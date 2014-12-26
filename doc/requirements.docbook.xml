@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<book version="5.0" xmlns="http://docbook.org/ns/docbook"
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:svg="http://www.w3.org/2000/svg"
+      xmlns:m="http://www.w3.org/1998/Math/MathML"
+      xmlns:html="http://www.w3.org/1999/xhtml"
+      xmlns:db="http://docbook.org/ns/docbook">
+  <info>
+    <title>Requirements</title>
+
+    <author>
+      <personname><firstname>Emil</firstname><surname>Karlén</surname></personname>
+    </author>
+  </info>
+
+  <chapter>
+    <title>Definitions</title>
+
+    <section>
+      <title>Test Case Results</title>
+
+      <para>Concepts are taken from <link
+      xlink:href="https://www.gnu.org/software/automake/manual/html_node/Generalities-about-Testing.html#Generalities-about-Testing">automake:
+      Generalities about Testing</link>.</para>
+
+      <para>Exit codes are taken from <link
+      xlink:href="https://www.gnu.org/software/automake/manual/html_node/Scripts_002dbased-Testsuites.html#Scripts_002dbased-Testsuites">automake:
+      Scripts-based Testsuites</link>.</para>
+
+      <variablelist>
+        <varlistentry>
+          <term>PASS</term>
+
+          <listitem>
+            <para><quote>the condition or behaviour it means to verify
+            holds</quote></para>
+
+            <para>Exit code: 0</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>FAIL</term>
+
+          <listitem>
+            <para>the condition or behaviour it means to verify does not
+            hold</para>
+
+            <para>Exit code: any code not used by a different result</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>SKIPPED</term>
+
+          <listitem>
+            <para>the test case is ignored</para>
+
+            <para>Exit code: 77</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>XFAIL</term>
+
+          <listitem>
+            <para>the result is FAIL, but this was expected</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>XPASS</term>
+
+          <listitem>
+            <para>the result is PASS, but XFAIL was expected</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>HARD ERROR</term>
+
+          <listitem>
+            <para>there was an error in arranging the test so non of the other
+            result can be derived</para>
+
+            <para>Exit code: 99</para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+    </section>
+
+    <section>
+      <title>Test Case Phases</title>
+
+      <para>Inspired, in part, by <link
+      xlink:href="http://code.google.com/p/spock/wiki/SpockBasics">Spock
+      Basics</link>.</para>
+
+      <variablelist>
+        <varlistentry>
+          <term>setup</term>
+
+          <listitem>
+            <para>Constructs the environment that the target expects.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>target</term>
+
+          <listitem>
+            <para>The program that is tested, in the environment set up by
+            "setup".</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>assert</term>
+
+          <listitem>
+            <para>Tests whether the target has behaved expectedly.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>cleanup</term>
+
+          <listitem>
+            <para>Destructs resources that has been previously constructed,
+            and that are not automatically destructed.</para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+    </section>
+  </chapter>
+</book>

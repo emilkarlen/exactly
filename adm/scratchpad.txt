@@ -1,0 +1,12 @@
+-*- org -*-
+
+* Relaterade verktyg
+** prove: "prove - Run tests through a TAP harness"
+http://search.cpan.org/~andya/Test-Harness/bin/prove
+
+* Relaterade tekniker
+** Från GNU automake tests
+*** TAP
+https://www.gnu.org/software/automake/manual/html_node/Introduction-to-TAP.html#Introduction-to-TAP
+*** Test metadata
+*** test result output
