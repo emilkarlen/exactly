@@ -212,6 +212,40 @@
           </listitem>
         </varlistentry>
       </variablelist>
+
+      <para>This structure is constructed for each test case.</para>
+
+      <para>The program needs to know where to construct this structure. For
+      this purpose, two values are used: a directory where temporary files can
+      be created, and, inside that directory, a unique directory for the
+      current test case:</para>
+
+      <variablelist>
+        <varlistentry>
+          <term><glossterm>temporary root directory</glossterm></term>
+
+          <listitem>
+            <para>A directory where directories can be created and
+            deleted.</para>
+
+            <para>The default is the standard directory on the system for
+            temporary files.</para>
+
+            <variablelist>
+              <varlistentry>
+                <term><glossterm>test case temporary
+                directory</glossterm></term>
+
+                <listitem>
+                  <para>The directory used for a single test case: the
+                  directory that contains the <glossterm>execution directory
+                  structure</glossterm>.</para>
+                </listitem>
+              </varlistentry>
+            </variablelist>
+          </listitem>
+        </varlistentry>
+      </variablelist>
     </section>
 
     <section>
