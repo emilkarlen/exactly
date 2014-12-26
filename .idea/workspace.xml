@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="c026eb99-a2d7-40a5-a7ef-6c33d860e155" name="Default" comment="Temporary directory">
+    <list default="true" id="c026eb99-a2d7-40a5-a7ef-6c33d860e155" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <list id="287514ad-2f86-4fdf-85a8-47686e325817" name="timing" comment="">
@@ -278,7 +278,13 @@
       <option name="project" value="LOCAL" />
       <updated>1419632424468</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="PyCharm">
+      <created>1419632433684</created>
+      <option name="number" value="00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1419632433684</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -324,7 +330,8 @@
     </option>
     <MESSAGE value="PyCharm dictionary" />
     <MESSAGE value="First try at defining temporary directory structure." />
-    <option name="LAST_COMMIT_MESSAGE" value="First try at defining temporary directory structure." />
+    <MESSAGE value="PyCharm" />
+    <option name="LAST_COMMIT_MESSAGE" value="PyCharm" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
