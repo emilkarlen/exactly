@@ -78,7 +78,7 @@
         </varlistentry>
 
         <varlistentry>
-          <term>HARD ERROR</term>
+          <term><glossterm>HARD ERROR</glossterm></term>
 
           <listitem>
             <para>there was an error in arranging the test so non of the other
@@ -107,7 +107,7 @@
         </varlistentry>
 
         <varlistentry>
-          <term>target</term>
+          <term>apply</term>
 
           <listitem>
             <para>The program that is tested, in the environment set up by
@@ -132,6 +132,168 @@
           </listitem>
         </varlistentry>
       </variablelist>
+    </section>
+
+    <section>
+      <title>Test Case Execution Directories</title>
+
+      <para>A temporary directory structure is used for the execution of each
+      test case. This structure is called the <glossterm>execution directory
+      structure</glossterm>.</para>
+
+      <para>This structure is organized as follows.</para>
+
+      <variablelist>
+        <varlistentry>
+          <term>result</term>
+
+          <listitem>
+            <variablelist>
+              <varlistentry>
+                <term>std</term>
+
+                <listitem>
+                  <para>Contains output from stdout and stderr.</para>
+
+                  <variablelist>
+                    <varlistentry>
+                      <term>out</term>
+
+                      <listitem>
+                        <para>Output from stdout</para>
+                      </listitem>
+                    </varlistentry>
+
+                    <varlistentry>
+                      <term>err</term>
+
+                      <listitem>
+                        <para>Output from stderr</para>
+                      </listitem>
+                    </varlistentry>
+                  </variablelist>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>exitcode</term>
+
+                <listitem>
+                  <para>Contains the exit code.</para>
+                </listitem>
+              </varlistentry>
+            </variablelist>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>test</term>
+
+          <listitem>
+            <para>Directory that is the (initial) Present Working Directory
+            for all parts of the test case (setup, application, ...).</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>testcase</term>
+
+          <listitem>
+            <para>The test case, transformed from the test case file, in a
+            form that is executed.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>log</term>
+
+          <listitem>
+            <para>Various logs.</para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+    </section>
+
+    <section>
+      <title>Forms of a Test Case used for executing it</title>
+
+      <para>A test case that is given to the program for execution is
+      transformed, in several steps, to a form that is suitable for execution
+      inside the <glossterm>execution directory structure</glossterm>.</para>
+    </section>
+
+    <section>
+      <title>The Steps involved in executing a Test Case</title>
+
+      <para>The execution of a test case is a process divided into several
+      steps. Some of these steps are part of a transformation of the test case
+      into a form suitable for execution inside the <glossterm>execution
+      directory structure</glossterm>.</para>
+
+      <para>The original test case is said to be the <glossterm>raw test
+      case</glossterm>.</para>
+
+      <orderedlist>
+        <listitem>
+          <para>Preprocess</para>
+
+          <para>This is an optional step.</para>
+
+          <para>The given preprocessor transforms the <glossterm>raw test
+          case</glossterm> into the <glossterm>plain test
+          case</glossterm>.</para>
+
+          <para>If a preprocessor is not used, then the <glossterm>plain test
+          case</glossterm> is identical to the <glossterm>raw test
+          case</glossterm>.</para>
+
+          <para>Fails with <glossterm>HARD ERROR</glossterm> if the
+          preprocessor fails.</para>
+        </listitem>
+
+        <listitem>
+          <para>Parse</para>
+
+          <para>The <glossterm>plain test case</glossterm> is checked for
+          syntax errors.</para>
+
+          <para>Fails with <glossterm>HARD ERROR</glossterm> if the test case
+          contains syntax errors.</para>
+
+          <para><remark>How are these handled: invalid "commands", invalid
+          options to a command? Would be nice if these could be detected in
+          this step.</remark></para>
+        </listitem>
+
+        <listitem>
+          <para>Construction of the <glossterm>execution directory
+          structure</glossterm></para>
+        </listitem>
+
+        <listitem>
+          <para>Generation of the <glossterm>executable test
+          case</glossterm></para>
+
+          <para>The <glossterm>executable test case</glossterm> is "installed"
+          into the <glossterm>execution directory
+          structure</glossterm>.</para>
+        </listitem>
+
+        <listitem>
+          <para>Execution of the <glossterm>executable test
+          case</glossterm></para>
+
+          <para>All phases of the test case are executed.</para>
+        </listitem>
+
+        <listitem>
+          <para>Destruction of the <glossterm>execution directory
+          structure</glossterm></para>
+        </listitem>
+      </orderedlist>
+
+      <para>This process can be halted after various steps for the purpose of
+      experimenting and debugging a test case.</para>
     </section>
   </chapter>
 </book>
