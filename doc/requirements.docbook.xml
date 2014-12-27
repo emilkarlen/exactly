@@ -213,7 +213,9 @@
         </varlistentry>
       </variablelist>
 
-      <para>This structure is constructed for each test case.</para>
+      <para>This structure is constructed for each test case. It resides in a
+      directory called the <glossterm>execution directory
+      root</glossterm>.</para>
 
       <para>The program needs to know where to construct this structure. For
       this purpose, two values are used: a directory where temporary files can
