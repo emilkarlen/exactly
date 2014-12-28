@@ -1,10 +1,12 @@
-__author__ = 'karlen'
+__author__ = 'emil'
 
 
 from pathlib import Path
 
 
 class DirWithSubDirs:
+    """Name of a directory together with a list of sub directories"""
+
     def __init__(self, name: str,
                  sub_dirs: list):
         self.name = name

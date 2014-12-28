@@ -1,7 +1,7 @@
-__author__ = 'karlen'
+__author__ = 'emil'
 
 from unittest import TestCase
-from shelltest import construct_execution_directory_structure
+from shelltest.shelltest import construct_execution_directory_structure
 import tempfile
 from pathlib import Path
 
