@@ -1,5 +1,8 @@
 -*- org -*-
 
+
+* Planering
+  CLOCK: [2014-12-30 tis 22:34]--[2014-12-30 tis 22:45] =>  0:11
 * Kravspec
   CLOCK: [2014-12-26 fre 21:07]--[2014-12-26 fre 23:20] =>  2:13
   CLOCK: [2014-12-26 fre 18:41]--[2014-12-26 fre 20:01] =>  1:20
@@ -13,6 +16,8 @@
   CLOCK: [2014-12-27 lör 08:11]--[2014-12-27 lör 09:55] =>  1:44
 * Grundstomme
 ** Funktionalitet för att parsa
+   CLOCK: [2014-12-30 tis 22:35]--[2014-12-30 tis 23:41] =>  1:06
+   CLOCK: [2014-12-30 tis 22:00]--[2014-12-30 tis 22:34] =>  0:34
    CLOCK: [2014-12-30 tis 08:36]--[2014-12-30 tis 12:03] =>  3:27
    CLOCK: [2014-12-29 mån 21:28]--[2014-12-30 tis 06:36] => 09:08
    CLOCK: [2014-12-29 mån 13:19]--[2014-12-29 mån 16:19] =>  3:0
@@ -25,6 +30,15 @@ Validera:
 *** steg kan återkomma (setup ... apply ... setup) och instruktioner accumuleras i rätt ordning
 *** instruktioner för ett givet steg är verkligen tillgängliga enbart för detta steg
 *** kommentarer tas med som pseudo-instruktioner
+** InstructionParser som kan parsa flera olika instruktioner
+Fundera på om tanken med "behållare" separerade av punkt ska användas.
+** Validering av parsat TestCase
+Abstrakt metod hos Instruction som tar som argument någon form av omgivning.
+Obs! Omgivningen måste kunna modifieras av instruktioner, t ex "home",
+"stdin" (ev kan "stdin" sättas per fas - dvs det är en omgivning som finns per
+fas).
+** Generering av script utifrån validerat TestCase och omgivning
+Omgivningen är den som används/är resultatet från valideringen.
 ** Exekvering av testfall inkl preprocessning
 Skriv en enkel preprocessor (py-pgm som, t ex, konv versal -> gemen).
 Testfallet sparar en sträng i en fil som sedan preprocessas.
