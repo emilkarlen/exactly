@@ -1,7 +1,5 @@
 __author__ = 'emil'
 
-from collections import namedtuple
-
 from shelltest.phase import Phase
 from shelltest import model
 from shelltest import line_source
@@ -25,18 +23,19 @@ class InstructionParser:
         raise NotImplementedError()
 
 
-class ParserForPhase:
-    def __init__(self,
-                 phase: Phase,
-                 parser: InstructionParser):
-        self._phase = phase
-        self._parser = parser
+class ParserForPhase(tuple):
+    def __new__(cls,
+                phase: Phase,
+                parser: InstructionParser):
+        return tuple.__new__(cls, (phase, parser))
 
+    @property
     def phase(self) -> Phase:
-        return self._phase
+        return self[0]
 
+    @property
     def parser(self) -> InstructionParser:
-        return self._parser
+        return self[1]
 
 
 class PhaseAndInstructionsConfiguration:
@@ -61,8 +60,8 @@ class PhaseAndInstructionsConfiguration:
             phase_names_in_order_of_execution.append(None)
             phase2parser[None] = parser_for_anonymous_phase
         for pfp in parsers_for_named_phases:
-            phase_names_in_order_of_execution.append(pfp.phase().name())
-            phase2parser[pfp.phase().name()] = pfp.parser()
+            phase_names_in_order_of_execution.append(pfp.phase.name)
+            phase2parser[pfp.phase.name] = pfp.parser
         self._phase_names_in_order_of_execution = tuple(phase_names_in_order_of_execution)
         self._phase2parser = phase2parser
 
@@ -76,21 +75,6 @@ class PhaseAndInstructionsConfiguration:
 
     def parser_for_phase(self, phase_name: str) -> InstructionParser:
         return self._phase2parser[phase_name]
-
-    def parser_for_anonymous_phase(self) -> InstructionParser:
-        """
-        :return: Not None
-        """
-        return self._parser_for_anonymous_phase
-
-    def parser_for_named_phase(self, phase: Phase) -> InstructionParser:
-        """
-        :return: Not None
-        """
-        for pfp in self._parsers_for_named_phases:
-            if pfp.phase().name() == phase.name():
-                return pfp.parser()
-        raise ValueError('Phase is not configured: ' + phase.name())
 
 
 def skip_empty_and_classify_lines(plain_test_case: line_source.LineSource) -> list:
@@ -106,24 +90,24 @@ def skip_empty_and_classify_lines(plain_test_case: line_source.LineSource) -> li
     return ret_val
 
 
-# class PhaseWithLines(tuple):
-#
-# def __new__(cls, a, b):
-# return tuple.__new__(cls, (a, b))
-#
-# @property
-#     def a(self):
-#         return self[0]
-#
-#     @property
-#     def b(self):
-#         return self[1]
+class PhaseWithLines(tuple):
+    def __new__(cls,
+                phase_name: str,
+                phase_line: line_source.Line,
+                lines_in_phase: tuple):
+        return tuple.__new__(cls, (phase_name, phase_line, lines_in_phase))
 
-PhaseWithLines = namedtuple('PhaseWithLines',
-                            ['phase_name',  # str
-                             'phase_line',  # line_source.Line
-                             'lines_in_phase'  # iterable (syntax.TYPE_-constant, line_source.Line)
-                            ])
+    @property
+    def phase_name(self) -> str:
+        return self[0]
+
+    @property
+    def phase_line(self) -> line_source.Line:
+        return self[1]
+
+    @property
+    def lines_in_phase(self) -> tuple:
+        return self[2]
 
 
 def group_by_phase(classified_nonempty_lines: list) -> list:
@@ -137,11 +121,9 @@ def group_by_phase(classified_nonempty_lines: list) -> list:
     ret_val = []
     phase_name = None
     phase_line = None
-    phase = _extract_and_remove_phase(phase_name,
-                                      phase_line,
-                                      classified_nonempty_lines)
-    if phase.lines_in_phase:
-        ret_val.append(phase)
+    phase_with_lines = _extract_and_remove_phase(phase_name, phase_line, classified_nonempty_lines)
+    if phase_with_lines.lines_in_phase:
+        ret_val.append(phase_with_lines)
     while classified_nonempty_lines:
         phase_type_const, phase_line = classified_nonempty_lines[0]
         del classified_nonempty_lines[0]
@@ -150,8 +132,8 @@ def group_by_phase(classified_nonempty_lines: list) -> list:
         except syntax.GeneralError:
             raise model.SourceError(phase_line,
                                     'Invalid syntax of phase (should have syntax %s)' % syntax.PHASE_SYNTAX)
-        phase = _extract_and_remove_phase(phase_name, phase_line, classified_nonempty_lines)
-        ret_val.append(phase)
+        phase_with_lines = _extract_and_remove_phase(phase_name, phase_line, classified_nonempty_lines)
+        ret_val.append(phase_with_lines)
     return ret_val
 
 

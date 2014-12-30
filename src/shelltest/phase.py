@@ -1,15 +1,17 @@
 __author__ = 'emil'
 
 
-class Phase:
+class Phase(tuple):
     """
     Class for enumeration of phase constants
     """
-    def __init__(self, name: str):
-        self._name = name
+    def __new__(cls,
+                name: str):
+        return tuple.__new__(cls, (name, ))
 
-    def name(self):
-        return self._name
+    @property
+    def name(self) -> str:
+        return self[0]
 
 SETUP = Phase('setup')
 APPLY = Phase('apply')
