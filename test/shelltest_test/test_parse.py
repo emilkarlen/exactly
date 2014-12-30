@@ -10,11 +10,11 @@ from shelltest import phase
 from shelltest import line_source
 
 
-class InstructionApplicationForPhase(model.InstructionApplication):
+class InstructionForPhase(model.Instruction):
     def __init__(self,
                  source_line: line_source.Line,
                  phase_name: str):
-        model.InstructionApplication.__init__(self, source_line)
+        model.Instruction.__init__(self, source_line)
         self._phase_name = phase_name
 
     def phase_name(self):
@@ -25,13 +25,13 @@ class InstructionParserForPhase(parse.InstructionParser):
     def __init__(self, phase_name: str):
         self._phase_name = phase_name
 
-    def apply(self, source_line: line_source.Line) -> model.InstructionApplication:
-        return InstructionApplicationForPhase(source_line,
+    def apply(self, source_line: line_source.Line) -> model.Instruction:
+        return InstructionForPhase(source_line,
                                               self._phase_name)
 
 
 class InstructionParserThatFails(parse.InstructionParser):
-    def apply(self, source_line: line_source.Line) -> model.InstructionApplication:
+    def apply(self, source_line: line_source.Line) -> model.Instruction:
         raise model.SourceError(source_line,
                                 'Unconditional failure')
 
@@ -165,15 +165,15 @@ class TestParsePlainTestCase(unittest.TestCase):
 
         anonymous_instructions = (
             parse.InstructionForComment(line_source.Line(1, '#comment anonymous')),
-            InstructionApplicationForPhase(line_source.Line(3, 'instruction anonymous'), None)
+            InstructionForPhase(line_source.Line(3, 'instruction anonymous'), None)
         )
         phase1_instructions = (
             parse.InstructionForComment(line_source.Line(5, '#comment 1')),
-            InstructionApplicationForPhase(line_source.Line(6, 'instruction 1'), 'phase 1')
+            InstructionForPhase(line_source.Line(6, 'instruction 1'), 'phase 1')
         )
         expected_phase2instructions = {
-            None: model.InstructionApplicationSequence(anonymous_instructions),
-            'phase 1': model.InstructionApplicationSequence(phase1_instructions)
+            None: model.InstructionSequence(anonymous_instructions),
+            'phase 1': model.InstructionSequence(phase1_instructions)
         }
         expected_test_case = model.TestCase(expected_phase2instructions)
         self._check_test_case(expected_test_case, actual_test_case)
@@ -186,10 +186,10 @@ class TestParsePlainTestCase(unittest.TestCase):
 
         phase1_instructions = (
             parse.InstructionForComment(line_source.Line(2, '#comment')),
-            InstructionApplicationForPhase(line_source.Line(3, 'instruction'), 'phase 1')
+            InstructionForPhase(line_source.Line(3, 'instruction'), 'phase 1')
         )
         expected_phase2instructions = {
-            'phase 1': model.InstructionApplicationSequence(phase1_instructions)
+            'phase 1': model.InstructionSequence(phase1_instructions)
         }
         expected_test_case = model.TestCase(expected_phase2instructions)
         self._check_test_case(expected_test_case, actual_test_case)
@@ -206,16 +206,16 @@ class TestParsePlainTestCase(unittest.TestCase):
 
         phase1_instructions = (
             parse.InstructionForComment(line_source.Line(2, '#comment 1')),
-            InstructionApplicationForPhase(line_source.Line(7, 'instruction 1'),
+            InstructionForPhase(line_source.Line(7, 'instruction 1'),
                                            'phase 1')
         )
         phase2_instructions = (
-            InstructionApplicationForPhase(line_source.Line(5, 'instruction 2'),
+            InstructionForPhase(line_source.Line(5, 'instruction 2'),
                                            'phase 2'),
         )
         expected_phase2instructions = {
-            'phase 1': model.InstructionApplicationSequence(phase1_instructions),
-            'phase 2': model.InstructionApplicationSequence(phase2_instructions)
+            'phase 1': model.InstructionSequence(phase1_instructions),
+            'phase 2': model.InstructionSequence(phase2_instructions)
         }
         expected_test_case = model.TestCase(expected_phase2instructions)
         self._check_test_case(expected_test_case, actual_test_case)
@@ -247,10 +247,10 @@ class TestParsePlainTestCase(unittest.TestCase):
                                                  'instruction 1'
                                              ])
         phase1_instructions = (
-            InstructionApplicationForPhase(line_source.Line(2, 'instruction 1'), 'phase 1'),
+            InstructionForPhase(line_source.Line(2, 'instruction 1'), 'phase 1'),
         )
         expected_phase2instructions = {
-            'phase 1': model.InstructionApplicationSequence(phase1_instructions)
+            'phase 1': model.InstructionSequence(phase1_instructions)
         }
         expected_test_case = model.TestCase(expected_phase2instructions)
         self._check_test_case(expected_test_case, actual_test_case)
@@ -276,25 +276,25 @@ class TestParsePlainTestCase(unittest.TestCase):
             self._check_equal_instr_app_seq(expected_instructions, actual_instructions)
 
     def _check_equal_instr_app_seq(self,
-                                   expected_instructions: model.InstructionApplicationSequence,
-                                   actual_instructions: model.InstructionApplicationSequence):
-        self.assertEqual(len(expected_instructions.instruction_applications()),
-                         len(actual_instructions.instruction_applications()),
+                                   expected_instructions: model.InstructionSequence,
+                                   actual_instructions: model.InstructionSequence):
+        self.assertEqual(len(expected_instructions.instructions()),
+                         len(actual_instructions.instructions()),
                          'Number of instructions in the phase')
-        for expected_instruction, actual_instruction in zip(expected_instructions.instruction_applications(),
-                                                            actual_instructions.instruction_applications()):
+        for expected_instruction, actual_instruction in zip(expected_instructions.instructions(),
+                                                            actual_instructions.instructions()):
             self._check_equal_instruction(expected_instruction, actual_instruction)
 
     def _check_equal_instruction(self,
-                                 expected_instruction: model.InstructionApplication,
-                                 actual_instruction: model.InstructionApplication):
+                                 expected_instruction: model.Instruction,
+                                 actual_instruction: model.Instruction):
         self.assertEqual(expected_instruction.source_line(),
                          actual_instruction.source_line(),
                          'Source lines should be equal')
         if isinstance(expected_instruction, parse.InstructionForComment):
             self.assertIsInstance(actual_instruction, parse.InstructionForComment)
-        elif isinstance(expected_instruction, InstructionApplicationForPhase):
-            self.assertIsInstance(actual_instruction, InstructionApplicationForPhase)
+        elif isinstance(expected_instruction, InstructionForPhase):
+            self.assertIsInstance(actual_instruction, InstructionForPhase)
             self.assertEqual(expected_instruction.phase_name(),
                              actual_instruction.phase_name(),
                              'Phase name should be equal')

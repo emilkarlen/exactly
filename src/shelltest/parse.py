@@ -4,15 +4,13 @@ from collections import namedtuple
 
 from shelltest.phase import Phase
 from shelltest import model
-from shelltest.model import InstructionSet
 from shelltest import line_source
 from shelltest import syntax
 
 
-class InstructionForComment(model.InstructionApplication):
-
+class InstructionForComment(model.Instruction):
     def __init__(self, source_line: line_source.Line):
-        model.InstructionApplication.__init__(self, source_line)
+        model.Instruction.__init__(self, source_line)
 
 
 class InstructionParser:
@@ -20,9 +18,9 @@ class InstructionParser:
     Parses an instruction line into an instruction.
     """
 
-    def apply(self, source_line: line_source.Line) -> model.InstructionApplication:
+    def apply(self, source_line: line_source.Line) -> model.Instruction:
         """
-        :raises model.SourceError if the line cannot be parsed.
+        :raises SourceError The instruction line cannot be parsed.
         """
         raise NotImplementedError()
 
@@ -48,21 +46,21 @@ class PhaseAndInstructionsConfiguration:
 
     def __init__(self,
                  parser_for_anonymous_phase: InstructionParser,
-                 parser_for_named_phase: tuple):
+                 parsers_for_named_phases: tuple):
         """
         :param parser_for_anonymous_phase: Parser for the top-level/anonymous phase. None if that phase
          is not used.
-        :param parser_for_named_phase: sequence of ParserForPhase in the order the phases should be
+        :param parsers_for_named_phases: sequence of ParserForPhase in the order the phases should be
         executed and also parsed.
         """
         self._parser_for_anonymous_phase = parser_for_anonymous_phase
-        self._parser_for_named_phase = parser_for_named_phase
+        self._parsers_for_named_phases = parsers_for_named_phases
         phase_names_in_order_of_execution = []
         phase2parser = {}
         if parser_for_anonymous_phase:
             phase_names_in_order_of_execution.append(None)
             phase2parser[None] = parser_for_anonymous_phase
-        for pfp in parser_for_named_phase:
+        for pfp in parsers_for_named_phases:
             phase_names_in_order_of_execution.append(pfp.phase().name())
             phase2parser[pfp.phase().name()] = pfp.parser()
         self._phase_names_in_order_of_execution = tuple(phase_names_in_order_of_execution)
@@ -79,17 +77,17 @@ class PhaseAndInstructionsConfiguration:
     def parser_for_phase(self, phase_name: str) -> InstructionParser:
         return self._phase2parser[phase_name]
 
-    def instructions_for_anonymous_phase(self) -> InstructionParser:
+    def parser_for_anonymous_phase(self) -> InstructionParser:
         """
         :return: Not None
         """
         return self._parser_for_anonymous_phase
 
-    def instructions_for_named_phase(self, phase: Phase) -> InstructionParser:
+    def parser_for_named_phase(self, phase: Phase) -> InstructionParser:
         """
         :return: Not None
         """
-        for pfp in self._parser_for_named_phase:
+        for pfp in self._parsers_for_named_phases:
             if pfp.phase().name() == phase.name():
                 return pfp.parser()
         raise ValueError('Phase is not configured: ' + phase.name())
@@ -110,10 +108,10 @@ def skip_empty_and_classify_lines(plain_test_case: line_source.LineSource) -> li
 
 # class PhaseWithLines(tuple):
 #
-#     def __new__(cls, a, b):
-#         return tuple.__new__(cls, (a, b))
+# def __new__(cls, a, b):
+# return tuple.__new__(cls, (a, b))
 #
-#     @property
+# @property
 #     def a(self):
 #         return self[0]
 #
@@ -139,7 +137,9 @@ def group_by_phase(classified_nonempty_lines: list) -> list:
     ret_val = []
     phase_name = None
     phase_line = None
-    phase = _extract_and_remove_phase(phase_name, phase_line, classified_nonempty_lines)
+    phase = _extract_and_remove_phase(phase_name,
+                                      phase_line,
+                                      classified_nonempty_lines)
     if phase.lines_in_phase:
         ret_val.append(phase)
     while classified_nonempty_lines:
@@ -201,7 +201,7 @@ class _PlainTestCaseParserForPhaseAndInstructionsConfiguration(model.PlainTestCa
         instructions_and_comments_grouped_by_phase = group_by_phase(classified_nonempty_lines)
         self._raise_exception_if_there_is_an_invalid_phase_name(instructions_and_comments_grouped_by_phase)
         phase2lines = accumulate_identical_phases(instructions_and_comments_grouped_by_phase)
-        return self.parse_instructions(phase2lines)
+        return self.parse_instruction_lines(phase2lines)
 
     def _raise_exception_if_there_is_an_invalid_phase_name(self, instructions_and_comments_grouped_by_phase):
         phase_names_in_configuration = self._configuration.phase_names_in_order_of_execution()
@@ -221,18 +221,19 @@ class _PlainTestCaseParserForPhaseAndInstructionsConfiguration(model.PlainTestCa
                     internal_phase_names)
         return ', '.join(names)
 
-    def parse_instructions(self, phase2c_lines: dict) -> model.TestCase:
+    def parse_instruction_lines(self, phase2c_lines: dict) -> model.TestCase:
         """
         :param phase2c_lines: dict: str -> iterable of (syntax.TYPE_-constant, line_source.Line)
         """
         phase2instruction_sequence = {}
         for phase_name in self._configuration.phase_names_in_order_of_execution():
             if phase_name in phase2c_lines:
-                phase2instruction_sequence[phase_name] = self.parse_instructions_for_phase(phase_name,
-                                                                                           phase2c_lines[phase_name])
+                phase2instruction_sequence[phase_name] = \
+                    self.parse_instruction_lines_for_phase(phase_name,
+                                                           phase2c_lines[phase_name])
         return model.TestCase(phase2instruction_sequence)
 
-    def parse_instructions_for_phase(self, phase_name: str, c_lines: tuple) -> model.InstructionApplicationSequence:
+    def parse_instruction_lines_for_phase(self, phase_name: str, c_lines: tuple) -> model.InstructionSequence:
         parser = self._configuration.parser_for_phase(phase_name)
         sequence = []
         for line_type, line in c_lines:
@@ -240,7 +241,7 @@ class _PlainTestCaseParserForPhaseAndInstructionsConfiguration(model.PlainTestCa
                 sequence.append(InstructionForComment(line))
             else:
                 sequence.append(parser.apply(line))
-        return model.InstructionApplicationSequence(tuple(sequence))
+        return model.InstructionSequence(tuple(sequence))
 
 
 def new_parser_for(configuration: PhaseAndInstructionsConfiguration) -> model.PlainTestCaseParser:
