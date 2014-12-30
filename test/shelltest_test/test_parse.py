@@ -237,8 +237,23 @@ class TestParsePlainTestCase(unittest.TestCase):
                           parser_for_phase2_that_fails_unconditionally(),
                           [
                               '[phase 2]',
-                              'instruction 1'
+                              'instruction 2'
                           ])
+
+    def test_the_instruction_parser_for_the_current_phase_should_be_used(self):
+        actual_test_case = self._parse_lines(parser_for_phase2_that_fails_unconditionally(),
+                                             [
+                                                 '[phase 1]',
+                                                 'instruction 1'
+                                             ])
+        phase1_instructions = (
+            InstructionApplicationForPhase(line_source.Line(2, 'instruction 1'), 'phase 1'),
+        )
+        expected_phase2instructions = {
+            'phase 1': model.InstructionApplicationSequence(phase1_instructions)
+        }
+        expected_test_case = model.TestCase(expected_phase2instructions)
+        self._check_test_case(expected_test_case, actual_test_case)
 
     def _parse_lines(self,
                      parser: model.PlainTestCaseParser,
