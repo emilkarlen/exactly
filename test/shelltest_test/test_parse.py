@@ -127,7 +127,6 @@ class TestGroupByPhase(unittest.TestCase):
 
 
 class TestParsePlainTestCase(unittest.TestCase):
-
     def test_all_valid_phases_in_order_of_execution_are_accepted_but_empty(self):
         all_phases_ptc = os.linesep.join(['[phase 1]',
                                           '[phase 2]'])
@@ -140,13 +139,13 @@ class TestParsePlainTestCase(unittest.TestCase):
                         'There should be no phases, since no phase has any lines')
 
     def test_valid_anonymous_and_named_phase(self):
-        actual_test_case = self._parse_lines_without_anonymous_phase(parser_with_anonymous_phase(),
-                                                                     ['#comment anonymous',
-                                                                      '',
-                                                                      'instruction anonymous',
-                                                                      '[phase 1]',
-                                                                      '#comment 1',
-                                                                      'instruction 1'])
+        actual_test_case = self._parse_lines(parser_with_anonymous_phase(),
+                                             ['#comment anonymous',
+                                              '',
+                                              'instruction anonymous',
+                                              '[phase 1]',
+                                              '#comment 1',
+                                              'instruction 1'])
 
         anonymous_instructions = (
             parse.InstructionForComment(line_source.Line(1, '#comment anonymous')),
@@ -164,10 +163,10 @@ class TestParsePlainTestCase(unittest.TestCase):
         self._check_test_case(expected_test_case, actual_test_case)
 
     def test_valid_phase_with_comment_and_instruction(self):
-        actual_test_case = self._parse_lines_without_anonymous_phase(parser_without_anonymous_phase(),
-                                                                     ['[phase 1]',
-                                                                      '#comment',
-                                                                      'instruction'])
+        actual_test_case = self._parse_lines(parser_without_anonymous_phase(),
+                                             ['[phase 1]',
+                                              '#comment',
+                                              'instruction'])
 
         phase1_instructions = (
             parse.InstructionForComment(line_source.Line(2, '#comment')),
@@ -180,14 +179,14 @@ class TestParsePlainTestCase(unittest.TestCase):
         self._check_test_case(expected_test_case, actual_test_case)
 
     def test_valid_phase_with_fragmented_phases(self):
-        actual_test_case = self._parse_lines_without_anonymous_phase(parser_without_anonymous_phase(),
-                                                                     ['[phase 1]',
-                                                                      '#comment 1',
-                                                                      '',
-                                                                      '[phase 2]',
-                                                                      'instruction 2',
-                                                                      '[phase 1]',
-                                                                      'instruction 1'])
+        actual_test_case = self._parse_lines(parser_without_anonymous_phase(),
+                                             ['[phase 1]',
+                                              '#comment 1',
+                                              '',
+                                              '[phase 2]',
+                                              'instruction 2',
+                                              '[phase 1]',
+                                              'instruction 1'])
 
         phase1_instructions = (
             parse.InstructionForComment(line_source.Line(2, '#comment 1')),
@@ -205,9 +204,9 @@ class TestParsePlainTestCase(unittest.TestCase):
         expected_test_case = model.TestCase(expected_phase2instructions)
         self._check_test_case(expected_test_case, actual_test_case)
 
-    def _parse_lines_without_anonymous_phase(self,
-                                             parser: model.PlainTestCaseParser,
-                                             lines: list) -> model.TestCase:
+    def _parse_lines(self,
+                     parser: model.PlainTestCaseParser,
+                     lines: list) -> model.TestCase:
         plain_test_case = os.linesep.join(lines)
         ptc_source = line_source.new_for_string(plain_test_case)
         return parser.apply(ptc_source)
