@@ -15,6 +15,9 @@ class LineSource:
     Line numbers start at 1.
     """
 
+    def __iter__(self):
+        raise NotImplementedError()
+
 
 class _LineSourceForString(LineSource):
     def __init__(self, contents: str):

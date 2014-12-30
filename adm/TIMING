@@ -11,3 +11,28 @@
   CLOCK: [2014-12-28 sön 12:14]--[2014-12-28 sön 15:02] =>  2:48
   CLOCK: [2014-12-27 lör 15:35]--[2014-12-27 lör 16:31] =>  0:56
   CLOCK: [2014-12-27 lör 08:11]--[2014-12-27 lör 09:55] =>  1:44
+* Grundstomme
+** Funktionalitet för att parsa
+   CLOCK: [2014-12-30 tis 08:36]
+   CLOCK: [2014-12-29 mån 21:28]--[2014-12-30 tis 06:36] => 09:08
+   CLOCK: [2014-12-29 mån 13:19]--[2014-12-29 mån 16:19] =>  3:0
+Funktion för parsning som tar som argument uppsättningen av instruktioner per
+steg.
+Validera:
+*** valida steg-identiferare ("setup", "apply", ...)
+*** steget apply har en eller flera instruktioner
+*** steget assert har en eller flera instruktioner
+*** steg kan återkomma (setup ... apply ... setup) och instruktioner accumuleras i rätt ordning
+*** instruktioner för ett givet steg är verkligen tillgängliga enbart för detta steg
+*** kommentarer tas med som pseudo-instruktioner
+** Exekvering av testfall inkl preprocessning
+Skriv en enkel preprocessor (py-pgm som, t ex, konv versal -> gemen).
+Testfallet sparar en sträng i en fil som sedan preprocessas.
+Invokera programmet, t ex:
+python3 shelltest/main.py --preprocess 'python3 convert-to-lowercse.py'
+--stop-after preprocess
+
+Detta
+- ger ett program med main-metod och cla-parsning
+- "mall" för ett testfall som exekverar ett externt program med in och utdata
+  i fil
