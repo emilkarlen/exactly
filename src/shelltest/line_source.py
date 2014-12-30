@@ -1,11 +1,19 @@
 __author__ = 'emil'
 
-from collections import namedtuple
 
+class Line(tuple):
+    def __new__(cls,
+                line_number: int,
+                text: str):
+        return tuple.__new__(cls, (line_number, text))
 
-Line = namedtuple('Line',
-                  ['line_number',
-                   'text'])
+    @property
+    def line_number(self) -> int:
+        return self[0]
+
+    @property
+    def text(self) -> str:
+        return self[1]
 
 
 class LineSource:
