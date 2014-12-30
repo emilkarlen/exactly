@@ -2,16 +2,16 @@ __author__ = 'emil'
 
 from shelltest import line_source
 from shelltest.line_source import LineSource
-from shelltest.phase import Phase
 
 
-class InstructionApplication:
+class Instruction:
     """
-    A parsed application of an Instruction.
+    Base class for a parsed instruction line.
 
     Arguments/values are necessarily not correct.
     Whether or not depends on if they have been validated.
     """
+
     def __init__(self, source_line: line_source.Line):
         self._source_line = source_line
 
@@ -19,50 +19,26 @@ class InstructionApplication:
         return self._source_line
 
 
-class InstructionApplicationSequence:
+class InstructionSequence:
     """
-    A sequence/list of InstructionApplication:s.
-    """
-    def __init__(self, instruction_applications: tuple):
-        self._instruction_applications = instruction_applications
-
-    def is_empty(self) -> bool:
-        return not self._instruction_applications
-
-    def instruction_applications(self):
-        return self._instruction_applications
-
-
-class Instruction:
+    A sequence/list of Instruction:s.
     """
 
-    """
-    def parse(self, line_immediately_after_instruction_name: str) -> InstructionApplication:
-        raise NotImplementedError()
-
-
-class InstructionSet:
-    """
-    All instructions that are available for a single step.
-    """
-    def __init__(self, instructions: dict):
+    def __init__(self, instructions: tuple):
         self._instructions = instructions
-
-    @staticmethod
-    def empty():
-        return InstructionSet({})
 
     def is_empty(self) -> bool:
         return not self._instructions
 
-    def lookup(self, instruction_name: str) -> Instruction:
-        return self._instructions[instruction_name]
+    def instructions(self):
+        return self._instructions
 
 
 class SourceError(Exception):
     """
     An exceptions related to a line in the test case.
     """
+
     def __init__(self,
                  line: line_source.Line,
                  message: str):
@@ -74,6 +50,7 @@ class TestCase:
     """
     The result of parsing a test case file without encountering any errors.
     """
+
     def __init__(self, phase2instructions: dict):
         """
         :param phase2instructions dictionary str -> InstructionApplicationSequence
@@ -83,7 +60,7 @@ class TestCase:
     def phases(self) -> frozenset:
         return self._phase2instructions.keys()
 
-    def instructions_for_phase(self, phase_name: str) -> InstructionApplicationSequence:
+    def instructions_for_phase(self, phase_name: str) -> InstructionSequence:
         return self._phase2instructions[phase_name]
 
 
@@ -92,6 +69,10 @@ class PlainTestCaseParser:
     Base class for parsers that parse a "plain test case"
     (i.e., a test case that do not need pre-processing).
     """
+
     def apply(self,
               plain_test_case: LineSource) -> TestCase:
+        """
+        :raises SourceError The test case cannot be parsed.
+        """
         raise NotImplementedError()
