@@ -13,7 +13,7 @@
   CLOCK: [2014-12-27 lör 08:11]--[2014-12-27 lör 09:55] =>  1:44
 * Grundstomme
 ** Funktionalitet för att parsa
-   CLOCK: [2014-12-30 tis 08:36]
+   CLOCK: [2014-12-30 tis 08:36]--[2014-12-30 tis 12:03] =>  3:27
    CLOCK: [2014-12-29 mån 21:28]--[2014-12-30 tis 06:36] => 09:08
    CLOCK: [2014-12-29 mån 13:19]--[2014-12-29 mån 16:19] =>  3:0
 Funktion för parsning som tar som argument uppsättningen av instruktioner per
