@@ -30,6 +30,12 @@ class InstructionParserForPhase(parse.InstructionParser):
                                               self._phase_name)
 
 
+class InstructionParserThatFails(parse.InstructionParser):
+    def apply(self, source_line: line_source.Line) -> model.InstructionApplication:
+        raise model.SourceError(source_line,
+                                'Unconditional failure')
+
+
 def parser_without_anonymous_phase() -> model.PlainTestCaseParser:
     configuration = parse.PhaseAndInstructionsConfiguration(
         None,
@@ -42,6 +48,15 @@ def parser_with_anonymous_phase() -> model.PlainTestCaseParser:
     configuration = parse.PhaseAndInstructionsConfiguration(
         InstructionParserForPhase(None),
         parsers_for_named_phases()
+    )
+    return parse.new_parser_for(configuration)
+
+
+def parser_for_phase1_that_fails_unconditionally() -> model.PlainTestCaseParser:
+    configuration = parse.PhaseAndInstructionsConfiguration(
+        None,
+        (parse.ParserForPhase(phase.Phase('phase 1'),
+                              InstructionParserThatFails()),)
     )
     return parse.new_parser_for(configuration)
 
@@ -122,11 +137,13 @@ class TestGroupByPhase(unittest.TestCase):
     def test_invalid_phase_name_should_raise_exception(self):
         self.assertRaises(model.SourceError,
                           parse.group_by_phase,
-                          [(syntax.TYPE_PHASE, line_source.Line(1, '[phase-name-without-closing-bracket'))])
+                          [
+                              (syntax.TYPE_PHASE,
+                               line_source.Line(1, '[phase-name-without-closing-bracket'))
+                          ])
 
 
 class TestParsePlainTestCase(unittest.TestCase):
-
     def test_all_valid_phases_in_order_of_execution_are_accepted_but_empty(self):
         test_case = self._parse_lines(parser_without_anonymous_phase(),
                                       ['[phase 1]',
@@ -211,6 +228,15 @@ class TestParsePlainTestCase(unittest.TestCase):
                               'instruction 1'
                           ]
         )
+
+    def test_parse_should_fail_when_instruction_parser_fails(self):
+        self.assertRaises(model.SourceError,
+                          self._parse_lines,
+                          parser_for_phase1_that_fails_unconditionally(),
+                          [
+                              '[phase 1]',
+                              'instruction 1'
+                          ])
 
     def _parse_lines(self,
                      parser: model.PlainTestCaseParser,
