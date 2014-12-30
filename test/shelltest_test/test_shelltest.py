@@ -1,10 +1,9 @@
 __author__ = 'emil'
 
 import unittest
+from shelltest import shelltest
 import tempfile
 from pathlib import Path
-
-from shelltest import shelltest
 
 
 class TestConstruct_execution_directory_structure(unittest.TestCase):
