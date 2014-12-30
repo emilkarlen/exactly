@@ -241,10 +241,9 @@ class TestParsePlainTestCase(unittest.TestCase):
                          actual_instruction.source_line(),
                          'Source lines should be equal')
         if isinstance(expected_instruction, parse.InstructionForComment):
-            self.assertTrue(isinstance(actual_instruction, parse.InstructionForComment),
-                            'Expected comment. Got ' + str(actual_instruction))
+            self.assertIsInstance(actual_instruction, parse.InstructionForComment)
         elif isinstance(expected_instruction, InstructionApplicationForPhase):
-            self.assertTrue(isinstance(actual_instruction, InstructionApplicationForPhase))
+            self.assertIsInstance(actual_instruction, InstructionApplicationForPhase)
             self.assertEqual(expected_instruction.phase_name(),
                              actual_instruction.phase_name(),
                              'Phase name should be equal')
