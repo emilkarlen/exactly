@@ -52,11 +52,13 @@ def parser_with_anonymous_phase() -> model.PlainTestCaseParser:
     return parse.new_parser_for(configuration)
 
 
-def parser_for_phase1_that_fails_unconditionally() -> model.PlainTestCaseParser:
+def parser_for_phase2_that_fails_unconditionally() -> model.PlainTestCaseParser:
     configuration = parse.PhaseAndInstructionsConfiguration(
         None,
         (parse.ParserForPhase(phase.Phase('phase 1'),
-                              InstructionParserThatFails()),)
+                              InstructionParserForPhase('phase 1')),
+         parse.ParserForPhase(phase.Phase('phase 2'),
+                              InstructionParserThatFails()))
     )
     return parse.new_parser_for(configuration)
 
@@ -232,9 +234,9 @@ class TestParsePlainTestCase(unittest.TestCase):
     def test_parse_should_fail_when_instruction_parser_fails(self):
         self.assertRaises(model.SourceError,
                           self._parse_lines,
-                          parser_for_phase1_that_fails_unconditionally(),
+                          parser_for_phase2_that_fails_unconditionally(),
                           [
-                              '[phase 1]',
+                              '[phase 2]',
                               'instruction 1'
                           ])
 
