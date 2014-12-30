@@ -1,7 +1,6 @@
 __author__ = 'emil'
 
 import os
-
 import unittest
 
 from shelltest import model
@@ -127,6 +126,7 @@ class TestGroupByPhase(unittest.TestCase):
 
 
 class TestParsePlainTestCase(unittest.TestCase):
+
     def test_all_valid_phases_in_order_of_execution_are_accepted_but_empty(self):
         all_phases_ptc = os.linesep.join(['[phase 1]',
                                           '[phase 2]'])
@@ -203,6 +203,17 @@ class TestParsePlainTestCase(unittest.TestCase):
         }
         expected_test_case = model.TestCase(expected_phase2instructions)
         self._check_test_case(expected_test_case, actual_test_case)
+
+    def test_instruction_in_anonymous_phase_should_not_be_allowed_when_there_is_no_anonymous_phase(self):
+        self.assertRaises(model.SourceError,
+                          self._parse_lines,
+                          parser_without_anonymous_phase(),
+                          [
+                              'instruction anonymous',
+                              '[phase 1]',
+                              'instruction 1'
+                          ]
+                          )
 
     def _parse_lines(self,
                      parser: model.PlainTestCaseParser,
