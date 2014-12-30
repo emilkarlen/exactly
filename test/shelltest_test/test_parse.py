@@ -128,12 +128,9 @@ class TestGroupByPhase(unittest.TestCase):
 class TestParsePlainTestCase(unittest.TestCase):
 
     def test_all_valid_phases_in_order_of_execution_are_accepted_but_empty(self):
-        all_phases_ptc = os.linesep.join(['[phase 1]',
-                                          '[phase 2]'])
-        all_phases_ptc_line_source = line_source.new_for_string(all_phases_ptc)
-        parser = parser_without_anonymous_phase()
-
-        test_case = parser.apply(all_phases_ptc_line_source)
+        test_case = self._parse_lines(parser_without_anonymous_phase(),
+                                      ['[phase 1]',
+                                       '[phase 2]'])
 
         self.assertTrue(not test_case.phases(),
                         'There should be no phases, since no phase has any lines')
@@ -213,7 +210,7 @@ class TestParsePlainTestCase(unittest.TestCase):
                               '[phase 1]',
                               'instruction 1'
                           ]
-                          )
+        )
 
     def _parse_lines(self,
                      parser: model.PlainTestCaseParser,
