@@ -120,9 +120,9 @@ class TestDocument(unittest.TestCase):
         }
         document = model.Document(phase2instructions)
         global_environment = GlobalEnvironment()
-        phase_b_environment = PhaseEnvironment()
+        phase_environment = PhaseEnvironment()
         phases_to_execute = [
-            (None, phase_b_environment)
+            (None, phase_environment)
         ]
         document.execute(global_environment,
                          phases_to_execute)
@@ -133,7 +133,35 @@ class TestDocument(unittest.TestCase):
         expected_global = expected_anonymous
 
         self.assertEqual(expected_global, global_environment.instruction_list, 'Global execution trace')
-        self.assertEqual(expected_anonymous, phase_b_environment.instruction_list, 'Phase <anonymous> execution trace')
+        self.assertEqual(expected_anonymous, phase_environment.instruction_list, 'Phase <anonymous> execution trace')
+
+    def test_non_existing_phases_should_be_silently_ignored(self):
+        phase2instructions = {
+            'a': model.InstructionSequence((instr('1'),
+                                            instr('2'))),
+        }
+        document = model.Document(phase2instructions)
+        global_environment = GlobalEnvironment()
+        phase_anonymous_environment = PhaseEnvironment()
+        phase_a_environment = PhaseEnvironment()
+        phase_b_environment = PhaseEnvironment()
+        phases_to_execute = [
+            (None, phase_anonymous_environment),
+            ('a', phase_a_environment),
+            ('b', phase_b_environment),
+        ]
+        document.execute(global_environment,
+                         phases_to_execute)
+        expected_phase_a = [
+            ('a', '1'),
+            ('a', '2'),
+        ]
+        expected_global = expected_phase_a
+
+        self.assertEqual(expected_global, global_environment.instruction_list, 'Global execution trace')
+        self.assertEqual(expected_phase_a, phase_a_environment.instruction_list, 'Phase a execution trace')
+        self.assertEqual([], phase_anonymous_environment.instruction_list, 'Phase <anonymous> execution trace')
+        self.assertEqual([], phase_b_environment.instruction_list, 'Phase b execution trace')
 
 
 def suite():
