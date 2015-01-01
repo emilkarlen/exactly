@@ -39,6 +39,9 @@ class InstructionForComment(model.Instruction):
     def __init__(self, source_line: line_source.Line):
         model.Instruction.__init__(self, source_line)
 
+    def execute(self, phase_name: str, global_environment, phase_environment):
+        pass
+
 
 class InstructionParser:
     """
