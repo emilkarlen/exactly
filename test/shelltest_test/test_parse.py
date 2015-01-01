@@ -22,6 +22,9 @@ class InstructionForPhase(model.Instruction):
     def phase_name(self):
         return self._phase_name
 
+    def execute(self, phase_name: str, global_environment, phase_environment):
+        pass
+
 
 class InstructionParserForPhase(parse.InstructionParser):
     def __init__(self, phase_name: str):
@@ -153,7 +156,7 @@ class TestParsePlainTestCase(unittest.TestCase):
                                       ['[phase 1]',
                                        '[phase 2]'])
 
-        self.assertTrue(not test_case.phases(),
+        self.assertTrue(not test_case.phases,
                         'There should be no phases, since no phase has any lines')
 
     def test_valid_anonymous_and_named_phase(self):
@@ -267,12 +270,12 @@ class TestParsePlainTestCase(unittest.TestCase):
     def _check_document(self,
                         expected_document: model.Document,
                         actual_document: model.Document):
-        self.assertEqual(len(expected_document.phases()),
-                         len(actual_document.phases()),
+        self.assertEqual(len(expected_document.phases),
+                         len(actual_document.phases),
                          'Number of phases')
-        for phase_name in expected_document.phases():
+        for phase_name in expected_document.phases:
             expected_instructions = expected_document.instructions_for_phase(phase_name)
-            self.assertTrue(phase_name in actual_document.phases(),
+            self.assertTrue(phase_name in actual_document.phases,
                             'The actual test case contains the expected phase "%s"' % phase_name)
             actual_instructions = actual_document.instructions_for_phase(phase_name)
             self._check_equal_instr_app_seq(expected_instructions, actual_instructions)
@@ -280,18 +283,18 @@ class TestParsePlainTestCase(unittest.TestCase):
     def _check_equal_instr_app_seq(self,
                                    expected_instructions: model.InstructionSequence,
                                    actual_instructions: model.InstructionSequence):
-        self.assertEqual(len(expected_instructions.instructions()),
-                         len(actual_instructions.instructions()),
+        self.assertEqual(len(expected_instructions.instructions),
+                         len(actual_instructions.instructions),
                          'Number of instructions in the phase')
-        for expected_instruction, actual_instruction in zip(expected_instructions.instructions(),
-                                                            actual_instructions.instructions()):
+        for expected_instruction, actual_instruction in zip(expected_instructions.instructions,
+                                                            actual_instructions.instructions):
             self._check_equal_instruction(expected_instruction, actual_instruction)
 
     def _check_equal_instruction(self,
                                  expected_instruction: model.Instruction,
                                  actual_instruction: model.Instruction):
-        self.assertEqual(expected_instruction.source_line(),
-                         actual_instruction.source_line(),
+        self.assertEqual(expected_instruction.source_line,
+                         actual_instruction.source_line,
                          'Source lines should be equal')
         if isinstance(expected_instruction, parse.InstructionForComment):
             self.assertIsInstance(actual_instruction, parse.InstructionForComment)

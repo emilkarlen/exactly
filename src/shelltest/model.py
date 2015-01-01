@@ -14,6 +14,7 @@ class Instruction:
     def __init__(self, source_line: line_source.Line):
         self._source_line = source_line
 
+    @property
     def source_line(self) -> line_source.Line:
         return self._source_line
 
@@ -38,6 +39,7 @@ class InstructionSequence:
     def is_empty(self) -> bool:
         return not self._instructions
 
+    @property
     def instructions(self):
         return self._instructions
 
@@ -53,6 +55,7 @@ class Document:
         """
         self._phase2instructions = phase2instructions
 
+    @property
     def phases(self) -> frozenset:
         return self._phase2instructions.keys()
 
@@ -72,5 +75,5 @@ class Document:
         for phase_name, phase_environment in phases:
             if phase_name in self._phase2instructions:
                 instruction_sequence = self._phase2instructions[phase_name]
-                for instruction in instruction_sequence.instructions():
+                for instruction in instruction_sequence.instructions:
                     instruction.execute(phase_name, global_environment, phase_environment)
