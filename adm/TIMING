@@ -51,5 +51,6 @@ Detta
 - "mall" för ett testfall som exekverar ett externt program med in och utdata
   i fil
 * Exekvera instruktioner
+  CLOCK: [2015-01-01 tor 21:31]
   CLOCK: [2015-01-01 tor 14:44]--[2015-01-01 tor 16:57] =>  2:13
 

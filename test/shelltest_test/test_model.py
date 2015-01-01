@@ -40,7 +40,6 @@ def instr(name: str) -> InstructionThatAppendsNameToEnvironments:
 
 
 class TestDocument(unittest.TestCase):
-
     def test_instructions_should_be_executed_in_the_order_they_appear_in_the_sequence(self):
         phase2instructions = {
             'phase': model.InstructionSequence((instr('1'),
@@ -56,6 +55,37 @@ class TestDocument(unittest.TestCase):
                     ('phase', '2')]
         self.assertEqual(expected, global_environment.instruction_list, 'Global execution trace')
         self.assertEqual(expected, phase_environment.instruction_list, 'Phase execution trace')
+
+    def test_phases_should_be_executed_in_the_order_they_appear_in_the_sequence(self):
+        phase2instructions = {
+            'a': model.InstructionSequence((instr('1'),
+                                            instr('2'))),
+            'b': model.InstructionSequence((instr('1'),
+                                            instr('2')))
+        }
+        document = model.Document(phase2instructions)
+        global_environment = GlobalEnvironment()
+        phase_a_environment = PhaseEnvironment()
+        phase_b_environment = PhaseEnvironment()
+        phases = [
+            ('b', phase_b_environment),
+            ('a', phase_a_environment)
+        ]
+        document.execute(global_environment,
+                         phases)
+        expected_a = [
+            ('a', '1'),
+            ('a', '2'),
+        ]
+        expected_b = [
+            ('b', '1'),
+            ('b', '2'),
+        ]
+        expected_global = expected_b + expected_a
+
+        self.assertEqual(expected_global, global_environment.instruction_list, 'Global execution trace')
+        self.assertEqual(expected_a, phase_a_environment.instruction_list, 'Phase a execution trace')
+        self.assertEqual(expected_b, phase_b_environment.instruction_list, 'Phase b execution trace')
 
 
 def suite():
