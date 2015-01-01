@@ -111,6 +111,30 @@ class TestDocument(unittest.TestCase):
         self.assertEqual(expected_global, global_environment.instruction_list, 'Global execution trace')
         self.assertEqual(expected_b, phase_b_environment.instruction_list, 'Phase b execution trace')
 
+    def test_only_specified_phases_should_be_executed__anonymous_phase(self):
+        phase2instructions = {
+            'a': model.InstructionSequence((instr('1'),
+                                            instr('2'))),
+            None: model.InstructionSequence((instr('1'),
+                                             instr('2')))
+        }
+        document = model.Document(phase2instructions)
+        global_environment = GlobalEnvironment()
+        phase_b_environment = PhaseEnvironment()
+        phases_to_execute = [
+            (None, phase_b_environment)
+        ]
+        document.execute(global_environment,
+                         phases_to_execute)
+        expected_anonymous = [
+            (None, '1'),
+            (None, '2'),
+        ]
+        expected_global = expected_anonymous
+
+        self.assertEqual(expected_global, global_environment.instruction_list, 'Global execution trace')
+        self.assertEqual(expected_anonymous, phase_b_environment.instruction_list, 'Phase <anonymous> execution trace')
+
 
 def suite():
     ret_val = unittest.TestSuite()
