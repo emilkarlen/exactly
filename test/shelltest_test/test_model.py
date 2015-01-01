@@ -35,6 +35,16 @@ class InstructionThatAppendsNameToEnvironments(model.Instruction):
         phase_environment.instruction_list.append((phase_name, self.__name))
 
 
+class InstructionThatUnconditionallyRaisesRuntimeError(model.Instruction):
+    def __init__(self):
+        super().__init__(None)
+
+    def execute(self, phase_name: str,
+                global_environment: GlobalEnvironment,
+                phase_environment: PhaseEnvironment):
+        raise RuntimeError()
+
+
 def instr(name: str) -> InstructionThatAppendsNameToEnvironments:
     return InstructionThatAppendsNameToEnvironments(name)
 
@@ -162,6 +172,25 @@ class TestDocument(unittest.TestCase):
         self.assertEqual(expected_phase_a, phase_a_environment.instruction_list, 'Phase a execution trace')
         self.assertEqual([], phase_anonymous_environment.instruction_list, 'Phase <anonymous> execution trace')
         self.assertEqual([], phase_b_environment.instruction_list, 'Phase b execution trace')
+
+    def test_when_an_exception_is_raised_the_execution_should_stop(self):
+        phase2instructions = {
+            'a': model.InstructionSequence((InstructionThatUnconditionallyRaisesRuntimeError(),
+                                            instr('2'))),
+        }
+        document = model.Document(phase2instructions)
+        global_environment = GlobalEnvironment()
+        phase_a_environment = PhaseEnvironment()
+        phases_to_execute = [
+            ('a', phase_a_environment)
+        ]
+
+        self.assertRaises(RuntimeError,
+                          document.execute,
+                          global_environment,
+                          phases_to_execute)
+        self.assertEqual([], global_environment.instruction_list, 'Global execution trace')
+        self.assertEqual([], phase_a_environment.instruction_list, 'Phase b execution trace')
 
 
 def suite():
