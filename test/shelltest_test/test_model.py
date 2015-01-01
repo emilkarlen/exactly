@@ -48,9 +48,9 @@ class TestDocument(unittest.TestCase):
         document = model.Document(phase2instructions)
         global_environment = GlobalEnvironment()
         phase_environment = PhaseEnvironment()
-        phases = [('phase', phase_environment)]
+        phases_to_execute = [('phase', phase_environment)]
         document.execute(global_environment,
-                         phases)
+                         phases_to_execute)
         expected = [('phase', '1'),
                     ('phase', '2')]
         self.assertEqual(expected, global_environment.instruction_list, 'Global execution trace')
@@ -67,12 +67,12 @@ class TestDocument(unittest.TestCase):
         global_environment = GlobalEnvironment()
         phase_a_environment = PhaseEnvironment()
         phase_b_environment = PhaseEnvironment()
-        phases = [
+        phases_to_execute = [
             ('b', phase_b_environment),
             ('a', phase_a_environment)
         ]
         document.execute(global_environment,
-                         phases)
+                         phases_to_execute)
         expected_a = [
             ('a', '1'),
             ('a', '2'),
@@ -85,6 +85,30 @@ class TestDocument(unittest.TestCase):
 
         self.assertEqual(expected_global, global_environment.instruction_list, 'Global execution trace')
         self.assertEqual(expected_a, phase_a_environment.instruction_list, 'Phase a execution trace')
+        self.assertEqual(expected_b, phase_b_environment.instruction_list, 'Phase b execution trace')
+
+    def test_only_specified_phases_should_be_executed(self):
+        phase2instructions = {
+            'a': model.InstructionSequence((instr('1'),
+                                            instr('2'))),
+            'b': model.InstructionSequence((instr('1'),
+                                            instr('2')))
+        }
+        document = model.Document(phase2instructions)
+        global_environment = GlobalEnvironment()
+        phase_b_environment = PhaseEnvironment()
+        phases_to_execute = [
+            ('b', phase_b_environment)
+        ]
+        document.execute(global_environment,
+                         phases_to_execute)
+        expected_b = [
+            ('b', '1'),
+            ('b', '2'),
+        ]
+        expected_global = expected_b
+
+        self.assertEqual(expected_global, global_environment.instruction_list, 'Global execution trace')
         self.assertEqual(expected_b, phase_b_environment.instruction_list, 'Phase b execution trace')
 
 
