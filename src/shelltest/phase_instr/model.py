@@ -34,6 +34,9 @@ class InstructionSequence:
     """
 
     def __init__(self, instructions: tuple):
+        """
+        :param instructions: List of Instruction.
+        """
         self._instructions = instructions
 
     @property
@@ -48,7 +51,7 @@ class Document:
 
     def __init__(self, phase2instructions: dict):
         """
-        :param phase2instructions dictionary str -> InstructionApplicationSequence
+        :param phase2instructions dictionary str -> InstructionSequence
         """
         self._phase2instructions = phase2instructions
 
