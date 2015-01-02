@@ -1,6 +1,6 @@
 __author__ = 'emil'
 
-from shelltest import line_source
+from shelltest.sect_instr import line_source
 
 
 class Instruction:
