@@ -2,7 +2,7 @@ __author__ = 'emil'
 
 import unittest
 
-from shelltest_test.sect_instr import test_suite
+from shelltest_test.phase_instr import test_suite
 from shelltest_test import test_shelltest
 
 

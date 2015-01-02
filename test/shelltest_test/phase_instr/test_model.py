@@ -2,7 +2,7 @@ __author__ = 'emil'
 
 import unittest
 
-from shelltest.sect_instr import model
+from shelltest.phase_instr import model
 
 
 class GlobalEnvironment:

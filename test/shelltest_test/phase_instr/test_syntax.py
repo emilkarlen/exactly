@@ -2,7 +2,7 @@ __author__ = 'emil'
 
 import unittest
 
-from shelltest.sect_instr import syntax
+from shelltest.phase_instr import syntax
 
 
 class TestExtractPhaseNameFromPhaseLine(unittest.TestCase):

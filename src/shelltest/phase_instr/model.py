@@ -1,6 +1,6 @@
 __author__ = 'emil'
 
-from shelltest.sect_instr import line_source
+from shelltest.phase_instr import line_source
 
 
 class Instruction:
