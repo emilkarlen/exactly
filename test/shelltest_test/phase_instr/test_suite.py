@@ -2,7 +2,7 @@ __author__ = 'emil'
 
 import unittest
 
-from shelltest_test.sect_instr import test_line_source, test_parse, test_model, test_syntax
+from shelltest_test.phase_instr import test_line_source, test_parse, test_model, test_syntax
 
 
 def suite():

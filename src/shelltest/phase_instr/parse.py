@@ -1,10 +1,10 @@
 __author__ = 'emil'
 
 from shelltest.phase import Phase
-from shelltest.sect_instr import model
-from shelltest.sect_instr import line_source
-from shelltest.sect_instr.line_source import LineSource
-from shelltest.sect_instr import syntax
+from shelltest.phase_instr import model
+from shelltest.phase_instr import line_source
+from shelltest.phase_instr.line_source import LineSource
+from shelltest.phase_instr import syntax
 
 
 class SourceError(Exception):

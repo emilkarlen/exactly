@@ -3,10 +3,10 @@ __author__ = 'emil'
 import os
 import unittest
 
-from shelltest.sect_instr.parse import SourceError, PlainTestCaseParser
-from shelltest.sect_instr import model
+from shelltest.phase_instr.parse import SourceError, PlainTestCaseParser
+from shelltest.phase_instr import model
 from shelltest import phase
-from shelltest.sect_instr import line_source, parse, syntax
+from shelltest.phase_instr import line_source, parse, syntax
 
 
 class InstructionForPhase(model.Instruction):

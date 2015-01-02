@@ -3,7 +3,7 @@ __author__ = 'emil'
 import os
 import unittest
 
-from shelltest.sect_instr import line_source
+from shelltest.phase_instr import line_source
 
 
 def line(line_number: int, text: str) -> line_source.Line:
