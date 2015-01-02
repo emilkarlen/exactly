@@ -36,9 +36,6 @@ class InstructionSequence:
     def __init__(self, instructions: tuple):
         self._instructions = instructions
 
-    def is_empty(self) -> bool:
-        return not self._instructions
-
     @property
     def instructions(self) -> tuple:
         return self._instructions
