@@ -1,6 +1,5 @@
 __author__ = 'emil'
 
-from shelltest.phase import Phase
 from shelltest.phase_instr import model
 from shelltest.phase_instr import line_source
 from shelltest.phase_instr.line_source import LineSource
@@ -55,12 +54,12 @@ class InstructionParser:
 
 class ParserForPhase(tuple):
     def __new__(cls,
-                phase: Phase,
+                phase: str,
                 parser: InstructionParser):
         return tuple.__new__(cls, (phase, parser))
 
     @property
-    def phase(self) -> Phase:
+    def phase(self) -> str:
         return self[0]
 
     @property
@@ -90,8 +89,8 @@ class PhaseAndInstructionsConfiguration:
             phase_names_in_order_of_execution.append(None)
             phase2parser[None] = parser_for_anonymous_phase
         for pfp in parsers_for_named_phases:
-            phase_names_in_order_of_execution.append(pfp.phase.name)
-            phase2parser[pfp.phase.name] = pfp.parser
+            phase_names_in_order_of_execution.append(pfp.phase)
+            phase2parser[pfp.phase] = pfp.parser
         self._phase_names_in_order_of_execution = tuple(phase_names_in_order_of_execution)
         self._phase2parser = phase2parser
 
