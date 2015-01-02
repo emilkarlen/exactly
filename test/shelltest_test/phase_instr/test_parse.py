@@ -5,7 +5,6 @@ import unittest
 
 from shelltest.phase_instr.parse import SourceError, PlainTestCaseParser
 from shelltest.phase_instr import model
-from shelltest import phase
 from shelltest.phase_instr import line_source, parse, syntax
 
 
@@ -57,18 +56,18 @@ def parser_with_anonymous_phase() -> PlainTestCaseParser:
 def parser_for_phase2_that_fails_unconditionally() -> PlainTestCaseParser:
     configuration = parse.PhaseAndInstructionsConfiguration(
         None,
-        (parse.ParserForPhase(phase.Phase('phase 1'),
+        (parse.ParserForPhase('phase 1',
                               InstructionParserForPhase('phase 1')),
-         parse.ParserForPhase(phase.Phase('phase 2'),
+         parse.ParserForPhase('phase 2',
                               InstructionParserThatFails()))
     )
     return parse.new_parser_for(configuration)
 
 
 def parsers_for_named_phases():
-    return (parse.ParserForPhase(phase.Phase('phase 1'),
+    return (parse.ParserForPhase('phase 1',
                                  InstructionParserForPhase('phase 1')),
-            parse.ParserForPhase(phase.Phase('phase 2'),
+            parse.ParserForPhase('phase 2',
                                  InstructionParserForPhase('phase 2')))
 
 
