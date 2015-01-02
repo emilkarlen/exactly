@@ -28,12 +28,11 @@ _PHASE_LINE_RE = re.compile(_OPTIONAL_SPACE + '\[')
 _PHASE_NAME_RE = re.compile('\w[\w -.]*\w|\w')
 _PHASE_NAME_AFTER_RE = re.compile(']' + _OPTIONAL_SPACE + '$')
 
-
 _DETECTABLE = (
     (TYPE_EMPTY, _EMPTY_LINE_RE),
     (TYPE_COMMENT, _COMMENT_LINE_RE),
     (TYPE_PHASE, _PHASE_LINE_RE),
-    )
+)
 
 
 def classify_line(line: str) -> int:

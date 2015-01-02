@@ -13,9 +13,10 @@ class Phase(tuple):
     def name(self) -> str:
         return self[0]
 
+ANONYMOUS = Phase(None)
 SETUP = Phase('setup')
 APPLY = Phase('apply')
 ASSERT = Phase('assert')
 CLEANUP = Phase('cleanup')
 
-ALL = [SETUP, APPLY, ASSERT, CLEANUP]
+ALL_NAMED = [SETUP, APPLY, ASSERT, CLEANUP]
