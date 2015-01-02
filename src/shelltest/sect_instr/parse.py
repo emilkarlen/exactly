@@ -1,12 +1,10 @@
-from shelltest.line_source import LineSource
-from shelltest.sect_instr import Document
-
 __author__ = 'emil'
 
 from shelltest.phase import Phase
-from shelltest import sect_instr
-from shelltest import line_source
-from shelltest import syntax
+from shelltest.sect_instr import model
+from shelltest.sect_instr import line_source
+from shelltest.sect_instr.line_source import LineSource
+from shelltest.sect_instr import syntax
 
 
 class SourceError(Exception):
@@ -28,16 +26,16 @@ class PlainTestCaseParser:
     """
 
     def apply(self,
-              plain_test_case: LineSource) -> Document:
+              plain_test_case: LineSource) -> model.Document:
         """
         :raises SourceError The test case cannot be parsed.
         """
         raise NotImplementedError()
 
 
-class InstructionForComment(sect_instr.Instruction):
+class InstructionForComment(model.Instruction):
     def __init__(self, source_line: line_source.Line):
-        sect_instr.Instruction.__init__(self, source_line)
+        model.Instruction.__init__(self, source_line)
 
     def execute(self, phase_name: str, global_environment, phase_environment):
         pass
@@ -48,7 +46,7 @@ class InstructionParser:
     Parses an instruction line into an instruction.
     """
 
-    def apply(self, source_line: line_source.Line) -> sect_instr.Instruction:
+    def apply(self, source_line: line_source.Line) -> model.Instruction:
         """
         :raises SourceError The instruction line cannot be parsed.
         """
@@ -163,7 +161,7 @@ def group_by_phase(classified_nonempty_lines: list) -> list:
             phase_name = syntax.extract_phase_name_from_phase_line(phase_line.text)
         except syntax.GeneralError:
             raise SourceError(phase_line,
-                                    'Invalid syntax of phase (should have syntax %s)' % syntax.PHASE_SYNTAX)
+                              'Invalid syntax of phase (should have syntax %s)' % syntax.PHASE_SYNTAX)
         phase_with_lines = _extract_and_remove_phase(phase_name, phase_line, classified_nonempty_lines)
         ret_val.append(phase_with_lines)
     return ret_val
@@ -210,7 +208,7 @@ class _PlainTestCaseParserForPhaseAndInstructionsConfiguration(PlainTestCasePars
     def __init__(self, configuration: PhaseAndInstructionsConfiguration):
         self._configuration = configuration
 
-    def apply(self, plain_test_case: line_source.LineSource) -> sect_instr.Document:
+    def apply(self, plain_test_case: line_source.LineSource) -> model.Document:
         classified_nonempty_lines = skip_empty_and_classify_lines(plain_test_case)
         instructions_and_comments_grouped_by_phase = group_by_phase(classified_nonempty_lines)
         self._raise_exception_if_there_is_an_invalid_phase_name(instructions_and_comments_grouped_by_phase)
@@ -222,9 +220,9 @@ class _PlainTestCaseParserForPhaseAndInstructionsConfiguration(PlainTestCasePars
         for phase_with_instructions in instructions_and_comments_grouped_by_phase:
             if phase_with_instructions.phase_name not in phase_names_in_configuration:
                 raise SourceError(phase_with_instructions.phase_line,
-                                        'Unknown phase: %s (valid phases are %s)' %
-                                        (phase_with_instructions.phase_name,
-                                         self._valid_phases_presentation_list(phase_names_in_configuration)))
+                                  'Unknown phase: %s (valid phases are %s)' %
+                                  (phase_with_instructions.phase_name,
+                                   self._valid_phases_presentation_list(phase_names_in_configuration)))
 
     @staticmethod
     def _valid_phases_presentation_list(internal_phase_names: tuple):
@@ -235,7 +233,7 @@ class _PlainTestCaseParserForPhaseAndInstructionsConfiguration(PlainTestCasePars
                     internal_phase_names)
         return ', '.join(names)
 
-    def parse_instruction_lines(self, phase2c_lines: dict) -> sect_instr.Document:
+    def parse_instruction_lines(self, phase2c_lines: dict) -> model.Document:
         """
         :param phase2c_lines: dict: str -> iterable of (syntax.TYPE_-constant, line_source.Line)
         """
@@ -245,9 +243,9 @@ class _PlainTestCaseParserForPhaseAndInstructionsConfiguration(PlainTestCasePars
                 phase2instruction_sequence[phase_name] = \
                     self.parse_instruction_lines_for_phase(phase_name,
                                                            phase2c_lines[phase_name])
-        return sect_instr.Document(phase2instruction_sequence)
+        return model.Document(phase2instruction_sequence)
 
-    def parse_instruction_lines_for_phase(self, phase_name: str, c_lines: tuple) -> sect_instr.InstructionSequence:
+    def parse_instruction_lines_for_phase(self, phase_name: str, c_lines: tuple) -> model.InstructionSequence:
         parser = self._configuration.parser_for_phase(phase_name)
         sequence = []
         for line_type, line in c_lines:
@@ -255,7 +253,7 @@ class _PlainTestCaseParserForPhaseAndInstructionsConfiguration(PlainTestCasePars
                 sequence.append(InstructionForComment(line))
             else:
                 sequence.append(parser.apply(line))
-        return sect_instr.InstructionSequence(tuple(sequence))
+        return model.InstructionSequence(tuple(sequence))
 
 
 def new_parser_for(configuration: PhaseAndInstructionsConfiguration) -> PlainTestCaseParser:
