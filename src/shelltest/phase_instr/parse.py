@@ -122,16 +122,16 @@ def skip_empty_and_classify_lines(plain_test_case: line_source.LineSource) -> li
 class PhaseWithLines(tuple):
     def __new__(cls,
                 phase_name: str,
-                phase_line: line_source.Line,
+                phase_source_line: line_source.Line,
                 lines_in_phase: tuple):
-        return tuple.__new__(cls, (phase_name, phase_line, lines_in_phase))
+        return tuple.__new__(cls, (phase_name, phase_source_line, lines_in_phase))
 
     @property
     def phase_name(self) -> str:
         return self[0]
 
     @property
-    def phase_line(self) -> line_source.Line:
+    def phase_source_line(self) -> line_source.Line:
         return self[1]
 
     @property
@@ -218,7 +218,7 @@ class _PlainTestCaseParserForPhaseAndInstructionsConfiguration(PlainTestCasePars
         phase_names_in_configuration = self._configuration.phase_names_in_order_of_execution()
         for phase_with_instructions in instructions_and_comments_grouped_by_phase:
             if phase_with_instructions.phase_name not in phase_names_in_configuration:
-                raise SourceError(phase_with_instructions.phase_line,
+                raise SourceError(phase_with_instructions.phase_source_line,
                                   'Unknown phase: %s (valid phases are %s)' %
                                   (phase_with_instructions.phase_name,
                                    self._valid_phases_presentation_list(phase_names_in_configuration)))
