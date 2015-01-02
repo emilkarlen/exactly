@@ -40,7 +40,7 @@ class InstructionSequence:
         return not self._instructions
 
     @property
-    def instructions(self):
+    def instructions(self) -> tuple:
         return self._instructions
 
 
