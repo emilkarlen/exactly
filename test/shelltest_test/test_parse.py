@@ -5,18 +5,18 @@ __author__ = 'emil'
 import os
 import unittest
 
-from shelltest import model
+from shelltest import sect_instr
 from shelltest import parse
 from shelltest import syntax
 from shelltest import phase
 from shelltest import line_source
 
 
-class InstructionForPhase(model.Instruction):
+class InstructionForPhase(sect_instr.Instruction):
     def __init__(self,
                  source_line: line_source.Line,
                  phase_name: str):
-        model.Instruction.__init__(self, source_line)
+        sect_instr.Instruction.__init__(self, source_line)
         self._phase_name = phase_name
 
     def phase_name(self):
@@ -30,13 +30,13 @@ class InstructionParserForPhase(parse.InstructionParser):
     def __init__(self, phase_name: str):
         self._phase_name = phase_name
 
-    def apply(self, source_line: line_source.Line) -> model.Instruction:
+    def apply(self, source_line: line_source.Line) -> sect_instr.Instruction:
         return InstructionForPhase(source_line,
                                    self._phase_name)
 
 
 class InstructionParserThatFails(parse.InstructionParser):
-    def apply(self, source_line: line_source.Line) -> model.Instruction:
+    def apply(self, source_line: line_source.Line) -> sect_instr.Instruction:
         raise SourceError(source_line,
                           'Unconditional failure')
 
@@ -177,10 +177,10 @@ class TestParsePlainTestCase(unittest.TestCase):
             InstructionForPhase(line_source.Line(6, 'instruction 1'), 'phase 1')
         )
         expected_phase2instructions = {
-            None: model.InstructionSequence(anonymous_instructions),
-            'phase 1': model.InstructionSequence(phase1_instructions)
+            None: sect_instr.InstructionSequence(anonymous_instructions),
+            'phase 1': sect_instr.InstructionSequence(phase1_instructions)
         }
-        expected_document = model.Document(expected_phase2instructions)
+        expected_document = sect_instr.Document(expected_phase2instructions)
         self._check_document(expected_document, actual_document)
 
     def test_valid_phase_with_comment_and_instruction(self):
@@ -194,9 +194,9 @@ class TestParsePlainTestCase(unittest.TestCase):
             InstructionForPhase(line_source.Line(3, 'instruction'), 'phase 1')
         )
         expected_phase2instructions = {
-            'phase 1': model.InstructionSequence(phase1_instructions)
+            'phase 1': sect_instr.InstructionSequence(phase1_instructions)
         }
-        expected_document = model.Document(expected_phase2instructions)
+        expected_document = sect_instr.Document(expected_phase2instructions)
         self._check_document(expected_document, actual_document)
 
     def test_valid_phase_with_fragmented_phases(self):
@@ -219,10 +219,10 @@ class TestParsePlainTestCase(unittest.TestCase):
                                 'phase 2'),
         )
         expected_phase2instructions = {
-            'phase 1': model.InstructionSequence(phase1_instructions),
-            'phase 2': model.InstructionSequence(phase2_instructions)
+            'phase 1': sect_instr.InstructionSequence(phase1_instructions),
+            'phase 2': sect_instr.InstructionSequence(phase2_instructions)
         }
-        expected_document = model.Document(expected_phase2instructions)
+        expected_document = sect_instr.Document(expected_phase2instructions)
         self._check_document(expected_document, actual_document)
 
     def test_instruction_in_anonymous_phase_should_not_be_allowed_when_there_is_no_anonymous_phase(self):
@@ -255,21 +255,21 @@ class TestParsePlainTestCase(unittest.TestCase):
             InstructionForPhase(line_source.Line(2, 'instruction 1'), 'phase 1'),
         )
         expected_phase2instructions = {
-            'phase 1': model.InstructionSequence(phase1_instructions)
+            'phase 1': sect_instr.InstructionSequence(phase1_instructions)
         }
-        expected_document = model.Document(expected_phase2instructions)
+        expected_document = sect_instr.Document(expected_phase2instructions)
         self._check_document(expected_document, actual_document)
 
     def _parse_lines(self,
                      parser: PlainTestCaseParser,
-                     lines: list) -> model.Document:
+                     lines: list) -> sect_instr.Document:
         plain_document = os.linesep.join(lines)
         ptc_source = line_source.new_for_string(plain_document)
         return parser.apply(ptc_source)
 
     def _check_document(self,
-                        expected_document: model.Document,
-                        actual_document: model.Document):
+                        expected_document: sect_instr.Document,
+                        actual_document: sect_instr.Document):
         self.assertEqual(len(expected_document.phases),
                          len(actual_document.phases),
                          'Number of phases')
@@ -281,8 +281,8 @@ class TestParsePlainTestCase(unittest.TestCase):
             self._check_equal_instr_app_seq(expected_instructions, actual_instructions)
 
     def _check_equal_instr_app_seq(self,
-                                   expected_instructions: model.InstructionSequence,
-                                   actual_instructions: model.InstructionSequence):
+                                   expected_instructions: sect_instr.InstructionSequence,
+                                   actual_instructions: sect_instr.InstructionSequence):
         self.assertEqual(len(expected_instructions.instructions),
                          len(actual_instructions.instructions),
                          'Number of instructions in the phase')
@@ -291,8 +291,8 @@ class TestParsePlainTestCase(unittest.TestCase):
             self._check_equal_instruction(expected_instruction, actual_instruction)
 
     def _check_equal_instruction(self,
-                                 expected_instruction: model.Instruction,
-                                 actual_instruction: model.Instruction):
+                                 expected_instruction: sect_instr.Instruction,
+                                 actual_instruction: sect_instr.Instruction):
         self.assertEqual(expected_instruction.source_line,
                          actual_instruction.source_line,
                          'Source lines should be equal')

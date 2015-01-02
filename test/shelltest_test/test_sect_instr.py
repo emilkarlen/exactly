@@ -2,7 +2,7 @@ __author__ = 'emil'
 
 import unittest
 
-from shelltest import model
+from shelltest import sect_instr
 
 
 class GlobalEnvironment:
@@ -23,7 +23,7 @@ class PhaseEnvironment:
         self.instruction_list = []
 
 
-class InstructionThatAppendsNameToEnvironments(model.Instruction):
+class InstructionThatAppendsNameToEnvironments(sect_instr.Instruction):
     def __init__(self, name: str):
         super().__init__(None)
         self.__name = name
@@ -35,7 +35,7 @@ class InstructionThatAppendsNameToEnvironments(model.Instruction):
         phase_environment.instruction_list.append((phase_name, self.__name))
 
 
-class InstructionThatUnconditionallyRaisesRuntimeError(model.Instruction):
+class InstructionThatUnconditionallyRaisesRuntimeError(sect_instr.Instruction):
     def __init__(self):
         super().__init__(None)
 
@@ -52,10 +52,10 @@ def instr(name: str) -> InstructionThatAppendsNameToEnvironments:
 class TestDocument(unittest.TestCase):
     def test_instructions_should_be_executed_in_the_order_they_appear_in_the_sequence(self):
         phase2instructions = {
-            'phase': model.InstructionSequence((instr('1'),
-                                                instr('2')))
+            'phase': sect_instr.InstructionSequence((instr('1'),
+                                                     instr('2')))
         }
-        document = model.Document(phase2instructions)
+        document = sect_instr.Document(phase2instructions)
         global_environment = GlobalEnvironment()
         phase_environment = PhaseEnvironment()
         phases_to_execute = [('phase', phase_environment)]
@@ -68,12 +68,12 @@ class TestDocument(unittest.TestCase):
 
     def test_phases_should_be_executed_in_the_order_they_appear_in_the_sequence(self):
         phase2instructions = {
-            'a': model.InstructionSequence((instr('1'),
-                                            instr('2'))),
-            'b': model.InstructionSequence((instr('1'),
-                                            instr('2')))
+            'a': sect_instr.InstructionSequence((instr('1'),
+                                                 instr('2'))),
+            'b': sect_instr.InstructionSequence((instr('1'),
+                                                 instr('2')))
         }
-        document = model.Document(phase2instructions)
+        document = sect_instr.Document(phase2instructions)
         global_environment = GlobalEnvironment()
         phase_a_environment = PhaseEnvironment()
         phase_b_environment = PhaseEnvironment()
@@ -99,12 +99,12 @@ class TestDocument(unittest.TestCase):
 
     def test_only_specified_phases_should_be_executed(self):
         phase2instructions = {
-            'a': model.InstructionSequence((instr('1'),
-                                            instr('2'))),
-            'b': model.InstructionSequence((instr('1'),
-                                            instr('2')))
+            'a': sect_instr.InstructionSequence((instr('1'),
+                                                 instr('2'))),
+            'b': sect_instr.InstructionSequence((instr('1'),
+                                                 instr('2')))
         }
-        document = model.Document(phase2instructions)
+        document = sect_instr.Document(phase2instructions)
         global_environment = GlobalEnvironment()
         phase_b_environment = PhaseEnvironment()
         phases_to_execute = [
@@ -123,12 +123,12 @@ class TestDocument(unittest.TestCase):
 
     def test_only_specified_phases_should_be_executed__anonymous_phase(self):
         phase2instructions = {
-            'a': model.InstructionSequence((instr('1'),
-                                            instr('2'))),
-            None: model.InstructionSequence((instr('1'),
-                                             instr('2')))
+            'a': sect_instr.InstructionSequence((instr('1'),
+                                                 instr('2'))),
+            None: sect_instr.InstructionSequence((instr('1'),
+                                                  instr('2')))
         }
-        document = model.Document(phase2instructions)
+        document = sect_instr.Document(phase2instructions)
         global_environment = GlobalEnvironment()
         phase_environment = PhaseEnvironment()
         phases_to_execute = [
@@ -147,10 +147,10 @@ class TestDocument(unittest.TestCase):
 
     def test_non_existing_phases_should_be_silently_ignored(self):
         phase2instructions = {
-            'a': model.InstructionSequence((instr('1'),
-                                            instr('2'))),
+            'a': sect_instr.InstructionSequence((instr('1'),
+                                                 instr('2'))),
         }
-        document = model.Document(phase2instructions)
+        document = sect_instr.Document(phase2instructions)
         global_environment = GlobalEnvironment()
         phase_anonymous_environment = PhaseEnvironment()
         phase_a_environment = PhaseEnvironment()
@@ -175,10 +175,10 @@ class TestDocument(unittest.TestCase):
 
     def test_when_an_exception_is_raised_the_execution_should_stop(self):
         phase2instructions = {
-            'a': model.InstructionSequence((InstructionThatUnconditionallyRaisesRuntimeError(),
-                                            instr('2'))),
+            'a': sect_instr.InstructionSequence((InstructionThatUnconditionallyRaisesRuntimeError(),
+                                                 instr('2'))),
         }
-        document = model.Document(phase2instructions)
+        document = sect_instr.Document(phase2instructions)
         global_environment = GlobalEnvironment()
         phase_a_environment = PhaseEnvironment()
         phases_to_execute = [
