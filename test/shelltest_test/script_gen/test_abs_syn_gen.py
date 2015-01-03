@@ -1,9 +1,8 @@
-from shelltest.script_gen.config import Configuration
-
 __author__ = 'emil'
 
 import unittest
 
+from shelltest.script_gen.config import Configuration
 from shelltest.phase_instr import line_source
 from shelltest.script_gen import abs_syn_gen
 from shelltest.phase_instr import model as phase_instr_model
