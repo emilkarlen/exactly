@@ -1,6 +1,6 @@
 __author__ = 'emil'
 
-from shelltest.script_gen.config import Configuration
+from shelltest.exec_abs_syn.config import Configuration
 
 from shelltest.phase_instr.line_source import Line
 

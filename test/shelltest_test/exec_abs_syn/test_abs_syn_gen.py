@@ -2,13 +2,13 @@ __author__ = 'emil'
 
 import unittest
 
-from shelltest.script_gen.config import Configuration
+from shelltest.exec_abs_syn.config import Configuration
 from shelltest.phase_instr import line_source
-from shelltest.script_gen import abs_syn_gen
+from shelltest.exec_abs_syn import abs_syn_gen
 from shelltest.phase_instr import model as phase_instr_model
 from shelltest import phase
-from shelltest.script_gen import script_stmt_gen
-from shelltest.script_gen import py_cmd_gen
+from shelltest.exec_abs_syn import script_stmt_gen
+from shelltest.exec_abs_syn import py_cmd_gen
 
 
 def dummy_line(line_number: int) -> line_source.Line:

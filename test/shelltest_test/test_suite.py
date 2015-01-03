@@ -3,7 +3,7 @@ __author__ = 'emil'
 import unittest
 
 from shelltest_test.phase_instr import test_suite as phase_instr_test
-from shelltest_test.script_gen import test_suite as script_gen_test
+from shelltest_test.exec_abs_syn import test_suite as script_gen_test
 from shelltest_test import test_execution_directory_structure
 
 

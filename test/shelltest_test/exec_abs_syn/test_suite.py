@@ -2,7 +2,7 @@ __author__ = 'emil'
 
 import unittest
 
-from shelltest_test.script_gen import test_abs_syn_gen
+from shelltest_test.exec_abs_syn import test_abs_syn_gen
 
 
 def suite():
