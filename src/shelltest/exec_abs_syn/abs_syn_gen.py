@@ -3,8 +3,8 @@ Functionality for generating a Shell Script from a parsed Test Case file.
 """
 __author__ = 'emil'
 
-from shelltest.script_gen import script_stmt_gen
-from shelltest.script_gen import py_cmd_gen
+from shelltest.exec_abs_syn import script_stmt_gen
+from shelltest.exec_abs_syn import py_cmd_gen
 from shelltest.phase import Phase
 from shelltest import phase
 
