@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <book version="5.0" xmlns="http://docbook.org/ns/docbook"
       xmlns:xlink="http://www.w3.org/1999/xlink"
-      xmlns:xi="http://www.w3.org/2001/XInclude"
-      xmlns:svg="http://www.w3.org/2000/svg"
-      xmlns:m="http://www.w3.org/1998/Math/MathML"
-      xmlns:html="http://www.w3.org/1999/xhtml"
-      xmlns:db="http://docbook.org/ns/docbook">
+        >
   <info>
     <title>Requirements</title>
 
@@ -13,6 +9,58 @@
       <personname><firstname>Emil</firstname><surname>Karlén</surname></personname>
     </author>
   </info>
+
+  <chapter>
+    <title>DocBook Usage</title>
+
+    <itemizedlist>
+      <listitem>
+        <para>Terms and definitions</para>
+
+        <para>Wrapped in <tag class="element">firstterm</tag> and <tag
+        class="element">glossterm</tag> elements.</para>
+      </listitem>
+
+      <listitem>
+        <para>Files and directories</para>
+
+        <para>Wrapped in <tag class="element">filename</tag> elements.
+        Directories have the attribute <tag class="attribute">class</tag> set
+        to "directory".</para>
+      </listitem>
+
+      <listitem>
+        <para>Executable</para>
+
+        <para>Wrapped in <tag class="element">command</tag> elements.</para>
+      </listitem>
+
+      <listitem>
+        <para>Phases</para>
+
+        <para>Wrapped in <tag class="element">systemitem</tag>
+        elements.</para>
+      </listitem>
+
+      <listitem>
+        <para>Test Case Execution result codes</para>
+      </listitem>
+
+      <listitem>
+        <para>Instructions</para>
+
+        <para>Wrapped in <tag class="element">command</tag> elements, with the
+        <tag class="attribute">attribute</tag> role set to
+        "instruction".</para>
+      </listitem>
+
+      <listitem>
+        <para>Environment variables</para>
+
+        <para>Wrapped in <tag>envar</tag>.</para>
+      </listitem>
+    </itemizedlist>
+  </chapter>
 
   <chapter>
     <title>Definitions</title>
@@ -30,7 +78,7 @@
 
       <variablelist>
         <varlistentry>
-          <term>PASS</term>
+          <term><constant>PASS</constant></term>
 
           <listitem>
             <para><quote>the condition or behaviour it means to verify
@@ -41,7 +89,7 @@
         </varlistentry>
 
         <varlistentry>
-          <term>FAIL</term>
+          <term><constant>FAIL</constant></term>
 
           <listitem>
             <para>the condition or behaviour it means to verify does not
@@ -52,7 +100,7 @@
         </varlistentry>
 
         <varlistentry>
-          <term>SKIPPED</term>
+          <term><constant>SKIPPED</constant></term>
 
           <listitem>
             <para>the test case is ignored</para>
@@ -62,7 +110,7 @@
         </varlistentry>
 
         <varlistentry>
-          <term>XFAIL</term>
+          <term><constant>XFAIL</constant></term>
 
           <listitem>
             <para>the result is FAIL, but this was expected</para>
@@ -70,7 +118,7 @@
         </varlistentry>
 
         <varlistentry>
-          <term>XPASS</term>
+          <term><constant>XPASS</constant></term>
 
           <listitem>
             <para>the result is PASS, but XFAIL was expected</para>
@@ -78,7 +126,7 @@
         </varlistentry>
 
         <varlistentry>
-          <term><glossterm>HARD ERROR</glossterm></term>
+          <term><constant>HARD ERROR</constant></term>
 
           <listitem>
             <para>there was an error in arranging the test so non of the other
@@ -93,13 +141,9 @@
     <section>
       <title>Test Case Phases</title>
 
-      <para>Inspired, in part, by <link
-      xlink:href="http://code.google.com/p/spock/wiki/SpockBasics">Spock
-      Basics</link>.</para>
-
       <variablelist>
         <varlistentry>
-          <term>setup</term>
+          <term><systemitem>setup</systemitem></term>
 
           <listitem>
             <para>Constructs the environment that the target expects.</para>
@@ -107,16 +151,16 @@
         </varlistentry>
 
         <varlistentry>
-          <term>apply</term>
+          <term><systemitem>apply</systemitem></term>
 
           <listitem>
             <para>The program that is tested, in the environment set up by
-            "setup".</para>
+            <systemitem>setup</systemitem>.</para>
           </listitem>
         </varlistentry>
 
         <varlistentry>
-          <term>assert</term>
+          <term><systemitem>assert</systemitem></term>
 
           <listitem>
             <para>Tests whether the target has behaved expectedly.</para>
@@ -124,7 +168,7 @@
         </varlistentry>
 
         <varlistentry>
-          <term>cleanup</term>
+          <term><systemitem>cleanup</systemitem></term>
 
           <listitem>
             <para>Destructs resources that has been previously constructed,
@@ -132,8 +176,6 @@
           </listitem>
         </varlistentry>
       </variablelist>
-
-      <para>For each step, </para>
     </section>
 
     <section>
@@ -147,19 +189,19 @@
 
       <variablelist>
         <varlistentry>
-          <term>result</term>
+          <term><filename class="directory">result</filename></term>
 
           <listitem>
             <variablelist>
               <varlistentry>
-                <term>std</term>
+                <term><filename class="directory">std</filename></term>
 
                 <listitem>
                   <para>Contains output from stdout and stderr.</para>
 
                   <variablelist>
                     <varlistentry>
-                      <term>out</term>
+                      <term><filename>out</filename></term>
 
                       <listitem>
                         <para>Output from stdout</para>
@@ -167,7 +209,7 @@
                     </varlistentry>
 
                     <varlistentry>
-                      <term>err</term>
+                      <term><filename>err</filename></term>
 
                       <listitem>
                         <para>Output from stderr</para>
@@ -178,7 +220,7 @@
               </varlistentry>
 
               <varlistentry>
-                <term>exitcode</term>
+                <term><filename>exitcode</filename></term>
 
                 <listitem>
                   <para>Contains the exit code.</para>
@@ -189,16 +231,17 @@
         </varlistentry>
 
         <varlistentry>
-          <term>test</term>
+          <term><filename class="directory">test</filename></term>
 
           <listitem>
             <para>Directory that is the (initial) Present Working Directory
-            for all parts of the test case (setup, application, ...).</para>
+            for all phases of the test case (<systemitem>setup</systemitem>,
+            <systemitem>apply</systemitem>, ...).</para>
           </listitem>
         </varlistentry>
 
         <varlistentry>
-          <term>testcase</term>
+          <term><filename class="directory">testcase</filename></term>
 
           <listitem>
             <para>The test case, transformed from the test case file, in a
@@ -207,7 +250,7 @@
         </varlistentry>
 
         <varlistentry>
-          <term>log</term>
+          <term><filename class="directory">log</filename></term>
 
           <listitem>
             <para>Various logs.</para>
@@ -223,6 +266,9 @@
       this purpose, two values are used: a directory where temporary files can
       be created, and, inside that directory, a unique directory for the
       current test case:</para>
+
+      <remark>Se över nedanstående (ev även ovanstående). Tror det skrevs
+      innan det var bestämt hur detta skulle skötas.</remark>
 
       <variablelist>
         <varlistentry>
@@ -253,11 +299,66 @@
     </section>
 
     <section>
+      <title>Execution Environment</title>
+
+      <para>The directory <filename>test</filename>, in the
+      <glossterm>execution directory structure</glossterm>, is the Current
+      Working Directory, for the instructions in all phases.</para>
+
+      <section>
+        <title>Environment variables</title>
+
+        <variablelist>
+          <varlistentry>
+            <term><envar>SHELLTEST_HOME</envar></term>
+
+            <listitem>
+              <para>Absolute name of the home directory of the test
+              case.</para>
+
+              <para>Initialized to the directory where the test case file is
+              located.</para>
+
+              <para>Modified by the <command role="instruction">home</command>
+              instruction in the test case.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><envar>SHELLTEST_TESTROOT</envar></term>
+
+            <listitem>
+              <para>Absolute name of the <filename
+              class="directory">test</filename> directory in the
+              <glossterm>execution directory structure</glossterm>.</para>
+
+              <para>This is the Current Working Directory at the start of each
+              phase.</para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </section>
+    </section>
+
+    <section>
       <title>Forms of a Test Case used for executing it</title>
 
       <para>A test case that is given to the program for execution is
       transformed, in several steps, to a form that is suitable for execution
       inside the <glossterm>execution directory structure</glossterm>.</para>
+
+      <para>The instructions in all phases except
+      <systemitem>apply</systemitem> are executed from within the
+      <command>shelltest</command> executable. They are implemented completely
+      in Python (shell commands are executed via Python).</para>
+
+      <para>The phase <systemitem>apply</systemitem> is represented as a shell
+      script named <filename>apply.sh</filename>, located in the <filename
+      class="directory">testcase</filename> directory. The instructions in
+      this phase generates shell script statements that are output to that
+      file. <filename>apply.sh</filename> is executed from a second shell
+      script file, <filename>main.sh</filename>. <filename>main.sh</filename>
+      sets up environment variables, redirect input and output, etc.</para>
     </section>
 
     <section>
