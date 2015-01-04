@@ -25,7 +25,7 @@ class StatementsGeneratorThatStoresHomeDir(script_stmt_gen.StatementsGeneratorFo
 
     def instruction_implementation(self,
                                    configuration: Configuration,
-                                   statement_constructor: script_stmt_gen.ScriptLanguageStatementConstructor) -> list:
+                                   script_language: script_stmt_gen.ScriptLanguage) -> list:
         raise RuntimeError('Should not be called')
 
 

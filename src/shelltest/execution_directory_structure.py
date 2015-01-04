@@ -68,30 +68,15 @@ class Result(DirWithRoot):
         return self.__exitcode_file
 
 
-class TestCase(DirWithRoot):
-    def __init__(self, parent_dir: Path):
-        super().__init__(parent_dir / 'testcase')
-        self.__apply_file = self.root_dir / 'apply.sh'
-        self.__main_file = self.root_dir / 'main.sh'
-
-    @property
-    def apply_file(self) -> Path:
-        return self.__apply_file
-
-    @property
-    def main_file(self) -> Path:
-        return self.__main_file
-
-
-class TestRootDir(DirWithRoot):
+class ExecutionDirectoryStructure(DirWithRoot):
     def __init__(self, dir_name: str):
         super().__init__(Path(dir_name))
         self.__test_dir = self.root_dir / 'test'
         self.__result = Result(self.root_dir)
-        self.__test_case = TestCase(self.root_dir)
+        self.__test_case_dir = self.root_dir / 'testcase'
 
     @property
-    def test_dir(self) -> Path:
+    def test_root_dir(self) -> Path:
         return self.__test_dir
 
     @property
@@ -99,16 +84,16 @@ class TestRootDir(DirWithRoot):
         return self.__result
 
     @property
-    def test_case(self) -> TestCase:
-        return self.__test_case
+    def test_case_dir(self) -> Path:
+        return self.__test_case_dir
 
 
-def construct_at(execution_directory_root: str) -> TestRootDir:
+def construct_at(execution_directory_root: str) -> ExecutionDirectoryStructure:
     for d in execution_directories:
-        d.mk_dirs(Path(Path(execution_directory_root)))
-    return TestRootDir(execution_directory_root)
+        d.mk_dirs(Path(execution_directory_root))
+    return ExecutionDirectoryStructure(execution_directory_root)
 
 
-def construct_at_tmp_root() -> TestRootDir:
-    root_dir_name = tempfile.TemporaryDirectory(prefix='shelltest-')
+def construct_at_tmp_root() -> ExecutionDirectoryStructure:
+    root_dir_name = tempfile.mkdtemp(prefix='shelltest-')
     return construct_at(root_dir_name)

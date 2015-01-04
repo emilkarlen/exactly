@@ -5,13 +5,24 @@ from shelltest.exec_abs_syn.config import Configuration
 from shelltest.phase_instr.line_source import Line
 
 
-class ScriptLanguageStatementConstructor:
-
-    def source_line(self, source_line: Line) -> list:
+class ScriptLanguage:
+    def base_name_from_stem(self, name):
         raise NotImplementedError()
 
-    def raw_shell_script_statement(self, statement: str) -> list:
+    def comment_line(self, comment: str) -> list:
         raise NotImplementedError()
+
+    def comment_lines(self, lines: list) -> list:
+        raise NotImplementedError()
+
+    def raw_script_statement(self, statement: str) -> list:
+        raise NotImplementedError()
+
+    def source_line_info(self, source_line: Line) -> list:
+        line_ref = 'Line %d' % source_line.line_number
+        line_contents = source_line.text
+        return self.comment_lines([line_ref,
+                                   line_contents])
 
 
 class StatementsGenerator:
@@ -21,7 +32,7 @@ class StatementsGenerator:
 
     def apply(self,
               configuration: Configuration,
-              statement_constructor: ScriptLanguageStatementConstructor) -> list:
+              statement_constructor: ScriptLanguage) -> list:
         """
         Generates script source code lines for this command.
         :return List of source code lines, each line is a str.
@@ -43,15 +54,15 @@ class StatementsGeneratorForInstruction(StatementsGenerator):
 
     def apply(self,
               configuration: Configuration,
-              statement_constructor: ScriptLanguageStatementConstructor) -> list:
+              statement_constructor: ScriptLanguage) -> list:
         ret_val = []
-        ret_val.extend(statement_constructor.source_line(self.__source_line))
+        ret_val.extend(statement_constructor.source_line_info(self.__source_line))
         ret_val.extend(self.instruction_implementation(configuration, statement_constructor))
         return ret_val
 
     def instruction_implementation(self,
                                    configuration: Configuration,
-                                   statement_constructor: ScriptLanguageStatementConstructor) -> list:
+                                   script_language: ScriptLanguage) -> list:
         """
         Generates script source code lines that implement the instruction that this object represents.
         :return List of source code lines, each line is a str.
@@ -63,6 +74,7 @@ class StatementsGeneratorForFileContents(StatementsGenerator):
     """
     Object that can generate a shell script.
     """
+
     def __init__(self,
                  instruction_statements_generators: list):
         """
@@ -79,7 +91,7 @@ class StatementsGeneratorForFileContents(StatementsGenerator):
 
     def apply(self,
               configuration: Configuration,
-              statement_constructor: ScriptLanguageStatementConstructor) -> list:
+              statement_constructor: ScriptLanguage) -> list:
         """
         Generates script source code lines for this command.
         :return List of source code lines, each line is a str.
