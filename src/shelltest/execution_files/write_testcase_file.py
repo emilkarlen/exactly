@@ -6,7 +6,7 @@ import pathlib
 from shelltest.exec_abs_syn import script_stmt_gen
 from shelltest.phase import Phase
 from shelltest.exec_abs_syn.config import Configuration
-from shelltest import execution_directory_structure
+from shelltest.execution_files import execution_directory_structure
 
 
 def write(statement_constructor: script_stmt_gen.ScriptLanguage,
