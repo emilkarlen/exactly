@@ -1,15 +1,16 @@
 __author__ = 'emil'
 
 
-from shelltest_test.execution_files import test_execution_directory_structure, test_write_testcase_file
-
 import unittest
+
+from shelltest_test.execution import test_execution_directory_structure, test_write_testcase_file, test_execution
 
 
 def suite():
     ret_val = unittest.TestSuite()
     ret_val.addTest(test_execution_directory_structure.suite())
     ret_val.addTest(test_write_testcase_file.suite())
+    ret_val.addTest(test_execution.suite())
     return ret_val
 
 

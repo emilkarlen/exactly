@@ -62,7 +62,7 @@ class InstructionThatRecordsHomeDirAsScriptStatement(phase_instr_model.Instructi
     def execute(self,
                 phase_name: str,
                 global_environment: abs_syn_gen.GlobalEnvironmentForNamedPhase,
-                phase_environment: abs_syn_gen.PhaseEnvironmentForShellScriptGeneration):
+                phase_environment: abs_syn_gen.PhaseEnvironmentForScriptGeneration):
         phase_environment.append_statement(StatementsGeneratorThatStoresHomeDir(self.source_line,
                                                                                 global_environment.home_directory))
 
@@ -134,7 +134,7 @@ class TestGenerate(unittest.TestCase):
                                                                            expected_home_dir: str,
                                                                            phase_environment):
         self.assertIsInstance(phase_environment,
-                              abs_syn_gen.PhaseEnvironmentForShellScriptGeneration)
+                              abs_syn_gen.PhaseEnvironmentForScriptGeneration)
         self.assertEqual(1,
                          len(phase_environment.statements_generators),
                          'Number of generators')

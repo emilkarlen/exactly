@@ -16,7 +16,7 @@ class PhaseEnvironmentForAnonymousPhase:
         self.home_dir = home_dir
 
 
-class PhaseEnvironmentForShellScriptGeneration:
+class PhaseEnvironmentForScriptGeneration:
     """
     The phase-environment for phases that generate a shell script.
     """
@@ -27,8 +27,8 @@ class PhaseEnvironmentForShellScriptGeneration:
     # def extend_statements(self, statements_generators: list):
     # """
     # :param statements_generators: List of StatementsGeneratorForInstruction.
-    #     """
-    #     self.statements_generators.extend(statements_generators)
+    # """
+    # self.statements_generators.extend(statements_generators)
 
     def append_statement(self, statements_generator: script_stmt_gen.StatementsGeneratorForInstruction):
         self.statements_generators.append(statements_generator)
@@ -65,8 +65,8 @@ class GlobalEnvironmentForNamedPhase:
 # file_generator: statement_generator.ScriptFileGenerator):
 # return tuple.__new__(cls, (phase, file_generator))
 #
-#     @property
-#     def phase(self) -> Phase:
+# @property
+# def phase(self) -> Phase:
 #         return self[0]
 #
 #     @property
@@ -99,7 +99,7 @@ class TestCasePhase(tuple):
                 phase: Phase,
                 phase_environment):
         """
-        :param elements: List of either StatementsGeneratorForInstruction or PythonCommand.
+        :param phase_environment: Either PhaseEnvironmentForScriptGeneration or PhaseEnvironmentForPythonCommands.
         """
         return tuple.__new__(cls, (phase, phase_environment))
 
@@ -110,6 +110,16 @@ class TestCasePhase(tuple):
     @property
     def phase_environment(self):
         return self[1]
+
+
+def new_test_case_phase_for_python_commands(phase: Phase,
+                                            phase_environment: PhaseEnvironmentForPythonCommands) -> TestCasePhase:
+    return TestCasePhase(phase, phase_environment)
+
+
+def new_test_case_phase_for_script_statements(phase: Phase,
+                                              phase_environment: PhaseEnvironmentForScriptGeneration) -> TestCasePhase:
+    return TestCasePhase(phase, phase_environment)
 
 
 class TestCase(tuple):
@@ -155,7 +165,7 @@ def validate_and_generate(original_home_directory: str,
         return phase_env
 
     def phase_env_for(ph: Phase):
-        return PhaseEnvironmentForShellScriptGeneration() \
+        return PhaseEnvironmentForScriptGeneration() \
             if ph == phase.APPLY \
             else PhaseEnvironmentForPythonCommands()
 
