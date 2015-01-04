@@ -18,6 +18,10 @@ def dummy_line(line_number: int) -> line_source.Line:
                             str(line_number))
 
 
+HOME_DIR_HEADER = 'Home Dir: '
+TEST_ROOT_DIR_HEADER = 'Test Root Dir: '
+
+
 class TheScriptLanguage(script_stmt_gen.ScriptLanguage):
     def base_name_from_stem(self, name):
         return name + '.test'
@@ -60,7 +64,8 @@ class StatementsGeneratorThatOutputsHomeDir(script_stmt_gen.StatementsGeneratorF
     def instruction_implementation(self,
                                    configuration: Configuration,
                                    script_language: script_stmt_gen.ScriptLanguage) -> list:
-        return script_language.raw_script_statement(str(configuration.home_dir))
+        line = HOME_DIR_HEADER + str(configuration.home_dir)
+        return script_language.raw_script_statement(line)
 
 
 class StatementsGeneratorThatOutputsTestRootDir(script_stmt_gen.StatementsGeneratorForInstruction):
@@ -71,7 +76,8 @@ class StatementsGeneratorThatOutputsTestRootDir(script_stmt_gen.StatementsGenera
     def instruction_implementation(self,
                                    configuration: Configuration,
                                    script_language: script_stmt_gen.ScriptLanguage) -> list:
-        return script_language.raw_script_statement(str(configuration.test_root_dir))
+        line = TEST_ROOT_DIR_HEADER + str(configuration.test_root_dir)
+        return script_language.raw_script_statement(line)
 
 
 class Test(unittest.TestCase):
@@ -110,10 +116,10 @@ class Test(unittest.TestCase):
 
             expected_contents = os.linesep.join(['# Line 1',
                                                  '# one',
-                                                 str(home_path),
+                                                 HOME_DIR_HEADER + str(home_path),
                                                  '# Line 2',
                                                  '# two',
-                                                 str(execution_dir_structure.test_root_dir),
+                                                 TEST_ROOT_DIR_HEADER + str(execution_dir_structure.test_root_dir),
                                                  ''])
             self.assert_contents_is(expected_contents,
                                     actual_file_path)
