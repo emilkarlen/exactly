@@ -8,7 +8,7 @@ from shelltest.exec_abs_syn.config import Configuration
 from shelltest.phase_instr import line_source
 from shelltest import phase
 from shelltest.exec_abs_syn import script_stmt_gen
-from shelltest.execution_files import write_testcase_file, execution_directory_structure
+from shelltest.execution import write_testcase_file, execution_directory_structure
 
 import unittest
 
@@ -23,8 +23,8 @@ TEST_ROOT_DIR_HEADER = 'Test Root Dir: '
 
 
 class TheScriptLanguage(script_stmt_gen.ScriptLanguage):
-    def base_name_from_stem(self, name):
-        return name + '.test'
+    def base_name_from_stem(self, stem):
+        return stem + '.test'
 
     def raw_script_statement(self, statement: str) -> list:
         return [statement]
@@ -69,20 +69,21 @@ class StatementsGeneratorThatOutputsTestRootDir(script_stmt_gen.StatementsGenera
 
 class Test(unittest.TestCase):
     def test_that_output_and_exitcode_are_stored(self):
-        with tempfile.TemporaryDirectory(prefix='shelltest-test-') as tmp_exec_dir_structure_root:
-            # ARRANGE #
-            statement_on_line_1 = StatementsGeneratorThatOutputsHomeDir(line_source.Line(1, 'one'))
-            statement_on_line_2 = StatementsGeneratorThatOutputsTestRootDir(line_source.Line(2, 'two'))
-            statement_generators = [statement_on_line_1,
-                                    statement_on_line_2]
+        # ARRANGE #
+        statement_on_line_1 = StatementsGeneratorThatOutputsHomeDir(line_source.Line(1, 'one'))
+        statement_on_line_2 = StatementsGeneratorThatOutputsTestRootDir(line_source.Line(2, 'two'))
+        statement_generators = [statement_on_line_1,
+                                statement_on_line_2]
 
+        script_language = TheScriptLanguage()
+
+        with tempfile.TemporaryDirectory(prefix='shelltest-test-') as tmp_exec_dir_structure_root:
             execution_dir_structure = execution_directory_structure.construct_at(tmp_exec_dir_structure_root)
 
             home_path = pathlib.Path().resolve()
             configuration = Configuration(home_path,
                                           execution_dir_structure.test_root_dir)
 
-            script_language = TheScriptLanguage()
             # ACT #
             actual_file_path = write_testcase_file.write(script_language,
                                                          execution_dir_structure,
