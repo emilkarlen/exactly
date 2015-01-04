@@ -15,13 +15,8 @@ def write(statement_constructor: script_stmt_gen.ScriptLanguage,
           phase: Phase,
           statement_generators: list) -> pathlib.Path:
     """
-
-    :param statement_constructor:
-    :param test_root:
-    :param configuration:
-    :param phase:
     :param statement_generators: List of script_stmt_gen.StatementsGeneratorForInstruction
-    :return:
+    :return: Path of the written file.
     """
     base_name = statement_constructor.base_name_from_stem(phase.name)
     # file_path = test_root.test_case.root_dir / base_name
