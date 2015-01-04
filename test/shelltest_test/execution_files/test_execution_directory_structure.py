@@ -4,7 +4,7 @@ import unittest
 import tempfile
 from pathlib import Path
 
-from shelltest import execution_directory_structure
+from shelltest.execution_files import execution_directory_structure
 
 
 class TestConstruct_execution_directory_structure(unittest.TestCase):

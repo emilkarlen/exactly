@@ -3,14 +3,14 @@ __author__ = 'emil'
 import os
 import pathlib
 import tempfile
-import unittest
 
 from shelltest.exec_abs_syn.config import Configuration
 from shelltest.phase_instr import line_source
 from shelltest import phase
 from shelltest.exec_abs_syn import script_stmt_gen
-from shelltest import execution_directory_structure
-from shelltest.script_gen import write_testcase_file
+from shelltest.execution_files import write_testcase_file, execution_directory_structure
+
+import unittest
 
 
 def dummy_line(line_number: int) -> line_source.Line:
@@ -74,7 +74,7 @@ class StatementsGeneratorThatOutputsTestRootDir(script_stmt_gen.StatementsGenera
         return script_language.raw_script_statement(str(configuration.test_root_dir))
 
 
-class TestScriptGen(unittest.TestCase):
+class Test(unittest.TestCase):
     def test_that_output_and_exitcode_are_stored(self):
         with tempfile.TemporaryDirectory(prefix='shelltest-test-') as tmp_exec_dir_structure_root:
             # ARRANGE #
@@ -131,14 +131,9 @@ class TestScriptGen(unittest.TestCase):
 
 def suite():
     ret_val = unittest.TestSuite()
-    # ret_val.addTest(test_model.suite())
+    ret_val.addTest(unittest.makeSuite(Test))
     return ret_val
 
 
-def run_suite():
-    runner = unittest.TextTestRunner()
-    runner.run(suite())
-
-
 if __name__ == '__main__':
-    run_suite()
+    unittest.main()

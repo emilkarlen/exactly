@@ -4,8 +4,7 @@ import unittest
 
 from shelltest_test.phase_instr import test_suite as phase_instr_test
 from shelltest_test.exec_abs_syn import test_suite as exec_abs_syn_test
-from shelltest_test.script_gen import test_suite as script_gen_test
-from shelltest_test import test_execution_directory_structure
+from shelltest_test.execution_files import test_write_testcase_file as script_gen_test, test_execution_directory_structure
 
 
 def suite():
