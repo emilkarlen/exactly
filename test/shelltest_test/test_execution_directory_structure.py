@@ -24,7 +24,7 @@ class TestConstruct_execution_directory_structure(unittest.TestCase):
             self._assert_exists_dir(test_root_dir.test_root_dir)
 
             self._assert_exists_dir(root / 'testcase')
-            self._assert_exists_dir(test_root_dir.test_case.root_dir)
+            self._assert_exists_dir(test_root_dir.test_case_dir)
 
     def _assert_exists_dir(self, p: Path):
         self.assertTrue(p.exists(), p.name + ' should exist')
