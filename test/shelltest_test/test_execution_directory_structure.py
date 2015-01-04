@@ -21,7 +21,7 @@ class TestConstruct_execution_directory_structure(unittest.TestCase):
             self._assert_exists_dir(test_root_dir.result.std.root_dir)
 
             self._assert_exists_dir(root / 'test')
-            self._assert_exists_dir(test_root_dir.test_dir)
+            self._assert_exists_dir(test_root_dir.test_root_dir)
 
             self._assert_exists_dir(root / 'testcase')
             self._assert_exists_dir(test_root_dir.test_case.root_dir)

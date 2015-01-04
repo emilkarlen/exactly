@@ -1,6 +1,6 @@
-import pathlib
-
 __author__ = 'emil'
+
+import pathlib
 
 
 class Configuration(tuple):
