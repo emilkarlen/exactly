@@ -43,19 +43,6 @@ class TheScriptLanguage(script_stmt_gen.ScriptLanguage):
                                    line_contents])
 
 
-class StatementsGeneratorForSingleRawScriptStatement(script_stmt_gen.StatementsGeneratorForInstruction):
-    def __init__(self,
-                 source_line: line_source.Line,
-                 raw_script_statement: str):
-        super().__init__(source_line)
-        self.raw_script_statement = raw_script_statement
-
-    def instruction_implementation(self,
-                                   configuration: Configuration,
-                                   script_language: script_stmt_gen.ScriptLanguage) -> list:
-        return script_language.raw_script_statement(self.raw_script_statement)
-
-
 class StatementsGeneratorThatOutputsHomeDir(script_stmt_gen.StatementsGeneratorForInstruction):
     def __init__(self,
                  source_line: line_source.Line):
