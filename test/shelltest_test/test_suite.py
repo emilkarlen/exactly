@@ -4,15 +4,14 @@ import unittest
 
 from shelltest_test.phase_instr import test_suite as phase_instr_test
 from shelltest_test.exec_abs_syn import test_suite as exec_abs_syn_test
-from shelltest_test.execution import test_write_testcase_file as script_gen_test, test_execution_directory_structure
+from shelltest_test.execution import test_suite
 
 
 def suite():
     ret_val = unittest.TestSuite()
     ret_val.addTest(phase_instr_test.suite())
     ret_val.addTest(exec_abs_syn_test.suite())
-    ret_val.addTest(script_gen_test.suite())
-    ret_val.addTest(test_execution_directory_structure.suite())
+    ret_val.addTest(test_suite.suite())
     return ret_val
 
 

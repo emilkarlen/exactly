@@ -21,8 +21,8 @@ class PhaseEnvironmentForScriptGeneration:
     The phase-environment for phases that generate a shell script.
     """
 
-    def __init__(self):
-        self.statements_generators = []
+    def __init__(self, statements_generators=[]):
+        self.statements_generators = statements_generators
 
     # def extend_statements(self, statements_generators: list):
     # """
@@ -39,8 +39,8 @@ class PhaseEnvironmentForPythonCommands:
     The phase-environment for phases that generate python commands.
     """
 
-    def __init__(self):
-        self.commands = []
+    def __init__(self, commands=[]):
+        self.commands = commands
 
     def append_command(self, command: py_cmd_gen.PythonCommand):
         self.commands.append(command)
@@ -67,7 +67,7 @@ class GlobalEnvironmentForNamedPhase:
 #
 # @property
 # def phase(self) -> Phase:
-#         return self[0]
+# return self[0]
 #
 #     @property
 #     def file_generator(self) -> ScriptFileGenerator:
@@ -138,7 +138,7 @@ class TestCase(tuple):
     @property
     def phase_list(self) -> list:
         """
-        :return: List of TestCasePhase
+        :rtype: list[TestCasePhase]
         """
         return self[1]
 
