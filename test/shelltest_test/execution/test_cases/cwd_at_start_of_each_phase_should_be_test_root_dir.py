@@ -66,7 +66,7 @@ class PyCommandThatChangesCwdToHomeDir(py_cmd_gen.PythonCommand):
 
     def apply(self, configuration: config.Configuration):
         os.chdir(str(configuration.home_dir))
-        print(os.getcwd())
+        # print(os.getcwd())
 
 
 class StatementsGeneratorForImportStatements(script_stmt_gen.StatementsGeneratorForInstruction):
@@ -121,6 +121,6 @@ class StatementsGeneratorThatChangesCwdToHomeDir(script_stmt_gen.StatementsGener
                                    script_language: script_stmt_gen.ScriptLanguage) -> list:
         statements = [
             'os.chdir(%s)' % py.string_expr(str(configuration.home_dir)),
-            'print(os.getcwd())'
+            #'print(os.getcwd())'
         ]
         return script_language.raw_script_statements(statements)
