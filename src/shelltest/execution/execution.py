@@ -18,6 +18,8 @@ from .execution_directory_structure import construct_at, ExecutionDirectoryStruc
 ENV_VAR_HOME = 'SHELLTEST_HOME'
 ENV_VAR_TEST = 'SHELLTEST_TESTROOT'
 
+ALL_ENV_VARS = [ENV_VAR_HOME, ENV_VAR_TEST]
+
 
 class TestCaseExecution:
     def __init__(self,
@@ -61,6 +63,8 @@ class TestCaseExecution:
         """
         Pre-condition: write has been executed.
         """
+        os.environ[ENV_VAR_HOME] = str(self.home_dir)
+        os.environ[ENV_VAR_TEST] = str(self.execution_directory_structure.test_root_dir)
         for test_case_phase in self.test_case.phase_list:
             if test_case_phase.phase == phase.APPLY:
                 self._execute_apply()
@@ -78,8 +82,6 @@ class TestCaseExecution:
         with open(str(self.execution_directory_structure.result.std.stdout_file), 'w') as f_stdout:
             with open(str(self.execution_directory_structure.result.std.stderr_file), 'w') as f_stderr:
                 try:
-                    os.environ[ENV_VAR_HOME] = str(self.home_dir)
-                    os.environ[ENV_VAR_TEST] = str(self.execution_directory_structure.test_root_dir)
                     exitcode = subprocess.call(cmd_and_args,
                                                cwd=str(self.execution_directory_structure.test_root_dir),
                                                stdout=f_stdout,
