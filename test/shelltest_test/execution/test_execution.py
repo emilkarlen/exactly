@@ -6,6 +6,7 @@ __author__ = 'emil'
 import tempfile
 import unittest
 
+from shelltest.exec_abs_syn import py_cmd_gen
 from shelltest.phase_instr import line_source
 from shelltest.exec_abs_syn import script_stmt_gen, abs_syn_gen
 from shelltest.exec_abs_syn.abs_syn_gen import \
@@ -115,9 +116,34 @@ def expected_output_on(file_object: str,
     ])
 
 
-def empty_py_cmd_test_case_phase(ph: phase.Phase) -> abs_syn_gen.TestCasePhase:
+def py_cmd_file_contents(configuration: Configuration) -> str:
+    return os.linesep.join([str(configuration.home_dir),
+                            str(configuration.test_root_dir),
+                            ''])
+
+
+class PyCommandThatCreatesAFileInCurrentDirWithName(py_cmd_gen.PythonCommand):
+    def __init__(self,
+                 source_line: line_source.Line,
+                 file_base_name: str):
+        super().__init__(source_line)
+        self.__file_base_name = file_base_name
+
+    def apply(self, configuration: Configuration):
+        with open(self.__file_base_name, 'w') as f:
+            f.write(py_cmd_file_contents(configuration))
+
+
+def test_file_name_for_phase(ph: phase.Phase) -> str:
+    return 'testfile-for-phase-' + ph.name
+
+
+def py_cmd_test_case_phase_that_creates_a_file_with_name_of_phase(ph: phase.Phase) -> abs_syn_gen.TestCasePhase:
+    env = abs_syn_gen.PhaseEnvironmentForPythonCommands()
+    env.append_command(PyCommandThatCreatesAFileInCurrentDirWithName(line_source.Line(1, 'py-cmd: create file'),
+                                                                     test_file_name_for_phase(ph)))
     return new_test_case_phase_for_python_commands(ph,
-                                                   abs_syn_gen.PhaseEnvironmentForPythonCommands())
+                                                   env)
 
 
 class Test(unittest.TestCase):
@@ -130,12 +156,16 @@ class Test(unittest.TestCase):
         phase_env_for_assert.append_statement(printer_statement)
         test_case = abs_syn_gen.TestCase(abs_syn_gen.GlobalEnvironmentForNamedPhase(str(home_dir_path)),
                                          [
-                                             empty_py_cmd_test_case_phase(phase.SETUP),
+                                             py_cmd_test_case_phase_that_creates_a_file_with_name_of_phase(phase.SETUP),
                                              new_test_case_phase_for_script_statements(phase.APPLY,
                                                                                        phase_env_for_assert),
-                                             empty_py_cmd_test_case_phase(phase.ASSERT),
-                                             empty_py_cmd_test_case_phase(phase.CLEANUP),
+                                             py_cmd_test_case_phase_that_creates_a_file_with_name_of_phase(
+                                                 phase.ASSERT),
+                                             py_cmd_test_case_phase_that_creates_a_file_with_name_of_phase(
+                                                 phase.CLEANUP),
                                          ])
+        file_name_from_py_cmd_list = [test_file_name_for_phase(ph)
+                                      for ph in [phase.SETUP, phase.ASSERT, phase.CLEANUP]]
         # ACT #
         with tempfile.TemporaryDirectory(prefix='shelltest-test-') as tmp_exec_dir_structure_root:
             # tmp_exec_dir_structure_root = tempfile.mkdtemp(prefix='shelltest-')
@@ -156,6 +186,9 @@ class Test(unittest.TestCase):
             self.assert_is_file_with_contents(eds.result.std.stderr_file,
                                               expected_output_on('sys.stderr',
                                                                  test_case_execution.configuration))
+            self.assert_files_in_test_root_with_dir_names(test_case_execution.execution_directory_structure,
+                                                          test_case_execution.configuration,
+                                                          file_name_from_py_cmd_list)
 
     def assert_is_file_with_contents(self,
                                      file_path: pathlib.Path,
@@ -171,6 +204,24 @@ class Test(unittest.TestCase):
         self.assertEqual(expected_content,
                          actual_contents,
                          'Contents of ' + file_name)
+
+    def assert_files_in_test_root_with_dir_names(self,
+                                                 eds: execution.ExecutionDirectoryStructure,
+                                                 configuration: Configuration,
+                                                 file_name_from_py_cmd_list: list):
+        expected_contents = py_cmd_file_contents(configuration)
+        for base_name in file_name_from_py_cmd_list:
+            file_path = eds.test_root_dir / base_name
+            file_name = str(file_path)
+            self.assertTrue(file_path.exists(),
+                            'py-cmd File should exist: ' + file_name)
+            self.assertTrue(file_path.is_file(),
+                            'py-cmd Should be a regular file: ' + file_name)
+            with open(str(file_path)) as f:
+                actual_contents = f.read()
+                self.assertEqual(expected_contents,
+                                 actual_contents,
+                                 'py-cmd Contents of py-cmd generated file ' + file_name)
 
 
 def suite():

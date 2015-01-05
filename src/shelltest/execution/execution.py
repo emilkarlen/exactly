@@ -7,11 +7,12 @@ import pathlib
 
 from shelltest import phase
 
-from shelltest.execution.execution_directory_structure import construct_at, ExecutionDirectoryStructure
 from shelltest.exec_abs_syn import script_stmt_gen, abs_syn_gen
 from shelltest.exec_abs_syn.config import Configuration
-from shelltest.execution import write_testcase_file
 from shelltest import exception
+
+from . import write_testcase_file
+from .execution_directory_structure import construct_at, ExecutionDirectoryStructure
 
 
 ENV_VAR_HOME = 'SHELLTEST_HOME'
@@ -57,6 +58,18 @@ class TestCaseExecution:
                                       script_gen_env.statements_generators)
 
     def execute(self):
+        """
+        Pre-condition: write has been executed.
+        """
+        for test_case_phase in self.test_case.phase_list:
+            if test_case_phase.phase == phase.APPLY:
+                self._execute_apply()
+                continue
+            phase_env = test_case_phase.phase_environment
+            if isinstance(phase_env, abs_syn_gen.PhaseEnvironmentForPythonCommands):
+                self._execute_py_commands_in_test_root(phase_env)
+
+    def _execute_apply(self):
         """
         Pre-condition: write has been executed.
         """
@@ -113,3 +126,9 @@ class TestCaseExecution:
     def _store_exit_code(self, exitcode: int):
         with open(str(self.execution_directory_structure.result.exitcode_file), 'w') as f:
             f.write(str(exitcode))
+
+    def _execute_py_commands_in_test_root(self,
+                                          phase_env: abs_syn_gen.PhaseEnvironmentForPythonCommands):
+        os.chdir(str(   self.execution_directory_structure.test_root_dir))
+        for command in phase_env.commands:
+            command.apply(self.configuration)
