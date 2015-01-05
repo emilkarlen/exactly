@@ -5,12 +5,12 @@ import pathlib
 import tempfile
 import unittest
 
-from shelltest_test.execution.execution_environment_variables_test_impl import \
+from shelltest_test.execution.test_cases.execution_environment_variables import \
     TestEnvironmentVariablesShouldBeAccessibleInEveryPhase
 
-from shelltest_test.execution.test_execution_utils import Python3Language, assert_is_file_with_contents, un_lines
-from shelltest_test.execution.py_unit_test_case_with_file_output import PyCommandThatWritesToStandardPhaseFile
-from shelltest_test.execution import py_unit_test_case_with_file_output as with_file_output
+from shelltest_test.execution.util.utils import Python3Language, assert_is_file_with_contents, un_lines
+from shelltest_test.execution.util.py_unit_test_case_with_file_output import PyCommandThatWritesToStandardPhaseFile
+from shelltest_test.execution.util import py_unit_test_case_with_file_output as with_file_output
 from shelltest.phase_instr import line_source
 from shelltest.exec_abs_syn import script_stmt_gen, abs_syn_gen
 from shelltest.exec_abs_syn.abs_syn_gen import \
