@@ -130,7 +130,7 @@ def py_cmd_test_case_phase_that_creates_a_file_with_name_of_phase(phase: phases.
     env.append_command(
         PyCommandThatCreatesAStandardPhaseFileInTestRootContainingDirectoryPaths(
             line_source.Line(1, 'py-cmd: create file'),
-            with_file_output.standard_phase_file_base_name(phase)))
+            phase))
     return new_test_case_phase_for_python_commands(phase,
                                                    env)
 
