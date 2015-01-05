@@ -3,13 +3,14 @@ __author__ = 'emil'
 import os
 import pathlib
 import unittest
+
 from shelltest import phases
 from shelltest.exec_abs_syn import py_cmd_gen
 from shelltest.exec_abs_syn.config import Configuration
 from shelltest.execution import execution
 from shelltest.phase_instr import line_source
-from shelltest_test.execution import test_execution_utils
-from shelltest_test.execution.py_unit_test_case import UnitTestCaseForPyLanguage
+from shelltest_test.execution.util import utils
+from shelltest_test.execution.util.py_unit_test_case import UnitTestCaseForPyLanguage
 
 
 def standard_phase_file_path_eds(eds: execution.ExecutionDirectoryStructure,
@@ -83,6 +84,6 @@ class UnitTestCaseForPyLanguageThatWritesAFileToTestRootForEachPhase(UnitTestCas
     def __assert_file_contents_for(self,
                                    phase: phases.Phase,
                                    expected_content: str):
-        test_execution_utils.assert_is_file_with_contents(self.unittest_case,
+        utils.assert_is_file_with_contents(self.unittest_case,
                                                           standard_phase_file_path_eds(self.eds, phase),
                                                           expected_content)

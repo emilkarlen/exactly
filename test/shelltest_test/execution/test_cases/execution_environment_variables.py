@@ -8,10 +8,10 @@ from shelltest.exec_abs_syn import abs_syn_gen, script_stmt_gen
 from shelltest.exec_abs_syn.config import Configuration
 from shelltest.execution import execution
 from shelltest.phase_instr import line_source
-from shelltest_test.execution import python_code_gen as py
-from shelltest_test.execution.py_unit_test_case_with_file_output import \
+from shelltest_test.execution.util import python_code_gen as py
+from shelltest_test.execution.util.py_unit_test_case_with_file_output import \
     UnitTestCaseForPyLanguageThatWritesAFileToTestRootForEachPhase, PyCommandThatWritesToStandardPhaseFile, standard_phase_file_path
-from shelltest_test.execution.test_execution_utils import format_header_value_line, un_lines
+from shelltest_test.execution.util.utils import format_header_value_line, un_lines
 
 
 class TestEnvironmentVariablesShouldBeAccessibleInEveryPhase(

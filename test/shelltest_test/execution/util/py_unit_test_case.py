@@ -8,11 +8,12 @@ from shelltest.phase_instr import line_source
 
 from shelltest.exec_abs_syn import script_stmt_gen
 
-from shelltest_test.execution.test_execution_utils import Python3Language
+from shelltest_test.execution.util.utils import Python3Language
 
 from shelltest.exec_abs_syn.abs_syn_gen import \
     new_test_case_phase_for_python_commands, \
     new_test_case_phase_for_script_statements
+
 from shelltest.exec_abs_syn import abs_syn_gen
 from shelltest import phases
 from shelltest.execution import execution
