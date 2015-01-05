@@ -1,14 +1,15 @@
+import pathlib
+
 __author__ = 'emil'
 
 import os
-import pathlib
+from shelltest.execution import execution
 
 from shelltest import phases
+from shelltest_test.execution.util.py_unit_test_case import UnitTestCaseForPyLanguage
 from shelltest.exec_abs_syn import abs_syn_gen, script_stmt_gen
 from shelltest.exec_abs_syn.config import Configuration
-from shelltest.execution import execution
 from shelltest.phase_instr import line_source
-from shelltest_test.execution.util.py_unit_test_case import UnitTestCaseForPyLanguage
 
 from shelltest_test.execution.util import utils
 
@@ -23,6 +24,7 @@ class TestCase(UnitTestCaseForPyLanguage):
     """
     Checks that output to stdout, stderr and the exit code are saved in the correct locations.
     """
+
     def _phase_env_apply(self) -> abs_syn_gen.PhaseEnvironmentForScriptGeneration:
         return \
             abs_syn_gen.PhaseEnvironmentForScriptGeneration([
@@ -47,8 +49,6 @@ class TestCase(UnitTestCaseForPyLanguage):
 
 
 class StatementsGeneratorThatPrintsPathsOnStdoutAndStderr(script_stmt_gen.StatementsGeneratorForInstruction):
-    EXIT_CODE = 5
-
     def __init__(self):
         super().__init__(line_source.Line(1, 'one'))
 
@@ -107,10 +107,6 @@ class StatementsGeneratorThatPrintsPathsOnStdoutAndStderr(script_stmt_gen.Statem
         return 'print(\'%s\', file=%s)' % (line, output_file)
 
 
-def output_with_header(header: str, value: str) -> str:
-    return '%-20s%s' % (header, value)
-
-
 def expected_output_on(file_object: str,
                        configuration: Configuration) -> str:
     return os.linesep.join([
@@ -124,3 +120,7 @@ def expected_output_on(file_object: str,
         output_with_header(execution.ENV_VAR_TEST, str(configuration.test_root_dir)),
         ''
     ])
+
+
+def output_with_header(header: str, value: str) -> str:
+    return '%-20s%s' % (header, value)
