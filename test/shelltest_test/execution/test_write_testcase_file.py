@@ -6,7 +6,7 @@ import tempfile
 
 from shelltest.exec_abs_syn.config import Configuration
 from shelltest.phase_instr import line_source
-from shelltest import phase
+from shelltest import phases
 from shelltest.exec_abs_syn import script_stmt_gen
 from shelltest.execution import write_testcase_file, execution_directory_structure
 
@@ -88,10 +88,10 @@ class Test(unittest.TestCase):
             actual_file_path = write_testcase_file.write(script_language,
                                                          execution_dir_structure,
                                                          configuration,
-                                                         phase.APPLY,
+                                                         phases.APPLY,
                                                          statement_generators)
             # ASSERT #
-            expected_base_name = script_language.base_name_from_stem(phase.APPLY.name)
+            expected_base_name = script_language.base_name_from_stem(phases.APPLY.name)
             expected_dir = execution_dir_structure.test_case_dir
             expected_file_path = expected_dir / expected_base_name
 

@@ -5,7 +5,9 @@ __author__ = 'emil'
 import subprocess
 import pathlib
 
-from shelltest import phase
+from shelltest import phases
+
+from shelltest.exec_abs_syn import py_cmd_gen
 
 from shelltest.exec_abs_syn import script_stmt_gen, abs_syn_gen
 from shelltest.exec_abs_syn.config import Configuration
@@ -46,17 +48,17 @@ class TestCaseExecution:
         self.__execution_directory_structure = construct_at(self.__existing_execution_directory_root)
         self.__configuration = Configuration(self.__home_dir,
                                              self.__execution_directory_structure.test_root_dir)
-        apply_phase = self.__test_case.lookup_phase(phase.APPLY)
+        apply_phase = self.__test_case.lookup_phase(phases.APPLY)
         script_gen_env = apply_phase.phase_environment
         if not isinstance(script_gen_env,
                           abs_syn_gen.PhaseEnvironmentForScriptGeneration):
             raise ValueError('Environment for the "%s" phase is not a %s' %
-                             (phase.APPLY.name, str(abs_syn_gen.PhaseEnvironmentForScriptGeneration)))
+                             (phases.APPLY.name, str(abs_syn_gen.PhaseEnvironmentForScriptGeneration)))
         self.__script_file_path = \
             write_testcase_file.write(self.__script_language,
                                       self.__execution_directory_structure,
                                       self.__configuration,
-                                      phase.APPLY,
+                                      phases.APPLY,
                                       script_gen_env.statements_generators)
 
     def execute(self):
@@ -66,7 +68,7 @@ class TestCaseExecution:
         os.environ[ENV_VAR_HOME] = str(self.home_dir)
         os.environ[ENV_VAR_TEST] = str(self.execution_directory_structure.test_root_dir)
         for test_case_phase in self.test_case.phase_list:
-            if test_case_phase.phase == phase.APPLY:
+            if test_case_phase.phase == phases.APPLY:
                 self._execute_apply()
                 continue
             phase_env = test_case_phase.phase_environment
@@ -131,6 +133,7 @@ class TestCaseExecution:
 
     def _execute_py_commands_in_test_root(self,
                                           phase_env: abs_syn_gen.PhaseEnvironmentForPythonCommands):
-        os.chdir(str(   self.execution_directory_structure.test_root_dir))
+        os.chdir(str(self.execution_directory_structure.test_root_dir))
         for command in phase_env.commands:
+            assert isinstance(command, py_cmd_gen.PythonCommand)
             command.apply(self.configuration)

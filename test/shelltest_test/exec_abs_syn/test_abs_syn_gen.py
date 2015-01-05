@@ -6,7 +6,7 @@ from shelltest.exec_abs_syn.config import Configuration
 from shelltest.phase_instr import line_source
 from shelltest.exec_abs_syn import abs_syn_gen
 from shelltest.phase_instr import model as phase_instr_model
-from shelltest import phase
+from shelltest import phases
 from shelltest.exec_abs_syn import script_stmt_gen
 from shelltest.exec_abs_syn import py_cmd_gen
 
@@ -84,16 +84,16 @@ class TestGenerate(unittest.TestCase):
     def test_gen(self):
         # ARRANGE #
         phase2instructions = {
-            phase.ANONYMOUS.name: phase_instr_model.InstructionSequence(
+            phases.ANONYMOUS.name: phase_instr_model.InstructionSequence(
                 (InstructionThatSetsHomeDir(1,
                                             'updated-home-dir'),)),
-            phase.SETUP.name: phase_instr_model.InstructionSequence(
+            phases.SETUP.name: phase_instr_model.InstructionSequence(
                 (InstructionThatRecordsHomeDirAsPythonCommand(2),)),
-            phase.APPLY.name: phase_instr_model.InstructionSequence(
+            phases.APPLY.name: phase_instr_model.InstructionSequence(
                 (InstructionThatRecordsHomeDirAsScriptStatement(3),)),
-            phase.ASSERT.name: phase_instr_model.InstructionSequence(
+            phases.ASSERT.name: phase_instr_model.InstructionSequence(
                 (InstructionThatRecordsHomeDirAsPythonCommand(4),)),
-            phase.CLEANUP.name: phase_instr_model.InstructionSequence(
+            phases.CLEANUP.name: phase_instr_model.InstructionSequence(
                 (InstructionThatRecordsHomeDirAsPythonCommand(5),)),
         }
         document = phase_instr_model.Document(phase2instructions)
@@ -108,14 +108,14 @@ class TestGenerate(unittest.TestCase):
 
         self.assert_has_single_script_statements_generator_that_stores_home_dir(
             'updated-home-dir',
-            test_case.lookup_phase(phase.APPLY).phase_environment)
+            test_case.lookup_phase(phases.APPLY).phase_environment)
 
         self.assert_has_single_py_command_that_stores_home_dir('updated-home-dir',
-                                                               test_case.lookup_phase(phase.SETUP).phase_environment)
+                                                               test_case.lookup_phase(phases.SETUP).phase_environment)
         self.assert_has_single_py_command_that_stores_home_dir('updated-home-dir',
-                                                               test_case.lookup_phase(phase.ASSERT).phase_environment)
+                                                               test_case.lookup_phase(phases.ASSERT).phase_environment)
         self.assert_has_single_py_command_that_stores_home_dir('updated-home-dir',
-                                                               test_case.lookup_phase(phase.CLEANUP).phase_environment)
+                                                               test_case.lookup_phase(phases.CLEANUP).phase_environment)
 
     def assert_has_single_py_command_that_stores_home_dir(self,
                                                           expected_home_dir: str,
