@@ -5,12 +5,13 @@ import pathlib
 import unittest
 
 from shelltest import phases
-from shelltest.exec_abs_syn import py_cmd_gen
+from shelltest.exec_abs_syn import py_cmd_gen, script_stmt_gen
 from shelltest.exec_abs_syn.config import Configuration
 from shelltest.execution import execution
 from shelltest.phase_instr import line_source
 from shelltest_test.execution.util import utils
 from shelltest_test.execution.util.py_unit_test_case import UnitTestCaseForPyLanguage
+from shelltest_test.execution.util import python_code_gen as py
 
 
 def standard_phase_file_path_eds(eds: execution.ExecutionDirectoryStructure,
@@ -41,6 +42,52 @@ class PyCommandThatWritesToStandardPhaseFile(py_cmd_gen.PythonCommand):
 
     def file_lines(self, configuration) -> list:
         raise NotImplementedError()
+
+
+class ModulesAndStatements:
+    def __init__(self,
+                 used_modules: set,
+                 statements: list):
+        self.__used_modules = used_modules
+        self.__statements = statements
+
+    @property
+    def used_modules(self) -> set:
+        return self.__used_modules
+
+    @property
+    def statements(self) -> list:
+        return self.__statements
+
+
+class StatementsGeneratorThatWritesToStandardPhaseFile(script_stmt_gen.StatementsGeneratorForInstruction):
+    def __init__(self,
+                 source_line: line_source.Line,
+                 phase: phases.Phase):
+        super().__init__(source_line)
+        self.__phase = phase
+
+    def code_using_file_opened_for_writing(self,
+                               file_variable: str) -> ModulesAndStatements:
+        raise NotImplementedError()
+
+    def instruction_implementation(self,
+                                   configuration: Configuration,
+                                   script_language: script_stmt_gen.ScriptLanguage) -> list:
+        file_path = standard_phase_file_path(configuration.test_root_dir, self.__phase)
+        file_name = str(file_path)
+        file_var = '_file_var'
+        mas = self.code_using_file_opened_for_writing(file_var)
+        all_statements = py.with_opened_file(file_name,
+                                             file_var,
+                                             'w',
+                                             mas.statements)
+
+        program = py.program_lines(mas.used_modules,
+                                   all_statements)
+        # print(os.linesep.join(statements))
+
+        return script_language.raw_script_statements(program)
 
 
 class UnitTestCaseForPyLanguageThatWritesAFileToTestRootForEachPhase(UnitTestCaseForPyLanguage):

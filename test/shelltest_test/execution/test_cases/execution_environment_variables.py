@@ -4,15 +4,15 @@ import os
 import unittest
 
 from shelltest import phases
-from shelltest.exec_abs_syn import abs_syn_gen, script_stmt_gen
-from shelltest.exec_abs_syn.config import Configuration
+from shelltest.exec_abs_syn import abs_syn_gen
 from shelltest.execution import execution
 from shelltest.phase_instr import line_source
 from shelltest_test.execution.util import python_code_gen as py
 from shelltest_test.execution.util.py_unit_test_case_with_file_output import \
     UnitTestCaseForPyLanguageThatWritesAFileToTestRootForEachPhase, \
     PyCommandThatWritesToStandardPhaseFile, \
-    standard_phase_file_path
+    StatementsGeneratorThatWritesToStandardPhaseFile, \
+    ModulesAndStatements
 from shelltest_test.execution.util.utils import format_header_value_line, un_lines
 
 
@@ -25,7 +25,7 @@ class TestCase(UnitTestCaseForPyLanguageThatWritesAFileToTestRootForEachPhase):
     def _phase_env_for_py_cmd_phase(self, phase: phases.Phase) -> abs_syn_gen.PhaseEnvironmentForPythonCommands:
         return \
             abs_syn_gen.PhaseEnvironmentForPythonCommands([
-                PyCommandThatWritesEnvironmentVariablesToStandardPhaseStandardPhaseFile(
+                PyCommandThatWritesEnvironmentVariables(
                     self._next_line(),
                     phase)
             ])
@@ -33,7 +33,7 @@ class TestCase(UnitTestCaseForPyLanguageThatWritesAFileToTestRootForEachPhase):
     def _phase_env_apply(self) -> abs_syn_gen.PhaseEnvironmentForScriptGeneration:
         return \
             abs_syn_gen.PhaseEnvironmentForScriptGeneration([
-                StatementsGeneratorThatWritesEnvironmentVariablesToStandardPhaseFile(
+                StatementsGeneratorThatWritesEnvironmentVariables(
                     self._next_line(),
                     phases.APPLY)
             ])
@@ -45,7 +45,7 @@ class TestCase(UnitTestCaseForPyLanguageThatWritesAFileToTestRootForEachPhase):
         ])
 
 
-class PyCommandThatWritesEnvironmentVariablesToStandardPhaseStandardPhaseFile(PyCommandThatWritesToStandardPhaseFile):
+class PyCommandThatWritesEnvironmentVariables(PyCommandThatWritesToStandardPhaseFile):
     def __init__(self,
                  source_line: line_source.Line,
                  phase: phases.Phase):
@@ -58,28 +58,18 @@ class PyCommandThatWritesEnvironmentVariablesToStandardPhaseStandardPhaseFile(Py
         return [format_environment_variable(var_name) for var_name in execution.ALL_ENV_VARS]
 
 
-class StatementsGeneratorThatWritesEnvironmentVariablesToStandardPhaseFile(
-    script_stmt_gen.StatementsGeneratorForInstruction):
+class StatementsGeneratorThatWritesEnvironmentVariables(StatementsGeneratorThatWritesToStandardPhaseFile):
     def __init__(self,
                  source_line: line_source.Line,
                  phase: phases.Phase):
-        super().__init__(source_line)
+        super().__init__(source_line, phase)
         self.__phase = phase
 
-    def instruction_implementation(self,
-                                   configuration: Configuration,
-                                   script_language: script_stmt_gen.ScriptLanguage) -> list:
-        file_path = standard_phase_file_path(configuration.test_root_dir, self.__phase)
-        file_name = str(file_path)
-        file_var = 'f'
-        print_env_stmts = [py.print_header_value(py.string_expr(env_var),
-                                                 py.env_var_expr(env_var),
-                                                 file_var)
-                           for env_var in execution.ALL_ENV_VARS]
-        open_file_and_print_stmts = py.with_opened_file(file_name, file_var, 'w', print_env_stmts)
-        statements = ['import os'] + \
-                     open_file_and_print_stmts
-
-        # print(os.linesep.join(statements))
-
-        return script_language.raw_script_statements(statements)
+    def code_using_file_opened_for_writing(self,
+                                           file_variable: str) -> ModulesAndStatements:
+        print_env_statements = [py.print_header_value(py.string_expr(env_var),
+                                                      py.env_var_expr(env_var),
+                                                      file_variable)
+                                for env_var in execution.ALL_ENV_VARS]
+        return ModulesAndStatements({'os'},
+                                    print_env_statements)
