@@ -4,14 +4,14 @@ import pathlib
 import unittest
 
 from shelltest import phases
-from shelltest.exec_abs_syn import abs_syn_gen, script_stmt_gen
-from shelltest.exec_abs_syn.config import Configuration
+from shelltest.exec_abs_syn import abs_syn_gen
 from shelltest.phase_instr import line_source
 from shelltest_test.execution.util import python_code_gen as py
 from shelltest_test.execution.util.py_unit_test_case_with_file_output import \
     UnitTestCaseForPyLanguageThatWritesAFileToTestRootForEachPhase, \
     PyCommandThatWritesToStandardPhaseFile, \
-    standard_phase_file_path
+    StatementsGeneratorThatWritesToStandardPhaseFile, \
+    ModulesAndStatements
 from shelltest_test.execution.util.utils import un_lines
 
 
@@ -52,25 +52,16 @@ class PyCommandThatWritesCwdToStandardPhaseStandardPhaseFile(PyCommandThatWrites
         return [str(cwd_path)]
 
 
-class StatementsGeneratorThatWritesCwdToStandardPhaseFile(script_stmt_gen.StatementsGeneratorForInstruction):
+class StatementsGeneratorThatWritesCwdToStandardPhaseFile(StatementsGeneratorThatWritesToStandardPhaseFile):
     def __init__(self,
                  source_line: line_source.Line,
                  phase: phases.Phase):
-        super().__init__(source_line)
+        super().__init__(source_line, phase)
         self.__phase = phase
 
-    def instruction_implementation(self,
-                                   configuration: Configuration,
-                                   script_language: script_stmt_gen.ScriptLanguage) -> list:
-        file_path = standard_phase_file_path(configuration.test_root_dir, self.__phase)
-        file_name = str(file_path)
-        file_var = 'f'
+    def code_using_file_opened_for_writing(self,
+                                           file_variable: str) -> ModulesAndStatements:
         print_statements = [py.print_value('pathlib.Path().resolve()',
-                                           file_var)]
-        open_file_and_print_stmts = py.with_opened_file(file_name, file_var, 'w', print_statements)
-        program = py.program_lines({'pathlib'},
-                                   open_file_and_print_stmts)
-
-        # print(os.linesep.join(statements))
-
-        return script_language.raw_script_statements(program)
+                                           file_variable)]
+        return ModulesAndStatements({'pathlib'},
+                                    print_statements)
