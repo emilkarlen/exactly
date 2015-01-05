@@ -1,18 +1,20 @@
+from shelltest_test.execution.test_cases.result_from_action_phase_should_be_saved import \
+    StatementsGeneratorThatPrintsPathsOnStdoutAndStderr, expected_output_on
+
 __author__ = 'emil'
 
-import os
 import pathlib
 import tempfile
 import unittest
 
-from shelltest_test.execution.test_cases.execution_environment_variables import \
-    TestEnvironmentVariablesShouldBeAccessibleInEveryPhase
+from shelltest_test.execution.test_cases import execution_environment_variables
+from shelltest_test.execution.test_cases import result_from_action_phase_should_be_saved
 
 from shelltest_test.execution.util.utils import Python3Language, assert_is_file_with_contents, un_lines
 from shelltest_test.execution.util.py_unit_test_case_with_file_output import PyCommandThatWritesToStandardPhaseFile
 from shelltest_test.execution.util import py_unit_test_case_with_file_output as with_file_output
 from shelltest.phase_instr import line_source
-from shelltest.exec_abs_syn import script_stmt_gen, abs_syn_gen
+from shelltest.exec_abs_syn import abs_syn_gen
 from shelltest.exec_abs_syn.abs_syn_gen import \
     new_test_case_phase_for_python_commands, \
     new_test_case_phase_for_script_statements
@@ -28,84 +30,6 @@ CURRENT_DIR_HEADER = 'Current Dir'
 EXIT_CODE = 5
 
 
-class StatementsGeneratorThatPrintsPathsOnStdoutAndStderr(script_stmt_gen.StatementsGeneratorForInstruction):
-    def __init__(self):
-        super().__init__(line_source.Line(1, 'one'))
-
-    def instruction_implementation(self,
-                                   configuration: Configuration,
-                                   script_language: script_stmt_gen.ScriptLanguage) -> list:
-        statements = [
-                         'import sys',
-                         'import os',
-                         'import pathlib',
-                     ] + \
-                     self.print_on('sys.stdout', configuration) + \
-                     self.print_on('sys.stderr', configuration) + \
-                     ['sys.exit(%d)' % EXIT_CODE]
-
-        return script_language.raw_script_statements(statements)
-
-    def print_on(self,
-                 file_object: str,
-                 configuration: Configuration) -> list:
-        return [
-            self.write_line(file_object, file_object),
-            self.write_path_line(file_object, HOME_DIR_HEADER, configuration.home_dir),
-            self.write_path_line(file_object, TEST_ROOT_DIR_HEADER, configuration.test_root_dir),
-            self.write_prefix_and_expr(file_object, CURRENT_DIR_HEADER, 'str(pathlib.Path().resolve())'),
-            self.write_env_var(file_object, execution.ENV_VAR_HOME),
-            self.write_env_var(file_object, execution.ENV_VAR_TEST),
-        ]
-
-    @staticmethod
-    def write_path_line(output_file: str,
-                        line_prefix: str,
-                        dir_path: pathlib.Path) -> str:
-        return StatementsGeneratorThatPrintsPathsOnStdoutAndStderr.write_prefix_and_expr(
-            output_file,
-            line_prefix,
-            '\'' + str(dir_path) + '\'')
-
-    @staticmethod
-    def write_env_var(output_file: str,
-                      var_name: str) -> str:
-        return StatementsGeneratorThatPrintsPathsOnStdoutAndStderr.write_prefix_and_expr(
-            output_file,
-            var_name,
-            'os.environ[\'%s\']' % var_name)
-
-    @staticmethod
-    def write_prefix_and_expr(output_file: str,
-                              prefix: str,
-                              expr: str) -> str:
-        return 'print(\'%-20s\' + %s, file=%s)' % (prefix, expr, output_file)
-
-    @staticmethod
-    def write_line(output_file: str,
-                   line: str) -> str:
-        return 'print(\'%s\', file=%s)' % (line, output_file)
-
-
-def output_with_header(header: str, value: str) -> str:
-    return '%-20s%s' % (header, value)
-
-
-def expected_output_on(file_object: str,
-                       configuration: Configuration) -> str:
-    return os.linesep.join([
-        file_object,
-
-        output_with_header(HOME_DIR_HEADER, str(configuration.home_dir)),
-        output_with_header(TEST_ROOT_DIR_HEADER, str(configuration.test_root_dir)),
-        output_with_header(CURRENT_DIR_HEADER, str(configuration.test_root_dir)),
-
-        output_with_header(execution.ENV_VAR_HOME, str(configuration.home_dir)),
-        output_with_header(execution.ENV_VAR_TEST, str(configuration.test_root_dir)),
-        ''
-    ])
-
-
 def py_cmd_file_lines(cwd: pathlib.Path, configuration: Configuration) -> list:
     def fmt(header: str, value: str):
         return '%-20s%s' % (header, value)
@@ -118,8 +42,8 @@ def py_cmd_file_lines(cwd: pathlib.Path, configuration: Configuration) -> list:
 class PyCommandThatCreatesAStandardPhaseFileInTestRootContainingDirectoryPaths(PyCommandThatWritesToStandardPhaseFile):
     def __init__(self,
                  source_line: line_source.Line,
-                 file_base_name: str):
-        super().__init__(source_line, file_base_name)
+                 phase: phases.Phase):
+        super().__init__(source_line, phase)
 
     def file_lines(self, configuration) -> list:
         return py_cmd_file_lines(pathlib.Path().resolve(), configuration)
@@ -136,7 +60,10 @@ def py_cmd_test_case_phase_that_creates_a_file_with_name_of_phase(phase: phases.
 
 
 class Test(unittest.TestCase):
-    def test_write_and_execute(self):
+    def test_result_from_act_phase_should_be_saved(self):
+        result_from_action_phase_should_be_saved.TestCase(self).execute()
+
+    def test_all_phases_should_be_executed_and_result_from_action_saved(self):
         # ARRANGE #
         home_dir_path = pathlib.Path().resolve()
         test_case = abs_syn_gen.TestCase(abs_syn_gen.GlobalEnvironmentForNamedPhase(str(home_dir_path)),
@@ -188,7 +115,7 @@ class Test(unittest.TestCase):
                 file_name_from_py_cmd_list)
 
     def test_environment_variables_should_be_accessible_in_all_phases(self):
-        TestEnvironmentVariablesShouldBeAccessibleInEveryPhase(self).execute()
+        execution_environment_variables.TestCase(self).execute()
 
     def test_test_root_dir_should_be_cwd_at_start_of_each_phase(self):
         pass  # TODO
