@@ -1,10 +1,11 @@
 __author__ = 'emil'
 
+import os
 import pathlib
 import unittest
 
 from shelltest import phases
-from shelltest.exec_abs_syn import abs_syn_gen
+from shelltest.exec_abs_syn import abs_syn_gen, py_cmd_gen, script_stmt_gen, config
 from shelltest.phase_instr import line_source
 from shelltest_test.execution.util import python_code_gen as py
 from shelltest_test.execution.util.py_unit_test_case_with_file_output import \
@@ -24,24 +25,30 @@ class TestCase(UnitTestCaseForPyLanguageThatWritesAFileToTestRootForEachPhase):
     def _phase_env_for_py_cmd_phase(self, phase: phases.Phase) -> abs_syn_gen.PhaseEnvironmentForPythonCommands:
         return \
             abs_syn_gen.PhaseEnvironmentForPythonCommands([
-                PyCommandThatWritesCwdToStandardPhaseStandardPhaseFile(
+                PyCommandThatWritesCurrentWorkingDirectory(
                     self._next_line(),
-                    phase)
+                    phase),
+                PyCommandThatChangesCwdToHomeDir(self._next_line())
             ])
 
     def _phase_env_apply(self) -> abs_syn_gen.PhaseEnvironmentForScriptGeneration:
+        import_statements_generator = StatementsGeneratorForImportStatements(self._next_line())
         return \
             abs_syn_gen.PhaseEnvironmentForScriptGeneration([
-                StatementsGeneratorThatWritesCwdToStandardPhaseFile(
+                import_statements_generator,
+                StatementsGeneratorThatWritesCurrentWorkingDirectory(
                     self._next_line(),
-                    phases.APPLY)
+                    phases.APPLY,
+                    import_statements_generator),
+                StatementsGeneratorThatChangesCwdToHomeDir(self._next_line(),
+                                                           import_statements_generator)
             ])
 
     def _expected_content_for(self, phase: phases.Phase) -> str:
         return un_lines([str(self.eds.test_root_dir)])
 
 
-class PyCommandThatWritesCwdToStandardPhaseStandardPhaseFile(PyCommandThatWritesToStandardPhaseFile):
+class PyCommandThatWritesCurrentWorkingDirectory(PyCommandThatWritesToStandardPhaseFile):
     def __init__(self,
                  source_line: line_source.Line,
                  phase: phases.Phase):
@@ -52,16 +59,68 @@ class PyCommandThatWritesCwdToStandardPhaseStandardPhaseFile(PyCommandThatWrites
         return [str(cwd_path)]
 
 
-class StatementsGeneratorThatWritesCwdToStandardPhaseFile(StatementsGeneratorThatWritesToStandardPhaseFile):
+class PyCommandThatChangesCwdToHomeDir(py_cmd_gen.PythonCommand):
+    def __init__(self,
+                 source_line: line_source.Line):
+        super().__init__(source_line)
+
+    def apply(self, configuration: config.Configuration):
+        os.chdir(str(configuration.home_dir))
+        print(os.getcwd())
+
+
+class StatementsGeneratorForImportStatements(script_stmt_gen.StatementsGeneratorForInstruction):
+    """
+    Pseudo-instruction for outputting Python import statements at the top of the program.
+
+    Later instructions add their used modules to an object of this class.
+    """
+
+    def __init__(self,
+                 source_line: line_source.Line):
+        super().__init__(source_line)
+        self.__modules = set()
+
+    def append_module(self, module_name: str):
+        self.__modules.add(module_name)
+
+    def instruction_implementation(self,
+                                   configuration: config.Configuration,
+                                   script_language: script_stmt_gen.ScriptLanguage) -> list:
+        import_statements = ['import %s' % module_name
+                             for module_name in self.__modules]
+        return script_language.raw_script_statements(import_statements)
+
+
+class StatementsGeneratorThatWritesCurrentWorkingDirectory(StatementsGeneratorThatWritesToStandardPhaseFile):
     def __init__(self,
                  source_line: line_source.Line,
-                 phase: phases.Phase):
+                 phase: phases.Phase,
+                 module_container: StatementsGeneratorForImportStatements):
         super().__init__(source_line, phase)
         self.__phase = phase
+        module_container.append_module('pathlib')
 
     def code_using_file_opened_for_writing(self,
                                            file_variable: str) -> ModulesAndStatements:
         print_statements = [py.print_value('pathlib.Path().resolve()',
                                            file_variable)]
-        return ModulesAndStatements({'pathlib'},
+        return ModulesAndStatements(set(),
                                     print_statements)
+
+
+class StatementsGeneratorThatChangesCwdToHomeDir(script_stmt_gen.StatementsGeneratorForInstruction):
+    def __init__(self,
+                 source_line: line_source.Line,
+                 module_container: StatementsGeneratorForImportStatements):
+        super().__init__(source_line)
+        module_container.append_module('os')
+
+    def instruction_implementation(self,
+                                   configuration: config.Configuration,
+                                   script_language: script_stmt_gen.ScriptLanguage) -> list:
+        statements = [
+            'os.chdir(%s)' % py.string_expr(str(configuration.home_dir)),
+            'print(os.getcwd())'
+        ]
+        return script_language.raw_script_statements(statements)
