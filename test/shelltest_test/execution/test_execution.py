@@ -1,15 +1,16 @@
-import os
-import pathlib
-
-from shelltest_test.execution.test_execution_utils import Python3Language, PyCommandThatWritesToFileInTestRootDirBase, \
-    format_header_value_line, assert_is_file_with_contents
-
-
 __author__ = 'emil'
 
+import os
+import pathlib
 import tempfile
 import unittest
 
+from shelltest_test.execution.execution_environment_variables_test_impl import \
+    TestEnvironmentVariablesShouldBeAccessibleInEveryPhase
+
+from shelltest_test.execution.test_execution_utils import Python3Language, assert_is_file_with_contents, un_lines
+from shelltest_test.execution.py_unit_test_case_with_file_output import PyCommandThatWritesToStandardPhaseFile
+from shelltest_test.execution import py_unit_test_case_with_file_output as with_file_output
 from shelltest.phase_instr import line_source
 from shelltest.exec_abs_syn import script_stmt_gen, abs_syn_gen
 from shelltest.exec_abs_syn.abs_syn_gen import \
@@ -17,8 +18,8 @@ from shelltest.exec_abs_syn.abs_syn_gen import \
     new_test_case_phase_for_script_statements
 from shelltest.exec_abs_syn.config import Configuration
 from shelltest.execution import execution
-from shelltest import phase
-from shelltest_test.execution import python_code_gen as py
+from shelltest import phases
+
 
 HOME_DIR_HEADER = 'Home Dir'
 TEST_ROOT_DIR_HEADER = 'Test Root Dir'
@@ -86,31 +87,6 @@ class StatementsGeneratorThatPrintsPathsOnStdoutAndStderr(script_stmt_gen.Statem
         return 'print(\'%s\', file=%s)' % (line, output_file)
 
 
-class StatementsGeneratorThatWritesEnvironmentVariablesToFileInTestRoot(
-    script_stmt_gen.StatementsGeneratorForInstruction):
-    def __init__(self,
-                 file_base_name: str):
-        super().__init__(line_source.Line(1, 'one'))
-        self.__file_base_name = file_base_name
-
-    def instruction_implementation(self,
-                                   configuration: Configuration,
-                                   script_language: script_stmt_gen.ScriptLanguage) -> list:
-        file_name = str(configuration.test_root_dir / self.__file_base_name)
-        file_var = 'f'
-        print_env_stmts = [py.print_header_value(py.string_expr(env_var),
-                                                 py.env_var_expr(env_var),
-                                                 file_var)
-                           for env_var in execution.ALL_ENV_VARS]
-        open_file_and_print_stmts = py.with_opened_file(file_name, file_var, 'w', print_env_stmts)
-        statements = ['import os'] + \
-                     open_file_and_print_stmts
-
-        # print(os.linesep.join(statements))
-
-        return script_language.raw_script_statements(statements)
-
-
 def output_with_header(header: str, value: str) -> str:
     return '%-20s%s' % (header, value)
 
@@ -130,10 +106,6 @@ def expected_output_on(file_object: str,
     ])
 
 
-def un_lines(lines: list) -> str:
-    return os.linesep.join(lines) + os.linesep
-
-
 def py_cmd_file_lines(cwd: pathlib.Path, configuration: Configuration) -> list:
     def fmt(header: str, value: str):
         return '%-20s%s' % (header, value)
@@ -143,7 +115,7 @@ def py_cmd_file_lines(cwd: pathlib.Path, configuration: Configuration) -> list:
             fmt(TEST_ROOT_DIR_HEADER, str(configuration.test_root_dir))]
 
 
-class PyCommandThatCreatesAFileInTestRootContainingDirectoryPaths(PyCommandThatWritesToFileInTestRootDirBase):
+class PyCommandThatCreatesAStandardPhaseFileInTestRootContainingDirectoryPaths(PyCommandThatWritesToStandardPhaseFile):
     def __init__(self,
                  source_line: line_source.Line,
                  file_base_name: str):
@@ -153,39 +125,14 @@ class PyCommandThatCreatesAFileInTestRootContainingDirectoryPaths(PyCommandThatW
         return py_cmd_file_lines(pathlib.Path().resolve(), configuration)
 
 
-class PyCommandThatWritesEnvironmentVariablesToFileInTestRoot(PyCommandThatWritesToFileInTestRootDirBase):
-    def __init__(self,
-                 source_line: line_source.Line,
-                 file_base_name: str):
-        super().__init__(source_line, file_base_name)
-
-    def file_lines(self, configuration) -> list:
-        def format_environment_variable(var_name: str) -> str:
-            return format_header_value_line(var_name, os.environ[var_name])
-
-        return [format_environment_variable(var_name) for var_name in execution.ALL_ENV_VARS]
-
-
-def test_file_name_for_phase(ph: phase.Phase) -> str:
-    return 'testfile-for-phase-' + ph.name
-
-
-def py_cmd_test_case_phase_that_creates_a_file_with_name_of_phase(ph: phase.Phase) -> abs_syn_gen.TestCasePhase:
+def py_cmd_test_case_phase_that_creates_a_file_with_name_of_phase(phase: phases.Phase) -> abs_syn_gen.TestCasePhase:
     env = abs_syn_gen.PhaseEnvironmentForPythonCommands()
     env.append_command(
-        PyCommandThatCreatesAFileInTestRootContainingDirectoryPaths(line_source.Line(1, 'py-cmd: create file'),
-                                                                    test_file_name_for_phase(ph)))
-    return new_test_case_phase_for_python_commands(ph,
+        PyCommandThatCreatesAStandardPhaseFileInTestRootContainingDirectoryPaths(
+            line_source.Line(1, 'py-cmd: create file'),
+            with_file_output.standard_phase_file_base_name(phase)))
+    return new_test_case_phase_for_python_commands(phase,
                                                    env)
-
-
-def py_cmd_test_case_phase_that_writes_environment_variables_to_file(ph: phase.Phase) -> abs_syn_gen.TestCasePhase:
-    return new_test_case_phase_for_python_commands(ph,
-                                                   abs_syn_gen.PhaseEnvironmentForPythonCommands([
-                                                       PyCommandThatWritesEnvironmentVariablesToFileInTestRoot(
-                                                           line_source.Line(1, 'py-cmd: create file'),
-                                                           test_file_name_for_phase(ph))
-                                                   ]))
 
 
 class Test(unittest.TestCase):
@@ -195,23 +142,23 @@ class Test(unittest.TestCase):
         test_case = abs_syn_gen.TestCase(abs_syn_gen.GlobalEnvironmentForNamedPhase(str(home_dir_path)),
                                          [
                                              py_cmd_test_case_phase_that_creates_a_file_with_name_of_phase(
-                                                 phase.SETUP),
+                                                 phases.SETUP),
 
                                              new_test_case_phase_for_script_statements(
-                                                 phase.APPLY,
+                                                 phases.APPLY,
                                                  abs_syn_gen.PhaseEnvironmentForScriptGeneration(
                                                      [StatementsGeneratorThatPrintsPathsOnStdoutAndStderr()])),
 
                                              py_cmd_test_case_phase_that_creates_a_file_with_name_of_phase(
-                                                 phase.ASSERT),
+                                                 phases.ASSERT),
 
                                              py_cmd_test_case_phase_that_creates_a_file_with_name_of_phase(
-                                                 phase.CLEANUP),
+                                                 phases.CLEANUP),
                                          ])
         # ACT #
         python3_language = Python3Language()
-        file_name_from_py_cmd_list = [test_file_name_for_phase(ph)
-                                      for ph in [phase.SETUP, phase.ASSERT, phase.CLEANUP]]
+        file_name_from_py_cmd_list = [with_file_output.standard_phase_file_base_name(phase)
+                                      for phase in [phases.SETUP, phases.ASSERT, phases.CLEANUP]]
         # ACT #
         with tempfile.TemporaryDirectory(prefix='shelltest-test-') as tmp_exec_dir_structure_root:
             # tmp_exec_dir_structure_root = tempfile.mkdtemp(prefix='shelltest-')
@@ -241,50 +188,10 @@ class Test(unittest.TestCase):
                 file_name_from_py_cmd_list)
 
     def test_environment_variables_should_be_accessible_in_all_phases(self):
-        # ARRANGE #
-        home_dir_path = pathlib.Path().resolve()
-        test_case = abs_syn_gen.TestCase(abs_syn_gen.GlobalEnvironmentForNamedPhase(str(home_dir_path)),
-                                         [
-                                             py_cmd_test_case_phase_that_writes_environment_variables_to_file(
-                                                 phase.SETUP),
+        TestEnvironmentVariablesShouldBeAccessibleInEveryPhase(self).execute()
 
-                                             new_test_case_phase_for_script_statements(
-                                                 phase.APPLY,
-                                                 abs_syn_gen.PhaseEnvironmentForScriptGeneration(
-                                                     [StatementsGeneratorThatWritesEnvironmentVariablesToFileInTestRoot(
-                                                         test_file_name_for_phase(phase.APPLY))])),
-
-                                             py_cmd_test_case_phase_that_writes_environment_variables_to_file(
-                                                 phase.ASSERT),
-
-                                             py_cmd_test_case_phase_that_writes_environment_variables_to_file(
-                                                 phase.CLEANUP),
-                                         ])
-        # ACT #
-        python3_language = Python3Language()
-        with tempfile.TemporaryDirectory(prefix='shelltest-test-') as tmp_exec_dir_structure_root:
-            # tmp_exec_dir_structure_root = tempfile.mkdtemp(prefix='shelltest-test-')
-            # print(tmp_exec_dir_structure_root)
-            test_case_execution = execution.TestCaseExecution(python3_language,
-                                                              test_case,
-                                                              tmp_exec_dir_structure_root,
-                                                              home_dir_path)
-            test_case_execution.write_and_execute()
-            # ASSERT #
-            eds = test_case_execution.execution_directory_structure
-            expected_contents = un_lines([
-                format_header_value_line(execution.ENV_VAR_HOME, str(home_dir_path)),
-                format_header_value_line(execution.ENV_VAR_TEST, str(eds.test_root_dir))
-            ])
-            for test_case_phase in test_case.phase_list:
-                assert isinstance(test_case_phase, abs_syn_gen.TestCasePhase)  # typing
-                file_path = eds.test_root_dir / test_file_name_for_phase(test_case_phase.phase)
-                assert_is_file_with_contents(self,
-                                             file_path,
-                                             expected_contents)
-
-    def test_that_cwd_is_test_root_at_start_of_each_phase_(self):
-        raise NotImplementedError()
+    def test_test_root_dir_should_be_cwd_at_start_of_each_phase(self):
+        pass  # TODO
 
     def assert_is_file_with_contents(self,
                                      file_path: pathlib.Path,

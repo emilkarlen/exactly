@@ -76,4 +76,5 @@ class Document:
             if phase_name in self._phase2instructions:
                 instruction_sequence = self._phase2instructions[phase_name]
                 for instruction in instruction_sequence.instructions:
+                    assert isinstance(instruction, Instruction)
                     instruction.execute(phase_name, global_environment, phase_environment)

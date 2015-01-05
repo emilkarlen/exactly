@@ -5,8 +5,8 @@ __author__ = 'emil'
 
 from shelltest.exec_abs_syn import script_stmt_gen
 from shelltest.exec_abs_syn import py_cmd_gen
-from shelltest.phase import Phase
-from shelltest import phase
+from shelltest.phases import Phase
+from shelltest import phases
 
 from shelltest.phase_instr import model as phase_instr_model
 
@@ -21,7 +21,9 @@ class PhaseEnvironmentForScriptGeneration:
     The phase-environment for phases that generate a shell script.
     """
 
-    def __init__(self, statements_generators=[]):
+    def __init__(self, statements_generators=None):
+        if not statements_generators:
+            statements_generators = []
         self.statements_generators = statements_generators
 
     # def extend_statements(self, statements_generators: list):
@@ -39,7 +41,9 @@ class PhaseEnvironmentForPythonCommands:
     The phase-environment for phases that generate python commands.
     """
 
-    def __init__(self, commands=[]):
+    def __init__(self, commands=None):
+        if not commands:
+            commands = []
         self.commands = commands
 
     def append_command(self, command: py_cmd_gen.PythonCommand):
@@ -166,13 +170,13 @@ def validate_and_generate(original_home_directory: str,
 
     def phase_env_for(ph: Phase):
         return PhaseEnvironmentForScriptGeneration() \
-            if ph == phase.APPLY \
+            if ph == phases.APPLY \
             else PhaseEnvironmentForPythonCommands()
 
     def execute_named_phases(settings_from_anonymous_phase: PhaseEnvironmentForAnonymousPhase):
         global_env = GlobalEnvironmentForNamedPhase(settings_from_anonymous_phase.home_dir)
         phases_to_execute = [(ph.name, phase_env_for(ph))
-                             for ph in phase.ALL_NAMED]
+                             for ph in phases.ALL_NAMED]
         document.execute(global_env, phases_to_execute)
         return global_env, phases_to_execute
 
