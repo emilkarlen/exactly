@@ -9,6 +9,7 @@ import unittest
 
 from shelltest_test.execution.test_cases import execution_environment_variables
 from shelltest_test.execution.test_cases import result_from_action_phase_should_be_saved
+from shelltest_test.execution.test_cases import cwd_at_start_of_each_phase_should_be_test_root_dir
 
 from shelltest_test.execution.util.utils import Python3Language, assert_is_file_with_contents, un_lines
 from shelltest_test.execution.util.py_unit_test_case_with_file_output import PyCommandThatWritesToStandardPhaseFile
@@ -63,6 +64,12 @@ class Test(unittest.TestCase):
     def test_result_from_act_phase_should_be_saved(self):
         result_from_action_phase_should_be_saved.TestCase(self).execute()
 
+    def test_environment_variables_should_be_accessible_in_all_phases(self):
+        execution_environment_variables.TestCase(self).execute()
+
+    def test_cwd_at_start_of_each_phase_should_be_test_root_dir(self):
+        cwd_at_start_of_each_phase_should_be_test_root_dir.TestCase(self).execute()
+
     def test_all_phases_should_be_executed_and_result_from_action_saved(self):
         # ARRANGE #
         home_dir_path = pathlib.Path().resolve()
@@ -113,12 +120,6 @@ class Test(unittest.TestCase):
                 test_case_execution.execution_directory_structure,
                 test_case_execution.configuration,
                 file_name_from_py_cmd_list)
-
-    def test_environment_variables_should_be_accessible_in_all_phases(self):
-        execution_environment_variables.TestCase(self).execute()
-
-    def test_test_root_dir_should_be_cwd_at_start_of_each_phase(self):
-        pass  # TODO
 
     def assert_is_file_with_contents(self,
                                      file_path: pathlib.Path,
