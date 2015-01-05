@@ -16,8 +16,7 @@ from shelltest_test.execution.util.py_unit_test_case_with_file_output import \
 from shelltest_test.execution.util.utils import format_header_value_line, un_lines
 
 
-class TestEnvironmentVariablesShouldBeAccessibleInEveryPhase(
-    UnitTestCaseForPyLanguageThatWritesAFileToTestRootForEachPhase):
+class TestCase(UnitTestCaseForPyLanguageThatWritesAFileToTestRootForEachPhase):
     def __init__(self,
                  unittest_case: unittest.TestCase,
                  dbg_do_not_delete_dir_structure=False):
