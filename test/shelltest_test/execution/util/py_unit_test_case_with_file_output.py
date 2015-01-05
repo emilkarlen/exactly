@@ -85,5 +85,5 @@ class UnitTestCaseForPyLanguageThatWritesAFileToTestRootForEachPhase(UnitTestCas
                                    phase: phases.Phase,
                                    expected_content: str):
         utils.assert_is_file_with_contents(self.unittest_case,
-                                                          standard_phase_file_path_eds(self.eds, phase),
-                                                          expected_content)
+                                           standard_phase_file_path_eds(self.eds, phase),
+                                           expected_content)
