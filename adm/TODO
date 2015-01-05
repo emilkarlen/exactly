@@ -1,0 +1,19 @@
+-*- org -*-
+
+
+* TODO Misc
+** TODO <2015-01-05 mån> abs_syn_gen.TestCase instances must be valid
+The constructor should validate all arguments
+The list of phases must:
+- be ordered according to phase execution order
+- type of environment must be correct for each phase
+
+** TODO <2015-01-05 mån> May be StatementsGeneratorForInstruction should not be given ScriptLanguage
+... since each StatementsGeneratorForInstruction is probably not designed to
+handla an arbitrary language.
+Giving a ScriptLanguage to apply, indicates that it should be capable of
+handling arbitrary langauges.
+* TODO Test result
+** TODO <2015-01-05 mån> Handle implementation errors
+** TODO <2015-01-05 mån> Handle parse errors
+** TODO <2015-01-05 mån> Handle errors correctly according to phase
