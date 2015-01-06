@@ -6,7 +6,6 @@ import pathlib
 from shelltest.exec_abs_syn.config import Configuration
 from shelltest.execution import execution
 from shelltest.phase_instr import line_source
-from shelltest_test.execution.util.utils import assert_is_file_with_contents
 from shelltest_test.execution.util import py_unit_test_case_with_file_output as with_file_output
 from shelltest_test.execution.util.py_unit_test_case_with_file_output import PyCommandThatWritesToStandardPhaseFile
 
@@ -37,17 +36,14 @@ class TestCase(UnitTestCaseForPyLanguage):
         ])
 
     def _assertions(self):
-        assert_is_file_with_contents(self.unittest_case,
-                                     self.eds.result.exitcode_file,
-                                     str(EXIT_CODE))
-        assert_is_file_with_contents(self.unittest_case,
-                                     self.eds.result.std.stdout_file,
-                                     expected_output_on('sys.stdout',
-                                                        self.test_case_execution.configuration))
-        assert_is_file_with_contents(self.unittest_case,
-                                     self.eds.result.std.stderr_file,
-                                     expected_output_on('sys.stderr',
-                                                        self.test_case_execution.configuration))
+        self.assert_is_regular_file_with_contents(self.eds.result.exitcode_file,
+                                                  str(EXIT_CODE))
+        self.assert_is_regular_file_with_contents(self.eds.result.std.stdout_file,
+                                                  expected_output_on('sys.stdout',
+                                                                     self.test_case_execution.configuration))
+        self.assert_is_regular_file_with_contents(self.eds.result.std.stderr_file,
+                                                  expected_output_on('sys.stderr',
+                                                                     self.test_case_execution.configuration))
 
         file_name_from_py_cmd_list = [with_file_output.standard_phase_file_base_name(phase)
                                       for phase in [phases.SETUP, phases.ASSERT, phases.CLEANUP]]

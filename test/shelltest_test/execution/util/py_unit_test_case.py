@@ -5,18 +5,15 @@ import tempfile
 import unittest
 
 from shelltest.phase_instr import line_source
-
 from shelltest.exec_abs_syn import script_stmt_gen
-
 from shelltest_test.execution.util.utils import Python3Language
-
 from shelltest.exec_abs_syn.abs_syn_gen import \
     new_test_case_phase_for_python_commands, \
     new_test_case_phase_for_script_statements
-
 from shelltest.exec_abs_syn import abs_syn_gen
 from shelltest import phases
 from shelltest.execution import execution
+from shelltest_test.execution.util import utils
 
 
 class UnitTestCaseForPyLanguage:
@@ -95,6 +92,16 @@ class UnitTestCaseForPyLanguage:
     @property
     def eds(self) -> execution.ExecutionDirectoryStructure:
         return self.__execution_directory_structure
+
+    def assert_is_regular_file_with_contents(self,
+                                             path: pathlib.Path,
+                                             expected_contents: str):
+        """
+        Helper for test cases that check the contents of files.
+        """
+        utils.assert_is_file_with_contents(self.unittest_case,
+                                           path,
+                                           expected_contents)
 
     def _test_case(self,
                    settings: abs_syn_gen.GlobalEnvironmentForNamedPhase) -> abs_syn_gen.TestCase:
