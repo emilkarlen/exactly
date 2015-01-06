@@ -21,10 +21,16 @@ class PhaseEnvironmentForScriptGeneration:
     The phase-environment for phases that generate a shell script.
     """
 
-    def __init__(self, statements_generators=None):
+    def __init__(self,
+                 statements_generators: list=None,
+                 stdin_file: str = None):
+        """
+        :type: statements_generators: list[script_stmt_gen.StatementsGeneratorForInstruction]
+        """
         if not statements_generators:
             statements_generators = []
         self.statements_generators = statements_generators
+        self.stdin_file = stdin_file
 
     # def extend_statements(self, statements_generators: list):
     # """
@@ -34,6 +40,10 @@ class PhaseEnvironmentForScriptGeneration:
 
     def append_statement(self, statements_generator: script_stmt_gen.StatementsGeneratorForInstruction):
         self.statements_generators.append(statements_generator)
+
+    def set_stdin_file(self,
+                       file_name: str):
+        self.stdin_file = file_name
 
 
 class PhaseEnvironmentForPythonCommands:

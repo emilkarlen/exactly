@@ -1,7 +1,6 @@
-import os
-
 __author__ = 'emil'
 
+import os
 import subprocess
 import pathlib
 
@@ -69,33 +68,11 @@ class TestCaseExecution:
         os.environ[ENV_VAR_TEST] = str(self.execution_directory_structure.test_root_dir)
         for test_case_phase in self.test_case.phase_list:
             if test_case_phase.phase == phases.APPLY:
-                self._execute_apply()
+                self._execute_apply(test_case_phase.phase_environment)
                 continue
             phase_env = test_case_phase.phase_environment
             if isinstance(phase_env, abs_syn_gen.PhaseEnvironmentForPythonCommands):
                 self._execute_py_commands_in_test_root(phase_env)
-
-    def _execute_apply(self):
-        """
-        Pre-condition: write has been executed.
-        """
-        cmd_and_args = self.script_language.command_and_args_for_executing_script_file(str(self.script_file_path))
-
-        with open(str(self.execution_directory_structure.result.std.stdout_file), 'w') as f_stdout:
-            with open(str(self.execution_directory_structure.result.std.stderr_file), 'w') as f_stderr:
-                try:
-                    exitcode = subprocess.call(cmd_and_args,
-                                               cwd=str(self.execution_directory_structure.test_root_dir),
-                                               stdout=f_stdout,
-                                               stderr=f_stderr)
-                    self._store_exit_code(exitcode)
-                except ValueError as ex:
-                    msg = 'Error invoking subprocess.call: ' + str(ex)
-                    raise exception.ImplementationError(msg)
-                except OSError as ex:
-                    msg = 'Error invoking subprocess.call: ' + str(ex)
-                    raise exception.ImplementationError(msg)
-
 
     @property
     def script_language(self) -> script_stmt_gen.ScriptLanguage:
@@ -137,3 +114,38 @@ class TestCaseExecution:
         for command in phase_env.commands:
             assert isinstance(command, py_cmd_gen.PythonCommand)
             command.apply(self.configuration)
+
+    def _execute_apply(self, phase_env: abs_syn_gen.PhaseEnvironmentForScriptGeneration):
+        """
+        Pre-condition: write has been executed.
+        """
+        if phase_env.stdin_file:
+            try:
+                f_stdin = open(phase_env.stdin_file)
+                self._execute_apply_with_stdin_file(f_stdin)
+            finally:
+                f_stdin.close()
+        else:
+                self._execute_apply_with_stdin_file(subprocess.DEVNULL)
+
+    def _execute_apply_with_stdin_file(self, f_stdin):
+        """
+        Pre-condition: write has been executed.
+        """
+        cmd_and_args = self.script_language.command_and_args_for_executing_script_file(str(self.script_file_path))
+
+        with open(str(self.execution_directory_structure.result.std.stdout_file), 'w') as f_stdout:
+            with open(str(self.execution_directory_structure.result.std.stderr_file), 'w') as f_stderr:
+                try:
+                    exitcode = subprocess.call(cmd_and_args,
+                                               cwd=str(self.execution_directory_structure.test_root_dir),
+                                               stdin=f_stdin,
+                                               stdout=f_stdout,
+                                               stderr=f_stderr)
+                    self._store_exit_code(exitcode)
+                except ValueError as ex:
+                    msg = 'Error invoking subprocess.call: ' + str(ex)
+                    raise exception.ImplementationError(msg)
+                except OSError as ex:
+                    msg = 'Error invoking subprocess.call: ' + str(ex)
+                    raise exception.ImplementationError(msg)
