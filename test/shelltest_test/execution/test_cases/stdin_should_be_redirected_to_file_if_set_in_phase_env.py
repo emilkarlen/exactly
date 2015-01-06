@@ -5,7 +5,6 @@ from shelltest_test.execution.util.py_unit_test_case import UnitTestCaseForPyLan
 from shelltest.exec_abs_syn import abs_syn_gen, script_stmt_gen, py_cmd_gen
 from shelltest.exec_abs_syn.config import Configuration
 from shelltest.phase_instr import line_source
-from shelltest_test.execution.util import utils
 
 
 class TestCase(UnitTestCaseForPyLanguage):
@@ -39,15 +38,12 @@ class TestCase(UnitTestCaseForPyLanguage):
         return abs_syn_gen.PhaseEnvironmentForPythonCommands()
 
     def _assertions(self):
-        utils.assert_is_file_with_contents(self.unittest_case,
-                                           self.eds.result.exitcode_file,
-                                           str(self.EXPECTED_EXIT_CODE))
-        utils.assert_is_file_with_contents(self.unittest_case,
-                                           self.eds.result.std.stdout_file,
-                                           self.TEXT_ON_STDIN)
-        utils.assert_is_file_with_contents(self.unittest_case,
-                                           self.eds.result.std.stderr_file,
-                                           self.EXPECTED_CONTENTS_OF_STDERR)
+        self.assert_is_regular_file_with_contents(self.eds.result.exitcode_file,
+                                                  str(self.EXPECTED_EXIT_CODE))
+        self.assert_is_regular_file_with_contents(self.eds.result.std.stdout_file,
+                                                  self.TEXT_ON_STDIN)
+        self.assert_is_regular_file_with_contents(self.eds.result.std.stderr_file,
+                                                  self.EXPECTED_CONTENTS_OF_STDERR)
 
 
 class PyCommandThatStoresStringInFileInCurrentDirectory(py_cmd_gen.PythonCommand):
