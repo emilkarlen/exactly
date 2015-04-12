@@ -11,12 +11,19 @@ from shelltest import phases
 from shelltest.phase_instr import model as phase_instr_model
 
 
-class PhaseEnvironmentForAnonymousPhase:
+class PhaseEnvironment:
+    """
+    Base class for phase environments.
+    """
+    pass
+
+
+class PhaseEnvironmentForAnonymousPhase(PhaseEnvironment):
     def __init__(self, home_dir: str):
         self.home_dir = home_dir
 
 
-class PhaseEnvironmentForScriptGeneration:
+class PhaseEnvironmentForScriptGeneration(PhaseEnvironment):
     """
     The phase-environment for phases that generate a shell script.
     """
@@ -46,7 +53,7 @@ class PhaseEnvironmentForScriptGeneration:
         self.stdin_file = file_name
 
 
-class PhaseEnvironmentForPythonCommands:
+class PhaseEnvironmentForPythonCommands(PhaseEnvironment):
     """
     The phase-environment for phases that generate python commands.
     """
@@ -101,17 +108,10 @@ class GlobalEnvironmentForNamedPhase:
 #         return self.__commands
 
 
-class PhaseEnvironment:
-    """
-    The environment
-    """
-    pass
-
-
 class TestCasePhase(tuple):
     def __new__(cls,
                 phase: Phase,
-                phase_environment):
+                phase_environment: PhaseEnvironment):
         """
         :param phase_environment: Either PhaseEnvironmentForScriptGeneration or PhaseEnvironmentForPythonCommands.
         """
@@ -122,7 +122,7 @@ class TestCasePhase(tuple):
         return self[0]
 
     @property
-    def phase_environment(self):
+    def phase_environment(self) -> PhaseEnvironment:
         return self[1]
 
 
