@@ -47,17 +47,17 @@ class TestCaseExecution:
         self.__execution_directory_structure = construct_at(self.__existing_execution_directory_root)
         self.__configuration = Configuration(self.__home_dir,
                                              self.__execution_directory_structure.test_root_dir)
-        apply_phase = self.__test_case.lookup_phase(phases.APPLY)
+        apply_phase = self.__test_case.lookup_phase(phases.ACT)
         script_gen_env = apply_phase.phase_environment
         if not isinstance(script_gen_env,
                           abs_syn_gen.PhaseEnvironmentForScriptGeneration):
             raise ValueError('Environment for the "%s" phase is not a %s' %
-                             (phases.APPLY.name, str(abs_syn_gen.PhaseEnvironmentForScriptGeneration)))
+                             (phases.ACT.name, str(abs_syn_gen.PhaseEnvironmentForScriptGeneration)))
         self.__script_file_path = \
             write_testcase_file.write(self.__script_language,
                                       self.__execution_directory_structure,
                                       self.__configuration,
-                                      phases.APPLY,
+                                      phases.ACT,
                                       script_gen_env.statements_generators)
 
     def execute(self):
@@ -67,7 +67,7 @@ class TestCaseExecution:
         os.environ[ENV_VAR_HOME] = str(self.home_dir)
         os.environ[ENV_VAR_TEST] = str(self.execution_directory_structure.test_root_dir)
         for test_case_phase in self.test_case.phase_list:
-            if test_case_phase.phase == phases.APPLY:
+            if test_case_phase.phase == phases.ACT:
                 self._execute_apply(test_case_phase.phase_environment)
                 continue
             phase_env = test_case_phase.phase_environment

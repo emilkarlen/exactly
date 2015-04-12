@@ -111,7 +111,7 @@ class UnitTestCaseForPyLanguage:
                 self._phase_env_setup()
             ),
             new_test_case_phase_for_script_statements(
-                phases.APPLY,
+                phases.ACT,
                 self._phase_env_apply()),
 
             new_test_case_phase_for_python_commands(

@@ -35,7 +35,7 @@ class TestCase(UnitTestCaseForPyLanguageThatWritesAFileToTestRootForEachPhase):
             abs_syn_gen.PhaseEnvironmentForScriptGeneration([
                 StatementsGeneratorThatWritesEnvironmentVariables(
                     self._next_line(),
-                    phases.APPLY)
+                    phases.ACT)
             ])
 
     def _expected_content_for(self, phase: phases.Phase) -> str:

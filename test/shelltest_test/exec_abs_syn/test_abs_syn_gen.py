@@ -89,7 +89,7 @@ class TestGenerate(unittest.TestCase):
                                             'updated-home-dir'),)),
             phases.SETUP.name: phase_instr_model.InstructionSequence(
                 (InstructionThatRecordsHomeDirAsPythonCommand(2),)),
-            phases.APPLY.name: phase_instr_model.InstructionSequence(
+            phases.ACT.name: phase_instr_model.InstructionSequence(
                 (InstructionThatRecordsHomeDirAsScriptStatement(3),)),
             phases.ASSERT.name: phase_instr_model.InstructionSequence(
                 (InstructionThatRecordsHomeDirAsPythonCommand(4),)),
@@ -108,7 +108,7 @@ class TestGenerate(unittest.TestCase):
 
         self.assert_has_single_script_statements_generator_that_stores_home_dir(
             'updated-home-dir',
-            test_case.lookup_phase(phases.APPLY).phase_environment)
+            test_case.lookup_phase(phases.ACT).phase_environment)
 
         self.assert_has_single_py_command_that_stores_home_dir('updated-home-dir',
                                                                test_case.lookup_phase(phases.SETUP).phase_environment)

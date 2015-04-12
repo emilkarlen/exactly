@@ -106,7 +106,7 @@ class UnitTestCaseForPyLanguageThatWritesAFileToTestRootForEachPhase(UnitTestCas
     def _assertions(self):
         self.__assert_file_contents_for(phases.SETUP,
                                         self._expected_content_for_setup())
-        self.__assert_file_contents_for(phases.APPLY,
+        self.__assert_file_contents_for(phases.ACT,
                                         self._expected_content_for_apply())
         self.__assert_file_contents_for(phases.ASSERT,
                                         self._expected_content_for_assert())
@@ -117,7 +117,7 @@ class UnitTestCaseForPyLanguageThatWritesAFileToTestRootForEachPhase(UnitTestCas
         return self._expected_content_for(phases.SETUP)
 
     def _expected_content_for_apply(self) -> str:
-        return self._expected_content_for(phases.APPLY)
+        return self._expected_content_for(phases.ACT)
 
     def _expected_content_for_assert(self) -> str:
         return self._expected_content_for(phases.ASSERT)

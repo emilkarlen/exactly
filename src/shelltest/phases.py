@@ -15,8 +15,8 @@ class Phase(tuple):
 
 ANONYMOUS = Phase(None)
 SETUP = Phase('setup')
-APPLY = Phase('apply')
+ACT = Phase('act')
 ASSERT = Phase('assert')
 CLEANUP = Phase('cleanup')
 
-ALL_NAMED = [SETUP, APPLY, ASSERT, CLEANUP]
+ALL_NAMED = [SETUP, ACT, ASSERT, CLEANUP]
