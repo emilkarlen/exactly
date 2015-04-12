@@ -3,6 +3,7 @@
     <words>
       <w>shelltest</w>
       <w>stderr</w>
+      <w>stdin</w>
       <w>testcase</w>
     </words>
   </dictionary>
