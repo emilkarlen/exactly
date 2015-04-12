@@ -43,7 +43,7 @@ class ScriptLanguage:
 
 class StatementsGenerator:
     """
-    Base class for object that can generate commands for a script of a type defined by StatementConstructor.
+    Base class for object that can generate commands for a script of a type defined by ScriptLanguage.
     """
 
     def apply(self,
@@ -110,5 +110,5 @@ class StatementsGeneratorForFileContents(StatementsGenerator):
         """
         ret_val = []
         for generator in self.__instruction_statements_generators:
-            ret_val.extend(generator.execute(script_language, configuration))
+            ret_val.extend(generator.apply(script_language, configuration))
         return ret_val
