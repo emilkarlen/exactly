@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <book version="5.0" xmlns="http://docbook.org/ns/docbook"
       xmlns:xlink="http://www.w3.org/1999/xlink"
-        >
+      xmlns:ns5="http://www.w3.org/1999/xhtml"
+      xmlns:ns4="http://www.w3.org/1998/Math/MathML"
+      xmlns:ns3="http://www.w3.org/2000/svg"
+      xmlns:ns="http://docbook.org/ns/docbook">
   <info>
     <title>Requirements</title>
 
@@ -151,7 +154,7 @@
         </varlistentry>
 
         <varlistentry>
-          <term><systemitem>apply</systemitem></term>
+          <term><systemitem>act</systemitem></term>
 
           <listitem>
             <para>The program that is tested, in the environment set up by
@@ -182,10 +185,8 @@
       <title>Test Case Execution Directories</title>
 
       <para>A temporary directory structure is used for the execution of each
-      test case. This structure is called the <glossterm>execution directory
-      structure</glossterm>.</para>
-
-      <para>This structure is organized as follows.</para>
+      test case. This structure is called the <firstterm>execution directory
+      structure</firstterm> .This structure is as follows.</para>
 
       <variablelist>
         <varlistentry>
@@ -197,14 +198,16 @@
                 <term><filename class="directory">std</filename></term>
 
                 <listitem>
-                  <para>Contains output from stdout and stderr.</para>
+                  <para>Contains output from stdout and stderr produced by
+                  instructions of the <systemitem>act</systemitem>
+                  phase.</para>
 
                   <variablelist>
                     <varlistentry>
                       <term><filename>out</filename></term>
 
                       <listitem>
-                        <para>Output from stdout</para>
+                        <para>Output from stdout.</para>
                       </listitem>
                     </varlistentry>
 
@@ -212,7 +215,7 @@
                       <term><filename>err</filename></term>
 
                       <listitem>
-                        <para>Output from stderr</para>
+                        <para>Output from stderr.</para>
                       </listitem>
                     </varlistentry>
                   </variablelist>
@@ -236,7 +239,7 @@
           <listitem>
             <para>Directory that is the (initial) Present Working Directory
             for all phases of the test case (<systemitem>setup</systemitem>,
-            <systemitem>apply</systemitem>, ...).</para>
+            <systemitem>act</systemitem>, ...).</para>
           </listitem>
         </varlistentry>
 
@@ -259,8 +262,8 @@
       </variablelist>
 
       <para>This structure is constructed for each test case. It resides in a
-      directory called the <glossterm>execution directory
-      root</glossterm>.</para>
+      directory called the <firstterm>execution directory
+      root</firstterm>.</para>
 
       <para>The program needs to know where to construct this structure. For
       this purpose, two values are used: a directory where temporary files can
@@ -303,7 +306,7 @@
 
       <para>The directory <filename>test</filename>, in the
       <glossterm>execution directory structure</glossterm>, is the Current
-      Working Directory, for the instructions in all phases.</para>
+      Working Directory, for initial instruction of all phases.</para>
 
       <section>
         <title>Environment variables</title>
@@ -347,10 +350,10 @@
       transformed, in several steps, to a form that is suitable for execution
       inside the <glossterm>execution directory structure</glossterm>.</para>
 
-      <para>The instructions in all phases except
-      <systemitem>apply</systemitem> are executed from within the
-      <command>shelltest</command> executable. They are implemented completely
-      in Python (shell commands are executed via Python).</para>
+      <para>The instructions in all phases except <systemitem>act</systemitem>
+      are executed from within the <command>shelltest</command> executable.
+      They are implemented completely in Python (shell commands are executed
+      via Python).</para>
 
       <para>The phase <systemitem>apply</systemitem> is represented as a shell
       script named <filename>apply.sh</filename>, located in the <filename
@@ -434,5 +437,26 @@
       <para>This process can be halted after various steps for the purpose of
       experimenting and debugging a test case.</para>
     </section>
+  </chapter>
+
+  <chapter>
+    <title>Implementation restrictions</title>
+
+    <simplesect>
+      <title>Language</title>
+
+      <para>The program is written completely in Python, version 3.</para>
+    </simplesect>
+
+    <simplesect>
+      <title>Dependencies</title>
+
+      <para>No dependencies except on Python 3 and it's standard
+      library.</para>
+
+      <para>No external tools are used.</para>
+
+      <para>No libraries except the Python 3 standard library are used.</para>
+    </simplesect>
   </chapter>
 </book>

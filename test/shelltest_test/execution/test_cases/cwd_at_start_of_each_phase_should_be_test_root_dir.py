@@ -38,7 +38,7 @@ class TestCase(UnitTestCaseForPyLanguageThatWritesAFileToTestRootForEachPhase):
                 import_statements_generator,
                 StatementsGeneratorThatWritesCurrentWorkingDirectory(
                     self._next_line(),
-                    phases.APPLY,
+                    phases.ACT,
                     import_statements_generator),
                 StatementsGeneratorThatChangesCwdToHomeDir(self._next_line(),
                                                            import_statements_generator)

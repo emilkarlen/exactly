@@ -88,10 +88,10 @@ class Test(unittest.TestCase):
             actual_file_path = write_testcase_file.write(script_language,
                                                          execution_dir_structure,
                                                          configuration,
-                                                         phases.APPLY,
+                                                         phases.ACT,
                                                          statement_generators)
             # ASSERT #
-            expected_base_name = script_language.base_name_from_stem(phases.APPLY.name)
+            expected_base_name = script_language.base_name_from_stem(phases.ACT.name)
             expected_dir = execution_dir_structure.test_case_dir
             expected_file_path = expected_dir / expected_base_name
 

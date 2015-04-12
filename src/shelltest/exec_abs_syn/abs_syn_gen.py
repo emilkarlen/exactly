@@ -180,7 +180,7 @@ def validate_and_generate(original_home_directory: str,
 
     def phase_env_for(ph: Phase):
         return PhaseEnvironmentForScriptGeneration() \
-            if ph == phases.APPLY \
+            if ph == phases.ACT \
             else PhaseEnvironmentForPythonCommands()
 
     def execute_named_phases(settings_from_anonymous_phase: PhaseEnvironmentForAnonymousPhase):
