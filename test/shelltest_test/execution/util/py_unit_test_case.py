@@ -59,7 +59,7 @@ class UnitTestCaseForPyLanguage:
     def _phase_env_setup(self) -> abs_syn_gen.PhaseEnvironmentForPythonCommands:
         return self._phase_env_for_py_cmd_phase(phases.SETUP)
 
-    def _phase_env_apply(self) -> abs_syn_gen.PhaseEnvironmentForScriptGeneration:
+    def _phase_env_act(self) -> abs_syn_gen.PhaseEnvironmentForScriptGeneration:
         raise NotImplementedError()
 
     def _phase_env_assert(self) -> abs_syn_gen.PhaseEnvironmentForPythonCommands:
@@ -116,7 +116,7 @@ class UnitTestCaseForPyLanguage:
             ),
             new_test_case_phase_for_script_statements(
                 phases.ACT,
-                self._phase_env_apply()),
+                self._phase_env_act()),
 
             new_test_case_phase_for_python_commands(
                 phases.ASSERT,

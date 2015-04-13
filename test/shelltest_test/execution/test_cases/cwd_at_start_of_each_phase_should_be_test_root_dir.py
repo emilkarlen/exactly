@@ -31,7 +31,7 @@ class TestCase(UnitTestCaseForPyLanguageThatWritesAFileToTestRootForEachPhase):
                 PyCommandThatChangesCwdToHomeDir(self._next_line())
             ])
 
-    def _phase_env_apply(self) -> abs_syn_gen.PhaseEnvironmentForScriptGeneration:
+    def _phase_env_act(self) -> abs_syn_gen.PhaseEnvironmentForScriptGeneration:
         import_statements_generator = StatementsGeneratorForImportStatements(self._next_line())
         return \
             abs_syn_gen.PhaseEnvironmentForScriptGeneration([
