@@ -1,3 +1,5 @@
+import os
+
 __author__ = 'emil'
 
 import pathlib
@@ -51,6 +53,8 @@ class UnitTestCaseForPyLanguage:
                                                                  python3_language,
                                                                  test_case,
                                                                  home_dir_path)
+        os.chdir(str(home_dir_path))
+
 
     def _phase_env_setup(self) -> abs_syn_gen.PhaseEnvironmentForPythonCommands:
         return self._phase_env_for_py_cmd_phase(phases.SETUP)
