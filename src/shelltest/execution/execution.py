@@ -42,13 +42,13 @@ class TestCaseExecution:
 
     def write(self):
         """
-        Creates all necessary directories and files and executes the test case.
+        Creates all necessary directories and files.
         """
         self.__execution_directory_structure = construct_at(self.__existing_execution_directory_root)
         self.__configuration = Configuration(self.__home_dir,
                                              self.__execution_directory_structure.test_root_dir)
-        apply_phase = self.__test_case.lookup_phase(phases.ACT)
-        script_gen_env = apply_phase.phase_environment
+        act_phase = self.__test_case.lookup_phase(phases.ACT)
+        script_gen_env = act_phase.phase_environment
         if not isinstance(script_gen_env,
                           abs_syn_gen.PhaseEnvironmentForScriptGeneration):
             raise ValueError('Environment for the "%s" phase is not a %s' %

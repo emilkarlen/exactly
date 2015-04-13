@@ -25,7 +25,7 @@ class TestCase(UnitTestCaseForPyLanguage):
                                                                self.TEXT_ON_STDIN)]
         )
 
-    def _phase_env_apply(self) -> abs_syn_gen.PhaseEnvironmentForScriptGeneration:
+    def _phase_env_act(self) -> abs_syn_gen.PhaseEnvironmentForScriptGeneration:
         return \
             abs_syn_gen.PhaseEnvironmentForScriptGeneration(
                 [
