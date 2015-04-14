@@ -1,4 +1,5 @@
 import os
+import shutil
 
 __author__ = 'emil'
 
@@ -40,21 +41,22 @@ class UnitTestCaseForPyLanguage:
         test_case = self._test_case(settings)
         python3_language = Python3Language()
         # ACT #
-        if self.__dbg_do_not_delete_dir_structure:
-            tmp_exec_dir_structure_root = tempfile.mkdtemp(prefix='shelltest-test-')
-            print(tmp_exec_dir_structure_root)
-            self.__act_with_existing_exec_dir_structure_root(tmp_exec_dir_structure_root,
-                                                             python3_language,
-                                                             test_case,
-                                                             home_dir_path)
-        else:
-            with tempfile.TemporaryDirectory(prefix='shelltest-test-') as tmp_exec_dir_structure_root:
-                self.__act_with_existing_exec_dir_structure_root(tmp_exec_dir_structure_root,
-                                                                 python3_language,
-                                                                 test_case,
-                                                                 home_dir_path)
-        os.chdir(str(home_dir_path))
+        test_case_execution = execution.execute_test_case_in_execution_directory(python3_language,
+                                                                                 test_case,
+                                                                                 home_dir_path,
+                                                                                 'shelltest-test-',
+                                                                                 True)
 
+        # ASSERT #
+        self.__test_case_execution = test_case_execution
+        self.__execution_directory_structure = test_case_execution.execution_directory_structure
+        self._assertions()
+        # CLEANUP #
+        os.chdir(str(home_dir_path))
+        if not self.__dbg_do_not_delete_dir_structure:
+            shutil.rmtree(str(self.__execution_directory_structure.root_dir))
+        else:
+            print(str(test_case_execution.execution_directory_structure.root_dir))
 
     def _phase_env_setup(self) -> abs_syn_gen.PhaseEnvironmentForPythonCommands:
         return self._phase_env_for_py_cmd_phase(phases.SETUP)
@@ -127,19 +129,3 @@ class UnitTestCaseForPyLanguage:
                 self._phase_env_cleanup()
             ),
         ])
-
-    def __act_with_existing_exec_dir_structure_root(self,
-                                                    tmp_exec_dir_structure_root: str,
-                                                    python3_language: script_stmt_gen.ScriptLanguage,
-                                                    test_case: abs_syn_gen.TestCase,
-                                                    home_dir_path: pathlib.Path):
-        # ACT #
-        test_case_execution = execution.TestCaseExecution(python3_language,
-                                                          test_case,
-                                                          tmp_exec_dir_structure_root,
-                                                          home_dir_path)
-        test_case_execution.write_and_execute()
-        # ASSERT #
-        self.__test_case_execution = test_case_execution
-        self.__execution_directory_structure = test_case_execution.execution_directory_structure
-        self._assertions()
