@@ -30,14 +30,12 @@ class TestCaseExecution:
     def __init__(self,
                  script_language: script_stmt_gen.ScriptLanguage,
                  test_case: abs_syn_gen.TestCase,
-                 existing_execution_directory_root: str,
-                 home_dir: pathlib.Path):
+                 execution_directory_structure: ExecutionDirectoryStructure,
+                 configuration: Configuration):
         self.__script_language = script_language
         self.__test_case = test_case
-        self.__existing_execution_directory_root = existing_execution_directory_root
-        self.__home_dir = home_dir
-        self.__execution_directory_structure = None
-        self.__configuration = None
+        self.__execution_directory_structure = execution_directory_structure
+        self.__configuration = configuration
         self.__script_file_path = None
 
     def write_and_execute(self):
@@ -48,9 +46,6 @@ class TestCaseExecution:
         """
         Creates all necessary directories and files.
         """
-        self.__execution_directory_structure = construct_at(self.__existing_execution_directory_root)
-        self.__configuration = Configuration(self.__home_dir,
-                                             self.__execution_directory_structure.test_root_dir)
         act_phase = self.__test_case.lookup_phase(phases.ACT)
         script_gen_env = act_phase.phase_environment
         if not isinstance(script_gen_env,
@@ -68,7 +63,7 @@ class TestCaseExecution:
         """
         Pre-condition: write has been executed.
         """
-        os.environ[ENV_VAR_HOME] = str(self.home_dir)
+        os.environ[ENV_VAR_HOME] = str(self.configuration.home_dir)
         os.environ[ENV_VAR_TEST] = str(self.execution_directory_structure.test_root_dir)
         for test_case_phase in self.test_case.phase_list:
             if test_case_phase.phase == phases.ACT:
@@ -85,10 +80,6 @@ class TestCaseExecution:
     @property
     def test_case(self) -> abs_syn_gen.TestCase:
         return self.__test_case
-
-    @property
-    def home_dir(self) -> pathlib.Path:
-        return self.__home_dir
 
     @property
     def execution_directory_structure(self) -> ExecutionDirectoryStructure:
@@ -176,10 +167,13 @@ def execute_test_case_in_execution_directory(script_language: script_stmt_gen.Sc
 
     def with_existing_root(exec_dir_structure_root: str) -> TestCaseExecution:
         cwd_before = os.getcwd()
+        execution_directory_structure = construct_at(exec_dir_structure_root)
+        configuration = Configuration(home_dir_path,
+                                      execution_directory_structure.test_root_dir)
         test_case_execution = TestCaseExecution(script_language,
                                                 test_case,
-                                                exec_dir_structure_root,
-                                                home_dir_path)
+                                                execution_directory_structure,
+                                                configuration)
         try:
             test_case_execution.write_and_execute()
         finally:
