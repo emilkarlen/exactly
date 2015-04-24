@@ -18,9 +18,8 @@ def dummy_line(line_number: int) -> line_source.Line:
 
 class StatementsGeneratorThatStoresHomeDir(script_stmt_gen.StatementsGeneratorForInstruction):
     def __init__(self,
-                 source_line: line_source.Line,
                  home_dir: str):
-        super().__init__(source_line)
+        super().__init__()
         self.home_dir = home_dir
 
     def instruction_implementation(self,
@@ -31,20 +30,24 @@ class StatementsGeneratorThatStoresHomeDir(script_stmt_gen.StatementsGeneratorFo
 
 class PythonCommandThatStoresHomeDir(py_cmd_gen.PythonCommand):
     def __init__(self,
-                 source_line: line_source.Line,
                  home_dir: str):
-        super().__init__(source_line)
+        super().__init__()
         self.home_dir = home_dir
 
     def apply(self, configuration: Configuration):
         raise RuntimeError('Should not be called')
 
 
-class InstructionThatSetsHomeDir(phase_instr_model.Instruction):
+def instruction(line_number: int,
+                executor: phase_instr_model.InstructionExecutor) -> phase_instr_model.PhaseContentElement:
+    return phase_instr_model.new_instruction_element(
+        dummy_line(line_number),
+        executor)
+
+
+class InstructionThatSetsHomeDir(phase_instr_model.InstructionExecutor):
     def __init__(self,
-                 line_number: int,
                  home_dir_to_set: str):
-        super().__init__(dummy_line(line_number))
         self.__home_dir_to_set = home_dir_to_set
 
     def execute(self,
@@ -54,47 +57,41 @@ class InstructionThatSetsHomeDir(phase_instr_model.Instruction):
         phase_environment.home_dir = self.__home_dir_to_set
 
 
-class InstructionThatRecordsHomeDirAsScriptStatement(phase_instr_model.Instruction):
-    def __init__(self,
-                 line_number: int):
-        super().__init__(dummy_line(line_number))
-
+class InstructionThatRecordsHomeDirAsScriptStatement(phase_instr_model.InstructionExecutor):
     def execute(self,
                 phase_name: str,
                 global_environment: abs_syn_gen.GlobalEnvironmentForNamedPhase,
                 phase_environment: abs_syn_gen.PhaseEnvironmentForScriptGeneration):
-        phase_environment.append_statement(StatementsGeneratorThatStoresHomeDir(self.source_line,
-                                                                                global_environment.home_directory))
+        phase_environment.append_statement(StatementsGeneratorThatStoresHomeDir(global_environment.home_directory))
 
 
-class InstructionThatRecordsHomeDirAsPythonCommand(phase_instr_model.Instruction):
-    def __init__(self,
-                 line_number: int):
-        super().__init__(dummy_line(line_number))
-
+class InstructionThatRecordsHomeDirAsPythonCommand(phase_instr_model.InstructionExecutor):
     def execute(self,
                 phase_name: str,
                 global_environment: abs_syn_gen.GlobalEnvironmentForNamedPhase,
                 phase_environment: abs_syn_gen.PhaseEnvironmentForPythonCommands):
-        phase_environment.append_command(PythonCommandThatStoresHomeDir(self.source_line,
-                                                                        global_environment.home_directory))
+        phase_environment.append_command(PythonCommandThatStoresHomeDir(global_environment.home_directory))
 
 
 class TestGenerate(unittest.TestCase):
     def test_gen(self):
         # ARRANGE #
         phase2instructions = {
-            phases.ANONYMOUS.name: phase_instr_model.InstructionSequence(
-                (InstructionThatSetsHomeDir(1,
-                                            'updated-home-dir'),)),
-            phases.SETUP.name: phase_instr_model.InstructionSequence(
-                (InstructionThatRecordsHomeDirAsPythonCommand(2),)),
-            phases.ACT.name: phase_instr_model.InstructionSequence(
-                (InstructionThatRecordsHomeDirAsScriptStatement(3),)),
-            phases.ASSERT.name: phase_instr_model.InstructionSequence(
-                (InstructionThatRecordsHomeDirAsPythonCommand(4),)),
-            phases.CLEANUP.name: phase_instr_model.InstructionSequence(
-                (InstructionThatRecordsHomeDirAsPythonCommand(5),)),
+            phases.ANONYMOUS.name: phase_instr_model.PhaseContents(
+                (instruction(1,
+                             InstructionThatSetsHomeDir('updated-home-dir')),)),
+            phases.SETUP.name: phase_instr_model.PhaseContents(
+                (instruction(2,
+                 InstructionThatRecordsHomeDirAsPythonCommand()),)),
+            phases.ACT.name: phase_instr_model.PhaseContents(
+                (instruction(3,
+                             InstructionThatRecordsHomeDirAsScriptStatement()),)),
+            phases.ASSERT.name: phase_instr_model.PhaseContents(
+                (instruction(4,
+                             InstructionThatRecordsHomeDirAsPythonCommand()),)),
+            phases.CLEANUP.name: phase_instr_model.PhaseContents(
+                (instruction(5,
+                             InstructionThatRecordsHomeDirAsPythonCommand()),)),
         }
         document = phase_instr_model.Document(phase2instructions)
         # ACT #

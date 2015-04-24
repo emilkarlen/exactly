@@ -10,12 +10,8 @@ class PythonCommand:
     Base class for commands implemented in Python.
     """
 
-    def __init__(self, source_line: Line):
-        self.__source_line = source_line
-
-    @property
-    def source_line(self) -> Line:
-        return self.__source_line
+    def __init__(self):
+        pass
 
     def apply(self,
               configuration: Configuration):
