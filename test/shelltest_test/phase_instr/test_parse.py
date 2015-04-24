@@ -8,13 +8,12 @@ from shelltest.phase_instr import model
 from shelltest.phase_instr import line_source, parse, syntax
 
 
-class InstructionForPhase(model.Instruction):
+class InstructionInPhaseExecutor(model.InstructionExecutor):
     def __init__(self,
-                 source_line: line_source.Line,
                  phase_name: str):
-        model.Instruction.__init__(self, source_line)
         self._phase_name = phase_name
 
+    @property
     def phase_name(self):
         return self._phase_name
 
@@ -22,17 +21,23 @@ class InstructionForPhase(model.Instruction):
         pass
 
 
+def new_instruction_in_phase(source_line: line_source.Line,
+                             phase_name: str) -> model.PhaseContentElement:
+    return model.new_instruction_element(source_line,
+                                         InstructionInPhaseExecutor(phase_name))
+
+
 class InstructionParserForPhase(parse.InstructionParser):
     def __init__(self, phase_name: str):
         self._phase_name = phase_name
 
-    def apply(self, source_line: line_source.Line) -> model.Instruction:
-        return InstructionForPhase(source_line,
-                                   self._phase_name)
+    def apply(self, source_line: line_source.Line) -> model.PhaseContentElement:
+        return model.new_instruction_element(source_line,
+                                             InstructionInPhaseExecutor(self._phase_name))
 
 
 class InstructionParserThatFails(parse.InstructionParser):
-    def apply(self, source_line: line_source.Line) -> model.Instruction:
+    def apply(self, source_line: line_source.Line) -> model.PhaseContentElement:
         raise SourceError(source_line,
                           'Unconditional failure')
 
@@ -149,74 +154,74 @@ class TestGroupByPhase(unittest.TestCase):
 class TestParsePlainTestCase(unittest.TestCase):
     def test_all_valid_phases_in_order_of_execution_are_accepted_but_empty(self):
         test_case = self._parse_lines(parser_without_anonymous_phase(),
-                                      ['[phase 1]',
-                                       '[phase 2]'])
+            ['[phase 1]',
+             '[phase 2]'])
 
         self.assertTrue(not test_case.phases,
                         'There should be no phases, since no phase has any lines')
 
     def test_valid_anonymous_and_named_phase(self):
         actual_document = self._parse_lines(parser_with_anonymous_phase(),
-                                            ['#comment anonymous',
-                                             '',
-                                             'instruction anonymous',
-                                             '[phase 1]',
-                                             '#comment 1',
-                                             'instruction 1'])
+            ['#comment anonymous',
+             '',
+             'instruction anonymous',
+             '[phase 1]',
+             '#comment 1',
+             'instruction 1'])
 
         anonymous_instructions = (
-            parse.InstructionForComment(line_source.Line(1, '#comment anonymous')),
-            InstructionForPhase(line_source.Line(3, 'instruction anonymous'), None)
+            model.new_comment_element(line_source.Line(1, '#comment anonymous')),
+            new_instruction_in_phase(line_source.Line(3, 'instruction anonymous'), None)
         )
         phase1_instructions = (
-            parse.InstructionForComment(line_source.Line(5, '#comment 1')),
-            InstructionForPhase(line_source.Line(6, 'instruction 1'), 'phase 1')
+            model.new_comment_element(line_source.Line(5, '#comment 1')),
+            new_instruction_in_phase(line_source.Line(6, 'instruction 1'), 'phase 1')
         )
         expected_phase2instructions = {
-            None: model.InstructionSequence(anonymous_instructions),
-            'phase 1': model.InstructionSequence(phase1_instructions)
+            None: model.PhaseContents(anonymous_instructions),
+            'phase 1': model.PhaseContents(phase1_instructions)
         }
         expected_document = model.Document(expected_phase2instructions)
         self._check_document(expected_document, actual_document)
 
     def test_valid_phase_with_comment_and_instruction(self):
         actual_document = self._parse_lines(parser_without_anonymous_phase(),
-                                            ['[phase 1]',
-                                             '#comment',
-                                             'instruction'])
+            ['[phase 1]',
+             '#comment',
+             'instruction'])
 
         phase1_instructions = (
-            parse.InstructionForComment(line_source.Line(2, '#comment')),
-            InstructionForPhase(line_source.Line(3, 'instruction'), 'phase 1')
+            model.new_comment_element(line_source.Line(2, '#comment')),
+            new_instruction_in_phase(line_source.Line(3, 'instruction'), 'phase 1')
         )
         expected_phase2instructions = {
-            'phase 1': model.InstructionSequence(phase1_instructions)
+            'phase 1': model.PhaseContents(phase1_instructions)
         }
         expected_document = model.Document(expected_phase2instructions)
         self._check_document(expected_document, actual_document)
 
     def test_valid_phase_with_fragmented_phases(self):
         actual_document = self._parse_lines(parser_without_anonymous_phase(),
-                                            ['[phase 1]',
-                                             '#comment 1',
-                                             '',
-                                             '[phase 2]',
-                                             'instruction 2',
-                                             '[phase 1]',
-                                             'instruction 1'])
+            ['[phase 1]',
+             '#comment 1',
+             '',
+             '[phase 2]',
+             'instruction 2',
+             '[phase 1]',
+             'instruction 1'])
 
         phase1_instructions = (
-            parse.InstructionForComment(line_source.Line(2, '#comment 1')),
-            InstructionForPhase(line_source.Line(7, 'instruction 1'),
-                                'phase 1')
+            model.new_comment_element(line_source.Line(2, '#comment 1')),
+            new_instruction_in_phase(line_source.Line(7, 'instruction 1'),
+                                     'phase 1')
         )
         phase2_instructions = (
-            InstructionForPhase(line_source.Line(5, 'instruction 2'),
-                                'phase 2'),
+            new_instruction_in_phase(line_source.Line(5, 'instruction 2'),
+                                     'phase 2'),
         )
         expected_phase2instructions = {
-            'phase 1': model.InstructionSequence(phase1_instructions),
-            'phase 2': model.InstructionSequence(phase2_instructions)
+            'phase 1': model.PhaseContents(phase1_instructions),
+            'phase 2': model.PhaseContents(phase2_instructions)
         }
         expected_document = model.Document(expected_phase2instructions)
         self._check_document(expected_document, actual_document)
@@ -230,7 +235,7 @@ class TestParsePlainTestCase(unittest.TestCase):
                               '[phase 1]',
                               'instruction 1'
                           ]
-        )
+                          )
 
     def test_parse_should_fail_when_instruction_parser_fails(self):
         self.assertRaises(SourceError,
@@ -243,15 +248,15 @@ class TestParsePlainTestCase(unittest.TestCase):
 
     def test_the_instruction_parser_for_the_current_phase_should_be_used(self):
         actual_document = self._parse_lines(parser_for_phase2_that_fails_unconditionally(),
-                                            [
-                                                '[phase 1]',
-                                                'instruction 1'
-                                            ])
+            [
+                '[phase 1]',
+                'instruction 1'
+            ])
         phase1_instructions = (
-            InstructionForPhase(line_source.Line(2, 'instruction 1'), 'phase 1'),
+            new_instruction_in_phase(line_source.Line(2, 'instruction 1'), 'phase 1'),
         )
         expected_phase2instructions = {
-            'phase 1': model.InstructionSequence(phase1_instructions)
+            'phase 1': model.PhaseContents(phase1_instructions)
         }
         expected_document = model.Document(expected_phase2instructions)
         self._check_document(expected_document, actual_document)
@@ -277,8 +282,8 @@ class TestParsePlainTestCase(unittest.TestCase):
             self._check_equal_instr_app_seq(expected_instructions, actual_instructions)
 
     def _check_equal_instr_app_seq(self,
-                                   expected_instructions: model.InstructionSequence,
-                                   actual_instructions: model.InstructionSequence):
+                                   expected_instructions: model.PhaseContents,
+                                   actual_instructions: model.PhaseContents):
         self.assertEqual(len(expected_instructions.instructions),
                          len(actual_instructions.instructions),
                          'Number of instructions in the phase')
@@ -287,18 +292,22 @@ class TestParsePlainTestCase(unittest.TestCase):
             self._check_equal_instruction(expected_instruction, actual_instruction)
 
     def _check_equal_instruction(self,
-                                 expected_instruction: model.Instruction,
-                                 actual_instruction: model.Instruction):
+                                 expected_instruction: model.PhaseContentElement,
+                                 actual_instruction: model.PhaseContentElement):
         self.assertEqual(expected_instruction.source_line,
                          actual_instruction.source_line,
                          'Source lines should be equal')
-        if isinstance(expected_instruction, parse.InstructionForComment):
-            self.assertIsInstance(actual_instruction, parse.InstructionForComment)
-        elif isinstance(expected_instruction, InstructionForPhase):
-            self.assertIsInstance(actual_instruction, InstructionForPhase)
-            self.assertEqual(expected_instruction.phase_name(),
-                             actual_instruction.phase_name(),
-                             'Phase name should be equal')
+        if expected_instruction.is_comment:
+            self.assertTrue(actual_instruction.is_comment)
+            self.assertFalse(actual_instruction.is_instruction)
+        else:
+            self.assertTrue(actual_instruction.is_instruction)
+            self.assertEqual(expected_instruction.executor.__class__,
+                             actual_instruction.executor.__class__, )
+            if isinstance(expected_instruction.executor, InstructionInPhaseExecutor):
+                self.assertIsInstance(actual_instruction.executor, InstructionInPhaseExecutor)
+                self.assertEqual(expected_instruction.executor.phase_name,
+                                 actual_instruction.executor.phase_name)
 
 
 def suite():

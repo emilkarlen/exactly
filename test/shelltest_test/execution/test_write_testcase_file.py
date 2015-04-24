@@ -36,7 +36,7 @@ class TheScriptLanguage(script_stmt_gen.ScriptLanguage):
     def comment_lines(self, lines: list) -> list:
         return ['# ' + line for line in lines]
 
-    def source_line_info(self, source_line: line_source.Line) -> list:
+    def source_line_header(self, source_line: line_source.Line) -> list:
         line_ref = 'Line %d' % source_line.line_number
         line_contents = source_line.text
         return self.comment_lines([line_ref,
@@ -44,9 +44,8 @@ class TheScriptLanguage(script_stmt_gen.ScriptLanguage):
 
 
 class StatementsGeneratorThatOutputsHomeDir(script_stmt_gen.StatementsGeneratorForInstruction):
-    def __init__(self,
-                 source_line: line_source.Line):
-        super().__init__(source_line)
+    def __init__(self):
+        super().__init__()
 
     def instruction_implementation(self,
                                    configuration: Configuration,
@@ -56,9 +55,8 @@ class StatementsGeneratorThatOutputsHomeDir(script_stmt_gen.StatementsGeneratorF
 
 
 class StatementsGeneratorThatOutputsTestRootDir(script_stmt_gen.StatementsGeneratorForInstruction):
-    def __init__(self,
-                 source_line: line_source.Line):
-        super().__init__(source_line)
+    def __init__(self):
+        super().__init__()
 
     def instruction_implementation(self,
                                    configuration: Configuration,
@@ -70,8 +68,8 @@ class StatementsGeneratorThatOutputsTestRootDir(script_stmt_gen.StatementsGenera
 class Test(unittest.TestCase):
     def test_that_output_and_exitcode_are_stored(self):
         # ARRANGE #
-        statement_on_line_1 = StatementsGeneratorThatOutputsHomeDir(line_source.Line(1, 'one'))
-        statement_on_line_2 = StatementsGeneratorThatOutputsTestRootDir(line_source.Line(2, 'two'))
+        statement_on_line_1 = StatementsGeneratorThatOutputsHomeDir()
+        statement_on_line_2 = StatementsGeneratorThatOutputsTestRootDir()
         statement_generators = [statement_on_line_1,
                                 statement_on_line_2]
 

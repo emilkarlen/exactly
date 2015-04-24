@@ -32,9 +32,9 @@ class PlainTestCaseParser:
         raise NotImplementedError()
 
 
-class InstructionForComment(model.Instruction):
+class InstructionForComment(model.PhaseContentElement):
     def __init__(self, source_line: line_source.Line):
-        model.Instruction.__init__(self, source_line)
+        model.PhaseContentElement.__init__(self, source_line)
 
     def execute(self, phase_name: str, global_environment, phase_environment):
         pass
@@ -45,7 +45,7 @@ class InstructionParser:
     Parses an instruction line into an instruction.
     """
 
-    def apply(self, source_line: line_source.Line) -> model.Instruction:
+    def apply(self, source_line: line_source.Line) -> model.PhaseContentElement:
         """
         :raises SourceError The instruction line cannot be parsed.
         """
@@ -103,6 +103,9 @@ class PhaseAndInstructionsConfiguration:
         return self._phase_names_in_order_of_execution
 
     def parser_for_phase(self, phase_name: str) -> InstructionParser:
+        """
+        :param phase_name None denotes the anonymous phase.
+        """
         return self._phase2parser[phase_name]
 
 
@@ -244,15 +247,15 @@ class _PlainTestCaseParserForPhaseAndInstructionsConfiguration(PlainTestCasePars
                                                            phase2c_lines[phase_name])
         return model.Document(phase2instruction_sequence)
 
-    def parse_instruction_lines_for_phase(self, phase_name: str, c_lines: tuple) -> model.InstructionSequence:
+    def parse_instruction_lines_for_phase(self, phase_name: str, c_lines: tuple) -> model.PhaseContents:
         parser = self._configuration.parser_for_phase(phase_name)
         sequence = []
         for line_type, line in c_lines:
             if line_type == syntax.TYPE_COMMENT:
-                sequence.append(InstructionForComment(line))
+                sequence.append(model.new_comment_element(line))
             else:
                 sequence.append(parser.apply(line))
-        return model.InstructionSequence(tuple(sequence))
+        return model.PhaseContents(tuple(sequence))
 
 
 def new_parser_for(configuration: PhaseAndInstructionsConfiguration) -> PlainTestCaseParser:

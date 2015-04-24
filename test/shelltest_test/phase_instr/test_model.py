@@ -2,6 +2,8 @@ __author__ = 'emil'
 
 import unittest
 
+from shelltest.phase_instr import line_source
+
 from shelltest.phase_instr import model
 
 
@@ -23,9 +25,8 @@ class PhaseEnvironment:
         self.instruction_list = []
 
 
-class InstructionThatAppendsNameToEnvironments(model.Instruction):
+class InstructionThatAppendsNameToEnvironments(model.InstructionExecutor):
     def __init__(self, name: str):
-        super().__init__(None)
         self.__name = name
 
     def execute(self, phase_name: str,
@@ -35,25 +36,32 @@ class InstructionThatAppendsNameToEnvironments(model.Instruction):
         phase_environment.instruction_list.append((phase_name, self.__name))
 
 
-class InstructionThatUnconditionallyRaisesRuntimeError(model.Instruction):
-    def __init__(self):
-        super().__init__(None)
-
+class InstructionThatUnconditionallyRaisesRuntimeError(model.InstructionExecutor):
     def execute(self, phase_name: str,
                 global_environment: GlobalEnvironment,
                 phase_environment: PhaseEnvironment):
         raise RuntimeError()
 
 
-def instr(name: str) -> InstructionThatAppendsNameToEnvironments:
-    return InstructionThatAppendsNameToEnvironments(name)
+def unconditionally_raise_runtime_error() -> model.PhaseContentElement:
+    return phase_content_element_from_dummy_line(
+        InstructionThatUnconditionallyRaisesRuntimeError())
+
+def append_to_envs(name: str) -> model.PhaseContentElement:
+    return phase_content_element_from_dummy_line(
+        InstructionThatAppendsNameToEnvironments(name))
+
+
+def phase_content_element_from_dummy_line(executor: model.InstructionExecutor) -> model.PhaseContentElement:
+    return model.new_instruction_element(line_source.Line(1, 'dummy line'),
+                                         executor)
 
 
 class TestDocument(unittest.TestCase):
     def test_instructions_should_be_executed_in_the_order_they_appear_in_the_sequence(self):
         phase2instructions = {
-            'phase': model.InstructionSequence((instr('1'),
-                                                instr('2')))
+            'phase': model.PhaseContents((append_to_envs('1'),
+                                          append_to_envs('2')))
         }
         document = model.Document(phase2instructions)
         global_environment = GlobalEnvironment()
@@ -68,10 +76,10 @@ class TestDocument(unittest.TestCase):
 
     def test_phases_should_be_executed_in_the_order_they_appear_in_the_sequence(self):
         phase2instructions = {
-            'a': model.InstructionSequence((instr('1'),
-                                            instr('2'))),
-            'b': model.InstructionSequence((instr('1'),
-                                            instr('2')))
+            'a': model.PhaseContents((append_to_envs('1'),
+                                      append_to_envs('2'))),
+            'b': model.PhaseContents((append_to_envs('1'),
+                                      append_to_envs('2')))
         }
         document = model.Document(phase2instructions)
         global_environment = GlobalEnvironment()
@@ -99,10 +107,10 @@ class TestDocument(unittest.TestCase):
 
     def test_only_specified_phases_should_be_executed(self):
         phase2instructions = {
-            'a': model.InstructionSequence((instr('1'),
-                                            instr('2'))),
-            'b': model.InstructionSequence((instr('1'),
-                                            instr('2')))
+            'a': model.PhaseContents((append_to_envs('1'),
+                                      append_to_envs('2'))),
+            'b': model.PhaseContents((append_to_envs('1'),
+                                      append_to_envs('2')))
         }
         document = model.Document(phase2instructions)
         global_environment = GlobalEnvironment()
@@ -123,10 +131,10 @@ class TestDocument(unittest.TestCase):
 
     def test_only_specified_phases_should_be_executed__anonymous_phase(self):
         phase2instructions = {
-            'a': model.InstructionSequence((instr('1'),
-                                            instr('2'))),
-            None: model.InstructionSequence((instr('1'),
-                                             instr('2')))
+            'a': model.PhaseContents((append_to_envs('1'),
+                                      append_to_envs('2'))),
+            None: model.PhaseContents((append_to_envs('1'),
+                                       append_to_envs('2')))
         }
         document = model.Document(phase2instructions)
         global_environment = GlobalEnvironment()
@@ -147,8 +155,8 @@ class TestDocument(unittest.TestCase):
 
     def test_non_existing_phases_should_be_silently_ignored(self):
         phase2instructions = {
-            'a': model.InstructionSequence((instr('1'),
-                                            instr('2'))),
+            'a': model.PhaseContents((append_to_envs('1'),
+                                      append_to_envs('2'))),
         }
         document = model.Document(phase2instructions)
         global_environment = GlobalEnvironment()
@@ -175,8 +183,8 @@ class TestDocument(unittest.TestCase):
 
     def test_when_an_exception_is_raised_the_execution_should_stop(self):
         phase2instructions = {
-            'a': model.InstructionSequence((InstructionThatUnconditionallyRaisesRuntimeError(),
-                                            instr('2'))),
+            'a': model.PhaseContents((unconditionally_raise_runtime_error(),
+                                      append_to_envs('2'))),
         }
         document = model.Document(phase2instructions)
         global_environment = GlobalEnvironment()

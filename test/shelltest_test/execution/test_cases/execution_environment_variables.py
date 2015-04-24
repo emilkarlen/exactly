@@ -26,7 +26,6 @@ class TestCase(UnitTestCaseForPyLanguageThatWritesAFileToTestRootForEachPhase):
         return \
             abs_syn_gen.PhaseEnvironmentForPythonCommands([
                 PyCommandThatWritesEnvironmentVariables(
-                    self._next_line(),
                     phase)
             ])
 
@@ -34,7 +33,6 @@ class TestCase(UnitTestCaseForPyLanguageThatWritesAFileToTestRootForEachPhase):
         return \
             abs_syn_gen.PhaseEnvironmentForScriptGeneration([
                 StatementsGeneratorThatWritesEnvironmentVariables(
-                    self._next_line(),
                     phases.ACT)
             ])
 
@@ -47,9 +45,8 @@ class TestCase(UnitTestCaseForPyLanguageThatWritesAFileToTestRootForEachPhase):
 
 class PyCommandThatWritesEnvironmentVariables(PyCommandThatWritesToStandardPhaseFile):
     def __init__(self,
-                 source_line: line_source.Line,
                  phase: phases.Phase):
-        super().__init__(source_line, phase)
+        super().__init__(phase)
 
     def file_lines(self, configuration) -> list:
         def format_environment_variable(var_name: str) -> str:
@@ -60,9 +57,8 @@ class PyCommandThatWritesEnvironmentVariables(PyCommandThatWritesToStandardPhase
 
 class StatementsGeneratorThatWritesEnvironmentVariables(StatementsGeneratorThatWritesToStandardPhaseFile):
     def __init__(self,
-                 source_line: line_source.Line,
                  phase: phases.Phase):
-        super().__init__(source_line, phase)
+        super().__init__(phase)
         self.__phase = phase
 
     def code_using_file_opened_for_writing(self,

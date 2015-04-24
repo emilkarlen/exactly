@@ -31,7 +31,6 @@ class TestCase(UnitTestCaseForPyLanguage):
     def _phase_env_for_py_cmd_phase(self, phase: phases.Phase) -> abs_syn_gen.PhaseEnvironmentForPythonCommands:
         return abs_syn_gen.PhaseEnvironmentForPythonCommands([
             PyCommandThatCreatesAStandardPhaseFileInTestRootContainingDirectoryPaths(
-                self._next_line(),
                 phase)
         ])
 
@@ -82,9 +81,8 @@ def py_cmd_file_lines(cwd: pathlib.Path, configuration: Configuration) -> list:
 
 class PyCommandThatCreatesAStandardPhaseFileInTestRootContainingDirectoryPaths(PyCommandThatWritesToStandardPhaseFile):
     def __init__(self,
-                 source_line: line_source.Line,
                  phase: phases.Phase):
-        super().__init__(source_line, phase)
+        super().__init__(phase)
 
     def file_lines(self, configuration) -> list:
         return py_cmd_file_lines(pathlib.Path().resolve(), configuration)
@@ -92,7 +90,7 @@ class PyCommandThatCreatesAStandardPhaseFileInTestRootContainingDirectoryPaths(P
 
 class StatementsGeneratorThatPrintsPathsOnStdoutAndStderr(script_stmt_gen.StatementsGeneratorForInstruction):
     def __init__(self):
-        super().__init__(line_source.Line(1, 'one'))
+        super().__init__()
 
     def instruction_implementation(self,
                                    configuration: Configuration,

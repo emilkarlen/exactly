@@ -29,9 +29,8 @@ def standard_phase_file_base_name(phase: phases.Phase) -> str:
 
 class PyCommandThatWritesToStandardPhaseFile(py_cmd_gen.PythonCommand):
     def __init__(self,
-                 source_line: line_source.Line,
                  phase: phases.Phase):
-        super().__init__(source_line)
+        super().__init__()
         self.__phase = phase
 
     def apply(self, configuration: Configuration):
@@ -62,9 +61,8 @@ class ModulesAndStatements:
 
 class StatementsGeneratorThatWritesToStandardPhaseFile(script_stmt_gen.StatementsGeneratorForInstruction):
     def __init__(self,
-                 source_line: line_source.Line,
                  phase: phases.Phase):
-        super().__init__(source_line)
+        super().__init__()
         self.__phase = phase
 
     def code_using_file_opened_for_writing(self,

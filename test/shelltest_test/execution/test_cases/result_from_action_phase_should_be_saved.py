@@ -19,8 +19,7 @@ class TestCase(UnitTestCaseForPyLanguage):
     def _phase_env_act(self) -> abs_syn_gen.PhaseEnvironmentForScriptGeneration:
         return \
             abs_syn_gen.PhaseEnvironmentForScriptGeneration([
-                StatementsGeneratorThatPrintsPathsOnStdoutAndStderr(self._next_line(),
-                                                                    self.EXIT_CODE,
+                StatementsGeneratorThatPrintsPathsOnStdoutAndStderr(self.EXIT_CODE,
                                                                     self.TEXT_ON_STDOUT,
                                                                     self.TEXT_ON_STDERR)
             ])
@@ -39,11 +38,10 @@ class TestCase(UnitTestCaseForPyLanguage):
 
 class StatementsGeneratorThatPrintsPathsOnStdoutAndStderr(script_stmt_gen.StatementsGeneratorForInstruction):
     def __init__(self,
-                 source_line: line_source.Line,
                  exit_code: int,
                  text_on_stdout: str,
                  text_on_stderr: str):
-        super().__init__(source_line)
+        super().__init__()
         self.__text_on_stdout = text_on_stdout
         self.__text_on_stderr = text_on_stderr
         self.__exit_code = exit_code

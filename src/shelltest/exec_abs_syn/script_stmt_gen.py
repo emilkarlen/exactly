@@ -34,7 +34,7 @@ class ScriptLanguage:
             ret_val.extend(self.raw_script_statement(statement))
         return ret_val
 
-    def source_line_info(self, source_line: Line) -> list:
+    def source_line_header(self, source_line: Line) -> list:
         line_ref = 'Line %d' % source_line.line_number
         line_contents = source_line.text
         return self.comment_lines([line_ref,
@@ -61,16 +61,11 @@ class StatementsGeneratorForInstruction(StatementsGenerator):
     Base class for StatementsGenerator that generates statements for a single instruction.
     """
 
-    def __init__(self, source_line: Line):
-        self.__source_line = source_line
-
-    @property
-    def source_line(self) -> Line:
-        return self.__source_line
+    def __init__(self):
+        pass
 
     def apply(self, script_language: ScriptLanguage, configuration: Configuration) -> list:
         ret_val = []
-        ret_val.extend(script_language.source_line_info(self.__source_line))
         ret_val.extend(self.instruction_implementation(configuration, script_language))
         return ret_val
 

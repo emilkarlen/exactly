@@ -3,21 +3,10 @@ __author__ = 'emil'
 from shelltest.phase_instr import line_source
 
 
-class Instruction:
+class InstructionExecutor:
     """
-    Base class for a parsed instruction line.
-
-    Arguments/values are necessarily not correct.
-    Whether or not depends on if they have been validated.
+    Abstract base class for the execution of a parsed source line/instruction.
     """
-
-    def __init__(self, source_line: line_source.Line):
-        self._source_line = source_line
-
-    @property
-    def source_line(self) -> line_source.Line:
-        return self._source_line
-
     def execute(self, phase_name: str, global_environment, phase_environment):
         """
         Does whatever this instruction should do.
@@ -28,9 +17,57 @@ class Instruction:
         raise NotImplementedError()
 
 
-class InstructionSequence:
+class PhaseContentElement:
     """
-    A sequence/list of Instruction:s.
+    Element of the contents of a phase: either a comment or an instruction.
+
+    Construct elements with either new_comment_element or new_instruction_element.
+    """
+
+    def __init__(self,
+                 source_line: line_source.Line,
+                 executor: InstructionExecutor):
+        self._source_line = source_line
+        self._executor = executor
+
+    @property
+    def source_line(self) -> line_source.Line:
+        return self._source_line
+
+    @property
+    def is_instruction(self) -> bool:
+        return self._executor
+
+    @property
+    def is_comment(self) -> bool:
+        return not self.is_instruction
+
+    @property
+    def executor(self) -> InstructionExecutor:
+        """
+        Precondition: is_instruction
+        """
+        return self._executor
+
+    def execute(self, phase_name: str, global_environment, phase_environment):
+        if self.is_instruction:
+            self._executor.execute(phase_name,
+                                   global_environment,
+                                   phase_environment)
+
+
+def new_comment_element(source_line: line_source.Line) -> PhaseContentElement:
+    return PhaseContentElement(source_line, None)
+
+
+def new_instruction_element(source_line: line_source.Line,
+                            executor: InstructionExecutor) -> PhaseContentElement:
+    return PhaseContentElement(source_line, executor)
+
+
+class PhaseContents:
+    """
+    A sequence/list of PhaseContentElement:s.
     """
 
     def __init__(self, instructions: tuple):
@@ -51,7 +88,7 @@ class Document:
 
     def __init__(self, phase2instructions: dict):
         """
-        :param phase2instructions dictionary str -> InstructionSequence
+        :param phase2instructions dictionary str -> PhaseContents
         """
         self._phase2instructions = phase2instructions
 
@@ -59,7 +96,7 @@ class Document:
     def phases(self) -> frozenset:
         return self._phase2instructions.keys()
 
-    def instructions_for_phase(self, phase_name: str) -> InstructionSequence:
+    def instructions_for_phase(self, phase_name: str) -> PhaseContents:
         return self._phase2instructions[phase_name]
 
     def execute(self, global_environment, phases: iter):
@@ -76,5 +113,5 @@ class Document:
             if phase_name in self._phase2instructions:
                 instruction_sequence = self._phase2instructions[phase_name]
                 for instruction in instruction_sequence.instructions:
-                    assert isinstance(instruction, Instruction)
+                    assert isinstance(instruction, PhaseContentElement)
                     instruction.execute(phase_name, global_environment, phase_environment)

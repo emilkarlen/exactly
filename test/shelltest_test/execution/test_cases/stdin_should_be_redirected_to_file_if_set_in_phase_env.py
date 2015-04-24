@@ -20,8 +20,7 @@ class TestCase(UnitTestCaseForPyLanguage):
 
     def _phase_env_setup(self) -> abs_syn_gen.PhaseEnvironmentForPythonCommands:
         return abs_syn_gen.PhaseEnvironmentForPythonCommands(
-            [PyCommandThatStoresStringInFileInCurrentDirectory(self._next_line(),
-                                                               self.INPUT_TMP_FILE,
+            [PyCommandThatStoresStringInFileInCurrentDirectory(self.INPUT_TMP_FILE,
                                                                self.TEXT_ON_STDIN)]
         )
 
@@ -29,7 +28,7 @@ class TestCase(UnitTestCaseForPyLanguage):
         return \
             abs_syn_gen.PhaseEnvironmentForScriptGeneration(
                 [
-                    StatementsThatCopiesStdinToStdout(self._next_line())
+                    StatementsThatCopiesStdinToStdout()
                 ],
                 stdin_file=self.INPUT_TMP_FILE
             )
@@ -48,10 +47,9 @@ class TestCase(UnitTestCaseForPyLanguage):
 
 class PyCommandThatStoresStringInFileInCurrentDirectory(py_cmd_gen.PythonCommand):
     def __init__(self,
-                 source_line: line_source.Line,
                  file_base_name: str,
                  text_to_store: str):
-        super().__init__(source_line)
+        super().__init__()
         self.__file_base_name = file_base_name
         self.__text_to_store = text_to_store
 
@@ -61,9 +59,8 @@ class PyCommandThatStoresStringInFileInCurrentDirectory(py_cmd_gen.PythonCommand
 
 
 class StatementsThatCopiesStdinToStdout(script_stmt_gen.StatementsGeneratorForInstruction):
-    def __init__(self,
-                 source_line: line_source.Line):
-        super().__init__(source_line)
+    def __init__(self):
+        super().__init__()
 
     def instruction_implementation(self,
                                    configuration: Configuration,
