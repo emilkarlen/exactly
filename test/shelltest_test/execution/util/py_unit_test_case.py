@@ -62,7 +62,7 @@ class UnitTestCaseForPy3Language:
         return line_source.Line(self.__previous_line_number,
                                 str(self.__previous_line_number))
 
-    def _next_instruction_line(self, instruction: model.InstructionExecutor) -> model.PhaseContentElement:
+    def _next_instruction_line(self, instruction: model.Instruction) -> model.PhaseContentElement:
         return model.new_instruction_element(
             self._next_line(),
             instruction)

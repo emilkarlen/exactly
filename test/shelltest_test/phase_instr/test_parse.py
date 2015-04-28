@@ -8,7 +8,7 @@ from shelltest.phase_instr import model
 from shelltest.phase_instr import line_source, parse, syntax
 
 
-class InstructionInPhaseExecutor(model.InstructionExecutor):
+class InstructionInPhase(model.Instruction):
     def __init__(self,
                  phase_name: str):
         self._phase_name = phase_name
@@ -17,14 +17,11 @@ class InstructionInPhaseExecutor(model.InstructionExecutor):
     def phase_name(self):
         return self._phase_name
 
-    def execute(self, phase_name: str, global_environment, phase_environment):
-        pass
-
 
 def new_instruction_in_phase(source_line: line_source.Line,
                              phase_name: str) -> model.PhaseContentElement:
     return model.new_instruction_element(source_line,
-                                         InstructionInPhaseExecutor(phase_name))
+                                         InstructionInPhase(phase_name))
 
 
 class InstructionParserForPhase(parse.InstructionParser):
@@ -33,7 +30,7 @@ class InstructionParserForPhase(parse.InstructionParser):
 
     def apply(self, source_line: line_source.Line) -> model.PhaseContentElement:
         return model.new_instruction_element(source_line,
-                                             InstructionInPhaseExecutor(self._phase_name))
+                                             InstructionInPhase(self._phase_name))
 
 
 class InstructionParserThatFails(parse.InstructionParser):
@@ -275,10 +272,10 @@ class TestParsePlainTestCase(unittest.TestCase):
                          len(actual_document.phases),
                          'Number of phases')
         for phase_name in expected_document.phases:
-            expected_instructions = expected_document.instructions_for_phase(phase_name)
+            expected_instructions = expected_document.elements_for_phase(phase_name)
             self.assertTrue(phase_name in actual_document.phases,
                             'The actual test case contains the expected phase "%s"' % phase_name)
-            actual_instructions = actual_document.instructions_for_phase(phase_name)
+            actual_instructions = actual_document.elements_for_phase(phase_name)
             self._check_equal_instr_app_seq(expected_instructions, actual_instructions)
 
     def _check_equal_instr_app_seq(self,
@@ -302,12 +299,12 @@ class TestParsePlainTestCase(unittest.TestCase):
             self.assertFalse(actual_instruction.is_instruction)
         else:
             self.assertTrue(actual_instruction.is_instruction)
-            self.assertEqual(expected_instruction.executor.__class__,
-                             actual_instruction.executor.__class__, )
-            if isinstance(expected_instruction.executor, InstructionInPhaseExecutor):
-                self.assertIsInstance(actual_instruction.executor, InstructionInPhaseExecutor)
-                self.assertEqual(expected_instruction.executor.phase_name,
-                                 actual_instruction.executor.phase_name)
+            self.assertEqual(expected_instruction.instruction.__class__,
+                             actual_instruction.instruction.__class__, )
+            if isinstance(expected_instruction.instruction, InstructionInPhase):
+                self.assertIsInstance(actual_instruction.instruction, InstructionInPhase)
+                self.assertEqual(expected_instruction.instruction.phase_name,
+                                 actual_instruction.instruction.phase_name)
 
 
 def suite():
