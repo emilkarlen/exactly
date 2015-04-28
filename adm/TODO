@@ -17,3 +17,21 @@ handling arbitrary langauges.
 ** TODO <2015-01-05 mån> Handle implementation errors
 ** TODO <2015-01-05 mån> Handle parse errors
 ** TODO <2015-01-05 mån> Handle errors correctly according to phase
+* TODO Instruktioner
+** Byta katalog till testrooten
+Tycker för tillfället det är vettigast att varje fas inte inleds med att
+automatiskt byta katalog till testroten.  Främsta anledningen är att
+act-fasens byte av katalog måste betraktas som en sidoeffekt av programmet
+som testsas och därmed som något man vill testa.
+
+Även vettigt att setup-fasen kan skapa tmp-katalog och byta till den för att
+köra act-fasen innifrån den (användbart t ex om act-fasen raderar aktuell
+katalog).  Därmed är det vettigt att inte heller act-fasen inleds med att
+automatiskt byta katalog.
+
+Dock.  Vore bra om det enkelt gick att byta till testroten för att ha en fast
+ugångspunkt för assert, cleanup, ...
+Därför vore det bra med en instruktion som byter till denna katalog.
+
+Problem ... hur ser man till att aktuell katalog bevaras från act-fasen om
+den kör i en egen process??
