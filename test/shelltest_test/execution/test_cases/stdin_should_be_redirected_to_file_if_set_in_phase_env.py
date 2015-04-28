@@ -1,10 +1,10 @@
 __author__ = 'emil'
 
-from shelltest_test.execution.util.py_unit_test_case import UnitTestCaseForPyLanguage2
+from shelltest_test.execution.util.py_unit_test_case import UnitTestCaseForPy3Language
 from shelltest.exec_abs_syn import instructions
 
 
-class TestCase(UnitTestCaseForPyLanguage2):
+class TestCase(UnitTestCaseForPy3Language):
     """
     Checks that output to stdout, stderr and the exit code are saved in the correct locations.
     """

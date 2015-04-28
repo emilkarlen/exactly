@@ -26,17 +26,11 @@ class PhaseEnvironmentForScriptGeneration(PhaseEnvironment):
 
     def __init__(self,
                  script_file_management: script_stmt_gen.ScriptFileManager,
-                 script_source_writer: script_stmt_gen.ScriptSourceWriter,
+                 script_source_builder: script_stmt_gen.ScriptSourceBuilder,
                  stdin_file_name: str=None):
         self.__script_file_management = script_file_management
-        self.__script_source_writer = script_source_writer
+        self.__script_source_builder = script_source_builder
         self.stdin_file_name = stdin_file_name
-
-    # def extend_statements(self, statements_generators: list):
-    # """
-    # :param statements_generators: List of StatementsGeneratorForInstruction.
-    # """
-    # self.statements_generators.extend(statements_generators)
 
     def set_stdin_file(self,
                        file_name: str):
@@ -47,15 +41,15 @@ class PhaseEnvironmentForScriptGeneration(PhaseEnvironment):
         return self.__script_file_management
 
     @property
-    def append(self) -> script_stmt_gen.ScriptSourceWriter:
-        return self.__script_source_writer
+    def append(self) -> script_stmt_gen.ScriptSourceBuilder:
+        return self.__script_source_builder
 
     @property
     def final_script_source(self) -> str:
         """
         Gives the source code for the complete script.
         """
-        return self.__script_source_writer.final_source_lines()
+        return self.__script_source_builder.build()
 
 
 class PhaseEnvironmentForInternalCommands(PhaseEnvironment):

@@ -8,12 +8,12 @@ from shelltest.exec_abs_syn import instructions
 from shelltest.execution import execution
 from shelltest_test.execution.util import python_code_gen as py
 from shelltest_test.execution.util.py_unit_test_case_with_file_output import \
-    ModulesAndStatements, UnitTestCaseForPyLanguageThatWritesAFileToTestRootForEachPhase2, \
+    ModulesAndStatements, UnitTestCaseForPy3LanguageThatWritesAFileToTestRootForEachPhase, \
     InternalInstructionThatWritesToStandardPhaseFile, ActPhaseInstructionThatWritesToStandardPhaseFile
 from shelltest_test.execution.util.utils import format_header_value_line, un_lines
 
 
-class TestCase(UnitTestCaseForPyLanguageThatWritesAFileToTestRootForEachPhase2):
+class TestCase(UnitTestCaseForPy3LanguageThatWritesAFileToTestRootForEachPhase):
     def __init__(self,
                  unittest_case: unittest.TestCase,
                  dbg_do_not_delete_dir_structure=False):
