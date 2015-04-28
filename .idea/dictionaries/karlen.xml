@@ -4,6 +4,7 @@
       <w>shelltest</w>
       <w>stderr</w>
       <w>stdin</w>
+      <w>stdout</w>
       <w>testcase</w>
     </words>
   </dictionary>
