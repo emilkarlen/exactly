@@ -1,19 +1,18 @@
-import os
-
 __author__ = 'emil'
 
+import os
 import pathlib
+
 from shelltest.exec_abs_syn.config import Configuration
 from shelltest.execution import execution
-from shelltest.phase_instr import line_source
 from shelltest_test.execution.util import py_unit_test_case_with_file_output as with_file_output
-from shelltest_test.execution.util.py_unit_test_case_with_file_output import PyCommandThatWritesToStandardPhaseFile
-
+from shelltest_test.execution.util.py_unit_test_case_with_file_output import \
+    InternalInstructionThatWritesToStandardPhaseFile
 from shelltest import phases
-
-from shelltest_test.execution.util.py_unit_test_case import UnitTestCaseForPyLanguage
-from shelltest.exec_abs_syn import abs_syn_gen, script_stmt_gen, instructions
+from shelltest_test.execution.util.py_unit_test_case import UnitTestCaseForPyLanguage2
+from shelltest.exec_abs_syn import instructions
 from shelltest_test.execution.util import utils
+
 
 HOME_DIR_HEADER = 'Home Dir'
 TEST_ROOT_DIR_HEADER = 'Test Root Dir'
@@ -22,17 +21,16 @@ CURRENT_DIR_HEADER = 'Current Dir'
 EXIT_CODE = 5
 
 
-class TestCase(UnitTestCaseForPyLanguage):
-    def _phase_env_act(self) -> instructions.PhaseEnvironmentForScriptGeneration:
-        return \
-            instructions.PhaseEnvironmentForScriptGeneration([
-                StatementsGeneratorThatPrintsPathsOnStdoutAndStderr()])
+class TestCase(UnitTestCaseForPyLanguage2):
+    def _default_instructions_for_setup_assert_cleanup(self, phase: phases.Phase) -> list:
+        return [
+            InternalInstructionThatCreatesAStandardPhaseFileInTestRootContainingDirectoryPaths(phase)
+        ]
 
-    def _phase_env_for_py_cmd_phase(self, phase: phases.Phase) -> abs_syn_gen.PhaseEnvironmentForPythonCommands:
-        return abs_syn_gen.PhaseEnvironmentForPythonCommands([
-            PyCommandThatCreatesAStandardPhaseFileInTestRootContainingDirectoryPaths(
-                phase)
-        ])
+    def _act_phase(self) -> list:
+        return [
+            self._next_instruction_line(ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr())
+        ]
 
     def _assertions(self):
         self.assert_is_regular_file_with_contents(self.eds.result.exitcode_file,
@@ -48,21 +46,23 @@ class TestCase(UnitTestCaseForPyLanguage):
                                       for phase in [phases.SETUP, phases.ASSERT, phases.CLEANUP]]
         self.assert_files_in_test_root_that_contain_name_of_test_root_dir(
             self.test_case_execution.execution_directory_structure,
-            self.test_case_execution.configuration,
+            self.test_case_execution.global_environment,
             file_name_from_py_cmd_list)
 
-    def assert_files_in_test_root_that_contain_name_of_test_root_dir(self,
-                                                                     eds: execution.ExecutionDirectoryStructure,
-                                                                     configuration: Configuration,
-                                                                     file_name_from_py_cmd_list: list):
-        expected_contents = utils.un_lines(py_cmd_file_lines(configuration.test_root_dir, configuration))
+    def assert_files_in_test_root_that_contain_name_of_test_root_dir(
+            self,
+            eds: execution.ExecutionDirectoryStructure,
+            global_environment: instructions.GlobalEnvironmentForNamedPhase,
+            file_name_from_py_cmd_list: list):
+        expected_contents = utils.un_lines(py_cmd_file_lines(global_environment.eds.test_root_dir,
+                                                             global_environment))
         for base_name in file_name_from_py_cmd_list:
             file_path = eds.test_root_dir / base_name
             file_name = str(file_path)
             self.unittest_case.assertTrue(file_path.exists(),
-                                          'py-cmd File should exist: ' + file_name)
+                'py-cmd File should exist: ' + file_name)
             self.unittest_case.assertTrue(file_path.is_file(),
-                                          'py-cmd Should be a regular file: ' + file_name)
+                'py-cmd Should be a regular file: ' + file_name)
             with open(str(file_path)) as f:
                 actual_contents = f.read()
                 self.unittest_case.assertEqual(expected_contents,
@@ -70,49 +70,53 @@ class TestCase(UnitTestCaseForPyLanguage):
                                                'py-cmd Contents of py-cmd generated file ' + file_name)
 
 
-def py_cmd_file_lines(cwd: pathlib.Path, configuration: Configuration) -> list:
+def py_cmd_file_lines(cwd: pathlib.Path,
+                      global_environment: instructions.GlobalEnvironmentForNamedPhase) -> list:
     def fmt(header: str, value: str):
         return '%-20s%s' % (header, value)
 
     return [fmt(CURRENT_DIR_HEADER, str(cwd)),
-            fmt(HOME_DIR_HEADER, str(configuration.home_dir)),
-            fmt(TEST_ROOT_DIR_HEADER, str(configuration.test_root_dir))]
+            fmt(HOME_DIR_HEADER, str(global_environment.home_directory)),
+            fmt(TEST_ROOT_DIR_HEADER, str(global_environment.eds.test_root_dir))]
 
 
-class PyCommandThatCreatesAStandardPhaseFileInTestRootContainingDirectoryPaths(PyCommandThatWritesToStandardPhaseFile):
+class InternalInstructionThatCreatesAStandardPhaseFileInTestRootContainingDirectoryPaths(
+    InternalInstructionThatWritesToStandardPhaseFile):
     def __init__(self,
                  phase: phases.Phase):
         super().__init__(phase)
 
-    def file_lines(self, configuration) -> list:
-        return py_cmd_file_lines(pathlib.Path().resolve(), configuration)
+    def _file_lines(self, global_environment: instructions.GlobalEnvironmentForNamedPhase) -> list:
+        return py_cmd_file_lines(
+            pathlib.Path().resolve(),
+            global_environment)
 
 
-class StatementsGeneratorThatPrintsPathsOnStdoutAndStderr(script_stmt_gen.StatementsGeneratorForInstruction):
+class ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr(instructions.ActPhaseInstruction):
     def __init__(self):
         super().__init__()
 
-    def instruction_implementation(self,
-                                   configuration: Configuration,
-                                   script_language: script_stmt_gen.ScriptLanguage) -> list:
+    def execute(self, phase_name: str,
+                global_environment: instructions.GlobalEnvironmentForNamedPhase,
+                phase_environment: instructions.PhaseEnvironmentForScriptGeneration):
         statements = [
                          'import sys',
                          'import os',
                          'import pathlib',
                      ] + \
-                     self.print_on('sys.stdout', configuration) + \
-                     self.print_on('sys.stderr', configuration) + \
+                     self.print_on('sys.stdout', global_environment) + \
+                     self.print_on('sys.stderr', global_environment) + \
                      ['sys.exit(%d)' % EXIT_CODE]
 
-        return script_language.raw_script_statements(statements)
+        return phase_environment.append.raw_script_statements(statements)
 
     def print_on(self,
                  file_object: str,
-                 configuration: Configuration) -> list:
+                 global_environment: instructions.GlobalEnvironmentForNamedPhase) -> list:
         return [
             self.write_line(file_object, file_object),
-            self.write_path_line(file_object, HOME_DIR_HEADER, configuration.home_dir),
-            self.write_path_line(file_object, TEST_ROOT_DIR_HEADER, configuration.test_root_dir),
+            self.write_path_line(file_object, HOME_DIR_HEADER, global_environment.home_directory),
+            self.write_path_line(file_object, TEST_ROOT_DIR_HEADER, global_environment.eds.test_root_dir),
             self.write_prefix_and_expr(file_object, CURRENT_DIR_HEADER, 'str(pathlib.Path().resolve())'),
             self.write_env_var(file_object, execution.ENV_VAR_HOME),
             self.write_env_var(file_object, execution.ENV_VAR_TEST),
@@ -122,7 +126,7 @@ class StatementsGeneratorThatPrintsPathsOnStdoutAndStderr(script_stmt_gen.Statem
     def write_path_line(output_file: str,
                         line_prefix: str,
                         dir_path: pathlib.Path) -> str:
-        return StatementsGeneratorThatPrintsPathsOnStdoutAndStderr.write_prefix_and_expr(
+        return ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr.write_prefix_and_expr(
             output_file,
             line_prefix,
             '\'' + str(dir_path) + '\'')
@@ -130,7 +134,7 @@ class StatementsGeneratorThatPrintsPathsOnStdoutAndStderr(script_stmt_gen.Statem
     @staticmethod
     def write_env_var(output_file: str,
                       var_name: str) -> str:
-        return StatementsGeneratorThatPrintsPathsOnStdoutAndStderr.write_prefix_and_expr(
+        return ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr.write_prefix_and_expr(
             output_file,
             var_name,
             'os.environ[\'%s\']' % var_name)

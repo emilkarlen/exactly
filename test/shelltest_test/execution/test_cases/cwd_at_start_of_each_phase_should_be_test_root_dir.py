@@ -11,7 +11,6 @@ from shelltest_test.execution.util.py_unit_test_case_with_file_output import \
     ModulesAndStatements, UnitTestCaseForPyLanguageThatWritesAFileToTestRootForEachPhase2, \
     InternalInstructionThatWritesToStandardPhaseFile, ActPhaseInstructionThatWritesToStandardPhaseFile
 from shelltest_test.execution.util.utils import un_lines
-from shelltest_test.execution.util import instruction_adapter
 
 
 class TestCase2(UnitTestCaseForPyLanguageThatWritesAFileToTestRootForEachPhase2):
@@ -20,20 +19,10 @@ class TestCase2(UnitTestCaseForPyLanguageThatWritesAFileToTestRootForEachPhase2)
                  dbg_do_not_delete_dir_structure=False):
         super().__init__(unittest_case, dbg_do_not_delete_dir_structure)
 
-    def _setup_phase(self) -> list:
+    def _default_instructions_for_setup_assert_cleanup(self, phase: phases.Phase) -> list:
         return [
-            self._next_instruction_line(
-                instruction_adapter.as_setup(PyCommandThatWritesCurrentWorkingDirectory2(phases.SETUP))),
-            self._next_instruction_line(
-                instruction_adapter.as_setup(PyCommandThatChangesCwdToHomeDir2())),
-        ]
-
-    def _assert_phase(self) -> list:
-        return [
-            self._next_instruction_line(
-                instruction_adapter.as_assert(PyCommandThatWritesCurrentWorkingDirectory2(phases.ASSERT))),
-            self._next_instruction_line(
-                instruction_adapter.as_assert(PyCommandThatChangesCwdToHomeDir2())),
+            PyCommandThatWritesCurrentWorkingDirectory2(phase),
+            PyCommandThatChangesCwdToHomeDir2(),
         ]
 
     def _act_phase(self) -> list:
@@ -46,14 +35,6 @@ class TestCase2(UnitTestCaseForPyLanguageThatWritesAFileToTestRootForEachPhase2)
                                                                       import_statements_generator)),
             self._next_instruction_line(
                 StatementsGeneratorThatChangesCwdToHomeDir2(import_statements_generator)),
-        ]
-
-    def _cleanup_phase(self) -> list:
-        return [
-            self._next_instruction_line(
-                instruction_adapter.as_cleanup(PyCommandThatWritesCurrentWorkingDirectory2(phases.CLEANUP))),
-            self._next_instruction_line(
-                instruction_adapter.as_cleanup(PyCommandThatChangesCwdToHomeDir2())),
         ]
 
     def _expected_content_for(self, phase: phases.Phase) -> str:

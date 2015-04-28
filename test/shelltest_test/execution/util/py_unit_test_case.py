@@ -17,7 +17,7 @@ from shelltest.exec_abs_syn import abs_syn_gen
 from shelltest.exec_abs_syn import instructions
 from shelltest import phases
 from shelltest.execution import execution
-from shelltest_test.execution.util import utils
+from shelltest_test.execution.util import utils, instruction_adapter
 
 
 class UnitTestCaseForPyLanguage:
@@ -195,7 +195,7 @@ class UnitTestCaseForPyLanguage2:
         return self.__unittest_case
 
     @property
-    def test_case_execution(self) -> execution.TestCaseExecution:
+    def test_case_execution(self) -> execution.TestCaseExecution2:
         return self.__test_case_execution
 
     @property
@@ -224,14 +224,34 @@ class UnitTestCaseForPyLanguage2:
         return []
 
     def _setup_phase(self) -> list:
-        return []
+        """
+        :rtype list[PhaseContentElement] (with instruction of type SetupPhaseInstruction)
+        """
+        return [self._next_instruction_line(instruction_adapter.as_setup(instr))
+                for instr in self._default_instructions_for_setup_assert_cleanup(phases.SETUP)]
 
     def _act_phase(self) -> list:
+        """
+        :rtype list[PhaseContentElement] (with instruction of type ActPhaseInstruction)
+        """
         return []
 
     def _assert_phase(self) -> list:
-        return []
+        """
+        :rtype list[PhaseContentElement] (with instruction of type AssertPhaseInstruction)
+        """
+        return [self._next_instruction_line(instruction_adapter.as_assert(instr))
+                for instr in self._default_instructions_for_setup_assert_cleanup(phases.ASSERT)]
 
     def _cleanup_phase(self) -> list:
-        return []
+        """
+        :rtype list[PhaseContentElement] (with instruction of type CleanupPhaseInstruction)
+        """
+        return [self._next_instruction_line(instruction_adapter.as_cleanup(instr))
+                for instr in self._default_instructions_for_setup_assert_cleanup(phases.CLEANUP)]
 
+    def _default_instructions_for_setup_assert_cleanup(self, phase: phases.Phase) -> list:
+        """
+        :rtype list[InternalInstruction]
+        """
+        return []

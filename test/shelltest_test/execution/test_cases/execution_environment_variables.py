@@ -6,7 +6,6 @@ import unittest
 from shelltest import phases
 from shelltest.exec_abs_syn import instructions
 from shelltest.execution import execution
-from shelltest_test.execution.util import instruction_adapter
 from shelltest_test.execution.util import python_code_gen as py
 from shelltest_test.execution.util.py_unit_test_case_with_file_output import \
     ModulesAndStatements, UnitTestCaseForPyLanguageThatWritesAFileToTestRootForEachPhase2, \
@@ -20,27 +19,14 @@ class TestCase(UnitTestCaseForPyLanguageThatWritesAFileToTestRootForEachPhase2):
                  dbg_do_not_delete_dir_structure=False):
         super().__init__(unittest_case, dbg_do_not_delete_dir_structure)
 
-    def _setup_phase(self) -> list:
+    def _default_instructions_for_setup_assert_cleanup(self, phase: phases.Phase) -> list:
         return [
-            self._next_instruction_line(
-                instruction_adapter.as_setup(InternalInstructionThatWritesEnvironmentVariables(phases.SETUP)))
+            InternalInstructionThatWritesEnvironmentVariables(phase)
         ]
 
     def _act_phase(self) -> list:
         return [
             self._next_instruction_line(ActPhaseInstructionThatWritesEnvironmentVariables(phases.ACT))
-        ]
-
-    def _assert_phase(self) -> list:
-        return [
-            self._next_instruction_line(
-                instruction_adapter.as_assert(InternalInstructionThatWritesEnvironmentVariables(phases.ASSERT)))
-        ]
-
-    def _cleanup_phase(self) -> list:
-        return [
-            self._next_instruction_line(
-                instruction_adapter.as_cleanup(InternalInstructionThatWritesEnvironmentVariables(phases.CLEANUP)))
         ]
 
     def _expected_content_for(self, phase: phases.Phase) -> str:
