@@ -2,12 +2,10 @@ __author__ = 'emil'
 
 import unittest
 
-from shelltest_test.exec_abs_syn import test_abs_syn_gen
-
 
 def suite():
     ret_val = unittest.TestSuite()
-    ret_val.addTest(test_abs_syn_gen.suite())
+    # ret_val.addTest(test_abs_syn_gen.suite())
     return ret_val
 
 
