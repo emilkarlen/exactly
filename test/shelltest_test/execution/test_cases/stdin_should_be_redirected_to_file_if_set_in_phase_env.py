@@ -55,7 +55,7 @@ class StatementsThatCopiesStdinToStdout2(instructions.ActPhaseInstruction):
     def __init__(self):
         super().__init__()
 
-    def execute(self,
+    def update_phase_environment(self,
                 phase_name: str,
                 global_environment: instructions.GlobalEnvironmentForNamedPhase,
                 phase_environment: instructions.PhaseEnvironmentForScriptGeneration):
@@ -72,7 +72,7 @@ class InstructionThatSetsStdinFileName(instructions.ActPhaseInstruction):
         super().__init__()
         self.__file_name = file_name
 
-    def execute(self,
+    def update_phase_environment(self,
                 phase_name: str,
                 global_environment: instructions.GlobalEnvironmentForNamedPhase,
                 phase_environment: instructions.PhaseEnvironmentForScriptGeneration):

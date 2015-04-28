@@ -48,7 +48,7 @@ class TestCase(UnitTestCaseForPy3Language):
 
 
 class ActPhaseInstructionThatOutputsHomeDir(instructions.ActPhaseInstruction):
-    def execute(self, phase_name: str,
+    def update_phase_environment(self, phase_name: str,
                 global_environment: instructions.GlobalEnvironmentForNamedPhase,
                 phase_environment: instructions.PhaseEnvironmentForScriptGeneration):
         line = HOME_DIR_HEADER + str(global_environment.home_directory)
@@ -56,7 +56,7 @@ class ActPhaseInstructionThatOutputsHomeDir(instructions.ActPhaseInstruction):
 
 
 class ActPhaseInstructionThatOutputsTestRootDir(instructions.ActPhaseInstruction):
-    def execute(self, phase_name: str,
+    def update_phase_environment(self, phase_name: str,
                 global_environment: instructions.GlobalEnvironmentForNamedPhase,
                 phase_environment: instructions.PhaseEnvironmentForScriptGeneration):
         line = TEST_ROOT_DIR_HEADER + str(global_environment.eds.test_root_dir)

@@ -86,6 +86,7 @@ class AnonymousPhaseInstruction(Instruction):
     """
     Abstract base class for instructions of the anonymous phase.
     """
+
     def execute(self, phase_name: str,
                 global_environment,
                 phase_environment: PhaseEnvironmentForAnonymousPhase):
@@ -102,6 +103,7 @@ class InternalInstruction(Instruction):
     """
     Abstract base class for instructions that are implemented in python.
     """
+
     def execute(self, phase_name: str,
                 global_environment: GlobalEnvironmentForNamedPhase,
                 phase_environment: PhaseEnvironmentForInternalCommands):
@@ -118,6 +120,7 @@ class SetupPhaseInstruction(InternalInstruction):
     """
     Abstract base class for instructions of the SETUP phase.
     """
+
     def execute(self, phase_name: str,
                 global_environment: GlobalEnvironmentForNamedPhase,
                 phase_environment: PhaseEnvironmentForInternalCommands):
@@ -134,11 +137,15 @@ class ActPhaseInstruction(Instruction):
     """
     Abstract base class for instructions of the ACT phase.
     """
-    def execute(self, phase_name: str,
-                global_environment: GlobalEnvironmentForNamedPhase,
-                phase_environment: PhaseEnvironmentForScriptGeneration):
+
+    def update_phase_environment(self,
+                                 phase_name: str,
+                                 global_environment: GlobalEnvironmentForNamedPhase,
+                                 phase_environment: PhaseEnvironmentForScriptGeneration):
         """
-        Does whatever this instruction should do.
+        Builds the script, and sets some execution premises (e.g. stdin),
+        by updating the phase environment.
+
         :param phase_name The phase in which this instruction is in.
         :param global_environment An object passed to all instructions in the Document.
         :param phase_environment An object passed to all instructions in the Phase.
@@ -150,6 +157,7 @@ class AssertPhaseInstruction(InternalInstruction):
     """
     Abstract base class for instructions of the ASSERT phase.
     """
+
     def execute(self, phase_name: str,
                 global_environment: GlobalEnvironmentForNamedPhase,
                 phase_environment: PhaseEnvironmentForInternalCommands):
@@ -166,6 +174,7 @@ class CleanupPhaseInstruction(InternalInstruction):
     """
     Abstract base class for instructions of the CLEANUP phase.
     """
+
     def execute(self, phase_name: str,
                 global_environment: GlobalEnvironmentForNamedPhase,
                 phase_environment: PhaseEnvironmentForInternalCommands):

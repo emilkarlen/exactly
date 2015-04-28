@@ -82,7 +82,7 @@ class ActPhaseInstructionThatWritesToStandardPhaseFile(instructions.ActPhaseInst
         super().__init__()
         self.__phase = phase
 
-    def execute(self, phase_name: str,
+    def update_phase_environment(self, phase_name: str,
                 global_environment: instructions.GlobalEnvironmentForNamedPhase,
                 phase_environment: instructions.PhaseEnvironmentForScriptGeneration):
         file_path = standard_phase_file_path(global_environment.eds.test_root_dir, self.__phase)

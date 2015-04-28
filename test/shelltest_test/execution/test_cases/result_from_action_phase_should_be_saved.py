@@ -41,7 +41,7 @@ class ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr(instructions.ActPhaseI
         self.__text_on_stderr = text_on_stderr
         self.__exit_code = exit_code
 
-    def execute(self, phase_name: str,
+    def update_phase_environment(self, phase_name: str,
                 global_environment: instructions.GlobalEnvironmentForNamedPhase,
                 phase_environment: instructions.PhaseEnvironmentForScriptGeneration):
         statements = [

@@ -164,7 +164,7 @@ def __execute_act_phase(global_environment: instructions.GlobalEnvironmentForNam
             act_environment.append.source_line_header(element.source_line)
             instruction = element.instruction
             assert isinstance(instruction, instructions.ActPhaseInstruction)
-            instruction.execute(phases.ACT.name,
+            instruction.update_phase_environment(phases.ACT.name,
                                 global_environment,
                                 act_environment)
 
