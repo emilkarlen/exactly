@@ -16,8 +16,8 @@ class Test(unittest.TestCase):
     def test_environment_variables_should_be_accessible_in_all_phases(self):
         execution_environment_variables.TestCase(self).execute()
 
-    def test_cwd_at_start_of_each_phase_should_be_test_root_dir(self):
-        cwd_at_start_of_each_phase_should_be_test_root_dir.TestCase(self).execute()
+    def test_cwd_at_start_of_each_phase_should_be_test_root_dir2(self):
+        cwd_at_start_of_each_phase_should_be_test_root_dir.TestCase2(self).execute()
 
     def test_all_phases_should_be_executed_and_result_from_action_saved_etc(self):
         all_phases_should_be_executed_and_result_from_action_saved_etc.TestCase(self).execute()

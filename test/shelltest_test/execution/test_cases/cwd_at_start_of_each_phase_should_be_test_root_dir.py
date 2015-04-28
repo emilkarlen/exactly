@@ -5,66 +5,83 @@ import pathlib
 import unittest
 
 from shelltest import phases
-from shelltest.exec_abs_syn import abs_syn_gen, py_cmd_gen, script_stmt_gen, config, instructions
-from shelltest.phase_instr import line_source
+from shelltest.exec_abs_syn import instructions
 from shelltest_test.execution.util import python_code_gen as py
 from shelltest_test.execution.util.py_unit_test_case_with_file_output import \
-    UnitTestCaseForPyLanguageThatWritesAFileToTestRootForEachPhase, \
-    PyCommandThatWritesToStandardPhaseFile, \
-    StatementsGeneratorThatWritesToStandardPhaseFile, \
-    ModulesAndStatements
+    ModulesAndStatements, UnitTestCaseForPyLanguageThatWritesAFileToTestRootForEachPhase2, \
+    InternalInstructionThatWritesToStandardPhaseFile, ActPhaseInstructionThatWritesToStandardPhaseFile
 from shelltest_test.execution.util.utils import un_lines
+from shelltest_test.execution.util import instruction_adapter
 
 
-class TestCase(UnitTestCaseForPyLanguageThatWritesAFileToTestRootForEachPhase):
+class TestCase2(UnitTestCaseForPyLanguageThatWritesAFileToTestRootForEachPhase2):
     def __init__(self,
                  unittest_case: unittest.TestCase,
                  dbg_do_not_delete_dir_structure=False):
         super().__init__(unittest_case, dbg_do_not_delete_dir_structure)
 
-    def _phase_env_for_py_cmd_phase(self, phase: phases.Phase) -> abs_syn_gen.PhaseEnvironmentForPythonCommands:
-        return \
-            abs_syn_gen.PhaseEnvironmentForPythonCommands([
-                PyCommandThatWritesCurrentWorkingDirectory(
-                    phase),
-                PyCommandThatChangesCwdToHomeDir()
-            ])
+    def _setup_phase(self) -> list:
+        return [
+            self._next_instruction_line(
+                instruction_adapter.as_setup(PyCommandThatWritesCurrentWorkingDirectory2(phases.SETUP))),
+            self._next_instruction_line(
+                instruction_adapter.as_setup(PyCommandThatChangesCwdToHomeDir2())),
+        ]
 
-    def _phase_env_act(self) -> instructions.PhaseEnvironmentForScriptGeneration:
-        import_statements_generator = StatementsGeneratorForImportStatements()
-        return \
-            instructions.PhaseEnvironmentForScriptGeneration([
-                import_statements_generator,
-                StatementsGeneratorThatWritesCurrentWorkingDirectory(
-                    phases.ACT,
-                    import_statements_generator),
-                StatementsGeneratorThatChangesCwdToHomeDir(import_statements_generator)
-            ])
+    def _assert_phase(self) -> list:
+        return [
+            self._next_instruction_line(
+                instruction_adapter.as_assert(PyCommandThatWritesCurrentWorkingDirectory2(phases.ASSERT))),
+            self._next_instruction_line(
+                instruction_adapter.as_assert(PyCommandThatChangesCwdToHomeDir2())),
+        ]
+
+    def _act_phase(self) -> list:
+        import_statements_generator = StatementsGeneratorForImportStatements2()
+        return [
+            self._next_instruction_line(
+                import_statements_generator),
+            self._next_instruction_line(
+                StatementsGeneratorThatWritesCurrentWorkingDirectory2(phases.ACT,
+                                                                      import_statements_generator)),
+            self._next_instruction_line(
+                StatementsGeneratorThatChangesCwdToHomeDir2(import_statements_generator)),
+        ]
+
+    def _cleanup_phase(self) -> list:
+        return [
+            self._next_instruction_line(
+                instruction_adapter.as_cleanup(PyCommandThatWritesCurrentWorkingDirectory2(phases.CLEANUP))),
+            self._next_instruction_line(
+                instruction_adapter.as_cleanup(PyCommandThatChangesCwdToHomeDir2())),
+        ]
 
     def _expected_content_for(self, phase: phases.Phase) -> str:
         return un_lines([str(self.eds.test_root_dir)])
 
 
-class PyCommandThatWritesCurrentWorkingDirectory(PyCommandThatWritesToStandardPhaseFile):
+class PyCommandThatWritesCurrentWorkingDirectory2(InternalInstructionThatWritesToStandardPhaseFile):
     def __init__(self,
                  phase: phases.Phase):
         super().__init__(phase)
 
-    def file_lines(self, configuration) -> list:
+    def _file_lines(self, global_environment: instructions.GlobalEnvironmentForNamedPhase) -> list:
         cwd_path = pathlib.Path().resolve()
         return [str(cwd_path)]
 
 
-class PyCommandThatChangesCwdToHomeDir(py_cmd_gen.PythonCommand):
+class PyCommandThatChangesCwdToHomeDir2(instructions.InternalInstruction):
     def __init__(self):
         super().__init__()
 
-    def apply(self, configuration: config.Configuration):
-        os.chdir(str(configuration.home_dir))
+    def execute(self, phase_name: str,
+                global_environment: instructions.GlobalEnvironmentForNamedPhase,
+                phase_environment: instructions.PhaseEnvironmentForInternalCommands):
+        os.chdir(str(global_environment.home_directory))
         # print(os.getcwd())
 
 
-class StatementsGeneratorForImportStatements(script_stmt_gen.StatementsGeneratorForInstruction):
+class StatementsGeneratorForImportStatements2(instructions.ActPhaseInstruction):
     """
     Pseudo-instruction for outputting Python import statements at the top of the program.
 
@@ -78,18 +95,18 @@ class StatementsGeneratorForImportStatements(script_stmt_gen.StatementsGenerator
     def append_module(self, module_name: str):
         self.__modules.add(module_name)
 
-    def instruction_implementation(self,
-                                   configuration: config.Configuration,
-                                   script_language: script_stmt_gen.ScriptLanguage) -> list:
+    def execute(self, phase_name: str,
+                global_environment: instructions.GlobalEnvironmentForNamedPhase,
+                phase_environment: instructions.PhaseEnvironmentForScriptGeneration):
         import_statements = ['import %s' % module_name
                              for module_name in self.__modules]
-        return script_language.raw_script_statements(import_statements)
+        return phase_environment.append.raw_script_statements(import_statements)
 
 
-class StatementsGeneratorThatWritesCurrentWorkingDirectory(StatementsGeneratorThatWritesToStandardPhaseFile):
+class StatementsGeneratorThatWritesCurrentWorkingDirectory2(ActPhaseInstructionThatWritesToStandardPhaseFile):
     def __init__(self,
                  phase: phases.Phase,
-                 module_container: StatementsGeneratorForImportStatements):
+                 module_container: StatementsGeneratorForImportStatements2):
         super().__init__(phase)
         self.__phase = phase
         module_container.append_module('pathlib')
@@ -99,20 +116,20 @@ class StatementsGeneratorThatWritesCurrentWorkingDirectory(StatementsGeneratorTh
         print_statements = [py.print_value('pathlib.Path().resolve()',
                                            file_variable)]
         return ModulesAndStatements(set(),
-                                    print_statements)
+            print_statements)
 
 
-class StatementsGeneratorThatChangesCwdToHomeDir(script_stmt_gen.StatementsGeneratorForInstruction):
+class StatementsGeneratorThatChangesCwdToHomeDir2(instructions.ActPhaseInstruction):
     def __init__(self,
-                 module_container: StatementsGeneratorForImportStatements):
+                 module_container: StatementsGeneratorForImportStatements2):
         super().__init__()
         module_container.append_module('os')
 
-    def instruction_implementation(self,
-                                   configuration: config.Configuration,
-                                   script_language: script_stmt_gen.ScriptLanguage) -> list:
+    def execute(self, phase_name: str,
+                global_environment: instructions.GlobalEnvironmentForNamedPhase,
+                phase_environment: instructions.PhaseEnvironmentForScriptGeneration):
         statements = [
-            'os.chdir(%s)' % py.string_expr(str(configuration.home_dir)),
-            #'print(os.getcwd())'
+            'os.chdir(%s)' % py.string_expr(str(global_environment.home_directory)),
+            # 'print(os.getcwd())'
         ]
-        return script_language.raw_script_statements(statements)
+        return phase_environment.append.raw_script_statements(statements)
