@@ -9,7 +9,7 @@ from shelltest.exec_abs_syn import py_cmd_gen, script_stmt_gen, instructions
 from shelltest.exec_abs_syn.config import Configuration
 from shelltest.execution import execution
 from shelltest_test.execution.util import utils
-from shelltest_test.execution.util.py_unit_test_case import UnitTestCaseForPyLanguage, UnitTestCaseForPyLanguage2
+from shelltest_test.execution.util.py_unit_test_case import UnitTestCaseForPyLanguage2
 from shelltest_test.execution.util import python_code_gen as py
 
 
@@ -131,52 +131,6 @@ class ActPhaseInstructionThatWritesToStandardPhaseFile(instructions.ActPhaseInst
     def code_using_file_opened_for_writing(self,
                                            file_variable: str) -> ModulesAndStatements:
         raise NotImplementedError()
-
-
-class UnitTestCaseForPyLanguageThatWritesAFileToTestRootForEachPhase(UnitTestCaseForPyLanguage):
-    """
-    Base class for tests where each phase is expected to write some output to a single file
-    in the test root directory.
-
-    The assertions consist of checking that these files exist and have expected content.
-    """
-
-    def __init__(self,
-                 unittest_case: unittest.TestCase,
-                 dbg_do_not_delete_dir_structure=False):
-        super().__init__(unittest_case, dbg_do_not_delete_dir_structure)
-
-    def _assertions(self):
-        self.__assert_file_contents_for(phases.SETUP,
-                                        self._expected_content_for_setup())
-        self.__assert_file_contents_for(phases.ACT,
-                                        self._expected_content_for_apply())
-        self.__assert_file_contents_for(phases.ASSERT,
-                                        self._expected_content_for_assert())
-        self.__assert_file_contents_for(phases.CLEANUP,
-                                        self._expected_content_for_cleanup())
-
-    def _expected_content_for_setup(self) -> str:
-        return self._expected_content_for(phases.SETUP)
-
-    def _expected_content_for_apply(self) -> str:
-        return self._expected_content_for(phases.ACT)
-
-    def _expected_content_for_assert(self) -> str:
-        return self._expected_content_for(phases.ASSERT)
-
-    def _expected_content_for_cleanup(self) -> str:
-        return self._expected_content_for(phases.CLEANUP)
-
-    def _expected_content_for(self, phase: phases.Phase) -> str:
-        raise NotImplementedError('Should not be used in this test')
-
-    def __assert_file_contents_for(self,
-                                   phase: phases.Phase,
-                                   expected_content: str):
-        utils.assert_is_file_with_contents(self.unittest_case,
-                                           standard_phase_file_path_eds(self.eds, phase),
-                                           expected_content)
 
 
 class UnitTestCaseForPyLanguageThatWritesAFileToTestRootForEachPhase2(UnitTestCaseForPyLanguage2):

@@ -1,8 +1,8 @@
-from shelltest.execution.execution_directory_structure import ExecutionDirectoryStructure
-
 __author__ = 'emil'
 
 import pathlib
+
+from shelltest.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shelltest.phase_instr.model import InstructionExecutor
 from shelltest.exec_abs_syn import script_stmt_gen
 
