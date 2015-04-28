@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<book version="5.0" xmlns="http://docbook.org/ns/docbook"
-      xmlns:xlink="http://www.w3.org/1999/xlink"
-      xmlns:ns5="http://www.w3.org/1999/xhtml"
-      xmlns:ns4="http://www.w3.org/1998/Math/MathML"
-      xmlns:ns3="http://www.w3.org/2000/svg"
-      xmlns:ns="http://docbook.org/ns/docbook">
+<book xmlns:xlink="http://www.w3.org/1999/xlink" version="5.0"
+      xmlns="http://docbook.org/ns/docbook"
+        >
   <info>
     <title>Requirements</title>
 
@@ -352,16 +349,26 @@
 
       <para>The instructions in all phases except <systemitem>act</systemitem>
       are executed from within the <command>shelltest</command> executable.
-      They are implemented completely in Python (shell commands are executed
-      via Python).</para>
+          They are implemented completely in Python.
+      </para>
 
-      <para>The phase <systemitem>apply</systemitem> is represented as a shell
-      script named <filename>apply.sh</filename>, located in the <filename
-      class="directory">testcase</filename> directory. The instructions in
-      this phase generates shell script statements that are output to that
-      file. <filename>apply.sh</filename> is executed from a second shell
-      script file, <filename>main.sh</filename>. <filename>main.sh</filename>
-      sets up environment variables, redirect input and output, etc.</para>
+        <para>The instruction of the
+            <systemitem>act</systemitem>
+            phase, on the
+            other hand, generate a script that is stored externally in it's own file
+            that is located in the
+            <filename class="directory">testcase</filename>
+            directory, e.g.<filename>testcase/act.sh</filename>.
+        </para>
+
+        <para>Which script language that is used is configurable. Bash is the
+            default.
+        </para>
+
+        <para>(For development of shelltest itself, all tests uses the same
+            language as the shelltest itself is written in. The reason is to
+            minimize dependencies.)
+        </para>
     </section>
 
     <section>
@@ -405,6 +412,22 @@
           <para><remark>How are these handled: invalid "commands", invalid
           options to a command? Would be nice if these could be detected in
           this step.</remark></para>
+        </listitem>
+
+          <listitem>
+              <para>Validation</para>
+
+              <para>Each instruction validates itself.</para>
+
+              <para>The typical validation is checking if referenced files that
+                  must exist before the test case is executed really exist.
+              </para>
+
+              <para>Fails with
+                  <glossterm>HARD ERROR</glossterm>
+                  if any
+                  instruction says that it is not valid.
+              </para>
         </listitem>
 
         <listitem>
