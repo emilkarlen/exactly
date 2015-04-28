@@ -11,9 +11,6 @@ from shelltest_test.execution.test_cases import stdin_should_be_redirected_to_fi
 
 class Test(unittest.TestCase):
     def test_result_from_act_phase_should_be_saved(self):
-        result_from_action_phase_should_be_saved.TestCase(self).execute()
-
-    def test_result_from_act_phase_should_be_saved2(self):
         result_from_action_phase_should_be_saved.TestCase2(self).execute()
 
     def test_environment_variables_should_be_accessible_in_all_phases(self):

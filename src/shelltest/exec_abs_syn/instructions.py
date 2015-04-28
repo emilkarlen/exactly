@@ -1,3 +1,5 @@
+from shelltest.execution.execution_directory_structure import ExecutionDirectoryStructure
+
 __author__ = 'emil'
 
 import pathlib
@@ -67,13 +69,23 @@ class PhaseEnvironmentForInternalCommands(PhaseEnvironment):
 
 
 class GlobalEnvironmentForNamedPhase:
-    def __init__(self, home_dir: pathlib.Path):
+    def __init__(self,
+                 home_dir: pathlib.Path,
+                 eds: ExecutionDirectoryStructure):
         self.__home_dir = home_dir
+        self.__eds = eds
 
     @property
     def home_directory(self) -> pathlib.Path:
         return self.__home_dir
 
+    @property
+    def execution_directory_structure(self) -> ExecutionDirectoryStructure:
+        return self.__eds
+
+    @property
+    def eds(self) -> ExecutionDirectoryStructure:
+        return self.__eds
 
 
 class AnonymousPhaseInstruction(InstructionExecutor):

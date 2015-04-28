@@ -150,7 +150,6 @@ class UnitTestCaseForPyLanguage2:
     def execute(self):
         # ARRANGE #
         home_dir_path = pathlib.Path().resolve()
-        settings = instructions.GlobalEnvironmentForNamedPhase(home_dir_path)
         test_case = self._test_case()
         # ACT #
         test_case_execution = execution.execute_test_case_in_execution_directory2(
