@@ -6,24 +6,24 @@ from shelltest import phases
 from shelltest.phase_instr import line_source
 from shelltest.phase_instr import model
 from shelltest.exec_abs_syn import instructions
-from shelltest_test.execution.util.py_unit_test_case import UnitTestCaseForPyLanguage2
+from shelltest_test.execution.util.py_unit_test_case import UnitTestCaseForPy3Language
 
 
 HOME_DIR_HEADER = '# Home Dir: '
 TEST_ROOT_DIR_HEADER = '# Test Root Dir: '
 
 
-class TestCase(UnitTestCaseForPyLanguage2):
+class TestCase(UnitTestCaseForPy3Language):
     def _act_phase(self) -> list:
         return [
             model.new_instruction_element(
                 line_source.Line(1, 'source for line one'),
-                StatementsGeneratorThatOutputsHomeDir()),
+                ActPhaseInstructionThatOutputsHomeDir()),
             model.new_comment_element(
                 line_source.Line(2, 'comment on line two')),
             model.new_instruction_element(
                 line_source.Line(3, 'source for line three'),
-                StatementsGeneratorThatOutputsTestRootDir()),
+                ActPhaseInstructionThatOutputsTestRootDir()),
         ]
 
     def _assertions(self):
@@ -47,7 +47,7 @@ class TestCase(UnitTestCaseForPyLanguage2):
                                                   expected_contents)
 
 
-class StatementsGeneratorThatOutputsHomeDir(instructions.ActPhaseInstruction):
+class ActPhaseInstructionThatOutputsHomeDir(instructions.ActPhaseInstruction):
     def execute(self, phase_name: str,
                 global_environment: instructions.GlobalEnvironmentForNamedPhase,
                 phase_environment: instructions.PhaseEnvironmentForScriptGeneration):
@@ -55,7 +55,7 @@ class StatementsGeneratorThatOutputsHomeDir(instructions.ActPhaseInstruction):
         phase_environment.append.raw_script_statement(line)
 
 
-class StatementsGeneratorThatOutputsTestRootDir(instructions.ActPhaseInstruction):
+class ActPhaseInstructionThatOutputsTestRootDir(instructions.ActPhaseInstruction):
     def execute(self, phase_name: str,
                 global_environment: instructions.GlobalEnvironmentForNamedPhase,
                 phase_environment: instructions.PhaseEnvironmentForScriptGeneration):

@@ -1,8 +1,6 @@
-import os
-
 __author__ = 'emil'
 
-from shelltest.exec_abs_syn.config import Configuration
+import os
 
 from shelltest.phase_instr.line_source import Line
 
@@ -43,96 +41,6 @@ class ScriptLanguage:
                                    line_contents])
 
 
-class StatementsGenerator:
-    """
-    Base class for object that can generate commands for a script of a type defined by ScriptLanguage.
-    """
-
-    def apply(self,
-              script_language: ScriptLanguage,
-              configuration: Configuration) -> list:
-        """
-        Generates script source code lines for this command.
-        :return List of source code lines, each line is a str.
-        """
-        raise NotImplementedError()
-
-
-class StatementsGeneratorForInstruction(StatementsGenerator):
-    """
-    Base class for StatementsGenerator that generates statements for a single instruction.
-    """
-
-    def __init__(self):
-        pass
-
-    def apply(self, script_language: ScriptLanguage, configuration: Configuration) -> list:
-        ret_val = []
-        ret_val.extend(self.instruction_implementation(configuration, script_language))
-        return ret_val
-
-    def instruction_implementation(self,
-                                   configuration: Configuration,
-                                   script_language: ScriptLanguage) -> list:
-        """
-        Generates script source code lines that implement the instruction that this object represents.
-        :return List of source code lines, each line is a str.
-        """
-        raise NotImplementedError()
-
-
-class StatementsGeneratorForFileContents(StatementsGenerator):
-    """
-    Object that can generate a shell script.
-    """
-
-    def __init__(self,
-                 instruction_statements_generators: list):
-        """
-        :param instruction_statements_generators: List of StatementsGeneratorForInstruction:s.
-        """
-        self.__instruction_statements_generators = instruction_statements_generators
-
-    @property
-    def instruction_statements_generators(self) -> list:
-        """
-        :returnsList of StatementsGeneratorForInstruction:s.
-        """
-        return self.__instruction_statements_generators
-
-    def apply(self, script_language: ScriptLanguage, configuration: Configuration) -> list:
-        """
-        Generates script source code lines for this command.
-        :return List of source code lines, each line is a str.
-        """
-        ret_val = []
-        for generator in self.__instruction_statements_generators:
-            ret_val.extend(generator.apply(script_language, configuration))
-        return ret_val
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# New code related to refactoring
-
-
 class ScriptFileManager:
     """
     Manages generation of a file-name and execution of an existing file.
@@ -148,7 +56,7 @@ class ScriptFileManager:
         raise NotImplementedError()
 
 
-class ScriptSourceWriter:
+class ScriptSourceBuilder:
     """
     Accumulates statements of a script program and generates the final source lines
     of the complete script.
@@ -162,7 +70,7 @@ class ScriptSourceWriter:
         self._source_lines = []
         self._final_source_code = None
 
-    def final_source_lines(self) -> str:
+    def build(self) -> str:
         """
         Gives the complete script source after all statements have been accumulated.
 

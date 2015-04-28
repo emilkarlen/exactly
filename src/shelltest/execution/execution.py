@@ -8,7 +8,6 @@ import pathlib
 from shelltest.exec_abs_syn import instructions
 from shelltest.phase_instr.model import PhaseContents, PhaseContentElement
 from shelltest import phases
-from shelltest.exec_abs_syn import py_cmd_gen
 from shelltest.exec_abs_syn import script_stmt_gen, abs_syn_gen
 from shelltest.exec_abs_syn.config import Configuration
 from shelltest import exception
@@ -21,7 +20,7 @@ ENV_VAR_TEST = 'SHELLTEST_TESTROOT'
 ALL_ENV_VARS = [ENV_VAR_HOME, ENV_VAR_TEST]
 
 
-class TestCaseExecution2:
+class TestCaseExecution:
     """
     Executes a given Test Case in an existing
     Execution Directory Root.
@@ -112,13 +111,6 @@ class TestCaseExecution2:
                                     self.__global_environment,
                                     phase_env)
 
-    def _execute_py_commands_in_test_root(self,
-                                          phase_env: abs_syn_gen.PhaseEnvironmentForPythonCommands):
-        os.chdir(str(self.execution_directory_structure.test_root_dir))
-        for command in phase_env.commands:
-            assert isinstance(command, py_cmd_gen.PythonCommand)
-            command.apply(self.configuration)
-
     def __run_act_script(self):
         """
         Pre-condition: write has been executed.
@@ -178,11 +170,11 @@ def __execute_act_phase(global_environment: instructions.GlobalEnvironmentForNam
 
 
 def execute_test_case_in_execution_directory2(script_file_management: script_stmt_gen.ScriptFileManager,
-                                              script_source_writer: script_stmt_gen.ScriptSourceWriter,
-                                              test_case: abs_syn_gen.TestCase2,
+                                              script_source_writer: script_stmt_gen.ScriptSourceBuilder,
+                                              test_case: abs_syn_gen.TestCase,
                                               home_dir_path: pathlib.Path,
                                               execution_directory_root_name_prefix: str,
-                                              is_keep_execution_directory_root: bool) -> TestCaseExecution2:
+                                              is_keep_execution_directory_root: bool) -> TestCaseExecution:
     """
     Takes care of construction of the Execution Directory Structure, including
     the root directory, and executes a given Test Case in this directory.
@@ -197,7 +189,7 @@ def execute_test_case_in_execution_directory2(script_file_management: script_stm
     Please refactor if a more natural responsibility evolves!
     """
 
-    def with_existing_root(exec_dir_structure_root: str) -> TestCaseExecution2:
+    def with_existing_root(exec_dir_structure_root: str) -> TestCaseExecution:
         cwd_before = os.getcwd()
         execution_directory_structure = construct_at(exec_dir_structure_root)
         global_environment = instructions.GlobalEnvironmentForNamedPhase(home_dir_path,
@@ -208,13 +200,13 @@ def execute_test_case_in_execution_directory2(script_file_management: script_stm
         configuration = Configuration(home_dir_path,
                                       execution_directory_structure.test_root_dir)
 
-        test_case_execution = TestCaseExecution2(global_environment,
-                                                 execution_directory_structure,
-                                                 configuration,
-                                                 act_environment,
-                                                 test_case.setup_phase,
-                                                 test_case.assert_phase,
-                                                 test_case.cleanup_phase)
+        test_case_execution = TestCaseExecution(global_environment,
+                                                execution_directory_structure,
+                                                configuration,
+                                                act_environment,
+                                                test_case.setup_phase,
+                                                test_case.assert_phase,
+                                                test_case.cleanup_phase)
         try:
             test_case_execution.write_and_execute()
         finally:

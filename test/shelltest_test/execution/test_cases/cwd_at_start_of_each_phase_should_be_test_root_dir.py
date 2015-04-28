@@ -8,12 +8,12 @@ from shelltest import phases
 from shelltest.exec_abs_syn import instructions
 from shelltest_test.execution.util import python_code_gen as py
 from shelltest_test.execution.util.py_unit_test_case_with_file_output import \
-    ModulesAndStatements, UnitTestCaseForPyLanguageThatWritesAFileToTestRootForEachPhase2, \
+    ModulesAndStatements, UnitTestCaseForPy3LanguageThatWritesAFileToTestRootForEachPhase, \
     InternalInstructionThatWritesToStandardPhaseFile, ActPhaseInstructionThatWritesToStandardPhaseFile
 from shelltest_test.execution.util.utils import un_lines
 
 
-class TestCase2(UnitTestCaseForPyLanguageThatWritesAFileToTestRootForEachPhase2):
+class TestCase(UnitTestCaseForPy3LanguageThatWritesAFileToTestRootForEachPhase):
     def __init__(self,
                  unittest_case: unittest.TestCase,
                  dbg_do_not_delete_dir_structure=False):
@@ -21,27 +21,27 @@ class TestCase2(UnitTestCaseForPyLanguageThatWritesAFileToTestRootForEachPhase2)
 
     def _default_instructions_for_setup_assert_cleanup(self, phase: phases.Phase) -> list:
         return [
-            PyCommandThatWritesCurrentWorkingDirectory2(phase),
-            PyCommandThatChangesCwdToHomeDir2(),
+            InternalInstructionThatWritesCurrentWorkingDirectory(phase),
+            InternalInstructionThatChangesCwdToHomeDir(),
         ]
 
     def _act_phase(self) -> list:
-        import_statements_generator = StatementsGeneratorForImportStatements2()
+        import_statements_generator = ActPhaseInstructionForImportStatements()
         return [
             self._next_instruction_line(
                 import_statements_generator),
             self._next_instruction_line(
-                StatementsGeneratorThatWritesCurrentWorkingDirectory2(phases.ACT,
-                                                                      import_statements_generator)),
+                ActPhaseInstructionThatWritesCurrentWorkingDirectory(phases.ACT,
+                                                                     import_statements_generator)),
             self._next_instruction_line(
-                StatementsGeneratorThatChangesCwdToHomeDir2(import_statements_generator)),
+                ActPhaseInstructionThatChangesCwdToHomeDir(import_statements_generator)),
         ]
 
     def _expected_content_for(self, phase: phases.Phase) -> str:
         return un_lines([str(self.eds.test_root_dir)])
 
 
-class PyCommandThatWritesCurrentWorkingDirectory2(InternalInstructionThatWritesToStandardPhaseFile):
+class InternalInstructionThatWritesCurrentWorkingDirectory(InternalInstructionThatWritesToStandardPhaseFile):
     def __init__(self,
                  phase: phases.Phase):
         super().__init__(phase)
@@ -51,7 +51,7 @@ class PyCommandThatWritesCurrentWorkingDirectory2(InternalInstructionThatWritesT
         return [str(cwd_path)]
 
 
-class PyCommandThatChangesCwdToHomeDir2(instructions.InternalInstruction):
+class InternalInstructionThatChangesCwdToHomeDir(instructions.InternalInstruction):
     def __init__(self):
         super().__init__()
 
@@ -62,7 +62,7 @@ class PyCommandThatChangesCwdToHomeDir2(instructions.InternalInstruction):
         # print(os.getcwd())
 
 
-class StatementsGeneratorForImportStatements2(instructions.ActPhaseInstruction):
+class ActPhaseInstructionForImportStatements(instructions.ActPhaseInstruction):
     """
     Pseudo-instruction for outputting Python import statements at the top of the program.
 
@@ -84,10 +84,10 @@ class StatementsGeneratorForImportStatements2(instructions.ActPhaseInstruction):
         return phase_environment.append.raw_script_statements(import_statements)
 
 
-class StatementsGeneratorThatWritesCurrentWorkingDirectory2(ActPhaseInstructionThatWritesToStandardPhaseFile):
+class ActPhaseInstructionThatWritesCurrentWorkingDirectory(ActPhaseInstructionThatWritesToStandardPhaseFile):
     def __init__(self,
                  phase: phases.Phase,
-                 module_container: StatementsGeneratorForImportStatements2):
+                 module_container: ActPhaseInstructionForImportStatements):
         super().__init__(phase)
         self.__phase = phase
         module_container.append_module('pathlib')
@@ -96,13 +96,14 @@ class StatementsGeneratorThatWritesCurrentWorkingDirectory2(ActPhaseInstructionT
                                            file_variable: str) -> ModulesAndStatements:
         print_statements = [py.print_value('pathlib.Path().resolve()',
                                            file_variable)]
-        return ModulesAndStatements(set(),
+        return ModulesAndStatements(
+            set(),
             print_statements)
 
 
-class StatementsGeneratorThatChangesCwdToHomeDir2(instructions.ActPhaseInstruction):
+class ActPhaseInstructionThatChangesCwdToHomeDir(instructions.ActPhaseInstruction):
     def __init__(self,
-                 module_container: StatementsGeneratorForImportStatements2):
+                 module_container: ActPhaseInstructionForImportStatements):
         super().__init__()
         module_container.append_module('os')
 

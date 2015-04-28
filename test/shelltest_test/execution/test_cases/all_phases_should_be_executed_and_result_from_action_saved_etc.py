@@ -9,7 +9,7 @@ from shelltest_test.execution.util import py_unit_test_case_with_file_output as 
 from shelltest_test.execution.util.py_unit_test_case_with_file_output import \
     InternalInstructionThatWritesToStandardPhaseFile
 from shelltest import phases
-from shelltest_test.execution.util.py_unit_test_case import UnitTestCaseForPyLanguage2
+from shelltest_test.execution.util.py_unit_test_case import UnitTestCaseForPy3Language
 from shelltest.exec_abs_syn import instructions
 from shelltest_test.execution.util import utils
 
@@ -21,7 +21,7 @@ CURRENT_DIR_HEADER = 'Current Dir'
 EXIT_CODE = 5
 
 
-class TestCase(UnitTestCaseForPyLanguage2):
+class TestCase(UnitTestCaseForPy3Language):
     def _default_instructions_for_setup_assert_cleanup(self, phase: phases.Phase) -> list:
         return [
             InternalInstructionThatCreatesAStandardPhaseFileInTestRootContainingDirectoryPaths(phase)

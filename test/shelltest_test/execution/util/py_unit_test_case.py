@@ -15,7 +15,7 @@ from shelltest.execution import execution
 from shelltest_test.execution.util import utils, instruction_adapter
 
 
-class UnitTestCaseForPyLanguage2:
+class UnitTestCaseForPy3Language:
     """
     Base class for tests on a test case that uses the Python 3 language in the apply phase.
     """
@@ -78,7 +78,7 @@ class UnitTestCaseForPyLanguage2:
         return self.__unittest_case
 
     @property
-    def test_case_execution(self) -> execution.TestCaseExecution2:
+    def test_case_execution(self) -> execution.TestCaseExecution:
         return self.__test_case_execution
 
     @property
@@ -95,8 +95,8 @@ class UnitTestCaseForPyLanguage2:
                                            path,
                                            expected_contents)
 
-    def _test_case(self) -> abs_syn_gen.TestCase2:
-        return abs_syn_gen.TestCase2(
+    def _test_case(self) -> abs_syn_gen.TestCase:
+        return abs_syn_gen.TestCase(
             model.PhaseContents(tuple(self._anonymous_phase())),
             model.PhaseContents(tuple(self._setup_phase())),
             model.PhaseContents(tuple(self._act_phase())),

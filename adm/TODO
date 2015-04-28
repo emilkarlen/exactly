@@ -8,11 +8,11 @@ The list of phases must:
 - be ordered according to phase execution order
 - type of environment must be correct for each phase
 
-** TODO <2015-01-05 mån> May be StatementsGeneratorForInstruction should not be given ScriptLanguage
+** DONE <2015-01-05 mån> May be StatementsGeneratorForInstruction should not be given ScriptLanguage
 ... since each StatementsGeneratorForInstruction is probably not designed to
-handla an arbitrary language.
+handle an arbitrary language.
 Giving a ScriptLanguage to apply, indicates that it should be capable of
-handling arbitrary langauges.
+handling arbitrary languages.
 * TODO Test result
 ** TODO <2015-01-05 mån> Handle implementation errors
 ** TODO <2015-01-05 mån> Handle parse errors
