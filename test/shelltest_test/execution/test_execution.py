@@ -22,7 +22,7 @@ class Test(unittest.TestCase):
     def test_all_phases_should_be_executed_and_result_from_action_saved_etc(self):
         all_phases_should_be_executed_and_result_from_action_saved_etc.TestCase(self).execute()
 
-    def test_stdin_should_be_redirected_to_file_if_set_in_phase_env(self):
+    def test_stdin_should_be_redirected_to_file_if_set_in_phase_env2(self):
         stdin_should_be_redirected_to_file_if_set_in_phase_env.TestCase(self).execute()
 
 

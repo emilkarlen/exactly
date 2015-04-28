@@ -1,13 +1,10 @@
 __author__ = 'emil'
 
-from shelltest import phases
-from shelltest_test.execution.util.py_unit_test_case import UnitTestCaseForPyLanguage
-from shelltest.exec_abs_syn import abs_syn_gen, script_stmt_gen, py_cmd_gen, instructions
-from shelltest.exec_abs_syn.config import Configuration
-from shelltest.phase_instr import line_source
+from shelltest_test.execution.util.py_unit_test_case import UnitTestCaseForPyLanguage2
+from shelltest.exec_abs_syn import instructions
 
 
-class TestCase(UnitTestCaseForPyLanguage):
+class TestCase(UnitTestCaseForPyLanguage2):
     """
     Checks that output to stdout, stderr and the exit code are saved in the correct locations.
     """
@@ -18,23 +15,17 @@ class TestCase(UnitTestCaseForPyLanguage):
     TEXT_ON_STDIN = 'on stdin'
     EXPECTED_CONTENTS_OF_STDERR = ''
 
-    def _phase_env_setup(self) -> abs_syn_gen.PhaseEnvironmentForPythonCommands:
-        return abs_syn_gen.PhaseEnvironmentForPythonCommands(
-            [PyCommandThatStoresStringInFileInCurrentDirectory(self.INPUT_TMP_FILE,
-                                                               self.TEXT_ON_STDIN)]
-        )
+    def _setup_phase(self) -> list:
+        return [
+            self._next_instruction_line(PyCommandThatStoresStringInFileInCurrentDirectory2(self.INPUT_TMP_FILE,
+                                                                                           self.TEXT_ON_STDIN))
+        ]
 
-    def _phase_env_act(self) -> instructions.PhaseEnvironmentForScriptGeneration:
-        return \
-            instructions.PhaseEnvironmentForScriptGeneration(
-                [
-                    StatementsThatCopiesStdinToStdout()
-                ],
-                stdin_file_name=self.INPUT_TMP_FILE
-            )
-
-    def _phase_env_for_py_cmd_phase(self, phase: phases.Phase) -> abs_syn_gen.PhaseEnvironmentForPythonCommands:
-        return abs_syn_gen.PhaseEnvironmentForPythonCommands()
+    def _act_phase(self) -> list:
+        return [
+            self._next_instruction_line(InstructionThatSetsStdinFileName(self.INPUT_TMP_FILE)),
+            self._next_instruction_line(StatementsThatCopiesStdinToStdout2())
+        ]
 
     def _assertions(self):
         self.assert_is_regular_file_with_contents(self.eds.result.exitcode_file,
@@ -45,7 +36,7 @@ class TestCase(UnitTestCaseForPyLanguage):
                                                   self.EXPECTED_CONTENTS_OF_STDERR)
 
 
-class PyCommandThatStoresStringInFileInCurrentDirectory(py_cmd_gen.PythonCommand):
+class PyCommandThatStoresStringInFileInCurrentDirectory2(instructions.SetupPhaseInstruction):
     def __init__(self,
                  file_base_name: str,
                  text_to_store: str):
@@ -53,20 +44,36 @@ class PyCommandThatStoresStringInFileInCurrentDirectory(py_cmd_gen.PythonCommand
         self.__file_base_name = file_base_name
         self.__text_to_store = text_to_store
 
-    def apply(self, configuration: Configuration):
+    def execute(self, phase_name: str,
+                global_environment: instructions.GlobalEnvironmentForNamedPhase,
+                phase_environment: instructions.PhaseEnvironmentForInternalCommands):
         with open(self.__file_base_name, 'w') as f:
             f.write(self.__text_to_store)
 
 
-class StatementsThatCopiesStdinToStdout(script_stmt_gen.StatementsGeneratorForInstruction):
+class StatementsThatCopiesStdinToStdout2(instructions.ActPhaseInstruction):
     def __init__(self):
         super().__init__()
 
-    def instruction_implementation(self,
-                                   configuration: Configuration,
-                                   script_language: script_stmt_gen.ScriptLanguage) -> list:
+    def execute(self,
+                phase_name: str,
+                global_environment: instructions.GlobalEnvironmentForNamedPhase,
+                phase_environment: instructions.PhaseEnvironmentForScriptGeneration):
         statements = [
             'import sys',
             'sys.stdout.write(sys.stdin.read())',
         ]
-        return script_language.raw_script_statements(statements)
+        return phase_environment.append.raw_script_statements(statements)
+
+
+class InstructionThatSetsStdinFileName(instructions.ActPhaseInstruction):
+    def __init__(self,
+                 file_name: str):
+        super().__init__()
+        self.__file_name = file_name
+
+    def execute(self,
+                phase_name: str,
+                global_environment: instructions.GlobalEnvironmentForNamedPhase,
+                phase_environment: instructions.PhaseEnvironmentForScriptGeneration):
+        phase_environment.set_stdin_file(self.__file_name)
