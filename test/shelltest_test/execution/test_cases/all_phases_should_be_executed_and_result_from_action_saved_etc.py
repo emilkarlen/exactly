@@ -96,7 +96,7 @@ class ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr(instructions.ActPhaseI
     def __init__(self):
         super().__init__()
 
-    def execute(self, phase_name: str,
+    def update_phase_environment(self, phase_name: str,
                 global_environment: instructions.GlobalEnvironmentForNamedPhase,
                 phase_environment: instructions.PhaseEnvironmentForScriptGeneration):
         statements = [

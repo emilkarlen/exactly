@@ -76,7 +76,7 @@ class ActPhaseInstructionForImportStatements(instructions.ActPhaseInstruction):
     def append_module(self, module_name: str):
         self.__modules.add(module_name)
 
-    def execute(self, phase_name: str,
+    def update_phase_environment(self, phase_name: str,
                 global_environment: instructions.GlobalEnvironmentForNamedPhase,
                 phase_environment: instructions.PhaseEnvironmentForScriptGeneration):
         import_statements = ['import %s' % module_name
@@ -107,7 +107,7 @@ class ActPhaseInstructionThatChangesCwdToHomeDir(instructions.ActPhaseInstructio
         super().__init__()
         module_container.append_module('os')
 
-    def execute(self, phase_name: str,
+    def update_phase_environment(self, phase_name: str,
                 global_environment: instructions.GlobalEnvironmentForNamedPhase,
                 phase_environment: instructions.PhaseEnvironmentForScriptGeneration):
         statements = [
