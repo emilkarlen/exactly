@@ -50,4 +50,4 @@ class TestCase(tuple):
                                    instruction_class):
         for element in phase_contents.elements:
             if element.is_instruction:
-                assert isinstance(element.executor, instruction_class)
+                assert isinstance(element.instruction, instruction_class)

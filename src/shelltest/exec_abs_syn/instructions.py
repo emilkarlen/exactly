@@ -3,7 +3,7 @@ __author__ = 'emil'
 import pathlib
 
 from shelltest.execution.execution_directory_structure import ExecutionDirectoryStructure
-from shelltest.phase_instr.model import InstructionExecutor
+from shelltest.phase_instr.model import Instruction
 from shelltest.exec_abs_syn import script_stmt_gen
 
 
@@ -82,7 +82,7 @@ class GlobalEnvironmentForNamedPhase:
         return self.__eds
 
 
-class AnonymousPhaseInstruction(InstructionExecutor):
+class AnonymousPhaseInstruction(Instruction):
     """
     Abstract base class for instructions of the anonymous phase.
     """
@@ -98,7 +98,7 @@ class AnonymousPhaseInstruction(InstructionExecutor):
         raise NotImplementedError()
 
 
-class InternalInstruction(InstructionExecutor):
+class InternalInstruction(Instruction):
     """
     Abstract base class for instructions that are implemented in python.
     """
@@ -130,7 +130,7 @@ class SetupPhaseInstruction(InternalInstruction):
         raise NotImplementedError()
 
 
-class ActPhaseInstruction(InstructionExecutor):
+class ActPhaseInstruction(Instruction):
     """
     Abstract base class for instructions of the ACT phase.
     """

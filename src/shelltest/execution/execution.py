@@ -105,7 +105,7 @@ class TestCaseExecution:
         for element in phase_contents.elements:
             assert isinstance(element, PhaseContentElement)
             if element.is_instruction:
-                instruction = element.executor
+                instruction = element.instruction
                 assert isinstance(instruction, instructions.InternalInstruction)
                 instruction.execute(phase.name,
                                     self.__global_environment,
@@ -162,11 +162,11 @@ def __execute_act_phase(global_environment: instructions.GlobalEnvironmentForNam
             act_environment.append.comment_line(element.source_line.text)
         else:
             act_environment.append.source_line_header(element.source_line)
-            executor = element.executor
-            assert isinstance(executor, instructions.ActPhaseInstruction)
-            executor.execute(phases.ACT.name,
-                             global_environment,
-                             act_environment)
+            instruction = element.instruction
+            assert isinstance(instruction, instructions.ActPhaseInstruction)
+            instruction.execute(phases.ACT.name,
+                                global_environment,
+                                act_environment)
 
 
 def execute_test_case_in_execution_directory2(script_file_management: script_stmt_gen.ScriptFileManager,
