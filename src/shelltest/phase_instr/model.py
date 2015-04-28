@@ -70,15 +70,19 @@ class PhaseContents:
     A sequence/list of PhaseContentElement:s.
     """
 
-    def __init__(self, instructions: tuple):
+    def __init__(self, elements: tuple):
         """
-        :param instructions: List of Instruction.
+        :param elements: List of PhaseContentElement.
         """
-        self._instructions = instructions
+        self._elements = elements
 
     @property
-    def instructions(self) -> tuple:
-        return self._instructions
+    def elements(self) -> tuple:
+        return self._elements
+
+
+def new_empty_phase_contents() -> PhaseContents:
+    return PhaseContents(())
 
 
 class Document:
@@ -112,6 +116,6 @@ class Document:
         for phase_name, phase_environment in phases:
             if phase_name in self._phase2instructions:
                 instruction_sequence = self._phase2instructions[phase_name]
-                for instruction in instruction_sequence.instructions:
+                for instruction in instruction_sequence.elements:
                     assert isinstance(instruction, PhaseContentElement)
                     instruction.execute(phase_name, global_environment, phase_environment)

@@ -5,7 +5,7 @@ import pathlib
 import unittest
 
 from shelltest import phases
-from shelltest.exec_abs_syn import abs_syn_gen, py_cmd_gen, script_stmt_gen, config
+from shelltest.exec_abs_syn import abs_syn_gen, py_cmd_gen, script_stmt_gen, config, instructions
 from shelltest.phase_instr import line_source
 from shelltest_test.execution.util import python_code_gen as py
 from shelltest_test.execution.util.py_unit_test_case_with_file_output import \
@@ -30,10 +30,10 @@ class TestCase(UnitTestCaseForPyLanguageThatWritesAFileToTestRootForEachPhase):
                 PyCommandThatChangesCwdToHomeDir()
             ])
 
-    def _phase_env_act(self) -> abs_syn_gen.PhaseEnvironmentForScriptGeneration:
+    def _phase_env_act(self) -> instructions.PhaseEnvironmentForScriptGeneration:
         import_statements_generator = StatementsGeneratorForImportStatements()
         return \
-            abs_syn_gen.PhaseEnvironmentForScriptGeneration([
+            instructions.PhaseEnvironmentForScriptGeneration([
                 import_statements_generator,
                 StatementsGeneratorThatWritesCurrentWorkingDirectory(
                     phases.ACT,

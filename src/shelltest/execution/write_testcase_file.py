@@ -1,3 +1,5 @@
+from shelltest.phase_instr.model import PhaseContents
+
 __author__ = 'emil'
 
 import os
