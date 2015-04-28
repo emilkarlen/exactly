@@ -4,38 +4,44 @@ import os
 import unittest
 
 from shelltest import phases
-from shelltest.exec_abs_syn import abs_syn_gen
 from shelltest.exec_abs_syn import instructions
 from shelltest.execution import execution
-from shelltest.phase_instr import line_source
+from shelltest_test.execution.util import instruction_adapter
 from shelltest_test.execution.util import python_code_gen as py
 from shelltest_test.execution.util.py_unit_test_case_with_file_output import \
-    UnitTestCaseForPyLanguageThatWritesAFileToTestRootForEachPhase, \
-    PyCommandThatWritesToStandardPhaseFile, \
-    StatementsGeneratorThatWritesToStandardPhaseFile, \
-    ModulesAndStatements
+    ModulesAndStatements, UnitTestCaseForPyLanguageThatWritesAFileToTestRootForEachPhase2, \
+    InternalInstructionThatWritesToStandardPhaseFile, ActPhaseInstructionThatWritesToStandardPhaseFile
 from shelltest_test.execution.util.utils import format_header_value_line, un_lines
 
 
-class TestCase(UnitTestCaseForPyLanguageThatWritesAFileToTestRootForEachPhase):
+class TestCase(UnitTestCaseForPyLanguageThatWritesAFileToTestRootForEachPhase2):
     def __init__(self,
                  unittest_case: unittest.TestCase,
                  dbg_do_not_delete_dir_structure=False):
         super().__init__(unittest_case, dbg_do_not_delete_dir_structure)
 
-    def _phase_env_for_py_cmd_phase(self, phase: phases.Phase) -> abs_syn_gen.PhaseEnvironmentForPythonCommands:
-        return \
-            abs_syn_gen.PhaseEnvironmentForPythonCommands([
-                PyCommandThatWritesEnvironmentVariables(
-                    phase)
-            ])
+    def _setup_phase(self) -> list:
+        return [
+            self._next_instruction_line(
+                instruction_adapter.as_setup(InternalInstructionThatWritesEnvironmentVariables(phases.SETUP)))
+        ]
 
-    def _phase_env_act(self) -> instructions.PhaseEnvironmentForScriptGeneration:
-        return \
-            instructions.PhaseEnvironmentForScriptGeneration([
-                StatementsGeneratorThatWritesEnvironmentVariables(
-                    phases.ACT)
-            ])
+    def _act_phase(self) -> list:
+        return [
+            self._next_instruction_line(ActPhaseInstructionThatWritesEnvironmentVariables(phases.ACT))
+        ]
+
+    def _assert_phase(self) -> list:
+        return [
+            self._next_instruction_line(
+                instruction_adapter.as_assert(InternalInstructionThatWritesEnvironmentVariables(phases.ASSERT)))
+        ]
+
+    def _cleanup_phase(self) -> list:
+        return [
+            self._next_instruction_line(
+                instruction_adapter.as_cleanup(InternalInstructionThatWritesEnvironmentVariables(phases.CLEANUP)))
+        ]
 
     def _expected_content_for(self, phase: phases.Phase) -> str:
         return un_lines([
@@ -44,19 +50,19 @@ class TestCase(UnitTestCaseForPyLanguageThatWritesAFileToTestRootForEachPhase):
         ])
 
 
-class PyCommandThatWritesEnvironmentVariables(PyCommandThatWritesToStandardPhaseFile):
+class InternalInstructionThatWritesEnvironmentVariables(InternalInstructionThatWritesToStandardPhaseFile):
     def __init__(self,
                  phase: phases.Phase):
         super().__init__(phase)
 
-    def file_lines(self, configuration) -> list:
+    def _file_lines(self, global_environment: instructions.GlobalEnvironmentForNamedPhase) -> list:
         def format_environment_variable(var_name: str) -> str:
             return format_header_value_line(var_name, os.environ[var_name])
 
         return [format_environment_variable(var_name) for var_name in execution.ALL_ENV_VARS]
 
 
-class StatementsGeneratorThatWritesEnvironmentVariables(StatementsGeneratorThatWritesToStandardPhaseFile):
+class ActPhaseInstructionThatWritesEnvironmentVariables(ActPhaseInstructionThatWritesToStandardPhaseFile):
     def __init__(self,
                  phase: phases.Phase):
         super().__init__(phase)

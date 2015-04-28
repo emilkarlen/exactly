@@ -227,10 +227,13 @@ class TestCaseExecution2:
                                         phase_env: instructions.PhaseEnvironmentForInternalCommands):
         os.chdir(str(self.execution_directory_structure.test_root_dir))
         for element in phase_contents.elements:
-            assert isinstance(element, instructions.InternalInstruction)
-            element.execute(phase.name,
-                            self.__global_environment,
-                            phase_env)
+            assert isinstance(element, PhaseContentElement)
+            if element.is_instruction:
+                instruction = element.executor
+                assert isinstance(instruction, instructions.InternalInstruction)
+                instruction.execute(phase.name,
+                                    self.__global_environment,
+                                    phase_env)
 
     def _execute_py_commands_in_test_root(self,
                                           phase_env: abs_syn_gen.PhaseEnvironmentForPythonCommands):
@@ -359,19 +362,21 @@ def execute_test_case_in_execution_directory2(script_file_management: script_stm
     Please refactor if a more natural responsibility evolves!
     """
 
-    def with_existing_root(exec_dir_structure_root: str,
-                           global_environment: instructions.GlobalEnvironmentForNamedPhase,
-                           environment_after_execution: instructions.PhaseEnvironmentForScriptGeneration) \
-            -> TestCaseExecution2:
+    def with_existing_root(exec_dir_structure_root: str) -> TestCaseExecution2:
         cwd_before = os.getcwd()
         execution_directory_structure = construct_at(exec_dir_structure_root)
+        global_environment = instructions.GlobalEnvironmentForNamedPhase(home_dir_path,
+                                                                         execution_directory_structure)
+        act_environment = instructions.PhaseEnvironmentForScriptGeneration(script_file_management,
+                                                                           script_source_writer)
+        __execute_act_phase(global_environment, test_case.act_phase, act_environment)
         configuration = Configuration(home_dir_path,
                                       execution_directory_structure.test_root_dir)
 
         test_case_execution = TestCaseExecution2(global_environment,
                                                  execution_directory_structure,
                                                  configuration,
-                                                 environment_after_execution,
+                                                 act_environment,
                                                  test_case.setup_phase,
                                                  test_case.assert_phase,
                                                  test_case.cleanup_phase)
@@ -381,17 +386,9 @@ def execute_test_case_in_execution_directory2(script_file_management: script_stm
             os.chdir(cwd_before)
         return test_case_execution
 
-    global_environment = instructions.GlobalEnvironmentForNamedPhase(home_dir_path)
-    act_environment = instructions.PhaseEnvironmentForScriptGeneration(script_file_management,
-                                                                       script_source_writer)
-    __execute_act_phase(global_environment, test_case.act_phase, act_environment)
     if is_keep_execution_directory_root:
         tmp_exec_dir_structure_root = tempfile.mkdtemp(prefix=execution_directory_root_name_prefix)
-        return with_existing_root(tmp_exec_dir_structure_root,
-                                  global_environment,
-                                  act_environment)
+        return with_existing_root(tmp_exec_dir_structure_root)
     else:
         with tempfile.TemporaryDirectory(prefix=execution_directory_root_name_prefix) as tmp_exec_dir_structure_root:
-            return with_existing_root(tmp_exec_dir_structure_root,
-                                      global_environment,
-                                      act_environment)
+            return with_existing_root(tmp_exec_dir_structure_root)
