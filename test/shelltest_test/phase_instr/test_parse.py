@@ -284,11 +284,11 @@ class TestParsePlainTestCase(unittest.TestCase):
     def _check_equal_instr_app_seq(self,
                                    expected_instructions: model.PhaseContents,
                                    actual_instructions: model.PhaseContents):
-        self.assertEqual(len(expected_instructions.instructions),
-                         len(actual_instructions.instructions),
+        self.assertEqual(len(expected_instructions.elements),
+                         len(actual_instructions.elements),
                          'Number of instructions in the phase')
-        for expected_instruction, actual_instruction in zip(expected_instructions.instructions,
-                                                            actual_instructions.instructions):
+        for expected_instruction, actual_instruction in zip(expected_instructions.elements,
+                                                            actual_instructions.elements):
             self._check_equal_instruction(expected_instruction, actual_instruction)
 
     def _check_equal_instruction(self,

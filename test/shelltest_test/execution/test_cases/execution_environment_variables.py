@@ -5,6 +5,7 @@ import unittest
 
 from shelltest import phases
 from shelltest.exec_abs_syn import abs_syn_gen
+from shelltest.exec_abs_syn import instructions
 from shelltest.execution import execution
 from shelltest.phase_instr import line_source
 from shelltest_test.execution.util import python_code_gen as py
@@ -29,9 +30,9 @@ class TestCase(UnitTestCaseForPyLanguageThatWritesAFileToTestRootForEachPhase):
                     phase)
             ])
 
-    def _phase_env_act(self) -> abs_syn_gen.PhaseEnvironmentForScriptGeneration:
+    def _phase_env_act(self) -> instructions.PhaseEnvironmentForScriptGeneration:
         return \
-            abs_syn_gen.PhaseEnvironmentForScriptGeneration([
+            instructions.PhaseEnvironmentForScriptGeneration([
                 StatementsGeneratorThatWritesEnvironmentVariables(
                     phases.ACT)
             ])

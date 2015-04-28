@@ -12,7 +12,7 @@ from shelltest_test.execution.util.py_unit_test_case_with_file_output import PyC
 from shelltest import phases
 
 from shelltest_test.execution.util.py_unit_test_case import UnitTestCaseForPyLanguage
-from shelltest.exec_abs_syn import abs_syn_gen, script_stmt_gen
+from shelltest.exec_abs_syn import abs_syn_gen, script_stmt_gen, instructions
 from shelltest_test.execution.util import utils
 
 HOME_DIR_HEADER = 'Home Dir'
@@ -23,9 +23,9 @@ EXIT_CODE = 5
 
 
 class TestCase(UnitTestCaseForPyLanguage):
-    def _phase_env_act(self) -> abs_syn_gen.PhaseEnvironmentForScriptGeneration:
+    def _phase_env_act(self) -> instructions.PhaseEnvironmentForScriptGeneration:
         return \
-            abs_syn_gen.PhaseEnvironmentForScriptGeneration([
+            instructions.PhaseEnvironmentForScriptGeneration([
                 StatementsGeneratorThatPrintsPathsOnStdoutAndStderr()])
 
     def _phase_env_for_py_cmd_phase(self, phase: phases.Phase) -> abs_syn_gen.PhaseEnvironmentForPythonCommands:

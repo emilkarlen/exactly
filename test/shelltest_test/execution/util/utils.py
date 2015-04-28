@@ -5,22 +5,6 @@ __author__ = 'emil'
 import pathlib
 import unittest
 
-from shelltest.exec_abs_syn import script_stmt_gen
-
-
-class Python3Language(script_stmt_gen.ScriptLanguage):
-    def command_and_args_for_executing_script_file(self, script_file_name: str) -> list:
-        return ['python3', script_file_name]
-
-    def base_name_from_stem(self, stem: str):
-        return stem + '.py'
-
-    def comment_line(self, comment: str) -> list:
-        return ['# ' + comment]
-
-    def raw_script_statement(self, statement: str) -> list:
-        return [statement]
-
 
 def format_header_value_line(header: str, value: str) -> str:
     return '%-30s: %s' % (header, value)
