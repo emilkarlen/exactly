@@ -217,6 +217,10 @@ class TestCaseExecution2:
             raise ValueError('configuration')
         return self.__configuration
 
+    @property
+    def global_environment(self) -> instructions.GlobalEnvironmentForNamedPhase:
+        return self.__global_environment
+
     def _store_exit_code(self, exitcode: int):
         with open(str(self.execution_directory_structure.result.exitcode_file), 'w') as f:
             f.write(str(exitcode))
