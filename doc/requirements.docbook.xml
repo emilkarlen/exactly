@@ -143,10 +143,30 @@
 
       <variablelist>
         <varlistentry>
+            <term>
+                <systemitem>anonymous</systemitem>
+            </term>
+
+            <listitem>
+                <para>Configures the test case.</para>
+            </listitem>
+        </varlistentry>
+
+          <varlistentry>
           <term><systemitem>setup</systemitem></term>
 
           <listitem>
-            <para>Constructs the environment that the target expects.</para>
+              <para>Constructs the environment that the
+                  <systemitem>act</systemitem>
+                  phase expects.
+              </para>
+
+              <para>E.g. "installing" files and directories into the temporary
+                  directory where the
+                  <systemitem>act</systemitem>
+                  phase is
+                  executed.
+              </para>
           </listitem>
         </varlistentry>
 
@@ -156,6 +176,8 @@
           <listitem>
             <para>The program that is tested, in the environment set up by
             <systemitem>setup</systemitem>.</para>
+
+              <para>Executed in a temporary directory.</para>
           </listitem>
         </varlistentry>
 
@@ -187,6 +209,53 @@
 
       <variablelist>
         <varlistentry>
+            <term>
+                <filename class="directory">testcase</filename>
+            </term>
+
+            <listitem>
+                <para>The test case, transformed from the test case file, in a
+                    form that is executed.
+                </para>
+            </listitem>
+        </varlistentry>
+
+          <varlistentry>
+              <term>
+                  <filename class="directory">test</filename>
+              </term>
+
+              <listitem>
+                  <para>Directory that is the (initial) Present Working Directory
+                      for all phases of the test case (<systemitem>setup</systemitem>,
+                      <systemitem>act</systemitem>, ...).
+                  </para>
+              </listitem>
+          </varlistentry>
+
+          <varlistentry>
+              <term>
+                  <filename class="directory">tmp</filename>
+              </term>
+
+              <listitem>
+                  <para>Directory that is not used by the
+                      <command>shelltest</command>
+                      program itself.
+                  </para>
+
+                  <para>The purpose is to have a place where the test case can store
+                      temporary files.
+                  </para>
+
+                  <para>The environment variable
+                      <envar>SHELLTEST_TMP</envar>
+                      contains the absolute name of this director .
+                  </para>
+              </listitem>
+          </varlistentry>
+
+          <varlistentry>
           <term><filename class="directory">result</filename></term>
 
           <listitem>
@@ -227,25 +296,6 @@
                 </listitem>
               </varlistentry>
             </variablelist>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term><filename class="directory">test</filename></term>
-
-          <listitem>
-            <para>Directory that is the (initial) Present Working Directory
-            for all phases of the test case (<systemitem>setup</systemitem>,
-            <systemitem>act</systemitem>, ...).</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term><filename class="directory">testcase</filename></term>
-
-          <listitem>
-            <para>The test case, transformed from the test case file, in a
-            form that is executed.</para>
           </listitem>
         </varlistentry>
 
@@ -336,6 +386,21 @@
               phase.</para>
             </listitem>
           </varlistentry>
+
+            <varlistentry>
+                <term>
+                    <envar>SHELLTEST_TMP</envar>
+                </term>
+
+                <listitem>
+                    <para>Absolute name of the
+                        <filename class="directory">tmp
+                        </filename>
+                        directory in the<glossterm>execution directory
+                            structure</glossterm>.
+                    </para>
+                </listitem>
+            </varlistentry>
         </variablelist>
       </section>
     </section>
@@ -403,9 +468,6 @@
         <listitem>
           <para>Parse</para>
 
-          <para>The <glossterm>plain test case</glossterm> is checked for
-          syntax errors.</para>
-
           <para>Fails with <glossterm>HARD ERROR</glossterm> if the test case
           contains syntax errors.</para>
 
@@ -415,40 +477,123 @@
         </listitem>
 
           <listitem>
-              <para>Validation</para>
+              <para>Validation and execution</para>
 
-              <para>Each instruction validates itself.</para>
-
-              <para>The typical validation is checking if referenced files that
-                  must exist before the test case is executed really exist.
+              <para>Each phase consists of two parts: validation and execution. If
+                  the validation phase fails, then the test case fails with
+                  <glossterm>HARD ERROR</glossterm>. (A typical validation failure is
+                  that a file that is assumed to exist does not exist.)
               </para>
 
-              <para>Fails with
-                  <glossterm>HARD ERROR</glossterm>
-                  if any
-                  instruction says that it is not valid.
-              </para>
-        </listitem>
+              <orderedlist>
+                  <listitem>
+                      <para>
+                          <systemitem>anonymous</systemitem>
+                          phase
+                      </para>
 
-        <listitem>
-          <para>Construction of the <glossterm>execution directory
-          structure</glossterm></para>
-        </listitem>
+                      <para>The anonymous phase sets the premises for the following
+                          phases.
+                      </para>
 
-        <listitem>
-          <para>Generation of the <glossterm>executable test
-          case</glossterm></para>
+                      <para>It is executed before the<glossterm>execution directory
+                          structure</glossterm>, which means that it only sets the
+                          "internal settings" (e.g. "home directory" and expected
+                          result).
+                      </para>
 
-          <para>The <glossterm>executable test case</glossterm> is "installed"
-          into the <glossterm>execution directory
-          structure</glossterm>.</para>
-        </listitem>
+                      <orderedlist>
+                          <listitem>
+                              <para>Validation</para>
+                          </listitem>
 
-        <listitem>
-          <para>Execution of the <glossterm>executable test
-          case</glossterm></para>
+                          <listitem>
+                              <para>Execution</para>
+                          </listitem>
+                      </orderedlist>
+                  </listitem>
 
-          <para>All phases of the test case are executed.</para>
+                  <listitem>
+                      <para>Construction of the
+                          <glossterm>execution directory
+                              structure
+                          </glossterm>
+                      </para>
+                  </listitem>
+
+                  <listitem>
+                      <para>
+                          <systemitem>setup</systemitem>
+                          phase (validation,
+                          execution)
+                      </para>
+
+                      <para>A failure in the execution will cause The test case fails
+                          with
+                          <glossterm>HARD ERROR</glossterm>
+                          if any step fails.
+                      </para>
+                  </listitem>
+
+                  <listitem>
+                      <para>Validation of all phases after
+                          <systemitem>setup</systemitem>:<systemitem>act</systemitem>,
+                          <systemitem>assert</systemitem>,
+                          <systemitem>cleanup</systemitem>
+                      </para>
+
+                      <para>The test case fails with
+                          <glossterm>HARD ERROR</glossterm>
+                          if there is any failure.
+                      </para>
+                  </listitem>
+
+                  <listitem>
+                      <para>
+                          <systemitem>act</systemitem>
+                          phase (script-generation,
+                          script-execution)
+                      </para>
+
+                      <para>The test case fails with
+                          <glossterm>HARD ERROR</glossterm>
+                          if script-generation fails.
+                      </para>
+
+                      <para>The script-execution step cannot fail, since it is the
+                          object that is tested for correctness.
+                      </para>
+                  </listitem>
+
+                  <listitem>
+                      <para>
+                          <systemitem>assert</systemitem>
+                          phase (execution)
+                      </para>
+
+                      <para>The test case fails with
+                          <glossterm>HARD ERROR</glossterm>
+                          if there is a failure.
+                      </para>
+
+                      <para>If there is no failure in this phase, then the
+                          instructions determine the test result (which can be any result
+                          status).
+                      </para>
+                  </listitem>
+
+                  <listitem>
+                      <para>
+                          <systemitem>cleanup</systemitem>
+                          phase (execution)
+                      </para>
+
+                      <para>The test case fails with
+                          <glossterm>HARD ERROR</glossterm>
+                          if there is a failure.
+                      </para>
+                  </listitem>
+              </orderedlist>
         </listitem>
 
         <listitem>
