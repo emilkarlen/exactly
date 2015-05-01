@@ -1,5 +1,6 @@
 __author__ = 'emil'
 
+
 import tempfile
 import os
 import subprocess
@@ -165,8 +166,8 @@ def __execute_act_phase(global_environment: instructions.GlobalEnvironmentForNam
             instruction = element.instruction
             assert isinstance(instruction, instructions.ActPhaseInstruction)
             instruction.update_phase_environment(phases.ACT.name,
-                                global_environment,
-                                act_environment)
+                                                 global_environment,
+                                                 act_environment)
 
 
 def execute_test_case_in_execution_directory2(script_file_management: script_stmt_gen.ScriptFileManager,
