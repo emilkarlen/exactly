@@ -33,10 +33,6 @@ class TestConstructExecutionDirectoryStructure(unittest.TestCase):
             self._assert_is_existing_empty_dir_with_name(root / 'log',
                                                          eds.log_dir)
 
-    def _assert_exists_dir(self, p: Path):
-        self.assertTrue(p.exists(), p.name + ' should exist')
-        self.assertTrue(p.is_dir(), p.name + ' should be a directory')
-
     def _assert_is_existing_empty_dir_with_name(self,
                                                 expected_path: Path,
                                                 actual_path: Path):
@@ -62,6 +58,10 @@ class TestConstructExecutionDirectoryStructure(unittest.TestCase):
             expected_number_of_files,
             len(list(p.iterdir())),
             'The directory should contain exactly %s files.' % expected_number_of_files)
+
+    def _assert_exists_dir(self, p: Path):
+        self.assertTrue(p.exists(), p.name + ' should exist')
+        self.assertTrue(p.is_dir(), p.name + ' should be a directory')
 
 
 def suite():
