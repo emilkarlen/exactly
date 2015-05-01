@@ -21,10 +21,12 @@ class DirWithSubDirs:
 
 
 execution_directories = [
+    DirWithSubDirs('testcase', []),
+    DirWithSubDirs('tmp', []),
+    DirWithSubDirs('test', []),
     DirWithSubDirs('result',
                    [DirWithSubDirs('std', [])]),
-    DirWithSubDirs('test', []),
-    DirWithSubDirs('testcase', []),
+    DirWithSubDirs('log', []),
 ]
 
 
@@ -71,21 +73,31 @@ class Result(DirWithRoot):
 class ExecutionDirectoryStructure(DirWithRoot):
     def __init__(self, dir_name: str):
         super().__init__(Path(dir_name))
-        self.__test_dir = self.root_dir / 'test'
-        self.__result = Result(self.root_dir)
         self.__test_case_dir = self.root_dir / 'testcase'
+        self.__test_dir = self.root_dir / 'test'
+        self.__tmp_dir = self.root_dir / 'tmp'
+        self.__result = Result(self.root_dir)
+        self.__log_dir = self.root_dir / 'log'
+
+    @property
+    def test_case_dir(self) -> Path:
+        return self.__test_case_dir
 
     @property
     def test_root_dir(self) -> Path:
         return self.__test_dir
 
     @property
+    def tmp_dir(self) -> Path:
+        return self.__tmp_dir
+
+    @property
     def result(self) -> Result:
         return self.__result
 
     @property
-    def test_case_dir(self) -> Path:
-        return self.__test_case_dir
+    def log_dir(self) -> Path:
+        return self.__log_dir
 
 
 def construct_at(execution_directory_root: str) -> ExecutionDirectoryStructure:
