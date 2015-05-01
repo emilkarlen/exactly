@@ -50,6 +50,10 @@ Detta
 - ger ett program med main-metod och cla-parsning
 - "mall" för ett testfall som exekverar ett externt program med in och utdata
   i fil
+* Bestämma exekveringsflöde
+  CLOCK: [2015-05-01 fre 14:01]
+  CLOCK: [2015-04-30 tor 21:53]--[2015-04-30 tor 22:38] =>  0:45
+  CLOCK: [2015-04-30 tor 12:50]--[2015-04-30 tor 15:55] =>  3:05
 * Exekvera instruktioner
   CLOCK: [2015-01-01 tor 21:31]--[2015-01-01 tor 22:08] =>  0:37
   CLOCK: [2015-01-01 tor 14:44]--[2015-01-01 tor 16:57] =>  2:13
@@ -64,6 +68,8 @@ Detta
   CLOCK: [2015-01-02 fre 08:17]--[2015-01-02 fre 08:52] =>  0:35
 
 * Exekvera testfall i katalogstruktur
+  CLOCK: [2015-04-29 ons 10:50]--[2015-04-29 ons 11:12] =>  0:22
+  CLOCK: [2015-04-29 ons 09:30]--[2015-04-29 ons 10:41] =>  1:11
   CLOCK: [2015-01-06 tis 08:40]--[2015-01-06 tis 09:24] =>  0:44
   CLOCK: [2015-01-06 tis 00:27]--[2015-01-06 tis 00:51] =>  0:24
   CLOCK: [2015-01-05 mån 19:14]--[2015-01-05 mån 20:41] =>  1:27
@@ -90,4 +96,5 @@ Detta
   CLOCK: [2015-04-27 mån 14:27]--[2015-04-27 mån 22:49] =>  8:22
   CLOCK: [2015-04-24 fre 09:35]--[2015-04-24 fre 15:39] =>  6:04
   CLOCK: [2015-04-23 tor 19:01]--[2015-04-23 tor 21:01] =>  2:00
+
 
