@@ -1,6 +1,5 @@
 __author__ = 'emil'
 
-
 import tempfile
 import os
 import subprocess
@@ -17,8 +16,11 @@ from .execution_directory_structure import construct_at, ExecutionDirectoryStruc
 
 ENV_VAR_HOME = 'SHELLTEST_HOME'
 ENV_VAR_TEST = 'SHELLTEST_TESTROOT'
+ENV_VAR_TMP = 'SHELLTEST_TMP'
 
-ALL_ENV_VARS = [ENV_VAR_HOME, ENV_VAR_TEST]
+ALL_ENV_VARS = [ENV_VAR_HOME,
+                ENV_VAR_TEST,
+                ENV_VAR_TMP]
 
 
 class TestCaseExecution:
@@ -66,6 +68,7 @@ class TestCaseExecution:
         # påverka huvudprocessen.
         os.environ[ENV_VAR_HOME] = str(self.configuration.home_dir)
         os.environ[ENV_VAR_TEST] = str(self.execution_directory_structure.test_root_dir)
+        os.environ[ENV_VAR_TMP] = str(self.execution_directory_structure.tmp_dir)
         phase_env = instructions.PhaseEnvironmentForInternalCommands()
         self.__execute_internal_instructions(phases.SETUP, self.__setup_phase, phase_env)
         self.__run_act_script()

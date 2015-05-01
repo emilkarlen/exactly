@@ -32,7 +32,8 @@ class TestCase(UnitTestCaseForPy3LanguageThatWritesAFileToTestRootForEachPhase):
     def _expected_content_for(self, phase: phases.Phase) -> str:
         return un_lines([
             format_header_value_line(execution.ENV_VAR_HOME, str(self.test_case_execution.configuration.home_dir)),
-            format_header_value_line(execution.ENV_VAR_TEST, str(self.eds.test_root_dir))
+            format_header_value_line(execution.ENV_VAR_TEST, str(self.eds.test_root_dir)),
+            format_header_value_line(execution.ENV_VAR_TMP, str(self.eds.tmp_dir)),
         ])
 
 
