@@ -11,7 +11,7 @@ from shelltest.execution import phase_step
 from shelltest_test.execution.test_execution_sequence.test_case_that_records_phase_execution import \
     TestCaseThatRecordsExecution, \
     ExpectedInstructionFailureForNoFailure, ExpectedInstructionFailureForFailure
-from shelltest_test.execution.sequence_test_cases import anonymous_phase_errors
+from shelltest_test.execution.test_execution_sequence import anonymous_phase_errors
 
 
 class Test(unittest.TestCase):
