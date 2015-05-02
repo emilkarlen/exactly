@@ -1,3 +1,5 @@
+from shelltest.execution.result import FullResultStatus
+
 __author__ = 'emil'
 
 import os
@@ -36,6 +38,7 @@ class TestCaseThatRecordsExecution:
 
     def __init__(self,
                  unittest_case: unittest.TestCase,
+                 expected_status: FullResultStatus,
                  expected_internal_recording: list,
                  expected_file_recording: list,
                  execution_directory_structure_should_exist: bool,
@@ -43,6 +46,7 @@ class TestCaseThatRecordsExecution:
         self.__previous_line_number = 0
         self.__unittest_case = unittest_case
         self.__dbg_do_not_delete_dir_structure = dbg_do_not_delete_dir_structure
+        self.__expected_status = expected_status
         self.__expected_internal_recording = expected_internal_recording
         self.__expected_file_recording = expected_file_recording
         self.__execution_directory_structure_should_exist = execution_directory_structure_should_exist
@@ -89,6 +93,9 @@ class TestCaseThatRecordsExecution:
             instruction)
 
     def _assertions(self):
+        self.unittest_case.assertEqual(self.__expected_status,
+                                       self.__full_result.status,
+                                       'Unexpected result status')
         msg = 'Difference in the sequence of executed phases and steps that are executed internally'
         self.unittest_case.assertEqual(self.__expected_internal_recording,
                                        self.__recorder,
@@ -230,6 +237,7 @@ class TestCaseThatRecordsExecution:
 class TestCaseThatRecordsExecutionWithSingleExtraInstruction(TestCaseThatRecordsExecution):
     def __init__(self,
                  unittest_case: unittest.TestCase,
+                 expected_status: FullResultStatus,
                  expected_internal_recording: list,
                  expected_file_recording: list,
                  execution_directory_structure_should_exist: bool,
@@ -240,6 +248,7 @@ class TestCaseThatRecordsExecutionWithSingleExtraInstruction(TestCaseThatRecords
                  cleanup_extra: instructions.CleanupPhaseInstruction,
                  dbg_do_not_delete_dir_structure=False):
         super().__init__(unittest_case,
+                         expected_status,
                          expected_internal_recording,
                          expected_file_recording,
                          execution_directory_structure_should_exist,
