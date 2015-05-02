@@ -1,3 +1,5 @@
+from shelltest.execution.result import FullResultStatus
+
 __author__ = 'emil'
 
 import unittest
@@ -11,6 +13,7 @@ class Test(unittest.TestCase):
     def test_full_sequence(self):
         TestCaseThatRecordsExecutionWithSingleExtraInstruction(
             self,
+            FullResultStatus.PASS,
             [phase_step.ANONYMOUS,
              phase_step.ACT__SCRIPT_GENERATION,
              phase_step.SETUP,
