@@ -1,5 +1,3 @@
-from shelltest.exec_abs_syn.instruction_result import new_success
-from shelltest.exec_abs_syn.instructions import SuccessOrHardError
 
 __author__ = 'emil'
 
@@ -8,7 +6,9 @@ import shutil
 import pathlib
 import unittest
 
-from shelltest import phases
+from shelltest.execution import phase_step
+from shelltest.exec_abs_syn.instruction_result import new_success
+from shelltest.exec_abs_syn.instructions import SuccessOrHardError
 from shelltest.exec_abs_syn import instructions
 from shelltest.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shelltest.phase_instr import model
@@ -17,14 +17,6 @@ from shelltest.script_language import python3
 from shelltest.exec_abs_syn import abs_syn_gen
 from shelltest.execution import execution
 from shelltest_test.execution.util import utils, instruction_adapter
-
-
-ANONYMOUS = 'anonymous'
-SETUP = phases.SETUP.name
-ACT_SCRIPT_GENERATION = phases.ACT.name + '/script-generation'
-ACT_SCRIPT_EXECUTION = phases.ACT.name + '/script-execution'
-ASSERT = phases.ASSERT.name
-CLEANUP = phases.CLEANUP.name
 
 
 class ListRecorder:
@@ -135,15 +127,15 @@ class TestCaseThatRecordsExecution:
 
     def _test_case(self) -> abs_syn_gen.TestCase:
         return abs_syn_gen.TestCase(
-            self.__from(self._anonymous_phase_recording(phases.ANONYMOUS) +
+            self.__from(self._anonymous_phase_recording() +
                         self._anonymous_phase_extra()),
-            self.__from(self._setup_phase_recording(phases.SETUP) +
+            self.__from(self._setup_phase_recording() +
                         self._setup_phase_extra()),
             self.__from(self._act_phase_recording() +
                         self._act_phase_extra()),
-            self.__from(self._assert_phase_recording(phases.ASSERT) +
+            self.__from(self._assert_phase_recording() +
                         self._assert_phase_extra()),
-            self.__from(self._cleanup_phase_recording(phases.CLEANUP) +
+            self.__from(self._cleanup_phase_recording() +
                         self._cleanup_phase_extra())
         )
 
@@ -153,23 +145,22 @@ class TestCaseThatRecordsExecution:
                     for instr in instruction_list]
         return model.PhaseContents(tuple(elements))
 
-    def _anonymous_phase_recording(self,
-                                   phase: phases.Phase) -> list:
+    def _anonymous_phase_recording(self) -> list:
         return [
-            AnonymousInternalInstructionThatRecordsStringInList(self.__recorder_of(phase.name))
+            AnonymousInternalInstructionThatRecordsStringInList(self.__recorder_of(phase_step.ANONYMOUS))
         ]
 
     def _anonymous_phase_extra(self) -> list:
         return []
 
-    def _setup_phase_recording(self,
-                               phase: phases.Phase) -> list:
+    def _setup_phase_recording(self) -> list:
         """
         :rtype list[PhaseContentElement] (with instruction of type SetupPhaseInstruction)
         """
         return [
-            instruction_adapter.as_setup(InternalInstructionThatRecordsStringInList(self.__recorder_of(phase.name))),
-            instruction_adapter.as_setup(InternalInstructionThatRecordsStringInRecordFile(phase.name)),
+            instruction_adapter.as_setup(
+                InternalInstructionThatRecordsStringInList(self.__recorder_of(phase_step.SETUP))),
+            instruction_adapter.as_setup(InternalInstructionThatRecordsStringInRecordFile(phase_step.SETUP)),
         ]
 
     def _setup_phase_extra(self) -> list:
@@ -183,8 +174,9 @@ class TestCaseThatRecordsExecution:
         :rtype list[PhaseContentElement] (with instruction of type ActPhaseInstruction)
         """
         return [
-            ActInstructionThatRecordsStringInList(self.__recorder_of(ACT_SCRIPT_GENERATION)),
-            ActInstructionThatRecordsStringInRecordFile(ACT_SCRIPT_EXECUTION),
+            ActInstructionThatRecordsStringInList(self.__recorder_of(phase_step.ACT__SCRIPT_GENERATION)),
+            ActInstructionThatRecordsStringInRecordFile(phase_step.ACT__SCRIPT_GENERATION),
+            ActInstructionThatRecordsStringInRecordFile(phase_step.ACT__SCRIPT_EXECUTION),
         ]
 
     def _act_phase_extra(self) -> list:
@@ -193,14 +185,14 @@ class TestCaseThatRecordsExecution:
         """
         return []
 
-    def _assert_phase_recording(self,
-                                phase: phases.Phase) -> list:
+    def _assert_phase_recording(self) -> list:
         """
         :rtype list[PhaseContentElement] (with instruction of type AssertPhaseInstruction)
         """
         return [
-            instruction_adapter.as_assert(InternalInstructionThatRecordsStringInList(self.__recorder_of(phase.name))),
-            instruction_adapter.as_assert(InternalInstructionThatRecordsStringInRecordFile(phase.name)),
+            instruction_adapter.as_assert(
+                InternalInstructionThatRecordsStringInList(self.__recorder_of(phase_step.ASSERT))),
+            instruction_adapter.as_assert(InternalInstructionThatRecordsStringInRecordFile(phase_step.ASSERT)),
         ]
 
     def _assert_phase_extra(self) -> list:
@@ -209,14 +201,14 @@ class TestCaseThatRecordsExecution:
         """
         return []
 
-    def _cleanup_phase_recording(self,
-                                 phase: phases.Phase) -> list:
+    def _cleanup_phase_recording(self) -> list:
         """
         :rtype list[PhaseContentElement] (with instruction of type CleanupPhaseInstruction)
         """
         return [
-            instruction_adapter.as_cleanup(InternalInstructionThatRecordsStringInList(self.__recorder_of(phase.name))),
-            instruction_adapter.as_cleanup(InternalInstructionThatRecordsStringInRecordFile(phase.name)),
+            instruction_adapter.as_cleanup(
+                InternalInstructionThatRecordsStringInList(self.__recorder_of(phase_step.CLEANUP))),
+            instruction_adapter.as_cleanup(InternalInstructionThatRecordsStringInRecordFile(phase_step.CLEANUP)),
         ]
 
     def _cleanup_phase_extra(self) -> list:

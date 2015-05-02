@@ -313,12 +313,12 @@ def execute(script_file_manager: script_stmt_gen.ScriptFileManager,
             execution_directory_root_name_prefix: str,
             is_keep_execution_directory_root: bool) -> FullResult:
     anonymous_phase_environment = PhaseEnvironmentForAnonymousPhase(str(initial_home_dir_path))
-    # partial_result = execute_anonymous_phase(anonymous_phase_environment,
-    # test_case)
-    # if partial_result.status is not PartialResultStatus.PASS:
-    #     return new_anonymous_phase_failure_from(partial_result)
-    # if anonymous_phase_environment.execution_mode is ExecutionMode.SKIPPED:
-    #     return new_skipped()
+    partial_result = execute_anonymous_phase(anonymous_phase_environment,
+                                             test_case)
+    if partial_result.status is not PartialResultStatus.PASS:
+        return new_anonymous_phase_failure_from(partial_result)
+    if anonymous_phase_environment.execution_mode is ExecutionMode.SKIPPED:
+        return result.new_skipped()
     partial_result = execute_named_phases(script_file_manager,
                                           script_source_writer,
                                           test_case,
