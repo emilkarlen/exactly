@@ -6,6 +6,8 @@
       <w>stdin</w>
       <w>stdout</w>
       <w>testcase</w>
+      <w>xfail</w>
+      <w>xpass</w>
     </words>
   </dictionary>
 </component>

@@ -1,3 +1,6 @@
+from shelltest.exec_abs_syn.instruction_result import new_success
+from shelltest.exec_abs_syn.instructions import SuccessOrHardError
+
 __author__ = 'emil'
 
 import os
@@ -54,7 +57,7 @@ class TestCaseThatRecordsExecution:
         self.__execution_directory_structure_should_exist = execution_directory_structure_should_exist
 
         self.__recorder = []
-        self.__test_case_execution = None
+        self.__full_result = None
         self.__execution_directory_structure = None
 
     def execute(self):
@@ -62,7 +65,7 @@ class TestCaseThatRecordsExecution:
         home_dir_path = pathlib.Path().resolve()
         test_case = self._test_case()
         # ACT #
-        test_case_execution = execution.execute_test_case_in_execution_directory2(
+        full_result = execution.execute(
             python3.Python3ScriptFileManager(),
             python3.new_script_source_writer(),
             test_case,
@@ -71,14 +74,15 @@ class TestCaseThatRecordsExecution:
             True)
 
         # ASSERT #
-        self.__test_case_execution = test_case_execution
+        self.__full_result = full_result
         self._assertions()
         # CLEANUP #
         os.chdir(str(home_dir_path))
-        if not self.__dbg_do_not_delete_dir_structure and self.__execution_directory_structure:
-            shutil.rmtree(str(self.__execution_directory_structure.root_dir))
+        if not self.__dbg_do_not_delete_dir_structure and self.eds:
+            shutil.rmtree(str(self.eds.root_dir))
         else:
-            print(str(test_case_execution.execution_directory_structure.root_dir))
+            if self.eds:
+                print(str(self.eds.root_dir))
 
     def _next_line(self) -> line_source.Line:
         """
@@ -97,9 +101,9 @@ class TestCaseThatRecordsExecution:
         self.unittest_case.assertEqual(self.__expected_internal_recording,
                                        self.__recorder)
         if self.__execution_directory_structure_should_exist:
-            self.__unittest_case.assertIsNotNone(self.test_case_execution.execution_directory_structure)
-            self.__unittest_case.assertTrue(self.test_case_execution.execution_directory_structure.root_dir.is_dir())
-            file_path = record_file_path(self.test_case_execution.execution_directory_structure)
+            self.__unittest_case.assertIsNotNone(self.eds)
+            self.__unittest_case.assertTrue(self.eds.root_dir.is_dir())
+            file_path = record_file_path(self.eds)
             if not self.__expected_file_recording:
                 self.__unittest_case.assertFalse(file_path.exists())
             else:
@@ -107,7 +111,7 @@ class TestCaseThatRecordsExecution:
                 self.assert_is_regular_file_with_contents(file_path,
                                                           expected_file_contents)
         else:
-            self.__unittest_case.assertIsNone(self.test_case_execution.execution_directory_structure)
+            self.__unittest_case.assertIsNone(self.eds)
 
 
 
@@ -116,12 +120,8 @@ class TestCaseThatRecordsExecution:
         return self.__unittest_case
 
     @property
-    def test_case_execution(self) -> execution.TestCaseExecution:
-        return self.__test_case_execution
-
-    @property
     def eds(self) -> execution.ExecutionDirectoryStructure:
-        return self.__execution_directory_structure
+        return self.__full_result.execution_directory_structure
 
     def assert_is_regular_file_with_contents(self,
                                              path: pathlib.Path,
@@ -321,8 +321,9 @@ class AnonymousInternalInstructionThatRecordsStringInList(instructions.Anonymous
 
     def execute(self, phase_name: str,
                 global_environment,
-                phase_environment: instructions.PhaseEnvironmentForAnonymousPhase):
+                phase_environment: instructions.PhaseEnvironmentForAnonymousPhase) -> SuccessOrHardError:
         self.__recorder.record()
+        return new_success()
 
 
 RECORD_FILE_BASE_NAME = 'recording.txt'

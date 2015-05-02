@@ -1,10 +1,68 @@
 __author__ = 'emil'
 
+from enum import Enum
 import pathlib
 
 from shelltest.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shelltest.phase_instr.model import Instruction
 from shelltest.exec_abs_syn import script_stmt_gen
+
+
+class SuccessOrHardError(tuple):
+    """
+    Represents EITHER success OR hard error.
+    """
+
+    def __new__(cls,
+                failure_message: str):
+        return tuple.__new__(cls, (failure_message, ))
+
+    @property
+    def failure_message(self) -> str:
+        """
+        :return None iff the object represents SUCCESS.
+        """
+        return self[0]
+
+    @property
+    def is_success(self) -> bool:
+        return self[0] is None
+
+    @property
+    def is_hard_error(self) -> bool:
+        return not self.is_success
+
+
+class PassOrFailOrHardErrorEnum(Enum):
+    PASS = 0
+    FAIL = 1
+    HARD_ERROR = 2
+
+
+class PassOrFailOrHardError(tuple):
+    """
+    Represents EITHER success OR hard error.
+    """
+
+    def __new__(cls,
+                status: PassOrFailOrHardErrorEnum,
+                error_message: str):
+        return tuple.__new__(cls, (status, error_message, ))
+
+    @property
+    def status(self) -> PassOrFailOrHardErrorEnum:
+        return self[0]
+
+    @property
+    def is_error(self) -> bool:
+        return self.status is not PassOrFailOrHardErrorEnum.PASS
+
+    @property
+    def error_message(self) -> str:
+        """
+        :return None iff the object represents PASS.
+        """
+        return self[1]
 
 
 class PhaseEnvironment:
@@ -14,9 +72,35 @@ class PhaseEnvironment:
     pass
 
 
+class ExecutionMode(Enum):
+    NORMAL = 0
+    SKIPPED = 1
+    XFAIL = 2
+
+
 class PhaseEnvironmentForAnonymousPhase(PhaseEnvironment):
     def __init__(self, home_dir: str):
-        self.home_dir = home_dir
+        self.__home_dir = home_dir
+        self.__execution_mode = ExecutionMode.NORMAL
+
+    @property
+    def execution_mode(self) -> ExecutionMode:
+        return self.__execution_mode
+
+    def set_execution_mode(self,
+                           x: ExecutionMode):
+        self.__execution_mode = x
+
+    @property
+    def home_dir(self) -> str:
+        return self.__home_dir
+
+    @property
+    def home_dir_path(self) -> pathlib.Path:
+        return pathlib.Path(self.__home_dir)
+
+    def set_home_dir(self, x: str):
+        self.__home_dir = x
 
 
 class PhaseEnvironmentForScriptGeneration(PhaseEnvironment):
@@ -89,7 +173,7 @@ class AnonymousPhaseInstruction(Instruction):
 
     def execute(self, phase_name: str,
                 global_environment,
-                phase_environment: PhaseEnvironmentForAnonymousPhase):
+                phase_environment: PhaseEnvironmentForAnonymousPhase) -> SuccessOrHardError:
         """
         Does whatever this instruction should do.
         :param phase_name The phase in which this instruction is in.
@@ -123,7 +207,7 @@ class SetupPhaseInstruction(InternalInstruction):
 
     def execute(self, phase_name: str,
                 global_environment: GlobalEnvironmentForNamedPhase,
-                phase_environment: PhaseEnvironmentForInternalCommands):
+                phase_environment: PhaseEnvironmentForInternalCommands) -> SuccessOrHardError:
         """
         Does whatever this instruction should do.
         :param phase_name The phase in which this instruction is in.
@@ -141,7 +225,7 @@ class ActPhaseInstruction(Instruction):
     def update_phase_environment(self,
                                  phase_name: str,
                                  global_environment: GlobalEnvironmentForNamedPhase,
-                                 phase_environment: PhaseEnvironmentForScriptGeneration):
+                                 phase_environment: PhaseEnvironmentForScriptGeneration) -> SuccessOrHardError:
         """
         Builds the script, and sets some execution premises (e.g. stdin),
         by updating the phase environment.
@@ -160,7 +244,7 @@ class AssertPhaseInstruction(InternalInstruction):
 
     def execute(self, phase_name: str,
                 global_environment: GlobalEnvironmentForNamedPhase,
-                phase_environment: PhaseEnvironmentForInternalCommands):
+                phase_environment: PhaseEnvironmentForInternalCommands) -> PassOrFailOrHardError:
         """
         Does whatever this instruction should do.
         :param phase_name The phase in which this instruction is in.
@@ -177,7 +261,7 @@ class CleanupPhaseInstruction(InternalInstruction):
 
     def execute(self, phase_name: str,
                 global_environment: GlobalEnvironmentForNamedPhase,
-                phase_environment: PhaseEnvironmentForInternalCommands):
+                phase_environment: PhaseEnvironmentForInternalCommands) -> SuccessOrHardError:
         """
         Does whatever this instruction should do.
         :param phase_name The phase in which this instruction is in.

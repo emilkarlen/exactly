@@ -12,6 +12,11 @@ from shelltest.exec_abs_syn import script_stmt_gen, abs_syn_gen
 from shelltest.exec_abs_syn.config import Configuration
 from shelltest import exception
 from .execution_directory_structure import construct_at, ExecutionDirectoryStructure
+from shelltest.exec_abs_syn.instructions import PhaseEnvironmentForAnonymousPhase, ExecutionMode, \
+    AnonymousPhaseInstruction
+from .result import FullResult, PartialResult, PartialResultStatus, FullResultStatus, \
+    InstructionFailureInfo, InstructionFailureDetails, new_failure_details_from_exception
+from . import result
 
 
 ENV_VAR_HOME = 'SHELLTEST_HOME'
@@ -46,6 +51,7 @@ class TestCaseExecution:
         self.__execution_directory_structure = execution_directory_structure
         self.__configuration = configuration
         self.__script_file_path = None
+        self.__partial_result = None
 
     def write_and_execute(self):
         self.write_and_store_script_file_path()
@@ -75,11 +81,17 @@ class TestCaseExecution:
         self.__execute_internal_instructions(phases.ASSERT, self.__assert_phase, phase_env)
         self.__execute_internal_instructions(phases.CLEANUP, self.__cleanup_phase, phase_env)
 
+        self.__partial_result = result.new_partial_result_pass(self.execution_directory_structure)
+
     @property
     def execution_directory_structure(self) -> ExecutionDirectoryStructure:
         if not self.__execution_directory_structure:
             raise ValueError('execution_directory_structure')
         return self.__execution_directory_structure
+
+    @property
+    def partial_result(self) -> result.PartialResult:
+        return self.__partial_result
 
     @property
     def script_file_path(self) -> pathlib.Path:
@@ -173,7 +185,7 @@ def __execute_act_phase(global_environment: instructions.GlobalEnvironmentForNam
                                                  act_environment)
 
 
-def execute_test_case_in_execution_directory2(script_file_management: script_stmt_gen.ScriptFileManager,
+def execute_test_case_in_execution_directory2(script_file_manager: script_stmt_gen.ScriptFileManager,
                                               script_source_writer: script_stmt_gen.ScriptSourceBuilder,
                                               test_case: abs_syn_gen.TestCase,
                                               home_dir_path: pathlib.Path,
@@ -198,7 +210,7 @@ def execute_test_case_in_execution_directory2(script_file_management: script_stm
         execution_directory_structure = construct_at(exec_dir_structure_root)
         global_environment = instructions.GlobalEnvironmentForNamedPhase(home_dir_path,
                                                                          execution_directory_structure)
-        act_environment = instructions.PhaseEnvironmentForScriptGeneration(script_file_management,
+        act_environment = instructions.PhaseEnvironmentForScriptGeneration(script_file_manager,
                                                                            script_source_writer)
         __execute_act_phase(global_environment, test_case.act_phase, act_environment)
         configuration = Configuration(home_dir_path,
@@ -223,3 +235,95 @@ def execute_test_case_in_execution_directory2(script_file_management: script_stm
     else:
         with tempfile.TemporaryDirectory(prefix=execution_directory_root_name_prefix) as tmp_exec_dir_structure_root:
             return with_existing_root(tmp_exec_dir_structure_root)
+
+
+def execute_anonymous_phase(phase_environment: PhaseEnvironmentForAnonymousPhase,
+                            test_case: abs_syn_gen.TestCase) -> PartialResult:
+    def failure_from(element: PhaseContentElement,
+                     fd: InstructionFailureDetails) -> PartialResult:
+        status = PartialResultStatus.IMPLEMENTATION_ERROR
+        if fd.error_message:
+            status = PartialResultStatus.HARD_ERROR
+        return PartialResult(status,
+                             None,
+                             InstructionFailureInfo(phases.ANONYMOUS,
+                                                    None,
+                                                    element.source_line,
+                                                    fd))
+
+    global_environment = ()
+    for element in test_case.anonymous_phase.elements:
+        assert isinstance(element, PhaseContentElement)
+        if element.is_instruction:
+            instruction = element.instruction
+            assert isinstance(instruction, AnonymousPhaseInstruction)
+            try:
+                instr_result = instruction.execute(phases.ANONYMOUS.name,
+                                                   global_environment,
+                                                   phase_environment)
+                if instr_result.is_hard_error:
+                    return failure_from(element,
+                                        result.new_failure_details_from_message(result.failure_message))
+            except Exception as ex:
+                return failure_from(element,
+                                    new_failure_details_from_exception(ex))
+    return result.new_partial_result_pass(None)
+
+
+def execute_named_phases(script_file_manager: script_stmt_gen.ScriptFileManager,
+                         script_source_writer: script_stmt_gen.ScriptSourceBuilder,
+                         test_case: abs_syn_gen.TestCase,
+                         home_dir_path: pathlib.Path,
+                         execution_directory_root_name_prefix: str,
+                         is_keep_execution_directory_root: bool) -> PartialResult:
+    tc_execution = execute_test_case_in_execution_directory2(script_file_manager,
+                                                             script_source_writer,
+                                                             test_case,
+                                                             home_dir_path,
+                                                             execution_directory_root_name_prefix,
+                                                             is_keep_execution_directory_root)
+    return tc_execution.partial_result
+
+
+def new_anonymous_phase_failure_from(partial_result: PartialResult) -> FullResult:
+    full_status = FullResultStatus.HARD_ERROR
+    if partial_result.status is PartialResultStatus.IMPLEMENTATION_ERROR:
+        full_status = FullResultStatus.IMPLEMENTATION_ERROR
+    return FullResult(full_status,
+                      None,
+                      partial_result.instruction_failure_info)
+
+
+def new_named_phases_result_from(anonymous_phase_environment: PhaseEnvironmentForAnonymousPhase,
+                                 partial_result: PartialResult) -> FullResult:
+    def translate_status(ps: PartialResultStatus) -> FullResultStatus:
+        if anonymous_phase_environment.execution_mode is ExecutionMode.NORMAL:
+            return FullResultStatus(ps.value)
+        raise NotImplementedError('not impl statuts translation')
+
+    return FullResult(translate_status(partial_result.status),
+                      partial_result.execution_directory_structure,
+                      partial_result.instruction_failure_info)
+
+
+def execute(script_file_manager: script_stmt_gen.ScriptFileManager,
+            script_source_writer: script_stmt_gen.ScriptSourceBuilder,
+            test_case: abs_syn_gen.TestCase,
+            initial_home_dir_path: pathlib.Path,
+            execution_directory_root_name_prefix: str,
+            is_keep_execution_directory_root: bool) -> FullResult:
+    anonymous_phase_environment = PhaseEnvironmentForAnonymousPhase(str(initial_home_dir_path))
+    # partial_result = execute_anonymous_phase(anonymous_phase_environment,
+    # test_case)
+    # if partial_result.status is not PartialResultStatus.PASS:
+    #     return new_anonymous_phase_failure_from(partial_result)
+    # if anonymous_phase_environment.execution_mode is ExecutionMode.SKIPPED:
+    #     return new_skipped()
+    partial_result = execute_named_phases(script_file_manager,
+                                          script_source_writer,
+                                          test_case,
+                                          anonymous_phase_environment.home_dir_path,
+                                          execution_directory_root_name_prefix,
+                                          is_keep_execution_directory_root)
+    return new_named_phases_result_from(anonymous_phase_environment,
+                                        partial_result)
