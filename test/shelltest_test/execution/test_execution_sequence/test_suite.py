@@ -35,7 +35,8 @@ class Test(unittest.TestCase):
 
     def test_hard_error_in_anonymous_phase(self):
         test_case = TestCaseThatRecordsExecutionWithSingleExtraInstruction(
-            anonymous_extra=anonymous_phase_errors.AnonymousPhaseInstructionThatReturnsHardError('hard error msg'))
+            anonymous_extra=
+            anonymous_phase_errors.AnonymousPhaseInstructionThatReturnsHardError('hard error msg'))
         TestCaseThatRecordsExecution(
             self,
             test_case,
@@ -43,6 +44,22 @@ class Test(unittest.TestCase):
             ExpectedInstructionFailureForFailure.new_with_message(
                 test_case.the_anonymous_phase_extra.source_line,
                 'hard error msg'),
+            [phase_step.ANONYMOUS],
+            [],
+            False).execute()
+
+    def test_implementation_error_in_anonymous_phase(self):
+        test_case = TestCaseThatRecordsExecutionWithSingleExtraInstruction(
+            anonymous_extra=
+            anonymous_phase_errors.AnonymousPhaseInstructionWithImplementationError(
+                anonymous_phase_errors.ImplementationErrorTestException()))
+        TestCaseThatRecordsExecution(
+            self,
+            test_case,
+            FullResultStatus.IMPLEMENTATION_ERROR,
+            ExpectedInstructionFailureForFailure.new_with_exception(
+                test_case.the_anonymous_phase_extra.source_line,
+                anonymous_phase_errors.ImplementationErrorTestException),
             [phase_step.ANONYMOUS],
             [],
             False).execute()
