@@ -2,8 +2,7 @@ __author__ = 'emil'
 
 import unittest
 
-from shelltest_test.execution.util.test_case_that_records_phase_execution import \
-    SETUP, ACT_SCRIPT_GENERATION, ACT_SCRIPT_EXECUTION,  CLEANUP, ASSERT
+from shelltest.execution import phase_step
 from shelltest_test.execution.util.test_case_that_records_phase_execution import \
     TestCaseThatRecordsExecutionWithSingleExtraInstruction
 
@@ -12,14 +11,16 @@ class Test(unittest.TestCase):
     def test_full_sequence(self):
         TestCaseThatRecordsExecutionWithSingleExtraInstruction(
             self,
-            [ACT_SCRIPT_GENERATION,
-             SETUP,
-             ASSERT,
-             CLEANUP],
-            [SETUP,
-             ACT_SCRIPT_EXECUTION,
-             ASSERT,
-             CLEANUP],
+            [phase_step.ANONYMOUS,
+             phase_step.ACT__SCRIPT_GENERATION,
+             phase_step.SETUP,
+             phase_step.ASSERT,
+             phase_step.CLEANUP],
+            [phase_step.SETUP,
+             phase_step.ACT__SCRIPT_GENERATION,
+             phase_step.ACT__SCRIPT_EXECUTION,
+             phase_step.ASSERT,
+             phase_step.CLEANUP],
             True,
             None, None, None, None, None
         ).execute()
