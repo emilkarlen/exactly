@@ -1,8 +1,9 @@
+from shelltest.phase_instr import line_source
+
 __author__ = 'emil'
 
 from enum import Enum
 
-from shelltest.phase_instr.line_source import LineSource
 from shelltest.phases import Phase
 from .execution_directory_structure import ExecutionDirectoryStructure
 
@@ -53,16 +54,16 @@ class InstructionFailureInfo:
     def __init__(self,
                  phase: Phase,
                  phase_step: str,
-                 instruction_source: LineSource,
+                 source_line: line_source.Line,
                  failure_details: InstructionFailureDetails):
-        self.__instruction_source = instruction_source
+        self.__source_line = source_line
         self.__phase = phase
         self.__phase_step = phase_step
         self.__failure_details = failure_details
 
     @property
-    def instruction_source(self) -> LineSource:
-        return self.__instruction_source
+    def source_line(self) -> line_source.Line:
+        return self.__source_line
 
     @property
     def phase(self) -> Phase:
@@ -157,7 +158,6 @@ class FullResult(ResultBase):
     @property
     def status(self) -> FullResultStatus:
         return self.__status
-
 
 def new_skipped() -> FullResult:
     return FullResult(FullResultStatus.SKIPPED,

@@ -1,5 +1,3 @@
-from shelltest.execution.result import FullResultStatus
-
 __author__ = 'emil'
 
 import os
@@ -7,28 +5,89 @@ import shutil
 import pathlib
 import unittest
 
-from shelltest.execution import phase_step
-from shelltest.exec_abs_syn.instruction_result import new_success
-from shelltest.exec_abs_syn.instructions import SuccessOrHardError
-from shelltest.exec_abs_syn import instructions
-from shelltest.execution.execution_directory_structure import ExecutionDirectoryStructure
+from shelltest.execution.result import FullResultStatus, InstructionFailureInfo
 from shelltest.phase_instr import model
 from shelltest.phase_instr import line_source
 from shelltest.script_language import python3
-from shelltest.exec_abs_syn import abs_syn_gen
 from shelltest.execution import execution
-from shelltest_test.execution.util import utils, instruction_adapter
+from shelltest_test.execution.util import utils
+from shelltest_test.execution.util.instructions_for_sequence_tests import record_file_path
+from shelltest_test.execution.util.instructions_for_sequence_tests import record_file_contents_from_lines
+from shelltest_test.execution.util.test_case_generation_for_sequence_tests import TestCaseGeneratorForExecutionRecording
 
 
-class ListRecorder:
-    def __init__(self,
-                 recorder: list,
-                 element: str):
-        self.recorder = recorder
-        self.element = element
+class ExpectedInstructionFailureBase:
+    def assertions(self,
+                   unittest_case: unittest.TestCase,
+                   actual_failure_info: InstructionFailureInfo):
+        raise NotImplementedError()
 
-    def record(self):
-        self.recorder.append(self.element)
+
+class ExpectedInstructionFailureForNoFailure(ExpectedInstructionFailureBase):
+    def assertions(self,
+                   unittest_case: unittest.TestCase,
+                   actual_failure_info: InstructionFailureInfo):
+        unittest_case.assertIsNone(actual_failure_info,
+                                   'There should be no failure')
+
+
+class ExpectedInstructionFailureForFailure(ExpectedInstructionFailureBase, tuple):
+    def __new__(cls,
+                source_line: line_source.Line,
+                error_message_or_none: str,
+                exception_class_or_none):
+        return tuple.__new__(cls, (source_line,
+                                   error_message_or_none,
+                                   exception_class_or_none))
+
+    @staticmethod
+    def new_with_message(source_line: line_source.Line,
+                         error_message: str):
+        return ExpectedInstructionFailureForFailure(source_line,
+                                                    error_message,
+                                                    None)
+
+    @staticmethod
+    def new_with_exception(source_line: line_source.Line,
+                           exception_class):
+        return ExpectedInstructionFailureForFailure(source_line,
+                                                    None,
+                                                    exception_class)
+
+    def assertions(self,
+                   unittest_case: unittest.TestCase,
+                   actual_failure_info: InstructionFailureInfo):
+        if actual_failure_info is not None:
+            unittest_case.assertEqual(self.source_line.line_number,
+                                      actual_failure_info.source_line.line_number,
+                                      'Source line number')
+            unittest_case.assertEqual(self.source_line.text,
+                                      actual_failure_info.source_line.text,
+                                      'Source text')
+            if self.error_message_or_none is not None:
+                unittest_case.assertIsNotNone(actual_failure_info.failure_details.error_message,
+                                              'An error message is expected (not an exception)')
+                unittest_case.assertEqual(actual_failure_info.failure_details.error_message,
+                                          self.error_message_or_none,
+                                          'Error message text')
+            else:
+                unittest_case.assertIsNotNone(actual_failure_info.failure_details.exception,
+                                              'An exception is expected (not an error message)')
+                unittest_case.assertIsInstance(actual_failure_info.failure_details.exception,
+                                               self.exception_class_or_none,
+                                               'Exception class')
+
+    @property
+    def source_line(self) -> line_source.Line:
+        return self[0]
+
+    @property
+    def error_message_or_none(self) -> str:
+        return self[1]
+
+    @property
+    def exception_class_or_none(self):
+        return self[2]
 
 
 class TestCaseThatRecordsExecution:
@@ -38,39 +97,42 @@ class TestCaseThatRecordsExecution:
 
     def __init__(self,
                  unittest_case: unittest.TestCase,
+                 test_case_generator: TestCaseGeneratorForExecutionRecording,
                  expected_status: FullResultStatus,
+                 expected_failure_info: ExpectedInstructionFailureBase,
                  expected_internal_recording: list,
                  expected_file_recording: list,
                  execution_directory_structure_should_exist: bool,
                  dbg_do_not_delete_dir_structure=False):
-        self.__previous_line_number = 0
         self.__unittest_case = unittest_case
+        self._test_case_generator = test_case_generator
+        self.__previous_line_number = 0
         self.__dbg_do_not_delete_dir_structure = dbg_do_not_delete_dir_structure
         self.__expected_status = expected_status
-        self.__expected_internal_recording = expected_internal_recording
+        self.__expected_failure_info = expected_failure_info
+        self.__expected_internal_instruction_recording = expected_internal_recording
         self.__expected_file_recording = expected_file_recording
         self.__execution_directory_structure_should_exist = execution_directory_structure_should_exist
 
-        self.__recorder = []
         self.__full_result = None
         self.__execution_directory_structure = None
 
     def execute(self):
         # ARRANGE #
         home_dir_path = pathlib.Path().resolve()
-        test_case = self._test_case()
         # ACT #
         full_result = execution.execute(
             python3.Python3ScriptFileManager(),
             python3.new_script_source_writer(),
-            test_case,
+            self._test_case_generator.test_case,
             home_dir_path,
             'shelltest-test-',
             True)
 
         # ASSERT #
         self.__full_result = full_result
-        self._assertions()
+        self._standard_assertions()
+        self._custom_assertions()
         # CLEANUP #
         os.chdir(str(home_dir_path))
         if not self.__dbg_do_not_delete_dir_structure and self.eds:
@@ -92,13 +154,15 @@ class TestCaseThatRecordsExecution:
             self._next_line(),
             instruction)
 
-    def _assertions(self):
+    def _standard_assertions(self):
         self.unittest_case.assertEqual(self.__expected_status,
                                        self.__full_result.status,
                                        'Unexpected result status')
+        self.__expected_failure_info.assertions(self.unittest_case,
+                                                self.__full_result.instruction_failure_info)
         msg = 'Difference in the sequence of executed phases and steps that are executed internally'
-        self.unittest_case.assertEqual(self.__expected_internal_recording,
-                                       self.__recorder,
+        self.unittest_case.assertEqual(self.__expected_internal_instruction_recording,
+                                       self._test_case_generator.internal_instruction_recorder,
                                        msg)
         if self.__execution_directory_structure_should_exist:
             self.__unittest_case.assertIsNotNone(self.eds)
@@ -116,6 +180,8 @@ class TestCaseThatRecordsExecution:
         else:
             self.__unittest_case.assertIsNone(self.eds)
 
+    def _custom_assertions(self):
+        pass
 
     @property
     def unittest_case(self) -> unittest.TestCase:
@@ -136,227 +202,3 @@ class TestCaseThatRecordsExecution:
                                            path,
                                            expected_contents,
                                            msg)
-
-    def _test_case(self) -> abs_syn_gen.TestCase:
-        return abs_syn_gen.TestCase(
-            self.__from(self._anonymous_phase_recording() +
-                        self._anonymous_phase_extra()),
-            self.__from(self._setup_phase_recording() +
-                        self._setup_phase_extra()),
-            self.__from(self._act_phase_recording() +
-                        self._act_phase_extra()),
-            self.__from(self._assert_phase_recording() +
-                        self._assert_phase_extra()),
-            self.__from(self._cleanup_phase_recording() +
-                        self._cleanup_phase_extra())
-        )
-
-    def __from(self,
-               instruction_list: list) -> model.PhaseContents:
-        elements = [self._next_instruction_line(instr)
-                    for instr in instruction_list]
-        return model.PhaseContents(tuple(elements))
-
-    def _anonymous_phase_recording(self) -> list:
-        return [
-            AnonymousInternalInstructionThatRecordsStringInList(self.__recorder_of(phase_step.ANONYMOUS))
-        ]
-
-    def _anonymous_phase_extra(self) -> list:
-        return []
-
-    def _setup_phase_recording(self) -> list:
-        """
-        :rtype list[PhaseContentElement] (with instruction of type SetupPhaseInstruction)
-        """
-        return [
-            instruction_adapter.as_setup(
-                InternalInstructionThatRecordsStringInList(self.__recorder_of(phase_step.SETUP))),
-            instruction_adapter.as_setup(InternalInstructionThatRecordsStringInRecordFile(phase_step.SETUP)),
-        ]
-
-    def _setup_phase_extra(self) -> list:
-        """
-        :rtype list[PhaseContentElement] (with instruction of type SetupPhaseInstruction)
-        """
-        return []
-
-    def _act_phase_recording(self) -> list:
-        """
-        :rtype list[PhaseContentElement] (with instruction of type ActPhaseInstruction)
-        """
-        return [
-            ActInstructionThatRecordsStringInList(self.__recorder_of(phase_step.ACT__SCRIPT_GENERATION)),
-            ActInstructionThatRecordsStringInRecordFile(phase_step.ACT__SCRIPT_GENERATION),
-            ActInstructionThatRecordsStringInRecordFile(phase_step.ACT__SCRIPT_EXECUTION),
-        ]
-
-    def _act_phase_extra(self) -> list:
-        """
-        :rtype list[PhaseContentElement] (with instruction of type ActPhaseInstruction)
-        """
-        return []
-
-    def _assert_phase_recording(self) -> list:
-        """
-        :rtype list[PhaseContentElement] (with instruction of type AssertPhaseInstruction)
-        """
-        return [
-            instruction_adapter.as_assert(
-                InternalInstructionThatRecordsStringInList(self.__recorder_of(phase_step.ASSERT))),
-            instruction_adapter.as_assert(InternalInstructionThatRecordsStringInRecordFile(phase_step.ASSERT)),
-        ]
-
-    def _assert_phase_extra(self) -> list:
-        """
-        :rtype list[PhaseContentElement] (with instruction of type AssertPhaseInstruction)
-        """
-        return []
-
-    def _cleanup_phase_recording(self) -> list:
-        """
-        :rtype list[PhaseContentElement] (with instruction of type CleanupPhaseInstruction)
-        """
-        return [
-            instruction_adapter.as_cleanup(
-                InternalInstructionThatRecordsStringInList(self.__recorder_of(phase_step.CLEANUP))),
-            instruction_adapter.as_cleanup(InternalInstructionThatRecordsStringInRecordFile(phase_step.CLEANUP)),
-        ]
-
-    def _cleanup_phase_extra(self) -> list:
-        """
-        :rtype list[PhaseContentElement] (with instruction of type CleanupPhaseInstruction)
-        """
-        return []
-
-    def __recorder_of(self, s: str) -> ListRecorder:
-        return ListRecorder(self.__recorder,
-                            s)
-
-
-class TestCaseThatRecordsExecutionWithSingleExtraInstruction(TestCaseThatRecordsExecution):
-    def __init__(self,
-                 unittest_case: unittest.TestCase,
-                 expected_status: FullResultStatus,
-                 expected_internal_recording: list,
-                 expected_file_recording: list,
-                 execution_directory_structure_should_exist: bool,
-                 anonymous_extra: instructions.AnonymousPhaseInstruction,
-                 setup_extra: instructions.SetupPhaseInstruction,
-                 act_extra: instructions.ActPhaseInstruction,
-                 assert_extra: instructions.AssertPhaseInstruction,
-                 cleanup_extra: instructions.CleanupPhaseInstruction,
-                 dbg_do_not_delete_dir_structure=False):
-        super().__init__(unittest_case,
-                         expected_status,
-                         expected_internal_recording,
-                         expected_file_recording,
-                         execution_directory_structure_should_exist,
-                         dbg_do_not_delete_dir_structure)
-        self.__anonymous_extra = anonymous_extra
-        self.__setup_extra = setup_extra
-        self.__act_extra = act_extra
-        self.__assert_extra = assert_extra
-        self.__cleanup_extra = cleanup_extra
-
-    def _anonymous_phase_extra(self) -> list:
-        return [self.__anonymous_extra] if self.__anonymous_extra else []
-
-    def _setup_phase_extra(self) -> list:
-        return [self.__setup_extra] if self.__setup_extra else []
-
-    def _act_phase_extra(self) -> list:
-        return [self.__act_extra] if self.__act_extra else []
-
-    def _assert_phase_extra(self) -> list:
-        return [self.__assert_extra] if self.__assert_extra else []
-
-    def _cleanup_phase_extra(self) -> list:
-        return [self.__cleanup_extra] if self.__cleanup_extra else []
-
-
-class InternalInstructionThatRecordsStringInRecordFile(instructions.InternalInstruction):
-    def __init__(self, s: str):
-        self.__s = s
-
-    def execute(self, phase_name: str,
-                global_environment: instructions.GlobalEnvironmentForNamedPhase,
-                phase_environment: instructions.PhaseEnvironmentForInternalCommands):
-        append_line_to_record_file(global_environment.execution_directory_structure,
-                                   self.__s)
-
-
-class InternalInstructionThatRecordsStringInList(instructions.InternalInstruction):
-    def __init__(self,
-                 recorder: ListRecorder):
-        self.__recorder = recorder
-
-    def execute(self, phase_name: str,
-                global_environment: instructions.GlobalEnvironmentForNamedPhase,
-                phase_environment: instructions.PhaseEnvironmentForInternalCommands):
-        self.__recorder.record()
-
-
-class ActInstructionThatRecordsStringInRecordFile(instructions.ActPhaseInstruction):
-    def __init__(self, s: str):
-        self.__s = s
-
-    def update_phase_environment(self, phase_name: str,
-                                 global_environment: instructions.GlobalEnvironmentForNamedPhase,
-                                 phase_environment: instructions.PhaseEnvironmentForScriptGeneration):
-        phase_environment.append.raw_script_statements(
-            append_line_to_record_file_statements(global_environment.execution_directory_structure,
-                                                  self.__s))
-
-
-class ActInstructionThatRecordsStringInList(instructions.ActPhaseInstruction):
-    def __init__(self,
-                 recorder: ListRecorder):
-        self.__recorder = recorder
-
-    def update_phase_environment(self, phase_name: str,
-                                 global_environment: instructions.GlobalEnvironmentForNamedPhase,
-                                 phase_environment: instructions.PhaseEnvironmentForScriptGeneration):
-        self.__recorder.record()
-
-
-class AnonymousInternalInstructionThatRecordsStringInList(instructions.AnonymousPhaseInstruction):
-    def __init__(self,
-                 recorder: ListRecorder):
-        self.__recorder = recorder
-
-    def execute(self, phase_name: str,
-                global_environment,
-                phase_environment: instructions.PhaseEnvironmentForAnonymousPhase) -> SuccessOrHardError:
-        self.__recorder.record()
-        return new_success()
-
-
-RECORD_FILE_BASE_NAME = 'recording.txt'
-
-
-def record_file_path(eds: ExecutionDirectoryStructure) -> pathlib.Path:
-    return eds.root_dir / RECORD_FILE_BASE_NAME
-
-
-def record_file_contents_from_lines(lines: list) -> str:
-    return '\n'.join(lines) + '\n'
-
-
-def append_line_to_record_file(eds: ExecutionDirectoryStructure,
-                               line: str):
-    append_line_to_file(record_file_path(eds), line)
-
-
-def append_line_to_record_file_statements(eds: ExecutionDirectoryStructure,
-                                          line: str) -> list:
-    return [
-        'with open(\'%s\', \'a\') as f:' % (str(record_file_path(eds))),
-        '  f.write(\'%s\')' % (line + '\\n'),
-    ]
-
-
-def append_line_to_file(file_path: pathlib.Path,
-                        line: str):
-    with open(str(file_path), 'a') as f:
-        f.write(line + '\n')

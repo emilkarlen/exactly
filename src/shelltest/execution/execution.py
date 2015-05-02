@@ -263,7 +263,7 @@ def execute_anonymous_phase(phase_environment: PhaseEnvironmentForAnonymousPhase
                                                    phase_environment)
                 if instr_result.is_hard_error:
                     return failure_from(element,
-                                        result.new_failure_details_from_message(result.failure_message))
+                                        result.new_failure_details_from_message(instr_result.failure_message))
             except Exception as ex:
                 return failure_from(element,
                                     new_failure_details_from_exception(ex))
