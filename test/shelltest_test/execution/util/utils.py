@@ -16,7 +16,8 @@ def un_lines(lines: list) -> str:
 
 def assert_is_file_with_contents(test: unittest.TestCase,
                                  file_path: pathlib.Path,
-                                 expected_content: str):
+                                 expected_content: str,
+                                 msg=None):
     file_name = str(file_path)
     test.assertTrue(file_path.exists(),
                     'File should exist: ' + file_name)
@@ -25,6 +26,8 @@ def assert_is_file_with_contents(test: unittest.TestCase,
     f = open(str(file_path))
     actual_contents = f.read()
     f.close()
+    if msg is None:
+        msg = 'Contents of:' + file_name
     test.assertEqual(expected_content,
                      actual_contents,
-                     'Contents of:' + file_name)
+                     msg)
