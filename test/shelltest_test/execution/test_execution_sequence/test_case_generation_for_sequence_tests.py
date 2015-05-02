@@ -1,5 +1,5 @@
 from shelltest.phase_instr.model import PhaseContentElement
-from shelltest_test.execution.test_execution_sequence import instructions_for_sequence_tests as instr
+from shelltest_test.execution.test_execution_sequence import recording_instructions_for_sequence_tests as instr
 from shelltest_test.execution.util.test_case_generation import TestCaseGeneratorBase
 
 __author__ = 'emil'
