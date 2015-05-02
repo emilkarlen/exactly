@@ -11,9 +11,11 @@ from shelltest.phase_instr import line_source
 from shelltest.script_language import python3
 from shelltest.execution import execution
 from shelltest_test.execution.util import utils
-from shelltest_test.execution.util.instructions_for_sequence_tests import record_file_path
-from shelltest_test.execution.util.instructions_for_sequence_tests import record_file_contents_from_lines
-from shelltest_test.execution.util.test_case_generation_for_sequence_tests import TestCaseGeneratorForExecutionRecording
+from shelltest_test.execution.test_execution_sequence.instructions_for_sequence_tests import record_file_path
+from shelltest_test.execution.test_execution_sequence.instructions_for_sequence_tests import \
+    record_file_contents_from_lines
+from shelltest_test.execution.test_execution_sequence.test_case_generation_for_sequence_tests import \
+    TestCaseGeneratorForExecutionRecording
 
 
 class ExpectedInstructionFailureBase:
