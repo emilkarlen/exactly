@@ -1,4 +1,3 @@
-
 __author__ = 'emil'
 
 import os
@@ -90,8 +89,10 @@ class TestCaseThatRecordsExecution:
             instruction)
 
     def _assertions(self):
+        msg = 'Difference in the sequence of executed phases and steps that are executed internally'
         self.unittest_case.assertEqual(self.__expected_internal_recording,
-                                       self.__recorder)
+                                       self.__recorder,
+                                       msg)
         if self.__execution_directory_structure_should_exist:
             self.__unittest_case.assertIsNotNone(self.eds)
             self.__unittest_case.assertTrue(self.eds.root_dir.is_dir())
@@ -100,11 +101,13 @@ class TestCaseThatRecordsExecution:
                 self.__unittest_case.assertFalse(file_path.exists())
             else:
                 expected_file_contents = record_file_contents_from_lines(self.__expected_file_recording)
+                msg = 'Difference in sequence of phases/steps that are executed after Execution Directory Structure' + \
+                      ' is created'
                 self.assert_is_regular_file_with_contents(file_path,
-                                                          expected_file_contents)
+                                                          expected_file_contents,
+                                                          msg)
         else:
             self.__unittest_case.assertIsNone(self.eds)
-
 
 
     @property
@@ -117,13 +120,15 @@ class TestCaseThatRecordsExecution:
 
     def assert_is_regular_file_with_contents(self,
                                              path: pathlib.Path,
-                                             expected_contents: str):
+                                             expected_contents: str,
+                                             msg=None):
         """
         Helper for test cases that check the contents of files.
         """
         utils.assert_is_file_with_contents(self.unittest_case,
                                            path,
-                                           expected_contents)
+                                           expected_contents,
+                                           msg)
 
     def _test_case(self) -> abs_syn_gen.TestCase:
         return abs_syn_gen.TestCase(
