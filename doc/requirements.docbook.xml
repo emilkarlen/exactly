@@ -76,7 +76,12 @@
       xlink:href="https://www.gnu.org/software/automake/manual/html_node/Scripts_002dbased-Testsuites.html#Scripts_002dbased-Testsuites">automake:
       Scripts-based Testsuites</link>.</para>
 
-      <variablelist>
+        <para>TODO: See<link
+                xlink:href="http://www.gnu.org/software/dejagnu/manual/x47.html#posix">
+            http://www.gnu.org/software/dejagnu/manual/x47.html#posix</link>.
+        </para>
+
+        <variablelist>
         <varlistentry>
           <term><constant>PASS</constant></term>
 
@@ -214,6 +219,8 @@
             </term>
 
             <listitem>
+                <para>Reserved directory.</para>
+
                 <para>The test case, transformed from the test case file, in a
                     form that is executed.
                 </para>
@@ -259,7 +266,9 @@
           <term><filename class="directory">result</filename></term>
 
           <listitem>
-            <variablelist>
+              <para>Reserved directory.</para>
+
+              <variablelist>
               <varlistentry>
                 <term><filename class="directory">std</filename></term>
 
@@ -303,7 +312,9 @@
           <term><filename class="directory">log</filename></term>
 
           <listitem>
-            <para>Various logs.</para>
+              <para>Reserved directory.</para>
+
+              <para>Various logs.</para>
           </listitem>
         </varlistentry>
       </variablelist>
@@ -477,7 +488,14 @@
         </listitem>
 
           <listitem>
-              <para>Validation and execution</para>
+              <para>Phases</para>
+
+              <para>Some phases are decomposed into "steps". The reason is mainly
+                  to help debugging test cases. When there is a "validation step",
+                  then this step is designed to validate that the following step(s)
+                  can be executed without problems. A typical example of a validation
+                  is checking that a file that must exist really exists.
+              </para>
 
               <para>Each phase consists of two parts: validation and execution. If
                   the validation phase fails, then the test case fails with
@@ -492,6 +510,8 @@
                           phase
                       </para>
 
+                      <para>This phase is not decomposed into steps.</para>
+
                       <para>The anonymous phase sets the premises for the following
                           phases.
                       </para>
@@ -502,15 +522,12 @@
                           result).
                       </para>
 
-                      <orderedlist>
-                          <listitem>
-                              <para>Validation</para>
-                          </listitem>
-
-                          <listitem>
-                              <para>Execution</para>
-                          </listitem>
-                      </orderedlist>
+                      <para>The test case will fail with
+                          <glossterm>HARD
+                              ERROR
+                          </glossterm>
+                          if any instruction fails.
+                      </para>
                   </listitem>
 
                   <listitem>
@@ -528,18 +545,15 @@
                           execution)
                       </para>
 
-                      <para>A failure in the execution will cause The test case fails
-                          with
+                      <para>The test case fails with
                           <glossterm>HARD ERROR</glossterm>
                           if any step fails.
                       </para>
                   </listitem>
 
                   <listitem>
-                      <para>Validation of all phases after
-                          <systemitem>setup</systemitem>:<systemitem>act</systemitem>,
-                          <systemitem>assert</systemitem>,
-                          <systemitem>cleanup</systemitem>
+                      <para>Validation of<systemitem>act</systemitem>,
+                          <systemitem>assert</systemitem>
                       </para>
 
                       <para>The test case fails with
@@ -604,6 +618,123 @@
 
       <para>This process can be halted after various steps for the purpose of
       experimenting and debugging a test case.</para>
+
+        <section>
+            <title>Sub exit statuses</title>
+
+            <para>Varje fel ska levereras via ett undantag.</para>
+
+            <para>Fördef fel för varje felstatus m gemensam basklass: FilureError
+                (HardErrorError, ...)
+            </para>
+
+            <para>Undantag som inte är ett av dessa representerar
+                implementationsfel i shelltest.
+            </para>
+
+            <para>Vore bra att kunna separera dessa utåt, dvs kunna få info om
+                orsaken vid körning. Samtidigt ska returkoden vara HARD_ERROR för att
+                kunna integreras i en svit.
+            </para>
+
+            <para>Förutom differentieringen i impl-fel, kontra "förväntade" fel,
+                finns differentieringen utefter steg, t ex validering kontra
+                exekvering. Fel i valideringen ger alltid upphov till
+                HARD_ERROR.
+            </para>
+
+            <para/>
+
+            <variablelist>
+                <varlistentry>
+                    <term>anonym</term>
+
+                    <listitem>
+                        <para>HARD_ERROR (hanterat): koden kastar HardErrorError</para>
+
+                        <para>HARD_ERROR (implementationsfel) något annat</para>
+                    </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                    <term>setup</term>
+
+                    <listitem>
+                        <para>HARD_ERROR (hanterat): koden kastar HardErrorError</para>
+
+                        <para>HARD_ERROR (implementationsfel) något annat</para>
+                    </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                    <term>act</term>
+
+                    <listitem>
+                        <variablelist>
+                            <varlistentry>
+                                <term>validering</term>
+
+                                <listitem>
+                                    <para>HARD_ERROR (oavsett undantag)</para>
+                                </listitem>
+                            </varlistentry>
+
+                            <varlistentry>
+                                <term>kod-generering</term>
+
+                                <listitem>
+                                    <para>HARD_ERROR (oavsett undantag)</para>
+                                </listitem>
+                            </varlistentry>
+
+                            <varlistentry>
+                                <term>kod-exekvering</term>
+
+                                <listitem>
+                                    <para>inga fel kan uppstå</para>
+                                </listitem>
+                            </varlistentry>
+                        </variablelist>
+                    </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                    <term>assert</term>
+
+                    <listitem>
+                        <variablelist>
+                            <varlistentry>
+                                <term>validering</term>
+
+                                <listitem>
+                                    <para>HARD_ERROR (oavsett undantag)</para>
+                                </listitem>
+                            </varlistentry>
+
+                            <varlistentry>
+                                <term>exekvering</term>
+
+                                <listitem>
+                                    <para>PASS, FAIL, HARD_ERROR</para>
+                                </listitem>
+                            </varlistentry>
+                        </variablelist>
+                    </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                    <term>cleanup</term>
+
+                    <listitem>
+                        <para>HARD_ERROR (oavsett undantag)</para>
+                    </listitem>
+                </varlistentry>
+            </variablelist>
+
+            <para>Alltså: HARD_ERROR finns i två varianter: "hanterat" och
+                implementationsfel/bugg.
+            </para>
+        </section>
     </section>
   </chapter>
 
