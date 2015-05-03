@@ -118,3 +118,26 @@ class AssertPhaseInstructionWithImplementationError(instrs.AssertPhaseInstructio
                 phase_environment: instrs.PhaseEnvironmentForInternalCommands) -> instrs.PassOrFailOrHardError:
         raise self.__exception_to_raise
 
+
+class CleanupPhaseInstructionThatReturnsHardError(instrs.CleanupPhaseInstruction):
+    def __init__(self,
+                 msg: str):
+        self.__msg = msg
+
+    def execute(self,
+                phase_name: str,
+                global_environment: instrs.GlobalEnvironmentForNamedPhase,
+                phase_environment: instrs.PhaseEnvironmentForInternalCommands) -> instrs.SuccessOrHardError:
+        return success_or_hard_error_construction.new_hard_error(self.__msg)
+
+
+class CleanupPhaseInstructionWithImplementationError(instrs.CleanupPhaseInstruction):
+    def __init__(self,
+                 exception_to_raise: Exception):
+        self.__exception_to_raise = exception_to_raise
+
+    def execute(self,
+                phase_name: str,
+                global_environment: instrs.GlobalEnvironmentForNamedPhase,
+                phase_environment: instrs.PhaseEnvironmentForInternalCommands) -> instrs.SuccessOrHardError:
+        raise self.__exception_to_raise

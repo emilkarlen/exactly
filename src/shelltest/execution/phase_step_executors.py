@@ -73,3 +73,17 @@ class AssertInstructionExecutor(ControlledInstructionExecutor):
             instruction.execute(phases.ASSERT.name,
                                 self.__global_environment,
                                 self.__phase_environment))
+
+
+class CleanupPhaseInstructionExecutor(ControlledInstructionExecutor):
+    def __init__(self,
+                 global_environment: instr.GlobalEnvironmentForNamedPhase,
+                 phase_environment: instr.PhaseEnvironmentForInternalCommands):
+        self.__global_environment = global_environment
+        self.__phase_environment = phase_environment
+
+    def apply(self, instruction: instr.CleanupPhaseInstruction) -> PartialInstructionControlledFailureInfo:
+        return _from_success_or_hard_error(
+            instruction.execute(phases.CLEANUP.name,
+                                self.__global_environment,
+                                self.__phase_environment))

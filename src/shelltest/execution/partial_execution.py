@@ -99,9 +99,14 @@ class TestCaseExecution:
                                                         phase_env),
                                                     self.__assert_phase)
         self.__partial_result = res
-        self.__execute_internal_instructions(phases.CLEANUP, self.__cleanup_phase, phase_env)
-
-        # self.__partial_result = result.new_partial_result_pass(self.execution_directory_structure)
+        res = self.__execute_internal_instructions2(phases.CLEANUP,
+                                                    None,
+                                                    phase_step_executors.CleanupPhaseInstructionExecutor(
+                                                        self.__global_environment,
+                                                        phase_env),
+                                                    self.__cleanup_phase)
+        if res.is_failure:
+            self.__partial_result = res
 
     @property
     def execution_directory_structure(self) -> ExecutionDirectoryStructure:
