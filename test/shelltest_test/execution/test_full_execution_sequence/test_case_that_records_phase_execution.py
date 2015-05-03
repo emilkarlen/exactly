@@ -1,3 +1,5 @@
+from shelltest.execution.execution_directory_structure import ExecutionDirectoryStructure
+
 __author__ = 'emil'
 
 import os
@@ -9,12 +11,13 @@ from shelltest.execution.result import FullResultStatus, InstructionFailureInfo
 from shelltest.phase_instr import model
 from shelltest.phase_instr import line_source
 from shelltest.script_language import python3
-from shelltest.execution import execution
+from shelltest.execution import full_execution
 from shelltest_test.execution.util import utils
-from shelltest_test.execution.test_execution_sequence.recording_instructions_for_sequence_tests import record_file_path
-from shelltest_test.execution.test_execution_sequence.recording_instructions_for_sequence_tests import \
+from shelltest_test.execution.test_full_execution_sequence.recording_instructions_for_sequence_tests import \
+    record_file_path
+from shelltest_test.execution.test_full_execution_sequence.recording_instructions_for_sequence_tests import \
     record_file_contents_from_lines
-from shelltest_test.execution.test_execution_sequence.test_case_generation_for_sequence_tests import \
+from shelltest_test.execution.test_full_execution_sequence.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorForExecutionRecording
 
 
@@ -123,7 +126,7 @@ class TestCaseThatRecordsExecution:
         # ARRANGE #
         home_dir_path = pathlib.Path().resolve()
         # ACT #
-        full_result = execution.execute(
+        full_result = full_execution.execute(
             python3.Python3ScriptFileManager(),
             python3.new_script_source_writer(),
             self._test_case_generator.test_case,
@@ -193,7 +196,7 @@ class TestCaseThatRecordsExecution:
         return self.__unittest_case
 
     @property
-    def eds(self) -> execution.ExecutionDirectoryStructure:
+    def eds(self) -> ExecutionDirectoryStructure:
         return self.__full_result.execution_directory_structure
 
     def assert_is_regular_file_with_contents(self,

@@ -9,13 +9,13 @@ import unittest
 from shelltest import phases
 from shelltest.exec_abs_syn import py_cmd_gen, instructions
 from shelltest.exec_abs_syn.config import Configuration
-from shelltest.execution import execution
+from shelltest.execution import full_execution
 from shelltest_test.execution.util import utils
 from shelltest_test.execution.util.py_unit_test_case import UnitTestCaseForPy3Language
 from shelltest_test.execution.util import python_code_gen as py
 
 
-def standard_phase_file_path_eds(eds: execution.ExecutionDirectoryStructure,
+def standard_phase_file_path_eds(eds: full_execution.ExecutionDirectoryStructure,
                                  phase: phases.Phase) -> pathlib.Path:
     return standard_phase_file_path(eds.test_root_dir, phase)
 

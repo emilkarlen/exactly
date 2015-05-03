@@ -5,7 +5,7 @@ import unittest
 
 from shelltest import phases
 from shelltest.exec_abs_syn import instructions
-from shelltest.execution import execution
+from shelltest.execution import full_execution
 from shelltest_test.execution.util import python_code_gen as py
 from shelltest_test.execution.util.py_unit_test_case_with_file_output import \
     ModulesAndStatements, UnitTestCaseForPy3LanguageThatWritesAFileToTestRootForEachPhase, \
@@ -31,9 +31,9 @@ class TestCase(UnitTestCaseForPy3LanguageThatWritesAFileToTestRootForEachPhase):
 
     def _expected_content_for(self, phase: phases.Phase) -> str:
         return un_lines([
-            format_header_value_line(execution.ENV_VAR_HOME, str(self.test_case_execution.configuration.home_dir)),
-            format_header_value_line(execution.ENV_VAR_TEST, str(self.eds.test_root_dir)),
-            format_header_value_line(execution.ENV_VAR_TMP, str(self.eds.tmp_dir)),
+            format_header_value_line(full_execution.ENV_VAR_HOME, str(self.test_case_execution.configuration.home_dir)),
+            format_header_value_line(full_execution.ENV_VAR_TEST, str(self.eds.test_root_dir)),
+            format_header_value_line(full_execution.ENV_VAR_TMP, str(self.eds.tmp_dir)),
         ])
 
 
@@ -46,7 +46,7 @@ class InternalInstructionThatWritesEnvironmentVariables(InternalInstructionThatW
         def format_environment_variable(var_name: str) -> str:
             return format_header_value_line(var_name, os.environ[var_name])
 
-        return [format_environment_variable(var_name) for var_name in execution.ALL_ENV_VARS]
+        return [format_environment_variable(var_name) for var_name in full_execution.ALL_ENV_VARS]
 
 
 class ActPhaseInstructionThatWritesEnvironmentVariables(ActPhaseInstructionThatWritesToStandardPhaseFile):
@@ -60,6 +60,6 @@ class ActPhaseInstructionThatWritesEnvironmentVariables(ActPhaseInstructionThatW
         print_env_statements = [py.print_header_value(py.string_expr(env_var),
                                                       py.env_var_expr(env_var),
                                                       file_variable)
-                                for env_var in execution.ALL_ENV_VARS]
+                                for env_var in full_execution.ALL_ENV_VARS]
         return ModulesAndStatements({'os'},
                                     print_env_statements)
