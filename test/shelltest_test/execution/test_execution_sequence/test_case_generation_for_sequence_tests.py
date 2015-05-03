@@ -41,8 +41,7 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorBase):
     def _anonymous_phase_recording(self) -> list:
         return list(map(self._next_instruction_line,
                         [
-                            instr.AnonymousInternalInstructionThatRecordsStringInList(
-                                self.__recorder_of(phase_step.ANONYMOUS))
+                            self._new_anonymous_internal_recorder(phase_step.ANONYMOUS)
                         ]))
 
     def _anonymous_phase_extra(self) -> list:
@@ -71,8 +70,7 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorBase):
         """
         return list(map(self._next_instruction_line,
                         [
-                            instr.ActInstructionThatRecordsStringInList(
-                                self.__recorder_of(phase_step.ACT__SCRIPT_GENERATION)),
+                            self._new_act_internal_recorder(phase_step.ACT__SCRIPT_GENERATION),
                             instr.ActInstructionThatRecordsStringInRecordFile(phase_step.ACT__SCRIPT_GENERATION),
                             instr.ActInstructionThatRecordsStringInRecordFile(phase_step.ACT__SCRIPT_EXECUTION),
                         ]))
@@ -89,9 +87,7 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorBase):
         """
         return list(map(self._next_instruction_line,
                         [
-                            instruction_adapter.as_assert(
-                                instr.InternalInstructionThatRecordsStringInList(
-                                    self.__recorder_of(phase_step.ASSERT))),
+                            self._new_assert_internal_recorder(phase_step.ASSERT),
                             instruction_adapter.as_assert(
                                 instr.InternalInstructionThatRecordsStringInRecordFile(phase_step.ASSERT)),
                         ]))
@@ -121,8 +117,22 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorBase):
         """
         return []
 
+    def _new_anonymous_internal_recorder(self, text: str) -> instructions.SetupPhaseInstruction:
+        return instr.AnonymousInternalInstructionThatRecordsStringInList(self.__recorder_of(text))
+
     def _new_setup_internal_recorder(self, text: str) -> instructions.SetupPhaseInstruction:
         return instruction_adapter.as_setup(
+            instr.InternalInstructionThatRecordsStringInList(self.__recorder_of(text)))
+
+    def _new_act_internal_recorder(self, text: str) -> instructions.SetupPhaseInstruction:
+        return instr.ActInstructionThatRecordsStringInList(self.__recorder_of(text))
+
+    def _new_assert_internal_recorder(self, text: str) -> instructions.SetupPhaseInstruction:
+        return instruction_adapter.as_assert(
+            instr.InternalInstructionThatRecordsStringInList(self.__recorder_of(text)))
+
+    def _new_cleanup_internal_recorder(self, text: str) -> instructions.SetupPhaseInstruction:
+        return instruction_adapter.as_cleanup(
             instr.InternalInstructionThatRecordsStringInList(self.__recorder_of(text)))
 
     def __recorder_of(self, s: str) -> instr.ListRecorder:
@@ -212,18 +222,13 @@ class TestCaseThatRecordsExecutionWithSingleExtraInstruction(TestCaseGeneratorFo
 
 
 class TestCaseThatRecordsExecutionWithExtraInstructionList(TestCaseGeneratorForExecutionRecording):
-    def __init__(self,
-                 anonymous_extra: list=None,
-                 setup_extra: list=None,
-                 act_extra: list=None,
-                 assert_extra: list=None,
-                 cleanup_extra: list=None):
+    def __init__(self):
         super().__init__()
-        self.__anonymous_extra = self.__to_list(anonymous_extra)
-        self.__setup_extra = self.__to_list(setup_extra)
-        self.__act_extra = self.__to_list(act_extra)
-        self.__assert_extra = self.__to_list(assert_extra)
-        self.__cleanup_extra = self.__to_list(cleanup_extra)
+        self.__anonymous_extra = []
+        self.__setup_extra = []
+        self.__act_extra = []
+        self.__assert_extra = []
+        self.__cleanup_extra = []
 
         self.__the_anonymous_extra = None
         self.__the_setup_extra = None
@@ -251,12 +256,36 @@ class TestCaseThatRecordsExecutionWithExtraInstructionList(TestCaseGeneratorForE
         self.__the_cleanup_extra = list(map(self._next_instruction_line, self.__cleanup_extra))
         return self.__the_cleanup_extra
 
+    def add_anonymous(self, instruction: instructions.AnonymousPhaseInstruction):
+        self.__anonymous_extra.append(instruction)
+        return self
+
+    def add_anonymous_internal_recorder_of(self, text: str):
+        self.__anonymous_extra.append(self._new_anonymous_internal_recorder(text))
+        return self
+
     def add_setup(self, instruction: instructions.SetupPhaseInstruction):
         self.__setup_extra.append(instruction)
         return self
 
     def add_setup_internal_recorder_of(self, text: str):
         self.__setup_extra.append(self._new_setup_internal_recorder(text))
+        return self
+
+    def add_act(self, instruction: instructions.ActPhaseInstruction):
+        self.__act_extra.append(instruction)
+        return self
+
+    def add_act_internal_recorder_of(self, text: str):
+        self.__act_extra.append(self._new_act_internal_recorder(text))
+        return self
+
+    def add_cleanup(self, instruction: instructions.CleanupPhaseInstruction):
+        self.__cleanup_extra.append(instruction)
+        return self
+
+    def add_cleanup_internal_recorder_of(self, text: str):
+        self.__cleanup_extra.append(self._new_cleanup_internal_recorder(text))
         return self
 
 
@@ -299,8 +328,4 @@ class TestCaseThatRecordsExecutionWithExtraInstructionList(TestCaseGeneratorForE
         """
         self.test_case
         return self.__the_cleanup_extra
-
-    @staticmethod
-    def __to_list(list_or_none: list) -> list:
-        return [] if list_or_none is None else list_or_none
 
