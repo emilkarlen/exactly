@@ -1,3 +1,6 @@
+from shelltest.exec_abs_syn.instruction_result import new_success
+from shelltest.exec_abs_syn.instructions import SuccessOrHardError
+
 __author__ = 'karlen'
 
 from shelltest.exec_abs_syn import instructions
@@ -17,15 +20,18 @@ def as_cleanup(internal_instruction: instructions.InternalInstruction) -> instru
 
 class _SetupInstructionExecutor(instructions.SetupPhaseInstruction):
     def __init__(self,
-                 internal_instruction: instructions.InternalInstruction):
+                 internal_instruction: instructions.InternalInstruction,
+                 ret_val: SuccessOrHardError=new_success()):
         self.__internal_instruction = internal_instruction
+        self.__ret_val = ret_val
 
     def execute(self, phase_name: str,
                 global_environment: instructions.GlobalEnvironmentForNamedPhase,
-                phase_environment: instructions.PhaseEnvironmentForInternalCommands):
+                phase_environment: instructions.PhaseEnvironmentForInternalCommands) -> SuccessOrHardError:
         self.__internal_instruction.execute(phase_name,
                                             global_environment,
                                             phase_environment)
+        return self.__ret_val
 
 
 class _AssertInstructionExecutor(instructions.AssertPhaseInstruction):
