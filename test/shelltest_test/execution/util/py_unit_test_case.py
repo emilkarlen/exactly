@@ -6,7 +6,6 @@ import pathlib
 import unittest
 
 from shelltest.phase_instr import model
-
 from shelltest.phase_instr import line_source
 from shelltest.script_language import python3
 from shelltest.exec_abs_syn import abs_syn_gen
@@ -35,7 +34,7 @@ class UnitTestCaseForPy3Language:
         home_dir_path = pathlib.Path().resolve()
         test_case = self._test_case()
         # ACT #
-        test_case_execution = execution.execute_test_case_in_execution_directory2(
+        test_case_execution = execution.execute_test_case_in_execution_directory(
             python3.Python3ScriptFileManager(),
             python3.new_script_source_writer(),
             test_case,

@@ -1,3 +1,5 @@
+from shelltest.exec_abs_syn.instruction_result import new_success
+
 __author__ = 'emil'
 
 from shelltest_test.execution.util.py_unit_test_case import UnitTestCaseForPy3Language
@@ -49,6 +51,7 @@ class PyCommandThatStoresStringInFileInCurrentDirectory2(instructions.SetupPhase
                 phase_environment: instructions.PhaseEnvironmentForInternalCommands):
         with open(self.__file_base_name, 'w') as f:
             f.write(self.__text_to_store)
+        return new_success()
 
 
 class StatementsThatCopiesStdinToStdout2(instructions.ActPhaseInstruction):

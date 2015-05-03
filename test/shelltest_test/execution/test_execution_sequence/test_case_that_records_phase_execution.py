@@ -168,7 +168,9 @@ class TestCaseThatRecordsExecution:
                                        msg)
         if self.__execution_directory_structure_should_exist:
             self.__unittest_case.assertIsNotNone(self.eds)
-            self.__unittest_case.assertTrue(self.eds.root_dir.is_dir())
+            self.__unittest_case.assertTrue(
+                self.eds.root_dir.is_dir(),
+                'Execution Directory Structure root is expected to be a directory')
             file_path = record_file_path(self.eds)
             if not self.__expected_file_recording:
                 self.__unittest_case.assertFalse(file_path.exists())
@@ -180,7 +182,8 @@ class TestCaseThatRecordsExecution:
                                                           expected_file_contents,
                                                           msg)
         else:
-            self.__unittest_case.assertIsNone(self.eds)
+            self.__unittest_case.assertIsNone(self.eds,
+                                              'Execution Directory Structure is expected to not be created')
 
     def _custom_assertions(self):
         pass
