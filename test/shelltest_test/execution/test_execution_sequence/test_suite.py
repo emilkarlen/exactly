@@ -83,6 +83,25 @@ class Test(unittest.TestCase):
             [phase_step.SETUP],
             True).execute()
 
+    def test_implementation_error_in_setup_execute_phase(self):
+        test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
+            .add_setup(
+            instructions_with_errors.SetupPhaseInstructionWithImplementationError(
+                instructions_with_errors.ImplementationErrorTestException())) \
+            .add_setup_internal_recorder_of('expected to not be executed')
+        TestCaseThatRecordsExecution(
+            self,
+            test_case,
+            FullResultStatus.IMPLEMENTATION_ERROR,
+            ExpectedInstructionFailureForFailure.new_with_exception(
+                test_case.the_setup_phase_extra[0].source_line,
+                instructions_with_errors.ImplementationErrorTestException),
+            [phase_step.ANONYMOUS,
+             phase_step.SETUP
+             ],
+            [phase_step.SETUP],
+            True).execute()
+
 
 def suite():
     ret_val = unittest.TestSuite()
