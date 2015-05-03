@@ -4,7 +4,7 @@ import unittest
 
 from shelltest_test.execution.test_execution_sequence.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorForExecutionRecording, \
-    TestCaseThatRecordsExecutionWithSingleExtraInstruction
+    TestCaseThatRecordsExecutionWithSingleExtraInstruction, TestCaseThatRecordsExecutionWithExtraInstructionList
 from shelltest.execution.result import FullResultStatus
 from shelltest.execution import phase_step
 from shelltest_test.execution.test_execution_sequence.test_case_that_records_phase_execution import \
@@ -67,16 +67,16 @@ class Test(unittest.TestCase):
             False).execute()
 
     def test_hard_error_in_setup_execute_phase(self):
-        test_case = TestCaseThatRecordsExecutionWithSingleExtraInstruction(
-            setup_extra=
-            anonymous_phase_errors.SetupPhaseInstructionThatReturnsHardError('hard error msg'))
+        test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
+            .add_setup(anonymous_phase_errors.SetupPhaseInstructionThatReturnsHardError('hard error msg from setup')) \
+            .add_setup_internal_recorder_of('expected to not be executed')
         TestCaseThatRecordsExecution(
             self,
             test_case,
             FullResultStatus.HARD_ERROR,
             ExpectedInstructionFailureForFailure.new_with_message(
-                test_case.the_setup_phase_extra.source_line,
-                'hard error msg'),
+                test_case.the_setup_phase_extra[0].source_line,
+                'hard error msg from setup'),
             [phase_step.ANONYMOUS,
              phase_step.SETUP
              ],
