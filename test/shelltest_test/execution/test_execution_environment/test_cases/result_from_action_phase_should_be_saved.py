@@ -1,3 +1,5 @@
+from shelltest.exec_abs_syn.instruction_result import new_success
+
 __author__ = 'emil'
 
 from shelltest.exec_abs_syn import instructions
@@ -41,16 +43,19 @@ class ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr(instructions.ActPhaseI
         self.__text_on_stderr = text_on_stderr
         self.__exit_code = exit_code
 
-    def update_phase_environment(self, phase_name: str,
-                global_environment: instructions.GlobalEnvironmentForNamedPhase,
-                phase_environment: instructions.PhaseEnvironmentForScriptGeneration):
+    def update_phase_environment(
+            self,
+            phase_name: str,
+            global_environment: instructions.GlobalEnvironmentForNamedPhase,
+            phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> instructions.SuccessOrHardError:
         statements = [
             'import sys',
             self.write_on('sys.stdout', self.__text_on_stdout),
             self.write_on('sys.stderr', self.__text_on_stderr),
             'sys.exit(%d)' % self.__exit_code
         ]
-        return phase_environment.append.raw_script_statements(statements)
+        phase_environment.append.raw_script_statements(statements)
+        return new_success()
 
     @staticmethod
     def write_on(output_file: str,

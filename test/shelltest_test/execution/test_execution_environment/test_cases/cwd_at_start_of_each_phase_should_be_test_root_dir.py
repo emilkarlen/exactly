@@ -1,3 +1,5 @@
+from shelltest.exec_abs_syn.instruction_result import new_success
+
 __author__ = 'emil'
 
 import os
@@ -78,10 +80,11 @@ class ActPhaseInstructionForImportStatements(instructions.ActPhaseInstruction):
 
     def update_phase_environment(self, phase_name: str,
                 global_environment: instructions.GlobalEnvironmentForNamedPhase,
-                phase_environment: instructions.PhaseEnvironmentForScriptGeneration):
+                phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> instructions.SuccessOrHardError:
         import_statements = ['import %s' % module_name
                              for module_name in self.__modules]
-        return phase_environment.append.raw_script_statements(import_statements)
+        phase_environment.append.raw_script_statements(import_statements)
+        return new_success()
 
 
 class ActPhaseInstructionThatWritesCurrentWorkingDirectory(ActPhaseInstructionThatWritesToStandardPhaseFile):
@@ -109,9 +112,10 @@ class ActPhaseInstructionThatChangesCwdToHomeDir(instructions.ActPhaseInstructio
 
     def update_phase_environment(self, phase_name: str,
                 global_environment: instructions.GlobalEnvironmentForNamedPhase,
-                phase_environment: instructions.PhaseEnvironmentForScriptGeneration):
+                phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> instructions.SuccessOrHardError:
         statements = [
             'os.chdir(%s)' % py.string_expr(str(global_environment.home_directory)),
             # 'print(os.getcwd())'
         ]
-        return phase_environment.append.raw_script_statements(statements)
+        phase_environment.append.raw_script_statements(statements)
+        return new_success()

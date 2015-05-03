@@ -1,4 +1,5 @@
-from shelltest.execution import phase_step_executors
+from shelltest.execution.phase_step import ACT_script_generation
+from shelltest.execution.phase_step_executor import ElementHeaderExecutor
 
 __author__ = 'emil'
 
@@ -7,7 +8,10 @@ import os
 import subprocess
 import pathlib
 
-from shelltest.execution.single_instruction_executor import ControlledInstructionExecutor, execute_element
+from shelltest.phase_instr import line_source
+
+from shelltest.execution import phase_step_executors
+from shelltest.execution.single_instruction_executor import ControlledInstructionExecutor
 from shelltest.exec_abs_syn import instructions
 from shelltest.phase_instr.model import PhaseContents, PhaseContentElement
 from shelltest import phases
@@ -16,9 +20,9 @@ from shelltest.exec_abs_syn.config import Configuration
 from shelltest import exception
 from .execution_directory_structure import construct_at, ExecutionDirectoryStructure
 from shelltest.exec_abs_syn.instructions import PhaseEnvironmentForAnonymousPhase, ExecutionMode
-from .result import FullResult, PartialResult, PartialResultStatus, FullResultStatus, \
-    InstructionFailureInfo, new_partial_result_pass
+from .result import FullResult, PartialResult, PartialResultStatus, FullResultStatus
 from . import result
+from . import phase_step_executor
 
 
 ENV_VAR_HOME = 'SHELLTEST_HOME'
@@ -85,7 +89,10 @@ class TestCaseExecution:
         if res.status is not PartialResultStatus.PASS:
             self.__partial_result = res
             return
-        self.__execute_act_phase_to_produce_script_in_act_environment()
+        res = self.__execute_act_phase_to_produce_script_in_act_environment()
+        if res.status is not PartialResultStatus.PASS:
+            self.__partial_result = res
+            return
         self.write_and_store_script_file_path()
         self.__run_act_script()
         self.__execute_internal_instructions(phases.ASSERT, self.__assert_phase, phase_env)
@@ -143,30 +150,30 @@ class TestCaseExecution:
                                          instruction_executor: ControlledInstructionExecutor,
                                          phase_contents: PhaseContents) -> PartialResult:
         os.chdir(str(self.execution_directory_structure.test_root_dir))
-        return execute_phase(phase_contents,
-                             instruction_executor,
-                             phase,
-                             phase_step,
-                             self.execution_directory_structure)
+        return phase_step_executor.execute_phase(phase_contents,
+                                                 phase_step_executor.ElementHeaderExecutorThatDoesNothing(),
+                                                 phase_step_executor.ElementHeaderExecutorThatDoesNothing(),
+                                                 instruction_executor,
+                                                 phase,
+                                                 phase_step,
+                                                 self.execution_directory_structure)
 
-    def __execute_act_phase_to_produce_script_in_act_environment(self):
+    def __execute_act_phase_to_produce_script_in_act_environment(self) -> PartialResult:
         """
         Accumulates the script source by executing all instructions, and adding
         comments from the test case file.
 
         :param act_environment: Post-condition: Contains the accumulated script source.
         """
-        for element in self.__act_phase.elements:
-            assert isinstance(element, PhaseContentElement)
-            if element.is_comment:
-                self.__act_env_before_execution.append.comment_line(element.source_line.text)
-            else:
-                self.__act_env_before_execution.append.source_line_header(element.source_line)
-                instruction = element.instruction
-                assert isinstance(instruction, instructions.ActPhaseInstruction)
-                instruction.update_phase_environment(phases.ACT.name,
-                                                     self.__global_environment,
-                                                     self.__act_env_before_execution)
+        return phase_step_executor.execute_phase(
+            self.__act_phase,
+            ActCommentHeaderExecutor(self.__act_env_before_execution),
+            ActInstructionHeaderExecutor(self.__act_env_before_execution),
+            phase_step_executors.ActScriptGenerationExecutor(self.__global_environment,
+                                                             self.__act_env_before_execution),
+            phases.ACT,
+            ACT_script_generation,
+            self.execution_directory_structure)
 
     def __run_act_script(self):
         """
@@ -204,26 +211,22 @@ class TestCaseExecution:
                     raise exception.ImplementationError(msg)
 
 
-def __execute_act_phase(global_environment: instructions.GlobalEnvironmentForNamedPhase,
-                        act_phase: PhaseContents,
-                        act_environment: instructions.PhaseEnvironmentForScriptGeneration):
-    """
-    Accumulates the script source by executing all instructions, and adding
-    comments from the test case file.
+class ActCommentHeaderExecutor(ElementHeaderExecutor):
+    def __init__(self,
+                 phase_environment: instructions.PhaseEnvironmentForScriptGeneration):
+        self.__phase_environment = phase_environment
 
-    :param act_environment: Post-condition: Contains the accumulated script source.
-    """
-    for element in act_phase.elements:
-        assert isinstance(element, PhaseContentElement)
-        if element.is_comment:
-            act_environment.append.comment_line(element.source_line.text)
-        else:
-            act_environment.append.source_line_header(element.source_line)
-            instruction = element.instruction
-            assert isinstance(instruction, instructions.ActPhaseInstruction)
-            instruction.update_phase_environment(phases.ACT.name,
-                                                 global_environment,
-                                                 act_environment)
+    def apply(self, line: line_source.Line):
+        self.__phase_environment.append.comment_line(line)
+
+
+class ActInstructionHeaderExecutor(ElementHeaderExecutor):
+    def __init__(self,
+                 phase_environment: instructions.PhaseEnvironmentForScriptGeneration):
+        self.__phase_environment = phase_environment
+
+    def apply(self, line: line_source.Line):
+        self.__phase_environment.append.source_line_header(line)
 
 
 def execute_test_case_in_execution_directory(script_file_manager: script_stmt_gen.ScriptFileManager,
@@ -339,30 +342,12 @@ def execute(script_file_manager: script_stmt_gen.ScriptFileManager,
 
 def execute_anonymous_phase(phase_environment: PhaseEnvironmentForAnonymousPhase,
                             test_case: abs_syn_gen.TestCase) -> PartialResult:
-    return execute_phase(test_case.anonymous_phase,
-                         phase_step_executors.AnonymousPhaseInstructionExecutor(phase_environment),
-                         phases.ANONYMOUS,
-                         None,
-                         None)
-
-
-def execute_phase(phase_contents: PhaseContents,
-                  instruction_executor: ControlledInstructionExecutor,
-                  phase: phases.Phase,
-                  phase_step: str,
-                  eds: ExecutionDirectoryStructure) -> PartialResult:
-    for element in phase_contents.elements:
-        assert isinstance(element, PhaseContentElement)
-        if element.is_instruction:
-            failure_info = execute_element(instruction_executor,
-                                           element)
-            if failure_info is not None:
-                return PartialResult(failure_info.status,
-                                     eds,
-                                     InstructionFailureInfo(phase,
-                                                            phase_step,
-                                                            failure_info.source_line,
-                                                            failure_info.failure_details))
-    return new_partial_result_pass(eds)
+    return phase_step_executor.execute_phase(test_case.anonymous_phase,
+                                             phase_step_executor.ElementHeaderExecutorThatDoesNothing(),
+                                             phase_step_executor.ElementHeaderExecutorThatDoesNothing(),
+                                             phase_step_executors.AnonymousPhaseInstructionExecutor(phase_environment),
+                                             phases.ANONYMOUS,
+                                             None,
+                                             None)
 
 

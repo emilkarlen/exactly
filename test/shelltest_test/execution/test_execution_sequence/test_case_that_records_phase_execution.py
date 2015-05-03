@@ -177,7 +177,7 @@ class TestCaseThatRecordsExecution:
             else:
                 expected_file_contents = record_file_contents_from_lines(self.__expected_file_recording)
                 msg = 'Difference in sequence of phases/steps that are executed after Execution Directory Structure' + \
-                      ' is created'
+                      ' is created (recorded in file)'
                 self.assert_is_regular_file_with_contents(file_path,
                                                           expected_file_contents,
                                                           msg)

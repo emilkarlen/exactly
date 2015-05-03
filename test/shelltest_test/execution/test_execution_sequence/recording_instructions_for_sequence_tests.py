@@ -24,10 +24,13 @@ class ActInstructionThatRecordsStringInList(instructions.ActPhaseInstruction):
                  recorder: ListRecorder):
         self.__recorder = recorder
 
-    def update_phase_environment(self, phase_name: str,
-                                 global_environment: instructions.GlobalEnvironmentForNamedPhase,
-                                 phase_environment: instructions.PhaseEnvironmentForScriptGeneration):
+    def update_phase_environment(
+            self,
+            phase_name: str,
+            global_environment: instructions.GlobalEnvironmentForNamedPhase,
+            phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> instructions.SuccessOrHardError:
         self.__recorder.record()
+        return new_success()
 
 
 class AnonymousInternalInstructionThatRecordsStringInList(instructions.AnonymousPhaseInstruction):
@@ -64,16 +67,33 @@ class InternalInstructionThatRecordsStringInList(instructions.InternalInstructio
         self.__recorder.record()
 
 
+class ActInstructionThatGeneratesScriptThatRecordsStringInRecordFile(instructions.ActPhaseInstruction):
+    def __init__(self, s: str):
+        self.__s = s
+
+    def update_phase_environment(
+            self,
+            phase_name: str,
+            global_environment: instructions.GlobalEnvironmentForNamedPhase,
+            phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> instructions.SuccessOrHardError:
+        phase_environment.append.raw_script_statements(
+            append_line_to_record_file_statements(global_environment.execution_directory_structure,
+                                                  self.__s))
+        return new_success()
+
+
 class ActInstructionThatRecordsStringInRecordFile(instructions.ActPhaseInstruction):
     def __init__(self, s: str):
         self.__s = s
 
-    def update_phase_environment(self, phase_name: str,
-                                 global_environment: instructions.GlobalEnvironmentForNamedPhase,
-                                 phase_environment: instructions.PhaseEnvironmentForScriptGeneration):
-        phase_environment.append.raw_script_statements(
-            append_line_to_record_file_statements(global_environment.execution_directory_structure,
-                                                  self.__s))
+    def update_phase_environment(
+            self,
+            phase_name: str,
+            global_environment: instructions.GlobalEnvironmentForNamedPhase,
+            phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> instructions.SuccessOrHardError:
+        append_line_to_record_file(global_environment.execution_directory_structure,
+                                   self.__s)
+        return new_success()
 
 
 RECORD_FILE_BASE_NAME = 'recording.txt'

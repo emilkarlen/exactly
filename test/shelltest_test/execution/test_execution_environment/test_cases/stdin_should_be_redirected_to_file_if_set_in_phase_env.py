@@ -61,12 +61,13 @@ class StatementsThatCopiesStdinToStdout2(instructions.ActPhaseInstruction):
     def update_phase_environment(self,
                 phase_name: str,
                 global_environment: instructions.GlobalEnvironmentForNamedPhase,
-                phase_environment: instructions.PhaseEnvironmentForScriptGeneration):
+                phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> instructions.SuccessOrHardError:
         statements = [
             'import sys',
             'sys.stdout.write(sys.stdin.read())',
         ]
-        return phase_environment.append.raw_script_statements(statements)
+        phase_environment.append.raw_script_statements(statements)
+        return new_success()
 
 
 class InstructionThatSetsStdinFileName(instructions.ActPhaseInstruction):
@@ -78,5 +79,6 @@ class InstructionThatSetsStdinFileName(instructions.ActPhaseInstruction):
     def update_phase_environment(self,
                 phase_name: str,
                 global_environment: instructions.GlobalEnvironmentForNamedPhase,
-                phase_environment: instructions.PhaseEnvironmentForScriptGeneration):
+                phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> instructions.SuccessOrHardError:
         phase_environment.set_stdin_file(self.__file_name)
+        return new_success()

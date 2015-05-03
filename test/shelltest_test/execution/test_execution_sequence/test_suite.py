@@ -102,6 +102,25 @@ class Test(unittest.TestCase):
             [phase_step.SETUP],
             True).execute()
 
+    def test_hard_error_in_act_script_generation(self):
+        test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
+            .add_act(instructions_with_errors.ActPhaseInstructionThatReturnsHardError('hard error msg from act')) \
+            .add_act_internal_recorder_of('expected to not be executed')
+        TestCaseThatRecordsExecution(
+            self,
+            test_case,
+            FullResultStatus.HARD_ERROR,
+            ExpectedInstructionFailureForFailure.new_with_message(
+                test_case.the_act_phase_extra[0].source_line,
+                'hard error msg from act'),
+            [phase_step.ANONYMOUS,
+             phase_step.SETUP,
+             phase_step.ACT__SCRIPT_GENERATION
+             ],
+            [phase_step.SETUP,
+             phase_step.ACT__SCRIPT_GENERATION],
+            True).execute()
+
 
 def suite():
     ret_val = unittest.TestSuite()

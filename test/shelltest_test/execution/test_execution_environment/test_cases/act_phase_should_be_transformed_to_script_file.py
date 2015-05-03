@@ -1,3 +1,5 @@
+from shelltest.exec_abs_syn.instruction_result import new_success
+
 __author__ = 'emil'
 
 import os
@@ -48,16 +50,22 @@ class TestCase(UnitTestCaseForPy3Language):
 
 
 class ActPhaseInstructionThatOutputsHomeDir(instructions.ActPhaseInstruction):
-    def update_phase_environment(self, phase_name: str,
-                global_environment: instructions.GlobalEnvironmentForNamedPhase,
-                phase_environment: instructions.PhaseEnvironmentForScriptGeneration):
+    def update_phase_environment(
+            self,
+            phase_name: str,
+            global_environment: instructions.GlobalEnvironmentForNamedPhase,
+            phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> instructions.SuccessOrHardError:
         line = HOME_DIR_HEADER + str(global_environment.home_directory)
         phase_environment.append.raw_script_statement(line)
+        return new_success()
 
 
 class ActPhaseInstructionThatOutputsTestRootDir(instructions.ActPhaseInstruction):
-    def update_phase_environment(self, phase_name: str,
-                global_environment: instructions.GlobalEnvironmentForNamedPhase,
-                phase_environment: instructions.PhaseEnvironmentForScriptGeneration):
+    def update_phase_environment(
+            self,
+            phase_name: str,
+            global_environment: instructions.GlobalEnvironmentForNamedPhase,
+            phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> instructions.SuccessOrHardError:
         line = TEST_ROOT_DIR_HEADER + str(global_environment.eds.test_root_dir)
         phase_environment.append.raw_script_statement(line)
+        return new_success()
