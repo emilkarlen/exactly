@@ -54,8 +54,7 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorBase):
         """
         return list(map(self._next_instruction_line,
                         [
-                            instruction_adapter.as_setup(
-                                instr.InternalInstructionThatRecordsStringInList(self.__recorder_of(phase_step.SETUP))),
+                            self._new_setup_internal_recorder(phase_step.SETUP),
                             instruction_adapter.as_setup(
                                 instr.InternalInstructionThatRecordsStringInRecordFile(phase_step.SETUP)),
                         ]))
@@ -121,6 +120,10 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorBase):
         :rtype list[PhaseContentElement] (with instruction of type CleanupPhaseInstruction)
         """
         return []
+
+    def _new_setup_internal_recorder(self, text: str) -> instructions.SetupPhaseInstruction:
+        return instruction_adapter.as_setup(
+            instr.InternalInstructionThatRecordsStringInList(self.__recorder_of(text)))
 
     def __recorder_of(self, s: str) -> instr.ListRecorder:
         return instr.ListRecorder(self.__recorder,
@@ -206,4 +209,98 @@ class TestCaseThatRecordsExecutionWithSingleExtraInstruction(TestCaseGeneratorFo
     def the_cleanup_phase_extra(self) -> PhaseContentElement:
         self.test_case
         return self.__the_cleanup_extra
+
+
+class TestCaseThatRecordsExecutionWithExtraInstructionList(TestCaseGeneratorForExecutionRecording):
+    def __init__(self,
+                 anonymous_extra: list=None,
+                 setup_extra: list=None,
+                 act_extra: list=None,
+                 assert_extra: list=None,
+                 cleanup_extra: list=None):
+        super().__init__()
+        self.__anonymous_extra = self.__to_list(anonymous_extra)
+        self.__setup_extra = self.__to_list(setup_extra)
+        self.__act_extra = self.__to_list(act_extra)
+        self.__assert_extra = self.__to_list(assert_extra)
+        self.__cleanup_extra = self.__to_list(cleanup_extra)
+
+        self.__the_anonymous_extra = None
+        self.__the_setup_extra = None
+        self.__the_act_extra = None
+        self.__the_assert_extra = None
+        self.__the_cleanup_extra = None
+
+    def _anonymous_phase_extra(self) -> list:
+        self.__the_anonymous_extra = list(map(self._next_instruction_line, self.__anonymous_extra))
+        return self.__the_anonymous_extra
+
+    def _setup_phase_extra(self) -> list:
+        self.__the_setup_extra = list(map(self._next_instruction_line, self.__setup_extra))
+        return self.__the_setup_extra
+
+    def _act_phase_extra(self) -> list:
+        self.__the_act_extra = list(map(self._next_instruction_line, self.__act_extra))
+        return self.__the_act_extra
+
+    def _assert_phase_extra(self) -> list:
+        self.__the_assert_extra = list(map(self._next_instruction_line, self.__assert_extra))
+        return self.__the_assert_extra
+
+    def _cleanup_phase_extra(self) -> list:
+        self.__the_cleanup_extra = list(map(self._next_instruction_line, self.__cleanup_extra))
+        return self.__the_cleanup_extra
+
+    def add_setup(self, instruction: instructions.SetupPhaseInstruction):
+        self.__setup_extra.append(instruction)
+        return self
+
+    def add_setup_internal_recorder_of(self, text: str):
+        self.__setup_extra.append(self._new_setup_internal_recorder(text))
+        return self
+
+
+    @property
+    def the_anonymous_phase_extra(self) -> list:
+        """
+        :rtype [PhaseContentElement]
+        """
+        self.test_case
+        return self.__the_anonymous_extra
+
+    @property
+    def the_setup_phase_extra(self) -> list:
+        """
+        :rtype [PhaseContentElement]
+        """
+        self.test_case
+        return self.__the_setup_extra
+
+    @property
+    def the_act_phase_extra(self) -> list:
+        """
+        :rtype [PhaseContentElement]
+        """
+        self.test_case
+        return self.__the_act_extra
+
+    @property
+    def the_assert_phase_extra(self) -> list:
+        """
+        :rtype [PhaseContentElement]
+        """
+        self.test_case
+        return self.__the_assert_extra
+
+    @property
+    def the_cleanup_phase_extra(self) -> list:
+        """
+        :rtype [PhaseContentElement]
+        """
+        self.test_case
+        return self.__the_cleanup_extra
+
+    @staticmethod
+    def __to_list(list_or_none: list) -> list:
+        return [] if list_or_none is None else list_or_none
 
