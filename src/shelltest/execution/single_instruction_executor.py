@@ -1,10 +1,8 @@
 from enum import Enum
 
 from shelltest.execution import result
-
 from shelltest.execution.result import InstructionFailureDetails, PartialResultStatus
 from shelltest.phase_instr import line_source
-
 from shelltest.phase_instr.model import Instruction, PhaseContentElement
 
 
@@ -51,7 +49,8 @@ class ControlledInstructionExecutor:
     Does not handle implementation errors (since these can be handled uniformly
      by the user of this class).
 
-    "Controlled" means that implementation errors are not handled.
+    "Controlled" means that implementation errors are not handled - i.e., it only handles flow
+    that can be considered "controlled".
     """
 
     def apply(self, instruction: Instruction) -> PartialInstructionControlledFailureInfo:

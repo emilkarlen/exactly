@@ -1,7 +1,6 @@
-import os
-
 __author__ = 'emil'
 
+import os
 import pathlib
 import unittest
 

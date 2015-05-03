@@ -19,9 +19,9 @@ class PhaseContentElement:
 
     def __init__(self,
                  source_line: line_source.Line,
-                 executor: Instruction):
+                 instruction: Instruction):
         self._source_line = source_line
-        self._executor = executor
+        self._instruction = instruction
 
     @property
     def source_line(self) -> line_source.Line:
@@ -29,7 +29,7 @@ class PhaseContentElement:
 
     @property
     def is_instruction(self) -> bool:
-        return self._executor
+        return self._instruction
 
     @property
     def is_comment(self) -> bool:
@@ -40,7 +40,7 @@ class PhaseContentElement:
         """
         Precondition: is_instruction
         """
-        return self._executor
+        return self._instruction
 
 
 def new_comment_element(source_line: line_source.Line) -> PhaseContentElement:
