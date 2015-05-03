@@ -14,6 +14,17 @@ handle an arbitrary language.
 Giving a ScriptLanguage to apply, indicates that it should be capable of
 handling arbitrary languages.
 * TODO Test result
+** TODO <2015-05-03 sön> Enhetstester för fast-steg-exekverare
+Blir redundans om alla dess varianter ska testas via integrationstest.
+Fallet som för tillfället orsakar problem är huruvida en fallerande
+instruktion är den sista i raden eller ej.  (O borde kanske även testa då den
+är den första ... dvs behöver UTFÖRLIGA tester av det här!)
+** TODO <2015-05-03 sön> Använd mest informationsbärande status-koder internt
+Fler fördelar:
+ - möjliggör mest utförliga testerna
+ - detfinns fler "externa" standarder: om har interna kan man översätta till
+   godtycklig extern standard och kan på så vis integrera programmet i flera
+   olika ramverk.
 ** TODO <2015-01-05 mån> Handle implementation errors
 ** TODO <2015-01-05 mån> Handle parse errors
 ** TODO <2015-01-05 mån> Handle errors correctly according to phase

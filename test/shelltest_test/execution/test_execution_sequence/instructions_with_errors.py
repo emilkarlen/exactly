@@ -43,3 +43,14 @@ class SetupPhaseInstructionThatReturnsHardError(instrs.SetupPhaseInstruction):
                 phase_environment: instrs.PhaseEnvironmentForInternalCommands) -> instrs.SuccessOrHardError:
         return instruction_result.new_hard_error(self.__msg)
 
+
+class SetupPhaseInstructionWithImplementationError(instrs.SetupPhaseInstruction):
+    def __init__(self,
+                 exception_to_raise: Exception):
+        self.__exception_to_raise = exception_to_raise
+
+    def execute(self,
+                phase_name: str,
+                global_environment: instrs.GlobalEnvironmentForNamedPhase,
+                phase_environment: instrs.PhaseEnvironmentForInternalCommands) -> instrs.SuccessOrHardError:
+        raise self.__exception_to_raise
