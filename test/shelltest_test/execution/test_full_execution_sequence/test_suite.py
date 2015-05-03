@@ -246,6 +246,33 @@ class Test(unittest.TestCase):
              ],
             True).execute()
 
+    def test_implementation_error_in_cleanup_phase(self):
+        test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
+            .add_cleanup(
+            instructions_with_errors.CleanupPhaseInstructionWithImplementationError(
+                instructions_with_errors.ImplementationErrorTestException())) \
+            .add_cleanup_internal_recorder_of('expected to not be executed')
+        TestCaseThatRecordsExecution(
+            self,
+            test_case,
+            FullResultStatus.IMPLEMENTATION_ERROR,
+            ExpectedInstructionFailureForFailure.new_with_exception(
+                test_case.the_cleanup_phase_extra[0].source_line,
+                instructions_with_errors.ImplementationErrorTestException),
+            [phase_step.ANONYMOUS,
+             phase_step.SETUP,
+             phase_step.ACT__SCRIPT_GENERATION,
+             phase_step.ASSERT,
+             phase_step.CLEANUP
+             ],
+            [phase_step.SETUP,
+             phase_step.ACT__SCRIPT_GENERATION,
+             phase_step.ACT__SCRIPT_EXECUTION,
+             phase_step.ASSERT,
+             phase_step.CLEANUP
+             ],
+            True).execute()
+
 
 def suite():
     ret_val = unittest.TestSuite()
