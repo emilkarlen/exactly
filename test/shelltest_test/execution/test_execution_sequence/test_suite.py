@@ -25,7 +25,8 @@ class Test(unittest.TestCase):
              phase_step.ACT__SCRIPT_GENERATION,
              phase_step.SETUP,
              phase_step.ASSERT,
-             phase_step.CLEANUP],
+             phase_step.CLEANUP
+             ],
             [phase_step.SETUP,
              phase_step.ACT__SCRIPT_GENERATION,
              phase_step.ACT__SCRIPT_EXECUTION,
@@ -44,7 +45,8 @@ class Test(unittest.TestCase):
             ExpectedInstructionFailureForFailure.new_with_message(
                 test_case.the_anonymous_phase_extra.source_line,
                 'hard error msg'),
-            [phase_step.ANONYMOUS],
+            [phase_step.ANONYMOUS
+             ],
             [],
             False).execute()
 
@@ -60,9 +62,27 @@ class Test(unittest.TestCase):
             ExpectedInstructionFailureForFailure.new_with_exception(
                 test_case.the_anonymous_phase_extra.source_line,
                 anonymous_phase_errors.ImplementationErrorTestException),
-            [phase_step.ANONYMOUS],
+            [phase_step.ANONYMOUS
+             ],
             [],
             False).execute()
+
+        # def test_hard_error_in_setup_execute_phase(self):
+        # test_case = TestCaseThatRecordsExecutionWithSingleExtraInstruction(
+        #         setup_extra=
+        #         anonymous_phase_errors.SetupPhaseInstructionThatReturnsHardError('hard error msg'))
+        #     TestCaseThatRecordsExecution(
+        #         self,
+        #         test_case,
+        #         FullResultStatus.HARD_ERROR,
+        #         ExpectedInstructionFailureForFailure.new_with_message(
+        #             test_case.the_setup_phase_extra.source_line,
+        #             'hard error msg'),
+        #         [phase_step.ANONYMOUS,
+        #          phase_step.SETUP
+        #          ],
+        #         [phase_step.SETUP],
+        #         False).execute()
 
 
 def suite():
