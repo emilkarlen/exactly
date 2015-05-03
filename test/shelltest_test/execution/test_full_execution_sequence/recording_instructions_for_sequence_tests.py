@@ -2,7 +2,7 @@ __author__ = 'emil'
 
 import pathlib
 
-from shelltest.exec_abs_syn.instruction_result import new_success
+from shelltest.exec_abs_syn.success_or_hard_error_construction import new_success
 from shelltest.exec_abs_syn.instructions import SuccessOrHardError
 from shelltest.exec_abs_syn import instructions
 from shelltest.execution.execution_directory_structure import ExecutionDirectoryStructure

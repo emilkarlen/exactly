@@ -1,3 +1,4 @@
+from shelltest.exec_abs_syn.instructions import PassOrFailOrHardErrorEnum
 from shelltest.execution.single_instruction_executor import ControlledInstructionExecutor, \
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum
 from shelltest import phases
@@ -9,6 +10,14 @@ def _from_success_or_hard_error(res: instr.SuccessOrHardError) -> PartialInstruc
         if res.is_success \
         else PartialInstructionControlledFailureInfo(PartialControlledFailureEnum.HARD_ERROR,
                                                      res.failure_message)
+
+
+def _from_pass_or_fail_or_hard_error(res: instr.PassOrFailOrHardError) -> PartialInstructionControlledFailureInfo:
+    if res.status is PassOrFailOrHardErrorEnum.PASS:
+        return None
+    else:
+        return PartialInstructionControlledFailureInfo(PartialControlledFailureEnum(res.status.value),
+                                                       res.failure_message)
 
 
 class AnonymousPhaseInstructionExecutor(ControlledInstructionExecutor):
@@ -50,3 +59,17 @@ class ActScriptGenerationExecutor(ControlledInstructionExecutor):
             instruction.update_phase_environment(phases.ACT.name,
                                                  self.__global_environment,
                                                  self.__phase_environment))
+
+
+class AssertInstructionExecutor(ControlledInstructionExecutor):
+    def __init__(self,
+                 global_environment: instr.GlobalEnvironmentForNamedPhase,
+                 phase_environment: instr.PhaseEnvironmentForInternalCommands):
+        self.__global_environment = global_environment
+        self.__phase_environment = phase_environment
+
+    def apply(self, instruction: instr.AssertPhaseInstruction) -> PartialInstructionControlledFailureInfo:
+        return _from_pass_or_fail_or_hard_error(
+            instruction.execute(phases.ASSERT.name,
+                                self.__global_environment,
+                                self.__phase_environment))

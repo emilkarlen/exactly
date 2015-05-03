@@ -34,9 +34,12 @@ class SuccessOrHardError(tuple):
 
 
 class PassOrFailOrHardErrorEnum(Enum):
+    """
+    Implementation note: The error-values must correspond to those of PartialControlledFailureEnum
+    """
     PASS = 0
-    FAIL = 1
-    HARD_ERROR = 2
+    FAIL = 2
+    HARD_ERROR = 99
 
 
 class PassOrFailOrHardError(tuple):
@@ -46,8 +49,8 @@ class PassOrFailOrHardError(tuple):
 
     def __new__(cls,
                 status: PassOrFailOrHardErrorEnum,
-                error_message: str):
-        return tuple.__new__(cls, (status, error_message, ))
+                failure_message: str):
+        return tuple.__new__(cls, (status, failure_message, ))
 
     @property
     def status(self) -> PassOrFailOrHardErrorEnum:
@@ -58,7 +61,7 @@ class PassOrFailOrHardError(tuple):
         return self.status is not PassOrFailOrHardErrorEnum.PASS
 
     @property
-    def error_message(self) -> str:
+    def failure_message(self) -> str:
         """
         :return None iff the object represents PASS.
         """
