@@ -19,6 +19,29 @@ class ListRecorder:
         self.recorder.append(self.element)
 
 
+class ActInstructionThatRecordsStringInList(instructions.ActPhaseInstruction):
+    def __init__(self,
+                 recorder: ListRecorder):
+        self.__recorder = recorder
+
+    def update_phase_environment(self, phase_name: str,
+                                 global_environment: instructions.GlobalEnvironmentForNamedPhase,
+                                 phase_environment: instructions.PhaseEnvironmentForScriptGeneration):
+        self.__recorder.record()
+
+
+class AnonymousInternalInstructionThatRecordsStringInList(instructions.AnonymousPhaseInstruction):
+    def __init__(self,
+                 recorder: ListRecorder):
+        self.__recorder = recorder
+
+    def execute(self, phase_name: str,
+                global_environment,
+                phase_environment: instructions.PhaseEnvironmentForAnonymousPhase) -> SuccessOrHardError:
+        self.__recorder.record()
+        return new_success()
+
+
 class InternalInstructionThatRecordsStringInRecordFile(instructions.InternalInstruction):
     def __init__(self, s: str):
         self.__s = s
@@ -51,29 +74,6 @@ class ActInstructionThatRecordsStringInRecordFile(instructions.ActPhaseInstructi
         phase_environment.append.raw_script_statements(
             append_line_to_record_file_statements(global_environment.execution_directory_structure,
                                                   self.__s))
-
-
-class ActInstructionThatRecordsStringInList(instructions.ActPhaseInstruction):
-    def __init__(self,
-                 recorder: ListRecorder):
-        self.__recorder = recorder
-
-    def update_phase_environment(self, phase_name: str,
-                                 global_environment: instructions.GlobalEnvironmentForNamedPhase,
-                                 phase_environment: instructions.PhaseEnvironmentForScriptGeneration):
-        self.__recorder.record()
-
-
-class AnonymousInternalInstructionThatRecordsStringInList(instructions.AnonymousPhaseInstruction):
-    def __init__(self,
-                 recorder: ListRecorder):
-        self.__recorder = recorder
-
-    def execute(self, phase_name: str,
-                global_environment,
-                phase_environment: instructions.PhaseEnvironmentForAnonymousPhase) -> SuccessOrHardError:
-        self.__recorder.record()
-        return new_success()
 
 
 RECORD_FILE_BASE_NAME = 'recording.txt'

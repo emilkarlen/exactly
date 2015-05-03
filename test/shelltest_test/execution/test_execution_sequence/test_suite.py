@@ -10,7 +10,7 @@ from shelltest.execution import phase_step
 from shelltest_test.execution.test_execution_sequence.test_case_that_records_phase_execution import \
     TestCaseThatRecordsExecution, \
     ExpectedInstructionFailureForNoFailure, ExpectedInstructionFailureForFailure
-from shelltest_test.execution.test_execution_sequence import anonymous_phase_errors
+from shelltest_test.execution.test_execution_sequence import instructions_with_errors
 
 
 class Test(unittest.TestCase):
@@ -36,7 +36,7 @@ class Test(unittest.TestCase):
     def test_hard_error_in_anonymous_phase(self):
         test_case = TestCaseThatRecordsExecutionWithSingleExtraInstruction(
             anonymous_extra=
-            anonymous_phase_errors.AnonymousPhaseInstructionThatReturnsHardError('hard error msg'))
+            instructions_with_errors.AnonymousPhaseInstructionThatReturnsHardError('hard error msg'))
         TestCaseThatRecordsExecution(
             self,
             test_case,
@@ -50,17 +50,17 @@ class Test(unittest.TestCase):
             False).execute()
 
     def test_implementation_error_in_anonymous_phase(self):
-        test_case = TestCaseThatRecordsExecutionWithSingleExtraInstruction(
-            anonymous_extra=
-            anonymous_phase_errors.AnonymousPhaseInstructionWithImplementationError(
-                anonymous_phase_errors.ImplementationErrorTestException()))
+        test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
+            .add_anonymous(
+            instructions_with_errors.AnonymousPhaseInstructionWithImplementationError(
+                instructions_with_errors.ImplementationErrorTestException()))
         TestCaseThatRecordsExecution(
             self,
             test_case,
             FullResultStatus.IMPLEMENTATION_ERROR,
             ExpectedInstructionFailureForFailure.new_with_exception(
-                test_case.the_anonymous_phase_extra.source_line,
-                anonymous_phase_errors.ImplementationErrorTestException),
+                test_case.the_anonymous_phase_extra[0].source_line,
+                instructions_with_errors.ImplementationErrorTestException),
             [phase_step.ANONYMOUS
              ],
             [],
@@ -68,7 +68,7 @@ class Test(unittest.TestCase):
 
     def test_hard_error_in_setup_execute_phase(self):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
-            .add_setup(anonymous_phase_errors.SetupPhaseInstructionThatReturnsHardError('hard error msg from setup')) \
+            .add_setup(instructions_with_errors.SetupPhaseInstructionThatReturnsHardError('hard error msg from setup')) \
             .add_setup_internal_recorder_of('expected to not be executed')
         TestCaseThatRecordsExecution(
             self,
