@@ -14,11 +14,11 @@ class InstructionFailureDetails:
     """
 
     def __init__(self,
-                 error_message: str,
+                 failure_message: str,
                  exception: Exception):
-        self.__error_message = error_message
+        self.__failure_message = failure_message
         self.__exception = exception
-        if self.__error_message is None:
+        if self.__failure_message is None:
             if self.__exception is None:
                 raise ValueError('Must specify either an error_message or an exception')
         else:
@@ -27,11 +27,11 @@ class InstructionFailureDetails:
 
     @property
     def is_error_message(self) -> bool:
-        return self.__error_message is not None
+        return self.__failure_message is not None
 
     @property
-    def error_message(self) -> str:
-        return self.__error_message
+    def failure_message(self) -> str:
+        return self.__failure_message
 
     @property
     def exception(self) -> Exception:

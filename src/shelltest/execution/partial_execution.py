@@ -92,10 +92,16 @@ class TestCaseExecution:
             return
         self.write_and_store_script_file_path()
         self.__run_act_script()
-        self.__execute_internal_instructions(phases.ASSERT, self.__assert_phase, phase_env)
+        res = self.__execute_internal_instructions2(phases.ASSERT,
+                                                    None,
+                                                    phase_step_executors.AssertInstructionExecutor(
+                                                        self.__global_environment,
+                                                        phase_env),
+                                                    self.__assert_phase)
+        self.__partial_result = res
         self.__execute_internal_instructions(phases.CLEANUP, self.__cleanup_phase, phase_env)
 
-        self.__partial_result = result.new_partial_result_pass(self.execution_directory_structure)
+        # self.__partial_result = result.new_partial_result_pass(self.execution_directory_structure)
 
     @property
     def execution_directory_structure(self) -> ExecutionDirectoryStructure:

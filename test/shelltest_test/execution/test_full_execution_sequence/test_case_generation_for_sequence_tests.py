@@ -200,6 +200,14 @@ class TestCaseThatRecordsExecutionWithExtraInstructionList(TestCaseGeneratorForE
         self.__act_extra.append(self._new_act_internal_recorder(text))
         return self
 
+    def add_assert(self, instruction: instructions.AssertPhaseInstruction):
+        self.__assert_extra.append(instruction)
+        return self
+
+    def add_assert_internal_recorder_of(self, text: str):
+        self.__assert_extra.append(self._new_assert_internal_recorder(text))
+        return self
+
     def add_cleanup(self, instruction: instructions.CleanupPhaseInstruction):
         self.__cleanup_extra.append(instruction)
         return self

@@ -70,9 +70,9 @@ class ExpectedInstructionFailureForFailure(ExpectedInstructionFailureBase, tuple
                                       actual_failure_info.source_line.text,
                                       'Source text')
             if self.error_message_or_none is not None:
-                unittest_case.assertIsNotNone(actual_failure_info.failure_details.error_message,
+                unittest_case.assertIsNotNone(actual_failure_info.failure_details.failure_message,
                                               'An error message is expected (not an exception)')
-                unittest_case.assertEqual(actual_failure_info.failure_details.error_message,
+                unittest_case.assertEqual(actual_failure_info.failure_details.failure_message,
                                           self.error_message_or_none,
                                           'Error message text')
             else:

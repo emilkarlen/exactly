@@ -1,4 +1,4 @@
-from shelltest.exec_abs_syn.instruction_result import new_success
+from shelltest.exec_abs_syn.success_or_hard_error_construction import new_success
 
 __author__ = 'emil'
 
