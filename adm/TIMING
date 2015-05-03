@@ -1,6 +1,11 @@
 -*- org -*-
 
 
+* TODO <2015-05-03 sön> Nya refaktoreringar
+** TODO Nya modulnamn
+- document (dok m faser o instr, syntax, parsning)
+- test_case (def faser o instr för TC, subklasser t Instruction ...)
+- execution (så som det är idag)
 * Planering
   CLOCK: [2014-12-30 tis 22:34]--[2014-12-30 tis 22:45] =>  0:11
 * Kravspec
@@ -51,10 +56,24 @@ Detta
 - "mall" för ett testfall som exekverar ett externt program med in och utdata
   i fil
 * Bestämma exekveringsflöde
-  CLOCK: [2015-05-01 fre 14:01]
+  CLOCK: [2015-05-03 sön 20:28]--[2015-05-03 sön 22:48] =>  2:20
+  CLOCK: [2015-05-03 sön 19:11]--[2015-05-03 sön 19:20] =>  0:09
+  CLOCK: [2015-05-03 sön 17:40]--[2015-05-03 sön 19:10] =>  1:30
+  CLOCK: [2015-05-03 sön 11:39]--[2015-05-03 sön 17:00] =>  5:21
+  CLOCK: [2015-05-03 sön 01:29]--[2015-05-03 sön 04:17] =>  2:48
+  CLOCK: [2015-05-02 lör 21:53]--[2015-05-03 sön 01:00] =>  3:07
+  CLOCK: [2015-05-02 lör 14:24]--[2015-05-02 lör 17:24] =>  3:00
+  CLOCK: [2015-05-02 lör 00:00]--[2015-05-02 lör 03:40] =>  3:40
+  CLOCK: [2015-05-01 fre 14:53]--[2015-05-01 fre 22:41] =>  7:48
   CLOCK: [2015-04-30 tor 21:53]--[2015-04-30 tor 22:38] =>  0:45
   CLOCK: [2015-04-30 tor 12:50]--[2015-04-30 tor 15:55] =>  3:05
+** TODO Test av exekvering av element-sekvens
+** TODO <2015-05-03 sön> kolla hur miljövariabler sätts
+Dels i förhållande till nya exekveringssekvensen.
+Dels pga ny variabel _TMP (behöver ev gå igenom alla ställen där miljövar
+testas, o lägga till nya.)
 * Exekvera instruktioner
+  CLOCK: [2015-05-03 sön 19:11]--[2015-05-03 sön 19:11] =>  0:00
   CLOCK: [2015-01-01 tor 21:31]--[2015-01-01 tor 22:08] =>  0:37
   CLOCK: [2015-01-01 tor 14:44]--[2015-01-01 tor 16:57] =>  2:13
 
