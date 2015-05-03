@@ -11,7 +11,7 @@ from shelltest.phase_instr import line_source
 from shelltest.execution import phase_step_executors
 from shelltest.execution.single_instruction_executor import ControlledInstructionExecutor
 from shelltest.exec_abs_syn import instructions
-from shelltest.phase_instr.model import PhaseContents, PhaseContentElement
+from shelltest.phase_instr.model import PhaseContents
 from shelltest import phases
 from shelltest.exec_abs_syn import script_stmt_gen, abs_syn_gen
 from shelltest.exec_abs_syn.config import Configuration
@@ -31,12 +31,7 @@ ALL_ENV_VARS = [ENV_VAR_HOME,
                 ENV_VAR_TMP]
 
 
-class TestCaseExecution:
-    """
-    Executes a given Test Case in an existing
-    Execution Directory Root.
-    """
-
+class _Executor:
     def __init__(self,
                  global_environment: instructions.GlobalEnvironmentForNamedPhase,
                  execution_directory_structure: ExecutionDirectoryStructure,
@@ -58,14 +53,6 @@ class TestCaseExecution:
         self.__script_file_path = None
         self.__partial_result = None
 
-    def write_and_store_script_file_path(self):
-        script_source = self.__act_env_before_execution.final_script_source
-        base_name = self.__file_management.base_name_from_stem(phases.ACT.name)
-        file_path = self.__execution_directory_structure.test_case_dir / base_name
-        with open(str(file_path), 'w') as f:
-            f.write(script_source)
-        self.__script_file_path = file_path
-
     def execute(self):
         """
         Pre-condition: write has been executed.
@@ -73,38 +60,20 @@ class TestCaseExecution:
         # TODO Köra det här i sub-process?
         # Tror det behövs för att undvika att sätta omgivningen mm, o därmed
         # påverka huvudprocessen.
-        os.environ[ENV_VAR_HOME] = str(self.configuration.home_dir)
-        os.environ[ENV_VAR_TEST] = str(self.execution_directory_structure.test_root_dir)
-        os.environ[ENV_VAR_TMP] = str(self.execution_directory_structure.tmp_dir)
+        self.__set_environment_variables()
         phase_env = instructions.PhaseEnvironmentForInternalCommands()
-        res = self.__execute_internal_instructions2(phases.SETUP,
-                                                    None,
-                                                    phase_step_executors.SetupPhaseInstructionExecutor(
-                                                        self.__global_environment,
-                                                        phase_env),
-                                                    self.__setup_phase)
+        res = self.__run_setup(phase_env)
         if res.status is not PartialResultStatus.PASS:
             self.__partial_result = res
             return
-        res = self.__execute_act_phase_to_produce_script_in_act_environment()
+        res = self.__run_act_script_generation()
         if res.status is not PartialResultStatus.PASS:
             self.__partial_result = res
             return
         self.write_and_store_script_file_path()
         self.__run_act_script()
-        res = self.__execute_internal_instructions2(phases.ASSERT,
-                                                    None,
-                                                    phase_step_executors.AssertInstructionExecutor(
-                                                        self.__global_environment,
-                                                        phase_env),
-                                                    self.__assert_phase)
-        self.__partial_result = res
-        res = self.__execute_internal_instructions2(phases.CLEANUP,
-                                                    None,
-                                                    phase_step_executors.CleanupPhaseInstructionExecutor(
-                                                        self.__global_environment,
-                                                        phase_env),
-                                                    self.__cleanup_phase)
+        self.__partial_result = self.__execute_assert(phase_env)
+        res = self.__run_cleanup(phase_env)
         if res.is_failure:
             self.__partial_result = res
 
@@ -138,25 +107,48 @@ class TestCaseExecution:
         with open(str(self.execution_directory_structure.result.exitcode_file), 'w') as f:
             f.write(str(exitcode))
 
-    def __execute_internal_instructions(self,
-                                        phase: phases.Phase,
-                                        phase_contents: PhaseContents,
-                                        phase_env: instructions.PhaseEnvironmentForInternalCommands):
-        os.chdir(str(self.execution_directory_structure.test_root_dir))
-        for element in phase_contents.elements:
-            assert isinstance(element, PhaseContentElement)
-            if element.is_instruction:
-                instruction = element.instruction
-                assert isinstance(instruction, instructions.InternalInstruction)
-                instruction.execute(phase.name,
-                                    self.__global_environment,
-                                    phase_env)
+    def write_and_store_script_file_path(self):
+        script_source = self.__act_env_before_execution.final_script_source
+        base_name = self.__file_management.base_name_from_stem(phases.ACT.name)
+        file_path = self.__execution_directory_structure.test_case_dir / base_name
+        with open(str(file_path), 'w') as f:
+            f.write(script_source)
+        self.__script_file_path = file_path
 
-    def __execute_internal_instructions2(self,
-                                         phase: phases.Phase,
-                                         phase_step: str,
-                                         instruction_executor: ControlledInstructionExecutor,
-                                         phase_contents: PhaseContents) -> PartialResult:
+    def __run_setup(self, phase_env):
+        return self.__run_internal_instructions_phase_step(phases.SETUP,
+                                                           None,
+                                                           phase_step_executors.SetupPhaseInstructionExecutor(
+                                                               self.__global_environment,
+                                                               phase_env),
+                                                           self.__setup_phase)
+
+    def __execute_assert(self, phase_env):
+        return self.__run_internal_instructions_phase_step(phases.ASSERT,
+                                                           None,
+                                                           phase_step_executors.AssertInstructionExecutor(
+                                                               self.__global_environment,
+                                                               phase_env),
+                                                           self.__assert_phase)
+
+    def __run_cleanup(self, phase_env):
+        return self.__run_internal_instructions_phase_step(phases.CLEANUP,
+                                                           None,
+                                                           phase_step_executors.CleanupPhaseInstructionExecutor(
+                                                               self.__global_environment,
+                                                               phase_env),
+                                                           self.__cleanup_phase)
+
+    def __set_environment_variables(self):
+        os.environ[ENV_VAR_HOME] = str(self.configuration.home_dir)
+        os.environ[ENV_VAR_TEST] = str(self.execution_directory_structure.test_root_dir)
+        os.environ[ENV_VAR_TMP] = str(self.execution_directory_structure.tmp_dir)
+
+    def __run_internal_instructions_phase_step(self,
+                                               phase: phases.Phase,
+                                               phase_step: str,
+                                               instruction_executor: ControlledInstructionExecutor,
+                                               phase_contents: PhaseContents) -> PartialResult:
         os.chdir(str(self.execution_directory_structure.test_root_dir))
         return phase_step_executor.execute_phase(phase_contents,
                                                  phase_step_executor.ElementHeaderExecutorThatDoesNothing(),
@@ -166,7 +158,7 @@ class TestCaseExecution:
                                                  phase_step,
                                                  self.execution_directory_structure)
 
-    def __execute_act_phase_to_produce_script_in_act_environment(self) -> PartialResult:
+    def __run_act_script_generation(self) -> PartialResult:
         """
         Accumulates the script source by executing all instructions, and adding
         comments from the test case file.
@@ -175,8 +167,8 @@ class TestCaseExecution:
         """
         return phase_step_executor.execute_phase(
             self.__act_phase,
-            ActCommentHeaderExecutor(self.__act_env_before_execution),
-            ActInstructionHeaderExecutor(self.__act_env_before_execution),
+            _ActCommentHeaderExecutor(self.__act_env_before_execution),
+            _ActInstructionHeaderExecutor(self.__act_env_before_execution),
             phase_step_executors.ActScriptGenerationExecutor(self.__global_environment,
                                                              self.__act_env_before_execution),
             phases.ACT,
@@ -219,7 +211,7 @@ class TestCaseExecution:
                     raise exception.ImplementationError(msg)
 
 
-class ActCommentHeaderExecutor(ElementHeaderExecutor):
+class _ActCommentHeaderExecutor(ElementHeaderExecutor):
     def __init__(self,
                  phase_environment: instructions.PhaseEnvironmentForScriptGeneration):
         self.__phase_environment = phase_environment
@@ -228,7 +220,7 @@ class ActCommentHeaderExecutor(ElementHeaderExecutor):
         self.__phase_environment.append.comment_line(line)
 
 
-class ActInstructionHeaderExecutor(ElementHeaderExecutor):
+class _ActInstructionHeaderExecutor(ElementHeaderExecutor):
     def __init__(self,
                  phase_environment: instructions.PhaseEnvironmentForScriptGeneration):
         self.__phase_environment = phase_environment
@@ -237,12 +229,27 @@ class ActInstructionHeaderExecutor(ElementHeaderExecutor):
         self.__phase_environment.append.source_line_header(line)
 
 
-def execute_test_case_in_execution_directory(script_file_manager: script_stmt_gen.ScriptFileManager,
-                                             script_source_writer: script_stmt_gen.ScriptSourceBuilder,
-                                             test_case: abs_syn_gen.TestCase,
-                                             home_dir_path: pathlib.Path,
-                                             execution_directory_root_name_prefix: str,
-                                             is_keep_execution_directory_root: bool) -> TestCaseExecution:
+def execute_partial(script_file_manager: script_stmt_gen.ScriptFileManager,
+                    script_source_writer: script_stmt_gen.ScriptSourceBuilder,
+                    test_case: abs_syn_gen.TestCase,
+                    home_dir_path: pathlib.Path,
+                    execution_directory_root_name_prefix: str,
+                    is_keep_execution_directory_root: bool) -> PartialResult:
+    tc_execution = _execute_test_case_in_execution_directory(script_file_manager,
+                                                             script_source_writer,
+                                                             test_case,
+                                                             home_dir_path,
+                                                             execution_directory_root_name_prefix,
+                                                             is_keep_execution_directory_root)
+    return tc_execution.partial_result
+
+
+def _execute_test_case_in_execution_directory(script_file_manager: script_stmt_gen.ScriptFileManager,
+                                              script_source_writer: script_stmt_gen.ScriptSourceBuilder,
+                                              test_case: abs_syn_gen.TestCase,
+                                              home_dir_path: pathlib.Path,
+                                              execution_directory_root_name_prefix: str,
+                                              is_keep_execution_directory_root: bool) -> _Executor:
     """
     Takes care of construction of the Execution Directory Structure, including
     the root directory, and executes a given Test Case in this directory.
@@ -257,7 +264,7 @@ def execute_test_case_in_execution_directory(script_file_manager: script_stmt_ge
     Please refactor if a more natural responsibility evolves!
     """
 
-    def with_existing_root(exec_dir_structure_root: str) -> TestCaseExecution:
+    def with_existing_root(exec_dir_structure_root: str) -> _Executor:
         cwd_before = os.getcwd()
         execution_directory_structure = construct_at(exec_dir_structure_root)
         global_environment = instructions.GlobalEnvironmentForNamedPhase(home_dir_path,
@@ -267,14 +274,14 @@ def execute_test_case_in_execution_directory(script_file_manager: script_stmt_ge
         configuration = Configuration(home_dir_path,
                                       execution_directory_structure.test_root_dir)
 
-        test_case_execution = TestCaseExecution(global_environment,
-                                                execution_directory_structure,
-                                                configuration,
-                                                act_environment,
-                                                test_case.setup_phase,
-                                                test_case.act_phase,
-                                                test_case.assert_phase,
-                                                test_case.cleanup_phase)
+        test_case_execution = _Executor(global_environment,
+                                        execution_directory_structure,
+                                        configuration,
+                                        act_environment,
+                                        test_case.setup_phase,
+                                        test_case.act_phase,
+                                        test_case.assert_phase,
+                                        test_case.cleanup_phase)
         try:
             test_case_execution.execute()
         finally:
@@ -289,16 +296,3 @@ def execute_test_case_in_execution_directory(script_file_manager: script_stmt_ge
             return with_existing_root(tmp_exec_dir_structure_root)
 
 
-def execute_partial(script_file_manager: script_stmt_gen.ScriptFileManager,
-                    script_source_writer: script_stmt_gen.ScriptSourceBuilder,
-                    test_case: abs_syn_gen.TestCase,
-                    home_dir_path: pathlib.Path,
-                    execution_directory_root_name_prefix: str,
-                    is_keep_execution_directory_root: bool) -> PartialResult:
-    tc_execution = execute_test_case_in_execution_directory(script_file_manager,
-                                                            script_source_writer,
-                                                            test_case,
-                                                            home_dir_path,
-                                                            execution_directory_root_name_prefix,
-                                                            is_keep_execution_directory_root)
-    return tc_execution.partial_result
