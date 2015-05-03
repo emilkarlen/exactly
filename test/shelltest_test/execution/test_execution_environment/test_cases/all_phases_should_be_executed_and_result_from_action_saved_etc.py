@@ -1,3 +1,5 @@
+from shelltest.exec_abs_syn.instruction_result import new_success
+
 __author__ = 'emil'
 
 import os
@@ -98,7 +100,7 @@ class ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr(instructions.ActPhaseI
 
     def update_phase_environment(self, phase_name: str,
                 global_environment: instructions.GlobalEnvironmentForNamedPhase,
-                phase_environment: instructions.PhaseEnvironmentForScriptGeneration):
+                phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> instructions.SuccessOrHardError:
         statements = [
                          'import sys',
                          'import os',
@@ -107,8 +109,8 @@ class ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr(instructions.ActPhaseI
                      self.print_on('sys.stdout', global_environment) + \
                      self.print_on('sys.stderr', global_environment) + \
                      ['sys.exit(%d)' % EXIT_CODE]
-
-        return phase_environment.append.raw_script_statements(statements)
+        phase_environment.append.raw_script_statements(statements)
+        return new_success()
 
     def print_on(self,
                  file_object: str,

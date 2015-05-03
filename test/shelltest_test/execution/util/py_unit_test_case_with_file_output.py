@@ -1,3 +1,5 @@
+from shelltest.exec_abs_syn.instruction_result import new_success
+
 __author__ = 'emil'
 
 import os
@@ -82,9 +84,11 @@ class ActPhaseInstructionThatWritesToStandardPhaseFile(instructions.ActPhaseInst
         super().__init__()
         self.__phase = phase
 
-    def update_phase_environment(self, phase_name: str,
-                                 global_environment: instructions.GlobalEnvironmentForNamedPhase,
-                                 phase_environment: instructions.PhaseEnvironmentForScriptGeneration):
+    def update_phase_environment(
+            self,
+            phase_name: str,
+            global_environment: instructions.GlobalEnvironmentForNamedPhase,
+            phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> instructions.SuccessOrHardError:
         file_path = standard_phase_file_path(global_environment.eds.test_root_dir, self.__phase)
         file_name = str(file_path)
         file_var = '_file_var'
@@ -97,7 +101,8 @@ class ActPhaseInstructionThatWritesToStandardPhaseFile(instructions.ActPhaseInst
         program = py.program_lines(mas.used_modules,
                                    all_statements)
         # print(os.linesep.join(statements))
-        return phase_environment.append.raw_script_statements(program)
+        phase_environment.append.raw_script_statements(program)
+        return new_success()
 
     def code_using_file_opened_for_writing(self,
                                            file_variable: str) -> ModulesAndStatements:
