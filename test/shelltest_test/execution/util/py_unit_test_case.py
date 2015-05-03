@@ -10,7 +10,7 @@ from shelltest.phase_instr import line_source
 from shelltest.script_language import python3
 from shelltest.exec_abs_syn import abs_syn_gen
 from shelltest import phases
-from shelltest.execution import execution
+from shelltest.execution import full_execution
 from shelltest_test.execution.util import utils, instruction_adapter
 
 
@@ -34,7 +34,7 @@ class UnitTestCaseForPy3Language:
         home_dir_path = pathlib.Path().resolve()
         test_case = self._test_case()
         # ACT #
-        test_case_execution = execution.execute_test_case_in_execution_directory(
+        test_case_execution = full_execution.execute_test_case_in_execution_directory(
             python3.Python3ScriptFileManager(),
             python3.new_script_source_writer(),
             test_case,
@@ -77,11 +77,11 @@ class UnitTestCaseForPy3Language:
         return self.__unittest_case
 
     @property
-    def test_case_execution(self) -> execution.TestCaseExecution:
+    def test_case_execution(self) -> full_execution.TestCaseExecution:
         return self.__test_case_execution
 
     @property
-    def eds(self) -> execution.ExecutionDirectoryStructure:
+    def eds(self) -> full_execution.ExecutionDirectoryStructure:
         return self.__execution_directory_structure
 
     def assert_is_regular_file_with_contents(self,

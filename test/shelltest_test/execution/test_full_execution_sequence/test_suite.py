@@ -2,15 +2,15 @@ __author__ = 'emil'
 
 import unittest
 
-from shelltest_test.execution.test_execution_sequence.test_case_generation_for_sequence_tests import \
+from shelltest_test.execution.test_full_execution_sequence.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorForExecutionRecording, \
     TestCaseThatRecordsExecutionWithSingleExtraInstruction, TestCaseThatRecordsExecutionWithExtraInstructionList
 from shelltest.execution.result import FullResultStatus
 from shelltest.execution import phase_step
-from shelltest_test.execution.test_execution_sequence.test_case_that_records_phase_execution import \
+from shelltest_test.execution.test_full_execution_sequence.test_case_that_records_phase_execution import \
     TestCaseThatRecordsExecution, \
     ExpectedInstructionFailureForNoFailure, ExpectedInstructionFailureForFailure
-from shelltest_test.execution.test_execution_sequence import instructions_with_errors
+from shelltest_test.execution.test_full_execution_sequence import instructions_with_errors
 
 
 class Test(unittest.TestCase):

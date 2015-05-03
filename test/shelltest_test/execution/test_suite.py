@@ -3,7 +3,7 @@ __author__ = 'emil'
 import unittest
 
 from shelltest_test.execution import test_execution_directory_structure
-from shelltest_test.execution.test_execution_sequence import test_suite
+from shelltest_test.execution.test_full_execution_sequence import test_suite
 
 
 def suite():
