@@ -4,7 +4,7 @@ import unittest
 
 from shelltest_test.execution.test_full_execution_sequence.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorForExecutionRecording, \
-    TestCaseThatRecordsExecutionWithSingleExtraInstruction, TestCaseThatRecordsExecutionWithExtraInstructionList
+    TestCaseThatRecordsExecutionWithExtraInstructionList
 from shelltest.execution.result import FullResultStatus
 from shelltest.execution import phase_step
 from shelltest_test.execution.test_full_execution_sequence.test_case_that_records_phase_execution import \
@@ -34,15 +34,14 @@ class Test(unittest.TestCase):
             True).execute()
 
     def test_hard_error_in_anonymous_phase(self):
-        test_case = TestCaseThatRecordsExecutionWithSingleExtraInstruction(
-            anonymous_extra=
-            instructions_with_errors.AnonymousPhaseInstructionThatReturnsHardError('hard error msg'))
+        test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
+            .add_anonymous(instructions_with_errors.AnonymousPhaseInstructionThatReturnsHardError('hard error msg'))
         TestCaseThatRecordsExecution(
             self,
             test_case,
             FullResultStatus.HARD_ERROR,
             ExpectedInstructionFailureForFailure.new_with_message(
-                test_case.the_anonymous_phase_extra.source_line,
+                test_case.the_anonymous_phase_extra[0].source_line,
                 'hard error msg'),
             [phase_step.ANONYMOUS
              ],
