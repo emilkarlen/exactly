@@ -127,6 +127,10 @@ class PartialResult(ResultBase):
     def status(self) -> PartialResultStatus:
         return self.__status
 
+    @property
+    def is_failure(self) -> bool:
+        return self.__status is not PartialResultStatus.PASS
+
 
 def new_partial_result_pass(execution_directory_structure: ExecutionDirectoryStructure) -> PartialResult:
     return PartialResult(PartialResultStatus.PASS,

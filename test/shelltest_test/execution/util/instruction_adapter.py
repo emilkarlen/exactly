@@ -53,13 +53,16 @@ class _AssertInstructionExecutor(instrs.AssertPhaseInstruction):
 
 class _CleanupInstructionExecutor(instrs.CleanupPhaseInstruction):
     def __init__(self,
-                 internal_instruction: instrs.InternalInstruction):
+                 internal_instruction: instrs.InternalInstruction,
+                 ret_val: SuccessOrHardError=new_success()):
         self.__internal_instruction = internal_instruction
+        self.__ret_val = ret_val
 
     def execute(self, phase_name: str,
                 global_environment: instrs.GlobalEnvironmentForNamedPhase,
-                phase_environment: instrs.PhaseEnvironmentForInternalCommands):
+                phase_environment: instrs.PhaseEnvironmentForInternalCommands) -> instrs.SuccessOrHardError:
         self.__internal_instruction.execute(phase_name,
                                             global_environment,
                                             phase_environment)
+        return self.__ret_val
 
