@@ -1,4 +1,5 @@
 from shelltest.exec_abs_syn.success_or_hard_error_construction import new_success
+from shelltest.execution.execution_directory_structure import ExecutionDirectoryStructure
 
 __author__ = 'emil'
 
@@ -6,7 +7,7 @@ import os
 import pathlib
 
 from shelltest.exec_abs_syn.config import Configuration
-from shelltest.execution import full_execution
+from shelltest.execution import partial_execution
 from shelltest_test.execution.util import py_unit_test_case_with_file_output as with_file_output
 from shelltest_test.execution.util.py_unit_test_case_with_file_output import \
     InternalInstructionThatWritesToStandardPhaseFile
@@ -53,7 +54,7 @@ class TestCase(UnitTestCaseForPy3Language):
 
     def assert_files_in_test_root_that_contain_name_of_test_root_dir(
             self,
-            eds: full_execution.ExecutionDirectoryStructure,
+            eds: ExecutionDirectoryStructure,
             global_environment: instructions.GlobalEnvironmentForNamedPhase,
             file_name_from_py_cmd_list: list):
         expected_contents = utils.un_lines(py_cmd_file_lines(global_environment.eds.test_root_dir,
@@ -99,8 +100,8 @@ class ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr(instructions.ActPhaseI
         super().__init__()
 
     def update_phase_environment(self, phase_name: str,
-                global_environment: instructions.GlobalEnvironmentForNamedPhase,
-                phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> instructions.SuccessOrHardError:
+                                 global_environment: instructions.GlobalEnvironmentForNamedPhase,
+                                 phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> instructions.SuccessOrHardError:
         statements = [
                          'import sys',
                          'import os',
@@ -120,8 +121,8 @@ class ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr(instructions.ActPhaseI
             self.write_path_line(file_object, HOME_DIR_HEADER, global_environment.home_directory),
             self.write_path_line(file_object, TEST_ROOT_DIR_HEADER, global_environment.eds.test_root_dir),
             self.write_prefix_and_expr(file_object, CURRENT_DIR_HEADER, 'str(pathlib.Path().resolve())'),
-            self.write_env_var(file_object, full_execution.ENV_VAR_HOME),
-            self.write_env_var(file_object, full_execution.ENV_VAR_TEST),
+            self.write_env_var(file_object, partial_execution.ENV_VAR_HOME),
+            self.write_env_var(file_object, partial_execution.ENV_VAR_TEST),
         ]
 
     @staticmethod
@@ -162,8 +163,8 @@ def expected_output_on(file_object: str,
         output_with_header(TEST_ROOT_DIR_HEADER, str(configuration.test_root_dir)),
         output_with_header(CURRENT_DIR_HEADER, str(configuration.test_root_dir)),
 
-        output_with_header(full_execution.ENV_VAR_HOME, str(configuration.home_dir)),
-        output_with_header(full_execution.ENV_VAR_TEST, str(configuration.test_root_dir)),
+        output_with_header(partial_execution.ENV_VAR_HOME, str(configuration.home_dir)),
+        output_with_header(partial_execution.ENV_VAR_TEST, str(configuration.test_root_dir)),
         ''
     ])
 

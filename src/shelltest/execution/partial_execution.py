@@ -31,7 +31,7 @@ ALL_ENV_VARS = [ENV_VAR_HOME,
                 ENV_VAR_TMP]
 
 
-class _Executor:
+class PartialExecutor:
     def __init__(self,
                  global_environment: instructions.GlobalEnvironmentForNamedPhase,
                  execution_directory_structure: ExecutionDirectoryStructure,
@@ -217,7 +217,7 @@ class _ActCommentHeaderExecutor(ElementHeaderExecutor):
         self.__phase_environment = phase_environment
 
     def apply(self, line: line_source.Line):
-        self.__phase_environment.append.comment_line(line)
+        self.__phase_environment.append.comment_line(line.text)
 
 
 class _ActInstructionHeaderExecutor(ElementHeaderExecutor):
@@ -235,21 +235,21 @@ def execute_partial(script_file_manager: script_stmt_gen.ScriptFileManager,
                     home_dir_path: pathlib.Path,
                     execution_directory_root_name_prefix: str,
                     is_keep_execution_directory_root: bool) -> PartialResult:
-    tc_execution = _execute_test_case_in_execution_directory(script_file_manager,
-                                                             script_source_writer,
-                                                             test_case,
-                                                             home_dir_path,
-                                                             execution_directory_root_name_prefix,
-                                                             is_keep_execution_directory_root)
+    tc_execution = execute_test_case_in_execution_directory(script_file_manager,
+                                                            script_source_writer,
+                                                            test_case,
+                                                            home_dir_path,
+                                                            execution_directory_root_name_prefix,
+                                                            is_keep_execution_directory_root)
     return tc_execution.partial_result
 
 
-def _execute_test_case_in_execution_directory(script_file_manager: script_stmt_gen.ScriptFileManager,
-                                              script_source_writer: script_stmt_gen.ScriptSourceBuilder,
-                                              test_case: abs_syn_gen.TestCase,
-                                              home_dir_path: pathlib.Path,
-                                              execution_directory_root_name_prefix: str,
-                                              is_keep_execution_directory_root: bool) -> _Executor:
+def execute_test_case_in_execution_directory(script_file_manager: script_stmt_gen.ScriptFileManager,
+                                             script_source_writer: script_stmt_gen.ScriptSourceBuilder,
+                                             test_case: abs_syn_gen.TestCase,
+                                             home_dir_path: pathlib.Path,
+                                             execution_directory_root_name_prefix: str,
+                                             is_keep_execution_directory_root: bool) -> PartialExecutor:
     """
     Takes care of construction of the Execution Directory Structure, including
     the root directory, and executes a given Test Case in this directory.
@@ -264,7 +264,7 @@ def _execute_test_case_in_execution_directory(script_file_manager: script_stmt_g
     Please refactor if a more natural responsibility evolves!
     """
 
-    def with_existing_root(exec_dir_structure_root: str) -> _Executor:
+    def with_existing_root(exec_dir_structure_root: str) -> PartialExecutor:
         cwd_before = os.getcwd()
         execution_directory_structure = construct_at(exec_dir_structure_root)
         global_environment = instructions.GlobalEnvironmentForNamedPhase(home_dir_path,
@@ -274,14 +274,14 @@ def _execute_test_case_in_execution_directory(script_file_manager: script_stmt_g
         configuration = Configuration(home_dir_path,
                                       execution_directory_structure.test_root_dir)
 
-        test_case_execution = _Executor(global_environment,
-                                        execution_directory_structure,
-                                        configuration,
-                                        act_environment,
-                                        test_case.setup_phase,
-                                        test_case.act_phase,
-                                        test_case.assert_phase,
-                                        test_case.cleanup_phase)
+        test_case_execution = PartialExecutor(global_environment,
+                                              execution_directory_structure,
+                                              configuration,
+                                              act_environment,
+                                              test_case.setup_phase,
+                                              test_case.act_phase,
+                                              test_case.assert_phase,
+                                              test_case.cleanup_phase)
         try:
             test_case_execution.execute()
         finally:

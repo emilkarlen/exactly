@@ -2,15 +2,17 @@ __author__ = 'emil'
 
 import unittest
 
-from shelltest_test.execution import test_execution_directory_structure
-from shelltest_test.execution.test_full_execution_sequence import test_suite
+from shelltest_test.execution import test_execution_directory_structure, test_single_instruction_executor
+from shelltest_test.execution.test_execution_environment import test_suite as execution_environment_test_suite
+from shelltest_test.execution.test_full_execution_sequence import test_suite as full_execution_test_suite
 
 
 def suite():
     ret_val = unittest.TestSuite()
     ret_val.addTest(test_execution_directory_structure.suite())
-    ret_val.addTest(test_suite.suite())
-    ret_val.addTest(test_suite.suite())
+    ret_val.addTest(test_single_instruction_executor.suite())
+    ret_val.addTest(execution_environment_test_suite.suite())
+    ret_val.addTest(full_execution_test_suite.suite())
     return ret_val
 
 
