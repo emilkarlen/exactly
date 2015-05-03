@@ -1,3 +1,6 @@
+from shelltest.execution.single_instruction_executor import ControlledInstructionExecutor, execute_element, \
+    PartialInstructionControlledFailureInfo, PartialControlledFailureEnum
+
 __author__ = 'emil'
 
 import tempfile
@@ -13,9 +16,9 @@ from shelltest.exec_abs_syn.config import Configuration
 from shelltest import exception
 from .execution_directory_structure import construct_at, ExecutionDirectoryStructure
 from shelltest.exec_abs_syn.instructions import PhaseEnvironmentForAnonymousPhase, ExecutionMode, \
-    AnonymousPhaseInstruction
+    AnonymousPhaseInstruction, SuccessOrHardError
 from .result import FullResult, PartialResult, PartialResultStatus, FullResultStatus, \
-    InstructionFailureInfo, InstructionFailureDetails, new_failure_details_from_exception
+    InstructionFailureInfo, new_partial_result_pass
 from . import result
 
 
@@ -239,35 +242,11 @@ def execute_test_case_in_execution_directory2(script_file_manager: script_stmt_g
 
 def execute_anonymous_phase(phase_environment: PhaseEnvironmentForAnonymousPhase,
                             test_case: abs_syn_gen.TestCase) -> PartialResult:
-    def failure_from(element: PhaseContentElement,
-                     fd: InstructionFailureDetails) -> PartialResult:
-        status = PartialResultStatus.IMPLEMENTATION_ERROR
-        if fd.error_message:
-            status = PartialResultStatus.HARD_ERROR
-        return PartialResult(status,
-                             None,
-                             InstructionFailureInfo(phases.ANONYMOUS,
-                                                    None,
-                                                    element.source_line,
-                                                    fd))
-
-    global_environment = ()
-    for element in test_case.anonymous_phase.elements:
-        assert isinstance(element, PhaseContentElement)
-        if element.is_instruction:
-            instruction = element.instruction
-            assert isinstance(instruction, AnonymousPhaseInstruction)
-            try:
-                instr_result = instruction.execute(phases.ANONYMOUS.name,
-                                                   global_environment,
-                                                   phase_environment)
-                if instr_result.is_hard_error:
-                    return failure_from(element,
-                                        result.new_failure_details_from_message(instr_result.failure_message))
-            except Exception as ex:
-                return failure_from(element,
-                                    new_failure_details_from_exception(ex))
-    return result.new_partial_result_pass(None)
+    return execute_phase(test_case.anonymous_phase,
+                         AnonymousPhaseInstructionExecutor(phase_environment),
+                         phases.ANONYMOUS,
+                         None,
+                         None)
 
 
 def execute_named_phases(script_file_manager: script_stmt_gen.ScriptFileManager,
@@ -327,3 +306,43 @@ def execute(script_file_manager: script_stmt_gen.ScriptFileManager,
                                           is_keep_execution_directory_root)
     return new_named_phases_result_from(anonymous_phase_environment,
                                         partial_result)
+
+
+def execute_phase(phase_contents: PhaseContents,
+                  instruction_executor: ControlledInstructionExecutor,
+                  phase: phases.Phase,
+                  phase_step: str,
+                  eds: ExecutionDirectoryStructure) -> PartialResult:
+    for element in phase_contents.elements:
+        assert isinstance(element, PhaseContentElement)
+        if element.is_instruction:
+            failure_info = execute_element(instruction_executor,
+                                           element)
+            if failure_info is not None:
+                return PartialResult(failure_info.status,
+                                     eds,
+                                     InstructionFailureInfo(phase,
+                                                            phase_step,
+                                                            failure_info.source_line,
+                                                            failure_info.failure_details))
+    return new_partial_result_pass(eds)
+
+
+def _from_success_or_hard_error(res: SuccessOrHardError) -> PartialInstructionControlledFailureInfo:
+    return None \
+        if res.is_success \
+        else PartialInstructionControlledFailureInfo(PartialControlledFailureEnum.HARD_ERROR,
+                                                     res.failure_message)
+
+
+class AnonymousPhaseInstructionExecutor(ControlledInstructionExecutor):
+    def __init__(self,
+                 phase_environment: PhaseEnvironmentForAnonymousPhase):
+        self.__phase_environment = phase_environment
+        self.__global_environment = ()
+
+    def apply(self, instruction: AnonymousPhaseInstruction) -> PartialInstructionControlledFailureInfo:
+        return _from_success_or_hard_error(
+            instruction.execute(phases.ANONYMOUS.name,
+                                self.__global_environment,
+                                self.__phase_environment))
