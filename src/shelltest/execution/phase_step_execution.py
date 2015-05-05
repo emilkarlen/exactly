@@ -30,10 +30,13 @@ def execute_phase(phase_contents: PhaseContents,
     Stops execution at the first failing instruction.
 
     :param phase_contents:
-    :param header_executor_for_comment: Is executed for each element that is comment.
+    :param header_executor_for_comment: Is executed for each element that is a comment.
+    Exceptions raised by this object are not handled.
     :param header_executor_for_instruction: Is executed for each element that is an instruction
+    Exceptions raised by this object are not handled.
     :param instruction_executor: Is executed for each element that is an instruction, after
     header_executor_for_instruction has been executed.
+    Exceptions raised by this object are translated to IMPLEMENTATION_ERROR.
     :param phase:
     :param phase_step:
     :param eds:
