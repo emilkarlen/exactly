@@ -6,7 +6,7 @@ import subprocess
 import pathlib
 
 from shelltest.execution.phase_step import ACT_script_generation
-from shelltest.execution.phase_step_executor import ElementHeaderExecutor
+from shelltest.execution.phase_step_execution import ElementHeaderExecutor
 from shelltest.phase_instr import line_source
 from shelltest.execution import phase_step_executors
 from shelltest.execution.single_instruction_executor import ControlledInstructionExecutor
@@ -19,7 +19,7 @@ from shelltest import exception
 from .execution_directory_structure import construct_at, ExecutionDirectoryStructure
 from .result import PartialResult, PartialResultStatus
 from . import result
-from . import phase_step_executor
+from . import phase_step_execution
 
 
 ENV_VAR_HOME = 'SHELLTEST_HOME'
@@ -150,9 +150,9 @@ class PartialExecutor:
                                                instruction_executor: ControlledInstructionExecutor,
                                                phase_contents: PhaseContents) -> PartialResult:
         os.chdir(str(self.execution_directory_structure.test_root_dir))
-        return phase_step_executor.execute_phase(phase_contents,
-                                                 phase_step_executor.ElementHeaderExecutorThatDoesNothing(),
-                                                 phase_step_executor.ElementHeaderExecutorThatDoesNothing(),
+        return phase_step_execution.execute_phase(phase_contents,
+                                                  phase_step_execution.ElementHeaderExecutorThatDoesNothing(),
+                                                  phase_step_execution.ElementHeaderExecutorThatDoesNothing(),
                                                  instruction_executor,
                                                  phase,
                                                  phase_step,
@@ -165,7 +165,7 @@ class PartialExecutor:
 
         :param act_environment: Post-condition: Contains the accumulated script source.
         """
-        return phase_step_executor.execute_phase(
+        return phase_step_execution.execute_phase(
             self.__act_phase,
             _ActCommentHeaderExecutor(self.__act_env_before_execution),
             _ActInstructionHeaderExecutor(self.__act_env_before_execution),

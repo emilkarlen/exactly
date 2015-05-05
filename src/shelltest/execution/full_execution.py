@@ -10,7 +10,7 @@ from shelltest.exec_abs_syn import script_stmt_gen, abs_syn_gen
 from shelltest.exec_abs_syn.instructions import PhaseEnvironmentForAnonymousPhase, ExecutionMode
 from .result import FullResult, PartialResult, PartialResultStatus, FullResultStatus
 from . import result
-from . import phase_step_executor
+from . import phase_step_execution
 
 
 def new_anonymous_phase_failure_from(partial_result: PartialResult) -> FullResult:
@@ -59,9 +59,9 @@ def execute(script_file_manager: script_stmt_gen.ScriptFileManager,
 
 def execute_anonymous_phase(phase_environment: PhaseEnvironmentForAnonymousPhase,
                             test_case: abs_syn_gen.TestCase) -> PartialResult:
-    return phase_step_executor.execute_phase(test_case.anonymous_phase,
-                                             phase_step_executor.ElementHeaderExecutorThatDoesNothing(),
-                                             phase_step_executor.ElementHeaderExecutorThatDoesNothing(),
+    return phase_step_execution.execute_phase(test_case.anonymous_phase,
+                                              phase_step_execution.ElementHeaderExecutorThatDoesNothing(),
+                                              phase_step_execution.ElementHeaderExecutorThatDoesNothing(),
                                              phase_step_executors.AnonymousPhaseInstructionExecutor(phase_environment),
                                              phases.ANONYMOUS,
                                              None,
