@@ -1,47 +1,121 @@
+from shelltest_test.phase_instr.test_resources import assert_equals_line
+
 __author__ = 'emil'
 
-import types
 import unittest
 
-from shelltest.execution.result import InstructionFailureDetails, new_failure_details_from_message, PartialResultStatus, \
-    new_failure_details_from_exception
+from shelltest_test.execution.util.expected_instruction_failure import ExpectedInstructionFailureDetails
+from shelltest.execution.phase_step_execution import ElementHeaderExecutor, execute_phase_prim, Failure
+from shelltest.execution.result import PartialResultStatus
 from shelltest.phase_instr import line_source
-from shelltest.phase_instr.model import Instruction, PhaseContentElement
-from shelltest.execution.single_instruction_executor import execute_element, ControlledInstructionExecutor, \
-    PartialInstructionControlledFailureInfo, PartialControlledFailureEnum, SingleInstructionExecutionFailure
+from shelltest.phase_instr.model import Instruction, PhaseContentElement, PhaseContents
+from shelltest.execution.single_instruction_executor import ControlledInstructionExecutor, \
+    PartialInstructionControlledFailureInfo
 
 
-class NameRecorder:
-    def __init__(self):
-        self.__list = []
+class ExpectedResult(tuple):
+    def __new__(cls,
+                status: PartialResultStatus,
+                line: line_source.Line,
+                failure_details: ExpectedInstructionFailureDetails):
+        return tuple.__new__(cls, (status,
+                                   line,
+                                   failure_details))
+
+    def assertions(self,
+                   unittest_case: unittest.TestCase,
+                   return_value: Failure):
+        if self.status is PartialResultStatus.PASS:
+            unittest_case.assertIsNone(return_value,
+                                       'Return value must be None (representing success)')
+        else:
+            unittest_case.assertIsNotNone(return_value,
+                                          'Return value must not be None (representing failure)')
+            unittest_case.assertEqual(self.status,
+                                      return_value.status,
+                                      'Status')
+            assert_equals_line(unittest_case,
+                               self.line,
+                               return_value.source_line,
+                               'Source Line')
+            self.failure_details.assertions(unittest_case,
+                                            return_value.failure_details,
+                                            'Failure details')
 
     @property
-    def recorded_elements(self) -> list:
-        return self.__list
+    def status(self) -> PartialResultStatus:
+        return self[0]
 
-    def new_function_that_records(self, s: str) -> types.FunctionType:
-        return lambda: self.__list.append(s)
+    @property
+    def line(self) -> line_source.Line:
+        return self[1]
+
+    @property
+    def failure_details(self) -> ExpectedInstructionFailureDetails:
+        return self[2]
 
 
-class SuccessfulExecutor(ControlledInstructionExecutor):
+def expected_success() -> ExpectedResult:
+    return ExpectedResult(PartialResultStatus.PASS,
+                          None,
+                          None)
+
+
+class Recorder:
     def __init__(self,
-                 do_record: types.FunctionType):
-        self.__do_record = do_record
+                 output: list,
+                 header: str):
+        self.__list = output
+        self.__header = header
+
+    def record_header(self):
+        self.__list.append(self.__header)
+
+    def record_header_value(self, value: str):
+        self.__list.append('%s: %s' % (self.__header, value))
+
+
+class RecordingMedia:
+    def __init__(self):
+        self.__output = []
+
+    @property
+    def output(self) -> list:
+        return self.__output
+
+    def new_recorder_with_header(self, header: str) -> Recorder:
+        return Recorder(self.__output,
+                        header)
+
+
+class ElementHeaderExecutorThatRecordsHeaderAndLineNumber(ElementHeaderExecutor):
+    def __init__(self,
+                 recorder: Recorder):
+        self.__recorder = recorder
+
+    def apply(self, line: line_source.Line):
+        self.__recorder.record_header_value(str(line.line_number))
+
+
+class InstructionExecutorThatRecordsHeaderAndReturnsSuccess(ControlledInstructionExecutor):
+    def __init__(self,
+                 recorder: Recorder):
+        self.__recorder = recorder
 
     def apply(self, instruction: Instruction) -> PartialInstructionControlledFailureInfo:
-        self.__do_record()
+        self.__recorder.record_header()
         return None
 
 
-class FailingExecutor(ControlledInstructionExecutor):
+class InstructionExecutorThatRecordsHeaderAndFails(ControlledInstructionExecutor):
     def __init__(self,
-                 do_record: types.FunctionType,
+                 recorder: Recorder,
                  ret_val: PartialInstructionControlledFailureInfo):
-        self.__do_record = do_record
+        self.__recorder = recorder
         self.__ret_val = ret_val
 
     def apply(self, instruction: Instruction) -> PartialInstructionControlledFailureInfo:
-        self.__do_record()
+        self.__recorder.record_header()
         return self.__ret_val
 
 
@@ -49,96 +123,49 @@ class TestException(Exception):
     pass
 
 
-class ExceptionRaisingExecutor(ControlledInstructionExecutor):
+class InstructionExecutorThatRecordsHeaderAndRaisesException(ControlledInstructionExecutor):
     def __init__(self,
-                 do_record: types.FunctionType,
+                 recorder: Recorder,
                  exception: Exception):
-        self.__do_record = do_record
+        self.__recorder = recorder
         self.__exception = exception
 
     def apply(self, instruction: Instruction) -> PartialInstructionControlledFailureInfo:
-        self.__do_record()
+        self.__recorder.record_header()
         raise self.__exception
 
 
 class Test(unittest.TestCase):
-    def test_when_there_are_not_elements_the_result_should_be_pass(self):
-        result = execute_element(SuccessfulExecutor(NameRecorder().new_function_that_records('s')),
-                                 new_dummy_instruction_element())
-        self.assertIsNone(result)
+    def test_when_there_are_no_elements_no_executor_should_be_invoked_and_the_result_should_be_pass(self):
+        # ARRANGE #
+        recording_media = RecordingMedia()
+        # ACT #
+        failure = execute_phase_prim(
+            PhaseContents(()),
+            ElementHeaderExecutorThatRecordsHeaderAndLineNumber(
+                recording_media.new_recorder_with_header('comment header')),
+            ElementHeaderExecutorThatRecordsHeaderAndLineNumber(
+                recording_media.new_recorder_with_header('instruction header')),
+            InstructionExecutorThatRecordsHeaderAndReturnsSuccess(
+                recording_media.new_recorder_with_header('instruction executor'))
+        )
+        # ASSERT #
+        self.__check(
+            expected_success(),
+            failure,
+            [],
+            recording_media)
 
-    def test_when_the_executor_returns__fail__then_this_failure_should_be_returned(self):
-        self._executor_that_returns_failure_helper(PartialControlledFailureEnum.FAIL,
-                                                   PartialResultStatus.FAIL)
-
-    def test_when_the_executor_returns__hard_error__then_this_failure_should_be_returned(self):
-        self._executor_that_returns_failure_helper(PartialControlledFailureEnum.HARD_ERROR,
-                                                   PartialResultStatus.HARD_ERROR)
-
-    def test_when_the_executor__raises_exception__then_an_error_should_be_returned(self):
-        element = new_dummy_instruction_element()
-        exception = TestException()
-        result = execute_element(
-            ExceptionRaisingExecutor(NameRecorder().new_function_that_records('s'),
-                                     exception),
-            element)
-        self._check_failure_result(PartialResultStatus.IMPLEMENTATION_ERROR,
-                                   result,
-                                   new_failure_details_from_exception(exception))
-
-    def _executor_that_returns_failure_helper(self,
-                                              failure_status_of_executor: PartialControlledFailureEnum,
-                                              expected_status: PartialResultStatus):
-        element = new_dummy_instruction_element()
-        result = execute_element(
-            FailingExecutor(NameRecorder().new_function_that_records('s'),
-                            PartialInstructionControlledFailureInfo(failure_status_of_executor,
-                                                                    'error message')),
-            element)
-        self._check_failure_result(expected_status,
-                                   result,
-                                   new_failure_details_from_message('error message'))
-
-    def _check_failure_result(self,
-                              expected_status: PartialResultStatus,
-                              result: SingleInstructionExecutionFailure,
-                              expected_failure_details: InstructionFailureDetails):
-        self.assertIsNotNone(result,
-                             'Failure information is expected')
-        self.assertEqual(result.status,
-                         expected_status,
-                         'Result status')
-        assert_equal_failure_details(self,
-                                     expected_failure_details,
-                                     result.failure_details)
-
-
-def assert_equal_failure_details(unit_tc: unittest.TestCase,
-                                 expected: InstructionFailureDetails,
-                                 actual: InstructionFailureDetails):
-    if expected.is_error_message:
-        unit_tc.assertTrue(actual.is_error_message,
-                           'An error message is expected')
-        unit_tc.assertEqual(expected.failure_message,
-                            actual.failure_message,
-                            'The failure message should be the expected')
-    else:
-        unit_tc.assertFalse(actual.is_error_message,
-                            'An exception is expected')
-        unit_tc.assertEqual(expected.exception,
-                            actual.exception,
-                            'The exception should be the expected')
-
-
-def assert_equal_lines(unit_tc: unittest.TestCase,
-                       expected: line_source.Line,
-                       actual: line_source.Line):
-    unit_tc.assertEqual(expected.line_number,
-                        actual.line_number,
-                        'Source line number')
-    unit_tc.assertEqual(expected.text,
-                        actual.text,
-                        'Source text')
+    def __check(self,
+                expected_result: ExpectedResult,
+                actual_result: Failure,
+                expected_recordings: list,
+                actual_recording_media: RecordingMedia):
+        expected_result.assertions(self,
+                                   actual_result)
+        self.assertEqual(expected_recordings,
+                         actual_recording_media.output,
+                         'Recorded executions')
 
 
 def new_dummy_instruction_element() -> PhaseContentElement:
