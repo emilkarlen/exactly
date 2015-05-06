@@ -88,6 +88,12 @@ class RecordingMedia:
                         header)
 
 
+class TestInstruction(Instruction):
+    def __init__(self,
+                 name: str):
+        self.name = name
+
+
 class ElementHeaderExecutorThatRecordsHeaderAndLineNumber(ElementHeaderExecutor):
     def __init__(self,
                  recorder: Recorder):
@@ -97,13 +103,13 @@ class ElementHeaderExecutorThatRecordsHeaderAndLineNumber(ElementHeaderExecutor)
         self.__recorder.record_header_value(str(line.line_number))
 
 
-class InstructionExecutorThatRecordsHeaderAndReturnsSuccess(ControlledInstructionExecutor):
+class InstructionExecutorThatRecordsInstructionNameAndReturnsSuccess(ControlledInstructionExecutor):
     def __init__(self,
                  recorder: Recorder):
         self.__recorder = recorder
 
-    def apply(self, instruction: Instruction) -> PartialInstructionControlledFailureInfo:
-        self.__recorder.record_header()
+    def apply(self, instruction: TestInstruction) -> PartialInstructionControlledFailureInfo:
+        self.__recorder.record_header_value(instruction.name)
         return None
 
 
@@ -114,8 +120,8 @@ class InstructionExecutorThatRecordsHeaderAndFails(ControlledInstructionExecutor
         self.__recorder = recorder
         self.__ret_val = ret_val
 
-    def apply(self, instruction: Instruction) -> PartialInstructionControlledFailureInfo:
-        self.__recorder.record_header()
+    def apply(self, instruction: TestInstruction) -> PartialInstructionControlledFailureInfo:
+        self.__recorder.record_header_value(instruction.name)
         return self.__ret_val
 
 
@@ -130,8 +136,8 @@ class InstructionExecutorThatRecordsHeaderAndRaisesException(ControlledInstructi
         self.__recorder = recorder
         self.__exception = exception
 
-    def apply(self, instruction: Instruction) -> PartialInstructionControlledFailureInfo:
-        self.__recorder.record_header()
+    def apply(self, instruction: TestInstruction) -> PartialInstructionControlledFailureInfo:
+        self.__recorder.record_header_value(instruction.name)
         raise self.__exception
 
 
@@ -140,21 +146,42 @@ class Test(unittest.TestCase):
         # ARRANGE #
         recording_media = RecordingMedia()
         # ACT #
-        failure = execute_phase_prim(
-            PhaseContents(()),
+        instruction_executor = InstructionExecutorThatRecordsInstructionNameAndReturnsSuccess(
+            recording_media.new_recorder_with_header('instruction executor'))
+        phase_contents = PhaseContents(())
+        self._standard_test(
+            recording_media,
+            phase_contents,
+            instruction_executor,
+            expected_success(),
+            [])
+
+    def _standard_test(self,
+                       recording_media: RecordingMedia,
+                       phase_contents: PhaseContents,
+                       instruction_executor: ControlledInstructionExecutor,
+                       expected_result: ExpectedResult,
+                       expected_recordings: list):
+        failure = self._run_std(recording_media,
+                                phase_contents,
+                                instruction_executor)
+        self.__check(
+            expected_result,
+            failure,
+            expected_recordings,
+            recording_media)
+
+    def _run_std(self,
+                 recording_media: RecordingMedia,
+                 phase_contents: PhaseContents,
+                 instruction_executor: ControlledInstructionExecutor) -> Failure:
+        return execute_phase_prim(
+            phase_contents,
             ElementHeaderExecutorThatRecordsHeaderAndLineNumber(
                 recording_media.new_recorder_with_header('comment header')),
             ElementHeaderExecutorThatRecordsHeaderAndLineNumber(
                 recording_media.new_recorder_with_header('instruction header')),
-            InstructionExecutorThatRecordsHeaderAndReturnsSuccess(
-                recording_media.new_recorder_with_header('instruction executor'))
-        )
-        # ASSERT #
-        self.__check(
-            expected_success(),
-            failure,
-            [],
-            recording_media)
+            instruction_executor)
 
     def __check(self,
                 expected_result: ExpectedResult,
