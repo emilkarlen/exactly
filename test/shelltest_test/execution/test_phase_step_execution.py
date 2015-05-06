@@ -9,7 +9,8 @@ from shelltest_test.execution.util.expected_instruction_failure import ExpectedI
 from shelltest.execution.phase_step_execution import ElementHeaderExecutor, execute_phase_prim, Failure
 from shelltest.execution.result import PartialResultStatus
 from shelltest.phase_instr import line_source
-from shelltest.phase_instr.model import Instruction, PhaseContentElement, PhaseContents, new_comment_element
+from shelltest.phase_instr.model import Instruction, PhaseContentElement, PhaseContents, new_comment_element, \
+    new_instruction_element
 from shelltest.execution.single_instruction_executor import ControlledInstructionExecutor, \
     PartialInstructionControlledFailureInfo
 
@@ -144,34 +145,46 @@ class InstructionExecutorThatRecordsHeaderAndRaisesException(ControlledInstructi
 
 class Test(unittest.TestCase):
     def test_when_there_are_no_elements_no_executor_should_be_invoked_and_the_result_should_be_pass(self):
-        # ARRANGE #
-        recording_media = RecordingMedia()
-        # ACT #
-        instruction_executor = InstructionExecutorThatRecordsInstructionNameAndReturnsSuccess(
-            recording_media.new_recorder_with_header('instruction executor'))
         phase_contents = PhaseContents(())
-        self._standard_test(
-            recording_media,
+        self._standard_test_with_successful_instruction_executor(
             phase_contents,
-            instruction_executor,
             expected_success(),
             [])
 
     def test_when_there_are_only_comment_elements_than_the_result_should_be_pass(self):
-        # ARRANGE #
-        recording_media = RecordingMedia()
-        # ACT #
-        instruction_executor = InstructionExecutorThatRecordsInstructionNameAndReturnsSuccess(
-            recording_media.new_recorder_with_header('instruction executor'))
         phase_contents = PhaseContents((new_comment_element(Line(1, '1')),
                                         new_comment_element(Line(2, '2'))))
-        self._standard_test(
-            recording_media,
+        self._standard_test_with_successful_instruction_executor(
             phase_contents,
-            instruction_executor,
             expected_success(),
             ['comment header: 1',
              'comment header: 2'])
+
+    def test_successful_execution_of_single_instruction(self):
+        phase_contents = PhaseContents((new_instruction_element(Line(1, '1'),
+                                                                TestInstruction('The instruction')),
+                                        ))
+        self._standard_test_with_successful_instruction_executor(
+            phase_contents,
+            expected_success(),
+            ['instruction header: 1',
+             'instruction executor: The instruction'])
+
+    def _standard_test_with_successful_instruction_executor(self,
+                                                            phase_contents: PhaseContents,
+                                                            expected_result: ExpectedResult,
+                                                            expected_recordings: list):
+        recording_media = RecordingMedia()
+        instruction_executor = InstructionExecutorThatRecordsInstructionNameAndReturnsSuccess(
+            recording_media.new_recorder_with_header('instruction executor'))
+        failure = self._run_std(recording_media,
+                                phase_contents,
+                                instruction_executor)
+        self.__check(
+            expected_result,
+            failure,
+            expected_recordings,
+            recording_media)
 
     def _standard_test(self,
                        recording_media: RecordingMedia,
