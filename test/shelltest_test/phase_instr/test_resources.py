@@ -1,3 +1,5 @@
+from shelltest_test.test_resources import assertion_message
+
 __author__ = 'emil'
 
 import unittest
@@ -16,10 +18,10 @@ def assert_equals_line(test_case: unittest.TestCase,
     """
     if expected is None:
         test_case.assertIsNone(actual,
-                               _message('Line expected to be None'))
+                               assertion_message('Line expected to be None'))
     test_case.assertEqual(expected.line_number,
                           actual.line_number,
-                          _message('Line number', message_header))
+                          assertion_message('Line number', message_header))
     test_case.assertEqual(expected.text,
                           actual.text,
-                          _message('Line text', message_header))
+                          assertion_message('Line text', message_header))

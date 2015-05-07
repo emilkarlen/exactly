@@ -5,14 +5,15 @@ __author__ = 'emil'
 
 import unittest
 
-from shelltest_test.execution.util.expected_instruction_failure import ExpectedInstructionFailureDetails
+from shelltest_test.execution.util.expected_instruction_failure import ExpectedInstructionFailureDetails, \
+    new_expected_failure_message, new_expected_exception
 from shelltest.execution.phase_step_execution import ElementHeaderExecutor, execute_phase_prim, Failure
 from shelltest.execution.result import PartialResultStatus
 from shelltest.phase_instr import line_source
 from shelltest.phase_instr.model import Instruction, PhaseContentElement, PhaseContents, new_comment_element, \
     new_instruction_element
 from shelltest.execution.single_instruction_executor import ControlledInstructionExecutor, \
-    PartialInstructionControlledFailureInfo
+    PartialInstructionControlledFailureInfo, PartialControlledFailureEnum
 
 
 class ExpectedResult(tuple):
@@ -115,7 +116,7 @@ class InstructionExecutorThatRecordsInstructionNameAndReturnsSuccess(ControlledI
         return None
 
 
-class InstructionExecutorThatRecordsHeaderAndFails(ControlledInstructionExecutor):
+class InstructionExecutorThatRecordsInstructionNameAndFails(ControlledInstructionExecutor):
     def __init__(self,
                  recorder: Recorder,
                  ret_val: PartialInstructionControlledFailureInfo):
@@ -131,7 +132,7 @@ class TestException(Exception):
     pass
 
 
-class InstructionExecutorThatRecordsHeaderAndRaisesException(ControlledInstructionExecutor):
+class InstructionExecutorThatRecordsInstructionNameAndRaisesException(ControlledInstructionExecutor):
     def __init__(self,
                  recorder: Recorder,
                  exception: Exception):
@@ -157,8 +158,8 @@ class Test(unittest.TestCase):
         self._standard_test_with_successful_instruction_executor(
             phase_contents,
             expected_success(),
-            ['comment header: 1',
-             'comment header: 2'])
+            ['comment header for source line number: 1',
+             'comment header for source line number: 2'])
 
     def test_successful_execution_of_single_instruction(self):
         phase_contents = PhaseContents((new_instruction_element(Line(1, '1'),
@@ -167,7 +168,66 @@ class Test(unittest.TestCase):
         self._standard_test_with_successful_instruction_executor(
             phase_contents,
             expected_success(),
-            ['instruction header: 1',
+            ['instruction header for source line number: 1',
+             'instruction executor: The instruction'])
+
+    def test_single_failing_instruction_executor__status_fail(self):
+        recording_media = RecordingMedia()
+        instruction_executor = InstructionExecutorThatRecordsInstructionNameAndFails(
+            recording_media.new_recorder_with_header('instruction executor'),
+            PartialInstructionControlledFailureInfo(PartialControlledFailureEnum.FAIL,
+                                                    'fail message')
+        )
+        phase_contents = PhaseContents((new_instruction_element(Line(1, '1'),
+                                                                TestInstruction('The instruction')),
+                                        ))
+        self._standard_test(
+            recording_media,
+            phase_contents,
+            instruction_executor,
+            ExpectedResult(PartialResultStatus.FAIL,
+                           Line(1, '1'),
+                           new_expected_failure_message('fail message')),
+            ['instruction header for source line number: 1',
+             'instruction executor: The instruction'])
+
+    def test_single_failing_instruction_executor__status_hard_error(self):
+        recording_media = RecordingMedia()
+        instruction_executor = InstructionExecutorThatRecordsInstructionNameAndFails(
+            recording_media.new_recorder_with_header('instruction executor'),
+            PartialInstructionControlledFailureInfo(PartialControlledFailureEnum.HARD_ERROR,
+                                                    'hard error message')
+        )
+        phase_contents = PhaseContents((new_instruction_element(Line(1, '1'),
+                                                                TestInstruction('The instruction')),
+                                        ))
+        self._standard_test(
+            recording_media,
+            phase_contents,
+            instruction_executor,
+            ExpectedResult(PartialResultStatus.HARD_ERROR,
+                           Line(1, '1'),
+                           new_expected_failure_message('hard error message')),
+            ['instruction header for source line number: 1',
+             'instruction executor: The instruction'])
+
+    def test_single_exception_raising_instruction_executor(self):
+        recording_media = RecordingMedia()
+        instruction_executor = InstructionExecutorThatRecordsInstructionNameAndRaisesException(
+            recording_media.new_recorder_with_header('instruction executor'),
+            TestException()
+        )
+        phase_contents = PhaseContents((new_instruction_element(Line(1, '1'),
+                                                                TestInstruction('The instruction')),
+                                        ))
+        self._standard_test(
+            recording_media,
+            phase_contents,
+            instruction_executor,
+            ExpectedResult(PartialResultStatus.IMPLEMENTATION_ERROR,
+                           Line(1, '1'),
+                           new_expected_exception(TestException)),
+            ['instruction header for source line number: 1',
              'instruction executor: The instruction'])
 
     def _standard_test_with_successful_instruction_executor(self,
@@ -208,9 +268,9 @@ class Test(unittest.TestCase):
         return execute_phase_prim(
             phase_contents,
             ElementHeaderExecutorThatRecordsHeaderAndLineNumber(
-                recording_media.new_recorder_with_header('comment header')),
+                recording_media.new_recorder_with_header('comment header for source line number')),
             ElementHeaderExecutorThatRecordsHeaderAndLineNumber(
-                recording_media.new_recorder_with_header('instruction header')),
+                recording_media.new_recorder_with_header('instruction header for source line number')),
             instruction_executor)
 
     def __check(self,
