@@ -56,6 +56,8 @@ Detta
 - "mall" för ett testfall som exekverar ett externt program med in och utdata
   i fil
 * Bestämma exekveringsflöde
+  CLOCK: [2015-05-07 tor 19:50]--[2015-05-07 tor 19:56] =>  0:06
+  CLOCK: [2015-05-07 tor 18:08]--[2015-05-07 tor 19:38] =>  1:30
   CLOCK: [2015-05-06 ons 18:22]--[2015-05-06 ons 20:05] =>  1:43
   CLOCK: [2015-05-06 ons 16:59]--[2015-05-06 ons 17:34] =>  0:35
   CLOCK: [2015-05-05 tis 20:14]--[2015-05-05 tis 22:04] =>  1:50
@@ -70,7 +72,6 @@ Detta
   CLOCK: [2015-05-01 fre 14:53]--[2015-05-01 fre 22:41] =>  7:48
   CLOCK: [2015-04-30 tor 21:53]--[2015-04-30 tor 22:38] =>  0:45
   CLOCK: [2015-04-30 tor 12:50]--[2015-04-30 tor 15:55] =>  3:05
-** TODO Test av exekvering av element-sekvens
 ** TODO <2015-05-03 sön> kolla hur miljövariabler sätts
 Dels i förhållande till nya exekveringssekvensen.
 Dels pga ny variabel _TMP (behöver ev gå igenom alla ställen där miljövar
