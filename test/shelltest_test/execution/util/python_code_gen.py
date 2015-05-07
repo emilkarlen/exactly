@@ -32,6 +32,7 @@ def with_opened_file(file_name: str, file_var: str, mode: str, statements: list)
 def env_var_expr(env_var_name: str) -> str:
     return 'os.environ[%s]' % string_expr(env_var_name)
 
+
 def program_lines(used_modules: set,
                   statements: list) -> list:
     ret_val = []
