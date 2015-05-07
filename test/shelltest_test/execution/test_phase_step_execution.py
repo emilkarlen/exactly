@@ -193,12 +193,12 @@ class Test(unittest.TestCase):
                                         new_instruction_element(Line(3, '3'),
                                                                 TestInstruction('Second instruction')),
                                         new_comment_element(Line(4, '4')),
-                                        new_comment_element(Line(5, '5')),
-                                        new_instruction_element(Line(6, '6'),
+                                        new_comment_element(Line(50, '50')),
+                                        new_instruction_element(Line(60, '60'),
                                                                 TestInstruction('Third instruction')),
-                                        new_instruction_element(Line(7, '7'),
+                                        new_instruction_element(Line(70, '70'),
                                                                 TestInstruction('Fourth instruction')),
-                                        new_comment_element(Line(8, '8')),
+                                        new_comment_element(Line(80, '80')),
                                         ))
         self._standard_test_with_successful_instruction_executor(
             phase_contents,
@@ -213,15 +213,15 @@ class Test(unittest.TestCase):
 
              'comment header for source line number: 4',
 
-             'comment header for source line number: 5',
+             'comment header for source line number: 50',
 
-             'instruction header for source line number: 6',
+             'instruction header for source line number: 60',
              'instruction executor: Third instruction',
 
-             'instruction header for source line number: 7',
+             'instruction header for source line number: 70',
              'instruction executor: Fourth instruction',
 
-             'comment header for source line number: 8',
+             'comment header for source line number: 80',
              ])
 
     def test_single_failing_instruction_executor__status_fail(self):
@@ -361,6 +361,29 @@ class Test(unittest.TestCase):
              'instruction executor: First instruction',
              'instruction header for source line number: 2',
              'instruction executor: Last instruction',
+             ])
+
+    def test_comment_after_instruction_that_fails(self):
+        recording_media = RecordingMedia()
+        instruction_executor = InstructionExecutorThatRecordsInstructionNameAndFailsFor(
+            any_instruction,
+            recording_media.new_recorder_with_header('instruction executor'),
+            PartialInstructionControlledFailureInfo(PartialControlledFailureEnum.FAIL,
+                                                    'fail message')
+        )
+        phase_contents = PhaseContents((new_instruction_element(Line(1, '1'),
+                                                                TestInstruction('First instruction')),
+                                        new_comment_element(Line(50, '50')),
+                                        ))
+        self._standard_test(
+            recording_media,
+            phase_contents,
+            instruction_executor,
+            ExpectedResult(PartialResultStatus.FAIL,
+                           Line(1, '1'),
+                           new_expected_failure_message('fail message')),
+            ['instruction header for source line number: 1',
+             'instruction executor: First instruction',
              ])
 
     def _standard_test_with_successful_instruction_executor(self,
