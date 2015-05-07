@@ -99,13 +99,11 @@ class ExpectedInstructionFailureForFailure(ExpectedInstructionFailureBase, tuple
     def assertions(self,
                    unittest_case: unittest.TestCase,
                    actual: InstructionFailureInfo):
-        unittest_case.assertIsNone(actual,
-                                   'Failure info')
-        assert_equals_line(unittest_case,
-                           self.source_line,
-                           actual.source_line)
-        self.expected_instruction_failure.assertions(unittest_case,
-                                                     actual.failure_details)
+        unittest_case.assertIsNotNone(actual,
+                                      'Failure info should be present')
+        self.assertions_(unittest_case,
+                         actual.source_line,
+                         actual.failure_details)
 
     @property
     def source_line(self) -> line_source.Line:
