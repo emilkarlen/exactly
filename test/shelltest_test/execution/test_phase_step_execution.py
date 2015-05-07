@@ -116,32 +116,47 @@ class InstructionExecutorThatRecordsInstructionNameAndReturnsSuccess(ControlledI
         return None
 
 
-class InstructionExecutorThatRecordsInstructionNameAndFails(ControlledInstructionExecutor):
+class InstructionExecutorThatRecordsInstructionNameAndFailsFor(ControlledInstructionExecutor):
     def __init__(self,
+                 record_name_matcher_for_instruction_that_should_fail,
                  recorder: Recorder,
                  ret_val: PartialInstructionControlledFailureInfo):
+        self.__record_name_matcher = record_name_matcher_for_instruction_that_should_fail
         self.__recorder = recorder
         self.__ret_val = ret_val
 
     def apply(self, instruction: TestInstruction) -> PartialInstructionControlledFailureInfo:
         self.__recorder.record_header_value(instruction.name)
-        return self.__ret_val
+        if self.__record_name_matcher(instruction.name):
+            return self.__ret_val
+        return None
 
 
 class TestException(Exception):
     pass
 
 
-class InstructionExecutorThatRecordsInstructionNameAndRaisesException(ControlledInstructionExecutor):
+class InstructionExecutorThatRecordsInstructionNameAndRaisesExceptionFor(ControlledInstructionExecutor):
     def __init__(self,
+                 record_name_matcher_for_instruction_that_should_fail,
                  recorder: Recorder,
                  exception: Exception):
+        self.__record_name_matcher = record_name_matcher_for_instruction_that_should_fail
         self.__recorder = recorder
         self.__exception = exception
 
     def apply(self, instruction: TestInstruction) -> PartialInstructionControlledFailureInfo:
         self.__recorder.record_header_value(instruction.name)
-        raise self.__exception
+        if self.__record_name_matcher(instruction.name):
+            raise self.__exception
+        return None
+
+
+any_instruction = lambda name: True
+
+
+def instruction_with_name(expected_name: str):
+    return lambda actual_name: expected_name == actual_name
 
 
 class Test(unittest.TestCase):
@@ -173,7 +188,8 @@ class Test(unittest.TestCase):
 
     def test_single_failing_instruction_executor__status_fail(self):
         recording_media = RecordingMedia()
-        instruction_executor = InstructionExecutorThatRecordsInstructionNameAndFails(
+        instruction_executor = InstructionExecutorThatRecordsInstructionNameAndFailsFor(
+            any_instruction,
             recording_media.new_recorder_with_header('instruction executor'),
             PartialInstructionControlledFailureInfo(PartialControlledFailureEnum.FAIL,
                                                     'fail message')
@@ -193,7 +209,8 @@ class Test(unittest.TestCase):
 
     def test_single_failing_instruction_executor__status_hard_error(self):
         recording_media = RecordingMedia()
-        instruction_executor = InstructionExecutorThatRecordsInstructionNameAndFails(
+        instruction_executor = InstructionExecutorThatRecordsInstructionNameAndFailsFor(
+            any_instruction,
             recording_media.new_recorder_with_header('instruction executor'),
             PartialInstructionControlledFailureInfo(PartialControlledFailureEnum.HARD_ERROR,
                                                     'hard error message')
@@ -213,7 +230,8 @@ class Test(unittest.TestCase):
 
     def test_single_exception_raising_instruction_executor(self):
         recording_media = RecordingMedia()
-        instruction_executor = InstructionExecutorThatRecordsInstructionNameAndRaisesException(
+        instruction_executor = InstructionExecutorThatRecordsInstructionNameAndRaisesExceptionFor(
+            any_instruction,
             recording_media.new_recorder_with_header('instruction executor'),
             TestException()
         )
