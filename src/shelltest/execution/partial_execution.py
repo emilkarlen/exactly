@@ -153,10 +153,10 @@ class PartialExecutor:
         return phase_step_execution.execute_phase(phase_contents,
                                                   phase_step_execution.ElementHeaderExecutorThatDoesNothing(),
                                                   phase_step_execution.ElementHeaderExecutorThatDoesNothing(),
-                                                 instruction_executor,
-                                                 phase,
-                                                 phase_step,
-                                                 self.execution_directory_structure)
+                                                  instruction_executor,
+                                                  phase,
+                                                  phase_step,
+                                                  self.execution_directory_structure)
 
     def __run_act_script_generation(self) -> PartialResult:
         """
