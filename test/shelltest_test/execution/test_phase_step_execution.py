@@ -286,6 +286,83 @@ class Test(unittest.TestCase):
             ['instruction header for source line number: 1',
              'instruction executor: The instruction'])
 
+    def test_first_instruction_fails(self):
+        recording_media = RecordingMedia()
+        instruction_executor = InstructionExecutorThatRecordsInstructionNameAndFailsFor(
+            instruction_with_name('First instruction'),
+            recording_media.new_recorder_with_header('instruction executor'),
+            PartialInstructionControlledFailureInfo(PartialControlledFailureEnum.FAIL,
+                                                    'fail message')
+        )
+        phase_contents = PhaseContents((new_instruction_element(Line(1, '1'),
+                                                                TestInstruction('First instruction')),
+                                        new_instruction_element(Line(2, '2'),
+                                                                TestInstruction('Second instruction'))
+                                        ))
+        self._standard_test(
+            recording_media,
+            phase_contents,
+            instruction_executor,
+            ExpectedResult(PartialResultStatus.FAIL,
+                           Line(1, '1'),
+                           new_expected_failure_message('fail message')),
+            ['instruction header for source line number: 1',
+             'instruction executor: First instruction'])
+
+    def test_middle_instruction_fails(self):
+        recording_media = RecordingMedia()
+        instruction_executor = InstructionExecutorThatRecordsInstructionNameAndFailsFor(
+            instruction_with_name('Middle instruction'),
+            recording_media.new_recorder_with_header('instruction executor'),
+            PartialInstructionControlledFailureInfo(PartialControlledFailureEnum.FAIL,
+                                                    'fail message')
+        )
+        phase_contents = PhaseContents((new_instruction_element(Line(1, '1'),
+                                                                TestInstruction('First instruction')),
+                                        new_instruction_element(Line(2, '2'),
+                                                                TestInstruction('Middle instruction')),
+                                        new_instruction_element(Line(3, '3'),
+                                                                TestInstruction('Last instruction')),
+                                        ))
+        self._standard_test(
+            recording_media,
+            phase_contents,
+            instruction_executor,
+            ExpectedResult(PartialResultStatus.FAIL,
+                           Line(2, '2'),
+                           new_expected_failure_message('fail message')),
+            ['instruction header for source line number: 1',
+             'instruction executor: First instruction',
+             'instruction header for source line number: 2',
+             'instruction executor: Middle instruction',
+             ])
+
+    def test_last_instruction_fails(self):
+        recording_media = RecordingMedia()
+        instruction_executor = InstructionExecutorThatRecordsInstructionNameAndFailsFor(
+            instruction_with_name('Last instruction'),
+            recording_media.new_recorder_with_header('instruction executor'),
+            PartialInstructionControlledFailureInfo(PartialControlledFailureEnum.FAIL,
+                                                    'fail message')
+        )
+        phase_contents = PhaseContents((new_instruction_element(Line(1, '1'),
+                                                                TestInstruction('First instruction')),
+                                        new_instruction_element(Line(2, '2'),
+                                                                TestInstruction('Last instruction'))
+                                        ))
+        self._standard_test(
+            recording_media,
+            phase_contents,
+            instruction_executor,
+            ExpectedResult(PartialResultStatus.FAIL,
+                           Line(2, '2'),
+                           new_expected_failure_message('fail message')),
+            ['instruction header for source line number: 1',
+             'instruction executor: First instruction',
+             'instruction header for source line number: 2',
+             'instruction executor: Last instruction',
+             ])
+
     def _standard_test_with_successful_instruction_executor(self,
                                                             phase_contents: PhaseContents,
                                                             expected_result: ExpectedResult,
