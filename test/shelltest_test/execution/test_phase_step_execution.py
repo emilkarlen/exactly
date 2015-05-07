@@ -186,6 +186,44 @@ class Test(unittest.TestCase):
             ['instruction header for source line number: 1',
              'instruction executor: The instruction'])
 
+    def test_successful_sequence(self):
+        phase_contents = PhaseContents((new_instruction_element(Line(1, '1'),
+                                                                TestInstruction('First instruction')),
+                                        new_comment_element(Line(2, '2')),
+                                        new_instruction_element(Line(3, '3'),
+                                                                TestInstruction('Second instruction')),
+                                        new_comment_element(Line(4, '4')),
+                                        new_comment_element(Line(5, '5')),
+                                        new_instruction_element(Line(6, '6'),
+                                                                TestInstruction('Third instruction')),
+                                        new_instruction_element(Line(7, '7'),
+                                                                TestInstruction('Fourth instruction')),
+                                        new_comment_element(Line(8, '8')),
+                                        ))
+        self._standard_test_with_successful_instruction_executor(
+            phase_contents,
+            expected_success(),
+            ['instruction header for source line number: 1',
+             'instruction executor: First instruction',
+
+             'comment header for source line number: 2',
+
+             'instruction header for source line number: 3',
+             'instruction executor: Second instruction',
+
+             'comment header for source line number: 4',
+
+             'comment header for source line number: 5',
+
+             'instruction header for source line number: 6',
+             'instruction executor: Third instruction',
+
+             'instruction header for source line number: 7',
+             'instruction executor: Fourth instruction',
+
+             'comment header for source line number: 8',
+             ])
+
     def test_single_failing_instruction_executor__status_fail(self):
         recording_media = RecordingMedia()
         instruction_executor = InstructionExecutorThatRecordsInstructionNameAndFailsFor(
