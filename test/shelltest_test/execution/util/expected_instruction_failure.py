@@ -35,8 +35,8 @@ class ExpectedInstructionFailureDetails(tuple):
                                       actual.failure_message,
                                       assertion_message('failure message', message_header))
         else:
-            unittest_case.assertIsInstance(self.exception_class_or_none,
-                                           actual.exception,
+            unittest_case.assertIsInstance(actual.exception,
+                                           self.exception_class_or_none,
                                            assertion_message('exception class', message_header))
 
 
