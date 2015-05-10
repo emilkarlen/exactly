@@ -68,8 +68,7 @@ class Test(unittest.TestCase):
 
     def test_hard_error_in_setup_execute_phase(self):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
-            .add_setup(instructions_with_errors.SetupPhaseInstructionThatReturnsHardError('hard error msg from setup')) \
-            .add_setup_internal_recorder_of('expected to not be executed')
+            .add_setup(instructions_with_errors.SetupPhaseInstructionThatReturnsHardError('hard error msg from setup'))
         TestCaseThatRecordsExecution(
             self,
             test_case,
@@ -87,8 +86,7 @@ class Test(unittest.TestCase):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_setup(
             instructions_with_errors.SetupPhaseInstructionWithImplementationError(
-                instructions_with_errors.ImplementationErrorTestException())) \
-            .add_setup_internal_recorder_of('expected to not be executed')
+                instructions_with_errors.ImplementationErrorTestException()))
         TestCaseThatRecordsExecution(
             self,
             test_case,
@@ -104,8 +102,7 @@ class Test(unittest.TestCase):
 
     def test_hard_error_in_act_script_generation(self):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
-            .add_act(instructions_with_errors.ActPhaseInstructionThatReturnsHardError('hard error msg from act')) \
-            .add_act_internal_recorder_of('expected to not be executed')
+            .add_act(instructions_with_errors.ActPhaseInstructionThatReturnsHardError('hard error msg from act'))
         TestCaseThatRecordsExecution(
             self,
             test_case,
@@ -125,8 +122,7 @@ class Test(unittest.TestCase):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_act(
             instructions_with_errors.ActPhaseInstructionWithImplementationError(
-                instructions_with_errors.ImplementationErrorTestException())) \
-            .add_act_internal_recorder_of('expected to not be executed')
+                instructions_with_errors.ImplementationErrorTestException()))
         TestCaseThatRecordsExecution(
             self,
             test_case,
@@ -145,8 +141,7 @@ class Test(unittest.TestCase):
     def test_fail_in_assert_phase(self):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_assert(
-            instructions_with_errors.AssertPhaseInstructionThatReturnsFail('fail msg from ASSERT')) \
-            .add_assert_internal_recorder_of('expected to not be executed')
+            instructions_with_errors.AssertPhaseInstructionThatReturnsFail('fail msg from ASSERT'))
         TestCaseThatRecordsExecution(
             self,
             test_case,
@@ -171,8 +166,7 @@ class Test(unittest.TestCase):
     def test_hard_error_in_assert_phase(self):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_assert(
-            instructions_with_errors.AssertPhaseInstructionThatReturnsHardError('hard error msg from ASSERT')) \
-            .add_assert_internal_recorder_of('expected to not be executed')
+            instructions_with_errors.AssertPhaseInstructionThatReturnsHardError('hard error msg from ASSERT'))
         TestCaseThatRecordsExecution(
             self,
             test_case,
@@ -198,8 +192,7 @@ class Test(unittest.TestCase):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_assert(
             instructions_with_errors.AssertPhaseInstructionWithImplementationError(
-                instructions_with_errors.ImplementationErrorTestException())) \
-            .add_assert_internal_recorder_of('expected to not be executed')
+                instructions_with_errors.ImplementationErrorTestException()))
         TestCaseThatRecordsExecution(
             self,
             test_case,
@@ -224,8 +217,7 @@ class Test(unittest.TestCase):
     def test_hard_error_in_cleanup_phase(self):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_cleanup(
-            instructions_with_errors.CleanupPhaseInstructionThatReturnsHardError('hard error msg from CLEANUP')) \
-            .add_cleanup_internal_recorder_of('expected to not be executed')
+            instructions_with_errors.CleanupPhaseInstructionThatReturnsHardError('hard error msg from CLEANUP'))
         TestCaseThatRecordsExecution(
             self,
             test_case,
@@ -251,8 +243,7 @@ class Test(unittest.TestCase):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_cleanup(
             instructions_with_errors.CleanupPhaseInstructionWithImplementationError(
-                instructions_with_errors.ImplementationErrorTestException())) \
-            .add_cleanup_internal_recorder_of('expected to not be executed')
+                instructions_with_errors.ImplementationErrorTestException()))
         TestCaseThatRecordsExecution(
             self,
             test_case,
