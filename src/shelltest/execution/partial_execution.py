@@ -3,7 +3,7 @@ import os
 import subprocess
 import pathlib
 
-from shelltest.execution.phase_step import ACT_script_generation
+from shelltest.execution import phase_step
 from shelltest.execution.phase_step_execution import ElementHeaderExecutor
 from shelltest.phase_instr import line_source
 from shelltest.execution import phase_step_executors
@@ -59,6 +59,10 @@ class PartialExecutor:
         # Tror det behövs för att undvika att sätta omgivningen mm, o därmed
         # påverka huvudprocessen.
         self.__set_environment_variables()
+        res = self.__run_setup_validate()
+        if res.status is not PartialResultStatus.PASS:
+            self.__partial_result = res
+            return
         phase_env = instructions.PhaseEnvironmentForInternalCommands()
         res = self.__run_setup(phase_env)
         if res.status is not PartialResultStatus.PASS:
@@ -113,7 +117,14 @@ class PartialExecutor:
             f.write(script_source)
         self.__script_file_path = file_path
 
-    def __run_setup(self, phase_env):
+    def __run_setup_validate(self) -> PartialResult:
+        return self.__run_internal_instructions_phase_step(phases.SETUP,
+                                                           phase_step.SETUP_validate,
+                                                           phase_step_executors.SetupValidateInstructionExecutor(
+                                                               self.__global_environment),
+                                                           self.__setup_phase)
+
+    def __run_setup(self, phase_env) -> PartialResult:
         return self.__run_internal_instructions_phase_step(phases.SETUP,
                                                            None,
                                                            phase_step_executors.SetupPhaseInstructionExecutor(
@@ -121,7 +132,7 @@ class PartialExecutor:
                                                                phase_env),
                                                            self.__setup_phase)
 
-    def __execute_assert(self, phase_env):
+    def __execute_assert(self, phase_env) -> PartialResult:
         return self.__run_internal_instructions_phase_step(phases.ASSERT,
                                                            None,
                                                            phase_step_executors.AssertInstructionExecutor(
@@ -129,7 +140,7 @@ class PartialExecutor:
                                                                phase_env),
                                                            self.__assert_phase)
 
-    def __run_cleanup(self, phase_env):
+    def __run_cleanup(self, phase_env) -> PartialResult:
         return self.__run_internal_instructions_phase_step(phases.CLEANUP,
                                                            None,
                                                            phase_step_executors.CleanupPhaseInstructionExecutor(
@@ -170,7 +181,7 @@ class PartialExecutor:
             phase_step_executors.ActScriptGenerationExecutor(self.__global_environment,
                                                              self.__act_env_before_execution),
             phases.ACT,
-            ACT_script_generation,
+            phase_step.ACT_script_generation,
             self.execution_directory_structure)
 
     def __run_act_script(self):

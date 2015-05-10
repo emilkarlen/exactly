@@ -1,4 +1,6 @@
 from shelltest_test.execution.test_full_execution_sequence import recording_instructions_for_sequence_tests as instr
+from shelltest_test.execution.test_full_execution_sequence.recording_instructions_for_sequence_tests import \
+    SetupInternalInstructionThatRecordsStringInList
 from shelltest_test.execution.util.test_case_generation import TestCaseGeneratorBase
 from shelltest.execution import phase_step
 from shelltest.exec_abs_syn import instructions
@@ -49,7 +51,8 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorBase):
         """
         return list(map(self._next_instruction_line,
                         [
-                            self._new_setup_internal_recorder(phase_step.SETUP_EXECUTE),
+                            self._new_setup_internal_recorder(phase_step.SETUP_VALIDATE,
+                                                              phase_step.SETUP_EXECUTE),
                             instruction_adapter.as_setup(
                                 instr.InternalInstructionThatRecordsStringInRecordFile(phase_step.SETUP_EXECUTE)),
                         ]))
@@ -118,9 +121,11 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorBase):
     def _new_anonymous_internal_recorder(self, text: str) -> instructions.SetupPhaseInstruction:
         return instr.AnonymousInternalInstructionThatRecordsStringInList(self.__recorder_of(text))
 
-    def _new_setup_internal_recorder(self, text: str) -> instructions.SetupPhaseInstruction:
-        return instruction_adapter.as_setup(
-            instr.InternalInstructionThatRecordsStringInList(self.__recorder_of(text)))
+    def _new_setup_internal_recorder(self,
+                                     text_for_validate: str,
+                                     text_for_execute: str) -> instructions.SetupPhaseInstruction:
+        return SetupInternalInstructionThatRecordsStringInList(self.__recorder_of(text_for_validate),
+                                                               self.__recorder_of(text_for_execute))
 
     def _new_act_internal_recorder(self, text: str) -> instructions.SetupPhaseInstruction:
         return instr.ActInstructionThatRecordsStringInList(self.__recorder_of(text))

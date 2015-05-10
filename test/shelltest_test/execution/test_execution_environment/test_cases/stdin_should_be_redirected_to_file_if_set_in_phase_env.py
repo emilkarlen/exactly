@@ -1,4 +1,5 @@
 from shelltest.exec_abs_syn.success_or_hard_error_construction import new_success
+from shelltest.exec_abs_syn import success_or_validation_hard_or_error_construction
 from shelltest_test.execution.util.py_unit_test_case import UnitTestCaseForPy3Language
 from shelltest.exec_abs_syn import instructions
 
@@ -43,6 +44,11 @@ class PyCommandThatStoresStringInFileInCurrentDirectory2(instructions.SetupPhase
         self.__file_base_name = file_base_name
         self.__text_to_store = text_to_store
 
+    def validate(self,
+                 global_environment: instructions.GlobalEnvironmentForPreEdsStep) \
+            -> instructions.SuccessOrValidationErrorOrHardError:
+        return success_or_validation_hard_or_error_construction.new_success()
+
     def execute(self, phase_name: str,
                 global_environment: instructions.GlobalEnvironmentForNamedPhase,
                 phase_environment: instructions.PhaseEnvironmentForInternalCommands):
@@ -56,9 +62,10 @@ class StatementsThatCopiesStdinToStdout2(instructions.ActPhaseInstruction):
         super().__init__()
 
     def update_phase_environment(self,
-                phase_name: str,
-                global_environment: instructions.GlobalEnvironmentForNamedPhase,
-                phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> instructions.SuccessOrHardError:
+                                 phase_name: str,
+                                 global_environment: instructions.GlobalEnvironmentForNamedPhase,
+                                 phase_environment: instructions.PhaseEnvironmentForScriptGeneration) \
+            -> instructions.SuccessOrHardError:
         statements = [
             'import sys',
             'sys.stdout.write(sys.stdin.read())',
@@ -74,8 +81,8 @@ class InstructionThatSetsStdinFileName(instructions.ActPhaseInstruction):
         self.__file_name = file_name
 
     def update_phase_environment(self,
-                phase_name: str,
-                global_environment: instructions.GlobalEnvironmentForNamedPhase,
-                phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> instructions.SuccessOrHardError:
+                                 phase_name: str,
+                                 global_environment: instructions.GlobalEnvironmentForNamedPhase,
+                                 phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> instructions.SuccessOrHardError:
         phase_environment.set_stdin_file(self.__file_name)
         return new_success()

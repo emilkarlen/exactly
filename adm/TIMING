@@ -56,6 +56,8 @@ Detta
 - "mall" för ett testfall som exekverar ett externt program med in och utdata
   i fil
 * Bestämma exekveringsflöde
+  CLOCK: [2015-05-10 sön 21:38]
+  CLOCK: [2015-05-10 sön 19:44]--[2015-05-10 sön 21:08] =>  1:24
   CLOCK: [2015-05-10 sön 17:30]--[2015-05-10 sön 18:45] =>  1:15
   CLOCK: [2015-05-07 tor 19:50]--[2015-05-07 tor 19:56] =>  0:06
   CLOCK: [2015-05-07 tor 18:08]--[2015-05-07 tor 19:38] =>  1:30
