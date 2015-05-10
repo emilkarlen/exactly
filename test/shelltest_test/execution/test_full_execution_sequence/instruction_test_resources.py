@@ -1,6 +1,8 @@
+from shelltest.exec_abs_syn.success_or_hard_error_construction import new_success
+
 __author__ = 'emil'
 
-from shelltest.exec_abs_syn import success_or_hard_error_construction
+from shelltest.exec_abs_syn import success_or_hard_error_construction, instructions
 from shelltest.exec_abs_syn import pass_or_fail_or_hard_error_construction
 from shelltest.exec_abs_syn import instructions as instrs
 
@@ -141,3 +143,16 @@ class CleanupPhaseInstructionWithImplementationError(instrs.CleanupPhaseInstruct
                 global_environment: instrs.GlobalEnvironmentForNamedPhase,
                 phase_environment: instrs.PhaseEnvironmentForInternalCommands) -> instrs.SuccessOrHardError:
         raise self.__exception_to_raise
+
+
+class AnonymousPhaseInstructionThatSetsExecutionMode(instructions.AnonymousPhaseInstruction):
+    def __init__(self,
+                 value_to_set: instructions.ExecutionMode):
+        self.value_to_set = value_to_set
+
+    def execute(self,
+                phase_name: str,
+                global_environment,
+                phase_environment: instructions.PhaseEnvironmentForAnonymousPhase) -> instructions.SuccessOrHardError:
+        phase_environment.set_execution_mode(self.value_to_set)
+        return new_success()

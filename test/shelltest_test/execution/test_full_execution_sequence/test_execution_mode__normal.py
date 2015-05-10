@@ -11,7 +11,7 @@ from shelltest_test.execution.test_full_execution_sequence.test_case_that_record
     TestCaseThatRecordsExecution
 from shelltest_test.execution.util.expected_instruction_failure import ExpectedInstructionFailureForNoFailure, \
     ExpectedInstructionFailureForFailure
-from shelltest_test.execution.test_full_execution_sequence import instructions_with_errors
+from shelltest_test.execution.test_full_execution_sequence import instruction_test_resources
 
 
 class Test(unittest.TestCase):
@@ -36,7 +36,7 @@ class Test(unittest.TestCase):
 
     def test_hard_error_in_anonymous_phase(self):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
-            .add_anonymous(instructions_with_errors.AnonymousPhaseInstructionThatReturnsHardError('hard error msg'))
+            .add_anonymous(instruction_test_resources.AnonymousPhaseInstructionThatReturnsHardError('hard error msg'))
         TestCaseThatRecordsExecution(
             self,
             test_case,
@@ -52,15 +52,15 @@ class Test(unittest.TestCase):
     def test_implementation_error_in_anonymous_phase(self):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_anonymous(
-            instructions_with_errors.AnonymousPhaseInstructionWithImplementationError(
-                instructions_with_errors.ImplementationErrorTestException()))
+            instruction_test_resources.AnonymousPhaseInstructionWithImplementationError(
+                instruction_test_resources.ImplementationErrorTestException()))
         TestCaseThatRecordsExecution(
             self,
             test_case,
             FullResultStatus.IMPLEMENTATION_ERROR,
             ExpectedInstructionFailureForFailure.new_with_exception(
                 test_case.the_anonymous_phase_extra[0].source_line,
-                instructions_with_errors.ImplementationErrorTestException),
+                instruction_test_resources.ImplementationErrorTestException),
             [phase_step.ANONYMOUS
              ],
             [],
@@ -68,7 +68,8 @@ class Test(unittest.TestCase):
 
     def test_hard_error_in_setup_execute_phase(self):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
-            .add_setup(instructions_with_errors.SetupPhaseInstructionThatReturnsHardError('hard error msg from setup'))
+            .add_setup(
+            instruction_test_resources.SetupPhaseInstructionThatReturnsHardError('hard error msg from setup'))
         TestCaseThatRecordsExecution(
             self,
             test_case,
@@ -85,15 +86,15 @@ class Test(unittest.TestCase):
     def test_implementation_error_in_setup_execute_phase(self):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_setup(
-            instructions_with_errors.SetupPhaseInstructionWithImplementationError(
-                instructions_with_errors.ImplementationErrorTestException()))
+            instruction_test_resources.SetupPhaseInstructionWithImplementationError(
+                instruction_test_resources.ImplementationErrorTestException()))
         TestCaseThatRecordsExecution(
             self,
             test_case,
             FullResultStatus.IMPLEMENTATION_ERROR,
             ExpectedInstructionFailureForFailure.new_with_exception(
                 test_case.the_setup_phase_extra[0].source_line,
-                instructions_with_errors.ImplementationErrorTestException),
+                instruction_test_resources.ImplementationErrorTestException),
             [phase_step.ANONYMOUS,
              phase_step.SETUP
              ],
@@ -102,7 +103,7 @@ class Test(unittest.TestCase):
 
     def test_hard_error_in_act_script_generation(self):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
-            .add_act(instructions_with_errors.ActPhaseInstructionThatReturnsHardError('hard error msg from act'))
+            .add_act(instruction_test_resources.ActPhaseInstructionThatReturnsHardError('hard error msg from act'))
         TestCaseThatRecordsExecution(
             self,
             test_case,
@@ -121,15 +122,15 @@ class Test(unittest.TestCase):
     def test_implementation_error_in_act_script_generation(self):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_act(
-            instructions_with_errors.ActPhaseInstructionWithImplementationError(
-                instructions_with_errors.ImplementationErrorTestException()))
+            instruction_test_resources.ActPhaseInstructionWithImplementationError(
+                instruction_test_resources.ImplementationErrorTestException()))
         TestCaseThatRecordsExecution(
             self,
             test_case,
             FullResultStatus.IMPLEMENTATION_ERROR,
             ExpectedInstructionFailureForFailure.new_with_exception(
                 test_case.the_act_phase_extra[0].source_line,
-                instructions_with_errors.ImplementationErrorTestException),
+                instruction_test_resources.ImplementationErrorTestException),
             [phase_step.ANONYMOUS,
              phase_step.SETUP,
              phase_step.ACT__SCRIPT_GENERATION
@@ -141,7 +142,7 @@ class Test(unittest.TestCase):
     def test_fail_in_assert_phase(self):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_assert(
-            instructions_with_errors.AssertPhaseInstructionThatReturnsFail('fail msg from ASSERT'))
+            instruction_test_resources.AssertPhaseInstructionThatReturnsFail('fail msg from ASSERT'))
         TestCaseThatRecordsExecution(
             self,
             test_case,
@@ -166,7 +167,7 @@ class Test(unittest.TestCase):
     def test_hard_error_in_assert_phase(self):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_assert(
-            instructions_with_errors.AssertPhaseInstructionThatReturnsHardError('hard error msg from ASSERT'))
+            instruction_test_resources.AssertPhaseInstructionThatReturnsHardError('hard error msg from ASSERT'))
         TestCaseThatRecordsExecution(
             self,
             test_case,
@@ -191,15 +192,15 @@ class Test(unittest.TestCase):
     def test_implementation_error_in_assert_phase(self):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_assert(
-            instructions_with_errors.AssertPhaseInstructionWithImplementationError(
-                instructions_with_errors.ImplementationErrorTestException()))
+            instruction_test_resources.AssertPhaseInstructionWithImplementationError(
+                instruction_test_resources.ImplementationErrorTestException()))
         TestCaseThatRecordsExecution(
             self,
             test_case,
             FullResultStatus.IMPLEMENTATION_ERROR,
             ExpectedInstructionFailureForFailure.new_with_exception(
                 test_case.the_assert_phase_extra[0].source_line,
-                instructions_with_errors.ImplementationErrorTestException),
+                instruction_test_resources.ImplementationErrorTestException),
             [phase_step.ANONYMOUS,
              phase_step.SETUP,
              phase_step.ACT__SCRIPT_GENERATION,
@@ -217,7 +218,7 @@ class Test(unittest.TestCase):
     def test_hard_error_in_cleanup_phase(self):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_cleanup(
-            instructions_with_errors.CleanupPhaseInstructionThatReturnsHardError('hard error msg from CLEANUP'))
+            instruction_test_resources.CleanupPhaseInstructionThatReturnsHardError('hard error msg from CLEANUP'))
         TestCaseThatRecordsExecution(
             self,
             test_case,
@@ -242,15 +243,15 @@ class Test(unittest.TestCase):
     def test_implementation_error_in_cleanup_phase(self):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_cleanup(
-            instructions_with_errors.CleanupPhaseInstructionWithImplementationError(
-                instructions_with_errors.ImplementationErrorTestException()))
+            instruction_test_resources.CleanupPhaseInstructionWithImplementationError(
+                instruction_test_resources.ImplementationErrorTestException()))
         TestCaseThatRecordsExecution(
             self,
             test_case,
             FullResultStatus.IMPLEMENTATION_ERROR,
             ExpectedInstructionFailureForFailure.new_with_exception(
                 test_case.the_cleanup_phase_extra[0].source_line,
-                instructions_with_errors.ImplementationErrorTestException),
+                instruction_test_resources.ImplementationErrorTestException),
             [phase_step.ANONYMOUS,
              phase_step.SETUP,
              phase_step.ACT__SCRIPT_GENERATION,
