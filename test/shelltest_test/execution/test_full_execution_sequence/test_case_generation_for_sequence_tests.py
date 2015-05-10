@@ -49,9 +49,9 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorBase):
         """
         return list(map(self._next_instruction_line,
                         [
-                            self._new_setup_internal_recorder(phase_step.SETUP),
+                            self._new_setup_internal_recorder(phase_step.SETUP_EXECUTE),
                             instruction_adapter.as_setup(
-                                instr.InternalInstructionThatRecordsStringInRecordFile(phase_step.SETUP)),
+                                instr.InternalInstructionThatRecordsStringInRecordFile(phase_step.SETUP_EXECUTE)),
                         ]))
 
     def _setup_phase_extra(self) -> list:
