@@ -1,11 +1,11 @@
-from shelltest.exec_abs_syn import instructions
-from shelltest.exec_abs_syn.success_or_hard_error_construction import new_success
-from shelltest_test.execution.test_full_execution_sequence import instructions_with_errors
-
 __author__ = 'emil'
 
 import unittest
 
+from shelltest.exec_abs_syn import instructions
+from shelltest_test.execution.test_full_execution_sequence import instruction_test_resources
+from shelltest_test.execution.test_full_execution_sequence.instruction_test_resources import \
+    AnonymousPhaseInstructionThatSetsExecutionMode
 from shelltest_test.execution.test_full_execution_sequence.test_case_generation_for_sequence_tests import \
     TestCaseThatRecordsExecutionWithExtraInstructionList
 from shelltest.execution.result import FullResultStatus
@@ -14,19 +14,6 @@ from shelltest_test.execution.test_full_execution_sequence.test_case_that_record
     TestCaseThatRecordsExecution
 from shelltest_test.execution.util.expected_instruction_failure import ExpectedInstructionFailureForNoFailure, \
     ExpectedInstructionFailureForFailure
-
-
-class AnonymousPhaseInstructionThatSetsExecutionMode(instructions.AnonymousPhaseInstruction):
-    def __init__(self,
-                 value_to_set: instructions.ExecutionMode):
-        self.value_to_set = value_to_set
-
-    def execute(self,
-                phase_name: str,
-                global_environment,
-                phase_environment: instructions.PhaseEnvironmentForAnonymousPhase) -> instructions.SuccessOrHardError:
-        phase_environment.set_execution_mode(self.value_to_set)
-        return new_success()
 
 
 class Test(unittest.TestCase):
@@ -45,7 +32,7 @@ class Test(unittest.TestCase):
 
     def test_execution_mode_skipped_but_failing_instruction_in_anonymous_phase_before_setting_execution_mode(self):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
-            .add_anonymous(instructions_with_errors.AnonymousPhaseInstructionThatReturnsHardError('hard error msg')) \
+            .add_anonymous(instruction_test_resources.AnonymousPhaseInstructionThatReturnsHardError('hard error msg')) \
             .add_anonymous(AnonymousPhaseInstructionThatSetsExecutionMode(instructions.ExecutionMode.SKIPPED))
         TestCaseThatRecordsExecution(
             self,
@@ -62,7 +49,7 @@ class Test(unittest.TestCase):
     def test_execution_mode_skipped_but_failing_instruction_in_anonymous_phase_after_setting_execution_mode(self):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_anonymous(AnonymousPhaseInstructionThatSetsExecutionMode(instructions.ExecutionMode.SKIPPED)) \
-            .add_anonymous(instructions_with_errors.AnonymousPhaseInstructionThatReturnsHardError('hard error msg'))
+            .add_anonymous(instruction_test_resources.AnonymousPhaseInstructionThatReturnsHardError('hard error msg'))
         TestCaseThatRecordsExecution(
             self,
             test_case,

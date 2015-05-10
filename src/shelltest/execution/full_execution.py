@@ -22,16 +22,24 @@ def new_anonymous_phase_failure_from(partial_result: PartialResult) -> FullResul
                       partial_result.instruction_failure_info)
 
 
-def new_named_phases_result_from(anonymous_phase_environment: PhaseEnvironmentForAnonymousPhase,
+def new_named_phases_result_from(execution_mode: ExecutionMode,
                                  partial_result: PartialResult) -> FullResult:
-    def translate_status(ps: PartialResultStatus) -> FullResultStatus:
-        if anonymous_phase_environment.execution_mode is ExecutionMode.NORMAL:
-            return FullResultStatus(ps.value)
-        raise NotImplementedError('not impl statuts translation')
-
-    return FullResult(translate_status(partial_result.status),
+    return FullResult(translate_status(execution_mode, partial_result.status),
                       partial_result.execution_directory_structure,
                       partial_result.instruction_failure_info)
+
+
+def translate_status(execution_mode: ExecutionMode,
+                     ps: PartialResultStatus) -> FullResultStatus:
+    """
+    :param execution_mode: Must not be ExecutionMode.SKIPPED
+    """
+    if execution_mode is ExecutionMode.XFAIL:
+        if ps is PartialResultStatus.FAIL:
+            return FullResultStatus.XFAIL
+        elif ps is PartialResultStatus.PASS:
+            return FullResultStatus.XPASS
+    return FullResultStatus(ps.value)
 
 
 def execute(script_file_manager: script_stmt_gen.ScriptFileManager,
@@ -53,7 +61,7 @@ def execute(script_file_manager: script_stmt_gen.ScriptFileManager,
                                      anonymous_phase_environment.home_dir_path,
                                      execution_directory_root_name_prefix,
                                      is_keep_execution_directory_root)
-    return new_named_phases_result_from(anonymous_phase_environment,
+    return new_named_phases_result_from(anonymous_phase_environment.execution_mode,
                                         partial_result)
 
 
@@ -62,9 +70,9 @@ def execute_anonymous_phase(phase_environment: PhaseEnvironmentForAnonymousPhase
     return phase_step_execution.execute_phase(test_case.anonymous_phase,
                                               phase_step_execution.ElementHeaderExecutorThatDoesNothing(),
                                               phase_step_execution.ElementHeaderExecutorThatDoesNothing(),
-                                             phase_step_executors.AnonymousPhaseInstructionExecutor(phase_environment),
-                                             phases.ANONYMOUS,
-                                             None,
-                                             None)
+                                              phase_step_executors.AnonymousPhaseInstructionExecutor(phase_environment),
+                                              phases.ANONYMOUS,
+                                              None,
+                                              None)
 
 
