@@ -1,5 +1,3 @@
-__author__ = 'emil'
-
 import unittest
 
 from shelltest_test.execution import test_execution_directory_structure, \

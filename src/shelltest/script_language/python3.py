@@ -1,5 +1,3 @@
-__author__ = 'emil'
-
 from shelltest.exec_abs_syn import script_stmt_gen
 from shelltest.exec_abs_syn.script_stmt_gen import ScriptSourceBuilder, ScriptFileManager
 

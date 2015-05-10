@@ -1,5 +1,3 @@
-__author__ = 'emil'
-
 import unittest
 import tempfile
 from pathlib import Path

@@ -1,9 +1,7 @@
+import unittest
+
 from shelltest_test.phase_instr.test_resources import assert_equals_line
 from shelltest_test.test_resources import assertion_message
-
-__author__ = 'emil'
-
-import unittest
 from shelltest.execution.result import InstructionFailureInfo, InstructionFailureDetails
 from shelltest.phase_instr import line_source
 

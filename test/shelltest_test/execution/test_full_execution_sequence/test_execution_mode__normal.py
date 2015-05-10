@@ -1,5 +1,3 @@
-__author__ = 'emil'
-
 import unittest
 
 from shelltest_test.execution.test_full_execution_sequence.test_case_generation_for_sequence_tests import \

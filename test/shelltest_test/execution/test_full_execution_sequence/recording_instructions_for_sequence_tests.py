@@ -1,5 +1,3 @@
-__author__ = 'emil'
-
 import pathlib
 
 from shelltest.exec_abs_syn.success_or_hard_error_construction import new_success

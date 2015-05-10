@@ -1,7 +1,4 @@
 from shelltest.exec_abs_syn.success_or_hard_error_construction import new_success
-
-__author__ = 'emil'
-
 from shelltest.exec_abs_syn import success_or_hard_error_construction, instructions
 from shelltest.exec_abs_syn import pass_or_fail_or_hard_error_construction
 from shelltest.exec_abs_syn import instructions as instrs

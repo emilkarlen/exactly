@@ -1,6 +1,3 @@
-__author__ = 'emil'
-
-
 class ImplementationError(Exception):
     def __init__(self, message: str):
         self.__message = message

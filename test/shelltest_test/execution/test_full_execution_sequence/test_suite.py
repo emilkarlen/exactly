@@ -1,5 +1,3 @@
-__author__ = 'emil'
-
 import unittest
 
 from shelltest_test.execution.test_full_execution_sequence import \

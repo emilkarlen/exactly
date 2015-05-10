@@ -1,5 +1,3 @@
-__author__ = 'emil'
-
 import unittest
 
 from shelltest_test.phase_instr import test_line_source, test_parse, test_syntax

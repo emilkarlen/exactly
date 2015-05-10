@@ -1,9 +1,6 @@
-from shelltest_test.execution.test_full_execution_sequence import instruction_test_resources
-
-__author__ = 'emil'
-
 import unittest
 
+from shelltest_test.execution.test_full_execution_sequence import instruction_test_resources
 from shelltest_test.execution.test_full_execution_sequence.instruction_test_resources import \
     AnonymousPhaseInstructionThatSetsExecutionMode, AssertPhaseInstructionThatReturnsFail
 from shelltest.exec_abs_syn import instructions

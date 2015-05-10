@@ -1,11 +1,8 @@
-from shelltest.exec_abs_syn.success_or_hard_error_construction import new_success
-
-__author__ = 'emil'
-
 import os
 import pathlib
 import unittest
 
+from shelltest.exec_abs_syn.success_or_hard_error_construction import new_success
 from shelltest import phases
 from shelltest.exec_abs_syn import instructions
 from shelltest_test.execution.util import python_code_gen as py

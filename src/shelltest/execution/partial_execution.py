@@ -1,5 +1,3 @@
-__author__ = 'emil'
-
 import tempfile
 import os
 import subprocess

@@ -1,6 +1,3 @@
-__author__ = 'emil'
-
-
 class Line(tuple):
     def __new__(cls,
                 line_number: int,

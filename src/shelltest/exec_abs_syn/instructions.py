@@ -1,5 +1,3 @@
-__author__ = 'emil'
-
 from enum import Enum
 import pathlib
 
