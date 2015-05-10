@@ -107,6 +107,7 @@ class PartialResultStatus(Enum):
     Implementation notes: integer values must correspond to FullResultStatus
     """
     PASS = 0
+    VALIDATE = 1
     FAIL = 2
     HARD_ERROR = 99
     IMPLEMENTATION_ERROR = 100
@@ -140,6 +141,7 @@ class FullResultStatus(Enum):
     Implementation notes: integer values must correspond to PartialResultStatus
     """
     PASS = 0
+    VALIDATE = 1
     FAIL = 2
     SKIPPED = 77
     XFAIL = 4

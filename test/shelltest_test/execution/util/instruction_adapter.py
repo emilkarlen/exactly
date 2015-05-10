@@ -1,5 +1,6 @@
 from shelltest.exec_abs_syn import pass_or_fail_or_hard_error_construction
 from shelltest.exec_abs_syn.success_or_hard_error_construction import new_success
+from shelltest.exec_abs_syn import success_or_validation_hard_or_error_construction
 from shelltest.exec_abs_syn.instructions import SuccessOrHardError
 from shelltest.exec_abs_syn import instructions as instrs
 
@@ -22,6 +23,11 @@ class _SetupInstructionExecutor(instrs.SetupPhaseInstruction):
                  ret_val: SuccessOrHardError=new_success()):
         self.__internal_instruction = internal_instruction
         self.__ret_val = ret_val
+
+    def validate(self,
+                 global_environment: instrs.GlobalEnvironmentForPreEdsStep) \
+            -> instrs.SuccessOrValidationErrorOrHardError:
+        return success_or_validation_hard_or_error_construction.new_success()
 
     def execute(self, phase_name: str,
                 global_environment: instrs.GlobalEnvironmentForNamedPhase,

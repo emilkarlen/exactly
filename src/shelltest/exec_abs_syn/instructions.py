@@ -31,6 +31,32 @@ class SuccessOrHardError(tuple):
         return not self.is_success
 
 
+class SuccessOrValidationErrorOrHardError(tuple):
+    def __new__(cls,
+                is_hard_error: bool,
+                failure_message: str):
+        return tuple.__new__(cls, (is_hard_error, failure_message, ))
+
+    @property
+    def failure_message(self) -> str:
+        """
+        :return None iff the object represents SUCCESS.
+        """
+        return self[1]
+
+    @property
+    def is_success(self) -> bool:
+        return self[0] is None
+
+    @property
+    def is_validation_error(self) -> bool:
+        return self[0] is False
+
+    @property
+    def is_hard_error(self) -> bool:
+        return self[0] is True
+
+
 class PassOrFailOrHardErrorEnum(Enum):
     """
     Implementation note: The error-values must correspond to those of PartialControlledFailureEnum
@@ -147,6 +173,16 @@ class PhaseEnvironmentForInternalCommands(PhaseEnvironment):
         pass
 
 
+class GlobalEnvironmentForPreEdsStep:
+    def __init__(self,
+                 home_dir: pathlib.Path):
+        self.__home_dir = home_dir
+
+    @property
+    def home_directory(self) -> pathlib.Path:
+        return self.__home_dir
+
+
 class GlobalEnvironmentForNamedPhase:
     def __init__(self,
                  home_dir: pathlib.Path,
@@ -205,6 +241,10 @@ class SetupPhaseInstruction(InternalInstruction):
     """
     Abstract base class for instructions of the SETUP phase.
     """
+
+    def validate(self,
+                 global_environment: GlobalEnvironmentForPreEdsStep) -> SuccessOrValidationErrorOrHardError:
+        raise NotImplementedError()
 
     def execute(self, phase_name: str,
                 global_environment: GlobalEnvironmentForNamedPhase,

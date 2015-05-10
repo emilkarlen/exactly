@@ -1,5 +1,5 @@
 from shelltest.exec_abs_syn.success_or_hard_error_construction import new_success
-from shelltest.exec_abs_syn import success_or_hard_error_construction, instructions
+from shelltest.exec_abs_syn import success_or_hard_error_construction, success_or_validation_hard_or_error_construction
 from shelltest.exec_abs_syn import pass_or_fail_or_hard_error_construction
 from shelltest.exec_abs_syn import instructions as instrs
 
@@ -32,10 +32,34 @@ class AnonymousPhaseInstructionWithImplementationError(instrs.AnonymousPhaseInst
         raise self.__exception_to_raise
 
 
+class SetupPhaseInstructionThatReturns(instrs.SetupPhaseInstruction):
+    def __init__(self,
+                 from_validate: instrs.SuccessOrValidationErrorOrHardError,
+                 from_execute: instrs.SuccessOrHardError):
+        self.__from_validate = from_validate
+        self.__from_execute = from_execute
+
+    def validate(self,
+                 global_environment: instrs.GlobalEnvironmentForPreEdsStep) \
+            -> instrs.SuccessOrValidationErrorOrHardError:
+        return self.__from_validate
+
+    def execute(self,
+                phase_name: str,
+                global_environment: instrs.GlobalEnvironmentForNamedPhase,
+                phase_environment: instrs.PhaseEnvironmentForInternalCommands) -> instrs.SuccessOrHardError:
+        return self.__from_execute
+
+
 class SetupPhaseInstructionThatReturnsHardError(instrs.SetupPhaseInstruction):
     def __init__(self,
                  msg: str):
         self.__msg = msg
+
+    def validate(self,
+                 global_environment: instrs.GlobalEnvironmentForPreEdsStep) \
+            -> instrs.SuccessOrValidationErrorOrHardError:
+        return success_or_validation_hard_or_error_construction.new_success()
 
     def execute(self,
                 phase_name: str,
@@ -48,6 +72,11 @@ class SetupPhaseInstructionWithImplementationError(instrs.SetupPhaseInstruction)
     def __init__(self,
                  exception_to_raise: Exception):
         self.__exception_to_raise = exception_to_raise
+
+    def validate(self,
+                 global_environment: instrs.GlobalEnvironmentForPreEdsStep) \
+            -> instrs.SuccessOrValidationErrorOrHardError:
+        return success_or_validation_hard_or_error_construction.new_success()
 
     def execute(self,
                 phase_name: str,
@@ -142,14 +171,14 @@ class CleanupPhaseInstructionWithImplementationError(instrs.CleanupPhaseInstruct
         raise self.__exception_to_raise
 
 
-class AnonymousPhaseInstructionThatSetsExecutionMode(instructions.AnonymousPhaseInstruction):
+class AnonymousPhaseInstructionThatSetsExecutionMode(instrs.AnonymousPhaseInstruction):
     def __init__(self,
-                 value_to_set: instructions.ExecutionMode):
+                 value_to_set: instrs.ExecutionMode):
         self.value_to_set = value_to_set
 
     def execute(self,
                 phase_name: str,
                 global_environment,
-                phase_environment: instructions.PhaseEnvironmentForAnonymousPhase) -> instructions.SuccessOrHardError:
+                phase_environment: instrs.PhaseEnvironmentForAnonymousPhase) -> instrs.SuccessOrHardError:
         phase_environment.set_execution_mode(self.value_to_set)
         return new_success()

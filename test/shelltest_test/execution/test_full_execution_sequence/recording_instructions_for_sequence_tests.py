@@ -1,6 +1,7 @@
 import pathlib
 
 from shelltest.exec_abs_syn.success_or_hard_error_construction import new_success
+from shelltest.exec_abs_syn import success_or_validation_hard_or_error_construction
 from shelltest.exec_abs_syn.instructions import SuccessOrHardError
 from shelltest.exec_abs_syn import instructions
 from shelltest.execution.execution_directory_structure import ExecutionDirectoryStructure
@@ -40,6 +41,26 @@ class AnonymousInternalInstructionThatRecordsStringInList(instructions.Anonymous
                 global_environment,
                 phase_environment: instructions.PhaseEnvironmentForAnonymousPhase) -> SuccessOrHardError:
         self.__recorder.record()
+        return new_success()
+
+
+class SetupInternalInstructionThatRecordsStringInList(instructions.SetupPhaseInstruction):
+    def __init__(self,
+                 recorder_for_validate: ListRecorder,
+                 recorder_for_execute: ListRecorder):
+        self.__recorder_for_validate = recorder_for_validate
+        self.__recorder_for_execute = recorder_for_execute
+
+    def validate(self,
+                 global_environment: instructions.GlobalEnvironmentForPreEdsStep) \
+            -> instructions.SuccessOrValidationErrorOrHardError:
+        self.__recorder_for_validate.record()
+        return success_or_validation_hard_or_error_construction.new_success()
+
+    def execute(self, phase_name: str,
+                global_environment,
+                phase_environment: instructions.PhaseEnvironmentForAnonymousPhase) -> SuccessOrHardError:
+        self.__recorder_for_execute.record()
         return new_success()
 
 
