@@ -1,6 +1,3 @@
-__author__ = 'emil'
-
-
 def string_expr(value: str) -> str:
     return '\'' + value.replace('\'', '\\\'') + '\''
 

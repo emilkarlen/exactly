@@ -1,9 +1,6 @@
-from shelltest_test.test_resources import assertion_message
-
-__author__ = 'emil'
-
 import unittest
 
+from shelltest_test.test_resources import assertion_message
 from shelltest.phase_instr.line_source import Line
 
 

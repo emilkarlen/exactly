@@ -1,7 +1,4 @@
 from shelltest.exec_abs_syn.success_or_hard_error_construction import new_success
-
-__author__ = 'emil'
-
 from shelltest_test.execution.util.py_unit_test_case import UnitTestCaseForPy3Language
 from shelltest.exec_abs_syn import instructions
 

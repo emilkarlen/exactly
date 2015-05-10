@@ -1,5 +1,3 @@
-__author__ = 'emil'
-
 __VALIDATE = 'validate'
 __EXECUTE = 'execute'
 

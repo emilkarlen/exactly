@@ -1,5 +1,3 @@
-__author__ = 'emil'
-
 from shelltest.phase_instr import line_source
 
 

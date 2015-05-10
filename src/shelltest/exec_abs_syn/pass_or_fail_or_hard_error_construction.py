@@ -1,5 +1,3 @@
-__author__ = 'emil'
-
 from shelltest.exec_abs_syn.instructions import PassOrFailOrHardError, PassOrFailOrHardErrorEnum
 
 

@@ -1,8 +1,5 @@
 from shelltest_test.execution.test_full_execution_sequence import recording_instructions_for_sequence_tests as instr
 from shelltest_test.execution.util.test_case_generation import TestCaseGeneratorBase
-
-__author__ = 'emil'
-
 from shelltest.execution import phase_step
 from shelltest.exec_abs_syn import instructions
 from shelltest.phase_instr import model

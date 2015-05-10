@@ -1,13 +1,10 @@
-from shelltest.execution.execution_directory_structure import ExecutionDirectoryStructure
-from shelltest.execution.partial_execution import execute_test_case_in_execution_directory, PartialExecutor
-
-__author__ = 'emil'
-
 import os
 import shutil
 import pathlib
 import unittest
 
+from shelltest.execution.execution_directory_structure import ExecutionDirectoryStructure
+from shelltest.execution.partial_execution import execute_test_case_in_execution_directory, PartialExecutor
 from shelltest.phase_instr import model
 from shelltest.phase_instr import line_source
 from shelltest.script_language import python3

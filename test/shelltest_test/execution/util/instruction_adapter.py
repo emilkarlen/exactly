@@ -1,9 +1,6 @@
-__author__ = 'karlen'
-
 from shelltest.exec_abs_syn import pass_or_fail_or_hard_error_construction
 from shelltest.exec_abs_syn.success_or_hard_error_construction import new_success
 from shelltest.exec_abs_syn.instructions import SuccessOrHardError
-
 from shelltest.exec_abs_syn import instructions as instrs
 
 

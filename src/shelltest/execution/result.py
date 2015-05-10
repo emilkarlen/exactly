@@ -1,9 +1,6 @@
-from shelltest.phase_instr import line_source
-
-__author__ = 'emil'
-
 from enum import Enum
 
+from shelltest.phase_instr import line_source
 from shelltest.phases import Phase
 from .execution_directory_structure import ExecutionDirectoryStructure
 

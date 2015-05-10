@@ -1,7 +1,6 @@
 """
 Functionality for generating a Shell Script from a parsed Test Case file.
 """
-__author__ = 'emil'
 
 from shelltest.exec_abs_syn import instructions
 from shelltest.phase_instr.model import PhaseContents

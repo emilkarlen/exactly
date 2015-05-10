@@ -1,12 +1,9 @@
-from shelltest.exec_abs_syn.success_or_hard_error_construction import new_success
-from shelltest.execution.execution_directory_structure import ExecutionDirectoryStructure
-
-__author__ = 'emil'
-
 import os
 import pathlib
 import unittest
 
+from shelltest.exec_abs_syn.success_or_hard_error_construction import new_success
+from shelltest.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shelltest import phases
 from shelltest.exec_abs_syn import py_cmd_gen, instructions
 from shelltest.exec_abs_syn.config import Configuration

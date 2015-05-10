@@ -1,6 +1,3 @@
-__author__ = 'emil'
-
-
 class Phase(tuple):
     """
     Class for enumeration of phase constants

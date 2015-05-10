@@ -1,11 +1,8 @@
-from shelltest.exec_abs_syn.success_or_hard_error_construction import new_success
-from shelltest.execution.execution_directory_structure import ExecutionDirectoryStructure
-
-__author__ = 'emil'
-
 import os
 import pathlib
 
+from shelltest.exec_abs_syn.success_or_hard_error_construction import new_success
+from shelltest.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shelltest.exec_abs_syn.config import Configuration
 from shelltest.execution import partial_execution
 from shelltest_test.execution.util import py_unit_test_case_with_file_output as with_file_output

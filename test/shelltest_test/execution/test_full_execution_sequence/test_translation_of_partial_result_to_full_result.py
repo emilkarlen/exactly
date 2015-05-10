@@ -1,5 +1,3 @@
-__author__ = 'emil'
-
 import unittest
 
 from shelltest.exec_abs_syn.instructions import ExecutionMode

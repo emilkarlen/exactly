@@ -1,6 +1,3 @@
-__author__ = 'emil'
-
-
 import tempfile
 from pathlib import Path
 

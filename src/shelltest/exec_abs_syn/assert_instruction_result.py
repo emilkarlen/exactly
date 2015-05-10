@@ -1,5 +1,3 @@
-__author__ = 'emil'
-
 from .instructions import PassOrFailOrHardErrorEnum, PassOrFailOrHardError
 
 

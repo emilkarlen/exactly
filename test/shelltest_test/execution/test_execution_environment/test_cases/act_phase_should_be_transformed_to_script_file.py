@@ -1,9 +1,6 @@
-from shelltest.exec_abs_syn.success_or_hard_error_construction import new_success
-
-__author__ = 'emil'
-
 import os
 
+from shelltest.exec_abs_syn.success_or_hard_error_construction import new_success
 from shelltest import phases
 from shelltest.phase_instr import line_source
 from shelltest.phase_instr import model
