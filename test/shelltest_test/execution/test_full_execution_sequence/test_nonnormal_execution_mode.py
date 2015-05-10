@@ -43,7 +43,23 @@ class Test(unittest.TestCase):
             [],
             False).execute()
 
-    def test_execution_mode_skipped_but_failing_instruction(self):
+    def test_execution_mode_skipped_but_failing_instruction_in_anonymous_phase_before_setting_execution_mode(self):
+        test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
+            .add_anonymous(instructions_with_errors.AnonymousPhaseInstructionThatReturnsHardError('hard error msg')) \
+            .add_anonymous(AnonymousPhaseInstructionThatSetsExecutionMode(instructions.ExecutionMode.SKIPPED))
+        TestCaseThatRecordsExecution(
+            self,
+            test_case,
+            FullResultStatus.HARD_ERROR,
+            ExpectedInstructionFailureForFailure.new_with_message(
+                test_case.the_anonymous_phase_extra[0].source_line,
+                'hard error msg'),
+            [phase_step.ANONYMOUS
+             ],
+            [],
+            False).execute()
+
+    def test_execution_mode_skipped_but_failing_instruction_in_anonymous_phase_after_setting_execution_mode(self):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_anonymous(AnonymousPhaseInstructionThatSetsExecutionMode(instructions.ExecutionMode.SKIPPED)) \
             .add_anonymous(instructions_with_errors.AnonymousPhaseInstructionThatReturnsHardError('hard error msg'))
