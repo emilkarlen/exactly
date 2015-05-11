@@ -65,6 +65,26 @@ class Test(unittest.TestCase):
             [],
             False).execute()
 
+    def test_validation_error_in_setup_validate_phase(self):
+        test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
+            .add_setup(
+            instruction_test_resources.SetupPhaseInstructionThatReturns(
+                success_or_validation_hard_or_error_construction.new_validation_error(
+                    'validation error from setup/validate'),
+                success_or_hard_error_construction.new_success()))
+        TestCaseThatRecordsExecution(
+            self,
+            test_case,
+            FullResultStatus.VALIDATE,
+            ExpectedInstructionFailureForFailure.new_with_message(
+                test_case.the_setup_phase_extra[0].source_line,
+                'validation error from setup/validate'),
+            [phase_step.ANONYMOUS,
+             phase_step.SETUP_VALIDATE,
+             ],
+            [],
+            True).execute()
+
     def test_hard_error_in_setup_validate_phase(self):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_setup(
