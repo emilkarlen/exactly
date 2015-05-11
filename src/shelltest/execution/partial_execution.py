@@ -67,6 +67,7 @@ class PartialExecutor:
         res = self.__run_setup_execute(phase_env)
         if res.status is not PartialResultStatus.PASS:
             self.__partial_result = res
+            self.__run_cleanup(phase_env)
             return
         res = self.__run_act_validate()
         if res.status is not PartialResultStatus.PASS:
