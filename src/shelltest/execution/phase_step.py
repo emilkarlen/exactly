@@ -13,8 +13,8 @@ SETUP = 'SETUP'
 SETUP_validate = __VALIDATE
 SETUP_execute = __EXECUTE
 
-SETUP_VALIDATE = __phase_step(SETUP, SETUP_validate)
-SETUP_EXECUTE = __phase_step(SETUP, SETUP_execute)
+SETUP__VALIDATE = __phase_step(SETUP, SETUP_validate)
+SETUP__EXECUTE = __phase_step(SETUP, SETUP_execute)
 
 ACT = 'ACT'
 

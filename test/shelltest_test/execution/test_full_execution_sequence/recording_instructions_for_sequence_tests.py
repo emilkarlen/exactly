@@ -20,15 +20,22 @@ class ListRecorder:
 
 class ActInstructionThatRecordsStringInList(instructions.ActPhaseInstruction):
     def __init__(self,
-                 recorder: ListRecorder):
-        self.__recorder = recorder
+                 recorder_for_validate: ListRecorder,
+                 recorder_for_execute: ListRecorder):
+        self.__recorder_for_validate = recorder_for_validate
+        self.__recorder_for_execute = recorder_for_execute
+
+    def validate(self, global_environment: instructions.GlobalEnvironmentForNamedPhase) \
+            -> instructions.SuccessOrValidationErrorOrHardError:
+        self.__recorder_for_validate.record()
+        return success_or_validation_hard_or_error_construction.new_success()
 
     def update_phase_environment(
             self,
             phase_name: str,
             global_environment: instructions.GlobalEnvironmentForNamedPhase,
             phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> instructions.SuccessOrHardError:
-        self.__recorder.record()
+        self.__recorder_for_execute.record()
         return new_success()
 
 
@@ -87,8 +94,13 @@ class InternalInstructionThatRecordsStringInList(instructions.InternalInstructio
 
 
 class ActInstructionThatGeneratesScriptThatRecordsStringInRecordFile(instructions.ActPhaseInstruction):
-    def __init__(self, s: str):
-        self.__s = s
+    def __init__(self,
+                 string_for_script_gen: str):
+        self.__string_for_script_gen = string_for_script_gen
+
+    def validate(self, global_environment: instructions.GlobalEnvironmentForNamedPhase) \
+            -> instructions.SuccessOrValidationErrorOrHardError:
+        return success_or_validation_hard_or_error_construction.new_success()
 
     def update_phase_environment(
             self,
@@ -97,13 +109,22 @@ class ActInstructionThatGeneratesScriptThatRecordsStringInRecordFile(instruction
             phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> instructions.SuccessOrHardError:
         phase_environment.append.raw_script_statements(
             append_line_to_record_file_statements(global_environment.execution_directory_structure,
-                                                  self.__s))
+                                                  self.__string_for_script_gen))
         return new_success()
 
 
 class ActInstructionThatRecordsStringInRecordFile(instructions.ActPhaseInstruction):
-    def __init__(self, s: str):
-        self.__s = s
+    def __init__(self,
+                 string_for_validation: str,
+                 string_for_script_gen: str):
+        self.__string_for_validation = string_for_validation
+        self.__string_for_script_gen = string_for_script_gen
+
+    def validate(self, global_environment: instructions.GlobalEnvironmentForNamedPhase) \
+            -> instructions.SuccessOrValidationErrorOrHardError:
+        append_line_to_record_file(global_environment.execution_directory_structure,
+                                   self.__string_for_validation)
+        return success_or_validation_hard_or_error_construction.new_success()
 
     def update_phase_environment(
             self,
@@ -111,7 +132,7 @@ class ActInstructionThatRecordsStringInRecordFile(instructions.ActPhaseInstructi
             global_environment: instructions.GlobalEnvironmentForNamedPhase,
             phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> instructions.SuccessOrHardError:
         append_line_to_record_file(global_environment.execution_directory_structure,
-                                   self.__s)
+                                   self.__string_for_script_gen)
         return new_success()
 
 

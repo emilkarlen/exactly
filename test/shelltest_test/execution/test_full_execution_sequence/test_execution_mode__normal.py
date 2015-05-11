@@ -12,6 +12,7 @@ from shelltest_test.execution.util.expected_instruction_failure import ExpectedI
 from shelltest_test.execution.test_full_execution_sequence import instruction_test_resources
 from shelltest.exec_abs_syn import success_or_validation_hard_or_error_construction, success_or_hard_error_construction
 
+
 class Test(unittest.TestCase):
     def test_full_sequence(self):
         TestCaseThatRecordsExecution(
@@ -20,13 +21,15 @@ class Test(unittest.TestCase):
             FullResultStatus.PASS,
             ExpectedInstructionFailureForNoFailure(),
             [phase_step.ANONYMOUS,
-             phase_step.SETUP_VALIDATE,
-             phase_step.SETUP_EXECUTE,
+             phase_step.SETUP__VALIDATE,
+             phase_step.SETUP__EXECUTE,
+             phase_step.ACT__VALIDATE,
              phase_step.ACT__SCRIPT_GENERATION,
              phase_step.ASSERT,
              phase_step.CLEANUP
              ],
-            [phase_step.SETUP_EXECUTE,
+            [phase_step.SETUP__EXECUTE,
+             phase_step.ACT__VALIDATE,
              phase_step.ACT__SCRIPT_GENERATION,
              phase_step.ACT__SCRIPT_EXECUTION,
              phase_step.ASSERT,
@@ -80,7 +83,7 @@ class Test(unittest.TestCase):
                 test_case.the_setup_phase_extra[0].source_line,
                 'validation error from setup/validate'),
             [phase_step.ANONYMOUS,
-             phase_step.SETUP_VALIDATE,
+             phase_step.SETUP__VALIDATE,
              ],
             [],
             True).execute()
@@ -99,7 +102,7 @@ class Test(unittest.TestCase):
                 test_case.the_setup_phase_extra[0].source_line,
                 'hard error from setup/validate'),
             [phase_step.ANONYMOUS,
-             phase_step.SETUP_VALIDATE,
+             phase_step.SETUP__VALIDATE,
              ],
             [],
             True).execute()
@@ -116,10 +119,10 @@ class Test(unittest.TestCase):
                 test_case.the_setup_phase_extra[0].source_line,
                 'hard error msg from setup'),
             [phase_step.ANONYMOUS,
-             phase_step.SETUP_VALIDATE,
-             phase_step.SETUP_EXECUTE,
+             phase_step.SETUP__VALIDATE,
+             phase_step.SETUP__EXECUTE,
              ],
-            [phase_step.SETUP_EXECUTE],
+            [phase_step.SETUP__EXECUTE],
             True).execute()
 
     def test_implementation_error_in_setup_execute_phase(self):
@@ -135,10 +138,10 @@ class Test(unittest.TestCase):
                 test_case.the_setup_phase_extra[0].source_line,
                 instruction_test_resources.ImplementationErrorTestException),
             [phase_step.ANONYMOUS,
-             phase_step.SETUP_VALIDATE,
-             phase_step.SETUP_EXECUTE,
+             phase_step.SETUP__VALIDATE,
+             phase_step.SETUP__EXECUTE,
              ],
-            [phase_step.SETUP_EXECUTE],
+            [phase_step.SETUP__EXECUTE],
             True).execute()
 
     def test_hard_error_in_act_script_generation(self):
@@ -152,11 +155,13 @@ class Test(unittest.TestCase):
                 test_case.the_act_phase_extra[0].source_line,
                 'hard error msg from act'),
             [phase_step.ANONYMOUS,
-             phase_step.SETUP_VALIDATE,
-             phase_step.SETUP_EXECUTE,
-             phase_step.ACT__SCRIPT_GENERATION
+             phase_step.SETUP__VALIDATE,
+             phase_step.SETUP__EXECUTE,
+             phase_step.ACT__VALIDATE,
+             phase_step.ACT__SCRIPT_GENERATION,
              ],
-            [phase_step.SETUP_EXECUTE,
+            [phase_step.SETUP__EXECUTE,
+             phase_step.ACT__VALIDATE,
              phase_step.ACT__SCRIPT_GENERATION],
             True).execute()
 
@@ -173,11 +178,13 @@ class Test(unittest.TestCase):
                 test_case.the_act_phase_extra[0].source_line,
                 instruction_test_resources.ImplementationErrorTestException),
             [phase_step.ANONYMOUS,
-             phase_step.SETUP_VALIDATE,
-             phase_step.SETUP_EXECUTE,
+             phase_step.SETUP__VALIDATE,
+             phase_step.SETUP__EXECUTE,
+             phase_step.ACT__VALIDATE,
              phase_step.ACT__SCRIPT_GENERATION
              ],
-            [phase_step.SETUP_EXECUTE,
+            [phase_step.SETUP__EXECUTE,
+             phase_step.ACT__VALIDATE,
              phase_step.ACT__SCRIPT_GENERATION],
             True).execute()
 
@@ -193,13 +200,15 @@ class Test(unittest.TestCase):
                 test_case.the_assert_phase_extra[0].source_line,
                 'fail msg from ASSERT'),
             [phase_step.ANONYMOUS,
-             phase_step.SETUP_VALIDATE,
-             phase_step.SETUP_EXECUTE,
+             phase_step.SETUP__VALIDATE,
+             phase_step.SETUP__EXECUTE,
+             phase_step.ACT__VALIDATE,
              phase_step.ACT__SCRIPT_GENERATION,
              phase_step.ASSERT,
              phase_step.CLEANUP
              ],
-            [phase_step.SETUP_EXECUTE,
+            [phase_step.SETUP__EXECUTE,
+             phase_step.ACT__VALIDATE,
              phase_step.ACT__SCRIPT_GENERATION,
              phase_step.ACT__SCRIPT_EXECUTION,
              phase_step.ASSERT,
@@ -219,13 +228,15 @@ class Test(unittest.TestCase):
                 test_case.the_assert_phase_extra[0].source_line,
                 'hard error msg from ASSERT'),
             [phase_step.ANONYMOUS,
-             phase_step.SETUP_VALIDATE,
-             phase_step.SETUP_EXECUTE,
+             phase_step.SETUP__VALIDATE,
+             phase_step.SETUP__EXECUTE,
+             phase_step.ACT__VALIDATE,
              phase_step.ACT__SCRIPT_GENERATION,
              phase_step.ASSERT,
              phase_step.CLEANUP
              ],
-            [phase_step.SETUP_EXECUTE,
+            [phase_step.SETUP__EXECUTE,
+             phase_step.ACT__VALIDATE,
              phase_step.ACT__SCRIPT_GENERATION,
              phase_step.ACT__SCRIPT_EXECUTION,
              phase_step.ASSERT,
@@ -246,13 +257,15 @@ class Test(unittest.TestCase):
                 test_case.the_assert_phase_extra[0].source_line,
                 instruction_test_resources.ImplementationErrorTestException),
             [phase_step.ANONYMOUS,
-             phase_step.SETUP_VALIDATE,
-             phase_step.SETUP_EXECUTE,
+             phase_step.SETUP__VALIDATE,
+             phase_step.SETUP__EXECUTE,
+             phase_step.ACT__VALIDATE,
              phase_step.ACT__SCRIPT_GENERATION,
              phase_step.ASSERT,
              phase_step.CLEANUP
              ],
-            [phase_step.SETUP_EXECUTE,
+            [phase_step.SETUP__EXECUTE,
+             phase_step.ACT__VALIDATE,
              phase_step.ACT__SCRIPT_GENERATION,
              phase_step.ACT__SCRIPT_EXECUTION,
              phase_step.ASSERT,
@@ -272,13 +285,15 @@ class Test(unittest.TestCase):
                 test_case.the_cleanup_phase_extra[0].source_line,
                 'hard error msg from CLEANUP'),
             [phase_step.ANONYMOUS,
-             phase_step.SETUP_VALIDATE,
-             phase_step.SETUP_EXECUTE,
+             phase_step.SETUP__VALIDATE,
+             phase_step.SETUP__EXECUTE,
+             phase_step.ACT__VALIDATE,
              phase_step.ACT__SCRIPT_GENERATION,
              phase_step.ASSERT,
              phase_step.CLEANUP
              ],
-            [phase_step.SETUP_EXECUTE,
+            [phase_step.SETUP__EXECUTE,
+             phase_step.ACT__VALIDATE,
              phase_step.ACT__SCRIPT_GENERATION,
              phase_step.ACT__SCRIPT_EXECUTION,
              phase_step.ASSERT,
@@ -299,13 +314,15 @@ class Test(unittest.TestCase):
                 test_case.the_cleanup_phase_extra[0].source_line,
                 instruction_test_resources.ImplementationErrorTestException),
             [phase_step.ANONYMOUS,
-             phase_step.SETUP_VALIDATE,
-             phase_step.SETUP_EXECUTE,
+             phase_step.SETUP__VALIDATE,
+             phase_step.SETUP__EXECUTE,
+             phase_step.ACT__VALIDATE,
              phase_step.ACT__SCRIPT_GENERATION,
              phase_step.ASSERT,
              phase_step.CLEANUP
              ],
-            [phase_step.SETUP_EXECUTE,
+            [phase_step.SETUP__EXECUTE,
+             phase_step.ACT__VALIDATE,
              phase_step.ACT__SCRIPT_GENERATION,
              phase_step.ACT__SCRIPT_EXECUTION,
              phase_step.ASSERT,

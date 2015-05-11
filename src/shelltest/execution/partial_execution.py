@@ -68,6 +68,10 @@ class PartialExecutor:
         if res.status is not PartialResultStatus.PASS:
             self.__partial_result = res
             return
+        res = self.__run_act_validate()
+        if res.status is not PartialResultStatus.PASS:
+            self.__partial_result = res
+            return
         res = self.__run_act_script_generation()
         if res.status is not PartialResultStatus.PASS:
             self.__partial_result = res
@@ -131,6 +135,13 @@ class PartialExecutor:
                                                                self.__global_environment,
                                                                phase_env),
                                                            self.__setup_phase)
+
+    def __run_act_validate(self) -> PartialResult:
+        return self.__run_internal_instructions_phase_step(phases.ACT,
+                                                           phase_step.ACT_validate,
+                                                           phase_step_executors.ActValidateInstructionExecutor(
+                                                               self.__global_environment),
+                                                           self.__act_phase)
 
     def __run_assert(self, phase_env) -> PartialResult:
         return self.__run_internal_instructions_phase_step(phases.ASSERT,
