@@ -69,6 +69,16 @@ class SetupPhaseInstructionExecutor(ControlledInstructionExecutor):
                                 self.__phase_environment))
 
 
+class ActValidateInstructionExecutor(ControlledInstructionExecutor):
+    def __init__(self,
+                 global_environment: instr.GlobalEnvironmentForNamedPhase):
+        self.__global_environment = global_environment
+
+    def apply(self, instruction: instr.ActPhaseInstruction) -> PartialInstructionControlledFailureInfo:
+        return _from_success_or_validation_error_or_hard_error(
+            instruction.validate(self.__global_environment))
+
+
 class ActScriptGenerationExecutor(ControlledInstructionExecutor):
     def __init__(self,
                  global_environment: instr.GlobalEnvironmentForNamedPhase,

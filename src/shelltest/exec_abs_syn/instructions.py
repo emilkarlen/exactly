@@ -263,6 +263,10 @@ class ActPhaseInstruction(Instruction):
     Abstract base class for instructions of the ACT phase.
     """
 
+    def validate(self,
+                 global_environment: GlobalEnvironmentForNamedPhase) -> SuccessOrValidationErrorOrHardError:
+        raise NotImplementedError()
+
     def update_phase_environment(self,
                                  phase_name: str,
                                  global_environment: GlobalEnvironmentForNamedPhase,

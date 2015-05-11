@@ -1,4 +1,3 @@
-from shelltest.exec_abs_syn.success_or_hard_error_construction import new_success
 from shelltest.exec_abs_syn import success_or_hard_error_construction, success_or_validation_hard_or_error_construction
 from shelltest.exec_abs_syn import pass_or_fail_or_hard_error_construction
 from shelltest.exec_abs_syn import instructions as instrs
@@ -90,6 +89,11 @@ class ActPhaseInstructionThatReturnsHardError(instrs.ActPhaseInstruction):
                  msg: str):
         self.__msg = msg
 
+    def validate(self,
+                 global_environment: instrs.GlobalEnvironmentForNamedPhase) \
+            -> instrs.SuccessOrValidationErrorOrHardError:
+        return success_or_validation_hard_or_error_construction.new_success()
+
     def update_phase_environment(
             self,
             phase_name: str,
@@ -102,6 +106,11 @@ class ActPhaseInstructionWithImplementationError(instrs.ActPhaseInstruction):
     def __init__(self,
                  exception_to_raise: Exception):
         self.__exception_to_raise = exception_to_raise
+
+    def validate(self,
+                 global_environment: instrs.GlobalEnvironmentForNamedPhase) \
+            -> instrs.SuccessOrValidationErrorOrHardError:
+        return success_or_validation_hard_or_error_construction.new_success()
 
     def update_phase_environment(
             self,
@@ -181,4 +190,4 @@ class AnonymousPhaseInstructionThatSetsExecutionMode(instrs.AnonymousPhaseInstru
                 global_environment,
                 phase_environment: instrs.PhaseEnvironmentForAnonymousPhase) -> instrs.SuccessOrHardError:
         phase_environment.set_execution_mode(self.value_to_set)
-        return new_success()
+        return success_or_hard_error_construction.new_success()

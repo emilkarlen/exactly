@@ -51,10 +51,10 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorBase):
         """
         return list(map(self._next_instruction_line,
                         [
-                            self._new_setup_internal_recorder(phase_step.SETUP_VALIDATE,
-                                                              phase_step.SETUP_EXECUTE),
+                            self._new_setup_internal_recorder(phase_step.SETUP__VALIDATE,
+                                                              phase_step.SETUP__EXECUTE),
                             instruction_adapter.as_setup(
-                                instr.InternalInstructionThatRecordsStringInRecordFile(phase_step.SETUP_EXECUTE)),
+                                instr.InternalInstructionThatRecordsStringInRecordFile(phase_step.SETUP__EXECUTE)),
                         ]))
 
     def _setup_phase_extra(self) -> list:
@@ -69,8 +69,10 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorBase):
         """
         return list(map(self._next_instruction_line,
                         [
-                            self._new_act_internal_recorder(phase_step.ACT__SCRIPT_GENERATION),
+                            self._new_act_internal_recorder(phase_step.ACT__VALIDATE,
+                                                            phase_step.ACT__SCRIPT_GENERATION),
                             instr.ActInstructionThatRecordsStringInRecordFile(
+                                phase_step.ACT__VALIDATE,
                                 phase_step.ACT__SCRIPT_GENERATION),
                             instr.ActInstructionThatGeneratesScriptThatRecordsStringInRecordFile(
                                 phase_step.ACT__SCRIPT_EXECUTION),
@@ -127,8 +129,11 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorBase):
         return SetupInternalInstructionThatRecordsStringInList(self.__recorder_of(text_for_validate),
                                                                self.__recorder_of(text_for_execute))
 
-    def _new_act_internal_recorder(self, text: str) -> instructions.SetupPhaseInstruction:
-        return instr.ActInstructionThatRecordsStringInList(self.__recorder_of(text))
+    def _new_act_internal_recorder(self,
+                                   text_for_validate: str,
+                                   text_for_execute: str) -> instructions.SetupPhaseInstruction:
+        return instr.ActInstructionThatRecordsStringInList(self.__recorder_of(text_for_validate),
+                                                           self.__recorder_of(text_for_execute))
 
     def _new_assert_internal_recorder(self, text: str) -> instructions.SetupPhaseInstruction:
         return instruction_adapter.as_assert(

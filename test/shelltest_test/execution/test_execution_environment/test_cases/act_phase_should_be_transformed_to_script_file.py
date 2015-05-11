@@ -1,6 +1,7 @@
 import os
 
 from shelltest.exec_abs_syn.success_or_hard_error_construction import new_success
+from shelltest.exec_abs_syn import success_or_validation_hard_or_error_construction
 from shelltest import phases
 from shelltest.phase_instr import line_source
 from shelltest.phase_instr import model
@@ -47,6 +48,10 @@ class TestCase(UnitTestCaseForPy3Language):
 
 
 class ActPhaseInstructionThatOutputsHomeDir(instructions.ActPhaseInstruction):
+    def validate(self, global_environment: instructions.GlobalEnvironmentForNamedPhase) \
+            -> instructions.SuccessOrValidationErrorOrHardError:
+        return success_or_validation_hard_or_error_construction.new_success()
+
     def update_phase_environment(
             self,
             phase_name: str,
@@ -58,6 +63,10 @@ class ActPhaseInstructionThatOutputsHomeDir(instructions.ActPhaseInstruction):
 
 
 class ActPhaseInstructionThatOutputsTestRootDir(instructions.ActPhaseInstruction):
+    def validate(self, global_environment: instructions.GlobalEnvironmentForNamedPhase) \
+            -> instructions.SuccessOrValidationErrorOrHardError:
+        return success_or_validation_hard_or_error_construction.new_success()
+
     def update_phase_environment(
             self,
             phase_name: str,

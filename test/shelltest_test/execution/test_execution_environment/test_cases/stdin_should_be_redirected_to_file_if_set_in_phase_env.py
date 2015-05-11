@@ -61,6 +61,10 @@ class StatementsThatCopiesStdinToStdout2(instructions.ActPhaseInstruction):
     def __init__(self):
         super().__init__()
 
+    def validate(self, global_environment: instructions.GlobalEnvironmentForNamedPhase) \
+            -> instructions.SuccessOrValidationErrorOrHardError:
+        return success_or_validation_hard_or_error_construction.new_success()
+
     def update_phase_environment(self,
                                  phase_name: str,
                                  global_environment: instructions.GlobalEnvironmentForNamedPhase,
@@ -79,6 +83,10 @@ class InstructionThatSetsStdinFileName(instructions.ActPhaseInstruction):
                  file_name: str):
         super().__init__()
         self.__file_name = file_name
+
+    def validate(self, global_environment: instructions.GlobalEnvironmentForNamedPhase) \
+            -> instructions.SuccessOrValidationErrorOrHardError:
+        return success_or_validation_hard_or_error_construction.new_success()
 
     def update_phase_environment(self,
                                  phase_name: str,

@@ -3,6 +3,8 @@ import pathlib
 import unittest
 
 from shelltest.exec_abs_syn.success_or_hard_error_construction import new_success
+
+from shelltest.exec_abs_syn import success_or_validation_hard_or_error_construction
 from shelltest import phases
 from shelltest.exec_abs_syn import instructions
 from shelltest_test.execution.util import python_code_gen as py
@@ -75,9 +77,14 @@ class ActPhaseInstructionForImportStatements(instructions.ActPhaseInstruction):
     def append_module(self, module_name: str):
         self.__modules.add(module_name)
 
+    def validate(self, global_environment: instructions.GlobalEnvironmentForNamedPhase) \
+            -> instructions.SuccessOrValidationErrorOrHardError:
+        return success_or_validation_hard_or_error_construction.new_success()
+
     def update_phase_environment(self, phase_name: str,
-                global_environment: instructions.GlobalEnvironmentForNamedPhase,
-                phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> instructions.SuccessOrHardError:
+                                 global_environment: instructions.GlobalEnvironmentForNamedPhase,
+                                 phase_environment: instructions.PhaseEnvironmentForScriptGeneration) \
+            -> instructions.SuccessOrHardError:
         import_statements = ['import %s' % module_name
                              for module_name in self.__modules]
         phase_environment.append.raw_script_statements(import_statements)
@@ -107,9 +114,13 @@ class ActPhaseInstructionThatChangesCwdToHomeDir(instructions.ActPhaseInstructio
         super().__init__()
         module_container.append_module('os')
 
+    def validate(self, global_environment: instructions.GlobalEnvironmentForNamedPhase) \
+            -> instructions.SuccessOrValidationErrorOrHardError:
+        return success_or_validation_hard_or_error_construction.new_success()
+
     def update_phase_environment(self, phase_name: str,
-                global_environment: instructions.GlobalEnvironmentForNamedPhase,
-                phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> instructions.SuccessOrHardError:
+                                 global_environment: instructions.GlobalEnvironmentForNamedPhase,
+                                 phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> instructions.SuccessOrHardError:
         statements = [
             'os.chdir(%s)' % py.string_expr(str(global_environment.home_directory)),
             # 'print(os.getcwd())'

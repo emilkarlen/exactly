@@ -1,4 +1,5 @@
 from shelltest.exec_abs_syn.success_or_hard_error_construction import new_success
+from shelltest.exec_abs_syn import success_or_validation_hard_or_error_construction
 from shelltest.exec_abs_syn import instructions
 from shelltest_test.execution.util.py_unit_test_case import UnitTestCaseForPy3Language
 
@@ -38,6 +39,10 @@ class ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr(instructions.ActPhaseI
         self.__text_on_stdout = text_on_stdout
         self.__text_on_stderr = text_on_stderr
         self.__exit_code = exit_code
+
+    def validate(self, global_environment: instructions.GlobalEnvironmentForNamedPhase) \
+            -> instructions.SuccessOrValidationErrorOrHardError:
+        return success_or_validation_hard_or_error_construction.new_success()
 
     def update_phase_environment(
             self,

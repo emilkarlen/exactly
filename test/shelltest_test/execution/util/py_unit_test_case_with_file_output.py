@@ -2,6 +2,7 @@ import os
 import pathlib
 import unittest
 
+from shelltest.exec_abs_syn import success_or_validation_hard_or_error_construction
 from shelltest.exec_abs_syn.success_or_hard_error_construction import new_success
 from shelltest.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shelltest import phases
@@ -76,10 +77,15 @@ class ModulesAndStatements:
 
 
 class ActPhaseInstructionThatWritesToStandardPhaseFile(instructions.ActPhaseInstruction):
+
     def __init__(self,
                  phase: phases.Phase):
         super().__init__()
         self.__phase = phase
+
+    def validate(self, global_environment: instructions.GlobalEnvironmentForNamedPhase) \
+            -> instructions.SuccessOrValidationErrorOrHardError:
+        return success_or_validation_hard_or_error_construction.new_success()
 
     def update_phase_environment(
             self,
