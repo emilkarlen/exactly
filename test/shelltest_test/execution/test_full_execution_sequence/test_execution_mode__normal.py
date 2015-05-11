@@ -108,6 +108,24 @@ class Test(unittest.TestCase):
             [],
             True).execute()
 
+    def test_implementation_error_in_setup_validate_phase(self):
+        test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
+            .add_setup(
+            instruction_test_resources.SetupPhaseInstructionWithImplementationErrorInValidate(
+                instruction_test_resources.ImplementationErrorTestException()))
+        TestCaseThatRecordsExecution(
+            self,
+            test_case,
+            FullResultStatus.IMPLEMENTATION_ERROR,
+            ExpectedInstructionFailureForFailure.new_with_exception(
+                test_case.the_setup_phase_extra[0].source_line,
+                instruction_test_resources.ImplementationErrorTestException),
+            [phase_step.ANONYMOUS,
+             phase_step.SETUP__VALIDATE,
+             ],
+            [],
+            True).execute()
+
     def test_hard_error_in_setup_execute_phase(self):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_setup(
@@ -132,7 +150,7 @@ class Test(unittest.TestCase):
     def test_implementation_error_in_setup_execute_phase(self):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_setup(
-            instruction_test_resources.SetupPhaseInstructionWithImplementationError(
+            instruction_test_resources.SetupPhaseInstructionWithImplementationErrorInExecute(
                 instruction_test_resources.ImplementationErrorTestException()))
         TestCaseThatRecordsExecution(
             self,

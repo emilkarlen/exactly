@@ -67,7 +67,24 @@ class SetupPhaseInstructionThatReturnsHardError(instrs.SetupPhaseInstruction):
         return success_or_hard_error_construction.new_hard_error(self.__msg)
 
 
-class SetupPhaseInstructionWithImplementationError(instrs.SetupPhaseInstruction):
+class SetupPhaseInstructionWithImplementationErrorInValidate(instrs.SetupPhaseInstruction):
+    def __init__(self,
+                 exception_to_raise: Exception):
+        self.__exception_to_raise = exception_to_raise
+
+    def validate(self,
+                 global_environment: instrs.GlobalEnvironmentForPreEdsStep) \
+            -> instrs.SuccessOrValidationErrorOrHardError:
+        raise self.__exception_to_raise
+
+    def execute(self,
+                phase_name: str,
+                global_environment: instrs.GlobalEnvironmentForNamedPhase,
+                phase_environment: instrs.PhaseEnvironmentForInternalCommands) -> instrs.SuccessOrHardError:
+        return success_or_hard_error_construction.new_success()
+
+
+class SetupPhaseInstructionWithImplementationErrorInExecute(instrs.SetupPhaseInstruction):
     def __init__(self,
                  exception_to_raise: Exception):
         self.__exception_to_raise = exception_to_raise
