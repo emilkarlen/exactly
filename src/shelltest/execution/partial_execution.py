@@ -64,7 +64,7 @@ class PartialExecutor:
             self.__partial_result = res
             return
         phase_env = instructions.PhaseEnvironmentForInternalCommands()
-        res = self.__run_setup(phase_env)
+        res = self.__run_setup_execute(phase_env)
         if res.status is not PartialResultStatus.PASS:
             self.__partial_result = res
             return
@@ -74,7 +74,7 @@ class PartialExecutor:
             return
         self.write_and_store_script_file_path()
         self.__run_act_script()
-        self.__partial_result = self.__execute_assert(phase_env)
+        self.__partial_result = self.__run_assert(phase_env)
         res = self.__run_cleanup(phase_env)
         if res.is_failure:
             self.__partial_result = res
@@ -124,15 +124,15 @@ class PartialExecutor:
                                                                self.__global_environment),
                                                            self.__setup_phase)
 
-    def __run_setup(self, phase_env) -> PartialResult:
+    def __run_setup_execute(self, phase_env) -> PartialResult:
         return self.__run_internal_instructions_phase_step(phases.SETUP,
-                                                           None,
+                                                           phase_step.SETUP_execute,
                                                            phase_step_executors.SetupPhaseInstructionExecutor(
                                                                self.__global_environment,
                                                                phase_env),
                                                            self.__setup_phase)
 
-    def __execute_assert(self, phase_env) -> PartialResult:
+    def __run_assert(self, phase_env) -> PartialResult:
         return self.__run_internal_instructions_phase_step(phases.ASSERT,
                                                            None,
                                                            phase_step_executors.AssertInstructionExecutor(
