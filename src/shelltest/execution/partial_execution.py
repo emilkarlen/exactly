@@ -76,6 +76,7 @@ class PartialExecutor:
         res = self.__run_act_script_generation()
         if res.status is not PartialResultStatus.PASS:
             self.__partial_result = res
+            self.__run_cleanup(phase_env)
             return
         self.write_and_store_script_file_path()
         self.__run_act_script()
