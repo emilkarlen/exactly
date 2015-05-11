@@ -121,8 +121,11 @@ class Test(unittest.TestCase):
             [phase_step.ANONYMOUS,
              phase_step.SETUP__VALIDATE,
              phase_step.SETUP__EXECUTE,
+             phase_step.CLEANUP,
              ],
-            [phase_step.SETUP__EXECUTE],
+            [phase_step.SETUP__EXECUTE,
+             phase_step.CLEANUP,
+             ],
             True).execute()
 
     def test_implementation_error_in_setup_execute_phase(self):
@@ -140,8 +143,11 @@ class Test(unittest.TestCase):
             [phase_step.ANONYMOUS,
              phase_step.SETUP__VALIDATE,
              phase_step.SETUP__EXECUTE,
+             phase_step.CLEANUP,
              ],
-            [phase_step.SETUP__EXECUTE],
+            [phase_step.SETUP__EXECUTE,
+             phase_step.CLEANUP,
+             ],
             True).execute()
 
     def test_hard_error_in_act_script_generation(self):

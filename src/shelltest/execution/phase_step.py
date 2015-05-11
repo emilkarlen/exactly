@@ -35,11 +35,3 @@ ASSERT__VALIDATE = __phase_step(ASSERT, ASSERT_validate)
 ASSERT__EXECUTE = __phase_step(ASSERT, ASSERT_execute)
 
 CLEANUP = 'CLEANUP'
-
-CLEANUP_validate = __VALIDATE
-CLEANUP_execute = __EXECUTE
-
-CLEANUP__VALIDATE = __phase_step(CLEANUP, CLEANUP_validate)
-CLEANUP__EXECUTE = __phase_step(CLEANUP, CLEANUP_execute)
-
-
