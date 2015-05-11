@@ -26,14 +26,15 @@ class Test(unittest.TestCase):
              phase_step.ACT__VALIDATE,
              phase_step.ACT__SCRIPT_GENERATION,
              phase_step.ASSERT,
-             phase_step.CLEANUP
+             phase_step.CLEANUP,
              ],
             [phase_step.SETUP__EXECUTE,
              phase_step.ACT__VALIDATE,
              phase_step.ACT__SCRIPT_GENERATION,
              phase_step.ACT__SCRIPT_EXECUTION,
              phase_step.ASSERT,
-             phase_step.CLEANUP],
+             phase_step.CLEANUP,
+             ],
             True).execute()
 
     def test_hard_error_in_anonymous_phase(self):
@@ -165,10 +166,13 @@ class Test(unittest.TestCase):
              phase_step.SETUP__EXECUTE,
              phase_step.ACT__VALIDATE,
              phase_step.ACT__SCRIPT_GENERATION,
+             phase_step.CLEANUP,
              ],
             [phase_step.SETUP__EXECUTE,
              phase_step.ACT__VALIDATE,
-             phase_step.ACT__SCRIPT_GENERATION],
+             phase_step.ACT__SCRIPT_GENERATION,
+             phase_step.CLEANUP,
+             ],
             True).execute()
 
     def test_implementation_error_in_act_script_generation(self):
@@ -187,11 +191,14 @@ class Test(unittest.TestCase):
              phase_step.SETUP__VALIDATE,
              phase_step.SETUP__EXECUTE,
              phase_step.ACT__VALIDATE,
-             phase_step.ACT__SCRIPT_GENERATION
+             phase_step.ACT__SCRIPT_GENERATION,
+             phase_step.CLEANUP,
              ],
             [phase_step.SETUP__EXECUTE,
              phase_step.ACT__VALIDATE,
-             phase_step.ACT__SCRIPT_GENERATION],
+             phase_step.ACT__SCRIPT_GENERATION,
+             phase_step.CLEANUP,
+             ],
             True).execute()
 
     def test_fail_in_assert_phase(self):
