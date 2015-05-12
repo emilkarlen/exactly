@@ -2,7 +2,7 @@ import unittest
 
 from shelltest_test.execution.test_full_execution_sequence import instruction_test_resources
 from shelltest_test.execution.test_full_execution_sequence.instruction_test_resources import \
-    AnonymousPhaseInstructionThatSetsExecutionMode, AssertPhaseInstructionThatReturnsFail
+    AnonymousPhaseInstructionThatSetsExecutionMode
 from shelltest.exec_abs_syn import instructions
 from shelltest_test.execution.test_full_execution_sequence.test_case_generation_for_sequence_tests import \
     TestCaseThatRecordsExecutionWithExtraInstructionList
@@ -12,13 +12,18 @@ from shelltest_test.execution.test_full_execution_sequence.test_case_that_record
     TestCaseThatRecordsExecution
 from shelltest_test.execution.util.expected_instruction_failure import ExpectedInstructionFailureForFailure, \
     ExpectedInstructionFailureForNoFailure
+from shelltest.exec_abs_syn import pass_or_fail_or_hard_error_construction, \
+    success_or_validation_hard_or_error_construction
 
 
 class Test(unittest.TestCase):
     def test_with_assert_phase_that_fails(self):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_anonymous(AnonymousPhaseInstructionThatSetsExecutionMode(instructions.ExecutionMode.XFAIL)) \
-            .add_assert(AssertPhaseInstructionThatReturnsFail('fail message'))
+            .add_assert(
+            instruction_test_resources.AssertPhaseInstructionThatReturns(
+                from_validate=success_or_validation_hard_or_error_construction.new_success(),
+                from_execute=pass_or_fail_or_hard_error_construction.new_fail('fail message')))
         TestCaseThatRecordsExecution(
             self,
             test_case,

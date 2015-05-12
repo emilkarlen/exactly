@@ -10,7 +10,9 @@ from shelltest_test.execution.test_full_execution_sequence.test_case_that_record
 from shelltest_test.execution.util.expected_instruction_failure import ExpectedInstructionFailureForNoFailure, \
     ExpectedInstructionFailureForFailure
 from shelltest_test.execution.test_full_execution_sequence import instruction_test_resources
-from shelltest.exec_abs_syn import success_or_validation_hard_or_error_construction, success_or_hard_error_construction
+from shelltest.exec_abs_syn import pass_or_fail_or_hard_error_construction, \
+    success_or_validation_hard_or_error_construction, \
+    success_or_hard_error_construction
 
 
 class Test(unittest.TestCase):
@@ -131,7 +133,9 @@ class Test(unittest.TestCase):
     def test_hard_error_in_setup_execute_phase(self):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_setup(
-            instruction_test_resources.SetupPhaseInstructionThatReturnsHardError('hard error msg from setup'))
+            instruction_test_resources.SetupPhaseInstructionThatReturns(
+                from_validate=success_or_validation_hard_or_error_construction.new_success(),
+                from_execute=success_or_hard_error_construction.new_hard_error('hard error msg from setup')))
         TestCaseThatRecordsExecution(
             self,
             test_case,
@@ -175,8 +179,8 @@ class Test(unittest.TestCase):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_assert(
             instruction_test_resources.AssertPhaseInstructionThatReturns(
-                for_validate=success_or_validation_hard_or_error_construction.new_validation_error('ASSERT/validate'),
-                for_execute=success_or_hard_error_construction.new_success()))
+                from_validate=success_or_validation_hard_or_error_construction.new_validation_error('ASSERT/validate'),
+                from_execute=success_or_hard_error_construction.new_success()))
         TestCaseThatRecordsExecution(
             self,
             test_case,
@@ -202,8 +206,8 @@ class Test(unittest.TestCase):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_assert(
             instruction_test_resources.AssertPhaseInstructionThatReturns(
-                for_validate=success_or_validation_hard_or_error_construction.new_hard_error('ASSERT/validate'),
-                for_execute=success_or_hard_error_construction.new_success()))
+                from_validate=success_or_validation_hard_or_error_construction.new_hard_error('ASSERT/validate'),
+                from_execute=success_or_hard_error_construction.new_success()))
         TestCaseThatRecordsExecution(
             self,
             test_case,
@@ -228,7 +232,7 @@ class Test(unittest.TestCase):
     def test_implementation_error_in_assert_validate_phase(self):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_assert(
-            instruction_test_resources.AssertValidatePhaseInstructionWithImplementationError(
+            instruction_test_resources.AssertPhaseInstructionWithImplementationErrorInValidate(
                 instruction_test_resources.ImplementationErrorTestException()))
         TestCaseThatRecordsExecution(
             self,
@@ -255,8 +259,8 @@ class Test(unittest.TestCase):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_act(
             instruction_test_resources.ActPhaseInstructionThatReturns(
-                for_validate=success_or_validation_hard_or_error_construction.new_validation_error('ACT/validate'),
-                for_execute=success_or_hard_error_construction.new_success()))
+                from_validate=success_or_validation_hard_or_error_construction.new_validation_error('ACT/validate'),
+                from_execute=success_or_hard_error_construction.new_success()))
         TestCaseThatRecordsExecution(
             self,
             test_case,
@@ -280,8 +284,8 @@ class Test(unittest.TestCase):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_act(
             instruction_test_resources.ActPhaseInstructionThatReturns(
-                for_validate=success_or_validation_hard_or_error_construction.new_hard_error('ACT/validate'),
-                for_execute=success_or_hard_error_construction.new_success()))
+                from_validate=success_or_validation_hard_or_error_construction.new_hard_error('ACT/validate'),
+                from_execute=success_or_hard_error_construction.new_success()))
         TestCaseThatRecordsExecution(
             self,
             test_case,
@@ -327,7 +331,10 @@ class Test(unittest.TestCase):
 
     def test_hard_error_in_act_script_generation(self):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
-            .add_act(instruction_test_resources.ActPhaseInstructionThatReturnsHardError('hard error msg from act'))
+            .add_act(
+            instruction_test_resources.ActPhaseInstructionThatReturns(
+                from_validate=success_or_validation_hard_or_error_construction.new_success(),
+                from_execute=success_or_hard_error_construction.new_hard_error('hard error msg from act')))
         TestCaseThatRecordsExecution(
             self,
             test_case,
@@ -382,7 +389,9 @@ class Test(unittest.TestCase):
     def test_fail_in_assert_execute_phase(self):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_assert(
-            instruction_test_resources.AssertPhaseInstructionThatReturnsFail('fail msg from ASSERT'))
+            instruction_test_resources.AssertPhaseInstructionThatReturns(
+                from_validate=success_or_validation_hard_or_error_construction.new_success(),
+                from_execute=pass_or_fail_or_hard_error_construction.new_fail('fail msg from ASSERT')))
         TestCaseThatRecordsExecution(
             self,
             test_case,
@@ -412,7 +421,9 @@ class Test(unittest.TestCase):
     def test_hard_error_in_assert_execute_phase(self):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_assert(
-            instruction_test_resources.AssertPhaseInstructionThatReturnsHardError('hard error msg from ASSERT'))
+            instruction_test_resources.AssertPhaseInstructionThatReturns(
+                from_validate=success_or_validation_hard_or_error_construction.new_success(),
+                from_execute=pass_or_fail_or_hard_error_construction.new_hard_error('hard error msg from ASSERT')))
         TestCaseThatRecordsExecution(
             self,
             test_case,
@@ -442,7 +453,7 @@ class Test(unittest.TestCase):
     def test_implementation_error_in_assert_execute_phase(self):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_assert(
-            instruction_test_resources.AssertExecutePhaseInstructionWithImplementationError(
+            instruction_test_resources.AssertPhaseInstructionWithImplementationErrorInExecute(
                 instruction_test_resources.ImplementationErrorTestException()))
         TestCaseThatRecordsExecution(
             self,
