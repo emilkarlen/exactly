@@ -1,6 +1,7 @@
 import pathlib
 
 from shelltest.exec_abs_syn.success_or_hard_error_construction import new_success
+from shelltest.exec_abs_syn import pass_or_fail_or_hard_error_construction
 from shelltest.exec_abs_syn import success_or_validation_hard_or_error_construction
 from shelltest.exec_abs_syn.instructions import SuccessOrHardError
 from shelltest.exec_abs_syn import instructions
@@ -134,6 +135,48 @@ class ActInstructionThatRecordsStringInRecordFile(instructions.ActPhaseInstructi
         append_line_to_record_file(global_environment.execution_directory_structure,
                                    self.__string_for_script_gen)
         return new_success()
+
+
+class AssertInternalInstructionThatRecordsStringInList(instructions.AssertPhaseInstruction):
+    def __init__(self,
+                 recorder_for_validate: ListRecorder,
+                 recorder_for_execute: ListRecorder):
+        self.__recorder_for_validate = recorder_for_validate
+        self.__recorder_for_execute = recorder_for_execute
+
+    def validate(self,
+                 global_environment: instructions.GlobalEnvironmentForPreEdsStep) \
+            -> instructions.SuccessOrValidationErrorOrHardError:
+        self.__recorder_for_validate.record()
+        return success_or_validation_hard_or_error_construction.new_success()
+
+    def execute(self, phase_name: str,
+                global_environment,
+                phase_environment: instructions.PhaseEnvironmentForAnonymousPhase) -> SuccessOrHardError:
+        self.__recorder_for_execute.record()
+        return pass_or_fail_or_hard_error_construction.new_success()
+
+
+class AssertInstructionThatRecordsStringInRecordFile(instructions.AssertPhaseInstruction):
+    def __init__(self,
+                 string_for_validation: str,
+                 string_for_script_gen: str):
+        self.__string_for_validation = string_for_validation
+        self.__string_for_script_gen = string_for_script_gen
+
+    def validate(self, global_environment: instructions.GlobalEnvironmentForNamedPhase) \
+            -> instructions.SuccessOrValidationErrorOrHardError:
+        append_line_to_record_file(global_environment.execution_directory_structure,
+                                   self.__string_for_validation)
+        return success_or_validation_hard_or_error_construction.new_success()
+
+    def execute(self,
+                phase_name: str,
+                global_environment: instructions.GlobalEnvironmentForNamedPhase,
+                phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> instructions.SuccessOrHardError:
+        append_line_to_record_file(global_environment.execution_directory_structure,
+                                   self.__string_for_script_gen)
+        return pass_or_fail_or_hard_error_construction.new_success()
 
 
 RECORD_FILE_BASE_NAME = 'recording.txt'

@@ -24,15 +24,17 @@ class Test(unittest.TestCase):
              phase_step.SETUP__VALIDATE,
              phase_step.SETUP__EXECUTE,
              phase_step.ACT__VALIDATE,
+             phase_step.ASSERT__VALIDATE,
              phase_step.ACT__SCRIPT_GENERATION,
-             phase_step.ASSERT,
+             phase_step.ASSERT__EXECUTE,
              phase_step.CLEANUP,
              ],
             [phase_step.SETUP__EXECUTE,
              phase_step.ACT__VALIDATE,
+             phase_step.ASSERT__VALIDATE,
              phase_step.ACT__SCRIPT_GENERATION,
              phase_step.ACT__SCRIPT_EXECUTION,
-             phase_step.ASSERT,
+             phase_step.ASSERT__EXECUTE,
              phase_step.CLEANUP,
              ],
             True).execute()
@@ -169,6 +171,86 @@ class Test(unittest.TestCase):
              ],
             True).execute()
 
+    def test_validation_error_in_assert_validate_phase(self):
+        test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
+            .add_assert(
+            instruction_test_resources.AssertPhaseInstructionThatReturns(
+                for_validate=success_or_validation_hard_or_error_construction.new_validation_error('ASSERT/validate'),
+                for_execute=success_or_hard_error_construction.new_success()))
+        TestCaseThatRecordsExecution(
+            self,
+            test_case,
+            FullResultStatus.VALIDATE,
+            ExpectedInstructionFailureForFailure.new_with_message(
+                test_case.the_assert_phase_extra[0].source_line,
+                'ASSERT/validate'),
+            [phase_step.ANONYMOUS,
+             phase_step.SETUP__VALIDATE,
+             phase_step.SETUP__EXECUTE,
+             phase_step.ACT__VALIDATE,
+             phase_step.ASSERT__VALIDATE,
+             phase_step.CLEANUP,
+             ],
+            [phase_step.SETUP__EXECUTE,
+             phase_step.ACT__VALIDATE,
+             phase_step.ASSERT__VALIDATE,
+             phase_step.CLEANUP,
+             ],
+            True).execute()
+
+    def test_implementation_error_in_assert_validate_phase(self):
+        test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
+            .add_assert(
+            instruction_test_resources.AssertValidatePhaseInstructionWithImplementationError(
+                instruction_test_resources.ImplementationErrorTestException()))
+        TestCaseThatRecordsExecution(
+            self,
+            test_case,
+            FullResultStatus.IMPLEMENTATION_ERROR,
+            ExpectedInstructionFailureForFailure.new_with_exception(
+                test_case.the_assert_phase_extra[0].source_line,
+                instruction_test_resources.ImplementationErrorTestException),
+            [phase_step.ANONYMOUS,
+             phase_step.SETUP__VALIDATE,
+             phase_step.SETUP__EXECUTE,
+             phase_step.ACT__VALIDATE,
+             phase_step.ASSERT__VALIDATE,
+             phase_step.CLEANUP,
+             ],
+            [phase_step.SETUP__EXECUTE,
+             phase_step.ACT__VALIDATE,
+             phase_step.ASSERT__VALIDATE,
+             phase_step.CLEANUP,
+             ],
+            True).execute()
+
+    def test_hard_error_in_assert_validate_phase(self):
+        test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
+            .add_assert(
+            instruction_test_resources.AssertPhaseInstructionThatReturns(
+                for_validate=success_or_validation_hard_or_error_construction.new_hard_error('ASSERT/validate'),
+                for_execute=success_or_hard_error_construction.new_success()))
+        TestCaseThatRecordsExecution(
+            self,
+            test_case,
+            FullResultStatus.HARD_ERROR,
+            ExpectedInstructionFailureForFailure.new_with_message(
+                test_case.the_assert_phase_extra[0].source_line,
+                'ASSERT/validate'),
+            [phase_step.ANONYMOUS,
+             phase_step.SETUP__VALIDATE,
+             phase_step.SETUP__EXECUTE,
+             phase_step.ACT__VALIDATE,
+             phase_step.ASSERT__VALIDATE,
+             phase_step.CLEANUP,
+             ],
+            [phase_step.SETUP__EXECUTE,
+             phase_step.ACT__VALIDATE,
+             phase_step.ASSERT__VALIDATE,
+             phase_step.CLEANUP,
+             ],
+            True).execute()
+
     def test_hard_error_in_act_script_generation(self):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_act(instruction_test_resources.ActPhaseInstructionThatReturnsHardError('hard error msg from act'))
@@ -183,11 +265,13 @@ class Test(unittest.TestCase):
              phase_step.SETUP__VALIDATE,
              phase_step.SETUP__EXECUTE,
              phase_step.ACT__VALIDATE,
+             phase_step.ASSERT__VALIDATE,
              phase_step.ACT__SCRIPT_GENERATION,
              phase_step.CLEANUP,
              ],
             [phase_step.SETUP__EXECUTE,
              phase_step.ACT__VALIDATE,
+             phase_step.ASSERT__VALIDATE,
              phase_step.ACT__SCRIPT_GENERATION,
              phase_step.CLEANUP,
              ],
@@ -209,17 +293,19 @@ class Test(unittest.TestCase):
              phase_step.SETUP__VALIDATE,
              phase_step.SETUP__EXECUTE,
              phase_step.ACT__VALIDATE,
+             phase_step.ASSERT__VALIDATE,
              phase_step.ACT__SCRIPT_GENERATION,
              phase_step.CLEANUP,
              ],
             [phase_step.SETUP__EXECUTE,
              phase_step.ACT__VALIDATE,
+             phase_step.ASSERT__VALIDATE,
              phase_step.ACT__SCRIPT_GENERATION,
              phase_step.CLEANUP,
              ],
             True).execute()
 
-    def test_fail_in_assert_phase(self):
+    def test_fail_in_assert_execute_phase(self):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_assert(
             instruction_test_resources.AssertPhaseInstructionThatReturnsFail('fail msg from ASSERT'))
@@ -234,20 +320,22 @@ class Test(unittest.TestCase):
              phase_step.SETUP__VALIDATE,
              phase_step.SETUP__EXECUTE,
              phase_step.ACT__VALIDATE,
+             phase_step.ASSERT__VALIDATE,
              phase_step.ACT__SCRIPT_GENERATION,
-             phase_step.ASSERT,
+             phase_step.ASSERT__EXECUTE,
              phase_step.CLEANUP
              ],
             [phase_step.SETUP__EXECUTE,
              phase_step.ACT__VALIDATE,
+             phase_step.ASSERT__VALIDATE,
              phase_step.ACT__SCRIPT_GENERATION,
              phase_step.ACT__SCRIPT_EXECUTION,
-             phase_step.ASSERT,
+             phase_step.ASSERT__EXECUTE,
              phase_step.CLEANUP
              ],
             True).execute()
 
-    def test_hard_error_in_assert_phase(self):
+    def test_hard_error_in_assert_execute_phase(self):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_assert(
             instruction_test_resources.AssertPhaseInstructionThatReturnsHardError('hard error msg from ASSERT'))
@@ -262,23 +350,25 @@ class Test(unittest.TestCase):
              phase_step.SETUP__VALIDATE,
              phase_step.SETUP__EXECUTE,
              phase_step.ACT__VALIDATE,
+             phase_step.ASSERT__VALIDATE,
              phase_step.ACT__SCRIPT_GENERATION,
-             phase_step.ASSERT,
+             phase_step.ASSERT__EXECUTE,
              phase_step.CLEANUP
              ],
             [phase_step.SETUP__EXECUTE,
              phase_step.ACT__VALIDATE,
+             phase_step.ASSERT__VALIDATE,
              phase_step.ACT__SCRIPT_GENERATION,
              phase_step.ACT__SCRIPT_EXECUTION,
-             phase_step.ASSERT,
+             phase_step.ASSERT__EXECUTE,
              phase_step.CLEANUP
              ],
             True).execute()
 
-    def test_implementation_error_in_assert_phase(self):
+    def test_implementation_error_in_assert_execute_phase(self):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_assert(
-            instruction_test_resources.AssertPhaseInstructionWithImplementationError(
+            instruction_test_resources.AssertExecutePhaseInstructionWithImplementationError(
                 instruction_test_resources.ImplementationErrorTestException()))
         TestCaseThatRecordsExecution(
             self,
@@ -291,15 +381,17 @@ class Test(unittest.TestCase):
              phase_step.SETUP__VALIDATE,
              phase_step.SETUP__EXECUTE,
              phase_step.ACT__VALIDATE,
+             phase_step.ASSERT__VALIDATE,
              phase_step.ACT__SCRIPT_GENERATION,
-             phase_step.ASSERT,
+             phase_step.ASSERT__EXECUTE,
              phase_step.CLEANUP
              ],
             [phase_step.SETUP__EXECUTE,
              phase_step.ACT__VALIDATE,
+             phase_step.ASSERT__VALIDATE,
              phase_step.ACT__SCRIPT_GENERATION,
              phase_step.ACT__SCRIPT_EXECUTION,
-             phase_step.ASSERT,
+             phase_step.ASSERT__EXECUTE,
              phase_step.CLEANUP
              ],
             True).execute()
@@ -319,15 +411,17 @@ class Test(unittest.TestCase):
              phase_step.SETUP__VALIDATE,
              phase_step.SETUP__EXECUTE,
              phase_step.ACT__VALIDATE,
+             phase_step.ASSERT__VALIDATE,
              phase_step.ACT__SCRIPT_GENERATION,
-             phase_step.ASSERT,
+             phase_step.ASSERT__EXECUTE,
              phase_step.CLEANUP
              ],
             [phase_step.SETUP__EXECUTE,
              phase_step.ACT__VALIDATE,
+             phase_step.ASSERT__VALIDATE,
              phase_step.ACT__SCRIPT_GENERATION,
              phase_step.ACT__SCRIPT_EXECUTION,
-             phase_step.ASSERT,
+             phase_step.ASSERT__EXECUTE,
              phase_step.CLEANUP
              ],
             True).execute()
@@ -348,15 +442,17 @@ class Test(unittest.TestCase):
              phase_step.SETUP__VALIDATE,
              phase_step.SETUP__EXECUTE,
              phase_step.ACT__VALIDATE,
+             phase_step.ASSERT__VALIDATE,
              phase_step.ACT__SCRIPT_GENERATION,
-             phase_step.ASSERT,
+             phase_step.ASSERT__EXECUTE,
              phase_step.CLEANUP
              ],
             [phase_step.SETUP__EXECUTE,
              phase_step.ACT__VALIDATE,
+             phase_step.ASSERT__VALIDATE,
              phase_step.ACT__SCRIPT_GENERATION,
              phase_step.ACT__SCRIPT_EXECUTION,
-             phase_step.ASSERT,
+             phase_step.ASSERT__EXECUTE,
              phase_step.CLEANUP
              ],
             True).execute()

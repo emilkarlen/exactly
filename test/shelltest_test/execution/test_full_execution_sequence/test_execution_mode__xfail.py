@@ -30,15 +30,17 @@ class Test(unittest.TestCase):
              phase_step.SETUP__VALIDATE,
              phase_step.SETUP__EXECUTE,
              phase_step.ACT__VALIDATE,
+             phase_step.ASSERT__VALIDATE,
              phase_step.ACT__SCRIPT_GENERATION,
-             phase_step.ASSERT,
+             phase_step.ASSERT__EXECUTE,
              phase_step.CLEANUP
              ],
             [phase_step.SETUP__EXECUTE,
              phase_step.ACT__VALIDATE,
+             phase_step.ASSERT__VALIDATE,
              phase_step.ACT__SCRIPT_GENERATION,
              phase_step.ACT__SCRIPT_EXECUTION,
-             phase_step.ASSERT,
+             phase_step.ASSERT__EXECUTE,
              phase_step.CLEANUP],
             True).execute()
 
@@ -54,15 +56,17 @@ class Test(unittest.TestCase):
              phase_step.SETUP__VALIDATE,
              phase_step.SETUP__EXECUTE,
              phase_step.ACT__VALIDATE,
+             phase_step.ASSERT__VALIDATE,
              phase_step.ACT__SCRIPT_GENERATION,
-             phase_step.ASSERT,
+             phase_step.ASSERT__EXECUTE,
              phase_step.CLEANUP
              ],
             [phase_step.SETUP__EXECUTE,
              phase_step.ACT__VALIDATE,
+             phase_step.ASSERT__VALIDATE,
              phase_step.ACT__SCRIPT_GENERATION,
              phase_step.ACT__SCRIPT_EXECUTION,
-             phase_step.ASSERT,
+             phase_step.ASSERT__EXECUTE,
              phase_step.CLEANUP],
             True).execute()
 
@@ -99,15 +103,17 @@ class Test(unittest.TestCase):
              phase_step.SETUP__VALIDATE,
              phase_step.SETUP__EXECUTE,
              phase_step.ACT__VALIDATE,
+             phase_step.ASSERT__VALIDATE,
              phase_step.ACT__SCRIPT_GENERATION,
-             phase_step.ASSERT,
+             phase_step.ASSERT__EXECUTE,
              phase_step.CLEANUP
              ],
             [phase_step.SETUP__EXECUTE,
              phase_step.ACT__VALIDATE,
+             phase_step.ASSERT__VALIDATE,
              phase_step.ACT__SCRIPT_GENERATION,
              phase_step.ACT__SCRIPT_EXECUTION,
-             phase_step.ASSERT,
+             phase_step.ASSERT__EXECUTE,
              phase_step.CLEANUP],
             True).execute()
 
