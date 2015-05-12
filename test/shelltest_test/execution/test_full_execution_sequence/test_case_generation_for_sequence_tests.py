@@ -1,6 +1,7 @@
 from shelltest_test.execution.test_full_execution_sequence import recording_instructions_for_sequence_tests as instr
 from shelltest_test.execution.test_full_execution_sequence.recording_instructions_for_sequence_tests import \
-    SetupInternalInstructionThatRecordsStringInList
+    SetupInternalInstructionThatRecordsStringInList, AssertInternalInstructionThatRecordsStringInList, \
+    AssertInstructionThatRecordsStringInRecordFile
 from shelltest_test.execution.util.test_case_generation import TestCaseGeneratorBase
 from shelltest.execution import phase_step
 from shelltest.exec_abs_syn import instructions
@@ -90,9 +91,10 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorBase):
         """
         return list(map(self._next_instruction_line,
                         [
-                            self._new_assert_internal_recorder(phase_step.ASSERT),
-                            instruction_adapter.as_assert(
-                                instr.InternalInstructionThatRecordsStringInRecordFile(phase_step.ASSERT)),
+                            self._new_assert_internal_recorder(phase_step.ASSERT__VALIDATE,
+                                                               phase_step.ASSERT__EXECUTE),
+                            AssertInstructionThatRecordsStringInRecordFile(phase_step.ASSERT__VALIDATE,
+                                                                           phase_step.ASSERT__EXECUTE),
                         ]))
 
     def _assert_phase_extra(self) -> list:
@@ -131,15 +133,17 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorBase):
 
     def _new_act_internal_recorder(self,
                                    text_for_validate: str,
-                                   text_for_execute: str) -> instructions.SetupPhaseInstruction:
+                                   text_for_execute: str) -> instructions.ActPhaseInstruction:
         return instr.ActInstructionThatRecordsStringInList(self.__recorder_of(text_for_validate),
                                                            self.__recorder_of(text_for_execute))
 
-    def _new_assert_internal_recorder(self, text: str) -> instructions.SetupPhaseInstruction:
-        return instruction_adapter.as_assert(
-            instr.InternalInstructionThatRecordsStringInList(self.__recorder_of(text)))
+    def _new_assert_internal_recorder(self,
+                                      text_for_validate: str,
+                                      text_for_execute: str) -> instructions.AssertPhaseInstruction:
+        return AssertInternalInstructionThatRecordsStringInList(self.__recorder_of(text_for_validate),
+                                                                self.__recorder_of(text_for_execute))
 
-    def _new_cleanup_internal_recorder(self, text: str) -> instructions.SetupPhaseInstruction:
+    def _new_cleanup_internal_recorder(self, text: str) -> instructions.CleanupPhaseInstruction:
         return instruction_adapter.as_cleanup(
             instr.InternalInstructionThatRecordsStringInList(self.__recorder_of(text)))
 

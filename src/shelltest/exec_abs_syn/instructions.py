@@ -287,6 +287,10 @@ class AssertPhaseInstruction(InternalInstruction):
     Abstract base class for instructions of the ASSERT phase.
     """
 
+    def validate(self,
+                 global_environment: GlobalEnvironmentForNamedPhase) -> SuccessOrValidationErrorOrHardError:
+        raise NotImplementedError()
+
     def execute(self, phase_name: str,
                 global_environment: GlobalEnvironmentForNamedPhase,
                 phase_environment: PhaseEnvironmentForInternalCommands) -> PassOrFailOrHardError:

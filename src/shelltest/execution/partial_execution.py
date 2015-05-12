@@ -73,6 +73,11 @@ class PartialExecutor:
         if res.status is not PartialResultStatus.PASS:
             self.__partial_result = res
             return
+        res = self.__run_assert_validate()
+        if res.status is not PartialResultStatus.PASS:
+            self.__run_cleanup(phase_env)
+            self.__partial_result = res
+            return
         res = self.__run_act_script_generation()
         if res.status is not PartialResultStatus.PASS:
             self.__partial_result = res
@@ -80,7 +85,7 @@ class PartialExecutor:
             return
         self.write_and_store_script_file_path()
         self.__run_act_script()
-        self.__partial_result = self.__run_assert(phase_env)
+        self.__partial_result = self.__run_assert_execute(phase_env)
         res = self.__run_cleanup(phase_env)
         if res.is_failure:
             self.__partial_result = res
@@ -145,9 +150,16 @@ class PartialExecutor:
                                                                self.__global_environment),
                                                            self.__act_phase)
 
-    def __run_assert(self, phase_env) -> PartialResult:
+    def __run_assert_validate(self) -> PartialResult:
         return self.__run_internal_instructions_phase_step(phases.ASSERT,
-                                                           None,
+                                                           phase_step.ASSERT_validate,
+                                                           phase_step_executors.AssertValidateInstructionExecutor(
+                                                               self.__global_environment),
+                                                           self.__assert_phase)
+
+    def __run_assert_execute(self, phase_env) -> PartialResult:
+        return self.__run_internal_instructions_phase_step(phases.ASSERT,
+                                                           phase_step.ASSERT_execute,
                                                            phase_step_executors.AssertInstructionExecutor(
                                                                self.__global_environment,
                                                                phase_env),
