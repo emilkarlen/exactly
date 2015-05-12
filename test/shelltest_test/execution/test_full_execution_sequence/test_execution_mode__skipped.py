@@ -1,5 +1,6 @@
 import unittest
 
+from shelltest import phases
 from shelltest.exec_abs_syn import instructions
 from shelltest_test.execution.test_full_execution_sequence import instruction_test_resources
 from shelltest_test.execution.test_full_execution_sequence.instruction_test_resources import \
@@ -37,6 +38,7 @@ class Test(unittest.TestCase):
             test_case,
             FullResultStatus.HARD_ERROR,
             ExpectedInstructionFailureForFailure.new_with_message(
+                phase_step.new_without_step(phases.ANONYMOUS),
                 test_case.the_anonymous_phase_extra[0].source_line,
                 'hard error msg'),
             [phase_step.ANONYMOUS
@@ -53,6 +55,7 @@ class Test(unittest.TestCase):
             test_case,
             FullResultStatus.HARD_ERROR,
             ExpectedInstructionFailureForFailure.new_with_message(
+                phase_step.new_without_step(phases.ANONYMOUS),
                 test_case.the_anonymous_phase_extra[1].source_line,
                 'hard error msg'),
             [phase_step.ANONYMOUS
