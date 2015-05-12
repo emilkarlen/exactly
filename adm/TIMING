@@ -56,6 +56,10 @@ Detta
 - "mall" för ett testfall som exekverar ett externt program med in och utdata
   i fil
 * Bestämma exekveringsflöde
+  CLOCK: [2015-05-12 tis 21:12]--[2015-05-12 tis 21:47] =>  0:35
+  CLOCK: [2015-05-12 tis 05:19]--[2015-05-12 tis 06:06] =>  0:47
+  CLOCK: [2015-05-11 mån 20:34]--[2015-05-11 mån 22:18] =>  1:44
+  CLOCK: [2015-05-11 mån 18:19]--[2015-05-11 mån 19:56] =>  1:37
   CLOCK: [2015-05-10 sön 21:38]--[2015-05-10 sön 21:45] =>  0:07
   CLOCK: [2015-05-10 sön 19:44]--[2015-05-10 sön 21:08] =>  1:24
   CLOCK: [2015-05-10 sön 17:30]--[2015-05-10 sön 18:45] =>  1:15
@@ -75,6 +79,20 @@ Detta
   CLOCK: [2015-05-01 fre 14:53]--[2015-05-01 fre 22:41] =>  7:48
   CLOCK: [2015-04-30 tor 21:53]--[2015-04-30 tor 22:38] =>  0:45
   CLOCK: [2015-04-30 tor 12:50]--[2015-04-30 tor 15:55] =>  3:05
+** DONE assert/validate
+*** DONE Lägg till fas till befintliga tester
+*** DONE Nya tester för fallering i denna fas
+**** DONE validation error
+**** DONE hard error
+**** DONE impl error
+** DONE act/validation: Tester för fel i denna fas  (cleanup ska följa)
+*** DONE validation error
+*** DONE hard error
+*** DONE impl error
+** TODO <2015-05-11 mån> Bestäm när EDS ska skapas
+** DONE <2015-05-11 mån> Kolla steg+fas i FullResult
+Tror namn på fas och steg inkluderas i FullResult, men finns ingen koll på att
+det är rätt värden nu.
 ** TODO <2015-05-03 sön> kolla hur miljövariabler sätts
 Dels i förhållande till nya exekveringssekvensen.
 Dels pga ny variabel _TMP (behöver ev gå igenom alla ställen där miljövar
