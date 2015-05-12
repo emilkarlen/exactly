@@ -198,6 +198,33 @@ class Test(unittest.TestCase):
              ],
             True).execute()
 
+    def test_hard_error_in_assert_validate_phase(self):
+        test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
+            .add_assert(
+            instruction_test_resources.AssertPhaseInstructionThatReturns(
+                for_validate=success_or_validation_hard_or_error_construction.new_hard_error('ASSERT/validate'),
+                for_execute=success_or_hard_error_construction.new_success()))
+        TestCaseThatRecordsExecution(
+            self,
+            test_case,
+            FullResultStatus.HARD_ERROR,
+            ExpectedInstructionFailureForFailure.new_with_message(
+                test_case.the_assert_phase_extra[0].source_line,
+                'ASSERT/validate'),
+            [phase_step.ANONYMOUS,
+             phase_step.SETUP__VALIDATE,
+             phase_step.SETUP__EXECUTE,
+             phase_step.ACT__VALIDATE,
+             phase_step.ASSERT__VALIDATE,
+             phase_step.CLEANUP,
+             ],
+            [phase_step.SETUP__EXECUTE,
+             phase_step.ACT__VALIDATE,
+             phase_step.ASSERT__VALIDATE,
+             phase_step.CLEANUP,
+             ],
+            True).execute()
+
     def test_implementation_error_in_assert_validate_phase(self):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_assert(
@@ -224,29 +251,76 @@ class Test(unittest.TestCase):
              ],
             True).execute()
 
-    def test_hard_error_in_assert_validate_phase(self):
+    def test_validation_error_in_act_validate_phase(self):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
-            .add_assert(
-            instruction_test_resources.AssertPhaseInstructionThatReturns(
-                for_validate=success_or_validation_hard_or_error_construction.new_hard_error('ASSERT/validate'),
+            .add_act(
+            instruction_test_resources.ActPhaseInstructionThatReturns(
+                for_validate=success_or_validation_hard_or_error_construction.new_validation_error('ACT/validate'),
+                for_execute=success_or_hard_error_construction.new_success()))
+        TestCaseThatRecordsExecution(
+            self,
+            test_case,
+            FullResultStatus.VALIDATE,
+            ExpectedInstructionFailureForFailure.new_with_message(
+                test_case.the_act_phase_extra[0].source_line,
+                'ACT/validate'),
+            [phase_step.ANONYMOUS,
+             phase_step.SETUP__VALIDATE,
+             phase_step.SETUP__EXECUTE,
+             phase_step.ACT__VALIDATE,
+             phase_step.CLEANUP,
+             ],
+            [phase_step.SETUP__EXECUTE,
+             phase_step.ACT__VALIDATE,
+             phase_step.CLEANUP,
+             ],
+            True).execute()
+
+    def test_hard_error_in_act_validate_phase(self):
+        test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
+            .add_act(
+            instruction_test_resources.ActPhaseInstructionThatReturns(
+                for_validate=success_or_validation_hard_or_error_construction.new_hard_error('ACT/validate'),
                 for_execute=success_or_hard_error_construction.new_success()))
         TestCaseThatRecordsExecution(
             self,
             test_case,
             FullResultStatus.HARD_ERROR,
             ExpectedInstructionFailureForFailure.new_with_message(
-                test_case.the_assert_phase_extra[0].source_line,
-                'ASSERT/validate'),
+                test_case.the_act_phase_extra[0].source_line,
+                'ACT/validate'),
             [phase_step.ANONYMOUS,
              phase_step.SETUP__VALIDATE,
              phase_step.SETUP__EXECUTE,
              phase_step.ACT__VALIDATE,
-             phase_step.ASSERT__VALIDATE,
              phase_step.CLEANUP,
              ],
             [phase_step.SETUP__EXECUTE,
              phase_step.ACT__VALIDATE,
-             phase_step.ASSERT__VALIDATE,
+             phase_step.CLEANUP,
+             ],
+            True).execute()
+
+    def test_implementation_error_in_act_validate_phase(self):
+        test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
+            .add_act(
+            instruction_test_resources.ActPhaseInstructionWithImplementationErrorInValidate(
+                instruction_test_resources.ImplementationErrorTestException()))
+        TestCaseThatRecordsExecution(
+            self,
+            test_case,
+            FullResultStatus.IMPLEMENTATION_ERROR,
+            ExpectedInstructionFailureForFailure.new_with_exception(
+                test_case.the_act_phase_extra[0].source_line,
+                instruction_test_resources.ImplementationErrorTestException),
+            [phase_step.ANONYMOUS,
+             phase_step.SETUP__VALIDATE,
+             phase_step.SETUP__EXECUTE,
+             phase_step.ACT__VALIDATE,
+             phase_step.CLEANUP,
+             ],
+            [phase_step.SETUP__EXECUTE,
+             phase_step.ACT__VALIDATE,
              phase_step.CLEANUP,
              ],
             True).execute()
@@ -280,7 +354,7 @@ class Test(unittest.TestCase):
     def test_implementation_error_in_act_script_generation(self):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_act(
-            instruction_test_resources.ActPhaseInstructionWithImplementationError(
+            instruction_test_resources.ActPhaseInstructionWithImplementationErrorInExecute(
                 instruction_test_resources.ImplementationErrorTestException()))
         TestCaseThatRecordsExecution(
             self,

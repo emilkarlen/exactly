@@ -71,6 +71,7 @@ class PartialExecutor:
             return
         res = self.__run_act_validate()
         if res.status is not PartialResultStatus.PASS:
+            self.__run_cleanup(phase_env)
             self.__partial_result = res
             return
         res = self.__run_assert_validate()
