@@ -9,15 +9,19 @@ class PhaseStep(tuple):
 
     @property
     def phase(self) -> Phase:
-        return self[1]
+        return self[0]
 
     @property
     def step(self) -> str:
         return self[1]
 
 
-__VALIDATE = 'validate'
-__EXECUTE = 'execute'
+def new_without_step(phase: Phase) -> PhaseStep:
+    return PhaseStep(phase, None)
+
+
+VALIDATE = 'validate'
+EXECUTE = 'execute'
 
 
 def __phase_step(phase: str, step: str) -> str:
@@ -28,15 +32,15 @@ ANONYMOUS = '<INIT>'
 
 SETUP = 'SETUP'
 
-SETUP_validate = __VALIDATE
-SETUP_execute = __EXECUTE
+SETUP_validate = VALIDATE
+SETUP_execute = EXECUTE
 
 SETUP__VALIDATE = __phase_step(SETUP, SETUP_validate)
 SETUP__EXECUTE = __phase_step(SETUP, SETUP_execute)
 
 ACT = 'ACT'
 
-ACT_validate = __VALIDATE
+ACT_validate = VALIDATE
 ACT_script_generation = 'script-generation'
 ACT_script_execution = 'script-execution'
 
@@ -46,8 +50,8 @@ ACT__SCRIPT_EXECUTION = __phase_step(ACT, ACT_script_execution)
 
 ASSERT = 'ASSERT'
 
-ASSERT_validate = __VALIDATE
-ASSERT_execute = __EXECUTE
+ASSERT_validate = VALIDATE
+ASSERT_execute = EXECUTE
 
 ASSERT__VALIDATE = __phase_step(ASSERT, ASSERT_validate)
 ASSERT__EXECUTE = __phase_step(ASSERT, ASSERT_execute)

@@ -1,5 +1,6 @@
 import unittest
 
+from shelltest import phases
 from shelltest_test.execution.test_full_execution_sequence import instruction_test_resources
 from shelltest_test.execution.test_full_execution_sequence.instruction_test_resources import \
     AnonymousPhaseInstructionThatSetsExecutionMode
@@ -29,6 +30,7 @@ class Test(unittest.TestCase):
             test_case,
             FullResultStatus.XFAIL,
             ExpectedInstructionFailureForFailure.new_with_message(
+                phase_step.PhaseStep(phases.ASSERT, phase_step.EXECUTE),
                 test_case.the_assert_phase_extra[0].source_line,
                 'fail message'),
             [phase_step.ANONYMOUS,
@@ -84,6 +86,7 @@ class Test(unittest.TestCase):
             test_case,
             FullResultStatus.HARD_ERROR,
             ExpectedInstructionFailureForFailure.new_with_message(
+                phase_step.new_without_step(phases.ANONYMOUS),
                 test_case.the_anonymous_phase_extra[1].source_line,
                 'hard error msg'),
             [phase_step.ANONYMOUS
@@ -102,6 +105,7 @@ class Test(unittest.TestCase):
             test_case,
             FullResultStatus.IMPLEMENTATION_ERROR,
             ExpectedInstructionFailureForFailure.new_with_exception(
+                phase_step.new_without_step(phases.CLEANUP),
                 test_case.the_cleanup_phase_extra[0].source_line,
                 instruction_test_resources.ImplementationErrorTestException),
             [phase_step.ANONYMOUS,
