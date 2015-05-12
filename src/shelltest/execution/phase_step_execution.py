@@ -1,3 +1,4 @@
+from shelltest.execution.phase_step import PhaseStep
 from shelltest.phase_instr import line_source
 from shelltest.execution.single_instruction_executor import ControlledInstructionExecutor, execute_element
 from shelltest.phase_instr.model import PhaseContents, PhaseContentElement
@@ -73,8 +74,8 @@ def execute_phase(phase_contents: PhaseContents,
         return PartialResult(
             failure.status,
             eds,
-            InstructionFailureInfo(phase,
-                                   phase_step,
+            InstructionFailureInfo(PhaseStep(phase,
+                                             phase_step),
                                    failure.source_line,
                                    failure.failure_details)
         )

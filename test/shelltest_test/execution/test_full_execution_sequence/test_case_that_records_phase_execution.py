@@ -47,7 +47,7 @@ class TestCaseThatRecordsExecution:
         self.__execution_directory_structure = None
 
     def execute(self):
-        # ARRANGE #
+        # SETUP #
         home_dir_path = pathlib.Path().resolve()
         # ACT #
         full_result = full_execution.execute(
