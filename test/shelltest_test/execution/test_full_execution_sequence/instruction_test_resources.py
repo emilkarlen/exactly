@@ -101,6 +101,26 @@ class SetupPhaseInstructionWithImplementationErrorInExecute(instrs.SetupPhaseIns
         raise self.__exception_to_raise
 
 
+class ActPhaseInstructionThatReturns(instrs.ActPhaseInstruction):
+    def __init__(self,
+                 for_validate: instrs.SuccessOrValidationErrorOrHardError,
+                 for_execute: instrs.SuccessOrHardError):
+        self.__for_validate = for_validate
+        self.__for_execute = for_execute
+
+    def validate(self,
+                 global_environment: instrs.GlobalEnvironmentForNamedPhase) \
+            -> instrs.SuccessOrValidationErrorOrHardError:
+        return self.__for_validate
+
+    def update_phase_environment(
+            self,
+            phase_name: str,
+            global_environment: instrs.GlobalEnvironmentForNamedPhase,
+            phase_environment: instrs.PhaseEnvironmentForScriptGeneration) -> instrs.SuccessOrHardError:
+        return self.__for_execute
+
+
 class ActPhaseInstructionThatReturnsHardError(instrs.ActPhaseInstruction):
     def __init__(self,
                  msg: str):
@@ -119,7 +139,25 @@ class ActPhaseInstructionThatReturnsHardError(instrs.ActPhaseInstruction):
         return success_or_hard_error_construction.new_hard_error(self.__msg)
 
 
-class ActPhaseInstructionWithImplementationError(instrs.ActPhaseInstruction):
+class ActPhaseInstructionWithImplementationErrorInValidate(instrs.ActPhaseInstruction):
+    def __init__(self,
+                 exception_to_raise: Exception):
+        self.__exception_to_raise = exception_to_raise
+
+    def validate(self,
+                 global_environment: instrs.GlobalEnvironmentForNamedPhase) \
+            -> instrs.SuccessOrValidationErrorOrHardError:
+        raise self.__exception_to_raise
+
+    def update_phase_environment(
+            self,
+            phase_name: str,
+            global_environment: instrs.GlobalEnvironmentForNamedPhase,
+            phase_environment: instrs.PhaseEnvironmentForScriptGeneration) -> instrs.SuccessOrHardError:
+        return success_or_hard_error_construction.new_success()
+
+
+class ActPhaseInstructionWithImplementationErrorInExecute(instrs.ActPhaseInstruction):
     def __init__(self,
                  exception_to_raise: Exception):
         self.__exception_to_raise = exception_to_raise
