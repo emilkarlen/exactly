@@ -1,7 +1,7 @@
 from enum import Enum
 
+from shelltest.execution.phase_step import PhaseStep
 from shelltest.phase_instr import line_source
-from shelltest.phases import Phase
 from .execution_directory_structure import ExecutionDirectoryStructure
 
 
@@ -49,12 +49,10 @@ class InstructionFailureInfo:
     """
 
     def __init__(self,
-                 phase: Phase,
-                 phase_step: str,
+                 phase_step: PhaseStep,
                  source_line: line_source.Line,
                  failure_details: InstructionFailureDetails):
         self.__source_line = source_line
-        self.__phase = phase
         self.__phase_step = phase_step
         self.__failure_details = failure_details
 
@@ -63,11 +61,7 @@ class InstructionFailureInfo:
         return self.__source_line
 
     @property
-    def phase(self) -> Phase:
-        return self.__phase
-
-    @property
-    def phase_step(self) -> str:
+    def phase_step(self) -> PhaseStep:
         return self.__phase_step
 
     @property

@@ -1,3 +1,21 @@
+from shelltest.phases import Phase
+
+
+class PhaseStep(tuple):
+    def __new__(cls,
+                phase: Phase,
+                step: str):
+        return tuple.__new__(cls, (phase, step))
+
+    @property
+    def phase(self) -> Phase:
+        return self[1]
+
+    @property
+    def step(self) -> str:
+        return self[1]
+
+
 __VALIDATE = 'validate'
 __EXECUTE = 'execute'
 
