@@ -61,7 +61,6 @@ class TestCaseThatRecordsExecution:
         # ASSERT #
         self.__full_result = full_result
         self._standard_assertions()
-        self._custom_assertions()
         # CLEANUP #
         os.chdir(str(home_dir_path))
         if not self.__dbg_do_not_delete_dir_structure and self.eds:
@@ -111,9 +110,6 @@ class TestCaseThatRecordsExecution:
         else:
             self.__unittest_case.assertIsNone(self.eds,
                                               'Execution Directory Structure is expected to not be created')
-
-    def _custom_assertions(self):
-        pass
 
     @property
     def unittest_case(self) -> unittest.TestCase:
