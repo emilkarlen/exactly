@@ -1,42 +1,55 @@
+"""
+Checks that output to stdout, stderr and the exit code are saved in the correct locations.
+"""
+import unittest
+
 from shelltest.exec_abs_syn.success_or_hard_error_construction import new_success
 from shelltest.exec_abs_syn import success_or_validation_hard_or_error_construction
-from shelltest_test.execution.util.py_unit_test_case import UnitTestCaseForPy3Language
+from shelltest_test.execution.util import utils
+from shelltest_test.execution.util import py_unit_test_case
+from shelltest_test.execution.util.py_unit_test_case import TestCaseWithCommonDefaultForSetupAssertCleanup
 from shelltest.exec_abs_syn import instructions
 
 
-class TestCase(UnitTestCaseForPy3Language):
-    """
-    Checks that output to stdout, stderr and the exit code are saved in the correct locations.
-    """
+INPUT_TMP_FILE = 'input.txt'
 
-    INPUT_TMP_FILE = 'input.txt'
+EXPECTED_EXIT_CODE = 0
+TEXT_ON_STDIN = 'on stdin'
+EXPECTED_CONTENTS_OF_STDERR = ''
 
-    EXPECTED_EXIT_CODE = 0
-    TEXT_ON_STDIN = 'on stdin'
-    EXPECTED_CONTENTS_OF_STDERR = ''
 
+class TestCaseDocument(TestCaseWithCommonDefaultForSetupAssertCleanup):
     def _setup_phase(self) -> list:
         return [
-            self._next_instruction_line(PyCommandThatStoresStringInFileInCurrentDirectory2(self.INPUT_TMP_FILE,
-                                                                                           self.TEXT_ON_STDIN))
+            self._next_instruction_line(
+                PyCommandThatStoresStringInFileInCurrentDirectory(INPUT_TMP_FILE,
+                                                                  TEXT_ON_STDIN))
         ]
 
     def _act_phase(self) -> list:
         return [
-            self._next_instruction_line(InstructionThatSetsStdinFileName(self.INPUT_TMP_FILE)),
-            self._next_instruction_line(StatementsThatCopiesStdinToStdout2())
+            self._next_instruction_line(InstructionThatSetsStdinFileName(INPUT_TMP_FILE)),
+            self._next_instruction_line(StatementsThatCopiesStdinToStdout())
         ]
 
-    def _assertions(self):
-        self.assert_is_regular_file_with_contents(self.eds.result.exitcode_file,
-                                                  str(self.EXPECTED_EXIT_CODE))
-        self.assert_is_regular_file_with_contents(self.eds.result.std.stdout_file,
-                                                  self.TEXT_ON_STDIN)
-        self.assert_is_regular_file_with_contents(self.eds.result.std.stderr_file,
-                                                  self.EXPECTED_CONTENTS_OF_STDERR)
+
+def assertions(utc: unittest.TestCase,
+               actual: py_unit_test_case.Result):
+    utils.assert_is_file_with_contents(
+        utc,
+        actual.execution_directory_structure.result.exitcode_file,
+        str(EXPECTED_EXIT_CODE))
+    utils.assert_is_file_with_contents(
+        utc,
+        actual.execution_directory_structure.result.std.stdout_file,
+        TEXT_ON_STDIN)
+    utils.assert_is_file_with_contents(
+        utc,
+        actual.execution_directory_structure.result.std.stderr_file,
+        EXPECTED_CONTENTS_OF_STDERR)
 
 
-class PyCommandThatStoresStringInFileInCurrentDirectory2(instructions.SetupPhaseInstruction):
+class PyCommandThatStoresStringInFileInCurrentDirectory(instructions.SetupPhaseInstruction):
     def __init__(self,
                  file_base_name: str,
                  text_to_store: str):
@@ -57,7 +70,7 @@ class PyCommandThatStoresStringInFileInCurrentDirectory2(instructions.SetupPhase
         return new_success()
 
 
-class StatementsThatCopiesStdinToStdout2(instructions.ActPhaseInstruction):
+class StatementsThatCopiesStdinToStdout(instructions.ActPhaseInstruction):
     def __init__(self):
         super().__init__()
 
