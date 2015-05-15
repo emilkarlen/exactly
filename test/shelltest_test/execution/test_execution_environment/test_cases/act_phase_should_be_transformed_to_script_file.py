@@ -30,33 +30,6 @@ class TestCaseDocument(TestCaseWithCommonDefaultForSetupAssertCleanup):
         ]
 
 
-class TestCase(py_unit_test_case.UnitTestCaseForPy3Language):
-    def __init__(self,
-                 unittest_case: unittest.TestCase,
-                 dbg_do_not_delete_dir_structure=False):
-        super().__init__(unittest_case, dbg_do_not_delete_dir_structure)
-
-    def _assertions(self):
-        expected_base_name = phases.ACT.name + '.py'
-        expected_dir = self.test_case_execution.execution_directory_structure.test_case_dir
-        expected_file_path = expected_dir / expected_base_name
-
-        home_dir_name = str(self.test_case_execution.global_environment.home_directory)
-        test_root_dir_name = str(self.test_case_execution.execution_directory_structure.test_root_dir)
-
-        expected_contents = os.linesep.join(['# Line 1',
-                                             '# source for line one',
-                                             HOME_DIR_HEADER + home_dir_name,
-                                             '# comment on line two',
-                                             '# Line 3',
-                                             '# source for line three',
-                                             TEST_ROOT_DIR_HEADER + test_root_dir_name,
-                                             ''])
-
-        self.assert_is_regular_file_with_contents(expected_file_path,
-                                                  expected_contents)
-
-
 def assertions(utc: unittest.TestCase,
                actual: py_unit_test_case.Result):
     expected_base_name = phases.ACT.name + '.py'

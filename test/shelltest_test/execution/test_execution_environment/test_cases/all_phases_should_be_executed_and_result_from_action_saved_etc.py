@@ -12,7 +12,6 @@ from shelltest_test.execution.util import py_unit_test_case_with_file_output as 
 from shelltest_test.execution.util.py_unit_test_case_with_file_output import \
     InternalInstructionThatWritesToStandardPhaseFile
 from shelltest import phases
-from shelltest_test.execution.util.py_unit_test_case import UnitTestCaseForPy3Language
 from shelltest_test.execution.util import py_unit_test_case
 from shelltest.exec_abs_syn import instructions
 from shelltest_test.execution.util import utils
@@ -35,58 +34,6 @@ class TestCaseDocument(py_unit_test_case.TestCaseWithCommonDefaultForSetupAssert
         return [
             self._next_instruction_line(ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr())
         ]
-
-
-class TestCase(UnitTestCaseForPy3Language):
-    def _default_instructions_for_setup_assert_cleanup(self, phase: phases.Phase) -> list:
-        return [
-            InternalInstructionThatCreatesAStandardPhaseFileInTestRootContainingDirectoryPaths(phase)
-        ]
-
-    def _act_phase(self) -> list:
-        return [
-            self._next_instruction_line(ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr())
-        ]
-
-    def _assertions(self):
-        self.assert_is_regular_file_with_contents(self.eds.result.exitcode_file,
-                                                  str(EXIT_CODE))
-        self.assert_is_regular_file_with_contents(self.eds.result.std.stdout_file,
-                                                  expected_output_on('sys.stdout',
-                                                                     self.test_case_execution.configuration))
-        self.assert_is_regular_file_with_contents(self.eds.result.std.stderr_file,
-                                                  expected_output_on('sys.stderr',
-                                                                     self.test_case_execution.configuration))
-
-        file_name_from_py_cmd_list = [with_file_output.standard_phase_file_base_name(phase)
-                                      for phase in [phases.SETUP, phases.ASSERT, phases.CLEANUP]]
-        self.assert_files_in_test_root_that_contain_name_of_test_root_dir(
-            self.test_case_execution.execution_directory_structure,
-            self.test_case_execution.global_environment,
-            file_name_from_py_cmd_list)
-
-    def assert_files_in_test_root_that_contain_name_of_test_root_dir(
-            self,
-            eds: ExecutionDirectoryStructure,
-            global_environment: instructions.GlobalEnvironmentForNamedPhase,
-            file_name_from_py_cmd_list: list):
-        expected_contents = utils.un_lines(py_cmd_file_lines(global_environment.eds.test_root_dir,
-                                                             global_environment.home_directory,
-                                                             global_environment.eds))
-        for base_name in file_name_from_py_cmd_list:
-            file_path = eds.test_root_dir / base_name
-            file_name = str(file_path)
-            self.unittest_case.assertTrue(
-                file_path.exists(),
-                'py-cmd File should exist: ' + file_name)
-            self.unittest_case.assertTrue(
-                file_path.is_file(),
-                'py-cmd Should be a regular file: ' + file_name)
-            with open(str(file_path)) as f:
-                actual_contents = f.read()
-                self.unittest_case.assertEqual(expected_contents,
-                                               actual_contents,
-                                               'py-cmd Contents of py-cmd generated file ' + file_name)
 
 
 def assertions(utc: unittest.TestCase,
