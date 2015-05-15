@@ -1,4 +1,5 @@
 import os
+import unittest
 
 from shelltest.exec_abs_syn.success_or_hard_error_construction import new_success
 from shelltest.exec_abs_syn import success_or_validation_hard_or_error_construction
@@ -6,14 +7,16 @@ from shelltest import phases
 from shelltest.phase_instr import line_source
 from shelltest.phase_instr import model
 from shelltest.exec_abs_syn import instructions
-from shelltest_test.execution.util.py_unit_test_case import UnitTestCaseForPy3Language
+from shelltest_test.execution.util import utils
+from shelltest_test.execution.util import py_unit_test_case
+from shelltest_test.execution.util.py_unit_test_case import TestCaseWithCommonDefaultForSetupAssertCleanup
 
 
 HOME_DIR_HEADER = '# Home Dir: '
 TEST_ROOT_DIR_HEADER = '# Test Root Dir: '
 
 
-class TestCase(UnitTestCaseForPy3Language):
+class TestCaseDocument(TestCaseWithCommonDefaultForSetupAssertCleanup):
     def _act_phase(self) -> list:
         return [
             model.new_instruction_element(
@@ -25,6 +28,13 @@ class TestCase(UnitTestCaseForPy3Language):
                 line_source.Line(3, 'source for line three'),
                 ActPhaseInstructionThatOutputsTestRootDir()),
         ]
+
+
+class TestCase(py_unit_test_case.UnitTestCaseForPy3Language):
+    def __init__(self,
+                 unittest_case: unittest.TestCase,
+                 dbg_do_not_delete_dir_structure=False):
+        super().__init__(unittest_case, dbg_do_not_delete_dir_structure)
 
     def _assertions(self):
         expected_base_name = phases.ACT.name + '.py'
@@ -45,6 +55,29 @@ class TestCase(UnitTestCaseForPy3Language):
 
         self.assert_is_regular_file_with_contents(expected_file_path,
                                                   expected_contents)
+
+
+def assertions(utc: unittest.TestCase,
+               actual: py_unit_test_case.Result):
+    expected_base_name = phases.ACT.name + '.py'
+    expected_dir = actual.partial_executor.execution_directory_structure.test_case_dir
+    expected_file_path = expected_dir / expected_base_name
+
+    home_dir_name = str(actual.home_dir_path)
+    test_root_dir_name = str(actual.execution_directory_structure.test_root_dir)
+
+    expected_contents = os.linesep.join(['# Line 1',
+                                         '# source for line one',
+                                         HOME_DIR_HEADER + home_dir_name,
+                                         '# comment on line two',
+                                         '# Line 3',
+                                         '# source for line three',
+                                         TEST_ROOT_DIR_HEADER + test_root_dir_name,
+                                         ''])
+
+    utils.assert_is_file_with_contents(utc,
+                                       expected_file_path,
+                                       expected_contents)
 
 
 class ActPhaseInstructionThatOutputsHomeDir(instructions.ActPhaseInstruction):

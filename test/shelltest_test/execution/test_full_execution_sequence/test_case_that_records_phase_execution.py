@@ -6,8 +6,6 @@ import unittest
 from shelltest.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shelltest_test.execution.util.expected_instruction_failure import ExpectedInstructionFailureBase
 from shelltest.execution.result import FullResultStatus
-from shelltest.phase_instr import model
-from shelltest.phase_instr import line_source
 from shelltest.script_language import python3
 from shelltest.execution import full_execution
 from shelltest_test.execution.util import utils
@@ -68,19 +66,6 @@ class TestCaseThatRecordsExecution:
         else:
             if self.eds:
                 print(str(self.eds.root_dir))
-
-    def _next_line(self) -> line_source.Line:
-        """
-        Generates lines in a continuous sequence.
-        """
-        self.__previous_line_number += 1
-        return line_source.Line(self.__previous_line_number,
-                                str(self.__previous_line_number))
-
-    def _next_instruction_line(self, instruction: model.Instruction) -> model.PhaseContentElement:
-        return model.new_instruction_element(
-            self._next_line(),
-            instruction)
 
     def _standard_assertions(self):
         self.unittest_case.assertEqual(self.__expected_status,

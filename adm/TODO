@@ -46,3 +46,12 @@ Därför vore det bra med en instruktion som byter till denna katalog.
 
 Problem ... hur ser man till att aktuell katalog bevaras från act-fasen om
 den kör i en egen process??
+* TODO Refaktoreringar
+** TODO Argument till instruktionernas steg
+Spikade först två generella miljöer: global miljö och fas-miljö.
+Iom att den modellen inte längre används kan mer ändamålsenliga argument
+användas.
+*** TODO act/script-gen
+Två argument:
+1. Skriptbyggare
+2. Inställningssättare (för t ex stdin).
