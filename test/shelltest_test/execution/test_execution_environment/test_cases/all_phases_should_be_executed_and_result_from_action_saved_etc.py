@@ -1,7 +1,9 @@
 import os
 import pathlib
+import unittest
 
 from shelltest.exec_abs_syn.success_or_hard_error_construction import new_success
+
 from shelltest.exec_abs_syn import success_or_validation_hard_or_error_construction
 from shelltest.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shelltest.exec_abs_syn.config import Configuration
@@ -11,6 +13,7 @@ from shelltest_test.execution.util.py_unit_test_case_with_file_output import \
     InternalInstructionThatWritesToStandardPhaseFile
 from shelltest import phases
 from shelltest_test.execution.util.py_unit_test_case import UnitTestCaseForPy3Language
+from shelltest_test.execution.util import py_unit_test_case
 from shelltest.exec_abs_syn import instructions
 from shelltest_test.execution.util import utils
 
@@ -20,6 +23,18 @@ TEST_ROOT_DIR_HEADER = 'Test Root Dir'
 CURRENT_DIR_HEADER = 'Current Dir'
 
 EXIT_CODE = 5
+
+
+class TestCaseDocument(py_unit_test_case.TestCaseWithCommonDefaultForSetupAssertCleanup):
+    def _default_instructions_for_setup_assert_cleanup(self, phase: phases.Phase) -> list:
+        return [
+            InternalInstructionThatCreatesAStandardPhaseFileInTestRootContainingDirectoryPaths(phase)
+        ]
+
+    def _act_phase(self) -> list:
+        return [
+            self._next_instruction_line(ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr())
+        ]
 
 
 class TestCase(UnitTestCaseForPy3Language):
@@ -56,13 +71,16 @@ class TestCase(UnitTestCaseForPy3Language):
             global_environment: instructions.GlobalEnvironmentForNamedPhase,
             file_name_from_py_cmd_list: list):
         expected_contents = utils.un_lines(py_cmd_file_lines(global_environment.eds.test_root_dir,
-                                                             global_environment))
+                                                             global_environment.home_directory,
+                                                             global_environment.eds))
         for base_name in file_name_from_py_cmd_list:
             file_path = eds.test_root_dir / base_name
             file_name = str(file_path)
-            self.unittest_case.assertTrue(file_path.exists(),
+            self.unittest_case.assertTrue(
+                file_path.exists(),
                 'py-cmd File should exist: ' + file_name)
-            self.unittest_case.assertTrue(file_path.is_file(),
+            self.unittest_case.assertTrue(
+                file_path.is_file(),
                 'py-cmd Should be a regular file: ' + file_name)
             with open(str(file_path)) as f:
                 actual_contents = f.read()
@@ -71,14 +89,62 @@ class TestCase(UnitTestCaseForPy3Language):
                                                'py-cmd Contents of py-cmd generated file ' + file_name)
 
 
+def assertions(utc: unittest.TestCase,
+               actual: py_unit_test_case.Result):
+    utils.assert_is_file_with_contents(utc,
+                                       actual.execution_directory_structure.result.exitcode_file,
+                                       str(EXIT_CODE))
+    utils.assert_is_file_with_contents(utc,
+                                       actual.execution_directory_structure.result.std.stdout_file,
+                                       expected_output_on('sys.stdout',
+                                                          actual.partial_executor.configuration))
+    utils.assert_is_file_with_contents(utc,
+                                       actual.execution_directory_structure.result.std.stderr_file,
+                                       expected_output_on('sys.stderr',
+                                                          actual.partial_executor.configuration))
+
+    file_name_from_py_cmd_list = [with_file_output.standard_phase_file_base_name(phase)
+                                  for phase in [phases.SETUP, phases.ASSERT, phases.CLEANUP]]
+    assert_files_in_test_root_that_contain_name_of_test_root_dir(
+        utc,
+        actual.partial_executor.execution_directory_structure,
+        actual.partial_executor.global_environment,
+        file_name_from_py_cmd_list)
+
+
+def assert_files_in_test_root_that_contain_name_of_test_root_dir(
+        utc: unittest.TestCase,
+        eds: ExecutionDirectoryStructure,
+        global_environment: instructions.GlobalEnvironmentForNamedPhase,
+        file_name_from_py_cmd_list: list):
+    expected_contents = utils.un_lines(py_cmd_file_lines(global_environment.eds.test_root_dir,
+                                                         global_environment.home_directory,
+                                                         global_environment.eds))
+    for base_name in file_name_from_py_cmd_list:
+        file_path = eds.test_root_dir / base_name
+        file_name = str(file_path)
+        utc.assertTrue(
+            file_path.exists(),
+            'py-cmd File should exist: ' + file_name)
+        utc.assertTrue(
+            file_path.is_file(),
+            'py-cmd Should be a regular file: ' + file_name)
+        with open(str(file_path)) as f:
+            actual_contents = f.read()
+            utc.assertEqual(expected_contents,
+                            actual_contents,
+                            'py-cmd Contents of py-cmd generated file ' + file_name)
+
+
 def py_cmd_file_lines(cwd: pathlib.Path,
-                      global_environment: instructions.GlobalEnvironmentForNamedPhase) -> list:
+                      home_directory: pathlib.Path,
+                      eds: ExecutionDirectoryStructure) -> list:
     def fmt(header: str, value: str):
         return '%-20s%s' % (header, value)
 
     return [fmt(CURRENT_DIR_HEADER, str(cwd)),
-            fmt(HOME_DIR_HEADER, str(global_environment.home_directory)),
-            fmt(TEST_ROOT_DIR_HEADER, str(global_environment.eds.test_root_dir))]
+            fmt(HOME_DIR_HEADER, str(home_directory)),
+            fmt(TEST_ROOT_DIR_HEADER, str(eds.test_root_dir))]
 
 
 class InternalInstructionThatCreatesAStandardPhaseFileInTestRootContainingDirectoryPaths(
@@ -90,7 +156,8 @@ class InternalInstructionThatCreatesAStandardPhaseFileInTestRootContainingDirect
     def _file_lines(self, global_environment: instructions.GlobalEnvironmentForNamedPhase) -> list:
         return py_cmd_file_lines(
             pathlib.Path().resolve(),
-            global_environment)
+            global_environment.home_directory,
+            global_environment.eds)
 
 
 class ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr(instructions.ActPhaseInstruction):
