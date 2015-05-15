@@ -16,7 +16,10 @@ class Test(unittest.TestCase):
             act_phase_should_be_transformed_to_script_file.assertions)
 
     def test_result_from_act_phase_should_be_saved(self):
-        result_from_action_phase_should_be_saved.TestCase(self).execute()
+        py_unit_test_case.py3_test(
+            self,
+            result_from_action_phase_should_be_saved.TestCaseDocument().test_case,
+            result_from_action_phase_should_be_saved.assertions)
 
     def test_environment_variables_should_be_accessible_in_all_phases(self):
         execution_environment_variables.TestCase(self).execute()

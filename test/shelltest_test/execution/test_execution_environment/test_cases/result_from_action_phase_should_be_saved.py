@@ -1,33 +1,47 @@
+"""
+Checks that output to stdout, stderr and the exit code are saved in the correct locations.
+"""
+
+import unittest
+
 from shelltest.exec_abs_syn.success_or_hard_error_construction import new_success
 from shelltest.exec_abs_syn import success_or_validation_hard_or_error_construction
 from shelltest.exec_abs_syn import instructions
-from shelltest_test.execution.util.py_unit_test_case import UnitTestCaseForPy3Language
+from shelltest_test.execution.util import utils
+from shelltest_test.execution.util import py_unit_test_case
+from shelltest_test.execution.util.py_unit_test_case import \
+    TestCaseWithCommonDefaultForSetupAssertCleanup
 
 
-class TestCase(UnitTestCaseForPy3Language):
-    """
-    Checks that output to stdout, stderr and the exit code are saved in the correct locations.
-    """
+_TEXT_ON_STDOUT = 'on stdout'
+_TEXT_ON_STDERR = 'on stderr'
+_EXIT_CODE = 5
 
-    TEXT_ON_STDOUT = 'on stdout'
-    TEXT_ON_STDERR = 'on stderr'
-    EXIT_CODE = 5
 
+class TestCaseDocument(TestCaseWithCommonDefaultForSetupAssertCleanup):
     def _act_phase(self) -> list:
         return [
             self._next_instruction_line(
-                ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr(self.EXIT_CODE,
-                                                                    self.TEXT_ON_STDOUT,
-                                                                    self.TEXT_ON_STDERR))
+                ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr(_EXIT_CODE,
+                                                                    _TEXT_ON_STDOUT,
+                                                                    _TEXT_ON_STDERR))
         ]
 
-    def _assertions(self):
-        self.assert_is_regular_file_with_contents(self.eds.result.exitcode_file,
-                                                  str(self.EXIT_CODE))
-        self.assert_is_regular_file_with_contents(self.eds.result.std.stdout_file,
-                                                  self.TEXT_ON_STDOUT)
-        self.assert_is_regular_file_with_contents(self.eds.result.std.stderr_file,
-                                                  self.TEXT_ON_STDERR)
+
+def assertions(utc: unittest.TestCase,
+               actual: py_unit_test_case.Result):
+    utils.assert_is_file_with_contents(
+        utc,
+        actual.execution_directory_structure.result.exitcode_file,
+        str(_EXIT_CODE))
+    utils.assert_is_file_with_contents(
+        utc,
+        actual.execution_directory_structure.result.std.stdout_file,
+        _TEXT_ON_STDOUT)
+    utils.assert_is_file_with_contents(
+        utc,
+        actual.execution_directory_structure.result.std.stderr_file,
+        _TEXT_ON_STDERR)
 
 
 class ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr(instructions.ActPhaseInstruction):
