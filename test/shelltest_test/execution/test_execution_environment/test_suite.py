@@ -21,6 +21,12 @@ class Test(unittest.TestCase):
             result_from_action_phase_should_be_saved.TestCaseDocument().test_case,
             result_from_action_phase_should_be_saved.assertions)
 
+    def test_stdin_should_be_redirected_to_file_if_set_in_phase_env(self):
+        py_unit_test_case.py3_test(
+            self,
+            stdin_should_be_redirected_to_file_if_set_in_phase_env.TestCaseDocument().test_case,
+            stdin_should_be_redirected_to_file_if_set_in_phase_env.assertions)
+
     def test_environment_variables_should_be_accessible_in_all_phases(self):
         execution_environment_variables.TestCase(self).execute()
 
@@ -32,9 +38,6 @@ class Test(unittest.TestCase):
             self,
             all_phases_should_be_executed_and_result_from_action_saved_etc.TestCaseDocument().test_case,
             all_phases_should_be_executed_and_result_from_action_saved_etc.assertions)
-
-    def test_stdin_should_be_redirected_to_file_if_set_in_phase_env(self):
-        stdin_should_be_redirected_to_file_if_set_in_phase_env.TestCase(self).execute()
 
 
 def suite():
