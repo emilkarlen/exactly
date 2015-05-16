@@ -6,7 +6,6 @@ from shelltest.exec_abs_syn.success_or_hard_error_construction import new_succes
 from shelltest.exec_abs_syn import success_or_validation_hard_or_error_construction
 from shelltest.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shelltest.exec_abs_syn.config import Configuration
-from shelltest.execution import partial_execution
 from shelltest_test.execution.util import py_unit_test_case_with_file_output as with_file_output
 from shelltest_test.execution.util.py_unit_test_case_with_file_output import \
     InternalInstructionThatWritesToStandardPhaseFile
@@ -137,8 +136,8 @@ class ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr(instructions.ActPhaseI
             self.write_path_line(file_object, HOME_DIR_HEADER, global_environment.home_directory),
             self.write_path_line(file_object, TEST_ROOT_DIR_HEADER, global_environment.eds.test_root_dir),
             self.write_prefix_and_expr(file_object, CURRENT_DIR_HEADER, 'str(pathlib.Path().resolve())'),
-            self.write_env_var(file_object, partial_execution.ENV_VAR_HOME),
-            self.write_env_var(file_object, partial_execution.ENV_VAR_TEST),
+            self.write_env_var(file_object, instructions.ENV_VAR_HOME),
+            self.write_env_var(file_object, instructions.ENV_VAR_TEST),
         ]
 
     @staticmethod
@@ -179,8 +178,8 @@ def expected_output_on(file_object: str,
         output_with_header(TEST_ROOT_DIR_HEADER, str(configuration.test_root_dir)),
         output_with_header(CURRENT_DIR_HEADER, str(configuration.test_root_dir)),
 
-        output_with_header(partial_execution.ENV_VAR_HOME, str(configuration.home_dir)),
-        output_with_header(partial_execution.ENV_VAR_TEST, str(configuration.test_root_dir)),
+        output_with_header(instructions.ENV_VAR_HOME, str(configuration.home_dir)),
+        output_with_header(instructions.ENV_VAR_TEST, str(configuration.test_root_dir)),
         ''
     ])
 

@@ -2,7 +2,7 @@ import unittest
 
 from shelltest.exec_abs_syn import abs_syn_gen
 
-from shelltest_test.execution.test_full_execution.util.test_case_base import FullExecutionTestCase
+from shelltest_test.execution.test_full_execution.util.test_case_base import FullExecutionTestCaseBase
 from shelltest_test.execution.util.expected_instruction_failure import ExpectedInstructionFailureBase
 from shelltest.execution.result import FullResultStatus
 from shelltest_test.execution.test_full_execution.util.recording_instructions_for_sequence_tests import \
@@ -13,7 +13,7 @@ from shelltest_test.execution.test_full_execution.util.test_case_generation_for_
     TestCaseGeneratorForExecutionRecording
 
 
-class TestCaseThatRecordsExecution(FullExecutionTestCase):
+class TestCaseThatRecordsExecution(FullExecutionTestCaseBase):
     """
     Base class for tests on a test case that uses the Python 3 language in the apply phase.
     """

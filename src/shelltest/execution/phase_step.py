@@ -1,3 +1,4 @@
+from shelltest import phases
 from shelltest.phases import Phase
 
 
@@ -57,3 +58,17 @@ ASSERT__VALIDATE = __phase_step(ASSERT, ASSERT_validate)
 ASSERT__EXECUTE = __phase_step(ASSERT, ASSERT_execute)
 
 CLEANUP = 'CLEANUP'
+
+ANONYMOUS_EXECUTE = new_without_step(phases.ANONYMOUS)
+
+SETUP_VALIDATE = PhaseStep(phases.SETUP, VALIDATE)
+SETUP_EXECUTE = PhaseStep(phases.SETUP, EXECUTE)
+
+ACT_VALIDATE = PhaseStep(phases.ACT, VALIDATE)
+ACT_SCRIPT_GENERATION = PhaseStep(phases.ACT, ACT_script_generation)
+ACT_SCRIPT_EXECUTION = PhaseStep(phases.ACT, ACT_script_execution)
+
+ASSERT_VALIDATE = PhaseStep(phases.ASSERT, VALIDATE)
+ASSERT_EXECUTE = PhaseStep(phases.ASSERT, EXECUTE)
+
+CLEANUP_EXECUTE = new_without_step(phases.CLEANUP)

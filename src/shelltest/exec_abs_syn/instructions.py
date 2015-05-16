@@ -6,6 +6,15 @@ from shelltest.phase_instr.model import Instruction
 from shelltest.exec_abs_syn import script_stmt_gen
 
 
+ENV_VAR_HOME = 'SHELLTEST_HOME'
+ENV_VAR_TEST = 'SHELLTEST_TESTROOT'
+ENV_VAR_TMP = 'SHELLTEST_TMP'
+
+ALL_ENV_VARS = [ENV_VAR_HOME,
+                ENV_VAR_TEST,
+                ENV_VAR_TMP]
+
+
 class SuccessOrHardError(tuple):
     """
     Represents EITHER success OR hard error.
