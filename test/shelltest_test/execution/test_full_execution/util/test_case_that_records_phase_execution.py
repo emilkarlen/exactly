@@ -33,7 +33,6 @@ class TestCaseThatRecordsExecution:
                  dbg_do_not_delete_dir_structure=False):
         self.__unittest_case = unittest_case
         self._test_case_generator = test_case_generator
-        self.__previous_line_number = 0
         self.__dbg_do_not_delete_dir_structure = dbg_do_not_delete_dir_structure
         self.__expected_status = expected_status
         self.__expected_failure_info = expected_failure_info
@@ -58,7 +57,7 @@ class TestCaseThatRecordsExecution:
 
         # ASSERT #
         self.__full_result = full_result
-        self._standard_assertions()
+        self._assertions()
         # CLEANUP #
         os.chdir(str(home_dir_path))
         if not self.__dbg_do_not_delete_dir_structure and self.eds:
@@ -67,7 +66,7 @@ class TestCaseThatRecordsExecution:
             if self.eds:
                 print(str(self.eds.root_dir))
 
-    def _standard_assertions(self):
+    def _assertions(self):
         self.unittest_case.assertEqual(self.__expected_status,
                                        self.__full_result.status,
                                        'Unexpected result status')
