@@ -56,6 +56,7 @@ Detta
 - "mall" för ett testfall som exekverar ett externt program med in och utdata
   i fil
 * Bestämma exekveringsflöde
+  CLOCK: [2015-05-16 lör 22:40]--[2015-05-16 lör 22:46] =>  0:06
   CLOCK: [2015-05-16 lör 19:48]--[2015-05-16 lör 22:37] =>  2:49
   CLOCK: [2015-05-16 lör 11:40]--[2015-05-16 lör 13:10] =>  1:30
   CLOCK: [2015-05-15 fre 20:28]--[2015-05-15 fre 22:01] =>  1:33
@@ -95,6 +96,13 @@ Detta
 *** DONE hard error
 *** DONE impl error
 ** TODO <2015-05-11 mån> Bestäm när EDS ska skapas
+Idag skapas för tidigt (sett till UML-skissen).
+Men varför inte ha EDS även i setup/validate? Känns lite överflödigt att
+"optimera" bort den i de fall valideringen misslyckas = undantagsfall.
+
+Borde testa skapning av denna på riktigt.  Kommer bara på ett bra sätt: att
+kunna ange godtycklig kod som körs enbart då EDS:en skapas.  Den koden skulle
+registerara skapandet, så att testet kunde kolla om den snutten körts eller ej.
 ** DONE <2015-05-11 mån> Kolla steg+fas i FullResult
 Tror namn på fas och steg inkluderas i FullResult, men finns ingen koll på att
 det är rätt värden nu.
