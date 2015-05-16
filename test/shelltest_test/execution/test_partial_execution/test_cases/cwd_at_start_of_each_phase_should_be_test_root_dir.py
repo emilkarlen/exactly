@@ -3,7 +3,6 @@ import pathlib
 import unittest
 
 from shelltest.exec_abs_syn.success_or_hard_error_construction import new_success
-
 from shelltest.exec_abs_syn import success_or_validation_hard_or_error_construction
 from shelltest import phases
 from shelltest.exec_abs_syn import instructions

@@ -1,15 +1,15 @@
 import unittest
 
 from shelltest import phases
-from shelltest_test.execution.test_full_execution_sequence import instruction_test_resources
-from shelltest_test.execution.test_full_execution_sequence.instruction_test_resources import \
+from shelltest_test.execution.test_full_execution import instruction_test_resources
+from shelltest_test.execution.test_full_execution.instruction_test_resources import \
     AnonymousPhaseInstructionThatSetsExecutionMode
 from shelltest.exec_abs_syn import instructions
-from shelltest_test.execution.test_full_execution_sequence.test_case_generation_for_sequence_tests import \
+from shelltest_test.execution.test_full_execution.test_case_generation_for_sequence_tests import \
     TestCaseThatRecordsExecutionWithExtraInstructionList
 from shelltest.execution.result import FullResultStatus
 from shelltest.execution import phase_step
-from shelltest_test.execution.test_full_execution_sequence.test_case_that_records_phase_execution import \
+from shelltest_test.execution.test_full_execution.test_case_that_records_phase_execution import \
     TestCaseThatRecordsExecution
 from shelltest_test.execution.util.expected_instruction_failure import ExpectedInstructionFailureForFailure, \
     ExpectedInstructionFailureForNoFailure

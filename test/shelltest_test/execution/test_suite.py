@@ -3,8 +3,8 @@ import unittest
 from shelltest_test.execution import test_execution_directory_structure, \
     test_single_instruction_executor, \
     test_phase_step_execution
-from shelltest_test.execution.test_execution_environment import test_suite as execution_environment_test_suite
-from shelltest_test.execution.test_full_execution_sequence import test_suite as full_execution_test_suite
+from shelltest_test.execution.test_partial_execution import test_suite as execution_environment_test_suite
+from shelltest_test.execution.test_full_execution import test_suite as full_execution_test_suite
 
 
 def suite():

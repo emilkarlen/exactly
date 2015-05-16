@@ -9,11 +9,11 @@ from shelltest.execution.result import FullResultStatus
 from shelltest.script_language import python3
 from shelltest.execution import full_execution
 from shelltest_test.execution.util import utils
-from shelltest_test.execution.test_full_execution_sequence.recording_instructions_for_sequence_tests import \
+from shelltest_test.execution.test_full_execution.recording_instructions_for_sequence_tests import \
     record_file_path
-from shelltest_test.execution.test_full_execution_sequence.recording_instructions_for_sequence_tests import \
+from shelltest_test.execution.test_full_execution.recording_instructions_for_sequence_tests import \
     record_file_contents_from_lines
-from shelltest_test.execution.test_full_execution_sequence.test_case_generation_for_sequence_tests import \
+from shelltest_test.execution.test_full_execution.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorForExecutionRecording
 
 
