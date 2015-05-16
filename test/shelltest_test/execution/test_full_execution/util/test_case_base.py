@@ -11,10 +11,7 @@ from shelltest.execution import full_execution
 from shelltest_test.execution.util import utils
 
 
-class FullExecutionTestCase:
-    """
-    Base class for tests on a test case that uses the Python 3 language in the apply phase.
-    """
+class FullExecutionTestCaseBase:
 
     def __init__(self,
                  unittest_case: unittest.TestCase,
@@ -23,16 +20,17 @@ class FullExecutionTestCase:
         self.__dbg_do_not_delete_dir_structure = dbg_do_not_delete_dir_structure
         self.__full_result = None
         self.__execution_directory_structure = None
+        self.__initial_home_dir_path = None
 
     def execute(self):
         # SETUP #
-        home_dir_path = pathlib.Path().resolve()
+        self.__initial_home_dir_path = pathlib.Path().resolve()
         # ACT #
         full_result = full_execution.execute(
             python3.Python3ScriptFileManager(),
             python3.new_script_source_writer(),
             self._test_case(),
-            home_dir_path,
+            self.initial_home_dir_path,
             'shelltest-test-',
             True)
 
@@ -40,7 +38,7 @@ class FullExecutionTestCase:
         self.__full_result = full_result
         self._assertions()
         # CLEANUP #
-        os.chdir(str(home_dir_path))
+        os.chdir(str(self.initial_home_dir_path))
         if not self.__dbg_do_not_delete_dir_structure and self.eds:
             shutil.rmtree(str(self.eds.root_dir))
         else:
@@ -56,6 +54,10 @@ class FullExecutionTestCase:
     @property
     def utc(self) -> unittest.TestCase:
         return self.__unittest_case
+
+    @property
+    def initial_home_dir_path(self) -> pathlib.Path:
+        return self.__initial_home_dir_path
 
     @property
     def full_result(self) -> FullResult:

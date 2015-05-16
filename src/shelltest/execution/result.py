@@ -156,6 +156,7 @@ class FullResult(ResultBase):
     def status(self) -> FullResultStatus:
         return self.__status
 
+
 def new_skipped() -> FullResult:
     return FullResult(FullResultStatus.SKIPPED,
                       None,

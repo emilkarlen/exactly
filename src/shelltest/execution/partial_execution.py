@@ -20,15 +20,6 @@ from . import result
 from . import phase_step_execution
 
 
-ENV_VAR_HOME = 'SHELLTEST_HOME'
-ENV_VAR_TEST = 'SHELLTEST_TESTROOT'
-ENV_VAR_TMP = 'SHELLTEST_TMP'
-
-ALL_ENV_VARS = [ENV_VAR_HOME,
-                ENV_VAR_TEST,
-                ENV_VAR_TMP]
-
-
 class PartialExecutor:
     def __init__(self,
                  global_environment: instructions.GlobalEnvironmentForNamedPhase,
@@ -58,12 +49,13 @@ class PartialExecutor:
         # TODO Köra det här i sub-process?
         # Tror det behövs för att undvika att sätta omgivningen mm, o därmed
         # påverka huvudprocessen.
-        self.__set_environment_variables()
+        self.__set_pre_eds_environment_variables()
         res = self.__run_setup_validate()
         if res.status is not PartialResultStatus.PASS:
             self.__partial_result = res
             return
         phase_env = instructions.PhaseEnvironmentForInternalCommands()
+        self.__set_post_eds_environment_variables()
         res = self.__run_setup_execute(phase_env)
         if res.status is not PartialResultStatus.PASS:
             self.__partial_result = res
@@ -174,10 +166,12 @@ class PartialExecutor:
                                                                phase_env),
                                                            self.__cleanup_phase)
 
-    def __set_environment_variables(self):
-        os.environ[ENV_VAR_HOME] = str(self.configuration.home_dir)
-        os.environ[ENV_VAR_TEST] = str(self.execution_directory_structure.test_root_dir)
-        os.environ[ENV_VAR_TMP] = str(self.execution_directory_structure.tmp_dir)
+    def __set_pre_eds_environment_variables(self):
+        os.environ[instructions.ENV_VAR_HOME] = str(self.configuration.home_dir)
+
+    def __set_post_eds_environment_variables(self):
+        os.environ[instructions.ENV_VAR_TEST] = str(self.execution_directory_structure.test_root_dir)
+        os.environ[instructions.ENV_VAR_TMP] = str(self.execution_directory_structure.tmp_dir)
 
     def __run_internal_instructions_phase_step(self,
                                                phase: phases.Phase,
