@@ -1,5 +1,5 @@
-from shelltest_test.execution.test_full_execution_sequence import recording_instructions_for_sequence_tests as instr
-from shelltest_test.execution.test_full_execution_sequence.recording_instructions_for_sequence_tests import \
+from shelltest_test.execution.test_full_execution import recording_instructions_for_sequence_tests as instr
+from shelltest_test.execution.test_full_execution.recording_instructions_for_sequence_tests import \
     SetupInternalInstructionThatRecordsStringInList, AssertInternalInstructionThatRecordsStringInList, \
     AssertInstructionThatRecordsStringInRecordFile
 from shelltest_test.execution.util.test_case_generation import TestCaseGeneratorBase

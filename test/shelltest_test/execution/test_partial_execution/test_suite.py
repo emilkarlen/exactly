@@ -1,6 +1,6 @@
 import unittest
 
-from shelltest_test.execution.test_execution_environment.test_cases import \
+from shelltest_test.execution.test_partial_execution.test_cases import \
     all_phases_should_be_executed_and_result_from_action_saved_etc, \
     cwd_at_start_of_each_phase_should_be_test_root_dir, \
     execution_environment_variables, act_phase_should_be_transformed_to_script_file, \
