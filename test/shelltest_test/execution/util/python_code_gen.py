@@ -19,6 +19,18 @@ def print_header_value(header_expr: str,
     return 'print(' + string_expr('%-30s: %s') + ' % (' + header_expr + ',' + value_expr + ')' + file_expr + ')'
 
 
+def print_env_var_if_defined(var_name: str,
+                             output_file_variable=None) -> list:
+    file_expr = ''
+    var_name_expr = string_expr(var_name)
+    if output_file_variable:
+        file_expr = ', file=' + output_file_variable
+    return [
+        'if %s in os.environ:' % var_name_expr,
+        '  print(%s + \'=\' + os.environ[%s]%s)' % (var_name_expr, var_name_expr, file_expr)
+    ]
+
+
 def with_opened_file(file_name: str, file_var: str, mode: str, statements: list) -> list:
     open_stmt = 'with open(%s,%s) as %s:' % (string_expr(file_name), string_expr(mode), file_var)
     indented_statements = ['  ' + stmt for stmt in statements]

@@ -4,14 +4,15 @@ import unittest
 import functools
 
 from shelltest.exec_abs_syn import abs_syn_gen
-
 from shelltest.exec_abs_syn import instructions
 from shelltest.execution.phase_step import PhaseStep
 from shelltest.execution.result import FullResultStatus
 from shelltest_test.execution.test_full_execution.util.test_case_base import FullExecutionTestCaseBase
 from shelltest.execution import phase_step
 from shelltest_test.execution.util.instruction_that_do_and_return import TestCaseSetup, \
-    TestCaseGeneratorForTestCaseSetup
+    TestCaseGeneratorForTestCaseSetup, print_to_file__generate_script
+from shelltest_test.execution.util.py_unit_test_case_with_file_output import ModulesAndStatements
+from shelltest_test.execution.util.python_code_gen import print_env_var_if_defined
 
 
 class _Recorder:
@@ -60,8 +61,22 @@ class Test(FullExecutionTestCaseBase):
             validation_action__without_eds=self.action__without_eds,
             execution_action__without_eds=self.action__without_eds,
             validation_action__with_eds=self.action__with_eds,
-            execution_action__with_eds=self.action__with_eds)
+            execution_action__with_eds=self.action__with_eds,
+            execution__generate_script=script_for_print_environment_variables_to_file,
+        )
         return TestCaseGeneratorForTestCaseSetup(setup).test_case
+
+    def __assert_expected_internally_recorded_variables(self, expected):
+        self._assert_expected_keys(expected,
+                                   self.recorder.phaseStep2VariablesDict,
+                                   'phase-step')
+        for ph in expected.keys():
+            self._assert_expected_keys(expected[ph],
+                                       self.recorder.phaseStep2VariablesDict[ph],
+                                       'Environment variables for phase-step ' + str(ph))
+            self._assert_expected_values(expected[ph],
+                                         self.recorder.phaseStep2VariablesDict[ph],
+                                         'Environment variable value for phase-step ' + str(ph))
 
     def _assertions(self):
         self.__assert_test_sanity()
@@ -83,19 +98,13 @@ class Test(FullExecutionTestCaseBase):
             phase_step.ASSERT_EXECUTE: for_post_eds,
             phase_step.CLEANUP_EXECUTE: for_post_eds,
         }
-        self._assert_expected_keys(expected,
-                                   self.recorder.phaseStep2VariablesDict,
-                                   'phase-step')
-        for ph in expected.keys():
-            self._assert_expected_keys(expected[ph],
-                                       self.recorder.phaseStep2VariablesDict[ph],
-                                       'Environment variables for phase-step ' + str(ph))
-            self._assert_expected_values(expected[ph],
-                                         self.recorder.phaseStep2VariablesDict[ph],
-                                         'Environment variable value for phase-step ' + str(ph))
-        self.utc.assertDictEqual(expected,
-                                 self.recorder.phaseStep2VariablesDict,
-                                 'Environment variables in each phase-step')
+        expected_act_output = ''.join([
+            '%s=%s%s' % (instructions.ENV_VAR_HOME, str(self.initial_home_dir_path), os.linesep),
+            '%s=%s%s' % (instructions.ENV_VAR_TEST, str(self.eds.test_root_dir), os.linesep),
+            '%s=%s%s' % (instructions.ENV_VAR_TMP, str(self.eds.tmp_dir), os.linesep),
+        ])
+        self.__assert_expected_internally_recorded_variables(expected)
+        self.__assert_expected_act_script_execution_recorded_variables(expected_act_output)
 
     def __assert_test_sanity(self):
         self.utc.assertEqual(self.full_result.status,
@@ -121,3 +130,25 @@ class Test(FullExecutionTestCaseBase):
             self.utc.assertEqual(expected[k],
                                  actual[k],
                                  'Value for %s %s' % (key_entity, str(k)))
+
+    def __assert_expected_act_script_execution_recorded_variables(self, expected_act_output: str):
+        self.assert_is_regular_file_with_contents(
+            self.full_result.execution_directory_structure.test_root_dir / ACT_SCRIPT_OUTPUT_FILE_NAME,
+            expected_act_output,
+            'Envronment Variables printed from act/script execution')
+
+
+ACT_SCRIPT_OUTPUT_FILE_NAME = 'act-script-output.txt'
+
+
+def python_code_for_print_environment_variables(file_variable: str) -> ModulesAndStatements:
+    code = []
+    for env_var in instructions.ALL_ENV_VARS:
+        code.extend(print_env_var_if_defined(env_var, file_variable))
+    return ModulesAndStatements({'os'},
+                                code)
+
+
+script_for_print_environment_variables_to_file = functools.partial(print_to_file__generate_script,
+                                                                   python_code_for_print_environment_variables,
+                                                                   ACT_SCRIPT_OUTPUT_FILE_NAME)
