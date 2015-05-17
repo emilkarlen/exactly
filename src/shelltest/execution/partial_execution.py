@@ -1,3 +1,4 @@
+import copy
 import tempfile
 import os
 import subprocess
@@ -49,10 +50,12 @@ class PartialExecutor:
         # TODO Köra det här i sub-process?
         # Tror det behövs för att undvika att sätta omgivningen mm, o därmed
         # påverka huvudprocessen.
+        self.__save_state()
         self.__set_pre_eds_environment_variables()
         res = self.__run_setup_validate()
         if res.status is not PartialResultStatus.PASS:
             self.__partial_result = res
+            self.__restore_saved_state()
             return
         phase_env = instructions.PhaseEnvironmentForInternalCommands()
         self.__set_post_eds_environment_variables()
@@ -60,21 +63,25 @@ class PartialExecutor:
         if res.status is not PartialResultStatus.PASS:
             self.__partial_result = res
             self.__run_cleanup(phase_env)
+            self.__restore_saved_state()
             return
         res = self.__run_act_validate()
         if res.status is not PartialResultStatus.PASS:
             self.__run_cleanup(phase_env)
             self.__partial_result = res
+            self.__restore_saved_state()
             return
         res = self.__run_assert_validate()
         if res.status is not PartialResultStatus.PASS:
             self.__run_cleanup(phase_env)
             self.__partial_result = res
+            self.__restore_saved_state()
             return
         res = self.__run_act_script_generation()
         if res.status is not PartialResultStatus.PASS:
             self.__partial_result = res
             self.__run_cleanup(phase_env)
+            self.__restore_saved_state()
             return
         self.write_and_store_script_file_path()
         self.__run_act_script()
@@ -82,6 +89,7 @@ class PartialExecutor:
         res = self.__run_cleanup(phase_env)
         if res.is_failure:
             self.__partial_result = res
+        self.__restore_saved_state()
 
     @property
     def execution_directory_structure(self) -> ExecutionDirectoryStructure:
@@ -238,6 +246,12 @@ class PartialExecutor:
                 except OSError as ex:
                     msg = 'Error executing act phase as subprocess: ' + str(ex)
                     raise exception.ImplementationError(msg)
+
+    def __save_state(self):
+        self.__saved_environment_variables = copy.deepcopy(os.environ)
+
+    def __restore_saved_state(self):
+        os.environ = self.__saved_environment_variables
 
 
 class _ActCommentHeaderExecutor(ElementHeaderExecutor):
