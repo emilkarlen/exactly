@@ -33,8 +33,9 @@ class _Recorder:
 
 
 def _set_home_dir_to_parent__anonymous_phase(recorder: _Recorder,
+                                             phase_step: PhaseStep,
                                              phase_environment: instructions.PhaseEnvironmentForAnonymousPhase):
-    recorder.record_for_phase(phase_step.ANONYMOUS_EXECUTE)
+    recorder.record_for_phase(phase_step)
     phase_environment.set_home_dir(phase_environment.home_dir_path.parent)
 
 
