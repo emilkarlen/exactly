@@ -4,6 +4,7 @@ import subprocess
 import pathlib
 
 from shelltest.execution import phase_step
+
 from shelltest.execution.phase_step_execution import ElementHeaderExecutor
 from shelltest.phase_instr import line_source
 from shelltest.execution import phase_step_executors
@@ -194,6 +195,7 @@ class PartialExecutor:
 
         :param act_environment: Post-condition: Contains the accumulated script source.
         """
+        os.chdir(str(self.execution_directory_structure.test_root_dir))
         return phase_step_execution.execute_phase(
             self.__act_phase,
             _ActCommentHeaderExecutor(self.__act_env_before_execution),
