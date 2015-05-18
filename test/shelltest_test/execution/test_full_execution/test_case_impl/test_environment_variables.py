@@ -32,6 +32,11 @@ class _Recorder:
         return self.phaseStep2VariablesDict[phase_step]
 
 
+def _set_home_dir_to_parent__anonymous_phase(recorder: _Recorder,
+                                             phase_environment: instructions.PhaseEnvironmentForAnonymousPhase):
+    recorder.record_for_phase(phase_step.ANONYMOUS_EXECUTE)
+
+
 def _action__without_eds(recorder: _Recorder,
                          phase_step: PhaseStep,
                          home_dir: pathlib.Path):
@@ -51,6 +56,8 @@ class Test(FullExecutionTestCaseBase):
         super().__init__(unittest_case,
                          dbg_do_not_delete_dir_structure)
         self.recorder = _Recorder()
+        self.action_anonymous_phase = functools.partial(_set_home_dir_to_parent__anonymous_phase,
+                                                        self.recorder)
         self.action__without_eds = functools.partial(_action__without_eds,
                                                      self.recorder)
         self.action__with_eds = functools.partial(_action__with_eds,
@@ -59,7 +66,7 @@ class Test(FullExecutionTestCaseBase):
     def _test_case(self) -> abs_syn_gen.TestCase:
         setup = TestCaseSetup(
             validation_action__without_eds=self.action__without_eds,
-            execution_action__without_eds=self.action__without_eds,
+            anonymous_phase_action=self.action_anonymous_phase,
             validation_action__with_eds=self.action__with_eds,
             execution_action__with_eds=self.action__with_eds,
             execution__generate_script=script_for_print_environment_variables_to_file,
