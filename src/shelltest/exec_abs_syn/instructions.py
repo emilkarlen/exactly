@@ -115,8 +115,8 @@ class ExecutionMode(Enum):
 
 
 class PhaseEnvironmentForAnonymousPhase(PhaseEnvironment):
-    def __init__(self, home_dir: str):
-        self.__home_dir = home_dir
+    def __init__(self, home_dir_path: pathlib.Path):
+        self.__home_dir_path = home_dir_path
         self.__execution_mode = ExecutionMode.NORMAL
 
     @property
@@ -129,14 +129,14 @@ class PhaseEnvironmentForAnonymousPhase(PhaseEnvironment):
 
     @property
     def home_dir(self) -> str:
-        return self.__home_dir
+        return str(self.__home_dir_path)
 
     @property
     def home_dir_path(self) -> pathlib.Path:
-        return pathlib.Path(self.__home_dir)
+        return self.__home_dir_path
 
-    def set_home_dir(self, x: str):
-        self.__home_dir = x
+    def set_home_dir(self, x: pathlib.Path):
+        self.__home_dir_path = x
 
 
 class PhaseEnvironmentForScriptGeneration(PhaseEnvironment):

@@ -50,7 +50,7 @@ def execute(script_file_manager: script_stmt_gen.ScriptFileManager,
             execution_directory_root_name_prefix: str,
             is_keep_execution_directory_root: bool) -> FullResult:
     saved_environment_variables = _prepare_and_save_environment_variables()
-    anonymous_phase_environment = PhaseEnvironmentForAnonymousPhase(str(initial_home_dir_path))
+    anonymous_phase_environment = PhaseEnvironmentForAnonymousPhase(initial_home_dir_path)
     partial_result = _execute_anonymous_phase(anonymous_phase_environment,
                                               test_case)
     if partial_result.status is not PartialResultStatus.PASS:
