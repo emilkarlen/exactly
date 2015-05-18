@@ -35,6 +35,7 @@ class _Recorder:
 def _set_home_dir_to_parent__anonymous_phase(recorder: _Recorder,
                                              phase_environment: instructions.PhaseEnvironmentForAnonymousPhase):
     recorder.record_for_phase(phase_step.ANONYMOUS_EXECUTE)
+    phase_environment.set_home_dir(phase_environment.home_dir_path.parent)
 
 
 def _action__without_eds(recorder: _Recorder,
@@ -88,9 +89,10 @@ class Test(FullExecutionTestCaseBase):
     def _assertions(self):
         self.__assert_test_sanity()
         for_anonymous_phase = dict()
-        for_pre_eds = {instructions.ENV_VAR_HOME: str(self.initial_home_dir_path)}
+        home_dir_after_anonymous = str(self.initial_home_dir_path.parent)
+        for_pre_eds = {instructions.ENV_VAR_HOME: home_dir_after_anonymous}
         for_post_eds = {
-            instructions.ENV_VAR_HOME: str(self.initial_home_dir_path),
+            instructions.ENV_VAR_HOME: home_dir_after_anonymous,
             instructions.ENV_VAR_TEST: str(self.eds.test_root_dir),
             instructions.ENV_VAR_TMP: str(self.eds.tmp_dir),
         }
@@ -100,13 +102,12 @@ class Test(FullExecutionTestCaseBase):
             phase_step.SETUP_EXECUTE: for_post_eds,
             phase_step.ACT_VALIDATE: for_post_eds,
             phase_step.ACT_SCRIPT_GENERATION: for_post_eds,
-            # phase_step.ACT_SCRIPT_EXECUTION: for_post_eds,
             phase_step.ASSERT_VALIDATE: for_post_eds,
             phase_step.ASSERT_EXECUTE: for_post_eds,
             phase_step.CLEANUP_EXECUTE: for_post_eds,
         }
         expected_act_output = ''.join([
-            '%s=%s%s' % (instructions.ENV_VAR_HOME, str(self.initial_home_dir_path), os.linesep),
+            '%s=%s%s' % (instructions.ENV_VAR_HOME, home_dir_after_anonymous, os.linesep),
             '%s=%s%s' % (instructions.ENV_VAR_TEST, str(self.eds.test_root_dir), os.linesep),
             '%s=%s%s' % (instructions.ENV_VAR_TMP, str(self.eds.tmp_dir), os.linesep),
         ])
