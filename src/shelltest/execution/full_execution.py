@@ -1,8 +1,12 @@
+import copy
+import os
 import pathlib
 
 from shelltest.execution.partial_execution import execute_partial
+
 from shelltest.execution import phase_step_executors
 from shelltest import phases
+from shelltest.exec_abs_syn import instructions
 from shelltest.exec_abs_syn import script_stmt_gen, abs_syn_gen
 from shelltest.exec_abs_syn.instructions import PhaseEnvironmentForAnonymousPhase, ExecutionMode
 from .result import FullResult, PartialResult, PartialResultStatus, FullResultStatus
@@ -45,9 +49,10 @@ def execute(script_file_manager: script_stmt_gen.ScriptFileManager,
             initial_home_dir_path: pathlib.Path,
             execution_directory_root_name_prefix: str,
             is_keep_execution_directory_root: bool) -> FullResult:
+    saved_environment_variables = _prepare_and_save_environment_variables()
     anonymous_phase_environment = PhaseEnvironmentForAnonymousPhase(str(initial_home_dir_path))
-    partial_result = execute_anonymous_phase(anonymous_phase_environment,
-                                             test_case)
+    partial_result = _execute_anonymous_phase(anonymous_phase_environment,
+                                              test_case)
     if partial_result.status is not PartialResultStatus.PASS:
         return new_anonymous_phase_failure_from(partial_result)
     if anonymous_phase_environment.execution_mode is ExecutionMode.SKIPPED:
@@ -58,12 +63,21 @@ def execute(script_file_manager: script_stmt_gen.ScriptFileManager,
                                      anonymous_phase_environment.home_dir_path,
                                      execution_directory_root_name_prefix,
                                      is_keep_execution_directory_root)
+    os.environ = saved_environment_variables
     return new_named_phases_result_from(anonymous_phase_environment.execution_mode,
                                         partial_result)
 
 
-def execute_anonymous_phase(phase_environment: PhaseEnvironmentForAnonymousPhase,
-                            test_case: abs_syn_gen.TestCase) -> PartialResult:
+def _prepare_and_save_environment_variables() -> dict:
+    before = copy.deepcopy(os.environ)
+    for ev in instructions.ALL_ENV_VARS:
+        if ev in os.environ:
+            del os.environ[ev]
+    return before
+
+
+def _execute_anonymous_phase(phase_environment: PhaseEnvironmentForAnonymousPhase,
+                             test_case: abs_syn_gen.TestCase) -> PartialResult:
     return phase_step_execution.execute_phase(test_case.anonymous_phase,
                                               phase_step_execution.ElementHeaderExecutorThatDoesNothing(),
                                               phase_step_execution.ElementHeaderExecutorThatDoesNothing(),
