@@ -12,7 +12,8 @@ from shelltest.phase_instr.model import Instruction
 from shelltest_test.execution.util.test_case_generation import TestCaseGeneratorBase
 
 
-def do_nothing__anonymous_phase(phase_environment: i.PhaseEnvironmentForAnonymousPhase):
+def do_nothing__anonymous_phase(phase_step: PhaseStep,
+                                phase_environment: i.PhaseEnvironmentForAnonymousPhase):
     pass
 
 
@@ -140,7 +141,8 @@ class _AnonymousInstruction(i.AnonymousPhaseInstruction):
     def execute(self, phase_name: str,
                 global_environment,
                 phase_environment: i.PhaseEnvironmentForAnonymousPhase) -> i.SuccessOrHardError:
-        self.__configuration.anonymous_phase_action(phase_environment)
+        self.__configuration.anonymous_phase_action(phase_step.ANONYMOUS_EXECUTE,
+                                                    phase_environment)
         return self.__configuration.ret_val_from_execute
 
 
