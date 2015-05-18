@@ -56,6 +56,8 @@ Detta
 - "mall" för ett testfall som exekverar ett externt program med in och utdata
   i fil
 * Bestämma exekveringsflöde
+  CLOCK: [2015-05-18 mån 19:36]--[2015-05-18 mån 22:54] =>  3:18
+  CLOCK: [2015-05-17 sön 13:24]--[2015-05-17 sön 15:46] =>  2:22
   CLOCK: [2015-05-16 lör 22:40]--[2015-05-16 lör 22:46] =>  0:06
   CLOCK: [2015-05-16 lör 19:48]--[2015-05-16 lör 22:37] =>  2:49
   CLOCK: [2015-05-16 lör 11:40]--[2015-05-16 lör 13:10] =>  1:30
@@ -95,7 +97,7 @@ Detta
 *** DONE validation error
 *** DONE hard error
 *** DONE impl error
-** TODO <2015-05-11 mån> Bestäm när EDS ska skapas
+** DONE <2015-05-11 mån> Bestäm när EDS ska skapas
 Idag skapas för tidigt (sett till UML-skissen).
 Men varför inte ha EDS även i setup/validate? Känns lite överflödigt att
 "optimera" bort den i de fall valideringen misslyckas = undantagsfall.
@@ -106,7 +108,7 @@ registerara skapandet, så att testet kunde kolla om den snutten körts eller ej
 ** DONE <2015-05-11 mån> Kolla steg+fas i FullResult
 Tror namn på fas och steg inkluderas i FullResult, men finns ingen koll på att
 det är rätt värden nu.
-** TODO <2015-05-03 sön> kolla hur miljövariabler sätts
+** DONE <2015-05-03 sön> kolla hur miljövariabler sätts
 Dels i förhållande till nya exekveringssekvensen.
 Dels pga ny variabel _TMP (behöver ev gå igenom alla ställen där miljövar
 testas, o lägga till nya.)
