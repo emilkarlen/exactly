@@ -12,6 +12,10 @@ from shelltest.phase_instr.model import Instruction
 from shelltest_test.execution.util.test_case_generation import TestCaseGeneratorBase
 
 
+def do_nothing__anonymous_phase(phase_environment: i.PhaseEnvironmentForAnonymousPhase):
+    pass
+
+
 def do_nothing__without_eds(phase_step: PhaseStep,
                             home_dir: Path):
     pass
@@ -33,7 +37,7 @@ class TestCaseSetup(tuple):
                 ret_val_from_execute: i.SuccessOrHardError=execution_result.new_success(),
                 ret_val_from_assert_execute: i.PassOrFailOrHardError=assert_result.new_pass(),
                 validation_action__without_eds: types.FunctionType=do_nothing__without_eds,
-                execution_action__without_eds: types.FunctionType=do_nothing__without_eds,
+                anonymous_phase_action: types.FunctionType=do_nothing__anonymous_phase,
                 validation_action__with_eds: types.FunctionType=do_nothing__with_eds,
                 execution_action__with_eds: types.FunctionType=do_nothing__with_eds,
                 execution__generate_script: types.FunctionType=do_nothing__generate_script,
@@ -42,7 +46,7 @@ class TestCaseSetup(tuple):
                                    ret_val_from_execute,
                                    ret_val_from_assert_execute,
                                    validation_action__without_eds,
-                                   execution_action__without_eds,
+                                   anonymous_phase_action,
                                    validation_action__with_eds,
                                    execution_action__with_eds,
                                    execution__generate_script,
@@ -80,7 +84,7 @@ class TestCaseSetup(tuple):
         return self[3]
 
     @property
-    def execution_action__without_eds(self) -> types.FunctionType:
+    def anonymous_phase_action(self) -> types.FunctionType:
         return self[4]
 
     @property
@@ -136,8 +140,7 @@ class _AnonymousInstruction(i.AnonymousPhaseInstruction):
     def execute(self, phase_name: str,
                 global_environment,
                 phase_environment: i.PhaseEnvironmentForAnonymousPhase) -> i.SuccessOrHardError:
-        self.__configuration.execution_action__without_eds(phase_step.ANONYMOUS_EXECUTE,
-                                                           phase_environment.home_dir_path)
+        self.__configuration.anonymous_phase_action(phase_environment)
         return self.__configuration.ret_val_from_execute
 
 
