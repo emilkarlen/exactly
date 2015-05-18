@@ -29,7 +29,7 @@ Fler fördelar:
 ** TODO <2015-01-05 mån> Handle parse errors
 ** TODO <2015-01-05 mån> Handle errors correctly according to phase
 * TODO Instruktioner
-** Byta katalog till testrooten
+** alla faser: Byta katalog till testrooten
 Tycker för tillfället det är vettigast att varje fas inte inleds med att
 automatiskt byta katalog till testroten.  Främsta anledningen är att
 act-fasens byte av katalog måste betraktas som en sidoeffekt av programmet
@@ -46,6 +46,17 @@ Därför vore det bra med en instruktion som byter till denna katalog.
 
 Problem ... hur ser man till att aktuell katalog bevaras från act-fasen om
 den kör i en egen process??
+** setup: Sätt systemets TMP-katalog till ${SHELLTEST_TMP}
+* TODO Förbättringar
+** TODO <2015-05-17 sön> Bevara glob tillstånd
+Idag sparas omgivningsvariabler "runt" partiell exekvering.  Borde sparas runt
+"full" exekvering, naturligtvis.
+Vore bäst (känns nu) om hela exekveringen kunde ske i sub-process.
+** TODO <2015-05-18 mån> Ev skapa EDS senare
+Enl diagram ska den skapas precis efter setup/validate.
+Idag skapas den precis innan setup/validate.
+Ingen stor grej, men kan ev ändras.
+Alternativ ändrar man spec till att göra som idag.
 * TODO Refaktoreringar
 ** TODO Argument till instruktionernas steg
 Spikade först två generella miljöer: global miljö och fas-miljö.
@@ -55,3 +66,6 @@ användas.
 Två argument:
 1. Skriptbyggare
 2. Inställningssättare (för t ex stdin).
+** TODO Använda nya TestCaseSetup i äldre tester
+Som du finns flera instruktions-klasser som enbart returnerar ett visst värde
+eller kastar undantag.  Alla de fallen kan hanteras av nya TestCaseSetup.
