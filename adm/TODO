@@ -13,6 +13,32 @@ The list of phases must:
 handle an arbitrary language.
 Giving a ScriptLanguage to apply, indicates that it should be capable of
 handling arbitrary languages.
+
+* TODO Kommandorads-program
+** TODO Hjälpsystem via CLI
+Förslag:
+*** -h | --help : Elementär hjälp. Hjälp för hur använda kommandot "help"
+*** Kommando "help" : om skrivs som första argument på CL
+**** Enbart "help" : hjälp om hur använda "help"
+**** help phase : Översikt över faserna
+I vilken ordning de körs och deras inbördes roller.
+**** help phase PHASE : Detaljerad info om fasen PHASE
+**** help instruction : Översiktlig hjälp om instruktioner
+**** help instruction INSTRUCTION : Detaljerad info om instr INSTRUCTION
+* TODO Formgivning av instruktionsuppsättning
+** Anonyma fasen: Fixerad mängd instruktioner
+Icke konfigurerbar pss som övriga faser, iom att denna fas har en speciell
+uppgift att styra kommande faser.
+** Instr har antingen arg enl argparse, eller skräddarsydd parsning
+Skräddarsydd parsning funkar bäst för t ex instr i act-fasen som enbart är
+källkod som ska kopieras till skriptet.
+** Generella instr: Instr som kan köras i alla namngivna faser
+Borde gå/finnas behov av att skriva generella instruktioner som kan köras i
+vilken som helst av de namngivna faserna, eller kanske snarare, i vilken som
+helst av faserna som har tillgång till EDS.
+*** Ta fram SGD för dessa instruktioner (t ex EDS + HOME)
+Ev är problemet här fasen "setup", vars "validate" inte har tillgång till EDS.
+Kanske är det av den orsaken värt att skapa EDS innan setup/validate.
 * TODO Test result
 ** TODO <2015-05-03 sön> Enhetstester för fast-steg-exekverare
 Blir redundans om alla dess varianter ska testas via integrationstest.
@@ -28,7 +54,7 @@ Fler fördelar:
 ** TODO <2015-01-05 mån> Handle implementation errors
 ** TODO <2015-01-05 mån> Handle parse errors
 ** TODO <2015-01-05 mån> Handle errors correctly according to phase
-* TODO Instruktioner
+* TODO Specifika instruktioner
 ** alla faser: Byta katalog till testrooten
 Tycker för tillfället det är vettigast att varje fas inte inleds med att
 automatiskt byta katalog till testroten.  Främsta anledningen är att
@@ -46,7 +72,9 @@ Därför vore det bra med en instruktion som byter till denna katalog.
 
 Problem ... hur ser man till att aktuell katalog bevaras från act-fasen om
 den kör i en egen process??
-** setup: Sätt systemets TMP-katalog till ${SHELLTEST_TMP}
+** Sätt systemets TMP-katalog till ${SHELLTEST_TMP}
+Används antingen i setup eller anonyma fasen.
+** Skapa temporär fil (filnamn tas fram automatiskt, läggs i SHELLTEST_TMP)
 * TODO Förbättringar
 ** TODO <2015-05-17 sön> Bevara glob tillstånd
 Idag sparas omgivningsvariabler "runt" partiell exekvering.  Borde sparas runt
