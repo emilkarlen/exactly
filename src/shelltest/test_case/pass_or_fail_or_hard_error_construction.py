@@ -1,4 +1,4 @@
-from shelltest.exec_abs_syn.instructions import PassOrFailOrHardError, PassOrFailOrHardErrorEnum
+from shelltest.test_case.instructions import PassOrFailOrHardError, PassOrFailOrHardErrorEnum
 
 
 def new_success() -> PassOrFailOrHardError:

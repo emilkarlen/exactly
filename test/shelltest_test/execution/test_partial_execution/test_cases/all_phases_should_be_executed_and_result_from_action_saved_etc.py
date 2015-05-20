@@ -2,16 +2,16 @@ import os
 import pathlib
 import unittest
 
-from shelltest.exec_abs_syn.success_or_hard_error_construction import new_success
-from shelltest.exec_abs_syn import success_or_validation_hard_or_error_construction
+from shelltest.test_case.success_or_hard_error_construction import new_success
+from shelltest.test_case import success_or_validation_hard_or_error_construction
 from shelltest.execution.execution_directory_structure import ExecutionDirectoryStructure
-from shelltest.exec_abs_syn.config import Configuration
+from shelltest.test_case.config import Configuration
 from shelltest_test.execution.util import py_unit_test_case_with_file_output as with_file_output
 from shelltest_test.execution.util.py_unit_test_case_with_file_output import \
     InternalInstructionThatWritesToStandardPhaseFile
 from shelltest import phases
 from shelltest_test.execution.util import py_unit_test_case
-from shelltest.exec_abs_syn import instructions
+from shelltest.test_case import instructions
 from shelltest_test.execution.util import utils
 
 

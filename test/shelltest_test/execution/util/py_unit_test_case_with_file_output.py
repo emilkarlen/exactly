@@ -3,7 +3,7 @@ import pathlib
 
 from shelltest.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shelltest import phases
-from shelltest.exec_abs_syn import instructions
+from shelltest.test_case import instructions
 
 
 def standard_phase_file_path_eds(eds: ExecutionDirectoryStructure,

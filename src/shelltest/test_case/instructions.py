@@ -3,7 +3,7 @@ import pathlib
 
 from shelltest.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shelltest.document.model import Instruction
-from shelltest.exec_abs_syn import script_stmt_gen
+from shelltest.test_case import script_stmt_gen
 
 
 ENV_VAR_HOME = 'SHELLTEST_HOME'

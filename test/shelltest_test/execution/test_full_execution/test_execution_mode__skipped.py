@@ -1,7 +1,7 @@
 import unittest
 
 from shelltest import phases
-from shelltest.exec_abs_syn import instructions
+from shelltest.test_case import instructions
 from shelltest_test.execution.test_full_execution.util import instruction_test_resources
 from shelltest_test.execution.test_full_execution.util.instruction_test_resources import \
     AnonymousPhaseInstructionThatSetsExecutionMode

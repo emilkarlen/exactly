@@ -3,11 +3,11 @@ from pathlib import Path
 import functools
 
 from shelltest.execution.phase_step import PhaseStep
-from shelltest.exec_abs_syn import abs_syn_gen
-from shelltest.exec_abs_syn import instructions as i
-from shelltest.exec_abs_syn import success_or_validation_hard_or_error_construction as validation_result
-from shelltest.exec_abs_syn import success_or_hard_error_construction as execution_result
-from shelltest.exec_abs_syn import assert_instruction_result as assert_result
+from shelltest.test_case import abs_syn_gen
+from shelltest.test_case import instructions as i
+from shelltest.test_case import success_or_validation_hard_or_error_construction as validation_result
+from shelltest.test_case import success_or_hard_error_construction as execution_result
+from shelltest.test_case import assert_instruction_result as assert_result
 from shelltest_test.execution.util import instruction_that_do_and_return
 
 

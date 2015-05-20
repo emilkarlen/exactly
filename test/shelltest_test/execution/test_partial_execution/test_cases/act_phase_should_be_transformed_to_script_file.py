@@ -1,12 +1,12 @@
 import os
 import unittest
 
-from shelltest.exec_abs_syn.success_or_hard_error_construction import new_success
-from shelltest.exec_abs_syn import success_or_validation_hard_or_error_construction
+from shelltest.test_case.success_or_hard_error_construction import new_success
+from shelltest.test_case import success_or_validation_hard_or_error_construction
 from shelltest import phases
 from shelltest.document import line_source
 from shelltest.document import model
-from shelltest.exec_abs_syn import instructions
+from shelltest.test_case import instructions
 from shelltest_test.execution.util import utils
 from shelltest_test.execution.util import py_unit_test_case
 from shelltest_test.execution.util.py_unit_test_case import TestCaseWithCommonDefaultForSetupAssertCleanup

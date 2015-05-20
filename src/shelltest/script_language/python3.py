@@ -1,5 +1,5 @@
-from shelltest.exec_abs_syn import script_stmt_gen
-from shelltest.exec_abs_syn.script_stmt_gen import ScriptSourceBuilder, ScriptFileManager
+from shelltest.test_case import script_stmt_gen
+from shelltest.test_case.script_stmt_gen import ScriptSourceBuilder, ScriptFileManager
 
 
 class Python3Language(script_stmt_gen.ScriptLanguage):

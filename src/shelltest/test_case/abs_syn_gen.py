@@ -2,7 +2,7 @@
 Functionality for generating a Shell Script from a parsed Test Case file.
 """
 
-from shelltest.exec_abs_syn import instructions
+from shelltest.test_case import instructions
 from shelltest.document.model import PhaseContents
 
 

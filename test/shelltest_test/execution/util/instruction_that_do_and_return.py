@@ -4,10 +4,10 @@ from pathlib import Path
 from shelltest_test.execution.util import python_code_gen as py
 from shelltest.execution import phase_step
 from shelltest.execution.phase_step import PhaseStep
-from shelltest.exec_abs_syn import instructions as i
-from shelltest.exec_abs_syn import success_or_validation_hard_or_error_construction as validation_result
-from shelltest.exec_abs_syn import success_or_hard_error_construction as execution_result
-from shelltest.exec_abs_syn import assert_instruction_result as assert_result
+from shelltest.test_case import instructions as i
+from shelltest.test_case import success_or_validation_hard_or_error_construction as validation_result
+from shelltest.test_case import success_or_hard_error_construction as execution_result
+from shelltest.test_case import assert_instruction_result as assert_result
 from shelltest.document.model import Instruction
 from shelltest_test.execution.util.test_case_generation import TestCaseGeneratorBase
 

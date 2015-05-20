@@ -1,7 +1,6 @@
 import unittest
 
-from shelltest.exec_abs_syn import abs_syn_gen
-
+from shelltest.test_case import abs_syn_gen
 from shelltest_test.execution.test_full_execution.util.test_case_base import FullExecutionTestCaseBase
 from shelltest_test.execution.util.expected_instruction_failure import ExpectedInstructionFailureBase
 from shelltest.execution.result import FullResultStatus

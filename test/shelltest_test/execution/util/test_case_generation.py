@@ -1,6 +1,6 @@
 from shelltest.document import model
 from shelltest.document import line_source
-from shelltest.exec_abs_syn import abs_syn_gen
+from shelltest.test_case import abs_syn_gen
 
 
 class TestCaseGeneratorBase:

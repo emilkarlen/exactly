@@ -8,11 +8,11 @@ from shelltest.execution.phase_step_execution import ElementHeaderExecutor
 from shelltest.document import line_source
 from shelltest.execution import phase_step_executors
 from shelltest.execution.single_instruction_executor import ControlledInstructionExecutor
-from shelltest.exec_abs_syn import instructions
+from shelltest.test_case import instructions
 from shelltest.document.model import PhaseContents
 from shelltest import phases
-from shelltest.exec_abs_syn import script_stmt_gen, abs_syn_gen
-from shelltest.exec_abs_syn.config import Configuration
+from shelltest.test_case import script_stmt_gen, abs_syn_gen
+from shelltest.test_case.config import Configuration
 from shelltest import exception
 from .execution_directory_structure import construct_at, ExecutionDirectoryStructure
 from .result import PartialResult, PartialResultStatus
