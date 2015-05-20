@@ -1,7 +1,7 @@
 import os
 import unittest
 
-from shelltest.phase_instr import line_source
+from shelltest.document import line_source
 
 
 def line(line_number: int, text: str) -> line_source.Line:

@@ -1,6 +1,6 @@
 import unittest
 
-from shelltest_test.phase_instr import test_suite as phase_instr_test
+from shelltest_test.document import test_suite as phase_instr_test
 from shelltest_test.exec_abs_syn import test_suite as exec_abs_syn_test
 from shelltest_test.execution import test_suite as execution_test
 

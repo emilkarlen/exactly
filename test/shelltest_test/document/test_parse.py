@@ -1,9 +1,9 @@
 import os
 import unittest
 
-from shelltest.phase_instr.parse import SourceError, PlainTestCaseParser
-from shelltest.phase_instr import model
-from shelltest.phase_instr import line_source, parse, syntax
+from shelltest.document.parse import SourceError, PlainTestCaseParser
+from shelltest.document import model
+from shelltest.document import line_source, parse, syntax
 
 
 class InstructionInPhase(model.Instruction):

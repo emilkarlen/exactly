@@ -2,8 +2,8 @@ from enum import Enum
 
 from shelltest.execution import result
 from shelltest.execution.result import InstructionFailureDetails, PartialResultStatus
-from shelltest.phase_instr import line_source
-from shelltest.phase_instr.model import Instruction, PhaseContentElement
+from shelltest.document import line_source
+from shelltest.document.model import Instruction, PhaseContentElement
 
 
 class PartialControlledFailureEnum(Enum):

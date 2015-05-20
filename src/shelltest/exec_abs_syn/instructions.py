@@ -2,7 +2,7 @@ from enum import Enum
 import pathlib
 
 from shelltest.execution.execution_directory_structure import ExecutionDirectoryStructure
-from shelltest.phase_instr.model import Instruction
+from shelltest.document.model import Instruction
 from shelltest.exec_abs_syn import script_stmt_gen
 
 

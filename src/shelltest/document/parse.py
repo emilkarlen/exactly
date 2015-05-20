@@ -1,7 +1,7 @@
-from shelltest.phase_instr import model
-from shelltest.phase_instr import line_source
-from shelltest.phase_instr.line_source import LineSource
-from shelltest.phase_instr import syntax
+from shelltest.document import model
+from shelltest.document import line_source
+from shelltest.document.line_source import LineSource
+from shelltest.document import syntax
 
 
 class SourceError(Exception):

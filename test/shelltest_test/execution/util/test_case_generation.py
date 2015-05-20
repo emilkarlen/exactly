@@ -1,5 +1,5 @@
-from shelltest.phase_instr import model
-from shelltest.phase_instr import line_source
+from shelltest.document import model
+from shelltest.document import line_source
 from shelltest.exec_abs_syn import abs_syn_gen
 
 

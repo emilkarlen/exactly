@@ -8,7 +8,7 @@ from shelltest.exec_abs_syn import instructions as i
 from shelltest.exec_abs_syn import success_or_validation_hard_or_error_construction as validation_result
 from shelltest.exec_abs_syn import success_or_hard_error_construction as execution_result
 from shelltest.exec_abs_syn import assert_instruction_result as assert_result
-from shelltest.phase_instr.model import Instruction
+from shelltest.document.model import Instruction
 from shelltest_test.execution.util.test_case_generation import TestCaseGeneratorBase
 
 

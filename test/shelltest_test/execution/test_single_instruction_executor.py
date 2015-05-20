@@ -3,8 +3,8 @@ import unittest
 
 from shelltest.execution.result import InstructionFailureDetails, new_failure_details_from_message, PartialResultStatus, \
     new_failure_details_from_exception
-from shelltest.phase_instr import line_source
-from shelltest.phase_instr.model import Instruction, PhaseContentElement
+from shelltest.document import line_source
+from shelltest.document.model import Instruction, PhaseContentElement
 from shelltest.execution.single_instruction_executor import execute_element, ControlledInstructionExecutor, \
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum, SingleInstructionExecutionFailure
 
