@@ -1,7 +1,7 @@
 import unittest
 
 from shelltest_test.test_resources import assertion_message
-from shelltest.phase_instr.line_source import Line
+from shelltest.document.line_source import Line
 
 
 def assert_equals_line(test_case: unittest.TestCase,

@@ -1,6 +1,6 @@
 import unittest
 
-from shelltest.phase_instr import syntax
+from shelltest.document import syntax
 
 
 class TestExtractPhaseNameFromPhaseLine(unittest.TestCase):

@@ -3,7 +3,7 @@ Functionality for generating a Shell Script from a parsed Test Case file.
 """
 
 from shelltest.exec_abs_syn import instructions
-from shelltest.phase_instr.model import PhaseContents
+from shelltest.document.model import PhaseContents
 
 
 class TestCase(tuple):

@@ -7,8 +7,8 @@ import unittest
 from shelltest.exec_abs_syn.abs_syn_gen import TestCase
 from shelltest.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shelltest.execution.partial_execution import execute_test_case_in_execution_directory, PartialExecutor
-from shelltest.phase_instr import model
-from shelltest.phase_instr import line_source
+from shelltest.document import model
+from shelltest.document import line_source
 from shelltest.script_language import python3
 from shelltest.exec_abs_syn import abs_syn_gen
 from shelltest import phases

@@ -1,6 +1,6 @@
 import os
 
-from shelltest.phase_instr.line_source import Line
+from shelltest.document.line_source import Line
 
 
 class ScriptLanguage:

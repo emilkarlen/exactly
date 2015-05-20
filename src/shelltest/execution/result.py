@@ -1,7 +1,7 @@
 from enum import Enum
 
 from shelltest.execution.phase_step import PhaseStep
-from shelltest.phase_instr import line_source
+from shelltest.document import line_source
 from .execution_directory_structure import ExecutionDirectoryStructure
 
 

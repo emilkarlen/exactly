@@ -4,13 +4,12 @@ import subprocess
 import pathlib
 
 from shelltest.execution import phase_step
-
 from shelltest.execution.phase_step_execution import ElementHeaderExecutor
-from shelltest.phase_instr import line_source
+from shelltest.document import line_source
 from shelltest.execution import phase_step_executors
 from shelltest.execution.single_instruction_executor import ControlledInstructionExecutor
 from shelltest.exec_abs_syn import instructions
-from shelltest.phase_instr.model import PhaseContents
+from shelltest.document.model import PhaseContents
 from shelltest import phases
 from shelltest.exec_abs_syn import script_stmt_gen, abs_syn_gen
 from shelltest.exec_abs_syn.config import Configuration

@@ -1,4 +1,4 @@
-from shelltest.phase_instr import line_source
+from shelltest.document import line_source
 
 
 class Instruction:

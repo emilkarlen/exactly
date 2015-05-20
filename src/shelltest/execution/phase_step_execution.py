@@ -1,7 +1,7 @@
 from shelltest.execution.phase_step import PhaseStep
-from shelltest.phase_instr import line_source
+from shelltest.document import line_source
 from shelltest.execution.single_instruction_executor import ControlledInstructionExecutor, execute_element
-from shelltest.phase_instr.model import PhaseContents, PhaseContentElement
+from shelltest.document.model import PhaseContents, PhaseContentElement
 from shelltest import phases
 from .execution_directory_structure import ExecutionDirectoryStructure
 from .result import PartialResult, InstructionFailureInfo, new_partial_result_pass, PartialResultStatus, \
