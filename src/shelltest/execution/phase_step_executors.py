@@ -1,8 +1,8 @@
-from shelltest.exec_abs_syn.instructions import PassOrFailOrHardErrorEnum
+from shelltest.test_case.instructions import PassOrFailOrHardErrorEnum
 from shelltest.execution.single_instruction_executor import ControlledInstructionExecutor, \
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum
 from shelltest import phases
-from shelltest.exec_abs_syn import instructions as instr
+from shelltest.test_case import instructions as instr
 
 
 def _from_success_or_validation_error_or_hard_error(res: instr.SuccessOrValidationErrorOrHardError) \

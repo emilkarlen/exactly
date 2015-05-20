@@ -4,7 +4,7 @@ from shelltest_test.execution.test_full_execution.util.recording_instructions_fo
     AssertInstructionThatRecordsStringInRecordFile
 from shelltest_test.execution.util.test_case_generation import TestCaseGeneratorBase
 from shelltest.execution import phase_step
-from shelltest.exec_abs_syn import instructions
+from shelltest.test_case import instructions
 from shelltest_test.execution.util import instruction_adapter
 
 

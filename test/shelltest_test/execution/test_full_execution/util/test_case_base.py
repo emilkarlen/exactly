@@ -3,7 +3,7 @@ import shutil
 import pathlib
 import unittest
 
-from shelltest.exec_abs_syn import abs_syn_gen
+from shelltest.test_case import abs_syn_gen
 from shelltest.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shelltest.execution.result import FullResult
 from shelltest.script_language import python3

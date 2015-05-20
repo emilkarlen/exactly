@@ -1,4 +1,4 @@
-from shelltest.exec_abs_syn.config import Configuration
+from shelltest.test_case.config import Configuration
 
 
 class PythonCommand:

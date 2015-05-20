@@ -1,5 +1,5 @@
-from shelltest.exec_abs_syn import success_or_hard_error_construction, success_or_validation_hard_or_error_construction
-from shelltest.exec_abs_syn import instructions as instrs
+from shelltest.test_case import success_or_hard_error_construction, success_or_validation_hard_or_error_construction
+from shelltest.test_case import instructions as instrs
 
 
 class ImplementationErrorTestException(Exception):

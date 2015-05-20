@@ -12,7 +12,7 @@ from shelltest_test.execution.test_full_execution.util.test_case_that_records_ph
 from shelltest_test.execution.util.expected_instruction_failure import ExpectedInstructionFailureForNoFailure, \
     ExpectedInstructionFailureForFailure
 from shelltest_test.execution.test_full_execution.util import instruction_test_resources
-from shelltest.exec_abs_syn import pass_or_fail_or_hard_error_construction, \
+from shelltest.test_case import pass_or_fail_or_hard_error_construction, \
     success_or_validation_hard_or_error_construction, \
     success_or_hard_error_construction
 

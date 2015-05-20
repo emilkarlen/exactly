@@ -4,7 +4,7 @@ from shelltest import phases
 from shelltest_test.execution.test_full_execution.util import instruction_test_resources
 from shelltest_test.execution.test_full_execution.util.instruction_test_resources import \
     AnonymousPhaseInstructionThatSetsExecutionMode
-from shelltest.exec_abs_syn import instructions
+from shelltest.test_case import instructions
 from shelltest_test.execution.test_full_execution.util.test_case_generation_for_sequence_tests import \
     TestCaseThatRecordsExecutionWithExtraInstructionList
 from shelltest.execution.result import FullResultStatus
@@ -13,7 +13,7 @@ from shelltest_test.execution.test_full_execution.util.test_case_that_records_ph
     TestCaseThatRecordsExecution
 from shelltest_test.execution.util.expected_instruction_failure import ExpectedInstructionFailureForFailure, \
     ExpectedInstructionFailureForNoFailure
-from shelltest.exec_abs_syn import pass_or_fail_or_hard_error_construction, \
+from shelltest.test_case import pass_or_fail_or_hard_error_construction, \
     success_or_validation_hard_or_error_construction
 
 

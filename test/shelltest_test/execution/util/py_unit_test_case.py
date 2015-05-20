@@ -4,13 +4,13 @@ import pathlib
 import types
 import unittest
 
-from shelltest.exec_abs_syn.abs_syn_gen import TestCase
+from shelltest.test_case.abs_syn_gen import TestCase
 from shelltest.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shelltest.execution.partial_execution import execute_test_case_in_execution_directory, PartialExecutor
 from shelltest.document import model
 from shelltest.document import line_source
 from shelltest.script_language import python3
-from shelltest.exec_abs_syn import abs_syn_gen
+from shelltest.test_case import abs_syn_gen
 from shelltest import phases
 from shelltest_test.execution.util import utils, instruction_adapter
 from shelltest_test.execution.util.test_case_generation import TestCaseGeneratorBase

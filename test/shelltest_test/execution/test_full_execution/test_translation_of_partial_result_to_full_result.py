@@ -1,6 +1,6 @@
 import unittest
 
-from shelltest.exec_abs_syn.instructions import ExecutionMode
+from shelltest.test_case.instructions import ExecutionMode
 from shelltest.execution.full_execution import translate_status
 from shelltest.execution.result import FullResultStatus, PartialResultStatus
 

@@ -3,8 +3,8 @@ import pathlib
 import unittest
 import functools
 
-from shelltest.exec_abs_syn import abs_syn_gen
-from shelltest.exec_abs_syn import instructions
+from shelltest.test_case import abs_syn_gen
+from shelltest.test_case import instructions
 from shelltest.execution.phase_step import PhaseStep
 from shelltest.execution.result import FullResultStatus
 from shelltest_test.execution.test_full_execution.util.test_case_base import FullExecutionTestCaseBase

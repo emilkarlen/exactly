@@ -3,12 +3,11 @@ import os
 import pathlib
 
 from shelltest.execution.partial_execution import execute_partial
-
 from shelltest.execution import phase_step_executors
 from shelltest import phases
-from shelltest.exec_abs_syn import instructions
-from shelltest.exec_abs_syn import script_stmt_gen, abs_syn_gen
-from shelltest.exec_abs_syn.instructions import PhaseEnvironmentForAnonymousPhase, ExecutionMode
+from shelltest.test_case import instructions
+from shelltest.test_case import script_stmt_gen, abs_syn_gen
+from shelltest.test_case.instructions import PhaseEnvironmentForAnonymousPhase, ExecutionMode
 from .result import FullResult, PartialResult, PartialResultStatus, FullResultStatus
 from . import result
 from . import phase_step_execution
