@@ -12,7 +12,6 @@ from shelltest_test.execution.util import utils
 
 
 class FullExecutionTestCaseBase:
-
     def __init__(self,
                  unittest_case: unittest.TestCase,
                  dbg_do_not_delete_dir_structure=False):
@@ -27,8 +26,7 @@ class FullExecutionTestCaseBase:
         self.__initial_home_dir_path = pathlib.Path().resolve()
         # ACT #
         full_result = full_execution.execute(
-            python3.Python3ScriptFileManager(),
-            python3.new_script_source_writer(),
+            python3.new_script_language_setup(),
             self._test_case(),
             self.initial_home_dir_path,
             'shelltest-test-',

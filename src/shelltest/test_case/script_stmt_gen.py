@@ -43,6 +43,7 @@ class ScriptFileManager:
     """
     Manages generation of a file-name and execution of an existing file.
     """
+
     def base_name_from_stem(self, stem: str) -> str:
         raise NotImplementedError()
 
@@ -54,31 +55,18 @@ class ScriptFileManager:
         raise NotImplementedError()
 
 
-class ScriptSourceBuilder:
+class ScriptSourceAccumulator:
     """
-    Accumulates statements of a script program and generates the final source lines
-    of the complete script.
+    Accumulates statements of a script program.
 
-    An object must only be used to generate a single script program.
+    Do not have the ability, though, to generates the final source lines
+    of the complete script.
     """
 
     def __init__(self,
                  script_language: ScriptLanguage):
         self._script_language = script_language
         self._source_lines = []
-        self._final_source_code = None
-
-    def build(self) -> str:
-        """
-        Gives the complete script source after all statements have been accumulated.
-
-        No script statements must be added after this method has been called.
-
-        :rtype List of strings: each string is a single line in the script.
-        """
-        if not self._final_source_code:
-            self._final_source_code = self._final_source_code_string()
-        return self._final_source_code
 
     def comment_line(self, comment: str):
         """
@@ -114,26 +102,46 @@ class ScriptSourceBuilder:
         return self.comment_lines([line_ref,
                                    line_contents])
 
+
+class ScriptSourceBuilder(ScriptSourceAccumulator):
+    """
+    An ScriptSourceAccumulator extended with the functionality to
+    generates the final source lines of the complete script.
+    """
+
+    def __init__(self,
+                 script_language: ScriptLanguage):
+        super().__init__(script_language)
+        self._final_source_code = None
+
+    def build(self) -> str:
+        """
+        Gives the complete script source after all statements have been accumulated.
+
+        No script statements must be added after this method has been called.
+
+        :rtype List of strings: each string is a single line in the script.
+        """
+        if not self._final_source_code:
+            self._final_source_code = self._final_source_code_string()
+        return self._final_source_code
+
     def _final_source_code_string(self) -> str:
         return os.linesep.join(self._source_lines) + os.linesep
 
 
-class ScriptGenerator:
-    """
-    Abstract base class for generating a script file.
+class ScriptLanguageSetup:
+    def __init__(self,
+                 file_manager: ScriptFileManager,
+                 language: ScriptLanguage):
+        self.__file_manager = file_manager
+        self.__language = language
 
-    Provides a buffer for accumulating script source.
-
-    Can generate a single script.
-    """
-
-    def command_and_args_for_executing_script_file(self, script_file_name: str) -> list:
-        """
-        :returns The list of the command and it's arguments for executing the given
-        script file (that is a program in the language defined by this object).
-        """
-        raise NotImplementedError()
+    def new_builder(self) -> ScriptSourceBuilder:
+        return ScriptSourceBuilder(self.__language)
 
     def base_name_from_stem(self, stem: str) -> str:
-        raise NotImplementedError()
+        return self.__file_manager.base_name_from_stem(stem)
 
+    def command_and_args_for_executing_script_file(self, file_name: str) -> list:
+        return self.__file_manager.command_and_args_for_executing_script_file(file_name)

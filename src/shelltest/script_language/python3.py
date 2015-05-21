@@ -1,5 +1,5 @@
 from shelltest.test_case import script_stmt_gen
-from shelltest.test_case.script_stmt_gen import ScriptSourceBuilder, ScriptFileManager
+from shelltest.test_case.script_stmt_gen import ScriptFileManager
 
 
 class Python3Language(script_stmt_gen.ScriptLanguage):
@@ -20,6 +20,7 @@ class Python3ScriptFileManager(ScriptFileManager):
     """
     This implementation assumes that the Python 3 interpreter (python3) is in the path.
     """
+
     def base_name_from_stem(self, stem: str) -> str:
         return stem + '.py'
 
@@ -27,5 +28,8 @@ class Python3ScriptFileManager(ScriptFileManager):
         return ['python3', script_file_name]
 
 
-def new_script_source_writer() -> ScriptSourceBuilder:
-    return ScriptSourceBuilder(Python3Language())
+def new_script_language_setup() -> script_stmt_gen.ScriptLanguageSetup:
+    return script_stmt_gen.ScriptLanguageSetup(
+        Python3ScriptFileManager(),
+        Python3Language())
+
