@@ -185,16 +185,12 @@ class GlobalEnvironmentForPreEdsStep:
         return self.__home_dir
 
 
-class GlobalEnvironmentForNamedPhase:
+class GlobalEnvironmentForNamedPhase(GlobalEnvironmentForPreEdsStep):
     def __init__(self,
                  home_dir: pathlib.Path,
                  eds: ExecutionDirectoryStructure):
-        self.__home_dir = home_dir
+        super().__init__(home_dir)
         self.__eds = eds
-
-    @property
-    def home_directory(self) -> pathlib.Path:
-        return self.__home_dir
 
     @property
     def execution_directory_structure(self) -> ExecutionDirectoryStructure:
