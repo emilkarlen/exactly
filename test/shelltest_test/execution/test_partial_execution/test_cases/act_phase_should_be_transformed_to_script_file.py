@@ -60,7 +60,6 @@ class ActPhaseInstructionThatOutputsHomeDir(instructions.ActPhaseInstruction):
 
     def update_phase_environment(
             self,
-            phase_name: str,
             global_environment: instructions.GlobalEnvironmentForNamedPhase,
             phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> instructions.SuccessOrHardError:
         line = HOME_DIR_HEADER + str(global_environment.home_directory)
@@ -75,7 +74,6 @@ class ActPhaseInstructionThatOutputsTestRootDir(instructions.ActPhaseInstruction
 
     def update_phase_environment(
             self,
-            phase_name: str,
             global_environment: instructions.GlobalEnvironmentForNamedPhase,
             phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> instructions.SuccessOrHardError:
         line = TEST_ROOT_DIR_HEADER + str(global_environment.eds.test_root_dir)

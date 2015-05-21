@@ -1,3 +1,4 @@
+from shelltest import phases
 from shelltest.test_case import pass_or_fail_or_hard_error_construction
 from shelltest.test_case.success_or_hard_error_construction import new_success
 from shelltest.test_case import success_or_validation_hard_or_error_construction
@@ -29,10 +30,10 @@ class _SetupInstructionExecutor(instrs.SetupPhaseInstruction):
             -> instrs.SuccessOrValidationErrorOrHardError:
         return success_or_validation_hard_or_error_construction.new_success()
 
-    def execute(self, phase_name: str,
+    def execute(self,
                 global_environment: instrs.GlobalEnvironmentForNamedPhase,
                 phase_environment: instrs.PhaseEnvironmentForInternalCommands) -> SuccessOrHardError:
-        self.__internal_instruction.execute(phase_name,
+        self.__internal_instruction.execute(phases.SETUP.name,
                                             global_environment,
                                             phase_environment)
         return self.__ret_val
@@ -50,10 +51,10 @@ class _AssertInstructionExecutor(instrs.AssertPhaseInstruction):
             -> instrs.SuccessOrValidationErrorOrHardError:
         return success_or_validation_hard_or_error_construction.new_success()
 
-    def execute(self, phase_name: str,
+    def execute(self,
                 global_environment: instrs.GlobalEnvironmentForNamedPhase,
                 phase_environment: instrs.PhaseEnvironmentForInternalCommands) -> instrs.PassOrFailOrHardError:
-        self.__internal_instruction.execute(phase_name,
+        self.__internal_instruction.execute(phases.ASSERT.name,
                                             global_environment,
                                             phase_environment)
         return self.__ret_val
@@ -66,10 +67,10 @@ class _CleanupInstructionExecutor(instrs.CleanupPhaseInstruction):
         self.__internal_instruction = internal_instruction
         self.__ret_val = ret_val
 
-    def execute(self, phase_name: str,
+    def execute(self,
                 global_environment: instrs.GlobalEnvironmentForNamedPhase,
                 phase_environment: instrs.PhaseEnvironmentForInternalCommands) -> instrs.SuccessOrHardError:
-        self.__internal_instruction.execute(phase_name,
+        self.__internal_instruction.execute(phases.CLEANUP.name,
                                             global_environment,
                                             phase_environment)
         return self.__ret_val

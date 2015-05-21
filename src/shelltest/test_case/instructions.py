@@ -206,12 +206,11 @@ class AnonymousPhaseInstruction(Instruction):
     Abstract base class for instructions of the anonymous phase.
     """
 
-    def execute(self, phase_name: str,
+    def execute(self,
                 global_environment,
                 phase_environment: PhaseEnvironmentForAnonymousPhase) -> SuccessOrHardError:
         """
         Does whatever this instruction should do.
-        :param phase_name The phase in which this instruction is in.
         :param global_environment An object passed to all instructions in the Document.
         :param phase_environment An object passed to all instructions in the Phase.
         """
@@ -223,7 +222,8 @@ class InternalInstruction(Instruction):
     Abstract base class for instructions that are implemented in python.
     """
 
-    def execute(self, phase_name: str,
+    def execute(self,
+                phase_name: str,
                 global_environment: GlobalEnvironmentForNamedPhase,
                 phase_environment: PhaseEnvironmentForInternalCommands):
         """
@@ -244,12 +244,11 @@ class SetupPhaseInstruction(Instruction):
                  global_environment: GlobalEnvironmentForPreEdsStep) -> SuccessOrValidationErrorOrHardError:
         raise NotImplementedError()
 
-    def execute(self, phase_name: str,
+    def execute(self,
                 global_environment: GlobalEnvironmentForNamedPhase,
                 phase_environment: PhaseEnvironmentForInternalCommands) -> SuccessOrHardError:
         """
         Does whatever this instruction should do.
-        :param phase_name The phase in which this instruction is in.
         :param global_environment An object passed to all instructions in the Document.
         :param phase_environment An object passed to all instructions in the Phase.
         """
@@ -266,14 +265,12 @@ class ActPhaseInstruction(Instruction):
         raise NotImplementedError()
 
     def update_phase_environment(self,
-                                 phase_name: str,
                                  global_environment: GlobalEnvironmentForNamedPhase,
                                  phase_environment: PhaseEnvironmentForScriptGeneration) -> SuccessOrHardError:
         """
         Builds the script, and sets some execution premises (e.g. stdin),
         by updating the phase environment.
 
-        :param phase_name The phase in which this instruction is in.
         :param global_environment An object passed to all instructions in the Document.
         :param phase_environment An object passed to all instructions in the Phase.
         """
@@ -289,12 +286,11 @@ class AssertPhaseInstruction(Instruction):
                  global_environment: GlobalEnvironmentForNamedPhase) -> SuccessOrValidationErrorOrHardError:
         raise NotImplementedError()
 
-    def execute(self, phase_name: str,
+    def execute(self,
                 global_environment: GlobalEnvironmentForNamedPhase,
                 phase_environment: PhaseEnvironmentForInternalCommands) -> PassOrFailOrHardError:
         """
         Does whatever this instruction should do.
-        :param phase_name The phase in which this instruction is in.
         :param global_environment An object passed to all instructions in the Document.
         :param phase_environment An object passed to all instructions in the Phase.
         """
@@ -306,12 +302,11 @@ class CleanupPhaseInstruction(Instruction):
     Abstract base class for instructions of the CLEANUP phase.
     """
 
-    def execute(self, phase_name: str,
+    def execute(self,
                 global_environment: GlobalEnvironmentForNamedPhase,
                 phase_environment: PhaseEnvironmentForInternalCommands) -> SuccessOrHardError:
         """
         Does whatever this instruction should do.
-        :param phase_name The phase in which this instruction is in.
         :param global_environment An object passed to all instructions in the Document.
         :param phase_environment An object passed to all instructions in the Phase.
         """

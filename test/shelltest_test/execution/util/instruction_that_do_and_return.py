@@ -138,7 +138,7 @@ class _AnonymousInstruction(i.AnonymousPhaseInstruction):
                  configuration: TestCaseSetup):
         self.__configuration = configuration
 
-    def execute(self, phase_name: str,
+    def execute(self,
                 global_environment,
                 phase_environment: i.PhaseEnvironmentForAnonymousPhase) -> i.SuccessOrHardError:
         self.__configuration.anonymous_phase_action(phase_step.ANONYMOUS_EXECUTE,
@@ -185,7 +185,7 @@ class _SetupInstruction(i.SetupPhaseInstruction):
                                                             global_environment.home_directory)
         return self.__configuration.ret_val_from_execute
 
-    def execute(self, phase_name: str,
+    def execute(self,
                 global_environment: i.GlobalEnvironmentForNamedPhase,
                 phase_environment: i.PhaseEnvironmentForInternalCommands) -> i.SuccessOrHardError:
         self.__configuration.execution_action__with_eds(phase_step.SETUP_EXECUTE,
@@ -204,7 +204,6 @@ class _ActInstruction(i.ActPhaseInstruction):
         return self.__configuration.ret_val_from_validate
 
     def update_phase_environment(self,
-                                 phase_name: str,
                                  global_environment: i.GlobalEnvironmentForNamedPhase,
                                  phase_environment: i.PhaseEnvironmentForScriptGeneration) -> i.SuccessOrHardError:
         self.__configuration.execution_action__with_eds(phase_step.ACT_SCRIPT_GENERATION,
@@ -226,7 +225,6 @@ class _AssertInstruction(i.AssertPhaseInstruction):
         return self.__configuration.ret_val_from_validate
 
     def execute(self,
-                phase_name: str,
                 global_environment: i.GlobalEnvironmentForNamedPhase,
                 phase_environment: i.PhaseEnvironmentForInternalCommands) -> i.PassOrFailOrHardError:
         self.__configuration.execution_action__with_eds(phase_step.ASSERT_EXECUTE,
@@ -240,7 +238,6 @@ class _CleanupInstruction(i.CleanupPhaseInstruction):
         self.__configuration = configuration
 
     def execute(self,
-                phase_name: str,
                 global_environment: i.GlobalEnvironmentForNamedPhase,
                 phase_environment: i.PhaseEnvironmentForInternalCommands) -> i.SuccessOrHardError:
         self.__configuration.execution_action__with_eds(phase_step.CLEANUP_EXECUTE,
