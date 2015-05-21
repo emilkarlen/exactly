@@ -138,31 +138,22 @@ class PhaseEnvironmentForScriptGeneration:
     """
 
     def __init__(self,
-                 script_file_management: script_stmt_gen.ScriptFileManager,
-                 script_source_builder: script_stmt_gen.ScriptSourceBuilder,
+                 script_source_accumulator: script_stmt_gen.ScriptSourceAccumulator,
                  stdin_file_name: str=None):
-        self.__script_file_management = script_file_management
-        self.__script_source_builder = script_source_builder
-        self.stdin_file_name = stdin_file_name
+        self.__script_source_accumulator = script_source_accumulator
+        self.__stdin_file_name = stdin_file_name
 
     def set_stdin_file(self,
                        file_name: str):
-        self.stdin_file_name = file_name
+        self.__stdin_file_name = file_name
 
     @property
-    def script_file_management(self) -> script_stmt_gen.ScriptFileManager:
-        return self.__script_file_management
+    def stdin_file_name(self) -> str:
+        return self.__stdin_file_name
 
     @property
-    def append(self) -> script_stmt_gen.ScriptSourceBuilder:
-        return self.__script_source_builder
-
-    @property
-    def final_script_source(self) -> str:
-        """
-        Gives the source code for the complete script.
-        """
-        return self.__script_source_builder.build()
+    def append(self) -> script_stmt_gen.ScriptSourceAccumulator:
+        return self.__script_source_accumulator
 
 
 class PhaseEnvironmentForInternalCommands:

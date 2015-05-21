@@ -2,7 +2,7 @@ import copy
 import os
 import pathlib
 
-from shelltest.execution.partial_execution import execute_partial
+from shelltest.execution import partial_execution
 from shelltest.execution import phase_step_executors
 from shelltest import phases
 from shelltest.test_case import instructions
@@ -42,8 +42,7 @@ def translate_status(execution_mode: ExecutionMode,
     return FullResultStatus(ps.value)
 
 
-def execute(script_file_manager: script_stmt_gen.ScriptFileManager,
-            script_source_writer: script_stmt_gen.ScriptSourceBuilder,
+def execute(script_language_setup: script_stmt_gen.ScriptLanguageSetup,
             test_case: abs_syn_gen.TestCase,
             initial_home_dir_path: pathlib.Path,
             execution_directory_root_name_prefix: str,
@@ -56,12 +55,11 @@ def execute(script_file_manager: script_stmt_gen.ScriptFileManager,
         return new_anonymous_phase_failure_from(partial_result)
     if anonymous_phase_environment.execution_mode is ExecutionMode.SKIPPED:
         return result.new_skipped()
-    partial_result = execute_partial(script_file_manager,
-                                     script_source_writer,
-                                     test_case,
-                                     anonymous_phase_environment.home_dir_path,
-                                     execution_directory_root_name_prefix,
-                                     is_keep_execution_directory_root)
+    partial_result = partial_execution.execute(script_language_setup,
+                                               test_case,
+                                               anonymous_phase_environment.home_dir_path,
+                                               execution_directory_root_name_prefix,
+                                               is_keep_execution_directory_root)
     os.environ = saved_environment_variables
     return new_named_phases_result_from(anonymous_phase_environment.execution_mode,
                                         partial_result)
