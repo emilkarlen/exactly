@@ -147,7 +147,7 @@ class AssertInternalInstructionThatRecordsStringInList(instructions.AssertPhaseI
         self.__recorder_for_validate.record()
         return success_or_validation_hard_or_error_construction.new_success()
 
-    def execute(self,
+    def main(self,
                 global_environment,
                 phase_environment: instructions.PhaseEnvironmentForAnonymousPhase) -> SuccessOrHardError:
         self.__recorder_for_execute.record()
@@ -167,7 +167,7 @@ class AssertInstructionThatRecordsStringInRecordFile(instructions.AssertPhaseIns
                                    self.__string_for_validation)
         return success_or_validation_hard_or_error_construction.new_success()
 
-    def execute(self,
+    def main(self,
                 global_environment: instructions.GlobalEnvironmentForNamedPhase,
                 phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> instructions.SuccessOrHardError:
         append_line_to_record_file(global_environment.execution_directory_structure,

@@ -108,7 +108,7 @@ class AssertInstructionExecutor(ControlledInstructionExecutor):
 
     def apply(self, instruction: instr.AssertPhaseInstruction) -> PartialInstructionControlledFailureInfo:
         return _from_pass_or_fail_or_hard_error(
-            instruction.execute(self.__global_environment,
+            instruction.main(self.__global_environment,
                                 self.__phase_environment))
 
 
