@@ -51,7 +51,7 @@ class _AssertInstructionExecutor(instrs.AssertPhaseInstruction):
             -> instrs.SuccessOrValidationErrorOrHardError:
         return success_or_validation_hard_or_error_construction.new_success()
 
-    def execute(self,
+    def main(self,
                 global_environment: instrs.GlobalEnvironmentForNamedPhase,
                 phase_environment: instrs.PhaseEnvironmentForInternalCommands) -> instrs.PassOrFailOrHardError:
         self.__internal_instruction.execute(phases.ASSERT.name,

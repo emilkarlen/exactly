@@ -286,9 +286,9 @@ class AssertPhaseInstruction(Instruction):
                  global_environment: GlobalEnvironmentForNamedPhase) -> SuccessOrValidationErrorOrHardError:
         raise NotImplementedError()
 
-    def execute(self,
-                global_environment: GlobalEnvironmentForNamedPhase,
-                phase_environment: PhaseEnvironmentForInternalCommands) -> PassOrFailOrHardError:
+    def main(self,
+             global_environment: GlobalEnvironmentForNamedPhase,
+             phase_environment: PhaseEnvironmentForInternalCommands) -> PassOrFailOrHardError:
         """
         Does whatever this instruction should do.
         :param global_environment An object passed to all instructions in the Document.

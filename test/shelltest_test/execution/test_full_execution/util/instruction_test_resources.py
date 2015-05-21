@@ -155,7 +155,7 @@ class AssertPhaseInstructionThatReturns(instrs.AssertPhaseInstruction):
             -> instrs.SuccessOrValidationErrorOrHardError:
         return self.__for_validate
 
-    def execute(self,
+    def main(self,
                 global_environment: instrs.GlobalEnvironmentForNamedPhase,
                 phase_environment: instrs.PhaseEnvironmentForInternalCommands) -> instrs.PassOrFailOrHardError:
         return self.__for_execute
@@ -171,7 +171,7 @@ class AssertPhaseInstructionWithImplementationErrorInValidate(instrs.AssertPhase
             -> instrs.SuccessOrValidationErrorOrHardError:
         raise self.__exception_to_raise
 
-    def execute(self,
+    def main(self,
                 global_environment: instrs.GlobalEnvironmentForNamedPhase,
                 phase_environment: instrs.PhaseEnvironmentForInternalCommands) -> instrs.PassOrFailOrHardError:
         return success_or_hard_error_construction.new_success()
@@ -187,7 +187,7 @@ class AssertPhaseInstructionWithImplementationErrorInExecute(instrs.AssertPhaseI
             -> instrs.SuccessOrValidationErrorOrHardError:
         return success_or_validation_hard_or_error_construction.new_success()
 
-    def execute(self,
+    def main(self,
                 global_environment: instrs.GlobalEnvironmentForNamedPhase,
                 phase_environment: instrs.PhaseEnvironmentForInternalCommands) -> instrs.PassOrFailOrHardError:
         raise self.__exception_to_raise

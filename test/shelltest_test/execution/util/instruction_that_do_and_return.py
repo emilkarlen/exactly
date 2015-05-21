@@ -224,7 +224,7 @@ class _AssertInstruction(i.AssertPhaseInstruction):
                                                          global_environment)
         return self.__configuration.ret_val_from_validate
 
-    def execute(self,
+    def main(self,
                 global_environment: i.GlobalEnvironmentForNamedPhase,
                 phase_environment: i.PhaseEnvironmentForInternalCommands) -> i.PassOrFailOrHardError:
         self.__configuration.execution_action__with_eds(phase_step.ASSERT_EXECUTE,

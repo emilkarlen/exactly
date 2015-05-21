@@ -63,8 +63,8 @@ class PyCommandThatStoresStringInFileInCurrentDirectory(instructions.SetupPhaseI
         return success_or_validation_hard_or_error_construction.new_success()
 
     def main(self,
-                global_environment: instructions.GlobalEnvironmentForNamedPhase,
-                phase_environment: instructions.PhaseEnvironmentForInternalCommands):
+             global_environment: instructions.GlobalEnvironmentForNamedPhase,
+             phase_environment: instructions.PhaseEnvironmentForInternalCommands):
         with open(self.__file_base_name, 'w') as f:
             f.write(self.__text_to_store)
         return new_success()
@@ -79,8 +79,8 @@ class StatementsThatCopiesStdinToStdout(instructions.ActPhaseInstruction):
         return success_or_validation_hard_or_error_construction.new_success()
 
     def main(self,
-                                 global_environment: instructions.GlobalEnvironmentForNamedPhase,
-                                 phase_environment: instructions.PhaseEnvironmentForScriptGeneration) \
+             global_environment: instructions.GlobalEnvironmentForNamedPhase,
+             phase_environment: instructions.PhaseEnvironmentForScriptGeneration) \
             -> instructions.SuccessOrHardError:
         statements = [
             'import sys',
@@ -101,7 +101,7 @@ class InstructionThatSetsStdinFileName(instructions.ActPhaseInstruction):
         return success_or_validation_hard_or_error_construction.new_success()
 
     def main(self,
-                                 global_environment: instructions.GlobalEnvironmentForNamedPhase,
-                                 phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> instructions.SuccessOrHardError:
+             global_environment: instructions.GlobalEnvironmentForNamedPhase,
+             phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> instructions.SuccessOrHardError:
         phase_environment.set_stdin_file(self.__file_name)
         return new_success()
