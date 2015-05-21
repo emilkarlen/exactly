@@ -44,7 +44,7 @@ class AnonymousInternalInstructionThatRecordsStringInList(instructions.Anonymous
                  recorder: ListRecorder):
         self.__recorder = recorder
 
-    def execute(self,
+    def main(self,
                 global_environment,
                 phase_environment: instructions.PhaseEnvironmentForAnonymousPhase) -> SuccessOrHardError:
         self.__recorder.record()
@@ -64,7 +64,7 @@ class SetupInternalInstructionThatRecordsStringInList(instructions.SetupPhaseIns
         self.__recorder_for_validate.record()
         return success_or_validation_hard_or_error_construction.new_success()
 
-    def execute(self,
+    def main(self,
                 global_environment,
                 phase_environment: instructions.PhaseEnvironmentForAnonymousPhase) -> SuccessOrHardError:
         self.__recorder_for_execute.record()

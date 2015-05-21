@@ -62,7 +62,7 @@ class PyCommandThatStoresStringInFileInCurrentDirectory(instructions.SetupPhaseI
             -> instructions.SuccessOrValidationErrorOrHardError:
         return success_or_validation_hard_or_error_construction.new_success()
 
-    def execute(self,
+    def main(self,
                 global_environment: instructions.GlobalEnvironmentForNamedPhase,
                 phase_environment: instructions.PhaseEnvironmentForInternalCommands):
         with open(self.__file_base_name, 'w') as f:

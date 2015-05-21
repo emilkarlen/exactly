@@ -206,9 +206,9 @@ class AnonymousPhaseInstruction(Instruction):
     Abstract base class for instructions of the anonymous phase.
     """
 
-    def execute(self,
-                global_environment,
-                phase_environment: PhaseEnvironmentForAnonymousPhase) -> SuccessOrHardError:
+    def main(self,
+             global_environment,
+             phase_environment: PhaseEnvironmentForAnonymousPhase) -> SuccessOrHardError:
         """
         Does whatever this instruction should do.
         :param global_environment An object passed to all instructions in the Document.
@@ -244,9 +244,9 @@ class SetupPhaseInstruction(Instruction):
                  global_environment: GlobalEnvironmentForPreEdsStep) -> SuccessOrValidationErrorOrHardError:
         raise NotImplementedError()
 
-    def execute(self,
-                global_environment: GlobalEnvironmentForNamedPhase,
-                phase_environment: PhaseEnvironmentForInternalCommands) -> SuccessOrHardError:
+    def main(self,
+             global_environment: GlobalEnvironmentForNamedPhase,
+             phase_environment: PhaseEnvironmentForInternalCommands) -> SuccessOrHardError:
         """
         Does whatever this instruction should do.
         :param global_environment An object passed to all instructions in the Document.

@@ -30,7 +30,7 @@ class _SetupInstructionExecutor(instrs.SetupPhaseInstruction):
             -> instrs.SuccessOrValidationErrorOrHardError:
         return success_or_validation_hard_or_error_construction.new_success()
 
-    def execute(self,
+    def main(self,
                 global_environment: instrs.GlobalEnvironmentForNamedPhase,
                 phase_environment: instrs.PhaseEnvironmentForInternalCommands) -> SuccessOrHardError:
         self.__internal_instruction.execute(phases.SETUP.name,
