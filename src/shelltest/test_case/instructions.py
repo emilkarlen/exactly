@@ -101,20 +101,13 @@ class PassOrFailOrHardError(tuple):
         return self[1]
 
 
-class PhaseEnvironment:
-    """
-    Base class for phase environments.
-    """
-    pass
-
-
 class ExecutionMode(Enum):
     NORMAL = 0
     SKIPPED = 1
     XFAIL = 2
 
 
-class PhaseEnvironmentForAnonymousPhase(PhaseEnvironment):
+class PhaseEnvironmentForAnonymousPhase:
     def __init__(self, home_dir_path: pathlib.Path):
         self.__home_dir_path = home_dir_path
         self.__execution_mode = ExecutionMode.NORMAL
@@ -139,7 +132,7 @@ class PhaseEnvironmentForAnonymousPhase(PhaseEnvironment):
         self.__home_dir_path = x
 
 
-class PhaseEnvironmentForScriptGeneration(PhaseEnvironment):
+class PhaseEnvironmentForScriptGeneration:
     """
     The phase-environment for phases that generate a script.
     """
@@ -172,7 +165,7 @@ class PhaseEnvironmentForScriptGeneration(PhaseEnvironment):
         return self.__script_source_builder.build()
 
 
-class PhaseEnvironmentForInternalCommands(PhaseEnvironment):
+class PhaseEnvironmentForInternalCommands:
     """
     The phase-environment for phases that are implemented internally
     - in Python.
