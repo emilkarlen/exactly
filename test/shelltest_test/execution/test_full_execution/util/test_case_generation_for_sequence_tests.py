@@ -79,7 +79,7 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorBase):
         """
         return list(map(self._next_instruction_line,
                         [
-                            self._new_setup_internal_recorder(phase_step.SETUP__VALIDATE,
+                            self._new_setup_internal_recorder(phase_step.SETUP__PRE_VALIDATE,
                                                               phase_step.SETUP__EXECUTE),
                             instruction_adapter.as_setup(
                                 instr.InternalInstructionThatRecordsStringInRecordFile(phase_step.SETUP__EXECUTE)),

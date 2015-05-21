@@ -22,6 +22,8 @@ def new_without_step(phase: Phase) -> PhaseStep:
 
 
 VALIDATE = 'validate'
+PRE_VALIDATE = 'pre-validate'
+POST_VALIDATE = 'post-validate'
 EXECUTE = 'execute'
 
 
@@ -33,11 +35,13 @@ ANONYMOUS = '<INIT>'
 
 SETUP = 'SETUP'
 
-SETUP_validate = VALIDATE
+SETUP_pre_validate = 'pre-validate'
 SETUP_execute = EXECUTE
+SETUP_post_validate = 'post-validate'
 
-SETUP__VALIDATE = __phase_step(SETUP, SETUP_validate)
+SETUP__PRE_VALIDATE = __phase_step(SETUP, SETUP_pre_validate)
 SETUP__EXECUTE = __phase_step(SETUP, SETUP_execute)
+SETUP__POST_VALIDATE = __phase_step(SETUP, SETUP_post_validate)
 
 ACT = 'ACT'
 

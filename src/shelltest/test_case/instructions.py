@@ -231,8 +231,8 @@ class SetupPhaseInstruction(Instruction):
     Abstract base class for instructions of the SETUP phase.
     """
 
-    def validate(self,
-                 global_environment: GlobalEnvironmentForPreEdsStep) -> SuccessOrValidationErrorOrHardError:
+    def pre_validate(self,
+                     global_environment: GlobalEnvironmentForPreEdsStep) -> SuccessOrValidationErrorOrHardError:
         raise NotImplementedError()
 
     def main(self,
