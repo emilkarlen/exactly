@@ -121,5 +121,5 @@ class CleanupPhaseInstructionExecutor(ControlledInstructionExecutor):
 
     def apply(self, instruction: instr.CleanupPhaseInstruction) -> PartialInstructionControlledFailureInfo:
         return _from_success_or_hard_error(
-            instruction.execute(self.__global_environment,
+            instruction.main(self.__global_environment,
                                 self.__phase_environment))

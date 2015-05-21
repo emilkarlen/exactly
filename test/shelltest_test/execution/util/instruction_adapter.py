@@ -67,7 +67,7 @@ class _CleanupInstructionExecutor(instrs.CleanupPhaseInstruction):
         self.__internal_instruction = internal_instruction
         self.__ret_val = ret_val
 
-    def execute(self,
+    def main(self,
                 global_environment: instrs.GlobalEnvironmentForNamedPhase,
                 phase_environment: instrs.PhaseEnvironmentForInternalCommands) -> instrs.SuccessOrHardError:
         self.__internal_instruction.execute(phases.CLEANUP.name,

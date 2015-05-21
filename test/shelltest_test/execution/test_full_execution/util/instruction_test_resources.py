@@ -198,7 +198,7 @@ class CleanupPhaseInstructionThatReturnsHardError(instrs.CleanupPhaseInstruction
                  msg: str):
         self.__msg = msg
 
-    def execute(self,
+    def main(self,
                 global_environment: instrs.GlobalEnvironmentForNamedPhase,
                 phase_environment: instrs.PhaseEnvironmentForInternalCommands) -> instrs.SuccessOrHardError:
         return success_or_hard_error_construction.new_hard_error(self.__msg)
@@ -209,7 +209,7 @@ class CleanupPhaseInstructionWithImplementationError(instrs.CleanupPhaseInstruct
                  exception_to_raise: Exception):
         self.__exception_to_raise = exception_to_raise
 
-    def execute(self,
+    def main(self,
                 global_environment: instrs.GlobalEnvironmentForNamedPhase,
                 phase_environment: instrs.PhaseEnvironmentForInternalCommands) -> instrs.SuccessOrHardError:
         raise self.__exception_to_raise

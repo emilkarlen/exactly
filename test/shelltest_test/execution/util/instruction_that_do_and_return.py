@@ -237,7 +237,7 @@ class _CleanupInstruction(i.CleanupPhaseInstruction):
                  configuration: TestCaseSetup):
         self.__configuration = configuration
 
-    def execute(self,
+    def main(self,
                 global_environment: i.GlobalEnvironmentForNamedPhase,
                 phase_environment: i.PhaseEnvironmentForInternalCommands) -> i.SuccessOrHardError:
         self.__configuration.execution_action__with_eds(phase_step.CLEANUP_EXECUTE,
