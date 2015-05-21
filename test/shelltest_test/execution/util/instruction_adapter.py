@@ -25,7 +25,7 @@ class _SetupInstructionExecutor(instrs.SetupPhaseInstruction):
         self.__internal_instruction = internal_instruction
         self.__ret_val = ret_val
 
-    def validate(self,
+    def pre_validate(self,
                  global_environment: instrs.GlobalEnvironmentForPreEdsStep) \
             -> instrs.SuccessOrValidationErrorOrHardError:
         return success_or_validation_hard_or_error_construction.new_success()

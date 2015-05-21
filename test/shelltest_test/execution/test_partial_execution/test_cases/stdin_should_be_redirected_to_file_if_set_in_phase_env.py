@@ -57,7 +57,7 @@ class PyCommandThatStoresStringInFileInCurrentDirectory(instructions.SetupPhaseI
         self.__file_base_name = file_base_name
         self.__text_to_store = text_to_store
 
-    def validate(self,
+    def pre_validate(self,
                  global_environment: instructions.GlobalEnvironmentForPreEdsStep) \
             -> instructions.SuccessOrValidationErrorOrHardError:
         return success_or_validation_hard_or_error_construction.new_success()

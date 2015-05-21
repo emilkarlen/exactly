@@ -131,7 +131,7 @@ class PartialExecutor:
 
     def __run_setup_validate(self) -> PartialResult:
         return self.__run_internal_instructions_phase_step(phases.SETUP,
-                                                           phase_step.SETUP_validate,
+                                                           phase_step.SETUP_pre_validate,
                                                            phase_step_executors.SetupValidateInstructionExecutor(
                                                                self.__global_environment),
                                                            self.__setup_phase)

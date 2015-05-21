@@ -58,7 +58,7 @@ class SetupInternalInstructionThatRecordsStringInList(instructions.SetupPhaseIns
         self.__recorder_for_validate = recorder_for_validate
         self.__recorder_for_execute = recorder_for_execute
 
-    def validate(self,
+    def pre_validate(self,
                  global_environment: instructions.GlobalEnvironmentForPreEdsStep) \
             -> instructions.SuccessOrValidationErrorOrHardError:
         self.__recorder_for_validate.record()

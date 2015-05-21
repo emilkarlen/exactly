@@ -179,7 +179,7 @@ class _SetupInstruction(i.SetupPhaseInstruction):
                  configuration: TestCaseSetup):
         self.__configuration = configuration
 
-    def validate(self,
+    def pre_validate(self,
                  global_environment: i.GlobalEnvironmentForPreEdsStep) -> i.SuccessOrValidationErrorOrHardError:
         self.__configuration.validation_action__without_eds(phase_step.SETUP_VALIDATE,
                                                             global_environment.home_directory)
