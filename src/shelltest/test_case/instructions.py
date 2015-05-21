@@ -235,7 +235,7 @@ class InternalInstruction(Instruction):
         raise NotImplementedError()
 
 
-class SetupPhaseInstruction(InternalInstruction):
+class SetupPhaseInstruction(Instruction):
     """
     Abstract base class for instructions of the SETUP phase.
     """
@@ -280,7 +280,7 @@ class ActPhaseInstruction(Instruction):
         raise NotImplementedError()
 
 
-class AssertPhaseInstruction(InternalInstruction):
+class AssertPhaseInstruction(Instruction):
     """
     Abstract base class for instructions of the ASSERT phase.
     """
@@ -301,7 +301,7 @@ class AssertPhaseInstruction(InternalInstruction):
         raise NotImplementedError()
 
 
-class CleanupPhaseInstruction(InternalInstruction):
+class CleanupPhaseInstruction(Instruction):
     """
     Abstract base class for instructions of the CLEANUP phase.
     """
