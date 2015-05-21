@@ -60,7 +60,6 @@ class ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr(instructions.ActPhaseI
 
     def update_phase_environment(
             self,
-            phase_name: str,
             global_environment: instructions.GlobalEnvironmentForNamedPhase,
             phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> instructions.SuccessOrHardError:
         statements = [

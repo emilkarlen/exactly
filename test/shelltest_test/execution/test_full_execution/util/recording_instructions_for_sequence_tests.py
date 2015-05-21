@@ -33,7 +33,6 @@ class ActInstructionThatRecordsStringInList(instructions.ActPhaseInstruction):
 
     def update_phase_environment(
             self,
-            phase_name: str,
             global_environment: instructions.GlobalEnvironmentForNamedPhase,
             phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> instructions.SuccessOrHardError:
         self.__recorder_for_execute.record()
@@ -45,7 +44,7 @@ class AnonymousInternalInstructionThatRecordsStringInList(instructions.Anonymous
                  recorder: ListRecorder):
         self.__recorder = recorder
 
-    def execute(self, phase_name: str,
+    def execute(self,
                 global_environment,
                 phase_environment: instructions.PhaseEnvironmentForAnonymousPhase) -> SuccessOrHardError:
         self.__recorder.record()
@@ -65,7 +64,7 @@ class SetupInternalInstructionThatRecordsStringInList(instructions.SetupPhaseIns
         self.__recorder_for_validate.record()
         return success_or_validation_hard_or_error_construction.new_success()
 
-    def execute(self, phase_name: str,
+    def execute(self,
                 global_environment,
                 phase_environment: instructions.PhaseEnvironmentForAnonymousPhase) -> SuccessOrHardError:
         self.__recorder_for_execute.record()
@@ -105,7 +104,6 @@ class ActInstructionThatGeneratesScriptThatRecordsStringInRecordFile(instruction
 
     def update_phase_environment(
             self,
-            phase_name: str,
             global_environment: instructions.GlobalEnvironmentForNamedPhase,
             phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> instructions.SuccessOrHardError:
         phase_environment.append.raw_script_statements(
@@ -129,7 +127,6 @@ class ActInstructionThatRecordsStringInRecordFile(instructions.ActPhaseInstructi
 
     def update_phase_environment(
             self,
-            phase_name: str,
             global_environment: instructions.GlobalEnvironmentForNamedPhase,
             phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> instructions.SuccessOrHardError:
         append_line_to_record_file(global_environment.execution_directory_structure,
@@ -150,7 +147,7 @@ class AssertInternalInstructionThatRecordsStringInList(instructions.AssertPhaseI
         self.__recorder_for_validate.record()
         return success_or_validation_hard_or_error_construction.new_success()
 
-    def execute(self, phase_name: str,
+    def execute(self,
                 global_environment,
                 phase_environment: instructions.PhaseEnvironmentForAnonymousPhase) -> SuccessOrHardError:
         self.__recorder_for_execute.record()
@@ -171,7 +168,6 @@ class AssertInstructionThatRecordsStringInRecordFile(instructions.AssertPhaseIns
         return success_or_validation_hard_or_error_construction.new_success()
 
     def execute(self,
-                phase_name: str,
                 global_environment: instructions.GlobalEnvironmentForNamedPhase,
                 phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> instructions.SuccessOrHardError:
         append_line_to_record_file(global_environment.execution_directory_structure,
