@@ -31,7 +31,7 @@ class ActInstructionThatRecordsStringInList(instructions.ActPhaseInstruction):
         self.__recorder_for_validate.record()
         return success_or_validation_hard_or_error_construction.new_success()
 
-    def update_phase_environment(
+    def main(
             self,
             global_environment: instructions.GlobalEnvironmentForNamedPhase,
             phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> instructions.SuccessOrHardError:
@@ -102,7 +102,7 @@ class ActInstructionThatGeneratesScriptThatRecordsStringInRecordFile(instruction
             -> instructions.SuccessOrValidationErrorOrHardError:
         return success_or_validation_hard_or_error_construction.new_success()
 
-    def update_phase_environment(
+    def main(
             self,
             global_environment: instructions.GlobalEnvironmentForNamedPhase,
             phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> instructions.SuccessOrHardError:
@@ -125,7 +125,7 @@ class ActInstructionThatRecordsStringInRecordFile(instructions.ActPhaseInstructi
                                    self.__string_for_validation)
         return success_or_validation_hard_or_error_construction.new_success()
 
-    def update_phase_environment(
+    def main(
             self,
             global_environment: instructions.GlobalEnvironmentForNamedPhase,
             phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> instructions.SuccessOrHardError:

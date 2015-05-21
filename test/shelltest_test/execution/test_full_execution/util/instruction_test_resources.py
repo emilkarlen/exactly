@@ -102,7 +102,7 @@ class ActPhaseInstructionThatReturns(instrs.ActPhaseInstruction):
             -> instrs.SuccessOrValidationErrorOrHardError:
         return self.__for_validate
 
-    def update_phase_environment(
+    def main(
             self,
             global_environment: instrs.GlobalEnvironmentForNamedPhase,
             phase_environment: instrs.PhaseEnvironmentForScriptGeneration) -> instrs.SuccessOrHardError:
@@ -119,7 +119,7 @@ class ActPhaseInstructionWithImplementationErrorInValidate(instrs.ActPhaseInstru
             -> instrs.SuccessOrValidationErrorOrHardError:
         raise self.__exception_to_raise
 
-    def update_phase_environment(
+    def main(
             self,
             global_environment: instrs.GlobalEnvironmentForNamedPhase,
             phase_environment: instrs.PhaseEnvironmentForScriptGeneration) -> instrs.SuccessOrHardError:
@@ -136,7 +136,7 @@ class ActPhaseInstructionWithImplementationErrorInExecute(instrs.ActPhaseInstruc
             -> instrs.SuccessOrValidationErrorOrHardError:
         return success_or_validation_hard_or_error_construction.new_success()
 
-    def update_phase_environment(
+    def main(
             self,
             global_environment: instrs.GlobalEnvironmentForNamedPhase,
             phase_environment: instrs.PhaseEnvironmentForScriptGeneration) -> instrs.SuccessOrHardError:
