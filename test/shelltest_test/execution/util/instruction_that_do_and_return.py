@@ -138,9 +138,9 @@ class _AnonymousInstruction(i.AnonymousPhaseInstruction):
                  configuration: TestCaseSetup):
         self.__configuration = configuration
 
-    def execute(self,
-                global_environment,
-                phase_environment: i.PhaseEnvironmentForAnonymousPhase) -> i.SuccessOrHardError:
+    def main(self,
+             global_environment,
+             phase_environment: i.PhaseEnvironmentForAnonymousPhase) -> i.SuccessOrHardError:
         self.__configuration.anonymous_phase_action(phase_step.ANONYMOUS_EXECUTE,
                                                     phase_environment)
         return self.__configuration.ret_val_from_execute
@@ -185,7 +185,7 @@ class _SetupInstruction(i.SetupPhaseInstruction):
                                                             global_environment.home_directory)
         return self.__configuration.ret_val_from_execute
 
-    def execute(self,
+    def main(self,
                 global_environment: i.GlobalEnvironmentForNamedPhase,
                 phase_environment: i.PhaseEnvironmentForInternalCommands) -> i.SuccessOrHardError:
         self.__configuration.execution_action__with_eds(phase_step.SETUP_EXECUTE,
