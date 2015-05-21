@@ -264,9 +264,9 @@ class ActPhaseInstruction(Instruction):
                  global_environment: GlobalEnvironmentForNamedPhase) -> SuccessOrValidationErrorOrHardError:
         raise NotImplementedError()
 
-    def update_phase_environment(self,
-                                 global_environment: GlobalEnvironmentForNamedPhase,
-                                 phase_environment: PhaseEnvironmentForScriptGeneration) -> SuccessOrHardError:
+    def main(self,
+             global_environment: GlobalEnvironmentForNamedPhase,
+             phase_environment: PhaseEnvironmentForScriptGeneration) -> SuccessOrHardError:
         """
         Builds the script, and sets some execution premises (e.g. stdin),
         by updating the phase environment.

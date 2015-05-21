@@ -203,7 +203,7 @@ class _ActInstruction(i.ActPhaseInstruction):
                                                          global_environment)
         return self.__configuration.ret_val_from_validate
 
-    def update_phase_environment(self,
+    def main(self,
                                  global_environment: i.GlobalEnvironmentForNamedPhase,
                                  phase_environment: i.PhaseEnvironmentForScriptGeneration) -> i.SuccessOrHardError:
         self.__configuration.execution_action__with_eds(phase_step.ACT_SCRIPT_GENERATION,

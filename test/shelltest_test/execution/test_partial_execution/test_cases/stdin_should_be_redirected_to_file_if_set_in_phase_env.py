@@ -78,7 +78,7 @@ class StatementsThatCopiesStdinToStdout(instructions.ActPhaseInstruction):
             -> instructions.SuccessOrValidationErrorOrHardError:
         return success_or_validation_hard_or_error_construction.new_success()
 
-    def update_phase_environment(self,
+    def main(self,
                                  global_environment: instructions.GlobalEnvironmentForNamedPhase,
                                  phase_environment: instructions.PhaseEnvironmentForScriptGeneration) \
             -> instructions.SuccessOrHardError:
@@ -100,7 +100,7 @@ class InstructionThatSetsStdinFileName(instructions.ActPhaseInstruction):
             -> instructions.SuccessOrValidationErrorOrHardError:
         return success_or_validation_hard_or_error_construction.new_success()
 
-    def update_phase_environment(self,
+    def main(self,
                                  global_environment: instructions.GlobalEnvironmentForNamedPhase,
                                  phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> instructions.SuccessOrHardError:
         phase_environment.set_stdin_file(self.__file_name)

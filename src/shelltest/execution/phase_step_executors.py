@@ -95,7 +95,7 @@ class ActScriptGenerationExecutor(ControlledInstructionExecutor):
 
     def apply(self, instruction: instr.ActPhaseInstruction) -> PartialInstructionControlledFailureInfo:
         return _from_success_or_hard_error(
-            instruction.update_phase_environment(self.__global_environment,
+            instruction.main(self.__global_environment,
                                                  self.__phase_environment))
 
 
