@@ -302,14 +302,12 @@ class CleanupPhaseInstruction(Instruction):
     Abstract base class for instructions of the CLEANUP phase.
     """
 
-    def execute(self,
-                global_environment: GlobalEnvironmentForNamedPhase,
-                phase_environment: PhaseEnvironmentForInternalCommands) -> SuccessOrHardError:
+    def main(self,
+             global_environment: GlobalEnvironmentForNamedPhase,
+             phase_environment: PhaseEnvironmentForInternalCommands) -> SuccessOrHardError:
         """
         Does whatever this instruction should do.
         :param global_environment An object passed to all instructions in the Document.
         :param phase_environment An object passed to all instructions in the Phase.
         """
         raise NotImplementedError()
-
-
