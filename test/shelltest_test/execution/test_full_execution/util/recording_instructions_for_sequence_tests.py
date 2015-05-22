@@ -68,7 +68,7 @@ class SetupInstructionThatRecordsStringInList(instructions.SetupPhaseInstruction
 
     def main(self,
              global_environment: instructions.GlobalEnvironmentForPostEdsPhase,
-             phase_environment: instructions.PhaseEnvironmentForAnonymousPhase) -> SuccessOrHardError:
+             settings_builder: instructions.SetupSettingsBuilder) -> SuccessOrHardError:
         self.__recorder_for_execute.record()
         return new_success()
 
@@ -93,7 +93,7 @@ class SetupInstructionThatRecordsStringInRecordFile(instructions.SetupPhaseInstr
 
     def main(self,
              global_environment: instructions.GlobalEnvironmentForPostEdsPhase,
-             phase_environment: instructions.PhaseEnvironmentForAnonymousPhase) -> SuccessOrHardError:
+             settings_builder: instructions.SetupSettingsBuilder) -> SuccessOrHardError:
         append_line_to_record_file(global_environment.execution_directory_structure,
                                    self.__text_for_execute)
         return new_success()

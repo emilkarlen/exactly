@@ -23,12 +23,12 @@ class TestCaseDocument(TestCaseWithCommonDefaultForSetupAssertCleanup):
         return [
             self._next_instruction_line(
                 PyCommandThatStoresStringInFileInCurrentDirectory(INPUT_TMP_FILE,
-                                                                  TEXT_ON_STDIN))
+                                                                  TEXT_ON_STDIN)),
+            self._next_instruction_line(InstructionThatSetsStdinFileName(INPUT_TMP_FILE)),
         ]
 
     def _act_phase(self) -> list:
         return [
-            self._next_instruction_line(InstructionThatSetsStdinFileName(INPUT_TMP_FILE)),
             self._next_instruction_line(StatementsThatCopiesStdinToStdout())
         ]
 
@@ -64,7 +64,7 @@ class PyCommandThatStoresStringInFileInCurrentDirectory(instructions.SetupPhaseI
 
     def main(self,
              global_environment: instructions.GlobalEnvironmentForPostEdsPhase,
-             phase_environment: instructions.PhaseEnvironmentForInternalCommands):
+             settings_builder: instructions.SetupSettingsBuilder):
         with open(self.__file_base_name, 'w') as f:
             f.write(self.__text_to_store)
         return new_success()
@@ -94,18 +94,24 @@ class StatementsThatCopiesStdinToStdout(instructions.ActPhaseInstruction):
         return new_success()
 
 
-class InstructionThatSetsStdinFileName(instructions.ActPhaseInstruction):
+class InstructionThatSetsStdinFileName(instructions.SetupPhaseInstruction):
     def __init__(self,
                  file_name: str):
         super().__init__()
         self.__file_name = file_name
 
-    def validate(self, global_environment: instructions.GlobalEnvironmentForPostEdsPhase) \
+    def pre_validate(self,
+                     global_environment: instructions.GlobalEnvironmentForPreEdsStep) \
             -> instructions.SuccessOrValidationErrorOrHardError:
         return success_or_validation_hard_or_error_construction.new_success()
 
     def main(self,
              global_environment: instructions.GlobalEnvironmentForPostEdsPhase,
-             phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> instructions.SuccessOrHardError:
-        phase_environment.set_stdin_file(self.__file_name)
+             settings_builder: instructions.SetupSettingsBuilder) -> instructions.SuccessOrHardError:
+        settings_builder.stdin_file_name = self.__file_name
         return new_success()
+
+    def post_validate(self,
+                      global_environment: instructions.GlobalEnvironmentForPostEdsPhase) \
+            -> instructions.SuccessOrValidationErrorOrHardError:
+        return success_or_validation_hard_or_error_construction.new_success()

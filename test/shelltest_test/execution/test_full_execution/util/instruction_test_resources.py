@@ -56,7 +56,7 @@ class SetupPhaseInstructionThatReturns(instrs.SetupPhaseInstruction):
 
     def main(self,
              global_environment: instrs.GlobalEnvironmentForPostEdsPhase,
-             phase_environment: instrs.PhaseEnvironmentForInternalCommands) -> instrs.SuccessOrHardError:
+             settings_builder: instrs.SetupSettingsBuilder) -> instrs.SuccessOrHardError:
         return self.__from_execute
 
     def post_validate(self,
@@ -77,7 +77,7 @@ class SetupPhaseInstructionWithImplementationErrorInPreValidate(instrs.SetupPhas
 
     def main(self,
              global_environment: instrs.GlobalEnvironmentForPostEdsPhase,
-             phase_environment: instrs.PhaseEnvironmentForInternalCommands) -> instrs.SuccessOrHardError:
+             settings_builder: instrs.SetupSettingsBuilder) -> instrs.SuccessOrHardError:
         return success_or_hard_error_construction.new_success()
 
     def post_validate(self,
@@ -98,7 +98,7 @@ class SetupPhaseInstructionWithImplementationErrorInPostValidate(instrs.SetupPha
 
     def main(self,
              global_environment: instrs.GlobalEnvironmentForPostEdsPhase,
-             phase_environment: instrs.PhaseEnvironmentForInternalCommands) -> instrs.SuccessOrHardError:
+             settings_builder: instrs.SetupSettingsBuilder) -> instrs.SuccessOrHardError:
         return success_or_hard_error_construction.new_success()
 
     def post_validate(self,
@@ -119,7 +119,7 @@ class SetupPhaseInstructionWithImplementationErrorInExecute(instrs.SetupPhaseIns
 
     def main(self,
              global_environment: instrs.GlobalEnvironmentForPostEdsPhase,
-             phase_environment: instrs.PhaseEnvironmentForInternalCommands) -> instrs.SuccessOrHardError:
+             settings_builder: instrs.SetupSettingsBuilder) -> instrs.SuccessOrHardError:
         raise self.__exception_to_raise
 
     def post_validate(self,

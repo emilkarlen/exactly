@@ -32,10 +32,10 @@ class _SetupInstructionExecutor(instrs.SetupPhaseInstruction):
 
     def main(self,
              global_environment: instrs.GlobalEnvironmentForPostEdsPhase,
-             phase_environment: instrs.PhaseEnvironmentForInternalCommands) -> SuccessOrHardError:
+             settings_builder: instrs.SetupSettingsBuilder) -> SuccessOrHardError:
         self.__internal_instruction.execute(phases.SETUP.name,
                                             global_environment,
-                                            phase_environment)
+                                            instrs.PhaseEnvironmentForInternalCommands())
         return self.__ret_val
 
     def post_validate(self,
