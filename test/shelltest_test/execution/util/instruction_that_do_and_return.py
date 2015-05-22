@@ -187,7 +187,7 @@ class _SetupInstruction(i.SetupPhaseInstruction):
 
     def main(self,
              global_environment: i.GlobalEnvironmentForPostEdsPhase,
-             phase_environment: i.PhaseEnvironmentForInternalCommands) -> i.SuccessOrHardError:
+             settings_builder: i.SetupSettingsBuilder) -> i.SuccessOrHardError:
         self.__configuration.execution_action__with_eds(phase_step.SETUP_EXECUTE,
                                                         global_environment)
         return self.__configuration.ret_val_from_execute

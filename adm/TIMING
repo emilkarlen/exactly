@@ -59,6 +59,8 @@ Detta
 * Ny fas: setup/post-validation
   CLOCK: [2015-05-22 fre 15:35]--[2015-05-22 fre 16:27] =>  0:52
   CLOCK: [2015-05-21 tor 16:54]--[2015-05-21 tor 17:16] =>  0:22
+** Flytta stdin till denna fas
+   CLOCK: [2015-05-22 fre 16:36]--[2015-05-22 fre 17:21] =>  0:45
 * Bestämma exekveringsflöde
   CLOCK: [2015-05-18 mån 19:36]--[2015-05-18 mån 22:54] =>  3:18
   CLOCK: [2015-05-17 sön 13:24]--[2015-05-17 sön 15:46] =>  2:22

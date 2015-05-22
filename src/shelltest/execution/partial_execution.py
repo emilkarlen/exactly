@@ -21,19 +21,26 @@ from . import phase_step_execution
 from shelltest.test_case.script_stmt_gen import ScriptLanguageSetup
 
 
-class _ScriptGenerationResult(tuple):
-    def __new__(cls,
-                script_source: str,
-                stdin_file_name: str):
-        return tuple.__new__(cls, (script_source, stdin_file_name))
+class _StepExecutionResult(tuple):
+    def __init__(self):
+        self.__script_source = None
+        self.__stdin_file_name = None
 
     @property
     def script_source(self) -> str:
-        return self[0]
+        return self.__script_source
+
+    @script_source.setter
+    def script_source(self, x: str):
+        self.__script_source = x
 
     @property
     def stdin_file_name(self) -> str:
-        return self[1]
+        return self.__stdin_file_name
+
+    @stdin_file_name.setter
+    def stdin_file_name(self, x: str):
+        self.__stdin_file_name = x
 
 
 class PartialExecutor:
@@ -54,7 +61,7 @@ class PartialExecutor:
         self.__cleanup_phase = cleanup_phase
         self.__execution_directory_structure = execution_directory_structure
         self.__configuration = configuration
-        self.___script_generation_result = None
+        self.___step_execution_result = _StepExecutionResult()
         self.__script_file_path = None
         self.__partial_result = None
 
@@ -72,7 +79,7 @@ class PartialExecutor:
             return
         phase_env = instructions.PhaseEnvironmentForInternalCommands()
         self.__set_post_eds_environment_variables()
-        res = self.__run_setup_execute(phase_env)
+        res = self.__run_setup_execute()
         if res.status is not PartialResultStatus.PASS:
             self.__partial_result = res
             self.__run_cleanup(phase_env)
@@ -141,13 +148,17 @@ class PartialExecutor:
                                                                self.__global_environment),
                                                            self.__setup_phase)
 
-    def __run_setup_execute(self, phase_env) -> PartialResult:
-        return self.__run_internal_instructions_phase_step(phases.SETUP,
-                                                           phase_step.SETUP_execute,
-                                                           phase_step_executors.SetupPhaseInstructionExecutor(
-                                                               self.__global_environment,
-                                                               phase_env),
-                                                           self.__setup_phase)
+    def __run_setup_execute(self) -> PartialResult:
+        setup_settings_builder = instructions.SetupSettingsBuilder()
+        ret_val = self.__run_internal_instructions_phase_step(phases.SETUP,
+                                                              phase_step.SETUP_execute,
+                                                              phase_step_executors.SetupPhaseInstructionExecutor(
+                                                                  self.__global_environment,
+                                                                  setup_settings_builder),
+                                                              self.__setup_phase)
+        self.___step_execution_result.stdin_file_name = setup_settings_builder.stdin_file_name
+
+        return ret_val
 
     def __run_setup_post_validate(self) -> PartialResult:
         return self.__run_internal_instructions_phase_step(phases.SETUP,
@@ -207,17 +218,16 @@ class PartialExecutor:
             phases.ACT,
             phase_step.ACT_script_generation,
             self.execution_directory_structure)
-        self.___script_generation_result = _ScriptGenerationResult(script_builder.build(),
-            environment.stdin_file_name)
+        self.___step_execution_result.script_source = script_builder.build()
         return ret_val
 
     def __run_act_script(self):
         """
         Pre-condition: write has been executed.
         """
-        if self.___script_generation_result.stdin_file_name:
+        if self.___step_execution_result.stdin_file_name:
             try:
-                f_stdin = open(self.___script_generation_result.stdin_file_name)
+                f_stdin = open(self.___step_execution_result.stdin_file_name)
                 self._run_act_script_with_stdin_file(f_stdin)
             finally:
                 f_stdin.close()
@@ -248,11 +258,10 @@ class PartialExecutor:
                     raise exception.ImplementationError(msg)
 
     def write_and_store_script_file_path(self):
-        script_source = self.___script_generation_result.script_source
         base_name = self.__script_language_setup.base_name_from_stem(phases.ACT.name)
         file_path = self.__execution_directory_structure.test_case_dir / base_name
         with open(str(file_path), 'w') as f:
-            f.write(script_source)
+            f.write(self.___step_execution_result.script_source)
         self.__script_file_path = file_path
 
     def __set_pre_eds_environment_variables(self):
@@ -296,10 +305,10 @@ class _ActInstructionHeaderExecutor(ElementHeaderExecutor):
 
 
 def execute(script_language_setup: ScriptLanguageSetup,
-                    test_case: abs_syn_gen.TestCase,
-                    home_dir_path: pathlib.Path,
-                    execution_directory_root_name_prefix: str,
-                    is_keep_execution_directory_root: bool) -> PartialResult:
+            test_case: abs_syn_gen.TestCase,
+            home_dir_path: pathlib.Path,
+            execution_directory_root_name_prefix: str,
+            is_keep_execution_directory_root: bool) -> PartialResult:
     tc_execution = execute_test_case_in_execution_directory(script_language_setup,
                                                             test_case,
                                                             home_dir_path,
@@ -331,7 +340,7 @@ def execute_test_case_in_execution_directory(script_language_setup: ScriptLangua
         cwd_before = os.getcwd()
         execution_directory_structure = construct_at(exec_dir_structure_root)
         global_environment = instructions.GlobalEnvironmentForPostEdsPhase(home_dir_path,
-                                                                         execution_directory_structure)
+                                                                           execution_directory_structure)
         configuration = Configuration(home_dir_path,
                                       execution_directory_structure.test_root_dir)
 

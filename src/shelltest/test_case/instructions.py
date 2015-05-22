@@ -138,18 +138,8 @@ class PhaseEnvironmentForScriptGeneration:
     """
 
     def __init__(self,
-                 script_source_accumulator: script_stmt_gen.ScriptSourceAccumulator,
-                 stdin_file_name: str=None):
+                 script_source_accumulator: script_stmt_gen.ScriptSourceAccumulator):
         self.__script_source_accumulator = script_source_accumulator
-        self.__stdin_file_name = stdin_file_name
-
-    def set_stdin_file(self,
-                       file_name: str):
-        self.__stdin_file_name = file_name
-
-    @property
-    def stdin_file_name(self) -> str:
-        return self.__stdin_file_name
 
     @property
     def append(self) -> script_stmt_gen.ScriptSourceAccumulator:
@@ -190,6 +180,24 @@ class GlobalEnvironmentForPostEdsPhase(GlobalEnvironmentForPreEdsStep):
     @property
     def eds(self) -> ExecutionDirectoryStructure:
         return self.__eds
+
+
+class SetupSettingsBuilder:
+    def __init__(self,
+                 stdin_file_name: str=None):
+        self.__stdin_file_name = stdin_file_name
+
+    def set_stdin_file(self,
+                       file_name: str):
+        self.__stdin_file_name = file_name
+
+    @property
+    def stdin_file_name(self) -> str:
+        return self.__stdin_file_name
+
+    @stdin_file_name.setter
+    def stdin_file_name(self, x: str):
+        self.__stdin_file_name = x
 
 
 class AnonymousPhaseInstruction(Instruction):
@@ -237,11 +245,10 @@ class SetupPhaseInstruction(Instruction):
 
     def main(self,
              global_environment: GlobalEnvironmentForPostEdsPhase,
-             phase_environment: PhaseEnvironmentForInternalCommands) -> SuccessOrHardError:
+             settings_builder: SetupSettingsBuilder) -> SuccessOrHardError:
         """
         Does whatever this instruction should do.
         :param global_environment An object passed to all instructions in the Document.
-        :param phase_environment An object passed to all instructions in the Phase.
         """
         raise NotImplementedError()
 
