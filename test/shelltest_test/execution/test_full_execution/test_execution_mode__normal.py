@@ -85,7 +85,8 @@ class Test(unittest.TestCase):
             instruction_test_resources.SetupPhaseInstructionThatReturns(
                 success_or_validation_hard_or_error_construction.new_validation_error(
                     'validation error from setup/validate'),
-                success_or_hard_error_construction.new_success()))
+                success_or_hard_error_construction.new_success(),
+                success_or_validation_hard_or_error_construction.new_success()))
         TestCaseThatRecordsExecution(
             self,
             test_case,
@@ -105,7 +106,8 @@ class Test(unittest.TestCase):
             .add_setup(
             instruction_test_resources.SetupPhaseInstructionThatReturns(
                 success_or_validation_hard_or_error_construction.new_hard_error('hard error from setup/validate'),
-                success_or_hard_error_construction.new_success()))
+                success_or_hard_error_construction.new_success(),
+                success_or_validation_hard_or_error_construction.new_success()))
         TestCaseThatRecordsExecution(
             self,
             test_case,
@@ -143,8 +145,9 @@ class Test(unittest.TestCase):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_setup(
             instruction_test_resources.SetupPhaseInstructionThatReturns(
-                from_validate=success_or_validation_hard_or_error_construction.new_success(),
-                from_execute=success_or_hard_error_construction.new_hard_error('hard error msg from setup')))
+                from_pre_validate=success_or_validation_hard_or_error_construction.new_success(),
+                from_execute=success_or_hard_error_construction.new_hard_error('hard error msg from setup'),
+                from_post_validate=success_or_validation_hard_or_error_construction.new_success()))
         TestCaseThatRecordsExecution(
             self,
             test_case,
@@ -182,6 +185,87 @@ class Test(unittest.TestCase):
              phase_step.CLEANUP,
              ],
             [phase_step.SETUP__EXECUTE,
+             phase_step.CLEANUP,
+             ],
+            True).execute()
+
+
+    def test_validation_error_in_setup_post_validate_phase(self):
+        test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
+            .add_setup(
+            instruction_test_resources.SetupPhaseInstructionThatReturns(
+                success_or_validation_hard_or_error_construction.new_success(),
+                success_or_hard_error_construction.new_success(),
+                success_or_validation_hard_or_error_construction.new_validation_error(
+                    'validation error from setup/post-validate')))
+        TestCaseThatRecordsExecution(
+            self,
+            test_case,
+            FullResultStatus.VALIDATE,
+            ExpectedInstructionFailureForFailure.new_with_message(
+                PhaseStep(phases.SETUP, phase_step.POST_VALIDATE),
+                test_case.the_setup_phase_extra[0].source_line,
+                'validation error from setup/post-validate'),
+            [phase_step.ANONYMOUS,
+             phase_step.SETUP__PRE_VALIDATE,
+             phase_step.SETUP__EXECUTE,
+             phase_step.SETUP__POST_VALIDATE,
+             phase_step.CLEANUP,
+             ],
+            [phase_step.SETUP__EXECUTE,
+             phase_step.SETUP__POST_VALIDATE,
+             phase_step.CLEANUP,
+             ],
+            True).execute()
+
+    def test_hard_error_in_setup_post_validate_phase(self):
+        test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
+            .add_setup(
+            instruction_test_resources.SetupPhaseInstructionThatReturns(
+                success_or_validation_hard_or_error_construction.new_success(),
+                success_or_hard_error_construction.new_success(),
+                success_or_validation_hard_or_error_construction.new_hard_error('hard error from setup/post-validate')))
+        TestCaseThatRecordsExecution(
+            self,
+            test_case,
+            FullResultStatus.HARD_ERROR,
+            ExpectedInstructionFailureForFailure.new_with_message(
+                PhaseStep(phases.SETUP, phase_step.POST_VALIDATE),
+                test_case.the_setup_phase_extra[0].source_line,
+                'hard error from setup/post-validate'),
+            [phase_step.ANONYMOUS,
+             phase_step.SETUP__PRE_VALIDATE,
+             phase_step.SETUP__EXECUTE,
+             phase_step.SETUP__POST_VALIDATE,
+             phase_step.CLEANUP,
+             ],
+            [phase_step.SETUP__EXECUTE,
+             phase_step.SETUP__POST_VALIDATE,
+             phase_step.CLEANUP,
+             ],
+            True).execute()
+
+    def test_implementation_error_in_setup_post_validate_phase(self):
+        test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
+            .add_setup(
+            instruction_test_resources.SetupPhaseInstructionWithImplementationErrorInPostValidate(
+                instruction_test_resources.ImplementationErrorTestException()))
+        TestCaseThatRecordsExecution(
+            self,
+            test_case,
+            FullResultStatus.IMPLEMENTATION_ERROR,
+            ExpectedInstructionFailureForFailure.new_with_exception(
+                PhaseStep(phases.SETUP, phase_step.POST_VALIDATE),
+                test_case.the_setup_phase_extra[0].source_line,
+                instruction_test_resources.ImplementationErrorTestException),
+            [phase_step.ANONYMOUS,
+             phase_step.SETUP__PRE_VALIDATE,
+             phase_step.SETUP__EXECUTE,
+             phase_step.SETUP__POST_VALIDATE,
+             phase_step.CLEANUP,
+             ],
+            [phase_step.SETUP__EXECUTE,
+             phase_step.SETUP__POST_VALIDATE,
              phase_step.CLEANUP,
              ],
             True).execute()
