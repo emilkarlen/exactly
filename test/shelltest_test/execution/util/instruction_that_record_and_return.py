@@ -48,7 +48,7 @@ def do_nothing__without_eds(recorder: Recorder,
 
 def do_nothing__with_eds(recorder: Recorder,
                          phase_step: PhaseStep,
-                         global_environment: i.GlobalEnvironmentForNamedPhase):
+                         global_environment: i.GlobalEnvironmentForPostEdsPhase):
     pass
 
 

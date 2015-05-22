@@ -54,13 +54,13 @@ class ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr(instructions.ActPhaseI
         self.__text_on_stderr = text_on_stderr
         self.__exit_code = exit_code
 
-    def validate(self, global_environment: instructions.GlobalEnvironmentForNamedPhase) \
+    def validate(self, global_environment: instructions.GlobalEnvironmentForPostEdsPhase) \
             -> instructions.SuccessOrValidationErrorOrHardError:
         return success_or_validation_hard_or_error_construction.new_success()
 
     def main(
             self,
-            global_environment: instructions.GlobalEnvironmentForNamedPhase,
+            global_environment: instructions.GlobalEnvironmentForPostEdsPhase,
             phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> instructions.SuccessOrHardError:
         statements = [
             'import sys',

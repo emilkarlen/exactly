@@ -54,13 +54,13 @@ def assertions(utc: unittest.TestCase,
 
 
 class ActPhaseInstructionThatOutputsHomeDir(instructions.ActPhaseInstruction):
-    def validate(self, global_environment: instructions.GlobalEnvironmentForNamedPhase) \
+    def validate(self, global_environment: instructions.GlobalEnvironmentForPostEdsPhase) \
             -> instructions.SuccessOrValidationErrorOrHardError:
         return success_or_validation_hard_or_error_construction.new_success()
 
     def main(
             self,
-            global_environment: instructions.GlobalEnvironmentForNamedPhase,
+            global_environment: instructions.GlobalEnvironmentForPostEdsPhase,
             phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> instructions.SuccessOrHardError:
         line = HOME_DIR_HEADER + str(global_environment.home_directory)
         phase_environment.append.raw_script_statement(line)
@@ -68,13 +68,13 @@ class ActPhaseInstructionThatOutputsHomeDir(instructions.ActPhaseInstruction):
 
 
 class ActPhaseInstructionThatOutputsTestRootDir(instructions.ActPhaseInstruction):
-    def validate(self, global_environment: instructions.GlobalEnvironmentForNamedPhase) \
+    def validate(self, global_environment: instructions.GlobalEnvironmentForPostEdsPhase) \
             -> instructions.SuccessOrValidationErrorOrHardError:
         return success_or_validation_hard_or_error_construction.new_success()
 
     def main(
             self,
-            global_environment: instructions.GlobalEnvironmentForNamedPhase,
+            global_environment: instructions.GlobalEnvironmentForPostEdsPhase,
             phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> instructions.SuccessOrHardError:
         line = TEST_ROOT_DIR_HEADER + str(global_environment.eds.test_root_dir)
         phase_environment.append.raw_script_statement(line)

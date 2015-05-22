@@ -63,13 +63,13 @@ class PyCommandThatStoresStringInFileInCurrentDirectory(instructions.SetupPhaseI
         return success_or_validation_hard_or_error_construction.new_success()
 
     def main(self,
-             global_environment: instructions.GlobalEnvironmentForNamedPhase,
+             global_environment: instructions.GlobalEnvironmentForPostEdsPhase,
              phase_environment: instructions.PhaseEnvironmentForInternalCommands):
         with open(self.__file_base_name, 'w') as f:
             f.write(self.__text_to_store)
         return new_success()
 
-    def post_validate(self, global_environment: instructions.GlobalEnvironmentForNamedPhase) \
+    def post_validate(self, global_environment: instructions.GlobalEnvironmentForPostEdsPhase) \
             -> instructions.SuccessOrValidationErrorOrHardError:
         return success_or_validation_hard_or_error_construction.new_success()
 
@@ -78,12 +78,12 @@ class StatementsThatCopiesStdinToStdout(instructions.ActPhaseInstruction):
     def __init__(self):
         super().__init__()
 
-    def validate(self, global_environment: instructions.GlobalEnvironmentForNamedPhase) \
+    def validate(self, global_environment: instructions.GlobalEnvironmentForPostEdsPhase) \
             -> instructions.SuccessOrValidationErrorOrHardError:
         return success_or_validation_hard_or_error_construction.new_success()
 
     def main(self,
-             global_environment: instructions.GlobalEnvironmentForNamedPhase,
+             global_environment: instructions.GlobalEnvironmentForPostEdsPhase,
              phase_environment: instructions.PhaseEnvironmentForScriptGeneration) \
             -> instructions.SuccessOrHardError:
         statements = [
@@ -100,12 +100,12 @@ class InstructionThatSetsStdinFileName(instructions.ActPhaseInstruction):
         super().__init__()
         self.__file_name = file_name
 
-    def validate(self, global_environment: instructions.GlobalEnvironmentForNamedPhase) \
+    def validate(self, global_environment: instructions.GlobalEnvironmentForPostEdsPhase) \
             -> instructions.SuccessOrValidationErrorOrHardError:
         return success_or_validation_hard_or_error_construction.new_success()
 
     def main(self,
-             global_environment: instructions.GlobalEnvironmentForNamedPhase,
+             global_environment: instructions.GlobalEnvironmentForPostEdsPhase,
              phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> instructions.SuccessOrHardError:
         phase_environment.set_stdin_file(self.__file_name)
         return new_success()

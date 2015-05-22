@@ -31,7 +31,7 @@ class _SetupInstructionExecutor(instrs.SetupPhaseInstruction):
         return success_or_validation_hard_or_error_construction.new_success()
 
     def main(self,
-             global_environment: instrs.GlobalEnvironmentForNamedPhase,
+             global_environment: instrs.GlobalEnvironmentForPostEdsPhase,
              phase_environment: instrs.PhaseEnvironmentForInternalCommands) -> SuccessOrHardError:
         self.__internal_instruction.execute(phases.SETUP.name,
                                             global_environment,
@@ -39,7 +39,7 @@ class _SetupInstructionExecutor(instrs.SetupPhaseInstruction):
         return self.__ret_val
 
     def post_validate(self,
-                      global_environment: instrs.GlobalEnvironmentForNamedPhase) \
+                      global_environment: instrs.GlobalEnvironmentForPostEdsPhase) \
             -> instrs.SuccessOrValidationErrorOrHardError:
         return success_or_validation_hard_or_error_construction.new_success()
 
@@ -52,12 +52,12 @@ class _AssertInstructionExecutor(instrs.AssertPhaseInstruction):
         self.__ret_val = ret_val
 
     def validate(self,
-                 global_environment: instrs.GlobalEnvironmentForNamedPhase) \
+                 global_environment: instrs.GlobalEnvironmentForPostEdsPhase) \
             -> instrs.SuccessOrValidationErrorOrHardError:
         return success_or_validation_hard_or_error_construction.new_success()
 
     def main(self,
-             global_environment: instrs.GlobalEnvironmentForNamedPhase,
+             global_environment: instrs.GlobalEnvironmentForPostEdsPhase,
              phase_environment: instrs.PhaseEnvironmentForInternalCommands) -> instrs.PassOrFailOrHardError:
         self.__internal_instruction.execute(phases.ASSERT.name,
                                             global_environment,
@@ -73,7 +73,7 @@ class _CleanupInstructionExecutor(instrs.CleanupPhaseInstruction):
         self.__ret_val = ret_val
 
     def main(self,
-             global_environment: instrs.GlobalEnvironmentForNamedPhase,
+             global_environment: instrs.GlobalEnvironmentForPostEdsPhase,
              phase_environment: instrs.PhaseEnvironmentForInternalCommands) -> instrs.SuccessOrHardError:
         self.__internal_instruction.execute(phases.CLEANUP.name,
                                             global_environment,
