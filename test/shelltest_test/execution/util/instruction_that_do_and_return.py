@@ -180,16 +180,22 @@ class _SetupInstruction(i.SetupPhaseInstruction):
         self.__configuration = configuration
 
     def pre_validate(self,
-                 global_environment: i.GlobalEnvironmentForPreEdsStep) -> i.SuccessOrValidationErrorOrHardError:
-        self.__configuration.validation_action__without_eds(phase_step.SETUP_VALIDATE,
+                     global_environment: i.GlobalEnvironmentForPreEdsStep) -> i.SuccessOrValidationErrorOrHardError:
+        self.__configuration.validation_action__without_eds(phase_step.SETUP_PRE_VALIDATE,
                                                             global_environment.home_directory)
         return self.__configuration.ret_val_from_execute
 
     def main(self,
-                global_environment: i.GlobalEnvironmentForNamedPhase,
-                phase_environment: i.PhaseEnvironmentForInternalCommands) -> i.SuccessOrHardError:
+             global_environment: i.GlobalEnvironmentForNamedPhase,
+             phase_environment: i.PhaseEnvironmentForInternalCommands) -> i.SuccessOrHardError:
         self.__configuration.execution_action__with_eds(phase_step.SETUP_EXECUTE,
                                                         global_environment)
+        return self.__configuration.ret_val_from_execute
+
+    def post_validate(self,
+                      global_environment: i.GlobalEnvironmentForNamedPhase) -> i.SuccessOrValidationErrorOrHardError:
+        self.__configuration.validation_action__without_eds(phase_step.SETUP_POST_VALIDATE,
+                                                            global_environment.home_directory)
         return self.__configuration.ret_val_from_execute
 
 
@@ -204,8 +210,8 @@ class _ActInstruction(i.ActPhaseInstruction):
         return self.__configuration.ret_val_from_validate
 
     def main(self,
-                                 global_environment: i.GlobalEnvironmentForNamedPhase,
-                                 phase_environment: i.PhaseEnvironmentForScriptGeneration) -> i.SuccessOrHardError:
+             global_environment: i.GlobalEnvironmentForNamedPhase,
+             phase_environment: i.PhaseEnvironmentForScriptGeneration) -> i.SuccessOrHardError:
         self.__configuration.execution_action__with_eds(phase_step.ACT_SCRIPT_GENERATION,
                                                         global_environment)
         self.__configuration.execution__generate_script(global_environment,
@@ -225,8 +231,8 @@ class _AssertInstruction(i.AssertPhaseInstruction):
         return self.__configuration.ret_val_from_validate
 
     def main(self,
-                global_environment: i.GlobalEnvironmentForNamedPhase,
-                phase_environment: i.PhaseEnvironmentForInternalCommands) -> i.PassOrFailOrHardError:
+             global_environment: i.GlobalEnvironmentForNamedPhase,
+             phase_environment: i.PhaseEnvironmentForInternalCommands) -> i.PassOrFailOrHardError:
         self.__configuration.execution_action__with_eds(phase_step.ASSERT_EXECUTE,
                                                         global_environment)
         return self.__configuration.ret_val_from_assert_execute
@@ -238,8 +244,8 @@ class _CleanupInstruction(i.CleanupPhaseInstruction):
         self.__configuration = configuration
 
     def main(self,
-                global_environment: i.GlobalEnvironmentForNamedPhase,
-                phase_environment: i.PhaseEnvironmentForInternalCommands) -> i.SuccessOrHardError:
+             global_environment: i.GlobalEnvironmentForNamedPhase,
+             phase_environment: i.PhaseEnvironmentForInternalCommands) -> i.SuccessOrHardError:
         self.__configuration.execution_action__with_eds(phase_step.CLEANUP_EXECUTE,
                                                         global_environment)
         return self.__configuration.ret_val_from_execute

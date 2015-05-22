@@ -66,13 +66,18 @@ class PartialExecutor:
         # Tror det behövs för att undvika att sätta omgivningen mm, o därmed
         # påverka huvudprocessen.
         self.__set_pre_eds_environment_variables()
-        res = self.__run_setup_validate()
+        res = self.__run_setup_pre_validate()
         if res.status is not PartialResultStatus.PASS:
             self.__partial_result = res
             return
         phase_env = instructions.PhaseEnvironmentForInternalCommands()
         self.__set_post_eds_environment_variables()
         res = self.__run_setup_execute(phase_env)
+        if res.status is not PartialResultStatus.PASS:
+            self.__partial_result = res
+            self.__run_cleanup(phase_env)
+            return
+        res = self.__run_setup_post_validate()
         if res.status is not PartialResultStatus.PASS:
             self.__partial_result = res
             self.__run_cleanup(phase_env)
@@ -129,10 +134,10 @@ class PartialExecutor:
         with open(str(self.execution_directory_structure.result.exitcode_file), 'w') as f:
             f.write(str(exitcode))
 
-    def __run_setup_validate(self) -> PartialResult:
+    def __run_setup_pre_validate(self) -> PartialResult:
         return self.__run_internal_instructions_phase_step(phases.SETUP,
                                                            phase_step.SETUP_pre_validate,
-                                                           phase_step_executors.SetupValidateInstructionExecutor(
+                                                           phase_step_executors.SetupPreValidateInstructionExecutor(
                                                                self.__global_environment),
                                                            self.__setup_phase)
 
@@ -142,6 +147,13 @@ class PartialExecutor:
                                                            phase_step_executors.SetupPhaseInstructionExecutor(
                                                                self.__global_environment,
                                                                phase_env),
+                                                           self.__setup_phase)
+
+    def __run_setup_post_validate(self) -> PartialResult:
+        return self.__run_internal_instructions_phase_step(phases.SETUP,
+                                                           phase_step.SETUP_post_validate,
+                                                           phase_step_executors.SetupPostValidateInstructionExecutor(
+                                                               self.__global_environment),
                                                            self.__setup_phase)
 
     def __run_act_validate(self) -> PartialResult:

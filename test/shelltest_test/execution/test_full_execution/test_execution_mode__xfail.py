@@ -36,6 +36,7 @@ class Test(unittest.TestCase):
             [phase_step.ANONYMOUS,
              phase_step.SETUP__PRE_VALIDATE,
              phase_step.SETUP__EXECUTE,
+             phase_step.SETUP__POST_VALIDATE,
              phase_step.ACT__VALIDATE,
              phase_step.ASSERT__VALIDATE,
              phase_step.ACT__SCRIPT_GENERATION,
@@ -43,6 +44,7 @@ class Test(unittest.TestCase):
              phase_step.CLEANUP
              ],
             [phase_step.SETUP__EXECUTE,
+             phase_step.SETUP__POST_VALIDATE,
              phase_step.ACT__VALIDATE,
              phase_step.ASSERT__VALIDATE,
              phase_step.ACT__SCRIPT_GENERATION,
@@ -62,6 +64,7 @@ class Test(unittest.TestCase):
             [phase_step.ANONYMOUS,
              phase_step.SETUP__PRE_VALIDATE,
              phase_step.SETUP__EXECUTE,
+             phase_step.SETUP__POST_VALIDATE,
              phase_step.ACT__VALIDATE,
              phase_step.ASSERT__VALIDATE,
              phase_step.ACT__SCRIPT_GENERATION,
@@ -69,6 +72,7 @@ class Test(unittest.TestCase):
              phase_step.CLEANUP
              ],
             [phase_step.SETUP__EXECUTE,
+             phase_step.SETUP__POST_VALIDATE,
              phase_step.ACT__VALIDATE,
              phase_step.ASSERT__VALIDATE,
              phase_step.ACT__SCRIPT_GENERATION,
@@ -111,6 +115,7 @@ class Test(unittest.TestCase):
             [phase_step.ANONYMOUS,
              phase_step.SETUP__PRE_VALIDATE,
              phase_step.SETUP__EXECUTE,
+             phase_step.SETUP__POST_VALIDATE,
              phase_step.ACT__VALIDATE,
              phase_step.ASSERT__VALIDATE,
              phase_step.ACT__SCRIPT_GENERATION,
@@ -118,6 +123,7 @@ class Test(unittest.TestCase):
              phase_step.CLEANUP
              ],
             [phase_step.SETUP__EXECUTE,
+             phase_step.SETUP__POST_VALIDATE,
              phase_step.ACT__VALIDATE,
              phase_step.ASSERT__VALIDATE,
              phase_step.ACT__SCRIPT_GENERATION,

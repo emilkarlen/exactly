@@ -65,8 +65,9 @@ CLEANUP = 'CLEANUP'
 
 ANONYMOUS_EXECUTE = new_without_step(phases.ANONYMOUS)
 
-SETUP_VALIDATE = PhaseStep(phases.SETUP, VALIDATE)
+SETUP_PRE_VALIDATE = PhaseStep(phases.SETUP, PRE_VALIDATE)
 SETUP_EXECUTE = PhaseStep(phases.SETUP, EXECUTE)
+SETUP_POST_VALIDATE = PhaseStep(phases.SETUP, POST_VALIDATE)
 
 ACT_VALIDATE = PhaseStep(phases.ACT, VALIDATE)
 ACT_SCRIPT_GENERATION = PhaseStep(phases.ACT, ACT_script_generation)

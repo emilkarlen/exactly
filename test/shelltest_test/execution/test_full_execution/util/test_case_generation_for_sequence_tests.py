@@ -1,6 +1,6 @@
 from shelltest_test.execution.test_full_execution.util import recording_instructions_for_sequence_tests as instr
 from shelltest_test.execution.test_full_execution.util.recording_instructions_for_sequence_tests import \
-    SetupInternalInstructionThatRecordsStringInList, AssertInternalInstructionThatRecordsStringInList, \
+    SetupInstructionThatRecordsStringInList, AssertInternalInstructionThatRecordsStringInList, \
     AssertInstructionThatRecordsStringInRecordFile
 from shelltest_test.execution.util.test_case_generation import TestCaseGeneratorBase
 from shelltest.execution import phase_step
@@ -80,9 +80,11 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorBase):
         return list(map(self._next_instruction_line,
                         [
                             self._new_setup_internal_recorder(phase_step.SETUP__PRE_VALIDATE,
-                                                              phase_step.SETUP__EXECUTE),
-                            instruction_adapter.as_setup(
-                                instr.InternalInstructionThatRecordsStringInRecordFile(phase_step.SETUP__EXECUTE)),
+                                                              phase_step.SETUP__EXECUTE,
+                                                              phase_step.SETUP__POST_VALIDATE),
+                            instr.SetupInstructionThatRecordsStringInRecordFile(
+                                phase_step.SETUP__EXECUTE,
+                                phase_step.SETUP__POST_VALIDATE),
                         ]))
 
     def _act_phase_recording(self) -> list:
@@ -129,10 +131,12 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorBase):
         return instr.AnonymousInternalInstructionThatRecordsStringInList(self.__recorder_of(text))
 
     def _new_setup_internal_recorder(self,
-                                     text_for_validate: str,
-                                     text_for_execute: str) -> instructions.SetupPhaseInstruction:
-        return SetupInternalInstructionThatRecordsStringInList(self.__recorder_of(text_for_validate),
-                                                               self.__recorder_of(text_for_execute))
+                                     text_for_pre_validate: str,
+                                     text_for_execute: str,
+                                     text_for_post_validate: str) -> instructions.SetupPhaseInstruction:
+        return SetupInstructionThatRecordsStringInList(self.__recorder_of(text_for_pre_validate),
+                                                       self.__recorder_of(text_for_execute),
+                                                       self.__recorder_of(text_for_post_validate))
 
     def _new_act_internal_recorder(self,
                                    text_for_validate: str,
