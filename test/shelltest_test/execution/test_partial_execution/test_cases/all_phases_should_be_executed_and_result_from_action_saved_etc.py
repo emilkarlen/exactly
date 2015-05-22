@@ -60,7 +60,7 @@ def assertions(utc: unittest.TestCase,
 def assert_files_in_test_root_that_contain_name_of_test_root_dir(
         utc: unittest.TestCase,
         eds: ExecutionDirectoryStructure,
-        global_environment: instructions.GlobalEnvironmentForNamedPhase,
+        global_environment: instructions.GlobalEnvironmentForPostEdsPhase,
         file_name_from_py_cmd_list: list):
     expected_contents = utils.un_lines(py_cmd_file_lines(global_environment.eds.test_root_dir,
                                                          global_environment.home_directory,
@@ -98,7 +98,7 @@ class InternalInstructionThatCreatesAStandardPhaseFileInTestRootContainingDirect
                  phase: phases.Phase):
         super().__init__(phase)
 
-    def _file_lines(self, global_environment: instructions.GlobalEnvironmentForNamedPhase) -> list:
+    def _file_lines(self, global_environment: instructions.GlobalEnvironmentForPostEdsPhase) -> list:
         return py_cmd_file_lines(
             pathlib.Path().resolve(),
             global_environment.home_directory,
@@ -109,12 +109,12 @@ class ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr(instructions.ActPhaseI
     def __init__(self):
         super().__init__()
 
-    def validate(self, global_environment: instructions.GlobalEnvironmentForNamedPhase) \
+    def validate(self, global_environment: instructions.GlobalEnvironmentForPostEdsPhase) \
             -> instructions.SuccessOrValidationErrorOrHardError:
         return success_or_validation_hard_or_error_construction.new_success()
 
     def main(self,
-                                 global_environment: instructions.GlobalEnvironmentForNamedPhase,
+             global_environment: instructions.GlobalEnvironmentForPostEdsPhase,
                                  phase_environment: instructions.PhaseEnvironmentForScriptGeneration) \
             -> instructions.SuccessOrHardError:
         statements = [
@@ -130,7 +130,7 @@ class ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr(instructions.ActPhaseI
 
     def print_on(self,
                  file_object: str,
-                 global_environment: instructions.GlobalEnvironmentForNamedPhase) -> list:
+                 global_environment: instructions.GlobalEnvironmentForPostEdsPhase) -> list:
         return [
             self.write_line(file_object, file_object),
             self.write_path_line(file_object, HOME_DIR_HEADER, global_environment.home_directory),

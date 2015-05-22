@@ -26,14 +26,14 @@ class InternalInstructionThatWritesToStandardPhaseFile(instructions.InternalInst
         self.__phase = phase
 
     def execute(self, phase_name: str,
-                global_environment: instructions.GlobalEnvironmentForNamedPhase,
+                global_environment: instructions.GlobalEnvironmentForPostEdsPhase,
                 phase_environment: instructions.PhaseEnvironmentForInternalCommands):
         file_path = standard_phase_file_path(global_environment.eds.test_root_dir, self.__phase)
         with open(str(file_path), 'w') as f:
             contents = os.linesep.join(self._file_lines(global_environment)) + os.linesep
             f.write(contents)
 
-    def _file_lines(self, global_environment: instructions.GlobalEnvironmentForNamedPhase) -> list:
+    def _file_lines(self, global_environment: instructions.GlobalEnvironmentForPostEdsPhase) -> list:
         raise NotImplementedError()
 
 

@@ -55,7 +55,7 @@ class SetupPreValidateInstructionExecutor(ControlledInstructionExecutor):
 
 class SetupPostValidateInstructionExecutor(ControlledInstructionExecutor):
     def __init__(self,
-                 global_environment: instr.GlobalEnvironmentForNamedPhase):
+                 global_environment: instr.GlobalEnvironmentForPostEdsPhase):
         self.__global_environment = global_environment
 
     def apply(self, instruction: instr.SetupPhaseInstruction) -> PartialInstructionControlledFailureInfo:
@@ -65,7 +65,7 @@ class SetupPostValidateInstructionExecutor(ControlledInstructionExecutor):
 
 class SetupPhaseInstructionExecutor(ControlledInstructionExecutor):
     def __init__(self,
-                 global_environment: instr.GlobalEnvironmentForNamedPhase,
+                 global_environment: instr.GlobalEnvironmentForPostEdsPhase,
                  phase_environment: instr.PhaseEnvironmentForInternalCommands):
         self.__global_environment = global_environment
         self.__phase_environment = phase_environment
@@ -78,7 +78,7 @@ class SetupPhaseInstructionExecutor(ControlledInstructionExecutor):
 
 class ActValidateInstructionExecutor(ControlledInstructionExecutor):
     def __init__(self,
-                 global_environment: instr.GlobalEnvironmentForNamedPhase):
+                 global_environment: instr.GlobalEnvironmentForPostEdsPhase):
         self.__global_environment = global_environment
 
     def apply(self, instruction: instr.ActPhaseInstruction) -> PartialInstructionControlledFailureInfo:
@@ -88,7 +88,7 @@ class ActValidateInstructionExecutor(ControlledInstructionExecutor):
 
 class AssertValidateInstructionExecutor(ControlledInstructionExecutor):
     def __init__(self,
-                 global_environment: instr.GlobalEnvironmentForNamedPhase):
+                 global_environment: instr.GlobalEnvironmentForPostEdsPhase):
         self.__global_environment = global_environment
 
     def apply(self, instruction: instr.AssertPhaseInstruction) -> PartialInstructionControlledFailureInfo:
@@ -98,7 +98,7 @@ class AssertValidateInstructionExecutor(ControlledInstructionExecutor):
 
 class ActScriptGenerationExecutor(ControlledInstructionExecutor):
     def __init__(self,
-                 global_environment: instr.GlobalEnvironmentForNamedPhase,
+                 global_environment: instr.GlobalEnvironmentForPostEdsPhase,
                  phase_environment: instr.PhaseEnvironmentForScriptGeneration):
         self.__global_environment = global_environment
         self.__phase_environment = phase_environment
@@ -111,7 +111,7 @@ class ActScriptGenerationExecutor(ControlledInstructionExecutor):
 
 class AssertInstructionExecutor(ControlledInstructionExecutor):
     def __init__(self,
-                 global_environment: instr.GlobalEnvironmentForNamedPhase,
+                 global_environment: instr.GlobalEnvironmentForPostEdsPhase,
                  phase_environment: instr.PhaseEnvironmentForInternalCommands):
         self.__global_environment = global_environment
         self.__phase_environment = phase_environment
@@ -124,7 +124,7 @@ class AssertInstructionExecutor(ControlledInstructionExecutor):
 
 class CleanupPhaseInstructionExecutor(ControlledInstructionExecutor):
     def __init__(self,
-                 global_environment: instr.GlobalEnvironmentForNamedPhase,
+                 global_environment: instr.GlobalEnvironmentForPostEdsPhase,
                  phase_environment: instr.PhaseEnvironmentForInternalCommands):
         self.__global_environment = global_environment
         self.__phase_environment = phase_environment

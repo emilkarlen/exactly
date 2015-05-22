@@ -38,7 +38,7 @@ class _ScriptGenerationResult(tuple):
 
 class PartialExecutor:
     def __init__(self,
-                 global_environment: instructions.GlobalEnvironmentForNamedPhase,
+                 global_environment: instructions.GlobalEnvironmentForPostEdsPhase,
                  execution_directory_structure: ExecutionDirectoryStructure,
                  configuration: Configuration,
                  script_language_setup: ScriptLanguageSetup,
@@ -127,7 +127,7 @@ class PartialExecutor:
         return self.__configuration
 
     @property
-    def global_environment(self) -> instructions.GlobalEnvironmentForNamedPhase:
+    def global_environment(self) -> instructions.GlobalEnvironmentForPostEdsPhase:
         return self.__global_environment
 
     def _store_exit_code(self, exitcode: int):
@@ -330,7 +330,7 @@ def execute_test_case_in_execution_directory(script_language_setup: ScriptLangua
     def with_existing_root(exec_dir_structure_root: str) -> PartialExecutor:
         cwd_before = os.getcwd()
         execution_directory_structure = construct_at(exec_dir_structure_root)
-        global_environment = instructions.GlobalEnvironmentForNamedPhase(home_dir_path,
+        global_environment = instructions.GlobalEnvironmentForPostEdsPhase(home_dir_path,
                                                                          execution_directory_structure)
         configuration = Configuration(home_dir_path,
                                       execution_directory_structure.test_root_dir)

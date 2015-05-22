@@ -34,7 +34,7 @@ def _action__without_eds(recorder: instr_setup.Recorder,
 
 def _action__with_eds(recorder: instr_setup.Recorder,
                       phase_step: PhaseStep,
-                      global_environment: instructions.GlobalEnvironmentForNamedPhase):
+                      global_environment: instructions.GlobalEnvironmentForPostEdsPhase):
     recorder.set_phase_step_recording(phase_step, current_directory())
     os.chdir(str(global_environment.home_directory))
 

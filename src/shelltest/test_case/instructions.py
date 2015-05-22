@@ -176,7 +176,7 @@ class GlobalEnvironmentForPreEdsStep:
         return self.__home_dir
 
 
-class GlobalEnvironmentForNamedPhase(GlobalEnvironmentForPreEdsStep):
+class GlobalEnvironmentForPostEdsPhase(GlobalEnvironmentForPreEdsStep):
     def __init__(self,
                  home_dir: pathlib.Path,
                  eds: ExecutionDirectoryStructure):
@@ -215,7 +215,7 @@ class InternalInstruction(Instruction):
 
     def execute(self,
                 phase_name: str,
-                global_environment: GlobalEnvironmentForNamedPhase,
+                global_environment: GlobalEnvironmentForPostEdsPhase,
                 phase_environment: PhaseEnvironmentForInternalCommands):
         """
         Does whatever this instruction should do.
@@ -236,7 +236,7 @@ class SetupPhaseInstruction(Instruction):
         raise NotImplementedError()
 
     def main(self,
-             global_environment: GlobalEnvironmentForNamedPhase,
+             global_environment: GlobalEnvironmentForPostEdsPhase,
              phase_environment: PhaseEnvironmentForInternalCommands) -> SuccessOrHardError:
         """
         Does whatever this instruction should do.
@@ -246,7 +246,7 @@ class SetupPhaseInstruction(Instruction):
         raise NotImplementedError()
 
     def post_validate(self,
-                      global_environment: GlobalEnvironmentForNamedPhase) -> SuccessOrValidationErrorOrHardError:
+                      global_environment: GlobalEnvironmentForPostEdsPhase) -> SuccessOrValidationErrorOrHardError:
         raise NotImplementedError()
 
 
@@ -256,11 +256,11 @@ class ActPhaseInstruction(Instruction):
     """
 
     def validate(self,
-                 global_environment: GlobalEnvironmentForNamedPhase) -> SuccessOrValidationErrorOrHardError:
+                 global_environment: GlobalEnvironmentForPostEdsPhase) -> SuccessOrValidationErrorOrHardError:
         raise NotImplementedError()
 
     def main(self,
-             global_environment: GlobalEnvironmentForNamedPhase,
+             global_environment: GlobalEnvironmentForPostEdsPhase,
              phase_environment: PhaseEnvironmentForScriptGeneration) -> SuccessOrHardError:
         """
         Builds the script, and sets some execution premises (e.g. stdin),
@@ -278,11 +278,11 @@ class AssertPhaseInstruction(Instruction):
     """
 
     def validate(self,
-                 global_environment: GlobalEnvironmentForNamedPhase) -> SuccessOrValidationErrorOrHardError:
+                 global_environment: GlobalEnvironmentForPostEdsPhase) -> SuccessOrValidationErrorOrHardError:
         raise NotImplementedError()
 
     def main(self,
-             global_environment: GlobalEnvironmentForNamedPhase,
+             global_environment: GlobalEnvironmentForPostEdsPhase,
              phase_environment: PhaseEnvironmentForInternalCommands) -> PassOrFailOrHardError:
         """
         Does whatever this instruction should do.
@@ -298,7 +298,7 @@ class CleanupPhaseInstruction(Instruction):
     """
 
     def main(self,
-             global_environment: GlobalEnvironmentForNamedPhase,
+             global_environment: GlobalEnvironmentForPostEdsPhase,
              phase_environment: PhaseEnvironmentForInternalCommands) -> SuccessOrHardError:
         """
         Does whatever this instruction should do.
