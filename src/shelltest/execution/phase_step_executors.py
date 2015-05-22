@@ -43,7 +43,7 @@ class AnonymousPhaseInstructionExecutor(ControlledInstructionExecutor):
                                 self.__phase_environment))
 
 
-class SetupValidateInstructionExecutor(ControlledInstructionExecutor):
+class SetupPreValidateInstructionExecutor(ControlledInstructionExecutor):
     def __init__(self,
                  global_environment: instr.GlobalEnvironmentForPreEdsStep):
         self.__global_environment = global_environment
@@ -51,6 +51,16 @@ class SetupValidateInstructionExecutor(ControlledInstructionExecutor):
     def apply(self, instruction: instr.SetupPhaseInstruction) -> PartialInstructionControlledFailureInfo:
         return _from_success_or_validation_error_or_hard_error(
             instruction.pre_validate(self.__global_environment))
+
+
+class SetupPostValidateInstructionExecutor(ControlledInstructionExecutor):
+    def __init__(self,
+                 global_environment: instr.GlobalEnvironmentForNamedPhase):
+        self.__global_environment = global_environment
+
+    def apply(self, instruction: instr.SetupPhaseInstruction) -> PartialInstructionControlledFailureInfo:
+        return _from_success_or_validation_error_or_hard_error(
+            instruction.post_validate(self.__global_environment))
 
 
 class SetupPhaseInstructionExecutor(ControlledInstructionExecutor):

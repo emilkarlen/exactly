@@ -12,8 +12,8 @@ class AnonymousPhaseInstructionThatSetsExecutionMode(instrs.AnonymousPhaseInstru
         self.value_to_set = value_to_set
 
     def main(self,
-                global_environment,
-                phase_environment: instrs.PhaseEnvironmentForAnonymousPhase) -> instrs.SuccessOrHardError:
+             global_environment,
+             phase_environment: instrs.PhaseEnvironmentForAnonymousPhase) -> instrs.SuccessOrHardError:
         phase_environment.set_execution_mode(self.value_to_set)
         return success_or_hard_error_construction.new_success()
 
@@ -24,8 +24,8 @@ class AnonymousPhaseInstructionThatReturnsHardError(instrs.AnonymousPhaseInstruc
         self.__msg = msg
 
     def main(self,
-                global_environment,
-                phase_environment: instrs.PhaseEnvironmentForAnonymousPhase) -> instrs.SuccessOrHardError:
+             global_environment,
+             phase_environment: instrs.PhaseEnvironmentForAnonymousPhase) -> instrs.SuccessOrHardError:
         return success_or_hard_error_construction.new_hard_error(self.__msg)
 
 
@@ -35,8 +35,8 @@ class AnonymousPhaseInstructionWithImplementationError(instrs.AnonymousPhaseInst
         self.__exception_to_raise = exception_to_raise
 
     def main(self,
-                global_environment,
-                phase_environment: instrs.PhaseEnvironmentForAnonymousPhase) -> instrs.SuccessOrHardError:
+             global_environment,
+             phase_environment: instrs.PhaseEnvironmentForAnonymousPhase) -> instrs.SuccessOrHardError:
         raise self.__exception_to_raise
 
 
@@ -48,30 +48,40 @@ class SetupPhaseInstructionThatReturns(instrs.SetupPhaseInstruction):
         self.__from_execute = from_execute
 
     def pre_validate(self,
-                 global_environment: instrs.GlobalEnvironmentForPreEdsStep) \
+                     global_environment: instrs.GlobalEnvironmentForPreEdsStep) \
             -> instrs.SuccessOrValidationErrorOrHardError:
         return self.__from_validate
 
     def main(self,
-                global_environment: instrs.GlobalEnvironmentForNamedPhase,
-                phase_environment: instrs.PhaseEnvironmentForInternalCommands) -> instrs.SuccessOrHardError:
+             global_environment: instrs.GlobalEnvironmentForNamedPhase,
+             phase_environment: instrs.PhaseEnvironmentForInternalCommands) -> instrs.SuccessOrHardError:
         return self.__from_execute
 
+    def post_validate(self,
+                      global_environment: instrs.GlobalEnvironmentForNamedPhase) \
+            -> instrs.SuccessOrValidationErrorOrHardError:
+        return self.__from_validate
 
-class SetupPhaseInstructionWithImplementationErrorInValidate(instrs.SetupPhaseInstruction):
+
+class SetupPhaseInstructionWithImplementationErrorInPreValidate(instrs.SetupPhaseInstruction):
     def __init__(self,
                  exception_to_raise: Exception):
         self.__exception_to_raise = exception_to_raise
 
     def pre_validate(self,
-                 global_environment: instrs.GlobalEnvironmentForPreEdsStep) \
+                     global_environment: instrs.GlobalEnvironmentForPreEdsStep) \
             -> instrs.SuccessOrValidationErrorOrHardError:
         raise self.__exception_to_raise
 
     def main(self,
-                global_environment: instrs.GlobalEnvironmentForNamedPhase,
-                phase_environment: instrs.PhaseEnvironmentForInternalCommands) -> instrs.SuccessOrHardError:
+             global_environment: instrs.GlobalEnvironmentForNamedPhase,
+             phase_environment: instrs.PhaseEnvironmentForInternalCommands) -> instrs.SuccessOrHardError:
         return success_or_hard_error_construction.new_success()
+
+    def post_validate(self,
+                      global_environment: instrs.GlobalEnvironmentForNamedPhase) \
+            -> instrs.SuccessOrValidationErrorOrHardError:
+        return success_or_validation_hard_or_error_construction.new_success()
 
 
 class SetupPhaseInstructionWithImplementationErrorInExecute(instrs.SetupPhaseInstruction):
@@ -80,14 +90,19 @@ class SetupPhaseInstructionWithImplementationErrorInExecute(instrs.SetupPhaseIns
         self.__exception_to_raise = exception_to_raise
 
     def pre_validate(self,
-                 global_environment: instrs.GlobalEnvironmentForPreEdsStep) \
+                     global_environment: instrs.GlobalEnvironmentForPreEdsStep) \
             -> instrs.SuccessOrValidationErrorOrHardError:
         return success_or_validation_hard_or_error_construction.new_success()
 
     def main(self,
-                global_environment: instrs.GlobalEnvironmentForNamedPhase,
-                phase_environment: instrs.PhaseEnvironmentForInternalCommands) -> instrs.SuccessOrHardError:
+             global_environment: instrs.GlobalEnvironmentForNamedPhase,
+             phase_environment: instrs.PhaseEnvironmentForInternalCommands) -> instrs.SuccessOrHardError:
         raise self.__exception_to_raise
+
+    def post_validate(self,
+                      global_environment: instrs.GlobalEnvironmentForNamedPhase) \
+            -> instrs.SuccessOrValidationErrorOrHardError:
+        return success_or_validation_hard_or_error_construction.new_success()
 
 
 class ActPhaseInstructionThatReturns(instrs.ActPhaseInstruction):
@@ -156,8 +171,8 @@ class AssertPhaseInstructionThatReturns(instrs.AssertPhaseInstruction):
         return self.__for_validate
 
     def main(self,
-                global_environment: instrs.GlobalEnvironmentForNamedPhase,
-                phase_environment: instrs.PhaseEnvironmentForInternalCommands) -> instrs.PassOrFailOrHardError:
+             global_environment: instrs.GlobalEnvironmentForNamedPhase,
+             phase_environment: instrs.PhaseEnvironmentForInternalCommands) -> instrs.PassOrFailOrHardError:
         return self.__for_execute
 
 
@@ -172,8 +187,8 @@ class AssertPhaseInstructionWithImplementationErrorInValidate(instrs.AssertPhase
         raise self.__exception_to_raise
 
     def main(self,
-                global_environment: instrs.GlobalEnvironmentForNamedPhase,
-                phase_environment: instrs.PhaseEnvironmentForInternalCommands) -> instrs.PassOrFailOrHardError:
+             global_environment: instrs.GlobalEnvironmentForNamedPhase,
+             phase_environment: instrs.PhaseEnvironmentForInternalCommands) -> instrs.PassOrFailOrHardError:
         return success_or_hard_error_construction.new_success()
 
 
@@ -188,8 +203,8 @@ class AssertPhaseInstructionWithImplementationErrorInExecute(instrs.AssertPhaseI
         return success_or_validation_hard_or_error_construction.new_success()
 
     def main(self,
-                global_environment: instrs.GlobalEnvironmentForNamedPhase,
-                phase_environment: instrs.PhaseEnvironmentForInternalCommands) -> instrs.PassOrFailOrHardError:
+             global_environment: instrs.GlobalEnvironmentForNamedPhase,
+             phase_environment: instrs.PhaseEnvironmentForInternalCommands) -> instrs.PassOrFailOrHardError:
         raise self.__exception_to_raise
 
 
@@ -199,8 +214,8 @@ class CleanupPhaseInstructionThatReturnsHardError(instrs.CleanupPhaseInstruction
         self.__msg = msg
 
     def main(self,
-                global_environment: instrs.GlobalEnvironmentForNamedPhase,
-                phase_environment: instrs.PhaseEnvironmentForInternalCommands) -> instrs.SuccessOrHardError:
+             global_environment: instrs.GlobalEnvironmentForNamedPhase,
+             phase_environment: instrs.PhaseEnvironmentForInternalCommands) -> instrs.SuccessOrHardError:
         return success_or_hard_error_construction.new_hard_error(self.__msg)
 
 
@@ -210,6 +225,6 @@ class CleanupPhaseInstructionWithImplementationError(instrs.CleanupPhaseInstruct
         self.__exception_to_raise = exception_to_raise
 
     def main(self,
-                global_environment: instrs.GlobalEnvironmentForNamedPhase,
-                phase_environment: instrs.PhaseEnvironmentForInternalCommands) -> instrs.SuccessOrHardError:
+             global_environment: instrs.GlobalEnvironmentForNamedPhase,
+             phase_environment: instrs.PhaseEnvironmentForInternalCommands) -> instrs.SuccessOrHardError:
         raise self.__exception_to_raise

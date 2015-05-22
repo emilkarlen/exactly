@@ -58,7 +58,7 @@ class PyCommandThatStoresStringInFileInCurrentDirectory(instructions.SetupPhaseI
         self.__text_to_store = text_to_store
 
     def pre_validate(self,
-                 global_environment: instructions.GlobalEnvironmentForPreEdsStep) \
+                     global_environment: instructions.GlobalEnvironmentForPreEdsStep) \
             -> instructions.SuccessOrValidationErrorOrHardError:
         return success_or_validation_hard_or_error_construction.new_success()
 
@@ -68,6 +68,10 @@ class PyCommandThatStoresStringInFileInCurrentDirectory(instructions.SetupPhaseI
         with open(self.__file_base_name, 'w') as f:
             f.write(self.__text_to_store)
         return new_success()
+
+    def post_validate(self, global_environment: instructions.GlobalEnvironmentForNamedPhase) \
+            -> instructions.SuccessOrValidationErrorOrHardError:
+        return success_or_validation_hard_or_error_construction.new_success()
 
 
 class StatementsThatCopiesStdinToStdout(instructions.ActPhaseInstruction):

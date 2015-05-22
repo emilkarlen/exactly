@@ -245,6 +245,10 @@ class SetupPhaseInstruction(Instruction):
         """
         raise NotImplementedError()
 
+    def post_validate(self,
+                      global_environment: GlobalEnvironmentForNamedPhase) -> SuccessOrValidationErrorOrHardError:
+        raise NotImplementedError()
+
 
 class ActPhaseInstruction(Instruction):
     """
