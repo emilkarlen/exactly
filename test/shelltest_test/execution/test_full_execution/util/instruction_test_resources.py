@@ -42,15 +42,17 @@ class AnonymousPhaseInstructionWithImplementationError(instrs.AnonymousPhaseInst
 
 class SetupPhaseInstructionThatReturns(instrs.SetupPhaseInstruction):
     def __init__(self,
-                 from_validate: instrs.SuccessOrValidationErrorOrHardError,
-                 from_execute: instrs.SuccessOrHardError):
-        self.__from_validate = from_validate
+                 from_pre_validate: instrs.SuccessOrValidationErrorOrHardError,
+                 from_execute: instrs.SuccessOrHardError,
+                 from_post_validate: instrs.SuccessOrValidationErrorOrHardError):
+        self.__from_pre_validate = from_pre_validate
         self.__from_execute = from_execute
+        self.__from_post_validate = from_post_validate
 
     def pre_validate(self,
                      global_environment: instrs.GlobalEnvironmentForPreEdsStep) \
             -> instrs.SuccessOrValidationErrorOrHardError:
-        return self.__from_validate
+        return self.__from_pre_validate
 
     def main(self,
              global_environment: instrs.GlobalEnvironmentForNamedPhase,
@@ -60,7 +62,7 @@ class SetupPhaseInstructionThatReturns(instrs.SetupPhaseInstruction):
     def post_validate(self,
                       global_environment: instrs.GlobalEnvironmentForNamedPhase) \
             -> instrs.SuccessOrValidationErrorOrHardError:
-        return self.__from_validate
+        return self.__from_post_validate
 
 
 class SetupPhaseInstructionWithImplementationErrorInPreValidate(instrs.SetupPhaseInstruction):
@@ -82,6 +84,27 @@ class SetupPhaseInstructionWithImplementationErrorInPreValidate(instrs.SetupPhas
                       global_environment: instrs.GlobalEnvironmentForNamedPhase) \
             -> instrs.SuccessOrValidationErrorOrHardError:
         return success_or_validation_hard_or_error_construction.new_success()
+
+
+class SetupPhaseInstructionWithImplementationErrorInPostValidate(instrs.SetupPhaseInstruction):
+    def __init__(self,
+                 exception_to_raise: Exception):
+        self.__exception_to_raise = exception_to_raise
+
+    def pre_validate(self,
+                     global_environment: instrs.GlobalEnvironmentForPreEdsStep) \
+            -> instrs.SuccessOrValidationErrorOrHardError:
+        return success_or_validation_hard_or_error_construction.new_success()
+
+    def main(self,
+             global_environment: instrs.GlobalEnvironmentForNamedPhase,
+             phase_environment: instrs.PhaseEnvironmentForInternalCommands) -> instrs.SuccessOrHardError:
+        return success_or_hard_error_construction.new_success()
+
+    def post_validate(self,
+                      global_environment: instrs.GlobalEnvironmentForNamedPhase) \
+            -> instrs.SuccessOrValidationErrorOrHardError:
+        raise self.__exception_to_raise
 
 
 class SetupPhaseInstructionWithImplementationErrorInExecute(instrs.SetupPhaseInstruction):
