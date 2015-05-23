@@ -1,5 +1,5 @@
-from shelltest.test_case import act_script_management
-from shelltest.test_case.act_script_management import ScriptFileManager
+from shelltest.script_language import act_script_management
+from shelltest.script_language.act_script_management import ScriptFileManager
 
 
 class Python3Language(act_script_management.ScriptLanguage):
