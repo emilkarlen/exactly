@@ -5,7 +5,7 @@ import unittest
 from shelltest.test_case.success_or_hard_error_construction import new_success
 from shelltest.test_case import success_or_validation_hard_or_error_construction
 from shelltest.execution.execution_directory_structure import ExecutionDirectoryStructure
-from shelltest.test_case.config import Configuration
+from shelltest.execution.partial_execution import Configuration
 from shelltest_test.execution.util import py_unit_test_case_with_file_output as with_file_output
 from shelltest_test.execution.util.py_unit_test_case_with_file_output import \
     InternalInstructionThatWritesToStandardPhaseFile

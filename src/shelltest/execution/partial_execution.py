@@ -12,13 +12,27 @@ from shelltest.test_case import instructions
 from shelltest.document.model import PhaseContents
 from shelltest import phases
 from shelltest.test_case import test_case_struct
-from shelltest.test_case.config import Configuration
 from shelltest import exception
 from .execution_directory_structure import construct_at, ExecutionDirectoryStructure
 from .result import PartialResult, PartialResultStatus
 from . import result
 from . import phase_step_execution
 from shelltest.test_case.act_script_management import ScriptLanguageSetup
+
+
+class Configuration(tuple):
+    def __new__(cls,
+                home_dir: pathlib.Path,
+                test_root_dir: pathlib.Path):
+        return tuple.__new__(cls, (home_dir, test_root_dir))
+
+    @property
+    def home_dir(self) -> pathlib.Path:
+        return self[0]
+
+    @property
+    def test_root_dir(self) -> pathlib.Path:
+        return self[1]
 
 
 class _StepExecutionResult(tuple):
@@ -364,5 +378,3 @@ def execute_test_case_in_execution_directory(script_language_setup: ScriptLangua
     else:
         with tempfile.TemporaryDirectory(prefix=execution_directory_root_name_prefix) as tmp_exec_dir_structure_root:
             return with_existing_root(tmp_exec_dir_structure_root)
-
-
