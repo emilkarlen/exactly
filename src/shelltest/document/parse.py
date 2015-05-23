@@ -76,8 +76,7 @@ class PhaseAndInstructionsConfiguration:
         """
         :param parser_for_anonymous_phase: Parser for the top-level/anonymous phase. None if that phase
          is not used.
-        :param parsers_for_named_phases: sequence of ParserForPhase in the order the phases should be
-        executed and also parsed.
+        :param parsers_for_named_phases: sequence of ParserForPhase.
         """
         self._parser_for_anonymous_phase = parser_for_anonymous_phase
         self._parsers_for_named_phases = parsers_for_named_phases
