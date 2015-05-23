@@ -4,13 +4,13 @@ import pathlib
 import types
 import unittest
 
-from shelltest.test_case.abs_syn_gen import TestCase
+from shelltest.test_case.test_case_struct import TestCase
 from shelltest.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shelltest.execution.partial_execution import execute_test_case_in_execution_directory, PartialExecutor
 from shelltest.document import model
 from shelltest.document import line_source
 from shelltest.script_language import python3
-from shelltest.test_case import abs_syn_gen
+from shelltest.test_case import test_case_struct
 from shelltest import phases
 from shelltest_test.execution.util import utils, instruction_adapter
 from shelltest_test.execution.util.test_case_generation import TestCaseGeneratorBase
@@ -95,8 +95,8 @@ class UnitTestCaseForPy3Language:
                                            path,
                                            expected_contents)
 
-    def _test_case(self) -> abs_syn_gen.TestCase:
-        return abs_syn_gen.TestCase(
+    def _test_case(self) -> test_case_struct.TestCase:
+        return test_case_struct.TestCase(
             model.PhaseContents(tuple(self._anonymous_phase())),
             model.PhaseContents(tuple(self._setup_phase())),
             model.PhaseContents(tuple(self._act_phase())),

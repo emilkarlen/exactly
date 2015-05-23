@@ -11,7 +11,7 @@ from shelltest.execution.single_instruction_executor import ControlledInstructio
 from shelltest.test_case import instructions
 from shelltest.document.model import PhaseContents
 from shelltest import phases
-from shelltest.test_case import abs_syn_gen
+from shelltest.test_case import test_case_struct
 from shelltest.test_case.config import Configuration
 from shelltest import exception
 from .execution_directory_structure import construct_at, ExecutionDirectoryStructure
@@ -305,7 +305,7 @@ class _ActInstructionHeaderExecutor(ElementHeaderExecutor):
 
 
 def execute(script_language_setup: ScriptLanguageSetup,
-            test_case: abs_syn_gen.TestCase,
+            test_case: test_case_struct.TestCase,
             home_dir_path: pathlib.Path,
             execution_directory_root_name_prefix: str,
             is_keep_execution_directory_root: bool) -> PartialResult:
@@ -318,7 +318,7 @@ def execute(script_language_setup: ScriptLanguageSetup,
 
 
 def execute_test_case_in_execution_directory(script_language_setup: ScriptLanguageSetup,
-                                             test_case: abs_syn_gen.TestCase,
+                                             test_case: test_case_struct.TestCase,
                                              home_dir_path: pathlib.Path,
                                              execution_directory_root_name_prefix: str,
                                              is_keep_execution_directory_root: bool) -> PartialExecutor:

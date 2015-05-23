@@ -3,7 +3,7 @@ import pathlib
 import unittest
 import functools
 
-from shelltest.test_case import abs_syn_gen
+from shelltest.test_case import test_case_struct
 from shelltest.test_case import instructions
 from shelltest.execution.phase_step import PhaseStep
 from shelltest.execution.result import FullResultStatus
@@ -47,7 +47,7 @@ class Test(FullExecutionTestCaseBase):
                          dbg_do_not_delete_dir_structure)
         self.recorder = instr_setup.Recorder()
 
-    def _test_case(self) -> abs_syn_gen.TestCase:
+    def _test_case(self) -> test_case_struct.TestCase:
         setup = instr_setup.TestCaseSetupWithRecorder(
             validation_action__with_eds=_action__with_eds,
             execution_action__with_eds=_action__with_eds,

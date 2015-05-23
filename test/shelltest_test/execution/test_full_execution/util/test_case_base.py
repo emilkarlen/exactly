@@ -3,7 +3,7 @@ import shutil
 import pathlib
 import unittest
 
-from shelltest.test_case import abs_syn_gen
+from shelltest.test_case import test_case_struct
 from shelltest.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shelltest.execution.result import FullResult
 from shelltest.script_language import python3
@@ -43,7 +43,7 @@ class FullExecutionTestCaseBase:
             if self.eds:
                 print(str(self.eds.root_dir))
 
-    def _test_case(self) -> abs_syn_gen.TestCase:
+    def _test_case(self) -> test_case_struct.TestCase:
         raise NotImplementedError()
 
     def _assertions(self):
