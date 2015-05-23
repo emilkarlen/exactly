@@ -17,7 +17,7 @@ from .execution_directory_structure import construct_at, ExecutionDirectoryStruc
 from .result import PartialResult, PartialResultStatus
 from . import result
 from . import phase_step_execution
-from shelltest.test_case.act_script_management import ScriptLanguageSetup
+from shelltest.script_language.act_script_management import ScriptLanguageSetup
 
 
 class Configuration(tuple):

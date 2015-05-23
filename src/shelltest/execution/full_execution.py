@@ -6,7 +6,8 @@ from shelltest.execution import partial_execution
 from shelltest.execution import phase_step_executors
 from shelltest import phases
 from shelltest.test_case import instructions
-from shelltest.test_case import act_script_management, test_case_struct
+from shelltest.test_case import test_case_struct
+from shelltest.script_language import act_script_management
 from shelltest.test_case.instructions import PhaseEnvironmentForAnonymousPhase, ExecutionMode
 from .result import FullResult, PartialResult, PartialResultStatus, FullResultStatus
 from . import result
