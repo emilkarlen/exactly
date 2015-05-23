@@ -6,14 +6,14 @@ from shelltest.execution import partial_execution
 from shelltest.execution import phase_step_executors
 from shelltest import phases
 from shelltest.test_case import instructions
-from shelltest.test_case import script_stmt_gen, abs_syn_gen
+from shelltest.test_case import act_script_management, abs_syn_gen
 from shelltest.test_case.instructions import PhaseEnvironmentForAnonymousPhase, ExecutionMode
 from .result import FullResult, PartialResult, PartialResultStatus, FullResultStatus
 from . import result
 from . import phase_step_execution
 
 
-def execute(script_language_setup: script_stmt_gen.ScriptLanguageSetup,
+def execute(script_language_setup: act_script_management.ScriptLanguageSetup,
             test_case: abs_syn_gen.TestCase,
             initial_home_dir_path: pathlib.Path,
             execution_directory_root_name_prefix: str,

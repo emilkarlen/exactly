@@ -18,7 +18,7 @@ from .execution_directory_structure import construct_at, ExecutionDirectoryStruc
 from .result import PartialResult, PartialResultStatus
 from . import result
 from . import phase_step_execution
-from shelltest.test_case.script_stmt_gen import ScriptLanguageSetup
+from shelltest.test_case.act_script_management import ScriptLanguageSetup
 
 
 class _StepExecutionResult(tuple):
