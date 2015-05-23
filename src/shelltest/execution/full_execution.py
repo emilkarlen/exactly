@@ -13,6 +13,32 @@ from . import result
 from . import phase_step_execution
 
 
+def execute(script_language_setup: script_stmt_gen.ScriptLanguageSetup,
+            test_case: abs_syn_gen.TestCase,
+            initial_home_dir_path: pathlib.Path,
+            execution_directory_root_name_prefix: str,
+            is_keep_execution_directory_root: bool) -> FullResult:
+    """
+    The main method for executing a Test Case.
+    """
+    saved_environment_variables = _prepare_and_save_environment_variables()
+    anonymous_phase_environment = PhaseEnvironmentForAnonymousPhase(initial_home_dir_path)
+    partial_result = _execute_anonymous_phase(anonymous_phase_environment,
+                                              test_case)
+    if partial_result.status is not PartialResultStatus.PASS:
+        return new_anonymous_phase_failure_from(partial_result)
+    if anonymous_phase_environment.execution_mode is ExecutionMode.SKIPPED:
+        return result.new_skipped()
+    partial_result = partial_execution.execute(script_language_setup,
+                                               test_case,
+                                               anonymous_phase_environment.home_dir_path,
+                                               execution_directory_root_name_prefix,
+                                               is_keep_execution_directory_root)
+    os.environ = saved_environment_variables
+    return new_named_phases_result_from(anonymous_phase_environment.execution_mode,
+                                        partial_result)
+
+
 def new_anonymous_phase_failure_from(partial_result: PartialResult) -> FullResult:
     full_status = FullResultStatus.HARD_ERROR
     if partial_result.status is PartialResultStatus.IMPLEMENTATION_ERROR:
@@ -40,29 +66,6 @@ def translate_status(execution_mode: ExecutionMode,
         elif ps is PartialResultStatus.PASS:
             return FullResultStatus.XPASS
     return FullResultStatus(ps.value)
-
-
-def execute(script_language_setup: script_stmt_gen.ScriptLanguageSetup,
-            test_case: abs_syn_gen.TestCase,
-            initial_home_dir_path: pathlib.Path,
-            execution_directory_root_name_prefix: str,
-            is_keep_execution_directory_root: bool) -> FullResult:
-    saved_environment_variables = _prepare_and_save_environment_variables()
-    anonymous_phase_environment = PhaseEnvironmentForAnonymousPhase(initial_home_dir_path)
-    partial_result = _execute_anonymous_phase(anonymous_phase_environment,
-                                              test_case)
-    if partial_result.status is not PartialResultStatus.PASS:
-        return new_anonymous_phase_failure_from(partial_result)
-    if anonymous_phase_environment.execution_mode is ExecutionMode.SKIPPED:
-        return result.new_skipped()
-    partial_result = partial_execution.execute(script_language_setup,
-                                               test_case,
-                                               anonymous_phase_environment.home_dir_path,
-                                               execution_directory_root_name_prefix,
-                                               is_keep_execution_directory_root)
-    os.environ = saved_environment_variables
-    return new_named_phases_result_from(anonymous_phase_environment.execution_mode,
-                                        partial_result)
 
 
 def _prepare_and_save_environment_variables() -> dict:
