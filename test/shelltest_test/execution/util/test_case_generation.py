@@ -1,6 +1,6 @@
 from shelltest.document import model
 from shelltest.document import line_source
-from shelltest.test_case import abs_syn_gen
+from shelltest.test_case import test_case_struct
 
 
 class TestCaseGeneratorBase:
@@ -17,13 +17,13 @@ class TestCaseGeneratorBase:
         self.__test_case = None
 
     @property
-    def test_case(self) -> abs_syn_gen.TestCase:
+    def test_case(self) -> test_case_struct.TestCase:
         if self.__test_case is None:
             self.__test_case = self._generate()
         return self.__test_case
 
-    def _generate(self) -> abs_syn_gen.TestCase:
-        return abs_syn_gen.TestCase(
+    def _generate(self) -> test_case_struct.TestCase:
+        return test_case_struct.TestCase(
             self.__from(self._anonymous_phase()),
             self.__from(self._setup_phase()),
             self.__from(self._act_phase()),

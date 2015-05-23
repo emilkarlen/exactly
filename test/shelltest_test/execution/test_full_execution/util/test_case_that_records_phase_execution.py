@@ -1,6 +1,6 @@
 import unittest
 
-from shelltest.test_case import abs_syn_gen
+from shelltest.test_case import test_case_struct
 from shelltest_test.execution.test_full_execution.util.test_case_base import FullExecutionTestCaseBase
 from shelltest_test.execution.util.expected_instruction_failure import ExpectedInstructionFailureBase
 from shelltest.execution.result import FullResultStatus
@@ -34,7 +34,7 @@ class TestCaseThatRecordsExecution(FullExecutionTestCaseBase):
         self.__expected_file_recording = expected_file_recording
         self.__execution_directory_structure_should_exist = execution_directory_structure_should_exist
 
-    def _test_case(self) -> abs_syn_gen.TestCase:
+    def _test_case(self) -> test_case_struct.TestCase:
         return self._test_case_generator.test_case
 
     def _assertions(self):
