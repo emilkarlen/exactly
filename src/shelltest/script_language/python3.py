@@ -1,8 +1,8 @@
-from shelltest.test_case import script_stmt_gen
-from shelltest.test_case.script_stmt_gen import ScriptFileManager
+from shelltest.test_case import act_script_management
+from shelltest.test_case.act_script_management import ScriptFileManager
 
 
-class Python3Language(script_stmt_gen.ScriptLanguage):
+class Python3Language(act_script_management.ScriptLanguage):
     def command_and_args_for_executing_script_file(self, script_file_name: str) -> list:
         return ['python3', script_file_name]
 
@@ -28,8 +28,8 @@ class Python3ScriptFileManager(ScriptFileManager):
         return ['python3', script_file_name]
 
 
-def new_script_language_setup() -> script_stmt_gen.ScriptLanguageSetup:
-    return script_stmt_gen.ScriptLanguageSetup(
+def new_script_language_setup() -> act_script_management.ScriptLanguageSetup:
+    return act_script_management.ScriptLanguageSetup(
         Python3ScriptFileManager(),
         Python3Language())
 

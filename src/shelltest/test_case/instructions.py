@@ -3,7 +3,7 @@ import pathlib
 
 from shelltest.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shelltest.document.model import Instruction
-from shelltest.test_case import script_stmt_gen
+from shelltest.test_case import act_script_management
 
 
 ENV_VAR_HOME = 'SHELLTEST_HOME'
@@ -138,11 +138,11 @@ class PhaseEnvironmentForScriptGeneration:
     """
 
     def __init__(self,
-                 script_source_accumulator: script_stmt_gen.ScriptSourceAccumulator):
+                 script_source_accumulator: act_script_management.ScriptSourceAccumulator):
         self.__script_source_accumulator = script_source_accumulator
 
     @property
-    def append(self) -> script_stmt_gen.ScriptSourceAccumulator:
+    def append(self) -> act_script_management.ScriptSourceAccumulator:
         return self.__script_source_accumulator
 
 
