@@ -85,6 +85,10 @@ Enl diagram ska den skapas precis efter setup/validate.
 Idag skapas den precis innan setup/validate.
 Ingen stor grej, men kan ev ändras.
 Alternativ ändrar man spec till att göra som idag.
+** TODO <2015-05-22 fre> Konfbar gemensam miljö för alla instruktioner
+Införa argument som ges till alla metoder i alla instruktioner.
+Skulle erbjuda mölighet att skräddarsy den information som instruktionerna har
+tillgång till.
 * TODO Refaktoreringar
 ** TODO Argument till instruktionernas steg
 Spikade först två generella miljöer: global miljö och fas-miljö.
