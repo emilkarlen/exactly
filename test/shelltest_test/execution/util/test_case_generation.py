@@ -1,5 +1,5 @@
 from shelltest.document import model
-from shelltest.document import line_source
+from shelltest.general import line_source
 from shelltest.test_case import test_case_struct
 
 

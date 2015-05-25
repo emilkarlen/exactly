@@ -1,6 +1,6 @@
 from shelltest.document import model
-from shelltest.document import line_source
-from shelltest.document.line_source import LineSource
+from shelltest.general import line_source
+from shelltest.general.line_source import LineSource
 from shelltest.document import syntax
 
 

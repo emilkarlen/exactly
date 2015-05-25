@@ -4,7 +4,7 @@ from shelltest.cli import test_case_parser
 from shelltest.cli import argument_parsing
 from shelltest.execution import full_execution
 from shelltest.script_language.python3 import new_script_language_setup
-from shelltest.document import line_source
+from shelltest.general import line_source
 
 
 def main():

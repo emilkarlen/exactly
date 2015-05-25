@@ -1,5 +1,5 @@
 from shelltest.execution.phase_step import PhaseStep
-from shelltest.document import line_source
+from shelltest.general import line_source
 from shelltest.execution.single_instruction_executor import ControlledInstructionExecutor, execute_element
 from shelltest.document.model import PhaseContents, PhaseContentElement
 from shelltest import phases

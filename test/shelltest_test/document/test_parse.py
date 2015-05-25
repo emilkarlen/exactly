@@ -3,7 +3,8 @@ import unittest
 
 from shelltest.document.parse import SourceError, PlainTestCaseParser
 from shelltest.document import model
-from shelltest.document import line_source, parse, syntax
+from shelltest.document import parse, syntax
+from shelltest.general import line_source
 
 
 class InstructionInPhase(model.Instruction):
