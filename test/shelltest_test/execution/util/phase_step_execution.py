@@ -6,7 +6,7 @@ from shelltest.execution.single_instruction_executor import ControlledInstructio
     PartialInstructionControlledFailureInfo
 from shelltest.general import line_source
 from shelltest.document.model import Instruction
-from shelltest_test.execution.util.expected_instruction_failure import ExpectedInstructionFailureDetails
+from shelltest_test.util.expected_instruction_failure import ExpectedInstructionFailureDetails
 from shelltest_test.document.test_resources import assert_equals_line
 
 

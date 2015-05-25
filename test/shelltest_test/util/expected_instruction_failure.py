@@ -1,10 +1,10 @@
 import unittest
 
-from shelltest.execution.phase_step import PhaseStep
-from shelltest_test.document.test_resources import assert_equals_line
-from shelltest_test.test_resources import assertion_message
-from shelltest.execution.result import InstructionFailureInfo, InstructionFailureDetails
 from shelltest.general import line_source
+from shelltest_test.document.test_resources import assert_equals_line
+from shelltest.execution.phase_step import PhaseStep
+from shelltest_test.test_resources import assertion_message
+from shelltest.execution.result import InstructionFailureInfo, InstructionFailureDetails, FullResultStatus, FullResult
 
 
 class ExpectedInstructionFailureDetails(tuple):
@@ -52,6 +52,38 @@ class ExpectedInstructionFailureBase:
                    unittest_case: unittest.TestCase,
                    actual_failure_info: InstructionFailureInfo):
         raise NotImplementedError()
+
+
+class ExpectedStatusAndFailure(tuple):
+    def __new__(cls,
+                status: FullResultStatus,
+                failure: ExpectedInstructionFailureBase):
+        return tuple.__new__(cls, (status, failure))
+
+    def assertions(self,
+                   utc: unittest.TestCase,
+                   actual_status: FullResultStatus,
+                   actual_failure_info: InstructionFailureInfo):
+        utc.assertEqual(self.status,
+                        actual_status,
+                        'Status')
+        self.failure.assertions(utc,
+                                actual_failure_info)
+
+    def assertions_on_status_and_failure(self,
+                                         utc: unittest.TestCase,
+                                         actual_result: FullResult):
+        self.assertions(utc,
+                        actual_result.status,
+                        actual_result.instruction_failure_info)
+
+    @property
+    def status(self) -> FullResultStatus:
+        return self[0]
+
+    @property
+    def failure(self) -> ExpectedInstructionFailureBase:
+        return self[1]
 
 
 class ExpectedInstructionFailureForNoFailure(ExpectedInstructionFailureBase):
