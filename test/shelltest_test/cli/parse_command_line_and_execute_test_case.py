@@ -4,7 +4,7 @@ from shelltest.execution.result import FullResultStatus
 
 from shelltest_test.util.expected_instruction_failure import ExpectedStatusAndFailure, \
     ExpectedInstructionFailureForNoFailure
-from shelltest_test.util.with_tmp_file import tmp_file_containing
+from shelltest_test.util.with_tmp_file import tmp_file_containing, tmp_file_containing_lines
 from shelltest.cli import parse_command_line_and_execute_test_case as sut
 
 
@@ -12,6 +12,25 @@ class TestTestCaseWithoutInstructions(unittest.TestCase):
     def test_empty_file(self):
         # ARRANGE #
         with tmp_file_containing('') as file_path:
+            argv = [str(file_path)]
+            # ACT #
+            result = sut.execute(argv)
+        # ASSERT #
+        expected = ExpectedStatusAndFailure(
+            FullResultStatus.PASS,
+            ExpectedInstructionFailureForNoFailure())
+        expected.assertions_on_status_and_failure(self,
+                                                  result.full_result)
+
+    def test_empty_phases(self):
+        # ARRANGE #
+        lines = [
+            '[setup]',
+            '[act]',
+            '[assert]',
+            '[cleanup]',
+        ]
+        with tmp_file_containing_lines(lines) as file_path:
             argv = [str(file_path)]
             # ACT #
             result = sut.execute(argv)
