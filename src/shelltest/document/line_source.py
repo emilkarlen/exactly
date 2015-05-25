@@ -1,3 +1,6 @@
+import pathlib
+
+
 class Line(tuple):
     def __new__(cls,
                 line_number: int,
@@ -24,6 +27,14 @@ class LineSource:
         raise NotImplementedError()
 
 
+def new_for_string(contents: str) -> LineSource:
+    return _LineSourceForString(contents)
+
+
+def new_for_file(path: pathlib.Path) -> LineSource:
+    raise NotImplementedError()
+
+
 class _LineSourceForString(LineSource):
     def __init__(self, contents: str):
         self._lines = enumerate(contents.splitlines(),
@@ -32,11 +43,3 @@ class _LineSourceForString(LineSource):
     def __iter__(self):
         for n, s in self._lines:
             yield Line(n, s)
-
-
-def new_for_string(contents: str) -> LineSource:
-    return _LineSourceForString(contents)
-
-
-def new_for_file(file_name: str) -> LineSource:
-    raise NotImplementedError()
