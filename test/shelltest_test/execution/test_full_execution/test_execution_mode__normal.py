@@ -9,7 +9,7 @@ from shelltest.execution.result import FullResultStatus
 from shelltest.execution import phase_step
 from shelltest_test.execution.test_full_execution.util.test_case_that_records_phase_execution import \
     TestCaseThatRecordsExecution
-from shelltest_test.execution.util.expected_instruction_failure import ExpectedInstructionFailureForNoFailure, \
+from shelltest_test.util.expected_instruction_failure import ExpectedInstructionFailureForNoFailure, \
     ExpectedInstructionFailureForFailure
 from shelltest_test.execution.test_full_execution.util import instruction_test_resources
 from shelltest.test_case import pass_or_fail_or_hard_error_construction, \

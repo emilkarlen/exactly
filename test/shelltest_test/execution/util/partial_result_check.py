@@ -2,7 +2,7 @@ import unittest
 
 from shelltest.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shelltest.execution.result import PartialResultStatus, PartialResult
-from shelltest_test.execution.util.expected_instruction_failure import ExpectedInstructionFailureBase, \
+from shelltest_test.util.expected_instruction_failure import ExpectedInstructionFailureBase, \
     ExpectedInstructionFailureForNoFailure
 
 

@@ -6,7 +6,7 @@ from shelltest_test.execution.util.phase_step_execution import ExpectedResult, e
     InstructionExecutorThatRecordsInstructionNameAndReturnsSuccess, \
     InstructionExecutorThatRecordsInstructionNameAndFailsFor, TestException, \
     InstructionExecutorThatRecordsInstructionNameAndRaisesExceptionFor, any_instruction, instruction_with_name
-from shelltest_test.execution.util.expected_instruction_failure import \
+from shelltest_test.util.expected_instruction_failure import \
     new_expected_failure_message, \
     new_expected_exception
 from shelltest.execution.phase_step_execution import execute_phase_prim, Failure

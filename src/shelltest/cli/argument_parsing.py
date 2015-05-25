@@ -31,7 +31,7 @@ class Result:
         return self.__execution_directory_root_name_prefix
 
 
-def parse(argv: str) -> Result:
+def parse(argv: list) -> Result:
     raise NotImplementedError()
 
 

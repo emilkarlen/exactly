@@ -2,7 +2,7 @@ import unittest
 
 from shelltest.test_case import test_case_struct
 from shelltest_test.execution.test_full_execution.util.test_case_base import FullExecutionTestCaseBase
-from shelltest_test.execution.util.expected_instruction_failure import ExpectedInstructionFailureBase
+from shelltest_test.util.expected_instruction_failure import ExpectedInstructionFailureBase
 from shelltest.execution.result import FullResultStatus
 from shelltest_test.execution.test_full_execution.util.recording_instructions_for_sequence_tests import \
     record_file_path
