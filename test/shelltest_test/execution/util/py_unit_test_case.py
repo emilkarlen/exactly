@@ -8,7 +8,7 @@ from shelltest.test_case.test_case_struct import TestCase
 from shelltest.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shelltest.execution.partial_execution import execute_test_case_in_execution_directory, PartialExecutor
 from shelltest.document import model
-from shelltest.document import line_source
+from shelltest.general import line_source
 from shelltest.script_language import python3
 from shelltest.test_case import test_case_struct
 from shelltest import phases

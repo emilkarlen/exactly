@@ -2,7 +2,7 @@ from enum import Enum
 
 from shelltest.execution import result
 from shelltest.execution.result import InstructionFailureDetails, PartialResultStatus
-from shelltest.document import line_source
+from shelltest.general import line_source
 from shelltest.document.model import Instruction, PhaseContentElement
 
 

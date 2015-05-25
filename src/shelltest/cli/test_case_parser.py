@@ -1,6 +1,6 @@
 from shelltest import phases
 from shelltest.document import parse
-from shelltest.document.line_source import LineSource
+from shelltest.general.line_source import LineSource
 from shelltest.test_case import test_case_struct
 
 

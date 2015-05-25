@@ -4,7 +4,7 @@ from shelltest.execution.phase_step_execution import Failure, ElementHeaderExecu
 from shelltest.execution.result import PartialResultStatus
 from shelltest.execution.single_instruction_executor import ControlledInstructionExecutor, \
     PartialInstructionControlledFailureInfo
-from shelltest.document import line_source
+from shelltest.general import line_source
 from shelltest.document.model import Instruction
 from shelltest_test.execution.util.expected_instruction_failure import ExpectedInstructionFailureDetails
 from shelltest_test.document.test_resources import assert_equals_line

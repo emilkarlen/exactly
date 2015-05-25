@@ -5,7 +5,7 @@ import pathlib
 
 from shelltest.execution import phase_step
 from shelltest.execution.phase_step_execution import ElementHeaderExecutor
-from shelltest.document import line_source
+from shelltest.general import line_source
 from shelltest.execution import phase_step_executors
 from shelltest.execution.single_instruction_executor import ControlledInstructionExecutor
 from shelltest.test_case import instructions
