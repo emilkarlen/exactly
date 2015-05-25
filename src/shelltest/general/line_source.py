@@ -32,7 +32,9 @@ def new_for_string(contents: str) -> LineSource:
 
 
 def new_for_file(path: pathlib.Path) -> LineSource:
-    raise NotImplementedError()
+    with path.open() as fo:
+        contents = fo.read()
+    return new_for_string(contents)
 
 
 class _LineSourceForString(LineSource):
