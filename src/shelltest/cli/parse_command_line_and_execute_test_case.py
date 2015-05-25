@@ -28,4 +28,4 @@ def execute(argv: list) -> Result:
                                          parse_result.initial_home_dir_path,
                                          parse_result.execution_directory_root_name_prefix,
                                          parse_result.is_keep_execution_directory_root)
-    return full_result
+    return Result(full_result)

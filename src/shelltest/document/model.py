@@ -87,3 +87,9 @@ class Document:
 
     def elements_for_phase(self, phase_name: str) -> PhaseContents:
         return self._phase2elements[phase_name]
+
+    def elements_for_phase_or_empty_if_phase_not_present(self, phase_name: str) -> PhaseContents:
+        if phase_name in self._phase2elements:
+            return self.elements_for_phase(phase_name)
+        else:
+            return PhaseContents(())

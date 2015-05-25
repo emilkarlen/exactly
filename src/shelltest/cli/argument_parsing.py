@@ -32,7 +32,9 @@ class Result:
 
 
 def parse(argv: list) -> Result:
-    raise NotImplementedError()
+    namespace = _new_argument_parser().parse_args(argv)
+    return Result(pathlib.Path(namespace.file),
+                  pathlib.Path.cwd())
 
 
 def _new_argument_parser() -> argparse.ArgumentParser:
@@ -40,3 +42,4 @@ def _new_argument_parser() -> argparse.ArgumentParser:
     ret_val.add_argument('file',
                          type=str,
                          help='The file containing the test case')
+    return ret_val
