@@ -2,7 +2,7 @@ import os
 import pathlib
 
 from shelltest.execution.execution_directory_structure import ExecutionDirectoryStructure
-from shelltest import phases
+from shelltest.execution import phases
 from shelltest.test_case import instructions
 
 

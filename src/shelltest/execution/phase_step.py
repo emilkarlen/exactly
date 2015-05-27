@@ -1,5 +1,5 @@
-from shelltest import phases
-from shelltest.phases import Phase
+from shelltest.execution import phases
+from shelltest.execution.phases import Phase
 
 
 class PhaseStep(tuple):

@@ -3,7 +3,7 @@ import unittest
 
 from shelltest.test_case.success_or_hard_error_construction import new_success
 from shelltest.test_case import success_or_validation_hard_or_error_construction
-from shelltest import phases
+from shelltest.execution import phases
 from shelltest.general import line_source
 from shelltest.document import model
 from shelltest.test_case import instructions

@@ -1,4 +1,4 @@
-from shelltest import phases
+from shelltest.execution import phases
 from shelltest.document import model
 from shelltest.document import parse
 from shelltest.document.parse import InstructionParser, SourceError, ParserForPhase

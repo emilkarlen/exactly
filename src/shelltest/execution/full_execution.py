@@ -2,9 +2,7 @@ import copy
 import os
 import pathlib
 
-from shelltest.execution import partial_execution
-from shelltest.execution import phase_step_executors
-from shelltest import phases
+from shelltest.execution import phase_step_executors, partial_execution, phases
 from shelltest.test_case import instructions
 from shelltest.test_case import test_case_struct
 from shelltest.script_language import act_script_management

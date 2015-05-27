@@ -9,7 +9,7 @@ from shelltest.execution.partial_execution import Configuration
 from shelltest_test.execution.util import py_unit_test_case_with_file_output as with_file_output
 from shelltest_test.execution.util.py_unit_test_case_with_file_output import \
     InternalInstructionThatWritesToStandardPhaseFile
-from shelltest import phases
+from shelltest.execution import phases
 from shelltest_test.execution.util import py_unit_test_case
 from shelltest.test_case import instructions
 from shelltest_test.execution.util import utils
