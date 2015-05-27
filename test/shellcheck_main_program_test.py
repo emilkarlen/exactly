@@ -11,6 +11,10 @@ SRC_DIR_NAME = 'src'
 MAIN_PROGRAM_FILE_NAME = 'shellcheck.py'
 
 
+def shellcheck_src_path(dir_of_this_file: pathlib.Path) -> pathlib.Path:
+    return dir_of_this_file.parent / SRC_DIR_NAME / MAIN_PROGRAM_FILE_NAME
+
+
 class TestCase(unittest.TestCase):
     def test_successful_test_case(self):
         # ARRANGE #
@@ -29,8 +33,8 @@ class TestCase(unittest.TestCase):
         # print('# DEBUG: cwd: ' + str(cwd))
         if not sys.executable:
             self.fail('Cannot execute test since name of executable not found in sys.executable.')
-        shellcheck_src_path = cwd.parent.parent / SRC_DIR_NAME / ('%s' % MAIN_PROGRAM_FILE_NAME)
-        args_without_file = [sys.executable, str(shellcheck_src_path)]
+        shellcheck_path = shellcheck_src_path(cwd)
+        args_without_file = [sys.executable, str(shellcheck_path)]
         # ACT #
         result = run_subprocess_with_file_arg(args_without_file, lines_content(lines))
         # ASSERT #
