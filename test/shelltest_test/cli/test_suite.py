@@ -1,6 +1,6 @@
 import unittest
 
-from . import parse_command_line_and_execute_test_case
+from shelltest_test.cli import parse_command_line_and_execute_test_case
 
 
 def suite():
