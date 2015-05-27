@@ -11,7 +11,7 @@ from shelltest.document import model
 from shelltest.general import line_source
 from shelltest.script_language import python3
 from shelltest.test_case import test_case_struct
-from shelltest import phases
+from shelltest.execution import phases
 from shelltest_test.execution.util import utils, instruction_adapter
 from shelltest_test.execution.util.test_case_generation import TestCaseGeneratorBase
 

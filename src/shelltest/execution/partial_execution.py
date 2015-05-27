@@ -10,7 +10,7 @@ from shelltest.execution import phase_step_executors
 from shelltest.execution.single_instruction_executor import ControlledInstructionExecutor
 from shelltest.test_case import instructions
 from shelltest.document.model import PhaseContents
-from shelltest import phases
+from shelltest.execution import phases
 from shelltest.test_case import test_case_struct
 from shelltest import exception
 from .execution_directory_structure import construct_at, ExecutionDirectoryStructure

@@ -1,12 +1,11 @@
 import unittest
 
-from shelltest import phases
 from shelltest.execution.phase_step import PhaseStep
 from shelltest_test.execution.test_full_execution.util.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorForExecutionRecording, \
     TestCaseThatRecordsExecutionWithExtraInstructionList
 from shelltest.execution.result import FullResultStatus
-from shelltest.execution import phase_step
+from shelltest.execution import phase_step, phases
 from shelltest_test.execution.test_full_execution.util.test_case_that_records_phase_execution import \
     TestCaseThatRecordsExecution
 from shelltest_test.util.expected_instruction_failure import ExpectedInstructionFailureForNoFailure, \
