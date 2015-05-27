@@ -68,21 +68,26 @@ class SubProcessResult(tuple):
 
 stdout_file_name = 'stdout.txt'
 stderr_file_name = 'stderr.txt'
+stdin_file_name = 'stdin.txt'
 
 
 def capture_subprocess(cmd_and_args: list,
                        tmp_dir: pathlib.Path,
                        cwd: str=None,
-                       stdin=subprocess.DEVNULL) -> SubProcessResult:
+                       stdin_contents: str='') -> SubProcessResult:
     stdout_path = tmp_dir / stdout_file_name
     stderr_path = tmp_dir / stderr_file_name
-    with open(str(stdout_path), 'w') as f_stdout:
-        with open(str(stderr_path), 'w') as f_stderr:
-            exitcode = subprocess.call(cmd_and_args,
-                                       cwd=cwd,
-                                       stdin=stdin,
-                                       stdout=f_stdout,
-                                       stderr=f_stderr)
+    stdin_path = tmp_dir / stdin_file_name
+    with open(str(stdin_path), 'w') as f_stdin:
+        f_stdin.write(stdin_contents)
+    with open(str(stdin_path)) as f_stdin:
+        with open(str(stdout_path), 'w') as f_stdout:
+            with open(str(stderr_path), 'w') as f_stderr:
+                exitcode = subprocess.call(cmd_and_args,
+                                           cwd=cwd,
+                                           stdin=f_stdin,
+                                           stdout=f_stdout,
+                                           stderr=f_stderr)
     return SubProcessResult(exitcode,
                             _contents_of_file(stdout_path),
                             _contents_of_file(stderr_path))
@@ -93,16 +98,20 @@ def _contents_of_file(path: pathlib.Path) -> str:
         return f.read()
 
 
-def capture_subprocess_in_tmp_dir(cmd_and_args: list) -> SubProcessResult:
+def run_subprocess(cmd_and_args: list,
+                   stdin_contents: str='') -> SubProcessResult:
     with tempfile.TemporaryDirectory(prefix='shelltest-test-') as tmp_dir:
         return capture_subprocess(cmd_and_args,
-                                  pathlib.Path(tmp_dir))
+                                  pathlib.Path(tmp_dir),
+                                  stdin_contents=stdin_contents)
 
 
-def run_sub_process_with_file_arg(cmd_and_args_except_file_arg: list,
-                                  file_contents: str) -> SubProcessResult:
+def run_subprocess_with_file_arg(cmd_and_args_except_file_arg: list,
+                                 file_contents: str,
+                                 stdin_contents: str='') -> SubProcessResult:
     with tempfile.TemporaryDirectory(prefix='shelltest-test-') as tmp_dir_name:
         with tmp_file_containing(file_contents, dir=tmp_dir_name) as file_path:
             cmd_and_args = cmd_and_args_except_file_arg + [str(file_path)]
             return capture_subprocess(cmd_and_args,
-                                      pathlib.Path(tmp_dir_name))
+                                      pathlib.Path(tmp_dir_name),
+                                      stdin_contents=stdin_contents)
