@@ -343,7 +343,7 @@ def execute_test_case_in_execution_directory(script_language_setup: ScriptLangua
 
     Perhaps the test case should be executed in a sub process, so that
     Environment Variables and Current Working Directory of the process that executes
-    shelltest is not modified.
+    shellcheck is not modified.
 
     The responsibility of this method is not the most natural!!
     Please refactor if a more natural responsibility evolves!

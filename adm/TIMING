@@ -49,7 +49,7 @@ Omgivningen är den som används/är resultatet från valideringen.
 Skriv en enkel preprocessor (py-pgm som, t ex, konv versal -> gemen).
 Testfallet sparar en sträng i en fil som sedan preprocessas.
 Invokera programmet, t ex:
-python3 shelltest/main.py --preprocess 'python3 convert-to-lowercse.py'
+python3 shellcheck/main.py --preprocess 'python3 convert-to-lowercse.py'
 --stop-after preprocess
 
 Detta

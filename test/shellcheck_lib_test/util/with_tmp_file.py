@@ -23,7 +23,7 @@ def tmp_file_containing(contents: str,
     """
     path = None
     try:
-        fd, absolute_file_path = tempfile.mkstemp(prefix='shelltest-test-',
+        fd, absolute_file_path = tempfile.mkstemp(prefix='shellcheck-test-',
                                                   suffix=suffix,
                                                   dir=dir,
                                                   text=True)
@@ -100,7 +100,7 @@ def _contents_of_file(path: pathlib.Path) -> str:
 
 def run_subprocess(cmd_and_args: list,
                    stdin_contents: str='') -> SubProcessResult:
-    with tempfile.TemporaryDirectory(prefix='shelltest-test-') as tmp_dir:
+    with tempfile.TemporaryDirectory(prefix='shellcheck-test-') as tmp_dir:
         return capture_subprocess(cmd_and_args,
                                   pathlib.Path(tmp_dir),
                                   stdin_contents=stdin_contents)
@@ -109,7 +109,7 @@ def run_subprocess(cmd_and_args: list,
 def run_subprocess_with_file_arg(cmd_and_args_except_file_arg: list,
                                  file_contents: str,
                                  stdin_contents: str='') -> SubProcessResult:
-    with tempfile.TemporaryDirectory(prefix='shelltest-test-') as tmp_dir_name:
+    with tempfile.TemporaryDirectory(prefix='shellcheck-test-') as tmp_dir_name:
         with tmp_file_containing(file_contents, dir=tmp_dir_name) as file_path:
             cmd_and_args = cmd_and_args_except_file_arg + [str(file_path)]
             return capture_subprocess(cmd_and_args,

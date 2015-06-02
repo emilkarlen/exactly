@@ -247,7 +247,7 @@
 
               <listitem>
                   <para>Directory that is not used by the
-                      <command>shelltest</command>
+                      <command>shellcheck</command>
                       program itself.
                   </para>
 
@@ -256,7 +256,7 @@
                   </para>
 
                   <para>The environment variable
-                      <envar>SHELLTEST_TMP</envar>
+                      <envar>SHELLCHECK_TMP</envar>
                       contains the absolute name of this director .
                   </para>
               </listitem>
@@ -371,7 +371,7 @@
 
         <variablelist>
           <varlistentry>
-            <term><envar>SHELLTEST_HOME</envar></term>
+            <term><envar>SHELLCHECK_HOME</envar></term>
 
             <listitem>
               <para>Absolute name of the home directory of the test
@@ -386,7 +386,7 @@
           </varlistentry>
 
           <varlistentry>
-            <term><envar>SHELLTEST_TESTROOT</envar></term>
+            <term><envar>SHELLCHECK_TESTROOT</envar></term>
 
             <listitem>
               <para>Absolute name of the <filename
@@ -400,7 +400,7 @@
 
             <varlistentry>
                 <term>
-                    <envar>SHELLTEST_TMP</envar>
+                    <envar>SHELLCHECK_TMP</envar>
                 </term>
 
                 <listitem>
@@ -424,7 +424,7 @@
       inside the <glossterm>execution directory structure</glossterm>.</para>
 
       <para>The instructions in all phases except <systemitem>act</systemitem>
-      are executed from within the <command>shelltest</command> executable.
+      are executed from within the <command>shellcheck</command> executable.
           They are implemented completely in Python.
       </para>
 
@@ -441,8 +441,8 @@
             default.
         </para>
 
-        <para>(For development of shelltest itself, all tests uses the same
-            language as the shelltest itself is written in. The reason is to
+        <para>(For development of shellcheck itself, all tests uses the same
+            language as the shellcheck itself is written in. The reason is to
             minimize dependencies.)
         </para>
     </section>
@@ -629,7 +629,7 @@
             </para>
 
             <para>Undantag som inte är ett av dessa representerar
-                implementationsfel i shelltest.
+                implementationsfel i shellcheck.
             </para>
 
             <para>Vore bra att kunna separera dessa utåt, dvs kunna få info om

@@ -29,7 +29,7 @@ class FullExecutionTestCaseBase:
             python3.new_script_language_setup(),
             self._test_case(),
             self.initial_home_dir_path,
-            'shelltest-test-',
+            'shellcheck-test-',
             True)
 
         # ASSERT #
