@@ -3,8 +3,8 @@ import pathlib
 import unittest
 import sys
 
-from shelltest.execution.result import FullResultStatus
-from shelltest_test.util.with_tmp_file import lines_content, run_subprocess_with_file_arg
+from shellcheck_lib.execution.result import FullResultStatus
+from shellcheck_lib_test.util.with_tmp_file import lines_content, run_subprocess_with_file_arg
 
 
 SRC_DIR_NAME = 'src'
