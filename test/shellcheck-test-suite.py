@@ -13,7 +13,7 @@ sys.path.insert(0, src_dir)
 os.chdir(this_dir)
 
 import shellcheck_main_program_test
-from shelltest_test import test_suite as shelltest_test_suite
+from shellcheck_lib_test import test_suite as shelltest_test_suite
 
 suite = unittest.TestSuite()
 suite.addTest(shelltest_test_suite.suite())
