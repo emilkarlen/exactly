@@ -104,5 +104,5 @@ def construct_at(execution_directory_root: str) -> ExecutionDirectoryStructure:
 
 
 def construct_at_tmp_root() -> ExecutionDirectoryStructure:
-    root_dir_name = tempfile.mkdtemp(prefix='shelltest-')
+    root_dir_name = tempfile.mkdtemp(prefix='shellcheck-')
     return construct_at(root_dir_name)

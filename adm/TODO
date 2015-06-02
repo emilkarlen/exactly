@@ -72,9 +72,9 @@ Därför vore det bra med en instruktion som byter till denna katalog.
 
 Problem ... hur ser man till att aktuell katalog bevaras från act-fasen om
 den kör i en egen process??
-** Sätt systemets TMP-katalog till ${SHELLTEST_TMP}
+** Sätt systemets TMP-katalog till ${SHELLCHECK_TMP}
 Används antingen i setup eller anonyma fasen.
-** Skapa temporär fil (filnamn tas fram automatiskt, läggs i SHELLTEST_TMP)
+** Skapa temporär fil (filnamn tas fram automatiskt, läggs i SHELLCHECK_TMP)
 * TODO Förbättringar
 ** TODO <2015-05-17 sön> Bevara glob tillstånd
 Idag sparas omgivningsvariabler "runt" partiell exekvering.  Borde sparas runt

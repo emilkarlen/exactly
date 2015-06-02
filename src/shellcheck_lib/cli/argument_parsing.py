@@ -8,7 +8,7 @@ class Result:
                  file_path: pathlib.Path,
                  initial_home_dir_path: pathlib.Path,
                  is_keep_execution_directory_root: bool=False,
-                 execution_directory_root_name_prefix: str='shelltest-'):
+                 execution_directory_root_name_prefix: str='shellcheck-'):
         self.__file_path = file_path
         self.__initial_home_dir_path = initial_home_dir_path
         self.__is_keep_execution_directory_root = is_keep_execution_directory_root
@@ -38,7 +38,7 @@ def parse(argv: list) -> Result:
 
 
 def _new_argument_parser() -> argparse.ArgumentParser:
-    ret_val = argparse.ArgumentParser(description='Execute Shelltest test case')
+    ret_val = argparse.ArgumentParser(description='Execute Shellcheck test case')
     ret_val.add_argument('file',
                          type=str,
                          help='The file containing the test case')

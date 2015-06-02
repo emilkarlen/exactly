@@ -40,7 +40,7 @@ class UnitTestCaseForPy3Language:
             python3.new_script_language_setup(),
             test_case,
             home_dir_path,
-            'shelltest-test-',
+            'shellcheck-test-',
             True)
 
         # ASSERT #
@@ -177,7 +177,7 @@ def py3_test(unittest_case: unittest.TestCase,
         python3.new_script_language_setup(),
         test_case,
         home_dir_path,
-        'shelltest-test-',
+        'shellcheck-test-',
         True)
     # ASSERT #
     eds = test_case_execution.execution_directory_structure

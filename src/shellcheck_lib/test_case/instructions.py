@@ -6,9 +6,9 @@ from shellcheck_lib.document.model import Instruction
 from shellcheck_lib.script_language import act_script_management
 
 
-ENV_VAR_HOME = 'SHELLTEST_HOME'
-ENV_VAR_TEST = 'SHELLTEST_TESTROOT'
-ENV_VAR_TMP = 'SHELLTEST_TMP'
+ENV_VAR_HOME = 'SHELLCHECK_HOME'
+ENV_VAR_TEST = 'SHELLCHECK_TESTROOT'
+ENV_VAR_TMP = 'SHELLCHECK_TMP'
 
 ALL_ENV_VARS = [ENV_VAR_HOME,
                 ENV_VAR_TEST,

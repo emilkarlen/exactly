@@ -7,7 +7,7 @@ from shellcheck_lib.execution import execution_directory_structure
 
 class TestConstructExecutionDirectoryStructure(unittest.TestCase):
     def test_construct_execution_directory_structure(self):
-        with tempfile.TemporaryDirectory(prefix='shelltest-test-') as tmp_dir_name:
+        with tempfile.TemporaryDirectory(prefix='shellcheck-test-') as tmp_dir_name:
             eds = execution_directory_structure.construct_at(tmp_dir_name)
 
             root = Path(tmp_dir_name)
