@@ -3,12 +3,6 @@ from shellcheck_lib.script_language.act_script_management import ScriptFileManag
 
 
 class Python3Language(act_script_management.ScriptLanguage):
-    def command_and_args_for_executing_script_file(self, script_file_name: str) -> list:
-        return ['python3', script_file_name]
-
-    def base_name_from_stem(self, stem: str):
-        return stem + '.py'
-
     def comment_line(self, comment: str) -> list:
         return ['# ' + comment]
 

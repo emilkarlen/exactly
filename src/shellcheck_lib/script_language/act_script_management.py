@@ -4,16 +4,6 @@ from shellcheck_lib.general.line_source import Line
 
 
 class ScriptLanguage:
-    def command_and_args_for_executing_script_file(self, script_file_name: str) -> list:
-        """
-        :returns The list of the command and it's arguments for executing the given
-        script file (that is a program in the language defined by this object).
-        """
-        raise NotImplementedError()
-
-    def base_name_from_stem(self, stem: str):
-        raise NotImplementedError()
-
     def comment_line(self, comment: str) -> list:
         raise NotImplementedError()
 
