@@ -39,21 +39,17 @@ class TestCase(unittest.TestCase):
     #                      result.stderr,
     #                      'Content on stderr')
 
-    def test_successful_test_case(self):
+    def test_test_case_with_only_phase_headers(self):
         # ARRANGE #
-        lines = [
+        test_case_source_lines = [
             '[setup]',
-            '# TODO: add instruction',
             '[act]',
-            '# TODO: add instruction',
             '[assert]',
-            '# TODO: add instruction',
             '[cleanup]',
-            '# TODO: add instruction',
         ]
-
+        test_case_source = lines_content(test_case_source_lines)
         # ACT #
-        result = self._run_shellcheck_in_sub_process(test_case_source=lines_content(lines))
+        result = self._run_shellcheck_in_sub_process(test_case_source)
         # ASSERT #
         self.assertEqual(FullResultStatus.PASS.value,
                          result.exitcode,
