@@ -16,8 +16,8 @@ def shellcheck_src_path(dir_of_this_file: pathlib.Path) -> pathlib.Path:
     return dir_of_this_file.parent / SRC_DIR_NAME / MAIN_PROGRAM_FILE_NAME
 
 
-class TestCase(unittest.TestCase):
-    def test_empty_test_case__invoked_with_no_cli_flags(self):
+class TestCaseWithNoCliFlags(unittest.TestCase):
+    def test_empty_test_case(self):
         # ARRANGE #
         test_case_source = ''
         # ACT #
@@ -68,7 +68,7 @@ def run_shellcheck_in_sub_process(puc: unittest.TestCase,
 
 def suite():
     ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestCase))
+    ret_val.addTest(unittest.makeSuite(TestCaseWithNoCliFlags))
     return ret_val
 
 
