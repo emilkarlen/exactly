@@ -16,7 +16,16 @@ def shellcheck_src_path(dir_of_this_file: pathlib.Path) -> pathlib.Path:
     return dir_of_this_file.parent / SRC_DIR_NAME / MAIN_PROGRAM_FILE_NAME
 
 
-class TestCaseWithNoCliFlags(unittest.TestCase):
+class UnitTestCaseWithUtils(unittest.TestCase):
+    def _run_shellcheck_in_sub_process(self,
+                                       test_case_source: str,
+                                       flags: list=()) -> SubProcessResult:
+        return run_shellcheck_in_sub_process(self,
+                                             test_case_source=test_case_source,
+                                             flags=flags)
+
+
+class TestCaseWithNoCliFlags(UnitTestCaseWithUtils):
     def test_empty_test_case(self):
         # ARRANGE #
         test_case_source = ''
@@ -40,13 +49,6 @@ class TestCaseWithNoCliFlags(unittest.TestCase):
         # ASSERT #
         SUCCESSFUL_RESULT.assert_matches(self,
                                          actual)
-
-    def _run_shellcheck_in_sub_process(self,
-                                       test_case_source: str,
-                                       flags: list=()) -> SubProcessResult:
-        return run_shellcheck_in_sub_process(self,
-                                             test_case_source=test_case_source,
-                                             flags=flags)
 
 
 SUCCESSFUL_RESULT = ExpectedSubProcessResult(exitcode=FullResultStatus.PASS.value,
