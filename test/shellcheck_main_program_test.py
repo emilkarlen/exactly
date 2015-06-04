@@ -1,9 +1,9 @@
 import pathlib
+import shutil
 import unittest
 import sys
 
 from shellcheck_lib.execution.result import FullResultStatus
-
 from shellcheck_lib_test.util.with_tmp_file import lines_content, run_subprocess_with_file_arg, SubProcessResult, \
     ExpectedSubProcessResult
 
@@ -25,7 +25,7 @@ class UnitTestCaseWithUtils(unittest.TestCase):
                                              flags=flags)
 
 
-class TestCaseWithNoCliFlags(UnitTestCaseWithUtils):
+class BasicTestsWithNoCliFlags(UnitTestCaseWithUtils):
     def test_empty_test_case(self):
         # ARRANGE #
         test_case_source = ''
@@ -51,6 +51,33 @@ class TestCaseWithNoCliFlags(UnitTestCaseWithUtils):
                                          actual)
 
 
+class TestsWithPreservedExecutionDirectoryStructure(UnitTestCaseWithUtils):
+    def test_flag_for_printing_and_preserving_eds(self):
+        # ARRANGE #
+        test_case_source = ''
+        # ACT #
+        actual = self._run_shellcheck_in_sub_process(test_case_source,
+                                                     flags=['--print-and-preserve-eds'])
+        # ASSERT #
+        printed_lines = actual.stdout.splitlines()
+        self.assertEqual(1,
+                         len(printed_lines),
+                         'Number of printed printed lines should be exactly 1')
+        actual_eds_directory = printed_lines[0]
+        actual_eds_path = pathlib.Path(actual_eds_directory)
+        if actual_eds_path.exists():
+            if actual_eds_path.is_dir():
+                shutil.rmtree(actual_eds_directory)
+            else:
+                self.fail('Output from program is not the EDS: "%s"' % actual_eds_directory)
+        else:
+            self.fail('The output from the program is not the EDS: "%s"' % actual_eds_directory)
+        expected = ExpectedSubProcessResult(exitcode=FullResultStatus.PASS.value,
+                                            stderr='')
+        expected.assert_matches(self,
+                                actual)
+
+
 SUCCESSFUL_RESULT = ExpectedSubProcessResult(exitcode=FullResultStatus.PASS.value,
                                              stdout=lines_content([FullResultStatus.PASS.name]),
                                              stderr='')
@@ -70,7 +97,8 @@ def run_shellcheck_in_sub_process(puc: unittest.TestCase,
 
 def suite():
     ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestCaseWithNoCliFlags))
+    ret_val.addTest(unittest.makeSuite(BasicTestsWithNoCliFlags))
+    ret_val.addTest(unittest.makeSuite(TestsWithPreservedExecutionDirectoryStructure))
     return ret_val
 
 
