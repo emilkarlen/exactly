@@ -34,7 +34,7 @@ class Result:
 def parse(argv: list) -> Result:
     namespace = _new_argument_parser().parse_args(argv)
     return Result(pathlib.Path(namespace.file),
-                  pathlib.Path.cwd())
+                  pathlib.Path(namespace.file).parent.resolve())
 
 
 def _new_argument_parser() -> argparse.ArgumentParser:
