@@ -25,6 +25,17 @@ I vilken ordning de körs och deras inbördes roller.
 **** help phase PHASE : Detaljerad info om fasen PHASE
 **** help instruction : Översiktlig hjälp om instruktioner
 **** help instruction INSTRUCTION : Detaljerad info om instr INSTRUCTION
+** TODO Funktion för att köra assert/execute på given EDS
+För felsökning av assert.
+Tänkt användning:
+1. Kör hela snurran (ev utom cleanup), och spara EDS.
+   Troligtvis ger assert ett oväntat resultat som behöver felsökas.
+2. Mixtra med innehållet i EDS.
+3. Kör assert/execute på given EDS.
+4. Upprepa 2-3 tills assert ger förväntat resultat.
+5. Rätta till felet (i SUT, setup, act, el assert).
+6. Radera EDS manuellt, eller kör shellcheck m växel som enbart kör cleanup,
+   inklusive automatisk radering av EDS.  Kör denna mot angiven EDS.
 * TODO Formgivning av instruktionsuppsättning
 ** Anonyma fasen: Fixerad mängd instruktioner
 Icke konfigurerbar pss som övriga faser, iom att denna fas har en speciell
