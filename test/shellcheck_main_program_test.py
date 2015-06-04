@@ -24,8 +24,8 @@ class TestCase(unittest.TestCase):
     # cwd = pathlib.Path.cwd()
     # # print('# DEBUG: cwd: ' + str(cwd))
     # if not sys.executable:
-    #         self.fail('Cannot execute test since name of executable not found in sys.executable.')
-    #     shellcheck_path = shellcheck_src_path(cwd)
+    # self.fail('Cannot execute test since name of executable not found in sys.executable.')
+    # shellcheck_path = shellcheck_src_path(cwd)
     #     args_without_file = [sys.executable, str(shellcheck_path)]
     #     # ACT #
     #     result = run_subprocess_with_file_arg(args_without_file, test_case_source)
@@ -52,11 +52,8 @@ class TestCase(unittest.TestCase):
         # ACT #
         actual = self._run_shellcheck_in_sub_process(test_case_source)
         # ASSERT #
-        expected = ExpectedSubProcessResult(exitcode=FullResultStatus.PASS.value,
-                                            stdout=lines_content([FullResultStatus.PASS.name]),
-                                            stderr='')
-        expected.assert_matches(self,
-                                actual)
+        SUCCESSFUL_RESULT.assert_matches(self,
+                                         actual)
 
     def _run_shellcheck_in_sub_process(self,
                                        test_case_source: str,
@@ -64,6 +61,11 @@ class TestCase(unittest.TestCase):
         return run_shellcheck_in_sub_process(self,
                                              test_case_source=test_case_source,
                                              flags=flags)
+
+
+SUCCESSFUL_RESULT = ExpectedSubProcessResult(exitcode=FullResultStatus.PASS.value,
+                                             stdout=lines_content([FullResultStatus.PASS.name]),
+                                             stderr='')
 
 
 def run_shellcheck_in_sub_process(puc: unittest.TestCase,
