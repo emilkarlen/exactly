@@ -18,6 +18,8 @@ class Python3ScriptFileManager(ScriptFileManager):
     """
 
     def __init__(self):
+        if not sys.executable:
+            raise ValueError('Cannot execute test since name of executable not found in sys.executable.')
         self.__interpreter = sys.executable
 
     def base_name_from_stem(self, stem: str) -> str:
