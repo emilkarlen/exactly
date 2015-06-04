@@ -1,10 +1,11 @@
-import os
 import pathlib
 import unittest
 import sys
 
 from shellcheck_lib.execution.result import FullResultStatus
-from shellcheck_lib_test.util.with_tmp_file import lines_content, run_subprocess_with_file_arg, SubProcessResult
+
+from shellcheck_lib_test.util.with_tmp_file import lines_content, run_subprocess_with_file_arg, SubProcessResult, \
+    ExpectedSubProcessResult
 
 
 SRC_DIR_NAME = 'src'
@@ -21,8 +22,8 @@ class TestCase(unittest.TestCase):
     # test_case_source = ''
     #
     # cwd = pathlib.Path.cwd()
-    #     # print('# DEBUG: cwd: ' + str(cwd))
-    #     if not sys.executable:
+    # # print('# DEBUG: cwd: ' + str(cwd))
+    # if not sys.executable:
     #         self.fail('Cannot execute test since name of executable not found in sys.executable.')
     #     shellcheck_path = shellcheck_src_path(cwd)
     #     args_without_file = [sys.executable, str(shellcheck_path)]
@@ -49,17 +50,13 @@ class TestCase(unittest.TestCase):
         ]
         test_case_source = lines_content(test_case_source_lines)
         # ACT #
-        result = self._run_shellcheck_in_sub_process(test_case_source)
+        actual = self._run_shellcheck_in_sub_process(test_case_source)
         # ASSERT #
-        self.assertEqual(FullResultStatus.PASS.value,
-                         result.exitcode,
-                         'Exit code')
-        self.assertEqual(FullResultStatus.PASS.name + os.linesep,
-                         result.stdout,
-                         'Content on stdout')
-        self.assertEqual('',
-                         result.stderr,
-                         'Content on stderr')
+        expected = ExpectedSubProcessResult(exitcode=FullResultStatus.PASS.value,
+                                            stdout=lines_content([FullResultStatus.PASS.name]),
+                                            stderr='')
+        expected.assert_matches(self,
+                                actual)
 
     def _run_shellcheck_in_sub_process(self,
                                        test_case_source: str,
