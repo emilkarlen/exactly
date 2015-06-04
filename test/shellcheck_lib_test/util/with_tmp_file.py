@@ -3,6 +3,7 @@ import os
 import pathlib
 import tempfile
 import subprocess
+import unittest
 
 
 def lines_content(lines: list) -> str:
@@ -52,6 +53,43 @@ class SubProcessResult(tuple):
                 stdout: str,
                 stderr: str):
         return tuple.__new__(cls, (exitcode, stdout, stderr))
+
+    @property
+    def exitcode(self) -> int:
+        return self[0]
+
+    @property
+    def stdout(self) -> str:
+        return self[1]
+
+    @property
+    def stderr(self) -> str:
+        return self[2]
+
+
+class ExpectedSubProcessResult(tuple):
+    def __new__(cls,
+                exitcode: int=None,
+                stdout: str=None,
+                stderr: str=None):
+        return tuple.__new__(cls, (exitcode, stdout, stderr))
+
+    def assert_matches(self,
+                       put: unittest.TestCase,
+                       actual: SubProcessResult):
+        if self.exitcode is not None:
+            put.assertEqual(self.exitcode,
+                            actual.exitcode,
+                            'Exit code')
+        if self.stdout is not None:
+            put.assertEqual(self.stdout,
+                            actual.stdout,
+                            'Content on stdout')
+        if self.stderr is not None:
+            put.assertEqual(self.stderr,
+                            actual.stderr,
+                            'Content on stderr')
+
 
     @property
     def exitcode(self) -> int:
