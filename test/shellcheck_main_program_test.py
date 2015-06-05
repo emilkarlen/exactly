@@ -4,6 +4,9 @@ import unittest
 import sys
 
 from shellcheck_lib.execution.result import FullResultStatus
+from shellcheck_lib_test.execution.test_execution_directory_structure import \
+    is_execution_directory_structure_after_execution
+from shellcheck_lib_test.util.file_checks import FileChecker
 from shellcheck_lib_test.util.with_tmp_file import lines_content, run_subprocess_with_file_arg, SubProcessResult, \
     ExpectedSubProcessResult
 
@@ -67,9 +70,12 @@ class TestsWithPreservedExecutionDirectoryStructure(UnitTestCaseWithUtils):
         actual_eds_path = pathlib.Path(actual_eds_directory)
         if actual_eds_path.exists():
             if actual_eds_path.is_dir():
+                is_execution_directory_structure_after_execution(
+                    FileChecker(self, 'Not an Execution Directory Structure'),
+                    actual_eds_directory)
                 shutil.rmtree(actual_eds_directory)
             else:
-                self.fail('Output from program is not the EDS: "%s"' % actual_eds_directory)
+                self.fail('Output from program is not the EDS (not a directory): "%s"' % actual_eds_directory)
         else:
             self.fail('The output from the program is not the EDS: "%s"' % actual_eds_directory)
         expected = ExpectedSubProcessResult(exitcode=FullResultStatus.PASS.value,
