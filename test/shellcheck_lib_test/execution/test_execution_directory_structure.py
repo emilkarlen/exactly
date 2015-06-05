@@ -3,6 +3,7 @@ import tempfile
 from pathlib import Path
 
 from shellcheck_lib.execution import execution_directory_structure
+from shellcheck_lib_test.util.file_checks import FileChecker
 
 
 class TestConstructExecutionDirectoryStructure(unittest.TestCase):
@@ -41,13 +42,6 @@ class TestConstructExecutionDirectoryStructure(unittest.TestCase):
     def _assert_is_existing_empty_dir(self, p: Path):
         self._assert_is_existing_dir_with_given_number_of_files_in_it(p, 0)
 
-    def _assert_is_existing_empty_dir(self, p: Path):
-        self._assert_exists_dir(p)
-        self.assertEquals(
-            0,
-            len(list(p.iterdir())),
-            'The directory is expected to be empty.')
-
     def _assert_is_existing_dir_with_given_number_of_files_in_it(self,
                                                                  p: Path,
                                                                  expected_number_of_files: int):
@@ -60,6 +54,27 @@ class TestConstructExecutionDirectoryStructure(unittest.TestCase):
     def _assert_exists_dir(self, p: Path):
         self.assertTrue(p.exists(), p.name + ' should exist')
         self.assertTrue(p.is_dir(), p.name + ' should be a directory')
+
+
+def is_execution_directory_structure_after_execution(fc: FileChecker,
+                                                     root_dir_name: str):
+    eds = execution_directory_structure.ExecutionDirectoryStructure(root_dir_name)
+    fc.assert_exists_dir_with_given_number_of_files_in_it(eds.root_dir,
+                                                          5)
+    fc.assert_exists_dir(eds.test_case_dir)
+    fc.assert_exists_dir(eds.tmp_dir)
+    fc.assert_exists_dir(eds.test_root_dir)
+
+    fc.assert_exists_dir_with_given_number_of_files_in_it(eds.result.root_dir,
+                                                          2)
+    fc.assert_exists_plain_file(eds.result.exitcode_file)
+
+    fc.assert_exists_dir_with_given_number_of_files_in_it(eds.result.std.root_dir,
+                                                          2)
+    fc.assert_exists_plain_file(eds.result.std.stdout_file)
+    fc.assert_exists_plain_file(eds.result.std.stderr_file)
+
+    fc.assert_exists_dir(eds.log_dir)
 
 
 def suite():
