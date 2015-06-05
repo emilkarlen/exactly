@@ -1,0 +1,22 @@
+-*- org -*-
+
+Fortsätt med
+
+* Exekverbart program
+** Testa: miljövariabler
+Räcker att testa att de är korrekta i act-fasen.
+Andra tester testar att de initierats till korrekta värden i tidgare och
+senare faser (verifiera att det är testat!)
+** Testa resultat av felaktig invokering
+** Ny växel: --keep, -k
+** Ny växel: --execute, -e
+* Instruktioner
+** Troligtvis: infrastruktur för test av instruktion
+Tror räcker med "integrationstest":
+1. parsa
+2. exekvera
+
+Dvs behöver inte separata test för parsning o exekvering.  Tvärt om är det
+troligtvis lämpligt att ha ett o samma test så att alla led testas.  Dessutom
+blir troligtvis koden mer flexibel då man inte testar = kräver fix
+representation av - "mellanled".
