@@ -2,6 +2,7 @@
   <dictionary name="karlen">
     <words>
       <w>argv</w>
+      <w>invokation</w>
       <w>shellcheck</w>
       <w>shelltest</w>
       <w>stderr</w>
