@@ -2,9 +2,6 @@
 
 Fortsätt med
 
-* Exekverbart program
-** Ny växel: --keep, -k
-** Ny växel: --execute, -e
 * Instruktioner
 ** Troligtvis: infrastruktur för test av instruktion
 Tror räcker med "integrationstest":
