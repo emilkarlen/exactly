@@ -80,7 +80,7 @@ class TestsWithPreservedExecutionDirectoryStructure(UnitTestCaseWithUtils):
         test_case_source = ''
         # ACT #
         actual = self._run_shellcheck_in_sub_process(test_case_source,
-                                                     flags=['--print-and-preserve-eds']).sub_process_result
+                                                     flags=['--keep']).sub_process_result
         # ASSERT #
         actual_eds_directory = self._get_printed_eds_or_fail(actual)
         actual_eds_path = pathlib.Path(actual_eds_directory)
@@ -112,7 +112,7 @@ class TestsWithPreservedExecutionDirectoryStructure(UnitTestCaseWithUtils):
         # ACT #
         actual = self._run_shellcheck_in_sub_process(test_case_source,
                                                      flags=['--interpreter', argument_parsing.INTERPRETER_FOR_TEST,
-                                                            '--print-and-preserve-eds'])
+                                                            '--keep'])
         # ASSERT #
         self.assertEqual(FullResultStatus.PASS.value,
                          actual.sub_process_result.exitcode,

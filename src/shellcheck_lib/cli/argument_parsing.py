@@ -56,7 +56,7 @@ def parse(argv: list) -> Result:
     output = Output.STATUS_CODE
     is_keep_execution_directory_root = False
     namespace = _new_argument_parser().parse_args(argv)
-    if namespace.print_and_preserve_eds:
+    if namespace.keep:
         output = Output.EXECUTION_DIRECTORY_STRUCTURE_ROOT
         is_keep_execution_directory_root = True
     return Result(pathlib.Path(namespace.file),
@@ -70,7 +70,7 @@ def _new_argument_parser() -> argparse.ArgumentParser:
     ret_val.add_argument('file',
                          type=str,
                          help='The file containing the test case')
-    ret_val.add_argument('--print-and-preserve-eds',
+    ret_val.add_argument('-k', '--keep',
                          default=False,
                          action="store_true",
                          help="""\
