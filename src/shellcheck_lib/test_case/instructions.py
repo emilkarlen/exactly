@@ -40,6 +40,19 @@ class SuccessOrHardError(tuple):
         return not self.is_success
 
 
+__SH_SUCCESS = SuccessOrHardError(None)
+
+
+def new_sh_success() -> SuccessOrHardError:
+    return __SH_SUCCESS
+
+
+def new_sh_hard_error(failure_message: str) -> SuccessOrHardError:
+    if failure_message is None:
+        raise ValueError('A HARD ERROR must have a failure message (that is not None)')
+    return SuccessOrHardError(failure_message)
+
+
 class SuccessOrValidationErrorOrHardError(tuple):
     def __new__(cls,
                 is_hard_error: bool,
@@ -64,6 +77,25 @@ class SuccessOrValidationErrorOrHardError(tuple):
     @property
     def is_hard_error(self) -> bool:
         return self[0] is True
+
+
+__SVH_SUCCESS = SuccessOrValidationErrorOrHardError(None, None)
+
+
+def new_svh_success() -> SuccessOrValidationErrorOrHardError:
+    return __SVH_SUCCESS
+
+
+def new_svh_validation_error(failure_message: str) -> SuccessOrValidationErrorOrHardError:
+    if failure_message is None:
+        raise ValueError('A VALIDATION ERROR must have a failure message (that is not None)')
+    return SuccessOrValidationErrorOrHardError(False, failure_message)
+
+
+def new_svh_hard_error(failure_message: str) -> SuccessOrValidationErrorOrHardError:
+    if failure_message is None:
+        raise ValueError('A HARD ERROR must have a failure message (that is not None)')
+    return SuccessOrValidationErrorOrHardError(True, failure_message)
 
 
 class PassOrFailOrHardErrorEnum(Enum):
@@ -99,6 +131,19 @@ class PassOrFailOrHardError(tuple):
         :return None iff the object represents PASS.
         """
         return self[1]
+
+
+__PFH_SUCCESS = SuccessOrHardError(None)
+
+
+def new_pfh_success() -> SuccessOrHardError:
+    return __PFH_SUCCESS
+
+
+def new_pfh_hard_error(failure_message: str) -> SuccessOrHardError:
+    if failure_message is None:
+        raise ValueError('A HARD ERROR must have a failure message (that is not None)')
+    return SuccessOrHardError(failure_message)
 
 
 class ExecutionMode(Enum):

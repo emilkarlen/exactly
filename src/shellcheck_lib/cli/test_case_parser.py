@@ -5,6 +5,7 @@ from shellcheck_lib.document.parse import InstructionParser, SourceError, Parser
 from shellcheck_lib.general import line_source
 from shellcheck_lib.general.line_source import LineSource
 from shellcheck_lib.test_case import test_case_struct
+from shellcheck_lib.test_case import instructions
 
 
 class Parser:
@@ -34,7 +35,7 @@ def new_parser() -> Parser:
             ParserForPhase(phases.SETUP.name,
                            failing_parser),
             ParserForPhase(phases.ACT.name,
-                           failing_parser),
+                           PlainSourceActPhaseParser()),
             ParserForPhase(phases.ASSERT.name,
                            failing_parser),
             ParserForPhase(phases.CLEANUP.name,
@@ -49,3 +50,22 @@ class InstructionParserThatFailsUnconditionally(InstructionParser):
         raise SourceError(line, 'This parser fails unconditionally')
 
 
+class PlainSourceActPhaseParser(InstructionParser):
+    def apply(self, line: line_source.Line) -> model.PhaseContentElement:
+        return model.new_instruction_element(line,
+                                             SourceCodeInstruction(line.text))
+
+
+class SourceCodeInstruction(instructions.ActPhaseInstruction):
+    def __init__(self,
+                 source_code: str):
+        self.source_code = source_code
+
+    def validate(self, global_environment: instructions.GlobalEnvironmentForPostEdsPhase) \
+            -> instructions.SuccessOrValidationErrorOrHardError:
+        return instructions.new_svh_success()
+
+    def main(self, global_environment: instructions.GlobalEnvironmentForPostEdsPhase,
+             script_generator: instructions.PhaseEnvironmentForScriptGeneration) -> instructions.SuccessOrHardError:
+        script_generator.append.raw_script_statement(self.source_code)
+        return instructions.new_sh_success()

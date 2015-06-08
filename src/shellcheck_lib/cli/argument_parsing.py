@@ -4,6 +4,9 @@ import pathlib
 import argparse
 
 
+INTERPRETER_FOR_TEST = 'test-language'
+
+
 class Output(enum.Enum):
     STATUS_CODE = 1
     EXECUTION_DIRECTORY_STRUCTURE_ROOT = 2
@@ -15,12 +18,14 @@ class Result:
                  initial_home_dir_path: pathlib.Path,
                  output: Output,
                  is_keep_execution_directory_root: bool=False,
-                 execution_directory_root_name_prefix: str='shellcheck-'):
+                 execution_directory_root_name_prefix: str='shellcheck-',
+                 interpreter: str=None):
         self.__file_path = file_path
         self.__initial_home_dir_path = initial_home_dir_path
         self.__output = output
         self.__is_keep_execution_directory_root = is_keep_execution_directory_root
         self.__execution_directory_root_name_prefix = execution_directory_root_name_prefix
+        self.__interpreter = interpreter
 
     @property
     def file_path(self) -> pathlib.Path:
@@ -41,6 +46,10 @@ class Result:
     @property
     def execution_directory_root_name_prefix(self) -> str:
         return self.__execution_directory_root_name_prefix
+
+    @property
+    def interpreter(self) -> str:
+        return self.__interpreter
 
 
 def parse(argv: list) -> Result:
@@ -67,4 +76,9 @@ def _new_argument_parser() -> argparse.ArgumentParser:
                          help="""\
                         Execution Directory Structure is preserved,
                         and it's root directory is the only output on stdout.""")
+    ret_val.add_argument('--interpreter',
+                         metavar="INTERPRETER",
+                         nargs=1,
+                         help="""\
+                        Executable that executes the script of the act phase.""")
     return ret_val

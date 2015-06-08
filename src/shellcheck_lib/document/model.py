@@ -46,8 +46,8 @@ def new_comment_element(source_line: line_source.Line) -> PhaseContentElement:
 
 
 def new_instruction_element(source_line: line_source.Line,
-                            executor: Instruction) -> PhaseContentElement:
-    return PhaseContentElement(source_line, executor)
+                            instruction: Instruction) -> PhaseContentElement:
+    return PhaseContentElement(source_line, instruction)
 
 
 class PhaseContents:
