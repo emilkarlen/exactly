@@ -3,11 +3,6 @@
 Fortsätt med
 
 * Exekverbart program
-** Testa: miljövariabler
-Räcker att testa att de är korrekta i act-fasen.
-Andra tester testar att de initierats till korrekta värden i tidgare och
-senare faser (verifiera att det är testat!)
-** Testa resultat av felaktig invokering
 ** Ny växel: --keep, -k
 ** Ny växel: --execute, -e
 * Instruktioner
