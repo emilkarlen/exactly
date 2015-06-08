@@ -132,7 +132,7 @@ def capture_subprocess(cmd_and_args: list,
 
 
 def _contents_of_file(path: pathlib.Path) -> str:
-    with open(str(path)) as f:
+    with path.open() as f:
         return f.read()
 
 
@@ -144,12 +144,37 @@ def run_subprocess(cmd_and_args: list,
                                   stdin_contents=stdin_contents)
 
 
+class SubProcessResultInfo(tuple):
+    def __new__(cls,
+                file_argument: pathlib.Path,
+                sub_process_result: SubProcessResult):
+        return tuple.__new__(cls, (file_argument, sub_process_result))
+
+    @property
+    def file_argument(self) -> pathlib.Path:
+        return self[0]
+
+    @property
+    def sub_process_result(self) -> SubProcessResult:
+        return self[1]
+
+
 def run_subprocess_with_file_arg(cmd_and_args_except_file_arg: list,
                                  file_contents: str,
                                  stdin_contents: str='') -> SubProcessResult:
+    return run_subprocess_with_file_arg__full(cmd_and_args_except_file_arg,
+                                              file_contents,
+                                              stdin_contents).sub_process_result
+
+
+def run_subprocess_with_file_arg__full(cmd_and_args_except_file_arg: list,
+                                       file_contents: str,
+                                       stdin_contents: str='') -> SubProcessResultInfo:
     with tempfile.TemporaryDirectory(prefix='shellcheck-test-') as tmp_dir_name:
         with tmp_file_containing(file_contents, dir=tmp_dir_name) as file_path:
             cmd_and_args = cmd_and_args_except_file_arg + [str(file_path)]
-            return capture_subprocess(cmd_and_args,
-                                      pathlib.Path(tmp_dir_name),
-                                      stdin_contents=stdin_contents)
+            sub_process_result = capture_subprocess(cmd_and_args,
+                                                    pathlib.Path(tmp_dir_name),
+                                                    stdin_contents=stdin_contents)
+            return SubProcessResultInfo(file_path,
+                                        sub_process_result)

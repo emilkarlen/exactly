@@ -5,6 +5,7 @@ import sys
 
 from shellcheck_lib.cli import test_case_parser
 from shellcheck_lib.cli import argument_parsing
+from shellcheck_lib.cli.argument_parsing import INTERPRETER_FOR_TEST
 from shellcheck_lib.execution import full_execution
 from shellcheck_lib.script_language.act_script_management import ScriptLanguageSetup
 from shellcheck_lib.script_language import python3
@@ -27,6 +28,8 @@ def main():
 
 
 def resolve_script_language(cl_arguments: argument_parsing.Result) -> ScriptLanguageSetup:
+    if cl_arguments.interpreter and cl_arguments.interpreter == INTERPRETER_FOR_TEST:
+        return python3.new_script_language_setup()
     return python3.new_script_language_setup()
 
 
