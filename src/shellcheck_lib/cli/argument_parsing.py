@@ -10,6 +10,7 @@ INTERPRETER_FOR_TEST = 'test-language'
 class Output(enum.Enum):
     STATUS_CODE = 1
     EXECUTION_DIRECTORY_STRUCTURE_ROOT = 2
+    ACT_PHASE_OUTPUT = 3
 
 
 class Result:
@@ -56,7 +57,9 @@ def parse(argv: list) -> Result:
     output = Output.STATUS_CODE
     is_keep_execution_directory_root = False
     namespace = _new_argument_parser().parse_args(argv)
-    if namespace.keep:
+    if namespace.act:
+        output = Output.ACT_PHASE_OUTPUT
+    elif namespace.keep:
         output = Output.EXECUTION_DIRECTORY_STRUCTURE_ROOT
         is_keep_execution_directory_root = True
     return Result(pathlib.Path(namespace.file),
@@ -76,6 +79,14 @@ def _new_argument_parser() -> argparse.ArgumentParser:
                          help="""\
                         Execution Directory Structure is preserved,
                         and it's root directory is the only output on stdout.""")
+    ret_val.add_argument('--act',
+                         default=False,
+                         action="store_true",
+                         help="""\
+                        Executes the full test case, but instead of "reporting" the result,
+                        the output from the act phase script is emitted:
+                        Output on stdout/stderr from the script is printed to stdout/stderr.
+                        The exit code from the act script becomes the exit code from the program.""")
     ret_val.add_argument('--interpreter',
                          metavar="INTERPRETER",
                          nargs=1,

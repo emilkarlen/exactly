@@ -152,6 +152,34 @@ class TestsWithPreservedExecutionDirectoryStructure(UnitTestCaseWithUtils):
         return _contents_of_file(eds.result.std.stdout_file)
 
 
+class TestsExecuteActPhase(UnitTestCaseWithUtils):
+    def test_that_output_and_exit_code_from_act_phase_is_emitted_as_result_of_shellcheck(self):
+        # ARRANGE #
+        test_case_source_lines = [
+            '[act]',
+            'import os',
+            'import sys',
+            'sys.stdout.write("output to stdout")',
+            'sys.stderr.write("output to stderr\\n")',
+            'sys.exit(72)',
+        ]
+        test_case_source = lines_content(test_case_source_lines)
+        # ACT #
+        actual = self._run_shellcheck_in_sub_process(test_case_source,
+                                                     flags=['--interpreter', argument_parsing.INTERPRETER_FOR_TEST,
+                                                            '--act']).sub_process_result
+        # ASSERT #
+        self.assertEqual(72,
+                         actual.exitcode,
+                         'Program is expected to exit with same exit code as act script')
+        self.assertEqual('output to stdout',
+                         actual.stdout,
+                         'Output on stdout is expected to be same as that of act script')
+        self.assertEqual('output to stderr\n',
+                         actual.stderr,
+                         'Output on stderr is expected to be same as that of act script')
+
+
 SUCCESSFUL_RESULT = ExpectedSubProcessResult(exitcode=FullResultStatus.PASS.value,
                                              stdout=lines_content([FullResultStatus.PASS.name]),
                                              stderr='')
@@ -179,6 +207,7 @@ def suite():
     ret_val.addTest(unittest.makeSuite(TestsInvokation))
     ret_val.addTest(unittest.makeSuite(BasicTestsWithNoCliFlags))
     ret_val.addTest(unittest.makeSuite(TestsWithPreservedExecutionDirectoryStructure))
+    ret_val.addTest(unittest.makeSuite(TestsExecuteActPhase))
     return ret_val
 
 
