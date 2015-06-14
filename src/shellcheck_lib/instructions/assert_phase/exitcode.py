@@ -2,7 +2,6 @@ import pathlib
 import shlex
 
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
-
 from shellcheck_lib.test_case import instructions as i
 from shellcheck_lib.instruction_parsing.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionInvalidArgumentException
@@ -19,7 +18,7 @@ class Instruction(utils.InstructionWithoutValidationBase):
              phase_environment: i.PhaseEnvironmentForInternalCommands) -> i.PassOrFailOrHardError:
         actual_value = read_exitcode(global_environment.eds)
         if actual_value == self._expected_value:
-            i.new_pfh_pass()
+            return i.new_pfh_pass()
         return i.new_pfh_fail('Unexpected exitcode. Expected:%d, actual:%d' % (self._expected_value,
                                                                                actual_value))
 

@@ -3,7 +3,9 @@ import unittest
 from shellcheck_lib.instructions.assert_phase import exitcode
 from shellcheck_lib.instruction_parsing.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from shellcheck_lib.test_case import instructions as i
 from shellcheck_lib.test_case.instructions import AssertPhaseInstruction
+from shellcheck_lib_test.instructions import utils
 
 
 class TestParse(unittest.TestCase):
@@ -38,9 +40,22 @@ class TestParse(unittest.TestCase):
                               AssertPhaseInstruction)
 
 
+class TestParseAndExecute(unittest.TestCase):
+    def test_that__when__actual_value_is_as_expected__then__pass_is_returned(self):
+        parser = exitcode.Parser()
+        instruction = parser.apply('72')
+        with utils.act_phase_result(exitcode=72) as post_eds_environment:
+            actual = instruction.main(post_eds_environment,
+                                      i.PhaseEnvironmentForInternalCommands())
+            self.assertEqual(i.PassOrFailOrHardErrorEnum.PASS,
+                             actual.status,
+                             'The assertion is expected to PASS')
+
+
 def suite():
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestParse))
+    ret_val.addTest(unittest.makeSuite(TestParseAndExecute))
     return ret_val
 
 
