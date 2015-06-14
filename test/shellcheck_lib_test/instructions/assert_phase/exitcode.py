@@ -27,11 +27,17 @@ class TestParse(unittest.TestCase):
                           parser.apply,
                           'a')
 
-    def test_that_when_argument_contains_integer_out_of_range_then_exception_is_raised(self):
+    def test_that__when__argument_contains_too_small_integer__then__exception_is_raised(self):
         parser = exitcode.Parser()
         self.assertRaises(SingleInstructionInvalidArgumentException,
                           parser.apply,
                           '-1')
+
+    def test_that__when__argument_contains_too_large_integer__then__exception_is_raised(self):
+        parser = exitcode.Parser()
+        self.assertRaises(SingleInstructionInvalidArgumentException,
+                          parser.apply,
+                          '256')
 
     def test_that_when_valid_argument_is_given_than_instruction_is_returned(self):
         parser = exitcode.Parser()
