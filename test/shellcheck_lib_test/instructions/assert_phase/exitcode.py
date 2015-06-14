@@ -45,10 +45,13 @@ class TestParseAndExecute(unittest.TestCase):
         parser = exitcode.Parser()
         instruction = parser.apply('72')
         with utils.act_phase_result(exitcode=72) as post_eds_environment:
-            actual = instruction.main(post_eds_environment,
-                                      i.PhaseEnvironmentForInternalCommands())
+            validation_result = instruction.validate(post_eds_environment)
+            self.assertTrue(validation_result.is_success,
+                            'The assertion/validation is expected to succeed')
+            main_actual = instruction.main(post_eds_environment,
+                                           i.PhaseEnvironmentForInternalCommands())
             self.assertEqual(i.PassOrFailOrHardErrorEnum.PASS,
-                             actual.status,
+                             main_actual.status,
                              'The assertion is expected to PASS')
 
 
