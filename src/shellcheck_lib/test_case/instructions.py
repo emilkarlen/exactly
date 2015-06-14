@@ -133,11 +133,16 @@ class PassOrFailOrHardError(tuple):
         return self[1]
 
 
-__PFH_SUCCESS = SuccessOrHardError(None)
+__PFH_PASS = PassOrFailOrHardError(PassOrFailOrHardErrorEnum.PASS, None)
 
 
-def new_pfh_success() -> SuccessOrHardError:
-    return __PFH_SUCCESS
+def new_pfh_pass() -> SuccessOrHardError:
+    return __PFH_PASS
+
+
+def new_pfh_fail(failure_message: str) -> SuccessOrHardError:
+    return PassOrFailOrHardError(PassOrFailOrHardErrorEnum.FAIL,
+                                 failure_message)
 
 
 def new_pfh_hard_error(failure_message: str) -> SuccessOrHardError:
