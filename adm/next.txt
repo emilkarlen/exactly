@@ -2,9 +2,11 @@
 
 Fortsätt med
 
-* Instruktioner
-** Troligtvis: infrastruktur för test av instruktion
-Tror räcker med "integrationstest":
+* TODO Instruktioner
+** DONE Impl instr för assert/exitcode
+** DONE Testa parsing
+** DONE Troligtvis: infrastruktur för test av instruktion
+Tror räcker med "integrationstest" för exekveringen:
 1. parsa
 2. exekvera
 
@@ -12,3 +14,23 @@ Dvs behöver inte separata test för parsning o exekvering.  Tvärt om är det
 troligtvis lämpligt att ha ett o samma test så att alla led testas.  Dessutom
 blir troligtvis koden mer flexibel då man inte testar = kräver fix
 representation av - "mellanled".
+*** with EDS-and-act-result(exitcode, stdout_output, stderr_output) as eds:
+** DONE Testa parsning + exekvering
+** TODO Testa infrastrukturen för att parsa instruktioner i uppslagsverk
+** TODO Lyft ut funk från impl av exitcode så att den blir allmänt tillgänglig
+** TODO Ta bort nuv phase_enviroment från Assert-instruktionen
+* TODO Kring instruktioner
+** TODO PassOrFailOrHardError: FAIL ska kunna ta olika varianter av felmeddelande
+- sträng
+- förväntat värde, verkligt värde, namn på egenskap
+Inför subklass för varje variant.
+** TODO assert-instr: Infrastruktur för att hämta vanliga värden
+T ex returkod, utdata på stdout/err.
+Funk kan antingen
+- ligga i ActPhaseInstruction
+- objekct åtkomligt via medlemsmetod i ActPhaseInstruction
+- objekt som skickas till main
+
+Tror bäst att skicka obj till main.  Då kan infrastrukturen säkerställa att
+alla instruktioner får samma objekt.  Därmed kan objektet lagra privat data då
+den efterfrågats (prestanda)
