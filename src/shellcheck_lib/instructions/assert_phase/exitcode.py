@@ -9,6 +9,21 @@ from shellcheck_lib.instruction_parsing.instruction_parser_for_single_phase impo
 from . import utils
 
 
+class Instruction(utils.InstructionWithoutValidationBase):
+    def __init__(self,
+                 expected_value: int):
+        self._expected_value = expected_value
+
+    def main(self,
+             global_environment: i.GlobalEnvironmentForPostEdsPhase,
+             phase_environment: i.PhaseEnvironmentForInternalCommands) -> i.PassOrFailOrHardError:
+        actual_value = read_exitcode(global_environment.eds)
+        if actual_value == self._expected_value:
+            i.new_pfh_pass()
+        return i.new_pfh_fail('Unexpected exitcode. Expected:%d, actual:%d' % (self._expected_value,
+                                                                               actual_value))
+
+
 class Parser(SingleInstructionParser):
     def apply(self, instruction_argument: str) -> Instruction:
         argument_list = shlex.split(instruction_argument)
@@ -24,21 +39,6 @@ class Parser(SingleInstructionParser):
             raise SingleInstructionInvalidArgumentException('Argument must be an integer in the range [0, 255]')
 
         return Instruction(expected)
-
-
-class Instruction(utils.InstructionWithoutValidationBase):
-    def __init__(self,
-                 expected_value: int):
-        self._expected_value = expected_value
-
-    def main(self,
-             global_environment: i.GlobalEnvironmentForPostEdsPhase,
-             phase_environment: i.PhaseEnvironmentForInternalCommands) -> i.PassOrFailOrHardError:
-        actual_value = read_exitcode(global_environment.eds)
-        if actual_value == self._expected_value:
-            i.new_pfh_pass()
-        return i.new_pfh_fail('Unexpected exitcode. Expected:%d, actual:%d' % (self._expected_value,
-                                                                               actual_value))
 
 
 class InstructionEnvironmentError(Exception):
