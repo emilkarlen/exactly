@@ -63,7 +63,7 @@ class Result(DirWithRoot):
         return self.__std
 
     @property
-    def exitcode_file(self) -> Std:
+    def exitcode_file(self) -> Path:
         return self.__exitcode_file
 
 
