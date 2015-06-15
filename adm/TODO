@@ -112,3 +112,10 @@ Två argument:
 ** TODO Använda nya TestCaseSetup i äldre tester
 Som du finns flera instruktions-klasser som enbart returnerar ett visst värde
 eller kastar undantag.  Alla de fallen kan hanteras av nya TestCaseSetup.
+* TODO Preprocessor
+Vore bäst om programmet innehöll en egen preprocessor.
+På så vis maximeras oberoende av yttre miljön.
+Funktionallitet:
+- filinklusion
+- definitioner av konstanter
+- definitioner av funktioner
