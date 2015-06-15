@@ -1,3 +1,5 @@
+import os
+
 from shellcheck_lib.cli.instruction_setup import InstructionsSetup
 from shellcheck_lib.cli import main_program
 from shellcheck_lib.execution import phase_step
@@ -19,6 +21,10 @@ class PrintInstructionsPerPhase:
                      instruction_set: dict):
         if not instruction_set:
             return
-        self._std.out.writeln(phase_name)
-        for instruction_name, instruction_setup in instruction_set:
-            self._std.out.writeln(instruction_name + ' ' + instruction_setup.description.single_line_description)
+        self._writeln(phase_name)
+        for instruction_name, instruction_setup in instruction_set.items():
+            self._writeln(instruction_name + ' : ' + instruction_setup.description.single_line_description)
+
+    def _writeln(self, s: str):
+        self._std.out.write(s)
+        self._std.out.write(os.linesep)

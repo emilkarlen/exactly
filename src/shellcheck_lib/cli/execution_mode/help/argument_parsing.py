@@ -14,7 +14,7 @@ def parse(help_command_arguments: list) -> HelpSettings:
         raise argument_parsing_utils.ArgumentParsingError(None,
                                                           'Invalid number of arguments.')
     argument = help_command_arguments[0]
-    if argument is not INSTRUCTIONS:
+    if argument != INSTRUCTIONS:
         raise argument_parsing_utils.ArgumentParsingError(None,
                                                           'Invalid argument: ' + argument)
     return HelpSettings()
