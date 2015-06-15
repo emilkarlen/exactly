@@ -1,33 +1,17 @@
+import os
 import pathlib
 import shutil
 import sys
 
-from shellcheck_lib.cli.execution_mode.test_case.settings import Output, TestCaseExecutionSettings
 from shellcheck_lib.execution import full_execution
 from shellcheck_lib.script_language.act_script_management import ScriptLanguageSetup
 from shellcheck_lib.script_language import python3
 from shellcheck_lib.general import line_source
 from shellcheck_lib.test_case import test_case_struct
-from . import test_case_parser
 from shellcheck_lib.cli.execution_mode.test_case.argument_parsing import INTERPRETER_FOR_TEST
-
-
-def execute(settings: TestCaseExecutionSettings):
-    test_case = parse_test_case_source(settings)
-    script_language_setup = resolve_script_language(settings)
-    if settings.output is Output.ACT_PHASE_OUTPUT:
-        execute_act_phase(settings,
-                          test_case,
-                          script_language_setup)
-    else:
-        full_result = full_execution.execute(script_language_setup,
-                                             test_case,
-                                             settings.initial_home_dir_path,
-                                             settings.execution_directory_root_name_prefix,
-                                             settings.is_keep_execution_directory_root)
-        print_output_to_stdout(settings,
-                               full_result)
-        sys.exit(full_result.status.value)
+from shellcheck_lib.cli.execution_mode.test_case import test_case_parser
+from shellcheck_lib.cli.execution_mode.test_case.settings import Output, TestCaseExecutionSettings
+from shellcheck_lib.cli import main_program
 
 
 def execute_act_phase(the_cl_arguments: TestCaseExecutionSettings,
@@ -68,9 +52,12 @@ def parse_test_case_source(cl_arguments: TestCaseExecutionSettings) -> test_case
     return file_parser.apply(source)
 
 
-def print_output_to_stdout(cl_arguments: TestCaseExecutionSettings,
+def print_output_to_stdout(std: main_program.StdOutputFiles,
+                           cl_arguments: TestCaseExecutionSettings,
                            the_full_result: full_execution.FullResult):
     if cl_arguments.output is Output.STATUS_CODE:
-        print(the_full_result.status.name)
+        std.out.write(the_full_result.status.name)
+        std.out.write(os.linesep)
     elif cl_arguments.output is Output.EXECUTION_DIRECTORY_STRUCTURE_ROOT:
-        print(str(the_full_result.execution_directory_structure.root_dir))
+        std.out.write(str(the_full_result.execution_directory_structure.root_dir))
+        std.out.write(os.linesep)

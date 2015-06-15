@@ -18,7 +18,8 @@ class TestTestCaseWithoutInstructions(unittest.TestCase):
         with tmp_file_containing(test_case_source) as file_path:
             argv = ['--invalid-option-that-should-cause-failure', str(file_path)]
             # ACT #
-            exit_status = sut.MainProgram(stdout_file, stderr_file).execute(argv)
+            program = sut.MainProgram(main_program.StdOutputFiles(stdout_file, stderr_file))
+            exit_status = program.execute(argv)
             stdout_contents = stdout_file.getvalue()
             stdout_file.close()
             stderr_contents = stderr_file.getvalue()
@@ -40,7 +41,8 @@ class TestTestCaseWithoutInstructions(unittest.TestCase):
         with tmp_file_containing(test_case_source) as file_path:
             argv = [str(file_path)]
             # ACT #
-            exit_status = sut.MainProgram(stdout_file).execute(argv)
+            program = sut.MainProgram(main_program.StdOutputFiles(stdout_file))
+            exit_status = program.execute(argv)
             stdout_contents = stdout_file.getvalue()
             stdout_file.close()
         # ASSERT #
@@ -63,7 +65,8 @@ class TestTestCaseWithoutInstructions(unittest.TestCase):
         with tmp_file_containing_lines(test_case_lines) as file_path:
             argv = [str(file_path)]
             # ACT #
-            exit_status = sut.MainProgram(stdout_file).execute(argv)
+            program = sut.MainProgram(main_program.StdOutputFiles(stdout_file))
+            exit_status = program.execute(argv)
             stdout_contents = stdout_file.getvalue()
             stdout_file.close()
         # ASSERT #
@@ -81,7 +84,8 @@ class TestHelp(unittest.TestCase):
         command_line_arguments = ['help', 'arg', 'arg', 'arg', 'arg']
         stdout_file = io.StringIO()
         stderr_file = io.StringIO()
-        exit_status = sut.MainProgram(stdout_file, stderr_file).execute(command_line_arguments)
+        program = sut.MainProgram(main_program.StdOutputFiles(stdout_file, stderr_file))
+        exit_status = program.execute(command_line_arguments)
         stdout_contents = stdout_file.getvalue()
         stdout_file.close()
         stderr_contents = stderr_file.getvalue()
@@ -99,7 +103,8 @@ class TestHelp(unittest.TestCase):
         # ARRANGE #
         command_line_arguments = ['help', 'instructions']
         stdout_file = io.StringIO()
-        exit_status = sut.MainProgram(stdout_file).execute(command_line_arguments)
+        program = sut.MainProgram(main_program.StdOutputFiles(stdout_file))
+        exit_status = program.execute(command_line_arguments)
         stdout_contents = stdout_file.getvalue()
         stdout_file.close()
         # ASSERT #

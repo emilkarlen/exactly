@@ -13,12 +13,26 @@ EXIT_INVALID_USAGE = 2
 HELP_COMMAND = 'help'
 
 
-class MainProgram:
+class StdOutputFiles:
     def __init__(self,
                  stdout_file=sys.stdout,
                  stderr_file=sys.stderr):
         self._stdout_file = stdout_file
         self._stderr_file = stderr_file
+
+    @property
+    def out(self):
+        return self._stdout_file
+
+    @property
+    def err(self):
+        return self._stderr_file
+
+
+class MainProgram:
+    def __init__(self,
+                 output: StdOutputFiles):
+        self._output = output
 
     def execute(self, command_line_arguments: list) -> int:
         if len(command_line_arguments) > 0 and command_line_arguments[0] == HELP_COMMAND:
@@ -35,6 +49,10 @@ class MainProgram:
                      settings: HelpSettings) -> int:
         raise NotImplementedError()
 
+    @property
+    def _std(self) -> StdOutputFiles:
+        return self._output
+
     def _parse_and_execute_test_case(self, command_line_arguments: list) -> int:
         test_case_execution_settings = argument_parsing.parse(command_line_arguments)
         return self.execute_test_case(test_case_execution_settings)
@@ -47,6 +65,6 @@ class MainProgram:
         try:
             return parse_arguments_and_execute_callable(arguments)
         except argument_parsing_utils.ArgumentParsingError as ex:
-            self._stderr_file.write(ex.error_message)
-            self._stderr_file.write(os.linesep)
+            self._std.err.write(ex.error_message)
+            self._std.err.write(os.linesep)
             return EXIT_INVALID_USAGE
