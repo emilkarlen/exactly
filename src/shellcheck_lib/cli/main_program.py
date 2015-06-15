@@ -22,8 +22,10 @@ class MainProgram:
 
     def execute(self, command_line_arguments: list) -> int:
         if len(command_line_arguments) > 0 and command_line_arguments[0] == HELP_COMMAND:
-            return self._parse_and_execute_help(command_line_arguments[1:])
-        return self._parse_and_execute_test_case(command_line_arguments)
+            return self._parse_and_exit_on_error(self._parse_and_execute_help,
+                                                 command_line_arguments[1:])
+        return self._parse_and_exit_on_error(self._parse_and_execute_test_case,
+                                             command_line_arguments)
 
     def execute_test_case(self,
                           settings: TestCaseExecutionSettings) -> int:
@@ -34,18 +36,16 @@ class MainProgram:
         raise NotImplementedError()
 
     def _parse_and_execute_test_case(self, command_line_arguments: list) -> int:
-        try:
-            test_case_execution_settings = argument_parsing.parse(command_line_arguments)
-            return self.execute_test_case(test_case_execution_settings)
-        except argument_parsing_utils.ArgumentParsingError as ex:
-            self._stderr_file.write(ex.error_message)
-            self._stderr_file.write(os.linesep)
-            return EXIT_INVALID_USAGE
+        test_case_execution_settings = argument_parsing.parse(command_line_arguments)
+        return self.execute_test_case(test_case_execution_settings)
 
     def _parse_and_execute_help(self, help_command_arguments: list) -> int:
+        settings = parse_help(help_command_arguments)
+        return self.execute_help(settings)
+
+    def _parse_and_exit_on_error(self, parse_arguments_and_execute_callable, arguments: list) -> int:
         try:
-            settings = parse_help(help_command_arguments)
-            return self.execute_help(settings)
+            return parse_arguments_and_execute_callable(arguments)
         except argument_parsing_utils.ArgumentParsingError as ex:
             self._stderr_file.write(ex.error_message)
             self._stderr_file.write(os.linesep)
