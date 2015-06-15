@@ -11,7 +11,6 @@ class PrintInstructionsPerPhase:
     def apply(self, instruction_setup: InstructionsSetup):
         self._print_phase(phase_step.ANONYMOUS, instruction_setup.config_instruction_set)
         self._print_phase(phase_step.SETUP, instruction_setup.setup_instruction_set)
-        self._print_phase(phase_step.ACT, instruction_setup.act_instruction_set)
         self._print_phase(phase_step.ASSERT, instruction_setup.assert_instruction_set)
         self._print_phase(phase_step.CLEANUP, instruction_setup.cleanup_instruction_set)
 
