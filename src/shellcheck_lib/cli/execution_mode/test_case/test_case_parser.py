@@ -1,9 +1,12 @@
+from shellcheck_lib.cli.instruction_setup import InstructionsSetup
 from shellcheck_lib.execution import phases
 from shellcheck_lib.document import model
 from shellcheck_lib.document import parse
 from shellcheck_lib.document.parse import InstructionParser, SourceError, ParserForPhase
 from shellcheck_lib.general import line_source
 from shellcheck_lib.general.line_source import LineSource
+from shellcheck_lib.instruction_parsing.instruction_parser_for_single_phase import \
+    InstructionParserForDictionaryOfInstructions
 from shellcheck_lib.test_case import test_case_struct
 from shellcheck_lib.test_case import instructions
 
@@ -25,21 +28,23 @@ class Parser:
         )
 
 
-def new_parser() -> Parser:
-    failing_parser = InstructionParserThatFailsUnconditionally()
+def new_parser(instructions_setup: InstructionsSetup) -> Parser:
+    def dict_parser(instruction_set: dict) -> InstructionParser:
+        return InstructionParserForDictionaryOfInstructions(instruction_set)
+
     anonymous_phase = parse.ParserForPhase(phases.ANONYMOUS.name,
-                                           failing_parser)
+                                           dict_parser(instructions_setup.config_instruction_set))
     configuration = parse.PhaseAndInstructionsConfiguration(
         anonymous_phase,
         (
             ParserForPhase(phases.SETUP.name,
-                           failing_parser),
+                           dict_parser(instructions_setup.setup_instruction_set)),
             ParserForPhase(phases.ACT.name,
                            PlainSourceActPhaseParser()),
             ParserForPhase(phases.ASSERT.name,
-                           failing_parser),
+                           dict_parser(instructions_setup.assert_instruction_set)),
             ParserForPhase(phases.CLEANUP.name,
-                           failing_parser),
+                           dict_parser(instructions_setup.cleanup_instruction_set)),
         )
     )
     return Parser(parse.new_parser_for(configuration))

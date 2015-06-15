@@ -3,27 +3,42 @@ import os
 import unittest
 
 from shellcheck_lib.execution.result import FullResultStatus
-
 from shellcheck_lib_test.util.with_tmp_file import tmp_file_containing, tmp_file_containing_lines
+
 from shellcheck_lib.cli import main_program
 from shellcheck_lib.cli import main_program_default as sut
+from shellcheck_lib.cli.instruction_setup import InstructionsSetup
+
+
+instructions_setup = InstructionsSetup(
+    {},
+    {},
+    {},
+    {},
+    {})
+
+
+def execute_main_program(arguments: list):
+    stdout_file = io.StringIO()
+    stderr_file = io.StringIO()
+    program = sut.MainProgram(main_program.StdOutputFiles(stdout_file, stderr_file),
+                              instructions_setup)
+    exit_status = program.execute(arguments)
+    stdout_contents = stdout_file.getvalue()
+    stdout_file.close()
+    stderr_contents = stderr_file.getvalue()
+    stderr_file.close()
+    return exit_status, stdout_contents, stderr_contents
 
 
 class TestTestCaseWithoutInstructions(unittest.TestCase):
     def test_invalid_usage(self):
         # ARRANGE #
         test_case_source = ''
-        stdout_file = io.StringIO()
-        stderr_file = io.StringIO()
         with tmp_file_containing(test_case_source) as file_path:
             argv = ['--invalid-option-that-should-cause-failure', str(file_path)]
             # ACT #
-            program = sut.MainProgram(main_program.StdOutputFiles(stdout_file, stderr_file))
-            exit_status = program.execute(argv)
-            stdout_contents = stdout_file.getvalue()
-            stdout_file.close()
-            stderr_contents = stderr_file.getvalue()
-            stderr_file.close()
+            exit_status, stdout_contents, stderr_contents = execute_main_program(argv)
         # ASSERT #
         self.assertEqual(main_program.EXIT_INVALID_USAGE,
                          exit_status,
@@ -37,14 +52,10 @@ class TestTestCaseWithoutInstructions(unittest.TestCase):
     def test_empty_file(self):
         # ARRANGE #
         test_case_source = ''
-        stdout_file = io.StringIO()
         with tmp_file_containing(test_case_source) as file_path:
             argv = [str(file_path)]
             # ACT #
-            program = sut.MainProgram(main_program.StdOutputFiles(stdout_file))
-            exit_status = program.execute(argv)
-            stdout_contents = stdout_file.getvalue()
-            stdout_file.close()
+            exit_status, stdout_contents, stderr_contents = execute_main_program(argv)
         # ASSERT #
         self.assertEqual(0,
                          exit_status,
@@ -61,14 +72,10 @@ class TestTestCaseWithoutInstructions(unittest.TestCase):
             '[assert]',
             '[cleanup]',
         ]
-        stdout_file = io.StringIO()
         with tmp_file_containing_lines(test_case_lines) as file_path:
             argv = [str(file_path)]
             # ACT #
-            program = sut.MainProgram(main_program.StdOutputFiles(stdout_file))
-            exit_status = program.execute(argv)
-            stdout_contents = stdout_file.getvalue()
-            stdout_file.close()
+            exit_status, stdout_contents, stderr_contents = execute_main_program(argv)
         # ASSERT #
         self.assertEqual(0,
                          exit_status,
@@ -82,14 +89,7 @@ class TestHelp(unittest.TestCase):
     def test_invalid_usage(self):
         # ARRANGE #
         command_line_arguments = ['help', 'arg', 'arg', 'arg', 'arg']
-        stdout_file = io.StringIO()
-        stderr_file = io.StringIO()
-        program = sut.MainProgram(main_program.StdOutputFiles(stdout_file, stderr_file))
-        exit_status = program.execute(command_line_arguments)
-        stdout_contents = stdout_file.getvalue()
-        stdout_file.close()
-        stderr_contents = stderr_file.getvalue()
-        stderr_file.close()
+        exit_status, stdout_contents, stderr_contents = execute_main_program(command_line_arguments)
         # ASSERT #
         self.assertEqual(main_program.EXIT_INVALID_USAGE,
                          exit_status,
@@ -102,11 +102,7 @@ class TestHelp(unittest.TestCase):
     def test_instructions(self):
         # ARRANGE #
         command_line_arguments = ['help', 'instructions']
-        stdout_file = io.StringIO()
-        program = sut.MainProgram(main_program.StdOutputFiles(stdout_file))
-        exit_status = program.execute(command_line_arguments)
-        stdout_contents = stdout_file.getvalue()
-        stdout_file.close()
+        exit_status, stdout_contents, stderr_contents = execute_main_program(command_line_arguments)
         # ASSERT #
         self.assertEqual(0,
                          exit_status,
