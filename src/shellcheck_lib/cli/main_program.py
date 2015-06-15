@@ -46,3 +46,13 @@ class TestCaseExecutionSettings:
     @property
     def interpreter(self) -> str:
         return self.__interpreter
+
+
+class MainProgram:
+    def execute(self,
+                command_line_arguments: list):
+        raise NotImplementedError()
+
+    def execute_test_case(self,
+                          settings: TestCaseExecutionSettings):
+        raise NotImplementedError()
