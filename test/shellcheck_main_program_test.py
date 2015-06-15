@@ -4,6 +4,7 @@ import unittest
 import sys
 
 from shellcheck_lib.cli.execution_mode.test_case import argument_parsing
+from shellcheck_lib.cli.main_program import EXIT_INVALID_USAGE
 from shellcheck_lib.execution import execution_directory_structure
 from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib.test_case import instructions
@@ -39,7 +40,7 @@ class TestsInvokation(UnitTestCaseWithUtils):
         actual = self._run_shellcheck_in_sub_process(test_case_source,
                                                      flags=['--illegal-flag-42847920189']).sub_process_result
         # ASSERT #
-        self.assertEqual(2,
+        self.assertEqual(EXIT_INVALID_USAGE,
                          actual.exitcode,
                          'Expected exit code for invalid invokation')
         self.assertEqual('',
