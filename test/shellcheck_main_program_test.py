@@ -3,8 +3,7 @@ import shutil
 import unittest
 import sys
 
-from shellcheck_lib.cli import argument_parsing
-
+from shellcheck_lib.cli.execution_mode.test_case import argument_parsing
 from shellcheck_lib.execution import execution_directory_structure
 from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib.test_case import instructions
