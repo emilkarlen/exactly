@@ -16,6 +16,12 @@ from . import main_program
 
 
 class MainProgram(main_program.MainProgram):
+    def __init__(self,
+                 stdout_file=sys.stdout,
+                 stderr_file=sys.stderr):
+        super().__init__(stdout_file,
+                         stderr_file)
+
     def execute_test_case(self, settings: TestCaseExecutionSettings) -> int:
         test_case = parse_test_case_source(settings)
         script_language_setup = resolve_script_language(settings)
