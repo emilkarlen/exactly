@@ -3,7 +3,7 @@ from shellcheck_lib.cli.execution_mode.help import execution as help_execution
 from shellcheck_lib.cli.execution_mode.test_case.settings import TestCaseExecutionSettings
 from shellcheck_lib.cli.execution_mode.test_case import execution as test_case_execution
 from shellcheck_lib.cli.execution_mode.help.settings import HelpSettings
-from . import main_program
+from shellcheck_lib.cli import main_program
 
 
 class MainProgram(main_program.MainProgram):

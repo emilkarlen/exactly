@@ -6,7 +6,7 @@ from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib_test.util.with_tmp_file import tmp_file_containing, tmp_file_containing_lines
 
 from shellcheck_lib.cli import main_program
-from shellcheck_lib.cli import main_program_default as sut
+from shellcheck_lib.cli.default import default_main_program as sut
 from shellcheck_lib.cli.instruction_setup import InstructionsSetup
 
 
