@@ -1,7 +1,6 @@
 import os
 import pathlib
 import shutil
-import sys
 
 from shellcheck_lib.script_language.act_script_management import ScriptLanguageSetup
 from shellcheck_lib.script_language import python3
@@ -58,8 +57,8 @@ class Executor:
                                              self._settings.initial_home_dir_path,
                                              self._settings.execution_directory_root_name_prefix,
                                              True)
-        copy_file(full_result.execution_directory_structure.result.std.stdout_file, sys.stdout)
-        copy_file(full_result.execution_directory_structure.result.std.stderr_file, sys.stderr)
+        copy_file(full_result.execution_directory_structure.result.std.stdout_file, self._std.out)
+        copy_file(full_result.execution_directory_structure.result.std.stderr_file, self._std.err)
         exit_code = act_phase_exit_code(full_result.execution_directory_structure.result.exitcode_file)
         shutil.rmtree(str(full_result.execution_directory_structure.root_dir))
         return exit_code
