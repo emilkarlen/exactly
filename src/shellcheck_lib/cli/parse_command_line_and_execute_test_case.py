@@ -1,5 +1,4 @@
-from shellcheck_lib.cli import test_case_parser
-from shellcheck_lib.cli import argument_parsing
+from shellcheck_lib.cli.execution_mode.test_case import argument_parsing, test_case_parser
 from shellcheck_lib.execution import full_execution
 from shellcheck_lib.execution.result import FullResult
 from shellcheck_lib.script_language.python3 import new_script_language_setup

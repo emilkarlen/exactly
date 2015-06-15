@@ -1,7 +1,7 @@
 import pathlib
 import argparse
 
-from shellcheck_lib.cli.main_program import TestCaseExecutionSettings, Output
+from .settings import Output, TestCaseExecutionSettings
 
 
 INTERPRETER_FOR_TEST = 'test-language'
