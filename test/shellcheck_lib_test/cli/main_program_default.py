@@ -14,7 +14,6 @@ instructions_setup = InstructionsSetup(
     {},
     {},
     {},
-    {},
     {})
 
 

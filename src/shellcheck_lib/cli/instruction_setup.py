@@ -31,7 +31,6 @@ class InstructionsSetup:
     def __init__(self,
                  config_instruction_set: dict,
                  setup_instruction_set: dict,
-                 act_instruction_set: dict,
                  assert_instruction_set: dict,
                  cleanup_instruction_set: dict):
         """
@@ -42,7 +41,6 @@ class InstructionsSetup:
         """
         self._config_instruction_set = config_instruction_set
         self._setup_instruction_set = setup_instruction_set
-        self._act_instruction_set = act_instruction_set
         self._assert_instruction_set = assert_instruction_set
         self._cleanup_instruction_set = cleanup_instruction_set
 
@@ -53,10 +51,6 @@ class InstructionsSetup:
     @property
     def setup_instruction_set(self) -> dict:
         return self._setup_instruction_set
-
-    @property
-    def act_instruction_set(self) -> dict:
-        return self._act_instruction_set
 
     @property
     def assert_instruction_set(self) -> dict:

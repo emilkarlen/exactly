@@ -12,7 +12,6 @@ instructions_setup = InstructionsSetup(
     {},
     {},
     {},
-    {},
     {})
 
 program = MainProgram(main_program.StdOutputFiles(sys.stdout, sys.stderr),
