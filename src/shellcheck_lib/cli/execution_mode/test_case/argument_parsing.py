@@ -1,6 +1,8 @@
 import pathlib
 import argparse
 
+from shellcheck_lib.cli import argument_parsing_utils
+
 from .settings import Output, TestCaseExecutionSettings
 
 
@@ -8,9 +10,16 @@ INTERPRETER_FOR_TEST = 'test-language'
 
 
 def parse(argv: list) -> TestCaseExecutionSettings:
+    """
+    :raises ArgumentParsingError Invalid usage
+    :param argv:
+    :return:
+    """
     output = Output.STATUS_CODE
     is_keep_execution_directory_root = False
-    namespace = _new_argument_parser().parse_args(argv)
+    argument_parser = _new_argument_parser()
+    namespace = argument_parsing_utils.raise_exception_instead_of_exiting_on_error(argument_parser,
+                                                                                   argv)
     if namespace.act:
         output = Output.ACT_PHASE_OUTPUT
     elif namespace.keep:
