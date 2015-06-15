@@ -1,7 +1,7 @@
 import unittest
 
 from shellcheck_lib.instructions.assert_phase import exitcode
-from shellcheck_lib.instruction_parsing.instruction_parser_for_single_phase import \
+from shellcheck_lib.instructions.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from shellcheck_lib.test_case import instructions as i
 from shellcheck_lib.test_case.instructions import AssertPhaseInstruction

@@ -5,7 +5,7 @@ from shellcheck_lib.document import parse
 from shellcheck_lib.document.parse import InstructionParser, SourceError, ParserForPhase
 from shellcheck_lib.general import line_source
 from shellcheck_lib.general.line_source import LineSource
-from shellcheck_lib.instruction_parsing.instruction_parser_for_single_phase import \
+from shellcheck_lib.instructions.instruction_parser_for_single_phase import \
     InstructionParserForDictionaryOfInstructions
 from shellcheck_lib.test_case import test_case_struct
 from shellcheck_lib.test_case import instructions

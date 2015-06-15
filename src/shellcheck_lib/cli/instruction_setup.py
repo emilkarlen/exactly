@@ -1,5 +1,5 @@
 from shellcheck_lib.document import model
-from shellcheck_lib.instruction_parsing.instruction_parser_for_single_phase import SingleInstructionParser
+from shellcheck_lib.instructions.instruction_parser_for_single_phase import SingleInstructionParser
 
 
 class Description:
