@@ -12,6 +12,16 @@ class TestCase(unittest.TestCase):
                     'instruction',
                     '')
 
+    def test_valid_name_characters(self):
+        self._check('abczABCZ01239.- argument',
+                    'abczABCZ01239.-',
+                    ' argument')
+
+    def test_colon_separates(self):
+        self._check('name:argument',
+                    'name',
+                    ':argument')
+
     def _check(self,
                line: str,
                expected_name: str,
