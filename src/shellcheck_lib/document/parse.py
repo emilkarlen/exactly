@@ -32,7 +32,7 @@ class PlainTestCaseParser:
 
 class InstructionForComment(model.PhaseContentElement):
     def __init__(self, source_line: line_source.Line):
-        model.PhaseContentElement.__init__(self, source_line)
+        super().__init__(source_line, None)
 
     def execute(self, phase_name: str, global_environment, phase_environment):
         pass

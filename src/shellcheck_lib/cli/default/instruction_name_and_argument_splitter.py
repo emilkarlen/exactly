@@ -6,12 +6,13 @@ class SkipInitialWhiteSpaceAndIdentifyNameByRegEx:
                  reg_ex):
         self._reg_ex = reg_ex
 
-    def __call__(self, *args, **kwargs):
-        raise NotImplementedError()
+    def __call__(self, line: str):
+        match = self._reg_ex.match(line)
+        if match is None:
+            raise ValueError('Cannot find instruction name')
+        return line[:match.end()], line[match.end():]
 
 
-INSTRUCTION_NAME_REG_EX = re.compile(r"")
+INSTRUCTION_NAME_REG_EX = re.compile(r"[a-z]+")
 
-
-def splitter(s):
-    return s[0], s[1:]
+splitter = SkipInitialWhiteSpaceAndIdentifyNameByRegEx(INSTRUCTION_NAME_REG_EX)
