@@ -15,7 +15,7 @@ def new_line(text: str) -> line_source.Line:
 
 
 class TestParse(unittest.TestCase):
-    def test_when_instruction_name_not_in_dict_then_exception_should_be_raised(self):
+    def test__when__instruction_name_not_in_dict__then__exception_should_be_raised(self):
         phase_parser = parse.InstructionParserForDictionaryOfInstructions(name_argument_splitter, {})
         line = new_line('Ia')
         with self.assertRaises(parse.UnknownInstructionException) as cm:
@@ -28,7 +28,7 @@ class TestParse(unittest.TestCase):
                                cm.ex.line,
                                'Source line')
 
-    def test_when_parser_fails_to_parse_instruction_name_not_in_dict_then_exception_should_be_raised(self):
+    def test__when__parser_fails_to_parse_instruction_name_not_in_dict__then__exception_should_be_raised(self):
         parsers_dict = {'S': SingleInstructionParserThatSucceeds(),
                         'F': SingleInstructionParserThatRaisesInvalidArgumentError('the error message')}
         phase_parser = parse.InstructionParserForDictionaryOfInstructions(name_argument_splitter,
