@@ -7,6 +7,11 @@ class TestCase(unittest.TestCase):
     def test_single_character_name_and_no_argument(self):
         self._check('i', 'i', '')
 
+    def test_multi_character_name_and_no_argument(self):
+        self._check('instruction',
+                    'instruction',
+                    '')
+
     def _check(self,
                line: str,
                expected_name: str,
@@ -14,8 +19,8 @@ class TestCase(unittest.TestCase):
         # ACT #
         (actual_name, actual_arg) = splitter(line)
         # ASSERT #
-        self.assertEqual(actual_name, expected_name, 'Name')
-        self.assertEqual(actual_arg, expected_argument, 'Argument')
+        self.assertEqual(expected_name, actual_name, 'Name')
+        self.assertEqual(expected_argument, actual_arg, 'Argument')
 
 
 def suite():
