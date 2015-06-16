@@ -22,6 +22,16 @@ class TestCase(unittest.TestCase):
                     'name',
                     ':argument')
 
+    def test_skip_initial_space(self):
+        self._check('   name:argument',
+                    'name',
+                    ':argument')
+
+    def test_do_not_skip_trailing_space(self):
+        self._check('name:argument  ',
+                    'name',
+                    ':argument  ')
+
     def _check(self,
                line: str,
                expected_name: str,

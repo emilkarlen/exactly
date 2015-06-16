@@ -7,10 +7,11 @@ class SkipInitialWhiteSpaceAndIdentifyNameByRegEx:
         self._reg_ex = reg_ex
 
     def __call__(self, line: str):
-        match = self._reg_ex.match(line)
+        s = line.lstrip()
+        match = self._reg_ex.match(s)
         if match is None:
             raise ValueError('Cannot find instruction name')
-        return line[:match.end()], line[match.end():]
+        return s[:match.end()], s[match.end():]
 
 
 INSTRUCTION_NAME_REG_EX = re.compile(r"[a-zA-Z0-9.-]+")
