@@ -12,4 +12,6 @@ class SkipInitialWhiteSpaceAndIdentifyNameByRegEx:
 
 INSTRUCTION_NAME_REG_EX = re.compile(r"")
 
-splitter = SkipInitialWhiteSpaceAndIdentifyNameByRegEx(INSTRUCTION_NAME_REG_EX)
+
+def splitter(s):
+    return s[0], s[1:]
