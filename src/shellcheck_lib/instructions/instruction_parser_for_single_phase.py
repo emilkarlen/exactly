@@ -107,52 +107,56 @@ class ArgumentParsingImplementationException(InvalidInstructionException):
         self.parser_that_raised_exception = parser_that_raised_exception
 
 
-class _InstructionParserForPhase(InstructionParser):
+class InstructionParserForDictionaryOfInstructions(InstructionParser):
     def __init__(self,
+                 split_line_into_name_and_argument_function,
                  instruction_name__2__single_instruction_parser: dict):
+        """
+        :param split_line_into_name_and_argument_function Callable that splits a source line text into a
+        (name, argument) tuple. The source line text is assumed to contain at least
+        an instruction name.
+        :param instruction_name__2__single_instruction_parser: dict: str -> SingleInstructionParser
+        """
         self.__instruction_name__2__single_instruction_parser = instruction_name__2__single_instruction_parser
         for value in self.__instruction_name__2__single_instruction_parser.values():
             assert isinstance(value, SingleInstructionParser)
-
-    # def apply(self, line: line_source.Line) -> model.PhaseContentElement:
-    def apply(self, line: line_source.Line) -> Instruction:
-        """
-        :raises: InvalidInstructionException
-        :param line: The source code to parse.
-        """
-        (name, argument) = self._split_name_and_argument(line.text)
-        if name not in self.__instruction_name__2__single_instruction_parser:
-            raise UnknownInstructionException(line,
-                                              name)
-        single_instruction_parser = self.__instruction_name__2__single_instruction_parser[name]
-        try:
-            return single_instruction_parser.apply(argument)
-        except SingleInstructionInvalidArgumentException as ex:
-            raise InvalidInstructionArgumentException(line,
-                                                      name,
-                                                      ex.error_message)
-        except Exception:
-            raise ArgumentParsingImplementationException(line,
-                                                         name,
-                                                         single_instruction_parser)
-
-    @staticmethod
-    def _split_name_and_argument(instruction_source: str) -> tuple:
-        # DUMMY DUMMY IMPLEMENTATION - TEST DRIVING!
-        return instruction_source[1], instruction_source[1:]
-
-
-class InstructionParserForDictionaryOfInstructions(InstructionParser):
-    def __init__(self,
-                 instruction_name__2__single_instruction_parser: dict):
-        """
-        :param instruction_name__2__single_instruction_parser: dict: str -> SingleInstructionParser
-        """
-        self.parser = _InstructionParserForPhase(instruction_name__2__single_instruction_parser)
+        self._name_and_argument_splitter = split_line_into_name_and_argument_function
 
     def apply(self, source_line: line_source.Line) -> model.PhaseContentElement:
         """
         :raises: InvalidInstructionException
         """
-        instruction = self.parser.apply(source_line)
+        (name, argument) = self._name_and_argument_splitter(source_line.text)
+        parser = self._lookup_parser(source_line, name)
+        instruction = self._parse(source_line, parser, name, argument)
         return model.new_instruction_element(source_line, instruction)
+
+    def _lookup_parser(self,
+                       original_source_line: line_source.Line,
+                       name: str) -> SingleInstructionParser:
+        """
+        :raises: InvalidInstructionException
+        """
+        if name not in self.__instruction_name__2__single_instruction_parser:
+            raise UnknownInstructionException(original_source_line,
+                                              name)
+        return self.__instruction_name__2__single_instruction_parser[name]
+
+    @staticmethod
+    def _parse(original_source_line: line_source.Line,
+               parser: SingleInstructionParser,
+               name: str,
+               argument: str) -> Instruction:
+        """
+        :raises: InvalidInstructionException
+        """
+        try:
+            return parser.apply(argument)
+        except SingleInstructionInvalidArgumentException as ex:
+            raise InvalidInstructionArgumentException(original_source_line,
+                                                      name,
+                                                      ex.error_message)
+        except Exception:
+            raise ArgumentParsingImplementationException(original_source_line,
+                                                         name,
+                                                         parser)

@@ -28,9 +28,11 @@ class Parser:
         )
 
 
-def new_parser(instructions_setup: InstructionsSetup) -> Parser:
+def new_parser(split_line_into_name_and_argument_function,
+               instructions_setup: InstructionsSetup) -> Parser:
     def dict_parser(instruction_set: dict) -> InstructionParser:
-        return InstructionParserForDictionaryOfInstructions(instruction_set)
+        return InstructionParserForDictionaryOfInstructions(split_line_into_name_and_argument_function,
+                                                            instruction_set)
 
     anonymous_phase = parse.ParserForPhase(phases.ANONYMOUS.name,
                                            dict_parser(instructions_setup.config_instruction_set))
