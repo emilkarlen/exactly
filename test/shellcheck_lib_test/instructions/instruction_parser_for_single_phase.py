@@ -67,11 +67,27 @@ class TestParse(unittest.TestCase):
                                cm.ex.line,
                                'Source line')
 
-# def test_handling_of_invalid_argument_exception_from_parser(self):
-# parser = exitcode.Parser()
-# self.assertRaises(parse.SingleInstructionInvalidArgumentException,
-#                           parser.apply,
-#                           '')
+    def test__when__parser_succeeds__then__the_instruction_should_be_returned(self):
+        parsers_dict = {'S': SingleInstructionParserThatSucceeds(),
+                        'F': SingleInstructionParserThatRaisesInvalidArgumentError('the error message')}
+        phase_parser = parse.InstructionParserForDictionaryOfInstructions(name_argument_splitter,
+                                                                          parsers_dict)
+        line = new_line('Sa')
+        phase_content_element = phase_parser.apply(line)
+        self.assertTrue(phase_content_element.is_instruction,
+                        'Should be instruction')
+        self.assertFalse(phase_content_element.is_comment,
+                         'Should NOT be comment')
+        assert_equals_line(self,
+                           line,
+                           phase_content_element.source_line,
+                           'Source line')
+        self.assertIsInstance(phase_content_element.instruction,
+                              Instruction,
+                              'Instruction class')
+        self.assertEqual(phase_content_element.instruction.argument,
+                         'a',
+                         'Argument given to parser')
 
 
 class SingleInstructionParserThatRaisesInvalidArgumentError(parse.SingleInstructionParser):
