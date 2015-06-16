@@ -17,9 +17,11 @@ from shellcheck_lib.cli.execution_mode.test_case.settings import Output, TestCas
 class Executor:
     def __init__(self,
                  output: main_program.StdOutputFiles,
+                 split_line_into_name_and_argument_function,
                  instruction_setup: InstructionsSetup,
                  settings: TestCaseExecutionSettings):
         self._std = output
+        self._split_line_into_name_and_argument_function = split_line_into_name_and_argument_function
         self._instruction_setup = instruction_setup
         self._settings = settings
 
@@ -72,7 +74,8 @@ class Executor:
             self._std.out.write(os.linesep)
 
     def _parse_test_case_source(self) -> test_case_struct.TestCase:
-        file_parser = test_case_parser.new_parser(self._instruction_setup)
+        file_parser = test_case_parser.new_parser(self._split_line_into_name_and_argument_function,
+                                                  self._instruction_setup)
         source = line_source.new_for_file(self._settings.file_path)
         return file_parser.apply(source)
 

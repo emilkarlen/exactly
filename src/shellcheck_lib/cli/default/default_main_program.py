@@ -9,12 +9,15 @@ from shellcheck_lib.cli import main_program
 class MainProgram(main_program.MainProgram):
     def __init__(self,
                  output: main_program.StdOutputFiles,
+                 split_line_into_name_and_argument_function,
                  instruction_setup: InstructionsSetup):
         super().__init__(output)
+        self._split_line_into_name_and_argument_function = split_line_into_name_and_argument_function
         self._instruction_setup = instruction_setup
 
     def execute_test_case(self, settings: TestCaseExecutionSettings) -> int:
         executor = test_case_execution.Executor(self._std,
+                                                self._split_line_into_name_and_argument_function,
                                                 self._instruction_setup,
                                                 settings)
         return executor.execute()
