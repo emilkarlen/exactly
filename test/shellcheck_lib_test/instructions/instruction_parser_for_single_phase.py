@@ -14,6 +14,34 @@ def new_line(text: str) -> line_source.Line:
     return line_source.Line(1, text)
 
 
+class TestFailingSplitter(unittest.TestCase):
+    def test_parser_that_raises_exception(self):
+        def parser(x):
+            raise NotImplementedError()
+
+        self._check(parser)
+
+    def test_parser_that_do_not_return_pair(self):
+        self._check(lambda x: x)
+
+    def test_parser_that_do_not_take_a_single_argument(self):
+        def parser():
+            return 'a', 'b'
+
+        self._check(parser)
+
+    def _check(self,
+               splitter):
+        phase_parser = parse.InstructionParserForDictionaryOfInstructions(splitter, {})
+        line = new_line('line')
+        with self.assertRaises(parse.InvalidInstructionSyntaxException) as cm:
+            phase_parser.apply(line)
+            assert_equals_line(self,
+                               line,
+                               cm.ex.line,
+                               'Source line')
+
+
 class TestParse(unittest.TestCase):
     def test__when__instruction_name_not_in_dict__then__exception_should_be_raised(self):
         phase_parser = parse.InstructionParserForDictionaryOfInstructions(name_argument_splitter, {})
@@ -117,6 +145,7 @@ class Instruction(instructions.Instruction):
 
 def suite():
     ret_val = unittest.TestSuite()
+    ret_val.addTest(unittest.makeSuite(TestFailingSplitter))
     ret_val.addTest(unittest.makeSuite(TestParse))
     return ret_val
 

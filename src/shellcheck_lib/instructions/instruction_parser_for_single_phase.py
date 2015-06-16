@@ -126,10 +126,17 @@ class InstructionParserForDictionaryOfInstructions(InstructionParser):
         """
         :raises: InvalidInstructionException
         """
-        (name, argument) = self._name_and_argument_splitter(source_line.text)
+        (name, argument) = self._split(source_line)
         parser = self._lookup_parser(source_line, name)
         instruction = self._parse(source_line, parser, name, argument)
         return model.new_instruction_element(source_line, instruction)
+
+    def _split(self, source_line: line_source.Line) -> (str, str):
+        try:
+            (name, arg) = self._name_and_argument_splitter(source_line.text)
+            return name, arg
+        except:
+            raise InvalidInstructionSyntaxException(source_line)
 
     def _lookup_parser(self,
                        original_source_line: line_source.Line,
