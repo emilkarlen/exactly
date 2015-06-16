@@ -16,25 +16,21 @@ def new_line(text: str) -> line_source.Line:
 class TestParse(unittest.TestCase):
     def test_when_instruction_name_not_in_dict_then_exception_should_be_raised(self):
         phase_parser = parse.InstructionParserForDictionaryOfInstructions(name_argument_splitter, {})
-        line = new_line('I a')
-        try:
+        line = new_line('Ia')
+        with self.assertRaises(parse.UnknownInstructionException) as cm:
             phase_parser.apply(line)
-            self.fail('Exception expected to be thrown')
-        except parse.UnknownInstructionException as ex:
             self.assertEqual('I',
-                             ex.instruction_name,
+                             cm.ex.instruction_name,
                              'Instruction name')
             assert_equals_line(self,
                                line,
-                               ex.line,
+                               cm.ex.line,
                                'Source line')
-        except Exception as ex:
-            self.fail('Invalid exception thrown: ' + str(ex))
 
 
 # def test_handling_of_invalid_argument_exception_from_parser(self):
 # parser = exitcode.Parser()
-#         self.assertRaises(parse.SingleInstructionInvalidArgumentException,
+# self.assertRaises(parse.SingleInstructionInvalidArgumentException,
 #                           parser.apply,
 #                           '')
 
