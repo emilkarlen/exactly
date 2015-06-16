@@ -47,6 +47,25 @@ class TestParse(unittest.TestCase):
                                cm.ex.line,
                                'Source line')
 
+    def test__when__parser_raises_unknown_exception__then__exception_should_be_raised(self):
+        parser_that_raises_exception = SingleInstructionParserThatRaisesImplementationException()
+        parsers_dict = {'S': SingleInstructionParserThatSucceeds(),
+                        'F': parser_that_raises_exception}
+        phase_parser = parse.InstructionParserForDictionaryOfInstructions(name_argument_splitter,
+                                                                          parsers_dict)
+        line = new_line('Fa')
+        with self.assertRaises(parse.ArgumentParsingImplementationException) as cm:
+            phase_parser.apply(line)
+            self.assertEqual('F',
+                             cm.ex.instruction_name,
+                             'Instruction name')
+            self.assertIs(parser_that_raises_exception,
+                          cm.ex.parser_that_raised_exception,
+                          'Failing Parser instance')
+            assert_equals_line(self,
+                               line,
+                               cm.ex.line,
+                               'Source line')
 
 # def test_handling_of_invalid_argument_exception_from_parser(self):
 # parser = exitcode.Parser()
@@ -62,6 +81,11 @@ class SingleInstructionParserThatRaisesInvalidArgumentError(parse.SingleInstruct
 
     def apply(self, instruction_argument: str) -> instructions.Instruction:
         raise parse.SingleInstructionInvalidArgumentException(self.error_message)
+
+
+class SingleInstructionParserThatRaisesImplementationException(parse.SingleInstructionParser):
+    def apply(self, instruction_argument: str) -> instructions.Instruction:
+        raise NotImplementedError()
 
 
 class SingleInstructionParserThatSucceeds(parse.SingleInstructionParser):
