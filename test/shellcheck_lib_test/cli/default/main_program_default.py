@@ -3,6 +3,7 @@ import os
 import unittest
 
 from shellcheck_lib.execution.result import FullResultStatus
+from shellcheck_lib.general.output import StdOutputFiles
 from shellcheck_lib_test.util.with_tmp_file import tmp_file_containing, tmp_file_containing_lines
 from shellcheck_lib.cli import main_program
 from shellcheck_lib.cli.default import default_main_program as sut
@@ -23,7 +24,7 @@ instructions_setup = InstructionsSetup(
 def execute_main_program(arguments: list):
     stdout_file = io.StringIO()
     stderr_file = io.StringIO()
-    program = sut.MainProgram(main_program.StdOutputFiles(stdout_file, stderr_file),
+    program = sut.MainProgram(StdOutputFiles(stdout_file, stderr_file),
                               name_argument_splitter,
                               instructions_setup)
     exit_status = program.execute(arguments)

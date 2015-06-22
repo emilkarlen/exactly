@@ -1,7 +1,3 @@
-"""
-Functionality for generating a Shell Script from a parsed Test Case file.
-"""
-
 from shellcheck_lib.test_case import instructions
 from shellcheck_lib.document.model import PhaseContents
 

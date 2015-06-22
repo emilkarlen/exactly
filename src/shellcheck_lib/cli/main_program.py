@@ -1,32 +1,17 @@
 import os
-import sys
 
 from shellcheck_lib.cli.execution_mode.test_case.settings import TestCaseExecutionSettings
 from shellcheck_lib.cli.execution_mode.help.settings import HelpSettings
 from shellcheck_lib.cli.execution_mode.test_case import argument_parsing
 from shellcheck_lib.cli import argument_parsing_utils
 from shellcheck_lib.cli.execution_mode.help.argument_parsing import parse as parse_help
+from shellcheck_lib.cli.execution_mode.test_suite.settings import TestSuiteExecutionSettings
+from shellcheck_lib.general.output import StdOutputFiles
 
 
 EXIT_INVALID_USAGE = 2
 
 HELP_COMMAND = 'help'
-
-
-class StdOutputFiles:
-    def __init__(self,
-                 stdout_file=sys.stdout,
-                 stderr_file=sys.stderr):
-        self._stdout_file = stdout_file
-        self._stderr_file = stderr_file
-
-    @property
-    def out(self):
-        return self._stdout_file
-
-    @property
-    def err(self):
-        return self._stderr_file
 
 
 class MainProgram:
@@ -43,6 +28,10 @@ class MainProgram:
 
     def execute_test_case(self,
                           settings: TestCaseExecutionSettings) -> int:
+        raise NotImplementedError()
+
+    def execute_test_suite(self,
+                           settings: TestSuiteExecutionSettings) -> int:
         raise NotImplementedError()
 
     def execute_help(self,

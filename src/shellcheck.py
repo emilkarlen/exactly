@@ -3,12 +3,12 @@ Main program for shellcheck
 """
 import sys
 
-from shellcheck_lib.cli import main_program
 from shellcheck_lib.cli.default.default_main_program import MainProgram
 from shellcheck_lib.cli.default import default_instructions_setup
 from shellcheck_lib.cli.default import instruction_name_and_argument_splitter
+from shellcheck_lib.general.output import StdOutputFiles
 
-program = MainProgram(main_program.StdOutputFiles(sys.stdout,
+program = MainProgram(StdOutputFiles(sys.stdout,
                                                   sys.stderr),
                       instruction_name_and_argument_splitter.splitter,
                       default_instructions_setup.instructions_setup)
