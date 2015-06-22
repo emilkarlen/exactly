@@ -80,24 +80,24 @@ class PhaseAndInstructionsConfiguration:
         """
         self._parser_for_anonymous_phase = parser_for_anonymous_phase
         self._parsers_for_named_phases = parsers_for_named_phases
-        phase_names_in_order_of_execution = []
+        phase_names = []
         phase2parser = {}
         if parser_for_anonymous_phase:
-            phase_names_in_order_of_execution.append(None)
+            phase_names.append(None)
             phase2parser[None] = parser_for_anonymous_phase
         for pfp in parsers_for_named_phases:
-            phase_names_in_order_of_execution.append(pfp.phase)
+            phase_names.append(pfp.phase)
             phase2parser[pfp.phase] = pfp.parser
-        self._phase_names_in_order_of_execution = tuple(phase_names_in_order_of_execution)
+        self._phase_list_as_tuple = tuple(phase_names)
         self._phase2parser = phase2parser
 
-    def phase_names_in_order_of_execution(self) -> tuple:
+    def phase_names(self) -> tuple:
         """
-        Sequence of all Phase Names, in the order of execution (same order as given to constructor.
+        Sequence of all Phase Names (same order as given to constructor.
         The Phase Name None represents the anonymous Phase.
         :return: tuple of str:s
         """
-        return self._phase_names_in_order_of_execution
+        return self._phase_list_as_tuple
 
     def parser_for_phase(self, phase_name: str) -> InstructionParser:
         """
@@ -203,7 +203,7 @@ def accumulate_identical_phases(phase_with_lines_list: list) -> dict:
     return ret_val
 
 
-class _PlainTestCaseParserForPhaseAndInstructionsConfiguration(PlainTestCaseParser):
+class _PlainDocumentParserForPhaseAndInstructionsConfiguration(PlainTestCaseParser):
     def __init__(self, configuration: PhaseAndInstructionsConfiguration):
         self._configuration = configuration
 
@@ -215,7 +215,7 @@ class _PlainTestCaseParserForPhaseAndInstructionsConfiguration(PlainTestCasePars
         return self.parse_instruction_lines(phase2lines)
 
     def _raise_exception_if_there_is_an_invalid_phase_name(self, instructions_and_comments_grouped_by_phase):
-        phase_names_in_configuration = self._configuration.phase_names_in_order_of_execution()
+        phase_names_in_configuration = self._configuration.phase_names()
         for phase_with_instructions in instructions_and_comments_grouped_by_phase:
             if phase_with_instructions.phase_name not in phase_names_in_configuration:
                 raise SourceError(phase_with_instructions.phase_source_line,
@@ -237,7 +237,7 @@ class _PlainTestCaseParserForPhaseAndInstructionsConfiguration(PlainTestCasePars
         :param phase2c_lines: dict: str -> iterable of (syntax.TYPE_-constant, line_source.Line)
         """
         phase2instruction_sequence = {}
-        for phase_name in self._configuration.phase_names_in_order_of_execution():
+        for phase_name in self._configuration.phase_names():
             if phase_name in phase2c_lines:
                 phase2instruction_sequence[phase_name] = \
                     self.parse_instruction_lines_for_phase(phase_name,
@@ -256,4 +256,4 @@ class _PlainTestCaseParserForPhaseAndInstructionsConfiguration(PlainTestCasePars
 
 
 def new_parser_for(configuration: PhaseAndInstructionsConfiguration) -> PlainTestCaseParser:
-    return _PlainTestCaseParserForPhaseAndInstructionsConfiguration(configuration)
+    return _PlainDocumentParserForPhaseAndInstructionsConfiguration(configuration)
