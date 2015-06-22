@@ -1,7 +1,7 @@
 import os
 import unittest
 
-from shellcheck_lib.document.parse import SourceError, PlainTestCaseParser
+from shellcheck_lib.document.parse import SourceError, PlainDocumentParser
 from shellcheck_lib.document import model
 from shellcheck_lib.document import parse, syntax
 from shellcheck_lib.general import line_source
@@ -38,7 +38,7 @@ class InstructionParserThatFails(parse.InstructionParser):
                           'Unconditional failure')
 
 
-def parser_without_anonymous_phase() -> PlainTestCaseParser:
+def parser_without_anonymous_phase() -> PlainDocumentParser:
     configuration = parse.PhaseAndInstructionsConfiguration(
         None,
         parsers_for_named_phases()
@@ -46,7 +46,7 @@ def parser_without_anonymous_phase() -> PlainTestCaseParser:
     return parse.new_parser_for(configuration)
 
 
-def parser_with_anonymous_phase() -> PlainTestCaseParser:
+def parser_with_anonymous_phase() -> PlainDocumentParser:
     configuration = parse.PhaseAndInstructionsConfiguration(
         InstructionParserForPhase(None),
         parsers_for_named_phases()
@@ -54,7 +54,7 @@ def parser_with_anonymous_phase() -> PlainTestCaseParser:
     return parse.new_parser_for(configuration)
 
 
-def parser_for_phase2_that_fails_unconditionally() -> PlainTestCaseParser:
+def parser_for_phase2_that_fails_unconditionally() -> PlainDocumentParser:
     configuration = parse.PhaseAndInstructionsConfiguration(
         None,
         (parse.ParserForPhase('phase 1',
@@ -258,7 +258,7 @@ class TestParsePlainTestCase(unittest.TestCase):
         self._check_document(expected_document, actual_document)
 
     def _parse_lines(self,
-                     parser: PlainTestCaseParser,
+                     parser: PlainDocumentParser,
                      lines: list) -> model.Document:
         plain_document = os.linesep.join(lines)
         ptc_source = line_source.new_for_string(plain_document)

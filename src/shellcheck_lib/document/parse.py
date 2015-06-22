@@ -16,10 +16,10 @@ class SourceError(Exception):
         self._message = message
 
 
-class PlainTestCaseParser:
+class PlainDocumentParser:
     """
-    Base class for parsers that parse a "plain test case"
-    (i.e., a test case that do not need pre-processing).
+    Base class for parsers that parse a "plain file"
+    (i.e., a file that do not need pre-processing).
     """
 
     def apply(self,
@@ -203,7 +203,7 @@ def accumulate_identical_phases(phase_with_lines_list: list) -> dict:
     return ret_val
 
 
-class _PlainDocumentParserForPhaseAndInstructionsConfiguration(PlainTestCaseParser):
+class _PlainDocumentParserForPhaseAndInstructionsConfiguration(PlainDocumentParser):
     def __init__(self, configuration: PhaseAndInstructionsConfiguration):
         self._configuration = configuration
 
@@ -255,5 +255,5 @@ class _PlainDocumentParserForPhaseAndInstructionsConfiguration(PlainTestCasePars
         return model.PhaseContents(tuple(sequence))
 
 
-def new_parser_for(configuration: PhaseAndInstructionsConfiguration) -> PlainTestCaseParser:
+def new_parser_for(configuration: PhaseAndInstructionsConfiguration) -> PlainDocumentParser:
     return _PlainDocumentParserForPhaseAndInstructionsConfiguration(configuration)
