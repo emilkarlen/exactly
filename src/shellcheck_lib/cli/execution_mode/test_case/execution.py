@@ -2,13 +2,13 @@ import os
 import pathlib
 import shutil
 
+from shellcheck_lib.general.output import StdOutputFiles
 from shellcheck_lib.script_language.act_script_management import ScriptLanguageSetup
 from shellcheck_lib.script_language import python3
 from shellcheck_lib.general import line_source
 from shellcheck_lib.test_case import test_case_struct
 from shellcheck_lib.cli.execution_mode.test_case.argument_parsing import INTERPRETER_FOR_TEST
 from shellcheck_lib.cli.execution_mode.test_case import test_case_parser
-from shellcheck_lib.cli import main_program
 from shellcheck_lib.cli.instruction_setup import InstructionsSetup
 from shellcheck_lib.execution import full_execution
 from shellcheck_lib.cli.execution_mode.test_case.settings import Output, TestCaseExecutionSettings
@@ -16,7 +16,7 @@ from shellcheck_lib.cli.execution_mode.test_case.settings import Output, TestCas
 
 class Executor:
     def __init__(self,
-                 output: main_program.StdOutputFiles,
+                 output: StdOutputFiles,
                  split_line_into_name_and_argument_function,
                  instruction_setup: InstructionsSetup,
                  settings: TestCaseExecutionSettings):

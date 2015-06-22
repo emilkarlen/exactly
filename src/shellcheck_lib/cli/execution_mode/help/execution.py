@@ -1,13 +1,13 @@
 import os
 
 from shellcheck_lib.cli.instruction_setup import InstructionsSetup
-from shellcheck_lib.cli import main_program
 from shellcheck_lib.execution import phase_step
+from shellcheck_lib.general.output import StdOutputFiles
 
 
 class PrintInstructionsPerPhase:
     def __init__(self,
-                 output: main_program.StdOutputFiles):
+                 output: StdOutputFiles):
         self._std = output
 
     def apply(self, instruction_setup: InstructionsSetup):
