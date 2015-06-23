@@ -2,10 +2,8 @@ import pathlib
 import unittest
 
 from shellcheck_lib.general import line_source
-
 from shellcheck_lib.test_suite import structure
 from shellcheck_lib.test_suite.parse import SuiteFileReferenceError, SuiteSyntaxError
-
 from shellcheck_lib_test.document.test_resources import assert_equals_line
 from shellcheck_lib_test.util.file_structure import DirContents, File, Dir
 from shellcheck_lib_test.util.with_tmp_file import lines_content
@@ -34,6 +32,27 @@ class MainSuiteWithTwoReferencedCases(check_structure.Setup):
                             File('1.case', ''),
                             Dir('sub',
                                 [File('2.case', '')])])
+
+
+class InvalidCaseContentShouldNotCauseParsingToFail(check_structure.Setup):
+    def root_suite_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
+        return root_path / 'main.suite'
+
+    def expected_structure_based_at(self, root_path: pathlib.Path) -> structure.TestSuite:
+        return structure.TestSuite(
+            [],
+            [
+                structure.TestCase(root_path / 'case-with-invalid-content.case'),
+            ])
+
+    def file_structure_to_read(self, root_path: pathlib.Path) -> DirContents:
+        return DirContents([File('main.suite',
+                                 lines_content(['[cases]',
+                                                'case-with-invalid-content.case',
+                                                ])),
+                            File('case-with-invalid-content.case',
+                                 'invalid content in test case'),
+                            ])
 
 
 class MainSuiteWithTwoReferencedSuites(check_structure.Setup):
@@ -254,6 +273,9 @@ class TestStructure(unittest.TestCase):
 
     def test_main_suite_with_two_referenced_suites(self):
         check_structure.check(MainSuiteWithTwoReferencedSuites(), self)
+
+    def test_invalid_case_content_should_not_cause_parsing_to_fail(self):
+        check_structure.check(InvalidCaseContentShouldNotCauseParsingToFail(), self)
 
     def test_absolute_references_to_suites_and_cases(self):
         check_structure.check(MainSuiteWithAbsoluteReferencesToSuitesAndCases(), self)
