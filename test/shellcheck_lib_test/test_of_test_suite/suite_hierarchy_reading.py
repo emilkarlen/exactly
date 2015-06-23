@@ -2,9 +2,10 @@ import pathlib
 import unittest
 
 from shellcheck_lib.general import line_source
-from shellcheck_lib.test_suite import structure
 
-from shellcheck_lib.test_suite.parse import SuiteFileReferenceError
+from shellcheck_lib.test_suite import structure
+from shellcheck_lib.test_suite.parse import SuiteFileReferenceError, SuiteSyntaxError
+
 from shellcheck_lib_test.document.test_resources import assert_equals_line
 from shellcheck_lib_test.util.file_structure import DirContents, File, Dir
 from shellcheck_lib_test.util.with_tmp_file import lines_content
@@ -86,6 +87,32 @@ class ReferencedCaseFileDoesNotExist(check_exception.Setup):
                            actual.line)
 
 
+class SuiteFileSyntaxError(check_exception.Setup):
+    def root_suite_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
+        return root_path / 'main.suite'
+
+    def file_structure_to_read(self) -> DirContents:
+        return DirContents([File('main.suite',
+                                 lines_content(['[invalid-section]',
+                                                ])),
+                            ])
+
+    def expected_exception_class(self):
+        return SuiteSyntaxError
+
+    def check_exception(self,
+                        root_path: pathlib.Path,
+                        actual: Exception,
+                        put: unittest.TestCase):
+        put.assertIsInstance(actual, SuiteSyntaxError)
+        put.assertEqual(str(self.root_suite_based_at(root_path)),
+                        str(actual.suite_file),
+                        'Source file that contains the error')
+        assert_equals_line(put,
+                           line_source.Line(1, '[invalid-section]'),
+                           actual.line)
+
+
 class ReferencedSuiteFileDoesNotExist(check_exception.Setup):
     def root_suite_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
@@ -129,10 +156,16 @@ class TestInvalidFileReferences(unittest.TestCase):
         check_exception.check(ReferencedSuiteFileDoesNotExist(), self)
 
 
+class TestInvalidFileSyntax(unittest.TestCase):
+    def test_invalid_section(self):
+        check_exception.check(SuiteFileSyntaxError(), self)
+
+
 def suite():
     ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestStructure))
+    ret_val.addTest(unittest.makeSuite(TestInvalidFileSyntax))
     ret_val.addTest(unittest.makeSuite(TestInvalidFileReferences))
+    ret_val.addTest(unittest.makeSuite(TestStructure))
     return ret_val
 
 

@@ -41,6 +41,19 @@ class SuiteFileReferenceError(SuiteReadError):
         return self._reference
 
 
+class SuiteSyntaxError(SuiteReadError):
+    def __init__(self,
+                 suite_file: pathlib.Path,
+                 line: line_source.Line,
+                 message: str):
+        super().__init__(suite_file, line)
+        self._message = message
+
+    @property
+    def message(self) -> str:
+        return self._message
+
+
 class TestSuiteFileInstruction(instruction.TestSuiteSectionInstruction):
     def __init__(self, file_name: str):
         self._file_name = file_name

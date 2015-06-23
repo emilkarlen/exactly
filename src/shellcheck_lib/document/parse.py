@@ -15,6 +15,14 @@ class SourceError(Exception):
         self._line = line
         self._message = message
 
+    @property
+    def line(self) -> line_source.Line:
+        return self._line
+
+    @property
+    def message(self) -> str:
+        return self._message
+
 
 class PlainDocumentParser:
     """

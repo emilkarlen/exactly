@@ -1,13 +1,14 @@
 import pathlib
 
 from shellcheck_lib.document.model import PhaseContents
+from shellcheck_lib.document.parse import SourceError
 from shellcheck_lib.general import line_source
 from . import instruction
 from . import test_suite_struct
 from . import structure
 from . import parse
 from shellcheck_lib.test_suite.instruction import FileNotAccessibleSimpleError
-from shellcheck_lib.test_suite.parse import SuiteFileReferenceError
+from shellcheck_lib.test_suite.parse import SuiteFileReferenceError, SuiteSyntaxError
 
 
 def read(suite_file_path: pathlib.Path) -> structure.TestSuite:
@@ -17,7 +18,12 @@ def read(suite_file_path: pathlib.Path) -> structure.TestSuite:
     :return:
     """
     source = line_source.new_for_file(suite_file_path)
-    test_suite = parse.PARSER.apply(source)
+    try:
+        test_suite = parse.PARSER.apply(source)
+    except SourceError as ex:
+        raise SuiteSyntaxError(suite_file_path,
+                               ex.line,
+                               ex.message)
     suite_file_path_list, case_file_path_list = _resolve_paths(test_suite,
                                                                suite_file_path)
     suite_list = list(map(read, suite_file_path_list))
