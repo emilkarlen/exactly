@@ -5,6 +5,7 @@ import tempfile
 
 from shellcheck_lib.test_case import instructions as i
 from shellcheck_lib.execution import execution_directory_structure
+from shellcheck_lib_test.util.file_utils import write_file
 
 
 @contextmanager
@@ -24,8 +25,3 @@ def act_phase_result(exitcode: int=0,
                                                      eds)
         finally:
             os.chdir(cwd_before)
-
-
-def write_file(path: pathlib.Path, contents: str):
-    with open(str(path), 'w') as f:
-        f.write(contents)
