@@ -4,8 +4,8 @@ from shellcheck_lib.document.model import Instruction
 
 
 class Environment:
-    def __init(self,
-               suite_file_dir_path: pathlib.Path):
+    def __init__(self,
+                 suite_file_dir_path: pathlib.Path):
         self.__suite_file_dir_path = suite_file_dir_path
 
     @property
