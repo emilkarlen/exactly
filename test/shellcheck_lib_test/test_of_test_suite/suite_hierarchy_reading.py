@@ -11,23 +11,7 @@ from shellcheck_lib.test_suite.suite_hierarchy_reading import read
 from shellcheck_lib_test.document.test_resources import assert_equals_line
 from shellcheck_lib_test.util.file_structure import DirContents, File, Dir
 from shellcheck_lib_test.util.with_tmp_file import lines_content
-
-
-class FileStructureAndExpectedException:
-    def root_suite_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
-        raise NotImplementedError()
-
-    def file_structure_to_read(self) -> DirContents:
-        raise NotImplementedError()
-
-    def expected_exception_class(self):
-        raise NotImplementedError()
-
-    def check_exception(self,
-                        root_path: pathlib.Path,
-                        actual: Exception,
-                        put: unittest.TestCase):
-        raise NotImplementedError()
+from shellcheck_lib_test.test_of_test_suite.util import check_exception
 
 
 class FileStructureAndExpectedHierarchy:
@@ -88,7 +72,7 @@ class MainSuiteWithTwoReferencedSuits(FileStructureAndExpectedHierarchy):
                                 [File('2.suite', '')])])
 
 
-class ReferencedCaseFileDoesNotExist(FileStructureAndExpectedException):
+class ReferencedCaseFileDoesNotExist(check_exception.Setup):
     def root_suite_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -125,7 +109,7 @@ class TestRead(unittest.TestCase):
 
 class TestInvalidFileReferences(unittest.TestCase):
     def test_referenced_case_file_does_not_exist(self):
-        check_exception(ReferencedCaseFileDoesNotExist(), self)
+        check_exception.check(ReferencedCaseFileDoesNotExist(), self)
 
 
 def check(setup: FileStructureAndExpectedHierarchy,
@@ -138,16 +122,6 @@ def check(setup: FileStructureAndExpectedHierarchy,
 
         StructureEqualityChecker(put).check_suite(expected,
                                                   actual)
-
-
-def check_exception(setup: FileStructureAndExpectedException,
-                    put: unittest.TestCase):
-    with tempfile.TemporaryDirectory(prefix='shellcheck-test-') as tmp_dir:
-        tmp_dir_path = pathlib.Path(tmp_dir)
-        setup.file_structure_to_read().write_to(tmp_dir_path)
-        with put.assertRaises(Exception) as cm:
-            read(setup.root_suite_based_at(tmp_dir_path))
-        setup.check_exception(tmp_dir_path, cm.exception, put)
 
 
 class StructureEqualityChecker:
