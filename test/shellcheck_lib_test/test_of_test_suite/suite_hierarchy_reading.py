@@ -120,6 +120,54 @@ class MainSuiteWithReferencedSuitesAndCasesAndMixedSections(check_structure.Setu
                                  File('2.case', '')])])
 
 
+class ComplexStructure(check_structure.Setup):
+    def root_suite_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
+        return root_path / 'complex.suite'
+
+    def expected_structure_based_at(self, root_path: pathlib.Path) -> structure.TestSuite:
+        return structure.TestSuite(
+            [
+                structure.TestSuite(
+                    [],
+                    [structure.TestCase(root_path / 'from-local-suite.case')]),
+                structure.TestSuite(
+                    [structure.TestSuite([], [structure.TestCase(root_path / 'sub' / 'sub-sub.case')])],
+                    [structure.TestCase(root_path / 'sub' / 'sub.case')]),
+            ],
+            [structure.TestCase(root_path / 'from-main-suite.case')]
+        )
+
+    def file_structure_to_read(self, root_path: pathlib.Path) -> DirContents:
+        return DirContents([File('complex.suite',
+                                 lines_content(['[suites]',
+                                                'local.suite',
+                                                'sub/sub.suite',
+                                                '[cases]',
+                                                'from-main-suite.case',
+                                                ])),
+                            File('local.suite',
+                                 lines_content(['[cases]',
+                                                'from-local-suite.case'])),
+                            File('from-main-suite.case', ''),
+                            File('from-local-suite.case', ''),
+                            Dir('sub',
+                                [
+                                    File('sub.suite',
+                                         lines_content(['[suites]',
+                                                        'sub-sub.suite',
+                                                        '[cases]',
+                                                        'sub.case',
+                                                        ])),
+                                    File('sub-sub.suite',
+                                         lines_content(['[cases]',
+                                                        'sub-sub.case',
+                                                        ])),
+                                    File('sub.case', ''),
+                                    File('sub-sub.case', ''),
+                                ])
+                            ])
+
+
 class ReferencedCaseFileDoesNotExist(check_exception.Setup):
     def root_suite_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
@@ -212,6 +260,9 @@ class TestStructure(unittest.TestCase):
 
     def test_main_suite_with_referenced_suites_and_cases_and_mixed_sections(self):
         check_structure.check(MainSuiteWithReferencedSuitesAndCasesAndMixedSections(), self)
+
+    def test_complex_structure(self):
+        check_structure.check(ComplexStructure(), self)
 
 
 class TestInvalidFileReferences(unittest.TestCase):
