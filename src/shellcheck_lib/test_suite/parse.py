@@ -1,11 +1,44 @@
+import pathlib
+
 from shellcheck_lib.document import model
 from shellcheck_lib.document import parse
 from shellcheck_lib.general import line_source
 from shellcheck_lib.test_suite import instruction
 from shellcheck_lib.test_suite import test_suite_struct
+from shellcheck_lib.test_suite.instruction import FileNotAccessibleSimpleError
+
 
 SECTION_NAME__SUITS = 'suits'
 SECTION_NAME__CASES = 'cases'
+
+
+class SuiteReadError(Exception):
+    def __init__(self,
+                 suite_file: pathlib.Path,
+                 line: line_source.Line):
+        self._suite_file = suite_file
+        self._line = line
+
+    @property
+    def suite_file(self) -> pathlib.Path:
+        return self._suite_file
+
+    @property
+    def line(self) -> line_source.Line:
+        return self._line
+
+
+class SuiteFileReferenceError(SuiteReadError):
+    def __init__(self,
+                 suite_file: pathlib.Path,
+                 line: line_source.Line,
+                 reference: pathlib.Path):
+        super().__init__(suite_file, line)
+        self._reference = reference
+
+    @property
+    def reference(self) -> pathlib.Path:
+        return self._reference
 
 
 class TestSuiteFileInstruction(instruction.TestSuiteSectionInstruction):
@@ -14,7 +47,7 @@ class TestSuiteFileInstruction(instruction.TestSuiteSectionInstruction):
 
     def resolve_paths(self, environment: instruction.Environment) -> list:
         """
-        :raises FileNotAccessibleError: A referenced file is not accessible.
+        :raises FileNotAccessibleSimpleError: A referenced file is not accessible.
         :return: [pathlib.Path]
         """
         path = environment.suite_file_dir_path / self._file_name
@@ -27,6 +60,8 @@ class TestCaseFileInstruction(instruction.TestCaseSectionInstruction):
 
     def resolve_paths(self, environment: instruction.Environment) -> list:
         path = environment.suite_file_dir_path / self._file_name
+        if not path.is_file():
+            raise FileNotAccessibleSimpleError(path)
         return [path]
 
 
