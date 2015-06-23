@@ -5,59 +5,8 @@ import unittest
 
 from shellcheck_lib.test_suite import structure
 from shellcheck_lib.test_suite.suite_hierarchy_reading import read
-from shellcheck_lib_test.instructions.utils import write_file
+from shellcheck_lib_test.util.file_structure import DirContents, File, Dir
 from shellcheck_lib_test.util.with_tmp_file import lines_content
-
-
-class FileSystemElement:
-    def write_to(self,
-                 parent_dir_path: pathlib.Path):
-        raise NotImplementedError()
-
-
-class File(FileSystemElement):
-    def __init__(self,
-                 file_name: str,
-                 contents: str):
-        self.file_name = file_name
-        self.contents = contents
-
-    def write_to(self,
-                 parent_dir_path: pathlib.Path):
-        write_file(parent_dir_path / self.file_name,
-                   self.contents)
-
-
-class Dir(FileSystemElement):
-    def __init__(self,
-                 file_name: str,
-                 file_system_element_contents: list):
-        self.file_name = file_name
-        self.file_system_element_contents = file_system_element_contents
-
-    def write_to(self,
-                 parent_dir_path: pathlib.Path):
-        dir_path = parent_dir_path / self.file_name
-        dir_path.mkdir(parents=True)
-        for file_element in self.file_system_element_contents:
-            file_element.write_to(dir_path)
-
-
-class DirContents:
-    def __init__(self,
-                 file_system_element_contents: list):
-        self.file_system_element_contents = file_system_element_contents
-
-    def write_to(self,
-                 dir_path: pathlib.Path):
-        for file_element in self.file_system_element_contents:
-            file_element.write_to(dir_path)
-
-
-def write_to(dir_path: pathlib.Path,
-             dir_contents: DirContents) -> DirContents:
-    dir_contents.write_to(dir_path)
-    return dir_contents
 
 
 class FileStructureAndExpectedHierarchy:
@@ -130,7 +79,7 @@ def check(setup: FileStructureAndExpectedHierarchy,
           put: unittest.TestCase):
     with tempfile.TemporaryDirectory(prefix='shellcheck-test-') as tmp_dir:
         tmp_dir_path = pathlib.Path(tmp_dir)
-        write_to(tmp_dir_path, setup.file_structure_to_read())
+        setup.file_structure_to_read().write_to(tmp_dir_path)
         actual = read(setup.root_suite_based_at(tmp_dir_path))
         expected = setup.expected_structure_based_at(tmp_dir_path)
 
