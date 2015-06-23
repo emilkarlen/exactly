@@ -13,14 +13,14 @@ class Environment:
         return self.__suite_file_dir_path
 
 
-class FileNotAccessibleError(Exception):
+class FileNotAccessibleSimpleError(Exception):
     def __init__(self,
-                 file_name: str):
-        self._file_name = file_name
+                 file_path: pathlib.Path):
+        self._file_path = file_path
 
     @property
-    def file_name(self) -> str:
-        return self._file_name
+    def file_path(self) -> pathlib.Path:
+        return self._file_path
 
 
 class TestCaseSectionInstruction(Instruction):
