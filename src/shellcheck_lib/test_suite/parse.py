@@ -8,7 +8,7 @@ from shellcheck_lib.test_suite import test_suite_struct
 from shellcheck_lib.test_suite.instruction import FileNotAccessibleSimpleError
 
 
-SECTION_NAME__SUITS = 'suits'
+SECTION_NAME__SUITS = 'suites'
 SECTION_NAME__CASES = 'cases'
 
 
@@ -51,6 +51,8 @@ class TestSuiteFileInstruction(instruction.TestSuiteSectionInstruction):
         :return: [pathlib.Path]
         """
         path = environment.suite_file_dir_path / self._file_name
+        if not path.is_file():
+            raise FileNotAccessibleSimpleError(path)
         return [path]
 
 
