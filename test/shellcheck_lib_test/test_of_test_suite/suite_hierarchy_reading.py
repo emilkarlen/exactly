@@ -60,6 +60,32 @@ class MainSuiteWithTwoReferencedSuites(check_structure.Setup):
                                 [File('2.suite', '')])])
 
 
+class MainSuiteWithAbsoluteReferencesToSuitesAndCases(check_structure.Setup):
+    def root_suite_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
+        return root_path / 'main.suite'
+
+    def expected_structure_based_at(self, root_path: pathlib.Path) -> structure.TestSuite:
+        return structure.TestSuite(
+            [
+                structure.TestSuite([], []),
+            ],
+            [
+                structure.TestCase(root_path / '1.case'),
+            ],
+        )
+
+    def file_structure_to_read(self, root_path: pathlib.Path) -> DirContents:
+        return DirContents([File('main.suite',
+                                 lines_content(['[suites]',
+                                                str(root_path / '1.suite'),
+                                                '[cases]',
+                                                str(root_path / '1.case'),
+                                                ])),
+                            File('1.suite', ''),
+                            File('1.case', ''),
+                            ])
+
+
 class MainSuiteWithReferencedSuitesAndCasesAndMixedSections(check_structure.Setup):
     def root_suite_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
@@ -180,6 +206,9 @@ class TestStructure(unittest.TestCase):
 
     def test_main_suite_with_two_referenced_suites(self):
         check_structure.check(MainSuiteWithTwoReferencedSuites(), self)
+
+    def test_absolute_references_to_suites_and_cases(self):
+        check_structure.check(MainSuiteWithAbsoluteReferencesToSuitesAndCases(), self)
 
     def test_main_suite_with_referenced_suites_and_cases_and_mixed_sections(self):
         check_structure.check(MainSuiteWithReferencedSuitesAndCasesAndMixedSections(), self)
