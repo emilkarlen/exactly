@@ -36,7 +36,7 @@ class MainSuiteWithTwoReferencedCases(check_structure.Setup):
                                 [File('2.case', '')])])
 
 
-class MainSuiteWithTwoReferencedSuits(check_structure.Setup):
+class MainSuiteWithTwoReferencedSuites(check_structure.Setup):
     def root_suite_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -51,7 +51,7 @@ class MainSuiteWithTwoReferencedSuits(check_structure.Setup):
 
     def file_structure_to_read(self) -> DirContents:
         return DirContents([File('main.suite',
-                                 lines_content(['[suits]',
+                                 lines_content(['[suites]',
                                                 '1.suite',
                                                 os.path.join('sub', '2.suite'),
                                                 ])),
@@ -87,17 +87,47 @@ class ReferencedCaseFileDoesNotExist(check_exception.Setup):
                            actual.line)
 
 
+class ReferencedSuiteFileDoesNotExist(check_exception.Setup):
+    def root_suite_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
+        return root_path / 'main.suite'
+
+    def file_structure_to_read(self) -> DirContents:
+        return DirContents([File('main.suite',
+                                 lines_content(['[suites]',
+                                                'does-not_exist.suite',
+                                                ])),
+                            ])
+
+    def expected_exception_class(self):
+        return SuiteFileReferenceError
+
+    def check_exception(self,
+                        root_path: pathlib.Path,
+                        actual: Exception,
+                        put: unittest.TestCase):
+        put.assertIsInstance(actual, SuiteFileReferenceError)
+        put.assertEqual(str(self.root_suite_based_at(root_path)),
+                        str(actual.suite_file),
+                        'Source file that contains the error')
+        assert_equals_line(put,
+                           line_source.Line(2, 'does-not_exist.suite'),
+                           actual.line)
+
+
 class TestStructure(unittest.TestCase):
     def test_main_suite_with_two_referenced_cases(self):
         check_structure.check(MainSuiteWithTwoReferencedCases(), self)
 
-    def test_main_suite_with_two_referenced_suits(self):
-        check_structure.check(MainSuiteWithTwoReferencedSuits(), self)
+    def test_main_suite_with_two_referenced_suites(self):
+        check_structure.check(MainSuiteWithTwoReferencedSuites(), self)
 
 
 class TestInvalidFileReferences(unittest.TestCase):
     def test_referenced_case_file_does_not_exist(self):
         check_exception.check(ReferencedCaseFileDoesNotExist(), self)
+
+    def test_referenced_suite_file_does_not_exist(self):
+        check_exception.check(ReferencedSuiteFileDoesNotExist(), self)
 
 
 def suite():
