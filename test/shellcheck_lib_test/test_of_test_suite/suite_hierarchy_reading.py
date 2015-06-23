@@ -25,7 +25,7 @@ class MainSuiteWithTwoReferencedCases(check_structure.Setup):
                 structure.TestCase(root_path / 'sub' / '2.case')
             ])
 
-    def file_structure_to_read(self) -> DirContents:
+    def file_structure_to_read(self, root_path: pathlib.Path) -> DirContents:
         return DirContents([File('main.suite',
                                  lines_content(['[cases]',
                                                 '1.case',
@@ -49,7 +49,7 @@ class MainSuiteWithTwoReferencedSuites(check_structure.Setup):
             [],
         )
 
-    def file_structure_to_read(self) -> DirContents:
+    def file_structure_to_read(self, root_path: pathlib.Path) -> DirContents:
         return DirContents([File('main.suite',
                                  lines_content(['[suites]',
                                                 '1.suite',
@@ -76,7 +76,7 @@ class MainSuiteWithReferencedSuitesAndCasesAndMixedSections(check_structure.Setu
             ],
         )
 
-    def file_structure_to_read(self) -> DirContents:
+    def file_structure_to_read(self, root_path: pathlib.Path) -> DirContents:
         return DirContents([File('main.suite',
                                  lines_content(['[suites]',
                                                 '1.suite',

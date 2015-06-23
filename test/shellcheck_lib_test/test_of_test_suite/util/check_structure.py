@@ -12,7 +12,7 @@ class Setup:
     def root_suite_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         raise NotImplementedError()
 
-    def file_structure_to_read(self) -> DirContents:
+    def file_structure_to_read(self, root_path: pathlib.Path) -> DirContents:
         raise NotImplementedError()
 
     def expected_structure_based_at(self, root_path: pathlib.Path) -> structure.TestSuite:
@@ -23,7 +23,7 @@ def check(setup: Setup,
           put: unittest.TestCase):
     with tempfile.TemporaryDirectory(prefix='shellcheck-test-') as tmp_dir:
         tmp_dir_path = pathlib.Path(tmp_dir)
-        setup.file_structure_to_read().write_to(tmp_dir_path)
+        setup.file_structure_to_read(tmp_dir_path).write_to(tmp_dir_path)
         actual = read(setup.root_suite_based_at(tmp_dir_path))
         expected = setup.expected_structure_based_at(tmp_dir_path)
 
