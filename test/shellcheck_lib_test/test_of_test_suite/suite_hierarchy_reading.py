@@ -87,7 +87,7 @@ class ReferencedCaseFileDoesNotExist(check_exception.Setup):
                            actual.line)
 
 
-class TestRead(unittest.TestCase):
+class TestStructure(unittest.TestCase):
     def test_main_suite_with_two_referenced_cases(self):
         check_structure.check(MainSuiteWithTwoReferencedCases(), self)
 
@@ -102,7 +102,7 @@ class TestInvalidFileReferences(unittest.TestCase):
 
 def suite():
     ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestRead))
+    ret_val.addTest(unittest.makeSuite(TestStructure))
     ret_val.addTest(unittest.makeSuite(TestInvalidFileReferences))
     return ret_val
 
