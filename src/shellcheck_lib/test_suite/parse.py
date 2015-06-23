@@ -4,8 +4,8 @@ from shellcheck_lib.general import line_source
 from shellcheck_lib.test_suite import instruction
 from shellcheck_lib.test_suite import test_suite_struct
 
-SECTION_NAME__SUITS = 'testsuits'
-SECTION_NAME__CASES = 'testcases'
+SECTION_NAME__SUITS = 'suits'
+SECTION_NAME__CASES = 'cases'
 
 
 class TestSuiteFileInstruction(instruction.TestSuiteSectionInstruction):
@@ -25,7 +25,8 @@ class TestCaseFileInstruction(instruction.TestCaseSectionInstruction):
         self._file_name = file_name
 
     def resolve_paths(self, environment: instruction.Environment) -> list:
-        raise NotImplementedError("case file instr")
+        path = environment.suite_file_dir_path / self._file_name
+        return [path]
 
 
 class SuitesSectionParser(parse.InstructionParser):
