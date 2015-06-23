@@ -17,7 +17,8 @@ class TestSuiteFileInstruction(instruction.TestSuiteSectionInstruction):
         :raises FileNotAccessibleError: A referenced file is not accessible.
         :return: [pathlib.Path]
         """
-        raise NotImplementedError()
+        path = environment.suite_file_dir_path / self._file_name
+        return [path]
 
 
 class TestCaseFileInstruction(instruction.TestCaseSectionInstruction):

@@ -61,6 +61,9 @@ def write_to(dir_path: pathlib.Path,
 
 
 class FileStructureAndExpectedHierarchy:
+    def root_suite_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
+        raise NotImplementedError()
+
     def file_structure_to_read(self) -> DirContents:
         raise NotImplementedError()
 
@@ -69,6 +72,9 @@ class FileStructureAndExpectedHierarchy:
 
 
 class MainSuiteWithTwoReferencedCases(FileStructureAndExpectedHierarchy):
+    def root_suite_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
+        return root_path / 'main.suite'
+
     def expected_structure_based_at(self, root_path: pathlib.Path) -> structure.TestSuite:
         return structure.TestSuite(
             [],
@@ -88,9 +94,36 @@ class MainSuiteWithTwoReferencedCases(FileStructureAndExpectedHierarchy):
                                 [File('2.case', '')])])
 
 
+class MainSuiteWithTwoReferencedSuits(FileStructureAndExpectedHierarchy):
+    def root_suite_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
+        return root_path / 'main.suite'
+
+    def expected_structure_based_at(self, root_path: pathlib.Path) -> structure.TestSuite:
+        return structure.TestSuite(
+            [
+                structure.TestSuite([], []),
+                structure.TestSuite([], [])
+            ],
+            [],
+        )
+
+    def file_structure_to_read(self) -> DirContents:
+        return DirContents([File('main.suite',
+                                 lines_content(['[suits]',
+                                                '1.suite',
+                                                os.path.join('sub', '2.suite'),
+                                                ])),
+                            File('1.suite', ''),
+                            Dir('sub',
+                                [File('2.suite', '')])])
+
+
 class TestRead(unittest.TestCase):
     def test_main_suite_with_two_referenced_cases(self):
         check(MainSuiteWithTwoReferencedCases(), self)
+
+    def test_main_suite_with_two_referenced_suits(self):
+        check(MainSuiteWithTwoReferencedSuits(), self)
 
 
 def check(setup: FileStructureAndExpectedHierarchy,
@@ -98,7 +131,7 @@ def check(setup: FileStructureAndExpectedHierarchy,
     with tempfile.TemporaryDirectory(prefix='shellcheck-test-') as tmp_dir:
         tmp_dir_path = pathlib.Path(tmp_dir)
         write_to(tmp_dir_path, setup.file_structure_to_read())
-        actual = read(tmp_dir_path / 'main.suite')
+        actual = read(setup.root_suite_based_at(tmp_dir_path))
         expected = setup.expected_structure_based_at(tmp_dir_path)
 
         StructureEqualityChecker(put).check_suite(expected,
