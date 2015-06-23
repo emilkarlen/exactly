@@ -1,4 +1,3 @@
-import os
 import pathlib
 import unittest
 
@@ -29,7 +28,7 @@ class MainSuiteWithTwoReferencedCases(check_structure.Setup):
         return DirContents([File('main.suite',
                                  lines_content(['[cases]',
                                                 '1.case',
-                                                os.path.join('sub', '2.case'),
+                                                'sub/2.case',
                                                 ])),
                             File('1.case', ''),
                             Dir('sub',
@@ -53,7 +52,7 @@ class MainSuiteWithTwoReferencedSuites(check_structure.Setup):
         return DirContents([File('main.suite',
                                  lines_content(['[suites]',
                                                 '1.suite',
-                                                os.path.join('sub', '2.suite'),
+                                                'sub/2.suite',
                                                 ])),
                             File('1.suite', ''),
                             Dir('sub',
