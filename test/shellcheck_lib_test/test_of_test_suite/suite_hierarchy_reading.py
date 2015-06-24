@@ -326,6 +326,50 @@ class DoubleInclusionOfMainFileFromMainFile(check_exception.Setup):
                         'File that is included twice')
 
 
+class DoubleInclusionOfSuiteInSubDir(check_exception.Setup):
+    def root_suite_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
+        return root_path / 'main.suite'
+
+    def file_structure_to_read(self) -> DirContents:
+        return DirContents([File('main.suite',
+                                 lines_content(['[suites]',
+                                                'local-1.suite',
+                                                'local-2.suite',
+                                                ])),
+                            File('local-1.suite',
+                                 lines_content(['[suites]',
+                                                'subdir/in-subdir.suite',
+                                                ])),
+                            File('local-2.suite',
+                                 lines_content(['[suites]',
+                                                '',
+                                                'subdir/in-subdir.suite',
+                                                ])),
+                            Dir('subdir',
+                                [
+                                    File('in-subdir.suite', '')
+                                ])
+                            ])
+
+    def expected_exception_class(self):
+        return SuiteDoubleInclusion
+
+    def check_exception(self,
+                        root_path: pathlib.Path,
+                        actual: Exception,
+                        put: unittest.TestCase):
+        put.assertIsInstance(actual, SuiteDoubleInclusion)
+        put.assertEqual(str(root_path / 'local-2.suite'),
+                        str(actual.suite_file),
+                        'Source file that contains the error')
+        assert_equals_line(put,
+                           line_source.Line(3, 'subdir/in-subdir.suite'),
+                           actual.line)
+        put.assertEqual(root_path / 'subdir' / 'in-subdir.suite',
+                        actual.included_suite_file,
+                        'File that is included twice')
+
+
 class TestStructure(unittest.TestCase):
     def test_main_suite_with_two_referenced_cases(self):
         check_structure.check(MainSuiteWithTwoReferencedCases(), self)
@@ -355,6 +399,9 @@ class TestInvalidFileReferences(unittest.TestCase):
 
     def test_double_inclusion_of_main_file_from_main_file(self):
         check_exception.check(DoubleInclusionOfMainFileFromMainFile(), self)
+
+    def test_double_inclusion_of_suite_in_sub_dir(self):
+        check_exception.check(DoubleInclusionOfSuiteInSubDir(), self)
 
 
 class TestInvalidFileSyntax(unittest.TestCase):
