@@ -1,4 +1,5 @@
 import pathlib
+import functools
 
 from shellcheck_lib.document.model import PhaseContents
 from shellcheck_lib.document.parse import SourceError
@@ -17,6 +18,16 @@ def read(suite_file_path: pathlib.Path) -> structure.TestSuite:
     :param suite_file_path:
     :return:
     """
+    return _read([], suite_file_path)
+
+
+def _read(inclusions: list,
+          suite_file_path: pathlib.Path) -> structure.TestSuite:
+    """
+    :raises SuiteReadError:
+    :param suite_file_path:
+    :return:
+    """
     source = line_source.new_for_file(suite_file_path)
     try:
         test_suite = parse.PARSER.apply(source)
@@ -26,9 +37,11 @@ def read(suite_file_path: pathlib.Path) -> structure.TestSuite:
                                ex.message)
     suite_file_path_list, case_file_path_list = _resolve_paths(test_suite,
                                                                suite_file_path)
-    suite_list = list(map(read, suite_file_path_list))
+    sub_inclusions = inclusions + [suite_file_path]
+    sub_suites_reader = functools.partial(_read, sub_inclusions)
+    suite_list = list(map(sub_suites_reader, suite_file_path_list))
     case_list = list(map(structure.TestCase, case_file_path_list))
-    return structure.TestSuite(suite_file_path, suite_list, case_list)
+    return structure.TestSuite(suite_file_path, inclusions, suite_list, case_list)
 
 
 def _resolve_paths(test_suite: test_suite_struct.TestSuite,
