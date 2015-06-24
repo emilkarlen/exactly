@@ -324,6 +324,9 @@ class DoubleInclusionOfMainFileFromMainFile(check_exception.Setup):
         put.assertEqual(self.root_suite_based_at(root_path),
                         actual.included_suite_file,
                         'File that is included twice')
+        put.assertEqual(None,
+                        actual.first_referenced_from,
+                        'File that first included the suite file')
 
 
 class DoubleInclusionOfSuiteInSubDir(check_exception.Setup):
@@ -368,6 +371,9 @@ class DoubleInclusionOfSuiteInSubDir(check_exception.Setup):
         put.assertEqual(root_path / 'subdir' / 'in-subdir.suite',
                         actual.included_suite_file,
                         'File that is included twice')
+        put.assertEqual(root_path / 'local-1.suite',
+                        actual.first_referenced_from,
+                        'File that first included the suite file')
 
 
 class TestStructure(unittest.TestCase):
