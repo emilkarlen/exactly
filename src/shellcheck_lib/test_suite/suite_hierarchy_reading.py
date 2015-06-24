@@ -18,11 +18,11 @@ def read(suite_file_path: pathlib.Path) -> structure.TestSuite:
     :param suite_file_path:
     :return:
     """
-    return _read([], {suite_file_path.resolve()}, suite_file_path)
+    return _read([], {suite_file_path.resolve(): None}, suite_file_path)
 
 
 def _read(inclusions: list,
-          visited: set,
+          visited: dict,
           suite_file_path: pathlib.Path) -> structure.TestSuite:
     """
     :raises SuiteReadError:
@@ -46,7 +46,7 @@ def _read(inclusions: list,
     return structure.TestSuite(suite_file_path, inclusions, suite_list, case_list)
 
 
-def _resolve_paths(visited: set,
+def _resolve_paths(visited: dict,
                    test_suite: test_suite_struct.TestSuite,
                    suite_file_path: pathlib.Path) -> (list, list):
     def paths_for_instructions(env: instruction.Environment,
@@ -62,9 +62,10 @@ def _resolve_paths(visited: set,
                             if path in visited:
                                 raise SuiteDoubleInclusion(suite_file_path,
                                                            element.source_line,
-                                                           path)
+                                                           path,
+                                                           visited[path])
                             else:
-                                visited.add(path)
+                                visited[path] = suite_file_path
                     ret_val.extend(paths)
                 except FileNotAccessibleSimpleError as ex:
                     raise SuiteFileReferenceError(suite_file_path,

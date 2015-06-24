@@ -32,13 +32,24 @@ class SuiteDoubleInclusion(SuiteReadError):
     def __init__(self,
                  suite_file: pathlib.Path,
                  line: line_source.Line,
-                 included_suite_file: pathlib.Path):
+                 included_suite_file: pathlib.Path,
+                 first_referenced_from: pathlib.Path):
         super().__init__(suite_file, line)
         self._included_suite_file = included_suite_file
+        self._first_referenced_from = first_referenced_from
 
     @property
     def included_suite_file(self) -> pathlib.Path:
         return self._included_suite_file
+
+    @property
+    def first_referenced_from(self) -> pathlib.Path:
+        """
+        The suite file that contains the first reference to the
+        included file.
+        :return: None iff the file was mentioned on the command line.
+        """
+        return self._first_referenced_from
 
 
 class SuiteFileReferenceError(SuiteReadError):
