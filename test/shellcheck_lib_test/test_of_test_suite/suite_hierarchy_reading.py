@@ -17,6 +17,7 @@ class MainSuiteWithTwoReferencedCases(check_structure.Setup):
 
     def expected_structure_based_at(self, root_path: pathlib.Path) -> structure.TestSuite:
         return structure.TestSuite(
+            self.root_suite_based_at(root_path),
             [],
             [
                 structure.TestCase(root_path / '1.case'),
@@ -40,6 +41,7 @@ class InvalidCaseContentShouldNotCauseParsingToFail(check_structure.Setup):
 
     def expected_structure_based_at(self, root_path: pathlib.Path) -> structure.TestSuite:
         return structure.TestSuite(
+            self.root_suite_based_at(root_path),
             [],
             [
                 structure.TestCase(root_path / 'case-with-invalid-content.case'),
@@ -61,9 +63,10 @@ class MainSuiteWithTwoReferencedSuites(check_structure.Setup):
 
     def expected_structure_based_at(self, root_path: pathlib.Path) -> structure.TestSuite:
         return structure.TestSuite(
+            self.root_suite_based_at(root_path),
             [
-                structure.TestSuite([], []),
-                structure.TestSuite([], [])
+                structure.TestSuite(root_path / '1.suite', [], []),
+                structure.TestSuite(root_path / 'sub' / '2.suite', [], [])
             ],
             [],
         )
@@ -85,8 +88,9 @@ class MainSuiteWithAbsoluteReferencesToSuitesAndCases(check_structure.Setup):
 
     def expected_structure_based_at(self, root_path: pathlib.Path) -> structure.TestSuite:
         return structure.TestSuite(
+            self.root_suite_based_at(root_path),
             [
-                structure.TestSuite([], []),
+                structure.TestSuite(root_path / '1.suite', [], []),
             ],
             [
                 structure.TestCase(root_path / '1.case'),
@@ -111,9 +115,10 @@ class MainSuiteWithReferencedSuitesAndCasesAndMixedSections(check_structure.Setu
 
     def expected_structure_based_at(self, root_path: pathlib.Path) -> structure.TestSuite:
         return structure.TestSuite(
+            self.root_suite_based_at(root_path),
             [
-                structure.TestSuite([], []),
-                structure.TestSuite([], [])
+                structure.TestSuite(root_path / '1.suite', [], []),
+                structure.TestSuite(root_path / 'sub' / '2.suite', [], [])
             ],
             [
                 structure.TestCase(root_path / '1.case'),
@@ -145,12 +150,19 @@ class ComplexStructure(check_structure.Setup):
 
     def expected_structure_based_at(self, root_path: pathlib.Path) -> structure.TestSuite:
         return structure.TestSuite(
+            self.root_suite_based_at(root_path),
             [
                 structure.TestSuite(
+                    root_path / 'local.suite',
                     [],
                     [structure.TestCase(root_path / 'from-local-suite.case')]),
                 structure.TestSuite(
-                    [structure.TestSuite([], [structure.TestCase(root_path / 'sub' / 'sub-sub.case')])],
+                    root_path / 'sub' / 'sub.suite',
+                    [structure.TestSuite(
+                        root_path / 'sub' / 'sub-sub.suite',
+                        [],
+                        [structure.TestCase(root_path / 'sub' / 'sub-sub.case')]
+                    )],
                     [structure.TestCase(root_path / 'sub' / 'sub.case')]),
             ],
             [structure.TestCase(root_path / 'from-main-suite.case')]
