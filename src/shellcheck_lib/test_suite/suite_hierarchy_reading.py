@@ -18,7 +18,7 @@ def read(suite_file_path: pathlib.Path) -> structure.TestSuite:
     :param suite_file_path:
     :return:
     """
-    return _read([], {suite_file_path}, suite_file_path)
+    return _read([], {suite_file_path.resolve()}, suite_file_path)
 
 
 def _read(inclusions: list,
