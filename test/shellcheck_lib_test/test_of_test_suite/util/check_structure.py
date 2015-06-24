@@ -3,7 +3,6 @@ import tempfile
 import unittest
 
 from shellcheck_lib.test_suite import structure
-
 from shellcheck_lib.test_suite.suite_hierarchy_reading import read
 from shellcheck_lib_test.util.file_structure import DirContents
 
@@ -39,6 +38,9 @@ class StructureEqualityChecker:
     def check_suite(self,
                     expected: structure.TestSuite,
                     actual: structure.TestSuite):
+        self.put.assertEqual(expected.source_file,
+                             actual.source_file,
+                             'Source file')
         self.put.assertEqual(len(expected.sub_test_suites),
                              len(actual.sub_test_suites),
                              'Number of sub suites')

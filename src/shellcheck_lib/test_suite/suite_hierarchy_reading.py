@@ -28,7 +28,7 @@ def read(suite_file_path: pathlib.Path) -> structure.TestSuite:
                                                                suite_file_path)
     suite_list = list(map(read, suite_file_path_list))
     case_list = list(map(structure.TestCase, case_file_path_list))
-    return structure.TestSuite(suite_list, case_list)
+    return structure.TestSuite(suite_file_path, suite_list, case_list)
 
 
 def _resolve_paths(test_suite: test_suite_struct.TestSuite,
