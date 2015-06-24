@@ -41,6 +41,9 @@ class StructureEqualityChecker:
         self.put.assertEqual(expected.source_file,
                              actual.source_file,
                              'Source file')
+        self.put.assertEqual(expected.file_inclusions_leading_to_this_file,
+                             actual.file_inclusions_leading_to_this_file,
+                             'File inclusions')
         self.put.assertEqual(len(expected.sub_test_suites),
                              len(actual.sub_test_suites),
                              'Number of sub suites')
