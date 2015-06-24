@@ -28,6 +28,19 @@ class SuiteReadError(Exception):
         return self._line
 
 
+class SuiteDoubleInclusion(SuiteReadError):
+    def __init__(self,
+                 suite_file: pathlib.Path,
+                 line: line_source.Line,
+                 included_suite_file: pathlib.Path):
+        super().__init__(suite_file, line)
+        self._included_suite_file = included_suite_file
+
+    @property
+    def included_suite_file(self) -> pathlib.Path:
+        return self._included_suite_file
+
+
 class SuiteFileReferenceError(SuiteReadError):
     def __init__(self,
                  suite_file: pathlib.Path,
