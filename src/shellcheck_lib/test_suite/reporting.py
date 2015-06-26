@@ -1,5 +1,5 @@
 from shellcheck_lib.general.output import StdOutputFiles
-from . import test_case_execution
+from . import test_case_processing
 from . import structure
 
 
@@ -16,7 +16,7 @@ class SubSuiteReporter:
 
     def case_end(self,
                  case: structure.TestCase,
-                 result: test_case_execution.TestCaseProcessingResult):
+                 result: test_case_processing.TestCaseProcessingResult):
         raise NotImplementedError()
 
 
