@@ -4,6 +4,7 @@ from shellcheck_lib.cli.execution_mode.test_suite import settings
 from shellcheck_lib.execution.result import FullResult
 from shellcheck_lib.general.output import StdOutputFiles
 from shellcheck_lib.test_suite import structure
+from shellcheck_lib.test_suite.suite_hierarchy_reading import SuiteHierarchyReader
 
 
 class SuiteStructureError(Exception):
@@ -13,8 +14,10 @@ class SuiteStructureError(Exception):
 class Executor:
     def __init__(self,
                  output: StdOutputFiles,
+                 suite_hierarchy_reader: SuiteHierarchyReader,
                  execution_settings: settings.Settings):
         self._std = output
+        self._suite_hierarchy_reader = suite_hierarchy_reader
         self._execution_settings = execution_settings
         self._reporter = execution_settings.reporter_factory.new_reporter(output)
 

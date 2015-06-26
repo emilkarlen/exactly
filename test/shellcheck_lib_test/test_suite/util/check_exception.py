@@ -2,7 +2,7 @@ import pathlib
 import tempfile
 import unittest
 
-from shellcheck_lib.test_suite.suite_hierarchy_reading import read
+from shellcheck_lib.test_suite.suite_hierarchy_reading import Reader
 from shellcheck_lib_test.util.file_structure import DirContents
 
 
@@ -29,5 +29,5 @@ def check(setup: Setup,
         tmp_dir_path = pathlib.Path(tmp_dir)
         setup.file_structure_to_read().write_to(tmp_dir_path)
         with put.assertRaises(Exception) as cm:
-            read(setup.root_suite_based_at(tmp_dir_path))
+            Reader().apply(setup.root_suite_based_at(tmp_dir_path))
         setup.check_exception(tmp_dir_path, cm.exception, put)
