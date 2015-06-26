@@ -1,28 +1,22 @@
 import pathlib
 
 from shellcheck_lib.cli.execution_mode.test_suite import settings
-from shellcheck_lib.execution.result import FullResult
 from shellcheck_lib.general.output import StdOutputFiles
-from shellcheck_lib.test_case.test_case_struct import TestCase
 from shellcheck_lib.test_suite import structure
 from shellcheck_lib.test_suite.parse import SuiteReadError
 from shellcheck_lib.test_suite.suite_hierarchy_reading import SuiteHierarchyReader
-
-
-class TestCaseReader:
-    def __call__(self, path: pathlib.Path) -> TestCase:
-        raise NotImplementedError()
+from shellcheck_lib.test_suite import test_case_execution
 
 
 class Executor:
     def __init__(self,
                  output: StdOutputFiles,
                  suite_hierarchy_reader: SuiteHierarchyReader,
-                 test_case_reader: TestCaseReader,
+                 test_case_processor: test_case_execution.TestCaseProcessor,
                  execution_settings: settings.Settings):
         self._std = output
         self._suite_hierarchy_reader = suite_hierarchy_reader
-        self._test_case_reader = test_case_reader
+        self._test_case_processor = test_case_processor
         self._execution_settings = execution_settings
         self._reporter = execution_settings.reporter_factory.new_reporter(output)
 
@@ -59,12 +53,15 @@ class Executor:
         sub_suite_reporter.suite_begin()
         for case in suite.test_cases:
             sub_suite_reporter.case_begin(case)
-            full_result = self._execute_full_case(case)
+            result = self._execute_full_case(case)
             sub_suite_reporter.case_end(case,
-                                        full_result)
+                                        result)
         sub_suite_reporter.suite_end()
         pass
 
     def _execute_full_case(self,
-                           case: structure.TestCase) -> FullResult:
-        raise NotImplementedError()
+                           case: structure.TestCase) -> test_case_execution.TestCaseProcessingResult:
+        try:
+            return self._test_case_processor.apply(case)
+        except Exception as ex:
+            return test_case_execution.new_internal_error(str(ex))

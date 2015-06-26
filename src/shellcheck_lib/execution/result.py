@@ -161,3 +161,9 @@ def new_skipped() -> FullResult:
     return FullResult(FullResultStatus.SKIPPED,
                       None,
                       None)
+
+
+def new_pass(execution_directory_structure: ExecutionDirectoryStructure) -> FullResult:
+    return FullResult(FullResultStatus.PASS,
+                      execution_directory_structure,
+                      None)
