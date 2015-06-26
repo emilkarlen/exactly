@@ -25,7 +25,7 @@ class CompleteSuiteReporter:
     Reports the test process to the outside world.
     """
 
-    def invalid_suite(self) -> int:
+    def invalid_suite_exit_code(self) -> int:
         """
         Executed iff the suite is invalid, so that no test cases can be executed.
         Note that this does not include invalid test cases, since these should not
