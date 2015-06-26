@@ -1,6 +1,6 @@
 from shellcheck_lib.general.output import StdOutputFiles
-from shellcheck_lib.execution.result import FullResult
-from .structure import TestSuite, TestCase
+from . import test_case_execution
+from . import structure
 
 
 class SubSuiteReporter:
@@ -11,12 +11,12 @@ class SubSuiteReporter:
         raise NotImplementedError()
 
     def case_begin(self,
-                   case: TestCase):
+                   case: structure.TestCase):
         raise NotImplementedError()
 
     def case_end(self,
-                 case: TestCase,
-                 full_result: FullResult):
+                 case: structure.TestCase,
+                 result: test_case_execution.TestCaseProcessingResult):
         raise NotImplementedError()
 
 
@@ -43,7 +43,7 @@ class CompleteSuiteReporter:
         raise NotImplementedError()
 
     def new_sub_suite_reporter(self,
-                               sub_suite: TestSuite) -> SubSuiteReporter:
+                               sub_suite: structure.TestSuite) -> SubSuiteReporter:
         raise NotImplementedError()
 
 
