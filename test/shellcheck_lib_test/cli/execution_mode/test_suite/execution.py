@@ -203,37 +203,70 @@ class TestComplexSuite(unittest.TestCase):
             expected_suites,
             reporter_factory.complete_suite_reporter)
 
-        # def test_single_suite_with_single_case(self):
-        # # ARRANGE #
-        # str_std_out_files = StringStdOutFiles()
-        # # sub11 = TestSuite(pathlib.Path('11'), [], [], [])
-        #     # sub12 = TestSuite(pathlib.Path('12'), [], [], [])
-        #     # sub1 = TestSuite(pathlib.Path('1'), [], [sub11, sub12], [])
-        #     # sub21 = TestSuite(pathlib.Path('21'), [], [], [])
-        #     # sub2 = TestSuite(pathlib.Path('2'), [], [sub21], [])
-        #     # root = TestSuite(pathlib.Path('root'), [], [sub1, sub2], [])
-        #     case = structure.TestCase(pathlib.Path('test-case-file'))
-        #     root = structure.TestSuite(pathlib.Path('root-suite-file'), [], [], [case])
-        #     suite_hierarchy_reader = ReaderThatGivesConstantSuite(root)
-        #     reporter_factory = ExecutionTracingReporterFactory()
-        #     execution_settings = settings.Settings(reporter_factory,
-        #                                            DepthFirstEnumerator(),
-        #                                            pathlib.Path('root-suite-file'))
-        #     executor = Executor(str_std_out_files.stdout_files,
-        #                         suite_hierarchy_reader,
-        #                         TestCaseProcessorThatRaisesUnconditionally(),
-        #                         execution_settings)
-        #     # ACT #
-        #     exit_code = executor.execute()
-        #     # ASSERT #
-        #     check_exit_code_and_empty_stdout(self,
-        #                                      ExecutionTracingCompleteSuiteReporter.VALID_SUITE_EXIT_CODE,
-        #                                      exit_code,
-        #                                      str_std_out_files)
-        #     ExpectedSuiteReporting.check_list(
-        #         self,
-        #         [ExpectedSuiteReporting(root, [(case, TestCaseProcessingStatus.EXECUTED)])],
-        #         reporter_factory.complete_suite_reporter)
+    def test_complex_suite_structure_with_test_cases(self):
+        # ARRANGE #
+        reporter_factory = ExecutionTracingReporterFactory()
+        str_std_out_files = StringStdOutFiles()
+        tc_internal_error_11 = structure.TestCase(Path('internal error 11'))
+        tc_internal_error_21 = structure.TestCase(Path('internal error 21'))
+        tc_read_error_1 = structure.TestCase(Path('read error A'))
+        tc_read_error_12 = structure.TestCase(Path('read error 12'))
+        tc_executed_11 = structure.TestCase(Path('executed 11'))
+        tc_executed_12 = structure.TestCase(Path('executed 12'))
+        tc_executed_1 = structure.TestCase(Path('executed 1'))
+        tc_executed_2 = structure.TestCase(Path('executed 2'))
+        tc_executed_root = structure.TestCase(Path('executed root'))
+        test_case_processor = TestCaseProcessorThatGivesConstantPerCase({
+            id(tc_internal_error_11): test_case_execution.new_internal_error('message A'),
+            id(tc_internal_error_21): test_case_execution.new_internal_error('messageB'),
+            id(tc_read_error_1): test_case_execution.new_reading_error(TestCaseReadingError.PARSE_ERROR),
+            id(tc_read_error_12): test_case_execution.new_reading_error(TestCaseReadingError.FILE_ACCESS_ERROR),
+            id(tc_executed_11): test_case_execution.new_executed(FULL_RESULT_PASS),
+            id(tc_executed_12): test_case_execution.new_executed(FULL_RESULT_PASS),
+            id(tc_executed_1): test_case_execution.new_executed(FULL_RESULT_PASS),
+            id(tc_executed_2): test_case_execution.new_executed(FULL_RESULT_PASS),
+            id(tc_executed_root): test_case_execution.new_executed(FULL_RESULT_PASS),
+        })
+        sub11 = structure.TestSuite(pathlib.Path('11'), [], [], [tc_internal_error_11,
+                                                                 tc_executed_11])
+        sub12 = structure.TestSuite(pathlib.Path('12'), [], [], [tc_executed_12,
+                                                                 tc_read_error_12])
+        sub1 = structure.TestSuite(pathlib.Path('1'), [], [sub11, sub12], [tc_read_error_1,
+                                                                           tc_executed_1])
+        sub21 = structure.TestSuite(pathlib.Path('21'), [], [], [tc_internal_error_21])
+        sub2 = structure.TestSuite(pathlib.Path('2'), [], [sub21], [tc_executed_2])
+        root = structure.TestSuite(pathlib.Path('root'), [], [sub1, sub2], [tc_executed_root])
+
+        expected_suites = [
+            ExpectedSuiteReporting(sub11, [(tc_internal_error_11, TestCaseProcessingStatus.INTERNAL_ERROR),
+                                           (tc_executed_11, TestCaseProcessingStatus.EXECUTED)]),
+            ExpectedSuiteReporting(sub12, [(tc_executed_12, TestCaseProcessingStatus.EXECUTED),
+                                           (tc_read_error_12, TestCaseProcessingStatus.READ_ERROR)]),
+            ExpectedSuiteReporting(sub1, [(tc_read_error_1, TestCaseProcessingStatus.READ_ERROR),
+                                          (tc_executed_1, TestCaseProcessingStatus.EXECUTED)]),
+            ExpectedSuiteReporting(sub21, [(tc_internal_error_21, TestCaseProcessingStatus.INTERNAL_ERROR)]),
+            ExpectedSuiteReporting(sub2, [(tc_executed_2, TestCaseProcessingStatus.EXECUTED)]),
+            ExpectedSuiteReporting(root, [(tc_executed_root, TestCaseProcessingStatus.EXECUTED)]),
+        ]
+        suite_hierarchy_reader = ReaderThatGivesConstantSuite(root)
+        execution_settings = settings.Settings(reporter_factory,
+                                               DepthFirstEnumerator(),
+                                               pathlib.Path('root-suite-file'))
+        executor = Executor(str_std_out_files.stdout_files,
+                            suite_hierarchy_reader,
+                            test_case_processor,
+                            execution_settings)
+        # ACT #
+        exit_code = executor.execute()
+        # ASSERT #
+        check_exit_code_and_empty_stdout(self,
+                                         ExecutionTracingCompleteSuiteReporter.VALID_SUITE_EXIT_CODE,
+                                         exit_code,
+                                         str_std_out_files)
+        ExpectedSuiteReporting.check_list(
+            self,
+            expected_suites,
+            reporter_factory.complete_suite_reporter)
 
 
 def check_exit_code_and_empty_stdout(put: unittest.TestCase,
