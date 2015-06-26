@@ -6,7 +6,7 @@ from shellcheck_lib.test_suite.structure import SuiteEnumerator
 EXIT__INVALID_SUITE_STRUCTURE = 3
 
 
-class TestSuiteExecutionSettings:
+class Settings:
     def __init__(self,
                  reporter_factory: reporting.ReporterFactory,
                  suite_enumerator: SuiteEnumerator,

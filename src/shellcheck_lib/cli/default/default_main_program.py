@@ -1,4 +1,4 @@
-from shellcheck_lib.cli.execution_mode.test_suite.settings import TestSuiteExecutionSettings
+from shellcheck_lib.cli.execution_mode.test_suite.settings import Settings
 from shellcheck_lib.cli.execution_mode.test_case.instruction_setup import InstructionsSetup
 from shellcheck_lib.cli.execution_mode.help import execution as help_execution
 from shellcheck_lib.cli.execution_mode.test_case.settings import TestCaseExecutionSettings
@@ -25,7 +25,7 @@ class MainProgram(main_program.MainProgram):
                                                 settings)
         return executor.execute()
 
-    def execute_test_suite(self, settings: TestSuiteExecutionSettings) -> int:
+    def execute_test_suite(self, settings: Settings) -> int:
         executor = test_suite_execution.Executor(self._output,
                                                  settings)
         return executor.execute()

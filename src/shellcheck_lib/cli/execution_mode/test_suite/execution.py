@@ -13,7 +13,7 @@ class SuiteStructureError(Exception):
 class Executor:
     def __init__(self,
                  output: StdOutputFiles,
-                 execution_settings: settings.TestSuiteExecutionSettings):
+                 execution_settings: settings.Settings):
         self._std = output
         self._execution_settings = execution_settings
         self._reporter = execution_settings.reporter_factory.new_reporter(output)
@@ -35,7 +35,6 @@ class Executor:
     def _execute_suits_and_cases(self,
                                  suits_in_execution_order: list) -> int:
         """
-
         :param suits_in_execution_order: [TestSuite]
         :return: Exit code from main program.
         """
