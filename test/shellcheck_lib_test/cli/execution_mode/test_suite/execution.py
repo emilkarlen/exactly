@@ -164,6 +164,45 @@ class TestComplexSuite(unittest.TestCase):
             expected_suites,
             reporter_factory.complete_suite_reporter)
 
+    def test_suite_execution_order_using_empty_suites(self):
+        # ARRANGE #
+        reporter_factory = ExecutionTracingReporterFactory()
+        str_std_out_files = StringStdOutFiles()
+        sub11 = structure.TestSuite(pathlib.Path('11'), [], [], [])
+        sub12 = structure.TestSuite(pathlib.Path('12'), [], [], [])
+        sub1 = structure.TestSuite(pathlib.Path('1'), [], [sub11, sub12], [])
+        sub21 = structure.TestSuite(pathlib.Path('21'), [], [], [])
+        sub2 = structure.TestSuite(pathlib.Path('2'), [], [sub21], [])
+        root = structure.TestSuite(pathlib.Path('root'), [], [sub1, sub2], [])
+
+        expected_suites = [
+            ExpectedSuiteReporting(sub11, []),
+            ExpectedSuiteReporting(sub12, []),
+            ExpectedSuiteReporting(sub1, []),
+            ExpectedSuiteReporting(sub21, []),
+            ExpectedSuiteReporting(sub2, []),
+            ExpectedSuiteReporting(root, []),
+        ]
+        suite_hierarchy_reader = ReaderThatGivesConstantSuite(root)
+        execution_settings = settings.Settings(reporter_factory,
+                                               DepthFirstEnumerator(),
+                                               pathlib.Path('root-suite-file'))
+        executor = Executor(str_std_out_files.stdout_files,
+                            suite_hierarchy_reader,
+                            TestCaseProcessorThatGivesConstantPerCase({}),
+                            execution_settings)
+        # ACT #
+        exit_code = executor.execute()
+        # ASSERT #
+        check_exit_code_and_empty_stdout(self,
+                                         ExecutionTracingCompleteSuiteReporter.VALID_SUITE_EXIT_CODE,
+                                         exit_code,
+                                         str_std_out_files)
+        ExpectedSuiteReporting.check_list(
+            self,
+            expected_suites,
+            reporter_factory.complete_suite_reporter)
+
         # def test_single_suite_with_single_case(self):
         # # ARRANGE #
         # str_std_out_files = StringStdOutFiles()
