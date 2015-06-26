@@ -11,7 +11,6 @@ def assert_is_none_or_equals(test_case: unittest.TestCase,
                              actual,
                              item: str=None):
     """
-
     :param expected: If None, then the actual value is checked for None.
      Otherwise, equals.
     :param actual:
