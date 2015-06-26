@@ -1,8 +1,7 @@
 import unittest
-
 import pathlib
 
-from shellcheck_lib_test import test_resources
+from shellcheck_lib_test.util import assert_utils
 
 
 class FileChecker:
@@ -33,4 +32,4 @@ class FileChecker:
         self.put.assertTrue(p.is_file(), self._msg('"%s" should be a plain file' % p.name))
 
     def _msg(self, message: str) -> str:
-        return test_resources.assertion_message(message, self.message_header)
+        return assert_utils.assertion_message(message, self.message_header)
