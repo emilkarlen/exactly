@@ -8,17 +8,19 @@ from . import instruction
 from . import test_suite_struct
 from . import structure
 from . import parse
-from shellcheck_lib.test_suite.instruction import FileNotAccessibleSimpleError
-from shellcheck_lib.test_suite.parse import SuiteFileReferenceError, SuiteSyntaxError, SuiteDoubleInclusion
 
 
-def read(suite_file_path: pathlib.Path) -> structure.TestSuite:
-    """
-    :raises SuiteReadError:
-    :param suite_file_path:
-    :return:
-    """
-    return _read([], {suite_file_path.resolve(): None}, suite_file_path)
+class SuiteHierarchyReader:
+    def apply(self, suite_file_path: pathlib.Path) -> structure.TestSuite:
+        """
+        :raises SuiteReadError
+        """
+        raise NotImplementedError()
+
+
+class Reader(SuiteHierarchyReader):
+    def apply(self, suite_file_path: pathlib.Path) -> structure.TestSuite:
+        return _read([], {suite_file_path.resolve(): None}, suite_file_path)
 
 
 def _read(inclusions: list,
@@ -27,15 +29,14 @@ def _read(inclusions: list,
     """
     :raises SuiteReadError:
     :param suite_file_path:
-    :return:
     """
     source = line_source.new_for_file(suite_file_path)
     try:
         test_suite = parse.PARSER.apply(source)
     except SourceError as ex:
-        raise SuiteSyntaxError(suite_file_path,
-                               ex.line,
-                               ex.message)
+        raise parse.SuiteSyntaxError(suite_file_path,
+                                     ex.line,
+                                     ex.message)
     suite_file_path_list, case_file_path_list = _resolve_paths(visited,
                                                                test_suite,
                                                                suite_file_path)
@@ -60,17 +61,17 @@ def _resolve_paths(visited: dict,
                     if check_visited:
                         for path in paths:
                             if path in visited:
-                                raise SuiteDoubleInclusion(suite_file_path,
-                                                           element.source_line,
-                                                           path,
-                                                           visited[path])
+                                raise parse.SuiteDoubleInclusion(suite_file_path,
+                                                                 element.source_line,
+                                                                 path,
+                                                                 visited[path])
                             else:
                                 visited[path] = suite_file_path
                     ret_val.extend(paths)
-                except FileNotAccessibleSimpleError as ex:
-                    raise SuiteFileReferenceError(suite_file_path,
-                                                  element.source_line,
-                                                  ex.file_path)
+                except instruction.FileNotAccessibleSimpleError as ex:
+                    raise parse.SuiteFileReferenceError(suite_file_path,
+                                                        element.source_line,
+                                                        ex.file_path)
         return ret_val
 
     environment = instruction.Environment(suite_file_path.parent)

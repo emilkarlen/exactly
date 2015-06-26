@@ -3,7 +3,7 @@ import tempfile
 import unittest
 
 from shellcheck_lib.test_suite import structure
-from shellcheck_lib.test_suite.suite_hierarchy_reading import read
+from shellcheck_lib.test_suite.suite_hierarchy_reading import Reader
 from shellcheck_lib_test.util.file_structure import DirContents
 
 
@@ -23,7 +23,7 @@ def check(setup: Setup,
     with tempfile.TemporaryDirectory(prefix='shellcheck-test-') as tmp_dir:
         tmp_dir_path = pathlib.Path(tmp_dir)
         setup.file_structure_to_read(tmp_dir_path).write_to(tmp_dir_path)
-        actual = read(setup.root_suite_based_at(tmp_dir_path))
+        actual = Reader().apply(setup.root_suite_based_at(tmp_dir_path))
         expected = setup.expected_structure_based_at(tmp_dir_path)
 
         StructureEqualityChecker(put).check_suite(expected,
