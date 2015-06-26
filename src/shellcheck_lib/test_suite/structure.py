@@ -47,18 +47,3 @@ class TestSuite:
         :return: [TestCase]
         """
         return self.__test_cases
-
-
-class SuiteEnumerator:
-    """
-    Determines in what order the suites should be executed.
-    """
-
-    def apply(self,
-              suite: TestSuite) -> list:
-        """
-        Enumerates all suites contained in the argument.
-        :param suite: Root of suites to be enumerated.
-        :return: [TestSuite] All suites in the given suite hierarchy.
-        """
-        raise NotImplementedError()

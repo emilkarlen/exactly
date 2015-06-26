@@ -4,11 +4,8 @@ from shellcheck_lib.cli.execution_mode.test_suite import settings
 from shellcheck_lib.execution.result import FullResult
 from shellcheck_lib.general.output import StdOutputFiles
 from shellcheck_lib.test_suite import structure
+from shellcheck_lib.test_suite.parse import SuiteReadError
 from shellcheck_lib.test_suite.suite_hierarchy_reading import SuiteHierarchyReader
-
-
-class SuiteStructureError(Exception):
-    pass
 
 
 class Executor:
@@ -27,13 +24,13 @@ class Executor:
             suits_in_execution_order = self._execution_settings.suite_enumerator.apply(root_suite)
             exit_code = self._execute_suits_and_cases(suits_in_execution_order)
             return exit_code
-        except SuiteStructureError:
+        except SuiteReadError:
             exit_code = self._reporter.invalid_suite_exit_code()
             return exit_code
 
     def _read_structure(self,
                         suite_file_path: pathlib.Path) -> structure.TestSuite:
-        return structure.TestSuite([], [])
+        return self._suite_hierarchy_reader.apply(suite_file_path)
 
     def _execute_suits_and_cases(self,
                                  suits_in_execution_order: list) -> int:

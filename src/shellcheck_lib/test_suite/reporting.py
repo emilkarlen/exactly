@@ -34,7 +34,7 @@ class CompleteSuiteReporter:
         """
         raise NotImplementedError()
 
-    def main_program_exit_code(self) -> int:
+    def valid_suite_exit_code(self) -> int:
         """
         Gives the number that shall be the exit code of the main program.
         Called after the whole suite has been executed and reported.
