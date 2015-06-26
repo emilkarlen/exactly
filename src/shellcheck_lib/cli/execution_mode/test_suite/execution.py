@@ -3,18 +3,26 @@ import pathlib
 from shellcheck_lib.cli.execution_mode.test_suite import settings
 from shellcheck_lib.execution.result import FullResult
 from shellcheck_lib.general.output import StdOutputFiles
+from shellcheck_lib.test_case.test_case_struct import TestCase
 from shellcheck_lib.test_suite import structure
 from shellcheck_lib.test_suite.parse import SuiteReadError
 from shellcheck_lib.test_suite.suite_hierarchy_reading import SuiteHierarchyReader
+
+
+class TestCaseReader:
+    def __call__(self, path: pathlib.Path) -> TestCase:
+        raise NotImplementedError()
 
 
 class Executor:
     def __init__(self,
                  output: StdOutputFiles,
                  suite_hierarchy_reader: SuiteHierarchyReader,
+                 test_case_reader: TestCaseReader,
                  execution_settings: settings.Settings):
         self._std = output
         self._suite_hierarchy_reader = suite_hierarchy_reader
+        self._test_case_reader = test_case_reader
         self._execution_settings = execution_settings
         self._reporter = execution_settings.reporter_factory.new_reporter(output)
 
@@ -40,7 +48,7 @@ class Executor:
         """
         for suite in suits_in_execution_order:
             self._execute_single_sub_suite(suite)
-        return 1
+        return self._reporter.valid_suite_exit_code()
 
     def _execute_single_sub_suite(self,
                                   suite: structure.TestSuite):
