@@ -25,7 +25,7 @@ class Executor:
             exit_code = self._execute_suits_and_cases(suits_in_execution_order)
             return exit_code
         except SuiteStructureError:
-            exit_code = self._reporter.invalid_suite()
+            exit_code = self._reporter.invalid_suite_exit_code()
             return exit_code
 
     def _read_structure(self,
