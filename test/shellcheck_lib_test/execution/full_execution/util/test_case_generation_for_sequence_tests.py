@@ -1,5 +1,5 @@
-from shellcheck_lib_test.execution.test_full_execution.util import recording_instructions_for_sequence_tests as instr
-from shellcheck_lib_test.execution.test_full_execution.util.recording_instructions_for_sequence_tests import \
+from shellcheck_lib_test.execution.full_execution.util import recording_instructions_for_sequence_tests as instr
+from shellcheck_lib_test.execution.full_execution.util.recording_instructions_for_sequence_tests import \
     SetupInstructionThatRecordsStringInList, AssertInternalInstructionThatRecordsStringInList, \
     AssertInstructionThatRecordsStringInRecordFile
 from shellcheck_lib_test.execution.util.test_case_generation import TestCaseGeneratorBase

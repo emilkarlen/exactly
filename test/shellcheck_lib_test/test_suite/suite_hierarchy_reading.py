@@ -7,8 +7,8 @@ from shellcheck_lib.test_suite.parse import SuiteFileReferenceError, SuiteSyntax
 from shellcheck_lib_test.document.test_resources import assert_equals_line
 from shellcheck_lib_test.util.file_structure import DirContents, File, Dir
 from shellcheck_lib_test.util.with_tmp_file import lines_content
-from shellcheck_lib_test.test_of_test_suite.util import check_exception
-from shellcheck_lib_test.test_of_test_suite.util import check_structure
+from shellcheck_lib_test.test_suite.util import check_exception
+from shellcheck_lib_test.test_suite.util import check_structure
 
 
 class MainSuiteWithTwoReferencedCases(check_structure.Setup):

@@ -1,6 +1,6 @@
 import unittest
 
-from shellcheck_lib_test.execution.test_full_execution.test_case_impl import \
+from shellcheck_lib_test.execution.full_execution.test_case_impl import \
     test_environment_variables, \
     test_current_directory
 
