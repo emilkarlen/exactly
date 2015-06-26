@@ -5,7 +5,7 @@ from shellcheck_lib.cli.execution_mode.help.settings import HelpSettings
 from shellcheck_lib.cli.execution_mode.test_case import argument_parsing
 from shellcheck_lib.cli import argument_parsing_utils
 from shellcheck_lib.cli.execution_mode.help.argument_parsing import parse as parse_help
-from shellcheck_lib.cli.execution_mode.test_suite.settings import TestSuiteExecutionSettings
+from shellcheck_lib.cli.execution_mode.test_suite.settings import Settings
 from shellcheck_lib.general.output import StdOutputFiles
 
 
@@ -31,7 +31,7 @@ class MainProgram:
         raise NotImplementedError()
 
     def execute_test_suite(self,
-                           settings: TestSuiteExecutionSettings) -> int:
+                           settings: Settings) -> int:
         raise NotImplementedError()
 
     def execute_help(self,
