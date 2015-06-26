@@ -1,14 +1,14 @@
 import unittest
 
 from shellcheck_lib.test_case import test_case_struct
-from shellcheck_lib_test.execution.test_full_execution.util.test_case_base import FullExecutionTestCaseBase
+from shellcheck_lib_test.execution.full_execution.util.test_case_base import FullExecutionTestCaseBase
 from shellcheck_lib_test.util.expected_instruction_failure import ExpectedInstructionFailureBase
 from shellcheck_lib.execution.result import FullResultStatus
-from shellcheck_lib_test.execution.test_full_execution.util.recording_instructions_for_sequence_tests import \
+from shellcheck_lib_test.execution.full_execution.util.recording_instructions_for_sequence_tests import \
     record_file_path
-from shellcheck_lib_test.execution.test_full_execution.util.recording_instructions_for_sequence_tests import \
+from shellcheck_lib_test.execution.full_execution.util.recording_instructions_for_sequence_tests import \
     record_file_contents_from_lines
-from shellcheck_lib_test.execution.test_full_execution.util.test_case_generation_for_sequence_tests import \
+from shellcheck_lib_test.execution.full_execution.util.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorForExecutionRecording
 
 

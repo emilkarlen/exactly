@@ -3,7 +3,6 @@ import tempfile
 import unittest
 
 from shellcheck_lib.test_suite.suite_hierarchy_reading import read
-
 from shellcheck_lib_test.util.file_structure import DirContents
 
 

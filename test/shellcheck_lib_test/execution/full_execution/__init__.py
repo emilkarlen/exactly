@@ -1,6 +1,6 @@
 import unittest
 
-from shellcheck_lib_test.execution.test_full_execution import \
+from shellcheck_lib_test.execution.full_execution import \
     test_execution_mode__normal, \
     test_execution_mode__skipped, \
     test_execution_mode__xfail, \

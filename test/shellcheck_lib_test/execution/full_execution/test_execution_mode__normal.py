@@ -1,16 +1,16 @@
 import unittest
 
 from shellcheck_lib.execution.phase_step import PhaseStep
-from shellcheck_lib_test.execution.test_full_execution.util.test_case_generation_for_sequence_tests import \
+from shellcheck_lib_test.execution.full_execution.util.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorForExecutionRecording, \
     TestCaseThatRecordsExecutionWithExtraInstructionList
 from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib.execution import phase_step, phases
-from shellcheck_lib_test.execution.test_full_execution.util.test_case_that_records_phase_execution import \
+from shellcheck_lib_test.execution.full_execution.util.test_case_that_records_phase_execution import \
     TestCaseThatRecordsExecution
 from shellcheck_lib_test.util.expected_instruction_failure import ExpectedInstructionFailureForNoFailure, \
     ExpectedInstructionFailureForFailure
-from shellcheck_lib_test.execution.test_full_execution.util import instruction_test_resources
+from shellcheck_lib_test.execution.full_execution.util import instruction_test_resources
 from shellcheck_lib.test_case import pass_or_fail_or_hard_error_construction, \
     success_or_validation_hard_or_error_construction, \
     success_or_hard_error_construction
