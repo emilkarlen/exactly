@@ -14,16 +14,15 @@ from shellcheck_lib.test_suite.suite_hierarchy_reading import SuiteHierarchyRead
 from shellcheck_lib_test.util.str_std_out_files import StringStdOutFiles
 
 
-class TestCase(unittest.TestCase):
+class TestError(unittest.TestCase):
     def test_error_when_reading_suite_structure(self):
         # ARRANGE #
         str_std_out_files = StringStdOutFiles()
         suite_hierarchy_reader = ReaderThatRaisesParseError()
         reporter_factory = ExecutionTracingReporterFactory()
-        execution_settings = settings.Settings(
-            reporter_factory,
-            DepthFirstEnumerator(),
-            pathlib.Path('root-suite-file'))
+        execution_settings = settings.Settings(reporter_factory,
+                                               DepthFirstEnumerator(),
+                                               pathlib.Path('root-suite-file'))
         executor = Executor(str_std_out_files.stdout_files,
                             suite_hierarchy_reader,
                             execution_settings)
@@ -37,6 +36,11 @@ class TestCase(unittest.TestCase):
             [],
             reporter_factory.complete_suite_reporter.sub_suite_reporters,
             'Sub-suite reporters')
+
+        self.assertEqual(
+            '',
+            str_std_out_files.stdout_contents,
+            'Output on stdout')
 
 
 class ReaderThatRaisesParseError(SuiteHierarchyReader):
@@ -59,10 +63,10 @@ class ExecutionTracingSubSuiteReporter(reporting.SubSuiteReporter):
     def suite_end(self):
         self.num_suite_end_invocations += 1
 
-    def case_begin(self, case: TestCase):
+    def case_begin(self, case: TestError):
         self.case_begin_invocations.append(case)
 
-    def case_end(self, case: TestCase, full_result: FullResult):
+    def case_end(self, case: TestError, full_result: FullResult):
         self.case_begin_invocations.append((case, full_result))
 
 
@@ -95,7 +99,7 @@ class ExecutionTracingReporterFactory(reporting.ReporterFactory):
 
 def suite():
     ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestCase))
+    ret_val.addTest(unittest.makeSuite(TestError))
     return ret_val
 
 
