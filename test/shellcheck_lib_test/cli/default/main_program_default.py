@@ -1,9 +1,8 @@
-import io
 import os
 import unittest
 
 from shellcheck_lib.execution.result import FullResultStatus
-from shellcheck_lib.general.output import StdOutputFiles
+from shellcheck_lib_test.util.str_std_out_files import StringStdOutFiles
 from shellcheck_lib_test.util.with_tmp_file import tmp_file_containing, tmp_file_containing_lines
 from shellcheck_lib.cli import main_program
 from shellcheck_lib.cli.default import default_main_program as sut
@@ -22,17 +21,13 @@ instructions_setup = InstructionsSetup(
 
 
 def execute_main_program(arguments: list):
-    stdout_file = io.StringIO()
-    stderr_file = io.StringIO()
-    program = sut.MainProgram(StdOutputFiles(stdout_file, stderr_file),
+    str_std_out_files = StringStdOutFiles()
+    program = sut.MainProgram(str_std_out_files.stdout_files,
                               name_argument_splitter,
                               instructions_setup)
     exit_status = program.execute(arguments)
-    stdout_contents = stdout_file.getvalue()
-    stdout_file.close()
-    stderr_contents = stderr_file.getvalue()
-    stderr_file.close()
-    return exit_status, stdout_contents, stderr_contents
+    str_std_out_files.finish()
+    return exit_status, str_std_out_files.stdout_contents, str_std_out_files.stderr_contents
 
 
 class TestTestCaseWithoutInstructions(unittest.TestCase):

@@ -1,7 +1,7 @@
 import pathlib
 
 from shellcheck_lib.test_suite import reporting
-from shellcheck_lib.test_suite.structure import SuiteEnumerator
+from shellcheck_lib.test_suite.enumeration import SuiteEnumerator
 
 EXIT__INVALID_SUITE_STRUCTURE = 3
 
