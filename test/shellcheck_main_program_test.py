@@ -3,8 +3,8 @@ import shutil
 import unittest
 import sys
 
-from shellcheck_lib.cli.execution_mode.test_case import argument_parsing
 from shellcheck_lib.cli.main_program import EXIT_INVALID_USAGE
+import shellcheck_lib.cli.utils
 from shellcheck_lib.execution import execution_directory_structure
 from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib.test_case import instructions
@@ -13,7 +13,6 @@ from shellcheck_lib_test.execution.test_execution_directory_structure import \
 from shellcheck_lib_test.util.file_checks import FileChecker
 from shellcheck_lib_test.util.with_tmp_file import lines_content, SubProcessResult, \
     ExpectedSubProcessResult, run_subprocess_with_file_arg__full, SubProcessResultInfo
-
 
 SRC_DIR_NAME = 'src'
 MAIN_PROGRAM_FILE_NAME = 'shellcheck.py'
@@ -111,7 +110,8 @@ class TestsWithPreservedExecutionDirectoryStructure(UnitTestCaseWithUtils):
         test_case_source = lines_content(test_case_source_lines)
         # ACT #
         actual = self._run_shellcheck_in_sub_process(test_case_source,
-                                                     flags=['--interpreter', argument_parsing.INTERPRETER_FOR_TEST,
+                                                     flags=['--interpreter',
+                                                            shellcheck_lib.cli.utils.INTERPRETER_FOR_TEST,
                                                             '--keep'])
         # ASSERT #
         self.assertEqual(FullResultStatus.PASS.value,
@@ -166,7 +166,8 @@ class TestsExecuteActPhase(UnitTestCaseWithUtils):
         test_case_source = lines_content(test_case_source_lines)
         # ACT #
         actual = self._run_shellcheck_in_sub_process(test_case_source,
-                                                     flags=['--interpreter', argument_parsing.INTERPRETER_FOR_TEST,
+                                                     flags=['--interpreter',
+                                                            shellcheck_lib.cli.utils.INTERPRETER_FOR_TEST,
                                                             '--act']).sub_process_result
         # ASSERT #
         self.assertEqual(72,

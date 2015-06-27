@@ -39,10 +39,10 @@ class CompleteSuiteReporter(reporting.CompleteSuiteReporter, reporting.SubSuiteR
         return self._exit_code
 
     def suite_begin(self):
-        self._out_line('SUITE ' + self._current_suite.source_file + ': BEGIN')
+        self._out_line('SUITE ' + str(self._current_suite.source_file) + ': BEGIN')
 
     def suite_end(self):
-        self._out_line('SUITE ' + self._current_suite.source_file + ': END')
+        self._out_line('SUITE ' + str(self._current_suite.source_file) + ': END')
 
     def case_begin(self, case: test_case_processing.TestCase):
         self._std_output_files.out.write(str(case.file_path) + ': ')

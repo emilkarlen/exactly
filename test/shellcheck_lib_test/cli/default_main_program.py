@@ -3,7 +3,7 @@ import unittest
 
 from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib_test.util.str_std_out_files import StringStdOutFiles
-from shellcheck_lib_test.util.with_tmp_file import tmp_file_containing, tmp_file_containing_lines
+from shellcheck_lib_test.util.with_tmp_file import tmp_file_containing, tmp_file_containing_lines, lines_content
 from shellcheck_lib.cli import main_program
 from shellcheck_lib.cli import default_main_program as sut
 from shellcheck_lib.default.execution_mode.test_case.instruction_setup import InstructionsSetup
@@ -84,6 +84,42 @@ class TestTestCaseWithoutInstructions(unittest.TestCase):
                          'Output on stdout')
 
 
+class TestTestSuite(unittest.TestCase):
+    def test_invalid_usage(self):
+        # ARRANGE #
+        test_case_source = ''
+        with tmp_file_containing(test_case_source) as file_path:
+            argv = ['suite', '--invalid-option-that-should-cause-failure', str(file_path)]
+            # ACT #
+            exit_status, stdout_contents, stderr_contents = execute_main_program(argv)
+        # ASSERT #
+        self.assertEqual(main_program.EXIT_INVALID_USAGE,
+                         exit_status,
+                         'Exit Status')
+        self.assertEqual('',
+                         stdout_contents,
+                         'Output on stdout')
+        self.assertTrue(len(stderr_contents) > 0,
+                        'An error message should be printed on stderr')
+
+    def test_empty_file(self):
+        # ARRANGE #
+        test_case_source = ''
+        with tmp_file_containing(test_case_source) as file_path:
+            argv = ['suite', str(file_path)]
+            # ACT #
+            exit_status, stdout_contents, stderr_contents = execute_main_program(argv)
+        # ASSERT #
+        self.assertEqual(0,
+                         exit_status,
+                         'Exit Status')
+        output = lines_content(['SUITE ' + str(file_path) + ': BEGIN',
+                                'SUITE ' + str(file_path) + ': END'])
+        self.assertEqual(output,
+                         stdout_contents,
+                         'Output on stdout')
+
+
 class TestHelp(unittest.TestCase):
     def test_invalid_usage(self):
         # ARRANGE #
@@ -111,6 +147,7 @@ class TestHelp(unittest.TestCase):
 def suite():
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestTestCaseWithoutInstructions))
+    ret_val.addTest(unittest.makeSuite(TestTestSuite))
     ret_val.addTest(unittest.makeSuite(TestHelp))
     return ret_val
 

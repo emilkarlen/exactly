@@ -1,0 +1,31 @@
+import pathlib
+import argparse
+
+from shellcheck_lib.cli import argument_parsing_utils
+from .settings import Settings
+
+
+def parse(argv: list) -> Settings:
+    """
+    :raises ArgumentParsingError Invalid usage
+    :param argv:
+    :return:
+    """
+    argument_parser = _new_argument_parser()
+    namespace = argument_parsing_utils.raise_exception_instead_of_exiting_on_error(argument_parser,
+                                                                                   argv)
+    return Settings(namespace.interpreter,
+                    pathlib.Path(namespace.file).resolve())
+
+
+def _new_argument_parser() -> argparse.ArgumentParser:
+    ret_val = argparse.ArgumentParser(description='Execute Shellcheck test case')
+    ret_val.add_argument('file',
+                         type=str,
+                         help='The file containing the test case')
+    ret_val.add_argument('--interpreter',
+                         metavar="INTERPRETER",
+                         nargs=1,
+                         help="""\
+                        Executable that executes the script of the act phase.""")
+    return ret_val

@@ -2,11 +2,7 @@ import pathlib
 import argparse
 
 from shellcheck_lib.cli import argument_parsing_utils
-
 from .settings import Output, TestCaseExecutionSettings
-
-
-INTERPRETER_FOR_TEST = 'test-language'
 
 
 def parse(argv: list) -> TestCaseExecutionSettings:
