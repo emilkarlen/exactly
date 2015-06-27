@@ -16,7 +16,7 @@ from shellcheck_lib.test_suite import reporting
 from shellcheck_lib.test_suite import test_case_processing
 from shellcheck_lib.test_suite.suite_hierarchy_reading import SuiteHierarchyReader
 from shellcheck_lib.test_suite.test_case_processing import TestCaseProcessingStatus, TestCaseProcessingResult, \
-    TestCaseReadingError
+    TestCaseAccessError
 from shellcheck_lib_test.util.str_std_out_files import StringStdOutFiles
 
 
@@ -75,7 +75,7 @@ class TestReturnValueFromTestCaseProcessor(unittest.TestCase):
         self._helper_for_test_of_return_value_from_test_case_processor(result)
 
     def test_reading_error(self):
-        result = test_case_processing.new_reading_error(TestCaseReadingError.FILE_ACCESS_ERROR)
+        result = test_case_processing.new_access_error(TestCaseAccessError.FILE_ACCESS_ERROR)
         self._helper_for_test_of_return_value_from_test_case_processor(result)
 
     def test_executed__skipped(self):
@@ -120,7 +120,7 @@ class TestComplexSuite(unittest.TestCase):
         reporter_factory = ExecutionTracingReporterFactory()
         str_std_out_files = StringStdOutFiles()
         tc_internal_error = structure.TestCase(Path('internal error'))
-        tc_read_error = structure.TestCase(Path('read error'))
+        tc_access_error = structure.TestCase(Path('access error'))
         tc_executed = structure.TestCase(Path('executed'))
         root = structure.TestSuite(
             pathlib.Path('root'),
@@ -128,19 +128,19 @@ class TestComplexSuite(unittest.TestCase):
             [],
             [
                 tc_internal_error,
-                tc_read_error,
+                tc_access_error,
                 tc_executed,
             ])
         test_case_processor = TestCaseProcessorThatGivesConstantPerCase({
             id(tc_internal_error): test_case_processing.new_internal_error('message'),
-            id(tc_read_error): test_case_processing.new_reading_error(TestCaseReadingError.PARSE_ERROR),
+            id(tc_access_error): test_case_processing.new_access_error(TestCaseAccessError.PARSE_ERROR),
             id(tc_executed): test_case_processing.new_executed(FULL_RESULT_PASS),
         })
         expected_suites = [
             ExpectedSuiteReporting(root,
                                    [
                                        (tc_internal_error, TestCaseProcessingStatus.INTERNAL_ERROR),
-                                       (tc_read_error, TestCaseProcessingStatus.READ_ERROR),
+                                       (tc_access_error, TestCaseProcessingStatus.ACCESS_ERROR),
                                        (tc_executed, TestCaseProcessingStatus.EXECUTED),
                                    ])
         ]
@@ -209,8 +209,8 @@ class TestComplexSuite(unittest.TestCase):
         str_std_out_files = StringStdOutFiles()
         tc_internal_error_11 = structure.TestCase(Path('internal error 11'))
         tc_internal_error_21 = structure.TestCase(Path('internal error 21'))
-        tc_read_error_1 = structure.TestCase(Path('read error A'))
-        tc_read_error_12 = structure.TestCase(Path('read error 12'))
+        tc_access_error_1 = structure.TestCase(Path('access error A'))
+        tc_access_error_12 = structure.TestCase(Path('access error 12'))
         tc_executed_11 = structure.TestCase(Path('executed 11'))
         tc_executed_12 = structure.TestCase(Path('executed 12'))
         tc_executed_1 = structure.TestCase(Path('executed 1'))
@@ -219,8 +219,8 @@ class TestComplexSuite(unittest.TestCase):
         test_case_processor = TestCaseProcessorThatGivesConstantPerCase({
             id(tc_internal_error_11): test_case_processing.new_internal_error('message A'),
             id(tc_internal_error_21): test_case_processing.new_internal_error('messageB'),
-            id(tc_read_error_1): test_case_processing.new_reading_error(TestCaseReadingError.PARSE_ERROR),
-            id(tc_read_error_12): test_case_processing.new_reading_error(TestCaseReadingError.FILE_ACCESS_ERROR),
+            id(tc_access_error_1): test_case_processing.new_access_error(TestCaseAccessError.PARSE_ERROR),
+            id(tc_access_error_12): test_case_processing.new_access_error(TestCaseAccessError.FILE_ACCESS_ERROR),
             id(tc_executed_11): test_case_processing.new_executed(FULL_RESULT_PASS),
             id(tc_executed_12): test_case_processing.new_executed(FULL_RESULT_PASS),
             id(tc_executed_1): test_case_processing.new_executed(FULL_RESULT_PASS),
@@ -230,8 +230,8 @@ class TestComplexSuite(unittest.TestCase):
         sub11 = structure.TestSuite(pathlib.Path('11'), [], [], [tc_internal_error_11,
                                                                  tc_executed_11])
         sub12 = structure.TestSuite(pathlib.Path('12'), [], [], [tc_executed_12,
-                                                                 tc_read_error_12])
-        sub1 = structure.TestSuite(pathlib.Path('1'), [], [sub11, sub12], [tc_read_error_1,
+                                                                 tc_access_error_12])
+        sub1 = structure.TestSuite(pathlib.Path('1'), [], [sub11, sub12], [tc_access_error_1,
                                                                            tc_executed_1])
         sub21 = structure.TestSuite(pathlib.Path('21'), [], [], [tc_internal_error_21])
         sub2 = structure.TestSuite(pathlib.Path('2'), [], [sub21], [tc_executed_2])
@@ -241,8 +241,8 @@ class TestComplexSuite(unittest.TestCase):
             ExpectedSuiteReporting(sub11, [(tc_internal_error_11, TestCaseProcessingStatus.INTERNAL_ERROR),
                                            (tc_executed_11, TestCaseProcessingStatus.EXECUTED)]),
             ExpectedSuiteReporting(sub12, [(tc_executed_12, TestCaseProcessingStatus.EXECUTED),
-                                           (tc_read_error_12, TestCaseProcessingStatus.READ_ERROR)]),
-            ExpectedSuiteReporting(sub1, [(tc_read_error_1, TestCaseProcessingStatus.READ_ERROR),
+                                           (tc_access_error_12, TestCaseProcessingStatus.ACCESS_ERROR)]),
+            ExpectedSuiteReporting(sub1, [(tc_access_error_1, TestCaseProcessingStatus.ACCESS_ERROR),
                                           (tc_executed_1, TestCaseProcessingStatus.EXECUTED)]),
             ExpectedSuiteReporting(sub21, [(tc_internal_error_21, TestCaseProcessingStatus.INTERNAL_ERROR)]),
             ExpectedSuiteReporting(sub2, [(tc_executed_2, TestCaseProcessingStatus.EXECUTED)]),
