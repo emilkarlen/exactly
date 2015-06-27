@@ -92,6 +92,17 @@ class AccessorError(Exception):
         return self._error_info
 
 
+class IdentityPreprocessor(Preprocessor):
+    """
+    A pre-processor that does nothing.
+    """
+
+    def apply(self,
+              test_case_file_path: pathlib.Path,
+              test_case_source: str) -> str:
+        return test_case_source
+
+
 class Accessor:
     def __init__(self,
                  source_reader: SourceReader,

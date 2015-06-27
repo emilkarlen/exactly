@@ -3,8 +3,18 @@ import unittest
 
 from shellcheck_lib.document.model import new_empty_phase_contents
 from shellcheck_lib.test_case import processing_utils as sut
+from shellcheck_lib.test_case.processing_utils import IdentityPreprocessor
 from shellcheck_lib.test_case.test_case_doc import TestCase
 from shellcheck_lib.test_case.test_case_processing import AccessErrorType
+
+
+class TestIdentityPreprocessor(unittest.TestCase):
+    def test(self):
+        # ACT #
+        actual = IdentityPreprocessor().apply(PATH, 'source')
+        # ASSERT #
+        self.assertEqual('source',
+                         actual)
 
 
 class TestAccessor(unittest.TestCase):
@@ -161,6 +171,7 @@ TEST_CASE = TestCase(new_empty_phase_contents(),
 
 def suite():
     ret_val = unittest.TestSuite()
+    ret_val.addTest(unittest.makeSuite(TestIdentityPreprocessor))
     ret_val.addTest(unittest.makeSuite(TestAccessor))
     return ret_val
 
