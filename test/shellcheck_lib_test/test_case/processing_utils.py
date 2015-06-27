@@ -89,6 +89,20 @@ class TestProcessorFromAccessorAndExecutor(unittest.TestCase):
         self.assertEqual(result.message,
                          'exception message')
 
+    def test_implementation_exception_from_accessor(self):
+        # ARRANGE #
+        accessor = sut.Accessor(SourceReaderThat(raises(RuntimeError())),
+                                PreprocessorThat(gives_constant('preprocessed source')),
+                                ParserThat(gives_constant(TEST_CASE)))
+        executor = ExecutorThat(raises(PROCESS_ERROR))
+        processor = sut.ProcessorFromAccessorAndExecutor(accessor,
+                                                         executor)
+        # ACT #
+        result = processor.apply(test_case_processing.TestCase(PATH))
+        # ASSERT #
+        self.assertEqual(result.status,
+                         test_case_processing.Status.INTERNAL_ERROR)
+
 
 class SourceReaderThat(sut.SourceReader):
     def __init__(self, f):
