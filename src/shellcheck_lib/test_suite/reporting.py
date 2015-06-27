@@ -16,7 +16,7 @@ class SubSuiteReporter:
 
     def case_end(self,
                  case: structure.TestCase,
-                 result: test_case_processing.TestCaseProcessingResult):
+                 result: test_case_processing.Result):
         raise NotImplementedError()
 
 

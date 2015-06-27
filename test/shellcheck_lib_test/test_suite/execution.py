@@ -15,8 +15,6 @@ from shellcheck_lib.test_suite.parse import SuiteSyntaxError
 from shellcheck_lib.test_suite import reporting
 from shellcheck_lib.test_suite import test_case_processing
 from shellcheck_lib.test_suite.suite_hierarchy_reading import SuiteHierarchyReader
-from shellcheck_lib.test_suite.test_case_processing import TestCaseProcessingStatus, TestCaseProcessingResult, \
-    TestCaseAccessError
 from shellcheck_lib_test.util.str_std_out_files import StringStdOutFiles
 
 
@@ -63,7 +61,7 @@ class TestError(unittest.TestCase):
                                          str_std_out_files)
         ExpectedSuiteReporting.check_list(
             self,
-            [ExpectedSuiteReporting(root, [(test_case, TestCaseProcessingStatus.INTERNAL_ERROR)])],
+            [ExpectedSuiteReporting(root, [(test_case, test_case_processing.Status.INTERNAL_ERROR)])],
             reporter_factory.complete_suite_reporter)
 
 
@@ -73,7 +71,7 @@ class TestReturnValueFromTestCaseProcessor(unittest.TestCase):
         self._helper_for_test_of_return_value_from_test_case_processor(result)
 
     def test_reading_error(self):
-        result = test_case_processing.new_access_error(TestCaseAccessError.FILE_ACCESS_ERROR)
+        result = test_case_processing.new_access_error(test_case_processing.AccessError.FILE_ACCESS_ERROR)
         self._helper_for_test_of_return_value_from_test_case_processor(result)
 
     def test_executed__skipped(self):
@@ -85,7 +83,7 @@ class TestReturnValueFromTestCaseProcessor(unittest.TestCase):
         self._helper_for_test_of_return_value_from_test_case_processor(result)
 
     def _helper_for_test_of_return_value_from_test_case_processor(self,
-                                                                  result: TestCaseProcessingResult):
+                                                                  result: test_case_processing.Result):
         # ARRANGE #
         str_std_out_files = StringStdOutFiles()
         test_case = structure.TestCase(Path('test-case'))
@@ -130,15 +128,15 @@ class TestComplexSuite(unittest.TestCase):
             ])
         test_case_processor = TestCaseProcessorThatGivesConstantPerCase({
             id(tc_internal_error): test_case_processing.new_internal_error('message'),
-            id(tc_access_error): test_case_processing.new_access_error(TestCaseAccessError.PARSE_ERROR),
+            id(tc_access_error): test_case_processing.new_access_error(test_case_processing.AccessError.PARSE_ERROR),
             id(tc_executed): test_case_processing.new_executed(FULL_RESULT_PASS),
         })
         expected_suites = [
             ExpectedSuiteReporting(root,
                                    [
-                                       (tc_internal_error, TestCaseProcessingStatus.INTERNAL_ERROR),
-                                       (tc_access_error, TestCaseProcessingStatus.ACCESS_ERROR),
-                                       (tc_executed, TestCaseProcessingStatus.EXECUTED),
+                                       (tc_internal_error, test_case_processing.Status.INTERNAL_ERROR),
+                                       (tc_access_error, test_case_processing.Status.ACCESS_ERROR),
+                                       (tc_executed, test_case_processing.Status.EXECUTED),
                                    ])
         ]
         suite_hierarchy_reader = ReaderThatGivesConstantSuite(root)
@@ -214,8 +212,9 @@ class TestComplexSuite(unittest.TestCase):
         test_case_processor = TestCaseProcessorThatGivesConstantPerCase({
             id(tc_internal_error_11): test_case_processing.new_internal_error('message A'),
             id(tc_internal_error_21): test_case_processing.new_internal_error('messageB'),
-            id(tc_access_error_1): test_case_processing.new_access_error(TestCaseAccessError.PARSE_ERROR),
-            id(tc_access_error_12): test_case_processing.new_access_error(TestCaseAccessError.FILE_ACCESS_ERROR),
+            id(tc_access_error_1): test_case_processing.new_access_error(test_case_processing.AccessError.PARSE_ERROR),
+            id(tc_access_error_12): test_case_processing.new_access_error(
+                test_case_processing.AccessError.FILE_ACCESS_ERROR),
             id(tc_executed_11): test_case_processing.new_executed(FULL_RESULT_PASS),
             id(tc_executed_12): test_case_processing.new_executed(FULL_RESULT_PASS),
             id(tc_executed_1): test_case_processing.new_executed(FULL_RESULT_PASS),
@@ -234,16 +233,16 @@ class TestComplexSuite(unittest.TestCase):
         root = structure.TestSuite(pathlib.Path('root'), [], [sub1, sub2, sub3], [tc_executed_root])
 
         expected_suites = [
-            ExpectedSuiteReporting(sub11, [(tc_internal_error_11, TestCaseProcessingStatus.INTERNAL_ERROR),
-                                           (tc_executed_11, TestCaseProcessingStatus.EXECUTED)]),
-            ExpectedSuiteReporting(sub12, [(tc_executed_12, TestCaseProcessingStatus.EXECUTED),
-                                           (tc_access_error_12, TestCaseProcessingStatus.ACCESS_ERROR)]),
-            ExpectedSuiteReporting(sub1, [(tc_access_error_1, TestCaseProcessingStatus.ACCESS_ERROR),
-                                          (tc_executed_1, TestCaseProcessingStatus.EXECUTED)]),
-            ExpectedSuiteReporting(sub21, [(tc_internal_error_21, TestCaseProcessingStatus.INTERNAL_ERROR)]),
-            ExpectedSuiteReporting(sub2, [(tc_executed_2, TestCaseProcessingStatus.EXECUTED)]),
+            ExpectedSuiteReporting(sub11, [(tc_internal_error_11, test_case_processing.Status.INTERNAL_ERROR),
+                                           (tc_executed_11, test_case_processing.Status.EXECUTED)]),
+            ExpectedSuiteReporting(sub12, [(tc_executed_12, test_case_processing.Status.EXECUTED),
+                                           (tc_access_error_12, test_case_processing.Status.ACCESS_ERROR)]),
+            ExpectedSuiteReporting(sub1, [(tc_access_error_1, test_case_processing.Status.ACCESS_ERROR),
+                                          (tc_executed_1, test_case_processing.Status.EXECUTED)]),
+            ExpectedSuiteReporting(sub21, [(tc_internal_error_21, test_case_processing.Status.INTERNAL_ERROR)]),
+            ExpectedSuiteReporting(sub2, [(tc_executed_2, test_case_processing.Status.EXECUTED)]),
             ExpectedSuiteReporting(sub3, []),
-            ExpectedSuiteReporting(root, [(tc_executed_root, TestCaseProcessingStatus.EXECUTED)]),
+            ExpectedSuiteReporting(root, [(tc_executed_root, test_case_processing.Status.EXECUTED)]),
         ]
         suite_hierarchy_reader = ReaderThatGivesConstantSuite(root)
         executor = Executor(str_std_out_files.stdout_files,
@@ -277,30 +276,30 @@ def check_exit_code_and_empty_stdout(put: unittest.TestCase,
                     'Output to stdout')
 
 
-class TestCaseProcessorThatRaisesUnconditionally(test_case_processing.TestCaseProcessor):
-    def apply(self, test_case: structure.TestCase) -> TestCaseProcessingResult:
+class TestCaseProcessorThatRaisesUnconditionally(test_case_processing.Processor):
+    def apply(self, test_case: structure.TestCase) -> test_case_processing.Result:
         raise NotImplementedError()
 
 
-class TestCaseProcessorThatGivesConstant(test_case_processing.TestCaseProcessor):
+class TestCaseProcessorThatGivesConstant(test_case_processing.Processor):
     def __init__(self,
-                 result: TestCaseProcessingResult):
+                 result: test_case_processing.Result):
         self.result = result
 
-    def apply(self, test_case: structure.TestCase) -> TestCaseProcessingResult:
+    def apply(self, test_case: structure.TestCase) -> test_case_processing.Result:
         return self.result
 
 
-class TestCaseProcessorThatGivesConstantPerCase(test_case_processing.TestCaseProcessor):
+class TestCaseProcessorThatGivesConstantPerCase(test_case_processing.Processor):
     def __init__(self,
                  test_case_id_2_result: dict):
         """
-        :param test_case_id_2_result: int -> TestCaseProcessingResult
+        :param test_case_id_2_result: int -> test_case_processing.TestCaseProcessingResult
         :return:
         """
         self.test_case_id_2_result = test_case_id_2_result
 
-    def apply(self, test_case: structure.TestCase) -> TestCaseProcessingResult:
+    def apply(self, test_case: structure.TestCase) -> test_case_processing.Result:
         return self.test_case_id_2_result[id(test_case)]
 
 
@@ -350,7 +349,7 @@ class ExecutionTracingSubSuiteReporter(reporting.SubSuiteReporter):
 
     def case_end(self,
                  case: structure.TestCase,
-                 result: test_case_processing.TestCaseProcessingResult):
+                 result: test_case_processing.Result):
         self.event_type_list.append(EventType.CASE_END)
         self.case_end_list.append((case, result))
 
@@ -387,7 +386,7 @@ class ExpectedSuiteReporting(tuple):
                 test_suite: structure.TestSuite,
                 case_and_result_status_list: list):
         """
-        :param case_and_result_status_list: [(TestCase, TestCaseProcessingStatus)]
+        :param case_and_result_status_list: [(TestCase, test_case_processing.TestCaseProcessingStatus)]
         """
         return tuple.__new__(cls, (test_suite, case_and_result_status_list))
 

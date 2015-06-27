@@ -15,7 +15,7 @@ class Executor:
                  suite_hierarchy_reader: SuiteHierarchyReader,
                  reporter_factory: reporting.ReporterFactory,
                  suite_enumerator: SuiteEnumerator,
-                 test_case_processor: test_case_processing.TestCaseProcessor,
+                 test_case_processor: test_case_processing.Processor,
                  suite_root_file_path: pathlib.Path):
         self._std = output
         self._suite_hierarchy_reader = suite_hierarchy_reader
@@ -65,7 +65,7 @@ class Executor:
         pass
 
     def _process_case(self,
-                      case: structure.TestCase) -> test_case_processing.TestCaseProcessingResult:
+                      case: structure.TestCase) -> test_case_processing.Result:
         try:
             return self._test_case_processor.apply(case)
         except Exception as ex:
