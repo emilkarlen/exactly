@@ -3,7 +3,6 @@ import pathlib
 from pathlib import Path
 import unittest
 
-from shellcheck_lib.cli.execution_mode.test_suite import settings
 from shellcheck_lib.cli.execution_mode.test_suite.execution import Executor
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.execution.result import new_skipped, new_pass
@@ -27,13 +26,12 @@ class TestError(unittest.TestCase):
         str_std_out_files = StringStdOutFiles()
         suite_hierarchy_reader = ReaderThatRaisesParseError()
         reporter_factory = ExecutionTracingReporterFactory()
-        execution_settings = settings.Settings(reporter_factory,
-                                               DepthFirstEnumerator(),
-                                               Path('root-suite-file'))
         executor = Executor(str_std_out_files.stdout_files,
                             suite_hierarchy_reader,
+                            reporter_factory,
+                            DepthFirstEnumerator(),
                             TestCaseProcessorThatRaisesUnconditionally(),
-                            execution_settings)
+                            Path('root-suite-file'))
         # ACT #
         exit_code = executor.execute()
         # ASSERT #
@@ -50,13 +48,12 @@ class TestError(unittest.TestCase):
         root = structure.TestSuite(Path('root'), [], [], [test_case])
         suite_hierarchy_reader = ReaderThatGivesConstantSuite(root)
         reporter_factory = ExecutionTracingReporterFactory()
-        execution_settings = settings.Settings(reporter_factory,
-                                               DepthFirstEnumerator(),
-                                               pathlib.Path('root-suite-file'))
         executor = Executor(str_std_out_files.stdout_files,
                             suite_hierarchy_reader,
+                            reporter_factory,
+                            DepthFirstEnumerator(),
                             TestCaseProcessorThatRaisesUnconditionally(),
-                            execution_settings)
+                            pathlib.Path('root-suite-file'))
         # ACT #
         exit_code = executor.execute()
         # ASSERT #
@@ -95,13 +92,12 @@ class TestReturnValueFromTestCaseProcessor(unittest.TestCase):
         root = structure.TestSuite(Path('root'), [], [], [test_case])
         suite_hierarchy_reader = ReaderThatGivesConstantSuite(root)
         reporter_factory = ExecutionTracingReporterFactory()
-        execution_settings = settings.Settings(reporter_factory,
-                                               DepthFirstEnumerator(),
-                                               pathlib.Path('root-suite-file'))
         executor = Executor(str_std_out_files.stdout_files,
                             suite_hierarchy_reader,
+                            reporter_factory,
+                            DepthFirstEnumerator(),
                             TestCaseProcessorThatGivesConstant(result),
-                            execution_settings)
+                            pathlib.Path('root-suite-file'))
         # ACT #
         exit_code = executor.execute()
         # ASSERT #
@@ -146,13 +142,12 @@ class TestComplexSuite(unittest.TestCase):
                                    ])
         ]
         suite_hierarchy_reader = ReaderThatGivesConstantSuite(root)
-        execution_settings = settings.Settings(reporter_factory,
-                                               DepthFirstEnumerator(),
-                                               pathlib.Path('root-suite-file'))
         executor = Executor(str_std_out_files.stdout_files,
                             suite_hierarchy_reader,
+                            reporter_factory,
+                            DepthFirstEnumerator(),
                             test_case_processor,
-                            execution_settings)
+                            pathlib.Path('root-suite-file'))
         # ACT #
         exit_code = executor.execute()
         # ASSERT #
@@ -185,13 +180,12 @@ class TestComplexSuite(unittest.TestCase):
             ExpectedSuiteReporting(root, []),
         ]
         suite_hierarchy_reader = ReaderThatGivesConstantSuite(root)
-        execution_settings = settings.Settings(reporter_factory,
-                                               DepthFirstEnumerator(),
-                                               pathlib.Path('root-suite-file'))
         executor = Executor(str_std_out_files.stdout_files,
                             suite_hierarchy_reader,
+                            reporter_factory,
+                            DepthFirstEnumerator(),
                             TestCaseProcessorThatGivesConstantPerCase({}),
-                            execution_settings)
+                            pathlib.Path('root-suite-file'))
         # ACT #
         exit_code = executor.execute()
         # ASSERT #
@@ -252,13 +246,12 @@ class TestComplexSuite(unittest.TestCase):
             ExpectedSuiteReporting(root, [(tc_executed_root, TestCaseProcessingStatus.EXECUTED)]),
         ]
         suite_hierarchy_reader = ReaderThatGivesConstantSuite(root)
-        execution_settings = settings.Settings(reporter_factory,
-                                               DepthFirstEnumerator(),
-                                               pathlib.Path('root-suite-file'))
         executor = Executor(str_std_out_files.stdout_files,
                             suite_hierarchy_reader,
+                            reporter_factory,
+                            DepthFirstEnumerator(),
                             test_case_processor,
-                            execution_settings)
+                            pathlib.Path('root-suite-file'))
         # ACT #
         exit_code = executor.execute()
         # ASSERT #
