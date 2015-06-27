@@ -1,11 +1,13 @@
 import unittest
 
 from . import execution_mode
+from . import main_program_default
 
 
 def suite():
     ret_val = unittest.TestSuite()
     ret_val.addTest(execution_mode.suite())
+    ret_val.addTest(main_program_default.suite())
     return ret_val
 
 
