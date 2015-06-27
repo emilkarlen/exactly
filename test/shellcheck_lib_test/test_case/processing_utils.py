@@ -2,10 +2,11 @@ import pathlib
 import unittest
 
 from shellcheck_lib.document.model import new_empty_phase_contents
+from shellcheck_lib.execution.result import FullResult
 from shellcheck_lib.test_case import processing_utils as sut
 from shellcheck_lib.test_case.processing_utils import IdentityPreprocessor
-from shellcheck_lib.test_case.test_case_doc import TestCase
-from shellcheck_lib.test_case.test_case_processing import AccessErrorType
+from shellcheck_lib.test_case import test_case_doc
+from shellcheck_lib.test_case import test_case_processing
 
 
 class TestIdentityPreprocessor(unittest.TestCase):
@@ -28,7 +29,7 @@ class TestAccessor(unittest.TestCase):
             accessor.apply(PATH)
         # ASSERT #
         self.assertEqual(cm.exception.error,
-                         AccessErrorType.FILE_ACCESS_ERROR)
+                         test_case_processing.AccessErrorType.FILE_ACCESS_ERROR)
 
     def test_preprocessor_that_raises(self):
         # ARRANGE #
@@ -40,7 +41,7 @@ class TestAccessor(unittest.TestCase):
             accessor.apply(PATH)
         # ASSERT #
         self.assertEqual(cm.exception.error,
-                         AccessErrorType.PRE_PROCESS_ERROR)
+                         test_case_processing.AccessErrorType.PRE_PROCESS_ERROR)
 
     def test_parser_that_raises(self):
         # ARRANGE #
@@ -52,7 +53,7 @@ class TestAccessor(unittest.TestCase):
             accessor.apply(PATH)
         # ASSERT #
         self.assertEqual(cm.exception.error,
-                         AccessErrorType.PARSE_ERROR)
+                         test_case_processing.AccessErrorType.PARSE_ERROR)
 
     def test_successful_application(self):
         # ARRANGE #
@@ -66,6 +67,27 @@ class TestAccessor(unittest.TestCase):
         # ASSERT #
         self.assertIs(TEST_CASE,
                       actual)
+
+
+class TestProcessorFromAccessorAndExecutor(unittest.TestCase):
+    def test_accessor_exception_from_accessor(self):
+        # ARRANGE #
+        process_error = sut.ProcessError(sut.ErrorInfo(message='exception message'))
+        accessor = sut.Accessor(SourceReaderThat(raises(process_error)),
+                                PreprocessorThat(gives_constant('preprocessed source')),
+                                ParserThat(gives_constant(TEST_CASE)))
+        executor = ExecutorThat(raises(PROCESS_ERROR))
+        processor = sut.ProcessorFromAccessorAndExecutor(accessor,
+                                                         executor)
+        # ACT #
+        result = processor.apply(test_case_processing.TestCase(PATH))
+        # ASSERT #
+        self.assertEqual(result.status,
+                         test_case_processing.Status.ACCESS_ERROR)
+        self.assertEqual(result.error_type,
+                         test_case_processing.AccessErrorType.FILE_ACCESS_ERROR)
+        self.assertEqual(result.message,
+                         'exception message')
 
 
 class SourceReaderThat(sut.SourceReader):
@@ -115,7 +137,7 @@ class ParserThat(sut.Parser):
 
     def apply(self,
               test_case_file_path: pathlib.Path,
-              test_case_plain_source: str) -> TestCase:
+              test_case_plain_source: str) -> test_case_doc.TestCase:
         return self.f()
 
 
@@ -126,13 +148,34 @@ class ParserThatReturnsIfSame(sut.Parser):
 
     def apply(self,
               test_case_file_path: pathlib.Path,
-              test_case_plain_source: str) -> TestCase:
+              test_case_plain_source: str) -> test_case_doc.TestCase:
         return if_same_then_else_raise(self.expected,
                                        test_case_plain_source,
                                        self.returns)
 
 
-def raises(e: sut.ProcessError):
+class ExecutorThat(sut.Executor):
+    def __init__(self, f):
+        self.f = f
+
+    def apply(self,
+              test_case: test_case_doc.TestCase) -> FullResult:
+        self.f()
+
+
+class ExecutorThatReturnsIfSame(sut.Executor):
+    def __init__(self, expected, returns):
+        self.expected = expected
+        self.returns = returns
+
+    def apply(self,
+              test_case: test_case_doc.TestCase) -> FullResult:
+        return if_same_then_else_raise(self.expected,
+                                       test_case,
+                                       self.returns)
+
+
+def raises(e: Exception):
     def f():
         raise e
 
@@ -162,17 +205,18 @@ PROCESS_ERROR = sut.ProcessError(sut.ErrorInfo(message='exception message'))
 
 PATH = pathlib.Path('path')
 
-TEST_CASE = TestCase(new_empty_phase_contents(),
-                     new_empty_phase_contents(),
-                     new_empty_phase_contents(),
-                     new_empty_phase_contents(),
-                     new_empty_phase_contents())
+TEST_CASE = test_case_doc.TestCase(new_empty_phase_contents(),
+                                   new_empty_phase_contents(),
+                                   new_empty_phase_contents(),
+                                   new_empty_phase_contents(),
+                                   new_empty_phase_contents())
 
 
 def suite():
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestIdentityPreprocessor))
     ret_val.addTest(unittest.makeSuite(TestAccessor))
+    ret_val.addTest(unittest.makeSuite(TestProcessorFromAccessorAndExecutor))
     return ret_val
 
 

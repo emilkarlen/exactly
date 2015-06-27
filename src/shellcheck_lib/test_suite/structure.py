@@ -1,16 +1,6 @@
 import pathlib
 
 
-class TestCase:
-    def __init__(self,
-                 file_path: pathlib.Path):
-        self.__file_path = file_path
-
-    @property
-    def file_path(self) -> pathlib.Path:
-        return self.__file_path
-
-
 class TestSuite:
     """
     A root-suite with a hierarchy of sub-suites.
