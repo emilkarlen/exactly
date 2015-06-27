@@ -3,7 +3,7 @@ import pathlib
 from pathlib import Path
 import unittest
 
-from shellcheck_lib.cli.execution_mode.test_suite.execution import Executor
+from shellcheck_lib.test_suite.execution import Executor
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.execution.result import new_skipped, new_pass
 from shellcheck_lib.general import line_source
