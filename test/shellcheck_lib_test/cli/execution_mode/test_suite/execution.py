@@ -1,3 +1,4 @@
+import enum
 import pathlib
 from pathlib import Path
 import unittest
@@ -324,27 +325,38 @@ class ReaderThatGivesConstantSuite(SuiteHierarchyReader):
         return self.constant
 
 
+class EventType(enum.Enum):
+    """
+    Type for tracking sequence of invocations of methods of SubSuiteReporter.
+    """
+    SUITE_BEGIN = 1
+    CASE_BEGIN = 2
+    CASE_END = 3
+    SUITE_END = 4
+
+
 class ExecutionTracingSubSuiteReporter(reporting.SubSuiteReporter):
     def __init__(self,
                  sub_suite: structure.TestSuite):
         self.sub_suite = sub_suite
-        self.num_suite_begin_invocations = 0
-        self.num_suite_end_invocations = 0
+        self.event_type_list = []
         self.case_begin_list = []
         self.case_end_list = []
 
     def suite_begin(self):
-        self.num_suite_begin_invocations += 1
+        self.event_type_list.append(EventType.SUITE_BEGIN)
 
     def suite_end(self):
-        self.num_suite_end_invocations += 1
+        self.event_type_list.append(EventType.SUITE_END)
 
     def case_begin(self, case: TestCase):
+        self.event_type_list.append(EventType.CASE_BEGIN)
         self.case_begin_list.append(case)
 
     def case_end(self,
                  case: structure.TestCase,
                  result: test_case_processing.TestCaseProcessingResult):
+        self.event_type_list.append(EventType.CASE_END)
         self.case_end_list.append((case, result))
 
 
@@ -409,12 +421,6 @@ class ExpectedSuiteReporting(tuple):
               put: unittest.TestCase,
               sr: ExecutionTracingSubSuiteReporter,
               msg_header=''):
-        put.assertEqual(1,
-                        sr.num_suite_begin_invocations,
-                        msg_header + 'Number of invocations of suite-begin')
-        put.assertEqual(1,
-                        sr.num_suite_end_invocations,
-                        msg_header + 'Number of invocations of suite-end')
         put.assertIs(self.suite,
                      sr.sub_suite,
                      msg_header + 'Suite instance')
@@ -436,6 +442,32 @@ class ExpectedSuiteReporting(tuple):
             put.assertIs(exp_status,
                          end_proc_result.status,
                          msg_header + 'Registered status instance for case-end')
+
+        self._check_invokation_sequence(put, sr, msg_header)
+
+    def _check_invokation_sequence(self,
+                                   put: unittest.TestCase,
+                                   sr: ExecutionTracingSubSuiteReporter,
+                                   msg_header=''):
+        expected_num_cases = len(self.case_and_result_status_list)
+        actual_num_events = len(sr.event_type_list)
+        expected_num_events = 2 + 2 * expected_num_cases
+        put.assertEqual(expected_num_events,
+                        actual_num_events,
+                        msg_header + 'Total number of events')
+        put.assertIs(EventType.SUITE_BEGIN,
+                     sr.event_type_list[0],
+                     msg_header + 'First event should be ' + str(EventType.SUITE_BEGIN))
+        put.assertIs(EventType.SUITE_END,
+                     sr.event_type_list[-1],
+                     msg_header + 'Last event should be ' + str(EventType.SUITE_END))
+        for case_idx in range(1, 1 + 2 * expected_num_cases, 2):
+            put.assertIs(EventType.CASE_BEGIN,
+                         sr.event_type_list[case_idx],
+                         msg_header + 'First event of case processing')
+            put.assertIs(EventType.CASE_END,
+                         sr.event_type_list[case_idx + 1],
+                         msg_header + 'Second event of case processing')
 
 
 DUMMY_EDS = ExecutionDirectoryStructure('test-root-dir')
