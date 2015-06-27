@@ -1,6 +1,9 @@
 import enum
 import pathlib
 
+from shellcheck_lib.general import line_source
+from shellcheck_lib.test_case import test_case_doc
+
 from shellcheck_lib.execution.result import FullResult
 
 
@@ -67,6 +70,56 @@ def new_access_error(error: AccessErrorType) -> Result:
 def new_executed(execution_result: FullResult) -> Result:
     return Result(Status.EXECUTED,
                   execution_result=execution_result)
+
+
+class ErrorInfo(tuple):
+    def __new__(cls,
+                message: str=None,
+                file_path: pathlib.Path=None,
+                line: line_source.Line=None,
+                exception: Exception=None):
+        return tuple.__new__(cls, (message, file_path, line, exception))
+
+    @property
+    def message(self) -> str:
+        return self[0]
+
+    @property
+    def file(self) -> pathlib.Path:
+        return self[1]
+
+    @property
+    def line(self) -> line_source.Line:
+        return self[2]
+
+    @property
+    def exception(self) -> Exception:
+        return self[3]
+
+
+class AccessorError(Exception):
+    def __init__(self,
+                 error: AccessErrorType,
+                 error_info: ErrorInfo):
+        self._error = error
+        self._error_info = error_info
+
+    @property
+    def error(self) -> AccessErrorType:
+        return self._error
+
+    @property
+    def error_info(self) -> ErrorInfo:
+        return self._error_info
+
+
+class Accessor:
+    def apply(self,
+              test_case_file_path: pathlib.Path) -> test_case_doc.TestCase:
+        """
+        :raises AccessorError
+        """
+        raise NotImplementedError()
 
 
 class Processor:

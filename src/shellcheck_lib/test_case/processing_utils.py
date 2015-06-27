@@ -1,34 +1,9 @@
 import pathlib
 
 from shellcheck_lib.execution.result import FullResult
-from shellcheck_lib.general import line_source
 from shellcheck_lib.test_case import test_case_doc
 from shellcheck_lib.test_case import test_case_processing as processing
-
-
-class ErrorInfo(tuple):
-    def __new__(cls,
-                message: str=None,
-                file_path: pathlib.Path=None,
-                line: line_source.Line=None,
-                exception: Exception=None):
-        return tuple.__new__(cls, (message, file_path, line, exception))
-
-    @property
-    def message(self) -> str:
-        return self[0]
-
-    @property
-    def file(self) -> pathlib.Path:
-        return self[1]
-
-    @property
-    def line(self) -> line_source.Line:
-        return self[2]
-
-    @property
-    def exception(self) -> Exception:
-        return self[3]
+from shellcheck_lib.test_case.test_case_processing import AccessorError, ErrorInfo
 
 
 class ProcessError(Exception):
@@ -70,27 +45,12 @@ class Parser:
 
 class Executor:
     def apply(self,
-              test_case: processing.TestCase) -> FullResult:
+              test_case_file_path: pathlib.Path,
+              test_case: test_case_doc.TestCase) -> FullResult:
         """
         :raises ProcessError:
         """
         raise NotImplementedError()
-
-
-class AccessorError(Exception):
-    def __init__(self,
-                 error: processing.AccessErrorType,
-                 error_info: ErrorInfo):
-        self._error = error
-        self._error_info = error_info
-
-    @property
-    def error(self) -> processing.AccessErrorType:
-        return self._error
-
-    @property
-    def error_info(self) -> ErrorInfo:
-        return self._error_info
 
 
 class IdentityPreprocessor(Preprocessor):
@@ -104,7 +64,7 @@ class IdentityPreprocessor(Preprocessor):
         return test_case_source
 
 
-class Accessor:
+class AccessorFromParts:
     def __init__(self,
                  source_reader: SourceReader,
                  pre_processor: Preprocessor,
@@ -115,9 +75,6 @@ class Accessor:
 
     def apply(self,
               test_case_file_path: pathlib.Path) -> test_case_doc.TestCase:
-        """
-        :raises AccessorError
-        """
         source = self._apply(self._source_reader.apply,
                              processing.AccessErrorType.FILE_ACCESS_ERROR,
                              test_case_file_path)
@@ -142,7 +99,7 @@ class Accessor:
 
 class ProcessorFromAccessorAndExecutor(processing.Processor):
     def __init__(self,
-                 accessor: Accessor,
+                 accessor: processing.Accessor,
                  executor: Executor):
         self._accessor = accessor
         self._executor = executor
@@ -155,7 +112,8 @@ class ProcessorFromAccessorAndExecutor(processing.Processor):
                 return processing.Result(processing.Status.ACCESS_ERROR,
                                          message=ex.error_info.message,
                                          error_type=ex.error)
-            full_result = self._executor.apply(a_test_case_doc)
+            full_result = self._executor.apply(test_case.file_path,
+                                               a_test_case_doc)
             return processing.new_executed(full_result)
         except Exception as ex:
             return processing.new_internal_error(str(ex))
