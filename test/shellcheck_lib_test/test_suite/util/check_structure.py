@@ -2,6 +2,7 @@ import pathlib
 import tempfile
 import unittest
 
+import shellcheck_lib.test_case.test_case_processing
 from shellcheck_lib.test_suite import structure
 from shellcheck_lib.test_suite.suite_hierarchy_reading import Reader
 from shellcheck_lib_test.util.file_structure import DirContents
@@ -59,8 +60,8 @@ class StructureEqualityChecker:
             self.check_suite(expected_suite, actual_suite)
 
     def check_case(self,
-                   expected: structure.TestCase,
-                   actual: structure.TestCase):
+                   expected: shellcheck_lib.test_case.test_case_processing.TestCase,
+                   actual: shellcheck_lib.test_case.test_case_processing.TestCase):
         self.put.assertEqual(expected.file_path,
                              actual.file_path,
                              'File path of test case')

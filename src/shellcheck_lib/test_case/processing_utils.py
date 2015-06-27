@@ -2,7 +2,7 @@ import pathlib
 
 from shellcheck_lib.execution.result import FullResult
 from shellcheck_lib.general import line_source
-from shellcheck_lib.test_case.test_case_doc import TestCase
+from shellcheck_lib.test_case import test_case_doc
 from shellcheck_lib.test_case import test_case_processing as processing
 
 
@@ -61,7 +61,7 @@ class Preprocessor:
 class Parser:
     def apply(self,
               test_case_file_path: pathlib.Path,
-              test_case_plain_source: str) -> TestCase:
+              test_case_plain_source: str) -> test_case_doc.TestCase:
         """
         :raises ProcessError:
         """
@@ -69,7 +69,8 @@ class Parser:
 
 
 class Executor:
-    def apply(self, test_case: TestCase) -> FullResult:
+    def apply(self,
+              test_case: processing.TestCase) -> FullResult:
         """
         :raises ProcessError:
         """
@@ -113,7 +114,7 @@ class Accessor:
         self._parser = parser
 
     def apply(self,
-              test_case_file_path: pathlib.Path) -> TestCase:
+              test_case_file_path: pathlib.Path) -> test_case_doc.TestCase:
         """
         :raises AccessorError
         """
@@ -137,3 +138,22 @@ class Accessor:
         except ProcessError as ex:
             raise AccessorError(error_type,
                                 ex.error_info)
+
+
+class ProcessorFromAccessorAndExecutor(processing.Processor):
+    def __init__(self,
+                 accessor: Accessor,
+                 executor: Executor):
+        self._accessor = accessor
+        self._executor = executor
+
+    def apply(self, test_case: processing.TestCase) -> processing.Result:
+        try:
+            a_test_case_doc = self._accessor.apply(test_case.file_path)
+        except AccessorError as ex:
+            return processing.Result(processing.Status.ACCESS_ERROR,
+                                     message=ex.error_info.message,
+                                     error_type=ex.error)
+        full_result = self._executor.apply(a_test_case_doc)
+        return processing.Result(processing.Status.EXECUTED,
+                                 full_result=full_result)

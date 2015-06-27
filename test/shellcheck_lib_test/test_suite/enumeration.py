@@ -2,7 +2,8 @@ import pathlib
 import unittest
 
 from shellcheck_lib.test_suite.enumeration import DepthFirstEnumerator
-from shellcheck_lib.test_suite.structure import TestSuite, TestCase
+from shellcheck_lib.test_suite.structure import TestSuite
+from shellcheck_lib.test_case.test_case_processing import TestCase
 
 
 class TestDepthFirstEnumerator(unittest.TestCase):

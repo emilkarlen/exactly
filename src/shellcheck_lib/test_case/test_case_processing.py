@@ -1,7 +1,17 @@
 import enum
+import pathlib
 
 from shellcheck_lib.execution.result import FullResult
-from shellcheck_lib.test_suite import structure
+
+
+class TestCase:
+    def __init__(self,
+                 file_path: pathlib.Path):
+        self.__file_path = file_path
+
+    @property
+    def file_path(self) -> pathlib.Path:
+        return self.__file_path
 
 
 class Status(enum.Enum):
@@ -60,5 +70,5 @@ def new_executed(execution_result: FullResult) -> Result:
 
 
 class Processor:
-    def apply(self, test_case: structure.TestCase) -> Result:
+    def apply(self, test_case: TestCase) -> Result:
         raise NotImplementedError()
