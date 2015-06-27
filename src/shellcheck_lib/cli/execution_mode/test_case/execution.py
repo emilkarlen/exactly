@@ -2,10 +2,8 @@ import os
 import pathlib
 import shutil
 
+from shellcheck_lib.cli.utils import resolve_script_language
 from shellcheck_lib.general.output import StdOutputFiles
-from shellcheck_lib.script_language.act_script_management import ScriptLanguageSetup
-from shellcheck_lib.script_language import python3
-from shellcheck_lib.cli.execution_mode.test_case.argument_parsing import INTERPRETER_FOR_TEST
 from shellcheck_lib.default.execution_mode.test_case import processing
 from shellcheck_lib.default.execution_mode.test_case.instruction_setup import InstructionsSetup
 from shellcheck_lib.cli.execution_mode.test_case.settings import Output, TestCaseExecutionSettings
@@ -69,14 +67,8 @@ class Executor:
                  is_keep_eds: bool) -> test_case_processing.Result:
         configuration = processing.Configuration(self._split_line_into_name_and_argument_function,
                                                  self._instruction_setup,
-                                                 resolve_script_language(self._settings),
+                                                 resolve_script_language(self._settings.interpreter),
                                                  is_keep_eds,
                                                  self._settings.execution_directory_root_name_prefix)
         processor = processing.new_processor(configuration)
         return processor.apply(test_case_processing.TestCase(self._settings.file_path))
-
-
-def resolve_script_language(cl_arguments: TestCaseExecutionSettings) -> ScriptLanguageSetup:
-    if cl_arguments.interpreter and cl_arguments.interpreter == INTERPRETER_FOR_TEST:
-        return python3.new_script_language_setup()
-    return python3.new_script_language_setup()
