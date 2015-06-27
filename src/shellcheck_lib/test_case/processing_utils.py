@@ -149,11 +149,13 @@ class ProcessorFromAccessorAndExecutor(processing.Processor):
 
     def apply(self, test_case: processing.TestCase) -> processing.Result:
         try:
-            a_test_case_doc = self._accessor.apply(test_case.file_path)
-        except AccessorError as ex:
-            return processing.Result(processing.Status.ACCESS_ERROR,
-                                     message=ex.error_info.message,
-                                     error_type=ex.error)
-        full_result = self._executor.apply(a_test_case_doc)
-        return processing.Result(processing.Status.EXECUTED,
-                                 full_result=full_result)
+            try:
+                a_test_case_doc = self._accessor.apply(test_case.file_path)
+            except AccessorError as ex:
+                return processing.Result(processing.Status.ACCESS_ERROR,
+                                         message=ex.error_info.message,
+                                         error_type=ex.error)
+            full_result = self._executor.apply(a_test_case_doc)
+            return processing.new_executed(full_result)
+        except Exception as ex:
+            return processing.new_internal_error(str(ex))
