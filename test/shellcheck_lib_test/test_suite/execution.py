@@ -71,7 +71,7 @@ class TestReturnValueFromTestCaseProcessor(unittest.TestCase):
         self._helper_for_test_of_return_value_from_test_case_processor(result)
 
     def test_reading_error(self):
-        result = test_case_processing.new_access_error(test_case_processing.AccessError.FILE_ACCESS_ERROR)
+        result = test_case_processing.new_access_error(test_case_processing.AccessErrorType.FILE_ACCESS_ERROR)
         self._helper_for_test_of_return_value_from_test_case_processor(result)
 
     def test_executed__skipped(self):
@@ -128,7 +128,8 @@ class TestComplexSuite(unittest.TestCase):
             ])
         test_case_processor = TestCaseProcessorThatGivesConstantPerCase({
             id(tc_internal_error): test_case_processing.new_internal_error('message'),
-            id(tc_access_error): test_case_processing.new_access_error(test_case_processing.AccessError.PARSE_ERROR),
+            id(tc_access_error): test_case_processing.new_access_error(
+                test_case_processing.AccessErrorType.PARSE_ERROR),
             id(tc_executed): test_case_processing.new_executed(FULL_RESULT_PASS),
         })
         expected_suites = [
@@ -212,9 +213,10 @@ class TestComplexSuite(unittest.TestCase):
         test_case_processor = TestCaseProcessorThatGivesConstantPerCase({
             id(tc_internal_error_11): test_case_processing.new_internal_error('message A'),
             id(tc_internal_error_21): test_case_processing.new_internal_error('messageB'),
-            id(tc_access_error_1): test_case_processing.new_access_error(test_case_processing.AccessError.PARSE_ERROR),
+            id(tc_access_error_1): test_case_processing.new_access_error(
+                test_case_processing.AccessErrorType.PARSE_ERROR),
             id(tc_access_error_12): test_case_processing.new_access_error(
-                test_case_processing.AccessError.FILE_ACCESS_ERROR),
+                test_case_processing.AccessErrorType.FILE_ACCESS_ERROR),
             id(tc_executed_11): test_case_processing.new_executed(FULL_RESULT_PASS),
             id(tc_executed_12): test_case_processing.new_executed(FULL_RESULT_PASS),
             id(tc_executed_1): test_case_processing.new_executed(FULL_RESULT_PASS),

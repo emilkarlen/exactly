@@ -10,7 +10,7 @@ class Status(enum.Enum):
     EXECUTED = 3
 
 
-class AccessError(enum.Enum):
+class AccessErrorType(enum.Enum):
     FILE_ACCESS_ERROR = 1
     PRE_PROCESS_ERROR = 2
     PARSE_ERROR = 3
@@ -20,12 +20,12 @@ class Result(tuple):
     def __new__(cls,
                 status: Status,
                 message: str=None,
-                access_error: AccessError=None,
+                error_type: AccessErrorType=None,
                 execution_result: FullResult=None):
         """
         Exactly only one of the arguments must be non-None.
         """
-        return tuple.__new__(cls, (status, message, access_error, execution_result))
+        return tuple.__new__(cls, (status, message, error_type, execution_result))
 
     @property
     def status(self) -> Status:
@@ -36,7 +36,7 @@ class Result(tuple):
         return self[1]
 
     @property
-    def access_error(self) -> AccessError:
+    def error_type(self) -> AccessErrorType:
         return self[2]
 
     @property
@@ -49,9 +49,9 @@ def new_internal_error(message: str) -> Result:
                   message=message)
 
 
-def new_access_error(error: AccessError) -> Result:
+def new_access_error(error: AccessErrorType) -> Result:
     return Result(Status.ACCESS_ERROR,
-                  access_error=error)
+                  error_type=error)
 
 
 def new_executed(execution_result: FullResult) -> Result:
