@@ -3,7 +3,7 @@ from pathlib import Path
 import functools
 
 from shellcheck_lib.execution.phase_step import PhaseStep
-from shellcheck_lib.test_case import test_case_struct
+from shellcheck_lib.test_case import test_case_doc
 from shellcheck_lib.test_case import instructions as i
 from shellcheck_lib.test_case import success_or_validation_hard_or_error_construction as validation_result
 from shellcheck_lib.test_case import success_or_hard_error_construction as execution_result
@@ -125,6 +125,6 @@ class TestCaseSetupWithRecorder(tuple):
 
 def new_recording_test_case(
         setup_with_recorder: TestCaseSetupWithRecorder,
-        recorder: Recorder) -> test_case_struct.TestCase:
+        recorder: Recorder) -> test_case_doc.TestCase:
     return instruction_that_do_and_return.TestCaseGeneratorForTestCaseSetup(
         setup_with_recorder.as_plain_test_case_setup(recorder)).test_case

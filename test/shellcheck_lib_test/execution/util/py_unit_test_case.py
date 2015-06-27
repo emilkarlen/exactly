@@ -4,13 +4,13 @@ import pathlib
 import types
 import unittest
 
-from shellcheck_lib.test_case.test_case_struct import TestCase
+from shellcheck_lib.test_case.test_case_doc import TestCase
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.execution.partial_execution import execute_test_case_in_execution_directory, PartialExecutor
 from shellcheck_lib.document import model
 from shellcheck_lib.general import line_source
 from shellcheck_lib.script_language import python3
-from shellcheck_lib.test_case import test_case_struct
+from shellcheck_lib.test_case import test_case_doc
 from shellcheck_lib.execution import phases
 from shellcheck_lib_test.execution.util import utils, instruction_adapter
 from shellcheck_lib_test.execution.util.test_case_generation import TestCaseGeneratorBase
@@ -95,8 +95,8 @@ class UnitTestCaseForPy3Language:
                                            path,
                                            expected_contents)
 
-    def _test_case(self) -> test_case_struct.TestCase:
-        return test_case_struct.TestCase(
+    def _test_case(self) -> test_case_doc.TestCase:
+        return test_case_doc.TestCase(
             model.PhaseContents(tuple(self._anonymous_phase())),
             model.PhaseContents(tuple(self._setup_phase())),
             model.PhaseContents(tuple(self._act_phase())),

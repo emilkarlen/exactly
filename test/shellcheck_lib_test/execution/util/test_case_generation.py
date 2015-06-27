@@ -1,6 +1,6 @@
 from shellcheck_lib.document import model
 from shellcheck_lib.general import line_source
-from shellcheck_lib.test_case import test_case_struct
+from shellcheck_lib.test_case import test_case_doc
 
 
 class TestCaseGeneratorBase:
@@ -17,13 +17,13 @@ class TestCaseGeneratorBase:
         self.__test_case = None
 
     @property
-    def test_case(self) -> test_case_struct.TestCase:
+    def test_case(self) -> test_case_doc.TestCase:
         if self.__test_case is None:
             self.__test_case = self._generate()
         return self.__test_case
 
-    def _generate(self) -> test_case_struct.TestCase:
-        return test_case_struct.TestCase(
+    def _generate(self) -> test_case_doc.TestCase:
+        return test_case_doc.TestCase(
             self.__from(self._anonymous_phase()),
             self.__from(self._setup_phase()),
             self.__from(self._act_phase()),

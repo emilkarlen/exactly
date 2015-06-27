@@ -7,7 +7,7 @@ from shellcheck_lib.general import line_source
 from shellcheck_lib.general.line_source import LineSource
 from shellcheck_lib.instructions.instruction_parser_for_single_phase import \
     InstructionParserForDictionaryOfInstructions
-from shellcheck_lib.test_case import test_case_struct
+from shellcheck_lib.test_case import test_case_doc
 from shellcheck_lib.test_case import instructions
 
 
@@ -17,9 +17,9 @@ class Parser:
         self.__plain_file_parser = plain_file_parser
 
     def apply(self,
-              plain_test_case: LineSource) -> test_case_struct.TestCase:
+              plain_test_case: LineSource) -> test_case_doc.TestCase:
         document = self.__plain_file_parser.apply(plain_test_case)
-        return test_case_struct.TestCase(
+        return test_case_doc.TestCase(
             document.elements_for_phase_or_empty_if_phase_not_present(phases.ANONYMOUS.name),
             document.elements_for_phase_or_empty_if_phase_not_present(phases.SETUP.name),
             document.elements_for_phase_or_empty_if_phase_not_present(phases.ACT.name),

@@ -3,7 +3,7 @@ import shutil
 import pathlib
 import unittest
 
-from shellcheck_lib.test_case import test_case_struct
+from shellcheck_lib.test_case import test_case_doc
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.execution.result import FullResult
 from shellcheck_lib.script_language import python3
@@ -43,7 +43,7 @@ class FullExecutionTestCaseBase:
             if self.eds:
                 print(str(self.eds.root_dir))
 
-    def _test_case(self) -> test_case_struct.TestCase:
+    def _test_case(self) -> test_case_doc.TestCase:
         raise NotImplementedError()
 
     def _assertions(self):
