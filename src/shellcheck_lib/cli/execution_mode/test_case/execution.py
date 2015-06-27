@@ -8,8 +8,8 @@ from shellcheck_lib.script_language import python3
 from shellcheck_lib.general import line_source
 from shellcheck_lib.test_case import test_case_doc
 from shellcheck_lib.cli.execution_mode.test_case.argument_parsing import INTERPRETER_FOR_TEST
-from shellcheck_lib.cli.execution_mode.test_case import test_case_parser
-from shellcheck_lib.cli.execution_mode.test_case.instruction_setup import InstructionsSetup
+from shellcheck_lib.default.execution_mode.test_case import test_case_parser
+from shellcheck_lib.default.execution_mode.test_case.instruction_setup import InstructionsSetup
 from shellcheck_lib.cli.execution_mode.test_case.settings import Output, TestCaseExecutionSettings
 from shellcheck_lib.execution import full_execution
 
