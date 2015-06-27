@@ -2,7 +2,7 @@ import pathlib
 import unittest
 
 from shellcheck_lib.document.model import new_empty_phase_contents
-from shellcheck_lib.execution.result import FullResult
+from shellcheck_lib.execution.result import FullResult, new_skipped
 from shellcheck_lib.test_case import processing_utils as sut
 from shellcheck_lib.test_case.processing_utils import IdentityPreprocessor
 from shellcheck_lib.test_case import test_case_doc
@@ -114,8 +114,25 @@ class TestProcessorFromAccessorAndExecutor(unittest.TestCase):
         # ACT #
         result = processor.apply(test_case_processing.TestCase(PATH))
         # ASSERT #
-        self.assertEqual(result.status,
-                         test_case_processing.Status.INTERNAL_ERROR)
+        self.assertEqual(test_case_processing.Status.INTERNAL_ERROR,
+                         result.status)
+
+    def test_successful_application(self):
+        # ARRANGE #
+        accessor = sut.Accessor(SourceReaderThat(gives_constant('source')),
+                                PreprocessorThat(gives_constant('preprocessed source')),
+                                ParserThat(gives_constant(TEST_CASE)))
+        full_result = new_skipped()
+        executor = ExecutorThatReturnsIfSame(TEST_CASE, full_result)
+        processor = sut.ProcessorFromAccessorAndExecutor(accessor,
+                                                         executor)
+        # ACT #
+        result = processor.apply(test_case_processing.TestCase(PATH))
+        # ASSERT #
+        self.assertIs(test_case_processing.Status.EXECUTED,
+                      result.status)
+        self.assertIs(full_result,
+                      result.execution_result)
 
 
 class SourceReaderThat(sut.SourceReader):
