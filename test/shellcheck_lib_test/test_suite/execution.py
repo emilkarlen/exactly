@@ -13,7 +13,7 @@ from shellcheck_lib.test_suite import structure
 from shellcheck_lib.test_suite.enumeration import DepthFirstEnumerator
 from shellcheck_lib.test_suite.parse import SuiteSyntaxError
 from shellcheck_lib.test_suite import reporting
-from shellcheck_lib.test_suite import test_case_processing
+from shellcheck_lib.test_case import test_case_processing
 from shellcheck_lib.test_suite.suite_hierarchy_reading import SuiteHierarchyReader
 from shellcheck_lib_test.util.str_std_out_files import StringStdOutFiles
 
