@@ -236,7 +236,8 @@ class TestComplexSuite(unittest.TestCase):
                                                                            tc_executed_1])
         sub21 = structure.TestSuite(pathlib.Path('21'), [], [], [tc_internal_error_21])
         sub2 = structure.TestSuite(pathlib.Path('2'), [], [sub21], [tc_executed_2])
-        root = structure.TestSuite(pathlib.Path('root'), [], [sub1, sub2], [tc_executed_root])
+        sub3 = structure.TestSuite(pathlib.Path('2'), [], [], [])
+        root = structure.TestSuite(pathlib.Path('root'), [], [sub1, sub2, sub3], [tc_executed_root])
 
         expected_suites = [
             ExpectedSuiteReporting(sub11, [(tc_internal_error_11, TestCaseProcessingStatus.INTERNAL_ERROR),
@@ -247,6 +248,7 @@ class TestComplexSuite(unittest.TestCase):
                                           (tc_executed_1, TestCaseProcessingStatus.EXECUTED)]),
             ExpectedSuiteReporting(sub21, [(tc_internal_error_21, TestCaseProcessingStatus.INTERNAL_ERROR)]),
             ExpectedSuiteReporting(sub2, [(tc_executed_2, TestCaseProcessingStatus.EXECUTED)]),
+            ExpectedSuiteReporting(sub3, []),
             ExpectedSuiteReporting(root, [(tc_executed_root, TestCaseProcessingStatus.EXECUTED)]),
         ]
         suite_hierarchy_reader = ReaderThatGivesConstantSuite(root)
