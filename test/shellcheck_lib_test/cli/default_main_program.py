@@ -1,33 +1,13 @@
 import os
+import pathlib
 import unittest
 
 from shellcheck_lib.execution.result import FullResultStatus
-from shellcheck_lib_test.util.str_std_out_files import StringStdOutFiles
+from shellcheck_lib_test.cli.utils import check_suite
+from shellcheck_lib_test.cli.utils.execute_main_program import execute_main_program
+from shellcheck_lib_test.util.file_structure import DirContents, File
 from shellcheck_lib_test.util.with_tmp_file import tmp_file_containing, tmp_file_containing_lines, lines_content
 from shellcheck_lib.cli import main_program
-from shellcheck_lib.cli import default_main_program as sut
-from shellcheck_lib.default.execution_mode.test_case.instruction_setup import InstructionsSetup
-
-
-def name_argument_splitter(s: str) -> (str, str):
-    return s[0], s[1:]
-
-
-instructions_setup = InstructionsSetup(
-    {},
-    {},
-    {},
-    {})
-
-
-def execute_main_program(arguments: list):
-    str_std_out_files = StringStdOutFiles()
-    program = sut.MainProgram(str_std_out_files.stdout_files,
-                              name_argument_splitter,
-                              instructions_setup)
-    exit_status = program.execute(arguments)
-    str_std_out_files.finish()
-    return exit_status, str_std_out_files.stdout_contents, str_std_out_files.stderr_contents
 
 
 class TestTestCaseWithoutInstructions(unittest.TestCase):
@@ -84,6 +64,27 @@ class TestTestCaseWithoutInstructions(unittest.TestCase):
                          'Output on stdout')
 
 
+class SuiteWithSingleEmptyTestCase(check_suite.Setup):
+    def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
+        return root_path / 'main.suite'
+
+    def file_structure(self, root_path: pathlib.Path) -> DirContents:
+        return DirContents([
+            File('main.suite', lines_content(['[cases]', 'the.case'])),
+            File('the.case', ''),
+        ])
+
+    def expected_stdout_lines(self, root_path: pathlib.Path) -> list:
+        return [
+            self.suite_begin(root_path / 'main.suite'),
+            self.case(root_path / 'the.case', FullResultStatus.PASS.name),
+            self.suite_end(root_path / 'main.suite'),
+        ]
+
+    def expected_exit_code(self) -> int:
+        return 0
+
+
 class TestTestSuite(unittest.TestCase):
     def test_invalid_usage(self):
         # ARRANGE #
@@ -118,6 +119,9 @@ class TestTestSuite(unittest.TestCase):
         self.assertEqual(output,
                          stdout_contents,
                          'Output on stdout')
+
+    def test_suite_with_single_empty_case(self):
+        check_suite.check([], SuiteWithSingleEmptyTestCase(), self)
 
 
 class TestHelp(unittest.TestCase):
