@@ -1,5 +1,5 @@
 from shellcheck_lib.cli.execution_mode.test_suite.settings import Settings
-from shellcheck_lib.cli.execution_mode.test_case.instruction_setup import InstructionsSetup
+from shellcheck_lib.default.execution_mode.test_case.instruction_setup import InstructionsSetup
 from shellcheck_lib.cli.execution_mode.help import execution as help_execution
 from shellcheck_lib.cli.execution_mode.test_case.settings import TestCaseExecutionSettings
 from shellcheck_lib.cli.execution_mode.test_case import execution as test_case_execution

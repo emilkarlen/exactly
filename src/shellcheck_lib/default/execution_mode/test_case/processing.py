@@ -7,9 +7,8 @@ from shellcheck_lib.script_language.act_script_management import ScriptLanguageS
 from shellcheck_lib.test_case import processing_utils
 from shellcheck_lib.test_case import test_case_doc
 from shellcheck_lib.test_case import test_case_processing as processing
-from shellcheck_lib.cli.execution_mode.test_case import test_case_parser
-from shellcheck_lib.cli.execution_mode.test_case.instruction_setup import InstructionsSetup
-import shellcheck_lib.test_case.test_case_processing
+from shellcheck_lib.default.execution_mode.test_case import test_case_parser
+from shellcheck_lib.default.execution_mode.test_case.instruction_setup import InstructionsSetup
 
 
 class Configuration:
@@ -51,7 +50,7 @@ class _SourceReader(processing_utils.SourceReader):
             with test_case_file_path.open() as f:
                 return f.read()
         except IOError as ex:
-            error_info = shellcheck_lib.test_case.test_case_processing.ErrorInfo(exception=ex)
+            error_info = processing.ErrorInfo(exception=ex)
             raise processing_utils.ProcessError(error_info)
 
 

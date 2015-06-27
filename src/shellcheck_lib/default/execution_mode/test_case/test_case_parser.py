@@ -1,4 +1,4 @@
-from shellcheck_lib.cli.execution_mode.test_case.instruction_setup import InstructionsSetup
+from shellcheck_lib.default.execution_mode.test_case.instruction_setup import InstructionsSetup
 from shellcheck_lib.execution import phases
 from shellcheck_lib.document import model
 from shellcheck_lib.document import parse

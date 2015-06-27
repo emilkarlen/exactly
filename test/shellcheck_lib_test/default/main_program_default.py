@@ -6,7 +6,7 @@ from shellcheck_lib_test.util.str_std_out_files import StringStdOutFiles
 from shellcheck_lib_test.util.with_tmp_file import tmp_file_containing, tmp_file_containing_lines
 from shellcheck_lib.cli import main_program
 from shellcheck_lib.default import default_main_program as sut
-from shellcheck_lib.cli.execution_mode.test_case.instruction_setup import InstructionsSetup
+from shellcheck_lib.default.execution_mode.test_case.instruction_setup import InstructionsSetup
 
 
 def name_argument_splitter(s: str) -> (str, str):
