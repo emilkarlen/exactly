@@ -1,9 +1,11 @@
 import unittest
 
+from shellcheck_lib_test.test_case import processing_utils
+
 
 def suite():
     ret_val = unittest.TestSuite()
-    # ret_val.addTest(test_abs_syn_gen.suite())
+    ret_val.addTest(processing_utils.suite())
     return ret_val
 
 
