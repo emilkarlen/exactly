@@ -1,6 +1,6 @@
 import unittest
 
-from shellcheck_lib.test_case import test_case_struct
+from shellcheck_lib.test_case import test_case_doc
 from shellcheck_lib_test.execution.full_execution.util.test_case_base import FullExecutionTestCaseBase
 from shellcheck_lib_test.util.expected_instruction_failure import ExpectedInstructionFailureBase
 from shellcheck_lib.execution.result import FullResultStatus
@@ -34,7 +34,7 @@ class TestCaseThatRecordsExecution(FullExecutionTestCaseBase):
         self.__expected_file_recording = expected_file_recording
         self.__execution_directory_structure_should_exist = execution_directory_structure_should_exist
 
-    def _test_case(self) -> test_case_struct.TestCase:
+    def _test_case(self) -> test_case_doc.TestCase:
         return self._test_case_generator.test_case
 
     def _assertions(self):

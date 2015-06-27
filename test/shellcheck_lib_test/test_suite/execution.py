@@ -8,7 +8,7 @@ from shellcheck_lib.execution.execution_directory_structure import ExecutionDire
 from shellcheck_lib.execution.result import new_skipped, new_pass
 from shellcheck_lib.general import line_source
 from shellcheck_lib.general import output
-from shellcheck_lib.test_case.test_case_struct import TestCase
+from shellcheck_lib.test_case.test_case_doc import TestCase
 from shellcheck_lib.test_suite import structure
 from shellcheck_lib.test_suite.enumeration import DepthFirstEnumerator
 from shellcheck_lib.test_suite.parse import SuiteSyntaxError

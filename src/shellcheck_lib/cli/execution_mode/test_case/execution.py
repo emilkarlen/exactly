@@ -6,7 +6,7 @@ from shellcheck_lib.general.output import StdOutputFiles
 from shellcheck_lib.script_language.act_script_management import ScriptLanguageSetup
 from shellcheck_lib.script_language import python3
 from shellcheck_lib.general import line_source
-from shellcheck_lib.test_case import test_case_struct
+from shellcheck_lib.test_case import test_case_doc
 from shellcheck_lib.cli.execution_mode.test_case.argument_parsing import INTERPRETER_FOR_TEST
 from shellcheck_lib.cli.execution_mode.test_case import test_case_parser
 from shellcheck_lib.cli.execution_mode.test_case.instruction_setup import InstructionsSetup
@@ -41,7 +41,7 @@ class Executor:
             return full_result.status.value
 
     def _execute_act_phase(self,
-                           test_case: test_case_struct.TestCase,
+                           test_case: test_case_doc.TestCase,
                            script_language_setup: ScriptLanguageSetup) -> int:
         def copy_file(input_file_path: pathlib.Path,
                       output_file):
@@ -73,7 +73,7 @@ class Executor:
             self._std.out.write(str(the_full_result.execution_directory_structure.root_dir))
             self._std.out.write(os.linesep)
 
-    def _parse_test_case_source(self) -> test_case_struct.TestCase:
+    def _parse_test_case_source(self) -> test_case_doc.TestCase:
         file_parser = test_case_parser.new_parser(self._split_line_into_name_and_argument_function,
                                                   self._instruction_setup)
         source = line_source.new_for_file(self._settings.file_path)

@@ -11,7 +11,7 @@ from shellcheck_lib.execution.single_instruction_executor import ControlledInstr
 from shellcheck_lib.test_case import instructions
 from shellcheck_lib.document.model import PhaseContents
 from shellcheck_lib.execution import phases
-from shellcheck_lib.test_case import test_case_struct
+from shellcheck_lib.test_case import test_case_doc
 from .execution_directory_structure import construct_at, ExecutionDirectoryStructure
 from .result import PartialResult, PartialResultStatus
 from . import result
@@ -318,7 +318,7 @@ class _ActInstructionHeaderExecutor(ElementHeaderExecutor):
 
 
 def execute(script_language_setup: ScriptLanguageSetup,
-            test_case: test_case_struct.TestCase,
+            test_case: test_case_doc.TestCase,
             home_dir_path: pathlib.Path,
             execution_directory_root_name_prefix: str,
             is_keep_execution_directory_root: bool) -> PartialResult:
@@ -331,7 +331,7 @@ def execute(script_language_setup: ScriptLanguageSetup,
 
 
 def execute_test_case_in_execution_directory(script_language_setup: ScriptLanguageSetup,
-                                             test_case: test_case_struct.TestCase,
+                                             test_case: test_case_doc.TestCase,
                                              home_dir_path: pathlib.Path,
                                              execution_directory_root_name_prefix: str,
                                              is_keep_execution_directory_root: bool) -> PartialExecutor:
