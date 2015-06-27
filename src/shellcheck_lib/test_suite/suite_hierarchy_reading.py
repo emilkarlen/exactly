@@ -5,7 +5,7 @@ from shellcheck_lib.document.model import PhaseContents
 from shellcheck_lib.document.parse import SourceError
 from shellcheck_lib.general import line_source
 from . import instruction
-from . import test_suite_struct
+from . import test_suite_doc
 from . import structure
 from . import parse
 
@@ -53,7 +53,7 @@ class _SingleFileReader:
                                    case_list)
 
     def _resolve_paths(self,
-                       test_suite: test_suite_struct.TestSuite,
+                       test_suite: test_suite_doc.TestSuite,
                        suite_file_path: pathlib.Path) -> (list, list):
         def paths_for_instructions(env: instruction.Environment,
                                    section_contents: PhaseContents,
