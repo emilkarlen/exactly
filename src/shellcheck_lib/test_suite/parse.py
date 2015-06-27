@@ -4,7 +4,7 @@ from shellcheck_lib.document import model
 from shellcheck_lib.document import parse
 from shellcheck_lib.general import line_source
 from shellcheck_lib.test_suite import instruction
-from shellcheck_lib.test_suite import test_suite_struct
+from shellcheck_lib.test_suite import test_suite_doc
 from shellcheck_lib.test_suite.instruction import FileNotAccessibleSimpleError
 
 
@@ -129,9 +129,9 @@ class Parser:
         self.__plain_file_parser = parse.new_parser_for(PARSER_CONFIGURATION)
 
     def apply(self,
-              plain_test_case: line_source.LineSource) -> test_suite_struct.TestSuite:
+              plain_test_case: line_source.LineSource) -> test_suite_doc.TestSuite:
         document = self.__plain_file_parser.apply(plain_test_case)
-        return test_suite_struct.TestSuite(
+        return test_suite_doc.TestSuite(
             document.elements_for_phase_or_empty_if_phase_not_present(SECTION_NAME__SUITS),
             document.elements_for_phase_or_empty_if_phase_not_present(SECTION_NAME__CASES),
         )
