@@ -6,25 +6,26 @@ from shellcheck_lib.test_suite import structure
 
 class TestCaseProcessingStatus(enum.Enum):
     INTERNAL_ERROR = 1
-    READ_ERROR = 2
+    ACCESS_ERROR = 2
     EXECUTED = 3
 
 
-class TestCaseReadingError(enum.Enum):
+class TestCaseAccessError(enum.Enum):
     FILE_ACCESS_ERROR = 1
-    PARSE_ERROR = 2
+    PRE_PROCESS_ERROR = 2
+    PARSE_ERROR = 3
 
 
 class TestCaseProcessingResult(tuple):
     def __new__(cls,
                 status: TestCaseProcessingStatus,
                 message: str=None,
-                reading_error: TestCaseReadingError=None,
+                access_error: TestCaseAccessError=None,
                 execution_result: FullResult=None):
         """
         Exactly only one of the arguments must be non-None.
         """
-        return tuple.__new__(cls, (status, message, reading_error, execution_result))
+        return tuple.__new__(cls, (status, message, access_error, execution_result))
 
     @property
     def status(self) -> TestCaseProcessingStatus:
@@ -35,7 +36,7 @@ class TestCaseProcessingResult(tuple):
         return self[1]
 
     @property
-    def reading_error(self) -> TestCaseReadingError:
+    def access_error(self) -> TestCaseAccessError:
         return self[2]
 
     @property
@@ -48,9 +49,9 @@ def new_internal_error(message: str) -> TestCaseProcessingResult:
                                     message=message)
 
 
-def new_reading_error(error: TestCaseReadingError) -> TestCaseProcessingResult:
-    return TestCaseProcessingResult(TestCaseProcessingStatus.READ_ERROR,
-                                    reading_error=error)
+def new_access_error(error: TestCaseAccessError) -> TestCaseProcessingResult:
+    return TestCaseProcessingResult(TestCaseProcessingStatus.ACCESS_ERROR,
+                                    access_error=error)
 
 
 def new_executed(execution_result: FullResult) -> TestCaseProcessingResult:
