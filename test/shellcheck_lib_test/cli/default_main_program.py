@@ -64,6 +64,25 @@ class TestTestCaseWithoutInstructions(unittest.TestCase):
                          'Output on stdout')
 
 
+class EmptySuite(check_suite.Setup):
+    def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
+        return root_path / 'empty.suite'
+
+    def file_structure(self, root_path: pathlib.Path) -> DirContents:
+        return DirContents([
+            File('empty.suite', ''),
+        ])
+
+    def expected_stdout_lines(self, root_path: pathlib.Path) -> list:
+        return [
+            self.suite_begin(root_path / 'empty.suite'),
+            self.suite_end(root_path / 'empty.suite'),
+        ]
+
+    def expected_exit_code(self) -> int:
+        return 0
+
+
 class SuiteWithSingleEmptyTestCase(check_suite.Setup):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
@@ -104,24 +123,15 @@ class TestTestSuite(unittest.TestCase):
                         'An error message should be printed on stderr')
 
     def test_empty_file(self):
-        # ARRANGE #
-        test_case_source = ''
-        with tmp_file_containing(test_case_source) as file_path:
-            argv = ['suite', str(file_path)]
-            # ACT #
-            exit_status, stdout_contents, stderr_contents = execute_main_program(argv)
-        # ASSERT #
-        self.assertEqual(0,
-                         exit_status,
-                         'Exit Status')
-        output = lines_content(['SUITE ' + str(file_path) + ': BEGIN',
-                                'SUITE ' + str(file_path) + ': END'])
-        self.assertEqual(output,
-                         stdout_contents,
-                         'Output on stdout')
+        self._check([], EmptySuite())
 
     def test_suite_with_single_empty_case(self):
-        check_suite.check([], SuiteWithSingleEmptyTestCase(), self)
+        self._check([], SuiteWithSingleEmptyTestCase())
+
+    def _check(self,
+               additional_arguments: list,
+               setup: check_suite.Setup):
+        check_suite.check(additional_arguments, setup, self)
 
 
 class TestHelp(unittest.TestCase):
