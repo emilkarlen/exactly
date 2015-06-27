@@ -1,7 +1,7 @@
 import unittest
 
-from shellcheck_lib_test.cli.default import instruction_name_and_argument_splitter as splitter
-from shellcheck_lib_test.cli.default import main_program_default
+from shellcheck_lib_test.default import instruction_name_and_argument_splitter as splitter, main_program_default
+from shellcheck_lib_test.default import main_program_default
 
 
 def suite():

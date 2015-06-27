@@ -1,6 +1,7 @@
 import unittest
 
 from shellcheck_lib_test import general
+from shellcheck_lib_test import default
 from shellcheck_lib_test import document
 from shellcheck_lib_test import test_case
 from shellcheck_lib_test import execution
@@ -18,6 +19,7 @@ def suite():
     ret_val.addTest(cli.suite())
     ret_val.addTest(test_suite.suite())
     ret_val.addTest(instructions.suite())
+    ret_val.addTest(default.suite())
     return ret_val
 
 
