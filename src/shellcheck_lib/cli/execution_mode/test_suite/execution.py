@@ -1,8 +1,9 @@
 import pathlib
 
-from shellcheck_lib.cli.execution_mode.test_suite import settings
 from shellcheck_lib.general.output import StdOutputFiles
 from shellcheck_lib.test_suite import structure
+from shellcheck_lib.test_suite import reporting
+from shellcheck_lib.test_suite.enumeration import SuiteEnumerator
 from shellcheck_lib.test_suite.parse import SuiteReadError
 from shellcheck_lib.test_suite.suite_hierarchy_reading import SuiteHierarchyReader
 from shellcheck_lib.test_suite import test_case_processing
@@ -12,18 +13,22 @@ class Executor:
     def __init__(self,
                  output: StdOutputFiles,
                  suite_hierarchy_reader: SuiteHierarchyReader,
+                 reporter_factory: reporting.ReporterFactory,
+                 suite_enumerator: SuiteEnumerator,
                  test_case_processor: test_case_processing.TestCaseProcessor,
-                 execution_settings: settings.Settings):
+                 suite_root_file_path: pathlib.Path):
         self._std = output
         self._suite_hierarchy_reader = suite_hierarchy_reader
         self._test_case_processor = test_case_processor
-        self._execution_settings = execution_settings
-        self._reporter = execution_settings.reporter_factory.new_reporter(output)
+        self._suite_enumerator = suite_enumerator
+        self._reporter_factory = reporter_factory
+        self._suite_root_file_path = suite_root_file_path
+        self._reporter = self._reporter_factory.new_reporter(output)
 
     def execute(self) -> int:
         try:
-            root_suite = self._read_structure(self._execution_settings.suite_root_file_path)
-            suits_in_processing_order = self._execution_settings.suite_enumerator.apply(root_suite)
+            root_suite = self._read_structure(self._suite_root_file_path)
+            suits_in_processing_order = self._suite_enumerator.apply(root_suite)
             exit_code = self._process_suits(suits_in_processing_order)
             return exit_code
         except SuiteReadError:
