@@ -90,7 +90,6 @@ class ExpectedSubProcessResult(tuple):
                             actual.stderr,
                             'Content on stderr')
 
-
     @property
     def exitcode(self) -> int:
         return self[0]
