@@ -60,6 +60,20 @@ class TestsInvokation(UnitTestCaseWithUtils):
                          actual.stdout,
                          'Expects no output on stdout for invalid invokation')
 
+    def test_exit_status_with_invalid_invokation_for_help(self):
+        # ARRANGE #
+        test_suite_source = ''
+        # ACT #
+        actual = self._run_shellcheck_in_sub_process(test_suite_source,
+                                                     flags=['help', '--illegal-flag-42847920189']).sub_process_result
+        # ASSERT #
+        self.assertEqual(EXIT_INVALID_USAGE,
+                         actual.exitcode,
+                         'Expected exit code for invalid invokation')
+        self.assertEqual('',
+                         actual.stdout,
+                         'Expects no output on stdout for invalid invokation')
+
 
 class BasicTestsWithNoCliFlags(UnitTestCaseWithUtils):
     def test_empty_test_case(self):
