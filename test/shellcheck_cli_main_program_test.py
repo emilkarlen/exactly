@@ -7,23 +7,26 @@ import shellcheck_lib.cli.utils
 from shellcheck_lib.execution import execution_directory_structure
 from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib.test_case import instructions
+from shellcheck_lib_test.cli import default_main_program
 from shellcheck_lib_test.execution.test_execution_directory_structure import \
     is_execution_directory_structure_after_execution
 from shellcheck_lib_test.util.file_checks import FileChecker
 from shellcheck_lib_test.util.cli_main_program_via_shell_utils.run import SUCCESSFUL_RESULT, \
-    run_shellcheck_in_sub_process, \
+    run_shellcheck_in_sub_process_with_file_argument, \
     contents_of_file
 from shellcheck_lib_test.util.with_tmp_file import lines_content, SubProcessResult, \
     ExpectedSubProcessResult, SubProcessResultInfo
+from shellcheck_lib_test.util import check_suite
+from shellcheck_lib_test.util.cli_main_program_via_shell_utils import suite_utils
 
 
 class UnitTestCaseWithUtils(unittest.TestCase):
     def _run_shellcheck_in_sub_process(self,
                                        test_case_source: str,
                                        flags: list=()) -> SubProcessResultInfo:
-        return run_shellcheck_in_sub_process(self,
-                                             last_file_argument=test_case_source,
-                                             flags=flags)
+        return run_shellcheck_in_sub_process_with_file_argument(self,
+                                                                file_contents=test_case_source,
+                                                                flags=flags)
 
 
 class TestsInvokation(UnitTestCaseWithUtils):
@@ -204,12 +207,38 @@ class TestsExecuteActPhase(UnitTestCaseWithUtils):
                          'Output on stderr is expected to be same as that of act script')
 
 
+class TestTestSuite(unittest.TestCase):
+    def test_empty_file(self):
+        self._check([], default_main_program.EmptySuite())
+
+    def test_suite_with_single_empty_case(self):
+        self._check([], default_main_program.SuiteWithSingleEmptyTestCase())
+
+    def test_suite_with_single_test_case_with_only_section_headers(self):
+        self._check([], default_main_program.SuiteWithSingleTestCaseWithOnlySectionHeaders())
+
+    def test_suite_reference_to_non_existing_case_file(self):
+        self._check([], default_main_program.SuiteReferenceToNonExistingCaseFile())
+
+    def test_suite_with_single_case_with_invalid_syntax(self):
+        self._check([], default_main_program.SuiteWithSingleCaseWithInvalidSyntax())
+
+    def test_complex_successful_suite(self):
+        self._check([], default_main_program.ComplexSuccessfulSuite())
+
+    def _check(self,
+               additional_arguments: list,
+               setup: check_suite):
+        suite_utils.check(additional_arguments, setup, self)
+
+
 def suite():
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestsInvokation))
     ret_val.addTest(unittest.makeSuite(BasicTestsWithNoCliFlags))
     ret_val.addTest(unittest.makeSuite(TestsWithPreservedExecutionDirectoryStructure))
     ret_val.addTest(unittest.makeSuite(TestsExecuteActPhase))
+    ret_val.addTest(unittest.makeSuite(TestTestSuite))
     return ret_val
 
 
