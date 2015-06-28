@@ -174,6 +174,43 @@ class SuiteWithSingleCaseWithInvalidSyntax(check_suite.Setup):
         return FAILED_TESTS_EXIT_CODE
 
 
+class ComplexSuccessfulSuite(check_suite.Setup):
+    def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
+        return root_path / 'main.suite'
+
+    def file_structure(self, root_path: pathlib.Path) -> DirContents:
+        return DirContents([
+            File('main.suite', lines_content(['[suites]',
+                                              'sub.suite',
+                                              '[cases]',
+                                              'main.case'])),
+            File('main.case', ''),
+            File('sub.suite', lines_content(['[suites]',
+                                             'sub-sub.suite',
+                                             '[cases]',
+                                             'sub.case'])),
+            File('sub.case', ''),
+            File('sub-sub.suite', ''),
+        ])
+
+    def expected_stdout_lines(self, root_path: pathlib.Path) -> list:
+        return [
+            self.suite_begin(root_path / 'sub-sub.suite'),
+            self.suite_end(root_path / 'sub-sub.suite'),
+
+            self.suite_begin(root_path / 'sub.suite'),
+            self.case(root_path / 'sub.case', FullResultStatus.PASS.name),
+            self.suite_end(root_path / 'sub.suite'),
+
+            self.suite_begin(root_path / 'main.suite'),
+            self.case(root_path / 'main.case', FullResultStatus.PASS.name),
+            self.suite_end(root_path / 'main.suite'),
+        ]
+
+    def expected_exit_code(self) -> int:
+        return 0
+
+
 class TestTestSuite(unittest.TestCase):
     def test_invalid_usage(self):
         # ARRANGE #
@@ -206,6 +243,9 @@ class TestTestSuite(unittest.TestCase):
 
     def test_suite_with_single_case_with_invalid_syntax(self):
         self._check([], SuiteWithSingleCaseWithInvalidSyntax())
+
+    def test_complex_successful_suite(self):
+        self._check([], ComplexSuccessfulSuite())
 
     def _check(self,
                additional_arguments: list,
