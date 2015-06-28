@@ -65,11 +65,9 @@ class Executor:
 
     def _print_output_to_stdout_for_full_result(self, the_full_result: full_execution.FullResult):
         if self._settings.output is Output.STATUS_CODE:
-            self._std.out.write(the_full_result.status.name)
-            self._std.out.write(os.linesep)
+            self._out_line(the_full_result.status.name)
         elif self._settings.output is Output.EXECUTION_DIRECTORY_STRUCTURE_ROOT:
-            self._std.out.write(str(the_full_result.execution_directory_structure.root_dir))
-            self._std.out.write(os.linesep)
+            self._out_line(str(the_full_result.execution_directory_structure.root_dir))
 
     def _out_line(self, s: str):
         self._std.out.write(s)
