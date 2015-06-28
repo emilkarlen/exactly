@@ -6,7 +6,8 @@ from shellcheck_lib.cli.execution_mode.test_case.execution import NO_EXECUTION_E
 from shellcheck_lib.default.execution_mode.test_suite.reporting import INVALID_SUITE_EXIT_CODE, FAILED_TESTS_EXIT_CODE
 from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib.test_case.test_case_processing import AccessErrorType
-from shellcheck_lib_test.cli.utils import check_suite
+import shellcheck_lib_test.cli.utils.check_suite_for_main_program
+from shellcheck_lib_test.util import check_suite
 from shellcheck_lib_test.cli.utils.execute_main_program import execute_main_program
 from shellcheck_lib_test.util.file_structure import DirContents, File
 from shellcheck_lib_test.util.with_tmp_file import tmp_file_containing, tmp_file_containing_lines, lines_content
@@ -268,7 +269,7 @@ class TestTestSuite(unittest.TestCase):
     def _check(self,
                additional_arguments: list,
                setup: check_suite.Setup):
-        check_suite.check(additional_arguments, setup, self)
+        shellcheck_lib_test.cli.utils.check_suite_for_main_program.check(additional_arguments, setup, self)
 
 
 class TestHelp(unittest.TestCase):
