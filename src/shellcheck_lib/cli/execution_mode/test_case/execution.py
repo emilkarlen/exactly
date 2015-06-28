@@ -10,6 +10,7 @@ from shellcheck_lib.cli.execution_mode.test_case.settings import Output, TestCas
 from shellcheck_lib.execution import full_execution
 from shellcheck_lib.test_case import test_case_processing
 
+NO_EXECUTION_EXIT_CODE = 3
 
 class Executor:
     def __init__(self,
@@ -30,9 +31,16 @@ class Executor:
 
     def _execute_normal(self) -> int:
         result = self._process(self._settings.is_keep_execution_directory_root)
-        full_result = result.execution_result
-        self._print_output_to_stdout(full_result)
-        return full_result.status.value
+        if result.status is not test_case_processing.Status.EXECUTED:
+            if result.status is test_case_processing.Status.INTERNAL_ERROR:
+                self._out_line(result.status.name)
+            else:
+                self._out_line(result.error_type.name)
+            return NO_EXECUTION_EXIT_CODE
+        else:
+            full_result = result.execution_result
+            self._print_output_to_stdout_for_full_result(full_result)
+            return full_result.status.value
 
     def _execute_act_phase(self) -> int:
         def copy_file(input_file_path: pathlib.Path,
@@ -55,13 +63,17 @@ class Executor:
         shutil.rmtree(str(full_result.execution_directory_structure.root_dir))
         return exit_code
 
-    def _print_output_to_stdout(self, the_full_result: full_execution.FullResult):
+    def _print_output_to_stdout_for_full_result(self, the_full_result: full_execution.FullResult):
         if self._settings.output is Output.STATUS_CODE:
             self._std.out.write(the_full_result.status.name)
             self._std.out.write(os.linesep)
         elif self._settings.output is Output.EXECUTION_DIRECTORY_STRUCTURE_ROOT:
             self._std.out.write(str(the_full_result.execution_directory_structure.root_dir))
             self._std.out.write(os.linesep)
+
+    def _out_line(self, s: str):
+        self._std.out.write(s)
+        self._std.out.write(os.linesep)
 
     def _process(self,
                  is_keep_eds: bool) -> test_case_processing.Result:

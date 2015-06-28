@@ -2,6 +2,7 @@ import os
 import pathlib
 import unittest
 
+from shellcheck_lib.cli.execution_mode.test_case.execution import NO_EXECUTION_EXIT_CODE
 from shellcheck_lib.default.execution_mode.test_suite.reporting import INVALID_SUITE_EXIT_CODE, FAILED_TESTS_EXIT_CODE
 from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib.test_case.test_case_processing import AccessErrorType
@@ -62,6 +63,23 @@ class TestTestCaseWithoutInstructions(unittest.TestCase):
                          exit_status,
                          'Exit Status')
         self.assertEqual(FullResultStatus.PASS.name + os.linesep,
+                         stdout_contents,
+                         'Output on stdout')
+
+    def test_parse_error(self):
+        # ARRANGE #
+        test_case_lines = [
+            '[invalid phase]',
+        ]
+        with tmp_file_containing_lines(test_case_lines) as file_path:
+            argv = [str(file_path)]
+            # ACT #
+            exit_status, stdout_contents, stderr_contents = execute_main_program(argv)
+        # ASSERT #
+        self.assertEqual(NO_EXECUTION_EXIT_CODE,
+                         exit_status,
+                         'Exit Status')
+        self.assertEqual(AccessErrorType.PARSE_ERROR.name + os.linesep,
                          stdout_contents,
                          'Output on stdout')
 
