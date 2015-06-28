@@ -401,7 +401,7 @@ class ExpectedSuiteReporting(tuple):
         :param expected: [ExpectedSuiteReporting]
         """
         for i, (e, a) in enumerate(zip(expected, actual.sub_suite_reporters)):
-            e._check(put, a, 'Suite at index ' + str(i) + ': ')
+            e.check(put, a, 'Suite at index ' + str(i) + ': ')
         put.assertEqual(len(expected),
                         len(actual.sub_suite_reporters),
                         'Number of suites')
