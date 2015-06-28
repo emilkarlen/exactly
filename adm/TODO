@@ -158,4 +158,5 @@ Ev ange i svit-filerna.  På sätt o vis är det ju enbart i svit-filerna gruppe
 fall.
 Skulle kunna ha instruktion "@groups" i svit-filer (mycket liknande hur
 filelist använder @tags).
+** TODO Köra enskilda testfall i sub-process
 * TODO Loggning
