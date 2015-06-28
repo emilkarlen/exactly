@@ -104,6 +104,33 @@ class SuiteWithSingleEmptyTestCase(check_suite.Setup):
         return 0
 
 
+class SuiteWithSingleTestCaseWithOnlySectionHeaders(check_suite.Setup):
+    def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
+        return root_path / 'main.suite'
+
+    def file_structure(self, root_path: pathlib.Path) -> DirContents:
+        return DirContents([
+            File('main.suite', lines_content(['[cases]', 'the.case'])),
+            File('the.case',
+                 lines_content([
+                     '[setup]',
+                     '[act]',
+                     '[assert]',
+                     '[cleanup]',
+                 ])),
+        ])
+
+    def expected_stdout_lines(self, root_path: pathlib.Path) -> list:
+        return [
+            self.suite_begin(root_path / 'main.suite'),
+            self.case(root_path / 'the.case', FullResultStatus.PASS.name),
+            self.suite_end(root_path / 'main.suite'),
+        ]
+
+    def expected_exit_code(self) -> int:
+        return 0
+
+
 class TestTestSuite(unittest.TestCase):
     def test_invalid_usage(self):
         # ARRANGE #
@@ -127,6 +154,9 @@ class TestTestSuite(unittest.TestCase):
 
     def test_suite_with_single_empty_case(self):
         self._check([], SuiteWithSingleEmptyTestCase())
+
+    def test_suite_with_single_test_case_with_only_section_headers(self):
+        self._check([], SuiteWithSingleTestCaseWithOnlySectionHeaders())
 
     def _check(self,
                additional_arguments: list,
