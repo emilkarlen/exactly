@@ -118,12 +118,25 @@ Har spånat (o experimenterat m två varianter)
 rad\
 fortsätter\
 mha b-sne
+
+Har experimenterat m pythons shell-parsning.  (finns ev exempel nånstans).
+Har kommit fram till att det går hyfsat att detektera b-sne på slutet av
+raden - som inte ingår i quotade strängkonstanter.
 ** here-dokument
 <<<EOF
 Anger en sekvens av rader
 på samma
 sätt som HERE-dokument i shell.
 EOF
+** BNF
+Tänker mig dok-syntax ("nivå 0") ung
+rad ::= tom
+      | kommentar
+      | fasrubrik
+      | instruktion
+instruktion ::= enkel-radare
+              | here-block
+              | bne-separerade rader
 * TODO Preprocessor
 Vore bäst om programmet innehöll en egen preprocessor.
 På så vis maximeras oberoende av yttre miljön.
