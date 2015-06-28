@@ -1,5 +1,7 @@
 import pathlib
 
+from shellcheck_lib.document import parse as document_parser
+
 from shellcheck_lib.execution import full_execution
 from shellcheck_lib.execution.result import FullResult
 from shellcheck_lib.general import line_source
@@ -9,6 +11,8 @@ from shellcheck_lib.test_case import test_case_doc
 from shellcheck_lib.test_case import test_case_processing as processing
 from shellcheck_lib.default.execution_mode.test_case import test_case_parser
 from shellcheck_lib.default.execution_mode.test_case.instruction_setup import InstructionsSetup
+from shellcheck_lib.test_case.processing_utils import ProcessError
+from shellcheck_lib.test_case.test_case_processing import ErrorInfo
 
 
 class Configuration:
@@ -70,7 +74,14 @@ class _Parser(processing_utils.Parser):
         file_parser = test_case_parser.new_parser(self._split_line_into_name_and_argument_function,
                                                   self._instruction_setup)
         source = line_source.new_for_string(test_case_plain_source)
-        return file_parser.apply(source)
+        try:
+            return file_parser.apply(source)
+        except document_parser.SourceError as ex:
+            error_info = ErrorInfo(message='Parsing error: ' + ex.message,
+                                   file_path=test_case_file_path,
+                                   line=ex.line,
+                                   exception=ex)
+            raise ProcessError(error_info)
 
 
 class _Executor(processing_utils.Executor):
