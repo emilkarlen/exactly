@@ -7,7 +7,7 @@ import unittest
 
 
 def lines_content(lines: list) -> str:
-    return os.linesep.join(lines) + os.linesep
+    return '' if not lines else os.linesep.join(lines) + os.linesep
 
 
 @contextmanager

@@ -2,6 +2,7 @@ import os
 import pathlib
 import unittest
 
+from shellcheck_lib.default.execution_mode.test_suite.reporting import INVALID_SUITE_EXIT_CODE
 from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib_test.cli.utils import check_suite
 from shellcheck_lib_test.cli.utils.execute_main_program import execute_main_program
@@ -110,7 +111,8 @@ class SuiteWithSingleTestCaseWithOnlySectionHeaders(check_suite.Setup):
 
     def file_structure(self, root_path: pathlib.Path) -> DirContents:
         return DirContents([
-            File('main.suite', lines_content(['[cases]', 'the.case'])),
+            File('main.suite', lines_content(['[cases]',
+                                              'the.case'])),
             File('the.case',
                  lines_content([
                      '[setup]',
@@ -129,6 +131,23 @@ class SuiteWithSingleTestCaseWithOnlySectionHeaders(check_suite.Setup):
 
     def expected_exit_code(self) -> int:
         return 0
+
+
+class SuiteReferenceToNonExistingCaseFile(check_suite.Setup):
+    def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
+        return root_path / 'main.suite'
+
+    def file_structure(self, root_path: pathlib.Path) -> DirContents:
+        return DirContents([
+            File('main.suite', lines_content(['[cases]',
+                                              'non-existing.case'])),
+        ])
+
+    def expected_stdout_lines(self, root_path: pathlib.Path) -> list:
+        return []
+
+    def expected_exit_code(self) -> int:
+        return INVALID_SUITE_EXIT_CODE
 
 
 class TestTestSuite(unittest.TestCase):
@@ -157,6 +176,9 @@ class TestTestSuite(unittest.TestCase):
 
     def test_suite_with_single_test_case_with_only_section_headers(self):
         self._check([], SuiteWithSingleTestCaseWithOnlySectionHeaders())
+
+    def test_suite_reference_to_non_existing_case_file(self):
+        self._check([], SuiteReferenceToNonExistingCaseFile())
 
     def _check(self,
                additional_arguments: list,
