@@ -2,6 +2,9 @@
 
 Fortsätt med
 
+* TODO Svit: Summering i rapporten
+Avslutande utskrift: Antal lyckade, fallerade, <andra typer av fel>
+* TODO Exekvering av fall: Rapportera mha "Rapportör" (pss som svit)
 * TODO Instruktioner
 ** DONE Impl instr för assert/exitcode
 ** DONE Testa parsing

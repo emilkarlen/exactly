@@ -112,6 +112,18 @@ Två argument:
 ** TODO Använda nya TestCaseSetup i äldre tester
 Som du finns flera instruktions-klasser som enbart returnerar ett visst värde
 eller kastar undantag.  Alla de fallen kan hanteras av nya TestCaseSetup.
+* TODO Parsning av multi-rader
+Har spånat (o experimenterat m två varianter)
+** b-sne:
+rad\
+fortsätter\
+mha b-sne
+** here-dokument
+<<<EOF
+Anger en sekvens av rader
+på samma
+sätt som HERE-dokument i shell.
+EOF
 * TODO Preprocessor
 Vore bäst om programmet innehöll en egen preprocessor.
 På så vis maximeras oberoende av yttre miljön.
@@ -119,3 +131,31 @@ Funktionallitet:
 - filinklusion
 - definitioner av konstanter
 - definitioner av funktioner
+Har tittat på:
+** PYM (mest lovande)
+http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.25.400
+* TODO Härleda interpretator
+bash, sh, csh ...???
+Går det att ta reda på ett utgångsvärde för interpretator för varje plattform
+(dvs via python)?  El måste den anges explicit?
+* TODO Testa på andra plattformar (Windows, Mac)
+Ev måste hanteringen av ny-rader justeras.
+python har ju något som heter "universal newlines".  Ev ska det användas (om
+det inte redan används idag!)
+* TODO Svit
+** TODO Hjälp-funktionallitet för svit-kommandot
+** TODO Svit: Reffa flera fall-filer mha jokertecken
+Typ:
+[cases]
+sub-dir/*.case
+
+** TODO Gruppering av testfall
+Ev ange i varje enskilt testfall:
+groups database groupX groupY
+
+Ev ange i svit-filerna.  På sätt o vis är det ju enbart i svit-filerna grupper
+är relevanta iom att det enbart där är meningsfullt att arbeta med grupper av
+fall.
+Skulle kunna ha instruktion "@groups" i svit-filer (mycket liknande hur
+filelist använder @tags).
+* TODO Loggning

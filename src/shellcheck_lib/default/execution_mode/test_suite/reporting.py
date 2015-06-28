@@ -45,7 +45,7 @@ class CompleteSuiteReporter(reporting.CompleteSuiteReporter, reporting.SubSuiteR
         self._out_line('SUITE ' + str(self._current_suite.source_file) + ': END')
 
     def case_begin(self, case: test_case_processing.TestCase):
-        self._std_output_files.out.write(str(case.file_path) + ': ')
+        self._std_output_files.out.write('CASE  ' + str(case.file_path) + ': ')
 
     def case_end(self,
                  case: test_case_processing.TestCase,
