@@ -1,7 +1,6 @@
 import pathlib
 import shutil
 import unittest
-import sys
 
 from shellcheck_lib.cli.main_program import EXIT_INVALID_USAGE
 import shellcheck_lib.cli.utils
@@ -11,15 +10,11 @@ from shellcheck_lib.test_case import instructions
 from shellcheck_lib_test.execution.test_execution_directory_structure import \
     is_execution_directory_structure_after_execution
 from shellcheck_lib_test.util.file_checks import FileChecker
+from shellcheck_lib_test.util.cli_main_program_via_shell_utils.run import SUCCESSFUL_RESULT, \
+    run_shellcheck_in_sub_process, \
+    contents_of_file
 from shellcheck_lib_test.util.with_tmp_file import lines_content, SubProcessResult, \
-    ExpectedSubProcessResult, run_subprocess_with_file_arg__full, SubProcessResultInfo
-
-SRC_DIR_NAME = 'src'
-MAIN_PROGRAM_FILE_NAME = 'shellcheck.py'
-
-
-def shellcheck_src_path(dir_of_this_file: pathlib.Path) -> pathlib.Path:
-    return dir_of_this_file.parent / SRC_DIR_NAME / MAIN_PROGRAM_FILE_NAME
+    ExpectedSubProcessResult, SubProcessResultInfo
 
 
 class UnitTestCaseWithUtils(unittest.TestCase):
@@ -27,7 +22,7 @@ class UnitTestCaseWithUtils(unittest.TestCase):
                                        test_case_source: str,
                                        flags: list=()) -> SubProcessResultInfo:
         return run_shellcheck_in_sub_process(self,
-                                             test_case_source=test_case_source,
+                                             last_file_argument=test_case_source,
                                              flags=flags)
 
 
@@ -177,7 +172,7 @@ class TestsWithPreservedExecutionDirectoryStructure(UnitTestCaseWithUtils):
 
     def _get_act_output_to_stdout(self,
                                   eds: execution_directory_structure.ExecutionDirectoryStructure) -> str:
-        return _contents_of_file(eds.result.std.stdout_file)
+        return contents_of_file(eds.result.std.stdout_file)
 
 
 class TestsExecuteActPhase(UnitTestCaseWithUtils):
@@ -207,28 +202,6 @@ class TestsExecuteActPhase(UnitTestCaseWithUtils):
         self.assertEqual('output to stderr\n',
                          actual.stderr,
                          'Output on stderr is expected to be same as that of act script')
-
-
-SUCCESSFUL_RESULT = ExpectedSubProcessResult(exitcode=FullResultStatus.PASS.value,
-                                             stdout=lines_content([FullResultStatus.PASS.name]),
-                                             stderr='')
-
-
-def run_shellcheck_in_sub_process(puc: unittest.TestCase,
-                                  test_case_source: str,
-                                  flags: list=()) -> SubProcessResultInfo:
-    cwd = pathlib.Path.cwd()
-    # print('# DEBUG: cwd: ' + str(cwd))
-    if not sys.executable:
-        puc.fail('Cannot execute test since the name of the Python 3 interpreter is not found in sys.executable.')
-    shellcheck_path = shellcheck_src_path(cwd)
-    args_without_file = [sys.executable, str(shellcheck_path)] + list(flags)
-    return run_subprocess_with_file_arg__full(args_without_file, test_case_source)
-
-
-def _contents_of_file(path: pathlib.Path) -> str:
-    with path.open() as f:
-        return f.read()
 
 
 def suite():

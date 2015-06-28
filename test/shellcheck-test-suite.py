@@ -12,12 +12,12 @@ sys.path.insert(0, src_dir)
 
 os.chdir(this_dir)
 
-import shellcheck_main_program_test
+import shellcheck_cli_main_program_test
 import shellcheck_lib_test
 
 suite = unittest.TestSuite()
 suite.addTest(shellcheck_lib_test.suite())
-suite.addTest(shellcheck_main_program_test.suite())
+suite.addTest(shellcheck_cli_main_program_test.suite())
 
 runner = unittest.TextTestRunner()
 runner.run(suite)
