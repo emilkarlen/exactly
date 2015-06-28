@@ -23,4 +23,4 @@ class Setup:
         return 'SUITE ' + str(file_path) + ': END'
 
     def case(self, file_path: pathlib.Path, status: str) -> str:
-        return str(file_path) + ': ' + status
+        return 'CASE  ' + str(file_path) + ': ' + status
