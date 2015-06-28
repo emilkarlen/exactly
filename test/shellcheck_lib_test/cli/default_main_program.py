@@ -2,8 +2,9 @@ import os
 import pathlib
 import unittest
 
-from shellcheck_lib.default.execution_mode.test_suite.reporting import INVALID_SUITE_EXIT_CODE
+from shellcheck_lib.default.execution_mode.test_suite.reporting import INVALID_SUITE_EXIT_CODE, FAILED_TESTS_EXIT_CODE
 from shellcheck_lib.execution.result import FullResultStatus
+from shellcheck_lib.test_case.test_case_processing import AccessErrorType
 from shellcheck_lib_test.cli.utils import check_suite
 from shellcheck_lib_test.cli.utils.execute_main_program import execute_main_program
 from shellcheck_lib_test.util.file_structure import DirContents, File
@@ -150,6 +151,29 @@ class SuiteReferenceToNonExistingCaseFile(check_suite.Setup):
         return INVALID_SUITE_EXIT_CODE
 
 
+class SuiteWithSingleCaseWithInvalidSyntax(check_suite.Setup):
+    def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
+        return root_path / 'main.suite'
+
+    def file_structure(self, root_path: pathlib.Path) -> DirContents:
+        return DirContents([
+            File('main.suite', lines_content(['[cases]',
+                                              'invalid-syntax.case'])),
+            File('invalid-syntax.case',
+                 lines_content(['[invalid section]'])),
+        ])
+
+    def expected_stdout_lines(self, root_path: pathlib.Path) -> list:
+        return [
+            self.suite_begin(root_path / 'main.suite'),
+            self.case(root_path / 'invalid-syntax.case', AccessErrorType.PARSE_ERROR.name),
+            self.suite_end(root_path / 'main.suite'),
+        ]
+
+    def expected_exit_code(self) -> int:
+        return FAILED_TESTS_EXIT_CODE
+
+
 class TestTestSuite(unittest.TestCase):
     def test_invalid_usage(self):
         # ARRANGE #
@@ -179,6 +203,9 @@ class TestTestSuite(unittest.TestCase):
 
     def test_suite_reference_to_non_existing_case_file(self):
         self._check([], SuiteReferenceToNonExistingCaseFile())
+
+    def test_suite_with_single_case_with_invalid_syntax(self):
+        self._check([], SuiteWithSingleCaseWithInvalidSyntax())
 
     def _check(self,
                additional_arguments: list,

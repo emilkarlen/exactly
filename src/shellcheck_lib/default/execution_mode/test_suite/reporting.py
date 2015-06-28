@@ -51,8 +51,11 @@ class CompleteSuiteReporter(reporting.CompleteSuiteReporter, reporting.SubSuiteR
                  case: test_case_processing.TestCase,
                  result: test_case_processing.Result):
         if result.status is not test_case_processing.Status.EXECUTED:
-            self._out_line(result.status.name)
             self._exit_code = FAILED_TESTS_EXIT_CODE
+            if result.status is test_case_processing.Status.INTERNAL_ERROR:
+                self._out_line(result.status.name)
+            else:
+                self._out_line(result.error_type.name)
         else:
             status = result.execution_result.status
             self._out_line(status.name)
