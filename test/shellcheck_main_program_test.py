@@ -32,7 +32,7 @@ class UnitTestCaseWithUtils(unittest.TestCase):
 
 
 class TestsInvokation(UnitTestCaseWithUtils):
-    def test_exit_status_with_invalid_invokation(self):
+    def test_exit_status_with_invalid_invokation_for_test_case(self):
         # ARRANGE #
         test_case_source = ''
         # ACT #
