@@ -170,6 +170,23 @@ class SuiteReferenceToNonExistingCaseFile(check_suite.Setup):
         return INVALID_SUITE_EXIT_CODE
 
 
+class SuiteReferenceToNonExistingSuiteFile(check_suite.Setup):
+    def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
+        return root_path / 'main.suite'
+
+    def file_structure(self, root_path: pathlib.Path) -> DirContents:
+        return DirContents([
+            File('main.suite', lines_content(['[suites]',
+                                              'non-existing.suite'])),
+        ])
+
+    def expected_stdout_lines(self, root_path: pathlib.Path) -> list:
+        return []
+
+    def expected_exit_code(self) -> int:
+        return INVALID_SUITE_EXIT_CODE
+
+
 class SuiteWithSingleCaseWithInvalidSyntax(check_suite.Setup):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
@@ -259,6 +276,9 @@ class TestTestSuite(unittest.TestCase):
 
     def test_suite_reference_to_non_existing_case_file(self):
         self._check([], SuiteReferenceToNonExistingCaseFile())
+
+    def test_suite_reference_to_non_existing_suite_file(self):
+        self._check([], SuiteReferenceToNonExistingSuiteFile())
 
     def test_suite_with_single_case_with_invalid_syntax(self):
         self._check([], SuiteWithSingleCaseWithInvalidSyntax())
