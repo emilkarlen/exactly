@@ -220,6 +220,9 @@ class TestTestSuite(unittest.TestCase):
     def test_suite_reference_to_non_existing_case_file(self):
         self._check([], default_main_program.SuiteReferenceToNonExistingCaseFile())
 
+    def test_suite_reference_to_non_existing_suite_file(self):
+        self._check([], default_main_program.SuiteReferenceToNonExistingSuiteFile())
+
     def test_suite_with_single_case_with_invalid_syntax(self):
         self._check([], default_main_program.SuiteWithSingleCaseWithInvalidSyntax())
 
