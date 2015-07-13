@@ -325,6 +325,9 @@ class TestTestSuiteWithWildcardFileReferences(TestsForSetupBase):
     def test_suite_with_wildcard_references_to_case_files_that_matches_files__type_question_mark(self):
         self._check([], wildcard.SuiteWithWildcardReferencesToCaseFilesThatMatchesFilesTypeQuestionMark())
 
+    def test_suite_with_wildcard_references_to_case_files_in_subdir_that_matches(self):
+        self._check([], wildcard.SuiteWithWildcardReferencesToCaseFilesInSubDirThatMatchesFiles())
+
 
 class TestHelp(unittest.TestCase):
     def test_invalid_usage(self):
