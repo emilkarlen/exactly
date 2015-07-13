@@ -6,8 +6,7 @@ from shellcheck_lib.cli.execution_mode.test_case.execution import NO_EXECUTION_E
 from shellcheck_lib.default.execution_mode.test_suite.reporting import INVALID_SUITE_EXIT_CODE, FAILED_TESTS_EXIT_CODE
 from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib.test_case.test_case_processing import AccessErrorType
-from shellcheck_lib_test.cli.cases.default_main_program_wildcard import \
-    SuiteWithWildcardReferencesToCaseFilesThatMatchesNoFilesTypeQuestionMark
+from shellcheck_lib_test.cli.cases import default_main_program_wildcard as wildcard
 import shellcheck_lib_test.cli.utils.check_suite_for_main_program
 from shellcheck_lib_test.util import check_suite
 from shellcheck_lib_test.cli.utils.execute_main_program import execute_main_program
@@ -321,7 +320,10 @@ class TestTestSuite(TestsForSetupBase):
 
 class TestTestSuiteWithWildcardFileReferences(TestsForSetupBase):
     def test_suite_with_wildcard_references_to_case_files_that_matches_no_files__type_question_mark(self):
-        self._check([], SuiteWithWildcardReferencesToCaseFilesThatMatchesNoFilesTypeQuestionMark())
+        self._check([], wildcard.SuiteWithWildcardReferencesToCaseFilesThatMatchesNoFilesTypeQuestionMark())
+
+    def test_suite_with_wildcard_references_to_case_files_that_matches_files__type_question_mark(self):
+        self._check([], wildcard.SuiteWithWildcardReferencesToCaseFilesThatMatchesFilesTypeQuestionMark())
 
 
 class TestHelp(unittest.TestCase):
