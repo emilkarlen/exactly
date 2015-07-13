@@ -6,6 +6,8 @@ from shellcheck_lib.cli.execution_mode.test_case.execution import NO_EXECUTION_E
 from shellcheck_lib.default.execution_mode.test_suite.reporting import INVALID_SUITE_EXIT_CODE, FAILED_TESTS_EXIT_CODE
 from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib.test_case.test_case_processing import AccessErrorType
+from shellcheck_lib_test.cli.cases.default_main_program_wildcard import \
+    SuiteWithWildcardReferencesToCaseFilesThatMatchesNoFilesTypeQuestionMark
 import shellcheck_lib_test.cli.utils.check_suite_for_main_program
 from shellcheck_lib_test.util import check_suite
 from shellcheck_lib_test.cli.utils.execute_main_program import execute_main_program
@@ -210,6 +212,29 @@ class SuiteWithSingleCaseWithInvalidSyntax(check_suite.Setup):
         return FAILED_TESTS_EXIT_CODE
 
 
+class SuiteWithWildcardReferencesTo(check_suite.Setup):
+    def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
+        return root_path / 'main.suite'
+
+    def file_structure(self, root_path: pathlib.Path) -> DirContents:
+        return DirContents([
+            File('main.suite', lines_content(['[cases]',
+                                              'invalid-syntax.case'])),
+            File('invalid-syntax.case',
+                 lines_content(['[invalid section]'])),
+        ])
+
+    def expected_stdout_lines(self, root_path: pathlib.Path) -> list:
+        return [
+            self.suite_begin(root_path / 'main.suite'),
+            self.case(root_path / 'invalid-syntax.case', AccessErrorType.PARSE_ERROR.name),
+            self.suite_end(root_path / 'main.suite'),
+        ]
+
+    def expected_exit_code(self) -> int:
+        return FAILED_TESTS_EXIT_CODE
+
+
 class ComplexSuccessfulSuite(check_suite.Setup):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
@@ -247,7 +272,14 @@ class ComplexSuccessfulSuite(check_suite.Setup):
         return 0
 
 
-class TestTestSuite(unittest.TestCase):
+class TestsForSetupBase(unittest.TestCase):
+    def _check(self,
+               additional_arguments: list,
+               setup: check_suite.Setup):
+        shellcheck_lib_test.cli.utils.check_suite_for_main_program.check(additional_arguments, setup, self)
+
+
+class TestTestSuite(TestsForSetupBase):
     def test_invalid_usage(self):
         # ARRANGE #
         test_case_source = ''
@@ -286,10 +318,10 @@ class TestTestSuite(unittest.TestCase):
     def test_complex_successful_suite(self):
         self._check([], ComplexSuccessfulSuite())
 
-    def _check(self,
-               additional_arguments: list,
-               setup: check_suite.Setup):
-        shellcheck_lib_test.cli.utils.check_suite_for_main_program.check(additional_arguments, setup, self)
+
+class TestTestSuiteWithWildcardFileReferences(TestsForSetupBase):
+    def test_suite_with_wildcard_references_to_case_files_that_matches_no_files__type_question_mark(self):
+        self._check([], SuiteWithWildcardReferencesToCaseFilesThatMatchesNoFilesTypeQuestionMark())
 
 
 class TestHelp(unittest.TestCase):
@@ -320,6 +352,7 @@ def suite():
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestTestCaseWithoutInstructions))
     ret_val.addTest(unittest.makeSuite(TestTestSuite))
+    ret_val.addTest(unittest.makeSuite(TestTestSuiteWithWildcardFileReferences))
     ret_val.addTest(unittest.makeSuite(TestHelp))
     return ret_val
 
