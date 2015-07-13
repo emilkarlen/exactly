@@ -86,12 +86,31 @@ class TestSuiteFileInstruction(instruction.TestSuiteSectionInstruction):
         return _resolve_non_wildcard_path(self._file_name, environment)
 
 
-class TestCaseFileInstruction(instruction.TestCaseSectionInstruction):
+class TestCaseNonWildcardFileInstruction(instruction.TestCaseSectionInstruction):
+    """
+    Resolves a single path from a file-name that does not contain wild-cards.
+    """
     def __init__(self, file_name: str):
         self._file_name = file_name
 
     def resolve_paths(self, environment: instruction.Environment) -> list:
         return _resolve_non_wildcard_path(self._file_name, environment)
+
+
+class TestCaseWildcardFileInstruction(instruction.TestCaseSectionInstruction):
+    """
+    Resolves a list of paths from a file-name pattern.
+    """
+
+    def __init__(self, pattern: str):
+        self._pattern = pattern
+
+    def resolve_paths(self, environment: instruction.Environment) -> list:
+        paths = sorted(environment.suite_file_dir_path.glob(self._pattern))
+        for path in paths:
+            if not path.is_file():
+                raise FileNotAccessibleSimpleError(path)
+        return paths
 
 
 def _resolve_non_wildcard_path(file_name: str, environment: instruction.Environment) -> list:
@@ -109,8 +128,25 @@ class SuitesSectionParser(parse.InstructionParser):
 
 class CasesSectionParser(parse.InstructionParser):
     def apply(self, source_line: line_source.Line) -> model.PhaseContentElement:
+        instr = TestCaseWildcardFileInstruction(source_line.text) \
+            if _is_wildcard_pattern(source_line.text) \
+            else TestCaseNonWildcardFileInstruction(source_line.text)
         return model.new_instruction_element(source_line,
-                                             TestCaseFileInstruction(source_line.text))
+                                             instr)
+
+
+_WILDCARD_CHARACTERS = ('*', '?', '[')
+
+
+def _contains_any_of(strings_looking_for: tuple, string_looking_in: str):
+    for string_looking_for in strings_looking_for:
+        if string_looking_in.find(string_looking_for) != -1:
+            return True
+    return False
+
+
+def _is_wildcard_pattern(instruction_text: str) -> bool:
+    return _contains_any_of(_WILDCARD_CHARACTERS, instruction_text)
 
 
 PARSER_CONFIGURATION = parse.PhaseAndInstructionsConfiguration(
