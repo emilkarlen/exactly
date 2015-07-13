@@ -1,5 +1,7 @@
 import pathlib
 
+from shellcheck_lib.default.execution_mode.test_suite.reporting import INVALID_SUITE_EXIT_CODE
+
 from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib_test.util import check_suite
 from shellcheck_lib_test.util.file_structure import DirContents, Dir, File
@@ -48,6 +50,26 @@ class SuiteWithWildcardReferencesToCaseFilesThatMatchesFilesTypeQuestionMark(che
 
     def expected_exit_code(self) -> int:
         return 0
+
+
+class SuiteWithWildcardReferencesToCaseFilesThatAreDirectories(check_suite.Setup):
+    def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
+        return root_path / 'main.suite'
+
+    def file_structure(self, root_path: pathlib.Path) -> DirContents:
+        return DirContents([
+            File('main.suite', lines_content(['[cases]',
+                                              '?'])),
+            File('1', ''),
+            Dir('2', []),
+            File('3', ''),
+        ])
+
+    def expected_stdout_lines(self, root_path: pathlib.Path) -> list:
+        return []
+
+    def expected_exit_code(self) -> int:
+        return INVALID_SUITE_EXIT_CODE
 
 
 class SuiteWithWildcardReferencesToCaseFilesInSubDirThatMatchesFiles(check_suite.Setup):
