@@ -83,14 +83,7 @@ class TestSuiteFileInstruction(instruction.TestSuiteSectionInstruction):
         self._file_name = file_name
 
     def resolve_paths(self, environment: instruction.Environment) -> list:
-        """
-        :raises FileNotAccessibleSimpleError: A referenced file is not accessible.
-        :return: [pathlib.Path]
-        """
-        path = environment.suite_file_dir_path / self._file_name
-        if not path.is_file():
-            raise FileNotAccessibleSimpleError(path)
-        return [path]
+        return _resolve_non_wildcard_path(self._file_name, environment)
 
 
 class TestCaseFileInstruction(instruction.TestCaseSectionInstruction):
@@ -98,10 +91,14 @@ class TestCaseFileInstruction(instruction.TestCaseSectionInstruction):
         self._file_name = file_name
 
     def resolve_paths(self, environment: instruction.Environment) -> list:
-        path = environment.suite_file_dir_path / self._file_name
-        if not path.is_file():
-            raise FileNotAccessibleSimpleError(path)
-        return [path]
+        return _resolve_non_wildcard_path(self._file_name, environment)
+
+
+def _resolve_non_wildcard_path(file_name: str, environment: instruction.Environment) -> list:
+    path = environment.suite_file_dir_path / file_name
+    if not path.is_file():
+        raise FileNotAccessibleSimpleError(path)
+    return [path]
 
 
 class SuitesSectionParser(parse.InstructionParser):
