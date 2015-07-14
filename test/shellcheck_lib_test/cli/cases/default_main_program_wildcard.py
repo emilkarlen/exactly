@@ -35,8 +35,8 @@ class SuiteWithWildcardReferencesToCaseFilesThatMatchesFilesTypeQuestionMark(che
         return DirContents([
             File('main.suite', lines_content(['[cases]',
                                               '?.case'])),
-            File('b.case', ''),
-            File('a.case', ''),
+            empty_file('b.case'),
+            empty_file('a.case'),
         ])
 
     def expected_stdout_lines(self, root_path: pathlib.Path) -> list:
@@ -136,9 +136,9 @@ class SuiteWithWildcardReferencesToCaseFilesThatAreDirectories(check_suite.Setup
         return DirContents([
             File('main.suite', lines_content(['[cases]',
                                               '?'])),
-            File('1', ''),
+            empty_file('1'),
             Dir('2', []),
-            File('3', ''),
+            empty_file('3'),
         ])
 
     def expected_stdout_lines(self, root_path: pathlib.Path) -> list:
@@ -158,12 +158,12 @@ class SuiteWithWildcardReferencesToCaseFilesInSubDirThatMatchesFiles(check_suite
                                               'sub-dir-1/?.case',
                                               'sub-dir-2/*.case'])),
             Dir('sub-dir-1', [
-                File('b.case', ''),
-                File('a.case', ''),
+                empty_file('b.case'),
+                empty_file('a.case'),
             ]),
             Dir('sub-dir-2', [
-                File('22.case', ''),
-                File('11.case', ''),
+                empty_file('22.case'),
+                empty_file('11.case'),
             ]),
         ])
 
