@@ -308,6 +308,9 @@ class TestTestSuiteWithWildcardFileReferencesToCaseFiles(TestsForSetupBase):
     def test_references_to_case_files_that_matches_files__type_character_range(self):
         self._check([], wildcard.ReferencesToCaseFilesThatMatchesFilesTypeCharacterRange())
 
+    def test_references_to_case_files_that_matches_files__type_negated_character_range(self):
+        self._check([], wildcard.ReferencesToCaseFilesThatMatchesFilesTypeNegatedCharacterRange())
+
     def test_references_to_case_files_in_subdir_that_matches(self):
         self._check([], wildcard.ReferencesToCaseFilesInSubDirThatMatchesFiles())
 
