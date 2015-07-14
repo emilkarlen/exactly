@@ -216,6 +216,53 @@ class ReferencesToCaseFilesInAnySubDir(check_suite.Setup):
         return 0
 
 
+class ReferencesToSuiteFilesInAnySubDir(check_suite.Setup):
+    def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
+        return root_path / 'main.suite'
+
+    def file_structure(self, root_path: pathlib.Path) -> DirContents:
+        return DirContents([
+            File('main.suite', lines_content(['[suites]',
+                                              '**/_*.suite'])),
+            Dir('sub-dir-2', [
+                empty_file('_y.suite'),
+                empty_file('_x.suite'),
+            ]),
+            Dir('sub-dir-1', [
+                empty_file('_b.suite'),
+                empty_file('_a.suite'),
+                Dir('sub-dir-1-1', [
+                    empty_file('_1-1.suite'),
+                ])
+            ]),
+            empty_file('_1.suite'),
+            empty_file('_2.suite'),
+        ])
+
+    def expected_stdout_lines(self, root_path: pathlib.Path) -> list:
+        return [
+            self.suite_begin(root_path / '_1.suite'),
+            self.suite_end(root_path / '_1.suite'),
+            self.suite_begin(root_path / '_2.suite'),
+            self.suite_end(root_path / '_2.suite'),
+            self.suite_begin(root_path / 'sub-dir-1' / '_a.suite'),
+            self.suite_end(root_path / 'sub-dir-1' / '_a.suite'),
+            self.suite_begin(root_path / 'sub-dir-1' / '_b.suite'),
+            self.suite_end(root_path / 'sub-dir-1' / '_b.suite'),
+            self.suite_begin(root_path / 'sub-dir-1' / 'sub-dir-1-1' / '_1-1.suite'),
+            self.suite_end(root_path / 'sub-dir-1' / 'sub-dir-1-1' / '_1-1.suite'),
+            self.suite_begin(root_path / 'sub-dir-2' / '_x.suite'),
+            self.suite_end(root_path / 'sub-dir-2' / '_x.suite'),
+            self.suite_begin(root_path / 'sub-dir-2' / '_y.suite'),
+            self.suite_end(root_path / 'sub-dir-2' / '_y.suite'),
+            self.suite_begin(root_path / 'main.suite'),
+            self.suite_end(root_path / 'main.suite'),
+        ]
+
+    def expected_exit_code(self) -> int:
+        return 0
+
+
 class ReferencesToCaseFilesThatAreDirectories(check_suite.Setup):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'

@@ -328,6 +328,9 @@ class TestTestSuiteWithWildcardFileReferencesToSuiteFiles(TestsForSetupBase):
     def test_references_to_suite_files_in_any_direct_subdir(self):
         self._check([], wildcard.ReferencesToSuiteFilesInAnyDirectSubDir())
 
+    def test_references_to_suite_files_in_any_sub_dir(self):
+        self._check([], wildcard.ReferencesToSuiteFilesInAnySubDir())
+
 
 class TestHelp(unittest.TestCase):
     def test_invalid_usage(self):
