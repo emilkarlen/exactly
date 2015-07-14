@@ -319,6 +319,9 @@ class TestTestSuiteWithWildcardFileReferencesToCaseFiles(TestsForSetupBase):
 
 
 class TestTestSuiteWithWildcardFileReferencesToSuiteFiles(TestsForSetupBase):
+    def test_references_to_suite_files_that_matches_no_files(self):
+        self._check([], wildcard.ReferencesToCaseFilesThatMatchesNoFiles())
+
     def test_references_to_suite_files_that_are_directories(self):
         self._check([], wildcard.ReferencesToSuiteFilesThatAreDirectories())
 
