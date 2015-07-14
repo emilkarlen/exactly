@@ -7,7 +7,7 @@ from shellcheck_lib_test.util.file_structure import DirContents, Dir, File
 from shellcheck_lib_test.util.with_tmp_file import lines_content
 
 
-class SuiteWithWildcardReferencesToCaseFilesThatMatchesNoFiles(check_suite.Setup):
+class ReferencesToCaseFilesThatMatchesNoFiles(check_suite.Setup):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -27,7 +27,7 @@ class SuiteWithWildcardReferencesToCaseFilesThatMatchesNoFiles(check_suite.Setup
         return 0
 
 
-class SuiteWithWildcardReferencesToCaseFilesThatMatchesFilesTypeQuestionMark(check_suite.Setup):
+class ReferencesToCaseFilesThatMatchesFilesTypeQuestionMark(check_suite.Setup):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -51,7 +51,7 @@ class SuiteWithWildcardReferencesToCaseFilesThatMatchesFilesTypeQuestionMark(che
         return 0
 
 
-class SuiteWithWildcardReferencesToCaseFilesInAnyDirectSubDir(check_suite.Setup):
+class ReferencesToCaseFilesInAnyDirectSubDir(check_suite.Setup):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -88,7 +88,7 @@ class SuiteWithWildcardReferencesToCaseFilesInAnyDirectSubDir(check_suite.Setup)
         return 0
 
 
-class SuiteWithWildcardReferencesToSuiteFilesInAnyDirectSubDir(check_suite.Setup):
+class ReferencesToSuiteFilesInAnyDirectSubDir(check_suite.Setup):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -129,7 +129,7 @@ class SuiteWithWildcardReferencesToSuiteFilesInAnyDirectSubDir(check_suite.Setup
         return 0
 
 
-class SuiteWithWildcardReferencesToCaseFilesInAnySubDir(check_suite.Setup):
+class ReferencesToCaseFilesInAnySubDir(check_suite.Setup):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -169,7 +169,7 @@ class SuiteWithWildcardReferencesToCaseFilesInAnySubDir(check_suite.Setup):
         return 0
 
 
-class SuiteWithWildcardReferencesToCaseFilesThatAreDirectories(check_suite.Setup):
+class ReferencesToCaseFilesThatAreDirectories(check_suite.Setup):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -189,7 +189,7 @@ class SuiteWithWildcardReferencesToCaseFilesThatAreDirectories(check_suite.Setup
         return INVALID_SUITE_EXIT_CODE
 
 
-class SuiteWithWildcardReferencesToSuiteFilesThatAreDirectories(check_suite.Setup):
+class ReferencesToSuiteFilesThatAreDirectories(check_suite.Setup):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -209,7 +209,7 @@ class SuiteWithWildcardReferencesToSuiteFilesThatAreDirectories(check_suite.Setu
         return INVALID_SUITE_EXIT_CODE
 
 
-class SuiteWithWildcardReferencesToCaseFilesInSubDirThatMatchesFiles(check_suite.Setup):
+class ReferencesToCaseFilesInSubDirThatMatchesFiles(check_suite.Setup):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
