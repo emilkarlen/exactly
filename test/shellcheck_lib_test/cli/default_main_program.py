@@ -331,6 +331,9 @@ class TestTestSuiteWithWildcardFileReferencesToSuiteFiles(TestsForSetupBase):
     def test_references_to_suite_files_that_matches_files__type_character_range(self):
         self._check([], wildcard.ReferencesToSuiteFilesThatMatchesFilesTypeCharacterRange())
 
+    def test_references_to_suite_files_that_matches_files__type_negated_character_range(self):
+        self._check([], wildcard.ReferencesToSuiteFilesThatMatchesFilesTypeNegatedCharacterRange())
+
     def test_references_to_suite_files_in_any_direct_subdir(self):
         self._check([], wildcard.ReferencesToSuiteFilesInAnyDirectSubDir())
 
