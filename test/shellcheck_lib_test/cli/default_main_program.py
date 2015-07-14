@@ -334,6 +334,9 @@ class TestTestSuiteWithWildcardFileReferences(TestsForSetupBase):
     def test_suite_with_wildcard_references_to_case_files_in_any_direct_sub_dir(self):
         self._check([], wildcard.SuiteWithWildcardReferencesToCaseFilesInAnyDirectSubDir())
 
+    def test_suite_with_wildcard_references_to_case_files_in_any_sub_dir(self):
+        self._check([], wildcard.SuiteWithWildcardReferencesToCaseFilesInAnySubDir())
+
 
 class TestHelp(unittest.TestCase):
     def test_invalid_usage(self):
