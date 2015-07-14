@@ -207,7 +207,14 @@ class TestsExecuteActPhase(UnitTestCaseWithUtils):
                          'Output on stderr is expected to be same as that of act script')
 
 
-class TestTestSuite(unittest.TestCase):
+class TestsForSetupBase(unittest.TestCase):
+    def _check(self,
+               additional_arguments: list,
+               setup: check_suite):
+        suite_utils.check(additional_arguments, setup, self)
+
+
+class TestTestSuite(TestsForSetupBase):
     def test_empty_file(self):
         self._check([], default_main_program.EmptySuite())
 
@@ -228,11 +235,6 @@ class TestTestSuite(unittest.TestCase):
 
     def test_complex_successful_suite(self):
         self._check([], default_main_program.ComplexSuccessfulSuite())
-
-    def _check(self,
-               additional_arguments: list,
-               setup: check_suite):
-        suite_utils.check(additional_arguments, setup, self)
 
 
 def suite():
