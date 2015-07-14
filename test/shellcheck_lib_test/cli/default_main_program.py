@@ -296,31 +296,31 @@ class TestTestSuite(TestsForSetupBase):
 
 
 class TestTestSuiteWithWildcardFileReferencesToCaseFiles(TestsForSetupBase):
-    def test_suite_with_wildcard_references_to_case_files_that_matches_no_files(self):
-        self._check([], wildcard.SuiteWithWildcardReferencesToCaseFilesThatMatchesNoFiles())
+    def test_references_to_case_files_that_matches_no_files(self):
+        self._check([], wildcard.ReferencesToCaseFilesThatMatchesNoFiles())
 
-    def test_suite_with_wildcard_references_to_case_files_that_are_directories(self):
-        self._check([], wildcard.SuiteWithWildcardReferencesToCaseFilesThatAreDirectories())
+    def test_references_to_case_files_that_are_directories(self):
+        self._check([], wildcard.ReferencesToCaseFilesThatAreDirectories())
 
-    def test_suite_with_wildcard_references_to_case_files_that_matches_files__type_question_mark(self):
-        self._check([], wildcard.SuiteWithWildcardReferencesToCaseFilesThatMatchesFilesTypeQuestionMark())
+    def test_references_to_case_files_that_matches_files__type_question_mark(self):
+        self._check([], wildcard.ReferencesToCaseFilesThatMatchesFilesTypeQuestionMark())
 
-    def test_suite_with_wildcard_references_to_case_files_in_subdir_that_matches(self):
-        self._check([], wildcard.SuiteWithWildcardReferencesToCaseFilesInSubDirThatMatchesFiles())
+    def test_references_to_case_files_in_subdir_that_matches(self):
+        self._check([], wildcard.ReferencesToCaseFilesInSubDirThatMatchesFiles())
 
-    def test_suite_with_wildcard_references_to_case_files_in_any_direct_sub_dir(self):
-        self._check([], wildcard.SuiteWithWildcardReferencesToCaseFilesInAnyDirectSubDir())
+    def test_references_to_case_files_in_any_direct_sub_dir(self):
+        self._check([], wildcard.ReferencesToCaseFilesInAnyDirectSubDir())
 
-    def test_suite_with_wildcard_references_to_case_files_in_any_sub_dir(self):
-        self._check([], wildcard.SuiteWithWildcardReferencesToCaseFilesInAnySubDir())
+    def test_references_to_case_files_in_any_sub_dir(self):
+        self._check([], wildcard.ReferencesToCaseFilesInAnySubDir())
 
 
 class TestTestSuiteWithWildcardFileReferencesToSuiteFiles(TestsForSetupBase):
-    def test_suite_with_wildcard_references_to_suite_files_that_are_directories(self):
-        self._check([], wildcard.SuiteWithWildcardReferencesToSuiteFilesThatAreDirectories())
+    def test_references_to_suite_files_that_are_directories(self):
+        self._check([], wildcard.ReferencesToSuiteFilesThatAreDirectories())
 
-    def test_suite_with_wildcard_references_to_suite_files_in_any_direct_subdir(self):
-        self._check([], wildcard.SuiteWithWildcardReferencesToSuiteFilesInAnyDirectSubDir())
+    def test_references_to_suite_files_in_any_direct_subdir(self):
+        self._check([], wildcard.ReferencesToSuiteFilesInAnyDirectSubDir())
 
 
 class TestHelp(unittest.TestCase):
