@@ -88,6 +88,47 @@ class SuiteWithWildcardReferencesToCaseFilesInAnyDirectSubDir(check_suite.Setup)
         return 0
 
 
+class SuiteWithWildcardReferencesToSuiteFilesInAnyDirectSubDir(check_suite.Setup):
+    def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
+        return root_path / 'main.suite'
+
+    def file_structure(self, root_path: pathlib.Path) -> DirContents:
+        return DirContents([
+            File('main.suite', lines_content(['[suites]',
+                                              '*/*.suite'])),
+            Dir('sub-dir-2', [
+                empty_file('y.suite'),
+                empty_file('x.suite'),
+            ]),
+            Dir('sub-dir-1', [
+                empty_file('b.suite'),
+                empty_file('a.suite'),
+                Dir('sub-dir-1-1', [
+                    empty_file('1-1.suite'),
+                ])
+            ]),
+            empty_file('1.suite'),
+            empty_file('2.suite'),
+        ])
+
+    def expected_stdout_lines(self, root_path: pathlib.Path) -> list:
+        return [
+            self.suite_begin(root_path / 'sub-dir-1' / 'a.suite'),
+            self.suite_end(root_path / 'sub-dir-1' / 'a.suite'),
+            self.suite_begin(root_path / 'sub-dir-1' / 'b.suite'),
+            self.suite_end(root_path / 'sub-dir-1' / 'b.suite'),
+            self.suite_begin(root_path / 'sub-dir-2' / 'x.suite'),
+            self.suite_end(root_path / 'sub-dir-2' / 'x.suite'),
+            self.suite_begin(root_path / 'sub-dir-2' / 'y.suite'),
+            self.suite_end(root_path / 'sub-dir-2' / 'y.suite'),
+            self.suite_begin(root_path / 'main.suite'),
+            self.suite_end(root_path / 'main.suite'),
+        ]
+
+    def expected_exit_code(self) -> int:
+        return 0
+
+
 class SuiteWithWildcardReferencesToCaseFilesInAnySubDir(check_suite.Setup):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'

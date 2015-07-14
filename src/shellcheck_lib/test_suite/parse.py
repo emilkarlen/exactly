@@ -78,12 +78,24 @@ class SuiteSyntaxError(SuiteReadError):
         return self._message
 
 
-class TestSuiteFileInstruction(instruction.TestSuiteSectionInstruction):
+class TestSuiteNonWildcardFileInstruction(instruction.TestSuiteSectionInstruction):
     def __init__(self, file_name: str):
         self._file_name = file_name
 
     def resolve_paths(self, environment: instruction.Environment) -> list:
         return _resolve_non_wildcard_path(self._file_name, environment)
+
+
+class TestSuiteWildcardFileInstruction(instruction.TestSuiteSectionInstruction):
+    """
+    Resolves a list of paths from a file-name pattern.
+    """
+
+    def __init__(self, pattern: str):
+        self._pattern = pattern
+
+    def resolve_paths(self, environment: instruction.Environment) -> list:
+        return _resolve_wildcard_paths(self._pattern, environment)
 
 
 class TestCaseNonWildcardFileInstruction(instruction.TestCaseSectionInstruction):
@@ -101,16 +113,11 @@ class TestCaseWildcardFileInstruction(instruction.TestCaseSectionInstruction):
     """
     Resolves a list of paths from a file-name pattern.
     """
-
     def __init__(self, pattern: str):
         self._pattern = pattern
 
     def resolve_paths(self, environment: instruction.Environment) -> list:
-        paths = sorted(environment.suite_file_dir_path.glob(self._pattern))
-        for path in paths:
-            if not path.is_file():
-                raise FileNotAccessibleSimpleError(path)
-        return paths
+        return _resolve_wildcard_paths(self._pattern, environment)
 
 
 def _resolve_non_wildcard_path(file_name: str, environment: instruction.Environment) -> list:
@@ -120,10 +127,21 @@ def _resolve_non_wildcard_path(file_name: str, environment: instruction.Environm
     return [path]
 
 
+def _resolve_wildcard_paths(pattern: str, environment: instruction.Environment) -> list:
+    paths = sorted(environment.suite_file_dir_path.glob(pattern))
+    for path in paths:
+        if not path.is_file():
+            raise FileNotAccessibleSimpleError(path)
+    return paths
+
+
 class SuitesSectionParser(parse.InstructionParser):
     def apply(self, source_line: line_source.Line) -> model.PhaseContentElement:
+        instr = TestSuiteWildcardFileInstruction(source_line.text) \
+            if _is_wildcard_pattern(source_line.text) \
+            else TestSuiteNonWildcardFileInstruction(source_line.text)
         return model.new_instruction_element(source_line,
-                                             TestSuiteFileInstruction(source_line.text))
+                                             instr)
 
 
 class CasesSectionParser(parse.InstructionParser):
