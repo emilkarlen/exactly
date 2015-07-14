@@ -98,6 +98,31 @@ class ReferencesToCaseFilesThatMatchesFilesTypeCharacterRange(check_suite.Setup)
         return 0
 
 
+class ReferencesToCaseFilesThatMatchesFilesTypeNegatedCharacterRange(check_suite.Setup):
+    def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
+        return root_path / 'main.suite'
+
+    def file_structure(self, root_path: pathlib.Path) -> DirContents:
+        return DirContents([
+            File('main.suite', lines_content(['[cases]',
+                                              '_[!a-bx].case'])),
+            empty_file('_b.case'),
+            empty_file('_x.case'),
+            empty_file('_a.case'),
+            empty_file('_c.case'),
+        ])
+
+    def expected_stdout_lines(self, root_path: pathlib.Path) -> list:
+        return [
+            self.suite_begin(root_path / 'main.suite'),
+            self.case(root_path / '_c.case', FullResultStatus.PASS.name),
+            self.suite_end(root_path / 'main.suite'),
+        ]
+
+    def expected_exit_code(self) -> int:
+        return 0
+
+
 class ReferencesToCaseFilesInAnyDirectSubDir(check_suite.Setup):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
