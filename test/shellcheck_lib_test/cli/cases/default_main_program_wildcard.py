@@ -7,7 +7,7 @@ from shellcheck_lib_test.util.file_structure import DirContents, Dir, File
 from shellcheck_lib_test.util.with_tmp_file import lines_content
 
 
-class SuiteWithWildcardReferencesToCaseFilesThatMatchesNoFilesTypeQuestionMark(check_suite.Setup):
+class SuiteWithWildcardReferencesToCaseFilesThatMatchesNoFiles(check_suite.Setup):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 

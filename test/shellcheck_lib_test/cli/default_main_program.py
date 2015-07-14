@@ -296,8 +296,8 @@ class TestTestSuite(TestsForSetupBase):
 
 
 class TestTestSuiteWithWildcardFileReferences(TestsForSetupBase):
-    def test_suite_with_wildcard_references_to_case_files_that_matches_no_files__type_question_mark(self):
-        self._check([], wildcard.SuiteWithWildcardReferencesToCaseFilesThatMatchesNoFilesTypeQuestionMark())
+    def test_suite_with_wildcard_references_to_case_files_that_matches_no_files(self):
+        self._check([], wildcard.SuiteWithWildcardReferencesToCaseFilesThatMatchesNoFiles())
 
     def test_suite_with_wildcard_references_to_case_files_that_are_directories(self):
         self._check([], wildcard.SuiteWithWildcardReferencesToCaseFilesThatAreDirectories())
