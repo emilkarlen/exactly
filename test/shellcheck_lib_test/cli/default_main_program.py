@@ -302,6 +302,9 @@ class TestTestSuiteWithWildcardFileReferences(TestsForSetupBase):
     def test_suite_with_wildcard_references_to_case_files_that_are_directories(self):
         self._check([], wildcard.SuiteWithWildcardReferencesToCaseFilesThatAreDirectories())
 
+    def test_suite_with_wildcard_references_to_suite_files_that_are_directories(self):
+        self._check([], wildcard.SuiteWithWildcardReferencesToSuiteFilesThatAreDirectories())
+
     def test_suite_with_wildcard_references_to_case_files_that_matches_files__type_question_mark(self):
         self._check([], wildcard.SuiteWithWildcardReferencesToCaseFilesThatMatchesFilesTypeQuestionMark())
 

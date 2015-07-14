@@ -189,6 +189,26 @@ class SuiteWithWildcardReferencesToCaseFilesThatAreDirectories(check_suite.Setup
         return INVALID_SUITE_EXIT_CODE
 
 
+class SuiteWithWildcardReferencesToSuiteFilesThatAreDirectories(check_suite.Setup):
+    def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
+        return root_path / 'main.suite'
+
+    def file_structure(self, root_path: pathlib.Path) -> DirContents:
+        return DirContents([
+            File('main.suite', lines_content(['[suites]',
+                                              '?'])),
+            empty_file('1'),
+            Dir('2', []),
+            empty_file('3'),
+        ])
+
+    def expected_stdout_lines(self, root_path: pathlib.Path) -> list:
+        return []
+
+    def expected_exit_code(self) -> int:
+        return INVALID_SUITE_EXIT_CODE
+
+
 class SuiteWithWildcardReferencesToCaseFilesInSubDirThatMatchesFiles(check_suite.Setup):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
