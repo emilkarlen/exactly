@@ -172,4 +172,36 @@ fall.
 Skulle kunna ha instruktion "@groups" i svit-filer (mycket liknande hur
 filelist använder @tags).
 ** TODO Köra enskilda testfall i sub-process
+** TODO <2015-07-14 tis> Rapportering: Borde inte rappoteringen vara rekursiv?
+Nu (djupet-först):
+----------------------------------------
+sub-suite: BEGIN
+sub-case: PASS
+sub-suite: END
+
+main-suite: BEGIN
+main-case: PASS
+main-suite: END
+----------------------------------------
+Borde det inte vara:
+----------------------------------------
+main-suite: BEGIN
+
+sub-suite: BEGIN
+sub-case: PASS
+sub-suite: END
+
+main-case: PASS
+main-suite: END
+----------------------------------------
+
+Dagens impl har fördelningen att en svits BEGIN o END inkapslar "direkt"
+svitens egna testfall.
+Nackdelen är att det inte går att spåra inklusions-hierarkin.
+Frågan är vad som är vettigast.  Borde kolla på hur andra gör o följa det
+vanliga sättet.
+(Makefiler kör enl icke-nuvarande.  Å andra sidan har man inget val där, iom
+att det handlar om att "överliggande" moduler är beroende av "underliggande".
+El, jo, i rapporteringen har man naturligtvis ett val!  Dock inte i själva
+beräkningsordningen.)
 * TODO Loggning
