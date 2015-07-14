@@ -18,6 +18,7 @@ from shellcheck_lib_test.util.with_tmp_file import lines_content, SubProcessResu
     ExpectedSubProcessResult, SubProcessResultInfo
 from shellcheck_lib_test.util import check_suite
 from shellcheck_lib_test.util.cli_main_program_via_shell_utils import suite_utils
+from shellcheck_lib_test.cli.cases import default_main_program_wildcard as wildcard
 
 
 class UnitTestCaseWithUtils(unittest.TestCase):
@@ -237,6 +238,35 @@ class TestTestSuite(TestsForSetupBase):
         self._check([], default_main_program.ComplexSuccessfulSuite())
 
 
+class TestTestSuitesWithWildcardFileReferences(TestsForSetupBase):
+    def test_references_to_case_files_that_matches_no_files(self):
+        self._check([], wildcard.ReferencesToCaseFilesThatMatchesNoFiles())
+
+    def test_references_to_case_files_that_are_directories(self):
+        self._check([], wildcard.ReferencesToCaseFilesThatAreDirectories())
+
+    def test_references_to_case_files_that_matches_files__type_question_mark(self):
+        self._check([], wildcard.ReferencesToCaseFilesThatMatchesFilesTypeQuestionMark())
+
+    def test_references_to_case_files_in_any_direct_sub_dir(self):
+        self._check([], wildcard.ReferencesToCaseFilesInAnyDirectSubDir())
+
+    def test_references_to_suite_files_that_matches_no_files(self):
+        self._check([], wildcard.ReferencesToCaseFilesThatMatchesNoFiles())
+
+    def test_references_to_suite_files_that_are_directories(self):
+        self._check([], wildcard.ReferencesToSuiteFilesThatAreDirectories())
+
+    def test_references_to_suite_files_that_matches_files__type_character_range(self):
+        self._check([], wildcard.ReferencesToSuiteFilesThatMatchesFilesTypeCharacterRange())
+
+    def test_references_to_suite_files_that_matches_files__type_negated_character_range(self):
+        self._check([], wildcard.ReferencesToSuiteFilesThatMatchesFilesTypeNegatedCharacterRange())
+
+    def test_references_to_suite_files_in_any_sub_dir(self):
+        self._check([], wildcard.ReferencesToSuiteFilesInAnySubDir())
+
+
 def suite():
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestsInvokation))
@@ -244,6 +274,7 @@ def suite():
     ret_val.addTest(unittest.makeSuite(TestsWithPreservedExecutionDirectoryStructure))
     ret_val.addTest(unittest.makeSuite(TestsExecuteActPhase))
     ret_val.addTest(unittest.makeSuite(TestTestSuite))
+    ret_val.addTest(unittest.makeSuite(TestTestSuitesWithWildcardFileReferences))
     return ret_val
 
 
