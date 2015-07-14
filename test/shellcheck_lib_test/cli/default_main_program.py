@@ -211,29 +211,6 @@ class SuiteWithSingleCaseWithInvalidSyntax(check_suite.Setup):
         return FAILED_TESTS_EXIT_CODE
 
 
-class SuiteWithWildcardReferencesTo(check_suite.Setup):
-    def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
-        return root_path / 'main.suite'
-
-    def file_structure(self, root_path: pathlib.Path) -> DirContents:
-        return DirContents([
-            File('main.suite', lines_content(['[cases]',
-                                              'invalid-syntax.case'])),
-            File('invalid-syntax.case',
-                 lines_content(['[invalid section]'])),
-        ])
-
-    def expected_stdout_lines(self, root_path: pathlib.Path) -> list:
-        return [
-            self.suite_begin(root_path / 'main.suite'),
-            self.case(root_path / 'invalid-syntax.case', AccessErrorType.PARSE_ERROR.name),
-            self.suite_end(root_path / 'main.suite'),
-        ]
-
-    def expected_exit_code(self) -> int:
-        return FAILED_TESTS_EXIT_CODE
-
-
 class ComplexSuccessfulSuite(check_suite.Setup):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
@@ -336,6 +313,9 @@ class TestTestSuiteWithWildcardFileReferences(TestsForSetupBase):
 
     def test_suite_with_wildcard_references_to_case_files_in_any_sub_dir(self):
         self._check([], wildcard.SuiteWithWildcardReferencesToCaseFilesInAnySubDir())
+
+    def test_suite_with_wildcard_references_to_suite_files_in_any_direct_subdir(self):
+        self._check([], wildcard.SuiteWithWildcardReferencesToSuiteFilesInAnyDirectSubDir())
 
 
 class TestHelp(unittest.TestCase):
