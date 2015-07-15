@@ -38,14 +38,6 @@ class PlainDocumentParser:
         raise NotImplementedError()
 
 
-class InstructionForComment(model.PhaseContentElement):
-    def __init__(self, source_line: line_source.Line):
-        super().__init__(source_line, None)
-
-    def execute(self, phase_name: str, global_environment, phase_environment):
-        pass
-
-
 class InstructionParser:
     """
     Parses an instruction line into an instruction.
