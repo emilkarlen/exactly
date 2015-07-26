@@ -186,6 +186,26 @@ class TestParsePlainTestCase(unittest.TestCase):
         expected_document = model.Document(expected_phase2instructions)
         self._check_document(expected_document, actual_document)
 
+    def test_initial_empty_lines_and_comment_lines_should_be_ignored_when_there_is_no_anonymous_phase(self):
+        actual_document = self._parse_lines(parser_without_anonymous_phase(),
+                                            ['# standard-comment anonymous',
+                                             '',
+                                             '[phase 1]',
+                                             'COMMENT 1',
+                                             '',
+                                             'instruction 1'])
+
+        phase1_instructions = (
+            new_comment(4, 'COMMENT 1'),
+            new_empty(5, ''),
+            new_instruction(6, 'instruction 1', 'phase 1')
+        )
+        expected_phase2instructions = {
+            'phase 1': model.PhaseContents(phase1_instructions),
+        }
+        expected_document = model.Document(expected_phase2instructions)
+        self._check_document(expected_document, actual_document)
+
     def test_valid_anonymous_and_named_phase(self):
         actual_document = self._parse_lines(parser_with_anonymous_phase(),
                                             ['COMMENT anonymous',
