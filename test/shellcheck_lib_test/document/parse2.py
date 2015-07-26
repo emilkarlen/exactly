@@ -203,7 +203,7 @@ class ParseTestBase(unittest.TestCase):
     def _parse_lines(self,
                      parser: PlainDocumentParser,
                      lines: list) -> model.Document:
-        plain_document = os.linesep.join(lines)
+        plain_document = os.linesep.join(lines) + os.linesep
         ptc_source = line_source.new_for_string(plain_document)
         return parser.apply(ptc_source)
 
@@ -386,6 +386,27 @@ class TestParseMultiLineElements(ParseTestBase):
                                         ['MULTI-LINE-INSTRUCTION 1',
                                          'MULTI-LINE-INSTRUCTION 2'],
                                         None),
+        )
+        expected_phase2instructions = {
+            None: model.PhaseContents(anonymous_phase_instructions),
+        }
+        expected_document = model.Document(expected_phase2instructions)
+        self._check_document(expected_document, actual_document)
+
+    def test_single_multi_line_instruction_in_anonymous_phase_surrounded_by_empty_lines(self):
+        actual_document = self._parse_lines(parser_with_anonymous_phase(),
+                                            ['',
+                                             'MULTI-LINE-INSTRUCTION 1',
+                                             'MULTI-LINE-INSTRUCTION 2',
+                                             ''])
+
+        anonymous_phase_instructions = (
+            new_empty(1, ''),
+            new_instruction__multi_line(2,
+                                        ['MULTI-LINE-INSTRUCTION 1',
+                                         'MULTI-LINE-INSTRUCTION 2'],
+                                        None),
+            new_empty(4, ''),
         )
         expected_phase2instructions = {
             None: model.PhaseContents(anonymous_phase_instructions),
