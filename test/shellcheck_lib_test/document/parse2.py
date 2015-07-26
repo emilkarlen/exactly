@@ -12,6 +12,16 @@ from shellcheck_lib_test.util.assert_utils import TestCaseWithMessageHeader, \
 
 _COMMENT_START = 'COMMENT'
 
+_MULTI_LINE_INSTRUCTION_LINE_START = 'MULTI-LINE-INSTRUCTION'
+
+
+def is_multi_line_instruction_line(line: str) -> bool:
+    return line[:len(_MULTI_LINE_INSTRUCTION_LINE_START)] == _MULTI_LINE_INSTRUCTION_LINE_START
+
+
+def is_comment_line(line: str) -> bool:
+    return line[:len(_COMMENT_START)] == _COMMENT_START
+
 
 class InstructionInSection(model.Instruction):
     def __init__(self,
@@ -49,12 +59,20 @@ class InstructionParserForPhase(parse2.SectionElementParser):
 
     def apply(self, source: line_source.LineSequenceBuilder) -> model.PhaseContentElement:
         the_line = source.lines[0]
-        the_line_sequence = source.build()
         if the_line == '':
-            return model.new_empty_e(the_line_sequence)
-        if the_line[:len(_COMMENT_START)] == _COMMENT_START:
-            return model.new_comment_e(the_line_sequence)
-        return model.new_instruction_e(the_line_sequence,
+            return model.new_empty_e(source.build())
+        if is_comment_line(the_line):
+            return model.new_comment_e(source.build())
+        if is_multi_line_instruction_line(the_line):
+            # Eat additional lines
+            while source.has_next():
+                next_line = source.next_line()
+                if not is_multi_line_instruction_line(next_line):
+                    source.return_line()
+                    break
+            return model.new_instruction_e(source.build(),
+                                           InstructionInSection(self._section_name))
+        return model.new_instruction_e(source.build(),
                                        InstructionInSection(self._section_name))
 
 
@@ -173,7 +191,30 @@ def parsers_for_named_phases():
 #                           ])
 
 
-class TestParsePlainTestCase(unittest.TestCase):
+class ParseTestBase(unittest.TestCase):
+    def _parse_lines(self,
+                     parser: PlainDocumentParser,
+                     lines: list) -> model.Document:
+        plain_document = os.linesep.join(lines)
+        ptc_source = line_source.new_for_string(plain_document)
+        return parser.apply(ptc_source)
+
+    def _check_document(self,
+                        expected_document: model.Document,
+                        actual_document: model.Document):
+        self.assertEqual(len(expected_document.phases),
+                         len(actual_document.phases),
+                         'Number of phases')
+        for phase_name in expected_document.phases:
+            expected_instructions = expected_document.elements_for_phase(phase_name)
+            self.assertTrue(phase_name in actual_document.phases,
+                            'The actual test case contains the expected phase "%s"' % phase_name)
+            actual_elements = actual_document.elements_for_phase(phase_name)
+            ElementChecker(self, phase_name).check_equal_phase_contents(expected_instructions,
+                                                                        actual_elements)
+
+
+class TestParseSingleLineElements(ParseTestBase):
     def test_phases_without_elements_are_registered(self):
         actual_document = self._parse_lines(parser_without_anonymous_phase(),
                                             ['[phase 1]',
@@ -312,27 +353,6 @@ class TestParsePlainTestCase(unittest.TestCase):
         expected_document = model.Document(expected_phase2instructions)
         self._check_document(expected_document, actual_document)
 
-    def _parse_lines(self,
-                     parser: PlainDocumentParser,
-                     lines: list) -> model.Document:
-        plain_document = os.linesep.join(lines)
-        ptc_source = line_source.new_for_string(plain_document)
-        return parser.apply(ptc_source)
-
-    def _check_document(self,
-                        expected_document: model.Document,
-                        actual_document: model.Document):
-        self.assertEqual(len(expected_document.phases),
-                         len(actual_document.phases),
-                         'Number of phases')
-        for phase_name in expected_document.phases:
-            expected_instructions = expected_document.elements_for_phase(phase_name)
-            self.assertTrue(phase_name in actual_document.phases,
-                            'The actual test case contains the expected phase "%s"' % phase_name)
-            actual_elements = actual_document.elements_for_phase(phase_name)
-            ElementChecker(self, phase_name).check_equal_phase_contents(expected_instructions,
-                                                                        actual_elements)
-
 
 class ElementChecker(TestCaseWithMessageHeader):
     def __init__(self,
@@ -381,7 +401,8 @@ class ElementChecker(TestCaseWithMessageHeader):
 def suite():
     ret_val = unittest.TestSuite()
     # ret_val.addTest(unittest.makeSuite(TestGroupByPhase))
-    ret_val.addTest(unittest.makeSuite(TestParsePlainTestCase))
+    ret_val.addTest(unittest.makeSuite(TestParseSingleLineElements))
+    # ret_val.addTest(unittest.makeSuite(TestParseMultiLineElements))
     return ret_val
 
 
