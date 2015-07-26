@@ -284,6 +284,7 @@ class _Impl:
         while not self.is_at_eof():
             if not self.current_line_is_comment_or_empty():
                 break
+            self.next_line()
 
     def _get_next_line(self) -> line_source.Line:
         return None \
