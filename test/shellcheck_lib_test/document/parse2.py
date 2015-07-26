@@ -354,6 +354,20 @@ class TestParseSingleLineElements(ParseTestBase):
         self._check_document(expected_document, actual_document)
 
 
+class TestParseMultiLineElements(ParseTestBase):
+    def test_single_multi_line_instruction_that_is_actually_only_a_single_line_in_anonymous_phase(self):
+        actual_document = self._parse_lines(parser_with_anonymous_phase(),
+                                            ['MULTI-LINE-INSTRUCTION 1'])
+
+        anonymous_phase_instructions = (
+            new_instruction(1, 'MULTI-LINE-INSTRUCTION 1', None),
+        )
+        expected_phase2instructions = {
+            None: model.PhaseContents(anonymous_phase_instructions),
+        }
+        expected_document = model.Document(expected_phase2instructions)
+        self._check_document(expected_document, actual_document)
+
 class ElementChecker(TestCaseWithMessageHeader):
     def __init__(self,
                  test_case: unittest.TestCase,
@@ -402,7 +416,7 @@ def suite():
     ret_val = unittest.TestSuite()
     # ret_val.addTest(unittest.makeSuite(TestGroupByPhase))
     ret_val.addTest(unittest.makeSuite(TestParseSingleLineElements))
-    # ret_val.addTest(unittest.makeSuite(TestParseMultiLineElements))
+    ret_val.addTest(unittest.makeSuite(TestParseMultiLineElements))
     return ret_val
 
 
