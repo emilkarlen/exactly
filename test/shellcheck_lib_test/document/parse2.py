@@ -440,6 +440,33 @@ class TestParseMultiLineElements(ParseTestBase):
         expected_document = model.Document(expected_phase2instructions)
         self._check_document(expected_document, actual_document)
 
+    def test_mix_of_instructions_without_anonymous_phase(self):
+        actual_document = self._parse_lines(parser_without_anonymous_phase(),
+                                            ['',
+                                             '[phase 1]',
+                                             'instruction 1',
+                                             'MULTI-LINE-INSTRUCTION 2-1',
+                                             'MULTI-LINE-INSTRUCTION 2-2',
+                                             'MULTI-LINE-INSTRUCTION 2-3',
+                                             'instruction 3'])
+
+        phase1_instructions = (
+            new_instruction(3, 'instruction 1',
+                            'phase 1'),
+            new_instruction__multi_line(4,
+                                        ['MULTI-LINE-INSTRUCTION 2-1',
+                                         'MULTI-LINE-INSTRUCTION 2-2',
+                                         'MULTI-LINE-INSTRUCTION 2-3'],
+                                        'phase 1'),
+            new_instruction(7, 'instruction 3',
+                            'phase 1'),
+        )
+        expected_phase2instructions = {
+            'phase 1': model.PhaseContents(phase1_instructions),
+        }
+        expected_document = model.Document(expected_phase2instructions)
+        self._check_document(expected_document, actual_document)
+
 
 class ElementChecker(TestCaseWithMessageHeader):
     def __init__(self,
