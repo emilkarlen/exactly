@@ -6,7 +6,7 @@ from shellcheck_lib.document import model
 from shellcheck_lib.document import parse2
 from shellcheck_lib.general import line_source
 from shellcheck_lib.general.line_source import Line
-from shellcheck_lib_test.document.test_resources import assert_equals_line
+from shellcheck_lib_test.document.test_resources import assert_equals_line, assert_equals_line_sequence
 from shellcheck_lib_test.util.assert_utils import TestCaseWithMessageHeader, \
     MessageWithHeaderConstructor
 
@@ -310,8 +310,8 @@ class TestParsePlainTestCase(unittest.TestCase):
             self.assertTrue(phase_name in actual_document.phases,
                             'The actual test case contains the expected phase "%s"' % phase_name)
             actual_elements = actual_document.elements_for_phase(phase_name)
-            ElementChecker(self, phase_name).check_equal_instr_app_seq(expected_instructions,
-                                                                       actual_elements)
+            ElementChecker(self, phase_name).check_equal_phase_contents(expected_instructions,
+                                                                        actual_elements)
 
 
 class ElementChecker(TestCaseWithMessageHeader):
@@ -321,9 +321,9 @@ class ElementChecker(TestCaseWithMessageHeader):
         super().__init__(test_case,
                          MessageWithHeaderConstructor('Phase "%s"' % phase_name))
 
-    def check_equal_instr_app_seq(self,
-                                  expected_elements: model.PhaseContents,
-                                  actual_elements: model.PhaseContents):
+    def check_equal_phase_contents(self,
+                                   expected_elements: model.PhaseContents,
+                                   actual_elements: model.PhaseContents):
         self.tc.assertEqual(len(expected_elements.elements),
                             len(actual_elements.elements),
                             self.msg('Number of elements in the phase'))
@@ -334,12 +334,16 @@ class ElementChecker(TestCaseWithMessageHeader):
     def check_equal_element(self,
                             expected_element: model.PhaseContentElement,
                             actual_element: model.PhaseContentElement):
-        self.tc.assertEqual(expected_element.source_line,
-                            actual_element.source_line,
-                            self.msg('Source lines should be equal'))
         self.tc.assertEqual(expected_element.element_type,
                             actual_element.element_type,
                             self.msg('Element type'))
+        assert_equals_line_sequence(self.tc,
+                                    expected_element.source,
+                                    actual_element.source,
+                                    self.message_header)
+        # self.tc.assertEqual(expected_element.source_line,
+        #                     actual_element.source_line,
+        #                     self.msg('Source lines should be equal'))
         if expected_element.is_comment:
             self.tc.assertTrue(actual_element.is_comment)
             self.tc.assertFalse(actual_element.is_instruction)
