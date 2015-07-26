@@ -146,6 +146,12 @@ class ListOfLines:
         del self.lines[:number_of_lines]
         self.next_line_number += number_of_lines
 
+    def copy(self):
+        ret_val = ListOfLines(iter([]))
+        ret_val.next_line_number = self.next_line_number
+        ret_val.lines = self.lines.copy()
+        return ret_val
+
 
 class LineSequenceSourceFromListOfLines(line_source.LineSequenceSource):
     def __init__(self, list_of_lines: ListOfLines):
@@ -234,7 +240,7 @@ class _Impl:
             self.forward_line_source_according_lines_consumed_by(element)
 
     def parse_element_at_current_line_using_current_section_element_parser(self) -> model.PhaseContentElement:
-        sequence_source = LineSequenceSourceFromListOfLines(self._list_of_lines)
+        sequence_source = LineSequenceSourceFromListOfLines(self._list_of_lines.copy())
         line_sequence_builder = line_source.LineSequenceBuilder(sequence_source,
                                                                 self._current_line.line_number,
                                                                 self._current_line.text)
