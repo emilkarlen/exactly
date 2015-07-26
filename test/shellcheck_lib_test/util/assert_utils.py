@@ -26,6 +26,10 @@ class TestCaseWithMessageHeader:
     def tc(self) -> unittest.TestCase:
         return self._test_case
 
+    @property
+    def message_header(self) -> str:
+        return self._msg_constructor.header
+
     def msg(self, message: str) -> str:
         return self._msg_constructor.msg(message)
 
