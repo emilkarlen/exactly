@@ -19,17 +19,17 @@ TYPE_INSTRUCTION = 3
 
 _OPTIONAL_SPACE = '[ \t]*'
 
-_EMPTY_LINE_RE = re.compile(_OPTIONAL_SPACE + '$')
-_COMMENT_LINE_RE = re.compile(_OPTIONAL_SPACE + '#')
-_PHASE_LINE_RE = re.compile(_OPTIONAL_SPACE + '\[')
+EMPTY_LINE_RE = re.compile(_OPTIONAL_SPACE + '$')
+COMMENT_LINE_RE = re.compile(_OPTIONAL_SPACE + '#')
+PHASE_LINE_RE = re.compile(_OPTIONAL_SPACE + '\[')
 
 _PHASE_NAME_RE = re.compile('\w[\w -.]*\w|\w')
 _PHASE_NAME_AFTER_RE = re.compile(']' + _OPTIONAL_SPACE + '$')
 
 _DETECTABLE = (
-    (TYPE_EMPTY, _EMPTY_LINE_RE),
-    (TYPE_COMMENT, _COMMENT_LINE_RE),
-    (TYPE_PHASE, _PHASE_LINE_RE),
+    (TYPE_EMPTY, EMPTY_LINE_RE),
+    (TYPE_COMMENT, COMMENT_LINE_RE),
+    (TYPE_PHASE, PHASE_LINE_RE),
 )
 
 
@@ -60,7 +60,7 @@ def extract_phase_name_from_phase_line(line: str) -> str:
     :raise NonImplementationError: line is not a valid Phase Header
     :return:
     """
-    m = _PHASE_LINE_RE.match(line)
+    m = PHASE_LINE_RE.match(line)
     after_phase_marker = line[m.end():]
     m = _PHASE_NAME_RE.match(after_phase_marker)
     if not m:

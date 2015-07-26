@@ -1,3 +1,5 @@
+import enum
+
 from shellcheck_lib.general import line_source
 
 
@@ -8,6 +10,12 @@ class Instruction:
     pass
 
 
+class ElementType(enum.Enum):
+    EMPTY = 1
+    COMMENT = 2
+    INSTRUCTION = 3
+
+
 class PhaseContentElement:
     """
     Element of the contents of a phase: either a comment or an instruction.
@@ -16,14 +24,26 @@ class PhaseContentElement:
     """
 
     def __init__(self,
+                 element_type: ElementType,
+                 source: line_source.LineSequence,
                  source_line: line_source.Line,
                  instruction: Instruction):
+        self._element_type = element_type
+        self._source = source
         self._source_line = source_line
         self._instruction = instruction
 
     @property
+    def source(self) -> line_source.LineSequence:
+        return self._source
+
+    @property
     def source_line(self) -> line_source.Line:
         return self._source_line
+
+    @property
+    def element_type(self) -> ElementType:
+        return self._element_type
 
     @property
     def is_instruction(self) -> bool:
@@ -41,13 +61,51 @@ class PhaseContentElement:
         return self._instruction
 
 
+def new_empty_e(source: line_source.LineSequence) -> PhaseContentElement:
+    return PhaseContentElement(ElementType.EMPTY,
+                               source,
+                               line_source.Line(source.first_line_number,
+                                                source.lines[0]),
+                               None)
+
+
+def new_comment_e(source: line_source.LineSequence) -> PhaseContentElement:
+    return PhaseContentElement(ElementType.COMMENT,
+                               source,
+                               line_source.Line(source.first_line_number,
+                                                source.lines[0]),
+                               None)
+
+
+def new_instruction_e(source: line_source.LineSequence,
+                      instruction: Instruction) -> PhaseContentElement:
+    return PhaseContentElement(ElementType.INSTRUCTION,
+                               source,
+                               line_source.Line(source.first_line_number,
+                                                source.lines[0]),
+                               instruction)
+
+
+def new_empty_line_element(source_line: line_source.Line) -> PhaseContentElement:
+    return PhaseContentElement(ElementType.EMPTY,
+                               line_source.new_ls_from_line(source_line),
+                               source_line,
+                               None)
+
+
 def new_comment_element(source_line: line_source.Line) -> PhaseContentElement:
-    return PhaseContentElement(source_line, None)
+    return PhaseContentElement(ElementType.COMMENT,
+                               line_source.new_ls_from_line(source_line),
+                               source_line,
+                               None)
 
 
 def new_instruction_element(source_line: line_source.Line,
                             instruction: Instruction) -> PhaseContentElement:
-    return PhaseContentElement(source_line, instruction)
+    return PhaseContentElement(ElementType.INSTRUCTION,
+                               line_source.new_ls_from_line(source_line),
+                               source_line,
+                               instruction)
 
 
 class PhaseContents:
@@ -93,3 +151,7 @@ class Document:
             return self.elements_for_phase(phase_name)
         else:
             return PhaseContents(())
+
+
+def empty_document() -> Document:
+    return Document({})
