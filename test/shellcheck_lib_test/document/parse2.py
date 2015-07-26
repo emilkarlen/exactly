@@ -41,6 +41,14 @@ def new_instruction(line_number: int,
                                    InstructionInSection(phase_name))
 
 
+def new_instruction__multi_line(line_number: int,
+                                lines: list,
+                                phase_name: str) -> model.PhaseContentElement:
+    return model.new_instruction_e(line_source.LineSequence(line_number,
+                                                            tuple(lines)),
+                                   InstructionInSection(phase_name))
+
+
 def new_comment(line_number: int,
                 line_text: str) -> model.PhaseContentElement:
     return model.new_comment_e(line_source.LineSequence(line_number,
@@ -367,6 +375,24 @@ class TestParseMultiLineElements(ParseTestBase):
         }
         expected_document = model.Document(expected_phase2instructions)
         self._check_document(expected_document, actual_document)
+
+    def test_single_multi_line_instruction_in_anonymous_phase_that_occupies_whole_doc(self):
+        actual_document = self._parse_lines(parser_with_anonymous_phase(),
+                                            ['MULTI-LINE-INSTRUCTION 1',
+                                             'MULTI-LINE-INSTRUCTION 2'])
+
+        anonymous_phase_instructions = (
+            new_instruction__multi_line(1,
+                                        ['MULTI-LINE-INSTRUCTION 1',
+                                         'MULTI-LINE-INSTRUCTION 2'],
+                                        None),
+        )
+        expected_phase2instructions = {
+            None: model.PhaseContents(anonymous_phase_instructions),
+        }
+        expected_document = model.Document(expected_phase2instructions)
+        self._check_document(expected_document, actual_document)
+
 
 class ElementChecker(TestCaseWithMessageHeader):
     def __init__(self,

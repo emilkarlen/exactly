@@ -126,25 +126,25 @@ class _PlainDocumentParserForPhaseAndInstructionsConfiguration(PlainDocumentPars
 
 class ListOfLines:
     def __init__(self, lines: iter):
-        self.current_line_number = 1
+        self.next_line_number = 1
         self.lines = list(lines)
 
     def has_next(self) -> bool:
         return len(self.lines) > 0
 
     def next(self) -> line_source.Line:
-        ret_val = line_source.Line(self.current_line_number,
+        ret_val = line_source.Line(self.next_line_number,
                                    self.lines.pop(0))
-        self.current_line_number += 1
+        self.next_line_number += 1
         return ret_val
 
     def return_line(self, line: str):
         self.lines.insert(0, line)
-        self.current_line_number -= 1
+        self.next_line_number -= 1
 
     def forward(self, number_of_lines: int):
         del self.lines[:number_of_lines]
-        self.current_line_number += number_of_lines
+        self.next_line_number += number_of_lines
 
 
 class LineSequenceSourceFromListOfLines(line_source.LineSequenceSource):
@@ -155,7 +155,7 @@ class LineSequenceSourceFromListOfLines(line_source.LineSequenceSource):
         return self.list_of_lines.has_next()
 
     def next_line(self) -> str:
-        return self.list_of_lines.next()
+        return self.list_of_lines.next().text
 
     def return_line(self, line: str):
         self.list_of_lines.return_line(line)
@@ -221,13 +221,13 @@ class _Impl:
         while True:
             if self.is_at_eof():
                 return
-            self.read_section_elements_until_next_section_of_eof()
+            self.read_section_elements_until_next_section_or_eof()
             if self.is_at_eof():
                 return
             if self.current_line_is_section_line():
                 self.switch_section_according_to_current_line_and_consume_section_lines()
 
-    def read_section_elements_until_next_section_of_eof(self):
+    def read_section_elements_until_next_section_or_eof(self):
         while not self.is_at_eof() and not self.current_line_is_section_line():
             element = self.parse_element_at_current_line_using_current_section_element_parser()
             self.add_element_to_current_section(element)
@@ -289,7 +289,7 @@ class _Impl:
     def _get_next_line(self) -> line_source.Line:
         return None \
             if not self._list_of_lines.has_next() \
-            else self.list_of_lines.next()
+            else self._list_of_lines.next()
 
     def current_line_is_comment_or_empty(self):
         return syntax.EMPTY_LINE_RE.match(self._current_line.text) or \
