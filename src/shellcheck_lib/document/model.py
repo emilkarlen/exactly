@@ -26,11 +26,9 @@ class PhaseContentElement:
     def __init__(self,
                  element_type: ElementType,
                  source: line_source.LineSequence,
-                 source_line: line_source.Line,
                  instruction: Instruction):
         self._element_type = element_type
         self._source = source
-        self._source_line = source_line
         self._instruction = instruction
 
     @property
@@ -39,7 +37,7 @@ class PhaseContentElement:
 
     @property
     def source_line(self) -> line_source.Line:
-        return self._source_line
+        return self._source.first_line
 
     @property
     def element_type(self) -> ElementType:
@@ -64,16 +62,12 @@ class PhaseContentElement:
 def new_empty_e(source: line_source.LineSequence) -> PhaseContentElement:
     return PhaseContentElement(ElementType.EMPTY,
                                source,
-                               line_source.Line(source.first_line_number,
-                                                source.lines[0]),
                                None)
 
 
 def new_comment_e(source: line_source.LineSequence) -> PhaseContentElement:
     return PhaseContentElement(ElementType.COMMENT,
                                source,
-                               line_source.Line(source.first_line_number,
-                                                source.lines[0]),
                                None)
 
 
@@ -81,22 +75,18 @@ def new_instruction_e(source: line_source.LineSequence,
                       instruction: Instruction) -> PhaseContentElement:
     return PhaseContentElement(ElementType.INSTRUCTION,
                                source,
-                               line_source.Line(source.first_line_number,
-                                                source.lines[0]),
                                instruction)
 
 
 def new_empty_line_element(source_line: line_source.Line) -> PhaseContentElement:
     return PhaseContentElement(ElementType.EMPTY,
                                line_source.new_ls_from_line(source_line),
-                               source_line,
                                None)
 
 
 def new_comment_element(source_line: line_source.Line) -> PhaseContentElement:
     return PhaseContentElement(ElementType.COMMENT,
                                line_source.new_ls_from_line(source_line),
-                               source_line,
                                None)
 
 
@@ -104,7 +94,6 @@ def new_instruction_element(source_line: line_source.Line,
                             instruction: Instruction) -> PhaseContentElement:
     return PhaseContentElement(ElementType.INSTRUCTION,
                                line_source.new_ls_from_line(source_line),
-                               source_line,
                                instruction)
 
 
