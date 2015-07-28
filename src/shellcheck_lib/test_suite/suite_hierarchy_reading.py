@@ -2,7 +2,7 @@ import pathlib
 import functools
 
 from shellcheck_lib.document.model import PhaseContents
-from shellcheck_lib.document.parse2 import SourceError
+from shellcheck_lib.document.parse import SourceError
 from shellcheck_lib.general import line_source
 from shellcheck_lib.test_case import test_case_processing
 from . import instruction

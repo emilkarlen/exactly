@@ -1,9 +1,9 @@
-from shellcheck_lib.default.execution_mode.test_case.instruction_setup2 import InstructionsSetup
+from shellcheck_lib.default.execution_mode.test_case.instruction_setup import InstructionsSetup
 from shellcheck_lib.execution import phases
-from shellcheck_lib.document import parse2
+from shellcheck_lib.document import parse
 from shellcheck_lib.general import line_source
 from shellcheck_lib.general.line_source import LineSource
-from shellcheck_lib.instructions.instruction_parser_for_single_phase2 import \
+from shellcheck_lib.instructions.instruction_parser_for_single_phase import \
     SectionElementParserForDictionaryOfInstructions, SectionElementParserForStandardCommentAndEmptyLines
 from shellcheck_lib.test_case import test_case_doc
 from shellcheck_lib.test_case import instructions
@@ -11,7 +11,7 @@ from shellcheck_lib.test_case import instructions
 
 class Parser:
     def __init__(self,
-                 plain_file_parser: parse2.PlainDocumentParser):
+                 plain_file_parser: parse.PlainDocumentParser):
         self.__plain_file_parser = plain_file_parser
 
     def apply(self,
@@ -28,25 +28,25 @@ class Parser:
 
 def new_parser(split_line_into_name_and_argument_function,
                instructions_setup: InstructionsSetup) -> Parser:
-    def dict_parser(instruction_set: dict) -> parse2.SectionElementParser:
+    def dict_parser(instruction_set: dict) -> parse.SectionElementParser:
         return SectionElementParserForDictionaryOfInstructions(split_line_into_name_and_argument_function,
                                                                instruction_set)
 
     anonymous_phase = dict_parser(instructions_setup.config_instruction_set)
-    configuration = parse2.SectionsConfiguration(
+    configuration = parse.SectionsConfiguration(
         anonymous_phase,
         (
-            parse2.SectionConfiguration(phases.SETUP.name,
+            parse.SectionConfiguration(phases.SETUP.name,
                                         dict_parser(instructions_setup.setup_instruction_set)),
-            parse2.SectionConfiguration(phases.ACT.name,
+            parse.SectionConfiguration(phases.ACT.name,
                                         PlainSourceActPhaseParser()),
-            parse2.SectionConfiguration(phases.ASSERT.name,
+            parse.SectionConfiguration(phases.ASSERT.name,
                                         dict_parser(instructions_setup.assert_instruction_set)),
-            parse2.SectionConfiguration(phases.CLEANUP.name,
+            parse.SectionConfiguration(phases.CLEANUP.name,
                                         dict_parser(instructions_setup.cleanup_instruction_set)),
         )
     )
-    return Parser(parse2.new_parser_for(configuration))
+    return Parser(parse.new_parser_for(configuration))
 
 
 class PlainSourceActPhaseParser(SectionElementParserForStandardCommentAndEmptyLines):

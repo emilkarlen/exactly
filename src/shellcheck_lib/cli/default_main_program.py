@@ -13,7 +13,7 @@ from shellcheck_lib.test_suite import suite_hierarchy_reading
 from shellcheck_lib.test_suite import enumeration
 from shellcheck_lib.default.execution_mode.test_suite import reporting as suite_reporting
 from shellcheck_lib.default.execution_mode.test_case import processing as case_processing
-from shellcheck_lib.default.execution_mode.test_case.instruction_setup2 import InstructionsSetup
+from shellcheck_lib.default.execution_mode.test_case.instruction_setup import InstructionsSetup
 
 
 class MainProgram(main_program.MainProgram):
