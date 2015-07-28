@@ -33,6 +33,13 @@ _DETECTABLE = (
 )
 
 
+def is_empty_line(line: str) -> bool:
+    return EMPTY_LINE_RE.match(line)
+
+
+def is_comment_line(line: str) -> bool:
+    return COMMENT_LINE_RE.match(line)
+
 def classify_line(line: str) -> int:
     """
     Classifies a line according to the TYPE_ constants.

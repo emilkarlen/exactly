@@ -1,7 +1,9 @@
 import unittest
 
+from shellcheck_lib.document import parse2
+from shellcheck_lib.document.model import ElementType
 from shellcheck_lib.general import line_source
-from shellcheck_lib.instructions import instruction_parser_for_single_phase as parse
+from shellcheck_lib.instructions import instruction_parser_for_single_phase2 as parse
 from shellcheck_lib.test_case import instructions
 from shellcheck_lib_test.document.test_resources import assert_equals_line
 
@@ -10,8 +12,12 @@ def name_argument_splitter(s: str) -> (str, str):
     return s[0], s[1:]
 
 
-def new_line(text: str) -> line_source.Line:
-    return line_source.Line(1, text)
+def new_source(text: str) -> line_source.LineSequenceBuilder:
+    return line_source.LineSequenceBuilder(
+        parse2.LineSequenceSourceFromListOfLines(
+            parse2.ListOfLines([])),
+        1,
+        text)
 
 
 class TestFailingSplitter(unittest.TestCase):
@@ -32,38 +38,38 @@ class TestFailingSplitter(unittest.TestCase):
 
     def _check(self,
                splitter):
-        phase_parser = parse.InstructionParserForDictionaryOfInstructions(splitter, {})
-        line = new_line('line')
+        phase_parser = parse.SectionElementParserForDictionaryOfInstructions(splitter, {})
+        source = new_source('line')
         with self.assertRaises(parse.InvalidInstructionSyntaxException) as cm:
-            phase_parser.apply(line)
+            phase_parser.apply(source)
             assert_equals_line(self,
-                               line,
+                               source.first_line,
                                cm.ex.line,
                                'Source line')
 
 
 class TestParse(unittest.TestCase):
     def test__when__instruction_name_not_in_dict__then__exception_should_be_raised(self):
-        phase_parser = parse.InstructionParserForDictionaryOfInstructions(name_argument_splitter, {})
-        line = new_line('Ia')
+        phase_parser = parse.SectionElementParserForDictionaryOfInstructions(name_argument_splitter, {})
+        source = new_source('Ia')
         with self.assertRaises(parse.UnknownInstructionException) as cm:
-            phase_parser.apply(line)
+            phase_parser.apply(source)
             self.assertEqual('I',
                              cm.ex.instruction_name,
                              'Instruction name')
             assert_equals_line(self,
-                               line,
+                               source.first_line,
                                cm.ex.line,
                                'Source line')
 
     def test__when__parser_fails_to_parse_instruction_name_not_in_dict__then__exception_should_be_raised(self):
         parsers_dict = {'S': SingleInstructionParserThatSucceeds(),
                         'F': SingleInstructionParserThatRaisesInvalidArgumentError('the error message')}
-        phase_parser = parse.InstructionParserForDictionaryOfInstructions(name_argument_splitter,
-                                                                          parsers_dict)
-        line = new_line('Fa')
+        phase_parser = parse.SectionElementParserForDictionaryOfInstructions(name_argument_splitter,
+                                                                             parsers_dict)
+        source = new_source('Fa')
         with self.assertRaises(parse.InvalidInstructionArgumentException) as cm:
-            phase_parser.apply(line)
+            phase_parser.apply(source)
             self.assertEqual('F',
                              cm.ex.instruction_name,
                              'Instruction name')
@@ -71,7 +77,7 @@ class TestParse(unittest.TestCase):
                              cm.ex.error_message,
                              'Error message')
             assert_equals_line(self,
-                               line,
+                               source.first_line,
                                cm.ex.line,
                                'Source line')
 
@@ -79,11 +85,11 @@ class TestParse(unittest.TestCase):
         parser_that_raises_exception = SingleInstructionParserThatRaisesImplementationException()
         parsers_dict = {'S': SingleInstructionParserThatSucceeds(),
                         'F': parser_that_raises_exception}
-        phase_parser = parse.InstructionParserForDictionaryOfInstructions(name_argument_splitter,
-                                                                          parsers_dict)
-        line = new_line('Fa')
+        phase_parser = parse.SectionElementParserForDictionaryOfInstructions(name_argument_splitter,
+                                                                             parsers_dict)
+        source = new_source('Fa')
         with self.assertRaises(parse.ArgumentParsingImplementationException) as cm:
-            phase_parser.apply(line)
+            phase_parser.apply(source)
             self.assertEqual('F',
                              cm.ex.instruction_name,
                              'Instruction name')
@@ -91,23 +97,23 @@ class TestParse(unittest.TestCase):
                           cm.ex.parser_that_raised_exception,
                           'Failing Parser instance')
             assert_equals_line(self,
-                               line,
+                               source.first_line,
                                cm.ex.line,
                                'Source line')
 
     def test__when__parser_succeeds__then__the_instruction_should_be_returned(self):
         parsers_dict = {'S': SingleInstructionParserThatSucceeds(),
                         'F': SingleInstructionParserThatRaisesInvalidArgumentError('the error message')}
-        phase_parser = parse.InstructionParserForDictionaryOfInstructions(name_argument_splitter,
-                                                                          parsers_dict)
-        line = new_line('Sa')
-        phase_content_element = phase_parser.apply(line)
+        phase_parser = parse.SectionElementParserForDictionaryOfInstructions(name_argument_splitter,
+                                                                             parsers_dict)
+        source = new_source('Sa')
+        phase_content_element = phase_parser.apply(source)
         self.assertTrue(phase_content_element.is_instruction,
                         'Should be instruction')
         self.assertFalse(phase_content_element.is_comment,
                          'Should NOT be comment')
         assert_equals_line(self,
-                           line,
+                           source.first_line,
                            phase_content_element.source_line,
                            'Source line')
         self.assertIsInstance(phase_content_element.instruction,
@@ -117,23 +123,42 @@ class TestParse(unittest.TestCase):
                          'a',
                          'Argument given to parser')
 
+    def test__when__line_is_empty__then__an_empty_line_element_should_be_returned(self):
+        phase_parser = parse.SectionElementParserForDictionaryOfInstructions(name_argument_splitter,
+                                                                             {})
+        source = new_source('')
+        phase_content_element = phase_parser.apply(source)
+        self.assertEqual(phase_content_element.element_type,
+                         ElementType.EMPTY,
+                         'Element type')
+        assert_equals_line(self,
+                           source.first_line,
+                           phase_content_element.source_line,
+                           'Source line')
+
 
 class SingleInstructionParserThatRaisesInvalidArgumentError(parse.SingleInstructionParser):
     def __init__(self,
                  error_message: str):
         self.error_message = error_message
 
-    def apply(self, instruction_argument: str) -> instructions.Instruction:
+    def apply(self,
+              source: line_source.LineSequenceBuilder,
+              instruction_argument: str) -> instructions.Instruction:
         raise parse.SingleInstructionInvalidArgumentException(self.error_message)
 
 
 class SingleInstructionParserThatRaisesImplementationException(parse.SingleInstructionParser):
-    def apply(self, instruction_argument: str) -> instructions.Instruction:
+    def apply(self,
+              source: line_source.LineSequenceBuilder,
+              instruction_argument: str) -> instructions.Instruction:
         raise NotImplementedError()
 
 
 class SingleInstructionParserThatSucceeds(parse.SingleInstructionParser):
-    def apply(self, instruction_argument: str) -> instructions.Instruction:
+    def apply(self,
+              source: line_source.LineSequenceBuilder,
+              instruction_argument: str) -> instructions.Instruction:
         return Instruction(instruction_argument)
 
 
