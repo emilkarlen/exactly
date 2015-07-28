@@ -217,10 +217,11 @@ class _Impl:
         If there are many consecutive section lines, then all of these are consumed.
         """
         while not self.is_at_eof() and self.current_line_is_section_line():
+            section_line = self._current_line
             section_name = self.extract_section_name_and_consume_line()
             if not self.has_section(section_name):
-                raise SourceError(self._current_line,
-                                  'There is no section named ' + section_name)
+                raise SourceError(section_line,
+                                  'There is no section named "%s"' % section_name)
             self.set_current_section(section_name)
 
     def read_rest_of_document_from_inside_section_or_at_eof(self):

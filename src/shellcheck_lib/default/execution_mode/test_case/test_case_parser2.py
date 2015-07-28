@@ -1,12 +1,10 @@
 from shellcheck_lib.default.execution_mode.test_case.instruction_setup2 import InstructionsSetup
 from shellcheck_lib.execution import phases
-from shellcheck_lib.document import model
 from shellcheck_lib.document import parse2
-from shellcheck_lib.document.parse import InstructionParser
 from shellcheck_lib.general import line_source
 from shellcheck_lib.general.line_source import LineSource
 from shellcheck_lib.instructions.instruction_parser_for_single_phase2 import \
-    SectionElementParserForDictionaryOfInstructions
+    SectionElementParserForDictionaryOfInstructions, SectionElementParserForStandardCommentAndEmptyLines
 from shellcheck_lib.test_case import test_case_doc
 from shellcheck_lib.test_case import instructions
 
@@ -51,10 +49,9 @@ def new_parser(split_line_into_name_and_argument_function,
     return Parser(parse2.new_parser_for(configuration))
 
 
-class PlainSourceActPhaseParser(InstructionParser):
-    def apply(self, line: line_source.Line) -> model.PhaseContentElement:
-        return model.new_instruction_element(line,
-                                             SourceCodeInstruction(line.text))
+class PlainSourceActPhaseParser(SectionElementParserForStandardCommentAndEmptyLines):
+    def _parse_instruction(self, source: line_source.LineSequenceBuilder) -> instructions.Instruction:
+        return SourceCodeInstruction(source.first_line.text)
 
 
 class SourceCodeInstruction(instructions.ActPhaseInstruction):

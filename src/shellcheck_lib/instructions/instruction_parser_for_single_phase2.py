@@ -50,6 +50,21 @@ class SingleInstructionParser:
         raise NotImplementedError()
 
 
+class SectionElementParserForStandardCommentAndEmptyLines(parse2.SectionElementParser):
+    def apply(self, source: line_source.LineSequenceBuilder) -> model.PhaseContentElement:
+        first_line = source.first_line
+        if syntax.is_empty_line(first_line.text):
+            return model.new_empty_e(source.build())
+        if syntax.is_comment_line(first_line.text):
+            return model.new_comment_e(source.build())
+        instruction = self._parse_instruction(source)
+        return model.new_instruction_e(source.build(), instruction)
+
+    def _parse_instruction(self,
+                           source: line_source.LineSequenceBuilder) -> Instruction:
+        raise NotImplementedError()
+
+
 class InvalidInstructionException(Exception):
     """
     Indicates some kind of invalid instruction.
@@ -115,7 +130,7 @@ class ArgumentParsingImplementationException(InvalidInstructionException):
         self.parser_that_raised_exception = parser_that_raised_exception
 
 
-class SectionElementParserForDictionaryOfInstructions(parse2.SectionElementParser):
+class SectionElementParserForDictionaryOfInstructions(SectionElementParserForStandardCommentAndEmptyLines):
     def __init__(self,
                  split_line_into_name_and_argument_function,
                  instruction_name__2__single_instruction_parser: dict):
@@ -130,19 +145,11 @@ class SectionElementParserForDictionaryOfInstructions(parse2.SectionElementParse
             assert isinstance(value, SingleInstructionParser)
         self._name_and_argument_splitter = split_line_into_name_and_argument_function
 
-    def apply(self, source: line_source.LineSequenceBuilder) -> model.PhaseContentElement:
-        """
-        :raises: InvalidInstructionException
-        """
+    def _parse_instruction(self, source: line_source.LineSequenceBuilder) -> Instruction:
         first_line = source.first_line
-        if syntax.is_empty_line(first_line.text):
-            return model.new_empty_e(source.build())
-        if syntax.is_comment_line(first_line.text):
-            return model.new_comment_e(source.build())
         (name, argument) = self._split(first_line)
         parser = self._lookup_parser(first_line, name)
-        instruction = self._parse(source, parser, name, argument)
-        return model.new_instruction_e(source.build(), instruction)
+        return self._parse(source, parser, name, argument)
 
     def _split(self, source_line: line_source.Line) -> (str, str):
         try:
