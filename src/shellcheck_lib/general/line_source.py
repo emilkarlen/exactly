@@ -89,6 +89,10 @@ class LineSequenceBuilder:
                             tuple(self._lines))
 
     @property
+    def first_line(self) -> Line:
+        return Line(self._first_line_number, self._lines[0])
+
+    @property
     def lines(self) -> list:
         return self._lines
 

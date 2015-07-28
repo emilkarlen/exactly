@@ -112,10 +112,10 @@ class SectionsConfiguration:
 
 
 def new_parser_for(configuration: SectionsConfiguration) -> PlainDocumentParser:
-    return _PlainDocumentParserForPhaseAndInstructionsConfiguration(configuration)
+    return _PlainDocumentParserForSectionsConfiguration(configuration)
 
 
-class _PlainDocumentParserForPhaseAndInstructionsConfiguration(PlainDocumentParser):
+class _PlainDocumentParserForSectionsConfiguration(PlainDocumentParser):
     def __init__(self, configuration: SectionsConfiguration):
         self._configuration = configuration
 
