@@ -2,8 +2,9 @@ import pathlib
 import shlex
 
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
+from shellcheck_lib.general import line_source
 from shellcheck_lib.test_case import instructions as i
-from shellcheck_lib.instructions.instruction_parser_for_single_phase import SingleInstructionParser, \
+from shellcheck_lib.instructions.instruction_parser_for_single_phase2 import SingleInstructionParser, \
     SingleInstructionInvalidArgumentException
 from . import utils
 
@@ -24,7 +25,9 @@ class Instruction(utils.InstructionWithoutValidationBase):
 
 
 class Parser(SingleInstructionParser):
-    def apply(self, instruction_argument: str) -> Instruction:
+    def apply(self,
+              source: line_source.LineSequenceBuilder,
+              instruction_argument: str) -> Instruction:
         argument_list = shlex.split(instruction_argument)
         if len(argument_list) != 1:
             raise SingleInstructionInvalidArgumentException('Exactly 1 argument expected, got ' +
