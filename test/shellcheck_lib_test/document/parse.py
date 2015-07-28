@@ -1,9 +1,9 @@
 import os
 import unittest
 
-from shellcheck_lib.document.parse2 import SourceError, PlainDocumentParser
+from shellcheck_lib.document.parse import SourceError, PlainDocumentParser
 from shellcheck_lib.document import model
-from shellcheck_lib.document import parse2
+from shellcheck_lib.document import parse
 from shellcheck_lib.general import line_source
 from shellcheck_lib.general.line_source import Line
 from shellcheck_lib_test.document.test_resources import assert_equals_line, assert_equals_line_sequence
@@ -61,7 +61,7 @@ def new_empty(line_number: int,
                                                       (line_text,)))
 
 
-class InstructionParserForPhase(parse2.SectionElementParser):
+class InstructionParserForPhase(parse.SectionElementParser):
     def __init__(self, section_name: str):
         self._section_name = section_name
 
@@ -84,43 +84,43 @@ class InstructionParserForPhase(parse2.SectionElementParser):
                                        InstructionInSection(self._section_name))
 
 
-class InstructionParserThatFails(parse2.SectionElementParser):
+class InstructionParserThatFails(parse.SectionElementParser):
     def apply(self, source: line_source.LineSequenceBuilder) -> model.PhaseContentElement:
         raise SourceError(source.build().first_line,
                           'Unconditional failure')
 
 
 def parser_without_anonymous_phase() -> PlainDocumentParser:
-    configuration = parse2.SectionsConfiguration(
+    configuration = parse.SectionsConfiguration(
         None,
         parsers_for_named_phases()
     )
-    return parse2.new_parser_for(configuration)
+    return parse.new_parser_for(configuration)
 
 
 def parser_with_anonymous_phase() -> PlainDocumentParser:
-    configuration = parse2.SectionsConfiguration(
+    configuration = parse.SectionsConfiguration(
         InstructionParserForPhase(None),
         parsers_for_named_phases()
     )
-    return parse2.new_parser_for(configuration)
+    return parse.new_parser_for(configuration)
 
 
 def parser_for_phase2_that_fails_unconditionally() -> PlainDocumentParser:
-    configuration = parse2.SectionsConfiguration(
+    configuration = parse.SectionsConfiguration(
         None,
-        (parse2.SectionConfiguration('phase 1',
+        (parse.SectionConfiguration('phase 1',
                                      InstructionParserForPhase('phase 1')),
-         parse2.SectionConfiguration('phase 2',
+         parse.SectionConfiguration('phase 2',
                                      InstructionParserThatFails()))
     )
-    return parse2.new_parser_for(configuration)
+    return parse.new_parser_for(configuration)
 
 
 def parsers_for_named_phases():
-    return (parse2.SectionConfiguration('phase 1',
+    return (parse.SectionConfiguration('phase 1',
                                         InstructionParserForPhase('phase 1')),
-            parse2.SectionConfiguration('phase 2',
+            parse.SectionConfiguration('phase 2',
                                         InstructionParserForPhase('phase 2')))
 
 

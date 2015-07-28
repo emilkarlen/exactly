@@ -1,9 +1,9 @@
 import unittest
 
-from shellcheck_lib.document import parse2
+from shellcheck_lib.document import parse
 from shellcheck_lib.general import line_source
 from shellcheck_lib.instructions.assert_phase import exitcode
-from shellcheck_lib.instructions.instruction_parser_for_single_phase2 import \
+from shellcheck_lib.instructions.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from shellcheck_lib.test_case import instructions as i
 from shellcheck_lib.test_case.instructions import AssertPhaseInstruction
@@ -83,8 +83,8 @@ class TestParseAndExecute(unittest.TestCase):
 
 def new_source(text: str) -> line_source.LineSequenceBuilder:
     return line_source.LineSequenceBuilder(
-        parse2.LineSequenceSourceFromListOfLines(
-            parse2.ListOfLines([])),
+        parse.LineSequenceSourceFromListOfLines(
+            parse.ListOfLines([])),
         1,
         text)
 

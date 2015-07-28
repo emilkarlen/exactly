@@ -1,8 +1,8 @@
 import pathlib
 
-from shellcheck_lib.document import parse2
+from shellcheck_lib.document import parse
 from shellcheck_lib.general import line_source
-from shellcheck_lib.instructions.instruction_parser_for_single_phase2 import \
+from shellcheck_lib.instructions.instruction_parser_for_single_phase import \
     SectionElementParserForStandardCommentAndEmptyLines
 from shellcheck_lib.test_suite import instruction
 from shellcheck_lib.test_suite import test_suite_doc
@@ -169,17 +169,17 @@ def _is_wildcard_pattern(instruction_text: str) -> bool:
     return _contains_any_of(_WILDCARD_CHARACTERS, instruction_text)
 
 
-PARSER_CONFIGURATION = parse2.SectionsConfiguration(
+PARSER_CONFIGURATION = parse.SectionsConfiguration(
     None,
-    (parse2.SectionConfiguration(SECTION_NAME__SUITS, SuitesSectionParser()),
-     parse2.SectionConfiguration(SECTION_NAME__CASES, CasesSectionParser()),
+    (parse.SectionConfiguration(SECTION_NAME__SUITS, SuitesSectionParser()),
+     parse.SectionConfiguration(SECTION_NAME__CASES, CasesSectionParser()),
      )
 )
 
 
 class Parser:
     def __init__(self):
-        self.__plain_file_parser = parse2.new_parser_for(PARSER_CONFIGURATION)
+        self.__plain_file_parser = parse.new_parser_for(PARSER_CONFIGURATION)
 
     def apply(self,
               plain_test_case: line_source.LineSource) -> test_suite_doc.TestSuite:

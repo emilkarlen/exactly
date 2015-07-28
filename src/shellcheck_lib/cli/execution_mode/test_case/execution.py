@@ -5,7 +5,7 @@ import shutil
 from shellcheck_lib.cli.utils import resolve_script_language
 from shellcheck_lib.general.output import StdOutputFiles
 from shellcheck_lib.default.execution_mode.test_case import processing
-from shellcheck_lib.default.execution_mode.test_case.instruction_setup2 import InstructionsSetup
+from shellcheck_lib.default.execution_mode.test_case.instruction_setup import InstructionsSetup
 from shellcheck_lib.cli.execution_mode.test_case.settings import Output, TestCaseExecutionSettings
 from shellcheck_lib.execution import full_execution
 from shellcheck_lib.test_case import test_case_processing

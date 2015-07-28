@@ -1,6 +1,6 @@
 from shellcheck_lib.document import model
 from shellcheck_lib.document.model import Instruction
-from shellcheck_lib.document import parse2
+from shellcheck_lib.document import parse
 from shellcheck_lib.document import syntax
 from shellcheck_lib.general import line_source
 
@@ -50,7 +50,7 @@ class SingleInstructionParser:
         raise NotImplementedError()
 
 
-class SectionElementParserForStandardCommentAndEmptyLines(parse2.SectionElementParser):
+class SectionElementParserForStandardCommentAndEmptyLines(parse.SectionElementParser):
     def apply(self, source: line_source.LineSequenceBuilder) -> model.PhaseContentElement:
         first_line = source.first_line
         if syntax.is_empty_line(first_line.text):
