@@ -136,6 +136,19 @@ class TestParse(unittest.TestCase):
                            phase_content_element.source_line,
                            'Source line')
 
+    def test__when__line_is_comment__then__a_comment_line_element_should_be_returned(self):
+        phase_parser = parse.SectionElementParserForDictionaryOfInstructions(name_argument_splitter,
+                                                                             {})
+        source = new_source('# comment')
+        phase_content_element = phase_parser.apply(source)
+        self.assertEqual(phase_content_element.element_type,
+                         ElementType.COMMENT,
+                         'Element type')
+        assert_equals_line(self,
+                           source.first_line,
+                           phase_content_element.source_line,
+                           'Source line')
+
 
 class SingleInstructionParserThatRaisesInvalidArgumentError(parse.SingleInstructionParser):
     def __init__(self,
