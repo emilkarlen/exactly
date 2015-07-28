@@ -102,9 +102,9 @@ def execute_element(executor: ControlledInstructionExecutor,
         if fail_info is None:
             return None
         return SingleInstructionExecutionFailure(PartialResultStatus(fail_info.status.value),
-                                                 element.source_line,
+                                                 element.first_line,
                                                  result.new_failure_details_from_message(fail_info.error_message))
     except Exception as ex:
         return SingleInstructionExecutionFailure(PartialResultStatus.IMPLEMENTATION_ERROR,
-                                                 element.source_line,
+                                                 element.first_line,
                                                  result.new_failure_details_from_exception(ex))

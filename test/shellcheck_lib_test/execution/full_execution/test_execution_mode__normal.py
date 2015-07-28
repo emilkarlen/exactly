@@ -53,7 +53,7 @@ class Test(unittest.TestCase):
             FullResultStatus.HARD_ERROR,
             ExpectedInstructionFailureForFailure.new_with_message(
                 phase_step.new_without_step(phases.ANONYMOUS),
-                test_case.the_anonymous_phase_extra[0].source_line,
+                test_case.the_anonymous_phase_extra[0].first_line,
                 'hard error msg'),
             [phase_step.ANONYMOUS
              ],
@@ -71,7 +71,7 @@ class Test(unittest.TestCase):
             FullResultStatus.IMPLEMENTATION_ERROR,
             ExpectedInstructionFailureForFailure.new_with_exception(
                 PhaseStep(phases.ANONYMOUS, None),
-                test_case.the_anonymous_phase_extra[0].source_line,
+                test_case.the_anonymous_phase_extra[0].first_line,
                 instruction_test_resources.ImplementationErrorTestException),
             [phase_step.ANONYMOUS
              ],
@@ -92,7 +92,7 @@ class Test(unittest.TestCase):
             FullResultStatus.VALIDATE,
             ExpectedInstructionFailureForFailure.new_with_message(
                 PhaseStep(phases.SETUP, phase_step.PRE_VALIDATE),
-                test_case.the_setup_phase_extra[0].source_line,
+                test_case.the_setup_phase_extra[0].first_line,
                 'validation error from setup/validate'),
             [phase_step.ANONYMOUS,
              phase_step.SETUP__PRE_VALIDATE,
@@ -113,7 +113,7 @@ class Test(unittest.TestCase):
             FullResultStatus.HARD_ERROR,
             ExpectedInstructionFailureForFailure.new_with_message(
                 PhaseStep(phases.SETUP, phase_step.PRE_VALIDATE),
-                test_case.the_setup_phase_extra[0].source_line,
+                test_case.the_setup_phase_extra[0].first_line,
                 'hard error from setup/validate'),
             [phase_step.ANONYMOUS,
              phase_step.SETUP__PRE_VALIDATE,
@@ -132,7 +132,7 @@ class Test(unittest.TestCase):
             FullResultStatus.IMPLEMENTATION_ERROR,
             ExpectedInstructionFailureForFailure.new_with_exception(
                 PhaseStep(phases.SETUP, phase_step.PRE_VALIDATE),
-                test_case.the_setup_phase_extra[0].source_line,
+                test_case.the_setup_phase_extra[0].first_line,
                 instruction_test_resources.ImplementationErrorTestException),
             [phase_step.ANONYMOUS,
              phase_step.SETUP__PRE_VALIDATE,
@@ -153,7 +153,7 @@ class Test(unittest.TestCase):
             FullResultStatus.HARD_ERROR,
             ExpectedInstructionFailureForFailure.new_with_message(
                 PhaseStep(phases.SETUP, phase_step.EXECUTE),
-                test_case.the_setup_phase_extra[0].source_line,
+                test_case.the_setup_phase_extra[0].first_line,
                 'hard error msg from setup'),
             [phase_step.ANONYMOUS,
              phase_step.SETUP__PRE_VALIDATE,
@@ -176,7 +176,7 @@ class Test(unittest.TestCase):
             FullResultStatus.IMPLEMENTATION_ERROR,
             ExpectedInstructionFailureForFailure.new_with_exception(
                 PhaseStep(phases.SETUP, phase_step.EXECUTE),
-                test_case.the_setup_phase_extra[0].source_line,
+                test_case.the_setup_phase_extra[0].first_line,
                 instruction_test_resources.ImplementationErrorTestException),
             [phase_step.ANONYMOUS,
              phase_step.SETUP__PRE_VALIDATE,
@@ -203,7 +203,7 @@ class Test(unittest.TestCase):
             FullResultStatus.VALIDATE,
             ExpectedInstructionFailureForFailure.new_with_message(
                 PhaseStep(phases.SETUP, phase_step.POST_VALIDATE),
-                test_case.the_setup_phase_extra[0].source_line,
+                test_case.the_setup_phase_extra[0].first_line,
                 'validation error from setup/post-validate'),
             [phase_step.ANONYMOUS,
              phase_step.SETUP__PRE_VALIDATE,
@@ -230,7 +230,7 @@ class Test(unittest.TestCase):
             FullResultStatus.HARD_ERROR,
             ExpectedInstructionFailureForFailure.new_with_message(
                 PhaseStep(phases.SETUP, phase_step.POST_VALIDATE),
-                test_case.the_setup_phase_extra[0].source_line,
+                test_case.the_setup_phase_extra[0].first_line,
                 'hard error from setup/post-validate'),
             [phase_step.ANONYMOUS,
              phase_step.SETUP__PRE_VALIDATE,
@@ -255,7 +255,7 @@ class Test(unittest.TestCase):
             FullResultStatus.IMPLEMENTATION_ERROR,
             ExpectedInstructionFailureForFailure.new_with_exception(
                 PhaseStep(phases.SETUP, phase_step.POST_VALIDATE),
-                test_case.the_setup_phase_extra[0].source_line,
+                test_case.the_setup_phase_extra[0].first_line,
                 instruction_test_resources.ImplementationErrorTestException),
             [phase_step.ANONYMOUS,
              phase_step.SETUP__PRE_VALIDATE,
@@ -281,7 +281,7 @@ class Test(unittest.TestCase):
             FullResultStatus.VALIDATE,
             ExpectedInstructionFailureForFailure.new_with_message(
                 PhaseStep(phases.ASSERT, phase_step.VALIDATE),
-                test_case.the_assert_phase_extra[0].source_line,
+                test_case.the_assert_phase_extra[0].first_line,
                 'ASSERT/validate'),
             [phase_step.ANONYMOUS,
              phase_step.SETUP__PRE_VALIDATE,
@@ -311,7 +311,7 @@ class Test(unittest.TestCase):
             FullResultStatus.HARD_ERROR,
             ExpectedInstructionFailureForFailure.new_with_message(
                 PhaseStep(phases.ASSERT, phase_step.VALIDATE),
-                test_case.the_assert_phase_extra[0].source_line,
+                test_case.the_assert_phase_extra[0].first_line,
                 'ASSERT/validate'),
             [phase_step.ANONYMOUS,
              phase_step.SETUP__PRE_VALIDATE,
@@ -340,7 +340,7 @@ class Test(unittest.TestCase):
             FullResultStatus.IMPLEMENTATION_ERROR,
             ExpectedInstructionFailureForFailure.new_with_exception(
                 PhaseStep(phases.ASSERT, phase_step.VALIDATE),
-                test_case.the_assert_phase_extra[0].source_line,
+                test_case.the_assert_phase_extra[0].first_line,
                 instruction_test_resources.ImplementationErrorTestException),
             [phase_step.ANONYMOUS,
              phase_step.SETUP__PRE_VALIDATE,
@@ -370,7 +370,7 @@ class Test(unittest.TestCase):
             FullResultStatus.VALIDATE,
             ExpectedInstructionFailureForFailure.new_with_message(
                 PhaseStep(phases.ACT, phase_step.VALIDATE),
-                test_case.the_act_phase_extra[0].source_line,
+                test_case.the_act_phase_extra[0].first_line,
                 'ACT/validate'),
             [phase_step.ANONYMOUS,
              phase_step.SETUP__PRE_VALIDATE,
@@ -398,7 +398,7 @@ class Test(unittest.TestCase):
             FullResultStatus.HARD_ERROR,
             ExpectedInstructionFailureForFailure.new_with_message(
                 PhaseStep(phases.ACT, phase_step.VALIDATE),
-                test_case.the_act_phase_extra[0].source_line,
+                test_case.the_act_phase_extra[0].first_line,
                 'ACT/validate'),
             [phase_step.ANONYMOUS,
              phase_step.SETUP__PRE_VALIDATE,
@@ -425,7 +425,7 @@ class Test(unittest.TestCase):
             FullResultStatus.IMPLEMENTATION_ERROR,
             ExpectedInstructionFailureForFailure.new_with_exception(
                 PhaseStep(phases.ACT, phase_step.VALIDATE),
-                test_case.the_act_phase_extra[0].source_line,
+                test_case.the_act_phase_extra[0].first_line,
                 instruction_test_resources.ImplementationErrorTestException),
             [phase_step.ANONYMOUS,
              phase_step.SETUP__PRE_VALIDATE,
@@ -453,7 +453,7 @@ class Test(unittest.TestCase):
             FullResultStatus.HARD_ERROR,
             ExpectedInstructionFailureForFailure.new_with_message(
                 PhaseStep(phases.ACT, phase_step.ACT_script_generation),
-                test_case.the_act_phase_extra[0].source_line,
+                test_case.the_act_phase_extra[0].first_line,
                 'hard error msg from act'),
             [phase_step.ANONYMOUS,
              phase_step.SETUP__PRE_VALIDATE,
@@ -484,7 +484,7 @@ class Test(unittest.TestCase):
             FullResultStatus.IMPLEMENTATION_ERROR,
             ExpectedInstructionFailureForFailure.new_with_exception(
                 PhaseStep(phases.ACT, phase_step.ACT_script_generation),
-                test_case.the_act_phase_extra[0].source_line,
+                test_case.the_act_phase_extra[0].first_line,
                 instruction_test_resources.ImplementationErrorTestException),
             [phase_step.ANONYMOUS,
              phase_step.SETUP__PRE_VALIDATE,
@@ -516,7 +516,7 @@ class Test(unittest.TestCase):
             FullResultStatus.FAIL,
             ExpectedInstructionFailureForFailure.new_with_message(
                 PhaseStep(phases.ASSERT, phase_step.EXECUTE),
-                test_case.the_assert_phase_extra[0].source_line,
+                test_case.the_assert_phase_extra[0].first_line,
                 'fail msg from ASSERT'),
             [phase_step.ANONYMOUS,
              phase_step.SETUP__PRE_VALIDATE,
@@ -551,7 +551,7 @@ class Test(unittest.TestCase):
             FullResultStatus.HARD_ERROR,
             ExpectedInstructionFailureForFailure.new_with_message(
                 PhaseStep(phases.ASSERT, phase_step.EXECUTE),
-                test_case.the_assert_phase_extra[0].source_line,
+                test_case.the_assert_phase_extra[0].first_line,
                 'hard error msg from ASSERT'),
             [phase_step.ANONYMOUS,
              phase_step.SETUP__PRE_VALIDATE,
@@ -585,7 +585,7 @@ class Test(unittest.TestCase):
             FullResultStatus.IMPLEMENTATION_ERROR,
             ExpectedInstructionFailureForFailure.new_with_exception(
                 PhaseStep(phases.ASSERT, phase_step.EXECUTE),
-                test_case.the_assert_phase_extra[0].source_line,
+                test_case.the_assert_phase_extra[0].first_line,
                 instruction_test_resources.ImplementationErrorTestException),
             [phase_step.ANONYMOUS,
              phase_step.SETUP__PRE_VALIDATE,
@@ -618,7 +618,7 @@ class Test(unittest.TestCase):
             FullResultStatus.HARD_ERROR,
             ExpectedInstructionFailureForFailure.new_with_message(
                 phase_step.new_without_step(phases.CLEANUP),
-                test_case.the_cleanup_phase_extra[0].source_line,
+                test_case.the_cleanup_phase_extra[0].first_line,
                 'hard error msg from CLEANUP'),
             [phase_step.ANONYMOUS,
              phase_step.SETUP__PRE_VALIDATE,
@@ -652,7 +652,7 @@ class Test(unittest.TestCase):
             FullResultStatus.IMPLEMENTATION_ERROR,
             ExpectedInstructionFailureForFailure.new_with_exception(
                 phase_step.new_without_step(phases.CLEANUP),
-                test_case.the_cleanup_phase_extra[0].source_line,
+                test_case.the_cleanup_phase_extra[0].first_line,
                 instruction_test_resources.ImplementationErrorTestException),
             [phase_step.ANONYMOUS,
              phase_step.SETUP__PRE_VALIDATE,

@@ -30,7 +30,7 @@ class Test(unittest.TestCase):
             FullResultStatus.XFAIL,
             ExpectedInstructionFailureForFailure.new_with_message(
                 phase_step.PhaseStep(phases.ASSERT, phase_step.EXECUTE),
-                test_case.the_assert_phase_extra[0].source_line,
+                test_case.the_assert_phase_extra[0].first_line,
                 'fail message'),
             [phase_step.ANONYMOUS,
              phase_step.SETUP__PRE_VALIDATE,
@@ -90,7 +90,7 @@ class Test(unittest.TestCase):
             FullResultStatus.HARD_ERROR,
             ExpectedInstructionFailureForFailure.new_with_message(
                 phase_step.new_without_step(phases.ANONYMOUS),
-                test_case.the_anonymous_phase_extra[1].source_line,
+                test_case.the_anonymous_phase_extra[1].first_line,
                 'hard error msg'),
             [phase_step.ANONYMOUS
              ],
@@ -109,7 +109,7 @@ class Test(unittest.TestCase):
             FullResultStatus.IMPLEMENTATION_ERROR,
             ExpectedInstructionFailureForFailure.new_with_exception(
                 phase_step.new_without_step(phases.CLEANUP),
-                test_case.the_cleanup_phase_extra[0].source_line,
+                test_case.the_cleanup_phase_extra[0].first_line,
                 instruction_test_resources.ImplementationErrorTestException),
             [phase_step.ANONYMOUS,
              phase_step.SETUP__PRE_VALIDATE,

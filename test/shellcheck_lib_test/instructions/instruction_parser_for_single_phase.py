@@ -115,7 +115,7 @@ class TestParse(unittest.TestCase):
                          'Should NOT be comment')
         assert_equals_line(self,
                            source.first_line,
-                           phase_content_element.source_line,
+                           phase_content_element.first_line,
                            'Source line')
         self.assertIsInstance(phase_content_element.instruction,
                               Instruction,
@@ -134,7 +134,7 @@ class TestParse(unittest.TestCase):
                          'Element type')
         assert_equals_line(self,
                            source.first_line,
-                           phase_content_element.source_line,
+                           phase_content_element.first_line,
                            'Source line')
 
     def test__when__line_is_comment__then__a_comment_line_element_should_be_returned(self):
@@ -147,7 +147,7 @@ class TestParse(unittest.TestCase):
                          'Element type')
         assert_equals_line(self,
                            source.first_line,
-                           phase_content_element.source_line,
+                           phase_content_element.first_line,
                            'Source line')
 
 
