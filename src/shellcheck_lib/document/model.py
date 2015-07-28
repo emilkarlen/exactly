@@ -36,7 +36,7 @@ class PhaseContentElement:
         return self._source
 
     @property
-    def source_line(self) -> line_source.Line:
+    def first_line(self) -> line_source.Line:
         return self._source.first_line
 
     @property

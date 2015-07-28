@@ -104,9 +104,9 @@ def execute_phase_prim(phase_contents: PhaseContents,
     for element in phase_contents.elements:
         assert isinstance(element, PhaseContentElement)
         if element.is_comment:
-            header_executor_for_comment.apply(element.source_line)
+            header_executor_for_comment.apply(element.first_line)
         else:
-            header_executor_for_instruction.apply(element.source_line)
+            header_executor_for_instruction.apply(element.first_line)
             failure_info = execute_element(instruction_executor,
                                            element)
             if failure_info is not None:
