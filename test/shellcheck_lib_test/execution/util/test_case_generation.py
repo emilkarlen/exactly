@@ -1,6 +1,7 @@
 from shellcheck_lib.document import model
 from shellcheck_lib.general import line_source
 from shellcheck_lib.test_case import test_case_doc
+import shellcheck_lib_test.util.model_utils
 
 
 class TestCaseGeneratorBase:
@@ -32,7 +33,7 @@ class TestCaseGeneratorBase:
         )
 
     def _next_instruction_line(self, instruction: model.Instruction) -> model.PhaseContentElement:
-        return model.new_instruction_element(
+        return shellcheck_lib_test.util.model_utils.new_instruction_element(
             self._next_line(),
             instruction)
 

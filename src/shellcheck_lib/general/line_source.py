@@ -55,11 +55,6 @@ class LineSequence:
         return os.linesep.join(self._lines)
 
 
-def new_ls_from_line(line: Line) -> LineSequence:
-    return LineSequence(line.line_number,
-                        (line.text,))
-
-
 class LineSequenceSource:
     def has_next(self) -> bool:
         raise NotImplementedError()

@@ -14,6 +14,7 @@ from shellcheck_lib.test_case import test_case_doc
 from shellcheck_lib.execution import phases
 from shellcheck_lib_test.execution.util import utils, instruction_adapter
 from shellcheck_lib_test.execution.util.test_case_generation import TestCaseGeneratorBase
+import shellcheck_lib_test.util.model_utils
 
 
 class UnitTestCaseForPy3Language:
@@ -63,7 +64,7 @@ class UnitTestCaseForPy3Language:
                                 str(self.__previous_line_number))
 
     def _next_instruction_line(self, instruction: model.Instruction) -> model.PhaseContentElement:
-        return model.new_instruction_element(
+        return shellcheck_lib_test.util.model_utils.new_instruction_element(
             self._next_line(),
             instruction)
 
