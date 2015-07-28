@@ -78,25 +78,6 @@ def new_instruction_e(source: line_source.LineSequence,
                                instruction)
 
 
-def new_empty_line_element(source_line: line_source.Line) -> PhaseContentElement:
-    return PhaseContentElement(ElementType.EMPTY,
-                               line_source.new_ls_from_line(source_line),
-                               None)
-
-
-def new_comment_element(source_line: line_source.Line) -> PhaseContentElement:
-    return PhaseContentElement(ElementType.COMMENT,
-                               line_source.new_ls_from_line(source_line),
-                               None)
-
-
-def new_instruction_element(source_line: line_source.Line,
-                            instruction: Instruction) -> PhaseContentElement:
-    return PhaseContentElement(ElementType.INSTRUCTION,
-                               line_source.new_ls_from_line(source_line),
-                               instruction)
-
-
 class PhaseContents:
     """
     A sequence/list of PhaseContentElement:s.

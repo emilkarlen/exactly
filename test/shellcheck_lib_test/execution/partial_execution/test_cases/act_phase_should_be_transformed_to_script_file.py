@@ -5,12 +5,11 @@ from shellcheck_lib.test_case.success_or_hard_error_construction import new_succ
 from shellcheck_lib.test_case import success_or_validation_hard_or_error_construction
 from shellcheck_lib.execution import phases
 from shellcheck_lib.general import line_source
-from shellcheck_lib.document import model
 from shellcheck_lib.test_case import instructions
 from shellcheck_lib_test.execution.util import utils
 from shellcheck_lib_test.execution.util import py_unit_test_case
 from shellcheck_lib_test.execution.util.py_unit_test_case import TestCaseWithCommonDefaultForSetupAssertCleanup
-
+import shellcheck_lib_test.util.model_utils
 
 HOME_DIR_HEADER = '# Home Dir: '
 TEST_ROOT_DIR_HEADER = '# Test Root Dir: '
@@ -19,12 +18,12 @@ TEST_ROOT_DIR_HEADER = '# Test Root Dir: '
 class TestCaseDocument(TestCaseWithCommonDefaultForSetupAssertCleanup):
     def _act_phase(self) -> list:
         return [
-            model.new_instruction_element(
+            shellcheck_lib_test.util.model_utils.new_instruction_element(
                 line_source.Line(1, 'source for line one'),
                 ActPhaseInstructionThatOutputsHomeDir()),
-            model.new_comment_element(
+            shellcheck_lib_test.util.model_utils.new_comment_element(
                 line_source.Line(2, 'comment on line two')),
-            model.new_instruction_element(
+            shellcheck_lib_test.util.model_utils.new_instruction_element(
                 line_source.Line(3, 'source for line three'),
                 ActPhaseInstructionThatOutputsTestRootDir()),
         ]
