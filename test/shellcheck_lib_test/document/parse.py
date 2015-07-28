@@ -1,6 +1,7 @@
 import os
 import unittest
 
+from shellcheck_lib.document.model import ElementType
 from shellcheck_lib.document.parse import SourceError, PlainDocumentParser
 from shellcheck_lib.document import model
 from shellcheck_lib.document import parse
@@ -110,18 +111,18 @@ def parser_for_phase2_that_fails_unconditionally() -> PlainDocumentParser:
     configuration = parse.SectionsConfiguration(
         None,
         (parse.SectionConfiguration('phase 1',
-                                     InstructionParserForPhase('phase 1')),
+                                    InstructionParserForPhase('phase 1')),
          parse.SectionConfiguration('phase 2',
-                                     InstructionParserThatFails()))
+                                    InstructionParserThatFails()))
     )
     return parse.new_parser_for(configuration)
 
 
 def parsers_for_named_phases():
     return (parse.SectionConfiguration('phase 1',
-                                        InstructionParserForPhase('phase 1')),
+                                       InstructionParserForPhase('phase 1')),
             parse.SectionConfiguration('phase 2',
-                                        InstructionParserForPhase('phase 2')))
+                                       InstructionParserForPhase('phase 2')))
 
 
 # class TestGroupByPhase(unittest.TestCase):
@@ -550,11 +551,7 @@ class ElementChecker(TestCaseWithMessageHeader):
         # self.tc.assertEqual(expected_element.source_line,
         #                     actual_element.source_line,
         #                     self.msg('Source lines should be equal'))
-        if expected_element.is_comment:
-            self.tc.assertTrue(actual_element.is_comment)
-            self.tc.assertFalse(actual_element.is_instruction)
-        else:
-            self.tc.assertTrue(actual_element.is_instruction)
+        if expected_element.element_type is ElementType.INSTRUCTION:
             self.tc.assertEqual(expected_element.instruction.__class__,
                                 actual_element.instruction.__class__, )
             if isinstance(expected_element.instruction, InstructionInSection):
@@ -562,6 +559,9 @@ class ElementChecker(TestCaseWithMessageHeader):
                 self.tc.assertEqual(expected_element.instruction.phase_name,
                                     actual_element.instruction.phase_name,
                                     self.msg('Recorded phase name of instruction'))
+        else:
+            self.tc.assertIsNone(expected_element.instruction,
+                                 'Instruction should not be present for non-instruction elements')
 
 
 def suite():

@@ -1,7 +1,7 @@
 import pathlib
 import functools
 
-from shellcheck_lib.document.model import PhaseContents
+from shellcheck_lib.document.model import PhaseContents, ElementType
 from shellcheck_lib.document.parse import SourceError
 from shellcheck_lib.general import line_source
 from shellcheck_lib.test_case import test_case_processing
@@ -61,7 +61,7 @@ class _SingleFileReader:
                                    check_visited: bool) -> list:
             ret_val = []
             for element in section_contents.elements:
-                if element.is_instruction:
+                if element.element_type is ElementType.INSTRUCTION:
                     try:
                         paths = element.instruction.resolve_paths(env)
                         if check_visited:

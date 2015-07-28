@@ -44,17 +44,9 @@ class PhaseContentElement:
         return self._element_type
 
     @property
-    def is_instruction(self) -> bool:
-        return self._instruction
-
-    @property
-    def is_comment(self) -> bool:
-        return not self.is_instruction
-
-    @property
     def instruction(self) -> Instruction:
         """
-        Precondition: is_instruction
+        Precondition: Element type is INSTRUCTION.
         """
         return self._instruction
 
