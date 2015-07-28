@@ -1,5 +1,6 @@
 from shellcheck_lib.document import model
-from shellcheck_lib.instructions.instruction_parser_for_single_phase import SingleInstructionParser
+from shellcheck_lib.general import line_source
+from shellcheck_lib.instructions.instruction_parser_for_single_phase2 import SingleInstructionParser
 
 
 class Description:
@@ -23,8 +24,10 @@ class SingleInstructionSetup(SingleInstructionParser):
     def description(self) -> Description:
         return self._description
 
-    def apply(self, instruction_argument: str) -> model.Instruction:
-        return self._parser.apply(instruction_argument)
+    def apply(self,
+              source: line_source.LineSequenceBuilder,
+              instruction_argument: str) -> model.Instruction:
+        return self._parser.apply(source, instruction_argument)
 
 
 class InstructionsSetup:

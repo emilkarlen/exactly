@@ -1,5 +1,5 @@
 from shellcheck_lib.cli import default_main_program as sut
-from shellcheck_lib.default.execution_mode.test_case.instruction_setup import InstructionsSetup
+from shellcheck_lib.default.execution_mode.test_case.instruction_setup2 import InstructionsSetup
 from shellcheck_lib_test.util.str_std_out_files import StringStdOutFiles
 
 

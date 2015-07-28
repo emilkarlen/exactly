@@ -1,12 +1,14 @@
 import types
 import unittest
 
-from shellcheck_lib.execution.result import InstructionFailureDetails, new_failure_details_from_message, PartialResultStatus, \
+from shellcheck_lib.execution.result import InstructionFailureDetails, new_failure_details_from_message, \
+    PartialResultStatus, \
     new_failure_details_from_exception
 from shellcheck_lib.general import line_source
-from shellcheck_lib.document.model import Instruction, PhaseContentElement
+from shellcheck_lib.document.model import Instruction, PhaseContentElement, new_instruction_e
 from shellcheck_lib.execution.single_instruction_executor import execute_element, ControlledInstructionExecutor, \
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum, SingleInstructionExecutionFailure
+from shellcheck_lib.general.line_source import new_ls_from_line
 
 
 class NameRecorder:
@@ -140,8 +142,8 @@ def assert_equal_lines(unit_tc: unittest.TestCase,
 
 
 def new_dummy_instruction_element() -> PhaseContentElement:
-    return PhaseContentElement(line_source.Line(100, '100'),
-                               Instruction())
+    return new_instruction_e(new_ls_from_line(line_source.Line(100, '100')),
+                             Instruction())
 
 
 def suite():
