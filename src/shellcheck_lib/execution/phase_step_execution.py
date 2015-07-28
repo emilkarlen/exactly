@@ -1,7 +1,7 @@
 from shellcheck_lib.execution.phase_step import PhaseStep
 from shellcheck_lib.general import line_source
 from shellcheck_lib.execution.single_instruction_executor import ControlledInstructionExecutor, execute_element
-from shellcheck_lib.document.model import PhaseContents, PhaseContentElement
+from shellcheck_lib.document.model import PhaseContents, PhaseContentElement, ElementType
 from shellcheck_lib.execution import phases
 from .execution_directory_structure import ExecutionDirectoryStructure
 from .result import PartialResult, InstructionFailureInfo, new_partial_result_pass, PartialResultStatus, \
@@ -103,9 +103,9 @@ def execute_phase_prim(phase_contents: PhaseContents,
     """
     for element in phase_contents.elements:
         assert isinstance(element, PhaseContentElement)
-        if element.is_comment:
+        if element.element_type is ElementType.COMMENT:
             header_executor_for_comment.apply(element.first_line)
-        else:
+        elif element.element_type is ElementType.INSTRUCTION:
             header_executor_for_instruction.apply(element.first_line)
             failure_info = execute_element(instruction_executor,
                                            element)

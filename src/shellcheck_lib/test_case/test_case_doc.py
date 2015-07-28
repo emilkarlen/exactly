@@ -1,5 +1,5 @@
 from shellcheck_lib.test_case import instructions
-from shellcheck_lib.document.model import PhaseContents
+from shellcheck_lib.document.model import PhaseContents, ElementType
 
 
 class TestCase(tuple):
@@ -44,5 +44,5 @@ class TestCase(tuple):
     def __assert_instruction_class(phase_contents: PhaseContents,
                                    instruction_class):
         for element in phase_contents.elements:
-            if element.is_instruction:
+            if element.element_type is ElementType.INSTRUCTION:
                 assert isinstance(element.instruction, instruction_class)

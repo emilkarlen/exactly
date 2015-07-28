@@ -1,5 +1,5 @@
 from . import instruction
-from shellcheck_lib.document.model import PhaseContents
+from shellcheck_lib.document.model import PhaseContents, ElementType
 
 
 class TestSuite(tuple):
@@ -23,5 +23,5 @@ class TestSuite(tuple):
     def __assert_instruction_class(phase_contents: PhaseContents,
                                    instruction_class):
         for element in phase_contents.elements:
-            if element.is_instruction:
+            if element.element_type is ElementType.INSTRUCTION:
                 assert isinstance(element.instruction, instruction_class)

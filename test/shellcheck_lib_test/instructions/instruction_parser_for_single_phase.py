@@ -109,10 +109,9 @@ class TestParse(unittest.TestCase):
                                                                                           parsers_dict)
         source = new_source('Sa')
         phase_content_element = phase_parser.apply(source)
-        self.assertTrue(phase_content_element.is_instruction,
-                        'Should be instruction')
-        self.assertFalse(phase_content_element.is_comment,
-                         'Should NOT be comment')
+        self.assertEqual(ElementType.INSTRUCTION,
+                         phase_content_element.element_type,
+                         'Should be instruction')
         assert_equals_line(self,
                            source.first_line,
                            phase_content_element.first_line,
