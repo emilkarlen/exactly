@@ -5,7 +5,6 @@ from shellcheck_lib.execution.execution_directory_structure import ExecutionDire
 from shellcheck_lib.document.model import Instruction
 from shellcheck_lib.script_language import act_script_management
 
-
 ENV_VAR_HOME = 'SHELLCHECK_HOME'
 ENV_VAR_TEST = 'SHELLCHECK_TESTROOT'
 ENV_VAR_TMP = 'SHELLCHECK_TMP'
@@ -53,11 +52,24 @@ def new_sh_hard_error(failure_message: str) -> SuccessOrHardError:
     return SuccessOrHardError(failure_message)
 
 
+class SuccessOrValidationErrorOrHardErrorEnum(Enum):
+    SUCCESS = 0
+    VALIDATION_ERROR = 1
+    HARD_ERROR = 2
+
 class SuccessOrValidationErrorOrHardError(tuple):
     def __new__(cls,
                 is_hard_error: bool,
                 failure_message: str):
         return tuple.__new__(cls, (is_hard_error, failure_message, ))
+
+    @property
+    def status(self) -> SuccessOrValidationErrorOrHardErrorEnum:
+        if self.is_success:
+            return SuccessOrValidationErrorOrHardErrorEnum.SUCCESS
+        if self.is_validation_error:
+            return SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR
+        return SuccessOrValidationErrorOrHardErrorEnum.HARD_ERROR
 
     @property
     def failure_message(self) -> str:
