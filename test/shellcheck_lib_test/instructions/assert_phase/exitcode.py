@@ -8,6 +8,7 @@ from shellcheck_lib.instructions.instruction_parser_for_single_phase import \
 from shellcheck_lib.test_case import instructions as i
 from shellcheck_lib.test_case.instructions import AssertPhaseInstruction
 from shellcheck_lib_test.instructions import utils
+from shellcheck_lib_test.instructions.assert_phase.utils import AssertInstructionTest
 
 
 class TestParse(unittest.TestCase):
@@ -55,30 +56,22 @@ class TestParse(unittest.TestCase):
 
 class TestParseAndExecute(unittest.TestCase):
     def test_that__when__actual_value_is_as_expected__then__pass_is_returned(self):
-        parser = exitcode.Parser()
-        instruction = parser.apply(new_source('exitcode 72'), '72')
-        with utils.act_phase_result(exitcode=72) as post_eds_environment:
-            validation_result = instruction.validate(post_eds_environment)
-            self.assertTrue(validation_result.is_success,
-                            'The assertion/validation is expected to succeed')
-            main_actual = instruction.main(post_eds_environment,
-                                           i.PhaseEnvironmentForInternalCommands())
-            self.assertEqual(i.PassOrFailOrHardErrorEnum.PASS,
-                             main_actual.status,
-                             'The assertion is expected to PASS')
+        test = AssertInstructionTest(i.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                                     i.PassOrFailOrHardErrorEnum.PASS,
+                                     utils.ActResult(exitcode=72))
+        test.apply(self,
+                   exitcode.Parser(),
+                   new_source('exitcode 72'),
+                   ' 72')
 
     def test_that__when__actual_value_is_as_not_expected__then__fail_is_returned(self):
-        parser = exitcode.Parser()
-        instruction = parser.apply(new_source('exitcode 72'), '72')
-        with utils.act_phase_result(exitcode=0) as post_eds_environment:
-            validation_result = instruction.validate(post_eds_environment)
-            self.assertTrue(validation_result.is_success,
-                            'The assertion/validation is expected to succeed')
-            main_actual = instruction.main(post_eds_environment,
-                                           i.PhaseEnvironmentForInternalCommands())
-            self.assertEqual(i.PassOrFailOrHardErrorEnum.FAIL,
-                             main_actual.status,
-                             'The assertion is expected to FAIL')
+        test = AssertInstructionTest(i.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                                     i.PassOrFailOrHardErrorEnum.FAIL,
+                                     utils.ActResult(exitcode=0))
+        test.apply(self,
+                   exitcode.Parser(),
+                   new_source('exitcode 72'),
+                   ' 72')
 
 
 def new_source(text: str) -> line_source.LineSequenceBuilder:
@@ -87,6 +80,7 @@ def new_source(text: str) -> line_source.LineSequenceBuilder:
             parse.ListOfLines([])),
         1,
         text)
+
 
 def suite():
     ret_val = unittest.TestSuite()
