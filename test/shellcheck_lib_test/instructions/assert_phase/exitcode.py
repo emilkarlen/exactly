@@ -16,40 +16,40 @@ class TestParse(unittest.TestCase):
         parser = exitcode.Parser()
         self.assertRaises(SingleInstructionInvalidArgumentException,
                           parser.apply,
-                          new_source('exitcode '),
+                          new_source('instruction-name '),
                           '')
 
     def test_that_when_too_many_arguments_then_exception_is_raised(self):
         parser = exitcode.Parser()
         self.assertRaises(SingleInstructionInvalidArgumentException,
                           parser.apply,
-                          new_source('exitcode a b c'),
+                          new_source('instruction-name a b c'),
                           'a b c')
 
     def test_that_when_argument_does_not_contain_integer_then_exception_is_raised(self):
         parser = exitcode.Parser()
         self.assertRaises(SingleInstructionInvalidArgumentException,
                           parser.apply,
-                          new_source('exitcode a'),
+                          new_source('instruction-name a'),
                           'a')
 
     def test_that__when__argument_contains_too_small_integer__then__exception_is_raised(self):
         parser = exitcode.Parser()
         self.assertRaises(SingleInstructionInvalidArgumentException,
                           parser.apply,
-                          new_source('exitcode -1'),
+                          new_source('instruction-name -1'),
                           '-1')
 
     def test_that__when__argument_contains_too_large_integer__then__exception_is_raised(self):
         parser = exitcode.Parser()
         self.assertRaises(SingleInstructionInvalidArgumentException,
                           parser.apply,
-                          new_source('exitcode 256'),
+                          new_source('instruction-name 256'),
                           '256')
 
     def test_that_when_valid_argument_is_given_than_instruction_is_returned(self):
         parser = exitcode.Parser()
-        actual_instruction = parser.apply(new_source('exitcode 1'), '1')
+        actual_instruction = parser.apply(new_source('instruction-name 1'), '1')
         self.assertIsInstance(actual_instruction,
                               AssertPhaseInstruction)
 
@@ -61,7 +61,7 @@ class TestParseAndExecute(unittest.TestCase):
                                      utils.ActResult(exitcode=72))
         test.apply(self,
                    exitcode.Parser(),
-                   new_source('exitcode 72'),
+                   new_source('instruction-name 72'),
                    ' 72')
 
     def test_that__when__actual_value_is_as_not_expected__then__fail_is_returned(self):
@@ -70,7 +70,7 @@ class TestParseAndExecute(unittest.TestCase):
                                      utils.ActResult(exitcode=0))
         test.apply(self,
                    exitcode.Parser(),
-                   new_source('exitcode 72'),
+                   new_source('instruction-name 72'),
                    ' 72')
 
 
