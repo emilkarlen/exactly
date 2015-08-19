@@ -74,6 +74,162 @@ class TestParseAndExecute(unittest.TestCase):
                    ' 72')
 
 
+class TestParseAndExecuteTwoArgumentsEq(unittest.TestCase):
+    def test_pass(self):
+        test = AssertInstructionTest(i.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                                     i.PassOrFailOrHardErrorEnum.PASS,
+                                     utils.ActResult(exitcode=72))
+        test.apply(self,
+                   exitcode.Parser(),
+                   new_source('instruction-name = 72'),
+                   ' = 72')
+
+    def test_fail(self):
+        test = AssertInstructionTest(i.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                                     i.PassOrFailOrHardErrorEnum.FAIL,
+                                     utils.ActResult(exitcode=0))
+        test.apply(self,
+                   exitcode.Parser(),
+                   new_source('instruction-name = 72'),
+                   ' = 72')
+
+
+class TestParseAndExecuteTwoArgumentsNe(unittest.TestCase):
+    def test_pass(self):
+        test = AssertInstructionTest(i.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                                     i.PassOrFailOrHardErrorEnum.PASS,
+                                     utils.ActResult(exitcode=72))
+        test.apply(self,
+                   exitcode.Parser(),
+                   new_source('instruction-name != 73'),
+                   ' != 73')
+
+    def test_fail(self):
+        test = AssertInstructionTest(i.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                                     i.PassOrFailOrHardErrorEnum.FAIL,
+                                     utils.ActResult(exitcode=72))
+        test.apply(self,
+                   exitcode.Parser(),
+                   new_source('instruction-name != 72'),
+                   ' != 72')
+
+
+class TestParseAndExecuteTwoArgumentsLt(unittest.TestCase):
+    def test_pass(self):
+        test = AssertInstructionTest(i.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                                     i.PassOrFailOrHardErrorEnum.PASS,
+                                     utils.ActResult(exitcode=72))
+        test.apply(self,
+                   exitcode.Parser(),
+                   new_source('instruction-name < 73'),
+                   ' < 73')
+
+    def test_fail_equal(self):
+        test = AssertInstructionTest(i.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                                     i.PassOrFailOrHardErrorEnum.FAIL,
+                                     utils.ActResult(exitcode=72))
+        test.apply(self,
+                   exitcode.Parser(),
+                   new_source('instruction-name < 72'),
+                   ' < 72')
+
+    def test_fail_unequal(self):
+        test = AssertInstructionTest(i.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                                     i.PassOrFailOrHardErrorEnum.FAIL,
+                                     utils.ActResult(exitcode=72))
+        test.apply(self,
+                   exitcode.Parser(),
+                   new_source('instruction-name < 28'),
+                   ' < 28')
+
+
+class TestParseAndExecuteTwoArgumentsLe(unittest.TestCase):
+    def test_pass(self):
+        test = AssertInstructionTest(i.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                                     i.PassOrFailOrHardErrorEnum.PASS,
+                                     utils.ActResult(exitcode=72))
+        test.apply(self,
+                   exitcode.Parser(),
+                   new_source('instruction-name <= 73'),
+                   ' <= 73')
+
+    def test_pass_equal(self):
+        test = AssertInstructionTest(i.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                                     i.PassOrFailOrHardErrorEnum.PASS,
+                                     utils.ActResult(exitcode=72))
+        test.apply(self,
+                   exitcode.Parser(),
+                   new_source('instruction-name <= 72'),
+                   ' <= 72')
+
+    def test_fail_unequal(self):
+        test = AssertInstructionTest(i.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                                     i.PassOrFailOrHardErrorEnum.FAIL,
+                                     utils.ActResult(exitcode=72))
+        test.apply(self,
+                   exitcode.Parser(),
+                   new_source('instruction-name <= 28'),
+                   ' <= 28')
+
+
+class TestParseAndExecuteTwoArgumentsGt(unittest.TestCase):
+    def test_pass(self):
+        test = AssertInstructionTest(i.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                                     i.PassOrFailOrHardErrorEnum.PASS,
+                                     utils.ActResult(exitcode=72))
+        test.apply(self,
+                   exitcode.Parser(),
+                   new_source('instruction-name > 28'),
+                   ' > 28')
+
+    def test_fail_equal(self):
+        test = AssertInstructionTest(i.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                                     i.PassOrFailOrHardErrorEnum.FAIL,
+                                     utils.ActResult(exitcode=72))
+        test.apply(self,
+                   exitcode.Parser(),
+                   new_source('instruction-name > 72'),
+                   ' > 72')
+
+    def test_fail_unequal(self):
+        test = AssertInstructionTest(i.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                                     i.PassOrFailOrHardErrorEnum.FAIL,
+                                     utils.ActResult(exitcode=72))
+        test.apply(self,
+                   exitcode.Parser(),
+                   new_source('instruction-name > 87'),
+                   ' > 87')
+
+
+class TestParseAndExecuteTwoArgumentsGe(unittest.TestCase):
+    def test_pass(self):
+        test = AssertInstructionTest(i.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                                     i.PassOrFailOrHardErrorEnum.PASS,
+                                     utils.ActResult(exitcode=72))
+        test.apply(self,
+                   exitcode.Parser(),
+                   new_source('instruction-name >= 28'),
+                   ' >= 28')
+
+    def test_pass_equal(self):
+        test = AssertInstructionTest(i.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                                     i.PassOrFailOrHardErrorEnum.PASS,
+                                     utils.ActResult(exitcode=72))
+        test.apply(self,
+                   exitcode.Parser(),
+                   new_source('instruction-name >= 72'),
+                   ' >= 72')
+
+    def test_fail_unequal(self):
+        test = AssertInstructionTest(i.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                                     i.PassOrFailOrHardErrorEnum.FAIL,
+                                     utils.ActResult(exitcode=72))
+        test.apply(self,
+                   exitcode.Parser(),
+                   new_source('instruction-name >= 87'),
+                   ' >= 87')
+
+
 def new_source(text: str) -> line_source.LineSequenceBuilder:
     return line_source.LineSequenceBuilder(
         parse.LineSequenceSourceFromListOfLines(
@@ -86,6 +242,12 @@ def suite():
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestParse))
     ret_val.addTest(unittest.makeSuite(TestParseAndExecute))
+    ret_val.addTest(unittest.makeSuite(TestParseAndExecuteTwoArgumentsEq))
+    ret_val.addTest(unittest.makeSuite(TestParseAndExecuteTwoArgumentsNe))
+    ret_val.addTest(unittest.makeSuite(TestParseAndExecuteTwoArgumentsLt))
+    ret_val.addTest(unittest.makeSuite(TestParseAndExecuteTwoArgumentsLe))
+    ret_val.addTest(unittest.makeSuite(TestParseAndExecuteTwoArgumentsGt))
+    ret_val.addTest(unittest.makeSuite(TestParseAndExecuteTwoArgumentsGe))
     return ret_val
 
 
