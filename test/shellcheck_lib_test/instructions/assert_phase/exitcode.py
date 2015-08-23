@@ -10,6 +10,13 @@ from shellcheck_lib_test.instructions.assert_phase.utils import AssertInstructio
 
 
 class TestParse(unittest.TestCase):
+    def test_that_when_operator_is_invalid_then_exception_is_raised(self):
+        parser = exitcode.Parser()
+        self.assertRaises(SingleInstructionInvalidArgumentException,
+                          parser.apply,
+                          new_line_sequence('instruction-name <> 1'),
+                          ' <> 1')
+
     def test_that_when_no_arguments_then_exception_is_raised(self):
         parser = exitcode.Parser()
         self.assertRaises(SingleInstructionInvalidArgumentException,
