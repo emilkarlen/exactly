@@ -2,6 +2,8 @@ import unittest
 
 from shellcheck_lib_test.instructions.assert_phase import exitcode
 
+from shellcheck_lib_test.instructions.assert_phase import file
+
 
 def suite():
     ret_val = unittest.TestSuite()
