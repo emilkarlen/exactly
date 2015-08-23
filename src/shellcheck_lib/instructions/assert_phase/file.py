@@ -47,7 +47,7 @@ class InstructionForFileType(utils.InstructionWithoutValidationBase):
         return i.new_pfh_pass()
 
 
-class InstructionForFileContentsEmpty(utils.InstructionWithoutValidationBase):
+class InstructionForFileEmptinessBase(utils.InstructionWithoutValidationBase):
     def __init__(self,
                  file_name_relative_current_directory: str):
         self._file_name_relative_current_directory = file_name_relative_current_directory
@@ -58,17 +58,38 @@ class InstructionForFileContentsEmpty(utils.InstructionWithoutValidationBase):
         file_path = pathlib.Path(self._file_name_relative_current_directory)
         return all_of(file_path,
                       (self._file_must_be_a_regular_file,
-                       self._file_must_be_empty))
+                       self._file_must_have_expected_emptiness_status))
 
     def _file_must_be_a_regular_file(self, file_path: pathlib.Path) -> i.PassOrFailOrHardError:
         if not file_path.is_file():
             return i.new_pfh_fail('Not a regular file: ' + self._file_name_relative_current_directory)
         return i.new_pfh_pass()
 
-    def _file_must_be_empty(self, file_path: pathlib.Path) -> i.PassOrFailOrHardError:
+    def _file_must_have_expected_emptiness_status(self, file_path: pathlib.Path) -> i.PassOrFailOrHardError:
+        raise NotImplementedError()
+
+
+class InstructionForFileContentsEmpty(InstructionForFileEmptinessBase):
+    def __init__(self,
+                 file_name_relative_current_directory: str):
+        super().__init__(file_name_relative_current_directory)
+
+    def _file_must_have_expected_emptiness_status(self, file_path: pathlib.Path) -> i.PassOrFailOrHardError:
         size = file_path.stat().st_size
         if size != 0:
             return i.new_pfh_fail('File is not empty: Size (in bytes): ' + str(size))
+        return i.new_pfh_pass()
+
+
+class InstructionForFileContentsNonEmpty(InstructionForFileEmptinessBase):
+    def __init__(self,
+                 file_name_relative_current_directory: str):
+        super().__init__(file_name_relative_current_directory)
+
+    def _file_must_have_expected_emptiness_status(self, file_path: pathlib.Path) -> i.PassOrFailOrHardError:
+        size = file_path.stat().st_size
+        if size == 0:
+            return i.new_pfh_fail('File is empty')
         return i.new_pfh_pass()
 
 
@@ -95,7 +116,9 @@ class Parser(SingleInstructionParser):
             return self._parse_type(file_argument, arguments[1:])
         elif arguments[0] == 'empty':
             return self._parse_empty(file_argument, arguments[1:])
-        raise NotImplementedError()
+        elif arguments[:2] == ['!', 'empty']:
+            return self._parse_non_empty(file_argument, arguments[2:])
+        raise SingleInstructionInvalidArgumentException('Invalid file instruction')
 
     @staticmethod
     def _parse_empty(file_name: str,
@@ -103,6 +126,13 @@ class Parser(SingleInstructionParser):
         if arguments:
             raise SingleInstructionInvalidArgumentException('file/empty: Extra arguments: ' + str(arguments))
         return InstructionForFileContentsEmpty(file_name)
+
+    @staticmethod
+    def _parse_non_empty(file_name: str,
+                         arguments: list) -> AssertPhaseInstruction:
+        if arguments:
+            raise SingleInstructionInvalidArgumentException('file/!empty: Extra arguments: ' + str(arguments))
+        return InstructionForFileContentsNonEmpty(file_name)
 
     @staticmethod
     def _parse_type(file_name: str,

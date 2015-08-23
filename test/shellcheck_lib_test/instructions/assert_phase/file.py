@@ -8,6 +8,13 @@ from shellcheck_lib_test.instructions import utils
 from shellcheck_lib_test.instructions.assert_phase.utils import AssertInstructionTest, new_source, new_line_sequence
 from shellcheck_lib_test.util.file_structure import DirContents, empty_file, empty_dir, File
 
+syntax_list = [
+    ('FILENAME', 'File exists as any type of file (regular, directory, ...)'),
+    ('FILENAME type [regular|directory]', 'File exists and has given type'),
+    ('FILENAME empty', 'File exists, is a regular file, and is empty'),
+    ('FILENAME ! empty', 'File exists, is a regular file, and is not empty'),
+]
+
 
 class TestParse(unittest.TestCase):
     def test_that_when_no_arguments_then_exception_is_raised(self):
@@ -108,12 +115,64 @@ class TestFileContentsEmptyValidSyntax(unittest.TestCase):
                    new_source('instruction-name', file_name + ' empty'))
 
 
+class TestFileContentsNonEmptyInvalidSyntax(unittest.TestCase):
+    def test_that_when_no_arguments_then_exception_is_raised(self):
+        arguments = 'file-name ! empty superfluous-argument'
+        parser = file.Parser()
+        self.assertRaises(SingleInstructionInvalidArgumentException,
+                          parser.apply,
+                          new_line_sequence('instruction-name ' + arguments),
+                          arguments)
+
+
+class TestFileContentsNonEmptyValidSyntax(unittest.TestCase):
+    def test_fail__when__file_do_not_exist(self):
+        test = AssertInstructionTest(i.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                                     i.PassOrFailOrHardErrorEnum.FAIL,
+                                     utils.ActResult())
+        test.apply(self,
+                   file.Parser(),
+                   new_source('instruction-name', 'name-of-non-existing-file ! empty'))
+
+    def test_fail__when__file_is_directory(self):
+        file_name = 'name-of-existing-directory'
+        test = AssertInstructionTest(i.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                                     i.PassOrFailOrHardErrorEnum.FAIL,
+                                     utils.ActResult(),
+                                     act_dir_contents_after_act=DirContents([empty_dir(file_name)]))
+        test.apply(self,
+                   file.Parser(),
+                   new_source('instruction-name', file_name + ' ! empty'))
+
+    def test_fail__when__file_exists_but_is_empty(self):
+        file_name = 'name-of-existing-file'
+        test = AssertInstructionTest(i.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                                     i.PassOrFailOrHardErrorEnum.FAIL,
+                                     utils.ActResult(),
+                                     act_dir_contents_after_act=DirContents([empty_file(file_name)]))
+        test.apply(self,
+                   file.Parser(),
+                   new_source('instruction-name', file_name + ' ! empty'))
+
+    def test_pass__when__file_exists_and_is_non_empty(self):
+        file_name = 'name-of-existing-file'
+        test = AssertInstructionTest(i.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                                     i.PassOrFailOrHardErrorEnum.PASS,
+                                     utils.ActResult(),
+                                     act_dir_contents_after_act=DirContents([File(file_name, 'contents')]))
+        test.apply(self,
+                   file.Parser(),
+                   new_source('instruction-name', file_name + ' ! empty'))
+
+
 def suite():
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestParse))
     ret_val.addTest(unittest.makeSuite(TestFileTypeAndExistence))
     ret_val.addTest(unittest.makeSuite(TestFileContentsEmptyInvalidSyntax))
     ret_val.addTest(unittest.makeSuite(TestFileContentsEmptyValidSyntax))
+    ret_val.addTest(unittest.makeSuite(TestFileContentsNonEmptyInvalidSyntax))
+    ret_val.addTest(unittest.makeSuite(TestFileContentsNonEmptyValidSyntax))
     return ret_val
 
 
