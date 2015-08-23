@@ -22,6 +22,10 @@ class File(FileSystemElement):
                    self.contents)
 
 
+def empty_file(file_name: str) -> File:
+    return File(file_name, '')
+
+
 class Dir(FileSystemElement):
     def __init__(self,
                  file_name: str,
@@ -35,6 +39,10 @@ class Dir(FileSystemElement):
         dir_path.mkdir(parents=True)
         for file_element in self.file_system_element_contents:
             file_element.write_to(dir_path)
+
+
+def empty_dir(file_name: str) -> Dir:
+    return Dir(file_name, [])
 
 
 class DirContents:
