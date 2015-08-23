@@ -102,7 +102,7 @@ class TestParseAndExecuteTwoArgumentsNe(unittest.TestCase):
                                      utils.ActResult(exitcode=72))
         test.apply(self,
                    exitcode.Parser(),
-                   new_source('instruction-name', ' != 73'))
+                   new_source('instruction-name', ' ! 73'))
 
     def test_fail(self):
         test = AssertInstructionTest(i.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
@@ -110,7 +110,7 @@ class TestParseAndExecuteTwoArgumentsNe(unittest.TestCase):
                                      utils.ActResult(exitcode=72))
         test.apply(self,
                    exitcode.Parser(),
-                   new_source('instruction-name', ' != 72'))
+                   new_source('instruction-name', ' ! 72'))
 
 
 class TestParseAndExecuteTwoArgumentsLt(unittest.TestCase):

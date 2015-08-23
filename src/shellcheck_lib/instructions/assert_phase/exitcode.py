@@ -83,7 +83,7 @@ def _parse_int_argument(argument) -> int:
     return expected
 
 
-operators = {'!=': operator.ne,
+operators = {'!': operator.ne,
              '<': operator.lt,
              '<=': operator.le,
              '=': operator.eq,
