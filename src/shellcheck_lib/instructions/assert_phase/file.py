@@ -47,6 +47,39 @@ class InstructionForFileType(utils.InstructionWithoutValidationBase):
         return i.new_pfh_pass()
 
 
+class InstructionForFileContentsEmpty(utils.InstructionWithoutValidationBase):
+    def __init__(self,
+                 file_name_relative_current_directory: str):
+        self._file_name_relative_current_directory = file_name_relative_current_directory
+
+    def main(self,
+             global_environment: i.GlobalEnvironmentForPostEdsPhase,
+             phase_environment: i.PhaseEnvironmentForInternalCommands) -> i.PassOrFailOrHardError:
+        file_path = pathlib.Path(self._file_name_relative_current_directory)
+        return all_of(file_path,
+                      (self._file_must_be_a_regular_file,
+                       self._file_must_be_empty))
+
+    def _file_must_be_a_regular_file(self, file_path: pathlib.Path) -> i.PassOrFailOrHardError:
+        if not file_path.is_file():
+            return i.new_pfh_fail('Not a regular file: ' + self._file_name_relative_current_directory)
+        return i.new_pfh_pass()
+
+    def _file_must_be_empty(self, file_path: pathlib.Path) -> i.PassOrFailOrHardError:
+        size = file_path.stat().st_size
+        if size != 0:
+            return i.new_pfh_fail('File is not empty: Size (in bytes): ' + str(size))
+        return i.new_pfh_pass()
+
+
+def all_of(arg, checker_for_arg) -> i.PassOrFailOrHardError:
+    for f in checker_for_arg:
+        result = f(arg)
+        if result.status is not i.PassOrFailOrHardErrorEnum.PASS:
+            return result
+    return i.new_pfh_pass()
+
+
 class Parser(SingleInstructionParser):
     def apply(self,
               source: line_source.LineSequenceBuilder,
@@ -60,10 +93,19 @@ class Parser(SingleInstructionParser):
             return InstructionForFileType(file_argument, None)
         if arguments[0] == 'type':
             return self._parse_type(file_argument, arguments[1:])
+        elif arguments[0] == 'empty':
+            return self._parse_empty(file_argument, arguments[1:])
         raise NotImplementedError()
 
-    def _parse_type(self,
-                    file_name: str,
+    @staticmethod
+    def _parse_empty(file_name: str,
+                     arguments: list) -> AssertPhaseInstruction:
+        if arguments:
+            raise SingleInstructionInvalidArgumentException('file/empty: Extra arguments: ' + str(arguments))
+        return InstructionForFileContentsEmpty(file_name)
+
+    @staticmethod
+    def _parse_type(file_name: str,
                     arguments: list) -> AssertPhaseInstruction:
         num_arguments = len(arguments)
         if num_arguments == 0:
