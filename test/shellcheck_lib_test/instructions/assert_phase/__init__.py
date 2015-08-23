@@ -6,6 +6,7 @@ from shellcheck_lib_test.instructions.assert_phase import exitcode
 def suite():
     ret_val = unittest.TestSuite()
     ret_val.addTest(exitcode.suite())
+    ret_val.addTest(file.suite())
     return ret_val
 
 

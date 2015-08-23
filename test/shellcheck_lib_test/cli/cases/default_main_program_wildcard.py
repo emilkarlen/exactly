@@ -3,7 +3,7 @@ import pathlib
 from shellcheck_lib.default.execution_mode.test_suite.reporting import INVALID_SUITE_EXIT_CODE
 from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib_test.util import check_suite
-from shellcheck_lib_test.util.file_structure import DirContents, Dir, File
+from shellcheck_lib_test.util.file_structure import DirContents, Dir, File, empty_file
 from shellcheck_lib_test.util.with_tmp_file import lines_content
 
 
@@ -441,7 +441,3 @@ class ReferencesToCaseFilesInSubDirThatMatchesFiles(check_suite.Setup):
 
     def expected_exit_code(self) -> int:
         return 0
-
-
-def empty_file(file_name: str) -> File:
-    return File(file_name, '')
