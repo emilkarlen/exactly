@@ -6,7 +6,7 @@ from shellcheck_lib.instructions.instruction_parser_for_single_phase import \
 from shellcheck_lib.test_case import instructions as i
 from shellcheck_lib_test.instructions import utils
 from shellcheck_lib_test.instructions.assert_phase.utils import AssertInstructionTest, new_source, new_line_sequence
-from shellcheck_lib_test.util.file_structure import DirContents, empty_file, empty_dir, File
+from shellcheck_lib_test.util.file_structure import DirContents, empty_file, empty_dir, File, Link
 
 syntax_list = [
     ('FILENAME', 'File exists as any type of file (regular, directory, ...)'),
@@ -63,6 +63,46 @@ class TestFileTypeAndExistence(unittest.TestCase):
         test.apply(self,
                    file.Parser(),
                    new_source('instruction-name', file_name + ' type directory'))
+
+    def test_link_fail__when__file_exists_and_is_regular_file(self):
+        file_name = 'name-of-existing-file'
+        test = AssertInstructionTest(i.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                                     i.PassOrFailOrHardErrorEnum.FAIL,
+                                     utils.ActResult(),
+                                     act_dir_contents_after_act=DirContents([empty_file(file_name)]))
+        test.apply(self,
+                   file.Parser(),
+                   new_source('instruction-name', file_name + ' type symlink'))
+
+    def test_link_fail__when__file_type_is_given__directory(self):
+        file_name = 'name-of-existing-directory'
+        test = AssertInstructionTest(i.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                                     i.PassOrFailOrHardErrorEnum.FAIL,
+                                     utils.ActResult(),
+                                     act_dir_contents_after_act=DirContents([empty_dir(file_name)]))
+        test.apply(self,
+                   file.Parser(),
+                   new_source('instruction-name', file_name + ' type symlink'))
+
+    def test_pass__when__file_type_is_given__link_to_directory(self):
+        test = AssertInstructionTest(i.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                                     i.PassOrFailOrHardErrorEnum.PASS,
+                                     utils.ActResult(),
+                                     act_dir_contents_after_act=DirContents([empty_dir('dir'),
+                                                                             Link('link-file', 'dir')]))
+        test.apply(self,
+                   file.Parser(),
+                   new_source('instruction-name', 'link-file type symlink'))
+
+    def test_pass__when__file_type_is_given__link_to_regular_file(self):
+        test = AssertInstructionTest(i.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                                     i.PassOrFailOrHardErrorEnum.PASS,
+                                     utils.ActResult(),
+                                     act_dir_contents_after_act=DirContents([empty_file('file'),
+                                                                             Link('link-file', 'file')]))
+        test.apply(self,
+                   file.Parser(),
+                   new_source('instruction-name', 'link-file type symlink'))
 
 
 class TestFileContentsEmptyInvalidSyntax(unittest.TestCase):

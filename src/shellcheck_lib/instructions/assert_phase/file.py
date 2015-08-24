@@ -11,11 +11,13 @@ from shellcheck_lib.test_case.instructions import AssertPhaseInstruction
 
 
 class FileType(enum.Enum):
+    SYMLINK = 0
     REGULAR = 1
     DIRECTORY = 2
 
 
 FILE_TYPES = {
+    "symlink": FileType.SYMLINK,
     "regular": FileType.REGULAR,
     "directory": FileType.DIRECTORY
 }
@@ -44,6 +46,9 @@ class InstructionForFileType(utils.InstructionWithoutValidationBase):
         elif self._expected_file_type is FileType.DIRECTORY:
             if not file_path.is_dir():
                 return i.new_pfh_fail('Not a directory: ' + self._file_name_relative_current_directory)
+        elif self._expected_file_type is FileType.SYMLINK:
+            if not file_path.is_symlink():
+                return i.new_pfh_fail('Not a symlink: ' + self._file_name_relative_current_directory)
         return i.new_pfh_pass()
 
 
