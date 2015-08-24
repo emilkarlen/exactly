@@ -1,8 +1,10 @@
 import enum
+import filecmp
 import pathlib
 import shlex
 
 from shellcheck_lib.general import line_source
+from shellcheck_lib.instructions.assert_phase.utils import InstructionWithValidationOfRegularFileRelHomeBase
 from shellcheck_lib.test_case import instructions as i
 from shellcheck_lib.instructions.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionInvalidArgumentException
@@ -98,6 +100,25 @@ class InstructionForFileContentsNonEmpty(InstructionForFileEmptinessBase):
         return i.new_pfh_pass()
 
 
+class InstructionForFileContentsRelHome(InstructionWithValidationOfRegularFileRelHomeBase):
+    def __init__(self,
+                 target_file_name: str,
+                 file_name_relative_home: str):
+        super().__init__(file_name_relative_home)
+        self._target_file_name = target_file_name
+
+    def main(self, global_environment: i.GlobalEnvironmentForPostEdsPhase,
+             phase_environment: i.PhaseEnvironmentForInternalCommands) -> i.PassOrFailOrHardError:
+        target_path = pathlib.Path(self._target_file_name)
+        if not target_path.exists():
+            return i.new_pfh_fail('File does not exist: ' + self._target_file_name)
+        if not target_path.is_file():
+            return i.new_pfh_fail('Not a regular file: ' + self._target_file_name)
+        if not filecmp.cmp(str(self.file_rel_home_path), self._target_file_name, shallow=False):
+            return i.new_pfh_fail('Unexpected content: ' + self._target_file_name)
+        return i.new_pfh_pass()
+
+
 def all_of(arg, checker_for_arg) -> i.PassOrFailOrHardError:
     for f in checker_for_arg:
         result = f(arg)
@@ -119,6 +140,8 @@ class Parser(SingleInstructionParser):
             return InstructionForFileType(file_argument, None)
         if arguments[0] == 'type':
             return self._parse_type(file_argument, arguments[1:])
+        if arguments[0] == 'contents':
+            return self._parse_contents(file_argument, arguments[1:])
         elif arguments[0] == 'empty':
             return self._parse_empty(file_argument, arguments[1:])
         elif arguments[:2] == ['!', 'empty']:
@@ -138,6 +161,17 @@ class Parser(SingleInstructionParser):
         if arguments:
             raise SingleInstructionInvalidArgumentException('file/!empty: Extra arguments: ' + str(arguments))
         return InstructionForFileContentsNonEmpty(file_name)
+
+    @staticmethod
+    def _parse_contents(file_name: str,
+                        arguments: list) -> AssertPhaseInstruction:
+        if len(arguments) != 2:
+            msg_header = 'file/contents: Invalid number of arguments (expecting two): '
+            raise SingleInstructionInvalidArgumentException(msg_header + str(arguments))
+        if arguments[0] != '--rel-home':
+            msg_header = 'file/contents: First argument must be --rel-home.'
+            raise SingleInstructionInvalidArgumentException(msg_header)
+        return InstructionForFileContentsRelHome(file_name, arguments[1])
 
     @staticmethod
     def _parse_type(file_name: str,

@@ -68,10 +68,11 @@ class AssertInstructionTest:
             ptc.assertEqual(self.expected_validation_result,
                             validation_result.status,
                             'Validation result status')
-            home_and_eds.write_act_result(self._act_result)
-            phase_environment = i.PhaseEnvironmentForInternalCommands()
-            self._act_dir_contents_after_act.write_to(home_and_eds.eds.test_root_dir)
-            application_result = instruction.main(global_environment, phase_environment)
-            ptc.assertEqual(self.expected_application_result,
-                            application_result.status,
-                            'Application result status')
+            if self.expected_validation_result == i.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS:
+                home_and_eds.write_act_result(self._act_result)
+                phase_environment = i.PhaseEnvironmentForInternalCommands()
+                self._act_dir_contents_after_act.write_to(home_and_eds.eds.test_root_dir)
+                application_result = instruction.main(global_environment, phase_environment)
+                ptc.assertEqual(self.expected_application_result,
+                                application_result.status,
+                                'Application result status')
