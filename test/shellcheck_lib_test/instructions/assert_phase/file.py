@@ -13,6 +13,8 @@ syntax_list = [
     ('FILENAME type [regular|directory]', 'File exists and has given type'),
     ('FILENAME empty', 'File exists, is a regular file, and is empty'),
     ('FILENAME ! empty', 'File exists, is a regular file, and is not empty'),
+    ('FILENAME contents --rel-home FILE',
+     'Compares contents of FILENAME to contents of FILE (which is a path relative home)'),
 ]
 
 
