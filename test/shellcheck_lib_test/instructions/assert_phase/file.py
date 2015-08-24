@@ -15,6 +15,8 @@ syntax_list = [
     ('FILENAME ! empty', 'File exists, is a regular file, and is not empty'),
     ('FILENAME contents --rel-home FILE',
      'Compares contents of FILENAME to contents of FILE (which is a path relative home)'),
+    ('FILENAME contents --rel-cwd FILE',
+     'Compares contents of FILENAME to contents of FILE (which is a path relative current working directory)'),
 ]
 
 
@@ -265,6 +267,67 @@ class TestFileContentsFileRelHome(unittest.TestCase):
                    file.Parser(),
                    new_source('instruction-name', 'target.txt contents --rel-home f.txt'))
 
+
+class TestFileContentsFileRelCwd(unittest.TestCase):
+    def test_fail__when__comparison_file_does_not_exist(self):
+        test = AssertInstructionTest(i.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                                     i.PassOrFailOrHardErrorEnum.FAIL,
+                                     utils.ActResult(),
+                                     act_dir_contents_after_act=DirContents([empty_file('target')]))
+        test.apply(self,
+                   file.Parser(),
+                   new_source('instruction-name', 'target contents --rel-cwd comparison'))
+
+    def test_fail__when__target_file_does_not_exist(self):
+        test = AssertInstructionTest(i.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                                     i.PassOrFailOrHardErrorEnum.FAIL,
+                                     utils.ActResult(),
+                                     act_dir_contents_after_act=DirContents([empty_file('comparison')]))
+        test.apply(self,
+                   file.Parser(),
+                   new_source('instruction-name', 'target contents --rel-cwd comparison'))
+
+    def test_validation_error__when__comparison_file_is_a_directory(self):
+        test = AssertInstructionTest(i.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                                     i.PassOrFailOrHardErrorEnum.FAIL,
+                                     utils.ActResult(),
+                                     act_dir_contents_after_act=DirContents([empty_file('target'),
+                                                                             empty_dir('comparison')]))
+        test.apply(self,
+                   file.Parser(),
+                   new_source('instruction-name', 'target contents --rel-cwd comparison'))
+
+    def test_validation_error__when__target_file_is_a_directory(self):
+        test = AssertInstructionTest(i.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                                     i.PassOrFailOrHardErrorEnum.FAIL,
+                                     utils.ActResult(),
+                                     act_dir_contents_after_act=DirContents([empty_dir('target'),
+                                                                             empty_file('comparison')]))
+        test.apply(self,
+                   file.Parser(),
+                   new_source('instruction-name', 'target contents --rel-cwd comparison'))
+
+    def test_fail__when__contents_is_different(self):
+        test = AssertInstructionTest(i.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                                     i.PassOrFailOrHardErrorEnum.FAIL,
+                                     utils.ActResult(),
+                                     act_dir_contents_after_act=DirContents([File('target', 'target-contents'),
+                                                                             File('comparison', 'cmp-contents')]))
+        test.apply(self,
+                   file.Parser(),
+                   new_source('instruction-name', 'target contents --rel-cwd comparison'))
+
+    def test_pass__when__contents_is_equal(self):
+        test = AssertInstructionTest(i.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                                     i.PassOrFailOrHardErrorEnum.PASS,
+                                     utils.ActResult(),
+                                     act_dir_contents_after_act=DirContents([File('target', 'contents'),
+                                                                             File('comparison', 'contents')]))
+        test.apply(self,
+                   file.Parser(),
+                   new_source('instruction-name', 'target contents --rel-cwd comparison'))
+
+
 def suite():
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestParse))
@@ -274,6 +337,7 @@ def suite():
     ret_val.addTest(unittest.makeSuite(TestFileContentsNonEmptyInvalidSyntax))
     ret_val.addTest(unittest.makeSuite(TestFileContentsNonEmptyValidSyntax))
     ret_val.addTest(unittest.makeSuite(TestFileContentsFileRelHome))
+    ret_val.addTest(unittest.makeSuite(TestFileContentsFileRelCwd))
     return ret_val
 
 
