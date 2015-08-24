@@ -45,6 +45,21 @@ def empty_dir(file_name: str) -> Dir:
     return Dir(file_name, [])
 
 
+class Link(FileSystemElement):
+    def __init__(self,
+                 file_name: str,
+                 target: str):
+        self.file_name = file_name
+        self.target = target
+
+    def write_to(self,
+                 parent_dir_path: pathlib.Path):
+        target_path = parent_dir_path / self.target
+        file_path = parent_dir_path / self.file_name
+        target_is_dir = target_path.is_dir()
+        file_path.symlink_to(target_path, target_is_dir)
+
+
 class DirContents:
     def __init__(self,
                  file_system_element_contents: list):
