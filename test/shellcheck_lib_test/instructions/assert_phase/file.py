@@ -205,6 +205,66 @@ class TestFileContentsNonEmptyValidSyntax(unittest.TestCase):
                    new_source('instruction-name', file_name + ' ! empty'))
 
 
+class TestFileContentsFileFailureBeforeComparingContents(unittest.TestCase):
+    def test_validation_error__when__comparison_file_does_not_exist(self):
+        test = AssertInstructionTest(i.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
+                                     i.PassOrFailOrHardErrorEnum.FAIL,
+                                     utils.ActResult(),
+                                     home_dir_contents=DirContents([empty_file('f')]))
+        test.apply(self,
+                   file.Parser(),
+                   new_source('instruction-name', 'name-of-non-existing-file contents --rel-home f.txt'))
+
+    def test_validation_error__when__comparison_file_is_a_directory(self):
+        test = AssertInstructionTest(i.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
+                                     i.PassOrFailOrHardErrorEnum.FAIL,
+                                     utils.ActResult(),
+                                     home_dir_contents=DirContents([empty_dir('dir')]))
+        test.apply(self,
+                   file.Parser(),
+                   new_source('instruction-name', 'name-of-non-existing-file contents --rel-home dir'))
+
+    def test_fail__when__target_file_does_not_exist(self):
+        test = AssertInstructionTest(i.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                                     i.PassOrFailOrHardErrorEnum.FAIL,
+                                     utils.ActResult(),
+                                     home_dir_contents=DirContents([empty_file('f.txt')]))
+        test.apply(self,
+                   file.Parser(),
+                   new_source('instruction-name', 'name-of-non-existing-file contents --rel-home f.txt'))
+
+    def test_fail__when__target_file_is_a_directory(self):
+        test = AssertInstructionTest(i.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                                     i.PassOrFailOrHardErrorEnum.FAIL,
+                                     utils.ActResult(),
+                                     home_dir_contents=DirContents([empty_file('f.txt')]),
+                                     act_dir_contents_after_act=DirContents([empty_dir('dir')]))
+        test.apply(self,
+                   file.Parser(),
+                   new_source('instruction-name', 'dir contents --rel-home f.txt'))
+
+
+class TestFileContentsFileComparisons(unittest.TestCase):
+    def test_fail__when__contents_differ(self):
+        test = AssertInstructionTest(i.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                                     i.PassOrFailOrHardErrorEnum.FAIL,
+                                     utils.ActResult(),
+                                     home_dir_contents=DirContents([empty_file('f.txt')]),
+                                     act_dir_contents_after_act=DirContents([File('target.txt', 'non-empty')]))
+        test.apply(self,
+                   file.Parser(),
+                   new_source('instruction-name', 'target.txt contents --rel-home f.txt'))
+
+    def test_pass__when__contents_equals(self):
+        test = AssertInstructionTest(i.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                                     i.PassOrFailOrHardErrorEnum.PASS,
+                                     utils.ActResult(),
+                                     home_dir_contents=DirContents([File('f.txt', 'contents')]),
+                                     act_dir_contents_after_act=DirContents([File('target.txt', 'contents')]))
+        test.apply(self,
+                   file.Parser(),
+                   new_source('instruction-name', 'target.txt contents --rel-home f.txt'))
+
 def suite():
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestParse))
@@ -213,6 +273,8 @@ def suite():
     ret_val.addTest(unittest.makeSuite(TestFileContentsEmptyValidSyntax))
     ret_val.addTest(unittest.makeSuite(TestFileContentsNonEmptyInvalidSyntax))
     ret_val.addTest(unittest.makeSuite(TestFileContentsNonEmptyValidSyntax))
+    ret_val.addTest(unittest.makeSuite(TestFileContentsFileFailureBeforeComparingContents))
+    ret_val.addTest(unittest.makeSuite(TestFileContentsFileComparisons))
     return ret_val
 
 
