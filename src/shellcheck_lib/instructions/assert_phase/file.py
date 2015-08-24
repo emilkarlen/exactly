@@ -11,6 +11,17 @@ from shellcheck_lib.instructions.instruction_parser_for_single_phase import Sing
 from . import utils
 from shellcheck_lib.test_case.instructions import AssertPhaseInstruction
 
+syntax_list = [
+    ('FILENAME', 'File exists as any type of file (regular, directory, ...)'),
+    ('FILENAME type [regular|directory]', 'File exists and has given type'),
+    ('FILENAME empty', 'File exists, is a regular file, and is empty'),
+    ('FILENAME ! empty', 'File exists, is a regular file, and is not empty'),
+    ('FILENAME contents --rel-home FILE',
+     'Compares contents of FILENAME to contents of FILE (which is a path relative home)'),
+    ('FILENAME contents --rel-cwd FILE',
+     'Compares contents of FILENAME to contents of FILE (which is a path relative current working directory)'),
+]
+
 
 class FileType(enum.Enum):
     SYMLINK = 0

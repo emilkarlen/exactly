@@ -8,18 +8,6 @@ from shellcheck_lib_test.instructions import utils
 from shellcheck_lib_test.instructions.assert_phase.utils import AssertInstructionTest, new_source, new_line_sequence
 from shellcheck_lib_test.util.file_structure import DirContents, empty_file, empty_dir, File, Link
 
-syntax_list = [
-    ('FILENAME', 'File exists as any type of file (regular, directory, ...)'),
-    ('FILENAME type [regular|directory]', 'File exists and has given type'),
-    ('FILENAME empty', 'File exists, is a regular file, and is empty'),
-    ('FILENAME ! empty', 'File exists, is a regular file, and is not empty'),
-    ('FILENAME contents --rel-home FILE',
-     'Compares contents of FILENAME to contents of FILE (which is a path relative home)'),
-    ('FILENAME contents --rel-cwd FILE',
-     'Compares contents of FILENAME to contents of FILE (which is a path relative current working directory)'),
-]
-
-
 class TestParse(unittest.TestCase):
     def test_that_when_no_arguments_then_exception_is_raised(self):
         parser = file.Parser()
