@@ -119,6 +119,36 @@ class InstructionForFileContentsRelHome(InstructionWithValidationOfRegularFileRe
         return i.new_pfh_pass()
 
 
+class InstructionForFileContentsRelCwd(utils.InstructionWithoutValidationBase):
+    def __init__(self,
+                 target_file_name: str,
+                 comparison_file_name: str):
+        self._target_file_name = target_file_name
+        self._comparison_file_name = comparison_file_name
+
+    def main(self, global_environment: i.GlobalEnvironmentForPostEdsPhase,
+             phase_environment: i.PhaseEnvironmentForInternalCommands) -> i.PassOrFailOrHardError:
+        target_path = pathlib.Path(self._target_file_name)
+        comparison_path = pathlib.Path(self._comparison_file_name)
+        res = self._is_valid_file(target_path)
+        if res.status is not i.PassOrFailOrHardErrorEnum.PASS:
+            return res
+        res = self._is_valid_file(comparison_path)
+        if res.status is not i.PassOrFailOrHardErrorEnum.PASS:
+            return res
+        if not filecmp.cmp(str(comparison_path), str(target_path), shallow=False):
+            return i.new_pfh_fail('Unexpected content: ' + str(target_path))
+        return i.new_pfh_pass()
+
+    @staticmethod
+    def _is_valid_file(path: pathlib.Path) -> i.PassOrFailOrHardError:
+        if not path.exists():
+            return i.new_pfh_fail('File does not exist: ' + str(path))
+        if not path.is_file():
+            return i.new_pfh_fail('Not a regular file: ' + str(path))
+        return i.new_pfh_pass()
+
+
 def all_of(arg, checker_for_arg) -> i.PassOrFailOrHardError:
     for f in checker_for_arg:
         result = f(arg)
@@ -168,10 +198,12 @@ class Parser(SingleInstructionParser):
         if len(arguments) != 2:
             msg_header = 'file/contents: Invalid number of arguments (expecting two): '
             raise SingleInstructionInvalidArgumentException(msg_header + str(arguments))
-        if arguments[0] != '--rel-home':
-            msg_header = 'file/contents: First argument must be --rel-home.'
-            raise SingleInstructionInvalidArgumentException(msg_header)
-        return InstructionForFileContentsRelHome(file_name, arguments[1])
+        if arguments[0] == '--rel-home':
+            return InstructionForFileContentsRelHome(file_name, arguments[1])
+        elif arguments[0] == '--rel-cwd':
+            return InstructionForFileContentsRelCwd(file_name, arguments[1])
+        msg_header = 'file/contents: Invalid argument: '
+        raise SingleInstructionInvalidArgumentException(msg_header + arguments[0])
 
     @staticmethod
     def _parse_type(file_name: str,
