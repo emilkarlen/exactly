@@ -7,11 +7,11 @@ from shellcheck_lib.general import line_source
 from shellcheck_lib.test_case import instructions as i
 from shellcheck_lib.instructions.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionInvalidArgumentException
-from . import utils
+from shellcheck_lib.instructions.assert_phase.utils import instruction_utils
 from shellcheck_lib.test_case.instructions import AssertPhaseInstruction
 
 
-class InstructionForExactValue(utils.InstructionWithoutValidationBase):
+class InstructionForExactValue(instruction_utils.InstructionWithoutValidationBase):
     def __init__(self,
                  expected_value: int):
         self._expected_value = expected_value
@@ -26,7 +26,7 @@ class InstructionForExactValue(utils.InstructionWithoutValidationBase):
                                                                                actual_value))
 
 
-class InstructionForOperator(utils.InstructionWithoutValidationBase):
+class InstructionForOperator(instruction_utils.InstructionWithoutValidationBase):
     def __init__(self,
                  operator_info,
                  value: int):
