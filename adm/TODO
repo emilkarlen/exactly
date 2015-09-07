@@ -86,6 +86,19 @@ den kör i en egen process??
 ** Sätt systemets TMP-katalog till ${SHELLCHECK_TMP}
 Används antingen i setup eller anonyma fasen.
 ** Skapa temporär fil (filnamn tas fram automatiskt, läggs i SHELLCHECK_TMP)
+** file
+*** Separata instr för test av filtyp samt innehåll
+T ex
+content target.txt empty
+content target.txt --rel-home source.txt
+
+type target.txt dir
+type target.txt file
+*** Använda syntax mer lik unix "test" och "find"?
+Fördel iom att den är välkänd.
+** file/stdout/stderr --rel-cwd
+*** HARD_ERROR ifall jämförelsefilen inte finns?
+Nu ges FAIL: felet betraktas som en form av olikhet.
 * TODO Förbättringar
 ** TODO <2015-05-17 sön> Bevara glob tillstånd
 Idag sparas omgivningsvariabler "runt" partiell exekvering.  Borde sparas runt
