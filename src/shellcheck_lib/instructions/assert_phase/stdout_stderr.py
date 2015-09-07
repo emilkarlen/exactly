@@ -1,19 +1,33 @@
 import shlex
 
+from shellcheck_lib.default.execution_mode.test_case.instruction_setup import Description, InvokationVariant
 from shellcheck_lib.general import line_source
 from shellcheck_lib.instructions.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionInvalidArgumentException
 from shellcheck_lib.test_case.instructions import AssertPhaseInstruction
 from .utils import contents_utils
 
-syntax_list = [
-    ('stdout empty', 'File exists, is a regular file, and is empty'),
-    ('stdout ! empty', 'File exists, is a regular file, and is not empty'),
-    ('stdout contents --rel-home FILE',
-     'Compares contents of FILENAME to contents of FILE (which is a path relative home)'),
-    ('stdout contents --rel-cwd FILE',
-     'Compares contents of FILENAME to contents of FILE (which is a path relative current working directory)'),
-]
+
+def description(file: str) -> Description:
+    return Description(
+        'Test the contents of %s' % file,
+        '',
+        [
+            InvokationVariant(
+                'empty',
+                '%s is empty' % file),
+            InvokationVariant(
+                '! empty',
+                '%s is not empty' % file),
+            InvokationVariant(
+                'contents --rel-home FILE',
+                """Expects the contents of %s to equal the contents of FILE
+                (which is a path relative home)""" % file),
+            InvokationVariant(
+                'contents --rel-cwd FILE',
+                """Expects the contents of %s to equal the contents of FILE
+                (which is a path relative current working directory)""" % file),
+        ])
 
 
 class ParserForContentsForTarget(SingleInstructionParser):
