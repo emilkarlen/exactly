@@ -36,6 +36,11 @@ Tänkt användning:
 5. Rätta till felet (i SUT, setup, act, el assert).
 6. Radera EDS manuellt, eller kör shellcheck m växel som enbart kör cleanup,
    inklusive automatisk radering av EDS.  Kör denna mot angiven EDS.
+** TODO Dok för enskild instr ska ges av funktion
+Optimering: För att undvika att programmet alltid lägger tid på att ta fram
+dokumentation.
+Oftast kommer programmet att köras för att utföra ett testfall/svit, och
+prioriteringen är att få det att gå hyfsat fort.
 * TODO Formgivning av instruktionsuppsättning
 ** Anonyma fasen: Fixerad mängd instruktioner
 Icke konfigurerbar pss som övriga faser, iom att denna fas har en speciell
