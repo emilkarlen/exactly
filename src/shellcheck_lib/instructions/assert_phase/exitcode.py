@@ -2,6 +2,7 @@ import operator
 import pathlib
 import shlex
 
+from shellcheck_lib.default.execution_mode.test_case.instruction_setup import Description, InvokationVariant
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.general import line_source
 from shellcheck_lib.test_case import instructions as i
@@ -9,6 +10,20 @@ from shellcheck_lib.instructions.instruction_parser_for_single_phase import Sing
     SingleInstructionInvalidArgumentException
 from shellcheck_lib.instructions.assert_phase.utils import instruction_utils
 from shellcheck_lib.test_case.instructions import AssertPhaseInstruction
+
+DESCRIPTION = Description(
+    'Test numerical exitcode',
+    '',
+    [InvokationVariant('INTEGER',
+                       'Passes iff the exit code is exactly INTEGER'),
+     InvokationVariant('OPERATOR INTEGER',
+                       """Passes iff the given expression,
+                       with the actual exit code as an implicit left operand,
+                       evaluates to True.
+
+                       Operators: !, !=, =, <, <=, >, >=
+                       """)
+     ])
 
 
 class InstructionForExactValue(instruction_utils.InstructionWithoutValidationBase):

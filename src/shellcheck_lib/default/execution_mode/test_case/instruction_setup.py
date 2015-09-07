@@ -3,14 +3,37 @@ from shellcheck_lib.general import line_source
 from shellcheck_lib.instructions.instruction_parser_for_single_phase import SingleInstructionParser
 
 
+class InvokationVariant:
+    def __init__(self,
+                 syntax: str,
+                 description_rest: str):
+        self.syntax = syntax
+        self.description_rest = description_rest
+
+
 class Description:
     def __init__(self,
-                 single_line_description: str):
+                 single_line_description: str,
+                 main_description_rest: str,
+                 invokation_variants: list):
+        """
+        :param invokation_variants: [InvokationVariant]
+        """
         self.__single_line_description = single_line_description
+        self.__main_description_rest = main_description_rest
+        self.__invokation_variants = invokation_variants
 
     @property
     def single_line_description(self) -> str:
         return self.__single_line_description
+
+    @property
+    def main_description_rest(self) -> str:
+        return self.__main_description_rest
+
+    @property
+    def invokation_variants(self) -> list:
+        return self.__invokation_variants
 
 
 class SingleInstructionSetup(SingleInstructionParser):
