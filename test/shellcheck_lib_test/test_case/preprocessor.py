@@ -69,6 +69,28 @@ class TestPreprocessorViaExternalProgram(unittest.TestCase):
                              """Test case source is expected to be the name of the directory
                              that contains the test case.""")
 
+    def test_test_case_file_should_be_given_as_argument_to_preprocessor(self):
+        test_case_source = '123'
+        preprocessor_that_search_replace_current_working_directory = lines_content(
+            [
+                "import sys",
+                "import os",
+                "size=os.stat(sys.argv[1]).st_size",
+                "sys.stdout.write(str(size))",
+            ]
+        )
+        with test_case_and_preprocessor_source(test_case_source,
+                                               preprocessor_that_search_replace_current_working_directory) \
+                as (test_case_path,
+                    preprocessor_file_path):
+            pre_proc = PreprocessorViaExternalProgram([sys.executable, str(preprocessor_file_path)])
+
+            result = pre_proc.apply(test_case_path, test_case_source)
+
+            self.assertEqual('3',
+                             result,
+                             """Test case source is expected to be the size (in bytes) of the test case file.""")
+
 
 def suite():
     ret_val = unittest.TestSuite()
