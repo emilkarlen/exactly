@@ -45,13 +45,7 @@ class TestPreprocessorViaExternalProgram(unittest.TestCase):
         preprocessor_that_search_replace_current_working_directory = lines_content(
             [
                 "import os",
-                "import sys",
-
-                "cwd = os.getcwd()",
-                "f = open(sys.argv[1])",
-                "for line in f:",
-                "    print(line.replace('CURRENT_WORKING_DIRECTORY', cwd))",
-                "f.close()"
+                "print(os.getcwd())",
             ]
         )
         cwd_before = os.getcwd()
