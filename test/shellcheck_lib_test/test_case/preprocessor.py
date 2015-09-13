@@ -109,6 +109,24 @@ class TestPreprocessorViaExternalProgram(unittest.TestCase):
             with self.assertRaises(ProcessError) as ex_info:
                 pre_proc.apply(pathlib.Path('non-existing-file-name'), unused_test_case_source)
 
+    def test_exception_should_be_raised_when_preprocessor_does_not_exist(self):
+        unused_test_case_source = ''
+        preprocessor_that_opens_the_test_case_file = lines_content(
+            [
+                "import sys",
+                "open(sys.argv[1])",
+            ]
+        )
+        with test_case_and_preprocessor_source(unused_test_case_source,
+                                               preprocessor_that_opens_the_test_case_file) \
+                as (test_case_path,
+                    preprocessor_file_path):
+            pre_proc = PreprocessorViaExternalProgram(['non-existing-python-preprocessor',
+                                                       str(preprocessor_file_path)])
+
+            with self.assertRaises(ProcessError) as ex_info:
+                pre_proc.apply(test_case_path, unused_test_case_source)
+
 
 def suite():
     ret_val = unittest.TestSuite()
