@@ -3,6 +3,7 @@
     <words>
       <w>argv</w>
       <w>invokation</w>
+      <w>preprocessing</w>
       <w>proc</w>
       <w>shellcheck</w>
       <w>shelltest</w>
