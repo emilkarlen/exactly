@@ -8,6 +8,7 @@ from shellcheck_lib.cli.execution_mode.test_case.settings import TestCaseExecuti
 from shellcheck_lib.cli.execution_mode.test_case import execution as test_case_execution
 from shellcheck_lib.cli.execution_mode.help.settings import HelpSettings
 from shellcheck_lib.cli import main_program
+from shellcheck_lib.test_case.preprocessor import IdentityPreprocessor
 from shellcheck_lib.test_suite import execution as test_suite_execution
 from shellcheck_lib.test_suite import suite_hierarchy_reading
 from shellcheck_lib.test_suite import enumeration
@@ -36,6 +37,7 @@ class MainProgram(main_program.MainProgram):
         configuration = case_processing.Configuration(self._split_line_into_name_and_argument_function,
                                                       self._instruction_setup,
                                                       resolve_script_language(settings.interpreter),
+                                                      IdentityPreprocessor(),
                                                       False,
                                                       self._eds_root_name_prefix_for_suite())
         executor = test_suite_execution.Executor(self._output,

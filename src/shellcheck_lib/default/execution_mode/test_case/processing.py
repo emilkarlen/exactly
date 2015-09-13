@@ -10,8 +10,8 @@ from shellcheck_lib.test_case import test_case_doc
 from shellcheck_lib.test_case import test_case_processing as processing
 from shellcheck_lib.default.execution_mode.test_case import test_case_parser
 from shellcheck_lib.default.execution_mode.test_case.instruction_setup import InstructionsSetup
-from shellcheck_lib.test_case.processing_utils import ProcessError
-from shellcheck_lib.test_case.test_case_processing import ErrorInfo
+from shellcheck_lib.test_case.test_case_processing import ErrorInfo, ProcessError, Preprocessor
+import shellcheck_lib.test_case.test_case_processing
 
 
 class Configuration:
@@ -19,11 +19,13 @@ class Configuration:
                  split_line_into_name_and_argument_function,
                  instruction_setup: InstructionsSetup,
                  script_language_setup: ScriptLanguageSetup,
+                 preprocessor: Preprocessor,
                  is_keep_execution_directory_root: bool,
                  execution_directory_root_name_prefix: str='shellcheck-'):
         self.script_language_setup = script_language_setup
         self.instruction_setup = instruction_setup
         self.split_line_into_name_and_argument_function = split_line_into_name_and_argument_function
+        self.preprocessor = preprocessor
         self.is_keep_execution_directory_root = is_keep_execution_directory_root
         self.execution_directory_root_name_prefix = execution_directory_root_name_prefix
 
@@ -35,7 +37,7 @@ def new_processor(configuration: Configuration) -> processing.Processor:
 
 def new_accessor(configuration: Configuration) -> processing.Accessor:
     return processing_utils.AccessorFromParts(_SourceReader(),
-                                              _PRE_PROCESSOR,
+                                              configuration.preprocessor,
                                               _Parser(configuration.split_line_into_name_and_argument_function,
                                                       configuration.instruction_setup))
 
@@ -54,10 +56,7 @@ class _SourceReader(processing_utils.SourceReader):
                 return f.read()
         except IOError as ex:
             error_info = processing.ErrorInfo(exception=ex)
-            raise processing_utils.ProcessError(error_info)
-
-
-_PRE_PROCESSOR = processing_utils.IdentityPreprocessor()
+            raise shellcheck_lib.test_case.test_case_processing.ProcessError(error_info)
 
 
 class _Parser(processing_utils.Parser):

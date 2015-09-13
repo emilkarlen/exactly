@@ -4,7 +4,7 @@ import unittest
 from shellcheck_lib.document.model import new_empty_phase_contents
 from shellcheck_lib.execution.result import FullResult, new_skipped
 from shellcheck_lib.test_case import processing_utils as sut
-from shellcheck_lib.test_case.processing_utils import IdentityPreprocessor
+from shellcheck_lib.test_case.preprocessor import IdentityPreprocessor
 from shellcheck_lib.test_case import test_case_doc
 from shellcheck_lib.test_case import test_case_processing
 import shellcheck_lib.test_case.test_case_processing
@@ -73,7 +73,7 @@ class TestAccessor(unittest.TestCase):
 class TestProcessorFromAccessorAndExecutor(unittest.TestCase):
     def test_accessor_exception_from_accessor(self):
         # ARRANGE #
-        process_error = sut.ProcessError(
+        process_error = shellcheck_lib.test_case.test_case_processing.ProcessError(
             shellcheck_lib.test_case.test_case_processing.ErrorInfo(message='exception message'))
         accessor = sut.AccessorFromParts(SourceReaderThat(raises(process_error)),
                                          PreprocessorThat(gives_constant('preprocessed source')),
@@ -156,7 +156,7 @@ class SourceReaderThatReturnsIfSame(sut.SourceReader):
                                        self.returns)
 
 
-class PreprocessorThat(sut.Preprocessor):
+class PreprocessorThat(shellcheck_lib.test_case.test_case_processing.Preprocessor):
     def __init__(self, f):
         self.f = f
 
@@ -165,7 +165,7 @@ class PreprocessorThat(sut.Preprocessor):
         return self.f()
 
 
-class PreprocessorThatReturnsIfSame(sut.Preprocessor):
+class PreprocessorThatReturnsIfSame(shellcheck_lib.test_case.test_case_processing.Preprocessor):
     def __init__(self, expected, returns):
         self.expected = expected
         self.returns = returns
@@ -250,7 +250,8 @@ def if_same_then_else_raise(expected, actual, result):
         raise RuntimeError('should not be invoked')
 
 
-PROCESS_ERROR = sut.ProcessError(shellcheck_lib.test_case.test_case_processing.ErrorInfo(message='exception message'))
+PROCESS_ERROR = shellcheck_lib.test_case.test_case_processing.ProcessError(
+    shellcheck_lib.test_case.test_case_processing.ErrorInfo(message='exception message'))
 
 PATH = pathlib.Path('path')
 

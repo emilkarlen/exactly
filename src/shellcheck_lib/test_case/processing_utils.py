@@ -3,30 +3,11 @@ import pathlib
 from shellcheck_lib.execution.result import FullResult
 from shellcheck_lib.test_case import test_case_doc
 from shellcheck_lib.test_case import test_case_processing as processing
-from shellcheck_lib.test_case.test_case_processing import AccessorError, ErrorInfo
-
-
-class ProcessError(Exception):
-    def __init__(self, error_info: ErrorInfo):
-        self._error_info = error_info
-
-    @property
-    def error_info(self) -> ErrorInfo:
-        return self._error_info
+from shellcheck_lib.test_case.test_case_processing import AccessorError, Accessor, ProcessError, Preprocessor
 
 
 class SourceReader:
     def apply(self, test_case_file_path: pathlib.Path) -> str:
-        """
-        :raises ProcessError:
-        """
-        raise NotImplementedError()
-
-
-class Preprocessor:
-    def apply(self,
-              test_case_file_path: pathlib.Path,
-              test_case_source: str) -> str:
         """
         :raises ProcessError:
         """
@@ -53,18 +34,7 @@ class Executor:
         raise NotImplementedError()
 
 
-class IdentityPreprocessor(Preprocessor):
-    """
-    A pre-processor that does nothing.
-    """
-
-    def apply(self,
-              test_case_file_path: pathlib.Path,
-              test_case_source: str) -> str:
-        return test_case_source
-
-
-class AccessorFromParts:
+class AccessorFromParts(Accessor):
     def __init__(self,
                  source_reader: SourceReader,
                  pre_processor: Preprocessor,
