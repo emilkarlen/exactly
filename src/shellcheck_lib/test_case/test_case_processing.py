@@ -1,9 +1,8 @@
-import enum
+from enum import Enum
 import pathlib
 
 from shellcheck_lib.general import line_source
 from shellcheck_lib.test_case import test_case_doc
-
 from shellcheck_lib.execution.result import FullResult
 
 
@@ -17,13 +16,13 @@ class TestCase:
         return self.__file_path
 
 
-class Status(enum.Enum):
+class Status(Enum):
     INTERNAL_ERROR = 1
     ACCESS_ERROR = 2
     EXECUTED = 3
 
 
-class AccessErrorType(enum.Enum):
+class AccessErrorType(Enum):
     FILE_ACCESS_ERROR = 1
     PRE_PROCESS_ERROR = 2
     PARSE_ERROR = 3
@@ -111,6 +110,25 @@ class AccessorError(Exception):
     @property
     def error_info(self) -> ErrorInfo:
         return self._error_info
+
+
+class ProcessError(Exception):
+    def __init__(self, error_info: ErrorInfo):
+        self._error_info = error_info
+
+    @property
+    def error_info(self) -> ErrorInfo:
+        return self._error_info
+
+
+class Preprocessor:
+    def apply(self,
+              test_case_file_path: pathlib.Path,
+              test_case_source: str) -> str:
+        """
+        :raises ProcessError:
+        """
+        raise NotImplementedError()
 
 
 class Accessor:
