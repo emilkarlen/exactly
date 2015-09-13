@@ -9,7 +9,6 @@ from shellcheck_lib.default.execution_mode.test_case.instruction_setup import In
 from shellcheck_lib.cli.execution_mode.test_case.settings import Output, TestCaseExecutionSettings
 from shellcheck_lib.execution import full_execution
 from shellcheck_lib.test_case import test_case_processing
-from shellcheck_lib.test_case.preprocessor import IdentityPreprocessor
 
 NO_EXECUTION_EXIT_CODE = 3
 
@@ -79,7 +78,7 @@ class Executor:
         configuration = processing.Configuration(self._split_line_into_name_and_argument_function,
                                                  self._instruction_setup,
                                                  resolve_script_language(self._settings.interpreter),
-                                                 IdentityPreprocessor(),
+                                                 self._settings.preprocessor,
                                                  is_keep_eds,
                                                  self._settings.execution_directory_root_name_prefix)
         processor = processing.new_processor(configuration)

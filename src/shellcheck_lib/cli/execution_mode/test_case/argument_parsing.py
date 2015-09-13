@@ -1,15 +1,22 @@
 import pathlib
 import argparse
+import shlex
 
 from shellcheck_lib.cli import argument_parsing_utils
 from .settings import Output, TestCaseExecutionSettings
+from shellcheck_lib.test_case.preprocessor import IdentityPreprocessor, PreprocessorViaExternalProgram
+
+
+def _parse_preprocessor(preprocessor_argument):
+    if preprocessor_argument is None:
+        return IdentityPreprocessor()
+    else:
+        return PreprocessorViaExternalProgram(shlex.split(preprocessor_argument))
 
 
 def parse(argv: list) -> TestCaseExecutionSettings:
     """
     :raises ArgumentParsingError Invalid usage
-    :param argv:
-    :return:
     """
     output = Output.STATUS_CODE
     is_keep_execution_directory_root = False
@@ -21,6 +28,7 @@ def parse(argv: list) -> TestCaseExecutionSettings:
     elif namespace.keep:
         output = Output.EXECUTION_DIRECTORY_STRUCTURE_ROOT
         is_keep_execution_directory_root = True
+    preprocessor = _parse_preprocessor(namespace.preprocessor)
     return TestCaseExecutionSettings(pathlib.Path(namespace.file),
                                      pathlib.Path(namespace.file).parent.resolve(),
                                      output=output,
@@ -51,4 +59,18 @@ def _new_argument_parser() -> argparse.ArgumentParser:
                          nargs=1,
                          help="""\
                         Executable that executes the script of the act phase.""")
+    ret_val.add_argument('--preprocessor',
+                         metavar="SHELL-COMMAND",
+                         nargs=1,
+                         help="""\
+                        Command that preprocesses the test case before it is parsed.
+
+                        The name of the test case file is given to the command as the last argument.
+
+                        The command should output the processed test case on stdout.
+
+                        SHELL-COMMAND is parsed according to shell syntax.
+
+                        If the exit code from the preprocessor is non-zero, then processing is considered to have failed.
+                        """)
     return ret_val

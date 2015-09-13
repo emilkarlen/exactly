@@ -1,6 +1,8 @@
 import enum
 import pathlib
 
+from shellcheck_lib.test_case.test_case_processing import Preprocessor
+
 
 class Output(enum.Enum):
     STATUS_CODE = 1
@@ -13,12 +15,14 @@ class TestCaseExecutionSettings:
                  file_path: pathlib.Path,
                  initial_home_dir_path: pathlib.Path,
                  output: Output,
+                 preprocessor: Preprocessor,
                  is_keep_execution_directory_root: bool=False,
                  execution_directory_root_name_prefix: str='shellcheck-',
                  interpreter: str=None):
         self.__file_path = file_path
         self.__initial_home_dir_path = initial_home_dir_path
         self.__output = output
+        self.__preprocessor = preprocessor
         self.__is_keep_execution_directory_root = is_keep_execution_directory_root
         self.__execution_directory_root_name_prefix = execution_directory_root_name_prefix
         self.__interpreter = interpreter
@@ -34,6 +38,10 @@ class TestCaseExecutionSettings:
     @property
     def output(self) -> Output:
         return self.__output
+
+    @property
+    def preprocessor(self) -> Preprocessor:
+        return self.__preprocessor
 
     @property
     def is_keep_execution_directory_root(self) -> bool:
