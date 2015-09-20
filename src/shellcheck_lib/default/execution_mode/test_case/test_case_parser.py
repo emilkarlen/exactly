@@ -41,13 +41,13 @@ def new_parser(split_line_into_name_and_argument_function,
         anonymous_phase,
         (
             parse.SectionConfiguration(phases.SETUP.name,
-                                        dict_parser(instructions_setup.setup_instruction_set)),
+                                       dict_parser(instructions_setup.setup_instruction_set)),
             parse.SectionConfiguration(phases.ACT.name,
-                                        PlainSourceActPhaseParser()),
+                                       PlainSourceActPhaseParser()),
             parse.SectionConfiguration(phases.ASSERT.name,
-                                        dict_parser(instructions_setup.assert_instruction_set)),
+                                       dict_parser(instructions_setup.assert_instruction_set)),
             parse.SectionConfiguration(phases.CLEANUP.name,
-                                        dict_parser(instructions_setup.cleanup_instruction_set)),
+                                       dict_parser(instructions_setup.cleanup_instruction_set)),
         )
     )
     return Parser(parse.new_parser_for(configuration))
