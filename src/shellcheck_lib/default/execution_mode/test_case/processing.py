@@ -70,7 +70,7 @@ class _Parser(processing_utils.Parser):
               test_case_file_path: pathlib.Path,
               test_case_plain_source: str) -> test_case_doc.TestCase:
         file_parser = test_case_parser.new_parser(self._split_line_into_name_and_argument_function,
-                                                   self._instruction_setup)
+                                                  self._instruction_setup)
         source = line_source.new_for_string(test_case_plain_source)
         try:
             return file_parser.apply(source)
