@@ -165,7 +165,7 @@ class PartialExecutor:
         setup_settings_builder = instructions.SetupSettingsBuilder()
         ret_val = self.__run_internal_instructions_phase_step(phases.SETUP,
                                                               phase_step.SETUP_execute,
-                                                              phase_step_executors.SetupPhaseInstructionExecutor(
+                                                              phase_step_executors.SetupMainInstructionExecutor(
                                                                   self.__global_environment,
                                                                   setup_settings_builder),
                                                               self.__setup_phase)
@@ -197,7 +197,7 @@ class PartialExecutor:
     def __run_assert_execute(self, phase_env) -> PartialResult:
         return self.__run_internal_instructions_phase_step(phases.ASSERT,
                                                            phase_step.ASSERT_execute,
-                                                           phase_step_executors.AssertInstructionExecutor(
+                                                           phase_step_executors.AssertMainInstructionExecutor(
                                                                self.__global_environment,
                                                                phase_env),
                                                            self.__assert_phase)
@@ -205,7 +205,7 @@ class PartialExecutor:
     def __run_cleanup(self, phase_env) -> PartialResult:
         return self.__run_internal_instructions_phase_step(phases.CLEANUP,
                                                            None,
-                                                           phase_step_executors.CleanupPhaseInstructionExecutor(
+                                                           phase_step_executors.CleanupInstructionExecutor(
                                                                self.__global_environment,
                                                                phase_env),
                                                            self.__cleanup_phase)

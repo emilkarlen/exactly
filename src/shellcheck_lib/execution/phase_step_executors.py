@@ -33,7 +33,7 @@ def _from_pass_or_fail_or_hard_error(res: pfh.PassOrFailOrHardError) -> PartialI
                                                        res.failure_message)
 
 
-class AnonymousPhaseInstructionExecutor(ControlledInstructionExecutor):
+class AnonymousInstructionExecutor(ControlledInstructionExecutor):
     def __init__(self,
                  phase_environment: instr.PhaseEnvironmentForAnonymousPhase):
         self.__phase_environment = phase_environment
@@ -65,7 +65,7 @@ class SetupPostValidateInstructionExecutor(ControlledInstructionExecutor):
             instruction.post_validate(self.__global_environment))
 
 
-class SetupPhaseInstructionExecutor(ControlledInstructionExecutor):
+class SetupMainInstructionExecutor(ControlledInstructionExecutor):
     def __init__(self,
                  global_environment: instr.GlobalEnvironmentForPostEdsPhase,
                  setup_settings_builder: instr.SetupSettingsBuilder):
@@ -111,7 +111,7 @@ class ActScriptGenerationExecutor(ControlledInstructionExecutor):
                              self.__phase_environment))
 
 
-class AssertInstructionExecutor(ControlledInstructionExecutor):
+class AssertMainInstructionExecutor(ControlledInstructionExecutor):
     def __init__(self,
                  global_environment: instr.GlobalEnvironmentForPostEdsPhase,
                  phase_environment: instr.PhaseEnvironmentForInternalCommands):
@@ -124,7 +124,7 @@ class AssertInstructionExecutor(ControlledInstructionExecutor):
                              self.__phase_environment))
 
 
-class CleanupPhaseInstructionExecutor(ControlledInstructionExecutor):
+class CleanupInstructionExecutor(ControlledInstructionExecutor):
     def __init__(self,
                  global_environment: instr.GlobalEnvironmentForPostEdsPhase,
                  phase_environment: instr.PhaseEnvironmentForInternalCommands):

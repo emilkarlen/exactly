@@ -80,9 +80,7 @@ def _execute_anonymous_phase(phase_environment: PhaseEnvironmentForAnonymousPhas
     return phase_step_execution.execute_phase(test_case.anonymous_phase,
                                               phase_step_execution.ElementHeaderExecutorThatDoesNothing(),
                                               phase_step_execution.ElementHeaderExecutorThatDoesNothing(),
-                                              phase_step_executors.AnonymousPhaseInstructionExecutor(phase_environment),
+                                              phase_step_executors.AnonymousInstructionExecutor(phase_environment),
                                               phases.ANONYMOUS,
                                               None,
                                               None)
-
-
