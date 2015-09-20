@@ -4,6 +4,7 @@ import subprocess
 import pathlib
 
 from shellcheck_lib.execution import phase_step
+from shellcheck_lib.execution import environment_variables
 from shellcheck_lib.execution.phase_step_execution import ElementHeaderExecutor
 from shellcheck_lib.general import line_source, exception
 from shellcheck_lib.execution import phase_step_executors
@@ -280,11 +281,11 @@ class PartialExecutor:
         self.__script_file_path = file_path
 
     def __set_pre_eds_environment_variables(self):
-        os.environ[common.ENV_VAR_HOME] = str(self.configuration.home_dir)
+        os.environ[environment_variables.ENV_VAR_HOME] = str(self.configuration.home_dir)
 
     def __set_post_eds_environment_variables(self):
-        os.environ[common.ENV_VAR_TEST] = str(self.execution_directory_structure.test_root_dir)
-        os.environ[common.ENV_VAR_TMP] = str(self.execution_directory_structure.tmp_dir)
+        os.environ[environment_variables.ENV_VAR_TEST] = str(self.execution_directory_structure.test_root_dir)
+        os.environ[environment_variables.ENV_VAR_TMP] = str(self.execution_directory_structure.tmp_dir)
 
     def __run_internal_instructions_phase_step(self,
                                                phase: phases.Phase,
@@ -355,7 +356,7 @@ def execute_test_case_in_execution_directory(script_language_setup: ScriptLangua
         cwd_before = os.getcwd()
         execution_directory_structure = construct_at(exec_dir_structure_root)
         global_environment = common.GlobalEnvironmentForPostEdsPhase(home_dir_path,
-                                                                           execution_directory_structure)
+                                                                     execution_directory_structure)
         configuration = Configuration(home_dir_path,
                                       execution_directory_structure.test_root_dir)
 

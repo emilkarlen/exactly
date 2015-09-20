@@ -2,14 +2,6 @@ import pathlib
 
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 
-ENV_VAR_HOME = 'SHELLCHECK_HOME'
-ENV_VAR_TEST = 'SHELLCHECK_TESTROOT'
-ENV_VAR_TMP = 'SHELLCHECK_TMP'
-
-ALL_ENV_VARS = [ENV_VAR_HOME,
-                ENV_VAR_TEST,
-                ENV_VAR_TMP]
-
 
 class PhaseEnvironmentForInternalCommands:
     """

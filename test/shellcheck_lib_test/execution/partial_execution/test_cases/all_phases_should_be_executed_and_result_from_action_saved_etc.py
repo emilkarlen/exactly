@@ -2,6 +2,7 @@ import os
 import pathlib
 import unittest
 
+from shellcheck_lib.execution import environment_variables
 from shellcheck_lib.test_case.instruction.result import sh
 from shellcheck_lib.test_case.instruction.result import svh
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
@@ -135,8 +136,8 @@ class ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr(ActPhaseInstruction):
             self.write_path_line(file_object, HOME_DIR_HEADER, global_environment.home_directory),
             self.write_path_line(file_object, TEST_ROOT_DIR_HEADER, global_environment.eds.test_root_dir),
             self.write_prefix_and_expr(file_object, CURRENT_DIR_HEADER, 'str(pathlib.Path().resolve())'),
-            self.write_env_var(file_object, common.ENV_VAR_HOME),
-            self.write_env_var(file_object, common.ENV_VAR_TEST),
+            self.write_env_var(file_object, environment_variables.ENV_VAR_HOME),
+            self.write_env_var(file_object, environment_variables.ENV_VAR_TEST),
         ]
 
     @staticmethod
@@ -177,8 +178,8 @@ def expected_output_on(file_object: str,
         output_with_header(TEST_ROOT_DIR_HEADER, str(configuration.test_root_dir)),
         output_with_header(CURRENT_DIR_HEADER, str(configuration.test_root_dir)),
 
-        output_with_header(common.ENV_VAR_HOME, str(configuration.home_dir)),
-        output_with_header(common.ENV_VAR_TEST, str(configuration.test_root_dir)),
+        output_with_header(environment_variables.ENV_VAR_HOME, str(configuration.home_dir)),
+        output_with_header(environment_variables.ENV_VAR_TEST, str(configuration.test_root_dir)),
         ''
     ])
 
