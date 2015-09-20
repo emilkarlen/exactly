@@ -5,7 +5,7 @@ from shellcheck_lib.instructions.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from shellcheck_lib.test_case.instruction.result import pfh
 from shellcheck_lib.test_case.instruction.result import svh
-from shellcheck_lib.test_case.instructions import AssertPhaseInstruction
+from shellcheck_lib.test_case.instruction.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib_test.instructions import utils
 from shellcheck_lib_test.instructions.assert_phase.utils import AssertInstructionTest, new_source, new_line_sequence
 

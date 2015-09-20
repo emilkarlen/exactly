@@ -1,11 +1,17 @@
 import pathlib
 
 from shellcheck_lib.test_case.instruction.result import sh
+
 from shellcheck_lib.test_case.instruction.result import svh
 from shellcheck_lib.test_case.instruction.result import pfh
-from shellcheck_lib.test_case import instructions
+from shellcheck_lib.test_case.instruction import common
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
-
+from shellcheck_lib.test_case.instruction.sections.act import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
+from shellcheck_lib.test_case.instruction.sections.anonymous import AnonymousPhaseInstruction, \
+    PhaseEnvironmentForAnonymousPhase
+from shellcheck_lib.test_case.instruction.sections.assert_ import AssertPhaseInstruction
+from shellcheck_lib.test_case.instruction.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
+from shellcheck_lib_test.execution.util.instruction_adapter import InternalInstruction
 
 class ListRecorder:
     def __init__(self,
@@ -18,39 +24,39 @@ class ListRecorder:
         self.recorder.append(self.element)
 
 
-class ActInstructionThatRecordsStringInList(instructions.ActPhaseInstruction):
+class ActInstructionThatRecordsStringInList(ActPhaseInstruction):
     def __init__(self,
                  recorder_for_validate: ListRecorder,
                  recorder_for_execute: ListRecorder):
         self.__recorder_for_validate = recorder_for_validate
         self.__recorder_for_execute = recorder_for_execute
 
-    def validate(self, global_environment: instructions.GlobalEnvironmentForPostEdsPhase) \
+    def validate(self, global_environment: common.GlobalEnvironmentForPostEdsPhase) \
             -> svh.SuccessOrValidationErrorOrHardError:
         self.__recorder_for_validate.record()
         return sh.new_sh_success()
 
     def main(
             self,
-            global_environment: instructions.GlobalEnvironmentForPostEdsPhase,
-            phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> sh.SuccessOrHardError:
+            global_environment: common.GlobalEnvironmentForPostEdsPhase,
+            phase_environment: PhaseEnvironmentForScriptGeneration) -> sh.SuccessOrHardError:
         self.__recorder_for_execute.record()
         return sh.new_sh_success()
 
 
-class AnonymousInternalInstructionThatRecordsStringInList(instructions.AnonymousPhaseInstruction):
+class AnonymousInternalInstructionThatRecordsStringInList(AnonymousPhaseInstruction):
     def __init__(self,
                  recorder: ListRecorder):
         self.__recorder = recorder
 
     def main(self,
              global_environment,
-             phase_environment: instructions.PhaseEnvironmentForAnonymousPhase) -> sh.SuccessOrHardError:
+             phase_environment: PhaseEnvironmentForAnonymousPhase) -> sh.SuccessOrHardError:
         self.__recorder.record()
         return sh.new_sh_success()
 
 
-class SetupInstructionThatRecordsStringInList(instructions.SetupPhaseInstruction):
+class SetupInstructionThatRecordsStringInList(SetupPhaseInstruction):
     def __init__(self,
                  recorder_for_pre_validate: ListRecorder,
                  recorder_for_execute: ListRecorder,
@@ -60,25 +66,26 @@ class SetupInstructionThatRecordsStringInList(instructions.SetupPhaseInstruction
         self.__recorder_for_post_validate = recorder_for_post_validate
 
     def pre_validate(self,
-                     global_environment: instructions.GlobalEnvironmentForPreEdsStep) \
+                     global_environment: common.GlobalEnvironmentForPreEdsStep) \
             -> svh.SuccessOrValidationErrorOrHardError:
         self.__recorder_for_pre_validate.record()
         return sh.new_sh_success()
 
     def main(self,
-             global_environment: instructions.GlobalEnvironmentForPostEdsPhase,
-             settings_builder: instructions.SetupSettingsBuilder) -> sh.SuccessOrHardError:
+             global_environment: common.GlobalEnvironmentForPostEdsPhase,
+             settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         self.__recorder_for_execute.record()
         return sh.new_sh_success()
 
     def post_validate(self,
-                      global_environment:  instructions.GlobalEnvironmentForPostEdsPhase) \
+                      global_environment:  common.GlobalEnvironmentForPostEdsPhase) \
             -> svh.SuccessOrValidationErrorOrHardError:
         self.__recorder_for_post_validate.record()
         return sh.new_sh_success()
 
 
-class SetupInstructionThatRecordsStringInRecordFile(instructions.SetupPhaseInstruction):
+class SetupInstructionThatRecordsStringInRecordFile(
+    SetupPhaseInstruction):
     def __init__(self,
                  text_for_execute: str,
                  test_for_post_validate: str):
@@ -86,75 +93,75 @@ class SetupInstructionThatRecordsStringInRecordFile(instructions.SetupPhaseInstr
         self.__text_for_post_validate = test_for_post_validate
 
     def pre_validate(self,
-                     global_environment: instructions.GlobalEnvironmentForPreEdsStep) \
+                     global_environment: common.GlobalEnvironmentForPreEdsStep) \
             -> svh.SuccessOrValidationErrorOrHardError:
         return sh.new_sh_success()
 
     def main(self,
-             global_environment: instructions.GlobalEnvironmentForPostEdsPhase,
-             settings_builder: instructions.SetupSettingsBuilder) -> sh.SuccessOrHardError:
+             global_environment: common.GlobalEnvironmentForPostEdsPhase,
+             settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         append_line_to_record_file(global_environment.execution_directory_structure,
                                    self.__text_for_execute)
         return sh.new_sh_success()
 
     def post_validate(self,
-                      global_environment:  instructions.GlobalEnvironmentForPostEdsPhase) \
+                      global_environment:  common.GlobalEnvironmentForPostEdsPhase) \
             -> svh.SuccessOrValidationErrorOrHardError:
         append_line_to_record_file(global_environment.execution_directory_structure,
                                    self.__text_for_post_validate)
         return sh.new_sh_success()
 
 
-class InternalInstructionThatRecordsStringInRecordFile(instructions.InternalInstruction):
+class InternalInstructionThatRecordsStringInRecordFile(InternalInstruction):
     def __init__(self,
                  text_for_execute):
         self.__text_for_execute = text_for_execute
 
     def execute(self, phase_name: str,
-                global_environment: instructions.GlobalEnvironmentForPostEdsPhase,
-                phase_environment: instructions.PhaseEnvironmentForInternalCommands):
+                global_environment: common.GlobalEnvironmentForPostEdsPhase,
+                phase_environment: common.PhaseEnvironmentForInternalCommands):
         append_line_to_record_file(global_environment.execution_directory_structure,
                                    self.__text_for_execute)
 
 
-class InternalInstructionThatRecordsStringInList(instructions.InternalInstruction):
+class InternalInstructionThatRecordsStringInList(InternalInstruction):
     def __init__(self,
                  recorder: ListRecorder):
         self.__recorder = recorder
 
     def execute(self, phase_name: str,
-                global_environment: instructions.GlobalEnvironmentForPostEdsPhase,
-                phase_environment: instructions.PhaseEnvironmentForInternalCommands):
+                global_environment: common.GlobalEnvironmentForPostEdsPhase,
+                phase_environment: common.PhaseEnvironmentForInternalCommands):
         self.__recorder.record()
 
 
-class ActInstructionThatGeneratesScriptThatRecordsStringInRecordFile(instructions.ActPhaseInstruction):
+class ActInstructionThatGeneratesScriptThatRecordsStringInRecordFile(ActPhaseInstruction):
     def __init__(self,
                  string_for_script_gen: str):
         self.__string_for_script_gen = string_for_script_gen
 
-    def validate(self, global_environment: instructions.GlobalEnvironmentForPostEdsPhase) \
+    def validate(self, global_environment: common.GlobalEnvironmentForPostEdsPhase) \
             -> svh.SuccessOrValidationErrorOrHardError:
         return sh.new_sh_success()
 
     def main(
             self,
-            global_environment: instructions.GlobalEnvironmentForPostEdsPhase,
-            phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> sh.SuccessOrHardError:
+            global_environment: common.GlobalEnvironmentForPostEdsPhase,
+            phase_environment: PhaseEnvironmentForScriptGeneration) -> sh.SuccessOrHardError:
         phase_environment.append.raw_script_statements(
             append_line_to_record_file_statements(global_environment.execution_directory_structure,
                                                   self.__string_for_script_gen))
         return sh.new_sh_success()
 
 
-class ActInstructionThatRecordsStringInRecordFile(instructions.ActPhaseInstruction):
+class ActInstructionThatRecordsStringInRecordFile(ActPhaseInstruction):
     def __init__(self,
                  string_for_validation: str,
                  string_for_script_gen: str):
         self.__string_for_validation = string_for_validation
         self.__string_for_script_gen = string_for_script_gen
 
-    def validate(self, global_environment: instructions.GlobalEnvironmentForPostEdsPhase) \
+    def validate(self, global_environment: common.GlobalEnvironmentForPostEdsPhase) \
             -> svh.SuccessOrValidationErrorOrHardError:
         append_line_to_record_file(global_environment.execution_directory_structure,
                                    self.__string_for_validation)
@@ -162,14 +169,14 @@ class ActInstructionThatRecordsStringInRecordFile(instructions.ActPhaseInstructi
 
     def main(
             self,
-            global_environment: instructions.GlobalEnvironmentForPostEdsPhase,
-            phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> sh.SuccessOrHardError:
+            global_environment: common.GlobalEnvironmentForPostEdsPhase,
+            phase_environment: PhaseEnvironmentForScriptGeneration) -> sh.SuccessOrHardError:
         append_line_to_record_file(global_environment.execution_directory_structure,
                                    self.__string_for_script_gen)
         return sh.new_sh_success()
 
 
-class AssertInternalInstructionThatRecordsStringInList(instructions.AssertPhaseInstruction):
+class AssertInternalInstructionThatRecordsStringInList(AssertPhaseInstruction):
     def __init__(self,
                  recorder_for_validate: ListRecorder,
                  recorder_for_execute: ListRecorder):
@@ -177,34 +184,34 @@ class AssertInternalInstructionThatRecordsStringInList(instructions.AssertPhaseI
         self.__recorder_for_execute = recorder_for_execute
 
     def validate(self,
-                 global_environment: instructions.GlobalEnvironmentForPreEdsStep) \
+                 global_environment: common.GlobalEnvironmentForPreEdsStep) \
             -> svh.SuccessOrValidationErrorOrHardError:
         self.__recorder_for_validate.record()
         return svh.new_svh_success()
 
     def main(self,
              global_environment,
-             phase_environment: instructions.PhaseEnvironmentForAnonymousPhase) -> pfh.PassOrFailOrHardError:
+             phase_environment: PhaseEnvironmentForAnonymousPhase) -> pfh.PassOrFailOrHardError:
         self.__recorder_for_execute.record()
         return pfh.new_pfh_pass()
 
 
-class AssertInstructionThatRecordsStringInRecordFile(instructions.AssertPhaseInstruction):
+class AssertInstructionThatRecordsStringInRecordFile(AssertPhaseInstruction):
     def __init__(self,
                  string_for_validation: str,
                  string_for_script_gen: str):
         self.__string_for_validation = string_for_validation
         self.__string_for_script_gen = string_for_script_gen
 
-    def validate(self, global_environment: instructions.GlobalEnvironmentForPostEdsPhase) \
+    def validate(self, global_environment: common.GlobalEnvironmentForPostEdsPhase) \
             -> svh.SuccessOrValidationErrorOrHardError:
         append_line_to_record_file(global_environment.execution_directory_structure,
                                    self.__string_for_validation)
         return sh.new_sh_success()
 
     def main(self,
-             global_environment: instructions.GlobalEnvironmentForPostEdsPhase,
-             phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> pfh.PassOrFailOrHardError:
+             global_environment: common.GlobalEnvironmentForPostEdsPhase,
+             phase_environment: PhaseEnvironmentForScriptGeneration) -> pfh.PassOrFailOrHardError:
         append_line_to_record_file(global_environment.execution_directory_structure,
                                    self.__string_for_script_gen)
         return pfh.new_pfh_pass()

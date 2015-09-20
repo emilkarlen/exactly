@@ -8,7 +8,7 @@ from shellcheck_lib.execution.phase_step_execution import ElementHeaderExecutor
 from shellcheck_lib.general import line_source, exception
 from shellcheck_lib.execution import phase_step_executors
 from shellcheck_lib.execution.single_instruction_executor import ControlledInstructionExecutor
-from shellcheck_lib.test_case import instructions
+from shellcheck_lib.test_case.instruction import common
 from shellcheck_lib.document.model import PhaseContents
 from shellcheck_lib.execution import phases
 from shellcheck_lib.test_case import test_case_doc
@@ -17,6 +17,8 @@ from .result import PartialResult, PartialResultStatus
 from . import result
 from . import phase_step_execution
 from shellcheck_lib.script_language.act_script_management import ScriptLanguageSetup
+from shellcheck_lib.test_case.instruction.sections.act import PhaseEnvironmentForScriptGeneration
+from shellcheck_lib.test_case.instruction.sections.setup import SetupSettingsBuilder
 
 
 class Configuration(tuple):
@@ -58,7 +60,7 @@ class _StepExecutionResult(tuple):
 
 class PartialExecutor:
     def __init__(self,
-                 global_environment: instructions.GlobalEnvironmentForPostEdsPhase,
+                 global_environment: common.GlobalEnvironmentForPostEdsPhase,
                  execution_directory_structure: ExecutionDirectoryStructure,
                  configuration: Configuration,
                  script_language_setup: ScriptLanguageSetup,
@@ -90,7 +92,7 @@ class PartialExecutor:
         if res.status is not PartialResultStatus.PASS:
             self.__partial_result = res
             return
-        phase_env = instructions.PhaseEnvironmentForInternalCommands()
+        phase_env = common.PhaseEnvironmentForInternalCommands()
         self.__set_post_eds_environment_variables()
         res = self.__run_setup_execute()
         if res.status is not PartialResultStatus.PASS:
@@ -147,7 +149,7 @@ class PartialExecutor:
         return self.__configuration
 
     @property
-    def global_environment(self) -> instructions.GlobalEnvironmentForPostEdsPhase:
+    def global_environment(self) -> common.GlobalEnvironmentForPostEdsPhase:
         return self.__global_environment
 
     def _store_exit_code(self, exitcode: int):
@@ -162,7 +164,7 @@ class PartialExecutor:
                                                            self.__setup_phase)
 
     def __run_setup_execute(self) -> PartialResult:
-        setup_settings_builder = instructions.SetupSettingsBuilder()
+        setup_settings_builder = SetupSettingsBuilder()
         ret_val = self.__run_internal_instructions_phase_step(phases.SETUP,
                                                               phase_step.SETUP_execute,
                                                               phase_step_executors.SetupMainInstructionExecutor(
@@ -218,7 +220,7 @@ class PartialExecutor:
         :param act_environment: Post-condition: Contains the accumulated script source.
         """
         script_builder = self.__script_language_setup.new_builder()
-        environment = instructions.PhaseEnvironmentForScriptGeneration(
+        environment = PhaseEnvironmentForScriptGeneration(
             script_builder
         )
         os.chdir(str(self.execution_directory_structure.test_root_dir))
@@ -278,11 +280,11 @@ class PartialExecutor:
         self.__script_file_path = file_path
 
     def __set_pre_eds_environment_variables(self):
-        os.environ[instructions.ENV_VAR_HOME] = str(self.configuration.home_dir)
+        os.environ[common.ENV_VAR_HOME] = str(self.configuration.home_dir)
 
     def __set_post_eds_environment_variables(self):
-        os.environ[instructions.ENV_VAR_TEST] = str(self.execution_directory_structure.test_root_dir)
-        os.environ[instructions.ENV_VAR_TMP] = str(self.execution_directory_structure.tmp_dir)
+        os.environ[common.ENV_VAR_TEST] = str(self.execution_directory_structure.test_root_dir)
+        os.environ[common.ENV_VAR_TMP] = str(self.execution_directory_structure.tmp_dir)
 
     def __run_internal_instructions_phase_step(self,
                                                phase: phases.Phase,
@@ -301,7 +303,7 @@ class PartialExecutor:
 
 class _ActCommentHeaderExecutor(ElementHeaderExecutor):
     def __init__(self,
-                 phase_environment: instructions.PhaseEnvironmentForScriptGeneration):
+                 phase_environment: PhaseEnvironmentForScriptGeneration):
         self.__phase_environment = phase_environment
 
     def apply(self, line: line_source.Line):
@@ -310,7 +312,7 @@ class _ActCommentHeaderExecutor(ElementHeaderExecutor):
 
 class _ActInstructionHeaderExecutor(ElementHeaderExecutor):
     def __init__(self,
-                 phase_environment: instructions.PhaseEnvironmentForScriptGeneration):
+                 phase_environment: PhaseEnvironmentForScriptGeneration):
         self.__phase_environment = phase_environment
 
     def apply(self, line: line_source.Line):
@@ -352,7 +354,7 @@ def execute_test_case_in_execution_directory(script_language_setup: ScriptLangua
     def with_existing_root(exec_dir_structure_root: str) -> PartialExecutor:
         cwd_before = os.getcwd()
         execution_directory_structure = construct_at(exec_dir_structure_root)
-        global_environment = instructions.GlobalEnvironmentForPostEdsPhase(home_dir_path,
+        global_environment = common.GlobalEnvironmentForPostEdsPhase(home_dir_path,
                                                                            execution_directory_structure)
         configuration = Configuration(home_dir_path,
                                       execution_directory_structure.test_root_dir)

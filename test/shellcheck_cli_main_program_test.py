@@ -6,7 +6,7 @@ from shellcheck_lib.cli.main_program import EXIT_INVALID_USAGE
 import shellcheck_lib.cli.utils
 from shellcheck_lib.execution import execution_directory_structure
 from shellcheck_lib.execution.result import FullResultStatus
-from shellcheck_lib.test_case import instructions
+from shellcheck_lib.test_case.instruction import common
 from shellcheck_lib_test.cli import default_main_program
 from shellcheck_lib_test.execution.test_execution_directory_structure import \
     is_execution_directory_structure_after_execution
@@ -130,9 +130,9 @@ class TestsWithPreservedExecutionDirectoryStructure(UnitTestCaseWithUtils):
         test_case_source_lines = [
             '[act]',
             'import os',
-            self._print_variable_name__equals__variable_value(instructions.ENV_VAR_HOME),
-            self._print_variable_name__equals__variable_value(instructions.ENV_VAR_TEST),
-            self._print_variable_name__equals__variable_value(instructions.ENV_VAR_TMP),
+            self._print_variable_name__equals__variable_value(common.ENV_VAR_HOME),
+            self._print_variable_name__equals__variable_value(common.ENV_VAR_TEST),
+            self._print_variable_name__equals__variable_value(common.ENV_VAR_TMP),
         ]
         test_case_source = lines_content(test_case_source_lines)
         # ACT #
@@ -148,9 +148,9 @@ class TestsWithPreservedExecutionDirectoryStructure(UnitTestCaseWithUtils):
         eds = execution_directory_structure.ExecutionDirectoryStructure(actual_eds_directory)
         actually_printed_variables = self._get_act_output_to_stdout(eds).splitlines()
         expected_printed_variables = [
-            '%s=%s' % (instructions.ENV_VAR_HOME, str(actual.file_argument.parent)),
-            '%s=%s' % (instructions.ENV_VAR_TEST, str(eds.test_root_dir)),
-            '%s=%s' % (instructions.ENV_VAR_TMP, str(eds.tmp_dir)),
+            '%s=%s' % (common.ENV_VAR_HOME, str(actual.file_argument.parent)),
+            '%s=%s' % (common.ENV_VAR_TEST, str(eds.test_root_dir)),
+            '%s=%s' % (common.ENV_VAR_TMP, str(eds.tmp_dir)),
         ]
         self.assertEqual(expected_printed_variables,
                          actually_printed_variables,

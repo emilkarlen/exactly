@@ -3,7 +3,13 @@ from shellcheck_lib.test_case.instruction.result import sh
 from shellcheck_lib.test_case.instruction.result import svh
 from shellcheck_lib.execution.single_instruction_executor import ControlledInstructionExecutor, \
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum
-from shellcheck_lib.test_case import instructions as instr
+from shellcheck_lib.test_case.instruction import common as instr
+from shellcheck_lib.test_case.instruction.sections.act import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
+from shellcheck_lib.test_case.instruction.sections.anonymous import AnonymousPhaseInstruction, \
+    PhaseEnvironmentForAnonymousPhase
+from shellcheck_lib.test_case.instruction.sections.assert_ import AssertPhaseInstruction
+from shellcheck_lib.test_case.instruction.sections.cleanup import CleanupPhaseInstruction
+from shellcheck_lib.test_case.instruction.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
 
 
 def _from_success_or_validation_error_or_hard_error(res: svh.SuccessOrValidationErrorOrHardError) \
@@ -35,11 +41,11 @@ def _from_pass_or_fail_or_hard_error(res: pfh.PassOrFailOrHardError) -> PartialI
 
 class AnonymousInstructionExecutor(ControlledInstructionExecutor):
     def __init__(self,
-                 phase_environment: instr.PhaseEnvironmentForAnonymousPhase):
+                 phase_environment: PhaseEnvironmentForAnonymousPhase):
         self.__phase_environment = phase_environment
         self.__global_environment = ()
 
-    def apply(self, instruction: instr.AnonymousPhaseInstruction) -> PartialInstructionControlledFailureInfo:
+    def apply(self, instruction: AnonymousPhaseInstruction) -> PartialInstructionControlledFailureInfo:
         return _from_success_or_hard_error(
             instruction.main(self.__global_environment,
                              self.__phase_environment))
@@ -50,7 +56,7 @@ class SetupPreValidateInstructionExecutor(ControlledInstructionExecutor):
                  global_environment: instr.GlobalEnvironmentForPreEdsStep):
         self.__global_environment = global_environment
 
-    def apply(self, instruction: instr.SetupPhaseInstruction) -> PartialInstructionControlledFailureInfo:
+    def apply(self, instruction: SetupPhaseInstruction) -> PartialInstructionControlledFailureInfo:
         return _from_success_or_validation_error_or_hard_error(
             instruction.pre_validate(self.__global_environment))
 
@@ -60,7 +66,7 @@ class SetupPostValidateInstructionExecutor(ControlledInstructionExecutor):
                  global_environment: instr.GlobalEnvironmentForPostEdsPhase):
         self.__global_environment = global_environment
 
-    def apply(self, instruction: instr.SetupPhaseInstruction) -> PartialInstructionControlledFailureInfo:
+    def apply(self, instruction: SetupPhaseInstruction) -> PartialInstructionControlledFailureInfo:
         return _from_success_or_validation_error_or_hard_error(
             instruction.post_validate(self.__global_environment))
 
@@ -68,11 +74,11 @@ class SetupPostValidateInstructionExecutor(ControlledInstructionExecutor):
 class SetupMainInstructionExecutor(ControlledInstructionExecutor):
     def __init__(self,
                  global_environment: instr.GlobalEnvironmentForPostEdsPhase,
-                 setup_settings_builder: instr.SetupSettingsBuilder):
+                 setup_settings_builder: SetupSettingsBuilder):
         self.__global_environment = global_environment
         self.__setup_settings_builder = setup_settings_builder
 
-    def apply(self, instruction: instr.SetupPhaseInstruction) -> PartialInstructionControlledFailureInfo:
+    def apply(self, instruction: SetupPhaseInstruction) -> PartialInstructionControlledFailureInfo:
         return _from_success_or_hard_error(
             instruction.main(self.__global_environment,
                              self.__setup_settings_builder))
@@ -83,7 +89,7 @@ class ActValidateInstructionExecutor(ControlledInstructionExecutor):
                  global_environment: instr.GlobalEnvironmentForPostEdsPhase):
         self.__global_environment = global_environment
 
-    def apply(self, instruction: instr.ActPhaseInstruction) -> PartialInstructionControlledFailureInfo:
+    def apply(self, instruction: ActPhaseInstruction) -> PartialInstructionControlledFailureInfo:
         return _from_success_or_validation_error_or_hard_error(
             instruction.validate(self.__global_environment))
 
@@ -93,7 +99,7 @@ class AssertValidateInstructionExecutor(ControlledInstructionExecutor):
                  global_environment: instr.GlobalEnvironmentForPostEdsPhase):
         self.__global_environment = global_environment
 
-    def apply(self, instruction: instr.AssertPhaseInstruction) -> PartialInstructionControlledFailureInfo:
+    def apply(self, instruction: AssertPhaseInstruction) -> PartialInstructionControlledFailureInfo:
         return _from_success_or_validation_error_or_hard_error(
             instruction.validate(self.__global_environment))
 
@@ -101,11 +107,11 @@ class AssertValidateInstructionExecutor(ControlledInstructionExecutor):
 class ActScriptGenerationExecutor(ControlledInstructionExecutor):
     def __init__(self,
                  global_environment: instr.GlobalEnvironmentForPostEdsPhase,
-                 phase_environment: instr.PhaseEnvironmentForScriptGeneration):
+                 phase_environment: PhaseEnvironmentForScriptGeneration):
         self.__global_environment = global_environment
         self.__phase_environment = phase_environment
 
-    def apply(self, instruction: instr.ActPhaseInstruction) -> PartialInstructionControlledFailureInfo:
+    def apply(self, instruction: ActPhaseInstruction) -> PartialInstructionControlledFailureInfo:
         return _from_success_or_hard_error(
             instruction.main(self.__global_environment,
                              self.__phase_environment))
@@ -118,7 +124,7 @@ class AssertMainInstructionExecutor(ControlledInstructionExecutor):
         self.__global_environment = global_environment
         self.__phase_environment = phase_environment
 
-    def apply(self, instruction: instr.AssertPhaseInstruction) -> PartialInstructionControlledFailureInfo:
+    def apply(self, instruction: AssertPhaseInstruction) -> PartialInstructionControlledFailureInfo:
         return _from_pass_or_fail_or_hard_error(
             instruction.main(self.__global_environment,
                              self.__phase_environment))
@@ -131,7 +137,7 @@ class CleanupInstructionExecutor(ControlledInstructionExecutor):
         self.__global_environment = global_environment
         self.__phase_environment = phase_environment
 
-    def apply(self, instruction: instr.CleanupPhaseInstruction) -> PartialInstructionControlledFailureInfo:
+    def apply(self, instruction: CleanupPhaseInstruction) -> PartialInstructionControlledFailureInfo:
         return _from_success_or_hard_error(
             instruction.main(self.__global_environment,
                              self.__phase_environment))

@@ -3,10 +3,10 @@ import os
 import pathlib
 
 from shellcheck_lib.execution import phase_step_executors, partial_execution, phases
-from shellcheck_lib.test_case import instructions
+from shellcheck_lib.test_case.instruction import common
 from shellcheck_lib.test_case import test_case_doc
 from shellcheck_lib.script_language import act_script_management
-from shellcheck_lib.test_case.instructions import PhaseEnvironmentForAnonymousPhase, ExecutionMode
+from shellcheck_lib.test_case.instruction.sections.anonymous import PhaseEnvironmentForAnonymousPhase, ExecutionMode
 from .result import FullResult, PartialResult, PartialResultStatus, FullResultStatus
 from . import result
 from . import phase_step_execution
@@ -69,7 +69,7 @@ def translate_status(execution_mode: ExecutionMode,
 
 def _prepare_and_save_environment_variables() -> dict:
     before = copy.deepcopy(os.environ)
-    for ev in instructions.ALL_ENV_VARS:
+    for ev in common.ALL_ENV_VARS:
         if ev in os.environ:
             del os.environ[ev]
     return before

@@ -4,9 +4,10 @@ import unittest
 import functools
 
 from shellcheck_lib.test_case import test_case_doc
-from shellcheck_lib.test_case import instructions
+from shellcheck_lib.test_case.instruction import common
 from shellcheck_lib.execution.phase_step import PhaseStep
 from shellcheck_lib.execution.result import FullResultStatus
+from shellcheck_lib.test_case.instruction.sections.anonymous import PhaseEnvironmentForAnonymousPhase
 from shellcheck_lib_test.execution.full_execution.util.test_case_base import FullExecutionTestCaseBase
 from shellcheck_lib.execution import phase_step
 from shellcheck_lib_test.execution.util import instruction_that_record_and_return as instr_setup
@@ -22,7 +23,7 @@ def current_directory() -> str:
 
 def _set_home_dir_to_parent__anonymous_phase(recorder: instr_setup.Recorder,
                                              phase_step: PhaseStep,
-                                             phase_environment: instructions.PhaseEnvironmentForAnonymousPhase):
+                                             phase_environment: PhaseEnvironmentForAnonymousPhase):
     pass
 
 
@@ -34,7 +35,7 @@ def _action__without_eds(recorder: instr_setup.Recorder,
 
 def _action__with_eds(recorder: instr_setup.Recorder,
                       phase_step: PhaseStep,
-                      global_environment: instructions.GlobalEnvironmentForPostEdsPhase):
+                      global_environment: common.GlobalEnvironmentForPostEdsPhase):
     recorder.set_phase_step_recording(phase_step, current_directory())
     os.chdir(str(global_environment.home_directory))
 

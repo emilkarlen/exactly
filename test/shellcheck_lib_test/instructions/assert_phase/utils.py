@@ -5,9 +5,10 @@ from shellcheck_lib.general import line_source
 from shellcheck_lib.general.line_source import LineSequenceBuilder
 from shellcheck_lib.instructions.instruction_parser_for_single_phase import \
     SingleInstructionParser
-from shellcheck_lib.test_case import instructions as i
+from shellcheck_lib.test_case.instruction import common as i
 from shellcheck_lib.test_case.instruction.result import pfh
 from shellcheck_lib.test_case.instruction.result import svh
+from shellcheck_lib.test_case.instruction.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib_test.instructions import utils
 from shellcheck_lib_test.util.file_structure import DirContents
 
@@ -61,7 +62,7 @@ class AssertInstructionTest:
               parser: SingleInstructionParser,
               source: SingleInstructionParserSource):
         instruction = parser.apply(source.line_sequence, source.instruction_argument)
-        assert isinstance(instruction, i.AssertPhaseInstruction)
+        assert isinstance(instruction, AssertPhaseInstruction)
         with utils.home_and_eds_and_test_as_curr_dir() as home_and_eds:
             self._home_dir_contents.write_to(home_and_eds.home_dir_path)
             global_environment = i.GlobalEnvironmentForPostEdsPhase(home_and_eds.home_dir_path,

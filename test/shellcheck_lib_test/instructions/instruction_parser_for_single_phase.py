@@ -1,12 +1,11 @@
 import unittest
 
 from shellcheck_lib.document.model import ElementType
-
 from shellcheck_lib.document import parse
 from shellcheck_lib.general import line_source
 from shellcheck_lib.general.line_source import Line
 from shellcheck_lib.instructions import instruction_parser_for_single_phase as sut
-from shellcheck_lib.test_case import instructions
+from shellcheck_lib.document import model
 from shellcheck_lib_test.document.test_resources import assert_equals_line
 
 
@@ -68,7 +67,7 @@ class TestParse(unittest.TestCase):
         parsers_dict = {'S': SingleInstructionParserThatSucceeds(),
                         'F': SingleInstructionParserThatRaisesInvalidArgumentError('the error message')}
         phase_parser = sut.SectionElementParserForDictionaryOfInstructions(name_argument_splitter,
-                                                                                          parsers_dict)
+                                                                           parsers_dict)
         source = new_source('Fa')
         with self.assertRaises(sut.InvalidInstructionArgumentException) as cm:
             phase_parser.apply(source)
@@ -88,7 +87,7 @@ class TestParse(unittest.TestCase):
         parsers_dict = {'S': SingleInstructionParserThatSucceeds(),
                         'F': parser_that_raises_exception}
         phase_parser = sut.SectionElementParserForDictionaryOfInstructions(name_argument_splitter,
-                                                                                          parsers_dict)
+                                                                           parsers_dict)
         source = new_source('Fa')
         with self.assertRaises(sut.ArgumentParsingImplementationException) as cm:
             phase_parser.apply(source)
@@ -107,7 +106,7 @@ class TestParse(unittest.TestCase):
         parsers_dict = {'S': SingleInstructionParserThatSucceeds(),
                         'F': SingleInstructionParserThatRaisesInvalidArgumentError('the error message')}
         phase_parser = sut.SectionElementParserForDictionaryOfInstructions(name_argument_splitter,
-                                                                                          parsers_dict)
+                                                                           parsers_dict)
         source = new_source('Sa')
         phase_content_element = phase_parser.apply(source)
         self.assertEqual(ElementType.INSTRUCTION,
@@ -126,7 +125,7 @@ class TestParse(unittest.TestCase):
 
     def test__when__line_is_empty__then__an_empty_line_element_should_be_returned(self):
         phase_parser = sut.SectionElementParserForDictionaryOfInstructions(name_argument_splitter,
-                                                                                          {})
+                                                                           {})
         source = new_source('')
         phase_content_element = phase_parser.apply(source)
         self.assertEqual(phase_content_element.element_type,
@@ -139,7 +138,7 @@ class TestParse(unittest.TestCase):
 
     def test__when__line_is_comment__then__a_comment_line_element_should_be_returned(self):
         phase_parser = sut.SectionElementParserForDictionaryOfInstructions(name_argument_splitter,
-                                                                                          {})
+                                                                           {})
         source = new_source('# comment')
         phase_content_element = phase_parser.apply(source)
         self.assertEqual(phase_content_element.element_type,
@@ -196,30 +195,30 @@ class SingleInstructionParserThatRaisesInvalidArgumentError(sut.SingleInstructio
 
     def apply(self,
               source: line_source.LineSequenceBuilder,
-              instruction_argument: str) -> instructions.Instruction:
+              instruction_argument: str) -> model.Instruction:
         raise sut.SingleInstructionInvalidArgumentException(self.error_message)
 
 
 class SingleInstructionParserThatRaisesImplementationException(sut.SingleInstructionParser):
     def apply(self,
               source: line_source.LineSequenceBuilder,
-              instruction_argument: str) -> instructions.Instruction:
+              instruction_argument: str) -> model.Instruction:
         raise NotImplementedError()
 
 
 class SingleInstructionParserThatSucceeds(sut.SingleInstructionParser):
     def apply(self,
               source: line_source.LineSequenceBuilder,
-              instruction_argument: str) -> instructions.Instruction:
+              instruction_argument: str) -> model.Instruction:
         return Instruction(instruction_argument)
 
 
 class SectionElementParserForStandardCommentAndEmptyLines(sut.SectionElementParserForStandardCommentAndEmptyLines):
-    def _parse_instruction(self, source: line_source.LineSequenceBuilder) -> instructions.Instruction:
+    def _parse_instruction(self, source: line_source.LineSequenceBuilder) -> model.Instruction:
         return Instruction(source.first_line.text)
 
 
-class Instruction(instructions.Instruction):
+class Instruction(model.Instruction):
     def __init__(self,
                  argument: str):
         self.argument = argument

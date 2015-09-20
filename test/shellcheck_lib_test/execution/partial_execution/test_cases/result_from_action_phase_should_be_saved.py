@@ -6,7 +6,8 @@ import unittest
 
 from shellcheck_lib.test_case.instruction.result import sh
 from shellcheck_lib.test_case.instruction.result import svh
-from shellcheck_lib.test_case import instructions
+from shellcheck_lib.test_case.instruction import common
+from shellcheck_lib.test_case.instruction.sections.act import PhaseEnvironmentForScriptGeneration, ActPhaseInstruction
 from shellcheck_lib_test.execution.util import utils
 from shellcheck_lib_test.execution.util import py_unit_test_case
 from shellcheck_lib_test.execution.util.py_unit_test_case import \
@@ -43,7 +44,7 @@ def assertions(utc: unittest.TestCase,
         _TEXT_ON_STDERR)
 
 
-class ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr(instructions.ActPhaseInstruction):
+class ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr(ActPhaseInstruction):
     def __init__(self,
                  exit_code: int,
                  text_on_stdout: str,
@@ -53,14 +54,14 @@ class ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr(instructions.ActPhaseI
         self.__text_on_stderr = text_on_stderr
         self.__exit_code = exit_code
 
-    def validate(self, global_environment: instructions.GlobalEnvironmentForPostEdsPhase) \
+    def validate(self, global_environment: common.GlobalEnvironmentForPostEdsPhase) \
             -> svh.SuccessOrValidationErrorOrHardError:
         return svh.new_svh_success()
 
     def main(
             self,
-            global_environment: instructions.GlobalEnvironmentForPostEdsPhase,
-            phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> sh.SuccessOrHardError:
+            global_environment: common.GlobalEnvironmentForPostEdsPhase,
+            phase_environment: PhaseEnvironmentForScriptGeneration) -> sh.SuccessOrHardError:
         statements = [
             'import sys',
             self.write_on('sys.stdout', self.__text_on_stdout),

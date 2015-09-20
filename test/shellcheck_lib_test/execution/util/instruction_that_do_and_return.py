@@ -4,16 +4,22 @@ from pathlib import Path
 from shellcheck_lib.test_case.instruction.result import pfh
 from shellcheck_lib.test_case.instruction.result import sh
 from shellcheck_lib.test_case.instruction.result import svh
+from shellcheck_lib.test_case.instruction.sections.anonymous import PhaseEnvironmentForAnonymousPhase, \
+    AnonymousPhaseInstruction
+from shellcheck_lib.test_case.instruction.sections.cleanup import CleanupPhaseInstruction
+from shellcheck_lib.test_case.instruction.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
+from shellcheck_lib.test_case.instruction.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib_test.execution.util import python_code_gen as py
 from shellcheck_lib.execution import phase_step
 from shellcheck_lib.execution.phase_step import PhaseStep
-from shellcheck_lib.test_case import instructions as i
+from shellcheck_lib.test_case.instruction import common as i
 from shellcheck_lib.document.model import Instruction
+from shellcheck_lib.test_case.instruction.sections.act import PhaseEnvironmentForScriptGeneration, ActPhaseInstruction
 from shellcheck_lib_test.execution.util.test_case_generation import TestCaseGeneratorBase
 
 
 def do_nothing__anonymous_phase(phase_step: PhaseStep,
-                                phase_environment: i.PhaseEnvironmentForAnonymousPhase):
+                                phase_environment: PhaseEnvironmentForAnonymousPhase):
     pass
 
 
@@ -28,7 +34,7 @@ def do_nothing__with_eds(phase_step: PhaseStep,
 
 
 def do_nothing__generate_script(global_environment: i.GlobalEnvironmentForPostEdsPhase,
-                                phase_environment: i.PhaseEnvironmentForScriptGeneration):
+                                phase_environment: PhaseEnvironmentForScriptGeneration):
     pass
 
 
@@ -53,19 +59,19 @@ class TestCaseSetup(tuple):
                                    execution__generate_script,
                                    ))
 
-    def as_anonymous_phase_instruction(self) -> i.AnonymousPhaseInstruction:
+    def as_anonymous_phase_instruction(self) -> AnonymousPhaseInstruction:
         return _AnonymousInstruction(self)
 
-    def as_setup_phase_instruction(self) -> i.SetupPhaseInstruction:
+    def as_setup_phase_instruction(self) -> SetupPhaseInstruction:
         return _SetupInstruction(self)
 
-    def as_act_phase_instruction(self) -> i.ActPhaseInstruction:
+    def as_act_phase_instruction(self) -> ActPhaseInstruction:
         return _ActInstruction(self)
 
-    def as_assert_phase_instruction(self) -> i.AssertPhaseInstruction:
+    def as_assert_phase_instruction(self) -> AssertPhaseInstruction:
         return _AssertInstruction(self)
 
-    def as_cleanup_phase_instruction(self) -> i.CleanupPhaseInstruction:
+    def as_cleanup_phase_instruction(self) -> CleanupPhaseInstruction:
         return _CleanupInstruction(self)
 
     @property
@@ -133,14 +139,14 @@ class TestCaseGeneratorForTestCaseSetup(TestCaseGeneratorBase):
         return [self._next_instruction_line(instruction)]
 
 
-class _AnonymousInstruction(i.AnonymousPhaseInstruction):
+class _AnonymousInstruction(AnonymousPhaseInstruction):
     def __init__(self,
                  configuration: TestCaseSetup):
         self.__configuration = configuration
 
     def main(self,
              global_environment,
-             phase_environment: i.PhaseEnvironmentForAnonymousPhase) -> sh.SuccessOrHardError:
+             phase_environment: PhaseEnvironmentForAnonymousPhase) -> sh.SuccessOrHardError:
         self.__configuration.anonymous_phase_action(phase_step.ANONYMOUS_EXECUTE,
                                                     phase_environment)
         return self.__configuration.ret_val_from_execute
@@ -149,7 +155,7 @@ class _AnonymousInstruction(i.AnonymousPhaseInstruction):
 def print_to_file__generate_script(code_using_file_opened_for_writing: types.FunctionType,
                                    file_name: str,
                                    global_environment: i.GlobalEnvironmentForPostEdsPhase,
-                                   phase_environment: i.PhaseEnvironmentForScriptGeneration):
+                                   phase_environment: PhaseEnvironmentForScriptGeneration):
     """
     Function that is designed as the execution__generate_script argument to TestCaseSetup, after
     giving the first two arguments using partial application.
@@ -174,7 +180,7 @@ def print_to_file__generate_script(code_using_file_opened_for_writing: types.Fun
     phase_environment.append.raw_script_statements(program)
 
 
-class _SetupInstruction(i.SetupPhaseInstruction):
+class _SetupInstruction(SetupPhaseInstruction):
     def __init__(self,
                  configuration: TestCaseSetup):
         self.__configuration = configuration
@@ -187,7 +193,7 @@ class _SetupInstruction(i.SetupPhaseInstruction):
 
     def main(self,
              global_environment: i.GlobalEnvironmentForPostEdsPhase,
-             settings_builder: i.SetupSettingsBuilder) -> sh.SuccessOrHardError:
+             settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         self.__configuration.execution_action__with_eds(phase_step.SETUP_EXECUTE,
                                                         global_environment)
         return self.__configuration.ret_val_from_execute
@@ -200,7 +206,7 @@ class _SetupInstruction(i.SetupPhaseInstruction):
         return self.__configuration.ret_val_from_execute
 
 
-class _ActInstruction(i.ActPhaseInstruction):
+class _ActInstruction(ActPhaseInstruction):
     def __init__(self,
                  configuration: TestCaseSetup):
         self.__configuration = configuration
@@ -213,7 +219,7 @@ class _ActInstruction(i.ActPhaseInstruction):
 
     def main(self,
              global_environment: i.GlobalEnvironmentForPostEdsPhase,
-             phase_environment: i.PhaseEnvironmentForScriptGeneration) -> sh.SuccessOrHardError:
+             phase_environment: PhaseEnvironmentForScriptGeneration) -> sh.SuccessOrHardError:
         self.__configuration.execution_action__with_eds(phase_step.ACT_SCRIPT_GENERATION,
                                                         global_environment)
         self.__configuration.execution__generate_script(global_environment,
@@ -221,7 +227,7 @@ class _ActInstruction(i.ActPhaseInstruction):
         return self.__configuration.ret_val_from_execute
 
 
-class _AssertInstruction(i.AssertPhaseInstruction):
+class _AssertInstruction(AssertPhaseInstruction):
     def __init__(self,
                  configuration: TestCaseSetup):
         self.__configuration = configuration
@@ -240,7 +246,7 @@ class _AssertInstruction(i.AssertPhaseInstruction):
         return self.__configuration.ret_val_from_assert_execute
 
 
-class _CleanupInstruction(i.CleanupPhaseInstruction):
+class _CleanupInstruction(CleanupPhaseInstruction):
     def __init__(self,
                  configuration: TestCaseSetup):
         self.__configuration = configuration

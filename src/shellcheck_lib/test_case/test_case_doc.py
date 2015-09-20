@@ -1,5 +1,9 @@
-from shellcheck_lib.test_case import instructions
 from shellcheck_lib.document.model import PhaseContents, ElementType
+from shellcheck_lib.test_case.instruction.sections.act import ActPhaseInstruction
+from shellcheck_lib.test_case.instruction.sections.anonymous import AnonymousPhaseInstruction
+from shellcheck_lib.test_case.instruction.sections.assert_ import AssertPhaseInstruction
+from shellcheck_lib.test_case.instruction.sections.cleanup import CleanupPhaseInstruction
+from shellcheck_lib.test_case.instruction.sections.setup import SetupPhaseInstruction
 
 
 class TestCase(tuple):
@@ -9,11 +13,16 @@ class TestCase(tuple):
                 act_phase: PhaseContents,
                 assert_phase: PhaseContents,
                 cleanup_phase: PhaseContents):
-        TestCase.__assert_instruction_class(anonymous_phase, instructions.AnonymousPhaseInstruction)
-        TestCase.__assert_instruction_class(setup_phase, instructions.SetupPhaseInstruction)
-        TestCase.__assert_instruction_class(act_phase, instructions.ActPhaseInstruction)
-        TestCase.__assert_instruction_class(assert_phase, instructions.AssertPhaseInstruction)
-        TestCase.__assert_instruction_class(cleanup_phase, instructions.CleanupPhaseInstruction)
+        TestCase.__assert_instruction_class(anonymous_phase,
+                                            AnonymousPhaseInstruction)
+        TestCase.__assert_instruction_class(setup_phase,
+                                            SetupPhaseInstruction)
+        TestCase.__assert_instruction_class(act_phase,
+                                            ActPhaseInstruction)
+        TestCase.__assert_instruction_class(assert_phase,
+                                            AssertPhaseInstruction)
+        TestCase.__assert_instruction_class(cleanup_phase,
+                                            CleanupPhaseInstruction)
         return tuple.__new__(cls, (anonymous_phase,
                                    setup_phase,
                                    act_phase,

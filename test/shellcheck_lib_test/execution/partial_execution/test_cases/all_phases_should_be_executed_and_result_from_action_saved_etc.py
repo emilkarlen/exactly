@@ -11,8 +11,9 @@ from shellcheck_lib_test.execution.util.py_unit_test_case_with_file_output impor
     InternalInstructionThatWritesToStandardPhaseFile
 from shellcheck_lib.execution import phases
 from shellcheck_lib_test.execution.util import py_unit_test_case
-from shellcheck_lib.test_case import instructions
+from shellcheck_lib.test_case.instruction import common
 from shellcheck_lib_test.execution.util import utils
+from shellcheck_lib.test_case.instruction.sections.act import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
 
 HOME_DIR_HEADER = 'Home Dir'
 TEST_ROOT_DIR_HEADER = 'Test Root Dir'
@@ -59,7 +60,7 @@ def assertions(utc: unittest.TestCase,
 def assert_files_in_test_root_that_contain_name_of_test_root_dir(
         utc: unittest.TestCase,
         eds: ExecutionDirectoryStructure,
-        global_environment: instructions.GlobalEnvironmentForPostEdsPhase,
+        global_environment: common.GlobalEnvironmentForPostEdsPhase,
         file_name_from_py_cmd_list: list):
     expected_contents = utils.un_lines(py_cmd_file_lines(global_environment.eds.test_root_dir,
                                                          global_environment.home_directory,
@@ -97,25 +98,24 @@ class InternalInstructionThatCreatesAStandardPhaseFileInTestRootContainingDirect
                  phase: phases.Phase):
         super().__init__(phase)
 
-    def _file_lines(self, global_environment: instructions.GlobalEnvironmentForPostEdsPhase) -> list:
+    def _file_lines(self, global_environment: common.GlobalEnvironmentForPostEdsPhase) -> list:
         return py_cmd_file_lines(
             pathlib.Path().resolve(),
             global_environment.home_directory,
             global_environment.eds)
 
 
-class ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr(instructions.ActPhaseInstruction):
+class ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr(ActPhaseInstruction):
     def __init__(self):
         super().__init__()
 
-    def validate(self, global_environment: instructions.GlobalEnvironmentForPostEdsPhase) \
+    def validate(self, global_environment: common.GlobalEnvironmentForPostEdsPhase) \
             -> svh.SuccessOrValidationErrorOrHardError:
         return svh.new_svh_success()
 
     def main(self,
-             global_environment: instructions.GlobalEnvironmentForPostEdsPhase,
-             phase_environment: instructions.PhaseEnvironmentForScriptGeneration) \
-            -> sh.SuccessOrHardError:
+             global_environment: common.GlobalEnvironmentForPostEdsPhase,
+             phase_environment: PhaseEnvironmentForScriptGeneration) -> sh.SuccessOrHardError:
         statements = [
                          'import sys',
                          'import os',
@@ -129,14 +129,14 @@ class ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr(instructions.ActPhaseI
 
     def print_on(self,
                  file_object: str,
-                 global_environment: instructions.GlobalEnvironmentForPostEdsPhase) -> list:
+                 global_environment: common.GlobalEnvironmentForPostEdsPhase) -> list:
         return [
             self.write_line(file_object, file_object),
             self.write_path_line(file_object, HOME_DIR_HEADER, global_environment.home_directory),
             self.write_path_line(file_object, TEST_ROOT_DIR_HEADER, global_environment.eds.test_root_dir),
             self.write_prefix_and_expr(file_object, CURRENT_DIR_HEADER, 'str(pathlib.Path().resolve())'),
-            self.write_env_var(file_object, instructions.ENV_VAR_HOME),
-            self.write_env_var(file_object, instructions.ENV_VAR_TEST),
+            self.write_env_var(file_object, common.ENV_VAR_HOME),
+            self.write_env_var(file_object, common.ENV_VAR_TEST),
         ]
 
     @staticmethod
@@ -177,8 +177,8 @@ def expected_output_on(file_object: str,
         output_with_header(TEST_ROOT_DIR_HEADER, str(configuration.test_root_dir)),
         output_with_header(CURRENT_DIR_HEADER, str(configuration.test_root_dir)),
 
-        output_with_header(instructions.ENV_VAR_HOME, str(configuration.home_dir)),
-        output_with_header(instructions.ENV_VAR_TEST, str(configuration.test_root_dir)),
+        output_with_header(common.ENV_VAR_HOME, str(configuration.home_dir)),
+        output_with_header(common.ENV_VAR_TEST, str(configuration.test_root_dir)),
         ''
     ])
 
