@@ -1,10 +1,14 @@
+from shellcheck_lib.test_case.instruction.sections.act import ActPhaseInstruction
+from shellcheck_lib.test_case.instruction.sections.anonymous import AnonymousPhaseInstruction
+from shellcheck_lib.test_case.instruction.sections.assert_ import AssertPhaseInstruction
+from shellcheck_lib.test_case.instruction.sections.cleanup import CleanupPhaseInstruction
+from shellcheck_lib.test_case.instruction.sections.setup import SetupPhaseInstruction
 from shellcheck_lib_test.execution.full_execution.util import recording_instructions_for_sequence_tests as instr
 from shellcheck_lib_test.execution.full_execution.util.recording_instructions_for_sequence_tests import \
     SetupInstructionThatRecordsStringInList, AssertInternalInstructionThatRecordsStringInList, \
     AssertInstructionThatRecordsStringInRecordFile
 from shellcheck_lib_test.execution.util.test_case_generation import TestCaseGeneratorBase
 from shellcheck_lib.execution import phase_step
-from shellcheck_lib.test_case import instructions
 from shellcheck_lib_test.execution.util import instruction_adapter
 
 
@@ -127,30 +131,30 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorBase):
                                 instr.InternalInstructionThatRecordsStringInRecordFile(phase_step.CLEANUP)),
                         ]))
 
-    def _new_anonymous_internal_recorder(self, text: str) -> instructions.SetupPhaseInstruction:
+    def _new_anonymous_internal_recorder(self, text: str) -> SetupPhaseInstruction:
         return instr.AnonymousInternalInstructionThatRecordsStringInList(self.__recorder_of(text))
 
     def _new_setup_internal_recorder(self,
                                      text_for_pre_validate: str,
                                      text_for_execute: str,
-                                     text_for_post_validate: str) -> instructions.SetupPhaseInstruction:
+                                     text_for_post_validate: str) -> SetupPhaseInstruction:
         return SetupInstructionThatRecordsStringInList(self.__recorder_of(text_for_pre_validate),
                                                        self.__recorder_of(text_for_execute),
                                                        self.__recorder_of(text_for_post_validate))
 
     def _new_act_internal_recorder(self,
                                    text_for_validate: str,
-                                   text_for_execute: str) -> instructions.ActPhaseInstruction:
+                                   text_for_execute: str) -> ActPhaseInstruction:
         return instr.ActInstructionThatRecordsStringInList(self.__recorder_of(text_for_validate),
                                                            self.__recorder_of(text_for_execute))
 
     def _new_assert_internal_recorder(self,
                                       text_for_validate: str,
-                                      text_for_execute: str) -> instructions.AssertPhaseInstruction:
+                                      text_for_execute: str) -> AssertPhaseInstruction:
         return AssertInternalInstructionThatRecordsStringInList(self.__recorder_of(text_for_validate),
                                                                 self.__recorder_of(text_for_execute))
 
-    def _new_cleanup_internal_recorder(self, text: str) -> instructions.CleanupPhaseInstruction:
+    def _new_cleanup_internal_recorder(self, text: str) -> CleanupPhaseInstruction:
         return instruction_adapter.as_cleanup(
             instr.InternalInstructionThatRecordsStringInList(self.__recorder_of(text)))
 
@@ -194,7 +198,7 @@ class TestCaseThatRecordsExecutionWithExtraInstructionList(TestCaseGeneratorForE
         self.__the_cleanup_extra = list(map(self._next_instruction_line, self.__cleanup_extra))
         return self.__the_cleanup_extra
 
-    def add_anonymous(self, instruction: instructions.AnonymousPhaseInstruction):
+    def add_anonymous(self, instruction: AnonymousPhaseInstruction):
         self.__anonymous_extra.append(instruction)
         return self
 
@@ -202,7 +206,7 @@ class TestCaseThatRecordsExecutionWithExtraInstructionList(TestCaseGeneratorForE
         self.__anonymous_extra.append(self._new_anonymous_internal_recorder(text))
         return self
 
-    def add_setup(self, instruction: instructions.SetupPhaseInstruction):
+    def add_setup(self, instruction: SetupPhaseInstruction):
         self.__setup_extra.append(instruction)
         return self
 
@@ -210,7 +214,7 @@ class TestCaseThatRecordsExecutionWithExtraInstructionList(TestCaseGeneratorForE
         self.__setup_extra.append(self._new_setup_internal_recorder(text))
         return self
 
-    def add_act(self, instruction: instructions.ActPhaseInstruction):
+    def add_act(self, instruction: ActPhaseInstruction):
         self.__act_extra.append(instruction)
         return self
 
@@ -218,7 +222,7 @@ class TestCaseThatRecordsExecutionWithExtraInstructionList(TestCaseGeneratorForE
         self.__act_extra.append(self._new_act_internal_recorder(text))
         return self
 
-    def add_assert(self, instruction: instructions.AssertPhaseInstruction):
+    def add_assert(self, instruction: AssertPhaseInstruction):
         self.__assert_extra.append(instruction)
         return self
 
@@ -226,7 +230,7 @@ class TestCaseThatRecordsExecutionWithExtraInstructionList(TestCaseGeneratorForE
         self.__assert_extra.append(self._new_assert_internal_recorder(text))
         return self
 
-    def add_cleanup(self, instruction: instructions.CleanupPhaseInstruction):
+    def add_cleanup(self, instruction: CleanupPhaseInstruction):
         self.__cleanup_extra.append(instruction)
         return self
 

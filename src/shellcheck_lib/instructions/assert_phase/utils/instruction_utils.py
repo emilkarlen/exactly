@@ -1,9 +1,9 @@
 import pathlib
 
-from shellcheck_lib.test_case import instructions as i
+from shellcheck_lib.test_case.instruction import common as i
 from shellcheck_lib.test_case.instruction.result import pfh
 from shellcheck_lib.test_case.instruction.result import svh
-from shellcheck_lib.test_case.instructions import AssertPhaseInstruction
+from shellcheck_lib.test_case.instruction.sections.assert_ import AssertPhaseInstruction
 
 
 class InstructionWithoutValidationBase(AssertPhaseInstruction):

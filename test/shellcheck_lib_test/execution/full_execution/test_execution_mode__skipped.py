@@ -1,6 +1,6 @@
 import unittest
 
-from shellcheck_lib.test_case import instructions
+from shellcheck_lib.test_case.instruction.sections.anonymous import ExecutionMode
 from shellcheck_lib_test.execution.full_execution.util import instruction_test_resources
 from shellcheck_lib_test.execution.full_execution.util.instruction_test_resources import \
     AnonymousPhaseInstructionThatSetsExecutionMode
@@ -17,7 +17,8 @@ from shellcheck_lib_test.util.expected_instruction_failure import ExpectedInstru
 class Test(unittest.TestCase):
     def test_execution_mode_skipped(self):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
-            .add_anonymous(AnonymousPhaseInstructionThatSetsExecutionMode(instructions.ExecutionMode.SKIPPED))
+            .add_anonymous(AnonymousPhaseInstructionThatSetsExecutionMode(
+            ExecutionMode.SKIPPED))
         TestCaseThatRecordsExecution(
             self,
             test_case,
@@ -31,7 +32,8 @@ class Test(unittest.TestCase):
     def test_execution_mode_skipped_but_failing_instruction_in_anonymous_phase_before_setting_execution_mode(self):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_anonymous(instruction_test_resources.AnonymousPhaseInstructionThatReturnsHardError('hard error msg')) \
-            .add_anonymous(AnonymousPhaseInstructionThatSetsExecutionMode(instructions.ExecutionMode.SKIPPED))
+            .add_anonymous(AnonymousPhaseInstructionThatSetsExecutionMode(
+            ExecutionMode.SKIPPED))
         TestCaseThatRecordsExecution(
             self,
             test_case,
@@ -47,7 +49,8 @@ class Test(unittest.TestCase):
 
     def test_execution_mode_skipped_but_failing_instruction_in_anonymous_phase_after_setting_execution_mode(self):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
-            .add_anonymous(AnonymousPhaseInstructionThatSetsExecutionMode(instructions.ExecutionMode.SKIPPED)) \
+            .add_anonymous(AnonymousPhaseInstructionThatSetsExecutionMode(
+            ExecutionMode.SKIPPED)) \
             .add_anonymous(instruction_test_resources.AnonymousPhaseInstructionThatReturnsHardError('hard error msg'))
         TestCaseThatRecordsExecution(
             self,

@@ -1,79 +1,103 @@
+from shellcheck_lib.document.model import Instruction
 from shellcheck_lib.execution import phases
+from shellcheck_lib.test_case.instruction.common import GlobalEnvironmentForPostEdsPhase, \
+    PhaseEnvironmentForInternalCommands
 from shellcheck_lib.test_case.instruction.result import pfh
 from shellcheck_lib.test_case.instruction.result import sh
 from shellcheck_lib.test_case.instruction.result import svh
-from shellcheck_lib.test_case import instructions as instrs
+from shellcheck_lib.test_case.instruction import common as instr
+from shellcheck_lib.test_case.instruction.sections.assert_ import AssertPhaseInstruction
+from shellcheck_lib.test_case.instruction.sections.cleanup import CleanupPhaseInstruction
+from shellcheck_lib.test_case.instruction.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
 
 
-def as_setup(internal_instruction: instrs.InternalInstruction) -> instrs.SetupPhaseInstruction:
+class InternalInstruction(Instruction):
+    """
+    Abstract base class for instructions that are implemented in python.
+    """
+
+    def execute(self,
+                phase_name: str,
+                global_environment: GlobalEnvironmentForPostEdsPhase,
+                phase_environment: PhaseEnvironmentForInternalCommands):
+        """
+        Does whatever this instruction should do.
+        :param phase_name The phase in which this instruction is in.
+        :param global_environment An object passed to all instructions in the Document.
+        :param phase_environment An object passed to all instructions in the Phase.
+        """
+        raise NotImplementedError()
+
+
+def as_setup(internal_instruction: InternalInstruction) -> SetupPhaseInstruction:
     return _SetupInstructionExecutor(internal_instruction)
 
 
-def as_assert(internal_instruction: instrs.InternalInstruction) -> instrs.AssertPhaseInstruction:
+def as_assert(internal_instruction: InternalInstruction) -> AssertPhaseInstruction:
     return _AssertInstructionExecutor(internal_instruction)
 
 
-def as_cleanup(internal_instruction: instrs.InternalInstruction) -> instrs.CleanupPhaseInstruction:
+def as_cleanup(internal_instruction: InternalInstruction) -> CleanupPhaseInstruction:
     return _CleanupInstructionExecutor(internal_instruction)
 
 
-class _SetupInstructionExecutor(instrs.SetupPhaseInstruction):
+class _SetupInstructionExecutor(SetupPhaseInstruction):
     def __init__(self,
-                 internal_instruction: instrs.InternalInstruction,
+                 internal_instruction: InternalInstruction,
                  ret_val: sh.SuccessOrHardError=sh.new_sh_success()):
         self.__internal_instruction = internal_instruction
         self.__ret_val = ret_val
 
     def pre_validate(self,
-                     global_environment: instrs.GlobalEnvironmentForPreEdsStep) \
+                     global_environment: instr.GlobalEnvironmentForPreEdsStep) \
             -> svh.SuccessOrValidationErrorOrHardError:
         return svh.new_svh_success()
 
     def main(self,
-             global_environment: instrs.GlobalEnvironmentForPostEdsPhase,
-             settings_builder: instrs.SetupSettingsBuilder) -> sh.SuccessOrHardError:
+             global_environment: instr.GlobalEnvironmentForPostEdsPhase,
+             settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         self.__internal_instruction.execute(phases.SETUP.name,
                                             global_environment,
-                                            instrs.PhaseEnvironmentForInternalCommands())
+                                            instr.PhaseEnvironmentForInternalCommands())
         return self.__ret_val
 
     def post_validate(self,
-                      global_environment: instrs.GlobalEnvironmentForPostEdsPhase) \
+                      global_environment: instr.GlobalEnvironmentForPostEdsPhase) \
             -> svh.SuccessOrValidationErrorOrHardError:
         return svh.new_svh_success()
 
 
-class _AssertInstructionExecutor(instrs.AssertPhaseInstruction):
+class _AssertInstructionExecutor(AssertPhaseInstruction):
     def __init__(self,
-                 internal_instruction: instrs.InternalInstruction,
+                 internal_instruction: InternalInstruction,
                  ret_val: pfh.PassOrFailOrHardError=pfh.new_pfh_pass()):
         self.__internal_instruction = internal_instruction
         self.__ret_val = ret_val
 
     def validate(self,
-                 global_environment: instrs.GlobalEnvironmentForPostEdsPhase) \
+                 global_environment: instr.GlobalEnvironmentForPostEdsPhase) \
             -> svh.SuccessOrValidationErrorOrHardError:
         return svh.new_svh_success()
 
     def main(self,
-             global_environment: instrs.GlobalEnvironmentForPostEdsPhase,
-             phase_environment: instrs.PhaseEnvironmentForInternalCommands) -> pfh.PassOrFailOrHardError:
+             global_environment: instr.GlobalEnvironmentForPostEdsPhase,
+             phase_environment: instr.PhaseEnvironmentForInternalCommands) -> pfh.PassOrFailOrHardError:
         self.__internal_instruction.execute(phases.ASSERT.name,
                                             global_environment,
                                             phase_environment)
         return self.__ret_val
 
 
-class _CleanupInstructionExecutor(instrs.CleanupPhaseInstruction):
+class _CleanupInstructionExecutor(CleanupPhaseInstruction):
     def __init__(self,
-                 internal_instruction: instrs.InternalInstruction,
+                 internal_instruction: InternalInstruction,
                  ret_val: sh.SuccessOrHardError=sh.new_sh_success()):
         self.__internal_instruction = internal_instruction
         self.__ret_val = ret_val
 
     def main(self,
-             global_environment: instrs.GlobalEnvironmentForPostEdsPhase,
-             phase_environment: instrs.PhaseEnvironmentForInternalCommands) -> sh.SuccessOrHardError:
+             global_environment: instr.GlobalEnvironmentForPostEdsPhase,
+             phase_environment: instr.PhaseEnvironmentForInternalCommands) -> sh.SuccessOrHardError:
         self.__internal_instruction.execute(phases.CLEANUP.name,
                                             global_environment,
                                             phase_environment)

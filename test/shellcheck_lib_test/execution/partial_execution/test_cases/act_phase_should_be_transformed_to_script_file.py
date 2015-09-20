@@ -5,11 +5,12 @@ from shellcheck_lib.test_case.instruction.result import sh
 from shellcheck_lib.test_case.instruction.result import svh
 from shellcheck_lib.execution import phases
 from shellcheck_lib.general import line_source
-from shellcheck_lib.test_case import instructions
+from shellcheck_lib.test_case.instruction import common
 from shellcheck_lib_test.execution.util import utils
 from shellcheck_lib_test.execution.util import py_unit_test_case
 from shellcheck_lib_test.execution.util.py_unit_test_case import TestCaseWithCommonDefaultForSetupAssertCleanup
 import shellcheck_lib_test.util.model_utils
+from shellcheck_lib.test_case.instruction.sections.act import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
 
 HOME_DIR_HEADER = '# Home Dir: '
 TEST_ROOT_DIR_HEADER = '# Test Root Dir: '
@@ -52,29 +53,29 @@ def assertions(utc: unittest.TestCase,
                                        expected_contents)
 
 
-class ActPhaseInstructionThatOutputsHomeDir(instructions.ActPhaseInstruction):
-    def validate(self, global_environment: instructions.GlobalEnvironmentForPostEdsPhase) \
+class ActPhaseInstructionThatOutputsHomeDir(ActPhaseInstruction):
+    def validate(self, global_environment: common.GlobalEnvironmentForPostEdsPhase) \
             -> svh.SuccessOrValidationErrorOrHardError:
         return svh.new_svh_success()
 
     def main(
             self,
-            global_environment: instructions.GlobalEnvironmentForPostEdsPhase,
-            phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> sh.SuccessOrHardError:
+            global_environment: common.GlobalEnvironmentForPostEdsPhase,
+            phase_environment: PhaseEnvironmentForScriptGeneration) -> sh.SuccessOrHardError:
         line = HOME_DIR_HEADER + str(global_environment.home_directory)
         phase_environment.append.raw_script_statement(line)
         return sh.new_sh_success()
 
 
-class ActPhaseInstructionThatOutputsTestRootDir(instructions.ActPhaseInstruction):
-    def validate(self, global_environment: instructions.GlobalEnvironmentForPostEdsPhase) \
+class ActPhaseInstructionThatOutputsTestRootDir(ActPhaseInstruction):
+    def validate(self, global_environment: common.GlobalEnvironmentForPostEdsPhase) \
             -> svh.SuccessOrValidationErrorOrHardError:
         return svh.new_svh_success()
 
     def main(
             self,
-            global_environment: instructions.GlobalEnvironmentForPostEdsPhase,
-            phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> sh.SuccessOrHardError:
+            global_environment: common.GlobalEnvironmentForPostEdsPhase,
+            phase_environment: PhaseEnvironmentForScriptGeneration) -> sh.SuccessOrHardError:
         line = TEST_ROOT_DIR_HEADER + str(global_environment.eds.test_root_dir)
         phase_environment.append.raw_script_statement(line)
         return sh.new_sh_success()

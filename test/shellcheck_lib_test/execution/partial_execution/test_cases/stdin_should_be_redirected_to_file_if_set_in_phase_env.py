@@ -5,10 +5,12 @@ import unittest
 
 from shellcheck_lib.test_case.instruction.result import sh
 from shellcheck_lib.test_case.instruction.result import svh
+from shellcheck_lib.test_case.instruction.sections.act import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
+from shellcheck_lib.test_case.instruction.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
 from shellcheck_lib_test.execution.util import utils
 from shellcheck_lib_test.execution.util import py_unit_test_case
 from shellcheck_lib_test.execution.util.py_unit_test_case import TestCaseWithCommonDefaultForSetupAssertCleanup
-from shellcheck_lib.test_case import instructions
+from shellcheck_lib.test_case.instruction import common
 
 INPUT_TMP_FILE = 'input.txt'
 
@@ -48,7 +50,7 @@ def assertions(utc: unittest.TestCase,
         EXPECTED_CONTENTS_OF_STDERR)
 
 
-class PyCommandThatStoresStringInFileInCurrentDirectory(instructions.SetupPhaseInstruction):
+class PyCommandThatStoresStringInFileInCurrentDirectory(SetupPhaseInstruction):
     def __init__(self,
                  file_base_name: str,
                  text_to_store: str):
@@ -57,33 +59,33 @@ class PyCommandThatStoresStringInFileInCurrentDirectory(instructions.SetupPhaseI
         self.__text_to_store = text_to_store
 
     def pre_validate(self,
-                     global_environment: instructions.GlobalEnvironmentForPreEdsStep) \
+                     global_environment: common.GlobalEnvironmentForPreEdsStep) \
             -> svh.SuccessOrValidationErrorOrHardError:
         return svh.new_svh_success()
 
     def main(self,
-             global_environment: instructions.GlobalEnvironmentForPostEdsPhase,
-             settings_builder: instructions.SetupSettingsBuilder):
+             global_environment: common.GlobalEnvironmentForPostEdsPhase,
+             settings_builder: SetupSettingsBuilder):
         with open(self.__file_base_name, 'w') as f:
             f.write(self.__text_to_store)
         return svh.new_svh_success()
 
-    def post_validate(self, global_environment: instructions.GlobalEnvironmentForPostEdsPhase) \
+    def post_validate(self, global_environment: common.GlobalEnvironmentForPostEdsPhase) \
             -> svh.SuccessOrValidationErrorOrHardError:
         return svh.new_svh_success()
 
 
-class StatementsThatCopiesStdinToStdout(instructions.ActPhaseInstruction):
+class StatementsThatCopiesStdinToStdout(ActPhaseInstruction):
     def __init__(self):
         super().__init__()
 
-    def validate(self, global_environment: instructions.GlobalEnvironmentForPostEdsPhase) \
+    def validate(self, global_environment: common.GlobalEnvironmentForPostEdsPhase) \
             -> svh.SuccessOrValidationErrorOrHardError:
         return svh.new_svh_success()
 
     def main(self,
-             global_environment: instructions.GlobalEnvironmentForPostEdsPhase,
-             phase_environment: instructions.PhaseEnvironmentForScriptGeneration) \
+             global_environment: common.GlobalEnvironmentForPostEdsPhase,
+             phase_environment: PhaseEnvironmentForScriptGeneration) \
             -> sh.SuccessOrHardError:
         statements = [
             'import sys',
@@ -93,24 +95,24 @@ class StatementsThatCopiesStdinToStdout(instructions.ActPhaseInstruction):
         return svh.new_svh_success()
 
 
-class InstructionThatSetsStdinFileName(instructions.SetupPhaseInstruction):
+class InstructionThatSetsStdinFileName(SetupPhaseInstruction):
     def __init__(self,
                  file_name: str):
         super().__init__()
         self.__file_name = file_name
 
     def pre_validate(self,
-                     global_environment: instructions.GlobalEnvironmentForPreEdsStep) \
+                     global_environment: common.GlobalEnvironmentForPreEdsStep) \
             -> svh.SuccessOrValidationErrorOrHardError:
         return svh.new_svh_success()
 
     def main(self,
-             global_environment: instructions.GlobalEnvironmentForPostEdsPhase,
-             settings_builder: instructions.SetupSettingsBuilder) -> sh.SuccessOrHardError:
+             global_environment: common.GlobalEnvironmentForPostEdsPhase,
+             settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         settings_builder.stdin_file_name = self.__file_name
         return sh.new_sh_success()
 
     def post_validate(self,
-                      global_environment: instructions.GlobalEnvironmentForPostEdsPhase) \
+                      global_environment: common.GlobalEnvironmentForPostEdsPhase) \
             -> svh.SuccessOrValidationErrorOrHardError:
         return svh.new_svh_success()

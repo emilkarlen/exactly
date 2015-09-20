@@ -1,6 +1,6 @@
 import unittest
 
-from shellcheck_lib.test_case.instructions import ExecutionMode
+from shellcheck_lib.test_case.instruction.sections.anonymous import ExecutionMode
 from shellcheck_lib.execution.full_execution import translate_status
 from shellcheck_lib.execution.result import FullResultStatus, PartialResultStatus
 

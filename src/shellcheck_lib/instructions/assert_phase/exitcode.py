@@ -5,12 +5,12 @@ import shlex
 from shellcheck_lib.default.execution_mode.test_case.instruction_setup import Description, InvokationVariant
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.general import line_source
-from shellcheck_lib.test_case import instructions as i
+from shellcheck_lib.test_case.instruction import common as i
 from shellcheck_lib.instructions.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionInvalidArgumentException
 from shellcheck_lib.instructions.assert_phase.utils import instruction_utils
 from shellcheck_lib.test_case.instruction.result import pfh
-from shellcheck_lib.test_case.instructions import AssertPhaseInstruction
+from shellcheck_lib.test_case.instruction.sections.assert_ import AssertPhaseInstruction
 
 DESCRIPTION = Description(
     'Test numerical exitcode',
