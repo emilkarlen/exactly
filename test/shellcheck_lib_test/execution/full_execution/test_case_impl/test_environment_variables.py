@@ -3,6 +3,7 @@ import pathlib
 import unittest
 import functools
 
+from shellcheck_lib.execution import environment_variables
 from shellcheck_lib.test_case import test_case_doc
 from shellcheck_lib.test_case.instruction import common
 from shellcheck_lib.execution.phase_step import PhaseStep
@@ -19,7 +20,7 @@ from shellcheck_lib_test.execution.util.python_code_gen import print_env_var_if_
 
 def env_vars_dict() -> dict:
     ret_val = dict()
-    for env_var in common.ALL_ENV_VARS:
+    for env_var in environment_variables.ALL_ENV_VARS:
         if env_var in os.environ:
             ret_val[env_var] = os.environ[env_var]
     return ret_val
@@ -79,11 +80,11 @@ class Test(FullExecutionTestCaseBase):
         self.__assert_test_sanity()
         for_anonymous_phase = dict()
         home_dir_after_anonymous = str(self.initial_home_dir_path.parent)
-        for_pre_eds = {common.ENV_VAR_HOME: home_dir_after_anonymous}
+        for_pre_eds = {environment_variables.ENV_VAR_HOME: home_dir_after_anonymous}
         for_post_eds = {
-            common.ENV_VAR_HOME: home_dir_after_anonymous,
-            common.ENV_VAR_TEST: str(self.eds.test_root_dir),
-            common.ENV_VAR_TMP: str(self.eds.tmp_dir),
+            environment_variables.ENV_VAR_HOME: home_dir_after_anonymous,
+            environment_variables.ENV_VAR_TEST: str(self.eds.test_root_dir),
+            environment_variables.ENV_VAR_TMP: str(self.eds.tmp_dir),
         }
         expected_recorded_internally = {
             phase_step.ANONYMOUS_EXECUTE: for_anonymous_phase,
@@ -97,9 +98,11 @@ class Test(FullExecutionTestCaseBase):
             phase_step.CLEANUP_EXECUTE: for_post_eds,
         }
         expected_act_output = ''.join([
-            '%s=%s%s' % (common.ENV_VAR_HOME, home_dir_after_anonymous, os.linesep),
-            '%s=%s%s' % (common.ENV_VAR_TEST, str(self.eds.test_root_dir), os.linesep),
-            '%s=%s%s' % (common.ENV_VAR_TMP, str(self.eds.tmp_dir), os.linesep),
+            '%s=%s%s' % (
+                environment_variables.ENV_VAR_HOME, home_dir_after_anonymous, os.linesep),
+            '%s=%s%s' % (
+                environment_variables.ENV_VAR_TEST, str(self.eds.test_root_dir), os.linesep),
+            '%s=%s%s' % (environment_variables.ENV_VAR_TMP, str(self.eds.tmp_dir), os.linesep),
         ])
         self.__assert_expected_internally_recorded_variables(expected_recorded_internally)
         self.__assert_expected_act_script_execution_recorded_variables(expected_act_output)
@@ -141,7 +144,7 @@ ACT_SCRIPT_OUTPUT_FILE_NAME = 'act-script-output.txt'
 
 def python_code_for_print_environment_variables(file_variable: str) -> ModulesAndStatements:
     code = []
-    for env_var in common.ALL_ENV_VARS:
+    for env_var in environment_variables.ALL_ENV_VARS:
         code.extend(print_env_var_if_defined(env_var, file_variable))
     return ModulesAndStatements({'os'},
                                 code)
