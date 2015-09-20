@@ -3,7 +3,8 @@ import unittest
 from shellcheck_lib.instructions.assert_phase import stdout_stderr
 from shellcheck_lib.instructions.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException, SingleInstructionParser
-from shellcheck_lib.test_case import instructions as i
+from shellcheck_lib.test_case.instruction.result import pfh
+from shellcheck_lib.test_case.instruction.result import svh
 from shellcheck_lib_test.instructions import utils
 from shellcheck_lib_test.instructions.assert_phase.utils import AssertInstructionTest, new_source, new_line_sequence
 from shellcheck_lib_test.util.file_structure import DirContents, empty_dir, File
@@ -42,18 +43,20 @@ class TestFileContentsEmptyInvalidSyntaxFORStderr(FileContentsEmptyInvalidSyntax
 
 class FileContentsEmptyValidSyntax(TestWithParserBase):
     def fail__when__file_exists_but_is_non_empty(self, act_result: utils.ActResult):
-        test = AssertInstructionTest(i.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
-                                     i.PassOrFailOrHardErrorEnum.FAIL,
-                                     utils.ActResult(stdout_contents='contents',
-                                                     stderr_contents='contents'))
+        test = AssertInstructionTest(
+            svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+            pfh.PassOrFailOrHardErrorEnum.FAIL,
+            utils.ActResult(stdout_contents='contents',
+                            stderr_contents='contents'))
         test.apply(self,
                    self.new_parser(),
                    new_source('instruction-name', 'empty'))
 
     def pass__when__file_exists_and_is_empty(self, act_result: utils.ActResult):
-        test = AssertInstructionTest(i.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
-                                     i.PassOrFailOrHardErrorEnum.PASS,
-                                     utils.ActResult())
+        test = AssertInstructionTest(
+            svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+            pfh.PassOrFailOrHardErrorEnum.PASS,
+            utils.ActResult())
         test.apply(self,
                    self.new_parser(),
                    new_source('instruction-name', 'empty'))
@@ -111,18 +114,20 @@ class TestFileContentsNonEmptyInvalidSyntaxFORStderr(FileContentsNonEmptyInvalid
 
 class FileContentsNonEmptyValidSyntax(TestWithParserBase):
     def fail__when__file_exists_but_is_empty(self, act_result: utils.ActResult):
-        test = AssertInstructionTest(i.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
-                                     i.PassOrFailOrHardErrorEnum.FAIL,
-                                     utils.ActResult())
+        test = AssertInstructionTest(
+            svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+            pfh.PassOrFailOrHardErrorEnum.FAIL,
+            utils.ActResult())
         test.apply(self,
                    self.new_parser(),
                    new_source('instruction-name', '! empty'))
 
     def pass__when__file_exists_and_is_non_empty(self, act_result: utils.ActResult):
-        test = AssertInstructionTest(i.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
-                                     i.PassOrFailOrHardErrorEnum.PASS,
-                                     utils.ActResult(stdout_contents='contents',
-                                                     stderr_contents='contents'))
+        test = AssertInstructionTest(
+            svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+            pfh.PassOrFailOrHardErrorEnum.PASS,
+            utils.ActResult(stdout_contents='contents',
+                            stderr_contents='contents'))
         test.apply(self,
                    self.new_parser(),
                    new_source('instruction-name', '! empty'))
@@ -156,18 +161,20 @@ class TestFileContentsNonEmptyValidSyntaxFORStderr(FileContentsNonEmptyValidSynt
 
 class FileContentsFileRelHome(TestWithParserBase):
     def validation_error__when__comparison_file_does_not_exist(self):
-        test = AssertInstructionTest(i.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
-                                     i.PassOrFailOrHardErrorEnum.FAIL,
-                                     utils.ActResult())
+        test = AssertInstructionTest(
+            svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
+            pfh.PassOrFailOrHardErrorEnum.FAIL,
+            utils.ActResult())
         test.apply(self,
                    self.new_parser(),
                    new_source('instruction-name', 'contents --rel-home f.txt'))
 
     def validation_error__when__comparison_file_is_a_directory(self):
-        test = AssertInstructionTest(i.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
-                                     i.PassOrFailOrHardErrorEnum.FAIL,
-                                     utils.ActResult(),
-                                     home_dir_contents=DirContents([empty_dir('dir')]))
+        test = AssertInstructionTest(
+            svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
+            pfh.PassOrFailOrHardErrorEnum.FAIL,
+            utils.ActResult(),
+            home_dir_contents=DirContents([empty_dir('dir')]))
         test.apply(self,
                    self.new_parser(),
                    new_source('instruction-name', 'contents --rel-home dir'))
@@ -175,10 +182,11 @@ class FileContentsFileRelHome(TestWithParserBase):
     def fail__when__contents_differ(self,
                                     act_result: utils.ActResult,
                                     expected_contents: str):
-        test = AssertInstructionTest(i.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
-                                     i.PassOrFailOrHardErrorEnum.FAIL,
-                                     act_result,
-                                     home_dir_contents=DirContents([File('f.txt', expected_contents)]))
+        test = AssertInstructionTest(
+            svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+            pfh.PassOrFailOrHardErrorEnum.FAIL,
+            act_result,
+            home_dir_contents=DirContents([File('f.txt', expected_contents)]))
         test.apply(self,
                    self.new_parser(),
                    new_source('instruction-name', 'contents --rel-home f.txt'))
@@ -186,10 +194,11 @@ class FileContentsFileRelHome(TestWithParserBase):
     def pass__when__contents_equals(self,
                                     act_result: utils.ActResult,
                                     expected_contents: str):
-        test = AssertInstructionTest(i.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
-                                     i.PassOrFailOrHardErrorEnum.PASS,
-                                     act_result,
-                                     home_dir_contents=DirContents([File('f.txt', expected_contents)]))
+        test = AssertInstructionTest(
+            svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+            pfh.PassOrFailOrHardErrorEnum.PASS,
+            act_result,
+            home_dir_contents=DirContents([File('f.txt', expected_contents)]))
         test.apply(self,
                    self.new_parser(),
                    new_source('instruction-name', 'contents --rel-home f.txt'))
@@ -239,18 +248,20 @@ class TestFileContentsFileRelHomeFORStderr(FileContentsFileRelHome):
 
 class FileContentsFileRelCwd(TestWithParserBase):
     def fail__when__comparison_file_does_not_exist(self):
-        test = AssertInstructionTest(i.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
-                                     i.PassOrFailOrHardErrorEnum.FAIL,
-                                     utils.ActResult())
+        test = AssertInstructionTest(
+            svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+            pfh.PassOrFailOrHardErrorEnum.FAIL,
+            utils.ActResult())
         test.apply(self,
                    self.new_parser(),
                    new_source('instruction-name', 'contents --rel-cwd f.txt'))
 
     def fail__when__comparison_file_is_a_directory(self):
-        test = AssertInstructionTest(i.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
-                                     i.PassOrFailOrHardErrorEnum.FAIL,
-                                     utils.ActResult(),
-                                     act_dir_contents_after_act=DirContents([empty_dir('dir')]))
+        test = AssertInstructionTest(
+            svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+            pfh.PassOrFailOrHardErrorEnum.FAIL,
+            utils.ActResult(),
+            act_dir_contents_after_act=DirContents([empty_dir('dir')]))
         test.apply(self,
                    self.new_parser(),
                    new_source('instruction-name', 'contents --rel-cwd dir'))
@@ -258,10 +269,11 @@ class FileContentsFileRelCwd(TestWithParserBase):
     def fail__when__contents_differ(self,
                                     act_result: utils.ActResult,
                                     expected_contents: str):
-        test = AssertInstructionTest(i.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
-                                     i.PassOrFailOrHardErrorEnum.FAIL,
-                                     act_result,
-                                     act_dir_contents_after_act=DirContents([File('f.txt', expected_contents)]))
+        test = AssertInstructionTest(
+            svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+            pfh.PassOrFailOrHardErrorEnum.FAIL,
+            act_result,
+            act_dir_contents_after_act=DirContents([File('f.txt', expected_contents)]))
         test.apply(self,
                    self.new_parser(),
                    new_source('instruction-name', 'contents --rel-cwd f.txt'))
@@ -269,10 +281,11 @@ class FileContentsFileRelCwd(TestWithParserBase):
     def pass__when__contents_equals(self,
                                     act_result: utils.ActResult,
                                     expected_contents: str):
-        test = AssertInstructionTest(i.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
-                                     i.PassOrFailOrHardErrorEnum.PASS,
-                                     act_result,
-                                     act_dir_contents_after_act=DirContents([File('f.txt', expected_contents)]))
+        test = AssertInstructionTest(
+            svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+            pfh.PassOrFailOrHardErrorEnum.PASS,
+            act_result,
+            act_dir_contents_after_act=DirContents([File('f.txt', expected_contents)]))
         test.apply(self,
                    self.new_parser(),
                    new_source('instruction-name', 'contents --rel-cwd f.txt'))

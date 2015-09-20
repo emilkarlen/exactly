@@ -4,6 +4,9 @@ import pathlib
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.document.model import Instruction
 from shellcheck_lib.script_language import act_script_management
+from shellcheck_lib.test_case.instruction.result.pfh import PassOrFailOrHardError
+from shellcheck_lib.test_case.instruction.result.sh import SuccessOrHardError
+from shellcheck_lib.test_case.instruction.result.svh import SuccessOrValidationErrorOrHardError
 
 ENV_VAR_HOME = 'SHELLCHECK_HOME'
 ENV_VAR_TEST = 'SHELLCHECK_TESTROOT'
@@ -12,155 +15,6 @@ ENV_VAR_TMP = 'SHELLCHECK_TMP'
 ALL_ENV_VARS = [ENV_VAR_HOME,
                 ENV_VAR_TEST,
                 ENV_VAR_TMP]
-
-
-class SuccessOrHardError(tuple):
-    """
-    Represents EITHER success OR hard error.
-    """
-
-    def __new__(cls,
-                failure_message: str):
-        return tuple.__new__(cls, (failure_message, ))
-
-    @property
-    def failure_message(self) -> str:
-        """
-        :return None iff the object represents SUCCESS.
-        """
-        return self[0]
-
-    @property
-    def is_success(self) -> bool:
-        return self[0] is None
-
-    @property
-    def is_hard_error(self) -> bool:
-        return not self.is_success
-
-
-__SH_SUCCESS = SuccessOrHardError(None)
-
-
-def new_sh_success() -> SuccessOrHardError:
-    return __SH_SUCCESS
-
-
-def new_sh_hard_error(failure_message: str) -> SuccessOrHardError:
-    if failure_message is None:
-        raise ValueError('A HARD ERROR must have a failure message (that is not None)')
-    return SuccessOrHardError(failure_message)
-
-
-class SuccessOrValidationErrorOrHardErrorEnum(Enum):
-    SUCCESS = 0
-    VALIDATION_ERROR = 1
-    HARD_ERROR = 2
-
-class SuccessOrValidationErrorOrHardError(tuple):
-    def __new__(cls,
-                is_hard_error: bool,
-                failure_message: str):
-        return tuple.__new__(cls, (is_hard_error, failure_message, ))
-
-    @property
-    def status(self) -> SuccessOrValidationErrorOrHardErrorEnum:
-        if self.is_success:
-            return SuccessOrValidationErrorOrHardErrorEnum.SUCCESS
-        if self.is_validation_error:
-            return SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR
-        return SuccessOrValidationErrorOrHardErrorEnum.HARD_ERROR
-
-    @property
-    def failure_message(self) -> str:
-        """
-        :return None iff the object represents SUCCESS.
-        """
-        return self[1]
-
-    @property
-    def is_success(self) -> bool:
-        return self[0] is None
-
-    @property
-    def is_validation_error(self) -> bool:
-        return self[0] is False
-
-    @property
-    def is_hard_error(self) -> bool:
-        return self[0] is True
-
-
-__SVH_SUCCESS = SuccessOrValidationErrorOrHardError(None, None)
-
-
-def new_svh_success() -> SuccessOrValidationErrorOrHardError:
-    return __SVH_SUCCESS
-
-
-def new_svh_validation_error(failure_message: str) -> SuccessOrValidationErrorOrHardError:
-    if failure_message is None:
-        raise ValueError('A VALIDATION ERROR must have a failure message (that is not None)')
-    return SuccessOrValidationErrorOrHardError(False, failure_message)
-
-
-def new_svh_hard_error(failure_message: str) -> SuccessOrValidationErrorOrHardError:
-    if failure_message is None:
-        raise ValueError('A HARD ERROR must have a failure message (that is not None)')
-    return SuccessOrValidationErrorOrHardError(True, failure_message)
-
-
-class PassOrFailOrHardErrorEnum(Enum):
-    """
-    Implementation note: The error-values must correspond to those of PartialControlledFailureEnum
-    """
-    PASS = 0
-    FAIL = 2
-    HARD_ERROR = 99
-
-
-class PassOrFailOrHardError(tuple):
-    """
-    Represents EITHER success OR hard error.
-    """
-
-    def __new__(cls,
-                status: PassOrFailOrHardErrorEnum,
-                failure_message: str):
-        return tuple.__new__(cls, (status, failure_message, ))
-
-    @property
-    def status(self) -> PassOrFailOrHardErrorEnum:
-        return self[0]
-
-    @property
-    def is_error(self) -> bool:
-        return self.status is not PassOrFailOrHardErrorEnum.PASS
-
-    @property
-    def failure_message(self) -> str:
-        """
-        :return None iff the object represents PASS.
-        """
-        return self[1]
-
-
-__PFH_PASS = PassOrFailOrHardError(PassOrFailOrHardErrorEnum.PASS, None)
-
-
-def new_pfh_pass() -> SuccessOrHardError:
-    return __PFH_PASS
-
-
-def new_pfh_fail(failure_message: str) -> SuccessOrHardError:
-    return PassOrFailOrHardError(PassOrFailOrHardErrorEnum.FAIL,
-                                 failure_message)
-
-
-def new_pfh_hard_error(failure_message: str) -> SuccessOrHardError:
-    if failure_message is None:
-        raise ValueError('A HARD ERROR must have a failure message (that is not None)')
-    return SuccessOrHardError(failure_message)
 
 
 class ExecutionMode(Enum):

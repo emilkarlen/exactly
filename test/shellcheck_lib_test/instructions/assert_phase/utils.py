@@ -6,6 +6,8 @@ from shellcheck_lib.general.line_source import LineSequenceBuilder
 from shellcheck_lib.instructions.instruction_parser_for_single_phase import \
     SingleInstructionParser
 from shellcheck_lib.test_case import instructions as i
+from shellcheck_lib.test_case.instruction.result import pfh
+from shellcheck_lib.test_case.instruction.result import svh
 from shellcheck_lib_test.instructions import utils
 from shellcheck_lib_test.util.file_structure import DirContents
 
@@ -35,8 +37,8 @@ def new_line_sequence(first_line: str) -> LineSequenceBuilder:
 
 class AssertInstructionTest:
     def __init__(self,
-                 expected_validation_result: i.SuccessOrValidationErrorOrHardErrorEnum,
-                 expected_application_result: i.PassOrFailOrHardErrorEnum,
+                 expected_validation_result: svh.SuccessOrValidationErrorOrHardErrorEnum,
+                 expected_application_result: pfh.PassOrFailOrHardErrorEnum,
                  act_result: utils.ActResult,
                  home_dir_contents: DirContents=DirContents([]),
                  act_dir_contents_after_act: DirContents=DirContents([])):
@@ -47,11 +49,11 @@ class AssertInstructionTest:
         self._act_dir_contents_after_act = act_dir_contents_after_act
 
     @property
-    def expected_validation_result(self) -> i.SuccessOrValidationErrorOrHardError:
+    def expected_validation_result(self) -> svh.SuccessOrValidationErrorOrHardError:
         return self._expected_validation_result
 
     @property
-    def expected_application_result(self) -> i.PassOrFailOrHardErrorEnum:
+    def expected_application_result(self) -> pfh.PassOrFailOrHardErrorEnum:
         return self._expected_application_result
 
     def apply(self,
@@ -68,7 +70,7 @@ class AssertInstructionTest:
             ptc.assertEqual(self.expected_validation_result,
                             validation_result.status,
                             'Validation result status')
-            if self.expected_validation_result == i.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS:
+            if self.expected_validation_result == svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS:
                 home_and_eds.write_act_result(self._act_result)
                 phase_environment = i.PhaseEnvironmentForInternalCommands()
                 self._act_dir_contents_after_act.write_to(home_and_eds.eds.test_root_dir)

@@ -8,6 +8,7 @@ from shellcheck_lib.test_case import instructions as i
 from shellcheck_lib.instructions.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionInvalidArgumentException
 from shellcheck_lib.instructions.assert_phase.utils import instruction_utils
+from shellcheck_lib.test_case.instruction.result import pfh
 from shellcheck_lib.test_case.instructions import AssertPhaseInstruction
 from .utils import contents_utils
 
@@ -62,20 +63,20 @@ class InstructionForFileType(instruction_utils.InstructionWithoutValidationBase)
 
     def main(self,
              global_environment: i.GlobalEnvironmentForPostEdsPhase,
-             phase_environment: i.PhaseEnvironmentForInternalCommands) -> i.PassOrFailOrHardError:
+             phase_environment: i.PhaseEnvironmentForInternalCommands) -> pfh.PassOrFailOrHardError:
         file_path = pathlib.Path(self._file_name_relative_current_directory)
         if not file_path.exists():
-            return i.new_pfh_fail('File does not exist: ' + self._file_name_relative_current_directory)
+            return pfh.new_pfh_fail('File does not exist: ' + self._file_name_relative_current_directory)
         if self._expected_file_type is FileType.REGULAR:
             if not file_path.is_file():
-                return i.new_pfh_fail('Not a regular file: ' + self._file_name_relative_current_directory)
+                return pfh.new_pfh_fail('Not a regular file: ' + self._file_name_relative_current_directory)
         elif self._expected_file_type is FileType.DIRECTORY:
             if not file_path.is_dir():
-                return i.new_pfh_fail('Not a directory: ' + self._file_name_relative_current_directory)
+                return pfh.new_pfh_fail('Not a directory: ' + self._file_name_relative_current_directory)
         elif self._expected_file_type is FileType.SYMLINK:
             if not file_path.is_symlink():
-                return i.new_pfh_fail('Not a symlink: ' + self._file_name_relative_current_directory)
-        return i.new_pfh_pass()
+                return pfh.new_pfh_fail('Not a symlink: ' + self._file_name_relative_current_directory)
+        return pfh.new_pfh_pass()
 
 
 class Parser(SingleInstructionParser):

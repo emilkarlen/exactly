@@ -5,9 +5,9 @@ import functools
 from shellcheck_lib.execution.phase_step import PhaseStep
 from shellcheck_lib.test_case import test_case_doc
 from shellcheck_lib.test_case import instructions as i
-from shellcheck_lib.test_case import success_or_validation_hard_or_error_construction as validation_result
-from shellcheck_lib.test_case import success_or_hard_error_construction as execution_result
-from shellcheck_lib.test_case import assert_instruction_result as assert_result
+from shellcheck_lib.test_case.instruction.result import pfh
+from shellcheck_lib.test_case.instruction.result import sh
+from shellcheck_lib.test_case.instruction.result import svh
 from shellcheck_lib_test.execution.util import instruction_that_do_and_return
 
 
@@ -54,9 +54,9 @@ def do_nothing__with_eds(recorder: Recorder,
 
 class TestCaseSetupWithRecorder(tuple):
     def __new__(cls,
-                ret_val_from_validate: i.SuccessOrValidationErrorOrHardError=validation_result.new_success(),
-                ret_val_from_execute: i.SuccessOrHardError=execution_result.new_success(),
-                ret_val_from_assert_execute: i.PassOrFailOrHardError=assert_result.new_pass(),
+                ret_val_from_validate: svh.SuccessOrValidationErrorOrHardError=svh.new_svh_success(),
+                ret_val_from_execute: sh.SuccessOrHardError=sh.new_sh_success(),
+                ret_val_from_assert_execute: pfh.PassOrFailOrHardError=pfh.new_pfh_pass(),
                 validation_action__without_eds: types.FunctionType=do_nothing__without_eds,
                 anonymous_phase_action: types.FunctionType=do_nothing__anonymous_phase,
                 validation_action__with_eds: types.FunctionType=do_nothing__with_eds,
@@ -91,15 +91,15 @@ class TestCaseSetupWithRecorder(tuple):
             execution__generate_script=self.execution__generate_script)
 
     @property
-    def ret_val_from_validate(self) -> i.SuccessOrValidationErrorOrHardError:
+    def ret_val_from_validate(self) -> svh.SuccessOrValidationErrorOrHardError:
         return self[0]
 
     @property
-    def ret_val_from_execute(self) -> i.SuccessOrHardError:
+    def ret_val_from_execute(self) -> sh.SuccessOrHardError:
         return self[1]
 
     @property
-    def ret_val_from_assert_execute(self) -> i.PassOrFailOrHardError:
+    def ret_val_from_assert_execute(self) -> pfh.PassOrFailOrHardError:
         return self[2]
 
     @property

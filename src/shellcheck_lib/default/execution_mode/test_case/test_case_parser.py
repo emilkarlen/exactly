@@ -7,6 +7,8 @@ from shellcheck_lib.instructions.instruction_parser_for_single_phase import \
     SectionElementParserForDictionaryOfInstructions, SectionElementParserForStandardCommentAndEmptyLines
 from shellcheck_lib.test_case import test_case_doc
 from shellcheck_lib.test_case import instructions
+from shellcheck_lib.test_case.instruction.result import sh
+from shellcheck_lib.test_case.instruction.result import svh
 
 
 class Parser:
@@ -60,10 +62,10 @@ class SourceCodeInstruction(instructions.ActPhaseInstruction):
         self.source_code = source_code
 
     def validate(self, global_environment: instructions.GlobalEnvironmentForPostEdsPhase) \
-            -> instructions.SuccessOrValidationErrorOrHardError:
-        return instructions.new_svh_success()
+            -> svh.SuccessOrValidationErrorOrHardError:
+        return svh.new_svh_success()
 
     def main(self, global_environment: instructions.GlobalEnvironmentForPostEdsPhase,
-             script_generator: instructions.PhaseEnvironmentForScriptGeneration) -> instructions.SuccessOrHardError:
+             script_generator: instructions.PhaseEnvironmentForScriptGeneration) -> sh.SuccessOrHardError:
         script_generator.append.raw_script_statement(self.source_code)
-        return instructions.new_sh_success()
+        return sh.new_sh_success()

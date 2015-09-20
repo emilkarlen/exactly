@@ -1,8 +1,8 @@
 import os
 import unittest
 
-from shellcheck_lib.test_case.success_or_hard_error_construction import new_success
-from shellcheck_lib.test_case import success_or_validation_hard_or_error_construction
+from shellcheck_lib.test_case.instruction.result import sh
+from shellcheck_lib.test_case.instruction.result import svh
 from shellcheck_lib.execution import phases
 from shellcheck_lib.general import line_source
 from shellcheck_lib.test_case import instructions
@@ -54,27 +54,27 @@ def assertions(utc: unittest.TestCase,
 
 class ActPhaseInstructionThatOutputsHomeDir(instructions.ActPhaseInstruction):
     def validate(self, global_environment: instructions.GlobalEnvironmentForPostEdsPhase) \
-            -> instructions.SuccessOrValidationErrorOrHardError:
-        return success_or_validation_hard_or_error_construction.new_success()
+            -> svh.SuccessOrValidationErrorOrHardError:
+        return svh.new_svh_success()
 
     def main(
             self,
             global_environment: instructions.GlobalEnvironmentForPostEdsPhase,
-            phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> instructions.SuccessOrHardError:
+            phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> sh.SuccessOrHardError:
         line = HOME_DIR_HEADER + str(global_environment.home_directory)
         phase_environment.append.raw_script_statement(line)
-        return new_success()
+        return sh.new_sh_success()
 
 
 class ActPhaseInstructionThatOutputsTestRootDir(instructions.ActPhaseInstruction):
     def validate(self, global_environment: instructions.GlobalEnvironmentForPostEdsPhase) \
-            -> instructions.SuccessOrValidationErrorOrHardError:
-        return success_or_validation_hard_or_error_construction.new_success()
+            -> svh.SuccessOrValidationErrorOrHardError:
+        return svh.new_svh_success()
 
     def main(
             self,
             global_environment: instructions.GlobalEnvironmentForPostEdsPhase,
-            phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> instructions.SuccessOrHardError:
+            phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> sh.SuccessOrHardError:
         line = TEST_ROOT_DIR_HEADER + str(global_environment.eds.test_root_dir)
         phase_environment.append.raw_script_statement(line)
-        return new_success()
+        return sh.new_sh_success()

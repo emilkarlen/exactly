@@ -1,10 +1,12 @@
-from shellcheck_lib.test_case.instructions import PassOrFailOrHardErrorEnum
+from shellcheck_lib.test_case.instruction.result import pfh
+from shellcheck_lib.test_case.instruction.result import sh
+from shellcheck_lib.test_case.instruction.result import svh
 from shellcheck_lib.execution.single_instruction_executor import ControlledInstructionExecutor, \
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum
 from shellcheck_lib.test_case import instructions as instr
 
 
-def _from_success_or_validation_error_or_hard_error(res: instr.SuccessOrValidationErrorOrHardError) \
+def _from_success_or_validation_error_or_hard_error(res: svh.SuccessOrValidationErrorOrHardError) \
         -> PartialInstructionControlledFailureInfo:
     if res.is_success:
         return None
@@ -16,15 +18,15 @@ def _from_success_or_validation_error_or_hard_error(res: instr.SuccessOrValidati
                                                        res.failure_message)
 
 
-def _from_success_or_hard_error(res: instr.SuccessOrHardError) -> PartialInstructionControlledFailureInfo:
+def _from_success_or_hard_error(res: sh.SuccessOrHardError) -> PartialInstructionControlledFailureInfo:
     return None \
         if res.is_success \
         else PartialInstructionControlledFailureInfo(PartialControlledFailureEnum.HARD_ERROR,
                                                      res.failure_message)
 
 
-def _from_pass_or_fail_or_hard_error(res: instr.PassOrFailOrHardError) -> PartialInstructionControlledFailureInfo:
-    if res.status is PassOrFailOrHardErrorEnum.PASS:
+def _from_pass_or_fail_or_hard_error(res: pfh.PassOrFailOrHardError) -> PartialInstructionControlledFailureInfo:
+    if res.status is pfh.PassOrFailOrHardErrorEnum.PASS:
         return None
     else:
         return PartialInstructionControlledFailureInfo(PartialControlledFailureEnum(res.status.value),
