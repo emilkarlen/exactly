@@ -23,16 +23,6 @@ class FileNotAccessibleSimpleError(Exception):
         return self._file_path
 
 
-class TestCaseSectionInstruction(Instruction):
-    def resolve_paths(self,
-                      environment: Environment) -> list:
-        """
-        :raises FileNotAccessibleError: A referenced file is not accessible.
-        :return: [pathlib.Path]
-        """
-        raise NotImplementedError()
-
-
 class TestSuiteSectionInstruction(Instruction):
     def resolve_paths(self,
                       environment: Environment) -> list:

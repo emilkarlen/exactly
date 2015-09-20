@@ -1,5 +1,6 @@
 from shellcheck_lib.test_suite.instruction_set import instruction
 from shellcheck_lib.document.model import PhaseContents, ElementType
+from shellcheck_lib.test_suite.instruction_set.sections.cases import TestCaseSectionInstruction
 
 
 class TestSuite(tuple):
@@ -7,7 +8,7 @@ class TestSuite(tuple):
                 suites_section: PhaseContents,
                 cases_section: PhaseContents):
         TestSuite.__assert_instruction_class(suites_section, instruction.TestSuiteSectionInstruction)
-        TestSuite.__assert_instruction_class(cases_section, instruction.TestCaseSectionInstruction)
+        TestSuite.__assert_instruction_class(cases_section, TestCaseSectionInstruction)
         return tuple.__new__(cls, (suites_section,
                                    cases_section))
 
