@@ -1,9 +1,14 @@
-from shellcheck_lib.document.model import Instruction
 from shellcheck_lib.general import line_source
+from shellcheck_lib.document.model import Instruction
+from shellcheck_lib.document import parse
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SectionElementParserForStandardCommentAndEmptyLines
 from shellcheck_lib.test_suite.instruction_set import instruction, utils
 from shellcheck_lib.test_suite.instruction_set.instruction import Environment
+
+
+def new_parser() -> parse.SectionElementParser:
+    return _CasesSectionParser()
 
 
 class TestCaseSectionInstruction(Instruction):
@@ -16,16 +21,16 @@ class TestCaseSectionInstruction(Instruction):
         raise NotImplementedError()
 
 
-class CasesSectionParser(SectionElementParserForStandardCommentAndEmptyLines):
+class _CasesSectionParser(SectionElementParserForStandardCommentAndEmptyLines):
     def _parse_instruction(self,
                            source: line_source.LineSequenceBuilder) -> TestCaseSectionInstruction:
         line_text = source.first_line.text
-        return TestCaseWildcardFileInstruction(line_text) \
+        return _TestCaseWildcardFileInstruction(line_text) \
             if utils.is_wildcard_pattern(line_text) \
-            else TestCaseNonWildcardFileInstruction(line_text)
+            else _TestCaseNonWildcardFileInstruction(line_text)
 
 
-class TestCaseNonWildcardFileInstruction(TestCaseSectionInstruction):
+class _TestCaseNonWildcardFileInstruction(TestCaseSectionInstruction):
     """
     Resolves a single path from a file-name that does not contain wild-cards.
     """
@@ -37,7 +42,7 @@ class TestCaseNonWildcardFileInstruction(TestCaseSectionInstruction):
         return utils.resolve_non_wildcard_path(self._file_name, environment)
 
 
-class TestCaseWildcardFileInstruction(TestCaseSectionInstruction):
+class _TestCaseWildcardFileInstruction(TestCaseSectionInstruction):
     """
     Resolves a list of paths from a file-name pattern.
     """
