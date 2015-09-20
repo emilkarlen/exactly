@@ -7,7 +7,7 @@ from shellcheck_lib.document.parse import LineSequenceSourceFromListOfLines, Lis
 from shellcheck_lib.general import line_source
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from shellcheck_lib.instructions import instruction_parser_using_argument_parser as sut
+from shellcheck_lib.document.parser_implementations import instruction_parser_using_argument_parser as sut
 
 
 def name_argument_splitter(s: str) -> (str, str):
