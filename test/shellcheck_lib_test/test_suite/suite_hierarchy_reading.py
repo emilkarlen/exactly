@@ -4,7 +4,8 @@ import unittest
 from shellcheck_lib.general import line_source
 import shellcheck_lib.test_case.test_case_processing
 from shellcheck_lib.test_suite import structure
-from shellcheck_lib.test_suite.parse import SuiteFileReferenceError, SuiteSyntaxError, SuiteDoubleInclusion
+from shellcheck_lib.test_suite.instruction_set.parse import SuiteFileReferenceError, SuiteSyntaxError, \
+    SuiteDoubleInclusion
 from shellcheck_lib_test.document.test_resources import assert_equals_line
 from shellcheck_lib_test.util.file_structure import DirContents, File, Dir
 from shellcheck_lib_test.util.with_tmp_file import lines_content

@@ -12,7 +12,7 @@ from shellcheck_lib.general import output
 from shellcheck_lib.test_case.test_case_doc import TestCase
 from shellcheck_lib.test_suite import structure
 from shellcheck_lib.test_suite.enumeration import DepthFirstEnumerator
-from shellcheck_lib.test_suite.parse import SuiteSyntaxError
+from shellcheck_lib.test_suite.instruction_set.parse import SuiteSyntaxError
 from shellcheck_lib.test_suite import reporting
 from shellcheck_lib.test_case import test_case_processing
 from shellcheck_lib.test_suite.suite_hierarchy_reading import SuiteHierarchyReader

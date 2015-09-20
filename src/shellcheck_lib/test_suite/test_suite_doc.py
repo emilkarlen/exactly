@@ -1,4 +1,4 @@
-from . import instruction
+from shellcheck_lib.test_suite.instruction_set import instruction
 from shellcheck_lib.document.model import PhaseContents, ElementType
 
 
