@@ -1,13 +1,11 @@
 import unittest
 
-from shellcheck_lib_test.document import parse, test_syntax, parser_implementations
+from shellcheck_lib_test.document.parser_implementations import instruction_parser_for_single_phase
 
 
 def suite():
     ret_val = unittest.TestSuite()
-    ret_val.addTest(parse.suite())
-    ret_val.addTest(test_syntax.suite())
-    ret_val.addTest(parser_implementations.suite())
+    ret_val.addTest(instruction_parser_for_single_phase.suite())
     return ret_val
 
 

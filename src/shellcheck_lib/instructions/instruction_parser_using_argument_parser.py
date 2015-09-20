@@ -3,7 +3,7 @@ import shlex
 
 from shellcheck_lib.document.model import Instruction
 from shellcheck_lib.general import line_source
-from shellcheck_lib.instructions.instruction_parser_for_single_phase import SingleInstructionParser, \
+from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionInvalidArgumentException
 
 
