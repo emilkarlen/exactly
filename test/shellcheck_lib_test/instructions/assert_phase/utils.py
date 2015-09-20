@@ -3,7 +3,7 @@ import unittest
 from shellcheck_lib.document import parse
 from shellcheck_lib.general import line_source
 from shellcheck_lib.general.line_source import LineSequenceBuilder
-from shellcheck_lib.instructions.instruction_parser_for_single_phase import \
+from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser
 from shellcheck_lib.test_case.instruction import common as i
 from shellcheck_lib.test_case.instruction.result import pfh

@@ -5,7 +5,7 @@ import shlex
 from shellcheck_lib.default.execution_mode.test_case.instruction_setup import Description, InvokationVariant
 from shellcheck_lib.general import line_source
 from shellcheck_lib.test_case.instruction import common as i
-from shellcheck_lib.instructions.instruction_parser_for_single_phase import SingleInstructionParser, \
+from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionInvalidArgumentException
 from shellcheck_lib.instructions.assert_phase.utils import instruction_utils
 from shellcheck_lib.test_case.instruction.result import pfh

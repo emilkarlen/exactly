@@ -5,7 +5,8 @@ from shellcheck_lib.document.model import Instruction
 from shellcheck_lib.document import parse
 from shellcheck_lib.document.parse import LineSequenceSourceFromListOfLines, ListOfLines
 from shellcheck_lib.general import line_source
-from shellcheck_lib.instructions.instruction_parser_for_single_phase import SingleInstructionInvalidArgumentException
+from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
+    SingleInstructionInvalidArgumentException
 from shellcheck_lib.instructions import instruction_parser_using_argument_parser as sut
 
 
