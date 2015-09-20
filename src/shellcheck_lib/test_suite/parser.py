@@ -1,16 +1,16 @@
 from shellcheck_lib.document import parse
 from shellcheck_lib.general import line_source
 from shellcheck_lib.test_suite import test_suite_doc
-from shellcheck_lib.test_suite.instruction_set.sections.suites import SuitesSectionParser
-from shellcheck_lib.test_suite.instruction_set.sections.cases import CasesSectionParser
+from shellcheck_lib.test_suite.instruction_set.sections import suites
+from shellcheck_lib.test_suite.instruction_set.sections import cases
 
 SECTION_NAME__SUITS = 'suites'
 SECTION_NAME__CASES = 'cases'
 
 PARSER_CONFIGURATION = parse.SectionsConfiguration(
     None,
-    (parse.SectionConfiguration(SECTION_NAME__SUITS, SuitesSectionParser()),
-     parse.SectionConfiguration(SECTION_NAME__CASES, CasesSectionParser()),
+    (parse.SectionConfiguration(SECTION_NAME__SUITS, suites.new_parser()),
+     parse.SectionConfiguration(SECTION_NAME__CASES, cases.new_parser()),
      )
 )
 
