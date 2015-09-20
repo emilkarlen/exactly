@@ -1,7 +1,19 @@
+from shellcheck_lib.document.model import Instruction
 from shellcheck_lib.general import line_source
 from shellcheck_lib.instructions.instruction_parser_for_single_phase import \
     SectionElementParserForStandardCommentAndEmptyLines
 from shellcheck_lib.test_suite.instruction_set import instruction, utils
+from shellcheck_lib.test_suite.instruction_set.instruction import Environment
+
+
+class TestCaseSectionInstruction(Instruction):
+    def resolve_paths(self,
+                      environment: Environment) -> list:
+        """
+        :raises FileNotAccessibleError: A referenced file is not accessible.
+        :return: [pathlib.Path]
+        """
+        raise NotImplementedError()
 
 
 class CasesSectionParser(SectionElementParserForStandardCommentAndEmptyLines):
@@ -13,7 +25,7 @@ class CasesSectionParser(SectionElementParserForStandardCommentAndEmptyLines):
             else TestCaseNonWildcardFileInstruction(line_text)
 
 
-class TestCaseNonWildcardFileInstruction(instruction.TestCaseSectionInstruction):
+class TestCaseNonWildcardFileInstruction(TestCaseSectionInstruction):
     """
     Resolves a single path from a file-name that does not contain wild-cards.
     """
@@ -25,7 +37,7 @@ class TestCaseNonWildcardFileInstruction(instruction.TestCaseSectionInstruction)
         return utils.resolve_non_wildcard_path(self._file_name, environment)
 
 
-class TestCaseWildcardFileInstruction(instruction.TestCaseSectionInstruction):
+class TestCaseWildcardFileInstruction(TestCaseSectionInstruction):
     """
     Resolves a list of paths from a file-name pattern.
     """
