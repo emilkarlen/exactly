@@ -1,13 +1,13 @@
 import types
 from pathlib import Path
 
+from shellcheck_lib.test_case.instruction.result import pfh
+from shellcheck_lib.test_case.instruction.result import sh
+from shellcheck_lib.test_case.instruction.result import svh
 from shellcheck_lib_test.execution.util import python_code_gen as py
 from shellcheck_lib.execution import phase_step
 from shellcheck_lib.execution.phase_step import PhaseStep
 from shellcheck_lib.test_case import instructions as i
-from shellcheck_lib.test_case import success_or_validation_hard_or_error_construction as validation_result
-from shellcheck_lib.test_case import success_or_hard_error_construction as execution_result
-from shellcheck_lib.test_case import assert_instruction_result as assert_result
 from shellcheck_lib.document.model import Instruction
 from shellcheck_lib_test.execution.util.test_case_generation import TestCaseGeneratorBase
 
@@ -34,9 +34,9 @@ def do_nothing__generate_script(global_environment: i.GlobalEnvironmentForPostEd
 
 class TestCaseSetup(tuple):
     def __new__(cls,
-                ret_val_from_validate: i.SuccessOrValidationErrorOrHardError=validation_result.new_success(),
-                ret_val_from_execute: i.SuccessOrHardError=execution_result.new_success(),
-                ret_val_from_assert_execute: i.PassOrFailOrHardError=assert_result.new_pass(),
+                ret_val_from_validate: svh.SuccessOrValidationErrorOrHardError=svh.new_svh_success(),
+                ret_val_from_execute: sh.SuccessOrHardError=sh.new_sh_success(),
+                ret_val_from_assert_execute: pfh.PassOrFailOrHardError=pfh.new_pfh_pass(),
                 validation_action__without_eds: types.FunctionType=do_nothing__without_eds,
                 anonymous_phase_action: types.FunctionType=do_nothing__anonymous_phase,
                 validation_action__with_eds: types.FunctionType=do_nothing__with_eds,
@@ -69,15 +69,15 @@ class TestCaseSetup(tuple):
         return _CleanupInstruction(self)
 
     @property
-    def ret_val_from_validate(self) -> i.SuccessOrValidationErrorOrHardError:
+    def ret_val_from_validate(self) -> svh.SuccessOrValidationErrorOrHardError:
         return self[0]
 
     @property
-    def ret_val_from_execute(self) -> i.SuccessOrHardError:
+    def ret_val_from_execute(self) -> sh.SuccessOrHardError:
         return self[1]
 
     @property
-    def ret_val_from_assert_execute(self) -> i.PassOrFailOrHardError:
+    def ret_val_from_assert_execute(self) -> pfh.PassOrFailOrHardError:
         return self[2]
 
     @property
@@ -140,7 +140,7 @@ class _AnonymousInstruction(i.AnonymousPhaseInstruction):
 
     def main(self,
              global_environment,
-             phase_environment: i.PhaseEnvironmentForAnonymousPhase) -> i.SuccessOrHardError:
+             phase_environment: i.PhaseEnvironmentForAnonymousPhase) -> sh.SuccessOrHardError:
         self.__configuration.anonymous_phase_action(phase_step.ANONYMOUS_EXECUTE,
                                                     phase_environment)
         return self.__configuration.ret_val_from_execute
@@ -180,20 +180,21 @@ class _SetupInstruction(i.SetupPhaseInstruction):
         self.__configuration = configuration
 
     def pre_validate(self,
-                     global_environment: i.GlobalEnvironmentForPreEdsStep) -> i.SuccessOrValidationErrorOrHardError:
+                     global_environment: i.GlobalEnvironmentForPreEdsStep) -> svh.SuccessOrValidationErrorOrHardError:
         self.__configuration.validation_action__without_eds(phase_step.SETUP_PRE_VALIDATE,
                                                             global_environment.home_directory)
         return self.__configuration.ret_val_from_execute
 
     def main(self,
              global_environment: i.GlobalEnvironmentForPostEdsPhase,
-             settings_builder: i.SetupSettingsBuilder) -> i.SuccessOrHardError:
+             settings_builder: i.SetupSettingsBuilder) -> sh.SuccessOrHardError:
         self.__configuration.execution_action__with_eds(phase_step.SETUP_EXECUTE,
                                                         global_environment)
         return self.__configuration.ret_val_from_execute
 
     def post_validate(self,
-                      global_environment: i.GlobalEnvironmentForPostEdsPhase) -> i.SuccessOrValidationErrorOrHardError:
+                      global_environment: i.GlobalEnvironmentForPostEdsPhase) -> \
+            svh.SuccessOrValidationErrorOrHardError:
         self.__configuration.validation_action__without_eds(phase_step.SETUP_POST_VALIDATE,
                                                             global_environment.home_directory)
         return self.__configuration.ret_val_from_execute
@@ -204,14 +205,15 @@ class _ActInstruction(i.ActPhaseInstruction):
                  configuration: TestCaseSetup):
         self.__configuration = configuration
 
-    def validate(self, global_environment: i.GlobalEnvironmentForPostEdsPhase) -> i.SuccessOrValidationErrorOrHardError:
+    def validate(self, global_environment: i.GlobalEnvironmentForPostEdsPhase) -> \
+            svh.SuccessOrValidationErrorOrHardError:
         self.__configuration.validation_action__with_eds(phase_step.ACT_VALIDATE,
                                                          global_environment)
         return self.__configuration.ret_val_from_validate
 
     def main(self,
              global_environment: i.GlobalEnvironmentForPostEdsPhase,
-             phase_environment: i.PhaseEnvironmentForScriptGeneration) -> i.SuccessOrHardError:
+             phase_environment: i.PhaseEnvironmentForScriptGeneration) -> sh.SuccessOrHardError:
         self.__configuration.execution_action__with_eds(phase_step.ACT_SCRIPT_GENERATION,
                                                         global_environment)
         self.__configuration.execution__generate_script(global_environment,
@@ -225,14 +227,14 @@ class _AssertInstruction(i.AssertPhaseInstruction):
         self.__configuration = configuration
 
     def validate(self,
-                 global_environment: i.GlobalEnvironmentForPostEdsPhase) -> i.SuccessOrValidationErrorOrHardError:
+                 global_environment: i.GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
         self.__configuration.validation_action__with_eds(phase_step.ASSERT_VALIDATE,
                                                          global_environment)
         return self.__configuration.ret_val_from_validate
 
     def main(self,
              global_environment: i.GlobalEnvironmentForPostEdsPhase,
-             phase_environment: i.PhaseEnvironmentForInternalCommands) -> i.PassOrFailOrHardError:
+             phase_environment: i.PhaseEnvironmentForInternalCommands) -> pfh.PassOrFailOrHardError:
         self.__configuration.execution_action__with_eds(phase_step.ASSERT_EXECUTE,
                                                         global_environment)
         return self.__configuration.ret_val_from_assert_execute
@@ -245,8 +247,7 @@ class _CleanupInstruction(i.CleanupPhaseInstruction):
 
     def main(self,
              global_environment: i.GlobalEnvironmentForPostEdsPhase,
-             phase_environment: i.PhaseEnvironmentForInternalCommands) -> i.SuccessOrHardError:
+             phase_environment: i.PhaseEnvironmentForInternalCommands) -> sh.SuccessOrHardError:
         self.__configuration.execution_action__with_eds(phase_step.CLEANUP_EXECUTE,
                                                         global_environment)
         return self.__configuration.ret_val_from_execute
-

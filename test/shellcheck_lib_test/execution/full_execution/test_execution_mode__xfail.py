@@ -12,8 +12,8 @@ from shellcheck_lib_test.execution.full_execution.util.test_case_that_records_ph
     TestCaseThatRecordsExecution
 from shellcheck_lib_test.util.expected_instruction_failure import ExpectedInstructionFailureForFailure, \
     ExpectedInstructionFailureForNoFailure
-from shellcheck_lib.test_case import pass_or_fail_or_hard_error_construction, \
-    success_or_validation_hard_or_error_construction
+from shellcheck_lib.test_case.instruction.result import pfh
+from shellcheck_lib.test_case.instruction.result import svh
 
 
 class Test(unittest.TestCase):
@@ -22,8 +22,8 @@ class Test(unittest.TestCase):
             .add_anonymous(AnonymousPhaseInstructionThatSetsExecutionMode(instructions.ExecutionMode.XFAIL)) \
             .add_assert(
             instruction_test_resources.AssertPhaseInstructionThatReturns(
-                from_validate=success_or_validation_hard_or_error_construction.new_success(),
-                from_execute=pass_or_fail_or_hard_error_construction.new_fail('fail message')))
+                from_validate=svh.new_svh_success(),
+                from_execute=pfh.new_pfh_fail('fail message')))
         TestCaseThatRecordsExecution(
             self,
             test_case,

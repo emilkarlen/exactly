@@ -4,14 +4,13 @@ Checks that output to stdout, stderr and the exit code are saved in the correct 
 
 import unittest
 
-from shellcheck_lib.test_case.success_or_hard_error_construction import new_success
-from shellcheck_lib.test_case import success_or_validation_hard_or_error_construction
+from shellcheck_lib.test_case.instruction.result import sh
+from shellcheck_lib.test_case.instruction.result import svh
 from shellcheck_lib.test_case import instructions
 from shellcheck_lib_test.execution.util import utils
 from shellcheck_lib_test.execution.util import py_unit_test_case
 from shellcheck_lib_test.execution.util.py_unit_test_case import \
     TestCaseWithCommonDefaultForSetupAssertCleanup
-
 
 _TEXT_ON_STDOUT = 'on stdout'
 _TEXT_ON_STDERR = 'on stderr'
@@ -55,13 +54,13 @@ class ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr(instructions.ActPhaseI
         self.__exit_code = exit_code
 
     def validate(self, global_environment: instructions.GlobalEnvironmentForPostEdsPhase) \
-            -> instructions.SuccessOrValidationErrorOrHardError:
-        return success_or_validation_hard_or_error_construction.new_success()
+            -> svh.SuccessOrValidationErrorOrHardError:
+        return svh.new_svh_success()
 
     def main(
             self,
             global_environment: instructions.GlobalEnvironmentForPostEdsPhase,
-            phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> instructions.SuccessOrHardError:
+            phase_environment: instructions.PhaseEnvironmentForScriptGeneration) -> sh.SuccessOrHardError:
         statements = [
             'import sys',
             self.write_on('sys.stdout', self.__text_on_stdout),
@@ -69,7 +68,7 @@ class ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr(instructions.ActPhaseI
             'sys.exit(%d)' % self.__exit_code
         ]
         phase_environment.append.raw_script_statements(statements)
-        return new_success()
+        return sh.new_sh_success()
 
     @staticmethod
     def write_on(output_file: str,

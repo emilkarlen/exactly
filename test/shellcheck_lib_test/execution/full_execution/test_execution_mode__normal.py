@@ -11,9 +11,9 @@ from shellcheck_lib_test.execution.full_execution.util.test_case_that_records_ph
 from shellcheck_lib_test.util.expected_instruction_failure import ExpectedInstructionFailureForNoFailure, \
     ExpectedInstructionFailureForFailure
 from shellcheck_lib_test.execution.full_execution.util import instruction_test_resources
-from shellcheck_lib.test_case import pass_or_fail_or_hard_error_construction, \
-    success_or_validation_hard_or_error_construction, \
-    success_or_hard_error_construction
+from shellcheck_lib.test_case.instruction.result import pfh
+from shellcheck_lib.test_case.instruction.result import svh
+from shellcheck_lib.test_case.instruction.result import sh
 
 
 class Test(unittest.TestCase):
@@ -82,10 +82,10 @@ class Test(unittest.TestCase):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_setup(
             instruction_test_resources.SetupPhaseInstructionThatReturns(
-                success_or_validation_hard_or_error_construction.new_validation_error(
+                svh.new_svh_validation_error(
                     'validation error from setup/validate'),
-                success_or_hard_error_construction.new_success(),
-                success_or_validation_hard_or_error_construction.new_success()))
+                sh.new_sh_success(),
+                svh.new_svh_success()))
         TestCaseThatRecordsExecution(
             self,
             test_case,
@@ -104,9 +104,9 @@ class Test(unittest.TestCase):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_setup(
             instruction_test_resources.SetupPhaseInstructionThatReturns(
-                success_or_validation_hard_or_error_construction.new_hard_error('hard error from setup/validate'),
-                success_or_hard_error_construction.new_success(),
-                success_or_validation_hard_or_error_construction.new_success()))
+                svh.new_svh_hard_error('hard error from setup/validate'),
+                sh.new_sh_success(),
+                svh.new_svh_success()))
         TestCaseThatRecordsExecution(
             self,
             test_case,
@@ -144,9 +144,9 @@ class Test(unittest.TestCase):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_setup(
             instruction_test_resources.SetupPhaseInstructionThatReturns(
-                from_pre_validate=success_or_validation_hard_or_error_construction.new_success(),
-                from_execute=success_or_hard_error_construction.new_hard_error('hard error msg from setup'),
-                from_post_validate=success_or_validation_hard_or_error_construction.new_success()))
+                from_pre_validate=svh.new_svh_success(),
+                from_execute=sh.new_sh_hard_error('hard error msg from setup'),
+                from_post_validate=svh.new_svh_success()))
         TestCaseThatRecordsExecution(
             self,
             test_case,
@@ -193,9 +193,9 @@ class Test(unittest.TestCase):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_setup(
             instruction_test_resources.SetupPhaseInstructionThatReturns(
-                success_or_validation_hard_or_error_construction.new_success(),
-                success_or_hard_error_construction.new_success(),
-                success_or_validation_hard_or_error_construction.new_validation_error(
+                svh.new_svh_success(),
+                sh.new_sh_success(),
+                svh.new_svh_validation_error(
                     'validation error from setup/post-validate')))
         TestCaseThatRecordsExecution(
             self,
@@ -221,9 +221,9 @@ class Test(unittest.TestCase):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_setup(
             instruction_test_resources.SetupPhaseInstructionThatReturns(
-                success_or_validation_hard_or_error_construction.new_success(),
-                success_or_hard_error_construction.new_success(),
-                success_or_validation_hard_or_error_construction.new_hard_error('hard error from setup/post-validate')))
+                svh.new_svh_success(),
+                sh.new_sh_success(),
+                svh.new_svh_hard_error('hard error from setup/post-validate')))
         TestCaseThatRecordsExecution(
             self,
             test_case,
@@ -273,8 +273,8 @@ class Test(unittest.TestCase):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_assert(
             instruction_test_resources.AssertPhaseInstructionThatReturns(
-                from_validate=success_or_validation_hard_or_error_construction.new_validation_error('ASSERT/validate'),
-                from_execute=success_or_hard_error_construction.new_success()))
+                from_validate=svh.new_svh_validation_error('ASSERT/validate'),
+                from_execute=sh.new_sh_success()))
         TestCaseThatRecordsExecution(
             self,
             test_case,
@@ -303,8 +303,8 @@ class Test(unittest.TestCase):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_assert(
             instruction_test_resources.AssertPhaseInstructionThatReturns(
-                from_validate=success_or_validation_hard_or_error_construction.new_hard_error('ASSERT/validate'),
-                from_execute=success_or_hard_error_construction.new_success()))
+                from_validate=svh.new_svh_hard_error('ASSERT/validate'),
+                from_execute=sh.new_sh_success()))
         TestCaseThatRecordsExecution(
             self,
             test_case,
@@ -362,8 +362,8 @@ class Test(unittest.TestCase):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_act(
             instruction_test_resources.ActPhaseInstructionThatReturns(
-                from_validate=success_or_validation_hard_or_error_construction.new_validation_error('ACT/validate'),
-                from_execute=success_or_hard_error_construction.new_success()))
+                from_validate=svh.new_svh_validation_error('ACT/validate'),
+                from_execute=sh.new_sh_success()))
         TestCaseThatRecordsExecution(
             self,
             test_case,
@@ -390,8 +390,8 @@ class Test(unittest.TestCase):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_act(
             instruction_test_resources.ActPhaseInstructionThatReturns(
-                from_validate=success_or_validation_hard_or_error_construction.new_hard_error('ACT/validate'),
-                from_execute=success_or_hard_error_construction.new_success()))
+                from_validate=svh.new_svh_hard_error('ACT/validate'),
+                from_execute=sh.new_sh_success()))
         TestCaseThatRecordsExecution(
             self,
             test_case,
@@ -445,8 +445,8 @@ class Test(unittest.TestCase):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_act(
             instruction_test_resources.ActPhaseInstructionThatReturns(
-                from_validate=success_or_validation_hard_or_error_construction.new_success(),
-                from_execute=success_or_hard_error_construction.new_hard_error('hard error msg from act')))
+                from_validate=svh.new_svh_success(),
+                from_execute=sh.new_sh_hard_error('hard error msg from act')))
         TestCaseThatRecordsExecution(
             self,
             test_case,
@@ -508,8 +508,8 @@ class Test(unittest.TestCase):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_assert(
             instruction_test_resources.AssertPhaseInstructionThatReturns(
-                from_validate=success_or_validation_hard_or_error_construction.new_success(),
-                from_execute=pass_or_fail_or_hard_error_construction.new_fail('fail msg from ASSERT')))
+                from_validate=svh.new_svh_success(),
+                from_execute=pfh.new_pfh_fail('fail msg from ASSERT')))
         TestCaseThatRecordsExecution(
             self,
             test_case,
@@ -543,8 +543,8 @@ class Test(unittest.TestCase):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_assert(
             instruction_test_resources.AssertPhaseInstructionThatReturns(
-                from_validate=success_or_validation_hard_or_error_construction.new_success(),
-                from_execute=pass_or_fail_or_hard_error_construction.new_hard_error('hard error msg from ASSERT')))
+                from_validate=svh.new_svh_success(),
+                from_execute=pfh.new_pfh_hard_error('hard error msg from ASSERT')))
         TestCaseThatRecordsExecution(
             self,
             test_case,

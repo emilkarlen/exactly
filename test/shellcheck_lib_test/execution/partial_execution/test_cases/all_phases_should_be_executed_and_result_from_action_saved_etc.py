@@ -2,8 +2,8 @@ import os
 import pathlib
 import unittest
 
-from shellcheck_lib.test_case.success_or_hard_error_construction import new_success
-from shellcheck_lib.test_case import success_or_validation_hard_or_error_construction
+from shellcheck_lib.test_case.instruction.result import sh
+from shellcheck_lib.test_case.instruction.result import svh
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.execution.partial_execution import Configuration
 from shellcheck_lib_test.execution.util import py_unit_test_case_with_file_output as with_file_output
@@ -13,7 +13,6 @@ from shellcheck_lib.execution import phases
 from shellcheck_lib_test.execution.util import py_unit_test_case
 from shellcheck_lib.test_case import instructions
 from shellcheck_lib_test.execution.util import utils
-
 
 HOME_DIR_HEADER = 'Home Dir'
 TEST_ROOT_DIR_HEADER = 'Test Root Dir'
@@ -110,13 +109,13 @@ class ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr(instructions.ActPhaseI
         super().__init__()
 
     def validate(self, global_environment: instructions.GlobalEnvironmentForPostEdsPhase) \
-            -> instructions.SuccessOrValidationErrorOrHardError:
-        return success_or_validation_hard_or_error_construction.new_success()
+            -> svh.SuccessOrValidationErrorOrHardError:
+        return svh.new_svh_success()
 
     def main(self,
              global_environment: instructions.GlobalEnvironmentForPostEdsPhase,
              phase_environment: instructions.PhaseEnvironmentForScriptGeneration) \
-            -> instructions.SuccessOrHardError:
+            -> sh.SuccessOrHardError:
         statements = [
                          'import sys',
                          'import os',
@@ -126,7 +125,7 @@ class ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr(instructions.ActPhaseI
                      self.print_on('sys.stderr', global_environment) + \
                      ['sys.exit(%d)' % EXIT_CODE]
         phase_environment.append.raw_script_statements(statements)
-        return new_success()
+        return sh.new_sh_success()
 
     def print_on(self,
                  file_object: str,

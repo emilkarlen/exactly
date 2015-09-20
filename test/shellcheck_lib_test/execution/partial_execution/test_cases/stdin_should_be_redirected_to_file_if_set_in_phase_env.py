@@ -3,13 +3,12 @@ Checks that output to stdout, stderr and the exit code are saved in the correct 
 """
 import unittest
 
-from shellcheck_lib.test_case.success_or_hard_error_construction import new_success
-from shellcheck_lib.test_case import success_or_validation_hard_or_error_construction
+from shellcheck_lib.test_case.instruction.result import sh
+from shellcheck_lib.test_case.instruction.result import svh
 from shellcheck_lib_test.execution.util import utils
 from shellcheck_lib_test.execution.util import py_unit_test_case
 from shellcheck_lib_test.execution.util.py_unit_test_case import TestCaseWithCommonDefaultForSetupAssertCleanup
 from shellcheck_lib.test_case import instructions
-
 
 INPUT_TMP_FILE = 'input.txt'
 
@@ -59,19 +58,19 @@ class PyCommandThatStoresStringInFileInCurrentDirectory(instructions.SetupPhaseI
 
     def pre_validate(self,
                      global_environment: instructions.GlobalEnvironmentForPreEdsStep) \
-            -> instructions.SuccessOrValidationErrorOrHardError:
-        return success_or_validation_hard_or_error_construction.new_success()
+            -> svh.SuccessOrValidationErrorOrHardError:
+        return svh.new_svh_success()
 
     def main(self,
              global_environment: instructions.GlobalEnvironmentForPostEdsPhase,
              settings_builder: instructions.SetupSettingsBuilder):
         with open(self.__file_base_name, 'w') as f:
             f.write(self.__text_to_store)
-        return new_success()
+        return svh.new_svh_success()
 
     def post_validate(self, global_environment: instructions.GlobalEnvironmentForPostEdsPhase) \
-            -> instructions.SuccessOrValidationErrorOrHardError:
-        return success_or_validation_hard_or_error_construction.new_success()
+            -> svh.SuccessOrValidationErrorOrHardError:
+        return svh.new_svh_success()
 
 
 class StatementsThatCopiesStdinToStdout(instructions.ActPhaseInstruction):
@@ -79,19 +78,19 @@ class StatementsThatCopiesStdinToStdout(instructions.ActPhaseInstruction):
         super().__init__()
 
     def validate(self, global_environment: instructions.GlobalEnvironmentForPostEdsPhase) \
-            -> instructions.SuccessOrValidationErrorOrHardError:
-        return success_or_validation_hard_or_error_construction.new_success()
+            -> svh.SuccessOrValidationErrorOrHardError:
+        return svh.new_svh_success()
 
     def main(self,
              global_environment: instructions.GlobalEnvironmentForPostEdsPhase,
              phase_environment: instructions.PhaseEnvironmentForScriptGeneration) \
-            -> instructions.SuccessOrHardError:
+            -> sh.SuccessOrHardError:
         statements = [
             'import sys',
             'sys.stdout.write(sys.stdin.read())',
         ]
         phase_environment.append.raw_script_statements(statements)
-        return new_success()
+        return svh.new_svh_success()
 
 
 class InstructionThatSetsStdinFileName(instructions.SetupPhaseInstruction):
@@ -102,16 +101,16 @@ class InstructionThatSetsStdinFileName(instructions.SetupPhaseInstruction):
 
     def pre_validate(self,
                      global_environment: instructions.GlobalEnvironmentForPreEdsStep) \
-            -> instructions.SuccessOrValidationErrorOrHardError:
-        return success_or_validation_hard_or_error_construction.new_success()
+            -> svh.SuccessOrValidationErrorOrHardError:
+        return svh.new_svh_success()
 
     def main(self,
              global_environment: instructions.GlobalEnvironmentForPostEdsPhase,
-             settings_builder: instructions.SetupSettingsBuilder) -> instructions.SuccessOrHardError:
+             settings_builder: instructions.SetupSettingsBuilder) -> sh.SuccessOrHardError:
         settings_builder.stdin_file_name = self.__file_name
-        return new_success()
+        return sh.new_sh_success()
 
     def post_validate(self,
                       global_environment: instructions.GlobalEnvironmentForPostEdsPhase) \
-            -> instructions.SuccessOrValidationErrorOrHardError:
-        return success_or_validation_hard_or_error_construction.new_success()
+            -> svh.SuccessOrValidationErrorOrHardError:
+        return svh.new_svh_success()

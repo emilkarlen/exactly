@@ -9,6 +9,7 @@ from shellcheck_lib.test_case import instructions as i
 from shellcheck_lib.instructions.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionInvalidArgumentException
 from shellcheck_lib.instructions.assert_phase.utils import instruction_utils
+from shellcheck_lib.test_case.instruction.result import pfh
 from shellcheck_lib.test_case.instructions import AssertPhaseInstruction
 
 DESCRIPTION = Description(
@@ -33,12 +34,12 @@ class InstructionForExactValue(instruction_utils.InstructionWithoutValidationBas
 
     def main(self,
              global_environment: i.GlobalEnvironmentForPostEdsPhase,
-             phase_environment: i.PhaseEnvironmentForInternalCommands) -> i.PassOrFailOrHardError:
+             phase_environment: i.PhaseEnvironmentForInternalCommands) -> pfh.PassOrFailOrHardError:
         actual_value = read_exitcode(global_environment.eds)
         if actual_value == self._expected_value:
-            return i.new_pfh_pass()
-        return i.new_pfh_fail('Unexpected exitcode. Expected:%d, actual:%d' % (self._expected_value,
-                                                                               actual_value))
+            return pfh.new_pfh_pass()
+        return pfh.new_pfh_fail('Unexpected exitcode. Expected:%d, actual:%d' % (self._expected_value,
+                                                                                 actual_value))
 
 
 class InstructionForOperator(instruction_utils.InstructionWithoutValidationBase):
@@ -50,13 +51,13 @@ class InstructionForOperator(instruction_utils.InstructionWithoutValidationBase)
 
     def main(self,
              global_environment: i.GlobalEnvironmentForPostEdsPhase,
-             phase_environment: i.PhaseEnvironmentForInternalCommands) -> i.PassOrFailOrHardError:
+             phase_environment: i.PhaseEnvironmentForInternalCommands) -> pfh.PassOrFailOrHardError:
         actual_value = read_exitcode(global_environment.eds)
         if self._operator_info[1](actual_value, self._value):
-            return i.new_pfh_pass()
+            return pfh.new_pfh_pass()
         condition_str = self._operator_info[0] + ' ' + str(self._value)
-        return i.new_pfh_fail('Unexpected exitcode. Expected:%s½, actual:%d' % (condition_str,
-                                                                                actual_value))
+        return pfh.new_pfh_fail('Unexpected exitcode. Expected:%s½, actual:%d' % (condition_str,
+                                                                                  actual_value))
 
 
 class Parser(SingleInstructionParser):

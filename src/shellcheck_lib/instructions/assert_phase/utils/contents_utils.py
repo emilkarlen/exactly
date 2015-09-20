@@ -5,6 +5,8 @@ from shellcheck_lib.execution.execution_directory_structure import ExecutionDire
 from shellcheck_lib.instructions.assert_phase.utils import instruction_utils
 from shellcheck_lib.instructions.instruction_parser_for_single_phase import SingleInstructionInvalidArgumentException
 from shellcheck_lib.test_case import instructions as i
+from shellcheck_lib.test_case.instruction.result import pfh
+from shellcheck_lib.test_case.instruction.result import svh
 from shellcheck_lib.test_case.instructions import AssertPhaseInstruction
 
 
@@ -79,36 +81,36 @@ def check(file_path: pathlib.Path) -> str:
 
 class Checker:
     def validate(self,
-                 eds: ExecutionDirectoryStructure) -> i.SuccessOrValidationErrorOrHardError:
-        return i.new_svh_success()
+                 eds: ExecutionDirectoryStructure) -> svh.SuccessOrValidationErrorOrHardError:
+        return svh.new_svh_success()
 
     def main_check_target_file(self,
-                               eds: ExecutionDirectoryStructure) -> i.PassOrFailOrHardError:
-        return i.new_pfh_pass()
+                               eds: ExecutionDirectoryStructure) -> pfh.PassOrFailOrHardError:
+        return pfh.new_pfh_pass()
 
     def main_check_comparison_file(self,
-                                   eds: ExecutionDirectoryStructure) -> i.PassOrFailOrHardError:
-        return i.new_pfh_pass()
+                                   eds: ExecutionDirectoryStructure) -> pfh.PassOrFailOrHardError:
+        return pfh.new_pfh_pass()
 
     def target_file_path(self, eds: ExecutionDirectoryStructure) -> pathlib.Path:
         raise NotImplementedError()
 
-    def compare(self, eds: ExecutionDirectoryStructure) -> i.PassOrFailOrHardError:
+    def compare(self, eds: ExecutionDirectoryStructure) -> pfh.PassOrFailOrHardError:
         raise NotImplementedError()
 
 
 class CheckerWithFileRelHome(Checker):
     def validate(self,
-                 eds: ExecutionDirectoryStructure) -> i.SuccessOrValidationErrorOrHardError:
-        return i.new_svh_success()
+                 eds: ExecutionDirectoryStructure) -> svh.SuccessOrValidationErrorOrHardError:
+        return svh.new_svh_success()
 
     def main_check_target_file(self,
-                               eds: ExecutionDirectoryStructure) -> i.PassOrFailOrHardError:
-        return i.new_pfh_pass()
+                               eds: ExecutionDirectoryStructure) -> pfh.PassOrFailOrHardError:
+        return pfh.new_pfh_pass()
 
     def main_check_comparison_file(self,
-                                   eds: ExecutionDirectoryStructure) -> i.PassOrFailOrHardError:
-        return i.new_pfh_pass()
+                                   eds: ExecutionDirectoryStructure) -> pfh.PassOrFailOrHardError:
+        return pfh.new_pfh_pass()
 
     def target_file_path(self, eds: ExecutionDirectoryStructure) -> pathlib.Path:
         raise NotImplementedError()
@@ -116,25 +118,25 @@ class CheckerWithFileRelHome(Checker):
     def comparison_file_path(self, eds: ExecutionDirectoryStructure) -> pathlib.Path:
         raise NotImplementedError()
 
-    def compare(self, eds: ExecutionDirectoryStructure) -> i.PassOrFailOrHardError:
+    def compare(self, eds: ExecutionDirectoryStructure) -> pfh.PassOrFailOrHardError:
         target_file_name = str(self.target_file_path(eds))
         comparison_file_name = str(self.comparison_file_path(eds))
         if not filecmp.cmp(target_file_name, comparison_file_name, shallow=False):
-            return i.new_pfh_fail('Unexpected content in file: ' + target_file_name)
+            return pfh.new_pfh_fail('Unexpected content in file: ' + target_file_name)
 
 
 class CheckerForComparisonWithFile(Checker):
     def validate(self,
-                 eds: ExecutionDirectoryStructure) -> i.SuccessOrValidationErrorOrHardError:
-        return i.new_svh_success()
+                 eds: ExecutionDirectoryStructure) -> svh.SuccessOrValidationErrorOrHardError:
+        return svh.new_svh_success()
 
     def main_check_target_file(self,
-                               eds: ExecutionDirectoryStructure) -> i.PassOrFailOrHardError:
-        return i.new_pfh_pass()
+                               eds: ExecutionDirectoryStructure) -> pfh.PassOrFailOrHardError:
+        return pfh.new_pfh_pass()
 
     def main_check_comparison_file(self,
-                                   eds: ExecutionDirectoryStructure) -> i.PassOrFailOrHardError:
-        return i.new_pfh_pass()
+                                   eds: ExecutionDirectoryStructure) -> pfh.PassOrFailOrHardError:
+        return pfh.new_pfh_pass()
 
     def target_file_path(self, eds: ExecutionDirectoryStructure) -> pathlib.Path:
         raise NotImplementedError()
@@ -142,11 +144,11 @@ class CheckerForComparisonWithFile(Checker):
     def comparison_file_path(self, eds: ExecutionDirectoryStructure) -> pathlib.Path:
         raise NotImplementedError()
 
-    def compare(self, eds: ExecutionDirectoryStructure) -> i.PassOrFailOrHardError:
+    def compare(self, eds: ExecutionDirectoryStructure) -> pfh.PassOrFailOrHardError:
         target_file_name = str(self.target_file_path(eds))
         comparison_file_name = str(self.comparison_file_path(eds))
         if not filecmp.cmp(target_file_name, comparison_file_name, shallow=False):
-            return i.new_pfh_fail('Unexpected content in file: ' + target_file_name)
+            return pfh.new_pfh_fail('Unexpected content in file: ' + target_file_name)
 
 
 class CheckerForEmptiness(Checker):
@@ -154,16 +156,16 @@ class CheckerForEmptiness(Checker):
         self._expect_empty = expect_empty
 
     def validate(self,
-                 eds: ExecutionDirectoryStructure) -> i.SuccessOrValidationErrorOrHardError:
-        return i.new_svh_success()
+                 eds: ExecutionDirectoryStructure) -> svh.SuccessOrValidationErrorOrHardError:
+        return svh.new_svh_success()
 
     def main_check_target_file(self,
-                               eds: ExecutionDirectoryStructure) -> i.PassOrFailOrHardError:
-        return i.new_pfh_pass()
+                               eds: ExecutionDirectoryStructure) -> pfh.PassOrFailOrHardError:
+        return pfh.new_pfh_pass()
 
     def main_check_comparison_file(self,
-                                   eds: ExecutionDirectoryStructure) -> i.PassOrFailOrHardError:
-        return i.new_pfh_pass()
+                                   eds: ExecutionDirectoryStructure) -> pfh.PassOrFailOrHardError:
+        return pfh.new_pfh_pass()
 
     def target_file_path(self, eds: ExecutionDirectoryStructure) -> pathlib.Path:
         raise NotImplementedError()
@@ -171,15 +173,15 @@ class CheckerForEmptiness(Checker):
     def comparison_file_path(self, eds: ExecutionDirectoryStructure) -> pathlib.Path:
         raise NotImplementedError()
 
-    def compare(self, eds: ExecutionDirectoryStructure) -> i.PassOrFailOrHardError:
+    def compare(self, eds: ExecutionDirectoryStructure) -> pfh.PassOrFailOrHardError:
         size = self.target_file_path(eds).stat().st_size
         if self._expect_empty:
             if size != 0:
-                return i.new_pfh_fail('File is not empty: Size (in bytes): ' + str(size))
+                return pfh.new_pfh_fail('File is not empty: Size (in bytes): ' + str(size))
         else:
             if size == 0:
-                return i.new_pfh_fail('File is empty')
-        return i.new_pfh_pass()
+                return pfh.new_pfh_fail('File is empty')
+        return pfh.new_pfh_pass()
 
 
 class ContentCheckerInstruction(AssertPhaseInstruction):
@@ -190,31 +192,31 @@ class ContentCheckerInstruction(AssertPhaseInstruction):
         self._comparison_source = comparison_source
 
     def validate(self,
-                 global_environment: i.GlobalEnvironmentForPostEdsPhase) -> i.SuccessOrValidationErrorOrHardError:
+                 global_environment: i.GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
         if self._comparison_source.check_during_validation:
             error_message = check(self._comparison_source.file_path(global_environment))
             if error_message:
-                return i.new_svh_validation_error(error_message)
-        return i.new_svh_success()
+                return svh.new_svh_validation_error(error_message)
+        return svh.new_svh_success()
 
     def main(self, global_environment: i.GlobalEnvironmentForPostEdsPhase,
-             phase_environment: i.PhaseEnvironmentForInternalCommands) -> i.PassOrFailOrHardError:
+             phase_environment: i.PhaseEnvironmentForInternalCommands) -> pfh.PassOrFailOrHardError:
         comparison_file_path = self._comparison_source.file_path(global_environment)
         error_message = check(comparison_file_path)
         if error_message:
-            return i.new_pfh_fail(error_message)
+            return pfh.new_pfh_fail(error_message)
 
         comparison_target_path = self.comparison_target.file_path(global_environment)
         if self.comparison_target.do_check_file_properties:
             error_message = check(comparison_target_path)
             if error_message:
-                return i.new_pfh_fail(error_message)
+                return pfh.new_pfh_fail(error_message)
 
         target_file_name = str(comparison_target_path)
         comparison_file_name = str(comparison_file_path)
         if not filecmp.cmp(target_file_name, comparison_file_name, shallow=False):
-            return i.new_pfh_fail('Unexpected content in file: ' + target_file_name)
-        return i.new_pfh_pass()
+            return pfh.new_pfh_fail('Unexpected content in file: ' + target_file_name)
+        return pfh.new_pfh_pass()
 
 
 class EmptinessCheckerInstruction(instruction_utils.InstructionWithoutValidationBase):
@@ -225,21 +227,21 @@ class EmptinessCheckerInstruction(instruction_utils.InstructionWithoutValidation
         self.expect_empty = expect_empty
 
     def main(self, global_environment: i.GlobalEnvironmentForPostEdsPhase,
-             phase_environment: i.PhaseEnvironmentForInternalCommands) -> i.PassOrFailOrHardError:
+             phase_environment: i.PhaseEnvironmentForInternalCommands) -> pfh.PassOrFailOrHardError:
         comparison_target_path = self.comparison_target.file_path(global_environment)
         if self.comparison_target.do_check_file_properties:
             error_message = check(comparison_target_path)
             if error_message:
-                return i.new_pfh_fail(error_message)
+                return pfh.new_pfh_fail(error_message)
 
         size = self.comparison_target.file_path(global_environment).stat().st_size
         if self.expect_empty:
             if size != 0:
-                return i.new_pfh_fail('File is not empty: Size (in bytes): ' + str(size))
+                return pfh.new_pfh_fail('File is not empty: Size (in bytes): ' + str(size))
         else:
             if size == 0:
-                return i.new_pfh_fail('File is empty')
-        return i.new_pfh_pass()
+                return pfh.new_pfh_fail('File is empty')
+        return pfh.new_pfh_pass()
 
 
 def try_parse_content(comparison_target: ComparisonTarget, arguments: list) -> AssertPhaseInstruction:
