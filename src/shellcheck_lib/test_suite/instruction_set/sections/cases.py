@@ -18,7 +18,7 @@ class TestCaseSectionInstruction(Instruction):
 
 class CasesSectionParser(SectionElementParserForStandardCommentAndEmptyLines):
     def _parse_instruction(self,
-                           source: line_source.LineSequenceBuilder) -> instruction.Instruction:
+                           source: line_source.LineSequenceBuilder) -> TestCaseSectionInstruction:
         line_text = source.first_line.text
         return TestCaseWildcardFileInstruction(line_text) \
             if utils.is_wildcard_pattern(line_text) \
