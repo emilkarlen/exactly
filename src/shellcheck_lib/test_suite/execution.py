@@ -4,7 +4,7 @@ from shellcheck_lib.general.output import StdOutputFiles
 from shellcheck_lib.test_suite import structure
 from shellcheck_lib.test_suite import reporting
 from shellcheck_lib.test_suite.enumeration import SuiteEnumerator
-from shellcheck_lib.test_suite.parse import SuiteReadError
+from shellcheck_lib.test_suite.instruction_set.parse import SuiteReadError
 from shellcheck_lib.test_suite.suite_hierarchy_reading import SuiteHierarchyReader
 from shellcheck_lib.test_case import test_case_processing
 

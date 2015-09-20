@@ -5,10 +5,10 @@ from shellcheck_lib.document.model import PhaseContents, ElementType
 from shellcheck_lib.document.parse import SourceError
 from shellcheck_lib.general import line_source
 from shellcheck_lib.test_case import test_case_processing
-from . import instruction
 from . import test_suite_doc
 from . import structure
-from . import parse
+from shellcheck_lib.test_suite.instruction_set import parse, instruction
+import shellcheck_lib.test_suite.parser
 
 
 class SuiteHierarchyReader:
@@ -37,7 +37,7 @@ class _SingleFileReader:
                  suite_file_path: pathlib.Path) -> structure.TestSuite:
         source = line_source.new_for_file(suite_file_path)
         try:
-            test_suite = parse.PARSER.apply(source)
+            test_suite = shellcheck_lib.test_suite.parser.PARSER.apply(source)
         except SourceError as ex:
             raise parse.SuiteSyntaxError(suite_file_path,
                                          ex.line,
