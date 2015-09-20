@@ -31,7 +31,8 @@ def parse(argv: list) -> TestCaseExecutionSettings:
     preprocessor = _parse_preprocessor(namespace.preprocessor)
     return TestCaseExecutionSettings(pathlib.Path(namespace.file),
                                      pathlib.Path(namespace.file).parent.resolve(),
-                                     output=output,
+                                     output,
+                                     preprocessor,
                                      is_keep_execution_directory_root=is_keep_execution_directory_root)
 
 
