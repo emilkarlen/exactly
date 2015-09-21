@@ -7,7 +7,9 @@ from shellcheck_lib.general import line_source
 from shellcheck_lib.test_case import test_case_processing
 from . import test_suite_doc
 from . import structure
+from shellcheck_lib.test_case.preprocessor import IdentityPreprocessor
 from shellcheck_lib.test_suite.instruction_set import parse, instruction
+from shellcheck_lib.test_suite.instruction_set.sections.anonymous import AnonymousSectionEnvironment
 import shellcheck_lib.test_suite.parser
 
 
@@ -42,6 +44,7 @@ class _SingleFileReader:
             raise parse.SuiteSyntaxError(suite_file_path,
                                          ex.line,
                                          ex.message)
+        anonymous_section_environment = self._resolve_preprocessor(test_suite)
         suite_file_path_list, case_file_path_list = self._resolve_paths(test_suite,
                                                                         suite_file_path)
         sub_inclusions = inclusions + [suite_file_path]
@@ -83,3 +86,11 @@ class _SingleFileReader:
         environment = instruction.Environment(suite_file_path.parent)
         return (paths_for_instructions(environment, test_suite.suites_section, True),
                 paths_for_instructions(environment, test_suite.cases_section, False))
+
+    @staticmethod
+    def _resolve_preprocessor(test_suite: test_suite_doc.TestSuite) -> AnonymousSectionEnvironment:
+        ret_val = AnonymousSectionEnvironment(IdentityPreprocessor())
+        for section_element in test_suite.anonymous_section.elements:
+            if section_element.element_type is ElementType.INSTRUCTION:
+                section_element.instruction.execute(ret_val)
+        return ret_val

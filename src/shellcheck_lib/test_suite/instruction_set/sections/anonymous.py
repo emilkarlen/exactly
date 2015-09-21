@@ -20,8 +20,9 @@ def new_parser() -> parse.SectionElementParser:
 
 
 class AnonymousSectionEnvironment:
-    def __init__(self):
-        self._preprocessor = 1
+    def __init__(self,
+                 initial_preprocessor: Preprocessor):
+        self._preprocessor = initial_preprocessor
 
     @property
     def preprocessor(self) -> Preprocessor:
