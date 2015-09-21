@@ -42,7 +42,9 @@ class MainProgram(main_program.MainProgram):
                                                               self._eds_root_name_prefix_for_suite())
         executor = test_suite_execution.Executor(default_configuration,
                                                  self._output,
-                                                 suite_hierarchy_reading.Reader(),
+                                                 suite_hierarchy_reading.Reader(
+                                                     suite_hierarchy_reading.Environment(
+                                                         default_configuration.preprocessor)),
                                                  suite_reporting.ReporterFactory(),
                                                  enumeration.DepthFirstEnumerator(),
                                                  case_processing.new_processor,
