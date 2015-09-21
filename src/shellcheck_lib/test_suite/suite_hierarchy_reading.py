@@ -53,6 +53,7 @@ class _SingleFileReader:
         case_list = list(map(test_case_processing.TestCase, case_file_path_list))
         return structure.TestSuite(suite_file_path,
                                    inclusions,
+                                   anonymous_section_environment.preprocessor,
                                    suite_list,
                                    case_list)
 

@@ -2,6 +2,7 @@ import pathlib
 import unittest
 
 from shellcheck_lib.general import line_source
+from shellcheck_lib.test_case.preprocessor import IDENTITY_PREPROCESSOR
 import shellcheck_lib.test_case.test_case_processing
 from shellcheck_lib.test_suite import structure
 from shellcheck_lib.test_suite.instruction_set.parse import SuiteFileReferenceError, SuiteSyntaxError, \
@@ -21,6 +22,7 @@ class MainSuiteWithTwoReferencedCases(check_structure.Setup):
         return structure.TestSuite(
             self.root_suite_based_at(root_path),
             [],
+            IDENTITY_PREPROCESSOR,
             [],
             [
                 shellcheck_lib.test_case.test_case_processing.TestCase(root_path / '1.case'),
@@ -46,6 +48,7 @@ class InvalidCaseContentShouldNotCauseParsingToFail(check_structure.Setup):
         return structure.TestSuite(
             self.root_suite_based_at(root_path),
             [],
+            IDENTITY_PREPROCESSOR,
             [],
             [
                 shellcheck_lib.test_case.test_case_processing.TestCase(root_path / 'case-with-invalid-content.case'),
@@ -69,12 +72,15 @@ class MainSuiteWithTwoReferencedSuites(check_structure.Setup):
         return structure.TestSuite(
             self.root_suite_based_at(root_path),
             [],
+            IDENTITY_PREPROCESSOR,
             [
                 structure.TestSuite(
                     root_path / '1.suite', [self.root_suite_based_at(root_path)],
+                    IDENTITY_PREPROCESSOR,
                     [], []),
                 structure.TestSuite(
                     root_path / 'sub' / '2.suite', [self.root_suite_based_at(root_path)],
+                    IDENTITY_PREPROCESSOR,
                     [], [])
             ],
             [],
@@ -99,8 +105,12 @@ class MainSuiteWithAbsoluteReferencesToSuitesAndCases(check_structure.Setup):
         return structure.TestSuite(
             self.root_suite_based_at(root_path),
             [],
+            IDENTITY_PREPROCESSOR,
             [
-                structure.TestSuite(root_path / '1.suite', [self.root_suite_based_at(root_path)], [], []),
+                structure.TestSuite(root_path / '1.suite',
+                                    [self.root_suite_based_at(root_path)],
+                                    IDENTITY_PREPROCESSOR,
+                                    [], []),
             ],
             [
                 shellcheck_lib.test_case.test_case_processing.TestCase(root_path / '1.case'),
@@ -127,12 +137,15 @@ class MainSuiteWithReferencedSuitesAndCasesAndMixedSections(check_structure.Setu
         return structure.TestSuite(
             self.root_suite_based_at(root_path),
             [],
+            IDENTITY_PREPROCESSOR,
             [
                 structure.TestSuite(
                     root_path / '1.suite', [self.root_suite_based_at(root_path)],
+                    IDENTITY_PREPROCESSOR,
                     [], []),
                 structure.TestSuite(
                     root_path / 'sub' / '2.suite', [self.root_suite_based_at(root_path)],
+                    IDENTITY_PREPROCESSOR,
                     [], [])
             ],
             [
@@ -167,18 +180,22 @@ class ComplexStructure(check_structure.Setup):
         return structure.TestSuite(
             self.root_suite_based_at(root_path),
             [],
+            IDENTITY_PREPROCESSOR,
             [
                 structure.TestSuite(
                     root_path / 'local.suite',
                     [self.root_suite_based_at(root_path)],
+                    IDENTITY_PREPROCESSOR,
                     [],
                     [shellcheck_lib.test_case.test_case_processing.TestCase(root_path / 'from-local-suite.case')]),
                 structure.TestSuite(
                     root_path / 'sub' / 'sub.suite',
                     [self.root_suite_based_at(root_path)],
+                    IDENTITY_PREPROCESSOR,
                     [structure.TestSuite(
                         root_path / 'sub' / 'sub-sub.suite',
                         [self.root_suite_based_at(root_path), root_path / 'sub' / 'sub.suite'],
+                        IDENTITY_PREPROCESSOR,
                         [],
                         [shellcheck_lib.test_case.test_case_processing.TestCase(root_path / 'sub' / 'sub-sub.case')]
                     )],

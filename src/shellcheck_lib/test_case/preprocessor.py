@@ -16,6 +16,9 @@ class IdentityPreprocessor(Preprocessor):
         return test_case_source
 
 
+IDENTITY_PREPROCESSOR = IdentityPreprocessor()
+
+
 class PreprocessorViaExternalProgram(Preprocessor):
     """
     A pre-processor that transforms the contents of a test case file

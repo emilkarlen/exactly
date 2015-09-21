@@ -1,9 +1,12 @@
 import pathlib
 import unittest
 
+from shellcheck_lib.test_case.preprocessor import IDENTITY_PREPROCESSOR
 from shellcheck_lib.test_suite.enumeration import DepthFirstEnumerator
 from shellcheck_lib.test_suite.structure import TestSuite
 from shellcheck_lib.test_case.test_case_processing import TestCase
+
+IP = IDENTITY_PREPROCESSOR
 
 
 class TestDepthFirstEnumerator(unittest.TestCase):
@@ -11,6 +14,7 @@ class TestDepthFirstEnumerator(unittest.TestCase):
         root_suite = TestSuite(
             pathlib.Path('root-file'),
             [],
+            IP,
             [],
             [TestCase(pathlib.Path('case-file'))])
         suite_list = DepthFirstEnumerator().apply(root_suite)
@@ -23,12 +27,12 @@ class TestDepthFirstEnumerator(unittest.TestCase):
 
     def test_hierarchy(self):
         # ARRANGE #
-        sub11 = TestSuite(pathlib.Path('11'), [], [], [])
-        sub12 = TestSuite(pathlib.Path('12'), [], [], [])
-        sub1 = TestSuite(pathlib.Path('1'), [], [sub11, sub12], [])
-        sub21 = TestSuite(pathlib.Path('21'), [], [], [])
-        sub2 = TestSuite(pathlib.Path('2'), [], [sub21], [])
-        root = TestSuite(pathlib.Path('root'), [], [sub1, sub2], [])
+        sub11 = TestSuite(pathlib.Path('11'), [], IP, [], [])
+        sub12 = TestSuite(pathlib.Path('12'), [], IP, [], [])
+        sub1 = TestSuite(pathlib.Path('1'), [], IP, [sub11, sub12], [])
+        sub21 = TestSuite(pathlib.Path('21'), [], IP, [], [])
+        sub2 = TestSuite(pathlib.Path('2'), [], IP, [sub21], [])
+        root = TestSuite(pathlib.Path('root'), [], IP, [sub1, sub2], [])
         # ACT #
         actual = DepthFirstEnumerator().apply(root)
         # ASSERT #
