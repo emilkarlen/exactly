@@ -42,6 +42,6 @@ class TestSuite:
     @property
     def test_cases(self) -> list:
         """
-        :return: [TestCase]
+        :return: [TestCaseSetup]
         """
         return self.__test_cases

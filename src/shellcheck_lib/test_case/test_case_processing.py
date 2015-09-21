@@ -6,7 +6,7 @@ from shellcheck_lib.test_case import test_case_doc
 from shellcheck_lib.execution.result import FullResult
 
 
-class TestCase:
+class TestCaseSetup:
     def __init__(self,
                  file_path: pathlib.Path):
         self.__file_path = file_path
@@ -141,5 +141,5 @@ class Accessor:
 
 
 class Processor:
-    def apply(self, test_case: TestCase) -> Result:
+    def apply(self, test_case: TestCaseSetup) -> Result:
         raise NotImplementedError()

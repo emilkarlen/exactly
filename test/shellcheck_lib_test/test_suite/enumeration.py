@@ -4,7 +4,7 @@ import unittest
 from shellcheck_lib.test_case.preprocessor import IDENTITY_PREPROCESSOR
 from shellcheck_lib.test_suite.enumeration import DepthFirstEnumerator
 from shellcheck_lib.test_suite.structure import TestSuite
-from shellcheck_lib.test_case.test_case_processing import TestCase
+from shellcheck_lib.test_case.test_case_processing import TestCaseSetup
 
 IP = IDENTITY_PREPROCESSOR
 
@@ -16,7 +16,7 @@ class TestDepthFirstEnumerator(unittest.TestCase):
             [],
             IP,
             [],
-            [TestCase(pathlib.Path('case-file'))])
+            [TestCaseSetup(pathlib.Path('case-file'))])
         suite_list = DepthFirstEnumerator().apply(root_suite)
         self.assertEqual(1,
                          len(suite_list),

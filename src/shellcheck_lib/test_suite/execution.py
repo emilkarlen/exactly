@@ -65,7 +65,7 @@ class Executor:
         pass
 
     def _process_case(self,
-                      case: test_case_processing.TestCase) -> test_case_processing.Result:
+                      case: test_case_processing.TestCaseSetup) -> test_case_processing.Result:
         try:
             return self._test_case_processor.apply(case)
         except Exception as ex:
