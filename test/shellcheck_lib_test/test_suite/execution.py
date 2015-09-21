@@ -3,6 +3,7 @@ import pathlib
 from pathlib import Path
 import unittest
 
+from shellcheck_lib.test_case.preprocessor import IDENTITY_PREPROCESSOR
 import shellcheck_lib.test_case.test_case_processing
 from shellcheck_lib.test_suite.execution import Executor
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
@@ -17,6 +18,14 @@ from shellcheck_lib.test_suite import reporting
 from shellcheck_lib.test_case import test_case_processing
 from shellcheck_lib.test_suite.suite_hierarchy_reading import SuiteHierarchyReader
 from shellcheck_lib_test.util.str_std_out_files import StringStdOutFiles
+
+
+def new_test_suite(source_file_name: str,
+                   sub_test_suites: list,
+                   test_cases: list) -> structure.TestSuite:
+    return structure.TestSuite(pathlib.Path(source_file_name), [], IDENTITY_PREPROCESSOR,
+                               sub_test_suites,
+                               test_cases)
 
 
 class TestError(unittest.TestCase):
@@ -44,7 +53,7 @@ class TestError(unittest.TestCase):
         # ARRANGE #
         str_std_out_files = StringStdOutFiles()
         test_case = shellcheck_lib.test_case.test_case_processing.TestCase(Path('test-case'))
-        root = structure.TestSuite(Path('root'), [], [], [test_case])
+        root = new_test_suite('root', [], [test_case])
         suite_hierarchy_reader = ReaderThatGivesConstantSuite(root)
         reporter_factory = ExecutionTracingReporterFactory()
         executor = Executor(str_std_out_files.stdout_files,
@@ -88,7 +97,7 @@ class TestReturnValueFromTestCaseProcessor(unittest.TestCase):
         # ARRANGE #
         str_std_out_files = StringStdOutFiles()
         test_case = shellcheck_lib.test_case.test_case_processing.TestCase(Path('test-case'))
-        root = structure.TestSuite(Path('root'), [], [], [test_case])
+        root = new_test_suite('root', [], [test_case])
         suite_hierarchy_reader = ReaderThatGivesConstantSuite(root)
         reporter_factory = ExecutionTracingReporterFactory()
         executor = Executor(str_std_out_files.stdout_files,
@@ -118,9 +127,8 @@ class TestComplexSuite(unittest.TestCase):
         tc_internal_error = shellcheck_lib.test_case.test_case_processing.TestCase(Path('internal error'))
         tc_access_error = shellcheck_lib.test_case.test_case_processing.TestCase(Path('access error'))
         tc_executed = shellcheck_lib.test_case.test_case_processing.TestCase(Path('executed'))
-        root = structure.TestSuite(
-            pathlib.Path('root'),
-            [],
+        root = new_test_suite(
+            'root',
             [],
             [
                 tc_internal_error,
@@ -164,12 +172,12 @@ class TestComplexSuite(unittest.TestCase):
         # ARRANGE #
         reporter_factory = ExecutionTracingReporterFactory()
         str_std_out_files = StringStdOutFiles()
-        sub11 = structure.TestSuite(pathlib.Path('11'), [], [], [])
-        sub12 = structure.TestSuite(pathlib.Path('12'), [], [], [])
-        sub1 = structure.TestSuite(pathlib.Path('1'), [], [sub11, sub12], [])
-        sub21 = structure.TestSuite(pathlib.Path('21'), [], [], [])
-        sub2 = structure.TestSuite(pathlib.Path('2'), [], [sub21], [])
-        root = structure.TestSuite(pathlib.Path('root'), [], [sub1, sub2], [])
+        sub11 = new_test_suite('11', [], [])
+        sub12 = new_test_suite('12', [], [])
+        sub1 = new_test_suite('1', [sub11, sub12], [])
+        sub21 = new_test_suite('21', [], [])
+        sub2 = new_test_suite('2', [sub21], [])
+        root = new_test_suite('root', [sub1, sub2], [])
 
         expected_suites = [
             ExpectedSuiteReporting(sub11, []),
@@ -224,16 +232,16 @@ class TestComplexSuite(unittest.TestCase):
             id(tc_executed_2): test_case_processing.new_executed(FULL_RESULT_PASS),
             id(tc_executed_root): test_case_processing.new_executed(FULL_RESULT_PASS),
         })
-        sub11 = structure.TestSuite(pathlib.Path('11'), [], [], [tc_internal_error_11,
-                                                                 tc_executed_11])
-        sub12 = structure.TestSuite(pathlib.Path('12'), [], [], [tc_executed_12,
-                                                                 tc_access_error_12])
-        sub1 = structure.TestSuite(pathlib.Path('1'), [], [sub11, sub12], [tc_access_error_1,
-                                                                           tc_executed_1])
-        sub21 = structure.TestSuite(pathlib.Path('21'), [], [], [tc_internal_error_21])
-        sub2 = structure.TestSuite(pathlib.Path('2'), [], [sub21], [tc_executed_2])
-        sub3 = structure.TestSuite(pathlib.Path('2'), [], [], [])
-        root = structure.TestSuite(pathlib.Path('root'), [], [sub1, sub2, sub3], [tc_executed_root])
+        sub11 = new_test_suite('11', [], [tc_internal_error_11,
+                                          tc_executed_11])
+        sub12 = new_test_suite('12', [], [tc_executed_12,
+                                          tc_access_error_12])
+        sub1 = new_test_suite('1', [sub11, sub12], [tc_access_error_1,
+                                                    tc_executed_1])
+        sub21 = new_test_suite('21', [], [tc_internal_error_21])
+        sub2 = new_test_suite('2', [sub21], [tc_executed_2])
+        sub3 = new_test_suite('2', [], [])
+        root = new_test_suite('root', [sub1, sub2, sub3], [tc_executed_root])
 
         expected_suites = [
             ExpectedSuiteReporting(sub11, [(tc_internal_error_11, test_case_processing.Status.INTERNAL_ERROR),
