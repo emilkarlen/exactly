@@ -82,4 +82,4 @@ class Executor:
                                                  is_keep_eds,
                                                  self._settings.execution_directory_root_name_prefix)
         processor = processing.new_processor(configuration)
-        return processor.apply(test_case_processing.TestCase(self._settings.file_path))
+        return processor.apply(test_case_processing.TestCaseSetup(self._settings.file_path))

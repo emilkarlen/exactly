@@ -74,7 +74,7 @@ class ProcessorFromAccessorAndExecutor(processing.Processor):
         self._accessor = accessor
         self._executor = executor
 
-    def apply(self, test_case: processing.TestCase) -> processing.Result:
+    def apply(self, test_case: processing.TestCaseSetup) -> processing.Result:
         try:
             try:
                 a_test_case_doc = self._accessor.apply(test_case.file_path)

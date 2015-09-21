@@ -44,11 +44,11 @@ class CompleteSuiteReporter(reporting.CompleteSuiteReporter, reporting.SubSuiteR
     def suite_end(self):
         self._out_line('SUITE ' + str(self._current_suite.source_file) + ': END')
 
-    def case_begin(self, case: test_case_processing.TestCase):
+    def case_begin(self, case: test_case_processing.TestCaseSetup):
         self._std_output_files.out.write('CASE  ' + str(case.file_path) + ': ')
 
     def case_end(self,
-                 case: test_case_processing.TestCase,
+                 case: test_case_processing.TestCaseSetup,
                  result: test_case_processing.Result):
         if result.status is not test_case_processing.Status.EXECUTED:
             self._exit_code = FAILED_TESTS_EXIT_CODE

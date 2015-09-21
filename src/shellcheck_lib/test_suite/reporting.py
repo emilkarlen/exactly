@@ -11,11 +11,11 @@ class SubSuiteReporter:
         raise NotImplementedError()
 
     def case_begin(self,
-                   case: test_case_processing.TestCase):
+                   case: test_case_processing.TestCaseSetup):
         raise NotImplementedError()
 
     def case_end(self,
-                 case: test_case_processing.TestCase,
+                 case: test_case_processing.TestCaseSetup,
                  result: test_case_processing.Result):
         raise NotImplementedError()
 

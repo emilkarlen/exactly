@@ -82,7 +82,7 @@ class TestProcessorFromAccessorAndExecutor(unittest.TestCase):
         processor = sut.ProcessorFromAccessorAndExecutor(accessor,
                                                          executor)
         # ACT #
-        result = processor.apply(test_case_processing.TestCase(PATH))
+        result = processor.apply(test_case_processing.TestCaseSetup(PATH))
         # ASSERT #
         self.assertEqual(result.status,
                          test_case_processing.Status.ACCESS_ERROR)
@@ -100,7 +100,7 @@ class TestProcessorFromAccessorAndExecutor(unittest.TestCase):
         processor = sut.ProcessorFromAccessorAndExecutor(accessor,
                                                          executor)
         # ACT #
-        result = processor.apply(test_case_processing.TestCase(PATH))
+        result = processor.apply(test_case_processing.TestCaseSetup(PATH))
         # ASSERT #
         self.assertEqual(result.status,
                          test_case_processing.Status.INTERNAL_ERROR)
@@ -114,7 +114,7 @@ class TestProcessorFromAccessorAndExecutor(unittest.TestCase):
         processor = sut.ProcessorFromAccessorAndExecutor(accessor,
                                                          executor)
         # ACT #
-        result = processor.apply(test_case_processing.TestCase(PATH))
+        result = processor.apply(test_case_processing.TestCaseSetup(PATH))
         # ASSERT #
         self.assertEqual(test_case_processing.Status.INTERNAL_ERROR,
                          result.status)
@@ -129,7 +129,7 @@ class TestProcessorFromAccessorAndExecutor(unittest.TestCase):
         processor = sut.ProcessorFromAccessorAndExecutor(accessor,
                                                          executor)
         # ACT #
-        result = processor.apply(test_case_processing.TestCase(PATH))
+        result = processor.apply(test_case_processing.TestCaseSetup(PATH))
         # ASSERT #
         self.assertIs(test_case_processing.Status.EXECUTED,
                       result.status)

@@ -4,7 +4,7 @@ from pathlib import Path
 import unittest
 
 from shellcheck_lib.test_case.preprocessor import IDENTITY_PREPROCESSOR
-import shellcheck_lib.test_case.test_case_processing
+from shellcheck_lib.test_case.test_case_processing import TestCaseSetup
 from shellcheck_lib.test_suite.execution import Executor
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.execution.result import new_skipped, new_pass
@@ -52,7 +52,7 @@ class TestError(unittest.TestCase):
     def test_internal_error_in_test_case_processor(self):
         # ARRANGE #
         str_std_out_files = StringStdOutFiles()
-        test_case = shellcheck_lib.test_case.test_case_processing.TestCase(Path('test-case'))
+        test_case = TestCaseSetup(Path('test-case'))
         root = new_test_suite('root', [], [test_case])
         suite_hierarchy_reader = ReaderThatGivesConstantSuite(root)
         reporter_factory = ExecutionTracingReporterFactory()
@@ -96,7 +96,7 @@ class TestReturnValueFromTestCaseProcessor(unittest.TestCase):
                                                                   result: test_case_processing.Result):
         # ARRANGE #
         str_std_out_files = StringStdOutFiles()
-        test_case = shellcheck_lib.test_case.test_case_processing.TestCase(Path('test-case'))
+        test_case = TestCaseSetup(Path('test-case'))
         root = new_test_suite('root', [], [test_case])
         suite_hierarchy_reader = ReaderThatGivesConstantSuite(root)
         reporter_factory = ExecutionTracingReporterFactory()
@@ -124,9 +124,9 @@ class TestComplexSuite(unittest.TestCase):
         # ARRANGE #
         reporter_factory = ExecutionTracingReporterFactory()
         str_std_out_files = StringStdOutFiles()
-        tc_internal_error = shellcheck_lib.test_case.test_case_processing.TestCase(Path('internal error'))
-        tc_access_error = shellcheck_lib.test_case.test_case_processing.TestCase(Path('access error'))
-        tc_executed = shellcheck_lib.test_case.test_case_processing.TestCase(Path('executed'))
+        tc_internal_error = TestCaseSetup(Path('internal error'))
+        tc_access_error = TestCaseSetup(Path('access error'))
+        tc_executed = TestCaseSetup(Path('executed'))
         root = new_test_suite(
             'root',
             [],
@@ -210,15 +210,15 @@ class TestComplexSuite(unittest.TestCase):
         # ARRANGE #
         reporter_factory = ExecutionTracingReporterFactory()
         str_std_out_files = StringStdOutFiles()
-        tc_internal_error_11 = shellcheck_lib.test_case.test_case_processing.TestCase(Path('internal error 11'))
-        tc_internal_error_21 = shellcheck_lib.test_case.test_case_processing.TestCase(Path('internal error 21'))
-        tc_access_error_1 = shellcheck_lib.test_case.test_case_processing.TestCase(Path('access error A'))
-        tc_access_error_12 = shellcheck_lib.test_case.test_case_processing.TestCase(Path('access error 12'))
-        tc_executed_11 = shellcheck_lib.test_case.test_case_processing.TestCase(Path('executed 11'))
-        tc_executed_12 = shellcheck_lib.test_case.test_case_processing.TestCase(Path('executed 12'))
-        tc_executed_1 = shellcheck_lib.test_case.test_case_processing.TestCase(Path('executed 1'))
-        tc_executed_2 = shellcheck_lib.test_case.test_case_processing.TestCase(Path('executed 2'))
-        tc_executed_root = shellcheck_lib.test_case.test_case_processing.TestCase(Path('executed root'))
+        tc_internal_error_11 = TestCaseSetup(Path('internal error 11'))
+        tc_internal_error_21 = TestCaseSetup(Path('internal error 21'))
+        tc_access_error_1 = TestCaseSetup(Path('access error A'))
+        tc_access_error_12 = TestCaseSetup(Path('access error 12'))
+        tc_executed_11 = TestCaseSetup(Path('executed 11'))
+        tc_executed_12 = TestCaseSetup(Path('executed 12'))
+        tc_executed_1 = TestCaseSetup(Path('executed 1'))
+        tc_executed_2 = TestCaseSetup(Path('executed 2'))
+        tc_executed_root = TestCaseSetup(Path('executed root'))
         test_case_processor = TestCaseProcessorThatGivesConstantPerCase({
             id(tc_internal_error_11): test_case_processing.new_internal_error('message A'),
             id(tc_internal_error_21): test_case_processing.new_internal_error('messageB'),
@@ -288,7 +288,7 @@ def check_exit_code_and_empty_stdout(put: unittest.TestCase,
 
 
 class TestCaseProcessorThatRaisesUnconditionally(test_case_processing.Processor):
-    def apply(self, test_case: shellcheck_lib.test_case.test_case_processing.TestCase) -> test_case_processing.Result:
+    def apply(self, test_case: TestCaseSetup) -> test_case_processing.Result:
         raise NotImplementedError()
 
 
@@ -297,7 +297,7 @@ class TestCaseProcessorThatGivesConstant(test_case_processing.Processor):
                  result: test_case_processing.Result):
         self.result = result
 
-    def apply(self, test_case: shellcheck_lib.test_case.test_case_processing.TestCase) -> test_case_processing.Result:
+    def apply(self, test_case: TestCaseSetup) -> test_case_processing.Result:
         return self.result
 
 
@@ -310,7 +310,7 @@ class TestCaseProcessorThatGivesConstantPerCase(test_case_processing.Processor):
         """
         self.test_case_id_2_result = test_case_id_2_result
 
-    def apply(self, test_case: shellcheck_lib.test_case.test_case_processing.TestCase) -> test_case_processing.Result:
+    def apply(self, test_case: TestCaseSetup) -> test_case_processing.Result:
         return self.test_case_id_2_result[id(test_case)]
 
 
@@ -359,7 +359,7 @@ class ExecutionTracingSubSuiteReporter(reporting.SubSuiteReporter):
         self.case_begin_list.append(case)
 
     def case_end(self,
-                 case: shellcheck_lib.test_case.test_case_processing.TestCase,
+                 case: TestCaseSetup,
                  result: test_case_processing.Result):
         self.event_type_list.append(EventType.CASE_END)
         self.case_end_list.append((case, result))

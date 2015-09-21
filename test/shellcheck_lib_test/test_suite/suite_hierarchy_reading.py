@@ -3,7 +3,7 @@ import unittest
 
 from shellcheck_lib.general import line_source
 from shellcheck_lib.test_case.preprocessor import IDENTITY_PREPROCESSOR
-import shellcheck_lib.test_case.test_case_processing
+from shellcheck_lib.test_case.test_case_processing import TestCaseSetup
 from shellcheck_lib.test_suite import structure
 from shellcheck_lib.test_suite.instruction_set.parse import SuiteFileReferenceError, SuiteSyntaxError, \
     SuiteDoubleInclusion
@@ -25,8 +25,8 @@ class MainSuiteWithTwoReferencedCases(check_structure.Setup):
             IDENTITY_PREPROCESSOR,
             [],
             [
-                shellcheck_lib.test_case.test_case_processing.TestCase(root_path / '1.case'),
-                shellcheck_lib.test_case.test_case_processing.TestCase(root_path / 'sub' / '2.case')
+                TestCaseSetup(root_path / '1.case'),
+                TestCaseSetup(root_path / 'sub' / '2.case')
             ])
 
     def file_structure_to_read(self, root_path: pathlib.Path) -> DirContents:
@@ -51,7 +51,7 @@ class InvalidCaseContentShouldNotCauseParsingToFail(check_structure.Setup):
             IDENTITY_PREPROCESSOR,
             [],
             [
-                shellcheck_lib.test_case.test_case_processing.TestCase(root_path / 'case-with-invalid-content.case'),
+                TestCaseSetup(root_path / 'case-with-invalid-content.case'),
             ])
 
     def file_structure_to_read(self, root_path: pathlib.Path) -> DirContents:
@@ -113,7 +113,7 @@ class MainSuiteWithAbsoluteReferencesToSuitesAndCases(check_structure.Setup):
                                     [], []),
             ],
             [
-                shellcheck_lib.test_case.test_case_processing.TestCase(root_path / '1.case'),
+                TestCaseSetup(root_path / '1.case'),
             ],
         )
 
@@ -149,8 +149,8 @@ class MainSuiteWithReferencedSuitesAndCasesAndMixedSections(check_structure.Setu
                     [], [])
             ],
             [
-                shellcheck_lib.test_case.test_case_processing.TestCase(root_path / '1.case'),
-                shellcheck_lib.test_case.test_case_processing.TestCase(root_path / 'sub' / '2.case')
+                TestCaseSetup(root_path / '1.case'),
+                TestCaseSetup(root_path / 'sub' / '2.case')
             ],
         )
 
@@ -187,7 +187,7 @@ class ComplexStructure(check_structure.Setup):
                     [self.root_suite_based_at(root_path)],
                     IDENTITY_PREPROCESSOR,
                     [],
-                    [shellcheck_lib.test_case.test_case_processing.TestCase(root_path / 'from-local-suite.case')]),
+                    [TestCaseSetup(root_path / 'from-local-suite.case')]),
                 structure.TestSuite(
                     root_path / 'sub' / 'sub.suite',
                     [self.root_suite_based_at(root_path)],
@@ -197,11 +197,11 @@ class ComplexStructure(check_structure.Setup):
                         [self.root_suite_based_at(root_path), root_path / 'sub' / 'sub.suite'],
                         IDENTITY_PREPROCESSOR,
                         [],
-                        [shellcheck_lib.test_case.test_case_processing.TestCase(root_path / 'sub' / 'sub-sub.case')]
+                        [TestCaseSetup(root_path / 'sub' / 'sub-sub.case')]
                     )],
-                    [shellcheck_lib.test_case.test_case_processing.TestCase(root_path / 'sub' / 'sub.case')]),
+                    [TestCaseSetup(root_path / 'sub' / 'sub.case')]),
             ],
-            [shellcheck_lib.test_case.test_case_processing.TestCase(root_path / 'from-main-suite.case')]
+            [TestCaseSetup(root_path / 'from-main-suite.case')]
         )
 
     def file_structure_to_read(self, root_path: pathlib.Path) -> DirContents:
