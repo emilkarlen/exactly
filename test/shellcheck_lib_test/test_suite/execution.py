@@ -3,6 +3,8 @@ import pathlib
 from pathlib import Path
 import unittest
 
+from shellcheck_lib.default.execution_mode.test_case.instruction_setup import InstructionsSetup
+from shellcheck_lib.script_language.python3 import new_script_language_setup
 from shellcheck_lib.test_case.preprocessor import IDENTITY_PREPROCESSOR
 from shellcheck_lib.test_case.test_case_processing import TestCaseSetup
 from shellcheck_lib.test_suite.execution import Executor
@@ -16,6 +18,7 @@ from shellcheck_lib.test_suite.enumeration import DepthFirstEnumerator
 from shellcheck_lib.test_suite.instruction_set.parse import SuiteSyntaxError
 from shellcheck_lib.test_suite import reporting
 from shellcheck_lib.test_case import test_case_processing
+from shellcheck_lib.default.execution_mode.test_case import processing as case_processing
 from shellcheck_lib.test_suite.suite_hierarchy_reading import SuiteHierarchyReader
 from shellcheck_lib_test.util.str_std_out_files import StringStdOutFiles
 
@@ -34,11 +37,12 @@ class TestError(unittest.TestCase):
         str_std_out_files = StringStdOutFiles()
         suite_hierarchy_reader = ReaderThatRaisesParseError()
         reporter_factory = ExecutionTracingReporterFactory()
-        executor = Executor(str_std_out_files.stdout_files,
+        executor = Executor(DEFAULT_CASE_PROCESSING,
+                            str_std_out_files.stdout_files,
                             suite_hierarchy_reader,
                             reporter_factory,
                             DepthFirstEnumerator(),
-                            TestCaseProcessorThatRaisesUnconditionally(),
+                            lambda x: TestCaseProcessorThatRaisesUnconditionally(),
                             Path('root-suite-file'))
         # ACT #
         exit_code = executor.execute()
@@ -56,11 +60,12 @@ class TestError(unittest.TestCase):
         root = new_test_suite('root', [], [test_case])
         suite_hierarchy_reader = ReaderThatGivesConstantSuite(root)
         reporter_factory = ExecutionTracingReporterFactory()
-        executor = Executor(str_std_out_files.stdout_files,
+        executor = Executor(DEFAULT_CASE_PROCESSING,
+                            str_std_out_files.stdout_files,
                             suite_hierarchy_reader,
                             reporter_factory,
                             DepthFirstEnumerator(),
-                            TestCaseProcessorThatRaisesUnconditionally(),
+                            lambda config: TestCaseProcessorThatRaisesUnconditionally(),
                             pathlib.Path('root-suite-file'))
         # ACT #
         exit_code = executor.execute()
@@ -100,11 +105,12 @@ class TestReturnValueFromTestCaseProcessor(unittest.TestCase):
         root = new_test_suite('root', [], [test_case])
         suite_hierarchy_reader = ReaderThatGivesConstantSuite(root)
         reporter_factory = ExecutionTracingReporterFactory()
-        executor = Executor(str_std_out_files.stdout_files,
+        executor = Executor(DEFAULT_CASE_PROCESSING,
+                            str_std_out_files.stdout_files,
                             suite_hierarchy_reader,
                             reporter_factory,
                             DepthFirstEnumerator(),
-                            TestCaseProcessorThatGivesConstant(result),
+                            lambda config: TestCaseProcessorThatGivesConstant(result),
                             pathlib.Path('root-suite-file'))
         # ACT #
         exit_code = executor.execute()
@@ -150,11 +156,12 @@ class TestComplexSuite(unittest.TestCase):
                                    ])
         ]
         suite_hierarchy_reader = ReaderThatGivesConstantSuite(root)
-        executor = Executor(str_std_out_files.stdout_files,
+        executor = Executor(DEFAULT_CASE_PROCESSING,
+                            str_std_out_files.stdout_files,
                             suite_hierarchy_reader,
                             reporter_factory,
                             DepthFirstEnumerator(),
-                            test_case_processor,
+                            lambda config: test_case_processor,
                             pathlib.Path('root-suite-file'))
         # ACT #
         exit_code = executor.execute()
@@ -188,11 +195,12 @@ class TestComplexSuite(unittest.TestCase):
             ExpectedSuiteReporting(root, []),
         ]
         suite_hierarchy_reader = ReaderThatGivesConstantSuite(root)
-        executor = Executor(str_std_out_files.stdout_files,
+        executor = Executor(DEFAULT_CASE_PROCESSING,
+                            str_std_out_files.stdout_files,
                             suite_hierarchy_reader,
                             reporter_factory,
                             DepthFirstEnumerator(),
-                            TestCaseProcessorThatGivesConstantPerCase({}),
+                            lambda config: TestCaseProcessorThatGivesConstantPerCase({}),
                             pathlib.Path('root-suite-file'))
         # ACT #
         exit_code = executor.execute()
@@ -256,11 +264,12 @@ class TestComplexSuite(unittest.TestCase):
             ExpectedSuiteReporting(root, [(tc_executed_root, test_case_processing.Status.EXECUTED)]),
         ]
         suite_hierarchy_reader = ReaderThatGivesConstantSuite(root)
-        executor = Executor(str_std_out_files.stdout_files,
+        executor = Executor(DEFAULT_CASE_PROCESSING,
+                            str_std_out_files.stdout_files,
                             suite_hierarchy_reader,
                             reporter_factory,
                             DepthFirstEnumerator(),
-                            test_case_processor,
+                            lambda config: test_case_processor,
                             pathlib.Path('root-suite-file'))
         # ACT #
         exit_code = executor.execute()
@@ -478,6 +487,13 @@ class ExpectedSuiteReporting(tuple):
 DUMMY_EDS = ExecutionDirectoryStructure('test-root-dir')
 
 FULL_RESULT_PASS = new_pass(DUMMY_EDS)
+
+DEFAULT_CASE_PROCESSING = case_processing.Configuration(
+    lambda x: ((), ()),
+    InstructionsSetup({}, {}, {}, {}),
+    new_script_language_setup(),
+    IDENTITY_PREPROCESSOR,
+    False)
 
 
 def suite():

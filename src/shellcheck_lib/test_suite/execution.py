@@ -1,27 +1,36 @@
 import pathlib
 
 from shellcheck_lib.general.output import StdOutputFiles
+
 from shellcheck_lib.test_suite import structure
 from shellcheck_lib.test_suite import reporting
 from shellcheck_lib.test_suite.enumeration import SuiteEnumerator
 from shellcheck_lib.test_suite.instruction_set.parse import SuiteReadError
 from shellcheck_lib.test_suite.suite_hierarchy_reading import SuiteHierarchyReader
 from shellcheck_lib.test_case import test_case_processing
+from shellcheck_lib.default.execution_mode.test_case import processing as case_processing
 
+
+# case_processing.new_processor(default_configuration),
 
 class Executor:
     def __init__(self,
+                 default_case_configuration: case_processing.Configuration,
                  output: StdOutputFiles,
                  suite_hierarchy_reader: SuiteHierarchyReader,
                  reporter_factory: reporting.ReporterFactory,
                  suite_enumerator: SuiteEnumerator,
-                 test_case_processor: test_case_processing.Processor,
+                 test_case_processor_constructor,
                  suite_root_file_path: pathlib.Path):
+        """
+        :param test_case_processor_constructor: case_processing.Configuration -> test_case_processing.Processor
+        """
+        self._default_case_configuration = default_case_configuration
         self._std = output
         self._suite_hierarchy_reader = suite_hierarchy_reader
-        self._test_case_processor = test_case_processor
         self._suite_enumerator = suite_enumerator
         self._reporter_factory = reporter_factory
+        self._test_case_processor_constructor = test_case_processor_constructor
         self._suite_root_file_path = suite_root_file_path
         self._reporter = self._reporter_factory.new_reporter(output)
 
@@ -56,17 +65,29 @@ class Executor:
         """
         sub_suite_reporter = self._reporter.new_sub_suite_reporter(suite)
         sub_suite_reporter.suite_begin()
+        configuration = self.configuration_for_cases_in_suite(suite)
+        case_processor = self._test_case_processor_constructor(configuration)
         for case in suite.test_cases:
             sub_suite_reporter.case_begin(case)
-            result = self._process_case(case)
+            result = self._process_case(case_processor, case)
             sub_suite_reporter.case_end(case,
                                         result)
         sub_suite_reporter.suite_end()
         pass
 
-    def _process_case(self,
+    @staticmethod
+    def _process_case(case_processor: test_case_processing.Processor,
                       case: test_case_processing.TestCaseSetup) -> test_case_processing.Result:
         try:
-            return self._test_case_processor.apply(case)
+            return case_processor.apply(case)
         except Exception as ex:
             return test_case_processing.new_internal_error(str(ex))
+
+    def configuration_for_cases_in_suite(self, suite):
+        return case_processing.Configuration(
+            self._default_case_configuration.split_line_into_name_and_argument_function,
+            self._default_case_configuration.instruction_setup,
+            self._default_case_configuration.script_language_setup,
+            suite.preprocessor,
+            self._default_case_configuration.is_keep_execution_directory_root,
+            self._default_case_configuration.execution_directory_root_name_prefix)

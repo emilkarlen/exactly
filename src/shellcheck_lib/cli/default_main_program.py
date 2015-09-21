@@ -34,17 +34,18 @@ class MainProgram(main_program.MainProgram):
         return executor.execute()
 
     def execute_test_suite(self, settings: Settings) -> int:
-        configuration = case_processing.Configuration(self._split_line_into_name_and_argument_function,
-                                                      self._instruction_setup,
-                                                      resolve_script_language(settings.interpreter),
-                                                      IdentityPreprocessor(),
-                                                      False,
-                                                      self._eds_root_name_prefix_for_suite())
-        executor = test_suite_execution.Executor(self._output,
+        default_configuration = case_processing.Configuration(self._split_line_into_name_and_argument_function,
+                                                              self._instruction_setup,
+                                                              resolve_script_language(settings.interpreter),
+                                                              IdentityPreprocessor(),
+                                                              False,
+                                                              self._eds_root_name_prefix_for_suite())
+        executor = test_suite_execution.Executor(default_configuration,
+                                                 self._output,
                                                  suite_hierarchy_reading.Reader(),
                                                  suite_reporting.ReporterFactory(),
                                                  enumeration.DepthFirstEnumerator(),
-                                                 case_processing.new_processor(configuration),
+                                                 case_processing.new_processor,
                                                  settings.suite_root_file_path)
         return executor.execute()
 
