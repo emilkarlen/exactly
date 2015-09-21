@@ -7,7 +7,8 @@ from shellcheck_lib.general import line_source
 from shellcheck_lib.test_case import test_case_processing
 from . import test_suite_doc
 from . import structure
-from shellcheck_lib.test_case.preprocessor import IdentityPreprocessor
+from shellcheck_lib.test_case.preprocessor import IDENTITY_PREPROCESSOR
+from shellcheck_lib.test_case.test_case_processing import Preprocessor
 from shellcheck_lib.test_suite.instruction_set import parse, instruction
 from shellcheck_lib.test_suite.instruction_set.sections.anonymous import AnonymousSectionEnvironment
 import shellcheck_lib.test_suite.parser
@@ -21,13 +22,34 @@ class SuiteHierarchyReader:
         raise NotImplementedError()
 
 
+class Environment(tuple):
+    def __new__(cls,
+                preprocessor: Preprocessor):
+        return tuple.__new__(cls, (preprocessor,))
+
+    @property
+    def preprocessor(self) -> Preprocessor:
+        return self[0]
+
+
+def default_environment() -> Environment:
+    return Environment(IDENTITY_PREPROCESSOR)
+
+
 class Reader(SuiteHierarchyReader):
+    def __init__(self,
+                 environment: Environment):
+        self._environment = environment
+
     def apply(self, suite_file_path: pathlib.Path) -> structure.TestSuite:
-        return _SingleFileReader(suite_file_path).apply()
+        return _SingleFileReader(self._environment, suite_file_path).apply()
 
 
 class _SingleFileReader:
-    def __init__(self, root_suite_file_path: pathlib.Path):
+    def __init__(self,
+                 environment: Environment,
+                 root_suite_file_path: pathlib.Path):
+        self.environment = environment
         self._root_suite_file_path = root_suite_file_path.resolve()
         self._visited = {self._root_suite_file_path: None}
 
@@ -88,9 +110,9 @@ class _SingleFileReader:
         return (paths_for_instructions(environment, test_suite.suites_section, True),
                 paths_for_instructions(environment, test_suite.cases_section, False))
 
-    @staticmethod
-    def _resolve_preprocessor(test_suite: test_suite_doc.TestSuiteDocument) -> AnonymousSectionEnvironment:
-        ret_val = AnonymousSectionEnvironment(IdentityPreprocessor())
+    def _resolve_preprocessor(self,
+                              test_suite: test_suite_doc.TestSuiteDocument) -> AnonymousSectionEnvironment:
+        ret_val = AnonymousSectionEnvironment(self.environment.preprocessor)
         for section_element in test_suite.anonymous_section.elements:
             if section_element.element_type is ElementType.INSTRUCTION:
                 section_element.instruction.execute(ret_val)
