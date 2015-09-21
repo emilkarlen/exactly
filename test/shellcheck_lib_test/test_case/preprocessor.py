@@ -1,13 +1,13 @@
 from contextlib import contextmanager
 import os
 import pathlib
-import tempfile
-from time import strftime, localtime
 import unittest
 import sys
 
 from shellcheck_lib.test_case.preprocessor import IdentityPreprocessor, PreprocessorViaExternalProgram
 from shellcheck_lib.test_case.test_case_processing import ProcessError
+from shellcheck_lib_test.util.file_structure import DirContents, File
+from shellcheck_lib_test.util.preprocessor_utils import dir_contents_and_preprocessor_source
 from shellcheck_lib_test.util.with_tmp_file import lines_content
 
 
@@ -28,16 +28,10 @@ def test_case_and_preprocessor_source(test_case_source: str,
     A contextmanager that gives a pair of pathlib.Path:s of temporary files:
     (test-case-file-path, preprocessor-source-file).
    """
-    prefix = strftime("shellcheck-test-", localtime())
-    with tempfile.TemporaryDirectory(prefix=prefix + "-test-case-") as test_case_dir:
-        test_case_path = pathlib.Path(test_case_dir) / 'test-case-file.txt'
-        with test_case_path.open('w') as f:
-            f.write(test_case_source)
-        with tempfile.TemporaryDirectory(prefix=prefix + "-proprocessor-") as preproc_dir:
-            preprocessor_file_path = pathlib.Path(preproc_dir) / 'preprocessor.py'
-            with preprocessor_file_path.open('w') as f:
-                f.write(preprocessor_py_source)
-            yield (test_case_path, preprocessor_file_path)
+    get_dir_contents = lambda x: DirContents([File('test-case-file.txt', test_case_source)])
+    with dir_contents_and_preprocessor_source(get_dir_contents,
+                                              preprocessor_py_source) as (dcr_path, pp_file_path):
+        yield (dcr_path / 'test-case-file.txt', pp_file_path)
 
 
 class TestPreprocessorViaExternalProgram(unittest.TestCase):
