@@ -21,9 +21,9 @@ class Parser:
         self.__plain_file_parser = parse.new_parser_for(PARSER_CONFIGURATION)
 
     def apply(self,
-              plain_test_case: line_source.LineSource) -> test_suite_doc.TestSuite:
+              plain_test_case: line_source.LineSource) -> test_suite_doc.TestSuiteDocument:
         document = self.__plain_file_parser.apply(plain_test_case)
-        return test_suite_doc.TestSuite(
+        return test_suite_doc.TestSuiteDocument(
             document.elements_for_phase_or_empty_if_phase_not_present(None),
             document.elements_for_phase_or_empty_if_phase_not_present(SECTION_NAME__SUITS),
             document.elements_for_phase_or_empty_if_phase_not_present(SECTION_NAME__CASES),
