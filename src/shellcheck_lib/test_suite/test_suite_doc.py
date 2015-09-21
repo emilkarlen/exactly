@@ -4,16 +4,16 @@ from shellcheck_lib.test_suite.instruction_set.sections.cases import TestCaseSec
 from shellcheck_lib.test_suite.instruction_set.sections.suites import TestSuiteSectionInstruction
 
 
-class TestSuite(tuple):
+class TestSuiteDocument(tuple):
     def __new__(cls,
                 anonymous_section: PhaseContents,
                 suites_section: PhaseContents,
                 cases_section: PhaseContents):
-        TestSuite.__assert_instruction_class(anonymous_section,
-                                             AnonymousSectionInstruction)
-        TestSuite.__assert_instruction_class(suites_section,
-                                             TestSuiteSectionInstruction)
-        TestSuite.__assert_instruction_class(cases_section, TestCaseSectionInstruction)
+        TestSuiteDocument.__assert_instruction_class(anonymous_section,
+                                                     AnonymousSectionInstruction)
+        TestSuiteDocument.__assert_instruction_class(suites_section,
+                                                     TestSuiteSectionInstruction)
+        TestSuiteDocument.__assert_instruction_class(cases_section, TestCaseSectionInstruction)
         return tuple.__new__(cls, (anonymous_section,
                                    suites_section,
                                    cases_section))

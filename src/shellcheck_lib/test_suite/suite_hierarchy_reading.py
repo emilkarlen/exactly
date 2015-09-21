@@ -58,7 +58,7 @@ class _SingleFileReader:
                                    case_list)
 
     def _resolve_paths(self,
-                       test_suite: test_suite_doc.TestSuite,
+                       test_suite: test_suite_doc.TestSuiteDocument,
                        suite_file_path: pathlib.Path) -> (list, list):
         def paths_for_instructions(env: instruction.Environment,
                                    section_contents: PhaseContents,
@@ -89,7 +89,7 @@ class _SingleFileReader:
                 paths_for_instructions(environment, test_suite.cases_section, False))
 
     @staticmethod
-    def _resolve_preprocessor(test_suite: test_suite_doc.TestSuite) -> AnonymousSectionEnvironment:
+    def _resolve_preprocessor(test_suite: test_suite_doc.TestSuiteDocument) -> AnonymousSectionEnvironment:
         ret_val = AnonymousSectionEnvironment(IdentityPreprocessor())
         for section_element in test_suite.anonymous_section.elements:
             if section_element.element_type is ElementType.INSTRUCTION:
