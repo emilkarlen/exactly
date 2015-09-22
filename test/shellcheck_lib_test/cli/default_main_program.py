@@ -7,7 +7,6 @@ from shellcheck_lib.default.execution_mode.test_suite.reporting import INVALID_S
 from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib.test_case.test_case_processing import AccessErrorType
 from shellcheck_lib_test.cli.cases import default_main_program_wildcard as wildcard
-import shellcheck_lib_test.cli.utils.check_suite_for_main_program
 from shellcheck_lib_test.util import check_suite
 from shellcheck_lib_test.cli.utils.execute_main_program import execute_main_program
 from shellcheck_lib_test.util.file_structure import DirContents, File
@@ -248,14 +247,15 @@ class ComplexSuccessfulSuite(check_suite.SetupWithoutPreprocessor):
         return 0
 
 
-class TestsForSetupBase(unittest.TestCase):
+class TestsForSetupWithoutPreprocessor(unittest.TestCase):
     def _check(self,
                additional_arguments: list,
                setup: check_suite.SetupWithoutPreprocessor):
-        shellcheck_lib_test.cli.utils.check_suite_for_main_program.check(additional_arguments, setup, self)
+        check_suite.check(additional_arguments, setup, self,
+                          check_suite.run_internally)
 
 
-class TestTestSuite(TestsForSetupBase):
+class TestTestSuite(TestsForSetupWithoutPreprocessor):
     def test_invalid_usage(self):
         # ARRANGE #
         test_case_source = ''
@@ -295,7 +295,7 @@ class TestTestSuite(TestsForSetupBase):
         self._check([], ComplexSuccessfulSuite())
 
 
-class TestTestSuiteWithWildcardFileReferencesToCaseFiles(TestsForSetupBase):
+class TestTestSuiteWithWildcardFileReferencesToCaseFiles(TestsForSetupWithoutPreprocessor):
     def test_references_to_case_files_that_matches_no_files(self):
         self._check([], wildcard.ReferencesToCaseFilesThatMatchesNoFiles())
 
@@ -321,7 +321,7 @@ class TestTestSuiteWithWildcardFileReferencesToCaseFiles(TestsForSetupBase):
         self._check([], wildcard.ReferencesToCaseFilesInAnySubDir())
 
 
-class TestTestSuiteWithWildcardFileReferencesToSuiteFiles(TestsForSetupBase):
+class TestTestSuiteWithWildcardFileReferencesToSuiteFiles(TestsForSetupWithoutPreprocessor):
     def test_references_to_suite_files_that_matches_no_files(self):
         self._check([], wildcard.ReferencesToCaseFilesThatMatchesNoFiles())
 
