@@ -214,7 +214,8 @@ class TestsWithoutPreprocessor(unittest.TestCase):
     def _check(self,
                additional_arguments: list,
                setup: check_suite.SetupWithoutPreprocessor):
-        check_suite.check(additional_arguments, setup, self)
+        check_suite.check(additional_arguments, setup, self,
+                          check_suite.run_shellcheck_in_sub_process)
 
 
 class TestsWithPreprocessor(unittest.TestCase):

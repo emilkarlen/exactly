@@ -3,9 +3,10 @@ import sys
 import tempfile
 import unittest
 
+from shellcheck_lib_test.cli.utils.execute_main_program import execute_main_program
 from shellcheck_lib_test.util.cli_main_program_via_shell_utils.run import run_shellcheck_in_sub_process
 from shellcheck_lib_test.util.file_structure import DirContents
-from shellcheck_lib_test.util.with_tmp_file import lines_content
+from shellcheck_lib_test.util.with_tmp_file import lines_content, SubProcessResult
 
 
 class SetupBase:
@@ -49,17 +50,30 @@ class SetupWithoutPreprocessor(SetupBase):
         raise NotImplementedError()
 
 
+def run_in_sub_process(put: unittest.TestCase,
+                       arguments: list) -> SubProcessResult:
+    return run_shellcheck_in_sub_process(put, arguments)
+
+
+def run_internally(put: unittest.TestCase,
+                   arguments: list) -> SubProcessResult:
+    return execute_main_program(arguments)
+
+
 def check(additional_arguments: list,
           setup: SetupWithoutPreprocessor,
-          put: unittest.TestCase):
+          put: unittest.TestCase,
+          runner):
+    """
+    :param runner: (unittest.TestCase, list) -> SubProcessResult
+    """
     with tempfile.TemporaryDirectory(prefix='shellcheck-suite-test-') as tmp_dir:
         tmp_dir_path = pathlib.Path(tmp_dir)
         setup.file_structure(tmp_dir_path).write_to(tmp_dir_path)
         file_argument = str(setup.root_suite_file_based_at(tmp_dir_path))
         arguments = ['suite'] + additional_arguments + [file_argument]
-        sub_process_result = run_shellcheck_in_sub_process(put,
-                                                           arguments)
-        print(sub_process_result.stderr)
+        sub_process_result = runner(put, arguments)
+        # print(sub_process_result.stderr)
         put.assertEqual(setup.expected_exit_code(),
                         sub_process_result.exitcode,
                         'Exit Code')
@@ -73,7 +87,11 @@ def check(additional_arguments: list,
 
 def check_with_pre_proc(additional_arguments: list,
                         setup: SetupWithPreprocessor,
-                        put: unittest.TestCase):
+                        put: unittest.TestCase,
+                        runner):
+    """
+    :param runner: (unittest.TestCase, list) -> SubProcessResult
+    """
     with tempfile.TemporaryDirectory(prefix='shellcheck-suite-test-preprocessor-') as pre_proc_dir:
         preprocessor_file_path = pathlib.Path(pre_proc_dir) / 'preprocessor.py'
         with preprocessor_file_path.open('w') as f:
@@ -86,8 +104,7 @@ def check_with_pre_proc(additional_arguments: list,
             file_structure.write_to(tmp_dir_path)
             file_argument = str(setup.root_suite_file_based_at(tmp_dir_path))
             arguments = ['suite'] + additional_arguments + [file_argument]
-            sub_process_result = run_shellcheck_in_sub_process(put,
-                                                               arguments)
+            sub_process_result = runner(put, arguments)
             print(sub_process_result.stderr)
             put.assertEqual(setup.expected_exit_code(),
                             sub_process_result.exitcode,
