@@ -17,7 +17,6 @@ from shellcheck_lib_test.util.cli_main_program_via_shell_utils.run import SUCCES
 from shellcheck_lib_test.util.with_tmp_file import lines_content, SubProcessResult, \
     ExpectedSubProcessResult, SubProcessResultInfo
 from shellcheck_lib_test.util import check_suite
-from shellcheck_lib_test.util.cli_main_program_via_shell_utils import suite_utils
 from shellcheck_lib_test.cli.cases import default_main_program_wildcard as wildcard
 
 
@@ -211,14 +210,21 @@ class TestsExecuteActPhase(UnitTestCaseWithUtils):
                          'Output on stderr is expected to be same as that of act script')
 
 
-class TestsForSetupBase(unittest.TestCase):
+class TestsWithoutPreprocessor(unittest.TestCase):
     def _check(self,
                additional_arguments: list,
-               setup: check_suite):
-        suite_utils.check(additional_arguments, setup, self)
+               setup: check_suite.SetupWithoutPreprocessor):
+        check_suite.check(additional_arguments, setup, self)
 
 
-class TestTestSuite(TestsForSetupBase):
+class TestsWithPreprocessor(unittest.TestCase):
+    def _check(self,
+               additional_arguments: list,
+               setup: check_suite.SetupWithPreprocessor):
+        check_suite.check_with_pre_proc(additional_arguments, setup, self)
+
+
+class TestTestSuite(TestsWithoutPreprocessor):
     def test_empty_file(self):
         self._check([], default_main_program.EmptySuite())
 
@@ -241,21 +247,21 @@ class TestTestSuite(TestsForSetupBase):
         self._check([], default_main_program.ComplexSuccessfulSuite())
 
 
-class TestTestSuitesWithWildcardFileReferences(TestsForSetupBase):
+class TestTestSuitesWithWildcardFileReferences(TestsWithoutPreprocessor):
     def test_references_to_case_files_that_matches_no_files(self):
         self._check([], wildcard.ReferencesToCaseFilesThatMatchesNoFiles())
 
     def test_references_to_case_files_that_are_directories(self):
         self._check([], wildcard.ReferencesToCaseFilesThatAreDirectories())
 
+    def test_references_to_suite_files_that_matches_no_files(self):
+        self._check([], wildcard.ReferencesToSuiteFilesThatMatchesNoFiles())
+
     def test_references_to_case_files_that_matches_files__type_question_mark(self):
         self._check([], wildcard.ReferencesToCaseFilesThatMatchesFilesTypeQuestionMark())
 
     def test_references_to_case_files_in_any_direct_sub_dir(self):
         self._check([], wildcard.ReferencesToCaseFilesInAnyDirectSubDir())
-
-    def test_references_to_suite_files_that_matches_no_files(self):
-        self._check([], wildcard.ReferencesToCaseFilesThatMatchesNoFiles())
 
     def test_references_to_suite_files_that_are_directories(self):
         self._check([], wildcard.ReferencesToSuiteFilesThatAreDirectories())
@@ -270,6 +276,12 @@ class TestTestSuitesWithWildcardFileReferences(TestsForSetupBase):
         self._check([], wildcard.ReferencesToSuiteFilesInAnySubDir())
 
 
+class TestTestSuitePreprocessing(TestsWithPreprocessor):
+    pass
+    # def test_empty_file(self):
+    #     self._check([], pre_proc_tests.PreprocessorIsAppliedWithTestCaseFileAsArgument())
+
+
 def suite():
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestsInvokation))
@@ -278,6 +290,7 @@ def suite():
     ret_val.addTest(unittest.makeSuite(TestsExecuteActPhase))
     ret_val.addTest(unittest.makeSuite(TestTestSuite))
     ret_val.addTest(unittest.makeSuite(TestTestSuitesWithWildcardFileReferences))
+    ret_val.addTest(unittest.makeSuite(TestTestSuitePreprocessing))
     return ret_val
 
 

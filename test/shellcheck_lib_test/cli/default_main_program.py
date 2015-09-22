@@ -22,15 +22,15 @@ class TestTestCaseWithoutInstructions(unittest.TestCase):
         with tmp_file_containing(test_case_source) as file_path:
             argv = ['--invalid-option-that-should-cause-failure', str(file_path)]
             # ACT #
-            exit_status, stdout_contents, stderr_contents = execute_main_program(argv)
+            sub_process_result = execute_main_program(argv)
         # ASSERT #
         self.assertEqual(main_program.EXIT_INVALID_USAGE,
-                         exit_status,
+                         sub_process_result.exitcode,
                          'Exit Status')
         self.assertEqual('',
-                         stdout_contents,
+                         sub_process_result.stdout,
                          'Output on stdout')
-        self.assertTrue(len(stderr_contents) > 0,
+        self.assertTrue(len(sub_process_result.stderr) > 0,
                         'An error message should be printed on stderr')
 
     def test_empty_file(self):
@@ -39,13 +39,13 @@ class TestTestCaseWithoutInstructions(unittest.TestCase):
         with tmp_file_containing(test_case_source) as file_path:
             argv = [str(file_path)]
             # ACT #
-            exit_status, stdout_contents, stderr_contents = execute_main_program(argv)
+            sub_process_result = execute_main_program(argv)
         # ASSERT #
         self.assertEqual(0,
-                         exit_status,
+                         sub_process_result.exitcode,
                          'Exit Status')
         self.assertEqual(FullResultStatus.PASS.name + os.linesep,
-                         stdout_contents,
+                         sub_process_result.stdout,
                          'Output on stdout')
 
     def test_empty_phases(self):
@@ -59,13 +59,13 @@ class TestTestCaseWithoutInstructions(unittest.TestCase):
         with tmp_file_containing_lines(test_case_lines) as file_path:
             argv = [str(file_path)]
             # ACT #
-            exit_status, stdout_contents, stderr_contents = execute_main_program(argv)
+            sub_process_result = execute_main_program(argv)
         # ASSERT #
         self.assertEqual(0,
-                         exit_status,
+                         sub_process_result.exitcode,
                          'Exit Status')
         self.assertEqual(FullResultStatus.PASS.name + os.linesep,
-                         stdout_contents,
+                         sub_process_result.stdout,
                          'Output on stdout')
 
     def test_parse_error(self):
@@ -76,17 +76,17 @@ class TestTestCaseWithoutInstructions(unittest.TestCase):
         with tmp_file_containing_lines(test_case_lines) as file_path:
             argv = [str(file_path)]
             # ACT #
-            exit_status, stdout_contents, stderr_contents = execute_main_program(argv)
+            sub_process_result = execute_main_program(argv)
         # ASSERT #
         self.assertEqual(NO_EXECUTION_EXIT_CODE,
-                         exit_status,
+                         sub_process_result.exitcode,
                          'Exit Status')
         self.assertEqual(AccessErrorType.PARSE_ERROR.name + os.linesep,
-                         stdout_contents,
+                         sub_process_result.stdout,
                          'Output on stdout')
 
 
-class EmptySuite(check_suite.Setup):
+class EmptySuite(check_suite.SetupWithoutPreprocessor):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'empty.suite'
 
@@ -105,7 +105,7 @@ class EmptySuite(check_suite.Setup):
         return 0
 
 
-class SuiteWithSingleEmptyTestCase(check_suite.Setup):
+class SuiteWithSingleEmptyTestCase(check_suite.SetupWithoutPreprocessor):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -126,7 +126,7 @@ class SuiteWithSingleEmptyTestCase(check_suite.Setup):
         return 0
 
 
-class SuiteWithSingleTestCaseWithOnlySectionHeaders(check_suite.Setup):
+class SuiteWithSingleTestCaseWithOnlySectionHeaders(check_suite.SetupWithoutPreprocessor):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -154,7 +154,7 @@ class SuiteWithSingleTestCaseWithOnlySectionHeaders(check_suite.Setup):
         return 0
 
 
-class SuiteReferenceToNonExistingCaseFile(check_suite.Setup):
+class SuiteReferenceToNonExistingCaseFile(check_suite.SetupWithoutPreprocessor):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -171,7 +171,7 @@ class SuiteReferenceToNonExistingCaseFile(check_suite.Setup):
         return INVALID_SUITE_EXIT_CODE
 
 
-class SuiteReferenceToNonExistingSuiteFile(check_suite.Setup):
+class SuiteReferenceToNonExistingSuiteFile(check_suite.SetupWithoutPreprocessor):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -188,7 +188,7 @@ class SuiteReferenceToNonExistingSuiteFile(check_suite.Setup):
         return INVALID_SUITE_EXIT_CODE
 
 
-class SuiteWithSingleCaseWithInvalidSyntax(check_suite.Setup):
+class SuiteWithSingleCaseWithInvalidSyntax(check_suite.SetupWithoutPreprocessor):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -211,7 +211,7 @@ class SuiteWithSingleCaseWithInvalidSyntax(check_suite.Setup):
         return FAILED_TESTS_EXIT_CODE
 
 
-class ComplexSuccessfulSuite(check_suite.Setup):
+class ComplexSuccessfulSuite(check_suite.SetupWithoutPreprocessor):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -251,7 +251,7 @@ class ComplexSuccessfulSuite(check_suite.Setup):
 class TestsForSetupBase(unittest.TestCase):
     def _check(self,
                additional_arguments: list,
-               setup: check_suite.Setup):
+               setup: check_suite.SetupWithoutPreprocessor):
         shellcheck_lib_test.cli.utils.check_suite_for_main_program.check(additional_arguments, setup, self)
 
 
@@ -262,15 +262,15 @@ class TestTestSuite(TestsForSetupBase):
         with tmp_file_containing(test_case_source) as file_path:
             argv = ['suite', '--invalid-option-that-should-cause-failure', str(file_path)]
             # ACT #
-            exit_status, stdout_contents, stderr_contents = execute_main_program(argv)
+            sub_process_result = execute_main_program(argv)
         # ASSERT #
         self.assertEqual(main_program.EXIT_INVALID_USAGE,
-                         exit_status,
+                         sub_process_result.exitcode,
                          'Exit Status')
         self.assertEqual('',
-                         stdout_contents,
+                         sub_process_result.stdout,
                          'Output on stdout')
-        self.assertTrue(len(stderr_contents) > 0,
+        self.assertTrue(len(sub_process_result.stderr) > 0,
                         'An error message should be printed on stderr')
 
     def test_empty_file(self):
@@ -348,23 +348,23 @@ class TestHelp(unittest.TestCase):
     def test_invalid_usage(self):
         # ARRANGE #
         command_line_arguments = ['help', 'arg', 'arg', 'arg', 'arg']
-        exit_status, stdout_contents, stderr_contents = execute_main_program(command_line_arguments)
+        sub_process_result = execute_main_program(command_line_arguments)
         # ASSERT #
         self.assertEqual(main_program.EXIT_INVALID_USAGE,
-                         exit_status,
+                         sub_process_result.exitcode,
                          'Exit Status')
         self.assertEqual('',
-                         stdout_contents,
+                         sub_process_result.stdout,
                          'Output on stdout')
-        self.assertTrue(len(stderr_contents) > 0)
+        self.assertTrue(len(sub_process_result.stderr) > 0)
 
     def test_instructions(self):
         # ARRANGE #
         command_line_arguments = ['help', 'instructions']
-        exit_status, stdout_contents, stderr_contents = execute_main_program(command_line_arguments)
+        sub_process_result = execute_main_program(command_line_arguments)
         # ASSERT #
         self.assertEqual(0,
-                         exit_status,
+                         sub_process_result.exitcode,
                          'Exit Status')
 
 
