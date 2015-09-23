@@ -185,15 +185,14 @@ class TestsWithPreservedExecutionDirectoryStructure(UnitTestCaseWithUtils):
 class TestsExecuteActPhase(UnitTestCaseWithUtils):
     def test_that_output_and_exit_code_from_act_phase_is_emitted_as_result_of_shellcheck(self):
         # ARRANGE #
-        test_case_source_lines = [
-            '[act]',
-            'import os',
-            'import sys',
-            'sys.stdout.write("output to stdout")',
-            'sys.stderr.write("output to stderr\\n")',
-            'sys.exit(72)',
-        ]
-        test_case_source = lines_content(test_case_source_lines)
+        test_case_source = """
+[act]
+import os
+import sys
+sys.stdout.write("output to stdout")
+sys.stderr.write("output to stderr\\n")
+sys.exit(72)
+"""
         # ACT #
         actual = self._run_shellcheck_in_sub_process(test_case_source,
                                                      flags=['--interpreter',
@@ -209,13 +208,6 @@ class TestsExecuteActPhase(UnitTestCaseWithUtils):
         self.assertEqual('output to stderr\n',
                          actual.stderr,
                          'Output on stderr is expected to be same as that of act script')
-
-
-class TestsWithPreprocessor(unittest.TestCase):
-    def _check(self,
-               additional_arguments: list,
-               setup: check_suite.SetupWithPreprocessor):
-        check_suite.check_with_pre_proc(additional_arguments, setup, self)
 
 
 class TestTestSuite(check_suite.TestsForSetupWithoutPreprocessorExternally):
