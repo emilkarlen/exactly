@@ -6,7 +6,8 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
 from shellcheck_lib.test_case.instruction.result import pfh
 from shellcheck_lib.test_case.instruction.result import svh
 from shellcheck_lib_test.instructions import utils
-from shellcheck_lib_test.instructions.assert_phase.utils import AssertInstructionTest, new_source, new_line_sequence
+from shellcheck_lib_test.instructions.assert_phase.utils import AssertInstructionTest
+from shellcheck_lib_test.instructions.utils import new_source, new_line_sequence
 from shellcheck_lib_test.util.file_structure import DirContents, empty_file, empty_dir, File, Link
 
 
