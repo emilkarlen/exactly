@@ -2,12 +2,12 @@ import pathlib
 
 from shellcheck_lib.default.execution_mode.test_suite.reporting import INVALID_SUITE_EXIT_CODE
 from shellcheck_lib.execution.result import FullResultStatus
-from shellcheck_lib_test.util import check_suite
 from shellcheck_lib_test.util.file_structure import DirContents, Dir, File, empty_file
 from shellcheck_lib_test.util.with_tmp_file import lines_content
+from shellcheck_lib_test.util.main_program import main_program_check_for_test_suite
 
 
-class ReferencesToCaseFilesThatMatchesNoFiles(check_suite.SetupWithoutPreprocessor):
+class ReferencesToCaseFilesThatMatchesNoFiles(main_program_check_for_test_suite.SetupWithoutPreprocessor):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -27,7 +27,7 @@ class ReferencesToCaseFilesThatMatchesNoFiles(check_suite.SetupWithoutPreprocess
         return 0
 
 
-class ReferencesToSuiteFilesThatMatchesNoFiles(check_suite.SetupWithoutPreprocessor):
+class ReferencesToSuiteFilesThatMatchesNoFiles(main_program_check_for_test_suite.SetupWithoutPreprocessor):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -47,7 +47,7 @@ class ReferencesToSuiteFilesThatMatchesNoFiles(check_suite.SetupWithoutPreproces
         return 0
 
 
-class ReferencesToCaseFilesThatMatchesFilesTypeQuestionMark(check_suite.SetupWithoutPreprocessor):
+class ReferencesToCaseFilesThatMatchesFilesTypeQuestionMark(main_program_check_for_test_suite.SetupWithoutPreprocessor):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -71,7 +71,8 @@ class ReferencesToCaseFilesThatMatchesFilesTypeQuestionMark(check_suite.SetupWit
         return 0
 
 
-class ReferencesToSuiteFilesThatMatchesFilesTypeQuestionMark(check_suite.SetupWithoutPreprocessor):
+class ReferencesToSuiteFilesThatMatchesFilesTypeQuestionMark(
+    main_program_check_for_test_suite.SetupWithoutPreprocessor):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -97,7 +98,8 @@ class ReferencesToSuiteFilesThatMatchesFilesTypeQuestionMark(check_suite.SetupWi
         return 0
 
 
-class ReferencesToCaseFilesThatMatchesFilesTypeCharacterRange(check_suite.SetupWithoutPreprocessor):
+class ReferencesToCaseFilesThatMatchesFilesTypeCharacterRange(
+    main_program_check_for_test_suite.SetupWithoutPreprocessor):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -124,7 +126,8 @@ class ReferencesToCaseFilesThatMatchesFilesTypeCharacterRange(check_suite.SetupW
         return 0
 
 
-class ReferencesToSuiteFilesThatMatchesFilesTypeCharacterRange(check_suite.SetupWithoutPreprocessor):
+class ReferencesToSuiteFilesThatMatchesFilesTypeCharacterRange(
+    main_program_check_for_test_suite.SetupWithoutPreprocessor):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -154,7 +157,8 @@ class ReferencesToSuiteFilesThatMatchesFilesTypeCharacterRange(check_suite.Setup
         return 0
 
 
-class ReferencesToSuiteFilesThatMatchesFilesTypeNegatedCharacterRange(check_suite.SetupWithoutPreprocessor):
+class ReferencesToSuiteFilesThatMatchesFilesTypeNegatedCharacterRange(
+    main_program_check_for_test_suite.SetupWithoutPreprocessor):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -180,7 +184,8 @@ class ReferencesToSuiteFilesThatMatchesFilesTypeNegatedCharacterRange(check_suit
         return 0
 
 
-class ReferencesToCaseFilesThatMatchesFilesTypeNegatedCharacterRange(check_suite.SetupWithoutPreprocessor):
+class ReferencesToCaseFilesThatMatchesFilesTypeNegatedCharacterRange(
+    main_program_check_for_test_suite.SetupWithoutPreprocessor):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -205,7 +210,7 @@ class ReferencesToCaseFilesThatMatchesFilesTypeNegatedCharacterRange(check_suite
         return 0
 
 
-class ReferencesToCaseFilesInAnyDirectSubDir(check_suite.SetupWithoutPreprocessor):
+class ReferencesToCaseFilesInAnyDirectSubDir(main_program_check_for_test_suite.SetupWithoutPreprocessor):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -242,7 +247,7 @@ class ReferencesToCaseFilesInAnyDirectSubDir(check_suite.SetupWithoutPreprocesso
         return 0
 
 
-class ReferencesToSuiteFilesInAnyDirectSubDir(check_suite.SetupWithoutPreprocessor):
+class ReferencesToSuiteFilesInAnyDirectSubDir(main_program_check_for_test_suite.SetupWithoutPreprocessor):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -283,7 +288,7 @@ class ReferencesToSuiteFilesInAnyDirectSubDir(check_suite.SetupWithoutPreprocess
         return 0
 
 
-class ReferencesToCaseFilesInAnySubDir(check_suite.SetupWithoutPreprocessor):
+class ReferencesToCaseFilesInAnySubDir(main_program_check_for_test_suite.SetupWithoutPreprocessor):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -323,7 +328,7 @@ class ReferencesToCaseFilesInAnySubDir(check_suite.SetupWithoutPreprocessor):
         return 0
 
 
-class ReferencesToSuiteFilesInAnySubDir(check_suite.SetupWithoutPreprocessor):
+class ReferencesToSuiteFilesInAnySubDir(main_program_check_for_test_suite.SetupWithoutPreprocessor):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -370,7 +375,7 @@ class ReferencesToSuiteFilesInAnySubDir(check_suite.SetupWithoutPreprocessor):
         return 0
 
 
-class ReferencesToCaseFilesThatAreDirectories(check_suite.SetupWithoutPreprocessor):
+class ReferencesToCaseFilesThatAreDirectories(main_program_check_for_test_suite.SetupWithoutPreprocessor):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -390,7 +395,7 @@ class ReferencesToCaseFilesThatAreDirectories(check_suite.SetupWithoutPreprocess
         return INVALID_SUITE_EXIT_CODE
 
 
-class ReferencesToSuiteFilesThatAreDirectories(check_suite.SetupWithoutPreprocessor):
+class ReferencesToSuiteFilesThatAreDirectories(main_program_check_for_test_suite.SetupWithoutPreprocessor):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -410,7 +415,7 @@ class ReferencesToSuiteFilesThatAreDirectories(check_suite.SetupWithoutPreproces
         return INVALID_SUITE_EXIT_CODE
 
 
-class ReferencesToCaseFilesInSubDirThatMatchesFiles(check_suite.SetupWithoutPreprocessor):
+class ReferencesToCaseFilesInSubDirThatMatchesFiles(main_program_check_for_test_suite.SetupWithoutPreprocessor):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 

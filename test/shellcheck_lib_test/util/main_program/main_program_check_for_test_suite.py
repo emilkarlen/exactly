@@ -92,6 +92,39 @@ class SetupWithPreprocessor(main_program_check_base.SetupWithPreprocessor,
         raise NotImplementedError()
 
 
+class SetupWithoutPreprocessor(main_program_check_base.SetupWithoutPreprocessor,
+                               SetupBase):
+    """
+    Setup that executes a suite that does not use a preprocessor.
+    """
+
+    def expected_exit_code(self) -> int:
+        raise NotImplementedError()
+
+    def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
+        raise NotImplementedError()
+
+    def first_arguments(self,
+                        root_path: pathlib.Path) -> list:
+        return ['suite']
+
+    def expected_stdout_lines(self, root_path: pathlib.Path) -> list:
+        raise NotImplementedError()
+
+    def file_argument_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
+        return self.root_suite_file_based_at(root_path)
+
+    def check(self,
+              put: unittest.TestCase,
+              root_path: pathlib.Path,
+              actual_result: SubProcessResult):
+        self._check_base(put, root_path, actual_result)
+
+    def file_structure(self,
+                       root_path: pathlib.Path) -> DirContents:
+        raise NotImplementedError()
+
+
 # class SetupWithoutPreprocessor(SetupBase):
 #     def file_structure(self, root_path: pathlib.Path) -> DirContents:
 #         raise NotImplementedError()
@@ -111,3 +144,19 @@ class TestsForSetupWithPreprocessorExternally(unittest.TestCase):
                setup: SetupWithPreprocessor):
         main_program_check_base.check_with_pre_proc(additional_arguments, setup, self,
                                                     main_program_check_base.run_in_sub_process)
+
+
+class TestsForSetupWithoutPreprocessorInternally(unittest.TestCase):
+    def _check(self,
+               additional_arguments: list,
+               setup: SetupWithoutPreprocessor):
+        main_program_check_base.check(additional_arguments, setup, self,
+                                      main_program_check_base.run_internally)
+
+
+class TestsForSetupWithoutPreprocessorExternally(unittest.TestCase):
+    def _check(self,
+               additional_arguments: list,
+               setup: SetupWithoutPreprocessor):
+        main_program_check_base.check(additional_arguments, setup, self,
+                                      main_program_check_base.run_in_sub_process)

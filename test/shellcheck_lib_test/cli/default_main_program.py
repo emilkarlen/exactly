@@ -8,7 +8,6 @@ from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib.test_case.test_case_processing import AccessErrorType
 from shellcheck_lib_test.cli.cases import default_main_program_wildcard as wildcard
 from shellcheck_lib_test.cli import default_main_program_suite_preprocessing as pre_proc_tests
-from shellcheck_lib_test.util import check_suite
 from shellcheck_lib_test.cli.utils.execute_main_program import execute_main_program
 from shellcheck_lib_test.util.file_structure import DirContents, File
 from shellcheck_lib_test.util.with_tmp_file import tmp_file_containing, tmp_file_containing_lines, lines_content
@@ -89,8 +88,7 @@ class TestTestCaseWithoutInstructions(unittest.TestCase):
                          'Output on stdout')
 
 
-class TestTestCasePreprocessing(
-    main_program_check_for_test_case.TestsForSetupWithPreprocessorInternally):
+class TestTestCasePreprocessing(main_program_check_for_test_case.TestsForSetupWithPreprocessorInternally):
     def test_transformation_into_test_case_that_pass(self):
         self._check([],
                     default_main_program_case_preprocessing.TransformationIntoTestCaseThatPass())
@@ -100,7 +98,7 @@ class TestTestCasePreprocessing(
                     default_main_program_case_preprocessing.TransformationIntoTestCaseThatParserError())
 
 
-class EmptySuite(check_suite.SetupWithoutPreprocessor):
+class EmptySuite(main_program_check_for_test_suite.SetupWithoutPreprocessor):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'empty.suite'
 
@@ -119,7 +117,7 @@ class EmptySuite(check_suite.SetupWithoutPreprocessor):
         return 0
 
 
-class SuiteWithSingleEmptyTestCase(check_suite.SetupWithoutPreprocessor):
+class SuiteWithSingleEmptyTestCase(main_program_check_for_test_suite.SetupWithoutPreprocessor):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -140,7 +138,7 @@ class SuiteWithSingleEmptyTestCase(check_suite.SetupWithoutPreprocessor):
         return 0
 
 
-class SuiteWithSingleTestCaseWithOnlySectionHeaders(check_suite.SetupWithoutPreprocessor):
+class SuiteWithSingleTestCaseWithOnlySectionHeaders(main_program_check_for_test_suite.SetupWithoutPreprocessor):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -168,7 +166,7 @@ class SuiteWithSingleTestCaseWithOnlySectionHeaders(check_suite.SetupWithoutPrep
         return 0
 
 
-class SuiteReferenceToNonExistingCaseFile(check_suite.SetupWithoutPreprocessor):
+class SuiteReferenceToNonExistingCaseFile(main_program_check_for_test_suite.SetupWithoutPreprocessor):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -185,7 +183,7 @@ class SuiteReferenceToNonExistingCaseFile(check_suite.SetupWithoutPreprocessor):
         return INVALID_SUITE_EXIT_CODE
 
 
-class SuiteReferenceToNonExistingSuiteFile(check_suite.SetupWithoutPreprocessor):
+class SuiteReferenceToNonExistingSuiteFile(main_program_check_for_test_suite.SetupWithoutPreprocessor):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -202,7 +200,7 @@ class SuiteReferenceToNonExistingSuiteFile(check_suite.SetupWithoutPreprocessor)
         return INVALID_SUITE_EXIT_CODE
 
 
-class SuiteWithSingleCaseWithInvalidSyntax(check_suite.SetupWithoutPreprocessor):
+class SuiteWithSingleCaseWithInvalidSyntax(main_program_check_for_test_suite.SetupWithoutPreprocessor):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -225,7 +223,7 @@ class SuiteWithSingleCaseWithInvalidSyntax(check_suite.SetupWithoutPreprocessor)
         return FAILED_TESTS_EXIT_CODE
 
 
-class ComplexSuccessfulSuite(check_suite.SetupWithoutPreprocessor):
+class ComplexSuccessfulSuite(main_program_check_for_test_suite.SetupWithoutPreprocessor):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -262,7 +260,7 @@ class ComplexSuccessfulSuite(check_suite.SetupWithoutPreprocessor):
         return 0
 
 
-class TestTestSuite(check_suite.TestsForSetupWithoutPreprocessorInternally):
+class TestTestSuite(main_program_check_for_test_suite.TestsForSetupWithoutPreprocessorInternally):
     def test_invalid_usage(self):
         # ARRANGE #
         test_case_source = ''
@@ -302,7 +300,8 @@ class TestTestSuite(check_suite.TestsForSetupWithoutPreprocessorInternally):
         self._check([], ComplexSuccessfulSuite())
 
 
-class TestTestSuiteWithWildcardFileReferencesToCaseFiles(check_suite.TestsForSetupWithoutPreprocessorInternally):
+class TestTestSuiteWithWildcardFileReferencesToCaseFiles(
+    main_program_check_for_test_suite.TestsForSetupWithoutPreprocessorInternally):
     def test_references_to_case_files_that_matches_no_files(self):
         self._check([], wildcard.ReferencesToCaseFilesThatMatchesNoFiles())
 
@@ -328,7 +327,8 @@ class TestTestSuiteWithWildcardFileReferencesToCaseFiles(check_suite.TestsForSet
         self._check([], wildcard.ReferencesToCaseFilesInAnySubDir())
 
 
-class TestTestSuiteWithWildcardFileReferencesToSuiteFiles(check_suite.TestsForSetupWithoutPreprocessorInternally):
+class TestTestSuiteWithWildcardFileReferencesToSuiteFiles(
+    main_program_check_for_test_suite.TestsForSetupWithoutPreprocessorInternally):
     def test_references_to_suite_files_that_matches_no_files(self):
         self._check([], wildcard.ReferencesToCaseFilesThatMatchesNoFiles())
 
