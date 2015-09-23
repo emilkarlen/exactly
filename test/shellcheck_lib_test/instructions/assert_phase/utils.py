@@ -1,8 +1,5 @@
 import unittest
 
-from shellcheck_lib.document import parse
-from shellcheck_lib.general import line_source
-from shellcheck_lib.general.line_source import LineSequenceBuilder
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser
 from shellcheck_lib.test_case.instruction import common as i
@@ -10,30 +7,8 @@ from shellcheck_lib.test_case.instruction.result import pfh
 from shellcheck_lib.test_case.instruction.result import svh
 from shellcheck_lib.test_case.instruction.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib_test.instructions import utils
+from shellcheck_lib_test.instructions.utils import SingleInstructionParserSource
 from shellcheck_lib_test.util.file_structure import DirContents
-
-
-class SingleInstructionParserSource:
-    def __init__(self,
-                 line_sequence: line_source.LineSequenceBuilder,
-                 instruction_argument: str):
-        self.line_sequence = line_sequence
-        self.instruction_argument = instruction_argument
-
-
-def new_source(instruction_name: str, arguments: str) -> SingleInstructionParserSource:
-    first_line = instruction_name + ' ' + arguments
-    return SingleInstructionParserSource(
-        new_line_sequence(first_line),
-        arguments)
-
-
-def new_line_sequence(first_line: str) -> LineSequenceBuilder:
-    return line_source.LineSequenceBuilder(
-        parse.LineSequenceSourceFromListOfLines(
-            parse.ListOfLines([])),
-        1,
-        first_line)
 
 
 class AssertInstructionTest:

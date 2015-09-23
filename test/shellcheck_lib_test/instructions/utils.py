@@ -4,7 +4,10 @@ import pathlib
 import tempfile
 from time import strftime, localtime
 
+from shellcheck_lib.document import parse
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
+from shellcheck_lib.general import line_source
+from shellcheck_lib.general.line_source import LineSequenceBuilder
 from shellcheck_lib.test_case.instruction import common as i
 from shellcheck_lib.execution import execution_directory_structure
 from shellcheck_lib_test.util.file_utils import write_file
@@ -87,3 +90,26 @@ def home_and_eds_and_test_as_curr_dir() -> HomeAndEds:
                                  eds)
             finally:
                 os.chdir(cwd_before)
+
+
+class SingleInstructionParserSource:
+    def __init__(self,
+                 line_sequence: line_source.LineSequenceBuilder,
+                 instruction_argument: str):
+        self.line_sequence = line_sequence
+        self.instruction_argument = instruction_argument
+
+
+def new_source(instruction_name: str, arguments: str) -> SingleInstructionParserSource:
+    first_line = instruction_name + ' ' + arguments
+    return SingleInstructionParserSource(
+        new_line_sequence(first_line),
+        arguments)
+
+
+def new_line_sequence(first_line: str) -> LineSequenceBuilder:
+    return line_source.LineSequenceBuilder(
+        parse.LineSequenceSourceFromListOfLines(
+            parse.ListOfLines([])),
+        1,
+        first_line)
