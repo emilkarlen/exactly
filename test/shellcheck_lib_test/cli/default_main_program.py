@@ -13,6 +13,8 @@ from shellcheck_lib_test.cli.utils.execute_main_program import execute_main_prog
 from shellcheck_lib_test.util.file_structure import DirContents, File
 from shellcheck_lib_test.util.with_tmp_file import tmp_file_containing, tmp_file_containing_lines, lines_content
 from shellcheck_lib.cli import main_program
+from shellcheck_lib_test.util.main_program import main_program_check_for_test_case
+from shellcheck_lib_test.cli import default_main_program_case_preprocessing
 
 
 class TestTestCaseWithoutInstructions(unittest.TestCase):
@@ -84,6 +86,17 @@ class TestTestCaseWithoutInstructions(unittest.TestCase):
         self.assertEqual(AccessErrorType.PARSE_ERROR.name + os.linesep,
                          sub_process_result.stdout,
                          'Output on stdout')
+
+
+class TestTestCasePreprocessing(
+    main_program_check_for_test_case.TestsForSetupWithPreprocessorInternally):
+    def test_transformation_into_test_case_that_pass(self):
+        self._check([],
+                    default_main_program_case_preprocessing.TransformationIntoTestCaseThatPass())
+
+    def test_transformation_into_test_case_that_parser_error(self):
+        self._check([],
+                    default_main_program_case_preprocessing.TransformationIntoTestCaseThatParserError())
 
 
 class EmptySuite(check_suite.SetupWithoutPreprocessor):
@@ -369,6 +382,7 @@ class TestTestSuitePreprocessing(check_suite.TestsForSetupWithPreprocessorIntern
 def suite():
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestTestCaseWithoutInstructions))
+    ret_val.addTest(unittest.makeSuite(TestTestCasePreprocessing))
     ret_val.addTest(unittest.makeSuite(TestTestSuite))
     ret_val.addTest(unittest.makeSuite(TestTestSuiteWithWildcardFileReferencesToCaseFiles))
     ret_val.addTest(unittest.makeSuite(TestTestSuiteWithWildcardFileReferencesToSuiteFiles))

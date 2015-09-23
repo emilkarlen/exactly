@@ -11,7 +11,7 @@ def _parse_preprocessor(preprocessor_argument):
     if preprocessor_argument is None:
         return IdentityPreprocessor()
     else:
-        return PreprocessorViaExternalProgram(shlex.split(preprocessor_argument))
+        return PreprocessorViaExternalProgram(shlex.split(preprocessor_argument[0]))
 
 
 def parse(argv: list) -> TestCaseExecutionSettings:
