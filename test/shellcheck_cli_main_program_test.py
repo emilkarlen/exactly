@@ -16,7 +16,6 @@ from shellcheck_lib_test.util.cli_main_program_via_shell_utils.run import SUCCES
     contents_of_file
 from shellcheck_lib_test.util.with_tmp_file import lines_content, SubProcessResult, \
     ExpectedSubProcessResult, SubProcessResultInfo
-from shellcheck_lib_test.util import check_suite
 from shellcheck_lib_test.cli.cases import default_main_program_wildcard as wildcard
 from shellcheck_lib_test.cli import default_main_program_suite_preprocessing as pre_proc_tests
 from shellcheck_lib_test.util.main_program import main_program_check_for_test_case
@@ -224,7 +223,7 @@ class TestTestCasePreprocessing(
                     default_main_program_case_preprocessing.TransformationIntoTestCaseThatParserError())
 
 
-class TestTestSuite(check_suite.TestsForSetupWithoutPreprocessorExternally):
+class TestTestSuite(main_program_check_for_test_suite.TestsForSetupWithoutPreprocessorExternally):
     def test_empty_file(self):
         self._check([], default_main_program.EmptySuite())
 
@@ -247,7 +246,8 @@ class TestTestSuite(check_suite.TestsForSetupWithoutPreprocessorExternally):
         self._check([], default_main_program.ComplexSuccessfulSuite())
 
 
-class TestTestSuitesWithWildcardFileReferences(check_suite.TestsForSetupWithoutPreprocessorExternally):
+class TestTestSuitesWithWildcardFileReferences(
+    main_program_check_for_test_suite.TestsForSetupWithoutPreprocessorExternally):
     def test_references_to_case_files_that_matches_no_files(self):
         self._check([], wildcard.ReferencesToCaseFilesThatMatchesNoFiles())
 
