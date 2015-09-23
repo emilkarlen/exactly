@@ -19,6 +19,8 @@ from shellcheck_lib_test.util.with_tmp_file import lines_content, SubProcessResu
 from shellcheck_lib_test.util import check_suite
 from shellcheck_lib_test.cli.cases import default_main_program_wildcard as wildcard
 from shellcheck_lib_test.cli import default_main_program_suite_preprocessing as pre_proc_tests
+from shellcheck_lib_test.util.main_program import main_program_check_for_test_case
+from shellcheck_lib_test.cli import default_main_program_case_preprocessing
 
 
 class UnitTestCaseWithUtils(unittest.TestCase):
@@ -210,6 +212,17 @@ sys.exit(72)
                          'Output on stderr is expected to be same as that of act script')
 
 
+class TestTestCasePreprocessing(
+    main_program_check_for_test_case.TestsForSetupWithPreprocessorExternally):
+    def test_transformation_into_test_case_that_pass(self):
+        self._check([],
+                    default_main_program_case_preprocessing.TransformationIntoTestCaseThatPass())
+
+    def test_transformation_into_test_case_that_parser_error(self):
+        self._check([],
+                    default_main_program_case_preprocessing.TransformationIntoTestCaseThatParserError())
+
+
 class TestTestSuite(check_suite.TestsForSetupWithoutPreprocessorExternally):
     def test_empty_file(self):
         self._check([], default_main_program.EmptySuite())
@@ -273,6 +286,7 @@ def suite():
     ret_val.addTest(unittest.makeSuite(BasicTestsWithNoCliFlags))
     ret_val.addTest(unittest.makeSuite(TestsWithPreservedExecutionDirectoryStructure))
     ret_val.addTest(unittest.makeSuite(TestsExecuteActPhase))
+    ret_val.addTest(unittest.makeSuite(TestTestCasePreprocessing))
     ret_val.addTest(unittest.makeSuite(TestTestSuite))
     ret_val.addTest(unittest.makeSuite(TestTestSuitesWithWildcardFileReferences))
     ret_val.addTest(unittest.makeSuite(TestTestSuitePreprocessing))
