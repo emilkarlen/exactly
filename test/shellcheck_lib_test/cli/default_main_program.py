@@ -15,6 +15,7 @@ from shellcheck_lib_test.util.with_tmp_file import tmp_file_containing, tmp_file
 from shellcheck_lib.cli import main_program
 from shellcheck_lib_test.util.main_program import main_program_check_for_test_case
 from shellcheck_lib_test.cli import default_main_program_case_preprocessing
+from shellcheck_lib_test.util.main_program import main_program_check_for_test_suite
 
 
 class TestTestCaseWithoutInstructions(unittest.TestCase):
@@ -374,7 +375,7 @@ class TestHelp(unittest.TestCase):
                          'Exit Status')
 
 
-class TestTestSuitePreprocessing(check_suite.TestsForSetupWithPreprocessorInternally):
+class TestTestSuitePreprocessing(main_program_check_for_test_suite.TestsForSetupWithPreprocessorInternally):
     def test_empty_file(self):
         self._check([], pre_proc_tests.PreprocessorIsAppliedWithTestCaseFileAsArgument())
 
