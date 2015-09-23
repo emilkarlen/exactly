@@ -52,7 +52,7 @@ class PreprocessorInstructionParser(SingleInstructionParser):
         return PreprocessorInstruction(shlex.split(arg))
 
 
-class PreprocessorInstruction(Instruction):
+class PreprocessorInstruction(AnonymousSectionInstruction):
     def __init__(self,
                  command_and_arguments: list):
         self.command_and_arguments = command_and_arguments

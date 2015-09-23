@@ -105,7 +105,7 @@ def check_with_pre_proc(additional_arguments: list,
             file_argument = str(setup.root_suite_file_based_at(tmp_dir_path))
             arguments = ['suite'] + additional_arguments + [file_argument]
             sub_process_result = runner(put, arguments)
-            print(sub_process_result.stderr)
+            # print(sub_process_result.stderr)
             put.assertEqual(setup.expected_exit_code(),
                             sub_process_result.exitcode,
                             'Exit Code')
@@ -115,3 +115,35 @@ def check_with_pre_proc(additional_arguments: list,
                 put.assertEqual(expected_output,
                                 sub_process_result.stdout,
                                 'Output on stdout')
+
+
+class TestsForSetupWithoutPreprocessorInternally(unittest.TestCase):
+    def _check(self,
+               additional_arguments: list,
+               setup: SetupWithoutPreprocessor):
+        check(additional_arguments, setup, self,
+              run_internally)
+
+
+class TestsForSetupWithoutPreprocessorExternally(unittest.TestCase):
+    def _check(self,
+               additional_arguments: list,
+               setup: SetupWithoutPreprocessor):
+        check(additional_arguments, setup, self,
+              run_in_sub_process)
+
+
+class TestsForSetupWithPreprocessorInternally(unittest.TestCase):
+    def _check(self,
+               additional_arguments: list,
+               setup: SetupWithPreprocessor):
+        check_with_pre_proc(additional_arguments, setup, self,
+                            run_internally)
+
+
+class TestsForSetupWithPreprocessorExternally(unittest.TestCase):
+    def _check(self,
+               additional_arguments: list,
+               setup: SetupWithPreprocessor):
+        check_with_pre_proc(additional_arguments, setup, self,
+                            run_in_sub_process)

@@ -210,14 +210,6 @@ class TestsExecuteActPhase(UnitTestCaseWithUtils):
                          'Output on stderr is expected to be same as that of act script')
 
 
-class TestsWithoutPreprocessor(unittest.TestCase):
-    def _check(self,
-               additional_arguments: list,
-               setup: check_suite.SetupWithoutPreprocessor):
-        check_suite.check(additional_arguments, setup, self,
-                          check_suite.run_shellcheck_in_sub_process)
-
-
 class TestsWithPreprocessor(unittest.TestCase):
     def _check(self,
                additional_arguments: list,
@@ -225,7 +217,7 @@ class TestsWithPreprocessor(unittest.TestCase):
         check_suite.check_with_pre_proc(additional_arguments, setup, self)
 
 
-class TestTestSuite(TestsWithoutPreprocessor):
+class TestTestSuite(check_suite.TestsForSetupWithoutPreprocessorExternally):
     def test_empty_file(self):
         self._check([], default_main_program.EmptySuite())
 
@@ -248,7 +240,7 @@ class TestTestSuite(TestsWithoutPreprocessor):
         self._check([], default_main_program.ComplexSuccessfulSuite())
 
 
-class TestTestSuitesWithWildcardFileReferences(TestsWithoutPreprocessor):
+class TestTestSuitesWithWildcardFileReferences(check_suite.TestsForSetupWithoutPreprocessorExternally):
     def test_references_to_case_files_that_matches_no_files(self):
         self._check([], wildcard.ReferencesToCaseFilesThatMatchesNoFiles())
 
@@ -277,7 +269,7 @@ class TestTestSuitesWithWildcardFileReferences(TestsWithoutPreprocessor):
         self._check([], wildcard.ReferencesToSuiteFilesInAnySubDir())
 
 
-class TestTestSuitePreprocessing(TestsWithPreprocessor):
+class TestTestSuitePreprocessing(check_suite.TestsForSetupWithPreprocessorExternally):
     pass
     # def test_empty_file(self):
     #     self._check([], pre_proc_tests.PreprocessorIsAppliedWithTestCaseFileAsArgument())
