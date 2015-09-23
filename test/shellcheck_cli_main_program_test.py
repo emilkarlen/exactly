@@ -18,6 +18,7 @@ from shellcheck_lib_test.util.with_tmp_file import lines_content, SubProcessResu
     ExpectedSubProcessResult, SubProcessResultInfo
 from shellcheck_lib_test.util import check_suite
 from shellcheck_lib_test.cli.cases import default_main_program_wildcard as wildcard
+from shellcheck_lib_test.cli import default_main_program_suite_preprocessing as pre_proc_tests
 
 
 class UnitTestCaseWithUtils(unittest.TestCase):
@@ -270,9 +271,8 @@ class TestTestSuitesWithWildcardFileReferences(check_suite.TestsForSetupWithoutP
 
 
 class TestTestSuitePreprocessing(check_suite.TestsForSetupWithPreprocessorExternally):
-    pass
-    # def test_empty_file(self):
-    #     self._check([], pre_proc_tests.PreprocessorIsAppliedWithTestCaseFileAsArgument())
+    def test_empty_file(self):
+        self._check([], pre_proc_tests.PreprocessorIsAppliedWithTestCaseFileAsArgument())
 
 
 def suite():
