@@ -2,6 +2,7 @@ from shellcheck_lib.document import model
 from shellcheck_lib.document.model import Instruction
 from shellcheck_lib.document import parse
 from shellcheck_lib.document import syntax
+from shellcheck_lib.document.parse import SourceError
 from shellcheck_lib.general import line_source
 
 
@@ -65,38 +66,42 @@ class SectionElementParserForStandardCommentAndEmptyLines(parse.SectionElementPa
         raise NotImplementedError()
 
 
-class InvalidInstructionException(Exception):
+class InvalidInstructionException(SourceError):
     """
     Indicates some kind of invalid instruction.
     """
 
     def __init__(self,
-                 line: line_source.Line):
-        self.line = line
+                 line: line_source.Line,
+                 message: str):
+        super().__init__(line, message)
 
 
-class InvalidInstructionSyntaxException(Exception):
+class InvalidInstructionSyntaxException(InvalidInstructionException):
     """
     The source line is not valid for an instruction.
     """
 
     def __init__(self,
                  line: line_source.Line):
-        self.line = line
+        super().__init__(line, 'Invalid instruction syntax')
 
 
 class UnknownInstructionException(InvalidInstructionException):
     """
     Indicates that an unknown instruction has been encountered.
-
-    The name of the instruction is unknown.
     """
 
     def __init__(self,
                  line: line_source.Line,
                  instruction_name: str):
-        super().__init__(line)
-        self.instruction_name = instruction_name
+        super().__init__(line,
+                         'Unknown instruction: ' + instruction_name)
+        self._instruction_name = instruction_name
+
+    @property
+    def instruction_name(self) -> str:
+        return self._instruction_name
 
 
 class InvalidInstructionArgumentException(InvalidInstructionException):
@@ -110,12 +115,13 @@ class InvalidInstructionArgumentException(InvalidInstructionException):
                  line: line_source.Line,
                  instruction_name: str,
                  error_message: str):
-        super().__init__(line)
+        super().__init__(line,
+                         'Invalid argument for %s: %s' % (instruction_name, error_message))
         self.instruction_name = instruction_name
         self.error_message = error_message
 
 
-class ArgumentParsingImplementationException(InvalidInstructionException):
+class ArgumentParsingImplementationException(SourceError):
     """
     An implementation error was encountered during parsing of the argument
     of an instruction.
@@ -125,7 +131,8 @@ class ArgumentParsingImplementationException(InvalidInstructionException):
                  line: line_source.Line,
                  instruction_name: str,
                  parser_that_raised_exception: SingleInstructionParser):
-        super().__init__(line)
+        super().__init__(line,
+                         'Parser implementation error while parsing ' + instruction_name)
         self.instruction_name = instruction_name
         self.parser_that_raised_exception = parser_that_raised_exception
 

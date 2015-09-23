@@ -6,8 +6,7 @@ from shellcheck_lib.execution.result import FullResult, new_skipped
 from shellcheck_lib.test_case import processing_utils as sut
 from shellcheck_lib.test_case.preprocessor import IdentityPreprocessor
 from shellcheck_lib.test_case import test_case_doc
-from shellcheck_lib.test_case import test_case_processing
-import shellcheck_lib.test_case.test_case_processing
+from shellcheck_lib.test_case import test_case_processing as tcp
 
 
 class TestIdentityPreprocessor(unittest.TestCase):
@@ -26,11 +25,11 @@ class TestAccessor(unittest.TestCase):
                                          PreprocessorThat(raises_should_not_be_invoked_error),
                                          ParserThat(raises_should_not_be_invoked_error))
         # ACT #
-        with self.assertRaises(shellcheck_lib.test_case.test_case_processing.AccessorError) as cm:
+        with self.assertRaises(tcp.AccessorError) as cm:
             accessor.apply(PATH)
         # ASSERT #
         self.assertEqual(cm.exception.error,
-                         test_case_processing.AccessErrorType.FILE_ACCESS_ERROR)
+                         tcp.AccessErrorType.FILE_ACCESS_ERROR)
 
     def test_preprocessor_that_raises(self):
         # ARRANGE #
@@ -38,11 +37,11 @@ class TestAccessor(unittest.TestCase):
                                          PreprocessorThat(raises(PROCESS_ERROR)),
                                          ParserThat(raises_should_not_be_invoked_error))
         # ACT #
-        with self.assertRaises(shellcheck_lib.test_case.test_case_processing.AccessorError) as cm:
+        with self.assertRaises(tcp.AccessorError) as cm:
             accessor.apply(PATH)
         # ASSERT #
         self.assertEqual(cm.exception.error,
-                         test_case_processing.AccessErrorType.PRE_PROCESS_ERROR)
+                         tcp.AccessErrorType.PRE_PROCESS_ERROR)
 
     def test_parser_that_raises(self):
         # ARRANGE #
@@ -50,11 +49,11 @@ class TestAccessor(unittest.TestCase):
                                          PreprocessorThat(gives_constant('preprocessed source')),
                                          ParserThat(raises(PROCESS_ERROR)))
         # ACT #
-        with self.assertRaises(shellcheck_lib.test_case.test_case_processing.AccessorError) as cm:
+        with self.assertRaises(tcp.AccessorError) as cm:
             accessor.apply(PATH)
         # ASSERT #
         self.assertEqual(cm.exception.error,
-                         test_case_processing.AccessErrorType.PARSE_ERROR)
+                         tcp.AccessErrorType.PARSE_ERROR)
 
     def test_successful_application(self):
         # ARRANGE #
@@ -73,8 +72,8 @@ class TestAccessor(unittest.TestCase):
 class TestProcessorFromAccessorAndExecutor(unittest.TestCase):
     def test_accessor_exception_from_accessor(self):
         # ARRANGE #
-        process_error = shellcheck_lib.test_case.test_case_processing.ProcessError(
-            shellcheck_lib.test_case.test_case_processing.ErrorInfo(message='exception message'))
+        process_error = tcp.ProcessError(
+            tcp.ErrorInfo(message='exception message'))
         accessor = sut.AccessorFromParts(SourceReaderThat(raises(process_error)),
                                          PreprocessorThat(gives_constant('preprocessed source')),
                                          ParserThat(gives_constant(TEST_CASE)))
@@ -82,12 +81,12 @@ class TestProcessorFromAccessorAndExecutor(unittest.TestCase):
         processor = sut.ProcessorFromAccessorAndExecutor(accessor,
                                                          executor)
         # ACT #
-        result = processor.apply(test_case_processing.TestCaseSetup(PATH))
+        result = processor.apply(tcp.TestCaseSetup(PATH))
         # ASSERT #
         self.assertEqual(result.status,
-                         test_case_processing.Status.ACCESS_ERROR)
+                         tcp.Status.ACCESS_ERROR)
         self.assertEqual(result.error_type,
-                         test_case_processing.AccessErrorType.FILE_ACCESS_ERROR)
+                         tcp.AccessErrorType.FILE_ACCESS_ERROR)
         self.assertEqual(result.message,
                          'exception message')
 
@@ -100,10 +99,10 @@ class TestProcessorFromAccessorAndExecutor(unittest.TestCase):
         processor = sut.ProcessorFromAccessorAndExecutor(accessor,
                                                          executor)
         # ACT #
-        result = processor.apply(test_case_processing.TestCaseSetup(PATH))
+        result = processor.apply(tcp.TestCaseSetup(PATH))
         # ASSERT #
-        self.assertEqual(result.status,
-                         test_case_processing.Status.INTERNAL_ERROR)
+        self.assertEqual(tcp.Status.INTERNAL_ERROR,
+                         result.status)
 
     def test_implementation_exception_from_executor(self):
         # ARRANGE #
@@ -114,9 +113,9 @@ class TestProcessorFromAccessorAndExecutor(unittest.TestCase):
         processor = sut.ProcessorFromAccessorAndExecutor(accessor,
                                                          executor)
         # ACT #
-        result = processor.apply(test_case_processing.TestCaseSetup(PATH))
+        result = processor.apply(tcp.TestCaseSetup(PATH))
         # ASSERT #
-        self.assertEqual(test_case_processing.Status.INTERNAL_ERROR,
+        self.assertEqual(tcp.Status.INTERNAL_ERROR,
                          result.status)
 
     def test_successful_application(self):
@@ -129,9 +128,9 @@ class TestProcessorFromAccessorAndExecutor(unittest.TestCase):
         processor = sut.ProcessorFromAccessorAndExecutor(accessor,
                                                          executor)
         # ACT #
-        result = processor.apply(test_case_processing.TestCaseSetup(PATH))
+        result = processor.apply(tcp.TestCaseSetup(PATH))
         # ASSERT #
-        self.assertIs(test_case_processing.Status.EXECUTED,
+        self.assertIs(tcp.Status.EXECUTED,
                       result.status)
         self.assertIs(full_result,
                       result.execution_result)
@@ -156,7 +155,7 @@ class SourceReaderThatReturnsIfSame(sut.SourceReader):
                                        self.returns)
 
 
-class PreprocessorThat(shellcheck_lib.test_case.test_case_processing.Preprocessor):
+class PreprocessorThat(tcp.Preprocessor):
     def __init__(self, f):
         self.f = f
 
@@ -165,7 +164,7 @@ class PreprocessorThat(shellcheck_lib.test_case.test_case_processing.Preprocesso
         return self.f()
 
 
-class PreprocessorThatReturnsIfSame(shellcheck_lib.test_case.test_case_processing.Preprocessor):
+class PreprocessorThatReturnsIfSame(tcp.Preprocessor):
     def __init__(self, expected, returns):
         self.expected = expected
         self.returns = returns
@@ -250,8 +249,7 @@ def if_same_then_else_raise(expected, actual, result):
         raise RuntimeError('should not be invoked')
 
 
-PROCESS_ERROR = shellcheck_lib.test_case.test_case_processing.ProcessError(
-    shellcheck_lib.test_case.test_case_processing.ErrorInfo(message='exception message'))
+PROCESS_ERROR = tcp.ProcessError(tcp.ErrorInfo(message='exception message'))
 
 PATH = pathlib.Path('path')
 
