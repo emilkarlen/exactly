@@ -21,6 +21,7 @@ from shellcheck_lib_test.cli.cases import default_main_program_wildcard as wildc
 from shellcheck_lib_test.cli import default_main_program_suite_preprocessing as pre_proc_tests
 from shellcheck_lib_test.util.main_program import main_program_check_for_test_case
 from shellcheck_lib_test.cli import default_main_program_case_preprocessing
+from shellcheck_lib_test.util.main_program import main_program_check_for_test_suite
 
 
 class UnitTestCaseWithUtils(unittest.TestCase):
@@ -275,7 +276,7 @@ class TestTestSuitesWithWildcardFileReferences(check_suite.TestsForSetupWithoutP
         self._check([], wildcard.ReferencesToSuiteFilesInAnySubDir())
 
 
-class TestTestSuitePreprocessing(check_suite.TestsForSetupWithPreprocessorExternally):
+class TestTestSuitePreprocessing(main_program_check_for_test_suite.TestsForSetupWithPreprocessorExternally):
     def test_empty_file(self):
         self._check([], pre_proc_tests.PreprocessorIsAppliedWithTestCaseFileAsArgument())
 

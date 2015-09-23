@@ -3,12 +3,12 @@ import pathlib
 from shellcheck_lib.default.execution_mode.test_suite.reporting import FAILED_TESTS_EXIT_CODE
 from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib.test_case.test_case_processing import AccessErrorType
-from shellcheck_lib_test.util.check_suite import SetupWithPreprocessor
 from shellcheck_lib_test.util.file_structure import DirContents, File
 from shellcheck_lib_test.util.with_tmp_file import lines_content
+from shellcheck_lib_test.util.main_program import main_program_check_for_test_suite
 
 
-class PreprocessorIsAppliedWithTestCaseFileAsArgument(SetupWithPreprocessor):
+class PreprocessorIsAppliedWithTestCaseFileAsArgument(main_program_check_for_test_suite.SetupWithPreprocessor):
     if_basename_is_pass_then_empty_tc_else_tc_that_will_cause_parser_error = """
 import sys
 import os.path
