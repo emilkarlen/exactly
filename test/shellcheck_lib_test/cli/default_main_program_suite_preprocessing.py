@@ -34,16 +34,16 @@ else:
                  lines_content(['preprocessor ' + python_executable_file_name + ' ' + preprocessor_source_file_name,
                                 '[cases]',
                                 'pass',
-                                'invalid'])),
-            File('pass', 'original content that will cause PARSE-ERROR'),
-            File('invalid', '# empty content that will cause PASS'),
+                                'parser-error'])),
+            File('pass', 'original content that would PARSE-ERROR, if it was not preprocessed'),
+            File('parser-error', '# empty content that would PASS, if it was not preprocessed'),
         ])
 
     def expected_stdout_lines(self, root_path: pathlib.Path) -> list:
         return [
             self.suite_begin(root_path / 'main.suite'),
             self.case(root_path / 'pass', FullResultStatus.PASS.name),
-            self.case(root_path / 'invalid', AccessErrorType.PARSE_ERROR.name),
+            self.case(root_path / 'parser-error', AccessErrorType.PARSE_ERROR.name),
             self.suite_end(root_path / 'main.suite'),
         ]
 
