@@ -4,7 +4,7 @@ from shellcheck_lib.default.execution_mode.test_suite.reporting import FAILED_TE
 from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib.test_case.test_case_processing import AccessErrorType
 from shellcheck_lib_test.util.check_suite import SetupWithPreprocessor
-from shellcheck_lib_test.util.file_structure import DirContents, File, empty_file
+from shellcheck_lib_test.util.file_structure import DirContents, File
 from shellcheck_lib_test.util.with_tmp_file import lines_content
 
 
@@ -35,8 +35,8 @@ else:
                                 '[cases]',
                                 'pass',
                                 'invalid'])),
-            empty_file('pass'),
-            empty_file('invalid'),
+            File('pass', 'original content that will cause PARSE-ERROR'),
+            File('invalid', '# empty content that will cause PASS'),
         ])
 
     def expected_stdout_lines(self, root_path: pathlib.Path) -> list:
