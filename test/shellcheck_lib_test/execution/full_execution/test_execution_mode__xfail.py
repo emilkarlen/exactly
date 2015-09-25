@@ -14,6 +14,7 @@ from shellcheck_lib_test.util.expected_instruction_failure import ExpectedInstru
     ExpectedInstructionFailureForNoFailure
 from shellcheck_lib.test_case.instruction.result import pfh
 from shellcheck_lib.test_case.instruction.result import svh
+from shellcheck_lib.test_case.instruction.result import sh
 
 
 class Test(unittest.TestCase):
@@ -83,7 +84,8 @@ class Test(unittest.TestCase):
     def test_with_anonymous_phase_with_hard_error(self):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_anonymous(AnonymousPhaseInstructionThatSetsExecutionMode(ExecutionMode.XFAIL)) \
-            .add_anonymous(instruction_test_resources.AnonymousPhaseInstructionThatReturnsHardError('hard error msg'))
+            .add_anonymous(instruction_test_resources.AnonymousPhaseInstructionThatReturns(
+            sh.new_sh_hard_error('hard error msg')))
         TestCaseThatRecordsExecution(
             self,
             test_case,
