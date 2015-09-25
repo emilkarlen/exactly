@@ -1,11 +1,13 @@
 import unittest
 
 from shellcheck_lib_test.instructions import assert_phase
+from shellcheck_lib_test.instructions import setup
 
 
 def suite():
     ret_val = unittest.TestSuite()
     ret_val.addTest(assert_phase.suite())
+    ret_val.addTest(setup.suite())
     return ret_val
 
 
