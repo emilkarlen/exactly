@@ -4,8 +4,11 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
     SingleInstructionParser
 
 from shellcheck_lib.test_case.instruction import common as i
+
 from shellcheck_lib.test_case.instruction.common import GlobalEnvironmentForPostEdsPhase, \
     PhaseEnvironmentForInternalCommands
+from shellcheck_lib.test_case.instruction.result import svh
+from shellcheck_lib.test_case.instruction.result import pfh
 from shellcheck_lib.test_case.instruction.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib_test.util import file_structure
 from shellcheck_lib_test.instructions.test_resources import svh_check
@@ -57,7 +60,9 @@ def execute(put: unittest.TestCase,
         setup.eds_contents_before_main.apply(home_and_eds.eds)
         environment = i.GlobalEnvironmentForPostEdsPhase(home_and_eds.home_dir_path,
                                                          home_and_eds.eds)
-        _execute_validate(environment, instruction, put, setup)
+        validate_result = _execute_validate(environment, instruction, put, setup)
+        if not validate_result.is_success:
+            return
         _execute_main(environment, instruction, put, setup)
         setup.expected_main_side_effects_on_files.apply(put, environment.eds)
 
@@ -72,20 +77,22 @@ def _execute_post_validate(global_environment_with_eds, instruction, put, setup)
 def _execute_validate(global_environment: GlobalEnvironmentForPostEdsPhase,
                       instruction: AssertPhaseInstruction,
                       put: unittest.TestCase,
-                      setup: Flow):
+                      setup: Flow) -> svh.SuccessOrValidationErrorOrHardError:
     result = instruction.validate(global_environment)
     put.assertIsNotNone(result,
                         'Result from validate method cannot be None')
     setup.expected_validation_result.apply(put, result)
+    return result
 
 
 def _execute_main(environment: GlobalEnvironmentForPostEdsPhase,
                   instruction: AssertPhaseInstruction,
                   put: unittest.TestCase,
-                  setup: Flow):
+                  setup: Flow) -> pfh.PassOrFailOrHardError:
     main_result = instruction.main(environment,
                                    PhaseEnvironmentForInternalCommands())
     put.assertIsNotNone(main_result,
                         'Result from main method cannot be None')
     setup.expected_main_result.apply(put, main_result)
     setup.expected_main_side_effects_on_files.apply(put, environment.eds)
+    return main_result
