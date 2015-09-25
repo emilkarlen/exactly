@@ -15,3 +15,10 @@ class AnythingGoes(Assertion):
               put: unittest.TestCase,
               eds: ExecutionDirectoryStructure):
         pass
+
+
+class UnconditionalFail(Assertion):
+    def apply(self,
+              put: unittest.TestCase,
+              eds: ExecutionDirectoryStructure):
+        put.fail('Unconditional fail')
