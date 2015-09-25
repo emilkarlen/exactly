@@ -1,6 +1,6 @@
 import unittest
 
-from shellcheck_lib_test.instructions.setup import test_resources
+from shellcheck_lib_test.instructions.assert_phase import test_resources
 from shellcheck_lib_test.instructions.assert_phase import exitcode
 from shellcheck_lib_test.instructions.assert_phase import file
 from shellcheck_lib_test.instructions.assert_phase import stdout_stderr
