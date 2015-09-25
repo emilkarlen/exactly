@@ -70,18 +70,18 @@ def execute(put: unittest.TestCase,
                 eds = execution_directory_structure.construct_at(eds_root_dir_name)
                 # main
                 os.chdir(str(eds.test_root_dir))
-                setup.eds_contents_before_main.apply(eds)
                 global_environment_with_eds = i.GlobalEnvironmentForPostEdsPhase(home_dir_path,
                                                                                  eds)
+                setup.eds_contents_before_main.apply(eds)
                 settings_builder = setup.initial_settings_builder
-                # TODO : check på settings
                 initial_settings_builder = copy.deepcopy(settings_builder)
                 main_result = instruction.main(global_environment_with_eds,
                                                settings_builder)
                 put.assertIsNotNone(main_result,
                                     'Result from main method cannot be None')
                 setup.expected_main_result.apply(put, main_result)
-                setup.expected_main_side_effects_on_environment.apply(initial_settings_builder,
+                setup.expected_main_side_effects_on_environment.apply(put,
+                                                                      initial_settings_builder,
                                                                       settings_builder)
                 setup.expected_main_side_effects_on_files.apply(put, eds)
                 # post-validation
