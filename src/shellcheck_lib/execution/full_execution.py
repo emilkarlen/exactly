@@ -6,7 +6,7 @@ from shellcheck_lib.execution import phase_step_executors, partial_execution, ph
 from shellcheck_lib.execution import environment_variables
 from shellcheck_lib.test_case import test_case_doc
 from shellcheck_lib.script_language import act_script_management
-from shellcheck_lib.test_case.instruction.sections.anonymous import PhaseEnvironmentForAnonymousPhase, ExecutionMode
+from shellcheck_lib.test_case.instruction.sections.anonymous import ConfigurationBuilder, ExecutionMode
 from .result import FullResult, PartialResult, PartialResultStatus, FullResultStatus
 from . import result
 from . import phase_step_execution
@@ -21,7 +21,7 @@ def execute(script_language_setup: act_script_management.ScriptLanguageSetup,
     The main method for executing a Test Case.
     """
     saved_environment_variables = _prepare_and_save_environment_variables()
-    anonymous_phase_environment = PhaseEnvironmentForAnonymousPhase(initial_home_dir_path)
+    anonymous_phase_environment = ConfigurationBuilder(initial_home_dir_path)
     partial_result = _execute_anonymous_phase(anonymous_phase_environment,
                                               test_case)
     if partial_result.status is not PartialResultStatus.PASS:
@@ -75,7 +75,7 @@ def _prepare_and_save_environment_variables() -> dict:
     return before
 
 
-def _execute_anonymous_phase(phase_environment: PhaseEnvironmentForAnonymousPhase,
+def _execute_anonymous_phase(phase_environment: ConfigurationBuilder,
                              test_case: test_case_doc.TestCase) -> PartialResult:
     return phase_step_execution.execute_phase(test_case.anonymous_phase,
                                               phase_step_execution.ElementHeaderExecutorThatDoesNothing(),

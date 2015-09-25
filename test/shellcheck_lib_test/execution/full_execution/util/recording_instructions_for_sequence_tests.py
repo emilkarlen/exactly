@@ -1,14 +1,13 @@
 import pathlib
 
 from shellcheck_lib.test_case.instruction.result import sh
-
 from shellcheck_lib.test_case.instruction.result import svh
 from shellcheck_lib.test_case.instruction.result import pfh
 from shellcheck_lib.test_case.instruction import common
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.test_case.instruction.sections.act import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
 from shellcheck_lib.test_case.instruction.sections.anonymous import AnonymousPhaseInstruction, \
-    PhaseEnvironmentForAnonymousPhase
+    ConfigurationBuilder
 from shellcheck_lib.test_case.instruction.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib.test_case.instruction.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
 from shellcheck_lib_test.execution.util.instruction_adapter import InternalInstruction
@@ -49,9 +48,8 @@ class AnonymousInternalInstructionThatRecordsStringInList(AnonymousPhaseInstruct
                  recorder: ListRecorder):
         self.__recorder = recorder
 
-    def main(self,
-             global_environment,
-             phase_environment: PhaseEnvironmentForAnonymousPhase) -> sh.SuccessOrHardError:
+    def main(self, global_environment,
+             configuration_builder: ConfigurationBuilder) -> sh.SuccessOrHardError:
         self.__recorder.record()
         return sh.new_sh_success()
 
@@ -191,7 +189,7 @@ class AssertInternalInstructionThatRecordsStringInList(AssertPhaseInstruction):
 
     def main(self,
              global_environment,
-             phase_environment: PhaseEnvironmentForAnonymousPhase) -> pfh.PassOrFailOrHardError:
+             phase_environment: ConfigurationBuilder) -> pfh.PassOrFailOrHardError:
         self.__recorder_for_execute.record()
         return pfh.new_pfh_pass()
 

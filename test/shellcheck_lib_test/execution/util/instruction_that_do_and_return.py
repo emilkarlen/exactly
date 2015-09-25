@@ -4,7 +4,7 @@ from pathlib import Path
 from shellcheck_lib.test_case.instruction.result import pfh
 from shellcheck_lib.test_case.instruction.result import sh
 from shellcheck_lib.test_case.instruction.result import svh
-from shellcheck_lib.test_case.instruction.sections.anonymous import PhaseEnvironmentForAnonymousPhase, \
+from shellcheck_lib.test_case.instruction.sections.anonymous import ConfigurationBuilder, \
     AnonymousPhaseInstruction
 from shellcheck_lib.test_case.instruction.sections.cleanup import CleanupPhaseInstruction
 from shellcheck_lib.test_case.instruction.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
@@ -19,7 +19,7 @@ from shellcheck_lib_test.execution.util.test_case_generation import TestCaseGene
 
 
 def do_nothing__anonymous_phase(phase_step: PhaseStep,
-                                phase_environment: PhaseEnvironmentForAnonymousPhase):
+                                phase_environment: ConfigurationBuilder):
     pass
 
 
@@ -144,11 +144,10 @@ class _AnonymousInstruction(AnonymousPhaseInstruction):
                  configuration: TestCaseSetup):
         self.__configuration = configuration
 
-    def main(self,
-             global_environment,
-             phase_environment: PhaseEnvironmentForAnonymousPhase) -> sh.SuccessOrHardError:
+    def main(self, global_environment,
+             configuration_builder: ConfigurationBuilder) -> sh.SuccessOrHardError:
         self.__configuration.anonymous_phase_action(phase_step.ANONYMOUS_EXECUTE,
-                                                    phase_environment)
+                                                    configuration_builder)
         return self.__configuration.ret_val_from_execute
 
 

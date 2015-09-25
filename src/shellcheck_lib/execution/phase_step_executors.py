@@ -6,7 +6,7 @@ from shellcheck_lib.execution.single_instruction_executor import ControlledInstr
 from shellcheck_lib.test_case.instruction import common as instr
 from shellcheck_lib.test_case.instruction.sections.act import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
 from shellcheck_lib.test_case.instruction.sections.anonymous import AnonymousPhaseInstruction, \
-    PhaseEnvironmentForAnonymousPhase
+    ConfigurationBuilder
 from shellcheck_lib.test_case.instruction.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib.test_case.instruction.sections.cleanup import CleanupPhaseInstruction
 from shellcheck_lib.test_case.instruction.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
@@ -41,14 +41,13 @@ def _from_pass_or_fail_or_hard_error(res: pfh.PassOrFailOrHardError) -> PartialI
 
 class AnonymousInstructionExecutor(ControlledInstructionExecutor):
     def __init__(self,
-                 phase_environment: PhaseEnvironmentForAnonymousPhase):
+                 phase_environment: ConfigurationBuilder):
         self.__phase_environment = phase_environment
         self.__global_environment = ()
 
     def apply(self, instruction: AnonymousPhaseInstruction) -> PartialInstructionControlledFailureInfo:
         return _from_success_or_hard_error(
-            instruction.main(self.__global_environment,
-                             self.__phase_environment))
+            instruction.main(self.__global_environment, self.__phase_environment))
 
 
 class SetupPreValidateInstructionExecutor(ControlledInstructionExecutor):
