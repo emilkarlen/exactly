@@ -332,7 +332,7 @@ class Test(unittest.TestCase):
     def test_implementation_error_in_assert_validate_phase(self):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_assert(
-            instruction_test_resources.AssertPhaseInstructionWithImplementationErrorInValidate(
+            instruction_test_resources.AssertPhaseInstructionWithExceptionInValidate(
                 instruction_test_resources.ImplementationErrorTestException()))
         TestCaseThatRecordsExecution(
             self,
@@ -577,7 +577,7 @@ class Test(unittest.TestCase):
     def test_implementation_error_in_assert_execute_phase(self):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_assert(
-            instruction_test_resources.AssertPhaseInstructionWithImplementationErrorInExecute(
+            instruction_test_resources.AssertPhaseInstructionWithExceptionInExecute(
                 instruction_test_resources.ImplementationErrorTestException()))
         TestCaseThatRecordsExecution(
             self,
