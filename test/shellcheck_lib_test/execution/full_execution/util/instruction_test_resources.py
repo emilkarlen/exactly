@@ -214,7 +214,7 @@ class AssertPhaseInstructionThatReturns(AssertPhaseInstruction):
         return self.__for_execute
 
 
-class AssertPhaseInstructionWithImplementationErrorInValidate(AssertPhaseInstruction):
+class AssertPhaseInstructionWithExceptionInValidate(AssertPhaseInstruction):
     def __init__(self,
                  exception_to_raise: Exception):
         self.__exception_to_raise = exception_to_raise
@@ -230,7 +230,7 @@ class AssertPhaseInstructionWithImplementationErrorInValidate(AssertPhaseInstruc
         return sh.new_sh_success()
 
 
-class AssertPhaseInstructionWithImplementationErrorInExecute(AssertPhaseInstruction):
+class AssertPhaseInstructionWithExceptionInExecute(AssertPhaseInstruction):
     def __init__(self,
                  exception_to_raise: Exception):
         self.__exception_to_raise = exception_to_raise
