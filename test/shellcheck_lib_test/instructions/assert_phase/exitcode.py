@@ -7,7 +7,11 @@ from shellcheck_lib.test_case.instruction.result import pfh
 from shellcheck_lib.test_case.instruction.result import svh
 from shellcheck_lib.test_case.instruction.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib_test.instructions import utils
+from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_check import Flow
 from shellcheck_lib_test.instructions.assert_phase.utils import AssertInstructionTest
+from shellcheck_lib_test.instructions.assert_phase.test_resources import instruction_check
+from shellcheck_lib_test.instructions.test_resources import svh_check
+from shellcheck_lib_test.instructions.test_resources import pfh_check
 from shellcheck_lib_test.instructions.utils import new_source, new_line_sequence
 
 
@@ -101,15 +105,14 @@ class TestParseAndExecuteTwoArgumentsEq(unittest.TestCase):
                    new_source('instruction-name', ' = 72'))
 
 
-class TestParseAndExecuteTwoArgumentsNe(unittest.TestCase):
+class TestParseAndExecuteTwoArgumentsNe(instruction_check.TestCaseBase):
     def test_pass(self):
-        test = AssertInstructionTest(
-            svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
-            pfh.PassOrFailOrHardErrorEnum.PASS,
-            utils.ActResult(exitcode=72))
-        test.apply(self,
-                   exitcode.Parser(),
-                   new_source('instruction-name', ' ! 73'))
+        self._check(
+            Flow(exitcode.Parser(),
+                 act_result=utils.ActResult(exitcode=72),
+                 expected_validation_result=svh_check.IsSuccess(),
+                 expected_main_result=pfh_check.IsPass()),
+            new_source('instruction-name', ' ! 73'))
 
     def test_fail(self):
         test = AssertInstructionTest(
