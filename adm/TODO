@@ -14,6 +14,8 @@ handle an arbitrary language.
 Giving a ScriptLanguage to apply, indicates that it should be capable of
 handling arbitrary languages.
 
+** TODO <2015-09-25 fre> EDS: test-root ska heta "act"
+Mkt enklare att koppla ihop med fasen "act".
 * TODO Kommandorads-program
 ** TODO Hjälpsystem via CLI
 Förslag:
