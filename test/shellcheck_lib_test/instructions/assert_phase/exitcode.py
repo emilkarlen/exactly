@@ -110,18 +110,17 @@ class TestParseAndExecuteTwoArgumentsNe(instruction_check.TestCaseBase):
         self._check(
             Flow(exitcode.Parser(),
                  act_result=utils.ActResult(exitcode=72),
-                 expected_validation_result=svh_check.IsSuccess(),
-                 expected_main_result=pfh_check.IsPass()),
+                 expected_validation_result=svh_check.is_success(),
+                 expected_main_result=pfh_check.is_pass()),
             new_source('instruction-name', ' ! 73'))
 
     def test_fail(self):
-        test = AssertInstructionTest(
-            svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
-            pfh.PassOrFailOrHardErrorEnum.FAIL,
-            utils.ActResult(exitcode=72))
-        test.apply(self,
-                   exitcode.Parser(),
-                   new_source('instruction-name', ' ! 72'))
+        self._check(
+            Flow(exitcode.Parser(),
+                 act_result=utils.ActResult(exitcode=72),
+                 expected_validation_result=svh_check.is_success(),
+                 expected_main_result=pfh_check.is_fail()),
+            new_source('instruction-name', ' ! 72'))
 
 
 class TestParseAndExecuteTwoArgumentsLt(unittest.TestCase):
