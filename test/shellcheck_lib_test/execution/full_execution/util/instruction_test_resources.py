@@ -257,17 +257,6 @@ class CleanupPhaseInstructionThatReturns(CleanupPhaseInstruction):
         return self.ret_val
 
 
-class CleanupPhaseInstructionThatReturnsHardError(CleanupPhaseInstruction):
-    def __init__(self,
-                 msg: str):
-        self.__msg = msg
-
-    def main(self,
-             global_environment: instrs.GlobalEnvironmentForPostEdsPhase,
-             phase_environment: instrs.PhaseEnvironmentForInternalCommands) -> sh.SuccessOrHardError:
-        return sh.new_sh_hard_error(self.__msg)
-
-
 class CleanupPhaseInstructionWithImplementationError(CleanupPhaseInstruction):
     def __init__(self,
                  exception_to_raise: Exception):
