@@ -13,7 +13,7 @@ class Assertion:
 
 class StatusIs(Assertion):
     def __init__(self,
-                 expected_status: pfh.PassOrFailOrHardError):
+                 expected_status: pfh.PassOrFailOrHardErrorEnum):
         self.expected_status = expected_status
 
     def apply(self,
@@ -24,13 +24,12 @@ class StatusIs(Assertion):
                      'Status')
 
 
-class IsPass(Assertion):
-    def apply(self,
-              put: unittest.TestCase,
-              actual: pfh.PassOrFailOrHardError):
-        put.assertIs(pfh.PassOrFailOrHardErrorEnum.PASS,
-                     actual.status,
-                     'Status')
+def is_pass():
+    return StatusIs(pfh.PassOrFailOrHardErrorEnum.PASS)
+
+
+def is_fail():
+    return StatusIs(pfh.PassOrFailOrHardErrorEnum.FAIL)
 
 
 class AnythingGoes(Assertion):
