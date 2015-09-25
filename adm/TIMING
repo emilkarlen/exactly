@@ -223,7 +223,11 @@ testas, o lägga till nya.)
 ** Parser
    CLOCK: [2015-08-11 tis 21:17]--[2015-08-11 tis 23:02] =>  1:45
 ** Ramverk för test av instruktioner
-   CLOCK: [2015-09-23 ons 18:05]
+   CLOCK: [2015-09-25 fre 19:15]--[2015-09-25 fre 20:02] =>  0:47
+   CLOCK: [2015-09-25 fre 16:50]--[2015-09-25 fre 18:57] =>  2:07
+   CLOCK: [2015-09-25 fre 13:39]--[2015-09-25 fre 14:19] =>  0:50
+   CLOCK: [2015-09-25 fre 08:33]--[2015-09-25 fre 11:23] =>  2:50
+   CLOCK: [2015-09-23 ons 18:05]--[2015-09-23 ons 18:35] =>  0:30
    CLOCK: [2015-08-19 ons 18:11]--[2015-08-19 ons 21:48] =>  3:37
 ** Instruktioner
 *** Exitkod
