@@ -611,7 +611,8 @@ class Test(unittest.TestCase):
     def test_hard_error_in_cleanup_phase(self):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_cleanup(
-            instruction_test_resources.CleanupPhaseInstructionThatReturnsHardError('hard error msg from CLEANUP'))
+            instruction_test_resources.CleanupPhaseInstructionThatReturns(
+                sh.new_sh_hard_error('hard error msg from CLEANUP')))
         TestCaseThatRecordsExecution(
             self,
             test_case,
