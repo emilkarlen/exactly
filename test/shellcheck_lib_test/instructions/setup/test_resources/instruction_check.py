@@ -43,6 +43,13 @@ class Flow:
         self.expected_post_validation_result = expected_post_validation_result
 
 
+class TestCaseBase(unittest.TestCase):
+    def _check(self,
+               check: Flow,
+               source: utils.SingleInstructionParserSource):
+        execute(self, check, source)
+
+
 def execute(put: unittest.TestCase,
             setup: Flow,
             source: utils.SingleInstructionParserSource):
@@ -70,13 +77,6 @@ def execute(put: unittest.TestCase,
                 _execute_post_validate(global_environment_with_eds, instruction, put, setup)
     finally:
         os.chdir(initial_cwd)
-
-
-class TestCaseBase(unittest.TestCase):
-    def _check(self,
-               check: Flow,
-               source: utils.SingleInstructionParserSource):
-        execute(self, check, source)
 
 
 def _execute_post_validate(global_environment_with_eds, instruction, put, setup):
