@@ -24,6 +24,15 @@ class StatusIs(Assertion):
                      'Status')
 
 
+class IsPass(Assertion):
+    def apply(self,
+              put: unittest.TestCase,
+              actual: pfh.PassOrFailOrHardError):
+        put.assertIs(pfh.PassOrFailOrHardErrorEnum.PASS,
+                     actual.status,
+                     'Status')
+
+
 class AnythingGoes(Assertion):
     def apply(self,
               put: unittest.TestCase,

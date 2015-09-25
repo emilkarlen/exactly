@@ -2,16 +2,17 @@ import unittest
 
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser
+
 from shellcheck_lib.test_case.instruction import common as i
 from shellcheck_lib.test_case.instruction.common import GlobalEnvironmentForPostEdsPhase, \
     PhaseEnvironmentForInternalCommands
 from shellcheck_lib.test_case.instruction.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib_test.util import file_structure
-from shellcheck_lib_test.instructions import utils
 from shellcheck_lib_test.instructions.test_resources import svh_check
 from shellcheck_lib_test.instructions.test_resources import pfh_check
 from shellcheck_lib_test.instructions.test_resources import eds_populator
 from shellcheck_lib_test.instructions.test_resources import eds_contents_check
+from shellcheck_lib_test.instructions import utils
 
 
 class Flow:
@@ -19,6 +20,7 @@ class Flow:
                  parser: SingleInstructionParser,
                  home_dir_contents: file_structure.DirContents=file_structure.DirContents([]),
                  eds_contents_before_main: eds_populator.EdsPopulator=eds_populator.Empty(),
+                 act_result: utils.ActResult=utils.ActResult(),
                  expected_validation_result: svh_check.Assertion=svh_check.AnythingGoes(),
                  expected_main_result: pfh_check.Assertion=pfh_check.AnythingGoes(),
                  expected_main_side_effects_on_files: eds_contents_check.Assertion=eds_contents_check.AnythingGoes(),
@@ -27,6 +29,7 @@ class Flow:
         self.home_dir_contents = home_dir_contents
         self.expected_validation_result = expected_validation_result
         self.eds_contents_before_main = eds_contents_before_main
+        self.act_result = act_result
         self.expected_main_result = expected_main_result
         self.expected_main_side_effects_on_files = expected_main_side_effects_on_files
 
@@ -49,6 +52,7 @@ def execute(put: unittest.TestCase,
                          'The instruction must be an instance of ' + str(AssertPhaseInstruction))
     assert isinstance(instruction, AssertPhaseInstruction)
     with utils.home_and_eds_and_test_as_curr_dir() as home_and_eds:
+        home_and_eds.write_act_result(setup.act_result)
         setup.home_dir_contents.write_to(home_and_eds.home_dir_path)
         setup.eds_contents_before_main.apply(home_and_eds.eds)
         environment = i.GlobalEnvironmentForPostEdsPhase(home_and_eds.home_dir_path,

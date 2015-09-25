@@ -23,6 +23,15 @@ class StatusIs(Assertion):
                      'Status')
 
 
+class IsSuccess(Assertion):
+    def apply(self,
+              put: unittest.TestCase,
+              actual: svh.SuccessOrValidationErrorOrHardError):
+        put.assertIs(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                     actual.status,
+                     'Status')
+
+
 class AnythingGoes(Assertion):
     def apply(self,
               put: unittest.TestCase,
