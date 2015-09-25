@@ -53,7 +53,6 @@ def execute(put: unittest.TestCase,
                          SetupPhaseInstruction,
                          'The instruction must be an instance of ' + str(SetupPhaseInstruction))
     assert isinstance(instruction, SetupPhaseInstruction)
-    # home-dir
     prefix = strftime("shellcheck-test-%Y-%m-%d-%H-%M-%S", localtime())
     initial_cwd = os.getcwd()
     try:
@@ -61,34 +60,14 @@ def execute(put: unittest.TestCase,
             home_dir_path = pathlib.Path(home_dir_name)
             setup.home_dir_contents.write_to(home_dir_path)
             # pre-validation
-            pre_validation_environment = GlobalEnvironmentForPreEdsStep(home_dir_path)
-            pre_validate_result = instruction.pre_validate(pre_validation_environment)
-            put.assertIsNotNone(pre_validate_result,
-                                'Result from pre_validate method cannot be None')
-            setup.expected_pre_validation_result.apply(put, pre_validate_result)
+            _execute_pre_validate(home_dir_path, instruction, put, setup)
             with tempfile.TemporaryDirectory(prefix=prefix + "-eds-") as eds_root_dir_name:
                 eds = execution_directory_structure.construct_at(eds_root_dir_name)
-                # main
                 os.chdir(str(eds.test_root_dir))
                 global_environment_with_eds = i.GlobalEnvironmentForPostEdsPhase(home_dir_path,
                                                                                  eds)
-                setup.eds_contents_before_main.apply(eds)
-                settings_builder = setup.initial_settings_builder
-                initial_settings_builder = copy.deepcopy(settings_builder)
-                main_result = instruction.main(global_environment_with_eds,
-                                               settings_builder)
-                put.assertIsNotNone(main_result,
-                                    'Result from main method cannot be None')
-                setup.expected_main_result.apply(put, main_result)
-                setup.expected_main_side_effects_on_environment.apply(put,
-                                                                      initial_settings_builder,
-                                                                      settings_builder)
-                setup.expected_main_side_effects_on_files.apply(put, eds)
-                # post-validation
-                post_validate_result = instruction.post_validate(global_environment_with_eds)
-                put.assertIsNotNone(post_validate_result,
-                                    'Result from post_validate method cannot be None')
-                setup.expected_post_validation_result.apply(put, post_validate_result)
+                _execute_main(eds, global_environment_with_eds, instruction, put, setup)
+                _execute_post_validate(global_environment_with_eds, instruction, put, setup)
     finally:
         os.chdir(initial_cwd)
 
@@ -98,3 +77,33 @@ class TestCaseBase(unittest.TestCase):
                check: Flow,
                source: utils.SingleInstructionParserSource):
         execute(self, check, source)
+
+
+def _execute_post_validate(global_environment_with_eds, instruction, put, setup):
+    post_validate_result = instruction.post_validate(global_environment_with_eds)
+    put.assertIsNotNone(post_validate_result,
+                        'Result from post_validate method cannot be None')
+    setup.expected_post_validation_result.apply(put, post_validate_result)
+
+
+def _execute_main(eds, global_environment_with_eds, instruction, put, setup):
+    setup.eds_contents_before_main.apply(eds)
+    settings_builder = setup.initial_settings_builder
+    initial_settings_builder = copy.deepcopy(settings_builder)
+    main_result = instruction.main(global_environment_with_eds,
+                                   settings_builder)
+    put.assertIsNotNone(main_result,
+                        'Result from main method cannot be None')
+    setup.expected_main_result.apply(put, main_result)
+    setup.expected_main_side_effects_on_environment.apply(put,
+                                                          initial_settings_builder,
+                                                          settings_builder)
+    setup.expected_main_side_effects_on_files.apply(put, eds)
+
+
+def _execute_pre_validate(home_dir_path, instruction, put, setup):
+    pre_validation_environment = GlobalEnvironmentForPreEdsStep(home_dir_path)
+    pre_validate_result = instruction.pre_validate(pre_validation_environment)
+    put.assertIsNotNone(pre_validate_result,
+                        'Result from pre_validate method cannot be None')
+    setup.expected_pre_validation_result.apply(put, pre_validate_result)
