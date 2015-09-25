@@ -8,7 +8,7 @@ from shellcheck_lib.test_case import test_case_doc
 from shellcheck_lib.test_case.instruction import common
 from shellcheck_lib.execution.phase_step import PhaseStep
 from shellcheck_lib.execution.result import FullResultStatus
-from shellcheck_lib.test_case.instruction.sections.anonymous import PhaseEnvironmentForAnonymousPhase
+from shellcheck_lib.test_case.instruction.sections.anonymous import ConfigurationBuilder
 from shellcheck_lib_test.execution.full_execution.util.test_case_base import FullExecutionTestCaseBase
 from shellcheck_lib.execution import phase_step
 from shellcheck_lib_test.execution.util import instruction_that_record_and_return as instr_setup
@@ -28,7 +28,7 @@ def env_vars_dict() -> dict:
 
 def _set_home_dir_to_parent__anonymous_phase(recorder: instr_setup.Recorder,
                                              phase_step: PhaseStep,
-                                             phase_environment: PhaseEnvironmentForAnonymousPhase):
+                                             phase_environment: ConfigurationBuilder):
     recorder.set_phase_step_recording(phase_step, env_vars_dict())
     phase_environment.set_home_dir(phase_environment.home_dir_path.parent)
 

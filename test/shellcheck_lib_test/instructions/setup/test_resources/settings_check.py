@@ -24,4 +24,4 @@ class UnconditionalFail(Assertion):
               put: unittest.TestCase,
               initial: SetupSettingsBuilder,
               actual_result: SetupSettingsBuilder):
-        pass
+        put.fail('Unconditional')

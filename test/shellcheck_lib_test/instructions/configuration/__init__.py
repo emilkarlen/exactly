@@ -1,6 +1,6 @@
 import unittest
 
-from shellcheck_lib_test.instructions.setup import test_resources
+from shellcheck_lib_test.instructions.configuration import test_resources
 
 
 def suite():

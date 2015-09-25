@@ -11,7 +11,7 @@ class ExecutionMode(Enum):
     XFAIL = 2
 
 
-class PhaseEnvironmentForAnonymousPhase:
+class ConfigurationBuilder:
     def __init__(self, home_dir_path: pathlib.Path):
         self.__home_dir_path = home_dir_path
         self.__execution_mode = ExecutionMode.NORMAL
@@ -43,10 +43,10 @@ class AnonymousPhaseInstruction(Instruction):
 
     def main(self,
              global_environment,
-             phase_environment: PhaseEnvironmentForAnonymousPhase) -> SuccessOrHardError:
+             configuration_builder: ConfigurationBuilder) -> SuccessOrHardError:
         """
         Does whatever this instruction should do.
         :param global_environment An object passed to all instructions in the Document.
-        :param phase_environment An object passed to all instructions in the Phase.
+        :param configuration_builder An object passed to all instructions in the Phase.
         """
         raise NotImplementedError()

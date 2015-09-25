@@ -3,7 +3,7 @@ from shellcheck_lib.test_case.instruction.result import svh
 from shellcheck_lib.test_case.instruction.result import pfh
 from shellcheck_lib.test_case.instruction import common as instrs
 from shellcheck_lib.test_case.instruction.sections.anonymous import AnonymousPhaseInstruction, ExecutionMode, \
-    PhaseEnvironmentForAnonymousPhase
+    ConfigurationBuilder
 from shellcheck_lib.test_case.instruction.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
 from shellcheck_lib.test_case.instruction.sections.act import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
 from shellcheck_lib.test_case.instruction.sections.assert_ import AssertPhaseInstruction
@@ -19,11 +19,20 @@ class AnonymousPhaseInstructionThatSetsExecutionMode(AnonymousPhaseInstruction):
                  value_to_set: ExecutionMode):
         self.value_to_set = value_to_set
 
-    def main(self,
-             global_environment,
-             phase_environment: PhaseEnvironmentForAnonymousPhase) -> sh.SuccessOrHardError:
-        phase_environment.set_execution_mode(self.value_to_set)
+    def main(self, global_environment,
+             configuration_builder: ConfigurationBuilder) -> sh.SuccessOrHardError:
+        configuration_builder.set_execution_mode(self.value_to_set)
         return sh.new_sh_success()
+
+
+class AnonymousPhaseInstructionThatReturns(AnonymousPhaseInstruction):
+    def __init__(self,
+                 ret_val: sh.SuccessOrHardError):
+        self.ret_val = ret_val
+
+    def main(self, global_environment,
+             configuration_builder: ConfigurationBuilder) -> sh.SuccessOrHardError:
+        return self.ret_val
 
 
 class AnonymousPhaseInstructionThatReturnsHardError(AnonymousPhaseInstruction):
@@ -31,9 +40,8 @@ class AnonymousPhaseInstructionThatReturnsHardError(AnonymousPhaseInstruction):
                  msg: str):
         self.__msg = msg
 
-    def main(self,
-             global_environment,
-             phase_environment: PhaseEnvironmentForAnonymousPhase) -> sh.SuccessOrHardError:
+    def main(self, global_environment,
+             configuration_builder: ConfigurationBuilder) -> sh.SuccessOrHardError:
         return sh.new_sh_hard_error(self.__msg)
 
 
@@ -42,9 +50,8 @@ class AnonymousPhaseInstructionWithImplementationError(AnonymousPhaseInstruction
                  exception_to_raise: Exception):
         self.__exception_to_raise = exception_to_raise
 
-    def main(self,
-             global_environment,
-             phase_environment: PhaseEnvironmentForAnonymousPhase) -> sh.SuccessOrHardError:
+    def main(self, global_environment,
+             configuration_builder: ConfigurationBuilder) -> sh.SuccessOrHardError:
         raise self.__exception_to_raise
 
 
