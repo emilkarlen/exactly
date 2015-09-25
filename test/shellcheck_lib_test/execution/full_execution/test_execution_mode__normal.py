@@ -46,7 +46,8 @@ class Test(unittest.TestCase):
 
     def test_hard_error_in_anonymous_phase(self):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
-            .add_anonymous(instruction_test_resources.AnonymousPhaseInstructionThatReturnsHardError('hard error msg'))
+            .add_anonymous(instruction_test_resources.AnonymousPhaseInstructionThatReturns(
+            sh.new_sh_hard_error('hard error msg')))
         TestCaseThatRecordsExecution(
             self,
             test_case,
@@ -168,7 +169,7 @@ class Test(unittest.TestCase):
     def test_implementation_error_in_setup_execute_phase(self):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
             .add_setup(
-            instruction_test_resources.SetupPhaseInstructionWithImplementationErrorInExecute(
+            instruction_test_resources.SetupPhaseInstructionWithExceptionInExecute(
                 instruction_test_resources.ImplementationErrorTestException()))
         TestCaseThatRecordsExecution(
             self,
@@ -187,7 +188,6 @@ class Test(unittest.TestCase):
              phase_step.CLEANUP,
              ],
             True).execute()
-
 
     def test_validation_error_in_setup_post_validate_phase(self):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \

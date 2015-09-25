@@ -35,16 +35,6 @@ class AnonymousPhaseInstructionThatReturns(AnonymousPhaseInstruction):
         return self.ret_val
 
 
-class AnonymousPhaseInstructionThatReturnsHardError(AnonymousPhaseInstruction):
-    def __init__(self,
-                 msg: str):
-        self.__msg = msg
-
-    def main(self, global_environment,
-             configuration_builder: ConfigurationBuilder) -> sh.SuccessOrHardError:
-        return sh.new_sh_hard_error(self.__msg)
-
-
 class AnonymousPhaseInstructionWithImplementationError(AnonymousPhaseInstruction):
     def __init__(self,
                  exception_to_raise: Exception):
@@ -122,7 +112,7 @@ class SetupPhaseInstructionWithImplementationErrorInPostValidate(SetupPhaseInstr
         raise self.__exception_to_raise
 
 
-class SetupPhaseInstructionWithImplementationErrorInExecute(SetupPhaseInstruction):
+class SetupPhaseInstructionWithExceptionInExecute(SetupPhaseInstruction):
     def __init__(self,
                  exception_to_raise: Exception):
         self.__exception_to_raise = exception_to_raise
