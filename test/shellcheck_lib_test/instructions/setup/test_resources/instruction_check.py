@@ -10,6 +10,8 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
 from shellcheck_lib.execution import execution_directory_structure
 from shellcheck_lib.test_case.instruction import common as i
 from shellcheck_lib.test_case.instruction.common import GlobalEnvironmentForPreEdsStep
+from shellcheck_lib.test_case.instruction.result import svh
+from shellcheck_lib.test_case.instruction.result import sh
 from shellcheck_lib.test_case.instruction.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
 from shellcheck_lib_test.util import file_structure
 from shellcheck_lib_test.instructions import utils
@@ -66,27 +68,36 @@ def execute(put: unittest.TestCase,
         with tempfile.TemporaryDirectory(prefix=prefix + "-home-") as home_dir_name:
             home_dir_path = pathlib.Path(home_dir_name)
             setup.home_dir_contents.write_to(home_dir_path)
-            # pre-validation
-            _execute_pre_validate(home_dir_path, instruction, put, setup)
+            pre_validate_result = _execute_pre_validate(home_dir_path, instruction, put, setup)
+            if not pre_validate_result.is_success:
+                return
             with tempfile.TemporaryDirectory(prefix=prefix + "-eds-") as eds_root_dir_name:
                 eds = execution_directory_structure.construct_at(eds_root_dir_name)
                 os.chdir(str(eds.test_root_dir))
                 global_environment_with_eds = i.GlobalEnvironmentForPostEdsPhase(home_dir_path,
                                                                                  eds)
-                _execute_main(eds, global_environment_with_eds, instruction, put, setup)
+                main_result = _execute_main(eds, global_environment_with_eds, instruction, put, setup)
+                if not main_result.is_success:
+                    return
                 _execute_post_validate(global_environment_with_eds, instruction, put, setup)
     finally:
         os.chdir(initial_cwd)
 
 
-def _execute_post_validate(global_environment_with_eds, instruction, put, setup):
-    post_validate_result = instruction.post_validate(global_environment_with_eds)
-    put.assertIsNotNone(post_validate_result,
-                        'Result from post_validate method cannot be None')
-    setup.expected_post_validation_result.apply(put, post_validate_result)
+def _execute_pre_validate(home_dir_path,
+                          instruction: SetupPhaseInstruction,
+                          put, setup) -> svh.SuccessOrValidationErrorOrHardError:
+    pre_validation_environment = GlobalEnvironmentForPreEdsStep(home_dir_path)
+    pre_validate_result = instruction.pre_validate(pre_validation_environment)
+    put.assertIsNotNone(pre_validate_result,
+                        'Result from pre_validate method cannot be None')
+    setup.expected_pre_validation_result.apply(put, pre_validate_result)
+    return pre_validate_result
 
 
-def _execute_main(eds, global_environment_with_eds, instruction, put, setup):
+def _execute_main(eds, global_environment_with_eds,
+                  instruction: SetupPhaseInstruction,
+                  put, setup) -> sh.SuccessOrHardError:
     setup.eds_contents_before_main.apply(eds)
     settings_builder = setup.initial_settings_builder
     initial_settings_builder = copy.deepcopy(settings_builder)
@@ -99,11 +110,14 @@ def _execute_main(eds, global_environment_with_eds, instruction, put, setup):
                                                           initial_settings_builder,
                                                           settings_builder)
     setup.expected_main_side_effects_on_files.apply(put, eds)
+    return main_result
 
 
-def _execute_pre_validate(home_dir_path, instruction, put, setup):
-    pre_validation_environment = GlobalEnvironmentForPreEdsStep(home_dir_path)
-    pre_validate_result = instruction.pre_validate(pre_validation_environment)
-    put.assertIsNotNone(pre_validate_result,
-                        'Result from pre_validate method cannot be None')
-    setup.expected_pre_validation_result.apply(put, pre_validate_result)
+def _execute_post_validate(global_environment_with_eds,
+                           instruction: SetupPhaseInstruction,
+                           put, setup) -> svh.SuccessOrValidationErrorOrHardError:
+    post_validate_result = instruction.post_validate(global_environment_with_eds)
+    put.assertIsNotNone(post_validate_result,
+                        'Result from post_validate method cannot be None')
+    setup.expected_post_validation_result.apply(put, post_validate_result)
+    return post_validate_result
