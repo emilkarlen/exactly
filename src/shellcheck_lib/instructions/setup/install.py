@@ -1,4 +1,6 @@
+import pathlib
 import shlex
+import shutil
 
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
@@ -24,12 +26,25 @@ class _InstallSourceInstruction(SetupPhaseInstruction):
 
     def pre_validate(self,
                      global_environment: GlobalEnvironmentForPreEdsStep) -> svh.SuccessOrValidationErrorOrHardError:
-        pass
+        path = self._src_path(global_environment)
+        if not path.exists():
+            return svh.new_svh_validation_error('File does not exist: {}'.format(str(path)))
+        return svh.new_svh_success()
 
     def main(self, global_environment: GlobalEnvironmentForPostEdsPhase,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
-        pass
+        src = str(self._src_path(global_environment))
+        dst = '.'
+        try:
+            shutil.copy2(src, dst)
+            return sh.new_sh_success()
+        except OSError as ex:
+            return sh.new_sh_hard_error('Failed to install {}: {}'.format(src, str(ex)))
 
     def post_validate(self,
                       global_environment: GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
         return svh.new_svh_success()
+
+    def _src_path(self,
+                  environment: GlobalEnvironmentForPreEdsStep) -> pathlib.Path:
+        return environment.home_directory / self.source_file_name
