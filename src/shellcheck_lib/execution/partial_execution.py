@@ -284,7 +284,7 @@ class PartialExecutor:
         os.environ[environment_variables.ENV_VAR_HOME] = str(self.configuration.home_dir)
 
     def __set_post_eds_environment_variables(self):
-        os.environ[environment_variables.ENV_VAR_TEST] = str(self.execution_directory_structure.act_dir)
+        os.environ[environment_variables.ENV_VAR_ACT] = str(self.execution_directory_structure.act_dir)
         os.environ[environment_variables.ENV_VAR_TMP] = str(self.execution_directory_structure.tmp_dir)
 
     def __run_internal_instructions_phase_step(self,
