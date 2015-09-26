@@ -12,20 +12,20 @@ class TestParse(unittest.TestCase):
     def test_fail_when_there_is_no_arguments(self):
         source = utils.new_source('instruction-name', '')
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.Parser().apply(source.line_sequence)
+            sut.Parser().apply(source)
 
     def test_fail_when_there_is_more_than_one_argument(self):
         source = utils.new_source('instruction-name', 'argument1 argument2')
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.Parser().apply(source.line_sequence)
+            sut.Parser().apply(source)
 
     def test_succeed_when_there_is_exactly_one_argument(self):
         source = utils.new_source('instruction-name', 'single-argument')
-        sut.Parser().apply(source.line_sequence)
+        sut.Parser().apply(source)
 
     def test_argument_shall_be_parsed_using_shell_syntax(self):
         source = utils.new_source('instruction-name', "'this is a single argument'")
-        sut.Parser().apply(source.line_sequence)
+        sut.Parser().apply(source)
 
 
 class TestSourceMustBeAnExistingFileRelativeTheHomeDirectory(TestCaseBase):
