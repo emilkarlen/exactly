@@ -36,6 +36,10 @@ class _InstallSourceInstruction(SetupPhaseInstruction):
              environment: GlobalEnvironmentForPostEdsPhase,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         src_path = self._src_path(environment)
+        basename = src_path.name
+        target = environment.eds.act_dir / basename
+        if target.exists():
+            return sh.new_sh_hard_error('Destination already exists: {}'.format(target))
         src = str(src_path)
         if src_path.is_dir():
             dst = str(pathlib.Path() / src_path.name)
