@@ -37,7 +37,7 @@ def assertions(utc: unittest.TestCase,
     expected_file_path = expected_dir / expected_base_name
 
     home_dir_name = str(actual.home_dir_path)
-    test_root_dir_name = str(actual.execution_directory_structure.test_root_dir)
+    test_root_dir_name = str(actual.execution_directory_structure.act_dir)
 
     expected_contents = os.linesep.join(['# Line 1',
                                          '# source for line one',
@@ -76,6 +76,6 @@ class ActPhaseInstructionThatOutputsTestRootDir(ActPhaseInstruction):
             self,
             global_environment: common.GlobalEnvironmentForPostEdsPhase,
             phase_environment: PhaseEnvironmentForScriptGeneration) -> sh.SuccessOrHardError:
-        line = TEST_ROOT_DIR_HEADER + str(global_environment.eds.test_root_dir)
+        line = TEST_ROOT_DIR_HEADER + str(global_environment.eds.act_dir)
         phase_environment.append.raw_script_statement(line)
         return sh.new_sh_success()

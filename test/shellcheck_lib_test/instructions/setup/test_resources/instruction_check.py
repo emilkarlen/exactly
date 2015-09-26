@@ -73,7 +73,7 @@ def execute(put: unittest.TestCase,
                 return
             with tempfile.TemporaryDirectory(prefix=prefix + "-eds-") as eds_root_dir_name:
                 eds = execution_directory_structure.construct_at(eds_root_dir_name)
-                os.chdir(str(eds.test_root_dir))
+                os.chdir(str(eds.act_dir))
                 global_environment_with_eds = i.GlobalEnvironmentForPostEdsPhase(home_dir_path,
                                                                                  eds)
                 main_result = _execute_main(eds, global_environment_with_eds, instruction, put, setup)

@@ -76,12 +76,12 @@
       xlink:href="https://www.gnu.org/software/automake/manual/html_node/Scripts_002dbased-Testsuites.html#Scripts_002dbased-Testsuites">automake:
       Scripts-based Testsuites</link>.</para>
 
-        <para>TODO: See<link
-                xlink:href="http://www.gnu.org/software/dejagnu/manual/x47.html#posix">
-            http://www.gnu.org/software/dejagnu/manual/x47.html#posix</link>.
-        </para>
+      <para>TODO: See<link
+              xlink:href="http://www.gnu.org/software/dejagnu/manual/x47.html#posix">
+        http://www.gnu.org/software/dejagnu/manual/x47.html#posix</link>.
+      </para>
 
-        <variablelist>
+      <variablelist>
         <varlistentry>
           <term><constant>PASS</constant></term>
 
@@ -148,30 +148,30 @@
 
       <variablelist>
         <varlistentry>
-            <term>
-                <systemitem>anonymous</systemitem>
-            </term>
+          <term>
+            <systemitem>anonymous</systemitem>
+          </term>
 
-            <listitem>
-                <para>Configures the test case.</para>
-            </listitem>
+          <listitem>
+            <para>Configures the test case.</para>
+          </listitem>
         </varlistentry>
 
-          <varlistentry>
+        <varlistentry>
           <term><systemitem>setup</systemitem></term>
 
           <listitem>
-              <para>Constructs the environment that the
-                  <systemitem>act</systemitem>
-                  phase expects.
-              </para>
+            <para>Constructs the environment that the
+              <systemitem>act</systemitem>
+              phase expects.
+            </para>
 
-              <para>E.g. "installing" files and directories into the temporary
-                  directory where the
-                  <systemitem>act</systemitem>
-                  phase is
-                  executed.
-              </para>
+            <para>E.g. "installing" files and directories into the temporary
+              directory where the
+              <systemitem>act</systemitem>
+              phase is
+              executed.
+            </para>
           </listitem>
         </varlistentry>
 
@@ -182,7 +182,7 @@
             <para>The program that is tested, in the environment set up by
             <systemitem>setup</systemitem>.</para>
 
-              <para>Executed in a temporary directory.</para>
+            <para>Executed in a temporary directory.</para>
           </listitem>
         </varlistentry>
 
@@ -214,61 +214,63 @@
 
       <variablelist>
         <varlistentry>
-            <term>
-                <filename class="directory">testcase</filename>
-            </term>
+          <term>
+            <filename class="directory">testcase</filename>
+          </term>
 
-            <listitem>
-                <para>Reserved directory.</para>
+          <listitem>
+            <para>Reserved directory.</para>
 
-                <para>The test case, transformed from the test case file, in a
-                    form that is executed.
-                </para>
-            </listitem>
+            <para>The test case, transformed from the test case file, in a
+              form that is executed.
+            </para>
+          </listitem>
         </varlistentry>
 
-          <varlistentry>
-              <term>
-                  <filename class="directory">test</filename>
-              </term>
+        <varlistentry>
+          <term>
+            <filename class="directory">act</filename>
+          </term>
 
-              <listitem>
-                  <para>Directory that is the (initial) Present Working Directory
-                      for all phases of the test case (<systemitem>setup</systemitem>,
-                      <systemitem>act</systemitem>, ...).
-                  </para>
-              </listitem>
-          </varlistentry>
+          <listitem>
+            <para>Directory that is the (initial) Current Working Directory
+              for all phases of the test case (<systemitem>setup</systemitem>,
+              <systemitem>act</systemitem>, ...).
+            </para>
+          </listitem>
+        </varlistentry>
 
-          <varlistentry>
-              <term>
-                  <filename class="directory">tmp</filename>
-              </term>
+        <varlistentry>
+          <term>
+            <filename class="directory">tmp</filename>
+          </term>
 
-              <listitem>
-                  <para>Directory that is not used by the
-                      <command>shellcheck</command>
-                      program itself.
-                  </para>
+          <listitem>
+            <para>Reserved directory.</para>
 
-                  <para>The purpose is to have a place where the test case can store
-                      temporary files.
-                  </para>
+            <para>Directory that is not used by the
+              <command>shellcheck</command>
+              program itself.
+            </para>
 
-                  <para>The environment variable
-                      <envar>SHELLCHECK_TMP</envar>
-                      contains the absolute name of this director .
-                  </para>
-              </listitem>
-          </varlistentry>
+            <para>The purpose is to have a place where the test case can store
+              temporary files.
+            </para>
 
-          <varlistentry>
+            <para>The environment variable
+              <envar>SHELLCHECK_TMP</envar>
+              contains the absolute name of this director .
+            </para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
           <term><filename class="directory">result</filename></term>
 
           <listitem>
-              <para>Reserved directory.</para>
+            <para>Reserved directory.</para>
 
-              <variablelist>
+            <variablelist>
               <varlistentry>
                 <term><filename class="directory">std</filename></term>
 
@@ -312,9 +314,9 @@
           <term><filename class="directory">log</filename></term>
 
           <listitem>
-              <para>Reserved directory.</para>
+            <para>Reserved directory.</para>
 
-              <para>Various logs.</para>
+            <para>Various logs.</para>
           </listitem>
         </varlistentry>
       </variablelist>
@@ -386,11 +388,15 @@
           </varlistentry>
 
           <varlistentry>
-            <term><envar>SHELLCHECK_TESTROOT</envar></term>
+            <term>
+              <envar>SHELLCHECK_ACT</envar>
+            </term>
 
             <listitem>
               <para>Absolute name of the <filename
-              class="directory">test</filename> directory in the
+                      class="directory">act
+              </filename>
+                directory in the
               <glossterm>execution directory structure</glossterm>.</para>
 
               <para>This is the Current Working Directory at the start of each
@@ -398,20 +404,20 @@
             </listitem>
           </varlistentry>
 
-            <varlistentry>
-                <term>
-                    <envar>SHELLCHECK_TMP</envar>
-                </term>
+          <varlistentry>
+            <term>
+              <envar>SHELLCHECK_TMP</envar>
+            </term>
 
-                <listitem>
-                    <para>Absolute name of the
-                        <filename class="directory">tmp
-                        </filename>
-                        directory in the<glossterm>execution directory
-                            structure</glossterm>.
-                    </para>
-                </listitem>
-            </varlistentry>
+            <listitem>
+              <para>Absolute name of the
+                <filename class="directory">tmp
+                </filename>
+                directory in the<glossterm>execution directory
+                  structure</glossterm>.
+              </para>
+            </listitem>
+          </varlistentry>
         </variablelist>
       </section>
     </section>
@@ -425,26 +431,26 @@
 
       <para>The instructions in all phases except <systemitem>act</systemitem>
       are executed from within the <command>shellcheck</command> executable.
-          They are implemented completely in Python.
+        They are implemented completely in Python.
       </para>
 
-        <para>The instruction of the
-            <systemitem>act</systemitem>
-            phase, on the
-            other hand, generate a script that is stored externally in it's own file
-            that is located in the
-            <filename class="directory">testcase</filename>
-            directory, e.g.<filename>testcase/act.sh</filename>.
-        </para>
+      <para>The instruction of the
+        <systemitem>act</systemitem>
+        phase, on the
+        other hand, generate a script that is stored externally in it's own file
+        that is located in the
+        <filename class="directory">testcase</filename>
+        directory, e.g.<filename>testcase/act.sh</filename>.
+      </para>
 
-        <para>Which script language that is used is configurable. Bash is the
-            default.
-        </para>
+      <para>Which script language that is used is configurable. Bash is the
+        default.
+      </para>
 
-        <para>(For development of shellcheck itself, all tests uses the same
-            language as the shellcheck itself is written in. The reason is to
-            minimize dependencies.)
-        </para>
+      <para>(For development of shellcheck itself, all tests uses the same
+        language as the shellcheck itself is written in. The reason is to
+        minimize dependencies.)
+      </para>
     </section>
 
     <section>
@@ -487,127 +493,126 @@
           this step.</remark></para>
         </listitem>
 
-          <listitem>
-              <para>Phases</para>
+        <listitem>
+          <para>Phases</para>
 
-              <para>Some phases are decomposed into "steps". The reason is mainly
-                  to help debugging test cases. When there is a "validation step",
-                  then this step is designed to validate that the following step(s)
-                  can be executed without problems. A typical example of a validation
-                  is checking that a file that must exist really exists.
+          <para>Some phases are decomposed into "steps". The reason is mainly
+            to help debugging test cases. When there is a "validation step",
+            then this step is designed to validate that the following step(s)
+            can be executed without problems. A typical example of a validation
+            is checking that a file that must exist really exists.
+          </para>
+
+          <para>Each phase consists of two parts: validation and execution. If
+            the validation phase fails, then the test case fails with
+            <glossterm>HARD ERROR</glossterm>. (A typical validation failure is
+            that a file that is assumed to exist does not exist.)
+          </para>
+
+          <orderedlist>
+            <listitem>
+              <para>
+                <systemitem>anonymous</systemitem>
+                phase
               </para>
 
-              <para>Each phase consists of two parts: validation and execution. If
-                  the validation phase fails, then the test case fails with
-                  <glossterm>HARD ERROR</glossterm>. (A typical validation failure is
-                  that a file that is assumed to exist does not exist.)
+              <para>This phase is not decomposed into steps.</para>
+
+              <para>The anonymous phase sets the premises for the following
+                phases.
               </para>
 
-              <orderedlist>
-                  <listitem>
-                      <para>
-                          <systemitem>anonymous</systemitem>
-                          phase
-                      </para>
+              <para>It is executed before the<glossterm>execution directory
+                structure</glossterm>, which means that it only sets the
+                "internal settings" (e.g. "home directory" and expected
+                result).
+              </para>
 
-                      <para>This phase is not decomposed into steps.</para>
+              <para>The test case will fail with
+                <glossterm>HARD ERROR
+                </glossterm>
+                if any instruction fails.
+              </para>
+            </listitem>
 
-                      <para>The anonymous phase sets the premises for the following
-                          phases.
-                      </para>
+            <listitem>
+              <para>Construction of the
+                <glossterm>execution directory
+                  structure
+                </glossterm>
+              </para>
+            </listitem>
 
-                      <para>It is executed before the<glossterm>execution directory
-                          structure</glossterm>, which means that it only sets the
-                          "internal settings" (e.g. "home directory" and expected
-                          result).
-                      </para>
+            <listitem>
+              <para>
+                <systemitem>setup</systemitem>
+                phase (validation,
+                execution)
+              </para>
 
-                      <para>The test case will fail with
-                          <glossterm>HARD
-                              ERROR
-                          </glossterm>
-                          if any instruction fails.
-                      </para>
-                  </listitem>
+              <para>The test case fails with
+                <glossterm>HARD ERROR</glossterm>
+                if any step fails.
+              </para>
+            </listitem>
 
-                  <listitem>
-                      <para>Construction of the
-                          <glossterm>execution directory
-                              structure
-                          </glossterm>
-                      </para>
-                  </listitem>
+            <listitem>
+              <para>Validation of<systemitem>act</systemitem>,
+                <systemitem>assert</systemitem>
+              </para>
 
-                  <listitem>
-                      <para>
-                          <systemitem>setup</systemitem>
-                          phase (validation,
-                          execution)
-                      </para>
+              <para>The test case fails with
+                <glossterm>HARD ERROR</glossterm>
+                if there is any failure.
+              </para>
+            </listitem>
 
-                      <para>The test case fails with
-                          <glossterm>HARD ERROR</glossterm>
-                          if any step fails.
-                      </para>
-                  </listitem>
+            <listitem>
+              <para>
+                <systemitem>act</systemitem>
+                phase (script-generation,
+                script-execution)
+              </para>
 
-                  <listitem>
-                      <para>Validation of<systemitem>act</systemitem>,
-                          <systemitem>assert</systemitem>
-                      </para>
+              <para>The test case fails with
+                <glossterm>HARD ERROR</glossterm>
+                if script-generation fails.
+              </para>
 
-                      <para>The test case fails with
-                          <glossterm>HARD ERROR</glossterm>
-                          if there is any failure.
-                      </para>
-                  </listitem>
+              <para>The script-execution step cannot fail, since it is the
+                object that is tested for correctness.
+              </para>
+            </listitem>
 
-                  <listitem>
-                      <para>
-                          <systemitem>act</systemitem>
-                          phase (script-generation,
-                          script-execution)
-                      </para>
+            <listitem>
+              <para>
+                <systemitem>assert</systemitem>
+                phase (execution)
+              </para>
 
-                      <para>The test case fails with
-                          <glossterm>HARD ERROR</glossterm>
-                          if script-generation fails.
-                      </para>
+              <para>The test case fails with
+                <glossterm>HARD ERROR</glossterm>
+                if there is a failure.
+              </para>
 
-                      <para>The script-execution step cannot fail, since it is the
-                          object that is tested for correctness.
-                      </para>
-                  </listitem>
+              <para>If there is no failure in this phase, then the
+                instructions determine the test result (which can be any result
+                status).
+              </para>
+            </listitem>
 
-                  <listitem>
-                      <para>
-                          <systemitem>assert</systemitem>
-                          phase (execution)
-                      </para>
+            <listitem>
+              <para>
+                <systemitem>cleanup</systemitem>
+                phase (execution)
+              </para>
 
-                      <para>The test case fails with
-                          <glossterm>HARD ERROR</glossterm>
-                          if there is a failure.
-                      </para>
-
-                      <para>If there is no failure in this phase, then the
-                          instructions determine the test result (which can be any result
-                          status).
-                      </para>
-                  </listitem>
-
-                  <listitem>
-                      <para>
-                          <systemitem>cleanup</systemitem>
-                          phase (execution)
-                      </para>
-
-                      <para>The test case fails with
-                          <glossterm>HARD ERROR</glossterm>
-                          if there is a failure.
-                      </para>
-                  </listitem>
-              </orderedlist>
+              <para>The test case fails with
+                <glossterm>HARD ERROR</glossterm>
+                if there is a failure.
+              </para>
+            </listitem>
+          </orderedlist>
         </listitem>
 
         <listitem>
@@ -619,122 +624,122 @@
       <para>This process can be halted after various steps for the purpose of
       experimenting and debugging a test case.</para>
 
-        <section>
-            <title>Sub exit statuses</title>
+      <section>
+        <title>Sub exit statuses</title>
 
-            <para>Varje fel ska levereras via ett undantag.</para>
+        <para>Varje fel ska levereras via ett undantag.</para>
 
-            <para>Fördef fel för varje felstatus m gemensam basklass: FilureError
-                (HardErrorError, ...)
-            </para>
+        <para>Fördef fel för varje felstatus m gemensam basklass: FilureError
+          (HardErrorError, ...)
+        </para>
 
-            <para>Undantag som inte är ett av dessa representerar
-                implementationsfel i shellcheck.
-            </para>
+        <para>Undantag som inte är ett av dessa representerar
+          implementationsfel i shellcheck.
+        </para>
 
-            <para>Vore bra att kunna separera dessa utåt, dvs kunna få info om
-                orsaken vid körning. Samtidigt ska returkoden vara HARD_ERROR för att
-                kunna integreras i en svit.
-            </para>
+        <para>Vore bra att kunna separera dessa utåt, dvs kunna få info om
+          orsaken vid körning. Samtidigt ska returkoden vara HARD_ERROR för att
+          kunna integreras i en svit.
+        </para>
 
-            <para>Förutom differentieringen i impl-fel, kontra "förväntade" fel,
-                finns differentieringen utefter steg, t ex validering kontra
-                exekvering. Fel i valideringen ger alltid upphov till
-                HARD_ERROR.
-            </para>
+        <para>Förutom differentieringen i impl-fel, kontra "förväntade" fel,
+          finns differentieringen utefter steg, t ex validering kontra
+          exekvering. Fel i valideringen ger alltid upphov till
+          HARD_ERROR.
+        </para>
 
-            <para/>
+        <para/>
 
-            <variablelist>
+        <variablelist>
+          <varlistentry>
+            <term>anonym</term>
+
+            <listitem>
+              <para>HARD_ERROR (hanterat): koden kastar HardErrorError</para>
+
+              <para>HARD_ERROR (implementationsfel) något annat</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>setup</term>
+
+            <listitem>
+              <para>HARD_ERROR (hanterat): koden kastar HardErrorError</para>
+
+              <para>HARD_ERROR (implementationsfel) något annat</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>act</term>
+
+            <listitem>
+              <variablelist>
                 <varlistentry>
-                    <term>anonym</term>
+                  <term>validering</term>
 
-                    <listitem>
-                        <para>HARD_ERROR (hanterat): koden kastar HardErrorError</para>
-
-                        <para>HARD_ERROR (implementationsfel) något annat</para>
-                    </listitem>
+                  <listitem>
+                    <para>HARD_ERROR (oavsett undantag)</para>
+                  </listitem>
                 </varlistentry>
 
                 <varlistentry>
-                    <term>setup</term>
+                  <term>kod-generering</term>
 
-                    <listitem>
-                        <para>HARD_ERROR (hanterat): koden kastar HardErrorError</para>
-
-                        <para>HARD_ERROR (implementationsfel) något annat</para>
-                    </listitem>
+                  <listitem>
+                    <para>HARD_ERROR (oavsett undantag)</para>
+                  </listitem>
                 </varlistentry>
 
                 <varlistentry>
-                    <term>act</term>
+                  <term>kod-exekvering</term>
 
-                    <listitem>
-                        <variablelist>
-                            <varlistentry>
-                                <term>validering</term>
+                  <listitem>
+                    <para>inga fel kan uppstå</para>
+                  </listitem>
+                </varlistentry>
+              </variablelist>
+            </listitem>
+          </varlistentry>
 
-                                <listitem>
-                                    <para>HARD_ERROR (oavsett undantag)</para>
-                                </listitem>
-                            </varlistentry>
+          <varlistentry>
+            <term>assert</term>
 
-                            <varlistentry>
-                                <term>kod-generering</term>
+            <listitem>
+              <variablelist>
+                <varlistentry>
+                  <term>validering</term>
 
-                                <listitem>
-                                    <para>HARD_ERROR (oavsett undantag)</para>
-                                </listitem>
-                            </varlistentry>
-
-                            <varlistentry>
-                                <term>kod-exekvering</term>
-
-                                <listitem>
-                                    <para>inga fel kan uppstå</para>
-                                </listitem>
-                            </varlistentry>
-                        </variablelist>
-                    </listitem>
+                  <listitem>
+                    <para>HARD_ERROR (oavsett undantag)</para>
+                  </listitem>
                 </varlistentry>
 
                 <varlistentry>
-                    <term>assert</term>
+                  <term>exekvering</term>
 
-                    <listitem>
-                        <variablelist>
-                            <varlistentry>
-                                <term>validering</term>
-
-                                <listitem>
-                                    <para>HARD_ERROR (oavsett undantag)</para>
-                                </listitem>
-                            </varlistentry>
-
-                            <varlistentry>
-                                <term>exekvering</term>
-
-                                <listitem>
-                                    <para>PASS, FAIL, HARD_ERROR</para>
-                                </listitem>
-                            </varlistentry>
-                        </variablelist>
-                    </listitem>
+                  <listitem>
+                    <para>PASS, FAIL, HARD_ERROR</para>
+                  </listitem>
                 </varlistentry>
+              </variablelist>
+            </listitem>
+          </varlistentry>
 
-                <varlistentry>
-                    <term>cleanup</term>
+          <varlistentry>
+            <term>cleanup</term>
 
-                    <listitem>
-                        <para>HARD_ERROR (oavsett undantag)</para>
-                    </listitem>
-                </varlistentry>
-            </variablelist>
+            <listitem>
+              <para>HARD_ERROR (oavsett undantag)</para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
 
-            <para>Alltså: HARD_ERROR finns i två varianter: "hanterat" och
-                implementationsfel/bugg.
-            </para>
-        </section>
+        <para>Alltså: HARD_ERROR finns i två varianter: "hanterat" och
+          implementationsfel/bugg.
+        </para>
+      </section>
     </section>
   </chapter>
 
