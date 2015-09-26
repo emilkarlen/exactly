@@ -13,7 +13,7 @@ class Empty(EdsPopulator):
         pass
 
 
-class FilesInTestRoot(EdsPopulator):
+class FilesInActDir(EdsPopulator):
     def __init__(self,
                  test_root_contents: DirContents):
         self.test_root_contents = test_root_contents
