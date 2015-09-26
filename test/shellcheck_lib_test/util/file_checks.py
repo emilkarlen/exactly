@@ -44,16 +44,21 @@ class FileChecker:
     def assert_dir_contents_matches_exactly(self,
                                             dir: pathlib.Path,
                                             expected: file_structure.DirContents):
+        return self.assert_dir_matches_exactly(dir, expected.file_system_element_contents)
+
+    def assert_dir_matches_exactly(self,
+                                   dir: pathlib.Path,
+                                   expected: list):
         self.assert_exists_dir_with_given_number_of_files_in_it(dir,
-                                                                len(expected.file_system_element_contents))
-        for file_system_element in expected.file_system_element_contents:
+                                                                len(expected))
+        for file_system_element in expected:
             if isinstance(file_system_element, file_structure.File):
                 self.assert_dir_contains_file(dir, file_system_element)
             elif isinstance(file_system_element, file_structure.Link):
                 self.assert_dir_contains_symlink(dir, file_system_element)
             elif isinstance(file_system_element, file_structure.Dir):
-                self.assert_dir_contents_matches_exactly(dir / file_system_element.file_name,
-                                                         file_system_element.file_system_element_contents)
+                self.assert_dir_matches_exactly(dir / file_system_element.file_name,
+                                                file_system_element.file_system_element_contents)
 
     def _msg(self, message: str) -> str:
         return assert_utils.assertion_message(message, self.message_header)

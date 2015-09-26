@@ -15,7 +15,7 @@ class IsSuccess(Assertion):
               put: unittest.TestCase,
               actual: sh.SuccessOrHardError):
         put.assertTrue(actual.is_success,
-                       'Status is expected to be success')
+                       'Status is expected to be success (was {})'.format(actual))
 
 
 class IsHardError(Assertion):
@@ -23,7 +23,7 @@ class IsHardError(Assertion):
               put: unittest.TestCase,
               actual: sh.SuccessOrHardError):
         put.assertTrue(actual.is_hard_error,
-                       'Status is expected to be hard-error')
+                       'Status is expected to be hard-error (was {})'.format(actual))
 
 
 class AnythingGoes(Assertion):

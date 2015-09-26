@@ -35,9 +35,13 @@ class _InstallSourceInstruction(SetupPhaseInstruction):
              os_services: OsServices,
              environment: GlobalEnvironmentForPostEdsPhase,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
-        src = str(self._src_path(environment))
-        dst = '.'
-        return os_services.copy_preserve_as_much_as_possible(src, dst)
+        src_path = self._src_path(environment)
+        src = str(src_path)
+        if src_path.is_dir():
+            dst = str(pathlib.Path() / src_path.name)
+            return os_services.copy_tree_preserve_as_much_as_possible(src, dst)
+        else:
+            return os_services.copy_file_preserve_as_much_as_possible(src, '.')
 
     def post_validate(self,
                       global_environment: GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:

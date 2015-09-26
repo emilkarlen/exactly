@@ -8,7 +8,7 @@ from shellcheck_lib_test.instructions import utils
 from shellcheck_lib_test.instructions.setup.test_resources.instruction_check import Flow, TestCaseBase
 from shellcheck_lib.instructions.setup import install as sut
 from shellcheck_lib_test.instructions.utils import new_source
-from shellcheck_lib_test.util.file_structure import DirContents, File
+from shellcheck_lib_test.util.file_structure import DirContents, File, Dir
 
 
 class TestParse(unittest.TestCase):
@@ -54,6 +54,23 @@ class TestSuccessfulScenarios(TestCaseBase):
                  ),
             new_source('instruction-name',
                        file_name))
+
+    def test_install_directory(self):
+        src_dir = 'existing-dir'
+        files_to_install = DirContents([Dir(src_dir,
+                                            [File('a', 'a'),
+                                             Dir('d', []),
+                                             Dir('d2',
+                                                 [File('f', 'f')])
+                                             ])])
+        self._check(
+            Flow(sut.Parser(),
+                 home_dir_contents=files_to_install,
+                 expected_main_side_effects_on_files=eds_contents_check.ActRootContainsExactly(
+                     files_to_install)
+                 ),
+            new_source('instruction-name',
+                       src_dir))
 
 
 def suite():
