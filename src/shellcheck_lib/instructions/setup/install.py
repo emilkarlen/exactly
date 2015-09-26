@@ -8,6 +8,7 @@ from shellcheck_lib.test_case.instruction.common import GlobalEnvironmentForPost
 from shellcheck_lib.test_case.instruction.result import svh
 from shellcheck_lib.test_case.instruction.result import sh
 from shellcheck_lib.test_case.instruction.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
+from shellcheck_lib.test_case.os_services import OsServices
 
 
 class Parser(SingleInstructionParser):
@@ -31,9 +32,11 @@ class _InstallSourceInstruction(SetupPhaseInstruction):
             return svh.new_svh_validation_error('File does not exist: {}'.format(str(path)))
         return svh.new_svh_success()
 
-    def main(self, global_environment: GlobalEnvironmentForPostEdsPhase,
+    def main(self,
+             os_services: OsServices,
+             environment: GlobalEnvironmentForPostEdsPhase,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
-        src = str(self._src_path(global_environment))
+        src = str(self._src_path(environment))
         dst = '.'
         try:
             shutil.copy2(src, dst)

@@ -73,14 +73,17 @@ class SetupPostValidateInstructionExecutor(ControlledInstructionExecutor):
 
 class SetupMainInstructionExecutor(ControlledInstructionExecutor):
     def __init__(self,
-                 global_environment: instr.GlobalEnvironmentForPostEdsPhase,
+                 os_services: OsServices,
+                 environment: instr.GlobalEnvironmentForPostEdsPhase,
                  setup_settings_builder: SetupSettingsBuilder):
-        self.__global_environment = global_environment
+        self.__os_services = os_services
+        self.__environment = environment
         self.__setup_settings_builder = setup_settings_builder
 
     def apply(self, instruction: SetupPhaseInstruction) -> PartialInstructionControlledFailureInfo:
         return _from_success_or_hard_error(
-            instruction.main(self.__global_environment,
+            instruction.main(self.__os_services,
+                             self.__environment,
                              self.__setup_settings_builder))
 
 

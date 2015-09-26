@@ -71,7 +71,8 @@ class SetupInstructionThatRecordsStringInList(SetupPhaseInstruction):
         return sh.new_sh_success()
 
     def main(self,
-             global_environment: common.GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices,
+             environment: common.GlobalEnvironmentForPostEdsPhase,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         self.__recorder_for_execute.record()
         return sh.new_sh_success()
@@ -97,9 +98,10 @@ class SetupInstructionThatRecordsStringInRecordFile(
         return sh.new_sh_success()
 
     def main(self,
-             global_environment: common.GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices,
+             environment: common.GlobalEnvironmentForPostEdsPhase,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
-        append_line_to_record_file(global_environment.execution_directory_structure,
+        append_line_to_record_file(environment.execution_directory_structure,
                                    self.__text_for_execute)
         return sh.new_sh_success()
 

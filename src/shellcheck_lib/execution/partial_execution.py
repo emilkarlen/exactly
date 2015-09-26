@@ -20,7 +20,7 @@ from . import phase_step_execution
 from shellcheck_lib.script_language.act_script_management import ScriptLanguageSetup
 from shellcheck_lib.test_case.instruction.sections.act import PhaseEnvironmentForScriptGeneration
 from shellcheck_lib.test_case.instruction.sections.setup import SetupSettingsBuilder
-from shellcheck_lib.test_case.os_services import new_default
+from shellcheck_lib.test_case.os_services import new_default, OsServices
 
 
 class Configuration(tuple):
@@ -94,37 +94,37 @@ class PartialExecutor:
         if res.status is not PartialResultStatus.PASS:
             self.__partial_result = res
             return
-        phase_env = new_default()
+        os_services = new_default()
         self.__set_post_eds_environment_variables()
-        res = self.__run_setup_execute()
+        res = self.__run_setup_main(os_services)
         if res.status is not PartialResultStatus.PASS:
             self.__partial_result = res
-            self.__run_cleanup(phase_env)
+            self.__run_cleanup(os_services)
             return
         res = self.__run_setup_post_validate()
         if res.status is not PartialResultStatus.PASS:
             self.__partial_result = res
-            self.__run_cleanup(phase_env)
+            self.__run_cleanup(os_services)
             return
         res = self.__run_act_validate()
         if res.status is not PartialResultStatus.PASS:
-            self.__run_cleanup(phase_env)
+            self.__run_cleanup(os_services)
             self.__partial_result = res
             return
         res = self.__run_assert_validate()
         if res.status is not PartialResultStatus.PASS:
-            self.__run_cleanup(phase_env)
+            self.__run_cleanup(os_services)
             self.__partial_result = res
             return
         res = self.__run_act_script_generation()
         if res.status is not PartialResultStatus.PASS:
             self.__partial_result = res
-            self.__run_cleanup(phase_env)
+            self.__run_cleanup(os_services)
             return
         self.write_and_store_script_file_path()
         self.__run_act_script()
-        self.__partial_result = self.__run_assert_execute(phase_env)
-        res = self.__run_cleanup(phase_env)
+        self.__partial_result = self.__run_assert_execute(os_services)
+        res = self.__run_cleanup(os_services)
         if res.is_failure:
             self.__partial_result = res
 
@@ -165,11 +165,12 @@ class PartialExecutor:
                                                                self.__global_environment),
                                                            self.__setup_phase)
 
-    def __run_setup_execute(self) -> PartialResult:
+    def __run_setup_main(self, os_services: OsServices) -> PartialResult:
         setup_settings_builder = SetupSettingsBuilder()
         ret_val = self.__run_internal_instructions_phase_step(phases.SETUP,
                                                               phase_step.SETUP_execute,
                                                               phase_step_executors.SetupMainInstructionExecutor(
+                                                                  os_services,
                                                                   self.__global_environment,
                                                                   setup_settings_builder),
                                                               self.__setup_phase)
@@ -206,12 +207,12 @@ class PartialExecutor:
                                                                phase_env),
                                                            self.__assert_phase)
 
-    def __run_cleanup(self, phase_env) -> PartialResult:
+    def __run_cleanup(self, os_services) -> PartialResult:
         return self.__run_internal_instructions_phase_step(phases.CLEANUP,
                                                            None,
                                                            phase_step_executors.CleanupInstructionExecutor(
                                                                self.__global_environment,
-                                                               phase_env),
+                                                               os_services),
                                                            self.__cleanup_phase)
 
     def __run_act_script_generation(self) -> PartialResult:
