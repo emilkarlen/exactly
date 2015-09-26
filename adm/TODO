@@ -229,3 +229,9 @@ beräkningsordningen.)
 * TODO Loggning
 * TODO Preprocessning
 ** TODO Testa ange preprocessor för TF via kommandoraden
+* TODO Blandat
+** TODO <2015-09-26 lör> Funktioner för att läsa act-resultat
+Ska finnas hjälpfunktioner i "biblioteket" för att läsa t ex statuskod på
+korrekt sätt - dvs kasta rätt undantag om något går snett.
+Idag läser t ex instruktionen "exitcode" själv exitkoden. Det ska den inte
+behöva göra.
