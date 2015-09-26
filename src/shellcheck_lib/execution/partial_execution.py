@@ -20,6 +20,7 @@ from . import phase_step_execution
 from shellcheck_lib.script_language.act_script_management import ScriptLanguageSetup
 from shellcheck_lib.test_case.instruction.sections.act import PhaseEnvironmentForScriptGeneration
 from shellcheck_lib.test_case.instruction.sections.setup import SetupSettingsBuilder
+from shellcheck_lib.test_case.os_services import new_default
 
 
 class Configuration(tuple):
@@ -93,7 +94,7 @@ class PartialExecutor:
         if res.status is not PartialResultStatus.PASS:
             self.__partial_result = res
             return
-        phase_env = common.PhaseEnvironmentForInternalCommands()
+        phase_env = new_default()
         self.__set_post_eds_environment_variables()
         res = self.__run_setup_execute()
         if res.status is not PartialResultStatus.PASS:

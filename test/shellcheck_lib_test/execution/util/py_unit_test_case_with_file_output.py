@@ -4,6 +4,7 @@ import pathlib
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.execution import phases
 from shellcheck_lib.test_case.instruction import common
+from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib_test.execution.util.instruction_adapter import InternalInstruction
 
 
@@ -27,14 +28,15 @@ class InternalInstructionThatWritesToStandardPhaseFile(InternalInstruction):
         self.__phase = phase
 
     def execute(self, phase_name: str,
-                global_environment: common.GlobalEnvironmentForPostEdsPhase,
-                phase_environment: common.PhaseEnvironmentForInternalCommands):
-        file_path = standard_phase_file_path(global_environment.eds.act_dir, self.__phase)
+                environment: common.GlobalEnvironmentForPostEdsPhase,
+                os_services: OsServices):
+        file_path = standard_phase_file_path(environment.eds.act_dir, self.__phase)
         with open(str(file_path), 'w') as f:
-            contents = os.linesep.join(self._file_lines(global_environment)) + os.linesep
+            contents = os.linesep.join(self._file_lines(environment)) + os.linesep
             f.write(contents)
 
-    def _file_lines(self, global_environment: common.GlobalEnvironmentForPostEdsPhase) -> list:
+    def _file_lines(self,
+                    environment: common.GlobalEnvironmentForPostEdsPhase) -> list:
         raise NotImplementedError()
 
 

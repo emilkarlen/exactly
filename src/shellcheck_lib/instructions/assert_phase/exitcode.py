@@ -10,6 +10,7 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
 from shellcheck_lib.instructions.assert_phase.utils import instruction_utils
 from shellcheck_lib.test_case.instruction.result import pfh
 from shellcheck_lib.test_case.instruction.sections.assert_ import AssertPhaseInstruction
+from shellcheck_lib.test_case.os_services import OsServices
 
 DESCRIPTION = Description(
     'Test numerical exitcode',
@@ -32,9 +33,9 @@ class InstructionForExactValue(instruction_utils.InstructionWithoutValidationBas
         self._expected_value = expected_value
 
     def main(self,
-             global_environment: i.GlobalEnvironmentForPostEdsPhase,
-             phase_environment: i.PhaseEnvironmentForInternalCommands) -> pfh.PassOrFailOrHardError:
-        actual_value = read_exitcode(global_environment.eds)
+             environment: i.GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices) -> pfh.PassOrFailOrHardError:
+        actual_value = read_exitcode(environment.eds)
         if actual_value == self._expected_value:
             return pfh.new_pfh_pass()
         return pfh.new_pfh_fail('Unexpected exitcode. Expected:%d, actual:%d' % (self._expected_value,
@@ -49,9 +50,9 @@ class InstructionForOperator(instruction_utils.InstructionWithoutValidationBase)
         self._operator_info = operator_info
 
     def main(self,
-             global_environment: i.GlobalEnvironmentForPostEdsPhase,
-             phase_environment: i.PhaseEnvironmentForInternalCommands) -> pfh.PassOrFailOrHardError:
-        actual_value = read_exitcode(global_environment.eds)
+             environment: i.GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices) -> pfh.PassOrFailOrHardError:
+        actual_value = read_exitcode(environment.eds)
         if self._operator_info[1](actual_value, self._value):
             return pfh.new_pfh_pass()
         condition_str = self._operator_info[0] + ' ' + str(self._value)

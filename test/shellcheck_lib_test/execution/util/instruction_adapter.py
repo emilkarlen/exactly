@@ -1,7 +1,7 @@
 from shellcheck_lib.document.model import Instruction
 from shellcheck_lib.execution import phases
-from shellcheck_lib.test_case.instruction.common import GlobalEnvironmentForPostEdsPhase, \
-    PhaseEnvironmentForInternalCommands
+from shellcheck_lib.test_case.instruction.common import GlobalEnvironmentForPostEdsPhase
+from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.instruction.result import pfh
 from shellcheck_lib.test_case.instruction.result import sh
 from shellcheck_lib.test_case.instruction.result import svh
@@ -19,7 +19,7 @@ class InternalInstruction(Instruction):
     def execute(self,
                 phase_name: str,
                 global_environment: GlobalEnvironmentForPostEdsPhase,
-                phase_environment: PhaseEnvironmentForInternalCommands):
+                phase_environment: OsServices):
         """
         Does whatever this instruction should do.
         :param phase_name The phase in which this instruction is in.
@@ -58,7 +58,7 @@ class _SetupInstructionExecutor(SetupPhaseInstruction):
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         self.__internal_instruction.execute(phases.SETUP.name,
                                             global_environment,
-                                            instr.PhaseEnvironmentForInternalCommands())
+                                            OsServices())
         return self.__ret_val
 
     def post_validate(self,
@@ -80,11 +80,11 @@ class _AssertInstructionExecutor(AssertPhaseInstruction):
         return svh.new_svh_success()
 
     def main(self,
-             global_environment: instr.GlobalEnvironmentForPostEdsPhase,
-             phase_environment: instr.PhaseEnvironmentForInternalCommands) -> pfh.PassOrFailOrHardError:
+             environment: instr.GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices) -> pfh.PassOrFailOrHardError:
         self.__internal_instruction.execute(phases.ASSERT.name,
-                                            global_environment,
-                                            phase_environment)
+                                            environment,
+                                            os_services)
         return self.__ret_val
 
 
@@ -96,9 +96,9 @@ class _CleanupInstructionExecutor(CleanupPhaseInstruction):
         self.__ret_val = ret_val
 
     def main(self,
-             global_environment: instr.GlobalEnvironmentForPostEdsPhase,
-             phase_environment: instr.PhaseEnvironmentForInternalCommands) -> sh.SuccessOrHardError:
+             environment: instr.GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices) -> sh.SuccessOrHardError:
         self.__internal_instruction.execute(phases.CLEANUP.name,
-                                            global_environment,
-                                            phase_environment)
+                                            environment,
+                                            os_services)
         return self.__ret_val

@@ -1,7 +1,7 @@
 from shellcheck_lib.document.model import Instruction
 from shellcheck_lib.test_case.instruction.result.sh import SuccessOrHardError
-from shellcheck_lib.test_case.instruction.common import GlobalEnvironmentForPostEdsPhase, \
-    PhaseEnvironmentForInternalCommands
+from shellcheck_lib.test_case.instruction.common import GlobalEnvironmentForPostEdsPhase
+from shellcheck_lib.test_case.os_services import OsServices
 
 
 class CleanupPhaseInstruction(Instruction):
@@ -10,11 +10,6 @@ class CleanupPhaseInstruction(Instruction):
     """
 
     def main(self,
-             global_environment: GlobalEnvironmentForPostEdsPhase,
-             phase_environment: PhaseEnvironmentForInternalCommands) -> SuccessOrHardError:
-        """
-        Does whatever this instruction should do.
-        :param global_environment An object passed to all instructions in the Document.
-        :param phase_environment An object passed to all instructions in the Phase.
-        """
+             environment: GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices) -> SuccessOrHardError:
         raise NotImplementedError()

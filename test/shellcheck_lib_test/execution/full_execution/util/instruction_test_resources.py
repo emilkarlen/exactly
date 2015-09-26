@@ -8,6 +8,7 @@ from shellcheck_lib.test_case.instruction.sections.setup import SetupPhaseInstru
 from shellcheck_lib.test_case.instruction.sections.act import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
 from shellcheck_lib.test_case.instruction.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib.test_case.instruction.sections.cleanup import CleanupPhaseInstruction
+from shellcheck_lib.test_case.os_services import OsServices
 
 
 class ImplementationErrorTestException(Exception):
@@ -199,8 +200,8 @@ class AssertPhaseInstructionThatReturns(AssertPhaseInstruction):
         return self.__for_validate
 
     def main(self,
-             global_environment: instrs.GlobalEnvironmentForPostEdsPhase,
-             phase_environment: instrs.PhaseEnvironmentForInternalCommands) -> pfh.PassOrFailOrHardError:
+             environment: instrs.GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices) -> pfh.PassOrFailOrHardError:
         return self.__for_execute
 
 
@@ -215,8 +216,8 @@ class AssertPhaseInstructionWithExceptionInValidate(AssertPhaseInstruction):
         raise self.__exception_to_raise
 
     def main(self,
-             global_environment: instrs.GlobalEnvironmentForPostEdsPhase,
-             phase_environment: instrs.PhaseEnvironmentForInternalCommands) -> pfh.PassOrFailOrHardError:
+             environment: instrs.GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices) -> pfh.PassOrFailOrHardError:
         return sh.new_sh_success()
 
 
@@ -231,8 +232,8 @@ class AssertPhaseInstructionWithExceptionInExecute(AssertPhaseInstruction):
         return svh.new_svh_success()
 
     def main(self,
-             global_environment: instrs.GlobalEnvironmentForPostEdsPhase,
-             phase_environment: instrs.PhaseEnvironmentForInternalCommands) -> pfh.PassOrFailOrHardError:
+             environment: instrs.GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices) -> pfh.PassOrFailOrHardError:
         raise self.__exception_to_raise
 
 
@@ -242,8 +243,8 @@ class CleanupPhaseInstructionThatReturns(CleanupPhaseInstruction):
         self.ret_val = ret_val
 
     def main(self,
-             global_environment: instrs.GlobalEnvironmentForPostEdsPhase,
-             phase_environment: instrs.PhaseEnvironmentForInternalCommands) -> sh.SuccessOrHardError:
+             environment: instrs.GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices) -> sh.SuccessOrHardError:
         return self.ret_val
 
 
@@ -253,6 +254,6 @@ class CleanupPhaseInstructionWithImplementationError(CleanupPhaseInstruction):
         self.__exception_to_raise = exception_to_raise
 
     def main(self,
-             global_environment: instrs.GlobalEnvironmentForPostEdsPhase,
-             phase_environment: instrs.PhaseEnvironmentForInternalCommands) -> sh.SuccessOrHardError:
+             environment: instrs.GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices) -> sh.SuccessOrHardError:
         raise self.__exception_to_raise

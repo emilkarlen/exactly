@@ -10,6 +10,7 @@ from shellcheck_lib.test_case.instruction.sections.anonymous import AnonymousPha
     ConfigurationBuilder
 from shellcheck_lib.test_case.instruction.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib.test_case.instruction.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
+from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib_test.execution.util.instruction_adapter import InternalInstruction
 
 class ListRecorder:
@@ -116,9 +117,9 @@ class InternalInstructionThatRecordsStringInRecordFile(InternalInstruction):
         self.__text_for_execute = text_for_execute
 
     def execute(self, phase_name: str,
-                global_environment: common.GlobalEnvironmentForPostEdsPhase,
-                phase_environment: common.PhaseEnvironmentForInternalCommands):
-        append_line_to_record_file(global_environment.execution_directory_structure,
+                environment: common.GlobalEnvironmentForPostEdsPhase,
+                os_services: OsServices):
+        append_line_to_record_file(environment.execution_directory_structure,
                                    self.__text_for_execute)
 
 
@@ -128,8 +129,8 @@ class InternalInstructionThatRecordsStringInList(InternalInstruction):
         self.__recorder = recorder
 
     def execute(self, phase_name: str,
-                global_environment: common.GlobalEnvironmentForPostEdsPhase,
-                phase_environment: common.PhaseEnvironmentForInternalCommands):
+                environment: common.GlobalEnvironmentForPostEdsPhase,
+                os_services: OsServices):
         self.__recorder.record()
 
 
@@ -138,8 +139,8 @@ class ActInstructionThatGeneratesScriptThatRecordsStringInRecordFile(ActPhaseIns
                  string_for_script_gen: str):
         self.__string_for_script_gen = string_for_script_gen
 
-    def validate(self, global_environment: common.GlobalEnvironmentForPostEdsPhase) \
-            -> svh.SuccessOrValidationErrorOrHardError:
+    def validate(self,
+                 environment: common.GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
         return sh.new_sh_success()
 
     def main(
@@ -159,9 +160,9 @@ class ActInstructionThatRecordsStringInRecordFile(ActPhaseInstruction):
         self.__string_for_validation = string_for_validation
         self.__string_for_script_gen = string_for_script_gen
 
-    def validate(self, global_environment: common.GlobalEnvironmentForPostEdsPhase) \
-            -> svh.SuccessOrValidationErrorOrHardError:
-        append_line_to_record_file(global_environment.execution_directory_structure,
+    def validate(self,
+                 environment: common.GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
+        append_line_to_record_file(environment.execution_directory_structure,
                                    self.__string_for_validation)
         return sh.new_sh_success()
 
@@ -187,9 +188,7 @@ class AssertInternalInstructionThatRecordsStringInList(AssertPhaseInstruction):
         self.__recorder_for_validate.record()
         return svh.new_svh_success()
 
-    def main(self,
-             global_environment,
-             phase_environment: ConfigurationBuilder) -> pfh.PassOrFailOrHardError:
+    def main(self, environment, os_services: ConfigurationBuilder) -> pfh.PassOrFailOrHardError:
         self.__recorder_for_execute.record()
         return pfh.new_pfh_pass()
 
@@ -207,10 +206,9 @@ class AssertInstructionThatRecordsStringInRecordFile(AssertPhaseInstruction):
                                    self.__string_for_validation)
         return sh.new_sh_success()
 
-    def main(self,
-             global_environment: common.GlobalEnvironmentForPostEdsPhase,
-             phase_environment: PhaseEnvironmentForScriptGeneration) -> pfh.PassOrFailOrHardError:
-        append_line_to_record_file(global_environment.execution_directory_structure,
+    def main(self, environment: common.GlobalEnvironmentForPostEdsPhase,
+             os_services: PhaseEnvironmentForScriptGeneration) -> pfh.PassOrFailOrHardError:
+        append_line_to_record_file(environment.execution_directory_structure,
                                    self.__string_for_script_gen)
         return pfh.new_pfh_pass()
 

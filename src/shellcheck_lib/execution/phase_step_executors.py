@@ -10,6 +10,7 @@ from shellcheck_lib.test_case.instruction.sections.anonymous import AnonymousPha
 from shellcheck_lib.test_case.instruction.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib.test_case.instruction.sections.cleanup import CleanupPhaseInstruction
 from shellcheck_lib.test_case.instruction.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
+from shellcheck_lib.test_case.os_services import OsServices
 
 
 def _from_success_or_validation_error_or_hard_error(res: svh.SuccessOrValidationErrorOrHardError) \
@@ -118,25 +119,23 @@ class ActScriptGenerationExecutor(ControlledInstructionExecutor):
 
 class AssertMainInstructionExecutor(ControlledInstructionExecutor):
     def __init__(self,
-                 global_environment: instr.GlobalEnvironmentForPostEdsPhase,
-                 phase_environment: instr.PhaseEnvironmentForInternalCommands):
-        self.__global_environment = global_environment
-        self.__phase_environment = phase_environment
+                 environment: instr.GlobalEnvironmentForPostEdsPhase,
+                 os_services: OsServices):
+        self.__environment = environment
+        self.__os_services = os_services
 
     def apply(self, instruction: AssertPhaseInstruction) -> PartialInstructionControlledFailureInfo:
         return _from_pass_or_fail_or_hard_error(
-            instruction.main(self.__global_environment,
-                             self.__phase_environment))
+            instruction.main(self.__environment, self.__os_services))
 
 
 class CleanupInstructionExecutor(ControlledInstructionExecutor):
     def __init__(self,
-                 global_environment: instr.GlobalEnvironmentForPostEdsPhase,
-                 phase_environment: instr.PhaseEnvironmentForInternalCommands):
-        self.__global_environment = global_environment
-        self.__phase_environment = phase_environment
+                 environment: instr.GlobalEnvironmentForPostEdsPhase,
+                 os_services: OsServices):
+        self.__environment = environment
+        self.__os_services = os_services
 
     def apply(self, instruction: CleanupPhaseInstruction) -> PartialInstructionControlledFailureInfo:
         return _from_success_or_hard_error(
-            instruction.main(self.__global_environment,
-                             self.__phase_environment))
+            instruction.main(self.__environment, self.__os_services))

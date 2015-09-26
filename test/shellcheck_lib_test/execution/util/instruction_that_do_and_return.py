@@ -9,6 +9,7 @@ from shellcheck_lib.test_case.instruction.sections.anonymous import Configuratio
 from shellcheck_lib.test_case.instruction.sections.cleanup import CleanupPhaseInstruction
 from shellcheck_lib.test_case.instruction.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
 from shellcheck_lib.test_case.instruction.sections.assert_ import AssertPhaseInstruction
+from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib_test.execution.util import python_code_gen as py
 from shellcheck_lib.execution import phase_step
 from shellcheck_lib.execution.phase_step import PhaseStep
@@ -238,10 +239,10 @@ class _AssertInstruction(AssertPhaseInstruction):
         return self.__configuration.ret_val_from_validate
 
     def main(self,
-             global_environment: i.GlobalEnvironmentForPostEdsPhase,
-             phase_environment: i.PhaseEnvironmentForInternalCommands) -> pfh.PassOrFailOrHardError:
+             environment: i.GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices) -> pfh.PassOrFailOrHardError:
         self.__configuration.execution_action__with_eds(phase_step.ASSERT_EXECUTE,
-                                                        global_environment)
+                                                        environment)
         return self.__configuration.ret_val_from_assert_execute
 
 
@@ -251,8 +252,8 @@ class _CleanupInstruction(CleanupPhaseInstruction):
         self.__configuration = configuration
 
     def main(self,
-             global_environment: i.GlobalEnvironmentForPostEdsPhase,
-             phase_environment: i.PhaseEnvironmentForInternalCommands) -> sh.SuccessOrHardError:
+             environment: i.GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices) -> sh.SuccessOrHardError:
         self.__configuration.execution_action__with_eds(phase_step.CLEANUP_EXECUTE,
-                                                        global_environment)
+                                                        environment)
         return self.__configuration.ret_val_from_execute
