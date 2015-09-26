@@ -137,7 +137,7 @@ class ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr(ActPhaseInstruction):
             self.write_path_line(file_object, TEST_ROOT_DIR_HEADER, global_environment.eds.act_dir),
             self.write_prefix_and_expr(file_object, CURRENT_DIR_HEADER, 'str(pathlib.Path().resolve())'),
             self.write_env_var(file_object, environment_variables.ENV_VAR_HOME),
-            self.write_env_var(file_object, environment_variables.ENV_VAR_TEST),
+            self.write_env_var(file_object, environment_variables.ENV_VAR_ACT),
         ]
 
     @staticmethod
@@ -179,7 +179,7 @@ def expected_output_on(file_object: str,
         output_with_header(CURRENT_DIR_HEADER, str(configuration.act_dir)),
 
         output_with_header(environment_variables.ENV_VAR_HOME, str(configuration.home_dir)),
-        output_with_header(environment_variables.ENV_VAR_TEST, str(configuration.act_dir)),
+        output_with_header(environment_variables.ENV_VAR_ACT, str(configuration.act_dir)),
         ''
     ])
 
