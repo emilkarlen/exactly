@@ -10,9 +10,9 @@ from shellcheck_lib_test.execution.full_execution.util.instruction_test_resource
 from shellcheck_lib_test.instructions.configuration.test_resources import instruction_check
 from shellcheck_lib_test.instructions.configuration.test_resources import configuration_check
 from shellcheck_lib_test.instructions import utils
-from shellcheck_lib_test.instructions.test_resources.misc import ParserThatGives
+from shellcheck_lib_test.instructions.test_resources.test_of_test_framework_utils import ParserThatGives
 from shellcheck_lib_test.instructions.utils import SingleInstructionParserSource
-from shellcheck_lib_test.instructions.test_resources import misc as test_misc
+from shellcheck_lib_test.instructions.test_resources import test_of_test_framework_utils as test_misc
 
 
 def suite():

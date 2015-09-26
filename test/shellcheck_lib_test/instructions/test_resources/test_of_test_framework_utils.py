@@ -34,8 +34,8 @@ class ShRaisesTestError(sh_check.Assertion):
 
 
 class PfhRaisesTestError(pfh_check.Assertion):
-    def apply(self, put:
-    unittest.TestCase,
+    def apply(self,
+              put: unittest.TestCase,
               actual: pfh.PassOrFailOrHardError):
         raise TestError()
 

@@ -26,6 +26,14 @@ class StatusIs(Assertion):
 def is_success():
     return StatusIs(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS)
 
+
+def is_hard_error():
+    return StatusIs(svh.SuccessOrValidationErrorOrHardErrorEnum.HARD_ERROR)
+
+
+def is_validation_error():
+    return StatusIs(svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR)
+
 class AnythingGoes(Assertion):
     def apply(self,
               put: unittest.TestCase,
