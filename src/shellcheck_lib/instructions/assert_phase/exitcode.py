@@ -4,10 +4,9 @@ import shlex
 
 from shellcheck_lib.default.execution_mode.test_case.instruction_setup import Description, InvokationVariant
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
-from shellcheck_lib.general import line_source
 from shellcheck_lib.test_case.instruction import common as i
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
-    SingleInstructionInvalidArgumentException
+    SingleInstructionInvalidArgumentException, SingleInstructionParserSource
 from shellcheck_lib.instructions.assert_phase.utils import instruction_utils
 from shellcheck_lib.test_case.instruction.result import pfh
 from shellcheck_lib.test_case.instruction.sections.assert_ import AssertPhaseInstruction
@@ -61,10 +60,8 @@ class InstructionForOperator(instruction_utils.InstructionWithoutValidationBase)
 
 
 class Parser(SingleInstructionParser):
-    def apply(self,
-              source: line_source.LineSequenceBuilder,
-              instruction_argument: str) -> AssertPhaseInstruction:
-        argument_list = shlex.split(instruction_argument)
+    def apply(self, source: SingleInstructionParserSource) -> AssertPhaseInstruction:
+        argument_list = shlex.split(source.instruction_argument)
         num_arguments = len(argument_list)
         if num_arguments != 1 and num_arguments != 2:
             raise SingleInstructionInvalidArgumentException('1 or 2 arguments expected, got ' +

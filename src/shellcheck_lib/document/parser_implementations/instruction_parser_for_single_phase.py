@@ -39,9 +39,7 @@ class SingleInstructionParser:
     of the instruction.
     """
 
-    def apply(self,
-              source: line_source.LineSequenceBuilder,
-              instruction_argument: str) -> Instruction:
+    def apply(self, source: SingleInstructionParserSource) -> Instruction:
         """
         The name of the instruction has already been parsed.
         And that name has been mapped to this parser.
@@ -50,9 +48,6 @@ class SingleInstructionParser:
 
         :param source: Contains a single line: the line with the instruction name at the
         beginning, followed by the instruction_argument.
-
-        :param instruction_argument: The string that follows the instruction-name on the
-        same line as the instruction-name.
 
         :return: An instruction, iff the arguments are valid.
         """
@@ -164,7 +159,9 @@ class SectionElementParserForDictionaryOfInstructions(SectionElementParserForSta
         first_line = source.first_line
         (name, argument) = self._split(first_line)
         parser = self._lookup_parser(first_line, name)
-        return self._parse(source, parser, name, argument)
+        return self._parse(SingleInstructionParserSource(source, argument),
+                           parser,
+                           name)
 
     def _split(self, source_line: line_source.Line) -> (str, str):
         try:
@@ -185,20 +182,19 @@ class SectionElementParserForDictionaryOfInstructions(SectionElementParserForSta
         return self.__instruction_name__2__single_instruction_parser[name]
 
     @staticmethod
-    def _parse(source: line_source.LineSequenceBuilder,
+    def _parse(source: SingleInstructionParserSource,
                parser: SingleInstructionParser,
-               name: str,
-               argument: str) -> Instruction:
+               name: str) -> Instruction:
         """
         :raises: InvalidInstructionException
         """
         try:
-            return parser.apply(source, argument)
+            return parser.apply(source)
         except SingleInstructionInvalidArgumentException as ex:
-            raise InvalidInstructionArgumentException(source.first_line,
+            raise InvalidInstructionArgumentException(source.line_sequence.first_line,
                                                       name,
                                                       ex.error_message)
         except Exception:
-            raise ArgumentParsingImplementationException(source.first_line,
+            raise ArgumentParsingImplementationException(source.line_sequence.first_line,
                                                          name,
                                                          parser)

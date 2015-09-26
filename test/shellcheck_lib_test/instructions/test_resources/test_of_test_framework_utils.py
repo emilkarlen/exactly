@@ -5,7 +5,6 @@ from shellcheck_lib.document.model import Instruction
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionParserSource
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
-from shellcheck_lib.general import line_source
 from shellcheck_lib.test_case.instruction.result import sh
 from shellcheck_lib.test_case.instruction.result import svh
 from shellcheck_lib.test_case.instruction.result import pfh
@@ -51,9 +50,7 @@ class ParserThatGives(SingleInstructionParser):
                  instruction: Instruction):
         self.instruction = instruction
 
-    def apply(self,
-              source: line_source.LineSequenceBuilder,
-              instruction_argument: str) -> Instruction:
+    def apply(self, source: SingleInstructionParserSource) -> Instruction:
         return self.instruction
 
 

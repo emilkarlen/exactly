@@ -36,7 +36,7 @@ class AssertInstructionTest:
               ptc: unittest.TestCase,
               parser: SingleInstructionParser,
               source: SingleInstructionParserSource):
-        instruction = parser.apply(source.line_sequence, source.instruction_argument)
+        instruction = parser.apply(source)
         assert isinstance(instruction, AssertPhaseInstruction)
         with utils.home_and_eds_and_test_as_curr_dir() as home_and_eds:
             self._home_dir_contents.write_to(home_and_eds.home_dir_path)

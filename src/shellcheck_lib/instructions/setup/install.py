@@ -1,5 +1,5 @@
-from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser
-from shellcheck_lib.general import line_source
+from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
+    SingleInstructionParserSource
 from shellcheck_lib.test_case.instruction.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
 from shellcheck_lib.test_case.instruction.result import svh
 from shellcheck_lib.test_case.instruction.result import sh
@@ -7,9 +7,7 @@ from shellcheck_lib.test_case.instruction.sections.setup import SetupPhaseInstru
 
 
 class Parser(SingleInstructionParser):
-    def apply(self,
-              source: line_source.LineSequenceBuilder,
-              instruction_argument: str) -> SetupPhaseInstruction:
+    def apply(self, source: SingleInstructionParserSource) -> SetupPhaseInstruction:
         raise NotImplementedError()
 
 

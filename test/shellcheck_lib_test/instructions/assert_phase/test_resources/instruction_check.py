@@ -45,7 +45,7 @@ class TestCaseBase(unittest.TestCase):
 def execute(put: unittest.TestCase,
             setup: Flow,
             source: SingleInstructionParserSource):
-    instruction = setup.parser.apply(source.line_sequence, source.instruction_argument)
+    instruction = setup.parser.apply(source)
     put.assertIsNotNone(instruction,
                         'Result from parser cannot be None')
     put.assertIsInstance(instruction,
