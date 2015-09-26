@@ -11,7 +11,7 @@ from shellcheck_lib.test_case.instruction.sections.assert_ import AssertPhaseIns
 from shellcheck_lib_test.execution.full_execution.util.instruction_test_resources import \
     AssertPhaseInstructionThatReturns
 from shellcheck_lib_test.instructions.assert_phase.test_resources import instruction_check
-from shellcheck_lib_test.instructions.test_resources import misc as test_misc
+from shellcheck_lib_test.instructions.test_resources import test_of_test_framework_utils as test_misc
 
 
 def suite():
