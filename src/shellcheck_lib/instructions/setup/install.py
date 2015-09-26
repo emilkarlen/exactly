@@ -1,5 +1,7 @@
+import shlex
+
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
-    SingleInstructionParserSource
+    SingleInstructionParserSource, SingleInstructionInvalidArgumentException
 from shellcheck_lib.test_case.instruction.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
 from shellcheck_lib.test_case.instruction.result import svh
 from shellcheck_lib.test_case.instruction.result import sh
@@ -8,7 +10,11 @@ from shellcheck_lib.test_case.instruction.sections.setup import SetupPhaseInstru
 
 class Parser(SingleInstructionParser):
     def apply(self, source: SingleInstructionParserSource) -> SetupPhaseInstruction:
-        raise NotImplementedError()
+        arguments = shlex.split(source.instruction_argument)
+        if len(arguments) != 1:
+            msg = 'Invalid number of arguments (exactly one expected), found {}'.format(str(len(arguments)))
+            raise SingleInstructionInvalidArgumentException(msg)
+        return _InstallSourceInstruction(arguments[0])
 
 
 class _InstallSourceInstruction(SetupPhaseInstruction):
