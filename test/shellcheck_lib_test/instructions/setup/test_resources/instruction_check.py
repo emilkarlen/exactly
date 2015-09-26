@@ -25,13 +25,13 @@ class Flow:
     def __init__(self,
                  parser: SingleInstructionParser,
                  home_dir_contents: file_structure.DirContents=file_structure.DirContents([]),
-                 expected_pre_validation_result: svh_check.Assertion=svh_check.AnythingGoes(),
+                 expected_pre_validation_result: svh_check.Assertion=svh_check.is_success(),
                  eds_contents_before_main: eds_populator.EdsPopulator=eds_populator.Empty(),
                  initial_settings_builder: SetupSettingsBuilder=SetupSettingsBuilder(),
-                 expected_main_result: sh_check.Assertion=sh_check.AnythingGoes(),
+                 expected_main_result: sh_check.Assertion=sh_check.IsSuccess(),
                  expected_main_side_effects_on_environment: settings_check.Assertion=settings_check.AnythingGoes(),
                  expected_main_side_effects_on_files: eds_contents_check.Assertion=eds_contents_check.AnythingGoes(),
-                 expected_post_validation_result: svh_check.Assertion=svh_check.AnythingGoes()
+                 expected_post_validation_result: svh_check.Assertion=svh_check.is_success()
                  ):
         self.parser = parser
         self.home_dir_contents = home_dir_contents
@@ -88,6 +88,9 @@ def _execute_pre_validate(home_dir_path,
                           put, setup) -> svh.SuccessOrValidationErrorOrHardError:
     pre_validation_environment = GlobalEnvironmentForPreEdsStep(home_dir_path)
     pre_validate_result = instruction.pre_validate(pre_validation_environment)
+    put.assertIsInstance(pre_validate_result,
+                         svh.SuccessOrValidationErrorOrHardError,
+                         'pre_validate must return a ' + str(svh.SuccessOrValidationErrorOrHardError))
     put.assertIsNotNone(pre_validate_result,
                         'Result from pre_validate method cannot be None')
     setup.expected_pre_validation_result.apply(put, pre_validate_result)
@@ -102,6 +105,9 @@ def _execute_main(eds, global_environment_with_eds,
     initial_settings_builder = copy.deepcopy(settings_builder)
     main_result = instruction.main(global_environment_with_eds,
                                    settings_builder)
+    put.assertIsInstance(main_result,
+                         sh.SuccessOrHardError,
+                         'main must return a ' + str(sh.SuccessOrHardError))
     put.assertIsNotNone(main_result,
                         'Result from main method cannot be None')
     setup.expected_main_result.apply(put, main_result)
@@ -116,6 +122,9 @@ def _execute_post_validate(global_environment_with_eds,
                            instruction: SetupPhaseInstruction,
                            put, setup) -> svh.SuccessOrValidationErrorOrHardError:
     post_validate_result = instruction.post_validate(global_environment_with_eds)
+    put.assertIsInstance(post_validate_result,
+                         svh.SuccessOrValidationErrorOrHardError,
+                         'post_validate must return a ' + str(svh.SuccessOrValidationErrorOrHardError))
     put.assertIsNotNone(post_validate_result,
                         'Result from post_validate method cannot be None')
     setup.expected_post_validation_result.apply(put, post_validate_result)

@@ -1,7 +1,7 @@
 import unittest
 import pathlib
 
-from shellcheck_lib_test.util import assert_utils
+from shellcheck_lib_test.util import assert_utils, file_structure
 
 
 class FileChecker:
@@ -31,5 +31,41 @@ class FileChecker:
         self.put.assertTrue(p.exists(), self._msg('"%s" should exist (as a plain file)' % p.name))
         self.put.assertTrue(p.is_file(), self._msg('"%s" should be a plain file' % p.name))
 
+    def assert_file_contents(self,
+                             p: pathlib.Path,
+                             expected_contents: str):
+        with p.open() as f:
+            actual_contents = f.read()
+            self.put.assertEqual(expected_contents,
+                                 actual_contents,
+                                 'The file {} should contain exactly {}'.format(str(p),
+                                                                                expected_contents))
+
+    def assert_dir_contents_matches_exactly(self,
+                                            dir: pathlib.Path,
+                                            expected: file_structure.DirContents):
+        self.assert_exists_dir_with_given_number_of_files_in_it(dir,
+                                                                len(expected.file_system_element_contents))
+        for file_system_element in expected.file_system_element_contents:
+            if isinstance(file_system_element, file_structure.File):
+                self.assert_dir_contains_file(dir, file_system_element)
+            elif isinstance(file_system_element, file_structure.Link):
+                self.assert_dir_contains_symlink(dir, file_system_element)
+            elif isinstance(file_system_element, file_structure.Dir):
+                self.assert_dir_contents_matches_exactly(dir / file_system_element.file_name,
+                                                         file_system_element.file_system_element_contents)
+
     def _msg(self, message: str) -> str:
         return assert_utils.assertion_message(message, self.message_header)
+
+    def assert_dir_contains_file(self,
+                                 dir: pathlib.Path,
+                                 file: file_structure.File):
+        path = dir / file.file_name
+        self.assert_exists_plain_file(path)
+        self.assert_file_contents(path, file.contents)
+
+    def assert_dir_contains_symlink(self,
+                                    dir: pathlib.Path,
+                                    sym_link: file_structure.Link):
+        raise NotImplementedError()
