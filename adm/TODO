@@ -108,6 +108,13 @@ Fördel iom att den är välkänd.
 Nu ges FAIL: felet betraktas som en form av olikhet.
 * TODO Faser
 ** TODO Byt namn "anonymous" -> "configuration"
+** TODO Configuration
+*** TODO <2015-09-26 lör> Builder för att modifiera conf + icke-builder
+En builder som har en metod build() som ger ett immutabelt conf-objekt.
+** TODO Setup
+*** TODO <2015-09-26 lör> Builder för att modifiera conf + icke-builder
+En builder som har en metod build() som ger ett immutabelt conf-objekt.
+
 ** TODO Act
 *** TODO <2015-09-26 lör> Parser ska ha syntax för att inkl [abc]-rader i källkoden
 Dessa rader är ju sektionsrubriker, och är därför omöjliga att inkludera i
