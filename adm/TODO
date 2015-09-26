@@ -108,6 +108,44 @@ Fördel iom att den är välkänd.
 Nu ges FAIL: felet betraktas som en form av olikhet.
 * TODO Faser
 ** TODO Byt namn "anonymous" -> "configuration"
+** TODO Act
+*** TODO <2015-09-26 lör> Parser ska ha syntax för att inkl [abc]-rader i källkoden
+Dessa rader är ju sektionsrubriker, och är därför omöjliga att inkludera i
+källkod.  Parsern ska ha syntax som löser detta.
+Förslag:
+"[abc]"		: vanlig sektionsrubrik
+"\[abc]"	: källkod: "[abc]"
+"\\[abc]"	: källkod: "\[abc]"
+"\\\[abc]"	: källkod: "\\[abc]"
+Det är alltså enbart första o ev andra tecknet som hanteras speciellt.
+Därefter är allt som vanligt.
+* TODO <2015-09-26 lör> Miljövariabler
+Miljövariabler medför problem för test-sviter, iom att de är globala, o därmed
+ändrar förutsättningarna för efterföljande test.
+Egentligen är det enda vettiga att köra varje test i en separat process.
+Då kan instruktioner i [setup] sätta miljövariabler.
+Det finns en fuktion os.fork, men denna är enbart tillgänglig i Unix.
+Ev behöver det införas ett nytt koncept: SubProcessTestCaseExecutor, som
+exekverar ett testfall i en sub-process.  Denna kan behöva implementeras olika
+för unix/övrigt.
+
+Har för mig att i dagsläget så sparar+återställer full_execution alla
+miljövariabler.  Det ska den inte behöva göra.  Speciellt när ett enda
+test-fall körs är det helt onödigt eftersom shellcheck kör i en separat
+process, vars sidoeffekter i form av miljövariabler försvinner när det
+avslutas.
+
+Ett alternativ är att låta det exekverbara programmet sätta dem.  Men då
+förändrar man SUT, vilket inte alls är bra.
+
+Ytterligare ett alternativ är att
+ 1. Låta instruktioner förändra miljövariabler indirekt genom att lägga
+    ändringarna i en lista.
+ 2. Låta ett program som kör precis innan SUT, ändra de faktiska variablerna i
+    enlighet med denna lista och sedan köra SUT som en sub-process.
+
+Detta är dock krångligt!!
+
 * TODO Förbättringar
 ** TODO <2015-05-17 sön> Bevara glob tillstånd
 Idag sparas omgivningsvariabler "runt" partiell exekvering.  Borde sparas runt
