@@ -19,4 +19,4 @@ class FilesInTestRoot(EdsPopulator):
         self.test_root_contents = test_root_contents
 
     def apply(self, eds: ExecutionDirectoryStructure):
-        self.test_root_contents.write_to(eds.test_root_dir)
+        self.test_root_contents.write_to(eds.act_dir)

@@ -25,15 +25,15 @@ from shellcheck_lib.test_case.instruction.sections.setup import SetupSettingsBui
 class Configuration(tuple):
     def __new__(cls,
                 home_dir: pathlib.Path,
-                test_root_dir: pathlib.Path):
-        return tuple.__new__(cls, (home_dir, test_root_dir))
+                act_dir: pathlib.Path):
+        return tuple.__new__(cls, (home_dir, act_dir))
 
     @property
     def home_dir(self) -> pathlib.Path:
         return self[0]
 
     @property
-    def test_root_dir(self) -> pathlib.Path:
+    def act_dir(self) -> pathlib.Path:
         return self[1]
 
 
@@ -224,7 +224,7 @@ class PartialExecutor:
         environment = PhaseEnvironmentForScriptGeneration(
             script_builder
         )
-        os.chdir(str(self.execution_directory_structure.test_root_dir))
+        os.chdir(str(self.execution_directory_structure.act_dir))
         ret_val = phase_step_execution.execute_phase(
             self.__act_phase,
             _ActCommentHeaderExecutor(environment),
@@ -261,7 +261,7 @@ class PartialExecutor:
             with open(str(self.execution_directory_structure.result.std.stderr_file), 'w') as f_stderr:
                 try:
                     exitcode = subprocess.call(cmd_and_args,
-                                               cwd=str(self.execution_directory_structure.test_root_dir),
+                                               cwd=str(self.execution_directory_structure.act_dir),
                                                stdin=f_stdin,
                                                stdout=f_stdout,
                                                stderr=f_stderr)
@@ -284,7 +284,7 @@ class PartialExecutor:
         os.environ[environment_variables.ENV_VAR_HOME] = str(self.configuration.home_dir)
 
     def __set_post_eds_environment_variables(self):
-        os.environ[environment_variables.ENV_VAR_TEST] = str(self.execution_directory_structure.test_root_dir)
+        os.environ[environment_variables.ENV_VAR_ACT] = str(self.execution_directory_structure.act_dir)
         os.environ[environment_variables.ENV_VAR_TMP] = str(self.execution_directory_structure.tmp_dir)
 
     def __run_internal_instructions_phase_step(self,
@@ -292,7 +292,7 @@ class PartialExecutor:
                                                phase_step: str,
                                                instruction_executor: ControlledInstructionExecutor,
                                                phase_contents: PhaseContents) -> PartialResult:
-        os.chdir(str(self.execution_directory_structure.test_root_dir))
+        os.chdir(str(self.execution_directory_structure.act_dir))
         return phase_step_execution.execute_phase(phase_contents,
                                                   phase_step_execution.ElementHeaderExecutorThatDoesNothing(),
                                                   phase_step_execution.ElementHeaderExecutorThatDoesNothing(),
@@ -358,7 +358,7 @@ def execute_test_case_in_execution_directory(script_language_setup: ScriptLangua
         global_environment = common.GlobalEnvironmentForPostEdsPhase(home_dir_path,
                                                                      execution_directory_structure)
         configuration = Configuration(home_dir_path,
-                                      execution_directory_structure.test_root_dir)
+                                      execution_directory_structure.act_dir)
 
         test_case_execution = PartialExecutor(global_environment,
                                               execution_directory_structure,

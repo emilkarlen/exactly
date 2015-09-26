@@ -63,11 +63,11 @@ def assert_files_in_test_root_that_contain_name_of_test_root_dir(
         eds: ExecutionDirectoryStructure,
         global_environment: common.GlobalEnvironmentForPostEdsPhase,
         file_name_from_py_cmd_list: list):
-    expected_contents = utils.un_lines(py_cmd_file_lines(global_environment.eds.test_root_dir,
+    expected_contents = utils.un_lines(py_cmd_file_lines(global_environment.eds.act_dir,
                                                          global_environment.home_directory,
                                                          global_environment.eds))
     for base_name in file_name_from_py_cmd_list:
-        file_path = eds.test_root_dir / base_name
+        file_path = eds.act_dir / base_name
         file_name = str(file_path)
         utc.assertTrue(
             file_path.exists(),
@@ -90,7 +90,7 @@ def py_cmd_file_lines(cwd: pathlib.Path,
 
     return [fmt(CURRENT_DIR_HEADER, str(cwd)),
             fmt(HOME_DIR_HEADER, str(home_directory)),
-            fmt(TEST_ROOT_DIR_HEADER, str(eds.test_root_dir))]
+            fmt(TEST_ROOT_DIR_HEADER, str(eds.act_dir))]
 
 
 class InternalInstructionThatCreatesAStandardPhaseFileInTestRootContainingDirectoryPaths(
@@ -134,10 +134,10 @@ class ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr(ActPhaseInstruction):
         return [
             self.write_line(file_object, file_object),
             self.write_path_line(file_object, HOME_DIR_HEADER, global_environment.home_directory),
-            self.write_path_line(file_object, TEST_ROOT_DIR_HEADER, global_environment.eds.test_root_dir),
+            self.write_path_line(file_object, TEST_ROOT_DIR_HEADER, global_environment.eds.act_dir),
             self.write_prefix_and_expr(file_object, CURRENT_DIR_HEADER, 'str(pathlib.Path().resolve())'),
             self.write_env_var(file_object, environment_variables.ENV_VAR_HOME),
-            self.write_env_var(file_object, environment_variables.ENV_VAR_TEST),
+            self.write_env_var(file_object, environment_variables.ENV_VAR_ACT),
         ]
 
     @staticmethod
@@ -175,11 +175,11 @@ def expected_output_on(file_object: str,
         file_object,
 
         output_with_header(HOME_DIR_HEADER, str(configuration.home_dir)),
-        output_with_header(TEST_ROOT_DIR_HEADER, str(configuration.test_root_dir)),
-        output_with_header(CURRENT_DIR_HEADER, str(configuration.test_root_dir)),
+        output_with_header(TEST_ROOT_DIR_HEADER, str(configuration.act_dir)),
+        output_with_header(CURRENT_DIR_HEADER, str(configuration.act_dir)),
 
         output_with_header(environment_variables.ENV_VAR_HOME, str(configuration.home_dir)),
-        output_with_header(environment_variables.ENV_VAR_TEST, str(configuration.test_root_dir)),
+        output_with_header(environment_variables.ENV_VAR_ACT, str(configuration.act_dir)),
         ''
     ])
 

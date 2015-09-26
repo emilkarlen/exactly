@@ -20,7 +20,7 @@ class DirWithSubDirs:
 execution_directories = [
     DirWithSubDirs('testcase', []),
     DirWithSubDirs('tmp', []),
-    DirWithSubDirs('test', []),
+    DirWithSubDirs('act', []),
     DirWithSubDirs('result',
                    [DirWithSubDirs('std', [])]),
     DirWithSubDirs('log', []),
@@ -71,7 +71,7 @@ class ExecutionDirectoryStructure(DirWithRoot):
     def __init__(self, dir_name: str):
         super().__init__(Path(dir_name))
         self.__test_case_dir = self.root_dir / 'testcase'
-        self.__test_dir = self.root_dir / 'test'
+        self.__act_dir = self.root_dir / 'act'
         self.__tmp_dir = self.root_dir / 'tmp'
         self.__result = Result(self.root_dir)
         self.__log_dir = self.root_dir / 'log'
@@ -81,8 +81,8 @@ class ExecutionDirectoryStructure(DirWithRoot):
         return self.__test_case_dir
 
     @property
-    def test_root_dir(self) -> Path:
-        return self.__test_dir
+    def act_dir(self) -> Path:
+        return self.__act_dir
 
     @property
     def tmp_dir(self) -> Path:
