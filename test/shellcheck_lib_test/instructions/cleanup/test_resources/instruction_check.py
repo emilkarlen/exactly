@@ -1,7 +1,7 @@
 import unittest
 
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionParser
+    SingleInstructionParser, SingleInstructionParserSource
 from shellcheck_lib.test_case.instruction import common as i
 from shellcheck_lib.test_case.instruction.common import GlobalEnvironmentForPostEdsPhase, \
     PhaseEnvironmentForInternalCommands
@@ -34,13 +34,13 @@ class Flow:
 class TestCaseBase(unittest.TestCase):
     def _check(self,
                check: Flow,
-               source: utils.SingleInstructionParserSource):
+               source: SingleInstructionParserSource):
         execute(self, check, source)
 
 
 def execute(put: unittest.TestCase,
             setup: Flow,
-            source: utils.SingleInstructionParserSource):
+            source: SingleInstructionParserSource):
     instruction = setup.parser.apply(source.line_sequence, source.instruction_argument)
     put.assertIsNotNone(instruction,
                         'Result from parser cannot be None')

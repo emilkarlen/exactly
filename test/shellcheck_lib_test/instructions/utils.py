@@ -5,6 +5,8 @@ import tempfile
 from time import strftime, localtime
 
 from shellcheck_lib.document import parse
+from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
+    SingleInstructionParserSource
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.general import line_source
 from shellcheck_lib.general.line_source import LineSequenceBuilder
@@ -90,14 +92,6 @@ def home_and_eds_and_test_as_curr_dir() -> HomeAndEds:
                                  eds)
             finally:
                 os.chdir(cwd_before)
-
-
-class SingleInstructionParserSource:
-    def __init__(self,
-                 line_sequence: line_source.LineSequenceBuilder,
-                 instruction_argument: str):
-        self.line_sequence = line_sequence
-        self.instruction_argument = instruction_argument
 
 
 def new_source(instruction_name: str, arguments: str) -> SingleInstructionParserSource:
