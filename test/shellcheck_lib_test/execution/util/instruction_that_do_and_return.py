@@ -192,10 +192,11 @@ class _SetupInstruction(SetupPhaseInstruction):
         return self.__configuration.ret_val_from_execute
 
     def main(self,
-             global_environment: i.GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices,
+             environment: i.GlobalEnvironmentForPostEdsPhase,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         self.__configuration.execution_action__with_eds(phase_step.SETUP_EXECUTE,
-                                                        global_environment)
+                                                        environment)
         return self.__configuration.ret_val_from_execute
 
     def post_validate(self,

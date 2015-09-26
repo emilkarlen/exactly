@@ -7,6 +7,7 @@ from shellcheck_lib.test_case.instruction.result import sh
 from shellcheck_lib.test_case.instruction.result import svh
 from shellcheck_lib.test_case.instruction.sections.act import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
 from shellcheck_lib.test_case.instruction.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
+from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib_test.execution.util import utils
 from shellcheck_lib_test.execution.util import py_unit_test_case
 from shellcheck_lib_test.execution.util.py_unit_test_case import TestCaseWithCommonDefaultForSetupAssertCleanup
@@ -64,7 +65,8 @@ class PyCommandThatStoresStringInFileInCurrentDirectory(SetupPhaseInstruction):
         return svh.new_svh_success()
 
     def main(self,
-             global_environment: common.GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices,
+             environment: common.GlobalEnvironmentForPostEdsPhase,
              settings_builder: SetupSettingsBuilder):
         with open(self.__file_base_name, 'w') as f:
             f.write(self.__text_to_store)
@@ -107,7 +109,8 @@ class InstructionThatSetsStdinFileName(SetupPhaseInstruction):
         return svh.new_svh_success()
 
     def main(self,
-             global_environment: common.GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices,
+             environment: common.GlobalEnvironmentForPostEdsPhase,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         settings_builder.stdin_file_name = self.__file_name
         return sh.new_sh_success()

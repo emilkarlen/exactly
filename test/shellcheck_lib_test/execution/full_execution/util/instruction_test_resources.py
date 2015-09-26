@@ -61,7 +61,8 @@ class SetupPhaseInstructionThatReturns(SetupPhaseInstruction):
         return self.__from_pre_validate
 
     def main(self,
-             global_environment: instrs.GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices,
+             environment: instrs.GlobalEnvironmentForPostEdsPhase,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         return self.__from_execute
 
@@ -82,7 +83,8 @@ class SetupPhaseInstructionWithImplementationErrorInPreValidate(SetupPhaseInstru
         raise self.__exception_to_raise
 
     def main(self,
-             global_environment: instrs.GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices,
+             environment: instrs.GlobalEnvironmentForPostEdsPhase,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         return sh.new_sh_success()
 
@@ -103,7 +105,8 @@ class SetupPhaseInstructionWithImplementationErrorInPostValidate(SetupPhaseInstr
         return svh.new_svh_success()
 
     def main(self,
-             global_environment: instrs.GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices,
+             environment: instrs.GlobalEnvironmentForPostEdsPhase,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         return sh.new_sh_success()
 
@@ -124,7 +127,8 @@ class SetupPhaseInstructionWithExceptionInExecute(SetupPhaseInstruction):
         return svh.new_svh_success()
 
     def main(self,
-             global_environment: instrs.GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices,
+             environment: instrs.GlobalEnvironmentForPostEdsPhase,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         raise self.__exception_to_raise
 

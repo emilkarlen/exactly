@@ -54,10 +54,11 @@ class _SetupInstructionExecutor(SetupPhaseInstruction):
         return svh.new_svh_success()
 
     def main(self,
-             global_environment: instr.GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices,
+             environment: instr.GlobalEnvironmentForPostEdsPhase,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         self.__internal_instruction.execute(phases.SETUP.name,
-                                            global_environment,
+                                            environment,
                                             OsServices())
         return self.__ret_val
 

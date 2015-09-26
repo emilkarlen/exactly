@@ -13,6 +13,7 @@ from shellcheck_lib.test_case.instruction.common import GlobalEnvironmentForPreE
 from shellcheck_lib.test_case.instruction.result import svh
 from shellcheck_lib.test_case.instruction.result import sh
 from shellcheck_lib.test_case.instruction.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
+from shellcheck_lib.test_case.os_services import new_default
 from shellcheck_lib_test.util import file_structure
 from shellcheck_lib_test.instructions.test_resources import svh_check
 from shellcheck_lib_test.instructions.test_resources import sh_check
@@ -103,7 +104,8 @@ def _execute_main(eds, global_environment_with_eds,
     setup.eds_contents_before_main.apply(eds)
     settings_builder = setup.initial_settings_builder
     initial_settings_builder = copy.deepcopy(settings_builder)
-    main_result = instruction.main(global_environment_with_eds,
+    main_result = instruction.main(new_default(),
+                                   global_environment_with_eds,
                                    settings_builder)
     put.assertIsInstance(main_result,
                          sh.SuccessOrHardError,

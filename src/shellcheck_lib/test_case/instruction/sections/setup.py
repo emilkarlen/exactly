@@ -2,6 +2,7 @@ from shellcheck_lib.document.model import Instruction
 from shellcheck_lib.test_case.instruction.result.sh import SuccessOrHardError
 from shellcheck_lib.test_case.instruction.result.svh import SuccessOrValidationErrorOrHardError
 from shellcheck_lib.test_case.instruction.common import GlobalEnvironmentForPreEdsStep, GlobalEnvironmentForPostEdsPhase
+from shellcheck_lib.test_case.os_services import OsServices
 
 
 class SetupSettingsBuilder:
@@ -32,12 +33,9 @@ class SetupPhaseInstruction(Instruction):
         raise NotImplementedError()
 
     def main(self,
-             global_environment: GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices,
+             environment: GlobalEnvironmentForPostEdsPhase,
              settings_builder: SetupSettingsBuilder) -> SuccessOrHardError:
-        """
-        Does whatever this instruction should do.
-        :param global_environment An object passed to all instructions in the Document.
-        """
         raise NotImplementedError()
 
     def post_validate(self,

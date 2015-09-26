@@ -7,6 +7,7 @@ from shellcheck_lib.test_case.instruction.common import GlobalEnvironmentForPost
 from shellcheck_lib.test_case.instruction.result import sh
 from shellcheck_lib.test_case.instruction.result import svh
 from shellcheck_lib.test_case.instruction.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
+from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib_test.execution.full_execution.util.instruction_test_resources import \
     SetupPhaseInstructionThatReturns
 from shellcheck_lib_test.instructions.setup.test_resources import instruction_check
@@ -96,9 +97,11 @@ class InstructionThatRaisesTestErrorIfCwdIsIsNotTestRoot(SetupPhaseInstruction):
                      global_environment: GlobalEnvironmentForPreEdsStep) -> svh.SuccessOrValidationErrorOrHardError:
         return svh.new_svh_success()
 
-    def main(self, global_environment: GlobalEnvironmentForPostEdsPhase,
+    def main(self,
+             os_services: OsServices,
+             environment: GlobalEnvironmentForPostEdsPhase,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
-        test_misc.raise_test_error_if_cwd_is_not_test_root(global_environment.eds)
+        test_misc.raise_test_error_if_cwd_is_not_test_root(environment.eds)
         return sh.new_sh_success()
 
     def post_validate(self,
