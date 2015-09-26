@@ -12,7 +12,7 @@ from shellcheck_lib_test.instructions.assert_phase.utils import AssertInstructio
 from shellcheck_lib_test.instructions.assert_phase.test_resources import instruction_check
 from shellcheck_lib_test.instructions.test_resources import svh_check
 from shellcheck_lib_test.instructions.test_resources import pfh_check
-from shellcheck_lib_test.instructions.utils import new_source, new_line_sequence
+from shellcheck_lib_test.instructions.utils import new_source
 
 
 class TestParse(unittest.TestCase):
@@ -20,47 +20,43 @@ class TestParse(unittest.TestCase):
         parser = exitcode.Parser()
         self.assertRaises(SingleInstructionInvalidArgumentException,
                           parser.apply,
-                          new_line_sequence('instruction-name <> 1'),
-                          ' <> 1')
+                          new_source('instruction-name',
+                                     ' <> 1'))
 
     def test_that_when_no_arguments_then_exception_is_raised(self):
         parser = exitcode.Parser()
         self.assertRaises(SingleInstructionInvalidArgumentException,
                           parser.apply,
-                          new_line_sequence('instruction-name '),
-                          '')
+                          new_source('instruction-name', ''))
 
     def test_that_when_too_many_arguments_then_exception_is_raised(self):
         parser = exitcode.Parser()
         self.assertRaises(SingleInstructionInvalidArgumentException,
                           parser.apply,
-                          new_line_sequence('instruction-name a b c'),
-                          'a b c')
+                          new_source('instruction-name',
+                                     'a b c'))
 
     def test_that_when_argument_does_not_contain_integer_then_exception_is_raised(self):
         parser = exitcode.Parser()
         self.assertRaises(SingleInstructionInvalidArgumentException,
                           parser.apply,
-                          new_line_sequence('instruction-name a'),
-                          'a')
+                          new_source('instruction-name', 'a'))
 
     def test_that__when__argument_contains_too_small_integer__then__exception_is_raised(self):
         parser = exitcode.Parser()
         self.assertRaises(SingleInstructionInvalidArgumentException,
                           parser.apply,
-                          new_line_sequence('instruction-name -1'),
-                          '-1')
+                          new_source('instruction-name', '-1'))
 
     def test_that__when__argument_contains_too_large_integer__then__exception_is_raised(self):
         parser = exitcode.Parser()
         self.assertRaises(SingleInstructionInvalidArgumentException,
                           parser.apply,
-                          new_line_sequence('instruction-name 256'),
-                          '256')
+                          new_source('instruction-name', '256'))
 
     def test_that_when_valid_argument_is_given_than_instruction_is_returned(self):
         parser = exitcode.Parser()
-        actual_instruction = parser.apply(new_line_sequence('instruction-name 1'), '1')
+        actual_instruction = parser.apply(new_source('instruction-name', '1'))
         self.assertIsInstance(actual_instruction,
                               AssertPhaseInstruction)
 

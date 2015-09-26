@@ -3,8 +3,8 @@ import shlex
 from shellcheck_lib.document.model import Instruction
 from shellcheck_lib.document import parse
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
-    SectionElementParserForDictionaryOfInstructions, SingleInstructionParser, SingleInstructionInvalidArgumentException
-from shellcheck_lib.general import line_source
+    SectionElementParserForDictionaryOfInstructions, SingleInstructionParser, SingleInstructionInvalidArgumentException, \
+    SingleInstructionParserSource
 from shellcheck_lib.test_case.preprocessor import PreprocessorViaExternalProgram
 from shellcheck_lib.test_case.test_case_processing import Preprocessor
 from shellcheck_lib.default.execution_mode.test_case import instruction_name_and_argument_splitter
@@ -43,10 +43,8 @@ class AnonymousSectionInstruction(Instruction):
 
 
 class PreprocessorInstructionParser(SingleInstructionParser):
-    def apply(self,
-              source: line_source.LineSequenceBuilder,
-              instruction_argument: str) -> AnonymousSectionInstruction:
-        arg = instruction_argument.strip()
+    def apply(self, source: SingleInstructionParserSource) -> AnonymousSectionInstruction:
+        arg = source.instruction_argument.strip()
         if arg == '':
             raise SingleInstructionInvalidArgumentException('A preprocessor program must be given.')
         return PreprocessorInstruction(shlex.split(arg))

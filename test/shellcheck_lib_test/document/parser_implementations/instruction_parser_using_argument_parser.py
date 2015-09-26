@@ -6,7 +6,7 @@ from shellcheck_lib.document import parse
 from shellcheck_lib.document.parse import LineSequenceSourceFromListOfLines, ListOfLines
 from shellcheck_lib.general import line_source
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionInvalidArgumentException
+    SingleInstructionInvalidArgumentException, SingleInstructionParserSource
 from shellcheck_lib.document.parser_implementations import instruction_parser_using_argument_parser as sut
 
 
@@ -53,26 +53,28 @@ class TestParse(unittest.TestCase):
     def test__when__argument_is_invalid__then__exception_should_be_raised(self):
         parser = Parser()
         with self.assertRaises(sut.SingleInstructionInvalidArgumentException) as cm:
-            parser.apply(line_source_builder(), 'not an integer')
+            parser.apply(source('not an integer'))
 
     def test__exception_from_instruction_construction(self):
         parser = ParserThatRaisesUnconditionallyWhenConstructingInstruction('error message')
         with self.assertRaises(sut.SingleInstructionInvalidArgumentException) as cm:
-            parser.apply(line_source_builder(), '28')
+            parser.apply(source('28'))
             self.assertEqual('error message',
                              cm.ex.error_message,
                              'Error message in exception')
 
     def test__when__argument_is_valid__then__an_instruction_initialized_from_this_argument_should_be_returned(self):
         parser = Parser()
-        instruction = parser.apply(line_source_builder(), '43')
+        instruction = parser.apply(source('43'))
         self.assertEqual(43, instruction.value)
 
 
-def line_source_builder():
-    return line_source.LineSequenceBuilder(LineSequenceSourceFromListOfLines(ListOfLines(['first line'])),
-                                           1,
-                                           'first line')
+def source(instruction_argument: str) -> SingleInstructionParserSource:
+    return SingleInstructionParserSource(
+        line_source.LineSequenceBuilder(LineSequenceSourceFromListOfLines(ListOfLines(['first line'])),
+                                        1,
+                                        'first line'),
+        instruction_argument)
 
 
 def suite():

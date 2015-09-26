@@ -2,9 +2,8 @@ import argparse
 import shlex
 
 from shellcheck_lib.document.model import Instruction
-from shellcheck_lib.general import line_source
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
-    SingleInstructionInvalidArgumentException
+    SingleInstructionInvalidArgumentException, SingleInstructionParserSource
 
 
 class SingleLineParser(SingleInstructionParser):
@@ -12,13 +11,11 @@ class SingleLineParser(SingleInstructionParser):
                  parser: argparse.ArgumentParser):
         self._parser = parser
 
-    def apply(self,
-              source: line_source.LineSequenceBuilder,
-              instruction_argument: str) -> Instruction:
+    def apply(self, source: SingleInstructionParserSource) -> Instruction:
         try:
-            arguments = self._split_argument(instruction_argument)
+            arguments = self._split_argument(source.instruction_argument)
         except Exception:
-            raise SingleInstructionInvalidArgumentException('Invalid arguments: "%s"' % instruction_argument)
+            raise SingleInstructionInvalidArgumentException('Invalid arguments: "%s"' % source.instruction_argument)
 
         original_error_handler = argparse.ArgumentParser.error
 

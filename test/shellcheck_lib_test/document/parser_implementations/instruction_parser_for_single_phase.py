@@ -2,6 +2,8 @@ import unittest
 
 from shellcheck_lib.document.model import ElementType
 from shellcheck_lib.document import parse
+from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
+    SingleInstructionParserSource
 from shellcheck_lib.general import line_source
 from shellcheck_lib.general.line_source import Line
 from shellcheck_lib.document.parser_implementations import instruction_parser_for_single_phase as sut
@@ -193,24 +195,18 @@ class SingleInstructionParserThatRaisesInvalidArgumentError(sut.SingleInstructio
                  error_message: str):
         self.error_message = error_message
 
-    def apply(self,
-              source: line_source.LineSequenceBuilder,
-              instruction_argument: str) -> model.Instruction:
+    def apply(self, source: SingleInstructionParserSource) -> model.Instruction:
         raise sut.SingleInstructionInvalidArgumentException(self.error_message)
 
 
 class SingleInstructionParserThatRaisesImplementationException(sut.SingleInstructionParser):
-    def apply(self,
-              source: line_source.LineSequenceBuilder,
-              instruction_argument: str) -> model.Instruction:
+    def apply(self, source: SingleInstructionParserSource) -> model.Instruction:
         raise NotImplementedError()
 
 
 class SingleInstructionParserThatSucceeds(sut.SingleInstructionParser):
-    def apply(self,
-              source: line_source.LineSequenceBuilder,
-              instruction_argument: str) -> model.Instruction:
-        return Instruction(instruction_argument)
+    def apply(self, source: SingleInstructionParserSource) -> model.Instruction:
+        return Instruction(source.instruction_argument)
 
 
 class SectionElementParserForStandardCommentAndEmptyLines(sut.SectionElementParserForStandardCommentAndEmptyLines):
