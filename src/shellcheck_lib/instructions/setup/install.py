@@ -1,6 +1,5 @@
 import pathlib
 import shlex
-import shutil
 
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
@@ -38,11 +37,7 @@ class _InstallSourceInstruction(SetupPhaseInstruction):
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         src = str(self._src_path(environment))
         dst = '.'
-        try:
-            shutil.copy2(src, dst)
-            return sh.new_sh_success()
-        except OSError as ex:
-            return sh.new_sh_hard_error('Failed to install {}: {}'.format(src, str(ex)))
+        return os_services.copy_preserve_as_much_as_possible(src, dst)
 
     def post_validate(self,
                       global_environment: GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
