@@ -2,7 +2,8 @@ import os
 import unittest
 
 from shellcheck_lib.document.model import Instruction
-from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser
+from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
+    SingleInstructionParserSource
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.general import line_source
 from shellcheck_lib.test_case.instruction.result import sh
@@ -15,7 +16,7 @@ from shellcheck_lib_test.instructions.test_resources import eds_contents_check
 from shellcheck_lib_test.instructions import utils
 
 
-def single_line_source() -> utils.SingleInstructionParserSource:
+def single_line_source() -> SingleInstructionParserSource:
     return utils.new_source('instruction name', 'instruction arguments')
 
 

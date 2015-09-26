@@ -16,6 +16,14 @@ class SingleInstructionInvalidArgumentException(Exception):
         self.error_message = error_message
 
 
+class SingleInstructionParserSource:
+    def __init__(self,
+                 line_sequence: line_source.LineSequenceBuilder,
+                 instruction_argument: str):
+        self.line_sequence = line_sequence
+        self.instruction_argument = instruction_argument
+
+
 class SingleInstructionParser:
     """
     Base class for parsers that parse a single instruction.

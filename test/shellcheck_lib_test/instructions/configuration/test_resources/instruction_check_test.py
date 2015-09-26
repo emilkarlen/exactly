@@ -11,7 +11,8 @@ from shellcheck_lib_test.instructions.configuration.test_resources import instru
 from shellcheck_lib_test.instructions.configuration.test_resources import configuration_check
 from shellcheck_lib_test.instructions import utils
 from shellcheck_lib_test.instructions.test_resources.test_of_test_framework_utils import ParserThatGives
-from shellcheck_lib_test.instructions.utils import SingleInstructionParserSource
+from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
+    SingleInstructionParserSource
 from shellcheck_lib_test.instructions.test_resources import test_of_test_framework_utils as test_misc
 
 
