@@ -9,6 +9,7 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
 from shellcheck_lib.instructions.assert_phase.utils import instruction_utils
 from shellcheck_lib.test_case.instruction.result import pfh
 from shellcheck_lib.test_case.instruction.sections.assert_ import AssertPhaseInstruction
+from shellcheck_lib.test_case.os_services import OsServices
 from .utils import contents_utils
 
 DESCRIPTION = Description(
@@ -61,8 +62,8 @@ class InstructionForFileType(instruction_utils.InstructionWithoutValidationBase)
         self._expected_file_type = expected_file_type
 
     def main(self,
-             global_environment: i.GlobalEnvironmentForPostEdsPhase,
-             phase_environment: i.PhaseEnvironmentForInternalCommands) -> pfh.PassOrFailOrHardError:
+             environment: i.GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices) -> pfh.PassOrFailOrHardError:
         file_path = pathlib.Path(self._file_name_relative_current_directory)
         if not file_path.exists():
             return pfh.new_pfh_fail('File does not exist: ' + self._file_name_relative_current_directory)

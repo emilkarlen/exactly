@@ -9,6 +9,7 @@ from shellcheck_lib.test_case.instruction import common as i
 from shellcheck_lib.test_case.instruction.result import pfh
 from shellcheck_lib.test_case.instruction.result import svh
 from shellcheck_lib.test_case.instruction.sections.assert_ import AssertPhaseInstruction
+from shellcheck_lib.test_case.os_services import OsServices
 
 
 class ComparisonSource:
@@ -200,14 +201,15 @@ class ContentCheckerInstruction(AssertPhaseInstruction):
                 return svh.new_svh_validation_error(error_message)
         return svh.new_svh_success()
 
-    def main(self, global_environment: i.GlobalEnvironmentForPostEdsPhase,
-             phase_environment: i.PhaseEnvironmentForInternalCommands) -> pfh.PassOrFailOrHardError:
-        comparison_file_path = self._comparison_source.file_path(global_environment)
+    def main(self,
+             environment: i.GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices) -> pfh.PassOrFailOrHardError:
+        comparison_file_path = self._comparison_source.file_path(environment)
         error_message = check(comparison_file_path)
         if error_message:
             return pfh.new_pfh_fail(error_message)
 
-        comparison_target_path = self.comparison_target.file_path(global_environment)
+        comparison_target_path = self.comparison_target.file_path(environment)
         if self.comparison_target.do_check_file_properties:
             error_message = check(comparison_target_path)
             if error_message:
@@ -227,15 +229,16 @@ class EmptinessCheckerInstruction(instruction_utils.InstructionWithoutValidation
         self.comparison_target = comparison_target
         self.expect_empty = expect_empty
 
-    def main(self, global_environment: i.GlobalEnvironmentForPostEdsPhase,
-             phase_environment: i.PhaseEnvironmentForInternalCommands) -> pfh.PassOrFailOrHardError:
-        comparison_target_path = self.comparison_target.file_path(global_environment)
+    def main(self,
+             environment: i.GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices) -> pfh.PassOrFailOrHardError:
+        comparison_target_path = self.comparison_target.file_path(environment)
         if self.comparison_target.do_check_file_properties:
             error_message = check(comparison_target_path)
             if error_message:
                 return pfh.new_pfh_fail(error_message)
 
-        size = self.comparison_target.file_path(global_environment).stat().st_size
+        size = self.comparison_target.file_path(environment).stat().st_size
         if self.expect_empty:
             if size != 0:
                 return pfh.new_pfh_fail('File is not empty: Size (in bytes): ' + str(size))

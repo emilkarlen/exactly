@@ -3,8 +3,8 @@ import unittest
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, SingleInstructionParserSource
 from shellcheck_lib.test_case.instruction import common as i
-from shellcheck_lib.test_case.instruction.common import GlobalEnvironmentForPostEdsPhase, \
-    PhaseEnvironmentForInternalCommands
+from shellcheck_lib.test_case.instruction.common import GlobalEnvironmentForPostEdsPhase
+from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.instruction.result import svh
 from shellcheck_lib.test_case.instruction.result import pfh
 from shellcheck_lib.test_case.instruction.sections.assert_ import AssertPhaseInstruction
@@ -87,8 +87,7 @@ def _execute_main(environment: GlobalEnvironmentForPostEdsPhase,
                   instruction: AssertPhaseInstruction,
                   put: unittest.TestCase,
                   setup: Flow) -> pfh.PassOrFailOrHardError:
-    main_result = instruction.main(environment,
-                                   PhaseEnvironmentForInternalCommands())
+    main_result = instruction.main(environment, OsServices())
     put.assertIsNotNone(main_result,
                         'Result from main method cannot be None')
     setup.expected_main_result.apply(put, main_result)

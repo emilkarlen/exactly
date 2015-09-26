@@ -6,6 +6,7 @@ from shellcheck_lib.test_case.instruction import common as i
 from shellcheck_lib.test_case.instruction.result import pfh
 from shellcheck_lib.test_case.instruction.result import svh
 from shellcheck_lib.test_case.instruction.sections.assert_ import AssertPhaseInstruction
+from shellcheck_lib.test_case.os_services import new_default
 from shellcheck_lib_test.instructions import utils
 from shellcheck_lib_test.instructions.utils import SingleInstructionParserSource
 from shellcheck_lib_test.util.file_structure import DirContents
@@ -48,7 +49,7 @@ class AssertInstructionTest:
                             'Validation result status')
             if self.expected_validation_result == svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS:
                 home_and_eds.write_act_result(self._act_result)
-                phase_environment = i.PhaseEnvironmentForInternalCommands()
+                phase_environment = new_default()
                 self._act_dir_contents_after_act.write_to(home_and_eds.eds.act_dir)
                 application_result = instruction.main(global_environment, phase_environment)
                 ptc.assertEqual(self.expected_application_result,

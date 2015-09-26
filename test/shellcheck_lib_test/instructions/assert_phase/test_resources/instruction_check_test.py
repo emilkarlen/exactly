@@ -3,8 +3,8 @@ Test of test-infrastructure: instruction_check.
 """
 import unittest
 
-from shellcheck_lib.test_case.instruction.common import GlobalEnvironmentForPostEdsPhase, \
-    PhaseEnvironmentForInternalCommands
+from shellcheck_lib.test_case.instruction.common import GlobalEnvironmentForPostEdsPhase
+from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.instruction.result import svh
 from shellcheck_lib.test_case.instruction.result import pfh
 from shellcheck_lib.test_case.instruction.sections.assert_ import AssertPhaseInstruction
@@ -66,8 +66,6 @@ class InstructionThatRaisesTestErrorIfCwdIsIsNotTestRoot(AssertPhaseInstruction)
         test_misc.raise_test_error_if_cwd_is_not_test_root(global_environment.eds)
         return svh.new_svh_success()
 
-    def main(self,
-             global_environment: GlobalEnvironmentForPostEdsPhase,
-             phase_environment: PhaseEnvironmentForInternalCommands) -> pfh.PassOrFailOrHardError:
-        test_misc.raise_test_error_if_cwd_is_not_test_root(global_environment.eds)
+    def main(self, environment: GlobalEnvironmentForPostEdsPhase, os_services: OsServices) -> pfh.PassOrFailOrHardError:
+        test_misc.raise_test_error_if_cwd_is_not_test_root(environment.eds)
         return pfh.new_pfh_pass()

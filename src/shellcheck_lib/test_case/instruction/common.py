@@ -3,16 +3,6 @@ import pathlib
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 
 
-class PhaseEnvironmentForInternalCommands:
-    """
-    The phase-environment for phases that are implemented internally
-    - in Python.
-    """
-
-    def __init__(self):
-        pass
-
-
 class GlobalEnvironmentForPreEdsStep:
     def __init__(self,
                  home_dir: pathlib.Path):

@@ -4,6 +4,7 @@ from shellcheck_lib.test_case.instruction import common as i
 from shellcheck_lib.test_case.instruction.result import pfh
 from shellcheck_lib.test_case.instruction.result import svh
 from shellcheck_lib.test_case.instruction.sections.assert_ import AssertPhaseInstruction
+from shellcheck_lib.test_case.os_services import OsServices
 
 
 class InstructionWithoutValidationBase(AssertPhaseInstruction):
@@ -11,8 +12,9 @@ class InstructionWithoutValidationBase(AssertPhaseInstruction):
                  global_environment: i.GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
         return svh.new_svh_success()
 
-    def main(self, global_environment: i.GlobalEnvironmentForPostEdsPhase,
-             phase_environment: i.PhaseEnvironmentForInternalCommands) -> pfh.PassOrFailOrHardError:
+    def main(self,
+             environment: i.GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices) -> pfh.PassOrFailOrHardError:
         raise NotImplementedError()
 
 
@@ -31,8 +33,9 @@ class InstructionWithValidationOfRegularFileRelHomeBase(AssertPhaseInstruction):
             return svh.new_svh_validation_error('Not a regular file: ' + str(self._file_rel_home_path))
         return svh.new_svh_success()
 
-    def main(self, global_environment: i.GlobalEnvironmentForPostEdsPhase,
-             phase_environment: i.PhaseEnvironmentForInternalCommands) -> pfh.PassOrFailOrHardError:
+    def main(self,
+             environment: i.GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices) -> pfh.PassOrFailOrHardError:
         raise NotImplementedError()
 
     @property

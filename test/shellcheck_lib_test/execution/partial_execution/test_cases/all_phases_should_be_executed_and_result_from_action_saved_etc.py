@@ -99,11 +99,11 @@ class InternalInstructionThatCreatesAStandardPhaseFileInTestRootContainingDirect
                  phase: phases.Phase):
         super().__init__(phase)
 
-    def _file_lines(self, global_environment: common.GlobalEnvironmentForPostEdsPhase) -> list:
+    def _file_lines(self, environment: common.GlobalEnvironmentForPostEdsPhase) -> list:
         return py_cmd_file_lines(
             pathlib.Path().resolve(),
-            global_environment.home_directory,
-            global_environment.eds)
+            environment.home_directory,
+            environment.eds)
 
 
 class ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr(ActPhaseInstruction):
