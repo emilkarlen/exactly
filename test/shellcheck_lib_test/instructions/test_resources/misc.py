@@ -58,5 +58,5 @@ class ParserThatGives(SingleInstructionParser):
 
 def raise_test_error_if_cwd_is_not_test_root(eds: ExecutionDirectoryStructure):
     cwd = os.getcwd()
-    if cwd != str(eds.test_root_dir):
+    if cwd != str(eds.act_dir):
         raise TestError()

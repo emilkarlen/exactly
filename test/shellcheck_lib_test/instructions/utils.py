@@ -47,7 +47,7 @@ def act_phase_result(exitcode: int=0,
         write_file(eds.result.std.stdout_file, stdout_contents)
         write_file(eds.result.std.stderr_file, stderr_contents)
         try:
-            os.chdir(str(eds.test_root_dir))
+            os.chdir(str(eds.act_dir))
             yield i.GlobalEnvironmentForPostEdsPhase(home_dir_path,
                                                      eds)
         finally:
@@ -85,7 +85,7 @@ def home_and_eds_and_test_as_curr_dir() -> HomeAndEds:
         with tempfile.TemporaryDirectory(prefix=prefix + "-eds-") as eds_root_dir:
             eds = execution_directory_structure.construct_at(eds_root_dir)
             try:
-                os.chdir(str(eds.test_root_dir))
+                os.chdir(str(eds.act_dir))
                 yield HomeAndEds(home_dir_path,
                                  eds)
             finally:
