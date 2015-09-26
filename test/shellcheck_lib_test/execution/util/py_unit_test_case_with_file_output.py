@@ -9,7 +9,7 @@ from shellcheck_lib_test.execution.util.instruction_adapter import InternalInstr
 
 def standard_phase_file_path_eds(eds: ExecutionDirectoryStructure,
                                  phase: phases.Phase) -> pathlib.Path:
-    return standard_phase_file_path(eds.test_root_dir, phase)
+    return standard_phase_file_path(eds.act_dir, phase)
 
 
 def standard_phase_file_path(test_root_dir: pathlib.Path, phase: phases.Phase) -> pathlib.Path:
@@ -29,7 +29,7 @@ class InternalInstructionThatWritesToStandardPhaseFile(InternalInstruction):
     def execute(self, phase_name: str,
                 global_environment: common.GlobalEnvironmentForPostEdsPhase,
                 phase_environment: common.PhaseEnvironmentForInternalCommands):
-        file_path = standard_phase_file_path(global_environment.eds.test_root_dir, self.__phase)
+        file_path = standard_phase_file_path(global_environment.eds.act_dir, self.__phase)
         with open(str(file_path), 'w') as f:
             contents = os.linesep.join(self._file_lines(global_environment)) + os.linesep
             f.write(contents)

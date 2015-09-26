@@ -164,7 +164,7 @@ def print_to_file__generate_script(code_using_file_opened_for_writing: types.Fun
     :param global_environment: Environment from act instruction
     :param phase_environment: Environment from act instruction
     """
-    file_path = global_environment.eds.test_root_dir / file_name
+    file_path = global_environment.eds.act_dir / file_name
     file_name = str(file_path)
     file_var = '_file_var'
     mas = code_using_file_opened_for_writing(file_var)

@@ -59,7 +59,7 @@ class Test(FullExecutionTestCaseBase):
 
     def _assertions(self):
         self.__assert_test_sanity()
-        for_post_eds = str(self.eds.test_root_dir)
+        for_post_eds = str(self.eds.act_dir)
         expected_recorded_internally = {
             phase_step.SETUP_EXECUTE: for_post_eds,
             phase_step.ACT_VALIDATE: for_post_eds,
@@ -108,7 +108,7 @@ class Test(FullExecutionTestCaseBase):
 
     def __assert_expected_act_script_execution_recorded_variables(self, expected_act_output: str):
         self.assert_is_regular_file_with_contents(
-            self.full_result.execution_directory_structure.test_root_dir / ACT_SCRIPT_OUTPUT_FILE_NAME,
+            self.full_result.execution_directory_structure.act_dir / ACT_SCRIPT_OUTPUT_FILE_NAME,
             expected_act_output,
             'Envronment Variables printed from act/script execution')
 
