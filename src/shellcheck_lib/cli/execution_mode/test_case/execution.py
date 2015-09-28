@@ -81,5 +81,5 @@ class Executor:
                                                  self._settings.preprocessor,
                                                  is_keep_eds,
                                                  self._settings.execution_directory_root_name_prefix)
-        processor = processing.new_processor(configuration)
+        processor = processing.new_processor_that_is_allowed_to_pollute_current_process(configuration)
         return processor.apply(test_case_processing.TestCaseSetup(self._settings.file_path))

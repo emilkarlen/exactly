@@ -1,3 +1,5 @@
+import copy
+import os
 import pathlib
 
 from shellcheck_lib.document import parse as document_parser
@@ -30,9 +32,16 @@ class Configuration:
         self.execution_directory_root_name_prefix = execution_directory_root_name_prefix
 
 
-def new_processor(configuration: Configuration) -> processing.Processor:
-    return processing_utils.ProcessorFromAccessorAndExecutor(new_accessor(configuration),
-                                                             new_executor(configuration))
+def new_processor_that_should_not_pollute_current_process(configuration: Configuration) -> processing.Processor:
+    return processing_utils.ProcessorFromAccessorAndExecutor(
+        new_accessor(configuration),
+        new_executor_that_should_not_pollute_current_processes(configuration))
+
+
+def new_processor_that_is_allowed_to_pollute_current_process(configuration: Configuration) -> processing.Processor:
+    return processing_utils.ProcessorFromAccessorAndExecutor(
+        new_accessor(configuration),
+        new_executor_that_may_pollute_current_processes(configuration))
 
 
 def new_accessor(configuration: Configuration) -> processing.Accessor:
@@ -42,7 +51,13 @@ def new_accessor(configuration: Configuration) -> processing.Accessor:
                                                       configuration.instruction_setup))
 
 
-def new_executor(configuration: Configuration) -> processing_utils.Executor:
+def new_executor_that_should_not_pollute_current_processes(configuration: Configuration) -> processing_utils.Executor:
+    return _ExecutorThatSavesAndRestoresEnvironmentVariables(configuration.script_language_setup,
+                                                             configuration.is_keep_execution_directory_root,
+                                                             configuration.execution_directory_root_name_prefix)
+
+
+def new_executor_that_may_pollute_current_processes(configuration: Configuration) -> processing_utils.Executor:
     return _Executor(configuration.script_language_setup,
                      configuration.is_keep_execution_directory_root,
                      configuration.execution_directory_root_name_prefix)
@@ -99,3 +114,22 @@ class _Executor(processing_utils.Executor):
                                       test_case_file_path.parent,
                                       self._execution_directory_root_name_prefix,
                                       self._is_keep_execution_directory_root)
+
+
+class _ExecutorThatSavesAndRestoresEnvironmentVariables(processing_utils.Executor):
+    def __init__(self,
+                 script_language_setup: ScriptLanguageSetup,
+                 is_keep_execution_directory_root: bool,
+                 execution_directory_root_name_prefix: str='shellcheck-'):
+        self._polluting_executor = _Executor(script_language_setup,
+                                             is_keep_execution_directory_root,
+                                             execution_directory_root_name_prefix)
+
+    def apply(self,
+              test_case_file_path: pathlib.Path,
+              test_case: test_case_doc.TestCase) -> FullResult:
+        variables_before = copy.deepcopy(os.environ)
+        ret_val = self._polluting_executor.apply(test_case_file_path,
+                                                 test_case)
+        os.environ = variables_before
+        return ret_val

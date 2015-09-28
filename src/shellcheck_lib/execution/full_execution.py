@@ -1,4 +1,3 @@
-import copy
 import os
 import pathlib
 
@@ -20,7 +19,7 @@ def execute(script_language_setup: act_script_management.ScriptLanguageSetup,
     """
     The main method for executing a Test Case.
     """
-    saved_environment_variables = _prepare_and_save_environment_variables()
+    _prepare_environment_variables()
     anonymous_phase_environment = ConfigurationBuilder(initial_home_dir_path)
     partial_result = _execute_anonymous_phase(anonymous_phase_environment,
                                               test_case)
@@ -33,7 +32,6 @@ def execute(script_language_setup: act_script_management.ScriptLanguageSetup,
                                                anonymous_phase_environment.home_dir_path,
                                                execution_directory_root_name_prefix,
                                                is_keep_execution_directory_root)
-    os.environ = saved_environment_variables
     return new_named_phases_result_from(anonymous_phase_environment.execution_mode,
                                         partial_result)
 
@@ -67,12 +65,10 @@ def translate_status(execution_mode: ExecutionMode,
     return FullResultStatus(ps.value)
 
 
-def _prepare_and_save_environment_variables() -> dict:
-    before = copy.deepcopy(os.environ)
+def _prepare_environment_variables():
     for ev in environment_variables.ALL_ENV_VARS:
         if ev in os.environ:
             del os.environ[ev]
-    return before
 
 
 def _execute_anonymous_phase(phase_environment: ConfigurationBuilder,
