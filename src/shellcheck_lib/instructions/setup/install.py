@@ -1,6 +1,7 @@
 import pathlib
 import shlex
 
+from shellcheck_lib.default.execution_mode.test_case.instruction_setup import Description, InvokationVariant
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
 from shellcheck_lib.test_case.instruction.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
@@ -8,6 +9,15 @@ from shellcheck_lib.test_case.instruction.result import svh
 from shellcheck_lib.test_case.instruction.result import sh
 from shellcheck_lib.test_case.instruction.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
 from shellcheck_lib.test_case.os_services import OsServices
+
+DESCRIPTION = Description(
+    'Install existing files in the home directory into the current directory.',
+    'As many attributes as possible of the files are preserved (this depends on Python implementation).',
+    [InvokationVariant('FILE',
+                       'A plain file.'),
+     InvokationVariant('DIRECTORY',
+                       "The directory and it's contents are installed."),
+     ])
 
 
 class Parser(SingleInstructionParser):
