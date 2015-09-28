@@ -8,7 +8,7 @@ from shellcheck_lib.test_case.instruction.result import svh
 from shellcheck_lib_test.instructions import utils
 from shellcheck_lib_test.instructions.assert_phase.utils import AssertInstructionTest
 from shellcheck_lib_test.instructions.utils import new_source
-from shellcheck_lib_test.util.file_structure import DirContents, empty_file, empty_dir, File, Link
+from shellcheck_lib_test.util.file_structure import DirContents, empty_file, empty_dir, File
 
 
 class TestParse(unittest.TestCase):
@@ -18,94 +18,6 @@ class TestParse(unittest.TestCase):
                           parser.apply,
                           new_source('instruction-name',
                                      ''))
-
-
-class TestFileTypeAndExistence(unittest.TestCase):
-    def test_fail__when__file_do_not_exist(self):
-        test = AssertInstructionTest(
-            svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
-            pfh.PassOrFailOrHardErrorEnum.FAIL,
-            utils.ActResult())
-        test.apply(self,
-                   file.Parser(),
-                   new_source('instruction-name', 'name-of-non-existing-file'))
-
-    def test_pass__when__file_is_directory(self):
-        file_name = 'name-of-existing-directory'
-        test = AssertInstructionTest(
-            svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
-            pfh.PassOrFailOrHardErrorEnum.PASS,
-            utils.ActResult(),
-            act_dir_contents_after_act=DirContents([empty_dir(file_name)]))
-        test.apply(self,
-                   file.Parser(),
-                   new_source('instruction-name', file_name))
-
-    def test_pass__when__file_exists_and_is_regular_file(self):
-        file_name = 'name-of-existing-file'
-        test = AssertInstructionTest(
-            svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
-            pfh.PassOrFailOrHardErrorEnum.PASS,
-            utils.ActResult(),
-            act_dir_contents_after_act=DirContents([empty_file(file_name)]))
-        test.apply(self,
-                   file.Parser(),
-                   new_source('instruction-name', file_name))
-
-    def test_pass__when__file_type_is_given__directory(self):
-        file_name = 'name-of-existing-directory'
-        test = AssertInstructionTest(
-            svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
-            pfh.PassOrFailOrHardErrorEnum.PASS,
-            utils.ActResult(),
-            act_dir_contents_after_act=DirContents([empty_dir(file_name)]))
-        test.apply(self,
-                   file.Parser(),
-                   new_source('instruction-name', file_name + ' type directory'))
-
-    def test_link_fail__when__file_exists_and_is_regular_file(self):
-        file_name = 'name-of-existing-file'
-        test = AssertInstructionTest(
-            svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
-            pfh.PassOrFailOrHardErrorEnum.FAIL,
-            utils.ActResult(),
-            act_dir_contents_after_act=DirContents([empty_file(file_name)]))
-        test.apply(self,
-                   file.Parser(),
-                   new_source('instruction-name', file_name + ' type symlink'))
-
-    def test_link_fail__when__file_type_is_given__directory(self):
-        file_name = 'name-of-existing-directory'
-        test = AssertInstructionTest(
-            svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
-            pfh.PassOrFailOrHardErrorEnum.FAIL,
-            utils.ActResult(),
-            act_dir_contents_after_act=DirContents([empty_dir(file_name)]))
-        test.apply(self,
-                   file.Parser(),
-                   new_source('instruction-name', file_name + ' type symlink'))
-
-    def test_pass__when__file_type_is_given__link_to_directory(self):
-        test = AssertInstructionTest(
-            svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
-            pfh.PassOrFailOrHardErrorEnum.PASS,
-            utils.ActResult(),
-            act_dir_contents_after_act=DirContents([empty_dir('dir'),
-                                                    Link('link-file', 'dir')]))
-        test.apply(self,
-                   file.Parser(),
-                   new_source('instruction-name', 'link-file type symlink'))
-
-    def test_pass__when__file_type_is_given__link_to_regular_file(self):
-        test = AssertInstructionTest(
-            svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
-            pfh.PassOrFailOrHardErrorEnum.PASS,
-            utils.ActResult(),
-            act_dir_contents_after_act=DirContents([empty_file('file'),
-                                                    Link('link-file', 'file')]))
-        test.apply(self,
-                   file.Parser(),
-                   new_source('instruction-name', 'link-file type symlink'))
 
 
 class TestFileContentsEmptyInvalidSyntax(unittest.TestCase):
@@ -350,7 +262,6 @@ class TestFileContentsFileRelCwd(unittest.TestCase):
 def suite():
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestParse))
-    ret_val.addTest(unittest.makeSuite(TestFileTypeAndExistence))
     ret_val.addTest(unittest.makeSuite(TestFileContentsEmptyInvalidSyntax))
     ret_val.addTest(unittest.makeSuite(TestFileContentsEmptyValidSyntax))
     ret_val.addTest(unittest.makeSuite(TestFileContentsNonEmptyInvalidSyntax))
