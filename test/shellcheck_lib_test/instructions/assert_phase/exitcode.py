@@ -3,15 +3,11 @@ import unittest
 from shellcheck_lib.instructions.assert_phase import exitcode
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from shellcheck_lib.test_case.instruction.result import pfh
-from shellcheck_lib.test_case.instruction.result import svh
 from shellcheck_lib.test_case.instruction.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib_test.instructions import utils
 from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_check import Flow
-from shellcheck_lib_test.instructions.assert_phase.utils import AssertInstructionTest
-from shellcheck_lib_test.instructions.assert_phase.test_resources import instruction_check
-from shellcheck_lib_test.instructions.test_resources import svh_check
 from shellcheck_lib_test.instructions.test_resources import pfh_check
+from shellcheck_lib_test.instructions.assert_phase.test_resources import instruction_check
 from shellcheck_lib_test.instructions.utils import new_source
 
 
@@ -61,44 +57,42 @@ class TestParse(unittest.TestCase):
                               AssertPhaseInstruction)
 
 
-class TestParseAndExecute(unittest.TestCase):
+class TestParseAndExecute(instruction_check.TestCaseBase):
     def test_that__when__actual_value_is_as_expected__then__pass_is_returned(self):
-        test = AssertInstructionTest(
-            svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
-            pfh.PassOrFailOrHardErrorEnum.PASS,
-            utils.ActResult(exitcode=72))
-        test.apply(self,
-                   exitcode.Parser(),
-                   new_source('instruction-name', ' 72'))
+        self._check(
+            Flow(exitcode.Parser(),
+                 act_result=utils.ActResult(exitcode=72),
+                 ),
+            new_source('instruction-name',
+                       ' 72'))
 
     def test_that__when__actual_value_is_as_not_expected__then__fail_is_returned(self):
-        test = AssertInstructionTest(
-            svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
-            pfh.PassOrFailOrHardErrorEnum.FAIL,
-            utils.ActResult(exitcode=0))
-        test.apply(self,
-                   exitcode.Parser(),
-                   new_source('instruction-name', ' 72'))
+        self._check(
+            Flow(exitcode.Parser(),
+                 act_result=utils.ActResult(exitcode=0),
+                 expected_main_result=pfh_check.is_fail()
+                 ),
+            new_source('instruction-name',
+                       '72'))
 
 
-class TestParseAndExecuteTwoArgumentsEq(unittest.TestCase):
+class TestParseAndExecuteTwoArgumentsEq(instruction_check.TestCaseBase):
     def test_pass(self):
-        test = AssertInstructionTest(
-            svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
-            pfh.PassOrFailOrHardErrorEnum.PASS,
-            utils.ActResult(exitcode=72))
-        test.apply(self,
-                   exitcode.Parser(),
-                   new_source('instruction-name', ' = 72'))
+        self._check(
+            Flow(exitcode.Parser(),
+                 act_result=utils.ActResult(exitcode=72),
+                 ),
+            new_source('instruction-name',
+                       ' = 72'))
 
     def test_fail(self):
-        test = AssertInstructionTest(
-            svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
-            pfh.PassOrFailOrHardErrorEnum.FAIL,
-            utils.ActResult(exitcode=0))
-        test.apply(self,
-                   exitcode.Parser(),
-                   new_source('instruction-name', ' = 72'))
+        self._check(
+            Flow(exitcode.Parser(),
+                 act_result=utils.ActResult(exitcode=0),
+                 expected_main_result=pfh_check.is_fail()
+                 ),
+            new_source('instruction-name',
+                       ' = 72'))
 
 
 class TestParseAndExecuteTwoArgumentsNe(instruction_check.TestCaseBase):
@@ -106,133 +100,126 @@ class TestParseAndExecuteTwoArgumentsNe(instruction_check.TestCaseBase):
         self._check(
             Flow(exitcode.Parser(),
                  act_result=utils.ActResult(exitcode=72),
-                 expected_validation_result=svh_check.is_success(),
-                 expected_main_result=pfh_check.is_pass()),
+                 ),
             new_source('instruction-name', ' ! 73'))
 
     def test_fail(self):
         self._check(
             Flow(exitcode.Parser(),
                  act_result=utils.ActResult(exitcode=72),
-                 expected_validation_result=svh_check.is_success(),
                  expected_main_result=pfh_check.is_fail()),
-            new_source('instruction-name', ' ! 72'))
+            new_source('instruction-name',
+                       ' ! 72'))
 
 
-class TestParseAndExecuteTwoArgumentsLt(unittest.TestCase):
+class TestParseAndExecuteTwoArgumentsLt(instruction_check.TestCaseBase):
     def test_pass(self):
-        test = AssertInstructionTest(
-            svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
-            pfh.PassOrFailOrHardErrorEnum.PASS,
-            utils.ActResult(exitcode=72))
-        test.apply(self,
-                   exitcode.Parser(),
-                   new_source('instruction-name', ' < 73'))
+        self._check(
+            Flow(exitcode.Parser(),
+                 act_result=utils.ActResult(exitcode=72),
+                 ),
+            new_source('instruction-name',
+                       ' < 87'))
 
     def test_fail_equal(self):
-        test = AssertInstructionTest(
-            svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
-            pfh.PassOrFailOrHardErrorEnum.FAIL,
-            utils.ActResult(exitcode=72))
-        test.apply(self,
-                   exitcode.Parser(),
-                   new_source('instruction-name', ' < 72'))
+        self._check(
+            Flow(exitcode.Parser(),
+                 act_result=utils.ActResult(exitcode=72),
+                 expected_main_result=pfh_check.is_fail()
+                 ),
+            new_source('instruction-name',
+                       ' < 72'))
 
     def test_fail_unequal(self):
-        test = AssertInstructionTest(
-            svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
-            pfh.PassOrFailOrHardErrorEnum.FAIL,
-            utils.ActResult(exitcode=72))
-        test.apply(self,
-                   exitcode.Parser(),
-                   new_source('instruction-name', ' < 28'))
+        self._check(
+            Flow(exitcode.Parser(),
+                 act_result=utils.ActResult(exitcode=72),
+                 expected_main_result=pfh_check.is_fail()
+                 ),
+            new_source('instruction-name',
+                       ' < 28'))
 
 
-class TestParseAndExecuteTwoArgumentsLe(unittest.TestCase):
+class TestParseAndExecuteTwoArgumentsLe(instruction_check.TestCaseBase):
     def test_pass(self):
-        test = AssertInstructionTest(
-            svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
-            pfh.PassOrFailOrHardErrorEnum.PASS,
-            utils.ActResult(exitcode=72))
-        test.apply(self,
-                   exitcode.Parser(),
-                   new_source('instruction-name', ' <= 73'))
+        self._check(
+            Flow(exitcode.Parser(),
+                 act_result=utils.ActResult(exitcode=72),
+                 ),
+            new_source('instruction-name',
+                       ' <= 87'))
 
     def test_pass_equal(self):
-        test = AssertInstructionTest(
-            svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
-            pfh.PassOrFailOrHardErrorEnum.PASS,
-            utils.ActResult(exitcode=72))
-        test.apply(self,
-                   exitcode.Parser(),
-                   new_source('instruction-name', ' <= 72'))
+        self._check(
+            Flow(exitcode.Parser(),
+                 act_result=utils.ActResult(exitcode=72),
+                 ),
+            new_source('instruction-name',
+                       ' <= 72'))
 
     def test_fail_unequal(self):
-        test = AssertInstructionTest(
-            svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
-            pfh.PassOrFailOrHardErrorEnum.FAIL,
-            utils.ActResult(exitcode=72))
-        test.apply(self,
-                   exitcode.Parser(),
-                   new_source('instruction-name', ' <= 28'))
+        self._check(
+            Flow(exitcode.Parser(),
+                 act_result=utils.ActResult(exitcode=72),
+                 expected_main_result=pfh_check.is_fail()
+                 ),
+            new_source('instruction-name',
+                       ' <= 28'))
 
 
-class TestParseAndExecuteTwoArgumentsGt(unittest.TestCase):
+class TestParseAndExecuteTwoArgumentsGt(instruction_check.TestCaseBase):
     def test_pass(self):
-        test = AssertInstructionTest(
-            svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
-            pfh.PassOrFailOrHardErrorEnum.PASS,
-            utils.ActResult(exitcode=72))
-        test.apply(self,
-                   exitcode.Parser(),
-                   new_source('instruction-name', ' > 28'))
+        self._check(
+            Flow(exitcode.Parser(),
+                 act_result=utils.ActResult(exitcode=72),
+                 ),
+            new_source('instruction-name',
+                       ' > 28'))
 
     def test_fail_equal(self):
-        test = AssertInstructionTest(
-            svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
-            pfh.PassOrFailOrHardErrorEnum.FAIL,
-            utils.ActResult(exitcode=72))
-        test.apply(self,
-                   exitcode.Parser(),
-                   new_source('instruction-name', ' > 72'))
+        self._check(
+            Flow(exitcode.Parser(),
+                 act_result=utils.ActResult(exitcode=72),
+                 expected_main_result=pfh_check.is_fail()
+                 ),
+            new_source('instruction-name',
+                       ' > 72'))
 
     def test_fail_unequal(self):
-        test = AssertInstructionTest(
-            svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
-            pfh.PassOrFailOrHardErrorEnum.FAIL,
-            utils.ActResult(exitcode=72))
-        test.apply(self,
-                   exitcode.Parser(),
-                   new_source('instruction-name', ' > 87'))
+        self._check(
+            Flow(exitcode.Parser(),
+                 act_result=utils.ActResult(exitcode=72),
+                 expected_main_result=pfh_check.is_fail()
+                 ),
+            new_source('instruction-name',
+                       ' > 87'))
 
 
-class TestParseAndExecuteTwoArgumentsGe(unittest.TestCase):
+class TestParseAndExecuteTwoArgumentsGe(instruction_check.TestCaseBase):
     def test_pass(self):
-        test = AssertInstructionTest(
-            svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
-            pfh.PassOrFailOrHardErrorEnum.PASS,
-            utils.ActResult(exitcode=72))
-        test.apply(self,
-                   exitcode.Parser(),
-                   new_source('instruction-name', ' >= 28'))
+        self._check(
+            Flow(exitcode.Parser(),
+                 act_result=utils.ActResult(exitcode=72),
+                 ),
+            new_source('instruction-name',
+                       ' >= 28'))
 
     def test_pass_equal(self):
-        test = AssertInstructionTest(
-            svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
-            pfh.PassOrFailOrHardErrorEnum.PASS,
-            utils.ActResult(exitcode=72))
-        test.apply(self,
-                   exitcode.Parser(),
-                   new_source('instruction-name', ' >= 72'))
+        self._check(
+            Flow(exitcode.Parser(),
+                 act_result=utils.ActResult(exitcode=72),
+                 ),
+            new_source('instruction-name',
+                       ' >= 72'))
 
     def test_fail_unequal(self):
-        test = AssertInstructionTest(
-            svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
-            pfh.PassOrFailOrHardErrorEnum.FAIL,
-            utils.ActResult(exitcode=72))
-        test.apply(self,
-                   exitcode.Parser(),
-                   new_source('instruction-name', ' >= 87'))
+        self._check(
+            Flow(exitcode.Parser(),
+                 act_result=utils.ActResult(exitcode=72),
+                 expected_main_result=pfh_check.is_fail()
+                 ),
+            new_source('instruction-name',
+                       ' >= 87'))
 
 
 def suite():
