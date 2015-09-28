@@ -1,11 +1,13 @@
 import unittest
 
 from shellcheck_lib_test.instructions.cleanup import test_resources
+from . import shell
 
 
 def suite():
     ret_val = unittest.TestSuite()
     ret_val.addTest(test_resources.suite())
+    ret_val.addTest(shell.suite())
     return ret_val
 
 
