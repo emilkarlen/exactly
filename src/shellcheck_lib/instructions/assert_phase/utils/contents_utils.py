@@ -274,10 +274,9 @@ def try_parse_content(comparison_target: ComparisonTarget, arguments: list) -> A
             raise SingleInstructionInvalidArgumentException('Invalid argument: ' + extra_arguments[0])
         return ContentCheckerInstruction(comparison_source, target)
 
-    if arguments[0] == 'contents':
-        return _parse_contents(comparison_target, arguments[1:])
-    elif arguments[0] == 'empty':
+    if arguments[0] == 'empty':
         return _parse_empty(comparison_target, arguments[1:])
     elif arguments[:2] == ['!', 'empty']:
         return _parse_non_empty(comparison_target, arguments[2:])
-    return None
+    else:
+        return _parse_contents(comparison_target, arguments)

@@ -10,7 +10,7 @@ from shellcheck_lib.instructions.setup import shell as setup_shell
 from shellcheck_lib.instructions.cleanup import shell as cleanup_shell
 from shellcheck_lib.instructions.assert_phase import shell as assert_shell
 from shellcheck_lib.instructions.assert_phase import exitcode as exitcode_instruction
-from shellcheck_lib.instructions.assert_phase import file as file_instruction
+from shellcheck_lib.instructions.assert_phase import contents as contents_instruction
 from shellcheck_lib.instructions.assert_phase import type
 from shellcheck_lib.instructions.assert_phase import stdout_stderr as stdout_stderr_instruction
 
@@ -36,10 +36,10 @@ instructions_setup = InstructionsSetup(
             SingleInstructionSetup(
                 exitcode_instruction.Parser(),
                 exitcode_instruction.DESCRIPTION),
-        'file':
+        'contents':
             SingleInstructionSetup(
-                file_instruction.Parser(),
-                file_instruction.DESCRIPTION),
+                contents_instruction.Parser(),
+                contents_instruction.DESCRIPTION),
         'shell':
             SingleInstructionSetup(
                 assert_shell.Parser(),

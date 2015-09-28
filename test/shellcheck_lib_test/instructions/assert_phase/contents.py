@@ -1,6 +1,6 @@
 import unittest
 
-from shellcheck_lib.instructions.assert_phase import file
+from shellcheck_lib.instructions.assert_phase import contents as sut
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from shellcheck_lib.test_case.instruction.result import pfh
@@ -13,7 +13,7 @@ from shellcheck_lib_test.util.file_structure import DirContents, empty_file, emp
 
 class TestParse(unittest.TestCase):
     def test_that_when_no_arguments_then_exception_is_raised(self):
-        parser = file.Parser()
+        parser = sut.Parser()
         self.assertRaises(SingleInstructionInvalidArgumentException,
                           parser.apply,
                           new_source('instruction-name',
@@ -23,7 +23,7 @@ class TestParse(unittest.TestCase):
 class TestFileContentsEmptyInvalidSyntax(unittest.TestCase):
     def test_that_when_no_arguments_then_exception_is_raised(self):
         arguments = 'file-name empty superfluous-argument'
-        parser = file.Parser()
+        parser = sut.Parser()
         self.assertRaises(SingleInstructionInvalidArgumentException,
                           parser.apply,
                           new_source('instruction-name',
@@ -37,7 +37,7 @@ class TestFileContentsEmptyValidSyntax(unittest.TestCase):
             pfh.PassOrFailOrHardErrorEnum.FAIL,
             utils.ActResult())
         test.apply(self,
-                   file.Parser(),
+                   sut.Parser(),
                    new_source('instruction-name', 'name-of-non-existing-file empty'))
 
     def test_fail__when__file_is_directory(self):
@@ -48,7 +48,7 @@ class TestFileContentsEmptyValidSyntax(unittest.TestCase):
             utils.ActResult(),
             act_dir_contents_after_act=DirContents([empty_dir(file_name)]))
         test.apply(self,
-                   file.Parser(),
+                   sut.Parser(),
                    new_source('instruction-name', file_name + ' empty'))
 
     def test_fail__when__file_exists_but_is_non_empty(self):
@@ -59,7 +59,7 @@ class TestFileContentsEmptyValidSyntax(unittest.TestCase):
             utils.ActResult(),
             act_dir_contents_after_act=DirContents([File(file_name, 'contents')]))
         test.apply(self,
-                   file.Parser(),
+                   sut.Parser(),
                    new_source('instruction-name', file_name + ' empty'))
 
     def test_pass__when__file_exists_and_is_empty(self):
@@ -70,14 +70,14 @@ class TestFileContentsEmptyValidSyntax(unittest.TestCase):
             utils.ActResult(),
             act_dir_contents_after_act=DirContents([empty_file(file_name)]))
         test.apply(self,
-                   file.Parser(),
+                   sut.Parser(),
                    new_source('instruction-name', file_name + ' empty'))
 
 
 class TestFileContentsNonEmptyInvalidSyntax(unittest.TestCase):
     def test_that_when_no_arguments_then_exception_is_raised(self):
         arguments = 'file-name ! empty superfluous-argument'
-        parser = file.Parser()
+        parser = sut.Parser()
         self.assertRaises(SingleInstructionInvalidArgumentException,
                           parser.apply,
                           new_source('instruction-name',
@@ -91,7 +91,7 @@ class TestFileContentsNonEmptyValidSyntax(unittest.TestCase):
             pfh.PassOrFailOrHardErrorEnum.FAIL,
             utils.ActResult())
         test.apply(self,
-                   file.Parser(),
+                   sut.Parser(),
                    new_source('instruction-name', 'name-of-non-existing-file ! empty'))
 
     def test_fail__when__file_is_directory(self):
@@ -102,7 +102,7 @@ class TestFileContentsNonEmptyValidSyntax(unittest.TestCase):
             utils.ActResult(),
             act_dir_contents_after_act=DirContents([empty_dir(file_name)]))
         test.apply(self,
-                   file.Parser(),
+                   sut.Parser(),
                    new_source('instruction-name', file_name + ' ! empty'))
 
     def test_fail__when__file_exists_but_is_empty(self):
@@ -113,7 +113,7 @@ class TestFileContentsNonEmptyValidSyntax(unittest.TestCase):
             utils.ActResult(),
             act_dir_contents_after_act=DirContents([empty_file(file_name)]))
         test.apply(self,
-                   file.Parser(),
+                   sut.Parser(),
                    new_source('instruction-name', file_name + ' ! empty'))
 
     def test_pass__when__file_exists_and_is_non_empty(self):
@@ -124,7 +124,7 @@ class TestFileContentsNonEmptyValidSyntax(unittest.TestCase):
             utils.ActResult(),
             act_dir_contents_after_act=DirContents([File(file_name, 'contents')]))
         test.apply(self,
-                   file.Parser(),
+                   sut.Parser(),
                    new_source('instruction-name', file_name + ' ! empty'))
 
 
@@ -136,8 +136,8 @@ class TestFileContentsFileRelHome(unittest.TestCase):
             utils.ActResult(),
             home_dir_contents=DirContents([empty_file('f')]))
         test.apply(self,
-                   file.Parser(),
-                   new_source('instruction-name', 'name-of-non-existing-file contents --rel-home f.txt'))
+                   sut.Parser(),
+                   new_source('instruction-name', 'name-of-non-existing-file --rel-home f.txt'))
 
     def test_validation_error__when__comparison_file_is_a_directory(self):
         test = AssertInstructionTest(
@@ -146,8 +146,8 @@ class TestFileContentsFileRelHome(unittest.TestCase):
             utils.ActResult(),
             home_dir_contents=DirContents([empty_dir('dir')]))
         test.apply(self,
-                   file.Parser(),
-                   new_source('instruction-name', 'name-of-non-existing-file contents --rel-home dir'))
+                   sut.Parser(),
+                   new_source('instruction-name', 'name-of-non-existing-file --rel-home dir'))
 
     def test_fail__when__target_file_does_not_exist(self):
         test = AssertInstructionTest(
@@ -156,8 +156,8 @@ class TestFileContentsFileRelHome(unittest.TestCase):
             utils.ActResult(),
             home_dir_contents=DirContents([empty_file('f.txt')]))
         test.apply(self,
-                   file.Parser(),
-                   new_source('instruction-name', 'name-of-non-existing-file contents --rel-home f.txt'))
+                   sut.Parser(),
+                   new_source('instruction-name', 'name-of-non-existing-file --rel-home f.txt'))
 
     def test_fail__when__target_file_is_a_directory(self):
         test = AssertInstructionTest(
@@ -167,8 +167,8 @@ class TestFileContentsFileRelHome(unittest.TestCase):
             home_dir_contents=DirContents([empty_file('f.txt')]),
             act_dir_contents_after_act=DirContents([empty_dir('dir')]))
         test.apply(self,
-                   file.Parser(),
-                   new_source('instruction-name', 'dir contents --rel-home f.txt'))
+                   sut.Parser(),
+                   new_source('instruction-name', 'dir --rel-home f.txt'))
 
     def test_fail__when__contents_differ(self):
         test = AssertInstructionTest(
@@ -178,8 +178,8 @@ class TestFileContentsFileRelHome(unittest.TestCase):
             home_dir_contents=DirContents([empty_file('f.txt')]),
             act_dir_contents_after_act=DirContents([File('target.txt', 'non-empty')]))
         test.apply(self,
-                   file.Parser(),
-                   new_source('instruction-name', 'target.txt contents --rel-home f.txt'))
+                   sut.Parser(),
+                   new_source('instruction-name', 'target.txt --rel-home f.txt'))
 
     def test_pass__when__contents_equals(self):
         test = AssertInstructionTest(
@@ -189,8 +189,8 @@ class TestFileContentsFileRelHome(unittest.TestCase):
             home_dir_contents=DirContents([File('f.txt', 'contents')]),
             act_dir_contents_after_act=DirContents([File('target.txt', 'contents')]))
         test.apply(self,
-                   file.Parser(),
-                   new_source('instruction-name', 'target.txt contents --rel-home f.txt'))
+                   sut.Parser(),
+                   new_source('instruction-name', 'target.txt --rel-home f.txt'))
 
 
 class TestFileContentsFileRelCwd(unittest.TestCase):
@@ -201,8 +201,8 @@ class TestFileContentsFileRelCwd(unittest.TestCase):
             utils.ActResult(),
             act_dir_contents_after_act=DirContents([empty_file('target')]))
         test.apply(self,
-                   file.Parser(),
-                   new_source('instruction-name', 'target contents --rel-cwd comparison'))
+                   sut.Parser(),
+                   new_source('instruction-name', 'target --rel-cwd comparison'))
 
     def test_fail__when__target_file_does_not_exist(self):
         test = AssertInstructionTest(
@@ -211,8 +211,8 @@ class TestFileContentsFileRelCwd(unittest.TestCase):
             utils.ActResult(),
             act_dir_contents_after_act=DirContents([empty_file('comparison')]))
         test.apply(self,
-                   file.Parser(),
-                   new_source('instruction-name', 'target contents --rel-cwd comparison'))
+                   sut.Parser(),
+                   new_source('instruction-name', 'target --rel-cwd comparison'))
 
     def test_validation_error__when__comparison_file_is_a_directory(self):
         test = AssertInstructionTest(
@@ -222,8 +222,8 @@ class TestFileContentsFileRelCwd(unittest.TestCase):
             act_dir_contents_after_act=DirContents([empty_file('target'),
                                                     empty_dir('comparison')]))
         test.apply(self,
-                   file.Parser(),
-                   new_source('instruction-name', 'target contents --rel-cwd comparison'))
+                   sut.Parser(),
+                   new_source('instruction-name', 'target --rel-cwd comparison'))
 
     def test_validation_error__when__target_file_is_a_directory(self):
         test = AssertInstructionTest(
@@ -233,8 +233,8 @@ class TestFileContentsFileRelCwd(unittest.TestCase):
             act_dir_contents_after_act=DirContents([empty_dir('target'),
                                                     empty_file('comparison')]))
         test.apply(self,
-                   file.Parser(),
-                   new_source('instruction-name', 'target contents --rel-cwd comparison'))
+                   sut.Parser(),
+                   new_source('instruction-name', 'target --rel-cwd comparison'))
 
     def test_fail__when__contents_is_different(self):
         test = AssertInstructionTest(
@@ -244,8 +244,8 @@ class TestFileContentsFileRelCwd(unittest.TestCase):
             act_dir_contents_after_act=DirContents([File('target', 'target-contents'),
                                                     File('comparison', 'cmp-contents')]))
         test.apply(self,
-                   file.Parser(),
-                   new_source('instruction-name', 'target contents --rel-cwd comparison'))
+                   sut.Parser(),
+                   new_source('instruction-name', 'target --rel-cwd comparison'))
 
     def test_pass__when__contents_is_equal(self):
         test = AssertInstructionTest(
@@ -255,8 +255,8 @@ class TestFileContentsFileRelCwd(unittest.TestCase):
             act_dir_contents_after_act=DirContents([File('target', 'contents'),
                                                     File('comparison', 'contents')]))
         test.apply(self,
-                   file.Parser(),
-                   new_source('instruction-name', 'target contents --rel-cwd comparison'))
+                   sut.Parser(),
+                   new_source('instruction-name', 'target --rel-cwd comparison'))
 
 
 def suite():
