@@ -93,7 +93,7 @@ class _Executor(processing_utils.Executor):
 
     def apply(self,
               test_case_file_path: pathlib.Path,
-              test_case: processing.TestCaseSetup) -> FullResult:
+              test_case: test_case_doc.TestCase) -> FullResult:
         return full_execution.execute(self._script_language_setup,
                                       test_case,
                                       test_case_file_path.parent,
