@@ -47,7 +47,7 @@ class MainProgram(main_program.MainProgram):
                                                          default_configuration.preprocessor)),
                                                  suite_reporting.ReporterFactory(),
                                                  enumeration.DepthFirstEnumerator(),
-                                                 case_processing.new_processor,
+                                                 case_processing.new_processor_that_should_not_pollute_current_process,
                                                  settings.suite_root_file_path)
         return executor.execute()
 
