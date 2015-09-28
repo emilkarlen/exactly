@@ -4,6 +4,7 @@ Main program for shellcheck
 
 from shellcheck_lib.default.execution_mode.test_case.instruction_setup import InstructionsSetup, \
     SingleInstructionSetup
+from shellcheck_lib.instructions.configuration import home
 from shellcheck_lib.instructions.setup import install
 from shellcheck_lib.instructions.setup import shell as setup_shell
 from shellcheck_lib.instructions.cleanup import shell as cleanup_shell
@@ -13,7 +14,12 @@ from shellcheck_lib.instructions.assert_phase import file as file_instruction
 from shellcheck_lib.instructions.assert_phase import stdout_stderr as stdout_stderr_instruction
 
 instructions_setup = InstructionsSetup(
-    {},
+    {
+        'home':
+            SingleInstructionSetup(
+                home.Parser(),
+                home.DESCRIPTION),
+    },
     {
         'install':
             SingleInstructionSetup(
