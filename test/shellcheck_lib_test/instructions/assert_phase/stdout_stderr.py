@@ -171,7 +171,7 @@ class FileContentsFileRelHome(TestWithParserBase):
             utils.ActResult())
         test.apply(self,
                    self.new_parser(),
-                   new_source('instruction-name', 'contents --rel-home f.txt'))
+                   new_source('instruction-name', '--rel-home f.txt'))
 
     def validation_error__when__comparison_file_is_a_directory(self):
         test = AssertInstructionTest(
@@ -181,7 +181,7 @@ class FileContentsFileRelHome(TestWithParserBase):
             home_dir_contents=DirContents([empty_dir('dir')]))
         test.apply(self,
                    self.new_parser(),
-                   new_source('instruction-name', 'contents --rel-home dir'))
+                   new_source('instruction-name', '--rel-home dir'))
 
     def fail__when__contents_differ(self,
                                     act_result: utils.ActResult,
@@ -193,7 +193,7 @@ class FileContentsFileRelHome(TestWithParserBase):
             home_dir_contents=DirContents([File('f.txt', expected_contents)]))
         test.apply(self,
                    self.new_parser(),
-                   new_source('instruction-name', 'contents --rel-home f.txt'))
+                   new_source('instruction-name', '--rel-home f.txt'))
 
     def pass__when__contents_equals(self,
                                     act_result: utils.ActResult,
@@ -205,7 +205,7 @@ class FileContentsFileRelHome(TestWithParserBase):
             home_dir_contents=DirContents([File('f.txt', expected_contents)]))
         test.apply(self,
                    self.new_parser(),
-                   new_source('instruction-name', 'contents --rel-home f.txt'))
+                   new_source('instruction-name', '--rel-home f.txt'))
 
 
 class TestFileContentsFileRelHomeFORStdout(FileContentsFileRelHome):
@@ -258,7 +258,7 @@ class FileContentsFileRelCwd(TestWithParserBase):
             utils.ActResult())
         test.apply(self,
                    self.new_parser(),
-                   new_source('instruction-name', 'contents --rel-cwd f.txt'))
+                   new_source('instruction-name', '--rel-cwd f.txt'))
 
     def fail__when__comparison_file_is_a_directory(self):
         test = AssertInstructionTest(
@@ -268,7 +268,7 @@ class FileContentsFileRelCwd(TestWithParserBase):
             act_dir_contents_after_act=DirContents([empty_dir('dir')]))
         test.apply(self,
                    self.new_parser(),
-                   new_source('instruction-name', 'contents --rel-cwd dir'))
+                   new_source('instruction-name', '--rel-cwd dir'))
 
     def fail__when__contents_differ(self,
                                     act_result: utils.ActResult,
@@ -280,7 +280,7 @@ class FileContentsFileRelCwd(TestWithParserBase):
             act_dir_contents_after_act=DirContents([File('f.txt', expected_contents)]))
         test.apply(self,
                    self.new_parser(),
-                   new_source('instruction-name', 'contents --rel-cwd f.txt'))
+                   new_source('instruction-name', '--rel-cwd f.txt'))
 
     def pass__when__contents_equals(self,
                                     act_result: utils.ActResult,
@@ -292,7 +292,7 @@ class FileContentsFileRelCwd(TestWithParserBase):
             act_dir_contents_after_act=DirContents([File('f.txt', expected_contents)]))
         test.apply(self,
                    self.new_parser(),
-                   new_source('instruction-name', 'contents --rel-cwd f.txt'))
+                   new_source('instruction-name', '--rel-cwd f.txt'))
 
 
 class TestFileContentsFileRelCwdFORStdout(FileContentsFileRelCwd):
