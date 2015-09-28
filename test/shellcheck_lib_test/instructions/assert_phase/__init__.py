@@ -1,9 +1,10 @@
 import unittest
 
 from shellcheck_lib_test.instructions.assert_phase import test_resources
-from shellcheck_lib_test.instructions.assert_phase import exitcode
-from shellcheck_lib_test.instructions.assert_phase import file
-from shellcheck_lib_test.instructions.assert_phase import stdout_stderr
+from . import exitcode
+from . import file
+from . import stdout_stderr
+from . import type
 
 
 def suite():
@@ -12,6 +13,7 @@ def suite():
     ret_val.addTest(exitcode.suite())
     ret_val.addTest(file.suite())
     ret_val.addTest(stdout_stderr.suite())
+    ret_val.addTest(type.suite())
     return ret_val
 
 

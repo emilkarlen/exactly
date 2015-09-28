@@ -5,7 +5,6 @@ import unittest
 
 from shellcheck_lib.test_case.instruction.common import GlobalEnvironmentForPostEdsPhase
 from shellcheck_lib.test_case.os_services import OsServices
-from shellcheck_lib.test_case.instruction.result import pfh
 from shellcheck_lib.test_case.instruction.result import sh
 from shellcheck_lib.test_case.instruction.sections.cleanup import CleanupPhaseInstruction
 from shellcheck_lib_test.execution.full_execution.util.instruction_test_resources import \
@@ -54,6 +53,6 @@ SUCCESSFUL_INSTRUCTION = CleanupPhaseInstructionThatReturns(sh.new_sh_success())
 
 
 class InstructionThatRaisesTestErrorIfCwdIsIsNotTestRoot(CleanupPhaseInstruction):
-    def main(self, environment: GlobalEnvironmentForPostEdsPhase, os_services: OsServices) -> pfh.PassOrFailOrHardError:
+    def main(self, environment: GlobalEnvironmentForPostEdsPhase, os_services: OsServices) -> sh.SuccessOrHardError:
         test_misc.raise_test_error_if_cwd_is_not_test_root(environment.eds)
-        return pfh.new_pfh_pass()
+        return sh.new_sh_success()

@@ -22,8 +22,8 @@ class Flow:
                  home_dir_contents: file_structure.DirContents=file_structure.DirContents([]),
                  eds_contents_before_main: eds_populator.EdsPopulator=eds_populator.Empty(),
                  act_result: utils.ActResult=utils.ActResult(),
-                 expected_validation_result: svh_check.Assertion=svh_check.AnythingGoes(),
-                 expected_main_result: pfh_check.Assertion=pfh_check.AnythingGoes(),
+                 expected_validation_result: svh_check.Assertion=svh_check.is_success(),
+                 expected_main_result: pfh_check.Assertion=pfh_check.is_pass(),
                  expected_main_side_effects_on_files: eds_contents_check.Assertion=eds_contents_check.AnythingGoes(),
                  ):
         self.parser = parser

@@ -18,7 +18,7 @@ class Flow:
                  parser: SingleInstructionParser,
                  home_dir_contents: file_structure.DirContents=file_structure.DirContents([]),
                  initial_configuration_builder: ConfigurationBuilder=ConfigurationBuilder(pathlib.Path('.')),
-                 expected_main_result: sh_check.Assertion=sh_check.AnythingGoes(),
+                 expected_main_result: sh_check.Assertion=sh_check.IsSuccess(),
                  expected_configuration: config_check.Assertion=config_check.AnythingGoes(),
                  ):
         self.parser = parser

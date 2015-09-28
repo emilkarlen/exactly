@@ -1,9 +1,9 @@
 import unittest
 
 from shellcheck_lib_test.instructions import assert_phase
-from shellcheck_lib_test.instructions import setup
-from shellcheck_lib_test.instructions import cleanup
-from shellcheck_lib_test.instructions import configuration
+from . import setup
+from . import cleanup
+from . import configuration
 
 
 def suite():
