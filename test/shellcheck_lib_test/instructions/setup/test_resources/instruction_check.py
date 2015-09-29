@@ -13,7 +13,7 @@ from shellcheck_lib.test_case.instruction.common import GlobalEnvironmentForPreE
 from shellcheck_lib.test_case.instruction.result import svh
 from shellcheck_lib.test_case.instruction.result import sh
 from shellcheck_lib.test_case.instruction.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
-from shellcheck_lib.test_case.os_services import new_default
+from shellcheck_lib.test_case.os_services import new_default, OsServices
 from shellcheck_lib_test.util import file_structure
 from shellcheck_lib_test.instructions.test_resources import svh_check
 from shellcheck_lib_test.instructions.test_resources import sh_check
@@ -26,6 +26,7 @@ class Flow:
     def __init__(self,
                  parser: SingleInstructionParser,
                  home_dir_contents: file_structure.DirContents=file_structure.DirContents([]),
+                 os_services: OsServices=new_default(),
                  expected_pre_validation_result: svh_check.Assertion=svh_check.is_success(),
                  eds_contents_before_main: eds_populator.EdsPopulator=eds_populator.Empty(),
                  initial_settings_builder: SetupSettingsBuilder=SetupSettingsBuilder(),
@@ -36,6 +37,7 @@ class Flow:
                  ):
         self.parser = parser
         self.home_dir_contents = home_dir_contents
+        self.os_services = os_services
         self.expected_pre_validation_result = expected_pre_validation_result
         self.eds_contents_before_main = eds_contents_before_main
         self.initial_settings_builder = initial_settings_builder
@@ -100,11 +102,12 @@ def _execute_pre_validate(home_dir_path,
 
 def _execute_main(eds, global_environment_with_eds,
                   instruction: SetupPhaseInstruction,
-                  put, setup) -> sh.SuccessOrHardError:
+                  put,
+                  setup: Flow) -> sh.SuccessOrHardError:
     setup.eds_contents_before_main.apply(eds)
     settings_builder = setup.initial_settings_builder
     initial_settings_builder = copy.deepcopy(settings_builder)
-    main_result = instruction.main(new_default(),
+    main_result = instruction.main(setup.os_services,
                                    global_environment_with_eds,
                                    settings_builder)
     put.assertIsInstance(main_result,
