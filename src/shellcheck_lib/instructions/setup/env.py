@@ -22,7 +22,7 @@ DESCRIPTION = Description(
 class Parser(SingleInstructionParser):
     def apply(self, source: SingleInstructionParserSource) -> SetupPhaseInstruction:
         arguments = shlex.split(source.instruction_argument)
-        if len(arguments) == 3 and arguments[1] != '=':
+        if len(arguments) == 3 and arguments[1] == '=':
             return _SetInstruction(arguments[0], arguments[2])
         if len(arguments) == 2 and arguments[0] == 'unset':
             return _UnsetInstruction(arguments[1])
