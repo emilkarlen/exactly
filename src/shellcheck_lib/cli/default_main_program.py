@@ -61,3 +61,6 @@ class MainProgram(main_program.MainProgram):
         datetime_suffix = today.strftime('%Y-%m-%d-%H-%M-%S')
         execution_directory_root_name_prefix = 'shellcheck-suite-' + datetime_suffix + '-'
         return execution_directory_root_name_prefix
+
+    def execute_global_help(self):
+        print('global help TODO')

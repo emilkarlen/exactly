@@ -19,13 +19,17 @@ def parse(argv: list) -> Settings:
 
 
 def _new_argument_parser() -> argparse.ArgumentParser:
-    ret_val = argparse.ArgumentParser(description='Execute Shellcheck test case')
+    ret_val = argparse.ArgumentParser(description='Execute a shellcheck Test Suite',
+                                      prog='shellcheck suite')
     ret_val.add_argument('file',
+                         metavar='FILE',
                          type=str,
-                         help='The file containing the test case')
+                         help='The file containing the Test Suite')
     ret_val.add_argument('--interpreter',
                          metavar="INTERPRETER",
                          nargs=1,
                          help="""\
-                        Executable that executes the script of the act phase.""")
+                        Executable that executes the script of the act phase.
+                        The interpreter is given a single argument, which is the file
+                        that contains the contents of the act phase.""")
     return ret_val

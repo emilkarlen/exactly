@@ -40,6 +40,9 @@ class MainProgram:
                            settings: Settings) -> int:
         raise NotImplementedError()
 
+    def execute_global_help(self):
+        raise NotImplementedError()
+
     def execute_help(self,
                      settings: HelpSettings) -> int:
         raise NotImplementedError()
@@ -57,6 +60,8 @@ class MainProgram:
         return self.execute_test_suite(settings)
 
     def _parse_and_execute_help(self, help_command_arguments: list) -> int:
+        if not help_command_arguments:
+            self.execute_global_help()
         settings = parse_help(help_command_arguments)
         return self.execute_help(settings)
 
