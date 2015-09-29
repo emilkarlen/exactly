@@ -1,8 +1,9 @@
 import unittest
 
 from shellcheck_lib_test.instructions.setup import test_resources
-from shellcheck_lib_test.instructions.setup import install
-from shellcheck_lib_test.instructions.setup import shell
+from . import install
+from . import shell
+from . import env
 
 
 def suite():
@@ -10,6 +11,7 @@ def suite():
     ret_val.addTest(test_resources.suite())
     ret_val.addTest(install.suite())
     ret_val.addTest(shell.suite())
+    ret_val.addTest(env.suite())
     return ret_val
 
 

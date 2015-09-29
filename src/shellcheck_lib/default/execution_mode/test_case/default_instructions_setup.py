@@ -5,6 +5,7 @@ Main program for shellcheck
 from shellcheck_lib.default.execution_mode.test_case.instruction_setup import InstructionsSetup, \
     SingleInstructionSetup
 from shellcheck_lib.instructions.configuration import home
+from shellcheck_lib.instructions.setup import env
 from shellcheck_lib.instructions.setup import install
 from shellcheck_lib.instructions.setup import shell as setup_shell
 from shellcheck_lib.instructions.cleanup import shell as cleanup_shell
@@ -22,6 +23,10 @@ instructions_setup = InstructionsSetup(
                 home.DESCRIPTION),
     },
     {
+        'env':
+            SingleInstructionSetup(
+                env.Parser(),
+                env.DESCRIPTION),
         'install':
             SingleInstructionSetup(
                 install.Parser(),
