@@ -1,7 +1,3 @@
-"""
-Main program for shellcheck
-"""
-
 from shellcheck_lib.default.execution_mode.test_case.instruction_setup import InstructionsSetup, \
     SingleInstructionSetup
 from shellcheck_lib.instructions.configuration import home
