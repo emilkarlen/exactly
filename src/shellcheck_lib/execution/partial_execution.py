@@ -6,9 +6,10 @@ import pathlib
 from shellcheck_lib.execution import phase_step
 from shellcheck_lib.execution import environment_variables
 from shellcheck_lib.execution.phase_step_execution import ElementHeaderExecutor
-from shellcheck_lib.general import line_source, exception
+from shellcheck_lib.general import line_source
 from shellcheck_lib.execution import phase_step_executors
 from shellcheck_lib.execution.single_instruction_executor import ControlledInstructionExecutor
+from shellcheck_lib.general.output import StdOutputFiles
 from shellcheck_lib.test_case.instruction import common
 from shellcheck_lib.document.model import PhaseContents
 from shellcheck_lib.execution import phases
@@ -17,8 +18,8 @@ from .execution_directory_structure import construct_at, ExecutionDirectoryStruc
 from .result import PartialResult, PartialResultStatus
 from . import result
 from . import phase_step_execution
-from shellcheck_lib.script_language.act_script_management import ScriptLanguageSetup
-from shellcheck_lib.test_case.instruction.sections.act import PhaseEnvironmentForScriptGeneration
+from shellcheck_lib.script_language.act_script_management import ScriptSourceBuilder
+from shellcheck_lib.test_case.act_phase_setup import PhaseEnvironmentForScriptGeneration, ActScriptExecutor, SourceSetup
 from shellcheck_lib.test_case.instruction.sections.setup import SetupSettingsBuilder
 from shellcheck_lib.test_case.os_services import new_default, OsServices
 
@@ -60,18 +61,26 @@ class _StepExecutionResult(tuple):
         self.__stdin_file_name = x
 
 
+class ScriptHandling:
+    def __init__(self,
+                 builder: ScriptSourceBuilder,
+                 executor: ActScriptExecutor):
+        self.builder = builder
+        self.executor = executor
+
+
 class PartialExecutor:
     def __init__(self,
                  global_environment: common.GlobalEnvironmentForPostEdsPhase,
                  execution_directory_structure: ExecutionDirectoryStructure,
                  configuration: Configuration,
-                 script_language_setup: ScriptLanguageSetup,
+                 script_handling: ScriptHandling,
                  setup_phase: PhaseContents,
                  act_phase: PhaseContents,
                  assert_phase: PhaseContents,
                  cleanup_phase: PhaseContents):
         self.__global_environment = global_environment
-        self.__script_language_setup = script_language_setup
+        self.__script_handling = script_handling
         self.__setup_phase = setup_phase
         self.__act_phase = act_phase
         self.__assert_phase = assert_phase
@@ -79,7 +88,7 @@ class PartialExecutor:
         self.__execution_directory_structure = execution_directory_structure
         self.__configuration = configuration
         self.___step_execution_result = _StepExecutionResult()
-        self.__script_file_path = None
+        self.__source_setup = None
         self.__partial_result = None
 
     def execute(self):
@@ -137,12 +146,6 @@ class PartialExecutor:
     @property
     def partial_result(self) -> result.PartialResult:
         return self.__partial_result
-
-    @property
-    def script_file_path(self) -> pathlib.Path:
-        if not self.__script_file_path:
-            raise ValueError('script_file_path')
-        return self.__script_file_path
 
     @property
     def configuration(self) -> Configuration:
@@ -222,7 +225,7 @@ class PartialExecutor:
 
         :param act_environment: Post-condition: Contains the accumulated script source.
         """
-        script_builder = self.__script_language_setup.new_builder()
+        script_builder = self.__script_handling.builder
         environment = PhaseEnvironmentForScriptGeneration(
             script_builder
         )
@@ -256,31 +259,23 @@ class PartialExecutor:
         """
         Pre-condition: write has been executed.
         """
-        cmd_and_args = self.__script_language_setup.command_and_args_for_executing_script_file(
-            str(self.script_file_path))
-
         with open(str(self.execution_directory_structure.result.std.stdout_file), 'w') as f_stdout:
             with open(str(self.execution_directory_structure.result.std.stderr_file), 'w') as f_stderr:
-                try:
-                    exitcode = subprocess.call(cmd_and_args,
-                                               cwd=str(self.execution_directory_structure.act_dir),
-                                               stdin=f_stdin,
-                                               stdout=f_stdout,
-                                               stderr=f_stderr)
-                    self._store_exit_code(exitcode)
-                except ValueError as ex:
-                    msg = 'Error executing act phase as subprocess: ' + str(ex)
-                    raise exception.ImplementationError(msg)
-                except OSError as ex:
-                    msg = 'Error executing act phase as subprocess: ' + str(ex)
-                    raise exception.ImplementationError(msg)
+                exitcode = self.__script_handling.executor.execute(
+                    self.__source_setup,
+                    self.execution_directory_structure.act_dir,
+                    self.__execution_directory_structure,
+                    f_stdin,
+                    StdOutputFiles(f_stdout,
+                                   f_stderr))
+                self._store_exit_code(exitcode)
 
     def write_and_store_script_file_path(self):
-        base_name = self.__script_language_setup.base_name_from_stem(phases.ACT.name)
-        file_path = self.__execution_directory_structure.test_case_dir / base_name
-        with open(str(file_path), 'w') as f:
-            f.write(self.___step_execution_result.script_source)
-        self.__script_file_path = file_path
+        self.__source_setup = SourceSetup(self.__script_handling.builder,
+                                          self.__execution_directory_structure.test_case_dir,
+                                          phases.ACT.name)
+        self.__script_handling.executor.prepare(self.__source_setup,
+                                                self.__execution_directory_structure)
 
     def __set_pre_eds_environment_variables(self):
         os.environ[environment_variables.ENV_VAR_HOME] = str(self.configuration.home_dir)
@@ -322,12 +317,12 @@ class _ActInstructionHeaderExecutor(ElementHeaderExecutor):
         self.__phase_environment.append.source_line_header(line)
 
 
-def execute(script_language_setup: ScriptLanguageSetup,
+def execute(script_handling: ScriptHandling,
             test_case: test_case_doc.TestCase,
             home_dir_path: pathlib.Path,
             execution_directory_root_name_prefix: str,
             is_keep_execution_directory_root: bool) -> PartialResult:
-    tc_execution = execute_test_case_in_execution_directory(script_language_setup,
+    tc_execution = execute_test_case_in_execution_directory(script_handling,
                                                             test_case,
                                                             home_dir_path,
                                                             execution_directory_root_name_prefix,
@@ -335,7 +330,7 @@ def execute(script_language_setup: ScriptLanguageSetup,
     return tc_execution.partial_result
 
 
-def execute_test_case_in_execution_directory(script_language_setup: ScriptLanguageSetup,
+def execute_test_case_in_execution_directory(script_handling: ScriptHandling,
                                              test_case: test_case_doc.TestCase,
                                              home_dir_path: pathlib.Path,
                                              execution_directory_root_name_prefix: str,
@@ -365,7 +360,7 @@ def execute_test_case_in_execution_directory(script_language_setup: ScriptLangua
         test_case_execution = PartialExecutor(global_environment,
                                               execution_directory_structure,
                                               configuration,
-                                              script_language_setup,
+                                              script_handling,
                                               test_case.setup_phase,
                                               test_case.act_phase,
                                               test_case.assert_phase,

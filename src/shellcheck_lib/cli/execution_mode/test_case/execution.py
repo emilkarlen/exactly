@@ -2,7 +2,7 @@ import os
 import pathlib
 import shutil
 
-from shellcheck_lib.cli.utils import resolve_script_language
+from shellcheck_lib.cli.utils import resolve_act_phase_setup
 from shellcheck_lib.general.output import StdOutputFiles
 from shellcheck_lib.default.execution_mode.test_case import processing
 from shellcheck_lib.default.execution_mode.test_case.instruction_setup import InstructionsSetup
@@ -77,7 +77,7 @@ class Executor:
                  is_keep_eds: bool) -> test_case_processing.Result:
         configuration = processing.Configuration(self._split_line_into_name_and_argument_function,
                                                  self._instruction_setup,
-                                                 resolve_script_language(self._settings.interpreter),
+                                                 resolve_act_phase_setup(self._settings.interpreter),
                                                  self._settings.preprocessor,
                                                  is_keep_eds,
                                                  self._settings.execution_directory_root_name_prefix)

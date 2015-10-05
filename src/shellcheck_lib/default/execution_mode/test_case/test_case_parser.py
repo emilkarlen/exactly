@@ -31,6 +31,7 @@ class Parser:
 
 
 def new_parser(split_line_into_name_and_argument_function,
+               act_phase_parser: parse.SectionElementParser,
                instructions_setup: InstructionsSetup) -> Parser:
     def dict_parser(instruction_set: dict) -> parse.SectionElementParser:
         return SectionElementParserForDictionaryOfInstructions(split_line_into_name_and_argument_function,
@@ -43,7 +44,7 @@ def new_parser(split_line_into_name_and_argument_function,
             parse.SectionConfiguration(phases.SETUP.name,
                                        dict_parser(instructions_setup.setup_instruction_set)),
             parse.SectionConfiguration(phases.ACT.name,
-                                       PlainSourceActPhaseParser()),
+                                       act_phase_parser),
             parse.SectionConfiguration(phases.ASSERT.name,
                                        dict_parser(instructions_setup.assert_instruction_set)),
             parse.SectionConfiguration(phases.CLEANUP.name,

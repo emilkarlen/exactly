@@ -38,7 +38,7 @@ class UnitTestCaseForPy3Language:
         test_case = self._test_case()
         # ACT #
         test_case_execution = execute_test_case_in_execution_directory(
-            python3.new_script_language_setup(),
+            python3.new_script_handling(),
             test_case,
             home_dir_path,
             'shellcheck-test-',
@@ -175,7 +175,7 @@ def py3_test(unittest_case: unittest.TestCase,
     home_dir_path = pathlib.Path().resolve()
     # ACT #
     test_case_execution = execute_test_case_in_execution_directory(
-        python3.new_script_language_setup(),
+        python3.new_script_handling(),
         test_case,
         home_dir_path,
         'shellcheck-test-',

@@ -1,7 +1,6 @@
 import pathlib
 
 from shellcheck_lib.general.output import StdOutputFiles
-
 from shellcheck_lib.test_suite import structure
 from shellcheck_lib.test_suite import reporting
 from shellcheck_lib.test_suite.enumeration import SuiteEnumerator
@@ -87,7 +86,7 @@ class Executor:
         return case_processing.Configuration(
             self._default_case_configuration.split_line_into_name_and_argument_function,
             self._default_case_configuration.instruction_setup,
-            self._default_case_configuration.script_language_setup,
+            self._default_case_configuration.act_phase_setup,
             suite.preprocessor,
             self._default_case_configuration.is_keep_execution_directory_root,
             self._default_case_configuration.execution_directory_root_name_prefix)

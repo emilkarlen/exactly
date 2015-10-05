@@ -1,6 +1,8 @@
 import sys
 
+from shellcheck_lib.execution.partial_execution import ScriptHandling
 from shellcheck_lib.script_language import act_script_management
+from shellcheck_lib.script_language.act_phase_setup_for_script_language import ActScriptExecutorForScriptLanguage
 from shellcheck_lib.script_language.act_script_management import ScriptFileManager
 
 
@@ -34,3 +36,8 @@ def new_script_language_setup() -> act_script_management.ScriptLanguageSetup:
         Python3ScriptFileManager(),
         Python3Language())
 
+
+def new_script_handling() -> ScriptHandling:
+    script_language_setup = new_script_language_setup()
+    return ScriptHandling(script_language_setup.new_builder(),
+                          ActScriptExecutorForScriptLanguage(script_language_setup))

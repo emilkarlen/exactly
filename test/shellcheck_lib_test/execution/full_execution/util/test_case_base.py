@@ -26,7 +26,7 @@ class FullExecutionTestCaseBase:
         self.__initial_home_dir_path = pathlib.Path().resolve()
         # ACT #
         full_result = full_execution.execute(
-            python3.new_script_language_setup(),
+            python3.new_script_handling(),
             self._test_case(),
             self.initial_home_dir_path,
             'shellcheck-test-',

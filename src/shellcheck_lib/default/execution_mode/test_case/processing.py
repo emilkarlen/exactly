@@ -3,15 +3,17 @@ import os
 import pathlib
 
 from shellcheck_lib.document import parse as document_parser
+from shellcheck_lib.document.parse import SectionElementParser
 from shellcheck_lib.execution import full_execution
+from shellcheck_lib.execution.partial_execution import ScriptHandling
 from shellcheck_lib.execution.result import FullResult
 from shellcheck_lib.general import line_source
-from shellcheck_lib.script_language.act_script_management import ScriptLanguageSetup
 from shellcheck_lib.test_case import processing_utils
 from shellcheck_lib.test_case import test_case_doc
 from shellcheck_lib.test_case import test_case_processing as processing
 from shellcheck_lib.default.execution_mode.test_case import test_case_parser
 from shellcheck_lib.default.execution_mode.test_case.instruction_setup import InstructionsSetup
+from shellcheck_lib.test_case.act_phase_setup import ActPhaseSetup
 from shellcheck_lib.test_case.test_case_processing import ErrorInfo, ProcessError, Preprocessor
 import shellcheck_lib.test_case.test_case_processing
 
@@ -20,11 +22,11 @@ class Configuration:
     def __init__(self,
                  split_line_into_name_and_argument_function,
                  instruction_setup: InstructionsSetup,
-                 script_language_setup: ScriptLanguageSetup,
+                 act_phase_setup: ActPhaseSetup,
                  preprocessor: Preprocessor,
                  is_keep_execution_directory_root: bool,
                  execution_directory_root_name_prefix: str='shellcheck-'):
-        self.script_language_setup = script_language_setup
+        self.act_phase_setup = act_phase_setup
         self.instruction_setup = instruction_setup
         self.split_line_into_name_and_argument_function = split_line_into_name_and_argument_function
         self.preprocessor = preprocessor
@@ -48,17 +50,18 @@ def new_accessor(configuration: Configuration) -> processing.Accessor:
     return processing_utils.AccessorFromParts(_SourceReader(),
                                               configuration.preprocessor,
                                               _Parser(configuration.split_line_into_name_and_argument_function,
+                                                      configuration.act_phase_setup.parser,
                                                       configuration.instruction_setup))
 
 
 def new_executor_that_should_not_pollute_current_processes(configuration: Configuration) -> processing_utils.Executor:
-    return _ExecutorThatSavesAndRestoresEnvironmentVariables(configuration.script_language_setup,
+    return _ExecutorThatSavesAndRestoresEnvironmentVariables(configuration.act_phase_setup,
                                                              configuration.is_keep_execution_directory_root,
                                                              configuration.execution_directory_root_name_prefix)
 
 
 def new_executor_that_may_pollute_current_processes(configuration: Configuration) -> processing_utils.Executor:
-    return _Executor(configuration.script_language_setup,
+    return _Executor(configuration.act_phase_setup,
                      configuration.is_keep_execution_directory_root,
                      configuration.execution_directory_root_name_prefix)
 
@@ -77,14 +80,17 @@ class _SourceReader(processing_utils.SourceReader):
 class _Parser(processing_utils.Parser):
     def __init__(self,
                  split_line_into_name_and_argument_function,
+                 act_phase_parser: SectionElementParser,
                  instruction_setup: InstructionsSetup):
         self._split_line_into_name_and_argument_function = split_line_into_name_and_argument_function
+        self._act_phase_parser = act_phase_parser
         self._instruction_setup = instruction_setup
 
     def apply(self,
               test_case_file_path: pathlib.Path,
               test_case_plain_source: str) -> test_case_doc.TestCase:
         file_parser = test_case_parser.new_parser(self._split_line_into_name_and_argument_function,
+                                                  self._act_phase_parser,
                                                   self._instruction_setup)
         source = line_source.new_for_string(test_case_plain_source)
         try:
@@ -99,17 +105,18 @@ class _Parser(processing_utils.Parser):
 
 class _Executor(processing_utils.Executor):
     def __init__(self,
-                 script_language_setup: ScriptLanguageSetup,
+                 act_phase_setup: ActPhaseSetup,
                  is_keep_execution_directory_root: bool,
                  execution_directory_root_name_prefix: str='shellcheck-'):
-        self._script_language_setup = script_language_setup
+        self._act_phase_setup = act_phase_setup
         self._is_keep_execution_directory_root = is_keep_execution_directory_root
         self._execution_directory_root_name_prefix = execution_directory_root_name_prefix
 
     def apply(self,
               test_case_file_path: pathlib.Path,
               test_case: test_case_doc.TestCase) -> FullResult:
-        return full_execution.execute(self._script_language_setup,
+        return full_execution.execute(ScriptHandling(self._act_phase_setup.script_builder_constructor(),
+                                                     self._act_phase_setup.executor),
                                       test_case,
                                       test_case_file_path.parent,
                                       self._execution_directory_root_name_prefix,
@@ -118,10 +125,10 @@ class _Executor(processing_utils.Executor):
 
 class _ExecutorThatSavesAndRestoresEnvironmentVariables(processing_utils.Executor):
     def __init__(self,
-                 script_language_setup: ScriptLanguageSetup,
+                 act_phase_setup: ActPhaseSetup,
                  is_keep_execution_directory_root: bool,
                  execution_directory_root_name_prefix: str='shellcheck-'):
-        self._polluting_executor = _Executor(script_language_setup,
+        self._polluting_executor = _Executor(act_phase_setup,
                                              is_keep_execution_directory_root,
                                              execution_directory_root_name_prefix)
 

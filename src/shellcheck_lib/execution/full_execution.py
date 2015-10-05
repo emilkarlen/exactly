@@ -3,15 +3,15 @@ import pathlib
 
 from shellcheck_lib.execution import phase_step_executors, partial_execution, phases
 from shellcheck_lib.execution import environment_variables
+from shellcheck_lib.execution.partial_execution import ScriptHandling
 from shellcheck_lib.test_case import test_case_doc
-from shellcheck_lib.script_language import act_script_management
 from shellcheck_lib.test_case.instruction.sections.anonymous import ConfigurationBuilder, ExecutionMode
 from .result import FullResult, PartialResult, PartialResultStatus, FullResultStatus
 from . import result
 from . import phase_step_execution
 
 
-def execute(script_language_setup: act_script_management.ScriptLanguageSetup,
+def execute(script_handling: ScriptHandling,
             test_case: test_case_doc.TestCase,
             initial_home_dir_path: pathlib.Path,
             execution_directory_root_name_prefix: str,
@@ -27,7 +27,7 @@ def execute(script_language_setup: act_script_management.ScriptLanguageSetup,
         return new_anonymous_phase_failure_from(partial_result)
     if anonymous_phase_environment.execution_mode is ExecutionMode.SKIPPED:
         return result.new_skipped()
-    partial_result = partial_execution.execute(script_language_setup,
+    partial_result = partial_execution.execute(script_handling,
                                                test_case,
                                                anonymous_phase_environment.home_dir_path,
                                                execution_directory_root_name_prefix,
