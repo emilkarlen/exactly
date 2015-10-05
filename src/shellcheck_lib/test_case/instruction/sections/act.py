@@ -1,22 +1,8 @@
 from shellcheck_lib.document.model import Instruction
-from shellcheck_lib.script_language import act_script_management
+from shellcheck_lib.test_case.act_phase_setup import PhaseEnvironmentForScriptGeneration
 from shellcheck_lib.test_case.instruction.result.sh import SuccessOrHardError
 from shellcheck_lib.test_case.instruction.result.svh import SuccessOrValidationErrorOrHardError
 from shellcheck_lib.test_case.instruction.common import GlobalEnvironmentForPostEdsPhase
-
-
-class PhaseEnvironmentForScriptGeneration:
-    """
-    The phase-environment for phases that generate a script.
-    """
-
-    def __init__(self,
-                 script_source_accumulator: act_script_management.ScriptSourceAccumulator):
-        self.__script_source_accumulator = script_source_accumulator
-
-    @property
-    def append(self) -> act_script_management.ScriptSourceAccumulator:
-        return self.__script_source_accumulator
 
 
 class ActPhaseInstruction(Instruction):

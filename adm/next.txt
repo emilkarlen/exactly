@@ -2,6 +2,25 @@
 
 Fortsätt med
 
+* TODO Skräddarsy act-fasen
+** TODO Testa befintlig script-lng-setup individuellt
+*** TODO Infrastruktur för test av act-phase-setup
+** TODO Integrera Executor.validate i tesetfalls-exekveringen
+** TODO Implementera setup för single-kommando
+Typ: "dir/mitt-program arg1 arg2"
+Se till att resolva abs-path till detta kommando så att man kan använda
+relativa sökvägar i testfallet.
+** TODO (Ev) förbättra script-byggaren
+Så att det går att separera på typ av rad (även på "färdiga" script):
+- kommentar
+- tom
+- källkod
+På så vis går det t ex att enkelt plocka ut enbart källkodsrader.  O m hjälp
+av det skulle en singel-kommando-exekverare enkelt kunna verifiera att angivet
+program verkligen består av ett enda kommando.
+** TODO Då interpretator anges via CLA: resolva abs-sökväg till denna
+... så att det går att ange relativa sökvägar på kommandoraden (o ev, i en
+senare framtid, även i testsviter).
 * TODO Svit: Summering i rapporten
 Avslutande utskrift: Antal lyckade, fallerade, <andra typer av fel>
 * TODO Exekvering av fall: Rapportera mha "Rapportör" (pss som svit)

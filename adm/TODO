@@ -57,6 +57,11 @@ helst av faserna som har tillgång till EDS.
 *** Ta fram SGD för dessa instruktioner (t ex EDS + HOME)
 Ev är problemet här fasen "setup", vars "validate" inte har tillgång till EDS.
 Kanske är det av den orsaken värt att skapa EDS innan setup/validate.
+* TODO Göra det enkelt att utöka programmet m egen act-phase-setup
+<2015-10-05 mån>
+Osäker på hur användbart det är att ha olika act-phase-setup.  Men vore hur
+som helst en "skyddande felxibilitet" om det vore enkelt (dvs på något sätt
+förberett så att det inte krockar med något).
 * TODO Test result
 ** TODO <2015-05-03 sön> Enhetstester för fast-steg-exekverare
 Blir redundans om alla dess varianter ska testas via integrationstest.
