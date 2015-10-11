@@ -4,7 +4,7 @@ from pathlib import Path
 import unittest
 
 from shellcheck_lib.default.execution_mode.test_case.instruction_setup import InstructionsSetup
-from shellcheck_lib.script_language.python3 import new_script_language_setup
+from shellcheck_lib.script_language.python3 import script_language_setup
 from shellcheck_lib.test_case.preprocessor import IDENTITY_PREPROCESSOR
 from shellcheck_lib.test_case.test_case_processing import TestCaseSetup
 from shellcheck_lib.test_suite.execution import Executor
@@ -491,7 +491,7 @@ FULL_RESULT_PASS = new_pass(DUMMY_EDS)
 DEFAULT_CASE_PROCESSING = case_processing.Configuration(
     lambda x: ((), ()),
     InstructionsSetup({}, {}, {}, {}),
-    new_script_language_setup(),
+    script_language_setup(),
     IDENTITY_PREPROCESSOR,
     False)
 
