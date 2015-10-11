@@ -5,7 +5,7 @@ from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections import common
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
-from shellcheck_lib.test_case.sections.act import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
+from shellcheck_lib.test_case.sections.act.instruction import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
 from shellcheck_lib.test_case.sections.anonymous import AnonymousPhaseInstruction, \
     ConfigurationBuilder
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
