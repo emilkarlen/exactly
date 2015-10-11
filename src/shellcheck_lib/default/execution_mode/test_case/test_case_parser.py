@@ -7,7 +7,7 @@ from shellcheck_lib.general.line_source import LineSource
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SectionElementParserForDictionaryOfInstructions, SectionElementParserForStandardCommentAndEmptyLines
 from shellcheck_lib.test_case import test_case_doc
-from shellcheck_lib.test_case.instruction import common
+from shellcheck_lib.test_case.sections import common
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.sections.act import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
