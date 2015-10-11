@@ -13,7 +13,7 @@ from shellcheck_lib.test_case import test_case_doc
 from shellcheck_lib.test_case import test_case_processing as processing
 from shellcheck_lib.default.execution_mode.test_case import test_case_parser
 from shellcheck_lib.default.execution_mode.test_case.instruction_setup import InstructionsSetup
-from shellcheck_lib.test_case.act_phase_setup import ActPhaseSetup
+from shellcheck_lib.test_case.sections.act.phase_setup import ActPhaseSetup
 from shellcheck_lib.test_case.test_case_processing import ErrorInfo, ProcessError, Preprocessor
 import shellcheck_lib.test_case.test_case_processing
 

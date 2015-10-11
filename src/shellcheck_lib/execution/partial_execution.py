@@ -19,7 +19,8 @@ from .result import PartialResult, PartialResultStatus
 from . import result
 from . import phase_step_execution
 from shellcheck_lib.script_language.act_script_management import ScriptSourceBuilder
-from shellcheck_lib.test_case.act_phase_setup import PhaseEnvironmentForScriptGeneration, ActScriptExecutor, SourceSetup
+from shellcheck_lib.test_case.sections.act.phase_setup import PhaseEnvironmentForScriptGeneration, ActScriptExecutor, \
+    SourceSetup
 from shellcheck_lib.test_case.sections.setup import SetupSettingsBuilder
 from shellcheck_lib.test_case.os_services import new_default, OsServices
 
