@@ -54,7 +54,7 @@ class ScriptSourceAccumulator:
         """
         self._source_lines.extend(self._script_language.comment_lines(lines))
 
-    def raw_script_statement(self, statement: str) -> list:
+    def raw_script_statement(self, statement: str):
         """
         Appends a statement in the script language.
 
@@ -62,7 +62,7 @@ class ScriptSourceAccumulator:
         """
         self._source_lines.extend(self._script_language.raw_script_statement(statement))
 
-    def raw_script_statements(self, statements: iter) -> list:
+    def raw_script_statements(self, statements: iter):
         """
         Appends multiple statements in the script script.
 
