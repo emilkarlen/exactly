@@ -20,6 +20,9 @@ class TestCases(unittest.TestCase):
     def test_stdin_and_stdout(self):
         self.tests.test_stdin_and_stdout_are_connected_to_program()
 
+    def test_exit_code_is_returned(self):
+        self.tests.test_exit_code_is_returned()
+
 
 class TestSetup(ActProgramExecutorTestSetup):
     def __init__(self):
@@ -51,6 +54,13 @@ class TestSetup(ActProgramExecutorTestSetup):
         ])
         return ret_val
 
+    def program_that_exits_with_code(self, exit_code: int):
+        ret_val = ScriptSourceBuilder(self.language)
+        ret_val.raw_script_statements([
+            'import sys',
+            "sys.exit({})".format(exit_code)
+        ])
+        return ret_val
 
 def suite():
     ret_val = unittest.TestSuite()

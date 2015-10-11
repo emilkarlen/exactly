@@ -24,6 +24,9 @@ class ActProgramExecutorTestSetup:
     def program_that_prints_to_stderr(self, string_to_print: str) -> ScriptSourceBuilder:
         raise NotImplementedError()
 
+    def program_that_exits_with_code(self, exit_code: int):
+        raise NotImplementedError()
+
 
 class _ProcessExecutorForProgramExecutor(ProcessExecutor):
     def __init__(self,
@@ -37,11 +40,11 @@ class _ProcessExecutorForProgramExecutor(ProcessExecutor):
     def execute(self,
                 cwd: str,
                 files: StdFiles) -> int:
-        self.program_executor.execute(self.source_setup,
-                                      pathlib.Path(cwd),
-                                      self.eds,
-                                      files.stdin,
-                                      files.output)
+        return self.program_executor.execute(self.source_setup,
+                                             pathlib.Path(cwd),
+                                             self.eds,
+                                             files.stdin,
+                                             files.output)
 
 
 class Tests:
@@ -69,6 +72,12 @@ class Tests:
                                         stdin_contents='contents of stdin')
         self.put.assertEqual('contents of stdin',
                              process_result.stdout)
+
+    def test_exit_code_is_returned(self):
+        program = self.test_setup.program_that_exits_with_code(87)
+        process_result = self.__execute(program)
+        self.put.assertEqual(87,
+                             process_result.exitcode)
 
     def __execute(self,
                   source: ScriptSourceBuilder,
