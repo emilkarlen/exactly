@@ -1,3 +1,4 @@
+import os
 import pathlib
 import unittest
 
@@ -25,6 +26,9 @@ class ActProgramExecutorTestSetup:
         raise NotImplementedError()
 
     def program_that_exits_with_code(self, exit_code: int):
+        raise NotImplementedError()
+
+    def program_that_prints_cwd_without_new_line_to_stdout(self):
         raise NotImplementedError()
 
 
@@ -58,26 +62,56 @@ class Tests:
         program = self.test_setup.program_that_prints_to_stdout('expected output on stdout')
         process_result = self.__execute(program)
         self.put.assertEqual('expected output on stdout',
-                             process_result.stdout)
+                             process_result.stdout,
+                             'Contents of stdout')
 
     def test_stderr_is_connected_to_program(self):
         program = self.test_setup.program_that_prints_to_stderr('expected output on stderr')
         process_result = self.__execute(program)
         self.put.assertEqual('expected output on stderr',
-                             process_result.stderr)
+                             process_result.stderr,
+                             'Contents of stderr')
 
     def test_stdin_and_stdout_are_connected_to_program(self):
         program = self.test_setup.program_that_copes_stdin_to_stdout()
         process_result = self.__execute(program,
                                         stdin_contents='contents of stdin')
         self.put.assertEqual('contents of stdin',
-                             process_result.stdout)
+                             process_result.stdout,
+                             'Contents of stdout is expected to be equal to stdin')
 
     def test_exit_code_is_returned(self):
         program = self.test_setup.program_that_exits_with_code(87)
         process_result = self.__execute(program)
         self.put.assertEqual(87,
-                             process_result.exitcode)
+                             process_result.exitcode,
+                             'Exit Code')
+
+    def test_initial_cwd_is_act_directory_and_that_cwd_is_restored_afterwards(self):
+        cwd_before = os.getcwd()
+        source = self.test_setup.program_that_prints_cwd_without_new_line_to_stdout()
+        act_program_executor = self.test_setup.sut
+        validation_result = act_program_executor.validate(source)
+        self.put.assertEqual(svh.new_svh_success(),
+                             validation_result)
+        with execution_directory_structure() as eds:
+            program_setup = SourceSetup(source,
+                                        eds.test_case_dir,
+                                        'file-name-stem')
+            act_program_executor.prepare(program_setup, eds)
+            process_executor = _ProcessExecutorForProgramExecutor(program_setup,
+                                                                  eds,
+                                                                  act_program_executor)
+            process_result = capture_process_executor_result(process_executor,
+                                                             eds.result.root_dir,
+                                                             cwd=eds.act_dir)
+        self.put.assertEqual(str(eds.act_dir),
+                             process_result.stdout,
+                             'Current Working Directory for program should be act-directory')
+
+        self.put.assertEqual(cwd_before,
+                             os.getcwd(),
+                             'Current Working Directory should be restored after program has finished')
 
     def __execute(self,
                   source: ScriptSourceBuilder,
