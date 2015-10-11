@@ -1,5 +1,5 @@
 from shellcheck_lib.script_language import python3
-from shellcheck_lib.script_language.act_phase_setup_for_script_language import new_for_script_language_setup
+from shellcheck_lib.act_phase_setups.script_language_setup import new_for_script_language_setup
 from shellcheck_lib.test_case.sections.act.phase_setup import ActPhaseSetup
 
 

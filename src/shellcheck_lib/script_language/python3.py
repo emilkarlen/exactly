@@ -2,7 +2,7 @@ import sys
 
 from shellcheck_lib.execution.partial_execution import ScriptHandling
 from shellcheck_lib.script_language import act_script_management
-from shellcheck_lib.script_language.act_phase_setup_for_script_language import ActScriptExecutorForScriptLanguage
+from shellcheck_lib.act_phase_setups.script_language_setup import ActScriptExecutorForScriptLanguage
 from shellcheck_lib.script_language.act_script_management import ScriptFileManager
 from shellcheck_lib.test_case.sections.act import script_source
 
