@@ -4,8 +4,8 @@ Checks that output to stdout, stderr and the exit code are saved in the correct 
 
 import unittest
 
-from shellcheck_lib.test_case.instruction.result import sh
-from shellcheck_lib.test_case.instruction.result import svh
+from shellcheck_lib.test_case.sections.result import sh
+from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.instruction import common
 from shellcheck_lib.test_case.sections.act import PhaseEnvironmentForScriptGeneration, ActPhaseInstruction
 from shellcheck_lib_test.execution.util import utils

@@ -2,9 +2,9 @@ from shellcheck_lib.document.model import Instruction
 from shellcheck_lib.execution import phases
 from shellcheck_lib.test_case.instruction.common import GlobalEnvironmentForPostEdsPhase
 from shellcheck_lib.test_case.os_services import OsServices
-from shellcheck_lib.test_case.instruction.result import pfh
-from shellcheck_lib.test_case.instruction.result import sh
-from shellcheck_lib.test_case.instruction.result import svh
+from shellcheck_lib.test_case.sections.result import pfh
+from shellcheck_lib.test_case.sections.result import sh
+from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.instruction import common as instr
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction

@@ -1,8 +1,8 @@
 import os
 import unittest
 
-from shellcheck_lib.test_case.instruction.result import sh
-from shellcheck_lib.test_case.instruction.result import svh
+from shellcheck_lib.test_case.sections.result import sh
+from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.execution import phases
 from shellcheck_lib.general import line_source
 from shellcheck_lib.test_case.instruction import common

@@ -3,8 +3,8 @@ import pathlib
 import unittest
 
 from shellcheck_lib.execution import environment_variables
-from shellcheck_lib.test_case.instruction.result import sh
-from shellcheck_lib.test_case.instruction.result import svh
+from shellcheck_lib.test_case.sections.result import sh
+from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.execution.partial_execution import Configuration
 from shellcheck_lib_test.execution.util import py_unit_test_case_with_file_output as with_file_output

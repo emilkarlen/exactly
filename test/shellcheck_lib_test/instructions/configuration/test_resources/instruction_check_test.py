@@ -3,7 +3,7 @@ Test of test-infrastructure: instruction_check.
 """
 import unittest
 
-from shellcheck_lib.test_case.instruction.result import sh
+from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.anonymous import ConfigurationBuilder
 from shellcheck_lib_test.execution.full_execution.util.instruction_test_resources import \
     AnonymousPhaseInstructionThatReturns
