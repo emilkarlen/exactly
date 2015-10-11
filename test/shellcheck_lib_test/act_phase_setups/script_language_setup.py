@@ -17,6 +17,9 @@ class TestCases(unittest.TestCase):
     def test_stderr_is_connected_to_program(self):
         self.tests.test_stderr_is_connected_to_program()
 
+    def test_stdin_and_stdout(self):
+        self.tests.test_stdin_and_stdout_are_connected_to_program()
+
 
 class TestSetup(ActProgramExecutorTestSetup):
     def __init__(self):
@@ -25,23 +28,28 @@ class TestSetup(ActProgramExecutorTestSetup):
         super().__init__(sut.ActProgramExecutorForScriptLanguage(self.language_setup))
 
     def program_that_copes_stdin_to_stdout(self) -> ScriptSourceBuilder:
-        raise NotImplementedError()
+        ret_val = ScriptSourceBuilder(self.language)
+        ret_val.raw_script_statements([
+            'import sys',
+            "sys.stdout.write(sys.stdin.read())"
+        ])
+        return ret_val
 
     def program_that_prints_to_stderr(self, string_to_print: str) -> ScriptSourceBuilder:
-        source_builder = ScriptSourceBuilder(self.language)
-        source_builder.raw_script_statements([
+        ret_val = ScriptSourceBuilder(self.language)
+        ret_val.raw_script_statements([
             'import sys',
             "sys.stderr.write('{}')".format(string_to_print)
         ])
-        return source_builder
+        return ret_val
 
     def program_that_prints_to_stdout(self, string_to_print: str) -> ScriptSourceBuilder:
-        source_builder = ScriptSourceBuilder(self.language)
-        source_builder.raw_script_statements([
+        ret_val = ScriptSourceBuilder(self.language)
+        ret_val.raw_script_statements([
             'import sys',
             "sys.stdout.write('{}')".format(string_to_print)
         ])
-        return source_builder
+        return ret_val
 
 
 def suite():

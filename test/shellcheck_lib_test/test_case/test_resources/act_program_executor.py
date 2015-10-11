@@ -63,6 +63,13 @@ class Tests:
         self.put.assertEqual('expected output on stderr',
                              process_result.stderr)
 
+    def test_stdin_and_stdout_are_connected_to_program(self):
+        program = self.test_setup.program_that_copes_stdin_to_stdout()
+        process_result = self.__execute(program,
+                                        stdin_contents='contents of stdin')
+        self.put.assertEqual('contents of stdin',
+                             process_result.stdout)
+
     def __execute(self,
                   source: ScriptSourceBuilder,
                   stdin_contents: str='') -> SubProcessResult:
