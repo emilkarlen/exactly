@@ -1,9 +1,9 @@
 import types
 from pathlib import Path
 
-from shellcheck_lib.test_case.instruction.result import pfh
-from shellcheck_lib.test_case.instruction.result import sh
-from shellcheck_lib.test_case.instruction.result import svh
+from shellcheck_lib.test_case.sections.result import pfh
+from shellcheck_lib.test_case.sections.result import sh
+from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.sections.anonymous import ConfigurationBuilder, \
     AnonymousPhaseInstruction
 from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction

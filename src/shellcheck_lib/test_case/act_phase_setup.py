@@ -5,7 +5,7 @@ from shellcheck_lib.execution.execution_directory_structure import ExecutionDire
 from shellcheck_lib.general.output import StdOutputFiles
 from shellcheck_lib.script_language.act_script_management import ScriptSourceAccumulator, \
     ScriptSourceBuilder
-from shellcheck_lib.test_case.instruction.result import svh
+from shellcheck_lib.test_case.sections.result import svh
 
 
 class PhaseEnvironmentForScriptGeneration:

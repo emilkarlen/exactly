@@ -1,7 +1,7 @@
 import os
 import shutil
 
-from shellcheck_lib.test_case.instruction.result import sh
+from shellcheck_lib.test_case.sections.result import sh
 
 
 class OsServices:

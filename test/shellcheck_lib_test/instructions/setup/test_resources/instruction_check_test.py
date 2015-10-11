@@ -4,8 +4,8 @@ Test of test-infrastructure: instruction_check.
 import unittest
 
 from shellcheck_lib.test_case.instruction.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
-from shellcheck_lib.test_case.instruction.result import sh
-from shellcheck_lib.test_case.instruction.result import svh
+from shellcheck_lib.test_case.sections.result import sh
+from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
 from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib_test.execution.full_execution.util.instruction_test_resources import \

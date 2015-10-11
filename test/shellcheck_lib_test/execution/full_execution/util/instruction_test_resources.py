@@ -1,6 +1,6 @@
-from shellcheck_lib.test_case.instruction.result import sh
-from shellcheck_lib.test_case.instruction.result import svh
-from shellcheck_lib.test_case.instruction.result import pfh
+from shellcheck_lib.test_case.sections.result import sh
+from shellcheck_lib.test_case.sections.result import svh
+from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.instruction import common as instrs
 from shellcheck_lib.test_case.sections.anonymous import AnonymousPhaseInstruction, ExecutionMode, \
     ConfigurationBuilder

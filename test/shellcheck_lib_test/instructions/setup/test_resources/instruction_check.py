@@ -10,8 +10,8 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
 from shellcheck_lib.execution import execution_directory_structure
 from shellcheck_lib.test_case.instruction import common as i
 from shellcheck_lib.test_case.instruction.common import GlobalEnvironmentForPreEdsStep
-from shellcheck_lib.test_case.instruction.result import svh
-from shellcheck_lib.test_case.instruction.result import sh
+from shellcheck_lib.test_case.sections.result import svh
+from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
 from shellcheck_lib.test_case.os_services import new_default, OsServices
 from shellcheck_lib_test.util import file_structure
