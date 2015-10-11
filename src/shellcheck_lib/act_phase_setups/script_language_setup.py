@@ -6,17 +6,17 @@ from shellcheck_lib.execution.execution_directory_structure import ExecutionDire
 from shellcheck_lib.general import exception
 from shellcheck_lib.general.output import StdOutputFiles
 from shellcheck_lib.script_language.script_language_management import ScriptLanguageSetup
-from shellcheck_lib.test_case.sections.act.phase_setup import ActPhaseSetup, ActScriptExecutor, SourceSetup
+from shellcheck_lib.test_case.sections.act.phase_setup import ActPhaseSetup, ActProgramExecutor, SourceSetup
 from shellcheck_lib.test_case.sections.result import svh
 
 
 def new_for_script_language_setup(script_language_setup: ScriptLanguageSetup) -> ActPhaseSetup:
     return ActPhaseSetup(PlainSourceActPhaseParser(),
                          script_language_setup.new_builder,
-                         ActScriptExecutorForScriptLanguage(script_language_setup))
+                         ActProgramExecutorForScriptLanguage(script_language_setup))
 
 
-class ActScriptExecutorForScriptLanguage(ActScriptExecutor):
+class ActProgramExecutorForScriptLanguage(ActProgramExecutor):
     def __init__(self,
                  script_language_setup: ScriptLanguageSetup):
         self.script_language_setup = script_language_setup
