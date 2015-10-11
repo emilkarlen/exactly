@@ -5,7 +5,7 @@ from shellcheck_lib.default.execution_mode.test_case.instruction_setup import De
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
 from shellcheck_lib.test_case.instruction.result import sh
-from shellcheck_lib.test_case.instruction.sections.anonymous import AnonymousPhaseInstruction, ConfigurationBuilder
+from shellcheck_lib.test_case.sections.anonymous import AnonymousPhaseInstruction, ConfigurationBuilder
 
 DESCRIPTION = Description(
     'Changes the Home Directory',

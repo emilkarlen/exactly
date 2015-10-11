@@ -4,12 +4,12 @@ from shellcheck_lib.test_case.instruction.result import svh
 from shellcheck_lib.execution.single_instruction_executor import ControlledInstructionExecutor, \
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum
 from shellcheck_lib.test_case.instruction import common as instr
-from shellcheck_lib.test_case.instruction.sections.act import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
-from shellcheck_lib.test_case.instruction.sections.anonymous import AnonymousPhaseInstruction, \
+from shellcheck_lib.test_case.sections.act import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
+from shellcheck_lib.test_case.sections.anonymous import AnonymousPhaseInstruction, \
     ConfigurationBuilder
-from shellcheck_lib.test_case.instruction.sections.assert_ import AssertPhaseInstruction
-from shellcheck_lib.test_case.instruction.sections.cleanup import CleanupPhaseInstruction
-from shellcheck_lib.test_case.instruction.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
+from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
+from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction
+from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
 from shellcheck_lib.test_case.os_services import OsServices
 
 

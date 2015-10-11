@@ -14,7 +14,7 @@ from shellcheck_lib.execution import phases
 from shellcheck_lib_test.execution.util import py_unit_test_case
 from shellcheck_lib.test_case.instruction import common
 from shellcheck_lib_test.execution.util import utils
-from shellcheck_lib.test_case.instruction.sections.act import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
+from shellcheck_lib.test_case.sections.act import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
 
 HOME_DIR_HEADER = 'Home Dir'
 TEST_ROOT_DIR_HEADER = 'Test Root Dir'

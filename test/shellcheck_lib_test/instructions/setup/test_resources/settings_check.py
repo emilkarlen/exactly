@@ -1,6 +1,6 @@
 import unittest
 
-from shellcheck_lib.test_case.instruction.sections.setup import SetupSettingsBuilder
+from shellcheck_lib.test_case.sections.setup import SetupSettingsBuilder
 
 
 class Assertion:

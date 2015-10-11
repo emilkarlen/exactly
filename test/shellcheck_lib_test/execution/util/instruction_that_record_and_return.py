@@ -8,7 +8,7 @@ from shellcheck_lib.test_case.instruction import common as i
 from shellcheck_lib.test_case.instruction.result import pfh
 from shellcheck_lib.test_case.instruction.result import sh
 from shellcheck_lib.test_case.instruction.result import svh
-from shellcheck_lib.test_case.instruction.sections.anonymous import ConfigurationBuilder
+from shellcheck_lib.test_case.sections.anonymous import ConfigurationBuilder
 from shellcheck_lib_test.execution.util import instruction_that_do_and_return
 
 

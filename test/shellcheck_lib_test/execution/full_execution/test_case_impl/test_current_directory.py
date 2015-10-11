@@ -7,7 +7,7 @@ from shellcheck_lib.test_case import test_case_doc
 from shellcheck_lib.test_case.instruction import common
 from shellcheck_lib.execution.phase_step import PhaseStep
 from shellcheck_lib.execution.result import FullResultStatus
-from shellcheck_lib.test_case.instruction.sections.anonymous import ConfigurationBuilder
+from shellcheck_lib.test_case.sections.anonymous import ConfigurationBuilder
 from shellcheck_lib_test.execution.full_execution.util.test_case_base import FullExecutionTestCaseBase
 from shellcheck_lib.execution import phase_step
 from shellcheck_lib_test.execution.util import instruction_that_record_and_return as instr_setup
