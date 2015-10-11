@@ -4,18 +4,18 @@ from pathlib import Path
 from shellcheck_lib.test_case.instruction.result import pfh
 from shellcheck_lib.test_case.instruction.result import sh
 from shellcheck_lib.test_case.instruction.result import svh
-from shellcheck_lib.test_case.instruction.sections.anonymous import ConfigurationBuilder, \
+from shellcheck_lib.test_case.sections.anonymous import ConfigurationBuilder, \
     AnonymousPhaseInstruction
-from shellcheck_lib.test_case.instruction.sections.cleanup import CleanupPhaseInstruction
-from shellcheck_lib.test_case.instruction.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
-from shellcheck_lib.test_case.instruction.sections.assert_ import AssertPhaseInstruction
+from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction
+from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
+from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib_test.execution.util import python_code_gen as py
 from shellcheck_lib.execution import phase_step
 from shellcheck_lib.execution.phase_step import PhaseStep
 from shellcheck_lib.test_case.instruction import common as i
 from shellcheck_lib.document.model import Instruction
-from shellcheck_lib.test_case.instruction.sections.act import PhaseEnvironmentForScriptGeneration, ActPhaseInstruction
+from shellcheck_lib.test_case.sections.act import PhaseEnvironmentForScriptGeneration, ActPhaseInstruction
 from shellcheck_lib_test.execution.util.test_case_generation import TestCaseGeneratorBase
 
 

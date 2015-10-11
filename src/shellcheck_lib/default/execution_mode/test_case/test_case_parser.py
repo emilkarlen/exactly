@@ -10,7 +10,7 @@ from shellcheck_lib.test_case import test_case_doc
 from shellcheck_lib.test_case.instruction import common
 from shellcheck_lib.test_case.instruction.result import sh
 from shellcheck_lib.test_case.instruction.result import svh
-from shellcheck_lib.test_case.instruction.sections.act import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
+from shellcheck_lib.test_case.sections.act import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
 
 
 class Parser:

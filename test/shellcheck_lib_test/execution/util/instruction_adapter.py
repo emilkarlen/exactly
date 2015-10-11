@@ -6,9 +6,9 @@ from shellcheck_lib.test_case.instruction.result import pfh
 from shellcheck_lib.test_case.instruction.result import sh
 from shellcheck_lib.test_case.instruction.result import svh
 from shellcheck_lib.test_case.instruction import common as instr
-from shellcheck_lib.test_case.instruction.sections.assert_ import AssertPhaseInstruction
-from shellcheck_lib.test_case.instruction.sections.cleanup import CleanupPhaseInstruction
-from shellcheck_lib.test_case.instruction.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
+from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
+from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction
+from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
 
 
 class InternalInstruction(Instruction):

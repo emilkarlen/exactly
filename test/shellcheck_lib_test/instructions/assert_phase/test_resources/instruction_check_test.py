@@ -7,7 +7,7 @@ from shellcheck_lib.test_case.instruction.common import GlobalEnvironmentForPost
 from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.instruction.result import svh
 from shellcheck_lib.test_case.instruction.result import pfh
-from shellcheck_lib.test_case.instruction.sections.assert_ import AssertPhaseInstruction
+from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib_test.execution.full_execution.util.instruction_test_resources import \
     AssertPhaseInstructionThatReturns
 from shellcheck_lib_test.instructions.assert_phase.test_resources import instruction_check

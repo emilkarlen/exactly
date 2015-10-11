@@ -1,6 +1,6 @@
 import unittest
 
-from shellcheck_lib.test_case.instruction.sections.anonymous import ExecutionMode
+from shellcheck_lib.test_case.sections.anonymous import ExecutionMode
 from shellcheck_lib_test.execution.full_execution.util import instruction_test_resources
 from shellcheck_lib_test.execution.full_execution.util.instruction_test_resources import \
     AnonymousPhaseInstructionThatSetsExecutionMode

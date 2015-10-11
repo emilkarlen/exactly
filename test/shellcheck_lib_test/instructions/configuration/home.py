@@ -2,8 +2,7 @@ import unittest
 
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from shellcheck_lib.test_case.instruction.sections.anonymous import ConfigurationBuilder
-
+from shellcheck_lib.test_case.sections.anonymous import ConfigurationBuilder
 from shellcheck_lib_test.instructions.test_resources import sh_check
 from shellcheck_lib_test.instructions import utils
 from shellcheck_lib_test.instructions.configuration.test_resources.instruction_check import Flow, TestCaseBase

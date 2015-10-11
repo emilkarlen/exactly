@@ -6,7 +6,7 @@ import unittest
 from shellcheck_lib.test_case.instruction.common import GlobalEnvironmentForPostEdsPhase
 from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.instruction.result import sh
-from shellcheck_lib.test_case.instruction.sections.cleanup import CleanupPhaseInstruction
+from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction
 from shellcheck_lib_test.execution.full_execution.util.instruction_test_resources import \
     CleanupPhaseInstructionThatReturns
 from shellcheck_lib_test.instructions.cleanup.test_resources import instruction_check

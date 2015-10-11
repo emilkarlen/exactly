@@ -1,6 +1,6 @@
 import unittest
 
-from shellcheck_lib.test_case.instruction.sections.anonymous import ConfigurationBuilder
+from shellcheck_lib.test_case.sections.anonymous import ConfigurationBuilder
 
 
 class Assertion:

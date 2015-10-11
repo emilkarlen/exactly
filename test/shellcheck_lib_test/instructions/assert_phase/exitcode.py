@@ -3,7 +3,7 @@ import unittest
 from shellcheck_lib.instructions.assert_phase import exitcode
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from shellcheck_lib.test_case.instruction.sections.assert_ import AssertPhaseInstruction
+from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib_test.instructions import utils
 from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_check import Flow
 from shellcheck_lib_test.instructions.test_resources import pfh_check

@@ -1,8 +1,8 @@
-from shellcheck_lib.test_case.instruction.sections.act import ActPhaseInstruction
-from shellcheck_lib.test_case.instruction.sections.anonymous import AnonymousPhaseInstruction
-from shellcheck_lib.test_case.instruction.sections.assert_ import AssertPhaseInstruction
-from shellcheck_lib.test_case.instruction.sections.cleanup import CleanupPhaseInstruction
-from shellcheck_lib.test_case.instruction.sections.setup import SetupPhaseInstruction
+from shellcheck_lib.test_case.sections.act import ActPhaseInstruction
+from shellcheck_lib.test_case.sections.anonymous import AnonymousPhaseInstruction
+from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
+from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction
+from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction
 from shellcheck_lib_test.execution.full_execution.util import recording_instructions_for_sequence_tests as instr
 from shellcheck_lib_test.execution.full_execution.util.recording_instructions_for_sequence_tests import \
     SetupInstructionThatRecordsStringInList, AssertInternalInstructionThatRecordsStringInList, \
