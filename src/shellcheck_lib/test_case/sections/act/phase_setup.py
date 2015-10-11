@@ -3,8 +3,7 @@ import pathlib
 from shellcheck_lib.document.parse import SectionElementParser
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.general.output import StdOutputFiles
-from shellcheck_lib.script_language.act_script_management import ScriptSourceAccumulator, \
-    ScriptSourceBuilder
+from shellcheck_lib.test_case.sections.act.script_source import ScriptSourceAccumulator, ScriptSourceBuilder
 from shellcheck_lib.test_case.sections.result import svh
 
 
