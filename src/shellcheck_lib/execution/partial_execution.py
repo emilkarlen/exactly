@@ -10,7 +10,7 @@ from shellcheck_lib.general import line_source
 from shellcheck_lib.execution import phase_step_executors
 from shellcheck_lib.execution.single_instruction_executor import ControlledInstructionExecutor
 from shellcheck_lib.general.output import StdOutputFiles
-from shellcheck_lib.test_case.instruction import common
+from shellcheck_lib.test_case.sections import common
 from shellcheck_lib.document.model import PhaseContents
 from shellcheck_lib.execution import phases
 from shellcheck_lib.test_case import test_case_doc

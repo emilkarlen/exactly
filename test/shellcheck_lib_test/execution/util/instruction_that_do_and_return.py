@@ -13,7 +13,7 @@ from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib_test.execution.util import python_code_gen as py
 from shellcheck_lib.execution import phase_step
 from shellcheck_lib.execution.phase_step import PhaseStep
-from shellcheck_lib.test_case.instruction import common as i
+from shellcheck_lib.test_case.sections import common as i
 from shellcheck_lib.document.model import Instruction
 from shellcheck_lib.test_case.sections.act import PhaseEnvironmentForScriptGeneration, ActPhaseInstruction
 from shellcheck_lib_test.execution.util.test_case_generation import TestCaseGeneratorBase

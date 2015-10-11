@@ -5,7 +5,7 @@ import functools
 
 from shellcheck_lib.execution import environment_variables
 from shellcheck_lib.test_case import test_case_doc
-from shellcheck_lib.test_case.instruction import common
+from shellcheck_lib.test_case.sections import common
 from shellcheck_lib.execution.phase_step import PhaseStep
 from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib.test_case.sections.anonymous import ConfigurationBuilder

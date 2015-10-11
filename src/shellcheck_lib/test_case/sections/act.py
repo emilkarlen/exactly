@@ -2,7 +2,7 @@ from shellcheck_lib.document.model import Instruction
 from shellcheck_lib.test_case.act_phase_setup import PhaseEnvironmentForScriptGeneration
 from shellcheck_lib.test_case.sections.result.sh import SuccessOrHardError
 from shellcheck_lib.test_case.sections.result.svh import SuccessOrValidationErrorOrHardError
-from shellcheck_lib.test_case.instruction.common import GlobalEnvironmentForPostEdsPhase
+from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
 
 
 class ActPhaseInstruction(Instruction):

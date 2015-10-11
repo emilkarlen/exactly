@@ -3,7 +3,7 @@ import pathlib
 
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.execution import phases
-from shellcheck_lib.test_case.instruction import common
+from shellcheck_lib.test_case.sections import common
 from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib_test.execution.util.instruction_adapter import InternalInstruction
 

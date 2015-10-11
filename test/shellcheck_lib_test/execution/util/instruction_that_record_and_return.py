@@ -4,7 +4,7 @@ import functools
 
 from shellcheck_lib.execution.phase_step import PhaseStep
 from shellcheck_lib.test_case import test_case_doc
-from shellcheck_lib.test_case.instruction import common as i
+from shellcheck_lib.test_case.sections import common as i
 from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.result import svh

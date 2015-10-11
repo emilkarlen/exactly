@@ -10,7 +10,7 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.general import line_source
 from shellcheck_lib.general.line_source import LineSequenceBuilder
-from shellcheck_lib.test_case.instruction import common as i
+from shellcheck_lib.test_case.sections import common as i
 from shellcheck_lib.execution import execution_directory_structure
 from shellcheck_lib_test.util.file_utils import write_file
 

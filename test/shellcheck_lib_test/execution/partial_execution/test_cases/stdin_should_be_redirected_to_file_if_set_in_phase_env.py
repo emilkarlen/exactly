@@ -11,7 +11,7 @@ from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib_test.execution.util import utils
 from shellcheck_lib_test.execution.util import py_unit_test_case
 from shellcheck_lib_test.execution.util.py_unit_test_case import TestCaseWithCommonDefaultForSetupAssertCleanup
-from shellcheck_lib.test_case.instruction import common
+from shellcheck_lib.test_case.sections import common
 
 INPUT_TMP_FILE = 'input.txt'
 

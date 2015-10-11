@@ -1,6 +1,6 @@
 from shellcheck_lib.document.model import Instruction
 from shellcheck_lib.test_case.sections.result.sh import SuccessOrHardError
-from shellcheck_lib.test_case.instruction.common import GlobalEnvironmentForPostEdsPhase
+from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
 from shellcheck_lib.test_case.os_services import OsServices
 
 

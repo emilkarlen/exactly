@@ -8,8 +8,8 @@ import unittest
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, SingleInstructionParserSource
 from shellcheck_lib.execution import execution_directory_structure
-from shellcheck_lib.test_case.instruction import common as i
-from shellcheck_lib.test_case.instruction.common import GlobalEnvironmentForPreEdsStep
+from shellcheck_lib.test_case.sections import common as i
+from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPreEdsStep
 from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder

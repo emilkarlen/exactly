@@ -12,7 +12,7 @@ from shellcheck_lib_test.execution.util.py_unit_test_case_with_file_output impor
     InternalInstructionThatWritesToStandardPhaseFile
 from shellcheck_lib.execution import phases
 from shellcheck_lib_test.execution.util import py_unit_test_case
-from shellcheck_lib.test_case.instruction import common
+from shellcheck_lib.test_case.sections import common
 from shellcheck_lib_test.execution.util import utils
 from shellcheck_lib.test_case.sections.act import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
 
