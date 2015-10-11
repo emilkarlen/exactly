@@ -1,9 +1,8 @@
 import sys
 
 from shellcheck_lib.execution.partial_execution import ScriptHandling
-from shellcheck_lib.script_language import act_script_management
+from shellcheck_lib.script_language import script_language_management
 from shellcheck_lib.act_phase_setups.script_language_setup import ActScriptExecutorForScriptLanguage
-from shellcheck_lib.script_language.act_script_management import ScriptFileManager
 from shellcheck_lib.test_case.sections.act import script_source
 
 
@@ -15,7 +14,7 @@ class Python3Language(script_source.ScriptLanguage):
         return [statement]
 
 
-class Python3ScriptFileManager(ScriptFileManager):
+class Python3ScriptFileManager(script_language_management.ScriptFileManager):
     """
     This implementation assumes that the Python 3 interpreter (python3) is in the path.
     """
@@ -32,8 +31,8 @@ class Python3ScriptFileManager(ScriptFileManager):
         return [self.__interpreter, script_file_name]
 
 
-def new_script_language_setup() -> act_script_management.ScriptLanguageSetup:
-    return act_script_management.ScriptLanguageSetup(
+def new_script_language_setup() -> script_language_management.ScriptLanguageSetup:
+    return script_language_management.ScriptLanguageSetup(
         Python3ScriptFileManager(),
         Python3Language())
 

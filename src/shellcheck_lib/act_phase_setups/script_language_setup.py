@@ -5,7 +5,7 @@ from shellcheck_lib.default.execution_mode.test_case.test_case_parser import Pla
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.general import exception
 from shellcheck_lib.general.output import StdOutputFiles
-from shellcheck_lib.script_language.act_script_management import ScriptLanguageSetup
+from shellcheck_lib.script_language.script_language_management import ScriptLanguageSetup
 from shellcheck_lib.test_case.sections.act.phase_setup import ActPhaseSetup, ActScriptExecutor, SourceSetup
 from shellcheck_lib.test_case.sections.result import svh
 
