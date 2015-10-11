@@ -6,7 +6,7 @@ from shellcheck_lib.execution.execution_directory_structure import ExecutionDire
 from shellcheck_lib.general import exception
 from shellcheck_lib.general.output import StdOutputFiles
 from shellcheck_lib.script_language.act_script_management import ScriptLanguageSetup
-from shellcheck_lib.test_case.act_phase_setup import ActPhaseSetup, ActScriptExecutor, SourceSetup
+from shellcheck_lib.test_case.sections.act.phase_setup import ActPhaseSetup, ActScriptExecutor, SourceSetup
 from shellcheck_lib.test_case.sections.result import svh
 
 

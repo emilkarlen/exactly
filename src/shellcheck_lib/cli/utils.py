@@ -1,6 +1,6 @@
 from shellcheck_lib.script_language import python3
 from shellcheck_lib.script_language.act_phase_setup_for_script_language import new_for_script_language_setup
-from shellcheck_lib.test_case.act_phase_setup import ActPhaseSetup
+from shellcheck_lib.test_case.sections.act.phase_setup import ActPhaseSetup
 
 
 def resolve_act_phase_setup(interpreter: str=None) -> ActPhaseSetup:
