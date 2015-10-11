@@ -31,7 +31,7 @@ class SourceSetup:
         self.script_file_stem = script_file_stem
 
 
-class ActScriptExecutor:
+class ActProgramExecutor:
     def validate(self,
                  source_setup: SourceSetup) -> svh.SuccessOrValidationErrorOrHardError:
         raise NotImplementedError()
@@ -39,6 +39,9 @@ class ActScriptExecutor:
     def prepare(self,
                 source_setup: SourceSetup,
                 esd: ExecutionDirectoryStructure):
+        """
+        Executed after validate.
+        """
         raise NotImplementedError()
 
     def execute(self,
@@ -47,6 +50,9 @@ class ActScriptExecutor:
                 esd: ExecutionDirectoryStructure,
                 stdin,
                 std_files: StdOutputFiles) -> int:
+        """
+        Executed after prepare.
+        """
         raise NotImplementedError()
 
 
@@ -54,7 +60,7 @@ class ActPhaseSetup:
     def __init__(self,
                  parser: SectionElementParser,
                  script_builder_constructor,
-                 executor: ActScriptExecutor):
+                 executor: ActProgramExecutor):
         """
         :param script_builder_constructor: () -> ScriptSourceBuilder
         """

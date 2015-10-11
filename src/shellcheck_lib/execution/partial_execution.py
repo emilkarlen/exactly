@@ -18,7 +18,7 @@ from .execution_directory_structure import construct_at, ExecutionDirectoryStruc
 from .result import PartialResult, PartialResultStatus
 from . import result
 from . import phase_step_execution
-from shellcheck_lib.test_case.sections.act.phase_setup import PhaseEnvironmentForScriptGeneration, ActScriptExecutor, \
+from shellcheck_lib.test_case.sections.act.phase_setup import PhaseEnvironmentForScriptGeneration, ActProgramExecutor, \
     SourceSetup, ScriptSourceBuilder
 from shellcheck_lib.test_case.sections.setup import SetupSettingsBuilder
 from shellcheck_lib.test_case.os_services import new_default, OsServices
@@ -64,7 +64,7 @@ class _StepExecutionResult(tuple):
 class ScriptHandling:
     def __init__(self,
                  builder: ScriptSourceBuilder,
-                 executor: ActScriptExecutor):
+                 executor: ActProgramExecutor):
         self.builder = builder
         self.executor = executor
 
