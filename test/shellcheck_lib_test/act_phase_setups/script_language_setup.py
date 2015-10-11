@@ -8,7 +8,7 @@ from shellcheck_lib_test.test_case.test_resources.act_program_executor import Ac
 
 class TestCases(unittest.TestCase):
     def __init__(self, method_name='runTest'):
-        super().__init__(methodName=method_name)
+        super().__init__(method_name)
         self.tests = Tests(self, TestSetup())
 
     def test_stdout_is_connected_to_program(self):
@@ -17,11 +17,14 @@ class TestCases(unittest.TestCase):
     def test_stderr_is_connected_to_program(self):
         self.tests.test_stderr_is_connected_to_program()
 
-    def test_stdin_and_stdout(self):
+    def test_stdin_and_stdout_are_connected_to_program(self):
         self.tests.test_stdin_and_stdout_are_connected_to_program()
 
     def test_exit_code_is_returned(self):
         self.tests.test_exit_code_is_returned()
+
+    def test_initial_cwd_is_act_directory_and_that_cwd_is_restored_afterwards(self):
+        self.tests.test_initial_cwd_is_act_directory_and_that_cwd_is_restored_afterwards()
 
 
 class TestSetup(ActProgramExecutorTestSetup):
@@ -61,6 +64,16 @@ class TestSetup(ActProgramExecutorTestSetup):
             "sys.exit({})".format(exit_code)
         ])
         return ret_val
+
+    def program_that_prints_cwd_without_new_line_to_stdout(self):
+        ret_val = ScriptSourceBuilder(self.language)
+        ret_val.raw_script_statements([
+            'import sys',
+            'import os',
+            "sys.stdout.write(os.getcwd())"
+        ])
+        return ret_val
+
 
 def suite():
     ret_val = unittest.TestSuite()
