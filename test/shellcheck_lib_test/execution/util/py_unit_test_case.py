@@ -9,7 +9,7 @@ from shellcheck_lib.execution.execution_directory_structure import ExecutionDire
 from shellcheck_lib.execution.partial_execution import execute_test_case_in_execution_directory, PartialExecutor
 from shellcheck_lib.document import model
 from shellcheck_lib.general import line_source
-from shellcheck_lib.script_language import python3
+from shellcheck_lib.act_phase_setups import python3
 from shellcheck_lib.test_case import test_case_doc
 from shellcheck_lib.execution import phases
 from shellcheck_lib_test.execution.util import utils, instruction_adapter
