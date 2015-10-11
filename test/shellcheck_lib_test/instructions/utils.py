@@ -7,11 +7,10 @@ from time import strftime, localtime
 from shellcheck_lib.document import parse
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParserSource
-from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
+from shellcheck_lib.execution import execution_directory_structure as eds_module
 from shellcheck_lib.general import line_source
 from shellcheck_lib.general.line_source import LineSequenceBuilder
 from shellcheck_lib.test_case.sections import common as i
-from shellcheck_lib.execution import execution_directory_structure
 from shellcheck_lib_test.util.file_utils import write_file
 
 
@@ -59,7 +58,7 @@ def act_phase_result(exitcode: int=0,
 class HomeAndEds:
     def __init__(self,
                  home_path: pathlib.Path,
-                 eds: ExecutionDirectoryStructure):
+                 eds: eds_module.ExecutionDirectoryStructure):
         self._home_path = home_path
         self._eds = eds
 
@@ -68,7 +67,7 @@ class HomeAndEds:
         return self._home_path
 
     @property
-    def eds(self) -> ExecutionDirectoryStructure:
+    def eds(self) -> eds_module.ExecutionDirectoryStructure:
         return self._eds
 
     def write_act_result(self,
@@ -84,14 +83,20 @@ def home_and_eds_and_test_as_curr_dir() -> HomeAndEds:
     prefix = strftime("shellcheck-test-%Y-%m-%d-%H-%M-%S", localtime())
     with tempfile.TemporaryDirectory(prefix=prefix + "-home-") as home_dir:
         home_dir_path = pathlib.Path(home_dir)
-        with tempfile.TemporaryDirectory(prefix=prefix + "-eds-") as eds_root_dir:
-            eds = execution_directory_structure.construct_at(eds_root_dir)
+        with execution_directory_structure(prefix=prefix + "-eds-") as eds:
             try:
                 os.chdir(str(eds.act_dir))
                 yield HomeAndEds(home_dir_path,
                                  eds)
             finally:
                 os.chdir(cwd_before)
+
+
+@contextmanager
+def execution_directory_structure(prefix: str='shellcheck-test-eds-') -> eds_module.ExecutionDirectoryStructure:
+    with tempfile.TemporaryDirectory(prefix=prefix) as eds_root_dir:
+        eds = eds_module.construct_at(eds_root_dir)
+        yield eds
 
 
 def new_source(instruction_name: str, arguments: str) -> SingleInstructionParserSource:

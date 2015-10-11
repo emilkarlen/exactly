@@ -5,6 +5,8 @@ import tempfile
 import subprocess
 import unittest
 
+from shellcheck_lib.general.output import StdFiles, StdOutputFiles
+
 
 def lines_content(lines: list) -> str:
     return '' if not lines else os.linesep.join(lines) + os.linesep
@@ -108,10 +110,44 @@ stderr_file_name = 'stderr.txt'
 stdin_file_name = 'stdin.txt'
 
 
+class ProcessExecutor:
+    def execute(self,
+                cwd: str,
+                files: StdFiles) -> int:
+        """
+        :param cwd: Initial Current Working Directory of the executed process
+        :return: exit code
+        """
+        raise NotImplementedError()
+
+
+class ProcessExecutorForSubProcess(ProcessExecutor):
+    def __init__(self,
+                 cmd_and_args: list):
+        self.__cmd_and_args = cmd_and_args
+
+    def execute(self, cwd: str, files: StdFiles) -> int:
+        return subprocess.call(self.__cmd_and_args,
+                               cwd=cwd,
+                               stdin=files.stdin,
+                               stdout=files.output.out,
+                               stderr=files.output.err)
+
+
 def capture_subprocess(cmd_and_args: list,
                        tmp_dir: pathlib.Path,
                        cwd: str=None,
                        stdin_contents: str='') -> SubProcessResult:
+    return capture_process_executor_result(ProcessExecutorForSubProcess(cmd_and_args),
+                                           tmp_dir,
+                                           cwd,
+                                           stdin_contents)
+
+
+def capture_process_executor_result(executor: ProcessExecutor,
+                                    tmp_dir: pathlib.Path,
+                                    cwd: str=None,
+                                    stdin_contents: str='') -> SubProcessResult:
     stdout_path = tmp_dir / stdout_file_name
     stderr_path = tmp_dir / stderr_file_name
     stdin_path = tmp_dir / stdin_file_name
@@ -120,11 +156,10 @@ def capture_subprocess(cmd_and_args: list,
     with open(str(stdin_path)) as f_stdin:
         with open(str(stdout_path), 'w') as f_stdout:
             with open(str(stderr_path), 'w') as f_stderr:
-                exitcode = subprocess.call(cmd_and_args,
-                                           cwd=cwd,
-                                           stdin=f_stdin,
-                                           stdout=f_stdout,
-                                           stderr=f_stderr)
+                exitcode = executor.execute(cwd,
+                                            StdFiles(f_stdin,
+                                                     StdOutputFiles(f_stdout,
+                                                                    f_stderr)))
     return SubProcessResult(exitcode,
                             _contents_of_file(stdout_path),
                             _contents_of_file(stderr_path))

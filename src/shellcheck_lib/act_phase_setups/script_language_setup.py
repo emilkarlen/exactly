@@ -7,6 +7,7 @@ from shellcheck_lib.general import exception
 from shellcheck_lib.general.output import StdOutputFiles
 from shellcheck_lib.script_language.script_language_management import ScriptLanguageSetup
 from shellcheck_lib.test_case.sections.act.phase_setup import ActPhaseSetup, ActProgramExecutor, SourceSetup
+from shellcheck_lib.test_case.sections.act.script_source import ScriptSourceBuilder
 from shellcheck_lib.test_case.sections.result import svh
 
 
@@ -22,7 +23,7 @@ class ActProgramExecutorForScriptLanguage(ActProgramExecutor):
         self.script_language_setup = script_language_setup
 
     def validate(self,
-                 source_setup: SourceSetup) -> svh.SuccessOrValidationErrorOrHardError:
+                 source: ScriptSourceBuilder) -> svh.SuccessOrValidationErrorOrHardError:
         return svh.new_svh_success()
 
     def prepare(self,
@@ -35,9 +36,9 @@ class ActProgramExecutorForScriptLanguage(ActProgramExecutor):
     def execute(self,
                 source_setup: SourceSetup,
                 cwd_dir_path: pathlib.Path,
-                esd: ExecutionDirectoryStructure,
+                eds: ExecutionDirectoryStructure,
                 stdin,
-                std_files: StdOutputFiles) -> int:
+                std_output_files: StdOutputFiles) -> int:
         script_file_path = self._script_path(source_setup)
         cmd_and_args = self.script_language_setup.command_and_args_for_executing_script_file(
             str(script_file_path))
@@ -45,8 +46,8 @@ class ActProgramExecutorForScriptLanguage(ActProgramExecutor):
             return subprocess.call(cmd_and_args,
                                    cwd=str(cwd_dir_path),
                                    stdin=stdin,
-                                   stdout=std_files.out,
-                                   stderr=std_files.err)
+                                   stdout=std_output_files.out,
+                                   stderr=std_output_files.err)
         except ValueError as ex:
             msg = 'Error executing act phase as subprocess: ' + str(ex)
             raise exception.ImplementationError(msg)

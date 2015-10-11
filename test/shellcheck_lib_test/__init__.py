@@ -8,6 +8,7 @@ from shellcheck_lib_test import execution
 from shellcheck_lib_test import cli
 from shellcheck_lib_test import instructions
 from shellcheck_lib_test import test_suite
+from shellcheck_lib_test import act_phase_setups
 
 
 def suite():
@@ -19,6 +20,7 @@ def suite():
     ret_val.addTest(cli.suite())
     ret_val.addTest(test_suite.suite())
     ret_val.addTest(instructions.suite())
+    ret_val.addTest(act_phase_setups.suite())
     ret_val.addTest(default.suite())
     return ret_val
 

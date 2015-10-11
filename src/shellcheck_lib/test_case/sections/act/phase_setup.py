@@ -33,25 +33,37 @@ class SourceSetup:
 
 class ActProgramExecutor:
     def validate(self,
-                 source_setup: SourceSetup) -> svh.SuccessOrValidationErrorOrHardError:
+                 source: ScriptSourceBuilder) -> svh.SuccessOrValidationErrorOrHardError:
+        """
+        Validates the given source.
+
+        If success is not returned, then the test is aborted.
+        """
         raise NotImplementedError()
 
     def prepare(self,
                 source_setup: SourceSetup,
-                esd: ExecutionDirectoryStructure):
+                eds: ExecutionDirectoryStructure):
         """
         Executed after validate.
+
+        An opportunity to prepare for execution.
+
+        E.g. write the source code to file.
         """
         raise NotImplementedError()
 
     def execute(self,
                 source_setup: SourceSetup,
                 cwd_dir_path: pathlib.Path,
-                esd: ExecutionDirectoryStructure,
+                eds: ExecutionDirectoryStructure,
                 stdin,
-                std_files: StdOutputFiles) -> int:
+                std_output_files: StdOutputFiles) -> int:
         """
         Executed after prepare.
+        :param cwd_dir_path: The directory that should be (initial) Current Working Directory of the program.
+        :param stdin: A file object that should become stdin of the program.
+        :param std_output_files: File objects that should become stdout and stderr of the program.
         """
         raise NotImplementedError()
 
