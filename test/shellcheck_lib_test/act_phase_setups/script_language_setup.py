@@ -1,3 +1,4 @@
+from contextlib import contextmanager
 import unittest
 
 from shellcheck_lib.act_phase_setups import script_language_setup as sut
@@ -36,38 +37,43 @@ class TestSetup(ActProgramExecutorTestSetup):
         self.language_setup = python3.script_language_setup()
         super().__init__(sut.ActProgramExecutorForScriptLanguage(self.language_setup))
 
+    @contextmanager
     def program_that_copes_stdin_to_stdout(self) -> ScriptSourceBuilder:
         ret_val = ScriptSourceBuilder(self.language)
         ret_val.raw_script_statements([
             'import sys',
             "sys.stdout.write(sys.stdin.read())"
         ])
-        return ret_val
+        yield ret_val
 
+    @contextmanager
     def program_that_prints_to_stderr(self, string_to_print: str) -> ScriptSourceBuilder:
         ret_val = ScriptSourceBuilder(self.language)
         ret_val.raw_script_statements([
             'import sys',
             "sys.stderr.write('{}')".format(string_to_print)
         ])
-        return ret_val
+        yield ret_val
 
+    @contextmanager
     def program_that_prints_to_stdout(self, string_to_print: str) -> ScriptSourceBuilder:
         ret_val = ScriptSourceBuilder(self.language)
         ret_val.raw_script_statements([
             'import sys',
             "sys.stdout.write('{}')".format(string_to_print)
         ])
-        return ret_val
+        yield ret_val
 
+    @contextmanager
     def program_that_exits_with_code(self, exit_code: int):
         ret_val = ScriptSourceBuilder(self.language)
         ret_val.raw_script_statements([
             'import sys',
             "sys.exit({})".format(exit_code)
         ])
-        return ret_val
+        yield ret_val
 
+    @contextmanager
     def program_that_prints_cwd_without_new_line_to_stdout(self):
         ret_val = ScriptSourceBuilder(self.language)
         ret_val.raw_script_statements([
@@ -75,8 +81,9 @@ class TestSetup(ActProgramExecutorTestSetup):
             'import os',
             "sys.stdout.write(os.getcwd())"
         ])
-        return ret_val
+        yield ret_val
 
+    @contextmanager
     def program_that_prints_value_of_environment_variable_to_stdout(self, var_name: str) -> ScriptSourceBuilder:
         ret_val = ScriptSourceBuilder(self.language)
         ret_val.raw_script_statements([
@@ -84,7 +91,7 @@ class TestSetup(ActProgramExecutorTestSetup):
             'import os',
             "sys.stdout.write(os.environ['{}'])".format(var_name)
         ])
-        return ret_val
+        yield ret_val
 
 
 def suite():
