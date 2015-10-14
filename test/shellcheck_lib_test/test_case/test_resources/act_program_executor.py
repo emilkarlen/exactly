@@ -1,5 +1,6 @@
 import os
 import pathlib
+import random
 import unittest
 
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
@@ -25,10 +26,13 @@ class ActProgramExecutorTestSetup:
     def program_that_prints_to_stderr(self, string_to_print: str) -> ScriptSourceBuilder:
         raise NotImplementedError()
 
-    def program_that_exits_with_code(self, exit_code: int):
+    def program_that_exits_with_code(self, exit_code: int) -> ScriptSourceBuilder:
         raise NotImplementedError()
 
-    def program_that_prints_cwd_without_new_line_to_stdout(self):
+    def program_that_prints_cwd_without_new_line_to_stdout(self) -> ScriptSourceBuilder:
+        raise NotImplementedError()
+
+    def program_that_prints_value_of_environment_variable_to_stdout(self, var_name: str) -> ScriptSourceBuilder:
         raise NotImplementedError()
 
 
@@ -86,6 +90,16 @@ class Tests:
         self.put.assertEqual(87,
                              process_result.exitcode,
                              'Exit Code')
+
+    def test_environment_variables_are_accessible_by_program(self):
+        var_name = 'SHELLCHECK_TEST_VAR'
+        var_value = str(random.getrandbits(32))
+        os.environ[var_name] = var_value
+        program = self.test_setup.program_that_prints_value_of_environment_variable_to_stdout(var_name)
+        process_result = self.__execute(program)
+        self.put.assertEqual(var_value,
+                             process_result.stdout,
+                             'Contents of stdout should be value of environment variable')
 
     def test_initial_cwd_is_act_directory_and_that_cwd_is_restored_afterwards(self):
         cwd_before = os.getcwd()
