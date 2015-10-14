@@ -26,6 +26,9 @@ class TestCases(unittest.TestCase):
     def test_initial_cwd_is_act_directory_and_that_cwd_is_restored_afterwards(self):
         self.tests.test_initial_cwd_is_act_directory_and_that_cwd_is_restored_afterwards()
 
+    def test_environment_variables_are_accessible_by_program(self):
+        self.tests.test_environment_variables_are_accessible_by_program()
+
 
 class TestSetup(ActProgramExecutorTestSetup):
     def __init__(self):
@@ -71,6 +74,15 @@ class TestSetup(ActProgramExecutorTestSetup):
             'import sys',
             'import os',
             "sys.stdout.write(os.getcwd())"
+        ])
+        return ret_val
+
+    def program_that_prints_value_of_environment_variable_to_stdout(self, var_name: str) -> ScriptSourceBuilder:
+        ret_val = ScriptSourceBuilder(self.language)
+        ret_val.raw_script_statements([
+            'import sys',
+            'import os',
+            "sys.stdout.write(os.environ['{}'])".format(var_name)
         ])
         return ret_val
 
