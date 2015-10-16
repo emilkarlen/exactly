@@ -10,6 +10,14 @@ from shellcheck_lib.act_phase_setups import utils
 from shellcheck_lib.test_case.sections.act.script_source import ScriptLanguage
 
 
+def script_language() -> ScriptLanguage:
+    return _ScriptLanguage()
+
+
+def act_program_executor() -> ActProgramExecutor:
+    return _ActProgramExecutorForSingleCommand()
+
+
 class _ScriptLanguage(ScriptLanguage):
     def raw_script_statement(self, statement: str) -> list:
         return [statement]
@@ -24,7 +32,7 @@ class _ScriptLanguage(ScriptLanguage):
 #                          ActProgramExecutorForSingleCommand(script_language_setup))
 
 
-class ActProgramExecutorForSingleCommand(ActProgramExecutor):
+class _ActProgramExecutorForSingleCommand(ActProgramExecutor):
     def validate(self,
                  source: ScriptSourceBuilder) -> svh.SuccessOrValidationErrorOrHardError:
         return svh.new_svh_success()
