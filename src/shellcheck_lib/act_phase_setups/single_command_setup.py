@@ -1,9 +1,10 @@
 import pathlib
 import shlex
 
+from shellcheck_lib.default.execution_mode.test_case.test_case_parser import PlainSourceActPhaseParser
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.general.output import StdOutputFiles, StdFiles
-from shellcheck_lib.test_case.sections.act.phase_setup import ActProgramExecutor, SourceSetup
+from shellcheck_lib.test_case.sections.act.phase_setup import ActProgramExecutor, SourceSetup, ActPhaseSetup
 from shellcheck_lib.test_case.sections.act.script_source import ScriptSourceBuilder
 from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.act_phase_setups import utils
@@ -26,10 +27,14 @@ class _ScriptLanguage(ScriptLanguage):
         return []
 
 
-# def new_for_script_language_setup(script_language_setup: ScriptLanguageSetup) -> ActPhaseSetup:
-#     return ActPhaseSetup(PlainSourceActPhaseParser(),
-#                          script_language_setup.new_builder,
-#                          ActProgramExecutorForSingleCommand(script_language_setup))
+def script_source_builder() -> ScriptSourceBuilder:
+    return ScriptSourceBuilder(script_language())
+
+
+def act_phase_setup() -> ActPhaseSetup:
+    return ActPhaseSetup(PlainSourceActPhaseParser(),
+                         script_source_builder,
+                         _ActProgramExecutorForSingleCommand())
 
 
 class _ActProgramExecutorForSingleCommand(ActProgramExecutor):
@@ -52,7 +57,7 @@ class _ActProgramExecutorForSingleCommand(ActProgramExecutor):
                 eds: ExecutionDirectoryStructure,
                 stdin,
                 std_output_files: StdOutputFiles) -> int:
-        command_string = source_setup.script_builder.build()
+        command_string = source_setup.script_builder.source_lines[0]
         cmd_and_args = shlex.split(command_string)
         return utils.execute_cmd_and_args(cmd_and_args,
                                           cwd_dir_path,
