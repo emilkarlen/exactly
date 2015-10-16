@@ -12,7 +12,7 @@ from shellcheck_lib_test.util.with_tmp_file import tmp_file_containing_lines
 
 
 class StandardExecutorTestCases(unittest.TestCase):
-    def __init__(self, method_name='runTest'):
+    def __init__(self, method_name):
         super().__init__(method_name)
         self.tests = Tests(self, TestSetup())
 
@@ -36,14 +36,13 @@ class StandardExecutorTestCases(unittest.TestCase):
 
 
 class ExecutorValidationTestCases(unittest.TestCase):
-    def __init__(self, method_name='runTest'):
+    def __init__(self, method_name):
         super().__init__(method_name)
-        self.language = sut.script_language()
-        self.act_program_executor = sut.act_program_executor()
+        self.setup = sut.act_phase_setup()
 
     def test_validation_fails_when_there_are_no_statements(self):
         source = self._empty_builder()
-        actual = self.act_program_executor.validate(source)
+        actual = self.setup.executor.validate(source)
         self.assertIs(actual.status,
                       svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
                       'Validation result')
@@ -52,7 +51,7 @@ class ExecutorValidationTestCases(unittest.TestCase):
         source = self._empty_builder()
         source.raw_script_statement('statement 1')
         source.raw_script_statement('statement 2')
-        actual = self.act_program_executor.validate(source)
+        actual = self.setup.executor.validate(source)
         self.assertIs(actual.status,
                       svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
                       'Validation result')
@@ -60,7 +59,7 @@ class ExecutorValidationTestCases(unittest.TestCase):
     def test_validation_succeeds_when_there_is_exactly_one_statements(self):
         source = self._empty_builder()
         source.raw_script_statement('statement 1')
-        actual = self.act_program_executor.validate(source)
+        actual = self.setup.executor.validate(source)
         self.assertIs(actual.status,
                       svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                       'Validation result')
@@ -69,19 +68,19 @@ class ExecutorValidationTestCases(unittest.TestCase):
         source = self._empty_builder()
         source.raw_script_statement('statement 1')
         source.comment_line('comment 1')
-        actual = self.act_program_executor.validate(source)
+        actual = self.setup.executor.validate(source)
         self.assertIs(actual.status,
                       svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                       'Validation result')
 
     def _empty_builder(self) -> ScriptSourceBuilder:
-        return ScriptSourceBuilder(self.language)
+        return self.setup.script_builder_constructor()
 
 
 class TestSetup(ActProgramExecutorTestSetup):
     def __init__(self):
-        super().__init__(sut.act_program_executor())
-        self.language = sut.script_language()
+        self.setup = sut.act_phase_setup()
+        super().__init__(self.setup.executor)
         self.python_executable = sys.executable
 
     @contextmanager
@@ -114,7 +113,7 @@ class TestSetup(ActProgramExecutorTestSetup):
             yield self._builder_for_executing_py_file(src_path)
 
     def _builder_for_executing_py_file(self, src_path: pathlib.Path) -> ScriptSourceBuilder:
-        ret_val = ScriptSourceBuilder(self.language)
+        ret_val = self.setup.script_builder_constructor()
         cmd = self.python_executable + ' ' + str(src_path)
         ret_val.raw_script_statement(cmd)
         return ret_val

@@ -9,7 +9,7 @@ from shellcheck_lib_test.act_phase_setups.test_resources import py_program
 
 
 class StandardExecutorTestCases(unittest.TestCase):
-    def __init__(self, method_name='runTest'):
+    def __init__(self, method_name):
         super().__init__(method_name)
         self.tests = Tests(self, TestSetup())
 
@@ -34,9 +34,8 @@ class StandardExecutorTestCases(unittest.TestCase):
 
 class TestSetup(ActProgramExecutorTestSetup):
     def __init__(self):
-        self.language = python3.language()
-        self.language_setup = python3.script_language_setup()
-        super().__init__(sut.ActProgramExecutorForScriptLanguage(self.language_setup))
+        self.setup = sut.new_for_script_language_setup(python3.script_language_setup())
+        super().__init__(self.setup.executor)
 
     @contextmanager
     def program_that_copes_stdin_to_stdout(self) -> ScriptSourceBuilder:
@@ -63,7 +62,7 @@ class TestSetup(ActProgramExecutorTestSetup):
         yield self._builder_for(py_program.write_value_of_environment_variable_to_stdout(var_name))
 
     def _builder_for(self, statements: list) -> ScriptSourceBuilder:
-        ret_val = ScriptSourceBuilder(self.language)
+        ret_val = self.setup.script_builder_constructor()
         ret_val.raw_script_statements(statements)
         return ret_val
 
