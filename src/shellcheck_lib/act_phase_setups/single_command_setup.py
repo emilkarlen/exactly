@@ -11,12 +11,14 @@ from shellcheck_lib.act_phase_setups import utils
 from shellcheck_lib.test_case.sections.act.script_source import ScriptLanguage
 
 
-def script_language() -> ScriptLanguage:
-    return _ScriptLanguage()
+def act_phase_setup() -> ActPhaseSetup:
+    return ActPhaseSetup(PlainSourceActPhaseParser(),
+                         _script_source_builder,
+                         _ActProgramExecutorForSingleCommand())
 
 
-def act_program_executor() -> ActProgramExecutor:
-    return _ActProgramExecutorForSingleCommand()
+def _script_source_builder() -> ScriptSourceBuilder:
+    return ScriptSourceBuilder(_ScriptLanguage())
 
 
 class _ScriptLanguage(ScriptLanguage):
@@ -25,16 +27,6 @@ class _ScriptLanguage(ScriptLanguage):
 
     def comment_line(self, comment: str) -> list:
         return []
-
-
-def script_source_builder() -> ScriptSourceBuilder:
-    return ScriptSourceBuilder(script_language())
-
-
-def act_phase_setup() -> ActPhaseSetup:
-    return ActPhaseSetup(PlainSourceActPhaseParser(),
-                         script_source_builder,
-                         _ActProgramExecutorForSingleCommand())
 
 
 class _ActProgramExecutorForSingleCommand(ActProgramExecutor):
