@@ -274,7 +274,7 @@ class Test(unittest.TestCase):
             .add_assert(
             instruction_test_resources.AssertPhaseInstructionThatReturns(
                 from_validate=svh.new_svh_validation_error('ASSERT/validate'),
-                from_execute=sh.new_sh_success()))
+                from_execute=pfh.new_pfh_pass()))
         TestCaseThatRecordsExecution(
             self,
             test_case,
@@ -304,7 +304,7 @@ class Test(unittest.TestCase):
             .add_assert(
             instruction_test_resources.AssertPhaseInstructionThatReturns(
                 from_validate=svh.new_svh_hard_error('ASSERT/validate'),
-                from_execute=sh.new_sh_success()))
+                from_execute=pfh.new_pfh_pass()))
         TestCaseThatRecordsExecution(
             self,
             test_case,
