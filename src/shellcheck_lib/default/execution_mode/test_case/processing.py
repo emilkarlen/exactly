@@ -103,6 +103,11 @@ class _Parser(processing_utils.Parser):
             raise ProcessError(error_info)
 
 
+def script_handling_for_setup(setup: ActPhaseSetup) -> ScriptHandling:
+    return ScriptHandling(setup.script_builder_constructor(),
+                          setup.executor)
+
+
 class _Executor(processing_utils.Executor):
     def __init__(self,
                  act_phase_setup: ActPhaseSetup,
@@ -115,8 +120,7 @@ class _Executor(processing_utils.Executor):
     def apply(self,
               test_case_file_path: pathlib.Path,
               test_case: test_case_doc.TestCase) -> FullResult:
-        return full_execution.execute(ScriptHandling(self._act_phase_setup.script_builder_constructor(),
-                                                     self._act_phase_setup.executor),
+        return full_execution.execute(script_handling_for_setup(self._act_phase_setup),
                                       test_case,
                                       test_case_file_path.parent,
                                       self._execution_directory_root_name_prefix,

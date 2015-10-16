@@ -3,6 +3,7 @@ import shutil
 import pathlib
 import unittest
 
+from shellcheck_lib.default.execution_mode.test_case.processing import script_handling_for_setup
 from shellcheck_lib.test_case import test_case_doc
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.execution.result import FullResult
@@ -26,7 +27,7 @@ class FullExecutionTestCaseBase:
         self.__initial_home_dir_path = pathlib.Path().resolve()
         # ACT #
         full_result = full_execution.execute(
-            python3.new_script_handling(),
+            script_handling_for_setup(python3.new_act_phase_setup()),
             self._test_case(),
             self.initial_home_dir_path,
             'shellcheck-test-',

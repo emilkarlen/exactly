@@ -4,6 +4,7 @@ import pathlib
 import types
 import unittest
 
+from shellcheck_lib.default.execution_mode.test_case.processing import script_handling_for_setup
 from shellcheck_lib.test_case.test_case_doc import TestCase
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.execution.partial_execution import execute_test_case_in_execution_directory, PartialExecutor
@@ -47,7 +48,7 @@ def py3_test(unittest_case: unittest.TestCase,
     home_dir_path = pathlib.Path().resolve()
     # ACT #
     test_case_execution = execute_test_case_in_execution_directory(
-        python3.new_script_handling(),
+        script_handling_for_setup(python3.new_act_phase_setup()),
         test_case,
         home_dir_path,
         'shellcheck-test-',
