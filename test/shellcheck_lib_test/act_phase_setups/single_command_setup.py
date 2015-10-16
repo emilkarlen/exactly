@@ -5,6 +5,7 @@ import sys
 
 from shellcheck_lib.act_phase_setups import single_command_setup as sut
 from shellcheck_lib.test_case.sections.act.script_source import ScriptSourceBuilder
+from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib_test.test_case.test_resources.act_program_executor import ActProgramExecutorTestSetup, Tests
 from shellcheck_lib_test.act_phase_setups.test_resources import py_program
 from shellcheck_lib_test.util.with_tmp_file import tmp_file_containing_lines
@@ -34,11 +35,54 @@ class StandardExecutorTestCases(unittest.TestCase):
         self.tests.test_environment_variables_are_accessible_by_program()
 
 
+class ExecutorValidationTestCases(unittest.TestCase):
+    def __init__(self, method_name='runTest'):
+        super().__init__(method_name)
+        self.language = sut.script_language()
+        self.act_program_executor = sut.act_program_executor()
+
+    def test_validation_fails_when_there_are_no_statements(self):
+        source = self._empty_builder()
+        actual = self.act_program_executor.validate(source)
+        self.assertIs(actual.status,
+                      svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
+                      'Validation result')
+
+    def test_validation_fails_when_there_are_more_than_one_statements(self):
+        source = self._empty_builder()
+        source.raw_script_statement('statement 1')
+        source.raw_script_statement('statement 2')
+        actual = self.act_program_executor.validate(source)
+        self.assertIs(actual.status,
+                      svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
+                      'Validation result')
+
+    def test_validation_succeeds_when_there_is_exactly_one_statements(self):
+        source = self._empty_builder()
+        source.raw_script_statement('statement 1')
+        actual = self.act_program_executor.validate(source)
+        self.assertIs(actual.status,
+                      svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                      'Validation result')
+
+    def test_that_comment_lines_are_ignored(self):
+        source = self._empty_builder()
+        source.raw_script_statement('statement 1')
+        source.comment_line('comment 1')
+        actual = self.act_program_executor.validate(source)
+        self.assertIs(actual.status,
+                      svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                      'Validation result')
+
+    def _empty_builder(self) -> ScriptSourceBuilder:
+        return ScriptSourceBuilder(self.language)
+
+
 class TestSetup(ActProgramExecutorTestSetup):
     def __init__(self):
-        self.language = sut.script_language()
         super().__init__(sut.act_program_executor())
-        self.executable = sys.executable
+        self.language = sut.script_language()
+        self.python_executable = sys.executable
 
     @contextmanager
     def program_that_copes_stdin_to_stdout(self) -> ScriptSourceBuilder:
@@ -71,13 +115,14 @@ class TestSetup(ActProgramExecutorTestSetup):
 
     def _builder_for_executing_py_file(self, src_path: pathlib.Path) -> ScriptSourceBuilder:
         ret_val = ScriptSourceBuilder(self.language)
-        cmd = self.executable + ' ' + str(src_path)
+        cmd = self.python_executable + ' ' + str(src_path)
         ret_val.raw_script_statement(cmd)
         return ret_val
 
 
 def suite():
     ret_val = unittest.TestSuite()
+    ret_val.addTest(unittest.makeSuite(ExecutorValidationTestCases))
     ret_val.addTest(unittest.makeSuite(StandardExecutorTestCases))
     return ret_val
 

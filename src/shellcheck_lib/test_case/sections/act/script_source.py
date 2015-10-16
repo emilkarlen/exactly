@@ -102,3 +102,7 @@ class ScriptSourceBuilder(ScriptSourceAccumulator):
 
     def _final_source_code_string(self) -> str:
         return os.linesep.join(self._source_lines) + os.linesep
+
+    @property
+    def source_lines(self) -> list:
+        return self._source_lines

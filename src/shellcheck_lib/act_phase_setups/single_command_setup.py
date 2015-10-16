@@ -35,7 +35,11 @@ class _ScriptLanguage(ScriptLanguage):
 class _ActProgramExecutorForSingleCommand(ActProgramExecutor):
     def validate(self,
                  source: ScriptSourceBuilder) -> svh.SuccessOrValidationErrorOrHardError:
-        return svh.new_svh_success()
+        num_source_lines = len(source.source_lines)
+        if num_source_lines == 1:
+            return svh.new_svh_success()
+        msg = 'There must be a single source line. Found {} lines'.format(num_source_lines)
+        return svh.new_svh_validation_error(msg)
 
     def prepare(self,
                 source_setup: SourceSetup,
