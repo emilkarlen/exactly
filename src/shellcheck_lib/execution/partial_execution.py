@@ -39,7 +39,7 @@ class Configuration(tuple):
         return self[1]
 
 
-class _StepExecutionResult(tuple):
+class _StepExecutionResult:
     def __init__(self):
         self.__script_source = None
         self.__stdin_file_name = None

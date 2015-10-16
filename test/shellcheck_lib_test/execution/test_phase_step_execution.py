@@ -11,8 +11,7 @@ from shellcheck_lib_test.util.expected_instruction_failure import \
     new_expected_exception
 from shellcheck_lib.execution.phase_step_execution import execute_phase_prim, Failure
 from shellcheck_lib.execution.result import PartialResultStatus
-from shellcheck_lib.general import line_source
-from shellcheck_lib.document.model import Instruction, PhaseContentElement, PhaseContents
+from shellcheck_lib.document.model import PhaseContents
 from shellcheck_lib_test.util.model_utils import new_comment_element, new_instruction_element
 from shellcheck_lib.execution.single_instruction_executor import ControlledInstructionExecutor, \
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum
@@ -298,11 +297,6 @@ class Test(unittest.TestCase):
         self.assertEqual(expected_recordings,
                          actual_recording_media.output,
                          'Recorded executions')
-
-
-def new_dummy_instruction_element() -> PhaseContentElement:
-    return PhaseContentElement(line_source.Line(100, '100'),
-                               Instruction())
 
 
 def suite():

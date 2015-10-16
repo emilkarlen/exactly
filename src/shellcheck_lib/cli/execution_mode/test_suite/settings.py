@@ -15,4 +15,3 @@ class Settings:
     @property
     def suite_root_file_path(self) -> pathlib.Path:
         return self.__suite_root_file_path
-
