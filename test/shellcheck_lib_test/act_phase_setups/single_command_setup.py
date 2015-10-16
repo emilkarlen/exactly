@@ -11,7 +11,7 @@ from shellcheck_lib_test.act_phase_setups.test_resources import py_program
 from shellcheck_lib_test.util.with_tmp_file import tmp_file_containing_lines
 
 
-class TestCases(unittest.TestCase):
+class StandardExecutorTestCases(unittest.TestCase):
     def __init__(self, method_name='runTest'):
         super().__init__(method_name)
         self.tests = Tests(self, TestSetup())
@@ -80,7 +80,7 @@ class TestSetup(ActProgramExecutorTestSetup):
 
 def suite():
     ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestCases))
+    ret_val.addTest(unittest.makeSuite(StandardExecutorTestCases))
     return ret_val
 
 
