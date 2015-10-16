@@ -1,14 +1,13 @@
 import pathlib
-import subprocess
 
 from shellcheck_lib.default.execution_mode.test_case.test_case_parser import PlainSourceActPhaseParser
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
-from shellcheck_lib.general import exception
-from shellcheck_lib.general.output import StdOutputFiles
+from shellcheck_lib.general.output import StdOutputFiles, StdFiles
 from shellcheck_lib.script_language.script_language_management import ScriptLanguageSetup
 from shellcheck_lib.test_case.sections.act.phase_setup import ActPhaseSetup, ActProgramExecutor, SourceSetup
 from shellcheck_lib.test_case.sections.act.script_source import ScriptSourceBuilder
 from shellcheck_lib.test_case.sections.result import svh
+from shellcheck_lib.act_phase_setups import utils
 
 
 def new_for_script_language_setup(script_language_setup: ScriptLanguageSetup) -> ActPhaseSetup:
@@ -42,18 +41,10 @@ class ActProgramExecutorForScriptLanguage(ActProgramExecutor):
         script_file_path = self._script_path(source_setup)
         cmd_and_args = self.script_language_setup.command_and_args_for_executing_script_file(
             str(script_file_path))
-        try:
-            return subprocess.call(cmd_and_args,
-                                   cwd=str(cwd_dir_path),
-                                   stdin=stdin,
-                                   stdout=std_output_files.out,
-                                   stderr=std_output_files.err)
-        except ValueError as ex:
-            msg = 'Error executing act phase as subprocess: ' + str(ex)
-            raise exception.ImplementationError(msg)
-        except OSError as ex:
-            msg = 'Error executing act phase as subprocess: ' + str(ex)
-            raise exception.ImplementationError(msg)
+        return utils.execute_cmd_and_args(cmd_and_args,
+                                          cwd_dir_path,
+                                          StdFiles(stdin_file=stdin,
+                                                   output_files=std_output_files))
 
     def _script_path(self,
                      source_setup: SourceSetup) -> pathlib.Path:
