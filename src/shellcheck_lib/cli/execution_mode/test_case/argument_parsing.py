@@ -72,6 +72,7 @@ def _new_argument_parser() -> argparse.ArgumentParser:
 
                         SHELL-COMMAND is parsed according to shell syntax.
 
-                        If the exit code from the preprocessor is non-zero, then processing is considered to have failed.
+                        If the exit code from the preprocessor is non-zero,
+                        then processing is considered to have failed.
                         """)
     return ret_val

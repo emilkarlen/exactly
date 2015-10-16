@@ -34,6 +34,7 @@ def is_hard_error():
 def is_validation_error():
     return StatusIs(svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR)
 
+
 class AnythingGoes(Assertion):
     def apply(self,
               put: unittest.TestCase,

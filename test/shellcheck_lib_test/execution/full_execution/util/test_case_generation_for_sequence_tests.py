@@ -210,26 +210,26 @@ class TestCaseThatRecordsExecutionWithExtraInstructionList(TestCaseGeneratorForE
         self.__setup_extra.append(instruction)
         return self
 
-    def add_setup_internal_recorder_of(self, text: str):
-        self.__setup_extra.append(self._new_setup_internal_recorder(text))
-        return self
+    # def add_setup_internal_recorder_of(self, text: str):
+    #     self.__setup_extra.append(self._new_setup_internal_recorder(text))
+    #     return self
 
     def add_act(self, instruction: ActPhaseInstruction):
         self.__act_extra.append(instruction)
         return self
 
-    def add_act_internal_recorder_of(self, text: str):
-        self.__act_extra.append(self._new_act_internal_recorder(text))
-        return self
+    # def add_act_internal_recorder_of(self, text: str):
+    #     self.__act_extra.append(self._new_act_internal_recorder(text))
+    #     return self
 
     def add_assert(self, instruction: AssertPhaseInstruction):
         self.__assert_extra.append(instruction)
         return self
 
-    def add_assert_internal_recorder_of(self, text: str):
-        self.__assert_extra.append(self._new_assert_internal_recorder(text))
-        return self
-
+    # def add_assert_internal_recorder_of(self, text: str):
+    #     self.__assert_extra.append(self._new_assert_internal_recorder(text))
+    #     return self
+    #
     def add_cleanup(self, instruction: CleanupPhaseInstruction):
         self.__cleanup_extra.append(instruction)
         return self
@@ -237,7 +237,6 @@ class TestCaseThatRecordsExecutionWithExtraInstructionList(TestCaseGeneratorForE
     def add_cleanup_internal_recorder_of(self, text: str):
         self.__cleanup_extra.append(self._new_cleanup_internal_recorder(text))
         return self
-
 
     @property
     def the_anonymous_phase_extra(self) -> list:
@@ -278,4 +277,3 @@ class TestCaseThatRecordsExecutionWithExtraInstructionList(TestCaseGeneratorForE
         """
         self.test_case
         return self.__the_cleanup_extra
-

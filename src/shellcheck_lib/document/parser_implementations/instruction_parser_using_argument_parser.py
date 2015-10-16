@@ -36,5 +36,6 @@ class SingleLineParser(SingleInstructionParser):
         """
         raise NotImplementedError()
 
-    def _split_argument(self, instruction_argument: str) -> list:
+    @staticmethod
+    def _split_argument(instruction_argument: str) -> list:
         return shlex.split(instruction_argument)

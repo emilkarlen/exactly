@@ -12,6 +12,7 @@ from shellcheck_lib.test_case import test_case_processing
 
 NO_EXECUTION_EXIT_CODE = 3
 
+
 class Executor:
     def __init__(self,
                  output: StdOutputFiles,

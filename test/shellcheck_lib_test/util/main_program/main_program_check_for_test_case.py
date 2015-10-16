@@ -28,6 +28,9 @@ class SetupWithPreprocessor(main_program_check_base.SetupWithPreprocessor):
     def file_argument_base_name(self) -> str:
         return 'test-case.tc'
 
+    def preprocessor_source(self) -> str:
+        raise NotImplementedError()
+
     def test_case(self) -> str:
         raise NotImplementedError()
 
