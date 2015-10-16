@@ -5,7 +5,6 @@ import sys
 
 from shellcheck_lib.act_phase_setups import single_command_setup as sut
 from shellcheck_lib.test_case.sections.act.script_source import ScriptSourceBuilder
-from shellcheck_lib.script_language import python3
 from shellcheck_lib_test.test_case.test_resources.act_program_executor import ActProgramExecutorTestSetup, Tests
 from shellcheck_lib_test.act_phase_setups.test_resources import py_program
 from shellcheck_lib_test.util.with_tmp_file import tmp_file_containing_lines
@@ -37,9 +36,8 @@ class StandardExecutorTestCases(unittest.TestCase):
 
 class TestSetup(ActProgramExecutorTestSetup):
     def __init__(self):
-        self.language = python3.language()
-        self.language_setup = python3.script_language_setup()
-        super().__init__(sut.ActProgramExecutorForSingleCommand())
+        self.language = sut.script_language()
+        super().__init__(sut.act_program_executor())
         self.executable = sys.executable
 
     @contextmanager
