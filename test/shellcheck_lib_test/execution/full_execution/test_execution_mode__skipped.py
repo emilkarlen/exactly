@@ -10,7 +10,7 @@ from shellcheck_lib_test.execution.full_execution.util.test_case_generation_for_
 from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib.execution import phase_step, phases
 from shellcheck_lib_test.execution.full_execution.util.test_case_that_records_phase_execution import \
-    TestCaseThatRecordsExecution
+    new_test_case_with_recording
 from shellcheck_lib_test.util.expected_instruction_failure import ExpectedFailureForNoFailure, \
     ExpectedFailureForInstructionFailure
 
@@ -20,7 +20,7 @@ class Test(unittest.TestCase):
         test_case = TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList() \
             .add_anonymous(AnonymousPhaseInstructionThatSetsExecutionMode(
             ExecutionMode.SKIPPED))
-        TestCaseThatRecordsExecution(
+        new_test_case_with_recording(
             self,
             test_case,
             FullResultStatus.SKIPPED,
@@ -36,7 +36,7 @@ class Test(unittest.TestCase):
             sh.new_sh_hard_error('hard error msg'))) \
             .add_anonymous(AnonymousPhaseInstructionThatSetsExecutionMode(
             ExecutionMode.SKIPPED))
-        TestCaseThatRecordsExecution(
+        new_test_case_with_recording(
             self,
             test_case,
             FullResultStatus.HARD_ERROR,
@@ -55,7 +55,7 @@ class Test(unittest.TestCase):
             ExecutionMode.SKIPPED)) \
             .add_anonymous(instruction_test_resources.AnonymousPhaseInstructionThatReturns(
             sh.new_sh_hard_error('hard error msg')))
-        TestCaseThatRecordsExecution(
+        new_test_case_with_recording(
             self,
             test_case,
             FullResultStatus.HARD_ERROR,
