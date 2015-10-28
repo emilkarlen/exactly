@@ -42,14 +42,14 @@ def new_anonymous_phase_failure_from(partial_result: PartialResult) -> FullResul
         full_status = FullResultStatus.IMPLEMENTATION_ERROR
     return FullResult(full_status,
                       None,
-                      partial_result.instruction_failure_info)
+                      partial_result.failure_info)
 
 
 def new_named_phases_result_from(execution_mode: ExecutionMode,
                                  partial_result: PartialResult) -> FullResult:
     return FullResult(translate_status(execution_mode, partial_result.status),
                       partial_result.execution_directory_structure,
-                      partial_result.instruction_failure_info)
+                      partial_result.failure_info)
 
 
 def translate_status(execution_mode: ExecutionMode,

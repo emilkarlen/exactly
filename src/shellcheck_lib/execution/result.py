@@ -5,7 +5,7 @@ from shellcheck_lib.general import line_source
 from .execution_directory_structure import ExecutionDirectoryStructure
 
 
-class InstructionFailureDetails:
+class FailureDetails:
     """
     EITHER an error message OR an exception
     """
@@ -35,15 +35,31 @@ class InstructionFailureDetails:
         return self.__exception
 
 
-def new_failure_details_from_exception(exception: Exception) -> InstructionFailureDetails:
-    return InstructionFailureDetails(None, exception)
+def new_failure_details_from_exception(exception: Exception) -> FailureDetails:
+    return FailureDetails(None, exception)
 
 
-def new_failure_details_from_message(error_message: str) -> InstructionFailureDetails:
-    return InstructionFailureDetails(error_message, None)
+def new_failure_details_from_message(error_message: str) -> FailureDetails:
+    return FailureDetails(error_message, None)
 
 
-class InstructionFailureInfo:
+class FailureInfo:
+    def __init__(self,
+                 phase_step: PhaseStep,
+                 failure_details: FailureDetails):
+        self.__phase_step = phase_step
+        self.__failure_details = failure_details
+
+    @property
+    def phase_step(self) -> PhaseStep:
+        return self.__phase_step
+
+    @property
+    def failure_details(self) -> FailureDetails:
+        return self.__failure_details
+
+
+class InstructionFailureInfo(FailureInfo):
     """
     Information that is present when an instruction has failed.
     """
@@ -51,30 +67,56 @@ class InstructionFailureInfo:
     def __init__(self,
                  phase_step: PhaseStep,
                  source_line: line_source.Line,
-                 failure_details: InstructionFailureDetails):
+                 failure_details: FailureDetails):
+        super().__init__(phase_step, failure_details)
         self.__source_line = source_line
         self.__phase_step = phase_step
-        self.__failure_details = failure_details
 
     @property
     def source_line(self) -> line_source.Line:
         return self.__source_line
 
-    @property
-    def phase_step(self) -> PhaseStep:
-        return self.__phase_step
 
-    @property
-    def failure_details(self) -> InstructionFailureDetails:
-        return self.__failure_details
+class PhaseFailureInfo(FailureInfo):
+    def __init__(self,
+                 phase_step: PhaseStep,
+                 failure_details: FailureDetails):
+        super().__init__(phase_step, failure_details)
+
+
+class FailureInfoVisitor:
+    def visit(self,
+              failure_info: FailureInfo):
+        if isinstance(failure_info, InstructionFailureInfo):
+            self._visit_instruction_failure(failure_info)
+        elif isinstance(failure_info, PhaseFailureInfo):
+            self._visit_phase_failure(failure_info)
+        else:
+            raise ValueError('Unknown FailureInfo: {}'.format(type(failure_info)))
+
+    def _visit_instruction_failure(self,
+                                   failure_info: InstructionFailureInfo):
+        raise NotImplementedError()
+
+    def _visit_phase_failure(self,
+                             failure_info: PhaseFailureInfo):
+        raise NotImplementedError()
+
+
+def instruction_failure_info_for_non_instruction_TODO_NAME(
+        phase_step: PhaseStep,
+        failure_details: FailureDetails) -> InstructionFailureInfo:
+    return InstructionFailureInfo(phase_step,
+                                  None,
+                                  failure_details)
 
 
 class ResultBase:
     def __init__(self,
                  execution_directory_structure: ExecutionDirectoryStructure,
-                 instruction_failure_info: InstructionFailureInfo):
+                 failure_info: FailureInfo):
         self.__execution_directory_structure = execution_directory_structure
-        self.__instruction_failure_info = instruction_failure_info
+        self.__failure_info = failure_info
 
     @property
     def has_execution_directory_structure(self) -> bool:
@@ -85,15 +127,15 @@ class ResultBase:
         return self.__execution_directory_structure
 
     @property
-    def is_instruction_failure(self) -> bool:
-        return self.__instruction_failure_info is not None
+    def is_failure(self) -> bool:
+        return self.__failure_info is not None
 
     @property
-    def instruction_failure_info(self) -> InstructionFailureInfo:
+    def failure_info(self) -> FailureInfo:
         """
-        Precondition: is_instruction_failure
+        Precondition: is_failure
         """
-        return self.__instruction_failure_info
+        return self.__failure_info
 
 
 class PartialResultStatus(Enum):
@@ -111,8 +153,8 @@ class PartialResult(ResultBase):
     def __init__(self,
                  status: PartialResultStatus,
                  execution_directory_structure: ExecutionDirectoryStructure,
-                 instruction_failure_info: InstructionFailureInfo):
-        super().__init__(execution_directory_structure, instruction_failure_info)
+                 failure_info: FailureInfo):
+        super().__init__(execution_directory_structure, failure_info)
         self.__status = status
 
     @property
@@ -148,8 +190,8 @@ class FullResult(ResultBase):
     def __init__(self,
                  status: FullResultStatus,
                  execution_directory_structure: ExecutionDirectoryStructure,
-                 instruction_failure_info: InstructionFailureInfo):
-        super().__init__(execution_directory_structure, instruction_failure_info)
+                 failure_info: FailureInfo):
+        super().__init__(execution_directory_structure, failure_info)
         self.__status = status
 
     @property

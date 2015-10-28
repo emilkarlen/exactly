@@ -10,8 +10,8 @@ from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib.execution import phase_step, phases
 from shellcheck_lib_test.execution.full_execution.util.test_case_that_records_phase_execution import \
     TestCaseThatRecordsExecution
-from shellcheck_lib_test.util.expected_instruction_failure import ExpectedInstructionFailureForFailure, \
-    ExpectedInstructionFailureForNoFailure
+from shellcheck_lib_test.util.expected_instruction_failure import ExpectedFailureForInstructionFailure, \
+    ExpectedFailureForNoFailure
 from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.sections.result import sh
@@ -29,7 +29,7 @@ class Test(unittest.TestCase):
             self,
             test_case,
             FullResultStatus.XFAIL,
-            ExpectedInstructionFailureForFailure.new_with_message(
+            ExpectedFailureForInstructionFailure.new_with_message(
                 phase_step.PhaseStep(phases.ASSERT, phase_step.EXECUTE),
                 test_case.the_assert_phase_extra[0].first_line,
                 'fail message'),
@@ -60,7 +60,7 @@ class Test(unittest.TestCase):
             self,
             test_case,
             FullResultStatus.XPASS,
-            ExpectedInstructionFailureForNoFailure(),
+            ExpectedFailureForNoFailure(),
             [phase_step.ANONYMOUS,
              phase_step.SETUP__PRE_VALIDATE,
              phase_step.SETUP__EXECUTE,
@@ -90,7 +90,7 @@ class Test(unittest.TestCase):
             self,
             test_case,
             FullResultStatus.HARD_ERROR,
-            ExpectedInstructionFailureForFailure.new_with_message(
+            ExpectedFailureForInstructionFailure.new_with_message(
                 phase_step.new_without_step(phases.ANONYMOUS),
                 test_case.the_anonymous_phase_extra[1].first_line,
                 'hard error msg'),
@@ -109,7 +109,7 @@ class Test(unittest.TestCase):
             self,
             test_case,
             FullResultStatus.IMPLEMENTATION_ERROR,
-            ExpectedInstructionFailureForFailure.new_with_exception(
+            ExpectedFailureForInstructionFailure.new_with_exception(
                 phase_step.new_without_step(phases.CLEANUP),
                 test_case.the_cleanup_phase_extra[0].first_line,
                 instruction_test_resources.ImplementationErrorTestException),

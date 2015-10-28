@@ -1,7 +1,7 @@
 from enum import Enum
 
 from shellcheck_lib.execution import result
-from shellcheck_lib.execution.result import InstructionFailureDetails, PartialResultStatus
+from shellcheck_lib.execution.result import FailureDetails, PartialResultStatus
 from shellcheck_lib.general import line_source
 from shellcheck_lib.document.model import Instruction, PhaseContentElement
 
@@ -69,7 +69,7 @@ class SingleInstructionExecutionFailure(tuple):
     def __new__(cls,
                 status: PartialResultStatus,
                 source_line: line_source.Line,
-                failure_details: InstructionFailureDetails):
+                failure_details: FailureDetails):
         return tuple.__new__(cls, (status,
                                    source_line,
                                    failure_details))
@@ -86,7 +86,7 @@ class SingleInstructionExecutionFailure(tuple):
         return self[1]
 
     @property
-    def failure_details(self) -> InstructionFailureDetails:
+    def failure_details(self) -> FailureDetails:
         return self[2]
 
 

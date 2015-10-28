@@ -6,7 +6,7 @@ from shellcheck_lib.execution.single_instruction_executor import ControlledInstr
     PartialInstructionControlledFailureInfo
 from shellcheck_lib.general import line_source
 from shellcheck_lib.document.model import Instruction
-from shellcheck_lib_test.util.expected_instruction_failure import ExpectedInstructionFailureDetails
+from shellcheck_lib_test.util.expected_instruction_failure import ExpectedFailureDetails
 from shellcheck_lib_test.document.test_resources import assert_equals_line
 
 
@@ -14,7 +14,7 @@ class ExpectedResult(tuple):
     def __new__(cls,
                 status: PartialResultStatus,
                 line: line_source.Line,
-                failure_details: ExpectedInstructionFailureDetails):
+                failure_details: ExpectedFailureDetails):
         return tuple.__new__(cls, (status,
                                    line,
                                    failure_details))
@@ -48,7 +48,7 @@ class ExpectedResult(tuple):
         return self[1]
 
     @property
-    def failure_details(self) -> ExpectedInstructionFailureDetails:
+    def failure_details(self) -> ExpectedFailureDetails:
         return self[2]
 
 

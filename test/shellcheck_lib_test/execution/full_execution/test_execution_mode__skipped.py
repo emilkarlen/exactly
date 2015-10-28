@@ -11,8 +11,8 @@ from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib.execution import phase_step, phases
 from shellcheck_lib_test.execution.full_execution.util.test_case_that_records_phase_execution import \
     TestCaseThatRecordsExecution
-from shellcheck_lib_test.util.expected_instruction_failure import ExpectedInstructionFailureForNoFailure, \
-    ExpectedInstructionFailureForFailure
+from shellcheck_lib_test.util.expected_instruction_failure import ExpectedFailureForNoFailure, \
+    ExpectedFailureForInstructionFailure
 
 
 class Test(unittest.TestCase):
@@ -24,7 +24,7 @@ class Test(unittest.TestCase):
             self,
             test_case,
             FullResultStatus.SKIPPED,
-            ExpectedInstructionFailureForNoFailure(),
+            ExpectedFailureForNoFailure(),
             [phase_step.ANONYMOUS
              ],
             [],
@@ -40,7 +40,7 @@ class Test(unittest.TestCase):
             self,
             test_case,
             FullResultStatus.HARD_ERROR,
-            ExpectedInstructionFailureForFailure.new_with_message(
+            ExpectedFailureForInstructionFailure.new_with_message(
                 phase_step.new_without_step(phases.ANONYMOUS),
                 test_case.the_anonymous_phase_extra[0].first_line,
                 'hard error msg'),
@@ -59,7 +59,7 @@ class Test(unittest.TestCase):
             self,
             test_case,
             FullResultStatus.HARD_ERROR,
-            ExpectedInstructionFailureForFailure.new_with_message(
+            ExpectedFailureForInstructionFailure.new_with_message(
                 phase_step.new_without_step(phases.ANONYMOUS),
                 test_case.the_anonymous_phase_extra[1].first_line,
                 'hard error msg'),

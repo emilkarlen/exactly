@@ -4,11 +4,11 @@ from shellcheck_lib.general import line_source
 from shellcheck_lib_test.document.test_resources import assert_equals_line
 from shellcheck_lib.execution.phase_step import PhaseStep
 from shellcheck_lib_test.util.assert_utils import assertion_message
-from shellcheck_lib.execution.result import InstructionFailureInfo, InstructionFailureDetails, \
-    FullResultStatus, FullResult
+from shellcheck_lib.execution.result import InstructionFailureInfo, FailureDetails, \
+    FullResultStatus, FullResult, FailureInfo, PhaseFailureInfo
 
 
-class ExpectedInstructionFailureDetails(tuple):
+class ExpectedFailureDetails(tuple):
     def __new__(cls,
                 error_message_or_none: str,
                 exception_class_or_none):
@@ -25,7 +25,7 @@ class ExpectedInstructionFailureDetails(tuple):
 
     def assertions(self,
                    unittest_case: unittest.TestCase,
-                   actual: InstructionFailureDetails,
+                   actual: FailureDetails,
                    message_header: str=None):
         if self.error_message_or_none is None and self.exception_class_or_none is None:
             unittest_case.assertIsNone(actual,
@@ -41,30 +41,30 @@ class ExpectedInstructionFailureDetails(tuple):
 
 
 def new_expected_failure_message(msg: str):
-    return ExpectedInstructionFailureDetails(msg, None)
+    return ExpectedFailureDetails(msg, None)
 
 
 def new_expected_exception(exception_class):
-    return ExpectedInstructionFailureDetails(None, exception_class)
+    return ExpectedFailureDetails(None, exception_class)
 
 
-class ExpectedInstructionFailureBase:
+class ExpectedFailure:
     def assertions(self,
                    unittest_case: unittest.TestCase,
-                   actual_failure_info: InstructionFailureInfo):
+                   actual_failure_info: FailureInfo):
         raise NotImplementedError()
 
 
 class ExpectedStatusAndFailure(tuple):
     def __new__(cls,
                 status: FullResultStatus,
-                failure: ExpectedInstructionFailureBase):
+                failure: ExpectedFailure):
         return tuple.__new__(cls, (status, failure))
 
     def assertions(self,
                    utc: unittest.TestCase,
                    actual_status: FullResultStatus,
-                   actual_failure_info: InstructionFailureInfo):
+                   actual_failure_info: FailureInfo):
         utc.assertEqual(self.status,
                         actual_status,
                         'Status')
@@ -76,26 +76,26 @@ class ExpectedStatusAndFailure(tuple):
                                          actual_result: FullResult):
         self.assertions(utc,
                         actual_result.status,
-                        actual_result.instruction_failure_info)
+                        actual_result.failure_info)
 
     @property
     def status(self) -> FullResultStatus:
         return self[0]
 
     @property
-    def failure(self) -> ExpectedInstructionFailureBase:
+    def failure(self) -> ExpectedFailure:
         return self[1]
 
 
-class ExpectedInstructionFailureForNoFailure(ExpectedInstructionFailureBase):
+class ExpectedFailureForNoFailure(ExpectedFailure):
     def assertions(self,
                    unittest_case: unittest.TestCase,
-                   actual_failure_info: InstructionFailureInfo):
+                   actual_failure_info: FailureInfo):
         unittest_case.assertIsNone(actual_failure_info,
                                    'There should be no failure')
 
 
-class ExpectedInstructionFailureForFailure(ExpectedInstructionFailureBase, tuple):
+class ExpectedFailureForInstructionFailure(ExpectedFailure, tuple):
     def __new__(cls,
                 phase_step: PhaseStep,
                 source_line: line_source.Line,
@@ -103,14 +103,14 @@ class ExpectedInstructionFailureForFailure(ExpectedInstructionFailureBase, tuple
                 exception_class_or_none):
         return tuple.__new__(cls, (phase_step,
                                    source_line,
-                                   ExpectedInstructionFailureDetails(error_message_or_none,
-                                                                     exception_class_or_none)))
+                                   ExpectedFailureDetails(error_message_or_none,
+                                                          exception_class_or_none)))
 
     @staticmethod
     def new_with_message(phase_step: PhaseStep,
                          source_line: line_source.Line,
                          error_message: str):
-        return ExpectedInstructionFailureForFailure(phase_step,
+        return ExpectedFailureForInstructionFailure(phase_step,
                                                     source_line,
                                                     error_message,
                                                     None)
@@ -119,7 +119,7 @@ class ExpectedInstructionFailureForFailure(ExpectedInstructionFailureBase, tuple
     def new_with_exception(phase_step: PhaseStep,
                            source_line: line_source.Line,
                            exception_class):
-        return ExpectedInstructionFailureForFailure(phase_step,
+        return ExpectedFailureForInstructionFailure(phase_step,
                                                     source_line,
                                                     None,
                                                     exception_class)
@@ -128,7 +128,7 @@ class ExpectedInstructionFailureForFailure(ExpectedInstructionFailureBase, tuple
                     unittest_case: unittest.TestCase,
                     phase_step: PhaseStep,
                     actual_line: line_source.Line,
-                    actual_details: InstructionFailureDetails):
+                    actual_details: FailureDetails):
         unittest_case.assertEqual(self.phase_step.phase,
                                   phase_step.phase,
                                   'Phase')
@@ -143,9 +143,12 @@ class ExpectedInstructionFailureForFailure(ExpectedInstructionFailureBase, tuple
 
     def assertions(self,
                    unittest_case: unittest.TestCase,
-                   actual: InstructionFailureInfo):
+                   actual: FailureInfo):
         unittest_case.assertIsNotNone(actual,
                                       'Failure info should be present')
+        unittest_case.assertIsInstance(actual, InstructionFailureInfo,
+                                       'The failure is expected to be a {}'.format(str(InstructionFailureInfo)))
+        assert isinstance(actual, InstructionFailureInfo)
         self.assertions_(unittest_case,
                          actual.phase_step,
                          actual.source_line,
@@ -160,5 +163,66 @@ class ExpectedInstructionFailureForFailure(ExpectedInstructionFailureBase, tuple
         return self[1]
 
     @property
-    def expected_instruction_failure(self) -> ExpectedInstructionFailureDetails:
+    def expected_instruction_failure(self) -> ExpectedFailureDetails:
+        return self[2]
+
+
+class ExpectedFailureForPhaseFailure(ExpectedFailure, tuple):
+    def __new__(cls,
+                phase_step: PhaseStep,
+                error_message_or_none: str,
+                exception_class_or_none):
+        return tuple.__new__(cls, (phase_step,
+                                   ExpectedFailureDetails(error_message_or_none,
+                                                          exception_class_or_none)))
+
+    @staticmethod
+    def new_with_message(phase_step: PhaseStep,
+                         error_message: str):
+        return ExpectedFailureForPhaseFailure(phase_step,
+                                              error_message,
+                                              None)
+
+    @staticmethod
+    def new_with_exception(phase_step: PhaseStep,
+                           exception_class):
+        return ExpectedFailureForPhaseFailure(phase_step,
+                                              None,
+                                              exception_class)
+
+    def assertions_(self,
+                    unittest_case: unittest.TestCase,
+                    phase_step: PhaseStep,
+                    actual_details: FailureDetails):
+        unittest_case.assertEqual(self.phase_step.phase,
+                                  phase_step.phase,
+                                  'Phase')
+        unittest_case.assertEqual(self.phase_step.step,
+                                  phase_step.step,
+                                  'Step')
+        self.expected_instruction_failure.assertions(unittest_case,
+                                                     actual_details)
+
+    def assertions(self,
+                   unittest_case: unittest.TestCase,
+                   actual: FailureInfo):
+        unittest_case.assertIsNotNone(actual,
+                                      'Failure info should be present')
+        unittest_case.assertIsInstance(actual, PhaseFailureInfo,
+                                       'The failure is expected to be a {}'.format(str(PhaseFailureInfo)))
+        assert isinstance(actual, PhaseFailureInfo)
+        self.assertions_(unittest_case,
+                         actual.phase_step,
+                         actual.failure_details)
+
+    @property
+    def phase_step(self) -> PhaseStep:
+        return self[0]
+
+    @property
+    def source_line(self) -> line_source.Line:
+        return self[1]
+
+    @property
+    def expected_instruction_failure(self) -> ExpectedFailureDetails:
         return self[2]
