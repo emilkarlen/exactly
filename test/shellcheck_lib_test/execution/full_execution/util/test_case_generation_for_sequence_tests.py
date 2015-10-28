@@ -13,9 +13,12 @@ from shellcheck_lib_test.execution.util import instruction_adapter
 
 
 class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorBase):
-    def __init__(self):
+    def __init__(self,
+                 recorder: instr.ListRecorder=None):
         super().__init__()
-        self.__recorder = instr.ListRecorder()
+        self.__recorder = recorder
+        if self.__recorder is None:
+            self.__recorder = instr.ListRecorder()
 
     def _anonymous_phase_extra(self) -> list:
         """
@@ -166,9 +169,10 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorBase):
         return self.__recorder.recording_of(element)
 
 
-class TestCaseThatRecordsExecutionWithExtraInstructionList(TestCaseGeneratorForExecutionRecording):
-    def __init__(self):
-        super().__init__()
+class TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList(TestCaseGeneratorForExecutionRecording):
+    def __init__(self,
+                 recorder: instr.ListRecorder=None):
+        super().__init__(recorder)
         self.__anonymous_extra = []
         self.__setup_extra = []
         self.__act_extra = []

@@ -4,7 +4,7 @@ from enum import Enum
 class SuccessOrValidationErrorOrHardErrorEnum(Enum):
     SUCCESS = 0
     VALIDATION_ERROR = 1
-    HARD_ERROR = 2
+    HARD_ERROR = 99
 
 
 class SuccessOrValidationErrorOrHardError(tuple):
@@ -22,15 +22,15 @@ class SuccessOrValidationErrorOrHardError(tuple):
         return SuccessOrValidationErrorOrHardErrorEnum.HARD_ERROR
 
     @property
+    def is_success(self) -> bool:
+        return self.failure_message is None
+
+    @property
     def failure_message(self) -> str:
         """
         :return None iff the object represents SUCCESS.
         """
         return self[1]
-
-    @property
-    def is_success(self) -> bool:
-        return self[0] is None
 
     @property
     def is_validation_error(self) -> bool:
