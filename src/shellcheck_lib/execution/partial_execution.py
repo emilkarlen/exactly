@@ -15,7 +15,7 @@ from shellcheck_lib.document.model import PhaseContents
 from shellcheck_lib.execution import phases
 from shellcheck_lib.test_case import test_case_doc
 from .execution_directory_structure import construct_at, ExecutionDirectoryStructure
-from .result import PartialResult, PartialResultStatus, new_partial_result_pass
+from .result import PartialResult, PartialResultStatus, new_partial_result_pass, PhaseFailureInfo
 from . import result
 from . import phase_step_execution
 from shellcheck_lib.test_case.sections.act.phase_setup import PhaseEnvironmentForScriptGeneration, ActProgramExecutor, \
@@ -246,14 +246,20 @@ class PartialExecutor:
         return ret_val
 
     def __run_act_script_validate(self) -> PartialResult:
-        # try:
-        #     res = self.__script_handling.executor.validate(self.__script_handling.builder)
-        #     if res.is_success:
-        #         return new_partial_result_pass(self.__execution_directory_structure)
-        #     else:
-        #         return PartialResult(PartialResultStatus(res.status.value)) # FUNKAR Inte !!
-        # except Exception as ex:
-        return new_partial_result_pass(self.__execution_directory_structure)
+        try:
+            res = self.__script_handling.executor.validate(self.__script_handling.builder)
+            if res.is_success:
+                return new_partial_result_pass(self.__execution_directory_structure)
+            else:
+                return PartialResult(PartialResultStatus(res.status.value),
+                                     self.__execution_directory_structure,
+                                     PhaseFailureInfo(phase_step.ACT__VALIDATE,
+                                                      result.new_failure_details_from_message(res.failure_message)))
+        except Exception as ex:
+            return PartialResult(PartialResultStatus.IMPLEMENTATION_ERROR,
+                                 self.__execution_directory_structure,
+                                 PhaseFailureInfo(phase_step.ACT__VALIDATE,
+                                                  result.new_failure_details_from_exception(ex)))
 
     def write_and_store_script_file_path(self):
         self.__source_setup = SourceSetup(self.__script_handling.builder,

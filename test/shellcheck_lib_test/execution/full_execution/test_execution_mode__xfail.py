@@ -5,7 +5,7 @@ from shellcheck_lib_test.execution.full_execution.util import instruction_test_r
 from shellcheck_lib_test.execution.full_execution.util.instruction_test_resources import \
     AnonymousPhaseInstructionThatSetsExecutionMode
 from shellcheck_lib_test.execution.full_execution.util.test_case_generation_for_sequence_tests import \
-    TestCaseThatRecordsExecutionWithExtraInstructionList
+    TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList
 from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib.execution import phase_step, phases
 from shellcheck_lib_test.execution.full_execution.util.test_case_that_records_phase_execution import \
@@ -19,7 +19,7 @@ from shellcheck_lib.test_case.sections.result import sh
 
 class Test(unittest.TestCase):
     def test_with_assert_phase_that_fails(self):
-        test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
+        test_case = TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList() \
             .add_anonymous(AnonymousPhaseInstructionThatSetsExecutionMode(ExecutionMode.XFAIL)) \
             .add_assert(
             instruction_test_resources.AssertPhaseInstructionThatReturns(
@@ -54,7 +54,7 @@ class Test(unittest.TestCase):
             True).execute()
 
     def test_with_assert_phase_that_passes(self):
-        test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
+        test_case = TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList() \
             .add_anonymous(AnonymousPhaseInstructionThatSetsExecutionMode(ExecutionMode.XFAIL))
         TestCaseThatRecordsExecution(
             self,
@@ -82,7 +82,7 @@ class Test(unittest.TestCase):
             True).execute()
 
     def test_with_anonymous_phase_with_hard_error(self):
-        test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
+        test_case = TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList() \
             .add_anonymous(AnonymousPhaseInstructionThatSetsExecutionMode(ExecutionMode.XFAIL)) \
             .add_anonymous(instruction_test_resources.AnonymousPhaseInstructionThatReturns(
             sh.new_sh_hard_error('hard error msg')))
@@ -100,7 +100,7 @@ class Test(unittest.TestCase):
             False).execute()
 
     def test_with_implementation_error(self):
-        test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
+        test_case = TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList() \
             .add_anonymous(AnonymousPhaseInstructionThatSetsExecutionMode(ExecutionMode.XFAIL)) \
             .add_cleanup(
             instruction_test_resources.CleanupPhaseInstructionWithImplementationError(
