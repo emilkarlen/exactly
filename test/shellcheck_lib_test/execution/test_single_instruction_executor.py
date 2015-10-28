@@ -1,7 +1,7 @@
 import types
 import unittest
 
-from shellcheck_lib.execution.result import InstructionFailureDetails, new_failure_details_from_message, \
+from shellcheck_lib.execution.result import FailureDetails, new_failure_details_from_message, \
     PartialResultStatus, \
     new_failure_details_from_exception
 from shellcheck_lib.general import line_source
@@ -102,7 +102,7 @@ class Test(unittest.TestCase):
     def _check_failure_result(self,
                               expected_status: PartialResultStatus,
                               result: SingleInstructionExecutionFailure,
-                              expected_failure_details: InstructionFailureDetails):
+                              expected_failure_details: FailureDetails):
         self.assertIsNotNone(result,
                              'Failure information is expected')
         self.assertEqual(result.status,
@@ -114,8 +114,8 @@ class Test(unittest.TestCase):
 
 
 def assert_equal_failure_details(unit_tc: unittest.TestCase,
-                                 expected: InstructionFailureDetails,
-                                 actual: InstructionFailureDetails):
+                                 expected: FailureDetails,
+                                 actual: FailureDetails):
     if expected.is_error_message:
         unit_tc.assertTrue(actual.is_error_message,
                            'An error message is expected')

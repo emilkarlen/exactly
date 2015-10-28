@@ -2,7 +2,7 @@ import unittest
 
 from shellcheck_lib.test_case import test_case_doc
 from shellcheck_lib_test.execution.full_execution.util.test_case_base import FullExecutionTestCaseBase
-from shellcheck_lib_test.util.expected_instruction_failure import ExpectedInstructionFailureBase
+from shellcheck_lib_test.util.expected_instruction_failure import ExpectedFailure
 from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib_test.execution.full_execution.util.recording_instructions_for_sequence_tests import \
     record_file_path
@@ -21,7 +21,7 @@ class TestCaseThatRecordsExecution(FullExecutionTestCaseBase):
                  unittest_case: unittest.TestCase,
                  test_case_generator: TestCaseGeneratorForExecutionRecording,
                  expected_status: FullResultStatus,
-                 expected_failure_info: ExpectedInstructionFailureBase,
+                 expected_failure_info: ExpectedFailure,
                  expected_internal_recording: list,
                  expected_file_recording: list,
                  execution_directory_structure_should_exist: bool,
@@ -42,7 +42,7 @@ class TestCaseThatRecordsExecution(FullExecutionTestCaseBase):
                              self.full_result.status,
                              'Unexpected result status')
         self.__expected_failure_info.assertions(self.utc,
-                                                self.full_result.instruction_failure_info)
+                                                self.full_result.failure_info)
         msg = 'Difference in the sequence of executed phases and steps that are executed internally'
         self.utc.assertEqual(self.__expected_internal_instruction_recording,
                              self._test_case_generator.internal_instruction_recorder,

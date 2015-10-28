@@ -5,7 +5,7 @@ from shellcheck_lib.document.model import PhaseContents, PhaseContentElement, El
 from shellcheck_lib.execution import phases
 from .execution_directory_structure import ExecutionDirectoryStructure
 from .result import PartialResult, InstructionFailureInfo, new_partial_result_pass, PartialResultStatus, \
-    InstructionFailureDetails
+    FailureDetails
 
 
 class ElementHeaderExecutor:
@@ -22,7 +22,7 @@ class Failure(tuple):
     def __new__(cls,
                 status: PartialResultStatus,
                 source_line: line_source.Line,
-                failure_details: InstructionFailureDetails):
+                failure_details: FailureDetails):
         return tuple.__new__(cls, (status, source_line, failure_details))
 
     @property
@@ -34,8 +34,15 @@ class Failure(tuple):
         return self[1]
 
     @property
-    def failure_details(self) -> InstructionFailureDetails:
+    def failure_details(self) -> FailureDetails:
         return self[2]
+
+
+def non_instruction_failure(status: PartialResultStatus,
+                            failure_details: FailureDetails) -> Failure:
+    return Failure(status,
+                   None,
+                   failure_details)
 
 
 def execute_phase(phase_contents: PhaseContents,
@@ -114,5 +121,3 @@ def execute_phase_prim(phase_contents: PhaseContents,
                                failure_info.source_line,
                                failure_info.failure_details)
     return None
-
-

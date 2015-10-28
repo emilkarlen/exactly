@@ -47,10 +47,12 @@ ACT = 'ACT'
 
 ACT_validate = VALIDATE
 ACT_script_generation = 'script-generation'
+ACT_script_validation = 'script-validation'
 ACT_script_execution = 'script-execution'
 
 ACT__VALIDATE = __phase_step(ACT, ACT_validate)
 ACT__SCRIPT_GENERATION = __phase_step(ACT, ACT_script_generation)
+ACT__SCRIPT_VALIDATION = __phase_step(ACT, ACT_script_validation)
 ACT__SCRIPT_EXECUTION = __phase_step(ACT, ACT_script_execution)
 
 ASSERT = 'ASSERT'

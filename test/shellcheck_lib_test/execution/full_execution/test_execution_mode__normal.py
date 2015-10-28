@@ -8,8 +8,8 @@ from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib.execution import phase_step, phases
 from shellcheck_lib_test.execution.full_execution.util.test_case_that_records_phase_execution import \
     TestCaseThatRecordsExecution
-from shellcheck_lib_test.util.expected_instruction_failure import ExpectedInstructionFailureForNoFailure, \
-    ExpectedInstructionFailureForFailure
+from shellcheck_lib_test.util.expected_instruction_failure import ExpectedFailureForNoFailure, \
+    ExpectedFailureForInstructionFailure
 from shellcheck_lib_test.execution.full_execution.util import instruction_test_resources
 from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.result import svh
@@ -22,7 +22,7 @@ class Test(unittest.TestCase):
             self,
             TestCaseGeneratorForExecutionRecording(),
             FullResultStatus.PASS,
-            ExpectedInstructionFailureForNoFailure(),
+            ExpectedFailureForNoFailure(),
             [phase_step.ANONYMOUS,
              phase_step.SETUP__PRE_VALIDATE,
              phase_step.SETUP__EXECUTE,
@@ -52,7 +52,7 @@ class Test(unittest.TestCase):
             self,
             test_case,
             FullResultStatus.HARD_ERROR,
-            ExpectedInstructionFailureForFailure.new_with_message(
+            ExpectedFailureForInstructionFailure.new_with_message(
                 phase_step.new_without_step(phases.ANONYMOUS),
                 test_case.the_anonymous_phase_extra[0].first_line,
                 'hard error msg'),
@@ -70,7 +70,7 @@ class Test(unittest.TestCase):
             self,
             test_case,
             FullResultStatus.IMPLEMENTATION_ERROR,
-            ExpectedInstructionFailureForFailure.new_with_exception(
+            ExpectedFailureForInstructionFailure.new_with_exception(
                 PhaseStep(phases.ANONYMOUS, None),
                 test_case.the_anonymous_phase_extra[0].first_line,
                 instruction_test_resources.ImplementationErrorTestException),
@@ -91,7 +91,7 @@ class Test(unittest.TestCase):
             self,
             test_case,
             FullResultStatus.VALIDATE,
-            ExpectedInstructionFailureForFailure.new_with_message(
+            ExpectedFailureForInstructionFailure.new_with_message(
                 PhaseStep(phases.SETUP, phase_step.PRE_VALIDATE),
                 test_case.the_setup_phase_extra[0].first_line,
                 'validation error from setup/validate'),
@@ -112,7 +112,7 @@ class Test(unittest.TestCase):
             self,
             test_case,
             FullResultStatus.HARD_ERROR,
-            ExpectedInstructionFailureForFailure.new_with_message(
+            ExpectedFailureForInstructionFailure.new_with_message(
                 PhaseStep(phases.SETUP, phase_step.PRE_VALIDATE),
                 test_case.the_setup_phase_extra[0].first_line,
                 'hard error from setup/validate'),
@@ -131,7 +131,7 @@ class Test(unittest.TestCase):
             self,
             test_case,
             FullResultStatus.IMPLEMENTATION_ERROR,
-            ExpectedInstructionFailureForFailure.new_with_exception(
+            ExpectedFailureForInstructionFailure.new_with_exception(
                 PhaseStep(phases.SETUP, phase_step.PRE_VALIDATE),
                 test_case.the_setup_phase_extra[0].first_line,
                 instruction_test_resources.ImplementationErrorTestException),
@@ -152,7 +152,7 @@ class Test(unittest.TestCase):
             self,
             test_case,
             FullResultStatus.HARD_ERROR,
-            ExpectedInstructionFailureForFailure.new_with_message(
+            ExpectedFailureForInstructionFailure.new_with_message(
                 PhaseStep(phases.SETUP, phase_step.EXECUTE),
                 test_case.the_setup_phase_extra[0].first_line,
                 'hard error msg from setup'),
@@ -175,7 +175,7 @@ class Test(unittest.TestCase):
             self,
             test_case,
             FullResultStatus.IMPLEMENTATION_ERROR,
-            ExpectedInstructionFailureForFailure.new_with_exception(
+            ExpectedFailureForInstructionFailure.new_with_exception(
                 PhaseStep(phases.SETUP, phase_step.EXECUTE),
                 test_case.the_setup_phase_extra[0].first_line,
                 instruction_test_resources.ImplementationErrorTestException),
@@ -201,7 +201,7 @@ class Test(unittest.TestCase):
             self,
             test_case,
             FullResultStatus.VALIDATE,
-            ExpectedInstructionFailureForFailure.new_with_message(
+            ExpectedFailureForInstructionFailure.new_with_message(
                 PhaseStep(phases.SETUP, phase_step.POST_VALIDATE),
                 test_case.the_setup_phase_extra[0].first_line,
                 'validation error from setup/post-validate'),
@@ -228,7 +228,7 @@ class Test(unittest.TestCase):
             self,
             test_case,
             FullResultStatus.HARD_ERROR,
-            ExpectedInstructionFailureForFailure.new_with_message(
+            ExpectedFailureForInstructionFailure.new_with_message(
                 PhaseStep(phases.SETUP, phase_step.POST_VALIDATE),
                 test_case.the_setup_phase_extra[0].first_line,
                 'hard error from setup/post-validate'),
@@ -253,7 +253,7 @@ class Test(unittest.TestCase):
             self,
             test_case,
             FullResultStatus.IMPLEMENTATION_ERROR,
-            ExpectedInstructionFailureForFailure.new_with_exception(
+            ExpectedFailureForInstructionFailure.new_with_exception(
                 PhaseStep(phases.SETUP, phase_step.POST_VALIDATE),
                 test_case.the_setup_phase_extra[0].first_line,
                 instruction_test_resources.ImplementationErrorTestException),
@@ -279,7 +279,7 @@ class Test(unittest.TestCase):
             self,
             test_case,
             FullResultStatus.VALIDATE,
-            ExpectedInstructionFailureForFailure.new_with_message(
+            ExpectedFailureForInstructionFailure.new_with_message(
                 PhaseStep(phases.ASSERT, phase_step.VALIDATE),
                 test_case.the_assert_phase_extra[0].first_line,
                 'ASSERT/validate'),
@@ -309,7 +309,7 @@ class Test(unittest.TestCase):
             self,
             test_case,
             FullResultStatus.HARD_ERROR,
-            ExpectedInstructionFailureForFailure.new_with_message(
+            ExpectedFailureForInstructionFailure.new_with_message(
                 PhaseStep(phases.ASSERT, phase_step.VALIDATE),
                 test_case.the_assert_phase_extra[0].first_line,
                 'ASSERT/validate'),
@@ -338,7 +338,7 @@ class Test(unittest.TestCase):
             self,
             test_case,
             FullResultStatus.IMPLEMENTATION_ERROR,
-            ExpectedInstructionFailureForFailure.new_with_exception(
+            ExpectedFailureForInstructionFailure.new_with_exception(
                 PhaseStep(phases.ASSERT, phase_step.VALIDATE),
                 test_case.the_assert_phase_extra[0].first_line,
                 instruction_test_resources.ImplementationErrorTestException),
@@ -368,7 +368,7 @@ class Test(unittest.TestCase):
             self,
             test_case,
             FullResultStatus.VALIDATE,
-            ExpectedInstructionFailureForFailure.new_with_message(
+            ExpectedFailureForInstructionFailure.new_with_message(
                 PhaseStep(phases.ACT, phase_step.VALIDATE),
                 test_case.the_act_phase_extra[0].first_line,
                 'ACT/validate'),
@@ -396,7 +396,7 @@ class Test(unittest.TestCase):
             self,
             test_case,
             FullResultStatus.HARD_ERROR,
-            ExpectedInstructionFailureForFailure.new_with_message(
+            ExpectedFailureForInstructionFailure.new_with_message(
                 PhaseStep(phases.ACT, phase_step.VALIDATE),
                 test_case.the_act_phase_extra[0].first_line,
                 'ACT/validate'),
@@ -423,7 +423,7 @@ class Test(unittest.TestCase):
             self,
             test_case,
             FullResultStatus.IMPLEMENTATION_ERROR,
-            ExpectedInstructionFailureForFailure.new_with_exception(
+            ExpectedFailureForInstructionFailure.new_with_exception(
                 PhaseStep(phases.ACT, phase_step.VALIDATE),
                 test_case.the_act_phase_extra[0].first_line,
                 instruction_test_resources.ImplementationErrorTestException),
@@ -451,7 +451,7 @@ class Test(unittest.TestCase):
             self,
             test_case,
             FullResultStatus.HARD_ERROR,
-            ExpectedInstructionFailureForFailure.new_with_message(
+            ExpectedFailureForInstructionFailure.new_with_message(
                 PhaseStep(phases.ACT, phase_step.ACT_script_generation),
                 test_case.the_act_phase_extra[0].first_line,
                 'hard error msg from act'),
@@ -482,7 +482,7 @@ class Test(unittest.TestCase):
             self,
             test_case,
             FullResultStatus.IMPLEMENTATION_ERROR,
-            ExpectedInstructionFailureForFailure.new_with_exception(
+            ExpectedFailureForInstructionFailure.new_with_exception(
                 PhaseStep(phases.ACT, phase_step.ACT_script_generation),
                 test_case.the_act_phase_extra[0].first_line,
                 instruction_test_resources.ImplementationErrorTestException),
@@ -514,7 +514,7 @@ class Test(unittest.TestCase):
             self,
             test_case,
             FullResultStatus.FAIL,
-            ExpectedInstructionFailureForFailure.new_with_message(
+            ExpectedFailureForInstructionFailure.new_with_message(
                 PhaseStep(phases.ASSERT, phase_step.EXECUTE),
                 test_case.the_assert_phase_extra[0].first_line,
                 'fail msg from ASSERT'),
@@ -549,7 +549,7 @@ class Test(unittest.TestCase):
             self,
             test_case,
             FullResultStatus.HARD_ERROR,
-            ExpectedInstructionFailureForFailure.new_with_message(
+            ExpectedFailureForInstructionFailure.new_with_message(
                 PhaseStep(phases.ASSERT, phase_step.EXECUTE),
                 test_case.the_assert_phase_extra[0].first_line,
                 'hard error msg from ASSERT'),
@@ -583,7 +583,7 @@ class Test(unittest.TestCase):
             self,
             test_case,
             FullResultStatus.IMPLEMENTATION_ERROR,
-            ExpectedInstructionFailureForFailure.new_with_exception(
+            ExpectedFailureForInstructionFailure.new_with_exception(
                 PhaseStep(phases.ASSERT, phase_step.EXECUTE),
                 test_case.the_assert_phase_extra[0].first_line,
                 instruction_test_resources.ImplementationErrorTestException),
@@ -617,7 +617,7 @@ class Test(unittest.TestCase):
             self,
             test_case,
             FullResultStatus.HARD_ERROR,
-            ExpectedInstructionFailureForFailure.new_with_message(
+            ExpectedFailureForInstructionFailure.new_with_message(
                 phase_step.new_without_step(phases.CLEANUP),
                 test_case.the_cleanup_phase_extra[0].first_line,
                 'hard error msg from CLEANUP'),
@@ -651,7 +651,7 @@ class Test(unittest.TestCase):
             self,
             test_case,
             FullResultStatus.IMPLEMENTATION_ERROR,
-            ExpectedInstructionFailureForFailure.new_with_exception(
+            ExpectedFailureForInstructionFailure.new_with_exception(
                 phase_step.new_without_step(phases.CLEANUP),
                 test_case.the_cleanup_phase_extra[0].first_line,
                 instruction_test_resources.ImplementationErrorTestException),

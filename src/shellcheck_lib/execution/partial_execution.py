@@ -15,7 +15,7 @@ from shellcheck_lib.document.model import PhaseContents
 from shellcheck_lib.execution import phases
 from shellcheck_lib.test_case import test_case_doc
 from .execution_directory_structure import construct_at, ExecutionDirectoryStructure
-from .result import PartialResult, PartialResultStatus
+from .result import PartialResult, PartialResultStatus, new_partial_result_pass
 from . import result
 from . import phase_step_execution
 from shellcheck_lib.test_case.sections.act.phase_setup import PhaseEnvironmentForScriptGeneration, ActProgramExecutor, \
@@ -130,6 +130,11 @@ class PartialExecutor:
             self.__partial_result = res
             self.__run_cleanup(os_services)
             return
+        res = self.__run_act_script_validate()
+        if res.status is not PartialResultStatus.PASS:
+            self.__partial_result = res
+            self.__run_cleanup(os_services)
+            return
         self.write_and_store_script_file_path()
         self.__run_act_script()
         self.__partial_result = self.__run_assert_execute(os_services)
@@ -226,9 +231,7 @@ class PartialExecutor:
         :param act_environment: Post-condition: Contains the accumulated script source.
         """
         script_builder = self.__script_handling.builder
-        environment = PhaseEnvironmentForScriptGeneration(
-            script_builder
-        )
+        environment = PhaseEnvironmentForScriptGeneration(script_builder)
         os.chdir(str(self.execution_directory_structure.act_dir))
         ret_val = phase_step_execution.execute_phase(
             self.__act_phase,
@@ -241,6 +244,23 @@ class PartialExecutor:
             self.execution_directory_structure)
         self.___step_execution_result.script_source = script_builder.build()
         return ret_val
+
+    def __run_act_script_validate(self) -> PartialResult:
+        # try:
+        #     res = self.__script_handling.executor.validate(self.__script_handling.builder)
+        #     if res.is_success:
+        #         return new_partial_result_pass(self.__execution_directory_structure)
+        #     else:
+        #         return PartialResult(PartialResultStatus(res.status.value)) # FUNKAR Inte !!
+        # except Exception as ex:
+        return new_partial_result_pass(self.__execution_directory_structure)
+
+    def write_and_store_script_file_path(self):
+        self.__source_setup = SourceSetup(self.__script_handling.builder,
+                                          self.__execution_directory_structure.test_case_dir,
+                                          phases.ACT.name)
+        self.__script_handling.executor.prepare(self.__source_setup,
+                                                self.__execution_directory_structure)
 
     def __run_act_script(self):
         """
@@ -269,13 +289,6 @@ class PartialExecutor:
                     StdOutputFiles(f_stdout,
                                    f_stderr))
                 self._store_exit_code(exitcode)
-
-    def write_and_store_script_file_path(self):
-        self.__source_setup = SourceSetup(self.__script_handling.builder,
-                                          self.__execution_directory_structure.test_case_dir,
-                                          phases.ACT.name)
-        self.__script_handling.executor.prepare(self.__source_setup,
-                                                self.__execution_directory_structure)
 
     def __set_pre_eds_environment_variables(self):
         os.environ[environment_variables.ENV_VAR_HOME] = str(self.configuration.home_dir)
