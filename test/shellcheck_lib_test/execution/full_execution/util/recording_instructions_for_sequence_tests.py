@@ -13,21 +13,34 @@ from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, Setup
 from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib_test.execution.util.instruction_adapter import InternalInstruction
 
-class ListRecorder:
+
+class ListElementRecorder:
     def __init__(self,
-                 recorder: list,
+                 element_list: list,
                  element: str):
-        self.recorder = recorder
+        self.recorder = element_list
         self.element = element
 
     def record(self):
         self.recorder.append(self.element)
 
 
+class ListRecorder:
+    def __init__(self):
+        self.__element_list = []
+
+    def recording_of(self, element: str) -> ListElementRecorder:
+        return ListElementRecorder(self.__element_list, element)
+
+    @property
+    def recorded_elements(self) -> list:
+        return self.__element_list
+
+
 class ActInstructionThatRecordsStringInList(ActPhaseInstruction):
     def __init__(self,
-                 recorder_for_validate: ListRecorder,
-                 recorder_for_execute: ListRecorder):
+                 recorder_for_validate: ListElementRecorder,
+                 recorder_for_execute: ListElementRecorder):
         self.__recorder_for_validate = recorder_for_validate
         self.__recorder_for_execute = recorder_for_execute
 
@@ -46,7 +59,7 @@ class ActInstructionThatRecordsStringInList(ActPhaseInstruction):
 
 class AnonymousInternalInstructionThatRecordsStringInList(AnonymousPhaseInstruction):
     def __init__(self,
-                 recorder: ListRecorder):
+                 recorder: ListElementRecorder):
         self.__recorder = recorder
 
     def main(self, global_environment,
@@ -57,9 +70,9 @@ class AnonymousInternalInstructionThatRecordsStringInList(AnonymousPhaseInstruct
 
 class SetupInstructionThatRecordsStringInList(SetupPhaseInstruction):
     def __init__(self,
-                 recorder_for_pre_validate: ListRecorder,
-                 recorder_for_execute: ListRecorder,
-                 recorder_for_post_validate: ListRecorder):
+                 recorder_for_pre_validate: ListElementRecorder,
+                 recorder_for_execute: ListElementRecorder,
+                 recorder_for_post_validate: ListElementRecorder):
         self.__recorder_for_pre_validate = recorder_for_pre_validate
         self.__recorder_for_execute = recorder_for_execute
         self.__recorder_for_post_validate = recorder_for_post_validate
@@ -127,7 +140,7 @@ class InternalInstructionThatRecordsStringInRecordFile(InternalInstruction):
 
 class InternalInstructionThatRecordsStringInList(InternalInstruction):
     def __init__(self,
-                 recorder: ListRecorder):
+                 recorder: ListElementRecorder):
         self.__recorder = recorder
 
     def execute(self, phase_name: str,
@@ -179,8 +192,8 @@ class ActInstructionThatRecordsStringInRecordFile(ActPhaseInstruction):
 
 class AssertInternalInstructionThatRecordsStringInList(AssertPhaseInstruction):
     def __init__(self,
-                 recorder_for_validate: ListRecorder,
-                 recorder_for_execute: ListRecorder):
+                 recorder_for_validate: ListElementRecorder,
+                 recorder_for_execute: ListElementRecorder):
         self.__recorder_for_validate = recorder_for_validate
         self.__recorder_for_execute = recorder_for_execute
 

@@ -4,6 +4,7 @@ import pathlib
 import unittest
 
 from shellcheck_lib.default.execution_mode.test_case.processing import script_handling_for_setup
+from shellcheck_lib.execution.partial_execution import ScriptHandling
 from shellcheck_lib.test_case import test_case_doc
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.execution.result import FullResult
@@ -15,19 +16,23 @@ from shellcheck_lib_test.execution.util import utils
 class FullExecutionTestCaseBase:
     def __init__(self,
                  unittest_case: unittest.TestCase,
-                 dbg_do_not_delete_dir_structure=False):
+                 dbg_do_not_delete_dir_structure=False,
+                 script_handling: ScriptHandling=None):
         self.__unittest_case = unittest_case
         self.__dbg_do_not_delete_dir_structure = dbg_do_not_delete_dir_structure
         self.__full_result = None
         self.__execution_directory_structure = None
         self.__initial_home_dir_path = None
+        self.__script_handling = script_handling
+        if self.__script_handling is None:
+            self.__script_handling = script_handling_for_setup(python3.new_act_phase_setup())
 
     def execute(self):
         # SETUP #
         self.__initial_home_dir_path = pathlib.Path().resolve()
         # ACT #
         full_result = full_execution.execute(
-            script_handling_for_setup(python3.new_act_phase_setup()),
+            self.__script_handling,
             self._test_case(),
             self.initial_home_dir_path,
             'shellcheck-test-',
