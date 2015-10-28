@@ -15,7 +15,7 @@ from shellcheck_lib_test.execution.util import instruction_adapter
 class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorBase):
     def __init__(self):
         super().__init__()
-        self.__recorder = []
+        self.__recorder = instr.ListRecorder()
 
     def _anonymous_phase_extra(self) -> list:
         """
@@ -48,8 +48,12 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorBase):
         return []
 
     @property
-    def internal_instruction_recorder(self) -> list:
+    def recorder(self) -> instr.ListRecorder:
         return self.__recorder
+
+    @property
+    def internal_instruction_recorder(self) -> list:
+        return self.__recorder.recorded_elements
 
     def _anonymous_phase(self) -> list:
         return self._anonymous_phase_recording() + \
@@ -158,9 +162,8 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorBase):
         return instruction_adapter.as_cleanup(
             instr.InternalInstructionThatRecordsStringInList(self.__recorder_of(text)))
 
-    def __recorder_of(self, s: str) -> instr.ListRecorder:
-        return instr.ListRecorder(self.__recorder,
-                                  s)
+    def __recorder_of(self, element: str) -> instr.ListElementRecorder:
+        return self.__recorder.recording_of(element)
 
 
 class TestCaseThatRecordsExecutionWithExtraInstructionList(TestCaseGeneratorForExecutionRecording):

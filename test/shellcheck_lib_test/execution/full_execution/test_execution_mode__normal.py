@@ -1,13 +1,15 @@
 import unittest
 
+from shellcheck_lib.default.execution_mode.test_case.processing import script_handling_for_setup
 from shellcheck_lib.execution.phase_step import PhaseStep
 from shellcheck_lib_test.execution.full_execution.util.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorForExecutionRecording, \
     TestCaseThatRecordsExecutionWithExtraInstructionList
 from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib.execution import phase_step, phases
+from shellcheck_lib.act_phase_setups import python3
 from shellcheck_lib_test.execution.full_execution.util.test_case_that_records_phase_execution import \
-    TestCaseThatRecordsExecution
+    TestCaseThatRecordsExecution, with_recording_act_program_executor
 from shellcheck_lib_test.util.expected_instruction_failure import ExpectedFailureForNoFailure, \
     ExpectedFailureForInstructionFailure
 from shellcheck_lib_test.execution.full_execution.util import instruction_test_resources
@@ -18,9 +20,12 @@ from shellcheck_lib.test_case.sections.result import sh
 
 class Test(unittest.TestCase):
     def test_full_sequence(self):
+        test_case_generator = TestCaseGeneratorForExecutionRecording()
+        script_handling = with_recording_act_program_executor(test_case_generator.recorder,
+                                                              script_handling_for_setup(python3.new_act_phase_setup()))
         TestCaseThatRecordsExecution(
             self,
-            TestCaseGeneratorForExecutionRecording(),
+            test_case_generator,
             FullResultStatus.PASS,
             ExpectedFailureForNoFailure(),
             [phase_step.ANONYMOUS,
@@ -30,6 +35,7 @@ class Test(unittest.TestCase):
              phase_step.ACT__VALIDATE,
              phase_step.ASSERT__VALIDATE,
              phase_step.ACT__SCRIPT_GENERATION,
+             phase_step.ACT__SCRIPT_EXECUTION,
              phase_step.ASSERT__EXECUTE,
              phase_step.CLEANUP,
              ],
@@ -42,7 +48,8 @@ class Test(unittest.TestCase):
              phase_step.ASSERT__EXECUTE,
              phase_step.CLEANUP,
              ],
-            True).execute()
+            True,
+            script_handling=script_handling).execute()
 
     def test_hard_error_in_anonymous_phase(self):
         test_case = TestCaseThatRecordsExecutionWithExtraInstructionList() \
