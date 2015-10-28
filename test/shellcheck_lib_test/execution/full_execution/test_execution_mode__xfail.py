@@ -9,7 +9,7 @@ from shellcheck_lib_test.execution.full_execution.util.test_case_generation_for_
 from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib.execution import phase_step, phases
 from shellcheck_lib_test.execution.full_execution.util.test_case_that_records_phase_execution import \
-    TestCaseThatRecordsExecution
+    new_test_case_with_recording
 from shellcheck_lib_test.util.expected_instruction_failure import ExpectedFailureForInstructionFailure, \
     ExpectedFailureForNoFailure
 from shellcheck_lib.test_case.sections.result import pfh
@@ -25,7 +25,7 @@ class Test(unittest.TestCase):
             instruction_test_resources.AssertPhaseInstructionThatReturns(
                 from_validate=svh.new_svh_success(),
                 from_execute=pfh.new_pfh_fail('fail message')))
-        TestCaseThatRecordsExecution(
+        new_test_case_with_recording(
             self,
             test_case,
             FullResultStatus.XFAIL,
@@ -40,6 +40,8 @@ class Test(unittest.TestCase):
              phase_step.ACT__VALIDATE,
              phase_step.ASSERT__VALIDATE,
              phase_step.ACT__SCRIPT_GENERATION,
+             phase_step.ACT__SCRIPT_VALIDATION,
+             phase_step.ACT__SCRIPT_EXECUTION,
              phase_step.ASSERT__EXECUTE,
              phase_step.CLEANUP
              ],
@@ -56,7 +58,7 @@ class Test(unittest.TestCase):
     def test_with_assert_phase_that_passes(self):
         test_case = TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList() \
             .add_anonymous(AnonymousPhaseInstructionThatSetsExecutionMode(ExecutionMode.XFAIL))
-        TestCaseThatRecordsExecution(
+        new_test_case_with_recording(
             self,
             test_case,
             FullResultStatus.XPASS,
@@ -68,6 +70,8 @@ class Test(unittest.TestCase):
              phase_step.ACT__VALIDATE,
              phase_step.ASSERT__VALIDATE,
              phase_step.ACT__SCRIPT_GENERATION,
+             phase_step.ACT__SCRIPT_VALIDATION,
+             phase_step.ACT__SCRIPT_EXECUTION,
              phase_step.ASSERT__EXECUTE,
              phase_step.CLEANUP
              ],
@@ -86,7 +90,7 @@ class Test(unittest.TestCase):
             .add_anonymous(AnonymousPhaseInstructionThatSetsExecutionMode(ExecutionMode.XFAIL)) \
             .add_anonymous(instruction_test_resources.AnonymousPhaseInstructionThatReturns(
             sh.new_sh_hard_error('hard error msg')))
-        TestCaseThatRecordsExecution(
+        new_test_case_with_recording(
             self,
             test_case,
             FullResultStatus.HARD_ERROR,
@@ -105,7 +109,7 @@ class Test(unittest.TestCase):
             .add_cleanup(
             instruction_test_resources.CleanupPhaseInstructionWithImplementationError(
                 instruction_test_resources.ImplementationErrorTestException()))
-        TestCaseThatRecordsExecution(
+        new_test_case_with_recording(
             self,
             test_case,
             FullResultStatus.IMPLEMENTATION_ERROR,
@@ -120,6 +124,8 @@ class Test(unittest.TestCase):
              phase_step.ACT__VALIDATE,
              phase_step.ASSERT__VALIDATE,
              phase_step.ACT__SCRIPT_GENERATION,
+             phase_step.ACT__SCRIPT_VALIDATION,
+             phase_step.ACT__SCRIPT_EXECUTION,
              phase_step.ASSERT__EXECUTE,
              phase_step.CLEANUP
              ],
