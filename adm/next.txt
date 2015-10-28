@@ -5,7 +5,7 @@ Fortsätt med
 * TODO Skräddarsy act-fasen
 ** TODO Testa befintlig script-lng-setup individuellt
 *** TODO Infrastruktur för test av act-phase-setup
-** TODO Integrera Executor.validate i tesetfalls-exekveringen
+** TODO Integrera Executor.validate i testfalls-exekveringen
 ** TODO Implementera setup för single-kommando
 Typ: "dir/mitt-program arg1 arg2"
 Se till att resolva abs-path till detta kommando så att man kan använda
