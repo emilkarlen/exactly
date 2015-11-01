@@ -34,10 +34,13 @@ class _ActProgramExecutorForSingleCommand(ActProgramExecutor):
                  home_dir: pathlib.Path,
                  source: ScriptSourceBuilder) -> svh.SuccessOrValidationErrorOrHardError:
         num_source_lines = len(source.source_lines)
-        if num_source_lines == 1:
-            return svh.new_svh_success()
-        msg = 'There must be a single source line. Found {} lines'.format(num_source_lines)
-        return svh.new_svh_validation_error(msg)
+        if num_source_lines != 1:
+            msg = 'There must be a single source line. Found {} lines'.format(num_source_lines)
+            return svh.new_svh_validation_error(msg)
+        if source.source_lines[0].isspace():
+            msg = 'Source statement is white space'
+            return svh.new_svh_validation_error(msg)
+        return svh.new_svh_success()
 
     def prepare(self,
                 source_setup: SourceSetup,

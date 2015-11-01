@@ -39,11 +39,11 @@ class ExecutorValidationTestCases(unittest.TestCase):
     def __init__(self, method_name):
         super().__init__(method_name)
         self.setup = sut.act_phase_setup()
-        self.home_dir = pathlib.Path()
+        self.home_dir_as_current_dir = pathlib.Path()
 
     def test_validation_fails_when_there_are_no_statements(self):
         source = self._empty_builder()
-        actual = self.setup.executor.validate(self.home_dir, source)
+        actual = self.setup.executor.validate(self.home_dir_as_current_dir, source)
         self.assertIs(actual.status,
                       svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
                       'Validation result')
@@ -52,7 +52,7 @@ class ExecutorValidationTestCases(unittest.TestCase):
         source = self._empty_builder()
         source.raw_script_statement('statement 1')
         source.raw_script_statement('statement 2')
-        actual = self.setup.executor.validate(self.home_dir, source)
+        actual = self.setup.executor.validate(self.home_dir_as_current_dir, source)
         self.assertIs(actual.status,
                       svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
                       'Validation result')
@@ -60,16 +60,24 @@ class ExecutorValidationTestCases(unittest.TestCase):
     def test_validation_succeeds_when_there_is_exactly_one_statements(self):
         source = self._empty_builder()
         source.raw_script_statement('statement 1')
-        actual = self.setup.executor.validate(self.home_dir, source)
+        actual = self.setup.executor.validate(self.home_dir_as_current_dir, source)
         self.assertIs(actual.status,
                       svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                      'Validation result')
+
+    def test_validation_fails_when_there_is_a_single_statement_line_but_this_line_is_only_space(self):
+        source = self._empty_builder()
+        source.raw_script_statement('  \t')
+        actual = self.setup.executor.validate(self.home_dir_as_current_dir, source)
+        self.assertIs(actual.status,
+                      svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
                       'Validation result')
 
     def test_that_comment_lines_are_ignored(self):
         source = self._empty_builder()
         source.raw_script_statement('statement 1')
         source.comment_line('comment 1')
-        actual = self.setup.executor.validate(self.home_dir, source)
+        actual = self.setup.executor.validate(self.home_dir_as_current_dir, source)
         self.assertIs(actual.status,
                       svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                       'Validation result')
