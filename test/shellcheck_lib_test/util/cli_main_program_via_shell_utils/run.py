@@ -3,7 +3,7 @@ import sys
 import unittest
 
 from shellcheck_lib.execution.result import FullResultStatus
-from shellcheck_lib_test.util.with_tmp_file import ExpectedSubProcessResult, lines_content, SubProcessResultInfo, \
+from shellcheck_lib_test.util.process import ExpectedSubProcessResult, lines_content, SubProcessResultInfo, \
     run_subprocess, run_subprocess_with_file_arg__full, SubProcessResult
 
 SRC_DIR_NAME = 'src'

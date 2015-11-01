@@ -14,7 +14,7 @@ from shellcheck_lib_test.util.file_checks import FileChecker
 from shellcheck_lib_test.util.cli_main_program_via_shell_utils.run import SUCCESSFUL_RESULT, \
     run_shellcheck_in_sub_process_with_file_argument, \
     contents_of_file
-from shellcheck_lib_test.util.with_tmp_file import lines_content, SubProcessResult, \
+from shellcheck_lib_test.util.process import lines_content, SubProcessResult, \
     ExpectedSubProcessResult, SubProcessResultInfo
 from shellcheck_lib_test.cli.cases import default_main_program_wildcard as wildcard
 from shellcheck_lib_test.cli import default_main_program_suite_preprocessing as pre_proc_tests

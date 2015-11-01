@@ -6,7 +6,7 @@ import unittest
 from shellcheck_lib_test.cli.utils.execute_main_program import execute_main_program
 from shellcheck_lib_test.util.cli_main_program_via_shell_utils.run import run_shellcheck_in_sub_process
 from shellcheck_lib_test.util.file_structure import DirContents
-from shellcheck_lib_test.util.with_tmp_file import SubProcessResult
+from shellcheck_lib_test.util.process import SubProcessResult
 
 
 class SetupBase:
