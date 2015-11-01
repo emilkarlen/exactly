@@ -5,7 +5,7 @@ import tempfile
 import subprocess
 import unittest
 
-from shellcheck_lib.general.output import StdFiles, StdOutputFiles
+from shellcheck_lib.general.std import StdFiles, StdOutputFiles
 
 
 def lines_content(lines: list) -> str:

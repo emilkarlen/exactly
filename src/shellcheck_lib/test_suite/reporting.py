@@ -1,4 +1,4 @@
-from shellcheck_lib.general.output import StdOutputFiles
+from shellcheck_lib.general.std import StdOutputFiles
 from shellcheck_lib.test_case import test_case_processing
 from . import structure
 

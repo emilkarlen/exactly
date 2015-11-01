@@ -2,7 +2,7 @@ import pathlib
 
 from shellcheck_lib.document.parse import SectionElementParser
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
-from shellcheck_lib.general.output import StdOutputFiles
+from shellcheck_lib.general.std import StdFiles
 from shellcheck_lib.test_case.sections.act.script_source import ScriptSourceAccumulator, ScriptSourceBuilder
 from shellcheck_lib.test_case.sections.result import svh
 
@@ -60,8 +60,7 @@ class ActProgramExecutor:
                 cwd_dir_path: pathlib.Path,
                 home_dir: pathlib.Path,
                 eds: ExecutionDirectoryStructure,
-                stdin,
-                std_output_files: StdOutputFiles) -> int:
+                std_files: StdFiles) -> int:
         """
         Executed after prepare.
         :param cwd_dir_path: The directory that should be (initial) Current Working Directory of the program.

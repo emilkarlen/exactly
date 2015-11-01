@@ -22,7 +22,7 @@ import sys
 from shellcheck_lib.cli.default_main_program import MainProgram
 from shellcheck_lib.default.execution_mode.test_case import default_instructions_setup, \
     instruction_name_and_argument_splitter
-from shellcheck_lib.general.output import StdOutputFiles
+from shellcheck_lib.general.std import StdOutputFiles
 
 program = MainProgram(StdOutputFiles(sys.stdout,
                                      sys.stderr),

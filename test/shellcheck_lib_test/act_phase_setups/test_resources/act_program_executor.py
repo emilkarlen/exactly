@@ -5,7 +5,7 @@ import random
 import unittest
 
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
-from shellcheck_lib.general.output import StdFiles
+from shellcheck_lib.general.std import StdFiles
 from shellcheck_lib.test_case.sections.act.script_source import ScriptSourceBuilder
 from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.sections.act.phase_setup import ActProgramExecutor, SourceSetup
@@ -61,8 +61,7 @@ class _ProcessExecutorForProgramExecutor(ProcessExecutor):
                                              pathlib.Path(cwd),
                                              self.home_dir_path,
                                              self.eds,
-                                             files.stdin,
-                                             files.output)
+                                             files)
 
 
 class Tests:

@@ -7,7 +7,7 @@ from shellcheck_lib.cli.execution_mode.test_suite import argument_parsing as sui
 from shellcheck_lib.cli import argument_parsing_utils
 from shellcheck_lib.cli.execution_mode.help.argument_parsing import parse as parse_help
 from shellcheck_lib.cli.execution_mode.test_suite.settings import Settings
-from shellcheck_lib.general.output import StdOutputFiles
+from shellcheck_lib.general.std import StdOutputFiles
 
 
 EXIT_INVALID_USAGE = 2
