@@ -4,7 +4,7 @@ import unittest
 from shellcheck_lib.act_phase_setups import script_language_setup as sut
 from shellcheck_lib.test_case.sections.act.script_source import ScriptSourceBuilder
 from shellcheck_lib.script_language import python3
-from shellcheck_lib_test.test_case.test_resources.act_program_executor import ActProgramExecutorTestSetup, Tests
+from shellcheck_lib_test.act_phase_setups.test_resources.act_program_executor import ActProgramExecutorTestSetup, Tests
 from shellcheck_lib_test.act_phase_setups.test_resources import py_program
 
 
