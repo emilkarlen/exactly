@@ -1,6 +1,6 @@
 from shellcheck_lib.cli.execution_mode.test_case.execution import NO_EXECUTION_EXIT_CODE
 from shellcheck_lib_test.util.main_program import main_program_check_for_test_case
-from shellcheck_lib_test.util.with_tmp_file import ExpectedSubProcessResult
+from shellcheck_lib_test.util.process import ExpectedSubProcessResult
 
 IF_BASENAME_IS_PASS_THEN_EMPTY_TC_ELSE_TC_THAT_WILL_CAUSE_PARSER_ERROR = """
 import sys

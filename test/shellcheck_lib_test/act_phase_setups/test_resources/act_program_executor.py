@@ -9,9 +9,9 @@ from shellcheck_lib.general.std import StdFiles
 from shellcheck_lib.test_case.sections.act.script_source import ScriptSourceBuilder
 from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.sections.act.phase_setup import ActProgramExecutor, SourceSetup
-from shellcheck_lib_test.util.with_tmp_file import ProcessExecutor, SubProcessResult
+from shellcheck_lib_test.util.process import ProcessExecutor, SubProcessResult
 from shellcheck_lib_test.instructions.utils import execution_directory_structure
-from shellcheck_lib_test.util.with_tmp_file import capture_process_executor_result
+from shellcheck_lib_test.util.process import capture_process_executor_result
 
 
 class ActProgramExecutorTestSetup:

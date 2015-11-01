@@ -3,7 +3,7 @@ import unittest
 
 from shellcheck_lib_test.util.file_structure import File, DirContents
 from shellcheck_lib_test.util.main_program import main_program_check_base
-from shellcheck_lib_test.util.with_tmp_file import SubProcessResult, ExpectedSubProcessResult
+from shellcheck_lib_test.util.process import SubProcessResult, ExpectedSubProcessResult
 
 
 class SetupWithPreprocessor(main_program_check_base.SetupWithPreprocessor):
