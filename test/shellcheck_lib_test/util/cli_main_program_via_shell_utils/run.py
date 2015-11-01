@@ -22,7 +22,7 @@ SUCCESSFUL_RESULT = ExpectedSubProcessResult(exitcode=FullResultStatus.PASS.valu
 
 def run_shellcheck_in_sub_process_with_file_argument(puc: unittest.TestCase,
                                                      file_contents: str,
-                                                     flags: list=()) -> SubProcessResultInfo:
+                                                     flags: tuple=()) -> SubProcessResultInfo:
     cwd = pathlib.Path.cwd()
     # print('# DEBUG: cwd: ' + str(cwd))
     if not sys.executable:

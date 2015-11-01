@@ -3,6 +3,7 @@ import argparse
 
 from shellcheck_lib.cli import argument_parsing_utils
 from .settings import Settings
+from shellcheck_lib.cli.argument_parsing_of_act_phase_setup import resolve_act_phase_setup_from_argparse_argument
 
 
 def parse(argv: list) -> Settings:
@@ -14,7 +15,7 @@ def parse(argv: list) -> Settings:
     argument_parser = _new_argument_parser()
     namespace = argument_parsing_utils.raise_exception_instead_of_exiting_on_error(argument_parser,
                                                                                    argv)
-    return Settings(namespace.interpreter,
+    return Settings(resolve_act_phase_setup_from_argparse_argument(namespace.interpreter),
                     pathlib.Path(namespace.file).resolve())
 
 

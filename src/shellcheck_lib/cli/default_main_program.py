@@ -2,7 +2,6 @@ import datetime
 
 from shellcheck_lib.general.std import StdOutputFiles
 from shellcheck_lib.cli.execution_mode.test_suite.settings import Settings
-from shellcheck_lib.cli.utils import resolve_act_phase_setup
 from shellcheck_lib.cli.execution_mode.help import execution as help_execution
 from shellcheck_lib.cli.execution_mode.test_case.settings import TestCaseExecutionSettings
 from shellcheck_lib.cli.execution_mode.test_case import execution as test_case_execution
@@ -36,7 +35,7 @@ class MainProgram(main_program.MainProgram):
     def execute_test_suite(self, settings: Settings) -> int:
         default_configuration = case_processing.Configuration(self._split_line_into_name_and_argument_function,
                                                               self._instruction_setup,
-                                                              resolve_act_phase_setup(settings.interpreter),
+                                                              settings.act_phase_setup,
                                                               IdentityPreprocessor(),
                                                               False,
                                                               self._eds_root_name_prefix_for_suite())
