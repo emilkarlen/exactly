@@ -139,8 +139,8 @@ class Tests:
                   stdin_contents: str='') -> SubProcessResult:
         act_program_executor = self.test_setup.sut
         validation_result = act_program_executor.validate(source)
-        self.put.assertEqual(svh.new_svh_success(),
-                             validation_result)
+        self.put.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                             validation_result.status)
         with execution_directory_structure() as eds:
             program_setup = SourceSetup(source,
                                         eds.test_case_dir,
