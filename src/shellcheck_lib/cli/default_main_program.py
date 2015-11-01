@@ -1,6 +1,6 @@
 import datetime
 
-from shellcheck_lib.general.output import StdOutputFiles
+from shellcheck_lib.general.std import StdOutputFiles
 from shellcheck_lib.cli.execution_mode.test_suite.settings import Settings
 from shellcheck_lib.cli.utils import resolve_act_phase_setup
 from shellcheck_lib.cli.execution_mode.help import execution as help_execution

@@ -2,7 +2,7 @@ import os
 
 from shellcheck_lib.default.execution_mode.test_case.instruction_setup import InstructionsSetup
 from shellcheck_lib.execution import phase_step
-from shellcheck_lib.general.output import StdOutputFiles
+from shellcheck_lib.general.std import StdOutputFiles
 
 
 class PrintInstructionsPerPhase:

@@ -10,7 +10,7 @@ from shellcheck_lib.execution.phase_step_execution import ElementHeaderExecutor
 from shellcheck_lib.general import line_source
 from shellcheck_lib.execution import phase_step_executors
 from shellcheck_lib.execution.single_instruction_executor import ControlledInstructionExecutor
-from shellcheck_lib.general.output import StdOutputFiles
+from shellcheck_lib.general.std import StdOutputFiles, StdFiles
 from shellcheck_lib.test_case.sections import common
 from shellcheck_lib.document.model import PhaseContents
 from shellcheck_lib.execution import phases
@@ -308,9 +308,9 @@ class PartialExecutor:
                     self.execution_directory_structure.act_dir,
                     self.configuration.home_dir,
                     self.__execution_directory_structure,
-                    f_stdin,
-                    StdOutputFiles(f_stdout,
-                                   f_stderr))
+                    StdFiles(f_stdin,
+                             StdOutputFiles(f_stdout,
+                                            f_stderr)))
                 self._store_exit_code(exitcode)
 
     def __set_pre_eds_environment_variables(self):

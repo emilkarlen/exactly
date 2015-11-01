@@ -1,6 +1,6 @@
 import pathlib
 
-from shellcheck_lib.general.output import StdOutputFiles
+from shellcheck_lib.general.std import StdOutputFiles
 from shellcheck_lib.test_suite import structure
 from shellcheck_lib.test_suite import reporting
 from shellcheck_lib.test_suite.enumeration import SuiteEnumerator

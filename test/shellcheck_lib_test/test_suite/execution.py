@@ -11,7 +11,7 @@ from shellcheck_lib.test_suite.execution import Executor
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.execution.result import new_skipped, new_pass
 from shellcheck_lib.general import line_source
-from shellcheck_lib.general import output
+from shellcheck_lib.general import std
 from shellcheck_lib.test_case.test_case_doc import TestCase
 from shellcheck_lib.test_suite import structure
 from shellcheck_lib.test_suite.enumeration import DepthFirstEnumerator
@@ -397,7 +397,7 @@ class ExecutionTracingReporterFactory(reporting.ReporterFactory):
     def __init__(self):
         self.complete_suite_reporter = ExecutionTracingCompleteSuiteReporter()
 
-    def new_reporter(self, std_output_files: output.StdOutputFiles) -> reporting.CompleteSuiteReporter:
+    def new_reporter(self, std_output_files: std.StdOutputFiles) -> reporting.CompleteSuiteReporter:
         return self.complete_suite_reporter
 
 

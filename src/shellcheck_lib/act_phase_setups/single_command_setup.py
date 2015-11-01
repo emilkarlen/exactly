@@ -4,7 +4,7 @@ import re
 
 from shellcheck_lib.default.execution_mode.test_case.test_case_parser import PlainSourceActPhaseParser
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
-from shellcheck_lib.general.output import StdOutputFiles, StdFiles
+from shellcheck_lib.general.std import StdFiles
 from shellcheck_lib.test_case.sections.act.phase_setup import ActProgramExecutor, SourceSetup, ActPhaseSetup
 from shellcheck_lib.test_case.sections.act.script_source import ScriptSourceBuilder
 from shellcheck_lib.test_case.sections.result import svh
@@ -70,15 +70,13 @@ class _ActProgramExecutorForSingleCommand(ActProgramExecutor):
                 cwd_dir_path: pathlib.Path,
                 home_dir: pathlib.Path,
                 eds: ExecutionDirectoryStructure,
-                stdin,
-                std_output_files: StdOutputFiles) -> int:
+                std_files: StdFiles) -> int:
         command_string = self.validator_and_transformer.transform(home_dir,
                                                                   source_setup.script_builder.source_lines[0])
         cmd_and_args = shlex.split(command_string)
         return utils.execute_cmd_and_args(cmd_and_args,
                                           cwd_dir_path,
-                                          StdFiles(stdin_file=stdin,
-                                                   output_files=std_output_files))
+                                          std_files)
 
     def __mandatory_validate(self,
                              source: ScriptSourceBuilder) -> svh.SuccessOrValidationErrorOrHardError:

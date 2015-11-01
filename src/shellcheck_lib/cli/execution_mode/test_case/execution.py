@@ -3,7 +3,7 @@ import pathlib
 import shutil
 
 from shellcheck_lib.cli.utils import resolve_act_phase_setup
-from shellcheck_lib.general.output import StdOutputFiles
+from shellcheck_lib.general.std import StdOutputFiles
 from shellcheck_lib.default.execution_mode.test_case import processing
 from shellcheck_lib.default.execution_mode.test_case.instruction_setup import InstructionsSetup
 from shellcheck_lib.cli.execution_mode.test_case.settings import Output, TestCaseExecutionSettings

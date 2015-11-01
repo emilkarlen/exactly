@@ -6,7 +6,7 @@ import unittest
 import sys
 
 from shellcheck_lib.act_phase_setups import single_command_setup as sut
-from shellcheck_lib.general.output import std_files_dev_null
+from shellcheck_lib.general.std import std_files_dev_null
 from shellcheck_lib.test_case.sections.act.phase_setup import SourceSetup
 from shellcheck_lib.test_case.sections.act.script_source import ScriptSourceBuilder
 from shellcheck_lib.test_case.sections.result import svh
@@ -243,8 +243,7 @@ def execute_program_rel_home_that_returns_number_of_arguments(puc: unittest.Test
                                           eds.act_dir,
                                           home_dir_path,
                                           eds,
-                                          std_files.stdin,
-                                          std_files.output)
+                                          std_files)
 
 
 def execute_absolute_program_that_returns_number_of_arguments(puc: unittest.TestCase,
@@ -272,8 +271,7 @@ def execute_absolute_program_that_returns_number_of_arguments(puc: unittest.Test
                                           eds.act_dir,
                                           home_dir_path,
                                           eds,
-                                          std_files.stdin,
-                                          std_files.output)
+                                          std_files)
 
 
 exit_code_is_number_of_arguments = """
