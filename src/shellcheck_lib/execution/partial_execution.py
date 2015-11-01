@@ -137,7 +137,11 @@ class PartialExecutor:
             self.__run_cleanup(os_services)
             return
         self.write_and_store_script_file_path()
-        self.__run_act_script()
+        res = self.__run_act_script_execute()
+        if res.status is not PartialResultStatus.PASS:
+            self.__partial_result = res
+            self.__run_cleanup(os_services)
+            return
         self.__partial_result = self.__run_assert_execute(os_services)
         res = self.__run_cleanup(os_services)
         if res.is_failure:
@@ -270,18 +274,26 @@ class PartialExecutor:
         self.__script_handling.executor.prepare(self.__source_setup,
                                                 self.__execution_directory_structure)
 
-    def __run_act_script(self):
+    def __run_act_script_execute(self) -> PartialResult:
         """
         Pre-condition: write has been executed.
         """
-        if self.___step_execution_result.stdin_file_name:
-            try:
-                f_stdin = open(self.___step_execution_result.stdin_file_name)
-                self._run_act_script_with_stdin_file(f_stdin)
-            finally:
-                f_stdin.close()
-        else:
-            self._run_act_script_with_stdin_file(subprocess.DEVNULL)
+        the_phase_step = PhaseStep(phases.ACT, phase_step.ACT_script_execution)
+        try:
+            if self.___step_execution_result.stdin_file_name:
+                try:
+                    f_stdin = open(self.___step_execution_result.stdin_file_name)
+                    self._run_act_script_with_stdin_file(f_stdin)
+                finally:
+                    f_stdin.close()
+            else:
+                self._run_act_script_with_stdin_file(subprocess.DEVNULL)
+            return new_partial_result_pass(self.__execution_directory_structure)
+        except Exception as ex:
+            return PartialResult(PartialResultStatus.IMPLEMENTATION_ERROR,
+                                 self.__execution_directory_structure,
+                                 PhaseFailureInfo(the_phase_step,
+                                                  result.new_failure_details_from_exception(ex)))
 
     def _run_act_script_with_stdin_file(self, f_stdin):
         """
