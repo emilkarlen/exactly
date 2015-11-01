@@ -130,12 +130,14 @@ class _ActProgramExecutorWrapperThatRecordsSteps(ActProgramExecutor):
 
     def prepare(self,
                 source_setup: SourceSetup,
+                home_dir: pathlib.Path,
                 eds: ExecutionDirectoryStructure):
-        self.__wrapped.prepare(source_setup, eds)
+        self.__wrapped.prepare(source_setup, home_dir, eds)
 
     def execute(self,
                 source_setup: SourceSetup,
                 cwd_dir_path: pathlib.Path,
+                home_dir: pathlib.Path,
                 eds: ExecutionDirectoryStructure,
                 stdin,
                 std_output_files: StdOutputFiles) -> int:
@@ -143,6 +145,7 @@ class _ActProgramExecutorWrapperThatRecordsSteps(ActProgramExecutor):
         self.__execute_test_action()
         return self.__wrapped.execute(source_setup,
                                       cwd_dir_path,
+                                      home_dir,
                                       eds,
                                       stdin,
                                       std_output_files)

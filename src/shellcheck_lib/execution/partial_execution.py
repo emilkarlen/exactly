@@ -272,6 +272,7 @@ class PartialExecutor:
                                           self.__execution_directory_structure.test_case_dir,
                                           phases.ACT.name)
         self.__script_handling.executor.prepare(self.__source_setup,
+                                                self.configuration.home_dir,
                                                 self.__execution_directory_structure)
 
     def __run_act_script_execute(self) -> PartialResult:
@@ -305,6 +306,7 @@ class PartialExecutor:
                 exitcode = self.__script_handling.executor.execute(
                     self.__source_setup,
                     self.execution_directory_structure.act_dir,
+                    self.configuration.home_dir,
                     self.__execution_directory_structure,
                     f_stdin,
                     StdOutputFiles(f_stdout,
