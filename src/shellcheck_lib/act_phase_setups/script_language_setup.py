@@ -28,7 +28,7 @@ class ActProgramExecutorForScriptLanguage(ActProgramExecutor):
 
     def prepare(self,
                 source_setup: SourceSetup,
-                home_dir: pathlib.Path,
+                home_dir_path: pathlib.Path,
                 eds: ExecutionDirectoryStructure):
         script_file_path = self._script_path(source_setup)
         with open(str(script_file_path), 'w') as f:
