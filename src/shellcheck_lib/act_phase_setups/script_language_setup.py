@@ -22,12 +22,13 @@ class ActProgramExecutorForScriptLanguage(ActProgramExecutor):
         self.script_language_setup = script_language_setup
 
     def validate(self,
-                 home_dir: pathlib.Path,
-                 source: ScriptSourceBuilder) -> svh.SuccessOrValidationErrorOrHardError:
+                 source: ScriptSourceBuilder,
+                 home_dir: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
         return svh.new_svh_success()
 
     def prepare(self,
                 source_setup: SourceSetup,
+                home_dir: pathlib.Path,
                 eds: ExecutionDirectoryStructure):
         script_file_path = self._script_path(source_setup)
         with open(str(script_file_path), 'w') as f:
@@ -36,6 +37,7 @@ class ActProgramExecutorForScriptLanguage(ActProgramExecutor):
     def execute(self,
                 source_setup: SourceSetup,
                 cwd_dir_path: pathlib.Path,
+                home_dir: pathlib.Path,
                 eds: ExecutionDirectoryStructure,
                 stdin,
                 std_output_files: StdOutputFiles) -> int:

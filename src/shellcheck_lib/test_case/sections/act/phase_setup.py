@@ -44,6 +44,7 @@ class ActProgramExecutor:
 
     def prepare(self,
                 source_setup: SourceSetup,
+                home_dir: pathlib.Path,
                 eds: ExecutionDirectoryStructure):
         """
         Executed after validate.
@@ -57,6 +58,7 @@ class ActProgramExecutor:
     def execute(self,
                 source_setup: SourceSetup,
                 cwd_dir_path: pathlib.Path,
+                home_dir: pathlib.Path,
                 eds: ExecutionDirectoryStructure,
                 stdin,
                 std_output_files: StdOutputFiles) -> int:

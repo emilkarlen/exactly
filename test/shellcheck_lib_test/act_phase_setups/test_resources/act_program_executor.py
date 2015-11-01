@@ -46,10 +46,12 @@ class ActProgramExecutorTestSetup:
 class _ProcessExecutorForProgramExecutor(ProcessExecutor):
     def __init__(self,
                  source_setup: SourceSetup,
+                 home_dir_path: pathlib.Path,
                  eds: ExecutionDirectoryStructure,
                  program_executor: ActProgramExecutor):
         self.program_executor = program_executor
         self.source_setup = source_setup
+        self.home_dir_path = home_dir_path
         self.eds = eds
 
     def execute(self,
@@ -57,6 +59,7 @@ class _ProcessExecutorForProgramExecutor(ProcessExecutor):
                 files: StdFiles) -> int:
         return self.program_executor.execute(self.source_setup,
                                              pathlib.Path(cwd),
+                                             self.home_dir_path,
                                              self.eds,
                                              files.stdin,
                                              files.output)
@@ -120,8 +123,9 @@ class Tests:
                 program_setup = SourceSetup(source,
                                             eds.test_case_dir,
                                             'file-name-stem')
-                act_program_executor.prepare(program_setup, eds)
+                act_program_executor.prepare(program_setup, home_dir, eds)
                 process_executor = _ProcessExecutorForProgramExecutor(program_setup,
+                                                                      home_dir,
                                                                       eds,
                                                                       act_program_executor)
                 process_result = capture_process_executor_result(process_executor,
@@ -147,8 +151,9 @@ class Tests:
             program_setup = SourceSetup(source,
                                         eds.test_case_dir,
                                         'file-name-stem')
-            act_program_executor.prepare(program_setup, eds)
+            act_program_executor.prepare(program_setup, home_dir, eds)
             process_executor = _ProcessExecutorForProgramExecutor(program_setup,
+                                                                  home_dir,
                                                                   eds,
                                                                   act_program_executor)
             return capture_process_executor_result(process_executor,

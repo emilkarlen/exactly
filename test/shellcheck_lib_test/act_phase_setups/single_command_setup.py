@@ -1,5 +1,6 @@
 from contextlib import contextmanager
 import pathlib
+import tempfile
 import unittest
 import sys
 
@@ -8,6 +9,7 @@ from shellcheck_lib.test_case.sections.act.script_source import ScriptSourceBuil
 from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib_test.act_phase_setups.test_resources.act_program_executor import ActProgramExecutorTestSetup, Tests
 from shellcheck_lib_test.act_phase_setups.test_resources import py_program
+from shellcheck_lib_test.util.file_structure import DirContents, empty_file, File
 from shellcheck_lib_test.util.with_tmp_file import tmp_file_containing_lines
 
 
@@ -38,7 +40,7 @@ class StandardExecutorTestCases(unittest.TestCase):
 class ExecutorValidationTestCases(unittest.TestCase):
     def __init__(self, method_name):
         super().__init__(method_name)
-        self.setup = sut.act_phase_setup()
+        self.setup = sut.act_phase_setup(False)
         self.home_dir_as_current_dir = pathlib.Path()
 
     def test_validation_fails_when_there_are_no_statements(self):
@@ -88,7 +90,7 @@ class ExecutorValidationTestCases(unittest.TestCase):
 
 class TestSetup(ActProgramExecutorTestSetup):
     def __init__(self):
-        self.setup = sut.act_phase_setup()
+        self.setup = sut.act_phase_setup(False)
         super().__init__(self.setup.executor)
         self.python_executable = sys.executable
 
@@ -128,10 +130,79 @@ class TestSetup(ActProgramExecutorTestSetup):
         return ret_val
 
 
+class CommandFileRelativeHomeTestCases(unittest.TestCase):
+    def test_validation_fails_when_command_is_relative_but_does_not_exist_relative_home__no_arguments(self):
+        setup = sut.act_phase_setup(True)
+        source = setup.script_builder_constructor()
+        source.raw_script_statement('relative-path-of-non-existing-command')
+        actual = setup.executor.validate(pathlib.Path(), source)
+        self.assertIs(actual.status,
+                      svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
+                      'Validation result')
+
+    def test_validation_succeeds_when_command_is_relative_and_does_exist_relative_home__no_arguments(self):
+        setup = sut.act_phase_setup(True)
+        source = setup.script_builder_constructor()
+        command_file_name = 'command'
+        source.raw_script_statement(command_file_name)
+        with tmp_dir_with_file(empty_file(command_file_name)) as home_dir_path:
+            actual = setup.executor.validate(home_dir_path, source)
+            self.assertIs(actual.status,
+                          svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                          'Validation result')
+
+    def test_validation_fails_when_command_is_relative_but_does_not_exist_relative_home__with_arguments(self):
+        setup = sut.act_phase_setup(True)
+        source = setup.script_builder_constructor()
+        source.raw_script_statement('{} {}'.format('non-existing-command', 'argument'))
+        actual = setup.executor.validate(pathlib.Path(), source)
+        self.assertIs(actual.status,
+                      svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
+                      'Validation result')
+
+    def test_validation_succeeds_when_command_is_relative_and_does_exist_relative_home__with_arguments(self):
+        setup = sut.act_phase_setup(True)
+        source = setup.script_builder_constructor()
+        command_file_name = 'command'
+        source.raw_script_statement('{} arg1 arg2'.format(command_file_name))
+        with tmp_dir_with_file(empty_file(command_file_name)) as home_dir_path:
+            actual = setup.executor.validate(home_dir_path, source)
+            self.assertIs(actual.status,
+                          svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                          'Validation result')
+
+    def test_validation_succeeds_when_command_is_absolute_without_arguments(self):
+        setup = sut.act_phase_setup(True)
+        source = setup.script_builder_constructor()
+        source.raw_script_statement(sys.executable)
+        actual = setup.executor.validate(pathlib.Path(), source)
+        self.assertIs(actual.status,
+                      svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                      'Validation result')
+
+    def test_validation_succeeds_when_command_is_absolute_with_arguments(self):
+        setup = sut.act_phase_setup(True)
+        source = setup.script_builder_constructor()
+        source.raw_script_statement('{} {}'.format(sys.executable, 'argument'))
+        actual = setup.executor.validate(pathlib.Path(), source)
+        self.assertIs(actual.status,
+                      svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                      'Validation result')
+
+
+@contextmanager
+def tmp_dir_with_file(file: File):
+    with tempfile.TemporaryDirectory() as home_dir:
+        home_dir_path = pathlib.Path(home_dir)
+        DirContents([file]).write_to(home_dir_path)
+        yield home_dir_path
+
+
 def suite():
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(ExecutorValidationTestCases))
     ret_val.addTest(unittest.makeSuite(StandardExecutorTestCases))
+    ret_val.addTest(unittest.makeSuite(CommandFileRelativeHomeTestCases))
     return ret_val
 
 
