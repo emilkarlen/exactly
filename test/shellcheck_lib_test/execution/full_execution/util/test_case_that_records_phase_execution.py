@@ -5,7 +5,6 @@ from shellcheck_lib.default.execution_mode.test_case.processing import script_ha
 from shellcheck_lib.execution import phase_step
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.execution.partial_execution import ScriptHandling
-
 from shellcheck_lib.general.output import StdOutputFiles
 from shellcheck_lib_test.execution.full_execution.util import recording_instructions_for_sequence_tests as instr
 from shellcheck_lib.test_case import test_case_doc
@@ -87,28 +86,67 @@ class TestCaseThatRecordsExecution(FullExecutionTestCaseBase):
 
 
 def with_recording_act_program_executor(recorder: instr.ListRecorder,
-                                        script_handling: ScriptHandling):
+                                        script_handling: ScriptHandling,
+                                        validate_test_action,
+                                        execute_test_action):
     return ScriptHandling(script_handling.builder,
                           _ActProgramExecutorWrapperThatRecordsSteps(recorder,
-                                                                     script_handling.executor))
+                                                                     script_handling.executor,
+                                                                     validate_test_action,
+                                                                     execute_test_action))
+
+
+def validate_action_that_returns(ret_val: svh.SuccessOrValidationErrorOrHardError):
+    def f():
+        return ret_val
+
+    return f
+
+
+def validate_action_that_raises(ex: Exception):
+    def f():
+        raise ex
+
+    return f
+
+
+def execute_action_that_does_nothing():
+    def f():
+        pass
+
+    return f
+
+
+def execute_action_that_raises(ex: Exception):
+    def f():
+        raise ex
+
+    return f
 
 
 class _ActProgramExecutorWrapperThatRecordsSteps(ActProgramExecutor):
     def __init__(self,
                  recorder: instr.ListRecorder,
-                 wrapped: ActProgramExecutor):
+                 wrapped: ActProgramExecutor,
+                 validate_test_action,
+                 execute_test_action):
         self.__recorder = recorder
         self.__wrapped = wrapped
+        self.__validate_test_action = validate_test_action
+        self.__execute_test_action = execute_test_action
 
     def validate(self,
                  source: ScriptSourceBuilder) -> svh.SuccessOrValidationErrorOrHardError:
         self.__recorder.recording_of(phase_step.ACT__SCRIPT_VALIDATION).record()
+        test_action_result = self.__validate_test_action()
+        if not test_action_result.is_success:
+            return test_action_result
         return self.__wrapped.validate(source)
 
     def prepare(self,
                 source_setup: SourceSetup,
                 eds: ExecutionDirectoryStructure):
-        return self.__wrapped.prepare(source_setup, eds)
+        self.__wrapped.prepare(source_setup, eds)
 
     def execute(self,
                 source_setup: SourceSetup,
@@ -117,6 +155,7 @@ class _ActProgramExecutorWrapperThatRecordsSteps(ActProgramExecutor):
                 stdin,
                 std_output_files: StdOutputFiles) -> int:
         self.__recorder.recording_of(phase_step.ACT__SCRIPT_EXECUTION).record()
+        self.__execute_test_action()
         return self.__wrapped.execute(source_setup,
                                       cwd_dir_path,
                                       eds,
@@ -131,9 +170,13 @@ def new_test_case_with_recording(unittest_case: unittest.TestCase,
                                  expected_internal_recording: list,
                                  expected_file_recording: list,
                                  execution_directory_structure_should_exist: bool,
+                                 validate_test_action=validate_action_that_returns(svh.new_svh_success()),
+                                 execute_test_action=execute_action_that_does_nothing(),
                                  dbg_do_not_delete_dir_structure=False) -> TestCaseThatRecordsExecution:
     script_handling = with_recording_act_program_executor(test_case_generator.recorder,
-                                                          script_handling_for_setup(python3.new_act_phase_setup()))
+                                                          script_handling_for_setup(python3.new_act_phase_setup()),
+                                                          validate_test_action,
+                                                          execute_test_action)
     return TestCaseThatRecordsExecution(unittest_case,
                                         test_case_generator,
                                         expected_status,

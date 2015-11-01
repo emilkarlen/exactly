@@ -5,6 +5,7 @@ import pathlib
 
 from shellcheck_lib.execution import phase_step
 from shellcheck_lib.execution import environment_variables
+from shellcheck_lib.execution.phase_step import PhaseStep
 from shellcheck_lib.execution.phase_step_execution import ElementHeaderExecutor
 from shellcheck_lib.general import line_source
 from shellcheck_lib.execution import phase_step_executors
@@ -246,6 +247,7 @@ class PartialExecutor:
         return ret_val
 
     def __run_act_script_validate(self) -> PartialResult:
+        the_phase_step = PhaseStep(phases.ACT, phase_step.ACT_script_validation)
         try:
             res = self.__script_handling.executor.validate(self.__script_handling.builder)
             if res.is_success:
@@ -253,12 +255,12 @@ class PartialExecutor:
             else:
                 return PartialResult(PartialResultStatus(res.status.value),
                                      self.__execution_directory_structure,
-                                     PhaseFailureInfo(phase_step.ACT__VALIDATE,
+                                     PhaseFailureInfo(the_phase_step,
                                                       result.new_failure_details_from_message(res.failure_message)))
         except Exception as ex:
             return PartialResult(PartialResultStatus.IMPLEMENTATION_ERROR,
                                  self.__execution_directory_structure,
-                                 PhaseFailureInfo(phase_step.ACT__VALIDATE,
+                                 PhaseFailureInfo(the_phase_step,
                                                   result.new_failure_details_from_exception(ex)))
 
     def write_and_store_script_file_path(self):

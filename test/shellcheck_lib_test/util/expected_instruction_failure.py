@@ -138,8 +138,8 @@ class ExpectedFailureForInstructionFailure(ExpectedFailure, tuple):
         assert_equals_line(unittest_case,
                            self.source_line,
                            actual_line)
-        self.expected_instruction_failure.assertions(unittest_case,
-                                                     actual_details)
+        self.expected_failure.assertions(unittest_case,
+                                         actual_details)
 
     def assertions(self,
                    unittest_case: unittest.TestCase,
@@ -163,7 +163,7 @@ class ExpectedFailureForInstructionFailure(ExpectedFailure, tuple):
         return self[1]
 
     @property
-    def expected_instruction_failure(self) -> ExpectedFailureDetails:
+    def expected_failure(self) -> ExpectedFailureDetails:
         return self[2]
 
 
@@ -200,8 +200,8 @@ class ExpectedFailureForPhaseFailure(ExpectedFailure, tuple):
         unittest_case.assertEqual(self.phase_step.step,
                                   phase_step.step,
                                   'Step')
-        self.expected_instruction_failure.assertions(unittest_case,
-                                                     actual_details)
+        self.expected_failure.assertions(unittest_case,
+                                         actual_details)
 
     def assertions(self,
                    unittest_case: unittest.TestCase,
@@ -220,9 +220,5 @@ class ExpectedFailureForPhaseFailure(ExpectedFailure, tuple):
         return self[0]
 
     @property
-    def source_line(self) -> line_source.Line:
+    def expected_failure(self) -> ExpectedFailureDetails:
         return self[1]
-
-    @property
-    def expected_instruction_failure(self) -> ExpectedFailureDetails:
-        return self[2]
