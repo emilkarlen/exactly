@@ -3,7 +3,7 @@ import sys
 import tempfile
 import unittest
 
-from shellcheck_lib_test.cli.utils.execute_main_program import execute_main_program
+from shellcheck_lib_test.cli.utils.execute_main_program import execute_main_program, ARGUMENTS_FOR_TEST_INTERPRETER
 from shellcheck_lib_test.util.cli_main_program_via_shell_utils.run import run_shellcheck_in_sub_process
 from shellcheck_lib_test.util.file_structure import DirContents
 from shellcheck_lib_test.util.process import SubProcessResult
@@ -72,7 +72,7 @@ def check(additional_arguments: list,
         setup.file_structure(tmp_dir_path).write_to(tmp_dir_path)
         file_argument = str(setup.file_argument_based_at(tmp_dir_path))
         first_arguments = setup.first_arguments(tmp_dir_path)
-        arguments = first_arguments + additional_arguments + [file_argument]
+        arguments = first_arguments + ARGUMENTS_FOR_TEST_INTERPRETER + additional_arguments + [file_argument]
         sub_process_result = runner(put, arguments)
         # print(sub_process_result.stderr)
         setup.check(put,
@@ -99,7 +99,7 @@ def check_with_pre_proc(additional_arguments: list,
             file_structure.write_to(tmp_dir_path)
             file_argument = str(setup.file_argument_based_at(tmp_dir_path))
             first_arguments = setup.first_arguments(tmp_dir_path, sys.executable, str(preprocessor_file_path))
-            arguments = first_arguments + additional_arguments + [file_argument]
+            arguments = first_arguments + ARGUMENTS_FOR_TEST_INTERPRETER + additional_arguments + [file_argument]
             sub_process_result = runner(put, arguments)
             setup.check(put,
                         tmp_dir_path,

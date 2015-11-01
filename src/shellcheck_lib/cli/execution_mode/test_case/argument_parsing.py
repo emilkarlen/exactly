@@ -4,6 +4,7 @@ import shlex
 
 from shellcheck_lib.cli import argument_parsing_utils
 from .settings import Output, TestCaseExecutionSettings
+from shellcheck_lib.cli.argument_parsing_of_act_phase_setup import resolve_act_phase_setup_from_argparse_argument
 from shellcheck_lib.test_case.preprocessor import IdentityPreprocessor, PreprocessorViaExternalProgram
 
 
@@ -28,11 +29,13 @@ def parse(argv: list) -> TestCaseExecutionSettings:
     elif namespace.keep:
         output = Output.EXECUTION_DIRECTORY_STRUCTURE_ROOT
         is_keep_execution_directory_root = True
+    act_phase_setup = resolve_act_phase_setup_from_argparse_argument(namespace.interpreter)
     preprocessor = _parse_preprocessor(namespace.preprocessor)
     return TestCaseExecutionSettings(pathlib.Path(namespace.file),
                                      pathlib.Path(namespace.file).parent.resolve(),
                                      output,
                                      preprocessor,
+                                     act_phase_setup,
                                      is_keep_execution_directory_root=is_keep_execution_directory_root)
 
 

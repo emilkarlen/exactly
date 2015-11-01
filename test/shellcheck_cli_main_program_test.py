@@ -3,11 +3,11 @@ import shutil
 import unittest
 
 from shellcheck_lib.cli.main_program import EXIT_INVALID_USAGE
-import shellcheck_lib.cli.utils
 from shellcheck_lib.execution import execution_directory_structure
 from shellcheck_lib.execution import environment_variables
 from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib_test.cli import default_main_program
+from shellcheck_lib_test.cli.utils.execute_main_program import arguments_for_test_interpreter_and_more_tuple
 from shellcheck_lib_test.execution.test_execution_directory_structure import \
     is_execution_directory_structure_after_execution
 from shellcheck_lib_test.util.file_checks import FileChecker
@@ -27,7 +27,15 @@ from shellcheck_lib_test.util.main_program import main_program_check_for_test_su
 class UnitTestCaseWithUtils(unittest.TestCase):
     def _run_shellcheck_in_sub_process(self,
                                        test_case_source: str,
-                                       flags: list=()) -> SubProcessResultInfo:
+                                       flags: tuple=()) -> SubProcessResultInfo:
+        return run_shellcheck_in_sub_process_with_file_argument(self,
+                                                                file_contents=test_case_source,
+                                                                flags=flags)
+
+    def _run_shellcheck_with_test_interpreter_in_sub_process(self,
+                                                             test_case_source: str,
+                                                             flags_before_interpreter_arg: tuple=()) -> SubProcessResultInfo:
+        flags = arguments_for_test_interpreter_and_more_tuple(flags_before_interpreter_arg)
         return run_shellcheck_in_sub_process_with_file_argument(self,
                                                                 file_contents=test_case_source,
                                                                 flags=flags)
@@ -39,7 +47,7 @@ class TestsInvokation(UnitTestCaseWithUtils):
         test_case_source = ''
         # ACT #
         actual = self._run_shellcheck_in_sub_process(test_case_source,
-                                                     flags=['--illegal-flag-42847920189']).sub_process_result
+                                                     flags=('--illegal-flag-42847920189',)).sub_process_result
         # ASSERT #
         self.assertEqual(EXIT_INVALID_USAGE,
                          actual.exitcode,
@@ -53,7 +61,7 @@ class TestsInvokation(UnitTestCaseWithUtils):
         test_suite_source = ''
         # ACT #
         actual = self._run_shellcheck_in_sub_process(test_suite_source,
-                                                     flags=['suite', '--illegal-flag-42847920189']).sub_process_result
+                                                     flags=('suite', '--illegal-flag-42847920189')).sub_process_result
         # ASSERT #
         self.assertEqual(EXIT_INVALID_USAGE,
                          actual.exitcode,
@@ -66,8 +74,9 @@ class TestsInvokation(UnitTestCaseWithUtils):
         # ARRANGE #
         test_suite_source = ''
         # ACT #
-        actual = self._run_shellcheck_in_sub_process(test_suite_source,
-                                                     flags=['help', '--illegal-flag-42847920189']).sub_process_result
+        actual = self._run_shellcheck_in_sub_process(
+            test_suite_source,
+            flags=('help', '--illegal-flag-42847920189')).sub_process_result
         # ASSERT #
         self.assertEqual(EXIT_INVALID_USAGE,
                          actual.exitcode,
@@ -82,7 +91,7 @@ class BasicTestsWithNoCliFlags(UnitTestCaseWithUtils):
         # ARRANGE #
         test_case_source = ''
         # ACT #
-        actual = self._run_shellcheck_in_sub_process(test_case_source).sub_process_result
+        actual = self._run_shellcheck_with_test_interpreter_in_sub_process(test_case_source).sub_process_result
         # ASSERT #
         SUCCESSFUL_RESULT.assert_matches(self,
                                          actual)
@@ -97,7 +106,7 @@ class BasicTestsWithNoCliFlags(UnitTestCaseWithUtils):
         ]
         test_case_source = lines_content(test_case_source_lines)
         # ACT #
-        actual = self._run_shellcheck_in_sub_process(test_case_source).sub_process_result
+        actual = self._run_shellcheck_with_test_interpreter_in_sub_process(test_case_source).sub_process_result
         # ASSERT #
         SUCCESSFUL_RESULT.assert_matches(self,
                                          actual)
@@ -108,8 +117,9 @@ class TestsWithPreservedExecutionDirectoryStructure(UnitTestCaseWithUtils):
         # ARRANGE #
         test_case_source = ''
         # ACT #
-        actual = self._run_shellcheck_in_sub_process(test_case_source,
-                                                     flags=['--keep']).sub_process_result
+        actual = self._run_shellcheck_with_test_interpreter_in_sub_process(
+            test_case_source,
+            flags_before_interpreter_arg=('--keep',)).sub_process_result
         # ASSERT #
         actual_eds_directory = self._get_printed_eds_or_fail(actual)
         actual_eds_path = pathlib.Path(actual_eds_directory)
@@ -142,10 +152,9 @@ class TestsWithPreservedExecutionDirectoryStructure(UnitTestCaseWithUtils):
         ]
         test_case_source = lines_content(test_case_source_lines)
         # ACT #
-        actual = self._run_shellcheck_in_sub_process(test_case_source,
-                                                     flags=['--interpreter',
-                                                            shellcheck_lib.cli.utils.INTERPRETER_FOR_TEST,
-                                                            '--keep'])
+        actual = self._run_shellcheck_with_test_interpreter_in_sub_process(
+            test_case_source,
+            flags_before_interpreter_arg=('--keep',))
         # ASSERT #
         self.assertEqual(FullResultStatus.PASS.value,
                          actual.sub_process_result.exitcode,
@@ -197,10 +206,9 @@ sys.stderr.write("output to stderr\\n")
 sys.exit(72)
 """
         # ACT #
-        actual = self._run_shellcheck_in_sub_process(test_case_source,
-                                                     flags=['--interpreter',
-                                                            shellcheck_lib.cli.utils.INTERPRETER_FOR_TEST,
-                                                            '--act']).sub_process_result
+        actual = self._run_shellcheck_in_sub_process(
+            test_case_source,
+            flags=arguments_for_test_interpreter_and_more_tuple(['--act'])).sub_process_result
         # ASSERT #
         self.assertEqual(72,
                          actual.exitcode,

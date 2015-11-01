@@ -8,7 +8,7 @@ from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib.test_case.test_case_processing import AccessErrorType
 from shellcheck_lib_test.cli.cases import default_main_program_wildcard as wildcard
 from shellcheck_lib_test.cli import default_main_program_suite_preprocessing as pre_proc_tests
-from shellcheck_lib_test.cli.utils.execute_main_program import execute_main_program
+from shellcheck_lib_test.cli.utils.execute_main_program import execute_main_program, ARGUMENTS_FOR_TEST_INTERPRETER
 from shellcheck_lib_test.util.file_structure import DirContents, File
 from shellcheck_lib_test.util.file_utils import lines_content, tmp_file_containing, tmp_file_containing_lines
 from shellcheck_lib.cli import main_program
@@ -39,7 +39,7 @@ class TestTestCaseWithoutInstructions(unittest.TestCase):
         # ARRANGE #
         test_case_source = ''
         with tmp_file_containing(test_case_source) as file_path:
-            argv = [str(file_path)]
+            argv = ARGUMENTS_FOR_TEST_INTERPRETER + [str(file_path)]
             # ACT #
             sub_process_result = execute_main_program(argv)
         # ASSERT #
@@ -59,7 +59,7 @@ class TestTestCaseWithoutInstructions(unittest.TestCase):
             '[cleanup]',
         ]
         with tmp_file_containing_lines(test_case_lines) as file_path:
-            argv = [str(file_path)]
+            argv = ARGUMENTS_FOR_TEST_INTERPRETER + [str(file_path)]
             # ACT #
             sub_process_result = execute_main_program(argv)
         # ASSERT #
@@ -76,7 +76,7 @@ class TestTestCaseWithoutInstructions(unittest.TestCase):
             '[invalid phase]',
         ]
         with tmp_file_containing_lines(test_case_lines) as file_path:
-            argv = [str(file_path)]
+            argv = ARGUMENTS_FOR_TEST_INTERPRETER + [str(file_path)]
             # ACT #
             sub_process_result = execute_main_program(argv)
         # ASSERT #
