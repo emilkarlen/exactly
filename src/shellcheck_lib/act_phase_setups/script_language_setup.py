@@ -22,6 +22,7 @@ class ActProgramExecutorForScriptLanguage(ActProgramExecutor):
         self.script_language_setup = script_language_setup
 
     def validate(self,
+                 home_dir: pathlib.Path,
                  source: ScriptSourceBuilder) -> svh.SuccessOrValidationErrorOrHardError:
         return svh.new_svh_success()
 

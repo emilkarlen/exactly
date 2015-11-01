@@ -252,7 +252,8 @@ class PartialExecutor:
     def __run_act_script_validate(self) -> PartialResult:
         the_phase_step = PhaseStep(phases.ACT, phase_step.ACT_script_validate)
         try:
-            res = self.__script_handling.executor.validate(self.__script_handling.builder)
+            res = self.__script_handling.executor.validate(self.configuration.home_dir,
+                                                           self.__script_handling.builder)
             if res.is_success:
                 return new_partial_result_pass(self.__execution_directory_structure)
             else:

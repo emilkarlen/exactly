@@ -112,7 +112,8 @@ class Tests:
         cwd_before = os.getcwd()
         with self.test_setup.program_that_prints_cwd_without_new_line_to_stdout() as source:
             act_program_executor = self.test_setup.sut
-            validation_result = act_program_executor.validate(source)
+            home_dir = pathlib.Path()
+            validation_result = act_program_executor.validate(home_dir, source)
             self.put.assertEqual(svh.new_svh_success(),
                                  validation_result)
             with execution_directory_structure() as eds:
@@ -138,7 +139,8 @@ class Tests:
                   source: ScriptSourceBuilder,
                   stdin_contents: str='') -> SubProcessResult:
         act_program_executor = self.test_setup.sut
-        validation_result = act_program_executor.validate(source)
+        home_dir = pathlib.Path()
+        validation_result = act_program_executor.validate(home_dir, source)
         self.put.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                              validation_result.status)
         with execution_directory_structure() as eds:
