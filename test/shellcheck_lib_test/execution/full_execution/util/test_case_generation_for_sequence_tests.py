@@ -105,12 +105,12 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorBase):
         return list(map(self._next_instruction_line,
                         [
                             self._new_act_internal_recorder(phase_step.ACT__VALIDATE,
-                                                            phase_step.ACT__SCRIPT_GENERATION),
+                                                            phase_step.ACT__SCRIPT_GENERATE),
                             instr.ActInstructionThatRecordsStringInRecordFile(
                                 phase_step.ACT__VALIDATE,
-                                phase_step.ACT__SCRIPT_GENERATION),
+                                phase_step.ACT__SCRIPT_GENERATE),
                             instr.ActInstructionThatGeneratesScriptThatRecordsStringInRecordFile(
-                                phase_step.ACT__SCRIPT_EXECUTION),
+                                phase_step.ACT__SCRIPT_EXECUTE),
                         ]))
 
     def _assert_phase_recording(self) -> list:
