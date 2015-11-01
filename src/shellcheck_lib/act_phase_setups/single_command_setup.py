@@ -31,6 +31,7 @@ class _ScriptLanguage(ScriptLanguage):
 
 class _ActProgramExecutorForSingleCommand(ActProgramExecutor):
     def validate(self,
+                 home_dir: pathlib.Path,
                  source: ScriptSourceBuilder) -> svh.SuccessOrValidationErrorOrHardError:
         num_source_lines = len(source.source_lines)
         if num_source_lines == 1:

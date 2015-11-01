@@ -120,12 +120,13 @@ class _ActProgramExecutorWrapperThatRecordsSteps(ActProgramExecutor):
         self.__execute_test_action = execute_test_action
 
     def validate(self,
+                 home_dir:  pathlib.Path(),
                  source: ScriptSourceBuilder) -> svh.SuccessOrValidationErrorOrHardError:
         self.__recorder.recording_of(phase_step.ACT__SCRIPT_VALIDATE).record()
         test_action_result = self.__validate_test_action()
         if not test_action_result.is_success:
             return test_action_result
-        return self.__wrapped.validate(source)
+        return self.__wrapped.validate(home_dir, source)
 
     def prepare(self,
                 source_setup: SourceSetup,

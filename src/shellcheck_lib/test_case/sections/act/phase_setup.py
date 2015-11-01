@@ -33,6 +33,7 @@ class SourceSetup:
 
 class ActProgramExecutor:
     def validate(self,
+                 home_dir: pathlib.Path,
                  source: ScriptSourceBuilder) -> svh.SuccessOrValidationErrorOrHardError:
         """
         Validates the given source.
