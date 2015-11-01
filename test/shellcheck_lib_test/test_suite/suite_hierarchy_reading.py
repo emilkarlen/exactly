@@ -9,7 +9,7 @@ from shellcheck_lib.test_suite.instruction_set.parse import SuiteFileReferenceEr
     SuiteDoubleInclusion
 from shellcheck_lib_test.document.test_resources import assert_equals_line
 from shellcheck_lib_test.util.file_structure import DirContents, File, Dir
-from shellcheck_lib_test.util.process import lines_content
+from shellcheck_lib_test.util.file_utils import lines_content
 from shellcheck_lib_test.test_suite.util import check_exception
 from shellcheck_lib_test.test_suite.util import check_structure
 

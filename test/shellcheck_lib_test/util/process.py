@@ -1,52 +1,10 @@
-from contextlib import contextmanager
-import os
 import pathlib
 import tempfile
 import subprocess
 import unittest
 
 from shellcheck_lib.general.std import StdFiles, StdOutputFiles
-
-
-def lines_content(lines: list) -> str:
-    return '' if not lines else os.linesep.join(lines) + os.linesep
-
-
-@contextmanager
-def tmp_file_containing(contents: str,
-                        suffix: str='',
-                        dir=None) -> pathlib.Path:
-    """
-    Returns a context manager (used by with tmp_file(...) as file_path) ...
-    The context manager takes care of deleting the file.
-
-    :param contents: The contents of the returned file.
-    :param suffix: A possible suffix of the file name (a dot does not automatically separate stem, suffix).
-    :return: File path of a closed text file with the given contents.
-    """
-    path = None
-    try:
-        fd, absolute_file_path = tempfile.mkstemp(prefix='shellcheck-test-',
-                                                  suffix=suffix,
-                                                  dir=dir,
-                                                  text=True)
-        fo = os.fdopen(fd, "w+")
-        fo.write(contents)
-        fo.close()
-        path = pathlib.Path(absolute_file_path)
-        yield path
-    finally:
-        if path:
-            path.unlink()
-
-
-def tmp_file_containing_lines(content_lines: list,
-                              suffix: str='') -> pathlib.Path:
-    """
-    Short cut to tmp_file_containing combined with giving the contents as a string of lines.
-    """
-    return tmp_file_containing(lines_content(content_lines),
-                               suffix=suffix)
+from shellcheck_lib_test.util.file_utils import tmp_file_containing
 
 
 class SubProcessResult(tuple):

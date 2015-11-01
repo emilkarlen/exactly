@@ -1,6 +1,6 @@
 import unittest
 
-from shellcheck_lib_test.util.process import tmp_file_containing
+from shellcheck_lib_test.util.file_utils import tmp_file_containing
 from shellcheck_lib.cli.execution_mode.test_case import argument_parsing as sut
 
 

@@ -8,7 +8,7 @@ from shellcheck_lib_test.instructions import utils
 from shellcheck_lib_test.instructions.cleanup.test_resources.instruction_check import Flow, TestCaseBase
 from shellcheck_lib.instructions.cleanup import shell as sut
 from shellcheck_lib_test.instructions.utils import new_source
-from shellcheck_lib_test.util.process import tmp_file_containing
+from shellcheck_lib_test.util.file_utils import tmp_file_containing
 
 
 class TestParse(unittest.TestCase):
