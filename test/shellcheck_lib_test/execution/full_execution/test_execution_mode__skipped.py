@@ -27,7 +27,6 @@ class Test(unittest.TestCase):
             ExpectedFailureForNoFailure(),
             [phase_step.ANONYMOUS
              ],
-            [],
             False).execute()
 
     def test_execution_mode_skipped_but_failing_instruction_in_anonymous_phase_before_setting_execution_mode(self):
@@ -46,7 +45,6 @@ class Test(unittest.TestCase):
                 'hard error msg'),
             [phase_step.ANONYMOUS
              ],
-            [],
             False).execute()
 
     def test_execution_mode_skipped_but_failing_instruction_in_anonymous_phase_after_setting_execution_mode(self):
@@ -65,7 +63,6 @@ class Test(unittest.TestCase):
                 'hard error msg'),
             [phase_step.ANONYMOUS
              ],
-            [],
             False).execute()
 
         if __name__ == '__main__':

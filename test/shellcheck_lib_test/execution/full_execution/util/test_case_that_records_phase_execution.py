@@ -15,10 +15,6 @@ from shellcheck_lib_test.execution.full_execution.util.test_case_base import Ful
 from shellcheck_lib.act_phase_setups import python3
 from shellcheck_lib_test.util.expected_instruction_failure import ExpectedFailure
 from shellcheck_lib.execution.result import FullResultStatus
-from shellcheck_lib_test.execution.full_execution.util.recording_instructions_for_sequence_tests import \
-    record_file_path
-from shellcheck_lib_test.execution.full_execution.util.recording_instructions_for_sequence_tests import \
-    record_file_contents_from_lines
 from shellcheck_lib_test.execution.full_execution.util.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorForExecutionRecording
 
@@ -34,7 +30,6 @@ class TestCaseThatRecordsExecution(FullExecutionTestCaseBase):
                  expected_status: FullResultStatus,
                  expected_failure_info: ExpectedFailure,
                  expected_internal_recording: list,
-                 expected_file_recording: list,
                  execution_directory_structure_should_exist: bool,
                  dbg_do_not_delete_dir_structure=False,
                  script_handling: ScriptHandling=None,
@@ -46,7 +41,6 @@ class TestCaseThatRecordsExecution(FullExecutionTestCaseBase):
         self.__expected_status = expected_status
         self.__expected_failure_info = expected_failure_info
         self.__expected_internal_instruction_recording = expected_internal_recording
-        self.__expected_file_recording = expected_file_recording
         self.__execution_directory_structure_should_exist = execution_directory_structure_should_exist
         self.__recorder = recorder
         if self.__recorder is None:
@@ -70,16 +64,6 @@ class TestCaseThatRecordsExecution(FullExecutionTestCaseBase):
             self.utc.assertTrue(
                 self.eds.root_dir.is_dir(),
                 'Execution Directory Structure root is expected to be a directory')
-            file_path = record_file_path(self.eds)
-            if not self.__expected_file_recording:
-                self.utc.assertFalse(file_path.exists())
-            else:
-                expected_file_contents = record_file_contents_from_lines(self.__expected_file_recording)
-                msg = 'Difference in sequence of phases/steps that are executed after Execution Directory Structure' + \
-                      ' is created (recorded in file)'
-                self.assert_is_regular_file_with_contents(file_path,
-                                                          expected_file_contents,
-                                                          msg)
         else:
             self.utc.assertIsNone(self.eds,
                                   'Execution Directory Structure is expected to not be created')
@@ -168,7 +152,6 @@ def new_test_case_with_recording(unittest_case: unittest.TestCase,
                                  expected_status: FullResultStatus,
                                  expected_failure_info: ExpectedFailure,
                                  expected_internal_recording: list,
-                                 expected_file_recording: list,
                                  execution_directory_structure_should_exist: bool,
                                  validate_test_action=validate_action_that_returns(svh.new_svh_success()),
                                  execute_test_action=execute_action_that_does_nothing(),
@@ -182,7 +165,6 @@ def new_test_case_with_recording(unittest_case: unittest.TestCase,
                                         expected_status,
                                         expected_failure_info,
                                         expected_internal_recording,
-                                        expected_file_recording,
                                         execution_directory_structure_should_exist,
                                         dbg_do_not_delete_dir_structure,
                                         script_handling,
