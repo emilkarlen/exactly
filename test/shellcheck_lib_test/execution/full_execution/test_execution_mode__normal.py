@@ -7,9 +7,9 @@ from shellcheck_lib_test.execution.full_execution.util.test_case_generation_for_
 from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib.execution import phase_step, phases
 from shellcheck_lib_test.execution.full_execution.util.test_case_that_records_phase_execution import \
-    new_test_case_with_recording
+    new_test_case_with_recording, validate_action_that_raises, validate_action_that_returns
 from shellcheck_lib_test.util.expected_instruction_failure import ExpectedFailureForNoFailure, \
-    ExpectedFailureForInstructionFailure
+    ExpectedFailureForInstructionFailure, ExpectedFailureForPhaseFailure
 from shellcheck_lib_test.execution.full_execution.util import instruction_test_resources
 from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.result import svh
@@ -505,6 +505,96 @@ class Test(unittest.TestCase):
              phase_step.CLEANUP,
              ],
             True).execute()
+
+    def test_validation_error_in_act_script_validation(self):
+        test_case = TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList()
+        new_test_case_with_recording(
+            self,
+            test_case,
+            FullResultStatus.VALIDATE,
+            ExpectedFailureForPhaseFailure.new_with_message(
+                PhaseStep(phases.ACT, phase_step.ACT_script_validation),
+                'error message from validate'),
+            [phase_step.ANONYMOUS,
+             phase_step.SETUP__PRE_VALIDATE,
+             phase_step.SETUP__EXECUTE,
+             phase_step.SETUP__POST_VALIDATE,
+             phase_step.ACT__VALIDATE,
+             phase_step.ASSERT__VALIDATE,
+             phase_step.ACT__SCRIPT_GENERATION,
+             phase_step.ACT__SCRIPT_VALIDATION,
+             phase_step.CLEANUP,
+             ],
+            [phase_step.SETUP__EXECUTE,
+             phase_step.SETUP__POST_VALIDATE,
+             phase_step.ACT__VALIDATE,
+             phase_step.ASSERT__VALIDATE,
+             phase_step.ACT__SCRIPT_GENERATION,
+             phase_step.CLEANUP,
+             ],
+            True,
+            validate_test_action=validate_action_that_returns(
+                svh.new_svh_validation_error('error message from validate'))).execute()
+
+    def test_hard_error_in_act_script_validation(self):
+        test_case = TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList()
+        new_test_case_with_recording(
+            self,
+            test_case,
+            FullResultStatus.HARD_ERROR,
+            ExpectedFailureForPhaseFailure.new_with_message(
+                PhaseStep(phases.ACT, phase_step.ACT_script_validation),
+                'error message from validate'),
+            [phase_step.ANONYMOUS,
+             phase_step.SETUP__PRE_VALIDATE,
+             phase_step.SETUP__EXECUTE,
+             phase_step.SETUP__POST_VALIDATE,
+             phase_step.ACT__VALIDATE,
+             phase_step.ASSERT__VALIDATE,
+             phase_step.ACT__SCRIPT_GENERATION,
+             phase_step.ACT__SCRIPT_VALIDATION,
+             phase_step.CLEANUP,
+             ],
+            [phase_step.SETUP__EXECUTE,
+             phase_step.SETUP__POST_VALIDATE,
+             phase_step.ACT__VALIDATE,
+             phase_step.ASSERT__VALIDATE,
+             phase_step.ACT__SCRIPT_GENERATION,
+             phase_step.CLEANUP,
+             ],
+            True,
+            validate_test_action=validate_action_that_returns(
+                svh.new_svh_hard_error('error message from validate'))).execute()
+
+    def test_implementation_error_in_act_script_validation(self):
+        test_case = TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList()
+        new_test_case_with_recording(
+            self,
+            test_case,
+            FullResultStatus.IMPLEMENTATION_ERROR,
+            ExpectedFailureForPhaseFailure.new_with_exception(
+                PhaseStep(phases.ACT, phase_step.ACT_script_validation),
+                instruction_test_resources.ImplementationErrorTestException),
+            [phase_step.ANONYMOUS,
+             phase_step.SETUP__PRE_VALIDATE,
+             phase_step.SETUP__EXECUTE,
+             phase_step.SETUP__POST_VALIDATE,
+             phase_step.ACT__VALIDATE,
+             phase_step.ASSERT__VALIDATE,
+             phase_step.ACT__SCRIPT_GENERATION,
+             phase_step.ACT__SCRIPT_VALIDATION,
+             phase_step.CLEANUP,
+             ],
+            [phase_step.SETUP__EXECUTE,
+             phase_step.SETUP__POST_VALIDATE,
+             phase_step.ACT__VALIDATE,
+             phase_step.ASSERT__VALIDATE,
+             phase_step.ACT__SCRIPT_GENERATION,
+             phase_step.CLEANUP,
+             ],
+            True,
+            validate_test_action=validate_action_that_raises(
+                instruction_test_resources.ImplementationErrorTestException())).execute()
 
     def test_fail_in_assert_execute_phase(self):
         test_case = TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList() \
