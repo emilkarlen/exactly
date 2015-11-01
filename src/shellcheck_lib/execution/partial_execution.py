@@ -136,7 +136,6 @@ class PartialExecutor:
             self.__partial_result = res
             self.__run_cleanup(os_services)
             return
-        self.write_and_store_script_file_path()
         res = self.__run_act_script_execute()
         if res.status is not PartialResultStatus.PASS:
             self.__partial_result = res
@@ -267,7 +266,7 @@ class PartialExecutor:
                                  PhaseFailureInfo(the_phase_step,
                                                   result.new_failure_details_from_exception(ex)))
 
-    def write_and_store_script_file_path(self):
+    def __write_and_store_script_file_path(self):
         self.__source_setup = SourceSetup(self.__script_handling.builder,
                                           self.__execution_directory_structure.test_case_dir,
                                           phases.ACT.name)
@@ -280,6 +279,7 @@ class PartialExecutor:
         """
         the_phase_step = PhaseStep(phases.ACT, phase_step.ACT_script_execute)
         try:
+            self.__write_and_store_script_file_path()
             if self.___step_execution_result.stdin_file_name:
                 try:
                     f_stdin = open(self.___step_execution_result.stdin_file_name)
