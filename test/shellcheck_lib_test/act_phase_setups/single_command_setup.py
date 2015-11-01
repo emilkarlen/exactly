@@ -14,7 +14,7 @@ from shellcheck_lib_test.act_phase_setups.test_resources.act_program_executor im
 from shellcheck_lib_test.act_phase_setups.test_resources import py_program
 from shellcheck_lib_test.instructions.utils import execution_directory_structure
 from shellcheck_lib_test.util.file_structure import DirContents, empty_file, File
-from shellcheck_lib_test.util.process import tmp_file_containing_lines
+from shellcheck_lib_test.util.file_utils import tmp_file_containing_lines
 
 
 class StandardExecutorTestCases(unittest.TestCase):

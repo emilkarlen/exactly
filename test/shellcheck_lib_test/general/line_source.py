@@ -2,7 +2,7 @@ import os
 import unittest
 
 from shellcheck_lib.general import line_source
-from shellcheck_lib_test.util.process import tmp_file_containing
+from shellcheck_lib_test.util.file_utils import tmp_file_containing
 
 
 def line(line_number: int, text: str) -> line_source.Line:
