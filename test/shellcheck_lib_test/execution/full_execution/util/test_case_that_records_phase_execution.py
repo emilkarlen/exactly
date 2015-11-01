@@ -130,9 +130,9 @@ class _ActProgramExecutorWrapperThatRecordsSteps(ActProgramExecutor):
 
     def prepare(self,
                 source_setup: SourceSetup,
-                home_dir: pathlib.Path,
+                home_dir_path: pathlib.Path,
                 eds: ExecutionDirectoryStructure):
-        self.__wrapped.prepare(source_setup, home_dir, eds)
+        self.__wrapped.prepare(source_setup, home_dir_path, eds)
 
     def execute(self,
                 source_setup: SourceSetup,

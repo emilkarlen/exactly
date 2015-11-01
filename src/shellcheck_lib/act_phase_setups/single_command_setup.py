@@ -61,7 +61,7 @@ class _ActProgramExecutorForSingleCommand(ActProgramExecutor):
 
     def prepare(self,
                 source_setup: SourceSetup,
-                home_dir: pathlib.Path,
+                home_dir_path: pathlib.Path,
                 eds: ExecutionDirectoryStructure):
         pass
 

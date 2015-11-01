@@ -1,4 +1,5 @@
 import sys
+import subprocess
 
 
 class StdOutputFiles:
@@ -17,6 +18,11 @@ class StdOutputFiles:
         return self._stderr_file
 
 
+def new_std_output_files_dev_null() -> StdOutputFiles:
+    return StdOutputFiles(subprocess.DEVNULL,
+                          subprocess.DEVNULL)
+
+
 class StdFiles:
     def __init__(self,
                  stdin_file=sys.stdin,
@@ -31,3 +37,8 @@ class StdFiles:
     @property
     def output(self) -> StdOutputFiles:
         return self._output_files
+
+
+def std_files_dev_null() -> StdFiles:
+    return StdFiles(subprocess.DEVNULL,
+                    new_std_output_files_dev_null())
