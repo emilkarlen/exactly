@@ -3,10 +3,12 @@
 Fortsätt med
 
 * TODO Skräddarsy act-fasen
-** TODO Testa befintlig script-lng-setup individuellt
-*** TODO Infrastruktur för test av act-phase-setup
-** TODO Integrera Executor.validate i testfalls-exekveringen
-** TODO Implementera setup för single-kommando
+** DONE Testa befintlig script-lng-setup individuellt
+*** DONE Infrastruktur för test av act-phase-setup
+** DONE Integrera Executor.validate i testfalls-exekveringen
+** TODO Dokumetera ny utökad sekvens i UML
+Nytt är act-exekverarens faser.
+** DONE Implementera setup för single-kommando
 Typ: "dir/mitt-program arg1 arg2"
 Se till att resolva abs-path till detta kommando så att man kan använda
 relativa sökvägar i testfallet.
@@ -21,6 +23,7 @@ program verkligen består av ett enda kommando.
 ** TODO Då interpretator anges via CLA: resolva abs-sökväg till denna
 ... så att det går att ange relativa sökvägar på kommandoraden (o ev, i en
 senare framtid, även i testsviter).
+Ev två olika setup: en som resolvar relativa sökvagar, o en som inte gör det.
 * TODO Svit: Summering i rapporten
 Avslutande utskrift: Antal lyckade, fallerade, <andra typer av fel>
 * TODO Exekvering av fall: Rapportera mha "Rapportör" (pss som svit)
@@ -38,9 +41,9 @@ blir troligtvis koden mer flexibel då man inte testar = kräver fix
 representation av - "mellanled".
 *** with EDS-and-act-result(exitcode, stdout_output, stderr_output) as eds:
 ** DONE Testa parsning + exekvering
-** TODO Testa infrastrukturen för att parsa instruktioner i uppslagsverk
+** DONE Testa infrastrukturen för att parsa instruktioner i uppslagsverk
 ** TODO Lyft ut funk från impl av exitcode så att den blir allmänt tillgänglig
-** TODO Ta bort nuv phase_enviroment från Assert-instruktionen
+** DONE Ta bort nuv phase_enviroment från Assert-instruktionen
 * TODO Kring instruktioner
 ** TODO PassOrFailOrHardError: FAIL ska kunna ta olika varianter av felmeddelande
 - sträng
