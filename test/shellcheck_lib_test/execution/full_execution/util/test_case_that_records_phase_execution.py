@@ -137,7 +137,7 @@ class _ActProgramExecutorWrapperThatRecordsSteps(ActProgramExecutor):
 
     def validate(self,
                  source: ScriptSourceBuilder) -> svh.SuccessOrValidationErrorOrHardError:
-        self.__recorder.recording_of(phase_step.ACT__SCRIPT_VALIDATION).record()
+        self.__recorder.recording_of(phase_step.ACT__SCRIPT_VALIDATE).record()
         test_action_result = self.__validate_test_action()
         if not test_action_result.is_success:
             return test_action_result
@@ -154,7 +154,7 @@ class _ActProgramExecutorWrapperThatRecordsSteps(ActProgramExecutor):
                 eds: ExecutionDirectoryStructure,
                 stdin,
                 std_output_files: StdOutputFiles) -> int:
-        self.__recorder.recording_of(phase_step.ACT__SCRIPT_EXECUTION).record()
+        self.__recorder.recording_of(phase_step.ACT__SCRIPT_EXECUTE).record()
         self.__execute_test_action()
         return self.__wrapped.execute(source_setup,
                                       cwd_dir_path,

@@ -245,13 +245,13 @@ class PartialExecutor:
             phase_step_executors.ActScriptGenerationExecutor(self.__global_environment,
                                                              environment),
             phases.ACT,
-            phase_step.ACT_script_generation,
+            phase_step.ACT_script_generate,
             self.execution_directory_structure)
         self.___step_execution_result.script_source = script_builder.build()
         return ret_val
 
     def __run_act_script_validate(self) -> PartialResult:
-        the_phase_step = PhaseStep(phases.ACT, phase_step.ACT_script_validation)
+        the_phase_step = PhaseStep(phases.ACT, phase_step.ACT_script_validate)
         try:
             res = self.__script_handling.executor.validate(self.__script_handling.builder)
             if res.is_success:
@@ -278,7 +278,7 @@ class PartialExecutor:
         """
         Pre-condition: write has been executed.
         """
-        the_phase_step = PhaseStep(phases.ACT, phase_step.ACT_script_execution)
+        the_phase_step = PhaseStep(phases.ACT, phase_step.ACT_script_execute)
         try:
             if self.___step_execution_result.stdin_file_name:
                 try:

@@ -29,9 +29,9 @@ class Test(unittest.TestCase):
              phase_step.SETUP__POST_VALIDATE,
              phase_step.ACT__VALIDATE,
              phase_step.ASSERT__VALIDATE,
-             phase_step.ACT__SCRIPT_GENERATION,
-             phase_step.ACT__SCRIPT_VALIDATION,
-             phase_step.ACT__SCRIPT_EXECUTION,
+             phase_step.ACT__SCRIPT_GENERATE,
+             phase_step.ACT__SCRIPT_VALIDATE,
+             phase_step.ACT__SCRIPT_EXECUTE,
              phase_step.ASSERT__EXECUTE,
              phase_step.CLEANUP,
              ],
@@ -39,8 +39,8 @@ class Test(unittest.TestCase):
              phase_step.SETUP__POST_VALIDATE,
              phase_step.ACT__VALIDATE,
              phase_step.ASSERT__VALIDATE,
-             phase_step.ACT__SCRIPT_GENERATION,
-             phase_step.ACT__SCRIPT_EXECUTION,
+             phase_step.ACT__SCRIPT_GENERATE,
+             phase_step.ACT__SCRIPT_EXECUTE,
              phase_step.ASSERT__EXECUTE,
              phase_step.CLEANUP,
              ],
@@ -416,7 +416,7 @@ class Test(unittest.TestCase):
              ],
             True).execute()
 
-    def test_implementation_error_in_act_validate_phase(self):
+    def test_implementation_error_in_act_validate(self):
         test_case = TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList() \
             .add_act(
             instruction_test_resources.ActPhaseInstructionWithImplementationErrorInValidate(
@@ -443,7 +443,7 @@ class Test(unittest.TestCase):
              ],
             True).execute()
 
-    def test_hard_error_in_act_script_generation(self):
+    def test_hard_error_in_act_script_generate(self):
         test_case = TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList() \
             .add_act(
             instruction_test_resources.ActPhaseInstructionThatReturns(
@@ -454,7 +454,7 @@ class Test(unittest.TestCase):
             test_case,
             FullResultStatus.HARD_ERROR,
             ExpectedFailureForInstructionFailure.new_with_message(
-                PhaseStep(phases.ACT, phase_step.ACT_script_generation),
+                PhaseStep(phases.ACT, phase_step.ACT_script_generate),
                 test_case.the_act_phase_extra[0].first_line,
                 'hard error msg from act'),
             [phase_step.ANONYMOUS,
@@ -463,19 +463,19 @@ class Test(unittest.TestCase):
              phase_step.SETUP__POST_VALIDATE,
              phase_step.ACT__VALIDATE,
              phase_step.ASSERT__VALIDATE,
-             phase_step.ACT__SCRIPT_GENERATION,
+             phase_step.ACT__SCRIPT_GENERATE,
              phase_step.CLEANUP,
              ],
             [phase_step.SETUP__EXECUTE,
              phase_step.SETUP__POST_VALIDATE,
              phase_step.ACT__VALIDATE,
              phase_step.ASSERT__VALIDATE,
-             phase_step.ACT__SCRIPT_GENERATION,
+             phase_step.ACT__SCRIPT_GENERATE,
              phase_step.CLEANUP,
              ],
             True).execute()
 
-    def test_implementation_error_in_act_script_generation(self):
+    def test_implementation_error_in_act_script_generate(self):
         test_case = TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList() \
             .add_act(
             instruction_test_resources.ActPhaseInstructionWithImplementationErrorInExecute(
@@ -485,7 +485,7 @@ class Test(unittest.TestCase):
             test_case,
             FullResultStatus.IMPLEMENTATION_ERROR,
             ExpectedFailureForInstructionFailure.new_with_exception(
-                PhaseStep(phases.ACT, phase_step.ACT_script_generation),
+                PhaseStep(phases.ACT, phase_step.ACT_script_generate),
                 test_case.the_act_phase_extra[0].first_line,
                 instruction_test_resources.ImplementationErrorTestException),
             [phase_step.ANONYMOUS,
@@ -494,26 +494,26 @@ class Test(unittest.TestCase):
              phase_step.SETUP__POST_VALIDATE,
              phase_step.ACT__VALIDATE,
              phase_step.ASSERT__VALIDATE,
-             phase_step.ACT__SCRIPT_GENERATION,
+             phase_step.ACT__SCRIPT_GENERATE,
              phase_step.CLEANUP,
              ],
             [phase_step.SETUP__EXECUTE,
              phase_step.SETUP__POST_VALIDATE,
              phase_step.ACT__VALIDATE,
              phase_step.ASSERT__VALIDATE,
-             phase_step.ACT__SCRIPT_GENERATION,
+             phase_step.ACT__SCRIPT_GENERATE,
              phase_step.CLEANUP,
              ],
             True).execute()
 
-    def test_validation_error_in_act_script_validation(self):
+    def test_validation_error_in_act_script_validate(self):
         test_case = TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList()
         new_test_case_with_recording(
             self,
             test_case,
             FullResultStatus.VALIDATE,
             ExpectedFailureForPhaseFailure.new_with_message(
-                PhaseStep(phases.ACT, phase_step.ACT_script_validation),
+                PhaseStep(phases.ACT, phase_step.ACT_script_validate),
                 'error message from validate'),
             [phase_step.ANONYMOUS,
              phase_step.SETUP__PRE_VALIDATE,
@@ -521,29 +521,29 @@ class Test(unittest.TestCase):
              phase_step.SETUP__POST_VALIDATE,
              phase_step.ACT__VALIDATE,
              phase_step.ASSERT__VALIDATE,
-             phase_step.ACT__SCRIPT_GENERATION,
-             phase_step.ACT__SCRIPT_VALIDATION,
+             phase_step.ACT__SCRIPT_GENERATE,
+             phase_step.ACT__SCRIPT_VALIDATE,
              phase_step.CLEANUP,
              ],
             [phase_step.SETUP__EXECUTE,
              phase_step.SETUP__POST_VALIDATE,
              phase_step.ACT__VALIDATE,
              phase_step.ASSERT__VALIDATE,
-             phase_step.ACT__SCRIPT_GENERATION,
+             phase_step.ACT__SCRIPT_GENERATE,
              phase_step.CLEANUP,
              ],
             True,
             validate_test_action=validate_action_that_returns(
                 svh.new_svh_validation_error('error message from validate'))).execute()
 
-    def test_hard_error_in_act_script_validation(self):
+    def test_hard_error_in_act_script_validate(self):
         test_case = TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList()
         new_test_case_with_recording(
             self,
             test_case,
             FullResultStatus.HARD_ERROR,
             ExpectedFailureForPhaseFailure.new_with_message(
-                PhaseStep(phases.ACT, phase_step.ACT_script_validation),
+                PhaseStep(phases.ACT, phase_step.ACT_script_validate),
                 'error message from validate'),
             [phase_step.ANONYMOUS,
              phase_step.SETUP__PRE_VALIDATE,
@@ -551,29 +551,29 @@ class Test(unittest.TestCase):
              phase_step.SETUP__POST_VALIDATE,
              phase_step.ACT__VALIDATE,
              phase_step.ASSERT__VALIDATE,
-             phase_step.ACT__SCRIPT_GENERATION,
-             phase_step.ACT__SCRIPT_VALIDATION,
+             phase_step.ACT__SCRIPT_GENERATE,
+             phase_step.ACT__SCRIPT_VALIDATE,
              phase_step.CLEANUP,
              ],
             [phase_step.SETUP__EXECUTE,
              phase_step.SETUP__POST_VALIDATE,
              phase_step.ACT__VALIDATE,
              phase_step.ASSERT__VALIDATE,
-             phase_step.ACT__SCRIPT_GENERATION,
+             phase_step.ACT__SCRIPT_GENERATE,
              phase_step.CLEANUP,
              ],
             True,
             validate_test_action=validate_action_that_returns(
                 svh.new_svh_hard_error('error message from validate'))).execute()
 
-    def test_implementation_error_in_act_script_validation(self):
+    def test_implementation_error_in_act_script_validate(self):
         test_case = TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList()
         new_test_case_with_recording(
             self,
             test_case,
             FullResultStatus.IMPLEMENTATION_ERROR,
             ExpectedFailureForPhaseFailure.new_with_exception(
-                PhaseStep(phases.ACT, phase_step.ACT_script_validation),
+                PhaseStep(phases.ACT, phase_step.ACT_script_validate),
                 instruction_test_resources.ImplementationErrorTestException),
             [phase_step.ANONYMOUS,
              phase_step.SETUP__PRE_VALIDATE,
@@ -581,15 +581,15 @@ class Test(unittest.TestCase):
              phase_step.SETUP__POST_VALIDATE,
              phase_step.ACT__VALIDATE,
              phase_step.ASSERT__VALIDATE,
-             phase_step.ACT__SCRIPT_GENERATION,
-             phase_step.ACT__SCRIPT_VALIDATION,
+             phase_step.ACT__SCRIPT_GENERATE,
+             phase_step.ACT__SCRIPT_VALIDATE,
              phase_step.CLEANUP,
              ],
             [phase_step.SETUP__EXECUTE,
              phase_step.SETUP__POST_VALIDATE,
              phase_step.ACT__VALIDATE,
              phase_step.ASSERT__VALIDATE,
-             phase_step.ACT__SCRIPT_GENERATION,
+             phase_step.ACT__SCRIPT_GENERATE,
              phase_step.CLEANUP,
              ],
             True,
@@ -603,7 +603,7 @@ class Test(unittest.TestCase):
             test_case,
             FullResultStatus.IMPLEMENTATION_ERROR,
             ExpectedFailureForPhaseFailure.new_with_exception(
-                PhaseStep(phases.ACT, phase_step.ACT_script_execution),
+                PhaseStep(phases.ACT, phase_step.ACT_script_execute),
                 instruction_test_resources.ImplementationErrorTestException),
             [phase_step.ANONYMOUS,
              phase_step.SETUP__PRE_VALIDATE,
@@ -611,16 +611,16 @@ class Test(unittest.TestCase):
              phase_step.SETUP__POST_VALIDATE,
              phase_step.ACT__VALIDATE,
              phase_step.ASSERT__VALIDATE,
-             phase_step.ACT__SCRIPT_GENERATION,
-             phase_step.ACT__SCRIPT_VALIDATION,
-             phase_step.ACT__SCRIPT_EXECUTION,
+             phase_step.ACT__SCRIPT_GENERATE,
+             phase_step.ACT__SCRIPT_VALIDATE,
+             phase_step.ACT__SCRIPT_EXECUTE,
              phase_step.CLEANUP,
              ],
             [phase_step.SETUP__EXECUTE,
              phase_step.SETUP__POST_VALIDATE,
              phase_step.ACT__VALIDATE,
              phase_step.ASSERT__VALIDATE,
-             phase_step.ACT__SCRIPT_GENERATION,
+             phase_step.ACT__SCRIPT_GENERATE,
              phase_step.CLEANUP,
              ],
             True,
@@ -647,9 +647,9 @@ class Test(unittest.TestCase):
              phase_step.SETUP__POST_VALIDATE,
              phase_step.ACT__VALIDATE,
              phase_step.ASSERT__VALIDATE,
-             phase_step.ACT__SCRIPT_GENERATION,
-             phase_step.ACT__SCRIPT_VALIDATION,
-             phase_step.ACT__SCRIPT_EXECUTION,
+             phase_step.ACT__SCRIPT_GENERATE,
+             phase_step.ACT__SCRIPT_VALIDATE,
+             phase_step.ACT__SCRIPT_EXECUTE,
              phase_step.ASSERT__EXECUTE,
              phase_step.CLEANUP
              ],
@@ -657,8 +657,8 @@ class Test(unittest.TestCase):
              phase_step.SETUP__POST_VALIDATE,
              phase_step.ACT__VALIDATE,
              phase_step.ASSERT__VALIDATE,
-             phase_step.ACT__SCRIPT_GENERATION,
-             phase_step.ACT__SCRIPT_EXECUTION,
+             phase_step.ACT__SCRIPT_GENERATE,
+             phase_step.ACT__SCRIPT_EXECUTE,
              phase_step.ASSERT__EXECUTE,
              phase_step.CLEANUP
              ],
@@ -684,9 +684,9 @@ class Test(unittest.TestCase):
              phase_step.SETUP__POST_VALIDATE,
              phase_step.ACT__VALIDATE,
              phase_step.ASSERT__VALIDATE,
-             phase_step.ACT__SCRIPT_GENERATION,
-             phase_step.ACT__SCRIPT_VALIDATION,
-             phase_step.ACT__SCRIPT_EXECUTION,
+             phase_step.ACT__SCRIPT_GENERATE,
+             phase_step.ACT__SCRIPT_VALIDATE,
+             phase_step.ACT__SCRIPT_EXECUTE,
              phase_step.ASSERT__EXECUTE,
              phase_step.CLEANUP
              ],
@@ -694,8 +694,8 @@ class Test(unittest.TestCase):
              phase_step.SETUP__POST_VALIDATE,
              phase_step.ACT__VALIDATE,
              phase_step.ASSERT__VALIDATE,
-             phase_step.ACT__SCRIPT_GENERATION,
-             phase_step.ACT__SCRIPT_EXECUTION,
+             phase_step.ACT__SCRIPT_GENERATE,
+             phase_step.ACT__SCRIPT_EXECUTE,
              phase_step.ASSERT__EXECUTE,
              phase_step.CLEANUP
              ],
@@ -720,9 +720,9 @@ class Test(unittest.TestCase):
              phase_step.SETUP__POST_VALIDATE,
              phase_step.ACT__VALIDATE,
              phase_step.ASSERT__VALIDATE,
-             phase_step.ACT__SCRIPT_GENERATION,
-             phase_step.ACT__SCRIPT_VALIDATION,
-             phase_step.ACT__SCRIPT_EXECUTION,
+             phase_step.ACT__SCRIPT_GENERATE,
+             phase_step.ACT__SCRIPT_VALIDATE,
+             phase_step.ACT__SCRIPT_EXECUTE,
              phase_step.ASSERT__EXECUTE,
              phase_step.CLEANUP
              ],
@@ -730,8 +730,8 @@ class Test(unittest.TestCase):
              phase_step.SETUP__POST_VALIDATE,
              phase_step.ACT__VALIDATE,
              phase_step.ASSERT__VALIDATE,
-             phase_step.ACT__SCRIPT_GENERATION,
-             phase_step.ACT__SCRIPT_EXECUTION,
+             phase_step.ACT__SCRIPT_GENERATE,
+             phase_step.ACT__SCRIPT_EXECUTE,
              phase_step.ASSERT__EXECUTE,
              phase_step.CLEANUP
              ],
@@ -756,9 +756,9 @@ class Test(unittest.TestCase):
              phase_step.SETUP__POST_VALIDATE,
              phase_step.ACT__VALIDATE,
              phase_step.ASSERT__VALIDATE,
-             phase_step.ACT__SCRIPT_GENERATION,
-             phase_step.ACT__SCRIPT_VALIDATION,
-             phase_step.ACT__SCRIPT_EXECUTION,
+             phase_step.ACT__SCRIPT_GENERATE,
+             phase_step.ACT__SCRIPT_VALIDATE,
+             phase_step.ACT__SCRIPT_EXECUTE,
              phase_step.ASSERT__EXECUTE,
              phase_step.CLEANUP
              ],
@@ -766,8 +766,8 @@ class Test(unittest.TestCase):
              phase_step.SETUP__POST_VALIDATE,
              phase_step.ACT__VALIDATE,
              phase_step.ASSERT__VALIDATE,
-             phase_step.ACT__SCRIPT_GENERATION,
-             phase_step.ACT__SCRIPT_EXECUTION,
+             phase_step.ACT__SCRIPT_GENERATE,
+             phase_step.ACT__SCRIPT_EXECUTE,
              phase_step.ASSERT__EXECUTE,
              phase_step.CLEANUP
              ],
@@ -792,9 +792,9 @@ class Test(unittest.TestCase):
              phase_step.SETUP__POST_VALIDATE,
              phase_step.ACT__VALIDATE,
              phase_step.ASSERT__VALIDATE,
-             phase_step.ACT__SCRIPT_GENERATION,
-             phase_step.ACT__SCRIPT_VALIDATION,
-             phase_step.ACT__SCRIPT_EXECUTION,
+             phase_step.ACT__SCRIPT_GENERATE,
+             phase_step.ACT__SCRIPT_VALIDATE,
+             phase_step.ACT__SCRIPT_EXECUTE,
              phase_step.ASSERT__EXECUTE,
              phase_step.CLEANUP
              ],
@@ -802,8 +802,8 @@ class Test(unittest.TestCase):
              phase_step.SETUP__POST_VALIDATE,
              phase_step.ACT__VALIDATE,
              phase_step.ASSERT__VALIDATE,
-             phase_step.ACT__SCRIPT_GENERATION,
-             phase_step.ACT__SCRIPT_EXECUTION,
+             phase_step.ACT__SCRIPT_GENERATE,
+             phase_step.ACT__SCRIPT_EXECUTE,
              phase_step.ASSERT__EXECUTE,
              phase_step.CLEANUP
              ],

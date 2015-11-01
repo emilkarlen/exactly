@@ -46,14 +46,14 @@ SETUP__POST_VALIDATE = __phase_step(SETUP, SETUP_post_validate)
 ACT = 'ACT'
 
 ACT_validate = VALIDATE
-ACT_script_generation = 'script-generation'
-ACT_script_validation = 'script-validation'
-ACT_script_execution = 'script-execution'
+ACT_script_generate = 'script-generation'
+ACT_script_validate = 'script-validation'
+ACT_script_execute = 'script-execution'
 
 ACT__VALIDATE = __phase_step(ACT, ACT_validate)
-ACT__SCRIPT_GENERATION = __phase_step(ACT, ACT_script_generation)
-ACT__SCRIPT_VALIDATION = __phase_step(ACT, ACT_script_validation)
-ACT__SCRIPT_EXECUTION = __phase_step(ACT, ACT_script_execution)
+ACT__SCRIPT_GENERATE = __phase_step(ACT, ACT_script_generate)
+ACT__SCRIPT_VALIDATE = __phase_step(ACT, ACT_script_validate)
+ACT__SCRIPT_EXECUTE = __phase_step(ACT, ACT_script_execute)
 
 ASSERT = 'ASSERT'
 
@@ -72,8 +72,8 @@ SETUP_EXECUTE = PhaseStep(phases.SETUP, EXECUTE)
 SETUP_POST_VALIDATE = PhaseStep(phases.SETUP, POST_VALIDATE)
 
 ACT_VALIDATE = PhaseStep(phases.ACT, VALIDATE)
-ACT_SCRIPT_GENERATION = PhaseStep(phases.ACT, ACT_script_generation)
-ACT_SCRIPT_EXECUTION = PhaseStep(phases.ACT, ACT_script_execution)
+ACT_SCRIPT_GENERATION = PhaseStep(phases.ACT, ACT_script_generate)
+ACT_SCRIPT_EXECUTION = PhaseStep(phases.ACT, ACT_script_execute)
 
 ASSERT_VALIDATE = PhaseStep(phases.ASSERT, VALIDATE)
 ASSERT_EXECUTE = PhaseStep(phases.ASSERT, EXECUTE)
