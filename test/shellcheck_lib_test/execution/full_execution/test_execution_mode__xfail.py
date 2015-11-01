@@ -45,14 +45,6 @@ class Test(unittest.TestCase):
              phase_step.ASSERT__EXECUTE,
              phase_step.CLEANUP
              ],
-            [phase_step.SETUP__EXECUTE,
-             phase_step.SETUP__POST_VALIDATE,
-             phase_step.ACT__VALIDATE,
-             phase_step.ASSERT__VALIDATE,
-             phase_step.ACT__SCRIPT_GENERATE,
-             phase_step.ACT__SCRIPT_EXECUTE,
-             phase_step.ASSERT__EXECUTE,
-             phase_step.CLEANUP],
             True).execute()
 
     def test_with_assert_phase_that_passes(self):
@@ -75,14 +67,6 @@ class Test(unittest.TestCase):
              phase_step.ASSERT__EXECUTE,
              phase_step.CLEANUP
              ],
-            [phase_step.SETUP__EXECUTE,
-             phase_step.SETUP__POST_VALIDATE,
-             phase_step.ACT__VALIDATE,
-             phase_step.ASSERT__VALIDATE,
-             phase_step.ACT__SCRIPT_GENERATE,
-             phase_step.ACT__SCRIPT_EXECUTE,
-             phase_step.ASSERT__EXECUTE,
-             phase_step.CLEANUP],
             True).execute()
 
     def test_with_anonymous_phase_with_hard_error(self):
@@ -100,7 +84,6 @@ class Test(unittest.TestCase):
                 'hard error msg'),
             [phase_step.ANONYMOUS
              ],
-            [],
             False).execute()
 
     def test_with_implementation_error(self):
@@ -129,14 +112,6 @@ class Test(unittest.TestCase):
              phase_step.ASSERT__EXECUTE,
              phase_step.CLEANUP
              ],
-            [phase_step.SETUP__EXECUTE,
-             phase_step.SETUP__POST_VALIDATE,
-             phase_step.ACT__VALIDATE,
-             phase_step.ASSERT__VALIDATE,
-             phase_step.ACT__SCRIPT_GENERATE,
-             phase_step.ACT__SCRIPT_EXECUTE,
-             phase_step.ASSERT__EXECUTE,
-             phase_step.CLEANUP],
             True).execute()
 
 
