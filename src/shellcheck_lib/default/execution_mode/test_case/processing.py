@@ -11,6 +11,7 @@ from shellcheck_lib.general import line_source
 from shellcheck_lib.test_case import processing_utils
 from shellcheck_lib.test_case import test_case_doc
 from shellcheck_lib.test_case import test_case_processing as processing
+from shellcheck_lib.test_case import error_description
 from shellcheck_lib.default.execution_mode.test_case import test_case_parser
 from shellcheck_lib.default.execution_mode.test_case.instruction_setup import InstructionsSetup
 from shellcheck_lib.test_case.sections.act.phase_setup import ActPhaseSetup
@@ -73,7 +74,7 @@ class _SourceReader(processing_utils.SourceReader):
             with test_case_file_path.open() as f:
                 return f.read()
         except IOError as ex:
-            error_info = processing.ErrorInfo(exception=ex)
+            error_info = processing.ErrorInfo(error_description.of_exception(ex))
             raise shellcheck_lib.test_case.test_case_processing.ProcessError(error_info)
 
 
@@ -96,10 +97,10 @@ class _Parser(processing_utils.Parser):
         try:
             return file_parser.apply(source)
         except document_parser.SourceError as ex:
-            error_info = ErrorInfo(message='Parsing error: ' + ex.message,
+            error_info = ErrorInfo(error_description.of_exception(ex,
+                                                                  'Parsing error: ' + ex.message),
                                    file_path=test_case_file_path,
-                                   line=ex.line,
-                                   exception=ex)
+                                   line=ex.line)
             raise ProcessError(error_info)
 
 

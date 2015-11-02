@@ -55,7 +55,7 @@ class CompleteSuiteReporter(reporting.CompleteSuiteReporter, reporting.SubSuiteR
             if result.status is test_case_processing.Status.INTERNAL_ERROR:
                 self._out_line(result.status.name)
             else:
-                self._out_line(result.error_type.name)
+                self._out_line(result.access_error_type.name)
         else:
             status = result.execution_result.status
             self._out_line(status.name)

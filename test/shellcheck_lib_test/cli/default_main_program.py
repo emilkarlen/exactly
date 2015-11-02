@@ -80,8 +80,8 @@ class TestTestCaseWithoutInstructions(unittest.TestCase):
             # ACT #
             sub_process_result = execute_main_program(argv)
         # ASSERT #
-        self.assertEqual(NO_EXECUTION_EXIT_CODE,
-                         sub_process_result.exitcode,
+        self.assertEqual(sub_process_result.exitcode,
+                         NO_EXECUTION_EXIT_CODE,
                          'Exit Status')
         self.assertEqual(AccessErrorType.PARSE_ERROR.name + os.linesep,
                          sub_process_result.stdout,

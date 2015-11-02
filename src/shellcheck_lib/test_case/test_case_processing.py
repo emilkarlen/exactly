@@ -4,6 +4,7 @@ import pathlib
 from shellcheck_lib.general import line_source
 from shellcheck_lib.test_case import test_case_doc
 from shellcheck_lib.execution.result import FullResult
+from shellcheck_lib.test_case.error_description import ErrorDescription
 
 
 class TestCaseSetup:
@@ -14,6 +15,29 @@ class TestCaseSetup:
     @property
     def file_path(self) -> pathlib.Path:
         return self.__file_path
+
+
+class ErrorInfo(tuple):
+    def __new__(cls,
+                description: ErrorDescription,
+                file_path: pathlib.Path=None,
+                line: line_source.Line=None):
+        if description is not None:
+            if not isinstance(description, ErrorDescription):
+                assert isinstance(description, ErrorDescription)  # TODO Use ONLY this impl after refactoring
+        return tuple.__new__(cls, (file_path, line, description))
+
+    @property
+    def file(self) -> pathlib.Path:
+        return self[0]
+
+    @property
+    def line(self) -> line_source.Line:
+        return self[1]
+
+    @property
+    def description(self) -> ErrorDescription:
+        return self[2]
 
 
 class Status(Enum):
@@ -31,24 +55,24 @@ class AccessErrorType(Enum):
 class Result(tuple):
     def __new__(cls,
                 status: Status,
-                message: str=None,
+                error_info: ErrorInfo=None,
                 error_type: AccessErrorType=None,
                 execution_result: FullResult=None):
         """
         Exactly only one of the arguments must be non-None.
         """
-        return tuple.__new__(cls, (status, message, error_type, execution_result))
+        return tuple.__new__(cls, (status, error_info, error_type, execution_result))
 
     @property
     def status(self) -> Status:
         return self[0]
 
     @property
-    def message(self) -> str:
+    def error_info(self) -> ErrorInfo:
         return self[1]
 
     @property
-    def error_type(self) -> AccessErrorType:
+    def access_error_type(self) -> AccessErrorType:
         return self[2]
 
     @property
@@ -56,44 +80,21 @@ class Result(tuple):
         return self[3]
 
 
-def new_internal_error(message: str) -> Result:
+def new_internal_error(error_info: ErrorInfo) -> Result:
     return Result(Status.INTERNAL_ERROR,
-                  message=message)
+                  error_info=error_info)
 
 
-def new_access_error(error: AccessErrorType) -> Result:
+def new_access_error(error: AccessErrorType,
+                     error_info: ErrorInfo) -> Result:
     return Result(Status.ACCESS_ERROR,
+                  error_info=error_info,
                   error_type=error)
 
 
 def new_executed(execution_result: FullResult) -> Result:
     return Result(Status.EXECUTED,
                   execution_result=execution_result)
-
-
-class ErrorInfo(tuple):
-    def __new__(cls,
-                message: str=None,
-                file_path: pathlib.Path=None,
-                line: line_source.Line=None,
-                exception: Exception=None):
-        return tuple.__new__(cls, (message, file_path, line, exception))
-
-    @property
-    def message(self) -> str:
-        return self[0]
-
-    @property
-    def file(self) -> pathlib.Path:
-        return self[1]
-
-    @property
-    def line(self) -> line_source.Line:
-        return self[2]
-
-    @property
-    def exception(self) -> Exception:
-        return self[3]
 
 
 class AccessorError(Exception):
