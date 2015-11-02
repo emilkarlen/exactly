@@ -7,7 +7,9 @@ from shellcheck_lib.default.execution_mode.test_case import processing
 from shellcheck_lib.default.execution_mode.test_case.instruction_setup import InstructionsSetup
 from shellcheck_lib.cli.execution_mode.test_case.settings import Output, TestCaseExecutionSettings
 from shellcheck_lib.execution import full_execution
+from shellcheck_lib.test_case import error_description
 from shellcheck_lib.test_case import test_case_processing
+from shellcheck_lib.test_case.test_case_processing import ErrorInfo
 
 NO_EXECUTION_EXIT_CODE = 3
 
@@ -37,10 +39,28 @@ class Executor:
             return full_result.status.value
         else:
             if result.status is test_case_processing.Status.INTERNAL_ERROR:
-                self._out_line(result.status.name)
+                self.__output_error_result(result.status.name,
+                                           result.error_info)
             else:
-                self._out_line(result.access_error_type.name)
+                self.__output_error_result(result.access_error_type.name,
+                                           result.error_info)
             return NO_EXECUTION_EXIT_CODE
+
+    def __output_error_result(self,
+                              stdout_error_code: str,
+                              error_info: ErrorInfo):
+        self._out_line(stdout_error_code)
+        has_output_header = False
+        if error_info.file:
+            self._err_line('File: ' + str(error_info.file))
+            has_output_header = True
+        line = error_info.line
+        if line:
+            self._err_line('Line {}: `{}\''.format(line.line_number, line.text))
+            has_output_header = True
+        if has_output_header:
+            self._err_line('')
+        _ErrorDescriptionDisplayer(self._std.err).visit(error_info.description)
 
     def _execute_act_phase(self) -> int:
         def copy_file(input_file_path: pathlib.Path,
@@ -73,6 +93,10 @@ class Executor:
         self._std.out.write(s)
         self._std.out.write(os.linesep)
 
+    def _err_line(self, s: str):
+        self._std.err.write(s)
+        self._std.err.write(os.linesep)
+
     def _process(self,
                  is_keep_eds: bool) -> test_case_processing.Result:
         configuration = processing.Configuration(self._split_line_into_name_and_argument_function,
@@ -83,3 +107,31 @@ class Executor:
                                                  self._settings.execution_directory_root_name_prefix)
         processor = processing.new_processor_that_is_allowed_to_pollute_current_process(configuration)
         return processor.apply(test_case_processing.TestCaseSetup(self._settings.file_path))
+
+
+class _ErrorDescriptionDisplayer(error_description.ErrorDescriptionVisitor):
+    def __init__(self,
+                 stderr):
+        self.stderr = stderr
+
+    def _visit_message(self, ed: error_description.ErrorDescriptionOfMessage):
+        self._output_message_if_present(ed)
+
+    def _visit_exception(self, ed: error_description.ErrorDescriptionOfException):
+        self._output_message_if_present(ed)
+        self._err_line('Exception:')
+        self._err_line(str(ed.exception))
+
+    def _visit_external_process_error(self, ed: error_description.ErrorDescriptionOfExternalProcessError):
+        self._output_message_if_present(ed)
+        self._err_line('Exit code: ' + str(ed.external_process_error.exit_code))
+        if ed.external_process_error.stderr_output:
+            self._err_line(ed.external_process_error.stderr_output)
+
+    def _output_message_if_present(self, ed: error_description.ErrorDescription):
+        if ed.message:
+            self._err_line(ed.message)
+
+    def _err_line(self, s: str):
+        self.stderr.write(s)
+        self.stderr.write(os.linesep)
