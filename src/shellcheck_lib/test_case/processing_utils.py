@@ -1,9 +1,10 @@
 import pathlib
 
 from shellcheck_lib.execution.result import FullResult
+from shellcheck_lib.test_case import error_description
 from shellcheck_lib.test_case import test_case_doc
 from shellcheck_lib.test_case import test_case_processing as processing
-from shellcheck_lib.test_case.test_case_processing import AccessorError, Accessor, ProcessError, Preprocessor
+from shellcheck_lib.test_case.test_case_processing import AccessorError, Accessor, ProcessError, Preprocessor, ErrorInfo
 
 
 class SourceReader:
@@ -83,10 +84,10 @@ class ProcessorFromAccessorAndExecutor(processing.Processor):
                 a_test_case_doc = self._accessor.apply(test_case.file_path)
             except AccessorError as ex:
                 return processing.Result(processing.Status.ACCESS_ERROR,
-                                         message=ex.error_info.message,
+                                         error_info=ex.error_info,
                                          error_type=ex.error)
             full_result = self._executor.apply(test_case.file_path,
                                                a_test_case_doc)
             return processing.new_executed(full_result)
         except Exception as ex:
-            return processing.new_internal_error(str(ex))
+            return processing.new_internal_error(ErrorInfo(error_description.of_exception(ex)))

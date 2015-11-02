@@ -2,6 +2,7 @@ import pathlib
 import subprocess
 import tempfile
 
+from shellcheck_lib.test_case import error_description
 from shellcheck_lib.test_case.test_case_processing import Preprocessor, ProcessError, ErrorInfo
 
 
@@ -48,10 +49,24 @@ class PreprocessorViaExternalProgram(Preprocessor):
                         stdout_contents = stdout_file.read()
                         return str(stdout_contents)
                     else:
-                        msg = 'Exitcode %d from preprocessing by: %s' % (exitcode, str(self.external_program))
-                        raise ProcessError(ErrorInfo(msg,
-                                                     test_case_file_path))
+                        stderr_file.seek(0)
+                        stderr_contents = stderr_file.read()
+                        raise self.__new_process_error(
+                            error_description.of_external_process_error(exitcode,
+                                                                        stderr_contents,
+                                                                        self.__error_message()),
+                            test_case_file_path)
         except Exception as ex:
-            raise ProcessError(ErrorInfo('Preprocessing by: ' + str(self.external_program),
-                                         test_case_file_path,
-                                         exception=ex))
+            raise self.__new_process_error(
+                error_description.of_exception(ex,
+                                               self.__error_message()),
+                test_case_file_path)
+
+    @staticmethod
+    def __new_process_error(ed: error_description.ErrorDescription,
+                            test_case_file_path: pathlib.Path) -> ProcessError:
+        return ProcessError(ErrorInfo(ed,
+                                      test_case_file_path))
+
+    def __error_message(self) -> str:
+        return 'Error from preprocessing by: ' + str(self.external_program)

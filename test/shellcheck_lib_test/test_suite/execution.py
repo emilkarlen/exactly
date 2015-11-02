@@ -20,6 +20,7 @@ from shellcheck_lib.test_suite import reporting
 from shellcheck_lib.test_case import test_case_processing
 from shellcheck_lib.default.execution_mode.test_case import processing as case_processing
 from shellcheck_lib.test_suite.suite_hierarchy_reading import SuiteHierarchyReader
+from shellcheck_lib_test.test_case.test_resources import error_info
 from shellcheck_lib_test.util.str_std_out_files import StringStdOutFiles
 
 
@@ -82,11 +83,12 @@ class TestError(unittest.TestCase):
 
 class TestReturnValueFromTestCaseProcessor(unittest.TestCase):
     def test_internal_error(self):
-        result = test_case_processing.new_internal_error('message')
+        result = test_case_processing.new_internal_error(error_info.of_message('message'))
         self._helper_for_test_of_return_value_from_test_case_processor(result)
 
     def test_reading_error(self):
-        result = test_case_processing.new_access_error(test_case_processing.AccessErrorType.FILE_ACCESS_ERROR)
+        result = test_case_processing.new_access_error(test_case_processing.AccessErrorType.FILE_ACCESS_ERROR,
+                                                       error_info.of_message('message'))
         self._helper_for_test_of_return_value_from_test_case_processor(result)
 
     def test_executed__skipped(self):
@@ -142,9 +144,9 @@ class TestComplexSuite(unittest.TestCase):
                 tc_executed,
             ])
         test_case_processor = TestCaseProcessorThatGivesConstantPerCase({
-            id(tc_internal_error): test_case_processing.new_internal_error('message'),
+            id(tc_internal_error): test_case_processing.new_internal_error(error_info.of_message('message')),
             id(tc_access_error): test_case_processing.new_access_error(
-                test_case_processing.AccessErrorType.PARSE_ERROR),
+                test_case_processing.AccessErrorType.PARSE_ERROR, error_info.of_message('parse error')),
             id(tc_executed): test_case_processing.new_executed(FULL_RESULT_PASS),
         })
         expected_suites = [
@@ -228,12 +230,12 @@ class TestComplexSuite(unittest.TestCase):
         tc_executed_2 = TestCaseSetup(Path('executed 2'))
         tc_executed_root = TestCaseSetup(Path('executed root'))
         test_case_processor = TestCaseProcessorThatGivesConstantPerCase({
-            id(tc_internal_error_11): test_case_processing.new_internal_error('message A'),
-            id(tc_internal_error_21): test_case_processing.new_internal_error('messageB'),
+            id(tc_internal_error_11): test_case_processing.new_internal_error(error_info.of_message('message A')),
+            id(tc_internal_error_21): test_case_processing.new_internal_error(error_info.of_message('message B')),
             id(tc_access_error_1): test_case_processing.new_access_error(
-                test_case_processing.AccessErrorType.PARSE_ERROR),
+                test_case_processing.AccessErrorType.PARSE_ERROR, error_info.of_message('parse error')),
             id(tc_access_error_12): test_case_processing.new_access_error(
-                test_case_processing.AccessErrorType.FILE_ACCESS_ERROR),
+                test_case_processing.AccessErrorType.FILE_ACCESS_ERROR, error_info.of_message('file access error')),
             id(tc_executed_11): test_case_processing.new_executed(FULL_RESULT_PASS),
             id(tc_executed_12): test_case_processing.new_executed(FULL_RESULT_PASS),
             id(tc_executed_1): test_case_processing.new_executed(FULL_RESULT_PASS),

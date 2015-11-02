@@ -31,16 +31,16 @@ class Executor:
 
     def _execute_normal(self) -> int:
         result = self._process(self._settings.is_keep_execution_directory_root)
-        if result.status is not test_case_processing.Status.EXECUTED:
-            if result.status is test_case_processing.Status.INTERNAL_ERROR:
-                self._out_line(result.status.name)
-            else:
-                self._out_line(result.error_type.name)
-            return NO_EXECUTION_EXIT_CODE
-        else:
+        if result.status is test_case_processing.Status.EXECUTED:
             full_result = result.execution_result
             self._print_output_to_stdout_for_full_result(full_result)
             return full_result.status.value
+        else:
+            if result.status is test_case_processing.Status.INTERNAL_ERROR:
+                self._out_line(result.status.name)
+            else:
+                self._out_line(result.access_error_type.name)
+            return NO_EXECUTION_EXIT_CODE
 
     def _execute_act_phase(self) -> int:
         def copy_file(input_file_path: pathlib.Path,

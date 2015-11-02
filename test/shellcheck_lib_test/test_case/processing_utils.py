@@ -4,9 +4,11 @@ import unittest
 from shellcheck_lib.document.model import new_empty_phase_contents
 from shellcheck_lib.execution.result import FullResult, new_skipped
 from shellcheck_lib.test_case import processing_utils as sut
+from shellcheck_lib.test_case import error_description
 from shellcheck_lib.test_case.preprocessor import IdentityPreprocessor
 from shellcheck_lib.test_case import test_case_doc
 from shellcheck_lib.test_case import test_case_processing as tcp
+from shellcheck_lib_test.test_case.test_resources import error_info
 
 
 class TestIdentityPreprocessor(unittest.TestCase):
@@ -73,7 +75,7 @@ class TestProcessorFromAccessorAndExecutor(unittest.TestCase):
     def test_accessor_exception_from_accessor(self):
         # ARRANGE #
         process_error = tcp.ProcessError(
-            tcp.ErrorInfo(message='exception message'))
+            error_info.of_exception(ValueError('exception message')))
         accessor = sut.AccessorFromParts(SourceReaderThat(raises(process_error)),
                                          PreprocessorThat(gives_constant('preprocessed source')),
                                          ParserThat(gives_constant(TEST_CASE)))
@@ -83,11 +85,18 @@ class TestProcessorFromAccessorAndExecutor(unittest.TestCase):
         # ACT #
         result = processor.apply(tcp.TestCaseSetup(PATH))
         # ASSERT #
-        self.assertEqual(result.status,
-                         tcp.Status.ACCESS_ERROR)
-        self.assertEqual(result.error_type,
-                         tcp.AccessErrorType.FILE_ACCESS_ERROR)
-        self.assertEqual(result.message,
+        self.assertIs(tcp.Status.ACCESS_ERROR,
+                      result.status)
+        self.assertIs(tcp.AccessErrorType.FILE_ACCESS_ERROR,
+                      result.access_error_type)
+        self.assertIsNotNone(result.error_info,
+                             'There should be ErrorInfo')
+        err_description = result.error_info.description
+        self.assertIsInstance(err_description,
+                              error_description.ErrorDescriptionOfException)
+        assert isinstance(err_description,
+                          error_description.ErrorDescriptionOfException)
+        self.assertEqual(err_description.exception.args[0],
                          'exception message')
 
     def test_implementation_exception_from_accessor(self):
@@ -249,7 +258,7 @@ def if_same_then_else_raise(expected, actual, result):
         raise RuntimeError('should not be invoked')
 
 
-PROCESS_ERROR = tcp.ProcessError(tcp.ErrorInfo(message='exception message'))
+PROCESS_ERROR = tcp.ProcessError(tcp.ErrorInfo(error_description.of_exception(ValueError('exception message'))))
 
 PATH = pathlib.Path('path')
 
