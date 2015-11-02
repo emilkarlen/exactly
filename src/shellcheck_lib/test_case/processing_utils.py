@@ -66,9 +66,6 @@ class AccessorFromParts(Accessor):
         except ProcessError as ex:
             raise AccessorError(error_type,
                                 ex.error_info)
-            # except Exception as ex:
-            #     raise AccessorError(error_type,
-            #                         ErrorInfo())
 
 
 class ProcessorFromAccessorAndExecutor(processing.Processor):
