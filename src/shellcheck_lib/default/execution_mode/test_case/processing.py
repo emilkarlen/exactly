@@ -16,7 +16,6 @@ from shellcheck_lib.default.execution_mode.test_case import test_case_parser
 from shellcheck_lib.default.execution_mode.test_case.instruction_setup import InstructionsSetup
 from shellcheck_lib.test_case.sections.act.phase_setup import ActPhaseSetup
 from shellcheck_lib.test_case.test_case_processing import ErrorInfo, ProcessError, Preprocessor
-import shellcheck_lib.test_case.test_case_processing
 
 
 class Configuration:
@@ -75,7 +74,7 @@ class _SourceReader(processing_utils.SourceReader):
                 return f.read()
         except IOError as ex:
             error_info = processing.ErrorInfo(error_description.of_exception(ex))
-            raise shellcheck_lib.test_case.test_case_processing.ProcessError(error_info)
+            raise ProcessError(error_info)
 
 
 class _Parser(processing_utils.Parser):
@@ -97,8 +96,7 @@ class _Parser(processing_utils.Parser):
         try:
             return file_parser.apply(source)
         except document_parser.SourceError as ex:
-            error_info = ErrorInfo(error_description.of_exception(ex,
-                                                                  'Parsing error: ' + ex.message),
+            error_info = ErrorInfo(error_description.of_message('Parse error: ' + ex.message),
                                    file_path=test_case_file_path,
                                    line=ex.line)
             raise ProcessError(error_info)
