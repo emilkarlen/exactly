@@ -2,6 +2,25 @@
 
 Fortsätt med
 
+* TODO Motsvarande simptest:s -replaced-SIMPTEST-envvars
+Idé:
+Ange att resultatet ska sök+ersättas m växel, t ex "--replace".
+(Vill i en förlängning kunna använda den växeln för att göra godtycklig
+sök+ersätt.  Så kan behöva tänkas på att införa en variant som kommer att vara
+kompatibel med en framtida sådan.)
+
+Sök+ersätt-versioner av stdout och stderr, för standard-sök+ersätt av värden
+som motsvarar shellchecks miljövariabler, ligger i samma katalog som stdout
+och stderr.
+När en jämförelse som använder --replace påträffas kollar instruktionen först
+om det finns en bearbetad fil som är redo att använda ("stdout-replaced", t
+ex).
+Om det inte gör det skapas den.
+Sedan utförs jämförelsen mot sök+ersatta versionen.
+* TODO shellcheck för filelist
+Beta av listan av tester i tests/CMakeList.txt
+Skapa utgångsfil från simptest-motsvarighet. Stå i testcases/ :
+for f in *.simptestcase; do bn=${f%.m4.simptestcase}; sc=${bn}.shellcheckcase; test -e $sc || cp -a $f $sc; done
 * TODO Skräddarsy act-fasen
 ** DONE Testa befintlig script-lng-setup individuellt
 *** DONE Infrastruktur för test av act-phase-setup
