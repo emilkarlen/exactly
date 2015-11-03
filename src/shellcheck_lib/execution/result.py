@@ -88,9 +88,9 @@ class FailureInfoVisitor:
     def visit(self,
               failure_info: FailureInfo):
         if isinstance(failure_info, InstructionFailureInfo):
-            self._visit_instruction_failure(failure_info)
+            return self._visit_instruction_failure(failure_info)
         elif isinstance(failure_info, PhaseFailureInfo):
-            self._visit_phase_failure(failure_info)
+            return self._visit_phase_failure(failure_info)
         else:
             raise ValueError('Unknown FailureInfo: {}'.format(type(failure_info)))
 

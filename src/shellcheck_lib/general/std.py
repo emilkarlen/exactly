@@ -1,3 +1,4 @@
+import os
 import sys
 import subprocess
 
@@ -42,3 +43,19 @@ class StdFiles:
 def std_files_dev_null() -> StdFiles:
     return StdFiles(subprocess.DEVNULL,
                     new_std_output_files_dev_null())
+
+
+class FilePrinter:
+    def __init__(self, file):
+        self.file = file
+
+    def write_line(self, line: str):
+        self.file.write(line)
+        self.file.write(os.linesep)
+
+    def write_line_if_present(self, line: str):
+        if line:
+            self.write_line(line)
+
+    def write(self, s: str):
+        self.file.write(s)
