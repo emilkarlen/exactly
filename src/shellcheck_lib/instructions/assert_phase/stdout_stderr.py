@@ -19,11 +19,11 @@ def description(file: str) -> Description:
                 '! empty',
                 '%s is not empty' % file),
             InvokationVariant(
-                'contents --rel-home FILE',
+                '--rel-home FILE',
                 """Expects the contents of %s to equal the contents of FILE
                 (which is a path relative home)""" % file),
             InvokationVariant(
-                'contents --rel-cwd FILE',
+                '--rel-cwd FILE',
                 """Expects the contents of %s to equal the contents of FILE
                 (which is a path relative current working directory)""" % file),
         ])
