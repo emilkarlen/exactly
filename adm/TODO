@@ -78,6 +78,14 @@ Fler fördelar:
 ** TODO <2015-01-05 mån> Handle parse errors
 ** TODO <2015-01-05 mån> Handle errors correctly according to phase
 * TODO Specifika instruktioner
+** TODO cd
+Syntax: cd [KATALOG]
+Byter aktuell katalog till given katalog.
+Om inget argument ges byts till SCHELLCHECK_ACT.
+** TODO sök+ersätt
+Är en vanlig informations-operation.  Är den vanlig i det här sammanhanget?
+Vet inte.
+Men innebär viss risk att inte ha den.
 ** TODO alla faser: Byta katalog till testrooten
 Tycker för tillfället det är vettigast att varje fas inte inleds med att
 automatiskt byta katalog till testroten.  Främsta anledningen är att
@@ -111,6 +119,17 @@ Fördel iom att den är välkänd.
 ** TODO file/stdout/stderr --rel-cwd
 *** TODO HARD_ERROR ifall jämförelsefilen inte finns?
 Nu ges FAIL: felet betraktas som en form av olikhet.
+** TODO setup/install
+*** DONE <2015-11-03 tis> Ska installera under Current Work Dir
+Idag installeras hårdkodat under act-dir.
+*** TODO <2015-11-03 tis> Hantering av multi-path-comp DESTINATION
+Idag är beteendet för DESTINATION som innehåller flera path-komponenter
+(t ex a/b/c) odefinierat.
+*** TODO <2015-11-03 tis> Sök+ersätt i filer som installeras
+Har ett testfall för filelist som gör just detta mha ex.
+Ersättningsvärdet är absolut sökväg för testets rot (SHELLCHECK_ACT).
+Antar att detta är relativt vanligt.  Därför borde shellcheck ha en sådan
+funktion inbyggd.
 * TODO Faser
 ** TODO Byt namn "anonymous" -> "configuration"
 ** TODO Configuration
