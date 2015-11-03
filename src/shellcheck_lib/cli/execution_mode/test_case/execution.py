@@ -1,8 +1,9 @@
-import os
 import pathlib
 import shutil
 
-from shellcheck_lib.general.std import StdOutputFiles
+from shellcheck_lib.execution.result import FailureInfoVisitor, PhaseFailureInfo, InstructionFailureInfo
+from shellcheck_lib.general import line_source
+from shellcheck_lib.general.std import StdOutputFiles, FilePrinter
 from shellcheck_lib.default.execution_mode.test_case import processing
 from shellcheck_lib.default.execution_mode.test_case.instruction_setup import InstructionsSetup
 from shellcheck_lib.cli.execution_mode.test_case.settings import Output, TestCaseExecutionSettings
@@ -21,6 +22,8 @@ class Executor:
                  instruction_setup: InstructionsSetup,
                  settings: TestCaseExecutionSettings):
         self._std = output
+        self._out_printer = FilePrinter(output.out)
+        self._err_printer = FilePrinter(output.err)
         self._split_line_into_name_and_argument_function = split_line_into_name_and_argument_function
         self._instruction_setup = instruction_setup
         self._settings = settings
@@ -35,7 +38,7 @@ class Executor:
         result = self._process(self._settings.is_keep_execution_directory_root)
         if result.status is test_case_processing.Status.EXECUTED:
             full_result = result.execution_result
-            self._print_output_to_stdout_for_full_result(full_result)
+            self._report_full_result(full_result)
             return full_result.status.value
         else:
             if result.status is test_case_processing.Status.INTERNAL_ERROR:
@@ -49,18 +52,11 @@ class Executor:
     def __output_error_result(self,
                               stdout_error_code: str,
                               error_info: ErrorInfo):
-        self._out_line(stdout_error_code)
-        has_output_header = False
-        if error_info.file:
-            self._err_line('File: ' + str(error_info.file))
-            has_output_header = True
-        line = error_info.line
-        if line:
-            self._err_line('Line {}: `{}\''.format(line.line_number, line.text))
-            has_output_header = True
-        if has_output_header:
-            self._err_line('')
-        _ErrorDescriptionDisplayer(self._std.err).visit(error_info.description)
+        self._out_printer.write_line(stdout_error_code)
+        _output_location(self._err_printer,
+                         error_info.file,
+                         error_info.line)
+        _ErrorDescriptionDisplayer(self._err_printer).visit(error_info.description)
 
     def _execute_act_phase(self) -> int:
         def copy_file(input_file_path: pathlib.Path,
@@ -83,19 +79,25 @@ class Executor:
         shutil.rmtree(str(full_result.execution_directory_structure.root_dir))
         return exit_code
 
+    def _report_full_result(self, the_full_result: full_execution.FullResult):
+        self._print_output_to_stdout_for_full_result(the_full_result)
+        self._print_output_to_stderr_for_full_result(the_full_result)
+
     def _print_output_to_stdout_for_full_result(self, the_full_result: full_execution.FullResult):
         if self._settings.output is Output.STATUS_CODE:
-            self._out_line(the_full_result.status.name)
+            self._out_printer.write_line(the_full_result.status.name)
         elif self._settings.output is Output.EXECUTION_DIRECTORY_STRUCTURE_ROOT:
-            self._out_line(str(the_full_result.execution_directory_structure.root_dir))
+            self._out_printer.write_line(str(the_full_result.execution_directory_structure.root_dir))
 
-    def _out_line(self, s: str):
-        self._std.out.write(s)
-        self._std.out.write(os.linesep)
-
-    def _err_line(self, s: str):
-        self._std.err.write(s)
-        self._std.err.write(os.linesep)
+    def _print_output_to_stderr_for_full_result(self, the_full_result: full_execution.FullResult):
+        if the_full_result.is_failure:
+            failure_info = the_full_result.failure_info
+            _SourceDisplayer(self._err_printer).visit(failure_info)
+            if failure_info.failure_details.is_error_message:
+                ed = error_description.of_message(failure_info.failure_details.failure_message)
+            else:
+                ed = error_description.of_exception(failure_info.failure_details.exception)
+            _ErrorDescriptionDisplayer(self._err_printer).visit(ed)
 
     def _process(self,
                  is_keep_eds: bool) -> test_case_processing.Result:
@@ -111,27 +113,47 @@ class Executor:
 
 class _ErrorDescriptionDisplayer(error_description.ErrorDescriptionVisitor):
     def __init__(self,
-                 stderr):
-        self.stderr = stderr
+                 out: FilePrinter):
+        self.out = out
 
     def _visit_message(self, ed: error_description.ErrorDescriptionOfMessage):
-        self._output_message_if_present(ed)
+        self.out.write_line_if_present(ed.message)
 
     def _visit_exception(self, ed: error_description.ErrorDescriptionOfException):
-        self._output_message_if_present(ed)
-        self._err_line('Exception:')
-        self._err_line(str(ed.exception))
+        self.out.write_line_if_present(ed.message)
+        self.out.write_line('Exception:')
+        self.out.write_line(str(ed.exception))
 
     def _visit_external_process_error(self, ed: error_description.ErrorDescriptionOfExternalProcessError):
-        self._output_message_if_present(ed)
-        self._err_line('Exit code: ' + str(ed.external_process_error.exit_code))
+        self.out.write_line_if_present(ed.message)
+        self.out.write_line('Exit code: ' + str(ed.external_process_error.exit_code))
         if ed.external_process_error.stderr_output:
-            self._err_line(ed.external_process_error.stderr_output)
+            self.out.write_line(ed.external_process_error.stderr_output)
 
-    def _output_message_if_present(self, ed: error_description.ErrorDescription):
-        if ed.message:
-            self._err_line(ed.message)
 
-    def _err_line(self, s: str):
-        self.stderr.write(s)
-        self.stderr.write(os.linesep)
+class _SourceDisplayer(FailureInfoVisitor):
+    def __init__(self,
+                 out: FilePrinter):
+        self.out = out
+
+    def _visit_phase_failure(self, failure_info: PhaseFailureInfo):
+        self.out.write_line('TODO: display of PhaseFailureInfo')
+
+    def _visit_instruction_failure(self, failure_info: InstructionFailureInfo):
+        _output_location(self.out,
+                         None,
+                         failure_info.source_line)
+
+
+def _output_location(printer: FilePrinter,
+                     test_case_file: pathlib.Path,
+                     line: line_source.Line):
+    has_output_header = False
+    if test_case_file:
+        printer.write_line('File: ' + str(test_case_file))
+        has_output_header = True
+    if line:
+        printer.write_line('Line {}: `{}\''.format(line.line_number, line.text))
+        has_output_header = True
+    if has_output_header:
+        printer.write_line('')
