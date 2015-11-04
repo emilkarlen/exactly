@@ -2,6 +2,7 @@ import filecmp
 import pathlib
 
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
+from shellcheck_lib.general.string import lines_content
 from shellcheck_lib.instructions.assert_phase.utils import instruction_utils
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
@@ -343,7 +344,11 @@ def try_parse_content(comparison_target: ComparisonTarget,
         elif last_arguments[0] == SOURCE_REL_CWD_OPTION:
             return ComparisonSourceForFileRelCwd(last_arguments[1])
         else:
-            raise SingleInstructionInvalidArgumentException('Invalid argument: ' + last_arguments[0])
+            raise SingleInstructionInvalidArgumentException(
+                lines_content(['Invalid argument: {}'.format(last_arguments[0]),
+                               'Expecting one of: {}'.format(', '.join(SOURCE_REL_HOME_OPTION,
+                                                                       SOURCE_REL_CWD_OPTION)),
+                               ]))
 
     if arguments[0] == EMPTY_ARGUMENT:
         return _parse_empty(comparison_target, arguments[1:])

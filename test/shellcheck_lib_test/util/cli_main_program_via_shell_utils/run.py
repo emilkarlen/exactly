@@ -5,7 +5,7 @@ import unittest
 from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib_test.util.process import ExpectedSubProcessResult, SubProcessResultInfo, \
     run_subprocess, run_subprocess_with_file_arg__full, SubProcessResult
-from shellcheck_lib_test.util.file_utils import lines_content
+from shellcheck_lib.general.string import lines_content
 
 SRC_DIR_NAME = 'src'
 MAIN_PROGRAM_FILE_NAME = 'shellcheck.py'

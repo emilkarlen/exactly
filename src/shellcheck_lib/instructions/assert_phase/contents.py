@@ -1,4 +1,3 @@
-import enum
 import pathlib
 import shlex
 
@@ -22,7 +21,7 @@ DESCRIPTION = Description(
 
     {}.
     """.format(WITH_REPLACED_ENV_VARS_OPTION,
-                   ', '.join(environment_variables.ALL_ENV_VARS)),
+               ', '.join(environment_variables.ALL_ENV_VARS)),
     [
         InvokationVariant(
             'FILENAME {}'.format(EMPTY_ARGUMENT),
@@ -39,30 +38,16 @@ DESCRIPTION = Description(
     ])
 
 
-class FileType(enum.Enum):
-    SYMLINK = 0
-    REGULAR = 1
-    DIRECTORY = 2
-
-
-FILE_TYPES = {
-    "symlink": FileType.SYMLINK,
-    "regular": FileType.REGULAR,
-    "directory": FileType.DIRECTORY
-}
-
-
 class Parser(SingleInstructionParser):
     def apply(self, source: SingleInstructionParserSource) -> AssertPhaseInstruction:
         arguments = shlex.split(source.instruction_argument)
         if not arguments:
             raise SingleInstructionInvalidArgumentException('At least one argument expected (file name)')
         file_argument = arguments[0]
-        del arguments[0]
         comparison_target = contents_utils.ActComparisonTarget(file_argument)
         content_instruction = contents_utils.try_parse_content(comparison_target,
                                                                _TargetTransformer(),
-                                                               arguments)
+                                                               arguments[1:])
         if content_instruction is not None:
             return content_instruction
         raise SingleInstructionInvalidArgumentException('Invalid file instruction')

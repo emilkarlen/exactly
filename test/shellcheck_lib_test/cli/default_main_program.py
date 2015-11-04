@@ -10,7 +10,8 @@ from shellcheck_lib_test.cli.cases import default_main_program_wildcard as wildc
 from shellcheck_lib_test.cli import default_main_program_suite_preprocessing as pre_proc_tests
 from shellcheck_lib_test.cli.utils.execute_main_program import execute_main_program, ARGUMENTS_FOR_TEST_INTERPRETER
 from shellcheck_lib_test.util.file_structure import DirContents, File
-from shellcheck_lib_test.util.file_utils import lines_content, tmp_file_containing, tmp_file_containing_lines
+from shellcheck_lib_test.util.file_utils import tmp_file_containing, tmp_file_containing_lines
+from shellcheck_lib.general.string import lines_content
 from shellcheck_lib.cli import main_program
 from shellcheck_lib_test.util.main_program import main_program_check_for_test_case
 from shellcheck_lib_test.cli import default_main_program_case_preprocessing
