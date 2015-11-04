@@ -4,6 +4,7 @@ import shlex
 
 from shellcheck_lib.default.execution_mode.test_case.instruction_setup import Description, InvokationVariant
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
+from shellcheck_lib.general.string import line_separated
 from shellcheck_lib.test_case.sections import common as i
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionInvalidArgumentException, SingleInstructionParserSource
@@ -38,8 +39,7 @@ class InstructionForExactValue(instruction_utils.InstructionWithoutValidationBas
         actual_value = read_exitcode(environment.eds)
         if actual_value == self._expected_value:
             return pfh.new_pfh_pass()
-        return pfh.new_pfh_fail('Unexpected exitcode. Expected:%d, actual:%d' % (self._expected_value,
-                                                                                 actual_value))
+        return pfh.new_pfh_fail(_unexpected_exit_code_message(self._expected_value, actual_value))
 
 
 class InstructionForOperator(instruction_utils.InstructionWithoutValidationBase):
@@ -56,8 +56,7 @@ class InstructionForOperator(instruction_utils.InstructionWithoutValidationBase)
         if self._operator_info[1](actual_value, self._value):
             return pfh.new_pfh_pass()
         condition_str = self._operator_info[0] + ' ' + str(self._value)
-        return pfh.new_pfh_fail('Unexpected exitcode. Expected:%s½, actual:%d' % (condition_str,
-                                                                                  actual_value))
+        return pfh.new_pfh_fail(_unexpected_exit_code_message(condition_str, actual_value))
 
 
 class Parser(SingleInstructionParser):
@@ -140,3 +139,9 @@ def read_exitcode(eds: ExecutionDirectoryStructure) -> int:
         raise InstructionEnvironmentError(msg)
     finally:
         f.close()
+
+
+def _unexpected_exit_code_message(expected, actual_value):
+    return line_separated(['Unexpected exitcode.',
+                           'Expected : {}'.format(expected),
+                           'Actual   : {}'.format(actual_value)])
