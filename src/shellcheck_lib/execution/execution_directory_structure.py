@@ -106,3 +106,12 @@ def construct_at(execution_directory_root: str) -> ExecutionDirectoryStructure:
 def construct_at_tmp_root() -> ExecutionDirectoryStructure:
     root_dir_name = tempfile.mkdtemp(prefix='shellcheck-')
     return construct_at(root_dir_name)
+
+
+def root_dir_for_non_stdout_or_stderr_files_with_replaced_env_vars(eds: ExecutionDirectoryStructure) -> Path:
+    return eds.tmp_dir / 'with-replaced-env-vars'
+
+
+SUB_DIR_FOR_REPLACEMENT_SOURCES_UNDER_ACT_DIR = 'act'
+
+SUB_DIR_FOR_REPLACEMENT_SOURCES_NOT_UNDER_ACT_DIR = 'global'

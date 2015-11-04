@@ -79,22 +79,23 @@ class StdXTargetTransformerBase(TargetTransformer):
                          environment: GlobalEnvironmentForPostEdsPhase,
                          os_services: OsServices,
                          target_file_path: pathlib.Path) -> pathlib.Path:
-        env_vars_to_replace = environment_variables.all_environment_variables(environment.home_directory,
-                                                                              environment.eds)
-        src_file_path = self._get_original_std_file(environment)
-        dst_file_path = self._dst_file_path(src_file_path)
+        src_file_path = self._get_src_file_path(environment)
+        dst_file_path = self._dst_file_path(environment, src_file_path)
         if dst_file_path.exists():
             return dst_file_path
+        env_vars_to_replace = environment_variables.all_environment_variables(environment.home_directory,
+                                                                              environment.eds)
         self._replace_env_vars_and_write_result_to_dst(env_vars_to_replace,
                                                        src_file_path,
                                                        dst_file_path)
         return dst_file_path
 
-    def _get_original_std_file(self, environment: GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
+    def _get_src_file_path(self, environment: GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
         raise NotImplementedError()
 
-    @staticmethod
-    def _dst_file_path(src_file_path: pathlib.Path) -> pathlib.Path:
+    def _dst_file_path(self,
+                       environment: GlobalEnvironmentForPostEdsPhase,
+                       src_file_path: pathlib.Path) -> pathlib.Path:
         src_stem_name = src_file_path.stem
         directory = src_file_path.parent
         dst_base_name = src_stem_name + WITH_REPLACED_ENV_VARS_STEM_SUFFIX
@@ -114,10 +115,10 @@ class StdXTargetTransformerBase(TargetTransformer):
 
 
 class TargetTransformerForStdOut(StdXTargetTransformerBase):
-    def _get_original_std_file(self, environment: GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
+    def _get_src_file_path(self, environment: GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
         return environment.eds.result.std.stdout_file
 
 
 class TargetTransformerForStdErr(StdXTargetTransformerBase):
-    def _get_original_std_file(self, environment: GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
+    def _get_src_file_path(self, environment: GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
         return environment.eds.result.std.stderr_file
