@@ -2,7 +2,7 @@
 
 Fortsätt med
 
-* TODO Motsvarande simptest:s -replaced-SIMPTEST-envvars
+* DONE Motsvarande simptest:s -replaced-SIMPTEST-envvars
 Idé:
 Ange att resultatet ska sök+ersättas m växel, t ex "--replace".
 (Vill i en förlängning kunna använda den växeln för att göra godtycklig
@@ -17,6 +17,20 @@ om det finns en bearbetad fil som är redo att använda ("stdout-replaced", t
 ex).
 Om det inte gör det skapas den.
 Sedan utförs jämförelsen mot sök+ersatta versionen.
+
+* DONE Implementera --with-replaced-env-vars för "contents"
+Den har nu en TargetTransformer som inte är helt implementerad.
+
+Bör gå att låna mycket från stdout/stderr.  (Ev behövs omstruktrering för att
+göra koden åtkommlig.)
+
+Bör gå att hitta på vettig namnkonvention som gör att namn inte krockar.
+1. Bestäm rot-katalog.  T ex ESD/tmp/with-replaced-env-vars/
+2. Härled suffix av namn under denna:
+   - För sökvägar under SHELLCHECK-esd-root:
+     Låt suffixet vara komponenterna som följer efter SHELLCHECK-esd-root
+   - För sökvägar utanför SHELLCHECK-esd-root:
+     Låt suffixet vara filens absoluta sökväg.
 * TODO shellcheck för filelist
 Beta av listan av tester i tests/CMakeList.txt
 Skapa utgångsfil från simptest-motsvarighet. Stå i testcases/ :
