@@ -1,6 +1,13 @@
 -*- org -*-
 
 
+* TODO Tester som inte är skrivna
+
+** TODO content/stdout/stderr --with-replaced-env-vars körd > 1 gång
+Eftersom befintliga transformerade filer återanvänds är beteendet annorlunda
+för användning nr > 1, än första gången. Måste alltså testas.
+Metod: Ev köra helt testfall o helt enkelt använda samma instruktion två
+gånger.
 * TODO Misc
 ** TODO <2015-01-05 mån> abs_syn_gen.TestCase instances must be valid
 The constructor should validate all arguments
@@ -16,6 +23,20 @@ handling arbitrary languages.
 
 ** TODO <2015-09-25 fre> EDS: test-root ska heta "act"
 Mkt enklare att koppla ihop med fasen "act".
+
+** TODO Ska omgivningsvariablerna ha ett "_DIR" på slutet?
+Känns vettigt.  Tydligare, helt enkelt.
+O tror innehållet i filer där omgivningsvariablerna bytits ut blir tydligare:
+Utan _DIR:
+----------------------------------------
+SHELLCHECK_ACT/data/dir/existing-file.txt
+----------------------------------------
+med _DIR:
+----------------------------------------
+SHELLCHECK_ACT_DIR/data/dir/existing-file.txt
+----------------------------------------
+Det blir helt enkelt tydligt att man pratar kataloger.
+
 * TODO Kommandorads-program
 ** TODO Hjälpsystem via CLI
 Förslag:
@@ -77,6 +98,10 @@ Fler fördelar:
 ** TODO <2015-01-05 mån> Handle implementation errors
 ** TODO <2015-01-05 mån> Handle parse errors
 ** TODO <2015-01-05 mån> Handle errors correctly according to phase
+* TODO Komplettera befintliga instruktioner
+** TODO contents: env-var replacement
+Notis i koden:
+"TODO: Implement env-var replacement for arbitrary file."
 * TODO Specifika instruktioner
 ** TODO cd
 Syntax: cd [KATALOG]
@@ -86,6 +111,14 @@ Om inget argument ges byts till SCHELLCHECK_ACT.
 Är en vanlig informations-operation.  Är den vanlig i det här sammanhanget?
 Vet inte.
 Men innebär viss risk att inte ha den.
+
+Vore bra att ha en sök+ersätt för reg-ex.
+Vore bra om man kunde använda omgivningsvariablers värden i sök/ersätt
+uttrycket.  Hur ska det göras?? Inte enkelt. Måste ha en syntax för att komma
+åt dem. O den syntaxen får inte krocka med reg-exen.  Kanske enklast att (till
+en början med, i varje fall) använda shell-syntax: ${ABC_abc_123}.
+Om en annan syntax ska användas ska det vara en som krockar så lite som
+möjligt med reg-ex syntax.
 ** TODO alla faser: Byta katalog till testrooten
 Tycker för tillfället det är vettigast att varje fas inte inleds med att
 automatiskt byta katalog till testroten.  Främsta anledningen är att
@@ -119,6 +152,19 @@ Fördel iom att den är välkänd.
 ** TODO file/stdout/stderr --rel-cwd
 *** TODO HARD_ERROR ifall jämförelsefilen inte finns?
 Nu ges FAIL: felet betraktas som en form av olikhet.
+*** TODO Bättre felmeddelande för stdout/stderr
+Nu:
+----------------------------------------
+Line 68: `stdout    --rel-home output/absolute-file-paths-existing.txt'
+
+Unexpected content in file: /tmp/shellcheck-290sqrhe/result/std/stdout
+----------------------------------------
+Det framgår inte tydligt att det handlar om stdout. Man får själv ana det,
+genom att leta reda på "stdout".
+
+Även när man använt --with-replaced-env-vars får man exakt samma meddelande.
+Det framgår inte någonstans (förutom på källkodsraden) att det handlar om
+varianten med variabler utbytta.
 ** TODO setup/install
 *** DONE <2015-11-03 tis> Ska installera under Current Work Dir
 Idag installeras hårdkodat under act-dir.
@@ -192,6 +238,7 @@ Införa argument som ges till alla metoder i alla instruktioner.
 Skulle erbjuda mölighet att skräddarsy den information som instruktionerna har
 tillgång till.
 * TODO Refaktoreringar
+** TODO Göra sig av med fel-typen som är överflödig (fr UML, Failure?)
 ** TODO Argument till instruktionernas steg
 Spikade först två generella miljöer: global miljö och fas-miljö.
 Iom att den modellen inte längre används kan mer ändamålsenliga argument
@@ -304,3 +351,48 @@ Ska finnas hjälpfunktioner i "biblioteket" för att läsa t ex statuskod på
 korrekt sätt - dvs kasta rätt undantag om något går snett.
 Idag läser t ex instruktionen "exitcode" själv exitkoden. Det ska den inte
 behöva göra.
+* TODO Prestanda
+** TODO All dokumentation ska skapas vid behov
+Dvs ska inte finnas konstater på global nivå.
+Ska istället finnas funktioner på global nivå:
+def get_document() -> Description:
+  return Description(...)
+
+* Vidareutveckling
+** TODO <2015-11-04 ons> Ange filstruktur i textformat att installera
+På liknande sätt som jag gör i Python:
+DirContents([File('f','contents'], Dir('d', [...]))
+
+Vore ju bekvämt om det fanns en liknande notation för filer att installera.
+Då skulle man slippa ha dem i filsystemet, i de fall det inte är nödvändigt av
+andra orsaker.
+
+Kruxet är bra syntax.
+Alternativ:
+ - egendefinierad
+ - JSON
+ - XML
+
+T ex
+----------------------------------------
+[setup]
+file-structure --xml <<EOF
+<contents>
+  <file name="empty-file"/>
+  <file name="g" timestamp="2015-11-03 10:20:30"/>
+  <file name="non-empty">contents of file</file>
+  <dir name="empty-dir"/>
+  <dir name="non-empty-dir">
+    <file name="f"/>
+  </dir>
+<contents>
+EOF
+----------------------------------------
+
+Ev kunde ett antal xml entities sättas så att de fanns att tillgå, på ung
+samma sätt som med omgivningsvariabler.
+
+
+assert/JÄMFÖRELSE
+Vore naturligtvis även användbart att kunna asserta att innehållet i en
+katalog är identiskt (el innehåller som minst) en sådan hårdkodad filstruktur.
