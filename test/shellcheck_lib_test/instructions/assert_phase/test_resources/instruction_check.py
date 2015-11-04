@@ -8,6 +8,7 @@ from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
+from shellcheck_lib_test.instructions.utils import HomeAndEds
 from shellcheck_lib_test.util import file_structure
 from shellcheck_lib_test.instructions.test_resources import svh_check
 from shellcheck_lib_test.instructions.test_resources import pfh_check
@@ -16,12 +17,29 @@ from shellcheck_lib_test.instructions.test_resources import eds_contents_check
 from shellcheck_lib_test.instructions import utils
 
 
+class ActEnvironment(tuple):
+    def __new__(cls,
+                home_and_eds: utils.HomeAndEds):
+        return tuple.__new__(cls, (home_and_eds,))
+
+    @property
+    def home_and_eds(self) -> HomeAndEds:
+        return self[0]
+
+
+class ActResultProducer:
+    def __init__(self, act_result: utils.ActResult=utils.ActResult()):
+        self.act_result = act_result
+
+    def apply(self, act_environment: ActEnvironment) -> utils.ActResult:
+        return self.act_result
+
 class Flow:
     def __init__(self,
                  parser: SingleInstructionParser,
                  home_dir_contents: file_structure.DirContents=file_structure.DirContents([]),
                  eds_contents_before_main: eds_populator.EdsPopulator=eds_populator.Empty(),
-                 act_result: utils.ActResult=utils.ActResult(),
+                 act_result_producer: ActResultProducer=ActResultProducer(),
                  expected_validation_result: svh_check.Assertion=svh_check.is_success(),
                  expected_main_result: pfh_check.Assertion=pfh_check.is_pass(),
                  expected_main_side_effects_on_files: eds_contents_check.Assertion=eds_contents_check.AnythingGoes(),
@@ -30,7 +48,7 @@ class Flow:
         self.home_dir_contents = home_dir_contents
         self.expected_validation_result = expected_validation_result
         self.eds_contents_before_main = eds_contents_before_main
-        self.act_result = act_result
+        self.act_result_producer = act_result_producer
         self.expected_main_result = expected_main_result
         self.expected_main_side_effects_on_files = expected_main_side_effects_on_files
 
@@ -53,7 +71,9 @@ def execute(put: unittest.TestCase,
                          'The instruction must be an instance of ' + str(AssertPhaseInstruction))
     assert isinstance(instruction, AssertPhaseInstruction)
     with utils.home_and_eds_and_test_as_curr_dir() as home_and_eds:
-        home_and_eds.write_act_result(setup.act_result)
+        act_result = setup.act_result_producer.apply(ActEnvironment(home_and_eds))
+        home_and_eds.write_act_result(act_result)
+
         setup.home_dir_contents.write_to(home_and_eds.home_dir_path)
         setup.eds_contents_before_main.apply(home_and_eds.eds)
         environment = i.GlobalEnvironmentForPostEdsPhase(home_and_eds.home_dir_path,

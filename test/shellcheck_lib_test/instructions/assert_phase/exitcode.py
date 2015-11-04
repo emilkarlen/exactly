@@ -5,7 +5,7 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
     SingleInstructionInvalidArgumentException
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib_test.instructions import utils
-from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_check import Flow
+from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_check import Flow, ActResultProducer
 from shellcheck_lib_test.instructions.test_resources import pfh_check
 from shellcheck_lib_test.instructions.assert_phase.test_resources import instruction_check
 from shellcheck_lib_test.instructions.utils import new_source
@@ -61,7 +61,7 @@ class TestParseAndExecute(instruction_check.TestCaseBase):
     def test_that__when__actual_value_is_as_expected__then__pass_is_returned(self):
         self._check(
             Flow(exitcode.Parser(),
-                 act_result=utils.ActResult(exitcode=72),
+                 act_result_producer=ActResultProducer(utils.ActResult(exitcode=72)),
                  ),
             new_source('instruction-name',
                        ' 72'))
@@ -69,7 +69,7 @@ class TestParseAndExecute(instruction_check.TestCaseBase):
     def test_that__when__actual_value_is_as_not_expected__then__fail_is_returned(self):
         self._check(
             Flow(exitcode.Parser(),
-                 act_result=utils.ActResult(exitcode=0),
+                 act_result_producer=ActResultProducer(utils.ActResult(exitcode=0)),
                  expected_main_result=pfh_check.is_fail()
                  ),
             new_source('instruction-name',
@@ -80,7 +80,7 @@ class TestParseAndExecuteTwoArgumentsEq(instruction_check.TestCaseBase):
     def test_pass(self):
         self._check(
             Flow(exitcode.Parser(),
-                 act_result=utils.ActResult(exitcode=72),
+                 act_result_producer=ActResultProducer(utils.ActResult(exitcode=72)),
                  ),
             new_source('instruction-name',
                        ' = 72'))
@@ -88,7 +88,7 @@ class TestParseAndExecuteTwoArgumentsEq(instruction_check.TestCaseBase):
     def test_fail(self):
         self._check(
             Flow(exitcode.Parser(),
-                 act_result=utils.ActResult(exitcode=0),
+                 act_result_producer=ActResultProducer(utils.ActResult(exitcode=0)),
                  expected_main_result=pfh_check.is_fail()
                  ),
             new_source('instruction-name',
@@ -99,14 +99,14 @@ class TestParseAndExecuteTwoArgumentsNe(instruction_check.TestCaseBase):
     def test_pass(self):
         self._check(
             Flow(exitcode.Parser(),
-                 act_result=utils.ActResult(exitcode=72),
+                 act_result_producer=ActResultProducer(utils.ActResult(exitcode=72)),
                  ),
             new_source('instruction-name', ' ! 73'))
 
     def test_fail(self):
         self._check(
             Flow(exitcode.Parser(),
-                 act_result=utils.ActResult(exitcode=72),
+                 act_result_producer=ActResultProducer(utils.ActResult(exitcode=72)),
                  expected_main_result=pfh_check.is_fail()),
             new_source('instruction-name',
                        ' ! 72'))
@@ -116,7 +116,7 @@ class TestParseAndExecuteTwoArgumentsLt(instruction_check.TestCaseBase):
     def test_pass(self):
         self._check(
             Flow(exitcode.Parser(),
-                 act_result=utils.ActResult(exitcode=72),
+                 act_result_producer=ActResultProducer(utils.ActResult(exitcode=72)),
                  ),
             new_source('instruction-name',
                        ' < 87'))
@@ -124,7 +124,7 @@ class TestParseAndExecuteTwoArgumentsLt(instruction_check.TestCaseBase):
     def test_fail_equal(self):
         self._check(
             Flow(exitcode.Parser(),
-                 act_result=utils.ActResult(exitcode=72),
+                 act_result_producer=ActResultProducer(utils.ActResult(exitcode=72)),
                  expected_main_result=pfh_check.is_fail()
                  ),
             new_source('instruction-name',
@@ -133,7 +133,7 @@ class TestParseAndExecuteTwoArgumentsLt(instruction_check.TestCaseBase):
     def test_fail_unequal(self):
         self._check(
             Flow(exitcode.Parser(),
-                 act_result=utils.ActResult(exitcode=72),
+                 act_result_producer=ActResultProducer(utils.ActResult(exitcode=72)),
                  expected_main_result=pfh_check.is_fail()
                  ),
             new_source('instruction-name',
@@ -144,7 +144,7 @@ class TestParseAndExecuteTwoArgumentsLe(instruction_check.TestCaseBase):
     def test_pass(self):
         self._check(
             Flow(exitcode.Parser(),
-                 act_result=utils.ActResult(exitcode=72),
+                 act_result_producer=ActResultProducer(utils.ActResult(exitcode=72)),
                  ),
             new_source('instruction-name',
                        ' <= 87'))
@@ -152,7 +152,7 @@ class TestParseAndExecuteTwoArgumentsLe(instruction_check.TestCaseBase):
     def test_pass_equal(self):
         self._check(
             Flow(exitcode.Parser(),
-                 act_result=utils.ActResult(exitcode=72),
+                 act_result_producer=ActResultProducer(utils.ActResult(exitcode=72)),
                  ),
             new_source('instruction-name',
                        ' <= 72'))
@@ -160,7 +160,7 @@ class TestParseAndExecuteTwoArgumentsLe(instruction_check.TestCaseBase):
     def test_fail_unequal(self):
         self._check(
             Flow(exitcode.Parser(),
-                 act_result=utils.ActResult(exitcode=72),
+                 act_result_producer=ActResultProducer(utils.ActResult(exitcode=72)),
                  expected_main_result=pfh_check.is_fail()
                  ),
             new_source('instruction-name',
@@ -171,7 +171,7 @@ class TestParseAndExecuteTwoArgumentsGt(instruction_check.TestCaseBase):
     def test_pass(self):
         self._check(
             Flow(exitcode.Parser(),
-                 act_result=utils.ActResult(exitcode=72),
+                 act_result_producer=ActResultProducer(utils.ActResult(exitcode=72)),
                  ),
             new_source('instruction-name',
                        ' > 28'))
@@ -179,7 +179,7 @@ class TestParseAndExecuteTwoArgumentsGt(instruction_check.TestCaseBase):
     def test_fail_equal(self):
         self._check(
             Flow(exitcode.Parser(),
-                 act_result=utils.ActResult(exitcode=72),
+                 act_result_producer=ActResultProducer(utils.ActResult(exitcode=72)),
                  expected_main_result=pfh_check.is_fail()
                  ),
             new_source('instruction-name',
@@ -188,7 +188,7 @@ class TestParseAndExecuteTwoArgumentsGt(instruction_check.TestCaseBase):
     def test_fail_unequal(self):
         self._check(
             Flow(exitcode.Parser(),
-                 act_result=utils.ActResult(exitcode=72),
+                 act_result_producer=ActResultProducer(utils.ActResult(exitcode=72)),
                  expected_main_result=pfh_check.is_fail()
                  ),
             new_source('instruction-name',
@@ -199,7 +199,7 @@ class TestParseAndExecuteTwoArgumentsGe(instruction_check.TestCaseBase):
     def test_pass(self):
         self._check(
             Flow(exitcode.Parser(),
-                 act_result=utils.ActResult(exitcode=72),
+                 act_result_producer=ActResultProducer(utils.ActResult(exitcode=72)),
                  ),
             new_source('instruction-name',
                        ' >= 28'))
@@ -207,7 +207,7 @@ class TestParseAndExecuteTwoArgumentsGe(instruction_check.TestCaseBase):
     def test_pass_equal(self):
         self._check(
             Flow(exitcode.Parser(),
-                 act_result=utils.ActResult(exitcode=72),
+                 act_result_producer=ActResultProducer(utils.ActResult(exitcode=72)),
                  ),
             new_source('instruction-name',
                        ' >= 72'))
@@ -215,7 +215,7 @@ class TestParseAndExecuteTwoArgumentsGe(instruction_check.TestCaseBase):
     def test_fail_unequal(self):
         self._check(
             Flow(exitcode.Parser(),
-                 act_result=utils.ActResult(exitcode=72),
+                 act_result_producer=ActResultProducer(utils.ActResult(exitcode=72)),
                  expected_main_result=pfh_check.is_fail()
                  ),
             new_source('instruction-name',
