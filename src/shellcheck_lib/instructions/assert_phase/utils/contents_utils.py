@@ -1,12 +1,15 @@
 import filecmp
 import pathlib
 
+from shellcheck_lib.execution import environment_variables
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
+from shellcheck_lib.general.file_utils import ensure_parent_directory_does_exist
 from shellcheck_lib.general.string import lines_content
 from shellcheck_lib.instructions.assert_phase.utils import instruction_utils
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from shellcheck_lib.test_case.sections import common as i
+from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
 from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
@@ -253,10 +256,44 @@ class ContentCheckerInstruction(ContentCheckerInstructionBase):
 
 class TargetTransformer:
     def replace_env_vars(self,
-                         environment: i.GlobalEnvironmentForPostEdsPhase,
+                         environment: GlobalEnvironmentForPostEdsPhase,
                          os_services: OsServices,
                          target_file_path: pathlib.Path) -> pathlib.Path:
+        src_file_path = self._get_src_file_path(environment)
+        dst_file_path = self._dst_file_path(environment, src_file_path)
+        if dst_file_path.exists():
+            return dst_file_path
+        env_vars_to_replace = environment_variables.all_environment_variables(environment.home_directory,
+                                                                              environment.eds)
+        self._replace_env_vars_and_write_result_to_dst(env_vars_to_replace,
+                                                       src_file_path,
+                                                       dst_file_path)
+        return dst_file_path
+
+    def _get_src_file_path(self, environment: GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
         raise NotImplementedError()
+
+    def _dst_file_path(self,
+                       environment: GlobalEnvironmentForPostEdsPhase,
+                       src_file_path: pathlib.Path) -> pathlib.Path:
+        """
+        :return: An absolute path that does/should store the transformed version of
+        the src file.
+        """
+        raise NotImplementedError()
+
+    @staticmethod
+    def _replace_env_vars_and_write_result_to_dst(env_vars_to_replace: dict,
+                                                  src_file_path: pathlib.Path,
+                                                  dst_file_path: pathlib.Path):
+        with src_file_path.open() as src_file:
+            # TODO Handle reading/replacing in chunks, if file is too large to be read in one chunk
+            contents = src_file.read()
+        for var_name, var_value in env_vars_to_replace.items():
+            contents = contents.replace(var_value, var_name)
+        ensure_parent_directory_does_exist(dst_file_path)
+        with open(str(dst_file_path), 'w') as dst_file:
+            dst_file.write(contents)
 
 
 class ContentCheckerWithTransformationInstruction(ContentCheckerInstructionBase):

@@ -1,10 +1,11 @@
-import os
 import unittest
 
 from shellcheck_lib.execution import environment_variables
 from shellcheck_lib.instructions.assert_phase import stdout_stderr
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException, SingleInstructionParser
+from shellcheck_lib_test.instructions.assert_phase.test_resources.contents_resources import \
+    ActResultProducerForContentsWithAllEnvVarsBase
 from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_check import Flow, ActResultProducer, \
     ActEnvironment
 from shellcheck_lib_test.instructions.assert_phase.test_resources import instruction_check
@@ -330,22 +331,10 @@ class TestFileContentsFileRelCwdFORStderr(FileContentsFileRelCwd):
                                          'expected')
 
 
-class ActResultProducerForContentsWithAllEnvVars(ActResultProducer):
+class ActResultProducerForContentsWithAllEnvVars(ActResultProducerForContentsWithAllEnvVarsBase):
     def __init__(self, is_produce_to_stdout: bool):
         super().__init__()
         self.is_produce_to_stdout = is_produce_to_stdout
-        self.sorted_env_var_keys = sorted(environment_variables.ALL_ENV_VARS)
-
-    @property
-    def expected_contents_after_replacement(self) -> str:
-        return self._content_from_values(self.sorted_env_var_keys)
-
-    @property
-    def unexpected_contents_after_replacement(self) -> str:
-        """
-        :return: Gives a variation of the expected result, that is not equal to the expected result.
-        """
-        return self._content_from_values(tuple(reversed(self.sorted_env_var_keys)))
 
     def apply(self, act_environment: ActEnvironment) -> ActResult:
         home_and_eds = act_environment.home_and_eds
@@ -364,15 +353,6 @@ class ActResultProducerForContentsWithAllEnvVars(ActResultProducer):
             stderr_contents = contents
         return ActResult(stdout_contents=stdout_contents,
                          stderr_contents=stderr_contents)
-
-    @staticmethod
-    def _content_from_values(values_in_determined_order: iter) -> str:
-        all_values_concatenated = ''.join(values_in_determined_order)
-        all_values_on_separate_lines = os.linesep.join(values_in_determined_order)
-        all_values_concatenated_in_reverse_order = ''.join(reversed(values_in_determined_order))
-        return os.linesep.join([all_values_concatenated,
-                                all_values_on_separate_lines,
-                                all_values_concatenated_in_reverse_order]) + os.linesep
 
 
 class ReplacedEnvVars(TestWithParserBase):

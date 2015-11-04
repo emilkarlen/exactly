@@ -14,7 +14,7 @@ def write_file(path: pathlib.Path, contents: str):
 @contextmanager
 def tmp_file_containing(contents: str,
                         suffix: str='',
-                        dir=None) -> pathlib.Path:
+                        directory=None) -> pathlib.Path:
     """
     Returns a context manager (used by with tmp_file(...) as file_path) ...
     The context manager takes care of deleting the file.
@@ -27,9 +27,9 @@ def tmp_file_containing(contents: str,
     try:
         fd, absolute_file_path = tempfile.mkstemp(prefix='shellcheck-test-',
                                                   suffix=suffix,
-                                                  dir=dir,
+                                                  dir=directory,
                                                   text=True)
-        fo = os.fdopen(fd, "w+")
+        fo = os.fdopen(fd, 'w+')
         fo.write(contents)
         fo.close()
         path = pathlib.Path(absolute_file_path)

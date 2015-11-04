@@ -1,15 +1,19 @@
+from pathlib import Path
 import unittest
 
+from shellcheck_lib.execution import environment_variables
+from shellcheck_lib.general import file_utils
 from shellcheck_lib.instructions.assert_phase import contents as sut
-
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_check import Flow
+from shellcheck_lib_test.instructions.assert_phase.test_resources.contents_resources import \
+    ActResultProducerForContentsWithAllEnvVarsBase
+from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_check import Flow, ActEnvironment
 from shellcheck_lib_test.instructions.assert_phase.test_resources import instruction_check
 from shellcheck_lib_test.instructions.test_resources import pfh_check
 from shellcheck_lib_test.instructions.test_resources import svh_check
 from shellcheck_lib_test.instructions.test_resources.eds_populator import FilesInActDir
-from shellcheck_lib_test.instructions.utils import new_source
+from shellcheck_lib_test.instructions.utils import new_source, ActResult
 from shellcheck_lib_test.util.file_structure import DirContents, empty_file, empty_dir, File
 
 
@@ -233,6 +237,99 @@ class TestFileContentsFileRelCwd(instruction_check.TestCaseBase):
                        'target --rel-cwd comparison'))
 
 
+class ActResultProducerForContentsWithAllEnvVars(ActResultProducerForContentsWithAllEnvVarsBase):
+    def __init__(self, output_file_path: Path):
+        super().__init__()
+        self.output_file_path = output_file_path
+
+    def apply(self, act_environment: ActEnvironment) -> ActResult:
+        home_and_eds = act_environment.home_and_eds
+        env_vars_dict = environment_variables.all_environment_variables(home_and_eds.home_dir_path,
+                                                                        home_and_eds.eds)
+        values_in_determined_order = list(map(env_vars_dict.get, self.sorted_env_var_keys))
+        contents = self._content_from_values(values_in_determined_order)
+        file_utils.write_new_text_file(self.output_file_path,
+                                       contents)
+        return ActResult()
+
+
+class TestReplacedEnvVars(instruction_check.TestCaseBase):
+    COMPARISON_SOURCE_FILE_NAME = 'with-replaced-env-vars.txt'
+    COMPARISON_TARGET_FILE_NAME = 'file-with-env-var-values-in-it-from-act-phase.txt'
+
+    def __init__(self,
+                 method_name):
+        super().__init__(method_name)
+
+    def test_pass__when__contents_equals__rel_home(self):
+        act_result_producer = ActResultProducerForContentsWithAllEnvVars(Path(self.COMPARISON_TARGET_FILE_NAME))
+        self._check(
+            Flow(sut.Parser(),
+                 home_dir_contents=DirContents([
+                     File(self.COMPARISON_SOURCE_FILE_NAME,
+                          act_result_producer.expected_contents_after_replacement)]),
+                 act_result_producer=act_result_producer),
+            new_source('instruction-name',
+                       '{} --with-replaced-env-vars --rel-home {}'.format(self.COMPARISON_TARGET_FILE_NAME,
+                                                                          self.COMPARISON_SOURCE_FILE_NAME))
+        )
+
+    def test_fail__when__contents_not_equals__rel_home(self):
+        act_result_producer = ActResultProducerForContentsWithAllEnvVars(Path(self.COMPARISON_TARGET_FILE_NAME))
+        self._check(
+            Flow(sut.Parser(),
+                 home_dir_contents=DirContents(
+                     [File(self.COMPARISON_SOURCE_FILE_NAME,
+                           act_result_producer.unexpected_contents_after_replacement)]),
+                 act_result_producer=act_result_producer,
+                 expected_main_result=pfh_check.is_fail()),
+            new_source('instruction-name',
+                       '{} --with-replaced-env-vars --rel-home {}'.format(self.COMPARISON_TARGET_FILE_NAME,
+                                                                          self.COMPARISON_SOURCE_FILE_NAME))
+        )
+
+    def test_pass__when__contents_equals__rel_cwd(self):
+        act_result_producer = ActResultProducerForContentsWithAllEnvVars(Path(self.COMPARISON_TARGET_FILE_NAME))
+        self._check(
+            Flow(sut.Parser(),
+                 eds_contents_before_main=FilesInActDir(
+                     DirContents([File(self.COMPARISON_SOURCE_FILE_NAME,
+                                       act_result_producer.expected_contents_after_replacement)])),
+                 act_result_producer=act_result_producer),
+            new_source('instruction-name',
+                       '{} --with-replaced-env-vars --rel-cwd {}'.format(self.COMPARISON_TARGET_FILE_NAME,
+                                                                         self.COMPARISON_SOURCE_FILE_NAME))
+        )
+
+    def test_fail__when__contents_not_equals__rel_cwd(self):
+        act_result_producer = ActResultProducerForContentsWithAllEnvVars(Path(self.COMPARISON_TARGET_FILE_NAME))
+        self._check(
+            Flow(sut.Parser(),
+                 eds_contents_before_main=FilesInActDir(
+                     DirContents([File(self.COMPARISON_SOURCE_FILE_NAME,
+                                       act_result_producer.unexpected_contents_after_replacement)])),
+                 act_result_producer=act_result_producer,
+                 expected_main_result=pfh_check.is_fail()),
+            new_source('instruction-name',
+                       '{} --with-replaced-env-vars --rel-cwd {}'.format(self.COMPARISON_TARGET_FILE_NAME,
+                                                                         self.COMPARISON_SOURCE_FILE_NAME))
+        )
+
+    def test_pass__when__contents_equals_but_src_does_not_reside_inside_act_dir__rel_home(self):
+        target_path = Path('..') / self.COMPARISON_TARGET_FILE_NAME
+        act_result_producer = ActResultProducerForContentsWithAllEnvVars(target_path)
+        self._check(
+            Flow(sut.Parser(),
+                 home_dir_contents=DirContents([
+                     File(self.COMPARISON_SOURCE_FILE_NAME,
+                          act_result_producer.expected_contents_after_replacement)]),
+                 act_result_producer=act_result_producer),
+            new_source('instruction-name',
+                       '{} --with-replaced-env-vars --rel-home {}'.format(str(target_path),
+                                                                          self.COMPARISON_SOURCE_FILE_NAME))
+        )
+
+
 def suite():
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestParse))
@@ -242,6 +339,7 @@ def suite():
     ret_val.addTest(unittest.makeSuite(TestFileContentsNonEmptyValidSyntax))
     ret_val.addTest(unittest.makeSuite(TestFileContentsFileRelHome))
     ret_val.addTest(unittest.makeSuite(TestFileContentsFileRelCwd))
+    ret_val.addTest(unittest.makeSuite(TestReplacedEnvVars))
     return ret_val
 
 
