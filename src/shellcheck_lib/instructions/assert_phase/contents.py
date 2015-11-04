@@ -5,7 +5,9 @@ import shlex
 from shellcheck_lib.default.execution_mode.test_case.instruction_setup import Description, InvokationVariant
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionInvalidArgumentException, SingleInstructionParserSource
-from shellcheck_lib.instructions.assert_phase.utils.contents_utils import TargetTransformer
+from shellcheck_lib.execution import environment_variables
+from shellcheck_lib.instructions.assert_phase.utils.contents_utils import TargetTransformer, EMPTY_ARGUMENT, \
+    SOURCE_REL_HOME_OPTION, SOURCE_REL_CWD_OPTION, WITH_REPLACED_ENV_VARS_OPTION
 from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
@@ -13,19 +15,26 @@ from .utils import contents_utils
 
 DESCRIPTION = Description(
     'Test the contents of a file.',
-    '',
+    """
+    {} replaces all occurrences of any of the shellcheck environment variables to the name of the variable.
+    (Variable values are replaced with variable names.)
+    These environment variables are:
+
+    {}.
+    """.format(WITH_REPLACED_ENV_VARS_OPTION,
+                   ', '.join(environment_variables.ALL_ENV_VARS)),
     [
         InvokationVariant(
-            'FILENAME empty',
+            'FILENAME {}'.format(EMPTY_ARGUMENT),
             'File exists, is a regular file, and is empty'),
         InvokationVariant(
-            'FILENAME ! empty',
+            'FILENAME ! {}'.format(EMPTY_ARGUMENT),
             'File exists, is a regular file, and is not empty'),
         InvokationVariant(
-            'FILENAME --rel-home FILE',
+            'FILENAME {} FILE'.format(SOURCE_REL_HOME_OPTION),
             'Compares contents of FILENAME to contents of FILE (which is a path relative home)'),
         InvokationVariant(
-            'FILENAME --rel-cwd FILE',
+            'FILENAME {} FILE'.format(SOURCE_REL_CWD_OPTION),
             'Compares contents of FILENAME to contents of FILE (which is a path relative current working directory)'),
     ])
 

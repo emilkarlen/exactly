@@ -6,7 +6,7 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
     SingleInstructionInvalidArgumentException, SingleInstructionParserSource
 from shellcheck_lib.execution import environment_variables
 from shellcheck_lib.instructions.assert_phase.utils.contents_utils import TargetTransformer, SOURCE_REL_HOME_OPTION, \
-    WITH_REPLACED_ENV_VARS_OPTION, SOURCE_REL_CWD_OPTION
+    WITH_REPLACED_ENV_VARS_OPTION, SOURCE_REL_CWD_OPTION, EMPTY_ARGUMENT
 from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
@@ -15,7 +15,7 @@ from .utils import contents_utils
 
 def description(file: str) -> Description:
     return Description(
-        'Test the contents of %s' % file,
+        'Test the contents of {}'.format(file),
         """
         {} replaces all occurrences of any of the shellcheck environment variables to the name of the variable.
         (Variable values are replaced with variable names.)
@@ -26,17 +26,17 @@ def description(file: str) -> Description:
                    ', '.join(environment_variables.ALL_ENV_VARS)),
         [
             InvokationVariant(
-                'empty',
+                '{}'.format(EMPTY_ARGUMENT),
                 '%s is empty' % file),
             InvokationVariant(
-                '! empty',
+                '! {}'.format(EMPTY_ARGUMENT),
                 '%s is not empty' % file),
             InvokationVariant(
-                '[{}] {} FILE'.format(WITH_REPLACED_ENV_VARS_OPTION, SOURCE_REL_HOME_OPTION),
+                '[{}] {} FILENAME'.format(WITH_REPLACED_ENV_VARS_OPTION, SOURCE_REL_HOME_OPTION),
                 """Expects the contents of %s to equal the contents of FILE
                 (which is a path relative home)""" % file),
             InvokationVariant(
-                '[{}] {} FILE'.format(WITH_REPLACED_ENV_VARS_OPTION, SOURCE_REL_CWD_OPTION),
+                '[{}] {} FILENAME'.format(WITH_REPLACED_ENV_VARS_OPTION, SOURCE_REL_CWD_OPTION),
                 """Expects the contents of %s to equal the contents of FILE
                 (which is a path relative current working directory)""" % file),
         ])
