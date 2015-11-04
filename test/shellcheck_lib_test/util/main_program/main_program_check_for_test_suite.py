@@ -3,7 +3,7 @@ import unittest
 
 from shellcheck_lib_test.util.file_structure import DirContents
 from shellcheck_lib_test.util.process import SubProcessResult
-from shellcheck_lib_test.util.file_utils import lines_content
+from shellcheck_lib.general.string import lines_content
 from shellcheck_lib_test.util.main_program import main_program_check_base
 
 

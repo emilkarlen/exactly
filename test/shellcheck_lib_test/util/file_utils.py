@@ -3,14 +3,12 @@ import os
 import pathlib
 import tempfile
 
+from shellcheck_lib.general.string import lines_content
+
 
 def write_file(path: pathlib.Path, contents: str):
     with open(str(path), 'w') as f:
         f.write(contents)
-
-
-def lines_content(lines: list) -> str:
-    return '' if not lines else os.linesep.join(lines) + os.linesep
 
 
 @contextmanager

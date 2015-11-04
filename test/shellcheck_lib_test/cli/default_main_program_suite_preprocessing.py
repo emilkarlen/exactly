@@ -4,7 +4,7 @@ from shellcheck_lib.default.execution_mode.test_suite.reporting import FAILED_TE
 from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib.test_case.test_case_processing import AccessErrorType
 from shellcheck_lib_test.util.file_structure import DirContents, File
-from shellcheck_lib_test.util.file_utils import lines_content
+from shellcheck_lib.general.string import lines_content
 from shellcheck_lib_test.util.main_program import main_program_check_for_test_suite
 
 

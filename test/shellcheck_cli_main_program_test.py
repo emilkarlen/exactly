@@ -16,7 +16,7 @@ from shellcheck_lib_test.util.cli_main_program_via_shell_utils.run import SUCCES
     contents_of_file
 from shellcheck_lib_test.util.process import SubProcessResult, \
     ExpectedSubProcessResult, SubProcessResultInfo
-from shellcheck_lib_test.util.file_utils import lines_content
+from shellcheck_lib.general.string import lines_content
 from shellcheck_lib_test.cli.cases import default_main_program_wildcard as wildcard
 from shellcheck_lib_test.cli import default_main_program_suite_preprocessing as pre_proc_tests
 from shellcheck_lib_test.util.main_program import main_program_check_for_test_case
