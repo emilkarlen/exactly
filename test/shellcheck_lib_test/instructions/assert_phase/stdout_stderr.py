@@ -380,53 +380,51 @@ class ReplacedEnvVars(TestWithParserBase):
 
     def __init__(self,
                  is_produce_to_stdout: bool,
-                 methodName):
-        super().__init__(methodName)
-        self.is_produce_to_stdout = is_produce_to_stdout
+                 method_name):
+        super().__init__(method_name)
+        self.act_result_producer = ActResultProducerForContentsWithAllEnvVars(is_produce_to_stdout)
 
     def pass__when__contents_equals__rel_home(self):
-        act_result_producer = ActResultProducerForContentsWithAllEnvVars(self.is_produce_to_stdout)
         self._check(
             Flow(self._new_parser(),
-                 home_dir_contents=DirContents([File(self.SOURCE_FILE_NAME,
-                                                     act_result_producer.expected_contents_after_replacement)]),
-                 act_result_producer=act_result_producer),
+                 home_dir_contents=DirContents([
+                     File(self.SOURCE_FILE_NAME,
+                          self.act_result_producer.expected_contents_after_replacement)]),
+                 act_result_producer=self.act_result_producer),
             new_source('instruction-name',
                        '--with-replaced-env-vars --rel-home {}'.format(self.SOURCE_FILE_NAME))
         )
 
     def fail__when__contents_not_equals__rel_home(self):
-        act_result_producer = ActResultProducerForContentsWithAllEnvVars(self.is_produce_to_stdout)
         self._check(
             Flow(self._new_parser(),
-                 home_dir_contents=DirContents([File(self.SOURCE_FILE_NAME,
-                                                     act_result_producer.unexpected_contents_after_replacement)]),
-                 act_result_producer=act_result_producer,
+                 home_dir_contents=DirContents(
+                     [File(self.SOURCE_FILE_NAME,
+                           self.act_result_producer.unexpected_contents_after_replacement)]),
+                 act_result_producer=self.act_result_producer,
                  expected_main_result=pfh_check.is_fail()),
             new_source('instruction-name',
                        '--with-replaced-env-vars --rel-home {}'.format(self.SOURCE_FILE_NAME))
         )
 
     def pass__when__contents_equals__rel_cwd(self):
-        act_result_producer = ActResultProducerForContentsWithAllEnvVars(self.is_produce_to_stdout)
         self._check(
             Flow(self._new_parser(),
                  eds_contents_before_main=FilesInActDir(
                      DirContents([File(self.SOURCE_FILE_NAME,
-                                       act_result_producer.expected_contents_after_replacement)])),
-                 act_result_producer=act_result_producer),
+                                       self.act_result_producer.expected_contents_after_replacement)])),
+                 act_result_producer=self.act_result_producer),
             new_source('instruction-name',
                        '--with-replaced-env-vars --rel-cwd {}'.format(self.SOURCE_FILE_NAME))
         )
 
     def fail__when__contents_not_equals__rel_cwd(self):
-        act_result_producer = ActResultProducerForContentsWithAllEnvVars(self.is_produce_to_stdout)
         self._check(
             Flow(self._new_parser(),
                  eds_contents_before_main=FilesInActDir(
                      DirContents([File(self.SOURCE_FILE_NAME,
-                                       act_result_producer.unexpected_contents_after_replacement)])),
-                 act_result_producer=act_result_producer,
+                                       self.act_result_producer.unexpected_contents_after_replacement)])),
+                 act_result_producer=self.act_result_producer,
                  expected_main_result=pfh_check.is_fail()),
             new_source('instruction-name',
                        '--with-replaced-env-vars --rel-cwd {}'.format(self.SOURCE_FILE_NAME))
@@ -434,8 +432,8 @@ class ReplacedEnvVars(TestWithParserBase):
 
 
 class ReplacedEnvVarsFORStdout(ReplacedEnvVars):
-    def __init__(self, methodName):
-        super().__init__(True, methodName)
+    def __init__(self, method_name):
+        super().__init__(True, method_name)
 
     def test_pass__when__contents_equals__rel_home(self):
         self.pass__when__contents_equals__rel_home()
@@ -454,8 +452,8 @@ class ReplacedEnvVarsFORStdout(ReplacedEnvVars):
 
 
 class ReplacedEnvVarsFORStderr(ReplacedEnvVars):
-    def __init__(self, methodName):
-        super().__init__(False, methodName)
+    def __init__(self, method_name):
+        super().__init__(False, method_name)
 
     def test_pass__when__contents_equals__rel_home(self):
         self.pass__when__contents_equals__rel_home()
