@@ -11,6 +11,10 @@ from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib.test_case.os_services import OsServices
 
+WITH_REPLACED_ENV_VARS_OPTION = '--with-replaced-env-vars'
+SOURCE_REL_HOME_OPTION = '--rel-home'
+SOURCE_REL_CWD_OPTION = '--rel-cwd'
+EMPTY_ARGUMENT = 'empty'
 
 class ComparisonSource:
     def __init__(self,
@@ -186,7 +190,7 @@ class CheckerForEmptiness(Checker):
         return pfh.new_pfh_pass()
 
 
-class ContentCheckerInstruction(AssertPhaseInstruction):
+class ContentCheckerInstructionBase(AssertPhaseInstruction):
     def __init__(self,
                  comparison_source: ComparisonSource,
                  comparison_target: ComparisonTarget):
@@ -204,8 +208,8 @@ class ContentCheckerInstruction(AssertPhaseInstruction):
     def main(self,
              environment: i.GlobalEnvironmentForPostEdsPhase,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
-        comparison_file_path = self._comparison_source.file_path(environment)
-        error_message = check(comparison_file_path)
+        comparison_source_file_path = self._comparison_source.file_path(environment)
+        error_message = check(comparison_source_file_path)
         if error_message:
             return pfh.new_pfh_fail(error_message)
 
@@ -215,11 +219,59 @@ class ContentCheckerInstruction(AssertPhaseInstruction):
             if error_message:
                 return pfh.new_pfh_fail(error_message)
 
-        target_file_name = str(comparison_target_path)
-        comparison_file_name = str(comparison_file_path)
-        if not filecmp.cmp(target_file_name, comparison_file_name, shallow=False):
-            return pfh.new_pfh_fail('Unexpected content in file: ' + target_file_name)
+        display_target_file_name = str(comparison_target_path)
+        comparison_source_file_name = str(comparison_source_file_path)
+        comparison_target_file_path = self._get_comparison_target_file_path(comparison_target_path,
+                                                                            environment,
+                                                                            os_services)
+        comparison_target_file_name = str(comparison_target_file_path)
+        if not filecmp.cmp(comparison_target_file_name, comparison_source_file_name, shallow=False):
+            return pfh.new_pfh_fail('Unexpected content in file: ' + display_target_file_name)
         return pfh.new_pfh_pass()
+
+    def _get_comparison_target_file_path(self,
+                                         target_file_path: pathlib.Path,
+                                         environment: i.GlobalEnvironmentForPostEdsPhase,
+                                         os_services: OsServices) -> str:
+        raise NotImplementedError()
+
+
+class ContentCheckerInstruction(ContentCheckerInstructionBase):
+    def __init__(self,
+                 comparison_source: ComparisonSource,
+                 comparison_target: ComparisonTarget):
+        super().__init__(comparison_source, comparison_target)
+
+    def _get_comparison_target_file_path(self,
+                                         target_file_path: pathlib.Path,
+                                         environment: i.GlobalEnvironmentForPostEdsPhase,
+                                         os_services: OsServices) -> pathlib.Path:
+        return target_file_path
+
+
+class TargetTransformer:
+    def replace_env_vars(self,
+                         environment: i.GlobalEnvironmentForPostEdsPhase,
+                         os_services: OsServices,
+                         target_file_path: pathlib.Path) -> pathlib.Path:
+        raise NotImplementedError()
+
+
+class ContentCheckerWithTransformationInstruction(ContentCheckerInstructionBase):
+    def __init__(self,
+                 comparison_source: ComparisonSource,
+                 comparison_target: ComparisonTarget,
+                 target_transformer: TargetTransformer):
+        super().__init__(comparison_source, comparison_target)
+        self.target_transformer = target_transformer
+
+    def _get_comparison_target_file_path(self,
+                                         target_file_path: pathlib.Path,
+                                         environment: i.GlobalEnvironmentForPostEdsPhase,
+                                         os_services: OsServices) -> pathlib.Path:
+        return self.target_transformer.replace_env_vars(environment,
+                                                        os_services,
+                                                        target_file_path)
 
 
 class EmptinessCheckerInstruction(instruction_utils.InstructionWithoutValidationBase):
@@ -248,7 +300,9 @@ class EmptinessCheckerInstruction(instruction_utils.InstructionWithoutValidation
         return pfh.new_pfh_pass()
 
 
-def try_parse_content(comparison_target: ComparisonTarget, arguments: list) -> AssertPhaseInstruction:
+def try_parse_content(comparison_target: ComparisonTarget,
+                      target_transformer: TargetTransformer,
+                      arguments: list) -> AssertPhaseInstruction:
     def _parse_empty(target: ComparisonTarget,
                      extra_arguments: list) -> AssertPhaseInstruction:
         if extra_arguments:
@@ -263,20 +317,32 @@ def try_parse_content(comparison_target: ComparisonTarget, arguments: list) -> A
 
     def _parse_contents(target: ComparisonTarget,
                         extra_arguments: list) -> AssertPhaseInstruction:
-        if len(extra_arguments) != 2:
-            msg_header = 'file/contents: Invalid number of arguments (expecting two): '
-            raise SingleInstructionInvalidArgumentException(msg_header + str(extra_arguments))
-        if extra_arguments[0] == '--rel-home':
-            comparison_source = ComparisonSourceForFileRelHome(extra_arguments[1])
-        elif extra_arguments[0] == '--rel-cwd':
-            comparison_source = ComparisonSourceForFileRelCwd(extra_arguments[1])
+        with_replaced_env_vars = False
+        if extra_arguments and extra_arguments[0] == WITH_REPLACED_ENV_VARS_OPTION:
+            with_replaced_env_vars = True
+            del extra_arguments[0]
+        comparison_source = _comparison_source(extra_arguments)
+        if with_replaced_env_vars:
+            return ContentCheckerWithTransformationInstruction(comparison_source,
+                                                               target,
+                                                               target_transformer)
         else:
-            raise SingleInstructionInvalidArgumentException('Invalid argument: ' + extra_arguments[0])
-        return ContentCheckerInstruction(comparison_source, target)
+            return ContentCheckerInstruction(comparison_source, target)
 
-    if arguments[0] == 'empty':
+    def _comparison_source(last_arguments: list) -> ComparisonSource:
+        if len(last_arguments) != 2:
+            msg_header = 'file/contents: Invalid number of arguments (expecting two): '
+            raise SingleInstructionInvalidArgumentException(msg_header + str(last_arguments))
+        if last_arguments[0] == SOURCE_REL_HOME_OPTION:
+            return ComparisonSourceForFileRelHome(last_arguments[1])
+        elif last_arguments[0] == SOURCE_REL_CWD_OPTION:
+            return ComparisonSourceForFileRelCwd(last_arguments[1])
+        else:
+            raise SingleInstructionInvalidArgumentException('Invalid argument: ' + last_arguments[0])
+
+    if arguments[0] == EMPTY_ARGUMENT:
         return _parse_empty(comparison_target, arguments[1:])
-    elif arguments[:2] == ['!', 'empty']:
+    elif arguments[:2] == ['!', EMPTY_ARGUMENT]:
         return _parse_non_empty(comparison_target, arguments[2:])
     else:
         return _parse_contents(comparison_target, arguments)
