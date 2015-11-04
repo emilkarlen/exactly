@@ -71,11 +71,12 @@ def execute(put: unittest.TestCase,
                          'The instruction must be an instance of ' + str(AssertPhaseInstruction))
     assert isinstance(instruction, AssertPhaseInstruction)
     with utils.home_and_eds_and_test_as_curr_dir() as home_and_eds:
+        setup.home_dir_contents.write_to(home_and_eds.home_dir_path)
+        setup.eds_contents_before_main.apply(home_and_eds.eds)
+
         act_result = setup.act_result_producer.apply(ActEnvironment(home_and_eds))
         home_and_eds.write_act_result(act_result)
 
-        setup.home_dir_contents.write_to(home_and_eds.home_dir_path)
-        setup.eds_contents_before_main.apply(home_and_eds.eds)
         environment = i.GlobalEnvironmentForPostEdsPhase(home_and_eds.home_dir_path,
                                                          home_and_eds.eds)
         validate_result = _execute_validate(environment, instruction, put, setup)
