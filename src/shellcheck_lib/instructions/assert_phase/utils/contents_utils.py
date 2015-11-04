@@ -16,6 +16,7 @@ SOURCE_REL_HOME_OPTION = '--rel-home'
 SOURCE_REL_CWD_OPTION = '--rel-cwd'
 EMPTY_ARGUMENT = 'empty'
 
+
 class ComparisonSource:
     def __init__(self,
                  check_during_validation: bool,
@@ -306,13 +307,17 @@ def try_parse_content(comparison_target: ComparisonTarget,
     def _parse_empty(target: ComparisonTarget,
                      extra_arguments: list) -> AssertPhaseInstruction:
         if extra_arguments:
-            raise SingleInstructionInvalidArgumentException('file/empty: Extra arguments: ' + str(extra_arguments))
+            raise SingleInstructionInvalidArgumentException(
+                'file/{}: Extra arguments: {}'.format(EMPTY_ARGUMENT,
+                                                      str(extra_arguments)))
         return EmptinessCheckerInstruction(True, target)
 
     def _parse_non_empty(target: ComparisonTarget,
                          extra_arguments: list) -> AssertPhaseInstruction:
         if extra_arguments:
-            raise SingleInstructionInvalidArgumentException('file/!empty: Extra arguments: ' + str(extra_arguments))
+            raise SingleInstructionInvalidArgumentException(
+                'file/!{}: Extra arguments: {}'.format(EMPTY_ARGUMENT,
+                                                       str(extra_arguments)))
         return EmptinessCheckerInstruction(False, target)
 
     def _parse_contents(target: ComparisonTarget,
