@@ -7,7 +7,6 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
 from shellcheck_lib.execution import environment_variables
 from shellcheck_lib.instructions.assert_phase.utils.contents_utils import TargetTransformer, SOURCE_REL_HOME_OPTION, \
     WITH_REPLACED_ENV_VARS_OPTION, SOURCE_REL_CWD_OPTION, EMPTY_ARGUMENT
-from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
 from .utils import contents_utils
@@ -65,35 +64,16 @@ class ParserForContentsForTarget(SingleInstructionParser):
 class ParserForContentsForStdout(ParserForContentsForTarget):
     def __init__(self):
         super().__init__(contents_utils.StdoutComparisonTarget(),
-                         TargetTransformerForStdOut())
+                         _StdXTargetTransformerBase())
 
 
 class ParserForContentsForStderr(ParserForContentsForTarget):
     def __init__(self):
         super().__init__(contents_utils.StderrComparisonTarget(),
-                         TargetTransformerForStdErr())
+                         _StdXTargetTransformerBase())
 
 
-class StdXTargetTransformerBase(TargetTransformer):
-    def replace_env_vars(self,
-                         environment: GlobalEnvironmentForPostEdsPhase,
-                         os_services: OsServices,
-                         target_file_path: pathlib.Path) -> pathlib.Path:
-        src_file_path = self._get_src_file_path(environment)
-        dst_file_path = self._dst_file_path(environment, src_file_path)
-        if dst_file_path.exists():
-            return dst_file_path
-        env_vars_to_replace = environment_variables.exists_at_setup_main(
-            environment.home_directory,
-            environment.eds)
-        self._replace_env_vars_and_write_result_to_dst(env_vars_to_replace,
-                                                       src_file_path,
-                                                       dst_file_path)
-        return dst_file_path
-
-    def _get_src_file_path(self, environment: GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
-        raise NotImplementedError()
-
+class _StdXTargetTransformerBase(TargetTransformer):
     def _dst_file_path(self,
                        environment: GlobalEnvironmentForPostEdsPhase,
                        src_file_path: pathlib.Path) -> pathlib.Path:
@@ -113,13 +93,3 @@ class StdXTargetTransformerBase(TargetTransformer):
             contents = contents.replace(var_value, var_name)
         with open(str(dst_file_path), 'w') as dst_file:
             dst_file.write(contents)
-
-
-class TargetTransformerForStdOut(StdXTargetTransformerBase):
-    def _get_src_file_path(self, environment: GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
-        return environment.eds.result.stdout_file
-
-
-class TargetTransformerForStdErr(StdXTargetTransformerBase):
-    def _get_src_file_path(self, environment: GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
-        return environment.eds.result.stderr_file

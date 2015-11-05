@@ -51,7 +51,7 @@ class Parser(SingleInstructionParser):
         file_argument_path = pathlib.Path(file_argument)
         comparison_target = contents_utils.ActComparisonTarget(file_argument)
         content_instruction = contents_utils.try_parse_content(comparison_target,
-                                                               _TargetTransformer(file_argument_path),
+                                                               _TargetTransformer(),
                                                                arguments[1:])
         if content_instruction is not None:
             return content_instruction
@@ -59,14 +59,6 @@ class Parser(SingleInstructionParser):
 
 
 class _TargetTransformer(TargetTransformer):
-    def __init__(self,
-                 src_file_path: pathlib.Path):
-        self.src_file_path = src_file_path
-
-    def _get_src_file_path(self,
-                           environment: GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
-        return self.src_file_path
-
     def _dst_file_path(self,
                        environment: GlobalEnvironmentForPostEdsPhase,
                        src_file_path: pathlib.Path) -> pathlib.Path:

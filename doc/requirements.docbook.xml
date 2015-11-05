@@ -36,7 +36,7 @@
       </listitem>
 
       <listitem>
-        <para>Phases</para>
+        <para>Phases and phase steps</para>
 
         <para>Wrapped in <tag class="element">systemitem</tag>
         elements.</para>
@@ -272,38 +272,32 @@
 
             <variablelist>
               <varlistentry>
-                <term><filename class="directory">std</filename></term>
+                <term>
+                  <filename>exitcode</filename>
+                </term>
 
                 <listitem>
-                  <para>Contains output from stdout and stderr produced by
-                  instructions of the <systemitem>act</systemitem>
-                  phase.</para>
-
-                  <variablelist>
-                    <varlistentry>
-                      <term><filename>out</filename></term>
-
-                      <listitem>
-                        <para>Output from stdout.</para>
-                      </listitem>
-                    </varlistentry>
-
-                    <varlistentry>
-                      <term><filename>err</filename></term>
-
-                      <listitem>
-                        <para>Output from stderr.</para>
-                      </listitem>
-                    </varlistentry>
-                  </variablelist>
+                  <para>Contains the exit code.</para>
                 </listitem>
               </varlistentry>
 
               <varlistentry>
-                <term><filename>exitcode</filename></term>
+                <term>
+                  <filename>stdout</filename>
+                </term>
 
                 <listitem>
-                  <para>Contains the exit code.</para>
+                  <para>Output from stdout.</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>
+                  <filename>stderr</filename>
+                </term>
+
+                <listitem>
+                  <para>Output from stderr.</para>
                 </listitem>
               </varlistentry>
             </variablelist>
@@ -393,11 +387,12 @@
             </term>
 
             <listitem>
-              <para>Absolute name of the <filename
-                      class="directory">act
-              </filename>
-                directory in the
-              <glossterm>execution directory structure</glossterm>.</para>
+              <para>Absolute name of the
+                <filename class="directory">act
+                </filename>
+                directory in the<glossterm>execution directory
+                  structure</glossterm>.
+              </para>
 
               <para>This is the Current Working Directory at the start of each
               phase.</para>
@@ -415,6 +410,32 @@
                 </filename>
                 directory in the<glossterm>execution directory
                   structure</glossterm>.
+              </para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>
+              <envar>SHELLCHECK_RESULT_DIR</envar>
+            </term>
+
+            <listitem>
+              <para>Absolute name of the<filename class="directory">result
+              </filename>directory in the<glossterm>execution directory
+                structure</glossterm>.
+              </para>
+
+              <para>This variable exists only in the
+                <systemitem>assert</systemitem>
+                and
+                <systemitem>cleanup</systemitem>
+                phases.
+              </para>
+
+              <para>In the
+                <systemitem>assert</systemitem>
+                phase, it only
+                exists in the<systemitem>main</systemitem>.
               </para>
             </listitem>
           </varlistentry>

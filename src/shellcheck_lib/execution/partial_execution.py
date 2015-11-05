@@ -141,6 +141,7 @@ class PartialExecutor:
             self.__partial_result = res
             self.__run_cleanup(os_services)
             return
+        self.__set_assert_environment_variables()
         self.__partial_result = self.__run_assert_execute(os_services)
         res = self.__run_cleanup(os_services)
         if res.is_failure:
@@ -318,6 +319,9 @@ class PartialExecutor:
 
     def __set_post_eds_environment_variables(self):
         os.environ.update(environment_variables.set_at_setup_main(self.execution_directory_structure))
+
+    def __set_assert_environment_variables(self):
+        os.environ.update(environment_variables.set_at_assert(self.execution_directory_structure))
 
     def __run_internal_instructions_phase_step(self,
                                                phase: phases.Phase,

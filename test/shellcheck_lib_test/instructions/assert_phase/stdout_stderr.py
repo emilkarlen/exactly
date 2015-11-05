@@ -1,13 +1,12 @@
 import unittest
 
-from shellcheck_lib.execution import environment_variables
 from shellcheck_lib.instructions.assert_phase import stdout_stderr
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException, SingleInstructionParser
 from shellcheck_lib_test.instructions.assert_phase.test_resources.contents_resources import \
-    ActResultProducerForContentsWithAllEnvVarsBase
-from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_check import Flow, ActResultProducer, \
-    ActEnvironment
+    ActResultProducerForContentsWithAllReplacedEnvVars, \
+    OutputContentsToStdout, WriteFileToHomeDir, ActResultContentsSetup, OutputContentsToStderr, WriteFileToCurrentDir
+from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_check import Flow, ActResultProducer
 from shellcheck_lib_test.instructions.assert_phase.test_resources import instruction_check
 from shellcheck_lib_test.instructions.test_resources import pfh_check
 from shellcheck_lib_test.instructions.test_resources import svh_check
@@ -331,89 +330,69 @@ class TestFileContentsFileRelCwdFORStderr(FileContentsFileRelCwd):
                                          'expected')
 
 
-class ActResultProducerForContentsWithAllReplacedEnvVars(ActResultProducerForContentsWithAllEnvVarsBase):
-    def __init__(self, is_produce_to_stdout: bool):
-        super().__init__()
-        self.is_produce_to_stdout = is_produce_to_stdout
-
-    def apply(self, act_environment: ActEnvironment) -> ActResult:
-        home_and_eds = act_environment.home_and_eds
-        env_vars_dict = environment_variables.replaced(home_and_eds.home_dir_path,
-                                                       home_and_eds.eds)
-        values_in_determined_order = list(map(env_vars_dict.get, self.sorted_env_var_keys))
-        contents = self._content_from_values(values_in_determined_order)
-        return self._result_with(contents)
-
-    def _result_with(self, contents: str) -> ActResult:
-        stdout_contents = ''
-        stderr_contents = ''
-        if self.is_produce_to_stdout:
-            stdout_contents = contents
-        else:
-            stderr_contents = contents
-        return ActResult(stdout_contents=stdout_contents,
-                         stderr_contents=stderr_contents)
-
-
 class ReplacedEnvVars(TestWithParserBase):
     SOURCE_FILE_NAME = 'with-replaced-env-vars.txt'
 
     def __init__(self,
-                 is_produce_to_stdout: bool,
+                 act_result_contents_setup: ActResultContentsSetup,
                  method_name):
         super().__init__(method_name)
-        self.act_result_producer = ActResultProducerForContentsWithAllReplacedEnvVars(is_produce_to_stdout)
+        self._act_result_contents_setup = act_result_contents_setup
 
     def pass__when__contents_equals__rel_home(self):
+        act_result_producer = ActResultProducerForContentsWithAllReplacedEnvVars(
+            self._act_result_contents_setup,
+            source_file_writer=WriteFileToHomeDir(self.SOURCE_FILE_NAME),
+            source_should_contain_expected_value=True)
         self._check(
             Flow(self._new_parser(),
-                 home_dir_contents=DirContents([
-                     File(self.SOURCE_FILE_NAME,
-                          self.act_result_producer.expected_contents_after_replacement)]),
-                 act_result_producer=self.act_result_producer),
+                 act_result_producer=act_result_producer),
             new_source('instruction-name',
                        '--with-replaced-env-vars --rel-home {}'.format(self.SOURCE_FILE_NAME))
         )
 
     def fail__when__contents_not_equals__rel_home(self):
+        act_result_producer = ActResultProducerForContentsWithAllReplacedEnvVars(
+            self._act_result_contents_setup,
+            source_file_writer=WriteFileToHomeDir(self.SOURCE_FILE_NAME),
+            source_should_contain_expected_value=False)
         self._check(
             Flow(self._new_parser(),
-                 home_dir_contents=DirContents(
-                     [File(self.SOURCE_FILE_NAME,
-                           self.act_result_producer.unexpected_contents_after_replacement)]),
-                 act_result_producer=self.act_result_producer,
+                 act_result_producer=act_result_producer,
                  expected_main_result=pfh_check.is_fail()),
             new_source('instruction-name',
                        '--with-replaced-env-vars --rel-home {}'.format(self.SOURCE_FILE_NAME))
         )
 
     def pass__when__contents_equals__rel_cwd(self):
+        act_result_producer = ActResultProducerForContentsWithAllReplacedEnvVars(
+            self._act_result_contents_setup,
+            source_file_writer=WriteFileToCurrentDir(self.SOURCE_FILE_NAME),
+            source_should_contain_expected_value=True)
         self._check(
             Flow(self._new_parser(),
-                 eds_contents_before_main=FilesInActDir(
-                     DirContents([File(self.SOURCE_FILE_NAME,
-                                       self.act_result_producer.expected_contents_after_replacement)])),
-                 act_result_producer=self.act_result_producer),
+                 act_result_producer=act_result_producer),
             new_source('instruction-name',
                        '--with-replaced-env-vars --rel-cwd {}'.format(self.SOURCE_FILE_NAME))
         )
 
     def fail__when__contents_not_equals__rel_cwd(self):
+        act_result_producer = ActResultProducerForContentsWithAllReplacedEnvVars(
+            self._act_result_contents_setup,
+            source_file_writer=WriteFileToCurrentDir(self.SOURCE_FILE_NAME),
+            source_should_contain_expected_value=False)
         self._check(
             Flow(self._new_parser(),
-                 eds_contents_before_main=FilesInActDir(
-                     DirContents([File(self.SOURCE_FILE_NAME,
-                                       self.act_result_producer.unexpected_contents_after_replacement)])),
-                 act_result_producer=self.act_result_producer,
+                 act_result_producer=act_result_producer,
                  expected_main_result=pfh_check.is_fail()),
             new_source('instruction-name',
                        '--with-replaced-env-vars --rel-cwd {}'.format(self.SOURCE_FILE_NAME))
         )
 
 
-class ReplacedEnvVarsFORStdout(ReplacedEnvVars):
+class TestReplacedEnvVarsFORStdout(ReplacedEnvVars):
     def __init__(self, method_name):
-        super().__init__(True, method_name)
+        super().__init__(OutputContentsToStdout(), method_name)
 
     def test_pass__when__contents_equals__rel_home(self):
         self.pass__when__contents_equals__rel_home()
@@ -431,9 +410,9 @@ class ReplacedEnvVarsFORStdout(ReplacedEnvVars):
         return stdout_stderr.ParserForContentsForStdout()
 
 
-class ReplacedEnvVarsFORStderr(ReplacedEnvVars):
+class TestReplacedEnvVarsFORStderr(ReplacedEnvVars):
     def __init__(self, method_name):
-        super().__init__(False, method_name)
+        super().__init__(OutputContentsToStderr(), method_name)
 
     def test_pass__when__contents_equals__rel_home(self):
         self.pass__when__contents_equals__rel_home()
@@ -472,8 +451,8 @@ def suite():
     ret_val.addTest(unittest.makeSuite(TestFileContentsFileRelCwdFORStdout))
     ret_val.addTest(unittest.makeSuite(TestFileContentsFileRelCwdFORStderr))
 
-    ret_val.addTest(unittest.makeSuite(ReplacedEnvVarsFORStdout))
-    ret_val.addTest(unittest.makeSuite(ReplacedEnvVarsFORStderr))
+    ret_val.addTest(unittest.makeSuite(TestReplacedEnvVarsFORStdout))
+    ret_val.addTest(unittest.makeSuite(TestReplacedEnvVarsFORStderr))
 
     return ret_val
 
