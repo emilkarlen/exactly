@@ -259,7 +259,7 @@ class TargetTransformer:
                          environment: GlobalEnvironmentForPostEdsPhase,
                          os_services: OsServices,
                          target_file_path: pathlib.Path) -> pathlib.Path:
-        src_file_path = self._get_src_file_path(environment)
+        src_file_path = target_file_path
         dst_file_path = self._dst_file_path(environment, src_file_path)
         if dst_file_path.exists():
             return dst_file_path
@@ -269,9 +269,6 @@ class TargetTransformer:
                                                        src_file_path,
                                                        dst_file_path)
         return dst_file_path
-
-    def _get_src_file_path(self, environment: GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
-        raise NotImplementedError()
 
     def _dst_file_path(self,
                        environment: GlobalEnvironmentForPostEdsPhase,

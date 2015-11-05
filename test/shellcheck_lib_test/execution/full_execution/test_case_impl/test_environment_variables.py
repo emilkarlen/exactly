@@ -55,8 +55,8 @@ class Test(FullExecutionTestCaseBase):
 
     def _test_case(self) -> test_case_doc.TestCase:
         setup = instr_setup.TestCaseSetupWithRecorder(
-            validation_action__without_eds=_action__without_eds,
             anonymous_phase_action=_set_home_dir_to_parent__anonymous_phase,
+            validation_action__without_eds=_action__without_eds,
             validation_action__with_eds=_action__with_eds,
             execution_action__with_eds=_action__with_eds,
             execution__generate_script=script_for_print_environment_variables_to_file,
@@ -78,13 +78,19 @@ class Test(FullExecutionTestCaseBase):
 
     def _assertions(self):
         self.__assert_test_sanity()
-        for_anonymous_phase = dict()
+        for_anonymous_phase = {}
         home_dir_after_anonymous = str(self.initial_home_dir_path.parent)
         for_pre_eds = {environment_variables.ENV_VAR_HOME: home_dir_after_anonymous}
         for_post_eds = {
             environment_variables.ENV_VAR_HOME: home_dir_after_anonymous,
             environment_variables.ENV_VAR_ACT: str(self.eds.act_dir),
             environment_variables.ENV_VAR_TMP: str(self.eds.tmp_dir),
+        }
+        set_at_assert = {
+            environment_variables.ENV_VAR_HOME: home_dir_after_anonymous,
+            environment_variables.ENV_VAR_ACT: str(self.eds.act_dir),
+            environment_variables.ENV_VAR_TMP: str(self.eds.tmp_dir),
+            environment_variables.ENV_VAR_RESULT_DIR: str(self.eds.result.root_dir),
         }
         expected_recorded_internally = {
             phase_step.ANONYMOUS_EXECUTE: for_anonymous_phase,
@@ -94,8 +100,8 @@ class Test(FullExecutionTestCaseBase):
             phase_step.ACT_VALIDATE: for_post_eds,
             phase_step.ACT_SCRIPT_GENERATION: for_post_eds,
             phase_step.ASSERT_VALIDATE: for_post_eds,
-            phase_step.ASSERT_EXECUTE: for_post_eds,
-            phase_step.CLEANUP_EXECUTE: for_post_eds,
+            phase_step.ASSERT_EXECUTE: set_at_assert,
+            phase_step.CLEANUP_EXECUTE: set_at_assert,
         }
         expected_act_output = ''.join([
             '%s=%s%s' % (
@@ -117,11 +123,13 @@ class Test(FullExecutionTestCaseBase):
                               actual: dict,
                               key_entity: str):
         for e in expected.keys():
-            self.utc.assertTrue(e in actual,
-                                'Missing key for %s: %s' % (key_entity, str(e)))
+            self.utc.assertIn(e,
+                              actual,
+                              'Missing key for %s: %s' % (key_entity, str(e)))
         for a in actual.keys():
-            self.utc.assertTrue(a in expected,
-                                'Unexpected key for %s: %s' % (key_entity, str(a)))
+            self.utc.assertIn(a,
+                              expected,
+                              'Unexpected key for %s: %s' % (key_entity, str(a)))
 
     def _assert_expected_values(self,
                                 expected: dict,
