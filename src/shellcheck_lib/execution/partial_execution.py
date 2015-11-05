@@ -301,8 +301,8 @@ class PartialExecutor:
         """
         Pre-condition: write has been executed.
         """
-        with open(str(self.execution_directory_structure.result.std.stdout_file), 'w') as f_stdout:
-            with open(str(self.execution_directory_structure.result.std.stderr_file), 'w') as f_stderr:
+        with open(str(self.execution_directory_structure.result.stdout_file), 'w') as f_stdout:
+            with open(str(self.execution_directory_structure.result.stderr_file), 'w') as f_stderr:
                 exitcode = self.__script_handling.executor.execute(
                     self.__source_setup,
                     self.execution_directory_structure.act_dir,

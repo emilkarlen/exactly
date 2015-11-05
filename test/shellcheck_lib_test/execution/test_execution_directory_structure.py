@@ -24,10 +24,8 @@ class TestConstructExecutionDirectoryStructure(unittest.TestCase):
             self._assert_is_existing_empty_dir_with_name(root / 'act',
                                                          eds.act_dir)
 
-            self._assert_is_existing_dir_with_given_number_of_files_in_it(eds.result.root_dir,
-                                                                          1)
-            self._assert_is_existing_empty_dir_with_name(root / 'result' / 'std',
-                                                         eds.result.std.root_dir)
+            self._assert_is_existing_empty_dir_with_name(root / 'result',
+                                                         eds.result.root_dir)
 
             self._assert_is_existing_empty_dir_with_name(root / 'log',
                                                          eds.log_dir)
@@ -66,13 +64,10 @@ def is_execution_directory_structure_after_execution(fc: FileChecker,
     fc.assert_exists_dir(eds.act_dir)
 
     fc.assert_exists_dir_with_given_number_of_files_in_it(eds.result.root_dir,
-                                                          2)
+                                                          3)
     fc.assert_exists_plain_file(eds.result.exitcode_file)
-
-    fc.assert_exists_dir_with_given_number_of_files_in_it(eds.result.std.root_dir,
-                                                          2)
-    fc.assert_exists_plain_file(eds.result.std.stdout_file)
-    fc.assert_exists_plain_file(eds.result.std.stderr_file)
+    fc.assert_exists_plain_file(eds.result.stdout_file)
+    fc.assert_exists_plain_file(eds.result.stderr_file)
 
     fc.assert_exists_dir(eds.log_dir)
 

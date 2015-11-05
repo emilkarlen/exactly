@@ -71,7 +71,7 @@ class StdoutComparisonTarget(ComparisonTarget):
         super().__init__(False)
 
     def file_path(self, global_environment: i.GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
-        return global_environment.eds.result.std.stdout_file
+        return global_environment.eds.result.stdout_file
 
 
 class StderrComparisonTarget(ComparisonTarget):
@@ -79,7 +79,7 @@ class StderrComparisonTarget(ComparisonTarget):
         super().__init__(False)
 
     def file_path(self, global_environment: i.GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
-        return global_environment.eds.result.std.stderr_file
+        return global_environment.eds.result.stderr_file
 
 
 def check(file_path: pathlib.Path) -> str:

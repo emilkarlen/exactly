@@ -36,11 +36,11 @@ def assertions(utc: unittest.TestCase,
         str(_EXIT_CODE))
     utils.assert_is_file_with_contents(
         utc,
-        actual.execution_directory_structure.result.std.stdout_file,
+        actual.execution_directory_structure.result.stdout_file,
         _TEXT_ON_STDOUT)
     utils.assert_is_file_with_contents(
         utc,
-        actual.execution_directory_structure.result.std.stderr_file,
+        actual.execution_directory_structure.result.stderr_file,
         _TEXT_ON_STDERR)
 
 
