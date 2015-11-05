@@ -73,8 +73,8 @@ class Executor:
         result = self._process(True)
         full_result = result.execution_result
 
-        copy_file(full_result.execution_directory_structure.result.std.stdout_file, self._std.out)
-        copy_file(full_result.execution_directory_structure.result.std.stderr_file, self._std.err)
+        copy_file(full_result.execution_directory_structure.result.stdout_file, self._std.out)
+        copy_file(full_result.execution_directory_structure.result.stderr_file, self._std.err)
         exit_code = act_phase_exit_code(full_result.execution_directory_structure.result.exitcode_file)
         shutil.rmtree(str(full_result.execution_directory_structure.root_dir))
         return exit_code

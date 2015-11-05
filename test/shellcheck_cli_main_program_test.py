@@ -191,7 +191,7 @@ class TestsWithPreservedExecutionDirectoryStructure(UnitTestCaseWithUtils):
 
     def _get_act_output_to_stdout(self,
                                   eds: execution_directory_structure.ExecutionDirectoryStructure) -> str:
-        return contents_of_file(eds.result.std.stdout_file)
+        return contents_of_file(eds.result.stdout_file)
 
 
 class TestsExecuteActPhase(UnitTestCaseWithUtils):

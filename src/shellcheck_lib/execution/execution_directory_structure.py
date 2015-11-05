@@ -17,13 +17,16 @@ class DirWithSubDirs:
             sub_dir.mk_dirs(this_dir)
 
 
+def empty_dir(name: str) -> DirWithSubDirs:
+    return DirWithSubDirs(name, [])
+
+
 execution_directories = [
-    DirWithSubDirs('testcase', []),
-    DirWithSubDirs('tmp', []),
-    DirWithSubDirs('act', []),
-    DirWithSubDirs('result',
-                   [DirWithSubDirs('std', [])]),
-    DirWithSubDirs('log', []),
+    empty_dir('testcase'),
+    empty_dir('tmp'),
+    empty_dir('act'),
+    empty_dir('result'),
+    empty_dir('log'),
 ]
 
 
@@ -37,11 +40,16 @@ class DirWithRoot:
         return self.__root_dir
 
 
-class Std(DirWithRoot):
+class Result(DirWithRoot):
     def __init__(self, parent_dir: Path):
-        super().__init__(parent_dir / 'std')
+        super().__init__(parent_dir / 'result')
+        self.__exitcode_file = self.root_dir / 'exitcode'
         self.__stdout_file = self.root_dir / 'stdout'
         self.__stderr_file = self.root_dir / 'stderr'
+
+    @property
+    def exitcode_file(self) -> Path:
+        return self.__exitcode_file
 
     @property
     def stdout_file(self) -> Path:
@@ -50,22 +58,6 @@ class Std(DirWithRoot):
     @property
     def stderr_file(self) -> Path:
         return self.__stderr_file
-
-
-class Result(DirWithRoot):
-    def __init__(self, parent_dir: Path):
-        super().__init__(parent_dir / 'result')
-        self.__std = Std(self.root_dir)
-        self.__exitcode_file = self.root_dir / 'exitcode'
-
-    @property
-    def std(self) -> Std:
-        return self.__std
-
-    @property
-    def exitcode_file(self) -> Path:
-        return self.__exitcode_file
-
 
 class ExecutionDirectoryStructure(DirWithRoot):
     def __init__(self, dir_name: str):

@@ -116,9 +116,9 @@ class StdXTargetTransformerBase(TargetTransformer):
 
 class TargetTransformerForStdOut(StdXTargetTransformerBase):
     def _get_src_file_path(self, environment: GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
-        return environment.eds.result.std.stdout_file
+        return environment.eds.result.stdout_file
 
 
 class TargetTransformerForStdErr(StdXTargetTransformerBase):
     def _get_src_file_path(self, environment: GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
-        return environment.eds.result.std.stderr_file
+        return environment.eds.result.stderr_file

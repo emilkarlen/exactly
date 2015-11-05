@@ -45,8 +45,8 @@ def act_phase_result(exitcode: int=0,
     with tempfile.TemporaryDirectory(prefix='shellcheck-test-') as eds_root_dir:
         eds = execution_directory_structure.construct_at(eds_root_dir)
         write_file(eds.result.exitcode_file, str(exitcode))
-        write_file(eds.result.std.stdout_file, stdout_contents)
-        write_file(eds.result.std.stderr_file, stderr_contents)
+        write_file(eds.result.stdout_file, stdout_contents)
+        write_file(eds.result.stderr_file, stderr_contents)
         try:
             os.chdir(str(eds.act_dir))
             yield i.GlobalEnvironmentForPostEdsPhase(home_dir_path,
@@ -73,8 +73,8 @@ class HomeAndEds:
     def write_act_result(self,
                          result: ActResult):
         write_file(self.eds.result.exitcode_file, str(result.exitcode))
-        write_file(self.eds.result.std.stdout_file, result.stdout_contents)
-        write_file(self.eds.result.std.stderr_file, result.stderr_contents)
+        write_file(self.eds.result.stdout_file, result.stdout_contents)
+        write_file(self.eds.result.stderr_file, result.stderr_contents)
 
 
 @contextmanager
