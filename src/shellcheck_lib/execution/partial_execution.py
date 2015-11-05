@@ -314,10 +314,10 @@ class PartialExecutor:
                 self._store_exit_code(exitcode)
 
     def __set_pre_eds_environment_variables(self):
-        os.environ.update(environment_variables.pre_eds_environment_variables(self.configuration.home_dir))
+        os.environ.update(environment_variables.set_at_setup_pre_validate(self.configuration.home_dir))
 
     def __set_post_eds_environment_variables(self):
-        os.environ.update(environment_variables.post_eds_environment_variables(self.execution_directory_structure))
+        os.environ.update(environment_variables.set_at_setup_main(self.execution_directory_structure))
 
     def __run_internal_instructions_phase_step(self,
                                                phase: phases.Phase,

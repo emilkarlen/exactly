@@ -237,15 +237,15 @@ class TestFileContentsFileRelCwd(instruction_check.TestCaseBase):
                        'target --rel-cwd comparison'))
 
 
-class ActResultProducerForContentsWithAllEnvVars(ActResultProducerForContentsWithAllEnvVarsBase):
+class ActResultProducerForContentsWithAllReplacedEnvVars(ActResultProducerForContentsWithAllEnvVarsBase):
     def __init__(self, output_file_path: Path):
         super().__init__()
         self.output_file_path = output_file_path
 
     def apply(self, act_environment: ActEnvironment) -> ActResult:
         home_and_eds = act_environment.home_and_eds
-        env_vars_dict = environment_variables.all_environment_variables(home_and_eds.home_dir_path,
-                                                                        home_and_eds.eds)
+        env_vars_dict = environment_variables.replaced(home_and_eds.home_dir_path,
+                                                       home_and_eds.eds)
         values_in_determined_order = list(map(env_vars_dict.get, self.sorted_env_var_keys))
         contents = self._content_from_values(values_in_determined_order)
         file_utils.write_new_text_file(self.output_file_path,
@@ -262,7 +262,7 @@ class TestReplacedEnvVars(instruction_check.TestCaseBase):
         super().__init__(method_name)
 
     def test_pass__when__contents_equals__rel_home(self):
-        act_result_producer = ActResultProducerForContentsWithAllEnvVars(Path(self.COMPARISON_TARGET_FILE_NAME))
+        act_result_producer = ActResultProducerForContentsWithAllReplacedEnvVars(Path(self.COMPARISON_TARGET_FILE_NAME))
         self._check(
             Flow(sut.Parser(),
                  home_dir_contents=DirContents([
@@ -275,7 +275,7 @@ class TestReplacedEnvVars(instruction_check.TestCaseBase):
         )
 
     def test_fail__when__contents_not_equals__rel_home(self):
-        act_result_producer = ActResultProducerForContentsWithAllEnvVars(Path(self.COMPARISON_TARGET_FILE_NAME))
+        act_result_producer = ActResultProducerForContentsWithAllReplacedEnvVars(Path(self.COMPARISON_TARGET_FILE_NAME))
         self._check(
             Flow(sut.Parser(),
                  home_dir_contents=DirContents(
@@ -289,7 +289,7 @@ class TestReplacedEnvVars(instruction_check.TestCaseBase):
         )
 
     def test_pass__when__contents_equals__rel_cwd(self):
-        act_result_producer = ActResultProducerForContentsWithAllEnvVars(Path(self.COMPARISON_TARGET_FILE_NAME))
+        act_result_producer = ActResultProducerForContentsWithAllReplacedEnvVars(Path(self.COMPARISON_TARGET_FILE_NAME))
         self._check(
             Flow(sut.Parser(),
                  eds_contents_before_main=FilesInActDir(
@@ -302,7 +302,7 @@ class TestReplacedEnvVars(instruction_check.TestCaseBase):
         )
 
     def test_fail__when__contents_not_equals__rel_cwd(self):
-        act_result_producer = ActResultProducerForContentsWithAllEnvVars(Path(self.COMPARISON_TARGET_FILE_NAME))
+        act_result_producer = ActResultProducerForContentsWithAllReplacedEnvVars(Path(self.COMPARISON_TARGET_FILE_NAME))
         self._check(
             Flow(sut.Parser(),
                  eds_contents_before_main=FilesInActDir(
@@ -317,7 +317,7 @@ class TestReplacedEnvVars(instruction_check.TestCaseBase):
 
     def test_pass__when__contents_equals_but_src_does_not_reside_inside_act_dir__rel_home(self):
         target_path = Path('..') / self.COMPARISON_TARGET_FILE_NAME
-        act_result_producer = ActResultProducerForContentsWithAllEnvVars(target_path)
+        act_result_producer = ActResultProducerForContentsWithAllReplacedEnvVars(target_path)
         self._check(
             Flow(sut.Parser(),
                  home_dir_contents=DirContents([
