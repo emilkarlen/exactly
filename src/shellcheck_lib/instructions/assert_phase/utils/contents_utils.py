@@ -263,8 +263,8 @@ class TargetTransformer:
         dst_file_path = self._dst_file_path(environment, src_file_path)
         if dst_file_path.exists():
             return dst_file_path
-        env_vars_to_replace = environment_variables.all_environment_variables(environment.home_directory,
-                                                                              environment.eds)
+        env_vars_to_replace = environment_variables.replaced(environment.home_directory,
+                                                             environment.eds)
         self._replace_env_vars_and_write_result_to_dst(env_vars_to_replace,
                                                        src_file_path,
                                                        dst_file_path)
@@ -383,8 +383,8 @@ def try_parse_content(comparison_target: ComparisonTarget,
         else:
             raise SingleInstructionInvalidArgumentException(
                 lines_content(['Invalid argument: {}'.format(last_arguments[0]),
-                               'Expecting one of: {}'.format(', '.join(SOURCE_REL_HOME_OPTION,
-                                                                       SOURCE_REL_CWD_OPTION)),
+                               'Expecting one of: {}'.format(', '.join([SOURCE_REL_HOME_OPTION,
+                                                                        SOURCE_REL_CWD_OPTION])),
                                ]))
 
     if arguments[0] == EMPTY_ARGUMENT:

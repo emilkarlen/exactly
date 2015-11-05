@@ -83,8 +83,9 @@ class StdXTargetTransformerBase(TargetTransformer):
         dst_file_path = self._dst_file_path(environment, src_file_path)
         if dst_file_path.exists():
             return dst_file_path
-        env_vars_to_replace = environment_variables.all_environment_variables(environment.home_directory,
-                                                                              environment.eds)
+        env_vars_to_replace = environment_variables.exists_at_setup_main(
+            environment.home_directory,
+            environment.eds)
         self._replace_env_vars_and_write_result_to_dst(env_vars_to_replace,
                                                        src_file_path,
                                                        dst_file_path)

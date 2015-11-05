@@ -331,15 +331,15 @@ class TestFileContentsFileRelCwdFORStderr(FileContentsFileRelCwd):
                                          'expected')
 
 
-class ActResultProducerForContentsWithAllEnvVars(ActResultProducerForContentsWithAllEnvVarsBase):
+class ActResultProducerForContentsWithAllReplacedEnvVars(ActResultProducerForContentsWithAllEnvVarsBase):
     def __init__(self, is_produce_to_stdout: bool):
         super().__init__()
         self.is_produce_to_stdout = is_produce_to_stdout
 
     def apply(self, act_environment: ActEnvironment) -> ActResult:
         home_and_eds = act_environment.home_and_eds
-        env_vars_dict = environment_variables.all_environment_variables(home_and_eds.home_dir_path,
-                                                                        home_and_eds.eds)
+        env_vars_dict = environment_variables.replaced(home_and_eds.home_dir_path,
+                                                       home_and_eds.eds)
         values_in_determined_order = list(map(env_vars_dict.get, self.sorted_env_var_keys))
         contents = self._content_from_values(values_in_determined_order)
         return self._result_with(contents)
@@ -362,7 +362,7 @@ class ReplacedEnvVars(TestWithParserBase):
                  is_produce_to_stdout: bool,
                  method_name):
         super().__init__(method_name)
-        self.act_result_producer = ActResultProducerForContentsWithAllEnvVars(is_produce_to_stdout)
+        self.act_result_producer = ActResultProducerForContentsWithAllReplacedEnvVars(is_produce_to_stdout)
 
     def pass__when__contents_equals__rel_home(self):
         self._check(
