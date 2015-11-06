@@ -1,0 +1,93 @@
+-*- org -*-
+
+* Dependencies
+
+shellcheck (base version) DOES not depend on anything not included in the
+standard library of it's implementation language.
+
+MOTIVATION
+
+It should be easy to include the implementation of shellcheck (except for the
+implementation of the langugage it uses (python 3)) in a project that uses
+shellcheck.
+
+The implementation language is choosen to be a language that contains a large
+standard library that does not make this restriction a great limitation.
+
+* Portability
+
+
+The goal is that shellcheck is portable to
+- Linux
+- BSD
+- OS X
+- Windows
+
+The implementation language Python 3 is the generic interface towards all
+these systems.
+
+MOTIVATION
+
+Usefullness of shellcheck.
+
+
+** Portability of tests
+
+
+Individual tests, on the other hand, should not be limitied to the portability
+requirements of shellcheck itself.
+The instruction "shell" is the main source of non-portability.
+
+MOTIVATION
+
+The requirement of having all tests to be portable to all systems that
+shellcheck itself is ported to would prevent usage of many usefull features
+that are available only on a specific system.
+
+Many programs are not required to be portable but they are _required to
+work_ = they need to be tested.
+
+E.g. a utility program is developed on a Linux Debian system and is only
+intended to be used on a Debian Linux production system.
+Thus you can use all utility programs available on this system.  This can make
+the tests much more easy to write, and more easy to read.
+
+
+* Instructions in assert phase
+
+
+FORM: ACTUAL EXPECTED
+
+Motivation:
+Although the opposite form - EXPECTED ACTUAL - often is more easy to read and
+understand, shellcheck uses the opposite form.  Reasons for this is
+possibility to have shorter (=more readable) assertions.  The reason for this
+is that the instruction must start the line.  And the instruction may specify
+what is tested, i.e. the ACTUAL value.
+
+Examples:
+exitcode 1
+stdout   empty
+stderr   empty
+
+contents actual-file.txt expected-file.txt
+
+THe order could be switched. "stdout" and "stderr" instructions could be a variant
+of the "contents" instruction. E.g.
+
+contents expected-file.txt --stdout
+
+number 1 = exitcode
+
+But this is much longer, and a bit contrived.
+The goal is a short and clean syntax for common tests.  And one that is easy
+to implement using the instruction-name-at-start-of-line parser.
+If an assertion becomes difficult to read it might be appropriate to express
+it using a macro with a more readable name.
+
+Noteworthy is that mathematical "assertions" is written in the
+ACTUAL EXPECTED form:
+
+n > 1
+
+Im(z) = 0
