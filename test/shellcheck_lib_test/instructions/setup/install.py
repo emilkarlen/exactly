@@ -93,7 +93,7 @@ class TestSuccessfulScenarios(TestCaseBase):
         self._check(
             Flow(sut.Parser(),
                  home_dir_contents=DirContents(home_dir_contents),
-                 eds_contents_before_main=eds_populator.FilesInActDir(DirContents(act_dir_contents)),
+                 eds_contents_before_main=eds_populator.act_dir_contents(DirContents(act_dir_contents)),
                  expected_main_side_effects_on_files=eds_contents_check.ActRootContainsExactly(
                      DirContents(act_dir_contents_after))
                  ),
@@ -131,7 +131,7 @@ class TestSuccessfulScenarios(TestCaseBase):
         self._check(
             Flow(sut.Parser(),
                  home_dir_contents=DirContents(files_to_install),
-                 eds_contents_before_main=eds_populator.FilesInActDir(act_dir_contents_before),
+                 eds_contents_before_main=eds_populator.act_dir_contents(act_dir_contents_before),
                  expected_main_side_effects_on_files=eds_contents_check.ActRootContainsExactly(
                      act_dir_contents_after)
                  ),
@@ -147,7 +147,8 @@ class TestFailingScenarios(TestCaseBase):
         self._check(
             Flow(sut.Parser(),
                  home_dir_contents=file_to_install,
-                 eds_contents_before_main=eds_populator.FilesInActDir(DirContents([empty_file(file_name)])),
+                 eds_contents_before_main=eds_populator.act_dir_contents(DirContents(
+                     [empty_file(file_name)])),
                  expected_main_result=sh_check.IsHardError()
                  ),
             new_source('instruction-name',
@@ -161,7 +162,7 @@ class TestFailingScenarios(TestCaseBase):
         self._check(
             Flow(sut.Parser(),
                  home_dir_contents=home_dir_contents,
-                 eds_contents_before_main=eds_populator.FilesInActDir(act_dir_contents),
+                 eds_contents_before_main=eds_populator.act_dir_contents(act_dir_contents),
                  expected_main_result=sh_check.IsHardError()
                  ),
             new_source('instruction-name',
@@ -176,7 +177,7 @@ class TestFailingScenarios(TestCaseBase):
         self._check(
             Flow(sut.Parser(),
                  home_dir_contents=home_dir_contents,
-                 eds_contents_before_main=eds_populator.FilesInActDir(act_dir_contents),
+                 eds_contents_before_main=eds_populator.act_dir_contents(act_dir_contents),
                  expected_main_result=sh_check.IsHardError()
                  ),
             new_source('instruction-name',

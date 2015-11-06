@@ -8,15 +8,49 @@ class EdsPopulator:
         raise NotImplementedError()
 
 
-class Empty(EdsPopulator):
+def empty() -> EdsPopulator:
+    return _Empty()
+
+
+def multiple(populators: list) -> EdsPopulator:
+    return _ListOfPopulators(populators)
+
+
+def act_dir_contents(contents: DirContents) -> EdsPopulator:
+    return _FilesInActDir(contents)
+
+
+def tmp_user_dir_contents(contents: DirContents) -> EdsPopulator:
+    return _FilesInTmpUserDir(contents)
+
+
+class _Empty(EdsPopulator):
     def apply(self, eds: ExecutionDirectoryStructure):
         pass
 
 
-class FilesInActDir(EdsPopulator):
+class _ListOfPopulators(EdsPopulator):
+    def __init__(self, populator_list: list):
+        self.__populator_list = populator_list
+
+    def apply(self, eds: ExecutionDirectoryStructure):
+        for populator in self.__populator_list:
+            populator.apply(eds)
+
+
+class _FilesInActDir(EdsPopulator):
     def __init__(self,
-                 test_root_contents: DirContents):
-        self.test_root_contents = test_root_contents
+                 contents: DirContents):
+        self.test_root_contents = contents
 
     def apply(self, eds: ExecutionDirectoryStructure):
         self.test_root_contents.write_to(eds.act_dir)
+
+
+class _FilesInTmpUserDir(EdsPopulator):
+    def __init__(self,
+                 contents: DirContents):
+        self.test_root_contents = contents
+
+    def apply(self, eds: ExecutionDirectoryStructure):
+        self.test_root_contents.write_to(eds.tmp.user_dir)
