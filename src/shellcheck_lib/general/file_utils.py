@@ -14,3 +14,8 @@ def ensure_parent_directory_does_exist(dst_file_path: pathlib.Path):
     containing_dir_path = dst_file_path.parent
     if not containing_dir_path.exists():
         containing_dir_path.mkdir(parents=True)
+
+
+def lines_of(file_path: pathlib.Path) -> list:
+    with file_path.open() as f:
+        return f.readlines()

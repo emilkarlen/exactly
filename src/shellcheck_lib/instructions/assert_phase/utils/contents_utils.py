@@ -1,8 +1,10 @@
+import difflib
 import filecmp
+import os
 import pathlib
 
 from shellcheck_lib.execution import environment_variables
-from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
+from shellcheck_lib.general import file_utils
 from shellcheck_lib.general.file_utils import ensure_parent_directory_does_exist
 from shellcheck_lib.general.string import lines_content
 from shellcheck_lib.instructions.assert_phase.utils import instruction_utils
@@ -90,111 +92,6 @@ def check(file_path: pathlib.Path) -> str:
     return None
 
 
-class Checker:
-    def validate(self,
-                 eds: ExecutionDirectoryStructure) -> svh.SuccessOrValidationErrorOrHardError:
-        return svh.new_svh_success()
-
-    def main_check_target_file(self,
-                               eds: ExecutionDirectoryStructure) -> pfh.PassOrFailOrHardError:
-        return pfh.new_pfh_pass()
-
-    def main_check_comparison_file(self,
-                                   eds: ExecutionDirectoryStructure) -> pfh.PassOrFailOrHardError:
-        return pfh.new_pfh_pass()
-
-    def target_file_path(self, eds: ExecutionDirectoryStructure) -> pathlib.Path:
-        raise NotImplementedError()
-
-    def compare(self, eds: ExecutionDirectoryStructure) -> pfh.PassOrFailOrHardError:
-        raise NotImplementedError()
-
-
-class CheckerWithFileRelHome(Checker):
-    def validate(self,
-                 eds: ExecutionDirectoryStructure) -> svh.SuccessOrValidationErrorOrHardError:
-        return svh.new_svh_success()
-
-    def main_check_target_file(self,
-                               eds: ExecutionDirectoryStructure) -> pfh.PassOrFailOrHardError:
-        return pfh.new_pfh_pass()
-
-    def main_check_comparison_file(self,
-                                   eds: ExecutionDirectoryStructure) -> pfh.PassOrFailOrHardError:
-        return pfh.new_pfh_pass()
-
-    def target_file_path(self, eds: ExecutionDirectoryStructure) -> pathlib.Path:
-        raise NotImplementedError()
-
-    def comparison_file_path(self, eds: ExecutionDirectoryStructure) -> pathlib.Path:
-        raise NotImplementedError()
-
-    def compare(self, eds: ExecutionDirectoryStructure) -> pfh.PassOrFailOrHardError:
-        target_file_name = str(self.target_file_path(eds))
-        comparison_file_name = str(self.comparison_file_path(eds))
-        if not filecmp.cmp(target_file_name, comparison_file_name, shallow=False):
-            return pfh.new_pfh_fail('Unexpected content in file: ' + target_file_name)
-
-
-class CheckerForComparisonWithFile(Checker):
-    def validate(self,
-                 eds: ExecutionDirectoryStructure) -> svh.SuccessOrValidationErrorOrHardError:
-        return svh.new_svh_success()
-
-    def main_check_target_file(self,
-                               eds: ExecutionDirectoryStructure) -> pfh.PassOrFailOrHardError:
-        return pfh.new_pfh_pass()
-
-    def main_check_comparison_file(self,
-                                   eds: ExecutionDirectoryStructure) -> pfh.PassOrFailOrHardError:
-        return pfh.new_pfh_pass()
-
-    def target_file_path(self, eds: ExecutionDirectoryStructure) -> pathlib.Path:
-        raise NotImplementedError()
-
-    def comparison_file_path(self, eds: ExecutionDirectoryStructure) -> pathlib.Path:
-        raise NotImplementedError()
-
-    def compare(self, eds: ExecutionDirectoryStructure) -> pfh.PassOrFailOrHardError:
-        target_file_name = str(self.target_file_path(eds))
-        comparison_file_name = str(self.comparison_file_path(eds))
-        if not filecmp.cmp(target_file_name, comparison_file_name, shallow=False):
-            return pfh.new_pfh_fail('Unexpected content in file: ' + target_file_name)
-
-
-class CheckerForEmptiness(Checker):
-    def __init__(self, expect_empty: bool):
-        self._expect_empty = expect_empty
-
-    def validate(self,
-                 eds: ExecutionDirectoryStructure) -> svh.SuccessOrValidationErrorOrHardError:
-        return svh.new_svh_success()
-
-    def main_check_target_file(self,
-                               eds: ExecutionDirectoryStructure) -> pfh.PassOrFailOrHardError:
-        return pfh.new_pfh_pass()
-
-    def main_check_comparison_file(self,
-                                   eds: ExecutionDirectoryStructure) -> pfh.PassOrFailOrHardError:
-        return pfh.new_pfh_pass()
-
-    def target_file_path(self, eds: ExecutionDirectoryStructure) -> pathlib.Path:
-        raise NotImplementedError()
-
-    def comparison_file_path(self, eds: ExecutionDirectoryStructure) -> pathlib.Path:
-        raise NotImplementedError()
-
-    def compare(self, eds: ExecutionDirectoryStructure) -> pfh.PassOrFailOrHardError:
-        size = self.target_file_path(eds).stat().st_size
-        if self._expect_empty:
-            if size != 0:
-                return pfh.new_pfh_fail('File is not empty: Size (in bytes): ' + str(size))
-        else:
-            if size == 0:
-                return pfh.new_pfh_fail('File is empty')
-        return pfh.new_pfh_pass()
-
-
 class ContentCheckerInstructionBase(AssertPhaseInstruction):
     def __init__(self,
                  comparison_source: ComparisonSource,
@@ -231,7 +128,10 @@ class ContentCheckerInstructionBase(AssertPhaseInstruction):
                                                                             os_services)
         comparison_target_file_name = str(comparison_target_file_path)
         if not filecmp.cmp(comparison_target_file_name, comparison_source_file_name, shallow=False):
-            return pfh.new_pfh_fail('Unexpected content in file: ' + display_target_file_name)
+            diff_description = _file_diff_description(comparison_target_file_path,
+                                                      comparison_source_file_path)
+            return pfh.new_pfh_fail('Unexpected content in file: ' + display_target_file_name +
+                                    diff_description)
         return pfh.new_pfh_pass()
 
     def _get_comparison_target_file_path(self,
@@ -390,3 +290,14 @@ def try_parse_content(comparison_target: ComparisonTarget,
         return _parse_non_empty(comparison_target, arguments[2:])
     else:
         return _parse_contents(comparison_target, arguments)
+
+
+def _file_diff_description(comparison_target_file_path: pathlib.Path,
+                           comparison_source_file_path: pathlib.Path) -> str:
+    source_lines = file_utils.lines_of(comparison_source_file_path)
+    target_lines = file_utils.lines_of(comparison_target_file_path)
+    diff = difflib.unified_diff(source_lines,
+                                target_lines,
+                                fromfile='Expected',
+                                tofile='Actual')
+    return os.linesep + ''.join(list(diff))
