@@ -10,7 +10,7 @@ from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_ch
 from shellcheck_lib_test.instructions.assert_phase.test_resources import instruction_check
 from shellcheck_lib_test.instructions.test_resources import pfh_check
 from shellcheck_lib_test.instructions.test_resources import svh_check
-from shellcheck_lib_test.instructions.test_resources.eds_populator import act_dir_contents
+from shellcheck_lib_test.instructions.test_resources.eds_populator import act_dir_contents, tmp_user_dir_contents
 from shellcheck_lib_test.instructions.utils import new_source, ActResult
 from shellcheck_lib_test.util.file_structure import DirContents, empty_dir, File
 
@@ -52,8 +52,7 @@ class FileContentsEmptyValidSyntax(TestWithParserBase):
     def fail__when__file_exists_but_is_non_empty(self, act_result: ActResult):
         self._check(
             Flow(self._new_parser(),
-                 act_result_producer=ActResultProducer(ActResult(stdout_contents='contents',
-                                                                 stderr_contents='contents')),
+                 act_result_producer=ActResultProducer(act_result),
                  expected_main_result=pfh_check.is_fail(),
                  ),
             new_source('instruction-name',
@@ -61,9 +60,11 @@ class FileContentsEmptyValidSyntax(TestWithParserBase):
 
     def pass__when__file_exists_and_is_empty(self, act_result: ActResult):
         self._check(
-            Flow(self._new_parser()),
+            Flow(self._new_parser(),
+                 act_result_producer=ActResultProducer(act_result)),
             new_source('instruction-name',
-                       'empty'))
+                       'empty')
+        )
 
 
 class TestFileContentsEmptyValidSyntaxFORStdout(FileContentsEmptyValidSyntax):
@@ -291,25 +292,29 @@ class FileContentsFileRelCwd(TestWithParserBase):
 
 
 class FileContentsFileRelTmp(TestWithParserBase):
+    def _act_result_with_contents(self,
+                                  contents_on_tested_channel: str,
+                                  contents_on_other_channel: str='') -> ActResult:
+        raise NotImplementedError()
+
     def fail__when__comparison_file_does_not_exist(self):
         self._check(
             Flow(self._new_parser(),
                  expected_main_result=pfh_check.is_fail(),
                  ),
             new_source('instruction-name',
-                       '--rel-cwd f.txt'))
+                       '--rel-tmp f.txt'))
 
-    def pass__when__contents_equals(self,
-                                    act_result: ActResult,
-                                    expected_contents: str):
+    def pass__when__contents_equals(self):
         self._check(
             Flow(self._new_parser(),
-                 eds_contents_before_main=act_dir_contents(DirContents(
-                     [File('f.txt', expected_contents)])),
-                 act_result_producer=ActResultProducer(act_result),
+                 eds_contents_before_main=tmp_user_dir_contents(DirContents(
+                     [File('f.txt', 'expected contents')])),
+                 act_result_producer=ActResultProducer(
+                     self._act_result_with_contents('expected contents'))
                  ),
             new_source('instruction-name',
-                       '--rel-cwd f.txt'))
+                       '--rel-tmp f.txt'))
 
 
 class TestFileContentsFileRelCwdFORStdout(FileContentsFileRelCwd):
@@ -352,6 +357,40 @@ class TestFileContentsFileRelCwdFORStderr(FileContentsFileRelCwd):
         self.pass__when__contents_equals(ActResult(stdout_contents='un-expected',
                                                    stderr_contents='expected'),
                                          'expected')
+
+
+class TestFileContentsFileRelTmpFORStdout(FileContentsFileRelTmp):
+    def test_fail__when__comparison_file_does_not_exist(self):
+        self.fail__when__comparison_file_does_not_exist()
+
+    def test_pass__when__contents_equals(self):
+        self.pass__when__contents_equals()
+
+    def _new_parser(self) -> SingleInstructionParser:
+        return stdout_stderr.ParserForContentsForStdout()
+
+    def _act_result_with_contents(self,
+                                  contents_on_tested_channel: str,
+                                  contents_on_other_channel: str='') -> ActResult:
+        return ActResult(stdout_contents=contents_on_tested_channel,
+                         stderr_contents=contents_on_other_channel)
+
+
+class TestFileContentsFileRelTmpFORStderr(FileContentsFileRelTmp):
+    def test_fail__when__comparison_file_does_not_exist(self):
+        self.fail__when__comparison_file_does_not_exist()
+
+    def test_pass__when__contents_equals(self):
+        self.pass__when__contents_equals()
+
+    def _new_parser(self) -> SingleInstructionParser:
+        return stdout_stderr.ParserForContentsForStderr()
+
+    def _act_result_with_contents(self,
+                                  contents_on_tested_channel: str,
+                                  contents_on_other_channel: str='') -> ActResult:
+        return ActResult(stderr_contents=contents_on_tested_channel,
+                         stdout_contents=contents_on_other_channel)
 
 
 class ReplacedEnvVars(TestWithParserBase):
@@ -477,6 +516,9 @@ def suite():
 
     ret_val.addTest(unittest.makeSuite(TestReplacedEnvVarsFORStdout))
     ret_val.addTest(unittest.makeSuite(TestReplacedEnvVarsFORStderr))
+
+    ret_val.addTest(unittest.makeSuite(TestFileContentsFileRelTmpFORStdout))
+    ret_val.addTest(unittest.makeSuite(TestFileContentsFileRelTmpFORStderr))
 
     return ret_val
 
