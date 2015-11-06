@@ -165,7 +165,7 @@ class TestsWithPreservedExecutionDirectoryStructure(UnitTestCaseWithUtils):
         expected_printed_variables = [
             '%s=%s' % (environment_variables.ENV_VAR_HOME, str(actual.file_argument.parent)),
             '%s=%s' % (environment_variables.ENV_VAR_ACT, str(eds.act_dir)),
-            '%s=%s' % (environment_variables.ENV_VAR_TMP, str(eds.tmp_dir)),
+            '%s=%s' % (environment_variables.ENV_VAR_TMP, str(eds.tmp.user_dir)),
         ]
         self.assertEqual(expected_printed_variables,
                          actually_printed_variables,

@@ -18,8 +18,17 @@ class TestConstructExecutionDirectoryStructure(unittest.TestCase):
             self._assert_is_existing_empty_dir_with_name(root / 'testcase',
                                                          eds.test_case_dir)
 
-            self._assert_is_existing_empty_dir_with_name(root / 'tmp',
-                                                         eds.tmp_dir)
+            self._assert_is_existing_dir_with_given_number_of_files_in_it(root / 'tmp',
+                                                                          2)
+
+            self._assert_is_existing_empty_dir_with_name(root / 'tmp' / 'internal',
+                                                         eds.tmp.internal_dir)
+
+            self._assert_is_existing_empty_dir_with_name(root / 'tmp' / 'user',
+                                                         eds.tmp.user_dir)
+
+            self._assert_is_existing_empty_dir_with_name(root / 'testcase',
+                                                         eds.test_case_dir)
 
             self._assert_is_existing_empty_dir_with_name(root / 'act',
                                                          eds.act_dir)
@@ -60,7 +69,9 @@ def is_execution_directory_structure_after_execution(fc: FileChecker,
     fc.assert_exists_dir_with_given_number_of_files_in_it(eds.root_dir,
                                                           5)
     fc.assert_exists_dir(eds.test_case_dir)
-    fc.assert_exists_dir(eds.tmp_dir)
+    fc.assert_exists_dir(eds.tmp.root_dir)
+    fc.assert_exists_dir(eds.tmp.internal_dir)
+    fc.assert_exists_dir(eds.tmp.user_dir)
     fc.assert_exists_dir(eds.act_dir)
 
     fc.assert_exists_dir_with_given_number_of_files_in_it(eds.result.root_dir,
