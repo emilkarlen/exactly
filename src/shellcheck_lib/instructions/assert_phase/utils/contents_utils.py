@@ -20,6 +20,7 @@ from shellcheck_lib.test_case.os_services import OsServices
 WITH_REPLACED_ENV_VARS_OPTION = '--with-replaced-env-vars'
 SOURCE_REL_HOME_OPTION = '--rel-home'
 SOURCE_REL_CWD_OPTION = '--rel-cwd'
+SOURCE_REL_TMP_OPTION = '--rel-tmp'
 EMPTY_ARGUMENT = 'empty'
 
 
@@ -30,24 +31,51 @@ class ComparisonSource:
         self.check_during_validation = check_during_validation
         self.file_name = file_name
 
-    def file_path(self, global_environment: i.GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
+    def file_path(self, environment: i.GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
         raise NotImplementedError()
+
+
+def parse_source_file_argument(arguments: list) -> (ComparisonSource, list):
+    if len(arguments) < 2:
+        msg_header = 'file/contents: Invalid number of arguments (expecting at least two): '
+        raise SingleInstructionInvalidArgumentException(msg_header + str(arguments))
+    option = arguments[0]
+    if option == SOURCE_REL_HOME_OPTION:
+        return ComparisonSourceForFileRelHome(arguments[1]), arguments[2:]
+    elif option == SOURCE_REL_CWD_OPTION:
+        return ComparisonSourceForFileRelCwd(arguments[1]), arguments[2:]
+    elif option == SOURCE_REL_TMP_OPTION:
+        return ComparisonSourceForFileRelTmpUser(arguments[1]), arguments[2:]
+    else:
+        raise SingleInstructionInvalidArgumentException(
+            lines_content(['Invalid argument: {}'.format(arguments[0]),
+                           'Expecting one of: {}'.format(', '.join([SOURCE_REL_HOME_OPTION,
+                                                                    SOURCE_REL_CWD_OPTION])),
+                           ]))
 
 
 class ComparisonSourceForFileRelHome(ComparisonSource):
     def __init__(self, file_name: str):
         super().__init__(True, file_name)
 
-    def file_path(self, global_environment: i.GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
-        return global_environment.home_directory / self.file_name
+    def file_path(self, environment: i.GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
+        return environment.home_directory / self.file_name
 
 
 class ComparisonSourceForFileRelCwd(ComparisonSource):
     def __init__(self, file_name: str):
         super().__init__(False, file_name)
 
-    def file_path(self, global_environment: i.GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
+    def file_path(self, environment: i.GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
         return pathlib.Path(self.file_name)
+
+
+class ComparisonSourceForFileRelTmpUser(ComparisonSource):
+    def __init__(self, file_name: str):
+        super().__init__(False, file_name)
+
+    def file_path(self, environment: i.GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
+        return environment.eds.tmp.user_dir / self.file_name
 
 
 class ComparisonTarget:
@@ -137,7 +165,7 @@ class ContentCheckerInstructionBase(AssertPhaseInstruction):
     def _get_comparison_target_file_path(self,
                                          target_file_path: pathlib.Path,
                                          environment: i.GlobalEnvironmentForPostEdsPhase,
-                                         os_services: OsServices) -> str:
+                                         os_services: OsServices) -> pathlib.Path:
         raise NotImplementedError()
 
 
@@ -261,28 +289,17 @@ def try_parse_content(comparison_target: ComparisonTarget,
         if extra_arguments and extra_arguments[0] == WITH_REPLACED_ENV_VARS_OPTION:
             with_replaced_env_vars = True
             del extra_arguments[0]
-        comparison_source = _comparison_source(extra_arguments)
+        (comparison_source, remaining_arguments) = parse_source_file_argument(extra_arguments)
+        if remaining_arguments:
+            raise SingleInstructionInvalidArgumentException(
+                lines_content('Superfluous arguments: {}'.format(remaining_arguments)))
+
         if with_replaced_env_vars:
             return ContentCheckerWithTransformationInstruction(comparison_source,
                                                                target,
                                                                target_transformer)
         else:
             return ContentCheckerInstruction(comparison_source, target)
-
-    def _comparison_source(last_arguments: list) -> ComparisonSource:
-        if len(last_arguments) != 2:
-            msg_header = 'file/contents: Invalid number of arguments (expecting two): '
-            raise SingleInstructionInvalidArgumentException(msg_header + str(last_arguments))
-        if last_arguments[0] == SOURCE_REL_HOME_OPTION:
-            return ComparisonSourceForFileRelHome(last_arguments[1])
-        elif last_arguments[0] == SOURCE_REL_CWD_OPTION:
-            return ComparisonSourceForFileRelCwd(last_arguments[1])
-        else:
-            raise SingleInstructionInvalidArgumentException(
-                lines_content(['Invalid argument: {}'.format(last_arguments[0]),
-                               'Expecting one of: {}'.format(', '.join([SOURCE_REL_HOME_OPTION,
-                                                                        SOURCE_REL_CWD_OPTION])),
-                               ]))
 
     if arguments[0] == EMPTY_ARGUMENT:
         return _parse_empty(comparison_target, arguments[1:])
