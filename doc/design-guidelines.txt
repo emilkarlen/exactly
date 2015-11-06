@@ -108,14 +108,3 @@ The opposite syntax is more difficult to read:
 type f1                                           dir
 type very-long-directory-name/very-long-file-name file 
 type not-that-long-path                           link
-
-A reason is that the name "type" does not denote a "value" by itself.  It
-needs to be followed by an argument to denot a value:
-type directory
-or
-type my-file.txt
-
-- neither ACTUAL nor
-EXPECTED.  It expresses a "value" only if it is followed by a file type:
-"type dir".
-"type dir" is the "value" to be checked for the EXPECTED.
