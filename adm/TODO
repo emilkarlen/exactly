@@ -1,6 +1,10 @@
 -*- org -*-
 
 
+* TODO Dokumentation
+** TODO Hjälpsystem
+** TODO Users Guide
+** TODO Reference Manual
 * TODO Tester som inte är skrivna
 ** TODO content/stdout/stderr --with-replaced-env-vars körd > 1 gång
 Eftersom befintliga transformerade filer återanvänds är beteendet annorlunda
