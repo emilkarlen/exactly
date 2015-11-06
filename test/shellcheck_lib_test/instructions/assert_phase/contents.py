@@ -11,7 +11,8 @@ from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_ch
 from shellcheck_lib_test.instructions.assert_phase.test_resources import instruction_check
 from shellcheck_lib_test.instructions.test_resources import pfh_check
 from shellcheck_lib_test.instructions.test_resources import svh_check
-from shellcheck_lib_test.instructions.test_resources.eds_populator import act_dir_contents
+from shellcheck_lib_test.instructions.test_resources.eds_populator import act_dir_contents, tmp_user_dir_contents, \
+    multiple
 from shellcheck_lib_test.instructions.utils import new_source
 from shellcheck_lib_test.util.file_structure import DirContents, empty_file, empty_dir, File
 
@@ -251,6 +252,30 @@ class TestFileContentsFileRelCwd(instruction_check.TestCaseBase):
                        'target --rel-cwd comparison'))
 
 
+class TestFileContentsFileRelTmp(instruction_check.TestCaseBase):
+    def test_fail__when__target_file_does_not_exist(self):
+        self._check(
+            Flow(sut.Parser(),
+                 eds_contents_before_main=tmp_user_dir_contents(
+                     DirContents([empty_file('comparison')])),
+                 expected_main_result=pfh_check.is_fail(),
+                 ),
+            new_source('instruction-name',
+                       'target --rel-tmp comparison'))
+
+    def test_pass__when__contents_is_equal(self):
+        self._check(
+            Flow(sut.Parser(),
+                 eds_contents_before_main=multiple([
+                     act_dir_contents(
+                         DirContents([File('target', 'contents')])),
+                     tmp_user_dir_contents(
+                         DirContents([File('comparison', 'contents')])),
+                 ])),
+            new_source('instruction-name',
+                       'target --rel-tmp comparison'))
+
+
 class TestReplacedEnvVars(instruction_check.TestCaseBase):
     COMPARISON_SOURCE_FILE_NAME = 'with-replaced-env-vars.txt'
     COMPARISON_TARGET_FILE_NAME = 'file-with-env-var-values-in-it-from-act-phase.txt'
@@ -336,6 +361,7 @@ def suite():
     ret_val.addTest(unittest.makeSuite(TestFileContentsNonEmptyValidSyntax))
     ret_val.addTest(unittest.makeSuite(TestFileContentsFileRelHome))
     ret_val.addTest(unittest.makeSuite(TestFileContentsFileRelCwd))
+    ret_val.addTest(unittest.makeSuite(TestFileContentsFileRelTmp))
     ret_val.addTest(unittest.makeSuite(TestReplacedEnvVars))
     return ret_val
 

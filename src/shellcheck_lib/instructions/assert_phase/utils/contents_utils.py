@@ -50,6 +50,7 @@ def parse_source_file_argument(arguments: list) -> (ComparisonSource, list):
         raise SingleInstructionInvalidArgumentException(
             lines_content(['Invalid argument: {}'.format(arguments[0]),
                            'Expecting one of: {}'.format(', '.join([SOURCE_REL_HOME_OPTION,
+                                                                    SOURCE_REL_TMP_OPTION,
                                                                     SOURCE_REL_CWD_OPTION])),
                            ]))
 

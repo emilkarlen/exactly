@@ -6,7 +6,7 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
     SingleInstructionInvalidArgumentException, SingleInstructionParserSource
 from shellcheck_lib.execution import environment_variables
 from shellcheck_lib.instructions.assert_phase.utils.contents_utils import TargetTransformer, SOURCE_REL_HOME_OPTION, \
-    WITH_REPLACED_ENV_VARS_OPTION, SOURCE_REL_CWD_OPTION, EMPTY_ARGUMENT
+    WITH_REPLACED_ENV_VARS_OPTION, SOURCE_REL_CWD_OPTION, EMPTY_ARGUMENT, SOURCE_REL_TMP_OPTION
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
 from .utils import contents_utils
@@ -34,6 +34,10 @@ def description(file: str) -> Description:
                 '[{}] {} FILENAME'.format(WITH_REPLACED_ENV_VARS_OPTION, SOURCE_REL_HOME_OPTION),
                 """Expects the contents of %s to equal the contents of FILE
                 (which is a path relative home)""" % file),
+            InvokationVariant(
+                '[{}] {} FILENAME'.format(WITH_REPLACED_ENV_VARS_OPTION, SOURCE_REL_TMP_OPTION),
+                """Expects the contents of %s to equal the contents of FILE
+                (which is a path relative the shellcheck tmp directory)""" % file),
             InvokationVariant(
                 '[{}] {} FILENAME'.format(WITH_REPLACED_ENV_VARS_OPTION, SOURCE_REL_CWD_OPTION),
                 """Expects the contents of %s to equal the contents of FILE

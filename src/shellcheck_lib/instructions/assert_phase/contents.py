@@ -9,7 +9,7 @@ from shellcheck_lib.execution.execution_directory_structure import \
     root_dir_for_non_stdout_or_stderr_files_with_replaced_env_vars, SUB_DIR_FOR_REPLACEMENT_SOURCES_UNDER_ACT_DIR, \
     SUB_DIR_FOR_REPLACEMENT_SOURCES_NOT_UNDER_ACT_DIR
 from shellcheck_lib.instructions.assert_phase.utils.contents_utils import TargetTransformer, EMPTY_ARGUMENT, \
-    SOURCE_REL_HOME_OPTION, SOURCE_REL_CWD_OPTION, WITH_REPLACED_ENV_VARS_OPTION
+    SOURCE_REL_HOME_OPTION, SOURCE_REL_CWD_OPTION, WITH_REPLACED_ENV_VARS_OPTION, SOURCE_REL_TMP_OPTION
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
 from .utils import contents_utils
@@ -34,11 +34,18 @@ DESCRIPTION = Description(
         InvokationVariant(
             'FILENAME {} {} FILE'.format(WITH_REPLACED_ENV_VARS_OPTION,
                                          SOURCE_REL_HOME_OPTION),
-            'Compares contents of FILENAME to contents of FILE (which is a path relative home)'),
+            'Compares contents of FILENAME to contents of FILE ' +
+            '(which is a path relative home)'),
+        InvokationVariant(
+            'FILENAME {} {} FILE'.format(WITH_REPLACED_ENV_VARS_OPTION,
+                                         SOURCE_REL_TMP_OPTION),
+            'Compares contents of FILENAME to contents of FILE ' +
+            '(which is a path relative the shellcheck tmp directory)'),
         InvokationVariant(
             'FILENAME {} {} FILE'.format(WITH_REPLACED_ENV_VARS_OPTION,
                                          SOURCE_REL_CWD_OPTION),
-            'Compares contents of FILENAME to contents of FILE (which is a path relative current working directory)'),
+            'Compares contents of FILENAME to contents of FILE ' +
+            '(which is a path relative current working directory)'),
     ])
 
 

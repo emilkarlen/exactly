@@ -24,7 +24,7 @@ class FileContentsEmptyInvalidSyntax(TestWithParserBase):
     def _new_parser(self) -> SingleInstructionParser:
         raise NotImplementedError()
 
-    def that_when_no_arguments_then_exception_is_raised(self):
+    def that_when_superfluous_arguments_then_exception_is_raised(self):
         arguments = 'empty superfluous-argument'
         parser = self._new_parser()
         with self.assertRaises(SingleInstructionInvalidArgumentException):
@@ -37,7 +37,7 @@ class TestFileContentsEmptyInvalidSyntaxFORStdout(FileContentsEmptyInvalidSyntax
         return stdout_stderr.ParserForContentsForStdout()
 
     def test_that_when_no_arguments_then_exception_is_raised(self):
-        self.that_when_no_arguments_then_exception_is_raised()
+        self.that_when_superfluous_arguments_then_exception_is_raised()
 
 
 class TestFileContentsEmptyInvalidSyntaxFORStderr(FileContentsEmptyInvalidSyntax):
@@ -45,7 +45,7 @@ class TestFileContentsEmptyInvalidSyntaxFORStderr(FileContentsEmptyInvalidSyntax
         return stdout_stderr.ParserForContentsForStderr()
 
     def test_that_when_no_arguments_then_exception_is_raised(self):
-        self.that_when_no_arguments_then_exception_is_raised()
+        self.that_when_superfluous_arguments_then_exception_is_raised()
 
 
 class FileContentsEmptyValidSyntax(TestWithParserBase):
