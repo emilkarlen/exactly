@@ -24,7 +24,7 @@ def set_at_setup_pre_validate(home_dir_path: pathlib.Path) -> dict:
 def set_at_setup_main(eds: ExecutionDirectoryStructure) -> dict:
     return {
         ENV_VAR_ACT: str(eds.act_dir),
-        ENV_VAR_TMP: str(eds.tmp_dir),
+        ENV_VAR_TMP: str(eds.tmp.user_dir),
     }
 
 

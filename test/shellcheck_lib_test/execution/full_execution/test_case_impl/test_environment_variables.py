@@ -84,12 +84,12 @@ class Test(FullExecutionTestCaseBase):
         for_post_eds = {
             environment_variables.ENV_VAR_HOME: home_dir_after_anonymous,
             environment_variables.ENV_VAR_ACT: str(self.eds.act_dir),
-            environment_variables.ENV_VAR_TMP: str(self.eds.tmp_dir),
+            environment_variables.ENV_VAR_TMP: str(self.eds.tmp.user_dir),
         }
         set_at_assert = {
             environment_variables.ENV_VAR_HOME: home_dir_after_anonymous,
             environment_variables.ENV_VAR_ACT: str(self.eds.act_dir),
-            environment_variables.ENV_VAR_TMP: str(self.eds.tmp_dir),
+            environment_variables.ENV_VAR_TMP: str(self.eds.tmp.user_dir),
             environment_variables.ENV_VAR_RESULT_DIR: str(self.eds.result.root_dir),
         }
         expected_recorded_internally = {
@@ -108,7 +108,8 @@ class Test(FullExecutionTestCaseBase):
                 environment_variables.ENV_VAR_HOME, home_dir_after_anonymous, os.linesep),
             '%s=%s%s' % (
                 environment_variables.ENV_VAR_ACT, str(self.eds.act_dir), os.linesep),
-            '%s=%s%s' % (environment_variables.ENV_VAR_TMP, str(self.eds.tmp_dir), os.linesep),
+            '%s=%s%s' % (environment_variables.ENV_VAR_TMP, str(self.eds.tmp.user_dir),
+                         os.linesep),
         ])
         self.__assert_expected_internally_recorded_variables(expected_recorded_internally)
         self.__assert_expected_act_script_execution_recorded_variables(expected_act_output)
