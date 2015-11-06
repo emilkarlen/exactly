@@ -38,7 +38,7 @@ class Flow:
     def __init__(self,
                  parser: SingleInstructionParser,
                  home_dir_contents: file_structure.DirContents=file_structure.DirContents([]),
-                 eds_contents_before_main: eds_populator.EdsPopulator=eds_populator.Empty(),
+                 eds_contents_before_main: eds_populator.EdsPopulator=eds_populator.empty(),
                  act_result_producer: ActResultProducer=ActResultProducer(),
                  expected_validation_result: svh_check.Assertion=svh_check.is_success(),
                  expected_main_result: pfh_check.Assertion=pfh_check.is_pass(),

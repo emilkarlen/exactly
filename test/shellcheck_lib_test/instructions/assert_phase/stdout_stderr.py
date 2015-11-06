@@ -10,7 +10,7 @@ from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_ch
 from shellcheck_lib_test.instructions.assert_phase.test_resources import instruction_check
 from shellcheck_lib_test.instructions.test_resources import pfh_check
 from shellcheck_lib_test.instructions.test_resources import svh_check
-from shellcheck_lib_test.instructions.test_resources.eds_populator import FilesInActDir
+from shellcheck_lib_test.instructions.test_resources.eds_populator import act_dir_contents
 from shellcheck_lib_test.instructions.utils import new_source, ActResult
 from shellcheck_lib_test.util.file_structure import DirContents, empty_dir, File
 
@@ -172,7 +172,8 @@ class FileContentsFileRelHome(TestWithParserBase):
     def validation_error__when__comparison_file_is_a_directory(self):
         self._check(
             Flow(self._new_parser(),
-                 eds_contents_before_main=FilesInActDir(DirContents([empty_dir('dir')])),
+                 eds_contents_before_main=act_dir_contents(DirContents(
+                     [empty_dir('dir')])),
                  expected_validation_result=svh_check.is_validation_error(),
                  ),
             new_source('instruction-name',
@@ -256,7 +257,8 @@ class FileContentsFileRelCwd(TestWithParserBase):
     def fail__when__comparison_file_is_a_directory(self):
         self._check(
             Flow(self._new_parser(),
-                 eds_contents_before_main=FilesInActDir(DirContents([empty_dir('dir')])),
+                 eds_contents_before_main=act_dir_contents(DirContents(
+                     [empty_dir('dir')])),
                  expected_main_result=pfh_check.is_fail(),
                  ),
             new_source('instruction-name',
@@ -267,8 +269,8 @@ class FileContentsFileRelCwd(TestWithParserBase):
                                     expected_contents: str):
         self._check(
             Flow(self._new_parser(),
-                 eds_contents_before_main=FilesInActDir(
-                     DirContents([File('f.txt', expected_contents)])),
+                 eds_contents_before_main=act_dir_contents(DirContents(
+                     [File('f.txt', expected_contents)])),
                  act_result_producer=ActResultProducer(act_result),
                  expected_main_result=pfh_check.is_fail(),
                  ),
@@ -280,8 +282,30 @@ class FileContentsFileRelCwd(TestWithParserBase):
                                     expected_contents: str):
         self._check(
             Flow(self._new_parser(),
-                 eds_contents_before_main=FilesInActDir(
-                     DirContents([File('f.txt', expected_contents)])),
+                 eds_contents_before_main=act_dir_contents(DirContents(
+                     [File('f.txt', expected_contents)])),
+                 act_result_producer=ActResultProducer(act_result),
+                 ),
+            new_source('instruction-name',
+                       '--rel-cwd f.txt'))
+
+
+class FileContentsFileRelTmp(TestWithParserBase):
+    def fail__when__comparison_file_does_not_exist(self):
+        self._check(
+            Flow(self._new_parser(),
+                 expected_main_result=pfh_check.is_fail(),
+                 ),
+            new_source('instruction-name',
+                       '--rel-cwd f.txt'))
+
+    def pass__when__contents_equals(self,
+                                    act_result: ActResult,
+                                    expected_contents: str):
+        self._check(
+            Flow(self._new_parser(),
+                 eds_contents_before_main=act_dir_contents(DirContents(
+                     [File('f.txt', expected_contents)])),
                  act_result_producer=ActResultProducer(act_result),
                  ),
             new_source('instruction-name',

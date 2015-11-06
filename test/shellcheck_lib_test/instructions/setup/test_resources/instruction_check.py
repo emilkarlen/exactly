@@ -28,7 +28,7 @@ class Flow:
                  home_dir_contents: file_structure.DirContents=file_structure.DirContents([]),
                  os_services: OsServices=new_default(),
                  expected_pre_validation_result: svh_check.Assertion=svh_check.is_success(),
-                 eds_contents_before_main: eds_populator.EdsPopulator=eds_populator.Empty(),
+                 eds_contents_before_main: eds_populator.EdsPopulator=eds_populator.empty(),
                  initial_settings_builder: SetupSettingsBuilder=SetupSettingsBuilder(),
                  expected_main_result: sh_check.Assertion=sh_check.IsSuccess(),
                  expected_main_side_effects_on_environment: settings_check.Assertion=settings_check.AnythingGoes(),

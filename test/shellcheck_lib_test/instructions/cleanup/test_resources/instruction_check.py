@@ -18,7 +18,7 @@ class Flow:
     def __init__(self,
                  parser: SingleInstructionParser,
                  home_dir_contents: file_structure.DirContents=file_structure.DirContents([]),
-                 eds_contents_before_main: eds_populator.EdsPopulator=eds_populator.Empty(),
+                 eds_contents_before_main: eds_populator.EdsPopulator=eds_populator.empty(),
                  act_result: utils.ActResult=utils.ActResult(),
                  expected_main_result: sh_check.Assertion=sh_check.IsSuccess(),
                  expected_main_side_effects_on_files: eds_contents_check.Assertion=eds_contents_check.AnythingGoes(),

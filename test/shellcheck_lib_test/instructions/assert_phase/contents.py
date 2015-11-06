@@ -11,7 +11,7 @@ from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_ch
 from shellcheck_lib_test.instructions.assert_phase.test_resources import instruction_check
 from shellcheck_lib_test.instructions.test_resources import pfh_check
 from shellcheck_lib_test.instructions.test_resources import svh_check
-from shellcheck_lib_test.instructions.test_resources.eds_populator import FilesInActDir
+from shellcheck_lib_test.instructions.test_resources.eds_populator import act_dir_contents
 from shellcheck_lib_test.instructions.utils import new_source
 from shellcheck_lib_test.util.file_structure import DirContents, empty_file, empty_dir, File
 
@@ -46,7 +46,8 @@ class TestFileContentsEmptyValidSyntax(instruction_check.TestCaseBase):
         file_name = 'name-of-existing-directory'
         self._check(
             Flow(sut.Parser(),
-                 eds_contents_before_main=FilesInActDir(DirContents([empty_dir(file_name)])),
+                 eds_contents_before_main=act_dir_contents(
+                     DirContents([empty_dir(file_name)])),
                  expected_main_result=pfh_check.is_fail()),
             new_source('instruction-name',
                        file_name + ' empty'))
@@ -55,7 +56,8 @@ class TestFileContentsEmptyValidSyntax(instruction_check.TestCaseBase):
         file_name = 'name-of-existing-file'
         self._check(
             Flow(sut.Parser(),
-                 eds_contents_before_main=FilesInActDir(DirContents([File(file_name, 'contents')])),
+                 eds_contents_before_main=act_dir_contents(
+                     DirContents([File(file_name, 'contents')])),
                  expected_main_result=pfh_check.is_fail()
                  ),
             new_source('instruction-name',
@@ -65,7 +67,8 @@ class TestFileContentsEmptyValidSyntax(instruction_check.TestCaseBase):
         file_name = 'name-of-existing-file'
         self._check(
             Flow(sut.Parser(),
-                 eds_contents_before_main=FilesInActDir(DirContents([empty_file(file_name)])),
+                 eds_contents_before_main=act_dir_contents(
+                     DirContents([empty_file(file_name)])),
                  ),
             new_source('instruction-name',
                        file_name + ' empty'))
@@ -94,7 +97,8 @@ class TestFileContentsNonEmptyValidSyntax(instruction_check.TestCaseBase):
         file_name = 'name-of-existing-directory'
         self._check(
             Flow(sut.Parser(),
-                 eds_contents_before_main=FilesInActDir(DirContents([empty_dir(file_name)])),
+                 eds_contents_before_main=act_dir_contents(DirContents(
+                     [empty_dir(file_name)])),
                  expected_main_result=pfh_check.is_fail(),
                  ),
             new_source('instruction-name',
@@ -104,7 +108,8 @@ class TestFileContentsNonEmptyValidSyntax(instruction_check.TestCaseBase):
         file_name = 'name-of-existing-file'
         self._check(
             Flow(sut.Parser(),
-                 eds_contents_before_main=FilesInActDir(DirContents([empty_file(file_name)])),
+                 eds_contents_before_main=act_dir_contents(DirContents(
+                     [empty_file(file_name)])),
                  expected_main_result=pfh_check.is_fail(),
                  ),
             new_source('instruction-name',
@@ -114,7 +119,8 @@ class TestFileContentsNonEmptyValidSyntax(instruction_check.TestCaseBase):
         file_name = 'name-of-existing-file'
         self._check(
             Flow(sut.Parser(),
-                 eds_contents_before_main=FilesInActDir(DirContents([File(file_name, 'contents')])),
+                 eds_contents_before_main=act_dir_contents(DirContents(
+                     [File(file_name, 'contents')])),
                  ),
             new_source('instruction-name',
                        file_name + ' ! empty'))
@@ -151,7 +157,8 @@ class TestFileContentsFileRelHome(instruction_check.TestCaseBase):
         self._check(
             Flow(sut.Parser(),
                  home_dir_contents=DirContents([empty_file('f.txt')]),
-                 eds_contents_before_main=FilesInActDir(DirContents([empty_dir('dir')])),
+                 eds_contents_before_main=act_dir_contents(
+                     DirContents([empty_dir('dir')])),
                  expected_main_result=pfh_check.is_fail(),
                  ),
             new_source('instruction-name',
@@ -161,7 +168,8 @@ class TestFileContentsFileRelHome(instruction_check.TestCaseBase):
         self._check(
             Flow(sut.Parser(),
                  home_dir_contents=DirContents([empty_file('f.txt')]),
-                 eds_contents_before_main=FilesInActDir(DirContents([File('target.txt', 'non-empty')])),
+                 eds_contents_before_main=act_dir_contents(
+                     DirContents([File('target.txt', 'non-empty')])),
                  expected_main_result=pfh_check.is_fail(),
                  ),
             new_source('instruction-name',
@@ -171,7 +179,8 @@ class TestFileContentsFileRelHome(instruction_check.TestCaseBase):
         self._check(
             Flow(sut.Parser(),
                  home_dir_contents=DirContents([File('f.txt', 'contents')]),
-                 eds_contents_before_main=FilesInActDir(DirContents([File('target.txt', 'contents')])),
+                 eds_contents_before_main=act_dir_contents(DirContents(
+                     [File('target.txt', 'contents')])),
                  ),
             new_source('instruction-name',
                        'target.txt --rel-home f.txt'))
@@ -181,7 +190,8 @@ class TestFileContentsFileRelCwd(instruction_check.TestCaseBase):
     def test_fail__when__comparison_file_does_not_exist(self):
         self._check(
             Flow(sut.Parser(),
-                 eds_contents_before_main=FilesInActDir(DirContents([empty_file('target')])),
+                 eds_contents_before_main=act_dir_contents(
+                     DirContents([empty_file('target')])),
                  expected_main_result=pfh_check.is_fail(),
                  ),
             new_source('instruction-name',
@@ -190,7 +200,8 @@ class TestFileContentsFileRelCwd(instruction_check.TestCaseBase):
     def test_fail__when__target_file_does_not_exist(self):
         self._check(
             Flow(sut.Parser(),
-                 eds_contents_before_main=FilesInActDir(DirContents([empty_file('comparison')])),
+                 eds_contents_before_main=act_dir_contents(
+                     DirContents([empty_file('comparison')])),
                  expected_main_result=pfh_check.is_fail(),
                  ),
             new_source('instruction-name',
@@ -199,8 +210,9 @@ class TestFileContentsFileRelCwd(instruction_check.TestCaseBase):
     def test_validation_error__when__comparison_file_is_a_directory(self):
         self._check(
             Flow(sut.Parser(),
-                 eds_contents_before_main=FilesInActDir(DirContents([empty_file('target'),
-                                                                     empty_dir('comparison')])),
+                 eds_contents_before_main=act_dir_contents(
+                     DirContents([empty_file('target'),
+                                  empty_dir('comparison')])),
                  expected_main_result=pfh_check.is_fail(),
                  ),
             new_source('instruction-name',
@@ -209,8 +221,9 @@ class TestFileContentsFileRelCwd(instruction_check.TestCaseBase):
     def test_validation_error__when__target_file_is_a_directory(self):
         self._check(
             Flow(sut.Parser(),
-                 eds_contents_before_main=FilesInActDir(DirContents([empty_dir('target'),
-                                                                     empty_file('comparison')])),
+                 eds_contents_before_main=act_dir_contents(
+                     DirContents([empty_dir('target'),
+                                  empty_file('comparison')])),
                  expected_main_result=pfh_check.is_fail(),
                  ),
             new_source('instruction-name',
@@ -219,8 +232,9 @@ class TestFileContentsFileRelCwd(instruction_check.TestCaseBase):
     def test_fail__when__contents_is_different(self):
         self._check(
             Flow(sut.Parser(),
-                 eds_contents_before_main=FilesInActDir(DirContents([File('target', 'target-contents'),
-                                                                     File('comparison', 'cmp-contents')])),
+                 eds_contents_before_main=act_dir_contents(
+                     DirContents([File('target', 'target-contents'),
+                                  File('comparison', 'cmp-contents')])),
                  expected_main_result=pfh_check.is_fail(),
                  ),
             new_source('instruction-name',
@@ -229,8 +243,9 @@ class TestFileContentsFileRelCwd(instruction_check.TestCaseBase):
     def test_pass__when__contents_is_equal(self):
         self._check(
             Flow(sut.Parser(),
-                 eds_contents_before_main=FilesInActDir(DirContents([File('target', 'contents'),
-                                                                     File('comparison', 'contents')])),
+                 eds_contents_before_main=act_dir_contents(
+                     DirContents([File('target', 'contents'),
+                                  File('comparison', 'contents')])),
                  ),
             new_source('instruction-name',
                        'target --rel-cwd comparison'))

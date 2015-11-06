@@ -1,11 +1,10 @@
 import unittest
 
 from shellcheck_lib.instructions.assert_phase import type as sut
-
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from shellcheck_lib_test.instructions.test_resources import pfh_check
-from shellcheck_lib_test.instructions.test_resources.eds_populator import FilesInActDir
+from shellcheck_lib_test.instructions.test_resources.eds_populator import act_dir_contents
 from shellcheck_lib_test.instructions.utils import new_source
 from shellcheck_lib_test.util.file_structure import DirContents, empty_file, empty_dir, Link
 from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_check import Flow, TestCaseBase
@@ -32,7 +31,8 @@ class TestCheckForDirectory(TestCaseBase):
         file_name = 'name-of-existing-directory'
         self._check(
             Flow(sut.Parser(),
-                 eds_contents_before_main=FilesInActDir(DirContents([empty_dir(file_name)]))),
+                 eds_contents_before_main=act_dir_contents(DirContents(
+                     [empty_dir(file_name)]))),
             new_source('instruction-name',
                        file_name + ' directory'))
 
@@ -41,7 +41,8 @@ class TestCheckForDirectory(TestCaseBase):
         self._check(
             Flow(sut.Parser(),
                  expected_main_result=pfh_check.is_fail(),
-                 eds_contents_before_main=FilesInActDir(DirContents([empty_file(file_name)]))),
+                 eds_contents_before_main=act_dir_contents(DirContents(
+                     [empty_file(file_name)]))),
             new_source('instruction-name',
                        file_name + ' directory'))
 
@@ -49,8 +50,9 @@ class TestCheckForDirectory(TestCaseBase):
         file_name = 'sym-link'
         self._check(
             Flow(sut.Parser(),
-                 eds_contents_before_main=FilesInActDir(DirContents([empty_dir('directory'),
-                                                                     Link(file_name, 'directory')]))),
+                 eds_contents_before_main=act_dir_contents(DirContents(
+                     [empty_dir('directory'),
+                      Link(file_name, 'directory')]))),
             new_source('instruction-name',
                        file_name + ' directory'))
 
@@ -59,8 +61,9 @@ class TestCheckForDirectory(TestCaseBase):
         self._check(
             Flow(sut.Parser(),
                  expected_main_result=pfh_check.is_fail(),
-                 eds_contents_before_main=FilesInActDir(DirContents([empty_file('existing-file'),
-                                                                     Link(file_name, 'existing-file')]))),
+                 eds_contents_before_main=act_dir_contents(DirContents(
+                     [empty_file('existing-file'),
+                      Link(file_name, 'existing-file')]))),
             new_source('instruction-name',
                        file_name + ' directory'))
 
@@ -70,7 +73,8 @@ class TestCheckForRegularFile(TestCaseBase):
         file_name = 'name-of-existing-directory'
         self._check(
             Flow(sut.Parser(),
-                 eds_contents_before_main=FilesInActDir(DirContents([empty_file(file_name)]))),
+                 eds_contents_before_main=act_dir_contents(DirContents(
+                     [empty_file(file_name)]))),
             new_source('instruction-name',
                        file_name + ' regular'))
 
@@ -79,7 +83,8 @@ class TestCheckForRegularFile(TestCaseBase):
         self._check(
             Flow(sut.Parser(),
                  expected_main_result=pfh_check.is_fail(),
-                 eds_contents_before_main=FilesInActDir(DirContents([empty_dir(file_name)]))),
+                 eds_contents_before_main=act_dir_contents(DirContents(
+                     [empty_dir(file_name)]))),
             new_source('instruction-name',
                        file_name + ' regular'))
 
@@ -88,8 +93,9 @@ class TestCheckForRegularFile(TestCaseBase):
         self._check(
             Flow(sut.Parser(),
                  expected_main_result=pfh_check.is_fail(),
-                 eds_contents_before_main=FilesInActDir(DirContents([empty_dir('directory'),
-                                                                     Link(file_name, 'directory')]))),
+                 eds_contents_before_main=act_dir_contents(DirContents(
+                     [empty_dir('directory'),
+                      Link(file_name, 'directory')]))),
             new_source('instruction-name',
                        file_name + ' regular'))
 
@@ -97,8 +103,9 @@ class TestCheckForRegularFile(TestCaseBase):
         file_name = 'sym-link'
         self._check(
             Flow(sut.Parser(),
-                 eds_contents_before_main=FilesInActDir(DirContents([empty_file('existing-file'),
-                                                                     Link(file_name, 'existing-file')]))),
+                 eds_contents_before_main=act_dir_contents(DirContents(
+                     [empty_file('existing-file'),
+                      Link(file_name, 'existing-file')]))),
             new_source('instruction-name',
                        file_name + ' regular'))
 
@@ -109,7 +116,8 @@ class TestCheckForSymLink(TestCaseBase):
         self._check(
             Flow(sut.Parser(),
                  expected_main_result=pfh_check.is_fail(),
-                 eds_contents_before_main=FilesInActDir(DirContents([empty_file(file_name)]))),
+                 eds_contents_before_main=act_dir_contents(DirContents(
+                     [empty_file(file_name)]))),
             new_source('instruction-name',
                        file_name + ' symlink'))
 
@@ -118,7 +126,8 @@ class TestCheckForSymLink(TestCaseBase):
         self._check(
             Flow(sut.Parser(),
                  expected_main_result=pfh_check.is_fail(),
-                 eds_contents_before_main=FilesInActDir(DirContents([empty_dir(file_name)]))),
+                 eds_contents_before_main=act_dir_contents(DirContents(
+                     [empty_dir(file_name)]))),
             new_source('instruction-name',
                        file_name + ' symlink'))
 
@@ -126,8 +135,9 @@ class TestCheckForSymLink(TestCaseBase):
         file_name = 'link-file'
         self._check(
             Flow(sut.Parser(),
-                 eds_contents_before_main=FilesInActDir(DirContents([empty_dir('dir'),
-                                                                     Link(file_name, 'dir')]))),
+                 eds_contents_before_main=act_dir_contents(DirContents(
+                     [empty_dir('dir'),
+                      Link(file_name, 'dir')]))),
             new_source('instruction-name',
                        file_name + ' symlink'))
 
@@ -135,8 +145,9 @@ class TestCheckForSymLink(TestCaseBase):
         file_name = 'link-file'
         self._check(
             Flow(sut.Parser(),
-                 eds_contents_before_main=FilesInActDir(DirContents([empty_file('file'),
-                                                                     Link(file_name, 'file')]))),
+                 eds_contents_before_main=act_dir_contents(DirContents(
+                     [empty_file('file'),
+                      Link(file_name, 'file')]))),
             new_source('instruction-name',
                        file_name + ' symlink'))
 
