@@ -11,6 +11,8 @@ from shellcheck_lib.execution import execution_directory_structure as eds_module
 from shellcheck_lib.general import line_source
 from shellcheck_lib.general.line_source import LineSequenceBuilder
 from shellcheck_lib.test_case.sections import common as i
+from shellcheck_lib_test.instructions.test_resources import eds_populator
+from shellcheck_lib_test.util.file_structure import DirContents
 from shellcheck_lib_test.util.file_utils import write_file
 
 
@@ -78,12 +80,16 @@ class HomeAndEds:
 
 
 @contextmanager
-def home_and_eds_and_test_as_curr_dir() -> HomeAndEds:
+def home_and_eds_and_test_as_curr_dir(
+        home_dir_contents: DirContents=DirContents([]),
+        eds_contents: eds_populator.EdsPopulator=eds_populator.empty()) -> HomeAndEds:
     cwd_before = os.getcwd()
     prefix = strftime("shellcheck-test-%Y-%m-%d-%H-%M-%S", localtime())
     with tempfile.TemporaryDirectory(prefix=prefix + "-home-") as home_dir:
         home_dir_path = pathlib.Path(home_dir)
+        home_dir_contents.write_to(home_dir_path)
         with execution_directory_structure(prefix=prefix + "-eds-") as eds:
+            eds_contents.apply(eds)
             try:
                 os.chdir(str(eds.act_dir))
                 yield HomeAndEds(home_dir_path,
