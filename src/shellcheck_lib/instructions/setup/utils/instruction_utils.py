@@ -20,7 +20,7 @@ class InstructionWithFileRefsBase(SetupPhaseInstruction):
                       environment: GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
         for file_reference in self.file_ref_list_tuple:
             if not file_reference.exists_pre_eds:
-                file_path = file_reference.file_path_pre_eds(environment.home_directory)
+                file_path = file_reference.file_path(environment)
                 if not file_path.exists():
                     return svh.new_svh_validation_error('File does not exist: ' + str(file_path))
         return svh.new_svh_success()
