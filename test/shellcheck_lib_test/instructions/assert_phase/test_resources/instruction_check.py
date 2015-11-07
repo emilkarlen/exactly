@@ -33,6 +33,7 @@ class ActResultProducer:
     def apply(self, act_environment: ActEnvironment) -> utils.ActResult:
         return self.act_result
 
+
 class Flow:
     def __init__(self,
                  parser: SingleInstructionParser,
@@ -69,10 +70,9 @@ def execute(put: unittest.TestCase,
                          AssertPhaseInstruction,
                          'The instruction must be an instance of ' + str(AssertPhaseInstruction))
     assert isinstance(instruction, AssertPhaseInstruction)
-    with utils.home_and_eds_and_test_as_curr_dir() as home_and_eds:
-        setup.home_dir_contents.write_to(home_and_eds.home_dir_path)
-        setup.eds_contents_before_main.apply(home_and_eds.eds)
-
+    with utils.home_and_eds_and_test_as_curr_dir(
+            home_dir_contents=setup.home_dir_contents,
+            eds_contents=setup.eds_contents_before_main) as home_and_eds:
         act_result = setup.act_result_producer.apply(ActEnvironment(home_and_eds))
         home_and_eds.write_act_result(act_result)
 
