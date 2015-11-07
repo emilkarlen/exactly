@@ -10,6 +10,8 @@ from shellcheck_lib.general.string import lines_content
 from shellcheck_lib.instructions.assert_phase.utils import instruction_utils
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from shellcheck_lib.instructions.utils.parse_file_ref import SOURCE_REL_HOME_OPTION, SOURCE_REL_CWD_OPTION, \
+    SOURCE_REL_TMP_OPTION
 from shellcheck_lib.test_case.sections import common as i
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
 from shellcheck_lib.test_case.sections.result import pfh
@@ -18,9 +20,6 @@ from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib.test_case.os_services import OsServices
 
 WITH_REPLACED_ENV_VARS_OPTION = '--with-replaced-env-vars'
-SOURCE_REL_HOME_OPTION = '--rel-home'
-SOURCE_REL_CWD_OPTION = '--rel-cwd'
-SOURCE_REL_TMP_OPTION = '--rel-tmp'
 EMPTY_ARGUMENT = 'empty'
 
 
@@ -69,7 +68,7 @@ def parse_target_file_argument(arguments: list) -> (ComparisonTarget, list):
             raise SingleInstructionInvalidArgumentException('{} requires a FILE argument'.format(option))
 
     if len(arguments) < 1:
-        msg_header = 'file/contents: Invalid number of arguments (expecting at least one): '
+        msg_header = 'Invalid number of arguments (expecting at least one): '
         raise SingleInstructionInvalidArgumentException(msg_header + str(arguments))
     first_argument = arguments[0]
     if first_argument == SOURCE_REL_CWD_OPTION:
