@@ -23,6 +23,7 @@ class Parser(SingleInstructionParser):
         (file_reference, remaining_arguments) = parse_file_ref.parse_non_act_generated_file(arguments)
         if remaining_arguments:
             raise SingleInstructionInvalidArgumentException('Superfluous arguments: ' + str(remaining_arguments))
+        return _Instruction(file_reference)
 
 
 class _Instruction(InstructionWithFileRefsBase):
@@ -35,3 +36,4 @@ class _Instruction(InstructionWithFileRefsBase):
              environment: GlobalEnvironmentForPostEdsPhase,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         settings_builder.set_stdin_file(str(self.redirect_file.file_path(environment)))
+        return sh.new_sh_success()
