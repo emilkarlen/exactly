@@ -13,7 +13,7 @@ from shellcheck_lib_test.instructions.test_resources import pfh_check
 from shellcheck_lib_test.instructions.test_resources import svh_check
 from shellcheck_lib_test.instructions.test_resources.eds_populator import act_dir_contents, tmp_user_dir_contents, \
     multiple
-from shellcheck_lib_test.instructions.utils import new_source
+from shellcheck_lib_test.instructions.test_resources.utils import new_source
 from shellcheck_lib_test.util.file_structure import DirContents, empty_file, empty_dir, File
 
 

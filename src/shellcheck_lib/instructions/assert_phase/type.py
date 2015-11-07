@@ -1,8 +1,8 @@
 import enum
 import pathlib
-import shlex
 
 from shellcheck_lib.default.execution_mode.test_case.instruction_setup import Description, InvokationVariant
+from shellcheck_lib.instructions.utils.parse_utils import spit_arguments_list_string
 from shellcheck_lib.test_case.sections import common as i
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionInvalidArgumentException, SingleInstructionParserSource
@@ -41,7 +41,7 @@ DESCRIPTION = Description(
 
 class Parser(SingleInstructionParser):
     def apply(self, source: SingleInstructionParserSource) -> AssertPhaseInstruction:
-        arguments = shlex.split(source.instruction_argument)
+        arguments = spit_arguments_list_string(source.instruction_argument)
         if len(arguments) != 2:
             raise SingleInstructionInvalidArgumentException('Invalid syntax')
         file_argument = arguments[0]

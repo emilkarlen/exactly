@@ -12,7 +12,7 @@ from shellcheck_lib_test.instructions.test_resources import svh_check
 from shellcheck_lib_test.instructions.test_resources import sh_check
 from shellcheck_lib_test.instructions.test_resources import pfh_check
 from shellcheck_lib_test.instructions.test_resources import eds_contents_check
-from shellcheck_lib_test.instructions import utils
+from shellcheck_lib_test.instructions.test_resources import utils
 
 
 def single_line_source() -> SingleInstructionParserSource:

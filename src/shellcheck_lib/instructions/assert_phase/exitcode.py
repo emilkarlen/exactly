@@ -1,10 +1,10 @@
 import operator
 import pathlib
-import shlex
 
 from shellcheck_lib.default.execution_mode.test_case.instruction_setup import Description, InvokationVariant
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.general.string import line_separated
+from shellcheck_lib.instructions.utils.parse_utils import spit_arguments_list_string
 from shellcheck_lib.test_case.sections import common as i
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionInvalidArgumentException, SingleInstructionParserSource
@@ -61,7 +61,7 @@ class InstructionForOperator(instruction_utils.InstructionWithoutValidationBase)
 
 class Parser(SingleInstructionParser):
     def apply(self, source: SingleInstructionParserSource) -> AssertPhaseInstruction:
-        argument_list = shlex.split(source.instruction_argument)
+        argument_list = spit_arguments_list_string(source.instruction_argument)
         num_arguments = len(argument_list)
         if num_arguments != 1 and num_arguments != 2:
             raise SingleInstructionInvalidArgumentException('1 or 2 arguments expected, got ' +

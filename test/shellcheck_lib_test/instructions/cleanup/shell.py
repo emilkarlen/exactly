@@ -4,16 +4,15 @@ import sys
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from shellcheck_lib_test.instructions.test_resources import sh_check
-from shellcheck_lib_test.instructions import utils
 from shellcheck_lib_test.instructions.cleanup.test_resources.instruction_check import Flow, TestCaseBase
 from shellcheck_lib.instructions.cleanup import shell as sut
-from shellcheck_lib_test.instructions.utils import new_source
+from shellcheck_lib_test.instructions.test_resources.utils import new_source
 from shellcheck_lib_test.util.file_utils import tmp_file_containing
 
 
 class TestParse(unittest.TestCase):
     def test_fail_when_there_is_no_arguments(self):
-        source = utils.new_source('instruction-name', '   ')
+        source = new_source('instruction-name', '   ')
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             sut.Parser().apply(source)
 
