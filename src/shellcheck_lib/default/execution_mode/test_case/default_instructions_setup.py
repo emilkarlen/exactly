@@ -4,6 +4,7 @@ from shellcheck_lib.instructions.configuration import home
 from shellcheck_lib.instructions.setup import env
 from shellcheck_lib.instructions.setup import install
 from shellcheck_lib.instructions.setup import shell as setup_shell
+from shellcheck_lib.instructions.setup import stdin
 from shellcheck_lib.instructions.cleanup import shell as cleanup_shell
 from shellcheck_lib.instructions.assert_phase import shell as assert_shell
 from shellcheck_lib.instructions.assert_phase import exitcode as exitcode_instruction
@@ -31,6 +32,10 @@ instructions_setup = InstructionsSetup(
             SingleInstructionSetup(
                 setup_shell.Parser(),
                 setup_shell.DESCRIPTION),
+        'stdin':
+            SingleInstructionSetup(
+                stdin.Parser(),
+                stdin.DESCRIPTION),
     },
     {
         'exitcode':
