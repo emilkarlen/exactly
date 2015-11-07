@@ -276,6 +276,36 @@ class TestFileContentsFileRelTmp(instruction_check.TestCaseBase):
                        'target --rel-tmp comparison'))
 
 
+class TestTargetFileRelTmp(instruction_check.TestCaseBase):
+    def test_fail__when__target_file_does_not_exist(self):
+        self._check(
+            Flow(sut.Parser(),
+                 home_dir_contents=DirContents([empty_file('comparison')]),
+                 expected_main_result=pfh_check.is_fail(),
+                 ),
+            new_source('instruction-name',
+                       '--rel-tmp target --rel-home comparison'))
+
+    def test_fail__when__contents_is_unequal(self):
+        self._check(
+            Flow(sut.Parser(),
+                 home_dir_contents=DirContents([File('comparison', 'comparison-contents')]),
+                 eds_contents_before_main=tmp_user_dir_contents(
+                     DirContents([File('target', 'target-contents')])),
+                 expected_main_result=pfh_check.is_fail()),
+            new_source('instruction-name',
+                       '--rel-tmp target --rel-home comparison'))
+
+    def test_pass__when__contents_is_equal(self):
+        self._check(
+            Flow(sut.Parser(),
+                 home_dir_contents=DirContents([File('comparison', 'contents')]),
+                 eds_contents_before_main=tmp_user_dir_contents(
+                     DirContents([File('target', 'contents')]))),
+            new_source('instruction-name',
+                       '--rel-tmp target --rel-home comparison'))
+
+
 class TestReplacedEnvVars(instruction_check.TestCaseBase):
     COMPARISON_SOURCE_FILE_NAME = 'with-replaced-env-vars.txt'
     COMPARISON_TARGET_FILE_NAME = 'file-with-env-var-values-in-it-from-act-phase.txt'
@@ -362,6 +392,7 @@ def suite():
     ret_val.addTest(unittest.makeSuite(TestFileContentsFileRelHome))
     ret_val.addTest(unittest.makeSuite(TestFileContentsFileRelCwd))
     ret_val.addTest(unittest.makeSuite(TestFileContentsFileRelTmp))
+    ret_val.addTest(unittest.makeSuite(TestTargetFileRelTmp))
     ret_val.addTest(unittest.makeSuite(TestReplacedEnvVars))
     return ret_val
 
