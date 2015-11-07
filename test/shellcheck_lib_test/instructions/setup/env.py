@@ -3,49 +3,48 @@ import unittest
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from shellcheck_lib.test_case.os_services import new_with_environ
-from shellcheck_lib_test.instructions import utils
 from shellcheck_lib_test.instructions.setup.test_resources.instruction_check import Flow, TestCaseBase
 from shellcheck_lib.instructions.setup import env as sut
-from shellcheck_lib_test.instructions.utils import new_source
+from shellcheck_lib_test.instructions.test_resources.utils import new_source
 
 
 class TestParseSet(unittest.TestCase):
     def test_fail_when_there_is_no_arguments(self):
-        source = utils.new_source('instruction-name', '')
+        source = new_source('instruction-name', '')
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             sut.Parser().apply(source)
 
     def test_fail_when_there_is_more_than_three_argument(self):
-        source = utils.new_source('instruction-name', 'argument1 = argument3 argument4')
+        source = new_source('instruction-name', 'argument1 = argument3 argument4')
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             sut.Parser().apply(source)
 
     def test_succeed_when_there_is_exactly_one_assignment(self):
-        source = utils.new_source('instruction-name', 'name = value')
+        source = new_source('instruction-name', 'name = value')
         sut.Parser().apply(source)
 
     def test_both_name_and_value_can_be_shell_quoted(self):
-        source = utils.new_source('instruction-name', "'long name' = 'long value'")
+        source = new_source('instruction-name', "'long name' = 'long value'")
         sut.Parser().apply(source)
 
 
 class TestParseUnset(unittest.TestCase):
     def test_fail_when_there_is_no_arguments(self):
-        source = utils.new_source('instruction-name', 'unset')
+        source = new_source('instruction-name', 'unset')
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             sut.Parser().apply(source)
 
     def test_fail_when_there_is_more_than_one_argument(self):
-        source = utils.new_source('instruction-name', 'unset name superfluous')
+        source = new_source('instruction-name', 'unset name superfluous')
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             sut.Parser().apply(source)
 
     def test_succeed_when_there_is_exactly_one_argument(self):
-        source = utils.new_source('instruction-name', 'unset name')
+        source = new_source('instruction-name', 'unset name')
         sut.Parser().apply(source)
 
     def test_all_parts_may_be_shell_quoted(self):
-        source = utils.new_source('instruction-name', "'unset' 'long name'")
+        source = new_source('instruction-name', "'unset' 'long name'")
         sut.Parser().apply(source)
 
 

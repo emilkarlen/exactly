@@ -5,35 +5,34 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
 from shellcheck_lib_test.instructions.test_resources import svh_check
 from shellcheck_lib_test.instructions.test_resources import sh_check
 from shellcheck_lib_test.instructions.test_resources import eds_contents_check
-from shellcheck_lib_test.instructions import utils
 from shellcheck_lib_test.instructions.setup.test_resources.instruction_check import Flow, TestCaseBase
 from shellcheck_lib.instructions.setup import install as sut
-from shellcheck_lib_test.instructions.utils import new_source
+from shellcheck_lib_test.instructions.test_resources.utils import new_source
 from shellcheck_lib_test.util.file_structure import DirContents, File, Dir, empty_file, empty_dir
 from shellcheck_lib_test.instructions.test_resources import eds_populator
 
 
 class TestParse(unittest.TestCase):
     def test_fail_when_there_is_no_arguments(self):
-        source = utils.new_source('instruction-name', '')
+        source = new_source('instruction-name', '')
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             sut.Parser().apply(source)
 
     def test_fail_when_there_is_more_than_two_arguments(self):
-        source = utils.new_source('instruction-name', 'argument1 argument2 argument3')
+        source = new_source('instruction-name', 'argument1 argument2 argument3')
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             sut.Parser().apply(source)
 
     def test_succeed_when_there_is_exactly_one_argument(self):
-        source = utils.new_source('instruction-name', 'single-argument')
+        source = new_source('instruction-name', 'single-argument')
         sut.Parser().apply(source)
 
     def test_succeed_when_there_is_exactly_two_arguments(self):
-        source = utils.new_source('instruction-name', 'argument1 argument2')
+        source = new_source('instruction-name', 'argument1 argument2')
         sut.Parser().apply(source)
 
     def test_argument_shall_be_parsed_using_shell_syntax(self):
-        source = utils.new_source('instruction-name', "'argument 1' 'argument 2'")
+        source = new_source('instruction-name', "'argument 1' 'argument 2'")
         sut.Parser().apply(source)
 
 
@@ -43,16 +42,16 @@ class TestValidationErrorScenarios(TestCaseBase):
             Flow(sut.Parser(),
                  expected_pre_validation_result=svh_check.is_validation_error(),
                  ),
-            utils.new_source('instruction-name',
-                             'source-that-do-not-exist'))
+            new_source('instruction-name',
+                       'source-that-do-not-exist'))
 
     def test_ERROR_when_file_does_not_exist__with_explicit_destination(self):
         self._check(
             Flow(sut.Parser(),
                  expected_pre_validation_result=svh_check.is_validation_error(),
                  ),
-            utils.new_source('instruction-name',
-                             'source-that-do-not-exist destination'))
+            new_source('instruction-name',
+                       'source-that-do-not-exist destination'))
 
 
 class TestSuccessfulScenarios(TestCaseBase):

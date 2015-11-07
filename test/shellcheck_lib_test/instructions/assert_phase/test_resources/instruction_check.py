@@ -8,13 +8,12 @@ from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
-from shellcheck_lib_test.instructions.utils import HomeAndEds
 from shellcheck_lib_test.util import file_structure
 from shellcheck_lib_test.instructions.test_resources import svh_check
 from shellcheck_lib_test.instructions.test_resources import pfh_check
 from shellcheck_lib_test.instructions.test_resources import eds_populator
 from shellcheck_lib_test.instructions.test_resources import eds_contents_check
-from shellcheck_lib_test.instructions import utils
+from shellcheck_lib_test.instructions.test_resources import utils
 
 
 class ActEnvironment(tuple):
@@ -23,7 +22,7 @@ class ActEnvironment(tuple):
         return tuple.__new__(cls, (home_and_eds,))
 
     @property
-    def home_and_eds(self) -> HomeAndEds:
+    def home_and_eds(self) -> utils.HomeAndEds:
         return self[0]
 
 

@@ -1,9 +1,9 @@
 import pathlib
-import shlex
 
 from shellcheck_lib.default.execution_mode.test_case.instruction_setup import Description, InvokationVariant
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
+from shellcheck_lib.instructions.utils.parse_utils import spit_arguments_list_string
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.anonymous import AnonymousPhaseInstruction, ConfigurationBuilder
 
@@ -17,7 +17,7 @@ DESCRIPTION = Description(
 
 class Parser(SingleInstructionParser):
     def apply(self, source: SingleInstructionParserSource) -> AnonymousPhaseInstruction:
-        arguments = shlex.split(source.instruction_argument)
+        arguments = spit_arguments_list_string(source.instruction_argument)
         if len(arguments) != 1:
             msg = 'Invalid number of arguments (exactly one expected), found {}'.format(str(len(arguments)))
             raise SingleInstructionInvalidArgumentException(msg)

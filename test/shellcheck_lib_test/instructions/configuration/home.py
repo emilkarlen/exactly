@@ -4,22 +4,21 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
     SingleInstructionInvalidArgumentException
 from shellcheck_lib.test_case.sections.anonymous import ConfigurationBuilder
 from shellcheck_lib_test.instructions.test_resources import sh_check
-from shellcheck_lib_test.instructions import utils
 from shellcheck_lib_test.instructions.configuration.test_resources.instruction_check import Flow, TestCaseBase
 from shellcheck_lib.instructions.configuration import home as sut
-from shellcheck_lib_test.instructions.utils import new_source
+from shellcheck_lib_test.instructions.test_resources.utils import new_source
 from shellcheck_lib_test.instructions.configuration.test_resources import configuration_check as config_check
 from shellcheck_lib_test.util.file_structure import DirContents, empty_file, empty_dir, Dir
 
 
 class TestParse(unittest.TestCase):
     def test_fail_when_there_is_no_arguments(self):
-        source = utils.new_source('instruction-name', '   ')
+        source = new_source('instruction-name', '   ')
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             sut.Parser().apply(source)
 
     def test_fail_when_there_is_more_than_one_argument(self):
-        source = utils.new_source('instruction-name', 'argument-1 argument-2')
+        source = new_source('instruction-name', 'argument-1 argument-2')
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             sut.Parser().apply(source)
 
