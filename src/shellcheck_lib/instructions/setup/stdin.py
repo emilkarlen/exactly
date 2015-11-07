@@ -12,7 +12,7 @@ from shellcheck_lib.test_case.os_services import OsServices
 DESCRIPTION = Description(
     'Redirects stdin, for the act program, to a given file.',
     '',
-    [InvokationVariant('--rel-home FILE',
+    [InvokationVariant('[--rel-home|rel-tmp|rel-cwd] FILE',
                        'Sets stdin to a file relative SHELLCHECK_HOME.'),
      ])
 

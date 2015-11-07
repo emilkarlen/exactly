@@ -31,5 +31,5 @@ def parse_non_act_generated_file(arguments: list) -> (file_ref.FileRef, list):
         ensure_have_at_least_two_arguments_for_option(SOURCE_REL_TMP_OPTION)
         return file_ref.rel_tmp_user(arguments[1]), arguments[2:]
     else:
-        ensure_is_not_option_argument(arguments[0])
-        return file_ref.rel_home(arguments[1]), arguments[2:]
+        ensure_is_not_option_argument(first_argument)
+        return file_ref.rel_home(first_argument), arguments[1:]

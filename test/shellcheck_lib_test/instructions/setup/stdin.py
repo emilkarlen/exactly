@@ -2,7 +2,6 @@ import unittest
 
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-
 from shellcheck_lib.instructions.setup import stdin as sut
 from shellcheck_lib.instructions.utils import file_ref
 from shellcheck_lib.test_case.sections.setup import SetupSettingsBuilder
@@ -36,13 +35,17 @@ class TestParseSet(unittest.TestCase):
         source = new_source('instruction-name', '--rel-tmp file')
         sut.Parser().apply(source)
 
+    def test_succeed_when_syntax_is_correct__rel_home__implicitly(self):
+        source = new_source('instruction-name', 'file')
+        sut.Parser().apply(source)
+
     def test_file_name_can_be_quoted(self):
         source = new_source('instruction-name', '--rel-home "file name with space"')
         sut.Parser().apply(source)
 
 
 class TestInstructionExecution(TestCaseBase):
-    def test_file_rel_home(self):
+    def test_file_rel_home__explicitly(self):
         self._check(
             Flow(sut.Parser(),
                  home_dir_contents=DirContents([
@@ -52,6 +55,17 @@ class TestInstructionExecution(TestCaseBase):
                  ),
             new_source('instruction-name',
                        '--rel-home file-in-home-dir.txt'))
+
+    def test_file_rel_home__implicitly(self):
+        self._check(
+            Flow(sut.Parser(),
+                 home_dir_contents=DirContents([
+                     empty_file('file-in-home-dir.txt')]),
+                 expected_main_side_effects_on_environment=AssertStdinFileIsSetToFile(
+                     file_ref.rel_home('file-in-home-dir.txt'))
+                 ),
+            new_source('instruction-name',
+                       'file-in-home-dir.txt'))
 
 
 class AssertStdinFileIsSetToFile(Assertion):
