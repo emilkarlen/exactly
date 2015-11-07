@@ -1,13 +1,16 @@
 import unittest
 
-from shellcheck_lib_test.instructions.utils import file_ref
 from shellcheck_lib_test.instructions.utils import parse_utils
+
+from shellcheck_lib_test.instructions.utils import file_ref
+from shellcheck_lib_test.instructions.utils import parse_file_ref
 
 
 def suite():
     ret_val = unittest.TestSuite()
-    ret_val.addTest(file_ref.suite())
     ret_val.addTest(parse_utils.suite())
+    ret_val.addTest(file_ref.suite())
+    ret_val.addTest(parse_file_ref.suite())
     return ret_val
 
 

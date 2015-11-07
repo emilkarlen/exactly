@@ -10,6 +10,10 @@ class FileRef:
         self.__exists_pre_eds = exists_pre_eds
         self._file_name = file_name
 
+    @property
+    def file_name(self) -> str:
+        return self._file_name
+
     def file_path_pre_eds(self, home_dir_path: pathlib.Path) -> pathlib.Path:
         """
         Can only be used if the files exists pre-EDS.
