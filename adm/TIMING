@@ -1,5 +1,7 @@
 -*- org -*-
 
+weird simptest behaviour / data-root-dir
+
 * TODO <2015-05-03 sön> Nya refaktoreringar
 ** TODO Nya modulnamn
 - document (dok m faser o instr, syntax, parsning)
@@ -272,8 +274,12 @@ testas, o lägga till nya.)
     CLOCK: [2015-09-28 mån 14:20]--[2015-09-28 mån 17:12] =>  2:52
 *** env
     CLOCK: [2015-09-29 tis 19:20]--[2015-09-29 tis 20:37] =>  1:17
+*** stdin
+    CLOCK: [2015-11-07 lör 13:53]--[2015-11-07 lör 15:21] =>  1:28
+    CLOCK: [2015-11-07 lör 12:48]--[2015-11-07 lör 13:23] =>  0:35
 *** Hjälpmedel
 **** Angivelse av fils placering
+     CLOCK: [2015-11-07 lör 17:36]--[2015-11-07 lör 19:00] =>  1:24
      CLOCK: [2015-11-06 fre 22:35]--[2015-11-07 lör 01:40] =>  3:05
 * Preprocessnig
 ** För individuellt testfall
