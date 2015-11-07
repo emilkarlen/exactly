@@ -55,6 +55,32 @@ def parse_source_file_argument(arguments: list) -> (ComparisonSource, list):
                            ]))
 
 
+class ComparisonTarget:
+    def __init__(self, do_check_file_properties: bool):
+        self.do_check_file_properties = do_check_file_properties
+
+    def file_path(self, environment: i.GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
+        raise NotImplementedError()
+
+
+def parse_target_file_argument(arguments: list) -> (ComparisonTarget, list):
+    def ensure_have_at_least_two_arguments_for_option(option: str):
+        if len(arguments) < 2:
+            raise SingleInstructionInvalidArgumentException('{} requires a FILE argument'.format(option))
+
+    if len(arguments) < 1:
+        msg_header = 'file/contents: Invalid number of arguments (expecting at least one): '
+        raise SingleInstructionInvalidArgumentException(msg_header + str(arguments))
+    first_argument = arguments[0]
+    if first_argument == SOURCE_REL_CWD_OPTION:
+        ensure_have_at_least_two_arguments_for_option(SOURCE_REL_CWD_OPTION)
+        return ActComparisonTargetRelCwd(arguments[1]), arguments[2:]
+    elif first_argument == SOURCE_REL_TMP_OPTION:
+        ensure_have_at_least_two_arguments_for_option(SOURCE_REL_TMP_OPTION)
+        return ActComparisonTargetRelTmpUser(arguments[1]), arguments[2:]
+    return ActComparisonTargetRelCwd(first_argument), arguments[1:]
+
+
 class ComparisonSourceForFileRelHome(ComparisonSource):
     def __init__(self, file_name: str):
         super().__init__(True, file_name)
@@ -79,38 +105,40 @@ class ComparisonSourceForFileRelTmpUser(ComparisonSource):
         return environment.eds.tmp.user_dir / self.file_name
 
 
-class ComparisonTarget:
-    def __init__(self, do_check_file_properties: bool):
-        self.do_check_file_properties = do_check_file_properties
-
-    def file_path(self, global_environment: i.GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
-        raise NotImplementedError()
-
-
-class ActComparisonTarget(ComparisonTarget):
+class ActComparisonTargetRelCwd(ComparisonTarget):
     def __init__(self,
                  file_name: str):
         super().__init__(True)
         self.file_name = file_name
 
-    def file_path(self, global_environment: i.GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
+    def file_path(self, environment: i.GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
         return pathlib.Path(self.file_name)
+
+
+class ActComparisonTargetRelTmpUser(ComparisonTarget):
+    def __init__(self,
+                 file_name: str):
+        super().__init__(True)
+        self.file_name = file_name
+
+    def file_path(self, environment: i.GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
+        return environment.eds.tmp.user_dir / self.file_name
 
 
 class StdoutComparisonTarget(ComparisonTarget):
     def __init__(self):
         super().__init__(False)
 
-    def file_path(self, global_environment: i.GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
-        return global_environment.eds.result.stdout_file
+    def file_path(self, environment: i.GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
+        return environment.eds.result.stdout_file
 
 
 class StderrComparisonTarget(ComparisonTarget):
     def __init__(self):
         super().__init__(False)
 
-    def file_path(self, global_environment: i.GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
-        return global_environment.eds.result.stderr_file
+    def file_path(self, environment: i.GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
+        return environment.eds.result.stderr_file
 
 
 def check(file_path: pathlib.Path) -> str:

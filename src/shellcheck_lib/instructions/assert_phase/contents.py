@@ -9,7 +9,8 @@ from shellcheck_lib.execution.execution_directory_structure import \
     root_dir_for_non_stdout_or_stderr_files_with_replaced_env_vars, SUB_DIR_FOR_REPLACEMENT_SOURCES_UNDER_ACT_DIR, \
     SUB_DIR_FOR_REPLACEMENT_SOURCES_NOT_UNDER_ACT_DIR
 from shellcheck_lib.instructions.assert_phase.utils.contents_utils import TargetTransformer, EMPTY_ARGUMENT, \
-    SOURCE_REL_HOME_OPTION, SOURCE_REL_CWD_OPTION, WITH_REPLACED_ENV_VARS_OPTION, SOURCE_REL_TMP_OPTION
+    SOURCE_REL_HOME_OPTION, SOURCE_REL_CWD_OPTION, WITH_REPLACED_ENV_VARS_OPTION, SOURCE_REL_TMP_OPTION, \
+    parse_target_file_argument
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
 from .utils import contents_utils
@@ -53,16 +54,15 @@ class Parser(SingleInstructionParser):
     def apply(self, source: SingleInstructionParserSource) -> AssertPhaseInstruction:
         arguments = shlex.split(source.instruction_argument)
         if not arguments:
-            raise SingleInstructionInvalidArgumentException('At least one argument expected (file name)')
-        file_argument = arguments[0]
-        file_argument_path = pathlib.Path(file_argument)
-        comparison_target = contents_utils.ActComparisonTarget(file_argument)
-        content_instruction = contents_utils.try_parse_content(comparison_target,
-                                                               _TargetTransformer(),
-                                                               arguments[1:])
-        if content_instruction is not None:
-            return content_instruction
-        raise SingleInstructionInvalidArgumentException('Invalid file instruction')
+            raise SingleInstructionInvalidArgumentException('At least one argument expected (FILE)')
+        (comparison_target, remaining_arguments) = parse_target_file_argument(arguments)
+        instruction = contents_utils.try_parse_content(comparison_target,
+                                                       _TargetTransformer(),
+                                                       remaining_arguments)
+        return instruction
+        # if content_instruction is not None:
+        #     return content_instruction
+        # raise SingleInstructionInvalidArgumentException('Invalid file instruction')
 
 
 class _TargetTransformer(TargetTransformer):
