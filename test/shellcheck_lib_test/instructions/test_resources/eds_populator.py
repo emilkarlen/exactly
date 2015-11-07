@@ -24,6 +24,10 @@ def tmp_user_dir_contents(contents: DirContents) -> EdsPopulator:
     return _FilesInTmpUserDir(contents)
 
 
+def tmp_internal_dir_contents(contents: DirContents) -> EdsPopulator:
+    return _FilesInTmpInternalDir(contents)
+
+
 class _Empty(EdsPopulator):
     def apply(self, eds: ExecutionDirectoryStructure):
         pass
@@ -54,3 +58,12 @@ class _FilesInTmpUserDir(EdsPopulator):
 
     def apply(self, eds: ExecutionDirectoryStructure):
         self.test_root_contents.write_to(eds.tmp.user_dir)
+
+
+class _FilesInTmpInternalDir(EdsPopulator):
+    def __init__(self,
+                 contents: DirContents):
+        self.test_root_contents = contents
+
+    def apply(self, eds: ExecutionDirectoryStructure):
+        self.test_root_contents.write_to(eds.tmp.internal_dir)
