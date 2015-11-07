@@ -100,7 +100,8 @@ def _execute_pre_validate(home_dir_path,
     return pre_validate_result
 
 
-def _execute_main(eds, global_environment_with_eds,
+def _execute_main(eds,
+                  global_environment_with_eds: i.GlobalEnvironmentForPostEdsPhase,
                   instruction: SetupPhaseInstruction,
                   put,
                   setup: Flow) -> sh.SuccessOrHardError:
@@ -117,6 +118,7 @@ def _execute_main(eds, global_environment_with_eds,
                         'Result from main method cannot be None')
     setup.expected_main_result.apply(put, main_result)
     setup.expected_main_side_effects_on_environment.apply(put,
+                                                          global_environment_with_eds,
                                                           initial_settings_builder,
                                                           settings_builder)
     setup.expected_main_side_effects_on_files.apply(put, eds)

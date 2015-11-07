@@ -3,6 +3,8 @@ Test of test-infrastructure: instruction_check.
 """
 import unittest
 
+from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
+    SingleInstructionParserSource
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.result import svh
@@ -10,11 +12,10 @@ from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, Setup
 from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib_test.execution.full_execution.util.instruction_test_resources import \
     SetupPhaseInstructionThatReturns
-from shellcheck_lib_test.instructions.setup.test_resources import instruction_check
+from shellcheck_lib.test_case.sections import common
 from shellcheck_lib_test.instructions.test_resources import utils
 from shellcheck_lib_test.instructions.test_resources.test_of_test_framework_utils import ParserThatGives
-from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionParserSource
+from shellcheck_lib_test.instructions.setup.test_resources import instruction_check
 from shellcheck_lib_test.instructions.test_resources import test_of_test_framework_utils as test_misc
 from shellcheck_lib_test.instructions.setup.test_resources import settings_check
 
@@ -78,6 +79,7 @@ class TestCases(instruction_check.TestCaseBase):
 
 class SettingsCheckRaisesTestError(settings_check.Assertion):
     def apply(self, put: unittest.TestCase,
+              environment: common.GlobalEnvironmentForPostEdsPhase,
               initial: SetupSettingsBuilder,
               actual_result: SetupSettingsBuilder):
         raise test_misc.TestError()
