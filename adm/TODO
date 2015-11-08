@@ -1,6 +1,11 @@
 -*- org -*-
 
 
+* TODO Refaktorering: Nya FileRef, FilePropCheck bör ersätta Comparison{Target,Source}
+Har laggt till massvis med FileRef, FilePropCheck, FileCheck (el vad de nu
+heter).
+De bör kunna ersätta mkt av det som content-assertions använder för att ange
+jämförelsefiler.
 * TODO Dokumentation
 ** TODO Hjälpsystem
 ** TODO Users Guide

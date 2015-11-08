@@ -2,6 +2,22 @@
 
 Fortsätt med
 
+* Felinfo från FileCheck
+Idag får enbart bool.
+
+Vill få detaljerad info användbar för felsökning.
+Lösning:
+resulat vid
+ok: info om vilka egenskaper som testats
+fel: info om vilken egenskap som orsakade felet
+
+Problemet var tidigare negate: När sub-testet gav ok så gav det None.
+Utifrån den infon är det omöjligt att avgöra vilken egenskap som orsakar
+negate att fallera.
+Det ska lösas genom ovanstående.
+
+Implementera detta och integrera det i felmeddelanden för de som använder
+FileCheck.
 * cd
 cd [DIRECTORY]
 Om directory inte anges så flyttas till SHELLCHECK_ACT.
