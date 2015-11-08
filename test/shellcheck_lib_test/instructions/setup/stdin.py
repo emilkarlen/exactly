@@ -72,6 +72,14 @@ class TestSuccessfulInstructionExecution(TestCaseBase):
 
 
 class TestFailingInstructionExecution(TestCaseBase):
+    def test_referenced_file_does_not_exist(self):
+        self._check(
+            Flow(sut.Parser(),
+                 expected_pre_validation_result=svh_check.is_validation_error(),
+                 ),
+            new_source('instruction-name',
+                       '--rel-home non-existing-file'))
+
     def test_referenced_file_is_a_directory(self):
         self._check(
             Flow(sut.Parser(),
