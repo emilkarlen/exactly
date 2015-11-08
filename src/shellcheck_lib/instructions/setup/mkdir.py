@@ -1,6 +1,6 @@
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionParserSource
-from shellcheck_lib.instructions.utils.multi_phase_instructions import mkdir as mkdir_utils
+from shellcheck_lib.instructions.multi_phase_instructions import mkdir as mkdir_utils
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.result import svh
