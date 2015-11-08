@@ -5,9 +5,11 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
 from shellcheck_lib.test_case.sections import common as i
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
 from shellcheck_lib.test_case.os_services import OsServices
+import shellcheck_lib.test_case.sections.common
 from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
+from shellcheck_lib_test.instructions.test_resources.utils import write_act_result
 from shellcheck_lib_test.util import file_structure
 from shellcheck_lib_test.instructions.test_resources import svh_check
 from shellcheck_lib_test.instructions.test_resources import pfh_check
@@ -18,11 +20,11 @@ from shellcheck_lib_test.instructions.test_resources import utils
 
 class ActEnvironment(tuple):
     def __new__(cls,
-                home_and_eds: utils.HomeAndEds):
+                home_and_eds: shellcheck_lib.test_case.sections.common.HomeAndEds):
         return tuple.__new__(cls, (home_and_eds,))
 
     @property
-    def home_and_eds(self) -> utils.HomeAndEds:
+    def home_and_eds(self) -> shellcheck_lib.test_case.sections.common.HomeAndEds:
         return self[0]
 
 
@@ -74,7 +76,7 @@ def execute(put: unittest.TestCase,
             home_dir_contents=setup.home_dir_contents,
             eds_contents=setup.eds_contents_before_main) as home_and_eds:
         act_result = setup.act_result_producer.apply(ActEnvironment(home_and_eds))
-        home_and_eds.write_act_result(act_result)
+        write_act_result(home_and_eds.eds, act_result)
 
         environment = i.GlobalEnvironmentForPostEdsPhase(home_and_eds.home_dir_path,
                                                          home_and_eds.eds)

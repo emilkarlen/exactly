@@ -7,6 +7,7 @@ from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEds
 from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction
+from shellcheck_lib_test.instructions.test_resources.utils import write_act_result
 from shellcheck_lib_test.util import file_structure
 from shellcheck_lib_test.instructions.test_resources import sh_check
 from shellcheck_lib_test.instructions.test_resources import eds_populator
@@ -51,7 +52,7 @@ def execute(put: unittest.TestCase,
     with utils.home_and_eds_and_test_as_curr_dir(
             home_dir_contents=setup.home_dir_contents,
             eds_contents=setup.eds_contents_before_main) as home_and_eds:
-        home_and_eds.write_act_result(setup.act_result)
+        write_act_result(home_and_eds.eds, setup.act_result)
         environment = i.GlobalEnvironmentForPostEdsPhase(home_and_eds.home_dir_path,
                                                          home_and_eds.eds)
         _execute_main(environment, instruction, put, setup)

@@ -1,7 +1,7 @@
-import enum
 import pathlib
 
 from shellcheck_lib.default.execution_mode.test_case.instruction_setup import Description, InvokationVariant
+from shellcheck_lib.instructions.utils.file_properties import FileType
 from shellcheck_lib.instructions.utils.parse_utils import spit_arguments_list_string
 from shellcheck_lib.test_case.sections import common as i
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
@@ -10,13 +10,6 @@ from shellcheck_lib.instructions.assert_phase.utils import instruction_utils
 from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib.test_case.os_services import OsServices
-
-
-class FileType(enum.Enum):
-    SYMLINK = 0
-    REGULAR = 1
-    DIRECTORY = 2
-
 
 FILE_TYPES = {
     "symlink": FileType.SYMLINK,

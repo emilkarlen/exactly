@@ -1,6 +1,23 @@
 import pathlib
 
+from shellcheck_lib.execution import execution_directory_structure as eds_module
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
+
+
+class HomeAndEds:
+    def __init__(self,
+                 home_path: pathlib.Path,
+                 eds: eds_module.ExecutionDirectoryStructure):
+        self._home_path = home_path
+        self._eds = eds
+
+    @property
+    def home_dir_path(self) -> pathlib.Path:
+        return self._home_path
+
+    @property
+    def eds(self) -> eds_module.ExecutionDirectoryStructure:
+        return self._eds
 
 
 class GlobalEnvironmentForPreEdsStep:
@@ -27,3 +44,8 @@ class GlobalEnvironmentForPostEdsPhase(GlobalEnvironmentForPreEdsStep):
     @property
     def eds(self) -> ExecutionDirectoryStructure:
         return self.__eds
+
+    @property
+    def home_and_eds(self) -> HomeAndEds:
+        return HomeAndEds(self.home_directory,
+                          self.eds)

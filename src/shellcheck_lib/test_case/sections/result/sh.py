@@ -22,6 +22,13 @@ class SuccessOrHardError(tuple):
     def is_hard_error(self) -> bool:
         return not self.is_success
 
+    def __str__(self):
+        if self.is_success:
+            return 'SUCCESS'
+        else:
+            return 'FAILURE:{}'.format(self.failure_message)
+
+
 
 __SH_SUCCESS = SuccessOrHardError(None)
 

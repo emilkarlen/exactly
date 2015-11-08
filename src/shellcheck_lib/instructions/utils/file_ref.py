@@ -1,6 +1,6 @@
 import pathlib
 
-from shellcheck_lib.test_case.sections import common as i
+from shellcheck_lib.test_case.sections.common import HomeAndEds
 
 
 class FileRef:
@@ -20,7 +20,7 @@ class FileRef:
         """
         raise NotImplementedError()
 
-    def file_path(self, environment: i.GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
+    def file_path(self, home_and_eds: HomeAndEds) -> pathlib.Path:
         raise NotImplementedError()
 
     @property
@@ -54,15 +54,15 @@ class _FileRefRelHome(FileRef):
         """
         return home_dir_path / self._file_name
 
-    def file_path(self, environment: i.GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
-        return self.file_path_pre_eds(environment.home_directory)
+    def file_path(self, home_and_eds: HomeAndEds) -> pathlib.Path:
+        return self.file_path_pre_eds(home_and_eds.home_dir_path)
 
 
 class _FileRefForFileThatDoesNotExistPreEdsBase(FileRef):
     def __init__(self, file_name: str):
         super().__init__(False, file_name)
 
-    def file_path(self, environment: i.GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
+    def file_path(self, home_and_eds: HomeAndEds) -> pathlib.Path:
         raise NotImplementedError()
 
     def file_path_pre_eds(self, home_dir_path: pathlib.Path) -> pathlib.Path:
@@ -76,7 +76,7 @@ class _FileRefRelCwd(_FileRefForFileThatDoesNotExistPreEdsBase):
     def __init__(self, file_name: str):
         super().__init__(file_name)
 
-    def file_path(self, environment: i.GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
+    def file_path(self, home_and_eds: HomeAndEds) -> pathlib.Path:
         return pathlib.Path.cwd() / self._file_name
 
 
@@ -84,13 +84,13 @@ class _FileRefRelTmpUser(_FileRefForFileThatDoesNotExistPreEdsBase):
     def __init__(self, file_name: str):
         super().__init__(file_name)
 
-    def file_path(self, environment: i.GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
-        return environment.eds.tmp.user_dir / self._file_name
+    def file_path(self, home_and_eds: HomeAndEds) -> pathlib.Path:
+        return home_and_eds.eds.tmp.user_dir / self._file_name
 
 
 class _FileRefRelTmpInternal(_FileRefForFileThatDoesNotExistPreEdsBase):
     def __init__(self, file_name: str):
         super().__init__(file_name)
 
-    def file_path(self, environment: i.GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
-        return environment.eds.tmp.internal_dir / self._file_name
+    def file_path(self, home_and_eds: HomeAndEds) -> pathlib.Path:
+        return home_and_eds.eds.tmp.internal_dir / self._file_name

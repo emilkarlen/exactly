@@ -69,3 +69,7 @@ class DirContents:
                  dir_path: pathlib.Path):
         for file_element in self.file_system_element_contents:
             file_element.write_to(dir_path)
+
+
+def empty_dir_contents() -> DirContents:
+    return DirContents([])

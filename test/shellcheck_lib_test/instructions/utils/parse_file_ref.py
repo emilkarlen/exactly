@@ -3,9 +3,8 @@ import unittest
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from shellcheck_lib.instructions.utils import parse_file_ref as sut
-from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
 from shellcheck_lib_test.instructions.test_resources.eds_populator import act_dir_contents, tmp_user_dir_contents
-from shellcheck_lib_test.instructions.test_resources.utils import home_and_eds_and_test_as_curr_dir, HomeAndEds
+from shellcheck_lib_test.instructions.test_resources.utils import home_and_eds_and_test_as_curr_dir
 from shellcheck_lib_test.util.file_structure import DirContents, empty_file
 
 
@@ -38,30 +37,25 @@ class TestParsesCorrectValue(unittest.TestCase):
         (file_reference, _) = sut.parse_non_act_generated_file(['--rel-home', 'file.txt'])
         with home_and_eds_and_test_as_curr_dir(
                 home_dir_contents=DirContents([empty_file('file.txt')])) as home_and_eds:
-            self.assertTrue(file_reference.file_path(env_from(home_and_eds)).exists())
+            self.assertTrue(file_reference.file_path(home_and_eds).exists())
 
     def test_rel_cwd(self):
         (file_reference, _) = sut.parse_non_act_generated_file(['--rel-cwd', 'file.txt'])
         with home_and_eds_and_test_as_curr_dir(
                 eds_contents=act_dir_contents(DirContents([empty_file('file.txt')]))) as home_and_eds:
-            self.assertTrue(file_reference.file_path(env_from(home_and_eds)).exists())
+            self.assertTrue(file_reference.file_path(home_and_eds).exists())
 
     def test_rel_tmp(self):
         (file_reference, _) = sut.parse_non_act_generated_file(['--rel-tmp', 'file.txt'])
         with home_and_eds_and_test_as_curr_dir(
                 eds_contents=tmp_user_dir_contents(DirContents([empty_file('file.txt')]))) as home_and_eds:
-            self.assertTrue(file_reference.file_path(env_from(home_and_eds)).exists())
+            self.assertTrue(file_reference.file_path(home_and_eds).exists())
 
     def test_rel_home_is_default(self):
         (file_reference, _) = sut.parse_non_act_generated_file(['file.txt'])
         with home_and_eds_and_test_as_curr_dir(
                 home_dir_contents=DirContents([empty_file('file.txt')])) as home_and_eds:
-            self.assertTrue(file_reference.file_path(env_from(home_and_eds)).exists())
-
-
-def env_from(home_and_eds: HomeAndEds) -> GlobalEnvironmentForPostEdsPhase:
-    return GlobalEnvironmentForPostEdsPhase(home_and_eds.home_dir_path,
-                                            home_and_eds.eds)
+            self.assertTrue(file_reference.file_path(home_and_eds).exists())
 
 
 def suite():
