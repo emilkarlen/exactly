@@ -2,14 +2,14 @@ import unittest
 
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-
 from shellcheck_lib.instructions.utils import file_ref
 from shellcheck_lib.test_case.sections.setup import SetupSettingsBuilder
 from shellcheck_lib_test.instructions.setup.test_resources.instruction_check import Flow, TestCaseBase
 from shellcheck_lib_test.instructions.setup.test_resources.settings_check import Assertion
+from shellcheck_lib_test.instructions.test_resources import svh_check
 from shellcheck_lib_test.instructions.test_resources.utils import new_source
 from shellcheck_lib.test_case.sections import common
-from shellcheck_lib_test.util.file_structure import DirContents, empty_file
+from shellcheck_lib_test.util.file_structure import DirContents, empty_file, empty_dir
 from shellcheck_lib.instructions.setup import stdin as sut
 
 
@@ -71,6 +71,19 @@ class TestSuccessfulInstructionExecution(TestCaseBase):
                        'file-in-home-dir.txt'))
 
 
+class TestFailingInstructionExecution(TestCaseBase):
+    def test_referenced_file_is_a_directory(self):
+        self._check(
+            Flow(sut.Parser(),
+                 home_dir_contents=DirContents([
+                     empty_dir('directory'),
+                 ]),
+                 expected_pre_validation_result=svh_check.is_validation_error(),
+                 ),
+            new_source('instruction-name',
+                       '--rel-home directory'))
+
+
 class AssertStdinFileIsSetToFile(Assertion):
     def __init__(self,
                  file_reference: file_ref.FileRef):
@@ -81,7 +94,7 @@ class AssertStdinFileIsSetToFile(Assertion):
               environment: common.GlobalEnvironmentForPostEdsPhase,
               initial: SetupSettingsBuilder,
               actual_result: SetupSettingsBuilder):
-        file_path = self._file_reference.file_path(environment.home_and_eds)
+        file_path = self._file_reference.file_path_post_eds(environment.home_and_eds)
         put.assertEqual(str(file_path),
                         actual_result.stdin_file_name,
                         'Name of stdin file in Setup Settings')
@@ -91,6 +104,7 @@ def suite():
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestParseSet))
     ret_val.addTest(unittest.makeSuite(TestSuccessfulInstructionExecution))
+    ret_val.addTest(unittest.makeSuite(TestFailingInstructionExecution))
     return ret_val
 
 

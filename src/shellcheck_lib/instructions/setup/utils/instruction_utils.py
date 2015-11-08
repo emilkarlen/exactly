@@ -1,4 +1,4 @@
-from shellcheck_lib.instructions.utils.file_check import FileRefCheck
+from shellcheck_lib.instructions.utils.file_ref_check import FileRefCheck
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
 from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction
