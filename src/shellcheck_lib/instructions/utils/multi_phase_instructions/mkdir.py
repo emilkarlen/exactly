@@ -1,6 +1,9 @@
 import pathlib
 
 from shellcheck_lib.default.execution_mode.test_case.instruction_setup import Description, InvokationVariant
+from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
+    SingleInstructionParserSource, SingleInstructionInvalidArgumentException
+from shellcheck_lib.instructions.utils.parse_utils import spit_arguments_list_string, ensure_is_not_option_argument
 
 DESCRIPTION = Description(
     'Makes a directory in the current directory',
@@ -13,6 +16,15 @@ DESCRIPTION = Description(
     [InvokationVariant('DIRECTORY',
                        ''),
      ])
+
+
+def parse(source: SingleInstructionParserSource) -> str:
+    arguments = spit_arguments_list_string(source.instruction_argument)
+    if len(arguments) != 1:
+        raise SingleInstructionInvalidArgumentException('Usage: DIRECTORY')
+    argument = arguments[0]
+    ensure_is_not_option_argument(argument)
+    return argument
 
 
 def make_dir_in_current_dir(directory_components: str) -> str:
