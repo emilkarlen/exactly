@@ -6,6 +6,9 @@ from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction
 class InstructionWithFileRefsBase(SetupPhaseInstruction):
     def __init__(self,
                  file_ref_list_tuple: tuple):
+        """
+        :param file_ref_list_tuple: [] Sequence of files to be validates
+        """
         self.file_ref_list_tuple = file_ref_list_tuple
 
     def pre_validate(self, environment: GlobalEnvironmentForPreEdsStep) -> svh.SuccessOrValidationErrorOrHardError:

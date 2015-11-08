@@ -8,11 +8,13 @@ from shellcheck_lib.document import parse
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParserSource
 from shellcheck_lib.execution import execution_directory_structure as eds_module
+from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.general import line_source
 from shellcheck_lib.general.line_source import LineSequenceBuilder
 from shellcheck_lib.test_case.sections import common as i
+from shellcheck_lib.test_case.sections.common import HomeAndEds
 from shellcheck_lib_test.instructions.test_resources import eds_populator
-from shellcheck_lib_test.util.file_structure import DirContents
+from shellcheck_lib_test.util.file_structure import DirContents, empty_dir_contents
 from shellcheck_lib_test.util.file_utils import write_file
 
 
@@ -38,6 +40,12 @@ class ActResult:
         return self._stderr_contents
 
 
+def write_act_result(eds: ExecutionDirectoryStructure,
+                     result: ActResult):
+    write_file(eds.result.exitcode_file, str(result.exitcode))
+    write_file(eds.result.stdout_file, result.stdout_contents)
+    write_file(eds.result.stderr_file, result.stderr_contents)
+
 @contextmanager
 def act_phase_result(exitcode: int=0,
                      stdout_contents: str='',
@@ -57,31 +65,9 @@ def act_phase_result(exitcode: int=0,
             os.chdir(cwd_before)
 
 
-class HomeAndEds:
-    def __init__(self,
-                 home_path: pathlib.Path,
-                 eds: eds_module.ExecutionDirectoryStructure):
-        self._home_path = home_path
-        self._eds = eds
-
-    @property
-    def home_dir_path(self) -> pathlib.Path:
-        return self._home_path
-
-    @property
-    def eds(self) -> eds_module.ExecutionDirectoryStructure:
-        return self._eds
-
-    def write_act_result(self,
-                         result: ActResult):
-        write_file(self.eds.result.exitcode_file, str(result.exitcode))
-        write_file(self.eds.result.stdout_file, result.stdout_contents)
-        write_file(self.eds.result.stderr_file, result.stderr_contents)
-
-
 @contextmanager
 def home_and_eds_and_test_as_curr_dir(
-        home_dir_contents: DirContents=DirContents([]),
+        home_dir_contents: DirContents=empty_dir_contents(),
         eds_contents: eds_populator.EdsPopulator=eds_populator.empty()) -> HomeAndEds:
     cwd_before = os.getcwd()
     prefix = strftime("shellcheck-test-%Y-%m-%d-%H-%M-%S", localtime())

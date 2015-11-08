@@ -1,7 +1,6 @@
 from contextlib import contextmanager
 import os
 import pathlib
-import tempfile
 import unittest
 import sys
 
@@ -13,7 +12,8 @@ from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib_test.act_phase_setups.test_resources.act_program_executor import ActProgramExecutorTestSetup, Tests
 from shellcheck_lib_test.act_phase_setups.test_resources import py_program
 from shellcheck_lib_test.instructions.test_resources.utils import execution_directory_structure
-from shellcheck_lib_test.util.file_structure import DirContents, empty_file, File
+from shellcheck_lib_test.util.file_structure import empty_file, File
+from shellcheck_lib_test.util.file_structure_utils import tmp_dir_with
 from shellcheck_lib_test.util.file_utils import tmp_file_containing_lines
 
 
@@ -149,7 +149,7 @@ class CommandFileRelativeHomeTestCases(unittest.TestCase):
         source = setup.script_builder_constructor()
         command_file_name = 'command'
         source.raw_script_statement(command_file_name)
-        with tmp_dir_with_file(empty_file(command_file_name)) as home_dir_path:
+        with tmp_dir_with(empty_file(command_file_name)) as home_dir_path:
             actual = setup.executor.validate(home_dir_path, source)
             self.assertIs(actual.status,
                           svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
@@ -169,7 +169,7 @@ class CommandFileRelativeHomeTestCases(unittest.TestCase):
         source = setup.script_builder_constructor()
         command_file_name = 'command'
         source.raw_script_statement('{} arg1 arg2'.format(command_file_name))
-        with tmp_dir_with_file(empty_file(command_file_name)) as home_dir_path:
+        with tmp_dir_with(empty_file(command_file_name)) as home_dir_path:
             actual = setup.executor.validate(home_dir_path, source)
             self.assertIs(actual.status,
                           svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
@@ -222,7 +222,7 @@ def execute_program_rel_home_that_returns_number_of_arguments(puc: unittest.Test
     source = setup.script_builder_constructor()
     python_interpreter_name = 'python-interpreter'
     command_file_name = 'program.py'
-    with tmp_dir_with_file(File(command_file_name, exit_code_is_number_of_arguments)) as home_dir_path:
+    with tmp_dir_with(File(command_file_name, exit_code_is_number_of_arguments)) as home_dir_path:
         os.symlink(sys.executable, str(home_dir_path / python_interpreter_name), False)
         source.raw_script_statement('{} {}{}'.format(python_interpreter_name,
                                                      home_dir_path / command_file_name,
@@ -251,7 +251,7 @@ def execute_absolute_program_that_returns_number_of_arguments(puc: unittest.Test
     setup = sut.act_phase_setup(True)
     source = setup.script_builder_constructor()
     command_file_name = 'program.py'
-    with tmp_dir_with_file(File(command_file_name, exit_code_is_number_of_arguments)) as home_dir_path:
+    with tmp_dir_with(File(command_file_name, exit_code_is_number_of_arguments)) as home_dir_path:
         source.raw_script_statement('{} {}{}'.format(sys.executable,
                                                      home_dir_path / command_file_name,
                                                      arguments))
@@ -278,14 +278,6 @@ exit_code_is_number_of_arguments = """
 import sys
 sys.exit(len(sys.argv) - 1)
 """
-
-
-@contextmanager
-def tmp_dir_with_file(file: File):
-    with tempfile.TemporaryDirectory() as home_dir:
-        home_dir_path = pathlib.Path(home_dir)
-        DirContents([file]).write_to(home_dir_path)
-        yield home_dir_path
 
 
 def suite():
