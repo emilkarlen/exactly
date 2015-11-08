@@ -32,6 +32,10 @@ def is_fail():
     return StatusIs(pfh.PassOrFailOrHardErrorEnum.FAIL)
 
 
+def is_hard_error():
+    return StatusIs(pfh.PassOrFailOrHardErrorEnum.HARD_ERROR)
+
+
 class AnythingGoes(Assertion):
     def apply(self,
               put: unittest.TestCase,
