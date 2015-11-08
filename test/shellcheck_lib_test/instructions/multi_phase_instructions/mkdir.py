@@ -20,13 +20,23 @@ class TestParseSet(unittest.TestCase):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             sut.parse(arguments)
 
+    def test_strip_trailing_space(self):
+        arguments = '  expected-argument  '
+        result = sut.parse(arguments)
+        self.assertEqual('expected-argument',
+                         result)
+
     def test_success_when_correct_number_of_arguments(self):
         arguments = 'expected-argument'
-        sut.parse(arguments)
+        result = sut.parse(arguments)
+        self.assertEqual('expected-argument',
+                         result)
 
     def test_success_when_correct_number_of_arguments__escaped(self):
         arguments = '"expected argument"'
-        sut.parse(arguments)
+        result = sut.parse(arguments)
+        self.assertEqual('expected argument',
+                         result)
 
 
 class ParseAndMkDirAction:

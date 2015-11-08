@@ -24,7 +24,7 @@ def parse(argument: str) -> str:
         raise SingleInstructionInvalidArgumentException('Usage: DIRECTORY')
     directory_argument = arguments[0]
     ensure_is_not_option_argument(directory_argument)
-    return argument
+    return directory_argument
 
 
 def make_dir_in_current_dir(directory_components: str) -> str:
