@@ -4,6 +4,7 @@ from shellcheck_lib.instructions.assert_phase import exitcode as exitcode_instru
 from shellcheck_lib.instructions.assert_phase import contents as contents_instruction
 from shellcheck_lib.instructions.assert_phase import type
 from shellcheck_lib.instructions.assert_phase import stdout_stderr as stdout_stderr_instruction
+from shellcheck_lib.instructions.assert_phase import mkdir
 
 INSTRUCTIONS = {
     'exitcode':
@@ -14,6 +15,10 @@ INSTRUCTIONS = {
         SingleInstructionSetup(
             contents_instruction.Parser(),
             contents_instruction.DESCRIPTION),
+    'mkdir':
+        SingleInstructionSetup(
+            mkdir.Parser(),
+            mkdir.DESCRIPTION),
     'shell':
         SingleInstructionSetup(
             assert_shell.Parser(),
