@@ -2,14 +2,13 @@ import unittest
 
 from shellcheck_lib.instructions.setup.utils.instruction_utils import InstructionWithFileRefsBase
 from shellcheck_lib.instructions.utils import file_ref
+from shellcheck_lib.instructions.utils.file_check import FileRefCheck
 from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
 from shellcheck_lib.test_case.sections.setup import SetupSettingsBuilder
 from shellcheck_lib.test_case.sections.result import sh
-from shellcheck_lib_test.instructions.test_resources.eds_populator import act_dir_contents
 from shellcheck_lib_test.instructions.test_resources.utils import home_and_eds_and_test_as_curr_dir, HomeAndEds
-from shellcheck_lib_test.util.file_structure import DirContents
-from shellcheck_lib_test.util.file_structure import empty_file
+from shellcheck_lib_test.instructions.utils.file_properties import FileCheckThatEvaluatesTo
 
 
 class TestInstruction(InstructionWithFileRefsBase):
@@ -25,9 +24,9 @@ class TestInstruction(InstructionWithFileRefsBase):
 
 class TestValidationShouldBeInPreValidateIfFileDoesExistPreEds(unittest.TestCase):
     def test_successful_validation(self):
-        instruction = TestInstruction((file_ref.rel_home('file.txt'),))
-        with home_and_eds_and_test_as_curr_dir(
-                home_dir_contents=DirContents([empty_file('file.txt')])) as home_and_eds:
+        instruction = TestInstruction((FileRefCheck(file_ref.rel_home('file.txt'),
+                                                    FileCheckThatEvaluatesTo(True)),))
+        with home_and_eds_and_test_as_curr_dir() as home_and_eds:
             pre_validate = instruction.pre_validate(GlobalEnvironmentForPreEdsStep(home_and_eds.home_dir_path))
             self.assertTrue(pre_validate.is_success)
 
@@ -35,7 +34,8 @@ class TestValidationShouldBeInPreValidateIfFileDoesExistPreEds(unittest.TestCase
             self.assertTrue(post_validate.is_success)
 
     def test_unsuccessful_validation(self):
-        instruction = TestInstruction((file_ref.rel_home('non-existing-file.txt'),))
+        instruction = TestInstruction((FileRefCheck(file_ref.rel_home('file.txt'),
+                                                    FileCheckThatEvaluatesTo(False)),))
         with home_and_eds_and_test_as_curr_dir() as home_and_eds:
             pre_validate = instruction.pre_validate(GlobalEnvironmentForPreEdsStep(home_and_eds.home_dir_path))
             self.assertFalse(pre_validate.is_success)
@@ -46,9 +46,9 @@ class TestValidationShouldBeInPreValidateIfFileDoesExistPreEds(unittest.TestCase
 
 class TestValidationShouldBeInPostValidateIfFileDoesNotExistPreEds(unittest.TestCase):
     def test_successful_validation(self):
-        instruction = TestInstruction((file_ref.rel_cwd('file.txt'),))
-        with home_and_eds_and_test_as_curr_dir(
-                eds_contents=act_dir_contents(DirContents([empty_file('file.txt')]))) as home_and_eds:
+        instruction = TestInstruction((FileRefCheck(file_ref.rel_cwd('file.txt'),
+                                                    FileCheckThatEvaluatesTo(True)),))
+        with home_and_eds_and_test_as_curr_dir() as home_and_eds:
             pre_validate = instruction.pre_validate(GlobalEnvironmentForPreEdsStep(home_and_eds.home_dir_path))
             self.assertTrue(pre_validate.is_success)
 
@@ -56,7 +56,8 @@ class TestValidationShouldBeInPostValidateIfFileDoesNotExistPreEds(unittest.Test
             self.assertTrue(post_validate.is_success)
 
     def test_unsuccessful_validation(self):
-        instruction = TestInstruction((file_ref.rel_cwd('file.txt'),))
+        instruction = TestInstruction((FileRefCheck(file_ref.rel_cwd('file.txt'),
+                                                    FileCheckThatEvaluatesTo(False)),))
         with home_and_eds_and_test_as_curr_dir() as home_and_eds:
             pre_validate = instruction.pre_validate(GlobalEnvironmentForPreEdsStep(home_and_eds.home_dir_path))
             self.assertTrue(pre_validate.is_success)

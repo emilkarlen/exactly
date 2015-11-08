@@ -37,25 +37,25 @@ class TestParsesCorrectValue(unittest.TestCase):
         (file_reference, _) = sut.parse_non_act_generated_file(['--rel-home', 'file.txt'])
         with home_and_eds_and_test_as_curr_dir(
                 home_dir_contents=DirContents([empty_file('file.txt')])) as home_and_eds:
-            self.assertTrue(file_reference.file_path(home_and_eds).exists())
+            self.assertTrue(file_reference.file_path_post_eds(home_and_eds).exists())
 
     def test_rel_cwd(self):
         (file_reference, _) = sut.parse_non_act_generated_file(['--rel-cwd', 'file.txt'])
         with home_and_eds_and_test_as_curr_dir(
                 eds_contents=act_dir_contents(DirContents([empty_file('file.txt')]))) as home_and_eds:
-            self.assertTrue(file_reference.file_path(home_and_eds).exists())
+            self.assertTrue(file_reference.file_path_post_eds(home_and_eds).exists())
 
     def test_rel_tmp(self):
         (file_reference, _) = sut.parse_non_act_generated_file(['--rel-tmp', 'file.txt'])
         with home_and_eds_and_test_as_curr_dir(
                 eds_contents=tmp_user_dir_contents(DirContents([empty_file('file.txt')]))) as home_and_eds:
-            self.assertTrue(file_reference.file_path(home_and_eds).exists())
+            self.assertTrue(file_reference.file_path_post_eds(home_and_eds).exists())
 
     def test_rel_home_is_default(self):
         (file_reference, _) = sut.parse_non_act_generated_file(['file.txt'])
         with home_and_eds_and_test_as_curr_dir(
                 home_dir_contents=DirContents([empty_file('file.txt')])) as home_and_eds:
-            self.assertTrue(file_reference.file_path(home_and_eds).exists())
+            self.assertTrue(file_reference.file_path_post_eds(home_and_eds).exists())
 
 
 def suite():

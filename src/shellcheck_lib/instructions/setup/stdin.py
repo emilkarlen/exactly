@@ -35,5 +35,5 @@ class _Instruction(InstructionWithFileRefsBase):
              os_services: OsServices,
              environment: GlobalEnvironmentForPostEdsPhase,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
-        settings_builder.set_stdin_file(str(self.redirect_file.file_path(environment.home_and_eds)))
+        settings_builder.set_stdin_file(str(self.redirect_file.file_path_post_eds(environment.home_and_eds)))
         return sh.new_sh_success()
