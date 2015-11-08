@@ -2,7 +2,7 @@ import unittest
 
 from shellcheck_lib.instructions.setup.utils.instruction_utils import InstructionWithFileRefsBase
 from shellcheck_lib.instructions.utils import file_ref
-from shellcheck_lib.instructions.utils.file_check import FileRefCheck
+from shellcheck_lib.instructions.utils.file_ref_check import FileRefCheck
 from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
 from shellcheck_lib.test_case.sections.setup import SetupSettingsBuilder
