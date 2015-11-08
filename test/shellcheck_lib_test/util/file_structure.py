@@ -60,6 +60,11 @@ class Link(FileSystemElement):
         file_path.symlink_to(target_path, target_is_dir)
 
 
+def sym_link(file_name: str,
+             target: str) -> Link:
+    return Link(file_name, target)
+
+
 class DirContents:
     def __init__(self,
                  file_system_element_contents: list):
