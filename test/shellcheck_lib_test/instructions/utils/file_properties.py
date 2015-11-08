@@ -8,6 +8,14 @@ from shellcheck_lib_test.util.file_structure_utils import tmp_dir, tmp_dir_with
 from shellcheck_lib.instructions.utils import file_properties as sut
 
 
+class FileCheckThatEvaluatesTo(sut.FilePropertiesCheck):
+    def __init__(self, constant: bool):
+        self.__constant = constant
+
+    def apply(self, path: pathlib.Path) -> bool:
+        return self.__constant
+
+
 class TestNegationOf(unittest.TestCase):
     def test_evaluate_to_false_when_operand_evaluates_to_true(self):
         property_check = sut.negation_of(FileCheckThatEvaluatesTo(True))
@@ -292,14 +300,6 @@ def dir_with_symlink_to_non_existing_file() -> pathlib.Path:
     with tmp_dir_with(sym_link('symlink-to-non-existing-file',
                                'non-existing-file')) as dir_path:
         yield dir_path / 'symlink-to-non-existing-file'
-
-
-class FileCheckThatEvaluatesTo(sut.FilePropertiesCheck):
-    def __init__(self, constant: bool):
-        self.__constant = constant
-
-    def apply(self, path: pathlib.Path) -> bool:
-        return self.__constant
 
 
 def suite():
