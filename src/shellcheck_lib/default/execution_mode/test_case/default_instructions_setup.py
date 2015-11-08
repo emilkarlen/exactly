@@ -4,6 +4,7 @@ from shellcheck_lib.instructions.configuration import home
 from shellcheck_lib.instructions.setup import env
 from shellcheck_lib.instructions.setup import install
 from shellcheck_lib.instructions.setup import shell as setup_shell
+from shellcheck_lib.instructions.setup import mkdir
 from shellcheck_lib.instructions.setup import stdin
 from shellcheck_lib.instructions.cleanup import shell as cleanup_shell
 from shellcheck_lib.instructions.assert_phase import shell as assert_shell
@@ -28,6 +29,10 @@ instructions_setup = InstructionsSetup(
             SingleInstructionSetup(
                 install.Parser(),
                 install.DESCRIPTION),
+        'mkdir':
+            SingleInstructionSetup(
+                mkdir.Parser(),
+                mkdir.DESCRIPTION),
         'shell':
             SingleInstructionSetup(
                 setup_shell.Parser(),
