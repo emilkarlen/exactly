@@ -1,7 +1,6 @@
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
-    SingleInstructionParserSource, SingleInstructionInvalidArgumentException
+    SingleInstructionParserSource
 from shellcheck_lib.instructions.utils.multi_phase_instructions import mkdir as mkdir_utils
-from shellcheck_lib.instructions.utils.parse_utils import spit_arguments_list_string, ensure_is_not_option_argument
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.result import svh
@@ -13,11 +12,7 @@ DESCRIPTION = mkdir_utils.DESCRIPTION
 
 class Parser(SingleInstructionParser):
     def apply(self, source: SingleInstructionParserSource) -> SetupPhaseInstruction:
-        arguments = spit_arguments_list_string(source.instruction_argument)
-        if len(arguments) != 1:
-            raise SingleInstructionInvalidArgumentException('Usage: DIRECTORY')
-        argument = arguments[0]
-        ensure_is_not_option_argument(argument)
+        argument = mkdir_utils.parse(source)
         return _Instruction(argument)
 
 
