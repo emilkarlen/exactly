@@ -5,6 +5,7 @@ from . import exitcode
 from . import contents
 from . import stdout_stderr
 from . import type
+from . import mkdir
 
 
 def suite():
@@ -14,6 +15,7 @@ def suite():
     ret_val.addTest(contents.suite())
     ret_val.addTest(stdout_stderr.suite())
     ret_val.addTest(type.suite())
+    ret_val.addTest(mkdir.suite())
     return ret_val
 
 
