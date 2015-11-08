@@ -193,6 +193,8 @@ Har ett testfall för filelist som gör just detta mha ex.
 Ersättningsvärdet är absolut sökväg för testets rot (SHELLCHECK_ACT).
 Antar att detta är relativt vanligt.  Därför borde shellcheck ha en sådan
 funktion inbyggd.
+** TODO mkdir --rel-tmp DIRECTORY
+Skapar katalog under tmp/user.
 * TODO Faser
 ** TODO Byt namn "anonymous" -> "configuration"
 ** TODO Configuration

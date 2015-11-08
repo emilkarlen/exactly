@@ -2,40 +2,14 @@
 
 Fortsätt med
 
-* DONE Motsvarande simptest:s -replaced-SIMPTEST-envvars
-Idé:
-Ange att resultatet ska sök+ersättas m växel, t ex "--replace".
-(Vill i en förlängning kunna använda den växeln för att göra godtycklig
-sök+ersätt.  Så kan behöva tänkas på att införa en variant som kommer att vara
-kompatibel med en framtida sådan.)
-
-Sök+ersätt-versioner av stdout och stderr, för standard-sök+ersätt av värden
-som motsvarar shellchecks miljövariabler, ligger i samma katalog som stdout
-och stderr.
-När en jämförelse som använder --replace påträffas kollar instruktionen först
-om det finns en bearbetad fil som är redo att använda ("stdout-replaced", t
-ex).
-Om det inte gör det skapas den.
-Sedan utförs jämförelsen mot sök+ersatta versionen.
-
-* DONE Implementera --with-replaced-env-vars för "contents"
-Den har nu en TargetTransformer som inte är helt implementerad.
-
-Bör gå att låna mycket från stdout/stderr.  (Ev behövs omstruktrering för att
-göra koden åtkommlig.)
-
-Bör gå att hitta på vettig namnkonvention som gör att namn inte krockar.
-1. Bestäm rot-katalog.  T ex ESD/tmp/with-replaced-env-vars/
-2. Härled suffix av namn under denna:
-   - För sökvägar under SHELLCHECK-esd-root:
-     Låt suffixet vara komponenterna som följer efter SHELLCHECK-esd-root
-   - För sökvägar utanför SHELLCHECK-esd-root:
-     Låt suffixet vara filens absoluta sökväg.
-* TODO shellcheck för filelist
+* cd
+cd [DIRECTORY]
+Om directory inte anges så flyttas till SHELLCHECK_ACT.
+* shellcheck för filelist
 Beta av listan av tester i tests/CMakeList.txt
 Skapa utgångsfil från simptest-motsvarighet. Stå i testcases/ :
 for f in *.simptestcase; do bn=${f%.m4.simptestcase}; sc=${bn}.shellcheckcase; test -e $sc || cp -a $f $sc; done
-* TODO Skräddarsy act-fasen
+* Skräddarsy act-fasen
 ** DONE Testa befintlig script-lng-setup individuellt
 *** DONE Infrastruktur för test av act-phase-setup
 ** DONE Integrera Executor.validate i testfalls-exekveringen
@@ -57,10 +31,10 @@ program verkligen består av ett enda kommando.
 ... så att det går att ange relativa sökvägar på kommandoraden (o ev, i en
 senare framtid, även i testsviter).
 Ev två olika setup: en som resolvar relativa sökvagar, o en som inte gör det.
-* TODO Svit: Summering i rapporten
+* Svit: Summering i rapporten
 Avslutande utskrift: Antal lyckade, fallerade, <andra typer av fel>
-* TODO Exekvering av fall: Rapportera mha "Rapportör" (pss som svit)
-* TODO Instruktioner
+* Exekvering av fall: Rapportera mha "Rapportör" (pss som svit)
+* Instruktioner
 ** DONE Impl instr för assert/exitcode
 ** DONE Testa parsing
 ** DONE Troligtvis: infrastruktur för test av instruktion
@@ -77,7 +51,7 @@ representation av - "mellanled".
 ** DONE Testa infrastrukturen för att parsa instruktioner i uppslagsverk
 ** TODO Lyft ut funk från impl av exitcode så att den blir allmänt tillgänglig
 ** DONE Ta bort nuv phase_enviroment från Assert-instruktionen
-* TODO Kring instruktioner
+* Kring instruktioner
 ** TODO PassOrFailOrHardError: FAIL ska kunna ta olika varianter av felmeddelande
 - sträng
 - förväntat värde, verkligt värde, namn på egenskap
