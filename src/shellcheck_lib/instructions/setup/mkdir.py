@@ -12,7 +12,7 @@ DESCRIPTION = mkdir_utils.DESCRIPTION
 
 class Parser(SingleInstructionParser):
     def apply(self, source: SingleInstructionParserSource) -> SetupPhaseInstruction:
-        argument = mkdir_utils.parse(source)
+        argument = mkdir_utils.parse(source.instruction_argument)
         return _Instruction(argument)
 
 
