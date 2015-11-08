@@ -1,8 +1,6 @@
-import pathlib
-
-from shellcheck_lib.default.execution_mode.test_case.instruction_setup import Description, InvokationVariant
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
+from shellcheck_lib.instructions.utils.multi_phase_instructions import mkdir as mkdir_utils
 from shellcheck_lib.instructions.utils.parse_utils import spit_arguments_list_string, ensure_is_not_option_argument
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
 from shellcheck_lib.test_case.sections.result import sh
@@ -10,17 +8,7 @@ from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
 from shellcheck_lib.test_case.os_services import OsServices
 
-DESCRIPTION = Description(
-    'Makes a directory in the current directory',
-    """
-    Makes parent components, if needed.
-
-
-    Does not fail if the given directory already exists.
-    """,
-    [InvokationVariant('DIRECTORY',
-                       ''),
-     ])
+DESCRIPTION = mkdir_utils.DESCRIPTION
 
 
 class Parser(SingleInstructionParser):
@@ -45,16 +33,8 @@ class _Instruction(SetupPhaseInstruction):
              os_services: OsServices,
              environment: GlobalEnvironmentForPostEdsPhase,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
-        dir_path = pathlib.Path() / self.directory_components
-        if dir_path.is_dir():
-            return sh.new_sh_success()
-        try:
-            dir_path.mkdir(parents=True)
-        except FileExistsError:
-            return sh.new_sh_hard_error('Path exists, but is not a directory: {}'.format(dir_path))
-        except NotADirectoryError:
-            return sh.new_sh_hard_error('Clash with existing file: {}'.format(dir_path))
-        return sh.new_sh_success()
+        error_message = mkdir_utils.make_dir_in_current_dir(self.directory_components)
+        return sh.new_sh_success() if error_message is None else sh.new_sh_hard_error(error_message)
 
     def post_validate(self,
                       global_environment: GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
