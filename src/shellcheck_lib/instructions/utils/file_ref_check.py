@@ -1,6 +1,6 @@
 import pathlib
 
-from shellcheck_lib.instructions.utils.file_properties import FilePropertiesCheck
+from shellcheck_lib.instructions.utils.file_properties import FilePropertiesCheck, CheckResult
 from shellcheck_lib.instructions.utils.file_ref import FileRef
 from shellcheck_lib.test_case.sections.common import HomeAndEds
 
@@ -12,12 +12,12 @@ class FileRefCheck:
         self.file_reference = file_reference
         self.file_properties = file_properties
 
-    def satisfies_pre_eds_condition(self, home_dir_path: pathlib.Path) -> bool:
+    def pre_eds_condition_result(self, home_dir_path: pathlib.Path) -> CheckResult:
         if self.file_reference.exists_pre_eds:
-            return self.file_properties.apply(self.file_reference.file_path_pre_eds(home_dir_path)).result
-        return True
+            return self.file_properties.apply(self.file_reference.file_path_pre_eds(home_dir_path))
+        return None
 
-    def satisfies_post_eds_condition(self, home_and_eds: HomeAndEds):
+    def post_eds_condition_result(self, home_and_eds: HomeAndEds) -> CheckResult:
         if not self.file_reference.exists_pre_eds:
-            return self.file_properties.apply(self.file_reference.file_path_post_eds(home_and_eds)).result
-        return True
+            return self.file_properties.apply(self.file_reference.file_path_post_eds(home_and_eds))
+        return None

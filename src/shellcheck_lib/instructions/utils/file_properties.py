@@ -10,6 +10,13 @@ class FileType(enum.Enum):
     DIRECTORY = 2
 
 
+type_name = {
+    FileType.REGULAR: 'regular file',
+    FileType.DIRECTORY: 'directory',
+    FileType.SYMLINK: 'symbolic link',
+}
+
+
 def stat_results_is_of(file_type: FileType,
                        stat_result) -> bool:
     if file_type is FileType.REGULAR:
@@ -76,12 +83,12 @@ class PropertiesWithNegation(tuple):
 
 class CheckResult(tuple):
     def __new__(cls,
-                result: bool,
+                is_success: bool,
                 cause: PropertiesWithNegation):
-        return tuple.__new__(cls, (result, cause,))
+        return tuple.__new__(cls, (is_success, cause,))
 
     @property
-    def result(self) -> bool:
+    def is_success(self) -> bool:
         return self[0]
 
     @property
@@ -90,7 +97,7 @@ class CheckResult(tuple):
 
 
 def negate(result: CheckResult) -> CheckResult:
-    return CheckResult(not result.result,
+    return CheckResult(not result.is_success,
                        result.cause)
 
 
@@ -112,6 +119,27 @@ def must_exist_as(file_type: FileType,
 
 def negation_of(check: FilePropertiesCheck):
     return _NegationOf(check)
+
+
+def render_failure(properties_with_neg: PropertiesWithNegation.properties,
+                   file_path: pathlib.Path) -> str:
+    is_follow_symlinks = properties_with_neg.properties.is_follow_symlinks
+    sym_links = 'symbolic links followed' if is_follow_symlinks else 'symbolic links not followed'
+    properties = properties_with_neg.properties
+    if properties_with_neg.is_negated:
+        if properties.is_existence:
+            return 'File does exist ({}): {}'.format(sym_links, str(file_path))
+        else:
+            return os.linesep.join(['File is a {} ({}):'.format(type_name[properties.type_of_existing_file],
+                                                                sym_links),
+                                    str(file_path)])
+    else:
+        if properties.is_existence:
+            return 'File does not exist ({}):{}'.format(sym_links, str(file_path))
+        else:
+            return os.linesep.join(['File is not a {} ({}):'.format(type_name[properties.type_of_existing_file],
+                                                                    sym_links),
+                                    str(file_path)])
 
 
 class _NegationOf(FilePropertiesCheck):

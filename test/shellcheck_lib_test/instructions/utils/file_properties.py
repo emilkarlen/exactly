@@ -23,11 +23,11 @@ class FileCheckThatEvaluatesTo(sut.FilePropertiesCheck):
 class TestNegationOf(unittest.TestCase):
     def test_evaluate_to_false_when_operand_evaluates_to_true(self):
         property_check = sut.negation_of(FileCheckThatEvaluatesTo(True))
-        self.assertFalse(property_check.apply(pathlib.Path()).result)
+        self.assertFalse(property_check.apply(pathlib.Path()).is_success)
 
     def test_evaluate_to_true_when_operand_evaluates_to_false(self):
         property_check = sut.negation_of(FileCheckThatEvaluatesTo(False))
-        self.assertTrue(property_check.apply(pathlib.Path()).result)
+        self.assertTrue(property_check.apply(pathlib.Path()).is_success)
 
 
 class TestMustExistWhenFollowSymLinks(unittest.TestCase):
@@ -37,27 +37,27 @@ class TestMustExistWhenFollowSymLinks(unittest.TestCase):
     def test_non_existing_path(self):
         property_check = self._the_property_check()
         with empty_directory() as file_path:
-            self.assertFalse(property_check.apply(file_path).result)
+            self.assertFalse(property_check.apply(file_path).is_success)
 
     def test_with_existing_file(self):
         property_check = self._the_property_check()
         with dir_with_file() as file_path:
-            self.assertTrue(property_check.apply(file_path).result)
+            self.assertTrue(property_check.apply(file_path).is_success)
 
     def test_with_existing_dir(self):
         property_check = self._the_property_check()
         with dir_with_dir() as file_path:
-            self.assertTrue(property_check.apply(file_path).result)
+            self.assertTrue(property_check.apply(file_path).is_success)
 
     def test_with_symlink_to_existing_file(self):
         property_check = self._the_property_check()
         with dir_with_symlink_to_existing_file() as file_path:
-            self.assertTrue(property_check.apply(file_path).result)
+            self.assertTrue(property_check.apply(file_path).is_success)
 
     def test_with_symlink_to_non_existing_file(self):
         property_check = self._the_property_check()
         with dir_with_symlink_to_non_existing_file() as file_path:
-            self.assertFalse(property_check.apply(file_path).result)
+            self.assertFalse(property_check.apply(file_path).is_success)
 
 
 class TestMustExistWhenDoNotFollowSymLinks(unittest.TestCase):
@@ -67,27 +67,27 @@ class TestMustExistWhenDoNotFollowSymLinks(unittest.TestCase):
     def test_non_existing_path(self):
         property_check = self._the_property_check()
         with empty_directory() as file_path:
-            self.assertFalse(property_check.apply(file_path).result)
+            self.assertFalse(property_check.apply(file_path).is_success)
 
     def test_with_existing_file(self):
         property_check = self._the_property_check()
         with dir_with_file() as file_path:
-            self.assertTrue(property_check.apply(file_path).result)
+            self.assertTrue(property_check.apply(file_path).is_success)
 
     def test_with_existing_dir(self):
         property_check = self._the_property_check()
         with dir_with_dir() as file_path:
-            self.assertTrue(property_check.apply(file_path).result)
+            self.assertTrue(property_check.apply(file_path).is_success)
 
     def test_with_symlink_to_existing_file(self):
         property_check = self._the_property_check()
         with dir_with_symlink_to_existing_file() as file_path:
-            self.assertTrue(property_check.apply(file_path).result)
+            self.assertTrue(property_check.apply(file_path).is_success)
 
     def test_with_symlink_to_non_existing_file(self):
         property_check = self._the_property_check()
         with dir_with_symlink_to_non_existing_file() as file_path:
-            self.assertTrue(property_check.apply(file_path).result)
+            self.assertTrue(property_check.apply(file_path).is_success)
 
 
 class TestMustExistAsRegularFileWhenFollowSymLinks(unittest.TestCase):
@@ -97,32 +97,32 @@ class TestMustExistAsRegularFileWhenFollowSymLinks(unittest.TestCase):
     def test_non_existing_path(self):
         property_check = self._the_property_check()
         with empty_directory() as file_path:
-            self.assertFalse(property_check.apply(file_path).result)
+            self.assertFalse(property_check.apply(file_path).is_success)
 
     def test_with_existing_file(self):
         property_check = self._the_property_check()
         with dir_with_file() as file_path:
-            self.assertTrue(property_check.apply(file_path).result)
+            self.assertTrue(property_check.apply(file_path).is_success)
 
     def test_with_existing_dir(self):
         property_check = self._the_property_check()
         with dir_with_dir() as file_path:
-            self.assertFalse(property_check.apply(file_path).result)
+            self.assertFalse(property_check.apply(file_path).is_success)
 
     def test_with_symlink_to_existing_file(self):
         property_check = self._the_property_check()
         with dir_with_symlink_to_existing_file() as file_path:
-            self.assertTrue(property_check.apply(file_path).result)
+            self.assertTrue(property_check.apply(file_path).is_success)
 
     def test_with_symlink_to_existing_dir(self):
         property_check = self._the_property_check()
         with dir_with_symlink_to_existing_dir() as file_path:
-            self.assertFalse(property_check.apply(file_path).result)
+            self.assertFalse(property_check.apply(file_path).is_success)
 
     def test_with_symlink_to_non_existing_file(self):
         property_check = self._the_property_check()
         with dir_with_symlink_to_non_existing_file() as file_path:
-            self.assertFalse(property_check.apply(file_path).result)
+            self.assertFalse(property_check.apply(file_path).is_success)
 
 
 class TestMustExistAsRegularFileWhenDoNotFollowSymLinks(unittest.TestCase):
@@ -132,32 +132,32 @@ class TestMustExistAsRegularFileWhenDoNotFollowSymLinks(unittest.TestCase):
     def test_non_existing_path(self):
         property_check = self._the_property_check()
         with empty_directory() as file_path:
-            self.assertFalse(property_check.apply(file_path).result)
+            self.assertFalse(property_check.apply(file_path).is_success)
 
     def test_with_existing_file(self):
         property_check = self._the_property_check()
         with dir_with_file() as file_path:
-            self.assertTrue(property_check.apply(file_path).result)
+            self.assertTrue(property_check.apply(file_path).is_success)
 
     def test_with_existing_dir(self):
         property_check = self._the_property_check()
         with dir_with_dir() as file_path:
-            self.assertFalse(property_check.apply(file_path).result)
+            self.assertFalse(property_check.apply(file_path).is_success)
 
     def test_with_symlink_to_existing_file(self):
         property_check = self._the_property_check()
         with dir_with_symlink_to_existing_file() as file_path:
-            self.assertFalse(property_check.apply(file_path).result)
+            self.assertFalse(property_check.apply(file_path).is_success)
 
     def test_with_symlink_to_existing_dir(self):
         property_check = self._the_property_check()
         with dir_with_symlink_to_existing_dir() as file_path:
-            self.assertFalse(property_check.apply(file_path).result)
+            self.assertFalse(property_check.apply(file_path).is_success)
 
     def test_with_symlink_to_non_existing_file(self):
         property_check = self._the_property_check()
         with dir_with_symlink_to_non_existing_file() as file_path:
-            self.assertFalse(property_check.apply(file_path).result)
+            self.assertFalse(property_check.apply(file_path).is_success)
 
 
 class TestMustExistAsDirectoryWhenFollowSymLinks(unittest.TestCase):
@@ -167,32 +167,32 @@ class TestMustExistAsDirectoryWhenFollowSymLinks(unittest.TestCase):
     def test_non_existing_path(self):
         property_check = self._the_property_check()
         with empty_directory() as file_path:
-            self.assertFalse(property_check.apply(file_path).result)
+            self.assertFalse(property_check.apply(file_path).is_success)
 
     def test_with_existing_file(self):
         property_check = self._the_property_check()
         with dir_with_file() as file_path:
-            self.assertFalse(property_check.apply(file_path).result)
+            self.assertFalse(property_check.apply(file_path).is_success)
 
     def test_with_existing_dir(self):
         property_check = self._the_property_check()
         with dir_with_dir() as file_path:
-            self.assertTrue(property_check.apply(file_path).result)
+            self.assertTrue(property_check.apply(file_path).is_success)
 
     def test_with_symlink_to_existing_file(self):
         property_check = self._the_property_check()
         with dir_with_symlink_to_existing_file() as file_path:
-            self.assertFalse(property_check.apply(file_path).result)
+            self.assertFalse(property_check.apply(file_path).is_success)
 
     def test_with_symlink_to_existing_dir(self):
         property_check = self._the_property_check()
         with dir_with_symlink_to_existing_dir() as file_path:
-            self.assertTrue(property_check.apply(file_path).result)
+            self.assertTrue(property_check.apply(file_path).is_success)
 
     def test_with_symlink_to_non_existing_file(self):
         property_check = self._the_property_check()
         with dir_with_symlink_to_non_existing_file() as file_path:
-            self.assertFalse(property_check.apply(file_path).result)
+            self.assertFalse(property_check.apply(file_path).is_success)
 
 
 class TestMustExistAsDirectoryWhenDoNotFollowSymLinks(unittest.TestCase):
@@ -202,32 +202,32 @@ class TestMustExistAsDirectoryWhenDoNotFollowSymLinks(unittest.TestCase):
     def test_non_existing_path(self):
         property_check = self._the_property_check()
         with empty_directory() as file_path:
-            self.assertFalse(property_check.apply(file_path).result)
+            self.assertFalse(property_check.apply(file_path).is_success)
 
     def test_with_existing_file(self):
         property_check = self._the_property_check()
         with dir_with_file() as file_path:
-            self.assertFalse(property_check.apply(file_path).result)
+            self.assertFalse(property_check.apply(file_path).is_success)
 
     def test_with_existing_dir(self):
         property_check = self._the_property_check()
         with dir_with_dir() as file_path:
-            self.assertTrue(property_check.apply(file_path).result)
+            self.assertTrue(property_check.apply(file_path).is_success)
 
     def test_with_symlink_to_existing_file(self):
         property_check = self._the_property_check()
         with dir_with_symlink_to_existing_file() as file_path:
-            self.assertFalse(property_check.apply(file_path).result)
+            self.assertFalse(property_check.apply(file_path).is_success)
 
     def test_with_symlink_to_existing_dir(self):
         property_check = self._the_property_check()
         with dir_with_symlink_to_existing_dir() as file_path:
-            self.assertFalse(property_check.apply(file_path).result)
+            self.assertFalse(property_check.apply(file_path).is_success)
 
     def test_with_symlink_to_non_existing_file(self):
         property_check = self._the_property_check()
         with dir_with_symlink_to_non_existing_file() as file_path:
-            self.assertFalse(property_check.apply(file_path).result)
+            self.assertFalse(property_check.apply(file_path).is_success)
 
 
 class TestMustExistAsSymbolicLinkWhenDoNotFollowSymLinks(unittest.TestCase):
@@ -237,32 +237,32 @@ class TestMustExistAsSymbolicLinkWhenDoNotFollowSymLinks(unittest.TestCase):
     def test_non_existing_path(self):
         property_check = self._the_property_check()
         with empty_directory() as file_path:
-            self.assertFalse(property_check.apply(file_path).result)
+            self.assertFalse(property_check.apply(file_path).is_success)
 
     def test_with_existing_file(self):
         property_check = self._the_property_check()
         with dir_with_file() as file_path:
-            self.assertFalse(property_check.apply(file_path).result)
+            self.assertFalse(property_check.apply(file_path).is_success)
 
     def test_with_existing_dir(self):
         property_check = self._the_property_check()
         with dir_with_dir() as file_path:
-            self.assertFalse(property_check.apply(file_path).result)
+            self.assertFalse(property_check.apply(file_path).is_success)
 
     def test_with_symlink_to_existing_file(self):
         property_check = self._the_property_check()
         with dir_with_symlink_to_existing_file() as file_path:
-            self.assertTrue(property_check.apply(file_path).result)
+            self.assertTrue(property_check.apply(file_path).is_success)
 
     def test_with_symlink_to_existing_dir(self):
         property_check = self._the_property_check()
         with dir_with_symlink_to_existing_dir() as file_path:
-            self.assertTrue(property_check.apply(file_path).result)
+            self.assertTrue(property_check.apply(file_path).is_success)
 
     def test_with_symlink_to_non_existing_file(self):
         property_check = self._the_property_check()
         with dir_with_symlink_to_non_existing_file() as file_path:
-            self.assertTrue(property_check.apply(file_path).result)
+            self.assertTrue(property_check.apply(file_path).is_success)
 
 
 @contextmanager
