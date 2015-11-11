@@ -14,10 +14,10 @@ class FileRefCheck:
 
     def satisfies_pre_eds_condition(self, home_dir_path: pathlib.Path) -> bool:
         if self.file_reference.exists_pre_eds:
-            return self.file_properties.apply(self.file_reference.file_path_pre_eds(home_dir_path))
+            return self.file_properties.apply(self.file_reference.file_path_pre_eds(home_dir_path)).result
         return True
 
     def satisfies_post_eds_condition(self, home_and_eds: HomeAndEds):
         if not self.file_reference.exists_pre_eds:
-            return self.file_properties.apply(self.file_reference.file_path_post_eds(home_and_eds))
+            return self.file_properties.apply(self.file_reference.file_path_post_eds(home_and_eds)).result
         return True

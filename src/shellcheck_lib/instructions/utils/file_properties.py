@@ -21,8 +21,81 @@ def stat_results_is_of(file_type: FileType,
     raise ValueError('Unknown {}: {}'.format(FileType, file_type))
 
 
+class Properties(tuple):
+    def __new__(cls,
+                follow_symlinks: bool,
+                file_exists: bool,
+                type_of_existing_file: FileType):
+        return tuple.__new__(cls, (follow_symlinks, file_exists, type_of_existing_file))
+
+    @property
+    def is_follow_symlinks(self) -> bool:
+        return self[0]
+
+    @property
+    def is_existence(self) -> bool:
+        return self[1] is not None
+
+    @property
+    def is_type_of_existing_file(self) -> FileType:
+        return not self.is_existence
+
+    @property
+    def file_exists(self) -> bool:
+        return self[1]
+
+    @property
+    def type_of_existing_file(self) -> FileType:
+        return self[2]
+
+
+def new_properties_for_existence(follow_symlinks: bool,
+                                 file_exists: bool) -> Properties:
+    return Properties(follow_symlinks, file_exists, None)
+
+
+def new_properties_for_type_of_existing_file(follow_symlinks: bool,
+                                             type_of_existing_file: FileType) -> Properties:
+    return Properties(follow_symlinks, None, type_of_existing_file)
+
+
+class PropertiesWithNegation(tuple):
+    def __new__(cls,
+                is_negated: bool,
+                properties: Properties):
+        return tuple.__new__(cls, (is_negated, properties,))
+
+    @property
+    def is_negated(self) -> bool:
+        return self[0]
+
+    @property
+    def properties(self) -> Properties:
+        return self[1]
+
+
+class CheckResult(tuple):
+    def __new__(cls,
+                result: bool,
+                cause: PropertiesWithNegation):
+        return tuple.__new__(cls, (result, cause,))
+
+    @property
+    def result(self) -> bool:
+        return self[0]
+
+    @property
+    def cause(self) -> PropertiesWithNegation:
+        return self[1]
+
+
+def negate(result: CheckResult) -> CheckResult:
+    return CheckResult(not result.result,
+                       result.cause)
+
+
 class FilePropertiesCheck:
-    def apply(self, path: pathlib.Path) -> bool:
+    def apply(self, path: pathlib.Path) -> CheckResult:
         raise NotImplementedError()
 
 
@@ -45,23 +118,27 @@ class _NegationOf(FilePropertiesCheck):
     def __init__(self, check: FilePropertiesCheck):
         self.__check = check
 
-    def apply(self, path: pathlib.Path) -> bool:
-        return not self.__check.apply(path)
+    def apply(self, path: pathlib.Path) -> CheckResult:
+        sub_result = self.__check.apply(path)
+        return negate(sub_result)
 
 
 class _MustExistBase(FilePropertiesCheck):
     def __init__(self, follow_symlinks: bool):
-        self.__follow_symlinks = follow_symlinks
+        self._follow_symlinks = follow_symlinks
 
-    def apply(self, path: pathlib.Path) -> bool:
+    def apply(self, path: pathlib.Path) -> CheckResult:
         try:
             stat_results = os.stat(str(path),
-                                   follow_symlinks=self.__follow_symlinks)
+                                   follow_symlinks=self._follow_symlinks)
             return self._for_existing_file(stat_results)
         except FileNotFoundError:
-            return False
+            return CheckResult(False,
+                               PropertiesWithNegation(False,
+                                                      new_properties_for_existence(self._follow_symlinks,
+                                                                                   False)))
 
-    def _for_existing_file(self, stat_results) -> bool:
+    def _for_existing_file(self, stat_results) -> CheckResult:
         raise NotImplementedError()
 
 
@@ -69,8 +146,11 @@ class _MustExist(_MustExistBase):
     def __init__(self, follow_symlinks: bool):
         super().__init__(follow_symlinks)
 
-    def _for_existing_file(self, stat_results) -> bool:
-        return True
+    def _for_existing_file(self, stat_results) -> CheckResult:
+        return CheckResult(True,
+                           PropertiesWithNegation(False,
+                                                  new_properties_for_existence(self._follow_symlinks,
+                                                                               True)))
 
 
 class _MustExistAs(_MustExistBase):
@@ -80,5 +160,9 @@ class _MustExistAs(_MustExistBase):
         super().__init__(follow_symlinks)
         self._expected_file_type = expected_file_type
 
-    def _for_existing_file(self, stat_results) -> bool:
-        return stat_results_is_of(self._expected_file_type, stat_results)
+    def _for_existing_file(self, stat_results) -> CheckResult:
+        result = stat_results_is_of(self._expected_file_type, stat_results)
+        return CheckResult(result,
+                           PropertiesWithNegation(False,
+                                                  new_properties_for_type_of_existing_file(self._follow_symlinks,
+                                                                                           self._expected_file_type)))
