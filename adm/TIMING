@@ -167,6 +167,7 @@ testas, o lägga till nya.)
   CLOCK: [2015-04-12 sön 14:03]--[2015-04-12 sön 16:32] =>  2:29
 
 * Refaktoreringar
+  CLOCK: [2015-11-12 tor 19:21]--[2015-11-12 tor 23:21] =>  4:00
   CLOCK: [2015-11-11 ons 21:04]--[2015-11-12 tor 00:31] =>  3:27
   CLOCK: [2015-09-20 sön 16:19]--[2015-09-20 sön 18:44] =>  2:25
   CLOCK: [2015-09-20 sön 07:30]--[2015-09-20 sön 10:11] =>  2:41
@@ -178,6 +179,8 @@ testas, o lägga till nya.)
   CLOCK: [2015-04-27 mån 14:27]--[2015-04-27 mån 22:49] =>  8:22
   CLOCK: [2015-04-24 fre 09:35]--[2015-04-24 fre 15:39] =>  6:04
   CLOCK: [2015-04-23 tor 19:01]--[2015-04-23 tor 21:01] =>  2:00
+
+** Byta ut mot nya FileRef+FileRefCheck där det går
 ** Paketstruktur
 * Tmp-directory
   CLOCK: [2015-05-01 fre 14:18]--[2015-05-01 fre 14:52] =>  0:34
