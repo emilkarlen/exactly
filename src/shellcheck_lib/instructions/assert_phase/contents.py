@@ -7,8 +7,8 @@ from shellcheck_lib.execution import environment_variables
 from shellcheck_lib.execution.execution_directory_structure import \
     root_dir_for_non_stdout_or_stderr_files_with_replaced_env_vars, SUB_DIR_FOR_REPLACEMENT_SOURCES_UNDER_ACT_DIR, \
     SUB_DIR_FOR_REPLACEMENT_SOURCES_NOT_UNDER_ACT_DIR
-from shellcheck_lib.instructions.assert_phase.utils.contents_utils import TargetTransformer, EMPTY_ARGUMENT, \
-    WITH_REPLACED_ENV_VARS_OPTION, parse_target_file_argument
+from shellcheck_lib.instructions.assert_phase.utils.contents_utils import ActualFileTransformer, EMPTY_ARGUMENT, \
+    WITH_REPLACED_ENV_VARS_OPTION, parse_actual_file_argument
 from shellcheck_lib.instructions.utils.parse_file_ref import SOURCE_REL_HOME_OPTION, SOURCE_REL_CWD_OPTION, \
     SOURCE_REL_TMP_OPTION
 from shellcheck_lib.instructions.utils.parse_utils import spit_arguments_list_string
@@ -56,9 +56,9 @@ class Parser(SingleInstructionParser):
         arguments = spit_arguments_list_string(source.instruction_argument)
         if not arguments:
             raise SingleInstructionInvalidArgumentException('At least one argument expected (FILE)')
-        (comparison_target, remaining_arguments) = parse_target_file_argument(arguments)
+        (comparison_target, remaining_arguments) = parse_actual_file_argument(arguments)
         instruction = contents_utils.try_parse_content(comparison_target,
-                                                       _TargetTransformer(),
+                                                       _ActualFileTransformer(),
                                                        remaining_arguments)
         return instruction
         # if content_instruction is not None:
@@ -66,7 +66,7 @@ class Parser(SingleInstructionParser):
         # raise SingleInstructionInvalidArgumentException('Invalid file instruction')
 
 
-class _TargetTransformer(TargetTransformer):
+class _ActualFileTransformer(ActualFileTransformer):
     def _dst_file_path(self,
                        environment: GlobalEnvironmentForPostEdsPhase,
                        src_file_path: pathlib.Path) -> pathlib.Path:

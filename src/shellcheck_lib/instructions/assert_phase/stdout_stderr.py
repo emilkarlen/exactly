@@ -4,7 +4,7 @@ from shellcheck_lib.default.execution_mode.test_case.instruction_setup import De
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionInvalidArgumentException, SingleInstructionParserSource
 from shellcheck_lib.execution import environment_variables
-from shellcheck_lib.instructions.assert_phase.utils.contents_utils import TargetTransformer, \
+from shellcheck_lib.instructions.assert_phase.utils.contents_utils import ActualFileTransformer, \
     WITH_REPLACED_ENV_VARS_OPTION, EMPTY_ARGUMENT
 from shellcheck_lib.instructions.utils.parse_file_ref import SOURCE_REL_HOME_OPTION, SOURCE_REL_CWD_OPTION, \
     SOURCE_REL_TMP_OPTION
@@ -50,16 +50,16 @@ def description(file: str) -> Description:
 WITH_REPLACED_ENV_VARS_STEM_SUFFIX = '-with-replaced-env-vars.txt'
 
 
-class ParserForContentsForTarget(SingleInstructionParser):
+class ParserForContentsForActualValue(SingleInstructionParser):
     def __init__(self,
-                 comparison_target: contents_utils.ComparisonTarget,
-                 target_transformer: TargetTransformer):
-        self.comparison_target = comparison_target
-        self.target_transformer = target_transformer
+                 comparison_actual_value: contents_utils.ComparisonActualFile,
+                 actual_value_transformer: ActualFileTransformer):
+        self.comparison_actual_value = comparison_actual_value
+        self.target_transformer = actual_value_transformer
 
     def apply(self, source: SingleInstructionParserSource) -> AssertPhaseInstruction:
         arguments = spit_arguments_list_string(source.instruction_argument)
-        content_instruction = contents_utils.try_parse_content(self.comparison_target,
+        content_instruction = contents_utils.try_parse_content(self.comparison_actual_value,
                                                                self.target_transformer,
                                                                arguments)
         if content_instruction is None:
@@ -67,19 +67,19 @@ class ParserForContentsForTarget(SingleInstructionParser):
         return content_instruction
 
 
-class ParserForContentsForStdout(ParserForContentsForTarget):
+class ParserForContentsForStdout(ParserForContentsForActualValue):
     def __init__(self):
         super().__init__(contents_utils.StdoutComparisonTarget(),
-                         _StdXTargetTransformerBase())
+                         _StdXActualFileTransformerBase())
 
 
-class ParserForContentsForStderr(ParserForContentsForTarget):
+class ParserForContentsForStderr(ParserForContentsForActualValue):
     def __init__(self):
         super().__init__(contents_utils.StderrComparisonTarget(),
-                         _StdXTargetTransformerBase())
+                         _StdXActualFileTransformerBase())
 
 
-class _StdXTargetTransformerBase(TargetTransformer):
+class _StdXActualFileTransformerBase(ActualFileTransformer):
     def _dst_file_path(self,
                        environment: GlobalEnvironmentForPostEdsPhase,
                        src_file_path: pathlib.Path) -> pathlib.Path:
