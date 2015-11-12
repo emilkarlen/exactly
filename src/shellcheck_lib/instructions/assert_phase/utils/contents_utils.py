@@ -26,7 +26,7 @@ WITH_REPLACED_ENV_VARS_OPTION = '--with-replaced-env-vars'
 EMPTY_ARGUMENT = 'empty'
 
 
-class ComparisonTarget:
+class ComparisonActualFile:
     def file_check_failure(self, environment: i.GlobalEnvironmentForPostEdsPhase) -> str:
         """
         :return: None iff there is no failure.
@@ -37,15 +37,15 @@ class ComparisonTarget:
         raise NotImplementedError()
 
 
-def parse_target_file_argument(arguments: list) -> (ComparisonTarget, list):
+def parse_actual_file_argument(arguments: list) -> (ComparisonActualFile, list):
     if len(arguments) < 1:
         msg_header = 'Invalid number of arguments (expecting at least one): '
         raise SingleInstructionInvalidArgumentException(msg_header + str(arguments))
     (file_ref, remaining_arguments) = parse_non_home_file_ref(arguments)
-    return ActComparisonTargetForFileRef(file_ref), remaining_arguments
+    return ActComparisonActualFileForFileRef(file_ref), remaining_arguments
 
 
-class ActComparisonTargetForFileRef(ComparisonTarget):
+class ActComparisonActualFileForFileRef(ComparisonActualFile):
     def __init__(self,
                  file_ref: FileRef):
         self.file_ref = file_ref
@@ -59,17 +59,17 @@ class ActComparisonTargetForFileRef(ComparisonTarget):
         return self.file_ref.file_path_post_eds(environment.home_and_eds)
 
 
-class ActComparisonTargetForStdFileBase(ComparisonTarget):
+class ActComparisonActualFileForStdFileBase(ComparisonActualFile):
     def file_check_failure(self, environment: i.GlobalEnvironmentForPostEdsPhase) -> str:
         return None
 
 
-class StdoutComparisonTarget(ActComparisonTargetForStdFileBase):
+class StdoutComparisonTarget(ActComparisonActualFileForStdFileBase):
     def file_path(self, environment: i.GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
         return environment.eds.result.stdout_file
 
 
-class StderrComparisonTarget(ActComparisonTargetForStdFileBase):
+class StderrComparisonTarget(ActComparisonActualFileForStdFileBase):
     def file_path(self, environment: i.GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
         return environment.eds.result.stderr_file
 
@@ -77,8 +77,8 @@ class StderrComparisonTarget(ActComparisonTargetForStdFileBase):
 class ContentCheckerInstructionBase(AssertPhaseInstruction):
     def __init__(self,
                  expected_contents: FileRef,
-                 comparison_target: ComparisonTarget):
-        self.comparison_target = comparison_target
+                 actual_contents: ComparisonActualFile):
+        self._actual_value = actual_contents
         self._expected_contents = expected_contents
 
     def validate(self,
@@ -96,23 +96,23 @@ class ContentCheckerInstructionBase(AssertPhaseInstruction):
                                                            environment)
         if failure_message:
             return pfh.new_pfh_fail(failure_message)
-        file_path_for_expected = self._expected_contents.file_path_post_eds(environment.home_and_eds)
+        expected_file_path = self._expected_contents.file_path_post_eds(environment.home_and_eds)
 
-        comparison_target_path = self.comparison_target.file_path(environment)
-        failure_message = self.comparison_target.file_check_failure(environment)
+        actual_file_path = self._actual_value.file_path(environment)
+        failure_message = self._actual_value.file_check_failure(environment)
         if failure_message is not None:
             return pfh.new_pfh_fail(failure_message)
 
-        display_target_file_name = str(comparison_target_path)
-        comparison_source_file_name = str(file_path_for_expected)
-        comparison_target_file_path = self._get_comparison_target_file_path(comparison_target_path,
-                                                                            environment,
-                                                                            os_services)
-        comparison_target_file_name = str(comparison_target_file_path)
-        if not filecmp.cmp(comparison_target_file_name, comparison_source_file_name, shallow=False):
-            diff_description = _file_diff_description(comparison_target_file_path,
-                                                      file_path_for_expected)
-            return pfh.new_pfh_fail('Unexpected content in file: ' + display_target_file_name +
+        display_actual_file_name = str(actual_file_path)
+        expected_file_name = str(expected_file_path)
+        processed_actual_file_path = self._get_processed_actual_file_path(actual_file_path,
+                                                                          environment,
+                                                                          os_services)
+        actual_file_name = str(processed_actual_file_path)
+        if not filecmp.cmp(actual_file_name, expected_file_name, shallow=False):
+            diff_description = _file_diff_description(processed_actual_file_path,
+                                                      expected_file_path)
+            return pfh.new_pfh_fail('Unexpected content in file: ' + display_actual_file_name +
                                     diff_description)
         return pfh.new_pfh_pass()
 
@@ -120,32 +120,32 @@ class ContentCheckerInstructionBase(AssertPhaseInstruction):
         return FileRefCheck(self._expected_contents,
                             must_exist_as(FileType.REGULAR))
 
-    def _get_comparison_target_file_path(self,
-                                         target_file_path: pathlib.Path,
-                                         environment: i.GlobalEnvironmentForPostEdsPhase,
-                                         os_services: OsServices) -> pathlib.Path:
+    def _get_processed_actual_file_path(self,
+                                        actual_file_path: pathlib.Path,
+                                        environment: i.GlobalEnvironmentForPostEdsPhase,
+                                        os_services: OsServices) -> pathlib.Path:
         raise NotImplementedError()
 
 
 class ContentCheckerInstruction(ContentCheckerInstructionBase):
     def __init__(self,
                  expected_contents: FileRef,
-                 comparison_target: ComparisonTarget):
-        super().__init__(expected_contents, comparison_target)
+                 actual_contents: ComparisonActualFile):
+        super().__init__(expected_contents, actual_contents)
 
-    def _get_comparison_target_file_path(self,
-                                         target_file_path: pathlib.Path,
-                                         environment: i.GlobalEnvironmentForPostEdsPhase,
-                                         os_services: OsServices) -> pathlib.Path:
-        return target_file_path
+    def _get_processed_actual_file_path(self,
+                                        actual_file_path: pathlib.Path,
+                                        environment: i.GlobalEnvironmentForPostEdsPhase,
+                                        os_services: OsServices) -> pathlib.Path:
+        return actual_file_path
 
 
-class TargetTransformer:
+class ActualFileTransformer:
     def replace_env_vars(self,
                          environment: GlobalEnvironmentForPostEdsPhase,
                          os_services: OsServices,
-                         target_file_path: pathlib.Path) -> pathlib.Path:
-        src_file_path = target_file_path
+                         actual_file_path: pathlib.Path) -> pathlib.Path:
+        src_file_path = actual_file_path
         dst_file_path = self._dst_file_path(environment, src_file_path)
         if dst_file_path.exists():
             return dst_file_path
@@ -182,35 +182,35 @@ class TargetTransformer:
 class ContentCheckerWithTransformationInstruction(ContentCheckerInstructionBase):
     def __init__(self,
                  expected_contents: FileRef,
-                 comparison_target: ComparisonTarget,
-                 target_transformer: TargetTransformer):
-        super().__init__(expected_contents, comparison_target)
-        self.target_transformer = target_transformer
+                 actual_contents: ComparisonActualFile,
+                 actual_file_transformer: ActualFileTransformer):
+        super().__init__(expected_contents, actual_contents)
+        self.actual_file_transformer = actual_file_transformer
 
-    def _get_comparison_target_file_path(self,
-                                         target_file_path: pathlib.Path,
-                                         environment: i.GlobalEnvironmentForPostEdsPhase,
-                                         os_services: OsServices) -> pathlib.Path:
-        return self.target_transformer.replace_env_vars(environment,
-                                                        os_services,
-                                                        target_file_path)
+    def _get_processed_actual_file_path(self,
+                                        actual_file_path: pathlib.Path,
+                                        environment: i.GlobalEnvironmentForPostEdsPhase,
+                                        os_services: OsServices) -> pathlib.Path:
+        return self.actual_file_transformer.replace_env_vars(environment,
+                                                             os_services,
+                                                             actual_file_path)
 
 
 class EmptinessCheckerInstruction(instruction_utils.InstructionWithoutValidationBase):
     def __init__(self,
                  expect_empty: bool,
-                 comparison_target: ComparisonTarget):
-        self.comparison_target = comparison_target
+                 actual_file: ComparisonActualFile):
+        self.actual_file = actual_file
         self.expect_empty = expect_empty
 
     def main(self,
              environment: i.GlobalEnvironmentForPostEdsPhase,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
-        failure_message = self.comparison_target.file_check_failure(environment)
+        failure_message = self.actual_file.file_check_failure(environment)
         if failure_message:
             return pfh.new_pfh_fail(failure_message)
 
-        size = self.comparison_target.file_path(environment).stat().st_size
+        size = self.actual_file.file_path(environment).stat().st_size
         if self.expect_empty:
             if size != 0:
                 return pfh.new_pfh_fail('File is not empty: Size (in bytes): ' + str(size))
@@ -220,26 +220,26 @@ class EmptinessCheckerInstruction(instruction_utils.InstructionWithoutValidation
         return pfh.new_pfh_pass()
 
 
-def try_parse_content(comparison_target: ComparisonTarget,
-                      target_transformer: TargetTransformer,
+def try_parse_content(actual_file: ComparisonActualFile,
+                      actual_file_transformer: ActualFileTransformer,
                       arguments: list) -> AssertPhaseInstruction:
-    def _parse_empty(target: ComparisonTarget,
+    def _parse_empty(actual: ComparisonActualFile,
                      extra_arguments: list) -> AssertPhaseInstruction:
         if extra_arguments:
             raise SingleInstructionInvalidArgumentException(
                 'file/{}: Extra arguments: {}'.format(EMPTY_ARGUMENT,
                                                       str(extra_arguments)))
-        return EmptinessCheckerInstruction(True, target)
+        return EmptinessCheckerInstruction(True, actual)
 
-    def _parse_non_empty(target: ComparisonTarget,
+    def _parse_non_empty(actual: ComparisonActualFile,
                          extra_arguments: list) -> AssertPhaseInstruction:
         if extra_arguments:
             raise SingleInstructionInvalidArgumentException(
                 'file/!{}: Extra arguments: {}'.format(EMPTY_ARGUMENT,
                                                        str(extra_arguments)))
-        return EmptinessCheckerInstruction(False, target)
+        return EmptinessCheckerInstruction(False, actual)
 
-    def _parse_contents(target: ComparisonTarget,
+    def _parse_contents(actual: ComparisonActualFile,
                         extra_arguments: list) -> AssertPhaseInstruction:
         with_replaced_env_vars = False
         if extra_arguments and extra_arguments[0] == WITH_REPLACED_ENV_VARS_OPTION:
@@ -252,25 +252,25 @@ def try_parse_content(comparison_target: ComparisonTarget,
 
         if with_replaced_env_vars:
             return ContentCheckerWithTransformationInstruction(file_ref_for_expected,
-                                                               target,
-                                                               target_transformer)
+                                                               actual,
+                                                               actual_file_transformer)
         else:
-            return ContentCheckerInstruction(file_ref_for_expected, target)
+            return ContentCheckerInstruction(file_ref_for_expected, actual)
 
     if arguments[0] == EMPTY_ARGUMENT:
-        return _parse_empty(comparison_target, arguments[1:])
+        return _parse_empty(actual_file, arguments[1:])
     elif arguments[:2] == ['!', EMPTY_ARGUMENT]:
-        return _parse_non_empty(comparison_target, arguments[2:])
+        return _parse_non_empty(actual_file, arguments[2:])
     else:
-        return _parse_contents(comparison_target, arguments)
+        return _parse_contents(actual_file, arguments)
 
 
-def _file_diff_description(comparison_target_file_path: pathlib.Path,
-                           comparison_source_file_path: pathlib.Path) -> str:
-    source_lines = file_utils.lines_of(comparison_source_file_path)
-    target_lines = file_utils.lines_of(comparison_target_file_path)
-    diff = difflib.unified_diff(source_lines,
-                                target_lines,
+def _file_diff_description(actual_file_path: pathlib.Path,
+                           expected_file_path: pathlib.Path) -> str:
+    expected_lines = file_utils.lines_of(expected_file_path)
+    actual_lines = file_utils.lines_of(actual_file_path)
+    diff = difflib.unified_diff(expected_lines,
+                                actual_lines,
                                 fromfile='Expected',
                                 tofile='Actual')
     return os.linesep + ''.join(list(diff))
