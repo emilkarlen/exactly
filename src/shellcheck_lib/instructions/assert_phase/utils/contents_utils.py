@@ -14,8 +14,7 @@ from shellcheck_lib.instructions.utils.file_properties import must_exist_as, Fil
 from shellcheck_lib.instructions.utils.file_ref import FileRef
 from shellcheck_lib.instructions.utils.file_ref_check import post_eds_validate, FileRefCheck, \
     post_eds_failure_message_or_none
-from shellcheck_lib.instructions.utils.parse_file_ref import SOURCE_REL_CWD_OPTION, \
-    SOURCE_REL_TMP_OPTION, parse_relative_file_argument
+from shellcheck_lib.instructions.utils.parse_file_ref import parse_relative_file_argument, parse_non_home_file_ref
 from shellcheck_lib.test_case.sections import common as i
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
 from shellcheck_lib.test_case.sections.result import pfh
@@ -28,73 +27,51 @@ EMPTY_ARGUMENT = 'empty'
 
 
 class ComparisonTarget:
-    def __init__(self, do_check_file_properties: bool):
-        self.do_check_file_properties = do_check_file_properties
+    def file_check_failure(self, environment: i.GlobalEnvironmentForPostEdsPhase) -> str:
+        """
+        :return: None iff there is no failure.
+        """
+        raise NotImplementedError()
 
     def file_path(self, environment: i.GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
         raise NotImplementedError()
 
 
 def parse_target_file_argument(arguments: list) -> (ComparisonTarget, list):
-    def ensure_have_at_least_two_arguments_for_option(option: str):
-        if len(arguments) < 2:
-            raise SingleInstructionInvalidArgumentException('{} requires a FILE argument'.format(option))
-
     if len(arguments) < 1:
         msg_header = 'Invalid number of arguments (expecting at least one): '
         raise SingleInstructionInvalidArgumentException(msg_header + str(arguments))
-    first_argument = arguments[0]
-    if first_argument == SOURCE_REL_CWD_OPTION:
-        ensure_have_at_least_two_arguments_for_option(SOURCE_REL_CWD_OPTION)
-        return ActComparisonTargetRelCwd(arguments[1]), arguments[2:]
-    elif first_argument == SOURCE_REL_TMP_OPTION:
-        ensure_have_at_least_two_arguments_for_option(SOURCE_REL_TMP_OPTION)
-        return ActComparisonTargetRelTmpUser(arguments[1]), arguments[2:]
-    return ActComparisonTargetRelCwd(first_argument), arguments[1:]
+    (file_ref, remaining_arguments) = parse_non_home_file_ref(arguments)
+    return ActComparisonTargetForFileRef(file_ref), remaining_arguments
 
 
-class ActComparisonTargetRelCwd(ComparisonTarget):
+class ActComparisonTargetForFileRef(ComparisonTarget):
     def __init__(self,
-                 file_name: str):
-        super().__init__(True)
-        self.file_name = file_name
+                 file_ref: FileRef):
+        self.file_ref = file_ref
+
+    def file_check_failure(self, environment: i.GlobalEnvironmentForPostEdsPhase) -> str:
+        return post_eds_failure_message_or_none(FileRefCheck(self.file_ref,
+                                                             must_exist_as(FileType.REGULAR)),
+                                                environment)
 
     def file_path(self, environment: i.GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
-        return pathlib.Path(self.file_name)
+        return self.file_ref.file_path_post_eds(environment.home_and_eds)
 
 
-class ActComparisonTargetRelTmpUser(ComparisonTarget):
-    def __init__(self,
-                 file_name: str):
-        super().__init__(True)
-        self.file_name = file_name
-
-    def file_path(self, environment: i.GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
-        return environment.eds.tmp.user_dir / self.file_name
+class ActComparisonTargetForStdFileBase(ComparisonTarget):
+    def file_check_failure(self, environment: i.GlobalEnvironmentForPostEdsPhase) -> str:
+        return None
 
 
-class StdoutComparisonTarget(ComparisonTarget):
-    def __init__(self):
-        super().__init__(False)
-
+class StdoutComparisonTarget(ActComparisonTargetForStdFileBase):
     def file_path(self, environment: i.GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
         return environment.eds.result.stdout_file
 
 
-class StderrComparisonTarget(ComparisonTarget):
-    def __init__(self):
-        super().__init__(False)
-
+class StderrComparisonTarget(ActComparisonTargetForStdFileBase):
     def file_path(self, environment: i.GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
         return environment.eds.result.stderr_file
-
-
-def check(file_path: pathlib.Path) -> str:
-    if not file_path.exists():
-        return 'File does not exist: ' + str(file_path)
-    if not file_path.is_file():
-        return 'Not a regular file: ' + str(file_path)
-    return None
 
 
 class ContentCheckerInstructionBase(AssertPhaseInstruction):
@@ -122,10 +99,9 @@ class ContentCheckerInstructionBase(AssertPhaseInstruction):
         file_path_for_expected = self._expected_contents.file_path_post_eds(environment.home_and_eds)
 
         comparison_target_path = self.comparison_target.file_path(environment)
-        if self.comparison_target.do_check_file_properties:
-            error_message = check(comparison_target_path)
-            if error_message:
-                return pfh.new_pfh_fail(error_message)
+        failure_message = self.comparison_target.file_check_failure(environment)
+        if failure_message is not None:
+            return pfh.new_pfh_fail(failure_message)
 
         display_target_file_name = str(comparison_target_path)
         comparison_source_file_name = str(file_path_for_expected)
@@ -230,11 +206,9 @@ class EmptinessCheckerInstruction(instruction_utils.InstructionWithoutValidation
     def main(self,
              environment: i.GlobalEnvironmentForPostEdsPhase,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
-        comparison_target_path = self.comparison_target.file_path(environment)
-        if self.comparison_target.do_check_file_properties:
-            error_message = check(comparison_target_path)
-            if error_message:
-                return pfh.new_pfh_fail(error_message)
+        failure_message = self.comparison_target.file_check_failure(environment)
+        if failure_message:
+            return pfh.new_pfh_fail(failure_message)
 
         size = self.comparison_target.file_path(environment).stat().st_size
         if self.expect_empty:
