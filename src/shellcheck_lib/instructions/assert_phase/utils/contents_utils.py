@@ -36,7 +36,7 @@ class ComparisonSource:
 
 def parse_source_file_argument(arguments: list) -> (ComparisonSource, list):
     if len(arguments) < 2:
-        msg_header = 'file/contents: Invalid number of arguments (expecting at least two): '
+        msg_header = 'Invalid number of arguments (expecting at least two): '
         raise SingleInstructionInvalidArgumentException(msg_header + str(arguments))
     option = arguments[0]
     if option == SOURCE_REL_HOME_OPTION:
