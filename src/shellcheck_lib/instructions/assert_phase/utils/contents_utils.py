@@ -10,6 +10,7 @@ from shellcheck_lib.general.string import lines_content
 from shellcheck_lib.instructions.assert_phase.utils import instruction_utils
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from shellcheck_lib.instructions.utils.file_ref import FileRef
 from shellcheck_lib.instructions.utils.parse_file_ref import SOURCE_REL_HOME_OPTION, SOURCE_REL_CWD_OPTION, \
     SOURCE_REL_TMP_OPTION
 from shellcheck_lib.test_case.sections import common as i
@@ -150,7 +151,7 @@ def check(file_path: pathlib.Path) -> str:
 
 class ContentCheckerInstructionBase(AssertPhaseInstruction):
     def __init__(self,
-                 comparison_source: ComparisonSource,
+                 comparison_source: FileRef,
                  comparison_target: ComparisonTarget):
         self.comparison_target = comparison_target
         self._comparison_source = comparison_source
