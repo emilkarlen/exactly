@@ -15,16 +15,18 @@ class InstructionWithFileRefsBase(SetupPhaseInstruction):
     def pre_validate(self, environment: GlobalEnvironmentForPreEdsStep) -> svh.SuccessOrValidationErrorOrHardError:
         for file_ref_check in self.file_ref_check_list_tuple:
             assert isinstance(file_ref_check, FileRefCheck)
-            result = pre_eds_validate(file_ref_check, environment)
-            if not result.is_success:
-                return result
+            if file_ref_check.file_reference.exists_pre_eds:
+                result = pre_eds_validate(file_ref_check, environment)
+                if not result.is_success:
+                    return result
         return svh.new_svh_success()
 
     def post_validate(self,
                       environment: GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
         for file_ref_check in self.file_ref_check_list_tuple:
             assert isinstance(file_ref_check, FileRefCheck)
-            result = post_eds_validate(file_ref_check, environment)
-            if not result.is_success:
-                return result
+            if not file_ref_check.file_reference.exists_pre_eds:
+                result = post_eds_validate(file_ref_check, environment)
+                if not result.is_success:
+                    return result
         return svh.new_svh_success()
