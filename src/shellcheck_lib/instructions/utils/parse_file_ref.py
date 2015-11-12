@@ -8,7 +8,7 @@ SOURCE_REL_CWD_OPTION = '--rel-cwd'
 SOURCE_REL_TMP_OPTION = '--rel-tmp'
 
 
-def parse_non_act_generated_file(arguments: list) -> (file_ref.FileRef, list):
+def parse_relative_file_argument(arguments: list) -> (file_ref.FileRef, list):
     """
     :param arguments: All remaining arguments for the instruction.
     :return: The parsed FileRef, remaining arguments after file was parsed.

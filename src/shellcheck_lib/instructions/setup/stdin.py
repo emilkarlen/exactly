@@ -23,7 +23,7 @@ DESCRIPTION = Description(
 class Parser(SingleInstructionParser):
     def apply(self, source: SingleInstructionParserSource) -> SetupPhaseInstruction:
         arguments = spit_arguments_list_string(source.instruction_argument)
-        (file_reference, remaining_arguments) = parse_file_ref.parse_non_act_generated_file(arguments)
+        (file_reference, remaining_arguments) = parse_file_ref.parse_relative_file_argument(arguments)
         if remaining_arguments:
             raise SingleInstructionInvalidArgumentException('Superfluous arguments: ' + str(remaining_arguments))
         return _Instruction(file_reference)
