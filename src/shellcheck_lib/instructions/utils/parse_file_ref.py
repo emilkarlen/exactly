@@ -33,3 +33,27 @@ def parse_relative_file_argument(arguments: list) -> (file_ref.FileRef, list):
     else:
         ensure_is_not_option_argument(first_argument)
         return file_ref.rel_home(first_argument), arguments[1:]
+
+
+def parse_non_home_file_ref(arguments: list) -> (file_ref.FileRef, list):
+    """
+    Default (i.e. when no option is given) is Relative CWD.
+    :param arguments: Argument list, with first arguments being those that are
+    supposed to specify a FileRef.
+    :return: (FileRef, arguments remaining after file argument)
+    """
+
+    def ensure_have_at_least_two_arguments_for_option(option: str):
+        if len(arguments) < 2:
+            raise SingleInstructionInvalidArgumentException('{} requires a FILE argument'.format(option))
+
+    first_argument = arguments[0]
+    if first_argument == SOURCE_REL_CWD_OPTION:
+        ensure_have_at_least_two_arguments_for_option(SOURCE_REL_CWD_OPTION)
+        return file_ref.rel_cwd(arguments[1]), arguments[2:]
+    elif first_argument == SOURCE_REL_TMP_OPTION:
+        ensure_have_at_least_two_arguments_for_option(SOURCE_REL_TMP_OPTION)
+        return file_ref.rel_tmp_user(arguments[1]), arguments[2:]
+    else:
+        ensure_is_not_option_argument(first_argument)
+        return file_ref.rel_cwd(first_argument), arguments[1:]
