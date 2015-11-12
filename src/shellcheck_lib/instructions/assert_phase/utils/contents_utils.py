@@ -10,9 +10,12 @@ from shellcheck_lib.general.string import lines_content
 from shellcheck_lib.instructions.assert_phase.utils import instruction_utils
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from shellcheck_lib.instructions.utils.file_properties import must_exist_as, FileType
 from shellcheck_lib.instructions.utils.file_ref import FileRef
-from shellcheck_lib.instructions.utils.parse_file_ref import SOURCE_REL_HOME_OPTION, SOURCE_REL_CWD_OPTION, \
-    SOURCE_REL_TMP_OPTION
+from shellcheck_lib.instructions.utils.file_ref_check import post_eds_validate, FileRefCheck, \
+    post_eds_failure_message_or_none
+from shellcheck_lib.instructions.utils.parse_file_ref import SOURCE_REL_CWD_OPTION, \
+    SOURCE_REL_TMP_OPTION, parse_relative_file_argument
 from shellcheck_lib.test_case.sections import common as i
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
 from shellcheck_lib.test_case.sections.result import pfh
@@ -22,37 +25,6 @@ from shellcheck_lib.test_case.os_services import OsServices
 
 WITH_REPLACED_ENV_VARS_OPTION = '--with-replaced-env-vars'
 EMPTY_ARGUMENT = 'empty'
-
-
-class ComparisonSource:
-    def __init__(self,
-                 check_during_validation: bool,
-                 file_name: str):
-        self.check_during_validation = check_during_validation
-        self.file_name = file_name
-
-    def file_path(self, environment: i.GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
-        raise NotImplementedError()
-
-
-def parse_source_file_argument(arguments: list) -> (ComparisonSource, list):
-    if len(arguments) < 2:
-        msg_header = 'Invalid number of arguments (expecting at least two): '
-        raise SingleInstructionInvalidArgumentException(msg_header + str(arguments))
-    option = arguments[0]
-    if option == SOURCE_REL_HOME_OPTION:
-        return ComparisonSourceForFileRelHome(arguments[1]), arguments[2:]
-    elif option == SOURCE_REL_CWD_OPTION:
-        return ComparisonSourceForFileRelCwd(arguments[1]), arguments[2:]
-    elif option == SOURCE_REL_TMP_OPTION:
-        return ComparisonSourceForFileRelTmpUser(arguments[1]), arguments[2:]
-    else:
-        raise SingleInstructionInvalidArgumentException(
-            lines_content(['Invalid argument: {}'.format(arguments[0]),
-                           'Expecting one of: {}'.format(', '.join([SOURCE_REL_HOME_OPTION,
-                                                                    SOURCE_REL_TMP_OPTION,
-                                                                    SOURCE_REL_CWD_OPTION])),
-                           ]))
 
 
 class ComparisonTarget:
@@ -79,30 +51,6 @@ def parse_target_file_argument(arguments: list) -> (ComparisonTarget, list):
         ensure_have_at_least_two_arguments_for_option(SOURCE_REL_TMP_OPTION)
         return ActComparisonTargetRelTmpUser(arguments[1]), arguments[2:]
     return ActComparisonTargetRelCwd(first_argument), arguments[1:]
-
-
-class ComparisonSourceForFileRelHome(ComparisonSource):
-    def __init__(self, file_name: str):
-        super().__init__(True, file_name)
-
-    def file_path(self, environment: i.GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
-        return environment.home_directory / self.file_name
-
-
-class ComparisonSourceForFileRelCwd(ComparisonSource):
-    def __init__(self, file_name: str):
-        super().__init__(False, file_name)
-
-    def file_path(self, environment: i.GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
-        return pathlib.Path(self.file_name)
-
-
-class ComparisonSourceForFileRelTmpUser(ComparisonSource):
-    def __init__(self, file_name: str):
-        super().__init__(False, file_name)
-
-    def file_path(self, environment: i.GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
-        return environment.eds.tmp.user_dir / self.file_name
 
 
 class ActComparisonTargetRelCwd(ComparisonTarget):
@@ -151,26 +99,27 @@ def check(file_path: pathlib.Path) -> str:
 
 class ContentCheckerInstructionBase(AssertPhaseInstruction):
     def __init__(self,
-                 comparison_source: FileRef,
+                 expected_contents: FileRef,
                  comparison_target: ComparisonTarget):
         self.comparison_target = comparison_target
-        self._comparison_source = comparison_source
+        self._expected_contents = expected_contents
 
     def validate(self,
-                 global_environment: i.GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
-        if self._comparison_source.check_during_validation:
-            error_message = check(self._comparison_source.file_path(global_environment))
-            if error_message:
-                return svh.new_svh_validation_error(error_message)
-        return svh.new_svh_success()
+                 environment: i.GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
+        if self._expected_contents.exists_pre_eds:
+            return post_eds_validate(self._file_ref_check_for_expected(),
+                                     environment)
+        else:
+            return svh.new_svh_success()
 
     def main(self,
              environment: i.GlobalEnvironmentForPostEdsPhase,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
-        comparison_source_file_path = self._comparison_source.file_path(environment)
-        error_message = check(comparison_source_file_path)
-        if error_message:
-            return pfh.new_pfh_fail(error_message)
+        failure_message = post_eds_failure_message_or_none(self._file_ref_check_for_expected(),
+                                                           environment)
+        if failure_message:
+            return pfh.new_pfh_fail(failure_message)
+        file_path_for_expected = self._expected_contents.file_path_post_eds(environment.home_and_eds)
 
         comparison_target_path = self.comparison_target.file_path(environment)
         if self.comparison_target.do_check_file_properties:
@@ -179,17 +128,21 @@ class ContentCheckerInstructionBase(AssertPhaseInstruction):
                 return pfh.new_pfh_fail(error_message)
 
         display_target_file_name = str(comparison_target_path)
-        comparison_source_file_name = str(comparison_source_file_path)
+        comparison_source_file_name = str(file_path_for_expected)
         comparison_target_file_path = self._get_comparison_target_file_path(comparison_target_path,
                                                                             environment,
                                                                             os_services)
         comparison_target_file_name = str(comparison_target_file_path)
         if not filecmp.cmp(comparison_target_file_name, comparison_source_file_name, shallow=False):
             diff_description = _file_diff_description(comparison_target_file_path,
-                                                      comparison_source_file_path)
+                                                      file_path_for_expected)
             return pfh.new_pfh_fail('Unexpected content in file: ' + display_target_file_name +
                                     diff_description)
         return pfh.new_pfh_pass()
+
+    def _file_ref_check_for_expected(self):
+        return FileRefCheck(self._expected_contents,
+                            must_exist_as(FileType.REGULAR))
 
     def _get_comparison_target_file_path(self,
                                          target_file_path: pathlib.Path,
@@ -200,9 +153,9 @@ class ContentCheckerInstructionBase(AssertPhaseInstruction):
 
 class ContentCheckerInstruction(ContentCheckerInstructionBase):
     def __init__(self,
-                 comparison_source: ComparisonSource,
+                 expected_contents: FileRef,
                  comparison_target: ComparisonTarget):
-        super().__init__(comparison_source, comparison_target)
+        super().__init__(expected_contents, comparison_target)
 
     def _get_comparison_target_file_path(self,
                                          target_file_path: pathlib.Path,
@@ -252,10 +205,10 @@ class TargetTransformer:
 
 class ContentCheckerWithTransformationInstruction(ContentCheckerInstructionBase):
     def __init__(self,
-                 comparison_source: ComparisonSource,
+                 expected_contents: FileRef,
                  comparison_target: ComparisonTarget,
                  target_transformer: TargetTransformer):
-        super().__init__(comparison_source, comparison_target)
+        super().__init__(expected_contents, comparison_target)
         self.target_transformer = target_transformer
 
     def _get_comparison_target_file_path(self,
@@ -318,17 +271,17 @@ def try_parse_content(comparison_target: ComparisonTarget,
         if extra_arguments and extra_arguments[0] == WITH_REPLACED_ENV_VARS_OPTION:
             with_replaced_env_vars = True
             del extra_arguments[0]
-        (comparison_source, remaining_arguments) = parse_source_file_argument(extra_arguments)
+        (file_ref_for_expected, remaining_arguments) = parse_relative_file_argument(extra_arguments)
         if remaining_arguments:
             raise SingleInstructionInvalidArgumentException(
                 lines_content('Superfluous arguments: {}'.format(remaining_arguments)))
 
         if with_replaced_env_vars:
-            return ContentCheckerWithTransformationInstruction(comparison_source,
+            return ContentCheckerWithTransformationInstruction(file_ref_for_expected,
                                                                target,
                                                                target_transformer)
         else:
-            return ContentCheckerInstruction(comparison_source, target)
+            return ContentCheckerInstruction(file_ref_for_expected, target)
 
     if arguments[0] == EMPTY_ARGUMENT:
         return _parse_empty(comparison_target, arguments[1:])
