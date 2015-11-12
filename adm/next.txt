@@ -2,39 +2,13 @@
 
 Fortsätt med
 
-* Felinfo från FileCheck
-Idag får enbart bool.
-
-Vill få detaljerad info användbar för felsökning.
-Lösning:
-resulat vid
-ok: info om vilka egenskaper som testats
-fel: info om vilken egenskap som orsakade felet
-
-Problemet var tidigare negate: När sub-testet gav ok så gav det None.
-Utifrån den infon är det omöjligt att avgöra vilken egenskap som orsakar
-negate att fallera.
-Det ska lösas genom ovanstående.
-
-Implementera detta och integrera det i felmeddelanden för de som använder
-FileCheck.
 * cd
 cd [DIRECTORY]
 Om directory inte anges så flyttas till SHELLCHECK_ACT.
-* shellcheck för filelist
-Beta av listan av tester i tests/CMakeList.txt
-Skapa utgångsfil från simptest-motsvarighet. Stå i testcases/ :
-for f in *.simptestcase; do bn=${f%.m4.simptestcase}; sc=${bn}.shellcheckcase; test -e $sc || cp -a $f $sc; done
+* assert/content: Möjl att parsa expected-fil m <<EOF ... EOF syntax
 * Skräddarsy act-fasen
-** DONE Testa befintlig script-lng-setup individuellt
-*** DONE Infrastruktur för test av act-phase-setup
-** DONE Integrera Executor.validate i testfalls-exekveringen
 ** TODO Dokumetera ny utökad sekvens i UML
 Nytt är act-exekverarens faser.
-** DONE Implementera setup för single-kommando
-Typ: "dir/mitt-program arg1 arg2"
-Se till att resolva abs-path till detta kommando så att man kan använda
-relativa sökvägar i testfallet.
 ** TODO (Ev) förbättra script-byggaren
 Så att det går att separera på typ av rad (även på "färdiga" script):
 - kommentar
@@ -47,26 +21,14 @@ program verkligen består av ett enda kommando.
 ... så att det går att ange relativa sökvägar på kommandoraden (o ev, i en
 senare framtid, även i testsviter).
 Ev två olika setup: en som resolvar relativa sökvagar, o en som inte gör det.
+** TODO Exekverare för shell-kommando
+Väldigt lik utgångsexekveraren.  Skilnnaden är att köra m shell=True,
+o ev inte splitta kommandoraden.
 * Svit: Summering i rapporten
 Avslutande utskrift: Antal lyckade, fallerade, <andra typer av fel>
 * Exekvering av fall: Rapportera mha "Rapportör" (pss som svit)
 * Instruktioner
-** DONE Impl instr för assert/exitcode
-** DONE Testa parsing
-** DONE Troligtvis: infrastruktur för test av instruktion
-Tror räcker med "integrationstest" för exekveringen:
-1. parsa
-2. exekvera
-
-Dvs behöver inte separata test för parsning o exekvering.  Tvärt om är det
-troligtvis lämpligt att ha ett o samma test så att alla led testas.  Dessutom
-blir troligtvis koden mer flexibel då man inte testar = kräver fix
-representation av - "mellanled".
-*** with EDS-and-act-result(exitcode, stdout_output, stderr_output) as eds:
-** DONE Testa parsning + exekvering
-** DONE Testa infrastrukturen för att parsa instruktioner i uppslagsverk
 ** TODO Lyft ut funk från impl av exitcode så att den blir allmänt tillgänglig
-** DONE Ta bort nuv phase_enviroment från Assert-instruktionen
 * Kring instruktioner
 ** TODO PassOrFailOrHardError: FAIL ska kunna ta olika varianter av felmeddelande
 - sträng
