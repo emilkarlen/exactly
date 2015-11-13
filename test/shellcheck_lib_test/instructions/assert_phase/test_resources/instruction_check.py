@@ -5,7 +5,6 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
 from shellcheck_lib.test_case.sections import common as i
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
 from shellcheck_lib.test_case.os_services import OsServices
-import shellcheck_lib.test_case.sections.common
 from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
@@ -20,11 +19,11 @@ from shellcheck_lib_test.instructions.test_resources import utils
 
 class ActEnvironment(tuple):
     def __new__(cls,
-                home_and_eds: shellcheck_lib.test_case.sections.common.HomeAndEds):
+                home_and_eds: i.HomeAndEds):
         return tuple.__new__(cls, (home_and_eds,))
 
     @property
-    def home_and_eds(self) -> shellcheck_lib.test_case.sections.common.HomeAndEds:
+    def home_and_eds(self) -> i.HomeAndEds:
         return self[0]
 
 
