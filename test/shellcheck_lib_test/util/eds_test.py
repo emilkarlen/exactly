@@ -2,7 +2,6 @@ import os
 import unittest
 
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
-
 from shellcheck_lib_test.instructions.test_resources import eds_populator, eds_contents_check
 from shellcheck_lib_test.instructions.test_resources.utils import execution_directory_structure
 from . import tmp_dir_test
