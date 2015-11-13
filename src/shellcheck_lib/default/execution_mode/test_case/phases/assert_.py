@@ -1,10 +1,11 @@
 from shellcheck_lib.default.execution_mode.test_case.instruction_setup import SingleInstructionSetup
-from shellcheck_lib.instructions.assert_phase import shell as assert_shell
+from shellcheck_lib.instructions.assert_phase import shell
 from shellcheck_lib.instructions.assert_phase import exitcode as exitcode_instruction
 from shellcheck_lib.instructions.assert_phase import contents as contents_instruction
 from shellcheck_lib.instructions.assert_phase import type
 from shellcheck_lib.instructions.assert_phase import stdout_stderr as stdout_stderr_instruction
 from shellcheck_lib.instructions.assert_phase import mkdir
+from shellcheck_lib.instructions.assert_phase import change_dir
 
 INSTRUCTIONS = {
     'exitcode':
@@ -19,10 +20,14 @@ INSTRUCTIONS = {
         SingleInstructionSetup(
             mkdir.Parser(),
             mkdir.DESCRIPTION),
+    'pwd':
+        SingleInstructionSetup(
+            change_dir.Parser(),
+            change_dir.DESCRIPTION),
     'shell':
         SingleInstructionSetup(
-            assert_shell.Parser(),
-            assert_shell.DESCRIPTION),
+            shell.Parser(),
+            shell.DESCRIPTION),
     'stdout':
         SingleInstructionSetup(
             stdout_stderr_instruction.ParserForContentsForStdout(),
