@@ -5,6 +5,10 @@ Fortsätt med
 * cd
 cd [DIRECTORY]
 Om directory inte anges så flyttas till SHELLCHECK_ACT.
+
+* Byt namn: "mkdir" -> "dir"
+Mer deklarativ att enbart skriva "önskade typen av objekt": "dir"
+* setup/file NAME <<EOF ... EOF
 * assert/content: Möjl att parsa expected-fil m <<EOF ... EOF syntax
 * Skräddarsy act-fasen
 ** TODO Dokumetera ny utökad sekvens i UML
