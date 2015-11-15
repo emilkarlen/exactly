@@ -8,7 +8,7 @@ from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
-from shellcheck_lib_test.instructions.test_resources.utils import write_act_result
+from shellcheck_lib_test.instructions.test_resources.utils import write_act_result, SideEffectsCheck
 from shellcheck_lib_test.util import file_structure
 from shellcheck_lib_test.instructions.test_resources import svh_check
 from shellcheck_lib_test.instructions.test_resources import pfh_check
@@ -44,6 +44,7 @@ class Flow:
                  expected_validation_result: svh_check.Assertion=svh_check.is_success(),
                  expected_main_result: pfh_check.Assertion=pfh_check.is_pass(),
                  expected_main_side_effects_on_files: eds_contents_check.Assertion=eds_contents_check.AnythingGoes(),
+                 side_effects_check: SideEffectsCheck=SideEffectsCheck(),
                  ):
         self.parser = parser
         self.home_dir_contents = home_dir_contents
@@ -52,6 +53,7 @@ class Flow:
         self.act_result_producer = act_result_producer
         self.expected_main_result = expected_main_result
         self.expected_main_side_effects_on_files = expected_main_side_effects_on_files
+        self.side_effects_check = side_effects_check
 
 
 class TestCaseBase(unittest.TestCase):
@@ -84,7 +86,7 @@ def execute(put: unittest.TestCase,
             return
         _execute_main(environment, instruction, put, setup)
         setup.expected_main_side_effects_on_files.apply(put, environment.eds)
-
+        setup.side_effects_check.apply(put, home_and_eds)
 
 def _execute_post_validate(global_environment_with_eds, instruction, put, setup):
     post_validate_result = instruction.post_validate(global_environment_with_eds)

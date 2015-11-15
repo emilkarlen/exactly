@@ -7,7 +7,7 @@ from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEds
 from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction
-from shellcheck_lib_test.instructions.test_resources.utils import write_act_result
+from shellcheck_lib_test.instructions.test_resources.utils import write_act_result, SideEffectsCheck
 from shellcheck_lib_test.util import file_structure
 from shellcheck_lib_test.instructions.test_resources import sh_check
 from shellcheck_lib_test.instructions.test_resources import eds_populator
@@ -23,6 +23,7 @@ class Flow:
                  act_result: utils.ActResult=utils.ActResult(),
                  expected_main_result: sh_check.Assertion=sh_check.IsSuccess(),
                  expected_main_side_effects_on_files: eds_contents_check.Assertion=eds_contents_check.AnythingGoes(),
+                 side_effects_check: SideEffectsCheck=SideEffectsCheck(),
                  ):
         self.parser = parser
         self.home_dir_contents = home_dir_contents
@@ -30,6 +31,7 @@ class Flow:
         self.act_result = act_result
         self.expected_main_result = expected_main_result
         self.expected_main_side_effects_on_files = expected_main_side_effects_on_files
+        self.side_effects_check = side_effects_check
 
 
 class TestCaseBase(unittest.TestCase):
@@ -57,6 +59,7 @@ def execute(put: unittest.TestCase,
                                                          home_and_eds.eds)
         _execute_main(environment, instruction, put, setup)
         setup.expected_main_side_effects_on_files.apply(put, environment.eds)
+        setup.side_effects_check.apply(put, home_and_eds)
 
 
 def _execute_main(environment: GlobalEnvironmentForPostEdsPhase,

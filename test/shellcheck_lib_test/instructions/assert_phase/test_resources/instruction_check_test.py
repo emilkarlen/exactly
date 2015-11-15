@@ -56,6 +56,13 @@ class TestCases(instruction_check.TestCaseBase):
             instruction_check.Flow(test_misc.ParserThatGives(InstructionThatRaisesTestErrorIfCwdIsIsNotTestRoot())),
             test_misc.single_line_source())
 
+    def test_fail_due_to_side_effects_check(self):
+        with self.assertRaises(test_misc.TestError):
+            self._check(
+                instruction_check.Flow(test_misc.ParserThatGives(SUCCESSFUL_INSTRUCTION),
+                                       side_effects_check=test_misc.SideEffectsCheckThatRaisesTestError()),
+                test_misc.single_line_source())
+
 
 SUCCESSFUL_INSTRUCTION = AssertPhaseInstructionThatReturns(svh.new_svh_success(),
                                                            pfh.new_pfh_pass())

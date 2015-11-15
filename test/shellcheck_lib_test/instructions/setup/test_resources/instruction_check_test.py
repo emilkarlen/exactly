@@ -71,6 +71,13 @@ class TestCases(instruction_check.TestCaseBase):
                                        expected_post_validation_result=test_misc.SvhRaisesTestError()),
                 single_line_source())
 
+    def test_fail_due_to_side_effects_check(self):
+        with self.assertRaises(test_misc.TestError):
+            self._check(
+                instruction_check.Flow(ParserThatGives(SUCCESSFUL_INSTRUCTION),
+                                       side_effects_check=test_misc.SideEffectsCheckThatRaisesTestError()),
+                single_line_source())
+
     def test_that_cwd_for_main_and_post_validation_is_test_root(self):
         self._check(
             instruction_check.Flow(ParserThatGives(InstructionThatRaisesTestErrorIfCwdIsIsNotTestRoot())),

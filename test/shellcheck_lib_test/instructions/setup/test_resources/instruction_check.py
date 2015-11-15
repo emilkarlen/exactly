@@ -14,6 +14,7 @@ from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
 from shellcheck_lib.test_case.os_services import new_default, OsServices
+from shellcheck_lib_test.instructions.test_resources.utils import SideEffectsCheck
 from shellcheck_lib_test.util import file_structure
 from shellcheck_lib_test.instructions.test_resources import svh_check
 from shellcheck_lib_test.instructions.test_resources import sh_check
@@ -33,7 +34,8 @@ class Flow:
                  expected_main_result: sh_check.Assertion=sh_check.IsSuccess(),
                  expected_main_side_effects_on_environment: settings_check.Assertion=settings_check.AnythingGoes(),
                  expected_main_side_effects_on_files: eds_contents_check.Assertion=eds_contents_check.AnythingGoes(),
-                 expected_post_validation_result: svh_check.Assertion=svh_check.is_success()
+                 expected_post_validation_result: svh_check.Assertion=svh_check.is_success(),
+                 side_effects_check: SideEffectsCheck=SideEffectsCheck(),
                  ):
         self.parser = parser
         self.home_dir_contents = home_dir_contents
@@ -45,6 +47,7 @@ class Flow:
         self.expected_main_side_effects_on_environment = expected_main_side_effects_on_environment
         self.expected_main_side_effects_on_files = expected_main_side_effects_on_files
         self.expected_post_validation_result = expected_post_validation_result
+        self.side_effects_check = side_effects_check
 
 
 class TestCaseBase(unittest.TestCase):
@@ -82,6 +85,7 @@ def execute(put: unittest.TestCase,
                 if not main_result.is_success:
                     return
                 _execute_post_validate(global_environment_with_eds, instruction, put, setup)
+                setup.side_effects_check.apply(put, global_environment_with_eds.home_and_eds)
     finally:
         os.chdir(initial_cwd)
 
