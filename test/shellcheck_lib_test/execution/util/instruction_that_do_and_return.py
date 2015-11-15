@@ -176,7 +176,6 @@ def print_to_file__generate_script(code_using_file_opened_for_writing: types.Fun
 
     program = py.program_lines(mas.used_modules,
                                all_statements)
-    # print(os.linesep.join(statements))
     phase_environment.append.raw_script_statements(program)
 
 
