@@ -6,9 +6,22 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
     SingleInstructionInvalidArgumentException
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.instructions.multi_phase_instructions import change_dir as sut
+from shellcheck_lib.test_case.sections.common import HomeAndEds
 from shellcheck_lib_test.instructions.test_resources.eds_populator import act_dir_contents, tmp_user_dir_contents
+from shellcheck_lib_test.instructions.test_resources.utils import SideEffectsCheck
 from shellcheck_lib_test.util import eds_test, tmp_dir_test
 from shellcheck_lib_test.util.file_structure import DirContents, empty_dir, Dir, empty_file
+
+
+class AssertCwdIsSubDirOfEds(SideEffectsCheck):
+    def __init__(self, expected_sub_dir_of_eds: pathlib.PurePath):
+        self.expected_sub_dir_of_eds = expected_sub_dir_of_eds
+
+    def apply(self,
+              put: unittest.TestCase,
+              home_and_eds: HomeAndEds):
+        put.assertEqual(home_and_eds.eds.act_dir / self.expected_sub_dir_of_eds,
+                        pathlib.Path.cwd())
 
 
 class TestParseSet(unittest.TestCase):

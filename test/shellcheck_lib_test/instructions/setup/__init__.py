@@ -6,6 +6,7 @@ from . import install
 from . import shell
 from . import env
 from . import stdin
+from . import change_dir
 
 
 def suite():
@@ -16,6 +17,7 @@ def suite():
     ret_val.addTest(shell.suite())
     ret_val.addTest(env.suite())
     ret_val.addTest(stdin.suite())
+    ret_val.addTest(change_dir.suite())
     return ret_val
 
 
