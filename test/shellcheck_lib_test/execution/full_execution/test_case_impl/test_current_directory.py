@@ -21,6 +21,9 @@ def current_directory() -> str:
     return os.getcwd()
 
 
+SUB_DIR_NAME = 'sub-dir'
+
+
 def _set_home_dir_to_parent__anonymous_phase(recorder: instr_setup.Recorder,
                                              phase_step: PhaseStep,
                                              phase_environment: ConfigurationBuilder):
@@ -33,11 +36,18 @@ def _action__without_eds(recorder: instr_setup.Recorder,
     pass
 
 
-def _action__with_eds(recorder: instr_setup.Recorder,
-                      phase_step: PhaseStep,
-                      global_environment: common.GlobalEnvironmentForPostEdsPhase):
+def _action__that_just_records_curr_dir(recorder: instr_setup.Recorder,
+                                        phase_step: PhaseStep,
+                                        global_environment: common.GlobalEnvironmentForPostEdsPhase):
     recorder.set_phase_step_recording(phase_step, current_directory())
-    os.chdir(str(global_environment.home_directory))
+
+
+def _action__make_dir_and_change_to_it(recorder: instr_setup.Recorder,
+                                       phase_step: PhaseStep,
+                                       global_environment: common.GlobalEnvironmentForPostEdsPhase):
+    recorder.set_phase_step_recording(phase_step, current_directory())
+    os.mkdir(SUB_DIR_NAME)
+    os.chdir(SUB_DIR_NAME)
 
 
 class Test(FullExecutionTestCaseBase):
@@ -50,8 +60,8 @@ class Test(FullExecutionTestCaseBase):
 
     def _test_case(self) -> test_case_doc.TestCase:
         setup = instr_setup.TestCaseSetupWithRecorder(
-            validation_action__with_eds=_action__with_eds,
-            execution_action__with_eds=_action__with_eds,
+            validation_action__with_eds=_action__that_just_records_curr_dir,
+            execution_action__with_eds=_action__make_dir_and_change_to_it,
             execution__generate_script=script_for_print_current_directory_to_file,
         )
         plain_test_case_setup = setup.as_plain_test_case_setup(self.recorder)
@@ -59,14 +69,16 @@ class Test(FullExecutionTestCaseBase):
 
     def _assertions(self):
         self.__assert_test_sanity()
+        initial_dir = self.eds.act_dir
+        initial_dir_recording = str(initial_dir)
         for_post_eds = str(self.eds.act_dir)
         expected_recorded_internally = {
-            phase_step.SETUP_EXECUTE: for_post_eds,
-            phase_step.ACT_VALIDATE: for_post_eds,
-            phase_step.ACT_SCRIPT_GENERATION: for_post_eds,
-            phase_step.ASSERT_VALIDATE: for_post_eds,
-            phase_step.ASSERT_EXECUTE: for_post_eds,
-            phase_step.CLEANUP_EXECUTE: for_post_eds,
+            phase_step.SETUP_EXECUTE: initial_dir_recording,
+            phase_step.ACT_VALIDATE: str(initial_dir / SUB_DIR_NAME),
+            phase_step.ACT_SCRIPT_GENERATION: str(initial_dir / SUB_DIR_NAME),
+            phase_step.ASSERT_VALIDATE: str(initial_dir / SUB_DIR_NAME),
+            phase_step.ASSERT_EXECUTE: str(initial_dir / SUB_DIR_NAME / SUB_DIR_NAME),
+            phase_step.CLEANUP_EXECUTE: str(initial_dir / SUB_DIR_NAME / SUB_DIR_NAME / SUB_DIR_NAME),
         }
         expected_act_output = for_post_eds + os.linesep
         self.__assert_expected_internally_recorded_variables(expected_recorded_internally)
@@ -110,7 +122,7 @@ class Test(FullExecutionTestCaseBase):
         self.assert_is_regular_file_with_contents(
             self.full_result.execution_directory_structure.act_dir / ACT_SCRIPT_OUTPUT_FILE_NAME,
             expected_act_output,
-            'Envronment Variables printed from act/script execution')
+            'Environment Variables printed from act/script execution')
 
 
 ACT_SCRIPT_OUTPUT_FILE_NAME = 'act-script-output.txt'

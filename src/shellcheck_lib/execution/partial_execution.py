@@ -105,6 +105,7 @@ class PartialExecutor:
             self.__partial_result = res
             return
         os_services = new_default()
+        self.__set_cwd_to_act_dir()
         self.__set_post_eds_environment_variables()
         res = self.__run_setup_main(os_services)
         if res.status is not PartialResultStatus.PASS:
@@ -237,7 +238,6 @@ class PartialExecutor:
         """
         script_builder = self.__script_handling.builder
         environment = PhaseEnvironmentForScriptGeneration(script_builder)
-        os.chdir(str(self.execution_directory_structure.act_dir))
         ret_val = phase_step_execution.execute_phase(
             self.__act_phase,
             _ActCommentHeaderExecutor(environment),
@@ -317,6 +317,9 @@ class PartialExecutor:
     def __set_pre_eds_environment_variables(self):
         os.environ.update(environment_variables.set_at_setup_pre_validate(self.configuration.home_dir))
 
+    def __set_cwd_to_act_dir(self):
+        os.chdir(str(self.execution_directory_structure.act_dir))
+
     def __set_post_eds_environment_variables(self):
         os.environ.update(environment_variables.set_at_setup_main(self.execution_directory_structure))
 
@@ -328,7 +331,6 @@ class PartialExecutor:
                                                phase_step: str,
                                                instruction_executor: ControlledInstructionExecutor,
                                                phase_contents: PhaseContents) -> PartialResult:
-        os.chdir(str(self.execution_directory_structure.act_dir))
         return phase_step_execution.execute_phase(phase_contents,
                                                   phase_step_execution.ElementHeaderExecutorThatDoesNothing(),
                                                   phase_step_execution.ElementHeaderExecutorThatDoesNothing(),
