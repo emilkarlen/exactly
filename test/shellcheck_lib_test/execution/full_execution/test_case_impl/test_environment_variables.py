@@ -145,7 +145,7 @@ class Test(FullExecutionTestCaseBase):
         self.assert_is_regular_file_with_contents(
             self.full_result.execution_directory_structure.act_dir / ACT_SCRIPT_OUTPUT_FILE_NAME,
             expected_act_output,
-            'Envronment Variables printed from act/script execution')
+            'Environment Variables printed from act/script execution')
 
 
 ACT_SCRIPT_OUTPUT_FILE_NAME = 'act-script-output.txt'
