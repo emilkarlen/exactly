@@ -2,10 +2,11 @@ from . import file_ref
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from shellcheck_lib.instructions.utils.parse_utils import ensure_is_not_option_argument
+from shellcheck_lib.instructions.utils.relative_path_options import REL_TMP_OPTION, REL_CWD_OPTION, REL_HOME_OPTION
 
-SOURCE_REL_HOME_OPTION = '--rel-home'
-SOURCE_REL_CWD_OPTION = '--rel-cwd'
-SOURCE_REL_TMP_OPTION = '--rel-tmp'
+SOURCE_REL_HOME_OPTION = REL_HOME_OPTION
+SOURCE_REL_CWD_OPTION = REL_CWD_OPTION
+SOURCE_REL_TMP_OPTION = REL_TMP_OPTION
 
 
 def parse_relative_file_argument(arguments: list) -> (file_ref.FileRef, list):

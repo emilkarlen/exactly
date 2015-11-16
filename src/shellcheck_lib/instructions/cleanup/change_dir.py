@@ -16,7 +16,7 @@ class Parser(SingleInstructionParser):
 
 
 class _Instruction(CleanupPhaseInstruction):
-    def __init__(self, destination_directory: cd_utils.DestinationDirectory):
+    def __init__(self, destination_directory: cd_utils.DestinationPath):
         self.destination_directory = destination_directory
 
     def main(self,

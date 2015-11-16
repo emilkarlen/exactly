@@ -17,7 +17,7 @@ class Parser(SingleInstructionParser):
 
 
 class _Instruction(AssertPhaseInstruction):
-    def __init__(self, destination_directory: cd_utils.DestinationDirectory):
+    def __init__(self, destination_directory: cd_utils.DestinationPath):
         self.destination_directory = destination_directory
 
     def validate(self, global_environment: GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
