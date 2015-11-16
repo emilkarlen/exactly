@@ -1,6 +1,7 @@
 from contextlib import contextmanager
 import os
 import pathlib
+import shlex
 import tempfile
 from time import strftime, localtime
 import unittest
@@ -123,6 +124,12 @@ def multi_line_source(first_line_arguments: str,
         new_line_sequence(first_line,
                           following_lines=tuple(following_lines)),
         first_line_arguments)
+
+
+def argument_list_source(arguments: list,
+                         following_lines: iter=()) -> SingleInstructionParserSource:
+    return multi_line_source(' '.join(map(shlex.quote, arguments)),
+                             following_lines)
 
 
 def new_line_sequence(first_line: str,
