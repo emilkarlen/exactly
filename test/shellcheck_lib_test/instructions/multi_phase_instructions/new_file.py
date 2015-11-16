@@ -25,7 +25,7 @@ class AssertCwdIsSubDirOfEds(SideEffectsCheck):
                         pathlib.Path.cwd())
 
 
-class TestParseSet(unittest.TestCase):
+class TestParseWithNoContents(unittest.TestCase):
     def test_path_is_mandatory__without_option(self):
         arguments = ''
         with self.assertRaises(SingleInstructionInvalidArgumentException):
@@ -146,7 +146,7 @@ class TestFailingScenarios(TestCaseBase):
 
 def suite():
     ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestParseSet))
+    ret_val.addTest(unittest.makeSuite(TestParseWithNoContents))
     ret_val.addTest(unittest.makeSuite(TestSuccessfulScenarios))
     ret_val.addTest(unittest.makeSuite(TestFailingScenarios))
     return ret_val
