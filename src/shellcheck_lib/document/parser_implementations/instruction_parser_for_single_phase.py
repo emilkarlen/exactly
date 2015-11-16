@@ -16,12 +16,19 @@ class SingleInstructionInvalidArgumentException(Exception):
         self.error_message = error_message
 
 
-class SingleInstructionParserSource:
-    def __init__(self,
-                 line_sequence: line_source.LineSequenceBuilder,
-                 instruction_argument: str):
-        self.line_sequence = line_sequence
-        self.instruction_argument = instruction_argument
+class SingleInstructionParserSource(tuple):
+    def __new__(cls,
+                line_sequence: line_source.LineSequenceBuilder,
+                instruction_argument: str):
+        return tuple.__new__(cls, (line_sequence, instruction_argument))
+
+    @property
+    def line_sequence(self) -> line_source.LineSequenceBuilder:
+        return self[0]
+
+    @property
+    def instruction_argument(self) -> str:
+        return self[1]
 
 
 class SingleInstructionParser:
@@ -46,8 +53,9 @@ class SingleInstructionParser:
 
         :raises SingleInstructionInvalidArgumentException The arguments are invalid.
 
-        :param source: Contains a single line: the line with the instruction name at the
+        :param source: First line is the line with the instruction name at the
         beginning, followed by the instruction_argument.
+        This, and only this, first line has been consumed.
 
         :return: An instruction, iff the arguments are valid.
         """
