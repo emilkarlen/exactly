@@ -2,7 +2,7 @@ from shellcheck_lib.default.execution_mode.test_case.instruction_setup import Si
 from shellcheck_lib.instructions.setup import env
 from shellcheck_lib.instructions.setup import install
 from shellcheck_lib.instructions.setup import shell
-from shellcheck_lib.instructions.setup import mkdir
+from shellcheck_lib.instructions.setup import new_dir
 from shellcheck_lib.instructions.setup import change_dir
 from shellcheck_lib.instructions.setup import stdin
 from shellcheck_lib.instructions.setup import new_file
@@ -22,8 +22,8 @@ INSTRUCTIONS = {
             install.DESCRIPTION),
     'mkdir':
         SingleInstructionSetup(
-            mkdir.Parser(),
-            mkdir.DESCRIPTION),
+            new_dir.Parser(),
+            new_dir.DESCRIPTION),
     'pwd':
         SingleInstructionSetup(
             change_dir.Parser(),
