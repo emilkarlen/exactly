@@ -1,11 +1,11 @@
 -*- org -*-
 
 
-* TODO Refaktorering: Nya FileRef, FilePropCheck bör ersätta Comparison{Target,Source}
-Har laggt till massvis med FileRef, FilePropCheck, FileCheck (el vad de nu
-heter).
-De bör kunna ersätta mkt av det som content-assertions använder för att ange
-jämförelsefiler.
+* TODO Alias för instruktioner
+Kan behövas för att attrahera utvecklare med olika bakgrund.
+Speciellt
+ - "pwd" kan behöva heta "cd"
+ - "dir" kan behöva heta "mkdir"
 * TODO Dokumentation
 ** TODO Hjälpsystem
 ** TODO Users Guide
@@ -117,6 +117,17 @@ Fler fördelar:
 Notis i koden:
 "TODO: Implement env-var replacement for arbitrary file."
 * TODO Specifika instruktioner
+** TODO Se över instruktionsnamn
+Har nu valt att använda deklarativa namn.
+Tex
+ - workdir (ist f cd)
+ - dir     (ist f mkdir)
+ - file
+
+Är detta bra?
+Tycker det ökar läsbarheten.
+Dock kan vara motiverat att använda inarbetade/standardiserade namn (som t ex
+"cd" och "mkdir").
 ** TODO cd
 Syntax: cd [KATALOG]
 Byter aktuell katalog till given katalog.
@@ -198,8 +209,17 @@ Har ett testfall för filelist som gör just detta mha ex.
 Ersättningsvärdet är absolut sökväg för testets rot (SHELLCHECK_ACT).
 Antar att detta är relativt vanligt.  Därför borde shellcheck ha en sådan
 funktion inbyggd.
-** TODO mkdir --rel-tmp DIRECTORY
+** TODO mkdir
+*** TODO Byt namn till "dir" el "directory"
+Mer deklarativt.
+*** TODO Lägg till till cleanup-fasen
+*** TODO mkdir --rel-tmp DIRECTORY
 Skapar katalog under tmp/user.
+** TODO interpret/execute
+Instruktion som kör/interpreterar kommando.
+Kan göras via shell.  Men om det görs via skräddarsydd instruktion kan
+programmet som ska köras reffas rel-home, och valideringssteget kan validera
+att det reffade programmet verkligen existerar.
 * TODO Faser
 ** TODO Byt namn "anonymous" -> "configuration"
 ** TODO Configuration
@@ -369,12 +389,17 @@ Detta är dock krångligt!!
 * TODO Loggning
 * TODO Preprocessning
 ** TODO Testa ange preprocessor för TF via kommandoraden
+* TODO Faser och steg
+** TODO Nytt steg cleanup/validate
+T ex för att göra möjligt för en instruktion "interpret PROGRAM" att validera
+att en reffade programfil existerar --rel-home.
 * TODO Blandat
 ** TODO <2015-09-26 lör> Funktioner för att läsa act-resultat
 Ska finnas hjälpfunktioner i "biblioteket" för att läsa t ex statuskod på
 korrekt sätt - dvs kasta rätt undantag om något går snett.
 Idag läser t ex instruktionen "exitcode" själv exitkoden. Det ska den inte
 behöva göra.
+** TODO Instr-namn-parser: "_" ska kunna ingå i instruktionsnamn
 * TODO Prestanda
 ** TODO All dokumentation ska skapas vid behov
 Dvs ska inte finnas konstater på global nivå.

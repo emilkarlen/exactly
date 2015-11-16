@@ -3,9 +3,10 @@
 Fortsätt med
 
 * cd
-cd [DIRECTORY]
-Om directory inte anges så flyttas till SHELLCHECK_ACT.
-
+** Tester av instruktionerna
+Finns tester av fas-oberoende utils.
+** Test av flödet (full_execution, tror jag)
+Testat att PWD inte ändras av ramverket.
 * Byt namn: "mkdir" -> "dir"
 Mer deklarativ att enbart skriva "önskade typen av objekt": "dir"
 * setup/file NAME <<EOF ... EOF
