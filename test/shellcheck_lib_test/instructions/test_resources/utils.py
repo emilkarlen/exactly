@@ -54,6 +54,7 @@ def write_act_result(eds: ExecutionDirectoryStructure,
     write_file(eds.result.stdout_file, result.stdout_contents)
     write_file(eds.result.stderr_file, result.stderr_contents)
 
+
 @contextmanager
 def act_phase_result(exitcode: int=0,
                      stdout_contents: str='',
@@ -108,9 +109,26 @@ def new_source(instruction_name: str, arguments: str) -> SingleInstructionParser
         arguments)
 
 
-def new_line_sequence(first_line: str) -> LineSequenceBuilder:
+def single_line_source(arguments: str) -> SingleInstructionParserSource:
+    first_line = 'instruction-name' + ' ' + arguments
+    return SingleInstructionParserSource(
+        new_line_sequence(first_line),
+        arguments)
+
+
+def multi_line_source(first_line_arguments: str,
+                      following_lines: list) -> SingleInstructionParserSource:
+    first_line = 'instruction-name' + ' ' + first_line_arguments
+    return SingleInstructionParserSource(
+        new_line_sequence(first_line,
+                          following_lines=tuple(following_lines)),
+        first_line_arguments)
+
+
+def new_line_sequence(first_line: str,
+                      following_lines: tuple=()) -> LineSequenceBuilder:
     return line_source.LineSequenceBuilder(
         parse.LineSequenceSourceFromListOfLines(
-            parse.ListOfLines([])),
+            parse.ListOfLines(list(following_lines))),
         1,
         first_line)

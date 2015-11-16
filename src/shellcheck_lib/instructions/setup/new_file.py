@@ -12,7 +12,7 @@ DESCRIPTION = new_file_utils.DESCRIPTION
 
 class Parser(SingleInstructionParser):
     def apply(self, source: SingleInstructionParserSource) -> SetupPhaseInstruction:
-        argument = new_file_utils.parse(source.instruction_argument)
+        argument = new_file_utils.parse(source)
         return _Instruction(argument)
 
 
