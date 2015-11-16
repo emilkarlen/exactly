@@ -26,23 +26,26 @@ class AssertCwdIsSubDirOfEds(SideEffectsCheck):
 
 class TestParseSet(unittest.TestCase):
     def test_no_argument_should_denote_act_dir(self):
-        arguments = '--act-root'
+        arguments = '--rel-act'
         actual = sut.parse(arguments)
-        self.assertIs(sut.DestinationType.ACT_DIR,
+        self.assertIs(sut.DestinationType.REL_ACT_DIR,
                       actual.destination_type)
 
-    def test_single_argument_should_denote_rel_cwd(self):
+    def test_no_option_should_use_default_option(self):
         arguments = 'single-argument'
         actual = sut.parse(arguments)
         self.assertIs(sut.DestinationType.REL_CWD,
                       actual.destination_type)
         self.assertEqual('single-argument',
-                         str(actual.directory_argument))
+                         str(actual.path_argument))
 
-    def test_fail_when_no_arguments(self):
+    def test_no_arguments_is_rel_default_option(self):
         arguments = ''
-        with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse(arguments)
+        actual = sut.parse(arguments)
+        self.assertIs(sut.DestinationType.REL_CWD,
+                      actual.destination_type)
+        self.assertEqual(str(pathlib.PurePath()),
+                         str(actual.path_argument))
 
     def test_fail_when_superfluous_arguments(self):
         arguments = 'expected-argument superfluous-argument'
@@ -55,7 +58,7 @@ class TestParseSet(unittest.TestCase):
         self.assertIs(sut.DestinationType.REL_CWD,
                       actual.destination_type)
         self.assertEqual('expected-argument',
-                         str(actual.directory_argument))
+                         str(actual.path_argument))
 
     def test_success_when_correct_number_of_arguments__escaped(self):
         arguments = '"expected argument"'
@@ -63,7 +66,7 @@ class TestParseSet(unittest.TestCase):
         self.assertIs(sut.DestinationType.REL_CWD,
                       actual.destination_type)
         self.assertEqual('expected argument',
-                         str(actual.directory_argument))
+                         str(actual.path_argument))
 
     def test_rel_tmp_without_argument(self):
         arguments = '--rel-tmp'
@@ -71,7 +74,7 @@ class TestParseSet(unittest.TestCase):
         self.assertIs(sut.DestinationType.REL_TMP_DIR,
                       actual.destination_type)
         self.assertEqual(str(pathlib.PurePosixPath()),
-                         str(actual.directory_argument))
+                         str(actual.path_argument))
 
     def test_rel_tmp_with_argument(self):
         arguments = '--rel-tmp subdir'
@@ -79,7 +82,7 @@ class TestParseSet(unittest.TestCase):
         self.assertIs(sut.DestinationType.REL_TMP_DIR,
                       actual.destination_type)
         self.assertEqual('subdir',
-                         str(actual.directory_argument))
+                         str(actual.path_argument))
 
     def test_rel_tmp_with_superfluous_argument(self):
         arguments = '--rel-tmp subdir superfluous'
@@ -172,7 +175,7 @@ class TestSuccessfulScenarios(TestCaseBase):
                                            ))
 
     def test_act_root_option_should_change_to_act_dir(self):
-        self._test_argument('--act-root',
+        self._test_argument('--rel-act',
                             eds_test.Check(expected_action_result=is_success(),
                                            pre_action_action=ChangeDirTo(lambda eds: eds.root_dir),
                                            post_action_check=CwdIs(lambda eds: eds.act_dir)
