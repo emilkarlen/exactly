@@ -4,7 +4,7 @@ from shellcheck_lib.instructions.assert_phase import exitcode as exitcode_instru
 from shellcheck_lib.instructions.assert_phase import contents as contents_instruction
 from shellcheck_lib.instructions.assert_phase import type
 from shellcheck_lib.instructions.assert_phase import stdout_stderr as stdout_stderr_instruction
-from shellcheck_lib.instructions.assert_phase import mkdir
+from shellcheck_lib.instructions.assert_phase import new_dir
 from shellcheck_lib.instructions.assert_phase import change_dir
 
 INSTRUCTIONS = {
@@ -18,8 +18,8 @@ INSTRUCTIONS = {
             contents_instruction.DESCRIPTION),
     'mkdir':
         SingleInstructionSetup(
-            mkdir.Parser(),
-            mkdir.DESCRIPTION),
+            new_dir.Parser(),
+            new_dir.DESCRIPTION),
     'pwd':
         SingleInstructionSetup(
             change_dir.Parser(),
