@@ -18,10 +18,13 @@ class FileChecker:
                                                            p: pathlib.Path,
                                                            expected_number_of_files: int):
         self.assert_exists_dir(p)
+        directory_contents = list(p.iterdir())
         self.put.assertEquals(
             expected_number_of_files,
-            len(list(p.iterdir())),
-            self._msg('The directory "%s" should contain exactly %s files.' % (str(p), expected_number_of_files)))
+            len(directory_contents),
+            self._msg('The directory "%s" should contain exactly %s files. Found %s' % (str(p),
+                                                                                        expected_number_of_files,
+                                                                                        str(directory_contents))))
 
     def assert_exists_dir(self, p: pathlib.Path):
         self.put.assertTrue(p.exists(), self._msg('"%s" should exist (as a directory)' % p.name))

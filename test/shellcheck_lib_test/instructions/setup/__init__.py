@@ -7,6 +7,7 @@ from . import shell
 from . import env
 from . import stdin
 from . import change_dir
+from . import new_file
 
 
 def suite():
@@ -18,6 +19,7 @@ def suite():
     ret_val.addTest(env.suite())
     ret_val.addTest(stdin.suite())
     ret_val.addTest(change_dir.suite())
+    ret_val.addTest(new_file.suite())
     return ret_val
 
 
