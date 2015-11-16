@@ -1,4 +1,6 @@
 from shellcheck_lib.default.execution_mode.test_case.instruction_setup import Description, InvokationVariant
+from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
+    SingleInstructionParserSource
 from shellcheck_lib.general.file_utils import ensure_parent_directory_does_exist_and_is_a_directory, write_new_text_file
 from shellcheck_lib.instructions.utils.parse_utils import spit_arguments_list_string
 from shellcheck_lib.instructions.utils.destination_path import *
@@ -29,8 +31,8 @@ class FileInfo(tuple):
         return self[1]
 
 
-def parse(argument: str) -> FileInfo:
-    arguments = spit_arguments_list_string(argument)
+def parse(source: SingleInstructionParserSource) -> FileInfo:
+    arguments = spit_arguments_list_string(source.instruction_argument)
 
     (destination_path, remaining_arguments) = parse_destination_path(DestinationType.REL_CWD, True, arguments)
     if remaining_arguments:
