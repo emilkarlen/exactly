@@ -4,14 +4,16 @@ import unittest
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException, SingleInstructionParserSource
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
+from shellcheck_lib.general.string import lines_content
 from shellcheck_lib.instructions.multi_phase_instructions import new_file as sut
 from shellcheck_lib.test_case.sections.common import HomeAndEds
 from shellcheck_lib_test.instructions.test_resources.eds_contents_check import ActRootContainsExactly, \
     TmpUserRootContainsExactly
 from shellcheck_lib_test.instructions.test_resources.eds_populator import act_dir_contents
-from shellcheck_lib_test.instructions.test_resources.utils import SideEffectsCheck, single_line_source
+from shellcheck_lib_test.instructions.test_resources.utils import SideEffectsCheck, single_line_source, \
+    argument_list_source
 from shellcheck_lib_test.util import eds_test, tmp_dir_test
-from shellcheck_lib_test.util.file_structure import DirContents, empty_dir, Dir, empty_file
+from shellcheck_lib_test.util.file_structure import DirContents, empty_dir, Dir, empty_file, File
 
 
 class AssertCwdIsSubDirOfEds(SideEffectsCheck):
@@ -36,7 +38,7 @@ class TestParseWithNoContents(unittest.TestCase):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             sut.parse(single_line_source(arguments))
 
-    def test_no_option_should_be_relative_cwd(self):
+    def test_when_no_option_path_should_be_relative_cwd(self):
         arguments = 'single-argument'
         actual = sut.parse(single_line_source(arguments))
         self.assertIs(sut.DestinationType.REL_CWD,
@@ -55,6 +57,44 @@ class TestParseWithNoContents(unittest.TestCase):
         arguments = '--rel-act expected-argument superfluous-argument'
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             sut.parse(single_line_source(arguments))
+
+
+class TestParseWithContents(unittest.TestCase):
+    def test_fail_when_superfluous_arguments(self):
+        source = argument_list_source(['file name', '<<MARKER', 'superfluous argument'],
+                                      ['single line',
+                                       'MARKER'])
+        with self.assertRaises(SingleInstructionInvalidArgumentException):
+            sut.parse(source)
+
+    def test_single_line(self):
+        source = argument_list_source(['file name', '<<MARKER'],
+                                      ['single line',
+                                       'MARKER'])
+        actual = sut.parse(source)
+        self.assertIs(sut.DestinationType.REL_CWD,
+                      actual.destination_path.destination_type)
+        self.assertEqual('file name',
+                         str(actual.destination_path.path_argument))
+        self.assertEqual(lines_content(['single line']),
+                         actual.contents)
+        self.assertFalse(source.line_sequence.has_next())
+
+    def test_single_line__with_option(self):
+        source = argument_list_source(['--rel-tmp', 'file name', '<<MARKER'],
+                                      ['single line',
+                                       'MARKER',
+                                       'following line'])
+        actual = sut.parse(source)
+        self.assertIs(sut.DestinationType.REL_TMP_DIR,
+                      actual.destination_path.destination_type)
+        self.assertEqual('file name',
+                         str(actual.destination_path.path_argument))
+        self.assertEqual(lines_content(['single line']),
+                         actual.contents)
+        self.assertTrue(source.line_sequence.has_next())
+        self.assertEqual('following line',
+                         source.line_sequence.next_line())
 
 
 class ParseAndCreateFileAction(eds_test.Action):
@@ -84,7 +124,7 @@ def is_failure() -> tmp_dir_test.ResultAssertion:
     return tmp_dir_test.ResultIsNotNone()
 
 
-class TestSuccessfulScenarios(TestCaseBase):
+class TestSuccessfulScenariosNoContent(TestCaseBase):
     def test_file_relative_pwd(self):
         self._test_argument(single_line_source('file-name.txt'),
                             eds_test.Check(expected_action_result=is_success(),
@@ -124,6 +164,21 @@ class TestSuccessfulScenarios(TestCaseBase):
                                            ))
 
 
+class TestSuccessfulScenariosWithContent(TestCaseBase):
+    def test_file_relative_pwd(self):
+        source = argument_list_source(['file-name.txt', '<<MARKER'],
+                                      ['single line',
+                                       'MARKER'])
+        self._test_argument(source,
+                            eds_test.Check(expected_action_result=is_success(),
+                                           expected_eds_contents_after=ActRootContainsExactly(DirContents([
+                                               File('file-name.txt',
+                                                    lines_content(['single line']))
+                                           ])),
+                                           ))
+
+
+
 class TestFailingScenarios(TestCaseBase):
     def test_argument_is_existing_file(self):
         self._test_argument(single_line_source('existing-file'),
@@ -147,8 +202,10 @@ class TestFailingScenarios(TestCaseBase):
 def suite():
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestParseWithNoContents))
-    ret_val.addTest(unittest.makeSuite(TestSuccessfulScenarios))
+    ret_val.addTest(unittest.makeSuite(TestSuccessfulScenariosNoContent))
+    ret_val.addTest(unittest.makeSuite(TestSuccessfulScenariosWithContent))
     ret_val.addTest(unittest.makeSuite(TestFailingScenarios))
+    ret_val.addTest(unittest.makeSuite(TestParseWithContents))
     return ret_val
 
 
