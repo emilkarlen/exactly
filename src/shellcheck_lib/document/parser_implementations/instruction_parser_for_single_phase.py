@@ -127,7 +127,7 @@ class InvalidInstructionArgumentException(InvalidInstructionException):
                  instruction_name: str,
                  error_message: str):
         super().__init__(line,
-                         'Invalid argument for %s: %s' % (instruction_name, error_message))
+                         'Invalid argument for %s:\n%s' % (instruction_name, error_message))
         self.instruction_name = instruction_name
         self.error_message = error_message
 
