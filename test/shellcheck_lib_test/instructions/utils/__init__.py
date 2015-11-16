@@ -1,9 +1,9 @@
 import unittest
 
 from shellcheck_lib_test.instructions.utils import parse_utils
-
 from shellcheck_lib_test.instructions.utils import file_ref
 from shellcheck_lib_test.instructions.utils import parse_file_ref
+from shellcheck_lib_test.instructions.utils import here_document_parser
 
 
 def suite():
@@ -11,6 +11,7 @@ def suite():
     ret_val.addTest(parse_utils.suite())
     ret_val.addTest(file_ref.suite())
     ret_val.addTest(parse_file_ref.suite())
+    ret_val.addTest(here_document_parser.suite())
     return ret_val
 
 
