@@ -5,12 +5,17 @@ from shellcheck_lib.instructions.setup import shell
 from shellcheck_lib.instructions.setup import mkdir
 from shellcheck_lib.instructions.setup import change_dir
 from shellcheck_lib.instructions.setup import stdin
+from shellcheck_lib.instructions.setup import new_file
 
 INSTRUCTIONS = {
     'env':
         SingleInstructionSetup(
             env.Parser(),
             env.DESCRIPTION),
+    'file':
+        SingleInstructionSetup(
+            new_file.Parser(),
+            new_file.DESCRIPTION),
     'install':
         SingleInstructionSetup(
             install.Parser(),
