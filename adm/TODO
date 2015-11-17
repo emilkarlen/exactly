@@ -1,6 +1,13 @@
 -*- org -*-
 
 
+* TODO tmp-filer för instruktioner
+Bör införa hjälpfunktion för att skapa tmp-filer för instruktioner.
+Nu: contents/stdout/stderr: Ser själva till att lägga tmp-fil i
+tmp/internal.
+Vill ha funktion, typ: tmp_file_for_instruction(prefix,suffix,contents)
+-> pathlib.Path
+som automatiskt lägger den i tmp/internal.
 * TODO cwd för act-exekveringen
 Ser ut som det är fel idag, dvs att act_dir används ovillkorligt.
 Ska vara: cwd.
