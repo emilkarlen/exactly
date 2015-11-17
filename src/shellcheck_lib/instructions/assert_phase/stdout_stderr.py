@@ -61,7 +61,8 @@ class ParserForContentsForActualValue(SingleInstructionParser):
         arguments = spit_arguments_list_string(source.instruction_argument)
         content_instruction = contents_utils.try_parse_content(self.comparison_actual_value,
                                                                self.target_transformer,
-                                                               arguments)
+                                                               arguments,
+                                                               source)
         if content_instruction is None:
             raise SingleInstructionInvalidArgumentException(str(arguments))
         return content_instruction
