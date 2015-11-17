@@ -20,7 +20,7 @@ TEXT_ON_STDIN = 'on stdin'
 EXPECTED_CONTENTS_OF_STDERR = ''
 
 
-class TestCaseDocument(TestCaseWithCommonDefaultForSetupAssertCleanup):
+class TestCaseDocumentThatSetsStdinFileName(TestCaseWithCommonDefaultForSetupAssertCleanup):
     def _setup_phase(self) -> list:
         return [
             self._next_instruction_line(
@@ -31,7 +31,19 @@ class TestCaseDocument(TestCaseWithCommonDefaultForSetupAssertCleanup):
 
     def _act_phase(self) -> list:
         return [
-            self._next_instruction_line(StatementsThatCopiesStdinToStdout())
+            self._next_instruction_line(GenerateStatementsThatCopiesStdinToStdout())
+        ]
+
+
+class TestCaseDocumentThatSetsStdinContents(TestCaseWithCommonDefaultForSetupAssertCleanup):
+    def _setup_phase(self) -> list:
+        return [
+            self._next_instruction_line(InstructionThatSetsStdinContents(TEXT_ON_STDIN)),
+        ]
+
+    def _act_phase(self) -> list:
+        return [
+            self._next_instruction_line(GenerateStatementsThatCopiesStdinToStdout())
         ]
 
 
@@ -77,7 +89,7 @@ class PyCommandThatStoresStringInFileInCurrentDirectory(SetupPhaseInstruction):
         return svh.new_svh_success()
 
 
-class StatementsThatCopiesStdinToStdout(ActPhaseInstruction):
+class GenerateStatementsThatCopiesStdinToStdout(ActPhaseInstruction):
     def __init__(self):
         super().__init__()
 
@@ -103,19 +115,23 @@ class InstructionThatSetsStdinFileName(SetupPhaseInstruction):
         super().__init__()
         self.__file_name = file_name
 
-    def pre_validate(self,
-                     global_environment: common.GlobalEnvironmentForPreEdsStep) \
-            -> svh.SuccessOrValidationErrorOrHardError:
-        return svh.new_svh_success()
+    def main(self,
+             os_services: OsServices,
+             environment: common.GlobalEnvironmentForPostEdsPhase,
+             settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
+        settings_builder.stdin.file_name = self.__file_name
+        return sh.new_sh_success()
+
+
+class InstructionThatSetsStdinContents(SetupPhaseInstruction):
+    def __init__(self,
+                 contents: str):
+        super().__init__()
+        self.__contents = contents
 
     def main(self,
              os_services: OsServices,
              environment: common.GlobalEnvironmentForPostEdsPhase,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
-        settings_builder.stdin_file_name = self.__file_name
+        settings_builder.stdin.contents = self.__contents
         return sh.new_sh_success()
-
-    def post_validate(self,
-                      global_environment: common.GlobalEnvironmentForPostEdsPhase) \
-            -> svh.SuccessOrValidationErrorOrHardError:
-        return svh.new_svh_success()

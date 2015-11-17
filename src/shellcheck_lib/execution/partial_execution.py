@@ -10,18 +10,19 @@ from shellcheck_lib.execution.phase_step_execution import ElementHeaderExecutor
 from shellcheck_lib.general import line_source
 from shellcheck_lib.execution import phase_step_executors
 from shellcheck_lib.execution.single_instruction_executor import ControlledInstructionExecutor
+from shellcheck_lib.general.file_utils import write_new_text_file
 from shellcheck_lib.general.std import StdOutputFiles, StdFiles
 from shellcheck_lib.test_case.sections import common
 from shellcheck_lib.document.model import PhaseContents
 from shellcheck_lib.execution import phases
 from shellcheck_lib.test_case import test_case_doc
-from .execution_directory_structure import construct_at, ExecutionDirectoryStructure
+from .execution_directory_structure import construct_at, ExecutionDirectoryStructure, stdin_contents_file
 from .result import PartialResult, PartialResultStatus, new_partial_result_pass, PhaseFailureInfo
 from . import result
 from . import phase_step_execution
 from shellcheck_lib.test_case.sections.act.phase_setup import PhaseEnvironmentForScriptGeneration, ActProgramExecutor, \
     SourceSetup, ScriptSourceBuilder
-from shellcheck_lib.test_case.sections.setup import SetupSettingsBuilder
+from shellcheck_lib.test_case.sections.setup import SetupSettingsBuilder, StdinSettings
 from shellcheck_lib.test_case.os_services import new_default, OsServices
 
 
@@ -43,7 +44,7 @@ class Configuration(tuple):
 class _StepExecutionResult:
     def __init__(self):
         self.__script_source = None
-        self.__stdin_file_name = None
+        self.__stdin_settings = None
 
     @property
     def script_source(self) -> str:
@@ -54,12 +55,17 @@ class _StepExecutionResult:
         self.__script_source = x
 
     @property
-    def stdin_file_name(self) -> str:
-        return self.__stdin_file_name
+    def has_custom_stdin(self) -> bool:
+        return self.__stdin_settings.file_name is not None or \
+               self.__stdin_settings.contents is not None
 
-    @stdin_file_name.setter
-    def stdin_file_name(self, x: str):
-        self.__stdin_file_name = x
+    @property
+    def stdin_settings(self) -> StdinSettings:
+        return self.__stdin_settings
+
+    @stdin_settings.setter
+    def stdin_settings(self, x: StdinSettings):
+        self.__stdin_settings = x
 
 
 class ScriptHandling:
@@ -188,7 +194,7 @@ class PartialExecutor:
                                                                   self.__global_environment,
                                                                   setup_settings_builder),
                                                               self.__setup_phase)
-        self.___step_execution_result.stdin_file_name = setup_settings_builder.stdin_file_name
+        self.___step_execution_result.stdin_settings = setup_settings_builder.stdin
 
         return ret_val
 
@@ -283,12 +289,9 @@ class PartialExecutor:
         the_phase_step = PhaseStep(phases.ACT, phase_step.ACT_script_execute)
         try:
             self.__write_and_store_script_file_path()
-            if self.___step_execution_result.stdin_file_name:
-                try:
-                    f_stdin = open(self.___step_execution_result.stdin_file_name)
-                    self._run_act_script_with_stdin_file(f_stdin)
-                finally:
-                    f_stdin.close()
+            if self.___step_execution_result.has_custom_stdin:
+                file_name = self._custom_stdin_file_name()
+                self._run_act_script_with_opened_stdin_file(file_name)
             else:
                 self._run_act_script_with_stdin_file(subprocess.DEVNULL)
             return new_partial_result_pass(self.__execution_directory_structure)
@@ -297,6 +300,13 @@ class PartialExecutor:
                                  self.__execution_directory_structure,
                                  PhaseFailureInfo(the_phase_step,
                                                   result.new_failure_details_from_exception(ex)))
+
+    def _run_act_script_with_opened_stdin_file(self, file_name: str):
+        try:
+            f_stdin = open(file_name)
+            self._run_act_script_with_stdin_file(f_stdin)
+        finally:
+            f_stdin.close()
 
     def _run_act_script_with_stdin_file(self, f_stdin):
         """
@@ -339,6 +349,14 @@ class PartialExecutor:
                                                   phase_step,
                                                   self.execution_directory_structure)
 
+    def _custom_stdin_file_name(self) -> str:
+        settings = self.___step_execution_result.stdin_settings
+        if settings.file_name is not None:
+            return settings.file_name
+        else:
+            file_path = stdin_contents_file(self.__execution_directory_structure)
+            write_new_text_file(file_path, settings.contents)
+            return str(file_path)
 
 class _ActCommentHeaderExecutor(ElementHeaderExecutor):
     def __init__(self,
