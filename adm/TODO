@@ -234,12 +234,17 @@ att det reffade programmet verkligen existerar.
 Namn?
  - run
  - exec (i Unix: denna byter ut aktuell process ... så inte helt rätt)
- - execute
+ - execute (rimmar bra med att det som körs måste vara exekverbart)
  - interpret (ev är detta en variant som tar interpreter som 1:a arg)
  - program
 Finn något namn som andas deklarativt synsätt??
  - checker
  - assert
+** TODO För Unix: kör sh-kommandon
+T ex [ $(wc -l FILE) = 4 ]
+
+Impl genom att ta raden (förutom instruktionen) o lägg i fil, o interpretera
+den m sh/bash.
 * TODO Faser
 ** TODO Byt namn "anonymous" -> "configuration"
 ** TODO Configuration
