@@ -2,7 +2,7 @@ import unittest
 
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from shellcheck_lib.instructions.utils import here_document_parser as sut
+from shellcheck_lib.instructions.utils import parse_here_document as sut
 from shellcheck_lib_test.instructions.test_resources.utils import argument_list_source
 
 

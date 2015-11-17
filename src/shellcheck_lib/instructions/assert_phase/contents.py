@@ -9,9 +9,8 @@ from shellcheck_lib.execution.execution_directory_structure import \
     SUB_DIR_FOR_REPLACEMENT_SOURCES_NOT_UNDER_ACT_DIR
 from shellcheck_lib.instructions.assert_phase.utils.contents_utils import ActualFileTransformer, EMPTY_ARGUMENT, \
     WITH_REPLACED_ENV_VARS_OPTION, parse_actual_file_argument
-from shellcheck_lib.instructions.utils.parse_file_ref import SOURCE_REL_HOME_OPTION, SOURCE_REL_CWD_OPTION, \
-    SOURCE_REL_TMP_OPTION
 from shellcheck_lib.instructions.utils.parse_utils import spit_arguments_list_string
+from shellcheck_lib.instructions.utils.relative_path_options import REL_HOME_OPTION, REL_TMP_OPTION, REL_CWD_OPTION
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
 from .utils import contents_utils
@@ -35,17 +34,17 @@ DESCRIPTION = Description(
             'File exists, is a regular file, and is not empty'),
         InvokationVariant(
             'FILENAME {} {} FILE'.format(WITH_REPLACED_ENV_VARS_OPTION,
-                                         SOURCE_REL_HOME_OPTION),
+                                         REL_HOME_OPTION),
             'Compares contents of FILENAME to contents of FILE ' +
             '(which is a path relative home)'),
         InvokationVariant(
             'FILENAME {} {} FILE'.format(WITH_REPLACED_ENV_VARS_OPTION,
-                                         SOURCE_REL_TMP_OPTION),
+                                         REL_TMP_OPTION),
             'Compares contents of FILENAME to contents of FILE ' +
             '(which is a path relative the shellcheck tmp directory)'),
         InvokationVariant(
             'FILENAME {} {} FILE'.format(WITH_REPLACED_ENV_VARS_OPTION,
-                                         SOURCE_REL_CWD_OPTION),
+                                         REL_CWD_OPTION),
             'Compares contents of FILENAME to contents of FILE ' +
             '(which is a path relative current working directory)'),
     ])
@@ -61,9 +60,6 @@ class Parser(SingleInstructionParser):
                                                        _ActualFileTransformer(),
                                                        remaining_arguments)
         return instruction
-        # if content_instruction is not None:
-        #     return content_instruction
-        # raise SingleInstructionInvalidArgumentException('Invalid file instruction')
 
 
 class _ActualFileTransformer(ActualFileTransformer):
