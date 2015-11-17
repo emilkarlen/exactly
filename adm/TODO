@@ -1,6 +1,21 @@
 -*- org -*-
 
 
+* TODO cwd för act-exekveringen
+Ser ut som det är fel idag, dvs att act_dir används ovillkorligt.
+Ska vara: cwd.
+                exitcode = self.__script_handling.executor.execute(
+                    self.__source_setup,
+                    self.execution_directory_structure.act_dir,
+                    self.configuration.home_dir,
+                    self.__execution_directory_structure,
+                    StdFiles(f_stdin,
+                             StdOutputFiles(f_stdout,
+                                            f_stderr)))
+
+** Säkerställ: om stdin ska omdirigeras att filen hittas
+Idag är cwd alltid (troligtvis) act-dir. Då kan sökvägar vara relativa denna.
+Ev måste det hanteras om cwd kan vara nått annat.
 * TODO Alias för instruktioner
 Kan behövas för att attrahera utvecklare med olika bakgrund.
 Speciellt
