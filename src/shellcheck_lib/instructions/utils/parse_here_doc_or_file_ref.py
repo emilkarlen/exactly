@@ -3,6 +3,7 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
 from . import file_ref
 from . import parse_here_document
 from . import parse_file_ref
+from shellcheck_lib.instructions.utils.parse_here_document import HereDocumentContentsParsingException
 
 
 class HereDocOrFileRef(tuple):
@@ -29,6 +30,8 @@ def parse(first_line_arguments: list,
     try:
         here_doc = parse_here_document.parse_as_last_argument(False, first_line_arguments, source)
         return HereDocOrFileRef(here_doc, None), []
+    except HereDocumentContentsParsingException as ex:
+        raise ex
     except SingleInstructionInvalidArgumentException:
         try:
             (file_reference, remaining_arguments) = parse_file_ref.parse_relative_file_argument(first_line_arguments)

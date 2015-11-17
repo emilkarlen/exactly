@@ -58,7 +58,8 @@ class Parser(SingleInstructionParser):
         (comparison_target, remaining_arguments) = parse_actual_file_argument(arguments)
         instruction = contents_utils.try_parse_content(comparison_target,
                                                        _ActualFileTransformer(),
-                                                       remaining_arguments)
+                                                       remaining_arguments,
+                                                       source)
         return instruction
 
 

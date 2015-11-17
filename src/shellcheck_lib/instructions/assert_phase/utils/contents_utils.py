@@ -5,18 +5,20 @@ import pathlib
 
 from shellcheck_lib.execution import environment_variables
 from shellcheck_lib.general import file_utils
-from shellcheck_lib.general.file_utils import ensure_parent_directory_does_exist
+from shellcheck_lib.general.file_utils import ensure_parent_directory_does_exist, tmp_text_file_containing
 from shellcheck_lib.general.string import lines_content
 from shellcheck_lib.instructions.assert_phase.utils import instruction_utils
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionInvalidArgumentException
+    SingleInstructionInvalidArgumentException, SingleInstructionParserSource
+from shellcheck_lib.instructions.utils import parse_here_doc_or_file_ref
 from shellcheck_lib.instructions.utils.file_properties import must_exist_as, FileType
 from shellcheck_lib.instructions.utils.file_ref import FileRef
 from shellcheck_lib.instructions.utils.file_ref_check import post_eds_validate, FileRefCheck, \
     post_eds_failure_message_or_none
-from shellcheck_lib.instructions.utils.parse_file_ref import parse_relative_file_argument, parse_non_home_file_ref
+from shellcheck_lib.instructions.utils.parse_file_ref import parse_non_home_file_ref
+from shellcheck_lib.instructions.utils.parse_here_doc_or_file_ref import HereDocOrFileRef
 from shellcheck_lib.test_case.sections import common as i
-from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
+from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase, HomeAndEds
 from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
@@ -76,27 +78,28 @@ class StderrComparisonTarget(ActComparisonActualFileForStdFileBase):
 
 class ContentCheckerInstructionBase(AssertPhaseInstruction):
     def __init__(self,
-                 expected_contents: FileRef,
+                 expected_contents: HereDocOrFileRef,
                  actual_contents: ComparisonActualFile):
         self._actual_value = actual_contents
         self._expected_contents = expected_contents
 
     def validate(self,
                  environment: i.GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
-        if self._expected_contents.exists_pre_eds:
-            return post_eds_validate(self._file_ref_check_for_expected(),
-                                     environment)
-        else:
-            return svh.new_svh_success()
+        if not self._expected_contents.is_here_document:
+            if self._expected_contents.file_reference.exists_pre_eds:
+                return post_eds_validate(self._file_ref_check_for_expected(),
+                                         environment)
+        return svh.new_svh_success()
 
     def main(self,
              environment: i.GlobalEnvironmentForPostEdsPhase,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
-        failure_message = post_eds_failure_message_or_none(self._file_ref_check_for_expected(),
-                                                           environment)
-        if failure_message:
-            return pfh.new_pfh_fail(failure_message)
-        expected_file_path = self._expected_contents.file_path_post_eds(environment.home_and_eds)
+        if not self._expected_contents.is_here_document:
+            failure_message = post_eds_failure_message_or_none(self._file_ref_check_for_expected(),
+                                                               environment)
+            if failure_message:
+                return pfh.new_pfh_fail(failure_message)
+        expected_file_path = self._file_path_for_file_with_expected_contents(environment.home_and_eds)
 
         actual_file_path = self._actual_value.file_path(environment)
         failure_message = self._actual_value.file_check_failure(environment)
@@ -116,8 +119,18 @@ class ContentCheckerInstructionBase(AssertPhaseInstruction):
                                     diff_description)
         return pfh.new_pfh_pass()
 
-    def _file_ref_check_for_expected(self):
-        return FileRefCheck(self._expected_contents,
+    def _file_path_for_file_with_expected_contents(self, home_and_eds: HomeAndEds) -> pathlib.Path:
+        if self._expected_contents.is_here_document:
+            contents = lines_content(self._expected_contents.here_document)
+            return tmp_text_file_containing(contents,
+                                            prefix='contents-',
+                                            suffix='.txt',
+                                            directory=str(home_and_eds.eds.tmp.internal_dir))
+        else:
+            return self._expected_contents.file_reference.file_path_post_eds(home_and_eds)
+
+    def _file_ref_check_for_expected(self) -> FileRefCheck:
+        return FileRefCheck(self._expected_contents.file_reference,
                             must_exist_as(FileType.REGULAR))
 
     def _get_processed_actual_file_path(self,
@@ -129,7 +142,7 @@ class ContentCheckerInstructionBase(AssertPhaseInstruction):
 
 class ContentCheckerInstruction(ContentCheckerInstructionBase):
     def __init__(self,
-                 expected_contents: FileRef,
+                 expected_contents: HereDocOrFileRef,
                  actual_contents: ComparisonActualFile):
         super().__init__(expected_contents, actual_contents)
 
@@ -181,7 +194,7 @@ class ActualFileTransformer:
 
 class ContentCheckerWithTransformationInstruction(ContentCheckerInstructionBase):
     def __init__(self,
-                 expected_contents: FileRef,
+                 expected_contents: HereDocOrFileRef,
                  actual_contents: ComparisonActualFile,
                  actual_file_transformer: ActualFileTransformer):
         super().__init__(expected_contents, actual_contents)
@@ -222,7 +235,8 @@ class EmptinessCheckerInstruction(instruction_utils.InstructionWithoutValidation
 
 def try_parse_content(actual_file: ComparisonActualFile,
                       actual_file_transformer: ActualFileTransformer,
-                      arguments: list) -> AssertPhaseInstruction:
+                      arguments: list,
+                      source: SingleInstructionParserSource) -> AssertPhaseInstruction:
     def _parse_empty(actual: ComparisonActualFile,
                      extra_arguments: list) -> AssertPhaseInstruction:
         if extra_arguments:
@@ -245,17 +259,18 @@ def try_parse_content(actual_file: ComparisonActualFile,
         if extra_arguments and extra_arguments[0] == WITH_REPLACED_ENV_VARS_OPTION:
             with_replaced_env_vars = True
             del extra_arguments[0]
-        (file_ref_for_expected, remaining_arguments) = parse_relative_file_argument(extra_arguments)
+        (here_doc_or_file_ref_for_expected, remaining_arguments) = parse_here_doc_or_file_ref.parse(extra_arguments,
+                                                                                                    source)
         if remaining_arguments:
             raise SingleInstructionInvalidArgumentException(
                 lines_content('Superfluous arguments: {}'.format(remaining_arguments)))
 
         if with_replaced_env_vars:
-            return ContentCheckerWithTransformationInstruction(file_ref_for_expected,
+            return ContentCheckerWithTransformationInstruction(here_doc_or_file_ref_for_expected,
                                                                actual,
                                                                actual_file_transformer)
         else:
-            return ContentCheckerInstruction(file_ref_for_expected, actual)
+            return ContentCheckerInstruction(here_doc_or_file_ref_for_expected, actual)
 
     if arguments[0] == EMPTY_ARGUMENT:
         return _parse_empty(actual_file, arguments[1:])

@@ -1,5 +1,6 @@
 import unittest
 
+from shellcheck_lib.general.string import lines_content
 from shellcheck_lib.instructions.assert_phase import stdout_stderr
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException, SingleInstructionParser
@@ -11,7 +12,7 @@ from shellcheck_lib_test.instructions.assert_phase.test_resources import instruc
 from shellcheck_lib_test.instructions.test_resources import pfh_check
 from shellcheck_lib_test.instructions.test_resources import svh_check
 from shellcheck_lib_test.instructions.test_resources.eds_populator import act_dir_contents, tmp_user_dir_contents
-from shellcheck_lib_test.instructions.test_resources.utils import new_source, ActResult
+from shellcheck_lib_test.instructions.test_resources.utils import new_source, ActResult, argument_list_source
 from shellcheck_lib_test.util.file_structure import DirContents, empty_dir, File
 
 
@@ -31,6 +32,14 @@ class FileContentsEmptyInvalidSyntax(TestWithParserBase):
             parser.apply(new_source('instruction-name',
                                     arguments))
 
+    def that_when_superfluous_arguments_of_valid_here_document(self):
+        source = argument_list_source(['empty', '<<MARKER'],
+                                      ['single line',
+                                       'MARKER'])
+        parser = self._new_parser()
+        with self.assertRaises(SingleInstructionInvalidArgumentException):
+            parser.apply(source)
+
 
 class TestFileContentsEmptyInvalidSyntaxFORStdout(FileContentsEmptyInvalidSyntax):
     def _new_parser(self) -> SingleInstructionParser:
@@ -39,6 +48,9 @@ class TestFileContentsEmptyInvalidSyntaxFORStdout(FileContentsEmptyInvalidSyntax
     def test_that_when_no_arguments_then_exception_is_raised(self):
         self.that_when_superfluous_arguments_then_exception_is_raised()
 
+    def test_when_superfluous_arguments_of_valid_here_document(self):
+        self.that_when_superfluous_arguments_of_valid_here_document()
+
 
 class TestFileContentsEmptyInvalidSyntaxFORStderr(FileContentsEmptyInvalidSyntax):
     def _new_parser(self) -> SingleInstructionParser:
@@ -46,6 +58,9 @@ class TestFileContentsEmptyInvalidSyntaxFORStderr(FileContentsEmptyInvalidSyntax
 
     def test_that_when_no_arguments_then_exception_is_raised(self):
         self.that_when_superfluous_arguments_then_exception_is_raised()
+
+    def test_when_superfluous_arguments_of_valid_here_document(self):
+        self.that_when_superfluous_arguments_of_valid_here_document()
 
 
 class FileContentsEmptyValidSyntax(TestWithParserBase):
@@ -100,6 +115,14 @@ class FileContentsNonEmptyInvalidSyntax(TestWithParserBase):
                           new_source('instruction-name',
                                      arguments))
 
+    def that_when_superfluous_arguments_of_valid_here_document(self):
+        source = argument_list_source(['!', 'empty', '<<MARKER'],
+                                      ['single line',
+                                       'MARKER'])
+        parser = self._new_parser()
+        with self.assertRaises(SingleInstructionInvalidArgumentException):
+            parser.apply(source)
+
 
 class TestFileContentsNonEmptyInvalidSyntaxFORStdout(FileContentsNonEmptyInvalidSyntax):
     def _new_parser(self) -> SingleInstructionParser:
@@ -108,6 +131,9 @@ class TestFileContentsNonEmptyInvalidSyntaxFORStdout(FileContentsNonEmptyInvalid
     def test_that_when_no_arguments_then_exception_is_raised(self):
         self.that_when_no_arguments_then_exception_is_raised()
 
+    def test_that_when_superfluous_arguments_of_valid_here_document(self):
+        self.that_when_superfluous_arguments_of_valid_here_document()
+
 
 class TestFileContentsNonEmptyInvalidSyntaxFORStderr(FileContentsNonEmptyInvalidSyntax):
     def _new_parser(self) -> SingleInstructionParser:
@@ -115,6 +141,9 @@ class TestFileContentsNonEmptyInvalidSyntaxFORStderr(FileContentsNonEmptyInvalid
 
     def test_that_when_no_arguments_then_exception_is_raised(self):
         self.that_when_no_arguments_then_exception_is_raised()
+
+    def test_that_when_superfluous_arguments_of_valid_here_document(self):
+        self.that_when_superfluous_arguments_of_valid_here_document()
 
 
 class FileContentsNonEmptyValidSyntax(TestWithParserBase):
@@ -317,6 +346,24 @@ class FileContentsFileRelTmp(TestWithParserBase):
                        '--rel-tmp f.txt'))
 
 
+class FileContentsHereDoc(TestWithParserBase):
+    def _act_result_with_contents(self,
+                                  contents_on_tested_channel: str,
+                                  contents_on_other_channel: str='') -> ActResult:
+        raise NotImplementedError()
+
+    def pass__when__contents_equals(self):
+        self._check(
+            Flow(self._new_parser(),
+                 act_result_producer=ActResultProducer(
+                     self._act_result_with_contents(lines_content(['single line'])))
+                 ),
+            argument_list_source(['<<EOF'],
+                                 ['single line',
+                                  'EOF'])
+        )
+
+
 class TestFileContentsFileRelCwdFORStdout(FileContentsFileRelCwd):
     def _new_parser(self) -> SingleInstructionParser:
         return stdout_stderr.ParserForContentsForStdout()
@@ -391,6 +438,35 @@ class TestFileContentsFileRelTmpFORStderr(FileContentsFileRelTmp):
                                   contents_on_other_channel: str='') -> ActResult:
         return ActResult(stderr_contents=contents_on_tested_channel,
                          stdout_contents=contents_on_other_channel)
+
+
+class FileContentsHereDocFORStdout(FileContentsHereDoc):
+    def test_pass__when__contents_equals(self):
+        self.pass__when__contents_equals()
+
+    def _new_parser(self) -> SingleInstructionParser:
+        return stdout_stderr.ParserForContentsForStdout()
+
+    def _act_result_with_contents(self,
+                                  contents_on_tested_channel: str,
+                                  contents_on_other_channel: str='') -> ActResult:
+        return ActResult(stdout_contents=contents_on_tested_channel,
+                         stderr_contents=contents_on_other_channel)
+
+
+class FileContentsHereDocFORStderr(FileContentsHereDoc):
+    def test_pass__when__contents_equals(self):
+        self.pass__when__contents_equals()
+
+    def _new_parser(self) -> SingleInstructionParser:
+        return stdout_stderr.ParserForContentsForStderr()
+
+    def _act_result_with_contents(self,
+                                  contents_on_tested_channel: str,
+                                  contents_on_other_channel: str='') -> ActResult:
+        return ActResult(stderr_contents=contents_on_tested_channel,
+                         stdout_contents=contents_on_other_channel)
+
 
 
 class ReplacedEnvVars(TestWithParserBase):
@@ -513,6 +589,9 @@ def suite():
 
     ret_val.addTest(unittest.makeSuite(TestFileContentsFileRelCwdFORStdout))
     ret_val.addTest(unittest.makeSuite(TestFileContentsFileRelCwdFORStderr))
+
+    ret_val.addTest(unittest.makeSuite(FileContentsHereDocFORStdout))
+    ret_val.addTest(unittest.makeSuite(FileContentsHereDocFORStderr))
 
     ret_val.addTest(unittest.makeSuite(TestReplacedEnvVarsFORStdout))
     ret_val.addTest(unittest.makeSuite(TestReplacedEnvVarsFORStderr))
