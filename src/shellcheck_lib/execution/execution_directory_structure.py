@@ -1,6 +1,8 @@
 import tempfile
 from pathlib import Path
 
+TMP_INTERNAL__STDIN_CONTENTS = 'stdin.txt'
+
 TMP_INTERNAL__WITH_REPLACED_ENV_VARS_SUB_DIR = 'with-replaced-env-vars'
 
 SUB_DIR_FOR_REPLACEMENT_SOURCES_UNDER_ACT_DIR = 'act'
@@ -126,3 +128,7 @@ def construct_at_tmp_root() -> ExecutionDirectoryStructure:
 
 def root_dir_for_non_stdout_or_stderr_files_with_replaced_env_vars(eds: ExecutionDirectoryStructure) -> Path:
     return eds.tmp.internal_dir / TMP_INTERNAL__WITH_REPLACED_ENV_VARS_SUB_DIR
+
+
+def stdin_contents_file(eds: ExecutionDirectoryStructure) -> Path:
+    return eds.tmp.internal_dir / TMP_INTERNAL__STDIN_CONTENTS

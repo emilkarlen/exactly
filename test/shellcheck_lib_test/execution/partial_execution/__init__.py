@@ -23,7 +23,13 @@ class Test(unittest.TestCase):
     def test_stdin_should_be_redirected_to_file_if_set_in_phase_env(self):
         py_unit_test_case.py3_test(
             self,
-            stdin_should_be_redirected_to_file_if_set_in_phase_env.TestCaseDocument().test_case,
+            stdin_should_be_redirected_to_file_if_set_in_phase_env.TestCaseDocumentThatSetsStdinFileName().test_case,
+            stdin_should_be_redirected_to_file_if_set_in_phase_env.assertions)
+
+    def test_stdin_should_be_redirected_to_stdin_contents_if_set_in_phase_env(self):
+        py_unit_test_case.py3_test(
+            self,
+            stdin_should_be_redirected_to_file_if_set_in_phase_env.TestCaseDocumentThatSetsStdinContents().test_case,
             stdin_should_be_redirected_to_file_if_set_in_phase_env.assertions)
 
     def test_all_phases_should_be_executed_and_result_from_action_saved_etc(self):

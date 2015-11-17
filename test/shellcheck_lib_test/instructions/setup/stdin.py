@@ -104,7 +104,7 @@ class AssertStdinFileIsSetToFile(Assertion):
               actual_result: SetupSettingsBuilder):
         file_path = self._file_reference.file_path_post_eds(environment.home_and_eds)
         put.assertEqual(str(file_path),
-                        actual_result.stdin_file_name,
+                        actual_result.stdin.file_name,
                         'Name of stdin file in Setup Settings')
 
 
