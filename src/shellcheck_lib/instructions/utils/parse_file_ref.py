@@ -4,9 +4,7 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
 from shellcheck_lib.instructions.utils.parse_utils import ensure_is_not_option_argument
 from shellcheck_lib.instructions.utils.relative_path_options import REL_TMP_OPTION, REL_CWD_OPTION, REL_HOME_OPTION
 
-SOURCE_REL_HOME_OPTION = REL_HOME_OPTION
-SOURCE_REL_CWD_OPTION = REL_CWD_OPTION
-SOURCE_REL_TMP_OPTION = REL_TMP_OPTION
+ALL_REL_OPTIONS = (REL_CWD_OPTION, REL_HOME_OPTION, REL_TMP_OPTION)
 
 
 def parse_relative_file_argument(arguments: list) -> (file_ref.FileRef, list):
@@ -22,14 +20,14 @@ def parse_relative_file_argument(arguments: list) -> (file_ref.FileRef, list):
     if not arguments:
         raise SingleInstructionInvalidArgumentException('Missing file argument')
     first_argument = arguments[0]
-    if first_argument == SOURCE_REL_HOME_OPTION:
-        ensure_have_at_least_two_arguments_for_option(SOURCE_REL_HOME_OPTION)
+    if first_argument == REL_HOME_OPTION:
+        ensure_have_at_least_two_arguments_for_option(REL_HOME_OPTION)
         return file_ref.rel_home(arguments[1]), arguments[2:]
-    if first_argument == SOURCE_REL_CWD_OPTION:
-        ensure_have_at_least_two_arguments_for_option(SOURCE_REL_CWD_OPTION)
+    if first_argument == REL_CWD_OPTION:
+        ensure_have_at_least_two_arguments_for_option(REL_CWD_OPTION)
         return file_ref.rel_cwd(arguments[1]), arguments[2:]
-    elif first_argument == SOURCE_REL_TMP_OPTION:
-        ensure_have_at_least_two_arguments_for_option(SOURCE_REL_TMP_OPTION)
+    elif first_argument == REL_TMP_OPTION:
+        ensure_have_at_least_two_arguments_for_option(REL_TMP_OPTION)
         return file_ref.rel_tmp_user(arguments[1]), arguments[2:]
     else:
         ensure_is_not_option_argument(first_argument)
@@ -49,11 +47,11 @@ def parse_non_home_file_ref(arguments: list) -> (file_ref.FileRef, list):
             raise SingleInstructionInvalidArgumentException('{} requires a FILE argument'.format(option))
 
     first_argument = arguments[0]
-    if first_argument == SOURCE_REL_CWD_OPTION:
-        ensure_have_at_least_two_arguments_for_option(SOURCE_REL_CWD_OPTION)
+    if first_argument == REL_CWD_OPTION:
+        ensure_have_at_least_two_arguments_for_option(REL_CWD_OPTION)
         return file_ref.rel_cwd(arguments[1]), arguments[2:]
-    elif first_argument == SOURCE_REL_TMP_OPTION:
-        ensure_have_at_least_two_arguments_for_option(SOURCE_REL_TMP_OPTION)
+    elif first_argument == REL_TMP_OPTION:
+        ensure_have_at_least_two_arguments_for_option(REL_TMP_OPTION)
         return file_ref.rel_tmp_user(arguments[1]), arguments[2:]
     else:
         ensure_is_not_option_argument(first_argument)

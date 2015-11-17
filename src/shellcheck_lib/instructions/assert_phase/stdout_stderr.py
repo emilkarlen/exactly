@@ -6,9 +6,9 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
 from shellcheck_lib.execution import environment_variables
 from shellcheck_lib.instructions.assert_phase.utils.contents_utils import ActualFileTransformer, \
     WITH_REPLACED_ENV_VARS_OPTION, EMPTY_ARGUMENT
-from shellcheck_lib.instructions.utils.parse_file_ref import SOURCE_REL_HOME_OPTION, SOURCE_REL_CWD_OPTION, \
-    SOURCE_REL_TMP_OPTION
 from shellcheck_lib.instructions.utils.parse_utils import spit_arguments_list_string
+from shellcheck_lib.instructions.utils.relative_path_options import REL_HOME_OPTION, REL_CWD_OPTION
+from shellcheck_lib.instructions.utils.relative_path_options import REL_TMP_OPTION
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
 from .utils import contents_utils
@@ -33,15 +33,15 @@ def description(file: str) -> Description:
                 '! {}'.format(EMPTY_ARGUMENT),
                 '%s is not empty' % file),
             InvokationVariant(
-                '[{}] {} FILENAME'.format(WITH_REPLACED_ENV_VARS_OPTION, SOURCE_REL_HOME_OPTION),
+                '[{}] {} FILENAME'.format(WITH_REPLACED_ENV_VARS_OPTION, REL_HOME_OPTION),
                 """Expects the contents of %s to equal the contents of FILE
                 (which is a path relative home)""" % file),
             InvokationVariant(
-                '[{}] {} FILENAME'.format(WITH_REPLACED_ENV_VARS_OPTION, SOURCE_REL_TMP_OPTION),
+                '[{}] {} FILENAME'.format(WITH_REPLACED_ENV_VARS_OPTION, REL_TMP_OPTION),
                 """Expects the contents of %s to equal the contents of FILE
                 (which is a path relative the shellcheck tmp directory)""" % file),
             InvokationVariant(
-                '[{}] {} FILENAME'.format(WITH_REPLACED_ENV_VARS_OPTION, SOURCE_REL_CWD_OPTION),
+                '[{}] {} FILENAME'.format(WITH_REPLACED_ENV_VARS_OPTION, REL_CWD_OPTION),
                 """Expects the contents of %s to equal the contents of FILE
                 (which is a path relative current working directory)""" % file),
         ])
