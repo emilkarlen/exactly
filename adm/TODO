@@ -150,10 +150,6 @@ Tex
 Tycker det ökar läsbarheten.
 Dock kan vara motiverat att använda inarbetade/standardiserade namn (som t ex
 "cd" och "mkdir").
-** TODO cd
-Syntax: cd [KATALOG]
-Byter aktuell katalog till given katalog.
-Om inget argument ges byts till SCHELLCHECK_ACT.
 ** TODO sök+ersätt
 Är en vanlig informations-operation.  Är den vanlig i det här sammanhanget?
 Vet inte.
@@ -187,13 +183,6 @@ den kör i en egen process??
 Används antingen i setup eller anonyma fasen.
 ** TODO Skapa temporär fil (filnamn tas fram automatiskt, läggs i SHELLCHECK_TMP)
 ** TODO file
-*** TODO Separata instr för test av filtyp samt innehåll
-T ex
-content target.txt empty
-content target.txt --rel-home source.txt
-
-type target.txt dir
-type target.txt file
 *** TODO Använda syntax mer lik unix "test" och "find"?
 Fördel iom att den är välkänd.
 ** TODO file/stdout/stderr --rel-cwd
@@ -242,6 +231,15 @@ Instruktion som kör/interpreterar kommando.
 Kan göras via shell.  Men om det görs via skräddarsydd instruktion kan
 programmet som ska köras reffas rel-home, och valideringssteget kan validera
 att det reffade programmet verkligen existerar.
+Namn?
+ - run
+ - exec (i Unix: denna byter ut aktuell process ... så inte helt rätt)
+ - execute
+ - interpret (ev är detta en variant som tar interpreter som 1:a arg)
+ - program
+Finn något namn som andas deklarativt synsätt??
+ - checker
+ - assert
 * TODO Faser
 ** TODO Byt namn "anonymous" -> "configuration"
 ** TODO Configuration
