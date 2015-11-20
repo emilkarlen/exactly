@@ -8,7 +8,6 @@ from shellcheck_lib.instructions.utils.parse_utils import spit_arguments_list_st
 from shellcheck_lib.test_case.sections import common as i
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionInvalidArgumentException, SingleInstructionParserSource
-from shellcheck_lib.instructions.assert_phase.utils import instruction_utils
 from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib.test_case.os_services import OsServices
@@ -28,7 +27,7 @@ DESCRIPTION = Description(
      ])
 
 
-class InstructionForExactValue(instruction_utils.InstructionWithoutValidationBase):
+class InstructionForExactValue(AssertPhaseInstruction):
     def __init__(self,
                  expected_value: int):
         self._expected_value = expected_value
@@ -42,7 +41,7 @@ class InstructionForExactValue(instruction_utils.InstructionWithoutValidationBas
         return pfh.new_pfh_fail(_unexpected_exit_code_message(self._expected_value, actual_value))
 
 
-class InstructionForOperator(instruction_utils.InstructionWithoutValidationBase):
+class InstructionForOperator(AssertPhaseInstruction):
     def __init__(self,
                  operator_info,
                  value: int):

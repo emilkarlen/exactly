@@ -6,7 +6,6 @@ from shellcheck_lib.instructions.utils.parse_utils import spit_arguments_list_st
 from shellcheck_lib.test_case.sections import common as i
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionInvalidArgumentException, SingleInstructionParserSource
-from shellcheck_lib.instructions.assert_phase.utils import instruction_utils
 from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib.test_case.os_services import OsServices
@@ -60,7 +59,7 @@ class Parser(SingleInstructionParser):
             raise SingleInstructionInvalidArgumentException('Invalid file type: ' + arguments[0])
 
 
-class _Instruction(instruction_utils.InstructionWithoutValidationBase):
+class _Instruction(AssertPhaseInstruction):
     def __init__(self,
                  file_reference: file_ref.FileRef,
                  expected_file_properties: FilePropertiesCheck):

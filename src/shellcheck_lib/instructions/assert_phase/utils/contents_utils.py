@@ -7,7 +7,6 @@ from shellcheck_lib.execution import environment_variables
 from shellcheck_lib.general import file_utils
 from shellcheck_lib.general.file_utils import ensure_parent_directory_does_exist, tmp_text_file_containing
 from shellcheck_lib.general.string import lines_content
-from shellcheck_lib.instructions.assert_phase.utils import instruction_utils
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException, SingleInstructionParserSource
 from shellcheck_lib.instructions.utils import parse_here_doc_or_file_ref
@@ -209,7 +208,7 @@ class ContentCheckerWithTransformationInstruction(ContentCheckerInstructionBase)
                                                              actual_file_path)
 
 
-class EmptinessCheckerInstruction(instruction_utils.InstructionWithoutValidationBase):
+class EmptinessCheckerInstruction(AssertPhaseInstruction):
     def __init__(self,
                  expect_empty: bool,
                  actual_file: ComparisonActualFile):

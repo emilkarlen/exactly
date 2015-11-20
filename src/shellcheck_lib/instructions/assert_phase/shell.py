@@ -5,7 +5,6 @@ from shellcheck_lib.default.execution_mode.test_case.instruction_setup import In
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
-from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib.test_case.os_services import OsServices
@@ -34,10 +33,6 @@ class _ShellInstruction(AssertPhaseInstruction):
     def __init__(self,
                  command: str):
         self.command = command
-
-    def validate(self,
-                 global_environment: GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
-        return svh.new_svh_success()
 
     def main(self,
              environment: GlobalEnvironmentForPostEdsPhase,
