@@ -1,13 +1,13 @@
 from shellcheck_lib.document.model import Instruction
 from shellcheck_lib.execution import phases
-from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
 from shellcheck_lib.test_case.os_services import OsServices
-from shellcheck_lib.test_case.sections.result import pfh
-from shellcheck_lib.test_case.sections.result import sh
-from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.sections import common as instr
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction
+from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
+from shellcheck_lib.test_case.sections.result import pfh
+from shellcheck_lib.test_case.sections.result import sh
+from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
 
 
@@ -76,7 +76,7 @@ class _AssertInstructionExecutor(AssertPhaseInstruction):
         self.__ret_val = ret_val
 
     def validate(self,
-                 global_environment: instr.GlobalEnvironmentForPostEdsPhase) \
+                 environment: instr.GlobalEnvironmentForPostEdsPhase) \
             -> svh.SuccessOrValidationErrorOrHardError:
         return svh.new_svh_success()
 
