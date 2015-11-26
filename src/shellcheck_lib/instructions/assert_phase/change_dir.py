@@ -1,11 +1,11 @@
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionParserSource
 from shellcheck_lib.instructions.multi_phase_instructions import change_dir as cd_utils
+from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
 from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.result import svh
-from shellcheck_lib.test_case.os_services import OsServices
 
 DESCRIPTION = cd_utils.DESCRIPTION
 
@@ -20,7 +20,7 @@ class _Instruction(AssertPhaseInstruction):
     def __init__(self, destination_directory: cd_utils.DestinationPath):
         self.destination_directory = destination_directory
 
-    def validate(self, global_environment: GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
+    def validate(self, environment: GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
         return svh.new_svh_success()
 
     def main(self, environment: GlobalEnvironmentForPostEdsPhase, os_services: OsServices) -> pfh.PassOrFailOrHardError:

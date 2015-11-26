@@ -1,13 +1,13 @@
-from shellcheck_lib.test_case.sections.result import sh
-from shellcheck_lib.test_case.sections.result import svh
-from shellcheck_lib.test_case.sections.result import pfh
+from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.sections import common
 from shellcheck_lib.test_case.sections.act.instruction import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
 from shellcheck_lib.test_case.sections.anonymous import AnonymousPhaseInstruction, \
     ConfigurationBuilder
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
+from shellcheck_lib.test_case.sections.result import pfh
+from shellcheck_lib.test_case.sections.result import sh
+from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
-from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib_test.execution.util.instruction_adapter import InternalInstruction
 
 
@@ -113,7 +113,7 @@ class AssertInternalInstructionThatRecordsStringInList(AssertPhaseInstruction):
         self.__recorder_for_execute = recorder_for_execute
 
     def validate(self,
-                 global_environment: common.GlobalEnvironmentForPreEdsStep) \
+                 environment: common.GlobalEnvironmentForPreEdsStep) \
             -> svh.SuccessOrValidationErrorOrHardError:
         self.__recorder_for_validate.record()
         return svh.new_svh_success()

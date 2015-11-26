@@ -1,14 +1,14 @@
-from shellcheck_lib.test_case.sections.result import sh
-from shellcheck_lib.test_case.sections.result import svh
-from shellcheck_lib.test_case.sections.result import pfh
+from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.sections import common as instrs
+from shellcheck_lib.test_case.sections.act.instruction import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
 from shellcheck_lib.test_case.sections.anonymous import AnonymousPhaseInstruction, ExecutionMode, \
     ConfigurationBuilder
-from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
-from shellcheck_lib.test_case.sections.act.instruction import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction
-from shellcheck_lib.test_case.os_services import OsServices
+from shellcheck_lib.test_case.sections.result import pfh
+from shellcheck_lib.test_case.sections.result import sh
+from shellcheck_lib.test_case.sections.result import svh
+from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
 
 
 class ImplementationErrorTestException(Exception):
@@ -199,7 +199,7 @@ class AssertPhaseInstructionThatReturns(AssertPhaseInstruction):
         self.__for_execute = from_execute
 
     def validate(self,
-                 global_environment: instrs.GlobalEnvironmentForPostEdsPhase) \
+                 environment: instrs.GlobalEnvironmentForPostEdsPhase) \
             -> svh.SuccessOrValidationErrorOrHardError:
         return self.__for_validate
 
@@ -215,7 +215,7 @@ class AssertPhaseInstructionWithExceptionInValidate(AssertPhaseInstruction):
         self.__exception_to_raise = exception_to_raise
 
     def validate(self,
-                 global_environment: instrs.GlobalEnvironmentForPostEdsPhase) \
+                 environment: instrs.GlobalEnvironmentForPostEdsPhase) \
             -> svh.SuccessOrValidationErrorOrHardError:
         raise self.__exception_to_raise
 
@@ -231,7 +231,7 @@ class AssertPhaseInstructionWithExceptionInExecute(AssertPhaseInstruction):
         self.__exception_to_raise = exception_to_raise
 
     def validate(self,
-                 global_environment: instrs.GlobalEnvironmentForPostEdsPhase) \
+                 environment: instrs.GlobalEnvironmentForPostEdsPhase) \
             -> svh.SuccessOrValidationErrorOrHardError:
         return svh.new_svh_success()
 

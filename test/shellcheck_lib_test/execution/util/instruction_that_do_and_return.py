@@ -1,21 +1,21 @@
 import types
 from pathlib import Path
 
+from shellcheck_lib.document.model import Instruction
+from shellcheck_lib.execution import phase_step
+from shellcheck_lib.execution.phase_step import PhaseStep
+from shellcheck_lib.test_case.os_services import OsServices
+from shellcheck_lib.test_case.sections import common as i
+from shellcheck_lib.test_case.sections.act.instruction import PhaseEnvironmentForScriptGeneration, ActPhaseInstruction
+from shellcheck_lib.test_case.sections.anonymous import ConfigurationBuilder, \
+    AnonymousPhaseInstruction
+from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
+from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction
 from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.result import svh
-from shellcheck_lib.test_case.sections.anonymous import ConfigurationBuilder, \
-    AnonymousPhaseInstruction
-from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction
 from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
-from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
-from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib_test.execution.util import python_code_gen as py
-from shellcheck_lib.execution import phase_step
-from shellcheck_lib.execution.phase_step import PhaseStep
-from shellcheck_lib.test_case.sections import common as i
-from shellcheck_lib.document.model import Instruction
-from shellcheck_lib.test_case.sections.act.instruction import PhaseEnvironmentForScriptGeneration, ActPhaseInstruction
 from shellcheck_lib_test.execution.util.test_case_generation import TestCaseGeneratorBase
 
 
@@ -233,9 +233,9 @@ class _AssertInstruction(AssertPhaseInstruction):
         self.__configuration = configuration
 
     def validate(self,
-                 global_environment: i.GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
+                 environment: i.GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
         self.__configuration.validation_action__with_eds(phase_step.ASSERT_VALIDATE,
-                                                         global_environment)
+                                                         environment)
         return self.__configuration.ret_val_from_validate
 
     def main(self,

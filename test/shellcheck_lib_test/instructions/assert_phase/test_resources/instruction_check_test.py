@@ -3,11 +3,11 @@ Test of test-infrastructure: instruction_check.
 """
 import unittest
 
-from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
 from shellcheck_lib.test_case.os_services import OsServices
-from shellcheck_lib.test_case.sections.result import svh
-from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
+from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
+from shellcheck_lib.test_case.sections.result import pfh
+from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib_test.execution.full_execution.util.instruction_test_resources import \
     AssertPhaseInstructionThatReturns
 from shellcheck_lib_test.instructions.assert_phase.test_resources import instruction_check
@@ -69,8 +69,8 @@ SUCCESSFUL_INSTRUCTION = AssertPhaseInstructionThatReturns(svh.new_svh_success()
 
 
 class InstructionThatRaisesTestErrorIfCwdIsIsNotTestRoot(AssertPhaseInstruction):
-    def validate(self, global_environment: GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
-        test_misc.raise_test_error_if_cwd_is_not_test_root(global_environment.eds)
+    def validate(self, environment: GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
+        test_misc.raise_test_error_if_cwd_is_not_test_root(environment.eds)
         return svh.new_svh_success()
 
     def main(self, environment: GlobalEnvironmentForPostEdsPhase, os_services: OsServices) -> pfh.PassOrFailOrHardError:
