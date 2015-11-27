@@ -33,17 +33,17 @@ class FileRefRelEds(FileRef):
     def __init__(self, file_name: str):
         super().__init__(False, file_name)
 
-    def file_path_rel_eds(self, eds: ExecutionDirectoryStructure) -> pathlib.Path:
-        raise NotImplementedError()
-
-    def file_path_post_eds(self, home_and_eds: HomeAndEds) -> pathlib.Path:
-        return self.file_path_rel_eds(home_and_eds.eds)
-
     def file_path_pre_eds(self, home_dir_path: pathlib.Path) -> pathlib.Path:
         """
         Can only be used if the files exists pre-EDS.
         """
         raise ValueError('This file does not exist before EDS is constructed')
+
+    def file_path_rel_eds(self, eds: ExecutionDirectoryStructure) -> pathlib.Path:
+        raise NotImplementedError()
+
+    def file_path_post_eds(self, home_and_eds: HomeAndEds) -> pathlib.Path:
+        return self.file_path_rel_eds(home_and_eds.eds)
 
 
 def rel_home(file_name: str) -> FileRef:
