@@ -73,17 +73,29 @@ def parse_as_first_space_separated_part(arguments_string: str) -> (ExecutableFil
     :return: (file, the part of the given arguments-string that follows the file argument)
     :raise SingleInstructionInvalidArgumentException: Invalid file syntax
     """
-    first_and_remaining_tokens = arguments_string.split(maxsplit=2)
-    if len(first_and_remaining_tokens) < 2:
-        msg = 'Invalid FILE argument syntax ({} FILE)'.format(ALL_REL_OPTIONS_SYNTAX_DESCRIPTION)
-        raise SingleInstructionInvalidArgumentException(msg)
-    relativity_option = first_and_remaining_tokens[0]
-    file_argument = first_and_remaining_tokens[1]
-    remaining_arguments_str = '' if len(first_and_remaining_tokens) == 2 else first_and_remaining_tokens[2]
+    first_and_remaining_tokens = arguments_string.split(maxsplit=1)
+    if not first_and_remaining_tokens:
+        raise SingleInstructionInvalidArgumentException('Missing EXECUTABLE argument: '.format(arguments_string))
+    first_argument = first_and_remaining_tokens[0]
+    first_argument_path = pathlib.PurePath(first_argument)
+    if first_argument_path.is_absolute():
+        remaining_arguments_str = _empty_string_or_value(first_and_remaining_tokens[1:])
+        return _executable_from_absolute_path(first_argument), remaining_arguments_str
+    relativity_option = first_argument
     if not is_option_argument(relativity_option):
-        msg = 'Missing option to specify where FILE is located. Requires {}'.format(ALL_REL_OPTIONS_SYNTAX_DESCRIPTION)
+        msg = 'Missing option to specify where EXECUTABLE is located. Use {}'.format(ALL_REL_OPTIONS_SYNTAX_DESCRIPTION)
         raise SingleInstructionInvalidArgumentException(msg)
+    if len(first_and_remaining_tokens) == 1:
+        msg = 'Missing EXECUTABLE argument: {}'.format(arguments_string)
+        raise SingleInstructionInvalidArgumentException(msg)
+    file_and_remaining_arguments_list = first_and_remaining_tokens[1].split(maxsplit=1)
+    file_argument = file_and_remaining_arguments_list[0]
+    remaining_arguments_str = _empty_string_or_value(file_and_remaining_arguments_list[1:])
     return _executable_file_from(relativity_option, file_argument), remaining_arguments_str
+
+
+def _executable_from_absolute_path(abs_path_str: str) -> ExecutableFile:
+    return ExecutableFile(file_ref.absolute_file_name(abs_path_str))
 
 
 def _executable_file_from(relativity_option: str, file_argument: str) -> ExecutableFile:
@@ -93,6 +105,10 @@ def _executable_file_from(relativity_option: str, file_argument: str) -> Executa
         msg = lines_content(['Invalid option for specifying where FILE is located: {}'.format(relativity_option),
                              'Expecting {}'.format(ALL_REL_OPTIONS_SYNTAX_DESCRIPTION)])
         raise SingleInstructionInvalidArgumentException(msg)
+
+
+def _empty_string_or_value(singleton_or_empty_list: list) -> str:
+    return '' if not singleton_or_empty_list else singleton_or_empty_list[0]
 
 
 ALL_REL_OPTIONS = (REL_HOME_OPTION, REL_SYSTEM_OPTION)

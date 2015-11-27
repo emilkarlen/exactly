@@ -46,6 +46,10 @@ class FileRefRelEds(FileRef):
         return self.file_path_rel_eds(home_and_eds.eds)
 
 
+def absolute_file_name(file_name: str) -> FileRef:
+    return _FileRefAbsolute(file_name)
+
+
 def rel_home(file_name: str) -> FileRef:
     return _FileRefRelHome(file_name)
 
@@ -62,14 +66,22 @@ def rel_tmp_user(file_name: str) -> FileRefRelEds:
     return _FileRefRelTmpUser(file_name)
 
 
+class _FileRefAbsolute(FileRef):
+    def __init__(self, file_name: str):
+        super().__init__(True, file_name)
+
+    def file_path_pre_eds(self, home_dir_path: pathlib.Path) -> pathlib.Path:
+        return pathlib.Path(self._file_name)
+
+    def file_path_post_eds(self, home_and_eds: HomeAndEds) -> pathlib.Path:
+        return self.file_path_pre_eds(home_and_eds.home_dir_path)
+
+
 class _FileRefRelHome(FileRef):
     def __init__(self, file_name: str):
         super().__init__(True, file_name)
 
     def file_path_pre_eds(self, home_dir_path: pathlib.Path) -> pathlib.Path:
-        """
-        Can only be used if the files exists pre-EDS.
-        """
         return home_dir_path / self._file_name
 
     def file_path_post_eds(self, home_and_eds: HomeAndEds) -> pathlib.Path:
