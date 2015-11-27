@@ -1,4 +1,5 @@
 import pathlib
+import stat
 
 from shellcheck_lib_test.util.file_utils import write_file
 
@@ -20,6 +21,23 @@ class File(FileSystemElement):
                  parent_dir_path: pathlib.Path):
         write_file(parent_dir_path / self.file_name,
                    self.contents)
+
+
+class _ExecutableFile(File):
+    def __init__(self, file_name: str, contents: str):
+        super().__init__(file_name, contents)
+
+    def write_to(self,
+                 parent_dir_path: pathlib.Path):
+        file_path = parent_dir_path / self.file_name
+        write_file(file_path,
+                   self.contents)
+        file_path.chmod(stat.S_IXOTH)
+
+
+def executable_file(file_name: str,
+                    contents: str = '') -> File:
+    return _ExecutableFile(file_name, contents)
 
 
 def empty_file(file_name: str) -> File:
