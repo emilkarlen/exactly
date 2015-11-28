@@ -10,6 +10,8 @@ from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEds
 from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.result import svh
 
+DESCRIPTION = execute.description("Executes a program and succeeds if it's exit-code is 0")
+
 
 def parser(instruction_name: str) -> SingleInstructionParser:
     return execute.InstructionParser(sub_process_execution.InstructionMetaInfo(ASSERT.name,
