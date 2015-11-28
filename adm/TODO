@@ -1,6 +1,10 @@
 -*- org -*-
 
+* TODO shell: Vad händer m stdout, stderr? blir del av stdout för shellcheck?
+Verkar så.  Väldigt dåligt i så fall.  Måste ändras.
 
+* TODO timeout för instruktioner som kör subprocesser
+subprocess.call(timeout=...)
 * TODO tmp-filer för instruktioner
 Bör införa hjälpfunktion för att skapa tmp-filer för instruktioner.
 Nu: contents/stdout/stderr: Ser själva till att lägga tmp-fil i
@@ -71,7 +75,11 @@ Det blir helt enkelt tydligt att man pratar kataloger.
 t ex
 contents --rel-tmp transformed-stdout.txt --rel-home expected-contents.txt
 * TODO Miljövariabler
-** TODO Lägga till _DIR i slutet av katalog-variabler
+** TODO Instruktioner: os.path.expandvars för att expandera miljövariabler
+Finns även en
+os.path.expanduser
+för att expanera ~user.
+** TODO Lägga till _DIR i slutet av katalog-variabler (ev skippa!!)
 ** DONE Ny miljövariabel: SHELLCHECK_RESULT_DIR
 * TODO Kommandorads-program
 ** TODO Hjälpsystem via CLI
@@ -226,7 +234,7 @@ Mer deklarativt.
 *** TODO Lägg till till cleanup-fasen
 *** TODO mkdir --rel-tmp DIRECTORY
 Skapar katalog under tmp/user.
-** TODO interpret/execute
+** TODO interpret/execute/source
 Instruktion som kör/interpreterar kommando.
 Kan göras via shell.  Men om det görs via skräddarsydd instruktion kan
 programmet som ska köras reffas rel-home, och valideringssteget kan validera
@@ -237,14 +245,102 @@ Namn?
  - execute (rimmar bra med att det som körs måste vara exekverbart)
  - interpret (ev är detta en variant som tar interpreter som 1:a arg)
  - program
+ - source
 Finn något namn som andas deklarativt synsätt??
  - checker
  - assert
-** TODO För Unix: kör sh-kommandon
+** DONE För Unix: kör sh-kommandon (visat sig gå mha "shell")
 T ex [ $(wc -l FILE) = 4 ]
 
 Impl genom att ta raden (förutom instruktionen) o lägg i fil, o interpretera
 den m sh/bash.
+** TODO Spara exitcode, stdout, stderr i filer
+Kan skapa katalog som heter execute-line-LINENUM/{exitcode, stdout, stderr}
+** TODO Validering: att filen är exekverbar
+Använd stat.S_IXUSR
+Den kollar om filen är exekverbar för användaren.
+Men ä osäker på om den enbart kollar om exekverings-flaggan är satt för
+användaren.  Det räcker ju inte.  Ty den kan vara satt för gruppen, o aktuell
+användare är medlem i gruppen som äger filen.
+** Syntax
+Tre (1) olika instruktioner, eller (2) en enda m växlar???
+Fördelar m separata instruktioner:
+ - kan ge kortare syntax
+Fördelar m en instruktion:
+ - färre instruktioner att hålla reda på
+ - skräpar ner namnrymnden mindre
+Om man har enkel tillgång till makroprocessor så erbjuder
+en-intruktions-alternativet fördelar i kombination med att det går att
+"skriva" egna skräddarsydda "instruktioner" om man föredrar det.
+Samt har sett att man kan ge skräddarsytt skal-program för shell/shell=True.
+(dvs kan ange /bin/bash, t ex)
+*** Varianter
+**** Alla tar program/"interpretator" som arg
+**** Kör: källkod
+***** Källkod finns i fil
+***** Källkod anges på som argument
+**** Argument till körbart program: ja/nej
+*** interpret INTERPRETER SOURCE-FILE ARGUMENTS
+INTERPRETER är troligtvis ett globalt program.  Så utgångsvärde för
+"relativitet" bör vara --global|--in-path|--system
+(Om det inte är ett globalt program så borde man istället skrivit ett program
+som kunnat exekveras med "execute".)
+
+SOURCE-FILE är troligtvis något som skrivits just för testsvitens skull, så
+där är --rel-home en lämpligt utgång.
+
+ARGUMENTS är trol helt vanliga argument, dvs de shell-splittas.
+*** execute   PROGRAM                 ARGUMENTS
+PROGRAM kan både vara --rel-home och --system.  Svårt att välja utgång.
+
+Dock, "shell" kan köra program som är i --system.  Med det i åtanke blir
+--rel-home en naturligare utgång.
+
+ARGUMENTS är trol helt vanliga argument, dvs de shell-splittas.
+*** source    INTERPRETER             SOURCE
+INTERPRETER är trol --in-system.  Om inte bör man skriva om det så att det
+blir så - dvs att man skriver ett program som körs m "execute" och tar
+ARGUMENTS istället för SOURCE som argument.  Sådana program är ju troligtvis
+enklare att både skriva och läsa.
+*** run: instruktion som hanterar alla fall
+**** run PROGRAM ARGUMENTS
+Exekverar: call([PROGRAM] ++ shell-split(ARGUMENTS))
+Ex: run --rel-home my-property-checking-pgm PROPERTY-DEFINITION
+**** run PROGRAM --interpret [--rel-X] FILE ARGUMENTS
+Exekverar: call([PROGRAM,FILE] ++ shell-split(ARGUMENTS))
+Här splittas ARGUMENT... enl shell-regler
+**** run PROGRAM --source [SOURCE|<<EOF SOURCE EOF]
+Exekverar: call([PROGRAM, SOURCE])
+**** Former av PROGRAM
+***** --rel-home|--rel-pwd|--rel-act|--rel-tmp PROGRAM
+***** --system PROGRAM-IN-PATH
+Bra för t ex "standardprogram" som awk, sed, där absolut sökväg kan variera
+mellan OS.
+** Implementation
+*** Växlar
+**** För exekverbart program
+  --system
+  --rel-home
+  --rel-pwd
+  --rel-act
+  --rel-tmp
+**** För källkodsfil
+  --rel-home
+  --rel-pwd
+  --rel-act
+  --rel-tmp
+*** Alla kommandon: 1:a arg är ett exekverbart program
+Ev meningsfullt att införa koncept/klass ExecutableFile.
+En skräddarsydd parser parsar en sådan.  Och den kan validera sig själv (för
+"existens").
+
+En sådan ExecutableFile är antingen en FileRef eller en system-global sak.  En
+FileRef kan alltid resolvas till en abolut sökväg.
+
+*** execute/interpret mkt lika varandra
+Enda skillnaden är att interpret tar ett argument som förutsätts är en fil och
+som därför ska valideras för "existens".
+Själva exekveringen är annars identisk: EXECUTABLE ARGUMENT...
 * TODO Faser
 ** TODO Byt namn "anonymous" -> "configuration"
 ** TODO Configuration
@@ -270,6 +366,7 @@ Därefter är allt som vanligt.
 Idag sparas omgivningsvariabler "runt" partiell exekvering.  Borde sparas runt
 "full" exekvering, naturligtvis.
 Vore bäst (känns nu) om hela exekveringen kunde ske i sub-process.
+(se modul concurrent.futures)
 ** TODO <2015-05-18 mån> Ev skapa EDS senare
 Enl diagram ska den skapas precis efter setup/validate.
 Idag skapas den precis innan setup/validate.
