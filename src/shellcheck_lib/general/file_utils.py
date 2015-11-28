@@ -43,6 +43,11 @@ def lines_of(file_path: pathlib.Path) -> list:
         return f.readlines()
 
 
+def contents_of(file_path: pathlib.Path) -> str:
+    with file_path.open() as f:
+        return f.read()
+
+
 def tmp_text_file_containing(contents: str,
                              prefix: str = '',
                              suffix: str = '',

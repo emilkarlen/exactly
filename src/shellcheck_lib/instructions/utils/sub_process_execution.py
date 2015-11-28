@@ -82,16 +82,16 @@ class InstructionSourceInfo(tuple):
 
 class Executor:
     def apply(self,
-              eds: ExecutionDirectoryStructure,
               instruction_source_info: InstructionSourceInfo,
+              eds: ExecutionDirectoryStructure,
               cmd_and_args: list) -> Result:
         raise NotImplementedError()
 
 
 class ExecutorThatLogsResultUnderPhaseDir(Executor):
     def apply(self,
-              eds: ExecutionDirectoryStructure,
               instruction_source_info: InstructionSourceInfo,
+              eds: ExecutionDirectoryStructure,
               cmd_and_args: list) -> Result:
         output_dir = self.instruction_output_directory(eds, instruction_source_info)
         file_services.create_dir_that_is_expected_to_not_exist(output_dir)
