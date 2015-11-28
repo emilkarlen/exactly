@@ -1,12 +1,12 @@
 import unittest
-import sys
 
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from shellcheck_lib_test.instructions.test_resources import sh_check
-from shellcheck_lib_test.instructions.cleanup.test_resources.instruction_check import Flow, TestCaseBase
 from shellcheck_lib.instructions.cleanup import shell as sut
+from shellcheck_lib_test.instructions.cleanup.test_resources.instruction_check import Flow, TestCaseBase
+from shellcheck_lib_test.instructions.test_resources import sh_check
 from shellcheck_lib_test.instructions.test_resources.utils import new_source
+from shellcheck_lib_test.test_resources import python_program_execution as py_exe
 from shellcheck_lib_test.util.file_utils import tmp_file_containing
 
 
@@ -28,8 +28,7 @@ sys.exit(0)
             self._check(
                 Flow(sut.Parser()),
                 new_source('instruction-name',
-                           '{} {}'.format(sys.executable,
-                                          str(script_file_path))))
+                           py_exe.command_line_for_interpreting(script_file_path)))
 
     def test_instruction_is_hard_error_WHEN_exit_status_from_command_is_not_0(self):
         script_that_exists_with_status_0 = """
@@ -42,8 +41,7 @@ sys.exit(1)
                 Flow(sut.Parser(),
                      expected_main_result=sh_check.IsHardError()),
                 new_source('instruction-name',
-                           '{} {}'.format(sys.executable,
-                                          str(script_file_path))))
+                           py_exe.command_line_for_interpreting(script_file_path)))
 
 
 def suite():
