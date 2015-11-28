@@ -7,7 +7,7 @@ from shellcheck_lib.instructions.multi_phase_instructions import execute as sut
 from shellcheck_lib.test_case.sections.common import HomeAndEds
 from shellcheck_lib_test.instructions.test_resources.utils import single_line_source
 from shellcheck_lib_test.util import home_and_eds_test
-from shellcheck_lib_test.util import tmp_dir_test
+from shellcheck_lib_test.util.value_assertion import ValueAssertion
 
 
 class ExecuteAction(home_and_eds_test.Action):
@@ -29,19 +29,19 @@ class TestCaseBase(home_and_eds_test.TestCaseBase):
                            check)
 
 
-class ExitCodeAndStderrContentsIs(tmp_dir_test.ResultAssertion):
+class ExitCodeAndStderrContentsIs(ValueAssertion):
     def __init__(self,
                  exit_code: int,
                  stderr_contents: str):
         self.exit_code = exit_code
         self.stderr_contents = stderr_contents
 
-    def apply(self, put: unittest.TestCase, result):
+    def apply(self, put: unittest.TestCase, value):
         put.assertEquals(self.exit_code,
-                         result[0],
+                         value[0],
                          'Exit code')
         put.assertEqual(self.stderr_contents,
-                        result[1],
+                        value[1],
                         'Stderr contents')
 
 

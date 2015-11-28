@@ -4,7 +4,7 @@ import unittest
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib_test.instructions.test_resources import eds_populator, eds_contents_check
 from shellcheck_lib_test.instructions.test_resources.utils import execution_directory_structure
-from . import tmp_dir_test
+from shellcheck_lib_test.util.value_assertion import ValueAssertion, AnythingGoes
 
 
 class PostActionCheck:
@@ -21,11 +21,11 @@ class Action:
 
 class Check:
     def __init__(self,
-                 eds_contents_before: eds_populator.EdsPopulator=eds_populator.empty(),
-                 expected_action_result: tmp_dir_test.ResultAssertion=tmp_dir_test.ResultAssertion(),
-                 expected_eds_contents_after: eds_contents_check.Assertion=eds_contents_check.AnythingGoes(),
-                 pre_action_action: Action=Action(),
-                 post_action_check: PostActionCheck=PostActionCheck()):
+                 eds_contents_before: eds_populator.EdsPopulator = eds_populator.empty(),
+                 expected_action_result: ValueAssertion = AnythingGoes(),
+                 expected_eds_contents_after: eds_contents_check.Assertion = eds_contents_check.AnythingGoes(),
+                 pre_action_action: Action = Action(),
+                 post_action_check: PostActionCheck = PostActionCheck()):
         self.eds_contents_before = eds_contents_before
         self.expected_action_result = expected_action_result
         self.expected_eds_contents_after = expected_eds_contents_after
