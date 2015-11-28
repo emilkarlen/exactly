@@ -1,5 +1,14 @@
 -*- org -*-
 
+* Main purpose
+shellcheck is aimd at testing ...
+- programs that are executed via the OS shell
+- programs who's input is stdin
+- programs who's input is files (including stdin)
+- programs who's output is exitcode and stdout, stderr
+- programs who's "output" is side effect on files (creating and destroying)
+- programs who's input/output is environment variables
+- programs that modify the contents of the Present Working Directory
 * Dependencies
 
 shellcheck (base version) DOES not depend on anything not included in the
@@ -15,7 +24,7 @@ The implementation language is choosen to be a language that contains a large
 standard library that does not make this restriction a great limitation.
 
 * Portability
-
+** Portability of shellcheck itself
 
 The goal is that shellcheck is portable to
 - Linux
@@ -52,6 +61,47 @@ intended to be used on a Debian Linux production system.
 Thus you can use all utility programs available on this system.  This can make
 the tests much more easy to write, and more easy to read.
 
+
+* Instruction set
+
+An ideal instruction set may be infinitely large, since there are infinitely
+many properties that can be tested.  But this ideal instruction set might not
+be so ideal in practice, since the size of the program also would be
+infinitely large.
+
+** Core instruction set
+
+*** Functionality for working with files
+The program should supply a "core" instruction set that covers the
+most common needs of tests covered by shellcheck's main purpose.
+This means that the "core" instruction set mostly covers working with files -
+attributes of files and the contents of files.
+
+*** Functionality for invoking external programs
+
+The core instruction set makes it possible to extend the "built-in"
+functionality by executing external programs.
+This is usefull both as a way of incorporating functionalty offered by
+existing programs (so that it does not have to be duplicated by shellcheck),
+and as a convenient way to extend shellcheck's functionality by writing custom
+external programs (when this is more convenient than implementing the
+functionality as custom instructions).
+
+** Extending the core instruction set
+
+It should be easy to extend the core instruction set by custom instructions.
+What this means is that it should be easy to specify the instruction set as
+the union of the core instruction set and a custom instruction set.
+
+* Preprocessing of test cases
+
+shellcheck uses preprocessing of test cases as a way to resuse test-code and to
+avoid test-code duplication.
+
+It should be easy to  use a custom preprocessor in the form av an executable
+program.
+shellcheck also should offer a built-in preprocessor that (of course) works
+identically on all supported platforms.  Currently, this is a TODO.
 
 * Instructions in assert phase
 
