@@ -9,8 +9,10 @@ from shellcheck_lib.instructions.multi_phase_instructions import change_dir as s
 from shellcheck_lib.test_case.sections.common import HomeAndEds
 from shellcheck_lib_test.instructions.test_resources.eds_populator import act_dir_contents, tmp_user_dir_contents
 from shellcheck_lib_test.instructions.test_resources.utils import SideEffectsCheck
-from shellcheck_lib_test.util import eds_test, tmp_dir_test
+from shellcheck_lib_test.util import eds_test
 from shellcheck_lib_test.util.file_structure import DirContents, empty_dir, Dir, empty_file
+from shellcheck_lib_test.util.value_assertion import ValueAssertion, ValueIsNotNone
+from shellcheck_lib_test.util.value_assertion import ValueIsNone
 
 
 class AssertCwdIsSubDirOfEds(SideEffectsCheck):
@@ -109,12 +111,12 @@ class TestCaseBase(eds_test.TestCaseBase):
                            setup)
 
 
-def is_success() -> tmp_dir_test.ResultAssertion:
-    return tmp_dir_test.ResultIsNone()
+def is_success() -> ValueAssertion:
+    return ValueIsNone()
 
 
-def is_failure() -> tmp_dir_test.ResultAssertion:
-    return tmp_dir_test.ResultIsNotNone()
+def is_failure() -> ValueAssertion:
+    return ValueIsNotNone()
 
 
 class ChangeDirTo(eds_test.Action):

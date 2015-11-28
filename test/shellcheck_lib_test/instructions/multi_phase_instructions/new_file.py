@@ -12,8 +12,9 @@ from shellcheck_lib_test.instructions.test_resources.eds_contents_check import A
 from shellcheck_lib_test.instructions.test_resources.eds_populator import act_dir_contents
 from shellcheck_lib_test.instructions.test_resources.utils import SideEffectsCheck, single_line_source, \
     argument_list_source
-from shellcheck_lib_test.util import eds_test, tmp_dir_test
+from shellcheck_lib_test.util import eds_test
 from shellcheck_lib_test.util.file_structure import DirContents, empty_dir, Dir, empty_file, File
+from shellcheck_lib_test.util.value_assertion import ValueAssertion, ValueIsNone, ValueIsNotNone
 
 
 class AssertCwdIsSubDirOfEds(SideEffectsCheck):
@@ -116,12 +117,12 @@ class TestCaseBase(eds_test.TestCaseBase):
                            setup)
 
 
-def is_success() -> tmp_dir_test.ResultAssertion:
-    return tmp_dir_test.ResultIsNone()
+def is_success() -> ValueAssertion:
+    return ValueIsNone()
 
 
-def is_failure() -> tmp_dir_test.ResultAssertion:
-    return tmp_dir_test.ResultIsNotNone()
+def is_failure() -> ValueAssertion:
+    return ValueIsNotNone()
 
 
 class TestSuccessfulScenariosNoContent(TestCaseBase):

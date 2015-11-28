@@ -2,11 +2,12 @@ import unittest
 
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from shellcheck_lib_test.util.file_checks import dir_contains_exactly
-from shellcheck_lib_test.util.file_structure import DirContents, empty_dir, Dir, empty_file
 from shellcheck_lib.instructions.multi_phase_instructions import new_dir as sut
 from shellcheck_lib_test.util import tmp_dir_test
+from shellcheck_lib_test.util.file_checks import dir_contains_exactly
+from shellcheck_lib_test.util.file_structure import DirContents, empty_dir, Dir, empty_file
 from shellcheck_lib_test.util.tmp_dir_test import Check
+from shellcheck_lib_test.util.value_assertion import ValueAssertion, ValueIsNone, ValueIsNotNone
 
 
 class TestParseSet(unittest.TestCase):
@@ -58,12 +59,12 @@ class TestCaseBase2(tmp_dir_test.TestCaseBase):
                            setup)
 
 
-def is_success() -> tmp_dir_test.ResultAssertion:
-    return tmp_dir_test.ResultIsNone()
+def is_success() -> ValueAssertion:
+    return ValueIsNone()
 
 
-def is_failure() -> tmp_dir_test.ResultAssertion:
-    return tmp_dir_test.ResultIsNotNone()
+def is_failure() -> ValueAssertion:
+    return ValueIsNotNone()
 
 
 class TestSuccessfulScenariosWithEmptyCwd(TestCaseBase2):
