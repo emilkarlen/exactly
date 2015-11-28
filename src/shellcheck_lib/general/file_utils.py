@@ -12,20 +12,30 @@ def write_new_text_file(file_path: pathlib.Path,
         f.write(contents)
 
 
+def ensure_directory_exists(dir_path: pathlib.Path):
+    if not dir_path.exists():
+        dir_path.mkdir(parents=True)
+
+
+def ensure_directory_exists_as_a_directory(dir_path: pathlib.Path) -> str:
+    """
+    :return: Failure message if cannot ensure, otherwise None.
+    """
+    try:
+        ensure_directory_exists(dir_path)
+    except NotADirectoryError as ex:
+        return 'Not a directory: {}'.format(dir_path)
+
+
 def ensure_parent_directory_does_exist(dst_file_path: pathlib.Path):
-    containing_dir_path = dst_file_path.parent
-    if not containing_dir_path.exists():
-        containing_dir_path.mkdir(parents=True)
+    ensure_directory_exists(dst_file_path.parent)
 
 
 def ensure_parent_directory_does_exist_and_is_a_directory(dst_file_path: pathlib.Path) -> str:
     """
     :return: Failure message if cannot ensure, otherwise None.
     """
-    try:
-        ensure_parent_directory_does_exist(dst_file_path)
-    except NotADirectoryError as ex:
-        return 'Not a directory: {}'.format(dst_file_path.parent)
+    return ensure_directory_exists_as_a_directory(dst_file_path.parent)
 
 
 def lines_of(file_path: pathlib.Path) -> list:
@@ -34,8 +44,8 @@ def lines_of(file_path: pathlib.Path) -> list:
 
 
 def tmp_text_file_containing(contents: str,
-                             prefix: str='',
-                             suffix: str='',
+                             prefix: str = '',
+                             suffix: str = '',
                              directory=None) -> pathlib.Path:
     fd, absolute_file_path = tempfile.mkstemp(prefix=prefix,
                                               suffix=suffix,

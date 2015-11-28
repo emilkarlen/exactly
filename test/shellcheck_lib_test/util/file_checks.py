@@ -1,5 +1,5 @@
-import unittest
 import pathlib
+import unittest
 
 from shellcheck_lib_test.util import assert_utils, file_structure
 
@@ -7,7 +7,7 @@ from shellcheck_lib_test.util import assert_utils, file_structure
 class FileChecker:
     def __init__(self,
                  put: unittest.TestCase,
-                 message_header: str=None):
+                 message_header: str = None):
         self.put = put
         self.message_header = message_header
 
@@ -54,6 +54,11 @@ class FileChecker:
                                    expected: list):
         self.assert_exists_dir_with_given_number_of_files_in_it(dir_path,
                                                                 len(expected))
+        self.assert_dir_contains_at_least(dir_path, expected)
+
+    def assert_dir_contains_at_least(self,
+                                     dir_path: pathlib.Path,
+                                     expected: list):
         for file_system_element in expected:
             if isinstance(file_system_element, file_structure.File):
                 self.assert_dir_contains_file(dir_path, file_system_element)
@@ -112,6 +117,20 @@ class DirContainsExactly(Assertion):
                               message_header='Contents of {}'.format(dir_path))
         checker.assert_dir_contents_matches_exactly(dir_path,
                                                     self.expected_contents)
+
+
+class DirContainsAtLeast(Assertion):
+    def __init__(self,
+                 expected_contents: file_structure.DirContents):
+        self.expected_contents = expected_contents
+
+    def apply(self,
+              put: unittest.TestCase,
+              dir_path: pathlib.Path):
+        checker = FileChecker(put,
+                              message_header='Contents of {}'.format(dir_path))
+        checker.assert_dir_contains_at_least(dir_path,
+                                             self.expected_contents.file_system_element_contents)
 
 
 def dir_contains_exactly(expected_contents: file_structure.DirContents) -> Assertion:
