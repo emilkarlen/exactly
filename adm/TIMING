@@ -300,6 +300,9 @@ testas, o lägga till nya.)
 *** cd
     CLOCK: [2015-11-13 fre 21:54]--[2015-11-14 lör 00:25] =>  2:31
     CLOCK: [2015-11-13 fre 17:39]--[2015-11-13 fre 18:28] =>  0:49
+*** execute/interpret/source
+    CLOCK: [2015-11-27 fre 20:41]--[2015-11-28 lör 02:26] =>  5:45
+    CLOCK: [2015-11-20 fre 13:00]--[2015-11-20 fre 15:28] =>  2:28
 * Preprocessnig
 ** För individuellt testfall
    CLOCK: [2015-09-13 sön 18:21]--[2015-09-13 sön 20:24] =>  2:03
