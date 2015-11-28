@@ -29,25 +29,38 @@ class TestCaseBase(home_and_eds_test.TestCaseBase):
                            check)
 
 
-class ExitCodeIs(tmp_dir_test.ResultAssertion):
+class ExitCodeAndStderrContentsIs(tmp_dir_test.ResultAssertion):
     def __init__(self,
-                 expected_value: int):
-        self.expected_value = expected_value
+                 exit_code: int,
+                 stderr_contents: str):
+        self.exit_code = exit_code
+        self.stderr_contents = stderr_contents
 
     def apply(self, put: unittest.TestCase, result):
-        put.assertEquals(self.expected_value,
+        put.assertEquals(self.exit_code,
                          result[0],
                          'Exit code')
+        put.assertEqual(self.stderr_contents,
+                        result[1],
+                        'Stderr contents')
 
 
 class TestExecuteProgramWithShellArgumentList(TestCaseBase):
     def test_check_zero_exit_code(self):
         self._test_source(single_line_source(python_with_command_argument_on_command_line('exit(0)')),
-                          home_and_eds_test.Check(expected_action_result=ExitCodeIs(0)))
+                          home_and_eds_test.Check(expected_action_result=ExitCodeAndStderrContentsIs(0,
+                                                                                                     None)))
 
     def test_check_non_zero_exit_code(self):
         self._test_source(single_line_source(python_with_command_argument_on_command_line('exit(1)')),
-                          home_and_eds_test.Check(expected_action_result=ExitCodeIs(1)))
+                          home_and_eds_test.Check(expected_action_result=ExitCodeAndStderrContentsIs(1,
+                                                                                                     '')))
+
+    def test_check_non_zero_exit_code_with_output_to_stderr(self):
+        python_program = 'import sys; sys.stderr.write(\\"on stderr\\"); exit(2)'
+        self._test_source(single_line_source(python_with_command_argument_on_command_line(python_program)),
+                          home_and_eds_test.Check(expected_action_result=ExitCodeAndStderrContentsIs(2,
+                                                                                                     'on stderr')))
 
 
 def python_with_command_argument_on_command_line(command_argument: str) -> str:

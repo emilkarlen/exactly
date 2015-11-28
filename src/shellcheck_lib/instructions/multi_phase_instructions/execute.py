@@ -1,6 +1,7 @@
 import os
 import shlex
 import subprocess
+import tempfile
 
 from shellcheck_lib.document.model import Instruction
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
@@ -26,11 +27,21 @@ class Setup:
         :return: (Exit code from sub process, Output on stderr, or None)
         """
         args = [self.executable.path_string(home_and_eds)] + self.argument_list
-        exit_code = subprocess.call(args,
-                                    stdin=subprocess.DEVNULL,
-                                    stdout=subprocess.DEVNULL,
-                                    stderr=subprocess.DEVNULL)
-        return exit_code, None
+
+        prefix_head = str(home_and_eds.eds.tmp.internal_dir) + 'execute-'
+        with tempfile.TemporaryFile(prefix=prefix_head + 'stdout',
+                                    mode='w+') as stdout_file:
+            with tempfile.TemporaryFile(prefix=prefix_head + 'stderr',
+                                        mode='w+') as stderr_file:
+                exitcode = subprocess.call(args,
+                                           stdin=subprocess.DEVNULL,
+                                           stdout=stdout_file,
+                                           stderr=stderr_file)
+                stderr_contents = None
+                if exitcode != 0:
+                    stderr_file.seek(0)
+                    stderr_contents = stderr_file.read()
+                return exitcode, stderr_contents
 
     def execute_and_return_error_message_if_non_zero_exit_status(self, home_and_eds: HomeAndEds) -> str:
         """
