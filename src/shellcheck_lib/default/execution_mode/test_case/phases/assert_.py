@@ -1,11 +1,12 @@
 from shellcheck_lib.default.execution_mode.test_case.instruction_setup import SingleInstructionSetup
-from shellcheck_lib.instructions.assert_phase import shell
-from shellcheck_lib.instructions.assert_phase import exitcode as exitcode_instruction
-from shellcheck_lib.instructions.assert_phase import contents as contents_instruction
-from shellcheck_lib.instructions.assert_phase import type
-from shellcheck_lib.instructions.assert_phase import stdout_stderr as stdout_stderr_instruction
-from shellcheck_lib.instructions.assert_phase import new_dir
 from shellcheck_lib.instructions.assert_phase import change_dir
+from shellcheck_lib.instructions.assert_phase import contents as contents_instruction
+from shellcheck_lib.instructions.assert_phase import execute
+from shellcheck_lib.instructions.assert_phase import exitcode as exitcode_instruction
+from shellcheck_lib.instructions.assert_phase import new_dir
+from shellcheck_lib.instructions.assert_phase import shell
+from shellcheck_lib.instructions.assert_phase import stdout_stderr as stdout_stderr_instruction
+from shellcheck_lib.instructions.assert_phase import type
 
 INSTRUCTIONS = {
     'exitcode':
@@ -16,6 +17,10 @@ INSTRUCTIONS = {
         SingleInstructionSetup(
             contents_instruction.Parser(),
             contents_instruction.DESCRIPTION),
+    'execute':
+        SingleInstructionSetup(
+            execute.parser('execute'),
+            execute.DESCRIPTION),
     'mkdir':
         SingleInstructionSetup(
             new_dir.Parser(),

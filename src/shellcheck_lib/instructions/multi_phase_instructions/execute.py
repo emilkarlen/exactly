@@ -1,6 +1,8 @@
 import os
 import shlex
 
+from shellcheck_lib.default.execution_mode.test_case.instruction_setup import Description, InvokationVariant, \
+    SyntaxElementDescription
 from shellcheck_lib.document.model import Instruction
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, SingleInstructionParserSource
@@ -8,7 +10,25 @@ from shellcheck_lib.general import file_utils
 from shellcheck_lib.instructions.utils import executable_file
 from shellcheck_lib.instructions.utils import sub_process_execution
 from shellcheck_lib.instructions.utils.executable_file import ExecutableFile
+from shellcheck_lib.instructions.utils.relative_path_options import REL_HOME_OPTION
 from shellcheck_lib.test_case.sections.common import HomeAndEds
+
+
+def description(single_line_description: str):
+    return Description(single_line_description,
+                       '',
+                       [InvokationVariant('EXECUTABLE [--] ARGUMENT...',
+                                          """Executes the given executable with the given command line arguments.
+                                          The arguments are splitted according to shell syntax."""),
+                        ],
+                       [SyntaxElementDescription('EXECUTABLE',
+                                                 'Specifies an executable program',
+                                                 [
+                                                     InvokationVariant('ABSOLUTE-PATH', ''),
+                                                     InvokationVariant('{} PATH'.format(REL_HOME_OPTION), ''),
+                                                 ]),
+                        ]
+                       )
 
 
 class Setup:
