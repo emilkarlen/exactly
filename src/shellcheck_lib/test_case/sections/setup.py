@@ -1,8 +1,8 @@
 from shellcheck_lib.document.model import Instruction
-from shellcheck_lib.test_case.sections.result.sh import SuccessOrHardError
-from shellcheck_lib.test_case.sections.result import svh
-from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPreEdsStep, GlobalEnvironmentForPostEdsPhase
 from shellcheck_lib.test_case.os_services import OsServices
+from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPreEdsStep, GlobalEnvironmentForPostEdsPhase
+from shellcheck_lib.test_case.sections.result import sh
+from shellcheck_lib.test_case.sections.result import svh
 
 
 class StdinSettings:
@@ -50,7 +50,7 @@ class SetupPhaseInstruction(Instruction):
     def main(self,
              os_services: OsServices,
              environment: GlobalEnvironmentForPostEdsPhase,
-             settings_builder: SetupSettingsBuilder) -> SuccessOrHardError:
+             settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         raise NotImplementedError()
 
     def post_validate(self,
