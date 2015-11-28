@@ -82,6 +82,13 @@ def execute_setup_and_read_stderr_if_non_zero_exitcode(setup: Setup,
     return ResultAndStderr(result, stderr_contents)
 
 
+def failure_message_for_nonzero_status(result_and_err: ResultAndStderr) -> str:
+    msg_tail = ''
+    if result_and_err.stderr_contents:
+        msg_tail = os.linesep + result_and_err.stderr_contents
+    return 'Exit code {}{}'.format(result_and_err.result.exit_code, msg_tail)
+
+
 class SetupParser:
     def __init__(self,
                  instruction_meta_info: sub_process_execution.InstructionMetaInfo):
