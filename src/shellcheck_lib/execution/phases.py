@@ -10,7 +10,8 @@ class Phase(tuple):
     def name(self) -> str:
         return self[0]
 
-ANONYMOUS = Phase(None)
+
+ANONYMOUS = Phase('configuration')
 SETUP = Phase('setup')
 ACT = Phase('act')
 ASSERT = Phase('assert')
