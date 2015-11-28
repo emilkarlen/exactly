@@ -1,7 +1,7 @@
 import unittest
 
-from shellcheck_lib.execution.phases import SETUP
 from shellcheck_lib.instructions.utils import sub_process_execution as sut
+from shellcheck_lib.instructions.utils.sub_process_execution import InstructionSourceInfo, InstructionMetaInfo
 from shellcheck_lib_test.instructions.test_resources.eds_populator import act_dir_contents
 from shellcheck_lib_test.instructions.test_resources.utils import execution_directory_structure
 from shellcheck_lib_test.test_resources import python_program_execution as py_exe
@@ -10,11 +10,12 @@ from shellcheck_lib_test.util.file_structure import DirContents, File
 
 
 class TestExecutorThatLogsResultUnderPhaseDir(unittest.TestCase):
+    source_info = InstructionSourceInfo(InstructionMetaInfo('phase-name',
+                                                            'instruction-name'),
+                                        4)
+
     def test_exit_code(self):
-        phase = SETUP
-        instruction_name = 'instruction-name'
-        line_number = 4
-        exit_code = 4
+        exit_code = 3
         py_pgm_that_exits_with_exit_code = """
 import sys
 sys.exit(%d)
@@ -26,9 +27,7 @@ sys.exit(%d)
                 ]))) as eds:
             executor = sut.ExecutorThatLogsResultUnderPhaseDir()
             result = executor.apply(eds,
-                                    phase,
-                                    instruction_name,
-                                    line_number,
+                                    self.source_info,
                                     py_exe.args_for_interpreting(eds.act_dir / 'program.py'))
             self.assertTrue(result.is_success,
                             'Result should indicate success')
@@ -37,23 +36,15 @@ sys.exit(%d)
                              'Exit code')
 
     def test_invalid_executable(self):
-        phase = SETUP
-        instruction_name = 'instruction-name'
-        line_number = 4
         with execution_directory_structure() as eds:
             executor = sut.ExecutorThatLogsResultUnderPhaseDir()
             result = executor.apply(eds,
-                                    phase,
-                                    instruction_name,
-                                    line_number,
+                                    self.source_info,
                                     [str(eds.act_dir / 'non-existing-program')])
             self.assertFalse(result.is_success,
                              'Result should indicate failure')
 
     def test_storage_of_result_in_files(self):
-        phase = SETUP
-        instruction_name = 'instruction-name'
-        line_number = 4
         stdout_contents = 'on stdout'
         stderr_contents = 'on stderr'
         exit_code = 4
@@ -70,9 +61,7 @@ sys.exit(%d)
                 ]))) as eds:
             executor = sut.ExecutorThatLogsResultUnderPhaseDir()
             result = executor.apply(eds,
-                                    phase,
-                                    instruction_name,
-                                    line_number,
+                                    self.source_info,
                                     py_exe.args_for_interpreting(eds.act_dir / 'program.py'))
             self.assertTrue(result.is_success,
                             'Result should indicate success')

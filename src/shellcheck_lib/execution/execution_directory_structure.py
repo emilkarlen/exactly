@@ -1,8 +1,6 @@
 import tempfile
 from pathlib import Path
 
-from shellcheck_lib.execution.phases import Phase
-
 TMP_INTERNAL__STDIN_CONTENTS = 'stdin.txt'
 
 TMP_INTERNAL__WITH_REPLACED_ENV_VARS_SUB_DIR = 'with-replaced-env-vars'
@@ -140,5 +138,5 @@ def stdin_contents_file(eds: ExecutionDirectoryStructure) -> Path:
 
 
 def log_phase_dir(eds: ExecutionDirectoryStructure,
-                  phase: Phase) -> Path:
-    return eds.log_dir / LOG__PHASE_SUB_DIR / phase.name
+                  phase_name: str) -> Path:
+    return eds.log_dir / LOG__PHASE_SUB_DIR / phase_name

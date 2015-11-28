@@ -2,7 +2,6 @@ import pathlib
 import subprocess
 
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure, log_phase_dir
-from shellcheck_lib.execution.phases import Phase
 from shellcheck_lib.general.file_utils import write_new_text_file
 from shellcheck_lib.instructions.utils import file_services
 
@@ -49,12 +48,42 @@ class Result(tuple):
         return STDERR_FILE_NAME
 
 
+class InstructionMetaInfo(tuple):
+    def __new__(cls,
+                phase_name: str,
+                instruction_name: str):
+        return tuple.__new__(cls, (phase_name,
+                                   instruction_name))
+
+    @property
+    def phase_name(self) -> str:
+        return self[0]
+
+    @property
+    def instruction_name(self) -> str:
+        return self[1]
+
+
+class InstructionSourceInfo(tuple):
+    def __new__(cls,
+                instruction_meta_info: InstructionMetaInfo,
+                source_line_number: int):
+        return tuple.__new__(cls, (instruction_meta_info,
+                                   source_line_number))
+
+    @property
+    def meta_info(self) -> InstructionMetaInfo:
+        return self[0]
+
+    @property
+    def line_number(self) -> int:
+        return self[1]
+
+
 class Executor:
     def apply(self,
               eds: ExecutionDirectoryStructure,
-              phase: Phase,
-              instruction_name: str,
-              line_number: int,
+              instruction_source_info: InstructionSourceInfo,
               cmd_and_args: list) -> Result:
         raise NotImplementedError()
 
@@ -62,11 +91,9 @@ class Executor:
 class ExecutorThatLogsResultUnderPhaseDir(Executor):
     def apply(self,
               eds: ExecutionDirectoryStructure,
-              phase: Phase,
-              instruction_name: str,
-              line_number: int,
+              instruction_source_info: InstructionSourceInfo,
               cmd_and_args: list) -> Result:
-        output_dir = self.instruction_output_directory(eds, phase, instruction_name, line_number)
+        output_dir = self.instruction_output_directory(eds, instruction_source_info)
         file_services.create_dir_that_is_expected_to_not_exist(output_dir)
         with open(str(output_dir / STDOUT_FILE_NAME), 'w') as f_stdout:
             with open(str(output_dir / STDERR_FILE_NAME), 'w') as f_stderr:
@@ -89,11 +116,10 @@ class ExecutorThatLogsResultUnderPhaseDir(Executor):
 
     def instruction_output_directory(self,
                                      eds: ExecutionDirectoryStructure,
-                                     phase: Phase,
-                                     instruction_name: str,
-                                     line_number: int) -> pathlib.Path:
-        instruction_sub_dir = self._format_instruction_output_sub_dir_name(instruction_name, line_number)
-        return log_phase_dir(eds, phase) / instruction_sub_dir
+                                     info: InstructionSourceInfo) -> pathlib.Path:
+        instruction_sub_dir = self._format_instruction_output_sub_dir_name(info.meta_info.instruction_name,
+                                                                           info.line_number)
+        return log_phase_dir(eds, info.meta_info.phase_name) / instruction_sub_dir
 
     @staticmethod
     def _format_instruction_output_sub_dir_name(instruction_name: str,
