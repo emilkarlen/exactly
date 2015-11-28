@@ -1,12 +1,14 @@
 import unittest
 
 from shellcheck_lib_test.instructions.assert_phase import test_resources
-from . import exitcode
+from . import change_dir
 from . import contents
+from . import execute
+from . import exitcode
+from . import new_dir
+from . import shell
 from . import stdout_stderr
 from . import type
-from . import new_dir
-from . import change_dir
 
 
 def suite():
@@ -18,6 +20,8 @@ def suite():
     ret_val.addTest(type.suite())
     ret_val.addTest(new_dir.suite())
     ret_val.addTest(change_dir.suite())
+    ret_val.addTest(execute.suite())
+    ret_val.addTest(shell.suite())
     return ret_val
 
 
