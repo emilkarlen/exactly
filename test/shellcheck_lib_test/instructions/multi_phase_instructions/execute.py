@@ -1,4 +1,3 @@
-import sys
 import unittest
 
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
@@ -6,6 +5,7 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
 from shellcheck_lib.instructions.multi_phase_instructions import execute as sut
 from shellcheck_lib.test_case.sections.common import HomeAndEds
 from shellcheck_lib_test.instructions.test_resources.utils import single_line_source
+from shellcheck_lib_test.test_resources import python_program_execution as py_exe
 from shellcheck_lib_test.util import home_and_eds_test
 from shellcheck_lib_test.util import value_assertion as va
 
@@ -59,24 +59,21 @@ def result_is(exitcode: int,
 
 class TestExecuteProgramWithShellArgumentList(TestCaseBase):
     def test_check_zero_exit_code(self):
-        self._test_source(single_line_source(python_with_command_argument_on_command_line('exit(0)')),
+        self._test_source(single_line_source(py_exe.command_line_for_executing_program_via_command_line('exit(0)')),
                           home_and_eds_test.Check(expected_action_result=result_is(0,
                                                                                    None)))
 
     def test_check_non_zero_exit_code(self):
-        self._test_source(single_line_source(python_with_command_argument_on_command_line('exit(1)')),
+        self._test_source(single_line_source(py_exe.command_line_for_executing_program_via_command_line('exit(1)')),
                           home_and_eds_test.Check(expected_action_result=result_is(1,
                                                                                    '')))
 
     def test_check_non_zero_exit_code_with_output_to_stderr(self):
         python_program = 'import sys; sys.stderr.write(\\"on stderr\\"); exit(2)'
-        self._test_source(single_line_source(python_with_command_argument_on_command_line(python_program)),
-                          home_and_eds_test.Check(expected_action_result=result_is(2,
-                                                                                   'on stderr')))
-
-
-def python_with_command_argument_on_command_line(command_argument: str) -> str:
-    return '{} -c "{}"'.format(sys.executable, command_argument)
+        self._test_source(
+            single_line_source(py_exe.command_line_for_executing_program_via_command_line(python_program)),
+            home_and_eds_test.Check(expected_action_result=result_is(2,
+                                                                     'on stderr')))
 
 
 def suite():

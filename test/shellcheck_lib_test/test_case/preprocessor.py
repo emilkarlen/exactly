@@ -1,14 +1,14 @@
-from contextlib import contextmanager
 import os
 import pathlib
 import unittest
-import sys
+from contextlib import contextmanager
 
+from shellcheck_lib.general.string import lines_content
 from shellcheck_lib.test_case.preprocessor import IdentityPreprocessor, PreprocessorViaExternalProgram
 from shellcheck_lib.test_case.test_case_processing import ProcessError
+from shellcheck_lib_test.test_resources import python_program_execution as py_exe
 from shellcheck_lib_test.util.file_structure import DirContents, File
 from shellcheck_lib_test.util.preprocessor_utils import dir_contents_and_preprocessor_source
-from shellcheck_lib.general.string import lines_content
 
 
 class TestIdentityPreprocessor(unittest.TestCase):
@@ -48,7 +48,7 @@ class TestPreprocessorViaExternalProgram(unittest.TestCase):
                                                preprocessor_that_search_replace_current_working_directory) \
                 as (test_case_path,
                     preprocessor_file_path):
-            pre_proc = PreprocessorViaExternalProgram([sys.executable, str(preprocessor_file_path)])
+            pre_proc = PreprocessorViaExternalProgram(py_exe.args_for_interpreting(preprocessor_file_path))
 
             result = pre_proc.apply(test_case_path, test_case_source)
 
@@ -78,7 +78,7 @@ class TestPreprocessorViaExternalProgram(unittest.TestCase):
                                                preprocessor_that_search_replace_current_working_directory) \
                 as (test_case_path,
                     preprocessor_file_path):
-            pre_proc = PreprocessorViaExternalProgram([sys.executable, str(preprocessor_file_path)])
+            pre_proc = PreprocessorViaExternalProgram(py_exe.args_for_interpreting(preprocessor_file_path))
 
             result = pre_proc.apply(test_case_path, test_case_source)
 
@@ -98,9 +98,9 @@ class TestPreprocessorViaExternalProgram(unittest.TestCase):
                                                preprocessor_that_opens_the_test_case_file) \
                 as (test_case_path,
                     preprocessor_file_path):
-            pre_proc = PreprocessorViaExternalProgram([sys.executable, str(preprocessor_file_path)])
+            pre_proc = PreprocessorViaExternalProgram(py_exe.args_for_interpreting(preprocessor_file_path))
 
-            with self.assertRaises(ProcessError) as ex_info:
+            with self.assertRaises(ProcessError):
                 pre_proc.apply(pathlib.Path('non-existing-file-name'), unused_test_case_source)
 
     def test_exception_should_be_raised_when_preprocessor_does_not_exist(self):

@@ -6,6 +6,7 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
 from shellcheck_lib.instructions.utils import executable_file as sut
 from shellcheck_lib.instructions.utils.relative_path_options import REL_HOME_OPTION
 from shellcheck_lib_test.instructions.test_resources.utils import home_and_eds_and_test_as_curr_dir
+from shellcheck_lib_test.test_resources import python_program_execution as py_exe
 from shellcheck_lib_test.util.file_structure import DirContents, executable_file, empty_file
 
 
@@ -87,7 +88,7 @@ class TestRelHome(unittest.TestCase):
 
 class TestAbsolutePath(unittest.TestCase):
     def test_existing_file(self):
-        arguments_str = '{} remaining args'.format(sys.executable)
+        arguments_str = py_exe.command_line_for_arguments(['remaining', 'args'])
         (exe_file, remaining_arguments) = sut.parse_as_first_space_separated_part(arguments_str)
         self.assertEqual('remaining args',
                          remaining_arguments,

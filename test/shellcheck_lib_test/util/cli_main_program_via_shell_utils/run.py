@@ -1,11 +1,11 @@
 import pathlib
-import sys
 import unittest
 
 from shellcheck_lib.execution.result import FullResultStatus
+from shellcheck_lib.general.string import lines_content
+from shellcheck_lib_test.test_resources import python_program_execution as py_exe
 from shellcheck_lib_test.util.process import ExpectedSubProcessResult, SubProcessResultInfo, \
     run_subprocess, run_subprocess_with_file_arg__full, SubProcessResult
-from shellcheck_lib.general.string import lines_content
 
 SRC_DIR_NAME = 'src'
 MAIN_PROGRAM_FILE_NAME = 'shellcheck.py'
@@ -22,25 +22,21 @@ SUCCESSFUL_RESULT = ExpectedSubProcessResult(exitcode=FullResultStatus.PASS.valu
 
 def run_shellcheck_in_sub_process_with_file_argument(puc: unittest.TestCase,
                                                      file_contents: str,
-                                                     flags: tuple=()) -> SubProcessResultInfo:
+                                                     flags: tuple = ()) -> SubProcessResultInfo:
     cwd = pathlib.Path.cwd()
-    # print('# DEBUG: cwd: ' + str(cwd))
-    if not sys.executable:
-        puc.fail('Cannot execute test since the name of the Python 3 interpreter is not found in sys.executable.')
+    py_exe.assert_interpreter_is_available(puc)
     shellcheck_path = shellcheck_src_path(cwd)
-    args_without_file = [sys.executable, str(shellcheck_path)] + list(flags)
+    args_without_file = py_exe.args_for_interpreting(shellcheck_path, flags)
     return run_subprocess_with_file_arg__full(args_without_file, file_contents)
 
 
 def run_shellcheck_in_sub_process(puc: unittest.TestCase,
                                   arguments: list,
-                                  stdin_contents: str='') -> SubProcessResult:
+                                  stdin_contents: str = '') -> SubProcessResult:
     cwd = pathlib.Path.cwd()
-    # print('# DEBUG: cwd: ' + str(cwd))
-    if not sys.executable:
-        puc.fail('Cannot execute test since the name of the Python 3 interpreter is not found in sys.executable.')
+    py_exe.assert_interpreter_is_available(puc)
     shellcheck_path = shellcheck_src_path(cwd)
-    cmd_and_args = [sys.executable, str(shellcheck_path)] + list(arguments)
+    cmd_and_args = py_exe.args_for_interpreting(shellcheck_path, arguments)
     return run_subprocess(cmd_and_args, stdin_contents)
 
 

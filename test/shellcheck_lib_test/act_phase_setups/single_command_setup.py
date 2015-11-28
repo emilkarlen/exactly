@@ -1,17 +1,18 @@
-from contextlib import contextmanager
 import os
 import pathlib
-import unittest
 import sys
+import unittest
+from contextlib import contextmanager
 
 from shellcheck_lib.act_phase_setups import single_command_setup as sut
 from shellcheck_lib.general.std import std_files_dev_null
 from shellcheck_lib.test_case.sections.act.phase_setup import SourceSetup
 from shellcheck_lib.test_case.sections.act.script_source import ScriptSourceBuilder
 from shellcheck_lib.test_case.sections.result import svh
-from shellcheck_lib_test.act_phase_setups.test_resources.act_program_executor import ActProgramExecutorTestSetup, Tests
 from shellcheck_lib_test.act_phase_setups.test_resources import py_program
+from shellcheck_lib_test.act_phase_setups.test_resources.act_program_executor import ActProgramExecutorTestSetup, Tests
 from shellcheck_lib_test.instructions.test_resources.utils import execution_directory_structure
+from shellcheck_lib_test.test_resources import python_program_execution as py_exe
 from shellcheck_lib_test.util.file_structure import empty_file, File
 from shellcheck_lib_test.util.file_structure_utils import tmp_dir_with
 from shellcheck_lib_test.util.file_utils import tmp_file_containing_lines
@@ -96,7 +97,6 @@ class TestSetup(ActProgramExecutorTestSetup):
     def __init__(self):
         self.setup = sut.act_phase_setup(False)
         super().__init__(self.setup.executor)
-        self.python_executable = sys.executable
 
     @contextmanager
     def program_that_copes_stdin_to_stdout(self) -> ScriptSourceBuilder:
@@ -129,7 +129,7 @@ class TestSetup(ActProgramExecutorTestSetup):
 
     def _builder_for_executing_py_file(self, src_path: pathlib.Path) -> ScriptSourceBuilder:
         ret_val = self.setup.script_builder_constructor()
-        cmd = self.python_executable + ' ' + str(src_path)
+        cmd = py_exe.command_line_for_interpreting(src_path)
         ret_val.raw_script_statement(cmd)
         return ret_val
 
@@ -178,7 +178,7 @@ class CommandFileRelativeHomeTestCases(unittest.TestCase):
     def test_validation_succeeds_when_command_is_absolute_without_arguments(self):
         setup = sut.act_phase_setup(True)
         source = setup.script_builder_constructor()
-        source.raw_script_statement(sys.executable)
+        source.raw_script_statement(py_exe.command_line_for_arguments([]))
         actual = setup.executor.validate(pathlib.Path(), source)
         self.assertIs(actual.status,
                       svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
@@ -187,7 +187,7 @@ class CommandFileRelativeHomeTestCases(unittest.TestCase):
     def test_validation_succeeds_when_command_is_absolute_with_arguments(self):
         setup = sut.act_phase_setup(True)
         source = setup.script_builder_constructor()
-        source.raw_script_statement('{} {}'.format(sys.executable, 'argument'))
+        source.raw_script_statement(py_exe.command_line_for_arguments(['argument']))
         actual = setup.executor.validate(pathlib.Path(), source)
         self.assertIs(actual.status,
                       svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
@@ -205,12 +205,12 @@ class CommandFileRelativeHomeTestCases(unittest.TestCase):
                          exit_code)
 
     def test_execution_of_command_absolute_path__single_argument_that_is_source_file(self):
-        exit_code = execute_absolute_program_that_returns_number_of_arguments(self, '')
+        exit_code = execute_absolute_program_that_returns_number_of_arguments(self, [])
         self.assertEqual(0,
                          exit_code)
 
     def test_execution_of_command_absolute_path__multiple_arguments(self):
-        exit_code = execute_absolute_program_that_returns_number_of_arguments(self, '  arg1 arg2')
+        exit_code = execute_absolute_program_that_returns_number_of_arguments(self, ['arg1', 'arg2'])
         num_arguments = 2
         self.assertEqual(num_arguments,
                          exit_code)
@@ -247,14 +247,13 @@ def execute_program_rel_home_that_returns_number_of_arguments(puc: unittest.Test
 
 
 def execute_absolute_program_that_returns_number_of_arguments(puc: unittest.TestCase,
-                                                              arguments) -> int:
+                                                              arguments: list) -> int:
     setup = sut.act_phase_setup(True)
     source = setup.script_builder_constructor()
     command_file_name = 'program.py'
     with tmp_dir_with(File(command_file_name, exit_code_is_number_of_arguments)) as home_dir_path:
-        source.raw_script_statement('{} {}{}'.format(sys.executable,
-                                                     home_dir_path / command_file_name,
-                                                     arguments))
+        source.raw_script_statement(py_exe.command_line_for_interpreting(home_dir_path / command_file_name,
+                                                                         arguments))
         actual = setup.executor.validate(home_dir_path, source)
         puc.assertIs(actual.status,
                      svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
