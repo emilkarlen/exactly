@@ -91,6 +91,10 @@ class TestExecuteProgramWithShellArgumentList(TestCaseBase):
             home_and_eds_test.Check(expected_action_result=is_success_result(2,
                                                                              'on stderr')))
 
+    def test_invalid_executable(self):
+        self._test_source(single_line_source('/not/an/executable/program'),
+                          home_and_eds_test.Check(expected_action_result=IsFailure()))
+
 
 def suite():
     ret_val = unittest.TestSuite()
