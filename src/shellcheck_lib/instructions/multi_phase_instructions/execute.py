@@ -1,4 +1,5 @@
 import os
+import shlex
 import subprocess
 
 from shellcheck_lib.document.model import Instruction
@@ -9,25 +10,22 @@ from shellcheck_lib.instructions.utils.executable_file import ExecutableFile
 from shellcheck_lib.test_case.sections.common import HomeAndEds
 
 
-class Setup(tuple):
-    def __new__(cls,
-                executable: ExecutableFile,
-                arguments: str):
-        return tuple.__new__(cls, (executable, arguments))
+class Setup:
+    def __init__(self,
+                 executable: ExecutableFile,
+                 argument_list: list):
+        self._executable = executable
+        self.argument_list = argument_list
 
     @property
     def executable(self) -> ExecutableFile:
-        return self[0]
-
-    @property
-    def arguments(self) -> str:
-        return self[1]
+        return self._executable
 
     def execute(self, home_and_eds: HomeAndEds) -> (int, str):
         """
         :return: (Exit code from sub process, Output on stderr, or None)
         """
-        args = self.executable.path_string(home_and_eds) + ' ' + self.arguments
+        args = [self.executable.path_string(home_and_eds)] + self.argument_list
         exit_code = subprocess.call(args,
                                     stdin=subprocess.DEVNULL,
                                     stdout=subprocess.DEVNULL,
@@ -38,23 +36,29 @@ class Setup(tuple):
         """
         :return: None iff exit status was 0 from execute.
         """
-        self.execute(home_and_eds)
+        (exit_code, stderr_output) = self.execute(home_and_eds)
         if exit_code != 0:
             msg_tail = ''
-            if err_output:
-                msg_tail = os.linesep + err_output
+            if stderr_output:
+                msg_tail = os.linesep + stderr_output
             return 'Exit code {}{}'.format(exit_code, msg_tail)
         else:
             return None
 
 
-class Parser(SingleInstructionParser):
+class SetupParser:
+    def apply(self, source: SingleInstructionParserSource) -> Setup:
+        (the_executable_file, remaining_arguments_str) = executable_file.parse_as_first_space_separated_part(
+            source.instruction_argument)
+        return Setup(the_executable_file, shlex.split(remaining_arguments_str))
+
+
+class InstructionParser(SingleInstructionParser):
     def __init__(self,
                  setup2instruction_function):
         self._setup2instruction_function = setup2instruction_function
+        self.setup_parser = SetupParser()
 
     def apply(self, source: SingleInstructionParserSource) -> Instruction:
-        (the_executable_file, remaining_arguments_str) = executable_file.parse_as_first_space_separated_part(
-            source.instruction_argument)
-        setup = Setup(the_executable_file, remaining_arguments_str)
+        setup = self.setup_parser.apply(source)
         return self._setup2instruction_function(setup)
