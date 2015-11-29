@@ -12,7 +12,7 @@ DESCRIPTION = execute.description("Executes a program")
 
 
 def parser(instruction_name: str) -> SingleInstructionParser:
-    return execute.InstructionParser(sub_process_execution.InstructionMetaInfo(SETUP.name,
+    return execute.InstructionParser(sub_process_execution.InstructionMetaInfo(SETUP.identifier,
                                                                                instruction_name),
                                      lambda setup: _Instruction(setup))
 

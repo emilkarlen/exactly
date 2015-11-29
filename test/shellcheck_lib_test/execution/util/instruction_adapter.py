@@ -57,7 +57,7 @@ class _SetupInstructionExecutor(SetupPhaseInstruction):
              os_services: OsServices,
              environment: instr.GlobalEnvironmentForPostEdsPhase,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
-        self.__internal_instruction.execute(phases.SETUP.name,
+        self.__internal_instruction.execute(phases.SETUP.section_name,
                                             environment,
                                             OsServices())
         return self.__ret_val
@@ -83,7 +83,7 @@ class _AssertInstructionExecutor(AssertPhaseInstruction):
     def main(self,
              environment: instr.GlobalEnvironmentForPostEdsPhase,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
-        self.__internal_instruction.execute(phases.ASSERT.name,
+        self.__internal_instruction.execute(phases.ASSERT.section_name,
                                             environment,
                                             os_services)
         return self.__ret_val
@@ -99,7 +99,7 @@ class _CleanupInstructionExecutor(CleanupPhaseInstruction):
     def main(self,
              environment: instr.GlobalEnvironmentForPostEdsPhase,
              os_services: OsServices) -> sh.SuccessOrHardError:
-        self.__internal_instruction.execute(phases.CLEANUP.name,
+        self.__internal_instruction.execute(phases.CLEANUP.section_name,
                                             environment,
                                             os_services)
         return self.__ret_val

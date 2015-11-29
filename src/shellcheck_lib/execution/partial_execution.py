@@ -1,29 +1,29 @@
-import tempfile
 import os
-import subprocess
 import pathlib
+import subprocess
+import tempfile
 
-from shellcheck_lib.execution import phase_step
+from shellcheck_lib.document.model import PhaseContents
 from shellcheck_lib.execution import environment_variables
+from shellcheck_lib.execution import phase_step
+from shellcheck_lib.execution import phase_step_executors
+from shellcheck_lib.execution import phases
 from shellcheck_lib.execution.phase_step import PhaseStep
 from shellcheck_lib.execution.phase_step_execution import ElementHeaderExecutor
-from shellcheck_lib.general import line_source
-from shellcheck_lib.execution import phase_step_executors
 from shellcheck_lib.execution.single_instruction_executor import ControlledInstructionExecutor
+from shellcheck_lib.general import line_source
 from shellcheck_lib.general.file_utils import write_new_text_file
 from shellcheck_lib.general.std import StdOutputFiles, StdFiles
-from shellcheck_lib.test_case.sections import common
-from shellcheck_lib.document.model import PhaseContents
-from shellcheck_lib.execution import phases
 from shellcheck_lib.test_case import test_case_doc
-from .execution_directory_structure import construct_at, ExecutionDirectoryStructure, stdin_contents_file
-from .result import PartialResult, PartialResultStatus, new_partial_result_pass, PhaseFailureInfo
-from . import result
-from . import phase_step_execution
+from shellcheck_lib.test_case.os_services import new_default, OsServices
+from shellcheck_lib.test_case.sections import common
 from shellcheck_lib.test_case.sections.act.phase_setup import PhaseEnvironmentForScriptGeneration, ActProgramExecutor, \
     SourceSetup, ScriptSourceBuilder
 from shellcheck_lib.test_case.sections.setup import SetupSettingsBuilder, StdinSettings
-from shellcheck_lib.test_case.os_services import new_default, OsServices
+from . import phase_step_execution
+from . import result
+from .execution_directory_structure import construct_at, ExecutionDirectoryStructure, stdin_contents_file
+from .result import PartialResult, PartialResultStatus, new_partial_result_pass, PhaseFailureInfo
 
 
 class Configuration(tuple):
@@ -277,7 +277,7 @@ class PartialExecutor:
     def __write_and_store_script_file_path(self):
         self.__source_setup = SourceSetup(self.__script_handling.builder,
                                           self.__execution_directory_structure.test_case_dir,
-                                          phases.ACT.name)
+                                          phases.ACT.section_name)
         self.__script_handling.executor.prepare(self.__source_setup,
                                                 self.configuration.home_dir,
                                                 self.__execution_directory_structure)

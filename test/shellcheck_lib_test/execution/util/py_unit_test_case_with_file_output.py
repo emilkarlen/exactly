@@ -1,10 +1,10 @@
 import os
 import pathlib
 
-from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.execution import phases
-from shellcheck_lib.test_case.sections import common
+from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.test_case.os_services import OsServices
+from shellcheck_lib.test_case.sections import common
 from shellcheck_lib_test.execution.util.instruction_adapter import InternalInstruction
 
 
@@ -18,7 +18,7 @@ def standard_phase_file_path(test_root_dir: pathlib.Path, phase: phases.Phase) -
 
 
 def standard_phase_file_base_name(phase: phases.Phase) -> str:
-    return 'testfile-for-phase-' + phase.name
+    return 'testfile-for-phase-' + phase.identifier
 
 
 class InternalInstructionThatWritesToStandardPhaseFile(InternalInstruction):

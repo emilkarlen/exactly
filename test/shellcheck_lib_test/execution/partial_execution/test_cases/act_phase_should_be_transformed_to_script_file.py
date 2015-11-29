@@ -1,16 +1,16 @@
 import os
 import unittest
 
-from shellcheck_lib.test_case.sections.result import sh
-from shellcheck_lib.test_case.sections.result import svh
+import shellcheck_lib_test.util.model_utils
 from shellcheck_lib.execution import phases
 from shellcheck_lib.general import line_source
 from shellcheck_lib.test_case.sections import common
-from shellcheck_lib_test.execution.util import utils
-from shellcheck_lib_test.execution.util import py_unit_test_case
-from shellcheck_lib_test.execution.util.py_unit_test_case import TestCaseWithCommonDefaultForSetupAssertCleanup
-import shellcheck_lib_test.util.model_utils
 from shellcheck_lib.test_case.sections.act.instruction import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
+from shellcheck_lib.test_case.sections.result import sh
+from shellcheck_lib.test_case.sections.result import svh
+from shellcheck_lib_test.execution.util import py_unit_test_case
+from shellcheck_lib_test.execution.util import utils
+from shellcheck_lib_test.execution.util.py_unit_test_case import TestCaseWithCommonDefaultForSetupAssertCleanup
 
 HOME_DIR_HEADER = '# Home Dir: '
 TEST_ROOT_DIR_HEADER = '# Test Root Dir: '
@@ -32,7 +32,7 @@ class TestCaseDocument(TestCaseWithCommonDefaultForSetupAssertCleanup):
 
 def assertions(utc: unittest.TestCase,
                actual: py_unit_test_case.Result):
-    expected_base_name = phases.ACT.name + '.py'
+    expected_base_name = phases.ACT.section_name + '.py'
     expected_dir = actual.partial_executor.execution_directory_structure.test_case_dir
     expected_file_path = expected_dir / expected_base_name
 
