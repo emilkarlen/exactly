@@ -27,11 +27,24 @@ Ska vara: cwd.
 ** Säkerställ: om stdin ska omdirigeras att filen hittas
 Idag är cwd alltid (troligtvis) act-dir. Då kan sökvägar vara relativa denna.
 Ev måste det hanteras om cwd kan vara nått annat.
+* TODO Syntax för instruktioner: vänta till EXPECTED ACTUAL??
+Bör se på om det är möjligt.
+T ex
+5 exitcode
+empty stdout
+empty file.txt
+contents --rel-home expected stderr
+type directory my-file
+
+Känns faktiskt aningen konstigt.  Spec exitcode. O även empty.
 * TODO Alias för instruktioner
 Kan behövas för att attrahera utvecklare med olika bakgrund.
 Speciellt
  - "pwd" kan behöva heta "cd"
  - "dir" kan behöva heta "mkdir"
+Dock, ett alt är naturligtvis att skapa alias m makron.  Är nog det enklaste,
+trots allt, iom att det förenklar programmets struktur, och funktionalliteten
+oavsett kommer att finnas iom makroprocessor.
 * TODO Dokumentation
 ** TODO Hjälpsystem
 ** TODO Users Guide
@@ -249,20 +262,20 @@ Namn?
 Finn något namn som andas deklarativt synsätt??
  - checker
  - assert
-** DONE För Unix: kör sh-kommandon (visat sig gå mha "shell")
+*** DONE För Unix: kör sh-kommandon (visat sig gå mha "shell")
 T ex [ $(wc -l FILE) = 4 ]
 
 Impl genom att ta raden (förutom instruktionen) o lägg i fil, o interpretera
 den m sh/bash.
-** TODO Spara exitcode, stdout, stderr i filer
+*** DONE Spara exitcode, stdout, stderr i filer
 Kan skapa katalog som heter execute-line-LINENUM/{exitcode, stdout, stderr}
-** TODO Validering: att filen är exekverbar
+*** TODO Validering: att filen är exekverbar
 Använd stat.S_IXUSR
 Den kollar om filen är exekverbar för användaren.
 Men ä osäker på om den enbart kollar om exekverings-flaggan är satt för
 användaren.  Det räcker ju inte.  Ty den kan vara satt för gruppen, o aktuell
 användare är medlem i gruppen som äger filen.
-** Syntax
+*** Syntax
 Tre (1) olika instruktioner, eller (2) en enda m växlar???
 Fördelar m separata instruktioner:
  - kan ge kortare syntax
@@ -274,13 +287,13 @@ en-intruktions-alternativet fördelar i kombination med att det går att
 "skriva" egna skräddarsydda "instruktioner" om man föredrar det.
 Samt har sett att man kan ge skräddarsytt skal-program för shell/shell=True.
 (dvs kan ange /bin/bash, t ex)
-*** Varianter
-**** Alla tar program/"interpretator" som arg
-**** Kör: källkod
-***** Källkod finns i fil
-***** Källkod anges på som argument
-**** Argument till körbart program: ja/nej
-*** interpret INTERPRETER SOURCE-FILE ARGUMENTS
+**** Varianter
+***** Alla tar program/"interpretator" som arg
+***** Kör: källkod
+****** Källkod finns i fil
+****** Källkod anges på som argument
+***** Argument till körbart program: ja/nej
+**** interpret INTERPRETER SOURCE-FILE ARGUMENTS
 INTERPRETER är troligtvis ett globalt program.  Så utgångsvärde för
 "relativitet" bör vara --global|--in-path|--system
 (Om det inte är ett globalt program så borde man istället skrivit ett program
@@ -290,46 +303,46 @@ SOURCE-FILE är troligtvis något som skrivits just för testsvitens skull, så
 där är --rel-home en lämpligt utgång.
 
 ARGUMENTS är trol helt vanliga argument, dvs de shell-splittas.
-*** execute   PROGRAM                 ARGUMENTS
+**** execute   PROGRAM                 ARGUMENTS
 PROGRAM kan både vara --rel-home och --system.  Svårt att välja utgång.
 
 Dock, "shell" kan köra program som är i --system.  Med det i åtanke blir
 --rel-home en naturligare utgång.
 
 ARGUMENTS är trol helt vanliga argument, dvs de shell-splittas.
-*** source    INTERPRETER             SOURCE
+**** source    INTERPRETER             SOURCE
 INTERPRETER är trol --in-system.  Om inte bör man skriva om det så att det
 blir så - dvs att man skriver ett program som körs m "execute" och tar
 ARGUMENTS istället för SOURCE som argument.  Sådana program är ju troligtvis
 enklare att både skriva och läsa.
-*** run: instruktion som hanterar alla fall
-**** run PROGRAM ARGUMENTS
+**** run: instruktion som hanterar alla fall
+***** run PROGRAM ARGUMENTS
 Exekverar: call([PROGRAM] ++ shell-split(ARGUMENTS))
 Ex: run --rel-home my-property-checking-pgm PROPERTY-DEFINITION
-**** run PROGRAM --interpret [--rel-X] FILE ARGUMENTS
+***** run PROGRAM --interpret [--rel-X] FILE ARGUMENTS
 Exekverar: call([PROGRAM,FILE] ++ shell-split(ARGUMENTS))
 Här splittas ARGUMENT... enl shell-regler
-**** run PROGRAM --source [SOURCE|<<EOF SOURCE EOF]
+***** run PROGRAM --source [SOURCE|<<EOF SOURCE EOF]
 Exekverar: call([PROGRAM, SOURCE])
-**** Former av PROGRAM
-***** --rel-home|--rel-pwd|--rel-act|--rel-tmp PROGRAM
-***** --system PROGRAM-IN-PATH
+***** Former av PROGRAM
+****** --rel-home|--rel-pwd|--rel-act|--rel-tmp PROGRAM
+****** --system PROGRAM-IN-PATH
 Bra för t ex "standardprogram" som awk, sed, där absolut sökväg kan variera
 mellan OS.
-** Implementation
-*** Växlar
-**** För exekverbart program
-  --system
-  --rel-home
-  --rel-pwd
-  --rel-act
-  --rel-tmp
-**** För källkodsfil
-  --rel-home
-  --rel-pwd
-  --rel-act
-  --rel-tmp
-*** Alla kommandon: 1:a arg är ett exekverbart program
+*** Implementation
+**** Växlar
+***** För exekverbart program
+   --system
+   --rel-home
+   --rel-pwd
+   --rel-act
+   --rel-tmp
+***** För källkodsfil
+   --rel-home
+   --rel-pwd
+   --rel-act
+   --rel-tmp
+**** Alla kommandon: 1:a arg är ett exekverbart program
 Ev meningsfullt att införa koncept/klass ExecutableFile.
 En skräddarsydd parser parsar en sådan.  Och den kan validera sig själv (för
 "existens").
@@ -337,7 +350,7 @@ En skräddarsydd parser parsar en sådan.  Och den kan validera sig själv (för
 En sådan ExecutableFile är antingen en FileRef eller en system-global sak.  En
 FileRef kan alltid resolvas till en abolut sökväg.
 
-*** execute/interpret mkt lika varandra
+**** execute/interpret mkt lika varandra
 Enda skillnaden är att interpret tar ett argument som förutsätts är en fil och
 som därför ska valideras för "existens".
 Själva exekveringen är annars identisk: EXECUTABLE ARGUMENT...
@@ -415,6 +428,7 @@ instruktion ::= enkel-radare
               | here-block
               | bne-separerade rader
 * TODO Preprocessor
+** TODO Inbyggd preprocessor
 Vore bäst om programmet innehöll en egen preprocessor.
 På så vis maximeras oberoende av yttre miljön.
 Funktionallitet:
@@ -422,8 +436,14 @@ Funktionallitet:
 - definitioner av konstanter
 - definitioner av funktioner
 Har tittat på:
-** PYM (mest lovande)
+*** PYM (mest lovande)
 http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.25.400
+Men hittar inte källkoden för den här.
+*** Pythons inbyggda stängformattering (format())
+file:///usr/share/doc/python3.4/html/library/string.html#string-formatting
+Kanske är denna tillräckligt kraftfull för att fungera som preprocessor.
+Dock förutom filinkludering, förutsätter jag.
+** TODO Testa ange preprocessor för TF via kommandoraden
 * TODO Härleda interpretator
 bash, sh, csh ...???
 Går det att ta reda på ett utgångsvärde för interpretator för varje plattform
@@ -510,7 +530,6 @@ Detta är dock krångligt!!
 
 * TODO Loggning
 * TODO Preprocessning
-** TODO Testa ange preprocessor för TF via kommandoraden
 * TODO Faser och steg
 ** TODO Nytt steg cleanup/validate
 T ex för att göra möjligt för en instruktion "interpret PROGRAM" att validera
