@@ -14,6 +14,6 @@ class SkipInitialWhiteSpaceAndIdentifyNameByRegEx:
         return s[:match.end()], s[match.end():]
 
 
-INSTRUCTION_NAME_REG_EX = re.compile(r"[a-zA-Z0-9.-]+")
+INSTRUCTION_NAME_REG_EX = re.compile(r"[_a-zA-Z0-9.-]+")
 
 splitter = SkipInitialWhiteSpaceAndIdentifyNameByRegEx(INSTRUCTION_NAME_REG_EX)
