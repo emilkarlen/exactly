@@ -32,6 +32,11 @@ class TestCase(unittest.TestCase):
                     'name',
                     ':argument  ')
 
+    def test_under_score(self):
+        self._check('a_b c',
+                    'a_b',
+                    ' c')
+
     def _check(self,
                line: str,
                expected_name: str,
