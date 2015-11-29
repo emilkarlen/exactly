@@ -1,16 +1,16 @@
 from shellcheck_lib.default.execution_mode.test_case.instruction_setup import InstructionsSetup
-from shellcheck_lib.document.model import Instruction
-from shellcheck_lib.execution import phases
 from shellcheck_lib.document import parse
-from shellcheck_lib.general import line_source
-from shellcheck_lib.general.line_source import LineSource
+from shellcheck_lib.document.model import Instruction
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SectionElementParserForDictionaryOfInstructions, SectionElementParserForStandardCommentAndEmptyLines
+from shellcheck_lib.execution import phases
+from shellcheck_lib.general import line_source
+from shellcheck_lib.general.line_source import LineSource
 from shellcheck_lib.test_case import test_case_doc
 from shellcheck_lib.test_case.sections import common
+from shellcheck_lib.test_case.sections.act.instruction import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.result import svh
-from shellcheck_lib.test_case.sections.act.instruction import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
 
 
 class Parser:
@@ -22,11 +22,11 @@ class Parser:
               plain_test_case: LineSource) -> test_case_doc.TestCase:
         document = self.__plain_file_parser.apply(plain_test_case)
         return test_case_doc.TestCase(
-            document.elements_for_phase_or_empty_if_phase_not_present(phases.ANONYMOUS.name),
-            document.elements_for_phase_or_empty_if_phase_not_present(phases.SETUP.name),
-            document.elements_for_phase_or_empty_if_phase_not_present(phases.ACT.name),
-            document.elements_for_phase_or_empty_if_phase_not_present(phases.ASSERT.name),
-            document.elements_for_phase_or_empty_if_phase_not_present(phases.CLEANUP.name),
+            document.elements_for_phase_or_empty_if_phase_not_present(phases.ANONYMOUS.section_name),
+            document.elements_for_phase_or_empty_if_phase_not_present(phases.SETUP.section_name),
+            document.elements_for_phase_or_empty_if_phase_not_present(phases.ACT.section_name),
+            document.elements_for_phase_or_empty_if_phase_not_present(phases.ASSERT.section_name),
+            document.elements_for_phase_or_empty_if_phase_not_present(phases.CLEANUP.section_name),
         )
 
 
@@ -41,13 +41,13 @@ def new_parser(split_line_into_name_and_argument_function,
     configuration = parse.SectionsConfiguration(
         anonymous_phase,
         (
-            parse.SectionConfiguration(phases.SETUP.name,
+            parse.SectionConfiguration(phases.SETUP.section_name,
                                        dict_parser(instructions_setup.setup_instruction_set)),
-            parse.SectionConfiguration(phases.ACT.name,
+            parse.SectionConfiguration(phases.ACT.section_name,
                                        act_phase_parser),
-            parse.SectionConfiguration(phases.ASSERT.name,
+            parse.SectionConfiguration(phases.ASSERT.section_name,
                                        dict_parser(instructions_setup.assert_instruction_set)),
-            parse.SectionConfiguration(phases.CLEANUP.name,
+            parse.SectionConfiguration(phases.CLEANUP.section_name,
                                        dict_parser(instructions_setup.cleanup_instruction_set)),
         )
     )

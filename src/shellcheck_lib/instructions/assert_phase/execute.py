@@ -12,7 +12,7 @@ DESCRIPTION = execute.description("Executes a program and succeeds if it's exit-
 
 
 def parser(instruction_name: str) -> SingleInstructionParser:
-    return execute.InstructionParser(sub_process_execution.InstructionMetaInfo(ASSERT.name,
+    return execute.InstructionParser(sub_process_execution.InstructionMetaInfo(ASSERT.identifier,
                                                                                instruction_name),
                                      lambda setup: _Instruction(setup))
 
