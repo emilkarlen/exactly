@@ -22,7 +22,7 @@ def parser(instruction_name: str) -> SingleInstructionParser:
 
 class _Instruction(CleanupPhaseInstruction):
     def __init__(self,
-                 setup: execute.Setup):
+                 setup: execute.SetupForExecutableWithArguments):
         self.setup = setup
 
     def pre_eds_validate(self,
