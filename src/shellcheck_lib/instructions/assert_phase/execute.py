@@ -19,7 +19,7 @@ def parser(instruction_name: str) -> SingleInstructionParser:
 
 class _Instruction(AssertPhaseInstruction):
     def __init__(self,
-                 setup: execute.Setup):
+                 setup: execute.SetupForExecutableWithArguments):
         self.setup = setup
 
     def validate(self, environment: GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:

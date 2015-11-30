@@ -8,10 +8,14 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
     SingleInstructionParser, SingleInstructionParserSource
 from shellcheck_lib.general import file_utils
 from shellcheck_lib.instructions.utils import executable_file
+from shellcheck_lib.instructions.utils import parse_file_ref
 from shellcheck_lib.instructions.utils import sub_process_execution
 from shellcheck_lib.instructions.utils.executable_file import ExecutableFile
+from shellcheck_lib.instructions.utils.file_ref import FileRef
 from shellcheck_lib.instructions.utils.relative_path_options import REL_HOME_OPTION
 from shellcheck_lib.test_case.sections.common import HomeAndEds
+
+INTERPRET_OPTION = '--interpret'
 
 
 def description(single_line_description: str):
@@ -31,25 +35,27 @@ def description(single_line_description: str):
                        )
 
 
-class Setup:
+class SetupForExecutableWithArguments:
     def __init__(self,
                  instruction_source_info: sub_process_execution.InstructionSourceInfo,
-                 executable: ExecutableFile,
-                 argument_list: list):
+                 executable: ExecutableFile):
         self.instruction_source_info = instruction_source_info
         self._executable = executable
-        self.argument_list = argument_list
 
     @property
     def executable(self) -> ExecutableFile:
         return self._executable
 
     def execute(self, home_and_eds: HomeAndEds) -> sub_process_execution.Result:
-        cmd_and_args = [self.executable.path_string(home_and_eds)] + self.argument_list
+        cmd_and_args = [self.executable.path_string(home_and_eds)] + self._arguments(home_and_eds)
         executor = sub_process_execution.ExecutorThatLogsResultUnderPhaseDir()
         return executor.apply(self.instruction_source_info,
                               home_and_eds.eds,
                               cmd_and_args)
+
+    def _arguments(self, home_and_eds: HomeAndEds) -> list:
+        raise NotImplementedError()
+
 
     def execute_and_return_error_message_if_non_zero_exit_status(self, home_and_eds: HomeAndEds) -> str:
         """
@@ -65,6 +71,32 @@ class Setup:
             return None
 
 
+class SetupForExecute(SetupForExecutableWithArguments):
+    def __init__(self,
+                 instruction_source_info: sub_process_execution.InstructionSourceInfo,
+                 executable: ExecutableFile,
+                 argument_list: list):
+        super().__init__(instruction_source_info, executable)
+        self.argument_list = argument_list
+
+    def _arguments(self, home_and_eds: HomeAndEds) -> list:
+        return self.argument_list
+
+
+class SetupForInterpret(SetupForExecutableWithArguments):
+    def __init__(self,
+                 instruction_source_info: sub_process_execution.InstructionSourceInfo,
+                 executable: ExecutableFile,
+                 file_to_interpret: FileRef,
+                 argument_list: list):
+        super().__init__(instruction_source_info, executable)
+        self.file_to_interpret = file_to_interpret
+        self.argument_list = argument_list
+
+    def _arguments(self, home_and_eds: HomeAndEds) -> list:
+        return [str(self.file_to_interpret.file_path_post_eds(home_and_eds))] + self.argument_list
+
+
 class ResultAndStderr:
     def __init__(self,
                  result: sub_process_execution.Result,
@@ -73,7 +105,7 @@ class ResultAndStderr:
         self.stderr_contents = stderr_contents
 
 
-def execute_setup_and_read_stderr_if_non_zero_exitcode(setup: Setup,
+def execute_setup_and_read_stderr_if_non_zero_exitcode(setup: SetupForExecutableWithArguments,
                                                        home_and_eds: HomeAndEds) -> ResultAndStderr:
     stderr_contents = None
     result = setup.execute(home_and_eds)
@@ -94,14 +126,39 @@ class SetupParser:
                  instruction_meta_info: sub_process_execution.InstructionMetaInfo):
         self.instruction_meta_info = instruction_meta_info
 
-    def apply(self, source: SingleInstructionParserSource) -> Setup:
+    def apply(self, source: SingleInstructionParserSource) -> SetupForExecutableWithArguments:
         (the_executable_file, remaining_arguments_str) = executable_file.parse_as_first_space_separated_part(
             source.instruction_argument)
-        return Setup(
+        first_token_and_remaining_arguments_str = remaining_arguments_str.split(maxsplit=1)
+        if not first_token_and_remaining_arguments_str:
+            return self._execute(source, the_executable_file, remaining_arguments_str)
+        first_token = first_token_and_remaining_arguments_str[0]
+        if first_token == INTERPRET_OPTION:
+            return self._interpret(source, the_executable_file, first_token_and_remaining_arguments_str[1])
+        return self._execute(source, the_executable_file, remaining_arguments_str)
+
+    def _execute(self,
+                 source: SingleInstructionParserSource,
+                 exe_file: ExecutableFile,
+                 remaining_arguments_str: str) -> SetupForExecutableWithArguments:
+        return SetupForExecute(
             sub_process_execution.InstructionSourceInfo(self.instruction_meta_info,
                                                         source.line_sequence.first_line.line_number),
-            the_executable_file,
+            exe_file,
             shlex.split(remaining_arguments_str))
+
+    def _interpret(self,
+                   source: SingleInstructionParserSource,
+                   exe_file: ExecutableFile,
+                   remaining_arguments_str: str) -> SetupForExecutableWithArguments:
+        remaining_arguments = shlex.split(remaining_arguments_str)
+        (file_to_interpret, remaining_arguments) = parse_file_ref.parse_relative_file_argument(remaining_arguments)
+        return SetupForInterpret(
+            sub_process_execution.InstructionSourceInfo(self.instruction_meta_info,
+                                                        source.line_sequence.first_line.line_number),
+            exe_file,
+            file_to_interpret,
+            remaining_arguments)
 
 
 class InstructionParser(SingleInstructionParser):
