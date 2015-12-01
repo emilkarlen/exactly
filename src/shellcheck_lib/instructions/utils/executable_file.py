@@ -24,6 +24,10 @@ class ExecutableFile:
         return str(self.path(home_and_eds))
 
     @property
+    def file_reference(self) -> file_ref.FileRef:
+        return self._file_reference
+
+    @property
     def arguments(self) -> list:
         return self._arguments
 

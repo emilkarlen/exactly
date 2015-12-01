@@ -5,16 +5,45 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
     SingleInstructionInvalidArgumentException
 from shellcheck_lib.instructions.utils import executable_file as sut
 from shellcheck_lib.instructions.utils.parse_utils import TokenStream
-from shellcheck_lib.instructions.utils.relative_path_options import REL_HOME_OPTION
+from shellcheck_lib.instructions.utils.relative_path_options import REL_HOME_OPTION, REL_CWD_OPTION
 from shellcheck_lib_test.instructions.test_resources.utils import home_and_eds_and_test_as_curr_dir
 from shellcheck_lib_test.test_resources import python_program_execution as py_exe
 from shellcheck_lib_test.util.file_structure import DirContents, executable_file, empty_file
 
 
-class TestParseInvalidSyntax(unittest.TestCase):
+class TestParseValidSyntax(unittest.TestCase):
     def test_absolute_path(self):
-        sut.parse(TokenStream(sys.executable))
+        (ef, remaining_arguments) = sut.parse(TokenStream(sys.executable))
+        self.assertEqual(sys.executable,
+                         ef.file_reference.file_name)
+        self.assertFalse(ef.arguments, 'The executable should have no arguments')
+        self.assertTrue(remaining_arguments.is_null)
 
+    def test_without_option(self):
+        (ef, remaining_arguments) = sut.parse(TokenStream('file arg2'))
+        self.assertEqual('file',
+                         ef.file_reference.file_name)
+        self.assertFalse(ef.arguments, 'The executable should have no arguments')
+        self.assertEqual('arg2',
+                         remaining_arguments.source)
+
+    def test_option_without_tail(self):
+        (ef, remaining_arguments) = sut.parse(TokenStream('%s THE_FILE' % REL_HOME_OPTION))
+        self.assertEqual('THE_FILE',
+                         ef.file_reference.file_name)
+        self.assertFalse(ef.arguments, 'The executable should have no arguments')
+        self.assertTrue(remaining_arguments.is_null)
+
+    def test_option_with_tail(self):
+        (ef, remaining_arguments) = sut.parse(TokenStream('%s FILE tail' % REL_CWD_OPTION))
+        self.assertEqual('FILE',
+                         ef.file_reference.file_name)
+        self.assertFalse(ef.arguments, 'The executable should have no arguments')
+        self.assertEqual('tail',
+                         remaining_arguments.source)
+
+
+class TestParseInvalidSyntax(unittest.TestCase):
     def test_missing_file_argument(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             sut.parse(TokenStream(REL_HOME_OPTION))
@@ -133,6 +162,7 @@ class TestAbsolutePath(unittest.TestCase):
 
 def suite():
     ret_val = unittest.TestSuite()
+    ret_val.addTest(unittest.makeSuite(TestParseValidSyntax))
     ret_val.addTest(unittest.makeSuite(TestParseInvalidSyntax))
     ret_val.addTest(unittest.makeSuite(TestAbsolutePath))
     ret_val.addTest(unittest.makeSuite(TestRelHome))
