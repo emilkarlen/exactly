@@ -51,7 +51,9 @@ class SetupForExecutableWithArguments:
         return self._executable
 
     def execute(self, home_and_eds: HomeAndEds) -> sub_process_execution.Result:
-        cmd_and_args = [self.executable.path_string(home_and_eds)] + self._arguments(home_and_eds)
+        cmd_and_args = [self.executable.path_string(home_and_eds)] + \
+                       self.executable.arguments + \
+                       self._arguments(home_and_eds)
         executor = sub_process_execution.ExecutorThatLogsResultUnderPhaseDir()
         return executor.apply(self.instruction_source_info,
                               home_and_eds.eds,

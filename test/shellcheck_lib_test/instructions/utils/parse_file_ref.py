@@ -6,7 +6,7 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
     SingleInstructionInvalidArgumentException
 from shellcheck_lib.instructions.utils import parse_file_ref as sut
 from shellcheck_lib.instructions.utils.parse_utils import TokenStream
-from shellcheck_lib.instructions.utils.relative_path_options import REL_CWD_OPTION
+from shellcheck_lib.instructions.utils.relative_path_options import REL_CWD_OPTION, REL_HOME_OPTION, REL_TMP_OPTION
 from shellcheck_lib_test.instructions.test_resources.eds_populator import act_dir_contents, tmp_user_dir_contents
 from shellcheck_lib_test.instructions.test_resources.utils import home_and_eds_and_test_as_curr_dir
 from shellcheck_lib_test.util.file_structure import DirContents, empty_file
@@ -39,19 +39,19 @@ class TestParse(unittest.TestCase):
 
 class TestParsesCorrectValue(unittest.TestCase):
     def test_rel_home(self):
-        (file_reference, _) = sut.parse_relative_file_argument(['--rel-home', 'file.txt'])
+        (file_reference, _) = sut.parse_relative_file_argument([REL_HOME_OPTION, 'file.txt'])
         with home_and_eds_and_test_as_curr_dir(
                 home_dir_contents=DirContents([empty_file('file.txt')])) as home_and_eds:
             self.assertTrue(file_reference.file_path_pre_or_post_eds(home_and_eds).exists())
 
     def test_rel_cwd(self):
-        (file_reference, _) = sut.parse_relative_file_argument(['--rel-cwd', 'file.txt'])
+        (file_reference, _) = sut.parse_relative_file_argument([REL_CWD_OPTION, 'file.txt'])
         with home_and_eds_and_test_as_curr_dir(
                 eds_contents=act_dir_contents(DirContents([empty_file('file.txt')]))) as home_and_eds:
             self.assertTrue(file_reference.file_path_pre_or_post_eds(home_and_eds).exists())
 
     def test_rel_tmp(self):
-        (file_reference, _) = sut.parse_relative_file_argument(['--rel-tmp', 'file.txt'])
+        (file_reference, _) = sut.parse_relative_file_argument([REL_TMP_OPTION, 'file.txt'])
         with home_and_eds_and_test_as_curr_dir(
                 eds_contents=tmp_user_dir_contents(DirContents([empty_file('file.txt')]))) as home_and_eds:
             self.assertTrue(file_reference.file_path_pre_or_post_eds(home_and_eds).exists())
@@ -97,19 +97,19 @@ class TestParseFromTokenStream(unittest.TestCase):
 
 class TestParsesCorrectValueFromTokenStream(unittest.TestCase):
     def test_rel_home(self):
-        (file_reference, _) = sut.parse_file_ref(TokenStream('--rel-home file.txt'))
+        (file_reference, _) = sut.parse_file_ref(TokenStream('%s file.txt' % REL_HOME_OPTION))
         with home_and_eds_and_test_as_curr_dir(
                 home_dir_contents=DirContents([empty_file('file.txt')])) as home_and_eds:
             self.assertTrue(file_reference.file_path_pre_or_post_eds(home_and_eds).exists())
 
     def test_rel_cwd(self):
-        (file_reference, _) = sut.parse_file_ref(TokenStream('--rel-cwd file.txt'))
+        (file_reference, _) = sut.parse_file_ref(TokenStream('%s file.txt' % REL_CWD_OPTION))
         with home_and_eds_and_test_as_curr_dir(
                 eds_contents=act_dir_contents(DirContents([empty_file('file.txt')]))) as home_and_eds:
             self.assertTrue(file_reference.file_path_pre_or_post_eds(home_and_eds).exists())
 
     def test_rel_tmp(self):
-        (file_reference, _) = sut.parse_file_ref(TokenStream('--rel-tmp file.txt'))
+        (file_reference, _) = sut.parse_file_ref(TokenStream('%s file.txt' % REL_TMP_OPTION))
         with home_and_eds_and_test_as_curr_dir(
                 eds_contents=tmp_user_dir_contents(DirContents([empty_file('file.txt')]))) as home_and_eds:
             self.assertTrue(file_reference.file_path_pre_or_post_eds(home_and_eds).exists())

@@ -10,8 +10,11 @@ from shellcheck_lib.test_case.sections.common import HomeAndEds
 
 
 class ExecutableFile:
-    def __init__(self, file_reference: file_ref.FileRef):
+    def __init__(self,
+                 file_reference: file_ref.FileRef,
+                 arguments: list):
         self._file_reference = file_reference
+        self._arguments = arguments
         self._validator = ExistingExecutableFile(file_reference)
 
     def path(self, home_and_eds: HomeAndEds) -> pathlib.Path:
@@ -19,6 +22,10 @@ class ExecutableFile:
 
     def path_string(self, home_and_eds: HomeAndEds) -> str:
         return str(self.path(home_and_eds))
+
+    @property
+    def arguments(self) -> list:
+        return self._arguments
 
     @property
     def exists_pre_eds(self) -> bool:
@@ -35,7 +42,7 @@ def parse(tokens0: TokenStream) -> (ExecutableFile, TokenStream):
     :raise SingleInstructionInvalidArgumentException: Invalid file syntax
     """
     (the_file_ref, remaining_tokens) = parse_file_ref.parse_file_ref(tokens0)
-    return ExecutableFile(the_file_ref), remaining_tokens
+    return ExecutableFile(the_file_ref, []), remaining_tokens
 
 
 class ExistingExecutableFile(FileRefValidatorBase):
