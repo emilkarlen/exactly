@@ -12,10 +12,12 @@ from shellcheck_lib.general.string import lines_content
 from shellcheck_lib.instructions.utils import parse_here_doc_or_file_ref
 from shellcheck_lib.instructions.utils.file_properties import must_exist_as, FileType
 from shellcheck_lib.instructions.utils.file_ref import FileRef
-from shellcheck_lib.instructions.utils.file_ref_check import pre_or_post_eds_validate, FileRefCheck, \
-    pre_or_post_eds_failure_message_or_none
+from shellcheck_lib.instructions.utils.file_ref_check import FileRefCheck, \
+    pre_or_post_eds_failure_message_or_none, FileRefCheckValidator
 from shellcheck_lib.instructions.utils.parse_file_ref import parse_non_home_file_ref
 from shellcheck_lib.instructions.utils.parse_here_doc_or_file_ref import HereDocOrFileRef
+from shellcheck_lib.instructions.utils.pre_or_post_validation import ConstantSuccessValidator, \
+    PreOrPostEdsSvhValidationErrorValidator
 from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.sections import common as i
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
@@ -81,14 +83,13 @@ class ContentCheckerInstructionBase(AssertPhaseInstruction):
                  actual_contents: ComparisonActualFile):
         self._actual_value = actual_contents
         self._expected_contents = expected_contents
+        validator_of_expected_ = ConstantSuccessValidator() if expected_contents.is_here_document else \
+            FileRefCheckValidator(self._file_ref_check_for_expected())
+        self.validator_of_expected = PreOrPostEdsSvhValidationErrorValidator(validator_of_expected_)
 
     def validate(self,
                  environment: i.GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
-        if not self._expected_contents.is_here_document:
-            if self._expected_contents.file_reference.exists_pre_eds:
-                return pre_or_post_eds_validate(self._file_ref_check_for_expected(),
-                                                environment.home_and_eds)
-        return svh.new_svh_success()
+        return self.validator_of_expected.validate_pre_eds_if_applicable(environment.home_directory)
 
     def main(self,
              environment: i.GlobalEnvironmentForPostEdsPhase,

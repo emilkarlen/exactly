@@ -32,6 +32,14 @@ class PreOrPostEdsValidator:
         return self.validate_post_eds_if_applicable(home_and_eds.eds)
 
 
+class ConstantSuccessValidator(PreOrPostEdsValidator):
+    def validate_pre_eds_if_applicable(self, home_dir_path: pathlib.Path) -> str:
+        return None
+
+    def validate_post_eds_if_applicable(self, eds: ExecutionDirectoryStructure) -> str:
+        return None
+
+
 class AndValidator(PreOrPostEdsValidator):
     def __init__(self,
                  validators: iter):
