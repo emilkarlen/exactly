@@ -15,10 +15,6 @@ class TestParseInvalidSyntax(unittest.TestCase):
     def test_absolute_path(self):
         sut.parse(TokenStream(sys.executable))
 
-    def test_missing_option_argument_for_relative_path(self):
-        with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse(TokenStream('file.exe'))
-
     def test_missing_file_argument(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             sut.parse(TokenStream(REL_HOME_OPTION))
