@@ -24,3 +24,37 @@ def ensure_is_not_option_argument(argument: str):
     """
     if is_option_argument(argument):
         raise SingleInstructionInvalidArgumentException('An option argument was not expected here: {}'.format(argument))
+
+
+class TokenStream:
+    def __init__(self, source: str):
+        self._source = source
+        self.t_and_tail_source = [] if source is None else source.split(maxsplit=1)
+
+    @property
+    def source(self) -> str:
+        return self._source
+
+    @property
+    def is_null(self) -> bool:
+        return not self.t_and_tail_source
+
+    @property
+    def head(self) -> str:
+        return self.t_and_tail_source[0]
+
+    @property
+    def tail(self):  # -> TokenStream
+        return TokenStream(self.tail_source)
+
+    @property
+    def tail_source_or_empty_string(self) -> str:
+        ts = self.tail_source
+        return '' if ts is None else ts
+
+    @property
+    def tail_source(self) -> str:
+        if len(self.t_and_tail_source) == 1:
+            return None
+        else:
+            return self.t_and_tail_source[1]
