@@ -1,3 +1,5 @@
+import pathlib
+
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from shellcheck_lib.instructions.utils.parse_utils import ensure_is_not_option_argument
@@ -33,7 +35,12 @@ def parse_relative_file_argument(arguments: list) -> (file_ref.FileRef, list):
         return file_ref.rel_tmp_user(arguments[1]), arguments[2:]
     else:
         ensure_is_not_option_argument(first_argument)
-        return file_ref.rel_home(first_argument), arguments[1:]
+        first_argument_path = pathlib.PurePath(first_argument)
+        if first_argument_path.is_absolute():
+            fr = file_ref.absolute_file_name(first_argument)
+        else:
+            fr = file_ref.rel_home(first_argument)
+        return fr, arguments[1:]
 
 
 def parse_non_home_file_ref(arguments: list) -> (file_ref.FileRef, list):

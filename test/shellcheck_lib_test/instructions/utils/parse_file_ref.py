@@ -1,8 +1,12 @@
+import pathlib
+
+import tempfile
 import unittest
 
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from shellcheck_lib.instructions.utils import parse_file_ref as sut
+from shellcheck_lib.instructions.utils.relative_path_options import REL_CWD_OPTION
 from shellcheck_lib_test.instructions.test_resources.eds_populator import act_dir_contents, tmp_user_dir_contents
 from shellcheck_lib_test.instructions.test_resources.utils import home_and_eds_and_test_as_curr_dir
 from shellcheck_lib_test.util.file_structure import DirContents, empty_file
@@ -10,7 +14,7 @@ from shellcheck_lib_test.util.file_structure import DirContents, empty_file
 
 class TestParse(unittest.TestCase):
     def test_fail_when_no_arguments(self):
-        with self.assertRaises(SingleInstructionInvalidArgumentException) as context:
+        with self.assertRaises(SingleInstructionInvalidArgumentException):
             sut.parse_relative_file_argument([])
 
     def test_parse_without_option(self):
@@ -21,15 +25,16 @@ class TestParse(unittest.TestCase):
                           remaining_arguments)
 
     def test_parse_with_option(self):
-        (file_ref, remaining_arguments) = sut.parse_relative_file_argument(['--rel-cwd', 'FILE NAME', 'arg3', 'arg4'])
+        (file_ref, remaining_arguments) = sut.parse_relative_file_argument(
+            [REL_CWD_OPTION, 'FILE NAME', 'arg3', 'arg4'])
         self.assertEquals('FILE NAME',
                           file_ref.file_name)
         self.assertEquals(['arg3', 'arg4'],
                           remaining_arguments)
 
     def test_fail_option_is_only_argument(self):
-        with self.assertRaises(SingleInstructionInvalidArgumentException) as context:
-            sut.parse_relative_file_argument(['--rel-cwd'])
+        with self.assertRaises(SingleInstructionInvalidArgumentException):
+            sut.parse_relative_file_argument([REL_CWD_OPTION])
 
 
 class TestParsesCorrectValue(unittest.TestCase):
@@ -50,6 +55,13 @@ class TestParsesCorrectValue(unittest.TestCase):
         with home_and_eds_and_test_as_curr_dir(
                 eds_contents=tmp_user_dir_contents(DirContents([empty_file('file.txt')]))) as home_and_eds:
             self.assertTrue(file_reference.file_path_pre_or_post_eds(home_and_eds).exists())
+
+    def test_absolute(self):
+        abs_path_str = str(pathlib.Path.cwd().resolve())
+        (file_reference, _) = sut.parse_relative_file_argument([abs_path_str])
+        with tempfile.TemporaryDirectory(prefix="shellcheck-home-") as home_dir:
+            home_dir_path = pathlib.Path(home_dir)
+            self.assertTrue(file_reference.file_path_pre_eds(home_dir_path).exists())
 
     def test_rel_home_is_default(self):
         (file_reference, _) = sut.parse_relative_file_argument(['file.txt'])
