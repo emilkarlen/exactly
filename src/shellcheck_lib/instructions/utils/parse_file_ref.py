@@ -2,7 +2,7 @@ import pathlib
 
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from shellcheck_lib.instructions.utils.parse_utils import ensure_is_not_option_argument
+from shellcheck_lib.instructions.utils.parse_utils import ensure_is_not_option_argument, TokenStream, is_option_argument
 from shellcheck_lib.instructions.utils.relative_path_options import REL_TMP_OPTION, REL_CWD_OPTION, REL_HOME_OPTION
 from . import file_ref
 
@@ -41,6 +41,48 @@ def parse_relative_file_argument(arguments: list) -> (file_ref.FileRef, list):
         else:
             fr = file_ref.rel_home(first_argument)
         return fr, arguments[1:]
+
+
+def parse_file_ref(tokens: TokenStream,
+                   argument_syntax_name: str = 'FILE') -> (file_ref.FileRef, TokenStream):
+    """
+    If no relativity-option is specified, the file is assumed to be rel-home.
+
+    :param tokens: Argument list
+    :param argument_syntax_name: Name of argument in error messages.
+    :return: The parsed FileRef, remaining arguments after file was parsed.
+    """
+
+    def ensure_have_at_least_two_arguments_for_option(option: str) -> TokenStream:
+        token1 = tokens.tail
+        if token1.is_null:
+            raise SingleInstructionInvalidArgumentException('{} requires a {} argument'.format(option,
+                                                                                               argument_syntax_name))
+        return token1
+
+    if tokens.is_null:
+        raise SingleInstructionInvalidArgumentException('Missing {} argument'.format(argument_syntax_name))
+    first_argument = tokens.head
+    if is_option_argument(first_argument):
+        if first_argument == REL_HOME_OPTION:
+            con = file_ref.rel_home
+        elif first_argument == REL_CWD_OPTION:
+            con = file_ref.rel_cwd
+        elif first_argument == REL_TMP_OPTION:
+            con = file_ref.rel_tmp_user
+        else:
+            msg = 'Invalid option for reference to {}: {}'.format(argument_syntax_name,
+                                                                  first_argument)
+            raise SingleInstructionInvalidArgumentException(msg)
+        tokens1 = ensure_have_at_least_two_arguments_for_option(first_argument)
+        return con(tokens1.head), tokens1.tail
+    else:
+        first_argument_path = pathlib.PurePath(first_argument)
+        if first_argument_path.is_absolute():
+            fr = file_ref.absolute_file_name(first_argument)
+        else:
+            fr = file_ref.rel_home(first_argument)
+        return fr, tokens.tail
 
 
 def parse_non_home_file_ref(arguments: list) -> (file_ref.FileRef, list):
