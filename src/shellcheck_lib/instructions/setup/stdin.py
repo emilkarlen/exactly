@@ -3,16 +3,16 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
 from shellcheck_lib.general.string import lines_content
 from shellcheck_lib.instructions.setup.utils.instruction_utils import InstructionWithFileRefsBase
+from shellcheck_lib.instructions.utils import file_properties
 from shellcheck_lib.instructions.utils import file_ref, parse_file_ref
+from shellcheck_lib.instructions.utils import parse_here_doc_or_file_ref
 from shellcheck_lib.instructions.utils.file_properties import FileType
 from shellcheck_lib.instructions.utils.file_ref_check import FileRefCheck
 from shellcheck_lib.instructions.utils.parse_utils import spit_arguments_list_string
+from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
-from shellcheck_lib.test_case.os_services import OsServices
-from shellcheck_lib.instructions.utils import file_properties
-from shellcheck_lib.instructions.utils import parse_here_doc_or_file_ref
 
 DESCRIPTION = Description(
     'Redirects stdin, for the act program, to a given file, or string.',
@@ -61,5 +61,5 @@ class _InstructionForFileRef(InstructionWithFileRefsBase):
              os_services: OsServices,
              environment: GlobalEnvironmentForPostEdsPhase,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
-        settings_builder.stdin.file_name = str(self.redirect_file.file_path_post_eds(environment.home_and_eds))
+        settings_builder.stdin.file_name = str(self.redirect_file.file_path_pre_or_post_eds(environment.home_and_eds))
         return sh.new_sh_success()

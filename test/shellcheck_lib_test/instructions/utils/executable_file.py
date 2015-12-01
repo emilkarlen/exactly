@@ -41,11 +41,11 @@ class TestRelHome(unittest.TestCase):
             self.assertEqual(str(home_and_eds.home_dir_path / 'file.exe'),
                              exe_file.path_string(home_and_eds),
                              'Path string')
-            self.assertIsNone(exe_file.validate_pre_eds_if_applicable(home_and_eds.home_dir_path),
+            self.assertIsNone(exe_file.validator.validate_pre_eds_if_applicable(home_and_eds.home_dir_path),
                               'Validation pre EDS')
-            self.assertIsNone(exe_file.validate_post_eds_if_applicable(home_and_eds.home_dir_path),
+            self.assertIsNone(exe_file.validator.validate_post_eds_if_applicable(home_and_eds.home_dir_path),
                               'Validation post EDS')
-            self.assertIsNone(exe_file.validate_pre_or_post_eds(home_and_eds),
+            self.assertIsNone(exe_file.validator.validate_pre_or_post_eds(home_and_eds),
                               'Validation pre or post EDS')
 
     def test_non_existing_file(self):
@@ -61,11 +61,11 @@ class TestRelHome(unittest.TestCase):
             self.assertEqual(str(home_and_eds.home_dir_path / 'file.exe'),
                              exe_file.path_string(home_and_eds),
                              'Path string')
-            self.assertIsNotNone(exe_file.validate_pre_eds_if_applicable(home_and_eds.home_dir_path),
+            self.assertIsNotNone(exe_file.validator.validate_pre_eds_if_applicable(home_and_eds.home_dir_path),
                                  'Validation pre EDS')
-            self.assertIsNone(exe_file.validate_post_eds_if_applicable(home_and_eds.home_dir_path),
+            self.assertIsNone(exe_file.validator.validate_post_eds_if_applicable(home_and_eds.home_dir_path),
                               'Validation post EDS')
-            self.assertIsNotNone(exe_file.validate_pre_or_post_eds(home_and_eds),
+            self.assertIsNotNone(exe_file.validator.validate_pre_or_post_eds(home_and_eds),
                                  'Validation pre or post EDS')
 
     def test_existing_but_non_executable_file(self):
@@ -78,11 +78,11 @@ class TestRelHome(unittest.TestCase):
                         'File is expected to exist pre EDS')
         with home_and_eds_and_test_as_curr_dir(
                 home_dir_contents=DirContents([empty_file('file.exe')])) as home_and_eds:
-            self.assertIsNotNone(exe_file.validate_pre_eds_if_applicable(home_and_eds.home_dir_path),
+            self.assertIsNotNone(exe_file.validator.validate_pre_eds_if_applicable(home_and_eds.home_dir_path),
                                  'Validation pre EDS')
-            self.assertIsNone(exe_file.validate_post_eds_if_applicable(home_and_eds.home_dir_path),
+            self.assertIsNone(exe_file.validator.validate_post_eds_if_applicable(home_and_eds.home_dir_path),
                               'Validation post EDS')
-            self.assertIsNotNone(exe_file.validate_pre_or_post_eds(home_and_eds),
+            self.assertIsNotNone(exe_file.validator.validate_pre_or_post_eds(home_and_eds),
                                  'Validation pre or post EDS')
 
 
@@ -100,11 +100,11 @@ class TestAbsolutePath(unittest.TestCase):
             self.assertEqual(sys.executable,
                              exe_file.path_string(home_and_eds),
                              'Path string')
-            self.assertIsNone(exe_file.validate_pre_eds_if_applicable(home_and_eds.home_dir_path),
+            self.assertIsNone(exe_file.validator.validate_pre_eds_if_applicable(home_and_eds.home_dir_path),
                               'Validation pre EDS')
-            self.assertIsNone(exe_file.validate_post_eds_if_applicable(home_and_eds.home_dir_path),
+            self.assertIsNone(exe_file.validator.validate_post_eds_if_applicable(home_and_eds.home_dir_path),
                               'Validation post EDS')
-            self.assertIsNone(exe_file.validate_pre_or_post_eds(home_and_eds),
+            self.assertIsNone(exe_file.validator.validate_pre_or_post_eds(home_and_eds),
                               'Validation pre or post EDS')
 
     def test_non_existing_file(self):
@@ -121,11 +121,11 @@ class TestAbsolutePath(unittest.TestCase):
             self.assertEqual(non_existing_file,
                              exe_file.path_string(home_and_eds),
                              'Path string')
-            self.assertIsNotNone(exe_file.validate_pre_eds_if_applicable(home_and_eds.home_dir_path),
+            self.assertIsNotNone(exe_file.validator.validate_pre_eds_if_applicable(home_and_eds.home_dir_path),
                                  'Validation pre EDS')
-            self.assertIsNone(exe_file.validate_post_eds_if_applicable(home_and_eds.home_dir_path),
+            self.assertIsNone(exe_file.validator.validate_post_eds_if_applicable(home_and_eds.home_dir_path),
                               'Validation post EDS')
-            self.assertIsNotNone(exe_file.validate_pre_or_post_eds(home_and_eds),
+            self.assertIsNotNone(exe_file.validator.validate_pre_or_post_eds(home_and_eds),
                                  'Validation pre or post EDS')
 
 

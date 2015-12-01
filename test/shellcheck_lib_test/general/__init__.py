@@ -1,11 +1,13 @@
 import unittest
 
 from shellcheck_lib_test.general import line_source
+from shellcheck_lib_test.general import monad
 
 
 def suite():
     ret_val = unittest.TestSuite()
     ret_val.addTest(line_source.suite())
+    ret_val.addTest(monad.suite())
     return ret_val
 
 

@@ -2,6 +2,7 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
 from shellcheck_lib.execution.phases import SETUP
 from shellcheck_lib.instructions.multi_phase_instructions import execute
 from shellcheck_lib.instructions.utils import sub_process_execution
+from shellcheck_lib.instructions.utils.pre_or_post_validation import PreOrPostEdsSvhValidationErrorValidator
 from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
 from shellcheck_lib.test_case.sections.result import sh
@@ -21,24 +22,22 @@ class _Instruction(SetupPhaseInstruction):
     def __init__(self,
                  setup: execute.SetupForExecutableWithArguments):
         self.setup = setup
+        self.svh_validator = PreOrPostEdsSvhValidationErrorValidator(setup.validator)
 
     def pre_validate(self,
                      global_environment: GlobalEnvironmentForPreEdsStep) -> svh.SuccessOrValidationErrorOrHardError:
-        error_message = self.setup.executable.validate_pre_eds_if_applicable(global_environment.home_directory)
-        if error_message is not None:
-            return svh.new_svh_validation_error(error_message)
-        return svh.new_svh_success()
+        return self.svh_validator.validate_pre_eds_if_applicable(global_environment.home_directory)
 
     def validate(self, environment: GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
-        error_message = self.setup.executable.validate_post_eds_if_applicable(environment.eds)
-        if error_message is not None:
-            return svh.new_svh_validation_error(error_message)
-        return svh.new_svh_success()
+        return self.svh_validator.validate_post_eds_if_applicable(environment.eds)
 
     def main(self,
              os_services: OsServices,
              environment: GlobalEnvironmentForPostEdsPhase,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
+        failure_message = self.setup.validator.validate_post_eds_if_applicable(environment.eds)
+        if failure_message is not None:
+            return sh.new_sh_hard_error(failure_message)
         result_and_err = execute.execute_setup_and_read_stderr_if_non_zero_exitcode(self.setup,
                                                                                     environment.home_and_eds)
         result = result_and_err.result
