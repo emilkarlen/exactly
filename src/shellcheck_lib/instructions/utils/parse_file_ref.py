@@ -6,7 +6,7 @@ from shellcheck_lib.instructions.utils.parse_utils import ensure_is_not_option_a
 from shellcheck_lib.instructions.utils.relative_path_options import REL_TMP_OPTION, REL_CWD_OPTION, REL_HOME_OPTION
 from . import file_ref
 
-ALL_REL_OPTIONS = (REL_CWD_OPTION, REL_HOME_OPTION, REL_TMP_OPTION)
+ALL_REL_OPTIONS = (REL_HOME_OPTION, REL_CWD_OPTION, REL_TMP_OPTION)
 
 
 def parse_relative_file_argument(arguments: list) -> (file_ref.FileRef, list):
