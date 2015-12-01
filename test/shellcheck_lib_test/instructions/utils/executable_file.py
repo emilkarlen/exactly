@@ -4,6 +4,7 @@ import unittest
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from shellcheck_lib.instructions.utils import executable_file as sut
+from shellcheck_lib.instructions.utils.parse_utils import TokenStream
 from shellcheck_lib.instructions.utils.relative_path_options import REL_HOME_OPTION
 from shellcheck_lib_test.instructions.test_resources.utils import home_and_eds_and_test_as_curr_dir
 from shellcheck_lib_test.test_resources import python_program_execution as py_exe
@@ -12,27 +13,28 @@ from shellcheck_lib_test.util.file_structure import DirContents, executable_file
 
 class TestParseInvalidSyntax(unittest.TestCase):
     def test_absolute_path(self):
-        sut.parse_as_first_space_separated_part(sys.executable)
+        sut.parse(TokenStream(sys.executable))
 
     def test_missing_option_argument_for_relative_path(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse_as_first_space_separated_part('file.exe')
+            sut.parse(TokenStream('file.exe'))
 
     def test_missing_file_argument(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse_as_first_space_separated_part(REL_HOME_OPTION)
+            sut.parse(TokenStream(REL_HOME_OPTION))
 
     def test_invalid_option(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse_as_first_space_separated_part('--invalid-option FILE')
+            sut.parse(TokenStream('--invalid-option FILE'))
 
 
 class TestRelHome(unittest.TestCase):
     def test_existing_file(self):
         arguments_str = '{} file.exe remaining args'.format(REL_HOME_OPTION)
-        (exe_file, remaining_arguments) = sut.parse_as_first_space_separated_part(arguments_str)
+        arguments = TokenStream(arguments_str)
+        (exe_file, remaining_arguments) = sut.parse(arguments)
         self.assertEqual('remaining args',
-                         remaining_arguments,
+                         remaining_arguments.source,
                          'Remaining arguments')
         self.assertTrue(exe_file.exists_pre_eds,
                         'File is expected to exist pre EDS')
@@ -50,9 +52,10 @@ class TestRelHome(unittest.TestCase):
 
     def test_non_existing_file(self):
         arguments_str = '{} file.exe remaining args'.format(REL_HOME_OPTION)
-        (exe_file, remaining_arguments) = sut.parse_as_first_space_separated_part(arguments_str)
+        arguments = TokenStream(arguments_str)
+        (exe_file, remaining_arguments) = sut.parse(arguments)
         self.assertEqual('remaining args',
-                         remaining_arguments,
+                         remaining_arguments.source,
                          'Remaining arguments')
         self.assertTrue(exe_file.exists_pre_eds,
                         'File is expected to exist pre EDS')
@@ -70,9 +73,10 @@ class TestRelHome(unittest.TestCase):
 
     def test_existing_but_non_executable_file(self):
         arguments_str = '{} file.exe remaining args'.format(REL_HOME_OPTION)
-        (exe_file, remaining_arguments) = sut.parse_as_first_space_separated_part(arguments_str)
+        arguments = TokenStream(arguments_str)
+        (exe_file, remaining_arguments) = sut.parse(arguments)
         self.assertEqual('remaining args',
-                         remaining_arguments,
+                         remaining_arguments.source,
                          'Remaining arguments')
         self.assertTrue(exe_file.exists_pre_eds,
                         'File is expected to exist pre EDS')
@@ -89,9 +93,10 @@ class TestRelHome(unittest.TestCase):
 class TestAbsolutePath(unittest.TestCase):
     def test_existing_file(self):
         arguments_str = py_exe.command_line_for_arguments(['remaining', 'args'])
-        (exe_file, remaining_arguments) = sut.parse_as_first_space_separated_part(arguments_str)
+        arguments = TokenStream(arguments_str)
+        (exe_file, remaining_arguments) = sut.parse(arguments)
         self.assertEqual('remaining args',
-                         remaining_arguments,
+                         remaining_arguments.source,
                          'Remaining arguments')
         self.assertTrue(exe_file.exists_pre_eds,
                         'File is expected to exist pre EDS')
@@ -110,9 +115,10 @@ class TestAbsolutePath(unittest.TestCase):
     def test_non_existing_file(self):
         non_existing_file = '/this/file/is/assumed/to/not/exist'
         arguments_str = '{} remaining args'.format(non_existing_file)
-        (exe_file, remaining_arguments) = sut.parse_as_first_space_separated_part(arguments_str)
+        arguments = TokenStream(arguments_str)
+        (exe_file, remaining_arguments) = sut.parse(arguments)
         self.assertEqual('remaining args',
-                         remaining_arguments,
+                         remaining_arguments.source,
                          'Remaining arguments')
         self.assertTrue(exe_file.exists_pre_eds,
                         'File is expected to exist pre EDS')
