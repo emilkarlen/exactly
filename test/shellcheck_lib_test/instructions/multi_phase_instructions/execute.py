@@ -148,23 +148,6 @@ class TestExecuteInterpret(TestCaseBase):
                                                            py_pgm_that_exits_with_value_on_command_line(''))])
                                                   ))
 
-        #
-        # def test_check_non_zero_exit_code(self):
-        #     self._test_source(single_line_source(py_exe.command_line_for_executing_program_via_command_line('exit(1)')),
-        #                       home_and_eds_test.Check(expected_action_result=is_success_result(1,
-        #                                                                                        '')))
-        #
-        # def test_check_non_zero_exit_code_with_output_to_stderr(self):
-        #     python_program = 'import sys; sys.stderr.write(\\"on stderr\\"); exit(2)'
-        #     self._test_source(
-        #         single_line_source(py_exe.command_line_for_executing_program_via_command_line(python_program)),
-        #         home_and_eds_test.Check(expected_action_result=is_success_result(2,
-        #                                                                          'on stderr')))
-        #
-        # def test_invalid_executable(self):
-        #     self._test_source(single_line_source('/not/an/executable/program'),
-        #                       home_and_eds_test.Check(expected_action_result=IsFailure()))
-
 
 def py_pgm_that_exits_with_value_on_command_line(stderr_output) -> str:
     return """
