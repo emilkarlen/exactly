@@ -14,6 +14,7 @@ from shellcheck_lib.instructions.utils import sub_process_execution
 from shellcheck_lib.instructions.utils.executable_file import ExecutableFile
 from shellcheck_lib.instructions.utils.file_ref import FileRef
 from shellcheck_lib.instructions.utils.file_ref_check import FileRefCheckValidator, FileRefCheck
+from shellcheck_lib.instructions.utils.parse_utils import TokenStream
 from shellcheck_lib.instructions.utils.pre_or_post_validation import PreOrPostEdsValidator, AndValidator
 from shellcheck_lib.instructions.utils.relative_path_options import REL_HOME_OPTION
 from shellcheck_lib.test_case.sections.common import HomeAndEds
@@ -145,15 +146,13 @@ class SetupParser:
         self.instruction_meta_info = instruction_meta_info
 
     def apply(self, source: SingleInstructionParserSource) -> SetupForExecutableWithArguments:
-        (the_executable_file, remaining_arguments_str) = executable_file.parse_as_first_space_separated_part(
-            source.instruction_argument)
-        first_token_and_remaining_arguments_str = remaining_arguments_str.split(maxsplit=1)
-        if not first_token_and_remaining_arguments_str:
-            return self._execute(source, the_executable_file, remaining_arguments_str)
-        first_token = first_token_and_remaining_arguments_str[0]
-        if first_token == INTERPRET_OPTION:
-            return self._interpret(source, the_executable_file, first_token_and_remaining_arguments_str[1])
-        return self._execute(source, the_executable_file, remaining_arguments_str)
+        tokens = TokenStream(source.instruction_argument)
+        (exe_file, arg_tokens) = executable_file.parse(tokens)
+        if arg_tokens.is_null:
+            return self._execute(source, exe_file, '')
+        if arg_tokens.head == INTERPRET_OPTION:
+            return self._interpret(source, exe_file, arg_tokens.tail_source_or_empty_string)
+        return self._execute(source, exe_file, arg_tokens.source)
 
     def _execute(self,
                  source: SingleInstructionParserSource,

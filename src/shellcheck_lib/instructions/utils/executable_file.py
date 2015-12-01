@@ -6,7 +6,7 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
 from shellcheck_lib.general.string import lines_content
 from shellcheck_lib.instructions.utils import file_ref
 from shellcheck_lib.instructions.utils.file_ref import FileRefValidatorBase
-from shellcheck_lib.instructions.utils.parse_utils import is_option_argument
+from shellcheck_lib.instructions.utils.parse_utils import is_option_argument, TokenStream
 from shellcheck_lib.instructions.utils.pre_or_post_validation import PreOrPostEdsValidator
 from shellcheck_lib.instructions.utils.relative_path_options import REL_HOME_OPTION, REL_SYSTEM_OPTION
 from shellcheck_lib.test_case.sections.common import HomeAndEds
@@ -32,38 +32,24 @@ class ExecutableFile:
         return self._validator
 
 
-def parse_as_first_space_separated_part(arguments_string: str) -> (ExecutableFile, str):
+def parse(tokens0: TokenStream) -> (ExecutableFile, TokenStream):
     """
-    Parses an ExecutableFile from the first part of the given arguments-string.
-    Consumes just the part that makes up the file argument. The remaining part, after any separating
-    space, is returned.
-
-    Purpose is to make it possible to parse the part after the file in different way (either as a single string,
-    or to split it using shell-syntax, e.g.).
-    :param arguments_string: All remaining arguments as a single string - initial part is assumed to
-    be the file-argument.
-    :return: (file, the part of the given arguments-string that follows the file argument)
+    :param tokens0: instruction argument
     :raise SingleInstructionInvalidArgumentException: Invalid file syntax
     """
-    first_and_remaining_tokens = arguments_string.split(maxsplit=1)
-    if not first_and_remaining_tokens:
-        raise SingleInstructionInvalidArgumentException('Missing EXECUTABLE argument: '.format(arguments_string))
-    first_argument = first_and_remaining_tokens[0]
-    first_argument_path = pathlib.PurePath(first_argument)
+    if tokens0.is_null:
+        raise SingleInstructionInvalidArgumentException('Missing EXECUTABLE argument: '.format(tokens0.source))
+    first_argument_path = pathlib.PurePath(tokens0.head)
     if first_argument_path.is_absolute():
-        remaining_arguments_str = _empty_string_or_value(first_and_remaining_tokens[1:])
-        return _executable_from_absolute_path(first_argument), remaining_arguments_str
-    relativity_option = first_argument
-    if not is_option_argument(relativity_option):
+        return _executable_from_absolute_path(tokens0.head), tokens0.tail
+    if not is_option_argument(tokens0.head):
         msg = 'Missing option to specify where EXECUTABLE is located. Use {}'.format(ALL_REL_OPTIONS_SYNTAX_DESCRIPTION)
         raise SingleInstructionInvalidArgumentException(msg)
-    if len(first_and_remaining_tokens) == 1:
-        msg = 'Missing EXECUTABLE argument: {}'.format(arguments_string)
+    tokens1 = tokens0.tail
+    if tokens1.is_null == 1:
+        msg = 'Missing EXECUTABLE argument: {}'.format(tokens0.source)
         raise SingleInstructionInvalidArgumentException(msg)
-    file_and_remaining_arguments_list = first_and_remaining_tokens[1].split(maxsplit=1)
-    file_argument = file_and_remaining_arguments_list[0]
-    remaining_arguments_str = _empty_string_or_value(file_and_remaining_arguments_list[1:])
-    return _executable_file_from(relativity_option, file_argument), remaining_arguments_str
+    return _executable_file_from(tokens0.head, tokens1.head), tokens1.tail
 
 
 def _executable_from_absolute_path(abs_path_str: str) -> ExecutableFile:
