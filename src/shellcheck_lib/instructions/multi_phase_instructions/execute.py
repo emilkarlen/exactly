@@ -14,9 +14,9 @@ from shellcheck_lib.instructions.utils import sub_process_execution
 from shellcheck_lib.instructions.utils.executable_file import ExecutableFile
 from shellcheck_lib.instructions.utils.file_ref import FileRef
 from shellcheck_lib.instructions.utils.file_ref_check import FileRefCheckValidator, FileRefCheck
+from shellcheck_lib.instructions.utils.parse_file_ref import ALL_REL_OPTIONS
 from shellcheck_lib.instructions.utils.parse_utils import TokenStream
 from shellcheck_lib.instructions.utils.pre_or_post_validation import PreOrPostEdsValidator, AndValidator
-from shellcheck_lib.instructions.utils.relative_path_options import REL_HOME_OPTION
 from shellcheck_lib.test_case.sections.common import HomeAndEds
 
 INTERPRET_OPTION = '--interpret'
@@ -33,7 +33,10 @@ def description(single_line_description: str):
                                                  'Specifies an executable program',
                                                  [
                                                      InvokationVariant('ABSOLUTE-PATH', ''),
-                                                     InvokationVariant('{} PATH'.format(REL_HOME_OPTION), ''),
+                                                     InvokationVariant('[{}] PATH'.format('|'.join(ALL_REL_OPTIONS)),
+                                                                       ''),
+                                                     InvokationVariant('( EXECUTABLE ARGUMENT-TO-EXECUTABLE... )',
+                                                                       ''),
                                                  ]),
                         ]
                        )
