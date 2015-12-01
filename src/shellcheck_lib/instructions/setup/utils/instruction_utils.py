@@ -1,4 +1,4 @@
-from shellcheck_lib.instructions.utils.file_ref_check import FileRefCheck, pre_eds_validate, post_eds_validate
+from shellcheck_lib.instructions.utils.file_ref_check import FileRefCheck, pre_eds_validate, pre_or_post_eds_validate
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
 from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction
@@ -26,7 +26,7 @@ class InstructionWithFileRefsBase(SetupPhaseInstruction):
         for file_ref_check in self.file_ref_check_list_tuple:
             assert isinstance(file_ref_check, FileRefCheck)
             if not file_ref_check.file_reference.exists_pre_eds:
-                result = post_eds_validate(file_ref_check, environment)
+                result = pre_or_post_eds_validate(file_ref_check, environment.home_and_eds)
                 if not result.is_success:
                     return result
         return svh.new_svh_success()

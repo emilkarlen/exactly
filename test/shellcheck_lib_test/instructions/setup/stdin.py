@@ -3,15 +3,15 @@ import unittest
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from shellcheck_lib.general.string import lines_content
+from shellcheck_lib.instructions.setup import stdin as sut
 from shellcheck_lib.instructions.utils import file_ref
+from shellcheck_lib.test_case.sections import common
 from shellcheck_lib.test_case.sections.setup import SetupSettingsBuilder
 from shellcheck_lib_test.instructions.setup.test_resources.instruction_check import Flow, TestCaseBase
 from shellcheck_lib_test.instructions.setup.test_resources.settings_check import Assertion
 from shellcheck_lib_test.instructions.test_resources import svh_check
 from shellcheck_lib_test.instructions.test_resources.utils import new_source, argument_list_source
-from shellcheck_lib.test_case.sections import common
 from shellcheck_lib_test.util.file_structure import DirContents, empty_file, empty_dir
-from shellcheck_lib.instructions.setup import stdin as sut
 
 
 class TestParseSet(unittest.TestCase):
@@ -127,7 +127,7 @@ class AssertStdinFileIsSetToFile(Assertion):
               environment: common.GlobalEnvironmentForPostEdsPhase,
               initial: SetupSettingsBuilder,
               actual_result: SetupSettingsBuilder):
-        file_path = self._file_reference.file_path_post_eds(environment.home_and_eds)
+        file_path = self._file_reference.file_path_pre_or_post_eds(environment.home_and_eds)
         put.assertIsNotNone(actual_result.stdin.file_name)
         put.assertEqual(str(file_path),
                         actual_result.stdin.file_name,

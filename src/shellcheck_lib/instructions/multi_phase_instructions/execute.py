@@ -8,10 +8,13 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
     SingleInstructionParser, SingleInstructionParserSource
 from shellcheck_lib.general import file_utils
 from shellcheck_lib.instructions.utils import executable_file
+from shellcheck_lib.instructions.utils import file_properties
 from shellcheck_lib.instructions.utils import parse_file_ref
 from shellcheck_lib.instructions.utils import sub_process_execution
 from shellcheck_lib.instructions.utils.executable_file import ExecutableFile
 from shellcheck_lib.instructions.utils.file_ref import FileRef
+from shellcheck_lib.instructions.utils.file_ref_check import FileRefCheckValidator, FileRefCheck
+from shellcheck_lib.instructions.utils.pre_or_post_validation import PreOrPostEdsValidator, AndValidator
 from shellcheck_lib.instructions.utils.relative_path_options import REL_HOME_OPTION
 from shellcheck_lib.test_case.sections.common import HomeAndEds
 
@@ -56,6 +59,9 @@ class SetupForExecutableWithArguments:
     def _arguments(self, home_and_eds: HomeAndEds) -> list:
         raise NotImplementedError()
 
+    @property
+    def validator(self) -> PreOrPostEdsValidator:
+        raise NotImplementedError()
 
     def execute_and_return_error_message_if_non_zero_exit_status(self, home_and_eds: HomeAndEds) -> str:
         """
@@ -82,6 +88,10 @@ class SetupForExecute(SetupForExecutableWithArguments):
     def _arguments(self, home_and_eds: HomeAndEds) -> list:
         return self.argument_list
 
+    @property
+    def validator(self) -> PreOrPostEdsValidator:
+        return self.executable.validator
+
 
 class SetupForInterpret(SetupForExecutableWithArguments):
     def __init__(self,
@@ -92,9 +102,17 @@ class SetupForInterpret(SetupForExecutableWithArguments):
         super().__init__(instruction_source_info, executable)
         self.file_to_interpret = file_to_interpret
         self.argument_list = argument_list
+        file_to_interpret_check = FileRefCheck(file_to_interpret,
+                                               file_properties.must_exist_as(file_properties.FileType.REGULAR))
+        self._validator = AndValidator((executable.validator,
+                                        FileRefCheckValidator(file_to_interpret_check)))
 
     def _arguments(self, home_and_eds: HomeAndEds) -> list:
-        return [str(self.file_to_interpret.file_path_post_eds(home_and_eds))] + self.argument_list
+        return [str(self.file_to_interpret.file_path_pre_or_post_eds(home_and_eds))] + self.argument_list
+
+    @property
+    def validator(self) -> PreOrPostEdsValidator:
+        return self._validator
 
 
 class ResultAndStderr:

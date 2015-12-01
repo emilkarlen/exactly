@@ -3,25 +3,25 @@ import filecmp
 import os
 import pathlib
 
+from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
+    SingleInstructionInvalidArgumentException, SingleInstructionParserSource
 from shellcheck_lib.execution import environment_variables
 from shellcheck_lib.general import file_utils
 from shellcheck_lib.general.file_utils import ensure_parent_directory_does_exist, tmp_text_file_containing
 from shellcheck_lib.general.string import lines_content
-from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionInvalidArgumentException, SingleInstructionParserSource
 from shellcheck_lib.instructions.utils import parse_here_doc_or_file_ref
 from shellcheck_lib.instructions.utils.file_properties import must_exist_as, FileType
 from shellcheck_lib.instructions.utils.file_ref import FileRef
-from shellcheck_lib.instructions.utils.file_ref_check import post_eds_validate, FileRefCheck, \
-    post_eds_failure_message_or_none
+from shellcheck_lib.instructions.utils.file_ref_check import pre_or_post_eds_validate, FileRefCheck, \
+    pre_or_post_eds_failure_message_or_none
 from shellcheck_lib.instructions.utils.parse_file_ref import parse_non_home_file_ref
 from shellcheck_lib.instructions.utils.parse_here_doc_or_file_ref import HereDocOrFileRef
+from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.sections import common as i
+from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase, HomeAndEds
 from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.result import svh
-from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
-from shellcheck_lib.test_case.os_services import OsServices
 
 WITH_REPLACED_ENV_VARS_OPTION = '--with-replaced-env-vars'
 EMPTY_ARGUMENT = 'empty'
@@ -52,12 +52,12 @@ class ActComparisonActualFileForFileRef(ComparisonActualFile):
         self.file_ref = file_ref
 
     def file_check_failure(self, environment: i.GlobalEnvironmentForPostEdsPhase) -> str:
-        return post_eds_failure_message_or_none(FileRefCheck(self.file_ref,
-                                                             must_exist_as(FileType.REGULAR)),
-                                                environment)
+        return pre_or_post_eds_failure_message_or_none(FileRefCheck(self.file_ref,
+                                                                    must_exist_as(FileType.REGULAR)),
+                                                       environment.home_and_eds)
 
     def file_path(self, environment: i.GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
-        return self.file_ref.file_path_post_eds(environment.home_and_eds)
+        return self.file_ref.file_path_pre_or_post_eds(environment.home_and_eds)
 
 
 class ActComparisonActualFileForStdFileBase(ComparisonActualFile):
@@ -86,16 +86,16 @@ class ContentCheckerInstructionBase(AssertPhaseInstruction):
                  environment: i.GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
         if not self._expected_contents.is_here_document:
             if self._expected_contents.file_reference.exists_pre_eds:
-                return post_eds_validate(self._file_ref_check_for_expected(),
-                                         environment)
+                return pre_or_post_eds_validate(self._file_ref_check_for_expected(),
+                                                environment.home_and_eds)
         return svh.new_svh_success()
 
     def main(self,
              environment: i.GlobalEnvironmentForPostEdsPhase,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
         if not self._expected_contents.is_here_document:
-            failure_message = post_eds_failure_message_or_none(self._file_ref_check_for_expected(),
-                                                               environment)
+            failure_message = pre_or_post_eds_failure_message_or_none(self._file_ref_check_for_expected(),
+                                                                      environment.home_and_eds)
             if failure_message:
                 return pfh.new_pfh_fail(failure_message)
         expected_file_path = self._file_path_for_file_with_expected_contents(environment.home_and_eds)
@@ -126,7 +126,7 @@ class ContentCheckerInstructionBase(AssertPhaseInstruction):
                                             suffix='.txt',
                                             directory=str(home_and_eds.eds.tmp.internal_dir))
         else:
-            return self._expected_contents.file_reference.file_path_post_eds(home_and_eds)
+            return self._expected_contents.file_reference.file_path_pre_or_post_eds(home_and_eds)
 
     def _file_ref_check_for_expected(self) -> FileRefCheck:
         return FileRefCheck(self._expected_contents.file_reference,
