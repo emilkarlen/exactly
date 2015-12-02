@@ -1,7 +1,7 @@
 import unittest
 
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionParserSource
+    SingleInstructionParserSource, SingleInstructionInvalidArgumentException
 from shellcheck_lib.instructions.multi_phase_instructions import execute as sut
 from shellcheck_lib.instructions.utils.relative_path_options import REL_TMP_OPTION
 from shellcheck_lib.instructions.utils.sub_process_execution import InstructionMetaInfo
@@ -27,9 +27,7 @@ class TestCaseBase(home_and_eds_test.TestCaseBase):
     def _test_source(self,
                      source: SingleInstructionParserSource,
                      check: home_and_eds_test.Check):
-        instruction_meta_info = InstructionMetaInfo('phase-name',
-                                                    'instruction-name')
-        setup = sut.SetupParser(instruction_meta_info).apply(source)
+        setup = _new_parser().apply(source)
         action = ExecuteAction(setup)
         self._check_action(action,
                            check)
@@ -149,6 +147,41 @@ class TestExecuteInterpret(TestCaseBase):
                                                   ))
 
 
+class TestSource(TestCaseBase):
+    def test_parse_should_fail_when_no_source_argument(self):
+        with self.assertRaises(SingleInstructionInvalidArgumentException):
+            _new_parser().apply(single_line_source('EXECUTABLE %s' % sut.SOURCE_OPTION))
+
+    def test_check_zero_exit_code(self):
+        self._test_source(self._python_interpreter_for_source_on_command_line('exit(0)'),
+                          home_and_eds_test.Check(expected_action_result=is_success_result(0,
+                                                                                           None)))
+
+    def test_check_non_zero_exit_code(self):
+        self._test_source(self._python_interpreter_for_source_on_command_line('exit(1)'),
+                          home_and_eds_test.Check(expected_action_result=is_success_result(1,
+                                                                                           '')))
+
+    def test_check_non_zero_exit_code_with_output_to_stderr(self):
+        python_program = 'import sys; sys.stderr.write("on stderr"); exit(2)'
+        self._test_source(
+            self._python_interpreter_for_source_on_command_line(python_program),
+            home_and_eds_test.Check(expected_action_result=is_success_result(2,
+                                                                             'on stderr')))
+
+    @staticmethod
+    def _python_interpreter_for_source_on_command_line(argument: str) -> SingleInstructionParserSource:
+        return single_line_source('( %s ) %s %s' % (py_exe.interpreter_that_executes_argument(),
+                                                    sut.SOURCE_OPTION,
+                                                    argument))
+
+
+def _new_parser() -> sut.SetupParser:
+    instruction_meta_info = InstructionMetaInfo('phase-name',
+                                                'instruction-name')
+    return sut.SetupParser(instruction_meta_info)
+
+
 def py_pgm_that_exits_with_value_on_command_line(stderr_output) -> str:
     return """
 import sys
@@ -163,6 +196,7 @@ def suite():
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestExecuteProgramWithShellArgumentList))
     ret_val.addTest(unittest.makeSuite(TestExecuteInterpret))
+    ret_val.addTest(unittest.makeSuite(TestSource))
     return ret_val
 
 
