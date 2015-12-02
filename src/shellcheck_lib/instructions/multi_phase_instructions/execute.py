@@ -186,6 +186,8 @@ class SetupParser:
             return self._interpret(source, exe_file, arg_tokens.tail_source_or_empty_string)
         if arg_tokens.head == SOURCE_OPTION:
             return self._source(source, exe_file, arg_tokens.tail_source)
+        if arg_tokens.head == '--':
+            return self._execute(source, exe_file, arg_tokens.tail.source)
         return self._execute(source, exe_file, arg_tokens.source)
 
     def _execute(self,
