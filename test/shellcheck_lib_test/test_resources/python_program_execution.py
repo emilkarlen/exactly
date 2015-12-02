@@ -6,8 +6,11 @@ def interpreter_that_executes_argument() -> str:
     return '{} -c'.format(sys.executable)
 
 
-def command_line_for_executing_program_via_command_line(command_argument: str) -> str:
-    return '{} -c "{}"'.format(sys.executable, command_argument)
+def command_line_for_executing_program_via_command_line(command_argument: str,
+                                                        args_directly_after_interpreter: str = '') -> str:
+    return '{} {} -c "{}"'.format(sys.executable,
+                                  args_directly_after_interpreter,
+                                  command_argument)
 
 
 def command_line_for_interpreting(python_source_file,

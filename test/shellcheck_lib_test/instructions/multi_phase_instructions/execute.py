@@ -80,6 +80,14 @@ class TestExecuteProgramWithShellArgumentList(TestCaseBase):
                           home_and_eds_test.Check(expected_action_result=is_success_result(0,
                                                                                            None)))
 
+    def test_double_dash_should_invoke_execute(self):
+        argument = py_exe.command_line_for_executing_program_via_command_line(
+            'exit(0)',
+            args_directly_after_interpreter='--')
+        self._test_source(single_line_source(argument),
+                          home_and_eds_test.Check(expected_action_result=is_success_result(0,
+                                                                                           None)))
+
     def test_check_non_zero_exit_code(self):
         self._test_source(single_line_source(py_exe.command_line_for_executing_program_via_command_line('exit(1)')),
                           home_and_eds_test.Check(expected_action_result=is_success_result(1,
