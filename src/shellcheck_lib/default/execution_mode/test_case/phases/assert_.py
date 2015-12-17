@@ -21,7 +21,7 @@ INSTRUCTIONS = {
         SingleInstructionSetup(
             execute.parser('execute'),
             execute.DESCRIPTION),
-    'mkdir':
+    'dir':
         SingleInstructionSetup(
             new_dir.Parser(),
             new_dir.DESCRIPTION),
