@@ -25,7 +25,7 @@ INSTRUCTIONS = {
         SingleInstructionSetup(
             install.Parser(),
             install.DESCRIPTION),
-    'mkdir':
+    'dir':
         SingleInstructionSetup(
             new_dir.Parser(),
             new_dir.DESCRIPTION),
