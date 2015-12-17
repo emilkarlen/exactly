@@ -316,7 +316,6 @@ class PartialExecutor:
             with open(str(self.execution_directory_structure.result.stderr_file), 'w') as f_stderr:
                 exitcode = self.__script_handling.executor.execute(
                     self.__source_setup,
-                    self.execution_directory_structure.act_dir,
                     self.configuration.home_dir,
                     self.__execution_directory_structure,
                     StdFiles(f_stdin,

@@ -1,15 +1,15 @@
 import pathlib
-import shlex
 import re
+import shlex
 
+from shellcheck_lib.act_phase_setups import utils
 from shellcheck_lib.default.execution_mode.test_case.test_case_parser import PlainSourceActPhaseParser
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.general.std import StdFiles
 from shellcheck_lib.test_case.sections.act.phase_setup import ActProgramExecutor, SourceSetup, ActPhaseSetup
+from shellcheck_lib.test_case.sections.act.script_source import ScriptLanguage
 from shellcheck_lib.test_case.sections.act.script_source import ScriptSourceBuilder
 from shellcheck_lib.test_case.sections.result import svh
-from shellcheck_lib.act_phase_setups import utils
-from shellcheck_lib.test_case.sections.act.script_source import ScriptLanguage
 
 
 def act_phase_setup(command_path_is_relative_home: bool) -> ActPhaseSetup:
@@ -67,7 +67,6 @@ class _ActProgramExecutorForSingleCommand(ActProgramExecutor):
 
     def execute(self,
                 source_setup: SourceSetup,
-                cwd_dir_path: pathlib.Path,
                 home_dir: pathlib.Path,
                 eds: ExecutionDirectoryStructure,
                 std_files: StdFiles) -> int:
@@ -75,7 +74,6 @@ class _ActProgramExecutorForSingleCommand(ActProgramExecutor):
                                                                   source_setup.script_builder.source_lines[0])
         cmd_and_args = shlex.split(command_string)
         return utils.execute_cmd_and_args(cmd_and_args,
-                                          cwd_dir_path,
                                           std_files)
 
     def __mandatory_validate(self,

@@ -1,20 +1,20 @@
+import functools
 import os
 import pathlib
 import unittest
-import functools
 
-from shellcheck_lib.test_case import test_case_doc
-from shellcheck_lib.test_case.sections import common
+from shellcheck_lib.execution import phase_step
 from shellcheck_lib.execution.phase_step import PhaseStep
 from shellcheck_lib.execution.result import FullResultStatus
+from shellcheck_lib.test_case import test_case_doc
+from shellcheck_lib.test_case.sections import common
 from shellcheck_lib.test_case.sections.anonymous import ConfigurationBuilder
 from shellcheck_lib_test.execution.full_execution.util.test_case_base import FullExecutionTestCaseBase
-from shellcheck_lib.execution import phase_step
 from shellcheck_lib_test.execution.util import instruction_that_record_and_return as instr_setup
+from shellcheck_lib_test.execution.util import python_code_gen
 from shellcheck_lib_test.execution.util.instruction_that_do_and_return import TestCaseGeneratorForTestCaseSetup, \
     print_to_file__generate_script
 from shellcheck_lib_test.execution.util.py_unit_test_case_with_file_output import ModulesAndStatements
-from shellcheck_lib_test.execution.util import python_code_gen
 
 
 def current_directory() -> str:
@@ -71,7 +71,6 @@ class Test(FullExecutionTestCaseBase):
         self.__assert_test_sanity()
         initial_dir = self.eds.act_dir
         initial_dir_recording = str(initial_dir)
-        for_post_eds = str(self.eds.act_dir)
         expected_recorded_internally = {
             phase_step.SETUP_EXECUTE: initial_dir_recording,
             phase_step.ACT_VALIDATE: str(initial_dir / SUB_DIR_NAME),
@@ -80,9 +79,9 @@ class Test(FullExecutionTestCaseBase):
             phase_step.ASSERT_EXECUTE: str(initial_dir / SUB_DIR_NAME / SUB_DIR_NAME),
             phase_step.CLEANUP_EXECUTE: str(initial_dir / SUB_DIR_NAME / SUB_DIR_NAME / SUB_DIR_NAME),
         }
-        expected_act_output = for_post_eds + os.linesep
         self.__assert_expected_internally_recorded_variables(expected_recorded_internally)
-        self.__assert_expected_act_script_execution_recorded_variables(expected_act_output)
+        cwd_for_program_executor = str(initial_dir / SUB_DIR_NAME / SUB_DIR_NAME) + os.linesep
+        self.__assert_expected_act_script_execution_recorded_variables(cwd_for_program_executor)
 
     def __assert_test_sanity(self):
         self.utc.assertEqual(self.full_result.status,
