@@ -534,6 +534,12 @@ Detta är dock krångligt!!
 ** TODO Nytt steg cleanup/validate
 T ex för att göra möjligt för en instruktion "interpret PROGRAM" att validera
 att en reffade programfil existerar --rel-home.
+** TODO Instr i alla faser borde ha validering pre-EDS
+Eftersom en instruktion i varje fall (ev utom config) kan referera filer i
+home.  O fel där kan upptäckas innan man skapar EDS.
+----------------------------------------
+Typ: validate_pre_eds(eds: ExecutionDirectoryStructure)
+----------------------------------------
 * TODO Blandat
 ** TODO <2015-09-26 lör> Funktioner för att läsa act-resultat
 Ska finnas hjälpfunktioner i "biblioteket" för att läsa t ex statuskod på
