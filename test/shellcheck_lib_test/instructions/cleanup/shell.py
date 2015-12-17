@@ -3,7 +3,8 @@ import unittest
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from shellcheck_lib.instructions.cleanup import shell as sut
-from shellcheck_lib_test.instructions.cleanup.test_resources.instruction_check import Flow, TestCaseBase
+from shellcheck_lib_test.instructions.cleanup.test_resources.instruction_check import TestCaseBase, Arrangement, \
+    Expectation
 from shellcheck_lib_test.instructions.test_resources import sh_check
 from shellcheck_lib_test.instructions.test_resources.utils import new_source
 from shellcheck_lib_test.test_resources import python_program_execution as py_exe
@@ -26,7 +27,9 @@ sys.exit(0)
         with tmp_file_containing(script_that_exists_with_status_0,
                                  suffix='.py') as script_file_path:
             self._check(
-                Flow(sut.Parser()),
+                sut.Parser(),
+                Arrangement(),
+                Expectation(),
                 new_source('instruction-name',
                            py_exe.command_line_for_interpreting(script_file_path)))
 
@@ -37,11 +40,11 @@ sys.exit(1)
 """
         with tmp_file_containing(script_that_exists_with_status_0,
                                  suffix='.py') as script_file_path:
-            self._check(
-                Flow(sut.Parser(),
-                     expected_main_result=sh_check.IsHardError()),
-                new_source('instruction-name',
-                           py_exe.command_line_for_interpreting(script_file_path)))
+            self._check(sut.Parser(),
+                        Arrangement(),
+                        Expectation(main_result=sh_check.IsHardError()),
+                        new_source('instruction-name',
+                                   py_exe.command_line_for_interpreting(script_file_path)))
 
 
 def suite():
