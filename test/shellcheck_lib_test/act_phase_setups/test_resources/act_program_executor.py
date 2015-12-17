@@ -1,16 +1,18 @@
-from contextlib import contextmanager
 import os
 import pathlib
 import random
 import unittest
+from contextlib import contextmanager
 
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.general.std import StdFiles
+from shellcheck_lib.test_case.sections.act.phase_setup import ActProgramExecutor, SourceSetup
 from shellcheck_lib.test_case.sections.act.script_source import ScriptSourceBuilder
 from shellcheck_lib.test_case.sections.result import svh
-from shellcheck_lib.test_case.sections.act.phase_setup import ActProgramExecutor, SourceSetup
-from shellcheck_lib_test.util.process import ProcessExecutor, SubProcessResult
+from shellcheck_lib_test.instructions.test_resources.eds_populator import act_dir_contents
 from shellcheck_lib_test.instructions.test_resources.utils import execution_directory_structure
+from shellcheck_lib_test.util.file_structure import DirContents, empty_dir
+from shellcheck_lib_test.util.process import ProcessExecutor, SubProcessResult
 from shellcheck_lib_test.util.process import capture_process_executor_result
 
 
@@ -55,10 +57,8 @@ class _ProcessExecutorForProgramExecutor(ProcessExecutor):
         self.eds = eds
 
     def execute(self,
-                cwd: str,
                 files: StdFiles) -> int:
         return self.program_executor.execute(self.source_setup,
-                                             pathlib.Path(cwd),
                                              self.home_dir_path,
                                              self.eds,
                                              files)
@@ -110,33 +110,38 @@ class Tests:
                                  process_result.stdout,
                                  'Contents of stdout should be value of environment variable')
 
-    def test_initial_cwd_is_act_directory_and_that_cwd_is_restored_afterwards(self):
+    def test_initial_cwd_is_current_dir_and_that_cwd_is_restored_afterwards(self):
         cwd_before = os.getcwd()
-        with self.test_setup.program_that_prints_cwd_without_new_line_to_stdout() as source:
-            act_program_executor = self.test_setup.sut
-            home_dir = pathlib.Path()
-            validation_result = act_program_executor.validate(home_dir, source)
-            self.put.assertEqual(svh.new_svh_success(),
-                                 validation_result)
-            with execution_directory_structure() as eds:
-                program_setup = SourceSetup(source,
-                                            eds.test_case_dir,
-                                            'file-name-stem')
-                act_program_executor.prepare(program_setup, home_dir, eds)
-                process_executor = _ProcessExecutorForProgramExecutor(program_setup,
-                                                                      home_dir,
-                                                                      eds,
-                                                                      act_program_executor)
-                process_result = capture_process_executor_result(process_executor,
-                                                                 eds.result.root_dir,
-                                                                 cwd=eds.act_dir)
-            self.put.assertEqual(str(eds.act_dir),
-                                 process_result.stdout,
-                                 'Current Working Directory for program should be act-directory')
+        try:
+            with self.test_setup.program_that_prints_cwd_without_new_line_to_stdout() as source:
+                act_program_executor = self.test_setup.sut
+                home_dir = pathlib.Path.cwd()
+                validation_result = act_program_executor.validate(home_dir, source)
+                self.put.assertEqual(svh.new_svh_success(),
+                                     validation_result)
+                with execution_directory_structure(act_dir_contents(DirContents([empty_dir('expected-cwd')]))) as eds:
+                    program_setup = SourceSetup(source,
+                                                eds.test_case_dir,
+                                                'file-name-stem')
+                    process_cwd = str(eds.act_dir / 'expected-cwd')
+                    os.chdir(process_cwd)
+                    assert process_cwd == os.getcwd()
+                    act_program_executor.prepare(program_setup, home_dir, eds)
+                    process_executor = _ProcessExecutorForProgramExecutor(program_setup,
+                                                                          home_dir,
+                                                                          eds,
+                                                                          act_program_executor)
+                    process_result = capture_process_executor_result(process_executor,
+                                                                     eds.result.root_dir)
+                    self.put.assertEqual(process_cwd,
+                                         process_result.stdout,
+                                         'Current Working Directory for program should be act-directory')
 
-            self.put.assertEqual(cwd_before,
-                                 os.getcwd(),
-                                 'Current Working Directory should be restored after program has finished')
+                    self.put.assertEqual(process_cwd,
+                                         os.getcwd(),
+                                         'Current Working Directory should be restored after program has finished')
+        finally:
+            os.chdir(cwd_before)
 
     def __execute(self,
                   source: ScriptSourceBuilder,
@@ -157,5 +162,4 @@ class Tests:
                                                                   act_program_executor)
             return capture_process_executor_result(process_executor,
                                                    eds.result.root_dir,
-                                                   cwd=eds.act_dir,
                                                    stdin_contents=stdin_contents)

@@ -57,15 +57,11 @@ class ActProgramExecutor:
 
     def execute(self,
                 source_setup: SourceSetup,
-                cwd_dir_path: pathlib.Path,
                 home_dir: pathlib.Path,
                 eds: ExecutionDirectoryStructure,
                 std_files: StdFiles) -> int:
         """
         Executed after prepare.
-        :param cwd_dir_path: The directory that should be (initial) Current Working Directory of the program.
-        :param stdin: A file object that should become stdin of the program.
-        :param std_output_files: File objects that should become stdout and stderr of the program.
         """
         raise NotImplementedError()
 

@@ -35,8 +35,8 @@ class StandardExecutorTestCases(unittest.TestCase):
     def test_exit_code_is_returned(self):
         self.tests.test_exit_code_is_returned()
 
-    def test_initial_cwd_is_act_directory_and_that_cwd_is_restored_afterwards(self):
-        self.tests.test_initial_cwd_is_act_directory_and_that_cwd_is_restored_afterwards()
+    def test_initial_cwd_is_current_dir_and_that_cwd_is_restored_afterwards(self):
+        self.tests.test_initial_cwd_is_current_dir_and_that_cwd_is_restored_afterwards()
 
     def test_environment_variables_are_accessible_by_program(self):
         self.tests.test_environment_variables_are_accessible_by_program()
@@ -240,7 +240,6 @@ def execute_program_rel_home_that_returns_number_of_arguments(puc: unittest.Test
                                    eds)
             std_files = std_files_dev_null()
             return setup.executor.execute(source_setup,
-                                          eds.act_dir,
                                           home_dir_path,
                                           eds,
                                           std_files)
@@ -267,7 +266,6 @@ def execute_absolute_program_that_returns_number_of_arguments(puc: unittest.Test
                                    eds)
             std_files = std_files_dev_null()
             return setup.executor.execute(source_setup,
-                                          eds.act_dir,
                                           home_dir_path,
                                           eds,
                                           std_files)

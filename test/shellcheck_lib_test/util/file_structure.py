@@ -91,6 +91,7 @@ class DirContents:
     def write_to(self,
                  dir_path: pathlib.Path):
         for file_element in self.file_system_element_contents:
+            assert isinstance(file_element, FileSystemElement)
             file_element.write_to(dir_path)
 
 
