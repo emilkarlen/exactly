@@ -1,14 +1,14 @@
 import unittest
 
-from shellcheck_lib_test import general
+from shellcheck_lib_test import act_phase_setups
+from shellcheck_lib_test import cli
 from shellcheck_lib_test import default
 from shellcheck_lib_test import document
-from shellcheck_lib_test import test_case
 from shellcheck_lib_test import execution
-from shellcheck_lib_test import cli
+from shellcheck_lib_test import general
 from shellcheck_lib_test import instructions
+from shellcheck_lib_test import test_case
 from shellcheck_lib_test import test_suite
-from shellcheck_lib_test import act_phase_setups
 
 
 def suite():
