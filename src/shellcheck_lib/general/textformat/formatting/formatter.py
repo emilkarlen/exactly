@@ -1,10 +1,25 @@
 from textwrap import TextWrapper
 
-from shellcheck_lib.general.textformat.formatting.lists import ListFormats
+from shellcheck_lib.general.textformat.formatting.lists import ListFormats, ListFormat
 from shellcheck_lib.general.textformat.structure.core import Text, ParagraphItem
-from shellcheck_lib.general.textformat.structure.lists import HeaderValueList
+from shellcheck_lib.general.textformat.structure.lists import HeaderValueList, HeaderValueListItem
 from shellcheck_lib.general.textformat.structure.paragraph import Paragraph
 from shellcheck_lib.general.textformat.structure.utils import ParagraphItemVisitor
+
+
+class Indent(tuple):
+    def __new__(cls,
+                first_line: str,
+                following_lines: str):
+        return tuple.__new__(cls, (first_line, following_lines))
+
+    @property
+    def first_line(self) -> str:
+        return self[0]
+
+    @property
+    def following_lines(self) -> str:
+        return self[1]
 
 
 class Formatter:
@@ -16,6 +31,26 @@ class Formatter:
         self.text_wrapper = TextWrapper(width=page_width)
         self.separator_lines = num_item_separator_lines * ['']
         self.text_item_formatter = _ParagraphItemFormatter(self)
+        self.indents_stack = []
+
+    def push_indent(self, indent: Indent):
+        text_wrapper = self.text_wrapper
+        current_indent = Indent(text_wrapper.initial_indent,
+                                text_wrapper.subsequent_indent)
+        self.indents_stack.insert(0, current_indent)
+        text_wrapper.initial_indent = indent.first_line
+        text_wrapper.subsequent_indent = indent.following_lines
+
+    def push_indent_increase(self, delta: Indent):
+        text_wrapper = self.text_wrapper
+        indent = Indent(text_wrapper.initial_indent + delta.first_line,
+                        text_wrapper.subsequent_indent + delta.following_lines)
+        self.push_indent(indent)
+
+    def pop_indent(self):
+        indent = self.indents_stack.pop()
+        self.text_wrapper.initial_indent = indent.first_line
+        self.text_wrapper.subsequent_indent = indent.following_lines
 
     def format_paragraph_items(self, items: iter) -> list:
         ret_val = []
@@ -32,19 +67,70 @@ class Formatter:
         ret_val = []
         for start_on_new_line_block in paragraph.start_on_new_line_blocks:
             assert isinstance(start_on_new_line_block, Text)
-            ret_val.extend(self.text_wrapper.wrap(start_on_new_line_block.value))
+            ret_val.extend(self.format_text(start_on_new_line_block))
         return ret_val
+
+    def format_text(self, text: Text) -> list:
+        return self.text_wrapper.wrap(text.value)
 
     def format_header_value_list(self, header_value_list: HeaderValueList):
         raise NotImplemented()
 
+    def format_header_value_list_according_to_format(self,
+                                                     items: iter,
+                                                     list_format: ListFormat):
+        """
+        :param items: [HeaderValueListItem]
+        """
+        return _ListFormatter(self, list_format, items).apply()
+
+
+class _ListFormatter:
+    def __init__(self,
+                 formatter: Formatter,
+                 list_format: ListFormat,
+                 items: iter):
+        self.formatter = formatter
+        self.list_format = list_format
+        self.items_list = list(items)
+        self.num_items = len(self.items_list)
+        separations = list_format.separations
+        self.blank_lines_between_elements = separations.num_blank_lines_between_elements * ['']
+        self.blank_lines_between_header_and_content = separations.num_blank_lines_between_header_and_value * ['']
+        self.ret_val = []
+
+    def apply(self) -> list:
+        ret_val = self.ret_val
+        list_format = self.list_format
+        num_items = self.num_items
+        header_format = list_format.header_format
+        item_number = 1
+        for item in self.items_list:
+            assert isinstance(item, HeaderValueListItem), ('The list item is not a %s' % str(HeaderValueListItem))
+            if item_number > 1:
+                ret_val.extend(self.blank_lines_between_elements)
+            self.push_header_indent(item_number)
+            text = header_format.header_text(item_number,
+                                             num_items,
+                                             item.header)
+            ret_val.extend(self.formatter.format_text(text))
+            self.formatter.pop_indent()
+            item_number += 1
+        return ret_val
+
+    def push_header_indent(self, item_number):
+        following_lines_indent = self.list_format.header_format.following_header_lines_indent(item_number,
+                                                                                              self.num_items)
+        indent_delta = Indent('', following_lines_indent)
+        self.formatter.push_indent_increase(indent_delta)
+
 
 class _ParagraphItemFormatter(ParagraphItemVisitor):
-    def __init__(self, printer: Formatter):
-        self.printer = printer
+    def __init__(self, formatter: Formatter):
+        self.formatter = formatter
 
     def visit_paragraph(self, paragraph: Paragraph):
-        return self.printer.format_paragraph(paragraph)
+        return self.formatter.format_paragraph(paragraph)
 
     def visit_header_value_list(self, header_value_list: HeaderValueList):
-        return self.printer.format_header_value_list(header_value_list)
+        return self.formatter.format_header_value_list(header_value_list)
