@@ -1,6 +1,6 @@
 from textwrap import TextWrapper
 
-from shellcheck_lib.general.textformat.structure import Paragraph, ParagraphItem, ParagraphItemVisitor
+from shellcheck_lib.general.textformat.structure import Text, Paragraph, ParagraphItem, ParagraphItemVisitor
 
 
 class Formatter:
@@ -26,7 +26,8 @@ class Formatter:
     def format_paragraph(self, paragraph: Paragraph) -> list:
         ret_val = []
         for start_on_new_line_block in paragraph.start_on_new_line_blocks:
-            ret_val.extend(self.text_wrapper.wrap(start_on_new_line_block))
+            assert isinstance(start_on_new_line_block, Text)
+            ret_val.extend(self.text_wrapper.wrap(start_on_new_line_block.value))
         return ret_val
 
 
