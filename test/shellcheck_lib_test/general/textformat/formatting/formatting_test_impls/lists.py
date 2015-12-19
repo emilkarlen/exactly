@@ -9,9 +9,6 @@ from shellcheck_lib.general.textformat.structure import paragraph
 NO_SEPARATIONS = lf.Separations(num_blank_lines_between_elements=0,
                                 num_blank_lines_between_header_and_value=0)
 
-list_formatter_with_blank_lines = lf.ListFormat(lf.HeaderAndIndentFormatWithNumbering(value_indent_spaces=3),
-                                                lf.Separations(num_blank_lines_between_elements=2,
-                                                               num_blank_lines_between_header_and_value=1))
 list_formatter_with_no_blank_lines = lf.ListFormat(lf.HeaderAndIndentFormatWithNumbering(value_indent_spaces=3),
                                                    NO_SEPARATIONS)
 
@@ -201,6 +198,41 @@ class TestSeparations(unittest.TestCase):
                          actual)
 
 
+class TestResolveListFormat(unittest.TestCase):
+    LIST_FORMATS = lf.ListFormats(itemized_list_format=lf.ListFormat(lf.HeaderAndIndentFormatWithMarker('*'),
+                                                                     NO_SEPARATIONS),
+                                  ordered_list_format=lf.ListFormat(lf.HeaderAndIndentFormatWithNumbering(),
+                                                                    NO_SEPARATIONS),
+                                  variable_list_format=lf.ListFormat(lf.HeaderAndIndentFormatPlain(),
+                                                                     NO_SEPARATIONS))
+
+    def test_itemized_list(self):
+        items = [header_only_item('header')]
+        formatter = sut.Formatter(page_width=100,
+                                  list_formats=self.LIST_FORMATS)
+        actual = formatter.format_header_value_list(lists.HeaderValueList(lists.ListType.ITEMIZED_LIST,
+                                                                          items))
+        self.assertEqual(['* header'],
+                         actual)
+
+    def test_ordered_list(self):
+        items = [header_only_item('header')]
+        formatter = sut.Formatter(page_width=100,
+                                  list_formats=self.LIST_FORMATS)
+        actual = formatter.format_header_value_list(lists.HeaderValueList(lists.ListType.ORDERED_LIST,
+                                                                          items))
+        self.assertEqual(['1. header'],
+                         actual)
+
+    def test_variable_list(self):
+        items = [header_only_item('header')]
+        formatter = sut.Formatter(page_width=100,
+                                  list_formats=self.LIST_FORMATS)
+        actual = formatter.format_header_value_list(lists.HeaderValueList(lists.ListType.VARIABLE_LIST,
+                                                                          items))
+        self.assertEqual(['header'],
+                         actual)
+
 
 def item(header: str,
          content: list) -> lists.HeaderValueListItem:
@@ -250,6 +282,7 @@ def suite():
     ret_val.addTest(unittest.makeSuite(TestHeaderOnlyListItemsWithLineWraps))
     ret_val.addTest(unittest.makeSuite(TestContentFormatting))
     ret_val.addTest(unittest.makeSuite(TestThatIdentationIsNotModified))
+    ret_val.addTest(unittest.makeSuite(TestResolveListFormat))
     return ret_val
 
 
