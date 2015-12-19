@@ -1,16 +1,16 @@
 from textwrap import TextWrapper
 
-from shellcheck_lib.general.textformat.structure import Paragraph, TextItem, TextItemVisitor
+from shellcheck_lib.general.textformat.structure import Paragraph, ParagraphItem, ParagraphItemVisitor
 
 
 class Formatter:
     def __init__(self,
                  page_width: int = 70):
         self.page_width = page_width
-        self.text_item_formatter = _TextItemFormatter(self)
+        self.text_item_formatter = _ParagraphItemFormatter(self)
         self.text_wrapper = TextWrapper(width=page_width)
 
-    def format_text_item(self, text_item: TextItem) -> list:
+    def format_paragraph_item(self, text_item: ParagraphItem) -> list:
         return self.text_item_formatter.visit(text_item)
 
     def format_paragraph(self, paragraph: Paragraph) -> list:
@@ -20,7 +20,7 @@ class Formatter:
         return ret_val
 
 
-class _TextItemFormatter(TextItemVisitor):
+class _ParagraphItemFormatter(ParagraphItemVisitor):
     def __init__(self, printer: Formatter):
         self.printer = printer
 

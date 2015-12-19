@@ -13,6 +13,14 @@ class TestParagraph(unittest.TestCase):
                           '12 34'],
                          actual)
 
+    def test_single_new_line_block_with_alternate_page_width(self):
+        para = structure.Paragraph(['1234 67 90'])
+        printer = sut.Formatter(page_width=7)
+        actual = printer.format_paragraph(para)
+        self.assertEqual(['1234 67',
+                          '90'],
+                         actual)
+
     def test_multiple_new_line_blocks(self):
         para = structure.Paragraph(['1234 12',
                                     '34 5678'])
