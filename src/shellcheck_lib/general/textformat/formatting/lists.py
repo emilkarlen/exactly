@@ -52,7 +52,7 @@ class ListFormat(tuple):
                                    separations))
 
     @property
-    def header_and_indent_format(self) -> HeaderAndIndentFormat:
+    def header_format(self) -> HeaderAndIndentFormat:
         return self[0]
 
     @property
