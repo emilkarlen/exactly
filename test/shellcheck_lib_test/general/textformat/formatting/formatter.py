@@ -1,31 +1,32 @@
 import unittest
 
-from shellcheck_lib.general.textformat import print as sut
-from shellcheck_lib.general.textformat import structure as s
+from shellcheck_lib.general.textformat.formatting import formatter as sut
+from shellcheck_lib.general.textformat.structure import core
+from shellcheck_lib.general.textformat.structure import paragraph
 
 
 class TestParagraph(unittest.TestCase):
     def test_single_new_line_block(self):
-        para = s.Paragraph([s.Text('1234 12 34')])
+        p = para([text('1234 12 34')])
         formatter = sut.Formatter(page_width=5)
-        actual = formatter.format_paragraph(para)
+        actual = formatter.format_paragraph(p)
         self.assertEqual(['1234',
                           '12 34'],
                          actual)
 
     def test_single_new_line_block_with_alternate_page_width(self):
-        para = s.Paragraph([s.Text('1234 67 90')])
+        p = para([text('1234 67 90')])
         formatter = sut.Formatter(page_width=7)
-        actual = formatter.format_paragraph(para)
+        actual = formatter.format_paragraph(p)
         self.assertEqual(['1234 67',
                           '90'],
                          actual)
 
     def test_multiple_new_line_blocks(self):
-        para = s.Paragraph([s.Text('1234 12'),
-                            s.Text('34 5678')])
+        p = para([text('1234 12'),
+                  text('34 5678')])
         formatter = sut.Formatter(page_width=5)
-        actual = formatter.format_paragraph(para)
+        actual = formatter.format_paragraph(p)
         self.assertEqual(['1234',
                           '12',
                           '34',
@@ -42,37 +43,45 @@ class TestParagraphItems(unittest.TestCase):
                          actual)
 
     def test_single_item(self):
-        para = s.Paragraph([s.Text('1234 12 34')])
+        p = para([text('1234 12 34')])
         formatter = sut.Formatter(page_width=5,
                                   num_item_separator_lines=1)
-        actual = formatter.format_paragraph_items([para])
+        actual = formatter.format_paragraph_items([p])
         self.assertEqual(['1234',
                           '12 34'],
                          actual)
 
     def test_multiple_items_with_zero_separator_lines(self):
-        para1 = s.Paragraph([s.Text('1234 12 34')])
-        para2 = s.Paragraph([s.Text('abc')])
+        p1 = para([text('1234 12 34')])
+        p2 = para([text('abc')])
         formatter = sut.Formatter(page_width=5,
                                   num_item_separator_lines=0)
-        actual = formatter.format_paragraph_items([para1, para2])
+        actual = formatter.format_paragraph_items([p1, p2])
         self.assertEqual(['1234',
                           '12 34',
                           'abc'],
                          actual)
 
     def test_multiple_items_with_non_zero_separator_lines(self):
-        para1 = s.Paragraph([s.Text('1234 12 34')])
-        para2 = s.Paragraph([s.Text('abc')])
+        p1 = para([text('1234 12 34')])
+        p2 = para([text('abc')])
         formatter = sut.Formatter(page_width=5,
                                   num_item_separator_lines=2)
-        actual = formatter.format_paragraph_items([para1, para2])
+        actual = formatter.format_paragraph_items([p1, p2])
         self.assertEqual(['1234',
                           '12 34',
                           '',
                           '',
                           'abc'],
                          actual)
+
+
+def text(string='1234 12 34') -> core.Text:
+    return core.Text(string)
+
+
+def para(texts: iter) -> paragraph.Paragraph:
+    return paragraph.Paragraph(texts)
 
 
 def suite():
