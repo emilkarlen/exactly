@@ -85,7 +85,7 @@ class TestHeaderOnlyListItemsWithLineWraps(unittest.TestCase):
 
 
 class TestThatIdentationIsNotModified(unittest.TestCase):
-    def test(self):
+    def test_without_content(self):
         formatter = sut.Formatter(page_width=4)
         current_indent_before = formatter.current_indent
         indent_stack_before = formatter._saved_indents_stack.copy()
@@ -103,9 +103,67 @@ class TestThatIdentationIsNotModified(unittest.TestCase):
                          formatter.saved_indents_stack,
                          'Saved indents stack')
 
+    def test_with_content(self):
+        list_format = lf.ListFormat(lf.HeaderAndIndentFormatWithNumbering(value_indent_spaces=1),
+                                    NO_SEPARATIONS)
+        items = [item('header',
+                      [single_text_para('2345678')])]
+        formatter = sut.Formatter(page_width=10)
+        current_indent_before = formatter.current_indent
+        indent_stack_before = formatter._saved_indents_stack.copy()
+        formatter.format_header_value_list_according_to_format(items,
+                                                               list_format)
+        self.assertEqual(current_indent_before,
+                         formatter.current_indent,
+                         'Current indent')
+
+        self.assertEqual(indent_stack_before,
+                         formatter.saved_indents_stack,
+                         'Saved indents stack')
+
+
+class TestContentFormatting(unittest.TestCase):
+    def test_singleton_list(self):
+        list_format = lf.ListFormat(lf.HeaderAndIndentFormatWithNumbering(value_indent_spaces=1),
+                                    NO_SEPARATIONS)
+        items = [item('header',
+                      [single_text_para('2345678 abc def')])]
+        formatter = sut.Formatter(page_width=10)
+        actual = formatter.format_header_value_list_according_to_format(items,
+                                                                        list_format)
+        self.assertEqual(['1. header',
+                          ' 2345678',
+                          ' abc def'],
+                         actual)
+
+    def test_multi_element_list(self):
+        list_format = lf.ListFormat(lf.HeaderAndIndentFormatWithNumbering(value_indent_spaces=1),
+                                    NO_SEPARATIONS)
+        items = [item('h1',
+                      [single_text_para('2345678')]),
+                 item('h2',
+                      [single_text_para('content 1'),
+                       single_text_para('content 2')])]
+        formatter = sut.Formatter(page_width=10)
+        actual = formatter.format_header_value_list_according_to_format(items,
+                                                                        list_format)
+        self.assertEqual(['1. h1',
+                          ' 2345678',
+                          '2. h2',
+                          ' content 1',
+                          '',
+                          ' content 2'],
+                         actual)
+
+
+def item(header: str,
+         content: list) -> lists.HeaderValueListItem:
+    return lists.HeaderValueListItem(text(header),
+                                     content)
+
 
 def header_only_item(header: str) -> lists.HeaderValueListItem:
-    return lists.HeaderValueListItem(text(header))
+    return item(header, [])
 
 
 def text(string: str) -> core.Text:
@@ -114,6 +172,10 @@ def text(string: str) -> core.Text:
 
 def para(texts: iter) -> paragraph.Paragraph:
     return paragraph.Paragraph(texts)
+
+
+def single_text_para(string: str) -> paragraph.Paragraph:
+    return paragraph.Paragraph([text(string)])
 
 
 class HeaderFormatWithVaryingFollowingLineIndent(lf.HeaderAndIndentFormatWithConstantValueIndentBase):
@@ -140,6 +202,7 @@ def suite():
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestHeaderOnlyListItemsWithNoLineWraps))
     ret_val.addTest(unittest.makeSuite(TestHeaderOnlyListItemsWithLineWraps))
+    ret_val.addTest(unittest.makeSuite(TestContentFormatting))
     ret_val.addTest(unittest.makeSuite(TestThatIdentationIsNotModified))
     return ret_val
 

@@ -117,10 +117,13 @@ class _ListFormatter:
             if item_number > 1:
                 ret_val.extend(self.blank_lines_between_elements)
             self.push_header_indent(item_number)
-            text = header_format.header_text(item_number,
-                                             num_items,
-                                             item.header)
-            ret_val.extend(self.formatter.format_text(text))
+            header_text = header_format.header_text(item_number,
+                                                    num_items,
+                                                    item.header)
+            ret_val.extend(self.formatter.format_text(header_text))
+            self.formatter.pop_indent()
+            self.push_content_indent(item_number)
+            ret_val.extend(self.formatter.format_paragraph_items(item.value_paragraph_items))
             self.formatter.pop_indent()
             item_number += 1
         return ret_val
@@ -129,6 +132,11 @@ class _ListFormatter:
         following_lines_indent = self.list_format.header_format.following_header_lines_indent(item_number,
                                                                                               self.num_items)
         indent_delta = Indent('', following_lines_indent)
+        self.formatter.push_indent_increase(indent_delta)
+
+    def push_content_indent(self, item_number):
+        indent_str = self.list_format.header_format.value_indent(self.num_items)
+        indent_delta = Indent(indent_str, indent_str)
         self.formatter.push_indent_increase(indent_delta)
 
 

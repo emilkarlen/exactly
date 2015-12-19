@@ -15,7 +15,7 @@ class HeaderValueListItem(tuple):
 
     @property
     def value_paragraph_items(self) -> iter:
-        return self[0]
+        return self[1]
 
 
 class ListType(Enum):
