@@ -5,13 +5,23 @@ from shellcheck_lib.general.textformat.structure import Paragraph, ParagraphItem
 
 class Formatter:
     def __init__(self,
-                 page_width: int = 70):
+                 page_width: int = 70,
+                 num_item_separator_lines: int = 1):
         self.page_width = page_width
         self.text_item_formatter = _ParagraphItemFormatter(self)
         self.text_wrapper = TextWrapper(width=page_width)
+        self.separator_lines = num_item_separator_lines * ['']
 
-    def format_paragraph_item(self, text_item: ParagraphItem) -> list:
-        return self.text_item_formatter.visit(text_item)
+    def format_paragraph_items(self, items: iter) -> list:
+        ret_val = []
+        for item in items:
+            if ret_val:
+                ret_val.extend(self.separator_lines)
+            ret_val.extend(self.format_paragraph_item(item))
+        return ret_val
+
+    def format_paragraph_item(self, item: ParagraphItem) -> list:
+        return self.text_item_formatter.visit(item)
 
     def format_paragraph(self, paragraph: Paragraph) -> list:
         ret_val = []
