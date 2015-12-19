@@ -31,6 +31,14 @@ class HeaderAndIndentFormat:
         """
         raise NotImplementedError()
 
+    def following_header_lines_indent(self,
+                                      element_number: int,
+                                      total_number_of_elements: int) -> str:
+        """
+        Indentation of lines that are part of the header, but that does not fit on the first line.
+        """
+        raise NotImplementedError()
+
     def value_indent(self,
                      total_number_of_elements: int) -> str:
         raise NotImplementedError()
@@ -62,6 +70,23 @@ class HeaderAndIndentFormatWithConstantValueIndentBase(HeaderAndIndentFormat):
         return self.value_indent_str
 
 
+class HeaderAndIndentFormatPlain(HeaderAndIndentFormatWithConstantValueIndentBase):
+    def __init__(self,
+                 value_indent_spaces: int = 3):
+        super().__init__(value_indent_spaces)
+
+    def header_text(self,
+                    element_number: int,
+                    total_number_of_elements: int,
+                    header: Text) -> Text:
+        return header
+
+    def following_header_lines_indent(self,
+                                      element_number: int,
+                                      total_number_of_elements: int) -> str:
+        return ''
+
+
 class HeaderAndIndentFormatWithMarker(HeaderAndIndentFormatWithConstantValueIndentBase):
     def __init__(self,
                  marker: str,
@@ -75,17 +100,10 @@ class HeaderAndIndentFormatWithMarker(HeaderAndIndentFormatWithConstantValueInde
                     header: Text) -> Text:
         return Text(self.marker + ' ' + header.value)
 
-
-class HeaderAndIndentFormatPlain(HeaderAndIndentFormatWithConstantValueIndentBase):
-    def __init__(self,
-                 value_indent_spaces: int = 3):
-        super().__init__(value_indent_spaces)
-
-    def header_text(self,
-                    element_number: int,
-                    total_number_of_elements: int,
-                    header: Text) -> Text:
-        return header
+    def following_header_lines_indent(self,
+                                      element_number: int,
+                                      total_number_of_elements: int) -> str:
+        return (len(self.marker) + 1) * ' '
 
 
 class HeaderAndIndentFormatWithNumbering(HeaderAndIndentFormatWithConstantValueIndentBase):
@@ -97,7 +115,16 @@ class HeaderAndIndentFormatWithNumbering(HeaderAndIndentFormatWithConstantValueI
                     element_number: int,
                     total_number_of_elements: int,
                     header: Text) -> Text:
-        return Text('%d. %s' % (element_number, header.value))
+        return Text(self._prefix(element_number) + header.value)
+
+    def following_header_lines_indent(self,
+                                      element_number: int,
+                                      total_number_of_elements: int) -> str:
+        return len(self._prefix(element_number)) * ' '
+
+    @staticmethod
+    def _prefix(element_number: int) -> str:
+        return '%d. ' % element_number
 
 
 class ListFormats(tuple):
