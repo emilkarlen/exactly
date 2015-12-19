@@ -1,8 +1,8 @@
 import unittest
 
-from shellcheck_lib_test.general import line_source
-from shellcheck_lib_test.general import monad
-from shellcheck_lib_test.general import textformat
+from . import line_source
+from . import monad
+from . import textformat
 
 
 def suite():
