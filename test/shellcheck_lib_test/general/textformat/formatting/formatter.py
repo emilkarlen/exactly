@@ -76,7 +76,7 @@ class TestParagraphItems(unittest.TestCase):
                          actual)
 
 
-def text(string='1234 12 34') -> core.Text:
+def text(string: str) -> core.Text:
     return core.Text(string)
 
 

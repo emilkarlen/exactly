@@ -1,60 +1,10 @@
 from textwrap import TextWrapper
 
+from shellcheck_lib.general.textformat.formatting.lists import ListFormats
 from shellcheck_lib.general.textformat.structure.core import Text, ParagraphItem
 from shellcheck_lib.general.textformat.structure.lists import HeaderValueList
 from shellcheck_lib.general.textformat.structure.paragraph import Paragraph
 from shellcheck_lib.general.textformat.structure.utils import ParagraphItemVisitor
-
-
-class ListFormat:
-    def __init__(self,
-                 value_indent: int = 3):
-        self.value_indent = value_indent
-        self.value_indent_str = value_indent * [' ']
-
-    def header_text(self,
-                    element_number: int,
-                    total_number_of_elements: int,
-                    header: Text) -> Text:
-        """
-        :param element_number: 1, 2, ...
-        :param total_number_of_elements: Number of elements in the list
-        :param header:
-        """
-        raise NotImplementedError()
-
-
-class ItemizedListFormat(ListFormat):
-    def __init__(self, value_indent: int = 3):
-        super().__init__(value_indent)
-
-    def header_text(self,
-                    element_number: int,
-                    total_number_of_elements: int,
-                    header: Text) -> Text:
-        raise NotImplementedError()
-
-
-class ListFormats(tuple):
-    def __new__(cls,
-                itemized_list_format: ListFormat = ListFormat(),
-                ordered_list_format: ListFormat = ListFormat(),
-                variable_list_format: ListFormat = ListFormat()):
-        return tuple.__new__(cls, (itemized_list_format,
-                                   ordered_list_format,
-                                   variable_list_format))
-
-    @property
-    def itemized_list_format(self) -> ListFormat:
-        return self[0]
-
-    @property
-    def ordered_list_format(self) -> ListFormat:
-        return self[0]
-
-    @property
-    def variable_list_format(self) -> ListFormat:
-        return self[0]
 
 
 class Formatter:
