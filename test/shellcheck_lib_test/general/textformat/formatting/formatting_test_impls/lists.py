@@ -156,6 +156,52 @@ class TestContentFormatting(unittest.TestCase):
                          actual)
 
 
+class TestSeparations(unittest.TestCase):
+    list_format = lf.ListFormat(lf.HeaderAndIndentFormatWithNumbering(value_indent_spaces=1),
+                                lf.Separations(num_blank_lines_between_elements=2,
+                                               num_blank_lines_between_header_and_value=1))
+
+    def test_empty_list(self):
+        items = []
+        formatter = sut.Formatter(page_width=10)
+        actual = formatter.format_header_value_list_according_to_format(items,
+                                                                        self.list_format)
+        self.assertEqual([],
+                         actual)
+
+    def test_singleton_list(self):
+        items = [header_only_item('header')]
+        formatter = sut.Formatter(page_width=10)
+        actual = formatter.format_header_value_list_according_to_format(items,
+                                                                        self.list_format)
+        self.assertEqual(['1. header'],
+                         actual)
+
+    def test_multi_element_list__no_content(self):
+        items = [header_only_item('header 1'),
+                 header_only_item('header 2')]
+        formatter = sut.Formatter(page_width=20)
+        actual = formatter.format_header_value_list_according_to_format(items,
+                                                                        self.list_format)
+        self.assertEqual(['1. header 1',
+                          '',
+                          '',
+                          '2. header 2'],
+                         actual)
+
+    def test_item_with_content(self):
+        items = [item('header',
+                      [single_text_para('content')])]
+        formatter = sut.Formatter(page_width=10)
+        actual = formatter.format_header_value_list_according_to_format(items,
+                                                                        self.list_format)
+        self.assertEqual(['1. header',
+                          '',
+                          ' content'],
+                         actual)
+
+
+
 def item(header: str,
          content: list) -> lists.HeaderValueListItem:
     return lists.HeaderValueListItem(text(header),

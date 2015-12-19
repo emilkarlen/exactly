@@ -108,25 +108,29 @@ class _ListFormatter:
 
     def apply(self) -> list:
         ret_val = self.ret_val
-        list_format = self.list_format
-        num_items = self.num_items
-        header_format = list_format.header_format
-        item_number = 1
-        for item in self.items_list:
+        for (item_number, item) in enumerate(self.items_list, start=1):
             assert isinstance(item, HeaderValueListItem), ('The list item is not a %s' % str(HeaderValueListItem))
             if item_number > 1:
                 ret_val.extend(self.blank_lines_between_elements)
-            self.push_header_indent(item_number)
-            header_text = header_format.header_text(item_number,
-                                                    num_items,
-                                                    item.header)
-            ret_val.extend(self.formatter.format_text(header_text))
-            self.formatter.pop_indent()
-            self.push_content_indent(item_number)
-            ret_val.extend(self.formatter.format_paragraph_items(item.value_paragraph_items))
-            self.formatter.pop_indent()
-            item_number += 1
+            self._format_header(item, item_number)
+            self._format_content(item, item_number)
         return ret_val
+
+    def _format_header(self, item, item_number):
+        self.push_header_indent(item_number)
+        header_text = self.list_format.header_format.header_text(item_number,
+                                                                 self.num_items,
+                                                                 item.header)
+        self.ret_val.extend(self.formatter.format_text(header_text))
+        self.formatter.pop_indent()
+
+    def _format_content(self, item, item_number):
+        content_items_list = list(item.value_paragraph_items)
+        if content_items_list:
+            self.ret_val.extend(self.blank_lines_between_header_and_content)
+            self.push_content_indent(item_number)
+            self.ret_val.extend(self.formatter.format_paragraph_items(content_items_list))
+            self.formatter.pop_indent()
 
     def push_header_indent(self, item_number):
         following_lines_indent = self.list_format.header_format.following_header_lines_indent(item_number,
