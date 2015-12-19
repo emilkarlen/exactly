@@ -80,12 +80,14 @@ class Formatter:
     def format_text(self, text: Text) -> list:
         return self.text_wrapper.wrap(text.value)
 
-    def format_header_value_list(self, header_value_list: HeaderValueList):
-        raise NotImplemented()
+    def format_header_value_list(self, the_list: HeaderValueList) -> list:
+        list_format = self.list_formats.for_type(the_list.list_type)
+        return self.format_header_value_list_according_to_format(the_list.items,
+                                                                 list_format)
 
     def format_header_value_list_according_to_format(self,
                                                      items: iter,
-                                                     list_format: ListFormat):
+                                                     list_format: ListFormat) -> list:
         """
         :param items: [HeaderValueListItem]
         """
