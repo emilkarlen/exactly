@@ -20,6 +20,13 @@ class TestHeaderAndIndentFormatWithMarker(unittest.TestCase):
         self.assertEqual(5 * ' ',
                          actual)
 
+    def test_following_header_lines_indent(self):
+        formatter = sut.HeaderAndIndentFormatWithMarker(marker='MARKER',
+                                                        value_indent_spaces=5)
+        actual = formatter.following_header_lines_indent(1, 10)
+        self.assertEqual((len('MARKER') + 1) * ' ',
+                         actual)
+
 
 class TestHeaderAndIndentFormatPlain(unittest.TestCase):
     def test_header_text(self):
@@ -32,6 +39,12 @@ class TestHeaderAndIndentFormatPlain(unittest.TestCase):
         formatter = sut.HeaderAndIndentFormatPlain(value_indent_spaces=7)
         actual = formatter.value_indent(1)
         self.assertEqual(7 * ' ',
+                         actual)
+
+    def test_following_header_lines_indent(self):
+        formatter = sut.HeaderAndIndentFormatPlain(value_indent_spaces=5)
+        actual = formatter.following_header_lines_indent(1, 10)
+        self.assertEqual('',
                          actual)
 
 
@@ -49,9 +62,15 @@ class TestHeaderAndIndentFormatWithNumbering(unittest.TestCase):
                          actual.value)
 
     def test_value_indent(self):
-        formatter = sut.HeaderAndIndentFormatPlain(value_indent_spaces=7)
+        formatter = sut.HeaderAndIndentFormatWithNumbering(value_indent_spaces=7)
         actual = formatter.value_indent(1)
         self.assertEqual(7 * ' ',
+                         actual)
+
+    def test_following_header_lines_indent(self):
+        formatter = sut.HeaderAndIndentFormatWithNumbering(value_indent_spaces=7)
+        actual = formatter.following_header_lines_indent(1, 10)
+        self.assertEqual(len('1. ') * ' ',
                          actual)
 
 
