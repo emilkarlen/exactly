@@ -31,13 +31,20 @@ class Formatter:
         self.text_wrapper = TextWrapper(width=page_width)
         self.separator_lines = num_item_separator_lines * ['']
         self.text_item_formatter = _ParagraphItemFormatter(self)
-        self.indents_stack = []
+        self._saved_indents_stack = []
+
+    @property
+    def current_indent(self) -> Indent:
+        return Indent(self.text_wrapper.initial_indent,
+                      self.text_wrapper.subsequent_indent)
+
+    @property
+    def saved_indents_stack(self) -> list:
+        return self._saved_indents_stack
 
     def push_indent(self, indent: Indent):
         text_wrapper = self.text_wrapper
-        current_indent = Indent(text_wrapper.initial_indent,
-                                text_wrapper.subsequent_indent)
-        self.indents_stack.insert(0, current_indent)
+        self._saved_indents_stack.insert(0, self.current_indent)
         text_wrapper.initial_indent = indent.first_line
         text_wrapper.subsequent_indent = indent.following_lines
 
@@ -48,7 +55,7 @@ class Formatter:
         self.push_indent(indent)
 
     def pop_indent(self):
-        indent = self.indents_stack.pop()
+        indent = self._saved_indents_stack.pop()
         self.text_wrapper.initial_indent = indent.first_line
         self.text_wrapper.subsequent_indent = indent.following_lines
 
