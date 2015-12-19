@@ -1,11 +1,11 @@
 import unittest
 
-from shellcheck_lib_test.general.textformat import formatting
+from . import formatter
 
 
 def suite():
     ret_val = unittest.TestSuite()
-    ret_val.addTest(formatting.suite())
+    ret_val.addTest(formatter.suite())
     return ret_val
 
 
