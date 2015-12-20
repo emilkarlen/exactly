@@ -4,7 +4,7 @@ from shellcheck_lib.general.textformat.formatting import lists as lf
 from shellcheck_lib.general.textformat.formatting import paragraph_item
 from shellcheck_lib.general.textformat.formatting import section as sut
 from shellcheck_lib.general.textformat.structure import lists
-from shellcheck_lib.general.textformat.structure.document import SectionContents
+from shellcheck_lib.general.textformat.structure.document import SectionContents, Section
 from shellcheck_lib_test.general.textformat.formatting.test_resources import single_text_para, header_only_item, \
     BLANK_LINE, text
 
@@ -74,6 +74,57 @@ class TestSectionContents(unittest.TestCase):
                          actual)
 
 
+class TestSection(unittest.TestCase):
+    def test_empty_section(self):
+        paragraph_item_formatter = paragraph_item.Formatter(paragraph_item.Wrapper(page_width=100),
+                                                            num_item_separator_lines=0)
+        formatter = sut.Formatter(paragraph_item_formatter,
+                                  sut.Separation(between_sections=1,
+                                                 between_header_and_content=2,
+                                                 between_initial_paragraphs_and_sub_sections=3))
+        section = empty_section('Section Header')
+        actual = formatter.format_section(section)
+        self.assertEqual(['Section Header',
+                          ],
+                         actual)
+
+    def test_separation_between_header_and_content__with_initial_paragraphs(self):
+        paragraph_item_formatter = paragraph_item.Formatter(paragraph_item.Wrapper(page_width=100),
+                                                            num_item_separator_lines=0)
+        formatter = sut.Formatter(paragraph_item_formatter,
+                                  sut.Separation(between_sections=1,
+                                                 between_header_and_content=2,
+                                                 between_initial_paragraphs_and_sub_sections=3))
+        section = Section(text('Section Header'),
+                          SectionContents([single_text_para('initial paragraph')],
+                                          []))
+        actual = formatter.format_section(section)
+        self.assertEqual(['Section Header',
+                          BLANK_LINE,
+                          BLANK_LINE,
+                          'initial paragraph',
+                          ],
+                         actual)
+
+    def test_separation_between_header_and_content__with_only_sub_sections(self):
+        paragraph_item_formatter = paragraph_item.Formatter(paragraph_item.Wrapper(page_width=100),
+                                                            num_item_separator_lines=0)
+        formatter = sut.Formatter(paragraph_item_formatter,
+                                  sut.Separation(between_sections=1,
+                                                 between_header_and_content=2,
+                                                 between_initial_paragraphs_and_sub_sections=3))
+        section = Section(text('Section Header'),
+                          SectionContents([],
+                                          [empty_section('Content Section Header')]))
+        actual = formatter.format_section(section)
+        self.assertEqual(['Section Header',
+                          BLANK_LINE,
+                          BLANK_LINE,
+                          'Content Section Header',
+                          ],
+                         actual)
+
+
 def single_para_contents(paragraph_text: str):
     return SectionContents([single_text_para(paragraph_text)],
                            [])
@@ -87,6 +138,7 @@ def empty_section(header: str) -> sut.Section:
 def suite():
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestSectionContents))
+    ret_val.addTest(unittest.makeSuite(TestSection))
     return ret_val
 
 
