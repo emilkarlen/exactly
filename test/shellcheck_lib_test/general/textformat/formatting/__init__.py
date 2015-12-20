@@ -1,13 +1,13 @@
 import unittest
 
-from . import formatter
 from . import lists
+from . import paragraph_item
 
 
 def suite():
     ret_val = unittest.TestSuite()
     ret_val.addTest(lists.suite())
-    ret_val.addTest(formatter.suite())
+    ret_val.addTest(paragraph_item.suite())
     return ret_val
 
 

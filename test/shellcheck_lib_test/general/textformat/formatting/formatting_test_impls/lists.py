@@ -1,7 +1,7 @@
 import unittest
 
-from shellcheck_lib.general.textformat.formatting import formatter as sut
 from shellcheck_lib.general.textformat.formatting import lists as lf
+from shellcheck_lib.general.textformat.formatting import paragraph_item as sut
 from shellcheck_lib.general.textformat.structure import core
 from shellcheck_lib.general.textformat.structure import lists
 from shellcheck_lib.general.textformat.structure import paragraph
