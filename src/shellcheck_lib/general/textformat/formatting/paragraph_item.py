@@ -1,7 +1,5 @@
-from textwrap import TextWrapper
-
 from shellcheck_lib.general.textformat.formatting.lists import ListFormats, ListFormat
-from shellcheck_lib.general.textformat.formatting.wrapper import Indent
+from shellcheck_lib.general.textformat.formatting.wrapper import Indent, Wrapper
 from shellcheck_lib.general.textformat.structure.core import Text, ParagraphItem
 from shellcheck_lib.general.textformat.structure.lists import HeaderValueList, HeaderValueListItem
 from shellcheck_lib.general.textformat.structure.paragraph import Paragraph
@@ -14,40 +12,9 @@ class Formatter:
                  num_item_separator_lines: int = 1,
                  list_formats: ListFormats = ListFormats()):
         self.list_formats = list_formats
-        self.text_wrapper = TextWrapper(width=page_width)
+        self.wrapper = Wrapper(page_width=page_width)
         self.separator_lines = num_item_separator_lines * ['']
         self.text_item_formatter = _ParagraphItemFormatter(self)
-        self._saved_indents_stack = []
-
-    @property
-    def page_width(self) -> int:
-        return self.text_wrapper.width
-
-    @property
-    def current_indent(self) -> Indent:
-        return Indent(self.text_wrapper.initial_indent,
-                      self.text_wrapper.subsequent_indent)
-
-    @property
-    def saved_indents_stack(self) -> list:
-        return self._saved_indents_stack
-
-    def push_indent(self, indent: Indent):
-        text_wrapper = self.text_wrapper
-        self._saved_indents_stack.insert(0, self.current_indent)
-        text_wrapper.initial_indent = indent.first_line
-        text_wrapper.subsequent_indent = indent.following_lines
-
-    def push_indent_increase(self, delta: Indent):
-        text_wrapper = self.text_wrapper
-        indent = Indent(text_wrapper.initial_indent + delta.first_line,
-                        text_wrapper.subsequent_indent + delta.following_lines)
-        self.push_indent(indent)
-
-    def pop_indent(self):
-        indent = self._saved_indents_stack.pop()
-        self.text_wrapper.initial_indent = indent.first_line
-        self.text_wrapper.subsequent_indent = indent.following_lines
 
     def format_paragraph_items(self, items: iter) -> list:
         ret_val = []
@@ -68,7 +35,7 @@ class Formatter:
         return ret_val
 
     def format_text(self, text: Text) -> list:
-        return self.text_wrapper.wrap(text.value)
+        return self.wrapper.wrap(text.value)
 
     def format_header_value_list(self, the_list: HeaderValueList) -> list:
         list_format = self.list_formats.for_type(the_list.list_type)
@@ -114,7 +81,7 @@ class _ListFormatter:
                                                                  self.num_items,
                                                                  item.header)
         self.ret_val.extend(self.formatter.format_text(header_text))
-        self.formatter.pop_indent()
+        self.formatter.wrapper.pop_indent()
 
     def _format_content(self, item, item_number):
         content_items_list = list(item.value_paragraph_items)
@@ -122,18 +89,18 @@ class _ListFormatter:
             self.ret_val.extend(self.blank_lines_between_header_and_content)
             self.push_content_indent(item_number)
             self.ret_val.extend(self.formatter.format_paragraph_items(content_items_list))
-            self.formatter.pop_indent()
+            self.formatter.wrapper.pop_indent()
 
     def push_header_indent(self, item_number):
         following_lines_indent = self.list_format.header_format.following_header_lines_indent(item_number,
                                                                                               self.num_items)
         indent_delta = Indent('', following_lines_indent)
-        self.formatter.push_indent_increase(indent_delta)
+        self.formatter.wrapper.push_indent_increase(indent_delta)
 
     def push_content_indent(self, item_number):
         indent_str = self.list_format.header_format.value_indent(self.num_items)
         indent_delta = Indent(indent_str, indent_str)
-        self.formatter.push_indent_increase(indent_delta)
+        self.formatter.wrapper.push_indent_increase(indent_delta)
 
 
 class _ParagraphItemFormatter(ParagraphItemVisitor):
