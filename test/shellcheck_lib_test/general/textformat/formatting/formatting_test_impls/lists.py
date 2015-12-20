@@ -85,8 +85,8 @@ class TestHeaderOnlyListItemsWithLineWraps(unittest.TestCase):
 class TestThatIdentationIsNotModified(unittest.TestCase):
     def test_without_content(self):
         formatter = sut.Formatter(page_width=4)
-        current_indent_before = formatter.current_indent
-        indent_stack_before = formatter._saved_indents_stack.copy()
+        current_indent_before = formatter.wrapper.current_indent
+        indent_stack_before = formatter.wrapper.saved_indents_stack.copy()
         items = [header_only_item('h1 X'),
                  header_only_item('h2 Y')]
         list_format = lf.ListFormat(HeaderFormatWithVaryingFollowingLineIndent(3),
@@ -94,11 +94,11 @@ class TestThatIdentationIsNotModified(unittest.TestCase):
         formatter.format_header_value_list_according_to_format(items,
                                                                list_format)
         self.assertEqual(current_indent_before,
-                         formatter.current_indent,
+                         formatter.wrapper.current_indent,
                          'Current indent')
 
         self.assertEqual(indent_stack_before,
-                         formatter.saved_indents_stack,
+                         formatter.wrapper.saved_indents_stack,
                          'Saved indents stack')
 
     def test_with_content(self):
@@ -107,16 +107,16 @@ class TestThatIdentationIsNotModified(unittest.TestCase):
         items = [item('header',
                       [single_text_para('2345678')])]
         formatter = sut.Formatter(page_width=10)
-        current_indent_before = formatter.current_indent
-        indent_stack_before = formatter._saved_indents_stack.copy()
+        current_indent_before = formatter.wrapper.current_indent
+        indent_stack_before = formatter.wrapper.saved_indents_stack.copy()
         formatter.format_header_value_list_according_to_format(items,
                                                                list_format)
         self.assertEqual(current_indent_before,
-                         formatter.current_indent,
+                         formatter.wrapper.current_indent,
                          'Current indent')
 
         self.assertEqual(indent_stack_before,
-                         formatter.saved_indents_stack,
+                         formatter.wrapper.saved_indents_stack,
                          'Saved indents stack')
 
 
