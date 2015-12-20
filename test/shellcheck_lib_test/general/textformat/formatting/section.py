@@ -10,23 +10,25 @@ from shellcheck_lib_test.general.textformat.formatting.test_resources import sin
 
 
 class TestSectionContents(unittest.TestCase):
-    def test_initial_paragraphs(self):
-        paragraph_item_formatter = paragraph_item.Formatter(paragraph_item.Wrapper(page_width=100),
+    def test_only_initial_paragraphs(self):
+        paragraph_item_formatter = paragraph_item.Formatter(paragraph_item.Wrapper(page_width=5),
                                                             num_item_separator_lines=1,
                                                             list_formats=lf.ListFormats(
                                                                 variable_list_format=lf.ListFormat(
                                                                     lf.HeaderAndIndentFormatPlain(),
                                                                     lf.Separations(0, 0))))
         formatter = sut.Formatter(paragraph_item_formatter)
-        section_contents = SectionContents([single_text_para('paragraph'),
+        section_contents = SectionContents([single_text_para('12345 123 5'),
                                             lists.HeaderValueList(lists.ListType.VARIABLE_LIST,
                                                                   [header_only_item(
-                                                                      'list item header')])],
+                                                                      '12345 123')])],
                                            [])
         actual = formatter.format_section_contents(section_contents)
-        self.assertEqual(['paragraph',
+        self.assertEqual(['12345',
+                          '123 5',
                           BLANK_LINE,
-                          'list item header'],
+                          '12345',
+                          '123'],
                          actual)
 
 
