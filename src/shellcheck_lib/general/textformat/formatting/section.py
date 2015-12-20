@@ -12,8 +12,16 @@ class Separation(tuple):
                                    between_initial_paragraphs_and_sub_sections))
 
     @property
-    def value(self) -> str:
+    def between_sections(self) -> int:
         return self[0]
+
+    @property
+    def between_header_and_content(self) -> int:
+        return self[1]
+
+    @property
+    def between_initial_paragraphs_and_sub_sections(self) -> int:
+        return self[2]
 
 
 def no_separation() -> Separation:
@@ -27,20 +35,34 @@ class Formatter:
         self.paragraph_item_formatter = paragraph_item_formatter
         self.separation = separation
 
-    def format_section_contents(self, section_contents: SectionContents) -> list:
+    def format_section_contents(self,
+                                section_contents: SectionContents,
+                                prepend_separator_for_contents: bool = False) -> list:
         ret_val = []
-        ret_val.extend(self.paragraph_item_formatter.format_paragraph_items(section_contents.initial_paragraphs))
-        ret_val.extend(self.format_sections(section_contents.sections))
+        init_para_lines = self.paragraph_item_formatter.format_paragraph_items(section_contents.initial_paragraphs)
+        sections_lines = self.format_sections(section_contents.sections)
+        if prepend_separator_for_contents:
+            if init_para_lines or sections_lines:
+                ret_val.extend(self._blanks(self.separation.between_header_and_content))
+        ret_val.extend(init_para_lines)
+        if init_para_lines and sections_lines:
+            ret_val.extend(self._blanks(self.separation.between_initial_paragraphs_and_sub_sections))
+        ret_val.extend(sections_lines)
         return ret_val
 
     def format_section(self, section: Section) -> list:
         ret_val = []
         ret_val.extend(self.paragraph_item_formatter.format_text(section.header))
-        ret_val.extend(self.format_section_contents(section.contents))
+        ret_val.extend(self.format_section_contents(section.contents, True))
         return ret_val
 
     def format_sections(self, sections: list) -> list:
         ret_val = []
         for section in sections:
+            if ret_val:
+                ret_val.extend(self._blanks(self.separation.between_sections))
             ret_val.extend(self.format_section(section))
         return ret_val
+
+    def _blanks(self, num_lines: int) -> list:
+        return self.paragraph_item_formatter.wrapper.blank_lines(num_lines)
