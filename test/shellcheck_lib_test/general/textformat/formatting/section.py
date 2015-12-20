@@ -124,6 +124,28 @@ class TestSection(unittest.TestCase):
                           ],
                          actual)
 
+    def test_separation_between_header_and_content__with_both_initial_paragraphs_and_sub_sections(self):
+        paragraph_item_formatter = paragraph_item.Formatter(paragraph_item.Wrapper(page_width=100),
+                                                            num_item_separator_lines=0)
+        formatter = sut.Formatter(paragraph_item_formatter,
+                                  sut.Separation(between_sections=1,
+                                                 between_header_and_content=2,
+                                                 between_initial_paragraphs_and_sub_sections=3))
+        section = Section(text('Section Header'),
+                          SectionContents([single_text_para('initial paragraph')],
+                                          [empty_section('Content Section Header')]))
+        actual = formatter.format_section(section)
+        self.assertEqual(['Section Header',
+                          BLANK_LINE,
+                          BLANK_LINE,
+                          'initial paragraph',
+                          BLANK_LINE,
+                          BLANK_LINE,
+                          BLANK_LINE,
+                          'Content Section Header',
+                          ],
+                         actual)
+
 
 def single_para_contents(paragraph_text: str):
     return SectionContents([single_text_para(paragraph_text)],
