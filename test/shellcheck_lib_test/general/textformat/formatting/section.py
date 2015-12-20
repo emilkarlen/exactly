@@ -4,7 +4,7 @@ from shellcheck_lib.general.textformat.formatting import lists as lf
 from shellcheck_lib.general.textformat.formatting import paragraph_item
 from shellcheck_lib.general.textformat.formatting import section as sut
 from shellcheck_lib.general.textformat.structure import lists
-from shellcheck_lib.general.textformat.structure.document import SectionContents, Section
+from shellcheck_lib.general.textformat.structure.document import SectionContents
 from shellcheck_lib_test.general.textformat.formatting.test_resources import single_text_para, header_only_item, \
     BLANK_LINE, text
 
@@ -37,21 +37,15 @@ class TestSectionContents(unittest.TestCase):
         formatter = sut.Formatter(paragraph_item_formatter,
                                   sut.no_separation())
         section_contents = SectionContents([],
-                                           [Section(text('*Section 1'),
-                                                    single_para_contents('Paragraph in Section 1')),
-                                            Section(
-                                                text('*Section 2'),
-                                                SectionContents(
-                                                    [],
-                                                    [Section(text('*Section 2.1'),
-                                                             single_para_contents(
-                                                                 'Paragraph in Section 2.1'))]))])
+                                           [empty_section('Section 1'),
+                                            sut.Section(text('Section 2'),
+                                                        sut.SectionContents(
+                                                            [],
+                                                            [empty_section('Section 2.1')]))])
         actual = formatter.format_section_contents(section_contents)
-        self.assertEqual(['*Section 1',
-                          'Paragraph in Section 1',
-                          '*Section 2',
-                          '*Section 2.1',
-                          'Paragraph in Section 2.1',
+        self.assertEqual(['Section 1',
+                          'Section 2',
+                          'Section 2.1',
                           ],
                          actual)
 
@@ -59,6 +53,11 @@ class TestSectionContents(unittest.TestCase):
 def single_para_contents(paragraph_text: str):
     return SectionContents([single_text_para(paragraph_text)],
                            [])
+
+
+def empty_section(header: str) -> sut.Section:
+    return sut.Section(text(header),
+                       sut.SectionContents([], []))
 
 
 def suite():
