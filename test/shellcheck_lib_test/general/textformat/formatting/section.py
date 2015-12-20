@@ -35,16 +35,22 @@ class TestSectionContents(unittest.TestCase):
         paragraph_item_formatter = paragraph_item.Formatter(paragraph_item.Wrapper(page_width=100),
                                                             num_item_separator_lines=0)
         formatter = sut.Formatter(paragraph_item_formatter,
-                                  sut.no_separation())
+                                  sut.Separation(between_sections=1,
+                                                 between_header_and_content=2,
+                                                 between_initial_paragraphs_and_sub_sections=3))
         section_contents = SectionContents([],
                                            [empty_section('Section 1'),
                                             sut.Section(text('Section 2'),
                                                         sut.SectionContents(
                                                             [],
-                                                            [empty_section('Section 2.1')]))])
+                                                            [empty_section('Section 2.1')]))
+                                            ])
         actual = formatter.format_section_contents(section_contents)
         self.assertEqual(['Section 1',
+                          BLANK_LINE,
                           'Section 2',
+                          BLANK_LINE,
+                          BLANK_LINE,
                           'Section 2.1',
                           ],
                          actual)
@@ -53,11 +59,16 @@ class TestSectionContents(unittest.TestCase):
         paragraph_item_formatter = paragraph_item.Formatter(paragraph_item.Wrapper(page_width=100),
                                                             num_item_separator_lines=0)
         formatter = sut.Formatter(paragraph_item_formatter,
-                                  sut.no_separation())
+                                  sut.Separation(between_sections=1,
+                                                 between_header_and_content=2,
+                                                 between_initial_paragraphs_and_sub_sections=3))
         section_contents = SectionContents([single_text_para('initial paragraph')],
                                            [empty_section('Section Header')])
         actual = formatter.format_section_contents(section_contents)
         self.assertEqual(['initial paragraph',
+                          BLANK_LINE,
+                          BLANK_LINE,
+                          BLANK_LINE,
                           'Section Header',
                           ],
                          actual)
