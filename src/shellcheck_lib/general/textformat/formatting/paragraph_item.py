@@ -20,6 +20,10 @@ class Formatter:
         self._saved_indents_stack = []
 
     @property
+    def page_width(self) -> int:
+        return self.text_wrapper.width
+
+    @property
     def current_indent(self) -> Indent:
         return Indent(self.text_wrapper.initial_indent,
                       self.text_wrapper.subsequent_indent)

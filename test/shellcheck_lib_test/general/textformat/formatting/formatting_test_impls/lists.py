@@ -4,7 +4,7 @@ from shellcheck_lib.general.textformat.formatting import lists as lf
 from shellcheck_lib.general.textformat.formatting import paragraph_item as sut
 from shellcheck_lib.general.textformat.structure import core
 from shellcheck_lib.general.textformat.structure import lists
-from shellcheck_lib_test.general.textformat.formatting.test_resources import text, single_text_para
+from shellcheck_lib_test.general.textformat.formatting.test_resources import single_text_para, item, header_only_item
 
 NO_SEPARATIONS = lf.Separations(num_blank_lines_between_elements=0,
                                 num_blank_lines_between_header_and_value=0)
@@ -232,16 +232,6 @@ class TestResolveListFormat(unittest.TestCase):
                                                                           items))
         self.assertEqual(['header'],
                          actual)
-
-
-def item(header: str,
-         content: list) -> lists.HeaderValueListItem:
-    return lists.HeaderValueListItem(text(header),
-                                     content)
-
-
-def header_only_item(header: str) -> lists.HeaderValueListItem:
-    return item(header, [])
 
 
 class HeaderFormatWithVaryingFollowingLineIndent(lf.HeaderAndIndentFormatWithConstantValueIndentBase):

@@ -1,4 +1,6 @@
-from shellcheck_lib.general.textformat.structure import core, paragraph
+from shellcheck_lib.general.textformat.structure import core, paragraph, lists
+
+BLANK_LINE = ''
 
 
 def text(string: str) -> core.Text:
@@ -11,3 +13,13 @@ def para(texts: iter) -> paragraph.Paragraph:
 
 def single_text_para(string: str) -> paragraph.Paragraph:
     return paragraph.Paragraph([text(string)])
+
+
+def item(header: str,
+         content: list) -> lists.HeaderValueListItem:
+    return lists.HeaderValueListItem(text(header),
+                                     content)
+
+
+def header_only_item(header: str) -> lists.HeaderValueListItem:
+    return item(header, [])
