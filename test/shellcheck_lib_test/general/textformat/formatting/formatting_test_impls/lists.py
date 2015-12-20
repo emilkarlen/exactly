@@ -4,7 +4,8 @@ from shellcheck_lib.general.textformat.formatting import lists as lf
 from shellcheck_lib.general.textformat.formatting import paragraph_item as sut
 from shellcheck_lib.general.textformat.structure import core
 from shellcheck_lib.general.textformat.structure import lists
-from shellcheck_lib_test.general.textformat.formatting.test_resources import single_text_para, item, header_only_item
+from shellcheck_lib_test.general.textformat.formatting.test_resources import single_text_para, item, header_only_item, \
+    BLANK_LINE
 
 NO_SEPARATIONS = lf.Separations(num_blank_lines_between_elements=0,
                                 num_blank_lines_between_header_and_value=0)
@@ -148,7 +149,7 @@ class TestContentFormatting(unittest.TestCase):
                           ' 2345678',
                           '2. h2',
                           ' content 1',
-                          '',
+                          BLANK_LINE,
                           ' content 2'],
                          actual)
 
@@ -181,8 +182,8 @@ class TestSeparations(unittest.TestCase):
         actual = formatter.format_header_value_list_according_to_format(items,
                                                                         self.list_format)
         self.assertEqual(['1. header 1',
-                          '',
-                          '',
+                          BLANK_LINE,
+                          BLANK_LINE,
                           '2. header 2'],
                          actual)
 
@@ -193,7 +194,7 @@ class TestSeparations(unittest.TestCase):
         actual = formatter.format_header_value_list_according_to_format(items,
                                                                         self.list_format)
         self.assertEqual(['1. header',
-                          '',
+                          BLANK_LINE,
                           ' content'],
                          actual)
 
