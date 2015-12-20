@@ -1,8 +1,7 @@
 import unittest
 
 from shellcheck_lib.general.textformat.formatting import paragraph_item as sut
-from shellcheck_lib.general.textformat.structure import core
-from shellcheck_lib.general.textformat.structure import paragraph
+from shellcheck_lib_test.general.textformat.formatting.test_resources import text, para
 
 
 class TestParagraph(unittest.TestCase):
@@ -74,14 +73,6 @@ class TestParagraphItems(unittest.TestCase):
                           '',
                           'abc'],
                          actual)
-
-
-def text(string: str) -> core.Text:
-    return core.Text(string)
-
-
-def para(texts: iter) -> paragraph.Paragraph:
-    return paragraph.Paragraph(texts)
 
 
 def suite():
