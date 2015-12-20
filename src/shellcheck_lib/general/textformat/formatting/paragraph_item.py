@@ -13,7 +13,7 @@ class Formatter:
                  list_formats: ListFormats = ListFormats()):
         self.list_formats = list_formats
         self.wrapper = Wrapper(page_width=page_width)
-        self.separator_lines = num_item_separator_lines * ['']
+        self.separator_lines = self.wrapper.blank_lines(num_item_separator_lines)
         self.text_item_formatter = _ParagraphItemFormatter(self)
 
     def format_paragraph_items(self, items: iter) -> list:
@@ -61,8 +61,10 @@ class _ListFormatter:
         self.items_list = list(items)
         self.num_items = len(self.items_list)
         separations = list_format.separations
-        self.blank_lines_between_elements = separations.num_blank_lines_between_elements * ['']
-        self.blank_lines_between_header_and_content = separations.num_blank_lines_between_header_and_value * ['']
+        self.blank_lines_between_elements = formatter.wrapper.blank_lines(
+            separations.num_blank_lines_between_elements)
+        self.blank_lines_between_header_and_content = formatter.wrapper.blank_lines(
+            separations.num_blank_lines_between_header_and_value)
         self.ret_val = []
 
     def apply(self) -> list:

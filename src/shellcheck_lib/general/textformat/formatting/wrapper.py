@@ -22,6 +22,13 @@ class Wrapper:
         self.text_wrapper = TextWrapper(width=page_width)
         self._saved_indents_stack = []
 
+    def wrap(self, text: str) -> list:
+        return self.text_wrapper.wrap(text)
+
+    @staticmethod
+    def blank_lines(num_lines=1) -> list:
+        return num_lines * ['']
+
     @property
     def page_width(self) -> int:
         return self.text_wrapper.width
@@ -51,6 +58,3 @@ class Wrapper:
         indent = self._saved_indents_stack.pop()
         self.text_wrapper.initial_indent = indent.first_line
         self.text_wrapper.subsequent_indent = indent.following_lines
-
-    def wrap(self, text: str) -> list:
-        return self.text_wrapper.wrap(text)
