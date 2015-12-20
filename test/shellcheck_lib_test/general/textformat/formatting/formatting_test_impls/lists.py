@@ -17,7 +17,7 @@ list_formatter_with_no_blank_lines = lf.ListFormat(lf.HeaderAndIndentFormatWithN
 class TestHeaderOnlyListItemsWithNoLineWraps(unittest.TestCase):
     def test_empty_list(self):
         items = []
-        formatter = sut.Formatter(page_width=10)
+        formatter = formatter_with_page_width(10)
         actual = formatter.format_header_value_list_according_to_format(items,
                                                                         list_formatter_with_no_blank_lines)
         self.assertEqual([],
@@ -25,7 +25,7 @@ class TestHeaderOnlyListItemsWithNoLineWraps(unittest.TestCase):
 
     def test_singleton_list(self):
         items = [header_only_item('header')]
-        formatter = sut.Formatter(page_width=10)
+        formatter = formatter_with_page_width(10)
         actual = formatter.format_header_value_list_according_to_format(items,
                                                                         list_formatter_with_no_blank_lines)
         self.assertEqual(['1. header'],
@@ -34,7 +34,7 @@ class TestHeaderOnlyListItemsWithNoLineWraps(unittest.TestCase):
     def test_multi_element_list(self):
         items = [header_only_item('header 1'),
                  header_only_item('header 2')]
-        formatter = sut.Formatter(page_width=20)
+        formatter = formatter_with_page_width(20)
         actual = formatter.format_header_value_list_according_to_format(items,
                                                                         list_formatter_with_no_blank_lines)
         self.assertEqual(['1. header 1',
@@ -44,7 +44,7 @@ class TestHeaderOnlyListItemsWithNoLineWraps(unittest.TestCase):
 
 class TestHeaderOnlyListItemsWithLineWraps(unittest.TestCase):
     def test_singleton_list(self):
-        formatter = sut.Formatter(page_width=5)
+        formatter = formatter_with_page_width(5)
         items = [header_only_item('45 4')]
         actual = formatter.format_header_value_list_according_to_format(items,
                                                                         list_formatter_with_no_blank_lines)
@@ -53,7 +53,7 @@ class TestHeaderOnlyListItemsWithLineWraps(unittest.TestCase):
                          actual)
 
     def test_multi_element_list(self):
-        formatter = sut.Formatter(page_width=5)
+        formatter = formatter_with_page_width(5)
         items = [header_only_item('45 4'),
                  header_only_item('ab c')]
         actual = formatter.format_header_value_list_according_to_format(items,
@@ -65,7 +65,7 @@ class TestHeaderOnlyListItemsWithLineWraps(unittest.TestCase):
                          actual)
 
     def test_varying_header_following_line_indent(self):
-        formatter = sut.Formatter(page_width=4)
+        formatter = formatter_with_page_width(4)
         items = [header_only_item('h1 X'),
                  header_only_item('h2 Y'),
                  header_only_item('h3 Z')]
@@ -84,7 +84,7 @@ class TestHeaderOnlyListItemsWithLineWraps(unittest.TestCase):
 
 class TestThatIdentationIsNotModified(unittest.TestCase):
     def test_without_content(self):
-        formatter = sut.Formatter(page_width=4)
+        formatter = formatter_with_page_width(4)
         current_indent_before = formatter.wrapper.current_indent
         indent_stack_before = formatter.wrapper.saved_indents_stack.copy()
         items = [header_only_item('h1 X'),
@@ -106,7 +106,7 @@ class TestThatIdentationIsNotModified(unittest.TestCase):
                                     NO_SEPARATIONS)
         items = [item('header',
                       [single_text_para('2345678')])]
-        formatter = sut.Formatter(page_width=10)
+        formatter = formatter_with_page_width(10)
         current_indent_before = formatter.wrapper.current_indent
         indent_stack_before = formatter.wrapper.saved_indents_stack.copy()
         formatter.format_header_value_list_according_to_format(items,
@@ -126,7 +126,7 @@ class TestContentFormatting(unittest.TestCase):
                                     NO_SEPARATIONS)
         items = [item('header',
                       [single_text_para('2345678 abc def')])]
-        formatter = sut.Formatter(page_width=10)
+        formatter = formatter_with_page_width(10)
         actual = formatter.format_header_value_list_according_to_format(items,
                                                                         list_format)
         self.assertEqual(['1. header',
@@ -142,7 +142,7 @@ class TestContentFormatting(unittest.TestCase):
                  item('h2',
                       [single_text_para('content 1'),
                        single_text_para('content 2')])]
-        formatter = sut.Formatter(page_width=10)
+        formatter = formatter_with_page_width(10)
         actual = formatter.format_header_value_list_according_to_format(items,
                                                                         list_format)
         self.assertEqual(['1. h1',
@@ -161,7 +161,7 @@ class TestSeparations(unittest.TestCase):
 
     def test_empty_list(self):
         items = []
-        formatter = sut.Formatter(page_width=10)
+        formatter = formatter_with_page_width(10)
         actual = formatter.format_header_value_list_according_to_format(items,
                                                                         self.list_format)
         self.assertEqual([],
@@ -169,7 +169,7 @@ class TestSeparations(unittest.TestCase):
 
     def test_singleton_list(self):
         items = [header_only_item('header')]
-        formatter = sut.Formatter(page_width=10)
+        formatter = formatter_with_page_width(10)
         actual = formatter.format_header_value_list_according_to_format(items,
                                                                         self.list_format)
         self.assertEqual(['1. header'],
@@ -178,7 +178,7 @@ class TestSeparations(unittest.TestCase):
     def test_multi_element_list__no_content(self):
         items = [header_only_item('header 1'),
                  header_only_item('header 2')]
-        formatter = sut.Formatter(page_width=20)
+        formatter = formatter_with_page_width(20)
         actual = formatter.format_header_value_list_according_to_format(items,
                                                                         self.list_format)
         self.assertEqual(['1. header 1',
@@ -190,7 +190,7 @@ class TestSeparations(unittest.TestCase):
     def test_item_with_content(self):
         items = [item('header',
                       [single_text_para('content')])]
-        formatter = sut.Formatter(page_width=10)
+        formatter = formatter_with_page_width(10)
         actual = formatter.format_header_value_list_according_to_format(items,
                                                                         self.list_format)
         self.assertEqual(['1. header',
@@ -209,7 +209,7 @@ class TestResolveListFormat(unittest.TestCase):
 
     def test_itemized_list(self):
         items = [header_only_item('header')]
-        formatter = sut.Formatter(page_width=100,
+        formatter = sut.Formatter(sut.Wrapper(page_width=100),
                                   list_formats=self.LIST_FORMATS)
         actual = formatter.format_header_value_list(lists.HeaderValueList(lists.ListType.ITEMIZED_LIST,
                                                                           items))
@@ -218,7 +218,7 @@ class TestResolveListFormat(unittest.TestCase):
 
     def test_ordered_list(self):
         items = [header_only_item('header')]
-        formatter = sut.Formatter(page_width=100,
+        formatter = sut.Formatter(sut.Wrapper(page_width=100),
                                   list_formats=self.LIST_FORMATS)
         actual = formatter.format_header_value_list(lists.HeaderValueList(lists.ListType.ORDERED_LIST,
                                                                           items))
@@ -227,7 +227,7 @@ class TestResolveListFormat(unittest.TestCase):
 
     def test_variable_list(self):
         items = [header_only_item('header')]
-        formatter = sut.Formatter(page_width=100,
+        formatter = sut.Formatter(sut.Wrapper(page_width=100),
                                   list_formats=self.LIST_FORMATS)
         actual = formatter.format_header_value_list(lists.HeaderValueList(lists.ListType.VARIABLE_LIST,
                                                                           items))
@@ -253,6 +253,10 @@ class HeaderFormatWithVaryingFollowingLineIndent(lf.HeaderAndIndentFormatWithCon
     @staticmethod
     def _prefix(element_number: int) -> str:
         return '*' if element_number % 2 == 0 else '**'
+
+
+def formatter_with_page_width(page_width: int) -> sut.Formatter:
+    return sut.Formatter(sut.Wrapper(page_width=page_width))
 
 
 def suite():

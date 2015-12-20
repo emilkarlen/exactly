@@ -8,11 +8,11 @@ from shellcheck_lib.general.textformat.structure.utils import ParagraphItemVisit
 
 class Formatter:
     def __init__(self,
-                 page_width: int = 70,
+                 wrapper: Wrapper = Wrapper(),
                  num_item_separator_lines: int = 1,
                  list_formats: ListFormats = ListFormats()):
         self.list_formats = list_formats
-        self.wrapper = Wrapper(page_width=page_width)
+        self.wrapper = wrapper
         self.separator_lines = self.wrapper.blank_lines(num_item_separator_lines)
         self.text_item_formatter = _ParagraphItemFormatter(self)
 

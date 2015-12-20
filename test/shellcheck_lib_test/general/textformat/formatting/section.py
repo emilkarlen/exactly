@@ -11,7 +11,7 @@ from shellcheck_lib_test.general.textformat.formatting.test_resources import sin
 
 class TestSectionContents(unittest.TestCase):
     def test_initial_paragraphs(self):
-        paragraph_item_formatter = paragraph_item.Formatter(page_width=100,
+        paragraph_item_formatter = paragraph_item.Formatter(paragraph_item.Wrapper(page_width=100),
                                                             num_item_separator_lines=1,
                                                             list_formats=lf.ListFormats(
                                                                 variable_list_format=lf.ListFormat(
