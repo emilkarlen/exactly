@@ -89,7 +89,7 @@ class Formatter:
                                                      items: iter,
                                                      list_format: ListFormat) -> list:
         """
-        :param items: [HeaderValueListItem]
+        :type items: [HeaderValueListItem]
         """
         return _ListFormatter(self, list_format, items).apply()
 
