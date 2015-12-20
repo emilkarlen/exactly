@@ -31,7 +31,7 @@ class TestSectionContents(unittest.TestCase):
                           '123'],
                          actual)
 
-    def test_sub_sections(self):
+    def test_multiple_and_nested_sub_sections(self):
         paragraph_item_formatter = paragraph_item.Formatter(paragraph_item.Wrapper(page_width=100),
                                                             num_item_separator_lines=0)
         formatter = sut.Formatter(paragraph_item_formatter,
@@ -46,6 +46,19 @@ class TestSectionContents(unittest.TestCase):
         self.assertEqual(['Section 1',
                           'Section 2',
                           'Section 2.1',
+                          ],
+                         actual)
+
+    def test_initial_paragraph_and_single_sub_section(self):
+        paragraph_item_formatter = paragraph_item.Formatter(paragraph_item.Wrapper(page_width=100),
+                                                            num_item_separator_lines=0)
+        formatter = sut.Formatter(paragraph_item_formatter,
+                                  sut.no_separation())
+        section_contents = SectionContents([single_text_para('initial paragraph')],
+                                           [empty_section('Section Header')])
+        actual = formatter.format_section_contents(section_contents)
+        self.assertEqual(['initial paragraph',
+                          'Section Header',
                           ],
                          actual)
 
