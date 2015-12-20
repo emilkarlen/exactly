@@ -1,25 +1,11 @@
 from textwrap import TextWrapper
 
 from shellcheck_lib.general.textformat.formatting.lists import ListFormats, ListFormat
+from shellcheck_lib.general.textformat.formatting.wrapper import Indent
 from shellcheck_lib.general.textformat.structure.core import Text, ParagraphItem
 from shellcheck_lib.general.textformat.structure.lists import HeaderValueList, HeaderValueListItem
 from shellcheck_lib.general.textformat.structure.paragraph import Paragraph
 from shellcheck_lib.general.textformat.structure.utils import ParagraphItemVisitor
-
-
-class Indent(tuple):
-    def __new__(cls,
-                first_line: str,
-                following_lines: str):
-        return tuple.__new__(cls, (first_line, following_lines))
-
-    @property
-    def first_line(self) -> str:
-        return self[0]
-
-    @property
-    def following_lines(self) -> str:
-        return self[1]
 
 
 class Formatter:
