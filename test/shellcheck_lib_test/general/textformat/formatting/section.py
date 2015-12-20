@@ -4,9 +4,9 @@ from shellcheck_lib.general.textformat.formatting import lists as lf
 from shellcheck_lib.general.textformat.formatting import paragraph_item
 from shellcheck_lib.general.textformat.formatting import section as sut
 from shellcheck_lib.general.textformat.structure import lists
-from shellcheck_lib.general.textformat.structure.document import SectionContents
+from shellcheck_lib.general.textformat.structure.document import SectionContents, Section
 from shellcheck_lib_test.general.textformat.formatting.test_resources import single_text_para, header_only_item, \
-    BLANK_LINE
+    BLANK_LINE, text
 
 
 class TestSectionContents(unittest.TestCase):
@@ -30,6 +30,35 @@ class TestSectionContents(unittest.TestCase):
                           '12345',
                           '123'],
                          actual)
+
+    def test_sub_sections(self):
+        paragraph_item_formatter = paragraph_item.Formatter(paragraph_item.Wrapper(page_width=100),
+                                                            num_item_separator_lines=0)
+        formatter = sut.Formatter(paragraph_item_formatter,
+                                  sut.no_separation())
+        section_contents = SectionContents([],
+                                           [Section(text('*Section 1'),
+                                                    single_para_contents('Paragraph in Section 1')),
+                                            Section(
+                                                text('*Section 2'),
+                                                SectionContents(
+                                                    [],
+                                                    [Section(text('*Section 2.1'),
+                                                             single_para_contents(
+                                                                 'Paragraph in Section 2.1'))]))])
+        actual = formatter.format_section_contents(section_contents)
+        self.assertEqual(['*Section 1',
+                          'Paragraph in Section 1',
+                          '*Section 2',
+                          '*Section 2.1',
+                          'Paragraph in Section 2.1',
+                          ],
+                         actual)
+
+
+def single_para_contents(paragraph_text: str):
+    return SectionContents([single_text_para(paragraph_text)],
+                           [])
 
 
 def suite():
