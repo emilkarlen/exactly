@@ -1,6 +1,6 @@
 import os
 
-from shellcheck_lib.cli.execution_mode.help.argument_parsing import parse as parse_help, HelpError
+from shellcheck_lib.cli.execution_mode.help import argument_parsing as parse_help
 from shellcheck_lib.cli.execution_mode.help.execution import print_help
 from shellcheck_lib.cli.execution_mode.test_case import argument_parsing as case_argument_parsing
 from shellcheck_lib.cli.execution_mode.test_case.settings import TestCaseExecutionSettings
@@ -56,8 +56,8 @@ class MainProgram:
 
     def _parse_and_execute_help(self, help_command_arguments: list) -> int:
         try:
-            settings = parse_help(self._instruction_set, help_command_arguments)
-        except HelpError as ex:
+            settings = parse_help.parse(self._instruction_set, help_command_arguments)
+        except parse_help.HelpError as ex:
             self._output.err.write(ex.msg)
             return EXIT_INVALID_USAGE
         print_help(self._output.out, self._instruction_set, settings)
