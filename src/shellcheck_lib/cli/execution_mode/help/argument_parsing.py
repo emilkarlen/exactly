@@ -1,6 +1,6 @@
 from shellcheck_lib.test_case.instruction_setup import InstructionsSetup
 
-from .settings import HelpSettings, TestCaseHelpSettings, TestCaseHelpItem
+from .settings import HelpSettings, ProgramHelpSettings, TestCaseHelpSettings, TestCaseHelpItem
 
 INSTRUCTIONS = 'instructions'
 
@@ -14,8 +14,10 @@ class HelpError(Exception):
 def parse(instruction_set: InstructionsSetup,
           help_command_arguments: list) -> HelpSettings:
     """
-    :raises ArgumentParsingError Invalid usage
+    :raises HelpError Invalid usage
     """
+    if not help_command_arguments:
+        return ProgramHelpSettings()
     if len(help_command_arguments) != 1:
         raise HelpError('Invalid number of arguments.')
     argument = help_command_arguments[0]
