@@ -1,8 +1,8 @@
 import os
 
-from shellcheck_lib.default.execution_mode.test_case.instruction_setup import Description, InvokationVariant
-from shellcheck_lib.instructions.utils.parse_utils import spit_arguments_list_string
 from shellcheck_lib.instructions.utils.destination_path import *
+from shellcheck_lib.instructions.utils.parse_utils import spit_arguments_list_string
+from shellcheck_lib.test_case.instruction_setup import Description, InvokationVariant
 
 DESCRIPTION = Description(
     'Changes Present Working Directory',

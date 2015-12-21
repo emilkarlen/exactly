@@ -2,18 +2,18 @@ import copy
 import os
 import pathlib
 
+from shellcheck_lib.default.execution_mode.test_case import test_case_parser
 from shellcheck_lib.document import parse as document_parser
 from shellcheck_lib.document.parse import SectionElementParser
 from shellcheck_lib.execution import full_execution
 from shellcheck_lib.execution.partial_execution import ScriptHandling
 from shellcheck_lib.execution.result import FullResult
 from shellcheck_lib.general import line_source
+from shellcheck_lib.test_case import error_description
 from shellcheck_lib.test_case import processing_utils
 from shellcheck_lib.test_case import test_case_doc
 from shellcheck_lib.test_case import test_case_processing as processing
-from shellcheck_lib.test_case import error_description
-from shellcheck_lib.default.execution_mode.test_case import test_case_parser
-from shellcheck_lib.default.execution_mode.test_case.instruction_setup import InstructionsSetup
+from shellcheck_lib.test_case.instruction_setup import InstructionsSetup
 from shellcheck_lib.test_case.sections.act.phase_setup import ActPhaseSetup
 from shellcheck_lib.test_case.test_case_processing import ErrorInfo, ProcessError, Preprocessor
 
