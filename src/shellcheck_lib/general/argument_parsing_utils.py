@@ -31,5 +31,3 @@ def raise_exception_instead_of_exiting_on_error(parser: argparse.ArgumentParser,
         return parser.parse_args(arguments)
     finally:
         argparse.ArgumentParser.error = original_error_handler
-
-

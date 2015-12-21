@@ -1,11 +1,11 @@
-import pathlib
 import argparse
+import pathlib
 import shlex
 
-from shellcheck_lib.cli import argument_parsing_utils
-from .settings import Output, TestCaseExecutionSettings
 from shellcheck_lib.cli.argument_parsing_of_act_phase_setup import resolve_act_phase_setup_from_argparse_argument
+from shellcheck_lib.general import argument_parsing_utils
 from shellcheck_lib.test_case.preprocessor import IdentityPreprocessor, PreprocessorViaExternalProgram
+from .settings import Output, TestCaseExecutionSettings
 
 
 def _parse_preprocessor(preprocessor_argument):

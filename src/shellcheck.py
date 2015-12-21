@@ -17,7 +17,7 @@
 # along with shellcheck.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
-from shellcheck_lib.cli.default_main_program_setup import *
+from shellcheck_lib.default.default_main_program_setup import *
 
 exit_status = default_main_program().execute(sys.argv[1:])
 sys.exit(exit_status)
