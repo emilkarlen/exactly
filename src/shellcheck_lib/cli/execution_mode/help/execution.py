@@ -50,7 +50,7 @@ def print_help(file,
 def doc_for(instruction_setup: InstructionsSetup,
             settings: HelpSettings) -> doc.SectionContents:
     if isinstance(settings, ProgramHelpSettings):
-        return doc.SectionContents(para('TODO program help'), [])
+        return doc.SectionContents([para('TODO program help')], [])
     if isinstance(settings, TestCaseHelpSettings):
         tc_help = TestCaseHelp()
         item = settings.item
