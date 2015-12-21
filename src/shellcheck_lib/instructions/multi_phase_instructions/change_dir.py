@@ -2,7 +2,7 @@ import os
 
 from shellcheck_lib.instructions.utils.destination_path import *
 from shellcheck_lib.instructions.utils.parse_utils import spit_arguments_list_string
-from shellcheck_lib.test_case.instruction_setup import Description, InvokationVariant
+from shellcheck_lib.test_case.help.instruction_description import InvokationVariant, Description
 
 DESCRIPTION = Description(
     'Changes Present Working Directory',

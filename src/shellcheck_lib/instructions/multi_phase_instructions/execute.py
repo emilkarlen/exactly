@@ -15,8 +15,8 @@ from shellcheck_lib.instructions.utils.file_ref_check import FileRefCheckValidat
 from shellcheck_lib.instructions.utils.parse_file_ref import ALL_REL_OPTIONS
 from shellcheck_lib.instructions.utils.parse_utils import TokenStream
 from shellcheck_lib.instructions.utils.pre_or_post_validation import PreOrPostEdsValidator, AndValidator
-from shellcheck_lib.test_case.instruction_setup import Description, InvokationVariant, \
-    SyntaxElementDescription
+from shellcheck_lib.test_case.help.instruction_description import InvokationVariant, SyntaxElementDescription, \
+    Description
 from shellcheck_lib.test_case.sections.common import HomeAndEds
 
 INTERPRET_OPTION = '--interpret'
