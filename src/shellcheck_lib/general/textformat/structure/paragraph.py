@@ -1,4 +1,4 @@
-from shellcheck_lib.general.textformat.structure.core import ParagraphItem
+from shellcheck_lib.general.textformat.structure.core import ParagraphItem, Text
 
 
 class Paragraph(ParagraphItem):
@@ -9,3 +9,7 @@ class Paragraph(ParagraphItem):
         on a new line.
         """
         self.start_on_new_line_blocks = start_on_new_line_blocks
+
+
+def para(text: str) -> Paragraph:
+    return Paragraph([Text(text)])
