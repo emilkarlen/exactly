@@ -1,9 +1,9 @@
-import pathlib
 import argparse
+import pathlib
 
-from shellcheck_lib.cli import argument_parsing_utils
-from .settings import Settings
 from shellcheck_lib.cli.argument_parsing_of_act_phase_setup import resolve_act_phase_setup_from_argparse_argument
+from shellcheck_lib.general import argument_parsing_utils
+from .settings import Settings
 
 
 def parse(argv: list) -> Settings:

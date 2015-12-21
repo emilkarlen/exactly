@@ -1,6 +1,6 @@
 import unittest
 
-from shellcheck_lib.cli.default_main_program_setup import *
+from shellcheck_lib.default.default_main_program_setup import *
 
 
 class TestCase(unittest.TestCase):
