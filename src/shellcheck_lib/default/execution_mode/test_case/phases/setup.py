@@ -1,4 +1,3 @@
-from shellcheck_lib.default.execution_mode.test_case.instruction_setup import SingleInstructionSetup
 from shellcheck_lib.instructions.setup import change_dir
 from shellcheck_lib.instructions.setup import env
 from shellcheck_lib.instructions.setup import execute
@@ -7,6 +6,7 @@ from shellcheck_lib.instructions.setup import new_dir
 from shellcheck_lib.instructions.setup import new_file
 from shellcheck_lib.instructions.setup import shell
 from shellcheck_lib.instructions.setup import stdin
+from shellcheck_lib.test_case.instruction_setup import SingleInstructionSetup
 
 INSTRUCTIONS = {
     'env':

@@ -1,5 +1,5 @@
-from shellcheck_lib.default.execution_mode.test_case.instruction_setup import SingleInstructionSetup
 from shellcheck_lib.instructions.configuration import home
+from shellcheck_lib.test_case.instruction_setup import SingleInstructionSetup
 
 INSTRUCTIONS = {
     'home':

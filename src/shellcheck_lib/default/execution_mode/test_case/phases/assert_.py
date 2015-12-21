@@ -1,4 +1,3 @@
-from shellcheck_lib.default.execution_mode.test_case.instruction_setup import SingleInstructionSetup
 from shellcheck_lib.instructions.assert_phase import change_dir
 from shellcheck_lib.instructions.assert_phase import contents as contents_instruction
 from shellcheck_lib.instructions.assert_phase import execute
@@ -7,6 +6,7 @@ from shellcheck_lib.instructions.assert_phase import new_dir
 from shellcheck_lib.instructions.assert_phase import shell
 from shellcheck_lib.instructions.assert_phase import stdout_stderr as stdout_stderr_instruction
 from shellcheck_lib.instructions.assert_phase import type
+from shellcheck_lib.test_case.instruction_setup import SingleInstructionSetup
 
 INSTRUCTIONS = {
     'exitcode':

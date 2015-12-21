@@ -1,19 +1,19 @@
 import datetime
 
-from shellcheck_lib.general.std import StdOutputFiles
-from shellcheck_lib.cli.execution_mode.test_suite.settings import Settings
-from shellcheck_lib.cli.execution_mode.help import execution as help_execution
-from shellcheck_lib.cli.execution_mode.test_case.settings import TestCaseExecutionSettings
-from shellcheck_lib.cli.execution_mode.test_case import execution as test_case_execution
-from shellcheck_lib.cli.execution_mode.help.settings import HelpSettings
 from shellcheck_lib.cli import main_program
+from shellcheck_lib.cli.execution_mode.help import execution as help_execution
+from shellcheck_lib.cli.execution_mode.help.settings import HelpSettings
+from shellcheck_lib.cli.execution_mode.test_case import execution as test_case_execution
+from shellcheck_lib.cli.execution_mode.test_case.settings import TestCaseExecutionSettings
+from shellcheck_lib.cli.execution_mode.test_suite.settings import Settings
+from shellcheck_lib.default.execution_mode.test_case import processing as case_processing
+from shellcheck_lib.default.execution_mode.test_suite import reporting as suite_reporting
+from shellcheck_lib.general.std import StdOutputFiles
+from shellcheck_lib.test_case.instruction_setup import InstructionsSetup
 from shellcheck_lib.test_case.preprocessor import IdentityPreprocessor
+from shellcheck_lib.test_suite import enumeration
 from shellcheck_lib.test_suite import execution as test_suite_execution
 from shellcheck_lib.test_suite import suite_hierarchy_reading
-from shellcheck_lib.test_suite import enumeration
-from shellcheck_lib.default.execution_mode.test_suite import reporting as suite_reporting
-from shellcheck_lib.default.execution_mode.test_case import processing as case_processing
-from shellcheck_lib.default.execution_mode.test_case.instruction_setup import InstructionsSetup
 
 
 class MainProgram(main_program.MainProgram):
