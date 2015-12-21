@@ -6,7 +6,7 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.general.string import line_separated
 from shellcheck_lib.instructions.utils.parse_utils import spit_arguments_list_string
-from shellcheck_lib.test_case.instruction_setup import Description, InvokationVariant
+from shellcheck_lib.test_case.help.instruction_description import InvokationVariant, Description
 from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.sections import common as i
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction

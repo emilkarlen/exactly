@@ -4,7 +4,7 @@ from shellcheck_lib.instructions.utils import file_ref
 from shellcheck_lib.instructions.utils.file_properties import FileType, must_exist_as, FilePropertiesCheck
 from shellcheck_lib.instructions.utils.file_ref_check import pre_or_post_eds_failure_message_or_none, FileRefCheck
 from shellcheck_lib.instructions.utils.parse_utils import spit_arguments_list_string, ensure_is_not_option_argument
-from shellcheck_lib.test_case.instruction_setup import Description, InvokationVariant
+from shellcheck_lib.test_case.help.instruction_description import InvokationVariant, Description
 from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.sections import common as i
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction

@@ -5,7 +5,7 @@ from shellcheck_lib.general.string import lines_content
 from shellcheck_lib.instructions.utils.destination_path import *
 from shellcheck_lib.instructions.utils.parse_here_document import parse_as_last_argument
 from shellcheck_lib.instructions.utils.parse_utils import spit_arguments_list_string
-from shellcheck_lib.test_case.instruction_setup import Description, InvokationVariant
+from shellcheck_lib.test_case.help.instruction_description import InvokationVariant, Description
 
 DESCRIPTION = Description(
     'Creates a new file',

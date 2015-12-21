@@ -2,7 +2,7 @@ import subprocess
 
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
-from shellcheck_lib.test_case.instruction_setup import Description, InvokationVariant
+from shellcheck_lib.test_case.help.instruction_description import InvokationVariant, Description
 from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
 from shellcheck_lib.test_case.sections.result import sh
