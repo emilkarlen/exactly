@@ -2,7 +2,6 @@ import unittest
 
 from . import help
 from . import test_case
-from . import test_suite
 
 
 def suite():
