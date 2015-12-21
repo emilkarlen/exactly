@@ -1,20 +1,24 @@
-from shellcheck_lib.cli import argument_parsing_utils
+from shellcheck_lib.test_case.instruction_setup import InstructionsSetup
 
-from .settings import HelpSettings
-
+from .settings import HelpSettings, TestCaseHelpSettings, TestCaseHelpItem
 
 INSTRUCTIONS = 'instructions'
 
 
-def parse(help_command_arguments: list) -> HelpSettings:
+class HelpError(Exception):
+    def __init__(self,
+                 msg: str):
+        self.msg = msg
+
+
+def parse(instruction_set: InstructionsSetup,
+          help_command_arguments: list) -> HelpSettings:
     """
     :raises ArgumentParsingError Invalid usage
     """
     if len(help_command_arguments) != 1:
-        raise argument_parsing_utils.ArgumentParsingError(None,
-                                                          'Invalid number of arguments.')
+        raise HelpError('Invalid number of arguments.')
     argument = help_command_arguments[0]
     if argument != INSTRUCTIONS:
-        raise argument_parsing_utils.ArgumentParsingError(None,
-                                                          'Invalid argument: ' + argument)
-    return HelpSettings()
+        raise HelpError('Invalid argument: ' + argument)
+    return TestCaseHelpSettings(TestCaseHelpItem.INSTRUCTION_SET, None, None)
