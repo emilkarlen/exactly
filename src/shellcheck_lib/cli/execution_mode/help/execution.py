@@ -92,7 +92,7 @@ class PrintInstructionsPerPhase:
             return
         self._writeln(phase_name)
         for instruction_name, instruction_setup in instruction_set.items():
-            self._writeln(instruction_name + ' : ' + instruction_setup.description.single_line_description)
+            self._writeln(instruction_name + ' : ' + instruction_setup.description.single_line_description())
 
     def _writeln(self, s: str):
         self._std.out.write(s)
