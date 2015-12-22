@@ -12,6 +12,7 @@ from shellcheck_lib.test_case.sections.result import pfh
 
 def description(instruction_name: str) -> Description:
     return DescriptionWithConstantValues(
+            instruction_name,
             "Executes the given program using the system's shell.",
             """The assertion PASSes if (and only if) the exit code from the command is 0.
 
@@ -19,8 +20,7 @@ def description(instruction_name: str) -> Description:
             """,
             [InvokationVariant('PROGRAM ARGUMENT...',
                                'A plain file.'),
-             ],
-            instruction_name=instruction_name)
+             ])
 
 
 class Parser(SingleInstructionParser):

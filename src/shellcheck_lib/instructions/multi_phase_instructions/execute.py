@@ -26,6 +26,7 @@ SOURCE_OPTION = '--source'
 def description(instruction_name: str,
                 single_line_description: str):
     return DescriptionWithConstantValues(
+            instruction_name,
             single_line_description,
             'TODO',
             [
@@ -58,8 +59,7 @@ def description(instruction_name: str,
                                          Other locations can be specified using %s.
                                          """ % '|'.join(ALL_REL_OPTIONS),
                                          []),
-            ],
-            instruction_name=instruction_name)
+            ])
 
 
 class SetupForExecutableWithArguments:

@@ -18,6 +18,7 @@ from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, Setup
 
 def description(instruction_name: str) -> Description:
     return DescriptionWithConstantValues(
+            instruction_name,
             'Redirects stdin, for the act program, to a given file, or string.',
             '',
             [
@@ -25,8 +26,7 @@ def description(instruction_name: str) -> Description:
                                   'Sets stdin to a file relative SHELLCHECK_HOME.'),
                 InvokationVariant('<<EOF-MARKER'.format('|'.join(parse_file_ref.ALL_REL_OPTIONS)),
                                   'Sets stdin to the contents of the given Here Document.'),
-            ],
-            instruction_name=instruction_name)
+            ])
 
 
 class Parser(SingleInstructionParser):

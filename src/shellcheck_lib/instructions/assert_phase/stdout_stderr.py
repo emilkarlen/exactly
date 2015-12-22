@@ -17,6 +17,7 @@ from .utils import contents_utils
 def description(instruction_name: str,
                 file: str) -> DescriptionWithConstantValues:
     return DescriptionWithConstantValues(
+            instruction_name,
             'Test the contents of {}'.format(file),
             """
             {} replaces all occurrences of any of the shellcheck environment variables to the name of the variable.
@@ -45,8 +46,7 @@ def description(instruction_name: str,
                         '[{}] {} FILENAME'.format(WITH_REPLACED_ENV_VARS_OPTION, REL_CWD_OPTION),
                         """Expects the contents of %s to equal the contents of FILE
                         (which is a path relative current working directory)""" % file),
-            ],
-            instruction_name=instruction_name)
+            ])
 
 
 WITH_REPLACED_ENV_VARS_STEM_SUFFIX = '-with-replaced-env-vars.txt'

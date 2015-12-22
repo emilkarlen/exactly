@@ -12,14 +12,14 @@ from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, Setup
 
 def description(instruction_name: str) -> Description:
     return DescriptionWithConstantValues(
+            instruction_name,
             'Manipulates environment variables.',
             '',
             [InvokationVariant('NAME = VALUE',
                                'Sets the environment variable NAME to VALUE.'),
              InvokationVariant('unset NAME',
                                'Removes the environment variable NAME.'),
-             ],
-            instruction_name=instruction_name)
+             ])
 
 
 class Parser(SingleInstructionParser):
