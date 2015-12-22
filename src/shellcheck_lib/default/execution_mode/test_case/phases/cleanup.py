@@ -7,19 +7,19 @@ from shellcheck_lib.test_case.instruction_setup import SingleInstructionSetup
 INSTRUCTIONS = {
     'dir':
         SingleInstructionSetup(
-            new_dir.Parser(),
-            new_dir.DESCRIPTION),
+                new_dir.Parser(),
+                new_dir.description('dir')),
     'execute':
         SingleInstructionSetup(
-            execute.parser('execute'),
+                execute.parser('execute'),
                 execute.description('execute')),
     'shell':
         SingleInstructionSetup(
-            shell.Parser(),
-            shell.DESCRIPTION),
+                shell.Parser(),
+                shell.DESCRIPTION),
     'pwd':
         SingleInstructionSetup(
-            change_dir.Parser(),
+                change_dir.Parser(),
                 change_dir.DESCRIPTION('pwd')),
 
 }

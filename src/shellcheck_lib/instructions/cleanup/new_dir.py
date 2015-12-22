@@ -6,7 +6,7 @@ from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
 from shellcheck_lib.test_case.sections.result import sh
 
-DESCRIPTION = mkdir_utils.DESCRIPTION
+description = mkdir_utils.description
 
 
 class Parser(SingleInstructionParser):

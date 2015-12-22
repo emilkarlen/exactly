@@ -24,7 +24,7 @@ INSTRUCTIONS = {
     'dir':
         SingleInstructionSetup(
                 new_dir.Parser(),
-                new_dir.DESCRIPTION),
+                new_dir.description('dir')),
     'pwd':
         SingleInstructionSetup(
                 change_dir.Parser(),
