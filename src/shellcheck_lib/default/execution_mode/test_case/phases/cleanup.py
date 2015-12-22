@@ -20,6 +20,6 @@ INSTRUCTIONS = {
     'pwd':
         SingleInstructionSetup(
             change_dir.Parser(),
-            change_dir.DESCRIPTION),
+                change_dir.DESCRIPTION('pwd')),
 
 }

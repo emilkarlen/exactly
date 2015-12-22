@@ -8,14 +8,14 @@ from shellcheck_lib.instructions.assert_phase.utils.contents_utils import Actual
 from shellcheck_lib.instructions.utils.parse_utils import spit_arguments_list_string
 from shellcheck_lib.instructions.utils.relative_path_options import REL_HOME_OPTION, REL_CWD_OPTION
 from shellcheck_lib.instructions.utils.relative_path_options import REL_TMP_OPTION
-from shellcheck_lib.test_case.help.instruction_description import InvokationVariant, Description
+from shellcheck_lib.test_case.help.instruction_description import InvokationVariant, DescriptionWithConstantValues
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
 from .utils import contents_utils
 
 
-def description(file: str) -> Description:
-    return Description(
+def description(file: str) -> DescriptionWithConstantValues:
+    return DescriptionWithConstantValues(
         'Test the contents of {}'.format(file),
         """
         {} replaces all occurrences of any of the shellcheck environment variables to the name of the variable.
