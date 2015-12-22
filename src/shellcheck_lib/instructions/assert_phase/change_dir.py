@@ -7,7 +7,7 @@ from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEds
 from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.result import svh
 
-DESCRIPTION = cd_utils.DESCRIPTION
+description = cd_utils.description
 
 
 class Parser(SingleInstructionParser):
