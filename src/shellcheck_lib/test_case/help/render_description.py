@@ -10,7 +10,7 @@ def render(description: DescriptionWithConstantValues) -> SectionContents:
 
 
 def _render_name_para(description: DescriptionWithConstantValues):
-    text_block = Text(description.single_line_description)
+    text_block = Text(description.single_line_description())
     return Paragraph([text_block])
 
 
