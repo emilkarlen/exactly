@@ -6,6 +6,8 @@ from shellcheck_lib.cli.execution_mode.help.settings import HelpSettings, TestCa
 from shellcheck_lib.general.textformat.formatting import section, paragraph_item
 from shellcheck_lib.general.textformat.formatting.wrapper import Wrapper
 from shellcheck_lib.general.textformat.structure import document as doc
+from shellcheck_lib.general.textformat.structure import lists
+from shellcheck_lib.general.textformat.structure.core import Text
 from shellcheck_lib.general.textformat.structure.paragraph import para
 from shellcheck_lib.test_case.help.instruction_description import DescriptionWithConstantValues
 from shellcheck_lib.test_case.instruction_setup import InstructionsSetup
@@ -19,7 +21,18 @@ class TestCaseHelp:
         return doc.SectionContents([para('TODO test-case help for phase ' + name)], [])
 
     def instruction_set(self, instruction_setup: InstructionsSetup) -> doc.SectionContents:
-        return doc.SectionContents([para('TODO: instruction set help')], [])
+        sections = []
+        for (phase, instruction_set_dict) in instruction_setup.phase_and_instruction_set:
+            instruction_list_items = []
+            for (instruction_name, instruction_setup) in instruction_set_dict.items():
+                description_para = para(instruction_setup.description.single_line_description())
+                instruction_list_items.append(lists.HeaderValueListItem(Text(instruction_name),
+                                                                        [description_para]))
+            instruction_list = lists.HeaderValueList(lists.ListType.VARIABLE_LIST,
+                                                     instruction_list_items)
+            sections.append(doc.Section(Text(phase.identifier),
+                                        doc.SectionContents([instruction_list], [])))
+        return doc.SectionContents([], sections)
 
     def instruction(self, name: str, description: DescriptionWithConstantValues) -> doc.SectionContents:
         return doc.SectionContents([para('TODO test-case help for instruction ' + name)], [])
