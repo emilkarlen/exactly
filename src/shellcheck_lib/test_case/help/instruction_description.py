@@ -18,14 +18,42 @@ class SyntaxElementDescription:
 
 class Description:
     def __init__(self,
+                 instruction_name: str):
+        self._instruction_name = instruction_name
+
+    @property
+    def instruction_name(self) -> str:
+        return self._instruction_name
+
+    @property
+    def single_line_description(self) -> str:
+        raise NotImplementedError()
+
+    @property
+    def main_description_rest(self) -> str:
+        raise NotImplementedError()
+
+    @property
+    def invokation_variants(self) -> list:
+        raise NotImplementedError()
+
+    @property
+    def syntax_element_descriptions(self) -> iter:
+        raise NotImplementedError()
+
+
+class DescriptionWithConstantValues(Description):
+    def __init__(self,
                  single_line_description: str,
                  main_description_rest: str,
                  invokation_variants: list,
-                 syntax_element_descriptions: iter = ()):
+                 syntax_element_descriptions: iter = (),
+                 instruction_name: str = 'TODO Description instruction name'):
         """
         :param invokation_variants: [InvokationVariant]
         :param syntax_element_descriptions: [SyntaxElementDescription]
         """
+        super().__init__(instruction_name)
         self.__single_line_description = single_line_description
         self.__main_description_rest = main_description_rest
         self.__invokation_variants = invokation_variants

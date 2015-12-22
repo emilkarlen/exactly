@@ -9,7 +9,7 @@ from shellcheck_lib.general.textformat.formatting import section, paragraph_item
 from shellcheck_lib.general.textformat.formatting.wrapper import Wrapper
 from shellcheck_lib.general.textformat.structure import document as doc
 from shellcheck_lib.general.textformat.structure.paragraph import para
-from shellcheck_lib.test_case.help.instruction_description import Description
+from shellcheck_lib.test_case.help.instruction_description import DescriptionWithConstantValues
 from shellcheck_lib.test_case.instruction_setup import InstructionsSetup
 
 
@@ -23,7 +23,7 @@ class TestCaseHelp:
     def instruction_set(self, instruction_setup: InstructionsSetup) -> doc.SectionContents:
         return doc.SectionContents([para('TODO: instruction set help')], [])
 
-    def instruction(self, name: str, description: Description) -> doc.SectionContents:
+    def instruction(self, name: str, description: DescriptionWithConstantValues) -> doc.SectionContents:
         return doc.SectionContents([para('TODO test-case help for instruction ' + name)], [])
 
 
