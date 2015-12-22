@@ -5,17 +5,21 @@ from shellcheck_lib.general.string import lines_content
 from shellcheck_lib.instructions.utils.destination_path import *
 from shellcheck_lib.instructions.utils.parse_here_document import parse_as_last_argument
 from shellcheck_lib.instructions.utils.parse_utils import spit_arguments_list_string
-from shellcheck_lib.test_case.help.instruction_description import InvokationVariant, DescriptionWithConstantValues
+from shellcheck_lib.test_case.help.instruction_description import InvokationVariant, DescriptionWithConstantValues, \
+    Description
 
-DESCRIPTION = DescriptionWithConstantValues(
-    'Creates a new file',
-    """
-    Uses Posix syntax for paths. I.e. directories are separated by /.
-    """,
-    [
-        InvokationVariant('[{}] FILENAME'.format('|'.join(OPTIONS)),
-                          'Creates a new file in the given directory.'),
-    ])
+
+def description(instruction_name: str) -> Description:
+    return DescriptionWithConstantValues(
+            'Creates a new file',
+            """
+            Uses Posix syntax for paths. I.e. directories are separated by /.
+            """,
+            [
+                InvokationVariant('[{}] FILENAME'.format('|'.join(OPTIONS)),
+                                  'Creates a new file in the given directory.'),
+            ],
+            instruction_name=instruction_name)
 
 
 class FileInfo(tuple):
