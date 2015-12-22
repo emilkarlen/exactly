@@ -1,7 +1,7 @@
 import os
 import shutil
 
-from shellcheck_lib.cli.execution_mode.help.contents.test_case import instruction_set, instruction
+from shellcheck_lib.cli.execution_mode.help.contents.test_case import instruction_set
 from shellcheck_lib.cli.execution_mode.help.settings import HelpSettings, TestCaseHelpSettings, TestCaseHelpItem, \
     TestSuiteHelpSettings, TestSuiteHelpItem, ProgramHelpSettings
 from shellcheck_lib.general.textformat.formatting import section, paragraph_item
@@ -9,6 +9,7 @@ from shellcheck_lib.general.textformat.formatting.wrapper import Wrapper
 from shellcheck_lib.general.textformat.structure import document as doc
 from shellcheck_lib.general.textformat.structure.paragraph import para
 from shellcheck_lib.test_case.help.instruction_description import Description
+from shellcheck_lib.test_case.help.render import instruction
 from shellcheck_lib.test_case.instruction_setup import InstructionsSetup
 
 
@@ -23,7 +24,7 @@ class TestCaseHelp:
         return instruction_set.instruction_set(instruction_setup)
 
     def instruction(self, name: str, description: Description) -> doc.SectionContents:
-        return instruction.section_contents(name, description)
+        return instruction.instruction_man_page(description)
 
 
 class TestSuiteHelp:
