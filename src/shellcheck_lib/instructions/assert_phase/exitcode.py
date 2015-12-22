@@ -6,25 +6,29 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.general.string import line_separated
 from shellcheck_lib.instructions.utils.parse_utils import spit_arguments_list_string
-from shellcheck_lib.test_case.help.instruction_description import InvokationVariant, DescriptionWithConstantValues
+from shellcheck_lib.test_case.help.instruction_description import InvokationVariant, DescriptionWithConstantValues, \
+    Description
 from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.sections import common as i
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib.test_case.sections.result import pfh
 
-DESCRIPTION = DescriptionWithConstantValues(
-    'Test numerical exitcode',
-    '',
-    [InvokationVariant('INTEGER',
-                       'Passes iff the exit code is exactly INTEGER'),
-     InvokationVariant('OPERATOR INTEGER',
-                       """Passes iff the given expression,
-                       with the actual exit code as an implicit left operand,
-                       evaluates to True.
 
-                       Operators: !, !=, =, <, <=, >, >=
-                       """)
-     ])
+def description(instruction_name: str) -> Description:
+    return DescriptionWithConstantValues(
+            'Test numerical exitcode',
+            '',
+            [InvokationVariant('INTEGER',
+                               'Passes iff the exit code is exactly INTEGER'),
+             InvokationVariant('OPERATOR INTEGER',
+                               """Passes iff the given expression,
+                               with the actual exit code as an implicit left operand,
+                               evaluates to True.
+
+                               Operators: !, !=, =, <, <=, >, >=
+                               """)
+             ],
+            instruction_name=instruction_name)
 
 
 class InstructionForExactValue(AssertPhaseInstruction):

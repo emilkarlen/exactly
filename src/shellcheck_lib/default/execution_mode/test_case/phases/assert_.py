@@ -12,7 +12,7 @@ INSTRUCTIONS = {
     'exitcode':
         SingleInstructionSetup(
                 exitcode_instruction.Parser(),
-                exitcode_instruction.DESCRIPTION),
+                exitcode_instruction.description('exitcode')),
     'contents':
         SingleInstructionSetup(
                 contents_instruction.Parser(),
