@@ -16,7 +16,7 @@ INSTRUCTIONS = {
     'execute':
         SingleInstructionSetup(
             execute.parser('execute'),
-            execute.DESCRIPTION),
+                execute.description('execute')),
     'file':
         SingleInstructionSetup(
             new_file.Parser(),

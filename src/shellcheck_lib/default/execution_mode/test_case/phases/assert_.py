@@ -20,7 +20,7 @@ INSTRUCTIONS = {
     'execute':
         SingleInstructionSetup(
                 execute.parser('execute'),
-                execute.DESCRIPTION),
+                execute.description('execute')),
     'dir':
         SingleInstructionSetup(
                 new_dir.Parser(),
