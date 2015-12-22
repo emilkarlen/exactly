@@ -55,6 +55,6 @@ class Wrapper:
         self.push_indent(indent)
 
     def pop_indent(self):
-        indent = self._saved_indents_stack.pop()
+        indent = self._saved_indents_stack.pop(0)
         self.text_wrapper.initial_indent = indent.first_line
         self.text_wrapper.subsequent_indent = indent.following_lines

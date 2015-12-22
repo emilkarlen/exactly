@@ -51,7 +51,8 @@ def print_help(file,
                settings: HelpSettings):
     section_contents = doc_for(instruction_setup, settings)
     terminal_size = shutil.get_terminal_size()
-    formatter = section.Formatter(paragraph_item.Formatter(Wrapper(page_width=terminal_size.columns)))
+    formatter = section.Formatter(paragraph_item.Formatter(Wrapper(page_width=terminal_size.columns)),
+                                  section_content_indent_str=4 * ' ')
     lines = formatter.format_section_contents(section_contents)
     for line in lines:
         file.write(line)

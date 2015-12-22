@@ -3,10 +3,12 @@ import unittest
 from . import lists
 from . import paragraph_item
 from . import section
+from . import wrapper
 
 
 def suite():
     ret_val = unittest.TestSuite()
+    ret_val.addTest(wrapper.suite())
     ret_val.addTest(lists.suite())
     ret_val.addTest(paragraph_item.suite())
     ret_val.addTest(section.suite())
