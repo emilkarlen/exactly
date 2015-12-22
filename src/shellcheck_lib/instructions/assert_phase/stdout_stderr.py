@@ -14,37 +14,39 @@ from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEds
 from .utils import contents_utils
 
 
-def description(file: str) -> DescriptionWithConstantValues:
+def description(instruction_name: str,
+                file: str) -> DescriptionWithConstantValues:
     return DescriptionWithConstantValues(
-        'Test the contents of {}'.format(file),
-        """
-        {} replaces all occurrences of any of the shellcheck environment variables to the name of the variable.
-        (Variable values are replaced with variable names.)
-        These environment variables are:
+            'Test the contents of {}'.format(file),
+            """
+            {} replaces all occurrences of any of the shellcheck environment variables to the name of the variable.
+            (Variable values are replaced with variable names.)
+            These environment variables are:
 
-        {}.
-        """.format(WITH_REPLACED_ENV_VARS_OPTION,
-                   ', '.join(environment_variables.ALL_ENV_VARS)),
-        [
-            InvokationVariant(
-                '{}'.format(EMPTY_ARGUMENT),
-                '%s is empty' % file),
-            InvokationVariant(
-                '! {}'.format(EMPTY_ARGUMENT),
-                '%s is not empty' % file),
-            InvokationVariant(
-                '[{}] {} FILENAME'.format(WITH_REPLACED_ENV_VARS_OPTION, REL_HOME_OPTION),
-                """Expects the contents of %s to equal the contents of FILE
-                (which is a path relative home)""" % file),
-            InvokationVariant(
-                '[{}] {} FILENAME'.format(WITH_REPLACED_ENV_VARS_OPTION, REL_TMP_OPTION),
-                """Expects the contents of %s to equal the contents of FILE
-                (which is a path relative the shellcheck tmp directory)""" % file),
-            InvokationVariant(
-                '[{}] {} FILENAME'.format(WITH_REPLACED_ENV_VARS_OPTION, REL_CWD_OPTION),
-                """Expects the contents of %s to equal the contents of FILE
-                (which is a path relative current working directory)""" % file),
-        ])
+            {}.
+            """.format(WITH_REPLACED_ENV_VARS_OPTION,
+                       ', '.join(environment_variables.ALL_ENV_VARS)),
+            [
+                InvokationVariant(
+                        '{}'.format(EMPTY_ARGUMENT),
+                        '%s is empty' % file),
+                InvokationVariant(
+                        '! {}'.format(EMPTY_ARGUMENT),
+                        '%s is not empty' % file),
+                InvokationVariant(
+                        '[{}] {} FILENAME'.format(WITH_REPLACED_ENV_VARS_OPTION, REL_HOME_OPTION),
+                        """Expects the contents of %s to equal the contents of FILE
+                        (which is a path relative home)""" % file),
+                InvokationVariant(
+                        '[{}] {} FILENAME'.format(WITH_REPLACED_ENV_VARS_OPTION, REL_TMP_OPTION),
+                        """Expects the contents of %s to equal the contents of FILE
+                        (which is a path relative the shellcheck tmp directory)""" % file),
+                InvokationVariant(
+                        '[{}] {} FILENAME'.format(WITH_REPLACED_ENV_VARS_OPTION, REL_CWD_OPTION),
+                        """Expects the contents of %s to equal the contents of FILE
+                        (which is a path relative current working directory)""" % file),
+            ],
+            instruction_name=instruction_name)
 
 
 WITH_REPLACED_ENV_VARS_STEM_SUFFIX = '-with-replaced-env-vars.txt'

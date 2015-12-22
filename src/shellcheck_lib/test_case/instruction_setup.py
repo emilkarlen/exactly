@@ -1,6 +1,7 @@
 from shellcheck_lib.document import model
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, SingleInstructionParserSource
+from shellcheck_lib.execution import phases
 from shellcheck_lib.test_case.help.instruction_description import Description
 
 
@@ -51,3 +52,15 @@ class InstructionsSetup:
     @property
     def cleanup_instruction_set(self) -> dict:
         return self._cleanup_instruction_set
+
+    @property
+    def phase_and_instruction_set(self) -> list:
+        """
+        :return: [(Phase, dict)]
+        """
+        return [
+            (phases.ANONYMOUS, self.config_instruction_set),
+            (phases.SETUP, self.setup_instruction_set),
+            (phases.ASSERT, self.assert_instruction_set),
+            (phases.CLEANUP, self.cleanup_instruction_set),
+        ]
