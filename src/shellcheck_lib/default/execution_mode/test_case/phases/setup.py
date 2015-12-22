@@ -32,7 +32,7 @@ INSTRUCTIONS = {
     'pwd':
         SingleInstructionSetup(
                 change_dir.Parser(),
-                change_dir.DESCRIPTION('pwd')),
+                change_dir.description('pwd')),
     'shell':
         SingleInstructionSetup(
                 shell.Parser(),

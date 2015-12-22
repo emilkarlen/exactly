@@ -6,7 +6,7 @@ from shellcheck_lib.test_case.help.instruction_description import InvokationVari
     Description
 
 
-def DESCRIPTION(instruction_name: str) -> Description:
+def description(instruction_name: str) -> Description:
     return DescriptionWithConstantValues(
             'Changes Present Working Directory',
             """
