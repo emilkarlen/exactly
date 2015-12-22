@@ -16,7 +16,7 @@ INSTRUCTIONS = {
     'shell':
         SingleInstructionSetup(
                 shell.Parser(),
-                shell.DESCRIPTION),
+                shell.description('shell')),
     'pwd':
         SingleInstructionSetup(
                 change_dir.Parser(),

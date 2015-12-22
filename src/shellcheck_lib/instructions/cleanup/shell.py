@@ -2,18 +2,22 @@ import subprocess
 
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
-from shellcheck_lib.test_case.help.instruction_description import InvokationVariant, DescriptionWithConstantValues
+from shellcheck_lib.test_case.help.instruction_description import InvokationVariant, DescriptionWithConstantValues, \
+    Description
 from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
 from shellcheck_lib.test_case.sections.result import sh
 
-DESCRIPTION = DescriptionWithConstantValues(
-    "Executes the given program using the system's shell.",
-    'The instruction is successful if (and only if) the exit code from the command is 0.',
-    [InvokationVariant('PROGRAM ARGUMENT...',
-                       'A plain file.'),
-     ])
+
+def description(instruction_name: str) -> Description:
+    return DescriptionWithConstantValues(
+            "Executes the given program using the system's shell.",
+            'The instruction is successful if (and only if) the exit code from the command is 0.',
+            [InvokationVariant('PROGRAM ARGUMENT...',
+                               'A plain file.'),
+             ],
+            instruction_name=instruction_name)
 
 
 class Parser(SingleInstructionParser):
