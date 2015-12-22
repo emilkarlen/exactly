@@ -1,13 +1,13 @@
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionParserSource
 from shellcheck_lib.instructions.multi_phase_instructions import new_file as new_file_utils
+from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
-from shellcheck_lib.test_case.os_services import OsServices
 
-DESCRIPTION = new_file_utils.DESCRIPTION
+description = new_file_utils.description
 
 
 class Parser(SingleInstructionParser):

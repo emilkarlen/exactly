@@ -20,7 +20,7 @@ INSTRUCTIONS = {
     'file':
         SingleInstructionSetup(
                 new_file.Parser(),
-                new_file.DESCRIPTION),
+                new_file.description('file')),
     'install':
         SingleInstructionSetup(
                 install.Parser(),
