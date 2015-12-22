@@ -57,6 +57,7 @@ class _ListFormatter:
                  list_format: ListFormat,
                  items: iter):
         self.formatter = formatter
+        self.wrapper = formatter.wrapper
         self.list_format = list_format
         self.items_list = list(items)
         self.num_items = len(self.items_list)
@@ -83,7 +84,7 @@ class _ListFormatter:
                                                                  self.num_items,
                                                                  item.header)
         self.ret_val.extend(self.formatter.format_text(header_text))
-        self.formatter.wrapper.pop_indent()
+        self.wrapper.pop_indent()
 
     def _format_content(self, item, item_number):
         content_items_list = list(item.value_paragraph_items)
@@ -91,18 +92,18 @@ class _ListFormatter:
             self.ret_val.extend(self.blank_lines_between_header_and_content)
             self.push_content_indent(item_number)
             self.ret_val.extend(self.formatter.format_paragraph_items(content_items_list))
-            self.formatter.wrapper.pop_indent()
+            self.wrapper.pop_indent()
 
     def push_header_indent(self, item_number):
         following_lines_indent = self.list_format.header_format.following_header_lines_indent(item_number,
                                                                                               self.num_items)
         indent_delta = Indent('', following_lines_indent)
-        self.formatter.wrapper.push_indent_increase(indent_delta)
+        self.wrapper.push_indent_increase(indent_delta)
 
     def push_content_indent(self, item_number):
         indent_str = self.list_format.header_format.value_indent(self.num_items)
         indent_delta = Indent(indent_str, indent_str)
-        self.formatter.wrapper.push_indent_increase(indent_delta)
+        self.wrapper.push_indent_increase(indent_delta)
 
 
 class _ParagraphItemFormatter(ParagraphItemVisitor):

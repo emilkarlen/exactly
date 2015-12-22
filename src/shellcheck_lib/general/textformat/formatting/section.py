@@ -32,8 +32,8 @@ def no_separation() -> Separation:
 class Formatter:
     def __init__(self,
                  paragraph_item_formatter: paragraph_item.Formatter,
-                 section_content_indent_str: str = '',
-                 separation: Separation = Separation()):
+                 separation: Separation = Separation(),
+                 section_content_indent_str: str = ''):
         self.paragraph_item_formatter = paragraph_item_formatter
         self.section_content_indent = Indent(section_content_indent_str,
                                              section_content_indent_str)
