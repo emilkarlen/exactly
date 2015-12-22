@@ -3,30 +3,34 @@ import pathlib
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
 from shellcheck_lib.instructions.utils.parse_utils import spit_arguments_list_string
-from shellcheck_lib.test_case.help.instruction_description import InvokationVariant, DescriptionWithConstantValues
+from shellcheck_lib.test_case.help.instruction_description import InvokationVariant, DescriptionWithConstantValues, \
+    Description
 from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
 
-DESCRIPTION = DescriptionWithConstantValues(
-    'Install existing files in the home directory into the current directory.',
-    """As many attributes as possible of the files are preserved (this depends on Python implementation).
 
-    Mimics the behaviour of Unix cp, when a DESTINATION is given.
-    If DESTINATION does not exist, then the source is installed under the name DESTINATION.
+def description(instruction_name: str) -> Description:
+    return DescriptionWithConstantValues(
+            'Install existing files in the home directory into the current directory.',
+            """As many attributes as possible of the files are preserved (this depends on Python implementation).
 
-    If DESTINATION does exist, it must be a directory, and FILE is installed inside that directory.
+            Mimics the behaviour of Unix cp, when a DESTINATION is given.
+            If DESTINATION does not exist, then the source is installed under the name DESTINATION.
 
-    NOTE: DESTINATION:s with multiple path components are NOT handled intelligently.
-    The behaviour is undefined.
-    """,
-    [InvokationVariant('FILE [DESTINATION]',
-                       'A plain file.'),
-     InvokationVariant('DIRECTORY [DESTINATION]',
-                       "The directory and it's contents are installed."),
-     ])
+            If DESTINATION does exist, it must be a directory, and FILE is installed inside that directory.
+
+            NOTE: DESTINATION:s with multiple path components are NOT handled intelligently.
+            The behaviour is undefined.
+            """,
+            [InvokationVariant('FILE [DESTINATION]',
+                               'A plain file.'),
+             InvokationVariant('DIRECTORY [DESTINATION]',
+                               "The directory and it's contents are installed."),
+             ],
+            instruction_name=instruction_name)
 
 
 class Parser(SingleInstructionParser):
