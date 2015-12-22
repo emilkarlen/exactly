@@ -4,7 +4,7 @@ from shellcheck_lib.general.textformat.formatting import lists as lf
 from shellcheck_lib.general.textformat.formatting import paragraph_item
 from shellcheck_lib.general.textformat.formatting import section as sut
 from shellcheck_lib.general.textformat.structure import lists
-from shellcheck_lib.general.textformat.structure.document import SectionContents, Section
+from shellcheck_lib.general.textformat.structure.document import SectionContents, Section, empty_contents
 from shellcheck_lib_test.general.textformat.formatting.test_resources import single_text_para, header_only_item, \
     BLANK_LINE, text
 
@@ -14,14 +14,14 @@ class TestSectionContents(unittest.TestCase):
         paragraph_item_formatter = paragraph_item.Formatter(paragraph_item.Wrapper(page_width=5),
                                                             num_item_separator_lines=1,
                                                             list_formats=lf.ListFormats(
-                                                                variable_list_format=lf.ListFormat(
-                                                                    lf.HeaderAndIndentFormatPlain(),
-                                                                    lf.Separations(0, 0))))
+                                                                    variable_list_format=lf.ListFormat(
+                                                                            lf.HeaderAndIndentFormatPlain(),
+                                                                            lf.Separations(0, 0))))
         formatter = sut.Formatter(paragraph_item_formatter)
         section_contents = SectionContents([single_text_para('12345 123 5'),
                                             lists.HeaderValueList(lists.ListType.VARIABLE_LIST,
                                                                   [header_only_item(
-                                                                      '12345 123')])],
+                                                                          '12345 123')])],
                                            [])
         actual = formatter.format_section_contents(section_contents)
         self.assertEqual(['12345',
@@ -42,8 +42,8 @@ class TestSectionContents(unittest.TestCase):
                                            [empty_section('Section 1'),
                                             sut.Section(text('Section 2'),
                                                         sut.SectionContents(
-                                                            [],
-                                                            [empty_section('Section 2.1')]))
+                                                                [],
+                                                                [empty_section('Section 2.1')]))
                                             ])
         actual = formatter.format_section_contents(section_contents)
         self.assertEqual(['Section 1',
@@ -143,6 +143,69 @@ class TestSection(unittest.TestCase):
                           BLANK_LINE,
                           BLANK_LINE,
                           'Content Section Header',
+                          ],
+                         actual)
+
+    def test_section_content_indent(self):
+        paragraph_item_formatter = paragraph_item.Formatter(paragraph_item.Wrapper(page_width=100),
+                                                            num_item_separator_lines=0)
+        content_indent = '  '
+        formatter = sut.Formatter(paragraph_item_formatter,
+                                  section_content_indent_str=content_indent,
+                                  separation=sut.Separation(between_sections=1,
+                                                            between_header_and_content=2,
+                                                            between_initial_paragraphs_and_sub_sections=3))
+        section = Section(text('Section Header'),
+                          SectionContents([single_text_para('initial paragraph')],
+                                          [Section(text('Section Header'),
+                                                   empty_contents())]))
+        actual = formatter.format_section(section)
+        self.assertEqual(['Section Header',
+                          BLANK_LINE,
+                          BLANK_LINE,
+                          content_indent + 'initial paragraph',
+                          BLANK_LINE,
+                          BLANK_LINE,
+                          BLANK_LINE,
+                          content_indent + 'Section Header',
+                          ],
+                         actual)
+
+    def test_section_content_indent__for_nested_sections(self):
+        paragraph_item_formatter = paragraph_item.Formatter(paragraph_item.Wrapper(page_width=100),
+                                                            num_item_separator_lines=0)
+        content_indent = '  '
+        formatter = sut.Formatter(paragraph_item_formatter,
+                                  section_content_indent_str=content_indent,
+                                  separation=sut.Separation(between_sections=1,
+                                                            between_header_and_content=2,
+                                                            between_initial_paragraphs_and_sub_sections=3))
+        section = Section(text('Section 1'),
+                          SectionContents(
+                                  [],
+                                  [Section(
+                                          text('Section 1.1'),
+                                          SectionContents(
+                                                  [single_text_para('paragraph in section 1.1')],
+                                                  [Section(text('Section 1.1.1'),
+                                                           SectionContents(
+                                                                   [single_text_para('paragraph in section 1.1.1')],
+                                                                   []))]))]))
+        actual = formatter.format_section(section)
+        self.assertEqual(['Section 1',
+                          BLANK_LINE,
+                          BLANK_LINE,
+                          (1 * content_indent) + 'Section 1.1',
+                          BLANK_LINE,
+                          BLANK_LINE,
+                          (2 * content_indent) + 'paragraph in section 1.1',
+                          BLANK_LINE,
+                          BLANK_LINE,
+                          BLANK_LINE,
+                          (2 * content_indent) + 'Section 1.1.1',
+                          BLANK_LINE,
+                          BLANK_LINE,
+                          (3 * content_indent) + 'paragraph in section 1.1.1',
                           ],
                          actual)
 
