@@ -11,6 +11,7 @@ from shellcheck_lib.test_case.help.instruction_description import InvokationVari
 
 def description(instruction_name: str) -> Description:
     return DescriptionWithConstantValues(
+            instruction_name,
             'Creates a new file',
             """
             Uses Posix syntax for paths. I.e. directories are separated by /.
@@ -18,8 +19,7 @@ def description(instruction_name: str) -> Description:
             [
                 InvokationVariant('[{}] FILENAME'.format('|'.join(OPTIONS)),
                                   'Creates a new file in the given directory.'),
-            ],
-            instruction_name=instruction_name)
+            ])
 
 
 class FileInfo(tuple):

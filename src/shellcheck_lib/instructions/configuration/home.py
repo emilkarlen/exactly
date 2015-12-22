@@ -11,12 +11,12 @@ from shellcheck_lib.test_case.sections.result import sh
 
 def description(instruction_name: str) -> Description:
     return DescriptionWithConstantValues(
+            instruction_name,
             'Changes the Home Directory',
             '',
             [InvokationVariant('PATH',
                                'A path that is relative the current Home Directory'),
-             ],
-            instruction_name=instruction_name)
+             ])
 
 
 class Parser(SingleInstructionParser):

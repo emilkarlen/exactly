@@ -16,6 +16,7 @@ from shellcheck_lib.test_case.sections.result import pfh
 
 def description(instruction_name: str) -> Description:
     return DescriptionWithConstantValues(
+            instruction_name,
             'Test numerical exitcode',
             '',
             [InvokationVariant('INTEGER',
@@ -27,8 +28,7 @@ def description(instruction_name: str) -> Description:
 
                                Operators: !, !=, =, <, <=, >, >=
                                """)
-             ],
-            instruction_name=instruction_name)
+             ])
 
 
 class InstructionForExactValue(AssertPhaseInstruction):

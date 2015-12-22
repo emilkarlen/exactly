@@ -19,6 +19,7 @@ from .utils import contents_utils
 
 def description(instruction_name: str) -> Description:
     return DescriptionWithConstantValues(
+            instruction_name,
             'Test the contents of a file.',
             """
             {} replaces all occurrences of any of the shellcheck environment variables to the name of the variable.
@@ -27,7 +28,7 @@ def description(instruction_name: str) -> Description:
 
             {}.
             """.format(WITH_REPLACED_ENV_VARS_OPTION,
-               ', '.join(environment_variables.ALL_ENV_VARS)),
+                       ', '.join(environment_variables.ALL_ENV_VARS)),
             [
                 InvokationVariant(
                         'FILENAME {}'.format(EMPTY_ARGUMENT),
@@ -50,8 +51,7 @@ def description(instruction_name: str) -> Description:
                                                      REL_CWD_OPTION),
                         'Compares contents of FILENAME to contents of FILE ' +
                         '(which is a path relative current working directory)'),
-            ],
-            instruction_name=instruction_name)
+            ])
 
 
 class Parser(SingleInstructionParser):

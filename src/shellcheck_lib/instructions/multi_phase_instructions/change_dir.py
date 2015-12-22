@@ -8,6 +8,7 @@ from shellcheck_lib.test_case.help.instruction_description import InvokationVari
 
 def description(instruction_name: str) -> Description:
     return DescriptionWithConstantValues(
+            instruction_name,
             'Changes Present Working Directory',
             """
             Uses Posix syntax for paths. I.e. directories are separated by /.
@@ -19,8 +20,7 @@ def description(instruction_name: str) -> Description:
                                   'Changes to a directory relative the SHELLCHECK ACT directory.'),
                 InvokationVariant('{} [DIRECTORY]'.format(REL_TMP_OPTION),
                                   'Changes to a directory relative the SHELLCHECK TMP directory.'),
-            ],
-            instruction_name=instruction_name)
+            ])
 
 
 def parse(argument: str) -> DestinationPath:

@@ -12,12 +12,12 @@ from shellcheck_lib.test_case.sections.result import sh
 
 def description(instruction_name: str) -> Description:
     return DescriptionWithConstantValues(
+            instruction_name,
             "Executes the given program using the system's shell.",
             'The instruction is successful if (and only if) the exit code from the command is 0.',
             [InvokationVariant('PROGRAM ARGUMENT...',
                                'A plain file.'),
-             ],
-            instruction_name=instruction_name)
+             ])
 
 
 class Parser(SingleInstructionParser):

@@ -57,11 +57,11 @@ class Description:
 
 class DescriptionWithConstantValues(Description):
     def __init__(self,
+                 instruction_name: str,
                  single_line_description: str,
                  main_description_rest: str,
                  invokation_variants: list,
-                 syntax_element_descriptions: iter = (),
-                 instruction_name: str = 'TODO Description instruction name'):
+                 syntax_element_descriptions: iter = ()):
         """
         :param invokation_variants: [InvokationVariant]
         :param syntax_element_descriptions: [SyntaxElementDescription]

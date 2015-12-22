@@ -20,6 +20,7 @@ FILE_TYPES = {
 
 def description(instruction_name: str) -> Description:
     return DescriptionWithConstantValues(
+            instruction_name,
             'Tests the type of a file',
             """All tests fails if FILENAME does not exist.
 
@@ -31,8 +32,7 @@ def description(instruction_name: str) -> Description:
                 InvokationVariant(
                         'FILENAME type [{}]'.format('|'.join(FILE_TYPES.keys())),
                         'File exists and has given type'),
-            ],
-            instruction_name=instruction_name)
+            ])
 
 
 class Parser(SingleInstructionParser):

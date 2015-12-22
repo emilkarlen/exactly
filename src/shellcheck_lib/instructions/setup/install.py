@@ -14,6 +14,7 @@ from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, Setup
 
 def description(instruction_name: str) -> Description:
     return DescriptionWithConstantValues(
+            instruction_name,
             'Install existing files in the home directory into the current directory.',
             """As many attributes as possible of the files are preserved (this depends on Python implementation).
 
@@ -29,8 +30,7 @@ def description(instruction_name: str) -> Description:
                                'A plain file.'),
              InvokationVariant('DIRECTORY [DESTINATION]',
                                "The directory and it's contents are installed."),
-             ],
-            instruction_name=instruction_name)
+             ])
 
 
 class Parser(SingleInstructionParser):
