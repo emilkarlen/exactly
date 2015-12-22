@@ -4,7 +4,8 @@ from shellcheck_lib.instructions.utils import file_ref
 from shellcheck_lib.instructions.utils.file_properties import FileType, must_exist_as, FilePropertiesCheck
 from shellcheck_lib.instructions.utils.file_ref_check import pre_or_post_eds_failure_message_or_none, FileRefCheck
 from shellcheck_lib.instructions.utils.parse_utils import spit_arguments_list_string, ensure_is_not_option_argument
-from shellcheck_lib.test_case.help.instruction_description import InvokationVariant, DescriptionWithConstantValues
+from shellcheck_lib.test_case.help.instruction_description import InvokationVariant, DescriptionWithConstantValues, \
+    Description
 from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.sections import common as i
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
@@ -16,19 +17,22 @@ FILE_TYPES = {
     "directory": FileType.DIRECTORY
 }
 
-DESCRIPTION = DescriptionWithConstantValues(
-    'Tests the type of a file',
-    """All tests fails if FILENAME does not exist.
 
-    regular: Tests if FILENAME is a regular file or a sym-link to a regular file.
-    directory: Tests if FILENAME is a regular file or a sym-link to a regular file.
-    symlink: Tests if FILENAME is a sym-link.
-    """,
-    [
-        InvokationVariant(
-            'FILENAME type [{}]'.format('|'.join(FILE_TYPES.keys())),
-            'File exists and has given type'),
-    ])
+def description(instruction_name: str) -> Description:
+    return DescriptionWithConstantValues(
+            'Tests the type of a file',
+            """All tests fails if FILENAME does not exist.
+
+            regular: Tests if FILENAME is a regular file or a sym-link to a regular file.
+            directory: Tests if FILENAME is a regular file or a sym-link to a regular file.
+            symlink: Tests if FILENAME is a sym-link.
+            """,
+            [
+                InvokationVariant(
+                        'FILENAME type [{}]'.format('|'.join(FILE_TYPES.keys())),
+                        'File exists and has given type'),
+            ],
+            instruction_name=instruction_name)
 
 
 class Parser(SingleInstructionParser):
