@@ -12,7 +12,7 @@ INSTRUCTIONS = {
     'execute':
         SingleInstructionSetup(
             execute.parser('execute'),
-            execute.DESCRIPTION),
+                execute.description('execute')),
     'shell':
         SingleInstructionSetup(
             shell.Parser(),

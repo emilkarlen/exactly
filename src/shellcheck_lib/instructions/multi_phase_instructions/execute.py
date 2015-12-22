@@ -23,42 +23,43 @@ INTERPRET_OPTION = '--interpret'
 SOURCE_OPTION = '--source'
 
 
-def description(single_line_description: str):
+def description(instruction_name: str,
+                single_line_description: str):
     return DescriptionWithConstantValues(
-        single_line_description,
-        'TODO',
-        [
-            InvokationVariant('EXECUTABLE [--] ARGUMENT...',
-                              """Executes the given executable with the given command line arguments.
-                              The arguments are splitted according to shell syntax."""),
-            InvokationVariant('EXECUTABLE %s SOURCE-FILE [--] ARGUMENT...' % INTERPRET_OPTION,
-                              """Interprets the given SOURCE-FILE using EXECUTABLE.
-                              ARGUMENTS... are splitted according to shell syntax."""),
-            InvokationVariant('EXECUTABLE %s SOURCE' % SOURCE_OPTION,
-                              """Interprets the given SOURCE using EXECUTABLE.
-                              SOURCE is taken literary, and is given as a single argument to EXECUTABLE.
-                              """),
-        ],
-        [
-            SyntaxElementDescription('EXECUTABLE',
-                                     'Specifies an executable program',
-                                     [
-                                         InvokationVariant('ABSOLUTE-PATH', ''),
-                                         InvokationVariant('[{}] PATH'.format('|'.join(ALL_REL_OPTIONS)),
-                                                           ''),
-                                         InvokationVariant('( EXECUTABLE ARGUMENT-TO-EXECUTABLE... )',
-                                                           ''),
-                                     ]),
-            SyntaxElementDescription('SOURCE-FILE',
-                                     """
-                                     Specifies a plain file.
-                                     By default, SOURCE-FILE is assumed to be relative the home dir.
+            single_line_description,
+            'TODO',
+            [
+                InvokationVariant('EXECUTABLE [--] ARGUMENT...',
+                                  """Executes the given executable with the given command line arguments.
+                                  The arguments are splitted according to shell syntax."""),
+                InvokationVariant('EXECUTABLE %s SOURCE-FILE [--] ARGUMENT...' % INTERPRET_OPTION,
+                                  """Interprets the given SOURCE-FILE using EXECUTABLE.
+                                  ARGUMENTS... are splitted according to shell syntax."""),
+                InvokationVariant('EXECUTABLE %s SOURCE' % SOURCE_OPTION,
+                                  """Interprets the given SOURCE using EXECUTABLE.
+                                  SOURCE is taken literary, and is given as a single argument to EXECUTABLE.
+                                  """),
+            ],
+            [
+                SyntaxElementDescription('EXECUTABLE',
+                                         'Specifies an executable program',
+                                         [
+                                             InvokationVariant('ABSOLUTE-PATH', ''),
+                                             InvokationVariant('[{}] PATH'.format('|'.join(ALL_REL_OPTIONS)),
+                                                               ''),
+                                             InvokationVariant('( EXECUTABLE ARGUMENT-TO-EXECUTABLE... )',
+                                                               ''),
+                                         ]),
+                SyntaxElementDescription('SOURCE-FILE',
+                                         """
+                                         Specifies a plain file.
+                                         By default, SOURCE-FILE is assumed to be relative the home dir.
 
-                                     Other locations can be specified using %s.
-                                     """ % '|'.join(ALL_REL_OPTIONS),
-                                     []),
-        ]
-    )
+                                         Other locations can be specified using %s.
+                                         """ % '|'.join(ALL_REL_OPTIONS),
+                                         []),
+            ],
+            instruction_name=instruction_name)
 
 
 class SetupForExecutableWithArguments:
@@ -195,10 +196,10 @@ class SetupParser:
                  exe_file: ExecutableFile,
                  remaining_arguments_str: str) -> SetupForExecutableWithArguments:
         return SetupForExecute(
-            sub_process_execution.InstructionSourceInfo(self.instruction_meta_info,
-                                                        source.line_sequence.first_line.line_number),
-            exe_file,
-            shlex.split(remaining_arguments_str))
+                sub_process_execution.InstructionSourceInfo(self.instruction_meta_info,
+                                                            source.line_sequence.first_line.line_number),
+                exe_file,
+                shlex.split(remaining_arguments_str))
 
     def _interpret(self,
                    source: SingleInstructionParserSource,
@@ -207,11 +208,11 @@ class SetupParser:
         remaining_arguments = shlex.split(remaining_arguments_str)
         (file_to_interpret, remaining_arguments) = parse_file_ref.parse_relative_file_argument(remaining_arguments)
         return SetupForInterpret(
-            sub_process_execution.InstructionSourceInfo(self.instruction_meta_info,
-                                                        source.line_sequence.first_line.line_number),
-            exe_file,
-            file_to_interpret,
-            remaining_arguments)
+                sub_process_execution.InstructionSourceInfo(self.instruction_meta_info,
+                                                            source.line_sequence.first_line.line_number),
+                exe_file,
+                file_to_interpret,
+                remaining_arguments)
 
     def _source(self,
                 source: SingleInstructionParserSource,
@@ -220,10 +221,10 @@ class SetupParser:
         if not remaining_arguments_str:
             raise SingleInstructionInvalidArgumentException('Missing SOURCE argument for option %s' % SOURCE_OPTION)
         return SetupForSource(
-            sub_process_execution.InstructionSourceInfo(self.instruction_meta_info,
-                                                        source.line_sequence.first_line.line_number),
-            exe_file,
-            remaining_arguments_str)
+                sub_process_execution.InstructionSourceInfo(self.instruction_meta_info,
+                                                            source.line_sequence.first_line.line_number),
+                exe_file,
+                remaining_arguments_str)
 
 
 class InstructionParser(SingleInstructionParser):

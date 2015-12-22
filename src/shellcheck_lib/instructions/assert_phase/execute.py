@@ -3,13 +3,17 @@ from shellcheck_lib.execution.phases import ASSERT
 from shellcheck_lib.instructions.multi_phase_instructions import execute
 from shellcheck_lib.instructions.utils import sub_process_execution
 from shellcheck_lib.instructions.utils.pre_or_post_validation import PreOrPostEdsSvhValidationErrorValidator
+from shellcheck_lib.test_case.help.instruction_description import Description
 from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
 from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.result import svh
 
-DESCRIPTION = execute.description("Executes a program and succeeds if it's exit-code is 0")
+
+def description(instruction_name: str) -> Description:
+    return execute.description(instruction_name,
+                               "Executes a program and succeeds if it's exit-code is 0")
 
 
 def parser(instruction_name: str) -> SingleInstructionParser:
