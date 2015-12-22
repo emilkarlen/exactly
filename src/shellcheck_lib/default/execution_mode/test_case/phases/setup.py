@@ -36,7 +36,7 @@ INSTRUCTIONS = {
     'shell':
         SingleInstructionSetup(
                 shell.Parser(),
-                shell.DESCRIPTION),
+                shell.description('shell')),
     'stdin':
         SingleInstructionSetup(
                 stdin.Parser(),
