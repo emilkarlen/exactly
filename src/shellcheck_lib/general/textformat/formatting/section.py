@@ -1,4 +1,5 @@
 from shellcheck_lib.general.textformat.formatting import paragraph_item
+from shellcheck_lib.general.textformat.formatting.wrapper import Indent
 from shellcheck_lib.general.textformat.structure.document import SectionContents, Section
 
 
@@ -31,9 +32,13 @@ def no_separation() -> Separation:
 class Formatter:
     def __init__(self,
                  paragraph_item_formatter: paragraph_item.Formatter,
+                 section_content_indent_str: str = '',
                  separation: Separation = Separation()):
         self.paragraph_item_formatter = paragraph_item_formatter
+        self.section_content_indent = Indent(section_content_indent_str,
+                                             section_content_indent_str)
         self.separation = separation
+        self.wrapper = paragraph_item_formatter.wrapper
 
     def format_section_contents(self,
                                 section_contents: SectionContents,
@@ -53,7 +58,9 @@ class Formatter:
     def format_section(self, section: Section) -> list:
         ret_val = []
         ret_val.extend(self.paragraph_item_formatter.format_text(section.header))
+        self.wrapper.push_indent_increase(self.section_content_indent)
         ret_val.extend(self.format_section_contents(section.contents, True))
+        self.wrapper.pop_indent()
         return ret_val
 
     def format_sections(self, sections: list) -> list:
@@ -65,4 +72,4 @@ class Formatter:
         return ret_val
 
     def _blanks(self, num_lines: int) -> list:
-        return self.paragraph_item_formatter.wrapper.blank_lines(num_lines)
+        return self.wrapper.blank_lines(num_lines)

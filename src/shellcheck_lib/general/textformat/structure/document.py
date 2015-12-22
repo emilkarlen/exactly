@@ -26,6 +26,10 @@ class SectionContents(tuple):
         return self[1]
 
 
+def empty_contents() -> SectionContents:
+    return SectionContents([], [])
+
+
 class Section(tuple):
     def __new__(cls,
                 header: core.Text,

@@ -62,9 +62,9 @@ class _ListFormatter:
         self.num_items = len(self.items_list)
         separations = list_format.separations
         self.blank_lines_between_elements = formatter.wrapper.blank_lines(
-            separations.num_blank_lines_between_elements)
+                separations.num_blank_lines_between_elements)
         self.blank_lines_between_header_and_content = formatter.wrapper.blank_lines(
-            separations.num_blank_lines_between_header_and_value)
+                separations.num_blank_lines_between_header_and_value)
         self.ret_val = []
 
     def apply(self) -> list:
