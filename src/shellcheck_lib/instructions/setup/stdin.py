@@ -8,21 +8,25 @@ from shellcheck_lib.instructions.utils import parse_here_doc_or_file_ref
 from shellcheck_lib.instructions.utils.file_properties import FileType
 from shellcheck_lib.instructions.utils.file_ref_check import FileRefCheck
 from shellcheck_lib.instructions.utils.parse_utils import spit_arguments_list_string
-from shellcheck_lib.test_case.help.instruction_description import InvokationVariant, DescriptionWithConstantValues
+from shellcheck_lib.test_case.help.instruction_description import InvokationVariant, DescriptionWithConstantValues, \
+    Description
 from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
 
-DESCRIPTION = DescriptionWithConstantValues(
-    'Redirects stdin, for the act program, to a given file, or string.',
-    '',
-    [
-        InvokationVariant('[{}] FILE'.format('|'.join(parse_file_ref.ALL_REL_OPTIONS)),
-                          'Sets stdin to a file relative SHELLCHECK_HOME.'),
-        InvokationVariant('<<EOF-MARKER'.format('|'.join(parse_file_ref.ALL_REL_OPTIONS)),
-                          'Sets stdin to the contents of the given Here Document.'),
-    ])
+
+def description(instruction_name: str) -> Description:
+    return DescriptionWithConstantValues(
+            'Redirects stdin, for the act program, to a given file, or string.',
+            '',
+            [
+                InvokationVariant('[{}] FILE'.format('|'.join(parse_file_ref.ALL_REL_OPTIONS)),
+                                  'Sets stdin to a file relative SHELLCHECK_HOME.'),
+                InvokationVariant('<<EOF-MARKER'.format('|'.join(parse_file_ref.ALL_REL_OPTIONS)),
+                                  'Sets stdin to the contents of the given Here Document.'),
+            ],
+            instruction_name=instruction_name)
 
 
 class Parser(SingleInstructionParser):
