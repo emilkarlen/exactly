@@ -171,6 +171,20 @@ Tex
 Tycker det ökar läsbarheten.
 Dock kan vara motiverat att använda inarbetade/standardiserade namn (som t ex
 "cd" och "mkdir").
+*** Olika konventioner för olika faser?
+Ett alt är att använda olika konventioner för olika faser.  T ex skulle
+setup-fasen kunna använda procedurella namn, medan assert-fasen använder
+deklarativa.
+
+Tanken har kommit efter att det känts att det kan vara konfunderande att i
+setup-fasen ha instruktionen
+----------
+pwd my-dir
+----------
+eftersom den ser ut som ett test i assert-fasen: Assert att pwd = my-dir.
+
+De faser som "utför" saker - setup o cleanup - skulle kunna ha procedurella
+namn.
 ** TODO sök+ersätt
 Är en vanlig informations-operation.  Är den vanlig i det här sammanhanget?
 Vet inte.
