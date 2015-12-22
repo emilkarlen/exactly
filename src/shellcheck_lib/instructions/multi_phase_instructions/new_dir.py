@@ -3,19 +3,23 @@ import pathlib
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from shellcheck_lib.instructions.utils.parse_utils import spit_arguments_list_string, ensure_is_not_option_argument
-from shellcheck_lib.test_case.help.instruction_description import InvokationVariant, DescriptionWithConstantValues
-
-DESCRIPTION = DescriptionWithConstantValues(
-    'Makes a directory in the current directory',
-    """
-    Makes parent components, if needed.
+from shellcheck_lib.test_case.help.instruction_description import InvokationVariant, DescriptionWithConstantValues, \
+    Description
 
 
-    Does not fail if the given directory already exists.
-    """,
-    [InvokationVariant('DIRECTORY',
-                       ''),
-     ])
+def description(instruction_name: str) -> Description:
+    return DescriptionWithConstantValues(
+            'Makes a directory in the current directory',
+            """
+            Makes parent components, if needed.
+
+
+            Does not fail if the given directory already exists.
+            """,
+            [InvokationVariant('DIRECTORY',
+                               ''),
+             ],
+            instruction_name=instruction_name)
 
 
 def parse(argument: str) -> str:
