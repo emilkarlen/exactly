@@ -3,38 +3,39 @@ import shutil
 import unittest
 
 from shellcheck_lib.cli.main_program import EXIT_INVALID_USAGE
-from shellcheck_lib.execution import execution_directory_structure
 from shellcheck_lib.execution import environment_variables
+from shellcheck_lib.execution import execution_directory_structure
 from shellcheck_lib.execution.result import FullResultStatus
-from shellcheck_lib_test.cli import default_main_program
+from shellcheck_lib.general.string import lines_content
+from shellcheck_lib_test.cli.cases import default_main_program_wildcard as wildcard
 from shellcheck_lib_test.cli.utils.execute_main_program import arguments_for_test_interpreter_and_more_tuple
+from shellcheck_lib_test.default import default_main_program
+from shellcheck_lib_test.default.test_impls import default_main_program_case_preprocessing
+from shellcheck_lib_test.default.test_impls import default_main_program_suite_preprocessing as pre_proc_tests
 from shellcheck_lib_test.execution.test_execution_directory_structure import \
     is_execution_directory_structure_after_execution
-from shellcheck_lib_test.util.file_checks import FileChecker
 from shellcheck_lib_test.util.cli_main_program_via_shell_utils.run import SUCCESSFUL_RESULT, \
     run_shellcheck_in_sub_process_with_file_argument, \
     contents_of_file
+from shellcheck_lib_test.util.file_checks import FileChecker
+from shellcheck_lib_test.util.main_program import main_program_check_for_test_case
+from shellcheck_lib_test.util.main_program import main_program_check_for_test_suite
 from shellcheck_lib_test.util.process import SubProcessResult, \
     ExpectedSubProcessResult, SubProcessResultInfo
-from shellcheck_lib.general.string import lines_content
-from shellcheck_lib_test.cli.cases import default_main_program_wildcard as wildcard
-from shellcheck_lib_test.cli import default_main_program_suite_preprocessing as pre_proc_tests
-from shellcheck_lib_test.util.main_program import main_program_check_for_test_case
-from shellcheck_lib_test.cli import default_main_program_case_preprocessing
-from shellcheck_lib_test.util.main_program import main_program_check_for_test_suite
 
 
 class UnitTestCaseWithUtils(unittest.TestCase):
     def _run_shellcheck_in_sub_process(self,
                                        test_case_source: str,
-                                       flags: tuple=()) -> SubProcessResultInfo:
+                                       flags: tuple = ()) -> SubProcessResultInfo:
         return run_shellcheck_in_sub_process_with_file_argument(self,
                                                                 file_contents=test_case_source,
                                                                 flags=flags)
 
-    def _run_shellcheck_with_test_interpreter_in_sub_process(self,
-                                                             test_case_source: str,
-                                                             flags_before_interpreter_arg: tuple=()) -> SubProcessResultInfo:
+    def _run_shellcheck_with_test_interpreter_in_sub_process(
+            self,
+            test_case_source: str,
+            flags_before_interpreter_arg: tuple = ()) -> SubProcessResultInfo:
         flags = arguments_for_test_interpreter_and_more_tuple(flags_before_interpreter_arg)
         return run_shellcheck_in_sub_process_with_file_argument(self,
                                                                 file_contents=test_case_source,
@@ -75,8 +76,8 @@ class TestsInvokation(UnitTestCaseWithUtils):
         test_suite_source = ''
         # ACT #
         actual = self._run_shellcheck_in_sub_process(
-            test_suite_source,
-            flags=('help', '--illegal-flag-42847920189')).sub_process_result
+                test_suite_source,
+                flags=('help', '--illegal-flag-42847920189')).sub_process_result
         # ASSERT #
         self.assertEqual(EXIT_INVALID_USAGE,
                          actual.exitcode,
@@ -118,16 +119,16 @@ class TestsWithPreservedExecutionDirectoryStructure(UnitTestCaseWithUtils):
         test_case_source = ''
         # ACT #
         actual = self._run_shellcheck_with_test_interpreter_in_sub_process(
-            test_case_source,
-            flags_before_interpreter_arg=('--keep',)).sub_process_result
+                test_case_source,
+                flags_before_interpreter_arg=('--keep',)).sub_process_result
         # ASSERT #
         actual_eds_directory = self._get_printed_eds_or_fail(actual)
         actual_eds_path = pathlib.Path(actual_eds_directory)
         if actual_eds_path.exists():
             if actual_eds_path.is_dir():
                 is_execution_directory_structure_after_execution(
-                    FileChecker(self, 'Not an Execution Directory Structure'),
-                    actual_eds_directory)
+                        FileChecker(self, 'Not an Execution Directory Structure'),
+                        actual_eds_directory)
                 self._remove_if_is_directory(actual_eds_directory)
             else:
                 self.fail('Output from program is not the EDS (not a directory): "%s"' % actual_eds_directory)
@@ -144,17 +145,17 @@ class TestsWithPreservedExecutionDirectoryStructure(UnitTestCaseWithUtils):
             '[act]',
             'import os',
             self._print_variable_name__equals__variable_value(
-                environment_variables.ENV_VAR_HOME),
+                    environment_variables.ENV_VAR_HOME),
             self._print_variable_name__equals__variable_value(
-                environment_variables.ENV_VAR_ACT),
+                    environment_variables.ENV_VAR_ACT),
             self._print_variable_name__equals__variable_value(
-                environment_variables.ENV_VAR_TMP),
+                    environment_variables.ENV_VAR_TMP),
         ]
         test_case_source = lines_content(test_case_source_lines)
         # ACT #
         actual = self._run_shellcheck_with_test_interpreter_in_sub_process(
-            test_case_source,
-            flags_before_interpreter_arg=('--keep',))
+                test_case_source,
+                flags_before_interpreter_arg=('--keep',))
         # ASSERT #
         self.assertEqual(FullResultStatus.PASS.value,
                          actual.sub_process_result.exitcode,
@@ -207,8 +208,8 @@ sys.exit(72)
 """
         # ACT #
         actual = self._run_shellcheck_in_sub_process(
-            test_case_source,
-            flags=arguments_for_test_interpreter_and_more_tuple(['--act'])).sub_process_result
+                test_case_source,
+                flags=arguments_for_test_interpreter_and_more_tuple(['--act'])).sub_process_result
         # ASSERT #
         self.assertEqual(72,
                          actual.exitcode,
@@ -222,7 +223,7 @@ sys.exit(72)
 
 
 class TestTestCasePreprocessing(
-    main_program_check_for_test_case.TestsForSetupWithPreprocessorExternally):
+        main_program_check_for_test_case.TestsForSetupWithPreprocessorExternally):
     def test_transformation_into_test_case_that_pass(self):
         self._check([],
                     default_main_program_case_preprocessing.TransformationIntoTestCaseThatPass())
@@ -256,7 +257,7 @@ class TestTestSuite(main_program_check_for_test_suite.TestsForSetupWithoutPrepro
 
 
 class TestTestSuitesWithWildcardFileReferences(
-    main_program_check_for_test_suite.TestsForSetupWithoutPreprocessorExternally):
+        main_program_check_for_test_suite.TestsForSetupWithoutPreprocessorExternally):
     def test_references_to_case_files_that_matches_no_files(self):
         self._check([], wildcard.ReferencesToCaseFilesThatMatchesNoFiles())
 
