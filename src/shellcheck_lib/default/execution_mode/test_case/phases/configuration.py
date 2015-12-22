@@ -4,6 +4,6 @@ from shellcheck_lib.test_case.instruction_setup import SingleInstructionSetup
 INSTRUCTIONS = {
     'home':
         SingleInstructionSetup(
-            home.Parser(),
-            home.DESCRIPTION),
+                home.Parser(),
+                home.description('home')),
 }

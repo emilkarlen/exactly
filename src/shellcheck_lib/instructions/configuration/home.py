@@ -3,16 +3,20 @@ import pathlib
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
 from shellcheck_lib.instructions.utils.parse_utils import spit_arguments_list_string
-from shellcheck_lib.test_case.help.instruction_description import InvokationVariant, DescriptionWithConstantValues
+from shellcheck_lib.test_case.help.instruction_description import InvokationVariant, DescriptionWithConstantValues, \
+    Description
 from shellcheck_lib.test_case.sections.anonymous import AnonymousPhaseInstruction, ConfigurationBuilder
 from shellcheck_lib.test_case.sections.result import sh
 
-DESCRIPTION = DescriptionWithConstantValues(
-    'Changes the Home Directory',
-    '',
-    [InvokationVariant('PATH',
-                       'A path that is relative the current Home Directory'),
-     ])
+
+def description(instruction_name: str) -> Description:
+    return DescriptionWithConstantValues(
+            'Changes the Home Directory',
+            '',
+            [InvokationVariant('PATH',
+                               'A path that is relative the current Home Directory'),
+             ],
+            instruction_name=instruction_name)
 
 
 class Parser(SingleInstructionParser):
