@@ -2,19 +2,19 @@ import os
 import pathlib
 import unittest
 
+from shellcheck_lib.cli import main_program
 from shellcheck_lib.cli.execution_mode.test_case.execution import NO_EXECUTION_EXIT_CODE
 from shellcheck_lib.default.execution_mode.test_suite.reporting import INVALID_SUITE_EXIT_CODE, FAILED_TESTS_EXIT_CODE
 from shellcheck_lib.execution.result import FullResultStatus
+from shellcheck_lib.general.string import lines_content
 from shellcheck_lib.test_case.test_case_processing import AccessErrorType
 from shellcheck_lib_test.cli.cases import default_main_program_wildcard as wildcard
-from shellcheck_lib_test.cli import default_main_program_suite_preprocessing as pre_proc_tests
 from shellcheck_lib_test.cli.utils.execute_main_program import execute_main_program, ARGUMENTS_FOR_TEST_INTERPRETER
+from shellcheck_lib_test.default.test_impls import default_main_program_case_preprocessing
+from shellcheck_lib_test.default.test_impls import default_main_program_suite_preprocessing as pre_proc_tests
 from shellcheck_lib_test.util.file_structure import DirContents, File
 from shellcheck_lib_test.util.file_utils import tmp_file_containing, tmp_file_containing_lines
-from shellcheck_lib.general.string import lines_content
-from shellcheck_lib.cli import main_program
 from shellcheck_lib_test.util.main_program import main_program_check_for_test_case
-from shellcheck_lib_test.cli import default_main_program_case_preprocessing
 from shellcheck_lib_test.util.main_program import main_program_check_for_test_suite
 
 
