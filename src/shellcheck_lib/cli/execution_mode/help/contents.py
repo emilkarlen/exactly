@@ -1,10 +1,15 @@
+from shellcheck_lib.test_case.help.instruction_description import Description
+
+
 class TestCasePhaseInstructionSet(tuple):
     def __new__(cls,
                 instruction_descriptions: iter):
         """
         :type instruction_descriptions: [Description]
         """
-        return tuple.__new__(cls, (list(instruction_descriptions),))
+        description_list = list(instruction_descriptions)
+        description_list.sort(key=Description.instruction_name)
+        return tuple.__new__(cls, (description_list,))
 
     @property
     def instruction_descriptions(self) -> list:

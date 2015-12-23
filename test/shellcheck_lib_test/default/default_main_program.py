@@ -5,10 +5,12 @@ import unittest
 from shellcheck_lib.cli import main_program
 from shellcheck_lib.cli.execution_mode.test_case.execution import NO_EXECUTION_EXIT_CODE
 from shellcheck_lib.cli.main_program import HELP_COMMAND
+from shellcheck_lib.default.execution_mode.test_case.default_instructions_setup import instructions_setup
 from shellcheck_lib.default.execution_mode.test_suite.reporting import INVALID_SUITE_EXIT_CODE, FAILED_TESTS_EXIT_CODE
 from shellcheck_lib.execution import phases
 from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib.general.string import lines_content
+from shellcheck_lib.test_case.help.config import phase_help_name
 from shellcheck_lib.test_case.test_case_processing import AccessErrorType
 from shellcheck_lib.test_suite.parser import SECTION_NAME__SUITS, SECTION_NAME__CASES
 from shellcheck_lib_test.cli.cases import default_main_program_wildcard as wildcard
@@ -381,6 +383,13 @@ class TestHelp(unittest.TestCase):
     def test_instructions(self):
         self._assert_is_successful_invokation(arguments_for.instructions())
 
+    def test_instruction_search(self):
+        self._assert_is_successful_invokation(arguments_for.instruction_search('home'))
+
+    def test_instruction_in_phase(self):
+        self._assert_is_successful_invokation(arguments_for.instruction_in_phase(phase_help_name(phases.ANONYMOUS),
+                                                                                 'home'))
+
     def test_suite(self):
         self._assert_is_successful_invokation(arguments_for.suite())
 
@@ -393,7 +402,8 @@ class TestHelp(unittest.TestCase):
     def _assert_is_successful_invokation(self, help_command_arguments: list,
                                          msg_header: str = ''):
         command_line_arguments = self._cl(help_command_arguments)
-        sub_process_result = execute_main_program(command_line_arguments)
+        sub_process_result = execute_main_program(command_line_arguments,
+                                                  instructions_setup=instructions_setup)
         self.assertEqual(0,
                          sub_process_result.exitcode,
                          msg_header + 'Exit Status')

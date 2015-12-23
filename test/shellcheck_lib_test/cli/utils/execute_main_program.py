@@ -17,14 +17,15 @@ def name_argument_splitter(s: str) -> (str, str):
     return s[0], s[1:]
 
 
-instructions_setup = InstructionsSetup(
-    {},
-    {},
-    {},
-    {})
+empty_instructions_setup = InstructionsSetup(
+        {},
+        {},
+        {},
+        {})
 
 
-def execute_main_program(arguments: list) -> SubProcessResult:
+def execute_main_program(arguments: list,
+                         instructions_setup: InstructionsSetup = empty_instructions_setup) -> SubProcessResult:
     str_std_out_files = StringStdOutFiles()
     program = sut.MainProgram(str_std_out_files.stdout_files,
                               name_argument_splitter,

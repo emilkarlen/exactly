@@ -23,7 +23,7 @@ class TestCaseHelpRenderer:
         return doc.SectionContents([para('TODO test-case help for phase ' + phase_help.name)], [])
 
     def instruction_set(self, test_case_help: TestCaseHelp) -> doc.SectionContents:
-        return instruction_set.instruction_set(test_case_help)
+        return instruction_set.instruction_set_per_phase(test_case_help)
 
     def instruction(self, description: Description) -> doc.SectionContents:
         return instruction.instruction_man_page(description)
@@ -34,7 +34,7 @@ class TestCaseHelpRenderer:
         sections = []
         for phase_and_instruction_description in phase_and_instruction_description_list:
             man_page = self.instruction(phase_and_instruction_description[1])
-            phase_section = doc.Section(Text(phase_and_instruction_description[0].identifier),
+            phase_section = doc.Section(Text(phase_and_instruction_description[0]),
                                         man_page)
             sections.append(phase_section)
         initial_paragraphs = []
