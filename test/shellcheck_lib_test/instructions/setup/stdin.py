@@ -5,11 +5,13 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
 from shellcheck_lib.general.string import lines_content
 from shellcheck_lib.instructions.setup import stdin as sut
 from shellcheck_lib.instructions.utils import file_ref
+from shellcheck_lib.test_case.help.instruction_description import Description
 from shellcheck_lib.test_case.sections import common
 from shellcheck_lib.test_case.sections.setup import SetupSettingsBuilder
 from shellcheck_lib_test.instructions.setup.test_resources.instruction_check import Flow, TestCaseBase
 from shellcheck_lib_test.instructions.setup.test_resources.settings_check import Assertion
 from shellcheck_lib_test.instructions.test_resources import svh_check
+from shellcheck_lib_test.instructions.test_resources.check_description import TestDescriptionBase
 from shellcheck_lib_test.instructions.test_resources.utils import new_source, argument_list_source
 from shellcheck_lib_test.util.file_structure import DirContents, empty_file, empty_dir
 
@@ -150,11 +152,17 @@ class AssertStdinIsSetToContents(Assertion):
                         'Contents of stdin in Setup Settings')
 
 
+class TestDescription(TestDescriptionBase):
+    def _description(self) -> Description:
+        return sut.description('instruction name')
+
+
 def suite():
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestParseSet))
     ret_val.addTest(unittest.makeSuite(TestSuccessfulInstructionExecution))
     ret_val.addTest(unittest.makeSuite(TestFailingInstructionExecution))
+    ret_val.addTest(unittest.makeSuite(TestDescription))
     return ret_val
 
 

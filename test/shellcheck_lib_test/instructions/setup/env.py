@@ -2,9 +2,11 @@ import unittest
 
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from shellcheck_lib.instructions.setup import env as sut
+from shellcheck_lib.test_case.help.instruction_description import Description
 from shellcheck_lib.test_case.os_services import new_with_environ
 from shellcheck_lib_test.instructions.setup.test_resources.instruction_check import Flow, TestCaseBase
-from shellcheck_lib.instructions.setup import env as sut
+from shellcheck_lib_test.instructions.test_resources.check_description import TestDescriptionBase
 from shellcheck_lib_test.instructions.test_resources.utils import new_source
 
 
@@ -74,12 +76,18 @@ class TestUnset(TestCaseBase):
                          {'b': 'B'})
 
 
+class TestDescription(TestDescriptionBase):
+    def _description(self) -> Description:
+        return sut.description('instruction name')
+
+
 def suite():
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestParseSet))
     ret_val.addTest(unittest.makeSuite(TestSet))
     ret_val.addTest(unittest.makeSuite(TestParseUnset))
     ret_val.addTest(unittest.makeSuite(TestUnset))
+    ret_val.addTest(unittest.makeSuite(TestDescription))
     return ret_val
 
 

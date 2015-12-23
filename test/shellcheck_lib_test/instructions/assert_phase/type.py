@@ -1,13 +1,15 @@
 import unittest
 
-from shellcheck_lib.instructions.assert_phase import type as sut
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from shellcheck_lib.instructions.assert_phase import type as sut
+from shellcheck_lib.test_case.help.instruction_description import Description
+from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_check import Flow, TestCaseBase
 from shellcheck_lib_test.instructions.test_resources import pfh_check
+from shellcheck_lib_test.instructions.test_resources.check_description import TestDescriptionBase
 from shellcheck_lib_test.instructions.test_resources.eds_populator import act_dir_contents
 from shellcheck_lib_test.instructions.test_resources.utils import new_source
 from shellcheck_lib_test.util.file_structure import DirContents, empty_file, empty_dir, Link
-from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_check import Flow, TestCaseBase
 
 
 class TestParse(TestCaseBase):
@@ -152,12 +154,18 @@ class TestCheckForSymLink(TestCaseBase):
                        file_name + ' symlink'))
 
 
+class TestDescription(TestDescriptionBase):
+    def _description(self) -> Description:
+        return sut.description('instruction name')
+
+
 def suite():
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestParse))
     ret_val.addTest(unittest.makeSuite(TestCheckForRegularFile))
     ret_val.addTest(unittest.makeSuite(TestCheckForDirectory))
     ret_val.addTest(unittest.makeSuite(TestCheckForSymLink))
+    ret_val.addTest(unittest.makeSuite(TestDescription))
     return ret_val
 
 
