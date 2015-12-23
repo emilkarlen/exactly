@@ -3,9 +3,11 @@ import unittest
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from shellcheck_lib.instructions.cleanup import shell as sut
+from shellcheck_lib.test_case.help.instruction_description import Description
 from shellcheck_lib_test.instructions.cleanup.test_resources.instruction_check import TestCaseBase, Arrangement, \
     Expectation
 from shellcheck_lib_test.instructions.test_resources import sh_check
+from shellcheck_lib_test.instructions.test_resources.check_description import TestDescriptionBase
 from shellcheck_lib_test.instructions.test_resources.utils import new_source
 from shellcheck_lib_test.test_resources import python_program_execution as py_exe
 from shellcheck_lib_test.util.file_utils import tmp_file_containing
@@ -27,11 +29,11 @@ sys.exit(0)
         with tmp_file_containing(script_that_exists_with_status_0,
                                  suffix='.py') as script_file_path:
             self._check(
-                sut.Parser(),
-                Arrangement(),
-                Expectation(),
-                new_source('instruction-name',
-                           py_exe.command_line_for_interpreting(script_file_path)))
+                    sut.Parser(),
+                    Arrangement(),
+                    Expectation(),
+                    new_source('instruction-name',
+                               py_exe.command_line_for_interpreting(script_file_path)))
 
     def test_instruction_is_hard_error_WHEN_exit_status_from_command_is_not_0(self):
         script_that_exists_with_status_0 = """
@@ -47,10 +49,16 @@ sys.exit(1)
                                    py_exe.command_line_for_interpreting(script_file_path)))
 
 
+class TestDescription(TestDescriptionBase):
+    def _description(self) -> Description:
+        return sut.description('instruction name')
+
+
 def suite():
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestParse))
     ret_val.addTest(unittest.makeSuite(TestExecution))
+    ret_val.addTest(unittest.makeSuite(TestDescription))
     return ret_val
 
 

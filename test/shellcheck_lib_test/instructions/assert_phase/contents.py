@@ -1,16 +1,18 @@
 import unittest
 
-from shellcheck_lib.instructions.assert_phase import contents as sut
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from shellcheck_lib.instructions.assert_phase import contents as sut
+from shellcheck_lib.test_case.help.instruction_description import Description
+from shellcheck_lib_test.instructions.assert_phase.test_resources import instruction_check
 from shellcheck_lib_test.instructions.assert_phase.test_resources.contents_resources import \
     ActResultProducerForContentsWithAllReplacedEnvVars, \
     StoreContentsInFileInCurrentDir, WriteFileToHomeDir, WriteFileToCurrentDir, \
     StoreContentsInFileInParentDirOfCwd
 from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_check import Flow
-from shellcheck_lib_test.instructions.assert_phase.test_resources import instruction_check
 from shellcheck_lib_test.instructions.test_resources import pfh_check
 from shellcheck_lib_test.instructions.test_resources import svh_check
+from shellcheck_lib_test.instructions.test_resources.check_description import TestDescriptionBase
 from shellcheck_lib_test.instructions.test_resources.eds_populator import act_dir_contents, tmp_user_dir_contents, \
     multiple
 from shellcheck_lib_test.instructions.test_resources.utils import new_source
@@ -382,6 +384,11 @@ class TestReplacedEnvVars(instruction_check.TestCaseBase):
         )
 
 
+class TestDescription(TestDescriptionBase):
+    def _description(self) -> Description:
+        return sut.description('instruction name')
+
+
 def suite():
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestParse))
@@ -394,6 +401,7 @@ def suite():
     ret_val.addTest(unittest.makeSuite(TestFileContentsFileRelTmp))
     ret_val.addTest(unittest.makeSuite(TestTargetFileRelTmp))
     ret_val.addTest(unittest.makeSuite(TestReplacedEnvVars))
+    ret_val.addTest(unittest.makeSuite(TestDescription))
     return ret_val
 
 
