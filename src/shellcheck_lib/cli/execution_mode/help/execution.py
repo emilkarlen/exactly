@@ -1,7 +1,7 @@
 import os
 import shutil
 
-from shellcheck_lib.cli.execution_mode.help.contents.test_case import instruction_set
+from shellcheck_lib.cli.execution_mode.help.render.test_case import instruction_set
 from shellcheck_lib.cli.execution_mode.help.settings import HelpSettings, TestCaseHelpSettings, TestCaseHelpItem, \
     TestSuiteHelpSettings, TestSuiteHelpItem, ProgramHelpSettings
 from shellcheck_lib.general.textformat.formatting import section, paragraph_item
