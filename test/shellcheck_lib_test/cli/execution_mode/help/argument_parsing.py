@@ -1,12 +1,13 @@
 import unittest
 
 from shellcheck_lib.cli.execution_mode.help import argument_parsing as sut
-from shellcheck_lib.cli.execution_mode.help.contents import ApplicationHelp, HelpInstructionsSetup
+from shellcheck_lib.cli.execution_mode.help.contents import ApplicationHelp, HelpInstructionsSetup, MainProgramHelp, \
+    TestCaseHelp, TestSuiteHelp
 from shellcheck_lib.document.model import Instruction
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionParserSource
 from shellcheck_lib.execution import phases
-from shellcheck_lib.test_case.help.instruction_description import DescriptionWithConstantValues
+from shellcheck_lib.test_case.help.instruction_description import DescriptionWithConstantValues, Description
 from shellcheck_lib.test_case.instruction_setup import InstructionsSetup, SingleInstructionSetup
 
 
@@ -95,7 +96,7 @@ class TestTestCaseSingleInstructionInPhase(unittest.TestCase):
         self.assertIs(sut.settings.TestCaseHelpItem.INSTRUCTION,
                       value.item)
         self.assertIsInstance(value.value,
-                              sut.settings.Description,
+                              Description,
                               'The value is expected to be the description of the instruction')
         return value
 
@@ -132,7 +133,6 @@ class TestTestCaseInstructionSet(unittest.TestCase):
         self.assertEqual(phase.identifier,
                          actual.name,
                          'Name of phase')
-
 
 
 class TestTestSuiteHelp(unittest.TestCase):
@@ -184,7 +184,9 @@ class ParserThatFailsUnconditionally(SingleInstructionParser):
 
 
 def _app_help_for(instructions_setup: InstructionsSetup) -> ApplicationHelp:
-    return ApplicationHelp(HelpInstructionsSetup(instructions_setup))
+    return ApplicationHelp(MainProgramHelp(),
+                           TestCaseHelp(HelpInstructionsSetup(instructions_setup)),
+                           TestSuiteHelp())
 
 
 def suite():
