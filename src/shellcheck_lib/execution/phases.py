@@ -23,3 +23,5 @@ ASSERT = Phase('assert', 'assert')
 CLEANUP = Phase('cleanup', 'cleanup')
 
 ALL_NAMED = [SETUP, ACT, ASSERT, CLEANUP]
+
+ALL = (ANONYMOUS, SETUP, ACT, ASSERT, CLEANUP)
