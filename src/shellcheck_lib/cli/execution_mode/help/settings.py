@@ -1,13 +1,12 @@
 from enum import Enum
 
-from shellcheck_lib.test_case.help.instruction_description import DescriptionWithConstantValues
-
 
 class TestCaseHelpItem(Enum):
     OVERVIEW = 0
     INSTRUCTION_SET = 1
     PHASE = 2
     INSTRUCTION = 3
+    INSTRUCTION_LIST = 4
 
 
 class TestSuiteHelpItem(Enum):
@@ -27,10 +26,10 @@ class TestCaseHelpSettings(HelpSettings):
     def __init__(self,
                  item: TestCaseHelpItem,
                  name: str,
-                 instruction_description: DescriptionWithConstantValues):
+                 value):
         self._item = item
         self._name = name
-        self._instruction_description = instruction_description
+        self._value = value
 
     @property
     def item(self) -> TestCaseHelpItem:
@@ -41,8 +40,8 @@ class TestCaseHelpSettings(HelpSettings):
         return self._name
 
     @property
-    def instruction_description(self) -> DescriptionWithConstantValues:
-        return self._instruction_description
+    def value(self):
+        return self._value
 
 
 class TestSuiteHelpSettings(HelpSettings):

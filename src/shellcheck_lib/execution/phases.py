@@ -2,6 +2,7 @@ class Phase(tuple):
     """
     Class for enumeration of phase constants
     """
+
     def __new__(cls,
                 section_name: str,
                 identifier: str):
@@ -25,3 +26,5 @@ CLEANUP = Phase('cleanup', 'cleanup')
 ALL_NAMED = [SETUP, ACT, ASSERT, CLEANUP]
 
 ALL = (ANONYMOUS, SETUP, ACT, ASSERT, CLEANUP)
+
+ALL_WITH_INSTRUCTIONS = (ANONYMOUS, SETUP, ASSERT, CLEANUP)
