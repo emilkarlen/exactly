@@ -6,7 +6,9 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
     SingleInstructionInvalidArgumentException
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.instructions.multi_phase_instructions import change_dir as sut
+from shellcheck_lib.test_case.help.instruction_description import Description
 from shellcheck_lib.test_case.sections.common import HomeAndEds
+from shellcheck_lib_test.instructions.test_resources.check_description import TestDescriptionBase
 from shellcheck_lib_test.instructions.test_resources.eds_populator import act_dir_contents, tmp_user_dir_contents
 from shellcheck_lib_test.instructions.test_resources.utils import SideEffectsCheck
 from shellcheck_lib_test.util import eds_test
@@ -211,11 +213,17 @@ class TestFailingScenarios(TestCaseBase):
                                            ))
 
 
+class TestDescription(TestDescriptionBase):
+    def _description(self) -> Description:
+        return sut.description('instruction name')
+
+
 def suite():
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestParseSet))
     ret_val.addTest(unittest.makeSuite(TestSuccessfulScenarios))
     ret_val.addTest(unittest.makeSuite(TestFailingScenarios))
+    ret_val.addTest(unittest.makeSuite(TestDescription))
     return ret_val
 
 
