@@ -1,3 +1,4 @@
+from shellcheck_lib.execution import phases
 from shellcheck_lib.test_case.instruction_setup import InstructionsSetup
 
 from . import settings
@@ -26,4 +27,12 @@ def parse(instruction_set: InstructionsSetup,
         return settings.TestCaseHelpSettings(settings.TestCaseHelpItem.INSTRUCTION_SET, None, None)
     if argument == SUITE:
         return settings.TestSuiteHelpSettings(settings.TestSuiteHelpItem.OVERVIEW, None)
+    if _is_name_of_phase(argument):
+        return settings.TestCaseHelpSettings(settings.TestCaseHelpItem.PHASE,
+                                             argument,
+                                             None)
     raise HelpError('Invalid argument: ' + argument)
+
+
+def _is_name_of_phase(x: str):
+    return x in map(lambda x: x.identifier, phases.ALL)
