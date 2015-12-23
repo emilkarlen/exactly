@@ -8,6 +8,7 @@ from shellcheck_lib.cli.execution_mode.help.settings import HelpSettings, TestCa
 from shellcheck_lib.general.textformat.formatting import section, paragraph_item
 from shellcheck_lib.general.textformat.formatting.wrapper import Wrapper
 from shellcheck_lib.general.textformat.structure import document as doc
+from shellcheck_lib.general.textformat.structure.core import Text
 from shellcheck_lib.general.textformat.structure.paragraph import para
 from shellcheck_lib.test_case.help.instruction_description import Description
 from shellcheck_lib.test_case.help.render import instruction
@@ -23,8 +24,22 @@ class TestCaseHelp:
     def instruction_set(self, instruction_setup: HelpInstructionsSetup) -> doc.SectionContents:
         return instruction_set.instruction_set(instruction_setup)
 
-    def instruction(self, name: str, description: Description) -> doc.SectionContents:
+    def instruction(self, description: Description) -> doc.SectionContents:
         return instruction.instruction_man_page(description)
+
+    def instruction_list(self,
+                         instruction_name: str,
+                         phase_and_instruction_description_list: list) -> doc.SectionContents:
+        sections = []
+        for phase_and_instruction_description in phase_and_instruction_description_list:
+            man_page = self.instruction(phase_and_instruction_description[1])
+            phase_section = doc.Section(Text(phase_and_instruction_description[0].identifier),
+                                        man_page)
+            sections.append(phase_section)
+        initial_paragraphs = []
+        if len(phase_and_instruction_description_list) > 1:
+            initial_paragraphs = para(Text('%s exists in multiple phases.' % instruction_name))
+        return doc.SectionContents(initial_paragraphs, sections)
 
 
 class TestSuiteHelp:
@@ -62,7 +77,9 @@ def doc_for(application_help: ApplicationHelp,
         if item is TestCaseHelpItem.PHASE:
             return tc_help.phase(settings.name)
         if item is TestCaseHelpItem.INSTRUCTION:
-            return tc_help.instruction(settings.name, settings.value)
+            return tc_help.instruction(settings.value)
+        if item is TestCaseHelpItem.INSTRUCTION_LIST:
+            return tc_help.instruction_list(settings.name, settings.value)
         raise ValueError('Invalid %s: %s' % (str(TestCaseHelpItem), str(item)))
     if isinstance(settings, TestSuiteHelpSettings):
         ts_help = TestSuiteHelp()

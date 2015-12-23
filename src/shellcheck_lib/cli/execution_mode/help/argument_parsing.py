@@ -47,7 +47,7 @@ class Parser:
             return settings.TestCaseHelpSettings(settings.TestCaseHelpItem.PHASE,
                                                  argument,
                                                  None)
-        raise HelpError('Invalid argument: ' + argument)
+        return self._parse_instruction_search(argument)
 
     def _parse_instruction_in_phase(self,
                                     phase_name: str,
@@ -68,6 +68,20 @@ class Parser:
             else:
                 msg = 'Unknown phase: ' + phase_name
             raise HelpError(msg)
+
+    def _parse_instruction_search(self, instruction_name) -> settings.TestCaseHelpSettings:
+        phase_and_instr_descr_list = []
+        instructions_setup = self.application_help.test_case_help.instructions_setup
+        for (phase, instruction_set_dict) in instructions_setup.phase_and_instruction_set:
+            if instruction_name in instruction_set_dict:
+                phase_and_instr_descr_list.append((phase,
+                                                   instruction_set_dict[instruction_name].description))
+        if not phase_and_instr_descr_list:
+            msg = 'There is no instruction "%s"' % instruction_name
+            raise HelpError(msg)
+        return settings.TestCaseHelpSettings(settings.TestCaseHelpItem.INSTRUCTION_LIST,
+                                             instruction_name,
+                                             phase_and_instr_descr_list)
 
 
 def _is_name_of_phase(name: str):
