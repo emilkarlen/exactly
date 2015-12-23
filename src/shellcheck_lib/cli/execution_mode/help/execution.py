@@ -38,7 +38,7 @@ class TestCaseHelp:
             sections.append(phase_section)
         initial_paragraphs = []
         if len(phase_and_instruction_description_list) > 1:
-            initial_paragraphs = para(Text('%s exists in multiple phases.' % instruction_name))
+            initial_paragraphs = [para('"%s" is in multiple phases.' % instruction_name)]
         return doc.SectionContents(initial_paragraphs, sections)
 
 

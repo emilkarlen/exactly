@@ -61,7 +61,7 @@ class MainProgram:
             settings = parse_help.parse(application_help,
                                         help_command_arguments)
         except parse_help.HelpError as ex:
-            self._output.err.write(ex.msg)
+            self._output.err.write(ex.msg + os.linesep)
             return EXIT_INVALID_USAGE
         print_help(self._output.out, application_help, settings)
         return 0
