@@ -15,9 +15,9 @@ def phase(ph: phases.Phase) -> list:
     return phase_for_name(phase_help_name(ph))
 
 
-def instruction_in_phase(phase_identifier: str,
+def instruction_in_phase(phase_name: str,
                          instruction_name: str) -> list:
-    return [phase_identifier, instruction_name]
+    return [phase_name, instruction_name]
 
 
 def instruction_search(instruction_name: str) -> list:

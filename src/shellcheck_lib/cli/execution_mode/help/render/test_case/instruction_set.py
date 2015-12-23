@@ -6,7 +6,7 @@ from shellcheck_lib.general.textformat.structure.core import Text
 from shellcheck_lib.test_case.help.render.instruction import instruction_set_list_item
 
 
-def instruction_set(test_case_help: TestCaseHelp) -> doc.SectionContents:
+def instruction_set_per_phase(test_case_help: TestCaseHelp) -> doc.SectionContents:
     sections = []
     for test_case_phase_help in test_case_help.phase_helps:
         if test_case_phase_help.is_phase_with_instructions:
@@ -16,7 +16,7 @@ def instruction_set(test_case_help: TestCaseHelp) -> doc.SectionContents:
     return doc.SectionContents([], sections)
 
 
-def _instruction_list(instruction_set: TestCasePhaseInstructionSet):
+def _instruction_list(instruction_set: TestCasePhaseInstructionSet) -> lists.HeaderValueList:
     instruction_list_items = []
     for description in instruction_set.instruction_descriptions:
         list_item = instruction_set_list_item(description)
