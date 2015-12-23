@@ -32,7 +32,12 @@ class HelpInstructionsSetup(tuple):
                         self.phase_and_instruction_set))
 
 
-class ApplicationHelp(tuple):
+class MainProgramHelp(tuple):
+    def __new__(cls):
+        return tuple.__new__(cls, ())
+
+
+class TestCaseHelp(tuple):
     def __new__(cls,
                 instructions_setup: HelpInstructionsSetup):
         return tuple.__new__(cls, (instructions_setup,))
@@ -40,3 +45,34 @@ class ApplicationHelp(tuple):
     @property
     def instructions_setup(self) -> HelpInstructionsSetup:
         return self[0]
+
+
+class TestSuiteHelp(tuple):
+    def __new__(cls):
+        return tuple.__new__(cls, ())
+
+
+class ApplicationHelp(tuple):
+    def __new__(cls,
+                main_program_help: MainProgramHelp,
+                test_case_help: TestCaseHelp,
+                test_suite_help: TestSuiteHelp):
+        return tuple.__new__(cls, (main_program_help,
+                                   test_case_help,
+                                   test_suite_help))
+
+    @property
+    def main_program_help(self) -> MainProgramHelp:
+        return self[0]
+
+    @property
+    def test_case_help(self) -> TestCaseHelp:
+        return self[1]
+
+    @property
+    def test_suite_help(self) -> TestSuiteHelp:
+        return self[2]
+
+    @property
+    def instructions_setup(self) -> HelpInstructionsSetup:
+        return self.test_case_help.instructions_setup

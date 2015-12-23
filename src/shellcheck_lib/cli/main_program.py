@@ -57,12 +57,13 @@ class MainProgram:
 
     def _parse_and_execute_help(self, help_command_arguments: list) -> int:
         try:
-            settings = parse_help.parse(_application_help(self._instruction_set),
+            application_help = _application_help(self._instruction_set)
+            settings = parse_help.parse(application_help,
                                         help_command_arguments)
         except parse_help.HelpError as ex:
             self._output.err.write(ex.msg)
             return EXIT_INVALID_USAGE
-        print_help(self._output.out, self._instruction_set, settings)
+        print_help(self._output.out, application_help, settings)
         return 0
 
     def _parse_and_exit_on_error(self, parse_arguments_and_execute_callable, arguments: list) -> int:
@@ -75,4 +76,7 @@ class MainProgram:
 
 
 def _application_help(instructions_setup: InstructionsSetup) -> help_contents.ApplicationHelp:
-    return help_contents.ApplicationHelp(help_contents.HelpInstructionsSetup(instructions_setup))
+    return help_contents.ApplicationHelp(
+            help_contents.MainProgramHelp(),
+            help_contents.TestCaseHelp(help_contents.HelpInstructionsSetup(instructions_setup)),
+            help_contents.TestSuiteHelp())
