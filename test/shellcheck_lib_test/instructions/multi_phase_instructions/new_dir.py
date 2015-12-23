@@ -3,6 +3,8 @@ import unittest
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from shellcheck_lib.instructions.multi_phase_instructions import new_dir as sut
+from shellcheck_lib.test_case.help.instruction_description import Description
+from shellcheck_lib_test.instructions.test_resources.check_description import TestDescriptionBase
 from shellcheck_lib_test.util import tmp_dir_test
 from shellcheck_lib_test.util.file_checks import dir_contains_exactly
 from shellcheck_lib_test.util.file_structure import DirContents, empty_dir, Dir, empty_file
@@ -165,12 +167,18 @@ class TestFailingScenarios(TestCaseBase2):
                             ))
 
 
+class TestDescription(TestDescriptionBase):
+    def _description(self) -> Description:
+        return sut.description('instruction name')
+
+
 def suite():
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestParseSet))
     ret_val.addTest(unittest.makeSuite(TestSuccessfulScenariosWithEmptyCwd))
     ret_val.addTest(unittest.makeSuite(TestSuccessfulScenariosWithExistingDirectories))
     ret_val.addTest(unittest.makeSuite(TestFailingScenarios))
+    ret_val.addTest(unittest.makeSuite(TestDescription))
     return ret_val
 
 
