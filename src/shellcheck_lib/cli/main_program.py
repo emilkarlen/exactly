@@ -1,8 +1,8 @@
 import os
 
 from shellcheck_lib.cli.execution_mode.help import argument_parsing as parse_help
-from shellcheck_lib.cli.execution_mode.help import contents as help_contents
 from shellcheck_lib.cli.execution_mode.help.execution import print_help
+from shellcheck_lib.cli.execution_mode.help.test_case import application_help_for
 from shellcheck_lib.cli.execution_mode.test_case import argument_parsing as case_argument_parsing
 from shellcheck_lib.cli.execution_mode.test_case.settings import TestCaseExecutionSettings
 from shellcheck_lib.cli.execution_mode.test_suite import argument_parsing as suite_argument_parsing
@@ -57,7 +57,7 @@ class MainProgram:
 
     def _parse_and_execute_help(self, help_command_arguments: list) -> int:
         try:
-            application_help = _application_help(self._instruction_set)
+            application_help = application_help_for(self._instruction_set)
             settings = parse_help.parse(application_help,
                                         help_command_arguments)
         except parse_help.HelpError as ex:
@@ -73,10 +73,3 @@ class MainProgram:
             self._std.err.write(ex.error_message)
             self._std.err.write(os.linesep)
             return EXIT_INVALID_USAGE
-
-
-def _application_help(instructions_setup: InstructionsSetup) -> help_contents.ApplicationHelp:
-    return help_contents.ApplicationHelp(
-            help_contents.MainProgramHelp(),
-            help_contents.TestCaseHelp(help_contents.HelpInstructionsSetup(instructions_setup)),
-            help_contents.TestSuiteHelp())

@@ -1,53 +1,96 @@
-from shellcheck_lib.execution import phases
-from shellcheck_lib.test_case.instruction_setup import InstructionsSetup
-
-
-class HelpInstructionsSetup(tuple):
+class TestCasePhaseInstructionSet(tuple):
     def __new__(cls,
-                instruction_set: InstructionsSetup):
-        return tuple.__new__(cls, (instruction_set,))
+                instruction_descriptions: iter):
+        """
+        :type instruction_descriptions: [Description]
+        """
+        return tuple.__new__(cls, (list(instruction_descriptions),))
 
     @property
-    def plain_instruction_set(self) -> InstructionsSetup:
+    def instruction_descriptions(self) -> list:
+        """
+        :type: [Description]
+        """
         return self[0]
 
     @property
-    def phase_and_instruction_set(self) -> list:
+    def name_2_description(self) -> dict:
+        return dict(map(lambda description: (description.instruction_name(), description),
+                        self.instruction_descriptions))
+
+
+class TestCasePhaseHelp(tuple):
+    def __new__(cls,
+                name: str,
+                instruction_set: TestCasePhaseInstructionSet):
         """
-        :return: [(Phase, dict)]
+
+        :param name:
+        :param instruction_set: None if this phase does not have instructions.
         """
-        return [
-            (phases.ANONYMOUS, self.plain_instruction_set.config_instruction_set),
-            (phases.SETUP, self.plain_instruction_set.setup_instruction_set),
-            (phases.ASSERT, self.plain_instruction_set.assert_instruction_set),
-            (phases.CLEANUP, self.plain_instruction_set.cleanup_instruction_set),
-        ]
+        return tuple.__new__(cls, (name, instruction_set))
 
     @property
-    def phase_2_instruction_set(self) -> dict:
-        """
-        :return: phase-identifier-str -> InstructionSet
-        """
-        return dict(map(lambda ph_is: (ph_is[0].identifier, ph_is[1]),
-                        self.phase_and_instruction_set))
+    def name(self) -> str:
+        return self[0]
 
+    @property
+    def is_phase_with_instructions(self) -> bool:
+        return self.instruction_set is not None
 
-class MainProgramHelp(tuple):
-    def __new__(cls):
-        return tuple.__new__(cls, ())
+    @property
+    def instruction_set(self) -> TestCasePhaseInstructionSet:
+        """
+        :return: None if this phase does not have instructions.
+        """
+        return self[1]
 
 
 class TestCaseHelp(tuple):
     def __new__(cls,
-                instructions_setup: HelpInstructionsSetup):
-        return tuple.__new__(cls, (instructions_setup,))
+                phase_helps: iter):
+        """
+        :type phase_helps: [TestCasePhaseHelp]
+        """
+        return tuple.__new__(cls, (list(phase_helps),))
 
     @property
-    def instructions_setup(self) -> HelpInstructionsSetup:
+    def phase_helps(self) -> list:
+        """
+        :type: [TestCasePhaseHelp]
+        """
+        return self[0]
+
+    @property
+    def phase_name_2_phase_help(self) -> dict:
+        """
+        :type: str -> TestCasePhaseHelp
+        """
+        return dict(map(lambda ph_help: (ph_help.name, ph_help),
+                        self.phase_helps))
+
+
+class TestSuiteSectionHelp(tuple):
+    def __new__(cls,
+                name: str):
+        return tuple.__new__(cls, (name,))
+
+    @property
+    def name(self) -> str:
         return self[0]
 
 
 class TestSuiteHelp(tuple):
+    def __new__(cls,
+                test_suite_section_helps: iter):
+        return tuple.__new__(cls, (list(test_suite_section_helps),))
+
+    @property
+    def section_helps(self) -> list:
+        return self[0]
+
+
+class MainProgramHelp(tuple):
     def __new__(cls):
         return tuple.__new__(cls, ())
 
@@ -72,7 +115,3 @@ class ApplicationHelp(tuple):
     @property
     def test_suite_help(self) -> TestSuiteHelp:
         return self[2]
-
-    @property
-    def instructions_setup(self) -> HelpInstructionsSetup:
-        return self.test_case_help.instructions_setup

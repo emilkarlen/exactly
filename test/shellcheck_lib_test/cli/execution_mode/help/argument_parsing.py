@@ -1,93 +1,110 @@
 import unittest
 
 from shellcheck_lib.cli.execution_mode.help import argument_parsing as sut
-from shellcheck_lib.cli.execution_mode.help.contents import ApplicationHelp, HelpInstructionsSetup, MainProgramHelp, \
-    TestCaseHelp, TestSuiteHelp
-from shellcheck_lib.document.model import Instruction
-from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionParser, SingleInstructionParserSource
-from shellcheck_lib.execution import phases
+from shellcheck_lib.cli.execution_mode.help.contents import ApplicationHelp, MainProgramHelp, \
+    TestCaseHelp, TestSuiteHelp, TestCasePhaseHelp, TestCasePhaseInstructionSet, TestSuiteSectionHelp
 from shellcheck_lib.test_case.help.instruction_description import DescriptionWithConstantValues, Description
-from shellcheck_lib.test_case.instruction_setup import InstructionsSetup, SingleInstructionSetup
-
-
-def _arguments_for_help_for_phase(phase: phases.Phase) -> list:
-    return [phase.identifier]
-
-
-def _arguments_for_help_for_instruction_in_phase(phase_identifier: str,
-                                                 instruction_name: str) -> list:
-    return [phase_identifier, instruction_name]
-
-
-def _arguments_for_help_for_instruction_search(instruction_name: str) -> list:
-    return [instruction_name]
+from shellcheck_lib_test.cli.execution_mode.help.test_resources import arguments_for
 
 
 class TestProgramHelp(unittest.TestCase):
     def test_program(self):
-        actual = sut.parse(_app_help_for(empty_instruction_set()),
+        actual = sut.parse(_app_help_for([]),
                            [])
         self.assertIsInstance(actual,
                               sut.settings.ProgramHelpSettings,
                               'Expecting settings for Program')
 
 
-class TestTestCaseSingleInstructionInPhase(unittest.TestCase):
-    def test_single_instruction_for_phases_with_instructions(self):
-        for phase in phases.ALL_WITH_INSTRUCTIONS:
-            self._check_instruction_in_phase(phase)
+class TestTestCasePhase(unittest.TestCase):
+    def test_existing_phases(self):
+        all_phases = ['phase 1',
+                      'phase 2']
+        application_help = self._application_help_with_phases(all_phases)
+        for phase_name in all_phases:
+            self._assert_successful_parsing_of_existing_phase(application_help, phase_name)
 
+    def test_non_existing_phases(self):
+        application_help = self._application_help_with_phases(['phase 1',
+                                                               'phase 2'])
+        arguments = arguments_for.phase_for_name('non existing phase')
+        with self.assertRaises(sut.HelpError):
+            sut.parse(application_help, arguments)
+
+    def _assert_successful_parsing_of_existing_phase(self,
+                                                     application_help: ApplicationHelp,
+                                                     phase_name: str):
+        arguments = arguments_for.phase_for_name(phase_name)
+        actual = sut.parse(application_help, arguments)
+        self._assert_is_single_phase_help(phase_name, actual)
+
+    def _assert_is_single_phase_help(self,
+                                     expected_phase_name: str,
+                                     actual):
+        self.assertIsInstance(actual, sut.settings.TestCaseHelpSettings,
+                              'Parse result should be a ' + str(sut.settings.TestCaseHelpSettings))
+        assert isinstance(actual, sut.settings.TestCaseHelpSettings)
+        self.assertIs(sut.settings.TestCaseHelpItem.PHASE,
+                      actual.item)
+        self.assertIsInstance(actual.data,
+                              TestCasePhaseHelp)
+
+        self.assertEqual(expected_phase_name,
+                         actual.data.name)
+
+    def _application_help_with_phases(self, all_phases):
+        return ApplicationHelp(MainProgramHelp(),
+                               TestCaseHelp(map(lambda ph_name: test_case_phase_help(ph_name, []),
+                                                all_phases)),
+                               TestSuiteHelp({}))
+
+
+class TestTestCaseSingleInstructionInPhase(unittest.TestCase):
     def test_unknown_phase(self):
-        instructions = ['instruction-name']
-        instr_set = instruction_set(instructions,
-                                    instructions,
-                                    instructions,
-                                    instructions)
-        application_help = _app_help_for(instr_set)
+        application_help = _app_help_for([
+            test_case_phase_help('phase', ['instruction-name'])
+        ])
         with self.assertRaises(sut.HelpError):
             sut.parse(application_help,
-                      _arguments_for_help_for_instruction_in_phase('non-existing-phase', 'instruction-name'))
+                      arguments_for.instruction_in_phase('non-existing-phase', 'instruction-name'))
 
     def test_unknown_instruction(self):
-        instructions = ['instruction-name']
-        instr_set = instruction_set(instructions,
-                                    instructions,
-                                    [],
-                                    instructions)
-        application_help = _app_help_for(instr_set)
+        application_help = _app_help_for([
+            test_case_phase_help('phase-1', ['instruction']),
+            test_case_phase_help('empty-phase', []),
+        ])
         with self.assertRaises(sut.HelpError):
             sut.parse(application_help,
-                      _arguments_for_help_for_instruction_in_phase(phases.ASSERT.identifier, 'instruction-name'))
+                      arguments_for.instruction_in_phase('empty-phase', 'instruction'))
 
-    def _check_instruction_in_phase(self, phase: phases.Phase):
-        instructions = [phase.identifier, 'name-that-is-not-the-name-of-a-phase']
-        instr_set = instruction_set(instructions,
-                                    instructions,
-                                    instructions,
-                                    instructions)
-        application_help = _app_help_for(instr_set)
+    def test_single_instruction_for_phases_with_instructions(self):
+        phase_name = 'phase name'
+        instructions = [phase_name, 'name-that-is-not-the-name-of-a-phase']
+        application_help = _app_help_for([
+            test_case_phase_help(phase_name, instructions),
+            test_case_phase_help('other phase ' + phase_name, instructions)
+        ])
         self._assert_is_existing_instruction_in_phase(application_help,
-                                                      phase,
+                                                      phase_name,
                                                       'name-that-is-not-the-name-of-a-phase')
         self._assert_is_existing_instruction_in_phase(application_help,
-                                                      phase,
-                                                      phase.identifier)
+                                                      phase_name,
+                                                      phase_name)
 
     def _assert_is_existing_instruction_in_phase(self,
                                                  application_help: ApplicationHelp,
-                                                 phase: phases.Phase,
+                                                 phase_name: str,
                                                  instruction_name: str):
         actual = sut.parse(application_help,
-                           _arguments_for_help_for_instruction_in_phase(phase.identifier,
-                                                                        instruction_name))
+                           arguments_for.instruction_in_phase(phase_name,
+                                                              instruction_name))
         actual = self._check_is_test_case_settings_for_single_instruction(actual)
         self.assertEqual(actual.name,
                          instruction_name,
                          'Name of instruction')
-        self.assertEqual(_single_line_description_that_identifies_instruction_and_phase(phase,
+        self.assertEqual(_single_line_description_that_identifies_instruction_and_phase(phase_name,
                                                                                         instruction_name),
-                         actual.value.single_line_description(),
+                         actual.data.single_line_description(),
                          'The single-line-description in this test is expected to identify (phase,instruction-name)')
 
     def _check_is_test_case_settings_for_single_instruction(
@@ -99,7 +116,7 @@ class TestTestCaseSingleInstructionInPhase(unittest.TestCase):
         assert isinstance(value, sut.settings.TestCaseHelpSettings)
         self.assertIs(sut.settings.TestCaseHelpItem.INSTRUCTION,
                       value.item)
-        self.assertIsInstance(value.value,
+        self.assertIsInstance(value.data,
                               Description,
                               'The value is expected to be the description of the instruction')
         return value
@@ -107,51 +124,45 @@ class TestTestCaseSingleInstructionInPhase(unittest.TestCase):
 
 class TestTestCaseInstructionList(unittest.TestCase):
     def test_instruction_in_single_phase(self):
-        instr_set = instruction_set(['config-instruction'],
-                                    ['setup-instruction'],
-                                    ['assert-instruction'],
-                                    ['cleanup-instruction'])
-        application_help = _app_help_for(instr_set)
-        actual = sut.parse(application_help, _arguments_for_help_for_instruction_search('setup-instruction'))
-        actual = self._assert_is_valid_instruction_list_settings('setup-instruction',
+        application_help = _app_help_for([test_case_phase_help('phase-a', ['a-instruction']),
+                                          test_case_phase_help('phase-with-target', ['target-instruction'])])
+        actual = sut.parse(application_help, arguments_for.instruction_search('target-instruction'))
+        actual = self._assert_is_valid_instruction_list_settings('target-instruction',
                                                                  actual)
         self.assertEqual(1,
-                         len(actual.value),
+                         len(actual.data),
                          'One instruction is expected to be found')
-        self.assertEqual(phases.SETUP,
-                         actual.value[0][0],
-                         'The instruction is expected to be found in the %s phase.' % phases.SETUP.identifier)
+        self.assertEqual('phase-with-target',
+                         actual.data[0][0],
+                         'The instruction is expected to be found in the %s phase.' % 'phase-with-target')
 
     def test_instruction_in_multiple_phase(self):
-        instr_set = instruction_set(['config-instruction'],
-                                    ['the-instruction'],
-                                    ['assert-instruction'],
-                                    ['the-instruction'])
-        application_help = _app_help_for(instr_set)
+        application_help = _app_help_for([
+            test_case_phase_help('phase-a', ['a-instr']),
+            test_case_phase_help('phase-b', ['the-instr']),
+            test_case_phase_help('phase-c', ['c-instr']),
+            test_case_phase_help('phase-d', ['the-instr']),
+        ])
         actual = sut.parse(application_help,
-                           _arguments_for_help_for_instruction_search('the-instruction'))
-        actual = self._assert_is_valid_instruction_list_settings('the-instruction',
+                           arguments_for.instruction_search('the-instr'))
+        actual = self._assert_is_valid_instruction_list_settings('the-instr',
                                                                  actual)
         self.assertEqual(2,
-                         len(actual.value),
+                         len(actual.data),
                          'Two instructions are expected to be found')
-        self.assertEqual(phases.SETUP,
-                         actual.value[0][0],
-                         'The first instruction is expected to be found in the %s phase.' % phases.SETUP.identifier)
-        self.assertEqual(phases.CLEANUP,
-                         actual.value[1][0],
-                         'The second instruction is expected to be found in the %s phase.' % phases.CLEANUP.identifier)
+        self.assertEqual('phase-b',
+                         actual.data[0][0],
+                         'The first instruction is expected to be found in the %s phase.' % 'phase-b')
+        self.assertEqual('phase-d',
+                         actual.data[1][0],
+                         'The second instruction is expected to be found in the %s phase.' % 'phase-d')
 
     def test_unknown_instruction(self):
         instructions = ['known-instruction']
-        instr_set = instruction_set(instructions,
-                                    instructions,
-                                    instructions,
-                                    instructions)
-        application_help = _app_help_for(instr_set)
+        application_help = _app_help_for([test_case_phase_help('phase', instructions)])
         with self.assertRaises(sut.HelpError):
             sut.parse(application_help,
-                      _arguments_for_help_for_instruction_search('unknown-instruction'))
+                      arguments_for.instruction_search('unknown-instruction'))
 
     def _assert_is_valid_instruction_list_settings(
             self,
@@ -166,10 +177,10 @@ class TestTestCaseInstructionList(unittest.TestCase):
                          'Name of instruction')
         self.assertIs(sut.settings.TestCaseHelpItem.INSTRUCTION_LIST,
                       value.item)
-        self.assertIsInstance(value.value,
+        self.assertIsInstance(value.data,
                               list,
                               'The value is expected to be a list')
-        for list_item in value.value:
+        for list_item in value.data:
             self.assertIsInstance(list_item,
                                   tuple,
                                   'Each item in the list is expected to be a tuple')
@@ -177,8 +188,8 @@ class TestTestCaseInstructionList(unittest.TestCase):
                               len(list_item),
                               'Each item in the list is expected to be a pair.')
             self.assertIsInstance(list_item[0],
-                                  phases.Phase,
-                                  'Each item in the list is expected to have a %s as first element' % str(phases.Phase))
+                                  str,
+                                  'Each item in the list is expected to have a %s as first element' % str(str))
             self.assertIsInstance(list_item[1],
                                   Description,
                                   'Each item in the list is expected to have a Description as second element')
@@ -193,8 +204,8 @@ class TestTestCaseInstructionList(unittest.TestCase):
 
 class TestTestCaseInstructionSet(unittest.TestCase):
     def test_instruction_set(self):
-        actual = sut.parse(_app_help_for(empty_instruction_set()),
-                           [sut.INSTRUCTIONS])
+        actual = sut.parse(_app_help_for([]),
+                           arguments_for.instructions())
         self.assertIsInstance(actual,
                               sut.settings.TestCaseHelpSettings,
                               'Expecting settings for Test Case')
@@ -203,32 +214,11 @@ class TestTestCaseInstructionSet(unittest.TestCase):
                       actual.item,
                       'Item should denote help for Instruction Set')
 
-    def test_phase(self):
-        for phase in phases.ALL:
-            self._check_phase(phase)
-
-    def _check_phase(self, phase: phases.Phase):
-        instr_set = instruction_set([phase.identifier],
-                                    [phase.identifier],
-                                    [phase.identifier],
-                                    [phase.identifier])
-        actual = sut.parse(_app_help_for(instr_set),
-                           _arguments_for_help_for_phase(phase))
-        self.assertIsInstance(actual,
-                              sut.settings.TestCaseHelpSettings,
-                              'Should be help for Test Case')
-        assert isinstance(actual, sut.settings.TestCaseHelpSettings)
-        self.assertIs(sut.settings.TestCaseHelpItem.PHASE,
-                      actual.item)
-        self.assertEqual(phase.identifier,
-                         actual.name,
-                         'Name of phase')
-
 
 class TestTestSuiteHelp(unittest.TestCase):
     def test_overview(self):
-        actual = sut.parse(_app_help_for(empty_instruction_set()),
-                           [sut.SUITE])
+        actual = sut.parse(_app_help_for([]),
+                           arguments_for.suite())
         self.assertIsInstance(actual,
                               sut.settings.TestSuiteHelpSettings,
                               'Expecting settings for Program')
@@ -237,46 +227,56 @@ class TestTestSuiteHelp(unittest.TestCase):
                       actual.item,
                       'Item should denote help for Overview')
 
+    def test_known_section(self):
+        actual = sut.parse(_app_help_for([],
+                                         suite_sections=[TestSuiteSectionHelp('section A'),
+                                                         TestSuiteSectionHelp('section B')]),
+                           arguments_for.suite_section('section A'))
+        self.assertIsInstance(actual,
+                              sut.settings.TestSuiteHelpSettings,
+                              'Expecting help for Suite Section')
+        assert isinstance(actual, sut.settings.TestSuiteHelpSettings)
+        self.assertIs(sut.settings.TestSuiteHelpItem.SECTION,
+                      actual.item,
+                      'Item should denote help for a Section')
+        self.assertIsInstance(actual.data,
+                              TestSuiteSectionHelp)
 
-def empty_instruction_set() -> InstructionsSetup:
-    return InstructionsSetup({}, {}, {}, {})
-
-
-def instruction_set(config_set_instruction_names: iter = (),
-                    setup_set_instruction_names: iter = (),
-                    assert_set_instruction_names: iter = (),
-                    cleanup_set_instruction_names: iter = ()) -> InstructionsSetup:
-    return InstructionsSetup(dict(map(lambda name: instr(phases.ANONYMOUS, name), config_set_instruction_names)),
-                             dict(map(lambda name: instr(phases.SETUP, name), setup_set_instruction_names)),
-                             dict(map(lambda name: instr(phases.ASSERT, name), assert_set_instruction_names)),
-                             dict(map(lambda name: instr(phases.CLEANUP, name), cleanup_set_instruction_names)))
-
-
-def instr(phase: phases.Phase, name: str) -> (str, SingleInstructionSetup):
-    return (name,
-            SingleInstructionSetup(
-                    ParserThatFailsUnconditionally(),
-                    DescriptionWithConstantValues(name,
-                                                  _single_line_description_that_identifies_instruction_and_phase(phase,
-                                                                                                                 name),
-                                                  '',
-                                                  [])))
+    def test_unknown_section(self):
+        application_help = _app_help_for([],
+                                         suite_sections=[TestSuiteSectionHelp('section A')])
+        with self.assertRaises(sut.HelpError):
+            sut.parse(application_help,
+                      arguments_for.suite_section('unknown section'))
 
 
-def _single_line_description_that_identifies_instruction_and_phase(phase: phases.Phase,
-                                                                   instruction_name: str):
-    return phase.identifier + '/' + instruction_name
+def instr_descr(phase_name: str, name: str) -> Description:
+    return DescriptionWithConstantValues(
+            name,
+            _single_line_description_that_identifies_instruction_and_phase(phase_name,
+                                                                           name),
+            '',
+            [])
 
 
-class ParserThatFailsUnconditionally(SingleInstructionParser):
-    def apply(self, source: SingleInstructionParserSource) -> Instruction:
-        raise NotImplementedError('This method should never be used')
+def _single_line_description_that_identifies_instruction_and_phase(phase_name: str,
+                                                                   instruction_name: str) -> str:
+    return phase_name + '/' + instruction_name
 
 
-def _app_help_for(instructions_setup: InstructionsSetup) -> ApplicationHelp:
+def _app_help_for(test_case_phase_helps: list,
+                  suite_sections=()) -> ApplicationHelp:
     return ApplicationHelp(MainProgramHelp(),
-                           TestCaseHelp(HelpInstructionsSetup(instructions_setup)),
-                           TestSuiteHelp())
+                           TestCaseHelp(test_case_phase_helps),
+                           TestSuiteHelp(suite_sections))
+
+
+def test_case_phase_help(phase_name: str,
+                         instruction_names: list) -> TestCasePhaseHelp:
+    instruction_descriptions = map(lambda name: instr_descr(phase_name, name),
+                                   instruction_names)
+    return TestCasePhaseHelp(phase_name,
+                             TestCasePhaseInstructionSet(instruction_descriptions))
 
 
 def suite():
