@@ -10,7 +10,7 @@ from shellcheck_lib.test_case.help.instruction_description import InvokationVari
 def description(instruction_name: str) -> Description:
     return DescriptionWithConstantValues(
             instruction_name,
-            'Makes a directory in the current directory',
+            'Makes a directory in the current directory.',
             """
             Makes parent components, if needed.
 

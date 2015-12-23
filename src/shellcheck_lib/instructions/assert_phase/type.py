@@ -21,7 +21,7 @@ FILE_TYPES = {
 def description(instruction_name: str) -> Description:
     return DescriptionWithConstantValues(
             instruction_name,
-            'Tests the type of a file',
+            'Tests the type of a file.',
             """All tests fails if FILENAME does not exist.
 
             regular: Tests if FILENAME is a regular file or a sym-link to a regular file.

@@ -12,7 +12,7 @@ from shellcheck_lib.test_case.sections.result import sh
 def description(instruction_name: str) -> Description:
     return DescriptionWithConstantValues(
             instruction_name,
-            'Changes the Home Directory',
+            'Changes the Home directory.',
             '',
             [InvokationVariant('PATH',
                                'A path that is relative the current Home Directory'),

@@ -12,7 +12,7 @@ from shellcheck_lib.test_case.help.instruction_description import InvokationVari
 def description(instruction_name: str) -> Description:
     return DescriptionWithConstantValues(
             instruction_name,
-            'Creates a new file',
+            'Creates a file.',
             """
             Uses Posix syntax for paths. I.e. directories are separated by /.
             """,
