@@ -17,7 +17,7 @@ from shellcheck_lib.test_case.sections.result import pfh
 def description(instruction_name: str) -> Description:
     return DescriptionWithConstantValues(
             instruction_name,
-            'Test numerical exitcode',
+            'Tests the exitcode.',
             '',
             [InvokationVariant('INTEGER',
                                'Passes iff the exit code is exactly INTEGER'),
