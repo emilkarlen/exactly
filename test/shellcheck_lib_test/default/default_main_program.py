@@ -4,11 +4,15 @@ import unittest
 
 from shellcheck_lib.cli import main_program
 from shellcheck_lib.cli.execution_mode.test_case.execution import NO_EXECUTION_EXIT_CODE
+from shellcheck_lib.cli.main_program import HELP_COMMAND
 from shellcheck_lib.default.execution_mode.test_suite.reporting import INVALID_SUITE_EXIT_CODE, FAILED_TESTS_EXIT_CODE
+from shellcheck_lib.execution import phases
 from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib.general.string import lines_content
 from shellcheck_lib.test_case.test_case_processing import AccessErrorType
+from shellcheck_lib.test_suite.parser import SECTION_NAME__SUITS, SECTION_NAME__CASES
 from shellcheck_lib_test.cli.cases import default_main_program_wildcard as wildcard
+from shellcheck_lib_test.cli.execution_mode.help.test_resources import arguments_for
 from shellcheck_lib_test.cli.utils.execute_main_program import execute_main_program, ARGUMENTS_FOR_TEST_INTERPRETER
 from shellcheck_lib_test.default.test_impls import default_main_program_case_preprocessing
 from shellcheck_lib_test.default.test_impls import default_main_program_suite_preprocessing as pre_proc_tests
@@ -302,7 +306,7 @@ class TestTestSuite(main_program_check_for_test_suite.TestsForSetupWithoutPrepro
 
 
 class TestTestSuiteWithWildcardFileReferencesToCaseFiles(
-    main_program_check_for_test_suite.TestsForSetupWithoutPreprocessorInternally):
+        main_program_check_for_test_suite.TestsForSetupWithoutPreprocessorInternally):
     def test_references_to_case_files_that_matches_no_files(self):
         self._check([], wildcard.ReferencesToCaseFilesThatMatchesNoFiles())
 
@@ -329,7 +333,7 @@ class TestTestSuiteWithWildcardFileReferencesToCaseFiles(
 
 
 class TestTestSuiteWithWildcardFileReferencesToSuiteFiles(
-    main_program_check_for_test_suite.TestsForSetupWithoutPreprocessorInternally):
+        main_program_check_for_test_suite.TestsForSetupWithoutPreprocessorInternally):
     def test_references_to_suite_files_that_matches_no_files(self):
         self._check([], wildcard.ReferencesToCaseFilesThatMatchesNoFiles())
 
@@ -355,7 +359,7 @@ class TestTestSuiteWithWildcardFileReferencesToSuiteFiles(
 class TestHelp(unittest.TestCase):
     def test_invalid_usage(self):
         # ARRANGE #
-        command_line_arguments = ['help', 'arg', 'arg', 'arg', 'arg']
+        command_line_arguments = self._cl(['too', 'many', 'arguments', ',', 'indeed'])
         sub_process_result = execute_main_program(command_line_arguments)
         # ASSERT #
         self.assertEqual(main_program.EXIT_INVALID_USAGE,
@@ -366,14 +370,37 @@ class TestHelp(unittest.TestCase):
                          'Output on stdout')
         self.assertTrue(len(sub_process_result.stderr) > 0)
 
+    def test_program(self):
+        self._assert_is_successful_invokation(arguments_for.program())
+
+    def test_case_phases(self):
+        for ph in phases.ALL:
+            self._assert_is_successful_invokation(arguments_for.phase(ph),
+                                                  msg_header='Phase %s: ' + ph.identifier)
+
     def test_instructions(self):
-        # ARRANGE #
-        command_line_arguments = ['help', 'instructions']
+        self._assert_is_successful_invokation(arguments_for.instructions())
+
+    def test_suite(self):
+        self._assert_is_successful_invokation(arguments_for.suite())
+
+    def test_suite_section__suites(self):
+        self._assert_is_successful_invokation(arguments_for.suite_section(SECTION_NAME__SUITS))
+
+    def test_suite_section__cases(self):
+        self._assert_is_successful_invokation(arguments_for.suite_section(SECTION_NAME__CASES))
+
+    def _assert_is_successful_invokation(self, help_command_arguments: list,
+                                         msg_header: str = ''):
+        command_line_arguments = self._cl(help_command_arguments)
         sub_process_result = execute_main_program(command_line_arguments)
-        # ASSERT #
         self.assertEqual(0,
                          sub_process_result.exitcode,
-                         'Exit Status')
+                         msg_header + 'Exit Status')
+
+    @staticmethod
+    def _cl(help_command_arguments: list) -> list:
+        return [HELP_COMMAND] + help_command_arguments
 
 
 class TestTestSuitePreprocessing(main_program_check_for_test_suite.TestsForSetupWithPreprocessorInternally):

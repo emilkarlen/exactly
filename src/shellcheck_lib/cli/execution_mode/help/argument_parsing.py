@@ -33,6 +33,8 @@ class Parser:
         """
         if not help_command_arguments:
             return settings.ProgramHelpSettings()
+        if help_command_arguments[0] == SUITE:
+            return self._parse_suite_help(help_command_arguments[1:])
         if len(help_command_arguments) == 2:
             return self._parse_instruction_in_phase(help_command_arguments[0],
                                                     help_command_arguments[1])
@@ -41,24 +43,39 @@ class Parser:
         argument = help_command_arguments[0]
         if argument == INSTRUCTIONS:
             return settings.TestCaseHelpSettings(settings.TestCaseHelpItem.INSTRUCTION_SET, None, None)
-        if argument == SUITE:
-            return settings.TestSuiteHelpSettings(settings.TestSuiteHelpItem.OVERVIEW, None)
-        if _is_name_of_phase(argument):
+        case_help = self.application_help.test_case_help
+        if argument in case_help.phase_name_2_phase_help:
             return settings.TestCaseHelpSettings(settings.TestCaseHelpItem.PHASE,
                                                  argument,
-                                                 None)
+                                                 case_help.phase_name_2_phase_help[argument])
         return self._parse_instruction_search(argument)
+
+    def _parse_suite_help(self, arguments: list) -> settings.TestSuiteHelpSettings:
+        if not arguments:
+            return settings.TestSuiteHelpSettings(settings.TestSuiteHelpItem.OVERVIEW, None, None)
+        if len(arguments) != 1:
+            raise HelpError('Invalid help syntax.')
+        section_name = arguments[0]
+        for test_suite_section_help in self.application_help.test_suite_help.section_helps:
+            if test_suite_section_help.name == section_name:
+                return settings.TestSuiteHelpSettings(settings.TestSuiteHelpItem.SECTION,
+                                                      section_name,
+                                                      test_suite_section_help)
+        raise HelpError('Unknown section: "%s"' % section_name)
 
     def _parse_instruction_in_phase(self,
                                     phase_name: str,
                                     instruction_name: str) -> settings.TestCaseHelpSettings:
         try:
-            instruction_set = self.application_help.instructions_setup.phase_2_instruction_set[phase_name]
+            test_case_phase_help = self.application_help.test_case_help.phase_name_2_phase_help[phase_name]
+            if not test_case_phase_help.is_phase_with_instructions:
+                msg = 'The phase %s does not contain instructions.' % instruction_name
+                raise HelpError(msg)
             try:
-                sing_instr_setup = instruction_set[instruction_name]
+                description = test_case_phase_help.instruction_set.name_2_description[instruction_name]
                 return settings.TestCaseHelpSettings(settings.TestCaseHelpItem.INSTRUCTION,
                                                      instruction_name,
-                                                     sing_instr_setup.description)
+                                                     description)
             except KeyError:
                 msg = 'The phase %s does not contain the instruction: %s' % (phase_name, instruction_name)
                 raise HelpError(msg)
@@ -71,11 +88,13 @@ class Parser:
 
     def _parse_instruction_search(self, instruction_name) -> settings.TestCaseHelpSettings:
         phase_and_instr_descr_list = []
-        instructions_setup = self.application_help.test_case_help.instructions_setup
-        for (phase, instruction_set_dict) in instructions_setup.phase_and_instruction_set:
-            if instruction_name in instruction_set_dict:
-                phase_and_instr_descr_list.append((phase,
-                                                   instruction_set_dict[instruction_name].description))
+        test_case_phase_helps = self.application_help.test_case_help.phase_helps
+        for test_case_phase_help in test_case_phase_helps:
+            if test_case_phase_help.is_phase_with_instructions:
+                name_2_description = test_case_phase_help.instruction_set.name_2_description
+                if instruction_name in name_2_description:
+                    phase_and_instr_descr_list.append((test_case_phase_help.name,
+                                                       name_2_description[instruction_name]))
         if not phase_and_instr_descr_list:
             msg = 'There is no instruction "%s"' % instruction_name
             raise HelpError(msg)
