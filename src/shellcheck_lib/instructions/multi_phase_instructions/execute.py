@@ -58,7 +58,7 @@ def description(instruction_name: str,
                 SyntaxElementDescription('EXECUTABLE',
                                          single_para('Specifies an executable program'),
                                          [
-                                             InvokationVariant('ABSOLUTE-PATH', ''),
+                                             InvokationVariant('ABSOLUTE-PATH', []),
                                              InvokationVariant('[{}] PATH'.format('|'.join(ALL_REL_OPTIONS)),
                                                                []),
                                              InvokationVariant('( EXECUTABLE ARGUMENT-TO-EXECUTABLE... )',

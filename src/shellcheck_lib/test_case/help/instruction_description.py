@@ -73,7 +73,7 @@ class DescriptionWithConstantValues(Description):
         self.__single_line_description = single_line_description
         self.__main_description_rest = main_description_rest
         self.__invokation_variants = invokation_variants
-        self.__syntax_element_descriptions = syntax_element_descriptions
+        self.__syntax_element_descriptions = list(syntax_element_descriptions)
 
     def single_line_description(self) -> str:
         return self.__single_line_description
