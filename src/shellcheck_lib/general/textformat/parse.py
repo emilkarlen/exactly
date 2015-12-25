@@ -1,6 +1,12 @@
 from shellcheck_lib.general.textformat.structure.core import ParagraphItem, Text
 from shellcheck_lib.general.textformat.structure.paragraph import Paragraph
 
+NUM_TEXT_SEPARATOR_LINES = 1
+NUM_PARAGRAPH_SEPARATOR_LINES = 2
+
+TEXT_SEPARATOR_LINES = NUM_TEXT_SEPARATOR_LINES * ['']
+PARAGRAPH_SEPARATOR_LINES = NUM_PARAGRAPH_SEPARATOR_LINES * ['']
+
 
 def parse(normalized_lines: list) -> list:
     return _Parser(normalized_lines).apply()
@@ -59,7 +65,7 @@ class _Parser:
         return self.number_of_blank_lines() > 0
 
     def is_at_paragraph_separator(self) -> bool:
-        return self.number_of_blank_lines() >= 2
+        return self.number_of_blank_lines() >= NUM_PARAGRAPH_SEPARATOR_LINES
 
     def consume_current_line(self) -> str:
         ret_val = self.lines[0]
