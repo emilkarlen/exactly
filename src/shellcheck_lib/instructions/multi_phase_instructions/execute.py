@@ -32,16 +32,27 @@ def description(instruction_name: str,
             single_line_description,
             'TODO',
             [
-                InvokationVariant('EXECUTABLE [--] ARGUMENT...',
-                                  """Executes the given executable with the given command line arguments.
-                                  The arguments are splitted according to shell syntax."""),
-                InvokationVariant('EXECUTABLE %s SOURCE-FILE [--] ARGUMENT...' % INTERPRET_OPTION,
-                                  """Interprets the given SOURCE-FILE using EXECUTABLE.
-                                  ARGUMENTS... are splitted according to shell syntax."""),
-                InvokationVariant('EXECUTABLE %s SOURCE' % SOURCE_OPTION,
-                                  """Interprets the given SOURCE using EXECUTABLE.
-                                  SOURCE is taken literary, and is given as a single argument to EXECUTABLE.
-                                  """),
+                InvokationVariant(
+                        'EXECUTABLE [--] ARGUMENT...',
+                        paragraphs_parse.normalize_and_parse(
+                                """\
+                                Executes the given executable with the given command line arguments.
+                                The arguments are splitted according to shell syntax.
+                                """)),
+                InvokationVariant(
+                        'EXECUTABLE %s SOURCE-FILE [--] ARGUMENT...' % INTERPRET_OPTION,
+                        paragraphs_parse.normalize_and_parse(
+                                """\
+                                Interprets the given SOURCE-FILE using EXECUTABLE.
+                                ARGUMENTS... are splitted according to shell syntax.
+                                """)),
+                InvokationVariant(
+                        'EXECUTABLE %s SOURCE' % SOURCE_OPTION,
+                        paragraphs_parse.normalize_and_parse(
+                                """\
+                                Interprets the given SOURCE using EXECUTABLE.
+                                SOURCE is taken literary, and is given as a single argument to EXECUTABLE.
+                                """)),
             ],
             [
                 SyntaxElementDescription('EXECUTABLE',
@@ -49,9 +60,9 @@ def description(instruction_name: str,
                                          [
                                              InvokationVariant('ABSOLUTE-PATH', ''),
                                              InvokationVariant('[{}] PATH'.format('|'.join(ALL_REL_OPTIONS)),
-                                                               ''),
+                                                               []),
                                              InvokationVariant('( EXECUTABLE ARGUMENT-TO-EXECUTABLE... )',
-                                                               ''),
+                                                               []),
                                          ]),
                 SyntaxElementDescription('SOURCE-FILE',
                                          paragraphs_parse.normalize_and_parse(

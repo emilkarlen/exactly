@@ -2,6 +2,7 @@ import subprocess
 
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
+from shellcheck_lib.general.textformat.structure.paragraph import single_para
 from shellcheck_lib.test_case.help.instruction_description import InvokationVariant, DescriptionWithConstantValues, \
     Description
 from shellcheck_lib.test_case.os_services import OsServices
@@ -20,7 +21,7 @@ def description(instruction_name: str) -> Description:
             All other exit codes makes the assertion FAIL.
             """,
             [InvokationVariant('PROGRAM ARGUMENT...',
-                               'A plain file.'),
+                               single_para('A plain file.'))
              ])
 
 

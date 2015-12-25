@@ -6,6 +6,7 @@ from shellcheck_lib.execution import environment_variables
 from shellcheck_lib.execution.execution_directory_structure import \
     root_dir_for_non_stdout_or_stderr_files_with_replaced_env_vars, SUB_DIR_FOR_REPLACEMENT_SOURCES_UNDER_ACT_DIR, \
     SUB_DIR_FOR_REPLACEMENT_SOURCES_NOT_UNDER_ACT_DIR
+from shellcheck_lib.general.textformat.structure.paragraph import single_para
 from shellcheck_lib.instructions.assert_phase.utils.contents_utils import ActualFileTransformer, EMPTY_ARGUMENT, \
     WITH_REPLACED_ENV_VARS_OPTION, parse_actual_file_argument
 from shellcheck_lib.instructions.utils.parse_utils import spit_arguments_list_string
@@ -32,25 +33,25 @@ def description(instruction_name: str) -> Description:
             [
                 InvokationVariant(
                         'FILENAME {}'.format(EMPTY_ARGUMENT),
-                        'File exists, is a regular file, and is empty'),
+                        single_para('File exists, is a regular file, and is empty')),
                 InvokationVariant(
                         'FILENAME ! {}'.format(EMPTY_ARGUMENT),
-                        'File exists, is a regular file, and is not empty'),
+                        single_para('File exists, is a regular file, and is not empty')),
                 InvokationVariant(
                         'FILENAME {} {} FILE'.format(WITH_REPLACED_ENV_VARS_OPTION,
                                                      REL_HOME_OPTION),
-                        'Compares contents of FILENAME to contents of FILE ' +
-                        '(which is a path relative home)'),
+                        single_para('Compares contents of FILENAME to contents of FILE '
+                                    '(which is a path relative home)')),
                 InvokationVariant(
                         'FILENAME {} {} FILE'.format(WITH_REPLACED_ENV_VARS_OPTION,
                                                      REL_TMP_OPTION),
-                        'Compares contents of FILENAME to contents of FILE ' +
-                        '(which is a path relative the shellcheck tmp directory)'),
+                        single_para('Compares contents of FILENAME to contents of FILE '
+                                    '(which is a path relative the shellcheck tmp directory)')),
                 InvokationVariant(
                         'FILENAME {} {} FILE'.format(WITH_REPLACED_ENV_VARS_OPTION,
                                                      REL_CWD_OPTION),
-                        'Compares contents of FILENAME to contents of FILE ' +
-                        '(which is a path relative current working directory)'),
+                        single_para('Compares contents of FILENAME to contents of FILE '
+                                    '(which is a path relative current working directory)')),
             ])
 
 

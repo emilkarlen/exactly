@@ -2,6 +2,7 @@ import pathlib
 
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
+from shellcheck_lib.general.textformat.structure.paragraph import single_para
 from shellcheck_lib.instructions.utils.parse_utils import spit_arguments_list_string
 from shellcheck_lib.test_case.help.instruction_description import InvokationVariant, DescriptionWithConstantValues, \
     Description
@@ -15,7 +16,7 @@ def description(instruction_name: str) -> Description:
             'Changes the Home directory.',
             '',
             [InvokationVariant('PATH',
-                               'A path that is relative the current Home Directory'),
+                               single_para('A path that is relative the current Home Directory')),
              ])
 
 

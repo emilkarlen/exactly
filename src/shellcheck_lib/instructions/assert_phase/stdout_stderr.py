@@ -3,6 +3,7 @@ import pathlib
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionInvalidArgumentException, SingleInstructionParserSource
 from shellcheck_lib.execution import environment_variables
+from shellcheck_lib.general.textformat.structure.paragraph import single_para
 from shellcheck_lib.instructions.assert_phase.utils.contents_utils import ActualFileTransformer, \
     WITH_REPLACED_ENV_VARS_OPTION, EMPTY_ARGUMENT
 from shellcheck_lib.instructions.utils.parse_utils import spit_arguments_list_string
@@ -30,26 +31,26 @@ def description(instruction_name: str,
             [
                 InvokationVariant(
                         '{}'.format(EMPTY_ARGUMENT),
-                        '%s is empty' % file),
+                        single_para('%s is empty' % file)),
                 InvokationVariant(
                         '! {}'.format(EMPTY_ARGUMENT),
-                        '%s is not empty' % file),
+                        single_para('%s is not empty' % file)),
                 InvokationVariant(
                         '[{}] {} FILENAME'.format(WITH_REPLACED_ENV_VARS_OPTION, REL_HOME_OPTION),
-                        """Expects the contents of %s to equal the contents of FILE
-                        (which is a path relative home)""" % file),
+                        single_para('Expects the contents of %s to equal the contents of FILE'
+                                    '(which is a path relative home)' % file)),
                 InvokationVariant(
                         '[{}] {} FILENAME'.format(WITH_REPLACED_ENV_VARS_OPTION, REL_TMP_OPTION),
-                        """Expects the contents of %s to equal the contents of FILE
-                        (which is a path relative the shellcheck tmp directory)""" % file),
+                        single_para('Expects the contents of %s to equal the contents of FILE'
+                                    '(which is a path relative the shellcheck tmp directory)' % file)),
                 InvokationVariant(
                         '[{}] {} FILENAME'.format(WITH_REPLACED_ENV_VARS_OPTION, REL_CWD_OPTION),
-                        """Expects the contents of %s to equal the contents of FILE
-                        (which is a path relative current working directory)""" % file),
+                        single_para('Expects the contents of %s to equal the contents of FILE'
+                                    '(which is a path relative current working directory)' % file)),
             ])
 
 
-WITH_REPLACED_ENV_VARS_STEM_SUFFIX = '-with-replaced-env-vars.txt'
+_WITH_REPLACED_ENV_VARS_STEM_SUFFIX = '-with-replaced-env-vars.txt'
 
 
 class ParserForContentsForActualValue(SingleInstructionParser):
@@ -88,7 +89,7 @@ class _StdXActualFileTransformerBase(ActualFileTransformer):
                        src_file_path: pathlib.Path) -> pathlib.Path:
         src_stem_name = src_file_path.stem
         directory = src_file_path.parent
-        dst_base_name = src_stem_name + WITH_REPLACED_ENV_VARS_STEM_SUFFIX
+        dst_base_name = src_stem_name + _WITH_REPLACED_ENV_VARS_STEM_SUFFIX
         return directory / dst_base_name
 
     @staticmethod
