@@ -21,7 +21,7 @@ def description(instruction_name: str) -> Description:
     return DescriptionWithConstantValues(
             instruction_name,
             'Test the contents of a file.',
-            """
+            """\
             {} replaces all occurrences of any of the shellcheck environment variables to the name of the variable.
             (Variable values are replaced with variable names.)
             These environment variables are:

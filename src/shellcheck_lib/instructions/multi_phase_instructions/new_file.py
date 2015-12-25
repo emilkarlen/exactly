@@ -13,9 +13,7 @@ def description(instruction_name: str) -> Description:
     return DescriptionWithConstantValues(
             instruction_name,
             'Creates a file.',
-            """
-            Uses Posix syntax for paths. I.e. directories are separated by /.
-            """,
+            """ Uses Posix syntax for paths. I.e. directories are separated by /. """,
             [
                 InvokationVariant('[{}] FILENAME'.format('|'.join(OPTIONS)),
                                   'Creates a new file in the given directory.'),
