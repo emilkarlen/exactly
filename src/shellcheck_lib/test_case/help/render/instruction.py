@@ -5,8 +5,13 @@ from shellcheck_lib.test_case.help.instruction_description import Description
 
 
 def instruction_man_page(description: Description) -> doc.SectionContents:
-    return doc.SectionContents([para('TODO test-case help for instruction ' +
-                                     description.instruction_name())],
+    todo_para = para('TODO test-case help for instruction ' + description.instruction_name())
+    single_line_description_para = para(description.single_line_description())
+    main_description_rest = description.main_description_rest()
+
+    return doc.SectionContents([todo_para,
+                                single_line_description_para] +
+                               main_description_rest,
                                [])
 
 
