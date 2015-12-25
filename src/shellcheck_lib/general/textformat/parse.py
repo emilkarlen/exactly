@@ -14,19 +14,15 @@ def parse(normalized_lines: list) -> list:
     return _Parser(normalized_lines).apply()
 
 
-def normalize_and_parse(text: str) -> list:
-    normalized_lines = normalize_lines(text)
-    return _Parser(normalized_lines).apply()
-
-
 def normalize_lines(text: str) -> list:
-    ret_val = _space_normalize_lines(text)
+    ret_val = textwrap.dedent(text).splitlines()
     _strip_empty_lines(ret_val)
     return ret_val
 
 
-def _space_normalize_lines(text: str) -> list:
-    return textwrap.dedent(text).splitlines()
+def normalize_and_parse(text: str) -> list:
+    normalized_lines = normalize_lines(text)
+    return _Parser(normalized_lines).apply()
 
 
 def _strip_empty_lines(space_normalized_lines: list):
@@ -34,7 +30,6 @@ def _strip_empty_lines(space_normalized_lines: list):
         del space_normalized_lines[0]
     while space_normalized_lines and not space_normalized_lines[-1]:
         del space_normalized_lines[-1]
-
 
 
 class _Parser:
@@ -57,9 +52,9 @@ class _Parser:
         return Paragraph(texts)
 
     def parse_text(self) -> Text:
-        lines = [self.consume_current_line()]
+        lines = [self.consume_current_line().strip()]
         while self.has_more_lines() and not self.is_at_separator():
-            lines.append(self.consume_current_line())
+            lines.append(self.consume_current_line().strip())
         contents = ' '.join(lines)
         return Text(contents)
 
