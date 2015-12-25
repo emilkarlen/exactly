@@ -1,8 +1,9 @@
 import unittest
 
 from shellcheck_lib_test.test_case import error_description
-from shellcheck_lib_test.test_case import processing_utils
+from shellcheck_lib_test.test_case import help
 from shellcheck_lib_test.test_case import preprocessor
+from shellcheck_lib_test.test_case import processing_utils
 
 
 def suite():
@@ -10,6 +11,7 @@ def suite():
     ret_val.addTest(error_description.suite())
     ret_val.addTest(processing_utils.suite())
     ret_val.addTest(preprocessor.suite())
+    ret_val.addTest(help.suite())
     return ret_val
 
 

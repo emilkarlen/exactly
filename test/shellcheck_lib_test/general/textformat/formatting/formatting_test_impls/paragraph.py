@@ -1,7 +1,7 @@
 import unittest
 
 from shellcheck_lib.general.textformat.formatting import paragraph_item as sut
-from shellcheck_lib_test.general.textformat.formatting.test_resources import text, para, BLANK_LINE
+from shellcheck_lib_test.general.textformat.test_resources.constr import text, para, BLANK_LINE
 
 
 class TestParagraph(unittest.TestCase):

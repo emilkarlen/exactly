@@ -2,6 +2,9 @@
 
 Fortsätt med
 
+* Formattering
+** TODO TestDescriptionBase: ska inte formattera
+Kan använda nya ramverket för att testa strukturen.
 * cd
 ** Tester av instruktionerna
 Finns tester av fas-oberoende utils.

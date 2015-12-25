@@ -4,6 +4,7 @@ from shellcheck_lib.general.textformat.structure.core import ParagraphItem, Text
 from shellcheck_lib.general.textformat.structure.lists import HeaderValueList
 from shellcheck_lib.general.textformat.structure.paragraph import Paragraph
 from shellcheck_lib.general.textformat.structure.utils import ParagraphItemVisitor
+from shellcheck_lib_test.general.textformat.test_resources import structure as structure_assert
 
 
 class Setup(tuple):
@@ -24,13 +25,14 @@ class Setup(tuple):
 def check(put: unittest.TestCase,
           expected_items: list,
           actual_items: list):
+    structure_assert.paragraph_item_list(put, expected_items, 'Hardcoded Expected value: ')
+    structure_assert.paragraph_item_list(put, actual_items, 'Actual value: ')
     put.assertEqual(len(expected_items),
                     len(actual_items),
                     'Number of Paragraph Items')
     element_index = 0
     for (expected_item, actual_item) in zip(expected_items, actual_items):
         msg_prefix = 'Paragraph at index %d: ' % element_index
-        _check_classes(put, msg_prefix, ParagraphItem, actual_item, expected_item)
         item_checker = ParagraphItemChecker(put, msg_prefix, actual_item)
         item_checker.visit(expected_item)
         element_index += 1
@@ -56,8 +58,6 @@ class ParagraphItemChecker(ParagraphItemVisitor):
                              self._msg("Number of %s's in %s" % (Text, Paragraph)))
         text_index = 0
         for (expected_text, actual_text) in zip(paragraph.start_on_new_line_blocks, actual.start_on_new_line_blocks):
-            msg_prefix = self._msg('%s at index %d: ' % (Text, text_index))
-            _check_classes(self.put, msg_prefix, Text, actual_text, expected_text)
             assert isinstance(expected_text, Text)
             assert isinstance(actual_text, Text)
             self.put.assertEqual(expected_text.value,
@@ -70,18 +70,3 @@ class ParagraphItemChecker(ParagraphItemVisitor):
 
     def _msg(self, tail: str) -> str:
         return self.msg_prefix + tail
-
-
-def _check_classes(put: unittest.TestCase,
-                   msg_prefix: str,
-                   expected_class, actual_item, expected_item):
-    if not isinstance(expected_item, expected_class):
-        msg = msg_prefix + 'Test setup error: Expected element is not a %s. It is a: %s' % (
-            expected_class,
-            type(expected_item))
-        put.fail(msg)
-    if not isinstance(actual_item, expected_class):
-        msg = msg_prefix + 'Actual element is not a %s. It is a: %s' % (
-            expected_class,
-            type(actual_item))
-        put.fail(msg)
