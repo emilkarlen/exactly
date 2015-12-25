@@ -48,11 +48,48 @@ class TestSingleParagraphWithMultipleTexts(unittest.TestCase):
                             sut.parse(input_lines))
 
 
+class TestMultipleParagraphs(unittest.TestCase):
+    def test_single_line_text_blocks(self):
+        test_resource.check(self,
+                            [sut.Paragraph([sut.Text('text in para 1')]),
+                             sut.Paragraph([sut.Text('text in para 2')])],
+                            sut.parse(['text in para 1'] +
+                                      sut.PARAGRAPH_SEPARATOR_LINES +
+                                      ['text in para 2']))
+
+    def test_single_multiple_text_blocks(self):
+        test_resource.check(self,
+                            [sut.Paragraph([sut.Text('text 1 in para 1'),
+                                            sut.Text('text 2 in para 1')]),
+                             sut.Paragraph([sut.Text('text 1 in para 2'),
+                                            sut.Text('text 2 in para 2')])],
+                            sut.parse(['text 1 in para 1'] +
+                                      sut.TEXT_SEPARATOR_LINES +
+                                      ['text 2 in para 1'] +
+                                      sut.PARAGRAPH_SEPARATOR_LINES +
+                                      ['text 1 in para 2'] +
+                                      sut.TEXT_SEPARATOR_LINES +
+                                      ['text 2 in para 2']))
+
+
+class TestMultipleParagraphsWithAlternateSeparator(unittest.TestCase):
+    def test_larger_paragraph_separator(self):
+        test_resource.check(self,
+                            [sut.Paragraph([sut.Text('text in para 1')]),
+                             sut.Paragraph([sut.Text('text in para 2')])],
+                            sut.parse(['text in para 1'] +
+                                      sut.PARAGRAPH_SEPARATOR_LINES +
+                                      sut.PARAGRAPH_SEPARATOR_LINES +
+                                      ['text in para 2']))
+
+
 def suite():
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestEmpty))
     ret_val.addTest(unittest.makeSuite(TestSingleParagraphWithSingleText))
     ret_val.addTest(unittest.makeSuite(TestSingleParagraphWithMultipleTexts))
+    ret_val.addTest(unittest.makeSuite(TestMultipleParagraphs))
+    ret_val.addTest(unittest.makeSuite(TestMultipleParagraphsWithAlternateSeparator))
     return ret_val
 
 
