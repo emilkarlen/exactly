@@ -25,6 +25,10 @@ class TestDescriptionBase(unittest.TestCase):
         actual = self.description.instruction_name()
         self.assertIsInstance(actual, str)
 
+    def test_single_line_description(self):
+        actual = self.description.single_line_description()
+        self.assertIsInstance(actual, str)
+
     def test_main_description_rest(self):
         actual = self.description.main_description_rest()
         struct_check.paragraph_item_list(self, actual)

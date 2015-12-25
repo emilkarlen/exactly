@@ -1,4 +1,4 @@
-from shellcheck_lib.general.textformat import parse
+from shellcheck_lib.general.textformat import parse as text_parse
 
 
 class InvokationVariant:
@@ -79,7 +79,7 @@ class DescriptionWithConstantValues(Description):
         return self.__single_line_description
 
     def main_description_rest(self) -> list:
-        return parse.normalize_and_parse(self.__main_description_rest)
+        return text_parse.normalize_and_parse(self.__main_description_rest)
 
     def invokation_variants(self) -> list:
         return self.__invokation_variants

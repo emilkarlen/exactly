@@ -386,7 +386,7 @@ class TestReplacedEnvVars(instruction_check.TestCaseBase):
 
 class TestDescription(TestDescriptionBase):
     def _description(self) -> Description:
-        return sut.description('instruction name')
+        return sut.TheDescription('instruction name')
 
 
 def suite():
