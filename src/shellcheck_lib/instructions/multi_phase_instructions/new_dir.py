@@ -11,7 +11,7 @@ def description(instruction_name: str) -> Description:
     return DescriptionWithConstantValues(
             instruction_name,
             'Makes a directory in the current directory.',
-            """
+            """\
             Makes parent components, if needed.
 
 

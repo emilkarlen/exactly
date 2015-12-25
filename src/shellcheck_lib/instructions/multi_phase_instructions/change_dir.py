@@ -10,9 +10,7 @@ def description(instruction_name: str) -> Description:
     return DescriptionWithConstantValues(
             instruction_name,
             'Changes Present Working Directory.',
-            """
-            Uses Posix syntax for paths. I.e. directories are separated by /.
-            """,
+            'Uses Posix syntax for paths. I.e. directories are separated by /.',
             [
                 InvokationVariant('[{}] [DIRECTORY]'.format('|'.join(OPTIONS)),
                                   'Changes to the given directory (paths are relative present directory).'),

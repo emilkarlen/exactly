@@ -16,7 +16,8 @@ def description(instruction_name: str) -> Description:
     return DescriptionWithConstantValues(
             instruction_name,
             'Install existing files in the home directory into the current directory.',
-            """As many attributes as possible of the files are preserved (this depends on Python implementation).
+            """\
+            As many attributes as possible of the files are preserved (this depends on Python implementation).
 
             Mimics the behaviour of Unix cp, when a DESTINATION is given.
             If DESTINATION does not exist, then the source is installed under the name DESTINATION.

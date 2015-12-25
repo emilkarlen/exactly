@@ -14,7 +14,8 @@ def description(instruction_name: str) -> Description:
     return DescriptionWithConstantValues(
             instruction_name,
             "Executes the given program using the system's shell.",
-            """The assertion PASSes if (and only if) the exit code from the command is 0.
+            """\
+            The assertion PASSes if (and only if) the exit code from the command is 0.
 
             All other exit codes makes the assertion FAIL.
             """,
