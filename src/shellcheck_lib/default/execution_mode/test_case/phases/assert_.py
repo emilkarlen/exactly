@@ -16,7 +16,7 @@ INSTRUCTIONS = {
     'contents':
         SingleInstructionSetup(
                 contents_instruction.Parser(),
-                contents_instruction.description('contents')),
+                contents_instruction.TheDescription('contents')),
     'execute':
         SingleInstructionSetup(
                 execute.parser('execute'),
