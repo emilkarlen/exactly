@@ -60,6 +60,11 @@ class TestSingleParagraphWithSingleText(unittest.TestCase):
                             [sut.Paragraph([sut.Text(' '.join(input_lines))])],
                             sut.parse(input_lines))
 
+    def test_strip_text_strings(self):
+        test_resource.check(self,
+                            [sut.Paragraph([sut.Text('the text block')])],
+                            sut.parse(['  the text block   ']))
+
 
 class TestSingleParagraphWithMultipleTexts(unittest.TestCase):
     def test_single_line_text_blocks(self):
@@ -125,9 +130,11 @@ class TestNormalizeAndParse(unittest.TestCase):
                  '  ',
                  '',
                  '   ',
-                 'para 2 text 1',
+                 '  para 2 text 1',
                  '  ',
-                 'para 2 text 2',
+                 'para 2 text 2  ',
+                 '  ',
+                 '\tpara 2 text 3  ',
                  '',
                  '   ']
         indented_lines = ['  ' + line for line in lines]
@@ -135,7 +142,8 @@ class TestNormalizeAndParse(unittest.TestCase):
         test_resource.check(self,
                             [sut.Paragraph([sut.Text('para 1 text 1')]),
                              sut.Paragraph([sut.Text('para 2 text 1'),
-                                            sut.Text('para 2 text 2')])],
+                                            sut.Text('para 2 text 2'),
+                                            sut.Text('para 2 text 3')])],
                             actual)
 
 
