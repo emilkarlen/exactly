@@ -1,5 +1,9 @@
 -*- org -*-
 
+* TODO Python-saker
+
+** TODO Är klasser py3? Ska det vara MyClass(object)?
+Ev ska varje klass explicit ärva object för att vara en py-3-klass.
 * TODO shell: Vad händer m stdout, stderr? blir del av stdout för shellcheck?
 Verkar så.  Väldigt dåligt i så fall.  Måste ändras.
 
