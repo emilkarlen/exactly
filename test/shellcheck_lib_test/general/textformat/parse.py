@@ -17,6 +17,15 @@ class TestSingleParagraph(unittest.TestCase):
                             [sut.Paragraph([sut.Text('the text block')])],
                             sut.parse(['the text block']))
 
+    def test_single_text_block_on_multiple_lines(self):
+        input_lines = ['the',
+                       'text',
+                       'block'
+                       ]
+        test_resource.check(self,
+                            [sut.Paragraph([sut.Text(' '.join(input_lines))])],
+                            sut.parse(input_lines))
+
 
 def suite():
     ret_val = unittest.TestSuite()
