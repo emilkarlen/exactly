@@ -56,7 +56,7 @@ def _invokation_variants_content(description: Description) -> doc.SectionContent
     def syntax_element_description_sections() -> list:
         if not description.syntax_element_descriptions():
             return []
-        return [doc.Section(Text('where'),
+        return [doc.Section(Text('where'),  # TODO Do not want this to a section (need indented list)
                             doc.SectionContents([syntax_element_description_list()],
                                                 []))
                 ]
