@@ -1,3 +1,5 @@
+import textwrap
+
 from shellcheck_lib.general.textformat.structure.core import ParagraphItem, Text
 from shellcheck_lib.general.textformat.structure.paragraph import Paragraph
 
@@ -13,9 +15,8 @@ def parse(normalized_lines: list) -> list:
 
 
 def normalize_and_parse(text: str) -> list:
-    lines = _space_normalize_lines(text)
-    _strip_empty_lines(lines)
-    return _Parser(lines).apply()
+    normalized_lines = normalize_lines(text)
+    return _Parser(normalized_lines).apply()
 
 
 def normalize_lines(text: str) -> list:
@@ -25,11 +26,15 @@ def normalize_lines(text: str) -> list:
 
 
 def _space_normalize_lines(text: str) -> list:
-    raise NotImplementedError()
+    return textwrap.dedent(text).splitlines()
 
 
 def _strip_empty_lines(space_normalized_lines: list):
-    pass
+    while space_normalized_lines and not space_normalized_lines[0]:
+        del space_normalized_lines[0]
+    while space_normalized_lines and not space_normalized_lines[-1]:
+        del space_normalized_lines[-1]
+
 
 
 class _Parser:
