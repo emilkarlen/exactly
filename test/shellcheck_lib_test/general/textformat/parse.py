@@ -4,7 +4,7 @@ from shellcheck_lib.general.textformat import parse as sut
 from shellcheck_lib_test.general.textformat.test_resources import parse as test_resource
 
 
-class TestEmpty(unittest.TestCase):
+class TestParseEmpty(unittest.TestCase):
     def test_empty_input(self):
         test_resource.check(self,
                             [],
@@ -85,7 +85,7 @@ class TestMultipleParagraphsWithAlternateSeparator(unittest.TestCase):
 
 def suite():
     ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestEmpty))
+    ret_val.addTest(unittest.makeSuite(TestParseEmpty))
     ret_val.addTest(unittest.makeSuite(TestSingleParagraphWithSingleText))
     ret_val.addTest(unittest.makeSuite(TestSingleParagraphWithMultipleTexts))
     ret_val.addTest(unittest.makeSuite(TestMultipleParagraphs))
