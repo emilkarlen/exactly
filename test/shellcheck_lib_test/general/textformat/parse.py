@@ -32,17 +32,16 @@ class TestSingleParagraphWithMultipleTexts(unittest.TestCase):
         test_resource.check(self,
                             [sut.Paragraph([sut.Text('text 1'),
                                             sut.Text('text 2')])],
-                            sut.parse(['text 1',
-                                       '',
-                                       'text 2']))
+                            sut.parse(['text 1'] +
+                                      sut.TEXT_SEPARATOR_LINES +
+                                      ['text 2']))
 
     def test_multi_line_text_blocks(self):
         input_lines = ['text',
-                       '1',
-                       '',
-                       'text',
-                       '2',
-                       ]
+                       '1'] + \
+                      sut.TEXT_SEPARATOR_LINES + \
+                      ['text',
+                       '2']
         test_resource.check(self,
                             [sut.Paragraph([sut.Text('text 1'),
                                             sut.Text('text 2')])],
