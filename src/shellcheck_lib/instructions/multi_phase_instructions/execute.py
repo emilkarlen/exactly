@@ -5,6 +5,8 @@ from shellcheck_lib.document.model import Instruction
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, SingleInstructionParserSource, SingleInstructionInvalidArgumentException
 from shellcheck_lib.general import file_utils
+from shellcheck_lib.general.textformat import parse as paragraphs_parse
+from shellcheck_lib.general.textformat.structure.paragraph import single_para
 from shellcheck_lib.instructions.utils import executable_file
 from shellcheck_lib.instructions.utils import file_properties
 from shellcheck_lib.instructions.utils import parse_file_ref
@@ -43,7 +45,7 @@ def description(instruction_name: str,
             ],
             [
                 SyntaxElementDescription('EXECUTABLE',
-                                         'Specifies an executable program',
+                                         single_para('Specifies an executable program'),
                                          [
                                              InvokationVariant('ABSOLUTE-PATH', ''),
                                              InvokationVariant('[{}] PATH'.format('|'.join(ALL_REL_OPTIONS)),
@@ -52,12 +54,13 @@ def description(instruction_name: str,
                                                                ''),
                                          ]),
                 SyntaxElementDescription('SOURCE-FILE',
-                                         """
-                                         Specifies a plain file.
-                                         By default, SOURCE-FILE is assumed to be relative the home dir.
+                                         paragraphs_parse.normalize_and_parse(
+                                                 """\
+                                                 Specifies a plain file.
+                                                 By default, SOURCE-FILE is assumed to be relative the home dir.
 
-                                         Other locations can be specified using %s.
-                                         """ % '|'.join(ALL_REL_OPTIONS),
+                                                 Other locations can be specified using %s.
+                                                 """ % '|'.join(ALL_REL_OPTIONS)),
                                          []),
             ])
 
