@@ -1,7 +1,41 @@
 import unittest
 
+from shellcheck_lib.general.string import lines_content
 from shellcheck_lib.general.textformat import parse as sut
 from shellcheck_lib_test.general.textformat.test_resources import parse as test_resource
+
+
+class TestNormalize(unittest.TestCase):
+    def test_identity(self):
+        normalized_lines = ['1',
+                            ''
+                            '  3',
+                            '4']
+        actual = sut.normalize_lines(lines_content(normalized_lines))
+        self.assertEqual(normalized_lines,
+                         actual)
+
+    def test_indentation(self):
+        normalized_lines = ['1',
+                            ''
+                            '  3',
+                            '4']
+        indented_lines = ['  ' + line for line in normalized_lines]
+        actual = sut.normalize_lines(lines_content(indented_lines))
+        self.assertEqual(normalized_lines,
+                         actual)
+
+    def test_strip_empty_lines(self):
+        lines = ['',
+                 '   '
+                 'non-empty',
+                 '  ',
+                 '',
+                 '   ']
+        indented_lines = ['  ' + line for line in lines]
+        actual = sut.normalize_lines(lines_content(indented_lines))
+        self.assertEqual(['non-empty'],
+                         actual)
 
 
 class TestParseEmpty(unittest.TestCase):
@@ -83,6 +117,28 @@ class TestMultipleParagraphsWithAlternateSeparator(unittest.TestCase):
                                       ['text in para 2']))
 
 
+class TestNormalizeAndParse(unittest.TestCase):
+    def test_misc(self):
+        lines = ['',
+                 '   ',
+                 'para 1 text 1',
+                 '  ',
+                 '',
+                 '   ',
+                 'para 2 text 1',
+                 '  ',
+                 'para 2 text 2',
+                 '',
+                 '   ']
+        indented_lines = ['  ' + line for line in lines]
+        actual = sut.normalize_and_parse(lines_content(indented_lines))
+        test_resource.check(self,
+                            [sut.Paragraph([sut.Text('para 1 text 1')]),
+                             sut.Paragraph([sut.Text('para 2 text 1'),
+                                            sut.Text('para 2 text 2')])],
+                            actual)
+
+
 def suite():
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestParseEmpty))
@@ -90,6 +146,10 @@ def suite():
     ret_val.addTest(unittest.makeSuite(TestSingleParagraphWithMultipleTexts))
     ret_val.addTest(unittest.makeSuite(TestMultipleParagraphs))
     ret_val.addTest(unittest.makeSuite(TestMultipleParagraphsWithAlternateSeparator))
+
+    ret_val.addTest(unittest.makeSuite(TestNormalize))
+
+    ret_val.addTest(unittest.makeSuite(TestNormalizeAndParse))
     return ret_val
 
 
