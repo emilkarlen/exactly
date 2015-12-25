@@ -4,7 +4,7 @@ from shellcheck_lib.general.textformat.formatting import lists as lf
 from shellcheck_lib.general.textformat.formatting import paragraph_item as sut
 from shellcheck_lib.general.textformat.structure import core
 from shellcheck_lib.general.textformat.structure import lists
-from shellcheck_lib_test.general.textformat.formatting.test_resources import single_text_para, item, header_only_item, \
+from shellcheck_lib_test.general.textformat.test_resources.constr import single_text_para, item, header_only_item, \
     BLANK_LINE
 
 NO_SEPARATIONS = lf.Separations(num_blank_lines_between_elements=0,

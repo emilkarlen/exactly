@@ -1,13 +1,11 @@
 import unittest
 
-from . import formatting
-from . import parse
+from shellcheck_lib_test.test_case.help.render import instruction
 
 
 def suite():
     ret_val = unittest.TestSuite()
-    ret_val.addTest(formatting.suite())
-    ret_val.addTest(parse.suite())
+    ret_val.addTest(instruction.suite())
     return ret_val
 
 
