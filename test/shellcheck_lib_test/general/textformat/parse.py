@@ -11,7 +11,7 @@ class TestEmpty(unittest.TestCase):
                             sut.parse([]))
 
 
-class TestSingleParagraph(unittest.TestCase):
+class TestSingleParagraphWithSingleText(unittest.TestCase):
     def test_single_text_block_on_single_line(self):
         test_resource.check(self,
                             [sut.Paragraph([sut.Text('the text block')])],
@@ -27,10 +27,33 @@ class TestSingleParagraph(unittest.TestCase):
                             sut.parse(input_lines))
 
 
+class TestSingleParagraphWithMultipleTexts(unittest.TestCase):
+    def test_single_line_text_blocks(self):
+        test_resource.check(self,
+                            [sut.Paragraph([sut.Text('text 1'),
+                                            sut.Text('text 2')])],
+                            sut.parse(['text 1',
+                                       '',
+                                       'text 2']))
+
+    def test_multi_line_text_blocks(self):
+        input_lines = ['text',
+                       '1',
+                       '',
+                       'text',
+                       '2',
+                       ]
+        test_resource.check(self,
+                            [sut.Paragraph([sut.Text('text 1'),
+                                            sut.Text('text 2')])],
+                            sut.parse(input_lines))
+
+
 def suite():
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestEmpty))
-    ret_val.addTest(unittest.makeSuite(TestSingleParagraph))
+    ret_val.addTest(unittest.makeSuite(TestSingleParagraphWithSingleText))
+    ret_val.addTest(unittest.makeSuite(TestSingleParagraphWithMultipleTexts))
     return ret_val
 
 
