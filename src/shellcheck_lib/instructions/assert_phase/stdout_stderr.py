@@ -23,6 +23,7 @@ def description(instruction_name: str,
             """\
             {} replaces all occurrences of any of the shellcheck environment variables to the name of the variable.
             (Variable values are replaced with variable names.)
+
             These environment variables are:
 
             {}.
