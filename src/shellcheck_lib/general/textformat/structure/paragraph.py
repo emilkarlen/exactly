@@ -13,3 +13,7 @@ class Paragraph(ParagraphItem):
 
 def para(text: str) -> Paragraph:
     return Paragraph([Text(text)])
+
+
+def single_para(text: str) -> list:
+    return [para(text)]
