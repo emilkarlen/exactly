@@ -7,7 +7,7 @@ from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
 
-description = cd_utils.description
+description = cd_utils.TheDescription
 
 
 class Parser(SingleInstructionParser):
