@@ -2,6 +2,7 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
     SingleInstructionParserSource
 from shellcheck_lib.general.file_utils import ensure_parent_directory_does_exist_and_is_a_directory, write_new_text_file
 from shellcheck_lib.general.string import lines_content
+from shellcheck_lib.general.textformat.structure.paragraph import single_para
 from shellcheck_lib.instructions.utils.destination_path import *
 from shellcheck_lib.instructions.utils.parse_here_document import parse_as_last_argument
 from shellcheck_lib.instructions.utils.parse_utils import spit_arguments_list_string
@@ -16,7 +17,7 @@ def description(instruction_name: str) -> Description:
             """ Uses Posix syntax for paths. I.e. directories are separated by /. """,
             [
                 InvokationVariant('[{}] FILENAME'.format('|'.join(OPTIONS)),
-                                  'Creates a new file in the given directory.'),
+                                  single_para('Creates a new file in the given directory.')),
             ])
 
 

@@ -2,6 +2,7 @@ import pathlib
 
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
+from shellcheck_lib.general.textformat.structure.paragraph import single_para
 from shellcheck_lib.instructions.utils.parse_utils import spit_arguments_list_string
 from shellcheck_lib.test_case.help.instruction_description import InvokationVariant, DescriptionWithConstantValues, \
     Description
@@ -28,9 +29,9 @@ def description(instruction_name: str) -> Description:
             The behaviour is undefined.
             """,
             [InvokationVariant('FILE [DESTINATION]',
-                               'A plain file.'),
+                               single_para('A plain file.')),
              InvokationVariant('DIRECTORY [DESTINATION]',
-                               "The directory and it's contents are installed."),
+                               single_para("The directory and it's contents are installed.")),
              ])
 
 

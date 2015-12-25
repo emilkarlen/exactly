@@ -1,6 +1,7 @@
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
 from shellcheck_lib.general.string import lines_content
+from shellcheck_lib.general.textformat.structure.paragraph import single_para
 from shellcheck_lib.instructions.setup.utils.instruction_utils import InstructionWithFileRefsBase
 from shellcheck_lib.instructions.utils import file_properties
 from shellcheck_lib.instructions.utils import file_ref, parse_file_ref
@@ -23,9 +24,9 @@ def description(instruction_name: str) -> Description:
             '',
             [
                 InvokationVariant('[{}] FILE'.format('|'.join(parse_file_ref.ALL_REL_OPTIONS)),
-                                  'Sets stdin to a file relative SHELLCHECK_HOME.'),
+                                  single_para('Sets stdin to a file relative SHELLCHECK_HOME.')),
                 InvokationVariant('<<EOF-MARKER'.format('|'.join(parse_file_ref.ALL_REL_OPTIONS)),
-                                  'Sets stdin to the contents of the given Here Document.'),
+                                  single_para('Sets stdin to the contents of the given Here Document.')),
             ])
 
 

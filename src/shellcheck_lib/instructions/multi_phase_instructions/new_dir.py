@@ -18,7 +18,7 @@ def description(instruction_name: str) -> Description:
             Does not fail if the given directory already exists.
             """,
             [InvokationVariant('DIRECTORY',
-                               ''),
+                               []),
              ])
 
 

@@ -5,6 +5,8 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
     SingleInstructionInvalidArgumentException, SingleInstructionParserSource
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.general.string import line_separated
+from shellcheck_lib.general.textformat import parse as paragraphs_parse
+from shellcheck_lib.general.textformat.structure.paragraph import single_para
 from shellcheck_lib.instructions.utils.parse_utils import spit_arguments_list_string
 from shellcheck_lib.test_case.help.instruction_description import InvokationVariant, DescriptionWithConstantValues, \
     Description
@@ -19,16 +21,20 @@ def description(instruction_name: str) -> Description:
             instruction_name,
             'Tests the exitcode.',
             '',
-            [InvokationVariant('INTEGER',
-                               'Passes iff the exit code is exactly INTEGER'),
-             InvokationVariant('OPERATOR INTEGER',
-                               """Passes iff the given expression,
-                               with the actual exit code as an implicit left operand,
-                               evaluates to True.
+            [InvokationVariant(
+                    'INTEGER',
+                    single_para('Passes iff the exit code is exactly INTEGER')),
+                InvokationVariant(
+                        'OPERATOR INTEGER',
+                        paragraphs_parse.normalize_and_parse(
+                                """\
+                                Passes iff the given expression,
+                                with the actual exit code as an implicit left operand,
+                                evaluates to True.
 
-                               Operators: !, !=, =, <, <=, >, >=
-                               """)
-             ])
+                                Operators: !, !=, =, <, <=, >, >=
+                                """))
+            ])
 
 
 class InstructionForExactValue(AssertPhaseInstruction):

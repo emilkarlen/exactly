@@ -1,5 +1,6 @@
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionInvalidArgumentException, SingleInstructionParserSource
+from shellcheck_lib.general.textformat.structure.paragraph import single_para
 from shellcheck_lib.instructions.utils import file_ref
 from shellcheck_lib.instructions.utils.file_properties import FileType, must_exist_as, FilePropertiesCheck
 from shellcheck_lib.instructions.utils.file_ref_check import pre_or_post_eds_failure_message_or_none, FileRefCheck
@@ -32,7 +33,7 @@ def description(instruction_name: str) -> Description:
             [
                 InvokationVariant(
                         'FILENAME type [{}]'.format('|'.join(FILE_TYPES.keys())),
-                        'File exists and has given type'),
+                        single_para('File exists and has given type')),
             ])
 
 

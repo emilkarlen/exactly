@@ -1,5 +1,6 @@
 import os
 
+from shellcheck_lib.general.textformat.structure.paragraph import single_para
 from shellcheck_lib.instructions.utils.destination_path import *
 from shellcheck_lib.instructions.utils.parse_utils import spit_arguments_list_string
 from shellcheck_lib.test_case.help.instruction_description import InvokationVariant, DescriptionWithConstantValues, \
@@ -13,11 +14,12 @@ def description(instruction_name: str) -> Description:
             'Uses Posix syntax for paths. I.e. directories are separated by /.',
             [
                 InvokationVariant('[{}] [DIRECTORY]'.format('|'.join(OPTIONS)),
-                                  'Changes to the given directory (paths are relative present directory).'),
+                                  single_para('Changes to the given directory '
+                                              '(paths are relative present directory).')),
                 InvokationVariant('{} [DIRECTORY]'.format(REL_ACT_OPTION),
-                                  'Changes to a directory relative the SHELLCHECK ACT directory.'),
+                                  single_para('Changes to a directory relative the SHELLCHECK ACT directory.')),
                 InvokationVariant('{} [DIRECTORY]'.format(REL_TMP_OPTION),
-                                  'Changes to a directory relative the SHELLCHECK TMP directory.'),
+                                  single_para('Changes to a directory relative the SHELLCHECK TMP directory.')),
             ])
 
 
