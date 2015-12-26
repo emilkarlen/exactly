@@ -5,5 +5,5 @@ INSTRUCTIONS = {
     'home':
         SingleInstructionSetup(
                 home.Parser(),
-                home.description('home')),
+                home.TheDescription('home')),
 }

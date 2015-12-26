@@ -112,7 +112,7 @@ class AssertActualHomeDirIsParentOfOriginalHomeDir(config_check.Assertion):
 
 class TestDescription(TestDescriptionBase):
     def _description(self) -> Description:
-        return sut.description('instruction name')
+        return sut.TheDescription('instruction name')
 
 
 def suite():
