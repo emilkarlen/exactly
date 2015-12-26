@@ -32,7 +32,7 @@ INSTRUCTIONS = {
     'shell':
         SingleInstructionSetup(
                 shell.Parser(),
-                shell.description('shell')),
+                shell.TheDescription('shell')),
     'stdout':
         SingleInstructionSetup(
                 stdout_stderr_instruction.ParserForContentsForStdout(),
