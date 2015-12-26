@@ -1,12 +1,14 @@
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionInvalidArgumentException, SingleInstructionParserSource
+from shellcheck_lib.general.textformat.structure import core
+from shellcheck_lib.general.textformat.structure import lists
 from shellcheck_lib.general.textformat.structure.paragraph import single_para
 from shellcheck_lib.instructions.utils import file_ref
-from shellcheck_lib.instructions.utils.file_properties import FileType, must_exist_as, FilePropertiesCheck
+from shellcheck_lib.instructions.utils.file_properties import FileType, must_exist_as, FilePropertiesCheck, type_name
 from shellcheck_lib.instructions.utils.file_ref_check import pre_or_post_eds_failure_message_or_none, FileRefCheck
 from shellcheck_lib.instructions.utils.parse_utils import spit_arguments_list_string, ensure_is_not_option_argument
-from shellcheck_lib.test_case.help.instruction_description import InvokationVariant, DescriptionWithConstantValues, \
-    Description
+from shellcheck_lib.test_case.help.instruction_description import InvokationVariant, Description, \
+    SyntaxElementDescription
 from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.sections import common as i
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
@@ -19,22 +21,41 @@ FILE_TYPES = {
 }
 
 
-def description(instruction_name: str) -> Description:
-    return DescriptionWithConstantValues(
-            instruction_name,
-            'Tests the type of a file.',
-            """\
-            All tests fails if FILENAME does not exist.
+class TheDescription(Description):
+    def __init__(self, name: str):
+        super().__init__(name)
 
-            regular: Tests if FILENAME is a regular file or a sym-link to a regular file.
-            directory: Tests if FILENAME is a regular file or a sym-link to a regular file.
-            symlink: Tests if FILENAME is a sym-link.
-            """,
-            [
-                InvokationVariant(
-                        'FILENAME type [{}]'.format('|'.join(FILE_TYPES.keys())),
-                        single_para('File exists and has given type')),
-            ])
+    def single_line_description(self) -> str:
+        return 'Tests the type of a file.'
+
+    def main_description_rest(self) -> list:
+        return single_para('All tests fails if FILENAME does not exist. (TODO symlink options/behavior)')
+
+    def invokation_variants(self) -> list:
+        return [
+            InvokationVariant(
+                    'FILENAME type TYPE',
+                    single_para('File exists and has given type.')),
+        ]
+
+    def syntax_element_descriptions(self) -> list:
+        def type_description(k: str) -> str:
+            tn = type_name[FILE_TYPES[k]]
+            return single_para('Tests if FILENAME is a %s or, a sym-link to a %s.' % (tn, tn))
+
+        def file_type_list() -> core.ParagraphItem:
+            list_items = [
+                lists.HeaderValueListItem(core.Text(k),
+                                          type_description(k))
+                for k in sorted(FILE_TYPES.keys())]
+            return lists.HeaderValueList(lists.ListType.VARIABLE_LIST,
+                                         list_items)
+
+        return [
+            SyntaxElementDescription('TYPE',
+                                     [file_type_list()],
+                                     [])
+        ]
 
 
 class Parser(SingleInstructionParser):
