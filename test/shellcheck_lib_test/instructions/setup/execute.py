@@ -7,8 +7,8 @@ from shellcheck_lib.instructions.setup import execute as sut
 from shellcheck_lib.instructions.utils.relative_path_options import REL_HOME_OPTION, REL_TMP_OPTION
 from shellcheck_lib_test.instructions.multi_phase_instructions.execute import \
     py_pgm_that_exits_with_value_on_command_line
-from shellcheck_lib_test.instructions.setup.test_resources.instruction_check import TestCaseBase, flow, \
-    Arrangement, Expectation, success
+from shellcheck_lib_test.instructions.setup.test_resources.instruction_check import TestCaseBase, Arrangement, \
+    Expectation, success
 from shellcheck_lib_test.instructions.test_resources import sh_check
 from shellcheck_lib_test.instructions.test_resources import svh_check
 from shellcheck_lib_test.instructions.test_resources.utils import single_line_source
@@ -22,7 +22,7 @@ class TestCaseBaseForParser(TestCaseBase):
              source: SingleInstructionParserSource,
              arrangement: Arrangement,
              expectation: Expectation):
-        self._check2(_PARSER, source, arrangement, expectation)
+        self._check2(sut.parser('instruction-name'), source, arrangement, expectation)
 
 
 class TestExecuteIntegrationByAFewRandomTests(TestCaseBaseForParser):
@@ -42,48 +42,36 @@ class TestExecuteIntegrationByAFewRandomTests(TestCaseBaseForParser):
                   Expectation(pre_validation_result=svh_check.is_validation_error()))
 
 
-class TestInterpretIntegrationByAFewRandomTests(TestCaseBase):
+class TestInterpretIntegrationByAFewRandomTests(TestCaseBaseForParser):
     def test_check_zero_exit_code__rel_home_default(self):
-        self._check(flow(_PARSER,
-                         _arrangement_for_pgm_that_exits_with_cla__rel_home('exit-with-value-on-command-line.py'),
-                         Expectation(),
-                         ),
-                    single_line_source(py_exe.command_line_for_arguments([INTERPRET_OPTION,
-                                                                          'exit-with-value-on-command-line.py',
-                                                                          0]))
-                    )
+        self._run(single_line_source(py_exe.command_line_for_arguments([INTERPRET_OPTION,
+                                                                        'exit-with-value-on-command-line.py',
+                                                                        0])),
+                  _arrangement_for_pgm_that_exits_with_cla__rel_home('exit-with-value-on-command-line.py'),
+                  Expectation())
 
     def test_check_non_zero_exit_code__rel_home(self):
-        self._check(flow(_PARSER,
-                         _arrangement_for_pgm_that_exits_with_cla__rel_home('exit-with-value-on-command-line.py'),
-                         Expectation(main_result=sh_check.IsHardError()),
-                         ),
-                    single_line_source(py_exe.command_line_for_arguments([INTERPRET_OPTION,
-                                                                          REL_HOME_OPTION,
-                                                                          'exit-with-value-on-command-line.py',
-                                                                          3]))
-                    )
+        self._run(single_line_source(py_exe.command_line_for_arguments([INTERPRET_OPTION,
+                                                                        REL_HOME_OPTION,
+                                                                        'exit-with-value-on-command-line.py',
+                                                                        3])),
+                  _arrangement_for_pgm_that_exits_with_cla__rel_home('exit-with-value-on-command-line.py'),
+                  Expectation(main_result=sh_check.IsHardError()))
 
     def test_non_existing_source_file_argument__pre_eds(self):
-        self._check(flow(_PARSER,
-                         Arrangement(),
-                         Expectation(pre_validation_result=svh_check.is_validation_error()),
-                         ),
-                    single_line_source(py_exe.command_line_for_arguments([INTERPRET_OPTION,
-                                                                          'non-existing-file-rel-home.py',
-                                                                          ]))
-                    )
+        self._run(single_line_source(py_exe.command_line_for_arguments([INTERPRET_OPTION,
+                                                                        'non-existing-file-rel-home.py',
+                                                                        ])),
+                  Arrangement(),
+                  Expectation(pre_validation_result=svh_check.is_validation_error()))
 
     def test_non_existing_source_file_argument__post_eds(self):
-        self._check(flow(_PARSER,
-                         Arrangement(),
-                         Expectation(main_result=sh_check.IsHardError()),
-                         ),
-                    single_line_source(py_exe.command_line_for_arguments([INTERPRET_OPTION,
-                                                                          REL_TMP_OPTION,
-                                                                          'non-existing-file-rel-tmp.py',
-                                                                          ]))
-                    )
+        self._run(single_line_source(py_exe.command_line_for_arguments([INTERPRET_OPTION,
+                                                                        REL_TMP_OPTION,
+                                                                        'non-existing-file-rel-tmp.py',
+                                                                        ])),
+                  Arrangement(),
+                  Expectation(main_result=sh_check.IsHardError()))
 
 
 def _arrangement_for_pgm_that_exits_with_cla__rel_home(source_file_name: str):
@@ -91,9 +79,6 @@ def _arrangement_for_pgm_that_exits_with_cla__rel_home(source_file_name: str):
         File(source_file_name,
              py_pgm_that_exits_with_value_on_command_line(''))])
     )
-
-
-_PARSER = sut.parser('instruction-name')
 
 
 def suite():
