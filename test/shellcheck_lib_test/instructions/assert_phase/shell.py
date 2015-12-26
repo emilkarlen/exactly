@@ -28,9 +28,9 @@ sys.exit(0)
         with tmp_file_containing(script_that_exists_with_status_0,
                                  suffix='.py') as script_file_path:
             self._check(
-                Flow(sut.Parser()),
-                new_source('instruction-name',
-                           py_exe.command_line_for_interpreting(script_file_path)))
+                    Flow(sut.Parser()),
+                    new_source('instruction-name',
+                               py_exe.command_line_for_interpreting(script_file_path)))
 
     def test_instruction_is_hard_error_WHEN_exit_status_from_command_is_not_0(self):
         script_that_exists_with_status_0 = """
@@ -40,15 +40,15 @@ sys.exit(1)
         with tmp_file_containing(script_that_exists_with_status_0,
                                  suffix='.py') as script_file_path:
             self._check(
-                Flow(sut.Parser(),
-                     expected_main_result=pfh_check.is_fail()),
-                new_source('instruction-name',
-                           py_exe.command_line_for_interpreting(script_file_path)))
+                    Flow(sut.Parser(),
+                         expected_main_result=pfh_check.is_fail()),
+                    new_source('instruction-name',
+                               py_exe.command_line_for_interpreting(script_file_path)))
 
 
 class TestDescription(TestDescriptionBase):
     def _description(self) -> Description:
-        return sut.description('instruction name')
+        return sut.TheDescription('instruction name')
 
 
 def suite():
