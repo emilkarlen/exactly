@@ -1,10 +1,10 @@
 import unittest
 
 from shellcheck_lib.general.textformat.structure.paragraph import single_para
-from shellcheck_lib.test_case.help.instruction_description import DescriptionWithConstantValues, \
-    InvokationVariant, SyntaxElementDescription
+from shellcheck_lib.test_case.help.instruction_description import InvokationVariant, SyntaxElementDescription
 from shellcheck_lib.test_case.help.render import instruction as sut
 from shellcheck_lib_test.general.textformat.test_resources import structure as struct_check
+from shellcheck_lib_test.test_resources.instruction_description import DescriptionWithConstantValues
 
 
 class TestListItem(unittest.TestCase):
