@@ -32,16 +32,14 @@ class TestExecuteIntegrationByAFewRandomTests(TestCaseBaseForParser):
                   success())
 
     def test_failing_execution(self):
-        self._check(flow(_PARSER,
-                         Arrangement(),
-                         Expectation(main_result=sh_check.IsHardError())),
-                    single_line_source(py_exe.command_line_for_executing_program_via_command_line('exit(1)')))
+        self._run(single_line_source(py_exe.command_line_for_executing_program_via_command_line('exit(1)')),
+                  Arrangement(),
+                  Expectation(main_result=sh_check.IsHardError()))
 
     def test_failing_validation(self):
-        self._check(flow(_PARSER,
-                         Arrangement(),
-                         Expectation(pre_validation_result=svh_check.is_validation_error())),
-                    single_line_source('/absolute/path/to/program/that/does/not/exist'))
+        self._run(single_line_source('/absolute/path/to/program/that/does/not/exist'),
+                  Arrangement(),
+                  Expectation(pre_validation_result=svh_check.is_validation_error()))
 
 
 class TestInterpretIntegrationByAFewRandomTests(TestCaseBase):
