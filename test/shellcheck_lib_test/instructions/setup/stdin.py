@@ -8,7 +8,7 @@ from shellcheck_lib.instructions.utils import file_ref
 from shellcheck_lib.test_case.help.instruction_description import Description
 from shellcheck_lib.test_case.sections import common
 from shellcheck_lib.test_case.sections.setup import SetupSettingsBuilder
-from shellcheck_lib_test.instructions.setup.test_resources.instruction_check import Flow, TestCaseBase, Arrangement, \
+from shellcheck_lib_test.instructions.setup.test_resources.instruction_check import TestCaseBase, Arrangement, \
     Expectation
 from shellcheck_lib_test.instructions.setup.test_resources.settings_check import Assertion
 from shellcheck_lib_test.instructions.test_resources import svh_check
@@ -92,34 +92,29 @@ class TestSuccessfulInstructionExecution(TestCaseBaseForParser):
                   )
 
 
-class TestFailingInstructionExecution(TestCaseBase):
+class TestFailingInstructionExecution(TestCaseBaseForParser):
     def test_referenced_file_does_not_exist(self):
-        self._check(
-                Flow(sut.Parser(),
-                     expected_pre_validation_result=svh_check.is_validation_error(),
-                     ),
-                new_source2('--rel-home non-existing-file'))
+        self._run(new_source2('--rel-home non-existing-file'),
+                  Arrangement(),
+                  Expectation(pre_validation_result=svh_check.is_validation_error())
+                  )
 
     def test_referenced_file_is_a_directory(self):
-        self._check(
-                Flow(sut.Parser(),
-                     home_dir_contents=DirContents([
-                         empty_dir('directory'),
-                     ]),
-                     expected_pre_validation_result=svh_check.is_validation_error(),
-                     ),
-                new_source2('--rel-home directory'))
+        self._run(new_source2('--rel-home directory'),
+                  Arrangement(home_dir_contents=DirContents([
+                      empty_dir('directory')])
+                  ),
+                  Expectation(pre_validation_result=svh_check.is_validation_error())
+                  )
 
     def test_single_line_contents_from_here_document(self):
-        self._check(
-                Flow(sut.Parser(),
-                     expected_main_side_effects_on_environment=AssertStdinIsSetToContents(
-                             lines_content(['single line'])),
-                     ),
-                argument_list_source(['<<MARKER'],
-                                     ['single line',
-                                      'MARKER'])
-        )
+        self._run(argument_list_source(['<<MARKER'],
+                                       ['single line',
+                                        'MARKER']),
+                  Arrangement(),
+                  Expectation(main_side_effects_on_environment=AssertStdinIsSetToContents(
+                          lines_content(['single line'])))
+                  )
 
 
 class AssertStdinFileIsSetToFile(Assertion):
