@@ -40,42 +40,47 @@ class Expectation:
 class TestCaseBase(unittest.TestCase):
     def _check(self,
                parser: SingleInstructionParser,
+               source: SingleInstructionParserSource,
                arrangement: Arrangement,
-               expectation: Expectation,
-               source: SingleInstructionParserSource):
-        execute(self, parser, arrangement, expectation, source)
+               expectation: Expectation):
+        Executor(self, arrangement, expectation).execute(parser, source)
 
 
-def execute(put: unittest.TestCase,
-            parser: SingleInstructionParser,
-            arrangement: Arrangement,
-            expectation: Expectation,
-            source: SingleInstructionParserSource):
-    instruction = parser.apply(source)
-    put.assertIsNotNone(instruction,
-                        'Result from parser cannot be None')
-    put.assertIsInstance(instruction,
-                         CleanupPhaseInstruction,
-                         'The instruction must be an instance of ' + str(CleanupPhaseInstruction))
-    assert isinstance(instruction, CleanupPhaseInstruction)
-    with utils.home_and_eds_and_test_as_curr_dir(
-            home_dir_contents=arrangement.home_dir_contents,
-            eds_contents=arrangement.eds_contents_before_main) as home_and_eds:
-        write_act_result(home_and_eds.eds, expectation.act_result)
-        environment = i.GlobalEnvironmentForPostEdsPhase(home_and_eds.home_dir_path,
-                                                         home_and_eds.eds)
-        _execute_main(environment, instruction, put, expectation)
-        expectation.main_side_effects_on_files.apply(put, environment.eds)
-        expectation.side_effects_check.apply(put, home_and_eds)
+class Executor:
+    def __init__(self,
+                 put: unittest.TestCase,
+                 arrangement: Arrangement,
+                 expectation: Expectation):
+        self.put = put
+        self.arrangement = arrangement
+        self.expectation = expectation
 
+    def execute(self,
+                parser: SingleInstructionParser,
+                source: SingleInstructionParserSource):
+        instruction = parser.apply(source)
+        self.put.assertIsNotNone(instruction,
+                                 'Result from parser cannot be None')
+        self.put.assertIsInstance(instruction,
+                                  CleanupPhaseInstruction,
+                                  'The instruction must be an instance of ' + str(CleanupPhaseInstruction))
+        assert isinstance(instruction, CleanupPhaseInstruction)
+        with utils.home_and_eds_and_test_as_curr_dir(
+                home_dir_contents=self.arrangement.home_dir_contents,
+                eds_contents=self.arrangement.eds_contents_before_main) as home_and_eds:
+            write_act_result(home_and_eds.eds, self.expectation.act_result)
+            environment = i.GlobalEnvironmentForPostEdsPhase(home_and_eds.home_dir_path,
+                                                             home_and_eds.eds)
+            self._execute_main(environment, instruction)
+            self.expectation.main_side_effects_on_files.apply(self.put, environment.eds)
+            self.expectation.side_effects_check.apply(self.put, home_and_eds)
 
-def _execute_main(environment: GlobalEnvironmentForPostEdsPhase,
-                  instruction: CleanupPhaseInstruction,
-                  put: unittest.TestCase,
-                  expectation: Expectation) -> pfh.PassOrFailOrHardError:
-    main_result = instruction.main(environment, OsServices())
-    put.assertIsNotNone(main_result,
-                        'Result from main method cannot be None')
-    expectation.main_result.apply(put, main_result)
-    expectation.main_side_effects_on_files.apply(put, environment.eds)
-    return main_result
+    def _execute_main(self,
+                      environment: GlobalEnvironmentForPostEdsPhase,
+                      instruction: CleanupPhaseInstruction) -> pfh.PassOrFailOrHardError:
+        main_result = instruction.main(environment, OsServices())
+        self.put.assertIsNotNone(main_result,
+                                 'Result from main method cannot be None')
+        self.expectation.main_result.apply(self.put, main_result)
+        self.expectation.main_side_effects_on_files.apply(self.put, environment.eds)
+        return main_result
