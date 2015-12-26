@@ -12,6 +12,7 @@ Kan använda nya ramverket för att testa strukturen.
 Dela upp i
 Arrangement
 Expectation
+* TODO Flytta DescriptionWithConstantValues till test
 * cd
 ** Tester av instruktionerna
 Finns tester av fas-oberoende utils.
