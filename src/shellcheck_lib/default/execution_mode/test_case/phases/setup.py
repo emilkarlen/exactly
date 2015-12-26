@@ -40,5 +40,5 @@ INSTRUCTIONS = {
     'stdin':
         SingleInstructionSetup(
                 stdin.Parser(),
-                stdin.description('stdin')),
+                stdin.TheDescription('stdin')),
 }

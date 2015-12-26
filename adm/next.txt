@@ -2,6 +2,7 @@
 
 Fortsätt med
 
+* TODO Basklasser för instruktioner ska ha bas-impl av valideringsfunktioner
 * Formattering
 ** DONE TestDescriptionBase: ska inte formattera
 Kan använda nya ramverket för att testa strukturen.
