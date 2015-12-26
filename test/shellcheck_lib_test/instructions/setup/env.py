@@ -1,11 +1,12 @@
 import unittest
 
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionInvalidArgumentException
+    SingleInstructionInvalidArgumentException, SingleInstructionParserSource
 from shellcheck_lib.instructions.setup import env as sut
 from shellcheck_lib.test_case.help.instruction_description import Description
 from shellcheck_lib.test_case.os_services import new_with_environ
-from shellcheck_lib_test.instructions.setup.test_resources.instruction_check import Flow, TestCaseBase
+from shellcheck_lib_test.instructions.setup.test_resources.instruction_check import Flow, TestCaseBase, Arrangement, \
+    Expectation
 from shellcheck_lib_test.instructions.test_resources.check_description import TestDescriptionBase
 from shellcheck_lib_test.instructions.test_resources.utils import new_source, new_source2
 
@@ -50,7 +51,15 @@ class TestParseUnset(unittest.TestCase):
         sut.Parser().apply(source)
 
 
-class TestSet(TestCaseBase):
+class TestCaseBaseForParser(TestCaseBase):
+    def _run(self,
+             source: SingleInstructionParserSource,
+             arrangement: Arrangement,
+             expectation: Expectation):
+        self._check2(sut.Parser(), source, arrangement, expectation)
+
+
+class TestSet(TestCaseBaseForParser):
     def test_set(self):
         environ = {}
         os_services = new_with_environ(environ)
@@ -63,7 +72,7 @@ class TestSet(TestCaseBase):
                          {'name': 'value'})
 
 
-class TestUnset(TestCaseBase):
+class TestUnset(TestCaseBaseForParser):
     def test_unset(self):
         environ = {'a': 'A', 'b': 'B'}
         os_services = new_with_environ(environ)
