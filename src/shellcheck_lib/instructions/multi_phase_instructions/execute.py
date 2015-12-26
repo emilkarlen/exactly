@@ -18,62 +18,74 @@ from shellcheck_lib.instructions.utils.parse_file_ref import ALL_REL_OPTIONS
 from shellcheck_lib.instructions.utils.parse_utils import TokenStream
 from shellcheck_lib.instructions.utils.pre_or_post_validation import PreOrPostEdsValidator, AndValidator
 from shellcheck_lib.test_case.help.instruction_description import InvokationVariant, SyntaxElementDescription, \
-    DescriptionWithConstantValues
+    Description
 from shellcheck_lib.test_case.sections.common import HomeAndEds
 
 INTERPRET_OPTION = '--interpret'
 SOURCE_OPTION = '--source'
 
 
-def description(instruction_name: str,
-                single_line_description: str):
-    return DescriptionWithConstantValues(
-            instruction_name,
-            single_line_description,
-            'TODO',
-            [
-                InvokationVariant(
-                        'EXECUTABLE [--] ARGUMENT...',
-                        paragraphs_parse.normalize_and_parse(
-                                """\
-                                Executes the given executable with the given command line arguments.
-                                The arguments are splitted according to shell syntax.
-                                """)),
-                InvokationVariant(
-                        'EXECUTABLE %s SOURCE-FILE [--] ARGUMENT...' % INTERPRET_OPTION,
-                        paragraphs_parse.normalize_and_parse(
-                                """\
-                                Interprets the given SOURCE-FILE using EXECUTABLE.
-                                ARGUMENTS... are splitted according to shell syntax.
-                                """)),
-                InvokationVariant(
-                        'EXECUTABLE %s SOURCE' % SOURCE_OPTION,
-                        paragraphs_parse.normalize_and_parse(
-                                """\
-                                Interprets the given SOURCE using EXECUTABLE.
-                                SOURCE is taken literary, and is given as a single argument to EXECUTABLE.
-                                """)),
-            ],
-            [
-                SyntaxElementDescription('EXECUTABLE',
-                                         single_para('Specifies an executable program'),
-                                         [
-                                             InvokationVariant('ABSOLUTE-PATH', []),
-                                             InvokationVariant('[{}] PATH'.format('|'.join(ALL_REL_OPTIONS)),
-                                                               []),
-                                             InvokationVariant('( EXECUTABLE ARGUMENT-TO-EXECUTABLE... )',
-                                                               []),
-                                         ]),
-                SyntaxElementDescription('SOURCE-FILE',
-                                         paragraphs_parse.normalize_and_parse(
-                                                 """\
-                                                 Specifies a plain file.
-                                                 By default, SOURCE-FILE is assumed to be relative the home dir.
+class TheDescription(Description):
+    def __init__(self,
+                 name: str,
+                 single_line_description: str):
+        super().__init__(name)
+        self._single_line_description = single_line_description
 
-                                                 Other locations can be specified using %s.
-                                                 """ % '|'.join(ALL_REL_OPTIONS)),
-                                         []),
-            ])
+    def single_line_description(self) -> str:
+        return self._single_line_description
+
+    def main_description_rest(self) -> list:
+        return single_para('TODO')
+
+    def invokation_variants(self) -> list:
+        return [
+            InvokationVariant(
+                    'EXECUTABLE [--] ARGUMENT...',
+                    paragraphs_parse.normalize_and_parse(
+                            """\
+                            Executes the given executable with the given command line arguments.
+                            The arguments are splitted according to shell syntax.
+                            """)),
+            InvokationVariant(
+                    'EXECUTABLE %s SOURCE-FILE [--] ARGUMENT...' % INTERPRET_OPTION,
+                    paragraphs_parse.normalize_and_parse(
+                            """\
+                            Interprets the given SOURCE-FILE using EXECUTABLE.
+                            ARGUMENTS... are splitted according to shell syntax.
+                            """)),
+            InvokationVariant(
+                    'EXECUTABLE %s SOURCE' % SOURCE_OPTION,
+                    paragraphs_parse.normalize_and_parse(
+                            """\
+                            Interprets the given SOURCE using EXECUTABLE.
+                            SOURCE is taken literary, and is given as a single argument to EXECUTABLE.
+                            """)),
+        ]
+
+    def syntax_element_descriptions(self) -> list:
+        return [
+            SyntaxElementDescription(
+                    'EXECUTABLE',
+                    single_para('Specifies an executable program'),
+                    [
+                        InvokationVariant('ABSOLUTE-PATH', []),
+                        InvokationVariant('[{}] PATH'.format('|'.join(ALL_REL_OPTIONS)),
+                                          []),
+                        InvokationVariant('( EXECUTABLE ARGUMENT-TO-EXECUTABLE... )',
+                                          []),
+                    ]),
+            SyntaxElementDescription(
+                    'SOURCE-FILE',
+                    paragraphs_parse.normalize_and_parse(
+                            """\
+                            Specifies a plain file.
+                            By default, SOURCE-FILE is assumed to be relative the home dir.
+
+                            Other locations can be specified using %s.
+                            """ % '|'.join(ALL_REL_OPTIONS)),
+                    []),
+        ]
 
 
 class SetupForExecutableWithArguments:
