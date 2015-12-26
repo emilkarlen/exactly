@@ -13,52 +13,47 @@ from shellcheck_lib_test.instructions.cleanup.test_resources import instruction_
 from shellcheck_lib_test.instructions.test_resources import test_of_test_framework_utils as test_misc
 
 
-def suite():
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestCases))
-    return ret_val
-
-
-if __name__ == '__main__':
-    unittest.main()
-
-
 class TestCases(sut.TestCaseBase):
     def test_successful_flow(self):
         self._check(
-            test_misc.ParserThatGives(SUCCESSFUL_INSTRUCTION),
-            sut.Arrangement(),
-            sut.Expectation(),
-            test_misc.single_line_source())
+                test_misc.ParserThatGives(SUCCESSFUL_INSTRUCTION),
+                test_misc.single_line_source(),
+                sut.Arrangement(),
+                sut.Expectation(),
+        )
 
     def test_fail_due_to_unexpected_result_from_main(self):
         with self.assertRaises(test_misc.TestError):
             self._check(
-                test_misc.ParserThatGives(SUCCESSFUL_INSTRUCTION),
-                sut.Arrangement(),
-                sut.Expectation(main_result=test_misc.ShRaisesTestError()),
-                test_misc.single_line_source())
+                    test_misc.ParserThatGives(SUCCESSFUL_INSTRUCTION),
+                    test_misc.single_line_source(),
+                    sut.Arrangement(),
+                    sut.Expectation(main_result=test_misc.ShRaisesTestError()),
+            )
 
     def test_fail_due_to_fail_of_side_effects_on_files(self):
         with self.assertRaises(test_misc.TestError):
             self._check(
-                test_misc.ParserThatGives(SUCCESSFUL_INSTRUCTION),
-                sut.Arrangement(),
-                sut.Expectation(main_side_effects_on_files=test_misc.EdsContentsRaisesTestError()),
-                test_misc.single_line_source())
+                    test_misc.ParserThatGives(SUCCESSFUL_INSTRUCTION),
+                    test_misc.single_line_source(),
+                    sut.Arrangement(),
+                    sut.Expectation(main_side_effects_on_files=test_misc.EdsContentsRaisesTestError()),
+            )
 
     def test_that_cwd_for_main_and_post_validation_is_test_root(self):
         self._check(test_misc.ParserThatGives(InstructionThatRaisesTestErrorIfCwdIsIsNotTestRoot()),
+                    test_misc.single_line_source(),
                     sut.Arrangement(),
                     sut.Expectation(),
-                    test_misc.single_line_source())
+                    )
 
     def test_fail_due_to_side_effects_check(self):
         with self.assertRaises(test_misc.TestError):
             self._check(test_misc.ParserThatGives(SUCCESSFUL_INSTRUCTION),
+                        test_misc.single_line_source(),
                         sut.Arrangement(),
                         sut.Expectation(side_effects_check=test_misc.SideEffectsCheckThatRaisesTestError()),
-                        test_misc.single_line_source())
+                        )
 
 
 SUCCESSFUL_INSTRUCTION = CleanupPhaseInstructionThatReturns(sh.new_sh_success())
@@ -68,3 +63,13 @@ class InstructionThatRaisesTestErrorIfCwdIsIsNotTestRoot(CleanupPhaseInstruction
     def main(self, environment: GlobalEnvironmentForPostEdsPhase, os_services: OsServices) -> sh.SuccessOrHardError:
         test_misc.raise_test_error_if_cwd_is_not_test_root(environment.eds)
         return sh.new_sh_success()
+
+
+def suite():
+    ret_val = unittest.TestSuite()
+    ret_val.addTest(unittest.makeSuite(TestCases))
+    return ret_val
+
+
+if __name__ == '__main__':
+    unittest.main()
