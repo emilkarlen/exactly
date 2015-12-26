@@ -47,20 +47,16 @@ class TestCaseBaseForParser(TestCaseBase):
         self._check2(sut.Parser(), source, arrangement, expectation)
 
 
-class TestValidationErrorScenarios(TestCaseBase):
+class TestValidationErrorScenarios(TestCaseBaseForParser):
     def test_ERROR_when_file_does_not_exist__without_explicit_destination(self):
-        self._check(
-                Flow(sut.Parser(),
-                     expected_pre_validation_result=svh_check.is_validation_error(),
-                     ),
-                new_source2('source-that-do-not-exist'))
+        self._run(new_source2('source-that-do-not-exist'),
+                  Arrangement(),
+                  Expectation(pre_validation_result=svh_check.is_validation_error()))
 
     def test_ERROR_when_file_does_not_exist__with_explicit_destination(self):
-        self._check(
-                Flow(sut.Parser(),
-                     expected_pre_validation_result=svh_check.is_validation_error(),
-                     ),
-                new_source2('source-that-do-not-exist destination'))
+        self._run(new_source2('source-that-do-not-exist destination'),
+                  Arrangement(),
+                  Expectation(pre_validation_result=svh_check.is_validation_error()))
 
 
 class TestSuccessfulScenarios(TestCaseBase):
