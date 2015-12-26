@@ -22,7 +22,7 @@ class TestCaseBaseForParser(TestCaseBase):
              source: SingleInstructionParserSource,
              arrangement: Arrangement,
              expectation: Expectation):
-        self._check2(sut.parser('instruction-name'), source, arrangement, expectation)
+        self._check(sut.parser('instruction-name'), source, arrangement, expectation)
 
 
 class TestExecuteIntegrationByAFewRandomTests(TestCaseBaseForParser):

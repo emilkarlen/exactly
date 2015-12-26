@@ -25,7 +25,7 @@ class TestCaseBaseForParser(TestCaseBase):
              source: SingleInstructionParserSource,
              arrangement: Arrangement,
              expectation: Expectation):
-        self._check2(sut.parser(), source, arrangement, expectation)
+        self._check(sut.parser(), source, arrangement, expectation)
 
 
 class TestExecution(TestCaseBaseForParser):

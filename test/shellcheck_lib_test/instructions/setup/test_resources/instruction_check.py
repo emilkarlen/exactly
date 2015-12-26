@@ -102,16 +102,11 @@ def flow(parser: SingleInstructionParser,
 
 class TestCaseBase(unittest.TestCase):
     def _check(self,
-               check: Flow,
-               source: SingleInstructionParserSource):
-        execute(self, check, source)
-
-    def _check2(self,
-                parser: SingleInstructionParser,
-                source: SingleInstructionParserSource,
-                arrangement: Arrangement,
-                expectation: Expectation):
-        self._check(flow(parser, arrangement, expectation), source)
+               parser: SingleInstructionParser,
+               source: SingleInstructionParserSource,
+               arrangement: Arrangement,
+               expectation: Expectation):
+        execute(self, flow(parser, arrangement, expectation), source)
 
 
 def execute(put: unittest.TestCase,
