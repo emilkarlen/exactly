@@ -5,10 +5,10 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
 from shellcheck_lib.instructions.setup import env as sut
 from shellcheck_lib.test_case.help.instruction_description import Description
 from shellcheck_lib.test_case.os_services import new_with_environ
-from shellcheck_lib_test.instructions.setup.test_resources.instruction_check import Flow, TestCaseBase, Arrangement, \
+from shellcheck_lib_test.instructions.setup.test_resources.instruction_check import TestCaseBase, Arrangement, \
     Expectation
 from shellcheck_lib_test.instructions.test_resources.check_description import TestDescriptionBase
-from shellcheck_lib_test.instructions.test_resources.utils import new_source, new_source2
+from shellcheck_lib_test.instructions.test_resources.utils import new_source2
 
 
 class TestParseSet(unittest.TestCase):
@@ -74,11 +74,9 @@ class TestUnset(TestCaseBaseForParser):
     def test_unset(self):
         environ = {'a': 'A', 'b': 'B'}
         os_services = new_with_environ(environ)
-        self._check(
-                Flow(sut.Parser(),
-                     os_services=os_services),
-                new_source('instruction-name',
-                           'unset a'))
+        self._run(new_source2('unset a'),
+                  Arrangement(os_services=os_services),
+                  Expectation())
         self.assertEqual(environ,
                          {'b': 'B'})
 
