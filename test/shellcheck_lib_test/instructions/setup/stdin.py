@@ -1,14 +1,15 @@
 import unittest
 
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionInvalidArgumentException
+    SingleInstructionInvalidArgumentException, SingleInstructionParserSource
 from shellcheck_lib.general.string import lines_content
 from shellcheck_lib.instructions.setup import stdin as sut
 from shellcheck_lib.instructions.utils import file_ref
 from shellcheck_lib.test_case.help.instruction_description import Description
 from shellcheck_lib.test_case.sections import common
 from shellcheck_lib.test_case.sections.setup import SetupSettingsBuilder
-from shellcheck_lib_test.instructions.setup.test_resources.instruction_check import Flow, TestCaseBase
+from shellcheck_lib_test.instructions.setup.test_resources.instruction_check import Flow, TestCaseBase, Arrangement, \
+    Expectation
 from shellcheck_lib_test.instructions.setup.test_resources.settings_check import Assertion
 from shellcheck_lib_test.instructions.test_resources import svh_check
 from shellcheck_lib_test.instructions.test_resources.check_description import TestDescriptionBase
@@ -61,28 +62,34 @@ class TestParseSet(unittest.TestCase):
         sut.Parser().apply(source)
 
 
-class TestSuccessfulInstructionExecution(TestCaseBase):
+class TestCaseBaseForParser(TestCaseBase):
+    def _run(self,
+             source: SingleInstructionParserSource,
+             arrangement: Arrangement,
+             expectation: Expectation):
+        self._check2(sut.Parser(), source, arrangement, expectation)
+
+
+class TestSuccessfulInstructionExecution(TestCaseBaseForParser):
     def test_file_rel_home__explicitly(self):
-        self._check(
-                Flow(sut.Parser(),
-                     home_dir_contents=DirContents([
-                         empty_file('file-in-home-dir.txt'),
-                     ]),
-                     expected_main_side_effects_on_environment=AssertStdinFileIsSetToFile(
-                             file_ref.rel_home('file-in-home-dir.txt'))
-                     ),
-                new_source2('--rel-home file-in-home-dir.txt'))
+        self._run(new_source2('--rel-home file-in-home-dir.txt'),
+                  Arrangement(
+                          home_dir_contents=DirContents([
+                              empty_file('file-in-home-dir.txt')])
+                  ),
+                  Expectation(
+                          main_side_effects_on_environment=AssertStdinFileIsSetToFile(
+                                  file_ref.rel_home('file-in-home-dir.txt')))
+                  )
 
     def test_file_rel_home__implicitly(self):
-        self._check(
-                Flow(sut.Parser(),
-                     home_dir_contents=DirContents([
-                         empty_file('file-in-home-dir.txt'),
-                     ]),
-                     expected_main_side_effects_on_environment=AssertStdinFileIsSetToFile(
-                             file_ref.rel_home('file-in-home-dir.txt')),
-                     ),
-                new_source2('file-in-home-dir.txt'))
+        self._run(new_source2('file-in-home-dir.txt'),
+                  Arrangement(home_dir_contents=DirContents([
+                      empty_file('file-in-home-dir.txt')])
+                  ),
+                  Expectation(main_side_effects_on_environment=AssertStdinFileIsSetToFile(
+                          file_ref.rel_home('file-in-home-dir.txt')))
+                  )
 
 
 class TestFailingInstructionExecution(TestCaseBase):
