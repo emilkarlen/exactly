@@ -103,6 +103,13 @@ class TestCaseBase(unittest.TestCase):
                source: SingleInstructionParserSource):
         execute(self, check, source)
 
+    def _check2(self,
+                parser: SingleInstructionParser,
+                source: SingleInstructionParserSource,
+                arrangement: Arrangement,
+                expectation: Expectation):
+        self._check(flow(parser, arrangement, expectation), source)
+
 
 def execute(put: unittest.TestCase,
             setup: Flow,

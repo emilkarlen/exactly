@@ -1,10 +1,10 @@
-from contextlib import contextmanager
 import os
 import pathlib
 import shlex
 import tempfile
-from time import strftime, localtime
 import unittest
+from contextlib import contextmanager
+from time import strftime, localtime
 
 from shellcheck_lib.document import parse
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
@@ -108,6 +108,13 @@ def new_source(instruction_name: str, arguments: str) -> SingleInstructionParser
     return SingleInstructionParserSource(
         new_line_sequence(first_line),
         arguments)
+
+
+def new_source2(arguments: str) -> SingleInstructionParserSource:
+    first_line = 'instruction name' + ' ' + arguments
+    return SingleInstructionParserSource(
+            new_line_sequence(first_line),
+            arguments)
 
 
 def single_line_source(arguments: str) -> SingleInstructionParserSource:
