@@ -47,25 +47,25 @@ class Expectation:
 
 
 class TestCaseBase(unittest.TestCase):
-    def _check(self,
+    def _chekk(self,
                check: Flow,
                source: SingleInstructionParserSource):
-        self._check2(check.parser,
-                     source,
-                     Arrangement(
-                             home_dir_contents=check.home_dir_contents,
-                             initial_configuration_builder=check.initial_configuration_builder,
-                     ),
-                     Expectation(
-                             expected_main_result=check.expected_main_result,
-                             expected_configuration=check.expected_configuration)
-                     )
+        self._check(check.parser,
+                    source,
+                    Arrangement(
+                            home_dir_contents=check.home_dir_contents,
+                            initial_configuration_builder=check.initial_configuration_builder,
+                    ),
+                    Expectation(
+                            expected_main_result=check.expected_main_result,
+                            expected_configuration=check.expected_configuration)
+                    )
 
-    def _check2(self,
-                parser: SingleInstructionParser,
-                source: SingleInstructionParserSource,
-                arrangement: Arrangement,
-                expectation: Expectation):
+    def _check(self,
+               parser: SingleInstructionParser,
+               source: SingleInstructionParserSource,
+               arrangement: Arrangement,
+               expectation: Expectation):
         Executor(self, arrangement, expectation).execute(parser, source)
 
 
