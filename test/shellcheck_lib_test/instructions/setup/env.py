@@ -63,11 +63,9 @@ class TestSet(TestCaseBaseForParser):
     def test_set(self):
         environ = {}
         os_services = new_with_environ(environ)
-        self._check(
-                Flow(sut.Parser(),
-                     os_services=os_services),
-                new_source('instruction-name',
-                           'name = value'))
+        self._run(new_source2('name = value'),
+                  Arrangement(os_services=os_services),
+                  Expectation())
         self.assertEqual(environ,
                          {'name': 'value'})
 
