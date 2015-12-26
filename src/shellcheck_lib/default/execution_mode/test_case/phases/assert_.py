@@ -36,11 +36,11 @@ INSTRUCTIONS = {
     'stdout':
         SingleInstructionSetup(
                 stdout_stderr_instruction.ParserForContentsForStdout(),
-                stdout_stderr_instruction.description('stdout', 'stdout')),
+                stdout_stderr_instruction.TheDescription('stdout', 'stdout')),
     'stderr':
         SingleInstructionSetup(
                 stdout_stderr_instruction.ParserForContentsForStderr(),
-                stdout_stderr_instruction.description('stderr', 'stderr')),
+                stdout_stderr_instruction.TheDescription('stderr', 'stderr')),
     'type':
         SingleInstructionSetup(
                 type.Parser(),

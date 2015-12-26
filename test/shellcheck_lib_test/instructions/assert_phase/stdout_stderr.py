@@ -573,7 +573,7 @@ class TestReplacedEnvVarsFORStderr(ReplacedEnvVars):
 
 class TestDescription(TestDescriptionBase):
     def _description(self) -> Description:
-        return sut.description('instruction name', 'file')
+        return sut.TheDescription('instruction name', 'file')
 
 
 def suite():
