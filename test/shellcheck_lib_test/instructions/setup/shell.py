@@ -16,7 +16,7 @@ class TestParse(unittest.TestCase):
     def test_fail_when_there_is_no_arguments(self):
         source = new_source('instruction-name', '   ')
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.Parser().apply(source)
+            sut.parser().apply(source)
 
 
 class TestExecution(TestCaseBase):
@@ -28,7 +28,7 @@ sys.exit(0)
         with tmp_file_containing(script_that_exists_with_status_0,
                                  suffix='.py') as script_file_path:
             self._check(
-                Flow(sut.Parser()),
+                    Flow(sut.parser()),
                 new_source('instruction-name',
                            py_exe.command_line_for_interpreting(script_file_path)))
 
@@ -40,8 +40,8 @@ sys.exit(1)
         with tmp_file_containing(script_that_exists_with_status_0,
                                  suffix='.py') as script_file_path:
             self._check(
-                Flow(sut.Parser(),
-                     expected_main_result=sh_check.IsHardError()),
+                    Flow(sut.parser(),
+                         expected_main_result=sh_check.IsHardError()),
                 new_source('instruction-name',
                            py_exe.command_line_for_interpreting(script_file_path)))
 

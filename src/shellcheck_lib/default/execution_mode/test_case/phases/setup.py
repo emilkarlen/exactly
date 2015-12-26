@@ -35,7 +35,7 @@ INSTRUCTIONS = {
                 change_dir.description('pwd')),
     'shell':
         SingleInstructionSetup(
-                shell.Parser(),
+                shell.parser(),
                 shell.TheDescription('shell')),
     'stdin':
         SingleInstructionSetup(

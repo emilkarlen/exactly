@@ -27,7 +27,4 @@ class _ShellInstruction(CleanupPhaseInstruction):
     def main(self,
              environment: GlobalEnvironmentForPostEdsPhase,
              os_services: OsServices) -> sh.SuccessOrHardError:
-        exit_code = self.executor.run()
-        if exit_code != 0:
-            return sh.new_sh_hard_error('Program finished with non-zero exit code {}'.format(exit_code))
-        return sh.new_sh_success()
+        return shell_common.run_and_return_sh(self.executor)
