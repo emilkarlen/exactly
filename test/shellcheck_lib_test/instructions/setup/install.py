@@ -89,14 +89,14 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
         home_dir_contents = [file_to_install]
         act_dir_contents = [empty_dir(dst)]
         act_dir_contents_after = [Dir(dst, [file_to_install])]
-        self._check(
-                Flow(sut.Parser(),
-                     home_dir_contents=DirContents(home_dir_contents),
-                     eds_contents_before_main=eds_populator.act_dir_contents(DirContents(act_dir_contents)),
-                     expected_main_side_effects_on_files=eds_contents_check.ActRootContainsExactly(
-                             DirContents(act_dir_contents_after))
-                     ),
-                new_source2('{} {}'.format(src, dst)))
+        self._run(new_source2('{} {}'.format(src, dst)),
+                  Arrangement(
+                          home_dir_contents=DirContents(home_dir_contents),
+                          eds_contents_before_main=eds_populator.act_dir_contents(DirContents(act_dir_contents))),
+                  Expectation(
+                          main_side_effects_on_files=eds_contents_check.ActRootContainsExactly(
+                                  DirContents(act_dir_contents_after)))
+                  )
 
     def test_install_directory__without_explicit_destination(self):
         src_dir = 'existing-dir'
@@ -106,13 +106,11 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
                                              Dir('d2',
                                                  [File('f', 'f')])
                                              ])])
-        self._check(
-                Flow(sut.Parser(),
-                     home_dir_contents=files_to_install,
-                     expected_main_side_effects_on_files=eds_contents_check.ActRootContainsExactly(
-                             files_to_install)
-                     ),
-                new_source2(src_dir))
+        self._run(new_source2(src_dir),
+                  Arrangement(home_dir_contents=files_to_install),
+                  Expectation(main_side_effects_on_files=eds_contents_check.ActRootContainsExactly(
+                          files_to_install))
+                  )
 
     def test_install_directory__with_explicit_destination__existing_directory(self):
         src_dir = 'existing-dir'
@@ -125,14 +123,14 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
                                  ])]
         act_dir_contents_before = DirContents([empty_dir(dst_dir)])
         act_dir_contents_after = DirContents([Dir(dst_dir, files_to_install)])
-        self._check(
-                Flow(sut.Parser(),
-                     home_dir_contents=DirContents(files_to_install),
-                     eds_contents_before_main=eds_populator.act_dir_contents(act_dir_contents_before),
-                     expected_main_side_effects_on_files=eds_contents_check.ActRootContainsExactly(
-                             act_dir_contents_after)
-                     ),
-                new_source2('{} {}'.format(src_dir, dst_dir)))
+        self._run(new_source2('{} {}'.format(src_dir, dst_dir)),
+                  Arrangement(
+                          home_dir_contents=DirContents(files_to_install),
+                          eds_contents_before_main=eds_populator.act_dir_contents(act_dir_contents_before)),
+                  Expectation(
+                          main_side_effects_on_files=eds_contents_check.ActRootContainsExactly(
+                                  act_dir_contents_after))
+                  )
 
 
 class TestFailingScenarios(TestCaseBase):
