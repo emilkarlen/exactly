@@ -12,7 +12,7 @@ INSTRUCTIONS = {
     'env':
         SingleInstructionSetup(
                 env.Parser(),
-                env.description('env')),
+                env.TheDescription('env')),
     'execute':
         SingleInstructionSetup(
                 execute.parser('execute'),

@@ -12,8 +12,8 @@ from shellcheck_lib.test_case.sections.result import svh
 
 
 def description(instruction_name: str) -> Description:
-    return execute.description(instruction_name,
-                               "Executes a program and succeeds if it's exit-code is 0.")
+    return execute.TheDescription(instruction_name,
+                                  "Executes a program and succeeds if it's exit-code is 0.")
 
 
 def parser(instruction_name: str) -> SingleInstructionParser:

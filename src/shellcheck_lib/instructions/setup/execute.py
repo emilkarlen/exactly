@@ -12,8 +12,8 @@ from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, Setup
 
 
 def description(instruction_name: str) -> Description:
-    return execute.description(instruction_name,
-                               'Executes a program.')
+    return execute.TheDescription(instruction_name,
+                                  'Executes a program.')
 
 
 def parser(instruction_name: str) -> SingleInstructionParser:

@@ -84,8 +84,8 @@ class TestExecuteProgramWithShellArgumentList(TestCaseBase):
 
     def test_double_dash_should_invoke_execute(self):
         argument = py_exe.command_line_for_executing_program_via_command_line(
-            'exit(0)',
-            args_directly_after_interpreter='--')
+                'exit(0)',
+                args_directly_after_interpreter='--')
         self._test_source(single_line_source(argument),
                           home_and_eds_test.Check(expected_action_result=is_success_result(0,
                                                                                            None)))
@@ -98,9 +98,9 @@ class TestExecuteProgramWithShellArgumentList(TestCaseBase):
     def test_check_non_zero_exit_code_with_output_to_stderr(self):
         python_program = 'import sys; sys.stderr.write(\\"on stderr\\"); exit(2)'
         self._test_source(
-            single_line_source(py_exe.command_line_for_executing_program_via_command_line(python_program)),
-            home_and_eds_test.Check(expected_action_result=is_success_result(2,
-                                                                             'on stderr')))
+                single_line_source(py_exe.command_line_for_executing_program_via_command_line(python_program)),
+                home_and_eds_test.Check(expected_action_result=is_success_result(2,
+                                                                                 'on stderr')))
 
     def test_invalid_executable(self):
         self._test_source(single_line_source('/not/an/executable/program'),
@@ -175,9 +175,9 @@ class TestSource(TestCaseBase):
     def test_check_non_zero_exit_code_with_output_to_stderr(self):
         python_program = 'import sys; sys.stderr.write("on stderr"); exit(2)'
         self._test_source(
-            self._python_interpreter_for_source_on_command_line(python_program),
-            home_and_eds_test.Check(expected_action_result=is_success_result(2,
-                                                                             'on stderr')))
+                self._python_interpreter_for_source_on_command_line(python_program),
+                home_and_eds_test.Check(expected_action_result=is_success_result(2,
+                                                                                 'on stderr')))
 
     @staticmethod
     def _python_interpreter_for_source_on_command_line(argument: str) -> SingleInstructionParserSource:
@@ -188,8 +188,8 @@ class TestSource(TestCaseBase):
 
 class TestDescription(TestDescriptionBase):
     def _description(self) -> Description:
-        return sut.description('instruction name',
-                               'single line description')
+        return sut.TheDescription('instruction name',
+                                  'single line description')
 
 
 def _new_parser() -> sut.SetupParser:

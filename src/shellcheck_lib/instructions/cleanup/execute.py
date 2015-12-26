@@ -14,8 +14,8 @@ from shellcheck_lib.test_case.sections.result import sh
 
 
 def description(instruction_name: str) -> Description:
-    return execute.description(instruction_name,
-                               'Executes a program.')
+    return execute.TheDescription(instruction_name,
+                                  'Executes a program.')
 
 
 def parser(instruction_name: str) -> SingleInstructionParser:
