@@ -44,5 +44,5 @@ INSTRUCTIONS = {
     'type':
         SingleInstructionSetup(
                 type.Parser(),
-                type.description('type')),
+                type.TheDescription('type')),
 }
