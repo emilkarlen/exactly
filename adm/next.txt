@@ -16,8 +16,6 @@ Expectation
 Finns tester av fas-oberoende utils.
 ** Test av flödet (full_execution, tror jag)
 Testat att PWD inte ändras av ramverket.
-* setup/file NAME <<EOF ... EOF
-* assert/content: Möjl att parsa expected-fil m <<EOF ... EOF syntax
 * Skräddarsy act-fasen
 ** TODO Dokumetera ny utökad sekvens i UML
 Nytt är act-exekverarens faser.
@@ -39,8 +37,6 @@ o ev inte splitta kommandoraden.
 * Svit: Summering i rapporten
 Avslutande utskrift: Antal lyckade, fallerade, <andra typer av fel>
 * Exekvering av fall: Rapportera mha "Rapportör" (pss som svit)
-* Instruktioner
-** TODO Lyft ut funk från impl av exitcode så att den blir allmänt tillgänglig
 * Kring instruktioner
 ** TODO PassOrFailOrHardError: FAIL ska kunna ta olika varianter av felmeddelande
 - sträng
