@@ -23,14 +23,14 @@ from shellcheck_lib_test.instructions.test_resources.test_of_test_framework_util
 
 class TestCases(instruction_check.TestCaseBase):
     def test_successful_flow(self):
-        self._check2(ParserThatGives(SUCCESSFUL_INSTRUCTION),
-                     single_line_source(),
-                     Arrangement(),
-                     success())
+        self._check(ParserThatGives(SUCCESSFUL_INSTRUCTION),
+                    single_line_source(),
+                    Arrangement(),
+                    success())
 
     def test_fail_due_to_unexpected_result_from_pre_validation(self):
         with self.assertRaises(test_misc.TestError):
-            self._check2(
+            self._check(
                     ParserThatGives(SUCCESSFUL_INSTRUCTION),
                     single_line_source(),
                     Arrangement(),
@@ -39,7 +39,7 @@ class TestCases(instruction_check.TestCaseBase):
 
     def test_fail_due_to_unexpected_result_from_main(self):
         with self.assertRaises(test_misc.TestError):
-            self._check2(
+            self._check(
                     ParserThatGives(SUCCESSFUL_INSTRUCTION),
                     single_line_source(),
                     Arrangement(),
@@ -48,7 +48,7 @@ class TestCases(instruction_check.TestCaseBase):
 
     def test_fail_due_to_fail_of_side_effects_on_environment(self):
         with self.assertRaises(test_misc.TestError):
-            self._check2(
+            self._check(
                     ParserThatGives(SUCCESSFUL_INSTRUCTION),
                     single_line_source(),
                     Arrangement(),
@@ -57,14 +57,14 @@ class TestCases(instruction_check.TestCaseBase):
 
     def test_fail_due_to_fail_of_side_effects_on_files(self):
         with self.assertRaises(test_misc.TestError):
-            self._check2(ParserThatGives(SUCCESSFUL_INSTRUCTION),
-                         single_line_source(),
-                         Arrangement(),
-                         Expectation(main_side_effects_on_files=test_misc.EdsContentsRaisesTestError()))
+            self._check(ParserThatGives(SUCCESSFUL_INSTRUCTION),
+                        single_line_source(),
+                        Arrangement(),
+                        Expectation(main_side_effects_on_files=test_misc.EdsContentsRaisesTestError()))
 
     def test_fail_due_to_unexpected_result_from_post_validation(self):
         with self.assertRaises(test_misc.TestError):
-            self._check2(
+            self._check(
                     ParserThatGives(SUCCESSFUL_INSTRUCTION),
                     single_line_source(),
                     Arrangement(),
@@ -73,18 +73,18 @@ class TestCases(instruction_check.TestCaseBase):
 
     def test_fail_due_to_side_effects_check(self):
         with self.assertRaises(test_misc.TestError):
-            self._check2(ParserThatGives(SUCCESSFUL_INSTRUCTION),
-                         single_line_source(),
-                         Arrangement(),
-                         Expectation(side_effects_check=test_misc.SideEffectsCheckThatRaisesTestError())
-                         )
+            self._check(ParserThatGives(SUCCESSFUL_INSTRUCTION),
+                        single_line_source(),
+                        Arrangement(),
+                        Expectation(side_effects_check=test_misc.SideEffectsCheckThatRaisesTestError())
+                        )
 
     def test_that_cwd_for_main_and_post_validation_is_test_root(self):
-        self._check2(ParserThatGives(InstructionThatRaisesTestErrorIfCwdIsIsNotTestRoot()),
-                     single_line_source(),
-                     Arrangement(),
-                     Expectation()
-                     )
+        self._check(ParserThatGives(InstructionThatRaisesTestErrorIfCwdIsIsNotTestRoot()),
+                    single_line_source(),
+                    Arrangement(),
+                    Expectation()
+                    )
 
 
 class SettingsCheckRaisesTestError(settings_check.Assertion):

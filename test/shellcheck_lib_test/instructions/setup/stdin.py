@@ -67,7 +67,7 @@ class TestCaseBaseForParser(TestCaseBase):
              source: SingleInstructionParserSource,
              arrangement: Arrangement,
              expectation: Expectation):
-        self._check2(sut.Parser(), source, arrangement, expectation)
+        self._check(sut.Parser(), source, arrangement, expectation)
 
 
 class TestSuccessfulInstructionExecution(TestCaseBaseForParser):
