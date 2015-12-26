@@ -1,25 +1,25 @@
 import copy
 import pathlib
 import tempfile
-from time import strftime, localtime
 import unittest
+from time import strftime, localtime
 
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, SingleInstructionParserSource
-from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.anonymous import AnonymousPhaseInstruction, ConfigurationBuilder
-from shellcheck_lib_test.util import file_structure
-from shellcheck_lib_test.instructions.test_resources import sh_check
+from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib_test.instructions.configuration.test_resources import configuration_check as config_check
+from shellcheck_lib_test.instructions.test_resources import sh_check
+from shellcheck_lib_test.util import file_structure
 
 
 class Flow:
     def __init__(self,
                  parser: SingleInstructionParser,
-                 home_dir_contents: file_structure.DirContents=file_structure.DirContents([]),
-                 initial_configuration_builder: ConfigurationBuilder=ConfigurationBuilder(pathlib.Path('.')),
-                 expected_main_result: sh_check.Assertion=sh_check.IsSuccess(),
-                 expected_configuration: config_check.Assertion=config_check.AnythingGoes(),
+                 home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
+                 initial_configuration_builder: ConfigurationBuilder = ConfigurationBuilder(pathlib.Path('.')),
+                 expected_main_result: sh_check.Assertion = sh_check.IsSuccess(),
+                 expected_configuration: config_check.Assertion = config_check.AnythingGoes(),
                  ):
         self.parser = parser
         self.home_dir_contents = home_dir_contents
@@ -28,43 +28,84 @@ class Flow:
         self.expected_configuration = expected_configuration
 
 
+class Arrangement:
+    def __init__(self,
+                 home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
+                 initial_configuration_builder: ConfigurationBuilder = ConfigurationBuilder(pathlib.Path('.')),
+                 ):
+        self.home_dir_contents = home_dir_contents
+        self.initial_configuration_builder = initial_configuration_builder
+
+
+class Expectation:
+    def __init__(self,
+                 expected_main_result: sh_check.Assertion = sh_check.IsSuccess(),
+                 expected_configuration: config_check.Assertion = config_check.AnythingGoes(),
+                 ):
+        self.expected_main_result = expected_main_result
+        self.expected_configuration = expected_configuration
+
+
 class TestCaseBase(unittest.TestCase):
     def _check(self,
                check: Flow,
                source: SingleInstructionParserSource):
-        execute(self, check, source)
+        self._check2(check.parser,
+                     source,
+                     Arrangement(
+                             home_dir_contents=check.home_dir_contents,
+                             initial_configuration_builder=check.initial_configuration_builder,
+                     ),
+                     Expectation(
+                             expected_main_result=check.expected_main_result,
+                             expected_configuration=check.expected_configuration)
+                     )
+
+    def _check2(self,
+                parser: SingleInstructionParser,
+                source: SingleInstructionParserSource,
+                arrangement: Arrangement,
+                expectation: Expectation):
+        Executor(self, arrangement, expectation).execute(parser, source)
 
 
-def execute(put: unittest.TestCase,
-            setup: Flow,
-            source: SingleInstructionParserSource):
-    instruction = setup.parser.apply(source)
-    put.assertIsNotNone(instruction,
-                        'Result from parser cannot be None')
-    put.assertIsInstance(instruction,
-                         AnonymousPhaseInstruction,
-                         'The instruction must be an instance of ' + str(AnonymousPhaseInstruction))
-    assert isinstance(instruction, AnonymousPhaseInstruction)
-    prefix = strftime("shellcheck-test-%Y-%m-%d-%H-%M-%S", localtime())
-    with tempfile.TemporaryDirectory(prefix=prefix + "-home-") as home_dir_name:
-        home_dir_path = pathlib.Path(home_dir_name)
-        setup.home_dir_contents.write_to(home_dir_path)
-        configuration_builder = setup.initial_configuration_builder
-        configuration_builder.set_home_dir(home_dir_path)
-        _execute_main(configuration_builder,
-                      instruction, put, setup)
+class Executor:
+    def __init__(self,
+                 put: unittest.TestCase,
+                 arrangement: Arrangement,
+                 expectation: Expectation):
+        self.put = put
+        self.arrangement = arrangement
+        self.expectation = expectation
 
+    def execute(self,
+                parser: SingleInstructionParser,
+                source: SingleInstructionParserSource):
+        instruction = parser.apply(source)
+        self.put.assertIsNotNone(instruction,
+                                 'Result from parser cannot be None')
+        self.put.assertIsInstance(instruction,
+                                  AnonymousPhaseInstruction,
+                                  'The instruction must be an instance of ' + str(AnonymousPhaseInstruction))
+        assert isinstance(instruction, AnonymousPhaseInstruction)
+        prefix = strftime("shellcheck-test-%Y-%m-%d-%H-%M-%S", localtime())
+        with tempfile.TemporaryDirectory(prefix=prefix + "-home-") as home_dir_name:
+            home_dir_path = pathlib.Path(home_dir_name)
+            self.arrangement.home_dir_contents.write_to(home_dir_path)
+            configuration_builder = self.arrangement.initial_configuration_builder
+            configuration_builder.set_home_dir(home_dir_path)
+            self._execute_main(configuration_builder,
+                               instruction)
 
-def _execute_main(configuration_builder: ConfigurationBuilder,
-                  instruction: AnonymousPhaseInstruction,
-                  put,
-                  setup: Flow) -> sh.SuccessOrHardError:
-    initial_configuration_builder = copy.deepcopy(configuration_builder)
-    main_result = instruction.main(None, configuration_builder)
-    put.assertIsNotNone(main_result,
-                        'Result from main method cannot be None')
-    setup.expected_main_result.apply(put, main_result)
-    setup.expected_configuration.apply(put,
-                                       initial_configuration_builder,
-                                       configuration_builder)
-    return main_result
+    def _execute_main(self,
+                      configuration_builder: ConfigurationBuilder,
+                      instruction: AnonymousPhaseInstruction) -> sh.SuccessOrHardError:
+        initial_configuration_builder = copy.deepcopy(configuration_builder)
+        main_result = instruction.main(None, configuration_builder)
+        self.put.assertIsNotNone(main_result,
+                                 'Result from main method cannot be None')
+        self.expectation.expected_main_result.apply(self.put, main_result)
+        self.expectation.expected_configuration.apply(self.put,
+                                                      initial_configuration_builder,
+                                                      configuration_builder)
+        return main_result
