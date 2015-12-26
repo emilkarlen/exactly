@@ -9,18 +9,18 @@ from shellcheck_lib_test.instructions.configuration.test_resources import config
 from shellcheck_lib_test.instructions.configuration.test_resources.instruction_check import Flow, TestCaseBase
 from shellcheck_lib_test.instructions.test_resources import sh_check
 from shellcheck_lib_test.instructions.test_resources.check_description import TestDescriptionBase
-from shellcheck_lib_test.instructions.test_resources.utils import new_source
+from shellcheck_lib_test.instructions.test_resources.utils import new_source2
 from shellcheck_lib_test.util.file_structure import DirContents, empty_file, empty_dir, Dir
 
 
 class TestParse(unittest.TestCase):
     def test_fail_when_there_is_no_arguments(self):
-        source = new_source('instruction-name', '   ')
+        source = new_source2('   ')
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             sut.Parser().apply(source)
 
     def test_fail_when_there_is_more_than_one_argument(self):
-        source = new_source('instruction-name', 'argument-1 argument-2')
+        source = new_source2('argument-1 argument-2')
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             sut.Parser().apply(source)
 
@@ -28,49 +28,44 @@ class TestParse(unittest.TestCase):
 class TestFailingExecution(TestCaseBase):
     def test_hard_error_WHEN_path_does_not_exist(self):
         self._chekk(
-            Flow(sut.Parser(),
-                 expected_main_result=sh_check.IsHardError()),
-            new_source('instruction-name',
-                       'non-existing-path'))
+                Flow(sut.Parser(),
+                     expected_main_result=sh_check.IsHardError()),
+                new_source2('non-existing-path'))
 
     def test_hard_error_WHEN_path_exists_but_is_a_file(self):
         file_name = 'existing-plain-file'
         self._chekk(
-            Flow(sut.Parser(),
-                 home_dir_contents=DirContents([empty_file(file_name)]),
-                 expected_main_result=sh_check.IsHardError()),
-            new_source('instruction-name',
-                       file_name))
+                Flow(sut.Parser(),
+                     home_dir_contents=DirContents([empty_file(file_name)]),
+                     expected_main_result=sh_check.IsHardError()),
+                new_source2(file_name))
 
 
 class TestSuccessfulExecution(TestCaseBase):
     def test_change_to_direct_sub_dir(self):
         directory_name = 'existing-directory'
         self._chekk(
-            Flow(sut.Parser(),
-                 home_dir_contents=DirContents([empty_dir(directory_name)]),
-                 expected_configuration=AssertActualHomeDirIsDirectSubDirOfOriginalHomeDir(directory_name)),
-            new_source('instruction-name',
-                       directory_name))
+                Flow(sut.Parser(),
+                     home_dir_contents=DirContents([empty_dir(directory_name)]),
+                     expected_configuration=AssertActualHomeDirIsDirectSubDirOfOriginalHomeDir(directory_name)),
+                new_source2(directory_name))
 
     def test_change_to_2_level_sub_dir(self):
         first_dir = 'first_dir'
         second_dir = 'second_dir'
         self._chekk(
-            Flow(sut.Parser(),
-                 home_dir_contents=DirContents([Dir(first_dir,
-                                                    [empty_dir(second_dir)])]),
-                 expected_configuration=AssertActualHomeDirIs2LevelSubDirOfOriginalHomeDir(first_dir,
-                                                                                           second_dir)),
-            new_source('instruction-name',
-                       '{}/{}'.format(first_dir, second_dir)))
+                Flow(sut.Parser(),
+                     home_dir_contents=DirContents([Dir(first_dir,
+                                                        [empty_dir(second_dir)])]),
+                     expected_configuration=AssertActualHomeDirIs2LevelSubDirOfOriginalHomeDir(first_dir,
+                                                                                               second_dir)),
+                new_source2('{}/{}'.format(first_dir, second_dir)))
 
     def test_change_to_parent_dir(self):
         self._chekk(
-            Flow(sut.Parser(),
-                 expected_configuration=AssertActualHomeDirIsParentOfOriginalHomeDir()),
-            new_source('instruction-name',
-                       '..'))
+                Flow(sut.Parser(),
+                     expected_configuration=AssertActualHomeDirIsParentOfOriginalHomeDir()),
+                new_source2('..'))
 
 
 class AssertActualHomeDirIsDirectSubDirOfOriginalHomeDir(config_check.Assertion):
