@@ -24,7 +24,7 @@ INSTRUCTIONS = {
     'install':
         SingleInstructionSetup(
                 install.Parser(),
-                install.description('install')),
+                install.TheDescription('install')),
     'dir':
         SingleInstructionSetup(
                 new_dir.Parser(),
