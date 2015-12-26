@@ -59,31 +59,28 @@ class TestValidationErrorScenarios(TestCaseBaseForParser):
                   Expectation(pre_validation_result=svh_check.is_validation_error()))
 
 
-class TestSuccessfulScenarios(TestCaseBase):
+class TestSuccessfulScenarios(TestCaseBaseForParser):
     def test_install_file__without_explicit_destination(self):
         file_name = 'existing-file'
         file_to_install = DirContents([(File(file_name,
                                              'contents'))])
-        self._check(
-                Flow(sut.Parser(),
-                     home_dir_contents=file_to_install,
-                     expected_main_side_effects_on_files=eds_contents_check.ActRootContainsExactly(
-                             file_to_install)
-                     ),
-                new_source2(file_name))
+        self._run(new_source2(file_name),
+                  Arrangement(home_dir_contents=file_to_install),
+                  Expectation(main_side_effects_on_files=eds_contents_check.ActRootContainsExactly(
+                          file_to_install))
+                  )
 
     def test_install_file__with_explicit_destination__non_existing_file(self):
         src = 'src-file'
         dst = 'dst-file'
-        self._check(
-                Flow(sut.Parser(),
-                     home_dir_contents=DirContents([(File(src,
-                                                          'contents'))]),
-                     expected_main_side_effects_on_files=eds_contents_check.ActRootContainsExactly(
-                             DirContents([(File(dst,
-                                                'contents'))]))
-                     ),
-                new_source2('{} {}'.format(src, dst)))
+        self._run(new_source2('{} {}'.format(src, dst)),
+                  Arrangement(home_dir_contents=DirContents([(File(src,
+                                                                   'contents'))])),
+                  Expectation(
+                          main_side_effects_on_files=eds_contents_check.ActRootContainsExactly(
+                                  DirContents([(File(dst,
+                                                     'contents'))])))
+                  )
 
     def test_install_file__with_explicit_destination__existing_directory(self):
         src = 'src-file'
