@@ -2,24 +2,33 @@ import pathlib
 
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from shellcheck_lib.general.textformat import parse as text_parse
 from shellcheck_lib.instructions.utils.parse_utils import spit_arguments_list_string, ensure_is_not_option_argument
-from shellcheck_lib.test_case.help.instruction_description import InvokationVariant, DescriptionWithConstantValues, \
-    Description
+from shellcheck_lib.test_case.help.instruction_description import InvokationVariant, Description
 
 
-def description(instruction_name: str) -> Description:
-    return DescriptionWithConstantValues(
-            instruction_name,
-            'Makes a directory in the current directory.',
-            """\
+class TheDescription(Description):
+    def __init__(self, name: str):
+        super().__init__(name)
+
+    def single_line_description(self) -> str:
+        return 'Makes a directory in the current directory.'
+
+    def main_description_rest(self) -> list:
+        # return single_para()
+        text = """\
             Makes parent components, if needed.
 
 
             Does not fail if the given directory already exists.
-            """,
-            [InvokationVariant('DIRECTORY',
-                               []),
-             ])
+            """
+        return text_parse.normalize_and_parse(text)
+
+    def invokation_variants(self) -> list:
+        return [
+            InvokationVariant('DIRECTORY',
+                              []),
+        ]
 
 
 def parse(argument: str) -> str:
