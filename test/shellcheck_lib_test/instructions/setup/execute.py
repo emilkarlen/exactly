@@ -1,12 +1,14 @@
 import unittest
 
+from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
+    SingleInstructionParserSource
 from shellcheck_lib.instructions.multi_phase_instructions.execute import INTERPRET_OPTION
 from shellcheck_lib.instructions.setup import execute as sut
 from shellcheck_lib.instructions.utils.relative_path_options import REL_HOME_OPTION, REL_TMP_OPTION
 from shellcheck_lib_test.instructions.multi_phase_instructions.execute import \
     py_pgm_that_exits_with_value_on_command_line
 from shellcheck_lib_test.instructions.setup.test_resources.instruction_check import TestCaseBase, flow, \
-    Arrangement, Expectation
+    Arrangement, Expectation, success
 from shellcheck_lib_test.instructions.test_resources import sh_check
 from shellcheck_lib_test.instructions.test_resources import svh_check
 from shellcheck_lib_test.instructions.test_resources.utils import single_line_source
@@ -15,13 +17,19 @@ from shellcheck_lib_test.util.file_structure import DirContents
 from shellcheck_lib_test.util.file_structure import File
 
 
-class TestExecuteIntegrationByAFewRandomTests(TestCaseBase):
+class TestCaseBaseForParser(TestCaseBase):
+    def _run(self,
+             source: SingleInstructionParserSource,
+             arrangement: Arrangement,
+             expectation: Expectation):
+        self._check2(_PARSER, source, arrangement, expectation)
+
+
+class TestExecuteIntegrationByAFewRandomTests(TestCaseBaseForParser):
     def test_successful_execution(self):
-        self._check(flow(_PARSER,
-                         Arrangement(),
-                         Expectation(),
-                         ),
-                    single_line_source(py_exe.command_line_for_executing_program_via_command_line('exit(0)')))
+        self._run(single_line_source(py_exe.command_line_for_executing_program_via_command_line('exit(0)')),
+                  Arrangement(),
+                  success())
 
     def test_failing_execution(self):
         self._check(flow(_PARSER,

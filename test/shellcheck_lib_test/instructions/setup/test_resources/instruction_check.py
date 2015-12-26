@@ -80,6 +80,9 @@ class Expectation:
         self.side_effects_check = side_effects_check
 
 
+success = Expectation
+
+
 def flow(parser: SingleInstructionParser,
          arrangement: Arrangement,
          expectation: Expectation) -> Flow:
