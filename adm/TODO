@@ -6,7 +6,8 @@
 Ev ska varje klass explicit ärva object för att vara en py-3-klass.
 * TODO shell: Vad händer m stdout, stderr? blir del av stdout för shellcheck?
 Verkar så.  Väldigt dåligt i så fall.  Måste ändras.
-
+** TODO stdout, stderr
+Skriv dessa till fil pss som görs för execute.
 * TODO timeout för instruktioner som kör subprocesser
 subprocess.call(timeout=...)
 * TODO tmp-filer för instruktioner
