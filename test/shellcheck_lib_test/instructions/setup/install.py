@@ -4,7 +4,7 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
     SingleInstructionInvalidArgumentException, SingleInstructionParserSource
 from shellcheck_lib.instructions.setup import install as sut
 from shellcheck_lib.test_case.help.instruction_description import Description
-from shellcheck_lib_test.instructions.setup.test_resources.instruction_check import Flow, TestCaseBase, Arrangement, \
+from shellcheck_lib_test.instructions.setup.test_resources.instruction_check import TestCaseBase, Arrangement, \
     Expectation
 from shellcheck_lib_test.instructions.test_resources import eds_contents_check
 from shellcheck_lib_test.instructions.test_resources import eds_populator
@@ -133,32 +133,34 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
                   )
 
 
-class TestFailingScenarios(TestCaseBase):
+class TestFailingScenarios(TestCaseBaseForParser):
     def test_destination_already_exists__without_explicit_destination(self):
         file_name = 'existing-file'
         file_to_install = DirContents([(File(file_name,
                                              'contents'))])
-        self._check(
-                Flow(sut.Parser(),
-                     home_dir_contents=file_to_install,
-                     eds_contents_before_main=eds_populator.act_dir_contents(DirContents(
-                             [empty_file(file_name)])),
-                     expected_main_result=sh_check.IsHardError()
-                     ),
-                new_source2(file_name))
+        self._run(new_source2(file_name),
+                  Arrangement(
+                          home_dir_contents=file_to_install,
+                          eds_contents_before_main=eds_populator.act_dir_contents(DirContents(
+                                  [empty_file(file_name)]))),
+                  Expectation(
+                          main_result=sh_check.IsHardError())
+                  )
 
     def test_destination_already_exists__with_explicit_destination(self):
         src = 'src-file-name'
         dst = 'dst-file-name'
         home_dir_contents = DirContents([(empty_file(src))])
         act_dir_contents = DirContents([empty_file(dst)])
-        self._check(
-                Flow(sut.Parser(),
-                     home_dir_contents=home_dir_contents,
-                     eds_contents_before_main=eds_populator.act_dir_contents(act_dir_contents),
-                     expected_main_result=sh_check.IsHardError()
-                     ),
-                new_source2('{} {}'.format(src, dst)))
+        self._run(new_source2('{} {}'.format(src, dst)),
+                  Arrangement(
+                          home_dir_contents=home_dir_contents,
+                          eds_contents_before_main=eds_populator.act_dir_contents(act_dir_contents)
+                  ),
+                  Expectation(
+                          main_result=sh_check.IsHardError()
+                  )
+                  )
 
     def test_destination_already_exists_in_destination_directory(self):
         src = 'src-file-name'
@@ -166,13 +168,13 @@ class TestFailingScenarios(TestCaseBase):
         home_dir_contents = DirContents([(empty_file(src))])
         act_dir_contents = DirContents([Dir(dst,
                                             [empty_file(src)])])
-        self._check(
-                Flow(sut.Parser(),
-                     home_dir_contents=home_dir_contents,
-                     eds_contents_before_main=eds_populator.act_dir_contents(act_dir_contents),
-                     expected_main_result=sh_check.IsHardError()
-                     ),
-                new_source2('{} {}'.format(src, dst)))
+        self._run(new_source2('{} {}'.format(src, dst)),
+                  Arrangement(
+                          home_dir_contents=home_dir_contents,
+                          eds_contents_before_main=eds_populator.act_dir_contents(act_dir_contents)),
+                  Expectation(
+                          main_result=sh_check.IsHardError())
+                  )
 
 
 class TestDescription(TestDescriptionBase):
