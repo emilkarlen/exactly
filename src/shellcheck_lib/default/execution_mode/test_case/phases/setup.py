@@ -9,6 +9,10 @@ from shellcheck_lib.instructions.setup import stdin
 from shellcheck_lib.test_case.instruction_setup import SingleInstructionSetup
 
 INSTRUCTIONS = {
+    'dir':
+        SingleInstructionSetup(
+                new_dir.Parser(),
+                new_dir.description('dir')),
     'env':
         SingleInstructionSetup(
                 env.Parser(),
@@ -25,10 +29,6 @@ INSTRUCTIONS = {
         SingleInstructionSetup(
                 install.Parser(),
                 install.TheDescription('install')),
-    'dir':
-        SingleInstructionSetup(
-                new_dir.Parser(),
-                new_dir.description('dir')),
     'pwd':
         SingleInstructionSetup(
                 change_dir.Parser(),
