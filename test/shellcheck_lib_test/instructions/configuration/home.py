@@ -27,7 +27,7 @@ class TestParse(unittest.TestCase):
 
 class TestFailingExecution(TestCaseBase):
     def test_hard_error_WHEN_path_does_not_exist(self):
-        self._check(
+        self._chekk(
             Flow(sut.Parser(),
                  expected_main_result=sh_check.IsHardError()),
             new_source('instruction-name',
@@ -35,7 +35,7 @@ class TestFailingExecution(TestCaseBase):
 
     def test_hard_error_WHEN_path_exists_but_is_a_file(self):
         file_name = 'existing-plain-file'
-        self._check(
+        self._chekk(
             Flow(sut.Parser(),
                  home_dir_contents=DirContents([empty_file(file_name)]),
                  expected_main_result=sh_check.IsHardError()),
@@ -46,7 +46,7 @@ class TestFailingExecution(TestCaseBase):
 class TestSuccessfulExecution(TestCaseBase):
     def test_change_to_direct_sub_dir(self):
         directory_name = 'existing-directory'
-        self._check(
+        self._chekk(
             Flow(sut.Parser(),
                  home_dir_contents=DirContents([empty_dir(directory_name)]),
                  expected_configuration=AssertActualHomeDirIsDirectSubDirOfOriginalHomeDir(directory_name)),
@@ -56,7 +56,7 @@ class TestSuccessfulExecution(TestCaseBase):
     def test_change_to_2_level_sub_dir(self):
         first_dir = 'first_dir'
         second_dir = 'second_dir'
-        self._check(
+        self._chekk(
             Flow(sut.Parser(),
                  home_dir_contents=DirContents([Dir(first_dir,
                                                     [empty_dir(second_dir)])]),
@@ -66,7 +66,7 @@ class TestSuccessfulExecution(TestCaseBase):
                        '{}/{}'.format(first_dir, second_dir)))
 
     def test_change_to_parent_dir(self):
-        self._check(
+        self._chekk(
             Flow(sut.Parser(),
                  expected_configuration=AssertActualHomeDirIsParentOfOriginalHomeDir()),
             new_source('instruction-name',
