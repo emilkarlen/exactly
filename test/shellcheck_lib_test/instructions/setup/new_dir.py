@@ -3,7 +3,7 @@ import unittest
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParserSource
 from shellcheck_lib.instructions.setup import new_dir as sut
-from shellcheck_lib_test.instructions.setup.test_resources.instruction_check import Flow, TestCaseBase, Arrangement, \
+from shellcheck_lib_test.instructions.setup.test_resources.instruction_check import TestCaseBase, Arrangement, \
     Expectation
 from shellcheck_lib_test.instructions.test_resources import sh_check
 from shellcheck_lib_test.instructions.test_resources.eds_contents_check import ActRootContainsExactly
@@ -22,25 +22,22 @@ class TestCaseBaseForParser(TestCaseBase):
 
 class TestCasesThatTestIntegrationByAFewRandomTests(TestCaseBaseForParser):
     def test_creation_of_directory_with_multiple_path_components(self):
-        self._check(
-                Flow(sut.Parser(),
-                     expected_main_side_effects_on_files=ActRootContainsExactly(DirContents([
-                         Dir('first-component', [
-                             empty_dir('second-component')
-                         ])
-                     ]))
-                     ),
-                new_source2('first-component/second-component'))
+        self._run(new_source2('first-component/second-component'),
+                  Arrangement(),
+                  Expectation(main_side_effects_on_files=ActRootContainsExactly(DirContents([
+                      Dir('first-component', [
+                          empty_dir('second-component')
+                      ])
+                  ])))
+                  )
 
     def test_argument_exists_as_non_directory__single_path_component(self):
-        self._check(
-                Flow(sut.Parser(),
-                     eds_contents_before_main=act_dir_contents(DirContents([
-                         empty_file('file')
-                     ])),
-                     expected_main_result=sh_check.IsHardError(),
-                     ),
-                new_source2('file'))
+        self._run(new_source2('file'),
+                  Arrangement(eds_contents_before_main=act_dir_contents(DirContents([
+                      empty_file('file')
+                  ]))),
+                  Expectation(main_result=sh_check.IsHardError())
+                  )
 
 
 def suite():
