@@ -3,7 +3,7 @@ import subprocess
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
 from shellcheck_lib.general.textformat.structure.paragraph import single_para
-from shellcheck_lib.test_case.help.instruction_description import InvokationVariant, Description
+from shellcheck_lib.instructions.multi_phase_instructions.shell import TheDescriptionBase
 from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
 from shellcheck_lib.test_case.sections.result import sh
@@ -11,22 +11,12 @@ from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
 
 
-class TheDescription(Description):
+class TheDescription(TheDescriptionBase):
     def __init__(self, name: str):
         super().__init__(name)
 
-    def single_line_description(self) -> str:
-        return "Executes the given program using the system's shell."
-
     def main_description_rest(self) -> list:
         return single_para('The instruction is successful if (and only if) the exit code from the command is 0.')
-
-    def invokation_variants(self) -> list:
-        return [
-            InvokationVariant(
-                    'PROGRAM ARGUMENT...',
-                    single_para('A plain file.')),
-        ]
 
 
 class Parser(SingleInstructionParser):
