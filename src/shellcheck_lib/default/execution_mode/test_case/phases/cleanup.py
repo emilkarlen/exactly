@@ -13,12 +13,12 @@ INSTRUCTIONS = {
         SingleInstructionSetup(
                 execute.parser('execute'),
                 execute.description('execute')),
-    'shell':
-        SingleInstructionSetup(
-                shell.parser(),
-                shell.TheDescription('shell')),
     'pwd':
         SingleInstructionSetup(
                 change_dir.Parser(),
                 change_dir.description('pwd')),
+    'shell':
+        SingleInstructionSetup(
+                shell.parser(),
+                shell.TheDescription('shell')),
 }

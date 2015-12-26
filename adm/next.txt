@@ -2,25 +2,20 @@
 
 Fortsätt med
 
-* TODO Basklasser för instruktioner ska ha bas-impl av valideringsfunktioner
+* Basklasser för instruktioner ska ha bas-impl av valideringsfunktioner
 * Formattering
-** DONE TestDescriptionBase: ska inte formattera
-Kan använda nya ramverket för att testa strukturen.
 ** (valfri) Indentering av lista
 ** Konfa mellanrum i lista i data-strukturen
 ... dvs utanför layout-strukturen.
-* TODO Refaktorera test-resurser för instruktioner
+* Refaktorera test-resurser för instruktioner
 Dela upp i
 Arrangement
 Expectation
-* TODO Flytta DescriptionWithConstantValues till test
 * cd
 ** Tester av instruktionerna
 Finns tester av fas-oberoende utils.
 ** Test av flödet (full_execution, tror jag)
 Testat att PWD inte ändras av ramverket.
-* Byt namn: "mkdir" -> "dir"
-Mer deklarativ att enbart skriva "önskade typen av objekt": "dir"
 * setup/file NAME <<EOF ... EOF
 * assert/content: Möjl att parsa expected-fil m <<EOF ... EOF syntax
 * Skräddarsy act-fasen

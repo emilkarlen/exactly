@@ -9,22 +9,22 @@ from shellcheck_lib.instructions.assert_phase import type
 from shellcheck_lib.test_case.instruction_setup import SingleInstructionSetup
 
 INSTRUCTIONS = {
-    'exitcode':
-        SingleInstructionSetup(
-                exitcode_instruction.Parser(),
-                exitcode_instruction.TheDescription('exitcode')),
     'contents':
         SingleInstructionSetup(
                 contents_instruction.Parser(),
                 contents_instruction.TheDescription('contents')),
-    'execute':
-        SingleInstructionSetup(
-                execute.parser('execute'),
-                execute.description('execute')),
     'dir':
         SingleInstructionSetup(
                 new_dir.Parser(),
                 new_dir.description('dir')),
+    'execute':
+        SingleInstructionSetup(
+                execute.parser('execute'),
+                execute.description('execute')),
+    'exitcode':
+        SingleInstructionSetup(
+                exitcode_instruction.Parser(),
+                exitcode_instruction.TheDescription('exitcode')),
     'pwd':
         SingleInstructionSetup(
                 change_dir.Parser(),
@@ -33,14 +33,14 @@ INSTRUCTIONS = {
         SingleInstructionSetup(
                 shell.parser(),
                 shell.TheDescription('shell')),
-    'stdout':
-        SingleInstructionSetup(
-                stdout_stderr_instruction.ParserForContentsForStdout(),
-                stdout_stderr_instruction.TheDescription('stdout', 'stdout')),
     'stderr':
         SingleInstructionSetup(
                 stdout_stderr_instruction.ParserForContentsForStderr(),
                 stdout_stderr_instruction.TheDescription('stderr', 'stderr')),
+    'stdout':
+        SingleInstructionSetup(
+                stdout_stderr_instruction.ParserForContentsForStdout(),
+                stdout_stderr_instruction.TheDescription('stdout', 'stdout')),
     'type':
         SingleInstructionSetup(
                 type.Parser(),
