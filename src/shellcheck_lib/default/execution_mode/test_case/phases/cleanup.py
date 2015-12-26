@@ -15,7 +15,7 @@ INSTRUCTIONS = {
                 execute.description('execute')),
     'shell':
         SingleInstructionSetup(
-                shell.Parser(),
+                shell.parser(),
                 shell.TheDescription('shell')),
     'pwd':
         SingleInstructionSetup(
