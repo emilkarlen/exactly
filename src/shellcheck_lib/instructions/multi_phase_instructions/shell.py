@@ -5,6 +5,7 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
 from shellcheck_lib.general.textformat.structure.paragraph import single_para
 from shellcheck_lib.test_case.help.instruction_description import Description, InvokationVariant
+from shellcheck_lib.test_case.sections.result import sh
 
 
 class TheDescriptionBase(Description):
@@ -50,3 +51,10 @@ class Executor:
         """
         return subprocess.call(self.command,
                                shell=True)
+
+
+def run_and_return_sh(executor: Executor) -> sh.SuccessOrHardError:
+    exit_code = executor.run()
+    if exit_code != 0:
+        return sh.new_sh_hard_error('Program finished with non-zero exit code {}'.format(exit_code))
+    return sh.new_sh_success()
