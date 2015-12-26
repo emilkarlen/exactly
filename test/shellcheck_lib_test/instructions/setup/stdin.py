@@ -12,35 +12,35 @@ from shellcheck_lib_test.instructions.setup.test_resources.instruction_check imp
 from shellcheck_lib_test.instructions.setup.test_resources.settings_check import Assertion
 from shellcheck_lib_test.instructions.test_resources import svh_check
 from shellcheck_lib_test.instructions.test_resources.check_description import TestDescriptionBase
-from shellcheck_lib_test.instructions.test_resources.utils import new_source, argument_list_source
+from shellcheck_lib_test.instructions.test_resources.utils import argument_list_source, new_source2
 from shellcheck_lib_test.util.file_structure import DirContents, empty_file, empty_dir
 
 
 class TestParseSet(unittest.TestCase):
     def test_fail_when_there_is_no_arguments(self):
-        source = new_source('instruction-name', '')
+        source = new_source2('')
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             sut.Parser().apply(source)
 
     def test_fail_when_there_is_more_than_three_argument(self):
-        source = new_source('instruction-name', '--rel-home file superfluous-argument')
+        source = new_source2('--rel-home file superfluous-argument')
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             sut.Parser().apply(source)
 
     def test_succeed_when_syntax_is_correct__rel_home(self):
-        source = new_source('instruction-name', '--rel-home file')
+        source = new_source2('--rel-home file')
         sut.Parser().apply(source)
 
     def test_succeed_when_syntax_is_correct__rel_cwd(self):
-        source = new_source('instruction-name', '--rel-cwd file')
+        source = new_source2('--rel-cwd file')
         sut.Parser().apply(source)
 
     def test_succeed_when_syntax_is_correct__rel_tmp(self):
-        source = new_source('instruction-name', '--rel-tmp file')
+        source = new_source2('--rel-tmp file')
         sut.Parser().apply(source)
 
     def test_succeed_when_syntax_is_correct__rel_home__implicitly(self):
-        source = new_source('instruction-name', 'file')
+        source = new_source2('file')
         sut.Parser().apply(source)
 
     def test_here_document(self):
@@ -57,65 +57,61 @@ class TestParseSet(unittest.TestCase):
             sut.Parser().apply(source)
 
     def test_file_name_can_be_quoted(self):
-        source = new_source('instruction-name', '--rel-home "file name with space"')
+        source = new_source2('--rel-home "file name with space"')
         sut.Parser().apply(source)
 
 
 class TestSuccessfulInstructionExecution(TestCaseBase):
     def test_file_rel_home__explicitly(self):
         self._check(
-            Flow(sut.Parser(),
-                 home_dir_contents=DirContents([
-                     empty_file('file-in-home-dir.txt'),
-                 ]),
-                 expected_main_side_effects_on_environment=AssertStdinFileIsSetToFile(
-                     file_ref.rel_home('file-in-home-dir.txt'))
-                 ),
-            new_source('instruction-name',
-                       '--rel-home file-in-home-dir.txt'))
+                Flow(sut.Parser(),
+                     home_dir_contents=DirContents([
+                         empty_file('file-in-home-dir.txt'),
+                     ]),
+                     expected_main_side_effects_on_environment=AssertStdinFileIsSetToFile(
+                             file_ref.rel_home('file-in-home-dir.txt'))
+                     ),
+                new_source2('--rel-home file-in-home-dir.txt'))
 
     def test_file_rel_home__implicitly(self):
         self._check(
-            Flow(sut.Parser(),
-                 home_dir_contents=DirContents([
-                     empty_file('file-in-home-dir.txt'),
-                 ]),
-                 expected_main_side_effects_on_environment=AssertStdinFileIsSetToFile(
-                     file_ref.rel_home('file-in-home-dir.txt')),
-                 ),
-            new_source('instruction-name',
-                       'file-in-home-dir.txt'))
+                Flow(sut.Parser(),
+                     home_dir_contents=DirContents([
+                         empty_file('file-in-home-dir.txt'),
+                     ]),
+                     expected_main_side_effects_on_environment=AssertStdinFileIsSetToFile(
+                             file_ref.rel_home('file-in-home-dir.txt')),
+                     ),
+                new_source2('file-in-home-dir.txt'))
 
 
 class TestFailingInstructionExecution(TestCaseBase):
     def test_referenced_file_does_not_exist(self):
         self._check(
-            Flow(sut.Parser(),
-                 expected_pre_validation_result=svh_check.is_validation_error(),
-                 ),
-            new_source('instruction-name',
-                       '--rel-home non-existing-file'))
+                Flow(sut.Parser(),
+                     expected_pre_validation_result=svh_check.is_validation_error(),
+                     ),
+                new_source2('--rel-home non-existing-file'))
 
     def test_referenced_file_is_a_directory(self):
         self._check(
-            Flow(sut.Parser(),
-                 home_dir_contents=DirContents([
-                     empty_dir('directory'),
-                 ]),
-                 expected_pre_validation_result=svh_check.is_validation_error(),
-                 ),
-            new_source('instruction-name',
-                       '--rel-home directory'))
+                Flow(sut.Parser(),
+                     home_dir_contents=DirContents([
+                         empty_dir('directory'),
+                     ]),
+                     expected_pre_validation_result=svh_check.is_validation_error(),
+                     ),
+                new_source2('--rel-home directory'))
 
     def test_single_line_contents_from_here_document(self):
         self._check(
-            Flow(sut.Parser(),
-                 expected_main_side_effects_on_environment=AssertStdinIsSetToContents(
-                     lines_content(['single line'])),
-                 ),
-            argument_list_source(['<<MARKER'],
-                                 ['single line',
-                                  'MARKER'])
+                Flow(sut.Parser(),
+                     expected_main_side_effects_on_environment=AssertStdinIsSetToContents(
+                             lines_content(['single line'])),
+                     ),
+                argument_list_source(['<<MARKER'],
+                                     ['single line',
+                                      'MARKER'])
         )
 
 
