@@ -6,16 +6,16 @@ from shellcheck_lib.general.textformat.structure.lists import ListType
 class Separations(tuple):
     def __new__(cls,
                 num_blank_lines_between_elements: int,
-                num_blank_lines_between_header_and_value: int):
+                num_blank_lines_between_header_and_contents: int):
         return tuple.__new__(cls, (num_blank_lines_between_elements,
-                                   num_blank_lines_between_header_and_value))
+                                   num_blank_lines_between_header_and_contents))
 
     @property
     def num_blank_lines_between_elements(self) -> int:
         return self[0]
 
     @property
-    def num_blank_lines_between_header_and_value(self) -> int:
+    def num_blank_lines_between_header_and_contents(self) -> int:
         return self[1]
 
 
@@ -39,8 +39,8 @@ class HeaderAndIndentFormat:
         """
         raise NotImplementedError()
 
-    def value_indent(self,
-                     total_number_of_elements: int) -> str:
+    def contents_indent(self,
+                        total_number_of_elements: int) -> str:
         raise NotImplementedError()
 
 
@@ -62,18 +62,18 @@ class ListFormat(tuple):
 
 class HeaderAndIndentFormatWithConstantValueIndentBase(HeaderAndIndentFormat):
     def __init__(self,
-                 value_indent_spaces: int):
-        self.value_indent_str = value_indent_spaces * ' '
+                 contents_indent_spaces: int):
+        self.contents_indent_str = contents_indent_spaces * ' '
 
-    def value_indent(self,
-                     total_number_of_elements: int) -> str:
-        return self.value_indent_str
+    def contents_indent(self,
+                        total_number_of_elements: int) -> str:
+        return self.contents_indent_str
 
 
 class HeaderAndIndentFormatPlain(HeaderAndIndentFormatWithConstantValueIndentBase):
     def __init__(self,
-                 value_indent_spaces: int = 3):
-        super().__init__(value_indent_spaces)
+                 contents_indent_spaces: int = 3):
+        super().__init__(contents_indent_spaces)
 
     def header_text(self,
                     element_number: int,
@@ -90,8 +90,8 @@ class HeaderAndIndentFormatPlain(HeaderAndIndentFormatWithConstantValueIndentBas
 class HeaderAndIndentFormatWithMarker(HeaderAndIndentFormatWithConstantValueIndentBase):
     def __init__(self,
                  marker: str,
-                 value_indent_spaces: int = 3):
-        super().__init__(value_indent_spaces)
+                 contents_indent_spaces: int = 3):
+        super().__init__(contents_indent_spaces)
         self.marker = marker
 
     def header_text(self,
@@ -108,8 +108,8 @@ class HeaderAndIndentFormatWithMarker(HeaderAndIndentFormatWithConstantValueInde
 
 class HeaderAndIndentFormatWithNumbering(HeaderAndIndentFormatWithConstantValueIndentBase):
     def __init__(self,
-                 value_indent_spaces: int = 3):
-        super().__init__(value_indent_spaces)
+                 contents_indent_spaces: int = 3):
+        super().__init__(contents_indent_spaces)
 
     def header_text(self,
                     element_number: int,

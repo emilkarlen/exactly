@@ -1,7 +1,7 @@
 import unittest
 
 from shellcheck_lib.general.textformat.structure.core import ParagraphItem, Text
-from shellcheck_lib.general.textformat.structure.lists import HeaderValueList
+from shellcheck_lib.general.textformat.structure.lists import HeaderContentList
 from shellcheck_lib.general.textformat.structure.paragraph import Paragraph
 from shellcheck_lib.general.textformat.structure.utils import ParagraphItemVisitor
 from shellcheck_lib_test.general.textformat.test_resources import structure as structure_assert
@@ -65,8 +65,8 @@ class ParagraphItemChecker(ParagraphItemVisitor):
                                  self._msg('Text at index %d: ' % text_index))
             text_index += 1
 
-    def visit_header_value_list(self, header_value_list: HeaderValueList):
-        raise ValueError(self._msg("Cannot check %s's" % HeaderValueList))
+    def visit_header_value_list(self, header_value_list: HeaderContentList):
+        raise ValueError(self._msg("Cannot check %s's" % HeaderContentList))
 
     def _msg(self, tail: str) -> str:
         return self.msg_prefix + tail

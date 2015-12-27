@@ -45,11 +45,11 @@ class TheDescription(Description):
 
         def file_type_list() -> core.ParagraphItem:
             list_items = [
-                lists.HeaderValueListItem(core.Text(k),
-                                          type_description(k))
+                lists.HeaderContentListItem(core.Text(k),
+                                            type_description(k))
                 for k in sorted(FILE_TYPES.keys())]
-            return lists.HeaderValueList(lists.ListType.VARIABLE_LIST,
-                                         list_items)
+            return lists.HeaderContentList(lists.ListType.VARIABLE_LIST,
+                                           list_items)
 
         return [
             SyntaxElementDescription('TYPE',

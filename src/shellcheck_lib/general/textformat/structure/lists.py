@@ -3,18 +3,24 @@ from enum import Enum
 from shellcheck_lib.general.textformat.structure.core import Text, ParagraphItem
 
 
-class HeaderValueListItem(tuple):
+class HeaderContentListItem(tuple):
     def __new__(cls,
                 header: Text,
-                value_paragraph_items: iter = ()):
-        return tuple.__new__(cls, (header, value_paragraph_items))
+                content_paragraph_items: iter = ()):
+        """
+        :type content_paragraph_items: List[ParagraphItem]
+        """
+        return tuple.__new__(cls, (header, content_paragraph_items))
 
     @property
     def header(self) -> Text:
         return self[0]
 
     @property
-    def value_paragraph_items(self) -> iter:
+    def content_paragraph_items(self) -> iter:
+        """
+        :type: List[ParagraphItem]
+        """
         return self[1]
 
 
@@ -24,7 +30,7 @@ class ListType(Enum):
     VARIABLE_LIST = 3
 
 
-class HeaderValueList(ParagraphItem):
+class HeaderContentList(ParagraphItem):
     def __init__(self,
                  list_type: ListType,
                  items: iter):

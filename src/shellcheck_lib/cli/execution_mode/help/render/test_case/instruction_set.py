@@ -16,10 +16,10 @@ def instruction_set_per_phase(test_case_help: TestCaseHelp) -> doc.SectionConten
     return doc.SectionContents([], sections)
 
 
-def _instruction_list(instruction_set: TestCasePhaseInstructionSet) -> lists.HeaderValueList:
+def _instruction_list(instruction_set: TestCasePhaseInstructionSet) -> lists.HeaderContentList:
     instruction_list_items = []
     for description in instruction_set.instruction_descriptions:
         list_item = instruction_set_list_item(description)
         instruction_list_items.append(list_item)
-    return lists.HeaderValueList(lists.ListType.VARIABLE_LIST,
-                                 instruction_list_items)
+    return lists.HeaderContentList(lists.ListType.VARIABLE_LIST,
+                                   instruction_list_items)
