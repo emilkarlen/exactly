@@ -254,31 +254,31 @@ class TestFileContentsFileRelTmp(TestCaseBaseForParser):
         )
 
 
-class TestTargetFileRelTmp(instruction_check.TestCaseBase):
+class TestTargetFileRelTmp(TestCaseBaseForParser):
     def test_fail__when__target_file_does_not_exist(self):
-        self._chekk(
-                Flow(sut.Parser(),
-                     home_dir_contents=DirContents([empty_file('comparison')]),
-                     expected_main_result=pfh_check.is_fail(),
-                     ),
-                new_source2('--rel-tmp target --rel-home comparison'))
+        self._run(
+                new_source2('--rel-tmp target --rel-home comparison'),
+                Arrangement(home_dir_contents=DirContents([empty_file('comparison')])),
+                Expectation(expected_main_result=pfh_check.is_fail()),
+        )
 
     def test_fail__when__contents_is_unequal(self):
-        self._chekk(
-                Flow(sut.Parser(),
-                     home_dir_contents=DirContents([File('comparison', 'comparison-contents')]),
-                     eds_contents_before_main=tmp_user_dir_contents(
-                             DirContents([File('target', 'target-contents')])),
-                     expected_main_result=pfh_check.is_fail()),
-                new_source2('--rel-tmp target --rel-home comparison'))
+        self._run(
+                new_source2('--rel-tmp target --rel-home comparison'),
+                Arrangement(home_dir_contents=DirContents([File('comparison', 'comparison-contents')]),
+                            eds_contents_before_main=tmp_user_dir_contents(
+                                    DirContents([File('target', 'target-contents')]))),
+                Expectation(expected_main_result=pfh_check.is_fail())
+        )
 
     def test_pass__when__contents_is_equal(self):
-        self._chekk(
-                Flow(sut.Parser(),
-                     home_dir_contents=DirContents([File('comparison', 'contents')]),
-                     eds_contents_before_main=tmp_user_dir_contents(
-                             DirContents([File('target', 'contents')]))),
-                new_source2('--rel-tmp target --rel-home comparison'))
+        self._run(
+                new_source2('--rel-tmp target --rel-home comparison'),
+                Arrangement(home_dir_contents=DirContents([File('comparison', 'contents')]),
+                            eds_contents_before_main=tmp_user_dir_contents(
+                                    DirContents([File('target', 'contents')]))),
+                success(),
+        )
 
 
 class TestReplacedEnvVars(instruction_check.TestCaseBase):
