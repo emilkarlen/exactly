@@ -8,17 +8,17 @@ LIST_INDENT = 2
 
 
 def instruction_man_page(description: Description) -> doc.SectionContents:
-    prelude_paragraphs = [(para('TODO test-case help for instruction ' + description.instruction_name())),
-                          (para(description.single_line_description()))]
+    prelude_paragraphs = [(para(description.single_line_description()))]
     main_description_rest = description.main_description_rest()
     if description.invokation_variants():
         section_contents = _invokation_variants_content(description)
+        description_sections = [] if not main_description_rest else [doc.Section(Text('DESCRIPTION'),
+                                                                                 doc.SectionContents(
+                                                                                         main_description_rest, []))]
         return doc.SectionContents(prelude_paragraphs,
                                    [doc.Section(Text('SYNOPSIS'),
-                                                section_contents),
-                                    doc.Section(Text('DESCRIPTION'),
-                                                doc.SectionContents(main_description_rest,
-                                                                    []))])
+                                                section_contents)] +
+                                   description_sections)
     else:
         return doc.SectionContents(prelude_paragraphs +
                                    main_description_rest,
