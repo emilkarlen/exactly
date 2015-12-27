@@ -8,7 +8,7 @@ from shellcheck_lib.instructions.utils.relative_path_options import REL_HOME_OPT
 from shellcheck_lib_test.instructions.multi_phase_instructions.execute import \
     py_pgm_that_exits_with_value_on_command_line
 from shellcheck_lib_test.instructions.setup.test_resources.instruction_check import TestCaseBase, Arrangement, \
-    Expectation, success
+    Expectation, is_success
 from shellcheck_lib_test.instructions.test_resources import sh_check
 from shellcheck_lib_test.instructions.test_resources import svh_check
 from shellcheck_lib_test.instructions.test_resources.utils import single_line_source
@@ -29,7 +29,7 @@ class TestExecuteIntegrationByAFewRandomTests(TestCaseBaseForParser):
     def test_successful_execution(self):
         self._run(single_line_source(py_exe.command_line_for_executing_program_via_command_line('exit(0)')),
                   Arrangement(),
-                  success())
+                  is_success())
 
     def test_failing_execution(self):
         self._run(single_line_source(py_exe.command_line_for_executing_program_via_command_line('exit(1)')),

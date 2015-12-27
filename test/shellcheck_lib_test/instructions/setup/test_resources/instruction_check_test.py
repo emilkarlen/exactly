@@ -15,7 +15,7 @@ from shellcheck_lib_test.execution.full_execution.util.instruction_test_resource
     SetupPhaseInstructionThatReturns
 from shellcheck_lib_test.instructions.setup.test_resources import instruction_check
 from shellcheck_lib_test.instructions.setup.test_resources import settings_check
-from shellcheck_lib_test.instructions.setup.test_resources.instruction_check import Arrangement, success, Expectation
+from shellcheck_lib_test.instructions.setup.test_resources.instruction_check import Arrangement, is_success, Expectation
 from shellcheck_lib_test.instructions.test_resources import test_of_test_framework_utils as test_misc
 from shellcheck_lib_test.instructions.test_resources import utils
 from shellcheck_lib_test.instructions.test_resources.test_of_test_framework_utils import ParserThatGives
@@ -26,7 +26,7 @@ class TestCases(instruction_check.TestCaseBase):
         self._check(ParserThatGives(SUCCESSFUL_INSTRUCTION),
                     single_line_source(),
                     Arrangement(),
-                    success())
+                    is_success())
 
     def test_fail_due_to_unexpected_result_from_pre_validation(self):
         with self.assertRaises(test_misc.TestError):
