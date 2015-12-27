@@ -7,21 +7,6 @@ from shellcheck_lib.general.textformat.structure.utils import ParagraphItemVisit
 from shellcheck_lib_test.general.textformat.test_resources import structure as structure_assert
 
 
-class Setup(tuple):
-    def __new__(cls, source_lines: list,
-                expected_paragraph_items: list):
-        return tuple.__new__(cls, (source_lines,
-                                   expected_paragraph_items))
-
-    @property
-    def source_lines(self) -> list:
-        return self[0]
-
-    @property
-    def expected_paragraph_items(self) -> list:
-        return self[1]
-
-
 def check(put: unittest.TestCase,
           expected_items: list,
           actual_items: list):
