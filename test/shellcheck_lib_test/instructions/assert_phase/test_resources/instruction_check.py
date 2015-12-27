@@ -48,14 +48,14 @@ class Arrangement:
 
 class Expectation:
     def __init__(self,
-                 expected_validation_result: svh_check.Assertion = svh_check.is_success(),
-                 expected_main_result: pfh_check.Assertion = pfh_check.is_pass(),
-                 expected_main_side_effects_on_files: eds_contents_check.Assertion = eds_contents_check.AnythingGoes(),
+                 validation_result: svh_check.Assertion = svh_check.is_success(),
+                 main_result: pfh_check.Assertion = pfh_check.is_pass(),
+                 main_side_effects_on_files: eds_contents_check.Assertion = eds_contents_check.AnythingGoes(),
                  side_effects_check: SideEffectsCheck = SideEffectsCheck(),
                  ):
-        self.expected_validation_result = expected_validation_result
-        self.expected_main_result = expected_main_result
-        self.expected_main_side_effects_on_files = expected_main_side_effects_on_files
+        self.validation_result = validation_result
+        self.main_result = main_result
+        self.main_side_effects_on_files = main_side_effects_on_files
         self.side_effects_check = side_effects_check
 
 
@@ -102,7 +102,7 @@ class Executor:
             if not validate_result.is_success:
                 return
             self._execute_main(environment, instruction)
-            self.expectation.expected_main_side_effects_on_files.apply(self.put, environment.eds)
+            self.expectation.main_side_effects_on_files.apply(self.put, environment.eds)
             self.expectation.side_effects_check.apply(self.put, home_and_eds)
 
     def _execute_validate(self,
@@ -111,7 +111,7 @@ class Executor:
         result = instruction.validate(global_environment)
         self.put.assertIsNotNone(result,
                                  'Result from validate method cannot be None')
-        self.expectation.expected_validation_result.apply(self.put, result)
+        self.expectation.validation_result.apply(self.put, result)
         return result
 
     def _execute_main(self,
@@ -120,6 +120,6 @@ class Executor:
         main_result = instruction.main(environment, OsServices())
         self.put.assertIsNotNone(main_result,
                                  'Result from main method cannot be None')
-        self.expectation.expected_main_result.apply(self.put, main_result)
-        self.expectation.expected_main_side_effects_on_files.apply(self.put, environment.eds)
+        self.expectation.main_result.apply(self.put, main_result)
+        self.expectation.main_side_effects_on_files.apply(self.put, environment.eds)
         return main_result

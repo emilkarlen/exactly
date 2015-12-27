@@ -50,7 +50,7 @@ class TestFileContentsEmptyValidSyntax(TestCaseBaseForParser):
         self._run(
                 new_source2('name-of-non-existing-file empty'),
                 Arrangement(),
-                Expectation(expected_main_result=pfh_check.is_fail())
+                Expectation(main_result=pfh_check.is_fail())
         )
 
     def test_fail__when__file_is_directory(self):
@@ -59,7 +59,7 @@ class TestFileContentsEmptyValidSyntax(TestCaseBaseForParser):
                 new_source2(file_name + ' empty'),
                 Arrangement(eds_contents_before_main=act_dir_contents(
                         DirContents([empty_dir(file_name)]))),
-                Expectation(expected_main_result=pfh_check.is_fail())
+                Expectation(main_result=pfh_check.is_fail())
         )
 
     def test_fail__when__file_exists_but_is_non_empty(self):
@@ -68,7 +68,7 @@ class TestFileContentsEmptyValidSyntax(TestCaseBaseForParser):
                 new_source2(file_name + ' empty'),
                 Arrangement(eds_contents_before_main=act_dir_contents(
                         DirContents([File(file_name, 'contents')]))),
-                Expectation(expected_main_result=pfh_check.is_fail())
+                Expectation(main_result=pfh_check.is_fail())
         )
 
     def test_pass__when__file_exists_and_is_empty(self):
@@ -97,7 +97,7 @@ class TestFileContentsNonEmptyValidSyntax(TestCaseBaseForParser):
         self._run(
                 new_source2('name-of-non-existing-file ! empty'),
                 Arrangement(),
-                Expectation(expected_main_result=pfh_check.is_fail()),
+                Expectation(main_result=pfh_check.is_fail()),
         )
 
     def test_fail__when__file_is_directory(self):
@@ -106,7 +106,7 @@ class TestFileContentsNonEmptyValidSyntax(TestCaseBaseForParser):
                 new_source2(file_name + ' ! empty'),
                 Arrangement(eds_contents_before_main=act_dir_contents(DirContents(
                         [empty_dir(file_name)]))),
-                Expectation(expected_main_result=pfh_check.is_fail()),
+                Expectation(main_result=pfh_check.is_fail()),
         )
 
     def test_fail__when__file_exists_but_is_empty(self):
@@ -115,7 +115,7 @@ class TestFileContentsNonEmptyValidSyntax(TestCaseBaseForParser):
                 new_source2(file_name + ' ! empty'),
                 Arrangement(eds_contents_before_main=act_dir_contents(DirContents(
                         [empty_file(file_name)]))),
-                Expectation(expected_main_result=pfh_check.is_fail()),
+                Expectation(main_result=pfh_check.is_fail()),
         )
 
     def test_pass__when__file_exists_and_is_non_empty(self):
@@ -133,21 +133,21 @@ class TestFileContentsFileRelHome(TestCaseBaseForParser):
         self._run(
                 new_source2('name-of-non-existing-file --rel-home f.txt'),
                 Arrangement(),
-                Expectation(expected_validation_result=svh_check.is_validation_error()),
+                Expectation(validation_result=svh_check.is_validation_error()),
         )
 
     def test_validation_error__when__comparison_file_is_a_directory(self):
         self._run(
                 new_source2('name-of-non-existing-file --rel-home dir'),
                 Arrangement(home_dir_contents=DirContents([empty_dir('dir')])),
-                Expectation(expected_validation_result=svh_check.is_validation_error()),
+                Expectation(validation_result=svh_check.is_validation_error()),
         )
 
     def test_fail__when__target_file_does_not_exist(self):
         self._run(
                 new_source2('name-of-non-existing-file --rel-home f.txt'),
                 Arrangement(home_dir_contents=DirContents([empty_file('f.txt')])),
-                Expectation(expected_main_result=pfh_check.is_fail()),
+                Expectation(main_result=pfh_check.is_fail()),
         )
 
     def test_fail__when__target_file_is_a_directory(self):
@@ -156,7 +156,7 @@ class TestFileContentsFileRelHome(TestCaseBaseForParser):
                 Arrangement(home_dir_contents=DirContents([empty_file('f.txt')]),
                             eds_contents_before_main=act_dir_contents(
                                     DirContents([empty_dir('dir')]))),
-                Expectation(expected_main_result=pfh_check.is_fail()),
+                Expectation(main_result=pfh_check.is_fail()),
         )
 
     def test_fail__when__contents_differ(self):
@@ -165,7 +165,7 @@ class TestFileContentsFileRelHome(TestCaseBaseForParser):
                 Arrangement(home_dir_contents=DirContents([empty_file('f.txt')]),
                             eds_contents_before_main=act_dir_contents(
                                     DirContents([File('target.txt', 'non-empty')]))),
-                Expectation(expected_main_result=pfh_check.is_fail()),
+                Expectation(main_result=pfh_check.is_fail()),
         )
 
     def test_pass__when__contents_equals(self):
@@ -184,7 +184,7 @@ class TestFileContentsFileRelCwd(TestCaseBaseForParser):
                 new_source2('target --rel-cwd comparison'),
                 Arrangement(eds_contents_before_main=act_dir_contents(
                         DirContents([empty_file('target')]))),
-                Expectation(expected_main_result=pfh_check.is_fail()),
+                Expectation(main_result=pfh_check.is_fail()),
         )
 
     def test_fail__when__target_file_does_not_exist(self):
@@ -192,7 +192,7 @@ class TestFileContentsFileRelCwd(TestCaseBaseForParser):
                 new_source2('target --rel-cwd comparison'),
                 Arrangement(eds_contents_before_main=act_dir_contents(
                         DirContents([empty_file('comparison')]))),
-                Expectation(expected_main_result=pfh_check.is_fail()),
+                Expectation(main_result=pfh_check.is_fail()),
         )
 
     def test_validation_error__when__comparison_file_is_a_directory(self):
@@ -201,7 +201,7 @@ class TestFileContentsFileRelCwd(TestCaseBaseForParser):
                 Arrangement(eds_contents_before_main=act_dir_contents(
                         DirContents([empty_file('target'),
                                      empty_dir('comparison')]))),
-                Expectation(expected_main_result=pfh_check.is_fail()),
+                Expectation(main_result=pfh_check.is_fail()),
         )
 
     def test_validation_error__when__target_file_is_a_directory(self):
@@ -210,7 +210,7 @@ class TestFileContentsFileRelCwd(TestCaseBaseForParser):
                 Arrangement(eds_contents_before_main=act_dir_contents(
                         DirContents([empty_dir('target'),
                                      empty_file('comparison')]))),
-                Expectation(expected_main_result=pfh_check.is_fail()),
+                Expectation(main_result=pfh_check.is_fail()),
         )
 
     def test_fail__when__contents_is_different(self):
@@ -219,7 +219,7 @@ class TestFileContentsFileRelCwd(TestCaseBaseForParser):
                 Arrangement(eds_contents_before_main=act_dir_contents(
                         DirContents([File('target', 'target-contents'),
                                      File('comparison', 'cmp-contents')]))),
-                Expectation(expected_main_result=pfh_check.is_fail()),
+                Expectation(main_result=pfh_check.is_fail()),
         )
 
     def test_pass__when__contents_is_equal(self):
@@ -238,7 +238,7 @@ class TestFileContentsFileRelTmp(TestCaseBaseForParser):
                 new_source2('target --rel-tmp comparison'),
                 Arrangement(eds_contents_before_main=tmp_user_dir_contents(
                         DirContents([empty_file('comparison')]))),
-                Expectation(expected_main_result=pfh_check.is_fail()),
+                Expectation(main_result=pfh_check.is_fail()),
         )
 
     def test_pass__when__contents_is_equal(self):
@@ -259,7 +259,7 @@ class TestTargetFileRelTmp(TestCaseBaseForParser):
         self._run(
                 new_source2('--rel-tmp target --rel-home comparison'),
                 Arrangement(home_dir_contents=DirContents([empty_file('comparison')])),
-                Expectation(expected_main_result=pfh_check.is_fail()),
+                Expectation(main_result=pfh_check.is_fail()),
         )
 
     def test_fail__when__contents_is_unequal(self):
@@ -268,7 +268,7 @@ class TestTargetFileRelTmp(TestCaseBaseForParser):
                 Arrangement(home_dir_contents=DirContents([File('comparison', 'comparison-contents')]),
                             eds_contents_before_main=tmp_user_dir_contents(
                                     DirContents([File('target', 'target-contents')]))),
-                Expectation(expected_main_result=pfh_check.is_fail())
+                Expectation(main_result=pfh_check.is_fail())
         )
 
     def test_pass__when__contents_is_equal(self):
@@ -312,7 +312,7 @@ class TestReplacedEnvVars(TestCaseBaseForParser):
                            '{} --with-replaced-env-vars --rel-home {}'.format(self.COMPARISON_TARGET_FILE_NAME,
                                                                               self.COMPARISON_SOURCE_FILE_NAME)),
                 Arrangement(act_result_producer=act_result_producer),
-                Expectation(expected_main_result=pfh_check.is_fail()),
+                Expectation(main_result=pfh_check.is_fail()),
         )
 
     def test_pass__when__contents_equals__rel_cwd(self):
@@ -336,7 +336,7 @@ class TestReplacedEnvVars(TestCaseBaseForParser):
                 new_source2('{} --with-replaced-env-vars --rel-cwd {}'.format(self.COMPARISON_TARGET_FILE_NAME,
                                                                               self.COMPARISON_SOURCE_FILE_NAME)),
                 Arrangement(act_result_producer=act_result_producer),
-                Expectation(expected_main_result=pfh_check.is_fail()),
+                Expectation(main_result=pfh_check.is_fail()),
         )
 
     def test_pass__when__contents_equals_but_src_does_not_reside_inside_act_dir__rel_home(self):

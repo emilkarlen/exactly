@@ -29,7 +29,7 @@ class TestCases(instruction_check.TestCaseBase):
             self._check(test_misc.ParserThatGives(_SUCCESSFUL_INSTRUCTION),
                         test_misc.single_line_source(),
                         Arrangement(),
-                        Expectation(expected_validation_result=test_misc.SvhRaisesTestError()),
+                        Expectation(validation_result=test_misc.SvhRaisesTestError()),
                         )
 
     def test_fail_due_to_unexpected_result_from_main(self):
@@ -38,7 +38,7 @@ class TestCases(instruction_check.TestCaseBase):
                     test_misc.ParserThatGives(_SUCCESSFUL_INSTRUCTION),
                     test_misc.single_line_source(),
                     Arrangement(),
-                    Expectation(expected_main_result=test_misc.PfhRaisesTestError()),
+                    Expectation(main_result=test_misc.PfhRaisesTestError()),
             )
 
     def test_fail_due_to_fail_of_side_effects_on_files(self):
@@ -47,7 +47,7 @@ class TestCases(instruction_check.TestCaseBase):
                     test_misc.ParserThatGives(_SUCCESSFUL_INSTRUCTION),
                     test_misc.single_line_source(),
                     Arrangement(),
-                    Expectation(expected_main_side_effects_on_files=test_misc.EdsContentsRaisesTestError()),
+                    Expectation(main_side_effects_on_files=test_misc.EdsContentsRaisesTestError()),
             )
 
     def test_that_cwd_for_main_and_post_validation_is_test_root(self):
