@@ -232,26 +232,26 @@ class TestFileContentsFileRelCwd(TestCaseBaseForParser):
         )
 
 
-class TestFileContentsFileRelTmp(instruction_check.TestCaseBase):
+class TestFileContentsFileRelTmp(TestCaseBaseForParser):
     def test_fail__when__target_file_does_not_exist(self):
-        self._chekk(
-                Flow(sut.Parser(),
-                     eds_contents_before_main=tmp_user_dir_contents(
-                             DirContents([empty_file('comparison')])),
-                     expected_main_result=pfh_check.is_fail(),
-                     ),
-                new_source2('target --rel-tmp comparison'))
+        self._run(
+                new_source2('target --rel-tmp comparison'),
+                Arrangement(eds_contents_before_main=tmp_user_dir_contents(
+                        DirContents([empty_file('comparison')]))),
+                Expectation(expected_main_result=pfh_check.is_fail()),
+        )
 
     def test_pass__when__contents_is_equal(self):
-        self._chekk(
-                Flow(sut.Parser(),
-                     eds_contents_before_main=multiple([
-                         act_dir_contents(
-                                 DirContents([File('target', 'contents')])),
-                         tmp_user_dir_contents(
-                                 DirContents([File('comparison', 'contents')])),
-                     ])),
-                new_source2('target --rel-tmp comparison'))
+        self._run(
+                new_source2('target --rel-tmp comparison'),
+                Arrangement(eds_contents_before_main=multiple([
+                    act_dir_contents(
+                            DirContents([File('target', 'contents')])),
+                    tmp_user_dir_contents(
+                            DirContents([File('comparison', 'contents')])),
+                ])),
+                success(),
+        )
 
 
 class TestTargetFileRelTmp(instruction_check.TestCaseBase):
