@@ -4,7 +4,7 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
     SingleInstructionParserSource
 from shellcheck_lib.instructions.cleanup import execute as sut
 from shellcheck_lib_test.instructions.cleanup.test_resources.instruction_check import TestCaseBase, Arrangement, \
-    Expectation
+    Expectation, is_success
 from shellcheck_lib_test.instructions.test_resources import sh_check
 from shellcheck_lib_test.instructions.test_resources.utils import single_line_source
 from shellcheck_lib_test.test_resources import python_program_execution as py_exe
@@ -22,7 +22,7 @@ class TestCasesThatTestIntegrationByAFewRandomTests(TestCaseBaseForParser):
     def test_successful_execution(self):
         self._run(single_line_source(py_exe.command_line_for_executing_program_via_command_line('exit(0)')),
                   Arrangement(),
-                  Expectation(),
+                  is_success(),
                   )
 
     def test_failing_execution(self):
