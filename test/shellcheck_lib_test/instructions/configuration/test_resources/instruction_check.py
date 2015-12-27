@@ -13,21 +13,6 @@ from shellcheck_lib_test.instructions.test_resources import sh_check
 from shellcheck_lib_test.util import file_structure
 
 
-class Flow:
-    def __init__(self,
-                 parser: SingleInstructionParser,
-                 home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
-                 initial_configuration_builder: ConfigurationBuilder = ConfigurationBuilder(pathlib.Path('.')),
-                 expected_main_result: sh_check.Assertion = sh_check.IsSuccess(),
-                 expected_configuration: config_check.Assertion = config_check.AnythingGoes(),
-                 ):
-        self.parser = parser
-        self.home_dir_contents = home_dir_contents
-        self.initial_configuration_builder = initial_configuration_builder
-        self.expected_main_result = expected_main_result
-        self.expected_configuration = expected_configuration
-
-
 class Arrangement:
     def __init__(self,
                  home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
@@ -39,28 +24,14 @@ class Arrangement:
 
 class Expectation:
     def __init__(self,
-                 expected_main_result: sh_check.Assertion = sh_check.IsSuccess(),
-                 expected_configuration: config_check.Assertion = config_check.AnythingGoes(),
+                 main_result: sh_check.Assertion = sh_check.IsSuccess(),
+                 configuration: config_check.Assertion = config_check.AnythingGoes(),
                  ):
-        self.expected_main_result = expected_main_result
-        self.expected_configuration = expected_configuration
+        self.main_result = main_result
+        self.configuration = configuration
 
 
 class TestCaseBase(unittest.TestCase):
-    def _chekk(self,
-               check: Flow,
-               source: SingleInstructionParserSource):
-        self._check(check.parser,
-                    source,
-                    Arrangement(
-                            home_dir_contents=check.home_dir_contents,
-                            initial_configuration_builder=check.initial_configuration_builder,
-                    ),
-                    Expectation(
-                            expected_main_result=check.expected_main_result,
-                            expected_configuration=check.expected_configuration)
-                    )
-
     def _check(self,
                parser: SingleInstructionParser,
                source: SingleInstructionParserSource,
@@ -104,8 +75,8 @@ class Executor:
         main_result = instruction.main(None, configuration_builder)
         self.put.assertIsNotNone(main_result,
                                  'Result from main method cannot be None')
-        self.expectation.expected_main_result.apply(self.put, main_result)
-        self.expectation.expected_configuration.apply(self.put,
-                                                      initial_configuration_builder,
-                                                      configuration_builder)
+        self.expectation.main_result.apply(self.put, main_result)
+        self.expectation.configuration.apply(self.put,
+                                             initial_configuration_builder,
+                                             configuration_builder)
         return main_result
