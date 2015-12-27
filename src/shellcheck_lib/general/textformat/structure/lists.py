@@ -10,7 +10,7 @@ class HeaderContentListItem(tuple):
         """
         :type content_paragraph_items: List[ParagraphItem]
         """
-        return tuple.__new__(cls, (header, content_paragraph_items))
+        return tuple.__new__(cls, (header, list(content_paragraph_items)))
 
     @property
     def header(self) -> Text:
@@ -33,10 +33,14 @@ class ListType(Enum):
 class HeaderContentList(ParagraphItem):
     def __init__(self,
                  list_type: ListType,
-                 items: iter):
+                 items: iter,
+                 custom_indent_spaces: int = None):
         """
+        :param custom_indent_spaces: Indentation of the list.
+        Overrides settings defined by a formatter.
         :param items: [HeaderValueListItem]
         :return:
         """
         self.list_type = list_type
         self.items = items
+        self.custom_indent_spaces = custom_indent_spaces

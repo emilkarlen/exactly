@@ -47,9 +47,11 @@ class HeaderAndIndentFormat:
 class ListFormat(tuple):
     def __new__(cls,
                 header_and_indent_format: HeaderAndIndentFormat,
-                separations: Separations):
+                separations: Separations,
+                indent_str: str = ''):
         return tuple.__new__(cls, (header_and_indent_format,
-                                   separations))
+                                   separations,
+                                   indent_str))
 
     @property
     def header_format(self) -> HeaderAndIndentFormat:
@@ -58,6 +60,16 @@ class ListFormat(tuple):
     @property
     def separations(self) -> Separations:
         return self[1]
+
+    @property
+    def indent_str(self) -> str:
+        return self[2]
+
+
+def list_format_with_indent_str(list_format: ListFormat, indent_str: str) -> ListFormat:
+    return ListFormat(list_format.header_format,
+                      list_format.separations,
+                      indent_str)
 
 
 class HeaderAndIndentFormatWithConstantValueIndentBase(HeaderAndIndentFormat):

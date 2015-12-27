@@ -154,6 +154,59 @@ class TestContentFormatting(unittest.TestCase):
                          actual)
 
 
+class TestWholeListIndent(unittest.TestCase):
+    def test_with_given_indent(self):
+        indent_str = '[INDENT]'
+        list_format = lf.ListFormat(lf.HeaderAndIndentFormatPlain(contents_indent_spaces=4),
+                                    NO_SEPARATIONS,
+                                    indent_str=indent_str)
+        items = [item('header',
+                      [single_text_para('contents')])]
+        formatter = formatter_with_page_width(100)
+        actual = formatter.format_header_value_list_according_to_format(items,
+                                                                        list_format)
+        self.assertEqual([indent_str + 'header',
+                          indent_str + (4 * ' ') + 'contents'],
+                         actual)
+
+    def test_with_resolved_indent(self):
+        format_indent_spaces = 2
+        indent_str = format_indent_spaces * ' '
+        list_format = lf.ListFormat(lf.HeaderAndIndentFormatPlain(contents_indent_spaces=4),
+                                    NO_SEPARATIONS,
+                                    indent_str=indent_str)
+        items = [item('header',
+                      [single_text_para('contents')])]
+        the_list = sut.HeaderContentList(lists.ListType.VARIABLE_LIST,
+                                         items)
+        formatter = sut.Formatter(sut.Wrapper(page_width=100),
+                                  list_formats=lf.ListFormats(variable_list_format=list_format))
+        actual = formatter.format_header_content_list(the_list)
+        self.assertEqual([indent_str + 'header',
+                          indent_str + (4 * ' ') + 'contents'],
+                         actual)
+
+    def test_with_custom_indent(self):
+        custom_indent_spaces = 5
+        custom_indent_str = custom_indent_spaces * ' '
+        content_indent_spaces = 4
+        content_indent_str = content_indent_spaces * ' '
+        list_format = lf.ListFormat(lf.HeaderAndIndentFormatPlain(contents_indent_spaces=content_indent_spaces),
+                                    NO_SEPARATIONS,
+                                    indent_str='should not be used since overridden by custom indent')
+        items = [item('header',
+                      [single_text_para('contents')])]
+        the_list = sut.HeaderContentList(lists.ListType.VARIABLE_LIST,
+                                         items,
+                                         custom_indent_spaces=custom_indent_spaces)
+        formatter = sut.Formatter(sut.Wrapper(page_width=100),
+                                  list_formats=lf.ListFormats(variable_list_format=list_format))
+        actual = formatter.format_header_content_list(the_list)
+        self.assertEqual([custom_indent_str + 'header',
+                          custom_indent_str + content_indent_str + 'contents'],
+                         actual)
+
+
 class TestSeparations(unittest.TestCase):
     list_format = lf.ListFormat(lf.HeaderAndIndentFormatWithNumbering(contents_indent_spaces=1),
                                 lf.Separations(num_blank_lines_between_elements=2,
@@ -211,8 +264,8 @@ class TestResolveListFormat(unittest.TestCase):
         items = [header_only_item('header')]
         formatter = sut.Formatter(sut.Wrapper(page_width=100),
                                   list_formats=self.LIST_FORMATS)
-        actual = formatter.format_header_value_list(lists.HeaderContentList(lists.ListType.ITEMIZED_LIST,
-                                                                            items))
+        actual = formatter.format_header_content_list(lists.HeaderContentList(lists.ListType.ITEMIZED_LIST,
+                                                                              items))
         self.assertEqual(['* header'],
                          actual)
 
@@ -220,8 +273,8 @@ class TestResolveListFormat(unittest.TestCase):
         items = [header_only_item('header')]
         formatter = sut.Formatter(sut.Wrapper(page_width=100),
                                   list_formats=self.LIST_FORMATS)
-        actual = formatter.format_header_value_list(lists.HeaderContentList(lists.ListType.ORDERED_LIST,
-                                                                            items))
+        actual = formatter.format_header_content_list(lists.HeaderContentList(lists.ListType.ORDERED_LIST,
+                                                                              items))
         self.assertEqual(['1. header'],
                          actual)
 
@@ -229,8 +282,8 @@ class TestResolveListFormat(unittest.TestCase):
         items = [header_only_item('header')]
         formatter = sut.Formatter(sut.Wrapper(page_width=100),
                                   list_formats=self.LIST_FORMATS)
-        actual = formatter.format_header_value_list(lists.HeaderContentList(lists.ListType.VARIABLE_LIST,
-                                                                            items))
+        actual = formatter.format_header_content_list(lists.HeaderContentList(lists.ListType.VARIABLE_LIST,
+                                                                              items))
         self.assertEqual(['header'],
                          actual)
 
@@ -266,6 +319,7 @@ def suite():
     ret_val.addTest(unittest.makeSuite(TestContentFormatting))
     ret_val.addTest(unittest.makeSuite(TestThatIdentationIsNotModified))
     ret_val.addTest(unittest.makeSuite(TestResolveListFormat))
+    ret_val.addTest(unittest.makeSuite(TestWholeListIndent))
     return ret_val
 
 
