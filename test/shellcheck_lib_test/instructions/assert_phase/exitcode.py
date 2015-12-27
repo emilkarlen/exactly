@@ -1,12 +1,13 @@
 import unittest
 
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionInvalidArgumentException
+    SingleInstructionInvalidArgumentException, SingleInstructionParserSource
 from shellcheck_lib.instructions.assert_phase import exitcode as sut
 from shellcheck_lib.test_case.help.instruction_description import Description
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib_test.instructions.assert_phase.test_resources import instruction_check
-from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_check import Flow, ActResultProducer
+from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_check import Flow, ActResultProducer, \
+    Arrangement, Expectation, success
 from shellcheck_lib_test.instructions.test_resources import pfh_check
 from shellcheck_lib_test.instructions.test_resources import utils
 from shellcheck_lib_test.instructions.test_resources.check_description import TestDescriptionBase
@@ -57,21 +58,28 @@ class TestParse(unittest.TestCase):
                               AssertPhaseInstruction)
 
 
-class TestParseAndExecute(instruction_check.TestCaseBase):
+class TestCaseBaseForParser(instruction_check.TestCaseBase):
+    def _run(self,
+             source: SingleInstructionParserSource,
+             arrangement: Arrangement,
+             expectation: Expectation):
+        self._check(sut.Parser(), source, arrangement, expectation)
+
+
+class TestParseAndExecute(TestCaseBaseForParser):
     def test_that__when__actual_value_is_as_expected__then__pass_is_returned(self):
-        self._chekk(
-                Flow(sut.Parser(),
-                     act_result_producer=ActResultProducer(utils.ActResult(exitcode=72)),
-                     ),
-                new_source2(' 72'))
+        self._run(
+                new_source2(' 72'),
+                Arrangement(act_result_producer=ActResultProducer(utils.ActResult(exitcode=72))),
+                success(),
+        )
 
     def test_that__when__actual_value_is_as_not_expected__then__fail_is_returned(self):
-        self._chekk(
-                Flow(sut.Parser(),
-                     act_result_producer=ActResultProducer(utils.ActResult(exitcode=0)),
-                     expected_main_result=pfh_check.is_fail()
-                     ),
-                new_source2('72'))
+        self._run(
+                new_source2('72'),
+                Arrangement(act_result_producer=ActResultProducer(utils.ActResult(exitcode=0))),
+                Expectation(expected_main_result=pfh_check.is_fail()),
+        )
 
 
 class TestParseAndExecuteTwoArgumentsEq(instruction_check.TestCaseBase):
