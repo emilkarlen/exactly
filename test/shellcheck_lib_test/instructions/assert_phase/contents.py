@@ -128,58 +128,54 @@ class TestFileContentsNonEmptyValidSyntax(TestCaseBaseForParser):
         )
 
 
-class TestFileContentsFileRelHome(instruction_check.TestCaseBase):
+class TestFileContentsFileRelHome(TestCaseBaseForParser):
     def test_validation_error__when__comparison_file_does_not_exist(self):
-        self._chekk(
-                Flow(sut.Parser(),
-                     expected_validation_result=svh_check.is_validation_error(),
-                     ),
-                new_source2('name-of-non-existing-file --rel-home f.txt'))
+        self._run(
+                new_source2('name-of-non-existing-file --rel-home f.txt'),
+                Arrangement(),
+                Expectation(expected_validation_result=svh_check.is_validation_error()),
+        )
 
     def test_validation_error__when__comparison_file_is_a_directory(self):
-        self._chekk(
-                Flow(sut.Parser(),
-                     home_dir_contents=DirContents([empty_dir('dir')]),
-                     expected_validation_result=svh_check.is_validation_error(),
-                     ),
-                new_source2('name-of-non-existing-file --rel-home dir'))
+        self._run(
+                new_source2('name-of-non-existing-file --rel-home dir'),
+                Arrangement(home_dir_contents=DirContents([empty_dir('dir')])),
+                Expectation(expected_validation_result=svh_check.is_validation_error()),
+        )
 
     def test_fail__when__target_file_does_not_exist(self):
-        self._chekk(
-                Flow(sut.Parser(),
-                     home_dir_contents=DirContents([empty_file('f.txt')]),
-                     expected_main_result=pfh_check.is_fail(),
-                     ),
-                new_source2('name-of-non-existing-file --rel-home f.txt'))
+        self._run(
+                new_source2('name-of-non-existing-file --rel-home f.txt'),
+                Arrangement(home_dir_contents=DirContents([empty_file('f.txt')])),
+                Expectation(expected_main_result=pfh_check.is_fail()),
+        )
 
     def test_fail__when__target_file_is_a_directory(self):
-        self._chekk(
-                Flow(sut.Parser(),
-                     home_dir_contents=DirContents([empty_file('f.txt')]),
-                     eds_contents_before_main=act_dir_contents(
-                             DirContents([empty_dir('dir')])),
-                     expected_main_result=pfh_check.is_fail(),
-                     ),
-                new_source2('dir --rel-home f.txt'))
+        self._run(
+                new_source2('dir --rel-home f.txt'),
+                Arrangement(home_dir_contents=DirContents([empty_file('f.txt')]),
+                            eds_contents_before_main=act_dir_contents(
+                                    DirContents([empty_dir('dir')]))),
+                Expectation(expected_main_result=pfh_check.is_fail()),
+        )
 
     def test_fail__when__contents_differ(self):
-        self._chekk(
-                Flow(sut.Parser(),
-                     home_dir_contents=DirContents([empty_file('f.txt')]),
-                     eds_contents_before_main=act_dir_contents(
-                             DirContents([File('target.txt', 'non-empty')])),
-                     expected_main_result=pfh_check.is_fail(),
-                     ),
-                new_source2('target.txt --rel-home f.txt'))
+        self._run(
+                new_source2('target.txt --rel-home f.txt'),
+                Arrangement(home_dir_contents=DirContents([empty_file('f.txt')]),
+                            eds_contents_before_main=act_dir_contents(
+                                    DirContents([File('target.txt', 'non-empty')]))),
+                Expectation(expected_main_result=pfh_check.is_fail()),
+        )
 
     def test_pass__when__contents_equals(self):
-        self._chekk(
-                Flow(sut.Parser(),
-                     home_dir_contents=DirContents([File('f.txt', 'contents')]),
-                     eds_contents_before_main=act_dir_contents(DirContents(
-                             [File('target.txt', 'contents')])),
-                     ),
-                new_source2('target.txt --rel-home f.txt'))
+        self._run(
+                new_source2('target.txt --rel-home f.txt'),
+                Arrangement(home_dir_contents=DirContents([File('f.txt', 'contents')]),
+                            eds_contents_before_main=act_dir_contents(DirContents(
+                                    [File('target.txt', 'contents')]))),
+                success(),
+        )
 
 
 class TestFileContentsFileRelCwd(instruction_check.TestCaseBase):
