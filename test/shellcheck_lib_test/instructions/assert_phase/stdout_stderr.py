@@ -4,7 +4,7 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
     SingleInstructionInvalidArgumentException, SingleInstructionParser, SingleInstructionParserSource
 from shellcheck_lib.general.string import lines_content
 from shellcheck_lib.instructions.assert_phase import stdout_stderr as sut
-from shellcheck_lib.test_case.help.instruction_description import Description
+from shellcheck_lib.test_case.instruction_description import Description
 from shellcheck_lib_test.instructions.assert_phase.test_resources import instruction_check
 from shellcheck_lib_test.instructions.assert_phase.test_resources.contents_resources import \
     ActResultProducerForContentsWithAllReplacedEnvVars, \

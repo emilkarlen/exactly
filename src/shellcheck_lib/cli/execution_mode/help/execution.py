@@ -11,8 +11,8 @@ from shellcheck_lib.general.textformat.formatting.wrapper import Wrapper
 from shellcheck_lib.general.textformat.structure import document as doc
 from shellcheck_lib.general.textformat.structure.core import Text
 from shellcheck_lib.general.textformat.structure.paragraph import para
-from shellcheck_lib.test_case.help.instruction_description import Description
-from shellcheck_lib.test_case.help.render import instruction
+from shellcheck_lib.help.test_case import instruction
+from shellcheck_lib.test_case.instruction_description import Description
 
 
 class TestCaseHelpRenderer:

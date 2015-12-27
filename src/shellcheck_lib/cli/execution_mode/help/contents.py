@@ -1,4 +1,4 @@
-from shellcheck_lib.test_case.help.instruction_description import Description
+from shellcheck_lib.test_case.instruction_description import Description
 
 
 class TestCasePhaseInstructionSet(tuple):

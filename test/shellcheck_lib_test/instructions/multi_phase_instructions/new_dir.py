@@ -3,7 +3,7 @@ import unittest
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from shellcheck_lib.instructions.multi_phase_instructions import new_dir as sut
-from shellcheck_lib.test_case.help.instruction_description import Description
+from shellcheck_lib.test_case.instruction_description import Description
 from shellcheck_lib_test.instructions.test_resources.check_description import TestDescriptionBase
 from shellcheck_lib_test.util import tmp_dir_test
 from shellcheck_lib_test.util.file_checks import dir_contains_exactly

@@ -1,5 +1,5 @@
 from shellcheck_lib.general.textformat import parse as text_parse
-from shellcheck_lib.test_case.help.instruction_description import Description
+from shellcheck_lib.test_case.instruction_description import Description
 
 
 class DescriptionWithConstantValues(Description):

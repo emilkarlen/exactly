@@ -3,7 +3,7 @@ from shellcheck_lib.cli.execution_mode.help.contents import TestCaseHelp, \
 from shellcheck_lib.general.textformat.structure import document as doc
 from shellcheck_lib.general.textformat.structure import lists
 from shellcheck_lib.general.textformat.structure.core import Text
-from shellcheck_lib.test_case.help.render.instruction import instruction_set_list_item
+from shellcheck_lib.help.test_case.instruction import instruction_set_list_item
 
 
 def instruction_set_per_phase(test_case_help: TestCaseHelp) -> doc.SectionContents:

@@ -6,6 +6,7 @@ from shellcheck_lib_test import default
 from shellcheck_lib_test import document
 from shellcheck_lib_test import execution
 from shellcheck_lib_test import general
+from shellcheck_lib_test import help
 from shellcheck_lib_test import instructions
 from shellcheck_lib_test import test_case
 from shellcheck_lib_test import test_suite
@@ -21,6 +22,7 @@ def suite():
     ret_val.addTest(test_suite.suite())
     ret_val.addTest(instructions.suite())
     ret_val.addTest(act_phase_setups.suite())
+    ret_val.addTest(help.suite())
     ret_val.addTest(default.suite())
     return ret_val
 

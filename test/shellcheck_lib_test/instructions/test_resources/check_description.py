@@ -3,7 +3,7 @@ import unittest
 from shellcheck_lib.general.textformat.formatting import paragraph_item
 from shellcheck_lib.general.textformat.formatting import section
 from shellcheck_lib.general.textformat.formatting.wrapper import Wrapper
-from shellcheck_lib.test_case.help.instruction_description import Description, InvokationVariant, \
+from shellcheck_lib.test_case.instruction_description import Description, InvokationVariant, \
     SyntaxElementDescription
 from shellcheck_lib_test.general.textformat.test_resources import structure as struct_check
 

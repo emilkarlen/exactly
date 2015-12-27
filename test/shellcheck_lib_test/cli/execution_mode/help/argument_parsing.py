@@ -3,7 +3,7 @@ import unittest
 from shellcheck_lib.cli.execution_mode.help import argument_parsing as sut
 from shellcheck_lib.cli.execution_mode.help.contents import ApplicationHelp, MainProgramHelp, \
     TestCaseHelp, TestSuiteHelp, TestCasePhaseHelp, TestCasePhaseInstructionSet, TestSuiteSectionHelp
-from shellcheck_lib.test_case.help.instruction_description import Description
+from shellcheck_lib.test_case.instruction_description import Description
 from shellcheck_lib_test.cli.execution_mode.help.test_resources import arguments_for
 from shellcheck_lib_test.test_resources.instruction_description import DescriptionWithConstantValues
 

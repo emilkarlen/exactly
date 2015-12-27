@@ -1,7 +1,7 @@
 from shellcheck_lib.document import model
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, SingleInstructionParserSource
-from shellcheck_lib.test_case.help.instruction_description import Description
+from shellcheck_lib.test_case.instruction_description import Description
 
 
 class SingleInstructionSetup(SingleInstructionParser):
