@@ -178,63 +178,58 @@ class TestFileContentsFileRelHome(TestCaseBaseForParser):
         )
 
 
-class TestFileContentsFileRelCwd(instruction_check.TestCaseBase):
+class TestFileContentsFileRelCwd(TestCaseBaseForParser):
     def test_fail__when__comparison_file_does_not_exist(self):
-        self._chekk(
-                Flow(sut.Parser(),
-                     eds_contents_before_main=act_dir_contents(
-                             DirContents([empty_file('target')])),
-                     expected_main_result=pfh_check.is_fail(),
-                     ),
-                new_source2('target --rel-cwd comparison'))
+        self._run(
+                new_source2('target --rel-cwd comparison'),
+                Arrangement(eds_contents_before_main=act_dir_contents(
+                        DirContents([empty_file('target')]))),
+                Expectation(expected_main_result=pfh_check.is_fail()),
+        )
 
     def test_fail__when__target_file_does_not_exist(self):
-        self._chekk(
-                Flow(sut.Parser(),
-                     eds_contents_before_main=act_dir_contents(
-                             DirContents([empty_file('comparison')])),
-                     expected_main_result=pfh_check.is_fail(),
-                     ),
-                new_source2('target --rel-cwd comparison'))
+        self._run(
+                new_source2('target --rel-cwd comparison'),
+                Arrangement(eds_contents_before_main=act_dir_contents(
+                        DirContents([empty_file('comparison')]))),
+                Expectation(expected_main_result=pfh_check.is_fail()),
+        )
 
     def test_validation_error__when__comparison_file_is_a_directory(self):
-        self._chekk(
-                Flow(sut.Parser(),
-                     eds_contents_before_main=act_dir_contents(
-                             DirContents([empty_file('target'),
-                                          empty_dir('comparison')])),
-                     expected_main_result=pfh_check.is_fail(),
-                     ),
-                new_source2('target --rel-cwd comparison'))
+        self._run(
+                new_source2('target --rel-cwd comparison'),
+                Arrangement(eds_contents_before_main=act_dir_contents(
+                        DirContents([empty_file('target'),
+                                     empty_dir('comparison')]))),
+                Expectation(expected_main_result=pfh_check.is_fail()),
+        )
 
     def test_validation_error__when__target_file_is_a_directory(self):
-        self._chekk(
-                Flow(sut.Parser(),
-                     eds_contents_before_main=act_dir_contents(
-                             DirContents([empty_dir('target'),
-                                          empty_file('comparison')])),
-                     expected_main_result=pfh_check.is_fail(),
-                     ),
-                new_source2('target --rel-cwd comparison'))
+        self._run(
+                new_source2('target --rel-cwd comparison'),
+                Arrangement(eds_contents_before_main=act_dir_contents(
+                        DirContents([empty_dir('target'),
+                                     empty_file('comparison')]))),
+                Expectation(expected_main_result=pfh_check.is_fail()),
+        )
 
     def test_fail__when__contents_is_different(self):
-        self._chekk(
-                Flow(sut.Parser(),
-                     eds_contents_before_main=act_dir_contents(
-                             DirContents([File('target', 'target-contents'),
-                                          File('comparison', 'cmp-contents')])),
-                     expected_main_result=pfh_check.is_fail(),
-                     ),
-                new_source2('target --rel-cwd comparison'))
+        self._run(
+                new_source2('target --rel-cwd comparison'),
+                Arrangement(eds_contents_before_main=act_dir_contents(
+                        DirContents([File('target', 'target-contents'),
+                                     File('comparison', 'cmp-contents')]))),
+                Expectation(expected_main_result=pfh_check.is_fail()),
+        )
 
     def test_pass__when__contents_is_equal(self):
-        self._chekk(
-                Flow(sut.Parser(),
-                     eds_contents_before_main=act_dir_contents(
-                             DirContents([File('target', 'contents'),
-                                          File('comparison', 'contents')])),
-                     ),
-                new_source2('target --rel-cwd comparison'))
+        self._run(
+                new_source2('target --rel-cwd comparison'),
+                Arrangement(eds_contents_before_main=act_dir_contents(
+                        DirContents([File('target', 'contents'),
+                                     File('comparison', 'contents')]))),
+                success(),
+        )
 
 
 class TestFileContentsFileRelTmp(instruction_check.TestCaseBase):
