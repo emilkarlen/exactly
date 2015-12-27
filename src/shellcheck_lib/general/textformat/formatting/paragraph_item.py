@@ -1,5 +1,5 @@
-from shellcheck_lib.general.textformat.formatting.lists import ListFormats, ListFormat
-from shellcheck_lib.general.textformat.formatting.wrapper import Indent, Wrapper
+from shellcheck_lib.general.textformat.formatting.lists import ListFormats, ListFormat, list_format_with_indent_str
+from shellcheck_lib.general.textformat.formatting.wrapper import Indent, Wrapper, identical_indent
 from shellcheck_lib.general.textformat.structure.core import Text, ParagraphItem
 from shellcheck_lib.general.textformat.structure.lists import HeaderContentList, HeaderContentListItem
 from shellcheck_lib.general.textformat.structure.paragraph import Paragraph
@@ -37,8 +37,11 @@ class Formatter:
     def format_text(self, text: Text) -> list:
         return self.wrapper.wrap(text.value)
 
-    def format_header_value_list(self, the_list: HeaderContentList) -> list:
+    def format_header_content_list(self, the_list: HeaderContentList) -> list:
         list_format = self.list_formats.for_type(the_list.list_type)
+        if the_list.custom_indent_spaces is not None:
+            indent_str = the_list.custom_indent_spaces * ' '
+            list_format = list_format_with_indent_str(list_format, indent_str)
         return self.format_header_value_list_according_to_format(the_list.items,
                                                                  list_format)
 
@@ -70,12 +73,14 @@ class _ListFormatter:
 
     def apply(self) -> list:
         ret_val = self.ret_val
-        for (item_number, item) in enumerate(self.items_list, start=1):
-            assert isinstance(item, HeaderContentListItem), ('The list item is not a %s' % str(HeaderContentListItem))
-            if item_number > 1:
-                ret_val.extend(self.blank_lines_between_elements)
-            self._format_header(item, item_number)
-            self._format_content(item, item_number)
+        with self.wrapper.indent_increase(identical_indent(self.list_format.indent_str)):
+            for (item_number, item) in enumerate(self.items_list, start=1):
+                assert isinstance(item, HeaderContentListItem), (
+                    'The list item is not a %s' % str(HeaderContentListItem))
+                if item_number > 1:
+                    ret_val.extend(self.blank_lines_between_elements)
+                self._format_header(item, item_number)
+                self._format_content(item, item_number)
         return ret_val
 
     def _format_header(self, item, item_number):
@@ -114,4 +119,4 @@ class _ParagraphItemFormatter(ParagraphItemVisitor):
         return self.formatter.format_paragraph(paragraph)
 
     def visit_header_value_list(self, header_value_list: HeaderContentList):
-        return self.formatter.format_header_value_list(header_value_list)
+        return self.formatter.format_header_content_list(header_value_list)
