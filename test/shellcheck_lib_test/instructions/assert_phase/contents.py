@@ -9,7 +9,7 @@ from shellcheck_lib_test.instructions.assert_phase.test_resources.contents_resou
     ActResultProducerForContentsWithAllReplacedEnvVars, \
     StoreContentsInFileInCurrentDir, WriteFileToHomeDir, WriteFileToCurrentDir, \
     StoreContentsInFileInParentDirOfCwd
-from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_check import Flow, Arrangement, \
+from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_check import Arrangement, \
     Expectation, success
 from shellcheck_lib_test.instructions.test_resources import pfh_check
 from shellcheck_lib_test.instructions.test_resources import svh_check
@@ -281,7 +281,7 @@ class TestTargetFileRelTmp(TestCaseBaseForParser):
         )
 
 
-class TestReplacedEnvVars(instruction_check.TestCaseBase):
+class TestReplacedEnvVars(TestCaseBaseForParser):
     COMPARISON_SOURCE_FILE_NAME = 'with-replaced-env-vars.txt'
     COMPARISON_TARGET_FILE_NAME = 'file-with-env-var-values-in-it-from-act-phase.txt'
 
@@ -294,12 +294,12 @@ class TestReplacedEnvVars(instruction_check.TestCaseBase):
                 StoreContentsInFileInCurrentDir(self.COMPARISON_TARGET_FILE_NAME),
                 source_file_writer=WriteFileToHomeDir(self.COMPARISON_SOURCE_FILE_NAME),
                 source_should_contain_expected_value=True)
-        self._chekk(
-                Flow(sut.Parser(),
-                     act_result_producer=act_result_producer),
+        self._run(
                 new_source('instruction-name',
                            '{} --with-replaced-env-vars --rel-home {}'.format(self.COMPARISON_TARGET_FILE_NAME,
-                                                                              self.COMPARISON_SOURCE_FILE_NAME))
+                                                                              self.COMPARISON_SOURCE_FILE_NAME)),
+                Arrangement(act_result_producer=act_result_producer),
+                success(),
         )
 
     def test_fail__when__contents_not_equals__rel_home(self):
@@ -307,13 +307,12 @@ class TestReplacedEnvVars(instruction_check.TestCaseBase):
                 StoreContentsInFileInCurrentDir(self.COMPARISON_TARGET_FILE_NAME),
                 source_file_writer=WriteFileToHomeDir(self.COMPARISON_SOURCE_FILE_NAME),
                 source_should_contain_expected_value=False)
-        self._chekk(
-                Flow(sut.Parser(),
-                     act_result_producer=act_result_producer,
-                     expected_main_result=pfh_check.is_fail()),
+        self._run(
                 new_source('instruction-name',
                            '{} --with-replaced-env-vars --rel-home {}'.format(self.COMPARISON_TARGET_FILE_NAME,
-                                                                              self.COMPARISON_SOURCE_FILE_NAME))
+                                                                              self.COMPARISON_SOURCE_FILE_NAME)),
+                Arrangement(act_result_producer=act_result_producer),
+                Expectation(expected_main_result=pfh_check.is_fail()),
         )
 
     def test_pass__when__contents_equals__rel_cwd(self):
@@ -321,11 +320,11 @@ class TestReplacedEnvVars(instruction_check.TestCaseBase):
                 StoreContentsInFileInCurrentDir(self.COMPARISON_TARGET_FILE_NAME),
                 source_file_writer=WriteFileToCurrentDir(self.COMPARISON_SOURCE_FILE_NAME),
                 source_should_contain_expected_value=True)
-        self._chekk(
-                Flow(sut.Parser(),
-                     act_result_producer=act_result_producer),
+        self._run(
                 new_source2('{} --with-replaced-env-vars --rel-cwd {}'.format(self.COMPARISON_TARGET_FILE_NAME,
-                                                                              self.COMPARISON_SOURCE_FILE_NAME))
+                                                                              self.COMPARISON_SOURCE_FILE_NAME)),
+                Arrangement(act_result_producer=act_result_producer),
+                success(),
         )
 
     def test_fail__when__contents_not_equals__rel_cwd(self):
@@ -333,12 +332,11 @@ class TestReplacedEnvVars(instruction_check.TestCaseBase):
                 StoreContentsInFileInCurrentDir(self.COMPARISON_TARGET_FILE_NAME),
                 source_file_writer=WriteFileToCurrentDir(self.COMPARISON_SOURCE_FILE_NAME),
                 source_should_contain_expected_value=False)
-        self._chekk(
-                Flow(sut.Parser(),
-                     act_result_producer=act_result_producer,
-                     expected_main_result=pfh_check.is_fail()),
+        self._run(
                 new_source2('{} --with-replaced-env-vars --rel-cwd {}'.format(self.COMPARISON_TARGET_FILE_NAME,
-                                                                              self.COMPARISON_SOURCE_FILE_NAME))
+                                                                              self.COMPARISON_SOURCE_FILE_NAME)),
+                Arrangement(act_result_producer=act_result_producer),
+                Expectation(expected_main_result=pfh_check.is_fail()),
         )
 
     def test_pass__when__contents_equals_but_src_does_not_reside_inside_act_dir__rel_home(self):
@@ -346,11 +344,11 @@ class TestReplacedEnvVars(instruction_check.TestCaseBase):
                 StoreContentsInFileInParentDirOfCwd(self.COMPARISON_TARGET_FILE_NAME),
                 source_file_writer=WriteFileToHomeDir(self.COMPARISON_SOURCE_FILE_NAME),
                 source_should_contain_expected_value=True)
-        self._chekk(
-                Flow(sut.Parser(),
-                     act_result_producer=act_result_producer),
+        self._run(
                 new_source2('../{} --with-replaced-env-vars --rel-home {}'.format(self.COMPARISON_TARGET_FILE_NAME,
-                                                                                  self.COMPARISON_SOURCE_FILE_NAME))
+                                                                                  self.COMPARISON_SOURCE_FILE_NAME)),
+                Arrangement(act_result_producer=act_result_producer),
+                success(),
         )
 
 
