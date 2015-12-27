@@ -191,41 +191,40 @@ class TestFileContentsNonEmptyValidSyntaxFORStderr(FileContentsNonEmptyValidSynt
 
 class FileContentsFileRelHome(TestWithParserBase):
     def validation_error__when__comparison_file_does_not_exist(self):
-        self._chekk(
-                Flow(self._new_parser(),
-                     expected_validation_result=svh_check.is_validation_error(),
-                     ),
-                new_source2('--rel-home f.txt'))
+        self._run(
+                new_source2('--rel-home f.txt'),
+                Arrangement(),
+                Expectation(expected_validation_result=svh_check.is_validation_error()),
+        )
 
     def validation_error__when__comparison_file_is_a_directory(self):
-        self._chekk(
-                Flow(self._new_parser(),
-                     eds_contents_before_main=act_dir_contents(DirContents(
-                             [empty_dir('dir')])),
-                     expected_validation_result=svh_check.is_validation_error(),
-                     ),
-                new_source2('--rel-home dir'))
+        self._run(
+                new_source2('--rel-home dir'),
+                Arrangement(eds_contents_before_main=act_dir_contents(DirContents(
+                        [empty_dir('dir')]))),
+                Expectation(expected_validation_result=svh_check.is_validation_error()),
+        )
 
     def fail__when__contents_differ(self,
                                     act_result: ActResult,
                                     expected_contents: str):
-        self._chekk(
-                Flow(self._new_parser(),
-                     act_result_producer=ActResultProducer(act_result),
-                     home_dir_contents=DirContents(
-                             [File('f.txt', expected_contents)]),
-                     expected_main_result=pfh_check.is_fail(),
-                     ),
-                new_source2('--rel-home f.txt'))
+        self._run(
+                new_source2('--rel-home f.txt'),
+                Arrangement(act_result_producer=ActResultProducer(act_result),
+                            home_dir_contents=DirContents(
+                                    [File('f.txt', expected_contents)])),
+                Expectation(expected_main_result=pfh_check.is_fail()),
+        )
 
     def pass__when__contents_equals(self,
                                     act_result: ActResult,
                                     expected_contents: str):
-        self._chekk(
-                Flow(self._new_parser(),
-                     home_dir_contents=DirContents([File('f.txt', expected_contents)]),
-                     act_result_producer=ActResultProducer(act_result)),
-                new_source2('--rel-home f.txt'))
+        self._run(
+                new_source2('--rel-home f.txt'),
+                Arrangement(home_dir_contents=DirContents([File('f.txt', expected_contents)]),
+                            act_result_producer=ActResultProducer(act_result)),
+                is_pass(),
+        )
 
 
 class TestFileContentsFileRelHomeFORStdout(FileContentsFileRelHome):
