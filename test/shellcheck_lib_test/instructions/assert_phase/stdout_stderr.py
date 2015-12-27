@@ -9,7 +9,7 @@ from shellcheck_lib_test.instructions.assert_phase.test_resources import instruc
 from shellcheck_lib_test.instructions.assert_phase.test_resources.contents_resources import \
     ActResultProducerForContentsWithAllReplacedEnvVars, \
     OutputContentsToStdout, WriteFileToHomeDir, ActResultContentsSetup, OutputContentsToStderr, WriteFileToCurrentDir
-from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_check import Flow, ActResultProducer, \
+from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_check import ActResultProducer, \
     Arrangement, Expectation, is_pass
 from shellcheck_lib_test.instructions.test_resources import pfh_check
 from shellcheck_lib_test.instructions.test_resources import svh_check
@@ -471,10 +471,11 @@ class ReplacedEnvVars(TestWithParserBase):
                 self._act_result_contents_setup,
                 source_file_writer=WriteFileToHomeDir(self.SOURCE_FILE_NAME),
                 source_should_contain_expected_value=True)
-        self._chekk(
-                Flow(self._new_parser(),
-                     act_result_producer=act_result_producer),
-                new_source2('--with-replaced-env-vars --rel-home {}'.format(self.SOURCE_FILE_NAME))
+        self._run(
+                new_source2('--with-replaced-env-vars --rel-home {}'.format(self.SOURCE_FILE_NAME)),
+                Arrangement(act_result_producer=act_result_producer),
+                is_pass(),
+
         )
 
     def fail__when__contents_not_equals__rel_home(self):
@@ -482,11 +483,10 @@ class ReplacedEnvVars(TestWithParserBase):
                 self._act_result_contents_setup,
                 source_file_writer=WriteFileToHomeDir(self.SOURCE_FILE_NAME),
                 source_should_contain_expected_value=False)
-        self._chekk(
-                Flow(self._new_parser(),
-                     act_result_producer=act_result_producer,
-                     expected_main_result=pfh_check.is_fail()),
-                new_source2('--with-replaced-env-vars --rel-home {}'.format(self.SOURCE_FILE_NAME))
+        self._run(
+                new_source2('--with-replaced-env-vars --rel-home {}'.format(self.SOURCE_FILE_NAME)),
+                Arrangement(act_result_producer=act_result_producer),
+                Expectation(expected_main_result=pfh_check.is_fail()),
         )
 
     def pass__when__contents_equals__rel_cwd(self):
@@ -494,10 +494,10 @@ class ReplacedEnvVars(TestWithParserBase):
                 self._act_result_contents_setup,
                 source_file_writer=WriteFileToCurrentDir(self.SOURCE_FILE_NAME),
                 source_should_contain_expected_value=True)
-        self._chekk(
-                Flow(self._new_parser(),
-                     act_result_producer=act_result_producer),
-                new_source2('--with-replaced-env-vars --rel-cwd {}'.format(self.SOURCE_FILE_NAME))
+        self._run(
+                new_source2('--with-replaced-env-vars --rel-cwd {}'.format(self.SOURCE_FILE_NAME)),
+                Arrangement(act_result_producer=act_result_producer),
+                is_pass(),
         )
 
     def fail__when__contents_not_equals__rel_cwd(self):
@@ -505,11 +505,10 @@ class ReplacedEnvVars(TestWithParserBase):
                 self._act_result_contents_setup,
                 source_file_writer=WriteFileToCurrentDir(self.SOURCE_FILE_NAME),
                 source_should_contain_expected_value=False)
-        self._chekk(
-                Flow(self._new_parser(),
-                     act_result_producer=act_result_producer,
-                     expected_main_result=pfh_check.is_fail()),
-                new_source2('--with-replaced-env-vars --rel-cwd {}'.format(self.SOURCE_FILE_NAME))
+        self._run(
+                new_source2('--with-replaced-env-vars --rel-cwd {}'.format(self.SOURCE_FILE_NAME)),
+                Arrangement(act_result_producer=act_result_producer),
+                Expectation(expected_main_result=pfh_check.is_fail()),
         )
 
 
