@@ -51,15 +51,16 @@ def _invokation_variants_content(description: Description) -> doc.SectionContent
                                                      x.description_rest +
                                                      variants_list_paragraphs))
         return lists.HeaderContentList(lists.ListType.VARIABLE_LIST,
-                                       items)
+                                       items,
+                                       custom_indent_spaces=2)
 
-    def syntax_element_description_sections() -> list:
+    def syntax_element_description_paragraph_items() -> list:
         if not description.syntax_element_descriptions():
             return []
-        return [doc.Section(Text('where'),  # TODO Do not want this to a section (need indented list)
-                            doc.SectionContents([syntax_element_description_list()],
-                                                []))
+        return [para('where'),
+                syntax_element_description_list()
                 ]
 
-    return doc.SectionContents([variants_list(description.invokation_variants())],
-                               syntax_element_description_sections())
+    return doc.SectionContents([variants_list(description.invokation_variants())] +
+                               syntax_element_description_paragraph_items(),
+                               [])
