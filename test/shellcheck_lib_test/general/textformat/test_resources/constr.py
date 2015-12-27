@@ -16,10 +16,10 @@ def single_text_para(string: str) -> paragraph.Paragraph:
 
 
 def item(header: str,
-         content: list) -> lists.HeaderValueListItem:
-    return lists.HeaderValueListItem(text(header),
-                                     content)
+         content: list) -> lists.HeaderContentListItem:
+    return lists.HeaderContentListItem(text(header),
+                                       content)
 
 
-def header_only_item(header: str) -> lists.HeaderValueListItem:
+def header_only_item(header: str) -> lists.HeaderContentListItem:
     return item(header, [])

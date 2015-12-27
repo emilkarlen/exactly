@@ -23,10 +23,10 @@ def instruction_man_page(description: Description) -> doc.SectionContents:
                                    [])
 
 
-def instruction_set_list_item(description: Description) -> lists.HeaderValueListItem:
+def instruction_set_list_item(description: Description) -> lists.HeaderContentListItem:
     description_para = para(description.single_line_description())
-    return lists.HeaderValueListItem(Text(description.instruction_name()),
-                                     [description_para])
+    return lists.HeaderContentListItem(Text(description.instruction_name()),
+                                       [description_para])
 
 
 def _invokation_variants_content(description: Description) -> doc.SectionContents:
@@ -34,10 +34,10 @@ def _invokation_variants_content(description: Description) -> doc.SectionContent
         items = []
         for x in invokation_variants:
             assert isinstance(x, InvokationVariant)
-            items.append(lists.HeaderValueListItem(Text(x.syntax),
-                                                   x.description_rest))
-        return lists.HeaderValueList(lists.ListType.VARIABLE_LIST,
-                                     items)
+            items.append(lists.HeaderContentListItem(Text(x.syntax),
+                                                     x.description_rest))
+        return lists.HeaderContentList(lists.ListType.VARIABLE_LIST,
+                                       items)
 
     def syntax_element_description_list() -> paragraph.ParagraphItem:
         items = []
@@ -47,11 +47,11 @@ def _invokation_variants_content(description: Description) -> doc.SectionContent
             if x.invokation_variants:
                 variants_list_paragraphs = [para('where'),
                                             variants_list(x.invokation_variants)]
-            items.append(lists.HeaderValueListItem(Text(x.element_name),
-                                                   x.description_rest +
-                                                   variants_list_paragraphs))
-        return lists.HeaderValueList(lists.ListType.VARIABLE_LIST,
-                                     items)
+            items.append(lists.HeaderContentListItem(Text(x.element_name),
+                                                     x.description_rest +
+                                                     variants_list_paragraphs))
+        return lists.HeaderContentList(lists.ListType.VARIABLE_LIST,
+                                       items)
 
     def syntax_element_description_sections() -> list:
         if not description.syntax_element_descriptions():

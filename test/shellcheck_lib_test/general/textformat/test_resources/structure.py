@@ -90,7 +90,7 @@ class _ParagraphItemCheckerVisitor(ParagraphItemVisitor):
         for (pos, text) in enumerate(paragraph.start_on_new_line_blocks):
             TextChecker(new_with_added_prefix('Text %d: ' % pos, self.checker)).apply(text)
 
-    def visit_header_value_list(self, header_value_list: lists.HeaderValueList):
+    def visit_header_value_list(self, header_value_list: lists.HeaderContentList):
         self.checker.put.assertIsInstance(header_value_list.list_type,
                                           lists.ListType,
                                           self.checker.msg('List type must be instance of %s' % lists.ListType))
@@ -106,13 +106,13 @@ class ListItemChecker(Assertion):
 
     def apply(self, item):
         self.checker.put.assertIsInstance(item,
-                                          lists.HeaderValueListItem,
-                                          self.checker.msg('Must be a %s' % lists.HeaderValueListItem))
-        assert isinstance(item, lists.HeaderValueListItem)
+                                          lists.HeaderContentListItem,
+                                          self.checker.msg('Must be a %s' % lists.HeaderContentListItem))
+        assert isinstance(item, lists.HeaderContentListItem)
         TextChecker(new_with_added_prefix('Header: ', self.checker)).apply(item.header)
         check_list(ParagraphItemChecker,
                    new_with_added_prefix('Values: ', self.checker),
-                   item.value_paragraph_items)
+                   item.content_paragraph_items)
 
 
 class SectionContentsChecker(Assertion):

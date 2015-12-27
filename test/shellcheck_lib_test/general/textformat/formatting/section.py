@@ -19,8 +19,8 @@ class TestSectionContents(unittest.TestCase):
                                                                             lf.Separations(0, 0))))
         formatter = sut.Formatter(paragraph_item_formatter)
         section_contents = SectionContents([single_text_para('12345 123 5'),
-                                            lists.HeaderValueList(lists.ListType.VARIABLE_LIST,
-                                                                  [header_only_item(
+                                            lists.HeaderContentList(lists.ListType.VARIABLE_LIST,
+                                                                    [header_only_item(
                                                                           '12345 123')])],
                                            [])
         actual = formatter.format_section_contents(section_contents)
