@@ -27,7 +27,7 @@ sys.exit(0)
 """
         with tmp_file_containing(script_that_exists_with_status_0,
                                  suffix='.py') as script_file_path:
-            self._check(
+            self._chekk(
                     Flow(sut.parser()),
                     new_source('instruction-name',
                                py_exe.command_line_for_interpreting(script_file_path)))
@@ -39,7 +39,7 @@ sys.exit(1)
 """
         with tmp_file_containing(script_that_exists_with_status_0,
                                  suffix='.py') as script_file_path:
-            self._check(
+            self._chekk(
                     Flow(sut.parser(),
                          expected_main_result=pfh_check.is_fail()),
                     new_source('instruction-name',

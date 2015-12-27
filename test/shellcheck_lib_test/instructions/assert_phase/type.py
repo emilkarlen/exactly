@@ -15,14 +15,14 @@ from shellcheck_lib_test.util.file_structure import DirContents, empty_file, emp
 class TestParse(TestCaseBase):
     def test_that_when_no_arguments_then_exception_is_raised(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            self._check(
+            self._chekk(
                 Flow(sut.Parser()),
                 new_source('instruction-name',
                            ''))
 
     def test_that_when_too_many_arguments_then_exception_is_raised(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            self._check(
+            self._chekk(
                 Flow(sut.Parser()),
                 new_source('instruction-name',
                            'file-name file extra-argument'))
@@ -31,7 +31,7 @@ class TestParse(TestCaseBase):
 class TestCheckForDirectory(TestCaseBase):
     def test_pass__when__file_type_is_given__directory(self):
         file_name = 'name-of-existing-directory'
-        self._check(
+        self._chekk(
             Flow(sut.Parser(),
                  eds_contents_before_main=act_dir_contents(DirContents(
                      [empty_dir(file_name)]))),
@@ -40,7 +40,7 @@ class TestCheckForDirectory(TestCaseBase):
 
     def test_fail__when__actual_type_is_regular_file(self):
         file_name = 'name-of-existing-directory'
-        self._check(
+        self._chekk(
             Flow(sut.Parser(),
                  expected_main_result=pfh_check.is_fail(),
                  eds_contents_before_main=act_dir_contents(DirContents(
@@ -50,7 +50,7 @@ class TestCheckForDirectory(TestCaseBase):
 
     def test_pass__when__actual_type_is_sym_link_to_directory(self):
         file_name = 'sym-link'
-        self._check(
+        self._chekk(
             Flow(sut.Parser(),
                  eds_contents_before_main=act_dir_contents(DirContents(
                      [empty_dir('directory'),
@@ -60,7 +60,7 @@ class TestCheckForDirectory(TestCaseBase):
 
     def test_fail__when__actual_type_is_sym_link_to_file(self):
         file_name = 'sym-link'
-        self._check(
+        self._chekk(
             Flow(sut.Parser(),
                  expected_main_result=pfh_check.is_fail(),
                  eds_contents_before_main=act_dir_contents(DirContents(
@@ -73,7 +73,7 @@ class TestCheckForDirectory(TestCaseBase):
 class TestCheckForRegularFile(TestCaseBase):
     def test_pass__when__actual_type_is_regular_file(self):
         file_name = 'name-of-existing-directory'
-        self._check(
+        self._chekk(
             Flow(sut.Parser(),
                  eds_contents_before_main=act_dir_contents(DirContents(
                      [empty_file(file_name)]))),
@@ -82,7 +82,7 @@ class TestCheckForRegularFile(TestCaseBase):
 
     def test_fail__when__file_type_is_given__directory(self):
         file_name = 'name-of-existing-directory'
-        self._check(
+        self._chekk(
             Flow(sut.Parser(),
                  expected_main_result=pfh_check.is_fail(),
                  eds_contents_before_main=act_dir_contents(DirContents(
@@ -92,7 +92,7 @@ class TestCheckForRegularFile(TestCaseBase):
 
     def test_fail__when__actual_type_is_sym_link_to_directory(self):
         file_name = 'sym-link'
-        self._check(
+        self._chekk(
             Flow(sut.Parser(),
                  expected_main_result=pfh_check.is_fail(),
                  eds_contents_before_main=act_dir_contents(DirContents(
@@ -103,7 +103,7 @@ class TestCheckForRegularFile(TestCaseBase):
 
     def test_pass__when__actual_type_is_sym_link_to_file(self):
         file_name = 'sym-link'
-        self._check(
+        self._chekk(
             Flow(sut.Parser(),
                  eds_contents_before_main=act_dir_contents(DirContents(
                      [empty_file('existing-file'),
@@ -115,7 +115,7 @@ class TestCheckForRegularFile(TestCaseBase):
 class TestCheckForSymLink(TestCaseBase):
     def test_link_fail__when__file_exists_and_is_regular_file(self):
         file_name = 'name-of-existing-file'
-        self._check(
+        self._chekk(
             Flow(sut.Parser(),
                  expected_main_result=pfh_check.is_fail(),
                  eds_contents_before_main=act_dir_contents(DirContents(
@@ -125,7 +125,7 @@ class TestCheckForSymLink(TestCaseBase):
 
     def test_link_fail__when__file_type_is_given__directory(self):
         file_name = 'name-of-existing-directory'
-        self._check(
+        self._chekk(
             Flow(sut.Parser(),
                  expected_main_result=pfh_check.is_fail(),
                  eds_contents_before_main=act_dir_contents(DirContents(
@@ -135,7 +135,7 @@ class TestCheckForSymLink(TestCaseBase):
 
     def test_pass__when__file_type_is_given__link_to_directory(self):
         file_name = 'link-file'
-        self._check(
+        self._chekk(
             Flow(sut.Parser(),
                  eds_contents_before_main=act_dir_contents(DirContents(
                      [empty_dir('dir'),
@@ -145,7 +145,7 @@ class TestCheckForSymLink(TestCaseBase):
 
     def test_pass__when__file_type_is_given__link_to_regular_file(self):
         file_name = 'link-file'
-        self._check(
+        self._chekk(
             Flow(sut.Parser(),
                  eds_contents_before_main=act_dir_contents(DirContents(
                      [empty_file('file'),
