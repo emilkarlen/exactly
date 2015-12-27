@@ -2,10 +2,6 @@
 
 Fortsätt med
 
-* Formattering
-** INVOKATION VARIANTS -> SYNOPSIS
-** Konfa mellanrum i lista i data-strukturen
-... dvs utanför layout-strukturen.
 * cd
 ** Tester av instruktionerna
 Finns tester av fas-oberoende utils.
