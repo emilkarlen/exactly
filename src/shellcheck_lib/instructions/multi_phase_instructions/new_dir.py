@@ -4,7 +4,7 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
     SingleInstructionInvalidArgumentException
 from shellcheck_lib.general.textformat import parse as text_parse
 from shellcheck_lib.instructions.utils.parse_utils import spit_arguments_list_string, ensure_is_not_option_argument
-from shellcheck_lib.test_case.help.instruction_description import InvokationVariant, Description
+from shellcheck_lib.test_case.instruction_description import InvokationVariant, Description
 
 
 class TheDescription(Description):
