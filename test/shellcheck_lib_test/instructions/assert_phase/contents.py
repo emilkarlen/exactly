@@ -92,42 +92,40 @@ class TestFileContentsNonEmptyInvalidSyntax(TestCaseBaseForParser):
             )
 
 
-class TestFileContentsNonEmptyValidSyntax(instruction_check.TestCaseBase):
+class TestFileContentsNonEmptyValidSyntax(TestCaseBaseForParser):
     def test_fail__when__file_do_not_exist(self):
-        self._chekk(
-                Flow(sut.Parser(),
-                     expected_main_result=pfh_check.is_fail(),
-                     ),
-                new_source2('name-of-non-existing-file ! empty'))
+        self._run(
+                new_source2('name-of-non-existing-file ! empty'),
+                Arrangement(),
+                Expectation(expected_main_result=pfh_check.is_fail()),
+        )
 
     def test_fail__when__file_is_directory(self):
         file_name = 'name-of-existing-directory'
-        self._chekk(
-                Flow(sut.Parser(),
-                     eds_contents_before_main=act_dir_contents(DirContents(
-                             [empty_dir(file_name)])),
-                     expected_main_result=pfh_check.is_fail(),
-                     ),
-                new_source2(file_name + ' ! empty'))
+        self._run(
+                new_source2(file_name + ' ! empty'),
+                Arrangement(eds_contents_before_main=act_dir_contents(DirContents(
+                        [empty_dir(file_name)]))),
+                Expectation(expected_main_result=pfh_check.is_fail()),
+        )
 
     def test_fail__when__file_exists_but_is_empty(self):
         file_name = 'name-of-existing-file'
-        self._chekk(
-                Flow(sut.Parser(),
-                     eds_contents_before_main=act_dir_contents(DirContents(
-                             [empty_file(file_name)])),
-                     expected_main_result=pfh_check.is_fail(),
-                     ),
-                new_source2(file_name + ' ! empty'))
+        self._run(
+                new_source2(file_name + ' ! empty'),
+                Arrangement(eds_contents_before_main=act_dir_contents(DirContents(
+                        [empty_file(file_name)]))),
+                Expectation(expected_main_result=pfh_check.is_fail()),
+        )
 
     def test_pass__when__file_exists_and_is_non_empty(self):
         file_name = 'name-of-existing-file'
-        self._chekk(
-                Flow(sut.Parser(),
-                     eds_contents_before_main=act_dir_contents(DirContents(
-                             [File(file_name, 'contents')])),
-                     ),
-                new_source2(file_name + ' ! empty'))
+        self._run(
+                new_source2(file_name + ' ! empty'),
+                Arrangement(eds_contents_before_main=act_dir_contents(DirContents(
+                        [File(file_name, 'contents')]))),
+                success(),
+        )
 
 
 class TestFileContentsFileRelHome(instruction_check.TestCaseBase):
