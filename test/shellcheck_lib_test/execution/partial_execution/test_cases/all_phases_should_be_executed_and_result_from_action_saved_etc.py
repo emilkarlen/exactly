@@ -3,18 +3,17 @@ import pathlib
 import unittest
 
 from shellcheck_lib.execution import environment_variables
-from shellcheck_lib.test_case.sections.result import sh
-from shellcheck_lib.test_case.sections.result import svh
+from shellcheck_lib.execution import phases
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.execution.partial_execution import Configuration
+from shellcheck_lib.test_case.sections import common
+from shellcheck_lib.test_case.sections.act.instruction import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
+from shellcheck_lib.test_case.sections.result import sh
+from shellcheck_lib_test.execution.util import py_unit_test_case
 from shellcheck_lib_test.execution.util import py_unit_test_case_with_file_output as with_file_output
+from shellcheck_lib_test.execution.util import utils
 from shellcheck_lib_test.execution.util.py_unit_test_case_with_file_output import \
     InternalInstructionThatWritesToStandardPhaseFile
-from shellcheck_lib.execution import phases
-from shellcheck_lib_test.execution.util import py_unit_test_case
-from shellcheck_lib.test_case.sections import common
-from shellcheck_lib_test.execution.util import utils
-from shellcheck_lib.test_case.sections.act.instruction import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
 
 HOME_DIR_HEADER = 'Home Dir'
 TEST_ROOT_DIR_HEADER = 'Test Root Dir'
@@ -109,10 +108,6 @@ class InternalInstructionThatCreatesAStandardPhaseFileInTestRootContainingDirect
 class ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr(ActPhaseInstruction):
     def __init__(self):
         super().__init__()
-
-    def validate(self, global_environment: common.GlobalEnvironmentForPostEdsPhase) \
-            -> svh.SuccessOrValidationErrorOrHardError:
-        return svh.new_svh_success()
 
     def main(self,
              global_environment: common.GlobalEnvironmentForPostEdsPhase,

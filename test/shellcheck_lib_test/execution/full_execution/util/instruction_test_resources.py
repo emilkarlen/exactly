@@ -159,11 +159,6 @@ class ActPhaseInstructionWithImplementationErrorInExecute(ActPhaseInstruction):
                  exception_to_raise: Exception):
         self.__exception_to_raise = exception_to_raise
 
-    def validate(self,
-                 global_environment: instrs.GlobalEnvironmentForPostEdsPhase) \
-            -> svh.SuccessOrValidationErrorOrHardError:
-        return svh.new_svh_success()
-
     def main(
             self,
             global_environment: instrs.GlobalEnvironmentForPostEdsPhase,
