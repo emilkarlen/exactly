@@ -318,21 +318,22 @@ class FileContentsFileRelTmp(TestWithParserBase):
         raise NotImplementedError()
 
     def fail__when__comparison_file_does_not_exist(self):
-        self._chekk(
-                Flow(self._new_parser(),
-                     expected_main_result=pfh_check.is_fail(),
-                     ),
-                new_source2('--rel-tmp f.txt'))
+        self._run(
+                new_source2('--rel-tmp f.txt'),
+                Arrangement(),
+                Expectation(expected_main_result=pfh_check.is_fail()),
+        )
 
     def pass__when__contents_equals(self):
-        self._chekk(
-                Flow(self._new_parser(),
-                     eds_contents_before_main=tmp_user_dir_contents(DirContents(
-                             [File('f.txt', 'expected contents')])),
-                     act_result_producer=ActResultProducer(
-                             self._act_result_with_contents('expected contents'))
-                     ),
-                new_source2('--rel-tmp f.txt'))
+        self._run(
+                new_source2('--rel-tmp f.txt'),
+                Arrangement(
+                        eds_contents_before_main=tmp_user_dir_contents(DirContents(
+                                [File('f.txt', 'expected contents')])),
+                        act_result_producer=ActResultProducer(
+                                self._act_result_with_contents('expected contents'))),
+                is_pass(),
+        )
 
 
 class FileContentsHereDoc(TestWithParserBase):
