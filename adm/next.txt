@@ -7,10 +7,6 @@ Fortsätt med
 ** (valfri) Indentering av lista
 ** Konfa mellanrum i lista i data-strukturen
 ... dvs utanför layout-strukturen.
-* Refaktorera test-resurser för instruktioner
-Dela upp i
-Arrangement
-Expectation
 * cd
 ** Tester av instruktionerna
 Finns tester av fas-oberoende utils.
