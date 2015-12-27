@@ -81,13 +81,15 @@ class TestFileContentsEmptyValidSyntax(TestCaseBaseForParser):
         )
 
 
-class TestFileContentsNonEmptyInvalidSyntax(instruction_check.TestCaseBase):
+class TestFileContentsNonEmptyInvalidSyntax(TestCaseBaseForParser):
     def test_that_when_no_arguments_then_exception_is_raised(self):
         arguments = 'file-name ! empty superfluous-argument'
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            self._chekk(
-                    Flow(sut.Parser()),
-                    new_source2(arguments))
+            self._run(
+                    new_source2(arguments),
+                    Arrangement(),
+                    success(),
+            )
 
 
 class TestFileContentsNonEmptyValidSyntax(instruction_check.TestCaseBase):
