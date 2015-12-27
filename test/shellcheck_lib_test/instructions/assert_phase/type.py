@@ -1,10 +1,11 @@
 import unittest
 
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionInvalidArgumentException
+    SingleInstructionInvalidArgumentException, SingleInstructionParserSource
 from shellcheck_lib.instructions.assert_phase import type as sut
 from shellcheck_lib.test_case.help.instruction_description import Description
-from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_check import Flow, TestCaseBase
+from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_check import Flow, TestCaseBase, \
+    Arrangement, Expectation, is_pass
 from shellcheck_lib_test.instructions.test_resources import pfh_check
 from shellcheck_lib_test.instructions.test_resources.check_description import TestDescriptionBase
 from shellcheck_lib_test.instructions.test_resources.eds_populator import act_dir_contents
@@ -22,42 +23,52 @@ class TestParse(TestCaseBase):
             sut.Parser().apply(new_source2('file-name file extra-argument'))
 
 
-class TestCheckForDirectory(TestCaseBase):
+class TestCaseBaseForParser(TestCaseBase):
+    def _run(self,
+             source: SingleInstructionParserSource,
+             arrangement: Arrangement,
+             expectation: Expectation):
+        self._check(sut.Parser(), source, arrangement, expectation)
+
+
+class TestCheckForDirectory(TestCaseBaseForParser):
     def test_pass__when__file_type_is_given__directory(self):
         file_name = 'name-of-existing-directory'
-        self._chekk(
-                Flow(sut.Parser(),
-                     eds_contents_before_main=act_dir_contents(DirContents(
-                             [empty_dir(file_name)]))),
-                new_source2(file_name + ' directory'))
+        self._run(
+                new_source2(file_name + ' directory'),
+                Arrangement(eds_contents_before_main=act_dir_contents(DirContents(
+                        [empty_dir(file_name)]))),
+                is_pass(),
+        )
 
     def test_fail__when__actual_type_is_regular_file(self):
         file_name = 'name-of-existing-directory'
-        self._chekk(
-                Flow(sut.Parser(),
-                     expected_main_result=pfh_check.is_fail(),
-                     eds_contents_before_main=act_dir_contents(DirContents(
-                             [empty_file(file_name)]))),
-                new_source2(file_name + ' directory'))
+        self._run(
+                new_source2(file_name + ' directory'),
+                Arrangement(eds_contents_before_main=act_dir_contents(DirContents(
+                        [empty_file(file_name)]))),
+                Expectation(expected_main_result=pfh_check.is_fail()),
+        )
 
     def test_pass__when__actual_type_is_sym_link_to_directory(self):
         file_name = 'sym-link'
-        self._chekk(
-                Flow(sut.Parser(),
-                     eds_contents_before_main=act_dir_contents(DirContents(
-                             [empty_dir('directory'),
-                              Link(file_name, 'directory')]))),
-                new_source2(file_name + ' directory'))
+        self._run(
+                new_source2(file_name + ' directory'),
+                Arrangement(eds_contents_before_main=act_dir_contents(DirContents(
+                        [empty_dir('directory'),
+                         Link(file_name, 'directory')]))),
+                is_pass(),
+        )
 
     def test_fail__when__actual_type_is_sym_link_to_file(self):
         file_name = 'sym-link'
-        self._chekk(
-                Flow(sut.Parser(),
-                     expected_main_result=pfh_check.is_fail(),
-                     eds_contents_before_main=act_dir_contents(DirContents(
-                             [empty_file('existing-file'),
-                              Link(file_name, 'existing-file')]))),
-                new_source2(file_name + ' directory'))
+        self._run(
+                new_source2(file_name + ' directory'),
+                Arrangement(eds_contents_before_main=act_dir_contents(DirContents(
+                        [empty_file('existing-file'),
+                         Link(file_name, 'existing-file')]))),
+                Expectation(expected_main_result=pfh_check.is_fail()),
+        )
 
 
 class TestCheckForRegularFile(TestCaseBase):
