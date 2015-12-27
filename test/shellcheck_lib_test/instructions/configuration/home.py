@@ -1,12 +1,13 @@
 import unittest
 
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionInvalidArgumentException
+    SingleInstructionInvalidArgumentException, SingleInstructionParserSource
 from shellcheck_lib.instructions.configuration import home as sut
 from shellcheck_lib.test_case.help.instruction_description import Description
 from shellcheck_lib.test_case.sections.anonymous import ConfigurationBuilder
 from shellcheck_lib_test.instructions.configuration.test_resources import configuration_check as config_check
-from shellcheck_lib_test.instructions.configuration.test_resources.instruction_check import Flow, TestCaseBase
+from shellcheck_lib_test.instructions.configuration.test_resources.instruction_check import Flow, TestCaseBase, \
+    Arrangement, Expectation
 from shellcheck_lib_test.instructions.test_resources import sh_check
 from shellcheck_lib_test.instructions.test_resources.check_description import TestDescriptionBase
 from shellcheck_lib_test.instructions.test_resources.utils import new_source2
@@ -25,20 +26,28 @@ class TestParse(unittest.TestCase):
             sut.Parser().apply(source)
 
 
-class TestFailingExecution(TestCaseBase):
+class TestCaseBaseForParser(TestCaseBase):
+    def _run(self,
+             source: SingleInstructionParserSource,
+             arrangement: Arrangement,
+             expectation: Expectation):
+        self._check(sut.Parser(), source, arrangement, expectation)
+
+
+class TestFailingExecution(TestCaseBaseForParser):
     def test_hard_error_WHEN_path_does_not_exist(self):
-        self._chekk(
-                Flow(sut.Parser(),
-                     expected_main_result=sh_check.IsHardError()),
-                new_source2('non-existing-path'))
+        self._run(
+                new_source2('non-existing-path'),
+                Arrangement(),
+                Expectation(expected_main_result=sh_check.IsHardError()))
 
     def test_hard_error_WHEN_path_exists_but_is_a_file(self):
         file_name = 'existing-plain-file'
-        self._chekk(
-                Flow(sut.Parser(),
-                     home_dir_contents=DirContents([empty_file(file_name)]),
-                     expected_main_result=sh_check.IsHardError()),
-                new_source2(file_name))
+        self._run(
+                new_source2(file_name),
+                Arrangement(home_dir_contents=DirContents([empty_file(file_name)])),
+                Expectation(expected_main_result=sh_check.IsHardError())
+        )
 
 
 class TestSuccessfulExecution(TestCaseBase):
