@@ -67,7 +67,7 @@ class TheDescription(Description):
         return [
             SyntaxElementDescription(
                     'EXECUTABLE',
-                    single_para('Specifies an executable program'),
+                    single_para('Specifies an executable program.'),
                     [
                         InvokationVariant('ABSOLUTE-PATH', []),
                         InvokationVariant('[{}] PATH'.format('|'.join(ALL_REL_OPTIONS)),
