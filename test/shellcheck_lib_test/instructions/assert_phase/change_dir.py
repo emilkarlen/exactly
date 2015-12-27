@@ -41,7 +41,7 @@ class TestCasesThatTestIntegrationByAFewRandomTests(TestCaseBaseForParser):
                         eds_contents_before_main=act_dir_contents(DirContents([
                             empty_file('file')]))),
                 Expectation(
-                        expected_main_result=pfh_check.is_hard_error())
+                        main_result=pfh_check.is_hard_error())
         )
 
 

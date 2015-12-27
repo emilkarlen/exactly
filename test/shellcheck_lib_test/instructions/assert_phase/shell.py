@@ -52,7 +52,7 @@ sys.exit(1)
             self._run(
                     new_source2(py_exe.command_line_for_interpreting(script_file_path)),
                     Arrangement(),
-                    Expectation(expected_main_result=pfh_check.is_fail()),
+                    Expectation(main_result=pfh_check.is_fail()),
             )
 
 

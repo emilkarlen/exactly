@@ -78,7 +78,7 @@ class TestParseAndExecute(TestCaseBaseForParser):
         self._run(
                 new_source2('72'),
                 Arrangement(act_result_producer=ActResultProducer(utils.ActResult(exitcode=0))),
-                Expectation(expected_main_result=pfh_check.is_fail()),
+                Expectation(main_result=pfh_check.is_fail()),
         )
 
 
@@ -94,7 +94,7 @@ class TestParseAndExecuteTwoArgumentsEq(TestCaseBaseForParser):
         self._run(
                 new_source2(' = 72'),
                 Arrangement(act_result_producer=ActResultProducer(utils.ActResult(exitcode=0))),
-                Expectation(expected_main_result=pfh_check.is_fail()),
+                Expectation(main_result=pfh_check.is_fail()),
         )
 
 
@@ -110,7 +110,7 @@ class TestParseAndExecuteTwoArgumentsNe(TestCaseBaseForParser):
         self._run(
                 new_source2(' ! 72'),
                 Arrangement(act_result_producer=ActResultProducer(utils.ActResult(exitcode=72))),
-                Expectation(expected_main_result=pfh_check.is_fail())
+                Expectation(main_result=pfh_check.is_fail())
         )
 
 
@@ -126,14 +126,14 @@ class TestParseAndExecuteTwoArgumentsLt(TestCaseBaseForParser):
         self._run(
                 new_source2(' < 72'),
                 Arrangement(act_result_producer=ActResultProducer(utils.ActResult(exitcode=72))),
-                Expectation(expected_main_result=pfh_check.is_fail()),
+                Expectation(main_result=pfh_check.is_fail()),
         )
 
     def test_fail_unequal(self):
         self._run(
                 new_source2(' < 28'),
                 Arrangement(act_result_producer=ActResultProducer(utils.ActResult(exitcode=72))),
-                Expectation(expected_main_result=pfh_check.is_fail()),
+                Expectation(main_result=pfh_check.is_fail()),
         )
 
 
@@ -156,7 +156,7 @@ class TestParseAndExecuteTwoArgumentsLe(TestCaseBaseForParser):
         self._run(
                 new_source2(' <= 28'),
                 Arrangement(act_result_producer=ActResultProducer(utils.ActResult(exitcode=72))),
-                Expectation(expected_main_result=pfh_check.is_fail()),
+                Expectation(main_result=pfh_check.is_fail()),
         )
 
 
@@ -172,14 +172,14 @@ class TestParseAndExecuteTwoArgumentsGt(TestCaseBaseForParser):
         self._run(
                 new_source2(' > 72'),
                 Arrangement(act_result_producer=ActResultProducer(utils.ActResult(exitcode=72))),
-                Expectation(expected_main_result=pfh_check.is_fail()),
+                Expectation(main_result=pfh_check.is_fail()),
         )
 
     def test_fail_unequal(self):
         self._run(
                 new_source2(' > 87'),
                 Arrangement(act_result_producer=ActResultProducer(utils.ActResult(exitcode=72))),
-                Expectation(expected_main_result=pfh_check.is_fail()),
+                Expectation(main_result=pfh_check.is_fail()),
         )
 
 
@@ -202,7 +202,7 @@ class TestParseAndExecuteTwoArgumentsGe(TestCaseBaseForParser):
         self._run(
                 new_source2(' >= 87'),
                 Arrangement(act_result_producer=ActResultProducer(utils.ActResult(exitcode=72))),
-                Expectation(expected_main_result=pfh_check.is_fail()),
+                Expectation(main_result=pfh_check.is_fail()),
         )
 
 

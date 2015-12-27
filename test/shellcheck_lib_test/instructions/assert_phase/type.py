@@ -47,7 +47,7 @@ class TestCheckForDirectory(TestCaseBaseForParser):
                 new_source2(file_name + ' directory'),
                 Arrangement(eds_contents_before_main=act_dir_contents(DirContents(
                         [empty_file(file_name)]))),
-                Expectation(expected_main_result=pfh_check.is_fail()),
+                Expectation(main_result=pfh_check.is_fail()),
         )
 
     def test_pass__when__actual_type_is_sym_link_to_directory(self):
@@ -67,7 +67,7 @@ class TestCheckForDirectory(TestCaseBaseForParser):
                 Arrangement(eds_contents_before_main=act_dir_contents(DirContents(
                         [empty_file('existing-file'),
                          Link(file_name, 'existing-file')]))),
-                Expectation(expected_main_result=pfh_check.is_fail()),
+                Expectation(main_result=pfh_check.is_fail()),
         )
 
 
@@ -87,7 +87,7 @@ class TestCheckForRegularFile(TestCaseBaseForParser):
                 new_source2(file_name + ' regular'),
                 Arrangement(eds_contents_before_main=act_dir_contents(DirContents(
                         [empty_dir(file_name)]))),
-                Expectation(expected_main_result=pfh_check.is_fail()),
+                Expectation(main_result=pfh_check.is_fail()),
         )
 
     def test_fail__when__actual_type_is_sym_link_to_directory(self):
@@ -97,7 +97,7 @@ class TestCheckForRegularFile(TestCaseBaseForParser):
                 Arrangement(eds_contents_before_main=act_dir_contents(DirContents(
                         [empty_dir('directory'),
                          Link(file_name, 'directory')]))),
-                Expectation(expected_main_result=pfh_check.is_fail()),
+                Expectation(main_result=pfh_check.is_fail()),
         )
 
     def test_pass__when__actual_type_is_sym_link_to_file(self):
@@ -118,7 +118,7 @@ class TestCheckForSymLink(TestCaseBaseForParser):
                 new_source2(file_name + ' symlink'),
                 Arrangement(eds_contents_before_main=act_dir_contents(DirContents(
                         [empty_file(file_name)]))),
-                Expectation(expected_main_result=pfh_check.is_fail()),
+                Expectation(main_result=pfh_check.is_fail()),
         )
 
     def test_link_fail__when__file_type_is_given__directory(self):
@@ -127,7 +127,7 @@ class TestCheckForSymLink(TestCaseBaseForParser):
                 new_source2(file_name + ' symlink'),
                 Arrangement(eds_contents_before_main=act_dir_contents(DirContents(
                         [empty_dir(file_name)]))),
-                Expectation(expected_main_result=pfh_check.is_fail()),
+                Expectation(main_result=pfh_check.is_fail()),
         )
 
     def test_pass__when__file_type_is_given__link_to_directory(self):

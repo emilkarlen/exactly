@@ -30,14 +30,14 @@ class TestCasesThatTestIntegrationByAFewRandomTests(TestCaseBaseForParser):
         self._run(
                 single_line_source(py_exe.command_line_for_executing_program_via_command_line('exit(1)')),
                 Arrangement(),
-                Expectation(expected_main_result=pfh_check.is_fail()),
+                Expectation(main_result=pfh_check.is_fail()),
         )
 
     def test_failing_validation(self):
         self._run(
                 single_line_source('/absolute/path/to/program/that/does/not/exist'),
                 Arrangement(),
-                Expectation(expected_validation_result=svh_check.is_validation_error()),
+                Expectation(validation_result=svh_check.is_validation_error()),
         )
 
 

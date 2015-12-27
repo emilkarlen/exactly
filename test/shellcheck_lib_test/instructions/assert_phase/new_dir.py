@@ -25,7 +25,7 @@ class TestCasesThatTestIntegrationByAFewRandomTests(TestCaseBaseForParser):
         self._run(
                 new_source2('first-component/second-component'),
                 Arrangement(),
-                Expectation(expected_main_side_effects_on_files=ActRootContainsExactly(DirContents([
+                Expectation(main_side_effects_on_files=ActRootContainsExactly(DirContents([
                     Dir('first-component', [
                         empty_dir('second-component')
                     ])
@@ -37,7 +37,7 @@ class TestCasesThatTestIntegrationByAFewRandomTests(TestCaseBaseForParser):
                 new_source2('file'),
                 Arrangement(eds_contents_before_main=act_dir_contents(DirContents([
                     empty_file('file')]))),
-                Expectation(expected_main_result=pfh_check.is_hard_error()),
+                Expectation(main_result=pfh_check.is_hard_error()),
         )
 
 

@@ -76,7 +76,7 @@ class FileContentsEmptyValidSyntax(TestWithParserBase):
         self._run(
                 new_source2('empty'),
                 Arrangement(act_result_producer=ActResultProducer(act_result)),
-                Expectation(expected_main_result=pfh_check.is_fail()),
+                Expectation(main_result=pfh_check.is_fail()),
         )
 
     def pass__when__file_exists_and_is_empty(self, act_result: ActResult):
@@ -152,7 +152,7 @@ class FileContentsNonEmptyValidSyntax(TestWithParserBase):
         self._run(
                 new_source2('! empty'),
                 Arrangement(act_result_producer=ActResultProducer(act_result)),
-                Expectation(expected_main_result=pfh_check.is_fail()),
+                Expectation(main_result=pfh_check.is_fail()),
         )
 
     def pass__when__file_exists_and_is_non_empty(self, act_result: ActResult):
@@ -194,7 +194,7 @@ class FileContentsFileRelHome(TestWithParserBase):
         self._run(
                 new_source2('--rel-home f.txt'),
                 Arrangement(),
-                Expectation(expected_validation_result=svh_check.is_validation_error()),
+                Expectation(validation_result=svh_check.is_validation_error()),
         )
 
     def validation_error__when__comparison_file_is_a_directory(self):
@@ -202,7 +202,7 @@ class FileContentsFileRelHome(TestWithParserBase):
                 new_source2('--rel-home dir'),
                 Arrangement(eds_contents_before_main=act_dir_contents(DirContents(
                         [empty_dir('dir')]))),
-                Expectation(expected_validation_result=svh_check.is_validation_error()),
+                Expectation(validation_result=svh_check.is_validation_error()),
         )
 
     def fail__when__contents_differ(self,
@@ -213,7 +213,7 @@ class FileContentsFileRelHome(TestWithParserBase):
                 Arrangement(act_result_producer=ActResultProducer(act_result),
                             home_dir_contents=DirContents(
                                     [File('f.txt', expected_contents)])),
-                Expectation(expected_main_result=pfh_check.is_fail()),
+                Expectation(main_result=pfh_check.is_fail()),
         )
 
     def pass__when__contents_equals(self,
@@ -274,7 +274,7 @@ class FileContentsFileRelCwd(TestWithParserBase):
         self._run(
                 new_source2('--rel-cwd f.txt'),
                 Arrangement(),
-                Expectation(expected_main_result=pfh_check.is_fail()),
+                Expectation(main_result=pfh_check.is_fail()),
         )
 
     def fail__when__comparison_file_is_a_directory(self):
@@ -282,7 +282,7 @@ class FileContentsFileRelCwd(TestWithParserBase):
                 new_source2('--rel-cwd dir'),
                 Arrangement(eds_contents_before_main=act_dir_contents(DirContents(
                         [empty_dir('dir')]))),
-                Expectation(expected_main_result=pfh_check.is_fail()),
+                Expectation(main_result=pfh_check.is_fail()),
         )
 
     def fail__when__contents_differ(self,
@@ -295,7 +295,7 @@ class FileContentsFileRelCwd(TestWithParserBase):
                                 [File('f.txt', expected_contents)])),
                         act_result_producer=ActResultProducer(act_result)),
                 Expectation(
-                        expected_main_result=pfh_check.is_fail()),
+                        main_result=pfh_check.is_fail()),
         )
 
     def pass__when__contents_equals(self,
@@ -321,7 +321,7 @@ class FileContentsFileRelTmp(TestWithParserBase):
         self._run(
                 new_source2('--rel-tmp f.txt'),
                 Arrangement(),
-                Expectation(expected_main_result=pfh_check.is_fail()),
+                Expectation(main_result=pfh_check.is_fail()),
         )
 
     def pass__when__contents_equals(self):
@@ -486,7 +486,7 @@ class ReplacedEnvVars(TestWithParserBase):
         self._run(
                 new_source2('--with-replaced-env-vars --rel-home {}'.format(self.SOURCE_FILE_NAME)),
                 Arrangement(act_result_producer=act_result_producer),
-                Expectation(expected_main_result=pfh_check.is_fail()),
+                Expectation(main_result=pfh_check.is_fail()),
         )
 
     def pass__when__contents_equals__rel_cwd(self):
@@ -508,7 +508,7 @@ class ReplacedEnvVars(TestWithParserBase):
         self._run(
                 new_source2('--with-replaced-env-vars --rel-cwd {}'.format(self.SOURCE_FILE_NAME)),
                 Arrangement(act_result_producer=act_result_producer),
-                Expectation(expected_main_result=pfh_check.is_fail()),
+                Expectation(main_result=pfh_check.is_fail()),
         )
 
 
