@@ -80,6 +80,9 @@ class Expectation:
         self.side_effects_check = side_effects_check
 
 
+success = Expectation
+
+
 class TestCaseBase(unittest.TestCase):
     def _chekk(self,
                check: Flow,
