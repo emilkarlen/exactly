@@ -10,7 +10,7 @@ from shellcheck_lib_test.instructions.assert_phase.test_resources.contents_resou
     StoreContentsInFileInCurrentDir, WriteFileToHomeDir, WriteFileToCurrentDir, \
     StoreContentsInFileInParentDirOfCwd
 from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_check import Arrangement, \
-    Expectation, success
+    Expectation, is_pass
 from shellcheck_lib_test.instructions.test_resources import pfh_check
 from shellcheck_lib_test.instructions.test_resources import svh_check
 from shellcheck_lib_test.instructions.test_resources.check_description import TestDescriptionBase
@@ -77,7 +77,7 @@ class TestFileContentsEmptyValidSyntax(TestCaseBaseForParser):
                 new_source2(file_name + ' empty'),
                 Arrangement(eds_contents_before_main=act_dir_contents(
                         DirContents([empty_file(file_name)]))),
-                success()
+                is_pass()
         )
 
 
@@ -88,7 +88,7 @@ class TestFileContentsNonEmptyInvalidSyntax(TestCaseBaseForParser):
             self._run(
                     new_source2(arguments),
                     Arrangement(),
-                    success(),
+                    is_pass(),
             )
 
 
@@ -124,7 +124,7 @@ class TestFileContentsNonEmptyValidSyntax(TestCaseBaseForParser):
                 new_source2(file_name + ' ! empty'),
                 Arrangement(eds_contents_before_main=act_dir_contents(DirContents(
                         [File(file_name, 'contents')]))),
-                success(),
+                is_pass(),
         )
 
 
@@ -174,7 +174,7 @@ class TestFileContentsFileRelHome(TestCaseBaseForParser):
                 Arrangement(home_dir_contents=DirContents([File('f.txt', 'contents')]),
                             eds_contents_before_main=act_dir_contents(DirContents(
                                     [File('target.txt', 'contents')]))),
-                success(),
+                is_pass(),
         )
 
 
@@ -228,7 +228,7 @@ class TestFileContentsFileRelCwd(TestCaseBaseForParser):
                 Arrangement(eds_contents_before_main=act_dir_contents(
                         DirContents([File('target', 'contents'),
                                      File('comparison', 'contents')]))),
-                success(),
+                is_pass(),
         )
 
 
@@ -250,7 +250,7 @@ class TestFileContentsFileRelTmp(TestCaseBaseForParser):
                     tmp_user_dir_contents(
                             DirContents([File('comparison', 'contents')])),
                 ])),
-                success(),
+                is_pass(),
         )
 
 
@@ -277,7 +277,7 @@ class TestTargetFileRelTmp(TestCaseBaseForParser):
                 Arrangement(home_dir_contents=DirContents([File('comparison', 'contents')]),
                             eds_contents_before_main=tmp_user_dir_contents(
                                     DirContents([File('target', 'contents')]))),
-                success(),
+                is_pass(),
         )
 
 
@@ -299,7 +299,7 @@ class TestReplacedEnvVars(TestCaseBaseForParser):
                            '{} --with-replaced-env-vars --rel-home {}'.format(self.COMPARISON_TARGET_FILE_NAME,
                                                                               self.COMPARISON_SOURCE_FILE_NAME)),
                 Arrangement(act_result_producer=act_result_producer),
-                success(),
+                is_pass(),
         )
 
     def test_fail__when__contents_not_equals__rel_home(self):
@@ -324,7 +324,7 @@ class TestReplacedEnvVars(TestCaseBaseForParser):
                 new_source2('{} --with-replaced-env-vars --rel-cwd {}'.format(self.COMPARISON_TARGET_FILE_NAME,
                                                                               self.COMPARISON_SOURCE_FILE_NAME)),
                 Arrangement(act_result_producer=act_result_producer),
-                success(),
+                is_pass(),
         )
 
     def test_fail__when__contents_not_equals__rel_cwd(self):
@@ -348,7 +348,7 @@ class TestReplacedEnvVars(TestCaseBaseForParser):
                 new_source2('../{} --with-replaced-env-vars --rel-home {}'.format(self.COMPARISON_TARGET_FILE_NAME,
                                                                                   self.COMPARISON_SOURCE_FILE_NAME)),
                 Arrangement(act_result_producer=act_result_producer),
-                success(),
+                is_pass(),
         )
 
 

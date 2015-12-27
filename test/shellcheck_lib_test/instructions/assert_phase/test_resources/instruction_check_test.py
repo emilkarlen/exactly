@@ -11,7 +11,7 @@ from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib_test.execution.full_execution.util.instruction_test_resources import \
     AssertPhaseInstructionThatReturns
 from shellcheck_lib_test.instructions.assert_phase.test_resources import instruction_check
-from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_check import Arrangement, success, \
+from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_check import Arrangement, is_pass, \
     Expectation
 from shellcheck_lib_test.instructions.test_resources import test_of_test_framework_utils as test_misc
 
@@ -22,7 +22,7 @@ class TestCases(instruction_check.TestCaseBase):
                 test_misc.ParserThatGives(_SUCCESSFUL_INSTRUCTION),
                 test_misc.single_line_source(),
                 Arrangement(),
-                success())
+                is_pass())
 
     def test_fail_due_to_unexpected_result_from_pre_validation(self):
         with self.assertRaises(test_misc.TestError):
@@ -55,7 +55,7 @@ class TestCases(instruction_check.TestCaseBase):
                 test_misc.ParserThatGives(InstructionThatRaisesTestErrorIfCwdIsIsNotTestRoot()),
                 test_misc.single_line_source(),
                 Arrangement(),
-                success())
+                is_pass())
 
     def test_fail_due_to_side_effects_check(self):
         with self.assertRaises(test_misc.TestError):
