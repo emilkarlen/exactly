@@ -5,7 +5,6 @@ from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
 from shellcheck_lib.test_case.sections.result import pfh
-from shellcheck_lib.test_case.sections.result import svh
 
 description = mkdir_utils.TheDescription
 
@@ -19,9 +18,6 @@ class Parser(SingleInstructionParser):
 class _Instruction(AssertPhaseInstruction):
     def __init__(self, directory_components: str):
         self.directory_components = directory_components
-
-    def validate(self, environment: GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
-        return svh.new_svh_success()
 
     def main(self, environment: GlobalEnvironmentForPostEdsPhase, os_services: OsServices) -> pfh.PassOrFailOrHardError:
         error_message = mkdir_utils.make_dir_in_current_dir(self.directory_components)

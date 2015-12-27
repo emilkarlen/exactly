@@ -230,11 +230,6 @@ class AssertPhaseInstructionWithExceptionInExecute(AssertPhaseInstruction):
                  exception_to_raise: Exception):
         self.__exception_to_raise = exception_to_raise
 
-    def validate(self,
-                 environment: instrs.GlobalEnvironmentForPostEdsPhase) \
-            -> svh.SuccessOrValidationErrorOrHardError:
-        return svh.new_svh_success()
-
     def main(self,
              environment: instrs.GlobalEnvironmentForPostEdsPhase,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:

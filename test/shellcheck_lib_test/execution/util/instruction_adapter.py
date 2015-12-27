@@ -75,11 +75,6 @@ class _AssertInstructionExecutor(AssertPhaseInstruction):
         self.__internal_instruction = internal_instruction
         self.__ret_val = ret_val
 
-    def validate(self,
-                 environment: instr.GlobalEnvironmentForPostEdsPhase) \
-            -> svh.SuccessOrValidationErrorOrHardError:
-        return svh.new_svh_success()
-
     def main(self,
              environment: instr.GlobalEnvironmentForPostEdsPhase,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
