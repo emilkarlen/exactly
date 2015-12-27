@@ -149,18 +149,18 @@ class TestFileContentsNonEmptyInvalidSyntaxFORStderr(FileContentsNonEmptyInvalid
 
 class FileContentsNonEmptyValidSyntax(TestWithParserBase):
     def fail__when__file_exists_but_is_empty(self, act_result: ActResult):
-        self._chekk(
-                Flow(self._new_parser(),
-                     act_result_producer=ActResultProducer(act_result),
-                     expected_main_result=pfh_check.is_fail(),
-                     ),
-                new_source2('! empty'))
+        self._run(
+                new_source2('! empty'),
+                Arrangement(act_result_producer=ActResultProducer(act_result)),
+                Expectation(expected_main_result=pfh_check.is_fail()),
+        )
 
     def pass__when__file_exists_and_is_non_empty(self, act_result: ActResult):
-        self._chekk(
-                Flow(self._new_parser(),
-                     act_result_producer=ActResultProducer(act_result)),
-                new_source2('! empty'))
+        self._run(
+                new_source2('! empty'),
+                Arrangement(act_result_producer=ActResultProducer(act_result)),
+                is_pass(),
+        )
 
 
 class TestFileContentsNonEmptyValidSyntaxFORStdout(FileContentsNonEmptyValidSyntax):
