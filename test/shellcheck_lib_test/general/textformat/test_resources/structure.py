@@ -47,7 +47,7 @@ def check_list(assertion_constructor_for_checker,
                                  list,
                                  checker.msg('Must be a list'))
     for (index, element) in enumerate(x):
-        assertion = assertion_constructor_for_checker(new_with_added_prefix('At index %d: ' % index, checker))
+        assertion = assertion_constructor_for_checker(new_with_added_prefix('[%d]: ' % index, checker))
         assertion.apply(element)
 
 
@@ -88,15 +88,32 @@ class _ParagraphItemCheckerVisitor(ParagraphItemVisitor):
                                           list,
                                           self.checker.msg('start_on_new_line_blocks must be a list'))
         for (pos, text) in enumerate(paragraph.start_on_new_line_blocks):
-            TextChecker(new_with_added_prefix('Text %d: ' % pos, self.checker)).apply(text)
+            TextChecker(new_with_added_prefix('Text[%d]: ' % pos, self.checker)).apply(text)
 
     def visit_header_value_list(self, header_value_list: lists.HeaderContentList):
-        self.checker.put.assertIsInstance(header_value_list.list_type,
+        ListChecker(self.checker).apply(header_value_list)
+
+
+class ListChecker(Assertion):
+    def __init__(self,
+                 checker: CheckerWithMsgPrefix):
+        self.checker = checker
+
+    def apply(self, x):
+        self.checker.put.assertIsInstance(x,
+                                          lists.HeaderContentList,
+                                          self.checker.msg('Must be a %s' % lists.HeaderContentList))
+        assert isinstance(x, lists.HeaderContentList)
+        self.checker.put.assertIsInstance(x.list_type,
                                           lists.ListType,
                                           self.checker.msg('List type must be instance of %s' % lists.ListType))
+        if x.custom_indent_spaces is not None:
+            self.checker.put.assertIsInstance(x.custom_indent_spaces,
+                                              int,
+                                              self.checker.msg('custom_indent_spaces must be either None or an int'))
         check_list(ListItemChecker,
                    new_with_added_prefix('Items: ', self.checker),
-                   header_value_list.items)
+                   x.items)
 
 
 class ListItemChecker(Assertion):
