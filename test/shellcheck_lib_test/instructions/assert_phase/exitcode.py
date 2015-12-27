@@ -10,7 +10,7 @@ from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_ch
 from shellcheck_lib_test.instructions.test_resources import pfh_check
 from shellcheck_lib_test.instructions.test_resources import utils
 from shellcheck_lib_test.instructions.test_resources.check_description import TestDescriptionBase
-from shellcheck_lib_test.instructions.test_resources.utils import new_source
+from shellcheck_lib_test.instructions.test_resources.utils import new_source2
 
 
 class TestParse(unittest.TestCase):
@@ -18,43 +18,41 @@ class TestParse(unittest.TestCase):
         parser = sut.Parser()
         self.assertRaises(SingleInstructionInvalidArgumentException,
                           parser.apply,
-                          new_source('instruction-name',
-                                     ' <> 1'))
+                          new_source2(' <> 1'))
 
     def test_that_when_no_arguments_then_exception_is_raised(self):
         parser = sut.Parser()
         self.assertRaises(SingleInstructionInvalidArgumentException,
                           parser.apply,
-                          new_source('instruction-name', ''))
+                          new_source2(''))
 
     def test_that_when_too_many_arguments_then_exception_is_raised(self):
         parser = sut.Parser()
         self.assertRaises(SingleInstructionInvalidArgumentException,
                           parser.apply,
-                          new_source('instruction-name',
-                                     'a b c'))
+                          new_source2('a b c'))
 
     def test_that_when_argument_does_not_contain_integer_then_exception_is_raised(self):
         parser = sut.Parser()
         self.assertRaises(SingleInstructionInvalidArgumentException,
                           parser.apply,
-                          new_source('instruction-name', 'a'))
+                          new_source2('a'))
 
     def test_that__when__argument_contains_too_small_integer__then__exception_is_raised(self):
         parser = sut.Parser()
         self.assertRaises(SingleInstructionInvalidArgumentException,
                           parser.apply,
-                          new_source('instruction-name', '-1'))
+                          new_source2('-1'))
 
     def test_that__when__argument_contains_too_large_integer__then__exception_is_raised(self):
         parser = sut.Parser()
         self.assertRaises(SingleInstructionInvalidArgumentException,
                           parser.apply,
-                          new_source('instruction-name', '256'))
+                          new_source2('256'))
 
     def test_that_when_valid_argument_is_given_than_instruction_is_returned(self):
         parser = sut.Parser()
-        actual_instruction = parser.apply(new_source('instruction-name', '1'))
+        actual_instruction = parser.apply(new_source2('1'))
         self.assertIsInstance(actual_instruction,
                               AssertPhaseInstruction)
 
@@ -65,8 +63,7 @@ class TestParseAndExecute(instruction_check.TestCaseBase):
                 Flow(sut.Parser(),
                      act_result_producer=ActResultProducer(utils.ActResult(exitcode=72)),
                      ),
-            new_source('instruction-name',
-                       ' 72'))
+                new_source2(' 72'))
 
     def test_that__when__actual_value_is_as_not_expected__then__fail_is_returned(self):
         self._chekk(
@@ -74,8 +71,7 @@ class TestParseAndExecute(instruction_check.TestCaseBase):
                      act_result_producer=ActResultProducer(utils.ActResult(exitcode=0)),
                      expected_main_result=pfh_check.is_fail()
                      ),
-            new_source('instruction-name',
-                       '72'))
+                new_source2('72'))
 
 
 class TestParseAndExecuteTwoArgumentsEq(instruction_check.TestCaseBase):
@@ -84,8 +80,7 @@ class TestParseAndExecuteTwoArgumentsEq(instruction_check.TestCaseBase):
                 Flow(sut.Parser(),
                      act_result_producer=ActResultProducer(utils.ActResult(exitcode=72)),
                      ),
-            new_source('instruction-name',
-                       ' = 72'))
+                new_source2(' = 72'))
 
     def test_fail(self):
         self._chekk(
@@ -93,8 +88,7 @@ class TestParseAndExecuteTwoArgumentsEq(instruction_check.TestCaseBase):
                      act_result_producer=ActResultProducer(utils.ActResult(exitcode=0)),
                      expected_main_result=pfh_check.is_fail()
                      ),
-            new_source('instruction-name',
-                       ' = 72'))
+                new_source2(' = 72'))
 
 
 class TestParseAndExecuteTwoArgumentsNe(instruction_check.TestCaseBase):
@@ -103,15 +97,14 @@ class TestParseAndExecuteTwoArgumentsNe(instruction_check.TestCaseBase):
                 Flow(sut.Parser(),
                      act_result_producer=ActResultProducer(utils.ActResult(exitcode=72)),
                      ),
-            new_source('instruction-name', ' ! 73'))
+                new_source2(' ! 73'))
 
     def test_fail(self):
         self._chekk(
                 Flow(sut.Parser(),
                      act_result_producer=ActResultProducer(utils.ActResult(exitcode=72)),
                      expected_main_result=pfh_check.is_fail()),
-            new_source('instruction-name',
-                       ' ! 72'))
+                new_source2(' ! 72'))
 
 
 class TestParseAndExecuteTwoArgumentsLt(instruction_check.TestCaseBase):
@@ -120,8 +113,7 @@ class TestParseAndExecuteTwoArgumentsLt(instruction_check.TestCaseBase):
                 Flow(sut.Parser(),
                      act_result_producer=ActResultProducer(utils.ActResult(exitcode=72)),
                      ),
-            new_source('instruction-name',
-                       ' < 87'))
+                new_source2(' < 87'))
 
     def test_fail_equal(self):
         self._chekk(
@@ -129,8 +121,7 @@ class TestParseAndExecuteTwoArgumentsLt(instruction_check.TestCaseBase):
                      act_result_producer=ActResultProducer(utils.ActResult(exitcode=72)),
                      expected_main_result=pfh_check.is_fail()
                      ),
-            new_source('instruction-name',
-                       ' < 72'))
+                new_source2(' < 72'))
 
     def test_fail_unequal(self):
         self._chekk(
@@ -138,8 +129,7 @@ class TestParseAndExecuteTwoArgumentsLt(instruction_check.TestCaseBase):
                      act_result_producer=ActResultProducer(utils.ActResult(exitcode=72)),
                      expected_main_result=pfh_check.is_fail()
                      ),
-            new_source('instruction-name',
-                       ' < 28'))
+                new_source2(' < 28'))
 
 
 class TestParseAndExecuteTwoArgumentsLe(instruction_check.TestCaseBase):
@@ -148,16 +138,14 @@ class TestParseAndExecuteTwoArgumentsLe(instruction_check.TestCaseBase):
                 Flow(sut.Parser(),
                      act_result_producer=ActResultProducer(utils.ActResult(exitcode=72)),
                      ),
-            new_source('instruction-name',
-                       ' <= 87'))
+                new_source2(' <= 87'))
 
     def test_pass_equal(self):
         self._chekk(
                 Flow(sut.Parser(),
                      act_result_producer=ActResultProducer(utils.ActResult(exitcode=72)),
                      ),
-            new_source('instruction-name',
-                       ' <= 72'))
+                new_source2(' <= 72'))
 
     def test_fail_unequal(self):
         self._chekk(
@@ -165,8 +153,7 @@ class TestParseAndExecuteTwoArgumentsLe(instruction_check.TestCaseBase):
                      act_result_producer=ActResultProducer(utils.ActResult(exitcode=72)),
                      expected_main_result=pfh_check.is_fail()
                      ),
-            new_source('instruction-name',
-                       ' <= 28'))
+                new_source2(' <= 28'))
 
 
 class TestParseAndExecuteTwoArgumentsGt(instruction_check.TestCaseBase):
@@ -175,8 +162,7 @@ class TestParseAndExecuteTwoArgumentsGt(instruction_check.TestCaseBase):
                 Flow(sut.Parser(),
                      act_result_producer=ActResultProducer(utils.ActResult(exitcode=72)),
                      ),
-            new_source('instruction-name',
-                       ' > 28'))
+                new_source2(' > 28'))
 
     def test_fail_equal(self):
         self._chekk(
@@ -184,8 +170,7 @@ class TestParseAndExecuteTwoArgumentsGt(instruction_check.TestCaseBase):
                      act_result_producer=ActResultProducer(utils.ActResult(exitcode=72)),
                      expected_main_result=pfh_check.is_fail()
                      ),
-            new_source('instruction-name',
-                       ' > 72'))
+                new_source2(' > 72'))
 
     def test_fail_unequal(self):
         self._chekk(
@@ -193,8 +178,7 @@ class TestParseAndExecuteTwoArgumentsGt(instruction_check.TestCaseBase):
                      act_result_producer=ActResultProducer(utils.ActResult(exitcode=72)),
                      expected_main_result=pfh_check.is_fail()
                      ),
-            new_source('instruction-name',
-                       ' > 87'))
+                new_source2(' > 87'))
 
 
 class TestParseAndExecuteTwoArgumentsGe(instruction_check.TestCaseBase):
@@ -203,16 +187,14 @@ class TestParseAndExecuteTwoArgumentsGe(instruction_check.TestCaseBase):
                 Flow(sut.Parser(),
                      act_result_producer=ActResultProducer(utils.ActResult(exitcode=72)),
                      ),
-            new_source('instruction-name',
-                       ' >= 28'))
+                new_source2(' >= 28'))
 
     def test_pass_equal(self):
         self._chekk(
                 Flow(sut.Parser(),
                      act_result_producer=ActResultProducer(utils.ActResult(exitcode=72)),
                      ),
-            new_source('instruction-name',
-                       ' >= 72'))
+                new_source2(' >= 72'))
 
     def test_fail_unequal(self):
         self._chekk(
@@ -220,8 +202,7 @@ class TestParseAndExecuteTwoArgumentsGe(instruction_check.TestCaseBase):
                      act_result_producer=ActResultProducer(utils.ActResult(exitcode=72)),
                      expected_main_result=pfh_check.is_fail()
                      ),
-            new_source('instruction-name',
-                       ' >= 87'))
+                new_source2(' >= 87'))
 
 
 class TestDescription(TestDescriptionBase):
