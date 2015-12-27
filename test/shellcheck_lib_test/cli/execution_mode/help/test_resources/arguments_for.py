@@ -1,6 +1,6 @@
 from shellcheck_lib.cli.execution_mode.help.argument_parsing import INSTRUCTIONS, SUITE
 from shellcheck_lib.execution import phases
-from shellcheck_lib.test_case.help.config import phase_help_name
+from shellcheck_lib.help.test_case.config import phase_help_name
 
 
 def program() -> list:
