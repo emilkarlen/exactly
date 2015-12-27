@@ -35,27 +35,6 @@ class ActResultProducer:
         return self.act_result
 
 
-class Flow:
-    def __init__(self,
-                 parser: SingleInstructionParser,
-                 home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
-                 eds_contents_before_main: eds_populator.EdsPopulator = eds_populator.empty(),
-                 act_result_producer: ActResultProducer = ActResultProducer(),
-                 expected_validation_result: svh_check.Assertion = svh_check.is_success(),
-                 expected_main_result: pfh_check.Assertion = pfh_check.is_pass(),
-                 expected_main_side_effects_on_files: eds_contents_check.Assertion = eds_contents_check.AnythingGoes(),
-                 side_effects_check: SideEffectsCheck = SideEffectsCheck(),
-                 ):
-        self.parser = parser
-        self.home_dir_contents = home_dir_contents
-        self.expected_validation_result = expected_validation_result
-        self.eds_contents_before_main = eds_contents_before_main
-        self.act_result_producer = act_result_producer
-        self.expected_main_result = expected_main_result
-        self.expected_main_side_effects_on_files = expected_main_side_effects_on_files
-        self.side_effects_check = side_effects_check
-
-
 class Arrangement:
     def __init__(self,
                  home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
@@ -84,22 +63,6 @@ is_pass = Expectation
 
 
 class TestCaseBase(unittest.TestCase):
-    def _chekk(self,
-               check: Flow,
-               source: SingleInstructionParserSource):
-        self._check(check.parser,
-                    source,
-                    Arrangement(
-                            home_dir_contents=check.home_dir_contents,
-                            eds_contents_before_main=check.eds_contents_before_main,
-                            act_result_producer=check.act_result_producer),
-
-                    Expectation(
-                            expected_validation_result=check.expected_validation_result,
-                            expected_main_result=check.expected_main_result,
-                            expected_main_side_effects_on_files=check.expected_main_side_effects_on_files,
-                            side_effects_check=check.side_effects_check))
-
     def _check(self,
                parser: SingleInstructionParser,
                source: SingleInstructionParserSource,
