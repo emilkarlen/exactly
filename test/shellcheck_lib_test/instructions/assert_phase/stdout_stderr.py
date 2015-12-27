@@ -343,14 +343,13 @@ class FileContentsHereDoc(TestWithParserBase):
         raise NotImplementedError()
 
     def pass__when__contents_equals(self):
-        self._chekk(
-                Flow(self._new_parser(),
-                     act_result_producer=ActResultProducer(
-                             self._act_result_with_contents(lines_content(['single line'])))
-                     ),
+        self._run(
                 argument_list_source(['<<EOF'],
                                      ['single line',
-                                      'EOF'])
+                                      'EOF']),
+                Arrangement(act_result_producer=ActResultProducer(
+                        self._act_result_with_contents(lines_content(['single line'])))),
+                is_pass(),
         )
 
 
