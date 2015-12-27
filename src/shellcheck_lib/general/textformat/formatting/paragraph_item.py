@@ -84,31 +84,27 @@ class _ListFormatter:
         return ret_val
 
     def _format_header(self, item, item_number):
-        self.push_header_indent(item_number)
         header_text = self.list_format.header_format.header_text(item_number,
                                                                  self.num_items,
                                                                  item.header)
-        self.ret_val.extend(self.formatter.format_text(header_text))
-        self.wrapper.pop_indent()
+        with self.wrapper.indent_increase(self.header_indent(item_number)):
+            self.ret_val.extend(self.formatter.format_text(header_text))
 
     def _format_content(self, item, item_number):
         content_items_list = list(item.content_paragraph_items)
         if content_items_list:
             self.ret_val.extend(self.blank_lines_between_header_and_content)
-            self.push_content_indent(item_number)
-            self.ret_val.extend(self.formatter.format_paragraph_items(content_items_list))
-            self.wrapper.pop_indent()
+            with self.wrapper.indent_increase(self.content_indent(item_number)):
+                self.ret_val.extend(self.formatter.format_paragraph_items(content_items_list))
 
-    def push_header_indent(self, item_number):
+    def header_indent(self, item_number) -> Indent:
         following_lines_indent = self.list_format.header_format.following_header_lines_indent(item_number,
                                                                                               self.num_items)
-        indent_delta = Indent('', following_lines_indent)
-        self.wrapper.push_indent_increase(indent_delta)
+        return Indent('', following_lines_indent)
 
-    def push_content_indent(self, item_number):
+    def content_indent(self, item_number) -> Indent:
         indent_str = self.list_format.header_format.contents_indent(self.num_items)
-        indent_delta = Indent(indent_str, indent_str)
-        self.wrapper.push_indent_increase(indent_delta)
+        return Indent(indent_str, indent_str)
 
 
 class _ParagraphItemFormatter(ParagraphItemVisitor):
