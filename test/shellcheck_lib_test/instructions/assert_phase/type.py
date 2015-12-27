@@ -15,15 +15,11 @@ from shellcheck_lib_test.util.file_structure import DirContents, empty_file, emp
 class TestParse(TestCaseBase):
     def test_that_when_no_arguments_then_exception_is_raised(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            self._chekk(
-                    Flow(sut.Parser()),
-                    new_source2(''))
+            sut.Parser().apply(new_source2(''))
 
     def test_that_when_too_many_arguments_then_exception_is_raised(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            self._chekk(
-                    Flow(sut.Parser()),
-                    new_source2('file-name file extra-argument'))
+            sut.Parser().apply(new_source2('file-name file extra-argument'))
 
 
 class TestCheckForDirectory(TestCaseBase):
