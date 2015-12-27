@@ -3,7 +3,7 @@ import unittest
 from shellcheck_lib.general.textformat.formatting import wrapper as sut
 
 
-class TestHeaderAndIndentFormatWithNumbering(unittest.TestCase):
+class TestIndent(unittest.TestCase):
     def test_construction(self):
         wrapper = sut.Wrapper(page_width=10)
         self.assertEqual(10,
@@ -52,6 +52,30 @@ class TestHeaderAndIndentFormatWithNumbering(unittest.TestCase):
                          'Saved indent1 stack')
 
 
+class TestIndentIncreaseContextManager(unittest.TestCase):
+    def test(self):
+        wrapper = sut.Wrapper(page_width=100)
+        with wrapper.indent_increase(sut.identical_indent('[INDENT]')):
+            lines = wrapper.wrap('text')
+        self.assertEqual(['[INDENT]text'],
+                         lines,
+                         'Resulting lines')
+        _check_indent(self,
+                      wrapper,
+                      sut.identical_indent(''),
+                      [])
+
+
+def _check_indent(put: unittest.TestCase,
+                  wrapper: sut.Wrapper,
+                  expected_current_indent: sut.Indent,
+                  expected_saved_stack: list):
+    _check_current_indent(put, wrapper, expected_current_indent)
+    put.assertEqual(expected_saved_stack,
+                    wrapper.saved_indents_stack,
+                    'Saved indent stack')
+
+
 def _check_current_indent(put: unittest.TestCase,
                           wrapper: sut.Wrapper,
                           expected: sut.Indent):
@@ -68,7 +92,8 @@ def _check_current_indent(put: unittest.TestCase,
 
 def suite():
     ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestHeaderAndIndentFormatWithNumbering))
+    ret_val.addTest(unittest.makeSuite(TestIndent))
+    ret_val.addTest(unittest.makeSuite(TestIndentIncreaseContextManager))
     return ret_val
 
 

@@ -1,3 +1,4 @@
+from contextlib import contextmanager
 from textwrap import TextWrapper
 
 
@@ -14,6 +15,10 @@ class Indent(tuple):
     @property
     def following_lines(self) -> str:
         return self[1]
+
+
+def identical_indent(indent: str) -> Indent:
+    return Indent(indent, indent)
 
 
 class Wrapper:
@@ -58,3 +63,9 @@ class Wrapper:
         indent = self._saved_indents_stack.pop(0)
         self.text_wrapper.initial_indent = indent.first_line
         self.text_wrapper.subsequent_indent = indent.following_lines
+
+    @contextmanager
+    def indent_increase(self, delta: Indent):
+        self.push_indent_increase(delta)
+        yield
+        self.pop_indent()
