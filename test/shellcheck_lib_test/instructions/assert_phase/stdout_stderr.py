@@ -1,7 +1,7 @@
 import unittest
 
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionInvalidArgumentException, SingleInstructionParser
+    SingleInstructionInvalidArgumentException, SingleInstructionParser, SingleInstructionParserSource
 from shellcheck_lib.general.string import lines_content
 from shellcheck_lib.instructions.assert_phase import stdout_stderr as sut
 from shellcheck_lib.test_case.help.instruction_description import Description
@@ -9,7 +9,8 @@ from shellcheck_lib_test.instructions.assert_phase.test_resources import instruc
 from shellcheck_lib_test.instructions.assert_phase.test_resources.contents_resources import \
     ActResultProducerForContentsWithAllReplacedEnvVars, \
     OutputContentsToStdout, WriteFileToHomeDir, ActResultContentsSetup, OutputContentsToStderr, WriteFileToCurrentDir
-from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_check import Flow, ActResultProducer
+from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_check import Flow, ActResultProducer, \
+    Arrangement, Expectation, is_pass
 from shellcheck_lib_test.instructions.test_resources import pfh_check
 from shellcheck_lib_test.instructions.test_resources import svh_check
 from shellcheck_lib_test.instructions.test_resources.check_description import TestDescriptionBase
@@ -21,6 +22,12 @@ from shellcheck_lib_test.util.file_structure import DirContents, empty_dir, File
 class TestWithParserBase(instruction_check.TestCaseBase):
     def _new_parser(self) -> SingleInstructionParser:
         raise NotImplementedError()
+
+    def _run(self,
+             source: SingleInstructionParserSource,
+             arrangement: Arrangement,
+             expectation: Expectation):
+        self._check(self._new_parser(), source, arrangement, expectation)
 
 
 class FileContentsEmptyInvalidSyntax(TestWithParserBase):
@@ -66,18 +73,17 @@ class TestFileContentsEmptyInvalidSyntaxFORStderr(FileContentsEmptyInvalidSyntax
 
 class FileContentsEmptyValidSyntax(TestWithParserBase):
     def fail__when__file_exists_but_is_non_empty(self, act_result: ActResult):
-        self._chekk(
-                Flow(self._new_parser(),
-                     act_result_producer=ActResultProducer(act_result),
-                     expected_main_result=pfh_check.is_fail(),
-                     ),
-                new_source2('empty'))
+        self._run(
+                new_source2('empty'),
+                Arrangement(act_result_producer=ActResultProducer(act_result)),
+                Expectation(expected_main_result=pfh_check.is_fail()),
+        )
 
     def pass__when__file_exists_and_is_empty(self, act_result: ActResult):
-        self._chekk(
-                Flow(self._new_parser(),
-                     act_result_producer=ActResultProducer(act_result)),
-                new_source2('empty')
+        self._run(
+                new_source2('empty'),
+                Arrangement(act_result_producer=ActResultProducer(act_result)),
+                is_pass(),
         )
 
 
@@ -108,18 +114,15 @@ class TestFileContentsEmptyValidSyntaxFORStderr(FileContentsEmptyValidSyntax):
 class FileContentsNonEmptyInvalidSyntax(TestWithParserBase):
     def that_when_no_arguments_then_exception_is_raised(self):
         arguments = '! empty superfluous-argument'
-        parser = self._new_parser()
-        self.assertRaises(SingleInstructionInvalidArgumentException,
-                          parser.apply,
-                          new_source2(arguments))
+        with self.assertRaises(SingleInstructionInvalidArgumentException):
+            self._new_parser().apply(new_source2(arguments))
 
     def that_when_superfluous_arguments_of_valid_here_document(self):
         source = argument_list_source(['!', 'empty', '<<MARKER'],
                                       ['single line',
                                        'MARKER'])
-        parser = self._new_parser()
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            parser.apply(source)
+            self._new_parser().apply(source)
 
 
 class TestFileContentsNonEmptyInvalidSyntaxFORStdout(FileContentsNonEmptyInvalidSyntax):
