@@ -2,9 +2,8 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
     SingleInstructionParserSource
 from shellcheck_lib.instructions.multi_phase_instructions import new_file as new_file_utils
 from shellcheck_lib.test_case.os_services import OsServices
-from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
+from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
 from shellcheck_lib.test_case.sections.result import sh
-from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
 
 description = new_file_utils.TheDescription
@@ -20,17 +19,9 @@ class _Instruction(SetupPhaseInstruction):
     def __init__(self, file_info: new_file_utils.FileInfo):
         self.file_info = file_info
 
-    def pre_validate(self,
-                     global_environment: GlobalEnvironmentForPreEdsStep) -> svh.SuccessOrValidationErrorOrHardError:
-        return svh.new_svh_success()
-
     def main(self,
              os_services: OsServices,
              environment: GlobalEnvironmentForPostEdsPhase,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         error_message = new_file_utils.create_file(self.file_info, environment.eds)
         return sh.new_sh_success() if error_message is None else sh.new_sh_hard_error(error_message)
-
-    def post_validate(self,
-                      global_environment: GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
-        return svh.new_svh_success()

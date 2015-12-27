@@ -3,6 +3,7 @@
 Fortsätt med
 
 * Basklasser för instruktioner ska ha bas-impl av valideringsfunktioner
+** act
 * Formattering
 ** (valfri) Indentering av lista
 ** Konfa mellanrum i lista i data-strukturen

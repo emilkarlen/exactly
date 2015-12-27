@@ -7,7 +7,6 @@ from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
 from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.result import sh
-from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
 
 
@@ -48,11 +47,6 @@ class _SetupInstructionExecutor(SetupPhaseInstruction):
         self.__internal_instruction = internal_instruction
         self.__ret_val = ret_val
 
-    def pre_validate(self,
-                     global_environment: instr.GlobalEnvironmentForPreEdsStep) \
-            -> svh.SuccessOrValidationErrorOrHardError:
-        return svh.new_svh_success()
-
     def main(self,
              os_services: OsServices,
              environment: instr.GlobalEnvironmentForPostEdsPhase,
@@ -61,11 +55,6 @@ class _SetupInstructionExecutor(SetupPhaseInstruction):
                                             environment,
                                             OsServices())
         return self.__ret_val
-
-    def post_validate(self,
-                      global_environment: instr.GlobalEnvironmentForPostEdsPhase) \
-            -> svh.SuccessOrValidationErrorOrHardError:
-        return svh.new_svh_success()
 
 
 class _AssertInstructionExecutor(AssertPhaseInstruction):

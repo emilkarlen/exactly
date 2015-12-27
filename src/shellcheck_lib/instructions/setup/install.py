@@ -71,10 +71,6 @@ class _InstallInstructionBase(SetupPhaseInstruction):
             return svh.new_svh_validation_error('File does not exist: {}'.format(str(path)))
         return svh.new_svh_success()
 
-    def post_validate(self,
-                      global_environment: GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
-        return svh.new_svh_success()
-
     def main(self, os_services: OsServices, environment: GlobalEnvironmentForPostEdsPhase,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         raise NotImplementedError()
