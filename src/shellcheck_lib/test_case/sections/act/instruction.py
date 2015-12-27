@@ -1,8 +1,8 @@
 from shellcheck_lib.document.model import Instruction
 from shellcheck_lib.test_case.sections.act.phase_setup import PhaseEnvironmentForScriptGeneration
-from shellcheck_lib.test_case.sections.result.sh import SuccessOrHardError
-from shellcheck_lib.test_case.sections.result.svh import SuccessOrValidationErrorOrHardError
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
+from shellcheck_lib.test_case.sections.result import svh
+from shellcheck_lib.test_case.sections.result.sh import SuccessOrHardError
 
 
 class ActPhaseInstruction(Instruction):
@@ -11,8 +11,8 @@ class ActPhaseInstruction(Instruction):
     """
 
     def validate(self,
-                 global_environment: GlobalEnvironmentForPostEdsPhase) -> SuccessOrValidationErrorOrHardError:
-        raise NotImplementedError()
+                 global_environment: GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
+        return svh.new_svh_success()
 
     def main(self,
              global_environment: GlobalEnvironmentForPostEdsPhase,

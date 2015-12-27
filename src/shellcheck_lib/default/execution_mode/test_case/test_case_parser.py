@@ -10,7 +10,6 @@ from shellcheck_lib.test_case.instruction_setup import InstructionsSetup
 from shellcheck_lib.test_case.sections import common
 from shellcheck_lib.test_case.sections.act.instruction import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
 from shellcheck_lib.test_case.sections.result import sh
-from shellcheck_lib.test_case.sections.result import svh
 
 
 class Parser:
@@ -63,10 +62,6 @@ class SourceCodeInstruction(ActPhaseInstruction):
     def __init__(self,
                  source_code: str):
         self.source_code = source_code
-
-    def validate(self, global_environment: common.GlobalEnvironmentForPostEdsPhase) \
-            -> svh.SuccessOrValidationErrorOrHardError:
-        return svh.new_svh_success()
 
     def main(self, global_environment: common.GlobalEnvironmentForPostEdsPhase,
              script_generator: PhaseEnvironmentForScriptGeneration) -> sh.SuccessOrHardError:

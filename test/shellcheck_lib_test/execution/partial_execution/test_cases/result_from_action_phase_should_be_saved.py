@@ -4,12 +4,11 @@ Checks that output to stdout, stderr and the exit code are saved in the correct 
 
 import unittest
 
-from shellcheck_lib.test_case.sections.result import sh
-from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.sections import common
 from shellcheck_lib.test_case.sections.act.instruction import PhaseEnvironmentForScriptGeneration, ActPhaseInstruction
-from shellcheck_lib_test.execution.util import utils
+from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib_test.execution.util import py_unit_test_case
+from shellcheck_lib_test.execution.util import utils
 from shellcheck_lib_test.execution.util.py_unit_test_case import \
     TestCaseWithCommonDefaultForSetupAssertCleanup
 
@@ -53,10 +52,6 @@ class ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr(ActPhaseInstruction):
         self.__text_on_stdout = text_on_stdout
         self.__text_on_stderr = text_on_stderr
         self.__exit_code = exit_code
-
-    def validate(self, global_environment: common.GlobalEnvironmentForPostEdsPhase) \
-            -> svh.SuccessOrValidationErrorOrHardError:
-        return svh.new_svh_success()
 
     def main(
             self,

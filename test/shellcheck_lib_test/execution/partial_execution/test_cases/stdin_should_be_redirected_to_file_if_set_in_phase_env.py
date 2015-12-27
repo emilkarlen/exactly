@@ -84,10 +84,6 @@ class GenerateStatementsThatCopiesStdinToStdout(ActPhaseInstruction):
     def __init__(self):
         super().__init__()
 
-    def validate(self, global_environment: common.GlobalEnvironmentForPostEdsPhase) \
-            -> svh.SuccessOrValidationErrorOrHardError:
-        return svh.new_svh_success()
-
     def main(self,
              global_environment: common.GlobalEnvironmentForPostEdsPhase,
              phase_environment: PhaseEnvironmentForScriptGeneration) \

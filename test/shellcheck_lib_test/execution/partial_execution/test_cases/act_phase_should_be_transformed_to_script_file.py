@@ -7,7 +7,6 @@ from shellcheck_lib.general import line_source
 from shellcheck_lib.test_case.sections import common
 from shellcheck_lib.test_case.sections.act.instruction import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
 from shellcheck_lib.test_case.sections.result import sh
-from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib_test.execution.util import py_unit_test_case
 from shellcheck_lib_test.execution.util import utils
 from shellcheck_lib_test.execution.util.py_unit_test_case import TestCaseWithCommonDefaultForSetupAssertCleanup
@@ -54,10 +53,6 @@ def assertions(utc: unittest.TestCase,
 
 
 class ActPhaseInstructionThatOutputsHomeDir(ActPhaseInstruction):
-    def validate(self, global_environment: common.GlobalEnvironmentForPostEdsPhase) \
-            -> svh.SuccessOrValidationErrorOrHardError:
-        return svh.new_svh_success()
-
     def main(
             self,
             global_environment: common.GlobalEnvironmentForPostEdsPhase,
@@ -68,10 +63,6 @@ class ActPhaseInstructionThatOutputsHomeDir(ActPhaseInstruction):
 
 
 class ActPhaseInstructionThatOutputsTestRootDir(ActPhaseInstruction):
-    def validate(self, global_environment: common.GlobalEnvironmentForPostEdsPhase) \
-            -> svh.SuccessOrValidationErrorOrHardError:
-        return svh.new_svh_success()
-
     def main(
             self,
             global_environment: common.GlobalEnvironmentForPostEdsPhase,
