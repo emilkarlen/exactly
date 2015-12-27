@@ -14,7 +14,7 @@ from shellcheck_lib_test.instructions.test_resources import pfh_check
 from shellcheck_lib_test.instructions.test_resources import svh_check
 from shellcheck_lib_test.instructions.test_resources.check_description import TestDescriptionBase
 from shellcheck_lib_test.instructions.test_resources.eds_populator import act_dir_contents, tmp_user_dir_contents
-from shellcheck_lib_test.instructions.test_resources.utils import new_source, ActResult, argument_list_source
+from shellcheck_lib_test.instructions.test_resources.utils import new_source2, ActResult, argument_list_source
 from shellcheck_lib_test.util.file_structure import DirContents, empty_dir, File
 
 
@@ -31,8 +31,7 @@ class FileContentsEmptyInvalidSyntax(TestWithParserBase):
         arguments = 'empty superfluous-argument'
         parser = self._new_parser()
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            parser.apply(new_source('instruction-name',
-                                    arguments))
+            parser.apply(new_source2(arguments))
 
     def that_when_superfluous_arguments_of_valid_here_document(self):
         source = argument_list_source(['empty', '<<MARKER'],
@@ -68,19 +67,17 @@ class TestFileContentsEmptyInvalidSyntaxFORStderr(FileContentsEmptyInvalidSyntax
 class FileContentsEmptyValidSyntax(TestWithParserBase):
     def fail__when__file_exists_but_is_non_empty(self, act_result: ActResult):
         self._chekk(
-            Flow(self._new_parser(),
-                 act_result_producer=ActResultProducer(act_result),
-                 expected_main_result=pfh_check.is_fail(),
-                 ),
-            new_source('instruction-name',
-                       'empty'))
+                Flow(self._new_parser(),
+                     act_result_producer=ActResultProducer(act_result),
+                     expected_main_result=pfh_check.is_fail(),
+                     ),
+                new_source2('empty'))
 
     def pass__when__file_exists_and_is_empty(self, act_result: ActResult):
         self._chekk(
-            Flow(self._new_parser(),
-                 act_result_producer=ActResultProducer(act_result)),
-            new_source('instruction-name',
-                       'empty')
+                Flow(self._new_parser(),
+                     act_result_producer=ActResultProducer(act_result)),
+                new_source2('empty')
         )
 
 
@@ -114,8 +111,7 @@ class FileContentsNonEmptyInvalidSyntax(TestWithParserBase):
         parser = self._new_parser()
         self.assertRaises(SingleInstructionInvalidArgumentException,
                           parser.apply,
-                          new_source('instruction-name',
-                                     arguments))
+                          new_source2(arguments))
 
     def that_when_superfluous_arguments_of_valid_here_document(self):
         source = argument_list_source(['!', 'empty', '<<MARKER'],
@@ -151,19 +147,17 @@ class TestFileContentsNonEmptyInvalidSyntaxFORStderr(FileContentsNonEmptyInvalid
 class FileContentsNonEmptyValidSyntax(TestWithParserBase):
     def fail__when__file_exists_but_is_empty(self, act_result: ActResult):
         self._chekk(
-            Flow(self._new_parser(),
-                 act_result_producer=ActResultProducer(act_result),
-                 expected_main_result=pfh_check.is_fail(),
-                 ),
-            new_source('instruction-name',
-                       '! empty'))
+                Flow(self._new_parser(),
+                     act_result_producer=ActResultProducer(act_result),
+                     expected_main_result=pfh_check.is_fail(),
+                     ),
+                new_source2('! empty'))
 
     def pass__when__file_exists_and_is_non_empty(self, act_result: ActResult):
         self._chekk(
-            Flow(self._new_parser(),
-                 act_result_producer=ActResultProducer(act_result)),
-            new_source('instruction-name',
-                       '! empty'))
+                Flow(self._new_parser(),
+                     act_result_producer=ActResultProducer(act_result)),
+                new_source2('! empty'))
 
 
 class TestFileContentsNonEmptyValidSyntaxFORStdout(FileContentsNonEmptyValidSyntax):
@@ -195,44 +189,40 @@ class TestFileContentsNonEmptyValidSyntaxFORStderr(FileContentsNonEmptyValidSynt
 class FileContentsFileRelHome(TestWithParserBase):
     def validation_error__when__comparison_file_does_not_exist(self):
         self._chekk(
-            Flow(self._new_parser(),
-                 expected_validation_result=svh_check.is_validation_error(),
-                 ),
-            new_source('instruction-name',
-                       '--rel-home f.txt'))
+                Flow(self._new_parser(),
+                     expected_validation_result=svh_check.is_validation_error(),
+                     ),
+                new_source2('--rel-home f.txt'))
 
     def validation_error__when__comparison_file_is_a_directory(self):
         self._chekk(
-            Flow(self._new_parser(),
-                 eds_contents_before_main=act_dir_contents(DirContents(
-                     [empty_dir('dir')])),
-                 expected_validation_result=svh_check.is_validation_error(),
-                 ),
-            new_source('instruction-name',
-                       '--rel-home dir'))
+                Flow(self._new_parser(),
+                     eds_contents_before_main=act_dir_contents(DirContents(
+                             [empty_dir('dir')])),
+                     expected_validation_result=svh_check.is_validation_error(),
+                     ),
+                new_source2('--rel-home dir'))
 
     def fail__when__contents_differ(self,
                                     act_result: ActResult,
                                     expected_contents: str):
         self._chekk(
-            Flow(self._new_parser(),
-                 act_result_producer=ActResultProducer(act_result),
-                 home_dir_contents=DirContents(
-                     [File('f.txt', expected_contents)]),
-                 expected_main_result=pfh_check.is_fail(),
-                 ),
-            new_source('instruction-name',
-                       '--rel-home f.txt'))
+                Flow(self._new_parser(),
+                     act_result_producer=ActResultProducer(act_result),
+                     home_dir_contents=DirContents(
+                             [File('f.txt', expected_contents)]),
+                     expected_main_result=pfh_check.is_fail(),
+                     ),
+                new_source2('--rel-home f.txt'))
 
     def pass__when__contents_equals(self,
                                     act_result: ActResult,
                                     expected_contents: str):
         self._chekk(
-            Flow(self._new_parser(),
-                 home_dir_contents=DirContents([File('f.txt', expected_contents)]),
-                 act_result_producer=ActResultProducer(act_result)),
-            new_source('instruction-name',
-                       '--rel-home f.txt'))
+                Flow(self._new_parser(),
+                     home_dir_contents=DirContents([File('f.txt', expected_contents)]),
+                     act_result_producer=ActResultProducer(act_result)),
+                new_source2('--rel-home f.txt'))
 
 
 class TestFileContentsFileRelHomeFORStdout(FileContentsFileRelHome):
@@ -280,89 +270,83 @@ class TestFileContentsFileRelHomeFORStderr(FileContentsFileRelHome):
 class FileContentsFileRelCwd(TestWithParserBase):
     def fail__when__comparison_file_does_not_exist(self):
         self._chekk(
-            Flow(self._new_parser(),
-                 expected_main_result=pfh_check.is_fail(),
-                 ),
-            new_source('instruction-name',
-                       '--rel-cwd f.txt'))
+                Flow(self._new_parser(),
+                     expected_main_result=pfh_check.is_fail(),
+                     ),
+                new_source2('--rel-cwd f.txt'))
 
     def fail__when__comparison_file_is_a_directory(self):
         self._chekk(
-            Flow(self._new_parser(),
-                 eds_contents_before_main=act_dir_contents(DirContents(
-                     [empty_dir('dir')])),
-                 expected_main_result=pfh_check.is_fail(),
-                 ),
-            new_source('instruction-name',
-                       '--rel-cwd dir'))
+                Flow(self._new_parser(),
+                     eds_contents_before_main=act_dir_contents(DirContents(
+                             [empty_dir('dir')])),
+                     expected_main_result=pfh_check.is_fail(),
+                     ),
+                new_source2('--rel-cwd dir'))
 
     def fail__when__contents_differ(self,
                                     act_result: ActResult,
                                     expected_contents: str):
         self._chekk(
-            Flow(self._new_parser(),
-                 eds_contents_before_main=act_dir_contents(DirContents(
-                     [File('f.txt', expected_contents)])),
-                 act_result_producer=ActResultProducer(act_result),
-                 expected_main_result=pfh_check.is_fail(),
-                 ),
-            new_source('instruction-name',
-                       '--rel-cwd f.txt'))
+                Flow(self._new_parser(),
+                     eds_contents_before_main=act_dir_contents(DirContents(
+                             [File('f.txt', expected_contents)])),
+                     act_result_producer=ActResultProducer(act_result),
+                     expected_main_result=pfh_check.is_fail(),
+                     ),
+                new_source2('--rel-cwd f.txt'))
 
     def pass__when__contents_equals(self,
                                     act_result: ActResult,
                                     expected_contents: str):
         self._chekk(
-            Flow(self._new_parser(),
-                 eds_contents_before_main=act_dir_contents(DirContents(
-                     [File('f.txt', expected_contents)])),
-                 act_result_producer=ActResultProducer(act_result),
-                 ),
-            new_source('instruction-name',
-                       '--rel-cwd f.txt'))
+                Flow(self._new_parser(),
+                     eds_contents_before_main=act_dir_contents(DirContents(
+                             [File('f.txt', expected_contents)])),
+                     act_result_producer=ActResultProducer(act_result),
+                     ),
+                new_source2('--rel-cwd f.txt'))
 
 
 class FileContentsFileRelTmp(TestWithParserBase):
     def _act_result_with_contents(self,
                                   contents_on_tested_channel: str,
-                                  contents_on_other_channel: str='') -> ActResult:
+                                  contents_on_other_channel: str = '') -> ActResult:
         raise NotImplementedError()
 
     def fail__when__comparison_file_does_not_exist(self):
         self._chekk(
-            Flow(self._new_parser(),
-                 expected_main_result=pfh_check.is_fail(),
-                 ),
-            new_source('instruction-name',
-                       '--rel-tmp f.txt'))
+                Flow(self._new_parser(),
+                     expected_main_result=pfh_check.is_fail(),
+                     ),
+                new_source2('--rel-tmp f.txt'))
 
     def pass__when__contents_equals(self):
         self._chekk(
-            Flow(self._new_parser(),
-                 eds_contents_before_main=tmp_user_dir_contents(DirContents(
-                     [File('f.txt', 'expected contents')])),
-                 act_result_producer=ActResultProducer(
-                     self._act_result_with_contents('expected contents'))
-                 ),
-            new_source('instruction-name',
-                       '--rel-tmp f.txt'))
+                Flow(self._new_parser(),
+                     eds_contents_before_main=tmp_user_dir_contents(DirContents(
+                             [File('f.txt', 'expected contents')])),
+                     act_result_producer=ActResultProducer(
+                             self._act_result_with_contents('expected contents'))
+                     ),
+                new_source2('--rel-tmp f.txt'))
 
 
 class FileContentsHereDoc(TestWithParserBase):
     def _act_result_with_contents(self,
                                   contents_on_tested_channel: str,
-                                  contents_on_other_channel: str='') -> ActResult:
+                                  contents_on_other_channel: str = '') -> ActResult:
         raise NotImplementedError()
 
     def pass__when__contents_equals(self):
         self._chekk(
-            Flow(self._new_parser(),
-                 act_result_producer=ActResultProducer(
-                     self._act_result_with_contents(lines_content(['single line'])))
-                 ),
-            argument_list_source(['<<EOF'],
-                                 ['single line',
-                                  'EOF'])
+                Flow(self._new_parser(),
+                     act_result_producer=ActResultProducer(
+                             self._act_result_with_contents(lines_content(['single line'])))
+                     ),
+                argument_list_source(['<<EOF'],
+                                     ['single line',
+                                      'EOF'])
         )
 
 
@@ -420,7 +404,7 @@ class TestFileContentsFileRelTmpFORStdout(FileContentsFileRelTmp):
 
     def _act_result_with_contents(self,
                                   contents_on_tested_channel: str,
-                                  contents_on_other_channel: str='') -> ActResult:
+                                  contents_on_other_channel: str = '') -> ActResult:
         return ActResult(stdout_contents=contents_on_tested_channel,
                          stderr_contents=contents_on_other_channel)
 
@@ -437,7 +421,7 @@ class TestFileContentsFileRelTmpFORStderr(FileContentsFileRelTmp):
 
     def _act_result_with_contents(self,
                                   contents_on_tested_channel: str,
-                                  contents_on_other_channel: str='') -> ActResult:
+                                  contents_on_other_channel: str = '') -> ActResult:
         return ActResult(stderr_contents=contents_on_tested_channel,
                          stdout_contents=contents_on_other_channel)
 
@@ -451,7 +435,7 @@ class FileContentsHereDocFORStdout(FileContentsHereDoc):
 
     def _act_result_with_contents(self,
                                   contents_on_tested_channel: str,
-                                  contents_on_other_channel: str='') -> ActResult:
+                                  contents_on_other_channel: str = '') -> ActResult:
         return ActResult(stdout_contents=contents_on_tested_channel,
                          stderr_contents=contents_on_other_channel)
 
@@ -465,10 +449,9 @@ class FileContentsHereDocFORStderr(FileContentsHereDoc):
 
     def _act_result_with_contents(self,
                                   contents_on_tested_channel: str,
-                                  contents_on_other_channel: str='') -> ActResult:
+                                  contents_on_other_channel: str = '') -> ActResult:
         return ActResult(stderr_contents=contents_on_tested_channel,
                          stdout_contents=contents_on_other_channel)
-
 
 
 class ReplacedEnvVars(TestWithParserBase):
@@ -482,52 +465,48 @@ class ReplacedEnvVars(TestWithParserBase):
 
     def pass__when__contents_equals__rel_home(self):
         act_result_producer = ActResultProducerForContentsWithAllReplacedEnvVars(
-            self._act_result_contents_setup,
-            source_file_writer=WriteFileToHomeDir(self.SOURCE_FILE_NAME),
-            source_should_contain_expected_value=True)
+                self._act_result_contents_setup,
+                source_file_writer=WriteFileToHomeDir(self.SOURCE_FILE_NAME),
+                source_should_contain_expected_value=True)
         self._chekk(
-            Flow(self._new_parser(),
-                 act_result_producer=act_result_producer),
-            new_source('instruction-name',
-                       '--with-replaced-env-vars --rel-home {}'.format(self.SOURCE_FILE_NAME))
+                Flow(self._new_parser(),
+                     act_result_producer=act_result_producer),
+                new_source2('--with-replaced-env-vars --rel-home {}'.format(self.SOURCE_FILE_NAME))
         )
 
     def fail__when__contents_not_equals__rel_home(self):
         act_result_producer = ActResultProducerForContentsWithAllReplacedEnvVars(
-            self._act_result_contents_setup,
-            source_file_writer=WriteFileToHomeDir(self.SOURCE_FILE_NAME),
-            source_should_contain_expected_value=False)
+                self._act_result_contents_setup,
+                source_file_writer=WriteFileToHomeDir(self.SOURCE_FILE_NAME),
+                source_should_contain_expected_value=False)
         self._chekk(
-            Flow(self._new_parser(),
-                 act_result_producer=act_result_producer,
-                 expected_main_result=pfh_check.is_fail()),
-            new_source('instruction-name',
-                       '--with-replaced-env-vars --rel-home {}'.format(self.SOURCE_FILE_NAME))
+                Flow(self._new_parser(),
+                     act_result_producer=act_result_producer,
+                     expected_main_result=pfh_check.is_fail()),
+                new_source2('--with-replaced-env-vars --rel-home {}'.format(self.SOURCE_FILE_NAME))
         )
 
     def pass__when__contents_equals__rel_cwd(self):
         act_result_producer = ActResultProducerForContentsWithAllReplacedEnvVars(
-            self._act_result_contents_setup,
-            source_file_writer=WriteFileToCurrentDir(self.SOURCE_FILE_NAME),
-            source_should_contain_expected_value=True)
+                self._act_result_contents_setup,
+                source_file_writer=WriteFileToCurrentDir(self.SOURCE_FILE_NAME),
+                source_should_contain_expected_value=True)
         self._chekk(
-            Flow(self._new_parser(),
-                 act_result_producer=act_result_producer),
-            new_source('instruction-name',
-                       '--with-replaced-env-vars --rel-cwd {}'.format(self.SOURCE_FILE_NAME))
+                Flow(self._new_parser(),
+                     act_result_producer=act_result_producer),
+                new_source2('--with-replaced-env-vars --rel-cwd {}'.format(self.SOURCE_FILE_NAME))
         )
 
     def fail__when__contents_not_equals__rel_cwd(self):
         act_result_producer = ActResultProducerForContentsWithAllReplacedEnvVars(
-            self._act_result_contents_setup,
-            source_file_writer=WriteFileToCurrentDir(self.SOURCE_FILE_NAME),
-            source_should_contain_expected_value=False)
+                self._act_result_contents_setup,
+                source_file_writer=WriteFileToCurrentDir(self.SOURCE_FILE_NAME),
+                source_should_contain_expected_value=False)
         self._chekk(
-            Flow(self._new_parser(),
-                 act_result_producer=act_result_producer,
-                 expected_main_result=pfh_check.is_fail()),
-            new_source('instruction-name',
-                       '--with-replaced-env-vars --rel-cwd {}'.format(self.SOURCE_FILE_NAME))
+                Flow(self._new_parser(),
+                     act_result_producer=act_result_producer,
+                     expected_main_result=pfh_check.is_fail()),
+                new_source2('--with-replaced-env-vars --rel-cwd {}'.format(self.SOURCE_FILE_NAME))
         )
 
 
