@@ -14,7 +14,7 @@ def instruction_man_page(description: Description) -> doc.SectionContents:
     if description.invokation_variants():
         section_contents = _invokation_variants_content(description)
         return doc.SectionContents(prelude_paragraphs,
-                                   [doc.Section(Text('INVOKATION VARIANTS'),
+                                   [doc.Section(Text('SYNOPSIS'),
                                                 section_contents),
                                     doc.Section(Text('DESCRIPTION'),
                                                 doc.SectionContents(main_description_rest,

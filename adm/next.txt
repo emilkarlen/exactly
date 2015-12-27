@@ -3,7 +3,6 @@
 Fortsätt med
 
 * Formattering
-** (valfri) Indentering av lista
 ** INVOKATION VARIANTS -> SYNOPSIS
 ** Konfa mellanrum i lista i data-strukturen
 ... dvs utanför layout-strukturen.
