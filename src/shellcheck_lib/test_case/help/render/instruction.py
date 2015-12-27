@@ -4,6 +4,8 @@ from shellcheck_lib.general.textformat.structure.paragraph import para
 from shellcheck_lib.test_case.help.instruction_description import Description, InvokationVariant, \
     SyntaxElementDescription
 
+LIST_INDENT = 2
+
 
 def instruction_man_page(description: Description) -> doc.SectionContents:
     prelude_paragraphs = [(para('TODO test-case help for instruction ' + description.instruction_name())),
@@ -30,14 +32,19 @@ def instruction_set_list_item(description: Description) -> lists.HeaderContentLi
 
 
 def _invokation_variants_content(description: Description) -> doc.SectionContents:
-    def variants_list(invokation_variants: list) -> paragraph.ParagraphItem:
+    def custom_list_indent(indented: bool) -> int:
+        return LIST_INDENT if indented else None
+
+    def variants_list(invokation_variants: list,
+                      indented: bool = False) -> paragraph.ParagraphItem:
         items = []
         for x in invokation_variants:
             assert isinstance(x, InvokationVariant)
             items.append(lists.HeaderContentListItem(Text(x.syntax),
                                                      x.description_rest))
         return lists.HeaderContentList(lists.ListType.VARIABLE_LIST,
-                                       items)
+                                       items,
+                                       custom_indent_spaces=custom_list_indent(indented))
 
     def syntax_element_description_list() -> paragraph.ParagraphItem:
         items = []
@@ -45,14 +52,14 @@ def _invokation_variants_content(description: Description) -> doc.SectionContent
             assert isinstance(x, SyntaxElementDescription)
             variants_list_paragraphs = []
             if x.invokation_variants:
-                variants_list_paragraphs = [para('where'),
-                                            variants_list(x.invokation_variants)]
+                variants_list_paragraphs = [para('Forms:'),
+                                            variants_list(x.invokation_variants, True)]
             items.append(lists.HeaderContentListItem(Text(x.element_name),
                                                      x.description_rest +
                                                      variants_list_paragraphs))
         return lists.HeaderContentList(lists.ListType.VARIABLE_LIST,
                                        items,
-                                       custom_indent_spaces=2)
+                                       custom_list_indent(True))
 
     def syntax_element_description_paragraph_items() -> list:
         if not description.syntax_element_descriptions():
