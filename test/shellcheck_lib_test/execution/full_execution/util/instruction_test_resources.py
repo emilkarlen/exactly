@@ -88,21 +88,11 @@ class SetupPhaseInstructionWithImplementationErrorInPreValidate(SetupPhaseInstru
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         return sh.new_sh_success()
 
-    def post_validate(self,
-                      global_environment: instrs.GlobalEnvironmentForPostEdsPhase) \
-            -> svh.SuccessOrValidationErrorOrHardError:
-        return svh.new_svh_success()
-
 
 class SetupPhaseInstructionWithImplementationErrorInPostValidate(SetupPhaseInstruction):
     def __init__(self,
                  exception_to_raise: Exception):
         self.__exception_to_raise = exception_to_raise
-
-    def pre_validate(self,
-                     global_environment: instrs.GlobalEnvironmentForPreEdsStep) \
-            -> svh.SuccessOrValidationErrorOrHardError:
-        return svh.new_svh_success()
 
     def main(self,
              os_services: OsServices,
@@ -121,21 +111,11 @@ class SetupPhaseInstructionWithExceptionInExecute(SetupPhaseInstruction):
                  exception_to_raise: Exception):
         self.__exception_to_raise = exception_to_raise
 
-    def pre_validate(self,
-                     global_environment: instrs.GlobalEnvironmentForPreEdsStep) \
-            -> svh.SuccessOrValidationErrorOrHardError:
-        return svh.new_svh_success()
-
     def main(self,
              os_services: OsServices,
              environment: instrs.GlobalEnvironmentForPostEdsPhase,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         raise self.__exception_to_raise
-
-    def post_validate(self,
-                      global_environment: instrs.GlobalEnvironmentForPostEdsPhase) \
-            -> svh.SuccessOrValidationErrorOrHardError:
-        return svh.new_svh_success()
 
 
 class ActPhaseInstructionThatReturns(ActPhaseInstruction):

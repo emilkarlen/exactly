@@ -3,9 +3,8 @@ from shellcheck_lib.general.textformat.structure.paragraph import single_para
 from shellcheck_lib.instructions.multi_phase_instructions import shell as shell_common
 from shellcheck_lib.instructions.multi_phase_instructions.shell import TheDescriptionBase
 from shellcheck_lib.test_case.os_services import OsServices
-from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
+from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
 from shellcheck_lib.test_case.sections.result import sh
-from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
 
 
@@ -26,16 +25,8 @@ class _ShellInstruction(SetupPhaseInstruction):
                  executor: shell_common.Executor):
         self.executor = executor
 
-    def pre_validate(self,
-                     global_environment: GlobalEnvironmentForPreEdsStep) -> svh.SuccessOrValidationErrorOrHardError:
-        return svh.new_svh_success()
-
     def main(self,
              os_services: OsServices,
              environment: GlobalEnvironmentForPostEdsPhase,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         return shell_common.run_and_return_sh(self.executor)
-
-    def post_validate(self,
-                      global_environment: GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
-        return svh.new_svh_success()

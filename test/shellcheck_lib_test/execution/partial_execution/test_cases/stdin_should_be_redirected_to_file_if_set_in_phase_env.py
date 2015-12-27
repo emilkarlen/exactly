@@ -3,15 +3,15 @@ Checks that output to stdout, stderr and the exit code are saved in the correct 
 """
 import unittest
 
+from shellcheck_lib.test_case.os_services import OsServices
+from shellcheck_lib.test_case.sections import common
+from shellcheck_lib.test_case.sections.act.instruction import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.result import svh
-from shellcheck_lib.test_case.sections.act.instruction import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
 from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
-from shellcheck_lib.test_case.os_services import OsServices
-from shellcheck_lib_test.execution.util import utils
 from shellcheck_lib_test.execution.util import py_unit_test_case
+from shellcheck_lib_test.execution.util import utils
 from shellcheck_lib_test.execution.util.py_unit_test_case import TestCaseWithCommonDefaultForSetupAssertCleanup
-from shellcheck_lib.test_case.sections import common
 
 INPUT_TMP_FILE = 'input.txt'
 
@@ -71,21 +71,12 @@ class PyCommandThatStoresStringInFileInCurrentDirectory(SetupPhaseInstruction):
         self.__file_base_name = file_base_name
         self.__text_to_store = text_to_store
 
-    def pre_validate(self,
-                     global_environment: common.GlobalEnvironmentForPreEdsStep) \
-            -> svh.SuccessOrValidationErrorOrHardError:
-        return svh.new_svh_success()
-
     def main(self,
              os_services: OsServices,
              environment: common.GlobalEnvironmentForPostEdsPhase,
              settings_builder: SetupSettingsBuilder):
         with open(self.__file_base_name, 'w') as f:
             f.write(self.__text_to_store)
-        return svh.new_svh_success()
-
-    def post_validate(self, global_environment: common.GlobalEnvironmentForPostEdsPhase) \
-            -> svh.SuccessOrValidationErrorOrHardError:
         return svh.new_svh_success()
 
 

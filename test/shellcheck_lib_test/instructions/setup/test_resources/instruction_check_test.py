@@ -7,7 +7,7 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
     SingleInstructionParserSource
 from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.sections import common
-from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
+from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
@@ -105,10 +105,6 @@ SUCCESSFUL_INSTRUCTION = SetupPhaseInstructionThatReturns(svh.new_svh_success(),
 
 
 class InstructionThatRaisesTestErrorIfCwdIsIsNotTestRoot(SetupPhaseInstruction):
-    def pre_validate(self,
-                     global_environment: GlobalEnvironmentForPreEdsStep) -> svh.SuccessOrValidationErrorOrHardError:
-        return svh.new_svh_success()
-
     def main(self,
              os_services: OsServices,
              environment: GlobalEnvironmentForPostEdsPhase,
