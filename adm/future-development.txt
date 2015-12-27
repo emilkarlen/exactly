@@ -1,0 +1,10 @@
+-*- org -*-
+
+* Multipla fall-filer på kommandoraden kör implicit test-svit
+Möjlighet att ange "anonym" testsvit genom att ange de testfall som ska ingå
+på kommandoraden.
+Argumenten som ger inställningar för testfall (t ex preprocessor,
+act-program-executor) kan hanteras som inställningar för sviten.
+
+Programmet ska köra, och rapportera, som om en svit angivits som innehöll de
+givna fallen.
