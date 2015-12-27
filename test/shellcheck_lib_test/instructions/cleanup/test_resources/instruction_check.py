@@ -37,6 +37,9 @@ class Expectation:
         self.side_effects_check = side_effects_check
 
 
+is_success = Expectation
+
+
 class TestCaseBase(unittest.TestCase):
     def _check(self,
                parser: SingleInstructionParser,

@@ -5,7 +5,7 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
 from shellcheck_lib.instructions.cleanup import shell as sut
 from shellcheck_lib.test_case.help.instruction_description import Description
 from shellcheck_lib_test.instructions.cleanup.test_resources.instruction_check import TestCaseBase, Arrangement, \
-    Expectation
+    Expectation, is_success
 from shellcheck_lib_test.instructions.test_resources import sh_check
 from shellcheck_lib_test.instructions.test_resources.check_description import TestDescriptionBase
 from shellcheck_lib_test.instructions.test_resources.utils import new_source2
@@ -39,7 +39,7 @@ sys.exit(0)
             self._run(
                     new_source2(py_exe.command_line_for_interpreting(script_file_path)),
                     Arrangement(),
-                    Expectation(),
+                    is_success(),
             )
 
     def test_instruction_is_hard_error_WHEN_exit_status_from_command_is_not_0(self):
