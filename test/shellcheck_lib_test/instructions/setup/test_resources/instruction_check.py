@@ -54,7 +54,7 @@ class Expectation:
         self.side_effects_check = side_effects_check
 
 
-success = Expectation
+is_success = Expectation
 
 
 class TestCaseBase(unittest.TestCase):
