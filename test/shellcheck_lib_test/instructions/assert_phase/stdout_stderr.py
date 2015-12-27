@@ -271,43 +271,44 @@ class TestFileContentsFileRelHomeFORStderr(FileContentsFileRelHome):
 
 class FileContentsFileRelCwd(TestWithParserBase):
     def fail__when__comparison_file_does_not_exist(self):
-        self._chekk(
-                Flow(self._new_parser(),
-                     expected_main_result=pfh_check.is_fail(),
-                     ),
-                new_source2('--rel-cwd f.txt'))
+        self._run(
+                new_source2('--rel-cwd f.txt'),
+                Arrangement(),
+                Expectation(expected_main_result=pfh_check.is_fail()),
+        )
 
     def fail__when__comparison_file_is_a_directory(self):
-        self._chekk(
-                Flow(self._new_parser(),
-                     eds_contents_before_main=act_dir_contents(DirContents(
-                             [empty_dir('dir')])),
-                     expected_main_result=pfh_check.is_fail(),
-                     ),
-                new_source2('--rel-cwd dir'))
+        self._run(
+                new_source2('--rel-cwd dir'),
+                Arrangement(eds_contents_before_main=act_dir_contents(DirContents(
+                        [empty_dir('dir')]))),
+                Expectation(expected_main_result=pfh_check.is_fail()),
+        )
 
     def fail__when__contents_differ(self,
                                     act_result: ActResult,
                                     expected_contents: str):
-        self._chekk(
-                Flow(self._new_parser(),
-                     eds_contents_before_main=act_dir_contents(DirContents(
-                             [File('f.txt', expected_contents)])),
-                     act_result_producer=ActResultProducer(act_result),
-                     expected_main_result=pfh_check.is_fail(),
-                     ),
-                new_source2('--rel-cwd f.txt'))
+        self._run(
+                new_source2('--rel-cwd f.txt'),
+                Arrangement(
+                        eds_contents_before_main=act_dir_contents(DirContents(
+                                [File('f.txt', expected_contents)])),
+                        act_result_producer=ActResultProducer(act_result)),
+                Expectation(
+                        expected_main_result=pfh_check.is_fail()),
+        )
 
     def pass__when__contents_equals(self,
                                     act_result: ActResult,
                                     expected_contents: str):
-        self._chekk(
-                Flow(self._new_parser(),
-                     eds_contents_before_main=act_dir_contents(DirContents(
-                             [File('f.txt', expected_contents)])),
-                     act_result_producer=ActResultProducer(act_result),
-                     ),
-                new_source2('--rel-cwd f.txt'))
+        self._run(
+                new_source2('--rel-cwd f.txt'),
+                Arrangement(
+                        eds_contents_before_main=act_dir_contents(DirContents(
+                                [File('f.txt', expected_contents)])),
+                        act_result_producer=ActResultProducer(act_result)),
+                is_pass(),
+        )
 
 
 class FileContentsFileRelTmp(TestWithParserBase):
