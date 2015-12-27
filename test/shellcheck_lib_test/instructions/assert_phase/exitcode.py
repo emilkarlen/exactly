@@ -6,7 +6,7 @@ from shellcheck_lib.instructions.assert_phase import exitcode as sut
 from shellcheck_lib.test_case.help.instruction_description import Description
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib_test.instructions.assert_phase.test_resources import instruction_check
-from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_check import Flow, ActResultProducer, \
+from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_check import ActResultProducer, \
     Arrangement, Expectation, is_pass
 from shellcheck_lib_test.instructions.test_resources import pfh_check
 from shellcheck_lib_test.instructions.test_resources import utils
@@ -183,28 +183,27 @@ class TestParseAndExecuteTwoArgumentsGt(TestCaseBaseForParser):
         )
 
 
-class TestParseAndExecuteTwoArgumentsGe(instruction_check.TestCaseBase):
+class TestParseAndExecuteTwoArgumentsGe(TestCaseBaseForParser):
     def test_pass(self):
-        self._chekk(
-                Flow(sut.Parser(),
-                     act_result_producer=ActResultProducer(utils.ActResult(exitcode=72)),
-                     ),
-                new_source2(' >= 28'))
+        self._run(
+                new_source2(' >= 28'),
+                Arrangement(act_result_producer=ActResultProducer(utils.ActResult(exitcode=72))),
+                is_pass(),
+        )
 
     def test_pass_equal(self):
-        self._chekk(
-                Flow(sut.Parser(),
-                     act_result_producer=ActResultProducer(utils.ActResult(exitcode=72)),
-                     ),
-                new_source2(' >= 72'))
+        self._run(
+                new_source2(' >= 72'),
+                Arrangement(act_result_producer=ActResultProducer(utils.ActResult(exitcode=72))),
+                is_pass(),
+        )
 
     def test_fail_unequal(self):
-        self._chekk(
-                Flow(sut.Parser(),
-                     act_result_producer=ActResultProducer(utils.ActResult(exitcode=72)),
-                     expected_main_result=pfh_check.is_fail()
-                     ),
-                new_source2(' >= 87'))
+        self._run(
+                new_source2(' >= 87'),
+                Arrangement(act_result_producer=ActResultProducer(utils.ActResult(exitcode=72))),
+                Expectation(expected_main_result=pfh_check.is_fail()),
+        )
 
 
 class TestDescription(TestDescriptionBase):
