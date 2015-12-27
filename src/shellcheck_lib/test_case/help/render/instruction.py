@@ -53,13 +53,17 @@ def _invokation_variants_content(description: Description) -> doc.SectionContent
             variants_list_paragraphs = []
             if x.invokation_variants:
                 variants_list_paragraphs = [para('Forms:'),
-                                            variants_list(x.invokation_variants, True)]
+                                            variants_list(x.invokation_variants,
+                                                          True,
+                                                          )]
             items.append(lists.HeaderContentListItem(Text(x.element_name),
                                                      x.description_rest +
                                                      variants_list_paragraphs))
+        separations = lists.Separations(1, 0)
         return lists.HeaderContentList(items,
                                        lists.Format(lists.ListType.VARIABLE_LIST,
-                                                    custom_indent_spaces=custom_list_indent(True)))
+                                                    custom_indent_spaces=custom_list_indent(True),
+                                                    custom_separations=separations))
 
     def syntax_element_description_paragraph_items() -> list:
         if not description.syntax_element_descriptions():
