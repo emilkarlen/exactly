@@ -6,7 +6,7 @@ from shellcheck_lib.instructions.configuration import home as sut
 from shellcheck_lib.test_case.help.instruction_description import Description
 from shellcheck_lib.test_case.sections.anonymous import ConfigurationBuilder
 from shellcheck_lib_test.instructions.configuration.test_resources import configuration_check as config_check
-from shellcheck_lib_test.instructions.configuration.test_resources.instruction_check import Flow, TestCaseBase, \
+from shellcheck_lib_test.instructions.configuration.test_resources.instruction_check import TestCaseBase, \
     Arrangement, Expectation
 from shellcheck_lib_test.instructions.test_resources import sh_check
 from shellcheck_lib_test.instructions.test_resources.check_description import TestDescriptionBase
@@ -50,31 +50,32 @@ class TestFailingExecution(TestCaseBaseForParser):
         )
 
 
-class TestSuccessfulExecution(TestCaseBase):
+class TestSuccessfulExecution(TestCaseBaseForParser):
     def test_change_to_direct_sub_dir(self):
         directory_name = 'existing-directory'
-        self._chekk(
-                Flow(sut.Parser(),
-                     home_dir_contents=DirContents([empty_dir(directory_name)]),
-                     expected_configuration=AssertActualHomeDirIsDirectSubDirOfOriginalHomeDir(directory_name)),
-                new_source2(directory_name))
+        self._run(
+                new_source2(directory_name),
+                Arrangement(home_dir_contents=DirContents([empty_dir(directory_name)])),
+                Expectation(expected_configuration=AssertActualHomeDirIsDirectSubDirOfOriginalHomeDir(directory_name))
+        )
 
     def test_change_to_2_level_sub_dir(self):
         first_dir = 'first_dir'
         second_dir = 'second_dir'
-        self._chekk(
-                Flow(sut.Parser(),
-                     home_dir_contents=DirContents([Dir(first_dir,
-                                                        [empty_dir(second_dir)])]),
-                     expected_configuration=AssertActualHomeDirIs2LevelSubDirOfOriginalHomeDir(first_dir,
-                                                                                               second_dir)),
-                new_source2('{}/{}'.format(first_dir, second_dir)))
+        self._run(
+                new_source2('{}/{}'.format(first_dir, second_dir)),
+                Arrangement(home_dir_contents=DirContents([Dir(first_dir,
+                                                               [empty_dir(second_dir)])])),
+                Expectation(expected_configuration=AssertActualHomeDirIs2LevelSubDirOfOriginalHomeDir(first_dir,
+                                                                                                      second_dir))
+        )
 
     def test_change_to_parent_dir(self):
-        self._chekk(
-                Flow(sut.Parser(),
-                     expected_configuration=AssertActualHomeDirIsParentOfOriginalHomeDir()),
-                new_source2('..'))
+        self._run(
+                new_source2('..'),
+                Arrangement(),
+                Expectation(expected_configuration=AssertActualHomeDirIsParentOfOriginalHomeDir())
+        )
 
 
 class AssertActualHomeDirIsDirectSubDirOfOriginalHomeDir(config_check.Assertion):
