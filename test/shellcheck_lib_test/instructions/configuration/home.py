@@ -39,14 +39,14 @@ class TestFailingExecution(TestCaseBaseForParser):
         self._run(
                 new_source2('non-existing-path'),
                 Arrangement(),
-                Expectation(expected_main_result=sh_check.IsHardError()))
+                Expectation(main_result=sh_check.IsHardError()))
 
     def test_hard_error_WHEN_path_exists_but_is_a_file(self):
         file_name = 'existing-plain-file'
         self._run(
                 new_source2(file_name),
                 Arrangement(home_dir_contents=DirContents([empty_file(file_name)])),
-                Expectation(expected_main_result=sh_check.IsHardError())
+                Expectation(main_result=sh_check.IsHardError())
         )
 
 
@@ -56,7 +56,7 @@ class TestSuccessfulExecution(TestCaseBaseForParser):
         self._run(
                 new_source2(directory_name),
                 Arrangement(home_dir_contents=DirContents([empty_dir(directory_name)])),
-                Expectation(expected_configuration=AssertActualHomeDirIsDirectSubDirOfOriginalHomeDir(directory_name))
+                Expectation(configuration=AssertActualHomeDirIsDirectSubDirOfOriginalHomeDir(directory_name))
         )
 
     def test_change_to_2_level_sub_dir(self):
@@ -66,15 +66,15 @@ class TestSuccessfulExecution(TestCaseBaseForParser):
                 new_source2('{}/{}'.format(first_dir, second_dir)),
                 Arrangement(home_dir_contents=DirContents([Dir(first_dir,
                                                                [empty_dir(second_dir)])])),
-                Expectation(expected_configuration=AssertActualHomeDirIs2LevelSubDirOfOriginalHomeDir(first_dir,
-                                                                                                      second_dir))
+                Expectation(configuration=AssertActualHomeDirIs2LevelSubDirOfOriginalHomeDir(first_dir,
+                                                                                             second_dir))
         )
 
     def test_change_to_parent_dir(self):
         self._run(
                 new_source2('..'),
                 Arrangement(),
-                Expectation(expected_configuration=AssertActualHomeDirIsParentOfOriginalHomeDir())
+                Expectation(configuration=AssertActualHomeDirIsParentOfOriginalHomeDir())
         )
 
 
