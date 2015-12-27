@@ -1,22 +1,6 @@
 from shellcheck_lib.general.textformat.structure.core import Text
 
-from shellcheck_lib.general.textformat.structure.lists import ListType
-
-
-class Separations(tuple):
-    def __new__(cls,
-                num_blank_lines_between_elements: int,
-                num_blank_lines_between_header_and_contents: int):
-        return tuple.__new__(cls, (num_blank_lines_between_elements,
-                                   num_blank_lines_between_header_and_contents))
-
-    @property
-    def num_blank_lines_between_elements(self) -> int:
-        return self[0]
-
-    @property
-    def num_blank_lines_between_header_and_contents(self) -> int:
-        return self[1]
+from shellcheck_lib.general.textformat.structure.lists import ListType, Separations
 
 
 class HeaderAndIndentFormat:
@@ -70,6 +54,12 @@ def list_format_with_indent_str(list_format: ListFormat, indent_str: str) -> Lis
     return ListFormat(list_format.header_format,
                       list_format.separations,
                       indent_str)
+
+
+def list_format_with_separations(list_format: ListFormat, separations: Separations) -> ListFormat:
+    return ListFormat(list_format.header_format,
+                      separations,
+                      list_format.indent_str)
 
 
 class HeaderAndIndentFormatWithConstantValueIndentBase(HeaderAndIndentFormat):

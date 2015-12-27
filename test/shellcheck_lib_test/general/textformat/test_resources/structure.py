@@ -104,6 +104,22 @@ class ListChecker(Assertion):
                                           lists.HeaderContentList,
                                           self.checker.msg('Must be a %s' % lists.HeaderContentList))
         assert isinstance(x, lists.HeaderContentList)
+        ListFormatChecker(new_with_added_prefix('Format: ', self.checker)).apply(x.format)
+        check_list(ListItemChecker,
+                   new_with_added_prefix('Items', self.checker),
+                   x.items)
+
+
+class ListFormatChecker(Assertion):
+    def __init__(self,
+                 checker: CheckerWithMsgPrefix):
+        self.checker = checker
+
+    def apply(self, x):
+        self.checker.put.assertIsInstance(x,
+                                          lists.Format,
+                                          self.checker.msg('Must be an instance of %s' % lists.Format))
+        assert isinstance(x, lists.Format)
         self.checker.put.assertIsInstance(x.list_type,
                                           lists.ListType,
                                           self.checker.msg('List type must be instance of %s' % lists.ListType))
@@ -111,9 +127,11 @@ class ListChecker(Assertion):
             self.checker.put.assertIsInstance(x.custom_indent_spaces,
                                               int,
                                               self.checker.msg('custom_indent_spaces must be either None or an int'))
-        check_list(ListItemChecker,
-                   new_with_added_prefix('Items: ', self.checker),
-                   x.items)
+        if x.custom_separations is not None:
+            self.checker.put.assertIsInstance(
+                    x.custom_separations,
+                    lists.Separations,
+                    self.checker.msg('custom_separations must be either None or an %s' % lists.Separations))
 
 
 class ListItemChecker(Assertion):
@@ -128,7 +146,7 @@ class ListItemChecker(Assertion):
         assert isinstance(item, lists.HeaderContentListItem)
         TextChecker(new_with_added_prefix('Header: ', self.checker)).apply(item.header)
         check_list(ParagraphItemChecker,
-                   new_with_added_prefix('Values: ', self.checker),
+                   new_with_added_prefix('Values', self.checker),
                    item.content_paragraph_items)
 
 
@@ -143,10 +161,10 @@ class SectionContentsChecker(Assertion):
                                           self.checker.msg('Must be SectionContents instance'))
         assert isinstance(x, doc.SectionContents)
         check_list(ParagraphItemChecker,
-                   new_with_added_prefix('Initial paras: ', self.checker),
+                   new_with_added_prefix('Initial paras', self.checker),
                    x.initial_paragraphs)
         check_list(SectionChecker,
-                   new_with_added_prefix('sections: ', self.checker),
+                   new_with_added_prefix('sections', self.checker),
                    x.sections)
 
 

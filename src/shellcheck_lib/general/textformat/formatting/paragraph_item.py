@@ -1,7 +1,8 @@
-from shellcheck_lib.general.textformat.formatting.lists import ListFormats, ListFormat, list_format_with_indent_str
+from shellcheck_lib.general.textformat.formatting.lists import ListFormats, ListFormat, list_format_with_indent_str, \
+    list_format_with_separations
 from shellcheck_lib.general.textformat.formatting.wrapper import Indent, Wrapper, identical_indent
 from shellcheck_lib.general.textformat.structure.core import Text, ParagraphItem
-from shellcheck_lib.general.textformat.structure.lists import HeaderContentList, HeaderContentListItem
+from shellcheck_lib.general.textformat.structure.lists import HeaderContentList, HeaderContentListItem, Format
 from shellcheck_lib.general.textformat.structure.paragraph import Paragraph
 from shellcheck_lib.general.textformat.structure.utils import ParagraphItemVisitor
 
@@ -38,10 +39,7 @@ class Formatter:
         return self.wrapper.wrap(text.value)
 
     def format_header_content_list(self, the_list: HeaderContentList) -> list:
-        list_format = self.list_formats.for_type(the_list.list_type)
-        if the_list.custom_indent_spaces is not None:
-            indent_str = the_list.custom_indent_spaces * ' '
-            list_format = list_format_with_indent_str(list_format, indent_str)
+        list_format = self.resolve_list_format(the_list.format)
         return self.format_header_value_list_according_to_format(the_list.items,
                                                                  list_format)
 
@@ -52,6 +50,15 @@ class Formatter:
         :type items: [HeaderValueListItem]
         """
         return _ListFormatter(self, list_format, items).apply()
+
+    def resolve_list_format(self, format_on_list: Format) -> ListFormat:
+        list_format = self.list_formats.for_type(format_on_list.list_type)
+        if format_on_list.custom_indent_spaces is not None:
+            indent_str = format_on_list.custom_indent_spaces * ' '
+            list_format = list_format_with_indent_str(list_format, indent_str)
+        if format_on_list.custom_separations is not None:
+            list_format = list_format_with_separations(list_format, format_on_list.custom_separations)
+        return list_format
 
 
 class _ListFormatter:

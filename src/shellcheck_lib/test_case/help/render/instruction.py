@@ -42,9 +42,9 @@ def _invokation_variants_content(description: Description) -> doc.SectionContent
             assert isinstance(x, InvokationVariant)
             items.append(lists.HeaderContentListItem(Text(x.syntax),
                                                      x.description_rest))
-        return lists.HeaderContentList(lists.ListType.VARIABLE_LIST,
-                                       items,
-                                       custom_indent_spaces=custom_list_indent(indented))
+        return lists.HeaderContentList(items,
+                                       lists.Format(lists.ListType.VARIABLE_LIST,
+                                                    custom_indent_spaces=custom_list_indent(indented)))
 
     def syntax_element_description_list() -> paragraph.ParagraphItem:
         items = []
@@ -57,9 +57,9 @@ def _invokation_variants_content(description: Description) -> doc.SectionContent
             items.append(lists.HeaderContentListItem(Text(x.element_name),
                                                      x.description_rest +
                                                      variants_list_paragraphs))
-        return lists.HeaderContentList(lists.ListType.VARIABLE_LIST,
-                                       items,
-                                       custom_list_indent(True))
+        return lists.HeaderContentList(items,
+                                       lists.Format(lists.ListType.VARIABLE_LIST,
+                                                    custom_indent_spaces=custom_list_indent(True)))
 
     def syntax_element_description_paragraph_items() -> list:
         if not description.syntax_element_descriptions():

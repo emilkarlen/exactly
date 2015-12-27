@@ -60,7 +60,7 @@ class InvokationVariantChecker(struct_check.Assertion):
                                           str,
                                           self.checker.msg('syntax be instance of %s' % str))
         struct_check.check_list(struct_check.ParagraphItemChecker,
-                                struct_check.new_with_added_prefix('description_rest: ', self.checker),
+                                struct_check.new_with_added_prefix('description_rest', self.checker),
                                 x.description_rest)
 
 
@@ -78,7 +78,7 @@ class SyntaxElementDescriptionChecker(struct_check.Assertion):
                                           str,
                                           self.checker.msg('element_name be instance of %s' % str))
         struct_check.check_list(struct_check.ParagraphItemChecker,
-                                struct_check.new_with_added_prefix('description_rest: ', self.checker),
+                                struct_check.new_with_added_prefix('description_rest', self.checker),
                                 x.description_rest)
         struct_check.check_list(InvokationVariantChecker,
                                 struct_check.new_with_added_prefix('invokation_variants: ', self.checker),

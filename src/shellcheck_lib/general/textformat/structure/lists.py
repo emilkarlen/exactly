@@ -30,17 +30,54 @@ class ListType(Enum):
     VARIABLE_LIST = 3
 
 
-class HeaderContentList(ParagraphItem):
-    def __init__(self,
-                 list_type: ListType,
-                 items: iter,
-                 custom_indent_spaces: int = None):
+class Separations(tuple):
+    def __new__(cls,
+                num_blank_lines_between_elements: int,
+                num_blank_lines_between_header_and_contents: int):
+        return tuple.__new__(cls, (num_blank_lines_between_elements,
+                                   num_blank_lines_between_header_and_contents))
+
+    @property
+    def num_blank_lines_between_elements(self) -> int:
+        return self[0]
+
+    @property
+    def num_blank_lines_between_header_and_contents(self) -> int:
+        return self[1]
+
+
+class Format(tuple):
+    def __new__(cls,
+                list_type: ListType,
+                custom_indent_spaces: int = None,
+                custom_separations: Separations = None):
         """
         :param custom_indent_spaces: Indentation of the list.
         Overrides settings defined by a formatter.
-        :param items: [HeaderValueListItem]
-        :return:
         """
-        self.list_type = list_type
+        return tuple.__new__(cls, (list_type,
+                                   custom_indent_spaces,
+                                   custom_separations))
+
+    @property
+    def list_type(self) -> ListType:
+        return self[0]
+
+    @property
+    def custom_indent_spaces(self) -> int:
+        return self[1]
+
+    @property
+    def custom_separations(self) -> Separations:
+        return self[2]
+
+
+class HeaderContentList(ParagraphItem):
+    def __init__(self,
+                 items: iter,
+                 list_format: Format):
+        """
+        :param items: [HeaderValueListItem]
+        """
         self.items = items
-        self.custom_indent_spaces = custom_indent_spaces
+        self.format = list_format

@@ -48,8 +48,8 @@ class TheDescription(Description):
                 lists.HeaderContentListItem(core.Text(k),
                                             type_description(k))
                 for k in sorted(FILE_TYPES.keys())]
-            return lists.HeaderContentList(lists.ListType.VARIABLE_LIST,
-                                           list_items)
+            return lists.HeaderContentList(list_items,
+                                           lists.Format(lists.ListType.VARIABLE_LIST))
 
         return [
             SyntaxElementDescription('TYPE',

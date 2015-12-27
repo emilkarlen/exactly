@@ -21,5 +21,5 @@ def _instruction_list(instruction_set: TestCasePhaseInstructionSet) -> lists.Hea
     for description in instruction_set.instruction_descriptions:
         list_item = instruction_set_list_item(description)
         instruction_list_items.append(list_item)
-    return lists.HeaderContentList(lists.ListType.VARIABLE_LIST,
-                                   instruction_list_items)
+    return lists.HeaderContentList(instruction_list_items,
+                                   lists.Format(lists.ListType.VARIABLE_LIST))
