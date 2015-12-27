@@ -35,9 +35,6 @@ class TheDescription(Description):
     def single_line_description(self) -> str:
         return self._single_line_description
 
-    def main_description_rest(self) -> list:
-        return single_para('TODO')
-
     def invokation_variants(self) -> list:
         return [
             InvokationVariant(
