@@ -10,16 +10,16 @@ from shellcheck_lib_test.test_resources import python_program_execution as py_ex
 
 class TestCasesThatTestIntegrationByAFewRandomTests(TestCaseBase):
     def test_successful_execution(self):
-        self._check(Flow(_PARSER),
+        self._chekk(Flow(_PARSER),
                     single_line_source(py_exe.command_line_for_executing_program_via_command_line('exit(0)')))
 
     def test_failing_execution(self):
-        self._check(Flow(_PARSER,
+        self._chekk(Flow(_PARSER,
                          expected_main_result=pfh_check.is_fail()),
                     single_line_source(py_exe.command_line_for_executing_program_via_command_line('exit(1)')))
 
     def test_failing_validation(self):
-        self._check(Flow(_PARSER,
+        self._chekk(Flow(_PARSER,
                          expected_validation_result=svh_check.is_validation_error()),
                     single_line_source('/absolute/path/to/program/that/does/not/exist'))
 

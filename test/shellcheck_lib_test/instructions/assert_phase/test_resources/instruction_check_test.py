@@ -26,39 +26,39 @@ if __name__ == '__main__':
 
 class TestCases(instruction_check.TestCaseBase):
     def test_successful_flow(self):
-        self._check(
+        self._chekk(
             instruction_check.Flow(test_misc.ParserThatGives(SUCCESSFUL_INSTRUCTION)),
             test_misc.single_line_source())
 
     def test_fail_due_to_unexpected_result_from_pre_validation(self):
         with self.assertRaises(test_misc.TestError):
-            self._check(
+            self._chekk(
                 instruction_check.Flow(test_misc.ParserThatGives(SUCCESSFUL_INSTRUCTION),
                                        expected_validation_result=test_misc.SvhRaisesTestError()),
                 test_misc.single_line_source())
 
     def test_fail_due_to_unexpected_result_from_main(self):
         with self.assertRaises(test_misc.TestError):
-            self._check(
+            self._chekk(
                 instruction_check.Flow(test_misc.ParserThatGives(SUCCESSFUL_INSTRUCTION),
                                        expected_main_result=test_misc.PfhRaisesTestError()),
                 test_misc.single_line_source())
 
     def test_fail_due_to_fail_of_side_effects_on_files(self):
         with self.assertRaises(test_misc.TestError):
-            self._check(
+            self._chekk(
                 instruction_check.Flow(test_misc.ParserThatGives(SUCCESSFUL_INSTRUCTION),
                                        expected_main_side_effects_on_files=test_misc.EdsContentsRaisesTestError()),
                 test_misc.single_line_source())
 
     def test_that_cwd_for_main_and_post_validation_is_test_root(self):
-        self._check(
+        self._chekk(
             instruction_check.Flow(test_misc.ParserThatGives(InstructionThatRaisesTestErrorIfCwdIsIsNotTestRoot())),
             test_misc.single_line_source())
 
     def test_fail_due_to_side_effects_check(self):
         with self.assertRaises(test_misc.TestError):
-            self._check(
+            self._chekk(
                 instruction_check.Flow(test_misc.ParserThatGives(SUCCESSFUL_INSTRUCTION),
                                        side_effects_check=test_misc.SideEffectsCheckThatRaisesTestError()),
                 test_misc.single_line_source())
