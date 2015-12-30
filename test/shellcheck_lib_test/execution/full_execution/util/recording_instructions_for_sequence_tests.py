@@ -8,7 +8,7 @@ from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
-from shellcheck_lib_test.execution.util.instruction_adapter import InternalInstruction
+from shellcheck_lib_test.execution.test_resources.instruction_adapter import InternalInstruction
 
 
 class ListElementRecorder:
