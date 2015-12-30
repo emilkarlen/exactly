@@ -176,7 +176,7 @@ class PartialExecutor:
             self.__partial_result = res
 
     @property
-    def execution_directory_structure(self) -> ExecutionDirectoryStructure:
+    def _execution_directory_structure(self) -> ExecutionDirectoryStructure:
         if not self.__execution_directory_structure:
             raise ValueError('execution_directory_structure')
         return self.__execution_directory_structure
@@ -196,7 +196,7 @@ class PartialExecutor:
         return self.__global_environment
 
     def _store_exit_code(self, exitcode: int):
-        with open(str(self.execution_directory_structure.result.exitcode_file), 'w') as f:
+        with open(str(self._execution_directory_structure.result.exitcode_file), 'w') as f:
             f.write(str(exitcode))
 
     def __run_setup_pre_validate(self) -> PartialResult:
@@ -273,7 +273,7 @@ class PartialExecutor:
                                                                  environment),
                 phases.ACT,
                 phase_step.ACT_script_generate,
-                self.execution_directory_structure)
+                self._execution_directory_structure)
         self.___step_execution_result.script_source = script_builder.build()
         return ret_val
 
@@ -333,8 +333,8 @@ class PartialExecutor:
         """
         Pre-condition: write has been executed.
         """
-        with open(str(self.execution_directory_structure.result.stdout_file), 'w') as f_stdout:
-            with open(str(self.execution_directory_structure.result.stderr_file), 'w') as f_stderr:
+        with open(str(self._execution_directory_structure.result.stdout_file), 'w') as f_stdout:
+            with open(str(self._execution_directory_structure.result.stderr_file), 'w') as f_stderr:
                 exitcode = self.__script_handling.executor.execute(
                         self.__source_setup,
                         self.configuration.home_dir,
@@ -348,13 +348,13 @@ class PartialExecutor:
         os.environ.update(environment_variables.set_at_setup_pre_validate(self.configuration.home_dir))
 
     def __set_cwd_to_act_dir(self):
-        os.chdir(str(self.execution_directory_structure.act_dir))
+        os.chdir(str(self._execution_directory_structure.act_dir))
 
     def __set_post_eds_environment_variables(self):
-        os.environ.update(environment_variables.set_at_setup_main(self.execution_directory_structure))
+        os.environ.update(environment_variables.set_at_setup_main(self._execution_directory_structure))
 
     def __set_assert_environment_variables(self):
-        os.environ.update(environment_variables.set_at_assert(self.execution_directory_structure))
+        os.environ.update(environment_variables.set_at_assert(self._execution_directory_structure))
 
     def __run_internal_instructions_phase_step(self,
                                                phase: phases.Phase,
@@ -367,7 +367,7 @@ class PartialExecutor:
                                                   instruction_executor,
                                                   phase,
                                                   phase_step,
-                                                  self.execution_directory_structure)
+                                                  self._execution_directory_structure)
 
     def _custom_stdin_file_name(self) -> str:
         settings = self.___step_execution_result.stdin_settings
