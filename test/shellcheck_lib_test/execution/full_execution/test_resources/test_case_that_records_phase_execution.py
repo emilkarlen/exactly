@@ -12,11 +12,40 @@ from shellcheck_lib.test_case import test_case_doc
 from shellcheck_lib.test_case.sections.act.phase_setup import ActProgramExecutor, SourceSetup
 from shellcheck_lib.test_case.sections.act.script_source import ScriptSourceBuilder
 from shellcheck_lib.test_case.sections.result import svh
-from shellcheck_lib_test.execution.full_execution.test_resources import recording_instructions_for_sequence_tests as instr
+from shellcheck_lib_test.execution.full_execution.test_resources import \
+    recording_instructions_for_sequence_tests as instr
 from shellcheck_lib_test.execution.full_execution.test_resources.test_case_base import FullExecutionTestCaseBase
 from shellcheck_lib_test.execution.full_execution.test_resources.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorForExecutionRecording
 from shellcheck_lib_test.test_resources.expected_instruction_failure import ExpectedFailure
+
+
+class Expectation(tuple):
+    def __new__(cls,
+                expected_status: FullResultStatus,
+                expected_failure_info: ExpectedFailure,
+                expected_internal_recording: list,
+                execution_directory_structure_should_exist: bool):
+        return tuple.__new__(cls, (expected_status,
+                                   expected_failure_info,
+                                   expected_internal_recording,
+                                   execution_directory_structure_should_exist))
+
+    @property
+    def status(self) -> FullResultStatus:
+        return self[0]
+
+    @property
+    def failure_info(self) -> ExpectedFailure:
+        return self[1]
+
+    @property
+    def internal_recording(self) -> list:
+        return self[2]
+
+    @property
+    def execution_directory_structure_should_exist(self) -> bool:
+        return self[3]
 
 
 class TestCaseThatRecordsExecution(FullExecutionTestCaseBase):
@@ -27,21 +56,15 @@ class TestCaseThatRecordsExecution(FullExecutionTestCaseBase):
     def __init__(self,
                  unittest_case: unittest.TestCase,
                  test_case_generator: TestCaseGeneratorForExecutionRecording,
-                 expected_status: FullResultStatus,
-                 expected_failure_info: ExpectedFailure,
-                 expected_internal_recording: list,
-                 execution_directory_structure_should_exist: bool,
+                 expectation: Expectation,
                  dbg_do_not_delete_dir_structure=False,
-                 script_handling: ScriptHandling=None,
-                 recorder: instr.ListRecorder=None):
+                 script_handling: ScriptHandling = None,
+                 recorder: instr.ListRecorder = None):
         super().__init__(unittest_case,
                          dbg_do_not_delete_dir_structure,
                          script_handling)
         self._test_case_generator = test_case_generator
-        self.__expected_status = expected_status
-        self.__expected_failure_info = expected_failure_info
-        self.__expected_internal_instruction_recording = expected_internal_recording
-        self.__execution_directory_structure_should_exist = execution_directory_structure_should_exist
+        self.__expectation = expectation
         self.__recorder = recorder
         if self.__recorder is None:
             self.__recorder = test_case_generator.recorder
@@ -50,20 +73,20 @@ class TestCaseThatRecordsExecution(FullExecutionTestCaseBase):
         return self._test_case_generator.test_case
 
     def _assertions(self):
-        self.utc.assertEqual(self.__expected_status,
+        self.utc.assertEqual(self.__expectation.status,
                              self.full_result.status,
                              'Unexpected result status')
-        self.__expected_failure_info.assertions(self.utc,
-                                                self.full_result.failure_info)
+        self.__expectation.failure_info.assertions(self.utc,
+                                                   self.full_result.failure_info)
         msg = 'Difference in the sequence of executed phases and steps that are executed internally'
-        self.utc.assertEqual(self.__expected_internal_instruction_recording,
+        self.utc.assertEqual(self.__expectation.internal_recording,
                              self.__recorder.recorded_elements,
                              msg)
-        if self.__execution_directory_structure_should_exist:
+        if self.__expectation.execution_directory_structure_should_exist:
             self.utc.assertIsNotNone(self.eds)
             self.utc.assertTrue(
-                self.eds.root_dir.is_dir(),
-                'Execution Directory Structure root is expected to be a directory')
+                    self.eds.root_dir.is_dir(),
+                    'Execution Directory Structure root is expected to be a directory')
         else:
             self.utc.assertIsNone(self.eds,
                                   'Execution Directory Structure is expected to not be created')
@@ -120,7 +143,7 @@ class _ActProgramExecutorWrapperThatRecordsSteps(ActProgramExecutor):
         self.__execute_test_action = execute_test_action
 
     def validate(self,
-                 home_dir:  pathlib.Path(),
+                 home_dir: pathlib.Path(),
                  source: ScriptSourceBuilder) -> svh.SuccessOrValidationErrorOrHardError:
         self.__recorder.recording_of(phase_step.ACT__SCRIPT_VALIDATE).record()
         test_action_result = self.__validate_test_action()
@@ -149,10 +172,7 @@ class _ActProgramExecutorWrapperThatRecordsSteps(ActProgramExecutor):
 
 def new_test_case_with_recording(unittest_case: unittest.TestCase,
                                  test_case_generator: TestCaseGeneratorForExecutionRecording,
-                                 expected_status: FullResultStatus,
-                                 expected_failure_info: ExpectedFailure,
-                                 expected_internal_recording: list,
-                                 execution_directory_structure_should_exist: bool,
+                                 expectation: Expectation,
                                  validate_test_action=validate_action_that_returns(svh.new_svh_success()),
                                  execute_test_action=execute_action_that_does_nothing(),
                                  dbg_do_not_delete_dir_structure=False) -> TestCaseThatRecordsExecution:
@@ -162,10 +182,7 @@ def new_test_case_with_recording(unittest_case: unittest.TestCase,
                                                           execute_test_action)
     return TestCaseThatRecordsExecution(unittest_case,
                                         test_case_generator,
-                                        expected_status,
-                                        expected_failure_info,
-                                        expected_internal_recording,
-                                        execution_directory_structure_should_exist,
+                                        expectation,
                                         dbg_do_not_delete_dir_structure,
                                         script_handling,
                                         test_case_generator.recorder)
