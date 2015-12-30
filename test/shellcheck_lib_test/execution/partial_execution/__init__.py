@@ -10,10 +10,7 @@ from shellcheck_lib_test.execution.partial_execution.test_resources import py3_t
 
 class Test(unittest.TestCase):
     def test_act_phase_should_be_transformed_to_script_file(self):
-        py3_test(
-                self,
-                act_phase_should_be_transformed_to_script_file.TestCaseDocument().test_case,
-                act_phase_should_be_transformed_to_script_file.assertions)
+        act_phase_should_be_transformed_to_script_file.TheTest(self).execute()
 
     def test_result_from_act_phase_should_be_saved(self):
         py3_test(
