@@ -1,9 +1,8 @@
 from enum import Enum
 
-from shellcheck_lib.execution import result
-from shellcheck_lib.execution.result import FailureDetails, PartialResultStatus
-from shellcheck_lib.general import line_source
 from shellcheck_lib.document.model import Instruction, PhaseContentElement
+from shellcheck_lib.execution import result
+from shellcheck_lib.general import line_source
 
 
 class PartialControlledFailureEnum(Enum):
@@ -67,15 +66,15 @@ class SingleInstructionExecutionFailure(tuple):
     """
 
     def __new__(cls,
-                status: PartialResultStatus,
+                status: result.PartialResultStatus,
                 source_line: line_source.Line,
-                failure_details: FailureDetails):
+                failure_details: result.FailureDetails):
         return tuple.__new__(cls, (status,
                                    source_line,
                                    failure_details))
 
     @property
-    def status(self) -> PartialResultStatus:
+    def status(self) -> result.PartialResultStatus:
         """
         :return: Never PartialResultStatus.PASS
         """
@@ -86,7 +85,7 @@ class SingleInstructionExecutionFailure(tuple):
         return self[1]
 
     @property
-    def failure_details(self) -> FailureDetails:
+    def failure_details(self) -> result.FailureDetails:
         return self[2]
 
 
@@ -101,10 +100,10 @@ def execute_element(executor: ControlledInstructionExecutor,
         fail_info = executor.apply(element.instruction)
         if fail_info is None:
             return None
-        return SingleInstructionExecutionFailure(PartialResultStatus(fail_info.status.value),
+        return SingleInstructionExecutionFailure(result.PartialResultStatus(fail_info.status.value),
                                                  element.first_line,
                                                  result.new_failure_details_from_message(fail_info.error_message))
     except Exception as ex:
-        return SingleInstructionExecutionFailure(PartialResultStatus.IMPLEMENTATION_ERROR,
+        return SingleInstructionExecutionFailure(result.PartialResultStatus.IMPLEMENTATION_ERROR,
                                                  element.first_line,
                                                  result.new_failure_details_from_exception(ex))
