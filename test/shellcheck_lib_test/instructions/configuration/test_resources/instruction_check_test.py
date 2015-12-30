@@ -7,7 +7,7 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
     SingleInstructionParserSource
 from shellcheck_lib.test_case.sections.anonymous import ConfigurationBuilder
 from shellcheck_lib.test_case.sections.result import sh
-from shellcheck_lib_test.execution.full_execution.util.instruction_test_resources import \
+from shellcheck_lib_test.execution.full_execution.test_resources.instruction_test_resources import \
     AnonymousPhaseInstructionThatReturns
 from shellcheck_lib_test.instructions.configuration.test_resources import configuration_check
 from shellcheck_lib_test.instructions.configuration.test_resources import instruction_check
