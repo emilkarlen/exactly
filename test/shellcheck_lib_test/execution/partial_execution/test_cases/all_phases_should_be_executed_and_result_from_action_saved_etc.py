@@ -9,6 +9,8 @@ from shellcheck_lib.execution.partial_execution import Configuration
 from shellcheck_lib.test_case.sections import common
 from shellcheck_lib.test_case.sections.act.instruction import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
 from shellcheck_lib.test_case.sections.result import sh
+from shellcheck_lib_test.execution.partial_execution.test_resources import \
+    TestCaseWithCommonDefaultForSetupAssertCleanup
 from shellcheck_lib_test.execution.test_resources import py_unit_test_case
 from shellcheck_lib_test.execution.test_resources import py_unit_test_case_with_file_output as with_file_output
 from shellcheck_lib_test.execution.test_resources import utils
@@ -22,7 +24,7 @@ CURRENT_DIR_HEADER = 'Current Dir'
 EXIT_CODE = 5
 
 
-class TestCaseDocument(py_unit_test_case.TestCaseWithCommonDefaultForSetupAssertCleanup):
+class TestCaseDocument(TestCaseWithCommonDefaultForSetupAssertCleanup):
     def _default_instructions_for_setup_assert_cleanup(self, phase: phases.Phase) -> list:
         return [
             InternalInstructionThatCreatesAStandardPhaseFileInTestRootContainingDirectoryPaths(phase)
@@ -51,10 +53,10 @@ def assertions(utc: unittest.TestCase,
     file_name_from_py_cmd_list = [with_file_output.standard_phase_file_base_name(phase)
                                   for phase in [phases.SETUP, phases.ASSERT, phases.CLEANUP]]
     assert_files_in_test_root_that_contain_name_of_test_root_dir(
-        utc,
-        actual.partial_executor.execution_directory_structure,
-        actual.partial_executor.global_environment,
-        file_name_from_py_cmd_list)
+            utc,
+            actual.partial_executor.execution_directory_structure,
+            actual.partial_executor.global_environment,
+            file_name_from_py_cmd_list)
 
 
 def assert_files_in_test_root_that_contain_name_of_test_root_dir(
@@ -69,11 +71,11 @@ def assert_files_in_test_root_that_contain_name_of_test_root_dir(
         file_path = eds.act_dir / base_name
         file_name = str(file_path)
         utc.assertTrue(
-            file_path.exists(),
-            'py-cmd File should exist: ' + file_name)
+                file_path.exists(),
+                'py-cmd File should exist: ' + file_name)
         utc.assertTrue(
-            file_path.is_file(),
-            'py-cmd Should be a regular file: ' + file_name)
+                file_path.is_file(),
+                'py-cmd Should be a regular file: ' + file_name)
         with open(str(file_path)) as f:
             actual_contents = f.read()
             utc.assertEqual(expected_contents,
@@ -93,16 +95,16 @@ def py_cmd_file_lines(cwd: pathlib.Path,
 
 
 class InternalInstructionThatCreatesAStandardPhaseFileInTestRootContainingDirectoryPaths(
-    InternalInstructionThatWritesToStandardPhaseFile):
+        InternalInstructionThatWritesToStandardPhaseFile):
     def __init__(self,
                  phase: phases.Phase):
         super().__init__(phase)
 
     def _file_lines(self, environment: common.GlobalEnvironmentForPostEdsPhase) -> list:
         return py_cmd_file_lines(
-            pathlib.Path().resolve(),
-            environment.home_directory,
-            environment.eds)
+                pathlib.Path().resolve(),
+                environment.home_directory,
+                environment.eds)
 
 
 class ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr(ActPhaseInstruction):
@@ -140,17 +142,17 @@ class ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr(ActPhaseInstruction):
                         line_prefix: str,
                         dir_path: pathlib.Path) -> str:
         return ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr.write_prefix_and_expr(
-            output_file,
-            line_prefix,
-            '\'' + str(dir_path) + '\'')
+                output_file,
+                line_prefix,
+                '\'' + str(dir_path) + '\'')
 
     @staticmethod
     def write_env_var(output_file: str,
                       var_name: str) -> str:
         return ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr.write_prefix_and_expr(
-            output_file,
-            var_name,
-            'os.environ[\'%s\']' % var_name)
+                output_file,
+                var_name,
+                'os.environ[\'%s\']' % var_name)
 
     @staticmethod
     def write_prefix_and_expr(output_file: str,

@@ -7,10 +7,10 @@ import unittest
 from shellcheck_lib.test_case.sections import common
 from shellcheck_lib.test_case.sections.act.instruction import PhaseEnvironmentForScriptGeneration, ActPhaseInstruction
 from shellcheck_lib.test_case.sections.result import sh
+from shellcheck_lib_test.execution.partial_execution.test_resources import \
+    TestCaseWithCommonDefaultForSetupAssertCleanup
 from shellcheck_lib_test.execution.test_resources import py_unit_test_case
 from shellcheck_lib_test.execution.test_resources import utils
-from shellcheck_lib_test.execution.test_resources.py_unit_test_case import \
-    TestCaseWithCommonDefaultForSetupAssertCleanup
 
 _TEXT_ON_STDOUT = 'on stdout'
 _TEXT_ON_STDERR = 'on stderr'
