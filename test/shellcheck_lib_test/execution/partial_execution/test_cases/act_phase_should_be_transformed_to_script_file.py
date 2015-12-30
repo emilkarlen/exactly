@@ -3,6 +3,7 @@ import unittest
 
 import shellcheck_lib_test.execution.partial_execution.test_resources
 import shellcheck_lib_test.test_resources.model_utils
+from shellcheck_lib.execution import partial_execution as sut
 from shellcheck_lib.execution import phases
 from shellcheck_lib.general import line_source
 from shellcheck_lib.test_case.sections import common
@@ -10,11 +11,23 @@ from shellcheck_lib.test_case.sections.act.instruction import ActPhaseInstructio
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib_test.execution.partial_execution import test_resources
 from shellcheck_lib_test.execution.partial_execution.test_resources import \
-    TestCaseWithCommonDefaultForSetupAssertCleanup
+    TestCaseWithCommonDefaultForSetupAssertCleanup, PartialExecutionTestCaseBase
 from shellcheck_lib_test.execution.test_resources import utils
 
 HOME_DIR_HEADER = '# Home Dir: '
 TEST_ROOT_DIR_HEADER = '# Test Root Dir: '
+
+
+class TheTest(PartialExecutionTestCaseBase):
+    def __init__(self,
+                 unittest_case: unittest.TestCase):
+        super().__init__(unittest_case)
+
+    def _test_case(self) -> sut.TestCase:
+        return TestCaseDocument().test_case
+
+    def _assertions(self):
+        assertions(self.utc, self.result)
 
 
 class TestCaseDocument(TestCaseWithCommonDefaultForSetupAssertCleanup):
