@@ -16,6 +16,7 @@ from shellcheck_lib_test.execution.test_resources import py_unit_test_case_with_
 from shellcheck_lib_test.execution.test_resources import utils
 from shellcheck_lib_test.execution.test_resources.py_unit_test_case_with_file_output import \
     InternalInstructionThatWritesToStandardPhaseFile
+from shellcheck_lib_test.test_resources.eds_test import ResultFilesCheck
 
 HOME_DIR_HEADER = 'Home Dir'
 TEST_ROOT_DIR_HEADER = 'Test Root Dir'
@@ -38,17 +39,10 @@ class TestCaseDocument(TestCaseWithCommonDefaultForSetupAssertCleanup):
 
 def assertions(utc: unittest.TestCase,
                actual: test_resources.Result):
-    utils.assert_is_file_with_contents(utc,
-                                       actual.execution_directory_structure.result.exitcode_file,
-                                       str(EXIT_CODE))
-    utils.assert_is_file_with_contents(utc,
-                                       actual.execution_directory_structure.result.stdout_file,
-                                       expected_output_on('sys.stdout',
-                                                          actual.partial_executor.configuration))
-    utils.assert_is_file_with_contents(utc,
-                                       actual.execution_directory_structure.result.stderr_file,
-                                       expected_output_on('sys.stderr',
-                                                          actual.partial_executor.configuration))
+    result_check = ResultFilesCheck(EXIT_CODE,
+                                    expected_output_on('sys.stdout', actual.partial_executor.configuration),
+                                    expected_output_on('sys.stderr', actual.partial_executor.configuration))
+    result_check.apply(utc, actual.execution_directory_structure)
 
     file_name_from_py_cmd_list = [with_file_output.standard_phase_file_base_name(phase)
                                   for phase in [phases.SETUP, phases.ASSERT, phases.CLEANUP]]
