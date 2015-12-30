@@ -1,15 +1,14 @@
 from shellcheck_lib.execution import phases
-from shellcheck_lib.execution.phases import Phase
 
 
 class PhaseStep(tuple):
     def __new__(cls,
-                phase: Phase,
+                phase: phases.Phase,
                 step: str):
         return tuple.__new__(cls, (phase, step))
 
     @property
-    def phase(self) -> Phase:
+    def phase(self) -> phases.Phase:
         return self[0]
 
     @property
@@ -17,7 +16,7 @@ class PhaseStep(tuple):
         return self[1]
 
 
-def new_without_step(phase: Phase) -> PhaseStep:
+def new_without_step(phase: phases.Phase) -> PhaseStep:
     return PhaseStep(phase, None)
 
 
