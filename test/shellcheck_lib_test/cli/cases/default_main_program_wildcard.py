@@ -2,9 +2,9 @@ import pathlib
 
 from shellcheck_lib.default.execution_mode.test_suite.reporting import INVALID_SUITE_EXIT_CODE
 from shellcheck_lib.execution.result import FullResultStatus
-from shellcheck_lib_test.util.file_structure import DirContents, Dir, File, empty_file
 from shellcheck_lib.general.string import lines_content
-from shellcheck_lib_test.util.main_program import main_program_check_for_test_suite
+from shellcheck_lib_test.test_resources.file_structure import DirContents, Dir, File, empty_file
+from shellcheck_lib_test.test_resources.main_program import main_program_check_for_test_suite
 
 
 class ReferencesToCaseFilesThatMatchesNoFiles(main_program_check_for_test_suite.SetupWithoutPreprocessor):

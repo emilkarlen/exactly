@@ -16,8 +16,8 @@ from shellcheck_lib.general.line_source import LineSequenceBuilder
 from shellcheck_lib.test_case.sections import common as i
 from shellcheck_lib.test_case.sections.common import HomeAndEds
 from shellcheck_lib_test.instructions.test_resources import eds_populator
-from shellcheck_lib_test.util.file_structure import DirContents, empty_dir_contents
-from shellcheck_lib_test.util.file_utils import write_file
+from shellcheck_lib_test.test_resources.file_structure import DirContents, empty_dir_contents
+from shellcheck_lib_test.test_resources.file_utils import write_file
 
 
 class SideEffectsCheck:

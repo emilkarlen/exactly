@@ -14,13 +14,13 @@ from shellcheck_lib_test.default.test_impls import default_main_program_case_pre
 from shellcheck_lib_test.default.test_impls import default_main_program_suite_preprocessing as pre_proc_tests
 from shellcheck_lib_test.execution.test_execution_directory_structure import \
     is_execution_directory_structure_after_execution
-from shellcheck_lib_test.util.cli_main_program_via_shell_utils.run import SUCCESSFUL_RESULT, \
+from shellcheck_lib_test.test_resources.cli_main_program_via_shell_utils.run import SUCCESSFUL_RESULT, \
     run_shellcheck_in_sub_process_with_file_argument, \
     contents_of_file
-from shellcheck_lib_test.util.file_checks import FileChecker
-from shellcheck_lib_test.util.main_program import main_program_check_for_test_case
-from shellcheck_lib_test.util.main_program import main_program_check_for_test_suite
-from shellcheck_lib_test.util.process import SubProcessResult, \
+from shellcheck_lib_test.test_resources.file_checks import FileChecker
+from shellcheck_lib_test.test_resources.main_program import main_program_check_for_test_case
+from shellcheck_lib_test.test_resources.main_program import main_program_check_for_test_suite
+from shellcheck_lib_test.test_resources.process import SubProcessResult, \
     ExpectedSubProcessResult, SubProcessResultInfo
 
 

@@ -21,7 +21,7 @@ from shellcheck_lib.test_suite.execution import Executor
 from shellcheck_lib.test_suite.instruction_set.parse import SuiteSyntaxError
 from shellcheck_lib.test_suite.suite_hierarchy_reading import SuiteHierarchyReader
 from shellcheck_lib_test.test_case.test_resources import error_info
-from shellcheck_lib_test.util.str_std_out_files import StringStdOutFiles
+from shellcheck_lib_test.test_resources.str_std_out_files import StringStdOutFiles
 
 
 def new_test_suite(source_file_name: str,

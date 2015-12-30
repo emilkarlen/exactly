@@ -3,7 +3,7 @@ import tempfile
 import unittest
 
 from shellcheck_lib.test_suite.suite_hierarchy_reading import Reader, default_environment
-from shellcheck_lib_test.util.file_structure import DirContents
+from shellcheck_lib_test.test_resources.file_structure import DirContents
 
 
 class Setup:

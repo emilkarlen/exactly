@@ -16,7 +16,7 @@ from shellcheck_lib_test.instructions.test_resources import svh_check
 from shellcheck_lib_test.instructions.test_resources.check_description import TestDescriptionBase
 from shellcheck_lib_test.instructions.test_resources.eds_populator import act_dir_contents, tmp_user_dir_contents
 from shellcheck_lib_test.instructions.test_resources.utils import new_source2, ActResult, argument_list_source
-from shellcheck_lib_test.util.file_structure import DirContents, empty_dir, File
+from shellcheck_lib_test.test_resources.file_structure import DirContents, empty_dir, File
 
 
 class TestWithParserBase(instruction_check.TestCaseBase):

@@ -18,10 +18,10 @@ from shellcheck_lib_test.cli.execution_mode.help.test_resources import arguments
 from shellcheck_lib_test.cli.utils.execute_main_program import execute_main_program, ARGUMENTS_FOR_TEST_INTERPRETER
 from shellcheck_lib_test.default.test_impls import default_main_program_case_preprocessing
 from shellcheck_lib_test.default.test_impls import default_main_program_suite_preprocessing as pre_proc_tests
-from shellcheck_lib_test.util.file_structure import DirContents, File
-from shellcheck_lib_test.util.file_utils import tmp_file_containing, tmp_file_containing_lines
-from shellcheck_lib_test.util.main_program import main_program_check_for_test_case
-from shellcheck_lib_test.util.main_program import main_program_check_for_test_suite
+from shellcheck_lib_test.test_resources.file_structure import DirContents, File
+from shellcheck_lib_test.test_resources.file_utils import tmp_file_containing, tmp_file_containing_lines
+from shellcheck_lib_test.test_resources.main_program import main_program_check_for_test_case
+from shellcheck_lib_test.test_resources.main_program import main_program_check_for_test_suite
 
 
 class TestTestCaseWithoutInstructions(unittest.TestCase):

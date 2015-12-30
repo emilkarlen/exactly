@@ -12,7 +12,7 @@ from shellcheck_lib_test.instructions.test_resources import eds_populator
 from shellcheck_lib_test.instructions.test_resources import sh_check
 from shellcheck_lib_test.instructions.test_resources import utils
 from shellcheck_lib_test.instructions.test_resources.utils import write_act_result, SideEffectsCheck
-from shellcheck_lib_test.util import file_structure
+from shellcheck_lib_test.test_resources import file_structure
 
 
 class Arrangement:

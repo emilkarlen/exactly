@@ -1,7 +1,7 @@
 import unittest
 
-from shellcheck_lib_test.util.assert_utils import assertion_message
 from shellcheck_lib.general.line_source import Line, LineSequence
+from shellcheck_lib_test.test_resources.assert_utils import assertion_message
 
 
 def assert_equals_line(test_case: unittest.TestCase,

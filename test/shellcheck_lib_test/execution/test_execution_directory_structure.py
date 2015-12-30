@@ -1,9 +1,9 @@
-import unittest
 import tempfile
+import unittest
 from pathlib import Path
 
 from shellcheck_lib.execution import execution_directory_structure
-from shellcheck_lib_test.util.file_checks import FileChecker
+from shellcheck_lib_test.test_resources.file_checks import FileChecker
 
 
 class TestConstructExecutionDirectoryStructure(unittest.TestCase):

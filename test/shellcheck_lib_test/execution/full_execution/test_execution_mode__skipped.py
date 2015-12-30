@@ -11,7 +11,7 @@ from shellcheck_lib_test.execution.full_execution.test_resources.test_case_gener
     TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList
 from shellcheck_lib_test.execution.full_execution.test_resources.test_case_that_records_phase_execution import \
     new_test_case_with_recording
-from shellcheck_lib_test.util.expected_instruction_failure import ExpectedFailureForNoFailure, \
+from shellcheck_lib_test.test_resources.expected_instruction_failure import ExpectedFailureForNoFailure, \
     ExpectedFailureForInstructionFailure
 
 

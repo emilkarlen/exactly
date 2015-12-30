@@ -13,8 +13,8 @@ from shellcheck_lib_test.instructions.test_resources import sh_check
 from shellcheck_lib_test.instructions.test_resources import svh_check
 from shellcheck_lib_test.instructions.test_resources.utils import single_line_source
 from shellcheck_lib_test.test_resources import python_program_execution as py_exe
-from shellcheck_lib_test.util.file_structure import DirContents
-from shellcheck_lib_test.util.file_structure import File
+from shellcheck_lib_test.test_resources.file_structure import DirContents
+from shellcheck_lib_test.test_resources.file_structure import File
 
 
 class TestCaseBaseForParser(TestCaseBase):

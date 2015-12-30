@@ -1,7 +1,7 @@
 import os
 import unittest
 
-import shellcheck_lib_test.util.model_utils
+import shellcheck_lib_test.test_resources.model_utils
 from shellcheck_lib.execution import phases
 from shellcheck_lib.general import line_source
 from shellcheck_lib.test_case.sections import common
@@ -19,12 +19,12 @@ TEST_ROOT_DIR_HEADER = '# Test Root Dir: '
 class TestCaseDocument(TestCaseWithCommonDefaultForSetupAssertCleanup):
     def _act_phase(self) -> list:
         return [
-            shellcheck_lib_test.util.model_utils.new_instruction_element(
+            shellcheck_lib_test.test_resources.model_utils.new_instruction_element(
                 line_source.Line(1, 'source for line one'),
                 ActPhaseInstructionThatOutputsHomeDir()),
-            shellcheck_lib_test.util.model_utils.new_comment_element(
+            shellcheck_lib_test.test_resources.model_utils.new_comment_element(
                 line_source.Line(2, 'comment on line two')),
-            shellcheck_lib_test.util.model_utils.new_instruction_element(
+            shellcheck_lib_test.test_resources.model_utils.new_instruction_element(
                 line_source.Line(3, 'source for line three'),
                 ActPhaseInstructionThatOutputsTestRootDir()),
         ]
