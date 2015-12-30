@@ -16,7 +16,7 @@ from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
 from shellcheck_lib_test.execution.util import python_code_gen as py
-from shellcheck_lib_test.execution.util.test_case_generation import TestCaseGeneratorBase
+from shellcheck_lib_test.execution.util.test_case_generation import TestCaseGeneratorForFullExecutionBase
 
 
 def do_nothing__anonymous_phase(phase_step: PhaseStep,
@@ -108,7 +108,7 @@ class TestCaseSetup(tuple):
         return self[7]
 
 
-class TestCaseGeneratorForTestCaseSetup(TestCaseGeneratorBase):
+class TestCaseGeneratorForTestCaseSetup(TestCaseGeneratorForFullExecutionBase):
     """
     Generation of a Test Case from a TestCaseSetup.
 

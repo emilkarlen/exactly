@@ -1,17 +1,17 @@
 import os
-import shutil
 import pathlib
+import shutil
 import types
 import unittest
 
-from shellcheck_lib.default.execution_mode.test_case.processing import script_handling_for_setup
-from shellcheck_lib.test_case.test_case_doc import TestCase
-from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
-from shellcheck_lib.execution.partial_execution import execute_test_case_in_execution_directory, PartialExecutor
 from shellcheck_lib.act_phase_setups import python3
+from shellcheck_lib.default.execution_mode.test_case.processing import script_handling_for_setup
 from shellcheck_lib.execution import phases
+from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
+from shellcheck_lib.execution.partial_execution import execute_test_case_in_execution_directory, PartialExecutor, \
+    TestCase
 from shellcheck_lib_test.execution.util import instruction_adapter
-from shellcheck_lib_test.execution.util.test_case_generation import TestCaseGeneratorBase
+from shellcheck_lib_test.execution.util.test_case_generation import TestCaseGeneratorForPartialExecutionBase
 
 
 class Result(tuple):
@@ -48,11 +48,11 @@ def py3_test(unittest_case: unittest.TestCase,
     home_dir_path = pathlib.Path().resolve()
     # ACT #
     test_case_execution = execute_test_case_in_execution_directory(
-        script_handling_for_setup(python3.new_act_phase_setup()),
-        test_case,
-        home_dir_path,
-        'shellcheck-test-',
-        True)
+            script_handling_for_setup(python3.new_act_phase_setup()),
+            test_case,
+            home_dir_path,
+            'shellcheck-test-',
+            True)
     # ASSERT #
     eds = test_case_execution.execution_directory_structure
     result = Result(home_dir_path,
@@ -69,7 +69,7 @@ def py3_test(unittest_case: unittest.TestCase,
         print(str(eds.root_dir))
 
 
-class TestCaseWithCommonDefaultForSetupAssertCleanup(TestCaseGeneratorBase):
+class TestCaseWithCommonDefaultForSetupAssertCleanup(TestCaseGeneratorForPartialExecutionBase):
     def _setup_phase(self) -> list:
         """
         :rtype list[PhaseContentElement] (with instruction of type SetupPhaseInstruction)

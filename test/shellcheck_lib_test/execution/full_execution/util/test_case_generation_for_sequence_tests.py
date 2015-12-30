@@ -1,3 +1,4 @@
+from shellcheck_lib.execution import phase_step
 from shellcheck_lib.test_case.sections.act.instruction import ActPhaseInstruction
 from shellcheck_lib.test_case.sections.anonymous import AnonymousPhaseInstruction
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
@@ -6,12 +7,11 @@ from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction
 from shellcheck_lib_test.execution.full_execution.util import recording_instructions_for_sequence_tests as instr
 from shellcheck_lib_test.execution.full_execution.util.recording_instructions_for_sequence_tests import \
     SetupInstructionThatRecordsStringInList, AssertInternalInstructionThatRecordsStringInList
-from shellcheck_lib_test.execution.util.test_case_generation import TestCaseGeneratorBase
-from shellcheck_lib.execution import phase_step
 from shellcheck_lib_test.execution.util import instruction_adapter
+from shellcheck_lib_test.execution.util.test_case_generation import TestCaseGeneratorForFullExecutionBase
 
 
-class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorBase):
+class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorForFullExecutionBase):
     def __init__(self,
                  recorder: instr.ListRecorder=None):
         super().__init__()
