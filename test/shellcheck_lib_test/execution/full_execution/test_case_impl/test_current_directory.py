@@ -9,7 +9,7 @@ from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib.test_case import test_case_doc
 from shellcheck_lib.test_case.sections import common
 from shellcheck_lib.test_case.sections.anonymous import ConfigurationBuilder
-from shellcheck_lib_test.execution.full_execution.util.test_case_base import FullExecutionTestCaseBase
+from shellcheck_lib_test.execution.full_execution.test_resources.test_case_base import FullExecutionTestCaseBase
 from shellcheck_lib_test.execution.test_resources import instruction_that_record_and_return as instr_setup
 from shellcheck_lib_test.execution.test_resources import python_code_gen
 from shellcheck_lib_test.execution.test_resources.instruction_that_do_and_return import \
