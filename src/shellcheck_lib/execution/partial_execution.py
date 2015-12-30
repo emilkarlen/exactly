@@ -14,7 +14,6 @@ from shellcheck_lib.execution.single_instruction_executor import ControlledInstr
 from shellcheck_lib.general import line_source
 from shellcheck_lib.general.file_utils import write_new_text_file
 from shellcheck_lib.general.std import StdOutputFiles, StdFiles
-from shellcheck_lib.test_case import test_case_doc
 from shellcheck_lib.test_case.os_services import new_default, OsServices
 from shellcheck_lib.test_case.sections import common
 from shellcheck_lib.test_case.sections.act.phase_setup import PhaseEnvironmentForScriptGeneration, ActProgramExecutor, \
@@ -110,16 +109,10 @@ class PartialExecutor:
                  execution_directory_structure: ExecutionDirectoryStructure,
                  configuration: Configuration,
                  script_handling: ScriptHandling,
-                 setup_phase: PhaseContents,
-                 act_phase: PhaseContents,
-                 assert_phase: PhaseContents,
-                 cleanup_phase: PhaseContents):
+                 test_case: TestCase):
         self.__global_environment = global_environment
         self.__script_handling = script_handling
-        self.__test_case = TestCase(setup_phase,
-                                    act_phase,
-                                    assert_phase,
-                                    cleanup_phase)
+        self.__test_case = test_case
         self.__execution_directory_structure = execution_directory_structure
         self.__configuration = configuration
         self.___step_execution_result = _StepExecutionResult()
@@ -405,7 +398,7 @@ class _ActInstructionHeaderExecutor(ElementHeaderExecutor):
 
 
 def execute(script_handling: ScriptHandling,
-            test_case: test_case_doc.TestCase,
+            test_case: TestCase,
             home_dir_path: pathlib.Path,
             execution_directory_root_name_prefix: str,
             is_keep_execution_directory_root: bool) -> PartialResult:
@@ -418,7 +411,7 @@ def execute(script_handling: ScriptHandling,
 
 
 def execute_test_case_in_execution_directory(script_handling: ScriptHandling,
-                                             test_case: test_case_doc.TestCase,
+                                             test_case: TestCase,
                                              home_dir_path: pathlib.Path,
                                              execution_directory_root_name_prefix: str,
                                              is_keep_execution_directory_root: bool) -> PartialExecutor:
@@ -448,10 +441,7 @@ def execute_test_case_in_execution_directory(script_handling: ScriptHandling,
                                               execution_directory_structure,
                                               configuration,
                                               script_handling,
-                                              test_case.setup_phase,
-                                              test_case.act_phase,
-                                              test_case.assert_phase,
-                                              test_case.cleanup_phase)
+                                              test_case)
         try:
             test_case_execution.execute()
         finally:
