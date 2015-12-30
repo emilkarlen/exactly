@@ -4,7 +4,7 @@ from shellcheck_lib_test.execution.partial_execution.test_cases import \
     all_phases_should_be_executed_and_result_from_action_saved_etc, \
     act_phase_should_be_transformed_to_script_file, \
     result_from_action_phase_should_be_saved, stdin_should_be_redirected_to_file_if_set_in_phase_env
-from shellcheck_lib_test.execution.util import py_unit_test_case
+from shellcheck_lib_test.execution.test_resources import py_unit_test_case
 
 
 class Test(unittest.TestCase):

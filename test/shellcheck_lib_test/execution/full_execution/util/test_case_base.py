@@ -1,16 +1,16 @@
 import os
-import shutil
 import pathlib
+import shutil
 import unittest
 
-from shellcheck_lib.default.execution_mode.test_case.processing import script_handling_for_setup
-from shellcheck_lib.execution.partial_execution import ScriptHandling
-from shellcheck_lib.test_case import test_case_doc
-from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
-from shellcheck_lib.execution.result import FullResult
 from shellcheck_lib.act_phase_setups import python3
+from shellcheck_lib.default.execution_mode.test_case.processing import script_handling_for_setup
 from shellcheck_lib.execution import full_execution
-from shellcheck_lib_test.execution.util import utils
+from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
+from shellcheck_lib.execution.partial_execution import ScriptHandling
+from shellcheck_lib.execution.result import FullResult
+from shellcheck_lib.test_case import test_case_doc
+from shellcheck_lib_test.execution.test_resources import utils
 
 
 class FullExecutionTestCaseBase:

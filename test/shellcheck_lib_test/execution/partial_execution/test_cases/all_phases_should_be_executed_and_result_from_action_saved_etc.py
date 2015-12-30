@@ -9,10 +9,10 @@ from shellcheck_lib.execution.partial_execution import Configuration
 from shellcheck_lib.test_case.sections import common
 from shellcheck_lib.test_case.sections.act.instruction import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
 from shellcheck_lib.test_case.sections.result import sh
-from shellcheck_lib_test.execution.util import py_unit_test_case
-from shellcheck_lib_test.execution.util import py_unit_test_case_with_file_output as with_file_output
-from shellcheck_lib_test.execution.util import utils
-from shellcheck_lib_test.execution.util.py_unit_test_case_with_file_output import \
+from shellcheck_lib_test.execution.test_resources import py_unit_test_case
+from shellcheck_lib_test.execution.test_resources import py_unit_test_case_with_file_output as with_file_output
+from shellcheck_lib_test.execution.test_resources import utils
+from shellcheck_lib_test.execution.test_resources.py_unit_test_case_with_file_output import \
     InternalInstructionThatWritesToStandardPhaseFile
 
 HOME_DIR_HEADER = 'Home Dir'

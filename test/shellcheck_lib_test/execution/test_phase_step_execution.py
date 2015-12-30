@@ -1,7 +1,13 @@
 import unittest
 
+from shellcheck_lib.document.model import PhaseContents
+from shellcheck_lib.execution.phase_step_execution import execute_phase_prim, Failure
+from shellcheck_lib.execution.result import PartialResultStatus
+from shellcheck_lib.execution.single_instruction_executor import ControlledInstructionExecutor, \
+    PartialInstructionControlledFailureInfo, PartialControlledFailureEnum
 from shellcheck_lib.general.line_source import Line
-from shellcheck_lib_test.execution.util.phase_step_execution import ExpectedResult, expected_success, RecordingMedia, \
+from shellcheck_lib_test.execution.test_resources.phase_step_execution import ExpectedResult, expected_success, \
+    RecordingMedia, \
     TestInstruction, ElementHeaderExecutorThatRecordsHeaderAndLineNumber, \
     InstructionExecutorThatRecordsInstructionNameAndReturnsSuccess, \
     InstructionExecutorThatRecordsInstructionNameAndFailsFor, TestException, \
@@ -9,12 +15,7 @@ from shellcheck_lib_test.execution.util.phase_step_execution import ExpectedResu
 from shellcheck_lib_test.util.expected_instruction_failure import \
     new_expected_failure_message, \
     new_expected_exception
-from shellcheck_lib.execution.phase_step_execution import execute_phase_prim, Failure
-from shellcheck_lib.execution.result import PartialResultStatus
-from shellcheck_lib.document.model import PhaseContents
 from shellcheck_lib_test.util.model_utils import new_comment_element, new_instruction_element
-from shellcheck_lib.execution.single_instruction_executor import ControlledInstructionExecutor, \
-    PartialInstructionControlledFailureInfo, PartialControlledFailureEnum
 
 
 class Test(unittest.TestCase):

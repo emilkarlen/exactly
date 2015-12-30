@@ -9,9 +9,10 @@ from shellcheck_lib.test_case.sections.act.instruction import ActPhaseInstructio
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
-from shellcheck_lib_test.execution.util import py_unit_test_case
-from shellcheck_lib_test.execution.util import utils
-from shellcheck_lib_test.execution.util.py_unit_test_case import TestCaseWithCommonDefaultForSetupAssertCleanup
+from shellcheck_lib_test.execution.test_resources import py_unit_test_case
+from shellcheck_lib_test.execution.test_resources import utils
+from shellcheck_lib_test.execution.test_resources.py_unit_test_case import \
+    TestCaseWithCommonDefaultForSetupAssertCleanup
 
 INPUT_TMP_FILE = 'input.txt'
 

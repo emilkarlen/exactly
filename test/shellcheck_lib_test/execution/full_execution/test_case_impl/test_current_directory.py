@@ -10,11 +10,12 @@ from shellcheck_lib.test_case import test_case_doc
 from shellcheck_lib.test_case.sections import common
 from shellcheck_lib.test_case.sections.anonymous import ConfigurationBuilder
 from shellcheck_lib_test.execution.full_execution.util.test_case_base import FullExecutionTestCaseBase
-from shellcheck_lib_test.execution.util import instruction_that_record_and_return as instr_setup
-from shellcheck_lib_test.execution.util import python_code_gen
-from shellcheck_lib_test.execution.util.instruction_that_do_and_return import TestCaseGeneratorForTestCaseSetup, \
+from shellcheck_lib_test.execution.test_resources import instruction_that_record_and_return as instr_setup
+from shellcheck_lib_test.execution.test_resources import python_code_gen
+from shellcheck_lib_test.execution.test_resources.instruction_that_do_and_return import \
+    TestCaseGeneratorForTestCaseSetup, \
     print_to_file__generate_script
-from shellcheck_lib_test.execution.util.py_unit_test_case_with_file_output import ModulesAndStatements
+from shellcheck_lib_test.execution.test_resources.py_unit_test_case_with_file_output import ModulesAndStatements
 
 
 def current_directory() -> str:
