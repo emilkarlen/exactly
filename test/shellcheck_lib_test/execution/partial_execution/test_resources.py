@@ -9,7 +9,7 @@ from shellcheck_lib.default.execution_mode.test_case.processing import script_ha
 from shellcheck_lib.execution import partial_execution, phases
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.execution.partial_execution import TestCase, execute_test_case_in_execution_directory, \
-    Configuration
+    Configuration, ScriptHandling
 from shellcheck_lib.execution.result import PartialResult
 from shellcheck_lib_test.execution.test_resources import instruction_adapter
 from shellcheck_lib_test.execution.test_resources.test_case_generation import TestCaseGeneratorBase
@@ -101,25 +101,80 @@ def py3_test(unittest_case: unittest.TestCase,
              test_case: TestCase,
              assertions: types.FunctionType,
              dbg_do_not_delete_dir_structure=False):
-    # SETUP #
-    home_dir_path = pathlib.Path().resolve()
-    # ACT #
-    partial_result = execute_test_case_in_execution_directory(
-            script_handling_for_setup(python3.new_act_phase_setup()),
-            test_case,
-            home_dir_path,
-            'shellcheck-test-',
-            True)
-    # ASSERT #
-    eds = partial_result.execution_directory_structure
-    result = Result(home_dir_path,
-                    partial_result)
+    result = _execute(test_case,
+                      script_handling_for_setup(python3.new_act_phase_setup()))
 
     assertions(unittest_case,
                result)
     # CLEANUP #
-    os.chdir(str(home_dir_path))
+    os.chdir(str(result.home_dir_path))
     if not dbg_do_not_delete_dir_structure:
-        shutil.rmtree(str(eds.root_dir))
+        shutil.rmtree(str(result.execution_directory_structure.root_dir))
     else:
-        print(str(eds.root_dir))
+        print(str(result.execution_directory_structure.root_dir))
+
+
+class PartialExecutionTestCaseBase:
+    def __init__(self,
+                 unittest_case: unittest.TestCase,
+                 dbg_do_not_delete_dir_structure=False,
+                 script_handling: ScriptHandling = None):
+        self.__unittest_case = unittest_case
+        self.__dbg_do_not_delete_dir_structure = dbg_do_not_delete_dir_structure
+        self.__initial_home_dir_path = None
+        self.__script_handling = script_handling
+        self.__result = None
+        if self.__script_handling is None:
+            self.__script_handling = script_handling_for_setup(python3.new_act_phase_setup())
+
+    def execute(self):
+        # SETUP #
+        self.__initial_home_dir_path = pathlib.Path().resolve()
+        # ACT #
+        self.__result = _execute(self._test_case(),
+                                 self.__script_handling)
+
+        # ASSERT #
+        self._assertions()
+        # CLEANUP #
+        os.chdir(str(self.__initial_home_dir_path))
+        if not self.__dbg_do_not_delete_dir_structure and self.eds:
+            shutil.rmtree(str(self.eds.root_dir))
+        else:
+            if self.eds:
+                print(str(self.eds.root_dir))
+
+    def _test_case(self) -> TestCase:
+        raise NotImplementedError()
+
+    def _assertions(self):
+        raise NotImplementedError()
+
+    @property
+    def utc(self) -> unittest.TestCase:
+        return self.__unittest_case
+
+    @property
+    def initial_home_dir_path(self) -> pathlib.Path:
+        return self.__initial_home_dir_path
+
+    @property
+    def result(self) -> Result:
+        return self.__result
+
+    @property
+    def eds(self) -> ExecutionDirectoryStructure:
+        return self.result.execution_directory_structure
+
+
+def _execute(test_case: TestCase,
+             script_handling: ScriptHandling) -> Result:
+    home_dir_path = pathlib.Path().resolve()
+    partial_result = execute_test_case_in_execution_directory(
+            script_handling,
+            test_case,
+            home_dir_path,
+            'shellcheck-test-',
+            True)
+    return Result(home_dir_path,
+                  partial_result)
