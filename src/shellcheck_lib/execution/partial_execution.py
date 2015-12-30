@@ -169,14 +169,10 @@ class PartialExecutor:
 
     @property
     def _eds(self) -> ExecutionDirectoryStructure:
-        if not self.__execution_directory_structure:
-            raise ValueError('execution_directory_structure')
         return self.__execution_directory_structure
 
     @property
     def configuration(self) -> Configuration:
-        if not self.__configuration:
-            raise ValueError('configuration')
         return self.__configuration
 
     @property
