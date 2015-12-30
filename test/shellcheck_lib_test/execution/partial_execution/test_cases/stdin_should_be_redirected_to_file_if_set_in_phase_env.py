@@ -12,7 +12,7 @@ from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, Setup
 from shellcheck_lib_test.execution.partial_execution import test_resources
 from shellcheck_lib_test.execution.partial_execution.test_resources import \
     TestCaseWithCommonDefaultForSetupAssertCleanup
-from shellcheck_lib_test.execution.test_resources import utils
+from shellcheck_lib_test.test_resources.eds_test import ResultFilesCheck
 
 INPUT_TMP_FILE = 'input.txt'
 
@@ -25,8 +25,8 @@ class TestCaseDocumentThatSetsStdinFileName(TestCaseWithCommonDefaultForSetupAss
     def _setup_phase(self) -> list:
         return [
             self._next_instruction_line(
-                PyCommandThatStoresStringInFileInCurrentDirectory(INPUT_TMP_FILE,
-                                                                  TEXT_ON_STDIN)),
+                    PyCommandThatStoresStringInFileInCurrentDirectory(INPUT_TMP_FILE,
+                                                                      TEXT_ON_STDIN)),
             self._next_instruction_line(InstructionThatSetsStdinFileName(INPUT_TMP_FILE)),
         ]
 
@@ -50,18 +50,10 @@ class TestCaseDocumentThatSetsStdinContents(TestCaseWithCommonDefaultForSetupAss
 
 def assertions(utc: unittest.TestCase,
                actual: test_resources.Result):
-    utils.assert_is_file_with_contents(
-        utc,
-        actual.execution_directory_structure.result.exitcode_file,
-        str(EXPECTED_EXIT_CODE))
-    utils.assert_is_file_with_contents(
-        utc,
-        actual.execution_directory_structure.result.stdout_file,
-        TEXT_ON_STDIN)
-    utils.assert_is_file_with_contents(
-        utc,
-        actual.execution_directory_structure.result.stderr_file,
-        EXPECTED_CONTENTS_OF_STDERR)
+    result_check = ResultFilesCheck(EXPECTED_EXIT_CODE,
+                                    TEXT_ON_STDIN,
+                                    EXPECTED_CONTENTS_OF_STDERR)
+    result_check.apply(utc, actual.execution_directory_structure)
 
 
 class PyCommandThatStoresStringInFileInCurrentDirectory(SetupPhaseInstruction):
