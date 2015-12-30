@@ -1,5 +1,5 @@
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
-from shellcheck_lib_test.util.file_structure import DirContents
+from shellcheck_lib_test.test_resources.file_structure import DirContents
 
 
 class EdsPopulator:

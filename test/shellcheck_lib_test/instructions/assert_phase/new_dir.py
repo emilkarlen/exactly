@@ -9,7 +9,7 @@ from shellcheck_lib_test.instructions.test_resources import pfh_check
 from shellcheck_lib_test.instructions.test_resources.eds_contents_check import ActRootContainsExactly
 from shellcheck_lib_test.instructions.test_resources.eds_populator import act_dir_contents
 from shellcheck_lib_test.instructions.test_resources.utils import new_source2
-from shellcheck_lib_test.util.file_structure import DirContents, empty_dir, Dir, empty_file
+from shellcheck_lib_test.test_resources.file_structure import DirContents, empty_dir, Dir, empty_file
 
 
 class TestCaseBaseForParser(TestCaseBase):

@@ -11,10 +11,10 @@ from shellcheck_lib.test_case.sections.common import HomeAndEds
 from shellcheck_lib_test.instructions.test_resources.check_description import TestDescriptionBase
 from shellcheck_lib_test.instructions.test_resources.eds_populator import act_dir_contents, tmp_user_dir_contents
 from shellcheck_lib_test.instructions.test_resources.utils import SideEffectsCheck
-from shellcheck_lib_test.util import eds_test
-from shellcheck_lib_test.util.file_structure import DirContents, empty_dir, Dir, empty_file
-from shellcheck_lib_test.util.value_assertion import ValueAssertion, ValueIsNotNone
-from shellcheck_lib_test.util.value_assertion import ValueIsNone
+from shellcheck_lib_test.test_resources import eds_test
+from shellcheck_lib_test.test_resources.file_structure import DirContents, empty_dir, Dir, empty_file
+from shellcheck_lib_test.test_resources.value_assertion import ValueAssertion, ValueIsNotNone
+from shellcheck_lib_test.test_resources.value_assertion import ValueIsNone
 
 
 class AssertCwdIsSubDirOfEds(SideEffectsCheck):

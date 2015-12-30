@@ -5,11 +5,11 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
 from shellcheck_lib.instructions.multi_phase_instructions import new_dir as sut
 from shellcheck_lib.test_case.instruction_description import Description
 from shellcheck_lib_test.instructions.test_resources.check_description import TestDescriptionBase
-from shellcheck_lib_test.util import tmp_dir_test
-from shellcheck_lib_test.util.file_checks import dir_contains_exactly
-from shellcheck_lib_test.util.file_structure import DirContents, empty_dir, Dir, empty_file
-from shellcheck_lib_test.util.tmp_dir_test import Check
-from shellcheck_lib_test.util.value_assertion import ValueAssertion, ValueIsNone, ValueIsNotNone
+from shellcheck_lib_test.test_resources import tmp_dir_test
+from shellcheck_lib_test.test_resources.file_checks import dir_contains_exactly
+from shellcheck_lib_test.test_resources.file_structure import DirContents, empty_dir, Dir, empty_file
+from shellcheck_lib_test.test_resources.tmp_dir_test import Check
+from shellcheck_lib_test.test_resources.value_assertion import ValueAssertion, ValueIsNone, ValueIsNotNone
 
 
 class TestParseSet(unittest.TestCase):

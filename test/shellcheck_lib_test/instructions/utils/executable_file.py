@@ -8,7 +8,7 @@ from shellcheck_lib.instructions.utils.parse_utils import TokenStream
 from shellcheck_lib.instructions.utils.relative_path_options import REL_HOME_OPTION, REL_CWD_OPTION
 from shellcheck_lib_test.instructions.test_resources.utils import home_and_eds_and_test_as_curr_dir
 from shellcheck_lib_test.test_resources import python_program_execution as py_exe
-from shellcheck_lib_test.util.file_structure import DirContents, executable_file, empty_file
+from shellcheck_lib_test.test_resources.file_structure import DirContents, executable_file, empty_file
 
 
 class TestParseValidSyntaxWithoutArguments(unittest.TestCase):

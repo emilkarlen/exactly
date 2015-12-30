@@ -10,7 +10,7 @@ from shellcheck_lib_test.instructions.test_resources import sh_check
 from shellcheck_lib_test.instructions.test_resources.check_description import TestDescriptionBase
 from shellcheck_lib_test.instructions.test_resources.utils import new_source2
 from shellcheck_lib_test.test_resources import python_program_execution as py_exe
-from shellcheck_lib_test.util.file_utils import tmp_file_containing
+from shellcheck_lib_test.test_resources.file_utils import tmp_file_containing
 
 
 class TestCaseBaseForParser(TestCaseBase):

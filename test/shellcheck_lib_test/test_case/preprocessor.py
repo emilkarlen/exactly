@@ -7,8 +7,8 @@ from shellcheck_lib.general.string import lines_content
 from shellcheck_lib.test_case.preprocessor import IdentityPreprocessor, PreprocessorViaExternalProgram
 from shellcheck_lib.test_case.test_case_processing import ProcessError
 from shellcheck_lib_test.test_resources import python_program_execution as py_exe
-from shellcheck_lib_test.util.file_structure import DirContents, File
-from shellcheck_lib_test.util.preprocessor_utils import dir_contents_and_preprocessor_source
+from shellcheck_lib_test.test_resources.file_structure import DirContents, File
+from shellcheck_lib_test.test_resources.preprocessor_utils import dir_contents_and_preprocessor_source
 
 
 class TestIdentityPreprocessor(unittest.TestCase):

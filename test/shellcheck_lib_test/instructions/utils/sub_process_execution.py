@@ -4,9 +4,9 @@ from shellcheck_lib.instructions.utils import sub_process_execution as sut
 from shellcheck_lib.instructions.utils.sub_process_execution import InstructionSourceInfo, InstructionMetaInfo
 from shellcheck_lib_test.instructions.test_resources.eds_populator import act_dir_contents
 from shellcheck_lib_test.instructions.test_resources.utils import execution_directory_structure
+from shellcheck_lib_test.test_resources import file_checks
 from shellcheck_lib_test.test_resources import python_program_execution as py_exe
-from shellcheck_lib_test.util import file_checks
-from shellcheck_lib_test.util.file_structure import DirContents, File
+from shellcheck_lib_test.test_resources.file_structure import DirContents, File
 
 
 class TestExecutorThatLogsResultUnderPhaseDir(unittest.TestCase):
