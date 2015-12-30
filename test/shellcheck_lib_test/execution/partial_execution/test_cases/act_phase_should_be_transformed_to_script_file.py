@@ -34,11 +34,11 @@ class TestCaseDocument(TestCaseWithCommonDefaultForSetupAssertCleanup):
 def assertions(utc: unittest.TestCase,
                actual: test_resources.Result):
     expected_base_name = phases.ACT.section_name + '.py'
-    expected_dir = actual.partial_executor._execution_directory_structure.test_case_dir
+    expected_dir = actual.partial_result.execution_directory_structure.test_case_dir
     expected_file_path = expected_dir / expected_base_name
 
     home_dir_name = str(actual.home_dir_path)
-    test_root_dir_name = str(actual.execution_directory_structure.act_dir)
+    test_root_dir_name = str(actual.partial_result.execution_directory_structure.act_dir)
 
     expected_contents = os.linesep.join(['# Line 1',
                                          '# source for line one',

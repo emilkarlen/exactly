@@ -9,7 +9,8 @@ from shellcheck_lib.default.execution_mode.test_case.processing import script_ha
 from shellcheck_lib.execution import partial_execution, phases
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.execution.partial_execution import TestCase, execute_test_case_in_execution_directory, \
-    PartialExecutor
+    Configuration
+from shellcheck_lib.execution.result import PartialResult
 from shellcheck_lib_test.execution.test_resources import instruction_adapter
 from shellcheck_lib_test.execution.test_resources.test_case_generation import TestCaseGeneratorBase
 
@@ -21,23 +22,26 @@ class Result(tuple):
 
     def __new__(cls,
                 home_dir_path: pathlib.Path,
-                partial_executor: PartialExecutor,
-                execution_directory_structure: ExecutionDirectoryStructure):
+                partial_result: PartialResult):
         return tuple.__new__(cls, (home_dir_path,
-                                   partial_executor,
-                                   execution_directory_structure))
+                                   partial_result))
 
     @property
     def home_dir_path(self) -> pathlib.Path:
         return self[0]
 
     @property
-    def partial_executor(self) -> PartialExecutor:
+    def partial_result(self) -> PartialResult:
         return self[1]
 
     @property
     def execution_directory_structure(self) -> ExecutionDirectoryStructure:
-        return self[2]
+        return self.partial_result.execution_directory_structure
+
+    @property
+    def configuration(self) -> Configuration:
+        return Configuration(self.home_dir_path,
+                             self.execution_directory_structure.act_dir)
 
 
 class TestCaseGeneratorForPartialExecutionBase(TestCaseGeneratorBase):
@@ -100,17 +104,16 @@ def py3_test(unittest_case: unittest.TestCase,
     # SETUP #
     home_dir_path = pathlib.Path().resolve()
     # ACT #
-    test_case_execution = execute_test_case_in_execution_directory(
+    partial_result = execute_test_case_in_execution_directory(
             script_handling_for_setup(python3.new_act_phase_setup()),
             test_case,
             home_dir_path,
             'shellcheck-test-',
             True)
     # ASSERT #
-    eds = test_case_execution._execution_directory_structure
+    eds = partial_result.execution_directory_structure
     result = Result(home_dir_path,
-                    test_case_execution,
-                    eds)
+                    partial_result)
 
     assertions(unittest_case,
                result)
