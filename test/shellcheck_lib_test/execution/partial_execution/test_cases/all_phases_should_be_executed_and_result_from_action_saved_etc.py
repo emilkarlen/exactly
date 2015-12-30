@@ -54,7 +54,7 @@ def assertions(utc: unittest.TestCase,
                                   for phase in [phases.SETUP, phases.ASSERT, phases.CLEANUP]]
     assert_files_in_test_root_that_contain_name_of_test_root_dir(
             utc,
-            actual.partial_executor.execution_directory_structure,
+            actual.partial_executor._execution_directory_structure,
             actual.partial_executor.global_environment,
             file_name_from_py_cmd_list)
 

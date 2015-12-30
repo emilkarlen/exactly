@@ -34,7 +34,7 @@ class TestCaseDocument(TestCaseWithCommonDefaultForSetupAssertCleanup):
 def assertions(utc: unittest.TestCase,
                actual: test_resources.Result):
     expected_base_name = phases.ACT.section_name + '.py'
-    expected_dir = actual.partial_executor.execution_directory_structure.test_case_dir
+    expected_dir = actual.partial_executor._execution_directory_structure.test_case_dir
     expected_file_path = expected_dir / expected_base_name
 
     home_dir_name = str(actual.home_dir_path)
