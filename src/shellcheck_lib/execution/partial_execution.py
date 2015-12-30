@@ -117,9 +117,8 @@ class PartialExecutor:
         self.__configuration = configuration
         self.___step_execution_result = _StepExecutionResult()
         self.__source_setup = None
-        self.__partial_result = None
 
-    def execute(self):
+    def execute(self) -> PartialResult:
         """
         Pre-condition: write has been executed.
         """
@@ -129,61 +128,50 @@ class PartialExecutor:
         self.__set_pre_eds_environment_variables()
         res = self.__run_setup_pre_validate()
         if res.status is not PartialResultStatus.PASS:
-            self.__partial_result = res
-            return
+            return res
         os_services = new_default()
         self.__set_cwd_to_act_dir()
         self.__set_post_eds_environment_variables()
         res = self.__run_setup_main(os_services)
         if res.status is not PartialResultStatus.PASS:
-            self.__partial_result = res
             self.__run_cleanup(os_services)
-            return
+            return res
         res = self.__run_setup_post_validate()
         if res.status is not PartialResultStatus.PASS:
-            self.__partial_result = res
             self.__run_cleanup(os_services)
-            return
+            return res
         res = self.__run_act_validate()
         if res.status is not PartialResultStatus.PASS:
             self.__run_cleanup(os_services)
-            self.__partial_result = res
-            return
+            return res
         res = self.__run_assert_validate()
         if res.status is not PartialResultStatus.PASS:
             self.__run_cleanup(os_services)
-            self.__partial_result = res
-            return
+            return res
         res = self.__run_act_script_generation()
         if res.status is not PartialResultStatus.PASS:
-            self.__partial_result = res
             self.__run_cleanup(os_services)
-            return
+            return res
         res = self.__run_act_script_validate()
         if res.status is not PartialResultStatus.PASS:
-            self.__partial_result = res
             self.__run_cleanup(os_services)
-            return
+            return res
         res = self.__run_act_script_execute()
         if res.status is not PartialResultStatus.PASS:
-            self.__partial_result = res
             self.__run_cleanup(os_services)
-            return
+            return res
         self.__set_assert_environment_variables()
-        self.__partial_result = self.__run_assert_execute(os_services)
+        ret_val = self.__run_assert_execute(os_services)
         res = self.__run_cleanup(os_services)
         if res.is_failure:
-            self.__partial_result = res
+            ret_val = res
+        return ret_val
 
     @property
-    def _execution_directory_structure(self) -> ExecutionDirectoryStructure:
+    def _eds(self) -> ExecutionDirectoryStructure:
         if not self.__execution_directory_structure:
             raise ValueError('execution_directory_structure')
         return self.__execution_directory_structure
-
-    @property
-    def partial_result(self) -> result.PartialResult:
-        return self.__partial_result
 
     @property
     def configuration(self) -> Configuration:
@@ -196,7 +184,7 @@ class PartialExecutor:
         return self.__global_environment
 
     def _store_exit_code(self, exitcode: int):
-        with open(str(self._execution_directory_structure.result.exitcode_file), 'w') as f:
+        with open(str(self._eds.result.exitcode_file), 'w') as f:
             f.write(str(exitcode))
 
     def __run_setup_pre_validate(self) -> PartialResult:
@@ -273,7 +261,7 @@ class PartialExecutor:
                                                                  environment),
                 phases.ACT,
                 phase_step.ACT_script_generate,
-                self._execution_directory_structure)
+                self._eds)
         self.___step_execution_result.script_source = script_builder.build()
         return ret_val
 
@@ -333,8 +321,8 @@ class PartialExecutor:
         """
         Pre-condition: write has been executed.
         """
-        with open(str(self._execution_directory_structure.result.stdout_file), 'w') as f_stdout:
-            with open(str(self._execution_directory_structure.result.stderr_file), 'w') as f_stderr:
+        with open(str(self._eds.result.stdout_file), 'w') as f_stdout:
+            with open(str(self._eds.result.stderr_file), 'w') as f_stderr:
                 exitcode = self.__script_handling.executor.execute(
                         self.__source_setup,
                         self.configuration.home_dir,
@@ -348,13 +336,13 @@ class PartialExecutor:
         os.environ.update(environment_variables.set_at_setup_pre_validate(self.configuration.home_dir))
 
     def __set_cwd_to_act_dir(self):
-        os.chdir(str(self._execution_directory_structure.act_dir))
+        os.chdir(str(self._eds.act_dir))
 
     def __set_post_eds_environment_variables(self):
-        os.environ.update(environment_variables.set_at_setup_main(self._execution_directory_structure))
+        os.environ.update(environment_variables.set_at_setup_main(self._eds))
 
     def __set_assert_environment_variables(self):
-        os.environ.update(environment_variables.set_at_assert(self._execution_directory_structure))
+        os.environ.update(environment_variables.set_at_assert(self._eds))
 
     def __run_internal_instructions_phase_step(self,
                                                phase: phases.Phase,
@@ -367,7 +355,7 @@ class PartialExecutor:
                                                   instruction_executor,
                                                   phase,
                                                   phase_step,
-                                                  self._execution_directory_structure)
+                                                  self._eds)
 
     def _custom_stdin_file_name(self) -> str:
         settings = self.___step_execution_result.stdin_settings
@@ -402,19 +390,18 @@ def execute(script_handling: ScriptHandling,
             home_dir_path: pathlib.Path,
             execution_directory_root_name_prefix: str,
             is_keep_execution_directory_root: bool) -> PartialResult:
-    tc_execution = execute_test_case_in_execution_directory(script_handling,
-                                                            test_case,
-                                                            home_dir_path,
-                                                            execution_directory_root_name_prefix,
-                                                            is_keep_execution_directory_root)
-    return tc_execution.partial_result
+    return execute_test_case_in_execution_directory(script_handling,
+                                                    test_case,
+                                                    home_dir_path,
+                                                    execution_directory_root_name_prefix,
+                                                    is_keep_execution_directory_root)
 
 
 def execute_test_case_in_execution_directory(script_handling: ScriptHandling,
                                              test_case: TestCase,
                                              home_dir_path: pathlib.Path,
                                              execution_directory_root_name_prefix: str,
-                                             is_keep_execution_directory_root: bool) -> PartialExecutor:
+                                             is_keep_execution_directory_root: bool) -> PartialResult:
     """
     Takes care of construction of the Execution Directory Structure, including
     the root directory, and executes a given Test Case in this directory.
@@ -429,7 +416,7 @@ def execute_test_case_in_execution_directory(script_handling: ScriptHandling,
     Please refactor if a more natural responsibility evolves!
     """
 
-    def with_existing_root(exec_dir_structure_root: str) -> PartialExecutor:
+    def with_existing_root(exec_dir_structure_root: str) -> PartialResult:
         cwd_before = os.getcwd()
         execution_directory_structure = construct_at(exec_dir_structure_root)
         global_environment = common.GlobalEnvironmentForPostEdsPhase(home_dir_path,
@@ -443,10 +430,9 @@ def execute_test_case_in_execution_directory(script_handling: ScriptHandling,
                                               script_handling,
                                               test_case)
         try:
-            test_case_execution.execute()
+            return test_case_execution.execute()
         finally:
             os.chdir(cwd_before)
-        return test_case_execution
 
     if is_keep_execution_directory_root:
         tmp_exec_dir_structure_root = tempfile.mkdtemp(prefix=execution_directory_root_name_prefix)

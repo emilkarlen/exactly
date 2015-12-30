@@ -40,27 +40,27 @@ class TestCaseDocument(TestCaseWithCommonDefaultForSetupAssertCleanup):
 def assertions(utc: unittest.TestCase,
                actual: test_resources.Result):
     result_check = ResultFilesCheck(EXIT_CODE,
-                                    expected_output_on('sys.stdout', actual.partial_executor.configuration),
-                                    expected_output_on('sys.stderr', actual.partial_executor.configuration))
+                                    expected_output_on('sys.stdout', actual.configuration),
+                                    expected_output_on('sys.stderr', actual.configuration))
     result_check.apply(utc, actual.execution_directory_structure)
 
     file_name_from_py_cmd_list = [with_file_output.standard_phase_file_base_name(phase)
                                   for phase in [phases.SETUP, phases.ASSERT, phases.CLEANUP]]
     assert_files_in_test_root_that_contain_name_of_test_root_dir(
             utc,
-            actual.partial_executor._execution_directory_structure,
-            actual.partial_executor.global_environment,
+            actual.partial_result.execution_directory_structure,
+            actual.home_dir_path,
             file_name_from_py_cmd_list)
 
 
 def assert_files_in_test_root_that_contain_name_of_test_root_dir(
         utc: unittest.TestCase,
         eds: ExecutionDirectoryStructure,
-        global_environment: common.GlobalEnvironmentForPostEdsPhase,
+        home_dir_path: pathlib.Path,
         file_name_from_py_cmd_list: list):
-    expected_contents = utils.un_lines(py_cmd_file_lines(global_environment.eds.act_dir,
-                                                         global_environment.home_directory,
-                                                         global_environment.eds))
+    expected_contents = utils.un_lines(py_cmd_file_lines(eds.act_dir,
+                                                         home_dir_path,
+                                                         eds))
     for base_name in file_name_from_py_cmd_list:
         file_path = eds.act_dir / base_name
         file_name = str(file_path)
