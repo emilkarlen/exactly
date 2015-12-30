@@ -9,9 +9,9 @@ from shellcheck_lib.test_case.sections.act.instruction import ActPhaseInstructio
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
+from shellcheck_lib_test.execution.partial_execution import test_resources
 from shellcheck_lib_test.execution.partial_execution.test_resources import \
     TestCaseWithCommonDefaultForSetupAssertCleanup
-from shellcheck_lib_test.execution.test_resources import py_unit_test_case
 from shellcheck_lib_test.execution.test_resources import utils
 
 INPUT_TMP_FILE = 'input.txt'
@@ -49,7 +49,7 @@ class TestCaseDocumentThatSetsStdinContents(TestCaseWithCommonDefaultForSetupAss
 
 
 def assertions(utc: unittest.TestCase,
-               actual: py_unit_test_case.Result):
+               actual: test_resources.Result):
     utils.assert_is_file_with_contents(
         utc,
         actual.execution_directory_structure.result.exitcode_file,
