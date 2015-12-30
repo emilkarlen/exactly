@@ -41,6 +41,34 @@ class Configuration(tuple):
         return self[1]
 
 
+class TestCase(tuple):
+    def __new__(cls,
+                setup_phase: PhaseContents,
+                act_phase: PhaseContents,
+                assert_phase: PhaseContents,
+                cleanup_phase: PhaseContents):
+        return tuple.__new__(cls, (setup_phase,
+                                   act_phase,
+                                   assert_phase,
+                                   cleanup_phase))
+
+    @property
+    def setup_phase(self) -> PhaseContents:
+        return self[0]
+
+    @property
+    def act_phase(self) -> PhaseContents:
+        return self[1]
+
+    @property
+    def assert_phase(self) -> PhaseContents:
+        return self[2]
+
+    @property
+    def cleanup_phase(self) -> PhaseContents:
+        return self[3]
+
+
 class _StepExecutionResult:
     def __init__(self):
         self.__script_source = None
@@ -88,10 +116,10 @@ class PartialExecutor:
                  cleanup_phase: PhaseContents):
         self.__global_environment = global_environment
         self.__script_handling = script_handling
-        self.__setup_phase = setup_phase
-        self.__act_phase = act_phase
-        self.__assert_phase = assert_phase
-        self.__cleanup_phase = cleanup_phase
+        self.__test_case = TestCase(setup_phase,
+                                    act_phase,
+                                    assert_phase,
+                                    cleanup_phase)
         self.__execution_directory_structure = execution_directory_structure
         self.__configuration = configuration
         self.___step_execution_result = _StepExecutionResult()
@@ -182,18 +210,18 @@ class PartialExecutor:
         return self.__run_internal_instructions_phase_step(phases.SETUP,
                                                            phase_step.SETUP_pre_validate,
                                                            phase_step_executors.SetupPreValidateInstructionExecutor(
-                                                               self.__global_environment),
-                                                           self.__setup_phase)
+                                                                   self.__global_environment),
+                                                           self.__test_case.setup_phase)
 
     def __run_setup_main(self, os_services: OsServices) -> PartialResult:
         setup_settings_builder = SetupSettingsBuilder()
         ret_val = self.__run_internal_instructions_phase_step(phases.SETUP,
                                                               phase_step.SETUP_execute,
                                                               phase_step_executors.SetupMainInstructionExecutor(
-                                                                  os_services,
-                                                                  self.__global_environment,
-                                                                  setup_settings_builder),
-                                                              self.__setup_phase)
+                                                                      os_services,
+                                                                      self.__global_environment,
+                                                                      setup_settings_builder),
+                                                              self.__test_case.setup_phase)
         self.___step_execution_result.stdin_settings = setup_settings_builder.stdin
 
         return ret_val
@@ -202,38 +230,38 @@ class PartialExecutor:
         return self.__run_internal_instructions_phase_step(phases.SETUP,
                                                            phase_step.SETUP_post_validate,
                                                            phase_step_executors.SetupPostValidateInstructionExecutor(
-                                                               self.__global_environment),
-                                                           self.__setup_phase)
+                                                                   self.__global_environment),
+                                                           self.__test_case.setup_phase)
 
     def __run_act_validate(self) -> PartialResult:
         return self.__run_internal_instructions_phase_step(phases.ACT,
                                                            phase_step.ACT_validate,
                                                            phase_step_executors.ActValidateInstructionExecutor(
-                                                               self.__global_environment),
-                                                           self.__act_phase)
+                                                                   self.__global_environment),
+                                                           self.__test_case.act_phase)
 
     def __run_assert_validate(self) -> PartialResult:
         return self.__run_internal_instructions_phase_step(phases.ASSERT,
                                                            phase_step.ASSERT_validate,
                                                            phase_step_executors.AssertValidateInstructionExecutor(
-                                                               self.__global_environment),
-                                                           self.__assert_phase)
+                                                                   self.__global_environment),
+                                                           self.__test_case.assert_phase)
 
     def __run_assert_execute(self, phase_env) -> PartialResult:
         return self.__run_internal_instructions_phase_step(phases.ASSERT,
                                                            phase_step.ASSERT_execute,
                                                            phase_step_executors.AssertMainInstructionExecutor(
-                                                               self.__global_environment,
-                                                               phase_env),
-                                                           self.__assert_phase)
+                                                                   self.__global_environment,
+                                                                   phase_env),
+                                                           self.__test_case.assert_phase)
 
     def __run_cleanup(self, os_services) -> PartialResult:
         return self.__run_internal_instructions_phase_step(phases.CLEANUP,
                                                            None,
                                                            phase_step_executors.CleanupInstructionExecutor(
-                                                               self.__global_environment,
-                                                               os_services),
-                                                           self.__cleanup_phase)
+                                                                   self.__global_environment,
+                                                                   os_services),
+                                                           self.__test_case.cleanup_phase)
 
     def __run_act_script_generation(self) -> PartialResult:
         """
@@ -245,14 +273,14 @@ class PartialExecutor:
         script_builder = self.__script_handling.builder
         environment = PhaseEnvironmentForScriptGeneration(script_builder)
         ret_val = phase_step_execution.execute_phase(
-            self.__act_phase,
-            _ActCommentHeaderExecutor(environment),
-            _ActInstructionHeaderExecutor(environment),
-            phase_step_executors.ActScriptGenerationExecutor(self.__global_environment,
-                                                             environment),
-            phases.ACT,
-            phase_step.ACT_script_generate,
-            self.execution_directory_structure)
+                self.__test_case.act_phase,
+                _ActCommentHeaderExecutor(environment),
+                _ActInstructionHeaderExecutor(environment),
+                phase_step_executors.ActScriptGenerationExecutor(self.__global_environment,
+                                                                 environment),
+                phases.ACT,
+                phase_step.ACT_script_generate,
+                self.execution_directory_structure)
         self.___step_execution_result.script_source = script_builder.build()
         return ret_val
 
@@ -315,12 +343,12 @@ class PartialExecutor:
         with open(str(self.execution_directory_structure.result.stdout_file), 'w') as f_stdout:
             with open(str(self.execution_directory_structure.result.stderr_file), 'w') as f_stderr:
                 exitcode = self.__script_handling.executor.execute(
-                    self.__source_setup,
-                    self.configuration.home_dir,
-                    self.__execution_directory_structure,
-                    StdFiles(f_stdin,
-                             StdOutputFiles(f_stdout,
-                                            f_stderr)))
+                        self.__source_setup,
+                        self.configuration.home_dir,
+                        self.__execution_directory_structure,
+                        StdFiles(f_stdin,
+                                 StdOutputFiles(f_stdout,
+                                                f_stderr)))
                 self._store_exit_code(exitcode)
 
     def __set_pre_eds_environment_variables(self):
@@ -356,6 +384,7 @@ class PartialExecutor:
             file_path = stdin_contents_file(self.__execution_directory_structure)
             write_new_text_file(file_path, settings.contents)
             return str(file_path)
+
 
 class _ActCommentHeaderExecutor(ElementHeaderExecutor):
     def __init__(self,
