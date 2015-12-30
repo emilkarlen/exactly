@@ -7,9 +7,9 @@ import unittest
 from shellcheck_lib.test_case.sections import common
 from shellcheck_lib.test_case.sections.act.instruction import PhaseEnvironmentForScriptGeneration, ActPhaseInstruction
 from shellcheck_lib.test_case.sections.result import sh
+from shellcheck_lib_test.execution.partial_execution import test_resources
 from shellcheck_lib_test.execution.partial_execution.test_resources import \
     TestCaseWithCommonDefaultForSetupAssertCleanup
-from shellcheck_lib_test.execution.test_resources import py_unit_test_case
 from shellcheck_lib_test.execution.test_resources import utils
 
 _TEXT_ON_STDOUT = 'on stdout'
@@ -21,26 +21,26 @@ class TestCaseDocument(TestCaseWithCommonDefaultForSetupAssertCleanup):
     def _act_phase(self) -> list:
         return [
             self._next_instruction_line(
-                ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr(_EXIT_CODE,
-                                                                    _TEXT_ON_STDOUT,
-                                                                    _TEXT_ON_STDERR))
+                    ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr(_EXIT_CODE,
+                                                                        _TEXT_ON_STDOUT,
+                                                                        _TEXT_ON_STDERR))
         ]
 
 
 def assertions(utc: unittest.TestCase,
-               actual: py_unit_test_case.Result):
+               actual: test_resources.Result):
     utils.assert_is_file_with_contents(
-        utc,
-        actual.execution_directory_structure.result.exitcode_file,
-        str(_EXIT_CODE))
+            utc,
+            actual.execution_directory_structure.result.exitcode_file,
+            str(_EXIT_CODE))
     utils.assert_is_file_with_contents(
-        utc,
-        actual.execution_directory_structure.result.stdout_file,
-        _TEXT_ON_STDOUT)
+            utc,
+            actual.execution_directory_structure.result.stdout_file,
+            _TEXT_ON_STDOUT)
     utils.assert_is_file_with_contents(
-        utc,
-        actual.execution_directory_structure.result.stderr_file,
-        _TEXT_ON_STDERR)
+            utc,
+            actual.execution_directory_structure.result.stderr_file,
+            _TEXT_ON_STDERR)
 
 
 class ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr(ActPhaseInstruction):
