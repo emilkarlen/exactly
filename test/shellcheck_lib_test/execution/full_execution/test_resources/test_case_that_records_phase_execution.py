@@ -17,6 +17,8 @@ from shellcheck_lib_test.execution.full_execution.test_resources.test_case_base 
 from shellcheck_lib_test.execution.full_execution.test_resources.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorForExecutionRecording, TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList
 from shellcheck_lib_test.execution.test_resources import recording_instructions_for_sequence_tests as instr
+from shellcheck_lib_test.execution.test_resources.test_actions import validate_action_that_returns, \
+    execute_action_that_does_nothing
 from shellcheck_lib_test.test_resources.expected_instruction_failure import ExpectedFailure
 
 
@@ -101,34 +103,6 @@ def with_recording_act_program_executor(recorder: instr.ListRecorder,
                                                                      script_handling.executor,
                                                                      validate_test_action,
                                                                      execute_test_action))
-
-
-def validate_action_that_returns(ret_val: svh.SuccessOrValidationErrorOrHardError):
-    def f():
-        return ret_val
-
-    return f
-
-
-def validate_action_that_raises(ex: Exception):
-    def f():
-        raise ex
-
-    return f
-
-
-def execute_action_that_does_nothing():
-    def f():
-        pass
-
-    return f
-
-
-def execute_action_that_raises(ex: Exception):
-    def f():
-        raise ex
-
-    return f
 
 
 class _ActProgramExecutorWrapperThatRecordsSteps(ActProgramExecutor):
