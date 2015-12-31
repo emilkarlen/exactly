@@ -6,7 +6,7 @@ from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.result import svh
-from shellcheck_lib_test.execution.full_execution.test_resources.test_case_that_records_phase_execution import \
+from shellcheck_lib_test.execution.full_execution.test_resources.recording.test_case_that_records_phase_execution import \
     Expectation, Arrangement, TestCaseBase, one_successful_instruction_in_each_phase
 from shellcheck_lib_test.execution.test_resources import instruction_test_resources as test
 from shellcheck_lib_test.execution.test_resources.test_actions import validate_action_that_returns, \
