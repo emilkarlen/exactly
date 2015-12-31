@@ -13,11 +13,10 @@ from shellcheck_lib.test_case import test_case_doc
 from shellcheck_lib.test_case.sections.act.phase_setup import ActProgramExecutor, SourceSetup
 from shellcheck_lib.test_case.sections.act.script_source import ScriptSourceBuilder
 from shellcheck_lib.test_case.sections.result import svh
-from shellcheck_lib_test.execution.full_execution.test_resources import \
-    recording_instructions_for_sequence_tests as instr
 from shellcheck_lib_test.execution.full_execution.test_resources.test_case_base import FullExecutionTestCaseBase
 from shellcheck_lib_test.execution.full_execution.test_resources.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorForExecutionRecording, TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList
+from shellcheck_lib_test.execution.test_resources import recording_instructions_for_sequence_tests as instr
 from shellcheck_lib_test.test_resources.expected_instruction_failure import ExpectedFailure
 
 
