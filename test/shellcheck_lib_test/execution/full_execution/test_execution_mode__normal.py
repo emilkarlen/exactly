@@ -12,7 +12,7 @@ from shellcheck_lib_test.execution.full_execution.test_resources.test_case_gener
     TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList
 from shellcheck_lib_test.execution.full_execution.test_resources.test_case_that_records_phase_execution import \
     validate_action_that_raises, validate_action_that_returns, execute_action_that_raises, \
-    Expectation, new_test_case_with_recording
+    Expectation, new_test_case_with_recording, Arrangement
 from shellcheck_lib_test.test_resources.expected_instruction_failure import ExpectedFailureForNoFailure, \
     ExpectedFailureForInstructionFailure, ExpectedFailureForPhaseFailure
 
@@ -21,7 +21,7 @@ class Test(unittest.TestCase):
     def test_full_sequence(self):
         new_test_case_with_recording(
                 self,
-                TestCaseGeneratorForExecutionRecording(),
+                Arrangement(TestCaseGeneratorForExecutionRecording()),
                 Expectation(FullResultStatus.PASS,
                             ExpectedFailureForNoFailure(),
                             [phase_step.ANONYMOUS,
@@ -44,7 +44,7 @@ class Test(unittest.TestCase):
                 sh.new_sh_hard_error('hard error msg')))
         new_test_case_with_recording(
                 self,
-                test_case_generator,
+                Arrangement(test_case_generator),
                 Expectation(FullResultStatus.HARD_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_message(
                                     phase_step.new_without_step(phases.ANONYMOUS),
@@ -61,7 +61,7 @@ class Test(unittest.TestCase):
                         instruction_test_resources.ImplementationErrorTestException()))
         new_test_case_with_recording(
                 self,
-                test_case,
+                Arrangement(test_case),
                 Expectation(FullResultStatus.IMPLEMENTATION_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_exception(
                                     PhaseStep(phases.ANONYMOUS, None),
@@ -81,7 +81,7 @@ class Test(unittest.TestCase):
                         svh.new_svh_success()))
         new_test_case_with_recording(
                 self,
-                test_case,
+                Arrangement(test_case),
                 Expectation(FullResultStatus.VALIDATE,
                             ExpectedFailureForInstructionFailure.new_with_message(
                                     PhaseStep(phases.SETUP, phase_step.PRE_VALIDATE),
@@ -101,7 +101,7 @@ class Test(unittest.TestCase):
                         svh.new_svh_success()))
         new_test_case_with_recording(
                 self,
-                test_case,
+                Arrangement(test_case),
                 Expectation(FullResultStatus.HARD_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_message(
                                     PhaseStep(phases.SETUP, phase_step.PRE_VALIDATE),
@@ -119,7 +119,7 @@ class Test(unittest.TestCase):
                         instruction_test_resources.ImplementationErrorTestException()))
         new_test_case_with_recording(
                 self,
-                test_case,
+                Arrangement(test_case),
                 Expectation(FullResultStatus.IMPLEMENTATION_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_exception(
                                     PhaseStep(phases.SETUP, phase_step.PRE_VALIDATE),
@@ -139,7 +139,7 @@ class Test(unittest.TestCase):
                         from_post_validate=svh.new_svh_success()))
         new_test_case_with_recording(
                 self,
-                test_case,
+                Arrangement(test_case),
                 Expectation(FullResultStatus.HARD_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_message(
                                     PhaseStep(phases.SETUP, phase_step.EXECUTE),
@@ -159,7 +159,7 @@ class Test(unittest.TestCase):
                         instruction_test_resources.ImplementationErrorTestException()))
         new_test_case_with_recording(
                 self,
-                test_case,
+                Arrangement(test_case),
                 Expectation(FullResultStatus.IMPLEMENTATION_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_exception(
                                     PhaseStep(phases.SETUP, phase_step.EXECUTE),
@@ -182,7 +182,7 @@ class Test(unittest.TestCase):
                                 'validation error from setup/post-validate')))
         new_test_case_with_recording(
                 self,
-                test_case,
+                Arrangement(test_case),
                 Expectation(FullResultStatus.VALIDATE,
                             ExpectedFailureForInstructionFailure.new_with_message(
                                     PhaseStep(phases.SETUP, phase_step.POST_VALIDATE),
@@ -205,7 +205,7 @@ class Test(unittest.TestCase):
                         svh.new_svh_hard_error('hard error from setup/post-validate')))
         new_test_case_with_recording(
                 self,
-                test_case,
+                Arrangement(test_case),
                 Expectation(FullResultStatus.HARD_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_message(
                                     PhaseStep(phases.SETUP, phase_step.POST_VALIDATE),
@@ -226,7 +226,7 @@ class Test(unittest.TestCase):
                         instruction_test_resources.ImplementationErrorTestException()))
         new_test_case_with_recording(
                 self,
-                test_case,
+                Arrangement(test_case),
                 Expectation(FullResultStatus.IMPLEMENTATION_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_exception(
                                     PhaseStep(phases.SETUP, phase_step.POST_VALIDATE),
@@ -248,7 +248,7 @@ class Test(unittest.TestCase):
                         from_execute=pfh.new_pfh_pass()))
         new_test_case_with_recording(
                 self,
-                test_case,
+                Arrangement(test_case),
                 Expectation(FullResultStatus.VALIDATE,
                             ExpectedFailureForInstructionFailure.new_with_message(
                                     PhaseStep(phases.ASSERT, phase_step.VALIDATE),
@@ -272,7 +272,7 @@ class Test(unittest.TestCase):
                         from_execute=pfh.new_pfh_pass()))
         new_test_case_with_recording(
                 self,
-                test_case,
+                Arrangement(test_case),
                 Expectation(FullResultStatus.HARD_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_message(
                                     PhaseStep(phases.ASSERT, phase_step.VALIDATE),
@@ -295,7 +295,7 @@ class Test(unittest.TestCase):
                         instruction_test_resources.ImplementationErrorTestException()))
         new_test_case_with_recording(
                 self,
-                test_case,
+                Arrangement(test_case),
                 Expectation(FullResultStatus.IMPLEMENTATION_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_exception(
                                     PhaseStep(phases.ASSERT, phase_step.VALIDATE),
@@ -320,7 +320,7 @@ class Test(unittest.TestCase):
                         from_execute=sh.new_sh_success()))
         new_test_case_with_recording(
                 self,
-                test_case,
+                Arrangement(test_case),
                 Expectation(FullResultStatus.VALIDATE,
                             ExpectedFailureForInstructionFailure.new_with_message(
                                     PhaseStep(phases.ACT, phase_step.VALIDATE),
@@ -344,7 +344,7 @@ class Test(unittest.TestCase):
                         from_execute=sh.new_sh_success()))
         new_test_case_with_recording(
                 self,
-                test_case,
+                Arrangement(test_case),
                 Expectation(FullResultStatus.HARD_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_message(
                                     PhaseStep(phases.ACT, phase_step.VALIDATE),
@@ -367,7 +367,7 @@ class Test(unittest.TestCase):
                         instruction_test_resources.ImplementationErrorTestException()))
         new_test_case_with_recording(
                 self,
-                test_case,
+                Arrangement(test_case),
                 Expectation(FullResultStatus.IMPLEMENTATION_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_exception(
                                     PhaseStep(phases.ACT, phase_step.VALIDATE),
@@ -391,7 +391,7 @@ class Test(unittest.TestCase):
                         from_execute=sh.new_sh_hard_error('hard error msg from act')))
         new_test_case_with_recording(
                 self,
-                test_case,
+                Arrangement(test_case),
                 Expectation(FullResultStatus.HARD_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_message(
                                     PhaseStep(phases.ACT, phase_step.ACT_script_generate),
@@ -416,7 +416,7 @@ class Test(unittest.TestCase):
                         instruction_test_resources.ImplementationErrorTestException()))
         new_test_case_with_recording(
                 self,
-                test_case,
+                Arrangement(test_case),
                 Expectation(FullResultStatus.IMPLEMENTATION_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_exception(
                                     PhaseStep(phases.ACT, phase_step.ACT_script_generate),
@@ -438,7 +438,9 @@ class Test(unittest.TestCase):
         test_case = TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList()
         new_test_case_with_recording(
                 self,
-                test_case,
+                Arrangement(test_case,
+                            validate_test_action=validate_action_that_returns(
+                                    svh.new_svh_validation_error('error message from validate'))),
                 Expectation(FullResultStatus.VALIDATE,
                             ExpectedFailureForPhaseFailure.new_with_message(
                                     PhaseStep(phases.ACT, phase_step.ACT_script_validate),
@@ -453,16 +455,16 @@ class Test(unittest.TestCase):
                              phase_step.ACT__SCRIPT_VALIDATE,
                              phase_step.CLEANUP,
                              ],
-                            True),
-                validate_test_action=validate_action_that_returns(
-                        svh.new_svh_validation_error('error message from validate'))
+                            True)
         ).execute()
 
     def test_hard_error_in_act_script_validate(self):
         test_case = TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList()
         new_test_case_with_recording(
                 self,
-                test_case,
+                Arrangement(test_case,
+                            validate_test_action=validate_action_that_returns(
+                                    svh.new_svh_hard_error('error message from validate'))),
                 Expectation(FullResultStatus.HARD_ERROR,
                             ExpectedFailureForPhaseFailure.new_with_message(
                                     PhaseStep(phases.ACT, phase_step.ACT_script_validate),
@@ -477,16 +479,16 @@ class Test(unittest.TestCase):
                              phase_step.ACT__SCRIPT_VALIDATE,
                              phase_step.CLEANUP,
                              ],
-                            True),
-                validate_test_action=validate_action_that_returns(
-                        svh.new_svh_hard_error('error message from validate'))
+                            True)
         ).execute()
 
     def test_implementation_error_in_act_script_validate(self):
         test_case = TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList()
         new_test_case_with_recording(
                 self,
-                test_case,
+                Arrangement(test_case,
+                            validate_test_action=validate_action_that_raises(
+                                    instruction_test_resources.ImplementationErrorTestException())),
                 Expectation(FullResultStatus.IMPLEMENTATION_ERROR,
                             ExpectedFailureForPhaseFailure.new_with_exception(
                                     PhaseStep(phases.ACT, phase_step.ACT_script_validate),
@@ -501,16 +503,16 @@ class Test(unittest.TestCase):
                              phase_step.ACT__SCRIPT_VALIDATE,
                              phase_step.CLEANUP,
                              ],
-                            True),
-                validate_test_action=validate_action_that_raises(
-                        instruction_test_resources.ImplementationErrorTestException())
+                            True)
         ).execute()
 
     def test_implementation_error_in_act_script_execute(self):
         test_case = TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList()
         new_test_case_with_recording(
                 self,
-                test_case,
+                Arrangement(test_case,
+                            execute_test_action=execute_action_that_raises(
+                                    instruction_test_resources.ImplementationErrorTestException())),
                 Expectation(FullResultStatus.IMPLEMENTATION_ERROR,
                             ExpectedFailureForPhaseFailure.new_with_exception(
                                     PhaseStep(phases.ACT, phase_step.ACT_script_execute),
@@ -526,9 +528,7 @@ class Test(unittest.TestCase):
                              phase_step.ACT__SCRIPT_EXECUTE,
                              phase_step.CLEANUP,
                              ],
-                            True),
-                execute_test_action=execute_action_that_raises(
-                        instruction_test_resources.ImplementationErrorTestException())
+                            True)
         ).execute()
 
     def test_fail_in_assert_execute_phase(self):
@@ -539,7 +539,7 @@ class Test(unittest.TestCase):
                         from_execute=pfh.new_pfh_fail('fail msg from ASSERT')))
         new_test_case_with_recording(
                 self,
-                test_case,
+                Arrangement(test_case),
                 Expectation(FullResultStatus.FAIL,
                             ExpectedFailureForInstructionFailure.new_with_message(
                                     PhaseStep(phases.ASSERT, phase_step.EXECUTE),
@@ -568,7 +568,7 @@ class Test(unittest.TestCase):
                         from_execute=pfh.new_pfh_hard_error('hard error msg from ASSERT')))
         new_test_case_with_recording(
                 self,
-                test_case,
+                Arrangement(test_case),
                 Expectation(FullResultStatus.HARD_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_message(
                                     PhaseStep(phases.ASSERT, phase_step.EXECUTE),
@@ -596,7 +596,7 @@ class Test(unittest.TestCase):
                         instruction_test_resources.ImplementationErrorTestException()))
         new_test_case_with_recording(
                 self,
-                test_case,
+                Arrangement(test_case),
                 Expectation(FullResultStatus.IMPLEMENTATION_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_exception(
                                     PhaseStep(phases.ASSERT, phase_step.EXECUTE),
@@ -624,7 +624,7 @@ class Test(unittest.TestCase):
                         sh.new_sh_hard_error('hard error msg from CLEANUP')))
         new_test_case_with_recording(
                 self,
-                test_case,
+                Arrangement(test_case),
                 Expectation(FullResultStatus.HARD_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_message(
                                     phase_step.new_without_step(phases.CLEANUP),
@@ -652,7 +652,7 @@ class Test(unittest.TestCase):
                         instruction_test_resources.ImplementationErrorTestException()))
         new_test_case_with_recording(
                 self,
-                test_case,
+                Arrangement(test_case),
                 Expectation(FullResultStatus.IMPLEMENTATION_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_exception(
                                     phase_step.new_without_step(phases.CLEANUP),

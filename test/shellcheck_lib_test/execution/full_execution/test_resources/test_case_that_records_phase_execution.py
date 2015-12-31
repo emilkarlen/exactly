@@ -1,4 +1,5 @@
 import pathlib
+import types
 import unittest
 
 from shellcheck_lib.act_phase_setups import python3
@@ -95,7 +96,7 @@ class TestCaseThatRecordsExecution(FullExecutionTestCaseBase):
 def with_recording_act_program_executor(recorder: instr.ListRecorder,
                                         script_handling: ScriptHandling,
                                         validate_test_action,
-                                        execute_test_action):
+                                        execute_test_action) -> ScriptHandling:
     return ScriptHandling(script_handling.builder,
                           _ActProgramExecutorWrapperThatRecordsSteps(recorder,
                                                                      script_handling.executor,
@@ -170,19 +171,39 @@ class _ActProgramExecutorWrapperThatRecordsSteps(ActProgramExecutor):
                                       std_files)
 
 
+class Arrangement(tuple):
+    def __new__(cls,
+                test_case_generator: TestCaseGeneratorForExecutionRecording,
+                validate_test_action=validate_action_that_returns(svh.new_svh_success()),
+                execute_test_action=execute_action_that_does_nothing()):
+        return tuple.__new__(cls, (test_case_generator,
+                                   validate_test_action,
+                                   execute_test_action))
+
+    @property
+    def test_case_generator(self) -> TestCaseGeneratorForExecutionRecording:
+        return self[0]
+
+    @property
+    def validate_test_action(self) -> types.FunctionType:
+        return self[1]
+
+    @property
+    def execute_test_action(self) -> types.FunctionType:
+        return self[2]
+
+
 def new_test_case_with_recording(unittest_case: unittest.TestCase,
-                                 test_case_generator: TestCaseGeneratorForExecutionRecording,
+                                 arrangement: Arrangement,
                                  expectation: Expectation,
-                                 validate_test_action=validate_action_that_returns(svh.new_svh_success()),
-                                 execute_test_action=execute_action_that_does_nothing(),
                                  dbg_do_not_delete_dir_structure=False) -> TestCaseThatRecordsExecution:
-    script_handling = with_recording_act_program_executor(test_case_generator.recorder,
+    script_handling = with_recording_act_program_executor(arrangement.test_case_generator.recorder,
                                                           script_handling_for_setup(python3.new_act_phase_setup()),
-                                                          validate_test_action,
-                                                          execute_test_action)
+                                                          arrangement.validate_test_action,
+                                                          arrangement.execute_test_action)
     return TestCaseThatRecordsExecution(unittest_case,
-                                        test_case_generator,
+                                        arrangement.test_case_generator,
                                         expectation,
                                         dbg_do_not_delete_dir_structure,
                                         script_handling,
-                                        test_case_generator.recorder)
+                                        arrangement.test_case_generator.recorder)

@@ -10,7 +10,7 @@ from shellcheck_lib_test.execution.full_execution.test_resources.instruction_tes
 from shellcheck_lib_test.execution.full_execution.test_resources.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList
 from shellcheck_lib_test.execution.full_execution.test_resources.test_case_that_records_phase_execution import \
-    new_test_case_with_recording, Expectation
+    new_test_case_with_recording, Expectation, Arrangement
 from shellcheck_lib_test.test_resources.expected_instruction_failure import ExpectedFailureForNoFailure, \
     ExpectedFailureForInstructionFailure
 
@@ -22,7 +22,7 @@ class Test(unittest.TestCase):
                 ExecutionMode.SKIPPED))
         new_test_case_with_recording(
                 self,
-                test_case,
+                Arrangement(test_case),
                 Expectation(FullResultStatus.SKIPPED,
                             ExpectedFailureForNoFailure(),
                             [phase_step.ANONYMOUS
@@ -38,7 +38,7 @@ class Test(unittest.TestCase):
                 ExecutionMode.SKIPPED))
         new_test_case_with_recording(
                 self,
-                test_case,
+                Arrangement(test_case),
                 Expectation(FullResultStatus.HARD_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_message(
                                     phase_step.new_without_step(phases.ANONYMOUS),
@@ -57,7 +57,7 @@ class Test(unittest.TestCase):
                 sh.new_sh_hard_error('hard error msg')))
         new_test_case_with_recording(
                 self,
-                test_case,
+                Arrangement(test_case),
                 Expectation(FullResultStatus.HARD_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_message(
                                     phase_step.new_without_step(phases.ANONYMOUS),

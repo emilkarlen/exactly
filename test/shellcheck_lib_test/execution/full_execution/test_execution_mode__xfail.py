@@ -12,7 +12,7 @@ from shellcheck_lib_test.execution.full_execution.test_resources.instruction_tes
 from shellcheck_lib_test.execution.full_execution.test_resources.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList
 from shellcheck_lib_test.execution.full_execution.test_resources.test_case_that_records_phase_execution import \
-    new_test_case_with_recording, Expectation
+    new_test_case_with_recording, Expectation, Arrangement
 from shellcheck_lib_test.test_resources.expected_instruction_failure import ExpectedFailureForInstructionFailure, \
     ExpectedFailureForNoFailure
 
@@ -27,7 +27,7 @@ class Test(unittest.TestCase):
                         from_execute=pfh.new_pfh_fail('fail message')))
         new_test_case_with_recording(
                 self,
-                test_case,
+                Arrangement(test_case),
                 Expectation(FullResultStatus.XFAIL,
                             ExpectedFailureForInstructionFailure.new_with_message(
                                     phase_step.PhaseStep(phases.ASSERT, phase_step.EXECUTE),
@@ -53,7 +53,7 @@ class Test(unittest.TestCase):
             .add_anonymous(AnonymousPhaseInstructionThatSetsExecutionMode(ExecutionMode.XFAIL))
         new_test_case_with_recording(
                 self,
-                test_case,
+                Arrangement(test_case),
                 Expectation(FullResultStatus.XPASS,
                             ExpectedFailureForNoFailure(),
                             [phase_step.ANONYMOUS,
@@ -78,7 +78,7 @@ class Test(unittest.TestCase):
                 sh.new_sh_hard_error('hard error msg')))
         new_test_case_with_recording(
                 self,
-                test_case,
+                Arrangement(test_case),
                 Expectation(FullResultStatus.HARD_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_message(
                                     phase_step.new_without_step(phases.ANONYMOUS),
@@ -97,7 +97,7 @@ class Test(unittest.TestCase):
                         instruction_test_resources.ImplementationErrorTestException()))
         new_test_case_with_recording(
                 self,
-                test_case,
+                Arrangement(test_case),
                 Expectation(FullResultStatus.IMPLEMENTATION_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_exception(
                                     phase_step.new_without_step(phases.CLEANUP),
