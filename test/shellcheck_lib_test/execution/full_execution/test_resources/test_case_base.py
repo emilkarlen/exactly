@@ -17,7 +17,7 @@ class FullExecutionTestCaseBase:
     def __init__(self,
                  unittest_case: unittest.TestCase,
                  dbg_do_not_delete_dir_structure=False,
-                 script_handling: ScriptHandling=None):
+                 script_handling: ScriptHandling = None):
         self.__unittest_case = unittest_case
         self.__dbg_do_not_delete_dir_structure = dbg_do_not_delete_dir_structure
         self.__full_result = None
@@ -32,11 +32,11 @@ class FullExecutionTestCaseBase:
         self.__initial_home_dir_path = pathlib.Path().resolve()
         # ACT #
         full_result = full_execution.execute(
-            self.__script_handling,
-            self._test_case(),
-            self.initial_home_dir_path,
-            'shellcheck-test-',
-            True)
+                self.__script_handling,
+                self._test_case(),
+                self.initial_home_dir_path,
+                'shellcheck-test-',
+                True)
 
         # ASSERT #
         self.__full_result = full_result
