@@ -17,7 +17,7 @@ from shellcheck_lib_test.execution.full_execution.test_resources import \
     recording_instructions_for_sequence_tests as instr
 from shellcheck_lib_test.execution.full_execution.test_resources.test_case_base import FullExecutionTestCaseBase
 from shellcheck_lib_test.execution.full_execution.test_resources.test_case_generation_for_sequence_tests import \
-    TestCaseGeneratorForExecutionRecording
+    TestCaseGeneratorForExecutionRecording, TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList
 from shellcheck_lib_test.test_resources.expected_instruction_failure import ExpectedFailure
 
 
@@ -193,6 +193,17 @@ class Arrangement(tuple):
         return self[2]
 
 
+class TestCaseBase(unittest.TestCase):
+    def _check(self,
+               arrangement: Arrangement,
+               expectation: Expectation,
+               dbg_do_not_delete_dir_structure=False):
+        new_test_case_with_recording(self,
+                                     arrangement,
+                                     expectation,
+                                     dbg_do_not_delete_dir_structure).execute()
+
+
 def new_test_case_with_recording(unittest_case: unittest.TestCase,
                                  arrangement: Arrangement,
                                  expectation: Expectation,
@@ -207,3 +218,7 @@ def new_test_case_with_recording(unittest_case: unittest.TestCase,
                                         dbg_do_not_delete_dir_structure,
                                         script_handling,
                                         arrangement.test_case_generator.recorder)
+
+
+def one_successful_instruction_in_each_phase() -> TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList:
+    return TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList()

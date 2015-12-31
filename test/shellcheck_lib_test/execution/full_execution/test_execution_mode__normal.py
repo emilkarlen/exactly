@@ -7,21 +7,17 @@ from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib_test.execution.full_execution.test_resources import instruction_test_resources
-from shellcheck_lib_test.execution.full_execution.test_resources.test_case_generation_for_sequence_tests import \
-    TestCaseGeneratorForExecutionRecording, \
-    TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList
 from shellcheck_lib_test.execution.full_execution.test_resources.test_case_that_records_phase_execution import \
     validate_action_that_raises, validate_action_that_returns, execute_action_that_raises, \
-    Expectation, new_test_case_with_recording, Arrangement
+    Expectation, Arrangement, TestCaseBase, one_successful_instruction_in_each_phase
 from shellcheck_lib_test.test_resources.expected_instruction_failure import ExpectedFailureForNoFailure, \
     ExpectedFailureForInstructionFailure, ExpectedFailureForPhaseFailure
 
 
-class Test(unittest.TestCase):
+class Test(TestCaseBase):
     def test_full_sequence(self):
-        new_test_case_with_recording(
-                self,
-                Arrangement(TestCaseGeneratorForExecutionRecording()),
+        self._check(
+                Arrangement(one_successful_instruction_in_each_phase()),
                 Expectation(FullResultStatus.PASS,
                             ExpectedFailureForNoFailure(),
                             [phase_step.ANONYMOUS,
@@ -36,14 +32,13 @@ class Test(unittest.TestCase):
                              phase_step.ASSERT__EXECUTE,
                              phase_step.CLEANUP,
                              ],
-                            True)).execute()
+                            True))
 
     def test_hard_error_in_anonymous_phase(self):
-        test_case_generator = TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList() \
+        test_case_generator = one_successful_instruction_in_each_phase() \
             .add_anonymous(instruction_test_resources.AnonymousPhaseInstructionThatReturns(
                 sh.new_sh_hard_error('hard error msg')))
-        new_test_case_with_recording(
-                self,
+        self._check(
                 Arrangement(test_case_generator),
                 Expectation(FullResultStatus.HARD_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_message(
@@ -52,15 +47,14 @@ class Test(unittest.TestCase):
                                     'hard error msg'),
                             [phase_step.ANONYMOUS
                              ],
-                            False)).execute()
+                            False))
 
     def test_implementation_error_in_anonymous_phase(self):
-        test_case = TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList() \
+        test_case = one_successful_instruction_in_each_phase() \
             .add_anonymous(
                 instruction_test_resources.AnonymousPhaseInstructionWithImplementationError(
                         instruction_test_resources.ImplementationErrorTestException()))
-        new_test_case_with_recording(
-                self,
+        self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.IMPLEMENTATION_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_exception(
@@ -69,18 +63,17 @@ class Test(unittest.TestCase):
                                     instruction_test_resources.ImplementationErrorTestException),
                             [phase_step.ANONYMOUS
                              ],
-                            False)).execute()
+                            False))
 
     def test_validation_error_in_setup_validate_phase(self):
-        test_case = TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList() \
+        test_case = one_successful_instruction_in_each_phase() \
             .add_setup(
                 instruction_test_resources.SetupPhaseInstructionThatReturns(
                         svh.new_svh_validation_error(
                                 'validation error from setup/validate'),
                         sh.new_sh_success(),
                         svh.new_svh_success()))
-        new_test_case_with_recording(
-                self,
+        self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.VALIDATE,
                             ExpectedFailureForInstructionFailure.new_with_message(
@@ -90,17 +83,16 @@ class Test(unittest.TestCase):
                             [phase_step.ANONYMOUS,
                              phase_step.SETUP__PRE_VALIDATE,
                              ],
-                            True)).execute()
+                            True))
 
     def test_hard_error_in_setup_validate_phase(self):
-        test_case = TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList() \
+        test_case = one_successful_instruction_in_each_phase() \
             .add_setup(
                 instruction_test_resources.SetupPhaseInstructionThatReturns(
                         svh.new_svh_hard_error('hard error from setup/validate'),
                         sh.new_sh_success(),
                         svh.new_svh_success()))
-        new_test_case_with_recording(
-                self,
+        self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.HARD_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_message(
@@ -110,15 +102,14 @@ class Test(unittest.TestCase):
                             [phase_step.ANONYMOUS,
                              phase_step.SETUP__PRE_VALIDATE,
                              ],
-                            True)).execute()
+                            True))
 
     def test_implementation_error_in_setup_validate_phase(self):
-        test_case = TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList() \
+        test_case = one_successful_instruction_in_each_phase() \
             .add_setup(
                 instruction_test_resources.SetupPhaseInstructionWithImplementationErrorInPreValidate(
                         instruction_test_resources.ImplementationErrorTestException()))
-        new_test_case_with_recording(
-                self,
+        self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.IMPLEMENTATION_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_exception(
@@ -128,17 +119,16 @@ class Test(unittest.TestCase):
                             [phase_step.ANONYMOUS,
                              phase_step.SETUP__PRE_VALIDATE,
                              ],
-                            True)).execute()
+                            True))
 
     def test_hard_error_in_setup_execute_phase(self):
-        test_case = TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList() \
+        test_case = one_successful_instruction_in_each_phase() \
             .add_setup(
                 instruction_test_resources.SetupPhaseInstructionThatReturns(
                         from_pre_validate=svh.new_svh_success(),
                         from_execute=sh.new_sh_hard_error('hard error msg from setup'),
                         from_post_validate=svh.new_svh_success()))
-        new_test_case_with_recording(
-                self,
+        self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.HARD_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_message(
@@ -150,15 +140,14 @@ class Test(unittest.TestCase):
                              phase_step.SETUP__EXECUTE,
                              phase_step.CLEANUP,
                              ],
-                            True)).execute()
+                            True))
 
     def test_implementation_error_in_setup_execute_phase(self):
-        test_case = TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList() \
+        test_case = one_successful_instruction_in_each_phase() \
             .add_setup(
                 instruction_test_resources.SetupPhaseInstructionWithExceptionInExecute(
                         instruction_test_resources.ImplementationErrorTestException()))
-        new_test_case_with_recording(
-                self,
+        self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.IMPLEMENTATION_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_exception(
@@ -170,18 +159,17 @@ class Test(unittest.TestCase):
                              phase_step.SETUP__EXECUTE,
                              phase_step.CLEANUP,
                              ],
-                            True)).execute()
+                            True))
 
     def test_validation_error_in_setup_post_validate_phase(self):
-        test_case = TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList() \
+        test_case = one_successful_instruction_in_each_phase() \
             .add_setup(
                 instruction_test_resources.SetupPhaseInstructionThatReturns(
                         svh.new_svh_success(),
                         sh.new_sh_success(),
                         svh.new_svh_validation_error(
                                 'validation error from setup/post-validate')))
-        new_test_case_with_recording(
-                self,
+        self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.VALIDATE,
                             ExpectedFailureForInstructionFailure.new_with_message(
@@ -194,17 +182,16 @@ class Test(unittest.TestCase):
                              phase_step.SETUP__POST_VALIDATE,
                              phase_step.CLEANUP,
                              ],
-                            True)).execute()
+                            True))
 
     def test_hard_error_in_setup_post_validate_phase(self):
-        test_case = TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList() \
+        test_case = one_successful_instruction_in_each_phase() \
             .add_setup(
                 instruction_test_resources.SetupPhaseInstructionThatReturns(
                         svh.new_svh_success(),
                         sh.new_sh_success(),
                         svh.new_svh_hard_error('hard error from setup/post-validate')))
-        new_test_case_with_recording(
-                self,
+        self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.HARD_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_message(
@@ -217,15 +204,14 @@ class Test(unittest.TestCase):
                              phase_step.SETUP__POST_VALIDATE,
                              phase_step.CLEANUP,
                              ],
-                            True)).execute()
+                            True))
 
     def test_implementation_error_in_setup_post_validate_phase(self):
-        test_case = TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList() \
+        test_case = one_successful_instruction_in_each_phase() \
             .add_setup(
                 instruction_test_resources.SetupPhaseInstructionWithImplementationErrorInPostValidate(
                         instruction_test_resources.ImplementationErrorTestException()))
-        new_test_case_with_recording(
-                self,
+        self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.IMPLEMENTATION_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_exception(
@@ -238,16 +224,15 @@ class Test(unittest.TestCase):
                              phase_step.SETUP__POST_VALIDATE,
                              phase_step.CLEANUP,
                              ],
-                            True)).execute()
+                            True))
 
     def test_validation_error_in_assert_validate_phase(self):
-        test_case = TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList() \
+        test_case = one_successful_instruction_in_each_phase() \
             .add_assert(
                 instruction_test_resources.AssertPhaseInstructionThatReturns(
                         from_validate=svh.new_svh_validation_error('ASSERT/validate'),
                         from_execute=pfh.new_pfh_pass()))
-        new_test_case_with_recording(
-                self,
+        self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.VALIDATE,
                             ExpectedFailureForInstructionFailure.new_with_message(
@@ -262,16 +247,15 @@ class Test(unittest.TestCase):
                              phase_step.ASSERT__VALIDATE,
                              phase_step.CLEANUP,
                              ],
-                            True)).execute()
+                            True))
 
     def test_hard_error_in_assert_validate_phase(self):
-        test_case = TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList() \
+        test_case = one_successful_instruction_in_each_phase() \
             .add_assert(
                 instruction_test_resources.AssertPhaseInstructionThatReturns(
                         from_validate=svh.new_svh_hard_error('ASSERT/validate'),
                         from_execute=pfh.new_pfh_pass()))
-        new_test_case_with_recording(
-                self,
+        self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.HARD_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_message(
@@ -286,15 +270,14 @@ class Test(unittest.TestCase):
                              phase_step.ASSERT__VALIDATE,
                              phase_step.CLEANUP,
                              ],
-                            True)).execute()
+                            True))
 
     def test_implementation_error_in_assert_validate_phase(self):
-        test_case = TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList() \
+        test_case = one_successful_instruction_in_each_phase() \
             .add_assert(
                 instruction_test_resources.AssertPhaseInstructionWithExceptionInValidate(
                         instruction_test_resources.ImplementationErrorTestException()))
-        new_test_case_with_recording(
-                self,
+        self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.IMPLEMENTATION_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_exception(
@@ -309,17 +292,15 @@ class Test(unittest.TestCase):
                              phase_step.ASSERT__VALIDATE,
                              phase_step.CLEANUP,
                              ],
-                            True)
-        ).execute()
+                            True))
 
     def test_validation_error_in_act_validate_phase(self):
-        test_case = TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList() \
+        test_case = one_successful_instruction_in_each_phase() \
             .add_act(
                 instruction_test_resources.ActPhaseInstructionThatReturns(
                         from_validate=svh.new_svh_validation_error('ACT/validate'),
                         from_execute=sh.new_sh_success()))
-        new_test_case_with_recording(
-                self,
+        self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.VALIDATE,
                             ExpectedFailureForInstructionFailure.new_with_message(
@@ -333,17 +314,15 @@ class Test(unittest.TestCase):
                              phase_step.ACT__VALIDATE,
                              phase_step.CLEANUP,
                              ],
-                            True)
-        ).execute()
+                            True))
 
     def test_hard_error_in_act_validate_phase(self):
-        test_case = TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList() \
+        test_case = one_successful_instruction_in_each_phase() \
             .add_act(
                 instruction_test_resources.ActPhaseInstructionThatReturns(
                         from_validate=svh.new_svh_hard_error('ACT/validate'),
                         from_execute=sh.new_sh_success()))
-        new_test_case_with_recording(
-                self,
+        self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.HARD_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_message(
@@ -357,16 +336,14 @@ class Test(unittest.TestCase):
                              phase_step.ACT__VALIDATE,
                              phase_step.CLEANUP,
                              ],
-                            True)
-        ).execute()
+                            True))
 
     def test_implementation_error_in_act_validate(self):
-        test_case = TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList() \
+        test_case = one_successful_instruction_in_each_phase() \
             .add_act(
                 instruction_test_resources.ActPhaseInstructionWithImplementationErrorInValidate(
                         instruction_test_resources.ImplementationErrorTestException()))
-        new_test_case_with_recording(
-                self,
+        self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.IMPLEMENTATION_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_exception(
@@ -380,17 +357,15 @@ class Test(unittest.TestCase):
                              phase_step.ACT__VALIDATE,
                              phase_step.CLEANUP,
                              ],
-                            True)
-        ).execute()
+                            True))
 
     def test_hard_error_in_act_script_generate(self):
-        test_case = TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList() \
+        test_case = one_successful_instruction_in_each_phase() \
             .add_act(
                 instruction_test_resources.ActPhaseInstructionThatReturns(
                         from_validate=svh.new_svh_success(),
                         from_execute=sh.new_sh_hard_error('hard error msg from act')))
-        new_test_case_with_recording(
-                self,
+        self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.HARD_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_message(
@@ -406,16 +381,14 @@ class Test(unittest.TestCase):
                              phase_step.ACT__SCRIPT_GENERATE,
                              phase_step.CLEANUP,
                              ],
-                            True)
-        ).execute()
+                            True))
 
     def test_implementation_error_in_act_script_generate(self):
-        test_case = TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList() \
+        test_case = one_successful_instruction_in_each_phase() \
             .add_act(
                 instruction_test_resources.ActPhaseInstructionWithImplementationErrorInExecute(
                         instruction_test_resources.ImplementationErrorTestException()))
-        new_test_case_with_recording(
-                self,
+        self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.IMPLEMENTATION_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_exception(
@@ -431,13 +404,11 @@ class Test(unittest.TestCase):
                              phase_step.ACT__SCRIPT_GENERATE,
                              phase_step.CLEANUP,
                              ],
-                            True)
-        ).execute()
+                            True))
 
     def test_validation_error_in_act_script_validate(self):
-        test_case = TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList()
-        new_test_case_with_recording(
-                self,
+        test_case = one_successful_instruction_in_each_phase()
+        self._check(
                 Arrangement(test_case,
                             validate_test_action=validate_action_that_returns(
                                     svh.new_svh_validation_error('error message from validate'))),
@@ -455,13 +426,11 @@ class Test(unittest.TestCase):
                              phase_step.ACT__SCRIPT_VALIDATE,
                              phase_step.CLEANUP,
                              ],
-                            True)
-        ).execute()
+                            True))
 
     def test_hard_error_in_act_script_validate(self):
-        test_case = TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList()
-        new_test_case_with_recording(
-                self,
+        test_case = one_successful_instruction_in_each_phase()
+        self._check(
                 Arrangement(test_case,
                             validate_test_action=validate_action_that_returns(
                                     svh.new_svh_hard_error('error message from validate'))),
@@ -479,13 +448,11 @@ class Test(unittest.TestCase):
                              phase_step.ACT__SCRIPT_VALIDATE,
                              phase_step.CLEANUP,
                              ],
-                            True)
-        ).execute()
+                            True))
 
     def test_implementation_error_in_act_script_validate(self):
-        test_case = TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList()
-        new_test_case_with_recording(
-                self,
+        test_case = one_successful_instruction_in_each_phase()
+        self._check(
                 Arrangement(test_case,
                             validate_test_action=validate_action_that_raises(
                                     instruction_test_resources.ImplementationErrorTestException())),
@@ -503,13 +470,11 @@ class Test(unittest.TestCase):
                              phase_step.ACT__SCRIPT_VALIDATE,
                              phase_step.CLEANUP,
                              ],
-                            True)
-        ).execute()
+                            True))
 
     def test_implementation_error_in_act_script_execute(self):
-        test_case = TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList()
-        new_test_case_with_recording(
-                self,
+        test_case = one_successful_instruction_in_each_phase()
+        self._check(
                 Arrangement(test_case,
                             execute_test_action=execute_action_that_raises(
                                     instruction_test_resources.ImplementationErrorTestException())),
@@ -528,17 +493,15 @@ class Test(unittest.TestCase):
                              phase_step.ACT__SCRIPT_EXECUTE,
                              phase_step.CLEANUP,
                              ],
-                            True)
-        ).execute()
+                            True))
 
     def test_fail_in_assert_execute_phase(self):
-        test_case = TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList() \
+        test_case = one_successful_instruction_in_each_phase() \
             .add_assert(
                 instruction_test_resources.AssertPhaseInstructionThatReturns(
                         from_validate=svh.new_svh_success(),
                         from_execute=pfh.new_pfh_fail('fail msg from ASSERT')))
-        new_test_case_with_recording(
-                self,
+        self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.FAIL,
                             ExpectedFailureForInstructionFailure.new_with_message(
@@ -557,17 +520,15 @@ class Test(unittest.TestCase):
                              phase_step.ASSERT__EXECUTE,
                              phase_step.CLEANUP
                              ],
-                            True)
-        ).execute()
+                            True))
 
     def test_hard_error_in_assert_execute_phase(self):
-        test_case = TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList() \
+        test_case = one_successful_instruction_in_each_phase() \
             .add_assert(
                 instruction_test_resources.AssertPhaseInstructionThatReturns(
                         from_validate=svh.new_svh_success(),
                         from_execute=pfh.new_pfh_hard_error('hard error msg from ASSERT')))
-        new_test_case_with_recording(
-                self,
+        self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.HARD_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_message(
@@ -586,16 +547,14 @@ class Test(unittest.TestCase):
                              phase_step.ASSERT__EXECUTE,
                              phase_step.CLEANUP
                              ],
-                            True)
-        ).execute()
+                            True))
 
     def test_implementation_error_in_assert_execute_phase(self):
-        test_case = TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList() \
+        test_case = one_successful_instruction_in_each_phase() \
             .add_assert(
                 instruction_test_resources.AssertPhaseInstructionWithExceptionInExecute(
                         instruction_test_resources.ImplementationErrorTestException()))
-        new_test_case_with_recording(
-                self,
+        self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.IMPLEMENTATION_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_exception(
@@ -614,16 +573,14 @@ class Test(unittest.TestCase):
                              phase_step.ASSERT__EXECUTE,
                              phase_step.CLEANUP
                              ],
-                            True)
-        ).execute()
+                            True))
 
     def test_hard_error_in_cleanup_phase(self):
-        test_case = TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList() \
+        test_case = one_successful_instruction_in_each_phase() \
             .add_cleanup(
                 instruction_test_resources.CleanupPhaseInstructionThatReturns(
                         sh.new_sh_hard_error('hard error msg from CLEANUP')))
-        new_test_case_with_recording(
-                self,
+        self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.HARD_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_message(
@@ -642,16 +599,14 @@ class Test(unittest.TestCase):
                              phase_step.ASSERT__EXECUTE,
                              phase_step.CLEANUP
                              ],
-                            True)
-        ).execute()
+                            True))
 
     def test_implementation_error_in_cleanup_phase(self):
-        test_case = TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList() \
+        test_case = one_successful_instruction_in_each_phase() \
             .add_cleanup(
                 instruction_test_resources.CleanupPhaseInstructionWithImplementationError(
                         instruction_test_resources.ImplementationErrorTestException()))
-        new_test_case_with_recording(
-                self,
+        self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.IMPLEMENTATION_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_exception(
@@ -670,8 +625,7 @@ class Test(unittest.TestCase):
                              phase_step.ASSERT__EXECUTE,
                              phase_step.CLEANUP
                              ],
-                            True)
-        ).execute()
+                            True))
 
 
 if __name__ == '__main__':

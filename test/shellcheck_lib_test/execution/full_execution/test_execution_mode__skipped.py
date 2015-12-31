@@ -7,37 +7,32 @@ from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib_test.execution.full_execution.test_resources import instruction_test_resources
 from shellcheck_lib_test.execution.full_execution.test_resources.instruction_test_resources import \
     AnonymousPhaseInstructionThatSetsExecutionMode
-from shellcheck_lib_test.execution.full_execution.test_resources.test_case_generation_for_sequence_tests import \
-    TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList
 from shellcheck_lib_test.execution.full_execution.test_resources.test_case_that_records_phase_execution import \
-    new_test_case_with_recording, Expectation, Arrangement
+    Expectation, Arrangement, TestCaseBase, one_successful_instruction_in_each_phase
 from shellcheck_lib_test.test_resources.expected_instruction_failure import ExpectedFailureForNoFailure, \
     ExpectedFailureForInstructionFailure
 
 
-class Test(unittest.TestCase):
+class Test(TestCaseBase):
     def test_execution_mode_skipped(self):
-        test_case = TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList() \
+        test_case = one_successful_instruction_in_each_phase() \
             .add_anonymous(AnonymousPhaseInstructionThatSetsExecutionMode(
                 ExecutionMode.SKIPPED))
-        new_test_case_with_recording(
-                self,
+        self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.SKIPPED,
                             ExpectedFailureForNoFailure(),
                             [phase_step.ANONYMOUS
                              ],
-                            False)
-        ).execute()
+                            False))
 
     def test_execution_mode_skipped_but_failing_instruction_in_anonymous_phase_before_setting_execution_mode(self):
-        test_case = TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList() \
+        test_case = one_successful_instruction_in_each_phase() \
             .add_anonymous(instruction_test_resources.AnonymousPhaseInstructionThatReturns(
                 sh.new_sh_hard_error('hard error msg'))) \
             .add_anonymous(AnonymousPhaseInstructionThatSetsExecutionMode(
                 ExecutionMode.SKIPPED))
-        new_test_case_with_recording(
-                self,
+        self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.HARD_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_message(
@@ -46,17 +41,15 @@ class Test(unittest.TestCase):
                                     'hard error msg'),
                             [phase_step.ANONYMOUS
                              ],
-                            False)
-        ).execute()
+                            False))
 
     def test_execution_mode_skipped_but_failing_instruction_in_anonymous_phase_after_setting_execution_mode(self):
-        test_case = TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList() \
+        test_case = one_successful_instruction_in_each_phase() \
             .add_anonymous(AnonymousPhaseInstructionThatSetsExecutionMode(
                 ExecutionMode.SKIPPED)) \
             .add_anonymous(instruction_test_resources.AnonymousPhaseInstructionThatReturns(
                 sh.new_sh_hard_error('hard error msg')))
-        new_test_case_with_recording(
-                self,
+        self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.HARD_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_message(
@@ -65,8 +58,7 @@ class Test(unittest.TestCase):
                                     'hard error msg'),
                             [phase_step.ANONYMOUS
                              ],
-                            False)
-        ).execute()
+                            False))
 
         if __name__ == '__main__':
             unittest.main()

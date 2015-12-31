@@ -9,50 +9,44 @@ from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib_test.execution.full_execution.test_resources import instruction_test_resources
 from shellcheck_lib_test.execution.full_execution.test_resources.instruction_test_resources import \
     AnonymousPhaseInstructionThatSetsExecutionMode
-from shellcheck_lib_test.execution.full_execution.test_resources.test_case_generation_for_sequence_tests import \
-    TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList
 from shellcheck_lib_test.execution.full_execution.test_resources.test_case_that_records_phase_execution import \
-    new_test_case_with_recording, Expectation, Arrangement
+    Expectation, Arrangement, TestCaseBase, one_successful_instruction_in_each_phase
 from shellcheck_lib_test.test_resources.expected_instruction_failure import ExpectedFailureForInstructionFailure, \
     ExpectedFailureForNoFailure
 
 
-class Test(unittest.TestCase):
+class Test(TestCaseBase):
     def test_with_assert_phase_that_fails(self):
-        test_case = TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList() \
+        test_case = one_successful_instruction_in_each_phase() \
             .add_anonymous(AnonymousPhaseInstructionThatSetsExecutionMode(ExecutionMode.XFAIL)) \
             .add_assert(
                 instruction_test_resources.AssertPhaseInstructionThatReturns(
                         from_validate=svh.new_svh_success(),
                         from_execute=pfh.new_pfh_fail('fail message')))
-        new_test_case_with_recording(
-                self,
-                Arrangement(test_case),
-                Expectation(FullResultStatus.XFAIL,
-                            ExpectedFailureForInstructionFailure.new_with_message(
-                                    phase_step.PhaseStep(phases.ASSERT, phase_step.EXECUTE),
-                                    test_case.the_assert_phase_extra[0].first_line,
-                                    'fail message'),
-                            [phase_step.ANONYMOUS,
-                             phase_step.SETUP__PRE_VALIDATE,
-                             phase_step.SETUP__EXECUTE,
-                             phase_step.SETUP__POST_VALIDATE,
-                             phase_step.ACT__VALIDATE,
-                             phase_step.ASSERT__VALIDATE,
-                             phase_step.ACT__SCRIPT_GENERATE,
-                             phase_step.ACT__SCRIPT_VALIDATE,
-                             phase_step.ACT__SCRIPT_EXECUTE,
-                             phase_step.ASSERT__EXECUTE,
-                             phase_step.CLEANUP
-                             ],
-                            True)
-        ).execute()
+        self._check(Arrangement(test_case),
+                    Expectation(FullResultStatus.XFAIL,
+                                ExpectedFailureForInstructionFailure.new_with_message(
+                                        phase_step.PhaseStep(phases.ASSERT, phase_step.EXECUTE),
+                                        test_case.the_assert_phase_extra[0].first_line,
+                                        'fail message'),
+                                [phase_step.ANONYMOUS,
+                                 phase_step.SETUP__PRE_VALIDATE,
+                                 phase_step.SETUP__EXECUTE,
+                                 phase_step.SETUP__POST_VALIDATE,
+                                 phase_step.ACT__VALIDATE,
+                                 phase_step.ASSERT__VALIDATE,
+                                 phase_step.ACT__SCRIPT_GENERATE,
+                                 phase_step.ACT__SCRIPT_VALIDATE,
+                                 phase_step.ACT__SCRIPT_EXECUTE,
+                                 phase_step.ASSERT__EXECUTE,
+                                 phase_step.CLEANUP
+                                 ],
+                                True))
 
     def test_with_assert_phase_that_passes(self):
-        test_case = TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList() \
+        test_case = one_successful_instruction_in_each_phase() \
             .add_anonymous(AnonymousPhaseInstructionThatSetsExecutionMode(ExecutionMode.XFAIL))
-        new_test_case_with_recording(
-                self,
+        self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.XPASS,
                             ExpectedFailureForNoFailure(),
@@ -68,16 +62,14 @@ class Test(unittest.TestCase):
                              phase_step.ASSERT__EXECUTE,
                              phase_step.CLEANUP
                              ],
-                            True)
-        ).execute()
+                            True))
 
     def test_with_anonymous_phase_with_hard_error(self):
-        test_case = TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList() \
+        test_case = one_successful_instruction_in_each_phase() \
             .add_anonymous(AnonymousPhaseInstructionThatSetsExecutionMode(ExecutionMode.XFAIL)) \
             .add_anonymous(instruction_test_resources.AnonymousPhaseInstructionThatReturns(
                 sh.new_sh_hard_error('hard error msg')))
-        new_test_case_with_recording(
-                self,
+        self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.HARD_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_message(
@@ -86,17 +78,15 @@ class Test(unittest.TestCase):
                                     'hard error msg'),
                             [phase_step.ANONYMOUS
                              ],
-                            False)
-        ).execute()
+                            False))
 
     def test_with_implementation_error(self):
-        test_case = TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList() \
+        test_case = one_successful_instruction_in_each_phase() \
             .add_anonymous(AnonymousPhaseInstructionThatSetsExecutionMode(ExecutionMode.XFAIL)) \
             .add_cleanup(
                 instruction_test_resources.CleanupPhaseInstructionWithImplementationError(
                         instruction_test_resources.ImplementationErrorTestException()))
-        new_test_case_with_recording(
-                self,
+        self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.IMPLEMENTATION_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_exception(
@@ -115,8 +105,7 @@ class Test(unittest.TestCase):
                              phase_step.ASSERT__EXECUTE,
                              phase_step.CLEANUP
                              ],
-                            True)
-        ).execute()
+                            True))
 
 
 if __name__ == '__main__':
