@@ -7,8 +7,9 @@ from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction
 from shellcheck_lib_test.execution.full_execution.test_resources.test_case_generator import \
     TestCaseGeneratorForFullExecutionBase
 from shellcheck_lib_test.execution.test_resources import instruction_adapter
-from shellcheck_lib_test.execution.test_resources import recording_instructions_for_sequence_tests as instr
-from shellcheck_lib_test.execution.test_resources.recording_instructions_for_sequence_tests import \
+from shellcheck_lib_test.execution.test_resources.execution_recording import \
+    recording_instructions as instr
+from shellcheck_lib_test.execution.test_resources.execution_recording.recording_instructions import \
     SetupInstructionThatRecordsStringInList, AssertInternalInstructionThatRecordsStringInList
 
 
