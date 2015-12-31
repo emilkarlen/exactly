@@ -11,7 +11,7 @@ from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEds
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
-from shellcheck_lib_test.execution.full_execution.test_resources.instruction_test_resources import \
+from shellcheck_lib_test.execution.test_resources.instruction_test_resources import \
     SetupPhaseInstructionThatReturns
 from shellcheck_lib_test.instructions.setup.test_resources import instruction_check
 from shellcheck_lib_test.instructions.setup.test_resources import settings_check

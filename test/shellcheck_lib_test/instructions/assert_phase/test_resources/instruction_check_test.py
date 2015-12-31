@@ -8,7 +8,7 @@ from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
 from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.result import svh
-from shellcheck_lib_test.execution.full_execution.test_resources.instruction_test_resources import \
+from shellcheck_lib_test.execution.test_resources.instruction_test_resources import \
     AssertPhaseInstructionThatReturns
 from shellcheck_lib_test.instructions.assert_phase.test_resources import instruction_check
 from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_check import Arrangement, is_pass, \
