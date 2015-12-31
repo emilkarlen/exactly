@@ -7,9 +7,9 @@ from shellcheck_lib.execution.partial_execution import ScriptHandling
 from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib.test_case import test_case_doc
 from shellcheck_lib.test_case.sections.result import svh
-from shellcheck_lib_test.execution.full_execution.test_resources.test_case_base import FullExecutionTestCaseBase
-from shellcheck_lib_test.execution.full_execution.test_resources.test_case_generation_for_sequence_tests import \
+from shellcheck_lib_test.execution.full_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorForExecutionRecording, TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList
+from shellcheck_lib_test.execution.full_execution.test_resources.test_case_base import FullExecutionTestCaseBase
 from shellcheck_lib_test.execution.test_resources.execution_recording.act_program_executor import \
     ActProgramExecutorWrapperThatRecordsSteps
 from shellcheck_lib_test.execution.test_resources.execution_recording.recorder import \
