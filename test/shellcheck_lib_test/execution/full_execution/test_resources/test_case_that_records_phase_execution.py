@@ -16,8 +16,8 @@ from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib_test.execution.full_execution.test_resources.test_case_base import FullExecutionTestCaseBase
 from shellcheck_lib_test.execution.full_execution.test_resources.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorForExecutionRecording, TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList
-from shellcheck_lib_test.execution.test_resources.execution_recording import \
-    recording_instructions as instr
+from shellcheck_lib_test.execution.test_resources.execution_recording.recorder import \
+    ListRecorder
 from shellcheck_lib_test.execution.test_resources.test_actions import validate_action_that_returns, \
     execute_action_that_does_nothing
 from shellcheck_lib_test.test_resources.expected_instruction_failure import ExpectedFailure
@@ -62,7 +62,7 @@ class TestCaseThatRecordsExecution(FullExecutionTestCaseBase):
                  expectation: Expectation,
                  dbg_do_not_delete_dir_structure=False,
                  script_handling: ScriptHandling = None,
-                 recorder: instr.ListRecorder = None):
+                 recorder: ListRecorder = None):
         super().__init__(unittest_case,
                          dbg_do_not_delete_dir_structure,
                          script_handling)
@@ -95,7 +95,7 @@ class TestCaseThatRecordsExecution(FullExecutionTestCaseBase):
                                   'Execution Directory Structure is expected to not be created')
 
 
-def with_recording_act_program_executor(recorder: instr.ListRecorder,
+def with_recording_act_program_executor(recorder: ListRecorder,
                                         script_handling: ScriptHandling,
                                         validate_test_action,
                                         execute_test_action) -> ScriptHandling:
@@ -108,7 +108,7 @@ def with_recording_act_program_executor(recorder: instr.ListRecorder,
 
 class _ActProgramExecutorWrapperThatRecordsSteps(ActProgramExecutor):
     def __init__(self,
-                 recorder: instr.ListRecorder,
+                 recorder: ListRecorder,
                  wrapped: ActProgramExecutor,
                  validate_test_action,
                  execute_test_action):

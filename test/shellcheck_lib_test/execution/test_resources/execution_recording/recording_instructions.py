@@ -8,30 +8,8 @@ from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
+from shellcheck_lib_test.execution.test_resources.execution_recording.recorder import ListElementRecorder
 from shellcheck_lib_test.execution.test_resources.instruction_adapter import InternalInstruction
-
-
-class ListElementRecorder:
-    def __init__(self,
-                 element_list: list,
-                 element: str):
-        self.recorder = element_list
-        self.element = element
-
-    def record(self):
-        self.recorder.append(self.element)
-
-
-class ListRecorder:
-    def __init__(self):
-        self.__element_list = []
-
-    def recording_of(self, element: str) -> ListElementRecorder:
-        return ListElementRecorder(self.__element_list, element)
-
-    @property
-    def recorded_elements(self) -> list:
-        return self.__element_list
 
 
 class ActInstructionThatRecordsStringInList(ActPhaseInstruction):
