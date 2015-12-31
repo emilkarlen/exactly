@@ -6,10 +6,10 @@ from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.result import svh
-from shellcheck_lib_test.execution.full_execution.test_resources import instruction_test_resources
 from shellcheck_lib_test.execution.full_execution.test_resources.test_case_that_records_phase_execution import \
     validate_action_that_raises, validate_action_that_returns, execute_action_that_raises, \
     Expectation, Arrangement, TestCaseBase, one_successful_instruction_in_each_phase
+from shellcheck_lib_test.execution.test_resources import instruction_test_resources as test
 from shellcheck_lib_test.test_resources.expected_instruction_failure import ExpectedFailureForNoFailure, \
     ExpectedFailureForInstructionFailure, ExpectedFailureForPhaseFailure
 
@@ -36,7 +36,7 @@ class Test(TestCaseBase):
 
     def test_hard_error_in_anonymous_phase(self):
         test_case_generator = one_successful_instruction_in_each_phase() \
-            .add_anonymous(instruction_test_resources.AnonymousPhaseInstructionThatReturns(
+            .add_anonymous(test.AnonymousPhaseInstructionThatReturns(
                 sh.new_sh_hard_error('hard error msg')))
         self._check(
                 Arrangement(test_case_generator),
@@ -52,15 +52,15 @@ class Test(TestCaseBase):
     def test_implementation_error_in_anonymous_phase(self):
         test_case = one_successful_instruction_in_each_phase() \
             .add_anonymous(
-                instruction_test_resources.AnonymousPhaseInstructionWithImplementationError(
-                        instruction_test_resources.ImplementationErrorTestException()))
+                test.AnonymousPhaseInstructionWithImplementationError(
+                        test.ImplementationErrorTestException()))
         self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.IMPLEMENTATION_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_exception(
                                     PhaseStep(phases.ANONYMOUS, None),
                                     test_case.the_anonymous_phase_extra[0].first_line,
-                                    instruction_test_resources.ImplementationErrorTestException),
+                                    test.ImplementationErrorTestException),
                             [phase_step.ANONYMOUS
                              ],
                             False))
@@ -68,7 +68,7 @@ class Test(TestCaseBase):
     def test_validation_error_in_setup_validate_phase(self):
         test_case = one_successful_instruction_in_each_phase() \
             .add_setup(
-                instruction_test_resources.SetupPhaseInstructionThatReturns(
+                test.SetupPhaseInstructionThatReturns(
                         svh.new_svh_validation_error(
                                 'validation error from setup/validate'),
                         sh.new_sh_success(),
@@ -88,7 +88,7 @@ class Test(TestCaseBase):
     def test_hard_error_in_setup_validate_phase(self):
         test_case = one_successful_instruction_in_each_phase() \
             .add_setup(
-                instruction_test_resources.SetupPhaseInstructionThatReturns(
+                test.SetupPhaseInstructionThatReturns(
                         svh.new_svh_hard_error('hard error from setup/validate'),
                         sh.new_sh_success(),
                         svh.new_svh_success()))
@@ -107,15 +107,15 @@ class Test(TestCaseBase):
     def test_implementation_error_in_setup_validate_phase(self):
         test_case = one_successful_instruction_in_each_phase() \
             .add_setup(
-                instruction_test_resources.SetupPhaseInstructionWithImplementationErrorInPreValidate(
-                        instruction_test_resources.ImplementationErrorTestException()))
+                test.SetupPhaseInstructionWithImplementationErrorInPreValidate(
+                        test.ImplementationErrorTestException()))
         self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.IMPLEMENTATION_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_exception(
                                     PhaseStep(phases.SETUP, phase_step.PRE_VALIDATE),
                                     test_case.the_setup_phase_extra[0].first_line,
-                                    instruction_test_resources.ImplementationErrorTestException),
+                                    test.ImplementationErrorTestException),
                             [phase_step.ANONYMOUS,
                              phase_step.SETUP__PRE_VALIDATE,
                              ],
@@ -124,7 +124,7 @@ class Test(TestCaseBase):
     def test_hard_error_in_setup_execute_phase(self):
         test_case = one_successful_instruction_in_each_phase() \
             .add_setup(
-                instruction_test_resources.SetupPhaseInstructionThatReturns(
+                test.SetupPhaseInstructionThatReturns(
                         from_pre_validate=svh.new_svh_success(),
                         from_execute=sh.new_sh_hard_error('hard error msg from setup'),
                         from_post_validate=svh.new_svh_success()))
@@ -145,15 +145,15 @@ class Test(TestCaseBase):
     def test_implementation_error_in_setup_execute_phase(self):
         test_case = one_successful_instruction_in_each_phase() \
             .add_setup(
-                instruction_test_resources.SetupPhaseInstructionWithExceptionInExecute(
-                        instruction_test_resources.ImplementationErrorTestException()))
+                test.SetupPhaseInstructionWithExceptionInExecute(
+                        test.ImplementationErrorTestException()))
         self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.IMPLEMENTATION_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_exception(
                                     PhaseStep(phases.SETUP, phase_step.EXECUTE),
                                     test_case.the_setup_phase_extra[0].first_line,
-                                    instruction_test_resources.ImplementationErrorTestException),
+                                    test.ImplementationErrorTestException),
                             [phase_step.ANONYMOUS,
                              phase_step.SETUP__PRE_VALIDATE,
                              phase_step.SETUP__EXECUTE,
@@ -164,7 +164,7 @@ class Test(TestCaseBase):
     def test_validation_error_in_setup_post_validate_phase(self):
         test_case = one_successful_instruction_in_each_phase() \
             .add_setup(
-                instruction_test_resources.SetupPhaseInstructionThatReturns(
+                test.SetupPhaseInstructionThatReturns(
                         svh.new_svh_success(),
                         sh.new_sh_success(),
                         svh.new_svh_validation_error(
@@ -187,7 +187,7 @@ class Test(TestCaseBase):
     def test_hard_error_in_setup_post_validate_phase(self):
         test_case = one_successful_instruction_in_each_phase() \
             .add_setup(
-                instruction_test_resources.SetupPhaseInstructionThatReturns(
+                test.SetupPhaseInstructionThatReturns(
                         svh.new_svh_success(),
                         sh.new_sh_success(),
                         svh.new_svh_hard_error('hard error from setup/post-validate')))
@@ -209,15 +209,15 @@ class Test(TestCaseBase):
     def test_implementation_error_in_setup_post_validate_phase(self):
         test_case = one_successful_instruction_in_each_phase() \
             .add_setup(
-                instruction_test_resources.SetupPhaseInstructionWithImplementationErrorInPostValidate(
-                        instruction_test_resources.ImplementationErrorTestException()))
+                test.SetupPhaseInstructionWithImplementationErrorInPostValidate(
+                        test.ImplementationErrorTestException()))
         self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.IMPLEMENTATION_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_exception(
                                     PhaseStep(phases.SETUP, phase_step.POST_VALIDATE),
                                     test_case.the_setup_phase_extra[0].first_line,
-                                    instruction_test_resources.ImplementationErrorTestException),
+                                    test.ImplementationErrorTestException),
                             [phase_step.ANONYMOUS,
                              phase_step.SETUP__PRE_VALIDATE,
                              phase_step.SETUP__EXECUTE,
@@ -229,7 +229,7 @@ class Test(TestCaseBase):
     def test_validation_error_in_assert_validate_phase(self):
         test_case = one_successful_instruction_in_each_phase() \
             .add_assert(
-                instruction_test_resources.AssertPhaseInstructionThatReturns(
+                test.AssertPhaseInstructionThatReturns(
                         from_validate=svh.new_svh_validation_error('ASSERT/validate'),
                         from_execute=pfh.new_pfh_pass()))
         self._check(
@@ -252,7 +252,7 @@ class Test(TestCaseBase):
     def test_hard_error_in_assert_validate_phase(self):
         test_case = one_successful_instruction_in_each_phase() \
             .add_assert(
-                instruction_test_resources.AssertPhaseInstructionThatReturns(
+                test.AssertPhaseInstructionThatReturns(
                         from_validate=svh.new_svh_hard_error('ASSERT/validate'),
                         from_execute=pfh.new_pfh_pass()))
         self._check(
@@ -275,15 +275,15 @@ class Test(TestCaseBase):
     def test_implementation_error_in_assert_validate_phase(self):
         test_case = one_successful_instruction_in_each_phase() \
             .add_assert(
-                instruction_test_resources.AssertPhaseInstructionWithExceptionInValidate(
-                        instruction_test_resources.ImplementationErrorTestException()))
+                test.AssertPhaseInstructionWithExceptionInValidate(
+                        test.ImplementationErrorTestException()))
         self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.IMPLEMENTATION_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_exception(
                                     PhaseStep(phases.ASSERT, phase_step.VALIDATE),
                                     test_case.the_assert_phase_extra[0].first_line,
-                                    instruction_test_resources.ImplementationErrorTestException),
+                                    test.ImplementationErrorTestException),
                             [phase_step.ANONYMOUS,
                              phase_step.SETUP__PRE_VALIDATE,
                              phase_step.SETUP__EXECUTE,
@@ -297,7 +297,7 @@ class Test(TestCaseBase):
     def test_validation_error_in_act_validate_phase(self):
         test_case = one_successful_instruction_in_each_phase() \
             .add_act(
-                instruction_test_resources.ActPhaseInstructionThatReturns(
+                test.ActPhaseInstructionThatReturns(
                         from_validate=svh.new_svh_validation_error('ACT/validate'),
                         from_execute=sh.new_sh_success()))
         self._check(
@@ -319,7 +319,7 @@ class Test(TestCaseBase):
     def test_hard_error_in_act_validate_phase(self):
         test_case = one_successful_instruction_in_each_phase() \
             .add_act(
-                instruction_test_resources.ActPhaseInstructionThatReturns(
+                test.ActPhaseInstructionThatReturns(
                         from_validate=svh.new_svh_hard_error('ACT/validate'),
                         from_execute=sh.new_sh_success()))
         self._check(
@@ -341,15 +341,15 @@ class Test(TestCaseBase):
     def test_implementation_error_in_act_validate(self):
         test_case = one_successful_instruction_in_each_phase() \
             .add_act(
-                instruction_test_resources.ActPhaseInstructionWithImplementationErrorInValidate(
-                        instruction_test_resources.ImplementationErrorTestException()))
+                test.ActPhaseInstructionWithImplementationErrorInValidate(
+                        test.ImplementationErrorTestException()))
         self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.IMPLEMENTATION_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_exception(
                                     PhaseStep(phases.ACT, phase_step.VALIDATE),
                                     test_case.the_act_phase_extra[0].first_line,
-                                    instruction_test_resources.ImplementationErrorTestException),
+                                    test.ImplementationErrorTestException),
                             [phase_step.ANONYMOUS,
                              phase_step.SETUP__PRE_VALIDATE,
                              phase_step.SETUP__EXECUTE,
@@ -362,7 +362,7 @@ class Test(TestCaseBase):
     def test_hard_error_in_act_script_generate(self):
         test_case = one_successful_instruction_in_each_phase() \
             .add_act(
-                instruction_test_resources.ActPhaseInstructionThatReturns(
+                test.ActPhaseInstructionThatReturns(
                         from_validate=svh.new_svh_success(),
                         from_execute=sh.new_sh_hard_error('hard error msg from act')))
         self._check(
@@ -386,15 +386,15 @@ class Test(TestCaseBase):
     def test_implementation_error_in_act_script_generate(self):
         test_case = one_successful_instruction_in_each_phase() \
             .add_act(
-                instruction_test_resources.ActPhaseInstructionWithImplementationErrorInExecute(
-                        instruction_test_resources.ImplementationErrorTestException()))
+                test.ActPhaseInstructionWithImplementationErrorInExecute(
+                        test.ImplementationErrorTestException()))
         self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.IMPLEMENTATION_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_exception(
                                     PhaseStep(phases.ACT, phase_step.ACT_script_generate),
                                     test_case.the_act_phase_extra[0].first_line,
-                                    instruction_test_resources.ImplementationErrorTestException),
+                                    test.ImplementationErrorTestException),
                             [phase_step.ANONYMOUS,
                              phase_step.SETUP__PRE_VALIDATE,
                              phase_step.SETUP__EXECUTE,
@@ -455,11 +455,11 @@ class Test(TestCaseBase):
         self._check(
                 Arrangement(test_case,
                             validate_test_action=validate_action_that_raises(
-                                    instruction_test_resources.ImplementationErrorTestException())),
+                                    test.ImplementationErrorTestException())),
                 Expectation(FullResultStatus.IMPLEMENTATION_ERROR,
                             ExpectedFailureForPhaseFailure.new_with_exception(
                                     PhaseStep(phases.ACT, phase_step.ACT_script_validate),
-                                    instruction_test_resources.ImplementationErrorTestException),
+                                    test.ImplementationErrorTestException),
                             [phase_step.ANONYMOUS,
                              phase_step.SETUP__PRE_VALIDATE,
                              phase_step.SETUP__EXECUTE,
@@ -477,11 +477,11 @@ class Test(TestCaseBase):
         self._check(
                 Arrangement(test_case,
                             execute_test_action=execute_action_that_raises(
-                                    instruction_test_resources.ImplementationErrorTestException())),
+                                    test.ImplementationErrorTestException())),
                 Expectation(FullResultStatus.IMPLEMENTATION_ERROR,
                             ExpectedFailureForPhaseFailure.new_with_exception(
                                     PhaseStep(phases.ACT, phase_step.ACT_script_execute),
-                                    instruction_test_resources.ImplementationErrorTestException),
+                                    test.ImplementationErrorTestException),
                             [phase_step.ANONYMOUS,
                              phase_step.SETUP__PRE_VALIDATE,
                              phase_step.SETUP__EXECUTE,
@@ -498,7 +498,7 @@ class Test(TestCaseBase):
     def test_fail_in_assert_execute_phase(self):
         test_case = one_successful_instruction_in_each_phase() \
             .add_assert(
-                instruction_test_resources.AssertPhaseInstructionThatReturns(
+                test.AssertPhaseInstructionThatReturns(
                         from_validate=svh.new_svh_success(),
                         from_execute=pfh.new_pfh_fail('fail msg from ASSERT')))
         self._check(
@@ -525,7 +525,7 @@ class Test(TestCaseBase):
     def test_hard_error_in_assert_execute_phase(self):
         test_case = one_successful_instruction_in_each_phase() \
             .add_assert(
-                instruction_test_resources.AssertPhaseInstructionThatReturns(
+                test.AssertPhaseInstructionThatReturns(
                         from_validate=svh.new_svh_success(),
                         from_execute=pfh.new_pfh_hard_error('hard error msg from ASSERT')))
         self._check(
@@ -552,15 +552,15 @@ class Test(TestCaseBase):
     def test_implementation_error_in_assert_execute_phase(self):
         test_case = one_successful_instruction_in_each_phase() \
             .add_assert(
-                instruction_test_resources.AssertPhaseInstructionWithExceptionInExecute(
-                        instruction_test_resources.ImplementationErrorTestException()))
+                test.AssertPhaseInstructionWithExceptionInExecute(
+                        test.ImplementationErrorTestException()))
         self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.IMPLEMENTATION_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_exception(
                                     PhaseStep(phases.ASSERT, phase_step.EXECUTE),
                                     test_case.the_assert_phase_extra[0].first_line,
-                                    instruction_test_resources.ImplementationErrorTestException),
+                                    test.ImplementationErrorTestException),
                             [phase_step.ANONYMOUS,
                              phase_step.SETUP__PRE_VALIDATE,
                              phase_step.SETUP__EXECUTE,
@@ -578,7 +578,7 @@ class Test(TestCaseBase):
     def test_hard_error_in_cleanup_phase(self):
         test_case = one_successful_instruction_in_each_phase() \
             .add_cleanup(
-                instruction_test_resources.CleanupPhaseInstructionThatReturns(
+                test.CleanupPhaseInstructionThatReturns(
                         sh.new_sh_hard_error('hard error msg from CLEANUP')))
         self._check(
                 Arrangement(test_case),
@@ -604,15 +604,15 @@ class Test(TestCaseBase):
     def test_implementation_error_in_cleanup_phase(self):
         test_case = one_successful_instruction_in_each_phase() \
             .add_cleanup(
-                instruction_test_resources.CleanupPhaseInstructionWithImplementationError(
-                        instruction_test_resources.ImplementationErrorTestException()))
+                test.CleanupPhaseInstructionWithImplementationError(
+                        test.ImplementationErrorTestException()))
         self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.IMPLEMENTATION_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_exception(
                                     phase_step.new_without_step(phases.CLEANUP),
                                     test_case.the_cleanup_phase_extra[0].first_line,
-                                    instruction_test_resources.ImplementationErrorTestException),
+                                    test.ImplementationErrorTestException),
                             [phase_step.ANONYMOUS,
                              phase_step.SETUP__PRE_VALIDATE,
                              phase_step.SETUP__EXECUTE,

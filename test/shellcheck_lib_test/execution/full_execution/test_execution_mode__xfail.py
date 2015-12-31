@@ -6,11 +6,9 @@ from shellcheck_lib.test_case.sections.anonymous import ExecutionMode
 from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.result import svh
-from shellcheck_lib_test.execution.full_execution.test_resources import instruction_test_resources
-from shellcheck_lib_test.execution.full_execution.test_resources.instruction_test_resources import \
-    AnonymousPhaseInstructionThatSetsExecutionMode
 from shellcheck_lib_test.execution.full_execution.test_resources.test_case_that_records_phase_execution import \
     Expectation, Arrangement, TestCaseBase, one_successful_instruction_in_each_phase
+from shellcheck_lib_test.execution.test_resources import instruction_test_resources as test
 from shellcheck_lib_test.test_resources.expected_instruction_failure import ExpectedFailureForInstructionFailure, \
     ExpectedFailureForNoFailure
 
@@ -18,9 +16,9 @@ from shellcheck_lib_test.test_resources.expected_instruction_failure import Expe
 class Test(TestCaseBase):
     def test_with_assert_phase_that_fails(self):
         test_case = one_successful_instruction_in_each_phase() \
-            .add_anonymous(AnonymousPhaseInstructionThatSetsExecutionMode(ExecutionMode.XFAIL)) \
+            .add_anonymous(test.AnonymousPhaseInstructionThatSetsExecutionMode(ExecutionMode.XFAIL)) \
             .add_assert(
-                instruction_test_resources.AssertPhaseInstructionThatReturns(
+                test.AssertPhaseInstructionThatReturns(
                         from_validate=svh.new_svh_success(),
                         from_execute=pfh.new_pfh_fail('fail message')))
         self._check(Arrangement(test_case),
@@ -45,7 +43,7 @@ class Test(TestCaseBase):
 
     def test_with_assert_phase_that_passes(self):
         test_case = one_successful_instruction_in_each_phase() \
-            .add_anonymous(AnonymousPhaseInstructionThatSetsExecutionMode(ExecutionMode.XFAIL))
+            .add_anonymous(test.AnonymousPhaseInstructionThatSetsExecutionMode(ExecutionMode.XFAIL))
         self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.XPASS,
@@ -66,8 +64,8 @@ class Test(TestCaseBase):
 
     def test_with_anonymous_phase_with_hard_error(self):
         test_case = one_successful_instruction_in_each_phase() \
-            .add_anonymous(AnonymousPhaseInstructionThatSetsExecutionMode(ExecutionMode.XFAIL)) \
-            .add_anonymous(instruction_test_resources.AnonymousPhaseInstructionThatReturns(
+            .add_anonymous(test.AnonymousPhaseInstructionThatSetsExecutionMode(ExecutionMode.XFAIL)) \
+            .add_anonymous(test.AnonymousPhaseInstructionThatReturns(
                 sh.new_sh_hard_error('hard error msg')))
         self._check(
                 Arrangement(test_case),
@@ -82,17 +80,17 @@ class Test(TestCaseBase):
 
     def test_with_implementation_error(self):
         test_case = one_successful_instruction_in_each_phase() \
-            .add_anonymous(AnonymousPhaseInstructionThatSetsExecutionMode(ExecutionMode.XFAIL)) \
+            .add_anonymous(test.AnonymousPhaseInstructionThatSetsExecutionMode(ExecutionMode.XFAIL)) \
             .add_cleanup(
-                instruction_test_resources.CleanupPhaseInstructionWithImplementationError(
-                        instruction_test_resources.ImplementationErrorTestException()))
+                test.CleanupPhaseInstructionWithImplementationError(
+                        test.ImplementationErrorTestException()))
         self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.IMPLEMENTATION_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_exception(
                                     phase_step.new_without_step(phases.CLEANUP),
                                     test_case.the_cleanup_phase_extra[0].first_line,
-                                    instruction_test_resources.ImplementationErrorTestException),
+                                    test.ImplementationErrorTestException),
                             [phase_step.ANONYMOUS,
                              phase_step.SETUP__PRE_VALIDATE,
                              phase_step.SETUP__EXECUTE,
