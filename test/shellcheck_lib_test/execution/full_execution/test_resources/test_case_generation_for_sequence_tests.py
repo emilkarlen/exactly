@@ -9,17 +9,19 @@ from shellcheck_lib_test.execution.full_execution.test_resources.test_case_gener
 from shellcheck_lib_test.execution.test_resources import instruction_adapter
 from shellcheck_lib_test.execution.test_resources.execution_recording import \
     recording_instructions as instr
+from shellcheck_lib_test.execution.test_resources.execution_recording.recorder import \
+    ListRecorder, ListElementRecorder
 from shellcheck_lib_test.execution.test_resources.execution_recording.recording_instructions import \
     SetupInstructionThatRecordsStringInList, AssertInternalInstructionThatRecordsStringInList
 
 
 class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorForFullExecutionBase):
     def __init__(self,
-                 recorder: instr.ListRecorder=None):
+                 recorder: ListRecorder = None):
         super().__init__()
         self.__recorder = recorder
         if self.__recorder is None:
-            self.__recorder = instr.ListRecorder()
+            self.__recorder = ListRecorder()
 
     def _anonymous_phase_extra(self) -> list:
         """
@@ -52,7 +54,7 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorForFullExecutionBa
         return []
 
     @property
-    def recorder(self) -> instr.ListRecorder:
+    def recorder(self) -> ListRecorder:
         return self.__recorder
 
     @property
@@ -154,13 +156,13 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorForFullExecutionBa
         return instruction_adapter.as_cleanup(
             instr.InternalInstructionThatRecordsStringInList(self.__recorder_of(text)))
 
-    def __recorder_of(self, element: str) -> instr.ListElementRecorder:
+    def __recorder_of(self, element: str) -> ListElementRecorder:
         return self.__recorder.recording_of(element)
 
 
 class TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList(TestCaseGeneratorForExecutionRecording):
     def __init__(self,
-                 recorder: instr.ListRecorder=None):
+                 recorder: ListRecorder = None):
         super().__init__(recorder)
         self.__anonymous_extra = []
         self.__setup_extra = []
