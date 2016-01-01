@@ -1,6 +1,6 @@
 from shellcheck_lib.document import model
-from shellcheck_lib.document.model import Instruction
 from shellcheck_lib.execution import phases, phase_step
+from shellcheck_lib.test_case.sections.common import TestCaseInstruction
 from shellcheck_lib_test.execution.full_execution.test_resources.test_case_generator import \
     TestCaseGeneratorForFullExecutionBase
 from shellcheck_lib_test.execution.test_resources.execution_recording.recorder import \
@@ -79,7 +79,7 @@ class TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList(TestCaseGene
             self.__extra[ph] = []
         self.__the_extra = {}
 
-    def add(self, phase: phases.Phase, instruction: Instruction):
+    def add(self, phase: phases.Phase, instruction: TestCaseInstruction):
         self.__extra[phase].append(instruction)
         return self
 

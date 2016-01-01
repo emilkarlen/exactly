@@ -1,7 +1,6 @@
 import os
 import shlex
 
-from shellcheck_lib.document.model import Instruction
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, SingleInstructionParserSource, SingleInstructionInvalidArgumentException
 from shellcheck_lib.general import file_utils
@@ -19,7 +18,7 @@ from shellcheck_lib.instructions.utils.parse_utils import TokenStream
 from shellcheck_lib.instructions.utils.pre_or_post_validation import PreOrPostEdsValidator, AndValidator
 from shellcheck_lib.test_case.instruction_description import InvokationVariant, SyntaxElementDescription, \
     Description
-from shellcheck_lib.test_case.sections.common import HomeAndEds
+from shellcheck_lib.test_case.sections.common import HomeAndEds, TestCaseInstruction
 
 INTERPRET_OPTION = '--interpret'
 SOURCE_OPTION = '--source'
@@ -257,6 +256,6 @@ class InstructionParser(SingleInstructionParser):
         self._setup2instruction_function = setup2instruction_function
         self.setup_parser = SetupParser(instruction_meta_info)
 
-    def apply(self, source: SingleInstructionParserSource) -> Instruction:
+    def apply(self, source: SingleInstructionParserSource) -> TestCaseInstruction:
         setup = self.setup_parser.apply(source)
         return self._setup2instruction_function(setup)

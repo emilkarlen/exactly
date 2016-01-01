@@ -1,11 +1,10 @@
-from shellcheck_lib.document.model import Instruction
 from shellcheck_lib.test_case.sections.act.phase_setup import PhaseEnvironmentForScriptGeneration
-from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
+from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase, TestCaseInstruction
 from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.sections.result.sh import SuccessOrHardError
 
 
-class ActPhaseInstruction(Instruction):
+class ActPhaseInstruction(TestCaseInstruction):
     """
     Abstract base class for instructions of the ACT phase.
     """

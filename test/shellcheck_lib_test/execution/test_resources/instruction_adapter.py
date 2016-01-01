@@ -1,16 +1,15 @@
-from shellcheck_lib.document.model import Instruction
 from shellcheck_lib.execution import phases
 from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.sections import common as instr
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction
-from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
+from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase, TestCaseInstruction
 from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
 
 
-class InternalInstruction(Instruction):
+class InternalInstruction(TestCaseInstruction):
     """
     Abstract base class for instructions that are implemented in python.
     """
@@ -43,7 +42,7 @@ def as_cleanup(internal_instruction: InternalInstruction) -> CleanupPhaseInstruc
 class _SetupInstructionExecutor(SetupPhaseInstruction):
     def __init__(self,
                  internal_instruction: InternalInstruction,
-                 ret_val: sh.SuccessOrHardError=sh.new_sh_success()):
+                 ret_val: sh.SuccessOrHardError = sh.new_sh_success()):
         self.__internal_instruction = internal_instruction
         self.__ret_val = ret_val
 
@@ -60,7 +59,7 @@ class _SetupInstructionExecutor(SetupPhaseInstruction):
 class _AssertInstructionExecutor(AssertPhaseInstruction):
     def __init__(self,
                  internal_instruction: InternalInstruction,
-                 ret_val: pfh.PassOrFailOrHardError=pfh.new_pfh_pass()):
+                 ret_val: pfh.PassOrFailOrHardError = pfh.new_pfh_pass()):
         self.__internal_instruction = internal_instruction
         self.__ret_val = ret_val
 
@@ -76,7 +75,7 @@ class _AssertInstructionExecutor(AssertPhaseInstruction):
 class _CleanupInstructionExecutor(CleanupPhaseInstruction):
     def __init__(self,
                  internal_instruction: InternalInstruction,
-                 ret_val: sh.SuccessOrHardError=sh.new_sh_success()):
+                 ret_val: sh.SuccessOrHardError = sh.new_sh_success()):
         self.__internal_instruction = internal_instruction
         self.__ret_val = ret_val
 

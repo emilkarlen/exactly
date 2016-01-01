@@ -1,10 +1,10 @@
 import subprocess
 
-from shellcheck_lib.document.model import Instruction
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
 from shellcheck_lib.general.textformat.structure.paragraph import single_para
 from shellcheck_lib.test_case.instruction_description import Description, InvokationVariant
+from shellcheck_lib.test_case.sections.common import TestCaseInstruction
 from shellcheck_lib.test_case.sections.result import sh
 
 
@@ -31,7 +31,7 @@ class Parser(SingleInstructionParser):
                  executor_2_instruction_function):
         self.executor_2_instruction_function = executor_2_instruction_function
 
-    def apply(self, source: SingleInstructionParserSource) -> Instruction:
+    def apply(self, source: SingleInstructionParserSource) -> TestCaseInstruction:
         arguments = source.instruction_argument.strip()
         if not arguments:
             msg = 'Program to execute must be given as argument'

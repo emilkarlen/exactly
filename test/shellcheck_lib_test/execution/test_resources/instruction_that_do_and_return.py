@@ -2,7 +2,6 @@ import types
 from pathlib import Path
 
 from shellcheck_lib.document import model
-from shellcheck_lib.document.model import Instruction
 from shellcheck_lib.execution import phases, phase_step
 from shellcheck_lib.execution.phase_step import PhaseStep
 from shellcheck_lib.test_case.os_services import OsServices
@@ -12,6 +11,7 @@ from shellcheck_lib.test_case.sections.anonymous import ConfigurationBuilder, \
     AnonymousPhaseInstruction
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction
+from shellcheck_lib.test_case.sections.common import TestCaseInstruction
 from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.result import svh
@@ -157,7 +157,7 @@ class TestCaseGeneratorForTestCaseSetup(TestCaseGeneratorForFullExecutionBase):
         return self.__for(self.setup.as_cleanup_phase_instruction())
 
     def __for(self,
-              instruction: Instruction) -> list:
+              instruction: TestCaseInstruction) -> list:
         return [self.instruction_line_constructor.apply(instruction)]
 
 
