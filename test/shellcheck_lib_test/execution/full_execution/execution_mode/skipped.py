@@ -65,3 +65,14 @@ class Test(TestCaseBase):
 
         if __name__ == '__main__':
             unittest.main()
+
+
+def suite():
+    ret_val = unittest.TestSuite()
+    ret_val.addTest(unittest.makeSuite(Test))
+    return ret_val
+
+
+if __name__ == '__main__':
+    runner = unittest.TextTestRunner()
+    runner.run(suite())
