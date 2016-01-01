@@ -9,9 +9,8 @@ from shellcheck_lib.test_case.sections.act.instruction import ActPhaseInstructio
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
-from shellcheck_lib_test.execution.partial_execution import test_resources
-from shellcheck_lib_test.execution.partial_execution.test_resources import \
-    TestCaseWithCommonDefaultForSetupAssertCleanup
+from shellcheck_lib_test.execution.partial_execution.test_resources.basic import \
+    TestCaseWithCommonDefaultForSetupAssertCleanup, Result
 from shellcheck_lib_test.test_resources.eds_test import ResultFilesCheck
 
 INPUT_TMP_FILE = 'input.txt'
@@ -48,7 +47,7 @@ class TestCaseDocumentThatSetsStdinContents(TestCaseWithCommonDefaultForSetupAss
 
 
 def assertions(utc: unittest.TestCase,
-               actual: test_resources.Result):
+               actual: Result):
     result_check = ResultFilesCheck(EXPECTED_EXIT_CODE,
                                     TEXT_ON_STDIN,
                                     EXPECTED_CONTENTS_OF_STDERR)

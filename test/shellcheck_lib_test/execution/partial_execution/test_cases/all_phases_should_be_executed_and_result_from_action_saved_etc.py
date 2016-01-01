@@ -9,9 +9,8 @@ from shellcheck_lib.execution.partial_execution import Configuration
 from shellcheck_lib.test_case.sections import common
 from shellcheck_lib.test_case.sections.act.instruction import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
 from shellcheck_lib.test_case.sections.result import sh
-from shellcheck_lib_test.execution.partial_execution import test_resources
-from shellcheck_lib_test.execution.partial_execution.test_resources import \
-    TestCaseWithCommonDefaultForSetupAssertCleanup
+from shellcheck_lib_test.execution.partial_execution.test_resources.basic import \
+    TestCaseWithCommonDefaultForSetupAssertCleanup, Result
 from shellcheck_lib_test.execution.test_resources import py_unit_test_case_with_file_output as with_file_output
 from shellcheck_lib_test.execution.test_resources import utils
 from shellcheck_lib_test.execution.test_resources.py_unit_test_case_with_file_output import \
@@ -38,7 +37,7 @@ class TestCaseDocument(TestCaseWithCommonDefaultForSetupAssertCleanup):
 
 
 def assertions(utc: unittest.TestCase,
-               actual: test_resources.Result):
+               actual: Result):
     result_check = ResultFilesCheck(EXIT_CODE,
                                     expected_output_on('sys.stdout', actual.configuration),
                                     expected_output_on('sys.stderr', actual.configuration))
