@@ -7,9 +7,8 @@ import unittest
 from shellcheck_lib.test_case.sections import common
 from shellcheck_lib.test_case.sections.act.instruction import PhaseEnvironmentForScriptGeneration, ActPhaseInstruction
 from shellcheck_lib.test_case.sections.result import sh
-from shellcheck_lib_test.execution.partial_execution import test_resources
-from shellcheck_lib_test.execution.partial_execution.test_resources import \
-    TestCaseWithCommonDefaultForSetupAssertCleanup
+from shellcheck_lib_test.execution.partial_execution.test_resources.basic import \
+    TestCaseWithCommonDefaultForSetupAssertCleanup, Result
 from shellcheck_lib_test.test_resources.eds_test import ResultFilesCheck
 
 _TEXT_ON_STDOUT = 'on stdout'
@@ -27,7 +26,7 @@ class TestCaseDocument(TestCaseWithCommonDefaultForSetupAssertCleanup):
 
 
 def assertions(utc: unittest.TestCase,
-               actual: test_resources.Result):
+               actual: Result):
     result_check = ResultFilesCheck(_EXIT_CODE,
                                     _TEXT_ON_STDOUT,
                                     _TEXT_ON_STDERR)

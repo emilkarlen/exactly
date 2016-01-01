@@ -7,9 +7,8 @@ from shellcheck_lib.general import line_source
 from shellcheck_lib.test_case.sections import common
 from shellcheck_lib.test_case.sections.act.instruction import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
 from shellcheck_lib.test_case.sections.result import sh
-from shellcheck_lib_test.execution.partial_execution import test_resources
-from shellcheck_lib_test.execution.partial_execution.test_resources import \
-    TestCaseWithCommonDefaultForSetupAssertCleanup, PartialExecutionTestCaseBase
+from shellcheck_lib_test.execution.partial_execution.test_resources.basic import \
+    TestCaseWithCommonDefaultForSetupAssertCleanup, PartialExecutionTestCaseBase, Result
 from shellcheck_lib_test.execution.test_resources import utils
 from shellcheck_lib_test.test_resources.model_utils import new_instruction_element, new_comment_element
 
@@ -44,7 +43,7 @@ class TestCaseDocument(TestCaseWithCommonDefaultForSetupAssertCleanup):
 
 
 def assertions(utc: unittest.TestCase,
-               actual: test_resources.Result):
+               actual: Result):
     expected_base_name = phases.ACT.section_name + '.py'
     expected_dir = actual.partial_result.execution_directory_structure.test_case_dir
     expected_file_path = expected_dir / expected_base_name
