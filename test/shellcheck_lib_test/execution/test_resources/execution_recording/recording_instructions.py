@@ -4,12 +4,49 @@ from shellcheck_lib.test_case.sections.act.instruction import ActPhaseInstructio
 from shellcheck_lib.test_case.sections.anonymous import AnonymousPhaseInstruction, \
     ConfigurationBuilder
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
+from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction
 from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
-from shellcheck_lib_test.execution.test_resources.execution_recording.recorder import ListElementRecorder
+from shellcheck_lib_test.execution.test_resources import instruction_adapter
+from shellcheck_lib_test.execution.test_resources.execution_recording.recorder import ListElementRecorder, ListRecorder
 from shellcheck_lib_test.execution.test_resources.instruction_adapter import InternalInstruction
+
+
+class RecordingInstructions:
+    def __init__(self, recorder: ListRecorder):
+        self.recorder = recorder
+
+    def new_anonymous_instruction(self, text: str) -> SetupPhaseInstruction:
+        return AnonymousInternalInstructionThatRecordsStringInList(self.__recorder_of(text))
+
+    def new_setup_instruction(self,
+                              text_for_pre_validate: str,
+                              text_for_execute: str,
+                              text_for_post_validate: str) -> SetupPhaseInstruction:
+        return SetupInstructionThatRecordsStringInList(self.__recorder_of(text_for_pre_validate),
+                                                       self.__recorder_of(text_for_execute),
+                                                       self.__recorder_of(text_for_post_validate))
+
+    def new_act_instruction(self,
+                            text_for_validate: str,
+                            text_for_execute: str) -> ActPhaseInstruction:
+        return ActInstructionThatRecordsStringInList(self.__recorder_of(text_for_validate),
+                                                     self.__recorder_of(text_for_execute))
+
+    def new_assert_instruction(self,
+                               text_for_validate: str,
+                               text_for_execute: str) -> AssertPhaseInstruction:
+        return AssertInternalInstructionThatRecordsStringInList(self.__recorder_of(text_for_validate),
+                                                                self.__recorder_of(text_for_execute))
+
+    def new_cleanup_instruction(self, text: str) -> CleanupPhaseInstruction:
+        return instruction_adapter.as_cleanup(
+                InternalInstructionThatRecordsStringInList(self.__recorder_of(text)))
+
+    def __recorder_of(self, element: str) -> ListElementRecorder:
+        return self.recorder.recording_of(element)
 
 
 class ActInstructionThatRecordsStringInList(ActPhaseInstruction):
@@ -66,7 +103,7 @@ class SetupInstructionThatRecordsStringInList(SetupPhaseInstruction):
         return sh.new_sh_success()
 
     def post_validate(self,
-                      global_environment:  common.GlobalEnvironmentForPostEdsPhase) \
+                      global_environment: common.GlobalEnvironmentForPostEdsPhase) \
             -> svh.SuccessOrValidationErrorOrHardError:
         self.__recorder_for_post_validate.record()
         return sh.new_sh_success()
