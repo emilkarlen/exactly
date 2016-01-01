@@ -103,6 +103,51 @@ class ScriptHandling:
         self.executor = executor
 
 
+def execute(script_handling: ScriptHandling,
+            test_case: TestCase,
+            home_dir_path: pathlib.Path,
+            execution_directory_root_name_prefix: str,
+            is_keep_execution_directory_root: bool) -> PartialResult:
+    """
+    Takes care of construction of the Execution Directory Structure, including
+    the root directory, and executes a given Test Case in this directory.
+
+    Preserves Current Working Directory.
+
+    Perhaps the test case should be executed in a sub process, so that
+    Environment Variables and Current Working Directory of the process that executes
+    shellcheck is not modified.
+
+    The responsibility of this method is not the most natural!!
+    Please refactor if a more natural responsibility evolves!
+    """
+
+    def with_existing_root(exec_dir_structure_root: str) -> PartialResult:
+        cwd_before = os.getcwd()
+        execution_directory_structure = construct_at(exec_dir_structure_root)
+        global_environment = common.GlobalEnvironmentForPostEdsPhase(home_dir_path,
+                                                                     execution_directory_structure)
+        configuration = Configuration(home_dir_path,
+                                      execution_directory_structure.act_dir)
+
+        test_case_execution = PartialExecutor(global_environment,
+                                              execution_directory_structure,
+                                              configuration,
+                                              script_handling,
+                                              test_case)
+        try:
+            return test_case_execution.execute()
+        finally:
+            os.chdir(cwd_before)
+
+    if is_keep_execution_directory_root:
+        tmp_exec_dir_structure_root = tempfile.mkdtemp(prefix=execution_directory_root_name_prefix)
+        return with_existing_root(tmp_exec_dir_structure_root)
+    else:
+        with tempfile.TemporaryDirectory(prefix=execution_directory_root_name_prefix) as tmp_exec_dir_structure_root:
+            return with_existing_root(tmp_exec_dir_structure_root)
+
+
 class PartialExecutor:
     def __init__(self,
                  global_environment: common.GlobalEnvironmentForPostEdsPhase,
@@ -376,60 +421,3 @@ class _ActInstructionHeaderExecutor(ElementHeaderExecutor):
 
     def apply(self, line: line_source.Line):
         self.__phase_environment.append.source_line_header(line)
-
-
-def execute(script_handling: ScriptHandling,
-            test_case: TestCase,
-            home_dir_path: pathlib.Path,
-            execution_directory_root_name_prefix: str,
-            is_keep_execution_directory_root: bool) -> PartialResult:
-    return execute_test_case_in_execution_directory(script_handling,
-                                                    test_case,
-                                                    home_dir_path,
-                                                    execution_directory_root_name_prefix,
-                                                    is_keep_execution_directory_root)
-
-
-def execute_test_case_in_execution_directory(script_handling: ScriptHandling,
-                                             test_case: TestCase,
-                                             home_dir_path: pathlib.Path,
-                                             execution_directory_root_name_prefix: str,
-                                             is_keep_execution_directory_root: bool) -> PartialResult:
-    """
-    Takes care of construction of the Execution Directory Structure, including
-    the root directory, and executes a given Test Case in this directory.
-
-    Preserves Current Working Directory.
-
-    Perhaps the test case should be executed in a sub process, so that
-    Environment Variables and Current Working Directory of the process that executes
-    shellcheck is not modified.
-
-    The responsibility of this method is not the most natural!!
-    Please refactor if a more natural responsibility evolves!
-    """
-
-    def with_existing_root(exec_dir_structure_root: str) -> PartialResult:
-        cwd_before = os.getcwd()
-        execution_directory_structure = construct_at(exec_dir_structure_root)
-        global_environment = common.GlobalEnvironmentForPostEdsPhase(home_dir_path,
-                                                                     execution_directory_structure)
-        configuration = Configuration(home_dir_path,
-                                      execution_directory_structure.act_dir)
-
-        test_case_execution = PartialExecutor(global_environment,
-                                              execution_directory_structure,
-                                              configuration,
-                                              script_handling,
-                                              test_case)
-        try:
-            return test_case_execution.execute()
-        finally:
-            os.chdir(cwd_before)
-
-    if is_keep_execution_directory_root:
-        tmp_exec_dir_structure_root = tempfile.mkdtemp(prefix=execution_directory_root_name_prefix)
-        return with_existing_root(tmp_exec_dir_structure_root)
-    else:
-        with tempfile.TemporaryDirectory(prefix=execution_directory_root_name_prefix) as tmp_exec_dir_structure_root:
-            return with_existing_root(tmp_exec_dir_structure_root)
