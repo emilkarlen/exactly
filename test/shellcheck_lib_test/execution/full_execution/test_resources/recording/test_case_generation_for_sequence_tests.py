@@ -1,3 +1,4 @@
+from shellcheck_lib.document import model
 from shellcheck_lib.execution import phases, phase_step
 from shellcheck_lib.test_case.sections.act.instruction import ActPhaseInstruction
 from shellcheck_lib.test_case.sections.anonymous import AnonymousPhaseInstruction
@@ -12,7 +13,7 @@ from shellcheck_lib_test.execution.test_resources.execution_recording import \
 from shellcheck_lib_test.execution.test_resources.execution_recording.recorder import \
     ListRecorder, ListElementRecorder
 from shellcheck_lib_test.execution.test_resources.test_case_generation import instruction_line_constructor, \
-    TestCaseInstructionsForFullExecution
+    TestCaseInstructionsForFullExecution, phase_contents
 
 
 class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorForFullExecutionBase):
@@ -24,9 +25,26 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorForFullExecutionBa
             self.__recorder = ListRecorder()
         self.ilc = instruction_line_constructor()
 
-    def _get_extra(self, phase: phases.Phase) -> list:
+        self.__recorders = {}
+        r = self.__recorders
+        r[phases.ANONYMOUS] = self._new_anonymous_internal_recorder(phase_step.ANONYMOUS)
+        r[phases.SETUP] = self._new_setup_internal_recorder(phase_step.SETUP__PRE_VALIDATE,
+                                                            phase_step.SETUP__EXECUTE,
+                                                            phase_step.SETUP__POST_VALIDATE)
+        r[phases.ACT] = self._new_act_internal_recorder(phase_step.ACT__VALIDATE,
+                                                        phase_step.ACT__SCRIPT_GENERATE)
+        r[phases.ASSERT] = self._new_assert_internal_recorder(phase_step.ASSERT__VALIDATE,
+                                                              phase_step.ASSERT__EXECUTE)
+        r[phases.CLEANUP] = instruction_adapter.as_cleanup(
+                instr.InternalInstructionThatRecordsStringInList(
+                        self.__recorder_of(phase_step.CLEANUP)))
+
+    def recorders_for(self, phase: phases.Phase) -> list:
+        return [self.ilc.apply(self.__recorders[phase])]
+
+    def the_extra(self, phase: phases.Phase) -> list:
         """
-        :rtype list[PhaseContentElement]
+        :rtype [PhaseContentElement]
         """
         raise NotImplementedError()
 
@@ -38,56 +56,14 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorForFullExecutionBa
     def internal_instruction_recorder(self) -> list:
         return self.__recorder.recorded_elements
 
-    def _anonymous_phase(self) -> list:
-        return self._anonymous_phase_recording() + \
-               self._get_extra(phases.ANONYMOUS)
+    def phase_contents_for(self, phase: phases.Phase) -> model.PhaseContents:
+        return phase_contents(self._all_elements_for(phase))
 
-    def _setup_phase(self) -> list:
-        return self._setup_phase_recording() + \
-               self._get_extra(phases.SETUP)
-
-    def _act_phase(self) -> list:
-        return self._act_phase_recording() + \
-               self._get_extra(phases.ACT)
-
-    def _assert_phase(self) -> list:
-        return self._assert_phase_recording() + \
-               self._get_extra(phases.ASSERT)
-
-    def _cleanup_phase(self) -> list:
-        return self._cleanup_phase_recording() + \
-               self._get_extra(phases.CLEANUP)
-
-    def _anonymous_phase_recording(self) -> list:
-        return self.ilc.apply_list([
-            self._new_anonymous_internal_recorder(phase_step.ANONYMOUS)
-        ])
-
-    def _setup_phase_recording(self) -> list:
-        return self.ilc.apply_list([
-            self._new_setup_internal_recorder(phase_step.SETUP__PRE_VALIDATE,
-                                              phase_step.SETUP__EXECUTE,
-                                              phase_step.SETUP__POST_VALIDATE),
-        ])
-
-    def _act_phase_recording(self) -> list:
-        return self.ilc.apply_list([
-            self._new_act_internal_recorder(phase_step.ACT__VALIDATE,
-                                            phase_step.ACT__SCRIPT_GENERATE),
-        ])
-
-    def _assert_phase_recording(self) -> list:
-        return self.ilc.apply_list([
-            self._new_assert_internal_recorder(phase_step.ASSERT__VALIDATE,
-                                               phase_step.ASSERT__EXECUTE),
-        ])
-
-    def _cleanup_phase_recording(self) -> list:
-        return self.ilc.apply_list([
-            instruction_adapter.as_cleanup(
-                    instr.InternalInstructionThatRecordsStringInList(
-                            self.__recorder_of(phase_step.CLEANUP))),
-        ])
+    def _all_elements_for(self, phase: phases.Phase) -> list:
+        """
+        :rtype [PhaseContentElement]
+        """
+        return self.recorders_for(phase) + self.the_extra(phase)
 
     def _new_anonymous_internal_recorder(self, text: str) -> SetupPhaseInstruction:
         return instr.AnonymousInternalInstructionThatRecordsStringInList(self.__recorder_of(text))
@@ -131,74 +107,22 @@ class TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList(TestCaseGene
             self.__extra[ph] = []
         self.__the_extra = {}
 
-    def _get_extra(self, phase: phases.Phase) -> list:
-        self.__the_extra[phase] = self.ilc.apply_list(self.__extra[phase])
-        return self.__the_extra[phase]
-
-    def add_anonymous(self, instruction: AnonymousPhaseInstruction):
-        self.__extra[phases.ANONYMOUS].append(instruction)
+    def add(self, phase: phases.Phase, instruction: AnonymousPhaseInstruction):
+        self.__extra[phase].append(instruction)
         return self
 
     def add_anonymous_internal_recorder_of(self, text: str):
         self.__extra[phases.ANONYMOUS].append(self._new_anonymous_internal_recorder(text))
         return self
 
-    def add_setup(self, instruction: SetupPhaseInstruction):
-        self.__extra[phases.SETUP].append(instruction)
-        return self
-
-    def add_act(self, instruction: ActPhaseInstruction):
-        self.__extra[phases.ACT].append(instruction)
-        return self
-
-    def add_assert(self, instruction: AssertPhaseInstruction):
-        self.__extra[phases.ASSERT].append(instruction)
-        return self
-
-    def add_cleanup(self, instruction: CleanupPhaseInstruction):
-        self.__extra[phases.CLEANUP].append(instruction)
-        return self
-
     def add_cleanup_internal_recorder_of(self, text: str):
         self.__extra[phases.CLEANUP].append(self._new_cleanup_internal_recorder(text))
         return self
 
-    @property
-    def the_anonymous_phase_extra(self) -> list:
+    def the_extra(self, phase: phases.Phase) -> list:
         """
         :rtype [PhaseContentElement]
         """
-        self.test_case
-        return self.__the_extra[phases.ANONYMOUS]
-
-    @property
-    def the_setup_phase_extra(self) -> list:
-        """
-        :rtype [PhaseContentElement]
-        """
-        self.test_case
-        return self.__the_extra[phases.SETUP]
-
-    @property
-    def the_act_phase_extra(self) -> list:
-        """
-        :rtype [PhaseContentElement]
-        """
-        self.test_case
-        return self.__the_extra[phases.ACT]
-
-    @property
-    def the_assert_phase_extra(self) -> list:
-        """
-        :rtype [PhaseContentElement]
-        """
-        self.test_case
-        return self.__the_extra[phases.ASSERT]
-
-    @property
-    def the_cleanup_phase_extra(self) -> list:
-        """
-        :rtype [PhaseContentElement]
-        """
-        self.test_case
-        return self.__the_extra[phases.CLEANUP]
+        if phase not in self.__the_extra:
+            self.__the_extra[phase] = self.ilc.apply_list(self.__extra[phase])
+        return self.__the_extra[phase]
