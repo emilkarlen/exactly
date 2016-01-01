@@ -1,5 +1,6 @@
 import os
 import pathlib
+import shutil
 import subprocess
 import tempfile
 
@@ -28,15 +29,15 @@ from .result import PartialResult, PartialResultStatus, new_partial_result_pass,
 class Configuration(tuple):
     def __new__(cls,
                 home_dir: pathlib.Path,
-                act_dir: pathlib.Path):
-        return tuple.__new__(cls, (home_dir, act_dir))
+                execution_directory_root_name_prefix: str):
+        return tuple.__new__(cls, (home_dir, execution_directory_root_name_prefix))
 
     @property
     def home_dir(self) -> pathlib.Path:
         return self[0]
 
     @property
-    def act_dir(self) -> pathlib.Path:
+    def execution_directory_root_name_prefix(self) -> str:
         return self[1]
 
 
@@ -121,31 +122,34 @@ def execute(script_handling: ScriptHandling,
     The responsibility of this method is not the most natural!!
     Please refactor if a more natural responsibility evolves!
     """
-
-    def with_existing_root(exec_dir_structure_root: str) -> PartialResult:
+    cwd_before = None
+    ret_val = None
+    try:
         cwd_before = os.getcwd()
-        execution_directory_structure = construct_at(exec_dir_structure_root)
+        execution_directory_structure = construct_eds(execution_directory_root_name_prefix)
         global_environment = common.GlobalEnvironmentForPostEdsPhase(home_dir_path,
                                                                      execution_directory_structure)
         configuration = Configuration(home_dir_path,
-                                      execution_directory_structure.act_dir)
+                                      execution_directory_root_name_prefix)
 
         test_case_execution = PartialExecutor(global_environment,
                                               execution_directory_structure,
                                               configuration,
                                               script_handling,
                                               test_case)
-        try:
-            return test_case_execution.execute()
-        finally:
+        ret_val = test_case_execution.execute()
+        return ret_val
+    finally:
+        if cwd_before is not None:
             os.chdir(cwd_before)
+        if not is_keep_execution_directory_root:
+            if ret_val is not None and ret_val.has_execution_directory_structure:
+                shutil.rmtree(str(ret_val.execution_directory_structure.root_dir))
 
-    if is_keep_execution_directory_root:
-        tmp_exec_dir_structure_root = tempfile.mkdtemp(prefix=execution_directory_root_name_prefix)
-        return with_existing_root(tmp_exec_dir_structure_root)
-    else:
-        with tempfile.TemporaryDirectory(prefix=execution_directory_root_name_prefix) as tmp_exec_dir_structure_root:
-            return with_existing_root(tmp_exec_dir_structure_root)
+
+def construct_eds(execution_directory_root_name_prefix: str) -> ExecutionDirectoryStructure:
+    eds_structure_root = tempfile.mkdtemp(prefix=execution_directory_root_name_prefix)
+    return construct_at(eds_structure_root)
 
 
 class PartialExecutor:
