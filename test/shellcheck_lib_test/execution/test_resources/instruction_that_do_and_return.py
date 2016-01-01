@@ -15,9 +15,10 @@ from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
-from shellcheck_lib_test.execution.test_resources import python_code_gen as py
 from shellcheck_lib_test.execution.full_execution.test_resources.test_case_generator import \
     TestCaseGeneratorForFullExecutionBase
+from shellcheck_lib_test.execution.test_resources import python_code_gen as py
+from shellcheck_lib_test.execution.test_resources.test_case_generation import instruction_line_constructor
 
 
 def do_nothing__anonymous_phase(phase_step: PhaseStep,
@@ -120,6 +121,7 @@ class TestCaseGeneratorForTestCaseSetup(TestCaseGeneratorForFullExecutionBase):
                  setup: TestCaseSetup):
         super().__init__()
         self.setup = setup
+        self.instruction_line_constructor = instruction_line_constructor()
 
     def _anonymous_phase(self) -> list:
         return self.__for(self.setup.as_anonymous_phase_instruction())
@@ -138,7 +140,7 @@ class TestCaseGeneratorForTestCaseSetup(TestCaseGeneratorForFullExecutionBase):
 
     def __for(self,
               instruction: Instruction) -> list:
-        return [self._next_instruction_line(instruction)]
+        return [self.instruction_line_constructor.apply(instruction)]
 
 
 class _AnonymousInstruction(AnonymousPhaseInstruction):

@@ -1,5 +1,6 @@
+from shellcheck_lib.document import model
 from shellcheck_lib.test_case import test_case_doc
-from shellcheck_lib_test.execution.test_resources.test_case_generation import TestCaseGeneratorBase
+from shellcheck_lib_test.execution.test_resources.test_case_generation import TestCaseGeneratorBase, phase_contents
 
 
 class TestCaseGeneratorForFullExecutionBase(TestCaseGeneratorBase):
@@ -10,6 +11,9 @@ class TestCaseGeneratorForFullExecutionBase(TestCaseGeneratorBase):
     def __init__(self):
         super().__init__()
         self.__test_case = None
+
+    def anonymous_phase(self) -> model.PhaseContents:
+        return phase_contents(self._anonymous_phase())
 
     def _anonymous_phase(self) -> list:
         """
@@ -25,9 +29,9 @@ class TestCaseGeneratorForFullExecutionBase(TestCaseGeneratorBase):
 
     def _generate(self) -> test_case_doc.TestCase:
         return test_case_doc.TestCase(
-                self._from(self._anonymous_phase()),
-                self._from(self._setup_phase()),
-                self._from(self._act_phase()),
-                self._from(self._assert_phase()),
-                self._from(self._cleanup_phase())
+                self.anonymous_phase(),
+                self.setup_phase(),
+                self.act_phase(),
+                self.assert_phase(),
+                self.cleanup_phase()
         )

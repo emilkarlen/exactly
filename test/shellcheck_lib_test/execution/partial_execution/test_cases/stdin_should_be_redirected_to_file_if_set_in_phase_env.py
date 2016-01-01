@@ -23,29 +23,28 @@ EXPECTED_CONTENTS_OF_STDERR = ''
 
 class TestCaseDocumentThatSetsStdinFileName(TestCaseWithCommonDefaultForSetupAssertCleanup):
     def _setup_phase(self) -> list:
-        return [
-            self._next_instruction_line(
-                    PyCommandThatStoresStringInFileInCurrentDirectory(INPUT_TMP_FILE,
-                                                                      TEXT_ON_STDIN)),
-            self._next_instruction_line(InstructionThatSetsStdinFileName(INPUT_TMP_FILE)),
-        ]
+        return self.instruction_line_constructor.apply_list([
+            PyCommandThatStoresStringInFileInCurrentDirectory(INPUT_TMP_FILE,
+                                                              TEXT_ON_STDIN),
+            InstructionThatSetsStdinFileName(INPUT_TMP_FILE)
+        ])
 
     def _act_phase(self) -> list:
-        return [
-            self._next_instruction_line(GenerateStatementsThatCopiesStdinToStdout())
-        ]
+        return self.instruction_line_constructor.apply_list([
+            GenerateStatementsThatCopiesStdinToStdout()
+        ])
 
 
 class TestCaseDocumentThatSetsStdinContents(TestCaseWithCommonDefaultForSetupAssertCleanup):
     def _setup_phase(self) -> list:
-        return [
-            self._next_instruction_line(InstructionThatSetsStdinContents(TEXT_ON_STDIN)),
-        ]
+        return self.instruction_line_constructor.apply_list([
+            InstructionThatSetsStdinContents(TEXT_ON_STDIN),
+        ])
 
     def _act_phase(self) -> list:
-        return [
-            self._next_instruction_line(GenerateStatementsThatCopiesStdinToStdout())
-        ]
+        return self.instruction_line_constructor.apply_list([
+            GenerateStatementsThatCopiesStdinToStdout()
+        ])
 
 
 def assertions(utc: unittest.TestCase,
