@@ -1,8 +1,9 @@
 import types
 from pathlib import Path
 
+from shellcheck_lib.document import model
 from shellcheck_lib.document.model import Instruction
-from shellcheck_lib.execution import phase_step
+from shellcheck_lib.execution import phases, phase_step
 from shellcheck_lib.execution.phase_step import PhaseStep
 from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.sections import common as i
@@ -18,7 +19,8 @@ from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, Setup
 from shellcheck_lib_test.execution.full_execution.test_resources.test_case_generator import \
     TestCaseGeneratorForFullExecutionBase
 from shellcheck_lib_test.execution.test_resources import python_code_gen as py
-from shellcheck_lib_test.execution.test_resources.test_case_generation import instruction_line_constructor
+from shellcheck_lib_test.execution.test_resources.test_case_generation import instruction_line_constructor, \
+    phase_contents
 
 
 def do_nothing__anonymous_phase(phase_step: PhaseStep,
@@ -122,6 +124,22 @@ class TestCaseGeneratorForTestCaseSetup(TestCaseGeneratorForFullExecutionBase):
         super().__init__()
         self.setup = setup
         self.instruction_line_constructor = instruction_line_constructor()
+
+    def phase_contents_for(self, phase: phases.Phase) -> model.PhaseContents:
+        instr = None
+        if phase == phases.ANONYMOUS:
+            instr = self.setup.as_anonymous_phase_instruction()
+        if phase == phases.SETUP:
+            instr = self.setup.as_setup_phase_instruction()
+        if phase == phases.ACT:
+            instr = self.setup.as_act_phase_instruction()
+        if phase == phases.ASSERT:
+            instr = self.setup.as_assert_phase_instruction()
+        if phase == phases.CLEANUP:
+            instr = self.setup.as_cleanup_phase_instruction()
+        if instr is None:
+            raise ValueError('Unknown phase: ' + str(phase))
+        return phase_contents([self.instruction_line_constructor.apply(instr)])
 
     def _anonymous_phase(self) -> list:
         return self.__for(self.setup.as_anonymous_phase_instruction())

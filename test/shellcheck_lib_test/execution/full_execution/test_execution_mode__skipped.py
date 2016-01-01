@@ -14,8 +14,9 @@ from shellcheck_lib_test.test_resources.expected_instruction_failure import Expe
 class Test(TestCaseBase):
     def test_execution_mode_skipped(self):
         test_case = one_successful_instruction_in_each_phase() \
-            .add_anonymous(test.AnonymousPhaseInstructionThatSetsExecutionMode(
-                ExecutionMode.SKIPPED))
+            .add(phases.ANONYMOUS,
+                 test.AnonymousPhaseInstructionThatSetsExecutionMode(
+                         ExecutionMode.SKIPPED))
         self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.SKIPPED,
@@ -26,16 +27,18 @@ class Test(TestCaseBase):
 
     def test_execution_mode_skipped_but_failing_instruction_in_anonymous_phase_before_setting_execution_mode(self):
         test_case = one_successful_instruction_in_each_phase() \
-            .add_anonymous(test.AnonymousPhaseInstructionThatReturns(
-                sh.new_sh_hard_error('hard error msg'))) \
-            .add_anonymous(test.AnonymousPhaseInstructionThatSetsExecutionMode(
-                ExecutionMode.SKIPPED))
+            .add(phases.ANONYMOUS,
+                 test.AnonymousPhaseInstructionThatReturns(
+                         sh.new_sh_hard_error('hard error msg'))) \
+            .add(phases.ANONYMOUS,
+                 test.AnonymousPhaseInstructionThatSetsExecutionMode(
+                         ExecutionMode.SKIPPED))
         self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.HARD_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_message(
                                     phase_step.new_without_step(phases.ANONYMOUS),
-                                    test_case.the_anonymous_phase_extra[0].first_line,
+                                    test_case.the_extra(phases.ANONYMOUS)[0].first_line,
                                     'hard error msg'),
                             [phase_step.ANONYMOUS
                              ],
@@ -43,16 +46,18 @@ class Test(TestCaseBase):
 
     def test_execution_mode_skipped_but_failing_instruction_in_anonymous_phase_after_setting_execution_mode(self):
         test_case = one_successful_instruction_in_each_phase() \
-            .add_anonymous(test.AnonymousPhaseInstructionThatSetsExecutionMode(
-                ExecutionMode.SKIPPED)) \
-            .add_anonymous(test.AnonymousPhaseInstructionThatReturns(
-                sh.new_sh_hard_error('hard error msg')))
+            .add(phases.ANONYMOUS,
+                 test.AnonymousPhaseInstructionThatSetsExecutionMode(
+                         ExecutionMode.SKIPPED)) \
+            .add(phases.ANONYMOUS,
+                 test.AnonymousPhaseInstructionThatReturns(
+                         sh.new_sh_hard_error('hard error msg')))
         self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.HARD_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_message(
                                     phase_step.new_without_step(phases.ANONYMOUS),
-                                    test_case.the_anonymous_phase_extra[1].first_line,
+                                    test_case.the_extra(phases.ANONYMOUS)[1].first_line,
                                     'hard error msg'),
                             [phase_step.ANONYMOUS
                              ],
