@@ -8,8 +8,6 @@ from shellcheck_lib.act_phase_setups import python3
 from shellcheck_lib.default.execution_mode.test_case.processing import script_handling_for_setup
 from shellcheck_lib.execution import partial_execution, phases
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
-from shellcheck_lib.execution.partial_execution import TestCase, execute_test_case_in_execution_directory, \
-    Configuration, ScriptHandling
 from shellcheck_lib.execution.result import PartialResult
 from shellcheck_lib.general.functional import Composition
 from shellcheck_lib_test.execution.test_resources import instruction_adapter
@@ -41,9 +39,9 @@ class Result(tuple):
         return self.partial_result.execution_directory_structure
 
     @property
-    def configuration(self) -> Configuration:
-        return Configuration(self.home_dir_path,
-                             self.execution_directory_structure.act_dir)
+    def configuration(self) -> partial_execution.Configuration:
+        return partial_execution.Configuration(self.home_dir_path,
+                                               self.execution_directory_structure.act_dir)
 
 
 class TestCaseGeneratorForPartialExecutionBase(TestCaseGeneratorBase):
@@ -103,7 +101,7 @@ class TestCaseWithCommonDefaultForSetupAssertCleanup(TestCaseGeneratorForPartial
 
 
 def py3_test(unittest_case: unittest.TestCase,
-             test_case: TestCase,
+             test_case: partial_execution.TestCase,
              assertions: types.FunctionType,
              dbg_do_not_delete_dir_structure=False):
     result = _execute(test_case,
@@ -123,7 +121,7 @@ class PartialExecutionTestCaseBase:
     def __init__(self,
                  unittest_case: unittest.TestCase,
                  dbg_do_not_delete_dir_structure=False,
-                 script_handling: ScriptHandling = None):
+                 script_handling: partial_execution.ScriptHandling = None):
         self.__unittest_case = unittest_case
         self.__dbg_do_not_delete_dir_structure = dbg_do_not_delete_dir_structure
         self.__initial_home_dir_path = None
@@ -149,7 +147,7 @@ class PartialExecutionTestCaseBase:
             if self.eds:
                 print(str(self.eds.root_dir))
 
-    def _test_case(self) -> TestCase:
+    def _test_case(self) -> partial_execution.TestCase:
         raise NotImplementedError()
 
     def _assertions(self):
@@ -172,10 +170,10 @@ class PartialExecutionTestCaseBase:
         return self.result.execution_directory_structure
 
 
-def _execute(test_case: TestCase,
-             script_handling: ScriptHandling) -> Result:
+def _execute(test_case: partial_execution.TestCase,
+             script_handling: partial_execution.ScriptHandling) -> Result:
     home_dir_path = pathlib.Path().resolve()
-    partial_result = execute_test_case_in_execution_directory(
+    partial_result = partial_execution.execute(
             script_handling,
             test_case,
             home_dir_path,
