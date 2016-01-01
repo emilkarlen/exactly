@@ -73,12 +73,12 @@ class Test(FullExecutionTestCaseBase):
         initial_dir = self.eds.act_dir
         initial_dir_recording = str(initial_dir)
         expected_recorded_internally = {
-            phase_step.SETUP_EXECUTE: initial_dir_recording,
+            phase_step.SETUP_MAIN: initial_dir_recording,
             phase_step.ACT_VALIDATE: str(initial_dir / SUB_DIR_NAME),
             phase_step.ACT_SCRIPT_GENERATION: str(initial_dir / SUB_DIR_NAME),
             phase_step.ASSERT_VALIDATE: str(initial_dir / SUB_DIR_NAME),
-            phase_step.ASSERT_EXECUTE: str(initial_dir / SUB_DIR_NAME / SUB_DIR_NAME),
-            phase_step.CLEANUP_EXECUTE: str(initial_dir / SUB_DIR_NAME / SUB_DIR_NAME / SUB_DIR_NAME),
+            phase_step.ASSERT_MAIN: str(initial_dir / SUB_DIR_NAME / SUB_DIR_NAME),
+            phase_step.CLEANUP_MAIN: str(initial_dir / SUB_DIR_NAME / SUB_DIR_NAME / SUB_DIR_NAME),
         }
         self.__assert_expected_internally_recorded_variables(expected_recorded_internally)
         cwd_for_program_executor = str(initial_dir / SUB_DIR_NAME / SUB_DIR_NAME) + os.linesep

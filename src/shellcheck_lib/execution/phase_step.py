@@ -23,7 +23,7 @@ def new_without_step(phase: phases.Phase) -> PhaseStep:
 VALIDATE = 'validate'
 PRE_VALIDATE = 'pre-validate'
 POST_VALIDATE = 'post-validate'
-EXECUTE = 'execute'
+MAIN = 'main'
 
 
 def __phase_step(phase: str, step: str) -> str:
@@ -35,11 +35,11 @@ ANONYMOUS = '<INIT>'
 SETUP = 'SETUP'
 
 SETUP_pre_validate = 'pre-validate'
-SETUP_execute = EXECUTE
+SETUP_main = MAIN
 SETUP_post_validate = 'post-validate'
 
 SETUP__PRE_VALIDATE = __phase_step(SETUP, SETUP_pre_validate)
-SETUP__EXECUTE = __phase_step(SETUP, SETUP_execute)
+SETUP__MAIN = __phase_step(SETUP, SETUP_main)
 SETUP__POST_VALIDATE = __phase_step(SETUP, SETUP_post_validate)
 
 ACT = 'ACT'
@@ -47,7 +47,7 @@ ACT = 'ACT'
 ACT_validate = VALIDATE
 ACT_script_generate = 'script-generation'
 ACT_script_validate = 'script-validation'
-ACT_script_execute = 'script-execution'
+ACT_script_execute = 'script-execute'
 
 ACT__VALIDATE = __phase_step(ACT, ACT_validate)
 ACT__SCRIPT_GENERATE = __phase_step(ACT, ACT_script_generate)
@@ -57,17 +57,17 @@ ACT__SCRIPT_EXECUTE = __phase_step(ACT, ACT_script_execute)
 ASSERT = 'ASSERT'
 
 ASSERT_validate = VALIDATE
-ASSERT_execute = EXECUTE
+ASSERT_main = MAIN
 
 ASSERT__VALIDATE = __phase_step(ASSERT, ASSERT_validate)
-ASSERT__EXECUTE = __phase_step(ASSERT, ASSERT_execute)
+ASSERT__MAIN = __phase_step(ASSERT, ASSERT_main)
 
 CLEANUP = 'CLEANUP'
 
-ANONYMOUS_EXECUTE = new_without_step(phases.ANONYMOUS)
+ANONYMOUS_MAIN = new_without_step(phases.ANONYMOUS)
 
 SETUP_PRE_VALIDATE = PhaseStep(phases.SETUP, PRE_VALIDATE)
-SETUP_EXECUTE = PhaseStep(phases.SETUP, EXECUTE)
+SETUP_MAIN = PhaseStep(phases.SETUP, MAIN)
 SETUP_POST_VALIDATE = PhaseStep(phases.SETUP, POST_VALIDATE)
 
 ACT_VALIDATE = PhaseStep(phases.ACT, VALIDATE)
@@ -75,6 +75,6 @@ ACT_SCRIPT_GENERATION = PhaseStep(phases.ACT, ACT_script_generate)
 ACT_SCRIPT_EXECUTION = PhaseStep(phases.ACT, ACT_script_execute)
 
 ASSERT_VALIDATE = PhaseStep(phases.ASSERT, VALIDATE)
-ASSERT_EXECUTE = PhaseStep(phases.ASSERT, EXECUTE)
+ASSERT_MAIN = PhaseStep(phases.ASSERT, MAIN)
 
-CLEANUP_EXECUTE = new_without_step(phases.CLEANUP)
+CLEANUP_MAIN = new_without_step(phases.CLEANUP)

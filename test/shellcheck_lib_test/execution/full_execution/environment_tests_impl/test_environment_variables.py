@@ -94,15 +94,15 @@ class Test(FullExecutionTestCaseBase):
             environment_variables.ENV_VAR_RESULT_DIR: str(self.eds.result.root_dir),
         }
         expected_recorded_internally = {
-            phase_step.ANONYMOUS_EXECUTE: for_anonymous_phase,
+            phase_step.ANONYMOUS_MAIN: for_anonymous_phase,
             phase_step.SETUP_PRE_VALIDATE: for_pre_eds,
-            phase_step.SETUP_EXECUTE: for_post_eds,
+            phase_step.SETUP_MAIN: for_post_eds,
             phase_step.SETUP_POST_VALIDATE: for_post_eds,
             phase_step.ACT_VALIDATE: for_post_eds,
             phase_step.ACT_SCRIPT_GENERATION: for_post_eds,
             phase_step.ASSERT_VALIDATE: for_post_eds,
-            phase_step.ASSERT_EXECUTE: set_at_assert,
-            phase_step.CLEANUP_EXECUTE: set_at_assert,
+            phase_step.ASSERT_MAIN: set_at_assert,
+            phase_step.CLEANUP_MAIN: set_at_assert,
         }
         expected_act_output = ''.join([
             '%s=%s%s' % (

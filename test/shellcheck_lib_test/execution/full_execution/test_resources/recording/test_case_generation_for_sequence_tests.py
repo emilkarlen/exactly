@@ -26,14 +26,14 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorForFullExecutionBa
                 recording_instructions.new_anonymous_instruction(phase_step.ANONYMOUS),
             phases.SETUP:
                 recording_instructions.new_setup_instruction(phase_step.SETUP__PRE_VALIDATE,
-                                                             phase_step.SETUP__EXECUTE,
+                                                             phase_step.SETUP__MAIN,
                                                              phase_step.SETUP__POST_VALIDATE),
             phases.ACT:
                 recording_instructions.new_act_instruction(phase_step.ACT__VALIDATE,
                                                            phase_step.ACT__SCRIPT_GENERATE),
             phases.ASSERT:
                 recording_instructions.new_assert_instruction(phase_step.ASSERT__VALIDATE,
-                                                              phase_step.ASSERT__EXECUTE),
+                                                              phase_step.ASSERT__MAIN),
             phases.CLEANUP:
                 recording_instructions.new_cleanup_instruction(phase_step.CLEANUP)
         }

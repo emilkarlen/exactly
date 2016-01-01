@@ -193,7 +193,7 @@ class PartialExecutor:
     def __run_setup_main(self, os_services: OsServices) -> PartialResult:
         setup_settings_builder = SetupSettingsBuilder()
         ret_val = self.__run_internal_instructions_phase_step(phases.SETUP,
-                                                              phase_step.SETUP_execute,
+                                                              phase_step.SETUP_main,
                                                               phase_step_executors.SetupMainInstructionExecutor(
                                                                       os_services,
                                                                       self.__global_environment,
@@ -226,7 +226,7 @@ class PartialExecutor:
 
     def __run_assert_execute(self, phase_env) -> PartialResult:
         return self.__run_internal_instructions_phase_step(phases.ASSERT,
-                                                           phase_step.ASSERT_execute,
+                                                           phase_step.ASSERT_main,
                                                            phase_step_executors.AssertMainInstructionExecutor(
                                                                    self.__global_environment,
                                                                    phase_env),
