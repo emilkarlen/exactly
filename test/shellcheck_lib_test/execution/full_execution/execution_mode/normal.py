@@ -70,10 +70,6 @@ def suite():
     return ret_val
 
 
-def run_suite():
+if __name__ == '__main__':
     runner = unittest.TextTestRunner()
     runner.run(suite())
-
-
-if __name__ == '__main__':
-    run_suite()

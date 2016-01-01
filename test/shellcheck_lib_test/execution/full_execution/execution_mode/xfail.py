@@ -111,5 +111,12 @@ class Test(TestCaseBase):
                             True))
 
 
+def suite():
+    ret_val = unittest.TestSuite()
+    ret_val.addTest(unittest.makeSuite(Test))
+    return ret_val
+
+
 if __name__ == '__main__':
-    unittest.main()
+    runner = unittest.TextTestRunner()
+    runner.run(suite())

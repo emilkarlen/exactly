@@ -1,9 +1,7 @@
 import unittest
 
+from shellcheck_lib_test.execution.full_execution import execution_mode
 from shellcheck_lib_test.execution.full_execution import \
-    test_execution_mode__normal, \
-    test_execution_mode__skipped, \
-    test_execution_mode__xfail, \
     test_translation_of_partial_result_to_full_result, \
     test_environment
 
@@ -11,10 +9,8 @@ from shellcheck_lib_test.execution.full_execution import \
 def suite():
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(test_translation_of_partial_result_to_full_result.Test))
-    ret_val.addTest(test_execution_mode__normal.suite())
-    ret_val.addTest(unittest.makeSuite(test_execution_mode__skipped.Test))
-    ret_val.addTest(unittest.makeSuite(test_execution_mode__xfail.Test))
     ret_val.addTest(unittest.makeSuite(test_environment.Test))
+    ret_val.addTest(execution_mode.suite())
     return ret_val
 
 
