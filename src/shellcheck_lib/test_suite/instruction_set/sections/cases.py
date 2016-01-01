@@ -1,17 +1,16 @@
-from shellcheck_lib.general import line_source
-from shellcheck_lib.document.model import Instruction
 from shellcheck_lib.document import parse
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SectionElementParserForStandardCommentAndEmptyLines
+from shellcheck_lib.general import line_source
 from shellcheck_lib.test_suite.instruction_set import instruction, utils
-from shellcheck_lib.test_suite.instruction_set.instruction import Environment
+from shellcheck_lib.test_suite.instruction_set.instruction import Environment, TestSuiteInstruction
 
 
 def new_parser() -> parse.SectionElementParser:
     return _CasesSectionParser()
 
 
-class TestCaseSectionInstruction(Instruction):
+class TestCaseSectionInstruction(TestSuiteInstruction):
     def resolve_paths(self,
                       environment: Environment) -> list:
         """

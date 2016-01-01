@@ -1,5 +1,11 @@
 import pathlib
 
+from shellcheck_lib.document.model import Instruction
+
+
+class TestSuiteInstruction(Instruction):
+    pass
+
 
 class Environment:
     def __init__(self,

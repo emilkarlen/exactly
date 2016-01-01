@@ -6,8 +6,8 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
     SectionElementParserForDictionaryOfInstructions, SingleInstructionParser, SingleInstructionInvalidArgumentException, \
     SingleInstructionParserSource
 from shellcheck_lib.test_case.preprocessor import PreprocessorViaExternalProgram
-from shellcheck_lib.test_case.sections.common import TestCaseInstruction
 from shellcheck_lib.test_case.test_case_processing import Preprocessor
+from shellcheck_lib.test_suite.instruction_set.instruction import TestSuiteInstruction
 
 
 def new_parser() -> parse.SectionElementParser:
@@ -33,7 +33,7 @@ class AnonymousSectionEnvironment:
         self._preprocessor = value
 
 
-class AnonymousSectionInstruction(TestCaseInstruction):
+class AnonymousSectionInstruction(TestSuiteInstruction):
     def execute(self,
                 environment: AnonymousSectionEnvironment):
         """
