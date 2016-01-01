@@ -11,6 +11,12 @@ class TestCaseGeneratorForFullExecutionBase(TestCaseGeneratorBase):
         super().__init__()
         self.__test_case = None
 
+    def _anonymous_phase(self) -> list:
+        """
+        :rtype list[PhaseContentElement] (with instruction of type AnonymousPhaseInstruction)
+        """
+        return []
+
     @property
     def test_case(self) -> test_case_doc.TestCase:
         if self.__test_case is None:
@@ -25,9 +31,3 @@ class TestCaseGeneratorForFullExecutionBase(TestCaseGeneratorBase):
                 self._from(self._assert_phase()),
                 self._from(self._cleanup_phase())
         )
-
-    def _anonymous_phase(self) -> list:
-        """
-        :rtype list[PhaseContentElement] (with instruction of type AnonymousPhaseInstruction)
-        """
-        return []
