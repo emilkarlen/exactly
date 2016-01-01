@@ -5,7 +5,6 @@ import unittest
 from shellcheck_lib.execution import environment_variables
 from shellcheck_lib.execution import phases
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
-from shellcheck_lib.execution.partial_execution import Configuration
 from shellcheck_lib.test_case.sections import common
 from shellcheck_lib.test_case.sections.act.instruction import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
 from shellcheck_lib.test_case.sections.result import sh
@@ -39,8 +38,12 @@ class TestCaseDocument(TestCaseWithCommonDefaultForSetupAssertCleanup):
 def assertions(utc: unittest.TestCase,
                actual: Result):
     result_check = ResultFilesCheck(EXIT_CODE,
-                                    expected_output_on('sys.stdout', actual.configuration),
-                                    expected_output_on('sys.stderr', actual.configuration))
+                                    expected_output_on('sys.stdout',
+                                                       actual.home_dir_path,
+                                                       actual.partial_result.execution_directory_structure.act_dir),
+                                    expected_output_on('sys.stderr',
+                                                       actual.home_dir_path,
+                                                       actual.partial_result.execution_directory_structure.act_dir))
     result_check.apply(utc, actual.execution_directory_structure)
 
     file_name_from_py_cmd_list = [with_file_output.standard_phase_file_base_name(phase)
@@ -160,16 +163,17 @@ class ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr(ActPhaseInstruction):
 
 
 def expected_output_on(file_object: str,
-                       configuration: Configuration) -> str:
+                       home_dir_path: pathlib.Path,
+                       act_dir_path: pathlib.Path) -> str:
     return os.linesep.join([
         file_object,
 
-        output_with_header(HOME_DIR_HEADER, str(configuration.home_dir)),
-        output_with_header(TEST_ROOT_DIR_HEADER, str(configuration.act_dir)),
-        output_with_header(CURRENT_DIR_HEADER, str(configuration.act_dir)),
+        output_with_header(HOME_DIR_HEADER, str(home_dir_path)),
+        output_with_header(TEST_ROOT_DIR_HEADER, str(act_dir_path)),
+        output_with_header(CURRENT_DIR_HEADER, str(act_dir_path)),
 
-        output_with_header(environment_variables.ENV_VAR_HOME, str(configuration.home_dir)),
-        output_with_header(environment_variables.ENV_VAR_ACT, str(configuration.act_dir)),
+        output_with_header(environment_variables.ENV_VAR_HOME, str(home_dir_path)),
+        output_with_header(environment_variables.ENV_VAR_ACT, str(act_dir_path)),
         ''
     ])
 

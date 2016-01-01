@@ -110,7 +110,7 @@ class _TestCaseThatRecordsExecution(PartialExecutionTestCaseBase):
                     'Execution Directory Structure root is expected to be a directory')
         else:
             self.utc.assertIsNone(self.eds,
-                                  'Execution Directory Structure is expected to not be created')
+                                  'Execution Directory Structure is expected to not have been created')
 
 
 class TestCaseBase(unittest.TestCase):
