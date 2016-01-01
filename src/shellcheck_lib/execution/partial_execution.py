@@ -126,15 +126,10 @@ def execute(script_handling: ScriptHandling,
     ret_val = None
     try:
         cwd_before = os.getcwd()
-        execution_directory_structure = construct_eds(execution_directory_root_name_prefix)
-        global_environment = common.GlobalEnvironmentForPostEdsPhase(home_dir_path,
-                                                                     execution_directory_structure)
         configuration = Configuration(home_dir_path,
                                       execution_directory_root_name_prefix)
 
-        test_case_execution = PartialExecutor(global_environment,
-                                              execution_directory_structure,
-                                              configuration,
+        test_case_execution = PartialExecutor(configuration,
                                               script_handling,
                                               test_case)
         ret_val = test_case_execution.execute()
@@ -154,15 +149,12 @@ def construct_eds(execution_directory_root_name_prefix: str) -> ExecutionDirecto
 
 class PartialExecutor:
     def __init__(self,
-                 global_environment: common.GlobalEnvironmentForPostEdsPhase,
-                 execution_directory_structure: ExecutionDirectoryStructure,
                  configuration: Configuration,
                  script_handling: ScriptHandling,
                  test_case: TestCase):
-        self.__global_environment = global_environment
+        self.__execution_directory_structure = None
         self.__script_handling = script_handling
         self.__test_case = test_case
-        self.__execution_directory_structure = execution_directory_structure
         self.__configuration = configuration
         self.___step_execution_result = _StepExecutionResult()
         self.__source_setup = None
@@ -172,6 +164,8 @@ class PartialExecutor:
         # Tror det behövs för att undvika att sätta omgivningen mm, o därmed
         # påverka huvudprocessen.
         self.__set_pre_eds_environment_variables()
+        self.__construct_and_set_eds()
+        self.__set_post_eds_environment()
         res = self.__run_setup_pre_validate()
         if res.status is not PartialResultStatus.PASS:
             return res
@@ -379,6 +373,14 @@ class PartialExecutor:
 
     def __set_cwd_to_act_dir(self):
         os.chdir(str(self._eds.act_dir))
+
+    def __construct_and_set_eds(self) -> ExecutionDirectoryStructure:
+        eds_structure_root = tempfile.mkdtemp(prefix=self.__configuration.execution_directory_root_name_prefix)
+        self.__execution_directory_structure = construct_eds(eds_structure_root)
+
+    def __set_post_eds_environment(self):
+        self.__global_environment = common.GlobalEnvironmentForPostEdsPhase(self.__configuration.home_dir,
+                                                                            self.__execution_directory_structure)
 
     def __set_post_eds_environment_variables(self):
         os.environ.update(environment_variables.set_at_setup_main(self._eds))
