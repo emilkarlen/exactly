@@ -1,18 +1,17 @@
 import os
 import unittest
 
-from shellcheck_lib.document.model import Instruction
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionParserSource
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
-from shellcheck_lib.test_case.sections.common import HomeAndEds
+from shellcheck_lib.test_case.sections.common import HomeAndEds, TestCaseInstruction
+from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.result import svh
-from shellcheck_lib.test_case.sections.result import pfh
-from shellcheck_lib_test.instructions.test_resources import svh_check
-from shellcheck_lib_test.instructions.test_resources import sh_check
-from shellcheck_lib_test.instructions.test_resources import pfh_check
 from shellcheck_lib_test.instructions.test_resources import eds_contents_check
+from shellcheck_lib_test.instructions.test_resources import pfh_check
+from shellcheck_lib_test.instructions.test_resources import sh_check
+from shellcheck_lib_test.instructions.test_resources import svh_check
 from shellcheck_lib_test.instructions.test_resources import utils
 from shellcheck_lib_test.instructions.test_resources.utils import SideEffectsCheck
 
@@ -56,10 +55,10 @@ class SideEffectsCheckThatRaisesTestError(SideEffectsCheck):
 
 class ParserThatGives(SingleInstructionParser):
     def __init__(self,
-                 instruction: Instruction):
+                 instruction: TestCaseInstruction):
         self.instruction = instruction
 
-    def apply(self, source: SingleInstructionParserSource) -> Instruction:
+    def apply(self, source: SingleInstructionParserSource) -> TestCaseInstruction:
         return self.instruction
 
 

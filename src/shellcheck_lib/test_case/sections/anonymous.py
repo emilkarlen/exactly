@@ -1,7 +1,7 @@
-from enum import Enum
 import pathlib
+from enum import Enum
 
-from shellcheck_lib.document.model import Instruction
+from shellcheck_lib.test_case.sections.common import TestCaseInstruction
 from shellcheck_lib.test_case.sections.result.sh import SuccessOrHardError
 
 
@@ -36,7 +36,7 @@ class ConfigurationBuilder:
         self.__home_dir_path = x
 
 
-class AnonymousPhaseInstruction(Instruction):
+class AnonymousPhaseInstruction(TestCaseInstruction):
     """
     Abstract base class for instructions of the anonymous phase.
     """

@@ -1,6 +1,6 @@
-from shellcheck_lib.document.model import Instruction
 from shellcheck_lib.test_case.os_services import OsServices
-from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPreEdsStep, GlobalEnvironmentForPostEdsPhase
+from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPreEdsStep, GlobalEnvironmentForPostEdsPhase, \
+    TestCaseInstruction
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.result import svh
 
@@ -38,7 +38,7 @@ class SetupSettingsBuilder:
         return self.__stdin_settings
 
 
-class SetupPhaseInstruction(Instruction):
+class SetupPhaseInstruction(TestCaseInstruction):
     """
     Abstract base class for instructions of the SETUP phase.
     """

@@ -1,7 +1,7 @@
-from shellcheck_lib.document import model
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, SingleInstructionParserSource
 from shellcheck_lib.test_case.instruction_description import Description
+from shellcheck_lib.test_case.sections.common import TestCaseInstruction
 
 
 class SingleInstructionSetup(SingleInstructionParser):
@@ -15,7 +15,7 @@ class SingleInstructionSetup(SingleInstructionParser):
     def description(self) -> Description:
         return self._description
 
-    def apply(self, source: SingleInstructionParserSource) -> model.Instruction:
+    def apply(self, source: SingleInstructionParserSource) -> TestCaseInstruction:
         return self._parser.apply(source)
 
 

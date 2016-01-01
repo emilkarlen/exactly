@@ -1,6 +1,7 @@
 import shellcheck_lib_test.test_resources.model_utils
 from shellcheck_lib.document import model
 from shellcheck_lib.general import line_source
+from shellcheck_lib.test_case.sections.common import TestCaseInstruction
 
 
 class LinesGenerator:
@@ -23,7 +24,7 @@ class InstructionLineConstructor:
                  lines_generator: LinesGenerator):
         self.lines_generator = lines_generator
 
-    def apply(self, instruction: model.Instruction) -> model.PhaseContentElement:
+    def apply(self, instruction: TestCaseInstruction) -> model.PhaseContentElement:
         return shellcheck_lib_test.test_resources.model_utils.new_instruction_element(
                 self.lines_generator.next_line(),
                 instruction)

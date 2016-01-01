@@ -1,8 +1,9 @@
 from enum import Enum
 
-from shellcheck_lib.document.model import Instruction, PhaseContentElement
+from shellcheck_lib.document.model import PhaseContentElement
 from shellcheck_lib.execution import result
 from shellcheck_lib.general import line_source
+from shellcheck_lib.test_case.sections.common import TestCaseInstruction
 
 
 class PartialControlledFailureEnum(Enum):
@@ -53,7 +54,7 @@ class ControlledInstructionExecutor:
     that can be considered "controlled".
     """
 
-    def apply(self, instruction: Instruction) -> PartialInstructionControlledFailureInfo:
+    def apply(self, instruction: TestCaseInstruction) -> PartialInstructionControlledFailureInfo:
         """
         :return: None if the execution was successful.
         """

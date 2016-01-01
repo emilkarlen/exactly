@@ -1,13 +1,14 @@
 import types
 import unittest
 
-from shellcheck_lib.document.model import Instruction, PhaseContentElement, new_instruction_e
+from shellcheck_lib.document.model import PhaseContentElement, new_instruction_e
 from shellcheck_lib.execution.result import FailureDetails, new_failure_details_from_message, \
     PartialResultStatus, \
     new_failure_details_from_exception
 from shellcheck_lib.execution.single_instruction_executor import execute_element, ControlledInstructionExecutor, \
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum, SingleInstructionExecutionFailure
 from shellcheck_lib.general import line_source
+from shellcheck_lib.test_case.sections.common import TestCaseInstruction
 from shellcheck_lib_test.test_resources.model_utils import new_ls_from_line
 
 
@@ -28,7 +29,7 @@ class SuccessfulExecutor(ControlledInstructionExecutor):
                  do_record: types.FunctionType):
         self.__do_record = do_record
 
-    def apply(self, instruction: Instruction) -> PartialInstructionControlledFailureInfo:
+    def apply(self, instruction: TestCaseInstruction) -> PartialInstructionControlledFailureInfo:
         self.__do_record()
         return None
 
@@ -40,7 +41,7 @@ class FailingExecutor(ControlledInstructionExecutor):
         self.__do_record = do_record
         self.__ret_val = ret_val
 
-    def apply(self, instruction: Instruction) -> PartialInstructionControlledFailureInfo:
+    def apply(self, instruction: TestCaseInstruction) -> PartialInstructionControlledFailureInfo:
         self.__do_record()
         return self.__ret_val
 
@@ -56,7 +57,7 @@ class ExceptionRaisingExecutor(ControlledInstructionExecutor):
         self.__do_record = do_record
         self.__exception = exception
 
-    def apply(self, instruction: Instruction) -> PartialInstructionControlledFailureInfo:
+    def apply(self, instruction: TestCaseInstruction) -> PartialInstructionControlledFailureInfo:
         self.__do_record()
         raise self.__exception
 
@@ -79,9 +80,9 @@ class Test(unittest.TestCase):
         element = new_dummy_instruction_element()
         exception = TestException()
         result = execute_element(
-            ExceptionRaisingExecutor(NameRecorder().new_function_that_records('s'),
-                                     exception),
-            element)
+                ExceptionRaisingExecutor(NameRecorder().new_function_that_records('s'),
+                                         exception),
+                element)
         self._check_failure_result(PartialResultStatus.IMPLEMENTATION_ERROR,
                                    result,
                                    new_failure_details_from_exception(exception))
@@ -91,10 +92,10 @@ class Test(unittest.TestCase):
                                               expected_status: PartialResultStatus):
         element = new_dummy_instruction_element()
         result = execute_element(
-            FailingExecutor(NameRecorder().new_function_that_records('s'),
-                            PartialInstructionControlledFailureInfo(failure_status_of_executor,
-                                                                    'error message')),
-            element)
+                FailingExecutor(NameRecorder().new_function_that_records('s'),
+                                PartialInstructionControlledFailureInfo(failure_status_of_executor,
+                                                                        'error message')),
+                element)
         self._check_failure_result(expected_status,
                                    result,
                                    new_failure_details_from_message('error message'))
@@ -143,7 +144,7 @@ def assert_equal_lines(unit_tc: unittest.TestCase,
 
 def new_dummy_instruction_element() -> PhaseContentElement:
     return new_instruction_e(new_ls_from_line(line_source.Line(100, '100')),
-                             Instruction())
+                             TestCaseInstruction())
 
 
 def suite():
