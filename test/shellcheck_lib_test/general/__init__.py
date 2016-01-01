@@ -1,5 +1,6 @@
 import unittest
 
+from . import functional
 from . import line_source
 from . import monad
 from . import textformat
@@ -7,9 +8,10 @@ from . import textformat
 
 def suite():
     ret_val = unittest.TestSuite()
+    ret_val.addTest(functional.suite())
+    ret_val.addTest(monad.suite())
     ret_val.addTest(line_source.suite())
     ret_val.addTest(textformat.suite())
-    ret_val.addTest(monad.suite())
     return ret_val
 
 

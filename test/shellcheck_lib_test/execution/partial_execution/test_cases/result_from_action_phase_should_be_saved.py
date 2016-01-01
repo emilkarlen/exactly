@@ -19,12 +19,11 @@ _EXIT_CODE = 5
 
 class TestCaseDocument(TestCaseWithCommonDefaultForSetupAssertCleanup):
     def _act_phase(self) -> list:
-        return [
-            self._next_instruction_line(
-                    ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr(_EXIT_CODE,
-                                                                        _TEXT_ON_STDOUT,
-                                                                        _TEXT_ON_STDERR))
-        ]
+        return self.instruction_line_constructor.apply_list([
+            ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr(_EXIT_CODE,
+                                                                _TEXT_ON_STDOUT,
+                                                                _TEXT_ON_STDERR),
+        ])
 
 
 def assertions(utc: unittest.TestCase,

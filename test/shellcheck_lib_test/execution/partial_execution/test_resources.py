@@ -11,8 +11,10 @@ from shellcheck_lib.execution.execution_directory_structure import ExecutionDire
 from shellcheck_lib.execution.partial_execution import TestCase, execute_test_case_in_execution_directory, \
     Configuration, ScriptHandling
 from shellcheck_lib.execution.result import PartialResult
+from shellcheck_lib.general.functional import Composition
 from shellcheck_lib_test.execution.test_resources import instruction_adapter
-from shellcheck_lib_test.execution.test_resources.test_case_generation import TestCaseGeneratorBase
+from shellcheck_lib_test.execution.test_resources.test_case_generation import TestCaseGeneratorBase, \
+    instruction_line_constructor
 
 
 class Result(tuple):
@@ -60,35 +62,38 @@ class TestCaseGeneratorForPartialExecutionBase(TestCaseGeneratorBase):
         return self.__test_case
 
     def _generate(self) -> partial_execution.TestCase:
-        return partial_execution.TestCase(
-                self._from(self._setup_phase()),
-                self._from(self._act_phase()),
-                self._from(self._assert_phase()),
-                self._from(self._cleanup_phase())
-        )
+        return build(self)
+
+
+def build(tc: TestCaseGeneratorBase) -> partial_execution.TestCase:
+    return partial_execution.TestCase(
+            tc.setup_phase(),
+            tc.act_phase(),
+            tc.assert_phase(),
+            tc.cleanup_phase()
+    )
 
 
 class TestCaseWithCommonDefaultForSetupAssertCleanup(TestCaseGeneratorForPartialExecutionBase):
+    def __init__(self):
+        super().__init__()
+        self.instruction_line_constructor = instruction_line_constructor()
+
     def _setup_phase(self) -> list:
-        """
-        :rtype list[PhaseContentElement] (with instruction of type SetupPhaseInstruction)
-        """
-        return [self._next_instruction_line(instruction_adapter.as_setup(instr))
-                for instr in self._default_instructions_for_setup_assert_cleanup(phases.SETUP)]
+        return self._phase_elements(instruction_adapter.as_setup, phases.SETUP)
 
     def _assert_phase(self) -> list:
-        """
-        :rtype list[PhaseContentElement] (with instruction of type AssertPhaseInstruction)
-        """
-        return [self._next_instruction_line(instruction_adapter.as_assert(instr))
-                for instr in self._default_instructions_for_setup_assert_cleanup(phases.ASSERT)]
+        return self._phase_elements(instruction_adapter.as_assert, phases.ASSERT)
 
     def _cleanup_phase(self) -> list:
-        """
-        :rtype list[PhaseContentElement] (with instruction of type CleanupPhaseInstruction)
-        """
-        return [self._next_instruction_line(instruction_adapter.as_cleanup(instr))
-                for instr in self._default_instructions_for_setup_assert_cleanup(phases.CLEANUP)]
+        return self._phase_elements(instruction_adapter.as_cleanup, phases.CLEANUP)
+
+    def _phase_elements(self,
+                        adapter_function,
+                        phase: phases.Phase) -> list:
+        return list(map(Composition(self.instruction_line_constructor,
+                                    adapter_function),
+                        self._default_instructions_for_setup_assert_cleanup(phase)))
 
     def _default_instructions_for_setup_assert_cleanup(self, phase: phases.Phase) -> list:
         """

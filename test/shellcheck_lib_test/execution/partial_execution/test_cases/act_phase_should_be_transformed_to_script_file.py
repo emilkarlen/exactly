@@ -1,8 +1,6 @@
 import os
 import unittest
 
-import shellcheck_lib_test.execution.partial_execution.test_resources
-import shellcheck_lib_test.test_resources.model_utils
 from shellcheck_lib.execution import partial_execution as sut
 from shellcheck_lib.execution import phases
 from shellcheck_lib.general import line_source
@@ -13,6 +11,7 @@ from shellcheck_lib_test.execution.partial_execution import test_resources
 from shellcheck_lib_test.execution.partial_execution.test_resources import \
     TestCaseWithCommonDefaultForSetupAssertCleanup, PartialExecutionTestCaseBase
 from shellcheck_lib_test.execution.test_resources import utils
+from shellcheck_lib_test.test_resources.model_utils import new_instruction_element, new_comment_element
 
 HOME_DIR_HEADER = '# Home Dir: '
 TEST_ROOT_DIR_HEADER = '# Test Root Dir: '
@@ -33,12 +32,12 @@ class TheTest(PartialExecutionTestCaseBase):
 class TestCaseDocument(TestCaseWithCommonDefaultForSetupAssertCleanup):
     def _act_phase(self) -> list:
         return [
-            shellcheck_lib_test.test_resources.model_utils.new_instruction_element(
+            new_instruction_element(
                     line_source.Line(1, 'source for line one'),
                     ActPhaseInstructionThatOutputsHomeDir()),
-            shellcheck_lib_test.test_resources.model_utils.new_comment_element(
+            new_comment_element(
                     line_source.Line(2, 'comment on line two')),
-            shellcheck_lib_test.test_resources.model_utils.new_instruction_element(
+            new_instruction_element(
                     line_source.Line(3, 'source for line three'),
                     ActPhaseInstructionThatOutputsTestRootDir()),
         ]

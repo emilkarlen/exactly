@@ -32,9 +32,9 @@ class TestCaseDocument(TestCaseWithCommonDefaultForSetupAssertCleanup):
         ]
 
     def _act_phase(self) -> list:
-        return [
-            self._next_instruction_line(ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr())
-        ]
+        return self.instruction_line_constructor.apply_list([
+            ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr()
+        ])
 
 
 def assertions(utc: unittest.TestCase,
