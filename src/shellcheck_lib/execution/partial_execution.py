@@ -119,9 +119,6 @@ class PartialExecutor:
         self.__source_setup = None
 
     def execute(self) -> PartialResult:
-        """
-        Pre-condition: write has been executed.
-        """
         # TODO Köra det här i sub-process?
         # Tror det behövs för att undvika att sätta omgivningen mm, o därmed
         # påverka huvudprocessen.
