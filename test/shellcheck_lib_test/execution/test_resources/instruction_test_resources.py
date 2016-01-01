@@ -49,10 +49,10 @@ class AnonymousPhaseInstructionWithImplementationError(AnonymousPhaseInstruction
 class SetupPhaseInstructionThatReturns(SetupPhaseInstruction):
     def __init__(self,
                  from_pre_validate: svh.SuccessOrValidationErrorOrHardError,
-                 from_execute: sh.SuccessOrHardError,
+                 from_main: sh.SuccessOrHardError,
                  from_post_validate: svh.SuccessOrValidationErrorOrHardError):
         self.__from_pre_validate = from_pre_validate
-        self.__from_execute = from_execute
+        self.__from_main = from_main
         self.__from_post_validate = from_post_validate
 
     def pre_validate(self,
@@ -64,7 +64,7 @@ class SetupPhaseInstructionThatReturns(SetupPhaseInstruction):
              os_services: OsServices,
              environment: instrs.GlobalEnvironmentForPostEdsPhase,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
-        return self.__from_execute
+        return self.__from_main
 
     def post_validate(self,
                       global_environment: instrs.GlobalEnvironmentForPostEdsPhase) \
@@ -106,7 +106,7 @@ class SetupPhaseInstructionWithImplementationErrorInPostValidate(SetupPhaseInstr
         raise self.__exception_to_raise
 
 
-class SetupPhaseInstructionWithExceptionInExecute(SetupPhaseInstruction):
+class SetupPhaseInstructionWithExceptionInMain(SetupPhaseInstruction):
     def __init__(self,
                  exception_to_raise: Exception):
         self.__exception_to_raise = exception_to_raise
@@ -121,9 +121,9 @@ class SetupPhaseInstructionWithExceptionInExecute(SetupPhaseInstruction):
 class ActPhaseInstructionThatReturns(ActPhaseInstruction):
     def __init__(self,
                  from_validate: svh.SuccessOrValidationErrorOrHardError,
-                 from_execute: sh.SuccessOrHardError):
+                 from_main: sh.SuccessOrHardError):
         self.__for_validate = from_validate
-        self.__for_execute = from_execute
+        self.__for_main = from_main
 
     def validate(self,
                  global_environment: instrs.GlobalEnvironmentForPostEdsPhase) \
@@ -134,7 +134,7 @@ class ActPhaseInstructionThatReturns(ActPhaseInstruction):
             self,
             global_environment: instrs.GlobalEnvironmentForPostEdsPhase,
             phase_environment: PhaseEnvironmentForScriptGeneration) -> sh.SuccessOrHardError:
-        return self.__for_execute
+        return self.__for_main
 
 
 class ActPhaseInstructionWithImplementationErrorInValidate(ActPhaseInstruction):
@@ -154,7 +154,7 @@ class ActPhaseInstructionWithImplementationErrorInValidate(ActPhaseInstruction):
         return sh.new_sh_success()
 
 
-class ActPhaseInstructionWithImplementationErrorInExecute(ActPhaseInstruction):
+class ActPhaseInstructionWithImplementationErrorInMain(ActPhaseInstruction):
     def __init__(self,
                  exception_to_raise: Exception):
         self.__exception_to_raise = exception_to_raise
@@ -169,9 +169,9 @@ class ActPhaseInstructionWithImplementationErrorInExecute(ActPhaseInstruction):
 class AssertPhaseInstructionThatReturns(AssertPhaseInstruction):
     def __init__(self,
                  from_validate: svh.SuccessOrValidationErrorOrHardError,
-                 from_execute: pfh.PassOrFailOrHardError):
+                 from_main: pfh.PassOrFailOrHardError):
         self.__for_validate = from_validate
-        self.__for_execute = from_execute
+        self.__for_main = from_main
 
     def validate(self,
                  environment: instrs.GlobalEnvironmentForPostEdsPhase) \
@@ -181,7 +181,7 @@ class AssertPhaseInstructionThatReturns(AssertPhaseInstruction):
     def main(self,
              environment: instrs.GlobalEnvironmentForPostEdsPhase,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
-        return self.__for_execute
+        return self.__for_main
 
 
 class AssertPhaseInstructionWithExceptionInValidate(AssertPhaseInstruction):
@@ -200,7 +200,7 @@ class AssertPhaseInstructionWithExceptionInValidate(AssertPhaseInstruction):
         return sh.new_sh_success()
 
 
-class AssertPhaseInstructionWithExceptionInExecute(AssertPhaseInstruction):
+class AssertPhaseInstructionWithExceptionInMain(AssertPhaseInstruction):
     def __init__(self,
                  exception_to_raise: Exception):
         self.__exception_to_raise = exception_to_raise

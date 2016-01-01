@@ -168,7 +168,7 @@ class _AnonymousInstruction(AnonymousPhaseInstruction):
 
     def main(self, global_environment,
              configuration_builder: ConfigurationBuilder) -> sh.SuccessOrHardError:
-        self.__configuration.anonymous_phase_action(phase_step.ANONYMOUS_EXECUTE,
+        self.__configuration.anonymous_phase_action(phase_step.ANONYMOUS_MAIN,
                                                     configuration_builder)
         return self.__configuration.ret_val_from_execute
 
@@ -215,7 +215,7 @@ class _SetupInstruction(SetupPhaseInstruction):
              os_services: OsServices,
              environment: i.GlobalEnvironmentForPostEdsPhase,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
-        self.__configuration.execution_action__with_eds(phase_step.SETUP_EXECUTE,
+        self.__configuration.execution_action__with_eds(phase_step.SETUP_MAIN,
                                                         environment)
         return self.__configuration.ret_val_from_execute
 
@@ -262,7 +262,7 @@ class _AssertInstruction(AssertPhaseInstruction):
     def main(self,
              environment: i.GlobalEnvironmentForPostEdsPhase,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
-        self.__configuration.execution_action__with_eds(phase_step.ASSERT_EXECUTE,
+        self.__configuration.execution_action__with_eds(phase_step.ASSERT_MAIN,
                                                         environment)
         return self.__configuration.ret_val_from_assert_execute
 
@@ -275,6 +275,6 @@ class _CleanupInstruction(CleanupPhaseInstruction):
     def main(self,
              environment: i.GlobalEnvironmentForPostEdsPhase,
              os_services: OsServices) -> sh.SuccessOrHardError:
-        self.__configuration.execution_action__with_eds(phase_step.CLEANUP_EXECUTE,
+        self.__configuration.execution_action__with_eds(phase_step.CLEANUP_MAIN,
                                                         environment)
         return self.__configuration.ret_val_from_execute

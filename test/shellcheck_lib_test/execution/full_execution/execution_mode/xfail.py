@@ -21,23 +21,23 @@ class Test(TestCaseBase):
             .add(phases.ASSERT,
                  test.AssertPhaseInstructionThatReturns(
                          from_validate=svh.new_svh_success(),
-                         from_execute=pfh.new_pfh_fail('fail message')))
+                         from_main=pfh.new_pfh_fail('fail message')))
         self._check(Arrangement(test_case),
                     Expectation(FullResultStatus.XFAIL,
                                 ExpectedFailureForInstructionFailure.new_with_message(
-                                        phase_step.PhaseStep(phases.ASSERT, phase_step.EXECUTE),
+                                        phase_step.PhaseStep(phases.ASSERT, phase_step.MAIN),
                                         test_case.the_extra(phases.ASSERT)[0].first_line,
                                         'fail message'),
                                 [phase_step.ANONYMOUS,
                                  phase_step.SETUP__PRE_VALIDATE,
-                                 phase_step.SETUP__EXECUTE,
+                                 phase_step.SETUP__MAIN,
                                  phase_step.SETUP__POST_VALIDATE,
                                  phase_step.ACT__VALIDATE,
                                  phase_step.ASSERT__VALIDATE,
                                  phase_step.ACT__SCRIPT_GENERATE,
                                  phase_step.ACT__SCRIPT_VALIDATE,
                                  phase_step.ACT__SCRIPT_EXECUTE,
-                                 phase_step.ASSERT__EXECUTE,
+                                 phase_step.ASSERT__MAIN,
                                  phase_step.CLEANUP
                                  ],
                                 True))
@@ -52,14 +52,14 @@ class Test(TestCaseBase):
                             ExpectedFailureForNoFailure(),
                             [phase_step.ANONYMOUS,
                              phase_step.SETUP__PRE_VALIDATE,
-                             phase_step.SETUP__EXECUTE,
+                             phase_step.SETUP__MAIN,
                              phase_step.SETUP__POST_VALIDATE,
                              phase_step.ACT__VALIDATE,
                              phase_step.ASSERT__VALIDATE,
                              phase_step.ACT__SCRIPT_GENERATE,
                              phase_step.ACT__SCRIPT_VALIDATE,
                              phase_step.ACT__SCRIPT_EXECUTE,
-                             phase_step.ASSERT__EXECUTE,
+                             phase_step.ASSERT__MAIN,
                              phase_step.CLEANUP
                              ],
                             True))
@@ -98,14 +98,14 @@ class Test(TestCaseBase):
                                     test.ImplementationErrorTestException),
                             [phase_step.ANONYMOUS,
                              phase_step.SETUP__PRE_VALIDATE,
-                             phase_step.SETUP__EXECUTE,
+                             phase_step.SETUP__MAIN,
                              phase_step.SETUP__POST_VALIDATE,
                              phase_step.ACT__VALIDATE,
                              phase_step.ASSERT__VALIDATE,
                              phase_step.ACT__SCRIPT_GENERATE,
                              phase_step.ACT__SCRIPT_VALIDATE,
                              phase_step.ACT__SCRIPT_EXECUTE,
-                             phase_step.ASSERT__EXECUTE,
+                             phase_step.ASSERT__MAIN,
                              phase_step.CLEANUP
                              ],
                             True))

@@ -23,19 +23,19 @@ class Test(TestCaseBase):
                 Expectation(PartialResultStatus.PASS,
                             ExpectedFailureForNoFailure(),
                             [phase_step.SETUP__PRE_VALIDATE,
-                             phase_step.SETUP__EXECUTE,
+                             phase_step.SETUP__MAIN,
                              phase_step.SETUP__POST_VALIDATE,
                              phase_step.ACT__VALIDATE,
                              phase_step.ASSERT__VALIDATE,
                              phase_step.ACT__SCRIPT_GENERATE,
                              phase_step.ACT__SCRIPT_VALIDATE,
                              phase_step.ACT__SCRIPT_EXECUTE,
-                             phase_step.ASSERT__EXECUTE,
+                             phase_step.ASSERT__MAIN,
                              phase_step.CLEANUP,
                              ],
                             True))
 
-    def test_validation_error_in_setup_validate_phase(self):
+    def test_validation_error_in_setup_validate_step(self):
         test_case = one_successful_instruction_in_each_phase() \
             .add(PartialPhase.SETUP,
                  test.SetupPhaseInstructionThatReturns(
@@ -54,7 +54,7 @@ class Test(TestCaseBase):
                              ],
                             True))
 
-    def test_hard_error_in_setup_validate_phase(self):
+    def test_hard_error_in_setup_validate_step(self):
         test_case = one_successful_instruction_in_each_phase() \
             .add(PartialPhase.SETUP,
                  test.SetupPhaseInstructionThatReturns(
@@ -72,7 +72,7 @@ class Test(TestCaseBase):
                              ],
                             True))
 
-    def test_implementation_error_in_setup_validate_phase(self):
+    def test_implementation_error_in_setup_validate_step(self):
         test_case = one_successful_instruction_in_each_phase() \
             .add(PartialPhase.SETUP,
                  test.SetupPhaseInstructionWithImplementationErrorInPreValidate(
@@ -88,45 +88,45 @@ class Test(TestCaseBase):
                              ],
                             True))
 
-    def test_hard_error_in_setup_execute_phase(self):
+    def test_hard_error_in_setup_main_step(self):
         test_case = one_successful_instruction_in_each_phase() \
             .add(PartialPhase.SETUP,
                  test.SetupPhaseInstructionThatReturns(
                          from_pre_validate=svh.new_svh_success(),
-                         from_execute=sh.new_sh_hard_error('hard error msg from setup'),
+                         from_main=sh.new_sh_hard_error('hard error msg from setup'),
                          from_post_validate=svh.new_svh_success()))
         self._check(
                 Arrangement(test_case),
                 Expectation(PartialResultStatus.HARD_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_message(
-                                    PhaseStep(phases.SETUP, phase_step.EXECUTE),
+                                    PhaseStep(phases.SETUP, phase_step.MAIN),
                                     test_case.the_extra(PartialPhase.SETUP)[0].first_line,
                                     'hard error msg from setup'),
                             [phase_step.SETUP__PRE_VALIDATE,
-                             phase_step.SETUP__EXECUTE,
+                             phase_step.SETUP__MAIN,
                              phase_step.CLEANUP,
                              ],
                             True))
 
-    def test_implementation_error_in_setup_execute_phase(self):
+    def test_implementation_error_in_setup_main_step(self):
         test_case = one_successful_instruction_in_each_phase() \
             .add(PartialPhase.SETUP,
-                 test.SetupPhaseInstructionWithExceptionInExecute(
+                 test.SetupPhaseInstructionWithExceptionInMain(
                          test.ImplementationErrorTestException()))
         self._check(
                 Arrangement(test_case),
                 Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_exception(
-                                    PhaseStep(phases.SETUP, phase_step.EXECUTE),
+                                    PhaseStep(phases.SETUP, phase_step.MAIN),
                                     test_case.the_extra(PartialPhase.SETUP)[0].first_line,
                                     test.ImplementationErrorTestException),
                             [phase_step.SETUP__PRE_VALIDATE,
-                             phase_step.SETUP__EXECUTE,
+                             phase_step.SETUP__MAIN,
                              phase_step.CLEANUP,
                              ],
                             True))
 
-    def test_validation_error_in_setup_post_validate_phase(self):
+    def test_validation_error_in_setup_post_validate_step(self):
         test_case = one_successful_instruction_in_each_phase() \
             .add(PartialPhase.SETUP,
                  test.SetupPhaseInstructionThatReturns(
@@ -142,13 +142,13 @@ class Test(TestCaseBase):
                                     test_case.the_extra(PartialPhase.SETUP)[0].first_line,
                                     'validation error from setup/post-validate'),
                             [phase_step.SETUP__PRE_VALIDATE,
-                             phase_step.SETUP__EXECUTE,
+                             phase_step.SETUP__MAIN,
                              phase_step.SETUP__POST_VALIDATE,
                              phase_step.CLEANUP,
                              ],
                             True))
 
-    def test_hard_error_in_setup_post_validate_phase(self):
+    def test_hard_error_in_setup_post_validate_step(self):
         test_case = one_successful_instruction_in_each_phase() \
             .add(PartialPhase.SETUP,
                  test.SetupPhaseInstructionThatReturns(
@@ -163,13 +163,13 @@ class Test(TestCaseBase):
                                     test_case.the_extra(PartialPhase.SETUP)[0].first_line,
                                     'hard error from setup/post-validate'),
                             [phase_step.SETUP__PRE_VALIDATE,
-                             phase_step.SETUP__EXECUTE,
+                             phase_step.SETUP__MAIN,
                              phase_step.SETUP__POST_VALIDATE,
                              phase_step.CLEANUP,
                              ],
                             True))
 
-    def test_implementation_error_in_setup_post_validate_phase(self):
+    def test_implementation_error_in_setup_post_validate_step(self):
         test_case = one_successful_instruction_in_each_phase() \
             .add(PartialPhase.SETUP,
                  test.SetupPhaseInstructionWithImplementationErrorInPostValidate(
@@ -182,18 +182,18 @@ class Test(TestCaseBase):
                                     test_case.the_extra(PartialPhase.SETUP)[0].first_line,
                                     test.ImplementationErrorTestException),
                             [phase_step.SETUP__PRE_VALIDATE,
-                             phase_step.SETUP__EXECUTE,
+                             phase_step.SETUP__MAIN,
                              phase_step.SETUP__POST_VALIDATE,
                              phase_step.CLEANUP,
                              ],
                             True))
 
-    def test_validation_error_in_assert_validate_phase(self):
+    def test_validation_error_in_assert_validate_step(self):
         test_case = one_successful_instruction_in_each_phase() \
             .add(PartialPhase.ASSERT,
                  test.AssertPhaseInstructionThatReturns(
                          from_validate=svh.new_svh_validation_error('ASSERT/validate'),
-                         from_execute=pfh.new_pfh_pass()))
+                         from_main=pfh.new_pfh_pass()))
         self._check(
                 Arrangement(test_case),
                 Expectation(PartialResultStatus.VALIDATE,
@@ -202,7 +202,7 @@ class Test(TestCaseBase):
                                     test_case.the_extra(PartialPhase.ASSERT)[0].first_line,
                                     'ASSERT/validate'),
                             [phase_step.SETUP__PRE_VALIDATE,
-                             phase_step.SETUP__EXECUTE,
+                             phase_step.SETUP__MAIN,
                              phase_step.SETUP__POST_VALIDATE,
                              phase_step.ACT__VALIDATE,
                              phase_step.ASSERT__VALIDATE,
@@ -210,12 +210,12 @@ class Test(TestCaseBase):
                              ],
                             True))
 
-    def test_hard_error_in_assert_validate_phase(self):
+    def test_hard_error_in_assert_validate_step(self):
         test_case = one_successful_instruction_in_each_phase() \
             .add(PartialPhase.ASSERT,
                  test.AssertPhaseInstructionThatReturns(
                          from_validate=svh.new_svh_hard_error('ASSERT/validate'),
-                         from_execute=pfh.new_pfh_pass()))
+                         from_main=pfh.new_pfh_pass()))
         self._check(
                 Arrangement(test_case),
                 Expectation(PartialResultStatus.HARD_ERROR,
@@ -224,7 +224,7 @@ class Test(TestCaseBase):
                                     test_case.the_extra(PartialPhase.ASSERT)[0].first_line,
                                     'ASSERT/validate'),
                             [phase_step.SETUP__PRE_VALIDATE,
-                             phase_step.SETUP__EXECUTE,
+                             phase_step.SETUP__MAIN,
                              phase_step.SETUP__POST_VALIDATE,
                              phase_step.ACT__VALIDATE,
                              phase_step.ASSERT__VALIDATE,
@@ -232,7 +232,7 @@ class Test(TestCaseBase):
                              ],
                             True))
 
-    def test_implementation_error_in_assert_validate_phase(self):
+    def test_implementation_error_in_assert_validate_step(self):
         test_case = one_successful_instruction_in_each_phase() \
             .add(PartialPhase.ASSERT,
                  test.AssertPhaseInstructionWithExceptionInValidate(
@@ -245,7 +245,7 @@ class Test(TestCaseBase):
                                     test_case.the_extra(PartialPhase.ASSERT)[0].first_line,
                                     test.ImplementationErrorTestException),
                             [phase_step.SETUP__PRE_VALIDATE,
-                             phase_step.SETUP__EXECUTE,
+                             phase_step.SETUP__MAIN,
                              phase_step.SETUP__POST_VALIDATE,
                              phase_step.ACT__VALIDATE,
                              phase_step.ASSERT__VALIDATE,
@@ -253,12 +253,12 @@ class Test(TestCaseBase):
                              ],
                             True))
 
-    def test_validation_error_in_act_validate_phase(self):
+    def test_validation_error_in_act_validate_step(self):
         test_case = one_successful_instruction_in_each_phase() \
             .add(PartialPhase.ACT,
                  test.ActPhaseInstructionThatReturns(
                          from_validate=svh.new_svh_validation_error('ACT/validate'),
-                         from_execute=sh.new_sh_success()))
+                         from_main=sh.new_sh_success()))
         self._check(
                 Arrangement(test_case),
                 Expectation(PartialResultStatus.VALIDATE,
@@ -267,19 +267,19 @@ class Test(TestCaseBase):
                                     test_case.the_extra(PartialPhase.ACT)[0].first_line,
                                     'ACT/validate'),
                             [phase_step.SETUP__PRE_VALIDATE,
-                             phase_step.SETUP__EXECUTE,
+                             phase_step.SETUP__MAIN,
                              phase_step.SETUP__POST_VALIDATE,
                              phase_step.ACT__VALIDATE,
                              phase_step.CLEANUP,
                              ],
                             True))
 
-    def test_hard_error_in_act_validate_phase(self):
+    def test_hard_error_in_act_validate_step(self):
         test_case = one_successful_instruction_in_each_phase() \
             .add(PartialPhase.ACT,
                  test.ActPhaseInstructionThatReturns(
                          from_validate=svh.new_svh_hard_error('ACT/validate'),
-                         from_execute=sh.new_sh_success()))
+                         from_main=sh.new_sh_success()))
         self._check(
                 Arrangement(test_case),
                 Expectation(PartialResultStatus.HARD_ERROR,
@@ -288,7 +288,7 @@ class Test(TestCaseBase):
                                     test_case.the_extra(PartialPhase.ACT)[0].first_line,
                                     'ACT/validate'),
                             [phase_step.SETUP__PRE_VALIDATE,
-                             phase_step.SETUP__EXECUTE,
+                             phase_step.SETUP__MAIN,
                              phase_step.SETUP__POST_VALIDATE,
                              phase_step.ACT__VALIDATE,
                              phase_step.CLEANUP,
@@ -308,7 +308,7 @@ class Test(TestCaseBase):
                                     test_case.the_extra(PartialPhase.ACT)[0].first_line,
                                     test.ImplementationErrorTestException),
                             [phase_step.SETUP__PRE_VALIDATE,
-                             phase_step.SETUP__EXECUTE,
+                             phase_step.SETUP__MAIN,
                              phase_step.SETUP__POST_VALIDATE,
                              phase_step.ACT__VALIDATE,
                              phase_step.CLEANUP,
@@ -320,7 +320,7 @@ class Test(TestCaseBase):
             .add(PartialPhase.ACT,
                  test.ActPhaseInstructionThatReturns(
                          from_validate=svh.new_svh_success(),
-                         from_execute=sh.new_sh_hard_error('hard error msg from act')))
+                         from_main=sh.new_sh_hard_error('hard error msg from act')))
         self._check(
                 Arrangement(test_case),
                 Expectation(PartialResultStatus.HARD_ERROR,
@@ -329,7 +329,7 @@ class Test(TestCaseBase):
                                     test_case.the_extra(PartialPhase.ACT)[0].first_line,
                                     'hard error msg from act'),
                             [phase_step.SETUP__PRE_VALIDATE,
-                             phase_step.SETUP__EXECUTE,
+                             phase_step.SETUP__MAIN,
                              phase_step.SETUP__POST_VALIDATE,
                              phase_step.ACT__VALIDATE,
                              phase_step.ASSERT__VALIDATE,
@@ -341,7 +341,7 @@ class Test(TestCaseBase):
     def test_implementation_error_in_act_script_generate(self):
         test_case = one_successful_instruction_in_each_phase() \
             .add(PartialPhase.ACT,
-                 test.ActPhaseInstructionWithImplementationErrorInExecute(
+                 test.ActPhaseInstructionWithImplementationErrorInMain(
                          test.ImplementationErrorTestException()))
         self._check(
                 Arrangement(test_case),
@@ -351,7 +351,7 @@ class Test(TestCaseBase):
                                     test_case.the_extra(PartialPhase.ACT)[0].first_line,
                                     test.ImplementationErrorTestException),
                             [phase_step.SETUP__PRE_VALIDATE,
-                             phase_step.SETUP__EXECUTE,
+                             phase_step.SETUP__MAIN,
                              phase_step.SETUP__POST_VALIDATE,
                              phase_step.ACT__VALIDATE,
                              phase_step.ASSERT__VALIDATE,
@@ -371,7 +371,7 @@ class Test(TestCaseBase):
                                     PhaseStep(phases.ACT, phase_step.ACT_script_validate),
                                     'error message from validate'),
                             [phase_step.SETUP__PRE_VALIDATE,
-                             phase_step.SETUP__EXECUTE,
+                             phase_step.SETUP__MAIN,
                              phase_step.SETUP__POST_VALIDATE,
                              phase_step.ACT__VALIDATE,
                              phase_step.ASSERT__VALIDATE,
@@ -392,7 +392,7 @@ class Test(TestCaseBase):
                                     PhaseStep(phases.ACT, phase_step.ACT_script_validate),
                                     'error message from validate'),
                             [phase_step.SETUP__PRE_VALIDATE,
-                             phase_step.SETUP__EXECUTE,
+                             phase_step.SETUP__MAIN,
                              phase_step.SETUP__POST_VALIDATE,
                              phase_step.ACT__VALIDATE,
                              phase_step.ASSERT__VALIDATE,
@@ -413,7 +413,7 @@ class Test(TestCaseBase):
                                     PhaseStep(phases.ACT, phase_step.ACT_script_validate),
                                     test.ImplementationErrorTestException),
                             [phase_step.SETUP__PRE_VALIDATE,
-                             phase_step.SETUP__EXECUTE,
+                             phase_step.SETUP__MAIN,
                              phase_step.SETUP__POST_VALIDATE,
                              phase_step.ACT__VALIDATE,
                              phase_step.ASSERT__VALIDATE,
@@ -434,7 +434,7 @@ class Test(TestCaseBase):
                                     PhaseStep(phases.ACT, phase_step.ACT_script_execute),
                                     test.ImplementationErrorTestException),
                             [phase_step.SETUP__PRE_VALIDATE,
-                             phase_step.SETUP__EXECUTE,
+                             phase_step.SETUP__MAIN,
                              phase_step.SETUP__POST_VALIDATE,
                              phase_step.ACT__VALIDATE,
                              phase_step.ASSERT__VALIDATE,
@@ -445,84 +445,84 @@ class Test(TestCaseBase):
                              ],
                             True))
 
-    def test_fail_in_assert_execute_phase(self):
+    def test_fail_in_assert_main_step(self):
         test_case = one_successful_instruction_in_each_phase() \
             .add(PartialPhase.ASSERT,
                  test.AssertPhaseInstructionThatReturns(
                          from_validate=svh.new_svh_success(),
-                         from_execute=pfh.new_pfh_fail('fail msg from ASSERT')))
+                         from_main=pfh.new_pfh_fail('fail msg from ASSERT')))
         self._check(
                 Arrangement(test_case),
                 Expectation(PartialResultStatus.FAIL,
                             ExpectedFailureForInstructionFailure.new_with_message(
-                                    PhaseStep(phases.ASSERT, phase_step.EXECUTE),
+                                    PhaseStep(phases.ASSERT, phase_step.MAIN),
                                     test_case.the_extra(PartialPhase.ASSERT)[0].first_line,
                                     'fail msg from ASSERT'),
                             [phase_step.SETUP__PRE_VALIDATE,
-                             phase_step.SETUP__EXECUTE,
+                             phase_step.SETUP__MAIN,
                              phase_step.SETUP__POST_VALIDATE,
                              phase_step.ACT__VALIDATE,
                              phase_step.ASSERT__VALIDATE,
                              phase_step.ACT__SCRIPT_GENERATE,
                              phase_step.ACT__SCRIPT_VALIDATE,
                              phase_step.ACT__SCRIPT_EXECUTE,
-                             phase_step.ASSERT__EXECUTE,
+                             phase_step.ASSERT__MAIN,
                              phase_step.CLEANUP
                              ],
                             True))
 
-    def test_hard_error_in_assert_execute_phase(self):
+    def test_hard_error_in_assert_main_step(self):
         test_case = one_successful_instruction_in_each_phase() \
             .add(PartialPhase.ASSERT,
                  test.AssertPhaseInstructionThatReturns(
                          from_validate=svh.new_svh_success(),
-                         from_execute=pfh.new_pfh_hard_error('hard error msg from ASSERT')))
+                         from_main=pfh.new_pfh_hard_error('hard error msg from ASSERT')))
         self._check(
                 Arrangement(test_case),
                 Expectation(PartialResultStatus.HARD_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_message(
-                                    PhaseStep(phases.ASSERT, phase_step.EXECUTE),
+                                    PhaseStep(phases.ASSERT, phase_step.MAIN),
                                     test_case.the_extra(PartialPhase.ASSERT)[0].first_line,
                                     'hard error msg from ASSERT'),
                             [phase_step.SETUP__PRE_VALIDATE,
-                             phase_step.SETUP__EXECUTE,
+                             phase_step.SETUP__MAIN,
                              phase_step.SETUP__POST_VALIDATE,
                              phase_step.ACT__VALIDATE,
                              phase_step.ASSERT__VALIDATE,
                              phase_step.ACT__SCRIPT_GENERATE,
                              phase_step.ACT__SCRIPT_VALIDATE,
                              phase_step.ACT__SCRIPT_EXECUTE,
-                             phase_step.ASSERT__EXECUTE,
+                             phase_step.ASSERT__MAIN,
                              phase_step.CLEANUP
                              ],
                             True))
 
-    def test_implementation_error_in_assert_execute_phase(self):
+    def test_implementation_error_in_assert_main_step(self):
         test_case = one_successful_instruction_in_each_phase() \
             .add(PartialPhase.ASSERT,
-                 test.AssertPhaseInstructionWithExceptionInExecute(
+                 test.AssertPhaseInstructionWithExceptionInMain(
                          test.ImplementationErrorTestException()))
         self._check(
                 Arrangement(test_case),
                 Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_exception(
-                                    PhaseStep(phases.ASSERT, phase_step.EXECUTE),
+                                    PhaseStep(phases.ASSERT, phase_step.MAIN),
                                     test_case.the_extra(PartialPhase.ASSERT)[0].first_line,
                                     test.ImplementationErrorTestException),
                             [phase_step.SETUP__PRE_VALIDATE,
-                             phase_step.SETUP__EXECUTE,
+                             phase_step.SETUP__MAIN,
                              phase_step.SETUP__POST_VALIDATE,
                              phase_step.ACT__VALIDATE,
                              phase_step.ASSERT__VALIDATE,
                              phase_step.ACT__SCRIPT_GENERATE,
                              phase_step.ACT__SCRIPT_VALIDATE,
                              phase_step.ACT__SCRIPT_EXECUTE,
-                             phase_step.ASSERT__EXECUTE,
+                             phase_step.ASSERT__MAIN,
                              phase_step.CLEANUP
                              ],
                             True))
 
-    def test_hard_error_in_cleanup_phase(self):
+    def test_hard_error_in_cleanup_main_step(self):
         test_case = one_successful_instruction_in_each_phase() \
             .add(PartialPhase.CLEANUP,
                  test.CleanupPhaseInstructionThatReturns(
@@ -531,23 +531,23 @@ class Test(TestCaseBase):
                 Arrangement(test_case),
                 Expectation(PartialResultStatus.HARD_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_message(
-                                    phase_step.CLEANUP_EXECUTE,
+                                    phase_step.CLEANUP_MAIN,
                                     test_case.the_extra(PartialPhase.CLEANUP)[0].first_line,
                                     'hard error msg from CLEANUP'),
                             [phase_step.SETUP__PRE_VALIDATE,
-                             phase_step.SETUP__EXECUTE,
+                             phase_step.SETUP__MAIN,
                              phase_step.SETUP__POST_VALIDATE,
                              phase_step.ACT__VALIDATE,
                              phase_step.ASSERT__VALIDATE,
                              phase_step.ACT__SCRIPT_GENERATE,
                              phase_step.ACT__SCRIPT_VALIDATE,
                              phase_step.ACT__SCRIPT_EXECUTE,
-                             phase_step.ASSERT__EXECUTE,
+                             phase_step.ASSERT__MAIN,
                              phase_step.CLEANUP
                              ],
                             True))
 
-    def test_implementation_error_in_cleanup_phase(self):
+    def test_implementation_error_in_cleanup_main_step(self):
         test_case = one_successful_instruction_in_each_phase() \
             .add(PartialPhase.CLEANUP,
                  test.CleanupPhaseInstructionWithImplementationError(
@@ -556,18 +556,18 @@ class Test(TestCaseBase):
                 Arrangement(test_case),
                 Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_exception(
-                                    phase_step.CLEANUP_EXECUTE,
+                                    phase_step.CLEANUP_MAIN,
                                     test_case.the_extra(PartialPhase.CLEANUP)[0].first_line,
                                     test.ImplementationErrorTestException),
                             [phase_step.SETUP__PRE_VALIDATE,
-                             phase_step.SETUP__EXECUTE,
+                             phase_step.SETUP__MAIN,
                              phase_step.SETUP__POST_VALIDATE,
                              phase_step.ACT__VALIDATE,
                              phase_step.ASSERT__VALIDATE,
                              phase_step.ACT__SCRIPT_GENERATE,
                              phase_step.ACT__SCRIPT_VALIDATE,
                              phase_step.ACT__SCRIPT_EXECUTE,
-                             phase_step.ASSERT__EXECUTE,
+                             phase_step.ASSERT__MAIN,
                              phase_step.CLEANUP
                              ],
                             True))
