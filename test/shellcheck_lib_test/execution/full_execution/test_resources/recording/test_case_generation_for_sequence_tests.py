@@ -35,7 +35,8 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorForFullExecutionBa
                 recording_instructions.new_assert_instruction(phase_step.ASSERT__VALIDATE,
                                                               phase_step.ASSERT__MAIN),
             phases.CLEANUP:
-                recording_instructions.new_cleanup_instruction(phase_step.CLEANUP)
+                recording_instructions.new_cleanup_instruction(str(phase_step.CLEANUP_VALIDATE_PRE_EDS),
+                                                               phase_step.CLEANUP)
         }
 
     def recorders_for(self, phase: phases.Phase) -> list:
