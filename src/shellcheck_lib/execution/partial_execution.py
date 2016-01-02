@@ -19,6 +19,7 @@ from shellcheck_lib.test_case.os_services import new_default, OsServices
 from shellcheck_lib.test_case.sections import common
 from shellcheck_lib.test_case.sections.act.phase_setup import PhaseEnvironmentForScriptGeneration, ActProgramExecutor, \
     SourceSetup, ScriptSourceBuilder
+from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPreEdsStep
 from shellcheck_lib.test_case.sections.setup import SetupSettingsBuilder, StdinSettings
 from . import phase_step_execution
 from . import result
@@ -153,6 +154,7 @@ class PartialExecutor:
                  script_handling: ScriptHandling,
                  test_case: TestCase):
         self.__execution_directory_structure = None
+        self.__global_environment = GlobalEnvironmentForPreEdsStep(configuration.home_dir)
         self.__script_handling = script_handling
         self.__test_case = test_case
         self.__configuration = configuration
@@ -164,11 +166,11 @@ class PartialExecutor:
         # Tror det behövs för att undvika att sätta omgivningen mm, o därmed
         # påverka huvudprocessen.
         self.__set_pre_eds_environment_variables()
-        self.__construct_and_set_eds()
-        self.__set_post_eds_environment()
         res = self.__run_setup_pre_validate()
         if res.status is not PartialResultStatus.PASS:
             return res
+        self.__construct_and_set_eds()
+        self.__set_post_eds_environment()
         os_services = new_default()
         self.__set_cwd_to_act_dir()
         self.__set_post_eds_environment_variables()
