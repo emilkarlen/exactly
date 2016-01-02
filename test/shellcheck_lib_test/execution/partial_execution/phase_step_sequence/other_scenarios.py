@@ -12,82 +12,11 @@ from shellcheck_lib_test.execution.partial_execution.test_resources.test_case_ge
 from shellcheck_lib_test.execution.test_resources import instruction_test_resources as test
 from shellcheck_lib_test.execution.test_resources.test_actions import validate_action_that_returns, \
     validate_action_that_raises, execute_action_that_raises
-from shellcheck_lib_test.test_resources.expected_instruction_failure import ExpectedFailureForNoFailure, \
-    ExpectedFailureForInstructionFailure, ExpectedFailureForPhaseFailure
+from shellcheck_lib_test.test_resources.expected_instruction_failure import ExpectedFailureForInstructionFailure, \
+    ExpectedFailureForPhaseFailure
 
 
 class Test(TestCaseBase):
-    def test_full_sequence(self):
-        self._check(
-                Arrangement(one_successful_instruction_in_each_phase()),
-                Expectation(PartialResultStatus.PASS,
-                            ExpectedFailureForNoFailure(),
-                            [phase_step.SETUP__PRE_VALIDATE,
-                             phase_step.SETUP__MAIN,
-                             phase_step.SETUP__POST_VALIDATE,
-                             phase_step.ACT__VALIDATE,
-                             phase_step.ASSERT__VALIDATE,
-                             phase_step.ACT__SCRIPT_GENERATE,
-                             phase_step.ACT__SCRIPT_VALIDATE,
-                             phase_step.ACT__SCRIPT_EXECUTE,
-                             phase_step.ASSERT__MAIN,
-                             phase_step.CLEANUP,
-                             ],
-                            True))
-
-    def test_validation_error_in_setup_validate_step(self):
-        test_case = one_successful_instruction_in_each_phase() \
-            .add(PartialPhase.SETUP,
-                 test.SetupPhaseInstructionThatReturns(
-                         svh.new_svh_validation_error(
-                                 'validation error from setup/validate'),
-                         sh.new_sh_success(),
-                         svh.new_svh_success()))
-        self._check(
-                Arrangement(test_case),
-                Expectation(PartialResultStatus.VALIDATE,
-                            ExpectedFailureForInstructionFailure.new_with_message(
-                                    PhaseStep(phases.SETUP, phase_step.PRE_VALIDATE),
-                                    test_case.the_extra(PartialPhase.SETUP)[0].first_line,
-                                    'validation error from setup/validate'),
-                            [phase_step.SETUP__PRE_VALIDATE,
-                             ],
-                            False))
-
-    def test_hard_error_in_setup_validate_step(self):
-        test_case = one_successful_instruction_in_each_phase() \
-            .add(PartialPhase.SETUP,
-                 test.SetupPhaseInstructionThatReturns(
-                         svh.new_svh_hard_error('hard error from setup/validate'),
-                         sh.new_sh_success(),
-                         svh.new_svh_success()))
-        self._check(
-                Arrangement(test_case),
-                Expectation(PartialResultStatus.HARD_ERROR,
-                            ExpectedFailureForInstructionFailure.new_with_message(
-                                    PhaseStep(phases.SETUP, phase_step.PRE_VALIDATE),
-                                    test_case.the_extra(PartialPhase.SETUP)[0].first_line,
-                                    'hard error from setup/validate'),
-                            [phase_step.SETUP__PRE_VALIDATE,
-                             ],
-                            False))
-
-    def test_implementation_error_in_setup_validate_step(self):
-        test_case = one_successful_instruction_in_each_phase() \
-            .add(PartialPhase.SETUP,
-                 test.SetupPhaseInstructionWithImplementationErrorInPreValidate(
-                         test.ImplementationErrorTestException()))
-        self._check(
-                Arrangement(test_case),
-                Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
-                            ExpectedFailureForInstructionFailure.new_with_exception(
-                                    PhaseStep(phases.SETUP, phase_step.PRE_VALIDATE),
-                                    test_case.the_extra(PartialPhase.SETUP)[0].first_line,
-                                    test.ImplementationErrorTestException),
-                            [phase_step.SETUP__PRE_VALIDATE,
-                             ],
-                            False))
-
     def test_hard_error_in_setup_main_step(self):
         test_case = one_successful_instruction_in_each_phase() \
             .add(PartialPhase.SETUP,
