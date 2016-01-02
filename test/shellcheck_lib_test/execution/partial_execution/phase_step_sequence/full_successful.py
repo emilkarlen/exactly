@@ -23,7 +23,7 @@ class Test(TestCaseBase):
                              phase_step.ACT__SCRIPT_VALIDATE,
                              phase_step.ACT__SCRIPT_EXECUTE,
                              phase_step.ASSERT__MAIN,
-                             phase_step.CLEANUP,
+                             phase_step.CLEANUP__MAIN,
                              ],
                             True))
 

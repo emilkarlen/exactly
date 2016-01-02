@@ -39,7 +39,7 @@ class Test(TestCaseBase):
                                  phase_step.ACT__SCRIPT_VALIDATE,
                                  phase_step.ACT__SCRIPT_EXECUTE,
                                  phase_step.ASSERT__MAIN,
-                                 phase_step.CLEANUP
+                                 phase_step.CLEANUP__MAIN,
                                  ],
                                 True))
 
@@ -61,7 +61,7 @@ class Test(TestCaseBase):
                              phase_step.ACT__SCRIPT_VALIDATE,
                              phase_step.ACT__SCRIPT_EXECUTE,
                              phase_step.ASSERT__MAIN,
-                             phase_step.CLEANUP
+                             phase_step.CLEANUP__MAIN,
                              ],
                             True))
 
@@ -93,7 +93,7 @@ class Test(TestCaseBase):
                 Arrangement(test_case),
                 Expectation(FullResultStatus.IMPLEMENTATION_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_exception(
-                                    phase_step.new_without_step(phases.CLEANUP),
+                                    phase_step.CLEANUP_MAIN,
                                     test_case.the_extra(phases.CLEANUP)[0].first_line,
                                     test.ImplementationErrorTestException),
                             [phase_step.ANONYMOUS] +
@@ -106,7 +106,7 @@ class Test(TestCaseBase):
                              phase_step.ACT__SCRIPT_VALIDATE,
                              phase_step.ACT__SCRIPT_EXECUTE,
                              phase_step.ASSERT__MAIN,
-                             phase_step.CLEANUP
+                             phase_step.CLEANUP__MAIN,
                              ],
                             True))
 

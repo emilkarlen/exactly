@@ -1,16 +1,16 @@
-from shellcheck_lib.test_case.sections.result import pfh
-from shellcheck_lib.test_case.sections.result import sh
-from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.execution.single_instruction_executor import ControlledInstructionExecutor, \
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum
+from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.sections import common as instr
 from shellcheck_lib.test_case.sections.act.instruction import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
 from shellcheck_lib.test_case.sections.anonymous import AnonymousPhaseInstruction, \
     ConfigurationBuilder
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction
+from shellcheck_lib.test_case.sections.result import pfh
+from shellcheck_lib.test_case.sections.result import sh
+from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
-from shellcheck_lib.test_case.os_services import OsServices
 
 
 def _from_success_or_validation_error_or_hard_error(res: svh.SuccessOrValidationErrorOrHardError) \
@@ -48,7 +48,7 @@ class AnonymousInstructionExecutor(ControlledInstructionExecutor):
 
     def apply(self, instruction: AnonymousPhaseInstruction) -> PartialInstructionControlledFailureInfo:
         return _from_success_or_hard_error(
-            instruction.main(self.__global_environment, self.__phase_environment))
+                instruction.main(self.__global_environment, self.__phase_environment))
 
 
 class SetupPreValidateInstructionExecutor(ControlledInstructionExecutor):
@@ -58,7 +58,7 @@ class SetupPreValidateInstructionExecutor(ControlledInstructionExecutor):
 
     def apply(self, instruction: SetupPhaseInstruction) -> PartialInstructionControlledFailureInfo:
         return _from_success_or_validation_error_or_hard_error(
-            instruction.pre_validate(self.__global_environment))
+                instruction.pre_validate(self.__global_environment))
 
 
 class SetupPostValidateInstructionExecutor(ControlledInstructionExecutor):
@@ -68,7 +68,7 @@ class SetupPostValidateInstructionExecutor(ControlledInstructionExecutor):
 
     def apply(self, instruction: SetupPhaseInstruction) -> PartialInstructionControlledFailureInfo:
         return _from_success_or_validation_error_or_hard_error(
-            instruction.post_validate(self.__global_environment))
+                instruction.post_validate(self.__global_environment))
 
 
 class SetupMainInstructionExecutor(ControlledInstructionExecutor):
@@ -82,9 +82,9 @@ class SetupMainInstructionExecutor(ControlledInstructionExecutor):
 
     def apply(self, instruction: SetupPhaseInstruction) -> PartialInstructionControlledFailureInfo:
         return _from_success_or_hard_error(
-            instruction.main(self.__os_services,
-                             self.__environment,
-                             self.__setup_settings_builder))
+                instruction.main(self.__os_services,
+                                 self.__environment,
+                                 self.__setup_settings_builder))
 
 
 class ActValidateInstructionExecutor(ControlledInstructionExecutor):
@@ -94,7 +94,7 @@ class ActValidateInstructionExecutor(ControlledInstructionExecutor):
 
     def apply(self, instruction: ActPhaseInstruction) -> PartialInstructionControlledFailureInfo:
         return _from_success_or_validation_error_or_hard_error(
-            instruction.validate(self.__global_environment))
+                instruction.validate(self.__global_environment))
 
 
 class AssertValidateInstructionExecutor(ControlledInstructionExecutor):
@@ -104,7 +104,7 @@ class AssertValidateInstructionExecutor(ControlledInstructionExecutor):
 
     def apply(self, instruction: AssertPhaseInstruction) -> PartialInstructionControlledFailureInfo:
         return _from_success_or_validation_error_or_hard_error(
-            instruction.validate(self.__global_environment))
+                instruction.validate(self.__global_environment))
 
 
 class ActScriptGenerationExecutor(ControlledInstructionExecutor):
@@ -116,8 +116,8 @@ class ActScriptGenerationExecutor(ControlledInstructionExecutor):
 
     def apply(self, instruction: ActPhaseInstruction) -> PartialInstructionControlledFailureInfo:
         return _from_success_or_hard_error(
-            instruction.main(self.__global_environment,
-                             self.__phase_environment))
+                instruction.main(self.__global_environment,
+                                 self.__phase_environment))
 
 
 class AssertMainInstructionExecutor(ControlledInstructionExecutor):
@@ -129,7 +129,17 @@ class AssertMainInstructionExecutor(ControlledInstructionExecutor):
 
     def apply(self, instruction: AssertPhaseInstruction) -> PartialInstructionControlledFailureInfo:
         return _from_pass_or_fail_or_hard_error(
-            instruction.main(self.__environment, self.__os_services))
+                instruction.main(self.__environment, self.__os_services))
+
+
+class CleanupPreValidateInstructionExecutor(ControlledInstructionExecutor):
+    def __init__(self,
+                 global_environment: instr.GlobalEnvironmentForPreEdsStep):
+        self.__global_environment = global_environment
+
+    def apply(self, instruction: CleanupPhaseInstruction) -> PartialInstructionControlledFailureInfo:
+        return _from_success_or_validation_error_or_hard_error(
+                instruction.validate_pre_eds(self.__global_environment))
 
 
 class CleanupInstructionExecutor(ControlledInstructionExecutor):
@@ -141,4 +151,4 @@ class CleanupInstructionExecutor(ControlledInstructionExecutor):
 
     def apply(self, instruction: CleanupPhaseInstruction) -> PartialInstructionControlledFailureInfo:
         return _from_success_or_hard_error(
-            instruction.main(self.__environment, self.__os_services))
+                instruction.main(self.__environment, self.__os_services))

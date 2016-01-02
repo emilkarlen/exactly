@@ -169,6 +169,9 @@ class PartialExecutor:
         res = self.__run_setup_pre_validate()
         if res.status is not PartialResultStatus.PASS:
             return res
+        res = self.__run_cleanup__validate_pre_eds()
+        if res.status is not PartialResultStatus.PASS:
+            return res
         self.__construct_and_set_eds()
         self.__set_post_eds_environment()
         os_services = new_default()
@@ -232,6 +235,13 @@ class PartialExecutor:
                                                                    self.__global_environment),
                                                            self.__test_case.setup_phase)
 
+    def __run_cleanup__validate_pre_eds(self) -> PartialResult:
+        return self.__run_internal_instructions_phase_step(phases.CLEANUP,
+                                                           phase_step.PRE_EDS_VALIDATE,
+                                                           phase_step_executors.CleanupPreValidateInstructionExecutor(
+                                                                   self.__global_environment),
+                                                           self.__test_case.cleanup_phase)
+
     def __run_setup_main(self, os_services: OsServices) -> PartialResult:
         setup_settings_builder = SetupSettingsBuilder()
         ret_val = self.__run_internal_instructions_phase_step(phases.SETUP,
@@ -276,7 +286,7 @@ class PartialExecutor:
 
     def __run_cleanup(self, os_services) -> PartialResult:
         return self.__run_internal_instructions_phase_step(phases.CLEANUP,
-                                                           None,
+                                                           phase_step.MAIN,
                                                            phase_step_executors.CleanupInstructionExecutor(
                                                                    self.__global_environment,
                                                                    os_services),
