@@ -1,7 +1,6 @@
 import unittest
 
 from shellcheck_lib.execution import phase_step, phases
-from shellcheck_lib.execution.phase_step import PhaseStep
 from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib_test.execution.full_execution.test_resources.recording.test_case_that_records_phase_execution import \
@@ -18,17 +17,17 @@ class Test(TestCaseBase):
                 Arrangement(one_successful_instruction_in_each_phase()),
                 Expectation(FullResultStatus.PASS,
                             ExpectedFailureForNoFailure(),
-                            [phase_step.ANONYMOUS] +
+                            [phase_step.ANONYMOUS_MAIN] +
                             PRE_EDS_VALIDATION_STEPS +
-                            [phase_step.SETUP__MAIN,
-                             phase_step.SETUP__POST_VALIDATE,
-                             phase_step.ACT__VALIDATE,
-                             phase_step.ASSERT__VALIDATE,
-                             phase_step.ACT__SCRIPT_GENERATE,
-                             phase_step.ACT__SCRIPT_VALIDATE,
-                             phase_step.ACT__SCRIPT_EXECUTE,
-                             phase_step.ASSERT__MAIN,
-                             phase_step.CLEANUP__MAIN,
+                            [phase_step.SETUP_MAIN,
+                             phase_step.SETUP_POST_VALIDATE,
+                             phase_step.ACT_VALIDATE_POST_EDS,
+                             phase_step.ASSERT_VALIDATE_POST_EDS,
+                             phase_step.ACT_MAIN,
+                             phase_step.ACT_SCRIPT_VALIDATE,
+                             phase_step.ACT_SCRIPT_EXECUTE,
+                             phase_step.ASSERT_MAIN,
+                             phase_step.CLEANUP_MAIN,
                              ],
                             True))
 
@@ -41,10 +40,10 @@ class Test(TestCaseBase):
                 Arrangement(test_case_generator),
                 Expectation(FullResultStatus.HARD_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_message(
-                                    phase_step.new_without_step(phases.ANONYMOUS),
+                                    phase_step.ANONYMOUS_MAIN,
                                     test_case_generator.the_extra(phases.ANONYMOUS)[0].first_line,
                                     'hard error msg'),
-                            [phase_step.ANONYMOUS],
+                            [phase_step.ANONYMOUS_MAIN],
                             False))
 
     def test_implementation_error_in_anonymous_phase(self):
@@ -56,10 +55,10 @@ class Test(TestCaseBase):
                 Arrangement(test_case),
                 Expectation(FullResultStatus.IMPLEMENTATION_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_exception(
-                                    PhaseStep(phases.ANONYMOUS, None),
+                                    phase_step.ANONYMOUS_MAIN,
                                     test_case.the_extra(phases.ANONYMOUS)[0].first_line,
                                     test.ImplementationErrorTestException),
-                            [phase_step.ANONYMOUS],
+                            [phase_step.ANONYMOUS_MAIN],
                             False))
 
 

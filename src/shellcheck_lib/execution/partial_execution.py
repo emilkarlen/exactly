@@ -229,23 +229,20 @@ class PartialExecutor:
             f.write(str(exitcode))
 
     def __run_setup_pre_validate(self) -> PartialResult:
-        return self.__run_internal_instructions_phase_step(phases.SETUP,
-                                                           phase_step.SETUP_pre_validate,
+        return self.__run_internal_instructions_phase_step(phase_step.SETUP_PRE_VALIDATE,
                                                            phase_step_executors.SetupPreValidateInstructionExecutor(
                                                                    self.__global_environment),
                                                            self.__test_case.setup_phase)
 
     def __run_cleanup__validate_pre_eds(self) -> PartialResult:
-        return self.__run_internal_instructions_phase_step(phases.CLEANUP,
-                                                           phase_step.PRE_EDS_VALIDATE,
+        return self.__run_internal_instructions_phase_step(phase_step.CLEANUP_VALIDATE_PRE_EDS,
                                                            phase_step_executors.CleanupPreValidateInstructionExecutor(
                                                                    self.__global_environment),
                                                            self.__test_case.cleanup_phase)
 
     def __run_setup_main(self, os_services: OsServices) -> PartialResult:
         setup_settings_builder = SetupSettingsBuilder()
-        ret_val = self.__run_internal_instructions_phase_step(phases.SETUP,
-                                                              phase_step.SETUP_main,
+        ret_val = self.__run_internal_instructions_phase_step(phase_step.SETUP_MAIN,
                                                               phase_step_executors.SetupMainInstructionExecutor(
                                                                       os_services,
                                                                       self.__global_environment,
@@ -256,41 +253,16 @@ class PartialExecutor:
         return ret_val
 
     def __run_setup_post_validate(self) -> PartialResult:
-        return self.__run_internal_instructions_phase_step(phases.SETUP,
-                                                           phase_step.SETUP_post_validate,
+        return self.__run_internal_instructions_phase_step(phase_step.SETUP_POST_VALIDATE,
                                                            phase_step_executors.SetupPostValidateInstructionExecutor(
                                                                    self.__global_environment),
                                                            self.__test_case.setup_phase)
 
     def __run_act_validate(self) -> PartialResult:
-        return self.__run_internal_instructions_phase_step(phases.ACT,
-                                                           phase_step.ACT_validate,
+        return self.__run_internal_instructions_phase_step(phase_step.ACT_VALIDATE_POST_EDS,
                                                            phase_step_executors.ActValidateInstructionExecutor(
                                                                    self.__global_environment),
                                                            self.__test_case.act_phase)
-
-    def __run_assert_validate(self) -> PartialResult:
-        return self.__run_internal_instructions_phase_step(phases.ASSERT,
-                                                           phase_step.ASSERT_validate,
-                                                           phase_step_executors.AssertValidateInstructionExecutor(
-                                                                   self.__global_environment),
-                                                           self.__test_case.assert_phase)
-
-    def __run_assert_execute(self, phase_env) -> PartialResult:
-        return self.__run_internal_instructions_phase_step(phases.ASSERT,
-                                                           phase_step.ASSERT_main,
-                                                           phase_step_executors.AssertMainInstructionExecutor(
-                                                                   self.__global_environment,
-                                                                   phase_env),
-                                                           self.__test_case.assert_phase)
-
-    def __run_cleanup(self, os_services) -> PartialResult:
-        return self.__run_internal_instructions_phase_step(phases.CLEANUP,
-                                                           phase_step.MAIN,
-                                                           phase_step_executors.CleanupInstructionExecutor(
-                                                                   self.__global_environment,
-                                                                   os_services),
-                                                           self.__test_case.cleanup_phase)
 
     def __run_act_script_generation(self) -> PartialResult:
         """
@@ -305,16 +277,15 @@ class PartialExecutor:
                 self.__test_case.act_phase,
                 _ActCommentHeaderExecutor(environment),
                 _ActInstructionHeaderExecutor(environment),
-                phase_step_executors.ActScriptGenerationExecutor(self.__global_environment,
-                                                                 environment),
-                phases.ACT,
-                phase_step.ACT_script_generate,
+                phase_step_executors.ActMainInstructionExecutor(self.__global_environment,
+                                                                environment),
+                phase_step.ACT_MAIN,
                 self._eds)
         self.___step_execution_result.script_source = script_builder.build()
         return ret_val
 
     def __run_act_script_validate(self) -> PartialResult:
-        the_phase_step = PhaseStep(phases.ACT, phase_step.ACT_script_validate)
+        the_phase_step = phase_step.ACT_SCRIPT_VALIDATE
         try:
             res = self.__script_handling.executor.validate(self.configuration.home_dir,
                                                            self.__script_handling.builder)
@@ -331,6 +302,26 @@ class PartialExecutor:
                                  PhaseFailureInfo(the_phase_step,
                                                   result.new_failure_details_from_exception(ex)))
 
+    def __run_assert_validate(self) -> PartialResult:
+        return self.__run_internal_instructions_phase_step(phase_step.ASSERT_VALIDATE_POST_EDS,
+                                                           phase_step_executors.AssertValidateInstructionExecutor(
+                                                                   self.__global_environment),
+                                                           self.__test_case.assert_phase)
+
+    def __run_assert_execute(self, phase_env) -> PartialResult:
+        return self.__run_internal_instructions_phase_step(phase_step.ASSERT_MAIN,
+                                                           phase_step_executors.AssertMainInstructionExecutor(
+                                                                   self.__global_environment,
+                                                                   phase_env),
+                                                           self.__test_case.assert_phase)
+
+    def __run_cleanup(self, os_services) -> PartialResult:
+        return self.__run_internal_instructions_phase_step(phase_step.CLEANUP_MAIN,
+                                                           phase_step_executors.CleanupInstructionExecutor(
+                                                                   self.__global_environment,
+                                                                   os_services),
+                                                           self.__test_case.cleanup_phase)
+
     def __write_and_store_script_file_path(self):
         self.__source_setup = SourceSetup(self.__script_handling.builder,
                                           self.__execution_directory_structure.test_case_dir,
@@ -343,7 +334,7 @@ class PartialExecutor:
         """
         Pre-condition: write has been executed.
         """
-        the_phase_step = PhaseStep(phases.ACT, phase_step.ACT_script_execute)
+        the_phase_step = phase_step.ACT_SCRIPT_EXECUTE
         try:
             self.__write_and_store_script_file_path()
             if self.___step_execution_result.has_custom_stdin:
@@ -401,16 +392,14 @@ class PartialExecutor:
         os.environ.update(environment_variables.set_at_assert(self._eds))
 
     def __run_internal_instructions_phase_step(self,
-                                               phase: phases.Phase,
-                                               phase_step: str,
+                                               step: PhaseStep,
                                                instruction_executor: ControlledInstructionExecutor,
                                                phase_contents: PhaseContents) -> PartialResult:
         return phase_step_execution.execute_phase(phase_contents,
                                                   phase_step_execution.ElementHeaderExecutorThatDoesNothing(),
                                                   phase_step_execution.ElementHeaderExecutorThatDoesNothing(),
                                                   instruction_executor,
-                                                  phase,
-                                                  phase_step,
+                                                  step,
                                                   self._eds)
 
     def _custom_stdin_file_name(self) -> str:

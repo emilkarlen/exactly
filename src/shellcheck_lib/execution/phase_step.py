@@ -20,67 +20,31 @@ class PhaseStep(tuple):
         return self.phase.identifier + tail
 
 
-def new_without_step(phase: phases.Phase) -> PhaseStep:
-    return PhaseStep(phase, None)
+def _main_step(phase: phases.Phase) -> PhaseStep:
+    return PhaseStep(phase, 'main')
 
 
-VALIDATE = 'validate'
-PRE_EDS_VALIDATE = 'pre-validate'
-POST_VALIDATE = 'post-validate'
-MAIN = 'main'
+def _validate_pre_eds_step(phase: phases.Phase) -> PhaseStep:
+    return PhaseStep(phase, 'validate-pre-eds')
 
 
-def __phase_step(phase: str, step: str) -> str:
-    return phase + '/' + step
+def _validate_post_eds_step(phase: phases.Phase) -> PhaseStep:
+    return PhaseStep(phase, 'validate-post-eds')
 
 
-ANONYMOUS = '<INIT>'
+ANONYMOUS_MAIN = _main_step(phases.ANONYMOUS)
 
-SETUP = 'SETUP'
+SETUP_PRE_VALIDATE = _validate_pre_eds_step(phases.SETUP)
+SETUP_POST_VALIDATE = _validate_post_eds_step(phases.SETUP)
+SETUP_MAIN = _main_step(phases.SETUP)
 
-SETUP_pre_validate = 'pre-validate'
-SETUP_main = MAIN
-SETUP_post_validate = 'post-validate'
+ACT_VALIDATE_POST_EDS = _validate_post_eds_step(phases.ACT)
+ACT_MAIN = _main_step(phases.ACT)
+ACT_SCRIPT_VALIDATE = PhaseStep(phases.ACT, 'script-validation')
+ACT_SCRIPT_EXECUTE = PhaseStep(phases.ACT, 'script-execute')
 
-SETUP__PRE_VALIDATE = __phase_step(SETUP, SETUP_pre_validate)
-SETUP__MAIN = __phase_step(SETUP, SETUP_main)
-SETUP__POST_VALIDATE = __phase_step(SETUP, SETUP_post_validate)
+ASSERT_VALIDATE_POST_EDS = _validate_post_eds_step(phases.ASSERT)
+ASSERT_MAIN = _main_step(phases.ASSERT)
 
-ACT = 'ACT'
-
-ACT_validate = VALIDATE
-ACT_script_generate = 'script-generation'
-ACT_script_validate = 'script-validation'
-ACT_script_execute = 'script-execute'
-
-ACT__VALIDATE = __phase_step(ACT, ACT_validate)
-ACT__SCRIPT_GENERATE = __phase_step(ACT, ACT_script_generate)
-ACT__SCRIPT_VALIDATE = __phase_step(ACT, ACT_script_validate)
-ACT__SCRIPT_EXECUTE = __phase_step(ACT, ACT_script_execute)
-
-ASSERT = 'ASSERT'
-
-ASSERT_validate = VALIDATE
-ASSERT_main = MAIN
-
-ASSERT__VALIDATE = __phase_step(ASSERT, ASSERT_validate)
-ASSERT__MAIN = __phase_step(ASSERT, ASSERT_main)
-
-CLEANUP = 'CLEANUP'
-
-ANONYMOUS_MAIN = new_without_step(phases.ANONYMOUS)
-
-SETUP_PRE_VALIDATE = PhaseStep(phases.SETUP, PRE_EDS_VALIDATE)
-SETUP_MAIN = PhaseStep(phases.SETUP, MAIN)
-SETUP_POST_VALIDATE = PhaseStep(phases.SETUP, POST_VALIDATE)
-
-ACT_VALIDATE = PhaseStep(phases.ACT, VALIDATE)
-ACT_SCRIPT_GENERATION = PhaseStep(phases.ACT, ACT_script_generate)
-ACT_SCRIPT_EXECUTION = PhaseStep(phases.ACT, ACT_script_execute)
-
-ASSERT_VALIDATE = PhaseStep(phases.ASSERT, VALIDATE)
-ASSERT_MAIN = PhaseStep(phases.ASSERT, MAIN)
-
-CLEANUP_VALIDATE_PRE_EDS = PhaseStep(phases.CLEANUP, PRE_EDS_VALIDATE)
-CLEANUP_MAIN = PhaseStep(phases.CLEANUP, MAIN)
-CLEANUP__MAIN = __phase_step(CLEANUP, MAIN)
+CLEANUP_VALIDATE_PRE_EDS = _validate_pre_eds_step(phases.CLEANUP)
+CLEANUP_MAIN = _main_step(phases.CLEANUP)

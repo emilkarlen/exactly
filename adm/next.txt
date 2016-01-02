@@ -2,6 +2,7 @@
 
 Fortsätt med
 
+* pre-eds-valid
 * cd
 ** Tester av instruktionerna
 Finns tester av fas-oberoende utils.

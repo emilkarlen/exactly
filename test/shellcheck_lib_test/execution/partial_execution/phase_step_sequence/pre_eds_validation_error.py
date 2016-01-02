@@ -1,7 +1,6 @@
 import unittest
 
-from shellcheck_lib.execution import phase_step, phases
-from shellcheck_lib.execution.phase_step import PhaseStep
+from shellcheck_lib.execution import phase_step
 from shellcheck_lib.execution.result import PartialResultStatus
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.result import svh
@@ -25,10 +24,10 @@ class Test(TestCaseBase):
                 Arrangement(test_case),
                 Expectation(PartialResultStatus.VALIDATE,
                             ExpectedFailureForInstructionFailure.new_with_message(
-                                    PhaseStep(phases.SETUP, phase_step.PRE_EDS_VALIDATE),
+                                    phase_step.SETUP_PRE_VALIDATE,
                                     test_case.the_extra(PartialPhase.SETUP)[0].first_line,
                                     'validation error from setup/validate'),
-                            [phase_step.SETUP__PRE_VALIDATE,
+                            [phase_step.SETUP_PRE_VALIDATE,
                              ],
                             False))
 
@@ -43,10 +42,10 @@ class Test(TestCaseBase):
                 Arrangement(test_case),
                 Expectation(PartialResultStatus.HARD_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_message(
-                                    PhaseStep(phases.SETUP, phase_step.PRE_EDS_VALIDATE),
+                                    phase_step.SETUP_PRE_VALIDATE,
                                     test_case.the_extra(PartialPhase.SETUP)[0].first_line,
                                     'hard error from setup/validate'),
-                            [phase_step.SETUP__PRE_VALIDATE,
+                            [phase_step.SETUP_PRE_VALIDATE,
                              ],
                             False))
 
@@ -59,10 +58,10 @@ class Test(TestCaseBase):
                 Arrangement(test_case),
                 Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_exception(
-                                    PhaseStep(phases.SETUP, phase_step.PRE_EDS_VALIDATE),
+                                    phase_step.SETUP_PRE_VALIDATE,
                                     test_case.the_extra(PartialPhase.SETUP)[0].first_line,
                                     test.ImplementationErrorTestException),
-                            [phase_step.SETUP__PRE_VALIDATE,
+                            [phase_step.SETUP_PRE_VALIDATE,
                              ],
                             False))
 

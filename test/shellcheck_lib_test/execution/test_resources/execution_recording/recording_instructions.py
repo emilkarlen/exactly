@@ -17,34 +17,36 @@ class RecordingInstructions:
     def __init__(self, recorder: ListRecorder):
         self.recorder = recorder
 
-    def new_anonymous_instruction(self, text: str) -> SetupPhaseInstruction:
-        return AnonymousInternalInstructionThatRecordsStringInList(self.__recorder_of(text))
+    def new_anonymous_instruction(self, value) -> SetupPhaseInstruction:
+        return AnonymousInternalInstructionThatRecordsStringInList(self.__recorder_of(value))
 
     def new_setup_instruction(self,
-                              text_for_pre_validate: str,
-                              text_for_execute: str,
-                              text_for_post_validate: str) -> SetupPhaseInstruction:
-        return SetupInstructionThatRecordsStringInList(self.__recorder_of(text_for_pre_validate),
-                                                       self.__recorder_of(text_for_execute),
-                                                       self.__recorder_of(text_for_post_validate))
+                              value_for_pre_validate,
+                              value_for_execute,
+                              value_for_post_validate) -> SetupPhaseInstruction:
+        return SetupInstructionThatRecordsStringInList(self.__recorder_of(value_for_pre_validate),
+                                                       self.__recorder_of(value_for_execute),
+                                                       self.__recorder_of(value_for_post_validate))
 
     def new_act_instruction(self,
-                            text_for_validate: str,
-                            text_for_execute: str) -> ActPhaseInstruction:
-        return ActInstructionThatRecordsStringInList(self.__recorder_of(text_for_validate),
-                                                     self.__recorder_of(text_for_execute))
+                            value_for_validate,
+                            value_for_execute) -> ActPhaseInstruction:
+        return ActInstructionThatRecordsStringInList(self.__recorder_of(value_for_validate),
+                                                     self.__recorder_of(value_for_execute))
 
     def new_assert_instruction(self,
-                               text_for_validate: str,
-                               text_for_execute: str) -> AssertPhaseInstruction:
-        return AssertInternalInstructionThatRecordsStringInList(self.__recorder_of(text_for_validate),
-                                                                self.__recorder_of(text_for_execute))
+                               value_for_validate,
+                               value_for_execute) -> AssertPhaseInstruction:
+        return AssertInternalInstructionThatRecordsStringInList(self.__recorder_of(value_for_validate),
+                                                                self.__recorder_of(value_for_execute))
 
-    def new_cleanup_instruction(self, text_for_validate_pre_eds: str, text_for_main: str) -> CleanupPhaseInstruction:
-        return CleanupInstructionThatRecordsStringInList(self.__recorder_of(text_for_validate_pre_eds),
-                                                         self.__recorder_of(text_for_main))
+    def new_cleanup_instruction(self,
+                                value_for_validate_pre_eds,
+                                value_for_main) -> CleanupPhaseInstruction:
+        return CleanupInstructionThatRecordsStringInList(self.__recorder_of(value_for_validate_pre_eds),
+                                                         self.__recorder_of(value_for_main))
 
-    def __recorder_of(self, element: str) -> ListElementRecorder:
+    def __recorder_of(self, element) -> ListElementRecorder:
         return self.recorder.recording_of(element)
 
 
@@ -113,7 +115,7 @@ class InternalInstructionThatRecordsStringInList(InternalInstruction):
                  recorder: ListElementRecorder):
         self.__recorder = recorder
 
-    def execute(self, phase_name: str,
+    def execute(self, phase_name,
                 environment: common.GlobalEnvironmentForPostEdsPhase,
                 os_services: OsServices):
         self.__recorder.record()

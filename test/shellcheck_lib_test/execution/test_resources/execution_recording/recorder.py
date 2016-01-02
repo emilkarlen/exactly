@@ -1,7 +1,7 @@
 class ListElementRecorder:
     def __init__(self,
                  element_list: list,
-                 element: str):
+                 element):
         self.recorder = element_list
         self.element = element
 
@@ -13,7 +13,7 @@ class ListRecorder:
     def __init__(self):
         self.__element_list = []
 
-    def recording_of(self, element: str) -> ListElementRecorder:
+    def recording_of(self, element) -> ListElementRecorder:
         return ListElementRecorder(self.__element_list, element)
 
     @property

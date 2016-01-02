@@ -107,7 +107,7 @@ class AssertValidateInstructionExecutor(ControlledInstructionExecutor):
                 instruction.validate(self.__global_environment))
 
 
-class ActScriptGenerationExecutor(ControlledInstructionExecutor):
+class ActMainInstructionExecutor(ControlledInstructionExecutor):
     def __init__(self,
                  global_environment: instr.GlobalEnvironmentForPostEdsPhase,
                  phase_environment: PhaseEnvironmentForScriptGeneration):

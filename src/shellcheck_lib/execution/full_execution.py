@@ -2,7 +2,7 @@ import os
 import pathlib
 
 from shellcheck_lib.execution import environment_variables
-from shellcheck_lib.execution import phase_step_executors, partial_execution, phases
+from shellcheck_lib.execution import phase_step_executors, partial_execution, phase_step
 from shellcheck_lib.execution.partial_execution import ScriptHandling
 from shellcheck_lib.test_case import test_case_doc
 from shellcheck_lib.test_case.sections.anonymous import ConfigurationBuilder, ExecutionMode
@@ -80,6 +80,5 @@ def _execute_anonymous_phase(phase_environment: ConfigurationBuilder,
                                               phase_step_execution.ElementHeaderExecutorThatDoesNothing(),
                                               phase_step_execution.ElementHeaderExecutorThatDoesNothing(),
                                               phase_step_executors.AnonymousInstructionExecutor(phase_environment),
-                                              phases.ANONYMOUS,
-                                              None,
+                                              phase_step.ANONYMOUS_MAIN,
                                               None)
