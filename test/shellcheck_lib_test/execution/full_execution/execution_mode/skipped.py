@@ -21,8 +21,7 @@ class Test(TestCaseBase):
                 Arrangement(test_case),
                 Expectation(FullResultStatus.SKIPPED,
                             ExpectedFailureForNoFailure(),
-                            [phase_step.ANONYMOUS
-                             ],
+                            [phase_step.ANONYMOUS],
                             False))
 
     def test_execution_mode_skipped_but_failing_instruction_in_anonymous_phase_before_setting_execution_mode(self):
@@ -40,8 +39,7 @@ class Test(TestCaseBase):
                                     phase_step.new_without_step(phases.ANONYMOUS),
                                     test_case.the_extra(phases.ANONYMOUS)[0].first_line,
                                     'hard error msg'),
-                            [phase_step.ANONYMOUS
-                             ],
+                            [phase_step.ANONYMOUS],
                             False))
 
     def test_execution_mode_skipped_but_failing_instruction_in_anonymous_phase_after_setting_execution_mode(self):
@@ -59,8 +57,7 @@ class Test(TestCaseBase):
                                     phase_step.new_without_step(phases.ANONYMOUS),
                                     test_case.the_extra(phases.ANONYMOUS)[1].first_line,
                                     'hard error msg'),
-                            [phase_step.ANONYMOUS
-                             ],
+                            [phase_step.ANONYMOUS],
                             False))
 
         if __name__ == '__main__':

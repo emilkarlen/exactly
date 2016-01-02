@@ -10,6 +10,7 @@ from shellcheck_lib_test.execution.partial_execution.test_resources.recording.te
     Expectation, Arrangement, TestCaseBase, one_successful_instruction_in_each_phase
 from shellcheck_lib_test.execution.partial_execution.test_resources.test_case_generator import PartialPhase
 from shellcheck_lib_test.execution.test_resources import instruction_test_resources as test
+from shellcheck_lib_test.execution.test_resources.execution_recording.phase_steps import PRE_EDS_VALIDATION_STEPS
 from shellcheck_lib_test.execution.test_resources.test_actions import validate_action_that_returns, \
     validate_action_that_raises, execute_action_that_raises
 from shellcheck_lib_test.test_resources.expected_instruction_failure import ExpectedFailureForInstructionFailure, \
@@ -31,8 +32,8 @@ class Test(TestCaseBase):
                                     PhaseStep(phases.SETUP, phase_step.MAIN),
                                     test_case.the_extra(PartialPhase.SETUP)[0].first_line,
                                     'hard error msg from setup'),
-                            [phase_step.SETUP__PRE_VALIDATE,
-                             phase_step.SETUP__MAIN,
+                            PRE_EDS_VALIDATION_STEPS +
+                            [phase_step.SETUP__MAIN,
                              phase_step.CLEANUP,
                              ],
                             True))
@@ -49,8 +50,8 @@ class Test(TestCaseBase):
                                     PhaseStep(phases.SETUP, phase_step.MAIN),
                                     test_case.the_extra(PartialPhase.SETUP)[0].first_line,
                                     test.ImplementationErrorTestException),
-                            [phase_step.SETUP__PRE_VALIDATE,
-                             phase_step.SETUP__MAIN,
+                            PRE_EDS_VALIDATION_STEPS +
+                            [phase_step.SETUP__MAIN,
                              phase_step.CLEANUP,
                              ],
                             True))
@@ -70,8 +71,8 @@ class Test(TestCaseBase):
                                     PhaseStep(phases.SETUP, phase_step.POST_VALIDATE),
                                     test_case.the_extra(PartialPhase.SETUP)[0].first_line,
                                     'validation error from setup/post-validate'),
-                            [phase_step.SETUP__PRE_VALIDATE,
-                             phase_step.SETUP__MAIN,
+                            PRE_EDS_VALIDATION_STEPS +
+                            [phase_step.SETUP__MAIN,
                              phase_step.SETUP__POST_VALIDATE,
                              phase_step.CLEANUP,
                              ],
@@ -91,8 +92,8 @@ class Test(TestCaseBase):
                                     PhaseStep(phases.SETUP, phase_step.POST_VALIDATE),
                                     test_case.the_extra(PartialPhase.SETUP)[0].first_line,
                                     'hard error from setup/post-validate'),
-                            [phase_step.SETUP__PRE_VALIDATE,
-                             phase_step.SETUP__MAIN,
+                            PRE_EDS_VALIDATION_STEPS +
+                            [phase_step.SETUP__MAIN,
                              phase_step.SETUP__POST_VALIDATE,
                              phase_step.CLEANUP,
                              ],
@@ -110,8 +111,8 @@ class Test(TestCaseBase):
                                     PhaseStep(phases.SETUP, phase_step.POST_VALIDATE),
                                     test_case.the_extra(PartialPhase.SETUP)[0].first_line,
                                     test.ImplementationErrorTestException),
-                            [phase_step.SETUP__PRE_VALIDATE,
-                             phase_step.SETUP__MAIN,
+                            PRE_EDS_VALIDATION_STEPS +
+                            [phase_step.SETUP__MAIN,
                              phase_step.SETUP__POST_VALIDATE,
                              phase_step.CLEANUP,
                              ],
@@ -130,8 +131,8 @@ class Test(TestCaseBase):
                                     PhaseStep(phases.ASSERT, phase_step.VALIDATE),
                                     test_case.the_extra(PartialPhase.ASSERT)[0].first_line,
                                     'ASSERT/validate'),
-                            [phase_step.SETUP__PRE_VALIDATE,
-                             phase_step.SETUP__MAIN,
+                            PRE_EDS_VALIDATION_STEPS +
+                            [phase_step.SETUP__MAIN,
                              phase_step.SETUP__POST_VALIDATE,
                              phase_step.ACT__VALIDATE,
                              phase_step.ASSERT__VALIDATE,
@@ -152,8 +153,8 @@ class Test(TestCaseBase):
                                     PhaseStep(phases.ASSERT, phase_step.VALIDATE),
                                     test_case.the_extra(PartialPhase.ASSERT)[0].first_line,
                                     'ASSERT/validate'),
-                            [phase_step.SETUP__PRE_VALIDATE,
-                             phase_step.SETUP__MAIN,
+                            PRE_EDS_VALIDATION_STEPS +
+                            [phase_step.SETUP__MAIN,
                              phase_step.SETUP__POST_VALIDATE,
                              phase_step.ACT__VALIDATE,
                              phase_step.ASSERT__VALIDATE,
@@ -173,8 +174,8 @@ class Test(TestCaseBase):
                                     PhaseStep(phases.ASSERT, phase_step.VALIDATE),
                                     test_case.the_extra(PartialPhase.ASSERT)[0].first_line,
                                     test.ImplementationErrorTestException),
-                            [phase_step.SETUP__PRE_VALIDATE,
-                             phase_step.SETUP__MAIN,
+                            PRE_EDS_VALIDATION_STEPS +
+                            [phase_step.SETUP__MAIN,
                              phase_step.SETUP__POST_VALIDATE,
                              phase_step.ACT__VALIDATE,
                              phase_step.ASSERT__VALIDATE,
@@ -195,8 +196,8 @@ class Test(TestCaseBase):
                                     PhaseStep(phases.ACT, phase_step.VALIDATE),
                                     test_case.the_extra(PartialPhase.ACT)[0].first_line,
                                     'ACT/validate'),
-                            [phase_step.SETUP__PRE_VALIDATE,
-                             phase_step.SETUP__MAIN,
+                            PRE_EDS_VALIDATION_STEPS +
+                            [phase_step.SETUP__MAIN,
                              phase_step.SETUP__POST_VALIDATE,
                              phase_step.ACT__VALIDATE,
                              phase_step.CLEANUP,
@@ -216,8 +217,8 @@ class Test(TestCaseBase):
                                     PhaseStep(phases.ACT, phase_step.VALIDATE),
                                     test_case.the_extra(PartialPhase.ACT)[0].first_line,
                                     'ACT/validate'),
-                            [phase_step.SETUP__PRE_VALIDATE,
-                             phase_step.SETUP__MAIN,
+                            PRE_EDS_VALIDATION_STEPS +
+                            [phase_step.SETUP__MAIN,
                              phase_step.SETUP__POST_VALIDATE,
                              phase_step.ACT__VALIDATE,
                              phase_step.CLEANUP,
@@ -236,8 +237,8 @@ class Test(TestCaseBase):
                                     PhaseStep(phases.ACT, phase_step.VALIDATE),
                                     test_case.the_extra(PartialPhase.ACT)[0].first_line,
                                     test.ImplementationErrorTestException),
-                            [phase_step.SETUP__PRE_VALIDATE,
-                             phase_step.SETUP__MAIN,
+                            PRE_EDS_VALIDATION_STEPS +
+                            [phase_step.SETUP__MAIN,
                              phase_step.SETUP__POST_VALIDATE,
                              phase_step.ACT__VALIDATE,
                              phase_step.CLEANUP,
@@ -257,8 +258,8 @@ class Test(TestCaseBase):
                                     PhaseStep(phases.ACT, phase_step.ACT_script_generate),
                                     test_case.the_extra(PartialPhase.ACT)[0].first_line,
                                     'hard error msg from act'),
-                            [phase_step.SETUP__PRE_VALIDATE,
-                             phase_step.SETUP__MAIN,
+                            PRE_EDS_VALIDATION_STEPS +
+                            [phase_step.SETUP__MAIN,
                              phase_step.SETUP__POST_VALIDATE,
                              phase_step.ACT__VALIDATE,
                              phase_step.ASSERT__VALIDATE,
@@ -279,8 +280,8 @@ class Test(TestCaseBase):
                                     PhaseStep(phases.ACT, phase_step.ACT_script_generate),
                                     test_case.the_extra(PartialPhase.ACT)[0].first_line,
                                     test.ImplementationErrorTestException),
-                            [phase_step.SETUP__PRE_VALIDATE,
-                             phase_step.SETUP__MAIN,
+                            PRE_EDS_VALIDATION_STEPS +
+                            [phase_step.SETUP__MAIN,
                              phase_step.SETUP__POST_VALIDATE,
                              phase_step.ACT__VALIDATE,
                              phase_step.ASSERT__VALIDATE,
@@ -299,8 +300,8 @@ class Test(TestCaseBase):
                             ExpectedFailureForPhaseFailure.new_with_message(
                                     PhaseStep(phases.ACT, phase_step.ACT_script_validate),
                                     'error message from validate'),
-                            [phase_step.SETUP__PRE_VALIDATE,
-                             phase_step.SETUP__MAIN,
+                            PRE_EDS_VALIDATION_STEPS +
+                            [phase_step.SETUP__MAIN,
                              phase_step.SETUP__POST_VALIDATE,
                              phase_step.ACT__VALIDATE,
                              phase_step.ASSERT__VALIDATE,
@@ -320,8 +321,8 @@ class Test(TestCaseBase):
                             ExpectedFailureForPhaseFailure.new_with_message(
                                     PhaseStep(phases.ACT, phase_step.ACT_script_validate),
                                     'error message from validate'),
-                            [phase_step.SETUP__PRE_VALIDATE,
-                             phase_step.SETUP__MAIN,
+                            PRE_EDS_VALIDATION_STEPS +
+                            [phase_step.SETUP__MAIN,
                              phase_step.SETUP__POST_VALIDATE,
                              phase_step.ACT__VALIDATE,
                              phase_step.ASSERT__VALIDATE,
@@ -341,8 +342,8 @@ class Test(TestCaseBase):
                             ExpectedFailureForPhaseFailure.new_with_exception(
                                     PhaseStep(phases.ACT, phase_step.ACT_script_validate),
                                     test.ImplementationErrorTestException),
-                            [phase_step.SETUP__PRE_VALIDATE,
-                             phase_step.SETUP__MAIN,
+                            PRE_EDS_VALIDATION_STEPS +
+                            [phase_step.SETUP__MAIN,
                              phase_step.SETUP__POST_VALIDATE,
                              phase_step.ACT__VALIDATE,
                              phase_step.ASSERT__VALIDATE,
@@ -362,8 +363,8 @@ class Test(TestCaseBase):
                             ExpectedFailureForPhaseFailure.new_with_exception(
                                     PhaseStep(phases.ACT, phase_step.ACT_script_execute),
                                     test.ImplementationErrorTestException),
-                            [phase_step.SETUP__PRE_VALIDATE,
-                             phase_step.SETUP__MAIN,
+                            PRE_EDS_VALIDATION_STEPS +
+                            [phase_step.SETUP__MAIN,
                              phase_step.SETUP__POST_VALIDATE,
                              phase_step.ACT__VALIDATE,
                              phase_step.ASSERT__VALIDATE,
@@ -387,8 +388,8 @@ class Test(TestCaseBase):
                                     PhaseStep(phases.ASSERT, phase_step.MAIN),
                                     test_case.the_extra(PartialPhase.ASSERT)[0].first_line,
                                     'fail msg from ASSERT'),
-                            [phase_step.SETUP__PRE_VALIDATE,
-                             phase_step.SETUP__MAIN,
+                            PRE_EDS_VALIDATION_STEPS +
+                            [phase_step.SETUP__MAIN,
                              phase_step.SETUP__POST_VALIDATE,
                              phase_step.ACT__VALIDATE,
                              phase_step.ASSERT__VALIDATE,
@@ -413,8 +414,8 @@ class Test(TestCaseBase):
                                     PhaseStep(phases.ASSERT, phase_step.MAIN),
                                     test_case.the_extra(PartialPhase.ASSERT)[0].first_line,
                                     'hard error msg from ASSERT'),
-                            [phase_step.SETUP__PRE_VALIDATE,
-                             phase_step.SETUP__MAIN,
+                            PRE_EDS_VALIDATION_STEPS +
+                            [phase_step.SETUP__MAIN,
                              phase_step.SETUP__POST_VALIDATE,
                              phase_step.ACT__VALIDATE,
                              phase_step.ASSERT__VALIDATE,
@@ -438,8 +439,8 @@ class Test(TestCaseBase):
                                     PhaseStep(phases.ASSERT, phase_step.MAIN),
                                     test_case.the_extra(PartialPhase.ASSERT)[0].first_line,
                                     test.ImplementationErrorTestException),
-                            [phase_step.SETUP__PRE_VALIDATE,
-                             phase_step.SETUP__MAIN,
+                            PRE_EDS_VALIDATION_STEPS +
+                            [phase_step.SETUP__MAIN,
                              phase_step.SETUP__POST_VALIDATE,
                              phase_step.ACT__VALIDATE,
                              phase_step.ASSERT__VALIDATE,
@@ -463,8 +464,8 @@ class Test(TestCaseBase):
                                     phase_step.CLEANUP_MAIN,
                                     test_case.the_extra(PartialPhase.CLEANUP)[0].first_line,
                                     'hard error msg from CLEANUP'),
-                            [phase_step.SETUP__PRE_VALIDATE,
-                             phase_step.SETUP__MAIN,
+                            PRE_EDS_VALIDATION_STEPS +
+                            [phase_step.SETUP__MAIN,
                              phase_step.SETUP__POST_VALIDATE,
                              phase_step.ACT__VALIDATE,
                              phase_step.ASSERT__VALIDATE,
@@ -488,8 +489,8 @@ class Test(TestCaseBase):
                                     phase_step.CLEANUP_MAIN,
                                     test_case.the_extra(PartialPhase.CLEANUP)[0].first_line,
                                     test.ImplementationErrorTestException),
-                            [phase_step.SETUP__PRE_VALIDATE,
-                             phase_step.SETUP__MAIN,
+                            PRE_EDS_VALIDATION_STEPS +
+                            [phase_step.SETUP__MAIN,
                              phase_step.SETUP__POST_VALIDATE,
                              phase_step.ACT__VALIDATE,
                              phase_step.ASSERT__VALIDATE,
