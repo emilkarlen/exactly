@@ -15,6 +15,10 @@ class PhaseStep(tuple):
     def step(self) -> str:
         return self[1]
 
+    def __str__(self):
+        tail = '' if not self.step else '/' + self.step
+        return self.phase.identifier + tail
+
 
 def new_without_step(phase: phases.Phase) -> PhaseStep:
     return PhaseStep(phase, None)
@@ -78,4 +82,4 @@ ASSERT_VALIDATE = PhaseStep(phases.ASSERT, VALIDATE)
 ASSERT_MAIN = PhaseStep(phases.ASSERT, MAIN)
 
 CLEANUP_VALIDATE_PRE_EDS = PhaseStep(phases.CLEANUP, PRE_EDS_VALIDATE)
-CLEANUP_MAIN = new_without_step(phases.CLEANUP)
+CLEANUP_MAIN = PhaseStep(phases.CLEANUP, MAIN)

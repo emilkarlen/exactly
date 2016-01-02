@@ -9,7 +9,6 @@ from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
-from shellcheck_lib_test.execution.test_resources import instruction_adapter
 from shellcheck_lib_test.execution.test_resources.execution_recording.recorder import ListElementRecorder, ListRecorder
 from shellcheck_lib_test.execution.test_resources.instruction_adapter import InternalInstruction
 
@@ -41,9 +40,9 @@ class RecordingInstructions:
         return AssertInternalInstructionThatRecordsStringInList(self.__recorder_of(text_for_validate),
                                                                 self.__recorder_of(text_for_execute))
 
-    def new_cleanup_instruction(self, text: str) -> CleanupPhaseInstruction:
-        return instruction_adapter.as_cleanup(
-                InternalInstructionThatRecordsStringInList(self.__recorder_of(text)))
+    def new_cleanup_instruction(self, text_for_validate_pre_eds: str, text_for_main: str) -> CleanupPhaseInstruction:
+        return CleanupInstructionThatRecordsStringInList(self.__recorder_of(text_for_validate_pre_eds),
+                                                         self.__recorder_of(text_for_main))
 
     def __recorder_of(self, element: str) -> ListElementRecorder:
         return self.recorder.recording_of(element)
@@ -136,3 +135,22 @@ class AssertInternalInstructionThatRecordsStringInList(AssertPhaseInstruction):
     def main(self, environment, os_services: ConfigurationBuilder) -> pfh.PassOrFailOrHardError:
         self.__recorder_for_execute.record()
         return pfh.new_pfh_pass()
+
+
+class CleanupInstructionThatRecordsStringInList(CleanupPhaseInstruction):
+    def __init__(self,
+                 recorder_for_pre_validate: ListElementRecorder,
+                 recorder_for_main: ListElementRecorder):
+        self.__recorder_for_pre_validate = recorder_for_pre_validate
+        self.__recorder_for_execute = recorder_for_main
+
+    def validate_pre_eds(self,
+                         environment: common.GlobalEnvironmentForPreEdsStep) -> svh.SuccessOrValidationErrorOrHardError:
+        self.__recorder_for_pre_validate.record()
+        return sh.new_sh_success()
+
+    def main(self,
+             environment: common.GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices) -> sh.SuccessOrHardError:
+        self.__recorder_for_execute.record()
+        return sh.new_sh_success()
