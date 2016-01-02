@@ -234,14 +234,14 @@ class _ActInstruction(ActPhaseInstruction):
 
     def validate(self, global_environment: i.GlobalEnvironmentForPostEdsPhase) -> \
             svh.SuccessOrValidationErrorOrHardError:
-        self.__configuration.validation_action__with_eds(phase_step.ACT_VALIDATE,
+        self.__configuration.validation_action__with_eds(phase_step.ACT_VALIDATE_POST_EDS,
                                                          global_environment)
         return self.__configuration.ret_val_from_validate
 
     def main(self,
              global_environment: i.GlobalEnvironmentForPostEdsPhase,
              phase_environment: PhaseEnvironmentForScriptGeneration) -> sh.SuccessOrHardError:
-        self.__configuration.execution_action__with_eds(phase_step.ACT_SCRIPT_GENERATION,
+        self.__configuration.execution_action__with_eds(phase_step.ACT_MAIN,
                                                         global_environment)
         self.__configuration.execution__generate_script(global_environment,
                                                         phase_environment)
@@ -255,7 +255,7 @@ class _AssertInstruction(AssertPhaseInstruction):
 
     def validate(self,
                  environment: i.GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
-        self.__configuration.validation_action__with_eds(phase_step.ASSERT_VALIDATE,
+        self.__configuration.validation_action__with_eds(phase_step.ASSERT_VALIDATE_POST_EDS,
                                                          environment)
         return self.__configuration.ret_val_from_validate
 

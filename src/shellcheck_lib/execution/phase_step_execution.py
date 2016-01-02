@@ -1,8 +1,7 @@
-from shellcheck_lib.execution.phase_step import PhaseStep
-from shellcheck_lib.general import line_source
-from shellcheck_lib.execution.single_instruction_executor import ControlledInstructionExecutor, execute_element
 from shellcheck_lib.document.model import PhaseContents, PhaseContentElement, ElementType
-from shellcheck_lib.execution import phases
+from shellcheck_lib.execution.phase_step import PhaseStep
+from shellcheck_lib.execution.single_instruction_executor import ControlledInstructionExecutor, execute_element
+from shellcheck_lib.general import line_source
 from .execution_directory_structure import ExecutionDirectoryStructure
 from .result import PartialResult, InstructionFailureInfo, new_partial_result_pass, PartialResultStatus, \
     FailureDetails
@@ -49,8 +48,7 @@ def execute_phase(phase_contents: PhaseContents,
                   header_executor_for_comment: ElementHeaderExecutor,
                   header_executor_for_instruction: ElementHeaderExecutor,
                   instruction_executor: ControlledInstructionExecutor,
-                  phase: phases.Phase,
-                  phase_step: str,
+                  phase_step: PhaseStep,
                   eds: ExecutionDirectoryStructure) -> PartialResult:
     """
     Executes the elements of a given phase/step.
@@ -66,9 +64,6 @@ def execute_phase(phase_contents: PhaseContents,
     :param instruction_executor: Is executed for each element that is an instruction, after
     header_executor_for_instruction has been executed.
     Exceptions raised by this object are translated to IMPLEMENTATION_ERROR.
-    :param phase:
-    :param phase_step:
-    :param eds:
     :return: PASS status, if there was no error. Otherwise, the first error.
     """
     failure = execute_phase_prim(phase_contents,
@@ -79,12 +74,11 @@ def execute_phase(phase_contents: PhaseContents,
         return new_partial_result_pass(eds)
     else:
         return PartialResult(
-            failure.status,
-            eds,
-            InstructionFailureInfo(PhaseStep(phase,
-                                             phase_step),
-                                   failure.source_line,
-                                   failure.failure_details)
+                failure.status,
+                eds,
+                InstructionFailureInfo(phase_step,
+                                       failure.source_line,
+                                       failure.failure_details)
         )
 
 

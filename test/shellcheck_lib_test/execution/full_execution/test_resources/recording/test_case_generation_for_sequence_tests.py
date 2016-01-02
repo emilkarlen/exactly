@@ -23,20 +23,20 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorForFullExecutionBa
         recording_instructions = RecordingInstructions(self.__recorder)
         self.__recorders = {
             phases.ANONYMOUS:
-                recording_instructions.new_anonymous_instruction(phase_step.ANONYMOUS),
+                recording_instructions.new_anonymous_instruction(phase_step.ANONYMOUS_MAIN),
             phases.SETUP:
-                recording_instructions.new_setup_instruction(phase_step.SETUP__PRE_VALIDATE,
-                                                             phase_step.SETUP__MAIN,
-                                                             phase_step.SETUP__POST_VALIDATE),
+                recording_instructions.new_setup_instruction(phase_step.SETUP_PRE_VALIDATE,
+                                                             phase_step.SETUP_MAIN,
+                                                             phase_step.SETUP_POST_VALIDATE),
             phases.ACT:
-                recording_instructions.new_act_instruction(phase_step.ACT__VALIDATE,
-                                                           phase_step.ACT__SCRIPT_GENERATE),
+                recording_instructions.new_act_instruction(phase_step.ACT_VALIDATE_POST_EDS,
+                                                           phase_step.ACT_MAIN),
             phases.ASSERT:
-                recording_instructions.new_assert_instruction(phase_step.ASSERT__VALIDATE,
-                                                              phase_step.ASSERT__MAIN),
+                recording_instructions.new_assert_instruction(phase_step.ASSERT_VALIDATE_POST_EDS,
+                                                              phase_step.ASSERT_MAIN),
             phases.CLEANUP:
-                recording_instructions.new_cleanup_instruction(str(phase_step.CLEANUP_VALIDATE_PRE_EDS),
-                                                               phase_step.CLEANUP__MAIN)
+                recording_instructions.new_cleanup_instruction(phase_step.CLEANUP_VALIDATE_PRE_EDS,
+                                                               phase_step.CLEANUP_MAIN)
         }
 
     def recorders_for(self, phase: phases.Phase) -> list:

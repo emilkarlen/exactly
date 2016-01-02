@@ -74,9 +74,9 @@ class Test(FullExecutionTestCaseBase):
         initial_dir_recording = str(initial_dir)
         expected_recorded_internally = {
             phase_step.SETUP_MAIN: initial_dir_recording,
-            phase_step.ACT_VALIDATE: str(initial_dir / SUB_DIR_NAME),
-            phase_step.ACT_SCRIPT_GENERATION: str(initial_dir / SUB_DIR_NAME),
-            phase_step.ASSERT_VALIDATE: str(initial_dir / SUB_DIR_NAME),
+            phase_step.ACT_VALIDATE_POST_EDS: str(initial_dir / SUB_DIR_NAME),
+            phase_step.ACT_MAIN: str(initial_dir / SUB_DIR_NAME),
+            phase_step.ASSERT_VALIDATE_POST_EDS: str(initial_dir / SUB_DIR_NAME),
             phase_step.ASSERT_MAIN: str(initial_dir / SUB_DIR_NAME / SUB_DIR_NAME),
             phase_step.CLEANUP_MAIN: str(initial_dir / SUB_DIR_NAME / SUB_DIR_NAME / SUB_DIR_NAME),
         }

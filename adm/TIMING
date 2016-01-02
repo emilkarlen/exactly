@@ -151,6 +151,9 @@ Dels i förhållande till nya exekveringssekvensen.
 Dels pga ny variabel _TMP (behöver ev gå igenom alla ställen där miljövar
 testas, o lägga till nya.)
 * Exekvera instruktioner
+  CLOCK: [2016-01-02 lör 22:50]--[2016-01-02 lör 23:26] =>  0:36
+  CLOCK: [2016-01-02 lör 13:21]--[2016-01-02 lör 14:32] =>  1:11
+  CLOCK: [2016-01-02 lör 09:50]--[2016-01-02 lör 10:04] =>  0:14
   CLOCK: [2016-01-02 lör 00:20]--[2016-01-02 lör 01:50] =>  1:30
   CLOCK: [2016-01-01 fre 23:41]--[2016-01-01 fre 23:56] =>  0:15
   CLOCK: [2015-05-03 sön 19:11]--[2015-05-03 sön 19:11] =>  0:00

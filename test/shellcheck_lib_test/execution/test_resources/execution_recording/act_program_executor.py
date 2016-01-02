@@ -23,7 +23,7 @@ class ActProgramExecutorWrapperThatRecordsSteps(ActProgramExecutor):
     def validate(self,
                  home_dir: pathlib.Path(),
                  source: ScriptSourceBuilder) -> svh.SuccessOrValidationErrorOrHardError:
-        self.__recorder.recording_of(phase_step.ACT__SCRIPT_VALIDATE).record()
+        self.__recorder.recording_of(phase_step.ACT_SCRIPT_VALIDATE).record()
         test_action_result = self.__validate_test_action()
         if not test_action_result.is_success:
             return test_action_result
@@ -40,7 +40,7 @@ class ActProgramExecutorWrapperThatRecordsSteps(ActProgramExecutor):
                 home_dir: pathlib.Path,
                 eds: ExecutionDirectoryStructure,
                 std_files: StdFiles) -> int:
-        self.__recorder.recording_of(phase_step.ACT__SCRIPT_EXECUTE).record()
+        self.__recorder.recording_of(phase_step.ACT_SCRIPT_EXECUTE).record()
         self.__execute_test_action()
         return self.__wrapped.execute(source_setup,
                                       home_dir,

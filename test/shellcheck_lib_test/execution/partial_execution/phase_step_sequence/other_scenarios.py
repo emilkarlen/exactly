@@ -1,7 +1,6 @@
 import unittest
 
-from shellcheck_lib.execution import phase_step, phases
-from shellcheck_lib.execution.phase_step import PhaseStep
+from shellcheck_lib.execution import phase_step
 from shellcheck_lib.execution.result import PartialResultStatus
 from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.result import sh
@@ -29,12 +28,12 @@ class Test(TestCaseBase):
                 Arrangement(test_case),
                 Expectation(PartialResultStatus.HARD_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_message(
-                                    PhaseStep(phases.SETUP, phase_step.MAIN),
+                                    phase_step.SETUP_MAIN,
                                     test_case.the_extra(PartialPhase.SETUP)[0].first_line,
                                     'hard error msg from setup'),
                             PRE_EDS_VALIDATION_STEPS +
-                            [phase_step.SETUP__MAIN,
-                             phase_step.CLEANUP__MAIN,
+                            [phase_step.SETUP_MAIN,
+                             phase_step.CLEANUP_MAIN,
                              ],
                             True))
 
@@ -47,12 +46,12 @@ class Test(TestCaseBase):
                 Arrangement(test_case),
                 Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_exception(
-                                    PhaseStep(phases.SETUP, phase_step.MAIN),
+                                    phase_step.SETUP_MAIN,
                                     test_case.the_extra(PartialPhase.SETUP)[0].first_line,
                                     test.ImplementationErrorTestException),
                             PRE_EDS_VALIDATION_STEPS +
-                            [phase_step.SETUP__MAIN,
-                             phase_step.CLEANUP__MAIN,
+                            [phase_step.SETUP_MAIN,
+                             phase_step.CLEANUP_MAIN,
                              ],
                             True))
 
@@ -68,13 +67,13 @@ class Test(TestCaseBase):
                 Arrangement(test_case),
                 Expectation(PartialResultStatus.VALIDATE,
                             ExpectedFailureForInstructionFailure.new_with_message(
-                                    PhaseStep(phases.SETUP, phase_step.POST_VALIDATE),
+                                    phase_step.SETUP_POST_VALIDATE,
                                     test_case.the_extra(PartialPhase.SETUP)[0].first_line,
                                     'validation error from setup/post-validate'),
                             PRE_EDS_VALIDATION_STEPS +
-                            [phase_step.SETUP__MAIN,
-                             phase_step.SETUP__POST_VALIDATE,
-                             phase_step.CLEANUP__MAIN,
+                            [phase_step.SETUP_MAIN,
+                             phase_step.SETUP_POST_VALIDATE,
+                             phase_step.CLEANUP_MAIN,
                              ],
                             True))
 
@@ -89,13 +88,13 @@ class Test(TestCaseBase):
                 Arrangement(test_case),
                 Expectation(PartialResultStatus.HARD_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_message(
-                                    PhaseStep(phases.SETUP, phase_step.POST_VALIDATE),
+                                    phase_step.SETUP_POST_VALIDATE,
                                     test_case.the_extra(PartialPhase.SETUP)[0].first_line,
                                     'hard error from setup/post-validate'),
                             PRE_EDS_VALIDATION_STEPS +
-                            [phase_step.SETUP__MAIN,
-                             phase_step.SETUP__POST_VALIDATE,
-                             phase_step.CLEANUP__MAIN,
+                            [phase_step.SETUP_MAIN,
+                             phase_step.SETUP_POST_VALIDATE,
+                             phase_step.CLEANUP_MAIN,
                              ],
                             True))
 
@@ -108,13 +107,13 @@ class Test(TestCaseBase):
                 Arrangement(test_case),
                 Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_exception(
-                                    PhaseStep(phases.SETUP, phase_step.POST_VALIDATE),
+                                    phase_step.SETUP_POST_VALIDATE,
                                     test_case.the_extra(PartialPhase.SETUP)[0].first_line,
                                     test.ImplementationErrorTestException),
                             PRE_EDS_VALIDATION_STEPS +
-                            [phase_step.SETUP__MAIN,
-                             phase_step.SETUP__POST_VALIDATE,
-                             phase_step.CLEANUP__MAIN,
+                            [phase_step.SETUP_MAIN,
+                             phase_step.SETUP_POST_VALIDATE,
+                             phase_step.CLEANUP_MAIN,
                              ],
                             True))
 
@@ -128,15 +127,15 @@ class Test(TestCaseBase):
                 Arrangement(test_case),
                 Expectation(PartialResultStatus.VALIDATE,
                             ExpectedFailureForInstructionFailure.new_with_message(
-                                    PhaseStep(phases.ASSERT, phase_step.VALIDATE),
+                                    phase_step.ASSERT_VALIDATE_POST_EDS,
                                     test_case.the_extra(PartialPhase.ASSERT)[0].first_line,
                                     'ASSERT/validate'),
                             PRE_EDS_VALIDATION_STEPS +
-                            [phase_step.SETUP__MAIN,
-                             phase_step.SETUP__POST_VALIDATE,
-                             phase_step.ACT__VALIDATE,
-                             phase_step.ASSERT__VALIDATE,
-                             phase_step.CLEANUP__MAIN,
+                            [phase_step.SETUP_MAIN,
+                             phase_step.SETUP_POST_VALIDATE,
+                             phase_step.ACT_VALIDATE_POST_EDS,
+                             phase_step.ASSERT_VALIDATE_POST_EDS,
+                             phase_step.CLEANUP_MAIN,
                              ],
                             True))
 
@@ -150,15 +149,15 @@ class Test(TestCaseBase):
                 Arrangement(test_case),
                 Expectation(PartialResultStatus.HARD_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_message(
-                                    PhaseStep(phases.ASSERT, phase_step.VALIDATE),
+                                    phase_step.ASSERT_VALIDATE_POST_EDS,
                                     test_case.the_extra(PartialPhase.ASSERT)[0].first_line,
                                     'ASSERT/validate'),
                             PRE_EDS_VALIDATION_STEPS +
-                            [phase_step.SETUP__MAIN,
-                             phase_step.SETUP__POST_VALIDATE,
-                             phase_step.ACT__VALIDATE,
-                             phase_step.ASSERT__VALIDATE,
-                             phase_step.CLEANUP__MAIN,
+                            [phase_step.SETUP_MAIN,
+                             phase_step.SETUP_POST_VALIDATE,
+                             phase_step.ACT_VALIDATE_POST_EDS,
+                             phase_step.ASSERT_VALIDATE_POST_EDS,
+                             phase_step.CLEANUP_MAIN,
                              ],
                             True))
 
@@ -171,15 +170,15 @@ class Test(TestCaseBase):
                 Arrangement(test_case),
                 Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_exception(
-                                    PhaseStep(phases.ASSERT, phase_step.VALIDATE),
+                                    phase_step.ASSERT_VALIDATE_POST_EDS,
                                     test_case.the_extra(PartialPhase.ASSERT)[0].first_line,
                                     test.ImplementationErrorTestException),
                             PRE_EDS_VALIDATION_STEPS +
-                            [phase_step.SETUP__MAIN,
-                             phase_step.SETUP__POST_VALIDATE,
-                             phase_step.ACT__VALIDATE,
-                             phase_step.ASSERT__VALIDATE,
-                             phase_step.CLEANUP__MAIN,
+                            [phase_step.SETUP_MAIN,
+                             phase_step.SETUP_POST_VALIDATE,
+                             phase_step.ACT_VALIDATE_POST_EDS,
+                             phase_step.ASSERT_VALIDATE_POST_EDS,
+                             phase_step.CLEANUP_MAIN,
                              ],
                             True))
 
@@ -193,14 +192,14 @@ class Test(TestCaseBase):
                 Arrangement(test_case),
                 Expectation(PartialResultStatus.VALIDATE,
                             ExpectedFailureForInstructionFailure.new_with_message(
-                                    PhaseStep(phases.ACT, phase_step.VALIDATE),
+                                    phase_step.ACT_VALIDATE_POST_EDS,
                                     test_case.the_extra(PartialPhase.ACT)[0].first_line,
                                     'ACT/validate'),
                             PRE_EDS_VALIDATION_STEPS +
-                            [phase_step.SETUP__MAIN,
-                             phase_step.SETUP__POST_VALIDATE,
-                             phase_step.ACT__VALIDATE,
-                             phase_step.CLEANUP__MAIN,
+                            [phase_step.SETUP_MAIN,
+                             phase_step.SETUP_POST_VALIDATE,
+                             phase_step.ACT_VALIDATE_POST_EDS,
+                             phase_step.CLEANUP_MAIN,
                              ],
                             True))
 
@@ -214,14 +213,14 @@ class Test(TestCaseBase):
                 Arrangement(test_case),
                 Expectation(PartialResultStatus.HARD_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_message(
-                                    PhaseStep(phases.ACT, phase_step.VALIDATE),
+                                    phase_step.ACT_VALIDATE_POST_EDS,
                                     test_case.the_extra(PartialPhase.ACT)[0].first_line,
                                     'ACT/validate'),
                             PRE_EDS_VALIDATION_STEPS +
-                            [phase_step.SETUP__MAIN,
-                             phase_step.SETUP__POST_VALIDATE,
-                             phase_step.ACT__VALIDATE,
-                             phase_step.CLEANUP__MAIN,
+                            [phase_step.SETUP_MAIN,
+                             phase_step.SETUP_POST_VALIDATE,
+                             phase_step.ACT_VALIDATE_POST_EDS,
+                             phase_step.CLEANUP_MAIN,
                              ],
                             True))
 
@@ -234,14 +233,14 @@ class Test(TestCaseBase):
                 Arrangement(test_case),
                 Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_exception(
-                                    PhaseStep(phases.ACT, phase_step.VALIDATE),
+                                    phase_step.ACT_VALIDATE_POST_EDS,
                                     test_case.the_extra(PartialPhase.ACT)[0].first_line,
                                     test.ImplementationErrorTestException),
                             PRE_EDS_VALIDATION_STEPS +
-                            [phase_step.SETUP__MAIN,
-                             phase_step.SETUP__POST_VALIDATE,
-                             phase_step.ACT__VALIDATE,
-                             phase_step.CLEANUP__MAIN,
+                            [phase_step.SETUP_MAIN,
+                             phase_step.SETUP_POST_VALIDATE,
+                             phase_step.ACT_VALIDATE_POST_EDS,
+                             phase_step.CLEANUP_MAIN,
                              ],
                             True))
 
@@ -255,16 +254,16 @@ class Test(TestCaseBase):
                 Arrangement(test_case),
                 Expectation(PartialResultStatus.HARD_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_message(
-                                    PhaseStep(phases.ACT, phase_step.ACT_script_generate),
+                                    phase_step.ACT_MAIN,
                                     test_case.the_extra(PartialPhase.ACT)[0].first_line,
                                     'hard error msg from act'),
                             PRE_EDS_VALIDATION_STEPS +
-                            [phase_step.SETUP__MAIN,
-                             phase_step.SETUP__POST_VALIDATE,
-                             phase_step.ACT__VALIDATE,
-                             phase_step.ASSERT__VALIDATE,
-                             phase_step.ACT__SCRIPT_GENERATE,
-                             phase_step.CLEANUP__MAIN,
+                            [phase_step.SETUP_MAIN,
+                             phase_step.SETUP_POST_VALIDATE,
+                             phase_step.ACT_VALIDATE_POST_EDS,
+                             phase_step.ASSERT_VALIDATE_POST_EDS,
+                             phase_step.ACT_MAIN,
+                             phase_step.CLEANUP_MAIN,
                              ],
                             True))
 
@@ -277,16 +276,16 @@ class Test(TestCaseBase):
                 Arrangement(test_case),
                 Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_exception(
-                                    PhaseStep(phases.ACT, phase_step.ACT_script_generate),
+                                    phase_step.ACT_MAIN,
                                     test_case.the_extra(PartialPhase.ACT)[0].first_line,
                                     test.ImplementationErrorTestException),
                             PRE_EDS_VALIDATION_STEPS +
-                            [phase_step.SETUP__MAIN,
-                             phase_step.SETUP__POST_VALIDATE,
-                             phase_step.ACT__VALIDATE,
-                             phase_step.ASSERT__VALIDATE,
-                             phase_step.ACT__SCRIPT_GENERATE,
-                             phase_step.CLEANUP__MAIN,
+                            [phase_step.SETUP_MAIN,
+                             phase_step.SETUP_POST_VALIDATE,
+                             phase_step.ACT_VALIDATE_POST_EDS,
+                             phase_step.ASSERT_VALIDATE_POST_EDS,
+                             phase_step.ACT_MAIN,
+                             phase_step.CLEANUP_MAIN,
                              ],
                             True))
 
@@ -298,16 +297,16 @@ class Test(TestCaseBase):
                                     svh.new_svh_validation_error('error message from validate'))),
                 Expectation(PartialResultStatus.VALIDATE,
                             ExpectedFailureForPhaseFailure.new_with_message(
-                                    PhaseStep(phases.ACT, phase_step.ACT_script_validate),
+                                    phase_step.ACT_SCRIPT_VALIDATE,
                                     'error message from validate'),
                             PRE_EDS_VALIDATION_STEPS +
-                            [phase_step.SETUP__MAIN,
-                             phase_step.SETUP__POST_VALIDATE,
-                             phase_step.ACT__VALIDATE,
-                             phase_step.ASSERT__VALIDATE,
-                             phase_step.ACT__SCRIPT_GENERATE,
-                             phase_step.ACT__SCRIPT_VALIDATE,
-                             phase_step.CLEANUP__MAIN,
+                            [phase_step.SETUP_MAIN,
+                             phase_step.SETUP_POST_VALIDATE,
+                             phase_step.ACT_VALIDATE_POST_EDS,
+                             phase_step.ASSERT_VALIDATE_POST_EDS,
+                             phase_step.ACT_MAIN,
+                             phase_step.ACT_SCRIPT_VALIDATE,
+                             phase_step.CLEANUP_MAIN,
                              ],
                             True))
 
@@ -319,16 +318,16 @@ class Test(TestCaseBase):
                                     svh.new_svh_hard_error('error message from validate'))),
                 Expectation(PartialResultStatus.HARD_ERROR,
                             ExpectedFailureForPhaseFailure.new_with_message(
-                                    PhaseStep(phases.ACT, phase_step.ACT_script_validate),
+                                    phase_step.ACT_SCRIPT_VALIDATE,
                                     'error message from validate'),
                             PRE_EDS_VALIDATION_STEPS +
-                            [phase_step.SETUP__MAIN,
-                             phase_step.SETUP__POST_VALIDATE,
-                             phase_step.ACT__VALIDATE,
-                             phase_step.ASSERT__VALIDATE,
-                             phase_step.ACT__SCRIPT_GENERATE,
-                             phase_step.ACT__SCRIPT_VALIDATE,
-                             phase_step.CLEANUP__MAIN,
+                            [phase_step.SETUP_MAIN,
+                             phase_step.SETUP_POST_VALIDATE,
+                             phase_step.ACT_VALIDATE_POST_EDS,
+                             phase_step.ASSERT_VALIDATE_POST_EDS,
+                             phase_step.ACT_MAIN,
+                             phase_step.ACT_SCRIPT_VALIDATE,
+                             phase_step.CLEANUP_MAIN,
                              ],
                             True))
 
@@ -340,16 +339,16 @@ class Test(TestCaseBase):
                                     test.ImplementationErrorTestException())),
                 Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
                             ExpectedFailureForPhaseFailure.new_with_exception(
-                                    PhaseStep(phases.ACT, phase_step.ACT_script_validate),
+                                    phase_step.ACT_SCRIPT_VALIDATE,
                                     test.ImplementationErrorTestException),
                             PRE_EDS_VALIDATION_STEPS +
-                            [phase_step.SETUP__MAIN,
-                             phase_step.SETUP__POST_VALIDATE,
-                             phase_step.ACT__VALIDATE,
-                             phase_step.ASSERT__VALIDATE,
-                             phase_step.ACT__SCRIPT_GENERATE,
-                             phase_step.ACT__SCRIPT_VALIDATE,
-                             phase_step.CLEANUP__MAIN,
+                            [phase_step.SETUP_MAIN,
+                             phase_step.SETUP_POST_VALIDATE,
+                             phase_step.ACT_VALIDATE_POST_EDS,
+                             phase_step.ASSERT_VALIDATE_POST_EDS,
+                             phase_step.ACT_MAIN,
+                             phase_step.ACT_SCRIPT_VALIDATE,
+                             phase_step.CLEANUP_MAIN,
                              ],
                             True))
 
@@ -361,17 +360,17 @@ class Test(TestCaseBase):
                                     test.ImplementationErrorTestException())),
                 Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
                             ExpectedFailureForPhaseFailure.new_with_exception(
-                                    PhaseStep(phases.ACT, phase_step.ACT_script_execute),
+                                    phase_step.ACT_SCRIPT_EXECUTE,
                                     test.ImplementationErrorTestException),
                             PRE_EDS_VALIDATION_STEPS +
-                            [phase_step.SETUP__MAIN,
-                             phase_step.SETUP__POST_VALIDATE,
-                             phase_step.ACT__VALIDATE,
-                             phase_step.ASSERT__VALIDATE,
-                             phase_step.ACT__SCRIPT_GENERATE,
-                             phase_step.ACT__SCRIPT_VALIDATE,
-                             phase_step.ACT__SCRIPT_EXECUTE,
-                             phase_step.CLEANUP__MAIN,
+                            [phase_step.SETUP_MAIN,
+                             phase_step.SETUP_POST_VALIDATE,
+                             phase_step.ACT_VALIDATE_POST_EDS,
+                             phase_step.ASSERT_VALIDATE_POST_EDS,
+                             phase_step.ACT_MAIN,
+                             phase_step.ACT_SCRIPT_VALIDATE,
+                             phase_step.ACT_SCRIPT_EXECUTE,
+                             phase_step.CLEANUP_MAIN,
                              ],
                             True))
 
@@ -385,19 +384,19 @@ class Test(TestCaseBase):
                 Arrangement(test_case),
                 Expectation(PartialResultStatus.FAIL,
                             ExpectedFailureForInstructionFailure.new_with_message(
-                                    PhaseStep(phases.ASSERT, phase_step.MAIN),
+                                    phase_step.ASSERT_MAIN,
                                     test_case.the_extra(PartialPhase.ASSERT)[0].first_line,
                                     'fail msg from ASSERT'),
                             PRE_EDS_VALIDATION_STEPS +
-                            [phase_step.SETUP__MAIN,
-                             phase_step.SETUP__POST_VALIDATE,
-                             phase_step.ACT__VALIDATE,
-                             phase_step.ASSERT__VALIDATE,
-                             phase_step.ACT__SCRIPT_GENERATE,
-                             phase_step.ACT__SCRIPT_VALIDATE,
-                             phase_step.ACT__SCRIPT_EXECUTE,
-                             phase_step.ASSERT__MAIN,
-                             phase_step.CLEANUP__MAIN,
+                            [phase_step.SETUP_MAIN,
+                             phase_step.SETUP_POST_VALIDATE,
+                             phase_step.ACT_VALIDATE_POST_EDS,
+                             phase_step.ASSERT_VALIDATE_POST_EDS,
+                             phase_step.ACT_MAIN,
+                             phase_step.ACT_SCRIPT_VALIDATE,
+                             phase_step.ACT_SCRIPT_EXECUTE,
+                             phase_step.ASSERT_MAIN,
+                             phase_step.CLEANUP_MAIN,
                              ],
                             True))
 
@@ -411,19 +410,19 @@ class Test(TestCaseBase):
                 Arrangement(test_case),
                 Expectation(PartialResultStatus.HARD_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_message(
-                                    PhaseStep(phases.ASSERT, phase_step.MAIN),
+                                    phase_step.ASSERT_MAIN,
                                     test_case.the_extra(PartialPhase.ASSERT)[0].first_line,
                                     'hard error msg from ASSERT'),
                             PRE_EDS_VALIDATION_STEPS +
-                            [phase_step.SETUP__MAIN,
-                             phase_step.SETUP__POST_VALIDATE,
-                             phase_step.ACT__VALIDATE,
-                             phase_step.ASSERT__VALIDATE,
-                             phase_step.ACT__SCRIPT_GENERATE,
-                             phase_step.ACT__SCRIPT_VALIDATE,
-                             phase_step.ACT__SCRIPT_EXECUTE,
-                             phase_step.ASSERT__MAIN,
-                             phase_step.CLEANUP__MAIN,
+                            [phase_step.SETUP_MAIN,
+                             phase_step.SETUP_POST_VALIDATE,
+                             phase_step.ACT_VALIDATE_POST_EDS,
+                             phase_step.ASSERT_VALIDATE_POST_EDS,
+                             phase_step.ACT_MAIN,
+                             phase_step.ACT_SCRIPT_VALIDATE,
+                             phase_step.ACT_SCRIPT_EXECUTE,
+                             phase_step.ASSERT_MAIN,
+                             phase_step.CLEANUP_MAIN,
                              ],
                             True))
 
@@ -436,19 +435,19 @@ class Test(TestCaseBase):
                 Arrangement(test_case),
                 Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_exception(
-                                    PhaseStep(phases.ASSERT, phase_step.MAIN),
+                                    phase_step.ASSERT_MAIN,
                                     test_case.the_extra(PartialPhase.ASSERT)[0].first_line,
                                     test.ImplementationErrorTestException),
                             PRE_EDS_VALIDATION_STEPS +
-                            [phase_step.SETUP__MAIN,
-                             phase_step.SETUP__POST_VALIDATE,
-                             phase_step.ACT__VALIDATE,
-                             phase_step.ASSERT__VALIDATE,
-                             phase_step.ACT__SCRIPT_GENERATE,
-                             phase_step.ACT__SCRIPT_VALIDATE,
-                             phase_step.ACT__SCRIPT_EXECUTE,
-                             phase_step.ASSERT__MAIN,
-                             phase_step.CLEANUP__MAIN,
+                            [phase_step.SETUP_MAIN,
+                             phase_step.SETUP_POST_VALIDATE,
+                             phase_step.ACT_VALIDATE_POST_EDS,
+                             phase_step.ASSERT_VALIDATE_POST_EDS,
+                             phase_step.ACT_MAIN,
+                             phase_step.ACT_SCRIPT_VALIDATE,
+                             phase_step.ACT_SCRIPT_EXECUTE,
+                             phase_step.ASSERT_MAIN,
+                             phase_step.CLEANUP_MAIN,
                              ],
                             True))
 
@@ -465,15 +464,15 @@ class Test(TestCaseBase):
                                     test_case.the_extra(PartialPhase.CLEANUP)[0].first_line,
                                     'hard error msg from CLEANUP'),
                             PRE_EDS_VALIDATION_STEPS +
-                            [phase_step.SETUP__MAIN,
-                             phase_step.SETUP__POST_VALIDATE,
-                             phase_step.ACT__VALIDATE,
-                             phase_step.ASSERT__VALIDATE,
-                             phase_step.ACT__SCRIPT_GENERATE,
-                             phase_step.ACT__SCRIPT_VALIDATE,
-                             phase_step.ACT__SCRIPT_EXECUTE,
-                             phase_step.ASSERT__MAIN,
-                             phase_step.CLEANUP__MAIN,
+                            [phase_step.SETUP_MAIN,
+                             phase_step.SETUP_POST_VALIDATE,
+                             phase_step.ACT_VALIDATE_POST_EDS,
+                             phase_step.ASSERT_VALIDATE_POST_EDS,
+                             phase_step.ACT_MAIN,
+                             phase_step.ACT_SCRIPT_VALIDATE,
+                             phase_step.ACT_SCRIPT_EXECUTE,
+                             phase_step.ASSERT_MAIN,
+                             phase_step.CLEANUP_MAIN,
                              ],
                             True))
 
@@ -490,15 +489,15 @@ class Test(TestCaseBase):
                                     test_case.the_extra(PartialPhase.CLEANUP)[0].first_line,
                                     test.ImplementationErrorTestException),
                             PRE_EDS_VALIDATION_STEPS +
-                            [phase_step.SETUP__MAIN,
-                             phase_step.SETUP__POST_VALIDATE,
-                             phase_step.ACT__VALIDATE,
-                             phase_step.ASSERT__VALIDATE,
-                             phase_step.ACT__SCRIPT_GENERATE,
-                             phase_step.ACT__SCRIPT_VALIDATE,
-                             phase_step.ACT__SCRIPT_EXECUTE,
-                             phase_step.ASSERT__MAIN,
-                             phase_step.CLEANUP__MAIN,
+                            [phase_step.SETUP_MAIN,
+                             phase_step.SETUP_POST_VALIDATE,
+                             phase_step.ACT_VALIDATE_POST_EDS,
+                             phase_step.ASSERT_VALIDATE_POST_EDS,
+                             phase_step.ACT_MAIN,
+                             phase_step.ACT_SCRIPT_VALIDATE,
+                             phase_step.ACT_SCRIPT_EXECUTE,
+                             phase_step.ASSERT_MAIN,
+                             phase_step.CLEANUP_MAIN,
                              ],
                             True))
 
