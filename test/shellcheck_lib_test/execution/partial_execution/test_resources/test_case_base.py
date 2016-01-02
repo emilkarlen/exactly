@@ -35,7 +35,7 @@ class PartialExecutionTestCaseBase:
                 self._test_case(),
                 self.initial_home_dir_path,
                 'shellcheck-test-',
-                True)
+                self.__dbg_do_not_delete_dir_structure)
 
         # ASSERT #
         self.__partial_result = partial_result
@@ -43,7 +43,8 @@ class PartialExecutionTestCaseBase:
         # CLEANUP #
         os.chdir(str(self.initial_home_dir_path))
         if not self.__dbg_do_not_delete_dir_structure and self.eds:
-            shutil.rmtree(str(self.eds.root_dir))
+            if self.eds.root_dir.exists():
+                shutil.rmtree(str(self.eds.root_dir))
         else:
             if self.eds:
                 print(str(self.eds.root_dir))
