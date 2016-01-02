@@ -52,7 +52,7 @@ class Test(TestCaseBase):
                                     'validation error from setup/validate'),
                             [phase_step.SETUP__PRE_VALIDATE,
                              ],
-                            True))
+                            False))
 
     def test_hard_error_in_setup_validate_step(self):
         test_case = one_successful_instruction_in_each_phase() \
@@ -70,7 +70,7 @@ class Test(TestCaseBase):
                                     'hard error from setup/validate'),
                             [phase_step.SETUP__PRE_VALIDATE,
                              ],
-                            True))
+                            False))
 
     def test_implementation_error_in_setup_validate_step(self):
         test_case = one_successful_instruction_in_each_phase() \
@@ -86,7 +86,7 @@ class Test(TestCaseBase):
                                     test.ImplementationErrorTestException),
                             [phase_step.SETUP__PRE_VALIDATE,
                              ],
-                            True))
+                            False))
 
     def test_hard_error_in_setup_main_step(self):
         test_case = one_successful_instruction_in_each_phase() \
