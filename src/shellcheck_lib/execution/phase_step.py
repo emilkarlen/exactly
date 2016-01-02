@@ -21,7 +21,7 @@ def new_without_step(phase: phases.Phase) -> PhaseStep:
 
 
 VALIDATE = 'validate'
-PRE_VALIDATE = 'pre-validate'
+PRE_EDS_VALIDATE = 'pre-validate'
 POST_VALIDATE = 'post-validate'
 MAIN = 'main'
 
@@ -66,7 +66,7 @@ CLEANUP = 'CLEANUP'
 
 ANONYMOUS_MAIN = new_without_step(phases.ANONYMOUS)
 
-SETUP_PRE_VALIDATE = PhaseStep(phases.SETUP, PRE_VALIDATE)
+SETUP_PRE_VALIDATE = PhaseStep(phases.SETUP, PRE_EDS_VALIDATE)
 SETUP_MAIN = PhaseStep(phases.SETUP, MAIN)
 SETUP_POST_VALIDATE = PhaseStep(phases.SETUP, POST_VALIDATE)
 
@@ -77,4 +77,5 @@ ACT_SCRIPT_EXECUTION = PhaseStep(phases.ACT, ACT_script_execute)
 ASSERT_VALIDATE = PhaseStep(phases.ASSERT, VALIDATE)
 ASSERT_MAIN = PhaseStep(phases.ASSERT, MAIN)
 
+CLEANUP_VALIDATE_PRE_EDS = PhaseStep(phases.CLEANUP, PRE_EDS_VALIDATE)
 CLEANUP_MAIN = new_without_step(phases.CLEANUP)
