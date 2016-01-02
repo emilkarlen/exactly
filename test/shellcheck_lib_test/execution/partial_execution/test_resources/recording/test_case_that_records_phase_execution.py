@@ -104,13 +104,11 @@ class _TestCaseThatRecordsExecution(PartialExecutionTestCaseBase):
                              self.__recorder.recorded_elements,
                              msg)
         if self.__expectation.execution_directory_structure_should_exist:
-            self.utc.assertIsNotNone(self.eds)
-            self.utc.assertTrue(
-                    self.eds.root_dir.is_dir(),
-                    'Execution Directory Structure root is expected to be a directory')
+            self.utc.assertTrue(self.partial_result.has_execution_directory_structure)
+            self.utc.assertIsNotNone(self.partial_result.execution_directory_structure)
         else:
-            self.utc.assertIsNone(self.eds,
-                                  'Execution Directory Structure is expected to not have been created')
+            self.utc.assertFalse(self.partial_result.has_execution_directory_structure)
+            self.utc.assertIsNone(self.partial_result.execution_directory_structure)
 
 
 class TestCaseBase(unittest.TestCase):
