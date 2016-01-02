@@ -103,16 +103,19 @@ class TestCaseWithCommonDefaultForSetupAssertCleanup(TestCaseGeneratorForPartial
 def py3_test(unittest_case: unittest.TestCase,
              test_case: partial_execution.TestCase,
              assertions: types.FunctionType,
+             is_keep_execution_directory_root: bool = True,
              dbg_do_not_delete_dir_structure=False):
     result = _execute(test_case,
-                      script_handling_for_setup(python3.new_act_phase_setup()))
+                      script_handling_for_setup(python3.new_act_phase_setup()),
+                      is_keep_execution_directory_root=is_keep_execution_directory_root)
 
     assertions(unittest_case,
                result)
     # CLEANUP #
     os.chdir(str(result.home_dir_path))
     if not dbg_do_not_delete_dir_structure:
-        shutil.rmtree(str(result.execution_directory_structure.root_dir))
+        if result.execution_directory_structure.root_dir.exists():
+            shutil.rmtree(str(result.execution_directory_structure.root_dir))
     else:
         print(str(result.execution_directory_structure.root_dir))
 
@@ -171,13 +174,14 @@ class PartialExecutionTestCaseBase:
 
 
 def _execute(test_case: partial_execution.TestCase,
-             script_handling: partial_execution.ScriptHandling) -> Result:
+             script_handling: partial_execution.ScriptHandling,
+             is_keep_execution_directory_root: bool = True) -> Result:
     home_dir_path = pathlib.Path().resolve()
     partial_result = partial_execution.execute(
             script_handling,
             test_case,
             home_dir_path,
             'shellcheck-test-',
-            True)
+            is_keep_execution_directory_root)
     return Result(home_dir_path,
                   partial_result)
