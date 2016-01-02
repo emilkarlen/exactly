@@ -33,7 +33,7 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorForPartialExecutio
                                                               phase_step.ASSERT__MAIN),
             PartialPhase.CLEANUP:
                 recording_instructions.new_cleanup_instruction(str(phase_step.CLEANUP_VALIDATE_PRE_EDS),
-                                                               phase_step.CLEANUP)
+                                                               phase_step.CLEANUP__MAIN)
         }
 
     def recorders_for(self, phase: PartialPhase) -> list:
