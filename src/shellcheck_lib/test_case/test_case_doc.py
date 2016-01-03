@@ -2,6 +2,7 @@ from shellcheck_lib.document.model import PhaseContents, ElementType
 from shellcheck_lib.test_case.sections.act.instruction import ActPhaseInstruction
 from shellcheck_lib.test_case.sections.anonymous import AnonymousPhaseInstruction
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
+from shellcheck_lib.test_case.sections.before_assert import BeforeAssertPhaseInstruction
 from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction
 from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction
 
@@ -11,6 +12,7 @@ class TestCase(tuple):
                 anonymous_phase: PhaseContents,
                 setup_phase: PhaseContents,
                 act_phase: PhaseContents,
+                before_assert_phase: PhaseContents,
                 assert_phase: PhaseContents,
                 cleanup_phase: PhaseContents):
         TestCase.__assert_instruction_class(anonymous_phase,
@@ -19,6 +21,8 @@ class TestCase(tuple):
                                             SetupPhaseInstruction)
         TestCase.__assert_instruction_class(act_phase,
                                             ActPhaseInstruction)
+        TestCase.__assert_instruction_class(before_assert_phase,
+                                            BeforeAssertPhaseInstruction)
         TestCase.__assert_instruction_class(assert_phase,
                                             AssertPhaseInstruction)
         TestCase.__assert_instruction_class(cleanup_phase,
@@ -26,6 +30,7 @@ class TestCase(tuple):
         return tuple.__new__(cls, (anonymous_phase,
                                    setup_phase,
                                    act_phase,
+                                   before_assert_phase,
                                    assert_phase,
                                    cleanup_phase))
 
@@ -42,12 +47,16 @@ class TestCase(tuple):
         return self[2]
 
     @property
-    def assert_phase(self) -> PhaseContents:
+    def before_assert_phase(self) -> PhaseContents:
         return self[3]
 
     @property
-    def cleanup_phase(self) -> PhaseContents:
+    def assert_phase(self) -> PhaseContents:
         return self[4]
+
+    @property
+    def cleanup_phase(self) -> PhaseContents:
+        return self[5]
 
     @staticmethod
     def __assert_instruction_class(phase_contents: PhaseContents,

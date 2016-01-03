@@ -125,9 +125,9 @@ class ActPhaseInstructionThat(ActPhaseInstruction):
 def before_assert_phase_instruction_that(validate_pre_eds=do_return(svh.new_svh_success()),
                                          validate_post_eds=do_return(svh.new_svh_success()),
                                          main=do_return(sh.new_sh_success())) -> AssertPhaseInstruction:
-    return AssertPhaseInstructionThat(validate_pre_eds,
-                                      validate_post_eds,
-                                      main)
+    return BeforeAssertPhaseInstructionThat(validate_pre_eds,
+                                            validate_post_eds,
+                                            main)
 
 
 class BeforeAssertPhaseInstructionThat(BeforeAssertPhaseInstruction):

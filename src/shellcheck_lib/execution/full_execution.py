@@ -1,6 +1,7 @@
 import os
 import pathlib
 
+from shellcheck_lib.document.model import PhaseContents
 from shellcheck_lib.execution import environment_variables
 from shellcheck_lib.execution import phase_step_executors, partial_execution, phase_step
 from shellcheck_lib.execution.partial_execution import ScriptHandling
@@ -22,7 +23,7 @@ def execute(script_handling: ScriptHandling,
     _prepare_environment_variables()
     anonymous_phase_environment = ConfigurationBuilder(initial_home_dir_path)
     partial_result = _execute_anonymous_phase(anonymous_phase_environment,
-                                              test_case)
+                                              test_case.anonymous_phase)
     if partial_result.status is not PartialResultStatus.PASS:
         return new_anonymous_phase_failure_from(partial_result)
     if anonymous_phase_environment.execution_mode is ExecutionMode.SKIPPED:
@@ -75,8 +76,8 @@ def _prepare_environment_variables():
 
 
 def _execute_anonymous_phase(phase_environment: ConfigurationBuilder,
-                             test_case: test_case_doc.TestCase) -> PartialResult:
-    return phase_step_execution.execute_phase(test_case.anonymous_phase,
+                             anonymous_phase: PhaseContents) -> PartialResult:
+    return phase_step_execution.execute_phase(anonymous_phase,
                                               phase_step_execution.ElementHeaderExecutorThatDoesNothing(),
                                               phase_step_execution.ElementHeaderExecutorThatDoesNothing(),
                                               phase_step_executors.AnonymousInstructionExecutor(phase_environment),

@@ -26,6 +26,7 @@ class TestCaseGeneratorForFullExecutionBase:
                 self.phase_contents_for(phases.ANONYMOUS),
                 self.phase_contents_for(phases.SETUP),
                 self.phase_contents_for(phases.ACT),
+                self.phase_contents_for(phases.BEFORE_ASSERT),
                 self.phase_contents_for(phases.ASSERT),
                 self.phase_contents_for(phases.CLEANUP)
         )

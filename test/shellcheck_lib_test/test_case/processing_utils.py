@@ -3,11 +3,11 @@ import unittest
 
 from shellcheck_lib.document.model import new_empty_phase_contents
 from shellcheck_lib.execution.result import FullResult, new_skipped
-from shellcheck_lib.test_case import processing_utils as sut
 from shellcheck_lib.test_case import error_description
-from shellcheck_lib.test_case.preprocessor import IdentityPreprocessor
+from shellcheck_lib.test_case import processing_utils as sut
 from shellcheck_lib.test_case import test_case_doc
 from shellcheck_lib.test_case import test_case_processing as tcp
+from shellcheck_lib.test_case.preprocessor import IdentityPreprocessor
 from shellcheck_lib_test.test_case.test_resources import error_info
 
 
@@ -263,6 +263,7 @@ PROCESS_ERROR = tcp.ProcessError(tcp.ErrorInfo(error_description.of_exception(Va
 PATH = pathlib.Path('path')
 
 TEST_CASE = test_case_doc.TestCase(new_empty_phase_contents(),
+                                   new_empty_phase_contents(),
                                    new_empty_phase_contents(),
                                    new_empty_phase_contents(),
                                    new_empty_phase_contents(),
