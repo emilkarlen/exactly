@@ -2,6 +2,19 @@
 
 Fortsätt med
 
+* Ny fas: before-assert
+** instruktion
+** fas-konstanter
+** test-infrastruktur
+** test-falls-dokument
+** instruktions-uppsättning (default)
+** hjälp
+** test-fall
+*** validate/pre-eds
+*** validate/post-eds
+*** main
+** andra - "globala" - test
+* Ny validate/pre-eds: Befintliga instruktioner ska använda denna
 * cd
 ** Tester av instruktionerna
 Finns tester av fas-oberoende utils.
