@@ -11,6 +11,20 @@ from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
 
 
+def do_return(x):
+    def ret_val():
+        return x
+
+    return ret_val
+
+
+def do_raise(ex: Exception):
+    def ret_val():
+        raise ex
+
+    return ret_val
+
+
 class ImplementationErrorTestException(Exception):
     pass
 
@@ -26,231 +40,129 @@ class AnonymousPhaseInstructionThatSetsExecutionMode(AnonymousPhaseInstruction):
         return sh.new_sh_success()
 
 
-class AnonymousPhaseInstructionThatReturns(AnonymousPhaseInstruction):
+def anonymous_phase_instruction_that(do_main=do_return(sh.SuccessOrHardError)) -> AnonymousPhaseInstruction:
+    return AnonymousPhaseInstructionThat(do_main=do_main)
+
+
+class AnonymousPhaseInstructionThat(AnonymousPhaseInstruction):
     def __init__(self,
-                 ret_val: sh.SuccessOrHardError):
-        self.ret_val = ret_val
+                 do_main=do_return(sh.SuccessOrHardError)):
+        self.do_main = do_main
 
     def main(self, global_environment,
              configuration_builder: ConfigurationBuilder) -> sh.SuccessOrHardError:
-        return self.ret_val
+        return self.do_main()
 
 
-class AnonymousPhaseInstructionWithImplementationError(AnonymousPhaseInstruction):
+def setup_phase_instruction_that(pre_validate=do_return(svh.new_svh_success()),
+                                 main=do_return(sh.new_sh_success()),
+                                 post_validate=do_return(svh.new_svh_success())) -> SetupPhaseInstruction:
+    return SetupPhaseInstructionThat(pre_validate,
+                                     main,
+                                     post_validate)
+
+
+class SetupPhaseInstructionThat(SetupPhaseInstruction):
     def __init__(self,
-                 exception_to_raise: Exception):
-        self.__exception_to_raise = exception_to_raise
-
-    def main(self, global_environment,
-             configuration_builder: ConfigurationBuilder) -> sh.SuccessOrHardError:
-        raise self.__exception_to_raise
-
-
-class SetupPhaseInstructionThatReturns(SetupPhaseInstruction):
-    def __init__(self,
-                 from_pre_validate: svh.SuccessOrValidationErrorOrHardError,
-                 from_main: sh.SuccessOrHardError,
-                 from_post_validate: svh.SuccessOrValidationErrorOrHardError):
-        self.__from_pre_validate = from_pre_validate
-        self.__from_main = from_main
-        self.__from_post_validate = from_post_validate
+                 pre_validate,
+                 main,
+                 post_validate):
+        self._pre_validate = pre_validate
+        self._main = main
+        self._post_validate = post_validate
 
     def pre_validate(self,
                      global_environment: instrs.GlobalEnvironmentForPreEdsStep) \
             -> svh.SuccessOrValidationErrorOrHardError:
-        return self.__from_pre_validate
+        return self._pre_validate()
 
     def main(self,
              os_services: OsServices,
              environment: instrs.GlobalEnvironmentForPostEdsPhase,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
-        return self.__from_main
+        return self._main()
 
     def post_validate(self,
                       global_environment: instrs.GlobalEnvironmentForPostEdsPhase) \
             -> svh.SuccessOrValidationErrorOrHardError:
-        return self.__from_post_validate
+        return self._post_validate()
 
 
-class SetupPhaseInstructionWithImplementationErrorInPreValidate(SetupPhaseInstruction):
+def act_phase_instruction_that(do_validate=do_return(svh.new_svh_success()),
+                               do_main=do_return(sh.new_sh_success())) -> ActPhaseInstruction:
+    return ActPhaseInstructionThat(do_validate=do_validate,
+                                   do_main=do_main)
+
+
+class ActPhaseInstructionThat(ActPhaseInstruction):
     def __init__(self,
-                 exception_to_raise: Exception):
-        self.__exception_to_raise = exception_to_raise
-
-    def pre_validate(self,
-                     global_environment: instrs.GlobalEnvironmentForPreEdsStep) \
-            -> svh.SuccessOrValidationErrorOrHardError:
-        raise self.__exception_to_raise
-
-    def main(self,
-             os_services: OsServices,
-             environment: instrs.GlobalEnvironmentForPostEdsPhase,
-             settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
-        return sh.new_sh_success()
-
-
-class SetupPhaseInstructionWithImplementationErrorInPostValidate(SetupPhaseInstruction):
-    def __init__(self,
-                 exception_to_raise: Exception):
-        self.__exception_to_raise = exception_to_raise
-
-    def main(self,
-             os_services: OsServices,
-             environment: instrs.GlobalEnvironmentForPostEdsPhase,
-             settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
-        return sh.new_sh_success()
-
-    def post_validate(self,
-                      global_environment: instrs.GlobalEnvironmentForPostEdsPhase) \
-            -> svh.SuccessOrValidationErrorOrHardError:
-        raise self.__exception_to_raise
-
-
-class SetupPhaseInstructionWithExceptionInMain(SetupPhaseInstruction):
-    def __init__(self,
-                 exception_to_raise: Exception):
-        self.__exception_to_raise = exception_to_raise
-
-    def main(self,
-             os_services: OsServices,
-             environment: instrs.GlobalEnvironmentForPostEdsPhase,
-             settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
-        raise self.__exception_to_raise
-
-
-class ActPhaseInstructionThatReturns(ActPhaseInstruction):
-    def __init__(self,
-                 from_validate: svh.SuccessOrValidationErrorOrHardError,
-                 from_main: sh.SuccessOrHardError):
-        self.__for_validate = from_validate
-        self.__for_main = from_main
+                 do_validate=do_return(svh.new_svh_success()),
+                 do_main=do_return(sh.new_sh_success())):
+        self.do_validate = do_validate
+        self.do_main = do_main
 
     def validate(self,
                  global_environment: instrs.GlobalEnvironmentForPostEdsPhase) \
             -> svh.SuccessOrValidationErrorOrHardError:
-        return self.__for_validate
+        return self.do_validate()
 
     def main(
             self,
             global_environment: instrs.GlobalEnvironmentForPostEdsPhase,
             phase_environment: PhaseEnvironmentForScriptGeneration) -> sh.SuccessOrHardError:
-        return self.__for_main
+        return self.do_main()
 
 
-class ActPhaseInstructionWithImplementationErrorInValidate(ActPhaseInstruction):
+def assert_phase_instruction_that(validate=do_return(svh.new_svh_success()),
+                                  main=do_return(pfh.new_pfh_pass())) -> AssertPhaseInstruction:
+    return AssertPhaseInstructionThat(do_validate=validate,
+                                      do_main=main)
+
+
+def assert_phase_instruction_that_returns(
+        from_validate: svh.SuccessOrValidationErrorOrHardError = svh.new_svh_success(),
+        from_main: pfh.PassOrFailOrHardError = pfh.new_pfh_pass()) -> AssertPhaseInstruction:
+    return AssertPhaseInstructionThat(do_validate=do_return(from_validate),
+                                      do_main=do_return(from_main))
+
+
+class AssertPhaseInstructionThat(AssertPhaseInstruction):
     def __init__(self,
-                 exception_to_raise: Exception):
-        self.__exception_to_raise = exception_to_raise
-
-    def validate(self,
-                 global_environment: instrs.GlobalEnvironmentForPostEdsPhase) \
-            -> svh.SuccessOrValidationErrorOrHardError:
-        raise self.__exception_to_raise
-
-    def main(
-            self,
-            global_environment: instrs.GlobalEnvironmentForPostEdsPhase,
-            phase_environment: PhaseEnvironmentForScriptGeneration) -> sh.SuccessOrHardError:
-        return sh.new_sh_success()
-
-
-class ActPhaseInstructionWithImplementationErrorInMain(ActPhaseInstruction):
-    def __init__(self,
-                 exception_to_raise: Exception):
-        self.__exception_to_raise = exception_to_raise
-
-    def main(
-            self,
-            global_environment: instrs.GlobalEnvironmentForPostEdsPhase,
-            phase_environment: PhaseEnvironmentForScriptGeneration) -> sh.SuccessOrHardError:
-        raise self.__exception_to_raise
-
-
-class AssertPhaseInstructionThatReturns(AssertPhaseInstruction):
-    def __init__(self,
-                 from_validate: svh.SuccessOrValidationErrorOrHardError,
-                 from_main: pfh.PassOrFailOrHardError):
-        self.__for_validate = from_validate
-        self.__for_main = from_main
+                 do_validate=do_return(svh.new_svh_success()),
+                 do_main=do_return(pfh.new_pfh_pass())):
+        self.do_validate = do_validate
+        self.do_main = do_main
 
     def validate(self,
                  environment: instrs.GlobalEnvironmentForPostEdsPhase) \
             -> svh.SuccessOrValidationErrorOrHardError:
-        return self.__for_validate
+        return self.do_validate()
 
     def main(self,
              environment: instrs.GlobalEnvironmentForPostEdsPhase,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
-        return self.__for_main
+        return self.do_main()
 
 
-class AssertPhaseInstructionWithExceptionInValidate(AssertPhaseInstruction):
+def cleanup_phase_instruction_that(do_validate_pre_eds=do_return(svh.SuccessOrValidationErrorOrHardError),
+                                   do_main=do_return(sh.SuccessOrHardError)) -> CleanupPhaseInstruction:
+    return CleanupPhaseInstructionThat(do_validate_pre_eds=do_validate_pre_eds,
+                                       do_main=do_main)
+
+
+class CleanupPhaseInstructionThat(CleanupPhaseInstruction):
     def __init__(self,
-                 exception_to_raise: Exception):
-        self.__exception_to_raise = exception_to_raise
-
-    def validate(self,
-                 environment: instrs.GlobalEnvironmentForPostEdsPhase) \
-            -> svh.SuccessOrValidationErrorOrHardError:
-        raise self.__exception_to_raise
-
-    def main(self,
-             environment: instrs.GlobalEnvironmentForPostEdsPhase,
-             os_services: OsServices) -> pfh.PassOrFailOrHardError:
-        return sh.new_sh_success()
-
-
-class AssertPhaseInstructionWithExceptionInMain(AssertPhaseInstruction):
-    def __init__(self,
-                 exception_to_raise: Exception):
-        self.__exception_to_raise = exception_to_raise
-
-    def main(self,
-             environment: instrs.GlobalEnvironmentForPostEdsPhase,
-             os_services: OsServices) -> pfh.PassOrFailOrHardError:
-        raise self.__exception_to_raise
-
-
-class CleanupPhaseInstructionThatReturns(CleanupPhaseInstruction):
-    def __init__(self,
-                 from_validate_pre_eds: svh.SuccessOrValidationErrorOrHardError,
-                 from_main: sh.SuccessOrHardError):
-        self.from_validate_pre_eds = from_validate_pre_eds
-        self.from_main = from_main
+                 do_validate_pre_eds=do_return(svh.SuccessOrValidationErrorOrHardError),
+                 do_main=do_return(sh.SuccessOrHardError)):
+        self.do_validate_pre_eds = do_validate_pre_eds
+        self.do_main = do_main
 
     def validate_pre_eds(self,
                          environment: instrs.GlobalEnvironmentForPreEdsStep) \
             -> svh.SuccessOrValidationErrorOrHardError:
-        return self.from_validate_pre_eds
+        return self.do_validate_pre_eds()
 
     def main(self,
              environment: instrs.GlobalEnvironmentForPostEdsPhase,
              os_services: OsServices) -> sh.SuccessOrHardError:
-        return self.from_main
-
-
-class CleanupPhaseInstructionWithImplementationErrorInValidatePreEds(CleanupPhaseInstruction):
-    def __init__(self,
-                 exception_to_raise: Exception):
-        self.__exception_to_raise = exception_to_raise
-
-    def validate_pre_eds(self,
-                         environment: instrs.GlobalEnvironmentForPreEdsStep) \
-            -> svh.SuccessOrValidationErrorOrHardError:
-        raise self.__exception_to_raise
-
-    def main(self,
-             environment: instrs.GlobalEnvironmentForPostEdsPhase,
-             os_services: OsServices) -> sh.SuccessOrHardError:
-        return sh.new_sh_success()
-
-
-class CleanupPhaseInstructionWithImplementationErrorInMain(CleanupPhaseInstruction):
-    def __init__(self,
-                 exception_to_raise: Exception):
-        self.__exception_to_raise = exception_to_raise
-
-    def main(self,
-             environment: instrs.GlobalEnvironmentForPostEdsPhase,
-             os_services: OsServices) -> sh.SuccessOrHardError:
-        raise self.__exception_to_raise
+        return self.do_main()

@@ -7,9 +7,8 @@ from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
 from shellcheck_lib.test_case.sections.result import sh
-from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib_test.execution.test_resources.instruction_test_resources import \
-    CleanupPhaseInstructionThatReturns
+    cleanup_phase_instruction_that
 from shellcheck_lib_test.instructions.cleanup.test_resources import instruction_check as sut
 from shellcheck_lib_test.instructions.test_resources import test_of_test_framework_utils as test_misc
 
@@ -57,8 +56,7 @@ class TestCases(sut.TestCaseBase):
                         )
 
 
-SUCCESSFUL_INSTRUCTION = CleanupPhaseInstructionThatReturns(svh.new_svh_success(),
-                                                            sh.new_sh_success())
+SUCCESSFUL_INSTRUCTION = cleanup_phase_instruction_that()
 
 
 class InstructionThatRaisesTestErrorIfCwdIsIsNotTestRoot(CleanupPhaseInstruction):

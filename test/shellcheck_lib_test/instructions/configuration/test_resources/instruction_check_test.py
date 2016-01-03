@@ -6,9 +6,8 @@ import unittest
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParserSource
 from shellcheck_lib.test_case.sections.anonymous import ConfigurationBuilder
-from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib_test.execution.test_resources.instruction_test_resources import \
-    AnonymousPhaseInstructionThatReturns
+    anonymous_phase_instruction_that
 from shellcheck_lib_test.instructions.configuration.test_resources import configuration_check
 from shellcheck_lib_test.instructions.configuration.test_resources import instruction_check
 from shellcheck_lib_test.instructions.configuration.test_resources.instruction_check import Arrangement, Expectation
@@ -52,7 +51,7 @@ def single_line_source() -> SingleInstructionParserSource:
     return utils.new_source('instruction name', 'instruction arguments')
 
 
-_SUCCESSFUL_INSTRUCTION = AnonymousPhaseInstructionThatReturns(sh.new_sh_success())
+_SUCCESSFUL_INSTRUCTION = anonymous_phase_instruction_that()
 
 
 def suite():

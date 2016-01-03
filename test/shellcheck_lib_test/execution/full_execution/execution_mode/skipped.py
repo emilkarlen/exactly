@@ -7,6 +7,7 @@ from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib_test.execution.full_execution.test_resources.recording.test_case_that_records_phase_execution import \
     Expectation, Arrangement, TestCaseBase, one_successful_instruction_in_each_phase
 from shellcheck_lib_test.execution.test_resources import instruction_test_resources as test
+from shellcheck_lib_test.execution.test_resources.instruction_test_resources import do_return
 from shellcheck_lib_test.test_resources.expected_instruction_failure import ExpectedFailureForNoFailure, \
     ExpectedFailureForInstructionFailure
 
@@ -27,8 +28,7 @@ class Test(TestCaseBase):
     def test_execution_mode_skipped_but_failing_instruction_in_anonymous_phase_before_setting_execution_mode(self):
         test_case = one_successful_instruction_in_each_phase() \
             .add(phases.ANONYMOUS,
-                 test.AnonymousPhaseInstructionThatReturns(
-                         sh.new_sh_hard_error('hard error msg'))) \
+                 test.anonymous_phase_instruction_that(do_return(sh.new_sh_hard_error('hard error msg')))) \
             .add(phases.ANONYMOUS,
                  test.AnonymousPhaseInstructionThatSetsExecutionMode(
                          ExecutionMode.SKIPPED))
@@ -48,8 +48,7 @@ class Test(TestCaseBase):
                  test.AnonymousPhaseInstructionThatSetsExecutionMode(
                          ExecutionMode.SKIPPED)) \
             .add(phases.ANONYMOUS,
-                 test.AnonymousPhaseInstructionThatReturns(
-                         sh.new_sh_hard_error('hard error msg')))
+                 test.anonymous_phase_instruction_that(do_return(sh.new_sh_hard_error('hard error msg'))))
         self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.HARD_ERROR,

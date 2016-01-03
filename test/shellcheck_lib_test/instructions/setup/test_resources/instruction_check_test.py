@@ -12,7 +12,7 @@ from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
 from shellcheck_lib_test.execution.test_resources.instruction_test_resources import \
-    SetupPhaseInstructionThatReturns
+    setup_phase_instruction_that
 from shellcheck_lib_test.instructions.setup.test_resources import instruction_check
 from shellcheck_lib_test.instructions.setup.test_resources import settings_check
 from shellcheck_lib_test.instructions.setup.test_resources.instruction_check import Arrangement, is_success, Expectation
@@ -99,9 +99,7 @@ def single_line_source() -> SingleInstructionParserSource:
     return utils.new_source2('instruction arguments')
 
 
-SUCCESSFUL_INSTRUCTION = SetupPhaseInstructionThatReturns(svh.new_svh_success(),
-                                                          sh.new_sh_success(),
-                                                          svh.new_svh_success())
+SUCCESSFUL_INSTRUCTION = setup_phase_instruction_that()
 
 
 class InstructionThatRaisesTestErrorIfCwdIsIsNotTestRoot(SetupPhaseInstruction):
