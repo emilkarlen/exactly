@@ -17,10 +17,10 @@ class ConfigForSetupValidatePreEds(validation_tests.Configuration):
 
     def instruction_that_returns(self, return_value: svh.SuccessOrValidationErrorOrHardError) -> TestCaseInstruction:
         return test.setup_phase_instruction_that(
-                pre_validate=do_return(return_value))
+                validate_pre_eds=do_return(return_value))
 
     def instruction_that_raises(self, exception: Exception) -> TestCaseInstruction:
-        return test.setup_phase_instruction_that(pre_validate=do_raise(exception))
+        return test.setup_phase_instruction_that(validate_pre_eds=do_raise(exception))
 
 
 class ConfigForActValidatePreEds(validation_tests.Configuration):

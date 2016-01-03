@@ -16,90 +16,57 @@ class RecordingInstructions:
     def __init__(self, recorder: ListRecorder):
         self.recorder = recorder
 
-    def new_anonymous_instruction(self, value) -> SetupPhaseInstruction:
-        return anonymous_instruction_that_records(self.__recorder_of(value))
+    def new_anonymous_instruction(self, value) -> AnonymousPhaseInstruction:
+        return anonymous_phase_instruction_that(main=self._do_record_and_return_sh(value))
 
     def new_setup_instruction(self,
-                              value_for_pre_validate,
-                              value_for_execute,
-                              value_for_post_validate) -> SetupPhaseInstruction:
-        return setup_instruction_that_records(self.__recorder_of(value_for_pre_validate),
-                                              self.__recorder_of(value_for_execute),
-                                              self.__recorder_of(value_for_post_validate))
+                              value_for_validate_pre_eds,
+                              value_for_main,
+                              value_for_validate_post_eds) -> SetupPhaseInstruction:
+        return setup_phase_instruction_that(validate_pre_eds=self._do_record_and_return_svh(value_for_validate_pre_eds),
+                                            validate_post_eds=self._do_record_and_return_svh(
+                                                value_for_validate_post_eds),
+                                            main=self._do_record_and_return_sh(value_for_main))
 
     def new_act_instruction(self,
                             value_for_validate_pre_eds,
-                            value_for_validate,
-                            value_for_execute) -> ActPhaseInstruction:
-        return act_instruction_that_records(self.__recorder_of(value_for_validate_pre_eds),
-                                            self.__recorder_of(value_for_validate),
-                                            self.__recorder_of(value_for_execute))
+                            value_for_validate_post_eds,
+                            value_for_main) -> ActPhaseInstruction:
+        return act_phase_instruction_that(validate_pre_eds=self._do_record_and_return_svh(value_for_validate_pre_eds),
+                                          validate_post_eds=self._do_record_and_return_svh(value_for_validate_post_eds),
+                                          main=self._do_record_and_return_sh(value_for_main))
 
     def new_assert_instruction(self,
                                value_for_validate_pre_eds,
                                value_for_validate,
                                value_for_execute) -> AssertPhaseInstruction:
-        return assert_instruction_that_records(self.__recorder_of(value_for_validate_pre_eds),
-                                               self.__recorder_of(value_for_validate),
-                                               self.__recorder_of(value_for_execute))
+        return assert_phase_instruction_that(
+                validate_pre_eds=self._do_record_and_return_svh(value_for_validate_pre_eds),
+                validate_post_eds=self._do_record_and_return_svh(value_for_validate),
+                main=self._do_record_and_return(value_for_execute,
+                                                pfh.new_pfh_pass()))
 
     def new_cleanup_instruction(self,
                                 value_for_validate_pre_eds,
                                 value_for_main) -> CleanupPhaseInstruction:
-        return cleanup_instruction_that_records(self.__recorder_of(value_for_validate_pre_eds),
-                                                self.__recorder_of(value_for_main))
+        return cleanup_phase_instruction_that(
+                validate_pre_eds=self._do_record_and_return_svh(value_for_validate_pre_eds),
+                main=self._do_record_and_return_sh(value_for_main))
 
     def __recorder_of(self, element) -> ListElementRecorder:
         return self.recorder.recording_of(element)
 
+    def _do_record_and_return_sh(self, element):
+        return self._do_record_and_return(element,
+                                          sh.new_sh_success())
 
-def anonymous_instruction_that_records(recorder: ListElementRecorder) -> AnonymousPhaseInstruction:
-    return anonymous_phase_instruction_that(do_main=_do_record_and_return_sh(recorder))
+    def _do_record_and_return_svh(self, element):
+        return self._do_record_and_return(element,
+                                          svh.new_svh_success())
 
+    def _do_record_and_return(self, element, return_value):
+        def ret_val():
+            self.recorder.recording_of(element).record()
+            return return_value
 
-def setup_instruction_that_records(recorder_for_pre_validate: ListElementRecorder,
-                                   recorder_for_main: ListElementRecorder,
-                                   recorder_for_post_validate: ListElementRecorder) -> SetupPhaseInstruction:
-    return setup_phase_instruction_that(pre_validate=_do_record_and_return_svh(recorder_for_pre_validate),
-                                        post_validate=_do_record_and_return_svh(recorder_for_post_validate),
-                                        main=_do_record_and_return_sh(recorder_for_main))
-
-
-def act_instruction_that_records(recorder_for_validate_pre_eds: ListElementRecorder,
-                                 recorder_for_validate_post_eds: ListElementRecorder,
-                                 recorder_for_main: ListElementRecorder) -> ActPhaseInstruction:
-    return act_phase_instruction_that(validate_pre_eds=_do_record_and_return_svh(recorder_for_validate_pre_eds),
-                                      validate=_do_record_and_return_svh(recorder_for_validate_post_eds),
-                                      main=_do_record_and_return_sh(recorder_for_main))
-
-
-def assert_instruction_that_records(recorder_for_validate_pre_eds: ListElementRecorder,
-                                    recorder_for_validate: ListElementRecorder,
-                                    recorder_for_main: ListElementRecorder) -> AssertPhaseInstruction:
-    return assert_phase_instruction_that(validate_pre_eds=_do_record_and_return_svh(recorder_for_validate_pre_eds),
-                                         validate=_do_record_and_return_svh(recorder_for_validate),
-                                         main=_do_record_and_return(recorder_for_main,
-                                                                    pfh.new_pfh_pass()))
-
-
-def cleanup_instruction_that_records(recorder_for_pre_validate: ListElementRecorder,
-                                     recorder_for_main: ListElementRecorder) -> CleanupPhaseInstruction:
-    return cleanup_phase_instruction_that(validate_pre_eds=_do_record_and_return_svh(recorder_for_pre_validate),
-                                          main=_do_record_and_return_sh(recorder_for_main))
-
-
-def _do_record_and_return_sh(recorder: ListElementRecorder):
-    return _do_record_and_return(recorder, sh.new_sh_success())
-
-
-def _do_record_and_return_svh(recorder: ListElementRecorder):
-    return _do_record_and_return(recorder, svh.new_svh_success())
-
-
-def _do_record_and_return(recorder: ListElementRecorder,
-                          return_value):
-    def ret_val():
-        recorder.record()
-        return return_value
-
-    return ret_val
+        return ret_val

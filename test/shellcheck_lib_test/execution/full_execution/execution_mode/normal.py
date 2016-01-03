@@ -50,7 +50,7 @@ class Test(TestCaseBase):
         test_case = one_successful_instruction_in_each_phase() \
             .add(phases.ANONYMOUS,
                  test.anonymous_phase_instruction_that(
-                         do_main=test.do_raise(test.ImplementationErrorTestException())))
+                         main=test.do_raise(test.ImplementationErrorTestException())))
         self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.IMPLEMENTATION_ERROR,
