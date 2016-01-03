@@ -131,8 +131,11 @@ def execute_test_case_with_recording(put: unittest.TestCase,
             script_handling_for_setup(python3.new_act_phase_setup()),
             arrangement.validate_test_action,
             arrangement.execute_test_action)
-    test_case = _TestCaseThatRecordsExecution(put, arrangement.test_case_generator, expectation,
-                                              dbg_do_not_delete_dir_structure, script_handling,
+    test_case = _TestCaseThatRecordsExecution(put,
+                                              arrangement.test_case_generator,
+                                              expectation,
+                                              dbg_do_not_delete_dir_structure,
+                                              script_handling,
                                               arrangement.test_case_generator.recorder)
     test_case.execute()
 
