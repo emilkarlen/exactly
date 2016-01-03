@@ -38,6 +38,7 @@ SETUP_PRE_VALIDATE = _validate_pre_eds_step(phases.SETUP)
 SETUP_POST_VALIDATE = _validate_post_eds_step(phases.SETUP)
 SETUP_MAIN = _main_step(phases.SETUP)
 
+ACT_VALIDATE_PRE_EDS = _validate_pre_eds_step(phases.ACT)
 ACT_VALIDATE_POST_EDS = _validate_post_eds_step(phases.ACT)
 ACT_MAIN = _main_step(phases.ACT)
 ACT_SCRIPT_VALIDATE = PhaseStep(phases.ACT, 'script-validation')

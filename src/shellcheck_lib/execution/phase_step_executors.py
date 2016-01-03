@@ -132,6 +132,16 @@ class AssertMainInstructionExecutor(ControlledInstructionExecutor):
                 instruction.main(self.__environment, self.__os_services))
 
 
+class ActPreValidateInstructionExecutor(ControlledInstructionExecutor):
+    def __init__(self,
+                 global_environment: instr.GlobalEnvironmentForPreEdsStep):
+        self.__global_environment = global_environment
+
+    def apply(self, instruction: ActPhaseInstruction) -> PartialInstructionControlledFailureInfo:
+        return _from_success_or_validation_error_or_hard_error(
+                instruction.validate_pre_eds(self.__global_environment))
+
+
 class AssertPreValidateInstructionExecutor(ControlledInstructionExecutor):
     def __init__(self,
                  global_environment: instr.GlobalEnvironmentForPreEdsStep):
