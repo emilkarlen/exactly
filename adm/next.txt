@@ -2,9 +2,6 @@
 
 Fortsätt med
 
-* pre-eds-valid
-** inspelarna ska anv nya PHASE_instr_that(...)
-SetupInstructionThatRecordsStringInList
 * cd
 ** Tester av instruktionerna
 Finns tester av fas-oberoende utils.
