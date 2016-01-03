@@ -46,10 +46,12 @@ class TestCase(tuple):
     def __new__(cls,
                 setup_phase: PhaseContents,
                 act_phase: PhaseContents,
+                before_assert_phase: PhaseContents,
                 assert_phase: PhaseContents,
                 cleanup_phase: PhaseContents):
         return tuple.__new__(cls, (setup_phase,
                                    act_phase,
+                                   before_assert_phase,
                                    assert_phase,
                                    cleanup_phase))
 
@@ -62,12 +64,16 @@ class TestCase(tuple):
         return self[1]
 
     @property
-    def assert_phase(self) -> PhaseContents:
+    def before_assert_phase(self) -> PhaseContents:
         return self[2]
 
     @property
-    def cleanup_phase(self) -> PhaseContents:
+    def assert_phase(self) -> PhaseContents:
         return self[3]
+
+    @property
+    def cleanup_phase(self) -> PhaseContents:
+        return self[4]
 
 
 class _StepExecutionResult:

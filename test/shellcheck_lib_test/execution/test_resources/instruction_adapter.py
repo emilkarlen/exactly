@@ -2,6 +2,7 @@ from shellcheck_lib.execution import phases
 from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.sections import common as instr
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
+from shellcheck_lib.test_case.sections.before_assert import BeforeAssertPhaseInstruction
 from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase, TestCaseInstruction
 from shellcheck_lib.test_case.sections.result import pfh
@@ -31,6 +32,10 @@ def as_setup(internal_instruction: InternalInstruction) -> SetupPhaseInstruction
     return _SetupInstructionExecutor(internal_instruction)
 
 
+def as_before_assert(internal_instruction: InternalInstruction) -> BeforeAssertPhaseInstruction:
+    return _BeforeAssertPhaseExecutor(internal_instruction)
+
+
 def as_assert(internal_instruction: InternalInstruction) -> AssertPhaseInstruction:
     return _AssertInstructionExecutor(internal_instruction)
 
@@ -53,6 +58,22 @@ class _SetupInstructionExecutor(SetupPhaseInstruction):
         self.__internal_instruction.execute(phases.SETUP.section_name,
                                             environment,
                                             OsServices())
+        return self.__ret_val
+
+
+class _BeforeAssertPhaseExecutor(BeforeAssertPhaseInstruction):
+    def __init__(self,
+                 internal_instruction: InternalInstruction,
+                 ret_val: sh.SuccessOrHardError = sh.new_sh_success()):
+        self.__internal_instruction = internal_instruction
+        self.__ret_val = ret_val
+
+    def main(self,
+             os_services: OsServices,
+             environment: instr.GlobalEnvironmentForPostEdsPhase) -> sh.SuccessOrHardError:
+        self.__internal_instruction.execute(phases.BEFORE_ASSERT.section_name,
+                                            environment,
+                                            os_services)
         return self.__ret_val
 
 

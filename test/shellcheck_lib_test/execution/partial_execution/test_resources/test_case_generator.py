@@ -34,6 +34,7 @@ class TestCaseGeneratorForPartialExecutionBase:
         return TestCase(
                 self.phase_contents_for(PartialPhase.SETUP),
                 self.phase_contents_for(PartialPhase.ACT),
+                self.phase_contents_for(PartialPhase.BEFORE_ASSERT),
                 self.phase_contents_for(PartialPhase.ASSERT),
                 self.phase_contents_for(PartialPhase.CLEANUP)
         )
