@@ -116,36 +116,36 @@ class TestCaseBase(unittest.TestCase):
                arrangement: Arrangement,
                expectation: Expectation,
                dbg_do_not_delete_dir_structure=False):
-        self._new_test_case_with_recording(arrangement,
-                                           expectation,
-                                           dbg_do_not_delete_dir_structure).execute()
+        execute_test_case_with_recording(self,
+                                         arrangement,
+                                         expectation,
+                                         dbg_do_not_delete_dir_structure)
 
-    def _new_test_case_with_recording(self,
-                                      arrangement: Arrangement,
-                                      expectation: Expectation,
-                                      dbg_do_not_delete_dir_structure=False) -> _TestCaseThatRecordsExecution:
-        script_handling = self._with_recording_act_program_executor(
-                arrangement.test_case_generator.recorder,
-                script_handling_for_setup(python3.new_act_phase_setup()),
-                arrangement.validate_test_action,
-                arrangement.execute_test_action)
-        return _TestCaseThatRecordsExecution(self,
-                                             arrangement.test_case_generator,
-                                             expectation,
-                                             dbg_do_not_delete_dir_structure,
-                                             script_handling,
-                                             arrangement.test_case_generator.recorder)
 
-    def _with_recording_act_program_executor(self,
-                                             recorder: ListRecorder,
-                                             script_handling: ScriptHandling,
-                                             validate_test_action,
-                                             execute_test_action) -> ScriptHandling:
-        return ScriptHandling(script_handling.builder,
-                              ActProgramExecutorWrapperThatRecordsSteps(recorder,
-                                                                        script_handling.executor,
-                                                                        validate_test_action,
-                                                                        execute_test_action))
+def execute_test_case_with_recording(put: unittest.TestCase,
+                                     arrangement: Arrangement,
+                                     expectation: Expectation,
+                                     dbg_do_not_delete_dir_structure=False):
+    script_handling = _with_recording_act_program_executor(
+            arrangement.test_case_generator.recorder,
+            script_handling_for_setup(python3.new_act_phase_setup()),
+            arrangement.validate_test_action,
+            arrangement.execute_test_action)
+    test_case = _TestCaseThatRecordsExecution(put, arrangement.test_case_generator, expectation,
+                                              dbg_do_not_delete_dir_structure, script_handling,
+                                              arrangement.test_case_generator.recorder)
+    test_case.execute()
+
+
+def _with_recording_act_program_executor(recorder: ListRecorder,
+                                         script_handling: ScriptHandling,
+                                         validate_test_action,
+                                         execute_test_action) -> ScriptHandling:
+    return ScriptHandling(script_handling.builder,
+                          ActProgramExecutorWrapperThatRecordsSteps(recorder,
+                                                                    script_handling.executor,
+                                                                    validate_test_action,
+                                                                    execute_test_action))
 
 
 def one_successful_instruction_in_each_phase() -> TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList:

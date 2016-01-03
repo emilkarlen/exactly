@@ -1,74 +1,56 @@
 import unittest
 
 from shellcheck_lib.execution import phase_step
-from shellcheck_lib.execution.result import PartialResultStatus
+from shellcheck_lib.test_case.sections.common import TestCaseInstruction
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.result import svh
-from shellcheck_lib_test.execution.partial_execution.test_resources.recording.test_case_that_records_phase_execution import \
-    Expectation, Arrangement, TestCaseBase, one_successful_instruction_in_each_phase
+from shellcheck_lib_test.execution.partial_execution.test_resources.recording import validation_tests
 from shellcheck_lib_test.execution.partial_execution.test_resources.test_case_generator import PartialPhase
 from shellcheck_lib_test.execution.test_resources import instruction_test_resources as test
-from shellcheck_lib_test.test_resources.expected_instruction_failure import ExpectedFailureForInstructionFailure
 
 
-class Test(TestCaseBase):
-    def test_validation_error_in_setup_validate_step(self):
-        test_case = one_successful_instruction_in_each_phase() \
-            .add(PartialPhase.SETUP,
-                 test.SetupPhaseInstructionThatReturns(
-                         svh.new_svh_validation_error(
-                                 'validation error from setup/validate'),
-                         sh.new_sh_success(),
-                         svh.new_svh_success()))
-        self._check(
-                Arrangement(test_case),
-                Expectation(PartialResultStatus.VALIDATE,
-                            ExpectedFailureForInstructionFailure.new_with_message(
-                                    phase_step.SETUP_PRE_VALIDATE,
-                                    test_case.the_extra(PartialPhase.SETUP)[0].first_line,
-                                    'validation error from setup/validate'),
-                            [phase_step.SETUP_PRE_VALIDATE,
-                             ],
-                            False))
+class ConfigForSetupValidatePreEds(validation_tests.Configuration):
+    def __init__(self):
+        super().__init__(PartialPhase.SETUP,
+                         phase_step.SETUP_PRE_VALIDATE,
+                         expected_steps=[phase_step.SETUP_PRE_VALIDATE])
 
-    def test_hard_error_in_setup_validate_step(self):
-        test_case = one_successful_instruction_in_each_phase() \
-            .add(PartialPhase.SETUP,
-                 test.SetupPhaseInstructionThatReturns(
-                         svh.new_svh_hard_error('hard error from setup/validate'),
-                         sh.new_sh_success(),
-                         svh.new_svh_success()))
-        self._check(
-                Arrangement(test_case),
-                Expectation(PartialResultStatus.HARD_ERROR,
-                            ExpectedFailureForInstructionFailure.new_with_message(
-                                    phase_step.SETUP_PRE_VALIDATE,
-                                    test_case.the_extra(PartialPhase.SETUP)[0].first_line,
-                                    'hard error from setup/validate'),
-                            [phase_step.SETUP_PRE_VALIDATE,
-                             ],
-                            False))
+    def instruction_that_returns(self, return_value: svh.SuccessOrValidationErrorOrHardError) -> TestCaseInstruction:
+        return test.SetupPhaseInstructionThatReturns(
+                return_value,
+                sh.new_sh_success(),
+                svh.new_svh_success())
 
-    def test_implementation_error_in_setup_validate_step(self):
-        test_case = one_successful_instruction_in_each_phase() \
-            .add(PartialPhase.SETUP,
-                 test.SetupPhaseInstructionWithImplementationErrorInPreValidate(
-                         test.ImplementationErrorTestException()))
-        self._check(
-                Arrangement(test_case),
-                Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
-                            ExpectedFailureForInstructionFailure.new_with_exception(
-                                    phase_step.SETUP_PRE_VALIDATE,
-                                    test_case.the_extra(PartialPhase.SETUP)[0].first_line,
-                                    test.ImplementationErrorTestException),
-                            [phase_step.SETUP_PRE_VALIDATE,
-                             ],
-                            False))
+    def instruction_that_raises(self, exception: Exception) -> TestCaseInstruction:
+        return test.SetupPhaseInstructionWithImplementationErrorInPreValidate(exception)
+
+
+class ConfigForCleanupValidatePreEds(validation_tests.Configuration):
+    def __init__(self):
+        super().__init__(PartialPhase.CLEANUP,
+                         phase_step.CLEANUP_VALIDATE_PRE_EDS,
+                         expected_steps=[phase_step.SETUP_PRE_VALIDATE,
+                                         phase_step.CLEANUP_VALIDATE_PRE_EDS])
+
+    def instruction_that_returns(self, return_value: svh.SuccessOrValidationErrorOrHardError) -> TestCaseInstruction:
+        return test.CleanupPhaseInstructionThatReturns(
+                return_value,
+                sh.new_sh_success())
+
+    def instruction_that_raises(self, exception: Exception) -> TestCaseInstruction:
+        return test.CleanupPhaseInstructionWithImplementationErrorInValidatePreEds(exception)
+
+
+def instruction_validation_invocations() -> list:
+    return [ConfigForSetupValidatePreEds(),
+            ConfigForCleanupValidatePreEds(),
+            ]
 
 
 def suite():
     ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(Test))
+    ret_val.addTests(validation_tests.suite_for(conf)
+                     for conf in instruction_validation_invocations())
     return ret_val
 
 

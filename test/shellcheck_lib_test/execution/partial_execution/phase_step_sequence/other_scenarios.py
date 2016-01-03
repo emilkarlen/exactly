@@ -455,6 +455,7 @@ class Test(TestCaseBase):
         test_case = one_successful_instruction_in_each_phase() \
             .add(PartialPhase.CLEANUP,
                  test.CleanupPhaseInstructionThatReturns(
+                         svh.new_svh_success(),
                          sh.new_sh_hard_error('hard error msg from CLEANUP')))
         self._check(
                 Arrangement(test_case),
@@ -479,7 +480,7 @@ class Test(TestCaseBase):
     def test_implementation_error_in_cleanup_main_step(self):
         test_case = one_successful_instruction_in_each_phase() \
             .add(PartialPhase.CLEANUP,
-                 test.CleanupPhaseInstructionWithImplementationError(
+                 test.CleanupPhaseInstructionWithImplementationErrorInMain(
                          test.ImplementationErrorTestException()))
         self._check(
                 Arrangement(test_case),

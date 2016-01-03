@@ -87,7 +87,7 @@ class Test(TestCaseBase):
             .add(phases.ANONYMOUS,
                  test.AnonymousPhaseInstructionThatSetsExecutionMode(ExecutionMode.XFAIL)) \
             .add(phases.CLEANUP,
-                 test.CleanupPhaseInstructionWithImplementationError(
+                 test.CleanupPhaseInstructionWithImplementationErrorInMain(
                          test.ImplementationErrorTestException()))
         self._check(
                 Arrangement(test_case),
