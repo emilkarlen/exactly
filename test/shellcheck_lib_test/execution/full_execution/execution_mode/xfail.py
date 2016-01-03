@@ -5,11 +5,11 @@ from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib.test_case.sections.anonymous import ExecutionMode
 from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.result import sh
-from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib_test.execution.full_execution.test_resources.recording.test_case_that_records_phase_execution import \
     Expectation, Arrangement, TestCaseBase, one_successful_instruction_in_each_phase
 from shellcheck_lib_test.execution.test_resources import instruction_test_resources as test
 from shellcheck_lib_test.execution.test_resources.execution_recording.phase_steps import PRE_EDS_VALIDATION_STEPS
+from shellcheck_lib_test.execution.test_resources.instruction_test_resources import do_return
 from shellcheck_lib_test.test_resources.expected_instruction_failure import ExpectedFailureForInstructionFailure, \
     ExpectedFailureForNoFailure
 
@@ -20,9 +20,8 @@ class Test(TestCaseBase):
             .add(phases.ANONYMOUS,
                  test.AnonymousPhaseInstructionThatSetsExecutionMode(ExecutionMode.XFAIL)) \
             .add(phases.ASSERT,
-                 test.AssertPhaseInstructionThatReturns(
-                         from_validate=svh.new_svh_success(),
-                         from_main=pfh.new_pfh_fail('fail message')))
+                 test.assert_phase_instruction_that(
+                         main=test.do_return(pfh.new_pfh_fail('fail message'))))
         self._check(Arrangement(test_case),
                     Expectation(FullResultStatus.XFAIL,
                                 ExpectedFailureForInstructionFailure.new_with_message(
@@ -70,8 +69,7 @@ class Test(TestCaseBase):
             .add(phases.ANONYMOUS,
                  test.AnonymousPhaseInstructionThatSetsExecutionMode(ExecutionMode.XFAIL)) \
             .add(phases.ANONYMOUS,
-                 test.AnonymousPhaseInstructionThatReturns(
-                         sh.new_sh_hard_error('hard error msg')))
+                 test.anonymous_phase_instruction_that(do_return(sh.new_sh_hard_error('hard error msg'))))
         self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.HARD_ERROR,
@@ -87,8 +85,8 @@ class Test(TestCaseBase):
             .add(phases.ANONYMOUS,
                  test.AnonymousPhaseInstructionThatSetsExecutionMode(ExecutionMode.XFAIL)) \
             .add(phases.CLEANUP,
-                 test.CleanupPhaseInstructionWithImplementationErrorInMain(
-                         test.ImplementationErrorTestException()))
+                 test.cleanup_phase_instruction_that(
+                         do_main=test.do_raise(test.ImplementationErrorTestException())))
         self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.IMPLEMENTATION_ERROR,
