@@ -121,9 +121,11 @@ class ActPhaseInstructionThat(ActPhaseInstruction):
         return self.do_main()
 
 
-def assert_phase_instruction_that(validate=do_return(svh.new_svh_success()),
+def assert_phase_instruction_that(validate_pre_eds=do_return(svh.new_svh_success()),
+                                  validate=do_return(svh.new_svh_success()),
                                   main=do_return(pfh.new_pfh_pass())) -> AssertPhaseInstruction:
-    return AssertPhaseInstructionThat(do_validate=validate,
+    return AssertPhaseInstructionThat(do_validate_pre_eds=validate_pre_eds,
+                                      do_validate=validate,
                                       do_main=main)
 
 

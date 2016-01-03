@@ -11,7 +11,8 @@ from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
 from shellcheck_lib_test.execution.test_resources.execution_recording.recorder import ListElementRecorder, ListRecorder
 from shellcheck_lib_test.execution.test_resources.instruction_adapter import InternalInstruction
-from shellcheck_lib_test.execution.test_resources.instruction_test_resources import cleanup_phase_instruction_that
+from shellcheck_lib_test.execution.test_resources.instruction_test_resources import cleanup_phase_instruction_that, \
+    assert_phase_instruction_that
 
 
 class RecordingInstructions:
@@ -41,9 +42,9 @@ class RecordingInstructions:
                                value_for_validate_pre_eds,
                                value_for_validate,
                                value_for_execute) -> AssertPhaseInstruction:
-        return AssertInternalInstructionThatRecordsStringInList(self.__recorder_of(value_for_validate_pre_eds),
-                                                                self.__recorder_of(value_for_validate),
-                                                                self.__recorder_of(value_for_execute))
+        return assert_instruction_that_records(self.__recorder_of(value_for_validate_pre_eds),
+                                               self.__recorder_of(value_for_validate),
+                                               self.__recorder_of(value_for_execute))
 
     def new_cleanup_instruction(self,
                                 value_for_validate_pre_eds,
@@ -133,29 +134,13 @@ class InternalInstructionThatRecordsStringInList(InternalInstruction):
         self.__recorder.record()
 
 
-class AssertInternalInstructionThatRecordsStringInList(AssertPhaseInstruction):
-    def __init__(self,
-                 recorder_for_validate_pre_eds: ListElementRecorder,
-                 recorder_for_validate: ListElementRecorder,
-                 recorder_for_execute: ListElementRecorder):
-        self.__recorder_for_validate_pre_eds = recorder_for_validate_pre_eds
-        self.__recorder_for_validate = recorder_for_validate
-        self.__recorder_for_execute = recorder_for_execute
-
-    def validate_pre_eds(self,
-                         environment: common.GlobalEnvironmentForPreEdsStep) -> svh.SuccessOrValidationErrorOrHardError:
-        self.__recorder_for_validate_pre_eds.record()
-        return svh.new_svh_success()
-
-    def validate(self,
-                 environment: common.GlobalEnvironmentForPreEdsStep) \
-            -> svh.SuccessOrValidationErrorOrHardError:
-        self.__recorder_for_validate.record()
-        return svh.new_svh_success()
-
-    def main(self, environment, os_services: ConfigurationBuilder) -> pfh.PassOrFailOrHardError:
-        self.__recorder_for_execute.record()
-        return pfh.new_pfh_pass()
+def assert_instruction_that_records(recorder_for_validate_pre_eds: ListElementRecorder,
+                                    recorder_for_validate: ListElementRecorder,
+                                    recorder_for_main: ListElementRecorder) -> AssertPhaseInstruction:
+    return assert_phase_instruction_that(validate_pre_eds=_do_record_and_return_svh(recorder_for_validate_pre_eds),
+                                         validate=_do_record_and_return_svh(recorder_for_validate),
+                                         main=_do_record_and_return(recorder_for_main,
+                                                                    pfh.new_pfh_pass()))
 
 
 def cleanup_instruction_that_records(recorder_for_pre_validate: ListElementRecorder,
