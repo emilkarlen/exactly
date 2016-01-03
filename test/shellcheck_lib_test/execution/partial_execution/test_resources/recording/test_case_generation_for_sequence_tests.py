@@ -29,6 +29,10 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorForPartialExecutio
                 recording_instructions.new_act_instruction(phase_step.ACT_VALIDATE_PRE_EDS,
                                                            phase_step.ACT_VALIDATE_POST_EDS,
                                                            phase_step.ACT_MAIN),
+            PartialPhase.BEFORE_ASSERT:
+                recording_instructions.new_before_assert_instruction(phase_step.BEFORE_ASSERT_VALIDATE_PRE_EDS,
+                                                                     phase_step.BEFORE_ASSERT_VALIDATE_POST_EDS,
+                                                                     phase_step.BEFORE_ASSERT_MAIN),
             PartialPhase.ASSERT:
                 recording_instructions.new_assert_instruction(phase_step.ASSERT_VALIDATE_PRE_EDS,
                                                               phase_step.ASSERT_VALIDATE_POST_EDS,

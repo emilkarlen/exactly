@@ -1,6 +1,7 @@
 from shellcheck_lib.test_case.sections.act.instruction import ActPhaseInstruction
 from shellcheck_lib.test_case.sections.anonymous import AnonymousPhaseInstruction
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
+from shellcheck_lib.test_case.sections.before_assert import BeforeAssertPhaseInstruction
 from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction
 from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.result import sh
@@ -9,7 +10,7 @@ from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction
 from shellcheck_lib_test.execution.test_resources.execution_recording.recorder import ListElementRecorder, ListRecorder
 from shellcheck_lib_test.execution.test_resources.instruction_test_resources import cleanup_phase_instruction_that, \
     assert_phase_instruction_that, setup_phase_instruction_that, anonymous_phase_instruction_that, \
-    act_phase_instruction_that
+    act_phase_instruction_that, before_assert_phase_instruction_that
 
 
 class RecordingInstructions:
@@ -25,7 +26,7 @@ class RecordingInstructions:
                               value_for_validate_post_eds) -> SetupPhaseInstruction:
         return setup_phase_instruction_that(validate_pre_eds=self._do_record_and_return_svh(value_for_validate_pre_eds),
                                             validate_post_eds=self._do_record_and_return_svh(
-                                                value_for_validate_post_eds),
+                                                    value_for_validate_post_eds),
                                             main=self._do_record_and_return_sh(value_for_main))
 
     def new_act_instruction(self,
@@ -35,6 +36,15 @@ class RecordingInstructions:
         return act_phase_instruction_that(validate_pre_eds=self._do_record_and_return_svh(value_for_validate_pre_eds),
                                           validate_post_eds=self._do_record_and_return_svh(value_for_validate_post_eds),
                                           main=self._do_record_and_return_sh(value_for_main))
+
+    def new_before_assert_instruction(self,
+                                      value_for_validate_pre_eds,
+                                      value_for_main,
+                                      value_for_validate_post_eds) -> BeforeAssertPhaseInstruction:
+        return before_assert_phase_instruction_that(
+                validate_pre_eds=self._do_record_and_return_svh(value_for_validate_pre_eds),
+                validate_post_eds=self._do_record_and_return_svh(value_for_validate_post_eds),
+                main=self._do_record_and_return_sh(value_for_main))
 
     def new_assert_instruction(self,
                                value_for_validate_pre_eds,

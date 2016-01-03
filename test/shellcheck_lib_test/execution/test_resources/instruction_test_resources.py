@@ -4,6 +4,7 @@ from shellcheck_lib.test_case.sections.act.instruction import ActPhaseInstructio
 from shellcheck_lib.test_case.sections.anonymous import AnonymousPhaseInstruction, ExecutionMode, \
     ConfigurationBuilder
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
+from shellcheck_lib.test_case.sections.before_assert import BeforeAssertPhaseInstruction
 from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction
 from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.result import sh
@@ -119,6 +120,37 @@ class ActPhaseInstructionThat(ActPhaseInstruction):
             global_environment: instrs.GlobalEnvironmentForPostEdsPhase,
             phase_environment: PhaseEnvironmentForScriptGeneration) -> sh.SuccessOrHardError:
         return self.do_main()
+
+
+def before_assert_phase_instruction_that(validate_pre_eds=do_return(svh.new_svh_success()),
+                                         validate_post_eds=do_return(svh.new_svh_success()),
+                                         main=do_return(sh.new_sh_success())) -> AssertPhaseInstruction:
+    return AssertPhaseInstructionThat(validate_pre_eds,
+                                      validate_post_eds,
+                                      main)
+
+
+class BeforeAssertPhaseInstructionThat(BeforeAssertPhaseInstruction):
+    def __init__(self,
+                 validate_pre_eds,
+                 validate_post_eds,
+                 main):
+        self._validate_pre_eds = validate_pre_eds
+        self._validate_post_eds = validate_post_eds
+        self._main = main
+
+    def validate_pre_eds(self,
+                         environment: instrs.GlobalEnvironmentForPreEdsStep) -> svh.SuccessOrValidationErrorOrHardError:
+        return self._validate_pre_eds()
+
+    def validate_post_eds(self,
+                          environment: instrs.GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
+        return self._validate_post_eds()
+
+    def main(self,
+             os_services: OsServices,
+             environment: instrs.GlobalEnvironmentForPostEdsPhase) -> sh.SuccessOrHardError:
+        return self._main()
 
 
 def assert_phase_instruction_that(validate_pre_eds=do_return(svh.new_svh_success()),
