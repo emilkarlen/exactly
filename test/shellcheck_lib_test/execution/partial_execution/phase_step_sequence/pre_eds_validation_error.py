@@ -23,11 +23,27 @@ class ConfigForSetupValidatePreEds(validation_tests.Configuration):
         return test.setup_phase_instruction_that(pre_validate=do_raise(exception))
 
 
+class ConfigForAssertValidatePreEds(validation_tests.Configuration):
+    def __init__(self):
+        super().__init__(PartialPhase.ASSERT,
+                         phase_step.ASSERT_VALIDATE_PRE_EDS,
+                         expected_steps=[phase_step.SETUP_PRE_VALIDATE,
+                                         phase_step.ASSERT_VALIDATE_PRE_EDS])
+
+    def instruction_that_returns(self, return_value: svh.SuccessOrValidationErrorOrHardError) -> TestCaseInstruction:
+        return test.cleanup_phase_instruction_that(
+                do_validate_pre_eds=test.do_return(return_value))
+
+    def instruction_that_raises(self, exception: Exception) -> TestCaseInstruction:
+        return test.cleanup_phase_instruction_that(do_validate_pre_eds=test.do_raise(exception))
+
+
 class ConfigForCleanupValidatePreEds(validation_tests.Configuration):
     def __init__(self):
         super().__init__(PartialPhase.CLEANUP,
                          phase_step.CLEANUP_VALIDATE_PRE_EDS,
                          expected_steps=[phase_step.SETUP_PRE_VALIDATE,
+                                         phase_step.ASSERT_VALIDATE_PRE_EDS,
                                          phase_step.CLEANUP_VALIDATE_PRE_EDS])
 
     def instruction_that_returns(self, return_value: svh.SuccessOrValidationErrorOrHardError) -> TestCaseInstruction:
@@ -40,6 +56,7 @@ class ConfigForCleanupValidatePreEds(validation_tests.Configuration):
 
 def instruction_validation_invocations() -> list:
     return [ConfigForSetupValidatePreEds(),
+            ConfigForAssertValidatePreEds(),
             ConfigForCleanupValidatePreEds(),
             ]
 

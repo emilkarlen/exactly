@@ -35,9 +35,11 @@ class RecordingInstructions:
                                                      self.__recorder_of(value_for_execute))
 
     def new_assert_instruction(self,
+                               value_for_validate_pre_eds,
                                value_for_validate,
                                value_for_execute) -> AssertPhaseInstruction:
-        return AssertInternalInstructionThatRecordsStringInList(self.__recorder_of(value_for_validate),
+        return AssertInternalInstructionThatRecordsStringInList(self.__recorder_of(value_for_validate_pre_eds),
+                                                                self.__recorder_of(value_for_validate),
                                                                 self.__recorder_of(value_for_execute))
 
     def new_cleanup_instruction(self,
@@ -123,10 +125,17 @@ class InternalInstructionThatRecordsStringInList(InternalInstruction):
 
 class AssertInternalInstructionThatRecordsStringInList(AssertPhaseInstruction):
     def __init__(self,
+                 recorder_for_validate_pre_eds: ListElementRecorder,
                  recorder_for_validate: ListElementRecorder,
                  recorder_for_execute: ListElementRecorder):
+        self.__recorder_for_validate_pre_eds = recorder_for_validate_pre_eds
         self.__recorder_for_validate = recorder_for_validate
         self.__recorder_for_execute = recorder_for_execute
+
+    def validate_pre_eds(self,
+                         environment: common.GlobalEnvironmentForPreEdsStep) -> svh.SuccessOrValidationErrorOrHardError:
+        self.__recorder_for_validate_pre_eds.record()
+        return svh.new_svh_success()
 
     def validate(self,
                  environment: common.GlobalEnvironmentForPreEdsStep) \

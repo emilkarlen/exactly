@@ -43,6 +43,7 @@ ACT_MAIN = _main_step(phases.ACT)
 ACT_SCRIPT_VALIDATE = PhaseStep(phases.ACT, 'script-validation')
 ACT_SCRIPT_EXECUTE = PhaseStep(phases.ACT, 'script-execute')
 
+ASSERT_VALIDATE_PRE_EDS = _validate_pre_eds_step(phases.ASSERT)
 ASSERT_VALIDATE_POST_EDS = _validate_post_eds_step(phases.ASSERT)
 ASSERT_MAIN = _main_step(phases.ASSERT)
 
