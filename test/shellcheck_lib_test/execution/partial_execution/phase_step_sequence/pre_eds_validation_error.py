@@ -32,10 +32,10 @@ class ConfigForActValidatePreEds(validation_tests.Configuration):
 
     def instruction_that_returns(self, return_value: svh.SuccessOrValidationErrorOrHardError) -> TestCaseInstruction:
         return test.act_phase_instruction_that(
-                do_validate_pre_eds=do_return(return_value))
+                validate_pre_eds=do_return(return_value))
 
     def instruction_that_raises(self, exception: Exception) -> TestCaseInstruction:
-        return test.act_phase_instruction_that(do_validate_pre_eds=do_raise(exception))
+        return test.act_phase_instruction_that(validate_pre_eds=do_raise(exception))
 
 
 class ConfigForAssertValidatePreEds(validation_tests.Configuration):
@@ -48,10 +48,10 @@ class ConfigForAssertValidatePreEds(validation_tests.Configuration):
 
     def instruction_that_returns(self, return_value: svh.SuccessOrValidationErrorOrHardError) -> TestCaseInstruction:
         return test.cleanup_phase_instruction_that(
-                do_validate_pre_eds=do_return(return_value))
+                validate_pre_eds=do_return(return_value))
 
     def instruction_that_raises(self, exception: Exception) -> TestCaseInstruction:
-        return test.cleanup_phase_instruction_that(do_validate_pre_eds=do_raise(exception))
+        return test.cleanup_phase_instruction_that(validate_pre_eds=do_raise(exception))
 
 
 class ConfigForCleanupValidatePreEds(validation_tests.Configuration):
@@ -65,10 +65,10 @@ class ConfigForCleanupValidatePreEds(validation_tests.Configuration):
 
     def instruction_that_returns(self, return_value: svh.SuccessOrValidationErrorOrHardError) -> TestCaseInstruction:
         return test.cleanup_phase_instruction_that(
-                do_validate_pre_eds=do_return(return_value))
+                validate_pre_eds=do_return(return_value))
 
     def instruction_that_raises(self, exception: Exception) -> TestCaseInstruction:
-        return test.cleanup_phase_instruction_that(do_validate_pre_eds=do_raise(exception))
+        return test.cleanup_phase_instruction_that(validate_pre_eds=do_raise(exception))
 
 
 def instruction_validation_invocations() -> list:
