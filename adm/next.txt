@@ -3,17 +3,20 @@
 Fortsätt med
 
 * Ny fas: before-assert
-** instruktion
-** fas-konstanter
-** test-infrastruktur
-** test-falls-dokument
-** instruktions-uppsättning (default)
-** hjälp
-** test-fall
-*** validate/pre-eds
-*** validate/post-eds
-*** main
-** andra - "globala" - test
+** DONE instruktion
+** DONE fas-konstanter
+** DONE test-infrastruktur
+** TODO test-falls-dokument
+** TODO Lägga till till listingar i phases
+ALL_NAMED,
+ALL
+** TODO instruktions-uppsättning (default)
+** TODO hjälp
+** TODO test-fall
+*** TODO validate/pre-eds
+*** TODO validate/post-eds
+*** TODO main
+** TODO andra - "globala" - test
 * Ny validate/pre-eds: Befintliga instruktioner ska använda denna
 * cd
 ** Tester av instruktionerna

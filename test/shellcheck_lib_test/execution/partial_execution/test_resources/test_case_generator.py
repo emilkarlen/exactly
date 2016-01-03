@@ -7,8 +7,9 @@ from shellcheck_lib.execution.partial_execution import TestCase
 class PartialPhase(Enum):
     SETUP = 1
     ACT = 2
-    ASSERT = 3
-    CLEANUP = 4
+    BEFORE_ASSERT = 3
+    ASSERT = 4
+    CLEANUP = 5
 
 
 class TestCaseGeneratorForPartialExecutionBase:

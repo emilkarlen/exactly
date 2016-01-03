@@ -1,7 +1,7 @@
 from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase, TestCaseInstruction, \
     GlobalEnvironmentForPreEdsStep
-from shellcheck_lib.test_case.sections.result import pfh
+from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.result import svh
 
 
@@ -19,6 +19,6 @@ class BeforeAssertPhaseInstruction(TestCaseInstruction):
         return svh.new_svh_success()
 
     def main(self,
-             environment: GlobalEnvironmentForPostEdsPhase,
-             os_services: OsServices) -> pfh.PassOrFailOrHardError:
+             os_services: OsServices,
+             environment: GlobalEnvironmentForPostEdsPhase) -> sh.SuccessOrHardError:
         raise NotImplementedError()
