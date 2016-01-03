@@ -58,7 +58,7 @@ class Test(TestCaseBase):
         test_case = one_successful_instruction_in_each_phase() \
             .add(PartialPhase.SETUP,
                  test.setup_phase_instruction_that(
-                         post_validate=test.do_return(svh.new_svh_validation_error(
+                         validate_post_eds=test.do_return(svh.new_svh_validation_error(
                                  'validation error from setup/post-validate'))))
         self._check(
                 Arrangement(test_case),
@@ -78,7 +78,7 @@ class Test(TestCaseBase):
         test_case = one_successful_instruction_in_each_phase() \
             .add(PartialPhase.SETUP,
                  test.setup_phase_instruction_that(
-                         post_validate=do_return(svh.new_svh_hard_error('hard error from setup/post-validate'))))
+                         validate_post_eds=do_return(svh.new_svh_hard_error('hard error from setup/post-validate'))))
         self._check(
                 Arrangement(test_case),
                 Expectation(PartialResultStatus.HARD_ERROR,
@@ -97,7 +97,7 @@ class Test(TestCaseBase):
         test_case = one_successful_instruction_in_each_phase() \
             .add(PartialPhase.SETUP,
                  test.setup_phase_instruction_that(
-                         post_validate=do_raise(test.ImplementationErrorTestException())))
+                         validate_post_eds=do_raise(test.ImplementationErrorTestException())))
         self._check(
                 Arrangement(test_case),
                 Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
@@ -115,8 +115,8 @@ class Test(TestCaseBase):
     def test_validation_error_in_assert_validate_step(self):
         test_case = one_successful_instruction_in_each_phase() \
             .add(PartialPhase.ASSERT,
-                 test.assert_phase_instruction_that_returns(
-                         from_validate=svh.new_svh_validation_error('ASSERT/validate')))
+                 test.assert_phase_instruction_that(
+                         validate_post_eds=do_return(svh.new_svh_validation_error('ASSERT/validate'))))
         self._check(
                 Arrangement(test_case),
                 Expectation(PartialResultStatus.VALIDATE,
@@ -136,8 +136,8 @@ class Test(TestCaseBase):
     def test_hard_error_in_assert_validate_step(self):
         test_case = one_successful_instruction_in_each_phase() \
             .add(PartialPhase.ASSERT,
-                 test.assert_phase_instruction_that_returns(
-                         from_validate=svh.new_svh_hard_error('ASSERT/validate')))
+                 test.assert_phase_instruction_that(
+                         validate_post_eds=do_return(svh.new_svh_hard_error('ASSERT/validate'))))
         self._check(
                 Arrangement(test_case),
                 Expectation(PartialResultStatus.HARD_ERROR,
@@ -158,7 +158,7 @@ class Test(TestCaseBase):
         test_case = one_successful_instruction_in_each_phase() \
             .add(PartialPhase.ASSERT,
                  test.assert_phase_instruction_that(
-                         validate=test.do_raise(test.ImplementationErrorTestException())))
+                         validate_post_eds=test.do_raise(test.ImplementationErrorTestException())))
         self._check(
                 Arrangement(test_case),
                 Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
@@ -179,7 +179,7 @@ class Test(TestCaseBase):
         test_case = one_successful_instruction_in_each_phase() \
             .add(PartialPhase.ACT,
                  test.act_phase_instruction_that(
-                         validate=do_return(svh.new_svh_validation_error('ACT/validate'))))
+                         validate_post_eds=do_return(svh.new_svh_validation_error('ACT/validate'))))
         self._check(
                 Arrangement(test_case),
                 Expectation(PartialResultStatus.VALIDATE,
@@ -199,7 +199,7 @@ class Test(TestCaseBase):
         test_case = one_successful_instruction_in_each_phase() \
             .add(PartialPhase.ACT,
                  test.act_phase_instruction_that(
-                         validate=do_return(svh.new_svh_hard_error('error message'))))
+                         validate_post_eds=do_return(svh.new_svh_hard_error('error message'))))
         self._check(
                 Arrangement(test_case),
                 Expectation(PartialResultStatus.HARD_ERROR,
@@ -219,7 +219,7 @@ class Test(TestCaseBase):
         test_case = one_successful_instruction_in_each_phase() \
             .add(PartialPhase.ACT,
                  test.act_phase_instruction_that(
-                         validate=do_raise(test.ImplementationErrorTestException())))
+                         validate_post_eds=do_raise(test.ImplementationErrorTestException())))
         self._check(
                 Arrangement(test_case),
                 Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
@@ -367,8 +367,8 @@ class Test(TestCaseBase):
     def test_fail_in_assert_main_step(self):
         test_case = one_successful_instruction_in_each_phase() \
             .add(PartialPhase.ASSERT,
-                 test.assert_phase_instruction_that_returns(
-                         from_main=pfh.new_pfh_fail('fail msg from ASSERT')))
+                 test.assert_phase_instruction_that(
+                         main=do_return(pfh.new_pfh_fail('fail msg from ASSERT'))))
         self._check(
                 Arrangement(test_case),
                 Expectation(PartialResultStatus.FAIL,
@@ -392,8 +392,8 @@ class Test(TestCaseBase):
     def test_hard_error_in_assert_main_step(self):
         test_case = one_successful_instruction_in_each_phase() \
             .add(PartialPhase.ASSERT,
-                 test.assert_phase_instruction_that_returns(
-                         from_main=pfh.new_pfh_hard_error('hard error msg from ASSERT')))
+                 test.assert_phase_instruction_that(
+                         main=do_return(pfh.new_pfh_hard_error('hard error msg from ASSERT'))))
         self._check(
                 Arrangement(test_case),
                 Expectation(PartialResultStatus.HARD_ERROR,
