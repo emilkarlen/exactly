@@ -12,7 +12,6 @@ from shellcheck_lib.test_case.sections.anonymous import ConfigurationBuilder, \
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib.test_case.sections.before_assert import BeforeAssertPhaseInstruction
 from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction
-from shellcheck_lib.test_case.sections.common import TestCaseInstruction
 from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.result import svh
@@ -146,25 +145,6 @@ class TestCaseGeneratorForTestCaseSetup(TestCaseGeneratorForFullExecutionBase):
         if instr is None:
             raise ValueError('Unknown phase: ' + str(phase))
         return phase_contents([self.instruction_line_constructor.apply(instr)])
-
-    def _anonymous_phase(self) -> list:
-        return self.__for(self.setup.as_anonymous_phase_instruction())
-
-    def _setup_phase(self) -> list:
-        return self.__for(self.setup.as_setup_phase_instruction())
-
-    def _act_phase(self) -> list:
-        return self.__for(self.setup.as_act_phase_instruction())
-
-    def _assert_phase(self) -> list:
-        return self.__for(self.setup.as_assert_phase_instruction())
-
-    def _cleanup_phase(self) -> list:
-        return self.__for(self.setup.as_cleanup_phase_instruction())
-
-    def __for(self,
-              instruction: TestCaseInstruction) -> list:
-        return [self.instruction_line_constructor.apply(instruction)]
 
 
 class _AnonymousInstruction(AnonymousPhaseInstruction):
