@@ -1,5 +1,6 @@
 from shellcheck_lib.test_case.sections.act.phase_setup import PhaseEnvironmentForScriptGeneration
-from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase, TestCaseInstruction
+from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase, TestCaseInstruction, \
+    GlobalEnvironmentForPreEdsStep
 from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.sections.result.sh import SuccessOrHardError
 
@@ -8,6 +9,10 @@ class ActPhaseInstruction(TestCaseInstruction):
     """
     Abstract base class for instructions of the ACT phase.
     """
+
+    def validate_pre_eds(self,
+                         environment: GlobalEnvironmentForPreEdsStep) -> svh.SuccessOrValidationErrorOrHardError:
+        return svh.new_svh_success()
 
     def validate(self,
                  global_environment: GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
