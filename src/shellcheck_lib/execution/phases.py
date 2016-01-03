@@ -20,11 +20,12 @@ class Phase(tuple):
 ANONYMOUS = Phase(None, 'configuration')
 SETUP = Phase('setup', 'setup')
 ACT = Phase('act', 'act')
+BEFORE_ASSERT = Phase('before-assert', 'before-assert')
 ASSERT = Phase('assert', 'assert')
 CLEANUP = Phase('cleanup', 'cleanup')
 
-ALL_NAMED = [SETUP, ACT, ASSERT, CLEANUP]
+ALL_NAMED = (SETUP, ACT, ASSERT, CLEANUP)
 
-ALL = (ANONYMOUS, SETUP, ACT, ASSERT, CLEANUP)
+ALL = (ANONYMOUS,) + ALL_NAMED
 
 ALL_WITH_INSTRUCTIONS = (ANONYMOUS, SETUP, ASSERT, CLEANUP)
