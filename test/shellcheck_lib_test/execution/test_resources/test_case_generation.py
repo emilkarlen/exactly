@@ -50,6 +50,9 @@ class TestCaseGeneratorBase:
     def act_phase(self) -> model.PhaseContents:
         return phase_contents(self._act_phase())
 
+    def before_assert_phase(self) -> model.PhaseContents:
+        return phase_contents(self._before_assert_phase())
+
     def assert_phase(self) -> model.PhaseContents:
         return phase_contents(self._assert_phase())
 
@@ -65,6 +68,12 @@ class TestCaseGeneratorBase:
     def _act_phase(self) -> list:
         """
         :rtype list[PhaseContentElement] (with instruction of type ActPhaseInstruction)
+        """
+        return []
+
+    def _before_assert_phase(self) -> list:
+        """
+        :rtype list[PhaseContentElement] (with instruction of type BeforeAssertPhaseInstruction)
         """
         return []
 

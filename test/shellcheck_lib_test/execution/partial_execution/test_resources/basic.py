@@ -67,6 +67,7 @@ def build(tc: TestCaseGeneratorBase) -> partial_execution.TestCase:
     return partial_execution.TestCase(
             tc.setup_phase(),
             tc.act_phase(),
+            tc.before_assert_phase(),
             tc.assert_phase(),
             tc.cleanup_phase()
     )
@@ -79,6 +80,9 @@ class TestCaseWithCommonDefaultForSetupAssertCleanup(TestCaseGeneratorForPartial
 
     def _setup_phase(self) -> list:
         return self._phase_elements(instruction_adapter.as_setup, phases.SETUP)
+
+    def _before_assert_phase(self) -> list:
+        return self._phase_elements(instruction_adapter.as_before_assert, phases.BEFORE_ASSERT)
 
     def _assert_phase(self) -> list:
         return self._phase_elements(instruction_adapter.as_assert, phases.ASSERT)
