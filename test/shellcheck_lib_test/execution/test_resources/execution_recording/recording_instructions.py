@@ -1,7 +1,6 @@
 from shellcheck_lib.test_case.sections import common
 from shellcheck_lib.test_case.sections.act.instruction import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
-from shellcheck_lib.test_case.sections.anonymous import AnonymousPhaseInstruction, \
-    ConfigurationBuilder
+from shellcheck_lib.test_case.sections.anonymous import AnonymousPhaseInstruction
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction
 from shellcheck_lib.test_case.sections.result import pfh
@@ -10,7 +9,7 @@ from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction
 from shellcheck_lib_test.execution.test_resources.execution_recording.recorder import ListElementRecorder, ListRecorder
 from shellcheck_lib_test.execution.test_resources.instruction_test_resources import cleanup_phase_instruction_that, \
-    assert_phase_instruction_that, setup_phase_instruction_that
+    assert_phase_instruction_that, setup_phase_instruction_that, anonymous_phase_instruction_that
 
 
 class RecordingInstructions:
@@ -18,7 +17,7 @@ class RecordingInstructions:
         self.recorder = recorder
 
     def new_anonymous_instruction(self, value) -> SetupPhaseInstruction:
-        return AnonymousInternalInstructionThatRecordsStringInList(self.__recorder_of(value))
+        return anonymous_instruction_that_records(self.__recorder_of(value))
 
     def new_setup_instruction(self,
                               value_for_pre_validate,
@@ -81,15 +80,8 @@ class ActInstructionThatRecordsStringInList(ActPhaseInstruction):
         return sh.new_sh_success()
 
 
-class AnonymousInternalInstructionThatRecordsStringInList(AnonymousPhaseInstruction):
-    def __init__(self,
-                 recorder: ListElementRecorder):
-        self.__recorder = recorder
-
-    def main(self, global_environment,
-             configuration_builder: ConfigurationBuilder) -> sh.SuccessOrHardError:
-        self.__recorder.record()
-        return sh.new_sh_success()
+def anonymous_instruction_that_records(recorder: ListElementRecorder) -> AnonymousPhaseInstruction:
+    return anonymous_phase_instruction_that(do_main=_do_record_and_return_sh(recorder))
 
 
 def setup_instruction_that_records(recorder_for_pre_validate: ListElementRecorder,
