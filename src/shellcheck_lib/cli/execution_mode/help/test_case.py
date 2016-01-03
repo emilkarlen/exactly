@@ -23,6 +23,8 @@ def phase_helps_for(instructions_setup: InstructionsSetup) -> iter:
                           instruction_set_help(instructions_setup.setup_instruction_set.values())),
         TestCasePhaseHelp(phase_help_name(phases.ACT),
                           None),
+        TestCasePhaseHelp(phase_help_name(phases.BEFORE_ASSERT),
+                          instruction_set_help(instructions_setup.before_assert_instruction_set.values())),
         TestCasePhaseHelp(phase_help_name(phases.ASSERT),
                           instruction_set_help(instructions_setup.assert_instruction_set.values())),
         TestCasePhaseHelp(phase_help_name(phases.CLEANUP),

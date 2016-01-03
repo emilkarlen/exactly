@@ -492,7 +492,7 @@ FULL_RESULT_PASS = new_pass(DUMMY_EDS)
 
 DEFAULT_CASE_PROCESSING = case_processing.Configuration(
     lambda x: ((), ()),
-    InstructionsSetup({}, {}, {}, {}),
+        InstructionsSetup({}, {}, {}, {}, {}),
     script_language_setup(),
     IDENTITY_PREPROCESSOR,
     False)

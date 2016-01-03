@@ -24,6 +24,7 @@ class InstructionsSetup:
                  config_instruction_set: dict,
                  setup_instruction_set: dict,
                  assert_instruction_set: dict,
+                 before_assert_instruction_set: dict,
                  cleanup_instruction_set: dict):
         """
         Each dictionary is a mapping: instruction-name -> SingleInstructionSetup.
@@ -33,6 +34,7 @@ class InstructionsSetup:
         """
         self._config_instruction_set = config_instruction_set
         self._setup_instruction_set = setup_instruction_set
+        self._before_assert_instruction_set = before_assert_instruction_set
         self._assert_instruction_set = assert_instruction_set
         self._cleanup_instruction_set = cleanup_instruction_set
 
@@ -43,6 +45,10 @@ class InstructionsSetup:
     @property
     def setup_instruction_set(self) -> dict:
         return self._setup_instruction_set
+
+    @property
+    def before_assert_instruction_set(self) -> dict:
+        return self._assert_instruction_set
 
     @property
     def assert_instruction_set(self) -> dict:

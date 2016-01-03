@@ -24,7 +24,7 @@ BEFORE_ASSERT = Phase('before-assert', 'before-assert')
 ASSERT = Phase('assert', 'assert')
 CLEANUP = Phase('cleanup', 'cleanup')
 
-ALL_NAMED = (SETUP, ACT, ASSERT, CLEANUP)
+ALL_NAMED = (SETUP, ACT, BEFORE_ASSERT, ASSERT, CLEANUP)
 
 ALL = (ANONYMOUS,) + ALL_NAMED
 
