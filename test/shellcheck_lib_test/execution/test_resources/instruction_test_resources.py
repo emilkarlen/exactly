@@ -213,16 +213,39 @@ class AssertPhaseInstructionWithExceptionInMain(AssertPhaseInstruction):
 
 class CleanupPhaseInstructionThatReturns(CleanupPhaseInstruction):
     def __init__(self,
-                 ret_val: sh.SuccessOrHardError):
-        self.ret_val = ret_val
+                 from_validate_pre_eds: svh.SuccessOrValidationErrorOrHardError,
+                 from_main: sh.SuccessOrHardError):
+        self.from_validate_pre_eds = from_validate_pre_eds
+        self.from_main = from_main
+
+    def validate_pre_eds(self,
+                         environment: instrs.GlobalEnvironmentForPreEdsStep) \
+            -> svh.SuccessOrValidationErrorOrHardError:
+        return self.from_validate_pre_eds
 
     def main(self,
              environment: instrs.GlobalEnvironmentForPostEdsPhase,
              os_services: OsServices) -> sh.SuccessOrHardError:
-        return self.ret_val
+        return self.from_main
 
 
-class CleanupPhaseInstructionWithImplementationError(CleanupPhaseInstruction):
+class CleanupPhaseInstructionWithImplementationErrorInValidatePreEds(CleanupPhaseInstruction):
+    def __init__(self,
+                 exception_to_raise: Exception):
+        self.__exception_to_raise = exception_to_raise
+
+    def validate_pre_eds(self,
+                         environment: instrs.GlobalEnvironmentForPreEdsStep) \
+            -> svh.SuccessOrValidationErrorOrHardError:
+        raise self.__exception_to_raise
+
+    def main(self,
+             environment: instrs.GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices) -> sh.SuccessOrHardError:
+        return sh.new_sh_success()
+
+
+class CleanupPhaseInstructionWithImplementationErrorInMain(CleanupPhaseInstruction):
     def __init__(self,
                  exception_to_raise: Exception):
         self.__exception_to_raise = exception_to_raise
