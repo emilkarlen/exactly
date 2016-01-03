@@ -199,14 +199,14 @@ class Test(TestCaseBase):
         test_case = one_successful_instruction_in_each_phase() \
             .add(PartialPhase.ACT,
                  test.act_phase_instruction_that(
-                         do_validate=do_return(svh.new_svh_hard_error('ACT/validate'))))
+                         do_validate=do_return(svh.new_svh_hard_error('error message'))))
         self._check(
                 Arrangement(test_case),
                 Expectation(PartialResultStatus.HARD_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_message(
                                     phase_step.ACT_VALIDATE_POST_EDS,
                                     test_case.the_extra(PartialPhase.ACT)[0].first_line,
-                                    'ACT/validate'),
+                                    'error message'),
                             PRE_EDS_VALIDATION_STEPS +
                             [phase_step.SETUP_MAIN,
                              phase_step.SETUP_POST_VALIDATE,

@@ -29,7 +29,8 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorForFullExecutionBa
                                                              phase_step.SETUP_MAIN,
                                                              phase_step.SETUP_POST_VALIDATE),
             phases.ACT:
-                recording_instructions.new_act_instruction(phase_step.ACT_VALIDATE_POST_EDS,
+                recording_instructions.new_act_instruction(phase_step.ACT_VALIDATE_PRE_EDS,
+                                                           phase_step.ACT_VALIDATE_POST_EDS,
                                                            phase_step.ACT_MAIN),
             phases.ASSERT:
                 recording_instructions.new_assert_instruction(phase_step.ASSERT_VALIDATE_PRE_EDS,

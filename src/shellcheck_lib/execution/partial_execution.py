@@ -169,6 +169,9 @@ class PartialExecutor:
         res = self.__run_setup_pre_validate()
         if res.status is not PartialResultStatus.PASS:
             return res
+        res = self.__run_act__validate_pre_eds()
+        if res.status is not PartialResultStatus.PASS:
+            return res
         res = self.__run_assert__validate_pre_eds()
         if res.status is not PartialResultStatus.PASS:
             return res
@@ -236,6 +239,12 @@ class PartialExecutor:
                                                            phase_step_executors.SetupPreValidateInstructionExecutor(
                                                                    self.__global_environment),
                                                            self.__test_case.setup_phase)
+
+    def __run_act__validate_pre_eds(self) -> PartialResult:
+        return self.__run_internal_instructions_phase_step(phase_step.ACT_VALIDATE_PRE_EDS,
+                                                           phase_step_executors.ActPreValidateInstructionExecutor(
+                                                                   self.__global_environment),
+                                                           self.__test_case.act_phase)
 
     def __run_assert__validate_pre_eds(self) -> PartialResult:
         return self.__run_internal_instructions_phase_step(phase_step.ASSERT_VALIDATE_PRE_EDS,
