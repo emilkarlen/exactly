@@ -128,10 +128,16 @@ def assert_phase_instruction_that_returns(
 
 class AssertPhaseInstructionThat(AssertPhaseInstruction):
     def __init__(self,
+                 do_validate_pre_eds=do_return(svh.new_svh_success()),
                  do_validate=do_return(svh.new_svh_success()),
                  do_main=do_return(pfh.new_pfh_pass())):
+        self.do_validate_pre_eds = do_validate_pre_eds
         self.do_validate = do_validate
         self.do_main = do_main
+
+    def validate_pre_eds(self,
+                         environment: instrs.GlobalEnvironmentForPreEdsStep) -> svh.SuccessOrValidationErrorOrHardError:
+        return self.do_validate_pre_eds()
 
     def validate(self,
                  environment: instrs.GlobalEnvironmentForPostEdsPhase) \
