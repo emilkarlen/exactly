@@ -179,7 +179,7 @@ class Test(TestCaseBase):
         test_case = one_successful_instruction_in_each_phase() \
             .add(PartialPhase.ACT,
                  test.act_phase_instruction_that(
-                         do_validate=do_return(svh.new_svh_validation_error('ACT/validate'))))
+                         validate=do_return(svh.new_svh_validation_error('ACT/validate'))))
         self._check(
                 Arrangement(test_case),
                 Expectation(PartialResultStatus.VALIDATE,
@@ -199,7 +199,7 @@ class Test(TestCaseBase):
         test_case = one_successful_instruction_in_each_phase() \
             .add(PartialPhase.ACT,
                  test.act_phase_instruction_that(
-                         do_validate=do_return(svh.new_svh_hard_error('error message'))))
+                         validate=do_return(svh.new_svh_hard_error('error message'))))
         self._check(
                 Arrangement(test_case),
                 Expectation(PartialResultStatus.HARD_ERROR,
@@ -219,7 +219,7 @@ class Test(TestCaseBase):
         test_case = one_successful_instruction_in_each_phase() \
             .add(PartialPhase.ACT,
                  test.act_phase_instruction_that(
-                         do_validate=do_raise(test.ImplementationErrorTestException())))
+                         validate=do_raise(test.ImplementationErrorTestException())))
         self._check(
                 Arrangement(test_case),
                 Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
@@ -239,7 +239,7 @@ class Test(TestCaseBase):
         test_case = one_successful_instruction_in_each_phase() \
             .add(PartialPhase.ACT,
                  test.act_phase_instruction_that(
-                         do_main=do_return(sh.new_sh_hard_error('hard error msg from act'))))
+                         main=do_return(sh.new_sh_hard_error('hard error msg from act'))))
         self._check(
                 Arrangement(test_case),
                 Expectation(PartialResultStatus.HARD_ERROR,
@@ -261,7 +261,7 @@ class Test(TestCaseBase):
         test_case = one_successful_instruction_in_each_phase() \
             .add(PartialPhase.ACT,
                  test.act_phase_instruction_that(
-                         do_main=do_raise(test.ImplementationErrorTestException())))
+                         main=do_raise(test.ImplementationErrorTestException())))
         self._check(
                 Arrangement(test_case),
                 Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
@@ -443,7 +443,7 @@ class Test(TestCaseBase):
         test_case = one_successful_instruction_in_each_phase() \
             .add(PartialPhase.CLEANUP,
                  test.cleanup_phase_instruction_that(
-                         do_main=test.do_return(sh.new_sh_hard_error('hard error msg from CLEANUP'))))
+                         main=test.do_return(sh.new_sh_hard_error('hard error msg from CLEANUP'))))
         self._check(
                 Arrangement(test_case),
                 Expectation(PartialResultStatus.HARD_ERROR,
@@ -468,7 +468,7 @@ class Test(TestCaseBase):
         test_case = one_successful_instruction_in_each_phase() \
             .add(PartialPhase.CLEANUP,
                  test.cleanup_phase_instruction_that(
-                         do_main=test.do_raise(test.ImplementationErrorTestException())))
+                         main=test.do_raise(test.ImplementationErrorTestException())))
         self._check(
                 Arrangement(test_case),
                 Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,

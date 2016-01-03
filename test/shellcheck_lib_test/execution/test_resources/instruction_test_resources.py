@@ -88,12 +88,12 @@ class SetupPhaseInstructionThat(SetupPhaseInstruction):
         return self._post_validate()
 
 
-def act_phase_instruction_that(do_validate_pre_eds=do_return(svh.new_svh_success()),
-                               do_validate=do_return(svh.new_svh_success()),
-                               do_main=do_return(sh.new_sh_success())) -> ActPhaseInstruction:
-    return ActPhaseInstructionThat(do_validate_pre_eds=do_validate_pre_eds,
-                                   do_validate=do_validate,
-                                   do_main=do_main)
+def act_phase_instruction_that(validate_pre_eds=do_return(svh.new_svh_success()),
+                               validate=do_return(svh.new_svh_success()),
+                               main=do_return(sh.new_sh_success())) -> ActPhaseInstruction:
+    return ActPhaseInstructionThat(do_validate_pre_eds=validate_pre_eds,
+                                   do_validate=validate,
+                                   do_main=main)
 
 
 class ActPhaseInstructionThat(ActPhaseInstruction):
@@ -160,10 +160,10 @@ class AssertPhaseInstructionThat(AssertPhaseInstruction):
         return self.do_main()
 
 
-def cleanup_phase_instruction_that(do_validate_pre_eds=do_return(svh.SuccessOrValidationErrorOrHardError),
-                                   do_main=do_return(sh.SuccessOrHardError)) -> CleanupPhaseInstruction:
-    return CleanupPhaseInstructionThat(do_validate_pre_eds=do_validate_pre_eds,
-                                       do_main=do_main)
+def cleanup_phase_instruction_that(validate_pre_eds=do_return(svh.SuccessOrValidationErrorOrHardError),
+                                   main=do_return(sh.SuccessOrHardError)) -> CleanupPhaseInstruction:
+    return CleanupPhaseInstructionThat(do_validate_pre_eds=validate_pre_eds,
+                                       do_main=main)
 
 
 class CleanupPhaseInstructionThat(CleanupPhaseInstruction):

@@ -86,7 +86,7 @@ class Test(TestCaseBase):
                  test.AnonymousPhaseInstructionThatSetsExecutionMode(ExecutionMode.XFAIL)) \
             .add(phases.CLEANUP,
                  test.cleanup_phase_instruction_that(
-                         do_main=test.do_raise(test.ImplementationErrorTestException())))
+                         main=test.do_raise(test.ImplementationErrorTestException())))
         self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.IMPLEMENTATION_ERROR,
