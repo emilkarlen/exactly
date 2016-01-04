@@ -195,7 +195,14 @@ class _SetupInstruction(SetupPhaseInstruction):
                      global_environment: i.GlobalEnvironmentForPreEdsStep) -> svh.SuccessOrValidationErrorOrHardError:
         self.__configuration.validation_action__without_eds(phase_step.SETUP_PRE_VALIDATE,
                                                             global_environment.home_directory)
-        return self.__configuration.ret_val_from_execute
+        return self.__configuration.ret_val_from_validate
+
+    def post_validate(self,
+                      global_environment: i.GlobalEnvironmentForPostEdsPhase) -> \
+            svh.SuccessOrValidationErrorOrHardError:
+        self.__configuration.validation_action__with_eds(phase_step.SETUP_POST_VALIDATE,
+                                                         global_environment.home_directory)
+        return self.__configuration.ret_val_from_validate
 
     def main(self,
              os_services: OsServices,
@@ -205,18 +212,18 @@ class _SetupInstruction(SetupPhaseInstruction):
                                                         environment)
         return self.__configuration.ret_val_from_execute
 
-    def post_validate(self,
-                      global_environment: i.GlobalEnvironmentForPostEdsPhase) -> \
-            svh.SuccessOrValidationErrorOrHardError:
-        self.__configuration.validation_action__without_eds(phase_step.SETUP_POST_VALIDATE,
-                                                            global_environment.home_directory)
-        return self.__configuration.ret_val_from_execute
-
 
 class _ActInstruction(ActPhaseInstruction):
     def __init__(self,
                  configuration: TestCaseSetup):
         self.__configuration = configuration
+
+    def validate_pre_eds(self,
+                         global_environment: i.GlobalEnvironmentForPreEdsStep) -> \
+            svh.SuccessOrValidationErrorOrHardError:
+        self.__configuration.validation_action__without_eds(phase_step.BEFORE_ASSERT_VALIDATE_PRE_EDS,
+                                                            global_environment.home_directory)
+        return self.__configuration.ret_val_from_validate
 
     def validate(self, global_environment: i.GlobalEnvironmentForPostEdsPhase) -> \
             svh.SuccessOrValidationErrorOrHardError:
@@ -239,18 +246,18 @@ class _BeforeAssertInstruction(BeforeAssertPhaseInstruction):
                  configuration: TestCaseSetup):
         self.__configuration = configuration
 
-    def pre_validate(self,
-                     global_environment: i.GlobalEnvironmentForPreEdsStep) -> svh.SuccessOrValidationErrorOrHardError:
+    def validate_pre_eds(self,
+                         global_environment: i.GlobalEnvironmentForPreEdsStep) -> \
+            svh.SuccessOrValidationErrorOrHardError:
         self.__configuration.validation_action__without_eds(phase_step.BEFORE_ASSERT_VALIDATE_PRE_EDS,
                                                             global_environment.home_directory)
-        return self.__configuration.ret_val_from_execute
+        return self.__configuration.ret_val_from_validate
 
-    def post_validate(self,
-                      global_environment: i.GlobalEnvironmentForPostEdsPhase) -> \
-            svh.SuccessOrValidationErrorOrHardError:
+    def validate_post_eds(self,
+                          environment: i.GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
         self.__configuration.validation_action__with_eds(phase_step.BEFORE_ASSERT_VALIDATE_POST_EDS,
-                                                         global_environment)
-        return self.__configuration.ret_val_from_execute
+                                                         environment)
+        return self.__configuration.ret_val_from_validate
 
     def main(self,
              os_services: OsServices,
@@ -264,6 +271,13 @@ class _AssertInstruction(AssertPhaseInstruction):
     def __init__(self,
                  configuration: TestCaseSetup):
         self.__configuration = configuration
+
+    def validate_pre_eds(self,
+                         global_environment: i.GlobalEnvironmentForPreEdsStep) -> \
+            svh.SuccessOrValidationErrorOrHardError:
+        self.__configuration.validation_action__without_eds(phase_step.BEFORE_ASSERT_VALIDATE_PRE_EDS,
+                                                            global_environment.home_directory)
+        return self.__configuration.ret_val_from_validate
 
     def validate(self,
                  environment: i.GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
@@ -283,6 +297,13 @@ class _CleanupInstruction(CleanupPhaseInstruction):
     def __init__(self,
                  configuration: TestCaseSetup):
         self.__configuration = configuration
+
+    def validate_pre_eds(self,
+                         global_environment: i.GlobalEnvironmentForPreEdsStep) -> \
+            svh.SuccessOrValidationErrorOrHardError:
+        self.__configuration.validation_action__without_eds(phase_step.BEFORE_ASSERT_VALIDATE_PRE_EDS,
+                                                            global_environment.home_directory)
+        return self.__configuration.ret_val_from_validate
 
     def main(self,
              environment: i.GlobalEnvironmentForPostEdsPhase,
