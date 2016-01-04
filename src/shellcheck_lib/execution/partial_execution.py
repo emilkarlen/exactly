@@ -204,6 +204,10 @@ class PartialExecutor:
         if res.status is not PartialResultStatus.PASS:
             self.__run_cleanup(os_services)
             return res
+        res = self.__run_before_assert__validate_post_setup()
+        if res.status is not PartialResultStatus.PASS:
+            self.__run_cleanup(os_services)
+            return res
         res = self.__run_assert_validate()
         if res.status is not PartialResultStatus.PASS:
             self.__run_cleanup(os_services)
@@ -338,6 +342,13 @@ class PartialExecutor:
                                  self.__execution_directory_structure,
                                  PhaseFailureInfo(the_phase_step,
                                                   result.new_failure_details_from_exception(ex)))
+
+    def __run_before_assert__validate_post_setup(self) -> PartialResult:
+        return self.__run_internal_instructions_phase_step(
+                phase_step.BEFORE_ASSERT_VALIDATE_POST_EDS,
+                phase_step_executors.BeforeAssertValidatePostSetupInstructionExecutor(
+                        self.__global_environment),
+                self.__test_case.before_assert_phase)
 
     def __run_assert_validate(self) -> PartialResult:
         return self.__run_internal_instructions_phase_step(phase_step.ASSERT_VALIDATE_POST_EDS,
