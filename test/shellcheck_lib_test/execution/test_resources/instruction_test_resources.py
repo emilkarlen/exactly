@@ -103,7 +103,7 @@ class ActPhaseInstructionThat(ActPhaseInstruction):
                  validate_post_eds,
                  main):
         self.do_validate_pre_eds = validate_pre_eds
-        self.do_validate = validate_post_eds
+        self.do_validate_post_eds = validate_post_eds
         self.do_main = main
 
     def validate_pre_eds(self,
@@ -113,7 +113,7 @@ class ActPhaseInstructionThat(ActPhaseInstruction):
     def validate(self,
                  global_environment: instrs.GlobalEnvironmentForPostEdsPhase) \
             -> svh.SuccessOrValidationErrorOrHardError:
-        return self.do_validate()
+        return self.do_validate_post_eds()
 
     def main(
             self,
