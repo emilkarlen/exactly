@@ -364,6 +364,56 @@ class Test(TestCaseBase):
                              ],
                             True))
 
+    def test_hard_error_in_before_assert_main_step(self):
+        test_case = one_successful_instruction_in_each_phase() \
+            .add(PartialPhase.BEFORE_ASSERT,
+                 test.before_assert_phase_instruction_that(
+                         main=do_return(sh.new_sh_hard_error('hard error msg'))))
+        self._check(
+                Arrangement(test_case),
+                Expectation(PartialResultStatus.HARD_ERROR,
+                            ExpectedFailureForInstructionFailure.new_with_message(
+                                    phase_step.BEFORE_ASSERT_MAIN,
+                                    test_case.the_extra(PartialPhase.BEFORE_ASSERT)[0].first_line,
+                                    'hard error msg'),
+                            PRE_EDS_VALIDATION_STEPS +
+                            [phase_step.SETUP_MAIN,
+                             phase_step.SETUP_POST_VALIDATE,
+                             phase_step.ACT_VALIDATE_POST_EDS,
+                             phase_step.ASSERT_VALIDATE_POST_EDS,
+                             phase_step.ACT_MAIN,
+                             phase_step.ACT_SCRIPT_VALIDATE,
+                             phase_step.ACT_SCRIPT_EXECUTE,
+                             phase_step.BEFORE_ASSERT_MAIN,
+                             phase_step.CLEANUP_MAIN,
+                             ],
+                            True))
+
+    def test_implementation_error_in_before_assert_main_step(self):
+        test_case = one_successful_instruction_in_each_phase() \
+            .add(PartialPhase.BEFORE_ASSERT,
+                 test.before_assert_phase_instruction_that(
+                         main=test.do_raise(test.ImplementationErrorTestException())))
+        self._check(
+                Arrangement(test_case),
+                Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
+                            ExpectedFailureForInstructionFailure.new_with_exception(
+                                    phase_step.BEFORE_ASSERT_MAIN,
+                                    test_case.the_extra(PartialPhase.BEFORE_ASSERT)[0].first_line,
+                                    test.ImplementationErrorTestException),
+                            PRE_EDS_VALIDATION_STEPS +
+                            [phase_step.SETUP_MAIN,
+                             phase_step.SETUP_POST_VALIDATE,
+                             phase_step.ACT_VALIDATE_POST_EDS,
+                             phase_step.ASSERT_VALIDATE_POST_EDS,
+                             phase_step.ACT_MAIN,
+                             phase_step.ACT_SCRIPT_VALIDATE,
+                             phase_step.ACT_SCRIPT_EXECUTE,
+                             phase_step.BEFORE_ASSERT_MAIN,
+                             phase_step.CLEANUP_MAIN,
+                             ],
+                            True))
+
     def test_fail_in_assert_main_step(self):
         test_case = one_successful_instruction_in_each_phase() \
             .add(PartialPhase.ASSERT,
