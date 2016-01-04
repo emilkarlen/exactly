@@ -19,41 +19,41 @@ class SingleInstructionSetup(SingleInstructionParser):
         return self._parser.apply(source)
 
 
-class InstructionsSetup:
-    def __init__(self,
-                 config_instruction_set: dict,
-                 setup_instruction_set: dict,
-                 assert_instruction_set: dict,
-                 before_assert_instruction_set: dict,
-                 cleanup_instruction_set: dict):
+class InstructionsSetup(tuple):
+    def __new__(cls,
+                config_instruction_set: dict,
+                setup_instruction_set: dict,
+                assert_instruction_set: dict,
+                before_assert_instruction_set: dict,
+                cleanup_instruction_set: dict):
         """
         Each dictionary is a mapping: instruction-name -> SingleInstructionSetup.
 
         Each SingleInstructionSetup should parse and construct an instruction for
          the correct phase (of course). I.e., sub classes of Instruction.
         """
-        self._config_instruction_set = config_instruction_set
-        self._setup_instruction_set = setup_instruction_set
-        self._before_assert_instruction_set = before_assert_instruction_set
-        self._assert_instruction_set = assert_instruction_set
-        self._cleanup_instruction_set = cleanup_instruction_set
+        return tuple.__new__(cls, (config_instruction_set,
+                                   setup_instruction_set,
+                                   assert_instruction_set,
+                                   before_assert_instruction_set,
+                                   cleanup_instruction_set))
 
     @property
     def config_instruction_set(self) -> dict:
-        return self._config_instruction_set
+        return self[0]
 
     @property
     def setup_instruction_set(self) -> dict:
-        return self._setup_instruction_set
+        return self[1]
 
     @property
     def before_assert_instruction_set(self) -> dict:
-        return self._assert_instruction_set
+        return self[2]
 
     @property
     def assert_instruction_set(self) -> dict:
-        return self._assert_instruction_set
+        return self[3]
 
     @property
     def cleanup_instruction_set(self) -> dict:
-        return self._cleanup_instruction_set
+        return self[4]
