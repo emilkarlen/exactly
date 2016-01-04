@@ -6,6 +6,7 @@ from shellcheck_lib.test_case.sections.act.instruction import ActPhaseInstructio
 from shellcheck_lib.test_case.sections.anonymous import AnonymousPhaseInstruction, \
     ConfigurationBuilder
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
+from shellcheck_lib.test_case.sections.before_assert import BeforeAssertPhaseInstruction
 from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction
 from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.result import sh
@@ -138,6 +139,16 @@ class ActPreValidateInstructionExecutor(ControlledInstructionExecutor):
         self.__global_environment = global_environment
 
     def apply(self, instruction: ActPhaseInstruction) -> PartialInstructionControlledFailureInfo:
+        return _from_success_or_validation_error_or_hard_error(
+                instruction.validate_pre_eds(self.__global_environment))
+
+
+class BeforeAssertPreValidateInstructionExecutor(ControlledInstructionExecutor):
+    def __init__(self,
+                 global_environment: instr.GlobalEnvironmentForPreEdsStep):
+        self.__global_environment = global_environment
+
+    def apply(self, instruction: BeforeAssertPhaseInstruction) -> PartialInstructionControlledFailureInfo:
         return _from_success_or_validation_error_or_hard_error(
                 instruction.validate_pre_eds(self.__global_environment))
 
