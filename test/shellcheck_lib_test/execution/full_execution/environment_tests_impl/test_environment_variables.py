@@ -81,8 +81,10 @@ class Test(FullExecutionTestCaseBase):
         self.__assert_test_sanity()
         for_anonymous_phase = {}
         home_dir_after_anonymous = str(self.initial_home_dir_path.parent)
-        for_pre_eds = {environment_variables.ENV_VAR_HOME: home_dir_after_anonymous}
-        for_post_eds = {
+        for_pre_eds = {
+            environment_variables.ENV_VAR_HOME: home_dir_after_anonymous
+        }
+        set_at_eds_creation = {
             environment_variables.ENV_VAR_HOME: home_dir_after_anonymous,
             environment_variables.ENV_VAR_ACT: str(self.eds.act_dir),
             environment_variables.ENV_VAR_TMP: str(self.eds.tmp.user_dir),
@@ -96,11 +98,12 @@ class Test(FullExecutionTestCaseBase):
         expected_recorded_internally = {
             phase_step.ANONYMOUS_MAIN: for_anonymous_phase,
             phase_step.SETUP_PRE_VALIDATE: for_pre_eds,
-            phase_step.SETUP_MAIN: for_post_eds,
-            phase_step.SETUP_POST_VALIDATE: for_post_eds,
-            phase_step.ACT_VALIDATE_POST_EDS: for_post_eds,
-            phase_step.ACT_MAIN: for_post_eds,
-            phase_step.ASSERT_VALIDATE_POST_EDS: for_post_eds,
+            phase_step.SETUP_MAIN: set_at_eds_creation,
+            phase_step.SETUP_POST_VALIDATE: set_at_eds_creation,
+            phase_step.ACT_VALIDATE_POST_EDS: set_at_eds_creation,
+            phase_step.ACT_MAIN: set_at_eds_creation,
+            phase_step.ASSERT_VALIDATE_POST_EDS: set_at_eds_creation,
+            phase_step.BEFORE_ASSERT_MAIN: set_at_eds_creation,
             phase_step.ASSERT_MAIN: set_at_assert,
             phase_step.CLEANUP_MAIN: set_at_assert,
         }

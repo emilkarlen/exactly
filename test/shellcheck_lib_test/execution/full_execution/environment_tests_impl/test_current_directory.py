@@ -77,8 +77,9 @@ class Test(FullExecutionTestCaseBase):
             phase_step.ACT_VALIDATE_POST_EDS: str(initial_dir / SUB_DIR_NAME),
             phase_step.ACT_MAIN: str(initial_dir / SUB_DIR_NAME),
             phase_step.ASSERT_VALIDATE_POST_EDS: str(initial_dir / SUB_DIR_NAME),
-            phase_step.ASSERT_MAIN: str(initial_dir / SUB_DIR_NAME / SUB_DIR_NAME),
-            phase_step.CLEANUP_MAIN: str(initial_dir / SUB_DIR_NAME / SUB_DIR_NAME / SUB_DIR_NAME),
+            phase_step.BEFORE_ASSERT_MAIN: str(initial_dir / SUB_DIR_NAME / SUB_DIR_NAME),
+            phase_step.ASSERT_MAIN: str(initial_dir / SUB_DIR_NAME / SUB_DIR_NAME / SUB_DIR_NAME),
+            phase_step.CLEANUP_MAIN: str(initial_dir / SUB_DIR_NAME / SUB_DIR_NAME / SUB_DIR_NAME / SUB_DIR_NAME),
         }
         self.__assert_expected_internally_recorded_variables(expected_recorded_internally)
         cwd_for_program_executor = str(initial_dir / SUB_DIR_NAME / SUB_DIR_NAME) + os.linesep

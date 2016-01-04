@@ -22,6 +22,7 @@ class Test(TestCaseBase):
                              phase_step.ACT_MAIN,
                              phase_step.ACT_SCRIPT_VALIDATE,
                              phase_step.ACT_SCRIPT_EXECUTE,
+                             phase_step.BEFORE_ASSERT_MAIN,
                              phase_step.ASSERT_MAIN,
                              phase_step.CLEANUP_MAIN,
                              ],
