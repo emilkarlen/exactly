@@ -39,8 +39,8 @@ class RecordingInstructions:
 
     def new_before_assert_instruction(self,
                                       value_for_validate_pre_eds,
-                                      value_for_main,
-                                      value_for_validate_post_eds) -> BeforeAssertPhaseInstruction:
+                                      value_for_validate_post_eds,
+                                      value_for_main) -> BeforeAssertPhaseInstruction:
         return before_assert_phase_instruction_that(
                 validate_pre_eds=self._do_record_and_return_svh(value_for_validate_pre_eds),
                 validate_post_eds=self._do_record_and_return_svh(value_for_validate_post_eds),

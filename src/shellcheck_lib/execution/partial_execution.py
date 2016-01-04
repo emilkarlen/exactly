@@ -220,6 +220,10 @@ class PartialExecutor:
         if res.status is not PartialResultStatus.PASS:
             self.__run_cleanup(os_services)
             return res
+        res = self.__run_before_assert_main(os_services)
+        if res.status is not PartialResultStatus.PASS:
+            self.__run_cleanup(os_services)
+            return res
         self.__set_assert_environment_variables()
         ret_val = self.__run_assert_execute(os_services)
         res = self.__run_cleanup(os_services)
@@ -354,6 +358,13 @@ class PartialExecutor:
                                                                    self.__global_environment,
                                                                    os_services),
                                                            self.__test_case.cleanup_phase)
+
+    def __run_before_assert_main(self, os_services) -> PartialResult:
+        return self.__run_internal_instructions_phase_step(phase_step.BEFORE_ASSERT_MAIN,
+                                                           phase_step_executors.BeforeAssertInstructionExecutor(
+                                                                   self.__global_environment,
+                                                                   os_services),
+                                                           self.__test_case.before_assert_phase)
 
     def __write_and_store_script_file_path(self):
         self.__source_setup = SourceSetup(self.__script_handling.builder,
