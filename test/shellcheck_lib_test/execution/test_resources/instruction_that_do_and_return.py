@@ -46,22 +46,22 @@ def do_nothing__generate_script(global_environment: i.GlobalEnvironmentForPostEd
 class TestCaseSetup(tuple):
     def __new__(cls,
                 ret_val_from_validate: svh.SuccessOrValidationErrorOrHardError = svh.new_svh_success(),
-                ret_val_from_execute: sh.SuccessOrHardError = sh.new_sh_success(),
-                ret_val_from_assert_execute: pfh.PassOrFailOrHardError = pfh.new_pfh_pass(),
+                ret_val_from_main: sh.SuccessOrHardError = sh.new_sh_success(),
+                ret_val_from_assert_main: pfh.PassOrFailOrHardError = pfh.new_pfh_pass(),
                 validation_action__without_eds: types.FunctionType = do_nothing__without_eds,
                 anonymous_phase_action: types.FunctionType = do_nothing__anonymous_phase,
                 validation_action__with_eds: types.FunctionType = do_nothing__with_eds,
-                execution_action__with_eds: types.FunctionType = do_nothing__with_eds,
-                execution__generate_script: types.FunctionType = do_nothing__generate_script,
+                main_action__with_eds: types.FunctionType = do_nothing__with_eds,
+                main__generate_script: types.FunctionType = do_nothing__generate_script,
                 ):
         return tuple.__new__(cls, (ret_val_from_validate,
-                                   ret_val_from_execute,
-                                   ret_val_from_assert_execute,
+                                   ret_val_from_main,
+                                   ret_val_from_assert_main,
                                    validation_action__without_eds,
                                    anonymous_phase_action,
                                    validation_action__with_eds,
-                                   execution_action__with_eds,
-                                   execution__generate_script,
+                                   main_action__with_eds,
+                                   main__generate_script,
                                    ))
 
     def as_anonymous_phase_instruction(self) -> AnonymousPhaseInstruction:
@@ -87,11 +87,11 @@ class TestCaseSetup(tuple):
         return self[0]
 
     @property
-    def ret_val_from_execute(self) -> sh.SuccessOrHardError:
+    def ret_val_from_main(self) -> sh.SuccessOrHardError:
         return self[1]
 
     @property
-    def ret_val_from_assert_execute(self) -> pfh.PassOrFailOrHardError:
+    def ret_val_from_assert_main(self) -> pfh.PassOrFailOrHardError:
         return self[2]
 
     @property
@@ -156,7 +156,7 @@ class _AnonymousInstruction(AnonymousPhaseInstruction):
              configuration_builder: ConfigurationBuilder) -> sh.SuccessOrHardError:
         self.__configuration.anonymous_phase_action(phase_step.ANONYMOUS_MAIN,
                                                     configuration_builder)
-        return self.__configuration.ret_val_from_execute
+        return self.__configuration.ret_val_from_main
 
 
 def print_to_file__generate_script(code_using_file_opened_for_writing: types.FunctionType,
@@ -210,7 +210,7 @@ class _SetupInstruction(SetupPhaseInstruction):
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         self.__configuration.execution_action__with_eds(phase_step.SETUP_MAIN,
                                                         environment)
-        return self.__configuration.ret_val_from_execute
+        return self.__configuration.ret_val_from_main
 
 
 class _ActInstruction(ActPhaseInstruction):
@@ -238,7 +238,7 @@ class _ActInstruction(ActPhaseInstruction):
                                                         global_environment)
         self.__configuration.execution__generate_script(global_environment,
                                                         phase_environment)
-        return self.__configuration.ret_val_from_execute
+        return self.__configuration.ret_val_from_main
 
 
 class _BeforeAssertInstruction(BeforeAssertPhaseInstruction):
@@ -264,7 +264,7 @@ class _BeforeAssertInstruction(BeforeAssertPhaseInstruction):
              environment: i.GlobalEnvironmentForPostEdsPhase) -> sh.SuccessOrHardError:
         self.__configuration.execution_action__with_eds(phase_step.BEFORE_ASSERT_MAIN,
                                                         environment)
-        return self.__configuration.ret_val_from_execute
+        return self.__configuration.ret_val_from_main
 
 
 class _AssertInstruction(AssertPhaseInstruction):
@@ -290,7 +290,7 @@ class _AssertInstruction(AssertPhaseInstruction):
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
         self.__configuration.execution_action__with_eds(phase_step.ASSERT_MAIN,
                                                         environment)
-        return self.__configuration.ret_val_from_assert_execute
+        return self.__configuration.ret_val_from_assert_main
 
 
 class _CleanupInstruction(CleanupPhaseInstruction):
@@ -310,4 +310,4 @@ class _CleanupInstruction(CleanupPhaseInstruction):
              os_services: OsServices) -> sh.SuccessOrHardError:
         self.__configuration.execution_action__with_eds(phase_step.CLEANUP_MAIN,
                                                         environment)
-        return self.__configuration.ret_val_from_execute
+        return self.__configuration.ret_val_from_main
