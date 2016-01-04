@@ -89,7 +89,7 @@ class Test(FullExecutionTestCaseBase):
             environment_variables.ENV_VAR_ACT: str(self.eds.act_dir),
             environment_variables.ENV_VAR_TMP: str(self.eds.tmp.user_dir),
         }
-        set_at_assert = {
+        set_after_act = {
             environment_variables.ENV_VAR_HOME: home_dir_after_anonymous,
             environment_variables.ENV_VAR_ACT: str(self.eds.act_dir),
             environment_variables.ENV_VAR_TMP: str(self.eds.tmp.user_dir),
@@ -103,9 +103,9 @@ class Test(FullExecutionTestCaseBase):
             phase_step.ACT_VALIDATE_POST_EDS: set_at_eds_creation,
             phase_step.ACT_MAIN: set_at_eds_creation,
             phase_step.ASSERT_VALIDATE_POST_EDS: set_at_eds_creation,
-            phase_step.BEFORE_ASSERT_MAIN: set_at_eds_creation,
-            phase_step.ASSERT_MAIN: set_at_assert,
-            phase_step.CLEANUP_MAIN: set_at_assert,
+            phase_step.BEFORE_ASSERT_MAIN: set_after_act,
+            phase_step.ASSERT_MAIN: set_after_act,
+            phase_step.CLEANUP_MAIN: set_after_act,
         }
         expected_act_output = ''.join([
             '%s=%s%s' % (

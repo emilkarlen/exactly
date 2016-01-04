@@ -220,11 +220,11 @@ class PartialExecutor:
         if res.status is not PartialResultStatus.PASS:
             self.__run_cleanup(os_services)
             return res
+        self.__set_assert_environment_variables()
         res = self.__run_before_assert_main(os_services)
         if res.status is not PartialResultStatus.PASS:
             self.__run_cleanup(os_services)
             return res
-        self.__set_assert_environment_variables()
         ret_val = self.__run_assert_execute(os_services)
         res = self.__run_cleanup(os_services)
         if res.is_failure:
