@@ -98,6 +98,16 @@ class ActValidateInstructionExecutor(ControlledInstructionExecutor):
                 instruction.validate(self.__global_environment))
 
 
+class BeforeAssertValidatePostSetupInstructionExecutor(ControlledInstructionExecutor):
+    def __init__(self,
+                 global_environment: instr.GlobalEnvironmentForPostEdsPhase):
+        self.__global_environment = global_environment
+
+    def apply(self, instruction: BeforeAssertPhaseInstruction) -> PartialInstructionControlledFailureInfo:
+        return _from_success_or_validation_error_or_hard_error(
+                instruction.validate_post_eds(self.__global_environment))
+
+
 class AssertValidateInstructionExecutor(ControlledInstructionExecutor):
     def __init__(self,
                  global_environment: instr.GlobalEnvironmentForPostEdsPhase):

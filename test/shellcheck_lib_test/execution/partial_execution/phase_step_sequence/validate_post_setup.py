@@ -69,7 +69,7 @@ class AssertConfig(utils.Configuration):
                          PRE_EDS_VALIDATION_STEPS + [phase_step.SETUP_MAIN,
                                                      phase_step.SETUP_POST_VALIDATE,
                                                      phase_step.ACT_VALIDATE_POST_EDS,
-                                                     # phase_step.BEFORE_ASSERT_VALIDATE_POST_EDS,
+                                                     phase_step.BEFORE_ASSERT_VALIDATE_POST_EDS,
                                                      ]
                          )
 
@@ -85,7 +85,7 @@ def instruction_validation_invocations() -> list:
     return [
         SetupConfig(),
         ActConfig(),
-        # BeforeAssertConfig(),
+        BeforeAssertConfig(),
         AssertConfig(),
     ]
 
