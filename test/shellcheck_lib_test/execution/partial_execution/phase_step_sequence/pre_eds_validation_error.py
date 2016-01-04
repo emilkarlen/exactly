@@ -3,13 +3,13 @@ import unittest
 from shellcheck_lib.execution import phase_step
 from shellcheck_lib.test_case.sections.common import TestCaseInstruction
 from shellcheck_lib.test_case.sections.result import svh
-from shellcheck_lib_test.execution.partial_execution.test_resources.recording import validation_tests
+from shellcheck_lib_test.execution.partial_execution.test_resources.recording import validate_pre_eds_utils
 from shellcheck_lib_test.execution.partial_execution.test_resources.test_case_generator import PartialPhase
 from shellcheck_lib_test.execution.test_resources import instruction_test_resources as test
 from shellcheck_lib_test.execution.test_resources.instruction_test_resources import do_raise, do_return
 
 
-class ConfigForSetupValidatePreEds(validation_tests.Configuration):
+class ConfigForSetupValidatePreEds(validate_pre_eds_utils.Configuration):
     def __init__(self):
         super().__init__(PartialPhase.SETUP,
                          phase_step.SETUP_PRE_VALIDATE,
@@ -23,7 +23,7 @@ class ConfigForSetupValidatePreEds(validation_tests.Configuration):
         return test.setup_phase_instruction_that(validate_pre_eds=do_raise(exception))
 
 
-class ConfigForActValidatePreEds(validation_tests.Configuration):
+class ConfigForActValidatePreEds(validate_pre_eds_utils.Configuration):
     def __init__(self):
         super().__init__(PartialPhase.ACT,
                          phase_step.ACT_VALIDATE_PRE_EDS,
@@ -38,7 +38,7 @@ class ConfigForActValidatePreEds(validation_tests.Configuration):
         return test.act_phase_instruction_that(validate_pre_eds=do_raise(exception))
 
 
-class ConfigForBeforeAssertValidatePreEds(validation_tests.Configuration):
+class ConfigForBeforeAssertValidatePreEds(validate_pre_eds_utils.Configuration):
     def __init__(self):
         super().__init__(PartialPhase.BEFORE_ASSERT,
                          phase_step.BEFORE_ASSERT_VALIDATE_PRE_EDS,
@@ -54,7 +54,7 @@ class ConfigForBeforeAssertValidatePreEds(validation_tests.Configuration):
         return test.before_assert_phase_instruction_that(validate_pre_eds=do_raise(exception))
 
 
-class ConfigForAssertValidatePreEds(validation_tests.Configuration):
+class ConfigForAssertValidatePreEds(validate_pre_eds_utils.Configuration):
     def __init__(self):
         super().__init__(PartialPhase.ASSERT,
                          phase_step.ASSERT_VALIDATE_PRE_EDS,
@@ -71,7 +71,7 @@ class ConfigForAssertValidatePreEds(validation_tests.Configuration):
         return test.assert_phase_instruction_that(validate_pre_eds=do_raise(exception))
 
 
-class ConfigForCleanupValidatePreEds(validation_tests.Configuration):
+class ConfigForCleanupValidatePreEds(validate_pre_eds_utils.Configuration):
     def __init__(self):
         super().__init__(PartialPhase.CLEANUP,
                          phase_step.CLEANUP_VALIDATE_PRE_EDS,
@@ -100,7 +100,7 @@ def instruction_validation_invocations() -> list:
 
 def suite():
     ret_val = unittest.TestSuite()
-    ret_val.addTests(validation_tests.suite_for(conf)
+    ret_val.addTests(validate_pre_eds_utils.suite_for(conf)
                      for conf in instruction_validation_invocations())
     return ret_val
 
