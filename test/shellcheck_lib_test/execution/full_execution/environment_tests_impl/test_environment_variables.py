@@ -102,6 +102,8 @@ class Test(FullExecutionTestCaseBase):
             phase_step.SETUP_POST_VALIDATE: set_at_eds_creation,
             phase_step.ACT_VALIDATE_POST_EDS: set_at_eds_creation,
             phase_step.ACT_MAIN: set_at_eds_creation,
+            phase_step.BEFORE_ASSERT_VALIDATE_PRE_EDS: for_pre_eds,
+            phase_step.BEFORE_ASSERT_VALIDATE_POST_EDS: set_at_eds_creation,
             phase_step.ASSERT_VALIDATE_POST_EDS: set_at_eds_creation,
             phase_step.BEFORE_ASSERT_MAIN: set_after_act,
             phase_step.ASSERT_MAIN: set_after_act,
