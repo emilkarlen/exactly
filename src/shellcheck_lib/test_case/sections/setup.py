@@ -43,8 +43,12 @@ class SetupPhaseInstruction(TestCaseInstruction):
     Abstract base class for instructions of the SETUP phase.
     """
 
-    def pre_validate(self,
-                     global_environment: GlobalEnvironmentForPreEdsStep) -> svh.SuccessOrValidationErrorOrHardError:
+    def validate_pre_eds(self,
+                         environment: GlobalEnvironmentForPreEdsStep) -> svh.SuccessOrValidationErrorOrHardError:
+        return svh.new_svh_success()
+
+    def validate_post_eds(self,
+                          environment: GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
         return svh.new_svh_success()
 
     def main(self,
@@ -52,7 +56,3 @@ class SetupPhaseInstruction(TestCaseInstruction):
              environment: GlobalEnvironmentForPostEdsPhase,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         raise NotImplementedError()
-
-    def post_validate(self,
-                      global_environment: GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
-        return svh.new_svh_success()

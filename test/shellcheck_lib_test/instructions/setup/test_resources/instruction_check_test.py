@@ -110,9 +110,9 @@ class InstructionThatRaisesTestErrorIfCwdIsIsNotTestRoot(SetupPhaseInstruction):
         test_misc.raise_test_error_if_cwd_is_not_test_root(environment.eds)
         return sh.new_sh_success()
 
-    def post_validate(self,
-                      global_environment: GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
-        test_misc.raise_test_error_if_cwd_is_not_test_root(global_environment.eds)
+    def validate_post_eds(self,
+                          environment: GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
+        test_misc.raise_test_error_if_cwd_is_not_test_root(environment.eds)
         return svh.new_svh_success()
 
 

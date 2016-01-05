@@ -64,9 +64,9 @@ class _InstallInstructionBase(SetupPhaseInstruction):
                  source_file_name: str):
         self.source_file_name = source_file_name
 
-    def pre_validate(self,
-                     global_environment: GlobalEnvironmentForPreEdsStep) -> svh.SuccessOrValidationErrorOrHardError:
-        path = self._src_path(global_environment)
+    def validate_pre_eds(self,
+                         environment: GlobalEnvironmentForPreEdsStep) -> svh.SuccessOrValidationErrorOrHardError:
+        path = self._src_path(environment)
         if not path.exists():
             return svh.new_svh_validation_error('File does not exist: {}'.format(str(path)))
         return svh.new_svh_success()

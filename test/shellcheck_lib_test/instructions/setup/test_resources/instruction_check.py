@@ -111,7 +111,7 @@ class Executor:
                               home_dir_path,
                               instruction: SetupPhaseInstruction) -> svh.SuccessOrValidationErrorOrHardError:
         pre_validation_environment = GlobalEnvironmentForPreEdsStep(home_dir_path)
-        pre_validate_result = instruction.pre_validate(pre_validation_environment)
+        pre_validate_result = instruction.validate_pre_eds(pre_validation_environment)
         self.put.assertIsInstance(pre_validate_result,
                                   svh.SuccessOrValidationErrorOrHardError,
                                   'pre_validate must return a ' + str(svh.SuccessOrValidationErrorOrHardError))
@@ -146,7 +146,7 @@ class Executor:
     def _execute_post_validate(self,
                                global_environment_with_eds,
                                instruction: SetupPhaseInstruction, ) -> svh.SuccessOrValidationErrorOrHardError:
-        post_validate_result = instruction.post_validate(global_environment_with_eds)
+        post_validate_result = instruction.validate_post_eds(global_environment_with_eds)
         self.put.assertIsInstance(post_validate_result,
                                   svh.SuccessOrValidationErrorOrHardError,
                                   'post_validate must return a ' + str(svh.SuccessOrValidationErrorOrHardError))
