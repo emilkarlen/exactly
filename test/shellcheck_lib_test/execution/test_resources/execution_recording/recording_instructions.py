@@ -25,7 +25,7 @@ class RecordingInstructions:
                               value_for_main,
                               value_for_validate_post_eds) -> SetupPhaseInstruction:
         return setup_phase_instruction_that(validate_pre_eds=self._do_record_and_return_svh(value_for_validate_pre_eds),
-                                            validate_post_eds=self._do_record_and_return_svh(
+                                            validate_post_setup=self._do_record_and_return_svh(
                                                     value_for_validate_post_eds),
                                             main=self._do_record_and_return_sh(value_for_main))
 
@@ -34,7 +34,8 @@ class RecordingInstructions:
                             value_for_validate_post_eds,
                             value_for_main) -> ActPhaseInstruction:
         return act_phase_instruction_that(validate_pre_eds=self._do_record_and_return_svh(value_for_validate_pre_eds),
-                                          validate_post_eds=self._do_record_and_return_svh(value_for_validate_post_eds),
+                                          validate_post_setup=self._do_record_and_return_svh(
+                                              value_for_validate_post_eds),
                                           main=self._do_record_and_return_sh(value_for_main))
 
     def new_before_assert_instruction(self,
@@ -43,7 +44,7 @@ class RecordingInstructions:
                                       value_for_main) -> BeforeAssertPhaseInstruction:
         return before_assert_phase_instruction_that(
                 validate_pre_eds=self._do_record_and_return_svh(value_for_validate_pre_eds),
-                validate_post_eds=self._do_record_and_return_svh(value_for_validate_post_eds),
+                validate_post_setup=self._do_record_and_return_svh(value_for_validate_post_eds),
                 main=self._do_record_and_return_sh(value_for_main))
 
     def new_assert_instruction(self,
@@ -52,7 +53,7 @@ class RecordingInstructions:
                                value_for_execute) -> AssertPhaseInstruction:
         return assert_phase_instruction_that(
                 validate_pre_eds=self._do_record_and_return_svh(value_for_validate_pre_eds),
-                validate_post_eds=self._do_record_and_return_svh(value_for_validate),
+                validate_post_setup=self._do_record_and_return_svh(value_for_validate),
                 main=self._do_record_and_return(value_for_execute,
                                                 pfh.new_pfh_pass()))
 
