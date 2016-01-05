@@ -82,5 +82,5 @@ def _execute_anonymous_phase(phase_environment: ConfigurationBuilder,
                                               phase_step_execution.ElementHeaderExecutorThatDoesNothing(),
                                               phase_step_execution.ElementHeaderExecutorThatDoesNothing(),
                                               phase_step_executors.AnonymousMainExecutor(phase_environment),
-                                              phase_step.ANONYMOUS_MAIN,
+                                              phase_step.ANONYMOUS__MAIN,
                                               None)

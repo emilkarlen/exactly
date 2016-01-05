@@ -73,15 +73,15 @@ class Test(FullExecutionTestCaseBase):
         initial_dir = self.eds.act_dir
         initial_dir_recording = str(initial_dir)
         expected_recorded_internally = {
-            phase_step.SETUP_MAIN: initial_dir_recording,
-            phase_step.ACT_VALIDATE_POST_SETUP: str(initial_dir / SUB_DIR_NAME),
-            phase_step.ACT_MAIN: str(initial_dir / SUB_DIR_NAME),
-            phase_step.SETUP_VALIDATE_POST_SETUP: str(initial_dir / SUB_DIR_NAME),
-            phase_step.BEFORE_ASSERT_VALIDATE_POST_SETUP: str(initial_dir / SUB_DIR_NAME),
-            phase_step.ASSERT_VALIDATE_POST_EDS: str(initial_dir / SUB_DIR_NAME),
-            phase_step.BEFORE_ASSERT_MAIN: str(initial_dir / SUB_DIR_NAME / SUB_DIR_NAME),
-            phase_step.ASSERT_MAIN: str(initial_dir / SUB_DIR_NAME / SUB_DIR_NAME / SUB_DIR_NAME),
-            phase_step.CLEANUP_MAIN: str(initial_dir / SUB_DIR_NAME / SUB_DIR_NAME / SUB_DIR_NAME / SUB_DIR_NAME),
+            phase_step.SETUP__MAIN: initial_dir_recording,
+            phase_step.ACT__VALIDATE_POST_SETUP: str(initial_dir / SUB_DIR_NAME),
+            phase_step.ACT__MAIN: str(initial_dir / SUB_DIR_NAME),
+            phase_step.SETUP__VALIDATE_POST_SETUP: str(initial_dir / SUB_DIR_NAME),
+            phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP: str(initial_dir / SUB_DIR_NAME),
+            phase_step.ASSERT__VALIDATE_POST_EDS: str(initial_dir / SUB_DIR_NAME),
+            phase_step.BEFORE_ASSERT__MAIN: str(initial_dir / SUB_DIR_NAME / SUB_DIR_NAME),
+            phase_step.ASSERT__MAIN: str(initial_dir / SUB_DIR_NAME / SUB_DIR_NAME / SUB_DIR_NAME),
+            phase_step.CLEANUP__MAIN: str(initial_dir / SUB_DIR_NAME / SUB_DIR_NAME / SUB_DIR_NAME / SUB_DIR_NAME),
         }
         self.__assert_expected_internally_recorded_variables(expected_recorded_internally)
         cwd_for_program_executor = str(initial_dir / SUB_DIR_NAME / SUB_DIR_NAME) + os.linesep

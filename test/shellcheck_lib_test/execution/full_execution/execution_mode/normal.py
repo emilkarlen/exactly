@@ -18,19 +18,19 @@ class Test(TestCaseBase):
                 Arrangement(one_successful_instruction_in_each_phase()),
                 Expectation(FullResultStatus.PASS,
                             ExpectedFailureForNoFailure(),
-                            [phase_step.ANONYMOUS_MAIN] +
+                            [phase_step.ANONYMOUS__MAIN] +
                             PRE_EDS_VALIDATION_STEPS +
-                            [phase_step.SETUP_MAIN,
-                             phase_step.SETUP_VALIDATE_POST_SETUP,
-                             phase_step.ACT_VALIDATE_POST_SETUP,
-                             phase_step.BEFORE_ASSERT_VALIDATE_POST_SETUP,
-                             phase_step.ASSERT_VALIDATE_POST_EDS,
-                             phase_step.ACT_MAIN,
-                             phase_step.ACT_SCRIPT_VALIDATE,
-                             phase_step.ACT_SCRIPT_EXECUTE,
-                             phase_step.BEFORE_ASSERT_MAIN,
-                             phase_step.ASSERT_MAIN,
-                             phase_step.CLEANUP_MAIN,
+                            [phase_step.SETUP__MAIN,
+                             phase_step.SETUP__VALIDATE_POST_SETUP,
+                             phase_step.ACT__VALIDATE_POST_SETUP,
+                             phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
+                             phase_step.ASSERT__VALIDATE_POST_EDS,
+                             phase_step.ACT__MAIN,
+                             phase_step.ACT__SCRIPT_VALIDATE,
+                             phase_step.ACT__SCRIPT_EXECUTE,
+                             phase_step.BEFORE_ASSERT__MAIN,
+                             phase_step.ASSERT__MAIN,
+                             phase_step.CLEANUP__MAIN,
                              ],
                             True))
 
@@ -42,10 +42,10 @@ class Test(TestCaseBase):
                 Arrangement(test_case_generator),
                 Expectation(FullResultStatus.HARD_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_message(
-                                    phase_step.ANONYMOUS_MAIN,
+                                    phase_step.ANONYMOUS__MAIN,
                                     test_case_generator.the_extra(phases.ANONYMOUS)[0].first_line,
                                     'hard error msg'),
-                            [phase_step.ANONYMOUS_MAIN],
+                            [phase_step.ANONYMOUS__MAIN],
                             False))
 
     def test_implementation_error_in_anonymous_phase(self):
@@ -57,10 +57,10 @@ class Test(TestCaseBase):
                 Arrangement(test_case),
                 Expectation(FullResultStatus.IMPLEMENTATION_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_exception(
-                                    phase_step.ANONYMOUS_MAIN,
+                                    phase_step.ANONYMOUS__MAIN,
                                     test_case.the_extra(phases.ANONYMOUS)[0].first_line,
                                     test.ImplementationErrorTestException),
-                            [phase_step.ANONYMOUS_MAIN],
+                            [phase_step.ANONYMOUS__MAIN],
                             False))
 
 

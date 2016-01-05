@@ -71,32 +71,32 @@ class TestCaseSetup(tuple):
 
     def as_setup_phase_instruction(self) -> SetupPhaseInstruction:
         return setup_phase_instruction_that(
-                validate_pre_eds=self._do_validate_pre_eds(phase_step.SETUP_VALIDATE_PRE_EDS),
-                validate_post_setup=self._do_validate_post_eds(phase_step.SETUP_VALIDATE_POST_SETUP),
-                main=self._do_main(phase_step.SETUP_MAIN))
+                validate_pre_eds=self._do_validate_pre_eds(phase_step.SETUP__VALIDATE_PRE_EDS),
+                validate_post_setup=self._do_validate_post_eds(phase_step.SETUP__VALIDATE_POST_SETUP),
+                main=self._do_main(phase_step.SETUP__MAIN))
 
     def as_act_phase_instruction(self) -> ActPhaseInstruction:
         return act_phase_instruction_that(
-                validate_pre_eds=self._do_validate_pre_eds(phase_step.ACT_VALIDATE_PRE_EDS),
-                validate_post_setup=self._do_validate_post_eds(phase_step.ACT_VALIDATE_POST_SETUP),
+                validate_pre_eds=self._do_validate_pre_eds(phase_step.ACT__VALIDATE_PRE_EDS),
+                validate_post_setup=self._do_validate_post_eds(phase_step.ACT__VALIDATE_POST_SETUP),
                 main=self._do_act_main())
 
     def as_before_assert_phase_instruction(self) -> BeforeAssertPhaseInstruction:
         return before_assert_phase_instruction_that(
-                validate_pre_eds=self._do_validate_pre_eds(phase_step.BEFORE_ASSERT_VALIDATE_PRE_EDS),
-                validate_post_setup=self._do_validate_post_eds(phase_step.BEFORE_ASSERT_VALIDATE_POST_SETUP),
-                main=self._do_main(phase_step.BEFORE_ASSERT_MAIN))
+                validate_pre_eds=self._do_validate_pre_eds(phase_step.BEFORE_ASSERT__VALIDATE_PRE_EDS),
+                validate_post_setup=self._do_validate_post_eds(phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP),
+                main=self._do_main(phase_step.BEFORE_ASSERT__MAIN))
 
     def as_assert_phase_instruction(self) -> AssertPhaseInstruction:
         return assert_phase_instruction_that(
-                validate_pre_eds=self._do_validate_pre_eds(phase_step.ASSERT_VALIDATE_PRE_EDS),
-                validate_post_setup=self._do_validate_post_eds(phase_step.ASSERT_VALIDATE_POST_EDS),
+                validate_pre_eds=self._do_validate_pre_eds(phase_step.ASSERT__VALIDATE_PRE_EDS),
+                validate_post_setup=self._do_validate_post_eds(phase_step.ASSERT__VALIDATE_POST_EDS),
                 main=self._do_assert_main())
 
     def as_cleanup_phase_instruction(self) -> CleanupPhaseInstruction:
         return cleanup_phase_instruction_that(
-                validate_pre_eds=self._do_validate_pre_eds(phase_step.CLEANUP_VALIDATE_PRE_EDS),
-                main=self._do_main(phase_step.CLEANUP_MAIN))
+                validate_pre_eds=self._do_validate_pre_eds(phase_step.CLEANUP__VALIDATE_PRE_EDS),
+                main=self._do_main(phase_step.CLEANUP__MAIN))
 
     @property
     def ret_val_from_validate(self) -> svh.SuccessOrValidationErrorOrHardError:
@@ -159,7 +159,7 @@ class TestCaseSetup(tuple):
 
     def _do_anonymous_main(self):
         def ret_val(configuration_builder: ConfigurationBuilder) -> sh.SuccessOrHardError:
-            self.anonymous_phase_action(phase_step.ANONYMOUS_MAIN,
+            self.anonymous_phase_action(phase_step.ANONYMOUS__MAIN,
                                         configuration_builder)
             return self.ret_val_from_main
 
@@ -167,7 +167,7 @@ class TestCaseSetup(tuple):
 
     def _do_act_main(self) -> types.FunctionType:
         def ret_val(glob_env__and_phase_env) -> sh.SuccessOrHardError:
-            self.execution_action__with_eds(phase_step.ACT_MAIN,
+            self.execution_action__with_eds(phase_step.ACT__MAIN,
                                             glob_env__and_phase_env[0])
             self.execution__generate_script(glob_env__and_phase_env[0],
                                             glob_env__and_phase_env[1])
@@ -177,7 +177,7 @@ class TestCaseSetup(tuple):
 
     def _do_assert_main(self):
         def ret_val(environment: i.GlobalEnvironmentForPostEdsPhase) -> pfh.PassOrFailOrHardError:
-            self.execution_action__with_eds(phase_step.ASSERT_MAIN,
+            self.execution_action__with_eds(phase_step.ASSERT__MAIN,
                                             environment)
             return self.ret_val_from_assert_main
 
