@@ -81,13 +81,13 @@ class TestCaseSetupWithRecorder(tuple):
                 ret_val_from_validate=self.ret_val_from_validate,
                 ret_val_from_main=self.ret_val_from_main,
                 ret_val_from_assert_main=self.ret_val_from_assert_main,
-                validation_action__without_eds=functools.partial(self.validation_action__pre_eds,
-                                                                 recorder),
+                validation_action__pre_eds=functools.partial(self.validation_action__pre_eds,
+                                                             recorder),
                 anonymous_phase_action=functools.partial(self.anonymous_phase_action,
                                                          recorder),
-                validation_action__with_eds=functools.partial(self.validation_action__post_eds,
+                validation_action__post_eds=functools.partial(self.validation_action__post_eds,
                                                               recorder),
-                main_action__with_eds=functools.partial(self.main_action__post_eds,
+                main_action__post_eds=functools.partial(self.main_action__post_eds,
                                                         recorder),
                 main__generate_script=self.main__generate_script)
 

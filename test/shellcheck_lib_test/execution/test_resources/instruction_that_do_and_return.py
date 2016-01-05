@@ -30,12 +30,12 @@ def do_nothing__anonymous_phase(phase_step: PhaseStep,
     pass
 
 
-def do_nothing__without_eds(phase_step: PhaseStep,
-                            home_dir: Path):
+def do_nothing__pre_eds(phase_step: PhaseStep,
+                        home_dir: Path):
     pass
 
 
-def do_nothing__with_eds(phase_step: PhaseStep,
+def do_nothing__post_eds(phase_step: PhaseStep,
                          global_environment: i.GlobalEnvironmentForPostEdsPhase):
     pass
 
@@ -50,19 +50,19 @@ class TestCaseSetup(tuple):
                 ret_val_from_validate: svh.SuccessOrValidationErrorOrHardError = svh.new_svh_success(),
                 ret_val_from_main: sh.SuccessOrHardError = sh.new_sh_success(),
                 ret_val_from_assert_main: pfh.PassOrFailOrHardError = pfh.new_pfh_pass(),
-                validation_action__without_eds: types.FunctionType = do_nothing__without_eds,
+                validation_action__pre_eds: types.FunctionType = do_nothing__pre_eds,
                 anonymous_phase_action: types.FunctionType = do_nothing__anonymous_phase,
-                validation_action__with_eds: types.FunctionType = do_nothing__with_eds,
-                main_action__with_eds: types.FunctionType = do_nothing__with_eds,
+                validation_action__post_eds: types.FunctionType = do_nothing__post_eds,
+                main_action__post_eds: types.FunctionType = do_nothing__post_eds,
                 main__generate_script: types.FunctionType = do_nothing__generate_script,
                 ):
         return tuple.__new__(cls, (ret_val_from_validate,
                                    ret_val_from_main,
                                    ret_val_from_assert_main,
-                                   validation_action__without_eds,
+                                   validation_action__pre_eds,
                                    anonymous_phase_action,
-                                   validation_action__with_eds,
-                                   main_action__with_eds,
+                                   validation_action__post_eds,
+                                   main_action__post_eds,
                                    main__generate_script,
                                    ))
 
