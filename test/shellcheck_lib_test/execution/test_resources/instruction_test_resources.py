@@ -108,8 +108,8 @@ class ActPhaseInstructionThat(ActPhaseInstruction):
                          environment: instrs.GlobalEnvironmentForPreEdsStep) -> svh.SuccessOrValidationErrorOrHardError:
         return self.do_validate_pre_eds(environment)
 
-    def validate(self,
-                 global_environment: instrs.GlobalEnvironmentForPostEdsPhase) \
+    def validate_post_setup(self,
+                            global_environment: instrs.GlobalEnvironmentForPostEdsPhase) \
             -> svh.SuccessOrValidationErrorOrHardError:
         return self.do_validate_post_eds(global_environment)
 

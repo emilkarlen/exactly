@@ -29,7 +29,7 @@ class SetupConfig(utils.Configuration):
 class ActConfig(utils.Configuration):
     def __init__(self):
         super().__init__(PartialPhase.ACT,
-                         phase_step.ACT_VALIDATE_POST_EDS,
+                         phase_step.ACT_VALIDATE_POST_SETUP,
                          expected_steps_before_validation=
                          PRE_EDS_VALIDATION_STEPS + [phase_step.SETUP_MAIN,
                                                      phase_step.SETUP_VALIDATE_POST_EDS]
@@ -50,7 +50,7 @@ class BeforeAssertConfig(utils.Configuration):
                          expected_steps_before_validation=
                          PRE_EDS_VALIDATION_STEPS + [phase_step.SETUP_MAIN,
                                                      phase_step.SETUP_VALIDATE_POST_EDS,
-                                                     phase_step.ACT_VALIDATE_POST_EDS]
+                                                     phase_step.ACT_VALIDATE_POST_SETUP]
                          )
 
     def instruction_that_returns(self, return_value: svh.SuccessOrValidationErrorOrHardError) -> TestCaseInstruction:
@@ -68,7 +68,7 @@ class AssertConfig(utils.Configuration):
                          expected_steps_before_validation=
                          PRE_EDS_VALIDATION_STEPS + [phase_step.SETUP_MAIN,
                                                      phase_step.SETUP_VALIDATE_POST_EDS,
-                                                     phase_step.ACT_VALIDATE_POST_EDS,
+                                                     phase_step.ACT_VALIDATE_POST_SETUP,
                                                      phase_step.BEFORE_ASSERT_VALIDATE_POST_EDS,
                                                      ]
                          )

@@ -69,7 +69,7 @@ class Test(TestCaseBase):
                             PRE_EDS_VALIDATION_STEPS +
                             [phase_step.SETUP_MAIN,
                              phase_step.SETUP_VALIDATE_POST_EDS,
-                             phase_step.ACT_VALIDATE_POST_EDS,
+                             phase_step.ACT_VALIDATE_POST_SETUP,
                              phase_step.BEFORE_ASSERT_VALIDATE_POST_EDS,
                              phase_step.ASSERT_VALIDATE_POST_EDS,
                              phase_step.ACT_MAIN,
@@ -92,7 +92,7 @@ class Test(TestCaseBase):
                             PRE_EDS_VALIDATION_STEPS +
                             [phase_step.SETUP_MAIN,
                              phase_step.SETUP_VALIDATE_POST_EDS,
-                             phase_step.ACT_VALIDATE_POST_EDS,
+                             phase_step.ACT_VALIDATE_POST_SETUP,
                              phase_step.BEFORE_ASSERT_VALIDATE_POST_EDS,
                              phase_step.ASSERT_VALIDATE_POST_EDS,
                              phase_step.ACT_MAIN,
@@ -113,7 +113,7 @@ class Test(TestCaseBase):
                             PRE_EDS_VALIDATION_STEPS +
                             [phase_step.SETUP_MAIN,
                              phase_step.SETUP_VALIDATE_POST_EDS,
-                             phase_step.ACT_VALIDATE_POST_EDS,
+                             phase_step.ACT_VALIDATE_POST_SETUP,
                              phase_step.BEFORE_ASSERT_VALIDATE_POST_EDS,
                              phase_step.ASSERT_VALIDATE_POST_EDS,
                              phase_step.ACT_MAIN,
@@ -135,7 +135,7 @@ class Test(TestCaseBase):
                             PRE_EDS_VALIDATION_STEPS +
                             [phase_step.SETUP_MAIN,
                              phase_step.SETUP_VALIDATE_POST_EDS,
-                             phase_step.ACT_VALIDATE_POST_EDS,
+                             phase_step.ACT_VALIDATE_POST_SETUP,
                              phase_step.BEFORE_ASSERT_VALIDATE_POST_EDS,
                              phase_step.ASSERT_VALIDATE_POST_EDS,
                              phase_step.ACT_MAIN,
@@ -157,7 +157,7 @@ class Test(TestCaseBase):
                             PRE_EDS_VALIDATION_STEPS +
                             [phase_step.SETUP_MAIN,
                              phase_step.SETUP_VALIDATE_POST_EDS,
-                             phase_step.ACT_VALIDATE_POST_EDS,
+                             phase_step.ACT_VALIDATE_POST_SETUP,
                              phase_step.BEFORE_ASSERT_VALIDATE_POST_EDS,
                              phase_step.ASSERT_VALIDATE_POST_EDS,
                              phase_step.ACT_MAIN,
@@ -179,7 +179,7 @@ class Test(TestCaseBase):
                             PRE_EDS_VALIDATION_STEPS +
                             [phase_step.SETUP_MAIN,
                              phase_step.SETUP_VALIDATE_POST_EDS,
-                             phase_step.ACT_VALIDATE_POST_EDS,
+                             phase_step.ACT_VALIDATE_POST_SETUP,
                              phase_step.BEFORE_ASSERT_VALIDATE_POST_EDS,
                              phase_step.ASSERT_VALIDATE_POST_EDS,
                              phase_step.ACT_MAIN,
@@ -204,7 +204,7 @@ class Test(TestCaseBase):
                             PRE_EDS_VALIDATION_STEPS +
                             [phase_step.SETUP_MAIN,
                              phase_step.SETUP_VALIDATE_POST_EDS,
-                             phase_step.ACT_VALIDATE_POST_EDS,
+                             phase_step.ACT_VALIDATE_POST_SETUP,
                              phase_step.BEFORE_ASSERT_VALIDATE_POST_EDS,
                              phase_step.ASSERT_VALIDATE_POST_EDS,
                              phase_step.ACT_MAIN,
@@ -230,7 +230,7 @@ class Test(TestCaseBase):
                             PRE_EDS_VALIDATION_STEPS +
                             [phase_step.SETUP_MAIN,
                              phase_step.SETUP_VALIDATE_POST_EDS,
-                             phase_step.ACT_VALIDATE_POST_EDS,
+                             phase_step.ACT_VALIDATE_POST_SETUP,
                              phase_step.BEFORE_ASSERT_VALIDATE_POST_EDS,
                              phase_step.ASSERT_VALIDATE_POST_EDS,
                              phase_step.ACT_MAIN,
@@ -256,7 +256,7 @@ class Test(TestCaseBase):
                             PRE_EDS_VALIDATION_STEPS +
                             [phase_step.SETUP_MAIN,
                              phase_step.SETUP_VALIDATE_POST_EDS,
-                             phase_step.ACT_VALIDATE_POST_EDS,
+                             phase_step.ACT_VALIDATE_POST_SETUP,
                              phase_step.BEFORE_ASSERT_VALIDATE_POST_EDS,
                              phase_step.ASSERT_VALIDATE_POST_EDS,
                              phase_step.ACT_MAIN,
@@ -283,7 +283,7 @@ class Test(TestCaseBase):
                             PRE_EDS_VALIDATION_STEPS +
                             [phase_step.SETUP_MAIN,
                              phase_step.SETUP_VALIDATE_POST_EDS,
-                             phase_step.ACT_VALIDATE_POST_EDS,
+                             phase_step.ACT_VALIDATE_POST_SETUP,
                              phase_step.BEFORE_ASSERT_VALIDATE_POST_EDS,
                              phase_step.ASSERT_VALIDATE_POST_EDS,
                              phase_step.ACT_MAIN,
@@ -310,7 +310,7 @@ class Test(TestCaseBase):
                             PRE_EDS_VALIDATION_STEPS +
                             [phase_step.SETUP_MAIN,
                              phase_step.SETUP_VALIDATE_POST_EDS,
-                             phase_step.ACT_VALIDATE_POST_EDS,
+                             phase_step.ACT_VALIDATE_POST_SETUP,
                              phase_step.BEFORE_ASSERT_VALIDATE_POST_EDS,
                              phase_step.ASSERT_VALIDATE_POST_EDS,
                              phase_step.ACT_MAIN,
@@ -337,7 +337,7 @@ class Test(TestCaseBase):
                             PRE_EDS_VALIDATION_STEPS +
                             [phase_step.SETUP_MAIN,
                              phase_step.SETUP_VALIDATE_POST_EDS,
-                             phase_step.ACT_VALIDATE_POST_EDS,
+                             phase_step.ACT_VALIDATE_POST_SETUP,
                              phase_step.BEFORE_ASSERT_VALIDATE_POST_EDS,
                              phase_step.ASSERT_VALIDATE_POST_EDS,
                              phase_step.ACT_MAIN,
@@ -364,7 +364,7 @@ class Test(TestCaseBase):
                             PRE_EDS_VALIDATION_STEPS +
                             [phase_step.SETUP_MAIN,
                              phase_step.SETUP_VALIDATE_POST_EDS,
-                             phase_step.ACT_VALIDATE_POST_EDS,
+                             phase_step.ACT_VALIDATE_POST_SETUP,
                              phase_step.BEFORE_ASSERT_VALIDATE_POST_EDS,
                              phase_step.ASSERT_VALIDATE_POST_EDS,
                              phase_step.ACT_MAIN,
