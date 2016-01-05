@@ -13,7 +13,7 @@ from shellcheck_lib_test.execution.test_resources.instruction_test_resources imp
 class SetupConfig(utils.Configuration):
     def __init__(self):
         super().__init__(PartialPhase.SETUP,
-                         phase_step.SETUP_VALIDATE_POST_EDS,
+                         phase_step.SETUP_VALIDATE_POST_SETUP,
                          expected_steps_before_validation=
                          PRE_EDS_VALIDATION_STEPS + [phase_step.SETUP_MAIN]
                          )
@@ -32,7 +32,7 @@ class ActConfig(utils.Configuration):
                          phase_step.ACT_VALIDATE_POST_SETUP,
                          expected_steps_before_validation=
                          PRE_EDS_VALIDATION_STEPS + [phase_step.SETUP_MAIN,
-                                                     phase_step.SETUP_VALIDATE_POST_EDS]
+                                                     phase_step.SETUP_VALIDATE_POST_SETUP]
                          )
 
     def instruction_that_returns(self, return_value: svh.SuccessOrValidationErrorOrHardError) -> TestCaseInstruction:
@@ -49,7 +49,7 @@ class BeforeAssertConfig(utils.Configuration):
                          phase_step.BEFORE_ASSERT_VALIDATE_POST_EDS,
                          expected_steps_before_validation=
                          PRE_EDS_VALIDATION_STEPS + [phase_step.SETUP_MAIN,
-                                                     phase_step.SETUP_VALIDATE_POST_EDS,
+                                                     phase_step.SETUP_VALIDATE_POST_SETUP,
                                                      phase_step.ACT_VALIDATE_POST_SETUP]
                          )
 
@@ -67,7 +67,7 @@ class AssertConfig(utils.Configuration):
                          phase_step.ASSERT_VALIDATE_POST_EDS,
                          expected_steps_before_validation=
                          PRE_EDS_VALIDATION_STEPS + [phase_step.SETUP_MAIN,
-                                                     phase_step.SETUP_VALIDATE_POST_EDS,
+                                                     phase_step.SETUP_VALIDATE_POST_SETUP,
                                                      phase_step.ACT_VALIDATE_POST_SETUP,
                                                      phase_step.BEFORE_ASSERT_VALIDATE_POST_EDS,
                                                      ]
