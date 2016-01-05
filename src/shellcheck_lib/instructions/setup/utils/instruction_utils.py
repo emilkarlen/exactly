@@ -21,8 +21,8 @@ class InstructionWithFileRefsBase(SetupPhaseInstruction):
                     return result
         return svh.new_svh_success()
 
-    def validate_post_eds(self,
-                          environment: GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
+    def validate_post_setup(self,
+                            environment: GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
         for file_ref_check in self.file_ref_check_list_tuple:
             assert isinstance(file_ref_check, FileRefCheck)
             if not file_ref_check.file_reference.exists_pre_eds:

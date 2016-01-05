@@ -146,7 +146,7 @@ class Executor:
     def _execute_post_validate(self,
                                global_environment_with_eds,
                                instruction: SetupPhaseInstruction, ) -> svh.SuccessOrValidationErrorOrHardError:
-        post_validate_result = instruction.validate_post_eds(global_environment_with_eds)
+        post_validate_result = instruction.validate_post_setup(global_environment_with_eds)
         self.put.assertIsInstance(post_validate_result,
                                   svh.SuccessOrValidationErrorOrHardError,
                                   'post_validate must return a ' + str(svh.SuccessOrValidationErrorOrHardError))

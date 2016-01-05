@@ -80,8 +80,8 @@ class SetupPhaseInstructionThat(SetupPhaseInstruction):
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         return self._main(environment)
 
-    def validate_post_eds(self,
-                          environment: instrs.GlobalEnvironmentForPostEdsPhase) \
+    def validate_post_setup(self,
+                            environment: instrs.GlobalEnvironmentForPostEdsPhase) \
             -> svh.SuccessOrValidationErrorOrHardError:
         return self._validate_post_setup(environment)
 
