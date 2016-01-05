@@ -97,13 +97,13 @@ class Test(FullExecutionTestCaseBase):
         }
         expected_recorded_internally = {
             phase_step.ANONYMOUS_MAIN: for_anonymous_phase,
-            phase_step.SETUP_PRE_VALIDATE: for_pre_eds,
+            phase_step.SETUP_VALIDATE_PRE_EDS: for_pre_eds,
             phase_step.ACT_VALIDATE_PRE_EDS: for_pre_eds,
             phase_step.BEFORE_ASSERT_VALIDATE_PRE_EDS: for_pre_eds,
             phase_step.ASSERT_VALIDATE_PRE_EDS: for_pre_eds,
             phase_step.CLEANUP_VALIDATE_PRE_EDS: for_pre_eds,
             phase_step.SETUP_MAIN: set_at_eds_creation,
-            phase_step.SETUP_POST_VALIDATE: set_at_eds_creation,
+            phase_step.SETUP_VALIDATE_POST_EDS: set_at_eds_creation,
             phase_step.ACT_VALIDATE_POST_EDS: set_at_eds_creation,
             phase_step.ACT_MAIN: set_at_eds_creation,
             phase_step.BEFORE_ASSERT_VALIDATE_POST_EDS: set_at_eds_creation,
