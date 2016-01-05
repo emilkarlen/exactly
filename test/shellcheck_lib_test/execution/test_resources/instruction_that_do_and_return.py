@@ -20,7 +20,7 @@ from shellcheck_lib_test.execution.full_execution.test_resources.test_case_gener
     TestCaseGeneratorForFullExecutionBase
 from shellcheck_lib_test.execution.test_resources import python_code_gen as py
 from shellcheck_lib_test.execution.test_resources.instruction_test_resources import cleanup_phase_instruction_that, \
-    before_assert_phase_instruction_that, setup_phase_instruction_that
+    before_assert_phase_instruction_that, setup_phase_instruction_that, anonymous_phase_instruction_that
 from shellcheck_lib_test.execution.test_resources.test_case_generation import instruction_line_constructor, \
     phase_contents
 
@@ -67,7 +67,7 @@ class TestCaseSetup(tuple):
                                    ))
 
     def as_anonymous_phase_instruction(self) -> AnonymousPhaseInstruction:
-        return _AnonymousInstruction(self)
+        return anonymous_phase_instruction_that(main=self._do_assert_main())
 
     def as_setup_phase_instruction(self) -> SetupPhaseInstruction:
         return setup_phase_instruction_that(
@@ -151,6 +151,14 @@ class TestCaseSetup(tuple):
 
         return ret_val
 
+    def _do_assert_main(self):
+        def ret_val(configuration_builder: ConfigurationBuilder) -> sh.SuccessOrHardError:
+            self.anonymous_phase_action(phase_step.ANONYMOUS_MAIN,
+                                        configuration_builder)
+            return self.ret_val_from_main
+
+        return ret_val
+
 
 class TestCaseGeneratorForTestCaseSetup(TestCaseGeneratorForFullExecutionBase):
     """
@@ -182,18 +190,6 @@ class TestCaseGeneratorForTestCaseSetup(TestCaseGeneratorForFullExecutionBase):
         if instr is None:
             raise ValueError('Unknown phase: ' + str(phase))
         return phase_contents([self.instruction_line_constructor.apply(instr)])
-
-
-class _AnonymousInstruction(AnonymousPhaseInstruction):
-    def __init__(self,
-                 configuration: TestCaseSetup):
-        self.__configuration = configuration
-
-    def main(self, global_environment,
-             configuration_builder: ConfigurationBuilder) -> sh.SuccessOrHardError:
-        self.__configuration.anonymous_phase_action(phase_step.ANONYMOUS_MAIN,
-                                                    configuration_builder)
-        return self.__configuration.ret_val_from_main
 
 
 def print_to_file__generate_script(code_using_file_opened_for_writing: types.FunctionType,

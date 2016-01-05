@@ -49,7 +49,7 @@ class AnonymousPhaseInstructionThat(AnonymousPhaseInstruction):
 
     def main(self, global_environment,
              configuration_builder: ConfigurationBuilder) -> sh.SuccessOrHardError:
-        return self.do_main(global_environment)
+        return self.do_main(configuration_builder)
 
 
 def setup_phase_instruction_that(validate_pre_eds=do_return(svh.new_svh_success()),
