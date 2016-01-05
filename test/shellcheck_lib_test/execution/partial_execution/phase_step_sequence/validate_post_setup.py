@@ -46,7 +46,7 @@ class ActConfig(utils.Configuration):
 class BeforeAssertConfig(utils.Configuration):
     def __init__(self):
         super().__init__(PartialPhase.BEFORE_ASSERT,
-                         phase_step.BEFORE_ASSERT_VALIDATE_POST_EDS,
+                         phase_step.BEFORE_ASSERT_VALIDATE_POST_SETUP,
                          expected_steps_before_validation=
                          PRE_EDS_VALIDATION_STEPS + [phase_step.SETUP_MAIN,
                                                      phase_step.SETUP_VALIDATE_POST_SETUP,
@@ -69,7 +69,7 @@ class AssertConfig(utils.Configuration):
                          PRE_EDS_VALIDATION_STEPS + [phase_step.SETUP_MAIN,
                                                      phase_step.SETUP_VALIDATE_POST_SETUP,
                                                      phase_step.ACT_VALIDATE_POST_SETUP,
-                                                     phase_step.BEFORE_ASSERT_VALIDATE_POST_EDS,
+                                                     phase_step.BEFORE_ASSERT_VALIDATE_POST_SETUP,
                                                      ]
                          )
 
