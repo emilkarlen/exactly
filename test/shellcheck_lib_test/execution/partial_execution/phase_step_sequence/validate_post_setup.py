@@ -20,10 +20,10 @@ class SetupConfig(utils.Configuration):
 
     def instruction_that_returns(self, return_value: svh.SuccessOrValidationErrorOrHardError) -> TestCaseInstruction:
         return test.setup_phase_instruction_that(
-                validate_post_eds=do_return(return_value))
+                validate_post_setup=do_return(return_value))
 
     def instruction_that_raises(self, exception: Exception) -> TestCaseInstruction:
-        return test.setup_phase_instruction_that(validate_post_eds=do_raise(exception))
+        return test.setup_phase_instruction_that(validate_post_setup=do_raise(exception))
 
 
 class ActConfig(utils.Configuration):
@@ -37,10 +37,10 @@ class ActConfig(utils.Configuration):
 
     def instruction_that_returns(self, return_value: svh.SuccessOrValidationErrorOrHardError) -> TestCaseInstruction:
         return test.act_phase_instruction_that(
-                validate_post_eds=do_return(return_value))
+                validate_post_setup=do_return(return_value))
 
     def instruction_that_raises(self, exception: Exception) -> TestCaseInstruction:
-        return test.act_phase_instruction_that(validate_post_eds=do_raise(exception))
+        return test.act_phase_instruction_that(validate_post_setup=do_raise(exception))
 
 
 class BeforeAssertConfig(utils.Configuration):
@@ -55,10 +55,10 @@ class BeforeAssertConfig(utils.Configuration):
 
     def instruction_that_returns(self, return_value: svh.SuccessOrValidationErrorOrHardError) -> TestCaseInstruction:
         return test.before_assert_phase_instruction_that(
-                validate_post_eds=do_return(return_value))
+                validate_post_setup=do_return(return_value))
 
     def instruction_that_raises(self, exception: Exception) -> TestCaseInstruction:
-        return test.before_assert_phase_instruction_that(validate_post_eds=do_raise(exception))
+        return test.before_assert_phase_instruction_that(validate_post_setup=do_raise(exception))
 
 
 class AssertConfig(utils.Configuration):
@@ -75,10 +75,10 @@ class AssertConfig(utils.Configuration):
 
     def instruction_that_returns(self, return_value: svh.SuccessOrValidationErrorOrHardError) -> TestCaseInstruction:
         return test.assert_phase_instruction_that(
-                validate_post_eds=do_return(return_value))
+                validate_post_setup=do_return(return_value))
 
     def instruction_that_raises(self, exception: Exception) -> TestCaseInstruction:
-        return test.assert_phase_instruction_that(validate_post_eds=do_raise(exception))
+        return test.assert_phase_instruction_that(validate_post_setup=do_raise(exception))
 
 
 def instruction_validation_invocations() -> list:
