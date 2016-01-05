@@ -8,6 +8,7 @@ Fortsätt med
 ** DONE test-infrastruktur
 ** DONE TestCaseGeneratorForTestCaseSetup
 Används _PHASE_phase-metoderna??
+** DONE step_phase.SETUP_PRE_VALIDATE bytas mot namn i linje m övriga
 ** DONE test-falls-dokument
 *** DONE full
 *** DONE partiell
