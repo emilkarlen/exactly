@@ -114,6 +114,20 @@ class TestCaseSetup(tuple):
     def execution__generate_script(self) -> types.FunctionType:
         return self[7]
 
+    def do_validate_pre_eds(self,
+                            the_phase_step: PhaseStep,
+                            environment: i.GlobalEnvironmentForPreEdsStep):
+        self.validation_action__without_eds(the_phase_step,
+                                            environment.home_directory)
+        return self.ret_val_from_validate
+
+    def do_main(self,
+                the_phase_step: PhaseStep,
+                environment: i.GlobalEnvironmentForPostEdsPhase):
+        self.execution_action__with_eds(the_phase_step,
+                                        environment)
+        return self.ret_val_from_main
+
 
 class TestCaseGeneratorForTestCaseSetup(TestCaseGeneratorForFullExecutionBase):
     """
@@ -221,7 +235,7 @@ class _ActInstruction(ActPhaseInstruction):
     def validate_pre_eds(self,
                          global_environment: i.GlobalEnvironmentForPreEdsStep) -> \
             svh.SuccessOrValidationErrorOrHardError:
-        self.__configuration.validation_action__without_eds(phase_step.BEFORE_ASSERT_VALIDATE_PRE_EDS,
+        self.__configuration.validation_action__without_eds(phase_step.ACT_VALIDATE_PRE_EDS,
                                                             global_environment.home_directory)
         return self.__configuration.ret_val_from_validate
 
@@ -275,7 +289,7 @@ class _AssertInstruction(AssertPhaseInstruction):
     def validate_pre_eds(self,
                          global_environment: i.GlobalEnvironmentForPreEdsStep) -> \
             svh.SuccessOrValidationErrorOrHardError:
-        self.__configuration.validation_action__without_eds(phase_step.BEFORE_ASSERT_VALIDATE_PRE_EDS,
+        self.__configuration.validation_action__without_eds(phase_step.ASSERT_VALIDATE_PRE_EDS,
                                                             global_environment.home_directory)
         return self.__configuration.ret_val_from_validate
 
@@ -301,7 +315,7 @@ class _CleanupInstruction(CleanupPhaseInstruction):
     def validate_pre_eds(self,
                          global_environment: i.GlobalEnvironmentForPreEdsStep) -> \
             svh.SuccessOrValidationErrorOrHardError:
-        self.__configuration.validation_action__without_eds(phase_step.BEFORE_ASSERT_VALIDATE_PRE_EDS,
+        self.__configuration.validation_action__without_eds(phase_step.CLEANUP_VALIDATE_PRE_EDS,
                                                             global_environment.home_directory)
         return self.__configuration.ret_val_from_validate
 
