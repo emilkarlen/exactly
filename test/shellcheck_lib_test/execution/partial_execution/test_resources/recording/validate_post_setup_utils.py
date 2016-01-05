@@ -21,7 +21,7 @@ class Configuration:
         self.step = step
         self.expected_steps = expected_steps_before_validation + [
             step,
-            phase_step.CLEANUP_MAIN]
+            phase_step.CLEANUP__MAIN]
 
     def instruction_that_returns(self, return_value: svh.SuccessOrValidationErrorOrHardError) -> TestCaseInstruction:
         raise NotImplementedError()
