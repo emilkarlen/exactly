@@ -1,5 +1,13 @@
 -*- org -*-
 
+* TODO Paketstruktur: flytta act_phase_setup till test_case.act
+Kanske.
+El är test_case.act till för enbart instruktoner?
+act_phase_setup kanske tillhör exekvering mer
+* TODO main-program: möjl att köra flera tester m en o samma kommandorad
+Typ: Om fler än en tesfalls-fil anges så körs de som en test-svit.
+
+En temporär testsvit skapas bakom kulisserna.
 * TODO Python-saker
 
 ** TODO Är klasser py3? Ska det vara MyClass(object)?
@@ -60,6 +68,18 @@ Eftersom befintliga transformerade filer återanvänds är beteendet annorlunda
 för användning nr > 1, än första gången. Måste alltså testas.
 Metod: Ev köra helt testfall o helt enkelt använda samma instruktion två
 gånger.
+** TODO default main program: kolla att faserna innehåller rätt instruktioner
+----------
+Scenario:
+Alla tester passerades
+men gick inte att köra programmet pga att instruktionsuppsättningen var fel.
+Instruktionerna för fasX låg i fasY, typ.
+Felet var felaktig sekvens av argumenten till InstructionsSetup i
+shellcheck_lib/default/execution_mode/test_case/default_instructions_setup.py
+----------
+
+Lösning, typ: test som kör testfall m en "unik" instruktion från varje fas.
+("unik" = instruktion som inte finns i någon annan fas.)
 * TODO Misc
 ** TODO <2015-01-05 mån> abs_syn_gen.TestCase instances must be valid
 The constructor should validate all arguments

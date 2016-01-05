@@ -28,11 +28,20 @@ ALL
 ** DONE andra - "globala" - test
 ** DONE Gör om InstructionsSetup till tuple
 ** DONE hjälp
-* TODO shellcheck_lib_test/test_suite/execution.py:493 (fel arg)
-* TODO Byt namn: post_eds -> post_setup
-* TODO Refaktorering av testhjälpmedel
+* DONE shellcheck_lib_test/test_suite/execution.py:493 (fel arg)
+* DONE Byt namn: post_eds -> post_setup
+** Komponenter
+*** metoder i instruktion
+*** konstanter för fas-steg
+** Faser
+*** DONE act
+*** DONE setup
+*** DONE before-assert
+*** DONE assert
+*** DONE cleanup
+* DONE Refaktorering av testhjälpmedel
 shellcheck_lib_test/execution/test_resources/instruction_that_record_and_return.py
-** TODO namnbyte: execute -> main
+** DONE namnbyte: execute -> main
 ** använda PHASE_phase_instruction_that??
 * TODO Hantera nya faser o steg
 ** TODO shellcheck_lib_test/execution/test_resources/instruction_that_do_and_return.py
