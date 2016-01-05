@@ -28,7 +28,8 @@ class _Instruction(AssertPhaseInstruction):
         self.setup = setup
         self.validator = PreOrPostEdsSvhValidationErrorValidator(setup.validator)
 
-    def validate(self, environment: GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
+    def validate_post_setup(self,
+                            environment: GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
         return self.validator.validate_pre_or_post_eds(environment.home_and_eds)
 
     def main(self,

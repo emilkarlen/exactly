@@ -71,7 +71,8 @@ _SUCCESSFUL_INSTRUCTION = assert_phase_instruction_that()
 
 
 class InstructionThatRaisesTestErrorIfCwdIsIsNotTestRoot(AssertPhaseInstruction):
-    def validate(self, environment: GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
+    def validate_post_setup(self,
+                            environment: GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
         test_misc.raise_test_error_if_cwd_is_not_test_root(environment.eds)
         return svh.new_svh_success()
 

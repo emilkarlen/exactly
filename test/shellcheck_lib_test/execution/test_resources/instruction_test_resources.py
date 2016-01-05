@@ -171,8 +171,8 @@ class AssertPhaseInstructionThat(AssertPhaseInstruction):
                          environment: instrs.GlobalEnvironmentForPreEdsStep) -> svh.SuccessOrValidationErrorOrHardError:
         return self._validate_pre_eds(environment)
 
-    def validate(self,
-                 environment: instrs.GlobalEnvironmentForPostEdsPhase) \
+    def validate_post_setup(self,
+                            environment: instrs.GlobalEnvironmentForPostEdsPhase) \
             -> svh.SuccessOrValidationErrorOrHardError:
         return self._validate_post_setup(environment)
 

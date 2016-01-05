@@ -87,8 +87,8 @@ class ContentCheckerInstructionBase(AssertPhaseInstruction):
             FileRefCheckValidator(self._file_ref_check_for_expected())
         self.validator_of_expected = PreOrPostEdsSvhValidationErrorValidator(validator_of_expected_)
 
-    def validate(self,
-                 environment: i.GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
+    def validate_post_setup(self,
+                            environment: i.GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
         return self.validator_of_expected.validate_pre_eds_if_applicable(environment.home_directory)
 
     def main(self,
