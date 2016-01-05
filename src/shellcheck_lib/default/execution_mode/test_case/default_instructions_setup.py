@@ -9,6 +9,6 @@ from shellcheck_lib.test_case.instruction_setup import InstructionsSetup
 instructions_setup = InstructionsSetup(
         configuration.INSTRUCTIONS,
         setup.INSTRUCTIONS,
-        assert_.INSTRUCTIONS,
         before_assert.INSTRUCTIONS,
+        assert_.INSTRUCTIONS,
         cleanup.INSTRUCTIONS)
