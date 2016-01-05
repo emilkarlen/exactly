@@ -13,14 +13,11 @@ from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, Setup
 
 
 def do_return(x):
-    def ret_val():
-        return x
-
-    return ret_val
+    return lambda env: x
 
 
 def do_raise(ex: Exception):
-    def ret_val():
+    def ret_val(x):
         raise ex
 
     return ret_val
@@ -52,7 +49,7 @@ class AnonymousPhaseInstructionThat(AnonymousPhaseInstruction):
 
     def main(self, global_environment,
              configuration_builder: ConfigurationBuilder) -> sh.SuccessOrHardError:
-        return self.do_main()
+        return self.do_main(global_environment)
 
 
 def setup_phase_instruction_that(validate_pre_eds=do_return(svh.new_svh_success()),
@@ -75,18 +72,19 @@ class SetupPhaseInstructionThat(SetupPhaseInstruction):
     def pre_validate(self,
                      global_environment: instrs.GlobalEnvironmentForPreEdsStep) \
             -> svh.SuccessOrValidationErrorOrHardError:
-        return self._validate_pre_eds()
+        return self._validate_pre_eds(global_environment)
 
     def main(self,
              os_services: OsServices,
              environment: instrs.GlobalEnvironmentForPostEdsPhase,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
-        return self._main()
+        return self._main(environment)
 
     def post_validate(self,
                       global_environment: instrs.GlobalEnvironmentForPostEdsPhase) \
             -> svh.SuccessOrValidationErrorOrHardError:
-        return self._validate_post_eds()
+        return self._validate_post_eds(global_environment
+                                       )
 
 
 def act_phase_instruction_that(validate_pre_eds=do_return(svh.new_svh_success()),
@@ -108,18 +106,18 @@ class ActPhaseInstructionThat(ActPhaseInstruction):
 
     def validate_pre_eds(self,
                          environment: instrs.GlobalEnvironmentForPreEdsStep) -> svh.SuccessOrValidationErrorOrHardError:
-        return self.do_validate_pre_eds()
+        return self.do_validate_pre_eds(environment)
 
     def validate(self,
                  global_environment: instrs.GlobalEnvironmentForPostEdsPhase) \
             -> svh.SuccessOrValidationErrorOrHardError:
-        return self.do_validate_post_eds()
+        return self.do_validate_post_eds(global_environment)
 
     def main(
             self,
             global_environment: instrs.GlobalEnvironmentForPostEdsPhase,
             phase_environment: PhaseEnvironmentForScriptGeneration) -> sh.SuccessOrHardError:
-        return self.do_main()
+        return self.do_main(global_environment)
 
 
 def before_assert_phase_instruction_that(validate_pre_eds=do_return(svh.new_svh_success()),
@@ -141,16 +139,16 @@ class BeforeAssertPhaseInstructionThat(BeforeAssertPhaseInstruction):
 
     def validate_pre_eds(self,
                          environment: instrs.GlobalEnvironmentForPreEdsStep) -> svh.SuccessOrValidationErrorOrHardError:
-        return self._validate_pre_eds()
+        return self._validate_pre_eds(environment)
 
     def validate_post_eds(self,
                           environment: instrs.GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
-        return self._validate_post_eds()
+        return self._validate_post_eds(environment)
 
     def main(self,
              os_services: OsServices,
              environment: instrs.GlobalEnvironmentForPostEdsPhase) -> sh.SuccessOrHardError:
-        return self._main()
+        return self._main(environment)
 
 
 def assert_phase_instruction_that(validate_pre_eds=do_return(svh.new_svh_success()),
@@ -172,17 +170,17 @@ class AssertPhaseInstructionThat(AssertPhaseInstruction):
 
     def validate_pre_eds(self,
                          environment: instrs.GlobalEnvironmentForPreEdsStep) -> svh.SuccessOrValidationErrorOrHardError:
-        return self._validate_pre_eds()
+        return self._validate_pre_eds(environment)
 
     def validate(self,
                  environment: instrs.GlobalEnvironmentForPostEdsPhase) \
             -> svh.SuccessOrValidationErrorOrHardError:
-        return self._validate_post_eds()
+        return self._validate_post_eds(environment)
 
     def main(self,
              environment: instrs.GlobalEnvironmentForPostEdsPhase,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
-        return self._main()
+        return self._main(environment)
 
 
 def cleanup_phase_instruction_that(validate_pre_eds=do_return(svh.SuccessOrValidationErrorOrHardError),
@@ -201,9 +199,9 @@ class CleanupPhaseInstructionThat(CleanupPhaseInstruction):
     def validate_pre_eds(self,
                          environment: instrs.GlobalEnvironmentForPreEdsStep) \
             -> svh.SuccessOrValidationErrorOrHardError:
-        return self.do_validate_pre_eds()
+        return self.do_validate_pre_eds(environment)
 
     def main(self,
              environment: instrs.GlobalEnvironmentForPostEdsPhase,
              os_services: OsServices) -> sh.SuccessOrHardError:
-        return self.do_main()
+        return self.do_main(environment)
