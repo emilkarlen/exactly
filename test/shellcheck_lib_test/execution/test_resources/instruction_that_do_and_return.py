@@ -15,12 +15,12 @@ from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction
 from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.result import svh
-from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
+from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction
 from shellcheck_lib_test.execution.full_execution.test_resources.test_case_generator import \
     TestCaseGeneratorForFullExecutionBase
 from shellcheck_lib_test.execution.test_resources import python_code_gen as py
 from shellcheck_lib_test.execution.test_resources.instruction_test_resources import cleanup_phase_instruction_that, \
-    before_assert_phase_instruction_that
+    before_assert_phase_instruction_that, setup_phase_instruction_that
 from shellcheck_lib_test.execution.test_resources.test_case_generation import instruction_line_constructor, \
     phase_contents
 
@@ -70,7 +70,10 @@ class TestCaseSetup(tuple):
         return _AnonymousInstruction(self)
 
     def as_setup_phase_instruction(self) -> SetupPhaseInstruction:
-        return _SetupInstruction(self)
+        return setup_phase_instruction_that(
+                validate_pre_eds=self._do_validate_pre_eds(phase_step.SETUP_PRE_VALIDATE),
+                validate_post_eds=self._do_validate_post_eds(phase_step.SETUP_POST_VALIDATE),
+                main=self._do_main(phase_step.SETUP_MAIN))
 
     def as_act_phase_instruction(self) -> ActPhaseInstruction:
         return _ActInstruction(self)
@@ -218,33 +221,6 @@ def print_to_file__generate_script(code_using_file_opened_for_writing: types.Fun
     program = py.program_lines(mas.used_modules,
                                all_statements)
     phase_environment.append.raw_script_statements(program)
-
-
-class _SetupInstruction(SetupPhaseInstruction):
-    def __init__(self,
-                 configuration: TestCaseSetup):
-        self.__configuration = configuration
-
-    def pre_validate(self,
-                     global_environment: i.GlobalEnvironmentForPreEdsStep) -> svh.SuccessOrValidationErrorOrHardError:
-        self.__configuration.validation_action__without_eds(phase_step.SETUP_PRE_VALIDATE,
-                                                            global_environment.home_directory)
-        return self.__configuration.ret_val_from_validate
-
-    def post_validate(self,
-                      global_environment: i.GlobalEnvironmentForPostEdsPhase) -> \
-            svh.SuccessOrValidationErrorOrHardError:
-        self.__configuration.validation_action__with_eds(phase_step.SETUP_POST_VALIDATE,
-                                                         global_environment.home_directory)
-        return self.__configuration.ret_val_from_validate
-
-    def main(self,
-             os_services: OsServices,
-             environment: i.GlobalEnvironmentForPostEdsPhase,
-             settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
-        self.__configuration.execution_action__with_eds(phase_step.SETUP_MAIN,
-                                                        environment)
-        return self.__configuration.ret_val_from_main
 
 
 class _ActInstruction(ActPhaseInstruction):
