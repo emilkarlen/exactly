@@ -4,6 +4,7 @@ import shutil
 from shellcheck_lib.cli.execution_mode.test_case.settings import Output, TestCaseExecutionSettings
 from shellcheck_lib.default.execution_mode.test_case import processing
 from shellcheck_lib.execution import full_execution
+from shellcheck_lib.execution.phases import Phase
 from shellcheck_lib.execution.result import FailureInfoVisitor, PhaseFailureInfo, InstructionFailureInfo
 from shellcheck_lib.general import line_source
 from shellcheck_lib.general.std import StdOutputFiles, FilePrinter
@@ -55,6 +56,7 @@ class Executor:
         self._out_printer.write_line(stdout_error_code)
         _output_location(self._err_printer,
                          error_info.file,
+                         None,
                          error_info.line)
         _ErrorDescriptionDisplayer(self._err_printer).visit(error_info.description)
 
@@ -142,11 +144,13 @@ class _SourceDisplayer(FailureInfoVisitor):
     def _visit_instruction_failure(self, failure_info: InstructionFailureInfo):
         _output_location(self.out,
                          None,
+                         failure_info.phase_step.phase,
                          failure_info.source_line)
 
 
 def _output_location(printer: FilePrinter,
                      test_case_file: pathlib.Path,
+                     phase: Phase,
                      line: line_source.Line):
     has_output_header = False
     if test_case_file:
@@ -155,5 +159,8 @@ def _output_location(printer: FilePrinter,
     if line:
         printer.write_line('Line {}: `{}\''.format(line.line_number, line.text))
         has_output_header = True
+    if phase:
+        printer.write_line('In phase `%s`' % phase.identifier)
+
     if has_output_header:
         printer.write_line('')
