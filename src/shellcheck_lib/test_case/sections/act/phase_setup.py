@@ -62,6 +62,8 @@ class ActProgramExecutor:
                 std_files: StdFiles) -> int:
         """
         Executed after prepare.
+        
+        :returns exit code of executed program
         """
         raise NotImplementedError()
 

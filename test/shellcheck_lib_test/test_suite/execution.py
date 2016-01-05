@@ -76,9 +76,9 @@ class TestError(unittest.TestCase):
                                          exit_code,
                                          str_std_out_files)
         ExpectedSuiteReporting.check_list(
-            self,
-            [ExpectedSuiteReporting(root, [(test_case, test_case_processing.Status.INTERNAL_ERROR)])],
-            reporter_factory.complete_suite_reporter)
+                self,
+                [ExpectedSuiteReporting(root, [(test_case, test_case_processing.Status.INTERNAL_ERROR)])],
+                reporter_factory.complete_suite_reporter)
 
 
 class TestReturnValueFromTestCaseProcessor(unittest.TestCase):
@@ -122,9 +122,9 @@ class TestReturnValueFromTestCaseProcessor(unittest.TestCase):
                                          exit_code,
                                          str_std_out_files)
         ExpectedSuiteReporting.check_list(
-            self,
-            [ExpectedSuiteReporting(root, [(test_case, result.status)])],
-            reporter_factory.complete_suite_reporter)
+                self,
+                [ExpectedSuiteReporting(root, [(test_case, result.status)])],
+                reporter_factory.complete_suite_reporter)
 
 
 class TestComplexSuite(unittest.TestCase):
@@ -136,17 +136,17 @@ class TestComplexSuite(unittest.TestCase):
         tc_access_error = TestCaseSetup(Path('access error'))
         tc_executed = TestCaseSetup(Path('executed'))
         root = new_test_suite(
-            'root',
-            [],
-            [
-                tc_internal_error,
-                tc_access_error,
-                tc_executed,
-            ])
+                'root',
+                [],
+                [
+                    tc_internal_error,
+                    tc_access_error,
+                    tc_executed,
+                ])
         test_case_processor = TestCaseProcessorThatGivesConstantPerCase({
             id(tc_internal_error): test_case_processing.new_internal_error(error_info.of_message('message')),
             id(tc_access_error): test_case_processing.new_access_error(
-                test_case_processing.AccessErrorType.PARSE_ERROR, error_info.of_message('parse error')),
+                    test_case_processing.AccessErrorType.PARSE_ERROR, error_info.of_message('parse error')),
             id(tc_executed): test_case_processing.new_executed(FULL_RESULT_PASS),
         })
         expected_suites = [
@@ -173,9 +173,9 @@ class TestComplexSuite(unittest.TestCase):
                                          exit_code,
                                          str_std_out_files)
         ExpectedSuiteReporting.check_list(
-            self,
-            expected_suites,
-            reporter_factory.complete_suite_reporter)
+                self,
+                expected_suites,
+                reporter_factory.complete_suite_reporter)
 
     def test_suite_execution_order_using_empty_suites(self):
         # ARRANGE #
@@ -212,9 +212,9 @@ class TestComplexSuite(unittest.TestCase):
                                          exit_code,
                                          str_std_out_files)
         ExpectedSuiteReporting.check_list(
-            self,
-            expected_suites,
-            reporter_factory.complete_suite_reporter)
+                self,
+                expected_suites,
+                reporter_factory.complete_suite_reporter)
 
     def test_complex_suite_structure_with_test_cases(self):
         # ARRANGE #
@@ -233,9 +233,9 @@ class TestComplexSuite(unittest.TestCase):
             id(tc_internal_error_11): test_case_processing.new_internal_error(error_info.of_message('message A')),
             id(tc_internal_error_21): test_case_processing.new_internal_error(error_info.of_message('message B')),
             id(tc_access_error_1): test_case_processing.new_access_error(
-                test_case_processing.AccessErrorType.PARSE_ERROR, error_info.of_message('parse error')),
+                    test_case_processing.AccessErrorType.PARSE_ERROR, error_info.of_message('parse error')),
             id(tc_access_error_12): test_case_processing.new_access_error(
-                test_case_processing.AccessErrorType.FILE_ACCESS_ERROR, error_info.of_message('file access error')),
+                    test_case_processing.AccessErrorType.FILE_ACCESS_ERROR, error_info.of_message('file access error')),
             id(tc_executed_11): test_case_processing.new_executed(FULL_RESULT_PASS),
             id(tc_executed_12): test_case_processing.new_executed(FULL_RESULT_PASS),
             id(tc_executed_1): test_case_processing.new_executed(FULL_RESULT_PASS),
@@ -281,9 +281,9 @@ class TestComplexSuite(unittest.TestCase):
                                          exit_code,
                                          str_std_out_files)
         ExpectedSuiteReporting.check_list(
-            self,
-            expected_suites,
-            reporter_factory.complete_suite_reporter)
+                self,
+                expected_suites,
+                reporter_factory.complete_suite_reporter)
 
 
 def check_exit_code_and_empty_stdout(put: unittest.TestCase,
@@ -491,11 +491,11 @@ DUMMY_EDS = ExecutionDirectoryStructure('test-root-dir')
 FULL_RESULT_PASS = new_pass(DUMMY_EDS)
 
 DEFAULT_CASE_PROCESSING = case_processing.Configuration(
-    lambda x: ((), ()),
+        lambda x: ((), ()),
         InstructionsSetup({}, {}, {}, {}, {}),
-    script_language_setup(),
-    IDENTITY_PREPROCESSOR,
-    False)
+        script_language_setup(),
+        IDENTITY_PREPROCESSOR,
+        False)
 
 
 def suite():
