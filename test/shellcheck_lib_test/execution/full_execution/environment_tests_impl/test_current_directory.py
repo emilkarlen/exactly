@@ -78,7 +78,7 @@ class Test(FullExecutionTestCaseBase):
             phase_step.ACT__MAIN: str(initial_dir / SUB_DIR_NAME),
             phase_step.SETUP__VALIDATE_POST_SETUP: str(initial_dir / SUB_DIR_NAME),
             phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP: str(initial_dir / SUB_DIR_NAME),
-            phase_step.ASSERT__VALIDATE_POST_EDS: str(initial_dir / SUB_DIR_NAME),
+            phase_step.ASSERT__VALIDATE_POST_SETUP: str(initial_dir / SUB_DIR_NAME),
             phase_step.BEFORE_ASSERT__MAIN: str(initial_dir / SUB_DIR_NAME / SUB_DIR_NAME),
             phase_step.ASSERT__MAIN: str(initial_dir / SUB_DIR_NAME / SUB_DIR_NAME / SUB_DIR_NAME),
             phase_step.CLEANUP__MAIN: str(initial_dir / SUB_DIR_NAME / SUB_DIR_NAME / SUB_DIR_NAME / SUB_DIR_NAME),

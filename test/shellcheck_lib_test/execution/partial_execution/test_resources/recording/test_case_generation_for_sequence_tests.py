@@ -35,7 +35,7 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorForPartialExecutio
                                                                      phase_step.BEFORE_ASSERT__MAIN),
             PartialPhase.ASSERT:
                 recording_instructions.new_assert_instruction(phase_step.ASSERT__VALIDATE_PRE_EDS,
-                                                              phase_step.ASSERT__VALIDATE_POST_EDS,
+                                                              phase_step.ASSERT__VALIDATE_POST_SETUP,
                                                               phase_step.ASSERT__MAIN),
             PartialPhase.CLEANUP:
                 recording_instructions.new_cleanup_instruction(phase_step.CLEANUP__VALIDATE_PRE_EDS,

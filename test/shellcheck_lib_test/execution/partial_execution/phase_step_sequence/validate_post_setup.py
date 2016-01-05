@@ -64,7 +64,7 @@ class BeforeAssertConfig(utils.Configuration):
 class AssertConfig(utils.Configuration):
     def __init__(self):
         super().__init__(PartialPhase.ASSERT,
-                         phase_step.ASSERT__VALIDATE_POST_EDS,
+                         phase_step.ASSERT__VALIDATE_POST_SETUP,
                          expected_steps_before_validation=
                          PRE_EDS_VALIDATION_STEPS + [phase_step.SETUP__MAIN,
                                                      phase_step.SETUP__VALIDATE_POST_SETUP,

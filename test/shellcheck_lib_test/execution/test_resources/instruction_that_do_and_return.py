@@ -90,7 +90,7 @@ class TestCaseSetup(tuple):
     def as_assert_phase_instruction(self) -> AssertPhaseInstruction:
         return assert_phase_instruction_that(
                 validate_pre_eds=self._do_validate_pre_eds(phase_step.ASSERT__VALIDATE_PRE_EDS),
-                validate_post_setup=self._do_validate_post_eds(phase_step.ASSERT__VALIDATE_POST_EDS),
+                validate_post_setup=self._do_validate_post_eds(phase_step.ASSERT__VALIDATE_POST_SETUP),
                 main=self._do_assert_main())
 
     def as_cleanup_phase_instruction(self) -> CleanupPhaseInstruction:
