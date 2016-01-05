@@ -105,7 +105,7 @@ class BeforeAssertValidatePostSetupExecutor(ControlledInstructionExecutor):
 
     def apply(self, instruction: BeforeAssertPhaseInstruction) -> PartialInstructionControlledFailureInfo:
         return _from_success_or_validation_error_or_hard_error(
-                instruction.validate_post_eds(self.__global_environment))
+                instruction.validate_post_setup(self.__global_environment))
 
 
 class AssertValidatePostSetupExecutor(ControlledInstructionExecutor):
