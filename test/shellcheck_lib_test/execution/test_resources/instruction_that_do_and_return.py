@@ -20,7 +20,7 @@ from shellcheck_lib_test.execution.full_execution.test_resources.test_case_gener
 from shellcheck_lib_test.execution.test_resources import python_code_gen as py
 from shellcheck_lib_test.execution.test_resources.instruction_test_resources import cleanup_phase_instruction_that, \
     before_assert_phase_instruction_that, setup_phase_instruction_that, anonymous_phase_instruction_that, \
-    assert_phase_instruction_that
+    assert_phase_instruction_that, act_phase_instruction_that
 from shellcheck_lib_test.execution.test_resources.test_case_generation import instruction_line_constructor, \
     phase_contents
 
@@ -76,7 +76,10 @@ class TestCaseSetup(tuple):
                 main=self._do_main(phase_step.SETUP_MAIN))
 
     def as_act_phase_instruction(self) -> ActPhaseInstruction:
-        return _ActInstruction(self)
+        return act_phase_instruction_that(
+                validate_pre_eds=self._do_validate_pre_eds(phase_step.ACT_VALIDATE_PRE_EDS),
+                validate_post_eds=self._do_validate_post_eds(phase_step.ACT_VALIDATE_POST_EDS),
+                main=self._do_act_main())
 
     def as_before_assert_phase_instruction(self) -> BeforeAssertPhaseInstruction:
         return before_assert_phase_instruction_that(
@@ -162,6 +165,16 @@ class TestCaseSetup(tuple):
 
         return ret_val
 
+    def _do_act_main(self) -> types.FunctionType:
+        def ret_val(glob_env__and_phase_env) -> sh.SuccessOrHardError:
+            self.execution_action__with_eds(phase_step.ACT_MAIN,
+                                            glob_env__and_phase_env[0])
+            self.execution__generate_script(glob_env__and_phase_env[0],
+                                            glob_env__and_phase_env[1])
+            return self.ret_val_from_main
+
+        return ret_val
+
     def _do_assert_main(self):
         def ret_val(environment: i.GlobalEnvironmentForPostEdsPhase) -> pfh.PassOrFailOrHardError:
             self.execution_action__with_eds(phase_step.ASSERT_MAIN,
@@ -228,31 +241,3 @@ def print_to_file__generate_script(code_using_file_opened_for_writing: types.Fun
     program = py.program_lines(mas.used_modules,
                                all_statements)
     phase_environment.append.raw_script_statements(program)
-
-
-class _ActInstruction(ActPhaseInstruction):
-    def __init__(self,
-                 configuration: TestCaseSetup):
-        self.__configuration = configuration
-
-    def validate_pre_eds(self,
-                         global_environment: i.GlobalEnvironmentForPreEdsStep) -> \
-            svh.SuccessOrValidationErrorOrHardError:
-        self.__configuration.validation_action__without_eds(phase_step.ACT_VALIDATE_PRE_EDS,
-                                                            global_environment.home_directory)
-        return self.__configuration.ret_val_from_validate
-
-    def validate(self, global_environment: i.GlobalEnvironmentForPostEdsPhase) -> \
-            svh.SuccessOrValidationErrorOrHardError:
-        self.__configuration.validation_action__with_eds(phase_step.ACT_VALIDATE_POST_EDS,
-                                                         global_environment)
-        return self.__configuration.ret_val_from_validate
-
-    def main(self,
-             global_environment: i.GlobalEnvironmentForPostEdsPhase,
-             phase_environment: PhaseEnvironmentForScriptGeneration) -> sh.SuccessOrHardError:
-        self.__configuration.execution_action__with_eds(phase_step.ACT_MAIN,
-                                                        global_environment)
-        self.__configuration.execution__generate_script(global_environment,
-                                                        phase_environment)
-        return self.__configuration.ret_val_from_main
