@@ -71,8 +71,8 @@ class TestCaseSetup(tuple):
 
     def as_setup_phase_instruction(self) -> SetupPhaseInstruction:
         return setup_phase_instruction_that(
-                validate_pre_eds=self._do_validate_pre_eds(phase_step.SETUP_PRE_VALIDATE),
-                validate_post_eds=self._do_validate_post_eds(phase_step.SETUP_POST_VALIDATE),
+                validate_pre_eds=self._do_validate_pre_eds(phase_step.SETUP_VALIDATE_PRE_EDS),
+                validate_post_eds=self._do_validate_post_eds(phase_step.SETUP_VALIDATE_POST_EDS),
                 main=self._do_main(phase_step.SETUP_MAIN))
 
     def as_act_phase_instruction(self) -> ActPhaseInstruction:

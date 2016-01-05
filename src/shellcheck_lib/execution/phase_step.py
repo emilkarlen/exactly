@@ -34,8 +34,8 @@ def _validate_post_eds_step(phase: phases.Phase) -> PhaseStep:
 
 ANONYMOUS_MAIN = _main_step(phases.ANONYMOUS)
 
-SETUP_PRE_VALIDATE = _validate_pre_eds_step(phases.SETUP)
-SETUP_POST_VALIDATE = _validate_post_eds_step(phases.SETUP)
+SETUP_VALIDATE_PRE_EDS = _validate_pre_eds_step(phases.SETUP)
+SETUP_VALIDATE_POST_EDS = _validate_post_eds_step(phases.SETUP)
 SETUP_MAIN = _main_step(phases.SETUP)
 
 ACT_VALIDATE_PRE_EDS = _validate_pre_eds_step(phases.ACT)

@@ -252,7 +252,7 @@ class PartialExecutor:
             f.write(str(exitcode))
 
     def __run_setup_pre_validate(self) -> PartialResult:
-        return self.__run_internal_instructions_phase_step(phase_step.SETUP_PRE_VALIDATE,
+        return self.__run_internal_instructions_phase_step(phase_step.SETUP_VALIDATE_PRE_EDS,
                                                            phase_step_executors.SetupPreValidateInstructionExecutor(
                                                                    self.__global_environment),
                                                            self.__test_case.setup_phase)
@@ -294,7 +294,7 @@ class PartialExecutor:
         return ret_val
 
     def __run_setup_post_validate(self) -> PartialResult:
-        return self.__run_internal_instructions_phase_step(phase_step.SETUP_POST_VALIDATE,
+        return self.__run_internal_instructions_phase_step(phase_step.SETUP_VALIDATE_POST_EDS,
                                                            phase_step_executors.SetupPostValidateInstructionExecutor(
                                                                    self.__global_environment),
                                                            self.__test_case.setup_phase)

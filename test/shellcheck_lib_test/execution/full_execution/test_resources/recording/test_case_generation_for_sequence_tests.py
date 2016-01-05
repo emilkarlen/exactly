@@ -25,9 +25,9 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorForFullExecutionBa
             phases.ANONYMOUS:
                 recording_instructions.new_anonymous_instruction(phase_step.ANONYMOUS_MAIN),
             phases.SETUP:
-                recording_instructions.new_setup_instruction(phase_step.SETUP_PRE_VALIDATE,
+                recording_instructions.new_setup_instruction(phase_step.SETUP_VALIDATE_PRE_EDS,
                                                              phase_step.SETUP_MAIN,
-                                                             phase_step.SETUP_POST_VALIDATE),
+                                                             phase_step.SETUP_VALIDATE_POST_EDS),
             phases.ACT:
                 recording_instructions.new_act_instruction(phase_step.ACT_VALIDATE_PRE_EDS,
                                                            phase_step.ACT_VALIDATE_POST_EDS,

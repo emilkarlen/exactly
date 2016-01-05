@@ -12,8 +12,8 @@ from shellcheck_lib_test.execution.test_resources.instruction_test_resources imp
 class ConfigForSetupValidatePreEds(validate_pre_eds_utils.Configuration):
     def __init__(self):
         super().__init__(PartialPhase.SETUP,
-                         phase_step.SETUP_PRE_VALIDATE,
-                         expected_steps=[phase_step.SETUP_PRE_VALIDATE])
+                         phase_step.SETUP_VALIDATE_PRE_EDS,
+                         expected_steps=[phase_step.SETUP_VALIDATE_PRE_EDS])
 
     def instruction_that_returns(self, return_value: svh.SuccessOrValidationErrorOrHardError) -> TestCaseInstruction:
         return test.setup_phase_instruction_that(
@@ -27,7 +27,7 @@ class ConfigForActValidatePreEds(validate_pre_eds_utils.Configuration):
     def __init__(self):
         super().__init__(PartialPhase.ACT,
                          phase_step.ACT_VALIDATE_PRE_EDS,
-                         expected_steps=[phase_step.SETUP_PRE_VALIDATE,
+                         expected_steps=[phase_step.SETUP_VALIDATE_PRE_EDS,
                                          phase_step.ACT_VALIDATE_PRE_EDS])
 
     def instruction_that_returns(self, return_value: svh.SuccessOrValidationErrorOrHardError) -> TestCaseInstruction:
@@ -42,7 +42,7 @@ class ConfigForBeforeAssertValidatePreEds(validate_pre_eds_utils.Configuration):
     def __init__(self):
         super().__init__(PartialPhase.BEFORE_ASSERT,
                          phase_step.BEFORE_ASSERT_VALIDATE_PRE_EDS,
-                         expected_steps=[phase_step.SETUP_PRE_VALIDATE,
+                         expected_steps=[phase_step.SETUP_VALIDATE_PRE_EDS,
                                          phase_step.ACT_VALIDATE_PRE_EDS,
                                          phase_step.BEFORE_ASSERT_VALIDATE_PRE_EDS])
 
@@ -58,7 +58,7 @@ class ConfigForAssertValidatePreEds(validate_pre_eds_utils.Configuration):
     def __init__(self):
         super().__init__(PartialPhase.ASSERT,
                          phase_step.ASSERT_VALIDATE_PRE_EDS,
-                         expected_steps=[phase_step.SETUP_PRE_VALIDATE,
+                         expected_steps=[phase_step.SETUP_VALIDATE_PRE_EDS,
                                          phase_step.ACT_VALIDATE_PRE_EDS,
                                          phase_step.BEFORE_ASSERT_VALIDATE_PRE_EDS,
                                          phase_step.ASSERT_VALIDATE_PRE_EDS])
@@ -75,7 +75,7 @@ class ConfigForCleanupValidatePreEds(validate_pre_eds_utils.Configuration):
     def __init__(self):
         super().__init__(PartialPhase.CLEANUP,
                          phase_step.CLEANUP_VALIDATE_PRE_EDS,
-                         expected_steps=[phase_step.SETUP_PRE_VALIDATE,
+                         expected_steps=[phase_step.SETUP_VALIDATE_PRE_EDS,
                                          phase_step.ACT_VALIDATE_PRE_EDS,
                                          phase_step.BEFORE_ASSERT_VALIDATE_PRE_EDS,
                                          phase_step.ASSERT_VALIDATE_PRE_EDS,

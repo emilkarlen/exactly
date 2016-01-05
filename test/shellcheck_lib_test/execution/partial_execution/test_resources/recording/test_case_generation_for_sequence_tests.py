@@ -22,9 +22,9 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorForPartialExecutio
         recording_instructions = RecordingInstructions(self.__recorder)
         self.__recorders = {
             PartialPhase.SETUP:
-                recording_instructions.new_setup_instruction(phase_step.SETUP_PRE_VALIDATE,
+                recording_instructions.new_setup_instruction(phase_step.SETUP_VALIDATE_PRE_EDS,
                                                              phase_step.SETUP_MAIN,
-                                                             phase_step.SETUP_POST_VALIDATE),
+                                                             phase_step.SETUP_VALIDATE_POST_EDS),
             PartialPhase.ACT:
                 recording_instructions.new_act_instruction(phase_step.ACT_VALIDATE_PRE_EDS,
                                                            phase_step.ACT_VALIDATE_POST_EDS,
