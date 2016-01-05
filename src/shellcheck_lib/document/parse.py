@@ -192,7 +192,7 @@ class _Impl:
         if self.is_at_eof():
             return model.empty_document()
         if self.current_line_is_section_line():
-            self.switch_section_according_to_current_line_and_consume_section_lines()
+            self.switch_section_according_to_last_section_line_and_consume_section_lines()
             self.read_rest_of_document_from_inside_section_or_at_eof()
         else:
             if self.has_section(None):
@@ -202,14 +202,14 @@ class _Impl:
                 self.skip_standard_comment_and_empty_lines()
                 if not self.is_at_eof():
                     if self.current_line_is_section_line():
-                        self.switch_section_according_to_current_line_and_consume_section_lines()
+                        self.switch_section_according_to_last_section_line_and_consume_section_lines()
                         self.read_rest_of_document_from_inside_section_or_at_eof()
                     else:
                         raise SourceError(self._current_line,
                                           'Instruction outside of section')
         return self.build_document()
 
-    def switch_section_according_to_current_line_and_consume_section_lines(self):
+    def switch_section_according_to_last_section_line_and_consume_section_lines(self):
         """
         Precondition: Current line is a section-line
         Post condition: Current line is not a section-line.
@@ -232,7 +232,7 @@ class _Impl:
             if self.is_at_eof():
                 return
             if self.current_line_is_section_line():
-                self.switch_section_according_to_current_line_and_consume_section_lines()
+                self.switch_section_according_to_last_section_line_and_consume_section_lines()
 
     def read_section_elements_until_next_section_or_eof(self):
         while not self.is_at_eof() and not self.current_line_is_section_line():
