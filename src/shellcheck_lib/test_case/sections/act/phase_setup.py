@@ -1,4 +1,5 @@
 import pathlib
+import types
 
 from shellcheck_lib.document.parse import SectionElementParser
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
@@ -62,20 +63,35 @@ class ActProgramExecutor:
                 std_files: StdFiles) -> int:
         """
         Executed after prepare.
-        
+
         :returns exit code of executed program
         """
         raise NotImplementedError()
 
 
-class ActPhaseSetup:
-    def __init__(self,
-                 parser: SectionElementParser,
-                 script_builder_constructor,
-                 executor: ActProgramExecutor):
+class ActPhaseSetup(tuple):
+    def __new__(cls,
+                parser: SectionElementParser,
+                script_builder_constructor,
+                executor: ActProgramExecutor):
         """
         :param script_builder_constructor: () -> ScriptSourceBuilder
         """
-        self.parser = parser
-        self.script_builder_constructor = script_builder_constructor
-        self.executor = executor
+        return tuple.__new__(cls, (parser,
+                                   script_builder_constructor,
+                                   executor))
+
+    @property
+    def parser(self) -> SectionElementParser:
+        return self[0]
+
+    @property
+    def script_builder_constructor(self) -> types.FunctionType:
+        """
+        :return: () -> ScriptSourceBuilder
+        """
+        return self[1]
+
+    @property
+    def executor(self) -> ActProgramExecutor:
+        return self[2]
