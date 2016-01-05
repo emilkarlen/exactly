@@ -24,7 +24,7 @@ class Test(TestCaseBase):
                              phase_step.SETUP__VALIDATE_POST_SETUP,
                              phase_step.ACT__VALIDATE_POST_SETUP,
                              phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
-                             phase_step.ASSERT__VALIDATE_POST_EDS,
+                             phase_step.ASSERT__VALIDATE_POST_SETUP,
                              phase_step.ACT__MAIN,
                              phase_step.ACT__SCRIPT_VALIDATE,
                              phase_step.ACT__SCRIPT_EXECUTE,

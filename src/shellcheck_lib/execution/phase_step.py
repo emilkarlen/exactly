@@ -49,7 +49,7 @@ BEFORE_ASSERT__VALIDATE_POST_SETUP = _validate_post_setup_step(phases.BEFORE_ASS
 BEFORE_ASSERT__MAIN = _main_step(phases.BEFORE_ASSERT)
 
 ASSERT__VALIDATE_PRE_EDS = _validate_pre_eds_step(phases.ASSERT)
-ASSERT__VALIDATE_POST_EDS = _validate_post_setup_step(phases.ASSERT)
+ASSERT__VALIDATE_POST_SETUP = _validate_post_setup_step(phases.ASSERT)
 ASSERT__MAIN = _main_step(phases.ASSERT)
 
 CLEANUP__VALIDATE_PRE_EDS = _validate_pre_eds_step(phases.CLEANUP)
