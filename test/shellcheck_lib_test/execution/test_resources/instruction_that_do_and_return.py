@@ -19,6 +19,7 @@ from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, Setup
 from shellcheck_lib_test.execution.full_execution.test_resources.test_case_generator import \
     TestCaseGeneratorForFullExecutionBase
 from shellcheck_lib_test.execution.test_resources import python_code_gen as py
+from shellcheck_lib_test.execution.test_resources.instruction_test_resources import cleanup_phase_instruction_that
 from shellcheck_lib_test.execution.test_resources.test_case_generation import instruction_line_constructor, \
     phase_contents
 
@@ -80,7 +81,9 @@ class TestCaseSetup(tuple):
         return _AssertInstruction(self)
 
     def as_cleanup_phase_instruction(self) -> CleanupPhaseInstruction:
-        return _CleanupInstruction(self)
+        return cleanup_phase_instruction_that(
+                validate_pre_eds=self.do_validate_pre_eds(phase_step.CLEANUP_VALIDATE_PRE_EDS),
+                main=self.do_main(phase_step.CLEANUP_MAIN))
 
     @property
     def ret_val_from_validate(self) -> svh.SuccessOrValidationErrorOrHardError:
@@ -115,18 +118,22 @@ class TestCaseSetup(tuple):
         return self[7]
 
     def do_validate_pre_eds(self,
-                            the_phase_step: PhaseStep,
-                            environment: i.GlobalEnvironmentForPreEdsStep):
-        self.validation_action__without_eds(the_phase_step,
-                                            environment.home_directory)
-        return self.ret_val_from_validate
+                            the_phase_step: PhaseStep):
+        def ret_val(environment: i.GlobalEnvironmentForPreEdsStep):
+            self.validation_action__without_eds(the_phase_step,
+                                                environment.home_directory)
+            return self.ret_val_from_validate
+
+        return ret_val
 
     def do_main(self,
-                the_phase_step: PhaseStep,
-                environment: i.GlobalEnvironmentForPostEdsPhase):
-        self.execution_action__with_eds(the_phase_step,
-                                        environment)
-        return self.ret_val_from_main
+                the_phase_step: PhaseStep):
+        def ret_val(environment: i.GlobalEnvironmentForPostEdsPhase):
+            self.execution_action__with_eds(the_phase_step,
+                                            environment)
+            return self.ret_val_from_main
+
+        return ret_val
 
 
 class TestCaseGeneratorForTestCaseSetup(TestCaseGeneratorForFullExecutionBase):
@@ -305,23 +312,3 @@ class _AssertInstruction(AssertPhaseInstruction):
         self.__configuration.execution_action__with_eds(phase_step.ASSERT_MAIN,
                                                         environment)
         return self.__configuration.ret_val_from_assert_main
-
-
-class _CleanupInstruction(CleanupPhaseInstruction):
-    def __init__(self,
-                 configuration: TestCaseSetup):
-        self.__configuration = configuration
-
-    def validate_pre_eds(self,
-                         global_environment: i.GlobalEnvironmentForPreEdsStep) -> \
-            svh.SuccessOrValidationErrorOrHardError:
-        self.__configuration.validation_action__without_eds(phase_step.CLEANUP_VALIDATE_PRE_EDS,
-                                                            global_environment.home_directory)
-        return self.__configuration.ret_val_from_validate
-
-    def main(self,
-             environment: i.GlobalEnvironmentForPostEdsPhase,
-             os_services: OsServices) -> sh.SuccessOrHardError:
-        self.__configuration.execution_action__with_eds(phase_step.CLEANUP_MAIN,
-                                                        environment)
-        return self.__configuration.ret_val_from_main
