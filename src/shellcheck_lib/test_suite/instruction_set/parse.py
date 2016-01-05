@@ -60,10 +60,16 @@ class SuiteSyntaxError(SuiteReadError):
     def __init__(self,
                  suite_file: pathlib.Path,
                  line: line_source.Line,
-                 message: str):
+                 message: str,
+                 maybe_section_name: str = None):
         super().__init__(suite_file, line)
         self._message = message
+        self._maybe_section_name = maybe_section_name
 
     @property
     def message(self) -> str:
         return self._message
+
+    @property
+    def maybe_section_name(self) -> str:
+        return self._maybe_section_name

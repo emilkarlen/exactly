@@ -6,7 +6,8 @@ from shellcheck_lib.general.line_source import LineSource
 
 class SourceError(Exception):
     """
-    An exceptions related to a line in the test case.
+    An exceptions related to a line in the test case,
+    raised by a parser that is unaware of current section.
     """
 
     def __init__(self,
@@ -24,6 +25,26 @@ class SourceError(Exception):
         return self._message
 
 
+class FileSourceError(Exception):
+    """
+    An exceptions related to a line in the test case.
+    """
+
+    def __init__(self,
+                 source_error: SourceError,
+                 maybe_section_name: str):
+        self._source_error = source_error
+        self._maybe_section_name = maybe_section_name
+
+    @property
+    def source_error(self) -> SourceError:
+        return self._source_error
+
+    @property
+    def maybe_section_name(self) -> str:
+        return self._maybe_section_name
+
+
 class PlainDocumentParser:
     """
     Base class for parsers that parse a "plain file"
@@ -33,7 +54,7 @@ class PlainDocumentParser:
     def apply(self,
               plain_test_case: LineSource) -> model.Document:
         """
-        :raises SourceError The test case cannot be parsed.
+        :raises FileSourceError The test case cannot be parsed.
         """
         raise NotImplementedError()
 
@@ -177,6 +198,7 @@ class _Impl:
                                               self._plain_test_case))
         self._current_line = self._get_next_line()
         self._parser_for_current_section = None
+        self._name_of_current_section = None
         self._elements_for_current_section = []
         self._section_name_2_element_list = {}
 
@@ -205,8 +227,9 @@ class _Impl:
                         self.switch_section_according_to_last_section_line_and_consume_section_lines()
                         self.read_rest_of_document_from_inside_section_or_at_eof()
                     else:
-                        raise SourceError(self._current_line,
-                                          'Instruction outside of section')
+                        raise FileSourceError(SourceError(self._current_line,
+                                                          'Instruction outside of section'),
+                                              None)
         return self.build_document()
 
     def switch_section_according_to_last_section_line_and_consume_section_lines(self):
@@ -220,8 +243,9 @@ class _Impl:
             section_line = self._current_line
             section_name = self.extract_section_name_and_consume_line()
             if not self.has_section(section_name):
-                raise SourceError(section_line,
-                                  'There is no section named "%s"' % section_name)
+                raise FileSourceError(SourceError(section_line,
+                                                  'There is no section named "%s"' % section_name),
+                                      None)
             self.set_current_section(section_name)
 
     def read_rest_of_document_from_inside_section_or_at_eof(self):
@@ -236,7 +260,10 @@ class _Impl:
 
     def read_section_elements_until_next_section_or_eof(self):
         while not self.is_at_eof() and not self.current_line_is_section_line():
-            element = self.parse_element_at_current_line_using_current_section_element_parser()
+            try:
+                element = self.parse_element_at_current_line_using_current_section_element_parser()
+            except SourceError as ex:
+                raise FileSourceError(ex, self._name_of_current_section)
             self.add_element_to_current_section(element)
             self.forward_line_source_according_lines_consumed_by(element)
 
@@ -266,6 +293,7 @@ class _Impl:
         return model.Document(sections)
 
     def set_current_section(self, section_name: str):
+        self._name_of_current_section = section_name
         self._parser_for_current_section = self.configuration.parser_for_section(section_name)
         if section_name not in self._section_name_2_element_list:
             self._section_name_2_element_list[section_name] = []

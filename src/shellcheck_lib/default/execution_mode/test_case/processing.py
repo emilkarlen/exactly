@@ -25,7 +25,7 @@ class Configuration:
                  act_phase_setup: ActPhaseSetup,
                  preprocessor: Preprocessor,
                  is_keep_execution_directory_root: bool,
-                 execution_directory_root_name_prefix: str='shellcheck-'):
+                 execution_directory_root_name_prefix: str = 'shellcheck-'):
         self.act_phase_setup = act_phase_setup
         self.instruction_setup = instruction_setup
         self.split_line_into_name_and_argument_function = split_line_into_name_and_argument_function
@@ -36,14 +36,14 @@ class Configuration:
 
 def new_processor_that_should_not_pollute_current_process(configuration: Configuration) -> processing.Processor:
     return processing_utils.ProcessorFromAccessorAndExecutor(
-        new_accessor(configuration),
-        new_executor_that_should_not_pollute_current_processes(configuration))
+            new_accessor(configuration),
+            new_executor_that_should_not_pollute_current_processes(configuration))
 
 
 def new_processor_that_is_allowed_to_pollute_current_process(configuration: Configuration) -> processing.Processor:
     return processing_utils.ProcessorFromAccessorAndExecutor(
-        new_accessor(configuration),
-        new_executor_that_may_pollute_current_processes(configuration))
+            new_accessor(configuration),
+            new_executor_that_may_pollute_current_processes(configuration))
 
 
 def new_accessor(configuration: Configuration) -> processing.Accessor:
@@ -95,10 +95,11 @@ class _Parser(processing_utils.Parser):
         source = line_source.new_for_string(test_case_plain_source)
         try:
             return file_parser.apply(source)
-        except document_parser.SourceError as ex:
-            error_info = ErrorInfo(error_description.of_message('Parse error: ' + ex.message),
+        except document_parser.FileSourceError as ex:
+            error_info = ErrorInfo(error_description.of_message('Parse error: ' + ex.source_error.message),
                                    file_path=test_case_file_path,
-                                   line=ex.line)
+                                   line=ex.source_error.line,
+                                   section_name=ex.maybe_section_name)
             raise ProcessError(error_info)
 
 
@@ -111,7 +112,7 @@ class _Executor(processing_utils.Executor):
     def __init__(self,
                  act_phase_setup: ActPhaseSetup,
                  is_keep_execution_directory_root: bool,
-                 execution_directory_root_name_prefix: str='shellcheck-'):
+                 execution_directory_root_name_prefix: str = 'shellcheck-'):
         self._act_phase_setup = act_phase_setup
         self._is_keep_execution_directory_root = is_keep_execution_directory_root
         self._execution_directory_root_name_prefix = execution_directory_root_name_prefix
@@ -130,7 +131,7 @@ class _ExecutorThatSavesAndRestoresEnvironmentVariables(processing_utils.Executo
     def __init__(self,
                  act_phase_setup: ActPhaseSetup,
                  is_keep_execution_directory_root: bool,
-                 execution_directory_root_name_prefix: str='shellcheck-'):
+                 execution_directory_root_name_prefix: str = 'shellcheck-'):
         self._polluting_executor = _Executor(act_phase_setup,
                                              is_keep_execution_directory_root,
                                              execution_directory_root_name_prefix)

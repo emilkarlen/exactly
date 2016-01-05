@@ -1,17 +1,17 @@
-import pathlib
 import functools
+import pathlib
 
+import shellcheck_lib.test_suite.parser
 from shellcheck_lib.document.model import PhaseContents, ElementType
-from shellcheck_lib.document.parse import SourceError
+from shellcheck_lib.document.parse import FileSourceError
 from shellcheck_lib.general import line_source
 from shellcheck_lib.test_case import test_case_processing
-from . import test_suite_doc
-from . import structure
 from shellcheck_lib.test_case.preprocessor import IDENTITY_PREPROCESSOR
 from shellcheck_lib.test_case.test_case_processing import Preprocessor
 from shellcheck_lib.test_suite.instruction_set import parse, instruction
 from shellcheck_lib.test_suite.instruction_set.sections.anonymous import AnonymousSectionEnvironment
-import shellcheck_lib.test_suite.parser
+from . import structure
+from . import test_suite_doc
 
 
 class SuiteHierarchyReader:
@@ -62,10 +62,11 @@ class _SingleFileReader:
         source = line_source.new_for_file(suite_file_path)
         try:
             test_suite = shellcheck_lib.test_suite.parser.PARSER.apply(source)
-        except SourceError as ex:
+        except FileSourceError as ex:
             raise parse.SuiteSyntaxError(suite_file_path,
-                                         ex.line,
-                                         ex.message)
+                                         ex.source_error.line,
+                                         ex.source_error.message,
+                                         maybe_section_name=ex.maybe_section_name)
         anonymous_section_environment = self._resolve_preprocessor(test_suite)
         suite_file_path_list, case_file_path_list = self._resolve_paths(test_suite,
                                                                         suite_file_path)
