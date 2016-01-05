@@ -14,8 +14,8 @@ class AssertPhaseInstruction(TestCaseInstruction):
                          environment: GlobalEnvironmentForPreEdsStep) -> svh.SuccessOrValidationErrorOrHardError:
         return svh.new_svh_success()
 
-    def validate(self,
-                 environment: GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
+    def validate_post_setup(self,
+                            environment: GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
         return svh.new_svh_success()
 
     def main(self,

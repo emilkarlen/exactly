@@ -108,7 +108,7 @@ class Executor:
     def _execute_validate(self,
                           global_environment: GlobalEnvironmentForPostEdsPhase,
                           instruction: AssertPhaseInstruction) -> svh.SuccessOrValidationErrorOrHardError:
-        result = instruction.validate(global_environment)
+        result = instruction.validate_post_setup(global_environment)
         self.put.assertIsNotNone(result,
                                  'Result from validate method cannot be None')
         self.expectation.validation_result.apply(self.put, result)
