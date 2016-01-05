@@ -4,7 +4,7 @@ import unittest
 from shellcheck_lib.document import model
 from shellcheck_lib.document import parse
 from shellcheck_lib.document.model import ElementType
-from shellcheck_lib.document.parse import SourceError, PlainDocumentParser
+from shellcheck_lib.document.parse import SourceError, PlainDocumentParser, FileSourceError
 from shellcheck_lib.general import line_source
 from shellcheck_lib.general.line_source import Line
 from shellcheck_lib_test.document.test_resources import assert_equals_line, assert_equals_line_sequence
@@ -93,27 +93,27 @@ class InstructionParserThatFails(parse.SectionElementParser):
 
 def parser_without_anonymous_phase() -> PlainDocumentParser:
     configuration = parse.SectionsConfiguration(
-        None,
-        parsers_for_named_phases()
+            None,
+            parsers_for_named_phases()
     )
     return parse.new_parser_for(configuration)
 
 
 def parser_with_anonymous_phase() -> PlainDocumentParser:
     configuration = parse.SectionsConfiguration(
-        InstructionParserForPhase(None),
-        parsers_for_named_phases()
+            InstructionParserForPhase(None),
+            parsers_for_named_phases()
     )
     return parse.new_parser_for(configuration)
 
 
 def parser_for_phase2_that_fails_unconditionally() -> PlainDocumentParser:
     configuration = parse.SectionsConfiguration(
-        None,
-        (parse.SectionConfiguration('phase 1',
-                                    InstructionParserForPhase('phase 1')),
-         parse.SectionConfiguration('phase 2',
-                                    InstructionParserThatFails()))
+            None,
+            (parse.SectionConfiguration('phase 1',
+                                        InstructionParserForPhase('phase 1')),
+             parse.SectionConfiguration('phase 2',
+                                        InstructionParserThatFails()))
     )
     return parse.new_parser_for(configuration)
 
@@ -325,26 +325,30 @@ class TestParseSingleLineElements(ParseTestBase):
         self._check_document(expected_document, actual_document)
 
     def test_instruction_in_anonymous_phase_should_not_be_allowed_when_there_is_no_anonymous_phase(self):
-        with self.assertRaises(SourceError) as cm:
-            doc = self._parse_lines(
-                parser_without_anonymous_phase(),
-                [
-                    'instruction anonymous',
-                    '[phase 1]',
-                    'instruction 1'
-                ])
+        with self.assertRaises(FileSourceError) as cm:
+            self._parse_lines(
+                    parser_without_anonymous_phase(),
+                    [
+                        'instruction anonymous',
+                        '[phase 1]',
+                        'instruction 1'
+                    ])
         assert_equals_line(self,
                            Line(1, 'instruction anonymous'),
-                           cm.exception.line)
+                           cm.exception.source_error.line)
+        self.assertIsNone(cm.exception.maybe_section_name,
+                          'Section name')
 
     def test_parse_should_fail_when_instruction_parser_fails(self):
-        self.assertRaises(SourceError,
-                          self._parse_lines,
-                          parser_for_phase2_that_fails_unconditionally(),
-                          [
-                              '[phase 2]',
-                              'instruction 2'
-                          ])
+        with self.assertRaises(FileSourceError) as cm:
+            self._parse_lines(
+                    parser_for_phase2_that_fails_unconditionally(),
+                    [
+                        '[phase 2]',
+                        'instruction 2'
+                    ])
+        self.assertEqual('phase 2',
+                         cm.exception.maybe_section_name)
 
     def test_the_instruction_parser_for_the_current_phase_should_be_used(self):
         actual_document = self._parse_lines(parser_for_phase2_that_fails_unconditionally(),

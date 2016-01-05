@@ -70,11 +70,11 @@ class ScriptSourceAccumulator:
         """
         self._source_lines.extend(self._script_language.raw_script_statements(statements))
 
-    def source_line_header(self, source_line: Line) -> list:
+    def source_line_header(self, source_line: Line):
         line_ref = 'Line %d' % source_line.line_number
         line_contents = source_line.text
-        return self.comment_lines([line_ref,
-                                   line_contents])
+        self.comment_lines([line_ref,
+                            line_contents])
 
 
 class ScriptSourceBuilder(ScriptSourceAccumulator):

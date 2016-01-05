@@ -1,9 +1,9 @@
-from enum import Enum
 import pathlib
+from enum import Enum
 
+from shellcheck_lib.execution.result import FullResult
 from shellcheck_lib.general import line_source
 from shellcheck_lib.test_case import test_case_doc
-from shellcheck_lib.execution.result import FullResult
 from shellcheck_lib.test_case.error_description import ErrorDescription
 
 
@@ -20,12 +20,13 @@ class TestCaseSetup:
 class ErrorInfo(tuple):
     def __new__(cls,
                 description: ErrorDescription,
-                file_path: pathlib.Path=None,
-                line: line_source.Line=None):
+                file_path: pathlib.Path = None,
+                line: line_source.Line = None,
+                section_name: str = None):
         if description is not None:
             if not isinstance(description, ErrorDescription):
                 assert isinstance(description, ErrorDescription)  # TODO Use ONLY this impl after refactoring
-        return tuple.__new__(cls, (file_path, line, description))
+        return tuple.__new__(cls, (file_path, line, description, section_name))
 
     @property
     def file(self) -> pathlib.Path:
@@ -38,6 +39,10 @@ class ErrorInfo(tuple):
     @property
     def description(self) -> ErrorDescription:
         return self[2]
+
+    @property
+    def maybe_section_name(self) -> str:
+        return self[3]
 
 
 class Status(Enum):
@@ -55,9 +60,9 @@ class AccessErrorType(Enum):
 class Result(tuple):
     def __new__(cls,
                 status: Status,
-                error_info: ErrorInfo=None,
-                error_type: AccessErrorType=None,
-                execution_result: FullResult=None):
+                error_info: ErrorInfo = None,
+                error_type: AccessErrorType = None,
+                execution_result: FullResult = None):
         """
         Exactly only one of the arguments must be non-None.
         """
