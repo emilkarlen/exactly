@@ -69,10 +69,10 @@ class SetupPhaseInstructionThat(SetupPhaseInstruction):
         self._validate_post_eds = validate_post_eds
         self._main = main
 
-    def pre_validate(self,
-                     global_environment: instrs.GlobalEnvironmentForPreEdsStep) \
+    def validate_pre_eds(self,
+                         environment: instrs.GlobalEnvironmentForPreEdsStep) \
             -> svh.SuccessOrValidationErrorOrHardError:
-        return self._validate_pre_eds(global_environment)
+        return self._validate_pre_eds(environment)
 
     def main(self,
              os_services: OsServices,
@@ -80,10 +80,10 @@ class SetupPhaseInstructionThat(SetupPhaseInstruction):
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         return self._main(environment)
 
-    def post_validate(self,
-                      global_environment: instrs.GlobalEnvironmentForPostEdsPhase) \
+    def validate_post_eds(self,
+                          environment: instrs.GlobalEnvironmentForPostEdsPhase) \
             -> svh.SuccessOrValidationErrorOrHardError:
-        return self._validate_post_eds(global_environment
+        return self._validate_post_eds(environment
                                        )
 
 
