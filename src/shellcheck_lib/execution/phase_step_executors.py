@@ -41,7 +41,7 @@ def _from_pass_or_fail_or_hard_error(res: pfh.PassOrFailOrHardError) -> PartialI
                                                        res.failure_message)
 
 
-class AnonymousInstructionExecutor(ControlledInstructionExecutor):
+class AnonymousMainExecutor(ControlledInstructionExecutor):
     def __init__(self,
                  phase_environment: ConfigurationBuilder):
         self.__phase_environment = phase_environment
@@ -52,7 +52,7 @@ class AnonymousInstructionExecutor(ControlledInstructionExecutor):
                 instruction.main(self.__global_environment, self.__phase_environment))
 
 
-class SetupPreValidateInstructionExecutor(ControlledInstructionExecutor):
+class SetupValidatePreEdsExecutor(ControlledInstructionExecutor):
     def __init__(self,
                  global_environment: instr.GlobalEnvironmentForPreEdsStep):
         self.__global_environment = global_environment
@@ -62,7 +62,7 @@ class SetupPreValidateInstructionExecutor(ControlledInstructionExecutor):
                 instruction.validate_pre_eds(self.__global_environment))
 
 
-class SetupPostValidateInstructionExecutor(ControlledInstructionExecutor):
+class SetupValidatePostSetupExecutor(ControlledInstructionExecutor):
     def __init__(self,
                  global_environment: instr.GlobalEnvironmentForPostEdsPhase):
         self.__global_environment = global_environment
@@ -72,7 +72,7 @@ class SetupPostValidateInstructionExecutor(ControlledInstructionExecutor):
                 instruction.validate_post_setup(self.__global_environment))
 
 
-class SetupMainInstructionExecutor(ControlledInstructionExecutor):
+class SetupMainExecutor(ControlledInstructionExecutor):
     def __init__(self,
                  os_services: OsServices,
                  environment: instr.GlobalEnvironmentForPostEdsPhase,
@@ -88,7 +88,7 @@ class SetupMainInstructionExecutor(ControlledInstructionExecutor):
                                  self.__setup_settings_builder))
 
 
-class ActValidatePostSetupInstructionExecutor(ControlledInstructionExecutor):
+class ActValidatePostSetupExecutor(ControlledInstructionExecutor):
     def __init__(self,
                  global_environment: instr.GlobalEnvironmentForPostEdsPhase):
         self.__global_environment = global_environment
@@ -98,7 +98,7 @@ class ActValidatePostSetupInstructionExecutor(ControlledInstructionExecutor):
                 instruction.validate_post_setup(self.__global_environment))
 
 
-class BeforeAssertValidatePostSetupInstructionExecutor(ControlledInstructionExecutor):
+class BeforeAssertValidatePostSetupExecutor(ControlledInstructionExecutor):
     def __init__(self,
                  global_environment: instr.GlobalEnvironmentForPostEdsPhase):
         self.__global_environment = global_environment
@@ -108,7 +108,7 @@ class BeforeAssertValidatePostSetupInstructionExecutor(ControlledInstructionExec
                 instruction.validate_post_eds(self.__global_environment))
 
 
-class AssertValidateInstructionExecutor(ControlledInstructionExecutor):
+class AssertValidatePostSetupExecutor(ControlledInstructionExecutor):
     def __init__(self,
                  global_environment: instr.GlobalEnvironmentForPostEdsPhase):
         self.__global_environment = global_environment
@@ -118,7 +118,7 @@ class AssertValidateInstructionExecutor(ControlledInstructionExecutor):
                 instruction.validate(self.__global_environment))
 
 
-class ActMainInstructionExecutor(ControlledInstructionExecutor):
+class ActMainExecutor(ControlledInstructionExecutor):
     def __init__(self,
                  global_environment: instr.GlobalEnvironmentForPostEdsPhase,
                  phase_environment: PhaseEnvironmentForScriptGeneration):
@@ -131,7 +131,7 @@ class ActMainInstructionExecutor(ControlledInstructionExecutor):
                                  self.__phase_environment))
 
 
-class AssertMainInstructionExecutor(ControlledInstructionExecutor):
+class AssertMainExecutor(ControlledInstructionExecutor):
     def __init__(self,
                  environment: instr.GlobalEnvironmentForPostEdsPhase,
                  os_services: OsServices):
@@ -143,7 +143,7 @@ class AssertMainInstructionExecutor(ControlledInstructionExecutor):
                 instruction.main(self.__environment, self.__os_services))
 
 
-class ActPreValidateInstructionExecutor(ControlledInstructionExecutor):
+class ActValidatePreEdsExecutor(ControlledInstructionExecutor):
     def __init__(self,
                  global_environment: instr.GlobalEnvironmentForPreEdsStep):
         self.__global_environment = global_environment
@@ -153,7 +153,7 @@ class ActPreValidateInstructionExecutor(ControlledInstructionExecutor):
                 instruction.validate_pre_eds(self.__global_environment))
 
 
-class BeforeAssertPreValidateInstructionExecutor(ControlledInstructionExecutor):
+class BeforeAssertValidatePreEdsExecutor(ControlledInstructionExecutor):
     def __init__(self,
                  global_environment: instr.GlobalEnvironmentForPreEdsStep):
         self.__global_environment = global_environment
@@ -163,7 +163,7 @@ class BeforeAssertPreValidateInstructionExecutor(ControlledInstructionExecutor):
                 instruction.validate_pre_eds(self.__global_environment))
 
 
-class BeforeAssertInstructionExecutor(ControlledInstructionExecutor):
+class BeforeAssertMainExecutor(ControlledInstructionExecutor):
     def __init__(self,
                  environment: instr.GlobalEnvironmentForPostEdsPhase,
                  os_services: OsServices):
@@ -175,7 +175,7 @@ class BeforeAssertInstructionExecutor(ControlledInstructionExecutor):
                 instruction.main(self.__os_services, self.__environment))
 
 
-class AssertPreValidateInstructionExecutor(ControlledInstructionExecutor):
+class AssertValidatePreEdsExecutor(ControlledInstructionExecutor):
     def __init__(self,
                  global_environment: instr.GlobalEnvironmentForPreEdsStep):
         self.__global_environment = global_environment
@@ -185,7 +185,7 @@ class AssertPreValidateInstructionExecutor(ControlledInstructionExecutor):
                 instruction.validate_pre_eds(self.__global_environment))
 
 
-class CleanupPreValidateInstructionExecutor(ControlledInstructionExecutor):
+class CleanupValidatePreEdsExecutor(ControlledInstructionExecutor):
     def __init__(self,
                  global_environment: instr.GlobalEnvironmentForPreEdsStep):
         self.__global_environment = global_environment
@@ -195,7 +195,7 @@ class CleanupPreValidateInstructionExecutor(ControlledInstructionExecutor):
                 instruction.validate_pre_eds(self.__global_environment))
 
 
-class CleanupInstructionExecutor(ControlledInstructionExecutor):
+class CleanupMainExecutor(ControlledInstructionExecutor):
     def __init__(self,
                  environment: instr.GlobalEnvironmentForPostEdsPhase,
                  os_services: OsServices):
