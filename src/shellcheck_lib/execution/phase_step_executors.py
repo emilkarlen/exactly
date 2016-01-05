@@ -88,7 +88,7 @@ class SetupMainInstructionExecutor(ControlledInstructionExecutor):
                                  self.__setup_settings_builder))
 
 
-class ActValidateInstructionExecutor(ControlledInstructionExecutor):
+class ActValidatePostSetupInstructionExecutor(ControlledInstructionExecutor):
     def __init__(self,
                  global_environment: instr.GlobalEnvironmentForPostEdsPhase):
         self.__global_environment = global_environment

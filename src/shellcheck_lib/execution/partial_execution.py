@@ -200,7 +200,7 @@ class PartialExecutor:
         if res.status is not PartialResultStatus.PASS:
             self.__run_cleanup(os_services)
             return res
-        res = self.__run_act_validate()
+        res = self.__run_act_validate_post_setup()
         if res.status is not PartialResultStatus.PASS:
             self.__run_cleanup(os_services)
             return res
@@ -299,9 +299,9 @@ class PartialExecutor:
                                                                    self.__global_environment),
                                                            self.__test_case.setup_phase)
 
-    def __run_act_validate(self) -> PartialResult:
+    def __run_act_validate_post_setup(self) -> PartialResult:
         return self.__run_internal_instructions_phase_step(phase_step.ACT_VALIDATE_POST_SETUP,
-                                                           phase_step_executors.ActValidateInstructionExecutor(
+                                                           phase_step_executors.ActValidatePostSetupInstructionExecutor(
                                                                    self.__global_environment),
                                                            self.__test_case.act_phase)
 
