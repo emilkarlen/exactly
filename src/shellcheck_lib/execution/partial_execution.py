@@ -294,7 +294,7 @@ class PartialExecutor:
         return ret_val
 
     def __run_setup_post_validate(self) -> PartialResult:
-        return self.__run_internal_instructions_phase_step(phase_step.SETUP_VALIDATE_POST_EDS,
+        return self.__run_internal_instructions_phase_step(phase_step.SETUP_VALIDATE_POST_SETUP,
                                                            phase_step_executors.SetupPostValidateInstructionExecutor(
                                                                    self.__global_environment),
                                                            self.__test_case.setup_phase)
