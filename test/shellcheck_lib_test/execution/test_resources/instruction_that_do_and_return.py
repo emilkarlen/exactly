@@ -84,7 +84,7 @@ class TestCaseSetup(tuple):
     def as_before_assert_phase_instruction(self) -> BeforeAssertPhaseInstruction:
         return before_assert_phase_instruction_that(
                 validate_pre_eds=self._do_validate_pre_eds(phase_step.BEFORE_ASSERT_VALIDATE_PRE_EDS),
-                validate_post_setup=self._do_validate_post_eds(phase_step.BEFORE_ASSERT_VALIDATE_POST_EDS),
+                validate_post_setup=self._do_validate_post_eds(phase_step.BEFORE_ASSERT_VALIDATE_POST_SETUP),
                 main=self._do_main(phase_step.BEFORE_ASSERT_MAIN))
 
     def as_assert_phase_instruction(self) -> AssertPhaseInstruction:

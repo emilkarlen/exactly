@@ -347,7 +347,7 @@ class PartialExecutor:
 
     def __before_assert__validate_post_setup(self) -> PartialResult:
         return self.__run_internal_instructions_phase_step(
-                phase_step.BEFORE_ASSERT_VALIDATE_POST_EDS,
+                phase_step.BEFORE_ASSERT_VALIDATE_POST_SETUP,
                 phase_step_executors.BeforeAssertValidatePostSetupExecutor(
                         self.__global_environment),
                 self.__test_case.before_assert_phase)
