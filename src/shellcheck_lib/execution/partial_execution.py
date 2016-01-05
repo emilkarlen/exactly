@@ -300,7 +300,7 @@ class PartialExecutor:
                                                            self.__test_case.setup_phase)
 
     def __run_act_validate(self) -> PartialResult:
-        return self.__run_internal_instructions_phase_step(phase_step.ACT_VALIDATE_POST_EDS,
+        return self.__run_internal_instructions_phase_step(phase_step.ACT_VALIDATE_POST_SETUP,
                                                            phase_step_executors.ActValidateInstructionExecutor(
                                                                    self.__global_environment),
                                                            self.__test_case.act_phase)
