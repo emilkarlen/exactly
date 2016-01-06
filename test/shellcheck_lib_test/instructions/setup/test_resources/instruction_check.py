@@ -108,7 +108,7 @@ class Executor:
             os.chdir(initial_cwd)
 
     def _execute_pre_validate(self,
-                              home_dir_path,
+                              home_dir_path: pathlib.Path,
                               instruction: SetupPhaseInstruction) -> svh.SuccessOrValidationErrorOrHardError:
         pre_validation_environment = GlobalEnvironmentForPreEdsStep(home_dir_path)
         pre_validate_result = instruction.validate_pre_eds(pre_validation_environment)
