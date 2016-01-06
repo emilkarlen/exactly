@@ -65,8 +65,7 @@ def parse_file_ref__list(arguments: list,
 
     def ensure_have_at_least_two_arguments_for_option(option: str):
         if len(arguments) < 2:
-            _msg = '{} requires a {} argument'.format(option, conf.argument_syntax_name)
-            raise SingleInstructionInvalidArgumentException(_msg)
+            _raise_missing_option_argument_exception(option, conf)
 
     if not arguments:
         msg = 'Missing %s argument' % conf.argument_syntax_name
@@ -92,16 +91,15 @@ def parse_file_ref(tokens: TokenStream,
     :return: The parsed FileRef, remaining arguments after file was parsed.
     """
 
-    def ensure_have_at_least_two_arguments_for_option(option: str) -> TokenStream:
-        token1 = tokens.tail
-        if token1.is_null:
-            raise SingleInstructionInvalidArgumentException('{} requires a {} argument'.format(option,
-                                                                                               argument_syntax_name))
-        return token1
-
     conf = Configuration(ALL_REL_OPTIONS,
                          REL_HOME_OPTION,
                          argument_syntax_name)
+
+    def ensure_have_at_least_two_arguments_for_option(option: str) -> TokenStream:
+        token1 = tokens.tail
+        if token1.is_null:
+            _raise_missing_option_argument_exception(option, conf)
+        return token1
 
     if tokens.is_null:
         raise SingleInstructionInvalidArgumentException('Missing {} argument'.format(argument_syntax_name))
@@ -139,3 +137,9 @@ def _option_constructor_for(relativity_option: str) -> types.FunctionType:
     except KeyError:
         msg = 'parse_file_ref: Invalid relativity-option: {}'.format(relativity_option)
         raise ValueError(msg)
+
+
+def _raise_missing_option_argument_exception(option: str,
+                                             conf: Configuration):
+    _msg = '{} requires a {} argument'.format(option, conf.argument_syntax_name)
+    raise SingleInstructionInvalidArgumentException(_msg)
