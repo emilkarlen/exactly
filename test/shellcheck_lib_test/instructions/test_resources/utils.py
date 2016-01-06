@@ -29,9 +29,9 @@ class SideEffectsCheck:
 
 class ActResult:
     def __init__(self,
-                 exitcode: int=0,
-                 stdout_contents: str='',
-                 stderr_contents: str=''):
+                 exitcode: int = 0,
+                 stdout_contents: str = '',
+                 stderr_contents: str = ''):
         self._exitcode = exitcode
         self._stdout_contents = stdout_contents
         self._stderr_contents = stderr_contents
@@ -57,9 +57,9 @@ def write_act_result(eds: ExecutionDirectoryStructure,
 
 
 @contextmanager
-def act_phase_result(exitcode: int=0,
-                     stdout_contents: str='',
-                     stderr_contents: str='') -> i.GlobalEnvironmentForPostEdsPhase:
+def act_phase_result(exitcode: int = 0,
+                     stdout_contents: str = '',
+                     stderr_contents: str = '') -> i.GlobalEnvironmentForPostEdsPhase:
     cwd_before = os.getcwd()
     home_dir_path = pathlib.Path(cwd_before)
     with tempfile.TemporaryDirectory(prefix='shellcheck-test-') as eds_root_dir:
@@ -75,10 +75,27 @@ def act_phase_result(exitcode: int=0,
             os.chdir(cwd_before)
 
 
+class HomeAndEdsContents(tuple):
+    def __new__(cls,
+                home_dir_contents: DirContents = empty_dir_contents(),
+                eds_contents: eds_populator.EdsPopulator = eds_populator.empty()):
+        return tuple.__new__(cls, (home_dir_contents,
+                                   eds_contents))
+
+    @property
+    def home_dir_contents(self) -> DirContents:
+        return self[0]
+
+    @property
+    def eds_contents(self) -> eds_populator.EdsPopulator:
+        return self[1]
+
+
+
 @contextmanager
 def home_and_eds_and_test_as_curr_dir(
-        home_dir_contents: DirContents=empty_dir_contents(),
-        eds_contents: eds_populator.EdsPopulator=eds_populator.empty()) -> HomeAndEds:
+        home_dir_contents: DirContents = empty_dir_contents(),
+        eds_contents: eds_populator.EdsPopulator = eds_populator.empty()) -> HomeAndEds:
     cwd_before = os.getcwd()
     prefix = strftime("shellcheck-test-%Y-%m-%d-%H-%M-%S", localtime())
     with tempfile.TemporaryDirectory(prefix=prefix + "-home-") as home_dir:
@@ -95,8 +112,8 @@ def home_and_eds_and_test_as_curr_dir(
 
 
 @contextmanager
-def execution_directory_structure(contents: eds_populator.EdsPopulator=eds_populator.empty(),
-                                  prefix: str='shellcheck-test-eds-') -> eds_module.ExecutionDirectoryStructure:
+def execution_directory_structure(contents: eds_populator.EdsPopulator = eds_populator.empty(),
+                                  prefix: str = 'shellcheck-test-eds-') -> eds_module.ExecutionDirectoryStructure:
     with tempfile.TemporaryDirectory(prefix=prefix) as eds_root_dir:
         eds = eds_module.construct_at(eds_root_dir)
         contents.apply(eds)
@@ -106,8 +123,8 @@ def execution_directory_structure(contents: eds_populator.EdsPopulator=eds_popul
 def new_source(instruction_name: str, arguments: str) -> SingleInstructionParserSource:
     first_line = instruction_name + ' ' + arguments
     return SingleInstructionParserSource(
-        new_line_sequence(first_line),
-        arguments)
+            new_line_sequence(first_line),
+            arguments)
 
 
 def new_source2(arguments: str) -> SingleInstructionParserSource:
@@ -120,29 +137,29 @@ def new_source2(arguments: str) -> SingleInstructionParserSource:
 def single_line_source(arguments: str) -> SingleInstructionParserSource:
     first_line = 'instruction-name' + ' ' + arguments
     return SingleInstructionParserSource(
-        new_line_sequence(first_line),
-        arguments)
+            new_line_sequence(first_line),
+            arguments)
 
 
 def multi_line_source(first_line_arguments: str,
                       following_lines: list) -> SingleInstructionParserSource:
     first_line = 'instruction-name' + ' ' + first_line_arguments
     return SingleInstructionParserSource(
-        new_line_sequence(first_line,
-                          following_lines=tuple(following_lines)),
-        first_line_arguments)
+            new_line_sequence(first_line,
+                              following_lines=tuple(following_lines)),
+            first_line_arguments)
 
 
 def argument_list_source(arguments: list,
-                         following_lines: iter=()) -> SingleInstructionParserSource:
+                         following_lines: iter = ()) -> SingleInstructionParserSource:
     return multi_line_source(' '.join(map(shlex.quote, arguments)),
                              following_lines)
 
 
 def new_line_sequence(first_line: str,
-                      following_lines: tuple=()) -> LineSequenceBuilder:
+                      following_lines: tuple = ()) -> LineSequenceBuilder:
     return line_source.LineSequenceBuilder(
-        parse.LineSequenceSourceFromListOfLines(
-            parse.ListOfLines(list(following_lines))),
-        1,
-        first_line)
+            parse.LineSequenceSourceFromListOfLines(
+                    parse.ListOfLines(list(following_lines))),
+            1,
+            first_line)
