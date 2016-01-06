@@ -153,6 +153,20 @@ class DefaultConfiguration(Configuration):
         return home_and_eds.home_dir_path / file_name
 
 
+class RelActConfiguration(Configuration):
+    def __init__(self):
+        super().__init__(option.REL_ACT_OPTION, False)
+
+    def file_installation(self, file: File) -> (DirContents, eds_populator.EdsPopulator):
+        return (DirContents([]),
+                eds_populator.act_dir_contents(DirContents([file])))
+
+    def installed_file_path(self,
+                            file_name: str,
+                            home_and_eds: HomeAndEds) -> pathlib.Path:
+        return home_and_eds.eds.act_dir / file_name
+
+
 class RelTmpConfiguration(Configuration):
     def __init__(self):
         super().__init__(option.REL_TMP_OPTION, False)
@@ -184,6 +198,7 @@ class RelCwdConfiguration(Configuration):
 def configurations() -> list:
     return [
         RelHomeConfiguration(),
+        RelActConfiguration(),
         RelTmpConfiguration(),
         RelCwdConfiguration(),
         DefaultConfiguration(),
