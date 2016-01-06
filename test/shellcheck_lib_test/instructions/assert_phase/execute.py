@@ -37,7 +37,7 @@ class TestCasesThatTestIntegrationByAFewRandomTests(TestCaseBaseForParser):
         self._run(
                 single_line_source('/absolute/path/to/program/that/does/not/exist'),
                 Arrangement(),
-                Expectation(validation_result=svh_check.is_validation_error()),
+                Expectation(validation_post_eds=svh_check.is_validation_error()),
         )
 
 

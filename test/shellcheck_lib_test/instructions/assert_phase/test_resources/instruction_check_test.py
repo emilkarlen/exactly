@@ -29,7 +29,15 @@ class TestCases(instruction_check.TestCaseBase):
             self._check(test_misc.ParserThatGives(_SUCCESSFUL_INSTRUCTION),
                         test_misc.single_line_source(),
                         Arrangement(),
-                        Expectation(validation_result=test_misc.SvhRaisesTestError()),
+                        Expectation(validation_pre_eds=test_misc.SvhRaisesTestError()),
+                        )
+
+    def test_fail_due_to_unexpected_result_from_post_validation(self):
+        with self.assertRaises(test_misc.TestError):
+            self._check(test_misc.ParserThatGives(_SUCCESSFUL_INSTRUCTION),
+                        test_misc.single_line_source(),
+                        Arrangement(),
+                        Expectation(validation_post_eds=test_misc.SvhRaisesTestError()),
                         )
 
     def test_fail_due_to_unexpected_result_from_main(self):
