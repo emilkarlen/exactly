@@ -7,8 +7,6 @@ from shellcheck_lib.instructions.utils.relative_path_options import REL_TMP_OPTI
     REL_ACT_OPTION
 from . import file_ref
 
-ALL_REL_OPTIONS = (REL_HOME_OPTION, REL_CWD_OPTION, REL_TMP_OPTION)
-
 _REL_OPTION_TO_FILE_REF_CONSTRUCTOR = {
     REL_HOME_OPTION:
         file_ref.rel_home,
@@ -19,6 +17,8 @@ _REL_OPTION_TO_FILE_REF_CONSTRUCTOR = {
     REL_TMP_OPTION:
         file_ref.rel_tmp_user,
 }
+
+ALL_REL_OPTIONS = _REL_OPTION_TO_FILE_REF_CONSTRUCTOR.keys()
 
 
 def parse_relative_file_argument(arguments: list) -> (file_ref.FileRef, list):
