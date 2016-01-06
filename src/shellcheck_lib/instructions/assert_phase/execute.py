@@ -6,7 +6,7 @@ from shellcheck_lib.instructions.utils.pre_or_post_validation import PreOrPostEd
 from shellcheck_lib.test_case.instruction_description import Description
 from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
-from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
+from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
 from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.result import svh
 
@@ -28,9 +28,13 @@ class _Instruction(AssertPhaseInstruction):
         self.setup = setup
         self.validator = PreOrPostEdsSvhValidationErrorValidator(setup.validator)
 
+    def validate_pre_eds(self,
+                         environment: GlobalEnvironmentForPreEdsStep) -> svh.SuccessOrValidationErrorOrHardError:
+        return self.validator.validate_pre_eds_if_applicable(environment.home_directory)
+
     def validate_post_setup(self,
                             environment: GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
-        return self.validator.validate_pre_or_post_eds(environment.home_and_eds)
+        return self.validator.validate_post_eds_if_applicable(environment.eds)
 
     def main(self,
              environment: GlobalEnvironmentForPostEdsPhase,
