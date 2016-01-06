@@ -9,6 +9,17 @@ from . import file_ref
 
 ALL_REL_OPTIONS = (REL_HOME_OPTION, REL_CWD_OPTION, REL_TMP_OPTION)
 
+_REL_OPTION_TO_FILE_REF_CONSTRUCTOR = {
+    REL_HOME_OPTION:
+        file_ref.rel_home,
+    REL_CWD_OPTION:
+        file_ref.rel_cwd,
+    REL_ACT_OPTION:
+        file_ref.rel_act,
+    REL_TMP_OPTION:
+        file_ref.rel_tmp_user,
+}
+
 
 def parse_relative_file_argument(arguments: list) -> (file_ref.FileRef, list):
     """
@@ -25,15 +36,15 @@ def parse_relative_file_argument(arguments: list) -> (file_ref.FileRef, list):
     if not arguments:
         raise SingleInstructionInvalidArgumentException('Missing file argument')
     first_argument = arguments[0]
-    if first_argument == REL_HOME_OPTION:
-        ensure_have_at_least_two_arguments_for_option(REL_HOME_OPTION)
-        return file_ref.rel_home(arguments[1]), arguments[2:]
-    if first_argument == REL_CWD_OPTION:
-        ensure_have_at_least_two_arguments_for_option(REL_CWD_OPTION)
-        return file_ref.rel_cwd(arguments[1]), arguments[2:]
-    elif first_argument == REL_TMP_OPTION:
-        ensure_have_at_least_two_arguments_for_option(REL_TMP_OPTION)
-        return file_ref.rel_tmp_user(arguments[1]), arguments[2:]
+
+    if is_option_argument(first_argument):
+        try:
+            con = _REL_OPTION_TO_FILE_REF_CONSTRUCTOR[first_argument]
+        except KeyError:
+            msg = 'Invalid option {}'.format(first_argument)
+            raise SingleInstructionInvalidArgumentException(msg)
+        ensure_have_at_least_two_arguments_for_option(first_argument)
+        return con(arguments[1]), arguments[2:]
     else:
         ensure_is_not_option_argument(first_argument)
         first_argument_path = pathlib.PurePath(first_argument)
@@ -65,15 +76,9 @@ def parse_file_ref(tokens: TokenStream,
         raise SingleInstructionInvalidArgumentException('Missing {} argument'.format(argument_syntax_name))
     first_argument = tokens.head
     if is_option_argument(first_argument):
-        if first_argument == REL_HOME_OPTION:
-            con = file_ref.rel_home
-        elif first_argument == REL_CWD_OPTION:
-            con = file_ref.rel_cwd
-        elif first_argument == REL_ACT_OPTION:
-            con = file_ref.rel_act
-        elif first_argument == REL_TMP_OPTION:
-            con = file_ref.rel_tmp_user
-        else:
+        try:
+            con = _REL_OPTION_TO_FILE_REF_CONSTRUCTOR[first_argument]
+        except KeyError:
             msg = 'Invalid option for reference to {}: {}'.format(argument_syntax_name,
                                                                   first_argument)
             raise SingleInstructionInvalidArgumentException(msg)
