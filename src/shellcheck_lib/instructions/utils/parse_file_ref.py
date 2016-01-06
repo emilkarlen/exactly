@@ -71,7 +71,6 @@ def parse_file_ref__list(arguments: list,
         _raise_missing_arguments_exception(conf)
 
     first_argument = arguments[0]
-
     if is_option_argument(first_argument):
         file_ref_constructor = _get_file_ref_constructor(first_argument, conf)
         ensure_have_at_least_two_arguments_for_option(first_argument)

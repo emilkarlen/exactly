@@ -6,7 +6,7 @@ from shellcheck_lib.general.textformat.structure.paragraph import single_para
 from shellcheck_lib.instructions.utils import file_ref
 from shellcheck_lib.instructions.utils.file_properties import FileType, must_exist_as, FilePropertiesCheck, type_name
 from shellcheck_lib.instructions.utils.file_ref_check import pre_or_post_eds_failure_message_or_none, FileRefCheck
-from shellcheck_lib.instructions.utils.parse_utils import spit_arguments_list_string, ensure_is_not_option_argument
+from shellcheck_lib.instructions.utils.parse_utils import split_arguments_list_string, ensure_is_not_option_argument
 from shellcheck_lib.test_case.instruction_description import InvokationVariant, Description, \
     SyntaxElementDescription
 from shellcheck_lib.test_case.os_services import OsServices
@@ -60,7 +60,7 @@ class TheDescription(Description):
 
 class Parser(SingleInstructionParser):
     def apply(self, source: SingleInstructionParserSource) -> AssertPhaseInstruction:
-        arguments = spit_arguments_list_string(source.instruction_argument)
+        arguments = split_arguments_list_string(source.instruction_argument)
         if len(arguments) != 2:
             raise SingleInstructionInvalidArgumentException('Invalid syntax')
         file_argument = arguments[0]

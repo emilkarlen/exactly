@@ -4,7 +4,7 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
     SingleInstructionInvalidArgumentException
 
 
-def spit_arguments_list_string(arguments: str) -> list:
+def split_arguments_list_string(arguments: str) -> list:
     """
     :raises SingleInstructionInvalidArgumentException: The arguments string cannot be parsed.
     """

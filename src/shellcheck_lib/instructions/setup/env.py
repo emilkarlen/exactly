@@ -1,7 +1,7 @@
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
 from shellcheck_lib.general.textformat.structure.paragraph import single_para
-from shellcheck_lib.instructions.utils.parse_utils import spit_arguments_list_string
+from shellcheck_lib.instructions.utils.parse_utils import split_arguments_list_string
 from shellcheck_lib.test_case.instruction_description import InvokationVariant, Description
 from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
@@ -32,7 +32,7 @@ class TheDescription(Description):
 
 class Parser(SingleInstructionParser):
     def apply(self, source: SingleInstructionParserSource) -> SetupPhaseInstruction:
-        arguments = spit_arguments_list_string(source.instruction_argument)
+        arguments = split_arguments_list_string(source.instruction_argument)
         if len(arguments) == 3 and arguments[1] == '=':
             return _SetInstruction(arguments[0], arguments[2])
         if len(arguments) == 2 and arguments[0] == 'unset':

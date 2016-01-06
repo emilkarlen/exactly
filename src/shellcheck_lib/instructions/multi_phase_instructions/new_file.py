@@ -5,7 +5,7 @@ from shellcheck_lib.general.string import lines_content
 from shellcheck_lib.general.textformat.structure.paragraph import single_para
 from shellcheck_lib.instructions.utils.destination_path import *
 from shellcheck_lib.instructions.utils.parse_here_document import parse_as_last_argument
-from shellcheck_lib.instructions.utils.parse_utils import spit_arguments_list_string
+from shellcheck_lib.instructions.utils.parse_utils import split_arguments_list_string
 from shellcheck_lib.test_case.instruction_description import InvokationVariant, Description
 
 
@@ -43,7 +43,7 @@ class FileInfo(tuple):
 
 
 def parse(source: SingleInstructionParserSource) -> FileInfo:
-    arguments = spit_arguments_list_string(source.instruction_argument)
+    arguments = split_arguments_list_string(source.instruction_argument)
 
     (destination_path, remaining_arguments) = parse_destination_path(DestinationType.REL_CWD, True, arguments)
     contents = ''

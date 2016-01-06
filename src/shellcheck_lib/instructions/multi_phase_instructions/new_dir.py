@@ -3,7 +3,7 @@ import pathlib
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from shellcheck_lib.general.textformat import parse as text_parse
-from shellcheck_lib.instructions.utils.parse_utils import spit_arguments_list_string, ensure_is_not_option_argument
+from shellcheck_lib.instructions.utils.parse_utils import split_arguments_list_string, ensure_is_not_option_argument
 from shellcheck_lib.test_case.instruction_description import InvokationVariant, Description
 
 
@@ -32,7 +32,7 @@ class TheDescription(Description):
 
 
 def parse(argument: str) -> str:
-    arguments = spit_arguments_list_string(argument)
+    arguments = split_arguments_list_string(argument)
     if len(arguments) != 1:
         raise SingleInstructionInvalidArgumentException('Usage: DIRECTORY')
     directory_argument = arguments[0]

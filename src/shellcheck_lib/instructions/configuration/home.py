@@ -3,7 +3,7 @@ import pathlib
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
 from shellcheck_lib.general.textformat.structure.paragraph import single_para
-from shellcheck_lib.instructions.utils.parse_utils import spit_arguments_list_string
+from shellcheck_lib.instructions.utils.parse_utils import split_arguments_list_string
 from shellcheck_lib.test_case.instruction_description import InvokationVariant, Description
 from shellcheck_lib.test_case.sections.anonymous import AnonymousPhaseInstruction, ConfigurationBuilder
 from shellcheck_lib.test_case.sections.result import sh
@@ -29,7 +29,7 @@ class TheDescription(Description):
 
 class Parser(SingleInstructionParser):
     def apply(self, source: SingleInstructionParserSource) -> AnonymousPhaseInstruction:
-        arguments = spit_arguments_list_string(source.instruction_argument)
+        arguments = split_arguments_list_string(source.instruction_argument)
         if len(arguments) != 1:
             msg = 'Invalid number of arguments (exactly one expected), found {}'.format(str(len(arguments)))
             raise SingleInstructionInvalidArgumentException(msg)
