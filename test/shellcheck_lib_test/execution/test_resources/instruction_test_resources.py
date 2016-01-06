@@ -183,7 +183,7 @@ class AssertPhaseInstructionThat(AssertPhaseInstruction):
 
 
 def cleanup_phase_instruction_that(validate_pre_eds=do_return(svh.new_svh_success()),
-                                   main=do_return(sh.SuccessOrHardError)) -> CleanupPhaseInstruction:
+                                   main=do_return(sh.new_sh_success())) -> CleanupPhaseInstruction:
     return CleanupPhaseInstructionThat(validate_pre_eds,
                                        main)
 
