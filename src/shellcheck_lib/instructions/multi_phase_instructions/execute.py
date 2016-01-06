@@ -228,7 +228,7 @@ class SetupParser:
                    exe_file: ExecutableFile,
                    remaining_arguments_str: str) -> SetupForExecutableWithArguments:
         remaining_arguments = shlex.split(remaining_arguments_str)
-        (file_to_interpret, remaining_arguments) = parse_file_ref.parse_relative_file_argument(remaining_arguments)
+        (file_to_interpret, remaining_arguments) = parse_file_ref.parse_file_ref__list(remaining_arguments)
         return SetupForInterpret(
                 sub_process_execution.InstructionSourceInfo(self.instruction_meta_info,
                                                             source.line_sequence.first_line.line_number),

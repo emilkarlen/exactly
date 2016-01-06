@@ -22,30 +22,61 @@ _REL_OPTION_TO_FILE_REF_CONSTRUCTOR = {
 ALL_REL_OPTIONS = _REL_OPTION_TO_FILE_REF_CONSTRUCTOR.keys()
 
 
-def parse_relative_file_argument(arguments: list,
-                                 options=ALL_REL_OPTIONS,
-                                 default_option: str = REL_HOME_OPTION) -> (file_ref.FileRef, list):
+class Configuration(tuple):
+    def __new__(cls,
+                accepted_options,
+                default_option: str,
+                argument_syntax_name: str):
+        return tuple.__new__(cls, (accepted_options,
+                                   default_option,
+                                   argument_syntax_name))
+
+    @property
+    def accepted_options(self):
+        return self[0]
+
+    @property
+    def default_option(self) -> str:
+        return self[1]
+
+    @property
+    def argument_syntax_name(self) -> str:
+        return self[2]
+
+
+DEFAULT_CONFIG = Configuration(ALL_REL_OPTIONS,
+                               REL_HOME_OPTION,
+                               'FILE')
+
+NON_HOME_CONFIG = Configuration(ALL_REL_OPTIONS - {REL_HOME_OPTION},
+                                REL_CWD_OPTION,
+                                'FILE')
+
+
+def parse_file_ref__list(arguments: list,
+                         setup: Configuration = DEFAULT_CONFIG) -> (file_ref.FileRef, list):
     """
     If no relativity-option is specified, the file is assumed to be rel-home.
 
-    :param default_option: The option that is used if no option is given explicitly.
-    Must be one of ALL_REL_OPTIONS.
-    :param options: List/set of valid options: this must be a sub set of ALL_REL_OPTIONS.
+    :param setup:
     :param arguments: All remaining arguments for the instruction.
     :return: The parsed FileRef, remaining arguments after file was parsed.
     """
 
     def ensure_have_at_least_two_arguments_for_option(option: str):
         if len(arguments) < 2:
-            raise SingleInstructionInvalidArgumentException('{} requires a FILE argument'.format(option))
+            _msg = '{} requires a {} argument'.format(option, setup.argument_syntax_name)
+            raise SingleInstructionInvalidArgumentException(_msg)
 
     if not arguments:
-        raise SingleInstructionInvalidArgumentException('Missing FILE argument')
+        msg = 'Missing %s argument' % setup.argument_syntax_name
+        raise SingleInstructionInvalidArgumentException(msg)
     first_argument = arguments[0]
 
     if is_option_argument(first_argument):
-        if first_argument not in options:
-            msg = 'Invalid option {}'.format(first_argument)
+        if first_argument not in setup.accepted_options:
+            msg = 'Invalid option for reference to %s: %s' % (setup.argument_syntax_name,
+                                                              first_argument)
             raise SingleInstructionInvalidArgumentException(msg)
         file_ref_constructor = _option_constructor_for(first_argument)
         ensure_have_at_least_two_arguments_for_option(first_argument)
@@ -56,7 +87,7 @@ def parse_relative_file_argument(arguments: list,
         if first_argument_path.is_absolute():
             fr = file_ref.absolute_file_name(first_argument)
         else:
-            file_ref_constructor = _option_constructor_for(default_option)
+            file_ref_constructor = _option_constructor_for(setup.default_option)
             fr = file_ref_constructor(first_argument)
         return fr, arguments[1:]
 
@@ -97,18 +128,6 @@ def parse_file_ref(tokens: TokenStream,
         else:
             fr = file_ref.rel_home(first_argument)
         return fr, tokens.tail
-
-
-def parse_non_home_file_ref(arguments: list) -> (file_ref.FileRef, list):
-    """
-    Default (i.e. when no option is given) is Relative CWD.
-    :param arguments: Argument list, with first arguments being those that are
-    supposed to specify a FileRef.
-    :return: (FileRef, arguments remaining after file argument)
-    """
-    return parse_relative_file_argument(arguments,
-                                        options=ALL_REL_OPTIONS - {REL_HOME_OPTION},
-                                        default_option=REL_CWD_OPTION)
 
 
 def _option_constructor_for(relativity_option: str) -> types.FunctionType:

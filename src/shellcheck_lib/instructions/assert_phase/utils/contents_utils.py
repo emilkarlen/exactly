@@ -9,12 +9,12 @@ from shellcheck_lib.execution import environment_variables
 from shellcheck_lib.general import file_utils
 from shellcheck_lib.general.file_utils import ensure_parent_directory_does_exist, tmp_text_file_containing
 from shellcheck_lib.general.string import lines_content
+from shellcheck_lib.instructions.utils import parse_file_ref
 from shellcheck_lib.instructions.utils import parse_here_doc_or_file_ref
 from shellcheck_lib.instructions.utils.file_properties import must_exist_as, FileType
 from shellcheck_lib.instructions.utils.file_ref import FileRef
 from shellcheck_lib.instructions.utils.file_ref_check import FileRefCheck, \
     pre_or_post_eds_failure_message_or_none, FileRefCheckValidator
-from shellcheck_lib.instructions.utils.parse_file_ref import parse_non_home_file_ref
 from shellcheck_lib.instructions.utils.parse_here_doc_or_file_ref import HereDocOrFileRef
 from shellcheck_lib.instructions.utils.pre_or_post_validation import ConstantSuccessValidator, \
     PreOrPostEdsSvhValidationErrorValidator
@@ -41,7 +41,8 @@ class ComparisonActualFile:
 
 
 def parse_actual_file_argument(arguments: list) -> (ComparisonActualFile, list):
-    (file_ref, remaining_arguments) = parse_non_home_file_ref(arguments)
+    (file_ref, remaining_arguments) = parse_file_ref.parse_file_ref__list(arguments,
+                                                                          parse_file_ref.NON_HOME_CONFIG)
     return ActComparisonActualFileForFileRef(file_ref), remaining_arguments
 
 
@@ -238,16 +239,16 @@ def try_parse_content(actual_file: ComparisonActualFile,
                      extra_arguments: list) -> AssertPhaseInstruction:
         if extra_arguments:
             raise SingleInstructionInvalidArgumentException(
-                'file/{}: Extra arguments: {}'.format(EMPTY_ARGUMENT,
-                                                      str(extra_arguments)))
+                    'file/{}: Extra arguments: {}'.format(EMPTY_ARGUMENT,
+                                                          str(extra_arguments)))
         return EmptinessCheckerInstruction(True, actual)
 
     def _parse_non_empty(actual: ComparisonActualFile,
                          extra_arguments: list) -> AssertPhaseInstruction:
         if extra_arguments:
             raise SingleInstructionInvalidArgumentException(
-                'file/!{}: Extra arguments: {}'.format(EMPTY_ARGUMENT,
-                                                       str(extra_arguments)))
+                    'file/!{}: Extra arguments: {}'.format(EMPTY_ARGUMENT,
+                                                           str(extra_arguments)))
         return EmptinessCheckerInstruction(False, actual)
 
     def _parse_contents(actual: ComparisonActualFile,
@@ -260,7 +261,7 @@ def try_parse_content(actual_file: ComparisonActualFile,
                                                                                                     source)
         if remaining_arguments:
             raise SingleInstructionInvalidArgumentException(
-                lines_content('Superfluous arguments: {}'.format(remaining_arguments)))
+                    lines_content('Superfluous arguments: {}'.format(remaining_arguments)))
 
         if with_replaced_env_vars:
             return ContentCheckerWithTransformationInstruction(here_doc_or_file_ref_for_expected,
