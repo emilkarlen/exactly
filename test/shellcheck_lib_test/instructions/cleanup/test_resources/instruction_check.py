@@ -1,3 +1,4 @@
+import pathlib
 import unittest
 
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
@@ -5,11 +6,13 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
 from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.sections import common as i
 from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction
-from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
+from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
 from shellcheck_lib.test_case.sections.result import pfh
+from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib_test.instructions.test_resources import eds_contents_check
 from shellcheck_lib_test.instructions.test_resources import eds_populator
 from shellcheck_lib_test.instructions.test_resources import sh_check
+from shellcheck_lib_test.instructions.test_resources import svh_check
 from shellcheck_lib_test.instructions.test_resources import utils
 from shellcheck_lib_test.instructions.test_resources.utils import write_act_result, SideEffectsCheck
 from shellcheck_lib_test.test_resources import file_structure
@@ -27,11 +30,13 @@ class Arrangement:
 class Expectation:
     def __init__(self,
                  act_result: utils.ActResult = utils.ActResult(),
+                 validate_pre_eds_result: svh_check.Assertion = svh_check.is_success(),
                  main_result: sh_check.Assertion = sh_check.IsSuccess(),
                  main_side_effects_on_files: eds_contents_check.Assertion = eds_contents_check.AnythingGoes(),
                  side_effects_check: SideEffectsCheck = SideEffectsCheck(),
                  ):
         self.act_result = act_result
+        self.validate_pre_eds_result = validate_pre_eds_result
         self.main_result = main_result
         self.main_side_effects_on_files = main_side_effects_on_files
         self.side_effects_check = side_effects_check
@@ -72,11 +77,25 @@ class Executor:
                 home_dir_contents=self.arrangement.home_dir_contents,
                 eds_contents=self.arrangement.eds_contents_before_main) as home_and_eds:
             write_act_result(home_and_eds.eds, self.expectation.act_result)
+            self._execute_pre_validate(home_and_eds.home_dir_path, instruction)
             environment = i.GlobalEnvironmentForPostEdsPhase(home_and_eds.home_dir_path,
                                                              home_and_eds.eds)
             self._execute_main(environment, instruction)
             self.expectation.main_side_effects_on_files.apply(self.put, environment.eds)
             self.expectation.side_effects_check.apply(self.put, home_and_eds)
+
+    def _execute_pre_validate(self,
+                              home_dir_path: pathlib.Path,
+                              instruction: CleanupPhaseInstruction) -> svh.SuccessOrValidationErrorOrHardError:
+        pre_validation_environment = GlobalEnvironmentForPreEdsStep(home_dir_path)
+        pre_validate_result = instruction.validate_pre_eds(pre_validation_environment)
+        self.put.assertIsInstance(pre_validate_result,
+                                  svh.SuccessOrValidationErrorOrHardError,
+                                  'pre_validate must return a ' + str(svh.SuccessOrValidationErrorOrHardError))
+        self.put.assertIsNotNone(pre_validate_result,
+                                 'Result from pre_validate method cannot be None')
+        self.expectation.validate_pre_eds_result.apply(self.put, pre_validate_result)
+        return pre_validate_result
 
     def _execute_main(self,
                       environment: GlobalEnvironmentForPostEdsPhase,
