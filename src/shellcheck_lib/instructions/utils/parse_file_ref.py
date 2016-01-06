@@ -3,7 +3,7 @@ import types
 
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from shellcheck_lib.instructions.utils.parse_utils import ensure_is_not_option_argument, TokenStream, is_option_argument
+from shellcheck_lib.instructions.utils.parse_utils import TokenStream, is_option_argument
 from shellcheck_lib.instructions.utils.relative_path_options import REL_TMP_OPTION, REL_CWD_OPTION, REL_HOME_OPTION, \
     REL_ACT_OPTION
 from . import file_ref
@@ -78,7 +78,6 @@ def parse_file_ref__list(arguments: list,
         ensure_have_at_least_two_arguments_for_option(first_argument)
         return file_ref_constructor(arguments[1]), arguments[2:]
     else:
-        ensure_is_not_option_argument(first_argument)
         first_argument_path = pathlib.PurePath(first_argument)
         if first_argument_path.is_absolute():
             fr = file_ref.absolute_file_name(first_argument)
