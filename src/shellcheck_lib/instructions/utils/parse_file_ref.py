@@ -81,18 +81,13 @@ def parse_file_ref__list(arguments: list,
 
 
 def parse_file_ref(tokens: TokenStream,
-                   argument_syntax_name: str = 'FILE') -> (file_ref.FileRef, TokenStream):
+                   conf: Configuration = DEFAULT_CONFIG) -> (file_ref.FileRef, TokenStream):
     """
     If no relativity-option is specified, the file is assumed to be rel-home.
 
     :param tokens: Argument list
-    :param argument_syntax_name: Name of argument in error messages.
     :return: The parsed FileRef, remaining arguments after file was parsed.
     """
-
-    conf = Configuration(ALL_REL_OPTIONS,
-                         REL_HOME_OPTION,
-                         argument_syntax_name)
 
     def ensure_have_at_least_two_arguments_for_option(option: str) -> TokenStream:
         token1 = tokens.tail
