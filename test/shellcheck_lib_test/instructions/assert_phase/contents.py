@@ -3,6 +3,7 @@ import unittest
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException, SingleInstructionParserSource
 from shellcheck_lib.instructions.assert_phase import contents as sut
+from shellcheck_lib.instructions.utils import relative_path_options as options
 from shellcheck_lib.test_case.instruction_description import Description
 from shellcheck_lib_test.instructions.assert_phase.test_resources import instruction_check
 from shellcheck_lib_test.instructions.assert_phase.test_resources.contents_resources import \
@@ -131,16 +132,16 @@ class TestFileContentsNonEmptyValidSyntax(TestCaseBaseForParser):
 class TestFileContentsFileRelHome(TestCaseBaseForParser):
     def test_validation_error__when__comparison_file_does_not_exist(self):
         self._run(
-                new_source2('name-of-non-existing-file --rel-home f.txt'),
+                new_source2('name-of-non-existing-file %s f.txt' % options.REL_HOME_OPTION),
                 Arrangement(),
-                Expectation(validation_post_eds=svh_check.is_validation_error()),
+                Expectation(validation_pre_eds=svh_check.is_validation_error()),
         )
 
     def test_validation_error__when__comparison_file_is_a_directory(self):
         self._run(
                 new_source2('name-of-non-existing-file --rel-home dir'),
                 Arrangement(home_dir_contents=DirContents([empty_dir('dir')])),
-                Expectation(validation_post_eds=svh_check.is_validation_error()),
+                Expectation(validation_pre_eds=svh_check.is_validation_error()),
         )
 
     def test_fail__when__target_file_does_not_exist(self):
@@ -308,9 +309,8 @@ class TestReplacedEnvVars(TestCaseBaseForParser):
                 source_file_writer=WriteFileToHomeDir(self.COMPARISON_SOURCE_FILE_NAME),
                 source_should_contain_expected_value=False)
         self._run(
-                new_source('instruction-name',
-                           '{} --with-replaced-env-vars --rel-home {}'.format(self.COMPARISON_TARGET_FILE_NAME,
-                                                                              self.COMPARISON_SOURCE_FILE_NAME)),
+                new_source2('{} --with-replaced-env-vars --rel-home {}'.format(self.COMPARISON_TARGET_FILE_NAME,
+                                                                               self.COMPARISON_SOURCE_FILE_NAME)),
                 Arrangement(act_result_producer=act_result_producer),
                 Expectation(main_result=pfh_check.is_fail()),
         )

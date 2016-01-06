@@ -21,7 +21,8 @@ from shellcheck_lib.instructions.utils.pre_or_post_validation import ConstantSuc
 from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.sections import common as i
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
-from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase, HomeAndEds
+from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase, HomeAndEds, \
+    GlobalEnvironmentForPreEdsStep
 from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.result import svh
 
@@ -81,20 +82,19 @@ class ContentCheckerInstructionBase(AssertPhaseInstruction):
                  actual_contents: ComparisonActualFile):
         self._actual_value = actual_contents
         self._expected_contents = expected_contents
-        validator_of_expected_ = ConstantSuccessValidator() if expected_contents.is_here_document else \
+        self.validator_of_expected = ConstantSuccessValidator() if expected_contents.is_here_document else \
             FileRefCheckValidator(self._file_ref_check_for_expected())
-        self.validator_of_expected = PreOrPostEdsSvhValidationErrorValidator(validator_of_expected_)
 
-    def validate_post_setup(self,
-                            environment: i.GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
-        return self.validator_of_expected.validate_pre_eds_if_applicable(environment.home_directory)
+    def validate_pre_eds(self,
+                         environment: GlobalEnvironmentForPreEdsStep) -> svh.SuccessOrValidationErrorOrHardError:
+        validator = PreOrPostEdsSvhValidationErrorValidator(self.validator_of_expected)
+        return validator.validate_pre_eds_if_applicable(environment.home_directory)
 
     def main(self,
              environment: i.GlobalEnvironmentForPostEdsPhase,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
         if not self._expected_contents.is_here_document:
-            failure_message = pre_or_post_eds_failure_message_or_none(self._file_ref_check_for_expected(),
-                                                                      environment.home_and_eds)
+            failure_message = self.validator_of_expected.validate_post_eds_if_applicable(environment.home_and_eds.eds)
             if failure_message:
                 return pfh.new_pfh_fail(failure_message)
         expected_file_path = self._file_path_for_file_with_expected_contents(environment.home_and_eds)
