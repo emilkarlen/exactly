@@ -68,6 +68,10 @@ def rel_cwd(file_name: str) -> FileRefRelEds:
     return _FileRefRelCwd(file_name)
 
 
+def rel_act(file_name: str) -> FileRefRelEds:
+    return _FileRefRelAct(file_name)
+
+
 def rel_tmp_internal(file_name: str) -> FileRefRelEds:
     return _FileRefRelTmpInternal(file_name)
 
@@ -104,6 +108,14 @@ class _FileRefRelCwd(FileRefRelEds):
 
     def file_path_post_eds(self, eds: ExecutionDirectoryStructure):
         return pathlib.Path.cwd() / self._file_name
+
+
+class _FileRefRelAct(FileRefRelEds):
+    def __init__(self, file_name: str):
+        super().__init__(file_name)
+
+    def file_path_post_eds(self, eds: ExecutionDirectoryStructure):
+        return eds.act_dir / self._file_name
 
 
 class _FileRefRelTmpUser(FileRefRelEds):

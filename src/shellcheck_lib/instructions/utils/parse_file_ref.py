@@ -3,7 +3,8 @@ import pathlib
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from shellcheck_lib.instructions.utils.parse_utils import ensure_is_not_option_argument, TokenStream, is_option_argument
-from shellcheck_lib.instructions.utils.relative_path_options import REL_TMP_OPTION, REL_CWD_OPTION, REL_HOME_OPTION
+from shellcheck_lib.instructions.utils.relative_path_options import REL_TMP_OPTION, REL_CWD_OPTION, REL_HOME_OPTION, \
+    REL_ACT_OPTION
 from . import file_ref
 
 ALL_REL_OPTIONS = (REL_HOME_OPTION, REL_CWD_OPTION, REL_TMP_OPTION)
@@ -68,6 +69,8 @@ def parse_file_ref(tokens: TokenStream,
             con = file_ref.rel_home
         elif first_argument == REL_CWD_OPTION:
             con = file_ref.rel_cwd
+        elif first_argument == REL_ACT_OPTION:
+            con = file_ref.rel_act
         elif first_argument == REL_TMP_OPTION:
             con = file_ref.rel_tmp_user
         else:
