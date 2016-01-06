@@ -36,10 +36,15 @@ class TestExecuteIntegrationByAFewRandomTests(TestCaseBaseForParser):
                   Arrangement(),
                   Expectation(main_result=sh_check.IsHardError()))
 
-    def test_failing_validation(self):
+    def test_failing_validation_pre_eds(self):
         self._run(single_line_source('/absolute/path/to/program/that/does/not/exist'),
                   Arrangement(),
                   Expectation(pre_validation_result=svh_check.is_validation_error()))
+
+        # def test_failing_validation_post_setup(self):
+        #     self._run(single_line_source('--rel-act non-existing-file'),
+        #               Arrangement(),
+        #               Expectation(post_validation_result=svh_check.is_validation_error()))
 
 
 class TestInterpretIntegrationByAFewRandomTests(TestCaseBaseForParser):
