@@ -35,8 +35,8 @@ class TheDescription(Description):
                             with the actual exit code as an implicit left operand,
                             evaluates to True.
 
-                            Operators: !, !=, =, <, <=, >, >=
-                            """))
+                            Operators: {}
+                            """.format(', '.join(sorted(operators.keys())))))
         ]
 
 
@@ -108,13 +108,15 @@ def _parse_int_argument(argument) -> int:
     return expected
 
 
-operators = {'!': operator.ne,
-             '<': operator.lt,
-             '<=': operator.le,
-             '=': operator.eq,
-             '>=': operator.ge,
-             '>': operator.gt
-             }
+operators = {
+    '!': operator.ne,
+    '!=': operator.ne,
+    '<': operator.lt,
+    '<=': operator.le,
+    '=': operator.eq,
+    '>=': operator.ge,
+    '>': operator.gt
+}
 
 
 class InstructionEnvironmentError(Exception):
