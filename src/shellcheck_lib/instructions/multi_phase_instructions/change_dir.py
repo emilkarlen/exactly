@@ -2,7 +2,7 @@ import os
 
 from shellcheck_lib.general.textformat.structure.paragraph import single_para
 from shellcheck_lib.instructions.utils.destination_path import *
-from shellcheck_lib.instructions.utils.parse_utils import spit_arguments_list_string
+from shellcheck_lib.instructions.utils.parse_utils import split_arguments_list_string
 from shellcheck_lib.test_case.instruction_description import InvokationVariant, Description
 
 
@@ -29,7 +29,7 @@ class TheDescription(Description):
 
 
 def parse(argument: str) -> DestinationPath:
-    arguments = spit_arguments_list_string(argument)
+    arguments = split_arguments_list_string(argument)
 
     (destination_path, remaining_arguments) = parse_destination_path(DestinationType.REL_CWD, False, arguments)
     if remaining_arguments:

@@ -8,7 +8,7 @@ from shellcheck_lib.instructions.utils import file_ref, parse_file_ref
 from shellcheck_lib.instructions.utils import parse_here_doc_or_file_ref
 from shellcheck_lib.instructions.utils.file_properties import FileType
 from shellcheck_lib.instructions.utils.file_ref_check import FileRefCheck
-from shellcheck_lib.instructions.utils.parse_utils import spit_arguments_list_string
+from shellcheck_lib.instructions.utils.parse_utils import split_arguments_list_string
 from shellcheck_lib.test_case.instruction_description import InvokationVariant, Description
 from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
@@ -36,7 +36,7 @@ class TheDescription(Description):
 
 class Parser(SingleInstructionParser):
     def apply(self, source: SingleInstructionParserSource) -> SetupPhaseInstruction:
-        first_line_arguments = spit_arguments_list_string(source.instruction_argument)
+        first_line_arguments = split_arguments_list_string(source.instruction_argument)
         if not first_line_arguments:
             raise SingleInstructionInvalidArgumentException('Missing arguments: no arguments')
         (here_doc_or_file_ref, remaining_arguments) = parse_here_doc_or_file_ref.parse(first_line_arguments, source)

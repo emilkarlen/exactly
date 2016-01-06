@@ -7,7 +7,7 @@ from shellcheck_lib.execution.execution_directory_structure import ExecutionDire
 from shellcheck_lib.general.string import line_separated
 from shellcheck_lib.general.textformat import parse as paragraphs_parse
 from shellcheck_lib.general.textformat.structure.paragraph import single_para
-from shellcheck_lib.instructions.utils.parse_utils import spit_arguments_list_string
+from shellcheck_lib.instructions.utils.parse_utils import split_arguments_list_string
 from shellcheck_lib.test_case.instruction_description import InvokationVariant, Description
 from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.sections import common as i
@@ -73,7 +73,7 @@ class InstructionForOperator(AssertPhaseInstruction):
 
 class Parser(SingleInstructionParser):
     def apply(self, source: SingleInstructionParserSource) -> AssertPhaseInstruction:
-        argument_list = spit_arguments_list_string(source.instruction_argument)
+        argument_list = split_arguments_list_string(source.instruction_argument)
         num_arguments = len(argument_list)
         if num_arguments != 1 and num_arguments != 2:
             raise SingleInstructionInvalidArgumentException('1 or 2 arguments expected, got ' +
