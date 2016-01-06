@@ -4,6 +4,7 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
     SingleInstructionInvalidArgumentException, SingleInstructionParser, SingleInstructionParserSource
 from shellcheck_lib.general.string import lines_content
 from shellcheck_lib.instructions.assert_phase import stdout_stderr as sut
+from shellcheck_lib.instructions.utils.relative_path_options import REL_HOME_OPTION
 from shellcheck_lib.test_case.instruction_description import Description
 from shellcheck_lib_test.instructions.assert_phase.test_resources import instruction_check
 from shellcheck_lib_test.instructions.assert_phase.test_resources.contents_resources import \
@@ -192,24 +193,24 @@ class TestFileContentsNonEmptyValidSyntaxFORStderr(FileContentsNonEmptyValidSynt
 class FileContentsFileRelHome(TestWithParserBase):
     def validation_error__when__comparison_file_does_not_exist(self):
         self._run(
-                new_source2('--rel-home f.txt'),
+                new_source2('%s f.txt' % REL_HOME_OPTION),
                 Arrangement(),
-                Expectation(validation_post_eds=svh_check.is_validation_error()),
+                Expectation(validation_pre_eds=svh_check.is_validation_error()),
         )
 
     def validation_error__when__comparison_file_is_a_directory(self):
         self._run(
-                new_source2('--rel-home dir'),
+                new_source2('%s dir' % REL_HOME_OPTION),
                 Arrangement(eds_contents_before_main=act_dir_contents(DirContents(
                         [empty_dir('dir')]))),
-                Expectation(validation_post_eds=svh_check.is_validation_error()),
+                Expectation(validation_pre_eds=svh_check.is_validation_error()),
         )
 
     def fail__when__contents_differ(self,
                                     act_result: ActResult,
                                     expected_contents: str):
         self._run(
-                new_source2('--rel-home f.txt'),
+                new_source2('%s f.txt' % REL_HOME_OPTION),
                 Arrangement(act_result_producer=ActResultProducer(act_result),
                             home_dir_contents=DirContents(
                                     [File('f.txt', expected_contents)])),
