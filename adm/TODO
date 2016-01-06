@@ -1,5 +1,120 @@
 -*- org -*-
 
+* TODO <2016-01-07 tor> Gemensam basklass för instr m std-validering?
+Skulle t ex kunna finnas i InstructionWithStdValidation:
+ - validate_pre_eds
+ - validate_post_setup
+
+En fördel är att det gör det möjligt att "typ-säkert" återanvända
+steg-exkeverare (de som partial_execution använder för att köra steg).
+
+* TODO [#A] <2016-01-08 fre> Test av exekverings-sekvens
+För att testa felhantering måste de faser där felet uppstår ha en instruktion
+efter den som orsakar felet.
+Annars testas det inte att fasen avbryts direkt vid instruktions-fel.
+(Idag testas enbart hur efterföljande faser o steg exekveras.)
+* TODO <2016-01-06 ons> execute: La till --rel-act: Ta bort?
+Finns en anledning till att jag inte laggt dit den från början?
+T ex att det inte ska gå att lägga program i act som ska köras?
+Å andra sidan, varför omöjliggöra det istället för att låta det vara upp
+till användaren att bestämma var filerna ska ligga?
+* TODO cleanup
+** TODO cleanup ska ha validate/post-setup
+För vissa instruktioner är den meningsfull - det är oundvikligt att en
+validering måste göras innan själva "main-main" kan köras.
+T ex för execute: det exekverbara programmet kan inte köras om, t ex,
+källkodsfilen existerar.
+
+Skillnaden mot att utföra motsvarande validering i main är att, om det görs i
+main, så kan act-fasen låtas skapa nödvändiga filer.
+
+Känns dock rimligt att ha en validering/post-setup även i cleanup.
+Det skadar inte.  Någon instruktion borde kunna använda den, om inte annat
+skräddarsydda instruktioner.
+** TODO Ska alla instruktioner köras, oavsett om någon misslyckas?
+cleanup-instruktionerna skiljer sig ju åt i syfte.
+Även om en upprensnings-instruktion misslyckas så kan det vara önskvärt att
+köra efterföljande upprensningar, eftersom de kan tänkas rensa upp olika
+resurser.  Och ju mer som renasa dessto bättre, helt enkelt.
+Eller?
+En variant då det inte är önskvärt är då en instruktion används för att ta
+redapå hur mycket som act-fasen lyckats åstadkomma.  Det kan ju vara så att
+vissa upprensningar inte ska köras såvida inte act-fasen gjort vissa saker.
+Om act-fasen misslyckas vill man alltså inte utföra vissa upprensningar.
+I sådana fall kan en instruktion användas för att avbryta upprensningen.
+
+Ett alt är att införa möjligheten att villkora exekveringen av instruktioner.
+T ex
+--------------------
+if CONDITION {
+INSTRUCTION-LIST
+}
+--------------------
+
+o kanske är det användbart att kunna välja att avbryta exekveringen:
+
+--------------------
+break
+--------------------
+
+Kanske vill man ange i konfigurations-fasen om cleanup-fasen ska avbrytas
+eller fortsätta vid instruktions-fel.
+
+Om cleanup-fasen fortsätter exekvering efter instruktions-fel så behövs
+antagligen något sätt att välj att avbryta den vid utvalda instruktions-fel.
+T ex
+--------------------
+break-on-failure {
+INSTRUCTION-LIST
+}
+--------------------
+
+alt
+
+--------------------
+@break-on-failure INSTRUCTION
+--------------------
+
+** TODO <2016-01-06 ons> olika main beroende på om act körts el ej
+Olika metoder hos en cleanup-instruktion ska anropas beroende på om act-fasen
+exekverats eller ej.  Dvs en cleanup-instruktion ska vara medveten om i vilket
+läge den anropas.
+
+Alternativt skickas en flagga till main-metoden som anger "läget".
+Detta kan vara en bättre lösning eftersom det är enkelt att utvidga m fler
+"lägen".
+Denna lösning gör det t ex möjligt att tala om exakt vilken fas som kördes
+innan cleanup-anropades:
+ - SETUP
+ - BEFORE-ASSERT
+ - ASSERT
+
+Osäker på hur användbart det här verkligen är för stora merparten av de
+vanliga instruktionerna.  Har tänkt på det och tror inte det är speciellt
+användbart.
+Men känner ändå att det vore bra att implementera det för att ha en
+infrastruktur som inte är begränsande - om nu behovet skulle uppstå i en ev
+avlägsen framtid.
+
+Mest användbart är det antagligen för skräddarsydda instruktioner, kanske
+tillsammans med en skräddarsydd act-fas-exekverare.
+Dvs mest användbart är det kanske då programmet används i ett mycket specifikt
+sammanhang, kanske ett sammanhang där alla instruktioner och exekvering är
+skräddarsydd.  I ett sådant fall fungerar programmet mer som
+infrastruktur. Och det är ju attraktivt om det kan användas även i det
+sammanhanget!
+* TODO Expectation: använda samma namn för konstruktor-argument
+Använda samma namn i alla varianter av Expectation (dvs för de olika faserna).
+Nu finns t ex
+ - validate_pre_eds_result
+ - validation_pre_eds
+* TODO Byt till ValueAssertion där det går
+** TODO instruction_checks
+** TODO text-structure tests
+* TODO [#C] dokument-parser ska använda expl given fas för instr i anonym fas
+I dag finns en anonym fas.
+Den ska inte längre finnas.
+Ist ska en av faserna anges (valfritt) som den som används för ev "anonym" fas.
 * TODO Paketstruktur: flytta act_phase_setup till test_case.act
 Kanske.
 El är test_case.act till för enbart instruktoner?
@@ -593,34 +708,6 @@ home.  O fel där kan upptäckas innan man skapar EDS.
 ----------------------------------------
 Typ: validate_pre_eds(eds: ExecutionDirectoryStructure)
 ----------------------------------------
-** TODO <2016-01-06 ons> cleanup: olika main beroende på om act körts el ej
-Olika metoder hos en cleanup-instruktion ska anropas beroende på om act-fasen
-exekverats eller ej.  Dvs en cleanup-instruktion ska vara medveten om i vilket
-läge den anropas.
-
-Alternativt skickas en flagga till main-metoden som anger "läget".
-Detta kan vara en bättre lösning eftersom det är enkelt att utvidga m fler
-"lägen".
-Denna lösning gör det t ex möjligt att tala om exakt vilken fas som kördes
-innan cleanup-anropades:
- - SETUP
- - BEFORE-ASSERT
- - ASSERT
-
-Osäker på hur användbart det här verkligen är för stora merparten av de
-vanliga instruktionerna.  Har tänkt på det och tror inte det är speciellt
-användbart.
-Men känner ändå att det vore bra att implementera det för att ha en
-infrastruktur som inte är begränsande - om nu behovet skulle uppstå i en ev
-avlägsen framtid.
-
-Mest användbart är det antagligen för skräddarsydda instruktioner, kanske
-tillsammans med en skräddarsydd act-fas-exekverare.
-Dvs mest användbart är det kanske då programmet används i ett mycket specifikt
-sammanhang, kanske ett sammanhang där alla instruktioner och exekvering är
-skräddarsydd.  I ett sådant fall fungerar programmet mer som
-infrastruktur. Och det är ju attraktivt om det kan användas även i det
-sammanhanget!
 * TODO Blandat
 ** TODO <2015-09-26 lör> Funktioner för att läsa act-resultat
 Ska finnas hjälpfunktioner i "biblioteket" för att läsa t ex statuskod på
