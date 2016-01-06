@@ -1,16 +1,15 @@
-import pathlib
-
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser
-from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.execution.phases import CLEANUP
 from shellcheck_lib.instructions.multi_phase_instructions import execute
 from shellcheck_lib.instructions.utils import sub_process_execution
-from shellcheck_lib.instructions.utils.pre_or_post_validation import PreOrPostEdsSvhValidationForSuccessOrHardError
+from shellcheck_lib.instructions.utils.pre_or_post_validation import PreOrPostEdsSvhValidationForSuccessOrHardError, \
+    PreOrPostEdsSvhValidationErrorValidator
 from shellcheck_lib.test_case.instruction_description import Description
 from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction
-from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
+from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
 from shellcheck_lib.test_case.sections.result import sh
+from shellcheck_lib.test_case.sections.result import svh
 
 
 def description(instruction_name: str) -> Description:
@@ -28,25 +27,22 @@ class _Instruction(CleanupPhaseInstruction):
     def __init__(self,
                  setup: execute.SetupForExecutableWithArguments):
         self.setup = setup
-        self.validator = PreOrPostEdsSvhValidationForSuccessOrHardError(self.setup.validator)
 
-    def pre_eds_validate(self,
-                         home_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
-        return self.validator.validate_pre_eds_if_applicable(home_dir_path)
+    def validate_pre_eds(self,
+                         environment: GlobalEnvironmentForPreEdsStep) -> svh.SuccessOrValidationErrorOrHardError:
+        validator = PreOrPostEdsSvhValidationErrorValidator(self.setup.validator)
+        return validator.validate_pre_eds_if_applicable(environment.home_directory)
 
-    def post_eds_validate(self,
-                          eds: ExecutionDirectoryStructure) -> sh.SuccessOrHardError:
-        return self.validator.validate_post_eds_if_applicable(eds)
-
-    def _validate_in_absence_of_validation_step_for_cleanup_phase(
+    def _validate_from_main(
             self,
             environment: GlobalEnvironmentForPostEdsPhase) -> sh.SuccessOrHardError:
-        return self.validator.validate_pre_or_post_eds(environment.home_and_eds)
+        validator = PreOrPostEdsSvhValidationForSuccessOrHardError(self.setup.validator)
+        return validator.validate_pre_or_post_eds(environment.home_and_eds)
 
     def main(self,
              environment: GlobalEnvironmentForPostEdsPhase,
              os_services: OsServices) -> sh.SuccessOrHardError:
-        validation_result = self._validate_in_absence_of_validation_step_for_cleanup_phase(environment)
+        validation_result = self._validate_from_main(environment)
         if validation_result.is_hard_error:
             return validation_result
         result_and_err = execute.execute_setup_and_read_stderr_if_non_zero_exitcode(self.setup,
