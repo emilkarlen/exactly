@@ -1,14 +1,15 @@
 import unittest
 
+from shellcheck_lib_test.instructions.assert_phase import \
+    change_dir, \
+    contents, \
+    execute, \
+    exitcode, \
+    new_dir, \
+    shell, \
+    stdout_stderr, \
+    type
 from shellcheck_lib_test.instructions.assert_phase import test_resources
-from . import change_dir
-from . import contents
-from . import execute
-from . import exitcode
-from . import new_dir
-from . import shell
-from . import stdout_stderr
-from . import type
 
 
 def suite():
