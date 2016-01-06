@@ -32,9 +32,6 @@ class _Instruction(SetupPhaseInstruction):
                          environment: GlobalEnvironmentForPreEdsStep) -> svh.SuccessOrValidationErrorOrHardError:
         return self.svh_validator.validate_pre_eds_if_applicable(environment.home_directory)
 
-    def validate(self, environment: GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
-        return self.svh_validator.validate_post_eds_if_applicable(environment.eds)
-
     def main(self,
              os_services: OsServices,
              environment: GlobalEnvironmentForPostEdsPhase,
