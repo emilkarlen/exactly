@@ -36,15 +36,21 @@ class TestCaseBase(home_and_eds_test.TestCaseBase):
 
 
 class IsSuccess(va.ValueAssertion):
-    def apply(self, put: unittest.TestCase, value: sut.ResultAndStderr):
+    def apply(self,
+              put: unittest.TestCase,
+              value: sut.ResultAndStderr,
+              message_builder: va.MessageBuilder = va.MessageBuilder()):
         put.assertTrue(value.result.is_success,
-                       'Result is expected to indicate success')
+                       message_builder.apply('Result is expected to indicate success'))
 
 
 class IsFailure(va.ValueAssertion):
-    def apply(self, put: unittest.TestCase, value: sut.ResultAndStderr):
+    def apply(self,
+              put: unittest.TestCase,
+              value: sut.ResultAndStderr,
+              message_builder: va.MessageBuilder = va.MessageBuilder()):
         put.assertFalse(value.result.is_success,
-                        'Result is expected to indicate failure')
+                        message_builder.apply('Result is expected to indicate failure'))
 
 
 class ExitCodeIs(va.ValueAssertion):
@@ -52,10 +58,13 @@ class ExitCodeIs(va.ValueAssertion):
                  exit_code: int):
         self.exit_code = exit_code
 
-    def apply(self, put: unittest.TestCase, value: sut.ResultAndStderr):
+    def apply(self,
+              put: unittest.TestCase,
+              value: sut.ResultAndStderr,
+              message_builder: va.MessageBuilder = va.MessageBuilder()):
         put.assertEquals(self.exit_code,
                          value.result.exit_code,
-                         'Exit code')
+                         message_builder.apply('Exit code'))
 
 
 class StderrContentsIs(va.ValueAssertion):
@@ -63,10 +72,13 @@ class StderrContentsIs(va.ValueAssertion):
                  stderr_contents: str):
         self.stderr_contents = stderr_contents
 
-    def apply(self, put: unittest.TestCase, value: sut.ResultAndStderr):
+    def apply(self,
+              put: unittest.TestCase,
+              value: sut.ResultAndStderr,
+              message_builder: va.MessageBuilder = va.MessageBuilder()):
         put.assertEqual(self.stderr_contents,
                         value.stderr_contents,
-                        'Stderr contents')
+                        message_builder.apply('Stderr contents'))
 
 
 def is_success_result(exitcode: int,
