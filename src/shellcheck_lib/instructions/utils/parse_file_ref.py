@@ -1,4 +1,5 @@
 import pathlib
+import types
 
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
@@ -21,10 +22,15 @@ _REL_OPTION_TO_FILE_REF_CONSTRUCTOR = {
 ALL_REL_OPTIONS = _REL_OPTION_TO_FILE_REF_CONSTRUCTOR.keys()
 
 
-def parse_relative_file_argument(arguments: list) -> (file_ref.FileRef, list):
+def parse_relative_file_argument(arguments: list,
+                                 options=ALL_REL_OPTIONS,
+                                 default_option: str = REL_HOME_OPTION) -> (file_ref.FileRef, list):
     """
     If no relativity-option is specified, the file is assumed to be rel-home.
 
+    :param default_option: The option that is used if no option is given explicitly.
+    Must be one of ALL_REL_OPTIONS.
+    :param options: List/set of valid options: this must be a sub set of ALL_REL_OPTIONS.
     :param arguments: All remaining arguments for the instruction.
     :return: The parsed FileRef, remaining arguments after file was parsed.
     """
@@ -34,24 +40,24 @@ def parse_relative_file_argument(arguments: list) -> (file_ref.FileRef, list):
             raise SingleInstructionInvalidArgumentException('{} requires a FILE argument'.format(option))
 
     if not arguments:
-        raise SingleInstructionInvalidArgumentException('Missing file argument')
+        raise SingleInstructionInvalidArgumentException('Missing FILE argument')
     first_argument = arguments[0]
 
     if is_option_argument(first_argument):
-        try:
-            con = _REL_OPTION_TO_FILE_REF_CONSTRUCTOR[first_argument]
-        except KeyError:
+        if first_argument not in options:
             msg = 'Invalid option {}'.format(first_argument)
             raise SingleInstructionInvalidArgumentException(msg)
+        file_ref_constructor = _option_constructor_for(first_argument)
         ensure_have_at_least_two_arguments_for_option(first_argument)
-        return con(arguments[1]), arguments[2:]
+        return file_ref_constructor(arguments[1]), arguments[2:]
     else:
         ensure_is_not_option_argument(first_argument)
         first_argument_path = pathlib.PurePath(first_argument)
         if first_argument_path.is_absolute():
             fr = file_ref.absolute_file_name(first_argument)
         else:
-            fr = file_ref.rel_home(first_argument)
+            file_ref_constructor = _option_constructor_for(default_option)
+            fr = file_ref_constructor(first_argument)
         return fr, arguments[1:]
 
 
@@ -100,18 +106,14 @@ def parse_non_home_file_ref(arguments: list) -> (file_ref.FileRef, list):
     supposed to specify a FileRef.
     :return: (FileRef, arguments remaining after file argument)
     """
+    return parse_relative_file_argument(arguments,
+                                        options=ALL_REL_OPTIONS - {REL_HOME_OPTION},
+                                        default_option=REL_CWD_OPTION)
 
-    def ensure_have_at_least_two_arguments_for_option(option: str):
-        if len(arguments) < 2:
-            raise SingleInstructionInvalidArgumentException('{} requires a FILE argument'.format(option))
 
-    first_argument = arguments[0]
-    if first_argument == REL_CWD_OPTION:
-        ensure_have_at_least_two_arguments_for_option(REL_CWD_OPTION)
-        return file_ref.rel_cwd(arguments[1]), arguments[2:]
-    elif first_argument == REL_TMP_OPTION:
-        ensure_have_at_least_two_arguments_for_option(REL_TMP_OPTION)
-        return file_ref.rel_tmp_user(arguments[1]), arguments[2:]
-    else:
-        ensure_is_not_option_argument(first_argument)
-        return file_ref.rel_cwd(first_argument), arguments[1:]
+def _option_constructor_for(relativity_option: str) -> types.FunctionType:
+    try:
+        return _REL_OPTION_TO_FILE_REF_CONSTRUCTOR[relativity_option]
+    except KeyError:
+        msg = 'parse_file_ref: Invalid relativity-option: {}'.format(relativity_option)
+        raise ValueError(msg)
