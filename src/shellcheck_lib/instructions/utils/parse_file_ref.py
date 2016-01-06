@@ -54,31 +54,27 @@ NON_HOME_CONFIG = Configuration(ALL_REL_OPTIONS - {REL_HOME_OPTION},
 
 
 def parse_file_ref__list(arguments: list,
-                         setup: Configuration = DEFAULT_CONFIG) -> (file_ref.FileRef, list):
+                         conf: Configuration = DEFAULT_CONFIG) -> (file_ref.FileRef, list):
     """
     If no relativity-option is specified, the file is assumed to be rel-home.
 
-    :param setup:
+    :param conf:
     :param arguments: All remaining arguments for the instruction.
     :return: The parsed FileRef, remaining arguments after file was parsed.
     """
 
     def ensure_have_at_least_two_arguments_for_option(option: str):
         if len(arguments) < 2:
-            _msg = '{} requires a {} argument'.format(option, setup.argument_syntax_name)
+            _msg = '{} requires a {} argument'.format(option, conf.argument_syntax_name)
             raise SingleInstructionInvalidArgumentException(_msg)
 
     if not arguments:
-        msg = 'Missing %s argument' % setup.argument_syntax_name
+        msg = 'Missing %s argument' % conf.argument_syntax_name
         raise SingleInstructionInvalidArgumentException(msg)
     first_argument = arguments[0]
 
     if is_option_argument(first_argument):
-        if first_argument not in setup.accepted_options:
-            msg = 'Invalid option for reference to %s: %s' % (setup.argument_syntax_name,
-                                                              first_argument)
-            raise SingleInstructionInvalidArgumentException(msg)
-        file_ref_constructor = _option_constructor_for(first_argument)
+        file_ref_constructor = _get_file_ref_constructor(first_argument, conf)
         ensure_have_at_least_two_arguments_for_option(first_argument)
         return file_ref_constructor(arguments[1]), arguments[2:]
     else:
@@ -87,7 +83,7 @@ def parse_file_ref__list(arguments: list,
         if first_argument_path.is_absolute():
             fr = file_ref.absolute_file_name(first_argument)
         else:
-            file_ref_constructor = _option_constructor_for(setup.default_option)
+            file_ref_constructor = _option_constructor_for(conf.default_option)
             fr = file_ref_constructor(first_argument)
         return fr, arguments[1:]
 
@@ -109,18 +105,17 @@ def parse_file_ref(tokens: TokenStream,
                                                                                                argument_syntax_name))
         return token1
 
+    conf = Configuration(ALL_REL_OPTIONS,
+                         REL_HOME_OPTION,
+                         argument_syntax_name)
+
     if tokens.is_null:
         raise SingleInstructionInvalidArgumentException('Missing {} argument'.format(argument_syntax_name))
     first_argument = tokens.head
     if is_option_argument(first_argument):
-        try:
-            con = _REL_OPTION_TO_FILE_REF_CONSTRUCTOR[first_argument]
-        except KeyError:
-            msg = 'Invalid option for reference to {}: {}'.format(argument_syntax_name,
-                                                                  first_argument)
-            raise SingleInstructionInvalidArgumentException(msg)
+        file_ref_constructor = _get_file_ref_constructor(first_argument, conf)
         tokens1 = ensure_have_at_least_two_arguments_for_option(first_argument)
-        return con(tokens1.head), tokens1.tail
+        return file_ref_constructor(tokens1.head), tokens1.tail
     else:
         first_argument_path = pathlib.PurePath(first_argument)
         if first_argument_path.is_absolute():
@@ -128,6 +123,14 @@ def parse_file_ref(tokens: TokenStream,
         else:
             fr = file_ref.rel_home(first_argument)
         return fr, tokens.tail
+
+
+def _get_file_ref_constructor(option_argument: str,
+                              conf: Configuration) -> types.FunctionType:
+    if option_argument not in conf.accepted_options:
+        msg = 'Invalid option for reference to %s: %s' % (conf.argument_syntax_name, option_argument)
+        raise SingleInstructionInvalidArgumentException(msg)
+    return _option_constructor_for(option_argument)
 
 
 def _option_constructor_for(relativity_option: str) -> types.FunctionType:
