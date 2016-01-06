@@ -41,9 +41,6 @@ class ComparisonActualFile:
 
 
 def parse_actual_file_argument(arguments: list) -> (ComparisonActualFile, list):
-    if len(arguments) < 1:
-        msg_header = 'Invalid number of arguments (expecting at least one): '
-        raise SingleInstructionInvalidArgumentException(msg_header + str(arguments))
     (file_ref, remaining_arguments) = parse_non_home_file_ref(arguments)
     return ActComparisonActualFileForFileRef(file_ref), remaining_arguments
 
