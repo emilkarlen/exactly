@@ -41,11 +41,15 @@ class Parser(SingleInstructionParser):
 
 
 class _InstructionBase(SetupPhaseInstruction):
+    def _action(self, os_services: OsServices):
+        raise NotImplementedError()
+
     def main(self,
              os_services: OsServices,
              environment: GlobalEnvironmentForPostEdsPhase,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
-        raise NotImplementedError()
+        self._action(os_services)
+        return sh.new_sh_success()
 
 
 class _SetInstruction(_InstructionBase):
@@ -55,12 +59,8 @@ class _SetInstruction(_InstructionBase):
         self.name = name
         self.value = value
 
-    def main(self,
-             os_services: OsServices,
-             environment: GlobalEnvironmentForPostEdsPhase,
-             settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
+    def _action(self, os_services: OsServices):
         os_services.environ[self.name] = self.value
-        return sh.new_sh_success()
 
 
 class _UnsetInstruction(_InstructionBase):
@@ -68,9 +68,5 @@ class _UnsetInstruction(_InstructionBase):
                  name: str):
         self.name = name
 
-    def main(self,
-             os_services: OsServices,
-             environment: GlobalEnvironmentForPostEdsPhase,
-             settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
+    def _action(self, os_services: OsServices):
         del os_services.environ[self.name]
-        return sh.new_sh_success()
