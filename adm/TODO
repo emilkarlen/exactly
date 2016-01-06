@@ -112,6 +112,17 @@ Det blir helt enkelt tydligt att man pratar kataloger.
 ** TODO --rel-tmp : i assert-fasen ska det ange fil relativt tmp/
 t ex
 contents --rel-tmp transformed-stdout.txt --rel-home expected-contents.txt
+
+** TODO <2016-01-06 ons> PHASE_phase_instruction_that: action ska ta alla arg
+De steg-metoder som tar flera argument ska ha en action som tar alla dessa
+argument i en tupel.
+I dagsläget gör en av stegens action det (minns inte vilken), medan andra inte
+gör det.  Den olikheten är bara dålig.
+** TODO <2016-01-06 ons> anonymous/main: arg global_environment ospecificerat
+I dagsläget har det ingen roll (har ingen typ, bl a).
+Antingen ska det
+ - specificeras med en typ o innehåll
+ - tas bort
 * TODO Miljövariabler
 ** TODO Instruktioner: os.path.expandvars för att expandera miljövariabler
 Finns även en
@@ -429,6 +440,9 @@ Införa argument som ges till alla metoder i alla instruktioner.
 Skulle erbjuda mölighet att skräddarsy den information som instruktionerna har
 tillgång till.
 * TODO Refaktoreringar
+** TODO <2016-01-06 ons> Byt namn: Anonymous -> Config
+** TODO <2016-01-06 ons> Byt namn: GlobalEnvironmentForX -> EnvironmentForX
+Gäller typerna för arg till instruktionernas steg-metoder.
 ** TODO Göra sig av med fel-typen som är överflödig (fr UML, Failure?)
 ** TODO Argument till instruktionernas steg
 Spikade först två generella miljöer: global miljö och fas-miljö.
@@ -570,15 +584,43 @@ Detta är dock krångligt!!
 * TODO Loggning
 * TODO Preprocessning
 * TODO Faser och steg
-** TODO Nytt steg cleanup/validate
+** DONE Nytt steg cleanup/validate
 T ex för att göra möjligt för en instruktion "interpret PROGRAM" att validera
 att en reffade programfil existerar --rel-home.
-** TODO Instr i alla faser borde ha validering pre-EDS
+** DONE Instr i alla faser borde ha validering pre-EDS
 Eftersom en instruktion i varje fall (ev utom config) kan referera filer i
 home.  O fel där kan upptäckas innan man skapar EDS.
 ----------------------------------------
 Typ: validate_pre_eds(eds: ExecutionDirectoryStructure)
 ----------------------------------------
+** TODO <2016-01-06 ons> cleanup: olika main beroende på om act körts el ej
+Olika metoder hos en cleanup-instruktion ska anropas beroende på om act-fasen
+exekverats eller ej.  Dvs en cleanup-instruktion ska vara medveten om i vilket
+läge den anropas.
+
+Alternativt skickas en flagga till main-metoden som anger "läget".
+Detta kan vara en bättre lösning eftersom det är enkelt att utvidga m fler
+"lägen".
+Denna lösning gör det t ex möjligt att tala om exakt vilken fas som kördes
+innan cleanup-anropades:
+ - SETUP
+ - BEFORE-ASSERT
+ - ASSERT
+
+Osäker på hur användbart det här verkligen är för stora merparten av de
+vanliga instruktionerna.  Har tänkt på det och tror inte det är speciellt
+användbart.
+Men känner ändå att det vore bra att implementera det för att ha en
+infrastruktur som inte är begränsande - om nu behovet skulle uppstå i en ev
+avlägsen framtid.
+
+Mest användbart är det antagligen för skräddarsydda instruktioner, kanske
+tillsammans med en skräddarsydd act-fas-exekverare.
+Dvs mest användbart är det kanske då programmet används i ett mycket specifikt
+sammanhang, kanske ett sammanhang där alla instruktioner och exekvering är
+skräddarsydd.  I ett sådant fall fungerar programmet mer som
+infrastruktur. Och det är ju attraktivt om det kan användas även i det
+sammanhanget!
 * TODO Blandat
 ** TODO <2015-09-26 lör> Funktioner för att läsa act-resultat
 Ska finnas hjälpfunktioner i "biblioteket" för att läsa t ex statuskod på
