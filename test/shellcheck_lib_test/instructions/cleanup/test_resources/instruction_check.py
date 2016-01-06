@@ -8,6 +8,7 @@ from shellcheck_lib.test_case.sections import common as i
 from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
 from shellcheck_lib.test_case.sections.result import pfh
+from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib_test.instructions.test_resources import eds_contents_check
 from shellcheck_lib_test.instructions.test_resources import eds_populator
@@ -77,7 +78,9 @@ class Executor:
                 home_dir_contents=self.arrangement.home_dir_contents,
                 eds_contents=self.arrangement.eds_contents_before_main) as home_and_eds:
             write_act_result(home_and_eds.eds, self.expectation.act_result)
-            self._execute_pre_validate(home_and_eds.home_dir_path, instruction)
+            result_of_validate_pre_eds = self._execute_pre_validate(home_and_eds.home_dir_path, instruction)
+            if not result_of_validate_pre_eds.is_success:
+                return
             environment = i.GlobalEnvironmentForPostEdsPhase(home_and_eds.home_dir_path,
                                                              home_and_eds.eds)
             self._execute_main(environment, instruction)
@@ -89,11 +92,11 @@ class Executor:
                               instruction: CleanupPhaseInstruction) -> svh.SuccessOrValidationErrorOrHardError:
         pre_validation_environment = GlobalEnvironmentForPreEdsStep(home_dir_path)
         pre_validate_result = instruction.validate_pre_eds(pre_validation_environment)
+        self.put.assertIsNotNone(pre_validate_result,
+                                 'Result from pre_validate method cannot be None')
         self.put.assertIsInstance(pre_validate_result,
                                   svh.SuccessOrValidationErrorOrHardError,
                                   'pre_validate must return a ' + str(svh.SuccessOrValidationErrorOrHardError))
-        self.put.assertIsNotNone(pre_validate_result,
-                                 'Result from pre_validate method cannot be None')
         self.expectation.validate_pre_eds_result.apply(self.put, pre_validate_result)
         return pre_validate_result
 
@@ -103,6 +106,9 @@ class Executor:
         main_result = instruction.main(environment, OsServices())
         self.put.assertIsNotNone(main_result,
                                  'Result from main method cannot be None')
+        self.put.assertIsInstance(main_result,
+                                  sh.SuccessOrHardError,
+                                  'main must return a ' + str(sh.SuccessOrHardError))
         self.expectation.main_result.apply(self.put, main_result)
         self.expectation.main_side_effects_on_files.apply(self.put, environment.eds)
         return main_result
