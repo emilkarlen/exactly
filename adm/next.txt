@@ -2,6 +2,8 @@
 
 Fortsätt med
 
+* TODO Verkar inte bytt namn på setup/validate
+Borde vara validate_post_setup
 * Ny fas: before-assert
 ** DONE instruktion
 ** DONE fas-konstanter
@@ -43,13 +45,57 @@ ALL
 shellcheck_lib_test/execution/test_resources/instruction_that_record_and_return.py
 ** DONE namnbyte: execute -> main
 ** använda PHASE_phase_instruction_that??
-* TODO Hantera nya faser o steg
-** TODO shellcheck_lib_test/execution/test_resources/instruction_that_do_and_return.py
+* DONE Diverse refaktoreringar
+** DONE shellcheck_lib_test/execution/test_resources/instruction_that_do_and_return.py
 instruktions-sub-klasserna ser inte helt ok.
 Dels anropas fel funk, o alla metoder är inte impl.
 Kanske kan de impl i termer av PHASE_phase_instruction_that
-** TODO shellcheck_lib_test.execution.test_resources.instruction_that_record_and_return.TestCaseSetupWithRecorder
-** TODO Ny validate/pre-eds: Befintliga instruktioner ska använda denna
+** DONE shellcheck_lib_test.execution.test_resources.instruction_that_record_and_return.TestCaseSetupWithRecorder
+* TODO Ny validate/pre-eds: Befintliga instruktioner ska använda denna
+** DONE setup - säkerställ att instr är korrekta
+Finns inga tester som verifierar att validate_post_eds körs korrekt, ser det
+ut som.
+*** DONE execute
+*** DONE dir
+*** DONE env
+*** DONE file
+*** DONE install
+*** DONE pwd
+*** DONE shell
+*** DONE stdin
+** DONE cleanup
+*** DONE infrastruktur för instruktions-tester
+*** DONE dir
+*** DONE execute
+*** DONE pwd
+*** DONE shell
+** DONE assert
+*** DONE infrastruktur för instruktions-tester
+*** DONE contents
+*** DONE dir
+*** DONE execute
+*** DONE exitcode
+*** DONE pwd
+*** DONE shell
+*** DONE stderr
+*** DONE stdout
+*** DONE type
+** TODO act
+*** TODO infrastruktur för instruktions-tester
+*** TODO Gör så att relativa sökvägar antas vara --rel-home
+* TODO Refakt: validate_post_eds_if_applicable ska ta (EDS,home_dir)
+klass: PreOrPostEdsSvhValidationErrorValidator
+
+I nuläget tas enbart EDS.
+Onödigt att begränsa till att ta enbart EDS.
+Skulle ju kunna finnas en instruktion som använder både EDS och home_dir.
+* TODO Lägga till instruktioner till before-assert
+** TODO infrastruktur för instruktions-tester
+** TODO shell
+** TODO execute
+** TODO pwd
+** TODO dir
+** TODO env
 * cd
 ** Tester av instruktionerna
 Finns tester av fas-oberoende utils.
