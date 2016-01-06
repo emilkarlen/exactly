@@ -78,12 +78,7 @@ def parse_file_ref__list(arguments: list,
         ensure_have_at_least_two_arguments_for_option(first_argument)
         return file_ref_constructor(arguments[1]), arguments[2:]
     else:
-        first_argument_path = pathlib.PurePath(first_argument)
-        if first_argument_path.is_absolute():
-            fr = file_ref.absolute_file_name(first_argument)
-        else:
-            file_ref_constructor = _option_constructor_for(conf.default_option)
-            fr = file_ref_constructor(first_argument)
+        fr = _read_absolute_or_default_file_ref(first_argument, conf)
         return fr, arguments[1:]
 
 
@@ -116,12 +111,18 @@ def parse_file_ref(tokens: TokenStream,
         tokens1 = ensure_have_at_least_two_arguments_for_option(first_argument)
         return file_ref_constructor(tokens1.head), tokens1.tail
     else:
-        first_argument_path = pathlib.PurePath(first_argument)
-        if first_argument_path.is_absolute():
-            fr = file_ref.absolute_file_name(first_argument)
-        else:
-            fr = file_ref.rel_home(first_argument)
+        fr = _read_absolute_or_default_file_ref(first_argument, conf)
         return fr, tokens.tail
+
+
+def _read_absolute_or_default_file_ref(argument: str,
+                                       conf: Configuration) -> file_ref.FileRef:
+    argument_path = pathlib.PurePath(argument)
+    if argument_path.is_absolute():
+        return file_ref.absolute_file_name(argument)
+    else:
+        file_ref_constructor = _option_constructor_for(conf.default_option)
+        return file_ref_constructor(argument)
 
 
 def _get_file_ref_constructor(option_argument: str,
