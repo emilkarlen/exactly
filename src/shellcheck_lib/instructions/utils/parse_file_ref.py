@@ -68,8 +68,8 @@ def parse_file_ref__list(arguments: list,
             _raise_missing_option_argument_exception(option, conf)
 
     if not arguments:
-        msg = 'Missing %s argument' % conf.argument_syntax_name
-        raise SingleInstructionInvalidArgumentException(msg)
+        _raise_missing_arguments_exception(conf)
+
     first_argument = arguments[0]
 
     if is_option_argument(first_argument):
@@ -102,7 +102,8 @@ def parse_file_ref(tokens: TokenStream,
         return token1
 
     if tokens.is_null:
-        raise SingleInstructionInvalidArgumentException('Missing {} argument'.format(argument_syntax_name))
+        _raise_missing_arguments_exception(conf)
+
     first_argument = tokens.head
     if is_option_argument(first_argument):
         file_ref_constructor = _get_file_ref_constructor(first_argument, conf)
@@ -143,3 +144,8 @@ def _raise_missing_option_argument_exception(option: str,
                                              conf: Configuration):
     _msg = '{} requires a {} argument'.format(option, conf.argument_syntax_name)
     raise SingleInstructionInvalidArgumentException(_msg)
+
+
+def _raise_missing_arguments_exception(conf: Configuration):
+    msg = 'Missing %s argument' % conf.argument_syntax_name
+    raise SingleInstructionInvalidArgumentException(msg)
