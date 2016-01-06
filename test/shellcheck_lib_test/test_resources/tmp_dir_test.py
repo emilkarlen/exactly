@@ -9,7 +9,7 @@ from . import value_assertion
 class Check:
     def __init__(self,
                  dir_contents_before: file_structure.DirContents = file_structure.DirContents([]),
-                 expected_action_result: value_assertion.ValueAssertion = value_assertion.AnythingGoes(),
+                 expected_action_result: value_assertion.ValueAssertion = value_assertion.anything_goes(),
                  expected_dir_contents_after: file_checks.Assertion = file_checks.AnythingGoes()):
         self.dir_contents_before = dir_contents_before
         self.expected_action_result = expected_action_result

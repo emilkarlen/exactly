@@ -66,7 +66,7 @@ class Boolean(ValueAssertion):
             put.assertFalse(value, msg)
 
 
-def AnythingGoes() -> ValueAssertion:
+def anything_goes() -> ValueAssertion:
     return Constant(True)
 
 

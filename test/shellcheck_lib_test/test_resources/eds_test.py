@@ -5,7 +5,7 @@ from shellcheck_lib.execution.execution_directory_structure import ExecutionDire
 from shellcheck_lib_test.instructions.test_resources import eds_populator, eds_contents_check
 from shellcheck_lib_test.instructions.test_resources.utils import execution_directory_structure
 from shellcheck_lib_test.test_resources.file_checks import FileChecker
-from shellcheck_lib_test.test_resources.value_assertion import ValueAssertion, AnythingGoes
+from shellcheck_lib_test.test_resources.value_assertion import ValueAssertion, anything_goes
 
 
 class PostActionCheck:
@@ -23,7 +23,7 @@ class Action:
 class Check:
     def __init__(self,
                  eds_contents_before: eds_populator.EdsPopulator = eds_populator.empty(),
-                 expected_action_result: ValueAssertion = AnythingGoes(),
+                 expected_action_result: ValueAssertion = anything_goes(),
                  expected_eds_contents_after: eds_contents_check.Assertion = eds_contents_check.AnythingGoes(),
                  pre_action_action: Action = Action(),
                  post_action_check: PostActionCheck = PostActionCheck()):
