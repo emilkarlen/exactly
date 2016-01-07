@@ -36,6 +36,9 @@ class Arrangement(ArrangementWithEds):
         self.initial_settings_builder = initial_settings_builder
 
 
+arrangement = Arrangement
+
+
 class Expectation:
     def __init__(self,
                  pre_validation_result: svh_check.Assertion = svh_check.is_success(),
@@ -62,7 +65,15 @@ class TestCaseBase(unittest.TestCase):
                source: SingleInstructionParserSource,
                arrangement: Arrangement,
                expectation: Expectation):
-        Executor(self, arrangement, expectation).execute(parser, source)
+        check(self, parser, source, arrangement, expectation)
+
+
+def check(put: unittest.TestCase,
+          parser: SingleInstructionParser,
+          source: SingleInstructionParserSource,
+          arrangement: Arrangement,
+          expectation: Expectation):
+    Executor(put, arrangement, expectation).execute(parser, source)
 
 
 class Executor:
