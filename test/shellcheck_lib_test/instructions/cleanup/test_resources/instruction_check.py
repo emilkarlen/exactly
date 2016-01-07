@@ -51,7 +51,15 @@ class TestCaseBase(unittest.TestCase):
                source: SingleInstructionParserSource,
                arrangement: ArrangementWithEds,
                expectation: Expectation):
-        Executor(self, arrangement, expectation).execute(parser, source)
+        check(self, parser, source, arrangement, expectation)
+
+
+def check(put: unittest.TestCase,
+          parser: SingleInstructionParser,
+          source: SingleInstructionParserSource,
+          arrangement: ArrangementWithEds,
+          expectation: Expectation):
+    Executor(put, arrangement, expectation).execute(parser, source)
 
 
 class Executor:
