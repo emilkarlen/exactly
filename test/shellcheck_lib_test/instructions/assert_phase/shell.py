@@ -5,7 +5,7 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
 from shellcheck_lib.instructions.assert_phase import shell as sut
 from shellcheck_lib.test_case.instruction_description import Description
 from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_check import TestCaseBase, \
-    Arrangement, Expectation, is_pass
+    arrangement, Expectation, is_pass
 from shellcheck_lib_test.instructions.test_resources import pfh_check
 from shellcheck_lib_test.instructions.test_resources.check_description import TestDescriptionBase
 from shellcheck_lib_test.instructions.test_resources.utils import new_source2
@@ -23,7 +23,7 @@ class TestParse(unittest.TestCase):
 class TestCaseBaseForParser(TestCaseBase):
     def _run(self,
              source: SingleInstructionParserSource,
-             arrangement: Arrangement,
+             arrangement: arrangement,
              expectation: Expectation):
         self._check(sut.parser(), source, arrangement, expectation)
 
@@ -38,7 +38,7 @@ sys.exit(0)
                                  suffix='.py') as script_file_path:
             self._run(
                     new_source2(py_exe.command_line_for_interpreting(script_file_path)),
-                    Arrangement(),
+                    arrangement(),
                     is_pass(),
             )
 
@@ -51,7 +51,7 @@ sys.exit(1)
                                  suffix='.py') as script_file_path:
             self._run(
                     new_source2(py_exe.command_line_for_interpreting(script_file_path)),
-                    Arrangement(),
+                    arrangement(),
                     Expectation(main_result=pfh_check.is_fail()),
             )
 

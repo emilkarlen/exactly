@@ -13,6 +13,7 @@ from shellcheck_lib_test.instructions.test_resources import eds_populator
 from shellcheck_lib_test.instructions.test_resources import pfh_check
 from shellcheck_lib_test.instructions.test_resources import svh_check
 from shellcheck_lib_test.instructions.test_resources import utils
+from shellcheck_lib_test.instructions.test_resources.arrangement import ArrangementPostAct
 from shellcheck_lib_test.instructions.test_resources.utils import write_act_result, SideEffectsCheck
 from shellcheck_lib_test.test_resources import file_structure
 
@@ -35,15 +36,13 @@ class ActResultProducer:
         return self.act_result
 
 
-class Arrangement:
-    def __init__(self,
-                 home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
-                 eds_contents_before_main: eds_populator.EdsPopulator = eds_populator.empty(),
-                 act_result_producer: ActResultProducer = ActResultProducer(),
-                 ):
-        self.home_dir_contents = home_dir_contents
-        self.eds_contents_before_main = eds_contents_before_main
-        self.act_result_producer = act_result_producer
+def arrangement(home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
+                eds_contents_before_main: eds_populator.EdsPopulator = eds_populator.empty(),
+                act_result_producer: ActResultProducer = ActResultProducer()
+                ) -> ArrangementPostAct:
+    return ArrangementPostAct(home_dir_contents,
+                              eds_contents_before_main,
+                              act_result_producer)
 
 
 class Expectation:
@@ -68,7 +67,7 @@ class TestCaseBase(unittest.TestCase):
     def _check(self,
                parser: SingleInstructionParser,
                source: SingleInstructionParserSource,
-               arrangement: Arrangement,
+               arrangement: ArrangementPostAct,
                expectation: Expectation):
         Executor(self, arrangement, expectation).execute(parser, source)
 
@@ -76,7 +75,7 @@ class TestCaseBase(unittest.TestCase):
 class Executor:
     def __init__(self,
                  put: unittest.TestCase,
-                 arrangement: Arrangement,
+                 arrangement: ArrangementPostAct,
                  expectation: Expectation):
         self.put = put
         self.arrangement = arrangement
@@ -93,8 +92,8 @@ class Executor:
                                   'The instruction must be an instance of ' + str(AssertPhaseInstruction))
         assert isinstance(instruction, AssertPhaseInstruction)
         with utils.home_and_eds_and_test_as_curr_dir(
-                home_dir_contents=self.arrangement.home_dir_contents,
-                eds_contents=self.arrangement.eds_contents_before_main) as home_and_eds:
+                home_dir_contents=self.arrangement.home_contents,
+                eds_contents=self.arrangement.eds_contents) as home_and_eds:
             act_result = self.arrangement.act_result_producer.apply(ActEnvironment(home_and_eds))
             write_act_result(home_and_eds.eds, act_result)
             # TODO Execution of validate/pre-eds should be done before act-result is written.

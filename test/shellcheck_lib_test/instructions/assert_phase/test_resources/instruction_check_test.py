@@ -11,7 +11,7 @@ from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib_test.execution.test_resources.instruction_test_resources import \
     assert_phase_instruction_that
 from shellcheck_lib_test.instructions.assert_phase.test_resources import instruction_check
-from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_check import Arrangement, is_pass, \
+from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_check import arrangement, is_pass, \
     Expectation
 from shellcheck_lib_test.instructions.test_resources import test_of_test_framework_utils as test_misc
 
@@ -21,14 +21,14 @@ class TestCases(instruction_check.TestCaseBase):
         self._check(
                 test_misc.ParserThatGives(_SUCCESSFUL_INSTRUCTION),
                 test_misc.single_line_source(),
-                Arrangement(),
+                arrangement(),
                 is_pass())
 
     def test_fail_due_to_unexpected_result_from_pre_validation(self):
         with self.assertRaises(test_misc.TestError):
             self._check(test_misc.ParserThatGives(_SUCCESSFUL_INSTRUCTION),
                         test_misc.single_line_source(),
-                        Arrangement(),
+                        arrangement(),
                         Expectation(validation_pre_eds=test_misc.SvhRaisesTestError()),
                         )
 
@@ -36,7 +36,7 @@ class TestCases(instruction_check.TestCaseBase):
         with self.assertRaises(test_misc.TestError):
             self._check(test_misc.ParserThatGives(_SUCCESSFUL_INSTRUCTION),
                         test_misc.single_line_source(),
-                        Arrangement(),
+                        arrangement(),
                         Expectation(validation_post_eds=test_misc.SvhRaisesTestError()),
                         )
 
@@ -45,7 +45,7 @@ class TestCases(instruction_check.TestCaseBase):
             self._check(
                     test_misc.ParserThatGives(_SUCCESSFUL_INSTRUCTION),
                     test_misc.single_line_source(),
-                    Arrangement(),
+                    arrangement(),
                     Expectation(main_result=test_misc.PfhRaisesTestError()),
             )
 
@@ -54,7 +54,7 @@ class TestCases(instruction_check.TestCaseBase):
             self._check(
                     test_misc.ParserThatGives(_SUCCESSFUL_INSTRUCTION),
                     test_misc.single_line_source(),
-                    Arrangement(),
+                    arrangement(),
                     Expectation(main_side_effects_on_files=test_misc.EdsContentsRaisesTestError()),
             )
 
@@ -62,7 +62,7 @@ class TestCases(instruction_check.TestCaseBase):
         self._check(
                 test_misc.ParserThatGives(InstructionThatRaisesTestErrorIfCwdIsIsNotTestRoot()),
                 test_misc.single_line_source(),
-                Arrangement(),
+                arrangement(),
                 is_pass())
 
     def test_fail_due_to_side_effects_check(self):
@@ -70,7 +70,7 @@ class TestCases(instruction_check.TestCaseBase):
             self._check(
                     test_misc.ParserThatGives(_SUCCESSFUL_INSTRUCTION),
                     test_misc.single_line_source(),
-                    Arrangement(),
+                    arrangement(),
                     Expectation(side_effects_check=test_misc.SideEffectsCheckThatRaisesTestError()),
             )
 

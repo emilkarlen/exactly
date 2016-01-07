@@ -5,7 +5,7 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
     SingleInstructionParserSource
 from shellcheck_lib.instructions.assert_phase import change_dir as sut
 from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_check import TestCaseBase, \
-    Arrangement, Expectation
+    arrangement, Expectation
 from shellcheck_lib_test.instructions.multi_phase_instructions.change_dir import AssertCwdIsSubDirOfEds
 from shellcheck_lib_test.instructions.test_resources import pfh_check
 from shellcheck_lib_test.instructions.test_resources.eds_populator import act_dir_contents
@@ -16,7 +16,7 @@ from shellcheck_lib_test.test_resources.file_structure import DirContents, empty
 class TestCaseBaseForParser(TestCaseBase):
     def _run(self,
              source: SingleInstructionParserSource,
-             arrangement: Arrangement,
+             arrangement: arrangement,
              expectation: Expectation):
         self._check(sut.Parser(), source, arrangement, expectation)
 
@@ -25,7 +25,7 @@ class TestCasesThatTestIntegrationByAFewRandomTests(TestCaseBaseForParser):
     def test_creation_of_directory_with_multiple_path_components(self):
         self._run(
                 new_source2('first-component/second-component'),
-                Arrangement(
+                arrangement(
                         eds_contents_before_main=act_dir_contents(DirContents([
                             Dir('first-component', [
                                 empty_dir('second-component')
@@ -37,7 +37,7 @@ class TestCasesThatTestIntegrationByAFewRandomTests(TestCaseBaseForParser):
     def test_argument_exists_as_non_directory__single_path_component(self):
         self._run(
                 new_source2('file'),
-                Arrangement(
+                arrangement(
                         eds_contents_before_main=act_dir_contents(DirContents([
                             empty_file('file')]))),
                 Expectation(
