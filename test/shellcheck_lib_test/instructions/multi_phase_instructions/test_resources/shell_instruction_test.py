@@ -2,10 +2,7 @@ import unittest
 
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException, SingleInstructionParserSource, SingleInstructionParser
-from shellcheck_lib.instructions.assert_phase import shell as sut
-from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_check import arrangement, Expectation, \
-    check
-from shellcheck_lib_test.instructions.test_resources import pfh_check
+from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_check import Expectation
 from shellcheck_lib_test.instructions.test_resources.arrangement import ArrangementPostAct
 from shellcheck_lib_test.instructions.test_resources.utils import new_source2
 from shellcheck_lib_test.test_resources import python_program_execution as py_exe
@@ -18,19 +15,19 @@ class Configuration:
                  source: SingleInstructionParserSource,
                  arrangement,
                  expectation):
-        check(put, self.parser(), source, arrangement, expectation)
+        raise NotImplementedError()
 
     def parser(self) -> SingleInstructionParser:
-        return sut.parser()
+        raise NotImplementedError()
 
     def empty_arrangement(self) -> ArrangementPostAct:
-        return arrangement()
+        raise NotImplementedError()
 
     def expectation_of_non_zero_exitcode(self) -> Expectation:
-        return Expectation(main_result=pfh_check.is_fail())
+        raise NotImplementedError()
 
     def expectation_of_zero_exitcode(self) -> Expectation:
-        return Expectation()
+        raise NotImplementedError()
 
 
 class TestParseFailsWhenThereAreNoArguments(unittest.TestCase):
