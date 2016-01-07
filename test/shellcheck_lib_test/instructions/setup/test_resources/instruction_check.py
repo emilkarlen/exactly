@@ -20,20 +20,19 @@ from shellcheck_lib_test.instructions.test_resources import eds_contents_check
 from shellcheck_lib_test.instructions.test_resources import eds_populator
 from shellcheck_lib_test.instructions.test_resources import sh_check
 from shellcheck_lib_test.instructions.test_resources import svh_check
+from shellcheck_lib_test.instructions.test_resources.arrangement import ArrangementWithEds
 from shellcheck_lib_test.instructions.test_resources.utils import SideEffectsCheck
 from shellcheck_lib_test.test_resources import file_structure
 
 
-class Arrangement:
+class Arrangement(ArrangementWithEds):
     def __init__(self,
                  home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
                  os_services: OsServices = new_default(),
                  eds_contents_before_main: eds_populator.EdsPopulator = eds_populator.empty(),
-                 initial_settings_builder: SetupSettingsBuilder = SetupSettingsBuilder(),
-                 ):
-        self.home_dir_contents = home_dir_contents
+                 initial_settings_builder: SetupSettingsBuilder = SetupSettingsBuilder()):
+        super().__init__(home_dir_contents, eds_contents_before_main)
         self.os_services = os_services
-        self.eds_contents_before_main = eds_contents_before_main
         self.initial_settings_builder = initial_settings_builder
 
 
@@ -90,7 +89,7 @@ class Executor:
         try:
             with tempfile.TemporaryDirectory(prefix=prefix + "-home-") as home_dir_name:
                 home_dir_path = pathlib.Path(home_dir_name)
-                self.arrangement.home_dir_contents.write_to(home_dir_path)
+                self.arrangement.home_contents.write_to(home_dir_path)
                 pre_validate_result = self._execute_pre_validate(home_dir_path, instruction)
                 if not pre_validate_result.is_success:
                     return
@@ -124,7 +123,7 @@ class Executor:
                       eds: ExecutionDirectoryStructure,
                       global_environment_with_eds: i.GlobalEnvironmentForPostEdsPhase,
                       instruction: SetupPhaseInstruction) -> sh.SuccessOrHardError:
-        self.arrangement.eds_contents_before_main.apply(eds)
+        self.arrangement.eds_contents.apply(eds)
         settings_builder = self.arrangement.initial_settings_builder
         initial_settings_builder = copy.deepcopy(settings_builder)
         main_result = instruction.main(self.arrangement.os_services,
