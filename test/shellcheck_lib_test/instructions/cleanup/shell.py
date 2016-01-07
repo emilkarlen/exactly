@@ -57,7 +57,7 @@ sys.exit(1)
 
 class TestDescription(TestDescriptionBase):
     def _description(self) -> Description:
-        return sut.TheDescription('instruction name')
+        return sut.description('instruction name')
 
 
 def suite():
