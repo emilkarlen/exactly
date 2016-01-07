@@ -88,7 +88,7 @@ class Executor:
                 return
             environment = i.GlobalEnvironmentForPostEdsPhase(home_and_eds.home_dir_path,
                                                              home_and_eds.eds)
-            validate_result = self._execute_validate(environment, instruction)
+            validate_result = self._execute_validate_post_setup(environment, instruction)
             if not validate_result.is_success:
                 return
             self._execute_main(environment, instruction)
@@ -104,9 +104,9 @@ class Executor:
         self.expectation.validation_pre_eds.apply(self.put, result)
         return result
 
-    def _execute_validate(self,
-                          global_environment: GlobalEnvironmentForPostEdsPhase,
-                          instruction: AssertPhaseInstruction) -> svh.SuccessOrValidationErrorOrHardError:
+    def _execute_validate_post_setup(self,
+                                     global_environment: GlobalEnvironmentForPostEdsPhase,
+                                     instruction: AssertPhaseInstruction) -> svh.SuccessOrValidationErrorOrHardError:
         result = instruction.validate_post_setup(global_environment)
         self.put.assertIsNotNone(result,
                                  'Result from validate method cannot be None')
