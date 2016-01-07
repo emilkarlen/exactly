@@ -26,6 +26,14 @@ class TheDescriptionBase(Description):
         ]
 
 
+class DescriptionForNonAssertPhaseInstruction(TheDescriptionBase):
+    def __init__(self, name: str):
+        super().__init__(name)
+
+    def main_description_rest(self) -> list:
+        return single_para('The instruction is successful if (and only if) the exit code from the command is 0.')
+
+
 class Parser(SingleInstructionParser):
     def __init__(self,
                  executor_2_instruction_function):
