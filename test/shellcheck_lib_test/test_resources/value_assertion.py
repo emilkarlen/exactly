@@ -67,6 +67,25 @@ class Boolean(ValueAssertion):
             put.assertFalse(value, msg)
 
 
+class IsInstance(ValueAssertion):
+    """
+    Tests a boolean
+    """
+
+    def __init__(self,
+                 expected: type,
+                 message: str = ''):
+        self.expected = expected
+        self.message = message
+
+    def apply(self,
+              put: unittest.TestCase,
+              value,
+              message_builder: MessageBuilder = MessageBuilder()):
+        put.assertIsInstance(value,
+                             self.expected)
+
+
 def anything_goes() -> ValueAssertion:
     return Constant(True)
 
