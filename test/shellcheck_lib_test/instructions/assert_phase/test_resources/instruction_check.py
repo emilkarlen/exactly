@@ -13,27 +13,10 @@ from shellcheck_lib_test.instructions.test_resources import eds_populator
 from shellcheck_lib_test.instructions.test_resources import pfh_check
 from shellcheck_lib_test.instructions.test_resources import svh_check
 from shellcheck_lib_test.instructions.test_resources import utils
-from shellcheck_lib_test.instructions.test_resources.arrangement import ArrangementPostAct
+from shellcheck_lib_test.instructions.test_resources.arrangement import ArrangementPostAct, ActResultProducer, \
+    ActEnvironment
 from shellcheck_lib_test.instructions.test_resources.utils import write_act_result, SideEffectsCheck
 from shellcheck_lib_test.test_resources import file_structure
-
-
-class ActEnvironment(tuple):
-    def __new__(cls,
-                home_and_eds: i.HomeAndEds):
-        return tuple.__new__(cls, (home_and_eds,))
-
-    @property
-    def home_and_eds(self) -> i.HomeAndEds:
-        return self[0]
-
-
-class ActResultProducer:
-    def __init__(self, act_result: utils.ActResult = utils.ActResult()):
-        self.act_result = act_result
-
-    def apply(self, act_environment: ActEnvironment) -> utils.ActResult:
-        return self.act_result
 
 
 def arrangement(home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
