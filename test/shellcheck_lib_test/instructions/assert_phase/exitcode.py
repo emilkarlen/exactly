@@ -10,6 +10,7 @@ from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_ch
     arrangement, Expectation, is_pass
 from shellcheck_lib_test.instructions.test_resources import pfh_check
 from shellcheck_lib_test.instructions.test_resources import utils
+from shellcheck_lib_test.instructions.test_resources.arrangement import ArrangementPostAct
 from shellcheck_lib_test.instructions.test_resources.check_description import TestDescriptionBase
 from shellcheck_lib_test.instructions.test_resources.utils import new_source2
 
@@ -61,7 +62,7 @@ class TestParse(unittest.TestCase):
 class TestCaseBaseForParser(instruction_check.TestCaseBase):
     def _run(self,
              source: SingleInstructionParserSource,
-             arrangement: arrangement,
+             arrangement: ArrangementPostAct,
              expectation: Expectation):
         self._check(sut.Parser(), source, arrangement, expectation)
 

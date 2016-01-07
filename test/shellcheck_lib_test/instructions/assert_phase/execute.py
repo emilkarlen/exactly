@@ -9,6 +9,7 @@ from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_ch
 from shellcheck_lib_test.instructions.test_resources import eds_populator
 from shellcheck_lib_test.instructions.test_resources import pfh_check
 from shellcheck_lib_test.instructions.test_resources import svh_check
+from shellcheck_lib_test.instructions.test_resources.arrangement import ArrangementPostAct
 from shellcheck_lib_test.instructions.test_resources.execute_utils import source_for_interpreting
 from shellcheck_lib_test.instructions.test_resources.utils import single_line_source
 from shellcheck_lib_test.test_resources import python_program_execution as py_exe
@@ -18,7 +19,7 @@ from shellcheck_lib_test.test_resources.file_structure import DirContents, empty
 class TestCaseBaseForParser(TestCaseBase):
     def _run(self,
              source: SingleInstructionParserSource,
-             arrangement: arrangement,
+             arrangement: ArrangementPostAct,
              expectation: Expectation):
         self._check(sut.parser('instruction-name'), source, arrangement, expectation)
 

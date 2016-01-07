@@ -6,6 +6,7 @@ from shellcheck_lib.instructions.assert_phase import new_dir as sut
 from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_check import TestCaseBase, \
     arrangement, Expectation
 from shellcheck_lib_test.instructions.test_resources import pfh_check
+from shellcheck_lib_test.instructions.test_resources.arrangement import ArrangementPostAct
 from shellcheck_lib_test.instructions.test_resources.eds_contents_check import ActRootContainsExactly
 from shellcheck_lib_test.instructions.test_resources.eds_populator import act_dir_contents
 from shellcheck_lib_test.instructions.test_resources.utils import new_source2
@@ -15,7 +16,7 @@ from shellcheck_lib_test.test_resources.file_structure import DirContents, empty
 class TestCaseBaseForParser(TestCaseBase):
     def _run(self,
              source: SingleInstructionParserSource,
-             arrangement: arrangement,
+             arrangement: ArrangementPostAct,
              expectation: Expectation):
         self._check(sut.Parser(), source, arrangement, expectation)
 
