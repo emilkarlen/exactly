@@ -206,6 +206,34 @@ class TestOr(unittest.TestCase):
         sut.Or(assertions).apply(self.put, 'value')
 
 
+class TestOnTransformed(unittest.TestCase):
+    def setUp(self):
+        self.put = _put()
+
+    def test_false__sans_message_builder(self):
+        with self.assertRaises(TestException):
+            value = ['not none']
+            sut.OnTransformed(lambda x: x[0],
+                              sut.ValueIsNone()).apply(self.put, value)
+
+    def test_false__with_message_builder(self):
+        with self.assertRaises(TestException):
+            value = ['not none']
+            sut.OnTransformed(lambda x: x[0],
+                              sut.ValueIsNone()).apply(self.put,
+                                                       value,
+                                                       sut.MessageBuilder('message head'))
+
+    def test_true(self):
+        value = [None]
+        sut.OnTransformed(lambda x: x[0],
+                          sut.ValueIsNone()).apply(self.put, value)
+        sut.OnTransformed(lambda x: x[0],
+                          sut.ValueIsNone()).apply(self.put,
+                                                   value,
+                                                   sut.MessageBuilder('message head'))
+
+
 class TestSubComponent(unittest.TestCase):
     def setUp(self):
         self.put = _put()
@@ -288,6 +316,7 @@ def suite():
     ret_val.addTest(unittest.makeSuite(TestIsNotNone))
     ret_val.addTest(unittest.makeSuite(TestBoolean))
     ret_val.addTest(unittest.makeSuite(TestEquals))
+    ret_val.addTest(unittest.makeSuite(TestOnTransformed))
     ret_val.addTest(unittest.makeSuite(TestSubComponent))
     ret_val.addTest(unittest.makeSuite(TestEveryElement))
     return ret_val

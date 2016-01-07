@@ -32,9 +32,10 @@ class Constant(ValueAssertion):
     """
 
     def __init__(self,
-                 result: bool):
+                 result: bool,
+                 message: str = ''):
         self.result = result
-        self._message = 'Constant ' + str(result)
+        self._message = 'Constant ' + str(result) if not message else message
 
     def apply(self,
               put: unittest.TestCase,
@@ -164,6 +165,22 @@ class Equals(ValueAssertion):
         put.assertEquals(self.expected,
                          value,
                          message_builder.apply(self.message))
+
+
+class OnTransformed(ValueAssertion):
+    def __init__(self,
+                 transformer: types.FunctionType,
+                 assertion: ValueAssertion):
+        self.transformer = transformer
+        self.assertion = assertion
+
+    def apply(self,
+              put: unittest.TestCase,
+              value,
+              message_builder: MessageBuilder = MessageBuilder()):
+        self.assertion.apply(put,
+                             self.transformer(value),
+                             message_builder)
 
 
 def sub_component(component_name: str,
