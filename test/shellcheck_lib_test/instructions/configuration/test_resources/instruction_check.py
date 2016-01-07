@@ -10,15 +10,15 @@ from shellcheck_lib.test_case.sections.anonymous import AnonymousPhaseInstructio
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib_test.instructions.configuration.test_resources import configuration_check as config_check
 from shellcheck_lib_test.instructions.test_resources import sh_check
+from shellcheck_lib_test.instructions.test_resources.arrangement import ArrangementBase
 from shellcheck_lib_test.test_resources import file_structure
 
 
-class Arrangement:
+class Arrangement(ArrangementBase):
     def __init__(self,
                  home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
-                 initial_configuration_builder: ConfigurationBuilder = ConfigurationBuilder(pathlib.Path('.')),
-                 ):
-        self.home_dir_contents = home_dir_contents
+                 initial_configuration_builder: ConfigurationBuilder = ConfigurationBuilder(pathlib.Path('.'))):
+        super().__init__(home_dir_contents)
         self.initial_configuration_builder = initial_configuration_builder
 
 
@@ -62,7 +62,7 @@ class Executor:
         prefix = strftime("shellcheck-test-%Y-%m-%d-%H-%M-%S", localtime())
         with tempfile.TemporaryDirectory(prefix=prefix + "-home-") as home_dir_name:
             home_dir_path = pathlib.Path(home_dir_name)
-            self.arrangement.home_dir_contents.write_to(home_dir_path)
+            self.arrangement.home_contents.write_to(home_dir_path)
             configuration_builder = self.arrangement.initial_configuration_builder
             configuration_builder.set_home_dir(home_dir_path)
             self._execute_main(configuration_builder,
