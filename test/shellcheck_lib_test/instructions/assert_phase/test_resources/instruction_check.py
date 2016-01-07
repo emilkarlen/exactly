@@ -77,11 +77,6 @@ class Executor:
         with utils.home_and_eds_and_test_as_curr_dir(
                 home_dir_contents=self.arrangement.home_contents,
                 eds_contents=self.arrangement.eds_contents) as home_and_eds:
-            act_result = self.arrangement.act_result_producer.apply(ActEnvironment(home_and_eds))
-            write_act_result(home_and_eds.eds, act_result)
-            # TODO Execution of validate/pre-eds should be done before act-result is written.
-            # But cannot do this for the moment, since many tests write home-dir contents
-            # as part of the act-result.
             environment = i.GlobalEnvironmentForPreEdsStep(home_and_eds.home_dir_path)
             validate_result = self._execute_validate_pre_eds(environment, instruction)
             if not validate_result.is_success:
@@ -91,6 +86,8 @@ class Executor:
             validate_result = self._execute_validate_post_setup(environment, instruction)
             if not validate_result.is_success:
                 return
+            act_result = self.arrangement.act_result_producer.apply(ActEnvironment(home_and_eds))
+            write_act_result(home_and_eds.eds, act_result)
             self._execute_main(environment, instruction)
             self.expectation.main_side_effects_on_files.apply(self.put, environment.eds)
             self.expectation.side_effects_check.apply(self.put, home_and_eds)
