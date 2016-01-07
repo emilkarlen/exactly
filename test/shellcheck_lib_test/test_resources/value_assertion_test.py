@@ -10,7 +10,7 @@ class TestException(Exception):
 
 class TestIsNone(unittest.TestCase):
     def setUp(self):
-        self.put = _put()
+        self.put = test_case_with_failure_exception_set_to_test_exception()
 
     def test_none(self):
         sut.ValueIsNone().apply(self.put, None)
@@ -26,7 +26,7 @@ class TestIsNone(unittest.TestCase):
 
 class TestIsNotNone(unittest.TestCase):
     def setUp(self):
-        self.put = _put()
+        self.put = test_case_with_failure_exception_set_to_test_exception()
 
     def test_none__sans_message_builder(self):
         with self.assertRaises(TestException):
@@ -45,7 +45,7 @@ class TestIsNotNone(unittest.TestCase):
 
 class TestEquals(unittest.TestCase):
     def setUp(self):
-        self.put = _put()
+        self.put = test_case_with_failure_exception_set_to_test_exception()
 
     def test_false__sans_message_builder(self):
         with self.assertRaises(TestException):
@@ -64,7 +64,7 @@ class TestEquals(unittest.TestCase):
 
 class TestConstant(unittest.TestCase):
     def setUp(self):
-        self.put = _put()
+        self.put = test_case_with_failure_exception_set_to_test_exception()
 
     def test_false__sans_message_builder(self):
         with self.assertRaises(TestException):
@@ -83,7 +83,7 @@ class TestConstant(unittest.TestCase):
 
 class TestIsInstance(unittest.TestCase):
     def setUp(self):
-        self.put = _put()
+        self.put = test_case_with_failure_exception_set_to_test_exception()
 
     def test_false__sans_message_builder(self):
         with self.assertRaises(TestException):
@@ -102,7 +102,7 @@ class TestIsInstance(unittest.TestCase):
 
 class TestBoolean(unittest.TestCase):
     def setUp(self):
-        self.put = _put()
+        self.put = test_case_with_failure_exception_set_to_test_exception()
 
     def test_false_true__sans_message_builder(self):
         with self.assertRaises(TestException):
@@ -122,7 +122,7 @@ class TestBoolean(unittest.TestCase):
 
 class TestNot(unittest.TestCase):
     def setUp(self):
-        self.put = _put()
+        self.put = test_case_with_failure_exception_set_to_test_exception()
 
     def test_true__sans_message_builder(self):
         with self.assertRaises(TestException):
@@ -141,7 +141,7 @@ class TestNot(unittest.TestCase):
 
 class TestAnd(unittest.TestCase):
     def setUp(self):
-        self.put = _put()
+        self.put = test_case_with_failure_exception_set_to_test_exception()
 
     def test_empty_list(self):
         sut.And([]).apply(self.put, 'value')
@@ -183,7 +183,7 @@ class TestAnd(unittest.TestCase):
 
 class TestOr(unittest.TestCase):
     def setUp(self):
-        self.put = _put()
+        self.put = test_case_with_failure_exception_set_to_test_exception()
 
     def test_empty_list__sans_message_builder(self):
         with self.assertRaises(TestException):
@@ -227,7 +227,7 @@ class TestOr(unittest.TestCase):
 
 class TestOnTransformed(unittest.TestCase):
     def setUp(self):
-        self.put = _put()
+        self.put = test_case_with_failure_exception_set_to_test_exception()
 
     def test_false__sans_message_builder(self):
         with self.assertRaises(TestException):
@@ -255,7 +255,7 @@ class TestOnTransformed(unittest.TestCase):
 
 class TestSubComponent(unittest.TestCase):
     def setUp(self):
-        self.put = _put()
+        self.put = test_case_with_failure_exception_set_to_test_exception()
 
     def test_false__sans_message_builder(self):
         with self.assertRaises(TestException):
@@ -287,7 +287,7 @@ class TestSubComponent(unittest.TestCase):
 
 class TestEveryElement(unittest.TestCase):
     def setUp(self):
-        self.put = _put()
+        self.put = test_case_with_failure_exception_set_to_test_exception()
         self.every_element_is_none = sut.every_element('iterable name',
                                                        sut.ValueIsNone())
 
@@ -319,7 +319,7 @@ class TestEveryElement(unittest.TestCase):
         self.every_element_is_none.apply(self.put, [None, None])
 
 
-def _put() -> unittest.TestCase:
+def test_case_with_failure_exception_set_to_test_exception() -> unittest.TestCase:
     put = unittest.TestCase()
     put.failureException = TestException
     return put
