@@ -18,7 +18,7 @@ class TestCases(sut.TestCaseBase):
         self._check(
                 test_misc.ParserThatGives(SUCCESSFUL_INSTRUCTION),
                 test_misc.single_line_source(),
-                sut.Arrangement(),
+                sut.arrangement(),
                 sut.Expectation(),
         )
 
@@ -27,7 +27,7 @@ class TestCases(sut.TestCaseBase):
             self._check(
                     test_misc.ParserThatGives(SUCCESSFUL_INSTRUCTION),
                     test_misc.single_line_source(),
-                    sut.Arrangement(),
+                    sut.arrangement(),
                     sut.Expectation(main_result=test_misc.ShRaisesTestError()),
             )
 
@@ -36,7 +36,7 @@ class TestCases(sut.TestCaseBase):
             self._check(
                     test_misc.ParserThatGives(SUCCESSFUL_INSTRUCTION),
                     test_misc.single_line_source(),
-                    sut.Arrangement(),
+                    sut.arrangement(),
                     sut.Expectation(validate_pre_eds_result=test_misc.SvhRaisesTestError()),
             )
 
@@ -45,14 +45,14 @@ class TestCases(sut.TestCaseBase):
             self._check(
                     test_misc.ParserThatGives(SUCCESSFUL_INSTRUCTION),
                     test_misc.single_line_source(),
-                    sut.Arrangement(),
+                    sut.arrangement(),
                     sut.Expectation(main_side_effects_on_files=test_misc.EdsContentsRaisesTestError()),
             )
 
     def test_that_cwd_for_main_and_post_validation_is_test_root(self):
         self._check(test_misc.ParserThatGives(InstructionThatRaisesTestErrorIfCwdIsIsNotTestRoot()),
                     test_misc.single_line_source(),
-                    sut.Arrangement(),
+                    sut.arrangement(),
                     sut.Expectation(),
                     )
 
@@ -60,7 +60,7 @@ class TestCases(sut.TestCaseBase):
         with self.assertRaises(test_misc.TestError):
             self._check(test_misc.ParserThatGives(SUCCESSFUL_INSTRUCTION),
                         test_misc.single_line_source(),
-                        sut.Arrangement(),
+                        sut.arrangement(),
                         sut.Expectation(side_effects_check=test_misc.SideEffectsCheckThatRaisesTestError()),
                         )
 

@@ -15,17 +15,16 @@ from shellcheck_lib_test.instructions.test_resources import eds_populator
 from shellcheck_lib_test.instructions.test_resources import sh_check
 from shellcheck_lib_test.instructions.test_resources import svh_check
 from shellcheck_lib_test.instructions.test_resources import utils
+from shellcheck_lib_test.instructions.test_resources.arrangement import ArrangementWithEds
 from shellcheck_lib_test.instructions.test_resources.utils import write_act_result, SideEffectsCheck
 from shellcheck_lib_test.test_resources import file_structure
 
 
-class Arrangement:
-    def __init__(self,
-                 home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
-                 eds_contents_before_main: eds_populator.EdsPopulator = eds_populator.empty(),
-                 ):
-        self.home_dir_contents = home_dir_contents
-        self.eds_contents_before_main = eds_contents_before_main
+def arrangement(home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
+                eds_contents_before_main: eds_populator.EdsPopulator = eds_populator.empty(),
+                ) -> ArrangementWithEds:
+    return ArrangementWithEds(home_dir_contents,
+                              eds_contents_before_main)
 
 
 class Expectation:
@@ -50,7 +49,7 @@ class TestCaseBase(unittest.TestCase):
     def _check(self,
                parser: SingleInstructionParser,
                source: SingleInstructionParserSource,
-               arrangement: Arrangement,
+               arrangement: ArrangementWithEds,
                expectation: Expectation):
         Executor(self, arrangement, expectation).execute(parser, source)
 
@@ -58,7 +57,7 @@ class TestCaseBase(unittest.TestCase):
 class Executor:
     def __init__(self,
                  put: unittest.TestCase,
-                 arrangement: Arrangement,
+                 arrangement: ArrangementWithEds,
                  expectation: Expectation):
         self.put = put
         self.arrangement = arrangement
@@ -75,8 +74,8 @@ class Executor:
                                   'The instruction must be an instance of ' + str(CleanupPhaseInstruction))
         assert isinstance(instruction, CleanupPhaseInstruction)
         with utils.home_and_eds_and_test_as_curr_dir(
-                home_dir_contents=self.arrangement.home_dir_contents,
-                eds_contents=self.arrangement.eds_contents_before_main) as home_and_eds:
+                home_dir_contents=self.arrangement.home_contents,
+                eds_contents=self.arrangement.eds_contents) as home_and_eds:
             write_act_result(home_and_eds.eds, self.expectation.act_result)
             result_of_validate_pre_eds = self._execute_pre_validate(home_and_eds.home_dir_path, instruction)
             if not result_of_validate_pre_eds.is_success:
