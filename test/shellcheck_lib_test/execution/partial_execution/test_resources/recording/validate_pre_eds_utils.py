@@ -95,7 +95,7 @@ class TestImplementationError(unittest.TestCase):
                             False))
 
 
-def suite_for(configuration: Configuration) -> list:
+def suite_for(configuration: Configuration) -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTests([TestValidationError(configuration),
                       TestHardError(configuration),
