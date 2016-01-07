@@ -1,0 +1,19 @@
+from shellcheck_lib.test_case.sections.result import sh
+from shellcheck_lib_test.test_resources import value_assertion as va
+
+
+def is_success() -> va.ValueAssertion:
+    return va.OnTransformed(lambda value: value.is_success,
+                            va.Boolean(True,
+                                       'Status is expected to be success'))
+
+
+def is_hard_error() -> va.ValueAssertion:
+    return va.OnTransformed(lambda value: value.is_hard_error,
+                            va.Boolean(True,
+                                       'Status is expected to be hard-error'))
+
+
+def is_sh_and(assertion: va.ValueAssertion) -> va.ValueAssertion:
+    return va.And([va.IsInstance(sh.SuccessOrHardError),
+                   assertion])
