@@ -81,6 +81,25 @@ class TestConstant(unittest.TestCase):
                                  sut.MessageBuilder('head'))
 
 
+class TestIsInstance(unittest.TestCase):
+    def setUp(self):
+        self.put = _put()
+
+    def test_false__sans_message_builder(self):
+        with self.assertRaises(TestException):
+            sut.IsInstance(int).apply(self.put, 'not an int')
+
+    def test_false__with_message_builder(self):
+        with self.assertRaises(TestException):
+            sut.IsInstance(int).apply(self.put, 'not an int',
+                                      sut.MessageBuilder('head'))
+
+    def test_true(self):
+        sut.IsInstance(int).apply(self.put, 1)
+        sut.IsInstance(int).apply(self.put, 1,
+                                  sut.MessageBuilder('head'))
+
+
 class TestBoolean(unittest.TestCase):
     def setUp(self):
         self.put = _put()
@@ -308,14 +327,15 @@ def _put() -> unittest.TestCase:
 
 def suite():
     ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestConstant))
-    ret_val.addTest(unittest.makeSuite(TestNot))
-    ret_val.addTest(unittest.makeSuite(TestAnd))
-    ret_val.addTest(unittest.makeSuite(TestOr))
     ret_val.addTest(unittest.makeSuite(TestIsNone))
     ret_val.addTest(unittest.makeSuite(TestIsNotNone))
     ret_val.addTest(unittest.makeSuite(TestBoolean))
     ret_val.addTest(unittest.makeSuite(TestEquals))
+    ret_val.addTest(unittest.makeSuite(TestConstant))
+    ret_val.addTest(unittest.makeSuite(TestIsInstance))
+    ret_val.addTest(unittest.makeSuite(TestNot))
+    ret_val.addTest(unittest.makeSuite(TestAnd))
+    ret_val.addTest(unittest.makeSuite(TestOr))
     ret_val.addTest(unittest.makeSuite(TestOnTransformed))
     ret_val.addTest(unittest.makeSuite(TestSubComponent))
     ret_val.addTest(unittest.makeSuite(TestEveryElement))
