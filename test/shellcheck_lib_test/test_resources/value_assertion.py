@@ -240,6 +240,13 @@ class SubComponentMessageHeadConstructor:
         return head
 
 
+def sub_component_header(component_name: str,
+                         super_message_builder: MessageBuilder,
+                         component_separator: str = '/') -> str:
+    con = SubComponentMessageHeadConstructor(component_name, component_separator=component_separator)
+    return con.apply(super_message_builder)
+
+
 class SubComponent(ValueAssertion):
     def __init__(self,
                  message_head_constructor: SubComponentMessageHeadConstructor,
