@@ -13,7 +13,7 @@ from shellcheck_lib_test.instructions.test_resources.arrangement import Arrangem
 from shellcheck_lib_test.instructions.test_resources.check_description import TestDescriptionBase
 
 
-class BeforeAssertConfiguration(Configuration):
+class TheConfiguration(Configuration):
     def run_test(self,
                  put: unittest.TestCase,
                  source: SingleInstructionParserSource,
@@ -41,7 +41,7 @@ class TestDescription(TestDescriptionBase):
 
 def suite():
     ret_val = unittest.TestSuite()
-    ret_val.addTest(suite_for(BeforeAssertConfiguration()))
+    ret_val.addTest(suite_for(TheConfiguration()))
     ret_val.addTest(unittest.makeSuite(TestDescription))
     return ret_val
 
