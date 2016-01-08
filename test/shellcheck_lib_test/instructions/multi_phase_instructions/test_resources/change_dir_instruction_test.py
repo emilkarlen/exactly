@@ -1,9 +1,9 @@
 import pathlib
 import unittest
 
-from shellcheck_lib.test_case.sections.common import HomeAndEds
 from shellcheck_lib_test.instructions.multi_phase_instructions.test_resources.configuration import ConfigurationBase
-from shellcheck_lib_test.instructions.test_resources.assertion_utils.side_effects import SideEffectsCheck
+from shellcheck_lib_test.instructions.test_resources.assertion_utils.side_effects import SideEffectsCheck, \
+    AssertCwdIsSubDirOfActDir
 from shellcheck_lib_test.instructions.test_resources.eds_populator import act_dir_contents
 from shellcheck_lib_test.instructions.test_resources.utils import new_source2
 from shellcheck_lib_test.test_resources.file_structure import DirContents, Dir, empty_dir, empty_file
@@ -48,17 +48,6 @@ class TestArgumentExistsAsNonDirectory(TestCaseBase):
                     empty_file('file')
                 ]))),
                 self.conf.expect_target_is_not_a_directory())
-
-
-class AssertCwdIsSubDirOfActDir(SideEffectsCheck):
-    def __init__(self, expected_sub_dir_of_act_dir: pathlib.PurePath):
-        self.expected_sub_dir_of_act_dir = expected_sub_dir_of_act_dir
-
-    def apply(self,
-              put: unittest.TestCase,
-              home_and_eds: HomeAndEds):
-        put.assertEqual(home_and_eds.eds.act_dir / self.expected_sub_dir_of_act_dir,
-                        pathlib.Path.cwd())
 
 
 def suite_for(conf: ConfigurationBase) -> unittest.TestSuite:

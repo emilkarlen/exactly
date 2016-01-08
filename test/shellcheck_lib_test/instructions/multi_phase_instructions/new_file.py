@@ -1,4 +1,3 @@
-import pathlib
 import unittest
 
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
@@ -7,8 +6,6 @@ from shellcheck_lib.execution.execution_directory_structure import ExecutionDire
 from shellcheck_lib.general.string import lines_content
 from shellcheck_lib.instructions.multi_phase_instructions import new_file as sut
 from shellcheck_lib.test_case.instruction_description import Description
-from shellcheck_lib.test_case.sections.common import HomeAndEds
-from shellcheck_lib_test.instructions.test_resources.assertion_utils.side_effects import SideEffectsCheck
 from shellcheck_lib_test.instructions.test_resources.check_description import TestDescriptionBase
 from shellcheck_lib_test.instructions.test_resources.eds_contents_check import ActRootContainsExactly, \
     TmpUserRootContainsExactly
@@ -18,17 +15,6 @@ from shellcheck_lib_test.instructions.test_resources.utils import single_line_so
 from shellcheck_lib_test.test_resources import eds_test
 from shellcheck_lib_test.test_resources.file_structure import DirContents, empty_dir, Dir, empty_file, File
 from shellcheck_lib_test.test_resources.value_assertion import ValueAssertion, ValueIsNone, ValueIsNotNone
-
-
-class AssertCwdIsSubDirOfEds(SideEffectsCheck):
-    def __init__(self, expected_sub_dir_of_eds: pathlib.PurePath):
-        self.expected_sub_dir_of_eds = expected_sub_dir_of_eds
-
-    def apply(self,
-              put: unittest.TestCase,
-              home_and_eds: HomeAndEds):
-        put.assertEqual(home_and_eds.eds.act_dir / self.expected_sub_dir_of_eds,
-                        pathlib.Path.cwd())
 
 
 class TestParseWithNoContents(unittest.TestCase):
