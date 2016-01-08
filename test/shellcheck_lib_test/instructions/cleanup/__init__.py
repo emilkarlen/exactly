@@ -1,10 +1,7 @@
 import unittest
 
+from shellcheck_lib_test.instructions.cleanup import change_dir, execute, new_dir, shell
 from shellcheck_lib_test.instructions.cleanup import test_resources
-from . import change_dir
-from . import execute
-from . import new_dir
-from . import shell
 
 
 def suite():
