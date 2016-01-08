@@ -11,7 +11,7 @@ from shellcheck_lib_test.instructions.test_resources import svh_check
 
 
 class TheConfiguration(AssertConfigurationBase, Configuration):
-    def expectation_of_failure_because_specified_file_under_eds_is_missing(self):
+    def expect_failure_because_specified_file_under_eds_is_missing(self):
         return Expectation(validation_post_eds=svh_check.is_validation_error())
 
     def parser(self) -> SingleInstructionParser:

@@ -27,10 +27,10 @@ class TheConfiguration(Configuration):
     def empty_arrangement(self) -> ArrangementPostAct:
         return arrangement()
 
-    def expectation_of_non_zero_exitcode(self) -> Expectation:
+    def expectation_for_non_zero_exitcode(self) -> Expectation:
         return Expectation(main_result=sh_check__va.is_hard_error())
 
-    def expectation_of_zero_exitcode(self) -> Expectation:
+    def expectation_for_zero_exitcode(self) -> Expectation:
         return Expectation()
 
 

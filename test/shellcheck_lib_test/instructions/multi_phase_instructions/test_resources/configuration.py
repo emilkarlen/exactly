@@ -23,11 +23,11 @@ class ConfigurationBase:
     def parser(self) -> SingleInstructionParser:
         raise NotImplementedError()
 
-    def expectation_of_success(self):
+    def expect_success(self):
         raise NotImplementedError()
 
-    def expectation_of_failure_of_main(self):
+    def expect_failure_of_main(self):
         raise NotImplementedError()
 
-    def expectation_of_failing_validation_pre_eds(self):
+    def expect_failing_validation_pre_eds(self):
         raise NotImplementedError()

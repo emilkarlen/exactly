@@ -16,10 +16,10 @@ class TheConfiguration(AssertConfigurationBase, Configuration):
     def parser(self) -> SingleInstructionParser:
         return sut.parser()
 
-    def expectation_of_non_zero_exitcode(self) -> Expectation:
+    def expectation_for_non_zero_exitcode(self) -> Expectation:
         return Expectation(main_result=pfh_check.is_fail())
 
-    def expectation_of_zero_exitcode(self) -> Expectation:
+    def expectation_for_zero_exitcode(self) -> Expectation:
         return Expectation()
 
 
