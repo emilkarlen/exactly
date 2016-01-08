@@ -2,6 +2,7 @@ import pathlib
 import unittest
 
 from shellcheck_lib.test_case.sections.common import HomeAndEds
+from shellcheck_lib_test.test_resources.value_assertion import ValueAssertion
 
 
 class SideEffectsCheck:
@@ -20,3 +21,14 @@ class AssertCwdIsSubDirOfActDir(SideEffectsCheck):
               home_and_eds: HomeAndEds):
         put.assertEqual(home_and_eds.eds.act_dir / self.expected_sub_dir_of_act_dir,
                         pathlib.Path.cwd())
+
+
+class AdaptVa(SideEffectsCheck):
+    def __init__(self,
+                 va: ValueAssertion):
+        self.va = va
+
+    def apply(self,
+              put: unittest.TestCase,
+              home_and_eds: HomeAndEds):
+        self.va.apply(put, home_and_eds)
