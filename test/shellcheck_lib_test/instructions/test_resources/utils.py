@@ -2,7 +2,6 @@ import os
 import pathlib
 import shlex
 import tempfile
-import unittest
 from contextlib import contextmanager
 from time import strftime, localtime
 
@@ -18,13 +17,6 @@ from shellcheck_lib.test_case.sections.common import HomeAndEds
 from shellcheck_lib_test.instructions.test_resources import eds_populator
 from shellcheck_lib_test.test_resources.file_structure import DirContents, empty_dir_contents
 from shellcheck_lib_test.test_resources.file_utils import write_file
-
-
-class SideEffectsCheck:
-    def apply(self,
-              put: unittest.TestCase,
-              home_and_eds: HomeAndEds):
-        pass
 
 
 class ActResult:
@@ -89,7 +81,6 @@ class HomeAndEdsContents(tuple):
     @property
     def eds_contents(self) -> eds_populator.EdsPopulator:
         return self[1]
-
 
 
 @contextmanager
