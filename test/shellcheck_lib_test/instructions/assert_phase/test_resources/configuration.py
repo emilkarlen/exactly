@@ -18,13 +18,13 @@ class AssertConfigurationBase(ConfigurationBase):
                  expectation):
         check(put, self.parser(), source, arrangement, expectation)
 
-    def expectation_of_success(self):
+    def expect_success(self):
         return is_pass()
 
-    def expectation_of_failure_of_main(self):
+    def expect_failure_of_main(self):
         return Expectation(main_result=pfh_check.is_fail())
 
-    def expectation_of_failing_validation_pre_eds(self):
+    def expect_failing_validation_pre_eds(self):
         return Expectation(validation_pre_eds=svh_check.is_validation_error())
 
     def arrangement(self, eds_contents_before_main: eds_populator.EdsPopulator):

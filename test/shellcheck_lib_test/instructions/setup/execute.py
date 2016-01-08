@@ -11,7 +11,7 @@ from shellcheck_lib_test.instructions.test_resources import sh_check
 
 
 class TheConfiguration(SetupConfigurationBase, Configuration):
-    def expectation_of_failure_because_specified_file_under_eds_is_missing(self):
+    def expect_failure_because_specified_file_under_eds_is_missing(self):
         return Expectation(main_result=sh_check.IsHardError())
 
     def parser(self) -> SingleInstructionParser:

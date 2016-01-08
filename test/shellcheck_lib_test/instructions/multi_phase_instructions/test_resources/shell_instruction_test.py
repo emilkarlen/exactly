@@ -10,10 +10,10 @@ from shellcheck_lib_test.test_resources.file_utils import tmp_file_containing
 
 
 class Configuration(ConfigurationBase):
-    def expectation_of_non_zero_exitcode(self) -> Expectation:
+    def expectation_for_non_zero_exitcode(self) -> Expectation:
         raise NotImplementedError()
 
-    def expectation_of_zero_exitcode(self) -> Expectation:
+    def expectation_for_zero_exitcode(self) -> Expectation:
         raise NotImplementedError()
 
 
@@ -42,7 +42,7 @@ sys.exit(0)
                     self,
                     new_source2(py_exe.command_line_for_interpreting(script_file_path)),
                     self.conf.empty_arrangement(),
-                    self.conf.expectation_of_zero_exitcode(),
+                    self.conf.expectation_for_zero_exitcode(),
             )
 
 
@@ -58,7 +58,7 @@ sys.exit(1)
                     self,
                     new_source2(py_exe.command_line_for_interpreting(script_file_path)),
                     self.conf.empty_arrangement(),
-                    self.conf.expectation_of_non_zero_exitcode(),
+                    self.conf.expectation_for_non_zero_exitcode(),
             )
 
 

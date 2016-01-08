@@ -13,7 +13,7 @@ class Configuration(ConfigurationBase):
                                                      side_effects_check: SideEffectsCheck):
         raise NotImplementedError()
 
-    def expectation_when_target_is_not_a_directory(self):
+    def expect_target_is_not_a_directory(self):
         raise NotImplementedError()
 
 
@@ -46,7 +46,7 @@ class TestArgumentExistsAsNonDirectory(TestCaseBase):
                 self.conf.arrangement(eds_contents_before_main=act_dir_contents(DirContents([
                     empty_file('file')
                 ]))),
-                self.conf.expectation_when_target_is_not_a_directory())
+                self.conf.expect_target_is_not_a_directory())
 
 
 class AssertCwdIsSubDirOfEds(SideEffectsCheck):

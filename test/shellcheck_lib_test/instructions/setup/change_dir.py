@@ -19,7 +19,7 @@ class TheConfiguration(SetupConfigurationBase, Configuration):
                                                      side_effects_check: SideEffectsCheck):
         return Expectation(side_effects_check=side_effects_check)
 
-    def expectation_when_target_is_not_a_directory(self):
+    def expect_target_is_not_a_directory(self):
         return Expectation(main_result=sh_check.IsHardError())
 
 

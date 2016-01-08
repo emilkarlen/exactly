@@ -10,7 +10,7 @@ from shellcheck_lib_test.test_resources.file_structure import DirContents, empty
 
 
 class Configuration(ConfigurationBase):
-    def expectation_of_failure_because_specified_file_under_eds_is_missing(self):
+    def expect_failure_because_specified_file_under_eds_is_missing(self):
         raise NotImplementedError()
 
 
@@ -25,7 +25,7 @@ class TestSuccessfulExecution(TestCaseBase):
         self.conf.run_test(self,
                            single_line_source(py_exe.command_line_for_executing_program_via_command_line('exit(0)')),
                            self.conf.empty_arrangement(),
-                           self.conf.expectation_of_success(),
+                           self.conf.expect_success(),
                            )
 
 
@@ -34,7 +34,7 @@ class TestFailingExecution(TestCaseBase):
         self.conf.run_test(self,
                            single_line_source(py_exe.command_line_for_executing_program_via_command_line('exit(1)')),
                            self.conf.empty_arrangement(),
-                           self.conf.expectation_of_failure_of_main(),
+                           self.conf.expect_failure_of_main(),
                            )
 
 
@@ -44,7 +44,7 @@ class TestFailingValidationOfAbsolutePath(TestCaseBase):
                 self,
                 single_line_source('/absolute/path/to/program/that/does/not/exist'),
                 self.conf.empty_arrangement(),
-                self.conf.expectation_of_failing_validation_pre_eds(),
+                self.conf.expect_failing_validation_pre_eds(),
         )
 
 
@@ -54,7 +54,7 @@ class TestFailingValidationOfRelHomePath(TestCaseBase):
                 self,
                 source_for_interpreting(options.REL_HOME_OPTION, 'non-existing-file.py'),
                 self.conf.empty_arrangement(),
-                self.conf.expectation_of_failing_validation_pre_eds(),
+                self.conf.expect_failing_validation_pre_eds(),
         )
 
 
@@ -64,7 +64,7 @@ class TestFailingValidationOfRelTmpPath(TestCaseBase):
                 self,
                 source_for_interpreting(options.REL_TMP_OPTION, 'non-existing-file.py'),
                 self.conf.empty_arrangement(),
-                self.conf.expectation_of_failure_because_specified_file_under_eds_is_missing(),
+                self.conf.expect_failure_because_specified_file_under_eds_is_missing(),
         )
 
 
@@ -75,7 +75,7 @@ class TestSuccessfulValidation(TestCaseBase):
                 source_for_interpreting(options.REL_TMP_OPTION, 'existing-file.py'),
                 self.conf.arrangement(eds_contents_before_main=eds_populator.tmp_user_dir_contents(
                         DirContents([empty_file('existing-file.py')]))),
-                self.conf.expectation_of_success(),
+                self.conf.expect_success(),
         )
 
 
