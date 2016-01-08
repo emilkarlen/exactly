@@ -1,11 +1,12 @@
 import unittest
 
-from shellcheck_lib_test.instructions.before_assert import test_resources, execute, shell
+from shellcheck_lib_test.instructions.before_assert import test_resources, change_dir, execute, shell
 
 
 def suite():
     return unittest.TestSuite([
         test_resources.suite(),
+        change_dir.suite(),
         shell.suite(),
         execute.suite(),
     ])
