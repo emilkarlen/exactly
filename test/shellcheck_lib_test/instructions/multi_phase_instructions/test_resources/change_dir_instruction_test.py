@@ -34,7 +34,7 @@ class TestExistingDirectoryWithMultiplePathComponents(TestCaseBase):
                                 empty_dir('second-component')
                             ])]))),
                 self.conf.expect_successful_execution_with_side_effect(
-                        AssertCwdIsSubDirOfEds(
+                        AssertCwdIsSubDirOfActDir(
                                 pathlib.Path('first-component') / 'second-component')))
 
 
@@ -49,14 +49,14 @@ class TestArgumentExistsAsNonDirectory(TestCaseBase):
                 self.conf.expect_target_is_not_a_directory())
 
 
-class AssertCwdIsSubDirOfEds(SideEffectsCheck):
-    def __init__(self, expected_sub_dir_of_eds: pathlib.PurePath):
-        self.expected_sub_dir_of_eds = expected_sub_dir_of_eds
+class AssertCwdIsSubDirOfActDir(SideEffectsCheck):
+    def __init__(self, expected_sub_dir_of_act_dir: pathlib.PurePath):
+        self.expected_sub_dir_of_act_dir = expected_sub_dir_of_act_dir
 
     def apply(self,
               put: unittest.TestCase,
               home_and_eds: HomeAndEds):
-        put.assertEqual(home_and_eds.eds.act_dir / self.expected_sub_dir_of_eds,
+        put.assertEqual(home_and_eds.eds.act_dir / self.expected_sub_dir_of_act_dir,
                         pathlib.Path.cwd())
 
 
