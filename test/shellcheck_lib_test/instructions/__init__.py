@@ -10,15 +10,15 @@ from shellcheck_lib_test.instructions import utils
 
 
 def suite():
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(utils.suite())
-    ret_val.addTest(multi_phase_instructions.suite())
-    ret_val.addTest(configuration.suite())
-    ret_val.addTest(setup.suite())
-    ret_val.addTest(before_assert.suite())
-    ret_val.addTest(assert_phase.suite())
-    ret_val.addTest(cleanup.suite())
-    return ret_val
+    return unittest.TestSuite([
+        utils.suite(),
+        multi_phase_instructions.suite(),
+        configuration.suite(),
+        setup.suite(),
+        before_assert.suite(),
+        assert_phase.suite(),
+        cleanup.suite(),
+    ])
 
 
 def run_suite():
