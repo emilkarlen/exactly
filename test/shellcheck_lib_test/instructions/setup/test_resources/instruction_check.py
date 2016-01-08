@@ -21,7 +21,7 @@ from shellcheck_lib_test.instructions.test_resources import eds_populator
 from shellcheck_lib_test.instructions.test_resources import sh_check
 from shellcheck_lib_test.instructions.test_resources import svh_check
 from shellcheck_lib_test.instructions.test_resources.arrangement import ArrangementWithEds
-from shellcheck_lib_test.instructions.test_resources.utils import SideEffectsCheck
+from shellcheck_lib_test.instructions.test_resources.assertion_utils.side_effects import SideEffectsCheck
 from shellcheck_lib_test.test_resources import file_structure
 
 

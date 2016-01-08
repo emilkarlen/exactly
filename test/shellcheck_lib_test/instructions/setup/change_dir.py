@@ -9,7 +9,7 @@ from shellcheck_lib_test.instructions.multi_phase_instructions.test_resources.ch
 from shellcheck_lib_test.instructions.setup.test_resources.configuration import SetupConfigurationBase
 from shellcheck_lib_test.instructions.setup.test_resources.instruction_check import Expectation
 from shellcheck_lib_test.instructions.test_resources import sh_check
-from shellcheck_lib_test.instructions.test_resources.utils import SideEffectsCheck
+from shellcheck_lib_test.instructions.test_resources.assertion_utils.side_effects import SideEffectsCheck
 
 
 class TheConfiguration(SetupConfigurationBase, Configuration):

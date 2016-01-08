@@ -3,8 +3,9 @@ import unittest
 
 from shellcheck_lib.test_case.sections.common import HomeAndEds
 from shellcheck_lib_test.instructions.multi_phase_instructions.test_resources.configuration import ConfigurationBase
+from shellcheck_lib_test.instructions.test_resources.assertion_utils.side_effects import SideEffectsCheck
 from shellcheck_lib_test.instructions.test_resources.eds_populator import act_dir_contents
-from shellcheck_lib_test.instructions.test_resources.utils import SideEffectsCheck, new_source2
+from shellcheck_lib_test.instructions.test_resources.utils import new_source2
 from shellcheck_lib_test.test_resources.file_structure import DirContents, Dir, empty_dir, empty_file
 
 

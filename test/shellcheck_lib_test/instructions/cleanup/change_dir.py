@@ -7,7 +7,7 @@ from shellcheck_lib_test.instructions.cleanup.test_resources.instruction_check i
 from shellcheck_lib_test.instructions.multi_phase_instructions.test_resources.change_dir_instruction_test import \
     Configuration, suite_for
 from shellcheck_lib_test.instructions.test_resources import sh_check
-from shellcheck_lib_test.instructions.test_resources.utils import SideEffectsCheck
+from shellcheck_lib_test.instructions.test_resources.assertion_utils.side_effects import SideEffectsCheck
 
 
 class TheConfiguration(CleanupConfigurationBase, Configuration):

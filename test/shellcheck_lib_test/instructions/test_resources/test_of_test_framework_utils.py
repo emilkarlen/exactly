@@ -13,7 +13,7 @@ from shellcheck_lib_test.instructions.test_resources import pfh_check
 from shellcheck_lib_test.instructions.test_resources import sh_check
 from shellcheck_lib_test.instructions.test_resources import svh_check
 from shellcheck_lib_test.instructions.test_resources import utils
-from shellcheck_lib_test.instructions.test_resources.utils import SideEffectsCheck
+from shellcheck_lib_test.instructions.test_resources.assertion_utils.side_effects import SideEffectsCheck
 
 
 def single_line_source() -> SingleInstructionParserSource:

@@ -8,11 +8,12 @@ from shellcheck_lib.general.string import lines_content
 from shellcheck_lib.instructions.multi_phase_instructions import new_file as sut
 from shellcheck_lib.test_case.instruction_description import Description
 from shellcheck_lib.test_case.sections.common import HomeAndEds
+from shellcheck_lib_test.instructions.test_resources.assertion_utils.side_effects import SideEffectsCheck
 from shellcheck_lib_test.instructions.test_resources.check_description import TestDescriptionBase
 from shellcheck_lib_test.instructions.test_resources.eds_contents_check import ActRootContainsExactly, \
     TmpUserRootContainsExactly
 from shellcheck_lib_test.instructions.test_resources.eds_populator import act_dir_contents
-from shellcheck_lib_test.instructions.test_resources.utils import SideEffectsCheck, single_line_source, \
+from shellcheck_lib_test.instructions.test_resources.utils import single_line_source, \
     argument_list_source
 from shellcheck_lib_test.test_resources import eds_test
 from shellcheck_lib_test.test_resources.file_structure import DirContents, empty_dir, Dir, empty_file, File
