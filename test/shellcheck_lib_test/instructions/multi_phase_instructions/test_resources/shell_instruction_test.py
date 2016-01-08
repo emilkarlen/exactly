@@ -1,28 +1,15 @@
 import unittest
 
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionInvalidArgumentException, SingleInstructionParserSource, SingleInstructionParser
+    SingleInstructionInvalidArgumentException
 from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_check import Expectation
-from shellcheck_lib_test.instructions.test_resources.arrangement import ArrangementPostAct
+from shellcheck_lib_test.instructions.multi_phase_instructions.test_resources.configuration import ConfigurationBase
 from shellcheck_lib_test.instructions.test_resources.utils import new_source2
 from shellcheck_lib_test.test_resources import python_program_execution as py_exe
 from shellcheck_lib_test.test_resources.file_utils import tmp_file_containing
 
 
-class Configuration:
-    def run_test(self,
-                 put: unittest.TestCase,
-                 source: SingleInstructionParserSource,
-                 arrangement,
-                 expectation):
-        raise NotImplementedError()
-
-    def parser(self) -> SingleInstructionParser:
-        raise NotImplementedError()
-
-    def empty_arrangement(self) -> ArrangementPostAct:
-        raise NotImplementedError()
-
+class Configuration(ConfigurationBase):
     def expectation_of_non_zero_exitcode(self) -> Expectation:
         raise NotImplementedError()
 
@@ -30,22 +17,20 @@ class Configuration:
         raise NotImplementedError()
 
 
-class TestParseFailsWhenThereAreNoArguments(unittest.TestCase):
+class TestCaseBase(unittest.TestCase):
     def __init__(self, conf: Configuration):
         super().__init__()
         self.conf = conf
 
+
+class TestParseFailsWhenThereAreNoArguments(TestCaseBase):
     def runTest(self):
         source = new_source2('   ')
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             self.conf.parser().apply(source)
 
 
-class TestInstructionIsSuccessfulWhenExitStatusFromCommandIsZero(unittest.TestCase):
-    def __init__(self, conf: Configuration):
-        super().__init__()
-        self.conf = conf
-
+class TestInstructionIsSuccessfulWhenExitStatusFromCommandIsZero(TestCaseBase):
     def runTest(self):
         script_that_exists_with_status_0 = """
 import sys
@@ -61,11 +46,7 @@ sys.exit(0)
             )
 
 
-class TestInstructionIsHardErrorWhenExitStatusFromCommandIsNonZero(unittest.TestCase):
-    def __init__(self, conf: Configuration):
-        super().__init__()
-        self.conf = conf
-
+class TestInstructionIsHardErrorWhenExitStatusFromCommandIsNonZero(TestCaseBase):
     def runTest(self):
         script_that_exists_with_status_0 = """
 import sys
