@@ -2,6 +2,7 @@ import unittest
 
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib_test.test_resources import file_structure, file_checks
+from shellcheck_lib_test.test_resources.value_assertion import ValueAssertion, MessageBuilder
 
 
 class Assertion:
@@ -51,3 +52,12 @@ class TmpUserRootContainsExactly(Assertion):
                                           message_header='Contents of tmp/user directory')
         checker.assert_dir_contents_matches_exactly(eds.tmp.user_dir,
                                                     self.expected_contents)
+
+
+class AdaptVa(Assertion):
+    def __init__(self,
+                 va: ValueAssertion):
+        self.va = va
+
+    def apply(self, put: unittest.TestCase, eds: ExecutionDirectoryStructure):
+        self.va.apply(put, eds, MessageBuilder())

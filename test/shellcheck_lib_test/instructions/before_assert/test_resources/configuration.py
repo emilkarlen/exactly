@@ -8,6 +8,7 @@ from shellcheck_lib_test.instructions.multi_phase_instructions.test_resources.co
 from shellcheck_lib_test.instructions.test_resources import eds_populator
 from shellcheck_lib_test.instructions.test_resources import sh_check__va
 from shellcheck_lib_test.instructions.test_resources import svh_check__va
+from shellcheck_lib_test.test_resources.value_assertion import ValueAssertion
 
 
 class BeforeAssertConfigurationBase(ConfigurationBase):
@@ -29,3 +30,7 @@ class BeforeAssertConfigurationBase(ConfigurationBase):
 
     def arrangement(self, eds_contents_before_main: eds_populator.EdsPopulator):
         return arrangement(eds_contents_before_main=eds_contents_before_main)
+
+    def expect_success_and_side_effects_on_files(self,
+                                                 main_side_effects_on_files: ValueAssertion):
+        return Expectation(main_side_effects_on_files=main_side_effects_on_files)
