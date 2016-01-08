@@ -19,6 +19,7 @@ from shellcheck_lib.instructions.utils.pre_or_post_validation import PreOrPostEd
 from shellcheck_lib.test_case.instruction_description import InvokationVariant, SyntaxElementDescription, \
     Description
 from shellcheck_lib.test_case.sections.common import HomeAndEds, TestCaseInstruction
+from shellcheck_lib.test_case.sections.result import sh
 
 INTERPRET_OPTION = '--interpret'
 SOURCE_OPTION = '--source'
@@ -193,6 +194,17 @@ def failure_message_for_nonzero_status(result_and_err: ResultAndStderr) -> str:
     if result_and_err.stderr_contents:
         msg_tail = os.linesep + result_and_err.stderr_contents
     return 'Exit code {}{}'.format(result_and_err.result.exit_code, msg_tail)
+
+
+def execute_and_return_sh(setup: SetupForExecutableWithArguments, home_and_eds: HomeAndEds) -> sh.SuccessOrHardError:
+    result_and_err = execute_setup_and_read_stderr_if_non_zero_exitcode(setup,
+                                                                        home_and_eds)
+    result = result_and_err.result
+    if not result.is_success:
+        return sh.new_sh_hard_error(result.error_message)
+    if result.exit_code != 0:
+        return sh.new_sh_hard_error(failure_message_for_nonzero_status(result_and_err))
+    return sh.new_sh_success()
 
 
 class SetupParser:
