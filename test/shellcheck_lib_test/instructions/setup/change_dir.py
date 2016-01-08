@@ -24,9 +24,7 @@ class TheConfiguration(SetupConfigurationBase, Configuration):
 
 
 def suite():
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(suite_for(TheConfiguration()))
-    return ret_val
+    return suite_for(TheConfiguration())
 
 
 if __name__ == '__main__':
