@@ -1,14 +1,8 @@
 import unittest
 
+from shellcheck_lib_test.instructions.setup import \
+    change_dir, env, execute, install, new_file, new_dir, shell, stdin, utils
 from shellcheck_lib_test.instructions.setup import test_resources
-from . import change_dir
-from . import env
-from . import execute
-from . import install
-from . import new_file
-from . import shell
-from . import stdin
-from . import utils
 
 
 def suite():
