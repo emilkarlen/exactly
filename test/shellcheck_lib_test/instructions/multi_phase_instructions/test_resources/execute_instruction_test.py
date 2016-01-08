@@ -80,11 +80,10 @@ class TestSuccessfulValidation(TestCaseBase):
 
 
 def suite_for(conf: ConfigurationBase) -> unittest.TestSuite:
-    ret_val = unittest.TestSuite()
-    ret_val.addTests(tc(conf) for tc in [TestSuccessfulExecution,
-                                         TestFailingExecution,
-                                         TestFailingValidationOfAbsolutePath,
-                                         TestFailingValidationOfRelHomePath,
-                                         TestFailingValidationOfRelTmpPath,
-                                         TestSuccessfulValidation])
-    return ret_val
+    return unittest.TestSuite(
+            tcc(conf) for tcc in [TestSuccessfulExecution,
+                                  TestFailingExecution,
+                                  TestFailingValidationOfAbsolutePath,
+                                  TestFailingValidationOfRelHomePath,
+                                  TestFailingValidationOfRelTmpPath,
+                                  TestSuccessfulValidation])
