@@ -23,6 +23,5 @@ class _Instruction(SetupPhaseInstruction):
              os_services: OsServices,
              environment: GlobalEnvironmentForPostEdsPhase,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
-        error_message = cd_utils.change_dir(self.destination_directory,
-                                            environment.eds)
-        return sh.new_sh_success() if error_message is None else sh.new_sh_hard_error(error_message)
+        return cd_utils.execute_with_sh_result(self.destination_directory,
+                                               environment.eds)

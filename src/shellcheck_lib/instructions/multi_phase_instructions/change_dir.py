@@ -4,6 +4,7 @@ from shellcheck_lib.general.textformat.structure.paragraph import single_para
 from shellcheck_lib.instructions.utils.destination_path import *
 from shellcheck_lib.instructions.utils.parse_utils import split_arguments_list_string
 from shellcheck_lib.test_case.instruction_description import InvokationVariant, Description
+from shellcheck_lib.test_case.sections.result import sh
 
 
 class TheDescription(Description):
@@ -50,3 +51,9 @@ def change_dir(destination: DestinationPath,
     except NotADirectoryError:
         return 'Not a directory: {}'.format(dir_path)
     return None
+
+
+def execute_with_sh_result(destination: DestinationPath,
+                           eds: ExecutionDirectoryStructure) -> sh.SuccessOrHardError:
+    error_message = change_dir(destination, eds)
+    return sh.new_sh_success() if error_message is None else sh.new_sh_hard_error(error_message)
