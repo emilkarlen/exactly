@@ -7,25 +7,12 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.instructions.multi_phase_instructions import change_dir as sut
 from shellcheck_lib.test_case.instruction_description import Description
-from shellcheck_lib.test_case.sections.common import HomeAndEds
-from shellcheck_lib_test.instructions.test_resources.assertion_utils.side_effects import SideEffectsCheck
 from shellcheck_lib_test.instructions.test_resources.check_description import TestDescriptionBase
 from shellcheck_lib_test.instructions.test_resources.eds_populator import act_dir_contents, tmp_user_dir_contents
 from shellcheck_lib_test.test_resources import eds_test
 from shellcheck_lib_test.test_resources.file_structure import DirContents, empty_dir, Dir, empty_file
 from shellcheck_lib_test.test_resources.value_assertion import ValueAssertion, ValueIsNotNone
 from shellcheck_lib_test.test_resources.value_assertion import ValueIsNone
-
-
-class AssertCwdIsSubDirOfEds(SideEffectsCheck):
-    def __init__(self, expected_sub_dir_of_eds: pathlib.PurePath):
-        self.expected_sub_dir_of_eds = expected_sub_dir_of_eds
-
-    def apply(self,
-              put: unittest.TestCase,
-              home_and_eds: HomeAndEds):
-        put.assertEqual(home_and_eds.eds.act_dir / self.expected_sub_dir_of_eds,
-                        pathlib.Path.cwd())
 
 
 class TestParseSet(unittest.TestCase):
