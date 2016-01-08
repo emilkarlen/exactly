@@ -8,6 +8,8 @@ from shellcheck_lib_test.instructions.setup.test_resources.instruction_check imp
 from shellcheck_lib_test.instructions.test_resources import eds_populator
 from shellcheck_lib_test.instructions.test_resources import sh_check
 from shellcheck_lib_test.instructions.test_resources import svh_check
+from shellcheck_lib_test.instructions.test_resources.eds_contents_check import AdaptVa
+from shellcheck_lib_test.test_resources.value_assertion import ValueAssertion
 
 
 class SetupConfigurationBase(ConfigurationBase):
@@ -29,3 +31,7 @@ class SetupConfigurationBase(ConfigurationBase):
 
     def arrangement(self, eds_contents_before_main: eds_populator.EdsPopulator):
         return arrangement(eds_contents_before_main=eds_contents_before_main)
+
+    def expect_success_and_side_effects_on_files(self,
+                                                 main_side_effects_on_files: ValueAssertion):
+        return Expectation(main_side_effects_on_files=AdaptVa(main_side_effects_on_files))
