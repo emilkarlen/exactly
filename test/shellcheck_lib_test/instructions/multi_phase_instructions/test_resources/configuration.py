@@ -2,6 +2,7 @@ import unittest
 
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParserSource, SingleInstructionParser
+from shellcheck_lib.test_case.instruction_description import Description
 from shellcheck_lib_test.instructions.test_resources import eds_populator
 from shellcheck_lib_test.instructions.test_resources.arrangement import ArrangementBase
 
@@ -14,14 +15,17 @@ class ConfigurationBase:
                  expectation):
         raise NotImplementedError()
 
+    def parser(self) -> SingleInstructionParser:
+        raise NotImplementedError()
+
+    def description(self) -> Description:
+        raise NotImplementedError()
+
     def arrangement(self, eds_contents_before_main: eds_populator.EdsPopulator):
         raise NotImplementedError()
 
     def empty_arrangement(self) -> ArrangementBase:
         return self.arrangement(eds_contents_before_main=eds_populator.empty())
-
-    def parser(self) -> SingleInstructionParser:
-        raise NotImplementedError()
 
     def expect_success(self):
         raise NotImplementedError()
