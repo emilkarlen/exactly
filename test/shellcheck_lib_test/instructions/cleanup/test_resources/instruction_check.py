@@ -16,7 +16,7 @@ from shellcheck_lib_test.instructions.test_resources import sh_check
 from shellcheck_lib_test.instructions.test_resources import svh_check
 from shellcheck_lib_test.instructions.test_resources import utils
 from shellcheck_lib_test.instructions.test_resources.arrangement import ArrangementWithEds
-from shellcheck_lib_test.instructions.test_resources.utils import write_act_result, SideEffectsCheck
+from shellcheck_lib_test.instructions.test_resources.utils import SideEffectsCheck
 from shellcheck_lib_test.test_resources import file_structure
 
 
@@ -84,7 +84,6 @@ class Executor:
         with utils.home_and_eds_and_test_as_curr_dir(
                 home_dir_contents=self.arrangement.home_contents,
                 eds_contents=self.arrangement.eds_contents) as home_and_eds:
-            write_act_result(home_and_eds.eds, self.expectation.act_result)
             result_of_validate_pre_eds = self._execute_pre_validate(home_and_eds.home_dir_path, instruction)
             if not result_of_validate_pre_eds.is_success:
                 return
