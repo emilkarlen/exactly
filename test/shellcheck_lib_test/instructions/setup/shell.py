@@ -13,6 +13,9 @@ from shellcheck_lib_test.instructions.test_resources.check_description import Te
 
 
 class TheConfiguration(SetupConfigurationBase, Configuration):
+    def description(self) -> Description:
+        return sut.description('instruction name')
+
     def parser(self) -> SingleInstructionParser:
         return sut.parser()
 
