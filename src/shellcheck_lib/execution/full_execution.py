@@ -21,7 +21,7 @@ def execute(script_handling: ScriptHandling,
     The main method for executing a Test Case.
     """
     _prepare_environment_variables()
-    anonymous_phase_environment = ConfigurationBuilder(initial_home_dir_path)
+    anonymous_phase_environment = ConfigurationBuilder(initial_home_dir_path.resolve())
     partial_result = _execute_anonymous_phase(anonymous_phase_environment,
                                               test_case.anonymous_phase)
     if partial_result.status is not PartialResultStatus.PASS:
