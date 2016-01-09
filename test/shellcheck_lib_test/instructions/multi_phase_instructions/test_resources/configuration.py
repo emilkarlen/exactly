@@ -5,7 +5,7 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
 from shellcheck_lib.test_case.instruction_description import Description
 from shellcheck_lib_test.instructions.test_resources import eds_populator
 from shellcheck_lib_test.instructions.test_resources.arrangement import ArrangementBase
-from shellcheck_lib_test.instructions.test_resources.check_description import suite_for_description
+from shellcheck_lib_test.instructions.test_resources.check_description import suite_for_description_instance
 from shellcheck_lib_test.test_resources.value_assertion import ValueAssertion
 
 
@@ -49,5 +49,5 @@ class ConfigurationBase:
 def suite_for_cases(configuration: ConfigurationBase,
                     test_case_classes: list) -> unittest.TestSuite:
     return unittest.TestSuite(
-            [suite_for_description(configuration.description())] +
+            [suite_for_description_instance(configuration.description())] +
             list(tcc(configuration) for tcc in test_case_classes))

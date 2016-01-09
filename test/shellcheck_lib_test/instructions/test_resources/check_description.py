@@ -8,6 +8,12 @@ from shellcheck_lib.test_case.instruction_description import Description, Invoka
 from shellcheck_lib_test.general.textformat.test_resources import structure as struct_check
 
 
+def suite_for_description_instance(description: Description) -> unittest.TestSuite:
+    return unittest.TestSuite(tcc(description) for tcc in [
+        TestIsDescriptionInstance
+    ])
+
+
 def suite_for_description(description: Description) -> unittest.TestSuite:
     return unittest.TestSuite(tcc(description) for tcc in [
         TestInstructionName,
@@ -22,6 +28,12 @@ class WithDescriptionBase(unittest.TestCase):
     def __init__(self, description: Description):
         super().__init__()
         self.description = description
+
+
+class TestIsDescriptionInstance(WithDescriptionBase):
+    def runTest(self):
+        actual = self.description
+        self.assertIsInstance(actual, Description)
 
 
 class TestInstructionName(WithDescriptionBase):
