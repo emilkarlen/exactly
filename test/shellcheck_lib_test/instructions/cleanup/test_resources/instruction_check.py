@@ -111,7 +111,7 @@ class Executor:
     def _execute_main(self,
                       environment: GlobalEnvironmentForPostEdsPhase,
                       instruction: CleanupPhaseInstruction) -> pfh.PassOrFailOrHardError:
-        main_result = instruction.main(environment, OsServices())
+        main_result = instruction.main(environment, self.arrangement.os_services)
         self.put.assertIsNotNone(main_result,
                                  'Result from main method cannot be None')
         self.put.assertIsInstance(main_result,

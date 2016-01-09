@@ -1,4 +1,5 @@
 from shellcheck_lib.instructions.cleanup import change_dir
+from shellcheck_lib.instructions.cleanup import env
 from shellcheck_lib.instructions.cleanup import execute
 from shellcheck_lib.instructions.cleanup import new_dir
 from shellcheck_lib.instructions.cleanup import shell
@@ -9,6 +10,10 @@ INSTRUCTIONS = {
         SingleInstructionSetup(
                 new_dir.Parser(),
                 new_dir.description('dir')),
+    'env':
+        SingleInstructionSetup(
+                env.PARSER,
+                env.description('env')),
     'execute':
         SingleInstructionSetup(
                 execute.parser('execute'),
