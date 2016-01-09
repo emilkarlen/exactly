@@ -25,6 +25,7 @@ weird simptest behaviour / data-root-dir
    CLOCK: [2015-11-06 fre 21:30]--[2015-11-06 fre 22:01] =>  0:31
 ** Hjälpsystem
 *** Textformatering
+    CLOCK: [2016-01-09 lör 13:12]--[2016-01-09 lör 15:38] =>  2:26
     CLOCK: [2015-12-27 sön 18:02]--[2015-12-27 sön 19:51] =>  1:49
     CLOCK: [2015-12-27 sön 15:33]--[2015-12-27 sön 17:31] =>  1:58
     CLOCK: [2015-12-20 sön 18:29]--[2015-12-20 sön 19:08] =>  0:39
@@ -88,16 +89,26 @@ Detta
 - ger ett program med main-metod och cla-parsning
 - "mall" för ett testfall som exekverar ett externt program med in och utdata
   i fil
-* Ny fas: before-assert
-  CLOCK: [2016-01-04 mån 15:30]--[2016-01-04 mån 17:12] =>  1:42
-  CLOCK: [2016-01-04 mån 13:24]--[2016-01-04 mån 14:11] =>  0:47
-  CLOCK: [2016-01-03 sön 23:26]--[2016-01-04 mån 01:35] =>  2:09
-  CLOCK: [2016-01-03 sön 22:44]--[2016-01-03 sön 22:57] =>  0:13
-* Nytt steg: setup/post-validation
-  CLOCK: [2015-05-22 fre 15:35]--[2015-05-22 fre 16:27] =>  0:52
-  CLOCK: [2015-05-21 tor 16:54]--[2015-05-21 tor 17:16] =>  0:22
-** Flytta stdin till denna fas
-   CLOCK: [2015-05-22 fre 16:36]--[2015-05-22 fre 17:21] =>  0:45
+* Faser och steg
+** Nytt steg: act/validate-pre-eds
+   CLOCK: [2016-01-09 lör 18:06]--[2016-01-09 lör 20:11] =>  2:05
+** Ny fas: before-assert
+   CLOCK: [2016-01-04 mån 15:30]--[2016-01-04 mån 17:12] =>  1:42
+   CLOCK: [2016-01-04 mån 13:24]--[2016-01-04 mån 14:11] =>  0:47
+   CLOCK: [2016-01-03 sön 23:26]--[2016-01-04 mån 01:35] =>  2:09
+   CLOCK: [2016-01-03 sön 22:44]--[2016-01-03 sön 22:57] =>  0:13
+*** Ny infrastruktur för test
+   CLOCK: [2016-01-07 tor 16:27]--[2016-01-07 tor 21:10] =>  4:43
+*** Integrera instruktioner
+    CLOCK: [2016-01-09 lör 10:14]--[2016-01-09 lör 13:10] =>  2:56
+    CLOCK: [2016-01-08 fre 15:42]--[2016-01-08 fre 17:28] =>  1:46
+    CLOCK: [2016-01-08 fre 12:50]--[2016-01-08 fre 14:36] =>  1:46
+    CLOCK: [2016-01-07 tor 21:41]--[2016-01-08 fre 02:28] =>  4:47
+** Nytt steg: setup/post-validation
+   CLOCK: [2015-05-22 fre 15:35]--[2015-05-22 fre 16:27] =>  0:52
+   CLOCK: [2015-05-21 tor 16:54]--[2015-05-21 tor 17:16] =>  0:22
+*** Flytta stdin till denna fas
+    CLOCK: [2015-05-22 fre 16:36]--[2015-05-22 fre 17:21] =>  0:45
 * Bestämma exekveringsflöde
   CLOCK: [2015-05-18 mån 19:36]--[2015-05-18 mån 22:54] =>  3:18
   CLOCK: [2015-05-17 sön 13:24]--[2015-05-17 sön 15:46] =>  2:22
