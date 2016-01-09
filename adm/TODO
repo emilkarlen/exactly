@@ -1,5 +1,39 @@
 -*- org -*-
 
+* TODO <2016-01-08 fre> Arg till olika Expectation har olika namn
+Namnen ska strömlinjeformas.
+* TODO <2016-01-08 fre> instr/main har olika ordning på arg (env, os_servc)
+Olika hos bl a BeforeAssertPhaseInstruction o AssertPhaseInstruction.
+* TODO <2016-01-07 tor> Funderare på exekveringsflödet
+** När ska cleanup-instruktionerna köras?
+Se separat dok om detta under "cleanup".
+** Exekveringstrategi för instruktionerna inom en fas
+(Gäller ej validate/pre-eds, troligtvis.  Känns naturligt att köra dem på det
+sätt de körs idag).
+*** Alternativ
+**** ett STEG i taget
+instr(i).step1
+...
+instr(n).step1
+
+...
+
+instr(i).stepM
+...
+instr(n).stepM
+**** en INSTRUKTION i taget
+instr(i).step1
+...
+instr(i).stepM
+
+...
+
+instr(n).step1
+...
+instr(n).stepM
+*** Olika strategier för olika faser?
+Eftersom fasernas uppgifter/roller skiljer sig åt kanske inte en o samma
+strategi passar alla faser.
 * TODO <2016-01-07 tor> Gemensam basklass för instr m std-validering?
 Skulle t ex kunna finnas i InstructionWithStdValidation:
  - validate_pre_eds
@@ -19,7 +53,18 @@ T ex att det inte ska gå att lägga program i act som ska köras?
 Å andra sidan, varför omöjliggöra det istället för att låta det vara upp
 till användaren att bestämma var filerna ska ligga?
 * TODO cleanup
-** TODO cleanup ska ha validate/post-setup
+** TODO Infra-strukt för instr-test: Möjl att ange act-result
+<2016-01-07 tor>
+För tillfället kan inget resultat för act anges i dess Arrangement.
+assert:s Arrangement, t ex, anger alltid ett act-resultat.  Vilket
+naturligtvis beror på att act-fasen garranterat körts då assert körs.
+
+För cleanup _kan_ act-fasen ha körts, men det är inte säkert (dvs en cleanup
+som körts efter att en setup-instruktion fallerat.)
+
+Det måste finnas möjlighet att i cleanup:s Arrangement ange om act-fasen ska
+ha körts, genom att angen en "act-result-produser" pss som för assert.
+** TODO cleanup ska ha validate/post-setup?
 För vissa instruktioner är den meningsfull - det är oundvikligt att en
 validering måste göras innan själva "main-main" kan köras.
 T ex för execute: det exekverbara programmet kan inte köras om, t ex,
@@ -195,6 +240,13 @@ shellcheck_lib/default/execution_mode/test_case/default_instructions_setup.py
 
 Lösning, typ: test som kör testfall m en "unik" instruktion från varje fas.
 ("unik" = instruktion som inte finns i någon annan fas.)
+** TODO [#A] Exekveringsflödet: fler instr per fas
+Idag finns inget test (vad jag vet) som kollar hur flera instruktioner körs
+inom en o samma fas.
+Det som behövs är testet för "full_execution" med med åtminstonne två
+instruktioner per fas.
+Bäst vore om varje intsruktion hade egen unik identiferare som kunde "spelas
+in" för att järmföras mot förväntad "inspelning".
 * TODO Misc
 ** TODO <2015-01-05 mån> abs_syn_gen.TestCase instances must be valid
 The constructor should validate all arguments
