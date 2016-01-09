@@ -14,7 +14,7 @@ class TheConfiguration(SetupConfigurationBase):
         return sut.description('instruction name')
 
     def parser(self) -> SingleInstructionParser:
-        return sut.parser()
+        return sut.PARSER
 
 
 def suite():

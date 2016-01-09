@@ -1,5 +1,5 @@
-from shellcheck_lib.instructions.multi_phase_instructions import env
 from shellcheck_lib.instructions.setup import change_dir
+from shellcheck_lib.instructions.setup import env
 from shellcheck_lib.instructions.setup import execute
 from shellcheck_lib.instructions.setup import install
 from shellcheck_lib.instructions.setup import new_dir
@@ -15,8 +15,8 @@ INSTRUCTIONS = {
                 new_dir.description('dir')),
     'env':
         SingleInstructionSetup(
-                env.Parser(),
-                env.TheDescription('env')),
+                env.PARSER,
+                env.description('env')),
     'execute':
         SingleInstructionSetup(
                 execute.parser('execute'),
