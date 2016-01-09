@@ -1,3 +1,4 @@
+from shellcheck_lib.test_case.os_services import OsServices, new_default
 from shellcheck_lib.test_case.sections import common as i
 from shellcheck_lib_test.instructions.test_resources import eds_populator
 from shellcheck_lib_test.instructions.test_resources import utils
@@ -32,15 +33,20 @@ class ArrangementBase:
 class ArrangementWithEds(ArrangementBase):
     def __init__(self,
                  home_contents: file_structure.DirContents = file_structure.DirContents([]),
-                 eds_contents: eds_populator.EdsPopulator = eds_populator.empty()):
+                 eds_contents: eds_populator.EdsPopulator = eds_populator.empty(),
+                 os_services: OsServices = new_default(),
+                 ):
         super().__init__(home_contents)
         self.eds_contents = eds_contents
+        self.os_services = os_services
 
 
 class ArrangementPostAct(ArrangementWithEds):
     def __init__(self,
                  home_contents: file_structure.DirContents = file_structure.DirContents([]),
                  eds_contents: eds_populator.EdsPopulator = eds_populator.empty(),
-                 act_result_producer: ActResultProducer = ActResultProducer()):
-        super().__init__(home_contents, eds_contents)
+                 act_result_producer: ActResultProducer = ActResultProducer(),
+                 os_services: OsServices = new_default()
+                 ):
+        super().__init__(home_contents, eds_contents, os_services)
         self.act_result_producer = act_result_producer

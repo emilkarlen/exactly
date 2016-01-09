@@ -31,8 +31,7 @@ class Arrangement(ArrangementWithEds):
                  os_services: OsServices = new_default(),
                  eds_contents_before_main: eds_populator.EdsPopulator = eds_populator.empty(),
                  initial_settings_builder: SetupSettingsBuilder = SetupSettingsBuilder()):
-        super().__init__(home_dir_contents, eds_contents_before_main)
-        self.os_services = os_services
+        super().__init__(home_dir_contents, eds_contents_before_main, os_services)
         self.initial_settings_builder = initial_settings_builder
 
 
