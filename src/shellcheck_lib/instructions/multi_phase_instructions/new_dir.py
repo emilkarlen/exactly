@@ -5,6 +5,7 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
 from shellcheck_lib.general.textformat import parse as text_parse
 from shellcheck_lib.instructions.utils.parse_utils import split_arguments_list_string, ensure_is_not_option_argument
 from shellcheck_lib.test_case.instruction_description import InvokationVariant, Description
+from shellcheck_lib.test_case.sections.result import sh
 
 
 class TheDescription(Description):
@@ -54,3 +55,8 @@ def make_dir_in_current_dir(directory_components: str) -> str:
     except NotADirectoryError:
         return 'Clash with existing file: {}'.format(dir_path)
     return None
+
+
+def execute_and_return_sh(directory_components: str) -> sh.SuccessOrHardError:
+    error_message = make_dir_in_current_dir(directory_components)
+    return sh.new_sh_success() if error_message is None else sh.new_sh_hard_error(error_message)
