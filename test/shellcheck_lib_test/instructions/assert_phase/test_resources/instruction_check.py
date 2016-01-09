@@ -13,7 +13,7 @@ from shellcheck_lib_test.instructions.test_resources import eds_populator
 from shellcheck_lib_test.instructions.test_resources import pfh_check
 from shellcheck_lib_test.instructions.test_resources import svh_check
 from shellcheck_lib_test.instructions.test_resources import utils
-from shellcheck_lib_test.instructions.test_resources.arrangement import ArrangementPostAct, ActResultProducer, \
+from shellcheck_lib_test.instructions.test_resources.arrangements import ArrangementPostAct, ActResultProducer, \
     ActEnvironment
 from shellcheck_lib_test.instructions.test_resources.assertion_utils.side_effects import SideEffectsCheck
 from shellcheck_lib_test.instructions.test_resources.utils import write_act_result

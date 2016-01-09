@@ -8,15 +8,16 @@ from shellcheck_lib.test_case.sections import common as i
 from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
 from shellcheck_lib.test_case.sections.result import pfh
-from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib_test.instructions.test_resources import eds_contents_check
 from shellcheck_lib_test.instructions.test_resources import eds_populator
 from shellcheck_lib_test.instructions.test_resources import sh_check
 from shellcheck_lib_test.instructions.test_resources import svh_check
 from shellcheck_lib_test.instructions.test_resources import utils
-from shellcheck_lib_test.instructions.test_resources.arrangement import ArrangementWithEds
+from shellcheck_lib_test.instructions.test_resources.arrangements import ArrangementWithEds
 from shellcheck_lib_test.instructions.test_resources.assertion_utils.side_effects import SideEffectsCheck
+from shellcheck_lib_test.instructions.test_resources.instruction_check_utils import \
+    InstructionExecutionToBeReplacedByVaBase
 from shellcheck_lib_test.test_resources import file_structure
 
 
@@ -64,12 +65,12 @@ def check(put: unittest.TestCase,
     Executor(put, arrangement, expectation).execute(parser, source)
 
 
-class Executor:
+class Executor(InstructionExecutionToBeReplacedByVaBase):
     def __init__(self,
                  put: unittest.TestCase,
                  arrangement: ArrangementWithEds,
                  expectation: Expectation):
-        self.put = put
+        super().__init__(put, arrangement)
         self.arrangement = arrangement
         self.expectation = expectation
 
@@ -77,11 +78,7 @@ class Executor:
                 parser: SingleInstructionParser,
                 source: SingleInstructionParserSource):
         instruction = parser.apply(source)
-        self.put.assertIsNotNone(instruction,
-                                 'Result from parser cannot be None')
-        self.put.assertIsInstance(instruction,
-                                  CleanupPhaseInstruction,
-                                  'The instruction must be an instance of ' + str(CleanupPhaseInstruction))
+        self._check_instruction(CleanupPhaseInstruction, instruction)
         assert isinstance(instruction, CleanupPhaseInstruction)
         with utils.home_and_eds_and_test_as_curr_dir(
                 home_dir_contents=self.arrangement.home_contents,
@@ -99,24 +96,16 @@ class Executor:
                               home_dir_path: pathlib.Path,
                               instruction: CleanupPhaseInstruction) -> svh.SuccessOrValidationErrorOrHardError:
         pre_validation_environment = GlobalEnvironmentForPreEdsStep(home_dir_path)
-        pre_validate_result = instruction.validate_pre_eds(pre_validation_environment)
-        self.put.assertIsNotNone(pre_validate_result,
-                                 'Result from pre_validate method cannot be None')
-        self.put.assertIsInstance(pre_validate_result,
-                                  svh.SuccessOrValidationErrorOrHardError,
-                                  'pre_validate must return a ' + str(svh.SuccessOrValidationErrorOrHardError))
-        self.expectation.validate_pre_eds_result.apply(self.put, pre_validate_result)
-        return pre_validate_result
+        result = instruction.validate_pre_eds(pre_validation_environment)
+        self._check_result_of_validate_pre_eds(result)
+        self.expectation.validate_pre_eds_result.apply(self.put, result)
+        return result
 
     def _execute_main(self,
                       environment: GlobalEnvironmentForPostEdsPhase,
                       instruction: CleanupPhaseInstruction) -> pfh.PassOrFailOrHardError:
-        main_result = instruction.main(environment, self.arrangement.os_services)
-        self.put.assertIsNotNone(main_result,
-                                 'Result from main method cannot be None')
-        self.put.assertIsInstance(main_result,
-                                  sh.SuccessOrHardError,
-                                  'main must return a ' + str(sh.SuccessOrHardError))
-        self.expectation.main_result.apply(self.put, main_result)
+        result = instruction.main(environment, self.arrangement.os_services)
+        self._check_result_of_main__sh(result)
+        self.expectation.main_result.apply(self.put, result)
         self.expectation.main_side_effects_on_files.apply(self.put, environment.eds)
-        return main_result
+        return result

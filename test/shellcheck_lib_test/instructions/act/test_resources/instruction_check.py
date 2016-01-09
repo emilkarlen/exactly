@@ -2,9 +2,12 @@ import unittest
 
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, SingleInstructionParserSource
+from shellcheck_lib.script_language.standard_script_language import StandardScriptLanguage
 from shellcheck_lib.test_case.os_services import OsServices, new_default
 from shellcheck_lib.test_case.sections import common as i
-from shellcheck_lib.test_case.sections.before_assert import BeforeAssertPhaseInstruction
+from shellcheck_lib.test_case.sections.act.instruction import ActPhaseInstruction
+from shellcheck_lib.test_case.sections.act.phase_setup import PhaseEnvironmentForScriptGeneration
+from shellcheck_lib.test_case.sections.act.script_source import ScriptSourceAccumulator
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
 from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.result import svh
@@ -12,24 +15,22 @@ from shellcheck_lib_test.instructions.test_resources import eds_populator
 from shellcheck_lib_test.instructions.test_resources import sh_check__va
 from shellcheck_lib_test.instructions.test_resources import svh_check__va
 from shellcheck_lib_test.instructions.test_resources import utils
-from shellcheck_lib_test.instructions.test_resources.arrangements import ArrangementPostAct, ActResultProducer, \
-    ActEnvironment
+from shellcheck_lib_test.instructions.test_resources.arrangements import ArrangementWithEds
 from shellcheck_lib_test.instructions.test_resources.expectations import ExpectationBase
 from shellcheck_lib_test.instructions.test_resources.instruction_check_utils import InstructionExecutionBase
-from shellcheck_lib_test.instructions.test_resources.utils import write_act_result
 from shellcheck_lib_test.test_resources import file_structure
 from shellcheck_lib_test.test_resources import value_assertion as va
 
 
-def arrangement(home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
-                eds_contents_before_main: eds_populator.EdsPopulator = eds_populator.empty(),
-                act_result_producer: ActResultProducer = ActResultProducer(),
-                os_services: OsServices = new_default()
-                ) -> ArrangementPostAct:
-    return ArrangementPostAct(home_dir_contents,
-                              eds_contents_before_main,
-                              act_result_producer,
-                              os_services)
+class Arrangement(ArrangementWithEds):
+    def __init__(self,
+                 phase_environment: PhaseEnvironmentForScriptGeneration =
+                 PhaseEnvironmentForScriptGeneration(ScriptSourceAccumulator(StandardScriptLanguage())),
+                 home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
+                 eds_contents_before_main: eds_populator.EdsPopulator = eds_populator.empty(),
+                 os_services: OsServices = new_default()):
+        super().__init__(home_dir_contents, eds_contents_before_main, os_services)
+        self.phase_environment = phase_environment
 
 
 class Expectation(ExpectationBase):
@@ -50,7 +51,7 @@ class TestCaseBase(unittest.TestCase):
     def _check(self,
                parser: SingleInstructionParser,
                source: SingleInstructionParserSource,
-               arrangement: ArrangementPostAct,
+               arrangement: Arrangement,
                expectation: Expectation):
         check(self, parser, source, arrangement, expectation)
 
@@ -58,7 +59,7 @@ class TestCaseBase(unittest.TestCase):
 def check(put: unittest.TestCase,
           parser: SingleInstructionParser,
           source: SingleInstructionParserSource,
-          arrangement: ArrangementPostAct,
+          arrangement: Arrangement,
           expectation: Expectation):
     Executor(put, arrangement, expectation).execute(parser, source)
 
@@ -66,7 +67,7 @@ def check(put: unittest.TestCase,
 class Executor(InstructionExecutionBase):
     def __init__(self,
                  put: unittest.TestCase,
-                 arrangement: ArrangementPostAct,
+                 arrangement: Arrangement,
                  expectation: Expectation):
         super().__init__(put, arrangement, expectation)
         self.put = put
@@ -87,8 +88,8 @@ class Executor(InstructionExecutionBase):
                 parser: SingleInstructionParser,
                 source: SingleInstructionParserSource):
         instruction = parser.apply(source)
-        self._check_instruction(BeforeAssertPhaseInstruction, instruction)
-        assert isinstance(instruction, BeforeAssertPhaseInstruction)
+        self._check_instruction(ActPhaseInstruction, instruction)
+        assert isinstance(instruction, ActPhaseInstruction)
         with utils.home_and_eds_and_test_as_curr_dir(
                 home_dir_contents=self.arrangement.home_contents,
                 eds_contents=self.arrangement.eds_contents) as home_and_eds:
@@ -101,10 +102,6 @@ class Executor(InstructionExecutionBase):
             validate_result = self._execute_validate_post_setup(environment, instruction)
             if not validate_result.is_success:
                 return
-
-            act_result = self.arrangement.act_result_producer.apply(ActEnvironment(home_and_eds))
-            write_act_result(home_and_eds.eds, act_result)
-
             self._execute_main(environment, instruction)
             self._check_main_side_effects_on_files(home_and_eds)
             self._check_side_effects_on_home_and_eds(home_and_eds)
@@ -112,7 +109,7 @@ class Executor(InstructionExecutionBase):
     def _execute_validate_pre_eds(
             self,
             global_environment: GlobalEnvironmentForPreEdsStep,
-            instruction: BeforeAssertPhaseInstruction) -> svh.SuccessOrValidationErrorOrHardError:
+            instruction: ActPhaseInstruction) -> svh.SuccessOrValidationErrorOrHardError:
         result = instruction.validate_pre_eds(global_environment)
         self._check_result_of_validate_pre_eds(result)
         return result
@@ -120,7 +117,7 @@ class Executor(InstructionExecutionBase):
     def _execute_validate_post_setup(
             self,
             global_environment: GlobalEnvironmentForPostEdsPhase,
-            instruction: BeforeAssertPhaseInstruction) -> svh.SuccessOrValidationErrorOrHardError:
+            instruction: ActPhaseInstruction) -> svh.SuccessOrValidationErrorOrHardError:
         result = instruction.validate_post_setup(global_environment)
         self._check('result from validate/post-setup',
                     self.expectation.validation_post_setup,
@@ -129,8 +126,9 @@ class Executor(InstructionExecutionBase):
 
     def _execute_main(self,
                       environment: GlobalEnvironmentForPostEdsPhase,
-                      instruction: BeforeAssertPhaseInstruction) -> pfh.PassOrFailOrHardError:
-        result = instruction.main(self.arrangement.os_services, environment)
+                      instruction: ActPhaseInstruction) -> pfh.PassOrFailOrHardError:
+        result = instruction.main(environment,
+                                  self.arrangement.phase_environment)
         self._check('result from main',
                     self.expectation.main_result,
                     result)

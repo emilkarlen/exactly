@@ -5,7 +5,7 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
 from shellcheck_lib.test_case.instruction_description import Description
 from shellcheck_lib.test_case.os_services import new_default, OsServices
 from shellcheck_lib_test.instructions.test_resources import eds_populator
-from shellcheck_lib_test.instructions.test_resources.arrangement import ArrangementBase
+from shellcheck_lib_test.instructions.test_resources.arrangements import ArrangementBase
 from shellcheck_lib_test.instructions.test_resources.check_description import suite_for_description_instance
 from shellcheck_lib_test.test_resources.value_assertion import ValueAssertion
 
