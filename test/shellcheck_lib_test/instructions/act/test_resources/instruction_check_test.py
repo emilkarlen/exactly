@@ -12,12 +12,11 @@ from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEds
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib_test.execution.test_resources.instruction_test_resources import \
-    before_assert_phase_instruction_that
-from shellcheck_lib_test.instructions.before_assert.test_resources import instruction_check as sut
+    act_phase_instruction_that
+from shellcheck_lib_test.instructions.act.test_resources import instruction_check as sut
 from shellcheck_lib_test.instructions.test_resources import sh_check__va
 from shellcheck_lib_test.instructions.test_resources import svh_check__va
 from shellcheck_lib_test.instructions.test_resources import test_of_test_framework_utils as test_misc
-from shellcheck_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from shellcheck_lib_test.instructions.test_resources.eds_contents_check__va import act_dir_contains_exactly
 from shellcheck_lib_test.instructions.test_resources.test_of_test_framework_utils import single_line_source
 from shellcheck_lib_test.test_resources import value_assertion as va
@@ -39,7 +38,7 @@ class TestCases(sut.TestCaseBase):
     def _check(self,
                parser: SingleInstructionParser,
                source: SingleInstructionParserSource,
-               arrangement: ArrangementPostAct,
+               arrangement: sut.Arrangement,
                expectation: sut.Expectation):
         self.tc._check(parser, source, arrangement, expectation)
 
@@ -47,7 +46,7 @@ class TestCases(sut.TestCaseBase):
         self._check(
                 PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
                 single_line_source(),
-                sut.arrangement(),
+                sut.Arrangement(),
                 sut.is_success())
 
     def test_fail_due_to_unexpected_result_from__validate_pre_eds(self):
@@ -55,7 +54,7 @@ class TestCases(sut.TestCaseBase):
             self._check(
                     PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
                     single_line_source(),
-                    sut.arrangement(),
+                    sut.Arrangement(),
                     sut.Expectation(validation_pre_eds=svh_check__va.is_hard_error()),
             )
 
@@ -64,7 +63,7 @@ class TestCases(sut.TestCaseBase):
             self._check(
                     PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
                     single_line_source(),
-                    sut.arrangement(),
+                    sut.Arrangement(),
                     sut.Expectation(validation_post_setup=svh_check__va.is_hard_error()),
             )
 
@@ -73,7 +72,7 @@ class TestCases(sut.TestCaseBase):
             self._check(
                     PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
                     single_line_source(),
-                    sut.arrangement(),
+                    sut.Arrangement(),
                     sut.Expectation(main_result=sh_check__va.is_hard_error()),
             )
 
@@ -82,7 +81,7 @@ class TestCases(sut.TestCaseBase):
             self._check(
                     PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
                     single_line_source(),
-                    sut.arrangement(),
+                    sut.Arrangement(),
                     sut.Expectation(main_side_effects_on_files=act_dir_contains_exactly(
                             DirContents([empty_file('non-existing-file.txt')]))),
             )
@@ -91,7 +90,7 @@ class TestCases(sut.TestCaseBase):
         self._check(
                 test_misc.ParserThatGives(instruction_that_asserts_cwd_is_act_dir(self.tc)),
                 single_line_source(),
-                sut.arrangement(),
+                sut.Arrangement(),
                 sut.is_success())
 
     def test_fail_due_to_side_effects_check(self):
@@ -99,25 +98,32 @@ class TestCases(sut.TestCaseBase):
             self._check(
                     PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
                     single_line_source(),
-                    sut.arrangement(),
+                    sut.Arrangement(),
                     sut.Expectation(home_and_eds=va.IsInstance(bool)),
             )
 
 
-PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION = test_misc.ParserThatGives(before_assert_phase_instruction_that())
+PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION = test_misc.ParserThatGives(act_phase_instruction_that())
 
 
 def instruction_that_asserts_cwd_is_act_dir(put: unittest.TestCase):
-    def do_assert_cwd_is_act_dir(ret_val, environment: GlobalEnvironmentForPostEdsPhase):
+    def do_main(ret_val, glob_and_phase_env):
         cwd = os.getcwd()
-        put.assertEqual(str(environment.eds.act_dir),
+        put.assertEqual(str(glob_and_phase_env[0].eds.act_dir),
                         cwd,
                         'Current Directory')
         return ret_val
 
-    return before_assert_phase_instruction_that(
-            validate_post_setup=functools.partial(do_assert_cwd_is_act_dir, svh.new_svh_success()),
-            main=functools.partial(do_assert_cwd_is_act_dir, sh.new_sh_success()))
+    def do_post_setup(ret_val, glob_env: GlobalEnvironmentForPostEdsPhase):
+        cwd = os.getcwd()
+        put.assertEqual(str(glob_env.eds.act_dir),
+                        cwd,
+                        'Current Directory')
+        return ret_val
+
+    return act_phase_instruction_that(
+            validate_post_setup=functools.partial(do_post_setup, svh.new_svh_success()),
+            main=functools.partial(do_main, sh.new_sh_success()))
 
 
 def suite():

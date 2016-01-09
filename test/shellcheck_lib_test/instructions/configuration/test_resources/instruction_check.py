@@ -10,7 +10,7 @@ from shellcheck_lib.test_case.sections.anonymous import AnonymousPhaseInstructio
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib_test.instructions.configuration.test_resources import configuration_check as config_check
 from shellcheck_lib_test.instructions.test_resources import sh_check
-from shellcheck_lib_test.instructions.test_resources.arrangement import ArrangementBase
+from shellcheck_lib_test.instructions.test_resources.arrangements import ArrangementBase
 from shellcheck_lib_test.test_resources import file_structure
 
 

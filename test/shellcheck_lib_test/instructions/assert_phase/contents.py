@@ -14,7 +14,7 @@ from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_ch
     Expectation, is_pass
 from shellcheck_lib_test.instructions.test_resources import pfh_check
 from shellcheck_lib_test.instructions.test_resources import svh_check
-from shellcheck_lib_test.instructions.test_resources.arrangement import ArrangementPostAct
+from shellcheck_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from shellcheck_lib_test.instructions.test_resources.check_description import TestDescriptionBase
 from shellcheck_lib_test.instructions.test_resources.eds_populator import act_dir_contents, tmp_user_dir_contents, \
     multiple
