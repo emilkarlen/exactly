@@ -6,14 +6,9 @@ from shellcheck_lib_test.instructions.test_resources.eds_contents_check__va impo
 from shellcheck_lib_test.instructions.test_resources.eds_populator import act_dir_contents
 from shellcheck_lib_test.instructions.test_resources.utils import new_source2
 from shellcheck_lib_test.test_resources.file_structure import DirContents, empty_dir, Dir, empty_file
-from shellcheck_lib_test.test_resources.value_assertion import ValueAssertion
 
 
 class Configuration(ConfigurationBase):
-    def expect_successful_execution_with_side_effect(self,
-                                                     on_eds: ValueAssertion):
-        raise NotImplementedError()
-
     def expect_failure_to_create_dir(self):
         raise NotImplementedError()
 
@@ -30,11 +25,12 @@ class TestCreationOfDirectory(TestCaseBase):
                 self,
                 new_source2('first-component/second-component'),
                 self.conf.empty_arrangement(),
-                self.conf.expect_successful_execution_with_side_effect(on_eds=act_dir_contains_exactly(DirContents([
-                    Dir('first-component', [
-                        empty_dir('second-component')
-                    ])
-                ])))
+                self.conf.expect_success_and_side_effects_on_files(
+                        main_side_effects_on_files=act_dir_contains_exactly(DirContents([
+                            Dir('first-component', [
+                                empty_dir('second-component')
+                            ])
+                        ])))
         )
 
 

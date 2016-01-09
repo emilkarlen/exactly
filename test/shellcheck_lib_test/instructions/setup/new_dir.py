@@ -7,8 +7,6 @@ from shellcheck_lib_test.instructions.multi_phase_instructions.test_resources.ne
 from shellcheck_lib_test.instructions.setup.test_resources.configuration import SetupConfigurationBase
 from shellcheck_lib_test.instructions.setup.test_resources.instruction_check import Expectation
 from shellcheck_lib_test.instructions.test_resources import sh_check
-from shellcheck_lib_test.instructions.test_resources.eds_contents_check import AdaptVa
-from shellcheck_lib_test.test_resources.value_assertion import ValueAssertion
 
 
 class TheConfiguration(SetupConfigurationBase, Configuration):
@@ -17,10 +15,6 @@ class TheConfiguration(SetupConfigurationBase, Configuration):
 
     def description(self) -> Description:
         return sut.description('instruction name')
-
-    def expect_successful_execution_with_side_effect(self,
-                                                     on_eds: ValueAssertion):
-        return Expectation(main_side_effects_on_files=AdaptVa(on_eds))
 
     def expect_failure_to_create_dir(self):
         return Expectation(main_result=sh_check.IsHardError())
