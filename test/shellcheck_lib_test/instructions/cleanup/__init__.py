@@ -1,6 +1,6 @@
 import unittest
 
-from shellcheck_lib_test.instructions.cleanup import change_dir, execute, new_dir, shell
+from shellcheck_lib_test.instructions.cleanup import change_dir, env, execute, new_dir, shell
 from shellcheck_lib_test.instructions.cleanup import test_resources
 
 
@@ -9,6 +9,7 @@ def suite():
     ret_val.addTest(test_resources.suite())
     ret_val.addTest(shell.suite())
     ret_val.addTest(execute.suite())
+    ret_val.addTest(env.suite())
     ret_val.addTest(change_dir.suite())
     ret_val.addTest(new_dir.suite())
     return ret_val
