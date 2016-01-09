@@ -1,6 +1,6 @@
 import unittest
 
-from shellcheck_lib_test.instructions.before_assert import test_resources, change_dir, execute, shell, new_dir
+from shellcheck_lib_test.instructions.before_assert import test_resources, change_dir, env, execute, shell, new_dir
 
 
 def suite():
@@ -10,6 +10,7 @@ def suite():
         new_dir.suite(),
         shell.suite(),
         execute.suite(),
+        env.suite(),
     ])
 
 
