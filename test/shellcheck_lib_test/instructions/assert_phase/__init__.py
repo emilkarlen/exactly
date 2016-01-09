@@ -8,7 +8,8 @@ from shellcheck_lib_test.instructions.assert_phase import \
     new_dir, \
     shell, \
     stdout_stderr, \
-    type
+    type, \
+    env
 from shellcheck_lib_test.instructions.assert_phase import test_resources
 
 
@@ -23,6 +24,7 @@ def suite():
     ret_val.addTest(change_dir.suite())
     ret_val.addTest(execute.suite())
     ret_val.addTest(shell.suite())
+    ret_val.addTest(env.suite())
     return ret_val
 
 

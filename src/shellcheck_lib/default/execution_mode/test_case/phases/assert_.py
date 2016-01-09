@@ -1,5 +1,6 @@
 from shellcheck_lib.instructions.assert_phase import change_dir
 from shellcheck_lib.instructions.assert_phase import contents as contents_instruction
+from shellcheck_lib.instructions.assert_phase import env
 from shellcheck_lib.instructions.assert_phase import execute
 from shellcheck_lib.instructions.assert_phase import exitcode as exitcode_instruction
 from shellcheck_lib.instructions.assert_phase import new_dir
@@ -17,6 +18,10 @@ INSTRUCTIONS = {
         SingleInstructionSetup(
                 new_dir.Parser(),
                 new_dir.description('dir')),
+    'env':
+        SingleInstructionSetup(
+                env.PARSER,
+                env.description('env')),
     'execute':
         SingleInstructionSetup(
                 execute.parser('execute'),
