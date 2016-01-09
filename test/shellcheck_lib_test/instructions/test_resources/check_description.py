@@ -6,6 +6,7 @@ from shellcheck_lib.general.textformat.formatting.wrapper import Wrapper
 from shellcheck_lib.test_case.instruction_description import Description, InvokationVariant, \
     SyntaxElementDescription
 from shellcheck_lib_test.general.textformat.test_resources import structure as struct_check
+from shellcheck_lib_test.test_resources import value_assertion as va
 
 
 def suite_for_description_instance(description: Description) -> unittest.TestSuite:
@@ -51,23 +52,19 @@ class TestSingleLineDescription(WithDescriptionBase):
 class TestMainDescriptionRest(WithDescriptionBase):
     def runTest(self):
         actual = self.description.main_description_rest()
-        struct_check.paragraph_item_list(self, actual)
+        struct_check.paragraph_item_list().apply(self, actual)
 
 
 class TestInvokationVariants(WithDescriptionBase):
     def runTest(self):
         actual = self.description.invokation_variants()
-        struct_check.check_list(InvokationVariantChecker,
-                                struct_check.CheckerWithMsgPrefix(self),
-                                actual)
+        va.every_element('', is_invokation_variant).apply(self, actual)
 
 
 class TestSyntaxElementDescriptions(WithDescriptionBase):
     def runTest(self):
         actual = self.description.syntax_element_descriptions()
-        struct_check.check_list(SyntaxElementDescriptionChecker,
-                                struct_check.CheckerWithMsgPrefix(self),
-                                actual)
+        va.every_element('', syntax_element_description_checker).apply(self, actual)
 
 
 class TestDescriptionBase(unittest.TestCase):
@@ -93,55 +90,33 @@ class TestDescriptionBase(unittest.TestCase):
 
     def test_main_description_rest(self):
         actual = self.description.main_description_rest()
-        struct_check.paragraph_item_list(self, actual)
+        struct_check.paragraph_item_list().apply(self, actual)
 
     def test_invokation_variants(self):
         actual = self.description.invokation_variants()
-        struct_check.check_list(InvokationVariantChecker,
-                                struct_check.CheckerWithMsgPrefix(self),
-                                actual)
+        va.every_element('', is_invokation_variant).apply(self, actual)
 
     def test_syntax_element_descriptions(self):
         actual = self.description.syntax_element_descriptions()
-        struct_check.check_list(SyntaxElementDescriptionChecker,
-                                struct_check.CheckerWithMsgPrefix(self),
-                                actual)
+        va.every_element('', syntax_element_description_checker).apply(self, actual)
 
 
-class InvokationVariantChecker(struct_check.Assertion):
-    def __init__(self,
-                 checker: struct_check.CheckerWithMsgPrefix):
-        self.checker = checker
+is_invokation_variant = va.And([
+    va.IsInstance(InvokationVariant),
+    va.sub_component('syntax',
+                     lambda x: x.syntax,
+                     va.IsInstance(str)),
+    va.sub_component_list('description_rest',
+                          lambda x: x.description_rest,
+                          struct_check.is_paragraph_item)
+])
 
-    def apply(self, x):
-        self.checker.put.assertIsInstance(x,
-                                          InvokationVariant,
-                                          self.checker.msg('Must be instance of %s' % InvokationVariant))
-        assert isinstance(x, InvokationVariant)
-        self.checker.put.assertIsInstance(x.syntax,
-                                          str,
-                                          self.checker.msg('syntax be instance of %s' % str))
-        struct_check.check_list(struct_check.ParagraphItemChecker,
-                                struct_check.new_with_added_prefix('description_rest', self.checker),
-                                x.description_rest)
-
-
-class SyntaxElementDescriptionChecker(struct_check.Assertion):
-    def __init__(self,
-                 checker: struct_check.CheckerWithMsgPrefix):
-        self.checker = checker
-
-    def apply(self, x):
-        self.checker.put.assertIsInstance(x,
-                                          SyntaxElementDescription,
-                                          self.checker.msg('Must be instance of %s' % SyntaxElementDescription))
-        assert isinstance(x, SyntaxElementDescription)
-        self.checker.put.assertIsInstance(x.element_name,
-                                          str,
-                                          self.checker.msg('element_name be instance of %s' % str))
-        struct_check.check_list(struct_check.ParagraphItemChecker,
-                                struct_check.new_with_added_prefix('description_rest', self.checker),
-                                x.description_rest)
-        struct_check.check_list(InvokationVariantChecker,
-                                struct_check.new_with_added_prefix('invokation_variants: ', self.checker),
-                                x.invokation_variants)
+syntax_element_description_checker = va.And([
+    va.IsInstance(SyntaxElementDescription),
+    va.sub_component('name',
+                     lambda x: x.element_name,
+                     va.IsInstance(str)),
+    va.sub_component_list('description_rest',
+                          lambda x: x.description_rest,
+                          struct_check.is_paragraph_item)
+])

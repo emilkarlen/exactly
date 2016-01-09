@@ -21,7 +21,7 @@ class SectionContents(tuple):
     @property
     def sections(self) -> list:
         """
-        :return: [core.ParagraphItem]
+        :return: [Section]
         """
         return self[1]
 

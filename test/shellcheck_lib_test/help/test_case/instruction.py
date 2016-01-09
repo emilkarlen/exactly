@@ -13,7 +13,7 @@ class TestListItem(unittest.TestCase):
                                                                              'single line description',
                                                                              '',
                                                                              []))
-        struct_check.ListItemChecker(struct_check.CheckerWithMsgPrefix(self)).apply(actual)
+        struct_check.is_list_item.apply(self, actual)
 
 
 class TestManPage(unittest.TestCase):
@@ -23,7 +23,7 @@ class TestManPage(unittest.TestCase):
                                                     '',
                                                     [])
         actual = sut.instruction_man_page(description)
-        struct_check.section_contents(self, actual)
+        struct_check.is_section_contents.apply(self, actual)
 
     def test_with_main_description_rest(self):
         description = DescriptionWithConstantValues('instruction name',
@@ -31,7 +31,7 @@ class TestManPage(unittest.TestCase):
                                                     'main description rest',
                                                     [])
         actual = sut.instruction_man_page(description)
-        struct_check.section_contents(self, actual)
+        struct_check.is_section_contents.apply(self, actual)
 
     def test_with_invokation_variants(self):
         description = DescriptionWithConstantValues(
@@ -41,7 +41,7 @@ class TestManPage(unittest.TestCase):
                 [InvokationVariant('invokation variant syntax',
                                    single_para('invokation variant description rest'))])
         actual = sut.instruction_man_page(description)
-        struct_check.section_contents(self, actual)
+        struct_check.is_section_contents.apply(self, actual)
 
     def test_with_syntax_elements_without_invokation_variants(self):
         description = DescriptionWithConstantValues(
@@ -54,7 +54,7 @@ class TestManPage(unittest.TestCase):
                                           single_para('description rest'),
                                           [])])
         actual = sut.instruction_man_page(description)
-        struct_check.section_contents(self, actual)
+        struct_check.is_section_contents.apply(self, actual)
 
     def test_with_syntax_elements_with_invokation_variants(self):
         description = DescriptionWithConstantValues(
@@ -68,7 +68,7 @@ class TestManPage(unittest.TestCase):
                                           [InvokationVariant('SED/invokation variant syntax',
                                                              single_para('SED/IV description rest'))])])
         actual = sut.instruction_man_page(description)
-        struct_check.section_contents(self, actual)
+        struct_check.is_section_contents.apply(self, actual)
 
 
 def suite():

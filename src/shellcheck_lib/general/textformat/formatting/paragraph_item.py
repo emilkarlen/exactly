@@ -39,7 +39,7 @@ class Formatter:
         return self.wrapper.wrap(text.value)
 
     def format_header_content_list(self, the_list: HeaderContentList) -> list:
-        list_format = self.resolve_list_format(the_list.format)
+        list_format = self.resolve_list_format(the_list.list_format)
         return self.format_header_value_list_according_to_format(the_list.items,
                                                                  list_format)
 
