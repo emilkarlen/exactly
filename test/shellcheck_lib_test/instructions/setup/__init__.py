@@ -16,6 +16,7 @@ def suite():
     ret_val.addTest(stdin.suite())
     ret_val.addTest(change_dir.suite())
     ret_val.addTest(new_file.suite())
+    ret_val.addTest(new_dir.suite())
     return ret_val
 
 
