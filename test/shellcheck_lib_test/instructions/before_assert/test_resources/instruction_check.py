@@ -139,7 +139,7 @@ class Executor:
     def _execute_main(self,
                       environment: GlobalEnvironmentForPostEdsPhase,
                       instruction: BeforeAssertPhaseInstruction) -> pfh.PassOrFailOrHardError:
-        result = instruction.main(OsServices(), environment)
+        result = instruction.main(self.arrangement.os_services, environment)
         self._check('result from main',
                     self.expectation.main_result,
                     result)

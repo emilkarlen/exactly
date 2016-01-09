@@ -1,4 +1,4 @@
-from shellcheck_lib.instructions.before_assert import change_dir, execute, shell, new_dir
+from shellcheck_lib.instructions.before_assert import change_dir, env, execute, shell, new_dir
 from shellcheck_lib.test_case.instruction_setup import SingleInstructionSetup
 
 INSTRUCTIONS = {
@@ -6,6 +6,10 @@ INSTRUCTIONS = {
         SingleInstructionSetup(
                 new_dir.Parser(),
                 new_dir.description('dir')),
+    'env':
+        SingleInstructionSetup(
+                env.PARSER,
+                env.description('env')),
     'execute':
         SingleInstructionSetup(
                 execute.parser('execute'),
