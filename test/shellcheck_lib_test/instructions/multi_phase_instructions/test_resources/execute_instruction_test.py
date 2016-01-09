@@ -1,7 +1,8 @@
 import unittest
 
 from shellcheck_lib.instructions.utils import relative_path_options as options
-from shellcheck_lib_test.instructions.multi_phase_instructions.test_resources.configuration import ConfigurationBase
+from shellcheck_lib_test.instructions.multi_phase_instructions.test_resources.configuration import ConfigurationBase, \
+    suite_for_cases
 from shellcheck_lib_test.instructions.test_resources import eds_populator
 from shellcheck_lib_test.instructions.test_resources.execute_utils import source_for_interpreting
 from shellcheck_lib_test.instructions.test_resources.utils import single_line_source
@@ -80,10 +81,12 @@ class TestSuccessfulValidation(TestCaseBase):
 
 
 def suite_for(conf: ConfigurationBase) -> unittest.TestSuite:
-    return unittest.TestSuite(
-            tcc(conf) for tcc in [TestSuccessfulExecution,
-                                  TestFailingExecution,
-                                  TestFailingValidationOfAbsolutePath,
-                                  TestFailingValidationOfRelHomePath,
-                                  TestFailingValidationOfRelTmpPath,
-                                  TestSuccessfulValidation])
+    return suite_for_cases(conf,
+                           [
+                               TestSuccessfulExecution,
+                               TestFailingExecution,
+                               TestFailingValidationOfAbsolutePath,
+                               TestFailingValidationOfRelHomePath,
+                               TestFailingValidationOfRelTmpPath,
+                               TestSuccessfulValidation,
+                           ])

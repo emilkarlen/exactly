@@ -3,7 +3,8 @@ import unittest
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_check import Expectation
-from shellcheck_lib_test.instructions.multi_phase_instructions.test_resources.configuration import ConfigurationBase
+from shellcheck_lib_test.instructions.multi_phase_instructions.test_resources.configuration import ConfigurationBase, \
+    suite_for_cases
 from shellcheck_lib_test.instructions.test_resources.utils import new_source2
 from shellcheck_lib_test.test_resources import python_program_execution as py_exe
 from shellcheck_lib_test.test_resources.file_utils import tmp_file_containing
@@ -63,9 +64,9 @@ sys.exit(1)
 
 
 def suite_for(configuration: Configuration) -> unittest.TestSuite:
-    ret_val = unittest.TestSuite()
-    ret_val.addTests([TestParseFailsWhenThereAreNoArguments(configuration),
-                      TestInstructionIsSuccessfulWhenExitStatusFromCommandIsZero(configuration),
-                      TestInstructionIsHardErrorWhenExitStatusFromCommandIsNonZero(configuration),
-                      ])
-    return ret_val
+    return suite_for_cases(configuration,
+                           [
+                               TestParseFailsWhenThereAreNoArguments,
+                               TestInstructionIsSuccessfulWhenExitStatusFromCommandIsZero,
+                               TestInstructionIsHardErrorWhenExitStatusFromCommandIsNonZero,
+                           ])
