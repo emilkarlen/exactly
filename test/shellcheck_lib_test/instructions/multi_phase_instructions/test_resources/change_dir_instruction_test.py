@@ -1,7 +1,8 @@
 import pathlib
 import unittest
 
-from shellcheck_lib_test.instructions.multi_phase_instructions.test_resources.configuration import ConfigurationBase
+from shellcheck_lib_test.instructions.multi_phase_instructions.test_resources.configuration import ConfigurationBase, \
+    suite_for_cases
 from shellcheck_lib_test.instructions.test_resources.assertion_utils.side_effects__va import AssertCwdIsSubDirOfActDir
 from shellcheck_lib_test.instructions.test_resources.eds_populator import act_dir_contents
 from shellcheck_lib_test.instructions.test_resources.utils import new_source2
@@ -51,8 +52,8 @@ class TestArgumentExistsAsNonDirectory(TestCaseBase):
 
 
 def suite_for(conf: ConfigurationBase) -> unittest.TestSuite:
-    return unittest.TestSuite(
-            tcc(conf) for tcc in [
-                TestExistingDirectoryWithMultiplePathComponents,
-                TestArgumentExistsAsNonDirectory,
-            ])
+    return suite_for_cases(conf,
+                           [
+                               TestExistingDirectoryWithMultiplePathComponents,
+                               TestArgumentExistsAsNonDirectory,
+                           ])
