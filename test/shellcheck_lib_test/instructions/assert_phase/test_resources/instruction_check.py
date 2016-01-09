@@ -2,7 +2,7 @@ import unittest
 
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, SingleInstructionParserSource
-from shellcheck_lib.test_case.os_services import OsServices
+from shellcheck_lib.test_case.os_services import OsServices, new_default
 from shellcheck_lib.test_case.sections import common as i
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
@@ -22,11 +22,13 @@ from shellcheck_lib_test.test_resources import file_structure
 
 def arrangement(home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
                 eds_contents_before_main: eds_populator.EdsPopulator = eds_populator.empty(),
-                act_result_producer: ActResultProducer = ActResultProducer()
+                act_result_producer: ActResultProducer = ActResultProducer(),
+                os_services: OsServices = new_default()
                 ) -> ArrangementPostAct:
     return ArrangementPostAct(home_dir_contents,
                               eds_contents_before_main,
-                              act_result_producer)
+                              act_result_producer,
+                              os_services)
 
 
 class Expectation:

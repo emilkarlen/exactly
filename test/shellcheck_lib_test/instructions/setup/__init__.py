@@ -1,7 +1,7 @@
 import unittest
 
 from shellcheck_lib_test.instructions.setup import \
-    change_dir, env, execute, install, new_file, new_dir, shell, stdin, utils
+    change_dir, execute, install, new_file, new_dir, shell, stdin, utils, env
 from shellcheck_lib_test.instructions.setup import test_resources
 
 
