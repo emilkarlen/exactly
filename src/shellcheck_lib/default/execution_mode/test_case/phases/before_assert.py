@@ -1,8 +1,11 @@
-from shellcheck_lib.instructions.before_assert import change_dir
-from shellcheck_lib.instructions.cleanup import execute, shell
+from shellcheck_lib.instructions.before_assert import change_dir, execute, shell, new_dir
 from shellcheck_lib.test_case.instruction_setup import SingleInstructionSetup
 
 INSTRUCTIONS = {
+    'dir':
+        SingleInstructionSetup(
+                new_dir.Parser(),
+                new_dir.description('dir')),
     'execute':
         SingleInstructionSetup(
                 execute.parser('execute'),
