@@ -1,12 +1,13 @@
+import types
+
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
 from shellcheck_lib.general.textformat.structure.paragraph import single_para
 from shellcheck_lib.instructions.utils.parse_utils import split_arguments_list_string
 from shellcheck_lib.test_case.instruction_description import InvokationVariant, Description
 from shellcheck_lib.test_case.os_services import OsServices
-from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
+from shellcheck_lib.test_case.sections.common import TestCaseInstruction
 from shellcheck_lib.test_case.sections.result import sh
-from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
 
 
 class TheDescription(Description):
@@ -31,42 +32,46 @@ class TheDescription(Description):
 
 
 class Parser(SingleInstructionParser):
-    def apply(self, source: SingleInstructionParserSource) -> SetupPhaseInstruction:
+    def __init__(self,
+                 instruction_constructor_for_executor: types.FunctionType):
+        self.instruction_constructor_for_executor = instruction_constructor_for_executor
+
+    def apply(self, source: SingleInstructionParserSource) -> TestCaseInstruction:
         arguments = split_arguments_list_string(source.instruction_argument)
         if len(arguments) == 3 and arguments[1] == '=':
-            return _SetInstruction(arguments[0], arguments[2])
+            return self.instruction_constructor_for_executor(_SetExecutor(arguments[0],
+                                                                          arguments[2]))
         if len(arguments) == 2 and arguments[0] == 'unset':
-            return _UnsetInstruction(arguments[1])
+            return self.instruction_constructor_for_executor(_UnsetExecutor(arguments[1]))
         raise SingleInstructionInvalidArgumentException('Invalid syntax')
 
 
-class _InstructionBase(SetupPhaseInstruction):
-    def _action(self, os_services: OsServices):
+class Executor:
+    def execute(self, os_services: OsServices):
         raise NotImplementedError()
 
-    def main(self,
-             os_services: OsServices,
-             environment: GlobalEnvironmentForPostEdsPhase,
-             settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
-        self._action(os_services)
-        return sh.new_sh_success()
+
+def execute_and_return_sh(executor: Executor,
+                          os_services: OsServices) -> sh.SuccessOrHardError:
+    executor.execute(os_services)
+    return sh.new_sh_success()
 
 
-class _SetInstruction(_InstructionBase):
+class _SetExecutor(Executor):
     def __init__(self,
                  name: str,
                  value: str):
         self.name = name
         self.value = value
 
-    def _action(self, os_services: OsServices):
+    def execute(self, os_services: OsServices):
         os_services.environ[self.name] = self.value
 
 
-class _UnsetInstruction(_InstructionBase):
+class _UnsetExecutor(Executor):
     def __init__(self,
                  name: str):
         self.name = name
 
-    def _action(self, os_services: OsServices):
+    def execute(self, os_services: OsServices):
         del os_services.environ[self.name]
