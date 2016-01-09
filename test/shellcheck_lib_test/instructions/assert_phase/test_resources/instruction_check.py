@@ -102,7 +102,7 @@ class Executor:
             validate_result = self._execute_validate_post_setup(environment, instruction)
             if not validate_result.is_success:
                 return
-            self._execute_main(environment, instruction)
+            self._execute_main(environment, instruction, self.arrangement.os_services)
             self.expectation.main_side_effects_on_files.apply(self.put, environment.eds)
             self.expectation.side_effects_check.apply(self.put, home_and_eds)
 
@@ -126,8 +126,9 @@ class Executor:
 
     def _execute_main(self,
                       environment: GlobalEnvironmentForPostEdsPhase,
-                      instruction: AssertPhaseInstruction) -> pfh.PassOrFailOrHardError:
-        main_result = instruction.main(environment, OsServices())
+                      instruction: AssertPhaseInstruction,
+                      os_services: OsServices) -> pfh.PassOrFailOrHardError:
+        main_result = instruction.main(environment, os_services)
         self.put.assertIsNotNone(main_result,
                                  'Result from main method cannot be None')
         self.expectation.main_result.apply(self.put, main_result)
