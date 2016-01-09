@@ -26,6 +26,18 @@ class ValueAssertion:
         raise NotImplementedError()
 
 
+class OfCallable(ValueAssertion):
+    def __init__(self,
+                 f: types.FunctionType):
+        self.f = f
+
+    def apply(self,
+              put: unittest.TestCase,
+              value,
+              message_builder: MessageBuilder = MessageBuilder()):
+        self.f(put, value, message_builder)
+
+
 class Constant(ValueAssertion):
     """
     An assertion that passes or fails constantly.
@@ -83,7 +95,13 @@ class IsInstance(ValueAssertion):
               value,
               message_builder: MessageBuilder = MessageBuilder()):
         put.assertIsInstance(value,
-                             self.expected)
+                             self.expected,
+                             message_builder.apply(self.message))
+
+
+def optional(present_value: ValueAssertion) -> ValueAssertion:
+    return Or([ValueIsNone(),
+               present_value])
 
 
 def anything_goes() -> ValueAssertion:
@@ -215,6 +233,20 @@ def sub_component(component_name: str,
                         component_assertion)
 
 
+def sub_component_list(list_name: str,
+                       list_getter: types.FunctionType,
+                       element_assertion: ValueAssertion,
+                       component_separator: str = '/') -> ValueAssertion:
+    """
+    Short cut for creating a SubComponentValueAssertion that checks a list
+    """
+    return sub_component(list_name,
+                         list_getter,
+                         every_element('',
+                                       element_assertion),
+                         component_separator)
+
+
 def every_element(iterable_name: str,
                   element_assertion: ValueAssertion,
                   component_separator: str = '/') -> ValueAssertion:
@@ -245,6 +277,12 @@ def sub_component_header(component_name: str,
                          component_separator: str = '/') -> str:
     con = SubComponentMessageHeadConstructor(component_name, component_separator=component_separator)
     return con.apply(super_message_builder)
+
+
+def sub_component_builder(component_name: str,
+                          super_message_builder: MessageBuilder,
+                          component_separator: str = '/') -> MessageBuilder:
+    return MessageBuilder(sub_component_header(component_name, super_message_builder, component_separator))
 
 
 class SubComponent(ValueAssertion):
@@ -286,3 +324,7 @@ class EveryElement(ValueAssertion):
                                          element,
                                          element_message_builder)
             element_index += 1
+
+
+def fail(msg: str) -> ValueAssertion:
+    return Constant(False, msg)

@@ -5,13 +5,14 @@ from shellcheck_lib.general.textformat.structure.lists import HeaderContentList
 from shellcheck_lib.general.textformat.structure.paragraph import Paragraph
 from shellcheck_lib.general.textformat.structure.utils import ParagraphItemVisitor
 from shellcheck_lib_test.general.textformat.test_resources import structure as structure_assert
+from shellcheck_lib_test.test_resources import value_assertion as va
 
 
 def check(put: unittest.TestCase,
           expected_items: list,
           actual_items: list):
-    structure_assert.paragraph_item_list(put, expected_items, 'Hardcoded Expected value: ')
-    structure_assert.paragraph_item_list(put, actual_items, 'Actual value: ')
+    va.every_element('Hardcoded Expected value: ', structure_assert.is_paragraph_item).apply(put, expected_items)
+    va.every_element('Actual value: ', structure_assert.is_paragraph_item).apply(put, actual_items)
     put.assertEqual(len(expected_items),
                     len(actual_items),
                     'Number of Paragraph Items')

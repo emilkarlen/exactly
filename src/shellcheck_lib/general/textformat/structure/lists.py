@@ -79,5 +79,13 @@ class HeaderContentList(ParagraphItem):
         """
         :param items: [HeaderValueListItem]
         """
-        self.items = items
-        self.format = list_format
+        self._items = items
+        self._format = list_format
+
+    @property
+    def items(self) -> iter:
+        return self._items
+
+    @property
+    def list_format(self) -> Format:
+        return self._format

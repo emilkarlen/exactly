@@ -1,182 +1,118 @@
 import unittest
 
 from shellcheck_lib.general.textformat.structure import core, lists, document as doc
+from shellcheck_lib.general.textformat.structure.lists import HeaderContentList
 from shellcheck_lib.general.textformat.structure.paragraph import Paragraph
 from shellcheck_lib.general.textformat.structure.utils import ParagraphItemVisitor
+from shellcheck_lib_test.test_resources import value_assertion as va
 
 
-def paragraph_item_list(put: unittest.TestCase,
-                        x,
-                        msg_prefix=''):
-    check_list(ParagraphItemChecker,
-               CheckerWithMsgPrefix(put, msg_prefix),
-               x)
+def paragraph_item_list(name: str = '') -> va.ValueAssertion:
+    return va.every_element(name, is_paragraph_item)
 
 
-def section_contents(put: unittest.TestCase,
-                     x,
-                     msg_prefix=''):
-    SectionContentsChecker(CheckerWithMsgPrefix(put, msg_prefix)).apply(x),
+is_text = va.And([
+    va.IsInstance(core.Text),
+    va.sub_component('value',
+                     core.Text.value.fget,
+                     va.IsInstance(str))
+])
 
 
-class Assertion:
-    def apply(self, x):
-        raise NotImplementedError()
-
-
-class CheckerWithMsgPrefix:
-    def __init__(self,
-                 put: unittest.TestCase,
-                 msg_prefix=''):
+class IsParagraphItem(ParagraphItemVisitor, va.ValueAssertion):
+    def apply(self,
+              put: unittest.TestCase,
+              value,
+              message_builder: va.MessageBuilder = va.MessageBuilder()):
         self.put = put
-        self.msg_prefix = msg_prefix
-
-    def msg(self, s: str) -> str:
-        return self.msg_prefix + s
-
-
-def new_with_added_prefix(prefix_component: str, checker: CheckerWithMsgPrefix) -> CheckerWithMsgPrefix:
-    return CheckerWithMsgPrefix(checker.put,
-                                checker.msg_prefix + prefix_component)
-
-
-def check_list(assertion_constructor_for_checker,
-               checker: CheckerWithMsgPrefix,
-               x):
-    checker.put.assertIsInstance(x,
-                                 list,
-                                 checker.msg('Must be a list'))
-    for (index, element) in enumerate(x):
-        assertion = assertion_constructor_for_checker(new_with_added_prefix('[%d]: ' % index, checker))
-        assertion.apply(element)
-
-
-class TextChecker(Assertion):
-    def __init__(self,
-                 checker: CheckerWithMsgPrefix):
-        self.checker = checker
-
-    def apply(self, x):
-        self.checker.put.assertIsInstance(x,
-                                          core.Text,
-                                          self.checker.msg('Must be Text instance'))
-        assert isinstance(x, core.Text)
-        self.checker.put.assertIsInstance(x.value,
-                                          str,
-                                          self.checker.msg('Value must be a str'))
-
-
-class ParagraphItemChecker(Assertion):
-    def __init__(self,
-                 checker: CheckerWithMsgPrefix):
-        self.checker = checker
-
-    def apply(self, item):
-        self.checker.put.assertIsInstance(item,
-                                          core.ParagraphItem)
-        concrete_checker = _ParagraphItemCheckerVisitor(self.checker)
-        concrete_checker.visit(item)
-
-
-class _ParagraphItemCheckerVisitor(ParagraphItemVisitor):
-    def __init__(self,
-                 checker: CheckerWithMsgPrefix):
-        self.checker = checker
+        self.message_builder = message_builder
+        self.visit(value)
 
     def visit_paragraph(self, paragraph: Paragraph):
-        self.checker.put.assertIsInstance(paragraph.start_on_new_line_blocks,
-                                          list,
-                                          self.checker.msg('start_on_new_line_blocks must be a list'))
-        for (pos, text) in enumerate(paragraph.start_on_new_line_blocks):
-            TextChecker(new_with_added_prefix('Text[%d]: ' % pos, self.checker)).apply(text)
+        is_paragraph.apply(self.put, paragraph, self.message_builder)
 
-    def visit_header_value_list(self, header_value_list: lists.HeaderContentList):
-        ListChecker(self.checker).apply(header_value_list)
+    def visit_header_value_list(self, header_value_list: HeaderContentList):
+        is_header_value_list.apply(self.put, header_value_list, self.message_builder)
 
 
-class ListChecker(Assertion):
-    def __init__(self,
-                 checker: CheckerWithMsgPrefix):
-        self.checker = checker
+is_paragraph_item = IsParagraphItem()
 
-    def apply(self, x):
-        self.checker.put.assertIsInstance(x,
-                                          lists.HeaderContentList,
-                                          self.checker.msg('Must be a %s' % lists.HeaderContentList))
-        assert isinstance(x, lists.HeaderContentList)
-        ListFormatChecker(new_with_added_prefix('Format: ', self.checker)).apply(x.format)
-        check_list(ListItemChecker,
-                   new_with_added_prefix('Items', self.checker),
-                   x.items)
+is_paragraph = va.And([
+    va.IsInstance(Paragraph),
+    va.sub_component_list('text blocks',
+                          lambda p: p.start_on_new_line_blocks,
+                          is_text)
+])
 
 
-class ListFormatChecker(Assertion):
-    def __init__(self,
-                 checker: CheckerWithMsgPrefix):
-        self.checker = checker
+class SectionAssertion:
+    def is_section_contents(self,
+                            put: unittest.TestCase,
+                            value,
+                            message_builder: va.MessageBuilder = va.MessageBuilder()):
+        va.And([
+            va.IsInstance(doc.SectionContents),
+            va.sub_component_list('initial_paragraphs',
+                                  doc.SectionContents.initial_paragraphs.fget,
+                                  is_paragraph_item)
+        ]).apply(put, value, message_builder)
+        assert isinstance(value, doc.SectionContents)
+        sections_message = va.sub_component_builder('sections', message_builder)
+        va.IsInstance(list).apply(put, value.sections, sections_message)
+        for (idx, section) in enumerate(value.sections):
+            self.is_section(put, section,
+                            va.sub_component_builder('[%d]' % idx, sections_message))
 
-    def apply(self, x):
-        self.checker.put.assertIsInstance(x,
-                                          lists.Format,
-                                          self.checker.msg('Must be an instance of %s' % lists.Format))
-        assert isinstance(x, lists.Format)
-        self.checker.put.assertIsInstance(x.list_type,
-                                          lists.ListType,
-                                          self.checker.msg('List type must be instance of %s' % lists.ListType))
-        if x.custom_indent_spaces is not None:
-            self.checker.put.assertIsInstance(x.custom_indent_spaces,
-                                              int,
-                                              self.checker.msg('custom_indent_spaces must be either None or an int'))
-        if x.custom_separations is not None:
-            self.checker.put.assertIsInstance(
-                    x.custom_separations,
-                    lists.Separations,
-                    self.checker.msg('custom_separations must be either None or an %s' % lists.Separations))
-
-
-class ListItemChecker(Assertion):
-    def __init__(self,
-                 checker: CheckerWithMsgPrefix):
-        self.checker = checker
-
-    def apply(self, item):
-        self.checker.put.assertIsInstance(item,
-                                          lists.HeaderContentListItem,
-                                          self.checker.msg('Must be a %s' % lists.HeaderContentListItem))
-        assert isinstance(item, lists.HeaderContentListItem)
-        TextChecker(new_with_added_prefix('Header: ', self.checker)).apply(item.header)
-        check_list(ParagraphItemChecker,
-                   new_with_added_prefix('Values', self.checker),
-                   item.content_paragraph_items)
+    def is_section(self,
+                   put: unittest.TestCase,
+                   value,
+                   message_builder: va.MessageBuilder = va.MessageBuilder()):
+        va.IsInstance(doc.Section).apply(put, value, message_builder)
+        assert isinstance(value, doc.Section)
+        va.sub_component('header',
+                         doc.Section.header.fget,
+                         is_text).apply(put, value, message_builder)
+        self.is_section_contents(put, value.contents,
+                                 va.sub_component_builder('contents', message_builder))
 
 
-class SectionContentsChecker(Assertion):
-    def __init__(self,
-                 checker: CheckerWithMsgPrefix):
-        self.checker = checker
+SECTION_ASSERTION = SectionAssertion()
 
-    def apply(self, x):
-        self.checker.put.assertIsInstance(x,
-                                          doc.SectionContents,
-                                          self.checker.msg('Must be SectionContents instance'))
-        assert isinstance(x, doc.SectionContents)
-        check_list(ParagraphItemChecker,
-                   new_with_added_prefix('Initial paras', self.checker),
-                   x.initial_paragraphs)
-        check_list(SectionChecker,
-                   new_with_added_prefix('sections', self.checker),
-                   x.sections)
+is_section_contents = va.OfCallable(SECTION_ASSERTION.is_section_contents)
 
+is_section = va.OfCallable(SECTION_ASSERTION.is_section)
 
-class SectionChecker(Assertion):
-    def __init__(self,
-                 checker: CheckerWithMsgPrefix):
-        self.checker = checker
+is_list_item = va.And([
+    va.IsInstance(lists.HeaderContentListItem),
+    va.sub_component('header',
+                     lists.HeaderContentListItem.header.fget,
+                     is_text),
+    va.sub_component_list('values',
+                          lists.HeaderContentListItem.content_paragraph_items.fget,
+                          IsParagraphItem())
+])
 
-    def apply(self, x):
-        self.checker.put.assertIsInstance(x,
-                                          doc.Section,
-                                          self.checker.msg('Must be Section instance'))
-        assert isinstance(x, doc.Section)
-        TextChecker(new_with_added_prefix('header: ', self.checker)).apply(x.header)
-        SectionContentsChecker(new_with_added_prefix('contents: ', self.checker)).apply(x.contents)
+is_separations = va.IsInstance(lists.Separations)
+
+is_list_format = va.And([
+    va.IsInstance(lists.Format),
+    va.sub_component('list_type',
+                     lists.Format.list_type.fget,
+                     va.IsInstance(lists.ListType)),
+    va.sub_component('custom_indent_spaces',
+                     lists.Format.custom_indent_spaces.fget,
+                     va.optional(va.IsInstance(int))),
+    va.sub_component('custom_separations',
+                     lists.Format.custom_separations.fget,
+                     va.optional(is_separations)),
+])
+
+is_header_value_list = va.And([
+    va.IsInstance(lists.HeaderContentList),
+    va.sub_component('format',
+                     lists.HeaderContentList.list_format.fget,
+                     is_list_format),
+    va.sub_component_list('items',
+                          lists.HeaderContentList.items.fget,
+                          is_list_item),
+])
