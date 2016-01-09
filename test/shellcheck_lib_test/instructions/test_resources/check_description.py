@@ -8,6 +8,56 @@ from shellcheck_lib.test_case.instruction_description import Description, Invoka
 from shellcheck_lib_test.general.textformat.test_resources import structure as struct_check
 
 
+def suite_for_description(description: Description) -> unittest.TestSuite:
+    return unittest.TestSuite(tcc(description) for tcc in [
+        TestInstructionName,
+        TestSingleLineDescription,
+        TestMainDescriptionRest,
+        TestInvokationVariants,
+        TestSyntaxElementDescriptions,
+    ])
+
+
+class WithDescriptionBase(unittest.TestCase):
+    def __init__(self, description: Description):
+        super().__init__()
+        self.description = description
+
+
+class TestInstructionName(WithDescriptionBase):
+    def runTest(self):
+        actual = self.description.instruction_name()
+        self.assertIsInstance(actual, str)
+
+
+class TestSingleLineDescription(WithDescriptionBase):
+    def runTest(self):
+        actual = self.description.single_line_description()
+        self.assertIsInstance(actual, str)
+
+
+class TestMainDescriptionRest(WithDescriptionBase):
+    def runTest(self):
+        actual = self.description.main_description_rest()
+        struct_check.paragraph_item_list(self, actual)
+
+
+class TestInvokationVariants(WithDescriptionBase):
+    def runTest(self):
+        actual = self.description.invokation_variants()
+        struct_check.check_list(InvokationVariantChecker,
+                                struct_check.CheckerWithMsgPrefix(self),
+                                actual)
+
+
+class TestSyntaxElementDescriptions(WithDescriptionBase):
+    def runTest(self):
+        actual = self.description.syntax_element_descriptions()
+        struct_check.check_list(SyntaxElementDescriptionChecker,
+                                struct_check.CheckerWithMsgPrefix(self),
+                                actual)
+
+
 class TestDescriptionBase(unittest.TestCase):
     """
     Tests a Description by rendering it with a Formatter
