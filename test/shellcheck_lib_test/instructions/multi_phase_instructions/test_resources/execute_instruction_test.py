@@ -3,11 +3,11 @@ import unittest
 from shellcheck_lib.instructions.utils import relative_path_options as options
 from shellcheck_lib_test.instructions.multi_phase_instructions.test_resources.configuration import ConfigurationBase, \
     suite_for_cases
-from shellcheck_lib_test.instructions.test_resources import eds_populator
 from shellcheck_lib_test.instructions.test_resources.execute_utils import source_for_interpreting
-from shellcheck_lib_test.instructions.test_resources.utils import single_line_source
 from shellcheck_lib_test.test_resources import python_program_execution as py_exe
+from shellcheck_lib_test.test_resources.execution import eds_populator
 from shellcheck_lib_test.test_resources.file_structure import DirContents, empty_file
+from shellcheck_lib_test.test_resources.parse import single_line_source
 
 
 class Configuration(ConfigurationBase):

@@ -2,8 +2,8 @@ import os
 import unittest
 
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
-from shellcheck_lib_test.instructions.test_resources import eds_populator, eds_contents_check
-from shellcheck_lib_test.instructions.test_resources.utils import execution_directory_structure
+from shellcheck_lib_test.test_resources.execution import eds_populator, eds_contents_check
+from shellcheck_lib_test.test_resources.execution.utils import execution_directory_structure
 from shellcheck_lib_test.test_resources.file_checks import FileChecker
 from shellcheck_lib_test.test_resources.value_assertion import ValueAssertion, anything_goes
 

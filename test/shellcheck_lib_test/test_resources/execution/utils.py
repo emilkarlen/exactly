@@ -1,20 +1,14 @@
 import os
 import pathlib
-import shlex
 import tempfile
 from contextlib import contextmanager
 from time import strftime, localtime
 
-from shellcheck_lib.document import parse
-from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionParserSource
 from shellcheck_lib.execution import execution_directory_structure as eds_module
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
-from shellcheck_lib.general import line_source
-from shellcheck_lib.general.line_source import LineSequenceBuilder
 from shellcheck_lib.test_case.sections import common as i
 from shellcheck_lib.test_case.sections.common import HomeAndEds
-from shellcheck_lib_test.instructions.test_resources import eds_populator
+from shellcheck_lib_test.test_resources.execution import eds_populator
 from shellcheck_lib_test.test_resources.file_structure import DirContents, empty_dir_contents
 from shellcheck_lib_test.test_resources.file_utils import write_file
 
@@ -109,48 +103,3 @@ def execution_directory_structure(contents: eds_populator.EdsPopulator = eds_pop
         eds = eds_module.construct_at(eds_root_dir)
         contents.apply(eds)
         yield eds
-
-
-def new_source(instruction_name: str, arguments: str) -> SingleInstructionParserSource:
-    first_line = instruction_name + ' ' + arguments
-    return SingleInstructionParserSource(
-            new_line_sequence(first_line),
-            arguments)
-
-
-def new_source2(arguments: str) -> SingleInstructionParserSource:
-    first_line = 'instruction name' + ' ' + arguments
-    return SingleInstructionParserSource(
-            new_line_sequence(first_line),
-            arguments)
-
-
-def single_line_source(arguments: str) -> SingleInstructionParserSource:
-    first_line = 'instruction-name' + ' ' + arguments
-    return SingleInstructionParserSource(
-            new_line_sequence(first_line),
-            arguments)
-
-
-def multi_line_source(first_line_arguments: str,
-                      following_lines: list) -> SingleInstructionParserSource:
-    first_line = 'instruction-name' + ' ' + first_line_arguments
-    return SingleInstructionParserSource(
-            new_line_sequence(first_line,
-                              following_lines=tuple(following_lines)),
-            first_line_arguments)
-
-
-def argument_list_source(arguments: list,
-                         following_lines: iter = ()) -> SingleInstructionParserSource:
-    return multi_line_source(' '.join(map(shlex.quote, arguments)),
-                             following_lines)
-
-
-def new_line_sequence(first_line: str,
-                      following_lines: tuple = ()) -> LineSequenceBuilder:
-    return line_source.LineSequenceBuilder(
-            parse.LineSequenceSourceFromListOfLines(
-                    parse.ListOfLines(list(following_lines))),
-            1,
-            first_line)

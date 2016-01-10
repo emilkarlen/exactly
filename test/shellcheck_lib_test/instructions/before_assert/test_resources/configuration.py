@@ -6,9 +6,9 @@ from shellcheck_lib.test_case.os_services import OsServices, new_default
 from shellcheck_lib_test.instructions.before_assert.test_resources.instruction_check import arrangement, check, \
     is_success, Expectation
 from shellcheck_lib_test.instructions.multi_phase_instructions.test_resources.configuration import ConfigurationBase
-from shellcheck_lib_test.instructions.test_resources import eds_populator
 from shellcheck_lib_test.instructions.test_resources import sh_check__va
 from shellcheck_lib_test.instructions.test_resources import svh_check__va
+from shellcheck_lib_test.test_resources.execution import eds_populator
 from shellcheck_lib_test.test_resources.value_assertion import ValueAssertion
 
 

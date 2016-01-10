@@ -5,7 +5,7 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
 from shellcheck_lib.instructions.multi_phase_instructions import env as sut
 from shellcheck_lib.test_case.os_services import new_with_environ
 from shellcheck_lib_test.instructions.test_resources.check_description import suite_for_description
-from shellcheck_lib_test.instructions.test_resources.utils import new_source2
+from shellcheck_lib_test.test_resources.parse import new_source2
 
 
 def identity(x): return x

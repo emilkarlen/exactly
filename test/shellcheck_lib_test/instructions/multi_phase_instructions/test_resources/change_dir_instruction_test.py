@@ -4,9 +4,9 @@ import unittest
 from shellcheck_lib_test.instructions.multi_phase_instructions.test_resources.configuration import ConfigurationBase, \
     suite_for_cases
 from shellcheck_lib_test.instructions.test_resources.assertion_utils.side_effects__va import AssertCwdIsSubDirOfActDir
-from shellcheck_lib_test.instructions.test_resources.eds_populator import act_dir_contents
-from shellcheck_lib_test.instructions.test_resources.utils import new_source2
+from shellcheck_lib_test.test_resources.execution.eds_populator import act_dir_contents
 from shellcheck_lib_test.test_resources.file_structure import DirContents, Dir, empty_dir, empty_file
+from shellcheck_lib_test.test_resources.parse import new_source2
 from shellcheck_lib_test.test_resources.value_assertion import ValueAssertion
 
 

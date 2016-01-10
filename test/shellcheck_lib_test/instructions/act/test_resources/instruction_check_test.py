@@ -17,9 +17,9 @@ from shellcheck_lib_test.instructions.act.test_resources import instruction_chec
 from shellcheck_lib_test.instructions.test_resources import sh_check__va
 from shellcheck_lib_test.instructions.test_resources import svh_check__va
 from shellcheck_lib_test.instructions.test_resources import test_of_test_framework_utils as test_misc
-from shellcheck_lib_test.instructions.test_resources.eds_contents_check__va import act_dir_contains_exactly
 from shellcheck_lib_test.instructions.test_resources.test_of_test_framework_utils import single_line_source
 from shellcheck_lib_test.test_resources import value_assertion as va
+from shellcheck_lib_test.test_resources.execution.eds_contents_check__va import act_dir_contains_exactly
 from shellcheck_lib_test.test_resources.file_structure import DirContents, empty_file
 from shellcheck_lib_test.test_resources.value_assertion_test import \
     TestException

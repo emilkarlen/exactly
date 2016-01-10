@@ -3,6 +3,7 @@ Test of test-infrastructure: instruction_check.
 """
 import unittest
 
+import shellcheck_lib_test.test_resources.parse
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParserSource
 from shellcheck_lib.test_case.sections.anonymous import ConfigurationBuilder
@@ -12,7 +13,6 @@ from shellcheck_lib_test.instructions.configuration.test_resources import config
 from shellcheck_lib_test.instructions.configuration.test_resources import instruction_check
 from shellcheck_lib_test.instructions.configuration.test_resources.instruction_check import Arrangement, Expectation
 from shellcheck_lib_test.instructions.test_resources import test_of_test_framework_utils as test_misc
-from shellcheck_lib_test.instructions.test_resources import utils
 from shellcheck_lib_test.instructions.test_resources.test_of_test_framework_utils import ParserThatGives
 
 
@@ -48,7 +48,7 @@ class ConfigurationCheckRaisesTestError(configuration_check.Assertion):
 
 
 def single_line_source() -> SingleInstructionParserSource:
-    return utils.new_source('instruction name', 'instruction arguments')
+    return shellcheck_lib_test.test_resources.parse.new_source('instruction name', 'instruction arguments')
 
 
 _SUCCESSFUL_INSTRUCTION = anonymous_phase_instruction_that()

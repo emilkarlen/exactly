@@ -6,13 +6,12 @@ from shellcheck_lib.instructions.setup import install as sut
 from shellcheck_lib.test_case.instruction_description import Description
 from shellcheck_lib_test.instructions.setup.test_resources.instruction_check import TestCaseBase, Arrangement, \
     Expectation
-from shellcheck_lib_test.instructions.test_resources import eds_contents_check
-from shellcheck_lib_test.instructions.test_resources import eds_populator
 from shellcheck_lib_test.instructions.test_resources import sh_check
 from shellcheck_lib_test.instructions.test_resources import svh_check
 from shellcheck_lib_test.instructions.test_resources.check_description import TestDescriptionBase
-from shellcheck_lib_test.instructions.test_resources.utils import new_source2
+from shellcheck_lib_test.test_resources.execution import eds_populator, eds_contents_check
 from shellcheck_lib_test.test_resources.file_structure import DirContents, File, Dir, empty_file, empty_dir
+from shellcheck_lib_test.test_resources.parse import new_source2
 
 
 class TestParse(unittest.TestCase):
