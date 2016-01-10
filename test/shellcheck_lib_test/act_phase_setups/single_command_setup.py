@@ -10,8 +10,8 @@ from shellcheck_lib.test_case.sections.act.phase_setup import SourceSetup
 from shellcheck_lib.test_case.sections.act.script_source import ScriptSourceBuilder
 from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib_test.act_phase_setups.test_resources import py_program
-from shellcheck_lib_test.act_phase_setups.test_resources.act_program_executor import ActProgramExecutorTestSetup, \
-    suite_for
+from shellcheck_lib_test.act_phase_setups.test_resources.act_program_executor import Configuration, \
+    suite_for_execution
 from shellcheck_lib_test.test_resources import python_program_execution as py_exe
 from shellcheck_lib_test.test_resources.execution.utils import execution_directory_structure
 from shellcheck_lib_test.test_resources.file_structure import File
@@ -70,7 +70,7 @@ class ExecutorValidationTestCases(unittest.TestCase):
         return self.setup.script_builder_constructor()
 
 
-class TestSetup(ActProgramExecutorTestSetup):
+class TheConfiguration(Configuration):
     def __init__(self):
         self.setup = sut.act_phase_setup()
         super().__init__(self.setup.executor)
@@ -177,7 +177,7 @@ sys.exit(len(sys.argv) - 1)
 def suite():
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(ExecutorValidationTestCases))
-    ret_val.addTest(suite_for(TestSetup()))
+    ret_val.addTest(suite_for_execution(TheConfiguration()))
     return ret_val
 
 

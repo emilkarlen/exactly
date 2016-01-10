@@ -6,10 +6,10 @@ from shellcheck_lib.script_language import python3
 from shellcheck_lib.test_case.sections.act.script_source import ScriptSourceBuilder
 from shellcheck_lib_test.act_phase_setups.test_resources import py_program
 from shellcheck_lib_test.act_phase_setups.test_resources.act_program_executor import \
-    ActProgramExecutorTestSetup, suite_for
+    Configuration, suite_for_execution
 
 
-class TestSetup(ActProgramExecutorTestSetup):
+class TheConfiguration(Configuration):
     def __init__(self):
         self.setup = sut.new_for_script_language_setup(python3.script_language_setup())
         super().__init__(self.setup.executor)
@@ -45,7 +45,7 @@ class TestSetup(ActProgramExecutorTestSetup):
 
 
 def suite() -> unittest.TestSuite:
-    return suite_for(TestSetup())
+    return suite_for_execution(TheConfiguration())
 
 
 if __name__ == '__main__':

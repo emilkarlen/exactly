@@ -16,7 +16,7 @@ from shellcheck_lib_test.test_resources.process import ProcessExecutor, SubProce
 from shellcheck_lib_test.test_resources.process import capture_process_executor_result
 
 
-class ActProgramExecutorTestSetup:
+class Configuration:
     def __init__(self, sut: ActProgramExecutor):
         self.sut = sut
 
@@ -45,7 +45,7 @@ class ActProgramExecutorTestSetup:
         raise NotImplementedError()
 
 
-def suite_for(setup: ActProgramExecutorTestSetup) -> unittest.TestSuite:
+def suite_for_execution(setup: Configuration) -> unittest.TestSuite:
     return unittest.TestSuite(tcc(setup) for tcc in
                               [TestStdoutIsConnectedToProgram,
                                TestStderrIsConnectedToProgram,
@@ -76,7 +76,7 @@ class _ProcessExecutorForProgramExecutor(ProcessExecutor):
 
 
 class TestBase(unittest.TestCase):
-    def __init__(self, test_setup: ActProgramExecutorTestSetup):
+    def __init__(self, test_setup: Configuration):
         super().__init__()
         self.test_setup = test_setup
 
