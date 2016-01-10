@@ -7,7 +7,8 @@ from shellcheck_lib.test_case.sections import common as i
 from shellcheck_lib.test_case.sections.act.instruction import ActPhaseInstruction
 from shellcheck_lib.test_case.sections.act.phase_setup import PhaseEnvironmentForScriptGeneration
 from shellcheck_lib.test_case.sections.act.script_source import ScriptSourceBuilder
-from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
+from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep, \
+    HomeAndEds
 from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib_test.instructions.test_resources import sh_check__va
@@ -22,13 +23,30 @@ from shellcheck_lib_test.test_resources.execution import eds_populator, utils
 
 class Arrangement(ArrangementWithEds):
     def __init__(self,
-                 source_builder: ScriptSourceBuilder =
-                 ScriptSourceBuilder(StandardScriptLanguage()),
+                 source_builder: ScriptSourceBuilder = None,
                  home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
                  eds_contents_before_main: eds_populator.EdsPopulator = eds_populator.empty(),
                  os_services: OsServices = new_default()):
         super().__init__(home_dir_contents, eds_contents_before_main, os_services)
+        if source_builder is None:
+            source_builder = ScriptSourceBuilder(StandardScriptLanguage())
         self.source_builder = source_builder
+
+
+class SourceBuilderCheckInfo(tuple):
+    def __new__(cls,
+                home_and_eds: HomeAndEds,
+                source_builder: ScriptSourceBuilder):
+        return tuple.__new__(cls, (home_and_eds,
+                                   source_builder))
+
+    @property
+    def home_and_eds(self) -> HomeAndEds:
+        return self[0]
+
+    @property
+    def source_builder(self) -> ScriptSourceBuilder:
+        return self[1]
 
 
 class Expectation(ExpectationBase):
@@ -38,6 +56,9 @@ class Expectation(ExpectationBase):
                  main_side_effects_on_script_source: va.ValueAssertion = va.anything_goes(),
                  main_side_effects_on_files: va.ValueAssertion = va.anything_goes(),
                  home_and_eds: va.ValueAssertion = va.anything_goes()):
+        """
+        :param main_side_effects_on_script_source: given a  SourceBuilderCheckInfo as value
+        """
         super().__init__(validation_pre_eds, main_side_effects_on_files, home_and_eds)
         self.validation_post_setup = validation_post_setup
         self.main_result = sh_check__va.is_sh_and(main_result)
@@ -102,7 +123,7 @@ class Executor(InstructionExecutionBase):
             if not validate_result.is_success:
                 return
             self._execute_main(environment, instruction)
-            self._check_main_side_effects_on_script_source()
+            self._check_main_side_effects_on_script_source(environment)
             self._check_main_side_effects_on_files(home_and_eds)
             self._check_side_effects_on_home_and_eds(home_and_eds)
 
@@ -134,6 +155,9 @@ class Executor(InstructionExecutionBase):
                     result)
         return result
 
-    def _check_main_side_effects_on_script_source(self):
+    def _check_main_side_effects_on_script_source(self,
+                                                  environment: i.GlobalEnvironmentForPostEdsPhase):
+        value = SourceBuilderCheckInfo(environment.home_and_eds,
+                                       self.arrangement.source_builder)
         self.expectation.main_side_effects_on_script_source.apply(self.put,
-                                                                  self.arrangement.source_builder)
+                                                                  value)
