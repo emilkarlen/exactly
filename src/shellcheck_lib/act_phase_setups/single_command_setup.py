@@ -1,3 +1,4 @@
+import os
 import pathlib
 import shlex
 
@@ -45,10 +46,13 @@ class _ActProgramExecutorForSingleCommand(ActProgramExecutor):
                  source: ScriptSourceBuilder) -> svh.SuccessOrValidationErrorOrHardError:
         num_source_lines = len(source.source_lines)
         if num_source_lines != 1:
-            msg = 'There must be a single source line. Found {} lines'.format(num_source_lines)
+            header = 'There must be a single command. Found {}'.format(num_source_lines)
+            msg = header
+            if num_source_lines > 0:
+                msg = os.linesep.join([header + ':'] + source.source_lines)
             return svh.new_svh_validation_error(msg)
         if source.source_lines[0].isspace():
-            msg = 'Source statement is white space'
+            msg = 'command is only white space'
             return svh.new_svh_validation_error(msg)
         return svh.new_svh_success()
 
