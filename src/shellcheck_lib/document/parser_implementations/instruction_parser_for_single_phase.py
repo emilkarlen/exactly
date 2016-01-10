@@ -1,9 +1,10 @@
 from shellcheck_lib.document import model
-from shellcheck_lib.document.model import Instruction
 from shellcheck_lib.document import parse
 from shellcheck_lib.document import syntax
+from shellcheck_lib.document.model import Instruction
 from shellcheck_lib.document.parse import SourceError
 from shellcheck_lib.general import line_source
+from shellcheck_lib.test_case.sections.common import TestCaseInstruction
 
 
 class SingleInstructionInvalidArgumentException(Exception):
@@ -73,7 +74,7 @@ class SectionElementParserForStandardCommentAndEmptyLines(parse.SectionElementPa
         return model.new_instruction_e(source.build(), instruction)
 
     def _parse_instruction(self,
-                           source: line_source.LineSequenceBuilder) -> Instruction:
+                           source: line_source.LineSequenceBuilder) -> TestCaseInstruction:
         raise NotImplementedError()
 
 

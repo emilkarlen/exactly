@@ -3,7 +3,6 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
     SectionElementParserForDictionaryOfInstructions, SectionElementParserForStandardCommentAndEmptyLines
 from shellcheck_lib.execution import phases
 from shellcheck_lib.general import line_source
-from shellcheck_lib.general.line_source import LineSource
 from shellcheck_lib.test_case import test_case_doc
 from shellcheck_lib.test_case.instruction_setup import InstructionsSetup
 from shellcheck_lib.test_case.sections import common
@@ -17,7 +16,7 @@ class Parser:
         self.__plain_file_parser = plain_file_parser
 
     def apply(self,
-              plain_test_case: LineSource) -> test_case_doc.TestCase:
+              plain_test_case: line_source.LineSource) -> test_case_doc.TestCase:
         document = self.__plain_file_parser.apply(plain_test_case)
         return test_case_doc.TestCase(
                 document.elements_for_phase_or_empty_if_phase_not_present(phases.ANONYMOUS.section_name),
