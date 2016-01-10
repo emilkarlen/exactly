@@ -1,4 +1,5 @@
 import os
+import types
 
 from shellcheck_lib.instructions.act import executable_file as sut
 from shellcheck_lib_test.instructions.act.test_resources.instruction_check import *
@@ -19,8 +20,7 @@ class TestBase(TestCaseBase):
                source: str,
                arrangement: Arrangement,
                expectation: Expectation):
-        super()._check(sut.ExecutableFileInstruction,
-                       source,
+        super()._check(sut.ExecutableFileInstruction(source),
                        arrangement,
                        expectation)
 

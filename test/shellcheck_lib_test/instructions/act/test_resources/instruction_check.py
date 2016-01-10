@@ -1,4 +1,3 @@
-import types
 import unittest
 
 from shellcheck_lib.script_language.standard_script_language import StandardScriptLanguage
@@ -70,19 +69,17 @@ is_success = Expectation
 
 class TestCaseBase(unittest.TestCase):
     def _check(self,
-               instruction_constructor: types.FunctionType,
-               source: str,
+               instruction: ActPhaseInstruction,
                arrangement: Arrangement,
                expectation: Expectation):
-        check(self, instruction_constructor, source, arrangement, expectation)
+        check(self, instruction, arrangement, expectation)
 
 
 def check(put: unittest.TestCase,
-          instruction_constructor: types.FunctionType,
-          source: str,
+          instruction: ActPhaseInstruction,
           arrangement: Arrangement,
           expectation: Expectation):
-    Executor(put, arrangement, expectation).execute(instruction_constructor, source)
+    Executor(put, arrangement, expectation).execute(instruction)
 
 
 class Executor(InstructionExecutionBase):
@@ -105,9 +102,7 @@ class Executor(InstructionExecutionBase):
         return actual
 
     def execute(self,
-                instruction_constructor: types.FunctionType,
-                source: str):
-        instruction = instruction_constructor(source)
+                instruction: ActPhaseInstruction):
         self._check_instruction(ActPhaseInstruction, instruction)
         assert isinstance(instruction, ActPhaseInstruction)
         with utils.home_and_eds_and_test_as_curr_dir(

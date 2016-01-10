@@ -5,19 +5,16 @@ import functools
 import os
 import unittest
 
-from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser
-from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionParserSource
+from shellcheck_lib.test_case.sections.act.instruction import ActPhaseInstruction
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib_test.execution.test_resources.instruction_test_resources import \
     act_phase_instruction_that
 from shellcheck_lib_test.instructions.act.test_resources import instruction_check as sut
+from shellcheck_lib_test.instructions.act.test_resources.instruction_check import SourceBuilderCheckInfo
 from shellcheck_lib_test.instructions.test_resources import sh_check__va
 from shellcheck_lib_test.instructions.test_resources import svh_check__va
-from shellcheck_lib_test.instructions.test_resources import test_of_test_framework_utils as test_misc
-from shellcheck_lib_test.instructions.test_resources.test_of_test_framework_utils import single_line_source
 from shellcheck_lib_test.test_resources import value_assertion as va
 from shellcheck_lib_test.test_resources.execution.eds_contents_check__va import act_dir_contains_exactly
 from shellcheck_lib_test.test_resources.file_structure import DirContents, empty_file
@@ -36,24 +33,21 @@ class TestCases(sut.TestCaseBase):
         self.tc = ConcreteTestCase()
 
     def _check(self,
-               parser: SingleInstructionParser,
-               source: SingleInstructionParserSource,
+               instruction: ActPhaseInstruction,
                arrangement: sut.Arrangement,
                expectation: sut.Expectation):
-        self.tc._check(parser, source, arrangement, expectation)
+        self.tc._check(instruction, arrangement, expectation)
 
     def test_successful_flow(self):
         self._check(
-                PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
-                single_line_source(),
+                SUCCESSFUL_INSTRUCTION,
                 sut.Arrangement(),
                 sut.is_success())
 
     def test_fail_due_to_unexpected_result_from__validate_pre_eds(self):
         with self.assertRaises(TestException):
             self._check(
-                    PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
-                    single_line_source(),
+                    SUCCESSFUL_INSTRUCTION,
                     sut.Arrangement(),
                     sut.Expectation(validation_pre_eds=svh_check__va.is_hard_error()),
             )
@@ -61,8 +55,7 @@ class TestCases(sut.TestCaseBase):
     def test_fail_due_to_unexpected_result_from__validate_post_setup(self):
         with self.assertRaises(TestException):
             self._check(
-                    PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
-                    single_line_source(),
+                    SUCCESSFUL_INSTRUCTION,
                     sut.Arrangement(),
                     sut.Expectation(validation_post_setup=svh_check__va.is_hard_error()),
             )
@@ -70,17 +63,30 @@ class TestCases(sut.TestCaseBase):
     def test_fail_due_to_unexpected_result__from_main(self):
         with self.assertRaises(TestException):
             self._check(
-                    PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
-                    single_line_source(),
+                    SUCCESSFUL_INSTRUCTION,
                     sut.Arrangement(),
                     sut.Expectation(main_result=sh_check__va.is_hard_error()),
+            )
+
+    def test_correct_argument_to_check_of_side_effects_on_source_builder(self):
+        self._check(
+                SUCCESSFUL_INSTRUCTION,
+                sut.Arrangement(),
+                sut.Expectation(main_side_effects_on_script_source=va.IsInstance(SourceBuilderCheckInfo)),
+        )
+
+    def test_fail_due_to_fail_of_side_effects_on_source_builder(self):
+        with self.assertRaises(TestException):
+            self._check(
+                    SUCCESSFUL_INSTRUCTION,
+                    sut.Arrangement(),
+                    sut.Expectation(main_side_effects_on_script_source=va.fail('expected failure')),
             )
 
     def test_fail_due_to_fail_of_side_effects_on_files(self):
         with self.assertRaises(TestException):
             self._check(
-                    PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
-                    single_line_source(),
+                    SUCCESSFUL_INSTRUCTION,
                     sut.Arrangement(),
                     sut.Expectation(main_side_effects_on_files=act_dir_contains_exactly(
                             DirContents([empty_file('non-existing-file.txt')]))),
@@ -88,22 +94,20 @@ class TestCases(sut.TestCaseBase):
 
     def test_that_cwd_for_main__and__validate_post_setup_is_act_dir(self):
         self._check(
-                test_misc.ParserThatGives(instruction_that_asserts_cwd_is_act_dir(self.tc)),
-                single_line_source(),
+                instruction_that_asserts_cwd_is_act_dir(self.tc),
                 sut.Arrangement(),
                 sut.is_success())
 
     def test_fail_due_to_side_effects_check(self):
         with self.assertRaises(TestException):
             self._check(
-                    PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
-                    single_line_source(),
+                    SUCCESSFUL_INSTRUCTION,
                     sut.Arrangement(),
                     sut.Expectation(home_and_eds=va.IsInstance(bool)),
             )
 
 
-PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION = test_misc.ParserThatGives(act_phase_instruction_that())
+SUCCESSFUL_INSTRUCTION = act_phase_instruction_that()
 
 
 def instruction_that_asserts_cwd_is_act_dir(put: unittest.TestCase):
