@@ -8,3 +8,40 @@ act-program-executor) kan hanteras som inställningar för sviten.
 
 Programmet ska köra, och rapportera, som om en svit angivits som innehöll de
 givna fallen.
+* <2015-11-04 ons> Ange filstruktur i textformat att installera
+På liknande sätt som jag gör i Python:
+DirContents([File('f','contents'], Dir('d', [...]))
+
+Vore ju bekvämt om det fanns en liknande notation för filer att installera.
+Då skulle man slippa ha dem i filsystemet, i de fall det inte är nödvändigt av
+andra orsaker.
+
+Kruxet är bra syntax.
+Alternativ:
+ - egendefinierad
+ - JSON
+ - XML
+
+T ex
+----------------------------------------
+[setup]
+file-structure --xml <<EOF
+<contents>
+  <file name="empty-file"/>
+  <file name="g" timestamp="2015-11-03 10:20:30"/>
+  <file name="non-empty">contents of file</file>
+  <dir name="empty-dir"/>
+  <dir name="non-empty-dir">
+    <file name="f"/>
+  </dir>
+<contents>
+EOF
+----------------------------------------
+
+Ev kunde ett antal xml entities sättas så att de fanns att tillgå, på ung
+samma sätt som med omgivningsvariabler.
+
+
+assert/JÄMFÖRELSE
+Vore naturligtvis även användbart att kunna asserta att innehållet i en
+katalog är identiskt (el innehåller som minst) en sådan hårdkodad filstruktur.
