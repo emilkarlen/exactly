@@ -2,10 +2,10 @@ import unittest
 
 from shellcheck_lib_test.instructions.multi_phase_instructions.test_resources.configuration import ConfigurationBase, \
     suite_for_cases
-from shellcheck_lib_test.instructions.test_resources.eds_contents_check__va import act_dir_contains_exactly
-from shellcheck_lib_test.instructions.test_resources.eds_populator import act_dir_contents
-from shellcheck_lib_test.instructions.test_resources.utils import new_source2
+from shellcheck_lib_test.test_resources.execution.eds_contents_check__va import act_dir_contains_exactly
+from shellcheck_lib_test.test_resources.execution.eds_populator import act_dir_contents
 from shellcheck_lib_test.test_resources.file_structure import DirContents, empty_dir, Dir, empty_file
+from shellcheck_lib_test.test_resources.parse import new_source2
 
 
 class Configuration(ConfigurationBase):

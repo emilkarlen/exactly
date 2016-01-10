@@ -11,7 +11,7 @@ from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
 from shellcheck_lib_test.execution.partial_execution.test_resources.basic import \
     TestCaseWithCommonDefaultForSetupAssertCleanup, Result
-from shellcheck_lib_test.test_resources.eds_test import ResultFilesCheck
+from shellcheck_lib_test.test_resources.execution.eds_test import ResultFilesCheck
 
 INPUT_TMP_FILE = 'input.txt'
 

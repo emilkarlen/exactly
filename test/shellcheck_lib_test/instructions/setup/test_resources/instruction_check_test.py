@@ -3,6 +3,7 @@ Test of test-infrastructure: instruction_check.
 """
 import unittest
 
+import shellcheck_lib_test.test_resources.parse
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParserSource
 from shellcheck_lib.test_case.os_services import OsServices
@@ -17,7 +18,6 @@ from shellcheck_lib_test.instructions.setup.test_resources import instruction_ch
 from shellcheck_lib_test.instructions.setup.test_resources import settings_check
 from shellcheck_lib_test.instructions.setup.test_resources.instruction_check import Arrangement, is_success, Expectation
 from shellcheck_lib_test.instructions.test_resources import test_of_test_framework_utils as test_misc
-from shellcheck_lib_test.instructions.test_resources import utils
 from shellcheck_lib_test.instructions.test_resources.test_of_test_framework_utils import ParserThatGives
 
 
@@ -96,7 +96,7 @@ class SettingsCheckRaisesTestError(settings_check.Assertion):
 
 
 def single_line_source() -> SingleInstructionParserSource:
-    return utils.new_source2('instruction arguments')
+    return shellcheck_lib_test.test_resources.parse.new_source2('instruction arguments')
 
 
 SUCCESSFUL_INSTRUCTION = setup_phase_instruction_that()

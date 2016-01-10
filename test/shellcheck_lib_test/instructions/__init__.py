@@ -1,5 +1,6 @@
 import unittest
 
+from shellcheck_lib_test.instructions import act
 from shellcheck_lib_test.instructions import assert_phase
 from shellcheck_lib_test.instructions import before_assert
 from shellcheck_lib_test.instructions import cleanup
@@ -12,6 +13,7 @@ from shellcheck_lib_test.instructions import utils
 def suite():
     return unittest.TestSuite([
         utils.suite(),
+        act.suite(),
         multi_phase_instructions.suite(),
         configuration.suite(),
         setup.suite(),

@@ -4,7 +4,7 @@ from shellcheck_lib.test_case.sections.act.phase_setup import PhaseEnvironmentFo
 from shellcheck_lib.test_case.sections.result import sh
 
 
-class ExecutableProgramInstruction(ActPhaseInstruction):
+class ExecutableFileInstruction(ActPhaseInstruction):
     def __init__(self,
                  source_code: str):
         self.source_code = source_code

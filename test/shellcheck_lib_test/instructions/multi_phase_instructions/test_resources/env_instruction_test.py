@@ -3,7 +3,7 @@ import unittest
 from shellcheck_lib.test_case.os_services import new_with_environ
 from shellcheck_lib_test.instructions.multi_phase_instructions.test_resources.configuration import ConfigurationBase, \
     suite_for_cases
-from shellcheck_lib_test.instructions.test_resources.utils import new_source2
+from shellcheck_lib_test.test_resources.parse import new_source2
 
 
 class TestCaseBase(unittest.TestCase):

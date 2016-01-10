@@ -9,7 +9,7 @@ from shellcheck_lib.test_case.sections.act.instruction import PhaseEnvironmentFo
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib_test.execution.partial_execution.test_resources.basic import \
     TestCaseWithCommonDefaultForSetupAssertCleanup, Result
-from shellcheck_lib_test.test_resources.eds_test import ResultFilesCheck
+from shellcheck_lib_test.test_resources.execution.eds_test import ResultFilesCheck
 
 _TEXT_ON_STDOUT = 'on stdout'
 _TEXT_ON_STDERR = 'on stderr'

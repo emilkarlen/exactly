@@ -13,8 +13,8 @@ from shellcheck_lib_test.instructions.setup.test_resources.instruction_check imp
 from shellcheck_lib_test.instructions.setup.test_resources.settings_check import Assertion
 from shellcheck_lib_test.instructions.test_resources import svh_check
 from shellcheck_lib_test.instructions.test_resources.check_description import TestDescriptionBase
-from shellcheck_lib_test.instructions.test_resources.utils import argument_list_source, new_source2
 from shellcheck_lib_test.test_resources.file_structure import DirContents, empty_file, empty_dir
+from shellcheck_lib_test.test_resources.parse import new_source2, argument_list_source
 
 
 class TestParseSet(unittest.TestCase):

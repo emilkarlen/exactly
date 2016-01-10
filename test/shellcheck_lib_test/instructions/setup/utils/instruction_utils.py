@@ -7,8 +7,8 @@ from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.setup import SetupSettingsBuilder
-from shellcheck_lib_test.instructions.test_resources.utils import home_and_eds_and_test_as_curr_dir, HomeAndEds
 from shellcheck_lib_test.instructions.utils.file_properties import FileCheckThatEvaluatesTo
+from shellcheck_lib_test.test_resources.execution.utils import home_and_eds_and_test_as_curr_dir, HomeAndEds
 
 
 class TestInstruction(InstructionWithFileRefsBase):

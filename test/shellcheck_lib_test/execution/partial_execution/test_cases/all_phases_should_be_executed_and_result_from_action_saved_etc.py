@@ -14,7 +14,7 @@ from shellcheck_lib_test.execution.test_resources import py_unit_test_case_with_
 from shellcheck_lib_test.execution.test_resources import utils
 from shellcheck_lib_test.execution.test_resources.py_unit_test_case_with_file_output import \
     InternalInstructionThatWritesToStandardPhaseFile
-from shellcheck_lib_test.test_resources.eds_test import ResultFilesCheck
+from shellcheck_lib_test.test_resources.execution.eds_test import ResultFilesCheck
 
 HOME_DIR_HEADER = 'Home Dir'
 TEST_ROOT_DIR_HEADER = 'Test Root Dir'

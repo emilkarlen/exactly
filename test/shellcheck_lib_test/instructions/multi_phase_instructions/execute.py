@@ -7,13 +7,13 @@ from shellcheck_lib.instructions.utils.relative_path_options import REL_TMP_OPTI
 from shellcheck_lib.instructions.utils.sub_process_execution import InstructionMetaInfo
 from shellcheck_lib.test_case.instruction_description import Description
 from shellcheck_lib.test_case.sections.common import HomeAndEds
-from shellcheck_lib_test.instructions.test_resources import eds_populator
 from shellcheck_lib_test.instructions.test_resources.check_description import TestDescriptionBase
-from shellcheck_lib_test.instructions.test_resources.utils import single_line_source
 from shellcheck_lib_test.test_resources import home_and_eds_test
 from shellcheck_lib_test.test_resources import python_program_execution as py_exe
 from shellcheck_lib_test.test_resources import value_assertion as va
+from shellcheck_lib_test.test_resources.execution import eds_populator
 from shellcheck_lib_test.test_resources.file_structure import DirContents, File
+from shellcheck_lib_test.test_resources.parse import single_line_source
 
 
 class ExecuteAction(home_and_eds_test.Action):

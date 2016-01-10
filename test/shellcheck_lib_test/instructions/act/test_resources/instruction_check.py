@@ -11,15 +11,14 @@ from shellcheck_lib.test_case.sections.act.script_source import ScriptSourceAccu
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
 from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.result import svh
-from shellcheck_lib_test.instructions.test_resources import eds_populator
 from shellcheck_lib_test.instructions.test_resources import sh_check__va
 from shellcheck_lib_test.instructions.test_resources import svh_check__va
-from shellcheck_lib_test.instructions.test_resources import utils
 from shellcheck_lib_test.instructions.test_resources.arrangements import ArrangementWithEds
 from shellcheck_lib_test.instructions.test_resources.expectations import ExpectationBase
 from shellcheck_lib_test.instructions.test_resources.instruction_check_utils import InstructionExecutionBase
 from shellcheck_lib_test.test_resources import file_structure
 from shellcheck_lib_test.test_resources import value_assertion as va
+from shellcheck_lib_test.test_resources.execution import eds_populator, utils
 
 
 class Arrangement(ArrangementWithEds):

@@ -11,8 +11,8 @@ from shellcheck_lib.test_case.sections.act.script_source import ScriptSourceBuil
 from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib_test.act_phase_setups.test_resources import py_program
 from shellcheck_lib_test.act_phase_setups.test_resources.act_program_executor import ActProgramExecutorTestSetup, Tests
-from shellcheck_lib_test.instructions.test_resources.utils import execution_directory_structure
 from shellcheck_lib_test.test_resources import python_program_execution as py_exe
+from shellcheck_lib_test.test_resources.execution.utils import execution_directory_structure
 from shellcheck_lib_test.test_resources.file_structure import empty_file, File
 from shellcheck_lib_test.test_resources.file_structure_utils import tmp_dir_with
 from shellcheck_lib_test.test_resources.file_utils import tmp_file_containing_lines

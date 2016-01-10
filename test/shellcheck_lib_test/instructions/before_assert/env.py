@@ -1,3 +1,5 @@
+import unittest
+
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser
 from shellcheck_lib.instructions.before_assert import env as sut
@@ -15,5 +17,5 @@ class TheConfiguration(BeforeAssertConfigurationBase):
         return sut.PARSER
 
 
-def suite():
+def suite() -> unittest.TestSuite:
     return suite_for(TheConfiguration())

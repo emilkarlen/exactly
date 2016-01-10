@@ -8,17 +8,16 @@ from shellcheck_lib.test_case.sections.before_assert import BeforeAssertPhaseIns
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
 from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.result import svh
-from shellcheck_lib_test.instructions.test_resources import eds_populator
 from shellcheck_lib_test.instructions.test_resources import sh_check__va
 from shellcheck_lib_test.instructions.test_resources import svh_check__va
-from shellcheck_lib_test.instructions.test_resources import utils
 from shellcheck_lib_test.instructions.test_resources.arrangements import ArrangementPostAct, ActResultProducer, \
     ActEnvironment
 from shellcheck_lib_test.instructions.test_resources.expectations import ExpectationBase
 from shellcheck_lib_test.instructions.test_resources.instruction_check_utils import InstructionExecutionBase
-from shellcheck_lib_test.instructions.test_resources.utils import write_act_result
 from shellcheck_lib_test.test_resources import file_structure
 from shellcheck_lib_test.test_resources import value_assertion as va
+from shellcheck_lib_test.test_resources.execution import eds_populator, utils
+from shellcheck_lib_test.test_resources.execution.utils import write_act_result
 
 
 def arrangement(home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),

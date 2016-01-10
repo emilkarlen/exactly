@@ -10,8 +10,8 @@ from shellcheck_lib_test.instructions.configuration.test_resources.instruction_c
     Arrangement, Expectation
 from shellcheck_lib_test.instructions.test_resources import sh_check
 from shellcheck_lib_test.instructions.test_resources.check_description import TestDescriptionBase
-from shellcheck_lib_test.instructions.test_resources.utils import new_source2
 from shellcheck_lib_test.test_resources.file_structure import DirContents, empty_file, empty_dir, Dir
+from shellcheck_lib_test.test_resources.parse import new_source2
 
 
 class TestParse(unittest.TestCase):
