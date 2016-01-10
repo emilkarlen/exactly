@@ -6,7 +6,7 @@ from shellcheck_lib.test_case.os_services import OsServices, new_default
 from shellcheck_lib.test_case.sections import common as i
 from shellcheck_lib.test_case.sections.act.instruction import ActPhaseInstruction
 from shellcheck_lib.test_case.sections.act.phase_setup import PhaseEnvironmentForScriptGeneration
-from shellcheck_lib.test_case.sections.act.script_source import ScriptSourceAccumulator
+from shellcheck_lib.test_case.sections.act.script_source import ScriptSourceBuilder
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
 from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.result import svh
@@ -22,24 +22,26 @@ from shellcheck_lib_test.test_resources.execution import eds_populator, utils
 
 class Arrangement(ArrangementWithEds):
     def __init__(self,
-                 phase_environment: PhaseEnvironmentForScriptGeneration =
-                 PhaseEnvironmentForScriptGeneration(ScriptSourceAccumulator(StandardScriptLanguage())),
+                 source_builder: ScriptSourceBuilder =
+                 ScriptSourceBuilder(StandardScriptLanguage()),
                  home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
                  eds_contents_before_main: eds_populator.EdsPopulator = eds_populator.empty(),
                  os_services: OsServices = new_default()):
         super().__init__(home_dir_contents, eds_contents_before_main, os_services)
-        self.phase_environment = phase_environment
+        self.source_builder = source_builder
 
 
 class Expectation(ExpectationBase):
     def __init__(self, validation_pre_eds: va.ValueAssertion = svh_check__va.is_success(),
                  validation_post_setup: va.ValueAssertion = svh_check__va.is_success(),
                  main_result: va.ValueAssertion = sh_check__va.is_success(),
+                 main_side_effects_on_script_source: va.ValueAssertion = va.anything_goes(),
                  main_side_effects_on_files: va.ValueAssertion = va.anything_goes(),
                  home_and_eds: va.ValueAssertion = va.anything_goes()):
         super().__init__(validation_pre_eds, main_side_effects_on_files, home_and_eds)
         self.validation_post_setup = validation_post_setup
         self.main_result = sh_check__va.is_sh_and(main_result)
+        self.main_side_effects_on_script_source = main_side_effects_on_script_source
 
 
 is_success = Expectation
@@ -68,7 +70,6 @@ class Executor(InstructionExecutionBase):
                  arrangement: Arrangement,
                  expectation: Expectation):
         super().__init__(put, arrangement, expectation)
-        self.put = put
         self.arrangement = arrangement
         self.expectation = expectation
         self.message_builder = va.MessageBuilder()
@@ -101,6 +102,7 @@ class Executor(InstructionExecutionBase):
             if not validate_result.is_success:
                 return
             self._execute_main(environment, instruction)
+            self._check_main_side_effects_on_script_source()
             self._check_main_side_effects_on_files(home_and_eds)
             self._check_side_effects_on_home_and_eds(home_and_eds)
 
@@ -126,8 +128,12 @@ class Executor(InstructionExecutionBase):
                       environment: GlobalEnvironmentForPostEdsPhase,
                       instruction: ActPhaseInstruction) -> pfh.PassOrFailOrHardError:
         result = instruction.main(environment,
-                                  self.arrangement.phase_environment)
+                                  PhaseEnvironmentForScriptGeneration(self.arrangement.source_builder))
         self._check('result from main',
                     self.expectation.main_result,
                     result)
         return result
+
+    def _check_main_side_effects_on_script_source(self):
+        self.expectation.main_side_effects_on_script_source.apply(self.put,
+                                                                  self.arrangement.source_builder)
