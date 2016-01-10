@@ -19,20 +19,20 @@ from shellcheck_lib_test.test_resources.file_structure_utils import tmp_dir_with
 from shellcheck_lib_test.test_resources.file_utils import tmp_file_containing_lines
 
 
-class ExecutorValidationTestCases(unittest.TestCase):
+class TestValidation(unittest.TestCase):
     def __init__(self, method_name):
         super().__init__(method_name)
         self.setup = sut.act_phase_setup()
         self.home_dir_as_current_dir = pathlib.Path()
 
-    def test_validation_fails_when_there_are_no_statements(self):
+    def test_fails_when_there_are_no_statements(self):
         source = self._empty_builder()
         actual = self.setup.executor.validate(self.home_dir_as_current_dir, source)
         self.assertIs(actual.status,
                       svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
                       'Validation result')
 
-    def test_validation_fails_when_there_are_more_than_one_statements(self):
+    def test_fails_when_there_are_more_than_one_statements(self):
         source = self._empty_builder()
         source.raw_script_statement('statement 1')
         source.raw_script_statement('statement 2')
@@ -41,7 +41,7 @@ class ExecutorValidationTestCases(unittest.TestCase):
                       svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
                       'Validation result')
 
-    def test_validation_succeeds_when_there_is_exactly_one_statements(self):
+    def test_succeeds_when_there_is_exactly_one_statements(self):
         source = self._empty_builder()
         source.raw_script_statement('statement 1')
         actual = self.setup.executor.validate(self.home_dir_as_current_dir, source)
@@ -49,7 +49,7 @@ class ExecutorValidationTestCases(unittest.TestCase):
                       svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                       'Validation result')
 
-    def test_validation_fails_when_there_is_a_single_statement_line_but_this_line_is_only_space(self):
+    def test_fails_when_there_is_a_single_statement_line_but_this_line_is_only_space(self):
         source = self._empty_builder()
         source.raw_script_statement('  \t')
         actual = self.setup.executor.validate(self.home_dir_as_current_dir, source)
@@ -176,7 +176,7 @@ sys.exit(len(sys.argv) - 1)
 
 def suite():
     ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(ExecutorValidationTestCases))
+    ret_val.addTest(unittest.makeSuite(TestValidation))
     ret_val.addTest(suite_for_execution(TheConfiguration()))
     return ret_val
 
