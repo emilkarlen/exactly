@@ -99,12 +99,6 @@ Dvs m Arrangement + Expectation + TestCaseBase
 ska vara Totalt 17 test.
 **** DONE source
 **** DONE single command
-* TODO Extrahera gemensam kod för Expectation
-** TODO Extrahera basklasser
-** TODO config
-** TODO setup
-** TODO assert
-** TODO cleanup
 * DONE Ny validate/pre-eds: Befintliga instruktioner ska använda denna
 ** DONE setup - säkerställ att instr är korrekta
 Finns inga tester som verifierar att validate_post_eds körs korrekt, ser det
@@ -134,52 +128,5 @@ ut som.
 *** DONE stderr
 *** DONE stdout
 *** DONE type
-* TODO Refakt: validate_post_eds_if_applicable ska ta (EDS,home_dir)
-klass: PreOrPostEdsSvhValidationErrorValidator
-
-I nuläget tas enbart EDS.
-Onödigt att begränsa till att ta enbart EDS.
-Skulle ju kunna finnas en instruktion som använder både EDS och home_dir.
 * DONE Ny struktur för test av Description
 I stil m Configuration för gemensamma instruktioner.
-* cd
-** Tester av instruktionerna
-Finns tester av fas-oberoende utils.
-** Test av flödet (full_execution, tror jag)
-Testat att PWD inte ändras av ramverket.
-* Skräddarsy act-fasen
-** TODO Dokumetera ny utökad sekvens i UML
-Nytt är act-exekverarens faser.
-** TODO (Ev) förbättra script-byggaren
-Så att det går att separera på typ av rad (även på "färdiga" script):
-- kommentar
-- tom
-- källkod
-På så vis går det t ex att enkelt plocka ut enbart källkodsrader.  O m hjälp
-av det skulle en singel-kommando-exekverare enkelt kunna verifiera att angivet
-program verkligen består av ett enda kommando.
-** TODO Då interpretator anges via CLA: resolva abs-sökväg till denna
-... så att det går att ange relativa sökvägar på kommandoraden (o ev, i en
-senare framtid, även i testsviter).
-Ev två olika setup: en som resolvar relativa sökvagar, o en som inte gör det.
-** TODO Exekverare för shell-kommando
-Väldigt lik utgångsexekveraren.  Skilnnaden är att köra m shell=True,
-o ev inte splitta kommandoraden.
-* Svit: Summering i rapporten
-Avslutande utskrift: Antal lyckade, fallerade, <andra typer av fel>
-* Exekvering av fall: Rapportera mha "Rapportör" (pss som svit)
-* Kring instruktioner
-** TODO PassOrFailOrHardError: FAIL ska kunna ta olika varianter av felmeddelande
-- sträng
-- förväntat värde, verkligt värde, namn på egenskap
-Inför subklass för varje variant.
-** TODO assert-instr: Infrastruktur för att hämta vanliga värden
-T ex returkod, utdata på stdout/err.
-Funk kan antingen
-- ligga i ActPhaseInstruction
-- objekct åtkomligt via medlemsmetod i ActPhaseInstruction
-- objekt som skickas till main
-
-Tror bäst att skicka obj till main.  Då kan infrastrukturen säkerställa att
-alla instruktioner får samma objekt.  Därmed kan objektet lagra privat data då
-den efterfrågats (prestanda)

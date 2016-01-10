@@ -1,5 +1,55 @@
 -*- org -*-
 
+* TODO Skräddarsy act-fasen
+** TODO Dokumetera ny utökad sekvens i UML
+Nytt är act-exekverarens faser.
+** TODO (Ev) förbättra script-byggaren
+Så att det går att separera på typ av rad (även på "färdiga" script):
+- kommentar
+- tom
+- källkod
+På så vis går det t ex att enkelt plocka ut enbart källkodsrader.  O m hjälp
+av det skulle en singel-kommando-exekverare enkelt kunna verifiera att angivet
+program verkligen består av ett enda kommando.
+** TODO Då interpretator anges via CLA: resolva abs-sökväg till denna
+... så att det går att ange relativa sökvägar på kommandoraden (o ev, i en
+senare framtid, även i testsviter).
+Ev två olika setup: en som resolvar relativa sökvagar, o en som inte gör det.
+** TODO Exekverare för shell-kommando
+Väldigt lik utgångsexekveraren.  Skilnnaden är att köra m shell=True,
+o ev inte splitta kommandoraden.
+* TODO Svit: Summering i rapporten
+Avslutande utskrift: Antal lyckade, fallerade, <andra typer av fel>
+* TODO Exekvering av fall: Rapportera mha "Rapportör" (pss som svit)
+* TODO Kring instruktioner
+** TODO PassOrFailOrHardError: FAIL ska kunna ta olika varianter av felmeddelande
+- sträng
+- förväntat värde, verkligt värde, namn på egenskap
+Inför subklass för varje variant.
+** TODO assert-instr: Infrastruktur för att hämta vanliga värden
+T ex returkod, utdata på stdout/err.
+Funk kan antingen
+- ligga i ActPhaseInstruction
+- objekct åtkomligt via medlemsmetod i ActPhaseInstruction
+- objekt som skickas till main
+
+Tror bäst att skicka obj till main.  Då kan infrastrukturen säkerställa att
+alla instruktioner får samma objekt.  Därmed kan objektet lagra privat data då
+den efterfrågats (prestanda)
+* TODO Extrahera gemensam kod för Expectation
+<2016-01-09 lör>
+** TODO Extrahera basklasser
+** TODO config
+** TODO setup
+** TODO assert
+** TODO cleanup
+* TODO Refakt: validate_post_eds_if_applicable ska ta (EDS,home_dir)
+<2016-01-09 lör>
+klass: PreOrPostEdsSvhValidationErrorValidator
+
+I nuläget tas enbart EDS.
+Onödigt att begränsa till att ta enbart EDS.
+Skulle ju kunna finnas en instruktion som använder både EDS och home_dir.
 * TODO <2016-01-08 fre> Arg till olika Expectation har olika namn
 Namnen ska strömlinjeformas.
 * TODO <2016-01-08 fre> instr/main har olika ordning på arg (env, os_servc)
@@ -774,41 +824,3 @@ Ska istället finnas funktioner på global nivå:
 def get_document() -> Description:
   return Description(...)
 
-* Vidareutveckling
-** TODO <2015-11-04 ons> Ange filstruktur i textformat att installera
-På liknande sätt som jag gör i Python:
-DirContents([File('f','contents'], Dir('d', [...]))
-
-Vore ju bekvämt om det fanns en liknande notation för filer att installera.
-Då skulle man slippa ha dem i filsystemet, i de fall det inte är nödvändigt av
-andra orsaker.
-
-Kruxet är bra syntax.
-Alternativ:
- - egendefinierad
- - JSON
- - XML
-
-T ex
-----------------------------------------
-[setup]
-file-structure --xml <<EOF
-<contents>
-  <file name="empty-file"/>
-  <file name="g" timestamp="2015-11-03 10:20:30"/>
-  <file name="non-empty">contents of file</file>
-  <dir name="empty-dir"/>
-  <dir name="non-empty-dir">
-    <file name="f"/>
-  </dir>
-<contents>
-EOF
-----------------------------------------
-
-Ev kunde ett antal xml entities sättas så att de fanns att tillgå, på ung
-samma sätt som med omgivningsvariabler.
-
-
-assert/JÄMFÖRELSE
-Vore naturligtvis även användbart att kunna asserta att innehållet i en
-katalog är identiskt (el innehåller som minst) en sådan hårdkodad filstruktur.
