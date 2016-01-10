@@ -4,7 +4,7 @@ from shellcheck_lib.instructions.act import executable_file as sut
 from shellcheck_lib_test.instructions.act.test_resources.instruction_check import *
 from shellcheck_lib_test.instructions.test_resources import svh_check__va
 from shellcheck_lib_test.test_resources.file_structure import DirContents, executable_file
-from shellcheck_lib_test.test_resources.file_utils import absolute_path_toexecutable_file
+from shellcheck_lib_test.test_resources.file_utils import absolute_path_to_executable_file
 
 
 def suite() -> unittest.TestSuite:
@@ -52,13 +52,13 @@ class TestValidation(TestBase):
                     Expectation())
 
     def test_succeeds_when_command_is_absolute_without_arguments(self):
-        with absolute_path_toexecutable_file() as absolute_path:
+        with absolute_path_to_executable_file() as absolute_path:
             self._check(str(absolute_path),
                         Arrangement(),
                         Expectation())
 
     def test_succeeds_when_command_is_absolute_with_arguments(self):
-        with absolute_path_toexecutable_file() as absolute_path:
+        with absolute_path_to_executable_file() as absolute_path:
             self._check('%s argument-to-program' % str(absolute_path),
                         Arrangement(),
                         Expectation())
@@ -66,14 +66,14 @@ class TestValidation(TestBase):
 
 class TestStatementGeneration(TestBase):
     def test_absolute_path_is_unmodified__sans_arguments(self):
-        with absolute_path_toexecutable_file() as absolute_path:
+        with absolute_path_to_executable_file() as absolute_path:
             source = str(absolute_path)
             self._check(source,
                         Arrangement(),
                         Expectation(main_side_effects_on_script_source=_contains_single_line(source)))
 
     def test_absolute_path_is_unmodified__with_arguments(self):
-        with absolute_path_toexecutable_file() as absolute_path:
+        with absolute_path_to_executable_file() as absolute_path:
             source = '%s argument1 argument2' % str(absolute_path)
             self._check(source,
                         Arrangement(),

@@ -13,7 +13,7 @@ def write_file(path: pathlib.Path, contents: str):
 
 
 @contextmanager
-def absolute_path_toexecutable_file() -> pathlib.Path:
+def absolute_path_to_executable_file() -> pathlib.Path:
     yield sys.executable
 
 @contextmanager
