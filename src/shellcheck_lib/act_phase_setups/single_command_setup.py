@@ -2,17 +2,27 @@ import pathlib
 import shlex
 
 from shellcheck_lib.act_phase_setups import utils
-from shellcheck_lib.default.execution_mode.test_case.test_case_parser import PlainSourceActPhaseParser
+from shellcheck_lib.document.parse import SectionElementParser
+from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
+    SectionElementParserForStandardCommentAndEmptyLines
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
+from shellcheck_lib.general import line_source
 from shellcheck_lib.general.std import StdFiles
+from shellcheck_lib.instructions.act.executable_file import ExecutableFileInstruction
+from shellcheck_lib.test_case.sections.act.instruction import ActPhaseInstruction
 from shellcheck_lib.test_case.sections.act.phase_setup import ActProgramExecutor, SourceSetup, ActPhaseSetup
 from shellcheck_lib.test_case.sections.act.script_source import ScriptLanguage
 from shellcheck_lib.test_case.sections.act.script_source import ScriptSourceBuilder
 from shellcheck_lib.test_case.sections.result import svh
 
 
-def act_phase_setup(command_path_is_relative_home: bool) -> ActPhaseSetup:
-    return ActPhaseSetup(PlainSourceActPhaseParser(),
+class _ActPhaseParser(SectionElementParserForStandardCommentAndEmptyLines):
+    def _parse_instruction(self, source: line_source.LineSequenceBuilder) -> ActPhaseInstruction:
+        return ExecutableFileInstruction(source.first_line.text)
+
+
+def act_phase_setup(parser: SectionElementParser = _ActPhaseParser()) -> ActPhaseSetup:
+    return ActPhaseSetup(parser,
                          _script_source_builder,
                          _ActProgramExecutorForSingleCommand())
 
