@@ -40,5 +40,8 @@ def assert_interpreter_is_available(puc: unittest.TestCase):
         puc.fail('Cannot execute test since the name of the Python 3 interpreter is not found in sys.executable.')
 
 
+def abs_path_to_interpreter() -> str:
+    return sys.executable
+
 def _str_elements(elements: iter) -> list:
     return [str(x) for x in elements]
