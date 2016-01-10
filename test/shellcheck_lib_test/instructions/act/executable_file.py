@@ -27,16 +27,9 @@ class TestBase(TestCaseBase):
 
 class TestValidation(TestBase):
     def test_fails_when_command_is_relative_but_does_not_exist_relative_home__no_arguments(self):
-        self._check('relative-path-of-existing-program',
+        self._check('relative-path-of-non-existing-program',
                     Arrangement(),
                     Expectation(validation_pre_eds=svh_check__va.is_validation_error()))
-
-    def test_succeeds_when_command_is_relative_and_does_exist_relative_home__no_arguments(self):
-        relative_path = 'relative-path-of-existing-program'
-        self._check(relative_path,
-                    Arrangement(home_dir_contents=DirContents([
-                        executable_file(relative_path, '')])),
-                    Expectation())
 
     def test_fails_when_command_is_relative_but_does_not_exist_relative_home__with_arguments(self):
         relative_path = 'relative-path-of-existing-program'
@@ -44,35 +37,16 @@ class TestValidation(TestBase):
                     Arrangement(),
                     Expectation(validation_pre_eds=svh_check__va.is_validation_error()))
 
-    def test_succeeds_when_command_is_relative_and_does_exist_relative_home__with_arguments(self):
-        relative_path = 'relative-path-of-existing-program'
-        self._check('%s argument-to-program' % relative_path,
-                    Arrangement(home_dir_contents=DirContents([
-                        executable_file(relative_path, '')])),
-                    Expectation())
-
-    def test_succeeds_when_command_is_absolute_without_arguments(self):
-        with absolute_path_to_executable_file() as absolute_path:
-            self._check(str(absolute_path),
-                        Arrangement(),
-                        Expectation())
-
-    def test_succeeds_when_command_is_absolute_with_arguments(self):
-        with absolute_path_to_executable_file() as absolute_path:
-            self._check('%s argument-to-program' % str(absolute_path),
-                        Arrangement(),
-                        Expectation())
-
 
 class TestStatementGeneration(TestBase):
-    def test_absolute_path_is_unmodified__sans_arguments(self):
+    def test_absolute_path_is_absolute__sans_arguments(self):
         with absolute_path_to_executable_file() as absolute_path:
             source = str(absolute_path)
             self._check(source,
                         Arrangement(),
                         Expectation(main_side_effects_on_script_source=_contains_single_line(source)))
 
-    def test_absolute_path_is_unmodified__with_arguments(self):
+    def test_absolute_path_is_absolute__with_arguments(self):
         with absolute_path_to_executable_file() as absolute_path:
             source = '%s argument1 argument2' % str(absolute_path)
             self._check(source,
