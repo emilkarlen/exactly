@@ -78,13 +78,25 @@ Kanske kan de impl i termer av PHASE_phase_instruction_that
 *** DONE assert
 *** DONE cleanup
 *** DONE Integrera instruktionen i before-assert
+* TODO act
+** TODO infrastruktur för instruktions-tester
+** TODO Flytta beteende för valid/generering av sökväg till instrukionen
+*** TODO Bryt ut parsern o instruktionen
+Idag är parsern (o därmed instruktionen hårdkodadade).
+Bryt ut parsern så att det går att konfa dessa.
+Kanske ska de vara del av ActPhaseSetup.
+*** TODO Flytta validering till instruktionen
+Finns idag i ActExecutorn.
+*** TODO Gör så att relativa sökvägar antas vara --rel-home
+** TODO Ta bort funk som flyttats till instr från act-fas-exekveraren
+Dvs validering + generering av sökväg
 * TODO Extrahera gemensam kod för Expectation
 ** TODO Extrahera basklasser
 ** TODO config
 ** TODO setup
 ** TODO assert
 ** TODO cleanup
-* TODO Ny validate/pre-eds: Befintliga instruktioner ska använda denna
+* DONE Ny validate/pre-eds: Befintliga instruktioner ska använda denna
 ** DONE setup - säkerställ att instr är korrekta
 Finns inga tester som verifierar att validate_post_eds körs korrekt, ser det
 ut som.
@@ -113,15 +125,6 @@ ut som.
 *** DONE stderr
 *** DONE stdout
 *** DONE type
-** TODO act
-*** TODO infrastruktur för instruktions-tester
-*** TODO Bryt ut parsern o instruktionen
-Idag är parsern (o därmed instruktionen hårdkodadade).
-Bryt ut parsern så att det går att konfa dessa.
-Kanske ska de vara del av ActPhaseSetup.
-*** TODO Flytta validering till instruktionen
-Finns idag i ActExecutorn.
-*** TODO Gör så att relativa sökvägar antas vara --rel-home
 * TODO Refakt: validate_post_eds_if_applicable ska ta (EDS,home_dir)
 klass: PreOrPostEdsSvhValidationErrorValidator
 

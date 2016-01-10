@@ -1,7 +1,8 @@
-from contextlib import contextmanager
 import os
 import pathlib
+import sys
 import tempfile
+from contextlib import contextmanager
 
 from shellcheck_lib.general.string import lines_content
 
@@ -10,6 +11,10 @@ def write_file(path: pathlib.Path, contents: str):
     with open(str(path), 'w') as f:
         f.write(contents)
 
+
+@contextmanager
+def absolute_path_toexecutable_file() -> pathlib.Path:
+    yield sys.executable
 
 @contextmanager
 def tmp_file_containing(contents: str,

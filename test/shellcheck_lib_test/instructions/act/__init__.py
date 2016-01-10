@@ -1,15 +1,13 @@
 import unittest
 
+from shellcheck_lib_test.instructions.act import executable_file
 from shellcheck_lib_test.instructions.act import test_resources
-
-
-# from shellcheck_lib_test.instructions.act import executable_file
 
 
 def suite():
     return unittest.TestSuite([
         test_resources.suite(),
-        # executable_file.suite(),
+        executable_file.suite(),
     ])
 
 

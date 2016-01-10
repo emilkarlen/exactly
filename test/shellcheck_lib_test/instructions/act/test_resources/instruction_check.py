@@ -1,7 +1,6 @@
+import types
 import unittest
 
-from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionParser, SingleInstructionParserSource
 from shellcheck_lib.script_language.standard_script_language import StandardScriptLanguage
 from shellcheck_lib.test_case.os_services import OsServices, new_default
 from shellcheck_lib.test_case.sections import common as i
@@ -48,19 +47,19 @@ is_success = Expectation
 
 class TestCaseBase(unittest.TestCase):
     def _check(self,
-               parser: SingleInstructionParser,
-               source: SingleInstructionParserSource,
+               instruction_constructor: types.FunctionType,
+               source: str,
                arrangement: Arrangement,
                expectation: Expectation):
-        check(self, parser, source, arrangement, expectation)
+        check(self, instruction_constructor, source, arrangement, expectation)
 
 
 def check(put: unittest.TestCase,
-          parser: SingleInstructionParser,
-          source: SingleInstructionParserSource,
+          instruction_constructor: types.FunctionType,
+          source: str,
           arrangement: Arrangement,
           expectation: Expectation):
-    Executor(put, arrangement, expectation).execute(parser, source)
+    Executor(put, arrangement, expectation).execute(instruction_constructor, source)
 
 
 class Executor(InstructionExecutionBase):
@@ -84,9 +83,9 @@ class Executor(InstructionExecutionBase):
         return actual
 
     def execute(self,
-                parser: SingleInstructionParser,
-                source: SingleInstructionParserSource):
-        instruction = parser.apply(source)
+                instruction_constructor: types.FunctionType,
+                source: str):
+        instruction = instruction_constructor(source)
         self._check_instruction(ActPhaseInstruction, instruction)
         assert isinstance(instruction, ActPhaseInstruction)
         with utils.home_and_eds_and_test_as_curr_dir(
