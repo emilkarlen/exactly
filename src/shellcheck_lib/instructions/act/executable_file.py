@@ -24,31 +24,7 @@ class ExecutableFileInstruction(ActPhaseInstruction):
         return sh.new_sh_success()
 
 
-class _StatementValidatorAndTransformer:
-    def validate(self,
-                 home_dir_abs_path: pathlib.Path,
-                 statement: str) -> svh.SuccessOrValidationErrorOrHardError:
-        raise NotImplementedError()
-
-    def transform(self,
-                  home_dir_abs_path: pathlib.Path,
-                  statement: str):
-        raise NotImplementedError()
-
-
-class _PlainStatement(_StatementValidatorAndTransformer):
-    def validate(self,
-                 home_dir_abs_path: pathlib.Path,
-                 statement: str) -> svh.SuccessOrValidationErrorOrHardError:
-        return svh.new_svh_success()
-
-    def transform(self,
-                  home_dir_abs_path: pathlib.Path,
-                  statement: str) -> str:
-        return statement
-
-
-class _RelativePathIsRelativeHome(_StatementValidatorAndTransformer):
+class _RelativePathIsRelativeHome:
     SPACE_RE = re.compile('\\s')
 
     def validate(self,
