@@ -5,31 +5,8 @@ from shellcheck_lib.act_phase_setups import script_language_setup as sut
 from shellcheck_lib.script_language import python3
 from shellcheck_lib.test_case.sections.act.script_source import ScriptSourceBuilder
 from shellcheck_lib_test.act_phase_setups.test_resources import py_program
-from shellcheck_lib_test.act_phase_setups.test_resources.act_program_executor import ActProgramExecutorTestSetup, Tests
-
-
-class StandardExecutorTestCases(unittest.TestCase):
-    def __init__(self, method_name):
-        super().__init__(method_name)
-        self.tests = Tests(self, TestSetup())
-
-    def test_stdout_is_connected_to_program(self):
-        self.tests.test_stdout_is_connected_to_program()
-
-    def test_stderr_is_connected_to_program(self):
-        self.tests.test_stderr_is_connected_to_program()
-
-    def test_stdin_and_stdout_are_connected_to_program(self):
-        self.tests.test_stdin_and_stdout_are_connected_to_program()
-
-    def test_exit_code_is_returned(self):
-        self.tests.test_exit_code_is_returned()
-
-    def test_initial_cwd_is_current_dir_and_that_cwd_is_restored_afterwards(self):
-        self.tests.test_initial_cwd_is_current_dir_and_that_cwd_is_restored_afterwards()
-
-    def test_environment_variables_are_accessible_by_program(self):
-        self.tests.test_environment_variables_are_accessible_by_program()
+from shellcheck_lib_test.act_phase_setups.test_resources.act_program_executor import \
+    ActProgramExecutorTestSetup, suite_for
 
 
 class TestSetup(ActProgramExecutorTestSetup):
@@ -67,11 +44,8 @@ class TestSetup(ActProgramExecutorTestSetup):
         return ret_val
 
 
-
-def suite():
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(StandardExecutorTestCases))
-    return ret_val
+def suite() -> unittest.TestSuite:
+    return suite_for(TestSetup())
 
 
 if __name__ == '__main__':
