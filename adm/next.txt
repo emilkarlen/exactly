@@ -79,7 +79,7 @@ Kanske kan de impl i termer av PHASE_phase_instruction_that
 *** DONE cleanup
 *** DONE Integrera instruktionen i before-assert
 * TODO act
-** TODO infrastruktur för instruktions-tester
+** DONE infrastruktur för instruktions-tester
 ** TODO Flytta beteende för valid/generering av sökväg till instrukionen
 *** TODO Bryt ut parsern o instruktionen
 Idag är parsern (o därmed instruktionen hårdkodadade).
@@ -87,9 +87,16 @@ Bryt ut parsern så att det går att konfa dessa.
 Kanske ska de vara del av ActPhaseSetup.
 *** TODO Flytta validering till instruktionen
 Finns idag i ActExecutorn.
+**** DONE Befintlig validering
+**** TODO Validering av sökvägar m mellanslag i
 *** TODO Gör så att relativa sökvägar antas vara --rel-home
+* TODO act-phase-setup
 ** TODO Ta bort funk som flyttats till instr från act-fas-exekveraren
 Dvs validering + generering av sökväg
+** TODO Test-infrastruktur likn de för instruioner
+Dvs m Arrangement + Expectation + TestCaseBase
+** TODO Test av godtycklig ActPhaseSetup pss för Instruction
+Dvs m Configuration, suite_for
 * TODO Extrahera gemensam kod för Expectation
 ** TODO Extrahera basklasser
 ** TODO config
