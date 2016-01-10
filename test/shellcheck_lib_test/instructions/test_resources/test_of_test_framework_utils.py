@@ -1,7 +1,6 @@
 import os
 import unittest
 
-import shellcheck_lib_test.test_resources.parse
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionParserSource
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
@@ -16,8 +15,8 @@ from shellcheck_lib_test.instructions.test_resources.assertion_utils.side_effect
 from shellcheck_lib_test.test_resources.execution import eds_contents_check
 
 
-def single_line_source() -> SingleInstructionParserSource:
-    return shellcheck_lib_test.test_resources.parse.new_source('instruction name', 'instruction arguments')
+def single_line_source() -> str:
+    return 'instruction arguments'
 
 
 class TestError(Exception):
