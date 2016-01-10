@@ -1,7 +1,6 @@
 import unittest
 
-from . import script_language_setup
-from . import single_command_setup
+from shellcheck_lib_test.act_phase_setups import script_language_setup, single_command_setup
 
 
 def suite():
@@ -9,3 +8,12 @@ def suite():
     ret_val.addTest(script_language_setup.suite())
     ret_val.addTest(single_command_setup.suite())
     return ret_val
+
+
+def run_suite():
+    runner = unittest.TextTestRunner()
+    runner.run(suite())
+
+
+if __name__ == '__main__':
+    run_suite()
