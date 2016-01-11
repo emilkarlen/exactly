@@ -1,5 +1,8 @@
 -*- org -*-
 
+* TODO Test av default main-program som kör enkelt testfall
+Idag finns inget test som kör default-setuppen m default act-phase-executor.
+
 * TODO Skräddarsy act-fasen
 ** TODO Dokumetera ny utökad sekvens i UML
 Nytt är act-exekverarens faser.
