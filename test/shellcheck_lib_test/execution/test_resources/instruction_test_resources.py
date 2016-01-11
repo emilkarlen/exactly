@@ -207,4 +207,4 @@ class _CleanupPhaseInstructionThat(CleanupPhaseInstruction):
              environment: instrs.GlobalEnvironmentForPostEdsPhase,
              previous_phase: PreviousPhase,
              os_services: OsServices) -> sh.SuccessOrHardError:
-        return self.do_main(environment, os_services)
+        return self.do_main(environment, previous_phase, os_services)

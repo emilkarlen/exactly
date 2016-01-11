@@ -2,7 +2,7 @@ from shellcheck_lib.test_case.sections.act.instruction import ActPhaseInstructio
 from shellcheck_lib.test_case.sections.anonymous import AnonymousPhaseInstruction
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib.test_case.sections.before_assert import BeforeAssertPhaseInstruction
-from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction, PreviousPhase
+from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction
 from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.result import svh
@@ -72,8 +72,8 @@ class RecordingInstructions:
                                           sh.new_sh_success())
 
     def _do_cleanup_main(self, first_value_of_pair_for_main):
-        def ret_val(*args):
-            element = (first_value_of_pair_for_main, PreviousPhase.ASSERT)
+        def ret_val(environment, previous_phase, *args):
+            element = (first_value_of_pair_for_main, previous_phase)
             self.recorder.recording_of(element).record()
             return sh.new_sh_success()
 
