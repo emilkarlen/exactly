@@ -13,10 +13,11 @@ from shellcheck_lib_test.instructions.test_resources import sh_check
 from shellcheck_lib_test.instructions.test_resources import svh_check
 from shellcheck_lib_test.instructions.test_resources.assertion_utils.side_effects import SideEffectsCheck
 from shellcheck_lib_test.test_resources.execution import eds_contents_check
+from shellcheck_lib_test.test_resources.parse import new_source2
 
 
-def single_line_source() -> str:
-    return 'instruction arguments'
+def single_line_source() -> SingleInstructionParserSource:
+    return new_source2('argument')
 
 
 class TestError(Exception):
