@@ -21,6 +21,6 @@ class _ShellInstruction(BeforeAssertPhaseInstruction):
         self.executor = executor
 
     def main(self,
-             os_services: OsServices,
-             environment: GlobalEnvironmentForPostEdsPhase) -> sh.SuccessOrHardError:
+             environment: GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices) -> sh.SuccessOrHardError:
         return shell_common.run_and_return_sh(self.executor)

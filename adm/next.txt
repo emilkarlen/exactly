@@ -131,8 +131,10 @@ ut som.
 * DONE Ny struktur för test av Description
 I stil m Configuration för gemensamma instruktioner.
 * TODO cleanup/main ska få föregående-fas
-** TODO Test-infrastruktur: _that
-** TODO Impl-klasser ska vara privata
+** DONE Test-infrastruktur: _that
+** DONE Impl-klasser ska vara privata
 ** TODO Alla main ska ta glob-env som första arg
+*** TODO beforeAssert
+*** TODO setup
 ** 
 

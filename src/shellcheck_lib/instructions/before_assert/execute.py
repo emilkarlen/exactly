@@ -37,6 +37,6 @@ class _Instruction(BeforeAssertPhaseInstruction):
         return self.validator.validate_post_eds_if_applicable(environment.eds)
 
     def main(self,
-             os_services: OsServices,
-             environment: GlobalEnvironmentForPostEdsPhase) -> pfh.PassOrFailOrHardError:
+             environment: GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices) -> pfh.PassOrFailOrHardError:
         return execute.execute_and_return_sh(self.setup, environment.home_and_eds)

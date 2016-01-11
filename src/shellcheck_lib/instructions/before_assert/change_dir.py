@@ -20,7 +20,7 @@ class _Instruction(BeforeAssertPhaseInstruction):
         self.destination_directory = destination_directory
 
     def main(self,
-             os_services: OsServices,
-             environment: GlobalEnvironmentForPostEdsPhase) -> sh.SuccessOrHardError:
+             environment: GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices) -> sh.SuccessOrHardError:
         return cd_utils.execute_with_sh_result(self.destination_directory,
                                                environment.eds)
