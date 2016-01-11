@@ -13,7 +13,7 @@ from shellcheck_lib_test.execution.partial_execution.test_resources.basic import
 from shellcheck_lib_test.execution.test_resources import py_unit_test_case_with_file_output as with_file_output
 from shellcheck_lib_test.execution.test_resources import utils
 from shellcheck_lib_test.execution.test_resources.py_unit_test_case_with_file_output import \
-    InternalInstructionThatWritesToStandardPhaseFile, write_to_standard_phase_file
+    write_to_standard_phase_file
 from shellcheck_lib_test.test_resources.execution.eds_test import ResultFilesCheck
 
 HOME_DIR_HEADER = 'Home Dir'
@@ -28,9 +28,6 @@ class TestCaseDocument(TestCaseWithCommonDefaultForSetupAssertCleanup):
         return [
             write_to_standard_phase_file(phase, get_directory_paths_from_env)
         ]
-        # return [
-        #     InternalInstructionThatCreatesAStandardPhaseFileInTestRootContainingDirectoryPaths(phase)
-        # ]
 
     def _act_phase(self) -> list:
         return self.instruction_line_constructor.apply_list([
@@ -91,19 +88,6 @@ def py_cmd_file_lines(cwd: pathlib.Path,
     return [fmt(CURRENT_DIR_HEADER, str(cwd)),
             fmt(HOME_DIR_HEADER, str(home_directory)),
             fmt(TEST_ROOT_DIR_HEADER, str(eds.act_dir))]
-
-
-class InternalInstructionThatCreatesAStandardPhaseFileInTestRootContainingDirectoryPaths(
-        InternalInstructionThatWritesToStandardPhaseFile):
-    def __init__(self,
-                 phase: phases.Phase):
-        super().__init__(phase)
-
-    def _file_lines(self, environment: common.GlobalEnvironmentForPostEdsPhase) -> list:
-        return py_cmd_file_lines(
-                pathlib.Path().resolve(),
-                environment.home_directory,
-                environment.eds)
 
 
 def get_directory_paths_from_env(environment: common.GlobalEnvironmentForPostEdsPhase) -> list:
