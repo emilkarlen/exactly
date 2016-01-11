@@ -2,6 +2,7 @@ import unittest
 
 from shellcheck_lib.execution import phase_step
 from shellcheck_lib.execution.result import PartialResultStatus
+from shellcheck_lib.test_case.sections.cleanup import PreviousPhase
 from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.result import svh
@@ -32,7 +33,7 @@ class Test(TestCaseBase):
                                     'hard error msg from setup'),
                             PRE_EDS_VALIDATION_STEPS +
                             [phase_step.SETUP__MAIN,
-                             phase_step.CLEANUP__MAIN,
+                             (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
                              ],
                             True))
 
@@ -50,7 +51,7 @@ class Test(TestCaseBase):
                                     test.ImplementationErrorTestException),
                             PRE_EDS_VALIDATION_STEPS +
                             [phase_step.SETUP__MAIN,
-                             phase_step.CLEANUP__MAIN,
+                             (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
                              ],
                             True))
 
@@ -73,7 +74,7 @@ class Test(TestCaseBase):
                              phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
                              phase_step.ASSERT__VALIDATE_POST_SETUP,
                              phase_step.ACT__MAIN,
-                             phase_step.CLEANUP__MAIN,
+                             (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
                              ],
                             True))
 
@@ -96,7 +97,7 @@ class Test(TestCaseBase):
                              phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
                              phase_step.ASSERT__VALIDATE_POST_SETUP,
                              phase_step.ACT__MAIN,
-                             phase_step.CLEANUP__MAIN,
+                             (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
                              ],
                             True))
 
@@ -118,7 +119,7 @@ class Test(TestCaseBase):
                              phase_step.ASSERT__VALIDATE_POST_SETUP,
                              phase_step.ACT__MAIN,
                              phase_step.ACT__SCRIPT_VALIDATE,
-                             phase_step.CLEANUP__MAIN,
+                             (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
                              ],
                             True))
 
@@ -140,7 +141,7 @@ class Test(TestCaseBase):
                              phase_step.ASSERT__VALIDATE_POST_SETUP,
                              phase_step.ACT__MAIN,
                              phase_step.ACT__SCRIPT_VALIDATE,
-                             phase_step.CLEANUP__MAIN,
+                             (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
                              ],
                             True))
 
@@ -162,7 +163,7 @@ class Test(TestCaseBase):
                              phase_step.ASSERT__VALIDATE_POST_SETUP,
                              phase_step.ACT__MAIN,
                              phase_step.ACT__SCRIPT_VALIDATE,
-                             phase_step.CLEANUP__MAIN,
+                             (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
                              ],
                             True))
 
@@ -185,7 +186,7 @@ class Test(TestCaseBase):
                              phase_step.ACT__MAIN,
                              phase_step.ACT__SCRIPT_VALIDATE,
                              phase_step.ACT__SCRIPT_EXECUTE,
-                             phase_step.CLEANUP__MAIN,
+                             (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
                              ],
                             True))
 
@@ -211,7 +212,7 @@ class Test(TestCaseBase):
                              phase_step.ACT__SCRIPT_VALIDATE,
                              phase_step.ACT__SCRIPT_EXECUTE,
                              phase_step.BEFORE_ASSERT__MAIN,
-                             phase_step.CLEANUP__MAIN,
+                             (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
                              ],
                             True))
 
@@ -237,7 +238,7 @@ class Test(TestCaseBase):
                              phase_step.ACT__SCRIPT_VALIDATE,
                              phase_step.ACT__SCRIPT_EXECUTE,
                              phase_step.BEFORE_ASSERT__MAIN,
-                             phase_step.CLEANUP__MAIN,
+                             (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
                              ],
                             True))
 
@@ -264,7 +265,7 @@ class Test(TestCaseBase):
                              phase_step.ACT__SCRIPT_EXECUTE,
                              phase_step.BEFORE_ASSERT__MAIN,
                              phase_step.ASSERT__MAIN,
-                             phase_step.CLEANUP__MAIN,
+                             (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
                              ],
                             True))
 
@@ -291,7 +292,7 @@ class Test(TestCaseBase):
                              phase_step.ACT__SCRIPT_EXECUTE,
                              phase_step.BEFORE_ASSERT__MAIN,
                              phase_step.ASSERT__MAIN,
-                             phase_step.CLEANUP__MAIN,
+                             (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
                              ],
                             True))
 
@@ -318,7 +319,7 @@ class Test(TestCaseBase):
                              phase_step.ACT__SCRIPT_EXECUTE,
                              phase_step.BEFORE_ASSERT__MAIN,
                              phase_step.ASSERT__MAIN,
-                             phase_step.CLEANUP__MAIN,
+                             (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
                              ],
                             True))
 
@@ -345,7 +346,7 @@ class Test(TestCaseBase):
                              phase_step.ACT__SCRIPT_EXECUTE,
                              phase_step.BEFORE_ASSERT__MAIN,
                              phase_step.ASSERT__MAIN,
-                             phase_step.CLEANUP__MAIN,
+                             (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
                              ],
                             True))
 
@@ -372,7 +373,7 @@ class Test(TestCaseBase):
                              phase_step.ACT__SCRIPT_EXECUTE,
                              phase_step.BEFORE_ASSERT__MAIN,
                              phase_step.ASSERT__MAIN,
-                             phase_step.CLEANUP__MAIN,
+                             (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
                              ],
                             True))
 

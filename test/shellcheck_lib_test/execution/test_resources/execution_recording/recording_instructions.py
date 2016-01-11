@@ -2,7 +2,7 @@ from shellcheck_lib.test_case.sections.act.instruction import ActPhaseInstructio
 from shellcheck_lib.test_case.sections.anonymous import AnonymousPhaseInstruction
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib.test_case.sections.before_assert import BeforeAssertPhaseInstruction
-from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction
+from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction, PreviousPhase
 from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.result import svh
@@ -35,7 +35,7 @@ class RecordingInstructions:
                             value_for_main) -> ActPhaseInstruction:
         return act_phase_instruction_that(validate_pre_eds=self._do_record_and_return_svh(value_for_validate_pre_eds),
                                           validate_post_setup=self._do_record_and_return_svh(
-                                              value_for_validate_post_eds),
+                                                  value_for_validate_post_eds),
                                           main=self._do_record_and_return_sh(value_for_main))
 
     def new_before_assert_instruction(self,
@@ -59,10 +59,10 @@ class RecordingInstructions:
 
     def new_cleanup_instruction(self,
                                 value_for_validate_pre_eds,
-                                value_for_main) -> CleanupPhaseInstruction:
+                                first_value_of_pair_for_main) -> CleanupPhaseInstruction:
         return cleanup_phase_instruction_that(
                 validate_pre_eds=self._do_record_and_return_svh(value_for_validate_pre_eds),
-                main=self._do_record_and_return_sh(value_for_main))
+                main=self._do_cleanup_main(first_value_of_pair_for_main))
 
     def __recorder_of(self, element) -> ListElementRecorder:
         return self.recorder.recording_of(element)
@@ -70,6 +70,14 @@ class RecordingInstructions:
     def _do_record_and_return_sh(self, element):
         return self._do_record_and_return(element,
                                           sh.new_sh_success())
+
+    def _do_cleanup_main(self, first_value_of_pair_for_main):
+        def ret_val(*args):
+            element = (first_value_of_pair_for_main, PreviousPhase.ASSERT)
+            self.recorder.recording_of(element).record()
+            return sh.new_sh_success()
+
+        return ret_val
 
     def _do_record_and_return_svh(self, element):
         return self._do_record_and_return(element,

@@ -1,8 +1,16 @@
+from enum import Enum
+
 from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase, TestCaseInstruction, \
     GlobalEnvironmentForPreEdsStep
 from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.sections.result.sh import SuccessOrHardError
+
+
+class PreviousPhase(Enum):
+    SETUP = 1
+    BEFORE_ASSERT = 2
+    ASSERT = 3
 
 
 class CleanupPhaseInstruction(TestCaseInstruction):
