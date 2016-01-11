@@ -119,7 +119,7 @@ class ActPhaseInstructionThat(ActPhaseInstruction):
             self,
             global_environment: instrs.GlobalEnvironmentForPostEdsPhase,
             phase_environment: PhaseEnvironmentForScriptGeneration) -> sh.SuccessOrHardError:
-        return self._main((global_environment, phase_environment))
+        return self._main(global_environment, phase_environment)
 
 
 def before_assert_phase_instruction_that(validate_pre_eds=do_return(svh.new_svh_success()),
