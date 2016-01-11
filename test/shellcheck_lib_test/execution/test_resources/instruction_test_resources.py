@@ -206,4 +206,4 @@ class CleanupPhaseInstructionThat(CleanupPhaseInstruction):
     def main(self,
              environment: instrs.GlobalEnvironmentForPostEdsPhase,
              os_services: OsServices) -> sh.SuccessOrHardError:
-        return self.do_main(environment)
+        return self.do_main(environment, os_services)
