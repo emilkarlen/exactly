@@ -172,7 +172,7 @@ class BeforeAssertMainExecutor(ControlledInstructionExecutor):
 
     def apply(self, instruction: BeforeAssertPhaseInstruction) -> PartialInstructionControlledFailureInfo:
         return _from_success_or_hard_error(
-                instruction.main(self.__os_services, self.__environment))
+                instruction.main(self.__environment, self.__os_services))
 
 
 class AssertValidatePreEdsExecutor(ControlledInstructionExecutor):

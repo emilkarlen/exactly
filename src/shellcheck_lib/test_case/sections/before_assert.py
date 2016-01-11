@@ -19,6 +19,6 @@ class BeforeAssertPhaseInstruction(TestCaseInstruction):
         return svh.new_svh_success()
 
     def main(self,
-             os_services: OsServices,
-             environment: GlobalEnvironmentForPostEdsPhase) -> sh.SuccessOrHardError:
+             environment: GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices) -> sh.SuccessOrHardError:
         raise NotImplementedError()

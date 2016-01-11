@@ -162,8 +162,8 @@ class _BeforeAssertPhaseInstructionThat(BeforeAssertPhaseInstruction):
         return self._validate_post_setup(environment)
 
     def main(self,
-             os_services: OsServices,
-             environment: instrs.GlobalEnvironmentForPostEdsPhase) -> sh.SuccessOrHardError:
+             environment: instrs.GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices) -> sh.SuccessOrHardError:
         return self._main(environment, os_services)
 
 

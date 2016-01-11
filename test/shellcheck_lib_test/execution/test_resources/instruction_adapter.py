@@ -69,8 +69,8 @@ class _BeforeAssertPhaseExecutor(BeforeAssertPhaseInstruction):
         self.__ret_val = ret_val
 
     def main(self,
-             os_services: OsServices,
-             environment: instr.GlobalEnvironmentForPostEdsPhase) -> sh.SuccessOrHardError:
+             environment: instr.GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices) -> sh.SuccessOrHardError:
         self.__internal_instruction.execute(phases.BEFORE_ASSERT.section_name,
                                             environment,
                                             os_services)

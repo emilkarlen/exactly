@@ -20,6 +20,6 @@ class _Instruction(BeforeAssertPhaseInstruction):
         self.directory_components = directory_components
 
     def main(self,
-             os_services: OsServices,
-             environment: GlobalEnvironmentForPostEdsPhase) -> sh.SuccessOrHardError:
+             environment: GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices) -> sh.SuccessOrHardError:
         return mkdir_utils.execute_and_return_sh(self.directory_components)
