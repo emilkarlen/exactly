@@ -198,12 +198,14 @@ class CleanupValidatePreEdsExecutor(ControlledInstructionExecutor):
 class CleanupMainExecutor(ControlledInstructionExecutor):
     def __init__(self,
                  environment: instr.GlobalEnvironmentForPostEdsPhase,
+                 previous_phase: PreviousPhase,
                  os_services: OsServices):
         self.__environment = environment
+        self.__previous_phase = previous_phase
         self.__os_services = os_services
 
     def apply(self, instruction: CleanupPhaseInstruction) -> PartialInstructionControlledFailureInfo:
         return _from_success_or_hard_error(
                 instruction.main(self.__environment,
-                                 PreviousPhase.ASSERT,
+                                 self.__previous_phase,
                                  self.__os_services))

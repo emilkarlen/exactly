@@ -19,6 +19,7 @@ from shellcheck_lib.test_case.os_services import new_default, OsServices
 from shellcheck_lib.test_case.sections import common
 from shellcheck_lib.test_case.sections.act.phase_setup import PhaseEnvironmentForScriptGeneration, ActProgramExecutor, \
     SourceSetup, ScriptSourceBuilder
+from shellcheck_lib.test_case.sections.cleanup import PreviousPhase
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPreEdsStep
 from shellcheck_lib.test_case.sections.setup import SetupSettingsBuilder, StdinSettings
 from . import phase_step_execution
@@ -193,44 +194,45 @@ class PartialExecutor:
         self.__set_cwd_to_act_dir()
         self.__set_post_eds_environment_variables()
         res = self.__setup__main(os_services)
+        previous_phase = PreviousPhase.SETUP
         if res.status is not PartialResultStatus.PASS:
-            self.__cleanup_main(os_services)
+            self.__cleanup_main(previous_phase, os_services)
             return res
         res = self.__setup__validate_post_setup()
         if res.status is not PartialResultStatus.PASS:
-            self.__cleanup_main(os_services)
+            self.__cleanup_main(previous_phase, os_services)
             return res
         res = self.__act__validate_post_setup()
         if res.status is not PartialResultStatus.PASS:
-            self.__cleanup_main(os_services)
+            self.__cleanup_main(previous_phase, os_services)
             return res
         res = self.__before_assert__validate_post_setup()
         if res.status is not PartialResultStatus.PASS:
-            self.__cleanup_main(os_services)
+            self.__cleanup_main(previous_phase, os_services)
             return res
         res = self.__assert__validate_post_setup()
         if res.status is not PartialResultStatus.PASS:
-            self.__cleanup_main(os_services)
+            self.__cleanup_main(previous_phase, os_services)
             return res
         res = self.__act__script_generation()
         if res.status is not PartialResultStatus.PASS:
-            self.__cleanup_main(os_services)
+            self.__cleanup_main(previous_phase, os_services)
             return res
         res = self.__act__script_validate()
         if res.status is not PartialResultStatus.PASS:
-            self.__cleanup_main(os_services)
+            self.__cleanup_main(previous_phase, os_services)
             return res
         res = self.__act__script_execute()
         if res.status is not PartialResultStatus.PASS:
-            self.__cleanup_main(os_services)
+            self.__cleanup_main(previous_phase, os_services)
             return res
         self.__set_assert_environment_variables()
         res = self.__before_assert__main(os_services)
         if res.status is not PartialResultStatus.PASS:
-            self.__cleanup_main(os_services)
+            self.__cleanup_main(PreviousPhase.BEFORE_ASSERT, os_services)
             return res
         ret_val = self.__assert__main(os_services)
-        res = self.__cleanup_main(os_services)
+        res = self.__cleanup_main(PreviousPhase.ASSERT, os_services)
         if res.is_failure:
             ret_val = res
         return ret_val
@@ -353,31 +355,36 @@ class PartialExecutor:
                 self.__test_case.before_assert_phase)
 
     def __assert__validate_post_setup(self) -> PartialResult:
-        return self.__run_internal_instructions_phase_step(phase_step.ASSERT__VALIDATE_POST_SETUP,
-                                                           phase_step_executors.AssertValidatePostSetupExecutor(
-                                                                   self.__global_environment),
-                                                           self.__test_case.assert_phase)
+        return self.__run_internal_instructions_phase_step(
+                phase_step.ASSERT__VALIDATE_POST_SETUP,
+                phase_step_executors.AssertValidatePostSetupExecutor(
+                        self.__global_environment),
+                self.__test_case.assert_phase)
 
     def __assert__main(self, phase_env) -> PartialResult:
-        return self.__run_internal_instructions_phase_step(phase_step.ASSERT__MAIN,
-                                                           phase_step_executors.AssertMainExecutor(
-                                                                   self.__global_environment,
-                                                                   phase_env),
-                                                           self.__test_case.assert_phase)
+        return self.__run_internal_instructions_phase_step(
+                phase_step.ASSERT__MAIN,
+                phase_step_executors.AssertMainExecutor(
+                        self.__global_environment,
+                        phase_env),
+                self.__test_case.assert_phase)
 
-    def __cleanup_main(self, os_services) -> PartialResult:
-        return self.__run_internal_instructions_phase_step(phase_step.CLEANUP__MAIN,
-                                                           phase_step_executors.CleanupMainExecutor(
-                                                                   self.__global_environment,
-                                                                   os_services),
-                                                           self.__test_case.cleanup_phase)
+    def __cleanup_main(self, previous_phase: PreviousPhase, os_services) -> PartialResult:
+        return self.__run_internal_instructions_phase_step(
+                phase_step.CLEANUP__MAIN,
+                phase_step_executors.CleanupMainExecutor(
+                        self.__global_environment,
+                        previous_phase,
+                        os_services),
+                self.__test_case.cleanup_phase)
 
     def __before_assert__main(self, os_services) -> PartialResult:
-        return self.__run_internal_instructions_phase_step(phase_step.BEFORE_ASSERT__MAIN,
-                                                           phase_step_executors.BeforeAssertMainExecutor(
-                                                                   self.__global_environment,
-                                                                   os_services),
-                                                           self.__test_case.before_assert_phase)
+        return self.__run_internal_instructions_phase_step(
+                phase_step.BEFORE_ASSERT__MAIN,
+                phase_step_executors.BeforeAssertMainExecutor(
+                        self.__global_environment,
+                        os_services),
+                self.__test_case.before_assert_phase)
 
     def __write_and_store_script_file_path(self):
         self.__source_setup = SourceSetup(self.__script_handling.builder,

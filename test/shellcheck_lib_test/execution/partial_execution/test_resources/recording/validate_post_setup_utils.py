@@ -1,9 +1,7 @@
 import unittest
 
-from shellcheck_lib.execution import phase_step
 from shellcheck_lib.execution.phase_step import PhaseStep
 from shellcheck_lib.execution.result import PartialResultStatus
-from shellcheck_lib.test_case.sections.cleanup import PreviousPhase
 from shellcheck_lib.test_case.sections.common import TestCaseInstruction
 from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib_test.execution.partial_execution.test_resources.recording.test_case_that_records_phase_execution import \
@@ -17,13 +15,10 @@ class Configuration:
     def __init__(self,
                  phase: PartialPhase,
                  step: PhaseStep,
-                 expected_steps_before_validation: list):
+                 expected_steps: list):
         self.phase = phase
         self.step = step
-        self.expected_steps = expected_steps_before_validation + [
-            step,
-            (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
-        ]
+        self.expected_steps = expected_steps
 
     def instruction_that_returns(self, return_value: svh.SuccessOrValidationErrorOrHardError) -> TestCaseInstruction:
         raise NotImplementedError()
