@@ -111,9 +111,9 @@ SUCCESSFUL_INSTRUCTION = act_phase_instruction_that()
 
 
 def instruction_that_asserts_cwd_is_act_dir(put: unittest.TestCase):
-    def do_main(ret_val, glob_and_phase_env):
+    def do_main(ret_val, glob_env, phase_env):
         cwd = os.getcwd()
-        put.assertEqual(str(glob_and_phase_env[0].eds.act_dir),
+        put.assertEqual(str(glob_env.eds.act_dir),
                         cwd,
                         'Current Directory')
         return ret_val

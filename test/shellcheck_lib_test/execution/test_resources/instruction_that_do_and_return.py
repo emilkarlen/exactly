@@ -166,11 +166,11 @@ class TestCaseSetup(tuple):
         return ret_val
 
     def _do_act_main(self) -> types.FunctionType:
-        def ret_val(glob_env__and_phase_env) -> sh.SuccessOrHardError:
+        def ret_val(glob_env, phase_env) -> sh.SuccessOrHardError:
             self.execution_action__with_eds(phase_step.ACT__MAIN,
-                                            glob_env__and_phase_env[0])
-            self.execution__generate_script(glob_env__and_phase_env[0],
-                                            glob_env__and_phase_env[1])
+                                            glob_env)
+            self.execution__generate_script(glob_env,
+                                            phase_env)
             return self.ret_val_from_main
 
         return ret_val
