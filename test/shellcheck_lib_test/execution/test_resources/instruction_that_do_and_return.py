@@ -158,7 +158,7 @@ class TestCaseSetup(tuple):
         return ret_val
 
     def _do_anonymous_main(self):
-        def ret_val(configuration_builder: ConfigurationBuilder) -> sh.SuccessOrHardError:
+        def ret_val(global_environment, configuration_builder: ConfigurationBuilder) -> sh.SuccessOrHardError:
             self.anonymous_phase_action(phase_step.ANONYMOUS__MAIN,
                                         configuration_builder)
             return self.ret_val_from_main

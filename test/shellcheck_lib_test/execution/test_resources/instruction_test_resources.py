@@ -13,11 +13,14 @@ from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, Setup
 
 
 def do_return(x):
-    return lambda env: x
+    def ret_val(*args):
+        return x
+
+    return ret_val
 
 
 def do_raise(ex: Exception):
-    def ret_val(x):
+    def ret_val(*args):
         raise ex
 
     return ret_val
@@ -49,7 +52,7 @@ class AnonymousPhaseInstructionThat(AnonymousPhaseInstruction):
 
     def main(self, global_environment,
              configuration_builder: ConfigurationBuilder) -> sh.SuccessOrHardError:
-        return self.do_main(configuration_builder)
+        return self.do_main(global_environment, configuration_builder)
 
 
 def setup_phase_instruction_that(validate_pre_eds=do_return(svh.new_svh_success()),

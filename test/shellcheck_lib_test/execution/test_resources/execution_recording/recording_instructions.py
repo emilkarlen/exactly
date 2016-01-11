@@ -76,7 +76,7 @@ class RecordingInstructions:
                                           svh.new_svh_success())
 
     def _do_record_and_return(self, element, return_value):
-        def ret_val(x):
+        def ret_val(*args):
             self.recorder.recording_of(element).record()
             return return_value
 
