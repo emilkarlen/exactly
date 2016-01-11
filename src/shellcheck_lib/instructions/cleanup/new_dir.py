@@ -2,7 +2,7 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
     SingleInstructionParserSource
 from shellcheck_lib.instructions.multi_phase_instructions import new_dir as mkdir_utils
 from shellcheck_lib.test_case.os_services import OsServices
-from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction
+from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction, PreviousPhase
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
 from shellcheck_lib.test_case.sections.result import sh
 
@@ -21,6 +21,7 @@ class _Instruction(CleanupPhaseInstruction):
 
     def main(self,
              environment: GlobalEnvironmentForPostEdsPhase,
+             previous_phase: PreviousPhase,
              os_services: OsServices) -> sh.SuccessOrHardError:
         error_message = mkdir_utils.make_dir_in_current_dir(self.directory_components)
         return sh.new_sh_success() if error_message is None else sh.new_sh_hard_error(error_message)

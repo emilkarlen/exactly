@@ -5,7 +5,7 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
     SingleInstructionParser, SingleInstructionParserSource
 from shellcheck_lib.test_case.os_services import OsServices, new_default
 from shellcheck_lib.test_case.sections import common as i
-from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction
+from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction, PreviousPhase
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
 from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.result import svh
@@ -19,13 +19,16 @@ from shellcheck_lib_test.test_resources import file_structure
 from shellcheck_lib_test.test_resources.execution import eds_populator, utils, eds_contents_check
 
 
-def arrangement(home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
-                eds_contents_before_main: eds_populator.EdsPopulator = eds_populator.empty(),
-                os_services: OsServices = new_default(),
-                ) -> ArrangementWithEds:
-    return ArrangementWithEds(home_dir_contents,
-                              eds_contents_before_main,
-                              os_services)
+class Arrangement(ArrangementWithEds):
+    def __init__(self,
+                 home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
+                 eds_contents_before_main: eds_populator.EdsPopulator = eds_populator.empty(),
+                 os_services: OsServices = new_default(),
+                 previous_phase: PreviousPhase = PreviousPhase.ASSERT):
+        super().__init__(home_dir_contents,
+                         eds_contents_before_main,
+                         os_services)
+        self.previous_phase = previous_phase
 
 
 class Expectation:
@@ -50,7 +53,7 @@ class TestCaseBase(unittest.TestCase):
     def _check(self,
                parser: SingleInstructionParser,
                source: SingleInstructionParserSource,
-               arrangement: ArrangementWithEds,
+               arrangement: Arrangement,
                expectation: Expectation):
         check(self, parser, source, arrangement, expectation)
 
@@ -58,7 +61,7 @@ class TestCaseBase(unittest.TestCase):
 def check(put: unittest.TestCase,
           parser: SingleInstructionParser,
           source: SingleInstructionParserSource,
-          arrangement: ArrangementWithEds,
+          arrangement: Arrangement,
           expectation: Expectation):
     Executor(put, arrangement, expectation).execute(parser, source)
 
@@ -66,7 +69,7 @@ def check(put: unittest.TestCase,
 class Executor(InstructionExecutionToBeReplacedByVaBase):
     def __init__(self,
                  put: unittest.TestCase,
-                 arrangement: ArrangementWithEds,
+                 arrangement: Arrangement,
                  expectation: Expectation):
         super().__init__(put, arrangement)
         self.arrangement = arrangement
@@ -102,7 +105,9 @@ class Executor(InstructionExecutionToBeReplacedByVaBase):
     def _execute_main(self,
                       environment: GlobalEnvironmentForPostEdsPhase,
                       instruction: CleanupPhaseInstruction) -> pfh.PassOrFailOrHardError:
-        result = instruction.main(environment, self.arrangement.os_services)
+        result = instruction.main(environment,
+                                  self.arrangement.previous_phase,
+                                  self.arrangement.os_services)
         self._check_result_of_main__sh(result)
         self.expectation.main_result.apply(self.put, result)
         self.expectation.main_side_effects_on_files.apply(self.put, environment.eds)

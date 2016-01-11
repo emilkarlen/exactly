@@ -3,7 +3,7 @@ import unittest
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParserSource
 from shellcheck_lib.test_case.os_services import new_default, OsServices
-from shellcheck_lib_test.instructions.cleanup.test_resources.instruction_check import arrangement, check, is_success, \
+from shellcheck_lib_test.instructions.cleanup.test_resources.instruction_check import Arrangement, check, is_success, \
     Expectation
 from shellcheck_lib_test.instructions.multi_phase_instructions.test_resources.configuration import ConfigurationBase
 from shellcheck_lib_test.instructions.test_resources import sh_check
@@ -33,7 +33,7 @@ class CleanupConfigurationBase(ConfigurationBase):
     def arrangement(self,
                     eds_contents_before_main: eds_populator.EdsPopulator = eds_populator.empty(),
                     os_services: OsServices = new_default()):
-        return arrangement(eds_contents_before_main=eds_contents_before_main,
+        return Arrangement(eds_contents_before_main=eds_contents_before_main,
                            os_services=os_services)
 
     def expect_success_and_side_effects_on_files(self,
