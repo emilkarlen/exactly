@@ -63,8 +63,8 @@ class PyCommandThatStoresStringInFileInCurrentDirectory(SetupPhaseInstruction):
         self.__text_to_store = text_to_store
 
     def main(self,
-             os_services: OsServices,
              environment: common.GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices,
              settings_builder: SetupSettingsBuilder):
         with open(self.__file_base_name, 'w') as f:
             f.write(self.__text_to_store)
@@ -94,8 +94,8 @@ class InstructionThatSetsStdinFileName(SetupPhaseInstruction):
         self.__file_name = file_name
 
     def main(self,
-             os_services: OsServices,
              environment: common.GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         settings_builder.stdin.file_name = self.__file_name
         return sh.new_sh_success()
@@ -108,8 +108,8 @@ class InstructionThatSetsStdinContents(SetupPhaseInstruction):
         self.__contents = contents
 
     def main(self,
-             os_services: OsServices,
              environment: common.GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         settings_builder.stdin.contents = self.__contents
         return sh.new_sh_success()

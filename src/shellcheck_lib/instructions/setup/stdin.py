@@ -53,8 +53,8 @@ class _InstructionForHereDocument(SetupPhaseInstruction):
         self.contents = contents
 
     def main(self,
-             os_services: OsServices,
              environment: GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         settings_builder.stdin.contents = self.contents
         return sh.new_sh_success()
@@ -67,8 +67,8 @@ class _InstructionForFileRef(InstructionWithFileRefsBase):
         self.redirect_file = redirect_file
 
     def main(self,
-             os_services: OsServices,
              environment: GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         settings_builder.stdin.file_name = str(self.redirect_file.file_path_pre_or_post_eds(environment.home_and_eds))
         return sh.new_sh_success()

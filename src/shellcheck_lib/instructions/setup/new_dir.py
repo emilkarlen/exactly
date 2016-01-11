@@ -20,8 +20,8 @@ class _Instruction(SetupPhaseInstruction):
         self.directory_components = directory_components
 
     def main(self,
-             os_services: OsServices,
              environment: GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         error_message = new_dir_utils.make_dir_in_current_dir(self.directory_components)
         return sh.new_sh_success() if error_message is None else sh.new_sh_hard_error(error_message)

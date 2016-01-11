@@ -83,8 +83,8 @@ class SetupMainExecutor(ControlledInstructionExecutor):
 
     def apply(self, instruction: SetupPhaseInstruction) -> PartialInstructionControlledFailureInfo:
         return _from_success_or_hard_error(
-                instruction.main(self.__os_services,
-                                 self.__environment,
+                instruction.main(self.__environment,
+                                 self.__os_services,
                                  self.__setup_settings_builder))
 
 

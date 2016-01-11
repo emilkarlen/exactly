@@ -134,7 +134,7 @@ I stil m Configuration för gemensamma instruktioner.
 ** DONE Test-infrastruktur: _that
 ** DONE Impl-klasser ska vara privata
 ** TODO Alla main ska ta glob-env som första arg
-*** TODO beforeAssert
+*** DONE beforeAssert
 *** TODO setup
 ** 
 

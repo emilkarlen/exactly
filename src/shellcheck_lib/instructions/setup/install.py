@@ -71,7 +71,9 @@ class _InstallInstructionBase(SetupPhaseInstruction):
             return svh.new_svh_validation_error('File does not exist: {}'.format(str(path)))
         return svh.new_svh_success()
 
-    def main(self, os_services: OsServices, environment: GlobalEnvironmentForPostEdsPhase,
+    def main(self,
+             environment: GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         raise NotImplementedError()
 
@@ -85,8 +87,8 @@ class _InstallSourceWithoutExplicitDestinationInstruction(_InstallInstructionBas
         super().__init__(source_file_name)
 
     def main(self,
-             os_services: OsServices,
              environment: GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         src_path = self._src_path(environment)
         cwd = pathlib.Path()
@@ -104,8 +106,8 @@ class _InstallSourceWithExplicitDestinationInstruction(_InstallInstructionBase):
         self.destination_file_name = destination_file_name
 
     def main(self,
-             os_services: OsServices,
              environment: GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         src_path = self._src_path(environment)
         basename = src_path.name

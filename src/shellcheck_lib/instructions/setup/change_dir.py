@@ -20,8 +20,8 @@ class _Instruction(SetupPhaseInstruction):
         self.destination_directory = destination_directory
 
     def main(self,
-             os_services: OsServices,
              environment: GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         return cd_utils.execute_with_sh_result(self.destination_directory,
                                                environment.eds)

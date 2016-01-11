@@ -52,7 +52,7 @@ class SetupPhaseInstruction(TestCaseInstruction):
         return svh.new_svh_success()
 
     def main(self,
-             os_services: OsServices,
              environment: GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         raise NotImplementedError()

@@ -104,8 +104,8 @@ SUCCESSFUL_INSTRUCTION = setup_phase_instruction_that()
 
 class InstructionThatRaisesTestErrorIfCwdIsIsNotTestRoot(SetupPhaseInstruction):
     def main(self,
-             os_services: OsServices,
              environment: GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         test_misc.raise_test_error_if_cwd_is_not_test_root(environment.eds)
         return sh.new_sh_success()

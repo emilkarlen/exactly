@@ -135,8 +135,8 @@ class Executor:
         self.arrangement.eds_contents.apply(eds)
         settings_builder = self.arrangement.initial_settings_builder
         initial_settings_builder = copy.deepcopy(settings_builder)
-        main_result = instruction.main(self.arrangement.os_services,
-                                       global_environment_with_eds,
+        main_result = instruction.main(global_environment_with_eds,
+                                       self.arrangement.os_services,
                                        settings_builder)
         self.put.assertIsInstance(main_result,
                                   sh.SuccessOrHardError,

@@ -33,8 +33,8 @@ class _Instruction(SetupPhaseInstruction):
         return self.svh_validator.validate_pre_eds_if_applicable(environment.home_directory)
 
     def main(self,
-             os_services: OsServices,
              environment: GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         failure_message = self.setup.validator.validate_post_eds_if_applicable(environment.eds)
         if failure_message is not None:

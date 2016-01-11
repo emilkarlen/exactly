@@ -52,8 +52,8 @@ class _SetupInstructionExecutor(SetupPhaseInstruction):
         self.__ret_val = ret_val
 
     def main(self,
-             os_services: OsServices,
              environment: instr.GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         self.__internal_instruction.execute(phases.SETUP.section_name,
                                             environment,
