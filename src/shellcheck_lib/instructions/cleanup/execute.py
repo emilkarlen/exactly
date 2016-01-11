@@ -6,7 +6,7 @@ from shellcheck_lib.instructions.utils.pre_or_post_validation import PreOrPostEd
     PreOrPostEdsSvhValidationErrorValidator
 from shellcheck_lib.test_case.instruction_description import Description
 from shellcheck_lib.test_case.os_services import OsServices
-from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction
+from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction, PreviousPhase
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.result import svh
@@ -41,6 +41,7 @@ class _Instruction(CleanupPhaseInstruction):
 
     def main(self,
              environment: GlobalEnvironmentForPostEdsPhase,
+             previous_phase: PreviousPhase,
              os_services: OsServices) -> sh.SuccessOrHardError:
         validation_result = self._validate_from_main(environment)
         if validation_result.is_hard_error:

@@ -5,7 +5,7 @@ from shellcheck_lib.test_case.sections.anonymous import AnonymousPhaseInstructio
     ConfigurationBuilder
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib.test_case.sections.before_assert import BeforeAssertPhaseInstruction
-from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction
+from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction, PreviousPhase
 from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.result import svh
@@ -205,5 +205,6 @@ class _CleanupPhaseInstructionThat(CleanupPhaseInstruction):
 
     def main(self,
              environment: instrs.GlobalEnvironmentForPostEdsPhase,
+             previous_phase: PreviousPhase,
              os_services: OsServices) -> sh.SuccessOrHardError:
         return self.do_main(environment, os_services)

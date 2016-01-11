@@ -7,7 +7,7 @@ from shellcheck_lib.test_case.sections.anonymous import AnonymousPhaseInstructio
     ConfigurationBuilder
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib.test_case.sections.before_assert import BeforeAssertPhaseInstruction
-from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction
+from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction, PreviousPhase
 from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.result import svh
@@ -204,4 +204,6 @@ class CleanupMainExecutor(ControlledInstructionExecutor):
 
     def apply(self, instruction: CleanupPhaseInstruction) -> PartialInstructionControlledFailureInfo:
         return _from_success_or_hard_error(
-                instruction.main(self.__environment, self.__os_services))
+                instruction.main(self.__environment,
+                                 PreviousPhase.ASSERT,
+                                 self.__os_services))

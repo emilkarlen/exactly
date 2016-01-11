@@ -24,5 +24,9 @@ class CleanupPhaseInstruction(TestCaseInstruction):
 
     def main(self,
              environment: GlobalEnvironmentForPostEdsPhase,
+             previous_phase: PreviousPhase,
              os_services: OsServices) -> SuccessOrHardError:
+        """
+        :param previous_phase: The phase that was executed directly before the cleanup phase.
+        """
         raise NotImplementedError()
