@@ -2,6 +2,7 @@ import unittest
 
 from shellcheck_lib.execution import phase_step, phases
 from shellcheck_lib.execution.result import FullResultStatus
+from shellcheck_lib.test_case.sections.cleanup import PreviousPhase
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib_test.execution.full_execution.test_resources.recording.test_case_that_records_phase_execution import \
     Expectation, Arrangement, TestCaseBase, one_successful_instruction_in_each_phase
@@ -30,7 +31,7 @@ class Test(TestCaseBase):
                              phase_step.ACT__SCRIPT_EXECUTE,
                              phase_step.BEFORE_ASSERT__MAIN,
                              phase_step.ASSERT__MAIN,
-                             phase_step.CLEANUP__MAIN,
+                             (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
                              ],
                             True))
 
