@@ -16,8 +16,8 @@ class TestInstruction(InstructionWithFileRefsBase):
         super().__init__(file_ref_list_tuple)
 
     def main(self,
-             os_services: OsServices,
              environment: GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         return sh.new_sh_success()
 

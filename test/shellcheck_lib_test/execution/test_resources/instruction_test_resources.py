@@ -108,8 +108,8 @@ class _SetupPhaseInstructionThat(SetupPhaseInstruction):
         return self._validate_pre_eds(environment)
 
     def main(self,
-             os_services: OsServices,
              environment: instrs.GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         return self._main(environment, os_services, settings_builder)
 

@@ -13,8 +13,8 @@ class _Instruction(SetupPhaseInstruction):
         self.executor = executor
 
     def main(self,
-             os_services: OsServices,
              environment: GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         return env.execute_and_return_sh(self.executor, os_services)
 

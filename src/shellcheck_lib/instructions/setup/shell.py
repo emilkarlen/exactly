@@ -21,7 +21,7 @@ class _ShellInstruction(SetupPhaseInstruction):
         self.executor = executor
 
     def main(self,
-             os_services: OsServices,
              environment: GlobalEnvironmentForPostEdsPhase,
+             os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         return shell_common.run_and_return_sh(self.executor)
