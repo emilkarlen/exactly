@@ -1,10 +1,13 @@
 import os
 import pathlib
+import types
 
 from shellcheck_lib.execution import phases
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.sections import common
+from shellcheck_lib.test_case.sections.result import pfh
+from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib_test.execution.test_resources.instruction_adapter import InternalInstruction
 
 
@@ -38,6 +41,18 @@ class InternalInstructionThatWritesToStandardPhaseFile(InternalInstruction):
     def _file_lines(self,
                     environment: common.GlobalEnvironmentForPostEdsPhase) -> list:
         raise NotImplementedError()
+
+
+def write_to_standard_phase_file(phase: phases.Phase,
+                                 file_lines_from_env: types.FunctionType) -> types.FunctionType:
+    def ret_val(environment: common.GlobalEnvironmentForPostEdsPhase, *args):
+        file_path = standard_phase_file_path(environment.eds.act_dir, phase)
+        with open(str(file_path), 'w') as f:
+            contents = os.linesep.join(file_lines_from_env(environment)) + os.linesep
+            f.write(contents)
+        return pfh.new_pfh_pass() if phase.identifier == phases.ASSERT.identifier else sh.new_sh_success()
+
+    return ret_val
 
 
 class ModulesAndStatements:

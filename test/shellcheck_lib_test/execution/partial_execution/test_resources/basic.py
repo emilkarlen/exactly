@@ -10,7 +10,8 @@ from shellcheck_lib.execution import partial_execution, phases
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.execution.result import PartialResult
 from shellcheck_lib.general.functional import Composition
-from shellcheck_lib_test.execution.test_resources import instruction_adapter
+from shellcheck_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that, \
+    before_assert_phase_instruction_that, assert_phase_instruction_that, cleanup_phase_instruction_that
 from shellcheck_lib_test.execution.test_resources.test_case_generation import TestCaseGeneratorBase, \
     instruction_line_constructor
 
@@ -79,16 +80,20 @@ class TestCaseWithCommonDefaultForSetupAssertCleanup(TestCaseGeneratorForPartial
         self.instruction_line_constructor = instruction_line_constructor()
 
     def _setup_phase(self) -> list:
-        return self._phase_elements(instruction_adapter.as_setup, phases.SETUP)
+        return self._phase_elements(lambda main: setup_phase_instruction_that(main=main),
+                                    phases.SETUP)
 
     def _before_assert_phase(self) -> list:
-        return self._phase_elements(instruction_adapter.as_before_assert, phases.BEFORE_ASSERT)
+        return self._phase_elements(lambda main: before_assert_phase_instruction_that(main=main),
+                                    phases.BEFORE_ASSERT)
 
     def _assert_phase(self) -> list:
-        return self._phase_elements(instruction_adapter.as_assert, phases.ASSERT)
+        return self._phase_elements(lambda main: assert_phase_instruction_that(main=main),
+                                    phases.ASSERT)
 
     def _cleanup_phase(self) -> list:
-        return self._phase_elements(instruction_adapter.as_cleanup, phases.CLEANUP)
+        return self._phase_elements(lambda main: cleanup_phase_instruction_that(main=main),
+                                    phases.CLEANUP)
 
     def _phase_elements(self,
                         adapter_function,
@@ -99,7 +104,7 @@ class TestCaseWithCommonDefaultForSetupAssertCleanup(TestCaseGeneratorForPartial
 
     def _default_instructions_for_setup_assert_cleanup(self, phase: phases.Phase) -> list:
         """
-        :rtype list[InternalInstruction]
+        :rtype Function that can serve as main to PHASE_phase_instruction_that.
         """
         return []
 
