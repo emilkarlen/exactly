@@ -176,7 +176,7 @@ class TestCaseSetup(tuple):
         return ret_val
 
     def _do_assert_main(self):
-        def ret_val(environment: i.GlobalEnvironmentForPostEdsPhase) -> pfh.PassOrFailOrHardError:
+        def ret_val(environment: i.GlobalEnvironmentForPostEdsPhase, *args) -> pfh.PassOrFailOrHardError:
             self.execution_action__with_eds(phase_step.ASSERT__MAIN,
                                             environment)
             return self.ret_val_from_assert_main

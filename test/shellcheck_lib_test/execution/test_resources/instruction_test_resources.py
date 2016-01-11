@@ -182,7 +182,7 @@ class AssertPhaseInstructionThat(AssertPhaseInstruction):
     def main(self,
              environment: instrs.GlobalEnvironmentForPostEdsPhase,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
-        return self._main(environment)
+        return self._main(environment, os_services)
 
 
 def cleanup_phase_instruction_that(validate_pre_eds=do_return(svh.new_svh_success()),
