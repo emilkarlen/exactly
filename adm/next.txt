@@ -130,11 +130,19 @@ ut som.
 *** DONE type
 * DONE Ny struktur för test av Description
 I stil m Configuration för gemensamma instruktioner.
-* TODO cleanup/main ska få föregående-fas
+* DONE cleanup/main ska få föregående-fas
 ** DONE Test-infrastruktur: _that
 ** DONE Impl-klasser ska vara privata
-** TODO Alla main ska ta glob-env som första arg
+** DONE Alla main ska ta glob-env som första arg
 *** DONE beforeAssert
-*** TODO setup
-** 
+*** DONE setup
+** DONE Försök ta bort InternalInstruction
+get_directory_paths_from_env
+write_to_standard_phase_file
+** DONE Test-infrastruktur
+*** DONE Inspelare för cleanup ska ha tillgång till instruktionens arg
+** DONE Implementera
+*** DONE Lägg till arg t instr
+*** DONE Speca förväntat värde i tester
+*** DONE Implementera
 
