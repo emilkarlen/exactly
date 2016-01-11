@@ -81,7 +81,7 @@ class SetupPhaseInstructionThat(SetupPhaseInstruction):
              os_services: OsServices,
              environment: instrs.GlobalEnvironmentForPostEdsPhase,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
-        return self._main(environment)
+        return self._main(environment, os_services, settings_builder)
 
     def validate_post_setup(self,
                             environment: instrs.GlobalEnvironmentForPostEdsPhase) \

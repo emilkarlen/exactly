@@ -150,7 +150,7 @@ class TestCaseSetup(tuple):
 
     def _do_main(self,
                  the_phase_step: PhaseStep):
-        def ret_val(environment: i.GlobalEnvironmentForPostEdsPhase):
+        def ret_val(environment: i.GlobalEnvironmentForPostEdsPhase, *args):
             self.execution_action__with_eds(the_phase_step,
                                             environment)
             return self.ret_val_from_main
