@@ -150,7 +150,7 @@ class BeforeAssertPhaseInstructionThat(BeforeAssertPhaseInstruction):
     def main(self,
              os_services: OsServices,
              environment: instrs.GlobalEnvironmentForPostEdsPhase) -> sh.SuccessOrHardError:
-        return self._main(environment)
+        return self._main(environment, os_services)
 
 
 def assert_phase_instruction_that(validate_pre_eds=do_return(svh.new_svh_success()),
