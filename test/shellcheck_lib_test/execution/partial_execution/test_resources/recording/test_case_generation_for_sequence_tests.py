@@ -8,7 +8,7 @@ from shellcheck_lib_test.execution.test_resources.execution_recording.recorder i
 from shellcheck_lib_test.execution.test_resources.execution_recording.recording_instructions import \
     RecordingInstructions
 from shellcheck_lib_test.execution.test_resources.test_case_generation import instruction_line_constructor, \
-    TestCaseInstructionsForFullExecution, phase_contents
+    phase_contents
 
 
 class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorForPartialExecutionBase):
@@ -73,8 +73,6 @@ class TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList(TestCaseGene
     def __init__(self,
                  recorder: ListRecorder = None):
         super().__init__(recorder)
-        self.__extra = TestCaseInstructionsForFullExecution()
-
         self.__extra = {}
         for ph in PartialPhase:
             self.__extra[ph] = []
