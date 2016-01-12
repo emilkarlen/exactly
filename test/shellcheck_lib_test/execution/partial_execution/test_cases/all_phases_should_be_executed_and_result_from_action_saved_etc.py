@@ -5,6 +5,7 @@ import unittest
 from shellcheck_lib.execution import environment_variables
 from shellcheck_lib.execution import phases
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
+from shellcheck_lib.execution.phases import PhaseEnum
 from shellcheck_lib.test_case.sections import common
 from shellcheck_lib.test_case.sections.act.instruction import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
 from shellcheck_lib.test_case.sections.result import sh
@@ -24,7 +25,7 @@ EXIT_CODE = 5
 
 
 class TestCaseDocument(TestCaseWithCommonDefaultInstructions):
-    def _default_instructions(self, phase: phases.Phase) -> list:
+    def _default_instructions(self, phase: phases.PhaseEnum) -> list:
         return [
             write_to_standard_phase_file(phase, get_directory_paths_from_env)
         ]
@@ -47,7 +48,7 @@ def assertions(utc: unittest.TestCase,
     result_check.apply(utc, actual.execution_directory_structure)
 
     file_name_from_py_cmd_list = [with_file_output.standard_phase_file_base_name(phase)
-                                  for phase in [phases.SETUP, phases.ASSERT, phases.CLEANUP]]
+                                  for phase in [PhaseEnum.SETUP, PhaseEnum.ASSERT, PhaseEnum.CLEANUP]]
     assert_files_in_test_root_that_contain_name_of_test_root_dir(
             utc,
             actual.partial_result.execution_directory_structure,

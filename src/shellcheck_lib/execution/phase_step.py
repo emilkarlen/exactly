@@ -1,6 +1,21 @@
 from shellcheck_lib.execution import phases
 
 
+class SimplePhaseStep(tuple):
+    def __new__(cls,
+                phase: phases.PhaseEnum,
+                step: str):
+        return tuple.__new__(cls, (phase, step))
+
+    @property
+    def phase(self) -> phases.PhaseEnum:
+        return self[0]
+
+    @property
+    def step(self) -> str:
+        return self[1]
+
+
 class PhaseStep(tuple):
     def __new__(cls,
                 phase: phases.Phase,
@@ -14,6 +29,10 @@ class PhaseStep(tuple):
     @property
     def step(self) -> str:
         return self[1]
+
+    @property
+    def simple(self) -> SimplePhaseStep:
+        return SimplePhaseStep(self.phase.the_enum, self.step)
 
     def __str__(self):
         tail = '' if not self.step else '/' + self.step

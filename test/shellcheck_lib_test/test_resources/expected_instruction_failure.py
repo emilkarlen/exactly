@@ -1,11 +1,11 @@
 import unittest
 
-from shellcheck_lib.general import line_source
-from shellcheck_lib_test.document.test_resources import assert_equals_line
-from shellcheck_lib.execution.phase_step import PhaseStep
-from shellcheck_lib_test.test_resources.assert_utils import assertion_message
+from shellcheck_lib.execution.phase_step import PhaseStep, SimplePhaseStep
 from shellcheck_lib.execution.result import InstructionFailureInfo, FailureDetails, \
     FullResultStatus, FullResult, FailureInfo, PhaseFailureInfo
+from shellcheck_lib.general import line_source
+from shellcheck_lib_test.document.test_resources import assert_equals_line
+from shellcheck_lib_test.test_resources.assert_utils import assertion_message
 
 
 class ExpectedFailureDetails(tuple):
@@ -26,7 +26,7 @@ class ExpectedFailureDetails(tuple):
     def assertions(self,
                    unittest_case: unittest.TestCase,
                    actual: FailureDetails,
-                   message_header: str=None):
+                   message_header: str = None):
         if self.error_message_or_none is None and self.exception_class_or_none is None:
             unittest_case.assertIsNone(actual,
                                        message_header)
@@ -130,7 +130,7 @@ class ExpectedFailureForInstructionFailure(ExpectedFailure, tuple):
                     actual_line: line_source.Line,
                     actual_details: FailureDetails):
         unittest_case.assertEqual(self.phase_step.phase,
-                                  phase_step.phase,
+                                  phase_step.phase.the_enum,
                                   'Phase')
         unittest_case.assertEqual(self.phase_step.step,
                                   phase_step.step,
@@ -192,7 +192,7 @@ class ExpectedFailureForPhaseFailure(ExpectedFailure, tuple):
 
     def assertions_(self,
                     unittest_case: unittest.TestCase,
-                    phase_step: PhaseStep,
+                    phase_step: SimplePhaseStep,
                     actual_details: FailureDetails):
         unittest_case.assertEqual(self.phase_step.phase,
                                   phase_step.phase,
@@ -212,7 +212,7 @@ class ExpectedFailureForPhaseFailure(ExpectedFailure, tuple):
                                        'The failure is expected to be a {}'.format(str(PhaseFailureInfo)))
         assert isinstance(actual, PhaseFailureInfo)
         self.assertions_(unittest_case,
-                         actual.phase_step,
+                         actual.phase_step.simple,
                          actual.failure_details)
 
     @property

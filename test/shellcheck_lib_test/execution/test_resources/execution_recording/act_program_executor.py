@@ -1,6 +1,6 @@
 import pathlib
 
-from shellcheck_lib.execution import phase_step
+from shellcheck_lib.execution import phase_step_simple as phase_step
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.general.std import StdFiles
 from shellcheck_lib.test_case.sections.act.phase_setup import ActProgramExecutor, SourceSetup

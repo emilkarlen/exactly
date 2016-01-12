@@ -1,6 +1,6 @@
 import unittest
 
-from shellcheck_lib.execution import phase_step
+from shellcheck_lib.execution import phase_step_simple as phase_step
 from shellcheck_lib.test_case.sections.cleanup import PreviousPhase
 from shellcheck_lib.test_case.sections.common import TestCaseInstruction
 from shellcheck_lib.test_case.sections.result import svh

@@ -1,6 +1,6 @@
 import unittest
 
-from shellcheck_lib.execution import phase_step
+from shellcheck_lib.execution import phase_step_simple as phase_step
 from shellcheck_lib.test_case.sections.common import TestCaseInstruction
 from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib_test.execution.partial_execution.test_resources.recording import validate_pre_eds_utils

@@ -1,4 +1,4 @@
-from shellcheck_lib.execution import phase_step
+from shellcheck_lib.execution import phase_step_simple as phase_step
 
 PRE_EDS_VALIDATION_STEPS = [
     phase_step.SETUP__VALIDATE_PRE_EDS,
