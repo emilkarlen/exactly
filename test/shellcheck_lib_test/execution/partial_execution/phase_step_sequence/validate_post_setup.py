@@ -7,7 +7,7 @@ from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib_test.execution.partial_execution.test_resources.recording import validate_post_setup_utils as utils
 from shellcheck_lib_test.execution.partial_execution.test_resources.test_case_generator import PartialPhase
 from shellcheck_lib_test.execution.test_resources import instruction_test_resources as test
-from shellcheck_lib_test.execution.test_resources.execution_recording.phase_steps import PRE_EDS_VALIDATION_STEPS
+from shellcheck_lib_test.execution.test_resources.execution_recording.phase_steps import PRE_EDS_VALIDATION_STEPS__TWICE
 from shellcheck_lib_test.execution.test_resources.instruction_test_resources import do_raise, do_return
 
 
@@ -16,9 +16,11 @@ class SetupConfig(utils.Configuration):
         super().__init__(PartialPhase.SETUP,
                          phase_step.SETUP__VALIDATE_POST_SETUP,
                          expected_steps=
-                         PRE_EDS_VALIDATION_STEPS + [
+                         PRE_EDS_VALIDATION_STEPS__TWICE + [
+                             phase_step.SETUP__MAIN,
                              phase_step.SETUP__MAIN,
                              phase_step.SETUP__VALIDATE_POST_SETUP,
+                             (phase_step.CLEANUP__MAIN, PreviousPhase.SETUP),
                              (phase_step.CLEANUP__MAIN, PreviousPhase.SETUP),
                          ])
 
@@ -35,10 +37,13 @@ class ActConfig(utils.Configuration):
         super().__init__(PartialPhase.ACT,
                          phase_step.ACT__VALIDATE_POST_SETUP,
                          expected_steps=
-                         PRE_EDS_VALIDATION_STEPS + [
+                         PRE_EDS_VALIDATION_STEPS__TWICE + [
+                             phase_step.SETUP__MAIN,
                              phase_step.SETUP__MAIN,
                              phase_step.SETUP__VALIDATE_POST_SETUP,
+                             phase_step.SETUP__VALIDATE_POST_SETUP,
                              phase_step.ACT__VALIDATE_POST_SETUP,
+                             (phase_step.CLEANUP__MAIN, PreviousPhase.SETUP),
                              (phase_step.CLEANUP__MAIN, PreviousPhase.SETUP),
                          ])
 
@@ -55,11 +60,15 @@ class BeforeAssertConfig(utils.Configuration):
         super().__init__(PartialPhase.BEFORE_ASSERT,
                          phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
                          expected_steps=
-                         PRE_EDS_VALIDATION_STEPS + [
+                         PRE_EDS_VALIDATION_STEPS__TWICE + [
+                             phase_step.SETUP__MAIN,
                              phase_step.SETUP__MAIN,
                              phase_step.SETUP__VALIDATE_POST_SETUP,
+                             phase_step.SETUP__VALIDATE_POST_SETUP,
+                             phase_step.ACT__VALIDATE_POST_SETUP,
                              phase_step.ACT__VALIDATE_POST_SETUP,
                              phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
+                             (phase_step.CLEANUP__MAIN, PreviousPhase.SETUP),
                              (phase_step.CLEANUP__MAIN, PreviousPhase.SETUP),
                          ])
 
@@ -76,12 +85,17 @@ class AssertConfig(utils.Configuration):
         super().__init__(PartialPhase.ASSERT,
                          phase_step.ASSERT__VALIDATE_POST_SETUP,
                          expected_steps=
-                         PRE_EDS_VALIDATION_STEPS + [
+                         PRE_EDS_VALIDATION_STEPS__TWICE + [
+                             phase_step.SETUP__MAIN,
                              phase_step.SETUP__MAIN,
                              phase_step.SETUP__VALIDATE_POST_SETUP,
+                             phase_step.SETUP__VALIDATE_POST_SETUP,
+                             phase_step.ACT__VALIDATE_POST_SETUP,
                              phase_step.ACT__VALIDATE_POST_SETUP,
                              phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
+                             phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
                              phase_step.ASSERT__VALIDATE_POST_SETUP,
+                             (phase_step.CLEANUP__MAIN, PreviousPhase.SETUP),
                              (phase_step.CLEANUP__MAIN, PreviousPhase.SETUP),
                          ])
 
