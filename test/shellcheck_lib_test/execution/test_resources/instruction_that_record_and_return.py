@@ -1,11 +1,8 @@
 import functools
 import types
-from pathlib import Path
 
 from shellcheck_lib.execution.phase_step import PhaseStep
 from shellcheck_lib.test_case import test_case_doc
-from shellcheck_lib.test_case.sections import common as i
-from shellcheck_lib.test_case.sections.anonymous import ConfigurationBuilder
 from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.result import svh
@@ -35,21 +32,7 @@ class Recorder:
         self.list_recorder.extend(recordings)
 
 
-def do_nothing__anonymous_phase(recorder: Recorder,
-                                phase_step: PhaseStep,
-                                phase_environment: ConfigurationBuilder):
-    pass
-
-
-def do_nothing__without_eds(recorder: Recorder,
-                            phase_step: PhaseStep,
-                            home_dir: Path):
-    pass
-
-
-def do_nothing__with_eds(recorder: Recorder,
-                         phase_step: PhaseStep,
-                         global_environment: i.GlobalEnvironmentForPostEdsPhase):
+def do_nothing(recorder: Recorder, *args):
     pass
 
 
@@ -58,10 +41,10 @@ class TestCaseSetupWithRecorder(tuple):
                 ret_val_from_validate: svh.SuccessOrValidationErrorOrHardError = svh.new_svh_success(),
                 ret_val_from_execute: sh.SuccessOrHardError = sh.new_sh_success(),
                 ret_val_from_assert_execute: pfh.PassOrFailOrHardError = pfh.new_pfh_pass(),
-                validation_action__without_eds: types.FunctionType = do_nothing__without_eds,
-                anonymous_phase_action: types.FunctionType = do_nothing__anonymous_phase,
-                validation_action__with_eds: types.FunctionType = do_nothing__with_eds,
-                execution_action__with_eds: types.FunctionType = do_nothing__with_eds,
+                validation_action__without_eds: types.FunctionType = do_nothing,
+                anonymous_phase_action: types.FunctionType = do_nothing,
+                validation_action__with_eds: types.FunctionType = do_nothing,
+                execution_action__with_eds: types.FunctionType = do_nothing,
                 execution__generate_script: types.FunctionType =
                 instruction_that_do_and_return.do_nothing__generate_script,
                 ):
