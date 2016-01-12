@@ -8,7 +8,7 @@ from shellcheck_lib.test_case.sections import common
 from shellcheck_lib.test_case.sections.act.instruction import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib_test.execution.partial_execution.test_resources.basic import \
-    TestCaseWithCommonDefaultForSetupAssertCleanup, PartialExecutionTestCaseBase, Result
+    TestCaseWithCommonDefaultInstructions, PartialExecutionTestCaseBase, Result
 from shellcheck_lib_test.execution.test_resources import utils
 from shellcheck_lib_test.test_resources.model_utils import new_instruction_element, new_comment_element
 
@@ -28,7 +28,7 @@ class TheTest(PartialExecutionTestCaseBase):
         assertions(self.utc, self.result)
 
 
-class TestCaseDocument(TestCaseWithCommonDefaultForSetupAssertCleanup):
+class TestCaseDocument(TestCaseWithCommonDefaultInstructions):
     def _act_phase(self) -> list:
         return [
             new_instruction_element(
