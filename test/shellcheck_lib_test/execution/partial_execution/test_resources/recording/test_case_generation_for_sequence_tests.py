@@ -41,38 +41,6 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorForPartialExecutio
                 recording_instructions.new_cleanup_instruction(phase_step.CLEANUP__VALIDATE_PRE_EDS,
                                                                phase_step.CLEANUP__MAIN)
         }
-
-    def recorders_for(self, phase: PartialPhase) -> list:
-        return [self.ilc.apply(self.__recorders[phase])]
-
-    def the_extra(self, phase: PartialPhase) -> list:
-        """
-        :rtype [PhaseContentElement]
-        """
-        raise NotImplementedError()
-
-    @property
-    def recorder(self) -> ListRecorder:
-        return self.__recorder
-
-    @property
-    def internal_instruction_recorder(self) -> list:
-        return self.__recorder.recorded_elements
-
-    def phase_contents_for(self, phase: PartialPhase) -> model.PhaseContents:
-        return phase_contents(self._all_elements_for(phase))
-
-    def _all_elements_for(self, phase: PartialPhase) -> list:
-        """
-        :rtype [PhaseContentElement]
-        """
-        return self.recorders_for(phase) + self.the_extra(phase)
-
-
-class TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList(TestCaseGeneratorForExecutionRecording):
-    def __init__(self,
-                 recorder: ListRecorder = None):
-        super().__init__(recorder)
         self.__extra = {}
         for ph in PartialPhase:
             self.__extra[ph] = []
@@ -89,3 +57,44 @@ class TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList(TestCaseGene
         if phase not in self.__the_extra:
             self.__the_extra[phase] = self.ilc.apply_list(self.__extra[phase])
         return self.__the_extra[phase]
+
+    def recorder_for(self, phase: PartialPhase) -> list:
+        return self.ilc.apply(self.__recorders[phase])
+
+    @property
+    def recorder(self) -> ListRecorder:
+        return self.__recorder
+
+    @property
+    def internal_instruction_recorder(self) -> list:
+        return self.__recorder.recorded_elements
+
+    def phase_contents_for(self, phase: PartialPhase) -> model.PhaseContents:
+        return phase_contents(self._all_elements_for(phase))
+
+    def _all_elements_for(self, phase: PartialPhase) -> list:
+        """
+        :rtype [PhaseContentElement]
+        """
+        raise NotImplementedError()
+
+
+class TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList(TestCaseGeneratorForExecutionRecording):
+    def __init__(self,
+                 recorder: ListRecorder = None):
+        super().__init__(recorder)
+
+    def _all_elements_for(self, phase: PartialPhase) -> list:
+        """
+        :rtype [PhaseContentElement]
+        """
+        return [self.recorder_for(phase)] + self.the_extra(phase)
+
+
+class TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr(TestCaseGeneratorForExecutionRecording):
+    def __init__(self,
+                 recorder: ListRecorder = None):
+        super().__init__(recorder)
+
+    def _all_elements_for(self, phase: PartialPhase) -> list:
+        return [self.recorder_for(phase)] + self.the_extra(phase) + [self.recorder_for(phase)]

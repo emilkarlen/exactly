@@ -4,8 +4,10 @@ from shellcheck_lib.execution.phase_step import PhaseStep
 from shellcheck_lib.execution.result import PartialResultStatus
 from shellcheck_lib.test_case.sections.common import TestCaseInstruction
 from shellcheck_lib.test_case.sections.result import svh
+from shellcheck_lib_test.execution.partial_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
+    TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr
 from shellcheck_lib_test.execution.partial_execution.test_resources.recording.test_case_that_records_phase_execution import \
-    Expectation, Arrangement, one_successful_instruction_in_each_phase, execute_test_case_with_recording
+    Expectation, Arrangement, execute_test_case_with_recording
 from shellcheck_lib_test.execution.partial_execution.test_resources.test_case_generator import PartialPhase
 from shellcheck_lib_test.execution.test_resources import instruction_test_resources as test
 from shellcheck_lib_test.test_resources.expected_instruction_failure import ExpectedFailureForInstructionFailure
@@ -27,14 +29,16 @@ class Configuration:
         raise NotImplementedError()
 
 
-class TestValidationError(unittest.TestCase):
+class TestCaseBase(unittest.TestCase):
     def __init__(self, configuration: Configuration):
-        super(TestValidationError, self).__init__()
+        super().__init__()
         self.configuration = configuration
 
+
+class TestValidationError(TestCaseBase):
     def runTest(self):
         conf = self.configuration
-        test_case = one_successful_instruction_in_each_phase() \
+        test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
             .add(conf.phase,
                  conf.instruction_that_returns(svh.new_svh_validation_error('validation error message')))
         execute_test_case_with_recording(
@@ -50,14 +54,10 @@ class TestValidationError(unittest.TestCase):
         )
 
 
-class TestHardError(unittest.TestCase):
-    def __init__(self, configuration: Configuration):
-        super().__init__()
-        self.configuration = configuration
-
+class TestHardError(TestCaseBase):
     def runTest(self):
         conf = self.configuration
-        test_case = one_successful_instruction_in_each_phase() \
+        test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
             .add(conf.phase,
                  conf.instruction_that_returns(svh.new_svh_hard_error('Error message from hard error')))
         execute_test_case_with_recording(
@@ -72,14 +72,10 @@ class TestHardError(unittest.TestCase):
                             True))
 
 
-class TestImplementationError(unittest.TestCase):
-    def __init__(self, configuration: Configuration):
-        super().__init__()
-        self.configuration = configuration
-
+class TestImplementationError(TestCaseBase):
     def runTest(self):
         conf = self.configuration
-        test_case = one_successful_instruction_in_each_phase() \
+        test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
             .add(conf.phase,
                  conf.instruction_that_raises(test.ImplementationErrorTestException()))
         execute_test_case_with_recording(
