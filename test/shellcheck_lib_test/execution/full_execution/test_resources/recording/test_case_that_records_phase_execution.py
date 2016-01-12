@@ -150,5 +150,5 @@ class TestCaseBase(unittest.TestCase):
                                                                         execute_test_action))
 
 
-def one_successful_instruction_in_each_phase() -> TestCaseGeneratorWithRecordingInstrFollowedByExtraInstrsInEachPhase:
+def one_successful_instruction_in_each_phase() -> TestCaseGeneratorForExecutionRecording:
     return TestCaseGeneratorWithRecordingInstrFollowedByExtraInstrsInEachPhase()
