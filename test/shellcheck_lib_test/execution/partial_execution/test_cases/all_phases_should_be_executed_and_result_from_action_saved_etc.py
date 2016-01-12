@@ -9,7 +9,7 @@ from shellcheck_lib.test_case.sections import common
 from shellcheck_lib.test_case.sections.act.instruction import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib_test.execution.partial_execution.test_resources.basic import \
-    TestCaseWithCommonDefaultForSetupAssertCleanup, Result
+    TestCaseWithCommonDefaultInstructions, Result
 from shellcheck_lib_test.execution.test_resources import py_unit_test_case_with_file_output as with_file_output
 from shellcheck_lib_test.execution.test_resources import utils
 from shellcheck_lib_test.execution.test_resources.py_unit_test_case_with_file_output import \
@@ -23,8 +23,8 @@ CURRENT_DIR_HEADER = 'Current Dir'
 EXIT_CODE = 5
 
 
-class TestCaseDocument(TestCaseWithCommonDefaultForSetupAssertCleanup):
-    def _default_instructions_for_setup_assert_cleanup(self, phase: phases.Phase) -> list:
+class TestCaseDocument(TestCaseWithCommonDefaultInstructions):
+    def _default_instructions(self, phase: phases.Phase) -> list:
         return [
             write_to_standard_phase_file(phase, get_directory_paths_from_env)
         ]

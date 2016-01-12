@@ -10,7 +10,7 @@ from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
 from shellcheck_lib_test.execution.partial_execution.test_resources.basic import \
-    TestCaseWithCommonDefaultForSetupAssertCleanup, Result
+    TestCaseWithCommonDefaultInstructions, Result
 from shellcheck_lib_test.test_resources.execution.eds_test import ResultFilesCheck
 
 INPUT_TMP_FILE = 'input.txt'
@@ -20,7 +20,7 @@ TEXT_ON_STDIN = 'on stdin'
 EXPECTED_CONTENTS_OF_STDERR = ''
 
 
-class TestCaseDocumentThatSetsStdinFileName(TestCaseWithCommonDefaultForSetupAssertCleanup):
+class TestCaseDocumentThatSetsStdinFileName(TestCaseWithCommonDefaultInstructions):
     def _setup_phase(self) -> list:
         return self.instruction_line_constructor.apply_list([
             PyCommandThatStoresStringInFileInCurrentDirectory(INPUT_TMP_FILE,
@@ -34,7 +34,7 @@ class TestCaseDocumentThatSetsStdinFileName(TestCaseWithCommonDefaultForSetupAss
         ])
 
 
-class TestCaseDocumentThatSetsStdinContents(TestCaseWithCommonDefaultForSetupAssertCleanup):
+class TestCaseDocumentThatSetsStdinContents(TestCaseWithCommonDefaultInstructions):
     def _setup_phase(self) -> list:
         return self.instruction_line_constructor.apply_list([
             InstructionThatSetsStdinContents(TEXT_ON_STDIN),

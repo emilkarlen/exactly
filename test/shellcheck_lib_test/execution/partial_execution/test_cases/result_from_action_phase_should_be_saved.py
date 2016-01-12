@@ -8,7 +8,7 @@ from shellcheck_lib.test_case.sections import common
 from shellcheck_lib.test_case.sections.act.instruction import PhaseEnvironmentForScriptGeneration, ActPhaseInstruction
 from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib_test.execution.partial_execution.test_resources.basic import \
-    TestCaseWithCommonDefaultForSetupAssertCleanup, Result
+    TestCaseWithCommonDefaultInstructions, Result
 from shellcheck_lib_test.test_resources.execution.eds_test import ResultFilesCheck
 
 _TEXT_ON_STDOUT = 'on stdout'
@@ -16,7 +16,7 @@ _TEXT_ON_STDERR = 'on stderr'
 _EXIT_CODE = 5
 
 
-class TestCaseDocument(TestCaseWithCommonDefaultForSetupAssertCleanup):
+class TestCaseDocument(TestCaseWithCommonDefaultInstructions):
     def _act_phase(self) -> list:
         return self.instruction_line_constructor.apply_list([
             ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr(_EXIT_CODE,

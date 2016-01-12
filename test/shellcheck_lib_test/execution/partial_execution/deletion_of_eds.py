@@ -2,7 +2,7 @@ import unittest
 
 from shellcheck_lib.execution import partial_execution as sut
 from shellcheck_lib_test.execution.partial_execution.test_resources.basic import py3_test, \
-    TestCaseWithCommonDefaultForSetupAssertCleanup, Result
+    TestCaseWithCommonDefaultInstructions, Result
 
 
 class Test(unittest.TestCase):
@@ -39,7 +39,7 @@ def _common_assertions(actual, put):
 
 
 def test_case_that_does_nothing() -> sut.TestCase:
-    return TestCaseWithCommonDefaultForSetupAssertCleanup().test_case
+    return TestCaseWithCommonDefaultInstructions().test_case
 
 
 def suite():

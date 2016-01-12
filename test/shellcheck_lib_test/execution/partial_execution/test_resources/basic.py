@@ -74,7 +74,7 @@ def build(tc: TestCaseGeneratorBase) -> partial_execution.TestCase:
     )
 
 
-class TestCaseWithCommonDefaultForSetupAssertCleanup(TestCaseGeneratorForPartialExecutionBase):
+class TestCaseWithCommonDefaultInstructions(TestCaseGeneratorForPartialExecutionBase):
     def __init__(self):
         super().__init__()
         self.instruction_line_constructor = instruction_line_constructor()
@@ -96,13 +96,13 @@ class TestCaseWithCommonDefaultForSetupAssertCleanup(TestCaseGeneratorForPartial
                                     phases.CLEANUP)
 
     def _phase_elements(self,
-                        adapter_function,
+                        instruction_in_phase_adapter: types.FunctionType,
                         phase: phases.Phase) -> list:
         return list(map(Composition(self.instruction_line_constructor,
-                                    adapter_function),
-                        self._default_instructions_for_setup_assert_cleanup(phase)))
+                                    instruction_in_phase_adapter),
+                        self._default_instructions(phase)))
 
-    def _default_instructions_for_setup_assert_cleanup(self, phase: phases.Phase) -> list:
+    def _default_instructions(self, phase: phases.Phase) -> list:
         """
         :rtype Function that can serve as main to PHASE_phase_instruction_that.
         """
