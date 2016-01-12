@@ -8,7 +8,7 @@ from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib.test_case import test_case_doc
 from shellcheck_lib.test_case.sections.result import svh
 from shellcheck_lib_test.execution.full_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
-    TestCaseGeneratorForExecutionRecording, TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList
+    TestCaseGeneratorForExecutionRecording, TestCaseGeneratorWithRecordingInstrFollowedByExtraInstrsInEachPhase
 from shellcheck_lib_test.execution.full_execution.test_resources.test_case_base import FullExecutionTestCaseBase
 from shellcheck_lib_test.execution.test_resources.execution_recording.act_program_executor import \
     ActProgramExecutorWrapperThatRecordsSteps
@@ -150,5 +150,5 @@ class TestCaseBase(unittest.TestCase):
                                                                         execute_test_action))
 
 
-def one_successful_instruction_in_each_phase() -> TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList:
-    return TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList()
+def one_successful_instruction_in_each_phase() -> TestCaseGeneratorWithRecordingInstrFollowedByExtraInstrsInEachPhase:
+    return TestCaseGeneratorWithRecordingInstrFollowedByExtraInstrsInEachPhase()

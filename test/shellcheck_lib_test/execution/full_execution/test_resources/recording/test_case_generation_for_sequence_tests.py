@@ -1,4 +1,5 @@
 from shellcheck_lib.document import model
+from shellcheck_lib.document.model import PhaseContentElement
 from shellcheck_lib.execution import phases, phase_step
 from shellcheck_lib.test_case.sections.common import TestCaseInstruction
 from shellcheck_lib_test.execution.full_execution.test_resources.test_case_generator import \
@@ -8,7 +9,7 @@ from shellcheck_lib_test.execution.test_resources.execution_recording.recorder i
 from shellcheck_lib_test.execution.test_resources.execution_recording.recording_instructions import \
     RecordingInstructions
 from shellcheck_lib_test.execution.test_resources.test_case_generation import instruction_line_constructor, \
-    TestCaseInstructionsForFullExecution, phase_contents
+    phase_contents
 
 
 class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorForFullExecutionBase):
@@ -45,8 +46,8 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorForFullExecutionBa
                                                                phase_step.CLEANUP__MAIN)
         }
 
-    def recorders_for(self, phase: phases.Phase) -> list:
-        return [self.ilc.apply(self.__recorders[phase])]
+    def recorder_for(self, phase: phases.Phase) -> PhaseContentElement:
+        return self.ilc.apply(self.__recorders[phase])
 
     def the_extra(self, phase: phases.Phase) -> list:
         """
@@ -69,18 +70,16 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorForFullExecutionBa
         """
         :rtype [PhaseContentElement]
         """
-        return self.recorders_for(phase) + self.the_extra(phase)
+        return [self.recorder_for(phase)] + self.the_extra(phase)
 
     def __recorder_of(self, element: str) -> ListElementRecorder:
         return self.__recorder.recording_of(element)
 
 
-class TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList(TestCaseGeneratorForExecutionRecording):
+class TestCaseGeneratorWithRecordingInstrFollowedByExtraInstrsInEachPhase(TestCaseGeneratorForExecutionRecording):
     def __init__(self,
                  recorder: ListRecorder = None):
         super().__init__(recorder)
-        self.__extra = TestCaseInstructionsForFullExecution()
-
         self.__extra = {}
         for ph in phases.ALL:
             self.__extra[ph] = []
