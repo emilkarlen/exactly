@@ -10,26 +10,26 @@ from shellcheck_lib.test_case.sections.result import sh
 
 
 def standard_phase_file_path_eds(eds: ExecutionDirectoryStructure,
-                                 phase: phases.Phase) -> pathlib.Path:
+                                 phase: phases.PhaseEnum) -> pathlib.Path:
     return standard_phase_file_path(eds.act_dir, phase)
 
 
-def standard_phase_file_path(test_root_dir: pathlib.Path, phase: phases.Phase) -> pathlib.Path:
+def standard_phase_file_path(test_root_dir: pathlib.Path, phase: phases.PhaseEnum) -> pathlib.Path:
     return test_root_dir / standard_phase_file_base_name(phase)
 
 
-def standard_phase_file_base_name(phase: phases.Phase) -> str:
-    return 'testfile-for-phase-' + phase.identifier
+def standard_phase_file_base_name(phase: phases.PhaseEnum) -> str:
+    return 'testfile-for-phase-' + phase.name
 
 
-def write_to_standard_phase_file(phase: phases.Phase,
+def write_to_standard_phase_file(phase: phases.PhaseEnum,
                                  file_lines_from_env: types.FunctionType) -> types.FunctionType:
     def ret_val(environment: common.GlobalEnvironmentForPostEdsPhase, *args):
         file_path = standard_phase_file_path(environment.eds.act_dir, phase)
         with open(str(file_path), 'w') as f:
             contents = os.linesep.join(file_lines_from_env(environment)) + os.linesep
             f.write(contents)
-        return pfh.new_pfh_pass() if phase.identifier == phases.ASSERT.identifier else sh.new_sh_success()
+        return pfh.new_pfh_pass() if phase is phases.PhaseEnum.ASSERT else sh.new_sh_success()
 
     return ret_val
 

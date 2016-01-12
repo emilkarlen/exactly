@@ -1,6 +1,7 @@
 from shellcheck_lib.document import model
 from shellcheck_lib.document.model import PhaseContentElement
-from shellcheck_lib.execution import phases, phase_step
+from shellcheck_lib.execution import phase_step_simple as phase_step
+from shellcheck_lib.execution import phases
 from shellcheck_lib.test_case.sections.common import TestCaseInstruction
 from shellcheck_lib_test.execution.full_execution.test_resources.test_case_generator import \
     TestCaseGeneratorForFullExecutionBase

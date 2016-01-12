@@ -6,8 +6,9 @@ import unittest
 
 from shellcheck_lib.act_phase_setups import python3
 from shellcheck_lib.default.execution_mode.test_case.processing import script_handling_for_setup
-from shellcheck_lib.execution import partial_execution, phases
+from shellcheck_lib.execution import partial_execution
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
+from shellcheck_lib.execution.phases import PhaseEnum
 from shellcheck_lib.execution.result import PartialResult
 from shellcheck_lib.general.functional import Composition
 from shellcheck_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that, \
@@ -42,7 +43,7 @@ class Result(tuple):
     @property
     def configuration(self) -> partial_execution.Configuration:
         return partial_execution.Configuration(self.home_dir_path,
-                                               self.execution_directory_structure.act_dir)
+                                               str(self.execution_directory_structure.act_dir))
 
 
 class TestCaseGeneratorForPartialExecutionBase(TestCaseGeneratorBase):
@@ -81,28 +82,28 @@ class TestCaseWithCommonDefaultInstructions(TestCaseGeneratorForPartialExecution
 
     def _setup_phase(self) -> list:
         return self._phase_elements(lambda main: setup_phase_instruction_that(main=main),
-                                    phases.SETUP)
+                                    PhaseEnum.SETUP)
 
     def _before_assert_phase(self) -> list:
         return self._phase_elements(lambda main: before_assert_phase_instruction_that(main=main),
-                                    phases.BEFORE_ASSERT)
+                                    PhaseEnum.BEFORE_ASSERT)
 
     def _assert_phase(self) -> list:
         return self._phase_elements(lambda main: assert_phase_instruction_that(main=main),
-                                    phases.ASSERT)
+                                    PhaseEnum.ASSERT)
 
     def _cleanup_phase(self) -> list:
         return self._phase_elements(lambda main: cleanup_phase_instruction_that(main=main),
-                                    phases.CLEANUP)
+                                    PhaseEnum.CLEANUP)
 
     def _phase_elements(self,
                         instruction_in_phase_adapter: types.FunctionType,
-                        phase: phases.Phase) -> list:
+                        phase: PhaseEnum) -> list:
         return list(map(Composition(self.instruction_line_constructor,
                                     instruction_in_phase_adapter),
                         self._default_instructions(phase)))
 
-    def _default_instructions(self, phase: phases.Phase) -> list:
+    def _default_instructions(self, phase: PhaseEnum) -> list:
         """
         :rtype Function that can serve as main to PHASE_phase_instruction_that.
         """
