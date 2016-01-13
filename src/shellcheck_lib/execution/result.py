@@ -103,14 +103,6 @@ class FailureInfoVisitor:
         raise NotImplementedError()
 
 
-def instruction_failure_info_for_non_instruction_TODO_NAME(
-        phase_step: PhaseStep,
-        failure_details: FailureDetails) -> InstructionFailureInfo:
-    return InstructionFailureInfo(phase_step,
-                                  None,
-                                  failure_details)
-
-
 class ResultBase:
     def __init__(self,
                  execution_directory_structure: ExecutionDirectoryStructure,
