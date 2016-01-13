@@ -3,7 +3,8 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.general.textformat.structure.paragraph import single_para
 from shellcheck_lib.instructions.utils.sub_process_execution import ExecutorThatLogsResultUnderPhaseDir, \
-    InstructionSourceInfo, InstructionMetaInfo, execute_and_return_sh, execute_and_return_pfh, ExecuteInfo
+    InstructionSourceInfo, InstructionMetaInfo, ExecuteInfo, \
+    ResultAndStderr, execute_and_read_stderr_if_non_zero_exitcode, result_to_sh, result_to_pfh
 from shellcheck_lib.test_case.instruction_description import Description, InvokationVariant
 from shellcheck_lib.test_case.sections.common import TestCaseInstruction
 from shellcheck_lib.test_case.sections.result import pfh
@@ -54,15 +55,19 @@ class Parser(SingleInstructionParser):
         return self.executor_2_instruction_function(execute_info)
 
 
-def run_and_return_sh(setup: ExecuteInfo,
+def run(execute_info: ExecuteInfo,
+        eds: ExecutionDirectoryStructure) -> ResultAndStderr:
+    executor = ExecutorThatLogsResultUnderPhaseDir(is_shell=True)
+    return execute_and_read_stderr_if_non_zero_exitcode(execute_info, executor, eds)
+
+
+def run_and_return_sh(execute_info: ExecuteInfo,
                       eds: ExecutionDirectoryStructure) -> sh.SuccessOrHardError:
-    return execute_and_return_sh(setup,
-                                 ExecutorThatLogsResultUnderPhaseDir(is_shell=True),
-                                 eds)
+    result = run(execute_info, eds)
+    return result_to_sh(result)
 
 
-def run_and_return_pfh(setup: ExecuteInfo,
+def run_and_return_pfh(execute_info: ExecuteInfo,
                        eds: ExecutionDirectoryStructure) -> pfh.PassOrFailOrHardError:
-    return execute_and_return_pfh(setup,
-                                  ExecutorThatLogsResultUnderPhaseDir(is_shell=True),
-                                  eds)
+    result = run(execute_info, eds)
+    return result_to_pfh(result)

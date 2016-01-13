@@ -180,30 +180,24 @@ class ExecuteInfo:
         self.command = command
 
 
-def execute_and_return_sh(execute_info: ExecuteInfo,
-                          executor: ExecutorThatLogsResultUnderPhaseDir,
-                          eds: ExecutionDirectoryStructure) -> sh.SuccessOrHardError:
-    result_and_stderr = _execute(execute_info, executor, eds)
+def execute_and_read_stderr_if_non_zero_exitcode(execute_info: ExecuteInfo,
+                                                 executor: ExecutorThatLogsResultUnderPhaseDir,
+                                                 eds: ExecutionDirectoryStructure) -> ResultAndStderr:
+    result = executor.apply(execute_info.instruction_source_info, eds, execute_info.command)
+    return read_stderr_if_non_zero_exitcode(result)
+
+
+def result_to_sh(result_and_stderr: ResultAndStderr) -> sh.SuccessOrHardError:
     result = result_and_stderr.result
     if result.is_success and result.exit_code != 0:
         return sh.new_sh_hard_error(failure_message_for_nonzero_status(result_and_stderr))
     return sh.new_sh_success()
 
 
-def execute_and_return_pfh(execute_info: ExecuteInfo,
-                           executor: ExecutorThatLogsResultUnderPhaseDir,
-                           eds: ExecutionDirectoryStructure) -> pfh.PassOrFailOrHardError:
-    result_and_stderr = _execute(execute_info, executor, eds)
+def result_to_pfh(result_and_stderr: ResultAndStderr) -> sh.SuccessOrHardError:
     result = result_and_stderr.result
     if not result.is_success:
         return pfh.new_pfh_hard_error(failure_message_for_nonzero_status(result_and_stderr))
     if result.exit_code != 0:
         return pfh.new_pfh_fail(failure_message_for_nonzero_status(result_and_stderr))
     return pfh.new_pfh_pass()
-
-
-def _execute(execute_info: ExecuteInfo,
-             executor: ExecutorThatLogsResultUnderPhaseDir,
-             eds: ExecutionDirectoryStructure) -> ResultAndStderr:
-    result = executor.apply(execute_info.instruction_source_info, eds, execute_info.command)
-    return read_stderr_if_non_zero_exitcode(result)

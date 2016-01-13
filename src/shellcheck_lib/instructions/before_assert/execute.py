@@ -7,7 +7,7 @@ from shellcheck_lib.test_case.instruction_description import Description
 from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.sections.before_assert import BeforeAssertPhaseInstruction
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
-from shellcheck_lib.test_case.sections.result import pfh
+from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.result import svh
 
 
@@ -38,5 +38,5 @@ class _Instruction(BeforeAssertPhaseInstruction):
 
     def main(self,
              environment: GlobalEnvironmentForPostEdsPhase,
-             os_services: OsServices) -> pfh.PassOrFailOrHardError:
-        return execute.execute_and_return_sh(self.setup, environment.home_and_eds)
+             os_services: OsServices) -> sh.SuccessOrHardError:
+        return execute.run_and_return_sh(self.setup, environment.home_and_eds)

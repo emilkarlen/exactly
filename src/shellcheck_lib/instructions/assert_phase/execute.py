@@ -3,7 +3,6 @@ from shellcheck_lib.execution.phases import ASSERT
 from shellcheck_lib.instructions.multi_phase_instructions import execute
 from shellcheck_lib.instructions.utils import sub_process_execution
 from shellcheck_lib.instructions.utils.pre_or_post_validation import PreOrPostEdsSvhValidationErrorValidator
-from shellcheck_lib.instructions.utils.sub_process_execution import failure_message_for_nonzero_status
 from shellcheck_lib.test_case.instruction_description import Description
 from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
@@ -40,11 +39,4 @@ class _Instruction(AssertPhaseInstruction):
     def main(self,
              environment: GlobalEnvironmentForPostEdsPhase,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
-        result_and_err = execute.execute_setup_and_read_stderr_if_non_zero_exitcode(self.setup,
-                                                                                    environment.home_and_eds)
-        result = result_and_err.result
-        if not result.is_success:
-            return pfh.new_pfh_hard_error(result.error_message)
-        if result.exit_code != 0:
-            return pfh.new_pfh_fail(failure_message_for_nonzero_status(result_and_err))
-        return pfh.new_pfh_pass()
+        return execute.run_and_return_pfh(self.setup, environment.home_and_eds)
