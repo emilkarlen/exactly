@@ -26,7 +26,7 @@ def execute(script_handling: ScriptHandling,
                                               test_case.anonymous_phase)
     if partial_result.status is not PartialResultStatus.PASS:
         return new_anonymous_phase_failure_from(partial_result)
-    if anonymous_phase_environment.execution_mode is ExecutionMode.SKIPPED:
+    if anonymous_phase_environment.execution_mode is ExecutionMode.SKIP:
         return result.new_skipped()
     partial_result = partial_execution.execute(script_handling,
                                                partial_execution.TestCase(test_case.setup_phase,

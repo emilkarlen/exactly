@@ -7,7 +7,7 @@ from shellcheck_lib.test_case.sections.result.sh import SuccessOrHardError
 
 class ExecutionMode(Enum):
     NORMAL = 0
-    SKIPPED = 1
+    SKIP = 1
     XFAIL = 2
 
 

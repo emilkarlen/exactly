@@ -20,7 +20,7 @@ class Test(TestCaseBase):
         test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
             .add(phases.ANONYMOUS,
                  test.AnonymousPhaseInstructionThatSetsExecutionMode(
-                         ExecutionMode.SKIPPED))
+                         ExecutionMode.SKIP))
         self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.SKIPPED,
@@ -35,7 +35,7 @@ class Test(TestCaseBase):
                  test.anonymous_phase_instruction_that(do_return(sh.new_sh_hard_error('hard error msg')))) \
             .add(phases.ANONYMOUS,
                  test.AnonymousPhaseInstructionThatSetsExecutionMode(
-                         ExecutionMode.SKIPPED))
+                         ExecutionMode.SKIP))
         self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.HARD_ERROR,
@@ -50,7 +50,7 @@ class Test(TestCaseBase):
         test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
             .add(phases.ANONYMOUS,
                  test.AnonymousPhaseInstructionThatSetsExecutionMode(
-                         ExecutionMode.SKIPPED)) \
+                         ExecutionMode.SKIP)) \
             .add(phases.ANONYMOUS,
                  test.anonymous_phase_instruction_that(do_return(sh.new_sh_hard_error('hard error msg'))))
         self._check(
