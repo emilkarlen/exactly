@@ -138,7 +138,10 @@ class _SourceDisplayer(FailureInfoVisitor):
         self.out = out
 
     def _visit_phase_failure(self, failure_info: PhaseFailureInfo):
-        self.out.write_line('TODO: display of PhaseFailureInfo')
+        _output_location(self.out,
+                         None,
+                         failure_info.phase_step.phase.identifier,
+                         None)
 
     def _visit_instruction_failure(self, failure_info: InstructionFailureInfo):
         _output_location(self.out,
@@ -160,6 +163,7 @@ def _output_location(printer: FilePrinter,
         has_output_header = True
     if phase_name:
         printer.write_line('In phase %s' % phase_name)
+        has_output_header = True
 
     if has_output_header:
         printer.write_line('')
