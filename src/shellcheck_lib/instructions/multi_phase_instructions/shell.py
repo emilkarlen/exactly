@@ -31,7 +31,7 @@ class DescriptionForNonAssertPhaseInstruction(TheDescriptionBase):
         super().__init__(name)
 
     def main_description_rest(self) -> list:
-        return single_para('The instruction is successful if (and only if) the exit code from the command is 0.')
+        return single_para('The assertion passes if (and only if) the exit code from the command is 0.')
 
 
 class Parser(SingleInstructionParser):
