@@ -149,5 +149,14 @@ write_to_standard_phase_file
 * DONE SKIPPED -> SKIP
 * DONE textlista: list-typ arg före items (skippar)
 * DONE formattering av hjälp: utgång ska vara att listor indenteras
-* TODO spara utdata fr shell pss som för execute
-* TODO Några TODOs, t ex den för utskrift av fel
+* DONE spara utdata fr shell pss som för execute
+* DONE Några TODOs, t ex den för utskrift av fel
+* TODO Dokumentation
+* TODO exekvering i sub-process m concurrent.futures
+** TODO Svit: köra test-fall i egen sub-process (eventuellt)
+** TODO testfall: köra act-fasen i subprocess (eventuellt)
+Kanske inte behövs.
+Själva act-programmet kör redan idag i sub-process.
+Problemet är omgivningsvariabler.  Men ev går det att ange dem för
+sub-processen utan att ändra dem i förälderprocessen (shellcheck).  I sådana
+fall känns det onödigt att köra hela act-fasen i sub-process.

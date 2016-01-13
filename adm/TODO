@@ -213,7 +213,13 @@ Nu finns t ex
 I dag finns en anonym fas.
 Den ska inte längre finnas.
 Ist ska en av faserna anges (valfritt) som den som används för ev "anonym" fas.
-* TODO Paketstruktur: flytta act_phase_setup till test_case.act
+* TODO Paketstruktur: ev lägga instructions o act_phase_setups i gemensamt pkt
+<2016-01-13 ons>
+Lägg i ett paket som enbart innehåller "utdvidningar".
+Dvs separera
+ - infrastruktur
+ - användning av infrastrukturen
+* DONE Paketstruktur: flytta act_phase_setup till test_case.act
 Kanske.
 El är test_case.act till för enbart instruktoner?
 act_phase_setup kanske tillhör exekvering mer
@@ -225,7 +231,7 @@ En temporär testsvit skapas bakom kulisserna.
 
 ** TODO Är klasser py3? Ska det vara MyClass(object)?
 Ev ska varje klass explicit ärva object för att vara en py-3-klass.
-* TODO shell: Vad händer m stdout, stderr? blir del av stdout för shellcheck?
+* DONE shell: Vad händer m stdout, stderr? blir del av stdout för shellcheck?
 Verkar så.  Väldigt dåligt i så fall.  Måste ändras.
 ** TODO stdout, stderr
 Skriv dessa till fil pss som görs för execute.
@@ -238,7 +244,7 @@ tmp/internal.
 Vill ha funktion, typ: tmp_file_for_instruction(prefix,suffix,contents)
 -> pathlib.Path
 som automatiskt lägger den i tmp/internal.
-* TODO cwd för act-exekveringen
+* DONE cwd för act-exekveringen
 Ser ut som det är fel idag, dvs att act_dir används ovillkorligt.
 Ska vara: cwd.
                 exitcode = self.__script_handling.executor.execute(
