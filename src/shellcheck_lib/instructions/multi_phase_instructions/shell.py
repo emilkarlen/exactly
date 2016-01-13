@@ -1,10 +1,12 @@
-import subprocess
-
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
+from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.general.textformat.structure.paragraph import single_para
+from shellcheck_lib.instructions.utils.sub_process_execution import ExecutorThatLogsResultUnderPhaseDir, \
+    InstructionSourceInfo, InstructionMetaInfo, execute_and_return_sh, execute_and_return_pfh, ExecuteInfo
 from shellcheck_lib.test_case.instruction_description import Description, InvokationVariant
 from shellcheck_lib.test_case.sections.common import TestCaseInstruction
+from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.result import sh
 
 
@@ -36,7 +38,9 @@ class DescriptionForNonAssertPhaseInstruction(TheDescriptionBase):
 
 class Parser(SingleInstructionParser):
     def __init__(self,
+                 instruction_meta_info: InstructionMetaInfo,
                  executor_2_instruction_function):
+        self.instruction_meta_info = instruction_meta_info
         self.executor_2_instruction_function = executor_2_instruction_function
 
     def apply(self, source: SingleInstructionParserSource) -> TestCaseInstruction:
@@ -44,25 +48,21 @@ class Parser(SingleInstructionParser):
         if not arguments:
             msg = 'Program to execute must be given as argument'
             raise SingleInstructionInvalidArgumentException(msg)
-        executor = Executor(arguments)
-        return self.executor_2_instruction_function(executor)
+        execute_info = ExecuteInfo(InstructionSourceInfo(self.instruction_meta_info,
+                                                         source.line_sequence.first_line.line_number),
+                                   arguments)
+        return self.executor_2_instruction_function(execute_info)
 
 
-class Executor:
-    def __init__(self,
-                 command: str):
-        self.command = command
-
-    def run(self) -> int:
-        """
-        :return: exitcode
-        """
-        return subprocess.call(self.command,
-                               shell=True)
+def run_and_return_sh(setup: ExecuteInfo,
+                      eds: ExecutionDirectoryStructure) -> sh.SuccessOrHardError:
+    return execute_and_return_sh(setup,
+                                 ExecutorThatLogsResultUnderPhaseDir(is_shell=True),
+                                 eds)
 
 
-def run_and_return_sh(executor: Executor) -> sh.SuccessOrHardError:
-    exit_code = executor.run()
-    if exit_code != 0:
-        return sh.new_sh_hard_error('Program finished with non-zero exit code {}'.format(exit_code))
-    return sh.new_sh_success()
+def run_and_return_pfh(setup: ExecuteInfo,
+                       eds: ExecutionDirectoryStructure) -> pfh.PassOrFailOrHardError:
+    return execute_and_return_pfh(setup,
+                                  ExecutorThatLogsResultUnderPhaseDir(is_shell=True),
+                                  eds)

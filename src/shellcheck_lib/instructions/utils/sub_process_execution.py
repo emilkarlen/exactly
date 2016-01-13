@@ -6,6 +6,8 @@ from shellcheck_lib.execution.execution_directory_structure import ExecutionDire
 from shellcheck_lib.general import file_utils
 from shellcheck_lib.general.file_utils import write_new_text_file
 from shellcheck_lib.instructions.utils import file_services
+from shellcheck_lib.test_case.sections.result import pfh
+from shellcheck_lib.test_case.sections.result import sh
 
 EXIT_CODE_FILE_NAME = 'exitcode'
 STDOUT_FILE_NAME = 'stdout'
@@ -94,15 +96,19 @@ class Executor:
     def apply(self,
               instruction_source_info: InstructionSourceInfo,
               eds: ExecutionDirectoryStructure,
-              cmd_and_args: list) -> Result:
+              cmd_and_args) -> Result:
         raise NotImplementedError()
 
 
 class ExecutorThatLogsResultUnderPhaseDir(Executor):
+    def __init__(self,
+                 is_shell: bool):
+        self.is_shell = is_shell
+
     def apply(self,
               instruction_source_info: InstructionSourceInfo,
               eds: ExecutionDirectoryStructure,
-              cmd_and_args: list) -> Result:
+              cmd_and_args) -> Result:
 
         def _err_msg(exception: Exception) -> str:
             return 'Error executing %s instruction in subprocess: "%s"' % (
@@ -117,7 +123,8 @@ class ExecutorThatLogsResultUnderPhaseDir(Executor):
                     exit_code = subprocess.call(cmd_and_args,
                                                 stdin=subprocess.DEVNULL,
                                                 stdout=f_stdout,
-                                                stderr=f_stderr)
+                                                stderr=f_stderr,
+                                                shell=self.is_shell)
                     write_new_text_file(output_dir / EXIT_CODE_FILE_NAME,
                                         str(exit_code))
                     return Result(None,
@@ -163,3 +170,40 @@ def failure_message_for_nonzero_status(result_and_err: ResultAndStderr) -> str:
     if result_and_err.stderr_contents:
         msg_tail = os.linesep + result_and_err.stderr_contents
     return 'Exit code {}{}'.format(result_and_err.result.exit_code, msg_tail)
+
+
+class ExecuteInfo:
+    def __init__(self,
+                 instruction_source_info: InstructionSourceInfo,
+                 command):
+        self.instruction_source_info = instruction_source_info
+        self.command = command
+
+
+def execute_and_return_sh(execute_info: ExecuteInfo,
+                          executor: ExecutorThatLogsResultUnderPhaseDir,
+                          eds: ExecutionDirectoryStructure) -> sh.SuccessOrHardError:
+    result_and_stderr = _execute(execute_info, executor, eds)
+    result = result_and_stderr.result
+    if result.is_success and result.exit_code != 0:
+        return sh.new_sh_hard_error(failure_message_for_nonzero_status(result_and_stderr))
+    return sh.new_sh_success()
+
+
+def execute_and_return_pfh(execute_info: ExecuteInfo,
+                           executor: ExecutorThatLogsResultUnderPhaseDir,
+                           eds: ExecutionDirectoryStructure) -> pfh.PassOrFailOrHardError:
+    result_and_stderr = _execute(execute_info, executor, eds)
+    result = result_and_stderr.result
+    if not result.is_success:
+        return pfh.new_pfh_hard_error(failure_message_for_nonzero_status(result_and_stderr))
+    if result.exit_code != 0:
+        return pfh.new_pfh_fail(failure_message_for_nonzero_status(result_and_stderr))
+    return pfh.new_pfh_pass()
+
+
+def _execute(execute_info: ExecuteInfo,
+             executor: ExecutorThatLogsResultUnderPhaseDir,
+             eds: ExecutionDirectoryStructure) -> ResultAndStderr:
+    result = executor.apply(execute_info.instruction_source_info, eds, execute_info.command)
+    return read_stderr_if_non_zero_exitcode(result)

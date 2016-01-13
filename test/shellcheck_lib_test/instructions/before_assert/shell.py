@@ -17,7 +17,7 @@ class TheConfiguration(BeforeAssertConfigurationBase, Configuration):
         return sut.description('instruction name')
 
     def parser(self) -> SingleInstructionParser:
-        return sut.parser()
+        return sut.parser('instruction name')
 
     def expectation_for_non_zero_exitcode(self) -> Expectation:
         return Expectation(main_result=sh_check__va.is_hard_error())

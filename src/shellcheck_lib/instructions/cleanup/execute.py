@@ -20,7 +20,7 @@ def description(instruction_name: str) -> Description:
 def parser(instruction_name: str) -> SingleInstructionParser:
     return execute.InstructionParser(sub_process_execution.InstructionMetaInfo(CLEANUP.identifier,
                                                                                instruction_name),
-                                     lambda setup: _Instruction(setup))
+                                     _Instruction)
 
 
 class _Instruction(CleanupPhaseInstruction):
