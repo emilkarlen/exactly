@@ -1,9 +1,7 @@
-import os
 import shlex
 
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, SingleInstructionParserSource, SingleInstructionInvalidArgumentException
-from shellcheck_lib.general import file_utils
 from shellcheck_lib.general.textformat import parse as paragraphs_parse
 from shellcheck_lib.general.textformat.structure.paragraph import single_para
 from shellcheck_lib.instructions.utils import executable_file
@@ -16,6 +14,8 @@ from shellcheck_lib.instructions.utils.file_ref_check import FileRefCheckValidat
 from shellcheck_lib.instructions.utils.parse_file_ref import ALL_REL_OPTIONS
 from shellcheck_lib.instructions.utils.parse_utils import TokenStream
 from shellcheck_lib.instructions.utils.pre_or_post_validation import PreOrPostEdsValidator, AndValidator
+from shellcheck_lib.instructions.utils.sub_process_execution import ResultAndStderr, read_stderr_if_non_zero_exitcode, \
+    failure_message_for_nonzero_status
 from shellcheck_lib.test_case.instruction_description import InvokationVariant, SyntaxElementDescription, \
     Description
 from shellcheck_lib.test_case.sections.common import HomeAndEds, TestCaseInstruction
@@ -112,19 +112,6 @@ class SetupForExecutableWithArguments:
     def validator(self) -> PreOrPostEdsValidator:
         return self.executable.validator
 
-    def execute_and_return_error_message_if_non_zero_exit_status(self, home_and_eds: HomeAndEds) -> str:
-        """
-        :return: None iff exit status was 0 from execute.
-        """
-        (exit_code, stderr_output) = self.execute(home_and_eds)
-        if exit_code != 0:
-            msg_tail = ''
-            if stderr_output:
-                msg_tail = os.linesep + stderr_output
-            return 'Exit code {}{}'.format(exit_code, msg_tail)
-        else:
-            return None
-
 
 class SetupForExecute(SetupForExecutableWithArguments):
     def __init__(self,
@@ -172,28 +159,10 @@ class SetupForSource(SetupForExecutableWithArguments):
         return [self.source]
 
 
-class ResultAndStderr:
-    def __init__(self,
-                 result: sub_process_execution.Result,
-                 stderr_contents: str):
-        self.result = result
-        self.stderr_contents = stderr_contents
-
-
 def execute_setup_and_read_stderr_if_non_zero_exitcode(setup: SetupForExecutableWithArguments,
                                                        home_and_eds: HomeAndEds) -> ResultAndStderr:
-    stderr_contents = None
     result = setup.execute(home_and_eds)
-    if result.is_success and result.exit_code != 0:
-        stderr_contents = file_utils.contents_of(result.output_dir_path / result.stderr_file_name)
-    return ResultAndStderr(result, stderr_contents)
-
-
-def failure_message_for_nonzero_status(result_and_err: ResultAndStderr) -> str:
-    msg_tail = ''
-    if result_and_err.stderr_contents:
-        msg_tail = os.linesep + result_and_err.stderr_contents
-    return 'Exit code {}{}'.format(result_and_err.result.exit_code, msg_tail)
+    return read_stderr_if_non_zero_exitcode(result)
 
 
 def execute_and_return_sh(setup: SetupForExecutableWithArguments, home_and_eds: HomeAndEds) -> sh.SuccessOrHardError:
