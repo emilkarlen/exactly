@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (C) 2015 Emil Karlen.
+# Copyright (C) 2016 Emil Karlen.
 #
 # This file is part of shellcheck.
 # 
