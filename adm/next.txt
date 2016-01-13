@@ -148,6 +148,6 @@ write_to_standard_phase_file
 * DONE configuration/mode
 * DONE SKIPPED -> SKIP
 * DONE textlista: list-typ arg före items (skippar)
-* TODO formattering av hjälp: utgång ska vara att listor indenteras
+* DONE formattering av hjälp: utgång ska vara att listor indenteras
 * TODO spara utdata fr shell pss som för execute
 * TODO Några TODOs, t ex den för utskrift av fel
