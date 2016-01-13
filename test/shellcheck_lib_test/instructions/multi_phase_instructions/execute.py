@@ -23,7 +23,7 @@ class ExecuteAction(home_and_eds_test.Action):
 
     def apply(self,
               home_and_eds: HomeAndEds) -> ResultAndStderr:
-        return sut.execute_setup_and_read_stderr_if_non_zero_exitcode(self.setup, home_and_eds)
+        return sut.run(self.setup, home_and_eds)
 
 
 class TestCaseBase(home_and_eds_test.TestCaseBase):

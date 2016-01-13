@@ -14,11 +14,12 @@ from shellcheck_lib.instructions.utils.file_ref_check import FileRefCheckValidat
 from shellcheck_lib.instructions.utils.parse_file_ref import ALL_REL_OPTIONS
 from shellcheck_lib.instructions.utils.parse_utils import TokenStream
 from shellcheck_lib.instructions.utils.pre_or_post_validation import PreOrPostEdsValidator, AndValidator
-from shellcheck_lib.instructions.utils.sub_process_execution import ResultAndStderr, read_stderr_if_non_zero_exitcode, \
-    failure_message_for_nonzero_status
+from shellcheck_lib.instructions.utils.sub_process_execution import ResultAndStderr, ExecuteInfo, \
+    ExecutorThatLogsResultUnderPhaseDir, execute_and_read_stderr_if_non_zero_exitcode, result_to_sh, result_to_pfh
 from shellcheck_lib.test_case.instruction_description import InvokationVariant, SyntaxElementDescription, \
     Description
 from shellcheck_lib.test_case.sections.common import HomeAndEds, TestCaseInstruction
+from shellcheck_lib.test_case.sections.result import pfh
 from shellcheck_lib.test_case.sections.result import sh
 
 INTERPRET_OPTION = '--interpret'
@@ -90,27 +91,19 @@ class SetupForExecutableWithArguments:
                  instruction_source_info: sub_process_execution.InstructionSourceInfo,
                  executable: ExecutableFile):
         self.instruction_source_info = instruction_source_info
-        self._executable = executable
-
-    @property
-    def executable(self) -> ExecutableFile:
-        return self._executable
-
-    def execute(self, home_and_eds: HomeAndEds) -> sub_process_execution.Result:
-        cmd_and_args = [self.executable.path_string(home_and_eds)] + \
-                       self.executable.arguments + \
-                       self._arguments(home_and_eds)
-        executor = sub_process_execution.ExecutorThatLogsResultUnderPhaseDir(is_shell=False)
-        return executor.apply(self.instruction_source_info,
-                              home_and_eds.eds,
-                              cmd_and_args)
+        self.__executable = executable
 
     def _arguments(self, home_and_eds: HomeAndEds) -> list:
         raise NotImplementedError()
 
+    def cmd_and_args(self, home_and_eds: HomeAndEds) -> list:
+        return [self.__executable.path_string(home_and_eds)] + \
+               self.__executable.arguments + \
+               self._arguments(home_and_eds)
+
     @property
     def validator(self) -> PreOrPostEdsValidator:
-        return self.executable.validator
+        return self.__executable.validator
 
 
 class SetupForExecute(SetupForExecutableWithArguments):
@@ -159,21 +152,22 @@ class SetupForSource(SetupForExecutableWithArguments):
         return [self.source]
 
 
-def execute_setup_and_read_stderr_if_non_zero_exitcode(setup: SetupForExecutableWithArguments,
-                                                       home_and_eds: HomeAndEds) -> ResultAndStderr:
-    result = setup.execute(home_and_eds)
-    return read_stderr_if_non_zero_exitcode(result)
+def run(setup: SetupForExecutableWithArguments,
+        home_and_eds: HomeAndEds) -> ResultAndStderr:
+    execute_info = ExecuteInfo(setup.instruction_source_info,
+                               setup.cmd_and_args(home_and_eds))
+    executor = ExecutorThatLogsResultUnderPhaseDir(is_shell=False)
+    return execute_and_read_stderr_if_non_zero_exitcode(execute_info, executor, home_and_eds.eds)
 
 
-def execute_and_return_sh(setup: SetupForExecutableWithArguments, home_and_eds: HomeAndEds) -> sh.SuccessOrHardError:
-    result_and_err = execute_setup_and_read_stderr_if_non_zero_exitcode(setup,
-                                                                        home_and_eds)
-    result = result_and_err.result
-    if not result.is_success:
-        return sh.new_sh_hard_error(result.error_message)
-    if result.exit_code != 0:
-        return sh.new_sh_hard_error(failure_message_for_nonzero_status(result_and_err))
-    return sh.new_sh_success()
+def run_and_return_sh(setup: SetupForExecutableWithArguments, home_and_eds: HomeAndEds) -> sh.SuccessOrHardError:
+    result = run(setup, home_and_eds)
+    return result_to_sh(result)
+
+
+def run_and_return_pfh(setup: SetupForExecutableWithArguments, home_and_eds: HomeAndEds) -> pfh.PassOrFailOrHardError:
+    result = run(setup, home_and_eds)
+    return result_to_pfh(result)
 
 
 class SetupParser:

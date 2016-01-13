@@ -46,4 +46,4 @@ class _Instruction(CleanupPhaseInstruction):
         validation_result = self._validate_from_main(environment)
         if validation_result.is_hard_error:
             return validation_result
-        return execute.execute_and_return_sh(self.setup, environment.home_and_eds)
+        return execute.run_and_return_sh(self.setup, environment.home_and_eds)

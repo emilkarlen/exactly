@@ -39,4 +39,4 @@ class _Instruction(SetupPhaseInstruction):
         failure_message = self.setup.validator.validate_post_eds_if_applicable(environment.eds)
         if failure_message is not None:
             return sh.new_sh_hard_error(failure_message)
-        return execute.execute_and_return_sh(self.setup, environment.home_and_eds)
+        return execute.run_and_return_sh(self.setup, environment.home_and_eds)
