@@ -3,16 +3,18 @@ import unittest
 import shellcheck_lib.general.textformat.structure.lists
 from shellcheck_lib.general.textformat.formatting import lists as lf
 from shellcheck_lib.general.textformat.formatting import paragraph_item as sut
+from shellcheck_lib.general.textformat.formatting.lists import list_formats_with
 from shellcheck_lib.general.textformat.structure import core
 from shellcheck_lib.general.textformat.structure import lists
 from shellcheck_lib_test.general.textformat.test_resources.constr import single_text_para, item, header_only_item, \
     BLANK_LINE
 
-NO_SEPARATIONS = shellcheck_lib.general.textformat.structure.lists.Separations(num_blank_lines_between_elements=0,
-                                                                               num_blank_lines_between_header_and_contents=0)
+NO_SEPARATIONS = lists.Separations(num_blank_lines_between_elements=0,
+                                   num_blank_lines_between_header_and_contents=0)
 
 list_formatter_with_no_blank_lines = lf.ListFormat(lf.HeaderAndIndentFormatWithNumbering(contents_indent_spaces=3),
-                                                   NO_SEPARATIONS)
+                                                   NO_SEPARATIONS,
+                                                   indent_str='')
 
 
 class TestHeaderOnlyListItemsWithNoLineWraps(unittest.TestCase):
@@ -71,7 +73,8 @@ class TestHeaderOnlyListItemsWithLineWraps(unittest.TestCase):
                  header_only_item('h2 Y'),
                  header_only_item('h3 Z')]
         list_format = lf.ListFormat(HeaderFormatWithVaryingFollowingLineIndent(3),
-                                    NO_SEPARATIONS)
+                                    NO_SEPARATIONS,
+                                    indent_str='')
         actual = formatter.format_header_value_list_according_to_format(items,
                                                                         list_format)
         self.assertEqual(['**h1',
@@ -124,7 +127,8 @@ class TestThatIdentationIsNotModified(unittest.TestCase):
 class TestContentFormatting(unittest.TestCase):
     def test_singleton_list(self):
         list_format = lf.ListFormat(lf.HeaderAndIndentFormatWithNumbering(contents_indent_spaces=1),
-                                    NO_SEPARATIONS)
+                                    NO_SEPARATIONS,
+                                    indent_str='')
         items = [item('header',
                       [single_text_para('2345678 abc def')])]
         formatter = formatter_with_page_width(10)
@@ -137,7 +141,8 @@ class TestContentFormatting(unittest.TestCase):
 
     def test_multi_element_list(self):
         list_format = lf.ListFormat(lf.HeaderAndIndentFormatWithNumbering(contents_indent_spaces=1),
-                                    NO_SEPARATIONS)
+                                    NO_SEPARATIONS,
+                                    indent_str='')
         items = [item('h1',
                       [single_text_para('2345678')]),
                  item('h2',
@@ -256,9 +261,11 @@ class TestSeparations(unittest.TestCase):
 
 class TestResolveListFormat(unittest.TestCase):
     LIST_FORMATS = lf.ListFormats(itemized_list_format=lf.ListFormat(lf.HeaderAndIndentFormatWithMarker('*'),
-                                                                     NO_SEPARATIONS),
+                                                                     NO_SEPARATIONS,
+                                                                     indent_str=''),
                                   ordered_list_format=lf.ListFormat(lf.HeaderAndIndentFormatWithNumbering(),
-                                                                    NO_SEPARATIONS),
+                                                                    NO_SEPARATIONS,
+                                                                    indent_str=''),
                                   variable_list_format=lf.ListFormat(lf.HeaderAndIndentFormatPlain(),
                                                                      NO_SEPARATIONS,
                                                                      indent_str=''))
@@ -332,7 +339,8 @@ class HeaderFormatWithVaryingFollowingLineIndent(lf.HeaderAndIndentFormatWithCon
 
 
 def formatter_with_page_width(page_width: int) -> sut.Formatter:
-    return sut.Formatter(sut.Wrapper(page_width=page_width))
+    return sut.Formatter(sut.Wrapper(page_width=page_width),
+                         list_formats=list_formats_with(indent_str=''))
 
 
 def suite():

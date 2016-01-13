@@ -32,7 +32,7 @@ class ListFormat(tuple):
     def __new__(cls,
                 header_and_indent_format: HeaderAndIndentFormat,
                 separations: Separations,
-                indent_str: str = ''):
+                indent_str: str = '  '):
         return tuple.__new__(cls, (header_and_indent_format,
                                    separations,
                                    indent_str))
@@ -146,3 +146,19 @@ class ListFormats(tuple):
 
     def for_type(self, list_type: ListType) -> ListFormat:
         return self[0][list_type]
+
+
+def list_formats_with(separations: Separations = Separations(0, 0),
+                      indent_str: str = '  ',
+                      itemized_list_marker: str = '*') -> ListFormats:
+    return ListFormats(
+            itemized_list_format=ListFormat(HeaderAndIndentFormatWithMarker(itemized_list_marker),
+                                            separations,
+                                            indent_str=indent_str),
+            ordered_list_format=ListFormat(HeaderAndIndentFormatWithNumbering(),
+                                           separations,
+                                           indent_str=indent_str),
+            variable_list_format=ListFormat(HeaderAndIndentFormatPlain(),
+                                            separations,
+                                            indent_str=indent_str)
+    )

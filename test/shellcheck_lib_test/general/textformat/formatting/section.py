@@ -1,6 +1,5 @@
 import unittest
 
-import shellcheck_lib.general.textformat.structure.lists
 from shellcheck_lib.general.textformat.formatting import lists as lf
 from shellcheck_lib.general.textformat.formatting import paragraph_item
 from shellcheck_lib.general.textformat.formatting import section as sut
@@ -12,13 +11,14 @@ from shellcheck_lib_test.general.textformat.test_resources.constr import single_
 
 class TestSectionContents(unittest.TestCase):
     def test_only_initial_paragraphs(self):
-        paragraph_item_formatter = paragraph_item.Formatter(paragraph_item.Wrapper(page_width=5),
-                                                            num_item_separator_lines=1,
-                                                            list_formats=lf.ListFormats(
-                                                                    variable_list_format=lf.ListFormat(
-                                                                            lf.HeaderAndIndentFormatPlain(),
-                                                                            shellcheck_lib.general.textformat.structure.lists.Separations(
-                                                                                    0, 0))))
+        paragraph_item_formatter = paragraph_item.Formatter(
+                paragraph_item.Wrapper(page_width=5),
+                num_item_separator_lines=1,
+                list_formats=lf.ListFormats(
+                        variable_list_format=lf.ListFormat(
+                                lf.HeaderAndIndentFormatPlain(),
+                                lists.Separations(0, 0),
+                                indent_str='')))
         formatter = sut.Formatter(paragraph_item_formatter)
         section_contents = SectionContents([single_text_para('12345 123 5'),
                                             lists.HeaderContentList([header_only_item('12345 123')],
