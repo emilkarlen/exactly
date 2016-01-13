@@ -15,7 +15,7 @@ NAME_XFAIL = 'XFAIL'
 
 NAME_2_MODE = {
     NAME_NORMAL: ExecutionMode.NORMAL,
-    NAME_SKIP: ExecutionMode.SKIPPED,
+    NAME_SKIP: ExecutionMode.SKIP,
     NAME_XFAIL: ExecutionMode.XFAIL,
 }
 

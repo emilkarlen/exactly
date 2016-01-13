@@ -40,11 +40,11 @@ class TestCaseBaseForParser(TestCaseBase):
 class TestChangeMode(TestCaseBaseForParser):
     def test_NORMAL(self):
         self._run(expected=ExecutionMode.NORMAL,
-                  initial=ExecutionMode.SKIPPED,
+                  initial=ExecutionMode.SKIP,
                   argument=sut.NAME_NORMAL)
 
     def test_SKIP(self):
-        self._run(expected=ExecutionMode.SKIPPED,
+        self._run(expected=ExecutionMode.SKIP,
                   initial=ExecutionMode.NORMAL,
                   argument=sut.NAME_SKIP)
 
