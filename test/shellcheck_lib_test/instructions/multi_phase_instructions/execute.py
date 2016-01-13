@@ -4,7 +4,7 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
 from shellcheck_lib.instructions.multi_phase_instructions import execute as sut
 from shellcheck_lib.instructions.utils.relative_path_options import REL_TMP_OPTION
-from shellcheck_lib.instructions.utils.sub_process_execution import InstructionMetaInfo
+from shellcheck_lib.instructions.utils.sub_process_execution import InstructionMetaInfo, ResultAndStderr
 from shellcheck_lib.test_case.instruction_description import Description
 from shellcheck_lib.test_case.sections.common import HomeAndEds
 from shellcheck_lib_test.instructions.test_resources.check_description import TestDescriptionBase
@@ -21,7 +21,8 @@ class ExecuteAction(home_and_eds_test.Action):
                  setup: sut.SetupForExecutableWithArguments):
         self.setup = setup
 
-    def apply(self, home_and_eds: HomeAndEds) -> sut.ResultAndStderr:
+    def apply(self,
+              home_and_eds: HomeAndEds) -> ResultAndStderr:
         return sut.execute_setup_and_read_stderr_if_non_zero_exitcode(self.setup, home_and_eds)
 
 
@@ -38,7 +39,7 @@ class TestCaseBase(home_and_eds_test.TestCaseBase):
 class IsSuccess(va.ValueAssertion):
     def apply(self,
               put: unittest.TestCase,
-              value: sut.ResultAndStderr,
+              value: ResultAndStderr,
               message_builder: va.MessageBuilder = va.MessageBuilder()):
         put.assertTrue(value.result.is_success,
                        message_builder.apply('Result is expected to indicate success'))
@@ -47,7 +48,7 @@ class IsSuccess(va.ValueAssertion):
 class IsFailure(va.ValueAssertion):
     def apply(self,
               put: unittest.TestCase,
-              value: sut.ResultAndStderr,
+              value: ResultAndStderr,
               message_builder: va.MessageBuilder = va.MessageBuilder()):
         put.assertFalse(value.result.is_success,
                         message_builder.apply('Result is expected to indicate failure'))
@@ -60,7 +61,7 @@ class ExitCodeIs(va.ValueAssertion):
 
     def apply(self,
               put: unittest.TestCase,
-              value: sut.ResultAndStderr,
+              value: ResultAndStderr,
               message_builder: va.MessageBuilder = va.MessageBuilder()):
         put.assertEquals(self.exit_code,
                          value.result.exit_code,
@@ -74,7 +75,7 @@ class StderrContentsIs(va.ValueAssertion):
 
     def apply(self,
               put: unittest.TestCase,
-              value: sut.ResultAndStderr,
+              value: ResultAndStderr,
               message_builder: va.MessageBuilder = va.MessageBuilder()):
         put.assertEqual(self.stderr_contents,
                         value.stderr_contents,

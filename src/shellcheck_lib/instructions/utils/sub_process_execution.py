@@ -1,7 +1,9 @@
+import os
 import pathlib
 import subprocess
 
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure, log_phase_dir
+from shellcheck_lib.general import file_utils
 from shellcheck_lib.general.file_utils import write_new_text_file
 from shellcheck_lib.instructions.utils import file_services
 
@@ -46,6 +48,14 @@ class Result(tuple):
     @property
     def stderr_file_name(self) -> str:
         return STDERR_FILE_NAME
+
+
+class ResultAndStderr:
+    def __init__(self,
+                 result: Result,
+                 stderr_contents: str):
+        self.result = result
+        self.stderr_contents = stderr_contents
 
 
 class InstructionMetaInfo(tuple):
@@ -93,6 +103,12 @@ class ExecutorThatLogsResultUnderPhaseDir(Executor):
               instruction_source_info: InstructionSourceInfo,
               eds: ExecutionDirectoryStructure,
               cmd_and_args: list) -> Result:
+
+        def _err_msg(exception: Exception) -> str:
+            return 'Error executing %s instruction in subprocess: "%s"' % (
+                instruction_source_info.meta_info.instruction_name,
+                str(exception))
+
         output_dir = self.instruction_output_directory(eds, instruction_source_info)
         file_services.create_dir_that_is_expected_to_not_exist(output_dir)
         with open(str(output_dir / STDOUT_FILE_NAME), 'w') as f_stdout:
@@ -108,10 +124,10 @@ class ExecutorThatLogsResultUnderPhaseDir(Executor):
                                   exit_code,
                                   output_dir)
                 except ValueError as ex:
-                    msg = 'Error executing act phase as subprocess: ' + str(ex)
+                    msg = _err_msg(ex)
                     return Result(msg, None, None)
                 except OSError as ex:
-                    msg = 'Error executing act phase as subprocess: ' + str(ex)
+                    msg = _err_msg(ex)
                     return Result(msg, None, None)
 
     def instruction_output_directory(self,
@@ -125,3 +141,25 @@ class ExecutorThatLogsResultUnderPhaseDir(Executor):
     def _format_instruction_output_sub_dir_name(instruction_name: str,
                                                 line_number: int) -> str:
         return '%03d-%s' % (line_number, instruction_name)
+
+
+def read_stderr_if_non_zero_exitcode(result: Result) -> ResultAndStderr:
+    stderr_contents = None
+    if result.is_success and result.exit_code != 0:
+        stderr_contents = file_utils.contents_of(result.output_dir_path / result.stderr_file_name)
+    return ResultAndStderr(result, stderr_contents)
+
+
+def apply_and_read_stderr_if_non_zero_exitcode(executor: ExecutorThatLogsResultUnderPhaseDir,
+                                               instruction_source_info: InstructionSourceInfo,
+                                               eds: ExecutionDirectoryStructure,
+                                               cmd_and_args: list) -> ResultAndStderr:
+    result = executor.apply(instruction_source_info, eds, cmd_and_args)
+    return read_stderr_if_non_zero_exitcode(result)
+
+
+def failure_message_for_nonzero_status(result_and_err: ResultAndStderr) -> str:
+    msg_tail = ''
+    if result_and_err.stderr_contents:
+        msg_tail = os.linesep + result_and_err.stderr_contents
+    return 'Exit code {}{}'.format(result_and_err.result.exit_code, msg_tail)
