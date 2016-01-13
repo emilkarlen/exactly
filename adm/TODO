@@ -1,5 +1,7 @@
 -*- org -*-
 
+* TODO [#A] Ändring av miljövariabler får inte störa andra test-fall i en svit
+* TODO [#A] timeout för programmet i act-fasen
 * TODO Test av default main-program som kör enkelt testfall
 Idag finns inget test som kör default-setuppen m default act-phase-executor.
 
