@@ -7,6 +7,7 @@ from shellcheck_lib.cli.execution_mode.help.render.test_case import instruction_
 from shellcheck_lib.cli.execution_mode.help.settings import HelpSettings, TestCaseHelpSettings, TestCaseHelpItem, \
     TestSuiteHelpSettings, TestSuiteHelpItem, ProgramHelpSettings
 from shellcheck_lib.general.textformat.formatting import section, paragraph_item
+from shellcheck_lib.general.textformat.formatting.lists import list_formats_with
 from shellcheck_lib.general.textformat.formatting.wrapper import Wrapper
 from shellcheck_lib.general.textformat.structure import document as doc
 from shellcheck_lib.general.textformat.structure.core import Text
@@ -57,12 +58,12 @@ def print_help(file,
                settings: HelpSettings):
     section_contents = doc_for(application_help, settings)
     terminal_size = shutil.get_terminal_size()
-    formatter = section.Formatter(paragraph_item.Formatter(Wrapper(page_width=terminal_size.columns)),
-                                  section_content_indent_str=4 * ' ')
+    formatter = section.Formatter(paragraph_item.Formatter(Wrapper(page_width=terminal_size.columns),
+                                                           list_formats=list_formats_with(indent_str='  ')),
+                                  section_content_indent_str='   ')
     lines = formatter.format_section_contents(section_contents)
-    for line in lines:
-        file.write(line)
-        file.write(os.linesep)
+    contents = os.linesep.join(lines)
+    file.write(contents + os.linesep)
 
 
 def doc_for(application_help: ApplicationHelp,
