@@ -24,6 +24,6 @@ INSTRUCTIONS = {
                 change_dir.description('pwd')),
     'shell':
         SingleInstructionSetup(
-                shell.parser(),
+                shell.parser('shell'),
                 shell.description('shell')),
 }

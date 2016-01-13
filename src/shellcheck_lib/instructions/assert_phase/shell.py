@@ -2,6 +2,7 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
 from shellcheck_lib.general.textformat import parse as text_parse
 from shellcheck_lib.instructions.multi_phase_instructions import shell as shell_common
 from shellcheck_lib.instructions.multi_phase_instructions.shell import TheDescriptionBase
+from shellcheck_lib.instructions.utils.sub_process_execution import InstructionMetaInfo, ExecuteInfo
 from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
@@ -22,18 +23,17 @@ class TheDescription(TheDescriptionBase):
 
 
 def parser() -> SingleInstructionParser:
-    return shell_common.Parser(_ShellInstruction)
+    return shell_common.Parser(InstructionMetaInfo('phase-name',
+                                                   'instruction-name'),
+                               _ShellInstruction)
 
 
 class _ShellInstruction(AssertPhaseInstruction):
     def __init__(self,
-                 executor: shell_common.Executor):
-        self.executor = executor
+                 execute_info: ExecuteInfo):
+        self.execute_info = execute_info
 
     def main(self,
              environment: GlobalEnvironmentForPostEdsPhase,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
-        exit_code = self.executor.run()
-        if exit_code != 0:
-            return pfh.new_pfh_fail('Program finished with non-zero exit code {}'.format(exit_code))
-        return pfh.new_pfh_pass()
+        return shell_common.run_and_return_pfh(self.execute_info, environment.eds)
