@@ -101,15 +101,3 @@ class _StdXActualFileTransformerBase(ActualFileTransformer):
         directory = src_file_path.parent
         dst_base_name = src_stem_name + _WITH_REPLACED_ENV_VARS_STEM_SUFFIX
         return directory / dst_base_name
-
-    @staticmethod
-    def _replace_env_vars_and_write_result_to_dst(env_vars_to_replace: dict,
-                                                  src_file_path: pathlib.Path,
-                                                  dst_file_path: pathlib.Path):
-        with src_file_path.open() as src_file:
-            # TODO Handle reading/replacing in chunks, if file is too large to be read in one chunk
-            contents = src_file.read()
-        for var_name, var_value in env_vars_to_replace.items():
-            contents = contents.replace(var_value, var_name)
-        with open(str(dst_file_path), 'w') as dst_file:
-            dst_file.write(contents)
