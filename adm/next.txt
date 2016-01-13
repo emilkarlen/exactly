@@ -145,4 +145,6 @@ write_to_standard_phase_file
 *** DONE Lägg till arg t instr
 *** DONE Speca förväntat värde i tester
 *** DONE Implementera
-
+* TODO configuration/mode
+* TODO spara utdata fr shell pss som för execute
+* TODO Några TODOs, t ex den för utskrift av fel
