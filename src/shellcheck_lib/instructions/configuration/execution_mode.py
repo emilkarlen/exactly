@@ -32,6 +32,7 @@ class TheDescription(Description):
             InvokationVariant(
                     'MODE',
                     [
+                        para('Where MODE is one of:'),
                         lists.HeaderContentList([
                             lists.HeaderContentListItem(Text(NAME_NORMAL),
                                                         normalize_and_parse("""\
