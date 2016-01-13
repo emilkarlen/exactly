@@ -45,3 +45,8 @@ samma sätt som med omgivningsvariabler.
 assert/JÄMFÖRELSE
 Vore naturligtvis även användbart att kunna asserta att innehållet i en
 katalog är identiskt (el innehåller som minst) en sådan hårdkodad filstruktur.
+* timeout
+Ev möjlighet att ange för test-fall i configure: time-out för act-fasen.
+
+Ev möjlighet att ange för test-svit i configure: gemensam time-out för
+act-fasen för alla test-fall.
