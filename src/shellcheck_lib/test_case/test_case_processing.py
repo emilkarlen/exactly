@@ -24,8 +24,7 @@ class ErrorInfo(tuple):
                 line: line_source.Line = None,
                 section_name: str = None):
         if description is not None:
-            if not isinstance(description, ErrorDescription):
-                assert isinstance(description, ErrorDescription)  # TODO Use ONLY this impl after refactoring
+            assert isinstance(description, ErrorDescription)
         return tuple.__new__(cls, (file_path, line, description, section_name))
 
     @property
