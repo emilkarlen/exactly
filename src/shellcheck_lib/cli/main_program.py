@@ -16,6 +16,11 @@ EXIT_INVALID_USAGE = 2
 HELP_COMMAND = 'help'
 SUITE_COMMAND = 'suite'
 
+COMMAND_DESCRIPTIONS = {
+    HELP_COMMAND: 'Help system (use "help help" for help on help!)',
+    SUITE_COMMAND: 'Executes a test suite.'
+}
+
 
 class MainProgram:
     def __init__(self,
@@ -48,7 +53,8 @@ class MainProgram:
         return self._output
 
     def _parse_and_execute_test_case(self, command_line_arguments: list) -> int:
-        settings = case_argument_parsing.parse(command_line_arguments)
+        settings = case_argument_parsing.parse(command_line_arguments,
+                                               COMMAND_DESCRIPTIONS)
         return self.execute_test_case(settings)
 
     def _parse_and_execute_test_suite(self, command_line_arguments: list) -> int:

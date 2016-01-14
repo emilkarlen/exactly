@@ -11,7 +11,7 @@ class TestCase(unittest.TestCase):
             argv = [str(file_path)]
             expected_home_path = file_path.parent.resolve()
             # ACT #
-            result = sut.parse(argv)
+            result = sut.parse(argv, {})
         # ASSERT #
         self.assertEqual(expected_home_path,
                          result.initial_home_dir_path,

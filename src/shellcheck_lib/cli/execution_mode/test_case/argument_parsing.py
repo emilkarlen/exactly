@@ -15,13 +15,14 @@ def _parse_preprocessor(preprocessor_argument):
         return PreprocessorViaExternalProgram(shlex.split(preprocessor_argument[0]))
 
 
-def parse(argv: list) -> TestCaseExecutionSettings:
+def parse(argv: list,
+          commands: dict) -> TestCaseExecutionSettings:
     """
     :raises ArgumentParsingError Invalid usage
     """
     output = Output.STATUS_CODE
     is_keep_execution_directory_root = False
-    argument_parser = _new_argument_parser()
+    argument_parser = _new_argument_parser(commands)
     namespace = argument_parsing_utils.raise_exception_instead_of_exiting_on_error(argument_parser,
                                                                                    argv)
     if namespace.act:
@@ -39,11 +40,21 @@ def parse(argv: list) -> TestCaseExecutionSettings:
                                      is_keep_execution_directory_root=is_keep_execution_directory_root)
 
 
-def _new_argument_parser() -> argparse.ArgumentParser:
+def _new_argument_parser(commands: dict) -> argparse.ArgumentParser:
+    def command_description(n_d) -> str:
+        return '%s - %s' % (n_d[0], n_d[1])
+
+    command_descriptions = '\n\n'.join(map(command_description, commands.items()))
     ret_val = argparse.ArgumentParser(description='Execute Shellcheck test case')
     ret_val.add_argument('file',
+                         metavar='[FILE|COMMAND]',
                          type=str,
-                         help='The file containing the test case')
+                         help="""A test case file, or one of the commands {commands}.
+
+
+                         {command_descriptions}
+                         """.format(commands='|'.join(commands.keys()),
+                                    command_descriptions=command_descriptions))
     ret_val.add_argument('-k', '--keep',
                          default=False,
                          action="store_true",
