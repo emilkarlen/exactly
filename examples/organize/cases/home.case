@@ -1,0 +1,32 @@
+#
+# Some instructions reference files relative to a "home" directory.
+#
+# This Home Directory is initialy set to the directory containing the
+# test case file.
+#
+# The "home" instruction can change this default.
+#
+# "home" is part of the "conf" phase.  This phase is the default phase,
+# so no phase header is needed.
+#
+
+
+home ..
+
+
+[setup]
+
+
+install testdata/test-file.txt
+
+
+[act]
+
+
+bin/do-something-good-with test-file.txt
+
+
+[assert]
+
+
+contents test-file.txt expectation/expected.txt

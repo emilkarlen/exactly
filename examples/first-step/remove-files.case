@@ -1,0 +1,17 @@
+#
+# The tested program is executed in a temporary directory.
+# So it can remove files in the current directory without the risk of
+# deleting files files in a source or test directory, for example.
+#
+
+[act]
+
+remove-all-files-in-the-current-directory
+
+[assert]
+
+exitcode 0
+
+stdout <<EOF
+All files in current directory removed successfully!
+EOF

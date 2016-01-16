@@ -1,0 +1,28 @@
+#
+# The "external" instruction can be used in all phases except "act".
+#
+
+[setup]
+
+
+execute my-setup-helper-program with arguments
+
+execute /usr/bin/python --interpret my-py-setup-helper.py 'with argument'
+
+execute ( /usr/bin/python -c ) --source print('This does some setup!')
+
+
+[act]
+
+
+system-under-test
+
+
+[assert]
+
+
+#
+# Assertion passes if exit code from the program is 0.
+#
+
+execute my-assert-helper-program

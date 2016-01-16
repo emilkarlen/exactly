@@ -1,0 +1,34 @@
+[setup]
+
+
+dir a-directory
+
+dir even/more/directories
+
+#
+# "install" installes existing files and directories into the
+# temporyary execution directory.
+#
+
+install dir-with-1-dir-and-2-plain-files
+
+
+[act]
+
+
+list-files-under-pwd
+
+
+[assert]
+
+
+stdout <<EOF
+a-directory/
+dir-with-1-dir-and-2-plain-files/
+dir-with-1-dir-and-2-plain-files/a-dir/
+dir-with-1-dir-and-2-plain-files/file-1.txt
+dir-with-1-dir-and-2-plain-files/file-2.txt
+even/
+even/more/
+even/more/directories/
+EOF

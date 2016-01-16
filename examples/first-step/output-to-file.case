@@ -1,0 +1,16 @@
+#
+# The tested program is executed in a temporary directory.
+# So it can create files without polluting a source code directory.
+#
+
+[act]
+
+hello-world -o output.txt
+
+[assert]
+
+exitcode 0
+
+contents output.txt <<EOF
+Hello, World!
+EOF

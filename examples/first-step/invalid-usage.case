@@ -1,0 +1,9 @@
+[act]
+
+hello-world some unaccepted arguments
+
+[assert]
+
+exitcode ! 0
+
+stdout empty

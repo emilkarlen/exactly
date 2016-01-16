@@ -1,0 +1,32 @@
+[suites]
+
+#
+# Basic examples.
+#
+
+first-step/shellcheck.suite
+
+#
+# Setup using the "setup" phase.
+#
+
+setup/shellcheck.suite
+
+#
+# Cleanup using the "cleanup" phase.
+#
+
+cleanup/shellcheck.suite
+
+#
+# Implementing custom behaviour using external programs
+# and the OS shell.
+#
+
+external-programs/shellcheck.suite
+
+#
+# Organizing a test package in sub-directories
+#
+
+organize/shellcheck.suite

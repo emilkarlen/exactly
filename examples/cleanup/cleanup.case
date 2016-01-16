@@ -1,0 +1,16 @@
+[setup]
+
+
+execute my-helper-program --insert-testdata-into-database
+
+
+[act]
+
+
+manipulate-database-contents
+
+
+[cleanup]
+
+
+execute my-helper-program --cleanup-database-after-test

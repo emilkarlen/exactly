@@ -1,0 +1,47 @@
+#
+# Instructions in the "setup" phase are executed before the tested program.
+#
+# The Present Working Directory at the start of the phase is the same
+# temporary directory that becomes the PWD for the tested program.
+#
+
+[setup]
+
+
+file empty-file.txt
+
+file 'file name with spaces.txt'
+
+file new-directory/empty-file.txt
+file new-directory/empty-file2.txt
+
+file non-empty-file.txt <<EOF
+Some contents.
+EOF
+
+
+[act]
+
+
+list-files-under-pwd
+
+
+[assert]
+
+
+stdout <<EOF
+empty-file.txt
+file name with spaces.txt
+new-directory/
+new-directory/empty-file.txt
+new-directory/empty-file2.txt
+non-empty-file.txt
+EOF
+
+contents non-empty-file.txt <<EOF
+Some contents.
+EOF
+
+type empty-file.txt regular
+
+type new-directory directory

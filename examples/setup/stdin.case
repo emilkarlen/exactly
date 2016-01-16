@@ -1,0 +1,25 @@
+#
+# Instructions in the "setup" phase are executed before the tested program.
+#
+
+
+[setup]
+
+
+stdin <<EOF
+The contents of stdin.
+EOF
+
+
+[act]
+
+
+copy-stdin-to-stdout
+
+
+[assert]
+
+
+stdout <<EOF
+The contents of stdin.
+EOF

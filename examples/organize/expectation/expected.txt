@@ -1,0 +1,1 @@
+Haskell programmers are fond of pair-programming.
