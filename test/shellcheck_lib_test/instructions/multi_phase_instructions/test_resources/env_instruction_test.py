@@ -25,7 +25,7 @@ class TestSet(TestCaseBase):
                          {'name': 'value'})
 
 
-class TestUnset(TestCaseBase):
+class TestUnsetExistingVariable(TestCaseBase):
     def runTest(self):
         environ = {'a': 'A', 'b': 'B'}
         os_services = new_with_environ(environ)
@@ -38,9 +38,23 @@ class TestUnset(TestCaseBase):
                          {'b': 'B'})
 
 
+class TestUnsetNonExistingVariable(TestCaseBase):
+    def runTest(self):
+        environ = {'a': 'A'}
+        os_services = new_with_environ(environ)
+        self.conf.run_test(
+                self,
+                new_source2('unset non_existing_variable'),
+                self.conf.arrangement(os_services=os_services),
+                self.conf.expect_success())
+        self.assertEqual(environ,
+                         {'a': 'A'})
+
+
 def suite_for(conf: ConfigurationBase) -> unittest.TestSuite:
     return suite_for_cases(conf,
                            [
                                TestSet,
-                               TestUnset,
+                               TestUnsetExistingVariable,
+                               TestUnsetNonExistingVariable,
                            ])
