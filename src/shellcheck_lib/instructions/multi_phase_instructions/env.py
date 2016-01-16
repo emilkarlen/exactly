@@ -74,4 +74,7 @@ class _UnsetExecutor(Executor):
         self.name = name
 
     def execute(self, os_services: OsServices):
-        del os_services.environ[self.name]
+        try:
+            del os_services.environ[self.name]
+        except KeyError:
+            pass
