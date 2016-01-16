@@ -1,0 +1,37 @@
+#
+# The "shell" instruction can be used in all phases except "act".
+#
+# It executes a command using the OS's shell.
+#
+# Which OS shell is used depends on the OS.  So tests that uses "shell"
+# only works on platforms that has a shall that supportes the features
+# and commands that are used in the test.
+#
+
+
+[setup]
+
+
+shell touch empty-file.txt
+
+shell cp ${SHELLCHECK_HOME}/shell.case .
+
+
+[act]
+
+
+system-under-test
+
+
+[assert]
+
+
+#
+# Assertion passes if exit code from the shell is 0.
+#
+
+shell [ -f empty-file.txt ]
+
+shell [ 0 = `wc -l < empty-file.txt` ]
+
+shell [ -f shell.case ]

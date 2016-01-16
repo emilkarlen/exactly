@@ -1,0 +1,13 @@
+[cases]
+
+stdin.case
+
+stdin-contents-in-file.case
+
+files.case
+
+dir-install.case
+
+env.case
+
+present-working-directory.case

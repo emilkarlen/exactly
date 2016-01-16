@@ -1,0 +1,37 @@
+#
+# The "pwd" instruction sets the Present Working Directory.
+#
+
+
+[setup]
+
+
+file in-root-dir.txt
+
+dir execution-dir
+
+pwd execution-dir
+
+file in-execution-dir.txt
+
+
+[act]
+
+
+list-files-under-pwd
+
+
+[assert]
+
+
+stdout <<EOF
+in-execution-dir.txt
+EOF
+
+type in-execution-dir.txt regular
+
+pwd ..
+
+type in-root-dir.txt regular
+
+type execution-dir/in-execution-dir.txt regular

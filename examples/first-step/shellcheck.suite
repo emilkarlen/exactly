@@ -1,0 +1,11 @@
+[cases]
+
+exitcode-and-output.case
+
+invalid-usage.case
+
+expected-content-in-file.case
+
+output-to-file.case
+
+remove-files.case
