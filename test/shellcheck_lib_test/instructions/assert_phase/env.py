@@ -12,7 +12,7 @@ class TheConfiguration(AssertConfigurationBase):
         return sut.setup('instruction name')
 
 
-def suite():
+def suite() -> unittest.TestSuite:
     return suite_for(TheConfiguration())
 
 

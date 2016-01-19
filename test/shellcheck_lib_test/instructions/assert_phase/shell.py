@@ -21,11 +21,11 @@ class TheConfiguration(AssertConfigurationBase, Configuration):
         return Expectation()
 
 
-def suite():
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(suite_for(TheConfiguration()))
-    ret_val.addTest(suite_for_description(sut.TheDescription('instruction-name')))
-    return ret_val
+def suite() -> unittest.TestSuite:
+    return unittest.TestSuite([
+        suite_for(TheConfiguration()),
+        suite_for_description(sut.TheDescription('instruction-name')),
+    ])
 
 
 if __name__ == '__main__':

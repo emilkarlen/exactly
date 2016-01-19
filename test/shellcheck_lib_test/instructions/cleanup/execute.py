@@ -17,7 +17,7 @@ class TheConfiguration(CleanupConfigurationBase, Configuration):
         return Expectation(main_result=sh_check.IsHardError())
 
 
-def suite():
+def suite() -> unittest.TestSuite:
     return suite_for(TheConfiguration())
 
 
