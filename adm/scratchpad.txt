@@ -14,3 +14,29 @@ https://www.gnu.org/software/automake/manual/html_node/Introduction-to-TAP.html#
 ** string - bibliotek för parsning av formaterade strängar
 Kan användas som preprocessor?
 Troligtvis inte, men värt att ta en titt på innan man beslutar sig för annat.
+* Hjälpsystem
+** --help
+Tala om att
+ - help : ger hjälp
+ - help help : ger hjälp om hjälp
+** help: Former
+
+*** global
+**** help help
+Talar om vilka hjälp former som finns
+*** Testfall
+**** help
+Översikt över faser
+**** help example
+Enkelt exempel.
+**** help instructions
+listar instruktioner per fas
+**** help PHASE
+Översikt över fas (ev inkl listning av instruktioner).
+**** help PHASE INSTRUCTION
+Om enskild instruktion i enskild fas.
+**** help PHASE instructions
+**** help INSTRUCTION (såvida INSTRUCTION inte sammanfaller m ovanstående former)
+*** Testsvit
+**** help suite [SAMMA SOM FÖR TESTFALL]
+
