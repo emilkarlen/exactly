@@ -1,7 +1,4 @@
-from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionParser
 from shellcheck_lib.instructions.assert_phase import change_dir as sut
-from shellcheck_lib.test_case.instruction_description import Description
 from shellcheck_lib.test_case.instruction_setup import SingleInstructionSetup
 from shellcheck_lib_test.instructions.assert_phase.test_resources.configuration import AssertConfigurationBase
 from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_check import Expectation
@@ -15,12 +12,6 @@ from shellcheck_lib_test.test_resources.value_assertion import ValueAssertion
 class TheConfiguration(AssertConfigurationBase, Configuration):
     def instruction_setup(self) -> SingleInstructionSetup:
         return sut.setup('instruction name')
-
-    def parser(self) -> SingleInstructionParser:
-        return self.instruction_setup()
-
-    def description(self) -> Description:
-        return self.instruction_setup().description
 
     def expect_successful_execution_with_side_effect(self,
                                                      side_effects_check: ValueAssertion):

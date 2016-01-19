@@ -3,6 +3,7 @@ import unittest
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParserSource, SingleInstructionParser
 from shellcheck_lib.test_case.instruction_description import Description
+from shellcheck_lib.test_case.instruction_setup import SingleInstructionSetup
 from shellcheck_lib.test_case.os_services import new_default, OsServices
 from shellcheck_lib_test.instructions.test_resources.arrangements import ArrangementBase
 from shellcheck_lib_test.instructions.test_resources.check_description import suite_for_description_instance
@@ -18,11 +19,14 @@ class ConfigurationBase:
                  expectation):
         raise NotImplementedError()
 
-    def parser(self) -> SingleInstructionParser:
+    def instruction_setup(self) -> SingleInstructionSetup:
         raise NotImplementedError()
 
+    def parser(self) -> SingleInstructionParser:
+        return self.instruction_setup()
+
     def description(self) -> Description:
-        raise NotImplementedError()
+        return self.instruction_setup().description
 
     def arrangement(self,
                     eds_contents_before_main: eds_populator.EdsPopulator = eds_populator.empty(),
