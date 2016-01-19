@@ -1,9 +1,7 @@
 import unittest
 
-from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionParser
 from shellcheck_lib.instructions.setup import change_dir as sut
-from shellcheck_lib.test_case.instruction_description import Description
+from shellcheck_lib.test_case.instruction_setup import SingleInstructionSetup
 from shellcheck_lib_test.instructions.multi_phase_instructions.test_resources.change_dir_instruction_test import \
     Configuration, suite_for
 from shellcheck_lib_test.instructions.setup.test_resources.configuration import SetupConfigurationBase
@@ -14,11 +12,8 @@ from shellcheck_lib_test.test_resources.value_assertion import ValueAssertion
 
 
 class TheConfiguration(SetupConfigurationBase, Configuration):
-    def description(self) -> Description:
-        return sut.description('instruction name')
-
-    def parser(self) -> SingleInstructionParser:
-        return sut.Parser()
+    def instruction_setup(self) -> SingleInstructionSetup:
+        return sut.setup('instruction name')
 
     def expect_successful_execution_with_side_effect(self,
                                                      side_effects_check: ValueAssertion):
@@ -28,7 +23,7 @@ class TheConfiguration(SetupConfigurationBase, Configuration):
         return Expectation(main_result=sh_check.IsHardError())
 
 
-def suite():
+def suite() -> unittest.TestSuite:
     return suite_for(TheConfiguration())
 
 

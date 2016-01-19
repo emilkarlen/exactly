@@ -11,9 +11,22 @@ from shellcheck_lib.instructions.utils.parse_utils import split_arguments_list_s
 from shellcheck_lib.instructions.utils.relative_path_options import REL_HOME_OPTION, REL_CWD_OPTION
 from shellcheck_lib.instructions.utils.relative_path_options import REL_TMP_OPTION
 from shellcheck_lib.test_case.instruction_description import InvokationVariant, Description
+from shellcheck_lib.test_case.instruction_setup import SingleInstructionSetup
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
 from .utils import contents_utils
+
+
+def setup_for_stdout(instruction_name: str) -> SingleInstructionSetup:
+    return SingleInstructionSetup(
+            ParserForContentsForStdout(),
+            TheDescription(instruction_name, 'stdout'))
+
+
+def setup_for_stderr(instruction_name: str) -> SingleInstructionSetup:
+    return SingleInstructionSetup(
+            ParserForContentsForStderr(),
+            TheDescription(instruction_name, 'stderr'))
 
 
 class TheDescription(Description):

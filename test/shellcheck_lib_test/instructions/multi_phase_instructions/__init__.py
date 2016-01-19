@@ -1,16 +1,17 @@
 import unittest
 
-from shellcheck_lib_test.instructions.multi_phase_instructions import new_dir, change_dir, execute, new_file, env
+from shellcheck_lib_test.instructions.multi_phase_instructions import new_dir, change_dir, execute, new_file, env, shell
 
 
-def suite():
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(new_dir.suite())
-    ret_val.addTest(change_dir.suite())
-    ret_val.addTest(new_file.suite())
-    ret_val.addTest(execute.suite())
-    ret_val.addTest(env.suite())
-    return ret_val
+def suite() -> unittest.TestSuite:
+    return unittest.TestSuite([
+        new_dir.suite(),
+        change_dir.suite(),
+        new_file.suite(),
+        execute.suite(),
+        env.suite(),
+        shell.suite(),
+    ])
 
 
 def run_suite():

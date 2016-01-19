@@ -6,8 +6,16 @@ from shellcheck_lib.general.textformat.structure import lists
 from shellcheck_lib.general.textformat.structure.paragraph import *
 from shellcheck_lib.instructions.utils.parse_utils import split_arguments_list_string
 from shellcheck_lib.test_case.instruction_description import InvokationVariant, Description
+from shellcheck_lib.test_case.instruction_setup import SingleInstructionSetup
 from shellcheck_lib.test_case.sections.anonymous import AnonymousPhaseInstruction, ConfigurationBuilder, ExecutionMode
 from shellcheck_lib.test_case.sections.result import sh
+
+
+def setup(instruction_name: str) -> SingleInstructionSetup:
+    return SingleInstructionSetup(
+            Parser(),
+            TheDescription(instruction_name))
+
 
 NAME_NORMAL = 'NORMAL'
 NAME_SKIP = 'SKIP'

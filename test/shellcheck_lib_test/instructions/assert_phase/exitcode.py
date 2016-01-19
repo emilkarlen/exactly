@@ -3,14 +3,13 @@ import unittest
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException, SingleInstructionParserSource
 from shellcheck_lib.instructions.assert_phase import exitcode as sut
-from shellcheck_lib.test_case.instruction_description import Description
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib_test.instructions.assert_phase.test_resources import instruction_check
 from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_check import ActResultProducer, \
     arrangement, Expectation, is_pass
 from shellcheck_lib_test.instructions.test_resources import pfh_check
 from shellcheck_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
-from shellcheck_lib_test.instructions.test_resources.check_description import TestDescriptionBase
+from shellcheck_lib_test.instructions.test_resources.check_description import suite_for_description
 from shellcheck_lib_test.test_resources.execution import utils
 from shellcheck_lib_test.test_resources.parse import new_source2
 
@@ -207,23 +206,18 @@ class TestParseAndExecuteTwoArgumentsGe(TestCaseBaseForParser):
         )
 
 
-class TestDescription(TestDescriptionBase):
-    def _description(self) -> Description:
-        return sut.TheDescription('instruction name')
-
-
-def suite():
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestParse))
-    ret_val.addTest(unittest.makeSuite(TestParseAndExecute))
-    ret_val.addTest(unittest.makeSuite(TestParseAndExecuteTwoArgumentsEq))
-    ret_val.addTest(unittest.makeSuite(TestParseAndExecuteTwoArgumentsNe))
-    ret_val.addTest(unittest.makeSuite(TestParseAndExecuteTwoArgumentsLt))
-    ret_val.addTest(unittest.makeSuite(TestParseAndExecuteTwoArgumentsLe))
-    ret_val.addTest(unittest.makeSuite(TestParseAndExecuteTwoArgumentsGt))
-    ret_val.addTest(unittest.makeSuite(TestParseAndExecuteTwoArgumentsGe))
-    ret_val.addTest(unittest.makeSuite(TestDescription))
-    return ret_val
+def suite() -> unittest.TestSuite:
+    return unittest.TestSuite([
+        unittest.makeSuite(TestParse),
+        unittest.makeSuite(TestParseAndExecute),
+        unittest.makeSuite(TestParseAndExecuteTwoArgumentsEq),
+        unittest.makeSuite(TestParseAndExecuteTwoArgumentsNe),
+        unittest.makeSuite(TestParseAndExecuteTwoArgumentsLt),
+        unittest.makeSuite(TestParseAndExecuteTwoArgumentsLe),
+        unittest.makeSuite(TestParseAndExecuteTwoArgumentsGt),
+        unittest.makeSuite(TestParseAndExecuteTwoArgumentsGe),
+        suite_for_description(sut.TheDescription('instruction name')),
+    ])
 
 
 if __name__ == '__main__':

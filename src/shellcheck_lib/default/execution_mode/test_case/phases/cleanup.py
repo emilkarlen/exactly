@@ -1,29 +1,12 @@
-from shellcheck_lib.instructions.cleanup import change_dir
-from shellcheck_lib.instructions.cleanup import env
-from shellcheck_lib.instructions.cleanup import execute
-from shellcheck_lib.instructions.cleanup import new_dir
-from shellcheck_lib.instructions.cleanup import shell
-from shellcheck_lib.test_case.instruction_setup import SingleInstructionSetup
+from shellcheck_lib.instructions.cleanup import change_dir, env, execute, new_dir, shell
+from shellcheck_lib.test_case.instruction_setup import instruction_set_from_name_and_setup_constructor_list
 
-INSTRUCTIONS = {
-    'dir':
-        SingleInstructionSetup(
-                new_dir.Parser(),
-                new_dir.description('dir')),
-    'env':
-        SingleInstructionSetup(
-                env.PARSER,
-                env.description('env')),
-    'execute':
-        SingleInstructionSetup(
-                execute.parser('execute'),
-                execute.description('execute')),
-    'pwd':
-        SingleInstructionSetup(
-                change_dir.Parser(),
-                change_dir.description('pwd')),
-    'shell':
-        SingleInstructionSetup(
-                shell.parser('shell'),
-                shell.description('shell')),
-}
+INSTRUCTIONS = instruction_set_from_name_and_setup_constructor_list(
+        [
+            ('dir', new_dir.setup),
+            ('env', env.setup),
+            ('execute', execute.setup),
+            ('pwd', change_dir.setup),
+            ('shell', shell.setup),
+        ]
+)
