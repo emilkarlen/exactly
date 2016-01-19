@@ -39,4 +39,7 @@ Om enskild instruktion i enskild fas.
 **** help INSTRUCTION (såvida INSTRUCTION inte sammanfaller m ovanstående former)
 *** Testsvit
 **** help suite [SAMMA SOM FÖR TESTFALL]
-
+*** Annat
+**** Omgivningsvariabler
+**** Kataloger (home, ESD)
+T ex dok av --rel-home, --rel-act, --rel-tmp, ...
