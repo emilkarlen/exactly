@@ -39,7 +39,7 @@ class Parser:
             return self._parse_instruction_in_phase(help_command_arguments[0],
                                                     help_command_arguments[1])
         if len(help_command_arguments) != 1:
-            raise HelpError('Invalid number of arguments.')
+            raise HelpError('Invalid number of arguments. Use help help, for help!')
         argument = help_command_arguments[0]
         if argument == INSTRUCTIONS:
             return settings.TestCaseHelpSettings(settings.TestCaseHelpItem.INSTRUCTION_SET, None, None)
