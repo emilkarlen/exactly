@@ -5,8 +5,7 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.general.string import lines_content
 from shellcheck_lib.instructions.multi_phase_instructions import new_file as sut
-from shellcheck_lib.test_case.instruction_description import Description
-from shellcheck_lib_test.instructions.test_resources.check_description import TestDescriptionBase
+from shellcheck_lib_test.instructions.test_resources.check_description import suite_for_description
 from shellcheck_lib_test.test_resources.execution import eds_test
 from shellcheck_lib_test.test_resources.execution.eds_contents_check import ActRootContainsExactly, \
     TmpUserRootContainsExactly
@@ -187,20 +186,15 @@ class TestFailingScenarios(TestCaseBase):
                                            ))
 
 
-class TestDescription(TestDescriptionBase):
-    def _description(self) -> Description:
-        return sut.TheDescription('instruction name')
-
-
-def suite():
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestParseWithNoContents))
-    ret_val.addTest(unittest.makeSuite(TestSuccessfulScenariosNoContent))
-    ret_val.addTest(unittest.makeSuite(TestSuccessfulScenariosWithContent))
-    ret_val.addTest(unittest.makeSuite(TestFailingScenarios))
-    ret_val.addTest(unittest.makeSuite(TestParseWithContents))
-    ret_val.addTest(unittest.makeSuite(TestDescription))
-    return ret_val
+def suite() -> unittest.TestSuite:
+    return unittest.TestSuite([
+        unittest.makeSuite(TestParseWithNoContents),
+        unittest.makeSuite(TestSuccessfulScenariosNoContent),
+        unittest.makeSuite(TestSuccessfulScenariosWithContent),
+        unittest.makeSuite(TestFailingScenarios),
+        unittest.makeSuite(TestParseWithContents),
+        suite_for_description(sut.TheDescription('instruction name')),
+    ])
 
 
 if __name__ == '__main__':

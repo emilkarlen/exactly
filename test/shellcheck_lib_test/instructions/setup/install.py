@@ -3,12 +3,11 @@ import unittest
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException, SingleInstructionParserSource
 from shellcheck_lib.instructions.setup import install as sut
-from shellcheck_lib.test_case.instruction_description import Description
 from shellcheck_lib_test.instructions.setup.test_resources.instruction_check import TestCaseBase, Arrangement, \
     Expectation
 from shellcheck_lib_test.instructions.test_resources import sh_check
 from shellcheck_lib_test.instructions.test_resources import svh_check
-from shellcheck_lib_test.instructions.test_resources.check_description import TestDescriptionBase
+from shellcheck_lib_test.instructions.test_resources.check_description import suite_for_description
 from shellcheck_lib_test.test_resources.execution import eds_populator, eds_contents_check
 from shellcheck_lib_test.test_resources.file_structure import DirContents, File, Dir, empty_file, empty_dir
 from shellcheck_lib_test.test_resources.parse import new_source2
@@ -176,18 +175,13 @@ class TestFailingScenarios(TestCaseBaseForParser):
                   )
 
 
-class TestDescription(TestDescriptionBase):
-    def _description(self) -> Description:
-        return sut.TheDescription('instruction name')
-
-
-def suite():
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestParse))
-    ret_val.addTest(unittest.makeSuite(TestValidationErrorScenarios))
-    ret_val.addTest(unittest.makeSuite(TestFailingScenarios))
-    ret_val.addTest(unittest.makeSuite(TestDescription))
-    return ret_val
+def suite() -> unittest.TestSuite:
+    return unittest.TestSuite([
+        unittest.makeSuite(TestParse),
+        unittest.makeSuite(TestValidationErrorScenarios),
+        unittest.makeSuite(TestFailingScenarios),
+        suite_for_description(sut.TheDescription('instruction name')),
+    ])
 
 
 if __name__ == '__main__':

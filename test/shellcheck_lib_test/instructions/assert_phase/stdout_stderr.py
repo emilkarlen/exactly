@@ -5,7 +5,6 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
 from shellcheck_lib.general.string import lines_content
 from shellcheck_lib.instructions.assert_phase import stdout_stderr as sut
 from shellcheck_lib.instructions.utils.relative_path_options import REL_HOME_OPTION
-from shellcheck_lib.test_case.instruction_description import Description
 from shellcheck_lib_test.instructions.assert_phase.test_resources import instruction_check
 from shellcheck_lib_test.instructions.assert_phase.test_resources.contents_resources import \
     ActResultProducerForContentsWithAllReplacedEnvVars, \
@@ -15,7 +14,7 @@ from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_ch
 from shellcheck_lib_test.instructions.test_resources import pfh_check
 from shellcheck_lib_test.instructions.test_resources import svh_check
 from shellcheck_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
-from shellcheck_lib_test.instructions.test_resources.check_description import TestDescriptionBase
+from shellcheck_lib_test.instructions.test_resources.check_description import suite_for_description
 from shellcheck_lib_test.test_resources.execution.eds_populator import act_dir_contents, tmp_user_dir_contents
 from shellcheck_lib_test.test_resources.execution.utils import ActResult
 from shellcheck_lib_test.test_resources.file_structure import DirContents, empty_dir, File
@@ -555,44 +554,38 @@ class TestReplacedEnvVarsFORStderr(ReplacedEnvVars):
         return sut.ParserForContentsForStderr()
 
 
-class TestDescription(TestDescriptionBase):
-    def _description(self) -> Description:
-        return sut.TheDescription('instruction name', 'file')
+def suite() -> unittest.TestSuite:
+    return unittest.TestSuite([
 
+        unittest.makeSuite(TestFileContentsEmptyInvalidSyntaxFORStdout),
+        unittest.makeSuite(TestFileContentsEmptyInvalidSyntaxFORStderr),
 
-def suite():
-    ret_val = unittest.TestSuite()
+        unittest.makeSuite(TestFileContentsEmptyValidSyntaxFORStdout),
+        unittest.makeSuite(TestFileContentsEmptyValidSyntaxFORStderr),
 
-    ret_val.addTest(unittest.makeSuite(TestFileContentsEmptyInvalidSyntaxFORStdout))
-    ret_val.addTest(unittest.makeSuite(TestFileContentsEmptyInvalidSyntaxFORStderr))
+        unittest.makeSuite(TestFileContentsNonEmptyInvalidSyntaxFORStdout),
+        unittest.makeSuite(TestFileContentsNonEmptyInvalidSyntaxFORStderr),
 
-    ret_val.addTest(unittest.makeSuite(TestFileContentsEmptyValidSyntaxFORStdout))
-    ret_val.addTest(unittest.makeSuite(TestFileContentsEmptyValidSyntaxFORStderr))
+        unittest.makeSuite(TestFileContentsNonEmptyValidSyntaxFORStdout),
+        unittest.makeSuite(TestFileContentsNonEmptyValidSyntaxFORStderr),
 
-    ret_val.addTest(unittest.makeSuite(TestFileContentsNonEmptyInvalidSyntaxFORStdout))
-    ret_val.addTest(unittest.makeSuite(TestFileContentsNonEmptyInvalidSyntaxFORStderr))
+        unittest.makeSuite(TestFileContentsFileRelHomeFORStdout),
+        unittest.makeSuite(TestFileContentsFileRelHomeFORStderr),
 
-    ret_val.addTest(unittest.makeSuite(TestFileContentsNonEmptyValidSyntaxFORStdout))
-    ret_val.addTest(unittest.makeSuite(TestFileContentsNonEmptyValidSyntaxFORStderr))
+        unittest.makeSuite(TestFileContentsFileRelCwdFORStdout),
+        unittest.makeSuite(TestFileContentsFileRelCwdFORStderr),
 
-    ret_val.addTest(unittest.makeSuite(TestFileContentsFileRelHomeFORStdout))
-    ret_val.addTest(unittest.makeSuite(TestFileContentsFileRelHomeFORStderr))
+        unittest.makeSuite(FileContentsHereDocFORStdout),
+        unittest.makeSuite(FileContentsHereDocFORStderr),
 
-    ret_val.addTest(unittest.makeSuite(TestFileContentsFileRelCwdFORStdout))
-    ret_val.addTest(unittest.makeSuite(TestFileContentsFileRelCwdFORStderr))
+        unittest.makeSuite(TestReplacedEnvVarsFORStdout),
+        unittest.makeSuite(TestReplacedEnvVarsFORStderr),
 
-    ret_val.addTest(unittest.makeSuite(FileContentsHereDocFORStdout))
-    ret_val.addTest(unittest.makeSuite(FileContentsHereDocFORStderr))
+        unittest.makeSuite(TestFileContentsFileRelTmpFORStdout),
+        unittest.makeSuite(TestFileContentsFileRelTmpFORStderr),
 
-    ret_val.addTest(unittest.makeSuite(TestReplacedEnvVarsFORStdout))
-    ret_val.addTest(unittest.makeSuite(TestReplacedEnvVarsFORStderr))
-
-    ret_val.addTest(unittest.makeSuite(TestFileContentsFileRelTmpFORStdout))
-    ret_val.addTest(unittest.makeSuite(TestFileContentsFileRelTmpFORStderr))
-
-    ret_val.addTest(unittest.makeSuite(TestDescription))
-
-    return ret_val
+        suite_for_description(sut.TheDescription('instruction name', 'file')),
+    ])
 
 
 if __name__ == '__main__':

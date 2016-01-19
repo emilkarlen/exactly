@@ -5,14 +5,13 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
 from shellcheck_lib.general.string import lines_content
 from shellcheck_lib.instructions.setup import stdin as sut
 from shellcheck_lib.instructions.utils import file_ref
-from shellcheck_lib.test_case.instruction_description import Description
 from shellcheck_lib.test_case.sections import common
 from shellcheck_lib.test_case.sections.setup import SetupSettingsBuilder
 from shellcheck_lib_test.instructions.setup.test_resources.instruction_check import TestCaseBase, Arrangement, \
     Expectation
 from shellcheck_lib_test.instructions.setup.test_resources.settings_check import Assertion
 from shellcheck_lib_test.instructions.test_resources import svh_check
-from shellcheck_lib_test.instructions.test_resources.check_description import TestDescriptionBase
+from shellcheck_lib_test.instructions.test_resources.check_description import suite_for_description
 from shellcheck_lib_test.test_resources.file_structure import DirContents, empty_file, empty_dir
 from shellcheck_lib_test.test_resources.parse import new_source2, argument_list_source
 
@@ -150,18 +149,13 @@ class AssertStdinIsSetToContents(Assertion):
                         'Contents of stdin in Setup Settings')
 
 
-class TestDescription(TestDescriptionBase):
-    def _description(self) -> Description:
-        return sut.TheDescription('instruction name')
-
-
-def suite():
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestParseSet))
-    ret_val.addTest(unittest.makeSuite(TestSuccessfulInstructionExecution))
-    ret_val.addTest(unittest.makeSuite(TestFailingInstructionExecution))
-    ret_val.addTest(unittest.makeSuite(TestDescription))
-    return ret_val
+def suite() -> unittest.TestSuite:
+    return unittest.TestSuite([
+        unittest.makeSuite(TestParseSet),
+        unittest.makeSuite(TestSuccessfulInstructionExecution),
+        unittest.makeSuite(TestFailingInstructionExecution),
+        suite_for_description(sut.TheDescription('instruction name')),
+    ])
 
 
 if __name__ == '__main__':
