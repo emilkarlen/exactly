@@ -3,12 +3,11 @@ import unittest
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException, SingleInstructionParserSource
 from shellcheck_lib.instructions.assert_phase import type as sut
-from shellcheck_lib.test_case.instruction_description import Description
 from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_check import TestCaseBase, \
     arrangement, Expectation, is_pass
 from shellcheck_lib_test.instructions.test_resources import pfh_check
 from shellcheck_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
-from shellcheck_lib_test.instructions.test_resources.check_description import TestDescriptionBase
+from shellcheck_lib_test.instructions.test_resources.check_description import suite_for_description
 from shellcheck_lib_test.test_resources.execution.eds_populator import act_dir_contents
 from shellcheck_lib_test.test_resources.file_structure import DirContents, empty_file, empty_dir, Link
 from shellcheck_lib_test.test_resources.parse import new_source2
@@ -152,19 +151,14 @@ class TestCheckForSymLink(TestCaseBaseForParser):
         )
 
 
-class TestDescription(TestDescriptionBase):
-    def _description(self) -> Description:
-        return sut.TheDescription('instruction name')
-
-
-def suite():
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestParse))
-    ret_val.addTest(unittest.makeSuite(TestCheckForRegularFile))
-    ret_val.addTest(unittest.makeSuite(TestCheckForDirectory))
-    ret_val.addTest(unittest.makeSuite(TestCheckForSymLink))
-    ret_val.addTest(unittest.makeSuite(TestDescription))
-    return ret_val
+def suite() -> unittest.TestSuite:
+    return unittest.TestSuite([
+        unittest.makeSuite(TestParse),
+        unittest.makeSuite(TestCheckForRegularFile),
+        unittest.makeSuite(TestCheckForDirectory),
+        unittest.makeSuite(TestCheckForSymLink),
+        suite_for_description(sut.TheDescription('instruction name')),
+    ])
 
 
 if __name__ == '__main__':

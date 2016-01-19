@@ -5,6 +5,7 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
 from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_check import Expectation
 from shellcheck_lib_test.instructions.multi_phase_instructions.test_resources.configuration import ConfigurationBase, \
     suite_for_cases
+from shellcheck_lib_test.instructions.test_resources.check_description import suite_for_description_instance
 from shellcheck_lib_test.test_resources import python_program_execution as py_exe
 from shellcheck_lib_test.test_resources.file_utils import tmp_file_containing
 from shellcheck_lib_test.test_resources.parse import new_source2
@@ -64,9 +65,12 @@ sys.exit(1)
 
 
 def suite_for(configuration: Configuration) -> unittest.TestSuite:
-    return suite_for_cases(configuration,
-                           [
-                               TestParseFailsWhenThereAreNoArguments,
-                               TestInstructionIsSuccessfulWhenExitStatusFromCommandIsZero,
-                               TestInstructionIsHardErrorWhenExitStatusFromCommandIsNonZero,
-                           ])
+    return unittest.TestSuite([
+        suite_for_description_instance(configuration.description()),
+        suite_for_cases(configuration,
+                        [
+                            TestParseFailsWhenThereAreNoArguments,
+                            TestInstructionIsSuccessfulWhenExitStatusFromCommandIsZero,
+                            TestInstructionIsHardErrorWhenExitStatusFromCommandIsNonZero,
+                        ])
+    ])

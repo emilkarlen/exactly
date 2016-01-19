@@ -31,6 +31,10 @@ INTERNAL_ERROR
 Exception:
 comment_lines() missing 1 required positional argument: 'lines'
 ----------
+* TODO __main__ ska köra run_suite (inte unittest.main())
+<2016-01-19 tis>
+if __name__ == '__main__':
+    unittest.main()
 * TODO [#A] Ändring av miljövariabler får inte störa andra test-fall i en svit
 * TODO [#A] timeout för programmet i act-fasen
 * TODO timeout för instruktioner som kör subprocesser

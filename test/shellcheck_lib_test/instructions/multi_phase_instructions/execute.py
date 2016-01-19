@@ -5,9 +5,8 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
 from shellcheck_lib.instructions.multi_phase_instructions import execute as sut
 from shellcheck_lib.instructions.utils.relative_path_options import REL_TMP_OPTION
 from shellcheck_lib.instructions.utils.sub_process_execution import InstructionMetaInfo, ResultAndStderr
-from shellcheck_lib.test_case.instruction_description import Description
 from shellcheck_lib.test_case.sections.common import HomeAndEds
-from shellcheck_lib_test.instructions.test_resources.check_description import TestDescriptionBase
+from shellcheck_lib_test.instructions.test_resources.check_description import suite_for_description
 from shellcheck_lib_test.test_resources import home_and_eds_test
 from shellcheck_lib_test.test_resources import python_program_execution as py_exe
 from shellcheck_lib_test.test_resources import value_assertion as va
@@ -199,12 +198,6 @@ class TestSource(TestCaseBase):
                                                     argument))
 
 
-class TestDescription(TestDescriptionBase):
-    def _description(self) -> Description:
-        return sut.TheDescription('instruction name',
-                                  'single line description')
-
-
 def _new_parser() -> sut.SetupParser:
     instruction_meta_info = InstructionMetaInfo('phase-name',
                                                 'instruction-name')
@@ -221,13 +214,14 @@ sys.exit(val)
 """.format(stderr_output)
 
 
-def suite():
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestExecuteProgramWithShellArgumentList))
-    ret_val.addTest(unittest.makeSuite(TestExecuteInterpret))
-    ret_val.addTest(unittest.makeSuite(TestSource))
-    ret_val.addTest(unittest.makeSuite(TestDescription))
-    return ret_val
+def suite() -> unittest.TestSuite:
+    return unittest.TestSuite([
+        unittest.makeSuite(TestExecuteProgramWithShellArgumentList),
+        unittest.makeSuite(TestExecuteInterpret),
+        unittest.makeSuite(TestSource),
+        suite_for_description(sut.TheDescription('instruction name',
+                                                 'single line description')),
+    ])
 
 
 if __name__ == '__main__':

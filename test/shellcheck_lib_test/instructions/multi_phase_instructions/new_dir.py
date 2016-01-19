@@ -3,8 +3,7 @@ import unittest
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from shellcheck_lib.instructions.multi_phase_instructions import new_dir as sut
-from shellcheck_lib.test_case.instruction_description import Description
-from shellcheck_lib_test.instructions.test_resources.check_description import TestDescriptionBase
+from shellcheck_lib_test.instructions.test_resources.check_description import suite_for_description
 from shellcheck_lib_test.test_resources import tmp_dir_test
 from shellcheck_lib_test.test_resources.file_checks import dir_contains_exactly
 from shellcheck_lib_test.test_resources.file_structure import DirContents, empty_dir, Dir, empty_file
@@ -93,44 +92,44 @@ class TestSuccessfulScenariosWithExistingDirectories(TestCaseBase2):
     def test_whole_argument_exists_as_directory__single_path_component(self):
         self._test_argument('existing-directory',
                             Check(
-                                dir_contents_before=DirContents([
-                                    empty_dir('existing-directory')
-                                ]),
-                                expected_action_result=is_success(),
-                                expected_dir_contents_after=dir_contains_exactly(DirContents([
-                                    empty_dir('existing-directory')
-                                ]))
+                                    dir_contents_before=DirContents([
+                                        empty_dir('existing-directory')
+                                    ]),
+                                    expected_action_result=is_success(),
+                                    expected_dir_contents_after=dir_contains_exactly(DirContents([
+                                        empty_dir('existing-directory')
+                                    ]))
                             ))
 
     def test_whole_argument_exists_as_directory__multiple_path_components(self):
         self._test_argument('first-component/second-component',
                             Check(
-                                dir_contents_before=DirContents([
-                                    Dir('first-component', [
-                                        empty_dir('second-component')
-                                    ])]),
-                                expected_action_result=is_success(),
+                                    dir_contents_before=DirContents([
+                                        Dir('first-component', [
+                                            empty_dir('second-component')
+                                        ])]),
+                                    expected_action_result=is_success(),
 
-                                expected_dir_contents_after=dir_contains_exactly(DirContents([
-                                    Dir('first-component', [
-                                        empty_dir('second-component')
-                                    ])
-                                ]))
+                                    expected_dir_contents_after=dir_contains_exactly(DirContents([
+                                        Dir('first-component', [
+                                            empty_dir('second-component')
+                                        ])
+                                    ]))
                             ))
 
     def test_initial_component_of_argument_exists_as_directory__multiple_path_components(self):
         self._test_argument('first-component-that-exists/second-component',
                             Check(
-                                dir_contents_before=DirContents([
-                                    Dir('first-component-that-exists', [
-                                        empty_dir('second-component')])
-                                ]),
-                                expected_action_result=is_success(),
-                                expected_dir_contents_after=dir_contains_exactly(DirContents([
-                                    Dir('first-component-that-exists', [
-                                        empty_dir('second-component')
-                                    ])
-                                ]))
+                                    dir_contents_before=DirContents([
+                                        Dir('first-component-that-exists', [
+                                            empty_dir('second-component')])
+                                    ]),
+                                    expected_action_result=is_success(),
+                                    expected_dir_contents_after=dir_contains_exactly(DirContents([
+                                        Dir('first-component-that-exists', [
+                                            empty_dir('second-component')
+                                        ])
+                                    ]))
                             ))
 
 
@@ -138,48 +137,43 @@ class TestFailingScenarios(TestCaseBase2):
     def test_argument_exists_as_non_directory__single_path_component(self):
         self._test_argument('file',
                             Check(
-                                dir_contents_before=DirContents([
-                                    empty_file('file')
-                                ]),
-                                expected_action_result=is_failure(),
+                                    dir_contents_before=DirContents([
+                                        empty_file('file')
+                                    ]),
+                                    expected_action_result=is_failure(),
                             ))
 
     def test_argument_exists_as_non_directory__multiple_path_components(self):
         self._test_argument('existing-dir/existing-file',
                             Check(
-                                dir_contents_before=DirContents([
-                                    Dir('existing-dir', [
-                                        empty_file('existing-file')
-                                    ])
-                                ]),
-                                expected_action_result=is_failure(),
+                                    dir_contents_before=DirContents([
+                                        Dir('existing-dir', [
+                                            empty_file('existing-file')
+                                        ])
+                                    ]),
+                                    expected_action_result=is_failure(),
                             ))
 
     def test_multi_path_component_with_middle_component_is_a_file(self):
         self._test_argument('existing-dir/existing-file/leaf-dir',
                             Check(
-                                dir_contents_before=DirContents([
-                                    Dir('existing-dir', [
-                                        empty_file('existing-file')
-                                    ])
-                                ]),
-                                expected_action_result=is_failure(),
+                                    dir_contents_before=DirContents([
+                                        Dir('existing-dir', [
+                                            empty_file('existing-file')
+                                        ])
+                                    ]),
+                                    expected_action_result=is_failure(),
                             ))
 
 
-class TestDescription(TestDescriptionBase):
-    def _description(self) -> Description:
-        return sut.TheDescription('instruction name')
-
-
-def suite():
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestParseSet))
-    ret_val.addTest(unittest.makeSuite(TestSuccessfulScenariosWithEmptyCwd))
-    ret_val.addTest(unittest.makeSuite(TestSuccessfulScenariosWithExistingDirectories))
-    ret_val.addTest(unittest.makeSuite(TestFailingScenarios))
-    ret_val.addTest(unittest.makeSuite(TestDescription))
-    return ret_val
+def suite() -> unittest.TestSuite:
+    return unittest.TestSuite([
+        unittest.makeSuite(TestParseSet),
+        unittest.makeSuite(TestSuccessfulScenariosWithEmptyCwd),
+        unittest.makeSuite(TestSuccessfulScenariosWithExistingDirectories),
+        unittest.makeSuite(TestFailingScenarios),
+        suite_for_description(sut.TheDescription('instruction name')),
+    ])
 
 
 if __name__ == '__main__':

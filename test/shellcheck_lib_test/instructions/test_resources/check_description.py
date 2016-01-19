@@ -1,8 +1,5 @@
 import unittest
 
-from shellcheck_lib.general.textformat.formatting import paragraph_item
-from shellcheck_lib.general.textformat.formatting import section
-from shellcheck_lib.general.textformat.formatting.wrapper import Wrapper
 from shellcheck_lib.test_case.instruction_description import Description, InvokationVariant, \
     SyntaxElementDescription
 from shellcheck_lib_test.general.textformat.test_resources import structure as struct_check
@@ -65,41 +62,6 @@ class TestSyntaxElementDescriptions(WithDescriptionBase):
     def runTest(self):
         actual = self.description.syntax_element_descriptions()
         va.every_element('', syntax_element_description_checker).apply(self, actual)
-
-
-class TestDescriptionBase(unittest.TestCase):
-    """
-    Tests a Description by rendering it with a Formatter
-    (under the assumption that the Formatter is working).
-    """
-
-    def _description(self) -> Description:
-        raise NotImplementedError()
-
-    def setUp(self):
-        self.formatter = section.Formatter(paragraph_item.Formatter(Wrapper(page_width=100)))
-        self.description = self._description()
-
-    def test_instruction_name(self):
-        actual = self.description.instruction_name()
-        self.assertIsInstance(actual, str)
-
-    def test_single_line_description(self):
-        actual = self.description.single_line_description()
-        self.assertIsInstance(actual, str)
-
-    def test_main_description_rest(self):
-        actual = self.description.main_description_rest()
-        struct_check.paragraph_item_list().apply(self, actual)
-
-    def test_invokation_variants(self):
-        actual = self.description.invokation_variants()
-        va.every_element('', is_invokation_variant).apply(self, actual)
-
-    def test_syntax_element_descriptions(self):
-        actual = self.description.syntax_element_descriptions()
-        va.every_element('', syntax_element_description_checker).apply(self, actual)
-
 
 is_invokation_variant = va.And([
     va.IsInstance(InvokationVariant),

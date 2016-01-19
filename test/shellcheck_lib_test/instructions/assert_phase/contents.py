@@ -4,7 +4,6 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
     SingleInstructionInvalidArgumentException, SingleInstructionParserSource
 from shellcheck_lib.instructions.assert_phase import contents as sut
 from shellcheck_lib.instructions.utils import relative_path_options as options
-from shellcheck_lib.test_case.instruction_description import Description
 from shellcheck_lib_test.instructions.assert_phase.test_resources import instruction_check
 from shellcheck_lib_test.instructions.assert_phase.test_resources.contents_resources import \
     ActResultProducerForContentsWithAllReplacedEnvVars, \
@@ -15,7 +14,7 @@ from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_ch
 from shellcheck_lib_test.instructions.test_resources import pfh_check
 from shellcheck_lib_test.instructions.test_resources import svh_check
 from shellcheck_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
-from shellcheck_lib_test.instructions.test_resources.check_description import TestDescriptionBase
+from shellcheck_lib_test.instructions.test_resources.check_description import suite_for_description
 from shellcheck_lib_test.test_resources.execution.eds_populator import act_dir_contents, tmp_user_dir_contents, \
     multiple
 from shellcheck_lib_test.test_resources.file_structure import DirContents, empty_file, empty_dir, File
@@ -353,25 +352,20 @@ class TestReplacedEnvVars(TestCaseBaseForParser):
         )
 
 
-class TestDescription(TestDescriptionBase):
-    def _description(self) -> Description:
-        return sut.TheDescription('instruction name')
-
-
-def suite():
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestParse))
-    ret_val.addTest(unittest.makeSuite(TestFileContentsEmptyInvalidSyntax))
-    ret_val.addTest(unittest.makeSuite(TestFileContentsEmptyValidSyntax))
-    ret_val.addTest(unittest.makeSuite(TestFileContentsNonEmptyInvalidSyntax))
-    ret_val.addTest(unittest.makeSuite(TestFileContentsNonEmptyValidSyntax))
-    ret_val.addTest(unittest.makeSuite(TestFileContentsFileRelHome))
-    ret_val.addTest(unittest.makeSuite(TestFileContentsFileRelCwd))
-    ret_val.addTest(unittest.makeSuite(TestFileContentsFileRelTmp))
-    ret_val.addTest(unittest.makeSuite(TestTargetFileRelTmp))
-    ret_val.addTest(unittest.makeSuite(TestReplacedEnvVars))
-    ret_val.addTest(unittest.makeSuite(TestDescription))
-    return ret_val
+def suite() -> unittest.TestSuite:
+    return unittest.TestSuite([
+        unittest.makeSuite(TestParse),
+        unittest.makeSuite(TestFileContentsEmptyInvalidSyntax),
+        unittest.makeSuite(TestFileContentsEmptyValidSyntax),
+        unittest.makeSuite(TestFileContentsNonEmptyInvalidSyntax),
+        unittest.makeSuite(TestFileContentsNonEmptyValidSyntax),
+        unittest.makeSuite(TestFileContentsFileRelHome),
+        unittest.makeSuite(TestFileContentsFileRelCwd),
+        unittest.makeSuite(TestFileContentsFileRelTmp),
+        unittest.makeSuite(TestTargetFileRelTmp),
+        unittest.makeSuite(TestReplacedEnvVars),
+        suite_for_description(sut.TheDescription('instruction name')),
+    ])
 
 
 if __name__ == '__main__':
