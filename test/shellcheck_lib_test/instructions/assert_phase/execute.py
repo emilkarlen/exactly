@@ -17,7 +17,7 @@ class TheConfiguration(AssertConfigurationBase, Configuration):
         return Expectation(validation_post_eds=svh_check.is_validation_error())
 
 
-def suite():
+def suite() -> unittest.TestSuite:
     return suite_for(TheConfiguration())
 
 

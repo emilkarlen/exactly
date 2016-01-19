@@ -1,3 +1,5 @@
+import unittest
+
 from shellcheck_lib.instructions.setup import new_dir as sut
 from shellcheck_lib.test_case.instruction_setup import SingleInstructionSetup
 from shellcheck_lib_test.instructions.multi_phase_instructions.test_resources.new_dir_instruction_test import \
@@ -15,5 +17,5 @@ class TheConfiguration(SetupConfigurationBase, Configuration):
         return Expectation(main_result=sh_check.IsHardError())
 
 
-def suite():
+def suite() -> unittest.TestSuite:
     return suite_for(TheConfiguration())

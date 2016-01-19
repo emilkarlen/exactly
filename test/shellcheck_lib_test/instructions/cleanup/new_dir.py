@@ -1,3 +1,5 @@
+import unittest
+
 from shellcheck_lib.instructions.cleanup import new_dir as sut
 from shellcheck_lib.test_case.instruction_setup import SingleInstructionSetup
 from shellcheck_lib_test.instructions.cleanup.test_resources.configuration import CleanupConfigurationBase
@@ -15,5 +17,5 @@ class TheConfiguration(CleanupConfigurationBase, Configuration):
         return Expectation(main_result=sh_check.IsHardError())
 
 
-def suite():
+def suite() -> unittest.TestSuite:
     return suite_for(TheConfiguration())

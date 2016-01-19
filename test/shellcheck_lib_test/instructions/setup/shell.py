@@ -7,7 +7,6 @@ from shellcheck_lib_test.instructions.multi_phase_instructions.test_resources.sh
 from shellcheck_lib_test.instructions.setup.test_resources.configuration import SetupConfigurationBase
 from shellcheck_lib_test.instructions.setup.test_resources.instruction_check import Expectation
 from shellcheck_lib_test.instructions.test_resources import sh_check
-from shellcheck_lib_test.instructions.test_resources.check_description import suite_for_description
 
 
 class TheConfiguration(SetupConfigurationBase, Configuration):
@@ -21,11 +20,8 @@ class TheConfiguration(SetupConfigurationBase, Configuration):
         return Expectation()
 
 
-def suite():
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(suite_for(TheConfiguration()))
-    ret_val.addTest(suite_for_description(sut.setup('instruction-name').description))
-    return ret_val
+def suite() -> unittest.TestSuite:
+    return suite_for(TheConfiguration())
 
 
 if __name__ == '__main__':

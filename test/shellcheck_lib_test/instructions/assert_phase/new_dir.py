@@ -1,3 +1,5 @@
+import unittest
+
 from shellcheck_lib.instructions.assert_phase import new_dir as sut
 from shellcheck_lib.test_case.instruction_setup import SingleInstructionSetup
 from shellcheck_lib_test.instructions.assert_phase.test_resources.configuration import AssertConfigurationBase
@@ -15,5 +17,5 @@ class TheConfiguration(AssertConfigurationBase, Configuration):
         return Expectation(main_result=pfh_check.is_hard_error())
 
 
-def suite():
+def suite() -> unittest.TestSuite:
     return suite_for(TheConfiguration())
