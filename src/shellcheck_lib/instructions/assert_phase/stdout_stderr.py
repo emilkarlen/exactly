@@ -25,7 +25,7 @@ def setup_for_stdout(instruction_name: str) -> SingleInstructionSetup:
 
 def setup_for_stderr(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(
-            ParserForContentsForStdout(),
+            ParserForContentsForStderr(),
             TheDescription(instruction_name, 'stderr'))
 
 

@@ -4,7 +4,7 @@ from shellcheck_lib.instructions.multi_phase_instructions import execute
 from shellcheck_lib.instructions.utils import sub_process_execution
 from shellcheck_lib.instructions.utils.pre_or_post_validation import PreOrPostEdsSvhValidationForSuccessOrHardError, \
     PreOrPostEdsSvhValidationErrorValidator
-from shellcheck_lib.test_case.instruction_description import Description
+from shellcheck_lib.test_case.instruction_setup import SingleInstructionSetup
 from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction, PreviousPhase
 from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
@@ -12,9 +12,11 @@ from shellcheck_lib.test_case.sections.result import sh
 from shellcheck_lib.test_case.sections.result import svh
 
 
-def description(instruction_name: str) -> Description:
-    return execute.TheDescription(instruction_name,
-                                  'Executes a program.')
+def setup(instruction_name: str) -> SingleInstructionSetup:
+    return SingleInstructionSetup(
+            parser(instruction_name),
+            execute.TheDescription(instruction_name,
+                                   'Executes a program.'))
 
 
 def parser(instruction_name: str) -> SingleInstructionParser:
