@@ -1,7 +1,40 @@
 -*- org -*-
 
+* TODO Testfalls layout, namngivning, etc
+** TODO Fas-namn i versaler för tydlig separation fas / instruktion
+Om faserna måste skrivas m versaler kan ev göra testfallen tydligare.
+
+Alternativt ska fasnamn vara skiftokänsliga.
+* TODO Byt namn: Anonymous -> Configuration
+* TODO Parser: alla faser namngivna + möjl att ange utgångsfas
+Ska inte längre finnas någon annonym fas.
+Istället ska alla faser ha ett namn.  Samt möjligheten att ange en av faserna
+som utgångsfas.
+* TODO Bugg m --interpreter
+
+Testfall:
+----------
+[act]
+
+import sys
+sys.exit(1)
+
+[assert]
+
+exitcode 1
+----------
+
+Kör: --interpreter /usr/bin/python3
+Får:
+----------
+INTERNAL_ERROR
+Exception:
+comment_lines() missing 1 required positional argument: 'lines'
+----------
 * TODO [#A] Ändring av miljövariabler får inte störa andra test-fall i en svit
 * TODO [#A] timeout för programmet i act-fasen
+* TODO timeout för instruktioner som kör subprocesser
+subprocess.call(timeout=...)
 * TODO Test av default main-program som kör enkelt testfall
 Idag finns inget test som kör default-setuppen m default act-phase-executor.
 
@@ -97,7 +130,7 @@ Skulle t ex kunna finnas i InstructionWithStdValidation:
 En fördel är att det gör det möjligt att "typ-säkert" återanvända
 steg-exkeverare (de som partial_execution använder för att köra steg).
 
-* TODO [#A] <2016-01-08 fre> Test av exekverings-sekvens
+* DONE <2016-01-08 fre> Test av exekverings-sekvens
 För att testa felhantering måste de faser där felet uppstår ha en instruktion
 efter den som orsakar felet.
 Annars testas det inte att fasen avbryts direkt vid instruktions-fel.
@@ -237,8 +270,6 @@ Ev ska varje klass explicit ärva object för att vara en py-3-klass.
 Verkar så.  Väldigt dåligt i så fall.  Måste ändras.
 ** TODO stdout, stderr
 Skriv dessa till fil pss som görs för execute.
-* TODO timeout för instruktioner som kör subprocesser
-subprocess.call(timeout=...)
 * TODO tmp-filer för instruktioner
 Bör införa hjälpfunktion för att skapa tmp-filer för instruktioner.
 Nu: contents/stdout/stderr: Ser själva till att lägga tmp-fil i
