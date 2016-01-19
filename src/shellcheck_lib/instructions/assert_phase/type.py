@@ -9,10 +9,18 @@ from shellcheck_lib.instructions.utils.file_ref_check import pre_or_post_eds_fai
 from shellcheck_lib.instructions.utils.parse_utils import split_arguments_list_string, ensure_is_not_option_argument
 from shellcheck_lib.test_case.instruction_description import InvokationVariant, Description, \
     SyntaxElementDescription
+from shellcheck_lib.test_case.instruction_setup import SingleInstructionSetup
 from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.sections import common as i
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
 from shellcheck_lib.test_case.sections.result import pfh
+
+
+def setup(instruction_name: str) -> SingleInstructionSetup:
+    return SingleInstructionSetup(
+            Parser(),
+            TheDescription(instruction_name))
+
 
 FILE_TYPES = {
     "symlink": FileType.SYMLINK,
