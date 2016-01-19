@@ -5,8 +5,15 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
 from shellcheck_lib.general.textformat.structure.paragraph import single_para
 from shellcheck_lib.instructions.utils.parse_utils import split_arguments_list_string
 from shellcheck_lib.test_case.instruction_description import InvokationVariant, Description
+from shellcheck_lib.test_case.instruction_setup import SingleInstructionSetup
 from shellcheck_lib.test_case.sections.anonymous import AnonymousPhaseInstruction, ConfigurationBuilder
 from shellcheck_lib.test_case.sections.result import sh
+
+
+def setup(instruction_name: str) -> SingleInstructionSetup:
+    return SingleInstructionSetup(
+            Parser(),
+            TheDescription(instruction_name))
 
 
 class TheDescription(Description):
