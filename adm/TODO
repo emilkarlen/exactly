@@ -1,5 +1,9 @@
 -*- org -*-
 
+* TODO __main__ ska köra run_suite (inte unittest.main())
+<2016-01-19 tis>
+if __name__ == '__main__':
+    unittest.main()
 * TODO [#A] Ändring av miljövariabler får inte störa andra test-fall i en svit
 * TODO [#A] timeout för programmet i act-fasen
 * TODO Test av default main-program som kör enkelt testfall
