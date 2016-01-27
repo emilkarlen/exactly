@@ -12,7 +12,8 @@ from shellcheck_lib.execution.phases import PhaseEnum
 from shellcheck_lib.execution.result import PartialResult
 from shellcheck_lib.general.functional import Composition
 from shellcheck_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that, \
-    before_assert_phase_instruction_that, assert_phase_instruction_that, cleanup_phase_instruction_that
+    before_assert_phase_instruction_that, assert_phase_instruction_that, cleanup_phase_instruction_that, \
+    act_phase_instruction_that
 from shellcheck_lib_test.execution.test_resources.test_case_generation import TestCaseGeneratorBase, \
     instruction_line_constructor
 
@@ -83,6 +84,10 @@ class TestCaseWithCommonDefaultInstructions(TestCaseGeneratorForPartialExecution
     def _setup_phase(self) -> list:
         return self._phase_elements(lambda main: setup_phase_instruction_that(main=main),
                                     PhaseEnum.SETUP)
+
+    def _act_phase(self) -> list:
+        return self._phase_elements(lambda main: act_phase_instruction_that(main=main),
+                                    PhaseEnum.ACT)
 
     def _before_assert_phase(self) -> list:
         return self._phase_elements(lambda main: before_assert_phase_instruction_that(main=main),
