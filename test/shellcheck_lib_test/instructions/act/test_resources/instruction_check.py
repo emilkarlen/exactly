@@ -1,5 +1,6 @@
 import unittest
 
+from shellcheck_lib.execution import phases
 from shellcheck_lib.script_language.standard_script_language import StandardScriptLanguage
 from shellcheck_lib.test_case.os_services import OsServices, new_default
 from shellcheck_lib.test_case.sections import common as i
@@ -113,7 +114,8 @@ class Executor(InstructionExecutionBase):
             if not validate_result.is_success:
                 return
             environment = i.GlobalEnvironmentForPostEdsPhase(home_and_eds.home_dir_path,
-                                                             home_and_eds.eds)
+                                                             home_and_eds.eds,
+                                                             phases.ACT.identifier)
             validate_result = self._execute_validate_post_setup(environment, instruction)
             if not validate_result.is_success:
                 return

@@ -3,6 +3,7 @@ import unittest
 
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, SingleInstructionParserSource
+from shellcheck_lib.execution import phases
 from shellcheck_lib.test_case.os_services import OsServices, new_default
 from shellcheck_lib.test_case.sections import common as i
 from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction, PreviousPhase
@@ -88,7 +89,8 @@ class Executor(InstructionExecutionToBeReplacedByVaBase):
             if not result_of_validate_pre_eds.is_success:
                 return
             environment = i.GlobalEnvironmentForPostEdsPhase(home_and_eds.home_dir_path,
-                                                             home_and_eds.eds)
+                                                             home_and_eds.eds,
+                                                             phases.CLEANUP.identifier)
             self._execute_main(environment, instruction)
             self.expectation.main_side_effects_on_files.apply(self.put, environment.eds)
             self.expectation.side_effects_check.apply(self.put, home_and_eds)

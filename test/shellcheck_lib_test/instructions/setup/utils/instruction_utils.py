@@ -30,7 +30,7 @@ class TestValidationShouldBeInPreValidateIfFileDoesExistPreEds(unittest.TestCase
             pre_validate = instruction.validate_pre_eds(GlobalEnvironmentForPreEdsStep(home_and_eds.home_dir_path))
             self.assertTrue(pre_validate.is_success)
 
-            post_validate = instruction.validate_post_setup(env_from(home_and_eds))
+            post_validate = instruction.validate_post_setup(_env_from(home_and_eds))
             self.assertTrue(post_validate.is_success)
 
     def test_unsuccessful_validation(self):
@@ -40,7 +40,7 @@ class TestValidationShouldBeInPreValidateIfFileDoesExistPreEds(unittest.TestCase
             pre_validate = instruction.validate_pre_eds(GlobalEnvironmentForPreEdsStep(home_and_eds.home_dir_path))
             self.assertFalse(pre_validate.is_success)
 
-            post_validate = instruction.validate_post_setup(env_from(home_and_eds))
+            post_validate = instruction.validate_post_setup(_env_from(home_and_eds))
             self.assertTrue(post_validate.is_success)
 
 
@@ -52,7 +52,7 @@ class TestValidationShouldBeInPostValidateIfFileDoesNotExistPreEds(unittest.Test
             pre_validate = instruction.validate_pre_eds(GlobalEnvironmentForPreEdsStep(home_and_eds.home_dir_path))
             self.assertTrue(pre_validate.is_success)
 
-            post_validate = instruction.validate_post_setup(env_from(home_and_eds))
+            post_validate = instruction.validate_post_setup(_env_from(home_and_eds))
             self.assertTrue(post_validate.is_success)
 
     def test_unsuccessful_validation(self):
@@ -62,13 +62,14 @@ class TestValidationShouldBeInPostValidateIfFileDoesNotExistPreEds(unittest.Test
             pre_validate = instruction.validate_pre_eds(GlobalEnvironmentForPreEdsStep(home_and_eds.home_dir_path))
             self.assertTrue(pre_validate.is_success)
 
-            post_validate = instruction.validate_post_setup(env_from(home_and_eds))
+            post_validate = instruction.validate_post_setup(_env_from(home_and_eds))
             self.assertFalse(post_validate.is_success)
 
 
-def env_from(home_and_eds: HomeAndEds) -> GlobalEnvironmentForPostEdsPhase:
+def _env_from(home_and_eds: HomeAndEds) -> GlobalEnvironmentForPostEdsPhase:
     return GlobalEnvironmentForPostEdsPhase(home_and_eds.home_dir_path,
-                                            home_and_eds.eds)
+                                            home_and_eds.eds,
+                                            'phase-identifier')
 
 
 def suite():

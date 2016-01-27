@@ -34,9 +34,11 @@ class GlobalEnvironmentForPreEdsStep:
 class GlobalEnvironmentForPostEdsPhase(GlobalEnvironmentForPreEdsStep):
     def __init__(self,
                  home_dir: pathlib.Path,
-                 eds: ExecutionDirectoryStructure):
+                 eds: ExecutionDirectoryStructure,
+                 phase_identifier: str):
         super().__init__(home_dir)
         self.__eds = eds
+        self.phase_identifier = phase_identifier
 
     @property
     def execution_directory_structure(self) -> ExecutionDirectoryStructure:

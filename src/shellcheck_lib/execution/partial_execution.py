@@ -189,7 +189,7 @@ class PartialExecutor:
         if res.status is not PartialResultStatus.PASS:
             return res
         self.__construct_and_set_eds()
-        self.__set_post_eds_environment()
+        self.__set_post_eds_environment('phase-identifier')
         os_services = new_default()
         self.__set_cwd_to_act_dir()
         self.__set_post_eds_environment_variables()
@@ -445,9 +445,11 @@ class PartialExecutor:
         eds_structure_root = tempfile.mkdtemp(prefix=self.__configuration.execution_directory_root_name_prefix)
         self.__execution_directory_structure = construct_eds(eds_structure_root)
 
-    def __set_post_eds_environment(self):
+    def __set_post_eds_environment(self,
+                                   phase_identifier: str):
         self.__global_environment = common.GlobalEnvironmentForPostEdsPhase(self.__configuration.home_dir,
-                                                                            self.__execution_directory_structure)
+                                                                            self.__execution_directory_structure,
+                                                                            phase_identifier)
 
     def __set_post_eds_environment_variables(self):
         os.environ.update(environment_variables.set_at_setup_main(self._eds))
