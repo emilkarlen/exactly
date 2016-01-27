@@ -8,6 +8,7 @@ from time import strftime, localtime
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, SingleInstructionParserSource
 from shellcheck_lib.execution import execution_directory_structure
+from shellcheck_lib.execution import phases
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.test_case.os_services import new_default, OsServices
 from shellcheck_lib.test_case.sections import common as i
@@ -106,7 +107,8 @@ class Executor:
                     eds = execution_directory_structure.construct_at(eds_root_dir_name)
                     os.chdir(str(eds.act_dir))
                     global_environment_with_eds = i.GlobalEnvironmentForPostEdsPhase(home_dir_path,
-                                                                                     eds)
+                                                                                     eds,
+                                                                                     phases.SETUP.identifier)
                     main_result = self._execute_main(eds, global_environment_with_eds, instruction)
                     if not main_result.is_success:
                         return
