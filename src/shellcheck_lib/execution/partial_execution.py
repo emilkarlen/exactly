@@ -161,7 +161,7 @@ class PartialExecutor:
                  script_handling: ScriptHandling,
                  test_case: TestCase):
         self.__execution_directory_structure = None
-        self.__global_environment = GlobalEnvironmentForPreEdsStep(configuration.home_dir)
+        self.__global_environment_pre_eds = GlobalEnvironmentForPreEdsStep(configuration.home_dir)
         self.__script_handling = script_handling
         self.__test_case = test_case
         self.__configuration = configuration
@@ -189,7 +189,6 @@ class PartialExecutor:
         if res.status is not PartialResultStatus.PASS:
             return res
         self.__construct_and_set_eds()
-        self.__set_post_eds_environment('phase-identifier')
         os_services = new_default()
         self.__set_cwd_to_act_dir()
         self.__set_post_eds_environment_variables()
@@ -245,10 +244,6 @@ class PartialExecutor:
     def configuration(self) -> Configuration:
         return self.__configuration
 
-    @property
-    def global_environment(self) -> common.GlobalEnvironmentForPostEdsPhase:
-        return self.__global_environment
-
     def _store_exit_code(self, exitcode: int):
         with open(str(self._eds.result.exitcode_file), 'w') as f:
             f.write(str(exitcode))
@@ -256,31 +251,31 @@ class PartialExecutor:
     def __setup__validate_pre_eds(self) -> PartialResult:
         return self.__run_internal_instructions_phase_step(phase_step.SETUP__VALIDATE_PRE_EDS,
                                                            phase_step_executors.SetupValidatePreEdsExecutor(
-                                                                   self.__global_environment),
+                                                                   self.__global_environment_pre_eds),
                                                            self.__test_case.setup_phase)
 
     def __act__validate_pre_eds(self) -> PartialResult:
         return self.__run_internal_instructions_phase_step(phase_step.ACT__VALIDATE_PRE_EDS,
                                                            phase_step_executors.ActValidatePreEdsExecutor(
-                                                                   self.__global_environment),
+                                                                   self.__global_environment_pre_eds),
                                                            self.__test_case.act_phase)
 
     def __before_assert__validate_pre_eds(self) -> PartialResult:
         return self.__run_internal_instructions_phase_step(
                 phase_step.BEFORE_ASSERT__VALIDATE_PRE_EDS,
-                phase_step_executors.BeforeAssertValidatePreEdsExecutor(self.__global_environment),
+                phase_step_executors.BeforeAssertValidatePreEdsExecutor(self.__global_environment_pre_eds),
                 self.__test_case.before_assert_phase)
 
     def __assert__validate_pre_eds(self) -> PartialResult:
         return self.__run_internal_instructions_phase_step(phase_step.ASSERT__VALIDATE_PRE_EDS,
                                                            phase_step_executors.AssertValidatePreEdsExecutor(
-                                                                   self.__global_environment),
+                                                                   self.__global_environment_pre_eds),
                                                            self.__test_case.assert_phase)
 
     def __cleanup__validate_pre_eds(self) -> PartialResult:
         return self.__run_internal_instructions_phase_step(phase_step.CLEANUP__VALIDATE_PRE_EDS,
                                                            phase_step_executors.CleanupValidatePreEdsExecutor(
-                                                                   self.__global_environment),
+                                                                   self.__global_environment_pre_eds),
                                                            self.__test_case.cleanup_phase)
 
     def __setup__main(self, os_services: OsServices) -> PartialResult:
@@ -288,7 +283,7 @@ class PartialExecutor:
         ret_val = self.__run_internal_instructions_phase_step(phase_step.SETUP__MAIN,
                                                               phase_step_executors.SetupMainExecutor(
                                                                       os_services,
-                                                                      self.__global_environment,
+                                                                      self.__post_eds_environment(phases.SETUP),
                                                                       setup_settings_builder),
                                                               self.__test_case.setup_phase)
         self.___step_execution_result.stdin_settings = setup_settings_builder.stdin
@@ -299,14 +294,14 @@ class PartialExecutor:
         return self.__run_internal_instructions_phase_step(
                 phase_step.SETUP__VALIDATE_POST_SETUP,
                 phase_step_executors.SetupValidatePostSetupExecutor(
-                        self.__global_environment),
+                        self.__post_eds_environment(phases.SETUP)),
                 self.__test_case.setup_phase)
 
     def __act__validate_post_setup(self) -> PartialResult:
         return self.__run_internal_instructions_phase_step(
                 phase_step.ACT__VALIDATE_POST_SETUP,
                 phase_step_executors.ActValidatePostSetupExecutor(
-                        self.__global_environment),
+                        self.__post_eds_environment(phases.ACT)),
                 self.__test_case.act_phase)
 
     def __act__script_generation(self) -> PartialResult:
@@ -322,7 +317,7 @@ class PartialExecutor:
                 self.__test_case.act_phase,
                 _ActCommentHeaderExecutor(environment),
                 _ActInstructionHeaderExecutor(environment),
-                phase_step_executors.ActMainExecutor(self.__global_environment,
+                phase_step_executors.ActMainExecutor(self.__post_eds_environment(phases.ACT),
                                                      environment),
                 phase_step.ACT__MAIN,
                 self._eds)
@@ -351,21 +346,21 @@ class PartialExecutor:
         return self.__run_internal_instructions_phase_step(
                 phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
                 phase_step_executors.BeforeAssertValidatePostSetupExecutor(
-                        self.__global_environment),
+                        self.__post_eds_environment(phases.BEFORE_ASSERT)),
                 self.__test_case.before_assert_phase)
 
     def __assert__validate_post_setup(self) -> PartialResult:
         return self.__run_internal_instructions_phase_step(
                 phase_step.ASSERT__VALIDATE_POST_SETUP,
                 phase_step_executors.AssertValidatePostSetupExecutor(
-                        self.__global_environment),
+                        self.__post_eds_environment(phases.ASSERT)),
                 self.__test_case.assert_phase)
 
     def __assert__main(self, phase_env) -> PartialResult:
         return self.__run_internal_instructions_phase_step(
                 phase_step.ASSERT__MAIN,
                 phase_step_executors.AssertMainExecutor(
-                        self.__global_environment,
+                        self.__post_eds_environment(phases.ASSERT),
                         phase_env),
                 self.__test_case.assert_phase)
 
@@ -373,7 +368,7 @@ class PartialExecutor:
         return self.__run_internal_instructions_phase_step(
                 phase_step.CLEANUP__MAIN,
                 phase_step_executors.CleanupMainExecutor(
-                        self.__global_environment,
+                        self.__post_eds_environment(phases.CLEANUP),
                         previous_phase,
                         os_services),
                 self.__test_case.cleanup_phase)
@@ -382,7 +377,7 @@ class PartialExecutor:
         return self.__run_internal_instructions_phase_step(
                 phase_step.BEFORE_ASSERT__MAIN,
                 phase_step_executors.BeforeAssertMainExecutor(
-                        self.__global_environment,
+                        self.__post_eds_environment(phases.BEFORE_ASSERT),
                         os_services),
                 self.__test_case.before_assert_phase)
 
@@ -445,11 +440,11 @@ class PartialExecutor:
         eds_structure_root = tempfile.mkdtemp(prefix=self.__configuration.execution_directory_root_name_prefix)
         self.__execution_directory_structure = construct_eds(eds_structure_root)
 
-    def __set_post_eds_environment(self,
-                                   phase_identifier: str):
-        self.__global_environment = common.GlobalEnvironmentForPostEdsPhase(self.__configuration.home_dir,
-                                                                            self.__execution_directory_structure,
-                                                                            phase_identifier)
+    def __post_eds_environment(self,
+                               phase: phases.Phase) -> common.GlobalEnvironmentForPostEdsPhase:
+        return common.GlobalEnvironmentForPostEdsPhase(self.__configuration.home_dir,
+                                                       self.__execution_directory_structure,
+                                                       phase.identifier)
 
     def __set_post_eds_environment_variables(self):
         os.environ.update(environment_variables.set_at_setup_main(self._eds))

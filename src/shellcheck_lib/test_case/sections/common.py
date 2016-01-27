@@ -2,7 +2,7 @@ import pathlib
 
 from shellcheck_lib.document.model import Instruction
 from shellcheck_lib.execution import execution_directory_structure as eds_module
-from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
+from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure, log_phase_dir
 
 
 class HomeAndEds:
@@ -52,6 +52,10 @@ class GlobalEnvironmentForPostEdsPhase(GlobalEnvironmentForPreEdsStep):
     def home_and_eds(self) -> HomeAndEds:
         return HomeAndEds(self.home_directory,
                           self.eds)
+
+    @property
+    def phase_log_dir(self) -> pathlib.Path:
+        return log_phase_dir(self.__eds, self.phase_identifier)
 
 
 class TestCaseInstruction(Instruction):
