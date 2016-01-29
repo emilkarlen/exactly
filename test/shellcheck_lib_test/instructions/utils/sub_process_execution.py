@@ -25,7 +25,7 @@ sys.exit(%d)
                 DirContents([
                     File('program.py', py_pgm_that_exits_with_exit_code)
                 ]))) as eds:
-            executor = sut.ExecutorThatLogsResultUnderPhaseDir()
+            executor = sut.ExecutorThatLogsResultUnderPhaseDir(False)
             result = executor.apply(self.source_info,
                                     eds,
                                     py_exe.args_for_interpreting(eds.act_dir / 'program.py'))
@@ -37,7 +37,7 @@ sys.exit(%d)
 
     def test_invalid_executable(self):
         with execution_directory_structure() as eds:
-            executor = sut.ExecutorThatLogsResultUnderPhaseDir()
+            executor = sut.ExecutorThatLogsResultUnderPhaseDir(False)
             result = executor.apply(self.source_info,
                                     eds,
                                     [str(eds.act_dir / 'non-existing-program')])
@@ -59,7 +59,7 @@ sys.exit(%d)
                 DirContents([
                     File('program.py', py_pgm_that_prints_and_exits_with_exit_code)
                 ]))) as eds:
-            executor = sut.ExecutorThatLogsResultUnderPhaseDir()
+            executor = sut.ExecutorThatLogsResultUnderPhaseDir(False)
             result = executor.apply(self.source_info,
                                     eds,
                                     py_exe.args_for_interpreting(eds.act_dir / 'program.py'))
