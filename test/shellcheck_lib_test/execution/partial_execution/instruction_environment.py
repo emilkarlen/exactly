@@ -56,7 +56,7 @@ class TestCaseThatRecordsLogDirPerPhase(TestCaseWithCommonDefaultInstructions):
         ]
 
     def _recording_function(self, phase: PhaseEnum, environment: GlobalEnvironmentForPostEdsPhase, *args):
-        self.recorder[phase] = environment.phase_log_dir
+        self.recorder[phase] = environment.phase_logging.dir_path
         if phase == PhaseEnum.ACT:
             return sh.new_sh_success()
         if phase == PhaseEnum.ASSERT:
