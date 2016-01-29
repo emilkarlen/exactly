@@ -31,6 +31,17 @@ class GlobalEnvironmentForPreEdsStep:
         return self.__home_dir
 
 
+class PhaseLogging:
+    def __init__(self,
+                 eds: ExecutionDirectoryStructure,
+                 phase_identifier: str):
+        self._phase_dir_path = log_phase_dir(eds, phase_identifier)
+
+    @property
+    def dir_path(self) -> pathlib.Path:
+        return self._phase_dir_path
+
+
 class GlobalEnvironmentForPostEdsPhase(GlobalEnvironmentForPreEdsStep):
     def __init__(self,
                  home_dir: pathlib.Path,
@@ -38,7 +49,7 @@ class GlobalEnvironmentForPostEdsPhase(GlobalEnvironmentForPreEdsStep):
                  phase_identifier: str):
         super().__init__(home_dir)
         self.__eds = eds
-        self.phase_identifier = phase_identifier
+        self._phase_logging = PhaseLogging(eds, phase_identifier)
 
     @property
     def execution_directory_structure(self) -> ExecutionDirectoryStructure:
@@ -54,8 +65,8 @@ class GlobalEnvironmentForPostEdsPhase(GlobalEnvironmentForPreEdsStep):
                           self.eds)
 
     @property
-    def phase_log_dir(self) -> pathlib.Path:
-        return log_phase_dir(self.__eds, self.phase_identifier)
+    def phase_logging(self) -> PhaseLogging:
+        return self._phase_logging
 
 
 class TestCaseInstruction(Instruction):
