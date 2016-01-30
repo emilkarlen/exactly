@@ -1,10 +1,10 @@
 from shellcheck_lib.document.model import PhaseContents, ElementType
-from shellcheck_lib.test_case.sections.act.instruction import ActPhaseInstruction
-from shellcheck_lib.test_case.sections.anonymous import AnonymousPhaseInstruction
-from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
-from shellcheck_lib.test_case.sections.before_assert import BeforeAssertPhaseInstruction
-from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction
-from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction
+from shellcheck_lib.test_case.phases.act.instruction import ActPhaseInstruction
+from shellcheck_lib.test_case.phases.anonymous import AnonymousPhaseInstruction
+from shellcheck_lib.test_case.phases.assert_ import AssertPhaseInstruction
+from shellcheck_lib.test_case.phases.before_assert import BeforeAssertPhaseInstruction
+from shellcheck_lib.test_case.phases.cleanup import CleanupPhaseInstruction
+from shellcheck_lib.test_case.phases.setup import SetupPhaseInstruction
 
 
 class TestCase(tuple):

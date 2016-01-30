@@ -3,9 +3,9 @@ import types
 
 from shellcheck_lib.execution.phase_step import PhaseStep
 from shellcheck_lib.test_case import test_case_doc
-from shellcheck_lib.test_case.sections.result import pfh
-from shellcheck_lib.test_case.sections.result import sh
-from shellcheck_lib.test_case.sections.result import svh
+from shellcheck_lib.test_case.phases.result import pfh
+from shellcheck_lib.test_case.phases.result import sh
+from shellcheck_lib.test_case.phases.result import svh
 from shellcheck_lib_test.execution.test_resources import instruction_that_do_and_return
 
 

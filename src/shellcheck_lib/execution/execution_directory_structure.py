@@ -137,6 +137,11 @@ def stdin_contents_file(eds: ExecutionDirectoryStructure) -> Path:
     return eds.tmp.internal_dir / TMP_INTERNAL__STDIN_CONTENTS
 
 
-def log_phase_dir(eds: ExecutionDirectoryStructure,
+def eds_log_phase_dir(eds: ExecutionDirectoryStructure,
+                      phase_name: str) -> Path:
+    return log_phase_dir(eds.log_dir, phase_name)
+
+
+def log_phase_dir(log_root_dir: Path,
                   phase_name: str) -> Path:
-    return eds.log_dir / LOG__PHASE_SUB_DIR / phase_name
+    return log_root_dir / LOG__PHASE_SUB_DIR / phase_name

@@ -5,7 +5,7 @@ from shellcheck_lib.execution.phase_step_execution import Failure, ElementHeader
 from shellcheck_lib.execution.single_instruction_executor import ControlledInstructionExecutor, \
     PartialInstructionControlledFailureInfo
 from shellcheck_lib.general import line_source
-from shellcheck_lib.test_case.sections.common import TestCaseInstruction
+from shellcheck_lib.test_case.phases.common import TestCaseInstruction
 from shellcheck_lib_test.document.test_resources import assert_equals_line
 from shellcheck_lib_test.test_resources.expected_instruction_failure import ExpectedFailureDetails
 

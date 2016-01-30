@@ -6,7 +6,7 @@ from shellcheck_lib.execution import environment_variables
 from shellcheck_lib.execution import phase_step_executors, partial_execution, phase_step
 from shellcheck_lib.execution.partial_execution import ScriptHandling
 from shellcheck_lib.test_case import test_case_doc
-from shellcheck_lib.test_case.sections.anonymous import ConfigurationBuilder, ExecutionMode
+from shellcheck_lib.test_case.phases.anonymous import ConfigurationBuilder, ExecutionMode
 from . import phase_step_execution
 from . import result
 from .result import FullResult, PartialResult, PartialResultStatus, FullResultStatus

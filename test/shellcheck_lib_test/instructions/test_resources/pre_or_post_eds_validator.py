@@ -2,7 +2,7 @@ import types
 import unittest
 
 from shellcheck_lib.instructions.utils.pre_or_post_validation import PreOrPostEdsValidator
-from shellcheck_lib.test_case.sections.common import HomeAndEds
+from shellcheck_lib.test_case.phases.common import HomeAndEds
 
 
 def check(put: unittest.TestCase,

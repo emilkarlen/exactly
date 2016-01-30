@@ -1,7 +1,7 @@
 import enum
 import pathlib
 
-from shellcheck_lib.test_case.sections.act.phase_setup import ActPhaseSetup
+from shellcheck_lib.test_case.phases.act.phase_setup import ActPhaseSetup
 from shellcheck_lib.test_case.test_case_processing import Preprocessor
 
 

@@ -3,7 +3,7 @@ from shellcheck_lib.act_phase_setups import single_command_setup
 from shellcheck_lib.act_phase_setups.script_language_setup import new_for_script_language_setup
 from shellcheck_lib.script_language import standard_script_language
 from shellcheck_lib.script_language.script_language_management import ScriptLanguageSetup
-from shellcheck_lib.test_case.sections.act.phase_setup import ActPhaseSetup
+from shellcheck_lib.test_case.phases.act.phase_setup import ActPhaseSetup
 
 INTERPRETER_FOR_TEST = 'test-language'
 

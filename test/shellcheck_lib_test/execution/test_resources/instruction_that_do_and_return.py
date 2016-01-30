@@ -4,17 +4,17 @@ from pathlib import Path
 from shellcheck_lib.document import model
 from shellcheck_lib.execution import phases, phase_step
 from shellcheck_lib.execution.phase_step import PhaseStep
-from shellcheck_lib.test_case.sections import common as i
-from shellcheck_lib.test_case.sections.act.instruction import PhaseEnvironmentForScriptGeneration, ActPhaseInstruction
-from shellcheck_lib.test_case.sections.anonymous import ConfigurationBuilder, \
+from shellcheck_lib.test_case.phases import common as i
+from shellcheck_lib.test_case.phases.act.instruction import PhaseEnvironmentForScriptGeneration, ActPhaseInstruction
+from shellcheck_lib.test_case.phases.anonymous import ConfigurationBuilder, \
     AnonymousPhaseInstruction
-from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
-from shellcheck_lib.test_case.sections.before_assert import BeforeAssertPhaseInstruction
-from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction
-from shellcheck_lib.test_case.sections.result import pfh
-from shellcheck_lib.test_case.sections.result import sh
-from shellcheck_lib.test_case.sections.result import svh
-from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction
+from shellcheck_lib.test_case.phases.assert_ import AssertPhaseInstruction
+from shellcheck_lib.test_case.phases.before_assert import BeforeAssertPhaseInstruction
+from shellcheck_lib.test_case.phases.cleanup import CleanupPhaseInstruction
+from shellcheck_lib.test_case.phases.result import pfh
+from shellcheck_lib.test_case.phases.result import sh
+from shellcheck_lib.test_case.phases.result import svh
+from shellcheck_lib.test_case.phases.setup import SetupPhaseInstruction
 from shellcheck_lib_test.execution.full_execution.test_resources.test_case_generator import \
     TestCaseGeneratorForFullExecutionBase
 from shellcheck_lib_test.execution.test_resources import python_code_gen as py

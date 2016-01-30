@@ -4,8 +4,8 @@ import types
 from shellcheck_lib.document.parse import SectionElementParser
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.general.std import StdFiles
-from shellcheck_lib.test_case.sections.act.script_source import ScriptSourceAccumulator, ScriptSourceBuilder
-from shellcheck_lib.test_case.sections.result import svh
+from shellcheck_lib.test_case.phases.act.script_source import ScriptSourceAccumulator, ScriptSourceBuilder
+from shellcheck_lib.test_case.phases.result import svh
 
 
 class PhaseEnvironmentForScriptGeneration:

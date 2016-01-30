@@ -5,9 +5,9 @@ from shellcheck_lib.execution import phases
 from shellcheck_lib.general import line_source
 from shellcheck_lib.test_case import test_case_doc
 from shellcheck_lib.test_case.instruction_setup import InstructionsSetup
-from shellcheck_lib.test_case.sections import common
-from shellcheck_lib.test_case.sections.act.instruction import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
-from shellcheck_lib.test_case.sections.result import sh
+from shellcheck_lib.test_case.phases import common
+from shellcheck_lib.test_case.phases.act.instruction import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
+from shellcheck_lib.test_case.phases.result import sh
 
 
 class Parser:
