@@ -4,3 +4,4 @@ __pycache__
 .idea/workspace.xml
 *.vpp~*
 test/shellcheck_lib_test/tmp/
+.idea/shelf/
