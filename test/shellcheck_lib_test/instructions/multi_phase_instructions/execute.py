@@ -22,7 +22,9 @@ class ExecuteAction(home_and_eds_test.Action):
 
     def apply(self,
               home_and_eds: HomeAndEds) -> ResultAndStderr:
-        return sut.run(self.setup, home_and_eds, PhaseLoggingPaths(home_and_eds.eds, 'the-phase'))
+        return sut.run(self.setup,
+                       home_and_eds,
+                       PhaseLoggingPaths(home_and_eds.eds.log_dir, 'the-phase'))
 
 
 class TestCaseBase(home_and_eds_test.TestCaseBase):

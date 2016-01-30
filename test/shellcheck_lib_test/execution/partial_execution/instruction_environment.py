@@ -3,7 +3,7 @@ import unittest
 
 from shellcheck_lib.execution import partial_execution as sut
 from shellcheck_lib.execution import phases
-from shellcheck_lib.execution.execution_directory_structure import log_phase_dir
+from shellcheck_lib.execution.execution_directory_structure import eds_log_phase_dir
 from shellcheck_lib.execution.phases import PhaseEnum
 from shellcheck_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase
 from shellcheck_lib.test_case.phases.result import pfh
@@ -30,11 +30,11 @@ def log_dir_is_correct_for_each_phase(recordings: dict,
     put.assertFalse(actual.partial_result.is_failure)
     eds = actual.execution_directory_structure
     expected = {
-        PhaseEnum.SETUP: log_phase_dir(eds, phases.SETUP.identifier),
-        PhaseEnum.ACT: log_phase_dir(eds, phases.ACT.identifier),
-        PhaseEnum.BEFORE_ASSERT: log_phase_dir(eds, phases.BEFORE_ASSERT.identifier),
-        PhaseEnum.ASSERT: log_phase_dir(eds, phases.ASSERT.identifier),
-        PhaseEnum.CLEANUP: log_phase_dir(eds, phases.CLEANUP.identifier),
+        PhaseEnum.SETUP: eds_log_phase_dir(eds, phases.SETUP.identifier),
+        PhaseEnum.ACT: eds_log_phase_dir(eds, phases.ACT.identifier),
+        PhaseEnum.BEFORE_ASSERT: eds_log_phase_dir(eds, phases.BEFORE_ASSERT.identifier),
+        PhaseEnum.ASSERT: eds_log_phase_dir(eds, phases.ASSERT.identifier),
+        PhaseEnum.CLEANUP: eds_log_phase_dir(eds, phases.CLEANUP.identifier),
     }
     put.assertDictEqual(expected,
                         recordings,

@@ -35,9 +35,9 @@ class PhaseLoggingPaths:
     line_number_format = '%03d'
 
     def __init__(self,
-                 eds: ExecutionDirectoryStructure,
+                 log_root_dir: pathlib.Path,
                  phase_identifier: str):
-        self._phase_dir_path = log_phase_dir(eds, phase_identifier)
+        self._phase_dir_path = log_phase_dir(log_root_dir, phase_identifier)
         self.visited_line_numbers = []
 
     @property
@@ -73,7 +73,7 @@ class GlobalEnvironmentForPostEdsPhase(GlobalEnvironmentForPreEdsStep):
                  phase_identifier: str):
         super().__init__(home_dir)
         self.__eds = eds
-        self._phase_logging = PhaseLoggingPaths(eds, phase_identifier)
+        self._phase_logging = PhaseLoggingPaths(eds.log_dir, phase_identifier)
 
     @property
     def execution_directory_structure(self) -> ExecutionDirectoryStructure:
