@@ -1,7 +1,5 @@
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser
-from shellcheck_lib.execution.phases import SETUP
 from shellcheck_lib.instructions.multi_phase_instructions import execute
-from shellcheck_lib.instructions.utils import sub_process_execution
 from shellcheck_lib.instructions.utils.pre_or_post_validation import PreOrPostEdsSvhValidationErrorValidator
 from shellcheck_lib.test_case.instruction_setup import SingleInstructionSetup
 from shellcheck_lib.test_case.os_services import OsServices
@@ -19,8 +17,7 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
 
 
 def parser(instruction_name: str) -> SingleInstructionParser:
-    return execute.InstructionParser(sub_process_execution.InstructionMetaInfo(SETUP.identifier,
-                                                                               instruction_name),
+    return execute.InstructionParser(instruction_name,
                                      lambda setup: _Instruction(setup))
 
 
@@ -41,4 +38,6 @@ class _Instruction(SetupPhaseInstruction):
         failure_message = self.setup.validator.validate_post_eds_if_applicable(environment.eds)
         if failure_message is not None:
             return sh.new_sh_hard_error(failure_message)
-        return execute.run_and_return_sh(self.setup, environment.home_and_eds)
+        return execute.run_and_return_sh(self.setup,
+                                         environment.home_and_eds,
+                                         environment.phase_logging)

@@ -7,6 +7,7 @@ Python built-in exceptions, in cases when the built-in exceptions are "meaningfu
 import pathlib
 
 from shellcheck_lib.general import exception
+from shellcheck_lib.general import file_utils
 
 
 def create_dir_that_is_expected_to_not_exist(dir_path: pathlib.Path):
@@ -15,3 +16,12 @@ def create_dir_that_is_expected_to_not_exist(dir_path: pathlib.Path):
     except OSError as ex:
         msg = str(ex)
         raise exception.ImplementationError(msg)
+
+
+def ensure_directory_exists_as_a_directory(dir_path: pathlib.Path):
+    """
+    :raises exception.ImplementationError: If path cannot be ensured to exist as dir.
+    """
+    err_msg = file_utils.ensure_directory_exists_as_a_directory(dir_path)
+    if err_msg:
+        raise exception.ImplementationError(err_msg)

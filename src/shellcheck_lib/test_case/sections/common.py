@@ -31,15 +31,39 @@ class GlobalEnvironmentForPreEdsStep:
         return self.__home_dir
 
 
-class PhaseLogging:
+class PhaseLoggingPaths:
+    line_number_format = '%03d'
+
     def __init__(self,
                  eds: ExecutionDirectoryStructure,
                  phase_identifier: str):
         self._phase_dir_path = log_phase_dir(eds, phase_identifier)
+        self.visited_line_numbers = []
 
     @property
     def dir_path(self) -> pathlib.Path:
         return self._phase_dir_path
+
+    def for_line(self,
+                 line_number: int,
+                 tail: str = '') -> pathlib.Path:
+        return self._phase_dir_path / self.__line_suffix(line_number, tail)
+
+    def __line_suffix(self, line_number, tail) -> str:
+        num_previous_visited = self.visited_line_numbers.count(line_number)
+        self.visited_line_numbers.append(line_number)
+        if num_previous_visited == 0:
+            head = self.line_number_format % line_number
+            if tail:
+                return head + '--' + tail
+            else:
+                return head
+        else:
+            head = (self.line_number_format % line_number) + ('-%d' % num_previous_visited)
+            if tail:
+                return head + '-' + tail
+            else:
+                return head
 
 
 class GlobalEnvironmentForPostEdsPhase(GlobalEnvironmentForPreEdsStep):
@@ -49,7 +73,7 @@ class GlobalEnvironmentForPostEdsPhase(GlobalEnvironmentForPreEdsStep):
                  phase_identifier: str):
         super().__init__(home_dir)
         self.__eds = eds
-        self._phase_logging = PhaseLogging(eds, phase_identifier)
+        self._phase_logging = PhaseLoggingPaths(eds, phase_identifier)
 
     @property
     def execution_directory_structure(self) -> ExecutionDirectoryStructure:
@@ -65,7 +89,7 @@ class GlobalEnvironmentForPostEdsPhase(GlobalEnvironmentForPreEdsStep):
                           self.eds)
 
     @property
-    def phase_logging(self) -> PhaseLogging:
+    def phase_logging(self) -> PhaseLoggingPaths:
         return self._phase_logging
 
 
