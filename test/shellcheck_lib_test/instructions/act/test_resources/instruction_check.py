@@ -3,14 +3,14 @@ import unittest
 from shellcheck_lib.execution import phases
 from shellcheck_lib.script_language.standard_script_language import StandardScriptLanguage
 from shellcheck_lib.test_case.os_services import OsServices, new_default
-from shellcheck_lib.test_case.sections import common as i
-from shellcheck_lib.test_case.sections.act.instruction import ActPhaseInstruction
-from shellcheck_lib.test_case.sections.act.phase_setup import PhaseEnvironmentForScriptGeneration
-from shellcheck_lib.test_case.sections.act.script_source import ScriptSourceBuilder
-from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep, \
+from shellcheck_lib.test_case.phases import common as i
+from shellcheck_lib.test_case.phases.act.instruction import ActPhaseInstruction
+from shellcheck_lib.test_case.phases.act.phase_setup import PhaseEnvironmentForScriptGeneration
+from shellcheck_lib.test_case.phases.act.script_source import ScriptSourceBuilder
+from shellcheck_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep, \
     HomeAndEds
-from shellcheck_lib.test_case.sections.result import pfh
-from shellcheck_lib.test_case.sections.result import svh
+from shellcheck_lib.test_case.phases.result import pfh
+from shellcheck_lib.test_case.phases.result import svh
 from shellcheck_lib_test.instructions.test_resources import sh_check__va
 from shellcheck_lib_test.instructions.test_resources import svh_check__va
 from shellcheck_lib_test.instructions.test_resources.arrangements import ArrangementWithEds

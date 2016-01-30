@@ -5,11 +5,11 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
     SingleInstructionParser, SingleInstructionParserSource
 from shellcheck_lib.execution import phases
 from shellcheck_lib.test_case.os_services import OsServices, new_default
-from shellcheck_lib.test_case.sections import common as i
-from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction, PreviousPhase
-from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
-from shellcheck_lib.test_case.sections.result import pfh
-from shellcheck_lib.test_case.sections.result import svh
+from shellcheck_lib.test_case.phases import common as i
+from shellcheck_lib.test_case.phases.cleanup import CleanupPhaseInstruction, PreviousPhase
+from shellcheck_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
+from shellcheck_lib.test_case.phases.result import pfh
+from shellcheck_lib.test_case.phases.result import svh
 from shellcheck_lib_test.instructions.test_resources import sh_check
 from shellcheck_lib_test.instructions.test_resources import svh_check
 from shellcheck_lib_test.instructions.test_resources.arrangements import ArrangementWithEds

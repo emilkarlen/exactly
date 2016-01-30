@@ -1,7 +1,7 @@
 import unittest
 
-from shellcheck_lib.test_case.sections.result import svh
-from shellcheck_lib.test_case.sections.result import pfh
+from shellcheck_lib.test_case.phases.result import pfh
+from shellcheck_lib.test_case.phases.result import svh
 
 
 class Assertion:

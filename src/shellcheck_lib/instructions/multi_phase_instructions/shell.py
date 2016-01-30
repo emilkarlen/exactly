@@ -5,9 +5,9 @@ from shellcheck_lib.instructions.utils.sub_process_execution import ExecutorThat
     InstructionSourceInfo, ExecuteInfo, \
     ResultAndStderr, execute_and_read_stderr_if_non_zero_exitcode, result_to_sh, result_to_pfh
 from shellcheck_lib.test_case.instruction_description import Description, InvokationVariant
-from shellcheck_lib.test_case.sections.common import TestCaseInstruction, PhaseLoggingPaths
-from shellcheck_lib.test_case.sections.result import pfh
-from shellcheck_lib.test_case.sections.result import sh
+from shellcheck_lib.test_case.phases.common import TestCaseInstruction, PhaseLoggingPaths
+from shellcheck_lib.test_case.phases.result import pfh
+from shellcheck_lib.test_case.phases.result import sh
 
 
 class TheDescriptionBase(Description):

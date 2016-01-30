@@ -4,7 +4,7 @@ from shellcheck_lib.general.textformat.structure.paragraph import single_para
 from shellcheck_lib.instructions.utils.destination_path import *
 from shellcheck_lib.instructions.utils.parse_utils import split_arguments_list_string
 from shellcheck_lib.test_case.instruction_description import InvokationVariant, Description
-from shellcheck_lib.test_case.sections.result import sh
+from shellcheck_lib.test_case.phases.result import sh
 
 
 class TheDescription(Description):

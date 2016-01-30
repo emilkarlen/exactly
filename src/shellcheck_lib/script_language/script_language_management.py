@@ -1,4 +1,4 @@
-from shellcheck_lib.test_case.sections.act.script_source import ScriptLanguage, ScriptSourceBuilder
+from shellcheck_lib.test_case.phases.act.script_source import ScriptLanguage, ScriptSourceBuilder
 
 
 class ScriptFileManager:

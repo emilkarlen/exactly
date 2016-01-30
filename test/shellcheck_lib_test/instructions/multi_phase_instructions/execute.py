@@ -5,7 +5,7 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
 from shellcheck_lib.instructions.multi_phase_instructions import execute as sut
 from shellcheck_lib.instructions.utils.relative_path_options import REL_TMP_OPTION
 from shellcheck_lib.instructions.utils.sub_process_execution import ResultAndStderr
-from shellcheck_lib.test_case.sections.common import HomeAndEds, PhaseLoggingPaths
+from shellcheck_lib.test_case.phases.common import HomeAndEds, PhaseLoggingPaths
 from shellcheck_lib_test.instructions.test_resources.check_description import suite_for_description
 from shellcheck_lib_test.test_resources import home_and_eds_test
 from shellcheck_lib_test.test_resources import python_program_execution as py_exe

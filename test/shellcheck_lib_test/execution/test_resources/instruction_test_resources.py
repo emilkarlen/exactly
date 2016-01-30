@@ -1,15 +1,15 @@
 from shellcheck_lib.test_case.os_services import OsServices
-from shellcheck_lib.test_case.sections import common as instrs
-from shellcheck_lib.test_case.sections.act.instruction import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
-from shellcheck_lib.test_case.sections.anonymous import AnonymousPhaseInstruction, ExecutionMode, \
+from shellcheck_lib.test_case.phases import common as instrs
+from shellcheck_lib.test_case.phases.act.instruction import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
+from shellcheck_lib.test_case.phases.anonymous import AnonymousPhaseInstruction, ExecutionMode, \
     ConfigurationBuilder
-from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
-from shellcheck_lib.test_case.sections.before_assert import BeforeAssertPhaseInstruction
-from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction, PreviousPhase
-from shellcheck_lib.test_case.sections.result import pfh
-from shellcheck_lib.test_case.sections.result import sh
-from shellcheck_lib.test_case.sections.result import svh
-from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
+from shellcheck_lib.test_case.phases.assert_ import AssertPhaseInstruction
+from shellcheck_lib.test_case.phases.before_assert import BeforeAssertPhaseInstruction
+from shellcheck_lib.test_case.phases.cleanup import CleanupPhaseInstruction, PreviousPhase
+from shellcheck_lib.test_case.phases.result import pfh
+from shellcheck_lib.test_case.phases.result import sh
+from shellcheck_lib.test_case.phases.result import svh
+from shellcheck_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
 
 
 def do_return(x):

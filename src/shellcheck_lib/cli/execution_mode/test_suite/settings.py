@@ -1,6 +1,6 @@
 import pathlib
 
-from shellcheck_lib.test_case.sections.act.phase_setup import ActPhaseSetup
+from shellcheck_lib.test_case.phases.act.phase_setup import ActPhaseSetup
 
 
 class Settings:

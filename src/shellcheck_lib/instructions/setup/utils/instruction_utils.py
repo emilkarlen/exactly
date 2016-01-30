@@ -1,7 +1,7 @@
 from shellcheck_lib.instructions.utils.file_ref_check import FileRefCheck, pre_eds_validate, pre_or_post_eds_validate
-from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
-from shellcheck_lib.test_case.sections.result import svh
-from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction
+from shellcheck_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
+from shellcheck_lib.test_case.phases.result import svh
+from shellcheck_lib.test_case.phases.setup import SetupPhaseInstruction
 
 
 class InstructionWithFileRefsBase(SetupPhaseInstruction):

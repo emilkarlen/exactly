@@ -4,9 +4,9 @@ from shellcheck_lib.execution.execution_directory_structure import ExecutionDire
 from shellcheck_lib.instructions.utils.file_properties import FilePropertiesCheck, CheckResult
 from shellcheck_lib.instructions.utils.file_properties import render_failure
 from shellcheck_lib.instructions.utils.file_ref import FileRef, FileRefValidatorBase
-from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPreEdsStep
-from shellcheck_lib.test_case.sections.common import HomeAndEds
-from shellcheck_lib.test_case.sections.result import svh
+from shellcheck_lib.test_case.phases.common import GlobalEnvironmentForPreEdsStep
+from shellcheck_lib.test_case.phases.common import HomeAndEds
+from shellcheck_lib.test_case.phases.result import svh
 
 
 class FileRefCheck:

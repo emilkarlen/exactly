@@ -6,7 +6,7 @@ from shellcheck_lib.default.execution_mode.test_case.processing import script_ha
 from shellcheck_lib.execution.partial_execution import ScriptHandling
 from shellcheck_lib.execution.result import PartialResultStatus
 from shellcheck_lib.test_case import test_case_doc
-from shellcheck_lib.test_case.sections.result import svh
+from shellcheck_lib.test_case.phases.result import svh
 from shellcheck_lib_test.execution.partial_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorForExecutionRecording, TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList
 from shellcheck_lib_test.execution.partial_execution.test_resources.test_case_base import PartialExecutionTestCaseBase

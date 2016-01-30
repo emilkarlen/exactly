@@ -5,8 +5,8 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
 from shellcheck_lib.general.string import lines_content
 from shellcheck_lib.instructions.setup import stdin as sut
 from shellcheck_lib.instructions.utils import file_ref
-from shellcheck_lib.test_case.sections import common
-from shellcheck_lib.test_case.sections.setup import SetupSettingsBuilder
+from shellcheck_lib.test_case.phases import common
+from shellcheck_lib.test_case.phases.setup import SetupSettingsBuilder
 from shellcheck_lib_test.instructions.setup.test_resources.instruction_check import TestCaseBase, Arrangement, \
     Expectation
 from shellcheck_lib_test.instructions.setup.test_resources.settings_check import Assertion

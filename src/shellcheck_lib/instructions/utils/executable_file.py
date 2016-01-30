@@ -8,7 +8,7 @@ from shellcheck_lib.instructions.utils import parse_file_ref
 from shellcheck_lib.instructions.utils.file_ref import FileRefValidatorBase
 from shellcheck_lib.instructions.utils.parse_utils import TokenStream
 from shellcheck_lib.instructions.utils.pre_or_post_validation import PreOrPostEdsValidator
-from shellcheck_lib.test_case.sections.common import HomeAndEds
+from shellcheck_lib.test_case.phases.common import HomeAndEds
 
 LIST_DELIMITER_START = '('
 LIST_DELIMITER_END = ')'
