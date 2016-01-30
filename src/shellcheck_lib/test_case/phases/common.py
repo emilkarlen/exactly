@@ -32,7 +32,7 @@ class GlobalEnvironmentForPreEdsStep:
 
 
 class PhaseLoggingPaths:
-    _line_number_format = '%03d'
+    line_number_format = '{:03d}'
 
     def __init__(self,
                  log_root_dir: pathlib.Path,
@@ -53,13 +53,13 @@ class PhaseLoggingPaths:
         num_previous_visited = self._visited_line_numbers.count(line_number)
         self._visited_line_numbers.append(line_number)
         if num_previous_visited == 0:
-            head = self._line_number_format % line_number
+            head = self.line_number_format.format(line_number)
             if tail:
                 return head + '--' + tail
             else:
                 return head
         else:
-            head = (self._line_number_format % line_number) + ('-%d' % num_previous_visited)
+            head = (self.line_number_format.format(line_number)) + ('-%d' % (num_previous_visited + 1))
             if tail:
                 return head + '-' + tail
             else:
