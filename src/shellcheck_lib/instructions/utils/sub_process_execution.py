@@ -127,14 +127,6 @@ def read_stderr_if_non_zero_exitcode(result: Result) -> ResultAndStderr:
     return ResultAndStderr(result, stderr_contents)
 
 
-def apply_and_read_stderr_if_non_zero_exitcode(executor: ExecutorThatStoresResultInFilesInDir,
-                                               error_message_header: str,
-                                               storage_dir: pathlib.Path,
-                                               cmd_and_args: list) -> ResultAndStderr:
-    result = executor.apply(error_message_header, storage_dir, cmd_and_args)
-    return read_stderr_if_non_zero_exitcode(result)
-
-
 def failure_message_for_nonzero_status(result_and_err: ResultAndStderr) -> str:
     msg_tail = ''
     if result_and_err.stderr_contents:
