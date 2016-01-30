@@ -1,7 +1,5 @@
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser
-from shellcheck_lib.execution.phases import ASSERT
 from shellcheck_lib.instructions.multi_phase_instructions import execute
-from shellcheck_lib.instructions.utils import sub_process_execution
 from shellcheck_lib.instructions.utils.pre_or_post_validation import PreOrPostEdsSvhValidationErrorValidator
 from shellcheck_lib.test_case.instruction_setup import SingleInstructionSetup
 from shellcheck_lib.test_case.os_services import OsServices
@@ -19,8 +17,7 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
 
 
 def parser(instruction_name: str) -> SingleInstructionParser:
-    return execute.InstructionParser(sub_process_execution.InstructionMetaInfo(ASSERT.identifier,
-                                                                               instruction_name),
+    return execute.InstructionParser(instruction_name,
                                      lambda setup: _Instruction(setup))
 
 
@@ -41,4 +38,6 @@ class _Instruction(AssertPhaseInstruction):
     def main(self,
              environment: GlobalEnvironmentForPostEdsPhase,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
-        return execute.run_and_return_pfh(self.setup, environment.home_and_eds)
+        return execute.run_and_return_pfh(self.setup,
+                                          environment.home_and_eds,
+                                          environment.phase_logging)

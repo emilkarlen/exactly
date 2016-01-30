@@ -2,7 +2,7 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
 from shellcheck_lib.general.textformat import parse as text_parse
 from shellcheck_lib.instructions.multi_phase_instructions import shell as shell_common
 from shellcheck_lib.instructions.multi_phase_instructions.shell import TheDescriptionBase
-from shellcheck_lib.instructions.utils.sub_process_execution import InstructionMetaInfo, ExecuteInfo
+from shellcheck_lib.instructions.utils.sub_process_execution import ExecuteInfo
 from shellcheck_lib.test_case.instruction_setup import SingleInstructionSetup
 from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
@@ -30,8 +30,7 @@ class TheDescription(TheDescriptionBase):
 
 
 def parser() -> SingleInstructionParser:
-    return shell_common.Parser(InstructionMetaInfo('phase-name',
-                                                   'instruction-name'),
+    return shell_common.Parser('instruction-name',
                                _ShellInstruction)
 
 
@@ -43,4 +42,4 @@ class _ShellInstruction(AssertPhaseInstruction):
     def main(self,
              environment: GlobalEnvironmentForPostEdsPhase,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
-        return shell_common.run_and_return_pfh(self.execute_info, environment.eds)
+        return shell_common.run_and_return_pfh(self.execute_info, environment.phase_logging)
