@@ -1,5 +1,5 @@
 from shellcheck_lib.script_language.script_language_management import ScriptFileManager
-from shellcheck_lib.test_case.sections.act import script_source
+from shellcheck_lib.test_case.phases.act import script_source
 
 
 class StandardScriptFileManager(ScriptFileManager):

@@ -10,11 +10,11 @@ from shellcheck_lib.execution.execution_directory_structure import ExecutionDire
 from shellcheck_lib.general import line_source
 from shellcheck_lib.general.std import StdFiles
 from shellcheck_lib.instructions.act.executable_file import ExecutableFileInstruction
-from shellcheck_lib.test_case.sections.act.instruction import ActPhaseInstruction
-from shellcheck_lib.test_case.sections.act.phase_setup import ActProgramExecutor, SourceSetup, ActPhaseSetup
-from shellcheck_lib.test_case.sections.act.script_source import ScriptLanguage
-from shellcheck_lib.test_case.sections.act.script_source import ScriptSourceBuilder
-from shellcheck_lib.test_case.sections.result import svh
+from shellcheck_lib.test_case.phases.act.instruction import ActPhaseInstruction
+from shellcheck_lib.test_case.phases.act.phase_setup import ActProgramExecutor, SourceSetup, ActPhaseSetup
+from shellcheck_lib.test_case.phases.act.script_source import ScriptLanguage
+from shellcheck_lib.test_case.phases.act.script_source import ScriptSourceBuilder
+from shellcheck_lib.test_case.phases.result import svh
 
 
 class _ActPhaseParser(SectionElementParserForStandardCommentAndEmptyLines):

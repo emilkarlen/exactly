@@ -1,10 +1,10 @@
 import pathlib
 import re
 
-from shellcheck_lib.test_case.sections import common
-from shellcheck_lib.test_case.sections.act.instruction import ActPhaseInstruction
-from shellcheck_lib.test_case.sections.act.phase_setup import PhaseEnvironmentForScriptGeneration
-from shellcheck_lib.test_case.sections.result import sh, svh
+from shellcheck_lib.test_case.phases import common
+from shellcheck_lib.test_case.phases.act.instruction import ActPhaseInstruction
+from shellcheck_lib.test_case.phases.act.phase_setup import PhaseEnvironmentForScriptGeneration
+from shellcheck_lib.test_case.phases.result import sh, svh
 
 
 class ExecutableFileInstruction(ActPhaseInstruction):

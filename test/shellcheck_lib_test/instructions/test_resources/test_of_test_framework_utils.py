@@ -4,10 +4,10 @@ import unittest
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionParserSource
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
-from shellcheck_lib.test_case.sections.common import HomeAndEds, TestCaseInstruction
-from shellcheck_lib.test_case.sections.result import pfh
-from shellcheck_lib.test_case.sections.result import sh
-from shellcheck_lib.test_case.sections.result import svh
+from shellcheck_lib.test_case.phases.common import HomeAndEds, TestCaseInstruction
+from shellcheck_lib.test_case.phases.result import pfh
+from shellcheck_lib.test_case.phases.result import sh
+from shellcheck_lib.test_case.phases.result import svh
 from shellcheck_lib_test.instructions.test_resources import pfh_check
 from shellcheck_lib_test.instructions.test_resources import sh_check
 from shellcheck_lib_test.instructions.test_resources import svh_check

@@ -3,10 +3,10 @@ import unittest
 from shellcheck_lib.execution import phase_step_simple as phase_step
 from shellcheck_lib.execution import phases
 from shellcheck_lib.execution.result import FullResultStatus
-from shellcheck_lib.test_case.sections.anonymous import ExecutionMode
-from shellcheck_lib.test_case.sections.cleanup import PreviousPhase
-from shellcheck_lib.test_case.sections.result import pfh
-from shellcheck_lib.test_case.sections.result import sh
+from shellcheck_lib.test_case.phases.anonymous import ExecutionMode
+from shellcheck_lib.test_case.phases.cleanup import PreviousPhase
+from shellcheck_lib.test_case.phases.result import pfh
+from shellcheck_lib.test_case.phases.result import sh
 from shellcheck_lib_test.execution.full_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr
 from shellcheck_lib_test.execution.full_execution.test_resources.recording.test_case_that_records_phase_execution import \

@@ -1,13 +1,13 @@
 from shellcheck_lib.test_case.os_services import OsServices
-from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase, TestCaseInstruction, \
+from shellcheck_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase, TestCaseInstruction, \
     GlobalEnvironmentForPreEdsStep
-from shellcheck_lib.test_case.sections.result import sh
-from shellcheck_lib.test_case.sections.result import svh
+from shellcheck_lib.test_case.phases.result import pfh
+from shellcheck_lib.test_case.phases.result import svh
 
 
-class BeforeAssertPhaseInstruction(TestCaseInstruction):
+class AssertPhaseInstruction(TestCaseInstruction):
     """
-    Abstract base class for instructions of the BEFORE-ASSERT phase.
+    Abstract base class for instructions of the ASSERT phase.
     """
 
     def validate_pre_eds(self,
@@ -20,5 +20,5 @@ class BeforeAssertPhaseInstruction(TestCaseInstruction):
 
     def main(self,
              environment: GlobalEnvironmentForPostEdsPhase,
-             os_services: OsServices) -> sh.SuccessOrHardError:
+             os_services: OsServices) -> pfh.PassOrFailOrHardError:
         raise NotImplementedError()

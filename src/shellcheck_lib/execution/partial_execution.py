@@ -16,12 +16,12 @@ from shellcheck_lib.general import line_source
 from shellcheck_lib.general.file_utils import write_new_text_file
 from shellcheck_lib.general.std import StdOutputFiles, StdFiles
 from shellcheck_lib.test_case.os_services import new_default, OsServices
-from shellcheck_lib.test_case.sections import common
-from shellcheck_lib.test_case.sections.act.phase_setup import PhaseEnvironmentForScriptGeneration, ActProgramExecutor, \
+from shellcheck_lib.test_case.phases import common
+from shellcheck_lib.test_case.phases.act.phase_setup import PhaseEnvironmentForScriptGeneration, ActProgramExecutor, \
     SourceSetup, ScriptSourceBuilder
-from shellcheck_lib.test_case.sections.cleanup import PreviousPhase
-from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPreEdsStep
-from shellcheck_lib.test_case.sections.setup import SetupSettingsBuilder, StdinSettings
+from shellcheck_lib.test_case.phases.cleanup import PreviousPhase
+from shellcheck_lib.test_case.phases.common import GlobalEnvironmentForPreEdsStep
+from shellcheck_lib.test_case.phases.setup import SetupSettingsBuilder, StdinSettings
 from . import phase_step_execution
 from . import result
 from .execution_directory_structure import construct_at, ExecutionDirectoryStructure, stdin_contents_file

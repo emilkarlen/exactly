@@ -3,7 +3,7 @@ from enum import Enum
 from shellcheck_lib.document.model import PhaseContentElement
 from shellcheck_lib.execution import result
 from shellcheck_lib.general import line_source
-from shellcheck_lib.test_case.sections.common import TestCaseInstruction
+from shellcheck_lib.test_case.phases.common import TestCaseInstruction
 
 
 class PartialControlledFailureEnum(Enum):

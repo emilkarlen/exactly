@@ -1,8 +1,8 @@
 import pathlib
 from enum import Enum
 
-from shellcheck_lib.test_case.sections.common import TestCaseInstruction
-from shellcheck_lib.test_case.sections.result.sh import SuccessOrHardError
+from shellcheck_lib.test_case.phases.common import TestCaseInstruction
+from shellcheck_lib.test_case.phases.result.sh import SuccessOrHardError
 
 
 class ExecutionMode(Enum):

@@ -4,10 +4,10 @@ from shellcheck_lib.instructions.utils.pre_or_post_validation import PreOrPostEd
     PreOrPostEdsSvhValidationErrorValidator
 from shellcheck_lib.test_case.instruction_setup import SingleInstructionSetup
 from shellcheck_lib.test_case.os_services import OsServices
-from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction, PreviousPhase
-from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
-from shellcheck_lib.test_case.sections.result import sh
-from shellcheck_lib.test_case.sections.result import svh
+from shellcheck_lib.test_case.phases.cleanup import CleanupPhaseInstruction, PreviousPhase
+from shellcheck_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
+from shellcheck_lib.test_case.phases.result import sh
+from shellcheck_lib.test_case.phases.result import svh
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:

@@ -5,7 +5,7 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
 from shellcheck_lib.general.textformat import parse as text_parse
 from shellcheck_lib.instructions.utils.parse_utils import split_arguments_list_string, ensure_is_not_option_argument
 from shellcheck_lib.test_case.instruction_description import InvokationVariant, Description
-from shellcheck_lib.test_case.sections.result import sh
+from shellcheck_lib.test_case.phases.result import sh
 
 
 class TheDescription(Description):

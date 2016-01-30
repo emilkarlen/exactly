@@ -4,11 +4,11 @@ Checks that output to stdout, stderr and the exit code are saved in the correct 
 import unittest
 
 from shellcheck_lib.test_case.os_services import OsServices
-from shellcheck_lib.test_case.sections import common
-from shellcheck_lib.test_case.sections.act.instruction import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
-from shellcheck_lib.test_case.sections.result import sh
-from shellcheck_lib.test_case.sections.result import svh
-from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
+from shellcheck_lib.test_case.phases import common
+from shellcheck_lib.test_case.phases.act.instruction import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
+from shellcheck_lib.test_case.phases.result import sh
+from shellcheck_lib.test_case.phases.result import svh
+from shellcheck_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
 from shellcheck_lib_test.execution.partial_execution.test_resources.basic import \
     TestCaseWithCommonDefaultInstructions, Result
 from shellcheck_lib_test.test_resources.execution.eds_test import ResultFilesCheck

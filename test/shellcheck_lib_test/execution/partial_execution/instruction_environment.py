@@ -5,10 +5,10 @@ from shellcheck_lib.execution import partial_execution as sut
 from shellcheck_lib.execution import phases
 from shellcheck_lib.execution.execution_directory_structure import log_phase_dir
 from shellcheck_lib.execution.phases import PhaseEnum
-from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
-from shellcheck_lib.test_case.sections.result import pfh
-from shellcheck_lib.test_case.sections.result import sh
-from shellcheck_lib.test_case.sections.result import svh
+from shellcheck_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase
+from shellcheck_lib.test_case.phases.result import pfh
+from shellcheck_lib.test_case.phases.result import sh
+from shellcheck_lib.test_case.phases.result import svh
 from shellcheck_lib_test.execution.partial_execution.test_resources.basic import py3_test, \
     TestCaseWithCommonDefaultInstructions, Result
 

@@ -5,10 +5,10 @@ import functools
 import os
 import unittest
 
-from shellcheck_lib.test_case.sections.act.instruction import ActPhaseInstruction
-from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
-from shellcheck_lib.test_case.sections.result import sh
-from shellcheck_lib.test_case.sections.result import svh
+from shellcheck_lib.test_case.phases.act.instruction import ActPhaseInstruction
+from shellcheck_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase
+from shellcheck_lib.test_case.phases.result import sh
+from shellcheck_lib.test_case.phases.result import svh
 from shellcheck_lib_test.execution.test_resources.instruction_test_resources import \
     act_phase_instruction_that
 from shellcheck_lib_test.instructions.act.test_resources import instruction_check as sut

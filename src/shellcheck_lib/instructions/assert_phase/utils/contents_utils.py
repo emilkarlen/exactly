@@ -19,12 +19,12 @@ from shellcheck_lib.instructions.utils.parse_here_doc_or_file_ref import HereDoc
 from shellcheck_lib.instructions.utils.pre_or_post_validation import ConstantSuccessValidator, \
     PreOrPostEdsSvhValidationErrorValidator
 from shellcheck_lib.test_case.os_services import OsServices
-from shellcheck_lib.test_case.sections import common as i
-from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
-from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase, HomeAndEds, \
+from shellcheck_lib.test_case.phases import common as i
+from shellcheck_lib.test_case.phases.assert_ import AssertPhaseInstruction
+from shellcheck_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase, HomeAndEds, \
     GlobalEnvironmentForPreEdsStep
-from shellcheck_lib.test_case.sections.result import pfh
-from shellcheck_lib.test_case.sections.result import svh
+from shellcheck_lib.test_case.phases.result import pfh
+from shellcheck_lib.test_case.phases.result import svh
 
 WITH_REPLACED_ENV_VARS_OPTION = '--with-replaced-env-vars'
 EMPTY_ARGUMENT = 'empty'

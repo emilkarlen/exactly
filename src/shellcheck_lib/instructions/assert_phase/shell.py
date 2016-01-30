@@ -5,9 +5,9 @@ from shellcheck_lib.instructions.multi_phase_instructions.shell import TheDescri
 from shellcheck_lib.instructions.utils.sub_process_execution import ExecuteInfo
 from shellcheck_lib.test_case.instruction_setup import SingleInstructionSetup
 from shellcheck_lib.test_case.os_services import OsServices
-from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
-from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
-from shellcheck_lib.test_case.sections.result import pfh
+from shellcheck_lib.test_case.phases.assert_ import AssertPhaseInstruction
+from shellcheck_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase
+from shellcheck_lib.test_case.phases.result import pfh
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:

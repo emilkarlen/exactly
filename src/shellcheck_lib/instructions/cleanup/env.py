@@ -1,9 +1,9 @@
 from shellcheck_lib.instructions.multi_phase_instructions import env
 from shellcheck_lib.test_case.instruction_setup import SingleInstructionSetup
 from shellcheck_lib.test_case.os_services import OsServices
-from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction, PreviousPhase
-from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
-from shellcheck_lib.test_case.sections.result import sh
+from shellcheck_lib.test_case.phases.cleanup import CleanupPhaseInstruction, PreviousPhase
+from shellcheck_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase
+from shellcheck_lib.test_case.phases.result import sh
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:

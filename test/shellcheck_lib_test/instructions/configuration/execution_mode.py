@@ -4,7 +4,7 @@ import unittest
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from shellcheck_lib.instructions.configuration import execution_mode as sut
-from shellcheck_lib.test_case.sections.anonymous import ConfigurationBuilder, ExecutionMode
+from shellcheck_lib.test_case.phases.anonymous import ConfigurationBuilder, ExecutionMode
 from shellcheck_lib_test.instructions.configuration.test_resources import configuration_check as config_check
 from shellcheck_lib_test.instructions.configuration.test_resources.instruction_check import TestCaseBase, \
     Arrangement, Expectation
