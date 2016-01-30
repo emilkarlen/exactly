@@ -1,6 +1,6 @@
 import unittest
 
-from shellcheck_lib.test_case.sections.result import sh
+from shellcheck_lib.test_case.phases.result import sh
 
 
 class Assertion:

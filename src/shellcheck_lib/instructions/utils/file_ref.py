@@ -2,7 +2,7 @@ import pathlib
 
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.instructions.utils.pre_or_post_validation import PreOrPostEdsValidator
-from shellcheck_lib.test_case.sections.common import HomeAndEds
+from shellcheck_lib.test_case.phases.common import HomeAndEds
 
 
 class FileRef:

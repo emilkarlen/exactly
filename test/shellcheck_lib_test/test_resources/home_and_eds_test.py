@@ -1,6 +1,6 @@
 import unittest
 
-from shellcheck_lib.test_case.sections.common import HomeAndEds
+from shellcheck_lib.test_case.phases.common import HomeAndEds
 from shellcheck_lib_test.test_resources.execution import eds_populator, eds_contents_check
 from shellcheck_lib_test.test_resources.execution.utils import home_and_eds_and_test_as_curr_dir
 from shellcheck_lib_test.test_resources.file_structure import DirContents, empty_dir_contents

@@ -12,8 +12,8 @@ from shellcheck_lib.instructions.utils.relative_path_options import REL_HOME_OPT
 from shellcheck_lib.instructions.utils.relative_path_options import REL_TMP_OPTION
 from shellcheck_lib.test_case.instruction_description import InvokationVariant, Description
 from shellcheck_lib.test_case.instruction_setup import SingleInstructionSetup
-from shellcheck_lib.test_case.sections.assert_ import AssertPhaseInstruction
-from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase
+from shellcheck_lib.test_case.phases.assert_ import AssertPhaseInstruction
+from shellcheck_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase
 from .utils import contents_utils
 
 

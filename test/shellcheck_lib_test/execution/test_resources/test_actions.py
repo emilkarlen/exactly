@@ -1,4 +1,4 @@
-from shellcheck_lib.test_case.sections.result import svh
+from shellcheck_lib.test_case.phases.result import svh
 
 
 def validate_action_that_returns(ret_val: svh.SuccessOrValidationErrorOrHardError):

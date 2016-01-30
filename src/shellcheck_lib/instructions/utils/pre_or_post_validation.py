@@ -1,9 +1,9 @@
 import pathlib
 
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
-from shellcheck_lib.test_case.sections.common import HomeAndEds
-from shellcheck_lib.test_case.sections.result import sh
-from shellcheck_lib.test_case.sections.result import svh
+from shellcheck_lib.test_case.phases.common import HomeAndEds
+from shellcheck_lib.test_case.phases.result import sh
+from shellcheck_lib.test_case.phases.result import svh
 
 
 class PreOrPostEdsValidator:

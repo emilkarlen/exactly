@@ -1,6 +1,6 @@
 import sys
 
-from shellcheck_lib.test_case.sections.act import script_source
+from shellcheck_lib.test_case.phases.act import script_source
 from . import script_language_management
 from . import standard_script_language
 

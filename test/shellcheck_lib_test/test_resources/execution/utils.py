@@ -6,8 +6,8 @@ from time import strftime, localtime
 
 from shellcheck_lib.execution import execution_directory_structure as eds_module
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
-from shellcheck_lib.test_case.sections import common as i
-from shellcheck_lib.test_case.sections.common import HomeAndEds
+from shellcheck_lib.test_case.phases import common as i
+from shellcheck_lib.test_case.phases.common import HomeAndEds
 from shellcheck_lib_test.test_resources.execution import eds_populator
 from shellcheck_lib_test.test_resources.file_structure import DirContents, empty_dir_contents
 from shellcheck_lib_test.test_resources.file_utils import write_file

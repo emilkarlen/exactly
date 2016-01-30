@@ -2,8 +2,8 @@ import unittest
 
 from shellcheck_lib.execution.phase_step import PhaseStep
 from shellcheck_lib.execution.result import PartialResultStatus
-from shellcheck_lib.test_case.sections.common import TestCaseInstruction
-from shellcheck_lib.test_case.sections.result import svh
+from shellcheck_lib.test_case.phases.common import TestCaseInstruction
+from shellcheck_lib.test_case.phases.result import svh
 from shellcheck_lib_test.execution.partial_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr
 from shellcheck_lib_test.execution.partial_execution.test_resources.recording.test_case_that_records_phase_execution import \

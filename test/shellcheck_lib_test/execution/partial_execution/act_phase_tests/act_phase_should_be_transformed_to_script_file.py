@@ -4,9 +4,9 @@ import unittest
 from shellcheck_lib.execution import partial_execution as sut
 from shellcheck_lib.execution import phases
 from shellcheck_lib.general import line_source
-from shellcheck_lib.test_case.sections import common
-from shellcheck_lib.test_case.sections.act.instruction import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
-from shellcheck_lib.test_case.sections.result import sh
+from shellcheck_lib.test_case.phases import common
+from shellcheck_lib.test_case.phases.act.instruction import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
+from shellcheck_lib.test_case.phases.result import sh
 from shellcheck_lib_test.execution.partial_execution.test_resources.basic import \
     TestCaseWithCommonDefaultInstructions, PartialExecutionTestCaseBase, Result
 from shellcheck_lib_test.execution.test_resources import utils

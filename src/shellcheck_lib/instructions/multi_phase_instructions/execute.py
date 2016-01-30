@@ -15,12 +15,12 @@ from shellcheck_lib.instructions.utils.parse_file_ref import ALL_REL_OPTIONS
 from shellcheck_lib.instructions.utils.parse_utils import TokenStream
 from shellcheck_lib.instructions.utils.pre_or_post_validation import PreOrPostEdsValidator, AndValidator
 from shellcheck_lib.instructions.utils.sub_process_execution import ResultAndStderr, ExecuteInfo, \
-    ExecutorThatLogsResultUnderPhaseDir, execute_and_read_stderr_if_non_zero_exitcode, result_to_sh, result_to_pfh
+    ExecutorThatStoresResultInFilesInDir, execute_and_read_stderr_if_non_zero_exitcode, result_to_sh, result_to_pfh
 from shellcheck_lib.test_case.instruction_description import InvokationVariant, SyntaxElementDescription, \
     Description
-from shellcheck_lib.test_case.sections.common import HomeAndEds, TestCaseInstruction
-from shellcheck_lib.test_case.sections.result import pfh
-from shellcheck_lib.test_case.sections.result import sh
+from shellcheck_lib.test_case.phases.common import HomeAndEds, TestCaseInstruction, PhaseLoggingPaths
+from shellcheck_lib.test_case.phases.result import pfh
+from shellcheck_lib.test_case.phases.result import sh
 
 INTERPRET_OPTION = '--interpret'
 SOURCE_OPTION = '--source'
@@ -153,27 +153,32 @@ class SetupForSource(SetupForExecutableWithArguments):
 
 
 def run(setup: SetupForExecutableWithArguments,
-        home_and_eds: HomeAndEds) -> ResultAndStderr:
+        home_and_eds: HomeAndEds,
+        phase_logging_paths: PhaseLoggingPaths) -> ResultAndStderr:
     execute_info = ExecuteInfo(setup.instruction_source_info,
                                setup.cmd_and_args(home_and_eds))
-    executor = ExecutorThatLogsResultUnderPhaseDir(is_shell=False)
-    return execute_and_read_stderr_if_non_zero_exitcode(execute_info, executor, home_and_eds.eds)
+    executor = ExecutorThatStoresResultInFilesInDir(is_shell=False)
+    return execute_and_read_stderr_if_non_zero_exitcode(execute_info, executor, phase_logging_paths)
 
 
-def run_and_return_sh(setup: SetupForExecutableWithArguments, home_and_eds: HomeAndEds) -> sh.SuccessOrHardError:
-    result = run(setup, home_and_eds)
+def run_and_return_sh(setup: SetupForExecutableWithArguments,
+                      home_and_eds: HomeAndEds,
+                      phase_logging_paths: PhaseLoggingPaths) -> sh.SuccessOrHardError:
+    result = run(setup, home_and_eds, phase_logging_paths)
     return result_to_sh(result)
 
 
-def run_and_return_pfh(setup: SetupForExecutableWithArguments, home_and_eds: HomeAndEds) -> pfh.PassOrFailOrHardError:
-    result = run(setup, home_and_eds)
+def run_and_return_pfh(setup: SetupForExecutableWithArguments,
+                       home_and_eds: HomeAndEds,
+                       phase_logging_paths: PhaseLoggingPaths) -> pfh.PassOrFailOrHardError:
+    result = run(setup, home_and_eds, phase_logging_paths)
     return result_to_pfh(result)
 
 
 class SetupParser:
     def __init__(self,
-                 instruction_meta_info: sub_process_execution.InstructionMetaInfo):
-        self.instruction_meta_info = instruction_meta_info
+                 instruction_name: str):
+        self.instruction_name = instruction_name
 
     def apply(self, source: SingleInstructionParserSource) -> SetupForExecutableWithArguments:
         tokens = TokenStream(source.instruction_argument)
@@ -193,8 +198,8 @@ class SetupParser:
                  exe_file: ExecutableFile,
                  remaining_arguments_str: str) -> SetupForExecutableWithArguments:
         return SetupForExecute(
-                sub_process_execution.InstructionSourceInfo(self.instruction_meta_info,
-                                                            source.line_sequence.first_line.line_number),
+                sub_process_execution.InstructionSourceInfo(source.line_sequence.first_line.line_number,
+                                                            self.instruction_name),
                 exe_file,
                 shlex.split(remaining_arguments_str))
 
@@ -205,8 +210,8 @@ class SetupParser:
         remaining_arguments = shlex.split(remaining_arguments_str)
         (file_to_interpret, remaining_arguments) = parse_file_ref.parse_file_ref__list(remaining_arguments)
         return SetupForInterpret(
-                sub_process_execution.InstructionSourceInfo(self.instruction_meta_info,
-                                                            source.line_sequence.first_line.line_number),
+                sub_process_execution.InstructionSourceInfo(source.line_sequence.first_line.line_number,
+                                                            self.instruction_name),
                 exe_file,
                 file_to_interpret,
                 remaining_arguments)
@@ -218,18 +223,18 @@ class SetupParser:
         if not remaining_arguments_str:
             raise SingleInstructionInvalidArgumentException('Missing SOURCE argument for option %s' % SOURCE_OPTION)
         return SetupForSource(
-                sub_process_execution.InstructionSourceInfo(self.instruction_meta_info,
-                                                            source.line_sequence.first_line.line_number),
+                sub_process_execution.InstructionSourceInfo(source.line_sequence.first_line.line_number,
+                                                            self.instruction_name),
                 exe_file,
                 remaining_arguments_str)
 
 
 class InstructionParser(SingleInstructionParser):
     def __init__(self,
-                 instruction_meta_info: sub_process_execution.InstructionMetaInfo,
+                 instruction_name: str,
                  setup2instruction_function):
         self._setup2instruction_function = setup2instruction_function
-        self.setup_parser = SetupParser(instruction_meta_info)
+        self.setup_parser = SetupParser(instruction_name)
 
     def apply(self, source: SingleInstructionParserSource) -> TestCaseInstruction:
         setup = self.setup_parser.apply(source)

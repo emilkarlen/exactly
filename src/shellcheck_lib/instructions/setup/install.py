@@ -8,10 +8,10 @@ from shellcheck_lib.instructions.utils.parse_utils import split_arguments_list_s
 from shellcheck_lib.test_case.instruction_description import InvokationVariant, Description
 from shellcheck_lib.test_case.instruction_setup import SingleInstructionSetup
 from shellcheck_lib.test_case.os_services import OsServices
-from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
-from shellcheck_lib.test_case.sections.result import sh
-from shellcheck_lib.test_case.sections.result import svh
-from shellcheck_lib.test_case.sections.setup import SetupPhaseInstruction, SetupSettingsBuilder
+from shellcheck_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
+from shellcheck_lib.test_case.phases.result import sh
+from shellcheck_lib.test_case.phases.result import svh
+from shellcheck_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:

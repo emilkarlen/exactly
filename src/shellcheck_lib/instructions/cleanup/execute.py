@@ -1,15 +1,13 @@
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser
-from shellcheck_lib.execution.phases import CLEANUP
 from shellcheck_lib.instructions.multi_phase_instructions import execute
-from shellcheck_lib.instructions.utils import sub_process_execution
 from shellcheck_lib.instructions.utils.pre_or_post_validation import PreOrPostEdsSvhValidationForSuccessOrHardError, \
     PreOrPostEdsSvhValidationErrorValidator
 from shellcheck_lib.test_case.instruction_setup import SingleInstructionSetup
 from shellcheck_lib.test_case.os_services import OsServices
-from shellcheck_lib.test_case.sections.cleanup import CleanupPhaseInstruction, PreviousPhase
-from shellcheck_lib.test_case.sections.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
-from shellcheck_lib.test_case.sections.result import sh
-from shellcheck_lib.test_case.sections.result import svh
+from shellcheck_lib.test_case.phases.cleanup import CleanupPhaseInstruction, PreviousPhase
+from shellcheck_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
+from shellcheck_lib.test_case.phases.result import sh
+from shellcheck_lib.test_case.phases.result import svh
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
@@ -20,8 +18,7 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
 
 
 def parser(instruction_name: str) -> SingleInstructionParser:
-    return execute.InstructionParser(sub_process_execution.InstructionMetaInfo(CLEANUP.identifier,
-                                                                               instruction_name),
+    return execute.InstructionParser(instruction_name,
                                      _Instruction)
 
 
@@ -48,4 +45,6 @@ class _Instruction(CleanupPhaseInstruction):
         validation_result = self._validate_from_main(environment)
         if validation_result.is_hard_error:
             return validation_result
-        return execute.run_and_return_sh(self.setup, environment.home_and_eds)
+        return execute.run_and_return_sh(self.setup,
+                                         environment.home_and_eds,
+                                         environment.phase_logging)

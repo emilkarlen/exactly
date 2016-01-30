@@ -4,9 +4,9 @@ import types
 
 from shellcheck_lib.execution import phases
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
-from shellcheck_lib.test_case.sections import common
-from shellcheck_lib.test_case.sections.result import pfh
-from shellcheck_lib.test_case.sections.result import sh
+from shellcheck_lib.test_case.phases import common
+from shellcheck_lib.test_case.phases.result import pfh
+from shellcheck_lib.test_case.phases.result import sh
 
 
 def standard_phase_file_path_eds(eds: ExecutionDirectoryStructure,

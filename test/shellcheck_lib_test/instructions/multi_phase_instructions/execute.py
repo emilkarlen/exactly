@@ -4,8 +4,8 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
 from shellcheck_lib.instructions.multi_phase_instructions import execute as sut
 from shellcheck_lib.instructions.utils.relative_path_options import REL_TMP_OPTION
-from shellcheck_lib.instructions.utils.sub_process_execution import InstructionMetaInfo, ResultAndStderr
-from shellcheck_lib.test_case.sections.common import HomeAndEds
+from shellcheck_lib.instructions.utils.sub_process_execution import ResultAndStderr
+from shellcheck_lib.test_case.phases.common import HomeAndEds, PhaseLoggingPaths
 from shellcheck_lib_test.instructions.test_resources.check_description import suite_for_description
 from shellcheck_lib_test.test_resources import home_and_eds_test
 from shellcheck_lib_test.test_resources import python_program_execution as py_exe
@@ -22,7 +22,9 @@ class ExecuteAction(home_and_eds_test.Action):
 
     def apply(self,
               home_and_eds: HomeAndEds) -> ResultAndStderr:
-        return sut.run(self.setup, home_and_eds)
+        return sut.run(self.setup,
+                       home_and_eds,
+                       PhaseLoggingPaths(home_and_eds.eds.log_dir, 'the-phase'))
 
 
 class TestCaseBase(home_and_eds_test.TestCaseBase):
@@ -199,9 +201,7 @@ class TestSource(TestCaseBase):
 
 
 def _new_parser() -> sut.SetupParser:
-    instruction_meta_info = InstructionMetaInfo('phase-name',
-                                                'instruction-name')
-    return sut.SetupParser(instruction_meta_info)
+    return sut.SetupParser('instruction-name')
 
 
 def py_pgm_that_exits_with_value_on_command_line(stderr_output) -> str:

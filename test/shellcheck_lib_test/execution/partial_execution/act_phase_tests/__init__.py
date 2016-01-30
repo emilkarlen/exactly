@@ -1,6 +1,6 @@
 import unittest
 
-from shellcheck_lib_test.execution.partial_execution.test_cases import \
+from shellcheck_lib_test.execution.partial_execution.act_phase_tests import \
     all_phases_should_be_executed_and_result_from_action_saved_etc, \
     act_phase_should_be_transformed_to_script_file, \
     result_from_action_phase_should_be_saved, stdin_should_be_redirected_to_file_if_set_in_phase_env
@@ -36,10 +36,8 @@ class Test(unittest.TestCase):
                 all_phases_should_be_executed_and_result_from_action_saved_etc.assertions)
 
 
-def suite():
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(Test))
-    return ret_val
+def suite() -> unittest.TestSuite:
+    return unittest.makeSuite(Test)
 
 
 def run_suite():
@@ -48,4 +46,4 @@ def run_suite():
 
 
 if __name__ == '__main__':
-    unittest.main()
+    run_suite()
