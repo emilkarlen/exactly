@@ -126,7 +126,7 @@ def _resolve_root(script_file_path_name: str) -> pathlib.Path:
     return script_file_path.resolve().parent
 
 
-src = pathlib.Path('executables-src')
+src_base_dir = pathlib.Path('executables-src')
 first_step_dir = pathlib.Path('first-step')
 cleanup_dir = pathlib.Path('cleanup')
 external_programs_dir = pathlib.Path('external-programs')
@@ -134,8 +134,8 @@ organize_dir = pathlib.Path('organize')
 setup_dir = pathlib.Path('setup')
 
 
-def st(src_base: pathlib.Path, target_base: pathlib.Path, file_name: str) -> SourceAndTarget:
-    return SourceAndTarget(src_base / file_name,
+def st(target_base: pathlib.Path, file_name: str) -> SourceAndTarget:
+    return SourceAndTarget(src_base_dir / file_name,
                            target_base / file_name)
 
 
@@ -143,13 +143,13 @@ st2 = SourceAndTarget
 
 
 def do_nothing(target_file: pathlib.Path) -> SourceAndTarget:
-    return st2(src / 'do-nothing',
+    return st2(src_base_dir / 'do-nothing',
                target_file)
 
 
 files = [
-    st(src, first_step_dir, 'hello-world'),
-    st(src, first_step_dir, 'remove-all-files-in-the-current-directory'),
+    st(first_step_dir, 'hello-world'),
+    st(first_step_dir, 'remove-all-files-in-the-current-directory'),
 
     do_nothing(cleanup_dir / 'manipulate-database-contents'),
     do_nothing(cleanup_dir / 'my-helper-program'),
@@ -160,9 +160,9 @@ files = [
 
     do_nothing(organize_dir / 'bin' / 'do-something-good-with'),
 
-    st(src, setup_dir, 'copy-stdin-to-stdout'),
-    st(src, setup_dir, 'remove-all-files-in-the-current-directory'),
-    st(src, setup_dir, 'list-files-under-pwd'),
+    st(setup_dir, 'copy-stdin-to-stdout'),
+    st(setup_dir, 'remove-all-files-in-the-current-directory'),
+    st(setup_dir, 'list-files-under-pwd'),
 ]
 
 if __name__ == '__main__':
@@ -171,7 +171,7 @@ if __name__ == '__main__':
         _msg('Cannot resolve root directory: ' + str(base_dir))
     _msg('Examples dir: ' + str(base_dir))
     if len(sys.argv) != 2:
-        _msg("Usage all|clean|test")
+        _msg("Usage all|clean")
         sys.exit(1)
     cmd = sys.argv[1]
     maker = UnixMake('.py', sys.executable)
@@ -180,4 +180,5 @@ if __name__ == '__main__':
     elif cmd == 'clean':
         maker.clean_all(base_dir, files)
     else:
-        _msg('testing')
+        _msg('Unknown command: ' + cmd)
+        sys.exit(1)
