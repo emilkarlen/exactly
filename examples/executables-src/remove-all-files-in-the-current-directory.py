@@ -1,5 +1,3 @@
-#!/usr/bin/python3
-
 #!/usr/bin/python
 
 print('All files in current directory removed successfully!')
