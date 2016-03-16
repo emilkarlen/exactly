@@ -130,6 +130,7 @@ src = pathlib.Path('executables-src')
 first_step_dir = pathlib.Path('first-step')
 cleanup_dir = pathlib.Path('cleanup')
 external_programs_dir = pathlib.Path('external-programs')
+organize_dir = pathlib.Path('organize')
 
 
 def st(src_base: pathlib.Path, target_base: pathlib.Path, file_name: str) -> SourceAndTarget:
@@ -155,6 +156,8 @@ files = [
     do_nothing(external_programs_dir / 'my-assert-helper-program'),
     do_nothing(external_programs_dir / 'my-setup-helper-program'),
     do_nothing(external_programs_dir / 'system-under-test'),
+
+    do_nothing(organize_dir / 'bin' / 'do-something-good-with'),
 ]
 
 if __name__ == '__main__':
