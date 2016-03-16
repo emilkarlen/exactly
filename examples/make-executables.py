@@ -88,7 +88,7 @@ class UnixMake:
         ret_val = setup.target.is_file() and \
                   setup.target.stat().st_mtime >= source_file.stat().st_mtime
         if ret_val:
-            _msg('Fresh: ' + str(setup.target_plain))
+            _msg('Fresh : ' + str(setup.target_plain))
         return ret_val
 
     def _source_file(self, setup: SourceAndTargetSetup) -> pathlib.Path:
@@ -126,17 +126,33 @@ def _resolve_root(script_file_path_name: str) -> pathlib.Path:
     return script_file_path.resolve().parent
 
 
+src = pathlib.Path('executables-src')
+first_step = pathlib.Path('first-step')
+
+
+def st(src_base: pathlib.Path, target_base: pathlib.Path, file_name: str) -> SourceAndTarget:
+    return SourceAndTarget(src_base / file_name,
+                           target_base / file_name)
+
+
+files = [
+    st(src, first_step, 'hello-world'),
+    st(src, first_step, 'remove-all-files-in-the-current-directory'),
+]
+
 if __name__ == '__main__':
     base_dir = _resolve_root(sys.argv[0])
-    base_dir = pathlib.Path.cwd().resolve()
     if not base_dir.is_dir():
         _msg('Cannot resolve root directory: ' + str(base_dir))
-    _msg(str(base_dir))
-    if len(sys.argv) != 3:
+    _msg('Examples dir: ' + str(base_dir))
+    if len(sys.argv) != 2:
         _msg("Usage all|clean|test")
         sys.exit(1)
-
+    cmd = sys.argv[1]
     maker = UnixMake('.py', sys.executable)
-    ts = SourceAndTarget(pathlib.Path(sys.argv[1]),
-                         pathlib.Path(sys.argv[2]))
-    maker.make(SourceAndTargetSetup(base_dir, ts))
+    if cmd == 'all':
+        maker.make_all(base_dir, files)
+    elif cmd == 'clean':
+        maker.clean_all(base_dir, files)
+    else:
+        _msg('testing')
