@@ -131,6 +131,7 @@ first_step_dir = pathlib.Path('first-step')
 cleanup_dir = pathlib.Path('cleanup')
 external_programs_dir = pathlib.Path('external-programs')
 organize_dir = pathlib.Path('organize')
+setup_dir = pathlib.Path('setup')
 
 
 def st(src_base: pathlib.Path, target_base: pathlib.Path, file_name: str) -> SourceAndTarget:
@@ -158,6 +159,10 @@ files = [
     do_nothing(external_programs_dir / 'system-under-test'),
 
     do_nothing(organize_dir / 'bin' / 'do-something-good-with'),
+
+    st(src, setup_dir, 'copy-stdin-to-stdout'),
+    st(src, setup_dir, 'remove-all-files-in-the-current-directory'),
+    st(src, setup_dir, 'list-files-under-pwd'),
 ]
 
 if __name__ == '__main__':
