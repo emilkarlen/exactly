@@ -127,7 +127,8 @@ def _resolve_root(script_file_path_name: str) -> pathlib.Path:
 
 
 src = pathlib.Path('executables-src')
-first_step = pathlib.Path('first-step')
+first_step_dir = pathlib.Path('first-step')
+cleanup_dir = pathlib.Path('cleanup')
 
 
 def st(src_base: pathlib.Path, target_base: pathlib.Path, file_name: str) -> SourceAndTarget:
@@ -135,9 +136,17 @@ def st(src_base: pathlib.Path, target_base: pathlib.Path, file_name: str) -> Sou
                            target_base / file_name)
 
 
+st2 = SourceAndTarget
+
+
 files = [
-    st(src, first_step, 'hello-world'),
-    st(src, first_step, 'remove-all-files-in-the-current-directory'),
+    st(src, first_step_dir, 'hello-world'),
+    st(src, first_step_dir, 'remove-all-files-in-the-current-directory'),
+
+    st2(src / 'do-nothing',
+        cleanup_dir / 'manipulate-database-contents'),
+    st2(src / 'do-nothing',
+        cleanup_dir / 'my-helper-program'),
 ]
 
 if __name__ == '__main__':
