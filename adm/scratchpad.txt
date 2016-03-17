@@ -22,20 +22,20 @@ Tala om att
 ** help: Former
 
 *** global
-**** help help
+**** help help (skiljer inte pgm-help, help-help)
 Talar om vilka hjälp former som finns
 *** Testfall
-**** help
+**** help (pars ok, innehåll todo)
 Översikt över faser
-**** help example
+**** help example (pars ok, innehåll todo)
 Enkelt exempel.
-**** help instructions
+**** help instructions (OK)
 listar instruktioner per fas
-**** help PHASE
+**** help PHASE (pars ok, innehåll todo)
 Översikt över fas (ev inkl listning av instruktioner).
-**** help PHASE INSTRUCTION
+**** help PHASE INSTRUCTION (OK)
 Om enskild instruktion i enskild fas.
-**** help PHASE instructions
+**** help PHASE instructions (parse ok, innehåll todo)
 **** help INSTRUCTION (såvida INSTRUCTION inte sammanfaller m ovanstående former)
 *** Testsvit
 **** help suite [SAMMA SOM FÖR TESTFALL]

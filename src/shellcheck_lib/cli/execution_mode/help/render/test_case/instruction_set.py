@@ -1,5 +1,6 @@
 from shellcheck_lib.cli.execution_mode.help.contents import TestCaseHelp, \
     TestCasePhaseInstructionSet
+from shellcheck_lib.document.syntax import phase_name_in_phase_syntax
 from shellcheck_lib.help.test_case.instruction import instruction_set_list_item
 from shellcheck_lib.util.textformat.structure import document as doc
 from shellcheck_lib.util.textformat.structure import lists
@@ -11,7 +12,7 @@ def instruction_set_per_phase(test_case_help: TestCaseHelp) -> doc.SectionConten
     for test_case_phase_help in test_case_help.phase_helps:
         if test_case_phase_help.is_phase_with_instructions:
             instruction_list = _instruction_list(test_case_phase_help.instruction_set)
-            sections.append(doc.Section(Text(test_case_phase_help.name),
+            sections.append(doc.Section(Text(phase_name_in_phase_syntax(test_case_phase_help.name)),
                                         doc.SectionContents([instruction_list], [])))
     return doc.SectionContents([], sections)
 

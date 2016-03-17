@@ -12,6 +12,11 @@ ANONYMOUS_PHASE_PRESENTATION_NAME = '<top-level>'
 
 PHASE_SYNTAX = '[PHASE-NAME]'
 
+
+def phase_name_in_phase_syntax(phase_name: str) -> str:
+    return '[' + phase_name + ']'
+
+
 TYPE_EMPTY = 0
 TYPE_COMMENT = 1
 TYPE_PHASE = 2
