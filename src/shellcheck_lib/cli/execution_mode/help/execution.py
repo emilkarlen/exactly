@@ -116,6 +116,11 @@ def doc_for(application_help: ApplicationHelp,
 def help_invokation_variants() -> list:
     return [
         InvokationVariant(
+                help(argument_parsing.HELP),
+                paragraphs_parse.normalize_and_parse(
+                        'Displays this help.'
+                )),
+        InvokationVariant(
                 help(''),
                 paragraphs_parse.normalize_and_parse(
                         'Describes the test-case functionality.'
@@ -123,7 +128,7 @@ def help_invokation_variants() -> list:
         InvokationVariant(
                 help(argument_parsing.INSTRUCTIONS),
                 paragraphs_parse.normalize_and_parse(
-                        'Lists instructions per phase   .'
+                        'Lists instructions per phase.'
                 )),
         InvokationVariant(
                 help('PHASE'),
