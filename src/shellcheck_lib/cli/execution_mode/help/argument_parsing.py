@@ -3,6 +3,7 @@ from shellcheck_lib.execution import phases
 
 from . import settings
 
+HELP = 'help'
 INSTRUCTIONS = 'instructions'
 SUITE = 'suite'
 
@@ -32,7 +33,9 @@ class Parser:
         :raises HelpError Invalid usage
         """
         if not help_command_arguments:
-            return settings.ProgramHelpSettings()
+            return settings.ProgramHelpSettings(settings.ProgramHelpItem.PROGRAM)
+        if help_command_arguments[0] == HELP:
+            return settings.ProgramHelpSettings(settings.ProgramHelpItem.HELP)
         if help_command_arguments[0] == SUITE:
             return self._parse_suite_help(help_command_arguments[1:])
         if len(help_command_arguments) == 2:
@@ -48,7 +51,7 @@ class Parser:
             return settings.TestCaseHelpSettings(settings.TestCaseHelpItem.PHASE,
                                                  argument,
                                                  case_help.phase_name_2_phase_help[argument])
-        return self._parse_instruction_search(argument)
+        return self._parse_instruction_search_when_not_a_phase(argument)
 
     def _parse_suite_help(self, arguments: list) -> settings.TestSuiteHelpSettings:
         if not arguments:
@@ -71,6 +74,10 @@ class Parser:
             if not test_case_phase_help.is_phase_with_instructions:
                 msg = 'The phase %s does not contain instructions.' % instruction_name
                 raise HelpError(msg)
+            if instruction_name == INSTRUCTIONS:
+                return settings.TestCaseHelpSettings(settings.TestCaseHelpItem.PHASE_INSTRUCTION_LIST,
+                                                     phase_name,
+                                                     test_case_phase_help)
             try:
                 description = test_case_phase_help.instruction_set.name_2_description[instruction_name]
                 return settings.TestCaseHelpSettings(settings.TestCaseHelpItem.INSTRUCTION,
@@ -86,7 +93,7 @@ class Parser:
                 msg = 'Unknown phase: ' + phase_name
             raise HelpError(msg)
 
-    def _parse_instruction_search(self, instruction_name) -> settings.TestCaseHelpSettings:
+    def _parse_instruction_search_when_not_a_phase(self, instruction_name) -> settings.TestCaseHelpSettings:
         phase_and_instr_descr_list = []
         test_case_phase_helps = self.application_help.test_case_help.phase_helps
         for test_case_phase_help in test_case_phase_helps:
@@ -96,7 +103,7 @@ class Parser:
                     phase_and_instr_descr_list.append((test_case_phase_help.name,
                                                        name_2_description[instruction_name]))
         if not phase_and_instr_descr_list:
-            msg = 'There is no instruction "%s"' % instruction_name
+            msg = 'Neither the name of a phase nor of an instruction: "%s"' % instruction_name
             raise HelpError(msg)
         return settings.TestCaseHelpSettings(settings.TestCaseHelpItem.INSTRUCTION_LIST,
                                              instruction_name,

@@ -9,12 +9,27 @@ from shellcheck_lib_test.test_resources.instruction_description import Descripti
 
 
 class TestProgramHelp(unittest.TestCase):
-    def test_program(self):
+    def test_program_help(self):
         actual = sut.parse(_app_help_for([]),
                            [])
         self.assertIsInstance(actual,
                               sut.settings.ProgramHelpSettings,
                               'Expecting settings for Program')
+        assert isinstance(actual, sut.settings.ProgramHelpSettings)
+        self.assertIs(sut.settings.ProgramHelpItem.PROGRAM,
+                      actual.item,
+                      'Expects program help')
+
+    def test_help_help(self):
+        actual = sut.parse(_app_help_for([sut.HELP]),
+                           [])
+        self.assertIsInstance(actual,
+                              sut.settings.ProgramHelpSettings,
+                              'Expecting settings for Program')
+        assert isinstance(actual, sut.settings.ProgramHelpSettings)
+        self.assertIs(sut.settings.ProgramHelpItem.PROGRAM,
+                      actual.item,
+                      'Expects program help')
 
 
 class TestTestCasePhase(unittest.TestCase):

@@ -5,7 +5,7 @@ from shellcheck_lib.cli.execution_mode.help.contents import ApplicationHelp, Tes
     TestSuiteSectionHelp, TestCaseHelp, TestCasePhaseHelp
 from shellcheck_lib.cli.execution_mode.help.render.test_case import instruction_set
 from shellcheck_lib.cli.execution_mode.help.settings import HelpSettings, TestCaseHelpSettings, TestCaseHelpItem, \
-    TestSuiteHelpSettings, TestSuiteHelpItem, ProgramHelpSettings
+    TestSuiteHelpSettings, TestSuiteHelpItem, ProgramHelpSettings, ProgramHelpItem
 from shellcheck_lib.help.test_case import instruction
 from shellcheck_lib.test_case.instruction_description import Description
 from shellcheck_lib.util.textformat.formatting import section, paragraph_item
@@ -22,6 +22,9 @@ class TestCaseHelpRenderer:
 
     def phase(self, phase_help: TestCasePhaseHelp) -> doc.SectionContents:
         return doc.SectionContents([para('TODO test-case help for phase ' + phase_help.name)], [])
+
+    def phase_instruction_list(self, phase_help: TestCasePhaseHelp) -> doc.SectionContents:
+        return doc.SectionContents([para('TODO test-case help for phase %s/instruction-list' % phase_help.name)], [])
 
     def instruction_set(self, test_case_help: TestCaseHelp) -> doc.SectionContents:
         return instruction_set.instruction_set_per_phase(test_case_help)
@@ -69,7 +72,12 @@ def print_help(file,
 def doc_for(application_help: ApplicationHelp,
             settings: HelpSettings) -> doc.SectionContents:
     if isinstance(settings, ProgramHelpSettings):
-        return doc.SectionContents([para('TODO program help')], [])
+        item = settings.item
+        if item is ProgramHelpItem.PROGRAM:
+            return doc.SectionContents([para('TODO program help')], [])
+        if item is ProgramHelpItem.HELP:
+            return doc.SectionContents([para('TODO program help help')], [])
+        raise ValueError('Invalid %s: %s' % (str(ProgramHelpItem), str(item)))
     if isinstance(settings, TestCaseHelpSettings):
         tc_help = TestCaseHelpRenderer()
         item = settings.item
@@ -79,6 +87,8 @@ def doc_for(application_help: ApplicationHelp,
             return tc_help.instruction_set(application_help.test_case_help)
         if item is TestCaseHelpItem.PHASE:
             return tc_help.phase(settings.data)
+        if item is TestCaseHelpItem.PHASE_INSTRUCTION_LIST:
+            return tc_help.phase_instruction_list(settings.data)
         if item is TestCaseHelpItem.INSTRUCTION:
             return tc_help.instruction(settings.data)
         if item is TestCaseHelpItem.INSTRUCTION_LIST:

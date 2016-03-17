@@ -1,12 +1,18 @@
 from enum import Enum
 
 
+class ProgramHelpItem(Enum):
+    HELP = 0
+    PROGRAM = 1
+
+
 class TestCaseHelpItem(Enum):
     OVERVIEW = 0
     INSTRUCTION_SET = 1
     PHASE = 2
     INSTRUCTION = 3
     INSTRUCTION_LIST = 4
+    PHASE_INSTRUCTION_LIST = 5
 
 
 class TestSuiteHelpItem(Enum):
@@ -19,7 +25,13 @@ class HelpSettings:
 
 
 class ProgramHelpSettings(HelpSettings):
-    pass
+    def __init__(self,
+                 item: ProgramHelpItem):
+        self._item = item
+
+    @property
+    def item(self) -> ProgramHelpItem:
+        return self._item
 
 
 class TestCaseHelpSettings(HelpSettings):
