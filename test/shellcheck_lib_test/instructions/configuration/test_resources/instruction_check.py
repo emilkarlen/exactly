@@ -61,7 +61,7 @@ class Executor:
         assert isinstance(instruction, AnonymousPhaseInstruction)
         prefix = strftime("shellcheck-test-%Y-%m-%d-%H-%M-%S", localtime())
         with tempfile.TemporaryDirectory(prefix=prefix + "-home-") as home_dir_name:
-            home_dir_path = pathlib.Path(home_dir_name)
+            home_dir_path = pathlib.Path(home_dir_name).resolve()
             self.arrangement.home_contents.write_to(home_dir_path)
             configuration_builder = self.arrangement.initial_configuration_builder
             configuration_builder.set_home_dir(home_dir_path)

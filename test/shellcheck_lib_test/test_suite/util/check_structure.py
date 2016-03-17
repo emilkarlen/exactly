@@ -2,6 +2,7 @@ import pathlib
 import tempfile
 import unittest
 
+from shellcheck_lib.general.file_utils import resolved_path
 from shellcheck_lib.test_case.test_case_processing import TestCaseSetup
 from shellcheck_lib.test_suite import structure
 from shellcheck_lib.test_suite.suite_hierarchy_reading import Reader, default_environment
@@ -22,7 +23,7 @@ class Setup:
 def check(setup: Setup,
           put: unittest.TestCase):
     with tempfile.TemporaryDirectory(prefix='shellcheck-test-') as tmp_dir:
-        tmp_dir_path = pathlib.Path(tmp_dir)
+        tmp_dir_path = resolved_path(tmp_dir)
         setup.file_structure_to_read(tmp_dir_path).write_to(tmp_dir_path)
         actual = Reader(default_environment()).apply(setup.root_suite_based_at(tmp_dir_path))
         expected = setup.expected_structure_based_at(tmp_dir_path)

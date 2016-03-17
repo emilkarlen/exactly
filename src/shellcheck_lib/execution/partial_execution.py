@@ -13,7 +13,7 @@ from shellcheck_lib.execution.phase_step import PhaseStep
 from shellcheck_lib.execution.phase_step_execution import ElementHeaderExecutor
 from shellcheck_lib.execution.single_instruction_executor import ControlledInstructionExecutor
 from shellcheck_lib.general import line_source
-from shellcheck_lib.general.file_utils import write_new_text_file
+from shellcheck_lib.general.file_utils import write_new_text_file, resolved_path_name
 from shellcheck_lib.general.std import StdOutputFiles, StdFiles
 from shellcheck_lib.test_case.os_services import new_default, OsServices
 from shellcheck_lib.test_case.phases import common
@@ -152,7 +152,7 @@ def execute(script_handling: ScriptHandling,
 
 def construct_eds(execution_directory_root_name_prefix: str) -> ExecutionDirectoryStructure:
     eds_structure_root = tempfile.mkdtemp(prefix=execution_directory_root_name_prefix)
-    return construct_at(eds_structure_root)
+    return construct_at(resolved_path_name(eds_structure_root))
 
 
 class PartialExecutor:
