@@ -46,8 +46,8 @@ def variants_list(invokation_variants: list,
 
 
 def _invokation_variants_content(description: Description) -> doc.SectionContents:
-
     def syntax_element_description_list() -> paragraph.ParagraphItem:
+        blank_line_between_elements = lists.Separations(1, 0)
         items = []
         for x in description.syntax_element_descriptions():
             assert isinstance(x, SyntaxElementDescription)
@@ -56,15 +56,14 @@ def _invokation_variants_content(description: Description) -> doc.SectionContent
                 variants_list_paragraphs = [para('Forms:'),
                                             variants_list(x.invokation_variants,
                                                           True,
-                                                          )]
+                                                          custom_separations=blank_line_between_elements)]
             items.append(lists.HeaderContentListItem(Text(x.element_name),
                                                      x.description_rest +
                                                      variants_list_paragraphs))
-        separations = lists.Separations(1, 0)
         return lists.HeaderContentList(items,
                                        lists.Format(lists.ListType.VARIABLE_LIST,
                                                     custom_indent_spaces=_custom_list_indent(True),
-                                                    custom_separations=separations))
+                                                    custom_separations=blank_line_between_elements))
 
     def syntax_element_description_paragraph_items() -> list:
         if not description.syntax_element_descriptions():
