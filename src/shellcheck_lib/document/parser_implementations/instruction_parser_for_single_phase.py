@@ -3,8 +3,8 @@ from shellcheck_lib.document import parse
 from shellcheck_lib.document import syntax
 from shellcheck_lib.document.model import Instruction
 from shellcheck_lib.document.parse import SourceError
-from shellcheck_lib.general import line_source
 from shellcheck_lib.test_case.phases.common import TestCaseInstruction
+from shellcheck_lib.util import line_source
 
 
 class SingleInstructionInvalidArgumentException(Exception):

@@ -2,8 +2,8 @@ import pathlib
 import tempfile
 import unittest
 
-from shellcheck_lib.general.file_utils import resolved_path
 from shellcheck_lib.test_suite.suite_hierarchy_reading import Reader, default_environment
+from shellcheck_lib.util.file_utils import resolved_path
 from shellcheck_lib_test.test_resources.file_structure import DirContents
 
 

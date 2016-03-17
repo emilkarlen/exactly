@@ -1,6 +1,6 @@
-from shellcheck_lib.general.textformat.formatting import paragraph_item
-from shellcheck_lib.general.textformat.formatting.wrapper import Indent
-from shellcheck_lib.general.textformat.structure.document import SectionContents, Section
+from shellcheck_lib.util.textformat.formatting import paragraph_item
+from shellcheck_lib.util.textformat.formatting.wrapper import Indent
+from shellcheck_lib.util.textformat.structure.document import SectionContents, Section
 
 
 class Separation(tuple):

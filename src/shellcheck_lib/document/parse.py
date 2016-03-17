@@ -1,7 +1,7 @@
 from shellcheck_lib.document import model
 from shellcheck_lib.document import syntax
-from shellcheck_lib.general import line_source
-from shellcheck_lib.general.line_source import LineSource
+from shellcheck_lib.util import line_source
+from shellcheck_lib.util.line_source import LineSource
 
 
 class SourceError(Exception):

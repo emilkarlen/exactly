@@ -1,6 +1,6 @@
 import os
 
-from shellcheck_lib.general.line_source import Line
+from shellcheck_lib.util.line_source import Line
 
 
 class ScriptLanguage:

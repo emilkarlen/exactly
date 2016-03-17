@@ -5,8 +5,8 @@ from shellcheck_lib.document import model
 from shellcheck_lib.document import parse
 from shellcheck_lib.document.model import ElementType
 from shellcheck_lib.document.parse import SourceError, PlainDocumentParser, FileSourceError
-from shellcheck_lib.general import line_source
-from shellcheck_lib.general.line_source import Line
+from shellcheck_lib.util import line_source
+from shellcheck_lib.util.line_source import Line
 from shellcheck_lib_test.document.test_resources import assert_equals_line, assert_equals_line_sequence
 from shellcheck_lib_test.test_resources.assert_utils import TestCaseWithMessageHeader, \
     MessageWithHeaderConstructor

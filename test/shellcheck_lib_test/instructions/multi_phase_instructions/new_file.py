@@ -3,8 +3,8 @@ import unittest
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException, SingleInstructionParserSource
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
-from shellcheck_lib.general.string import lines_content
 from shellcheck_lib.instructions.multi_phase_instructions import new_file as sut
+from shellcheck_lib.util.string import lines_content
 from shellcheck_lib_test.instructions.test_resources.check_description import suite_for_description
 from shellcheck_lib_test.test_resources.execution import eds_test
 from shellcheck_lib_test.test_resources.execution.eds_contents_check import ActRootContainsExactly, \

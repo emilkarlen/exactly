@@ -5,10 +5,10 @@ import unittest
 from contextlib import contextmanager
 
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
-from shellcheck_lib.general.std import StdFiles
 from shellcheck_lib.test_case.phases.act.phase_setup import ActProgramExecutor, SourceSetup
 from shellcheck_lib.test_case.phases.act.script_source import ScriptSourceBuilder
 from shellcheck_lib.test_case.phases.result import svh
+from shellcheck_lib.util.std import StdFiles
 from shellcheck_lib_test.test_resources.execution.eds_populator import act_dir_contents
 from shellcheck_lib_test.test_resources.execution.utils import execution_directory_structure
 from shellcheck_lib_test.test_resources.file_structure import DirContents, empty_dir

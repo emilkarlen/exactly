@@ -1,6 +1,6 @@
 import unittest
 
-from shellcheck_lib_test.general import functional, line_source, monad, textformat
+from shellcheck_lib_test.util import functional, line_source, monad, textformat
 
 
 def suite():

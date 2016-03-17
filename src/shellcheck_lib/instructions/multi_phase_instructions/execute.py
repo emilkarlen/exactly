@@ -2,8 +2,6 @@ import shlex
 
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, SingleInstructionParserSource, SingleInstructionInvalidArgumentException
-from shellcheck_lib.general.textformat import parse as paragraphs_parse
-from shellcheck_lib.general.textformat.structure.paragraph import single_para
 from shellcheck_lib.instructions.utils import executable_file
 from shellcheck_lib.instructions.utils import file_properties
 from shellcheck_lib.instructions.utils import parse_file_ref
@@ -21,6 +19,8 @@ from shellcheck_lib.test_case.instruction_description import InvokationVariant, 
 from shellcheck_lib.test_case.phases.common import HomeAndEds, TestCaseInstruction, PhaseLoggingPaths
 from shellcheck_lib.test_case.phases.result import pfh
 from shellcheck_lib.test_case.phases.result import sh
+from shellcheck_lib.util.textformat import parse as paragraphs_parse
+from shellcheck_lib.util.textformat.structure.paragraph import single_para
 
 INTERPRET_OPTION = '--interpret'
 SOURCE_OPTION = '--source'

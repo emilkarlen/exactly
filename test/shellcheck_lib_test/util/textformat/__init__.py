@@ -1,6 +1,6 @@
 import unittest
 
-from shellcheck_lib_test.general.textformat import formatting, parse
+from shellcheck_lib_test.util.textformat import formatting, parse
 
 
 def suite():

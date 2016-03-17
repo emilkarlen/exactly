@@ -1,6 +1,6 @@
 from enum import Enum
 
-from shellcheck_lib.general.textformat.structure.core import Text, ParagraphItem
+from shellcheck_lib.util.textformat.structure.core import Text, ParagraphItem
 
 
 class HeaderContentListItem(tuple):

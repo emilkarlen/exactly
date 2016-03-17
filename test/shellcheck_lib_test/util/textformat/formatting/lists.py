@@ -1,8 +1,8 @@
 import unittest
 
-from shellcheck_lib.general.textformat.formatting import lists as sut
-from shellcheck_lib.general.textformat.structure import core
-from shellcheck_lib.general.textformat.structure import paragraph
+from shellcheck_lib.util.textformat.formatting import lists as sut
+from shellcheck_lib.util.textformat.structure import core
+from shellcheck_lib.util.textformat.structure import paragraph
 
 
 class TestHeaderAndIndentFormatWithMarker(unittest.TestCase):

@@ -1,4 +1,4 @@
-from shellcheck_lib.general.textformat.structure.core import ParagraphItem, Text
+from shellcheck_lib.util.textformat.structure.core import ParagraphItem, Text
 
 
 class Paragraph(ParagraphItem):

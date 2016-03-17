@@ -1,8 +1,5 @@
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionInvalidArgumentException, SingleInstructionParserSource
-from shellcheck_lib.general.textformat.structure import core
-from shellcheck_lib.general.textformat.structure import lists
-from shellcheck_lib.general.textformat.structure.paragraph import single_para
 from shellcheck_lib.instructions.utils import file_ref
 from shellcheck_lib.instructions.utils.file_properties import FileType, must_exist_as, FilePropertiesCheck, type_name
 from shellcheck_lib.instructions.utils.file_ref_check import pre_or_post_eds_failure_message_or_none, FileRefCheck
@@ -14,6 +11,9 @@ from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.phases import common as i
 from shellcheck_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from shellcheck_lib.test_case.phases.result import pfh
+from shellcheck_lib.util.textformat.structure import core
+from shellcheck_lib.util.textformat.structure import lists
+from shellcheck_lib.util.textformat.structure.paragraph import single_para
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:

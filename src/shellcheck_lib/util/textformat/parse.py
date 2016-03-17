@@ -1,7 +1,7 @@
 import textwrap
 
-from shellcheck_lib.general.textformat.structure.core import ParagraphItem, Text
-from shellcheck_lib.general.textformat.structure.paragraph import Paragraph
+from shellcheck_lib.util.textformat.structure.core import ParagraphItem, Text
+from shellcheck_lib.util.textformat.structure.paragraph import Paragraph
 
 NUM_TEXT_SEPARATOR_LINES = 1
 NUM_PARAGRAPH_SEPARATOR_LINES = 2

@@ -1,6 +1,6 @@
 import pathlib
 
-from shellcheck_lib.general import line_source
+from shellcheck_lib.util import line_source
 
 
 class SuiteReadError(Exception):

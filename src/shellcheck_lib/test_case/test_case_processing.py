@@ -2,9 +2,9 @@ import pathlib
 from enum import Enum
 
 from shellcheck_lib.execution.result import FullResult
-from shellcheck_lib.general import line_source
 from shellcheck_lib.test_case import test_case_doc
 from shellcheck_lib.test_case.error_description import ErrorDescription
+from shellcheck_lib.util import line_source
 
 
 class TestCaseSetup:

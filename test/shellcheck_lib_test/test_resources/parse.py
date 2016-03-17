@@ -3,8 +3,8 @@ import shlex
 from shellcheck_lib.document import parse
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParserSource
-from shellcheck_lib.general import line_source
-from shellcheck_lib.general.line_source import LineSequenceBuilder
+from shellcheck_lib.util import line_source
+from shellcheck_lib.util.line_source import LineSequenceBuilder
 
 
 def new_source(instruction_name: str, arguments: str) -> SingleInstructionParserSource:

@@ -1,9 +1,9 @@
 import os
 
 from shellcheck_lib.execution.result import FullResultStatus
-from shellcheck_lib.general.std import StdOutputFiles
 from shellcheck_lib.test_case import test_case_processing
 from shellcheck_lib.test_suite import reporting, structure
+from shellcheck_lib.util.std import StdOutputFiles
 
 INVALID_SUITE_EXIT_CODE = 3
 FAILED_TESTS_EXIT_CODE = 4

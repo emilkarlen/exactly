@@ -1,9 +1,9 @@
 from shellcheck_lib.document import parse
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SectionElementParserForStandardCommentAndEmptyLines
-from shellcheck_lib.general import line_source
 from shellcheck_lib.test_suite.instruction_set import instruction, utils
 from shellcheck_lib.test_suite.instruction_set.instruction import Environment, TestSuiteInstruction
+from shellcheck_lib.util import line_source
 
 
 def new_parser() -> parse.SectionElementParser:

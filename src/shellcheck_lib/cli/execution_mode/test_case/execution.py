@@ -5,12 +5,12 @@ from shellcheck_lib.cli.execution_mode.test_case.settings import Output, TestCas
 from shellcheck_lib.default.execution_mode.test_case import processing
 from shellcheck_lib.execution import full_execution
 from shellcheck_lib.execution.result import FailureInfoVisitor, PhaseFailureInfo, InstructionFailureInfo
-from shellcheck_lib.general import line_source
-from shellcheck_lib.general.std import StdOutputFiles, FilePrinter
 from shellcheck_lib.test_case import error_description
 from shellcheck_lib.test_case import test_case_processing
 from shellcheck_lib.test_case.instruction_setup import InstructionsSetup
 from shellcheck_lib.test_case.test_case_processing import ErrorInfo
+from shellcheck_lib.util import line_source
+from shellcheck_lib.util.std import StdOutputFiles, FilePrinter
 
 NO_EXECUTION_EXIT_CODE = 3
 

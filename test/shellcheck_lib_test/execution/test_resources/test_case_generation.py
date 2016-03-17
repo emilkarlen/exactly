@@ -1,7 +1,7 @@
 import shellcheck_lib_test.test_resources.model_utils
 from shellcheck_lib.document import model
-from shellcheck_lib.general import line_source
 from shellcheck_lib.test_case.phases.common import TestCaseInstruction
+from shellcheck_lib.util import line_source
 
 
 class LinesGenerator:

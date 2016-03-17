@@ -6,8 +6,8 @@ Python built-in exceptions, in cases when the built-in exceptions are "meaningfu
 """
 import pathlib
 
-from shellcheck_lib.general import exception
-from shellcheck_lib.general import file_utils
+from shellcheck_lib.util import exception
+from shellcheck_lib.util import file_utils
 
 
 def create_dir_that_is_expected_to_not_exist(dir_path: pathlib.Path):

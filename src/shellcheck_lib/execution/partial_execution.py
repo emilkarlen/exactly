@@ -12,9 +12,6 @@ from shellcheck_lib.execution import phases
 from shellcheck_lib.execution.phase_step import PhaseStep
 from shellcheck_lib.execution.phase_step_execution import ElementHeaderExecutor
 from shellcheck_lib.execution.single_instruction_executor import ControlledInstructionExecutor
-from shellcheck_lib.general import line_source
-from shellcheck_lib.general.file_utils import write_new_text_file, resolved_path_name
-from shellcheck_lib.general.std import StdOutputFiles, StdFiles
 from shellcheck_lib.test_case.os_services import new_default, OsServices
 from shellcheck_lib.test_case.phases import common
 from shellcheck_lib.test_case.phases.act.phase_setup import PhaseEnvironmentForScriptGeneration, ActProgramExecutor, \
@@ -22,6 +19,9 @@ from shellcheck_lib.test_case.phases.act.phase_setup import PhaseEnvironmentForS
 from shellcheck_lib.test_case.phases.cleanup import PreviousPhase
 from shellcheck_lib.test_case.phases.common import GlobalEnvironmentForPreEdsStep
 from shellcheck_lib.test_case.phases.setup import SetupSettingsBuilder, StdinSettings
+from shellcheck_lib.util import line_source
+from shellcheck_lib.util.file_utils import write_new_text_file, resolved_path_name
+from shellcheck_lib.util.std import StdOutputFiles, StdFiles
 from . import phase_step_execution
 from . import result
 from .execution_directory_structure import construct_at, ExecutionDirectoryStructure, stdin_contents_file

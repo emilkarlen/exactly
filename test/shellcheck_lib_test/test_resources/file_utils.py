@@ -4,8 +4,8 @@ import sys
 import tempfile
 from contextlib import contextmanager
 
-from shellcheck_lib.general.file_utils import resolved_path
-from shellcheck_lib.general.string import lines_content
+from shellcheck_lib.util.file_utils import resolved_path
+from shellcheck_lib.util.string import lines_content
 
 
 def write_file(path: pathlib.Path, contents: str):

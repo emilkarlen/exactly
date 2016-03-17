@@ -3,12 +3,12 @@ import pathlib
 import subprocess
 
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
-from shellcheck_lib.general import file_utils
-from shellcheck_lib.general.file_utils import write_new_text_file
 from shellcheck_lib.instructions.utils import file_services
 from shellcheck_lib.test_case.phases.common import PhaseLoggingPaths
 from shellcheck_lib.test_case.phases.result import pfh
 from shellcheck_lib.test_case.phases.result import sh
+from shellcheck_lib.util import file_utils
+from shellcheck_lib.util.file_utils import write_new_text_file
 
 EXIT_CODE_FILE_NAME = 'exitcode'
 STDOUT_FILE_NAME = 'stdout'

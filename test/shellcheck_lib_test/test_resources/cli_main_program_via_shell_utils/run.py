@@ -2,7 +2,7 @@ import pathlib
 import unittest
 
 from shellcheck_lib.execution.result import FullResultStatus
-from shellcheck_lib.general.string import lines_content
+from shellcheck_lib.util.string import lines_content
 from shellcheck_lib_test.test_resources import python_program_execution as py_exe
 from shellcheck_lib_test.test_resources.process import ExpectedSubProcessResult, SubProcessResultInfo, \
     run_subprocess, run_subprocess_with_file_arg__full, SubProcessResult

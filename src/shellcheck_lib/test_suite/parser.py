@@ -1,9 +1,9 @@
 from shellcheck_lib.document import parse
-from shellcheck_lib.general import line_source
 from shellcheck_lib.test_suite import test_suite_doc
 from shellcheck_lib.test_suite.instruction_set.sections import anonymous
-from shellcheck_lib.test_suite.instruction_set.sections import suites
 from shellcheck_lib.test_suite.instruction_set.sections import cases
+from shellcheck_lib.test_suite.instruction_set.sections import suites
+from shellcheck_lib.util import line_source
 
 SECTION_NAME__SUITS = 'suites'
 SECTION_NAME__CASES = 'cases'

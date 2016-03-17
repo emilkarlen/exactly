@@ -1,10 +1,10 @@
 import pathlib
 import unittest
 
+from shellcheck_lib.util.string import lines_content
 from shellcheck_lib_test.test_resources.file_structure import DirContents
-from shellcheck_lib_test.test_resources.process import SubProcessResult
-from shellcheck_lib.general.string import lines_content
 from shellcheck_lib_test.test_resources.main_program import main_program_check_base
+from shellcheck_lib_test.test_resources.process import SubProcessResult
 
 
 class SetupBase:

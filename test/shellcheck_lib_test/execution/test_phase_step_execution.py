@@ -5,7 +5,7 @@ from shellcheck_lib.execution.phase_step_execution import execute_phase_prim, Fa
 from shellcheck_lib.execution.result import PartialResultStatus
 from shellcheck_lib.execution.single_instruction_executor import ControlledInstructionExecutor, \
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum
-from shellcheck_lib.general.line_source import Line
+from shellcheck_lib.util.line_source import Line
 from shellcheck_lib_test.execution.test_resources.phase_step_execution import ExpectedResult, expected_success, \
     RecordingMedia, \
     TestInstruction, ElementHeaderExecutorThatRecordsHeaderAndLineNumber, \
