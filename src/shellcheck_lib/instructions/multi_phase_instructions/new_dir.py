@@ -21,7 +21,7 @@ class TheDescription(Description):
             Makes parent components, if needed.
 
 
-            Does not fail if the given directory already exists.
+            Does nothing if the given directory already exists.
             """
         return text_parse.normalize_and_parse(text)
 
