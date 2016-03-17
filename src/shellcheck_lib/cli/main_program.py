@@ -1,9 +1,9 @@
 import os
 
+from shellcheck_lib.cli.execution_mode import main_program_argument_parsing as case_argument_parsing
 from shellcheck_lib.cli.execution_mode.help import argument_parsing as parse_help
 from shellcheck_lib.cli.execution_mode.help.execution import print_help
 from shellcheck_lib.cli.execution_mode.help.test_case import application_help_for
-from shellcheck_lib.cli.execution_mode.test_case import argument_parsing as case_argument_parsing
 from shellcheck_lib.cli.execution_mode.test_case.settings import TestCaseExecutionSettings
 from shellcheck_lib.cli.execution_mode.test_suite import argument_parsing as suite_argument_parsing
 from shellcheck_lib.cli.execution_mode.test_suite.settings import Settings
@@ -17,8 +17,8 @@ HELP_COMMAND = 'help'
 SUITE_COMMAND = 'suite'
 
 COMMAND_DESCRIPTIONS = {
-    HELP_COMMAND: 'Help system (use "help help" for help on help!)',
-    SUITE_COMMAND: 'Executes a test suite.'
+    HELP_COMMAND: 'Help system (use "help help" for help on help.)',
+    SUITE_COMMAND: 'Executes a test suite: suite SUITE-FILE'
 }
 
 
