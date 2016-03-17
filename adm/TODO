@@ -1,5 +1,10 @@
 -*- org -*-
 
+* TODO <2015-05-03 sön> Nya refaktoreringar
+** TODO Nya modulnamn
+- document (dok m faser o instr, syntax, parsning)
+- test_case (def faser o instr för TC, subklasser t Instruction ...)
+- execution (så som det är idag)
 * TODO Testfalls layout, namngivning, etc
 ** TODO Fas-namn i versaler för tydlig separation fas / instruktion
 Om faserna måste skrivas m versaler kan ev göra testfallen tydligare.
