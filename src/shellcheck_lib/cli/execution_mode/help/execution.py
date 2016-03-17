@@ -6,6 +6,7 @@ from shellcheck_lib.cli.execution_mode.help.contents import ApplicationHelp, Tes
 from shellcheck_lib.cli.execution_mode.help.render.test_case import instruction_set
 from shellcheck_lib.cli.execution_mode.help.settings import HelpSettings, TestCaseHelpSettings, TestCaseHelpItem, \
     TestSuiteHelpSettings, TestSuiteHelpItem, ProgramHelpSettings, ProgramHelpItem
+from shellcheck_lib.document.syntax import phase_name_in_phase_syntax
 from shellcheck_lib.help.test_case import instruction
 from shellcheck_lib.test_case.instruction_description import Description
 from shellcheck_lib.util.textformat.formatting import section, paragraph_item
@@ -24,7 +25,7 @@ class TestCaseHelpRenderer:
         return doc.SectionContents([para('TODO test-case help for phase ' + phase_help.name)], [])
 
     def phase_instruction_list(self, phase_help: TestCasePhaseHelp) -> doc.SectionContents:
-        return doc.SectionContents([para('TODO test-case help for phase %s/instruction-list' % phase_help.name)], [])
+        return instruction_set.phase_instruction_set(phase_help.instruction_set)
 
     def instruction_set(self, test_case_help: TestCaseHelp) -> doc.SectionContents:
         return instruction_set.instruction_set_per_phase(test_case_help)
@@ -38,12 +39,12 @@ class TestCaseHelpRenderer:
         sections = []
         for phase_and_instruction_description in phase_and_instruction_description_list:
             man_page = self.instruction(phase_and_instruction_description[1])
-            phase_section = doc.Section(Text(phase_and_instruction_description[0]),
+            phase_section = doc.Section(Text(phase_name_in_phase_syntax(phase_and_instruction_description[0])),
                                         man_page)
             sections.append(phase_section)
         initial_paragraphs = []
         if len(phase_and_instruction_description_list) > 1:
-            initial_paragraphs = [para('"%s" is in multiple phases.' % instruction_name)]
+            initial_paragraphs = [para('The instruction "%s" is found in multiple phases.' % instruction_name)]
         return doc.SectionContents(initial_paragraphs, sections)
 
 

@@ -72,7 +72,7 @@ class Parser:
         try:
             test_case_phase_help = self.application_help.test_case_help.phase_name_2_phase_help[phase_name]
             if not test_case_phase_help.is_phase_with_instructions:
-                msg = 'The phase %s does not contain instructions.' % instruction_name
+                msg = 'The phase %s does not use instructions.' % instruction_name
                 raise HelpError(msg)
             if instruction_name == INSTRUCTIONS:
                 return settings.TestCaseHelpSettings(settings.TestCaseHelpItem.PHASE_INSTRUCTION_LIST,

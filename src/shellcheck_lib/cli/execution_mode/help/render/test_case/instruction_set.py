@@ -7,6 +7,11 @@ from shellcheck_lib.util.textformat.structure import lists
 from shellcheck_lib.util.textformat.structure.core import Text
 
 
+def phase_instruction_set(instruction_set: TestCasePhaseInstructionSet) -> doc.SectionContents:
+    instruction_list = _instruction_list(instruction_set)
+    return doc.SectionContents([instruction_list], [])
+
+
 def instruction_set_per_phase(test_case_help: TestCaseHelp) -> doc.SectionContents:
     sections = []
     for test_case_phase_help in test_case_help.phase_helps:
