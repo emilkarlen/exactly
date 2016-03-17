@@ -180,5 +180,5 @@ if __name__ == '__main__':
     elif cmd == 'clean':
         maker.clean_all(base_dir, files)
     else:
-        _msg('Unknown command: ' + cmd)
+        _msg('Not a command: ' + cmd)
         sys.exit(1)
