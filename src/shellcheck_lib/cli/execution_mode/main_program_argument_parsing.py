@@ -3,9 +3,9 @@ import pathlib
 import shlex
 
 from shellcheck_lib.cli.argument_parsing_of_act_phase_setup import resolve_act_phase_setup_from_argparse_argument
+from shellcheck_lib.cli.execution_mode.test_case.settings import Output, TestCaseExecutionSettings
 from shellcheck_lib.test_case.preprocessor import IdentityPreprocessor, PreprocessorViaExternalProgram
 from shellcheck_lib.util import argument_parsing_utils
-from .settings import Output, TestCaseExecutionSettings
 
 
 def _parse_preprocessor(preprocessor_argument):
@@ -44,14 +44,12 @@ def _new_argument_parser(commands: dict) -> argparse.ArgumentParser:
     def command_description(n_d) -> str:
         return '%s - %s' % (n_d[0], n_d[1])
 
-    command_descriptions = '\n\n'.join(map(command_description, commands.items()))
-    ret_val = argparse.ArgumentParser(description='Execute Shellcheck test case')
+    command_descriptions = '\n'.join(map(command_description, commands.items()))
+    ret_val = argparse.ArgumentParser(description='Execute Shellcheck test case or test suite.')
     ret_val.add_argument('file',
                          metavar='[FILE|COMMAND]',
                          type=str,
                          help="""A test case file, or one of the commands {commands}.
-
-
                          {command_descriptions}
                          """.format(commands='|'.join(commands.keys()),
                                     command_descriptions=command_descriptions))
@@ -59,7 +57,7 @@ def _new_argument_parser(commands: dict) -> argparse.ArgumentParser:
                          default=False,
                          action="store_true",
                          help="""\
-                        Execution Directory Structure is preserved,
+                        Executes a test case as normal, but Execution Directory Structure is preserved,
                         and it's root directory is the only output on stdout.""")
     ret_val.add_argument('--act',
                          default=False,
