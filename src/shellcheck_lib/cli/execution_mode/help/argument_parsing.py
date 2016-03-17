@@ -42,7 +42,7 @@ class Parser:
             return self._parse_instruction_in_phase(help_command_arguments[0],
                                                     help_command_arguments[1])
         if len(help_command_arguments) != 1:
-            raise HelpError('Invalid number of arguments. Use help help, for help!')
+            raise HelpError('Invalid number of arguments. Use help help, for help.')
         argument = help_command_arguments[0]
         if argument == INSTRUCTIONS:
             return settings.TestCaseHelpSettings(settings.TestCaseHelpItem.INSTRUCTION_SET, None, None)
@@ -57,14 +57,14 @@ class Parser:
         if not arguments:
             return settings.TestSuiteHelpSettings(settings.TestSuiteHelpItem.OVERVIEW, None, None)
         if len(arguments) != 1:
-            raise HelpError('Invalid help syntax.')
+            raise HelpError('Invalid help syntax. Use help help, for help.')
         section_name = arguments[0]
         for test_suite_section_help in self.application_help.test_suite_help.section_helps:
             if test_suite_section_help.name == section_name:
                 return settings.TestSuiteHelpSettings(settings.TestSuiteHelpItem.SECTION,
                                                       section_name,
                                                       test_suite_section_help)
-        raise HelpError('Unknown section: "%s"' % section_name)
+        raise HelpError('Not a test-suite section: "%s"' % section_name)
 
     def _parse_instruction_in_phase(self,
                                     phase_name: str,
@@ -90,7 +90,7 @@ class Parser:
             if phase_name == phases.ACT.identifier:
                 msg = 'The %s phase does not have instructions' % phases.ACT.identifier
             else:
-                msg = 'Unknown phase: ' + phase_name
+                msg = 'Not a phase: ' + phase_name
             raise HelpError(msg)
 
     def _parse_instruction_search_when_not_a_phase(self, instruction_name) -> settings.TestCaseHelpSettings:
