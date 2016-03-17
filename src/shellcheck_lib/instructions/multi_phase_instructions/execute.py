@@ -20,7 +20,7 @@ from shellcheck_lib.test_case.phases.common import HomeAndEds, TestCaseInstructi
 from shellcheck_lib.test_case.phases.result import pfh
 from shellcheck_lib.test_case.phases.result import sh
 from shellcheck_lib.util.textformat import parse as paragraphs_parse
-from shellcheck_lib.util.textformat.structure.paragraph import single_para
+from shellcheck_lib.util.textformat.structure.paragraph import single_para, para
 
 INTERPRET_OPTION = '--interpret'
 SOURCE_OPTION = '--source'
@@ -67,11 +67,14 @@ class TheDescription(Description):
                     'EXECUTABLE',
                     single_para('Specifies an executable program.'),
                     [
-                        InvokationVariant('ABSOLUTE-PATH', []),
+                        InvokationVariant('ABSOLUTE-PATH', [para('An absolute path.')]),
                         InvokationVariant('[{}] PATH'.format('|'.join(ALL_REL_OPTIONS)),
-                                          []),
+                                          paragraphs_parse.normalize_and_parse("""\
+                                          A path that is relative the given directory
+                                          under the Execution Directory Structure.""")),
                         InvokationVariant('( EXECUTABLE ARGUMENT-TO-EXECUTABLE... )',
-                                          []),
+                                          paragraphs_parse.normalize_and_parse("""\
+                                          An executable program with arguments. (Must be inside parentheses.)""")),
                     ]),
             SyntaxElementDescription(
                     'SOURCE-FILE',
