@@ -1,7 +1,7 @@
+import itertools
 import os
 import pathlib
 import stat
-
 import sys
 
 
@@ -139,31 +139,41 @@ def st(target_base: pathlib.Path, file_name: str) -> SourceAndTarget:
                            target_base / file_name)
 
 
-st2 = SourceAndTarget
+def sts(target_base: pathlib.Path, file_names: list) -> list:
+    return [st(target_base, file_name) for file_name in file_names]
 
 
 def do_nothing(target_file: pathlib.Path) -> SourceAndTarget:
-    return st2(src_base_dir / 'do-nothing',
-               target_file)
+    return SourceAndTarget(src_base_dir / 'do-nothing',
+                           target_file)
 
 
-files = [
-    st(first_step_dir, 'hello-world'),
-    st(first_step_dir, 'remove-all-files-in-the-current-directory'),
+def do_nothing_list(target_base: pathlib.Path, target_file_names: list) -> list:
+    return [do_nothing(target_base / file_name) for file_name in target_file_names]
 
-    do_nothing(cleanup_dir / 'manipulate-database-contents'),
-    do_nothing(cleanup_dir / 'my-helper-program'),
 
-    do_nothing(external_programs_dir / 'my-assert-helper-program'),
-    do_nothing(external_programs_dir / 'my-setup-helper-program'),
-    do_nothing(external_programs_dir / 'system-under-test'),
+files = itertools.chain.from_iterable([
+    sts(first_step_dir,
+        ['hello-world',
+         'remove-all-files-in-the-current-directory']),
 
-    do_nothing(organize_dir / 'bin' / 'do-something-good-with'),
+    do_nothing_list(cleanup_dir,
+                    ['manipulate-database-contents',
+                     'my-helper-program']),
 
-    st(setup_dir, 'copy-stdin-to-stdout'),
-    st(setup_dir, 'remove-all-files-in-the-current-directory'),
-    st(setup_dir, 'list-files-under-pwd'),
-]
+    do_nothing_list(external_programs_dir,
+                    ['my-assert-helper-program',
+                     'my-setup-helper-program',
+                     'system-under-test']),
+
+    do_nothing_list(organize_dir / 'bin',
+                    ['do-something-good-with']),
+
+    sts(setup_dir,
+        ['copy-stdin-to-stdout',
+         'remove-all-files-in-the-current-directory',
+         'list-files-under-pwd']),
+])
 
 if __name__ == '__main__':
     base_dir = _resolve_root(sys.argv[0])
@@ -181,4 +191,4 @@ if __name__ == '__main__':
         maker.clean_all(base_dir, files)
     else:
         _msg('Not a command: ' + cmd)
-        sys.exit(1)
+    sys.exit(1)
