@@ -3,8 +3,8 @@ import subprocess
 import tempfile
 import unittest
 
-from shellcheck_lib.general.file_utils import resolved_path
-from shellcheck_lib.general.std import StdFiles, StdOutputFiles
+from shellcheck_lib.util.file_utils import resolved_path
+from shellcheck_lib.util.std import StdFiles, StdOutputFiles
 from shellcheck_lib_test.test_resources.file_utils import tmp_file_containing
 
 

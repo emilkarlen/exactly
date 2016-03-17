@@ -5,16 +5,16 @@ from shellcheck_lib_test import cli
 from shellcheck_lib_test import default
 from shellcheck_lib_test import document
 from shellcheck_lib_test import execution
-from shellcheck_lib_test import general
 from shellcheck_lib_test import help
 from shellcheck_lib_test import instructions
 from shellcheck_lib_test import test_case
 from shellcheck_lib_test import test_suite
+from shellcheck_lib_test import util
 
 
 def suite():
     ret_val = unittest.TestSuite()
-    ret_val.addTest(general.suite())
+    ret_val.addTest(util.suite())
     ret_val.addTest(document.suite())
     ret_val.addTest(test_case.suite())
     ret_val.addTest(execution.suite())

@@ -1,7 +1,7 @@
 import operator
 import unittest
 
-from shellcheck_lib.general import functional as sut
+from shellcheck_lib.util import functional as sut
 
 
 class Test(unittest.TestCase):

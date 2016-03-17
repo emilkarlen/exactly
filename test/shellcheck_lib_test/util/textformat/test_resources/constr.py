@@ -1,4 +1,4 @@
-from shellcheck_lib.general.textformat.structure import core, paragraph, lists
+from shellcheck_lib.util.textformat.structure import core, paragraph, lists
 
 BLANK_LINE = ''
 

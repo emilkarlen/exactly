@@ -1,13 +1,13 @@
 import pathlib
 
-from shellcheck_lib.general.std import StdOutputFiles
-from shellcheck_lib.test_suite import structure
+from shellcheck_lib.default.execution_mode.test_case import processing as case_processing
+from shellcheck_lib.test_case import test_case_processing
 from shellcheck_lib.test_suite import reporting
+from shellcheck_lib.test_suite import structure
 from shellcheck_lib.test_suite.enumeration import SuiteEnumerator
 from shellcheck_lib.test_suite.instruction_set.parse import SuiteReadError
 from shellcheck_lib.test_suite.suite_hierarchy_reading import SuiteHierarchyReader
-from shellcheck_lib.test_case import test_case_processing
-from shellcheck_lib.default.execution_mode.test_case import processing as case_processing
+from shellcheck_lib.util.std import StdOutputFiles
 
 
 # case_processing.new_processor(default_configuration),

@@ -1,7 +1,7 @@
 from shellcheck_lib.document.model import PhaseContents, PhaseContentElement, ElementType
 from shellcheck_lib.execution.phase_step import PhaseStep
 from shellcheck_lib.execution.single_instruction_executor import ControlledInstructionExecutor, execute_element
-from shellcheck_lib.general import line_source
+from shellcheck_lib.util import line_source
 from .execution_directory_structure import ExecutionDirectoryStructure
 from .result import PartialResult, InstructionFailureInfo, new_partial_result_pass, PartialResultStatus, \
     FailureDetails

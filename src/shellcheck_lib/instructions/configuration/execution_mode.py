@@ -1,14 +1,14 @@
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
 from shellcheck_lib.execution.result import FullResultStatus
-from shellcheck_lib.general.textformat.parse import normalize_and_parse
-from shellcheck_lib.general.textformat.structure import lists
-from shellcheck_lib.general.textformat.structure.paragraph import *
 from shellcheck_lib.instructions.utils.parse_utils import split_arguments_list_string
 from shellcheck_lib.test_case.instruction_description import InvokationVariant, Description
 from shellcheck_lib.test_case.instruction_setup import SingleInstructionSetup
 from shellcheck_lib.test_case.phases.anonymous import AnonymousPhaseInstruction, ConfigurationBuilder, ExecutionMode
 from shellcheck_lib.test_case.phases.result import sh
+from shellcheck_lib.util.textformat.parse import normalize_and_parse
+from shellcheck_lib.util.textformat.structure import lists
+from shellcheck_lib.util.textformat.structure.paragraph import *
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:

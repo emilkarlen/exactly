@@ -3,7 +3,7 @@ import unittest
 from pathlib import Path
 
 from shellcheck_lib.execution import execution_directory_structure
-from shellcheck_lib.general.file_utils import resolved_path
+from shellcheck_lib.util.file_utils import resolved_path
 from shellcheck_lib_test.test_resources.file_checks import FileChecker
 
 

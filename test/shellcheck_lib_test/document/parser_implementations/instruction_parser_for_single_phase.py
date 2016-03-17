@@ -1,13 +1,13 @@
 import unittest
 
-from shellcheck_lib.document.model import ElementType
+from shellcheck_lib.document import model
 from shellcheck_lib.document import parse
+from shellcheck_lib.document.model import ElementType
+from shellcheck_lib.document.parser_implementations import instruction_parser_for_single_phase as sut
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParserSource
-from shellcheck_lib.general import line_source
-from shellcheck_lib.general.line_source import Line
-from shellcheck_lib.document.parser_implementations import instruction_parser_for_single_phase as sut
-from shellcheck_lib.document import model
+from shellcheck_lib.util import line_source
+from shellcheck_lib.util.line_source import Line
 from shellcheck_lib_test.document.test_resources import assert_equals_line
 
 

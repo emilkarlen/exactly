@@ -2,8 +2,8 @@ import unittest
 
 from shellcheck_lib.test_case.instruction_description import Description, InvokationVariant, \
     SyntaxElementDescription
-from shellcheck_lib_test.general.textformat.test_resources import structure as struct_check
 from shellcheck_lib_test.test_resources import value_assertion as va
+from shellcheck_lib_test.util.textformat.test_resources import structure as struct_check
 
 
 def suite_for_description_instance(description: Description) -> unittest.TestSuite:

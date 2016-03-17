@@ -6,9 +6,6 @@ import pathlib
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException, SingleInstructionParserSource
 from shellcheck_lib.execution import environment_variables
-from shellcheck_lib.general import file_utils
-from shellcheck_lib.general.file_utils import ensure_parent_directory_does_exist, tmp_text_file_containing
-from shellcheck_lib.general.string import lines_content
 from shellcheck_lib.instructions.utils import parse_file_ref
 from shellcheck_lib.instructions.utils import parse_here_doc_or_file_ref
 from shellcheck_lib.instructions.utils.file_properties import must_exist_as, FileType
@@ -25,6 +22,9 @@ from shellcheck_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPh
     GlobalEnvironmentForPreEdsStep
 from shellcheck_lib.test_case.phases.result import pfh
 from shellcheck_lib.test_case.phases.result import svh
+from shellcheck_lib.util import file_utils
+from shellcheck_lib.util.file_utils import ensure_parent_directory_does_exist, tmp_text_file_containing
+from shellcheck_lib.util.string import lines_content
 
 WITH_REPLACED_ENV_VARS_OPTION = '--with-replaced-env-vars'
 EMPTY_ARGUMENT = 'empty'

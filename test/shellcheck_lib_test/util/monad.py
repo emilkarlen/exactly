@@ -1,6 +1,6 @@
 import unittest
 
-from shellcheck_lib.general import monad as sut
+from shellcheck_lib.util import monad as sut
 
 
 class TestMapM(unittest.TestCase):

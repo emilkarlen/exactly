@@ -3,7 +3,7 @@ import unittest
 from shellcheck_lib.execution.phase_step import PhaseStep, SimplePhaseStep
 from shellcheck_lib.execution.result import InstructionFailureInfo, FailureDetails, \
     FullResultStatus, FullResult, FailureInfo, PhaseFailureInfo
-from shellcheck_lib.general import line_source
+from shellcheck_lib.util import line_source
 from shellcheck_lib_test.document.test_resources import assert_equals_line
 from shellcheck_lib_test.test_resources.assert_utils import assertion_message
 

@@ -1,7 +1,7 @@
 import subprocess
 
-from shellcheck_lib.general import exception
-from shellcheck_lib.general.std import StdFiles
+from shellcheck_lib.util import exception
+from shellcheck_lib.util.std import StdFiles
 
 
 def execute_cmd_and_args(cmd_and_args: list,

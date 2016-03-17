@@ -2,7 +2,7 @@ import os
 import pathlib
 
 from shellcheck_lib.execution import environment_variables
-from shellcheck_lib.general import file_utils
+from shellcheck_lib.util import file_utils
 from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_check import ActEnvironment, \
     ActResultProducer
 from shellcheck_lib_test.test_resources.execution.utils import ActResult

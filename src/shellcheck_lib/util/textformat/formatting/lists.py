@@ -1,6 +1,6 @@
-from shellcheck_lib.general.textformat.structure.core import Text
+from shellcheck_lib.util.textformat.structure.core import Text
 
-from shellcheck_lib.general.textformat.structure.lists import ListType, Separations
+from shellcheck_lib.util.textformat.structure.lists import ListType, Separations
 
 
 class HeaderAndIndentFormat:

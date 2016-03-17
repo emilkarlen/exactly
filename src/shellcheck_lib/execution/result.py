@@ -1,7 +1,7 @@
 from enum import Enum
 
 from shellcheck_lib.execution.phase_step import PhaseStep
-from shellcheck_lib.general import line_source
+from shellcheck_lib.util import line_source
 from .execution_directory_structure import ExecutionDirectoryStructure
 
 

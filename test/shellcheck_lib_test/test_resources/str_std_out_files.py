@@ -1,6 +1,6 @@
 import io
 
-from shellcheck_lib.general.std import StdOutputFiles
+from shellcheck_lib.util.std import StdOutputFiles
 
 
 class StringStdOutFiles:

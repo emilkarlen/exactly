@@ -6,14 +6,14 @@ from shellcheck_lib.cli.execution_mode.help.contents import ApplicationHelp, Tes
 from shellcheck_lib.cli.execution_mode.help.render.test_case import instruction_set
 from shellcheck_lib.cli.execution_mode.help.settings import HelpSettings, TestCaseHelpSettings, TestCaseHelpItem, \
     TestSuiteHelpSettings, TestSuiteHelpItem, ProgramHelpSettings
-from shellcheck_lib.general.textformat.formatting import section, paragraph_item
-from shellcheck_lib.general.textformat.formatting.lists import list_formats_with
-from shellcheck_lib.general.textformat.formatting.wrapper import Wrapper
-from shellcheck_lib.general.textformat.structure import document as doc
-from shellcheck_lib.general.textformat.structure.core import Text
-from shellcheck_lib.general.textformat.structure.paragraph import para
 from shellcheck_lib.help.test_case import instruction
 from shellcheck_lib.test_case.instruction_description import Description
+from shellcheck_lib.util.textformat.formatting import section, paragraph_item
+from shellcheck_lib.util.textformat.formatting.lists import list_formats_with
+from shellcheck_lib.util.textformat.formatting.wrapper import Wrapper
+from shellcheck_lib.util.textformat.structure import document as doc
+from shellcheck_lib.util.textformat.structure.core import Text
+from shellcheck_lib.util.textformat.structure.paragraph import para
 
 
 class TestCaseHelpRenderer:

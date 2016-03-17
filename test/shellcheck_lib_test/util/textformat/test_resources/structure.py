@@ -1,9 +1,9 @@
 import unittest
 
-from shellcheck_lib.general.textformat.structure import core, lists, document as doc
-from shellcheck_lib.general.textformat.structure.lists import HeaderContentList
-from shellcheck_lib.general.textformat.structure.paragraph import Paragraph
-from shellcheck_lib.general.textformat.structure.utils import ParagraphItemVisitor
+from shellcheck_lib.util.textformat.structure import core, lists, document as doc
+from shellcheck_lib.util.textformat.structure.lists import HeaderContentList
+from shellcheck_lib.util.textformat.structure.paragraph import Paragraph
+from shellcheck_lib.util.textformat.structure.utils import ParagraphItemVisitor
 from shellcheck_lib_test.test_resources import value_assertion as va
 
 

@@ -6,7 +6,7 @@ from shellcheck_lib.cli.main_program import EXIT_INVALID_USAGE
 from shellcheck_lib.execution import environment_variables
 from shellcheck_lib.execution import execution_directory_structure
 from shellcheck_lib.execution.result import FullResultStatus
-from shellcheck_lib.general.string import lines_content
+from shellcheck_lib.util.string import lines_content
 from shellcheck_lib_test.cli.cases import default_main_program_wildcard as wildcard
 from shellcheck_lib_test.cli.utils.execute_main_program import arguments_for_test_interpreter_and_more_tuple
 from shellcheck_lib_test.default import default_main_program

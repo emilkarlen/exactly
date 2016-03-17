@@ -1,5 +1,5 @@
-from shellcheck_lib.general.std import StdOutputFiles
 from shellcheck_lib.test_case import test_case_processing
+from shellcheck_lib.util.std import StdOutputFiles
 from . import structure
 
 

@@ -1,6 +1,5 @@
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
-from shellcheck_lib.general.textformat.structure.paragraph import single_para
 from shellcheck_lib.instructions.utils.sub_process_execution import ExecutorThatStoresResultInFilesInDir, \
     InstructionSourceInfo, ExecuteInfo, \
     ResultAndStderr, execute_and_read_stderr_if_non_zero_exitcode, result_to_sh, result_to_pfh
@@ -8,6 +7,7 @@ from shellcheck_lib.test_case.instruction_description import Description, Invoka
 from shellcheck_lib.test_case.phases.common import TestCaseInstruction, PhaseLoggingPaths
 from shellcheck_lib.test_case.phases.result import pfh
 from shellcheck_lib.test_case.phases.result import sh
+from shellcheck_lib.util.textformat.structure.paragraph import single_para
 
 
 class TheDescriptionBase(Description):

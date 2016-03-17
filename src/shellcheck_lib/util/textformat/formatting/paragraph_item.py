@@ -1,10 +1,10 @@
-from shellcheck_lib.general.textformat.formatting.lists import ListFormats, ListFormat, list_format_with_indent_str, \
+from shellcheck_lib.util.textformat.formatting.lists import ListFormats, ListFormat, list_format_with_indent_str, \
     list_format_with_separations
-from shellcheck_lib.general.textformat.formatting.wrapper import Indent, Wrapper, identical_indent
-from shellcheck_lib.general.textformat.structure.core import Text, ParagraphItem
-from shellcheck_lib.general.textformat.structure.lists import HeaderContentList, HeaderContentListItem, Format
-from shellcheck_lib.general.textformat.structure.paragraph import Paragraph
-from shellcheck_lib.general.textformat.structure.utils import ParagraphItemVisitor
+from shellcheck_lib.util.textformat.formatting.wrapper import Indent, Wrapper, identical_indent
+from shellcheck_lib.util.textformat.structure.core import Text, ParagraphItem
+from shellcheck_lib.util.textformat.structure.lists import HeaderContentList, HeaderContentListItem, Format
+from shellcheck_lib.util.textformat.structure.paragraph import Paragraph
+from shellcheck_lib.util.textformat.structure.utils import ParagraphItemVisitor
 
 
 class Formatter:

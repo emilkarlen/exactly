@@ -3,8 +3,6 @@ import pathlib
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionInvalidArgumentException, SingleInstructionParserSource
 from shellcheck_lib.execution import environment_variables
-from shellcheck_lib.general.textformat import parse as text_parse
-from shellcheck_lib.general.textformat.structure.paragraph import single_para
 from shellcheck_lib.instructions.assert_phase.utils.contents_utils import ActualFileTransformer, \
     WITH_REPLACED_ENV_VARS_OPTION, EMPTY_ARGUMENT
 from shellcheck_lib.instructions.utils.parse_utils import split_arguments_list_string
@@ -14,6 +12,8 @@ from shellcheck_lib.test_case.instruction_description import InvokationVariant, 
 from shellcheck_lib.test_case.instruction_setup import SingleInstructionSetup
 from shellcheck_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from shellcheck_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase
+from shellcheck_lib.util.textformat import parse as text_parse
+from shellcheck_lib.util.textformat.structure.paragraph import single_para
 from .utils import contents_utils
 
 

@@ -1,5 +1,4 @@
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser
-from shellcheck_lib.general.textformat import parse as text_parse
 from shellcheck_lib.instructions.multi_phase_instructions import shell as shell_common
 from shellcheck_lib.instructions.multi_phase_instructions.shell import TheDescriptionBase
 from shellcheck_lib.instructions.utils.sub_process_execution import ExecuteInfo
@@ -8,6 +7,7 @@ from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from shellcheck_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase
 from shellcheck_lib.test_case.phases.result import pfh
+from shellcheck_lib.util.textformat import parse as text_parse
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:

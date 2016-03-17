@@ -1,8 +1,8 @@
-from shellcheck_lib.general.textformat.structure import document as doc, paragraph, lists
-from shellcheck_lib.general.textformat.structure.core import Text
-from shellcheck_lib.general.textformat.structure.paragraph import para
 from shellcheck_lib.test_case.instruction_description import Description, InvokationVariant, \
     SyntaxElementDescription
+from shellcheck_lib.util.textformat.structure import document as doc, paragraph, lists
+from shellcheck_lib.util.textformat.structure.core import Text
+from shellcheck_lib.util.textformat.structure.paragraph import para
 
 LIST_INDENT = 2
 

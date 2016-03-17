@@ -2,7 +2,7 @@ import argparse
 import pathlib
 
 from shellcheck_lib.cli.argument_parsing_of_act_phase_setup import resolve_act_phase_setup_from_argparse_argument
-from shellcheck_lib.general import argument_parsing_utils
+from shellcheck_lib.util import argument_parsing_utils
 from .settings import Settings
 
 

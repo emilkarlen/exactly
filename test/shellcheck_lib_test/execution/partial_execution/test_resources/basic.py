@@ -10,7 +10,7 @@ from shellcheck_lib.execution import partial_execution
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.execution.phases import PhaseEnum
 from shellcheck_lib.execution.result import PartialResult
-from shellcheck_lib.general.functional import Composition
+from shellcheck_lib.util.functional import Composition
 from shellcheck_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that, \
     before_assert_phase_instruction_that, assert_phase_instruction_that, cleanup_phase_instruction_that, \
     act_phase_instruction_that
