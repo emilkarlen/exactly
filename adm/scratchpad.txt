@@ -43,3 +43,6 @@ Om enskild instruktion i enskild fas.
 **** Omgivningsvariabler
 **** Kataloger (home, ESD)
 T ex dok av --rel-home, --rel-act, --rel-tmp, ...
+
+
+RUN RUN RUN

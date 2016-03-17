@@ -31,20 +31,21 @@ def instruction_set_list_item(description: Description) -> lists.HeaderContentLi
                                        [description_para])
 
 
-def _invokation_variants_content(description: Description) -> doc.SectionContents:
-    def custom_list_indent(indented: bool) -> int:
-        return LIST_INDENT if indented else None
+def variants_list(invokation_variants: list,
+                  indented: bool = False,
+                  custom_separations: lists.Separations = None) -> paragraph.ParagraphItem:
+    items = []
+    for x in invokation_variants:
+        assert isinstance(x, InvokationVariant)
+        items.append(lists.HeaderContentListItem(Text(x.syntax),
+                                                 x.description_rest))
+    return lists.HeaderContentList(items,
+                                   lists.Format(lists.ListType.VARIABLE_LIST,
+                                                custom_indent_spaces=_custom_list_indent(indented),
+                                                custom_separations=custom_separations))
 
-    def variants_list(invokation_variants: list,
-                      indented: bool = False) -> paragraph.ParagraphItem:
-        items = []
-        for x in invokation_variants:
-            assert isinstance(x, InvokationVariant)
-            items.append(lists.HeaderContentListItem(Text(x.syntax),
-                                                     x.description_rest))
-        return lists.HeaderContentList(items,
-                                       lists.Format(lists.ListType.VARIABLE_LIST,
-                                                    custom_indent_spaces=custom_list_indent(indented)))
+
+def _invokation_variants_content(description: Description) -> doc.SectionContents:
 
     def syntax_element_description_list() -> paragraph.ParagraphItem:
         items = []
@@ -62,7 +63,7 @@ def _invokation_variants_content(description: Description) -> doc.SectionContent
         separations = lists.Separations(1, 0)
         return lists.HeaderContentList(items,
                                        lists.Format(lists.ListType.VARIABLE_LIST,
-                                                    custom_indent_spaces=custom_list_indent(True),
+                                                    custom_indent_spaces=_custom_list_indent(True),
                                                     custom_separations=separations))
 
     def syntax_element_description_paragraph_items() -> list:
@@ -75,3 +76,7 @@ def _invokation_variants_content(description: Description) -> doc.SectionContent
     return doc.SectionContents([variants_list(description.invokation_variants())] +
                                syntax_element_description_paragraph_items(),
                                [])
+
+
+def _custom_list_indent(indented: bool) -> int:
+    return None if indented else 0
