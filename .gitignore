@@ -5,3 +5,4 @@ __pycache__
 *.vpp~*
 test/shellcheck_lib_test/tmp/
 .idea/shelf/
+tmp/
