@@ -4,6 +4,7 @@ import sys
 import tempfile
 from contextlib import contextmanager
 
+from shellcheck_lib.general.file_utils import resolved_path
 from shellcheck_lib.general.string import lines_content
 
 
@@ -37,7 +38,7 @@ def tmp_file_containing(contents: str,
         fo = os.fdopen(fd, 'w+')
         fo.write(contents)
         fo.close()
-        path = pathlib.Path(absolute_file_path)
+        path = resolved_path(absolute_file_path)
         yield path
     finally:
         if path:

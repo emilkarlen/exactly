@@ -3,6 +3,14 @@ import pathlib
 import tempfile
 
 
+def resolved_path(existing_path: str) -> pathlib.Path:
+    return pathlib.Path(existing_path).resolve()
+
+
+def resolved_path_name(existing_path: str) -> str:
+    return str(pathlib.Path(existing_path).resolve())
+
+
 def write_new_text_file(file_path: pathlib.Path,
                         contents: str):
     """

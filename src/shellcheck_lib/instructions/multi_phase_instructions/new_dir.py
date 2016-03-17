@@ -46,8 +46,11 @@ def make_dir_in_current_dir(directory_components: str) -> str:
     :return: None iff success. Otherwise an error message.
     """
     dir_path = pathlib.Path() / directory_components
-    if dir_path.is_dir():
-        return None
+    try:
+        if dir_path.is_dir():
+            return None
+    except NotADirectoryError:
+        return 'Part of path exists, but is not a directory: %s' % str(dir_path)
     try:
         dir_path.mkdir(parents=True)
     except FileExistsError:

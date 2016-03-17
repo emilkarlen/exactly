@@ -1,7 +1,8 @@
-from contextlib import contextmanager
-import pathlib
 import tempfile
+from contextlib import contextmanager
 from time import strftime, localtime
+
+from shellcheck_lib.general.file_utils import resolved_path
 
 
 @contextmanager
@@ -23,11 +24,11 @@ def dir_contents_and_preprocessor_source(dir_contents__given_preprocessor_file_p
    """
     prefix = strftime("shellcheck-test-", localtime())
     with tempfile.TemporaryDirectory(prefix=prefix + "-preprocessor-") as pre_proc_dir:
-        preprocessor_file_path = pathlib.Path(pre_proc_dir) / 'preprocessor.py'
+        preprocessor_file_path = resolved_path(pre_proc_dir) / 'preprocessor.py'
         with preprocessor_file_path.open('w') as f:
             f.write(preprocessor_py_source)
         dir_contents = dir_contents__given_preprocessor_file_path(preprocessor_file_path)
         with tempfile.TemporaryDirectory(prefix=prefix + "-dir-contents-") as dir_contents_root:
-            dir_contents_dir_path = pathlib.Path(dir_contents_root)
+            dir_contents_dir_path = resolved_path(dir_contents_root)
             dir_contents.write_to(dir_contents_dir_path)
             yield (dir_contents_dir_path, preprocessor_file_path)

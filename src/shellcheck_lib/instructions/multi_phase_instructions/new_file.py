@@ -59,8 +59,11 @@ def create_file(file_info: FileInfo,
     :return: None iff success. Otherwise an error message.
     """
     file_path = file_info.destination_path.resolved_path(eds)
-    if file_path.exists():
-        return 'File does already exist: {}'.format(file_path)
+    try:
+        if file_path.exists():
+            return 'File does already exist: {}'.format(file_path)
+    except NotADirectoryError:
+        return 'Part of path exists, but perhaps one in-the-middle-component is not a directory: %s' % str(file_path)
     failure_message = ensure_parent_directory_does_exist_and_is_a_directory(file_path)
     if failure_message is not None:
         return failure_message

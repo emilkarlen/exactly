@@ -6,6 +6,7 @@ from time import strftime, localtime
 
 from shellcheck_lib.execution import execution_directory_structure as eds_module
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
+from shellcheck_lib.general.file_utils import resolved_path_name, resolved_path
 from shellcheck_lib.test_case.phases import common as i
 from shellcheck_lib.test_case.phases.common import HomeAndEds
 from shellcheck_lib_test.test_resources.execution import eds_populator
@@ -49,7 +50,7 @@ def act_phase_result(exitcode: int = 0,
     cwd_before = os.getcwd()
     home_dir_path = pathlib.Path(cwd_before)
     with tempfile.TemporaryDirectory(prefix='shellcheck-test-') as eds_root_dir:
-        eds = execution_directory_structure.construct_at(eds_root_dir)
+        eds = eds_module.construct_at(resolved_path_name(eds_root_dir))
         write_file(eds.result.exitcode_file, str(exitcode))
         write_file(eds.result.stdout_file, stdout_contents)
         write_file(eds.result.stderr_file, stderr_contents)
@@ -84,7 +85,7 @@ def home_and_eds_and_test_as_curr_dir(
     cwd_before = os.getcwd()
     prefix = strftime("shellcheck-test-%Y-%m-%d-%H-%M-%S", localtime())
     with tempfile.TemporaryDirectory(prefix=prefix + "-home-") as home_dir:
-        home_dir_path = pathlib.Path(home_dir)
+        home_dir_path = resolved_path(home_dir)
         home_dir_contents.write_to(home_dir_path)
         with execution_directory_structure(prefix=prefix + "-eds-",
                                            contents=eds_contents) as eds:
@@ -100,6 +101,6 @@ def home_and_eds_and_test_as_curr_dir(
 def execution_directory_structure(contents: eds_populator.EdsPopulator = eds_populator.empty(),
                                   prefix: str = 'shellcheck-test-eds-') -> eds_module.ExecutionDirectoryStructure:
     with tempfile.TemporaryDirectory(prefix=prefix) as eds_root_dir:
-        eds = eds_module.construct_at(eds_root_dir)
+        eds = eds_module.construct_at(resolved_path_name(eds_root_dir))
         contents.apply(eds)
         yield eds

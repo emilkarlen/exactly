@@ -3,15 +3,17 @@ import unittest
 from pathlib import Path
 
 from shellcheck_lib.execution import execution_directory_structure
+from shellcheck_lib.general.file_utils import resolved_path
 from shellcheck_lib_test.test_resources.file_checks import FileChecker
 
 
 class TestConstructExecutionDirectoryStructure(unittest.TestCase):
     def test_construct_execution_directory_structure(self):
         with tempfile.TemporaryDirectory(prefix='shellcheck-test-') as tmp_dir_name:
+            root = resolved_path(tmp_dir_name)
+            tmp_dir_name = str(root)
             eds = execution_directory_structure.construct_at(tmp_dir_name)
 
-            root = Path(tmp_dir_name)
             self._assert_is_existing_dir_with_given_number_of_files_in_it(eds.root_dir,
                                                                           5)
 

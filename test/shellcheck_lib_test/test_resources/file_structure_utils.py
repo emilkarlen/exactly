@@ -1,15 +1,16 @@
-from contextlib import contextmanager
 import os
 import pathlib
 import tempfile
+from contextlib import contextmanager
 
+from shellcheck_lib.general.file_utils import resolved_path
 from shellcheck_lib_test.test_resources.file_structure import DirContents, empty_dir_contents, FileSystemElement
 
 
 @contextmanager
 def tmp_dir(contents: DirContents=empty_dir_contents()) -> pathlib.Path:
     with tempfile.TemporaryDirectory() as dir_name:
-        dir_path = pathlib.Path(dir_name)
+        dir_path = resolved_path(dir_name)
         contents.write_to(dir_path)
         yield dir_path
 
@@ -17,7 +18,7 @@ def tmp_dir(contents: DirContents=empty_dir_contents()) -> pathlib.Path:
 @contextmanager
 def tmp_dir_as_cwd(contents: DirContents=empty_dir_contents()) -> pathlib.Path:
     with tempfile.TemporaryDirectory() as dir_name:
-        dir_path = pathlib.Path(dir_name)
+        dir_path = resolved_path(dir_name)
         contents.write_to(dir_path)
         original_cwd = os.getcwd()
         os.chdir(str(dir_path))
