@@ -3,11 +3,6 @@
 Fixa filelist test. SÖk på i cmake-filen:
 weird simptest behaviour / data-root-dir
 
-* TODO <2015-05-03 sön> Nya refaktoreringar
-** TODO Nya modulnamn
-- document (dok m faser o instr, syntax, parsning)
-- test_case (def faser o instr för TC, subklasser t Instruction ...)
-- execution (så som det är idag)
 * Planering
   CLOCK: [2015-05-19 tis 06:08]--[2015-05-19 tis 06:37] =>  0:29
   CLOCK: [2014-12-30 tis 22:34]--[2014-12-30 tis 22:45] =>  0:11
