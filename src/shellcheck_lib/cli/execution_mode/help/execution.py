@@ -1,21 +1,19 @@
 import os
 import shutil
 
-from shellcheck_lib.cli.execution_mode.help import argument_parsing
 from shellcheck_lib.cli.execution_mode.help.contents import ApplicationHelp, TestSuiteHelp, \
     TestSuiteSectionHelp, TestCaseHelp, TestCasePhaseHelp
+from shellcheck_lib.cli.execution_mode.help.contents2 import help_invokation_variants
 from shellcheck_lib.cli.execution_mode.help.render.test_case import instruction_set
 from shellcheck_lib.cli.execution_mode.help.settings import HelpSettings, TestCaseHelpSettings, TestCaseHelpItem, \
     TestSuiteHelpSettings, TestSuiteHelpItem, ProgramHelpSettings, ProgramHelpItem
 from shellcheck_lib.document.syntax import phase_name_in_phase_syntax
 from shellcheck_lib.help.test_case import instruction
-from shellcheck_lib.help.test_case.instruction import variants_list
-from shellcheck_lib.test_case.instruction_description import Description, InvokationVariant
-from shellcheck_lib.util.textformat import parse as paragraphs_parse
+from shellcheck_lib.test_case.instruction_description import Description
 from shellcheck_lib.util.textformat.formatting import section, paragraph_item
 from shellcheck_lib.util.textformat.formatting.lists import list_formats_with
 from shellcheck_lib.util.textformat.formatting.wrapper import Wrapper
-from shellcheck_lib.util.textformat.structure import document as doc, lists
+from shellcheck_lib.util.textformat.structure import document as doc
 from shellcheck_lib.util.textformat.structure.core import Text
 from shellcheck_lib.util.textformat.structure.paragraph import para
 
@@ -80,8 +78,7 @@ def doc_for(application_help: ApplicationHelp,
         if item is ProgramHelpItem.PROGRAM:
             return doc.SectionContents([para('TODO program help')], [])
         if item is ProgramHelpItem.HELP:
-            pi = variants_list(help_invokation_variants(),
-                               custom_separations=lists.Separations(1, 0))
+            pi = help_invokation_variants()
             return doc.SectionContents([pi], [])
         raise ValueError('Invalid %s: %s' % (str(ProgramHelpItem), str(item)))
     if isinstance(settings, TestCaseHelpSettings):
@@ -111,51 +108,3 @@ def doc_for(application_help: ApplicationHelp,
             return ts_help.section(data)
         raise ValueError('Invalid %s: %s' % (str(TestSuiteHelpItem), str(item)))
     raise ValueError('Invalid %s: %s' % (str(HelpSettings), str(type(settings))))
-
-
-def help_invokation_variants() -> list:
-    return [
-        InvokationVariant(
-                help(argument_parsing.HELP),
-                paragraphs_parse.normalize_and_parse(
-                        'Displays this help.'
-                )),
-        InvokationVariant(
-                help(''),
-                paragraphs_parse.normalize_and_parse(
-                        'Describes the test-case functionality.'
-                )),
-        InvokationVariant(
-                help(argument_parsing.INSTRUCTIONS),
-                paragraphs_parse.normalize_and_parse(
-                        'Lists instructions per phase.'
-                )),
-        InvokationVariant(
-                help('PHASE'),
-                paragraphs_parse.normalize_and_parse(
-                        'Help for a test-case phase.')),
-        InvokationVariant(
-                help('PHASE ' + argument_parsing.INSTRUCTIONS),
-                paragraphs_parse.normalize_and_parse(
-                        'Lists instructions for a phase.')),
-        InvokationVariant(
-                help('PHASE INSTRUCTION'),
-                paragraphs_parse.normalize_and_parse(
-                        'Help for an instruction in a phase.')),
-        InvokationVariant(
-                help('INSTRUCTION'),
-                paragraphs_parse.normalize_and_parse(
-                        'Help for an instruction (in any phase).')),
-        InvokationVariant(
-                help(argument_parsing.SUITE),
-                paragraphs_parse.normalize_and_parse(
-                        'Describes the test-suite functionality.')),
-        InvokationVariant(
-                help(argument_parsing.SUITE + ' SECTION'),
-                paragraphs_parse.normalize_and_parse(
-                        'Describes a test-suite section.')),
-    ]
-
-
-def help(syntax: str) -> str:
-    return argument_parsing.HELP + ' ' + syntax
