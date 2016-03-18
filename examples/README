@@ -1,0 +1,8 @@
+Generate the executable files needed by the examples using
+
+python3 make-executables.py all
+
+
+Remove them using
+
+python3 make-executables.py clean
