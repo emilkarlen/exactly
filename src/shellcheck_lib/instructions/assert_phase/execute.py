@@ -13,7 +13,7 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(
             parser(instruction_name),
             execute.TheDescription(instruction_name,
-                                   "Executes a program and succeeds if it's exit-code is 0."))
+                                   "Runs a program and succeeds if it's exit-code is 0."))
 
 
 def parser(instruction_name: str) -> SingleInstructionParser:

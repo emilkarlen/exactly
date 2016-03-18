@@ -7,7 +7,7 @@ INSTRUCTIONS = instruction_set_from_name_and_setup_constructor_list(
             ('contents', contents.setup),
             ('dir', new_dir.setup),
             ('env', env.setup),
-            ('execute', execute.setup),
+            ('run', execute.setup),
             ('exitcode', exitcode.setup),
             ('pwd', change_dir.setup),
             ('shell', shell.setup),
