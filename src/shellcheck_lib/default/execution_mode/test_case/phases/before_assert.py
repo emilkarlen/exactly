@@ -5,7 +5,7 @@ INSTRUCTIONS = instruction_set_from_name_and_setup_constructor_list(
         [
             ('dir', new_dir.setup),
             ('env', env.setup),
-            ('execute', execute.setup),
+            ('run', execute.setup),
             ('pwd', change_dir.setup),
             ('shell', shell.setup),
         ]
