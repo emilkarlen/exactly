@@ -1,6 +1,7 @@
 import unittest
 
-import shellcheck_lib.cli.execution_mode.help.help_request
+import shellcheck_lib.cli.execution_mode.help.mode.help_request
+import shellcheck_lib.cli.execution_mode.help.mode.test_case.help_request
 from shellcheck_lib.cli.execution_mode.help import argument_parsing as sut
 from shellcheck_lib.cli.execution_mode.help.contents_structure import ApplicationHelp
 from shellcheck_lib.cli.execution_mode.help.mode.main_program.contents_structure import MainProgramHelp
@@ -18,10 +19,10 @@ class TestProgramHelp(unittest.TestCase):
         actual = sut.parse(_app_help_for([]),
                            [])
         self.assertIsInstance(actual,
-                              sut.help_request.ProgramHelpRequest,
+                              shellcheck_lib.cli.execution_mode.help.mode.help_request.ProgramHelpRequest,
                               'Expecting settings for Program')
-        assert isinstance(actual, sut.help_request.ProgramHelpRequest)
-        self.assertIs(sut.help_request.ProgramHelpItem.PROGRAM,
+        assert isinstance(actual, shellcheck_lib.cli.execution_mode.help.mode.help_request.ProgramHelpRequest)
+        self.assertIs(shellcheck_lib.cli.execution_mode.help.mode.help_request.ProgramHelpItem.PROGRAM,
                       actual.item,
                       'Expects program help')
 
@@ -29,10 +30,10 @@ class TestProgramHelp(unittest.TestCase):
         actual = sut.parse(_app_help_for([sut.HELP]),
                            [])
         self.assertIsInstance(actual,
-                              sut.help_request.ProgramHelpRequest,
+                              shellcheck_lib.cli.execution_mode.help.mode.help_request.ProgramHelpRequest,
                               'Expecting settings for Program')
-        assert isinstance(actual, sut.help_request.ProgramHelpRequest)
-        self.assertIs(sut.help_request.ProgramHelpItem.PROGRAM,
+        assert isinstance(actual, shellcheck_lib.cli.execution_mode.help.mode.help_request.ProgramHelpRequest)
+        self.assertIs(shellcheck_lib.cli.execution_mode.help.mode.help_request.ProgramHelpItem.PROGRAM,
                       actual.item,
                       'Expects program help')
 
@@ -63,12 +64,12 @@ class TestTestCasePhase(unittest.TestCase):
                                      expected_phase_name: str,
                                      actual):
         self.assertIsInstance(actual,
-                              shellcheck_lib.cli.execution_mode.help.help_request.TestCaseHelpRequest,
+                              shellcheck_lib.cli.execution_mode.help.mode.test_case.help_request.TestCaseHelpRequest,
                               'Parse result should be a ' + str(
-                                      shellcheck_lib.cli.execution_mode.help.help_request.TestCaseHelpRequest))
+                                      shellcheck_lib.cli.execution_mode.help.mode.test_case.help_request.TestCaseHelpRequest))
         assert isinstance(actual,
-                          shellcheck_lib.cli.execution_mode.help.help_request.TestCaseHelpRequest)
-        self.assertIs(shellcheck_lib.cli.execution_mode.help.help_request.TestCaseHelpItem.PHASE,
+                          shellcheck_lib.cli.execution_mode.help.mode.test_case.help_request.TestCaseHelpRequest)
+        self.assertIs(shellcheck_lib.cli.execution_mode.help.mode.test_case.help_request.TestCaseHelpItem.PHASE,
                       actual.item)
         self.assertIsInstance(actual.data,
                               TestCasePhaseHelp)
@@ -133,13 +134,13 @@ class TestTestCaseSingleInstructionInPhase(unittest.TestCase):
 
     def _check_is_test_case_settings_for_single_instruction(
             self,
-            value) -> shellcheck_lib.cli.execution_mode.help.help_request.TestCaseHelpRequest:
+            value) -> shellcheck_lib.cli.execution_mode.help.mode.test_case.help_request.TestCaseHelpRequest:
         self.assertIsInstance(value,
-                              shellcheck_lib.cli.execution_mode.help.help_request.TestCaseHelpRequest,
+                              shellcheck_lib.cli.execution_mode.help.mode.test_case.help_request.TestCaseHelpRequest,
                               'Should be help for Test Case')
         assert isinstance(value,
-                          shellcheck_lib.cli.execution_mode.help.help_request.TestCaseHelpRequest)
-        self.assertIs(shellcheck_lib.cli.execution_mode.help.help_request.TestCaseHelpItem.INSTRUCTION,
+                          shellcheck_lib.cli.execution_mode.help.mode.test_case.help_request.TestCaseHelpRequest)
+        self.assertIs(shellcheck_lib.cli.execution_mode.help.mode.test_case.help_request.TestCaseHelpItem.INSTRUCTION,
                       value.item)
         self.assertIsInstance(value.data,
                               Description,
@@ -192,17 +193,17 @@ class TestTestCaseInstructionList(unittest.TestCase):
     def _assert_is_valid_instruction_list_settings(
             self,
             expected_instruction_name: str,
-            value) -> shellcheck_lib.cli.execution_mode.help.help_request.TestCaseHelpRequest:
+            value) -> shellcheck_lib.cli.execution_mode.help.mode.test_case.help_request.TestCaseHelpRequest:
         self.assertIsInstance(value,
-                              shellcheck_lib.cli.execution_mode.help.help_request.TestCaseHelpRequest,
+                              shellcheck_lib.cli.execution_mode.help.mode.test_case.help_request.TestCaseHelpRequest,
                               'Should be help for Test Case')
         assert isinstance(value,
-                          shellcheck_lib.cli.execution_mode.help.help_request.TestCaseHelpRequest)
+                          shellcheck_lib.cli.execution_mode.help.mode.test_case.help_request.TestCaseHelpRequest)
         self.assertEqual(expected_instruction_name,
                          value.name,
                          'Name of instruction')
         self.assertIs(
-                shellcheck_lib.cli.execution_mode.help.help_request.TestCaseHelpItem.INSTRUCTION_LIST,
+                shellcheck_lib.cli.execution_mode.help.mode.test_case.help_request.TestCaseHelpItem.INSTRUCTION_LIST,
                 value.item)
         self.assertIsInstance(value.data,
                               list,
@@ -234,12 +235,12 @@ class TestTestCaseInstructionSet(unittest.TestCase):
         actual = sut.parse(_app_help_for([]),
                            arguments_for.instructions())
         self.assertIsInstance(actual,
-                              shellcheck_lib.cli.execution_mode.help.help_request.TestCaseHelpRequest,
+                              shellcheck_lib.cli.execution_mode.help.mode.test_case.help_request.TestCaseHelpRequest,
                               'Expecting settings for Test Case')
         assert isinstance(actual,
-                          shellcheck_lib.cli.execution_mode.help.help_request.TestCaseHelpRequest)
+                          shellcheck_lib.cli.execution_mode.help.mode.test_case.help_request.TestCaseHelpRequest)
         self.assertIs(
-                shellcheck_lib.cli.execution_mode.help.help_request.TestCaseHelpItem.INSTRUCTION_SET,
+                shellcheck_lib.cli.execution_mode.help.mode.test_case.help_request.TestCaseHelpItem.INSTRUCTION_SET,
                 actual.item,
                 'Item should denote help for Instruction Set')
 
@@ -249,10 +250,10 @@ class TestTestSuiteHelp(unittest.TestCase):
         actual = sut.parse(_app_help_for([]),
                            arguments_for.suite())
         self.assertIsInstance(actual,
-                              sut.help_request.TestSuiteHelpRequest,
+                              shellcheck_lib.cli.execution_mode.help.mode.help_request.TestSuiteHelpRequest,
                               'Expecting settings for Program')
-        assert isinstance(actual, sut.help_request.TestSuiteHelpRequest)
-        self.assertIs(sut.help_request.TestSuiteHelpItem.OVERVIEW,
+        assert isinstance(actual, shellcheck_lib.cli.execution_mode.help.mode.help_request.TestSuiteHelpRequest)
+        self.assertIs(shellcheck_lib.cli.execution_mode.help.mode.help_request.TestSuiteHelpItem.OVERVIEW,
                       actual.item,
                       'Item should denote help for Overview')
 
@@ -262,10 +263,10 @@ class TestTestSuiteHelp(unittest.TestCase):
                                                          TestSuiteSectionHelp('section B')]),
                            arguments_for.suite_section('section A'))
         self.assertIsInstance(actual,
-                              sut.help_request.TestSuiteHelpRequest,
+                              shellcheck_lib.cli.execution_mode.help.mode.help_request.TestSuiteHelpRequest,
                               'Expecting help for Suite Section')
-        assert isinstance(actual, sut.help_request.TestSuiteHelpRequest)
-        self.assertIs(sut.help_request.TestSuiteHelpItem.SECTION,
+        assert isinstance(actual, shellcheck_lib.cli.execution_mode.help.mode.help_request.TestSuiteHelpRequest)
+        self.assertIs(shellcheck_lib.cli.execution_mode.help.mode.help_request.TestSuiteHelpItem.SECTION,
                       actual.item,
                       'Item should denote help for a Section')
         self.assertIsInstance(actual.data,

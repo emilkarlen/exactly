@@ -3,7 +3,8 @@ import shutil
 
 from shellcheck_lib.cli.execution_mode.help.contents2 import help_invokation_variants, test_case_overview_help
 from shellcheck_lib.cli.execution_mode.help.contents_structure import ApplicationHelp
-from shellcheck_lib.cli.execution_mode.help.help_request import *
+from shellcheck_lib.cli.execution_mode.help.mode.help_request import *
+from shellcheck_lib.cli.execution_mode.help.mode.test_case.help_request import TestCaseHelpRequest
 from shellcheck_lib.cli.execution_mode.help.mode.test_case.render import TestCaseHelpRenderer
 from shellcheck_lib.cli.execution_mode.help.mode.test_suite.contents_structure import TestSuiteSectionHelp
 from shellcheck_lib.cli.execution_mode.help.mode.test_suite.render import TestSuiteHelpRenderer
