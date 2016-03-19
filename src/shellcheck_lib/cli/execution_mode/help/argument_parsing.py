@@ -1,3 +1,4 @@
+import shellcheck_lib.cli.execution_mode.help.mode.main_program.help_request
 import shellcheck_lib.cli.execution_mode.help.mode.test_suite.help_request
 from shellcheck_lib.cli.execution_mode.help.contents_structure import ApplicationHelp
 from shellcheck_lib.cli.execution_mode.help.mode import help_request
@@ -34,9 +35,11 @@ class Parser:
         :raises HelpError Invalid usage
         """
         if not help_command_arguments:
-            return help_request.ProgramHelpRequest(help_request.ProgramHelpItem.PROGRAM)
+            return shellcheck_lib.cli.execution_mode.help.mode.main_program.help_request.MainProgramHelpRequest(
+                    shellcheck_lib.cli.execution_mode.help.mode.main_program.help_request.MainProgramHelpItem.PROGRAM)
         if help_command_arguments[0] == HELP:
-            return help_request.ProgramHelpRequest(help_request.ProgramHelpItem.HELP)
+            return shellcheck_lib.cli.execution_mode.help.mode.main_program.help_request.MainProgramHelpRequest(
+                    shellcheck_lib.cli.execution_mode.help.mode.main_program.help_request.MainProgramHelpItem.HELP)
         if help_command_arguments[0] == SUITE:
             return self._parse_suite_help(help_command_arguments[1:])
         if len(help_command_arguments) == 2:
