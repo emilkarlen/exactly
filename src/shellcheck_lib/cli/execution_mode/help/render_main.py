@@ -1,12 +1,13 @@
 import os
 import shutil
 
-from shellcheck_lib.cli.execution_mode.help.contents import ApplicationHelp, TestSuiteHelp, \
-    TestSuiteSectionHelp, TestCaseHelp, TestCasePhaseHelp
-from shellcheck_lib.cli.execution_mode.help.contents2 import help_invokation_variants
+from shellcheck_lib.cli.execution_mode.help.contents2 import help_invokation_variants, test_case_overview_help
+from shellcheck_lib.cli.execution_mode.help.contents_structure import ApplicationHelp
+from shellcheck_lib.cli.execution_mode.help.help_request import *
+from shellcheck_lib.cli.execution_mode.help.mode.test_case.contents_structure import TestCaseHelp, TestCasePhaseHelp
+from shellcheck_lib.cli.execution_mode.help.mode.test_suite.contents_structure import TestSuiteHelp, \
+    TestSuiteSectionHelp
 from shellcheck_lib.cli.execution_mode.help.render.test_case import instruction_set
-from shellcheck_lib.cli.execution_mode.help.settings import HelpSettings, TestCaseHelpSettings, TestCaseHelpItem, \
-    TestSuiteHelpSettings, TestSuiteHelpItem, ProgramHelpSettings, ProgramHelpItem
 from shellcheck_lib.document.syntax import phase_name_in_phase_syntax
 from shellcheck_lib.help.test_case import instruction
 from shellcheck_lib.test_case.instruction_description import Description
@@ -20,7 +21,7 @@ from shellcheck_lib.util.textformat.structure.paragraph import para
 
 class TestCaseHelpRenderer:
     def overview(self, test_case_help: TestCaseHelp) -> doc.SectionContents:
-        return doc.SectionContents([para('TODO: test case overview help')], [])
+        return doc.SectionContents(test_case_overview_help, [])
 
     def phase(self, phase_help: TestCasePhaseHelp) -> doc.SectionContents:
         return doc.SectionContents([para('TODO test-case help for phase ' + phase_help.name)], [])
@@ -60,7 +61,7 @@ class TestSuiteHelpRenderer:
 
 def print_help(file,
                application_help: ApplicationHelp,
-               settings: HelpSettings):
+               settings: HelpRequest):
     section_contents = doc_for(application_help, settings)
     page_width = shutil.get_terminal_size().columns
     formatter = section.Formatter(paragraph_item.Formatter(Wrapper(page_width=page_width),
@@ -72,16 +73,16 @@ def print_help(file,
 
 
 def doc_for(application_help: ApplicationHelp,
-            settings: HelpSettings) -> doc.SectionContents:
-    if isinstance(settings, ProgramHelpSettings):
+            settings: HelpRequest) -> doc.SectionContents:
+    if isinstance(settings, ProgramHelpRequest):
         item = settings.item
         if item is ProgramHelpItem.PROGRAM:
-            return doc.SectionContents([para('TODO program help')], [])
+            return doc.SectionContents(test_case_overview_help, [])
         if item is ProgramHelpItem.HELP:
             pi = help_invokation_variants()
             return doc.SectionContents([pi], [])
         raise ValueError('Invalid %s: %s' % (str(ProgramHelpItem), str(item)))
-    if isinstance(settings, TestCaseHelpSettings):
+    if isinstance(settings, TestCaseHelpRequest):
         tc_help = TestCaseHelpRenderer()
         item = settings.item
         if item is TestCaseHelpItem.OVERVIEW:
@@ -97,7 +98,7 @@ def doc_for(application_help: ApplicationHelp,
         if item is TestCaseHelpItem.INSTRUCTION_LIST:
             return tc_help.instruction_list(settings.name, settings.data)
         raise ValueError('Invalid %s: %s' % (str(TestCaseHelpItem), str(item)))
-    if isinstance(settings, TestSuiteHelpSettings):
+    if isinstance(settings, TestSuiteHelpRequest):
         ts_help = TestSuiteHelpRenderer()
         item = settings.item
         if item is TestSuiteHelpItem.OVERVIEW:
@@ -107,4 +108,4 @@ def doc_for(application_help: ApplicationHelp,
             assert isinstance(data, TestSuiteSectionHelp)
             return ts_help.section(data)
         raise ValueError('Invalid %s: %s' % (str(TestSuiteHelpItem), str(item)))
-    raise ValueError('Invalid %s: %s' % (str(HelpSettings), str(type(settings))))
+    raise ValueError('Invalid %s: %s' % (str(HelpRequest), str(type(settings))))

@@ -1,5 +1,5 @@
-from shellcheck_lib.cli.execution_mode.help.contents import TestCaseHelp, \
-    TestCasePhaseInstructionSet
+from shellcheck_lib.cli.execution_mode.help.mode.test_case.contents_structure import TestCasePhaseInstructionSet, \
+    TestCaseHelp
 from shellcheck_lib.document.syntax import phase_name_in_phase_syntax
 from shellcheck_lib.help.test_case.instruction import instruction_set_list_item
 from shellcheck_lib.util.textformat.structure import document as doc

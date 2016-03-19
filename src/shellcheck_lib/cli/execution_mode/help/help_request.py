@@ -1,9 +1,27 @@
 from enum import Enum
 
 
+class HelpRequest:
+    """
+    A request for help of a subject.
+    E.g. the instruction "my-instr" in the phase "my-phase" of the execution mode "test-case".
+    """
+    pass
+
+
 class ProgramHelpItem(Enum):
     HELP = 0
     PROGRAM = 1
+
+
+class ProgramHelpRequest(HelpRequest):
+    def __init__(self,
+                 item: ProgramHelpItem):
+        self._item = item
+
+    @property
+    def item(self) -> ProgramHelpItem:
+        return self._item
 
 
 class TestCaseHelpItem(Enum):
@@ -15,26 +33,7 @@ class TestCaseHelpItem(Enum):
     PHASE_INSTRUCTION_LIST = 5
 
 
-class TestSuiteHelpItem(Enum):
-    OVERVIEW = 0
-    SECTION = 1
-
-
-class HelpSettings:
-    pass
-
-
-class ProgramHelpSettings(HelpSettings):
-    def __init__(self,
-                 item: ProgramHelpItem):
-        self._item = item
-
-    @property
-    def item(self) -> ProgramHelpItem:
-        return self._item
-
-
-class TestCaseHelpSettings(HelpSettings):
+class TestCaseHelpRequest(HelpRequest):
     def __init__(self,
                  item: TestCaseHelpItem,
                  name: str,
@@ -56,7 +55,12 @@ class TestCaseHelpSettings(HelpSettings):
         return self._value
 
 
-class TestSuiteHelpSettings(HelpSettings):
+class TestSuiteHelpItem(Enum):
+    OVERVIEW = 0
+    SECTION = 1
+
+
+class TestSuiteHelpRequest(HelpRequest):
     def __init__(self,
                  item: TestSuiteHelpItem,
                  name: str,
