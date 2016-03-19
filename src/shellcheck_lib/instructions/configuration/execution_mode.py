@@ -1,8 +1,9 @@
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
 from shellcheck_lib.execution.result import FullResultStatus
+from shellcheck_lib.help.program_modes.test_case.instruction_reference import InvokationVariant, \
+    InstructionReference
 from shellcheck_lib.instructions.utils.parse_utils import split_arguments_list_string
-from shellcheck_lib.test_case.instruction_documentation import InvokationVariant, InstructionReference
 from shellcheck_lib.test_case.instruction_setup import SingleInstructionSetup
 from shellcheck_lib.test_case.phases.anonymous import AnonymousPhaseInstruction, ConfigurationBuilder, ExecutionMode
 from shellcheck_lib.test_case.phases.result import sh

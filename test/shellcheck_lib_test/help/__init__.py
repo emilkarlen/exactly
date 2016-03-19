@@ -1,11 +1,11 @@
 import unittest
 
-from shellcheck_lib_test.help.test_case import instruction
+from shellcheck_lib_test.help import program_modes
 
 
 def suite():
     ret_val = unittest.TestSuite()
-    ret_val.addTest(instruction.suite())
+    ret_val.addTest(program_modes.suite())
     return ret_val
 
 

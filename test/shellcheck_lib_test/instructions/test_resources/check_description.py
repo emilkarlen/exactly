@@ -1,6 +1,7 @@
 import unittest
 
-from shellcheck_lib.test_case.instruction_documentation import InstructionReference, InvokationVariant, \
+from shellcheck_lib.help.program_modes.test_case.instruction_reference import InstructionReference, \
+    InvokationVariant, \
     SyntaxElementDescription
 from shellcheck_lib_test.test_resources import value_assertion as va
 from shellcheck_lib_test.util.textformat.test_resources import structure as struct_check

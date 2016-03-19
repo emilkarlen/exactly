@@ -1,12 +1,12 @@
 import os
 
-from shellcheck_lib.cli.execution_mode import main_program_argument_parsing as case_argument_parsing
-from shellcheck_lib.cli.execution_mode.help import argument_parsing as parse_help
-from shellcheck_lib.cli.execution_mode.help.contents_structure import application_help_for
-from shellcheck_lib.cli.execution_mode.help.render_main import print_help
-from shellcheck_lib.cli.execution_mode.test_case.settings import TestCaseExecutionSettings
-from shellcheck_lib.cli.execution_mode.test_suite import argument_parsing as suite_argument_parsing
-from shellcheck_lib.cli.execution_mode.test_suite.settings import Settings
+from shellcheck_lib.cli.program_modes import main_program_argument_parsing as case_argument_parsing
+from shellcheck_lib.cli.program_modes.help import argument_parsing as parse_help
+from shellcheck_lib.cli.program_modes.help.request_rendering import print_help
+from shellcheck_lib.cli.program_modes.test_case.settings import TestCaseExecutionSettings
+from shellcheck_lib.cli.program_modes.test_suite import argument_parsing as suite_argument_parsing
+from shellcheck_lib.cli.program_modes.test_suite.settings import Settings
+from shellcheck_lib.help.contents_structure import application_help_for
 from shellcheck_lib.test_case.instruction_setup import InstructionsSetup
 from shellcheck_lib.util import argument_parsing_utils
 from shellcheck_lib.util.std import StdOutputFiles

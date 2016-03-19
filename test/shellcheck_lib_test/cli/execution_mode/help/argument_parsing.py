@@ -1,16 +1,17 @@
 import unittest
 
-from shellcheck_lib.cli.execution_mode.help import argument_parsing as sut
-from shellcheck_lib.cli.execution_mode.help.contents_structure import ApplicationHelp
-from shellcheck_lib.cli.execution_mode.help.mode.main_program.contents_structure import MainProgramHelp
-from shellcheck_lib.cli.execution_mode.help.mode.main_program.help_request import *
-from shellcheck_lib.cli.execution_mode.help.mode.test_case.contents_structure import TestCasePhaseInstructionSet, \
-    TestCasePhaseHelp, TestCaseHelp
-from shellcheck_lib.cli.execution_mode.help.mode.test_case.help_request import *
-from shellcheck_lib.cli.execution_mode.help.mode.test_suite.contents_structure import TestSuiteSectionHelp, \
+from shellcheck_lib.cli.program_modes.help import argument_parsing as sut
+from shellcheck_lib.cli.program_modes.help.program_modes.main_program.help_request import *
+from shellcheck_lib.cli.program_modes.help.program_modes.test_case.help_request import *
+from shellcheck_lib.cli.program_modes.help.program_modes.test_suite.help_request import *
+from shellcheck_lib.help.contents_structure import ApplicationHelp
+from shellcheck_lib.help.program_modes.main_program.contents_structure import MainProgramHelp
+from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCasePhaseInstructionSet, \
+    TestCasePhaseHelp, TestCaseHelp, TestCasePhaseReference
+from shellcheck_lib.help.program_modes.test_case.instruction_reference import InstructionReference
+from shellcheck_lib.help.program_modes.test_suite.contents_structure import TestSuiteSectionHelp, \
     TestSuiteHelp
-from shellcheck_lib.cli.execution_mode.help.mode.test_suite.help_request import *
-from shellcheck_lib.test_case.instruction_documentation import InstructionReference
+from shellcheck_lib.help.utils.description import single_line_description
 from shellcheck_lib_test.cli.execution_mode.help.test_resources import arguments_for
 from shellcheck_lib_test.test_resources.instruction_description import InstructionReferenceWithConstantValues
 
@@ -67,7 +68,7 @@ class TestTestCasePhase(unittest.TestCase):
         self.assertIsInstance(actual,
                               TestCaseHelpRequest,
                               'Parse result should be a ' + str(
-                                      TestCaseHelpRequest))
+                                  TestCaseHelpRequest))
         assert isinstance(actual, TestCaseHelpRequest)
         self.assertIs(TestCaseHelpItem.PHASE,
                       actual.item)
@@ -233,9 +234,9 @@ class TestTestCaseInstructionSet(unittest.TestCase):
                               'Expecting settings for Test Case')
         assert isinstance(actual, TestCaseHelpRequest)
         self.assertIs(
-                TestCaseHelpItem.INSTRUCTION_SET,
-                actual.item,
-                'Item should denote help for Instruction Set')
+            TestCaseHelpItem.INSTRUCTION_SET,
+            actual.item,
+            'Item should denote help for Instruction Set')
 
 
 class TestTestSuiteHelp(unittest.TestCase):
@@ -277,11 +278,11 @@ class TestTestSuiteHelp(unittest.TestCase):
 
 def instr_descr(phase_name: str, name: str) -> InstructionReference:
     return InstructionReferenceWithConstantValues(
-            name,
-            _single_line_description_that_identifies_instruction_and_phase(phase_name,
-                                                                           name),
-            '',
-            [])
+        name,
+        _single_line_description_that_identifies_instruction_and_phase(phase_name,
+                                                                       name),
+        '',
+        [])
 
 
 def _single_line_description_that_identifies_instruction_and_phase(phase_name: str,
@@ -301,7 +302,12 @@ def test_case_phase_help(phase_name: str,
     instruction_descriptions = map(lambda name: instr_descr(phase_name, name),
                                    instruction_names)
     return TestCasePhaseHelp(phase_name,
+                             dummy_phase_reference(phase_name),
                              TestCasePhaseInstructionSet(instruction_descriptions))
+
+
+def dummy_phase_reference(phase_name: str) -> TestCasePhaseReference:
+    return TestCasePhaseReference(single_line_description('single_line_description for phase ' + phase_name))
 
 
 def suite():
