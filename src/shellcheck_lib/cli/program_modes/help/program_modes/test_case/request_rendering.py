@@ -1,7 +1,6 @@
 from shellcheck_lib.cli.program_modes.help.program_modes.test_case.help_request import TestCaseHelpItem, \
     TestCaseHelpRequest
 from shellcheck_lib.document.syntax import phase_name_in_phase_syntax
-from shellcheck_lib.help.program_modes.main_program.contents import test_case_overview_help
 from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCaseHelp, TestCasePhaseHelp
 from shellcheck_lib.help.program_modes.test_case.instruction_reference import InstructionReference
 from shellcheck_lib.help.program_modes.test_case.render_utils import instruction_set, render_instruction
@@ -31,7 +30,7 @@ class TestCaseHelpRenderer:
         raise ValueError('Invalid %s: %s' % (str(TestCaseHelpItem), str(item)))
 
     def overview(self, test_case_help: TestCaseHelp) -> doc.SectionContents:
-        return doc.SectionContents(test_case_overview_help, [])
+        return doc.SectionContents([para('TODO help for test-case program-mode')], [])
 
     def phase(self, phase_help: TestCasePhaseHelp) -> doc.SectionContents:
         description = phase_help.reference.description

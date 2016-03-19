@@ -22,22 +22,22 @@ class TestProgramHelp(unittest.TestCase):
                            [])
         self.assertIsInstance(actual,
                               MainProgramHelpRequest,
-                              'Expecting settings for Program')
+                              'Expecting settings for MainProgram')
         assert isinstance(actual, MainProgramHelpRequest)
         self.assertIs(MainProgramHelpItem.PROGRAM,
                       actual.item,
                       'Expects program help')
 
     def test_help_help(self):
-        actual = sut.parse(_app_help_for([sut.HELP]),
-                           [])
+        actual = sut.parse(_app_help_for([]),
+                           [sut.HELP])
         self.assertIsInstance(actual,
                               MainProgramHelpRequest,
-                              'Expecting settings for Program')
+                              'Expecting settings for MainProgram')
         assert isinstance(actual, MainProgramHelpRequest)
-        self.assertIs(MainProgramHelpItem.PROGRAM,
+        self.assertIs(MainProgramHelpItem.HELP,
                       actual.item,
-                      'Expects program help')
+                      'Expects MainProgram help for help')
 
 
 class TestTestCasePhase(unittest.TestCase):
@@ -239,18 +239,32 @@ class TestTestCaseInstructionSet(unittest.TestCase):
             'Item should denote help for Instruction Set')
 
 
+class TestTestCaseHelp(unittest.TestCase):
+    def test_overview(self):
+        actual = sut.parse(_app_help_for([]),
+                           arguments_for.test_case())
+        self.assertIsInstance(actual,
+                              TestCaseHelpRequest,
+                              'Expecting settings for test-case')
+        assert isinstance(actual,
+                          TestCaseHelpRequest)
+        self.assertIs(TestCaseHelpItem.OVERVIEW,
+                      actual.item,
+                      'Item should denote help for test-case overview')
+
+
 class TestTestSuiteHelp(unittest.TestCase):
     def test_overview(self):
         actual = sut.parse(_app_help_for([]),
                            arguments_for.suite())
         self.assertIsInstance(actual,
                               TestSuiteHelpRequest,
-                              'Expecting settings for Program')
+                              'Expecting settings for test-suite')
         assert isinstance(actual,
                           TestSuiteHelpRequest)
         self.assertIs(TestSuiteHelpItem.OVERVIEW,
                       actual.item,
-                      'Item should denote help for Overview')
+                      'Item should denote help for test-suite overview')
 
     def test_known_section(self):
         actual = sut.parse(_app_help_for([],
@@ -313,6 +327,7 @@ def dummy_phase_reference(phase_name: str) -> TestCasePhaseReference:
 def suite():
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestProgramHelp))
+    ret_val.addTest(unittest.makeSuite(TestTestCaseHelp))
     ret_val.addTest(unittest.makeSuite(TestTestCaseInstructionSet))
     ret_val.addTest(unittest.makeSuite(TestTestCaseSingleInstructionInPhase))
     ret_val.addTest(unittest.makeSuite(TestTestCaseInstructionList))

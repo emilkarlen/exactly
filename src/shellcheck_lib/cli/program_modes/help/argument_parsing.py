@@ -7,7 +7,8 @@ from shellcheck_lib.help.contents_structure import ApplicationHelp
 
 HELP = 'help'
 INSTRUCTIONS = 'instructions'
-SUITE = 'suite'
+TEST_CASE = 'case'
+TEST_SUITE = 'suite'
 
 
 class HelpError(Exception):
@@ -38,23 +39,25 @@ class Parser:
             return MainProgramHelpRequest(MainProgramHelpItem.PROGRAM)
         if help_command_arguments[0] == HELP:
             return MainProgramHelpRequest(MainProgramHelpItem.HELP)
-        if help_command_arguments[0] == SUITE:
+        if help_command_arguments[0] == TEST_CASE:
+            if len(help_command_arguments) > 1:
+                raise HelpError('Invalid number of arguments for help command. Use help help, for help.')
+            return TestCaseHelpRequest(TestCaseHelpItem.OVERVIEW, None, None)
+        if help_command_arguments[0] == TEST_SUITE:
             return self._parse_suite_help(help_command_arguments[1:])
         if len(help_command_arguments) == 2:
             return self._parse_instruction_in_phase(help_command_arguments[0],
                                                     help_command_arguments[1])
         if len(help_command_arguments) != 1:
-            raise HelpError('Invalid number of arguments. Use help help, for help.')
+            raise HelpError('Invalid number of arguments for help command. Use help help, for help.')
         argument = help_command_arguments[0]
         if argument == INSTRUCTIONS:
-            return TestCaseHelpRequest(
-                    TestCaseHelpItem.INSTRUCTION_SET, None, None)
+            return TestCaseHelpRequest(TestCaseHelpItem.INSTRUCTION_SET, None, None)
         case_help = self.application_help.test_case_help
         if argument in case_help.phase_name_2_phase_help:
-            return TestCaseHelpRequest(
-                    TestCaseHelpItem.PHASE,
-                    argument,
-                    case_help.phase_name_2_phase_help[argument])
+            return TestCaseHelpRequest(TestCaseHelpItem.PHASE,
+                                       argument,
+                                       case_help.phase_name_2_phase_help[argument])
         return self._parse_instruction_search_when_not_a_phase(argument)
 
     def _parse_suite_help(self,
@@ -82,15 +85,15 @@ class Parser:
                 raise HelpError(msg)
             if instruction_name == INSTRUCTIONS:
                 return TestCaseHelpRequest(
-                        TestCaseHelpItem.PHASE_INSTRUCTION_LIST,
-                        phase_name,
-                        test_case_phase_help)
+                    TestCaseHelpItem.PHASE_INSTRUCTION_LIST,
+                    phase_name,
+                    test_case_phase_help)
             try:
                 description = test_case_phase_help.instruction_set.name_2_description[instruction_name]
                 return TestCaseHelpRequest(
-                        TestCaseHelpItem.INSTRUCTION,
-                        instruction_name,
-                        description)
+                    TestCaseHelpItem.INSTRUCTION,
+                    instruction_name,
+                    description)
             except KeyError:
                 msg = 'The phase %s does not contain the instruction: %s' % (phase_name, instruction_name)
                 raise HelpError(msg)
@@ -114,9 +117,9 @@ class Parser:
             msg = 'Neither the name of a phase nor of an instruction: "%s"' % instruction_name
             raise HelpError(msg)
         return TestCaseHelpRequest(
-                TestCaseHelpItem.INSTRUCTION_LIST,
-                instruction_name,
-                phase_and_instr_descr_list)
+            TestCaseHelpItem.INSTRUCTION_LIST,
+            instruction_name,
+            phase_and_instr_descr_list)
 
 
 def _is_name_of_phase(name: str):
