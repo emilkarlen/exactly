@@ -1,11 +1,10 @@
 import os
 import shutil
 
-from shellcheck_lib.cli.execution_mode.help.contents2 import help_invokation_variants, test_case_overview_help
 from shellcheck_lib.cli.execution_mode.help.contents_structure import ApplicationHelp
 from shellcheck_lib.cli.execution_mode.help.mode.help_request import *
-from shellcheck_lib.cli.execution_mode.help.mode.main_program.help_request import MainProgramHelpItem, \
-    MainProgramHelpRequest
+from shellcheck_lib.cli.execution_mode.help.mode.main_program.help_request import MainProgramHelpRequest
+from shellcheck_lib.cli.execution_mode.help.mode.main_program.render import MainProgramHelpRenderer
 from shellcheck_lib.cli.execution_mode.help.mode.test_case.help_request import TestCaseHelpRequest
 from shellcheck_lib.cli.execution_mode.help.mode.test_case.render import TestCaseHelpRenderer
 from shellcheck_lib.cli.execution_mode.help.mode.test_suite.help_request import TestSuiteHelpRequest
@@ -32,13 +31,8 @@ def print_help(file,
 def doc_for(application_help: ApplicationHelp,
             request: HelpRequest) -> doc.SectionContents:
     if isinstance(request, MainProgramHelpRequest):
-        item = request.item
-        if item is MainProgramHelpItem.PROGRAM:
-            return doc.SectionContents(test_case_overview_help, [])
-        if item is MainProgramHelpItem.HELP:
-            pi = help_invokation_variants()
-            return doc.SectionContents([pi], [])
-        raise ValueError('Invalid %s: %s' % (str(MainProgramHelpItem), str(item)))
+        renderer = MainProgramHelpRenderer()
+        return renderer.render(request)
     if isinstance(request, TestCaseHelpRequest):
         renderer = TestCaseHelpRenderer(application_help.test_case_help)
         return renderer.render(request)
