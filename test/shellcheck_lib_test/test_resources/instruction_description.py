@@ -1,8 +1,8 @@
-from shellcheck_lib.test_case.instruction_description import Description
+from shellcheck_lib.test_case.instruction_documentation import InstructionReference
 from shellcheck_lib.util.textformat import parse as text_parse
 
 
-class DescriptionWithConstantValues(Description):
+class InstructionReferenceWithConstantValues(InstructionReference):
     def __init__(self,
                  instruction_name: str,
                  single_line_description: str,

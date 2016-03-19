@@ -10,7 +10,7 @@ from shellcheck_lib.instructions.assert_phase.utils.contents_utils import Actual
     WITH_REPLACED_ENV_VARS_OPTION, parse_actual_file_argument
 from shellcheck_lib.instructions.utils.parse_utils import split_arguments_list_string
 from shellcheck_lib.instructions.utils.relative_path_options import REL_HOME_OPTION, REL_TMP_OPTION, REL_CWD_OPTION
-from shellcheck_lib.test_case.instruction_description import InvokationVariant, Description
+from shellcheck_lib.test_case.instruction_documentation import InvokationVariant, InstructionReference
 from shellcheck_lib.test_case.instruction_setup import SingleInstructionSetup
 from shellcheck_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from shellcheck_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase
@@ -21,10 +21,10 @@ from .utils import contents_utils
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(Parser(),
-                                  TheDescription(instruction_name))
+                                  TheInstructionReference(instruction_name))
 
 
-class TheDescription(Description):
+class TheInstructionReference(InstructionReference):
     def __init__(self, name: str):
         super().__init__(name)
 

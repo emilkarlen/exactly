@@ -14,8 +14,8 @@ from shellcheck_lib.instructions.utils.parse_utils import TokenStream
 from shellcheck_lib.instructions.utils.pre_or_post_validation import PreOrPostEdsValidator, AndValidator
 from shellcheck_lib.instructions.utils.sub_process_execution import ResultAndStderr, ExecuteInfo, \
     ExecutorThatStoresResultInFilesInDir, execute_and_read_stderr_if_non_zero_exitcode, result_to_sh, result_to_pfh
-from shellcheck_lib.test_case.instruction_description import InvokationVariant, SyntaxElementDescription, \
-    Description
+from shellcheck_lib.test_case.instruction_documentation import InvokationVariant, SyntaxElementDescription, \
+    InstructionReference
 from shellcheck_lib.test_case.phases.common import HomeAndEds, TestCaseInstruction, PhaseLoggingPaths
 from shellcheck_lib.test_case.phases.result import pfh
 from shellcheck_lib.test_case.phases.result import sh
@@ -26,7 +26,7 @@ INTERPRET_OPTION = '--interpret'
 SOURCE_OPTION = '--source'
 
 
-class TheDescription(Description):
+class TheInstructionReference(InstructionReference):
     def __init__(self,
                  name: str,
                  single_line_description: str):

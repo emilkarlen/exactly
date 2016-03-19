@@ -25,7 +25,12 @@ class SyntaxElementDescription:
         self.description_rest = description_rest
 
 
-class Description:
+class InstructionReference:
+    """
+    Reference documentation about an instruction,
+    à la man page.
+    """
+
     def __init__(self,
                  instruction_name: str):
         self._instruction_name = instruction_name

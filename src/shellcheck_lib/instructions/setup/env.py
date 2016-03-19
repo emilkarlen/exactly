@@ -9,7 +9,7 @@ from shellcheck_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSe
 def setup(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(
             env.Parser(_Instruction),
-            env.TheDescription(instruction_name))
+        env.TheInstructionReference(instruction_name))
 
 
 class _Instruction(SetupPhaseInstruction):

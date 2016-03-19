@@ -2,7 +2,7 @@ import unittest
 
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParserSource, SingleInstructionParser
-from shellcheck_lib.test_case.instruction_description import Description
+from shellcheck_lib.test_case.instruction_documentation import InstructionReference
 from shellcheck_lib.test_case.instruction_setup import SingleInstructionSetup
 from shellcheck_lib.test_case.os_services import new_default, OsServices
 from shellcheck_lib_test.instructions.test_resources.arrangements import ArrangementBase
@@ -25,7 +25,7 @@ class ConfigurationBase:
     def parser(self) -> SingleInstructionParser:
         return self.instruction_setup()
 
-    def description(self) -> Description:
+    def description(self) -> InstructionReference:
         return self.instruction_setup().description
 
     def arrangement(self,

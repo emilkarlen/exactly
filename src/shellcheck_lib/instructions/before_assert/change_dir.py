@@ -11,7 +11,7 @@ from shellcheck_lib.test_case.phases.result import sh
 def setup(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(
             Parser(),
-            cd_utils.TheDescription(instruction_name))
+        cd_utils.TheInstructionReference(instruction_name))
 
 
 class Parser(SingleInstructionParser):
