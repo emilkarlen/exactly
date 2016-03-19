@@ -2,6 +2,9 @@ import shlex
 
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, SingleInstructionParserSource, SingleInstructionInvalidArgumentException
+from shellcheck_lib.help.program_modes.test_case.instruction_reference import InvokationVariant, \
+    SyntaxElementDescription, \
+    InstructionReference
 from shellcheck_lib.instructions.utils import executable_file
 from shellcheck_lib.instructions.utils import file_properties
 from shellcheck_lib.instructions.utils import parse_file_ref
@@ -14,8 +17,6 @@ from shellcheck_lib.instructions.utils.parse_utils import TokenStream
 from shellcheck_lib.instructions.utils.pre_or_post_validation import PreOrPostEdsValidator, AndValidator
 from shellcheck_lib.instructions.utils.sub_process_execution import ResultAndStderr, ExecuteInfo, \
     ExecutorThatStoresResultInFilesInDir, execute_and_read_stderr_if_non_zero_exitcode, result_to_sh, result_to_pfh
-from shellcheck_lib.test_case.instruction_documentation import InvokationVariant, SyntaxElementDescription, \
-    InstructionReference
 from shellcheck_lib.test_case.phases.common import HomeAndEds, TestCaseInstruction, PhaseLoggingPaths
 from shellcheck_lib.test_case.phases.result import pfh
 from shellcheck_lib.test_case.phases.result import sh

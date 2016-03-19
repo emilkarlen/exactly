@@ -1,9 +1,10 @@
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParserSource
+from shellcheck_lib.help.program_modes.test_case.instruction_reference import InvokationVariant, \
+    InstructionReference
 from shellcheck_lib.instructions.utils.destination_path import *
 from shellcheck_lib.instructions.utils.parse_here_document import parse_as_last_argument
 from shellcheck_lib.instructions.utils.parse_utils import split_arguments_list_string
-from shellcheck_lib.test_case.instruction_documentation import InvokationVariant, InstructionReference
 from shellcheck_lib.util.file_utils import ensure_parent_directory_does_exist_and_is_a_directory, write_new_text_file
 from shellcheck_lib.util.string import lines_content
 from shellcheck_lib.util.textformat.structure.paragraph import single_para

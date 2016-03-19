@@ -1,4 +1,4 @@
-from shellcheck_lib.test_case.instruction_documentation import InstructionReference
+from shellcheck_lib.help.program_modes.test_case.instruction_reference import InstructionReference
 from shellcheck_lib.util.textformat import parse as text_parse
 
 
