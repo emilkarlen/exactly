@@ -1,6 +1,6 @@
 from shellcheck_lib.cli.execution_mode.help.contents2 import test_case_overview_help
-from shellcheck_lib.cli.execution_mode.help.help_request import TestCaseHelpRequest, TestCaseHelpItem
 from shellcheck_lib.cli.execution_mode.help.mode.test_case.contents_structure import TestCaseHelp, TestCasePhaseHelp
+from shellcheck_lib.cli.execution_mode.help.mode.test_case.help_request import TestCaseHelpItem, TestCaseHelpRequest
 from shellcheck_lib.cli.execution_mode.help.render.test_case import instruction_set
 from shellcheck_lib.document.syntax import phase_name_in_phase_syntax
 from shellcheck_lib.help.test_case import instruction

@@ -1,8 +1,7 @@
 from shellcheck_lib.cli.execution_mode.help.contents_structure import ApplicationHelp
-from shellcheck_lib.cli.execution_mode.help.help_request import *
+from shellcheck_lib.cli.execution_mode.help.mode import help_request
+from shellcheck_lib.cli.execution_mode.help.mode.test_case.help_request import TestCaseHelpItem, TestCaseHelpRequest
 from shellcheck_lib.execution import phases
-
-from . import help_request
 
 HELP = 'help'
 INSTRUCTIONS = 'instructions'
