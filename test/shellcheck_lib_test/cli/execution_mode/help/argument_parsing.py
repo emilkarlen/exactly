@@ -1,6 +1,7 @@
 import unittest
 
 import shellcheck_lib.cli.execution_mode.help.mode.help_request
+import shellcheck_lib.cli.execution_mode.help.mode.main_program.help_request
 import shellcheck_lib.cli.execution_mode.help.mode.test_case.help_request
 import shellcheck_lib.cli.execution_mode.help.mode.test_suite.help_request
 from shellcheck_lib.cli.execution_mode.help import argument_parsing as sut
@@ -20,10 +21,11 @@ class TestProgramHelp(unittest.TestCase):
         actual = sut.parse(_app_help_for([]),
                            [])
         self.assertIsInstance(actual,
-                              shellcheck_lib.cli.execution_mode.help.mode.help_request.ProgramHelpRequest,
+                              shellcheck_lib.cli.execution_mode.help.mode.main_program.help_request.MainProgramHelpRequest,
                               'Expecting settings for Program')
-        assert isinstance(actual, shellcheck_lib.cli.execution_mode.help.mode.help_request.ProgramHelpRequest)
-        self.assertIs(shellcheck_lib.cli.execution_mode.help.mode.help_request.ProgramHelpItem.PROGRAM,
+        assert isinstance(actual,
+                          shellcheck_lib.cli.execution_mode.help.mode.main_program.help_request.MainProgramHelpRequest)
+        self.assertIs(shellcheck_lib.cli.execution_mode.help.mode.main_program.help_request.MainProgramHelpItem.PROGRAM,
                       actual.item,
                       'Expects program help')
 
@@ -31,10 +33,11 @@ class TestProgramHelp(unittest.TestCase):
         actual = sut.parse(_app_help_for([sut.HELP]),
                            [])
         self.assertIsInstance(actual,
-                              shellcheck_lib.cli.execution_mode.help.mode.help_request.ProgramHelpRequest,
+                              shellcheck_lib.cli.execution_mode.help.mode.main_program.help_request.MainProgramHelpRequest,
                               'Expecting settings for Program')
-        assert isinstance(actual, shellcheck_lib.cli.execution_mode.help.mode.help_request.ProgramHelpRequest)
-        self.assertIs(shellcheck_lib.cli.execution_mode.help.mode.help_request.ProgramHelpItem.PROGRAM,
+        assert isinstance(actual,
+                          shellcheck_lib.cli.execution_mode.help.mode.main_program.help_request.MainProgramHelpRequest)
+        self.assertIs(shellcheck_lib.cli.execution_mode.help.mode.main_program.help_request.MainProgramHelpItem.PROGRAM,
                       actual.item,
                       'Expects program help')
 
