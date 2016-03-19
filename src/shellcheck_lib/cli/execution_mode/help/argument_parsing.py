@@ -1,3 +1,4 @@
+import shellcheck_lib.cli.execution_mode.help.mode.test_suite.help_request
 from shellcheck_lib.cli.execution_mode.help.contents_structure import ApplicationHelp
 from shellcheck_lib.cli.execution_mode.help.mode import help_request
 from shellcheck_lib.cli.execution_mode.help.mode.test_case.help_request import TestCaseHelpItem, TestCaseHelpRequest
@@ -55,17 +56,21 @@ class Parser:
                     case_help.phase_name_2_phase_help[argument])
         return self._parse_instruction_search_when_not_a_phase(argument)
 
-    def _parse_suite_help(self, arguments: list) -> help_request.TestSuiteHelpRequest:
+    def _parse_suite_help(self,
+                          arguments: list) -> shellcheck_lib.cli.execution_mode.help.mode.test_suite.help_request.TestSuiteHelpRequest:
         if not arguments:
-            return help_request.TestSuiteHelpRequest(help_request.TestSuiteHelpItem.OVERVIEW, None, None)
+            return shellcheck_lib.cli.execution_mode.help.mode.test_suite.help_request.TestSuiteHelpRequest(
+                    shellcheck_lib.cli.execution_mode.help.mode.test_suite.help_request.TestSuiteHelpItem.OVERVIEW,
+                    None, None)
         if len(arguments) != 1:
             raise HelpError('Invalid help syntax. Use help help, for help.')
         section_name = arguments[0]
         for test_suite_section_help in self.application_help.test_suite_help.section_helps:
             if test_suite_section_help.name == section_name:
-                return help_request.TestSuiteHelpRequest(help_request.TestSuiteHelpItem.SECTION,
-                                                         section_name,
-                                                         test_suite_section_help)
+                return shellcheck_lib.cli.execution_mode.help.mode.test_suite.help_request.TestSuiteHelpRequest(
+                        shellcheck_lib.cli.execution_mode.help.mode.test_suite.help_request.TestSuiteHelpItem.SECTION,
+                        section_name,
+                        test_suite_section_help)
         raise HelpError('Not a test-suite section: "%s"' % section_name)
 
     def _parse_instruction_in_phase(self,

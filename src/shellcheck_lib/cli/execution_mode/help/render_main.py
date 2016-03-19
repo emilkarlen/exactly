@@ -6,6 +6,7 @@ from shellcheck_lib.cli.execution_mode.help.contents_structure import Applicatio
 from shellcheck_lib.cli.execution_mode.help.mode.help_request import *
 from shellcheck_lib.cli.execution_mode.help.mode.test_case.help_request import TestCaseHelpRequest
 from shellcheck_lib.cli.execution_mode.help.mode.test_case.render import TestCaseHelpRenderer
+from shellcheck_lib.cli.execution_mode.help.mode.test_suite.help_request import TestSuiteHelpRequest
 from shellcheck_lib.cli.execution_mode.help.mode.test_suite.render import TestSuiteHelpRenderer
 from shellcheck_lib.util.textformat.formatting import section, paragraph_item
 from shellcheck_lib.util.textformat.formatting.lists import list_formats_with
