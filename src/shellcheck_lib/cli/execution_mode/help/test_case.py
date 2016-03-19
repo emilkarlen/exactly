@@ -1,5 +1,9 @@
-from shellcheck_lib.cli.execution_mode.help.contents import ApplicationHelp, MainProgramHelp, \
-    TestCaseHelp, TestSuiteHelp, TestCasePhaseHelp, TestCasePhaseInstructionSet, TestSuiteSectionHelp
+from shellcheck_lib.cli.execution_mode.help.contents_structure import ApplicationHelp
+from shellcheck_lib.cli.execution_mode.help.mode.main_program.contents_structure import MainProgramHelp
+from shellcheck_lib.cli.execution_mode.help.mode.test_case.contents_structure import TestCasePhaseInstructionSet, \
+    TestCasePhaseHelp, TestCaseHelp
+from shellcheck_lib.cli.execution_mode.help.mode.test_suite.contents_structure import TestSuiteSectionHelp, \
+    TestSuiteHelp
 from shellcheck_lib.execution import phases
 from shellcheck_lib.help.test_case.config import phase_help_name
 from shellcheck_lib.test_case.instruction_setup import InstructionsSetup
