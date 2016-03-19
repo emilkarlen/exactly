@@ -48,9 +48,14 @@ def help_invokation_variants() -> ParagraphItem:
                 'Describes a test-suite section.')),
     ]
 
+    return un_indented_variable_list(items)
+
+
+def un_indented_variable_list(items: list,
+                              custom_separations: lists.Separations = lists.Separations(1, 0)) -> ParagraphItem:
     return lists.HeaderContentList(items,
                                    lists.Format(lists.ListType.VARIABLE_LIST,
-                                                custom_separations=lists.Separations(1, 0),
+                                                custom_separations=custom_separations,
                                                 custom_indent_spaces=0))
 
 

@@ -30,7 +30,7 @@ class TestCaseHelpRenderer:
         raise ValueError('Invalid %s: %s' % (str(TestCaseHelpItem), str(item)))
 
     def overview(self, test_case_help: TestCaseHelp) -> doc.SectionContents:
-        return doc.SectionContents([para('TODO help for test-case program-mode')], [])
+        return doc.SectionContents([para('TODO help for test-case overview')], [])
 
     def phase(self, phase_help: TestCasePhaseHelp) -> doc.SectionContents:
         description = phase_help.reference.description
