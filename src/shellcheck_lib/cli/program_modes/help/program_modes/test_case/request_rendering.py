@@ -3,8 +3,8 @@ from shellcheck_lib.cli.program_modes.help.program_modes.test_case.help_request 
 from shellcheck_lib.document.syntax import phase_name_in_phase_syntax
 from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCaseHelp, TestCasePhaseHelp
 from shellcheck_lib.help.program_modes.test_case.instruction_reference import InstructionReference
+from shellcheck_lib.help.program_modes.test_case.render import instruction_set, render_instruction
 from shellcheck_lib.help.program_modes.test_case.render.test_case_phase import render_test_case_phase_overview
-from shellcheck_lib.help.program_modes.test_case.render_utils import instruction_set, render_instruction
 from shellcheck_lib.util.textformat.structure import document as doc
 from shellcheck_lib.util.textformat.structure.core import Text
 from shellcheck_lib.util.textformat.structure.paragraph import para

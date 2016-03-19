@@ -1,7 +1,7 @@
 from shellcheck_lib.document.syntax import phase_name_in_phase_syntax
 from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCasePhaseInstructionSet, \
     TestCaseHelp
-from shellcheck_lib.help.program_modes.test_case.render_utils.render_instruction import instruction_set_list_item
+from shellcheck_lib.help.program_modes.test_case.render.render_instruction import instruction_set_list_item
 from shellcheck_lib.util.textformat.structure import document as doc
 from shellcheck_lib.util.textformat.structure import lists
 from shellcheck_lib.util.textformat.structure.core import Text
