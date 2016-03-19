@@ -1,6 +1,6 @@
-from shellcheck_lib.cli.execution_mode.help.mode.help_request import TestSuiteHelpRequest, TestSuiteHelpItem
 from shellcheck_lib.cli.execution_mode.help.mode.test_suite.contents_structure import TestSuiteHelp, \
     TestSuiteSectionHelp
+from shellcheck_lib.cli.execution_mode.help.mode.test_suite.help_request import TestSuiteHelpItem, TestSuiteHelpRequest
 from shellcheck_lib.util.textformat.structure import document as doc
 from shellcheck_lib.util.textformat.structure.paragraph import para
 

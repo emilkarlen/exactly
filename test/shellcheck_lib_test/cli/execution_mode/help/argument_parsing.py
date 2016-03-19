@@ -2,6 +2,7 @@ import unittest
 
 import shellcheck_lib.cli.execution_mode.help.mode.help_request
 import shellcheck_lib.cli.execution_mode.help.mode.test_case.help_request
+import shellcheck_lib.cli.execution_mode.help.mode.test_suite.help_request
 from shellcheck_lib.cli.execution_mode.help import argument_parsing as sut
 from shellcheck_lib.cli.execution_mode.help.contents_structure import ApplicationHelp
 from shellcheck_lib.cli.execution_mode.help.mode.main_program.contents_structure import MainProgramHelp
@@ -250,10 +251,11 @@ class TestTestSuiteHelp(unittest.TestCase):
         actual = sut.parse(_app_help_for([]),
                            arguments_for.suite())
         self.assertIsInstance(actual,
-                              shellcheck_lib.cli.execution_mode.help.mode.help_request.TestSuiteHelpRequest,
+                              shellcheck_lib.cli.execution_mode.help.mode.test_suite.help_request.TestSuiteHelpRequest,
                               'Expecting settings for Program')
-        assert isinstance(actual, shellcheck_lib.cli.execution_mode.help.mode.help_request.TestSuiteHelpRequest)
-        self.assertIs(shellcheck_lib.cli.execution_mode.help.mode.help_request.TestSuiteHelpItem.OVERVIEW,
+        assert isinstance(actual,
+                          shellcheck_lib.cli.execution_mode.help.mode.test_suite.help_request.TestSuiteHelpRequest)
+        self.assertIs(shellcheck_lib.cli.execution_mode.help.mode.test_suite.help_request.TestSuiteHelpItem.OVERVIEW,
                       actual.item,
                       'Item should denote help for Overview')
 
@@ -263,10 +265,11 @@ class TestTestSuiteHelp(unittest.TestCase):
                                                          TestSuiteSectionHelp('section B')]),
                            arguments_for.suite_section('section A'))
         self.assertIsInstance(actual,
-                              shellcheck_lib.cli.execution_mode.help.mode.help_request.TestSuiteHelpRequest,
+                              shellcheck_lib.cli.execution_mode.help.mode.test_suite.help_request.TestSuiteHelpRequest,
                               'Expecting help for Suite Section')
-        assert isinstance(actual, shellcheck_lib.cli.execution_mode.help.mode.help_request.TestSuiteHelpRequest)
-        self.assertIs(shellcheck_lib.cli.execution_mode.help.mode.help_request.TestSuiteHelpItem.SECTION,
+        assert isinstance(actual,
+                          shellcheck_lib.cli.execution_mode.help.mode.test_suite.help_request.TestSuiteHelpRequest)
+        self.assertIs(shellcheck_lib.cli.execution_mode.help.mode.test_suite.help_request.TestSuiteHelpItem.SECTION,
                       actual.item,
                       'Item should denote help for a Section')
         self.assertIsInstance(actual.data,
