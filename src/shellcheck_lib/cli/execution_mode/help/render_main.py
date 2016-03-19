@@ -6,7 +6,6 @@ from shellcheck_lib.cli.execution_mode.help.contents_structure import Applicatio
 from shellcheck_lib.cli.execution_mode.help.mode.help_request import *
 from shellcheck_lib.cli.execution_mode.help.mode.test_case.help_request import TestCaseHelpRequest
 from shellcheck_lib.cli.execution_mode.help.mode.test_case.render import TestCaseHelpRenderer
-from shellcheck_lib.cli.execution_mode.help.mode.test_suite.contents_structure import TestSuiteSectionHelp
 from shellcheck_lib.cli.execution_mode.help.mode.test_suite.render import TestSuiteHelpRenderer
 from shellcheck_lib.util.textformat.formatting import section, paragraph_item
 from shellcheck_lib.util.textformat.formatting.lists import list_formats_with
@@ -28,26 +27,19 @@ def print_help(file,
 
 
 def doc_for(application_help: ApplicationHelp,
-            settings: HelpRequest) -> doc.SectionContents:
-    if isinstance(settings, ProgramHelpRequest):
-        item = settings.item
+            request: HelpRequest) -> doc.SectionContents:
+    if isinstance(request, ProgramHelpRequest):
+        item = request.item
         if item is ProgramHelpItem.PROGRAM:
             return doc.SectionContents(test_case_overview_help, [])
         if item is ProgramHelpItem.HELP:
             pi = help_invokation_variants()
             return doc.SectionContents([pi], [])
         raise ValueError('Invalid %s: %s' % (str(ProgramHelpItem), str(item)))
-    if isinstance(settings, TestCaseHelpRequest):
-        tc_help = TestCaseHelpRenderer(application_help.test_case_help)
-        return tc_help.render(settings)
-    if isinstance(settings, TestSuiteHelpRequest):
-        ts_help = TestSuiteHelpRenderer()
-        item = settings.item
-        if item is TestSuiteHelpItem.OVERVIEW:
-            return ts_help.overview(application_help.test_suite_help)
-        if item is TestSuiteHelpItem.SECTION:
-            data = settings.data
-            assert isinstance(data, TestSuiteSectionHelp)
-            return ts_help.section(data)
-        raise ValueError('Invalid %s: %s' % (str(TestSuiteHelpItem), str(item)))
-    raise ValueError('Invalid %s: %s' % (str(HelpRequest), str(type(settings))))
+    if isinstance(request, TestCaseHelpRequest):
+        renderer = TestCaseHelpRenderer(application_help.test_case_help)
+        return renderer.render(request)
+    if isinstance(request, TestSuiteHelpRequest):
+        renderer = TestSuiteHelpRenderer(application_help.test_suite_help)
+        return renderer.render(request)
+    raise ValueError('Invalid %s: %s' % (str(HelpRequest), str(type(request))))
