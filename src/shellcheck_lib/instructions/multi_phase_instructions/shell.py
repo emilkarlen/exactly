@@ -3,14 +3,14 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
 from shellcheck_lib.instructions.utils.sub_process_execution import ExecutorThatStoresResultInFilesInDir, \
     InstructionSourceInfo, ExecuteInfo, \
     ResultAndStderr, execute_and_read_stderr_if_non_zero_exitcode, result_to_sh, result_to_pfh
-from shellcheck_lib.test_case.instruction_description import Description, InvokationVariant
+from shellcheck_lib.test_case.instruction_documentation import InstructionReference, InvokationVariant
 from shellcheck_lib.test_case.phases.common import TestCaseInstruction, PhaseLoggingPaths
 from shellcheck_lib.test_case.phases.result import pfh
 from shellcheck_lib.test_case.phases.result import sh
 from shellcheck_lib.util.textformat.structure.paragraph import single_para
 
 
-class TheDescriptionBase(Description):
+class TheInstructionReferenceBase(InstructionReference):
     def __init__(self, name: str):
         super().__init__(name)
 
@@ -28,7 +28,7 @@ class TheDescriptionBase(Description):
         ]
 
 
-class DescriptionForNonAssertPhaseInstruction(TheDescriptionBase):
+class DescriptionForNonAssertPhaseInstruction(TheInstructionReferenceBase):
     def __init__(self, name: str):
         super().__init__(name)
 

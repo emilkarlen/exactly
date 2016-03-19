@@ -3,13 +3,13 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
 from shellcheck_lib.instructions.utils.destination_path import *
 from shellcheck_lib.instructions.utils.parse_here_document import parse_as_last_argument
 from shellcheck_lib.instructions.utils.parse_utils import split_arguments_list_string
-from shellcheck_lib.test_case.instruction_description import InvokationVariant, Description
+from shellcheck_lib.test_case.instruction_documentation import InvokationVariant, InstructionReference
 from shellcheck_lib.util.file_utils import ensure_parent_directory_does_exist_and_is_a_directory, write_new_text_file
 from shellcheck_lib.util.string import lines_content
 from shellcheck_lib.util.textformat.structure.paragraph import single_para
 
 
-class TheDescription(Description):
+class TheInstructionReference(InstructionReference):
     def __init__(self, name: str):
         super().__init__(name)
 

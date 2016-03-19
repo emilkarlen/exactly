@@ -12,7 +12,7 @@ from shellcheck_lib.test_case.phases.result import svh
 def setup(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(
             parser(instruction_name),
-            execute.TheDescription(instruction_name,
+        execute.TheInstructionReference(instruction_name,
                                    "Runs a program and succeeds if it's exit-code is 0."))
 
 

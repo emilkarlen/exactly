@@ -2,7 +2,7 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
 from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib.instructions.utils.parse_utils import split_arguments_list_string
-from shellcheck_lib.test_case.instruction_description import InvokationVariant, Description
+from shellcheck_lib.test_case.instruction_documentation import InvokationVariant, InstructionReference
 from shellcheck_lib.test_case.instruction_setup import SingleInstructionSetup
 from shellcheck_lib.test_case.phases.anonymous import AnonymousPhaseInstruction, ConfigurationBuilder, ExecutionMode
 from shellcheck_lib.test_case.phases.result import sh
@@ -14,7 +14,7 @@ from shellcheck_lib.util.textformat.structure.paragraph import *
 def setup(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(
             Parser(),
-            TheDescription(instruction_name))
+        TheInstructionReference(instruction_name))
 
 
 NAME_NORMAL = 'NORMAL'
@@ -28,7 +28,7 @@ NAME_2_MODE = {
 }
 
 
-class TheDescription(Description):
+class TheInstructionReference(InstructionReference):
     def __init__(self, name: str):
         super().__init__(name)
 

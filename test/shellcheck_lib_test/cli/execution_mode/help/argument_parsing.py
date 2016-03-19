@@ -10,9 +10,9 @@ from shellcheck_lib.cli.execution_mode.help.mode.test_case.help_request import *
 from shellcheck_lib.cli.execution_mode.help.mode.test_suite.contents_structure import TestSuiteSectionHelp, \
     TestSuiteHelp
 from shellcheck_lib.cli.execution_mode.help.mode.test_suite.help_request import *
-from shellcheck_lib.test_case.instruction_description import Description
+from shellcheck_lib.test_case.instruction_documentation import InstructionReference
 from shellcheck_lib_test.cli.execution_mode.help.test_resources import arguments_for
-from shellcheck_lib_test.test_resources.instruction_description import DescriptionWithConstantValues
+from shellcheck_lib_test.test_resources.instruction_description import InstructionReferenceWithConstantValues
 
 
 class TestProgramHelp(unittest.TestCase):
@@ -141,7 +141,7 @@ class TestTestCaseSingleInstructionInPhase(unittest.TestCase):
         self.assertIs(TestCaseHelpItem.INSTRUCTION,
                       value.item)
         self.assertIsInstance(value.data,
-                              Description,
+                              InstructionReference,
                               'The value is expected to be the description of the instruction')
         return value
 
@@ -214,10 +214,10 @@ class TestTestCaseInstructionList(unittest.TestCase):
                                   str,
                                   'Each item in the list is expected to have a %s as first element' % str(str))
             self.assertIsInstance(list_item[1],
-                                  Description,
+                                  InstructionReference,
                                   'Each item in the list is expected to have a Description as second element')
             description = list_item[1]
-            assert isinstance(description, Description)
+            assert isinstance(description, InstructionReference)
             self.assertEqual(expected_instruction_name,
                              list_item[1].instruction_name(),
                              'The name of each instruction is expected to be "%s"' % expected_instruction_name)
@@ -275,8 +275,8 @@ class TestTestSuiteHelp(unittest.TestCase):
                       arguments_for.suite_section('unknown section'))
 
 
-def instr_descr(phase_name: str, name: str) -> Description:
-    return DescriptionWithConstantValues(
+def instr_descr(phase_name: str, name: str) -> InstructionReference:
+    return InstructionReferenceWithConstantValues(
             name,
             _single_line_description_that_identifies_instruction_and_phase(phase_name,
                                                                            name),

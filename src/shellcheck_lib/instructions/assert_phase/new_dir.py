@@ -11,7 +11,7 @@ from shellcheck_lib.test_case.phases.result import pfh
 def setup(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(
             Parser(),
-            mkdir_utils.TheDescription(instruction_name))
+        mkdir_utils.TheInstructionReference(instruction_name))
 
 
 class Parser(SingleInstructionParser):

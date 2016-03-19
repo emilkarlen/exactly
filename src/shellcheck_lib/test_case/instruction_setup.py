@@ -1,18 +1,18 @@
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, SingleInstructionParserSource
-from shellcheck_lib.test_case.instruction_description import Description
+from shellcheck_lib.test_case.instruction_documentation import InstructionReference
 from shellcheck_lib.test_case.phases.common import TestCaseInstruction
 
 
 class SingleInstructionSetup(SingleInstructionParser):
     def __init__(self,
                  parser: SingleInstructionParser,
-                 description: Description):
+                 description: InstructionReference):
         self._parser = parser
         self._description = description
 
     @property
-    def description(self) -> Description:
+    def description(self) -> InstructionReference:
         return self._description
 
     def apply(self, source: SingleInstructionParserSource) -> TestCaseInstruction:

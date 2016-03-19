@@ -4,7 +4,7 @@ from shellcheck_lib.cli.execution_mode.help.mode.test_case.help_request import T
 from shellcheck_lib.cli.execution_mode.help.mode.test_case.render_utils import instruction_set
 from shellcheck_lib.document.syntax import phase_name_in_phase_syntax
 from shellcheck_lib.help.test_case import instruction
-from shellcheck_lib.test_case.instruction_description import Description
+from shellcheck_lib.test_case.instruction_documentation import InstructionReference
 from shellcheck_lib.util.textformat.structure import document as doc
 from shellcheck_lib.util.textformat.structure.core import Text
 from shellcheck_lib.util.textformat.structure.paragraph import para
@@ -42,7 +42,7 @@ class TestCaseHelpRenderer:
     def instruction_set(self, test_case_help: TestCaseHelp) -> doc.SectionContents:
         return instruction_set.instruction_set_per_phase(test_case_help)
 
-    def instruction(self, description: Description) -> doc.SectionContents:
+    def instruction(self, description: InstructionReference) -> doc.SectionContents:
         return instruction.instruction_man_page(description)
 
     def instruction_list(self,

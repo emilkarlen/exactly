@@ -1,4 +1,4 @@
-from shellcheck_lib.test_case.instruction_description import Description
+from shellcheck_lib.test_case.instruction_documentation import InstructionReference
 
 
 class TestCasePhaseInstructionSet(tuple):
@@ -8,7 +8,7 @@ class TestCasePhaseInstructionSet(tuple):
         :type instruction_descriptions: [Description]
         """
         description_list = list(instruction_descriptions)
-        description_list.sort(key=Description.instruction_name)
+        description_list.sort(key=InstructionReference.instruction_name)
         return tuple.__new__(cls, (description_list,))
 
     @property

@@ -11,7 +11,7 @@ from shellcheck_lib.test_case.phases.result import sh
 def setup(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(
             Parser(),
-            cd_utils.TheDescription('pwd'))
+        cd_utils.TheInstructionReference('pwd'))
 
 
 class Parser(SingleInstructionParser):

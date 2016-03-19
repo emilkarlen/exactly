@@ -7,7 +7,7 @@ from shellcheck_lib.instructions.utils import parse_here_doc_or_file_ref
 from shellcheck_lib.instructions.utils.file_properties import FileType
 from shellcheck_lib.instructions.utils.file_ref_check import FileRefCheck
 from shellcheck_lib.instructions.utils.parse_utils import split_arguments_list_string
-from shellcheck_lib.test_case.instruction_description import InvokationVariant, Description
+from shellcheck_lib.test_case.instruction_documentation import InvokationVariant, InstructionReference
 from shellcheck_lib.test_case.instruction_setup import SingleInstructionSetup
 from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase
@@ -20,10 +20,10 @@ from shellcheck_lib.util.textformat.structure.paragraph import single_para
 def setup(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(
             Parser(),
-            TheDescription(instruction_name))
+        TheInstructionReference(instruction_name))
 
 
-class TheDescription(Description):
+class TheInstructionReference(InstructionReference):
     def __init__(self, name: str):
         super().__init__(name)
 

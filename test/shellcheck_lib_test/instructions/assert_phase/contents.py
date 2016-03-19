@@ -364,7 +364,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestFileContentsFileRelTmp),
         unittest.makeSuite(TestTargetFileRelTmp),
         unittest.makeSuite(TestReplacedEnvVars),
-        suite_for_description(sut.TheDescription('instruction name')),
+        suite_for_description(sut.TheInstructionReference('instruction name')),
     ])
 
 
