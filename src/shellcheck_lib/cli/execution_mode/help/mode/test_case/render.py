@@ -1,4 +1,4 @@
-from shellcheck_lib.cli.execution_mode.help.contents2 import test_case_overview_help
+from shellcheck_lib.cli.execution_mode.help.mode.main_program.contents import test_case_overview_help
 from shellcheck_lib.cli.execution_mode.help.mode.test_case.contents_structure import TestCaseHelp, TestCasePhaseHelp
 from shellcheck_lib.cli.execution_mode.help.mode.test_case.help_request import TestCaseHelpItem, TestCaseHelpRequest
 from shellcheck_lib.cli.execution_mode.help.render.test_case import instruction_set
