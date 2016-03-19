@@ -2,8 +2,8 @@ import os
 
 from shellcheck_lib.cli.execution_mode import main_program_argument_parsing as case_argument_parsing
 from shellcheck_lib.cli.execution_mode.help import argument_parsing as parse_help
+from shellcheck_lib.cli.execution_mode.help.contents_structure import application_help_for
 from shellcheck_lib.cli.execution_mode.help.render_main import print_help
-from shellcheck_lib.cli.execution_mode.help.test_case import application_help_for
 from shellcheck_lib.cli.execution_mode.test_case.settings import TestCaseExecutionSettings
 from shellcheck_lib.cli.execution_mode.test_suite import argument_parsing as suite_argument_parsing
 from shellcheck_lib.cli.execution_mode.test_suite.settings import Settings
