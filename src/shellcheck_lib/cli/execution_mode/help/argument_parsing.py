@@ -1,8 +1,8 @@
-import shellcheck_lib.cli.execution_mode.help.mode.main_program.help_request
-import shellcheck_lib.cli.execution_mode.help.mode.test_suite.help_request
 from shellcheck_lib.cli.execution_mode.help.contents_structure import ApplicationHelp
 from shellcheck_lib.cli.execution_mode.help.mode import help_request
-from shellcheck_lib.cli.execution_mode.help.mode.test_case.help_request import TestCaseHelpItem, TestCaseHelpRequest
+from shellcheck_lib.cli.execution_mode.help.mode.main_program.help_request import *
+from shellcheck_lib.cli.execution_mode.help.mode.test_case.help_request import *
+from shellcheck_lib.cli.execution_mode.help.mode.test_suite.help_request import *
 from shellcheck_lib.execution import phases
 
 HELP = 'help'
@@ -35,11 +35,9 @@ class Parser:
         :raises HelpError Invalid usage
         """
         if not help_command_arguments:
-            return shellcheck_lib.cli.execution_mode.help.mode.main_program.help_request.MainProgramHelpRequest(
-                    shellcheck_lib.cli.execution_mode.help.mode.main_program.help_request.MainProgramHelpItem.PROGRAM)
+            return MainProgramHelpRequest(MainProgramHelpItem.PROGRAM)
         if help_command_arguments[0] == HELP:
-            return shellcheck_lib.cli.execution_mode.help.mode.main_program.help_request.MainProgramHelpRequest(
-                    shellcheck_lib.cli.execution_mode.help.mode.main_program.help_request.MainProgramHelpItem.HELP)
+            return MainProgramHelpRequest(MainProgramHelpItem.HELP)
         if help_command_arguments[0] == SUITE:
             return self._parse_suite_help(help_command_arguments[1:])
         if len(help_command_arguments) == 2:
@@ -60,20 +58,18 @@ class Parser:
         return self._parse_instruction_search_when_not_a_phase(argument)
 
     def _parse_suite_help(self,
-                          arguments: list) -> shellcheck_lib.cli.execution_mode.help.mode.test_suite.help_request.TestSuiteHelpRequest:
+                          arguments: list) -> TestSuiteHelpRequest:
         if not arguments:
-            return shellcheck_lib.cli.execution_mode.help.mode.test_suite.help_request.TestSuiteHelpRequest(
-                    shellcheck_lib.cli.execution_mode.help.mode.test_suite.help_request.TestSuiteHelpItem.OVERVIEW,
-                    None, None)
+            return TestSuiteHelpRequest(TestSuiteHelpItem.OVERVIEW,
+                                        None, None)
         if len(arguments) != 1:
             raise HelpError('Invalid help syntax. Use help help, for help.')
         section_name = arguments[0]
         for test_suite_section_help in self.application_help.test_suite_help.section_helps:
             if test_suite_section_help.name == section_name:
-                return shellcheck_lib.cli.execution_mode.help.mode.test_suite.help_request.TestSuiteHelpRequest(
-                        shellcheck_lib.cli.execution_mode.help.mode.test_suite.help_request.TestSuiteHelpItem.SECTION,
-                        section_name,
-                        test_suite_section_help)
+                return TestSuiteHelpRequest(TestSuiteHelpItem.SECTION,
+                                            section_name,
+                                            test_suite_section_help)
         raise HelpError('Not a test-suite section: "%s"' % section_name)
 
     def _parse_instruction_in_phase(self,
