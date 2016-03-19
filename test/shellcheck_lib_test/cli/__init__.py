@@ -1,6 +1,6 @@
 import unittest
 
-from . import execution_mode
+from shellcheck_lib_test.cli import execution_mode
 
 
 def suite():
