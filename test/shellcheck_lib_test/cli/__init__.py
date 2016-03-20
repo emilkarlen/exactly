@@ -1,11 +1,11 @@
 import unittest
 
-from shellcheck_lib_test.cli import execution_mode
+from shellcheck_lib_test.cli import program_modes
 
 
 def suite():
     ret_val = unittest.TestSuite()
-    ret_val.addTest(execution_mode.suite())
+    ret_val.addTest(program_modes.suite())
     return ret_val
 
 

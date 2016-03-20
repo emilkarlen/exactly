@@ -2,7 +2,7 @@ import copy
 import os
 import pathlib
 
-from shellcheck_lib.default.execution_mode.test_case import test_case_parser
+from shellcheck_lib.default.program_modes.test_case import test_case_parser
 from shellcheck_lib.document import parse as document_parser
 from shellcheck_lib.document.parse import SectionElementParser
 from shellcheck_lib.execution import full_execution
