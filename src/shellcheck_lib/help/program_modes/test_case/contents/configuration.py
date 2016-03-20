@@ -1,6 +1,11 @@
-from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCasePhaseDocumentation
+from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCasePhaseHelp, \
+    TestCasePhaseHelpForPhaseWithInstructions, \
+    TestCasePhaseInstructionSet
 from shellcheck_lib.help.utils.description import single_line_description
 
 
-def phase_reference(phase_name: str) -> TestCasePhaseDocumentation:
-    return TestCasePhaseDocumentation(single_line_description('The ' + phase_name + ' phase.'))
+def phase_reference(phase_name: str,
+                    instruction_set: TestCasePhaseInstructionSet) -> TestCasePhaseHelp:
+    return TestCasePhaseHelpForPhaseWithInstructions(phase_name,
+                                                     single_line_description('TODO The ' + phase_name + ' phase.'),
+                                                     instruction_set)

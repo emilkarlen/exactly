@@ -98,11 +98,7 @@ class Parser:
                 msg = 'The phase %s does not contain the instruction: %s' % (phase_name, instruction_name)
                 raise HelpError(msg)
         except KeyError:
-            if phase_name == phases.ACT.identifier:
-                msg = 'The %s phase does not have instructions' % phases.ACT.identifier
-            else:
-                msg = 'Not a phase: ' + phase_name
-            raise HelpError(msg)
+            raise HelpError('There is no phase with the name "%s"' % phase_name)
 
     def _parse_instruction_search_when_not_a_phase(self, instruction_name) -> TestCaseHelpRequest:
         phase_and_instr_descr_list = []

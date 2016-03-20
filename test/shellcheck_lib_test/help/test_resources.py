@@ -1,5 +1,5 @@
 from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCasePhaseInstructionSet, \
-    TestCasePhaseHelp, TestCasePhaseDocumentation
+    TestCasePhaseHelp, TestCasePhaseHelpForPhaseWithInstructions
 from shellcheck_lib.help.program_modes.test_case.instruction_documentation import InstructionDocumentation
 from shellcheck_lib.help.utils.description import single_line_description
 from shellcheck_lib_test.test_resources.instruction_description import InstructionDocumentationWithConstantValues
@@ -22,9 +22,10 @@ def single_line_description_that_identifies_instruction_and_phase(phase_name: st
 def test_case_phase_help(phase_name: str,
                          instruction_names: list) -> TestCasePhaseHelp:
     instruction_set = test_case_phase_instruction_set(phase_name, instruction_names)
-    return TestCasePhaseHelp(phase_name,
-                             phase_reference(phase_name),
-                             instruction_set)
+    return TestCasePhaseHelpForPhaseWithInstructions(phase_name,
+                                                     single_line_description(
+                                                         'single_line_description for phase ' + phase_name),
+                                                     instruction_set)
 
 
 def test_case_phase_instruction_set(phase_name: str,
@@ -32,7 +33,3 @@ def test_case_phase_instruction_set(phase_name: str,
     instruction_descriptions = map(lambda name: instr_descr(phase_name, name),
                                    instruction_names)
     return TestCasePhaseInstructionSet(instruction_descriptions)
-
-
-def phase_reference(phase_name: str) -> TestCasePhaseDocumentation:
-    return TestCasePhaseDocumentation(single_line_description('single_line_description for phase ' + phase_name))
