@@ -1,5 +1,17 @@
 -*- org -*-
 
+* TODO [#A] Förtydliga att sidoeffekts-instr (dir) under "assert"
+<2016-03-20 sön>
+Eric undrade vad "dir" gjorde i "assert"-fasen.
+
+Det behöver förtydligas att de finns där först o främst för sidoeffekternas
+skull - att de fungerar mer som hjälpmedel än som assertions.
+(Hur fungerar det egentligen?? Om dir misslyckas, antar att det blir
+HARD_ERROR då. Men är inte 100!!! Behöver förtydligas.)
+
+* TODO InstructionDocumentation ska använda Description
+<2016-03-20 sön>
+Extraherade den klassen för impl av TCPhaseHelp.
 * TODO <2015-05-03 sön> Nya refaktoreringar
 ** TODO Nya modulnamn
 - document (dok m faser o instr, syntax, parsning)
