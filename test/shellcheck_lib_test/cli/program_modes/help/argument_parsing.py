@@ -6,12 +6,10 @@ from shellcheck_lib.cli.program_modes.help.program_modes.test_case.help_request 
 from shellcheck_lib.cli.program_modes.help.program_modes.test_suite.help_request import *
 from shellcheck_lib.help.contents_structure import ApplicationHelp
 from shellcheck_lib.help.program_modes.main_program.contents_structure import MainProgramHelp
-from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCasePhaseHelp, TestCaseHelp, \
-    TestCasePhaseDocumentation
+from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCasePhaseHelp, TestCaseHelp
 from shellcheck_lib.help.program_modes.test_case.instruction_documentation import InstructionDocumentation
 from shellcheck_lib.help.program_modes.test_suite.contents_structure import TestSuiteSectionHelp, \
     TestSuiteHelp
-from shellcheck_lib.help.utils.description import single_line_description
 from shellcheck_lib_test.cli.program_modes.help.test_resources import arguments_for
 from shellcheck_lib_test.help.test_resources import test_case_phase_help, \
     single_line_description_that_identifies_instruction_and_phase
@@ -105,11 +103,11 @@ class TestTestCaseSingleInstructionInPhase(unittest.TestCase):
                       arguments_for.instruction_in_phase('empty-phase', 'instruction'))
 
     def test_single_instruction_for_phases_with_instructions(self):
-        phase_name = 'phase name'
+        phase_name = 'the phase name'
         instructions = [phase_name, 'name-that-is-not-the-name-of-a-phase']
         application_help = _app_help_for([
             test_case_phase_help(phase_name, instructions),
-            test_case_phase_help('other phase ' + phase_name, instructions)
+            test_case_phase_help('other phase than ' + phase_name, instructions)
         ])
         self._assert_is_existing_instruction_in_phase(application_help,
                                                       phase_name,
@@ -296,10 +294,6 @@ def _app_help_for(test_case_phase_helps: list,
     return ApplicationHelp(MainProgramHelp(),
                            TestCaseHelp(test_case_phase_helps),
                            TestSuiteHelp(suite_sections))
-
-
-def phase_reference(phase_name: str) -> TestCasePhaseDocumentation:
-    return TestCasePhaseDocumentation(single_line_description('single_line_description for phase ' + phase_name))
 
 
 def suite():
