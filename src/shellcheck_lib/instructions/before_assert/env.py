@@ -9,7 +9,7 @@ from shellcheck_lib.test_case.phases.result import sh
 def setup(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(
             PARSER,
-        env.TheInstructionReference(instruction_name))
+        env.TheInstructionDocumentation(instruction_name))
 
 
 class _Instruction(BeforeAssertPhaseInstruction):

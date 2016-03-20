@@ -157,7 +157,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestCheckForRegularFile),
         unittest.makeSuite(TestCheckForDirectory),
         unittest.makeSuite(TestCheckForSymLink),
-        suite_for_description(sut.TheInstructionReference('instruction name')),
+        suite_for_description(sut.TheInstructionDocumentation('instruction name')),
     ])
 
 

@@ -25,7 +25,7 @@ class SyntaxElementDescription:
         self.description_rest = description_rest
 
 
-class InstructionReference:
+class InstructionDocumentation:
     """
     Reference documentation about an instruction,
     à la man page.

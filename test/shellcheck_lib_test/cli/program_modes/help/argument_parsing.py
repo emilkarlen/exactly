@@ -7,8 +7,8 @@ from shellcheck_lib.cli.program_modes.help.program_modes.test_suite.help_request
 from shellcheck_lib.help.contents_structure import ApplicationHelp
 from shellcheck_lib.help.program_modes.main_program.contents_structure import MainProgramHelp
 from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCasePhaseHelp, TestCaseHelp, \
-    TestCasePhaseReference
-from shellcheck_lib.help.program_modes.test_case.instruction_reference import InstructionReference
+    TestCasePhaseDocumentation
+from shellcheck_lib.help.program_modes.test_case.instruction_documentation import InstructionDocumentation
 from shellcheck_lib.help.program_modes.test_suite.contents_structure import TestSuiteSectionHelp, \
     TestSuiteHelp
 from shellcheck_lib.help.utils.description import single_line_description
@@ -143,7 +143,7 @@ class TestTestCaseSingleInstructionInPhase(unittest.TestCase):
         self.assertIs(TestCaseHelpItem.INSTRUCTION,
                       value.item)
         self.assertIsInstance(value.data,
-                              InstructionReference,
+                              InstructionDocumentation,
                               'The value is expected to be the description of the instruction')
         return value
 
@@ -216,10 +216,10 @@ class TestTestCaseInstructionList(unittest.TestCase):
                                   str,
                                   'Each item in the list is expected to have a %s as first element' % str(str))
             self.assertIsInstance(list_item[1],
-                                  InstructionReference,
+                                  InstructionDocumentation,
                                   'Each item in the list is expected to have a Description as second element')
             description = list_item[1]
-            assert isinstance(description, InstructionReference)
+            assert isinstance(description, InstructionDocumentation)
             self.assertEqual(expected_instruction_name,
                              list_item[1].instruction_name(),
                              'The name of each instruction is expected to be "%s"' % expected_instruction_name)
@@ -298,8 +298,8 @@ def _app_help_for(test_case_phase_helps: list,
                            TestSuiteHelp(suite_sections))
 
 
-def phase_reference(phase_name: str) -> TestCasePhaseReference:
-    return TestCasePhaseReference(single_line_description('single_line_description for phase ' + phase_name))
+def phase_reference(phase_name: str) -> TestCasePhaseDocumentation:
+    return TestCasePhaseDocumentation(single_line_description('single_line_description for phase ' + phase_name))
 
 
 def suite():

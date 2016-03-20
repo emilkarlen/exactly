@@ -1,4 +1,4 @@
-from shellcheck_lib.help.program_modes.test_case.instruction_reference import InstructionReference
+from shellcheck_lib.help.program_modes.test_case.instruction_documentation import InstructionDocumentation
 from shellcheck_lib.help.utils.description import Description
 
 
@@ -9,7 +9,7 @@ class TestCasePhaseInstructionSet(tuple):
         :type instruction_descriptions: [Description]
         """
         description_list = list(instruction_descriptions)
-        description_list.sort(key=InstructionReference.instruction_name)
+        description_list.sort(key=InstructionDocumentation.instruction_name)
         return tuple.__new__(cls, (description_list,))
 
     @property
@@ -25,7 +25,7 @@ class TestCasePhaseInstructionSet(tuple):
                         self.instruction_descriptions))
 
 
-class TestCasePhaseReference:
+class TestCasePhaseDocumentation:
     def __init__(self,
                  description: Description):
         self._description = description
@@ -38,7 +38,7 @@ class TestCasePhaseReference:
 class TestCasePhaseHelp(tuple):
     def __new__(cls,
                 name: str,
-                reference: TestCasePhaseReference,
+                reference: TestCasePhaseDocumentation,
                 instruction_set: TestCasePhaseInstructionSet):
         """
 
@@ -51,7 +51,7 @@ class TestCasePhaseHelp(tuple):
         return self[0]
 
     @property
-    def reference(self) -> TestCasePhaseReference:
+    def reference(self) -> TestCasePhaseDocumentation:
         return self[1]
 
     @property

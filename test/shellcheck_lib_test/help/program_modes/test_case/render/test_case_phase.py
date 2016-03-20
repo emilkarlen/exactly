@@ -1,6 +1,7 @@
 import unittest
 
-from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCasePhaseReference, TestCasePhaseHelp, \
+from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCasePhaseDocumentation, \
+    TestCasePhaseHelp, \
     TestCasePhaseInstructionSet
 from shellcheck_lib.help.program_modes.test_case.render import test_case_phase as sut
 from shellcheck_lib.help.utils.description import single_line_description, Description
@@ -12,7 +13,7 @@ from shellcheck_lib_test.util.textformat.test_resources import structure as stru
 class TestRender(unittest.TestCase):
     def test_without_instruction_set(self):
         # ARRANGE
-        phase_ref = TestCasePhaseReference(single_line_description('single line'))
+        phase_ref = TestCasePhaseDocumentation(single_line_description('single line'))
         tcp_help = TestCasePhaseHelp('phase name',
                                      phase_ref,
                                      None)
@@ -23,7 +24,7 @@ class TestRender(unittest.TestCase):
 
     def test_with_instruction_set(self):
         # ARRANGE
-        phase_ref = TestCasePhaseReference(single_line_description('single line'))
+        phase_ref = TestCasePhaseDocumentation(single_line_description('single line'))
         tcp_help = TestCasePhaseHelp('phase name',
                                      phase_ref,
                                      non_empty_instruction_set('phase name'))
@@ -34,8 +35,8 @@ class TestRender(unittest.TestCase):
 
     def test_with_description_that_has_a_rest_part(self):
         # ARRANGE
-        phase_ref = TestCasePhaseReference(Description('single line',
-                                                       [para('paragraph 1'),
+        phase_ref = TestCasePhaseDocumentation(Description('single line',
+                                                           [para('paragraph 1'),
                                                         para('paragraph 2')]))
         tcp_help = TestCasePhaseHelp('phase name',
                                      phase_ref,

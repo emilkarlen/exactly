@@ -216,7 +216,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestParseAndExecuteTwoArgumentsLe),
         unittest.makeSuite(TestParseAndExecuteTwoArgumentsGt),
         unittest.makeSuite(TestParseAndExecuteTwoArgumentsGe),
-        suite_for_description(sut.TheInstructionReference('instruction name')),
+        suite_for_description(sut.TheInstructionDocumentation('instruction name')),
     ])
 
 

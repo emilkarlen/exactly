@@ -1,6 +1,6 @@
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
-from shellcheck_lib.help.program_modes.test_case.instruction_reference import InstructionReference, \
+from shellcheck_lib.help.program_modes.test_case.instruction_documentation import InstructionDocumentation, \
     InvokationVariant
 from shellcheck_lib.instructions.utils.sub_process_execution import ExecutorThatStoresResultInFilesInDir, \
     InstructionSourceInfo, ExecuteInfo, \
@@ -11,7 +11,7 @@ from shellcheck_lib.test_case.phases.result import sh
 from shellcheck_lib.util.textformat.structure.paragraph import single_para
 
 
-class TheInstructionReferenceBase(InstructionReference):
+class TheInstructionDocumentationBase(InstructionDocumentation):
     def __init__(self, name: str):
         super().__init__(name)
 
@@ -29,7 +29,7 @@ class TheInstructionReferenceBase(InstructionReference):
         ]
 
 
-class DescriptionForNonAssertPhaseInstruction(TheInstructionReferenceBase):
+class DescriptionForNonAssertPhaseInstruction(TheInstructionDocumentationBase):
     def __init__(self, name: str):
         super().__init__(name)
 

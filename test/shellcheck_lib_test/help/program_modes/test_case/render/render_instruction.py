@@ -1,41 +1,41 @@
 import unittest
 
-from shellcheck_lib.help.program_modes.test_case.instruction_reference import InvokationVariant, \
+from shellcheck_lib.help.program_modes.test_case.instruction_documentation import InvokationVariant, \
     SyntaxElementDescription
 from shellcheck_lib.help.program_modes.test_case.render import render_instruction as sut
 from shellcheck_lib.util.textformat.structure.paragraph import single_para
-from shellcheck_lib_test.test_resources.instruction_description import InstructionReferenceWithConstantValues
+from shellcheck_lib_test.test_resources.instruction_description import InstructionDocumentationWithConstantValues
 from shellcheck_lib_test.util.textformat.test_resources import structure as struct_check
 
 
 class TestListItem(unittest.TestCase):
     def test(self):
-        actual = sut.instruction_set_list_item(InstructionReferenceWithConstantValues('instruction name',
+        actual = sut.instruction_set_list_item(InstructionDocumentationWithConstantValues('instruction name',
                                                                                       'single line description',
                                                                                       '',
-                                                                                      []))
+                                                                                          []))
         struct_check.is_list_item.apply(self, actual)
 
 
 class TestManPage(unittest.TestCase):
     def test_just_single_line_description(self):
-        description = InstructionReferenceWithConstantValues('instruction name',
+        description = InstructionDocumentationWithConstantValues('instruction name',
                                                              'single line description',
                                                              '',
-                                                             [])
+                                                                 [])
         actual = sut.instruction_man_page(description)
         struct_check.is_section_contents.apply(self, actual)
 
     def test_with_main_description_rest(self):
-        description = InstructionReferenceWithConstantValues('instruction name',
+        description = InstructionDocumentationWithConstantValues('instruction name',
                                                              'single line description',
                                                              'main description rest',
-                                                             [])
+                                                                 [])
         actual = sut.instruction_man_page(description)
         struct_check.is_section_contents.apply(self, actual)
 
     def test_with_invokation_variants(self):
-        description = InstructionReferenceWithConstantValues(
+        description = InstructionDocumentationWithConstantValues(
             'instruction name',
             'single line description',
             'main description rest',
@@ -45,7 +45,7 @@ class TestManPage(unittest.TestCase):
         struct_check.is_section_contents.apply(self, actual)
 
     def test_with_syntax_elements_without_invokation_variants(self):
-        description = InstructionReferenceWithConstantValues(
+        description = InstructionDocumentationWithConstantValues(
             'instruction name',
             'single line description',
             'main description rest',
@@ -58,7 +58,7 @@ class TestManPage(unittest.TestCase):
         struct_check.is_section_contents.apply(self, actual)
 
     def test_with_syntax_elements_with_invokation_variants(self):
-        description = InstructionReferenceWithConstantValues(
+        description = InstructionDocumentationWithConstantValues(
             'instruction name',
             'single line description',
             'main description rest',

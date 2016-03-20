@@ -1,6 +1,6 @@
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser
 from shellcheck_lib.instructions.multi_phase_instructions import shell as shell_common
-from shellcheck_lib.instructions.multi_phase_instructions.shell import TheInstructionReferenceBase
+from shellcheck_lib.instructions.multi_phase_instructions.shell import TheInstructionDocumentationBase
 from shellcheck_lib.instructions.utils.sub_process_execution import ExecuteInfo
 from shellcheck_lib.test_case.instruction_setup import SingleInstructionSetup
 from shellcheck_lib.test_case.os_services import OsServices
@@ -16,7 +16,7 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
             TheDescription(instruction_name))
 
 
-class TheDescription(TheInstructionReferenceBase):
+class TheDescription(TheInstructionDocumentationBase):
     def __init__(self, name: str):
         super().__init__(name)
 

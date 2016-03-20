@@ -119,7 +119,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestParse),
         unittest.makeSuite(TestFailingExecution),
         unittest.makeSuite(TestSuccessfulExecution),
-        suite_for_description(sut.TheInstructionReference('instruction mame')),
+        suite_for_description(sut.TheInstructionDocumentation('instruction mame')),
     ])
 
 
