@@ -1,6 +1,7 @@
 from shellcheck_lib.document.syntax import phase_name_in_phase_syntax
 from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCasePhaseHelp, \
     TestCasePhaseInstructionSet
+from shellcheck_lib.help.program_modes.test_case.render.instruction_set import instruction_set_list
 from shellcheck_lib.help.utils.description import Description
 from shellcheck_lib.util.textformat.structure import document as doc
 from shellcheck_lib.util.textformat.structure import lists
@@ -79,6 +80,10 @@ class TestCasePhaseHelpBase(TestCasePhaseHelp):
             sections.append(doc.Section(text('Environment Variables (TODO check this)'),
                                         doc.SectionContents([ev_list],
                                                             [])))
+        if self.is_phase_with_instructions:
+            il = instruction_set_list(self.instruction_set)
+            sections.append(doc.Section(text('Instructions'),
+                                        doc.SectionContents([il], [])))
         return doc.SectionContents(paras, sections)
 
     def purpose(self) -> Description:
