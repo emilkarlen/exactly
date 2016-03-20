@@ -1,5 +1,6 @@
+from shellcheck_lib.help.program_modes.test_case.contents.phase_help_contents_structures import \
+    TestCasePhaseHelpForPhaseWithInstructions
 from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCasePhaseHelp, \
-    TestCasePhaseHelpForPhaseWithInstructions, \
     TestCasePhaseInstructionSet
 from shellcheck_lib.help.utils.description import single_line_description
 
