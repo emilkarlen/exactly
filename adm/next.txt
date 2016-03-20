@@ -3,6 +3,17 @@
 Fortsätt med
 
 * TODO Dokumentation
+** TODO Dok av exe-omgivning
+*** TODO Se till rätt omgivnings-variabler
+Hur ska "validate"-steget behandlas? Nämnas?
+** TODO Se till rätt dok av PWD
+För fasen efter act så funkar det inte riktigt med att säga att PWD är det som
+föregående fas lämnade efter sig - eftersom "act" inte förändrar PWD (eftersom
+exekverat som separat process).  Måste beskriva detta.
+** TODO Beskrivning av sidoeffekts-instr i assert-fasen
+Som Eric påpekade är det oklart vad de (dir, pwd, file, etc) har för funktion
+i assert-fasen.  Måste dokumentera detta - lägga till en notis om att de
+existerar som hjälp för att skriva assertions.
 * TODO exekvering i sub-process m concurrent.futures
 ** TODO Svit: köra test-fall i egen sub-process (eventuellt)
 ** TODO testfall: köra act-fasen i subprocess (eventuellt)
