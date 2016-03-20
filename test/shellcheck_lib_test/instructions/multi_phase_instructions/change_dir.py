@@ -204,7 +204,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestParseSet),
         unittest.makeSuite(TestSuccessfulScenarios),
         unittest.makeSuite(TestFailingScenarios),
-        suite_for_description(sut.TheInstructionReference('instruction name')),
+        suite_for_description(sut.TheInstructionDocumentation('instruction name')),
     ])
 
 

@@ -1,14 +1,14 @@
 import os
 
-from shellcheck_lib.help.program_modes.test_case.instruction_reference import InvokationVariant, \
-    InstructionReference
+from shellcheck_lib.help.program_modes.test_case.instruction_documentation import InvokationVariant, \
+    InstructionDocumentation
 from shellcheck_lib.instructions.utils.destination_path import *
 from shellcheck_lib.instructions.utils.parse_utils import split_arguments_list_string
 from shellcheck_lib.test_case.phases.result import sh
 from shellcheck_lib.util.textformat.structure.paragraph import single_para
 
 
-class TheInstructionReference(InstructionReference):
+class TheInstructionDocumentation(InstructionDocumentation):
     def __init__(self, name: str):
         super().__init__(name)
 

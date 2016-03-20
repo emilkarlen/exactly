@@ -193,7 +193,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestSuccessfulScenariosWithContent),
         unittest.makeSuite(TestFailingScenarios),
         unittest.makeSuite(TestParseWithContents),
-        suite_for_description(sut.TheInstructionReference('instruction name')),
+        suite_for_description(sut.TheInstructionDocumentation('instruction name')),
     ])
 
 

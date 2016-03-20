@@ -584,7 +584,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestFileContentsFileRelTmpFORStdout),
         unittest.makeSuite(TestFileContentsFileRelTmpFORStderr),
 
-        suite_for_description(sut.TheInstructionReference('instruction name', 'file')),
+        suite_for_description(sut.TheInstructionDocumentation('instruction name', 'file')),
     ])
 
 

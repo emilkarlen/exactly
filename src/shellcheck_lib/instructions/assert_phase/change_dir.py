@@ -10,7 +10,7 @@ from shellcheck_lib.test_case.phases.result import pfh
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(Parser(),
-                                  cd_utils.TheInstructionReference(instruction_name))
+                                  cd_utils.TheInstructionDocumentation(instruction_name))
 
 
 class Parser(SingleInstructionParser):

@@ -3,8 +3,8 @@ import pathlib
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionInvalidArgumentException, SingleInstructionParserSource
 from shellcheck_lib.execution import environment_variables
-from shellcheck_lib.help.program_modes.test_case.instruction_reference import InvokationVariant, \
-    InstructionReference
+from shellcheck_lib.help.program_modes.test_case.instruction_documentation import InvokationVariant, \
+    InstructionDocumentation
 from shellcheck_lib.instructions.assert_phase.utils.contents_utils import ActualFileTransformer, \
     WITH_REPLACED_ENV_VARS_OPTION, EMPTY_ARGUMENT
 from shellcheck_lib.instructions.utils.parse_utils import split_arguments_list_string
@@ -21,16 +21,16 @@ from .utils import contents_utils
 def setup_for_stdout(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(
             ParserForContentsForStdout(),
-        TheInstructionReference(instruction_name, 'stdout'))
+        TheInstructionDocumentation(instruction_name, 'stdout'))
 
 
 def setup_for_stderr(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(
             ParserForContentsForStderr(),
-        TheInstructionReference(instruction_name, 'stderr'))
+        TheInstructionDocumentation(instruction_name, 'stderr'))
 
 
-class TheInstructionReference(InstructionReference):
+class TheInstructionDocumentation(InstructionDocumentation):
     def __init__(self, name: str,
                  file: str):
         super().__init__(name)

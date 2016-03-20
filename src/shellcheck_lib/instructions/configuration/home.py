@@ -2,8 +2,8 @@ import pathlib
 
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
-from shellcheck_lib.help.program_modes.test_case.instruction_reference import InvokationVariant, \
-    InstructionReference
+from shellcheck_lib.help.program_modes.test_case.instruction_documentation import InvokationVariant, \
+    InstructionDocumentation
 from shellcheck_lib.instructions.utils.parse_utils import split_arguments_list_string
 from shellcheck_lib.test_case.instruction_setup import SingleInstructionSetup
 from shellcheck_lib.test_case.phases.anonymous import AnonymousPhaseInstruction, ConfigurationBuilder
@@ -14,10 +14,10 @@ from shellcheck_lib.util.textformat.structure.paragraph import single_para
 def setup(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(
             Parser(),
-        TheInstructionReference(instruction_name))
+        TheInstructionDocumentation(instruction_name))
 
 
-class TheInstructionReference(InstructionReference):
+class TheInstructionDocumentation(InstructionDocumentation):
     def __init__(self, name: str):
         super().__init__(name)
 

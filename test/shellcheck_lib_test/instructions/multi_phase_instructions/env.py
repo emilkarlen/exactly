@@ -81,7 +81,7 @@ class TestUnset(unittest.TestCase):
 
 def suite():
     return unittest.TestSuite([
-        suite_for_description(sut.TheInstructionReference('instruction name')),
+        suite_for_description(sut.TheInstructionDocumentation('instruction name')),
         unittest.makeSuite(TestParseSet),
         unittest.makeSuite(TestParseUnset),
         unittest.makeSuite(TestSet),

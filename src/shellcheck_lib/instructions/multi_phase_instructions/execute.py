@@ -2,9 +2,9 @@ import shlex
 
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, SingleInstructionParserSource, SingleInstructionInvalidArgumentException
-from shellcheck_lib.help.program_modes.test_case.instruction_reference import InvokationVariant, \
+from shellcheck_lib.help.program_modes.test_case.instruction_documentation import InvokationVariant, \
     SyntaxElementDescription, \
-    InstructionReference
+    InstructionDocumentation
 from shellcheck_lib.instructions.utils import executable_file
 from shellcheck_lib.instructions.utils import file_properties
 from shellcheck_lib.instructions.utils import parse_file_ref
@@ -27,7 +27,7 @@ INTERPRET_OPTION = '--interpret'
 SOURCE_OPTION = '--source'
 
 
-class TheInstructionReference(InstructionReference):
+class TheInstructionDocumentation(InstructionDocumentation):
     def __init__(self,
                  name: str,
                  single_line_description: str):

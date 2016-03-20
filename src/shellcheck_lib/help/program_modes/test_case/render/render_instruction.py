@@ -1,4 +1,4 @@
-from shellcheck_lib.help.program_modes.test_case.instruction_reference import InstructionReference, \
+from shellcheck_lib.help.program_modes.test_case.instruction_documentation import InstructionDocumentation, \
     InvokationVariant, \
     SyntaxElementDescription
 from shellcheck_lib.util.textformat.structure import document as doc, paragraph, lists
@@ -8,7 +8,7 @@ from shellcheck_lib.util.textformat.structure.paragraph import para
 LIST_INDENT = 2
 
 
-def instruction_man_page(description: InstructionReference) -> doc.SectionContents:
+def instruction_man_page(description: InstructionDocumentation) -> doc.SectionContents:
     prelude_paragraphs = [(para(description.single_line_description()))]
     main_description_rest = description.main_description_rest()
     if description.invokation_variants():
@@ -26,7 +26,7 @@ def instruction_man_page(description: InstructionReference) -> doc.SectionConten
                                    [])
 
 
-def instruction_set_list_item(description: InstructionReference) -> lists.HeaderContentListItem:
+def instruction_set_list_item(description: InstructionDocumentation) -> lists.HeaderContentListItem:
     description_para = para(description.single_line_description())
     return lists.HeaderContentListItem(Text(description.instruction_name()),
                                        [description_para])
@@ -46,7 +46,7 @@ def variants_list(invokation_variants: list,
                                                 custom_separations=custom_separations))
 
 
-def _invokation_variants_content(description: InstructionReference) -> doc.SectionContents:
+def _invokation_variants_content(description: InstructionDocumentation) -> doc.SectionContents:
     def syntax_element_description_list() -> paragraph.ParagraphItem:
         blank_line_between_elements = lists.Separations(1, 0)
         items = []

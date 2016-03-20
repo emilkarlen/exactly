@@ -1,19 +1,19 @@
 import unittest
 
-from shellcheck_lib.help.program_modes.test_case.instruction_reference import InstructionReference, \
+from shellcheck_lib.help.program_modes.test_case.instruction_documentation import InstructionDocumentation, \
     InvokationVariant, \
     SyntaxElementDescription
 from shellcheck_lib_test.test_resources import value_assertion as va
 from shellcheck_lib_test.util.textformat.test_resources import structure as struct_check
 
 
-def suite_for_description_instance(description: InstructionReference) -> unittest.TestSuite:
+def suite_for_description_instance(description: InstructionDocumentation) -> unittest.TestSuite:
     return unittest.TestSuite(tcc(description) for tcc in [
         TestIsDescriptionInstance
     ])
 
 
-def suite_for_description(description: InstructionReference) -> unittest.TestSuite:
+def suite_for_description(description: InstructionDocumentation) -> unittest.TestSuite:
     return unittest.TestSuite(tcc(description) for tcc in [
         TestInstructionName,
         TestSingleLineDescription,
@@ -24,7 +24,7 @@ def suite_for_description(description: InstructionReference) -> unittest.TestSui
 
 
 class WithDescriptionBase(unittest.TestCase):
-    def __init__(self, description: InstructionReference):
+    def __init__(self, description: InstructionDocumentation):
         super().__init__()
         self.description = description
 
@@ -32,7 +32,7 @@ class WithDescriptionBase(unittest.TestCase):
 class TestIsDescriptionInstance(WithDescriptionBase):
     def runTest(self):
         actual = self.description
-        self.assertIsInstance(actual, InstructionReference)
+        self.assertIsInstance(actual, InstructionDocumentation)
 
 
 class TestInstructionName(WithDescriptionBase):
