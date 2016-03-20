@@ -11,6 +11,8 @@ SUB_DIR_FOR_REPLACEMENT_SOURCES_UNDER_ACT_DIR = 'act'
 
 SUB_DIR_FOR_REPLACEMENT_SOURCES_NOT_UNDER_ACT_DIR = 'global'
 
+SUB_DIRECTORY__ACT = 'act'
+
 
 class DirWithSubDirs:
     """Name of a directory together with a list of sub directories"""
@@ -92,7 +94,7 @@ class ExecutionDirectoryStructure(DirWithRoot):
     def __init__(self, dir_name: str):
         super().__init__(Path(dir_name))
         self.__test_case_dir = self.root_dir / 'testcase'
-        self.__act_dir = self.root_dir / 'act'
+        self.__act_dir = self.root_dir / SUB_DIRECTORY__ACT
         self.__tmp = Tmp(self.root_dir / 'tmp')
         self.__result = Result(self.root_dir / 'result')
         self.__log_dir = self.root_dir / 'log'

@@ -89,3 +89,20 @@ class HeaderContentList(ParagraphItem):
     @property
     def list_format(self) -> Format:
         return self._format
+
+
+def simple_header_only_list(string_headers: iter,
+                            list_type: ListType) -> HeaderContentList:
+    items = [header_only_item(header) for header in string_headers]
+    return HeaderContentList(items,
+                             Format(list_type))
+
+
+def item(header: str,
+         content: list) -> HeaderContentListItem:
+    return HeaderContentListItem(Text(header),
+                                 content)
+
+
+def header_only_item(header: str) -> HeaderContentListItem:
+    return item(header, [])
