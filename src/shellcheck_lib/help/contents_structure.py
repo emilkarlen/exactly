@@ -1,9 +1,8 @@
 from shellcheck_lib.execution import phases
 from shellcheck_lib.help.program_modes.main_program.contents_structure import MainProgramHelp
 from shellcheck_lib.help.program_modes.test_case.config import phase_help_name
-from shellcheck_lib.help.program_modes.test_case.contents import assert_
 from shellcheck_lib.help.program_modes.test_case.contents import \
-    configuration, setup, act, before_assert, cleanup
+    assert_, configuration, setup, act, before_assert, cleanup
 from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCaseHelp, TestCasePhaseInstructionSet
 from shellcheck_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp, \
     TestSuiteSectionHelp
@@ -44,17 +43,18 @@ def application_help_for(instructions_setup: InstructionsSetup) -> ApplicationHe
 
 def phase_helps_for(instructions_setup: InstructionsSetup) -> iter:
     return [
-        configuration.phase_reference(phase_help_name(phases.ANONYMOUS),
-                                      instruction_set_help(instructions_setup.config_instruction_set.values())),
-        setup.phase_reference(phase_help_name(phases.SETUP),
-                              instruction_set_help(instructions_setup.setup_instruction_set.values())),
-        act.phase_reference(phase_help_name(phases.ACT)),
-        before_assert.phase_reference(phase_help_name(phases.BEFORE_ASSERT),
-                                      instruction_set_help(instructions_setup.before_assert_instruction_set.values())),
-        assert_.phase_reference(phase_help_name(phases.ASSERT),
+        configuration.ConfigurationPhaseHelp(phase_help_name(phases.ANONYMOUS),
+                                             instruction_set_help(instructions_setup.config_instruction_set.values())),
+        setup.SetupPhaseHelp(phase_help_name(phases.SETUP),
+                             instruction_set_help(instructions_setup.setup_instruction_set.values())),
+        act.ActPhaseHelp(phase_help_name(phases.ACT)),
+        before_assert.BeforeAssertPhaseHelp(phase_help_name(phases.BEFORE_ASSERT),
+                                            instruction_set_help(
+                                                instructions_setup.before_assert_instruction_set.values())),
+        assert_.AssertPhaseHelp(phase_help_name(phases.ASSERT),
                                 instruction_set_help(instructions_setup.assert_instruction_set.values())),
-        cleanup.phase_reference(phase_help_name(phases.CLEANUP),
-                                instruction_set_help(instructions_setup.cleanup_instruction_set.values())),
+        cleanup.CleanupPhaseHelp(phase_help_name(phases.CLEANUP),
+                                 instruction_set_help(instructions_setup.cleanup_instruction_set.values())),
     ]
 
 

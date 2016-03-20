@@ -1,5 +1,5 @@
 from shellcheck_lib.help.program_modes.test_case.instruction_documentation import InstructionDocumentation
-from shellcheck_lib.help.utils.description import Description
+from shellcheck_lib.util.textformat.structure import document as doc
 
 
 class TestCasePhaseInstructionSet(tuple):
@@ -28,17 +28,13 @@ class TestCasePhaseInstructionSet(tuple):
 class TestCasePhaseHelp:
     def __init__(self,
                  name: str):
-        """
-        :param instruction_set: None if this phase does not have instructions.
-        """
         self._name = name
 
     @property
     def name(self) -> str:
         return self._name
 
-    @property
-    def description(self) -> Description:
+    def render(self) -> doc.SectionContents:
         raise NotImplementedError()
 
     @property
