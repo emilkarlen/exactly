@@ -1,6 +1,6 @@
 import unittest
 
-from shellcheck_lib_test.cli.execution_mode.help import argument_parsing
+from shellcheck_lib_test.cli.program_modes.help import argument_parsing
 
 
 def suite():

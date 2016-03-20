@@ -4,8 +4,8 @@ from shellcheck_lib.cli import main_program
 from shellcheck_lib.cli.program_modes.test_case import execution as test_case_execution
 from shellcheck_lib.cli.program_modes.test_case.settings import TestCaseExecutionSettings
 from shellcheck_lib.cli.program_modes.test_suite.settings import Settings
-from shellcheck_lib.default.execution_mode.test_case import processing as case_processing
-from shellcheck_lib.default.execution_mode.test_suite import reporting as suite_reporting
+from shellcheck_lib.default.program_modes.test_case import processing as case_processing
+from shellcheck_lib.default.program_modes.test_suite import reporting as suite_reporting
 from shellcheck_lib.test_case.instruction_setup import InstructionsSetup
 from shellcheck_lib.test_case.preprocessor import IdentityPreprocessor
 from shellcheck_lib.test_suite import enumeration

@@ -4,7 +4,7 @@ import shutil
 import unittest
 
 from shellcheck_lib.act_phase_setups import python3
-from shellcheck_lib.default.execution_mode.test_case.processing import script_handling_for_setup
+from shellcheck_lib.default.program_modes.test_case.processing import script_handling_for_setup
 from shellcheck_lib.execution import full_execution
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.execution.partial_execution import ScriptHandling

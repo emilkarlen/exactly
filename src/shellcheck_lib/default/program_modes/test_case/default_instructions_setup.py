@@ -1,4 +1,4 @@
-from shellcheck_lib.default.execution_mode.test_case.phases import \
+from shellcheck_lib.default.program_modes.test_case.phases import \
     assert_, \
     before_assert, \
     cleanup, \

@@ -2,7 +2,7 @@ import types
 import unittest
 
 from shellcheck_lib.act_phase_setups import python3
-from shellcheck_lib.default.execution_mode.test_case.processing import script_handling_for_setup
+from shellcheck_lib.default.program_modes.test_case.processing import script_handling_for_setup
 from shellcheck_lib.execution.partial_execution import ScriptHandling
 from shellcheck_lib.execution.result import PartialResultStatus
 from shellcheck_lib.test_case import test_case_doc

@@ -1,6 +1,6 @@
 import shlex
 
-from shellcheck_lib.default.execution_mode.test_case import instruction_name_and_argument_splitter
+from shellcheck_lib.default.program_modes.test_case import instruction_name_and_argument_splitter
 from shellcheck_lib.document import parse
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SectionElementParserForDictionaryOfInstructions, SingleInstructionParser, SingleInstructionInvalidArgumentException, \

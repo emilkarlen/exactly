@@ -4,7 +4,7 @@ import unittest
 from pathlib import Path
 
 from shellcheck_lib.act_phase_setups.script_language_setup import new_for_script_language_setup
-from shellcheck_lib.default.execution_mode.test_case import processing as case_processing
+from shellcheck_lib.default.program_modes.test_case import processing as case_processing
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.execution.result import new_skipped, new_pass
 from shellcheck_lib.script_language.python3 import script_language_setup

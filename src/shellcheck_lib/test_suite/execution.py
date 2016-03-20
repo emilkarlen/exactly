@@ -1,6 +1,6 @@
 import pathlib
 
-from shellcheck_lib.default.execution_mode.test_case import processing as case_processing
+from shellcheck_lib.default.program_modes.test_case import processing as case_processing
 from shellcheck_lib.test_case import test_case_processing
 from shellcheck_lib.test_suite import reporting
 from shellcheck_lib.test_suite import structure

@@ -2,7 +2,7 @@ import pathlib
 import shutil
 
 from shellcheck_lib.cli.program_modes.test_case.settings import Output, TestCaseExecutionSettings
-from shellcheck_lib.default.execution_mode.test_case import processing
+from shellcheck_lib.default.program_modes.test_case import processing
 from shellcheck_lib.execution import full_execution
 from shellcheck_lib.execution.result import FailureInfoVisitor, PhaseFailureInfo, InstructionFailureInfo
 from shellcheck_lib.test_case import error_description

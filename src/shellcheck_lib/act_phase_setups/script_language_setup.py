@@ -1,7 +1,7 @@
 import pathlib
 
 from shellcheck_lib.act_phase_setups import utils
-from shellcheck_lib.default.execution_mode.test_case.test_case_parser import PlainSourceActPhaseParser
+from shellcheck_lib.default.program_modes.test_case.test_case_parser import PlainSourceActPhaseParser
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.script_language.script_language_management import ScriptLanguageSetup
 from shellcheck_lib.test_case.phases.act.phase_setup import ActPhaseSetup, ActProgramExecutor, SourceSetup

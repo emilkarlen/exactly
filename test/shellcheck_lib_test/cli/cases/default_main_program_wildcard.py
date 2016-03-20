@@ -1,6 +1,6 @@
 import pathlib
 
-from shellcheck_lib.default.execution_mode.test_suite.reporting import INVALID_SUITE_EXIT_CODE
+from shellcheck_lib.default.program_modes.test_suite.reporting import INVALID_SUITE_EXIT_CODE
 from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib.util.string import lines_content
 from shellcheck_lib_test.test_resources.file_structure import DirContents, Dir, File, empty_file

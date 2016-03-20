@@ -12,7 +12,7 @@ from shellcheck_lib.help.program_modes.test_case.instruction_reference import In
 from shellcheck_lib.help.program_modes.test_suite.contents_structure import TestSuiteSectionHelp, \
     TestSuiteHelp
 from shellcheck_lib.help.utils.description import single_line_description
-from shellcheck_lib_test.cli.execution_mode.help.test_resources import arguments_for
+from shellcheck_lib_test.cli.program_modes.help.test_resources import arguments_for
 from shellcheck_lib_test.test_resources.instruction_description import InstructionReferenceWithConstantValues
 
 
