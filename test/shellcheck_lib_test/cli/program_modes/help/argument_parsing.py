@@ -6,14 +6,15 @@ from shellcheck_lib.cli.program_modes.help.program_modes.test_case.help_request 
 from shellcheck_lib.cli.program_modes.help.program_modes.test_suite.help_request import *
 from shellcheck_lib.help.contents_structure import ApplicationHelp
 from shellcheck_lib.help.program_modes.main_program.contents_structure import MainProgramHelp
-from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCasePhaseInstructionSet, \
-    TestCasePhaseHelp, TestCaseHelp, TestCasePhaseReference
+from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCasePhaseHelp, TestCaseHelp, \
+    TestCasePhaseReference
 from shellcheck_lib.help.program_modes.test_case.instruction_reference import InstructionReference
 from shellcheck_lib.help.program_modes.test_suite.contents_structure import TestSuiteSectionHelp, \
     TestSuiteHelp
 from shellcheck_lib.help.utils.description import single_line_description
 from shellcheck_lib_test.cli.program_modes.help.test_resources import arguments_for
-from shellcheck_lib_test.test_resources.instruction_description import InstructionReferenceWithConstantValues
+from shellcheck_lib_test.help.test_resources import test_case_phase_help, \
+    single_line_description_that_identifies_instruction_and_phase
 
 
 class TestProgramHelp(unittest.TestCase):
@@ -128,8 +129,8 @@ class TestTestCaseSingleInstructionInPhase(unittest.TestCase):
         self.assertEqual(actual.name,
                          instruction_name,
                          'Name of instruction')
-        self.assertEqual(_single_line_description_that_identifies_instruction_and_phase(phase_name,
-                                                                                        instruction_name),
+        self.assertEqual(single_line_description_that_identifies_instruction_and_phase(phase_name,
+                                                                                       instruction_name),
                          actual.data.single_line_description(),
                          'The single-line-description in this test is expected to identify (phase,instruction-name)')
 
@@ -290,20 +291,6 @@ class TestTestSuiteHelp(unittest.TestCase):
                       arguments_for.suite_section('unknown section'))
 
 
-def instr_descr(phase_name: str, name: str) -> InstructionReference:
-    return InstructionReferenceWithConstantValues(
-        name,
-        _single_line_description_that_identifies_instruction_and_phase(phase_name,
-                                                                       name),
-        '',
-        [])
-
-
-def _single_line_description_that_identifies_instruction_and_phase(phase_name: str,
-                                                                   instruction_name: str) -> str:
-    return phase_name + '/' + instruction_name
-
-
 def _app_help_for(test_case_phase_helps: list,
                   suite_sections=()) -> ApplicationHelp:
     return ApplicationHelp(MainProgramHelp(),
@@ -311,16 +298,7 @@ def _app_help_for(test_case_phase_helps: list,
                            TestSuiteHelp(suite_sections))
 
 
-def test_case_phase_help(phase_name: str,
-                         instruction_names: list) -> TestCasePhaseHelp:
-    instruction_descriptions = map(lambda name: instr_descr(phase_name, name),
-                                   instruction_names)
-    return TestCasePhaseHelp(phase_name,
-                             dummy_phase_reference(phase_name),
-                             TestCasePhaseInstructionSet(instruction_descriptions))
-
-
-def dummy_phase_reference(phase_name: str) -> TestCasePhaseReference:
+def phase_reference(phase_name: str) -> TestCasePhaseReference:
     return TestCasePhaseReference(single_line_description('single_line_description for phase ' + phase_name))
 
 
