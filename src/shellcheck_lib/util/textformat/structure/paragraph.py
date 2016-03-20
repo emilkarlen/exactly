@@ -15,5 +15,12 @@ def para(text: str) -> Paragraph:
     return Paragraph([Text(text)])
 
 
+def text(s: str) -> Text:
+    return Text(s)
+
+
 def single_para(text: str) -> list:
+    """
+    :return: [ParagraphItem]
+    """
     return [para(text)]
