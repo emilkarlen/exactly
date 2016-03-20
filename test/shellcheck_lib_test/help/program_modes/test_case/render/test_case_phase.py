@@ -1,7 +1,9 @@
 import unittest
 
+from shellcheck_lib.help.program_modes.test_case.contents.phase_help_contents_structures import \
+    TestCasePhaseHelpForPhaseWithoutInstructions, TestCasePhaseHelpForPhaseWithInstructions
 from shellcheck_lib.help.program_modes.test_case.contents_structure import \
-    TestCasePhaseInstructionSet, TestCasePhaseHelpForPhaseWithoutInstructions, TestCasePhaseHelpForPhaseWithInstructions
+    TestCasePhaseInstructionSet
 from shellcheck_lib.help.program_modes.test_case.render import test_case_phase as sut
 from shellcheck_lib.help.utils.description import single_line_description, Description
 from shellcheck_lib.util.textformat.structure.paragraph import para
