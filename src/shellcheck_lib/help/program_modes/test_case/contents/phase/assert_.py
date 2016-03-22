@@ -1,5 +1,5 @@
-from shellcheck_lib.help.program_modes.test_case.contents.utils import pwd_at_start_of_phase_for_non_first_phases, \
-    env_vars_after_act__TODO_CHECK_THIS
+from shellcheck_lib.help.program_modes.test_case.contents.phase.utils import env_vars_after_act__TODO_CHECK_THIS, \
+    pwd_at_start_of_phase_for_non_first_phases
 from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCasePhaseInstructionSet
 from shellcheck_lib.help.program_modes.test_case.phase_help_contents_structures import \
     TestCasePhaseHelpForPhaseWithInstructions, PhaseSequenceInfo, ExecutionEnvironmentInfo
@@ -7,7 +7,7 @@ from shellcheck_lib.help.utils.description import Description, single_line_descr
 from shellcheck_lib.util.textformat.structure.paragraph import para
 
 
-class CleanupPhaseHelp(TestCasePhaseHelpForPhaseWithInstructions):
+class AssertPhaseHelp(TestCasePhaseHelpForPhaseWithInstructions):
     def __init__(self,
                  name: str,
                  instruction_set: TestCasePhaseInstructionSet):

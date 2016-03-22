@@ -1,3 +1,4 @@
+import shellcheck_lib.util.textformat.structure.structures
 from shellcheck_lib.document.syntax import phase_name_in_phase_syntax
 from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCasePhaseHelp, \
     TestCasePhaseInstructionSet
@@ -62,6 +63,7 @@ class TestCasePhaseHelpBase(TestCasePhaseHelp):
         self._name_as_header = phase_name_in_phase_syntax(name)
 
     def render(self) -> doc.SectionContents:
+        # TODO clean this method up
         purpose = self.purpose()
         mandatory_info = para('The %s phase is %s.' % (self._name_as_header,
                                                        'mandatory' if self.is_mandatory() else 'optional'))
@@ -75,8 +77,9 @@ class TestCasePhaseHelpBase(TestCasePhaseHelp):
             sections.append(doc.Section(text('Present Working Directory'),
                                         doc.SectionContents(eei.pwd_at_start_of_phase, [])))
         if eei.environment_variables:
-            ev_list = lists.simple_header_only_list(eei.environment_variables,
-                                                    lists.ListType.ITEMIZED_LIST)
+            ev_list = shellcheck_lib.util.textformat.structure.structures.simple_header_only_list(
+                eei.environment_variables,
+                lists.ListType.ITEMIZED_LIST)
             sections.append(doc.Section(text('Environment Variables (TODO check this)'),
                                         doc.SectionContents([ev_list],
                                                             [])))
