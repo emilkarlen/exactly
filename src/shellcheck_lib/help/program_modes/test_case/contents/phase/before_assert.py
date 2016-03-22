@@ -2,12 +2,12 @@ from shellcheck_lib.help.program_modes.test_case.contents.phase.utils import pwd
     env_vars_after_act__TODO_CHECK_THIS
 from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCasePhaseInstructionSet
 from shellcheck_lib.help.program_modes.test_case.phase_help_contents_structures import \
-    TestCasePhaseHelpForPhaseWithInstructions, PhaseSequenceInfo, ExecutionEnvironmentInfo
+    TestCasePhaseDocumentationForPhaseWithInstructions, PhaseSequenceInfo, ExecutionEnvironmentInfo
 from shellcheck_lib.help.utils.description import Description, single_line_description
 from shellcheck_lib.util.textformat.structure.paragraph import para
 
 
-class BeforeAssertPhaseHelp(TestCasePhaseHelpForPhaseWithInstructions):
+class BeforeAssertPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstructions):
     def __init__(self,
                  name: str,
                  instruction_set: TestCasePhaseInstructionSet):

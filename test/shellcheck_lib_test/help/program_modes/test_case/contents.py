@@ -11,7 +11,7 @@ from shellcheck_lib_test.util.textformat.test_resources import structure as stru
 class TestCase(unittest.TestCase):
     def test_configuration(self):
         # ARRANGE
-        tcp_help = configuration.ConfigurationPhaseHelp(
+        tcp_help = configuration.ConfigurationPhaseDocumentation(
             'phase name',
             test_case_phase_instruction_set('phase name',
                                             ['instr 1',
@@ -23,7 +23,7 @@ class TestCase(unittest.TestCase):
 
     def test_setup(self):
         # ARRANGE
-        tcp_help = setup.SetupPhaseHelp(
+        tcp_help = setup.SetupPhaseDocumentation(
             'phase name',
             test_case_phase_instruction_set('phase name',
                                             ['instr 1',
@@ -35,7 +35,7 @@ class TestCase(unittest.TestCase):
 
     def test_act(self):
         # ARRANGE
-        tcp_help = act.ActPhaseHelp('phase name')
+        tcp_help = act.ActPhaseDocumentation('phase name')
         # ACT
         actual = sut.render_test_case_phase_overview(tcp_help)
         # ASSERT
@@ -43,7 +43,7 @@ class TestCase(unittest.TestCase):
 
     def test_before_assert(self):
         # ARRANGE
-        tcp_help = before_assert.BeforeAssertPhaseHelp(
+        tcp_help = before_assert.BeforeAssertPhaseDocumentation(
             'phase name',
             test_case_phase_instruction_set('phase name',
                                             ['instr 1',
@@ -55,7 +55,7 @@ class TestCase(unittest.TestCase):
 
     def test_assert(self):
         # ARRANGE
-        tcp_help = assert_.AssertPhaseHelp(
+        tcp_help = assert_.AssertPhaseDocumentation(
             'phase name',
             test_case_phase_instruction_set('phase name',
                                             ['instr 1',
@@ -67,7 +67,7 @@ class TestCase(unittest.TestCase):
 
     def test_cleanup(self):
         # ARRANGE
-        tcp_help = cleanup.CleanupPhaseHelp(
+        tcp_help = cleanup.CleanupPhaseDocumentation(
             'phase name',
             test_case_phase_instruction_set('phase name',
                                             ['instr 1',

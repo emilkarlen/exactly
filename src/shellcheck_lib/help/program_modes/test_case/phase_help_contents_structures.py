@@ -1,6 +1,6 @@
 import shellcheck_lib.util.textformat.structure.structures
 from shellcheck_lib.document.syntax import phase_name_in_phase_syntax
-from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCasePhaseHelp, \
+from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCasePhaseDocumentation, \
     TestCasePhaseInstructionSet
 from shellcheck_lib.help.program_modes.test_case.render.instruction_set import instruction_set_list
 from shellcheck_lib.help.utils.description import Description
@@ -56,7 +56,7 @@ class ExecutionEnvironmentInfo(tuple):
         return self[1]
 
 
-class TestCasePhaseHelpBase(TestCasePhaseHelp):
+class TestCasePhaseDocumentationBase(TestCasePhaseDocumentation):
     def __init__(self,
                  name: str):
         super().__init__(name)
@@ -108,7 +108,7 @@ class TestCasePhaseHelpBase(TestCasePhaseHelp):
         raise NotImplementedError()
 
 
-class TestCasePhaseHelpForPhaseWithInstructions(TestCasePhaseHelpBase):
+class TestCasePhaseDocumentationForPhaseWithInstructions(TestCasePhaseDocumentationBase):
     def __init__(self,
                  name: str,
                  instruction_set: TestCasePhaseInstructionSet):
@@ -136,7 +136,7 @@ class TestCasePhaseHelpForPhaseWithInstructions(TestCasePhaseHelpBase):
         raise NotImplementedError()
 
 
-class TestCasePhaseHelpForPhaseWithoutInstructions(TestCasePhaseHelpBase):
+class TestCasePhaseDocumentationForPhaseWithoutInstructions(TestCasePhaseDocumentationBase):
     def __init__(self,
                  name: str):
         super().__init__(name)

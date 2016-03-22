@@ -43,18 +43,19 @@ def application_help_for(instructions_setup: InstructionsSetup) -> ApplicationHe
 
 def phase_helps_for(instructions_setup: InstructionsSetup) -> iter:
     return [
-        configuration.ConfigurationPhaseHelp(phase_help_name(phases.ANONYMOUS),
-                                             instruction_set_help(instructions_setup.config_instruction_set.values())),
-        setup.SetupPhaseHelp(phase_help_name(phases.SETUP),
-                             instruction_set_help(instructions_setup.setup_instruction_set.values())),
-        act.ActPhaseHelp(phase_help_name(phases.ACT)),
-        before_assert.BeforeAssertPhaseHelp(phase_help_name(phases.BEFORE_ASSERT),
-                                            instruction_set_help(
+        configuration.ConfigurationPhaseDocumentation(phase_help_name(phases.ANONYMOUS),
+                                                      instruction_set_help(
+                                                          instructions_setup.config_instruction_set.values())),
+        setup.SetupPhaseDocumentation(phase_help_name(phases.SETUP),
+                                      instruction_set_help(instructions_setup.setup_instruction_set.values())),
+        act.ActPhaseDocumentation(phase_help_name(phases.ACT)),
+        before_assert.BeforeAssertPhaseDocumentation(phase_help_name(phases.BEFORE_ASSERT),
+                                                     instruction_set_help(
                                                 instructions_setup.before_assert_instruction_set.values())),
-        assert_.AssertPhaseHelp(phase_help_name(phases.ASSERT),
-                                instruction_set_help(instructions_setup.assert_instruction_set.values())),
-        cleanup.CleanupPhaseHelp(phase_help_name(phases.CLEANUP),
-                                 instruction_set_help(instructions_setup.cleanup_instruction_set.values())),
+        assert_.AssertPhaseDocumentation(phase_help_name(phases.ASSERT),
+                                         instruction_set_help(instructions_setup.assert_instruction_set.values())),
+        cleanup.CleanupPhaseDocumentation(phase_help_name(phases.CLEANUP),
+                                          instruction_set_help(instructions_setup.cleanup_instruction_set.values())),
     ]
 
 
