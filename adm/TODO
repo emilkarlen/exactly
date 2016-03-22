@@ -1,5 +1,19 @@
 -*- org -*-
 
+* TODO Dokumentera syntax för flerrads-instr i InstrDoc
+<2016-03-22 tis>
+Tror inte dok nämner syntax för fler-raders instr.
+Får klura på hur det dokumenteras enklast.
+* TODO Optimera gnm att importera valfria moduler lokalt
+<2016-03-21 mån>
+Moduler ska laddas vid behov.  T ex modulen för hjälp ska laddas enbart om
+hjälp efterfrågas.
+Tror detta ska kunna lösas m lokala importer.
+* TODO Ska [act] vara utgångsfas?
+<2016-03-21 mån>
+Blir enklare att använda sc för att köra program i sandlåda då.
+* TODO --interpret ska heta "--actor"
+"actor" = den som agerar - den som utför "action"!
 * TODO [#A] Förtydliga att sidoeffekts-instr (dir) under "assert"
 <2016-03-20 sön>
 Eric undrade vad "dir" gjorde i "assert"-fasen.

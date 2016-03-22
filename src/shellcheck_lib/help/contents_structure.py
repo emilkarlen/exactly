@@ -1,8 +1,8 @@
 from shellcheck_lib.execution import phases
 from shellcheck_lib.help.program_modes.main_program.contents_structure import MainProgramHelp
 from shellcheck_lib.help.program_modes.test_case.config import phase_help_name
-from shellcheck_lib.help.program_modes.test_case.contents import \
-    assert_, configuration, setup, act, before_assert, cleanup
+from shellcheck_lib.help.program_modes.test_case.contents.phase import act, assert_, before_assert, configuration, \
+    setup, cleanup
 from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCaseHelp, TestCasePhaseInstructionSet
 from shellcheck_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp, \
     TestSuiteSectionHelp
