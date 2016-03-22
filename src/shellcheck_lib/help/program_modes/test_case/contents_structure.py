@@ -25,7 +25,7 @@ class TestCasePhaseInstructionSet(tuple):
                         self.instruction_descriptions))
 
 
-class TestCasePhaseHelp:
+class TestCasePhaseDocumentation:
     def __init__(self,
                  name: str):
         self._name = name

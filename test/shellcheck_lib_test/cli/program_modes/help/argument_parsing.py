@@ -6,7 +6,7 @@ from shellcheck_lib.cli.program_modes.help.program_modes.test_case.help_request 
 from shellcheck_lib.cli.program_modes.help.program_modes.test_suite.help_request import *
 from shellcheck_lib.help.contents_structure import ApplicationHelp
 from shellcheck_lib.help.program_modes.main_program.contents_structure import MainProgramHelp
-from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCasePhaseHelp, TestCaseHelp
+from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCasePhaseDocumentation, TestCaseHelp
 from shellcheck_lib.help.program_modes.test_case.instruction_documentation import InstructionDocumentation
 from shellcheck_lib.help.program_modes.test_suite.contents_structure import TestSuiteSectionHelp, \
     TestSuiteHelp
@@ -72,7 +72,7 @@ class TestTestCasePhase(unittest.TestCase):
         self.assertIs(TestCaseHelpItem.PHASE,
                       actual.item)
         self.assertIsInstance(actual.data,
-                              TestCasePhaseHelp)
+                              TestCasePhaseDocumentation)
 
         self.assertEqual(expected_phase_name,
                          actual.data.name)

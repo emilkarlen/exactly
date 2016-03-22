@@ -1,5 +1,5 @@
 from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCasePhaseInstructionSet, \
-    TestCasePhaseHelp
+    TestCasePhaseDocumentation
 from shellcheck_lib.help.program_modes.test_case.instruction_documentation import InstructionDocumentation
 from shellcheck_lib.util.textformat.structure import document as doc
 from shellcheck_lib.util.textformat.structure.paragraph import para
@@ -21,7 +21,7 @@ def single_line_description_that_identifies_instruction_and_phase(phase_name: st
 
 
 def test_case_phase_help(phase_name: str,
-                         instruction_names: list) -> TestCasePhaseHelp:
+                         instruction_names: list) -> TestCasePhaseDocumentation:
     instruction_set = test_case_phase_instruction_set(phase_name, instruction_names)
     return TestCasePhaseHelpForPhaseWithInstructionsTestImpl(phase_name,
                                                              instruction_set)
@@ -34,7 +34,7 @@ def test_case_phase_instruction_set(phase_name: str,
     return TestCasePhaseInstructionSet(instruction_descriptions)
 
 
-class TestCasePhaseHelpForPhaseWithInstructionsTestImpl(TestCasePhaseHelp):
+class TestCasePhaseHelpForPhaseWithInstructionsTestImpl(TestCasePhaseDocumentation):
     def __init__(self,
                  name: str,
                  instruction_set: TestCasePhaseInstructionSet):
