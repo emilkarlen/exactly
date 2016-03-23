@@ -1,8 +1,7 @@
 import unittest
 
 from shellcheck_lib.util.textformat.formatting import lists as sut
-from shellcheck_lib.util.textformat.structure import core
-from shellcheck_lib.util.textformat.structure import paragraph
+from shellcheck_lib_test.util.textformat.test_resources.constr import text
 
 
 class TestHeaderAndIndentFormatWithMarker(unittest.TestCase):
@@ -72,14 +71,6 @@ class TestHeaderAndIndentFormatWithNumbering(unittest.TestCase):
         actual = formatter.following_header_lines_indent(1, 10)
         self.assertEqual(len('1. ') * ' ',
                          actual)
-
-
-def text(string: str) -> core.Text:
-    return core.Text(string)
-
-
-def para(texts: iter) -> paragraph.Paragraph:
-    return paragraph.Paragraph(texts)
 
 
 def suite():
