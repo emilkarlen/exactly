@@ -1,3 +1,4 @@
+from shellcheck_lib.util.textformat.formatting import paragraph_item as sut
 from shellcheck_lib.util.textformat.structure import core, paragraph, lists
 
 BLANK_LINE = ''
@@ -23,3 +24,7 @@ def item(header: str,
 
 def header_only_item(header: str) -> lists.HeaderContentListItem:
     return item(header, [])
+
+
+def formatter_with_page_width(page_width: int) -> sut.Formatter:
+    return sut.Formatter(sut.Wrapper(page_width=page_width))

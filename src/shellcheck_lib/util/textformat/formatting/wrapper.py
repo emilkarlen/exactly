@@ -18,6 +18,10 @@ class Indent(tuple):
 
 
 def identical_indent(indent: str) -> Indent:
+    """
+    :return: Indent is identical for the first line
+    and following lines.
+    """
     return Indent(indent, indent)
 
 
@@ -29,6 +33,45 @@ class Wrapper:
 
     def wrap(self, text: str) -> list:
         return self.text_wrapper.wrap(text)
+
+    def no_word_wrap(self, lines: list) -> list:
+        """
+        Outputs lines with without wrapping.
+        Each line will begin on a new line.
+        :param lines: List of text that does not contain
+        new-line characters.
+        """
+        if not lines:
+            return []
+        ret_val = []
+        line = lines[0]
+        rest = lines[1:]
+        window_width = self.page_width - len(self.text_wrapper.initial_indent)
+        output_line = self._get_first_output_line_and_store_remaining_part(window_width,
+                                                                           line,
+                                                                           rest)
+        ret_val.append(self.text_wrapper.initial_indent + output_line)
+        window_width = self.page_width - len(self.text_wrapper.subsequent_indent)
+        while rest:
+            line = rest.pop(0)
+            output_line = self._get_first_output_line_and_store_remaining_part(window_width,
+                                                                               line,
+                                                                               rest)
+            ret_val.append(self.text_wrapper.subsequent_indent + output_line)
+        return ret_val
+
+    @staticmethod
+    def _get_first_output_line_and_store_remaining_part(window_width: int,
+                                                        line: str,
+                                                        remaining_lines: list) -> str:
+        if window_width <= 0:
+            return line
+        else:
+            ret_val = line[:window_width]
+            rest_of_first_line = line[window_width:]
+            if rest_of_first_line:
+                remaining_lines.insert(0, rest_of_first_line)
+            return ret_val
 
     @staticmethod
     def blank_lines(num_lines=1) -> list:
