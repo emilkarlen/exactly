@@ -1,5 +1,6 @@
 from shellcheck_lib.util.textformat.structure.core import ParagraphItem
 from shellcheck_lib.util.textformat.structure.lists import HeaderContentList
+from shellcheck_lib.util.textformat.structure.literal_layout import LiteralLayout
 from shellcheck_lib.util.textformat.structure.paragraph import Paragraph
 
 
@@ -9,10 +10,15 @@ class ParagraphItemVisitor:
             return self.visit_paragraph(item)
         if isinstance(item, HeaderContentList):
             return self.visit_header_value_list(item)
+        if isinstance(item, LiteralLayout):
+            return self.visit_literal_layout(item)
         raise ValueError('Unknown {}: {}'.format(ParagraphItem.__name__, str(type(item))))
 
     def visit_paragraph(self, paragraph: Paragraph):
         raise NotImplemented()
 
     def visit_header_value_list(self, header_value_list: HeaderContentList):
+        raise NotImplemented()
+
+    def visit_literal_layout(self, x: LiteralLayout):
         raise NotImplemented()
