@@ -66,6 +66,71 @@ class TestIndentIncreaseContextManager(unittest.TestCase):
                       [])
 
 
+class TestNoWordWrap(unittest.TestCase):
+    def test_empty_lines(self):
+        # ARRANGE #
+        wrapper = sut.Wrapper(page_width=5)
+        # ACT #
+        lines = wrapper.no_word_wrap(['',
+                                      ''])
+        # ASSERT #
+        self.assertEqual(['',
+                          ''],
+                         lines)
+
+    def test_input_lines_that_all_fit_on_single_output_line(self):
+        # ARRANGE #
+        wrapper = sut.Wrapper(page_width=5)
+        # ACT #
+        lines = wrapper.no_word_wrap(['12',
+                                      '',
+                                      'ab'])
+        # ASSERT #
+        self.assertEqual(['12',
+                          '',
+                          'ab'],
+                         lines)
+
+    def test_input_lines_that_do_not_fit_on_single_output_line(self):
+        # ARRANGE #
+        wrapper = sut.Wrapper(page_width=5)
+        # ACT #
+        lines = wrapper.no_word_wrap(['123 567',
+                                      'abc efg'])
+        # ASSERT #
+        self.assertEqual(['123 5',
+                          '67',
+                          'abc e',
+                          'fg'],
+                         lines)
+
+    def test_indentation_when_all_input_lines_fit_on_single_output_line(self):
+        # ARRANGE #
+        wrapper = sut.Wrapper(page_width=5)
+        indent = sut.Indent('>',
+                            '>>')
+        wrapper.push_indent(indent)
+        # ACT #
+        lines = wrapper.no_word_wrap(['fst', 'snd'])
+        # ASSERT #
+        self.assertEqual(['>fst',
+                          '>>snd'],
+                         lines)
+
+    def test_indentation_when_first_input_line_do_not_fit_on_single_output_line(self):
+        # ARRANGE #
+        wrapper = sut.Wrapper(page_width=5)
+        indent = sut.Indent('>',
+                            '>>')
+        wrapper.push_indent(indent)
+        # ACT #
+        lines = wrapper.no_word_wrap(['2345678'])
+        # ASSERT #
+        self.assertEqual(['>2345',
+                          '>>678'],
+                         lines)
+
+
 def _check_indent(put: unittest.TestCase,
                   wrapper: sut.Wrapper,
                   expected_current_indent: sut.Indent,
@@ -90,12 +155,18 @@ def _check_current_indent(put: unittest.TestCase,
                     'Current indent')
 
 
-def suite():
+def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestIndent))
     ret_val.addTest(unittest.makeSuite(TestIndentIncreaseContextManager))
+    ret_val.addTest(unittest.makeSuite(TestNoWordWrap))
     return ret_val
 
 
+def run_suite():
+    runner = unittest.TextTestRunner()
+    runner.run(suite())
+
+
 if __name__ == '__main__':
-    unittest.main()
+    run_suite()

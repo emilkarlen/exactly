@@ -1,7 +1,6 @@
 import unittest
 
-from shellcheck_lib.util.textformat.formatting import paragraph_item as sut
-from shellcheck_lib_test.util.textformat.test_resources.constr import text, para
+from shellcheck_lib_test.util.textformat.test_resources.constr import text, para, formatter_with_page_width
 
 
 class TestParagraph(unittest.TestCase):
@@ -39,10 +38,6 @@ class TestParagraph(unittest.TestCase):
                           '34',
                           '5678'],
                          actual)
-
-
-def formatter_with_page_width(page_width: int) -> sut.Formatter:
-    return sut.Formatter(sut.Wrapper(page_width=page_width))
 
 
 def suite() -> unittest.TestSuite:

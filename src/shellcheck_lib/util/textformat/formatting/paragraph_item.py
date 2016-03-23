@@ -40,7 +40,8 @@ class Formatter:
         return self.wrapper.wrap(text.value)
 
     def format_literal_layout(self, literal_layout: LiteralLayout) -> list:
-        return []
+        lines = literal_layout.literal_text.splitlines()
+        return self.wrapper.no_word_wrap(lines)
 
     def format_header_content_list(self, the_list: HeaderContentList) -> list:
         list_format = self.resolve_list_format(the_list.list_format)
