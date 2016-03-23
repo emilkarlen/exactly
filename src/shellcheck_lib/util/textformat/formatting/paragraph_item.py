@@ -3,6 +3,7 @@ from shellcheck_lib.util.textformat.formatting.lists import ListFormats, ListFor
 from shellcheck_lib.util.textformat.formatting.wrapper import Indent, Wrapper, identical_indent
 from shellcheck_lib.util.textformat.structure.core import Text, ParagraphItem
 from shellcheck_lib.util.textformat.structure.lists import HeaderContentList, HeaderContentListItem, Format
+from shellcheck_lib.util.textformat.structure.literal_layout import LiteralLayout
 from shellcheck_lib.util.textformat.structure.paragraph import Paragraph
 from shellcheck_lib.util.textformat.structure.utils import ParagraphItemVisitor
 
@@ -37,6 +38,9 @@ class Formatter:
 
     def format_text(self, text: Text) -> list:
         return self.wrapper.wrap(text.value)
+
+    def format_literal_layout(self, literal_layout: LiteralLayout) -> list:
+        return []
 
     def format_header_content_list(self, the_list: HeaderContentList) -> list:
         list_format = self.resolve_list_format(the_list.list_format)
@@ -73,9 +77,9 @@ class _ListFormatter:
         self.num_items = len(self.items_list)
         separations = list_format.separations
         self.blank_lines_between_elements = formatter.wrapper.blank_lines(
-                separations.num_blank_lines_between_elements)
+            separations.num_blank_lines_between_elements)
         self.blank_lines_between_header_and_content = formatter.wrapper.blank_lines(
-                separations.num_blank_lines_between_header_and_contents)
+            separations.num_blank_lines_between_header_and_contents)
         self.ret_val = []
 
     def apply(self) -> list:
