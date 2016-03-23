@@ -5,6 +5,14 @@ from shellcheck_lib_test.util.textformat.test_resources.constr import text, para
 
 
 class TestParagraph(unittest.TestCase):
+    def test_too_long_line(self):
+        p = para([text('1234567')])
+        formatter = formatter_with_page_width(5)
+        actual = formatter.format_paragraph(p)
+        self.assertEqual(['12345',
+                          '67'],
+                         actual)
+
     def test_single_new_line_block(self):
         p = para([text('1234 12 34')])
         formatter = formatter_with_page_width(5)
