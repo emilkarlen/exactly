@@ -1,10 +1,12 @@
 from shellcheck_lib.util.textformat.formatting.lists import ListFormats, ListFormat, list_format_with_indent_str, \
     list_format_with_separations
+from shellcheck_lib.util.textformat.formatting.table.formatter import TableFormatter
 from shellcheck_lib.util.textformat.formatting.wrapper import Indent, Wrapper, identical_indent
 from shellcheck_lib.util.textformat.structure.core import Text, ParagraphItem
 from shellcheck_lib.util.textformat.structure.lists import HeaderContentList, HeaderContentListItem, Format
 from shellcheck_lib.util.textformat.structure.literal_layout import LiteralLayout
 from shellcheck_lib.util.textformat.structure.paragraph import Paragraph
+from shellcheck_lib.util.textformat.structure.table import Table
 from shellcheck_lib.util.textformat.structure.utils import ParagraphItemVisitor
 
 
@@ -15,6 +17,7 @@ class Formatter:
                  list_formats: ListFormats = ListFormats()):
         self.list_formats = list_formats
         self.wrapper = wrapper
+        self.num_item_separator_lines = num_item_separator_lines
         self.separator_lines = self.wrapper.blank_lines(num_item_separator_lines)
         self.text_item_formatter = _ParagraphItemFormatter(self)
 
@@ -64,6 +67,23 @@ class Formatter:
         if format_on_list.custom_separations is not None:
             list_format = list_format_with_separations(list_format, format_on_list.custom_separations)
         return list_format
+
+    def format_table(self, table: Table) -> list:
+        first_line_indent = self.wrapper.current_indent.first_line
+        available_width = self.wrapper.page_width - len(first_line_indent)
+        if available_width <= 0:
+            return []
+        formatter = TableFormatter(self._paragraph_items_formatter_for_given_width_for_table_formatter,
+                                   available_width,
+                                   table)
+        un_indented_lines = formatter.apply()
+        return [first_line_indent + line for line in un_indented_lines]
+
+    def _paragraph_items_formatter_for_given_width_for_table_formatter(self, width: int):
+        formatter = Formatter(Wrapper(page_width=width),
+                              num_item_separator_lines=self.num_item_separator_lines,
+                              list_formats=self.list_formats)
+        return lambda paragraph_item_list: formatter.format_paragraph_items(paragraph_item_list)
 
 
 class _ListFormatter:
