@@ -4,6 +4,7 @@ from .formatting_test_impls import list_of_paragraph_items
 from .formatting_test_impls import lists
 from .formatting_test_impls import literal_layout
 from .formatting_test_impls import paragraph
+from .formatting_test_impls import table
 
 
 def suite():
@@ -12,6 +13,7 @@ def suite():
     ret_val.addTest(lists.suite())
     ret_val.addTest(literal_layout.suite())
     ret_val.addTest(list_of_paragraph_items.suite())
+    ret_val.addTest(table.suite())
     return ret_val
 
 
