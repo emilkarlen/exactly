@@ -1,5 +1,32 @@
 -*- org -*-
 
+* "fixture" som alt till "setup" + "cleanup"
+<2016-03-22 tis>
+Ett "fixture" består av en setup-action och en cleanup-action.
+
+setup-action:en körs på liknande sättt som "setup", och
+cleanup-actionen:en körs liknande "cleanup".
+
+Fördelen skulle vara problemet med att synka setup och cleanup:
+Om det är flera saker som ska sättas upp m setup, och någon av dessa
+misslyckas så körs "cleanup" för att rensa upp.  Problemet är att veta hur
+många saker "setup"-fasen hunnit sätta upp - och alltså vad som behöver
+städas.
+
+Iom att en "fixture" är en enhet som innehåller båda delarna så vet man att
+det är de fixture vars setup exekverats som behöver cleanup.
+
+Typ lyckad exekvering av en fixtures setup-sak registrerar dess cleanup-sak
+för senare exekvering.  fixtures som inte "hinner" exekveras därför att
+tidigare fixtures misslyckas med setup kommer då inte att registrera någon
+cleanup-sak.
+
+Skulle t ex kunna implementeras i testfall genom att fixturen är ett program
+som användaren anger.  Under setup-fasen (el motsvarande) så körs programmet
+med argumentet "setup".  Och under cleanup-fasen (el motsvarande) så körs
+programmet m argumentet "cleanup".
+
+"fixture" skulle kunna komplettera "setup" + "cleanup".
 * Multipla fall-filer på kommandoraden kör implicit test-svit
 Möjlighet att ange "anonym" testsvit genom att ange de testfall som ska ingå
 på kommandoraden.
