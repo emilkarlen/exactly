@@ -58,7 +58,7 @@ class TestCaseHelp(tuple):
         return tuple.__new__(cls, (list(phase_helps),))
 
     @property
-    def phase_helps(self) -> list:
+    def phase_helps_in_order_of_execution(self) -> list:
         """
         :type: [TestCasePhaseHelp]
         """
@@ -70,4 +70,4 @@ class TestCaseHelp(tuple):
         :type: str -> TestCasePhaseHelp
         """
         return dict(map(lambda ph_help: (ph_help.name, ph_help),
-                        self.phase_helps))
+                        self.phase_helps_in_order_of_execution))

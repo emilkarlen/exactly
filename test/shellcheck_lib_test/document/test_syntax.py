@@ -7,12 +7,12 @@ class TestExtractPhaseNameFromPhaseLine(unittest.TestCase):
 
     def test_valid_phase_line_without_initial_space(self):
         name = 'name'
-        actual = syntax.extract_phase_name_from_phase_line(syntax.phase_header(name))
+        actual = syntax.extract_phase_name_from_phase_line(syntax.section_header(name))
         self.assertEqual(name, actual)
 
     def test_valid_special_characters(self):
         name = 'begin -_.0123456789'
-        actual = syntax.extract_phase_name_from_phase_line(syntax.phase_header(name))
+        actual = syntax.extract_phase_name_from_phase_line(syntax.section_header(name))
         self.assertEqual(name, actual)
 
     def test_valid_phase_line_with_initial_space(self):

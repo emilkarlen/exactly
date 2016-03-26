@@ -102,7 +102,7 @@ class Parser:
 
     def _parse_instruction_search_when_not_a_phase(self, instruction_name) -> TestCaseHelpRequest:
         phase_and_instr_descr_list = []
-        test_case_phase_helps = self.application_help.test_case_help.phase_helps
+        test_case_phase_helps = self.application_help.test_case_help.phase_helps_in_order_of_execution
         for test_case_phase_help in test_case_phase_helps:
             if test_case_phase_help.is_phase_with_instructions:
                 name_2_description = test_case_phase_help.instruction_set.name_2_description
