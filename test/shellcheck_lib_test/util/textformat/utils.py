@@ -6,6 +6,7 @@ from shellcheck_lib.util.textformat.structure import lists
 from shellcheck_lib.util.textformat.structure import utils as sut
 from shellcheck_lib.util.textformat.structure.literal_layout import LiteralLayout
 from shellcheck_lib.util.textformat.structure.paragraph import Paragraph
+from shellcheck_lib.util.textformat.structure.table import Table, TableFormat
 from shellcheck_lib_test.util.textformat.test_resources.constr import single_text_para
 
 
@@ -42,6 +43,16 @@ class TestParagraphItemVisitor(unittest.TestCase):
         self.assertEqual([ItemType.LITERAL_LAYOUT],
                          visitor.visited_types)
 
+    def test_visit_table(self):
+        # ARRANGE #
+        item = Table(TableFormat('column separator'), [])
+        visitor = AVisitorThatRecordsVisitedMethods()
+        # ACT #
+        visitor.visit(item)
+        # ASSERT #
+        self.assertEqual([ItemType.TABLE],
+                         visitor.visited_types)
+
     def test_visit_unknown_object(self):
         # ARRANGE #
         item = 'A value of a type that is not a ParagraphItem'
@@ -67,11 +78,15 @@ class AVisitorThatRecordsVisitedMethods(sut.ParagraphItemVisitor):
     def visit_literal_layout(self, x: LiteralLayout):
         self.visited_types.append(ItemType.LITERAL_LAYOUT)
 
+    def visit_table(self, table: Table):
+        self.visited_types.append(ItemType.TABLE)
+
 
 class ItemType(enum.Enum):
     PARAGRAPH = 1
     LIST = 2
     LITERAL_LAYOUT = 3
+    TABLE = 4
 
 
 def suite() -> unittest.TestSuite:

@@ -2,6 +2,7 @@ from shellcheck_lib.util.textformat.structure.core import ParagraphItem
 from shellcheck_lib.util.textformat.structure.lists import HeaderContentList
 from shellcheck_lib.util.textformat.structure.literal_layout import LiteralLayout
 from shellcheck_lib.util.textformat.structure.paragraph import Paragraph
+from shellcheck_lib.util.textformat.structure.table import Table
 
 
 class ParagraphItemVisitor:
@@ -12,6 +13,8 @@ class ParagraphItemVisitor:
             return self.visit_header_value_list(item)
         if isinstance(item, LiteralLayout):
             return self.visit_literal_layout(item)
+        if isinstance(item, Table):
+            return self.visit_table(item)
         raise ValueError('Unknown {}: {}'.format(ParagraphItem.__name__, str(type(item))))
 
     def visit_paragraph(self, paragraph: Paragraph):
@@ -21,4 +24,7 @@ class ParagraphItemVisitor:
         raise NotImplemented()
 
     def visit_literal_layout(self, x: LiteralLayout):
+        raise NotImplemented()
+
+    def visit_table(self, table: Table):
         raise NotImplemented()
