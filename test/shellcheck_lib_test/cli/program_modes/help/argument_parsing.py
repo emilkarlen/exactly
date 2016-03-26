@@ -10,6 +10,7 @@ from shellcheck_lib.help.program_modes.test_case.contents_structure import TestC
 from shellcheck_lib.help.program_modes.test_case.instruction_documentation import InstructionDocumentation
 from shellcheck_lib.help.program_modes.test_suite.contents_structure import TestSuiteSectionHelp, \
     TestSuiteHelp
+from shellcheck_lib.help.utils import formatting
 from shellcheck_lib_test.cli.program_modes.help.test_resources import arguments_for
 from shellcheck_lib_test.help.test_resources import test_case_phase_help, \
     single_line_description_that_identifies_instruction_and_phase
@@ -157,7 +158,7 @@ class TestTestCaseInstructionList(unittest.TestCase):
                          len(actual.data),
                          'One instruction is expected to be found')
         self.assertEqual('phase-with-target',
-                         actual.data[0][0],
+                         actual.data[0][0].plain,
                          'The instruction is expected to be found in the %s phase.' % 'phase-with-target')
 
     def test_instruction_in_multiple_phase(self):
@@ -175,10 +176,10 @@ class TestTestCaseInstructionList(unittest.TestCase):
                          len(actual.data),
                          'Two instructions are expected to be found')
         self.assertEqual('phase-b',
-                         actual.data[0][0],
+                         actual.data[0][0].plain,
                          'The first instruction is expected to be found in the %s phase.' % 'phase-b')
         self.assertEqual('phase-d',
-                         actual.data[1][0],
+                         actual.data[1][0].plain,
                          'The second instruction is expected to be found in the %s phase.' % 'phase-d')
 
     def test_unknown_instruction(self):
@@ -211,8 +212,9 @@ class TestTestCaseInstructionList(unittest.TestCase):
                               len(list_item),
                               'Each item in the list is expected to be a pair.')
             self.assertIsInstance(list_item[0],
-                                  str,
-                                  'Each item in the list is expected to have a %s as first element' % str(str))
+                                  formatting.SectionName,
+                                  'Each item in the list is expected to have a %s as first element' %
+                                  str(formatting.SectionName))
             self.assertIsInstance(list_item[1],
                                   InstructionDocumentation,
                                   'Each item in the list is expected to have a Description as second element')

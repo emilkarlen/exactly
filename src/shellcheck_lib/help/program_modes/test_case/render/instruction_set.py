@@ -1,4 +1,3 @@
-from shellcheck_lib.document.syntax import section_header
 from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCasePhaseInstructionSet, \
     TestCaseHelp
 from shellcheck_lib.help.program_modes.test_case.render.render_instruction import instruction_set_list_item
@@ -17,7 +16,7 @@ def instruction_set_per_phase(test_case_help: TestCaseHelp) -> doc.SectionConten
     for test_case_phase_help in test_case_help.phase_helps_in_order_of_execution:
         if test_case_phase_help.is_phase_with_instructions:
             instruction_list = instruction_set_list(test_case_phase_help.instruction_set)
-            sections.append(doc.Section(Text(section_header(test_case_phase_help.name)),
+            sections.append(doc.Section(Text(test_case_phase_help.name.syntax),
                                         doc.SectionContents([instruction_list], [])))
     return doc.SectionContents([], sections)
 
