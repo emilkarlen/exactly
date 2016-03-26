@@ -37,7 +37,7 @@ class TheInstructionDocumentation(InstructionDocumentation):
         self.file = file
 
     def single_line_description(self) -> str:
-        return 'Test the contents of {}.'.format(self.file)
+        return 'Tests the contents of {}.'.format(self.file)
 
     def main_description_rest(self) -> list:
         text = """\
