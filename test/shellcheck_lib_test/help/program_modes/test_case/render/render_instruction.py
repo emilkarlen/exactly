@@ -11,8 +11,8 @@ from shellcheck_lib_test.util.textformat.test_resources import structure as stru
 class TestListItem(unittest.TestCase):
     def test(self):
         actual = sut.instruction_set_list_item(InstructionDocumentationWithConstantValues('instruction name',
-                                                                                      'single line description',
-                                                                                      '',
+                                                                                          'single line description',
+                                                                                          '',
                                                                                           []))
         struct_check.is_list_item.apply(self, actual)
 
@@ -20,16 +20,16 @@ class TestListItem(unittest.TestCase):
 class TestManPage(unittest.TestCase):
     def test_just_single_line_description(self):
         description = InstructionDocumentationWithConstantValues('instruction name',
-                                                             'single line description',
-                                                             '',
+                                                                 'single line description',
+                                                                 '',
                                                                  [])
         actual = sut.instruction_man_page(description)
         struct_check.is_section_contents.apply(self, actual)
 
     def test_with_main_description_rest(self):
         description = InstructionDocumentationWithConstantValues('instruction name',
-                                                             'single line description',
-                                                             'main description rest',
+                                                                 'single line description',
+                                                                 'main description rest',
                                                                  [])
         actual = sut.instruction_man_page(description)
         struct_check.is_section_contents.apply(self, actual)
@@ -72,8 +72,12 @@ class TestManPage(unittest.TestCase):
         struct_check.is_section_contents.apply(self, actual)
 
 
-def suite():
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestListItem))
-    ret_val.addTest(unittest.makeSuite(TestManPage))
-    return ret_val
+def suite() -> unittest.TestSuite:
+    return unittest.TestSuite([
+        unittest.makeSuite(TestListItem),
+        unittest.makeSuite(TestManPage),
+    ])
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())

@@ -2,6 +2,7 @@ import unittest
 
 from shellcheck_lib.util.textformat.structure.core import ParagraphItem, Text
 from shellcheck_lib.util.textformat.structure.lists import HeaderContentList
+from shellcheck_lib.util.textformat.structure.literal_layout import LiteralLayout
 from shellcheck_lib.util.textformat.structure.paragraph import Paragraph
 from shellcheck_lib.util.textformat.structure.utils import ParagraphItemVisitor
 from shellcheck_lib_test.test_resources import value_assertion as va
@@ -53,6 +54,9 @@ class ParagraphItemChecker(ParagraphItemVisitor):
 
     def visit_header_value_list(self, header_value_list: HeaderContentList):
         raise ValueError(self._msg("Cannot check %s's" % HeaderContentList))
+
+    def visit_literal_layout(self, literal_layout: LiteralLayout):
+        raise ValueError(self._msg("Cannot check %s's" % LiteralLayout))
 
     def _msg(self, tail: str) -> str:
         return self.msg_prefix + tail
