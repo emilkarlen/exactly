@@ -1,5 +1,5 @@
 import shellcheck_lib.util.textformat.structure.structures
-from shellcheck_lib.document.syntax import phase_name_in_phase_syntax
+from shellcheck_lib.document.syntax import section_header
 from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCasePhaseDocumentation, \
     TestCasePhaseInstructionSet
 from shellcheck_lib.help.program_modes.test_case.render.instruction_set import instruction_set_list
@@ -60,7 +60,7 @@ class TestCasePhaseDocumentationBase(TestCasePhaseDocumentation):
     def __init__(self,
                  name: str):
         super().__init__(name)
-        self._name_as_header = phase_name_in_phase_syntax(name)
+        self._name_as_header = section_header(name)
 
     def render(self) -> doc.SectionContents:
         # TODO clean this method up

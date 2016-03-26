@@ -12,11 +12,6 @@ ANONYMOUS_PHASE_PRESENTATION_NAME = '<top-level>'
 
 PHASE_SYNTAX = '[PHASE-NAME]'
 
-
-def phase_name_in_phase_syntax(phase_name: str) -> str:
-    return '[' + phase_name + ']'
-
-
 TYPE_EMPTY = 0
 TYPE_COMMENT = 1
 TYPE_PHASE = 2
@@ -45,6 +40,7 @@ def is_empty_line(line: str) -> bool:
 def is_comment_line(line: str) -> bool:
     return COMMENT_LINE_RE.match(line)
 
+
 def classify_line(line: str) -> int:
     """
     Classifies a line according to the TYPE_ constants.
@@ -57,17 +53,16 @@ def classify_line(line: str) -> int:
     return TYPE_INSTRUCTION
 
 
-def phase_header(phase_name: str) -> str:
+def section_header(section_name: str) -> str:
     """
     Constructs a Phase Header given a Phase Name
-    :param phase_name:
+    :param section_name:
     """
-    return '[' + phase_name + ']'
+    return '[' + section_name + ']'
 
 
 def extract_phase_name_from_phase_line(line: str) -> str:
     """
-
     :param line: A line that matches _PHASE_LINE_RE
     :raise NonImplementationError: line is not a valid Phase Header
     :return:

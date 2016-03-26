@@ -1,6 +1,6 @@
 from shellcheck_lib.cli.program_modes.help.program_modes.test_case.help_request import TestCaseHelpItem, \
     TestCaseHelpRequest
-from shellcheck_lib.document.syntax import phase_name_in_phase_syntax
+from shellcheck_lib.document.syntax import section_header
 from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCaseHelp, TestCasePhaseDocumentation
 from shellcheck_lib.help.program_modes.test_case.instruction_documentation import InstructionDocumentation
 from shellcheck_lib.help.program_modes.test_case.render import instruction_set, render_instruction
@@ -51,7 +51,7 @@ class TestCaseHelpRenderer:
         sections = []
         for phase_and_instruction_description in phase_and_instruction_description_list:
             man_page = self.instruction(phase_and_instruction_description[1])
-            phase_section = doc.Section(Text(phase_name_in_phase_syntax(phase_and_instruction_description[0])),
+            phase_section = doc.Section(Text(section_header(phase_and_instruction_description[0])),
                                         man_page)
             sections.append(phase_section)
         initial_paragraphs = []

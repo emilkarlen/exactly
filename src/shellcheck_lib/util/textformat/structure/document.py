@@ -6,8 +6,8 @@ class SectionContents(tuple):
                 initial_paragraphs: list,
                 sections: list):
         """
-        :type sections: [Section]
         :type initial_paragraphs: [core.ParagraphItem]
+        :type sections: [Section]
         """
         return tuple.__new__(cls, (initial_paragraphs, sections))
 
