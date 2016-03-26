@@ -65,8 +65,8 @@ class TestCasePhaseDocumentationBase(TestCasePhaseDocumentation):
     def render(self) -> doc.SectionContents:
         # TODO clean this method up
         purpose = self.purpose()
-        mandatory_info = para('The %s phase is %s.' % (self._name_as_header,
-                                                       'mandatory' if self.is_mandatory() else 'optional'))
+        mandatory_info = para('The {0} phase is {1}.'.format(self.name,
+                                                             'mandatory' if self.is_mandatory() else 'optional'))
         paras = ([para(purpose.single_line_description)] +
                  purpose.rest +
                  [mandatory_info] +

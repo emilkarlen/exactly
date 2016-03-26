@@ -42,7 +42,7 @@ class TestCasePhaseHelpForPhaseWithInstructionsTestImpl(TestCasePhaseDocumentati
         self._instruction_set = instruction_set
 
     def render(self) -> doc.SectionContents:
-        return doc.SectionContents([para('Rendition of phase "%s"' % self._name)],
+        return doc.SectionContents([para('Rendition of phase {0:emphasis}'.format(self.name))],
                                    [])
 
     @property

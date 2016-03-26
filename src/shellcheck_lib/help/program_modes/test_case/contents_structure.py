@@ -1,4 +1,5 @@
 from shellcheck_lib.help.program_modes.test_case.instruction_documentation import InstructionDocumentation
+from shellcheck_lib.help.utils import formatting
 from shellcheck_lib.util.textformat.structure import document as doc
 
 
@@ -28,11 +29,11 @@ class TestCasePhaseInstructionSet(tuple):
 class TestCasePhaseDocumentation:
     def __init__(self,
                  name: str):
-        self._name = name
+        self._name_formats = formatting.SectionName(name)
 
     @property
-    def name(self) -> str:
-        return self._name
+    def name(self) -> formatting.SectionName:
+        return self._name_formats
 
     def render(self) -> doc.SectionContents:
         raise NotImplementedError()
@@ -53,21 +54,21 @@ class TestCaseHelp(tuple):
     def __new__(cls,
                 phase_helps: iter):
         """
-        :type phase_helps: [TestCasePhaseHelp]
+        :type phase_helps: [TestCasePhaseDocumentation]
         """
         return tuple.__new__(cls, (list(phase_helps),))
 
     @property
     def phase_helps_in_order_of_execution(self) -> list:
         """
-        :type: [TestCasePhaseHelp]
+        :type: [TestCasePhaseDocumentation]
         """
         return self[0]
 
     @property
     def phase_name_2_phase_help(self) -> dict:
         """
-        :type: str -> TestCasePhaseHelp
+        :type: str -> TestCasePhaseDocumentation
         """
-        return dict(map(lambda ph_help: (ph_help.name, ph_help),
+        return dict(map(lambda ph_help: (ph_help.name.plain, ph_help),
                         self.phase_helps_in_order_of_execution))
