@@ -9,7 +9,9 @@ from shellcheck_lib_test.util.textformat.test_resources import structure as stru
 
 class TestCase(unittest.TestCase):
     def test_generate_overview_documentation(self):
+        # ACT #
         actual = overview_documentation(TEST_CASE_HELP_WITH_PRODUCTION_PHASES)
+        # ASSERT #
         struct_check.is_section_contents.apply(self, actual)
 
 
