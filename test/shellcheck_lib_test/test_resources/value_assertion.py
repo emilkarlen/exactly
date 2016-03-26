@@ -1,3 +1,4 @@
+import os
 import types
 import unittest
 
@@ -133,14 +134,16 @@ class Or(ValueAssertion):
               put: unittest.TestCase,
               value,
               message_builder: MessageBuilder = MessageBuilder()):
+        failures = []
         for assertion in self.assertions:
             assert isinstance(assertion, ValueAssertion)
             try:
                 assertion.apply(put, value, message_builder)
                 return
-            except put.failureException:
-                pass
-        put.fail(message_builder.apply('OR: ' + self.assertion_name))
+            except put.failureException as ex:
+                failures.append(ex)
+        put.fail(message_builder.apply('OR: ' + self.assertion_name) + '\n' +
+                 os.linesep.join([str(ex) for ex in failures]))
 
 
 class Not(ValueAssertion):

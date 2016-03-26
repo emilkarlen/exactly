@@ -1,6 +1,7 @@
 from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCasePhaseInstructionSet, \
     TestCasePhaseDocumentation
 from shellcheck_lib.help.program_modes.test_case.instruction_documentation import InstructionDocumentation
+from shellcheck_lib.help.utils.description import Description
 from shellcheck_lib.util.textformat.structure import document as doc
 from shellcheck_lib.util.textformat.structure.paragraph import para
 from shellcheck_lib_test.test_resources.instruction_description import InstructionDocumentationWithConstantValues
@@ -40,6 +41,10 @@ class TestCasePhaseHelpForPhaseWithInstructionsTestImpl(TestCasePhaseDocumentati
                  instruction_set: TestCasePhaseInstructionSet):
         super().__init__(name)
         self._instruction_set = instruction_set
+
+    def purpose(self) -> Description:
+        return Description('Single line purpose for phase ' + self.name.syntax,
+                           [para('Rest of purpose for phase ' + self.name.syntax)])
 
     def render(self) -> doc.SectionContents:
         return doc.SectionContents([para('Rendition of phase {0:emphasis}'.format(self.name))],
