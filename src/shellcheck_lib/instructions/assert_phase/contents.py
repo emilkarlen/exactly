@@ -30,7 +30,7 @@ class TheInstructionDocumentation(InstructionDocumentation):
         super().__init__(name)
 
     def single_line_description(self) -> str:
-        return 'Test the contents of a file.'
+        return 'Tests the contents of a file.'
 
     def main_description_rest(self) -> list:
         text = """\
