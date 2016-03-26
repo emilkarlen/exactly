@@ -1,5 +1,6 @@
 from shellcheck_lib.help.program_modes.test_case.instruction_documentation import InstructionDocumentation
 from shellcheck_lib.help.utils import formatting
+from shellcheck_lib.help.utils.description import Description
 from shellcheck_lib.util.textformat.structure import document as doc
 
 
@@ -34,6 +35,9 @@ class TestCasePhaseDocumentation:
     @property
     def name(self) -> formatting.SectionName:
         return self._name_formats
+
+    def purpose(self) -> Description:
+        raise NotImplementedError()
 
     def render(self) -> doc.SectionContents:
         raise NotImplementedError()

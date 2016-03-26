@@ -3,7 +3,6 @@ from shellcheck_lib.document.syntax import section_header
 from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCasePhaseDocumentation, \
     TestCasePhaseInstructionSet
 from shellcheck_lib.help.program_modes.test_case.render.instruction_set import instruction_set_list
-from shellcheck_lib.help.utils.description import Description
 from shellcheck_lib.util.textformat.structure import document as doc
 from shellcheck_lib.util.textformat.structure import lists
 from shellcheck_lib.util.textformat.structure.paragraph import para, text
@@ -88,9 +87,6 @@ class TestCasePhaseDocumentationBase(TestCasePhaseDocumentation):
             sections.append(doc.Section(text('Instructions'),
                                         doc.SectionContents([il], [])))
         return doc.SectionContents(paras, sections)
-
-    def purpose(self) -> Description:
-        raise NotImplementedError()
 
     def is_mandatory(self) -> bool:
         raise NotImplementedError()
