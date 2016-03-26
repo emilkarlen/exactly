@@ -50,7 +50,7 @@ class TestSingleLineDescription(WithDescriptionBase):
 class TestMainDescriptionRest(WithDescriptionBase):
     def runTest(self):
         actual = self.description.main_description_rest()
-        struct_check.paragraph_item_list().apply(self, actual)
+        struct_check.is_paragraph_item_list().apply(self, actual)
 
 
 class TestInvokationVariants(WithDescriptionBase):

@@ -2,12 +2,13 @@ import unittest
 
 from shellcheck_lib.util.textformat.structure import core, lists, document as doc
 from shellcheck_lib.util.textformat.structure.lists import HeaderContentList
+from shellcheck_lib.util.textformat.structure.literal_layout import LiteralLayout
 from shellcheck_lib.util.textformat.structure.paragraph import Paragraph
 from shellcheck_lib.util.textformat.structure.utils import ParagraphItemVisitor
 from shellcheck_lib_test.test_resources import value_assertion as va
 
 
-def paragraph_item_list(name: str = '') -> va.ValueAssertion:
+def is_paragraph_item_list(name: str = '') -> va.ValueAssertion:
     return va.every_element(name, is_paragraph_item)
 
 
@@ -19,7 +20,7 @@ is_text = va.And([
 ])
 
 
-class IsParagraphItem(ParagraphItemVisitor, va.ValueAssertion):
+class _IsParagraphItem(ParagraphItemVisitor, va.ValueAssertion):
     def apply(self,
               put: unittest.TestCase,
               value,
@@ -34,15 +35,17 @@ class IsParagraphItem(ParagraphItemVisitor, va.ValueAssertion):
     def visit_header_value_list(self, header_value_list: HeaderContentList):
         is_header_value_list.apply(self.put, header_value_list, self.message_builder)
 
+    def visit_literal_layout(self, literal_layout: LiteralLayout):
+        va.IsInstance(str).apply(self.put, literal_layout.literal_text, self.message_builder),
 
-is_paragraph_item = IsParagraphItem()
+
+is_paragraph_item = _IsParagraphItem()
 
 is_paragraph = va.And([
     va.IsInstance(Paragraph),
     va.sub_component_list('text blocks',
                           lambda p: p.start_on_new_line_blocks,
-                          is_text)
-])
+                          is_text)])
 
 
 class SectionAssertion:
@@ -89,7 +92,7 @@ is_list_item = va.And([
                      is_text),
     va.sub_component_list('values',
                           lists.HeaderContentListItem.content_paragraph_items.fget,
-                          IsParagraphItem())
+                          is_paragraph_item)
 ])
 
 is_separations = va.IsInstance(lists.Separations)
