@@ -148,3 +148,9 @@ class _ParagraphItemFormatter(ParagraphItemVisitor):
 
     def visit_header_value_list(self, header_value_list: HeaderContentList):
         return self.formatter.format_header_content_list(header_value_list)
+
+    def visit_literal_layout(self, literal_layout: LiteralLayout):
+        return self.formatter.format_literal_layout(literal_layout)
+
+    def visit_table(self, table: Table):
+        return self.formatter.format_table(table)

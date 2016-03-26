@@ -4,6 +4,7 @@ from shellcheck_lib.util.textformat.structure import core, lists, document as do
 from shellcheck_lib.util.textformat.structure.lists import HeaderContentList
 from shellcheck_lib.util.textformat.structure.literal_layout import LiteralLayout
 from shellcheck_lib.util.textformat.structure.paragraph import Paragraph
+from shellcheck_lib.util.textformat.structure.table import Table, TableFormat
 from shellcheck_lib.util.textformat.structure.utils import ParagraphItemVisitor
 from shellcheck_lib_test.test_resources import value_assertion as va
 
@@ -36,7 +37,23 @@ class _IsParagraphItem(ParagraphItemVisitor, va.ValueAssertion):
         is_header_value_list.apply(self.put, header_value_list, self.message_builder)
 
     def visit_literal_layout(self, literal_layout: LiteralLayout):
-        va.IsInstance(str).apply(self.put, literal_layout.literal_text, self.message_builder),
+        assertion = va.sub_component('literal_layout/literal_text',
+                                     LiteralLayout.literal_text.fget,
+                                     va.IsInstance(str))
+        assertion.apply(self.put, literal_layout, self.message_builder)
+
+    def visit_table(self, table: Table):
+        format_assertion = va.sub_component('format',
+                                            Table.format.fget,
+                                            va.IsInstance(TableFormat))
+        is_table_row = va.every_element('table row cells',
+                                        is_paragraph_item_list())
+        rows_assertion = va.sub_component_list('rows', Table.rows.fget, is_table_row, '/')
+
+        assertion = va.And([format_assertion,
+                            rows_assertion])
+
+        assertion.apply(self.put, table, self.message_builder)
 
 
 is_paragraph_item = _IsParagraphItem()
