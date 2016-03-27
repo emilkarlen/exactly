@@ -1,4 +1,4 @@
-from shellcheck_lib.cli.program_modes.test_case.execution import NO_EXECUTION_EXIT_CODE
+from shellcheck_lib.cli.cli_environment.exit_values import NO_EXECUTION_EXIT_CODE
 from shellcheck_lib_test.test_resources.main_program import main_program_check_for_test_case
 from shellcheck_lib_test.test_resources.process import ExpectedSubProcessResult
 
