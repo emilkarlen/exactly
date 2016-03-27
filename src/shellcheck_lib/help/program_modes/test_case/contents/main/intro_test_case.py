@@ -6,17 +6,17 @@ from shellcheck_lib.util.textformat.structure.structures import para, literal_la
 
 def test_case_intro_documentation(setup: Setup) -> doc.SectionContents:
     paragraphs = ([
-                      para(a_test_case_is_a_plain_text_file),
-                      literal_layout(example_test_case)
+                      para(A_TEST_CASE_IS_A_PLAIN_TEXT_FILE),
+                      literal_layout(EXAMPLE_TEST_CASE)
                   ] +
-                  normalize_and_parse(description.format(phase=setup.phase_names))
+                  normalize_and_parse(DESCRIPTION.format(phase=setup.phase_names))
                   )
     return doc.SectionContents(paragraphs, [])
 
 
-a_test_case_is_a_plain_text_file = 'A test case is written as a plain text file:'
+A_TEST_CASE_IS_A_PLAIN_TEXT_FILE = 'A test case is written as a plain text file:'
 
-example_test_case = """\
+EXAMPLE_TEST_CASE = """\
 [act]
 
 helloworld
@@ -30,7 +30,7 @@ Hello, World!
 EOF\
 """
 
-description = """\
+DESCRIPTION = """\
 A test case file contains a sequence of “phases”.
 
 
