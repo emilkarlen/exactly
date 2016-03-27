@@ -1,7 +1,7 @@
-from shellcheck_lib.help.program_modes.test_case.contents.main.execution import execution_documentation
-from shellcheck_lib.help.program_modes.test_case.contents.main.phases import phases_documentation
+from shellcheck_lib.help.program_modes.test_case.contents.main.intro_execution import execution_documentation
+from shellcheck_lib.help.program_modes.test_case.contents.main.intro_phases import phases_documentation
+from shellcheck_lib.help.program_modes.test_case.contents.main.intro_test_case import test_case_intro_documentation
 from shellcheck_lib.help.program_modes.test_case.contents.main.setup import Setup
-from shellcheck_lib.help.program_modes.test_case.contents.main.test_case_intro import test_case_intro_documentation
 from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from shellcheck_lib.util.textformat.structure import document as doc
 from shellcheck_lib.util.textformat.structure.structures import para, text
