@@ -9,6 +9,9 @@ Får klura på hur det dokumenteras enklast.
 Moduler ska laddas vid behov.  T ex modulen för hjälp ska laddas enbart om
 hjälp efterfrågas.
 Tror detta ska kunna lösas m lokala importer.
+
+Koden som köra case/suite/help:
+shellcheck_lib.cli.main_program.MainProgram#execute
 * TODO Ska [act] vara utgångsfas?
 <2016-03-21 mån>
 Blir enklare att använda sc för att köra program i sandlåda då.

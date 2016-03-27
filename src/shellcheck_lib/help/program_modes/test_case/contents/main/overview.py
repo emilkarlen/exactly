@@ -24,11 +24,11 @@ def overview_documentation(test_case_help: TestCaseHelp) -> doc.SectionContents:
                         doc.SectionContents(
                             [],
                             [
-                                doc.Section(text('TEST CASES'),
+                                doc.Section(text('Test cases'),
                                             test_case_intro_contents),
-                                doc.Section(text('PHASES'),
+                                doc.Section(text('Phases'),
                                             phases_contents),
-                                doc.Section(text('EXECUTION'),
+                                doc.Section(text('Execution'),
                                             execution_contents),
                             ])),
             doc.Section(text('TEST CASE FILES'),
