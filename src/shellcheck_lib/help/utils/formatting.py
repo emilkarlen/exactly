@@ -96,5 +96,9 @@ class AnyInstructionNameDictionary(dict):
         return InstructionName(key)
 
 
+def cli_option(s: str) -> str:
+    return '"' + s + '"'
+
+
 def emphasis(s: str) -> str:
     return '"' + s + '"'
