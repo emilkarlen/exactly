@@ -2,6 +2,8 @@ from shellcheck_lib.help.program_modes.test_case.contents.main.intro_execution i
 from shellcheck_lib.help.program_modes.test_case.contents.main.intro_phases import phases_documentation
 from shellcheck_lib.help.program_modes.test_case.contents.main.intro_test_case import test_case_intro_documentation
 from shellcheck_lib.help.program_modes.test_case.contents.main.ref_test_case_files import test_case_files_documentation
+from shellcheck_lib.help.program_modes.test_case.contents.main.ref_test_case_processing import \
+    test_case_processing_documentation
 from shellcheck_lib.help.program_modes.test_case.contents.main.setup import Setup
 from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from shellcheck_lib.util.textformat.structure import document as doc
@@ -31,4 +33,6 @@ def overview_documentation(test_case_help: TestCaseHelp) -> doc.SectionContents:
                             ])),
             doc.Section(text('TEST CASE FILES'),
                         test_case_files_documentation(setup)),
+            doc.Section(text('TEST CASE PROCESSING'),
+                        test_case_processing_documentation(setup)),
         ])

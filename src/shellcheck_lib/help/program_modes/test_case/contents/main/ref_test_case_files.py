@@ -97,15 +97,14 @@ Empty lines are ignored.
 
 Note though that instructions themselves, and also the {phase[act]} phase,
 can decide how lines are interpreted.
-
-As {instruction[stdout]} does in this example:
+As {instruction[stdout]} does here:
 """
 
 EXAMPLE_OF_INSTRUCTION_THAT_CONTAINS_COMMENT_AND_EMPTY_LINES = """\
 stdout <<EOF
-this instruction expects 4 lines of output
+this assertion expects 4 lines of output
 # this is the second line of the expected output
 
-the above empty lines is part of the expected output
+the above empty line is part of the expected output
 EOF
 """
