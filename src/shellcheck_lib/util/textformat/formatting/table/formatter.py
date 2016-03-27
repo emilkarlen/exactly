@@ -18,6 +18,7 @@ class TableFormatter:
                  table: Table):
         self.paragraph_items_formatter_for_given_width = paragraph_items_formatter_for_given_width
         self.available_width = available_width
+
         self.table = table
         if not table.rows:
             self.normalised_rows = []
@@ -26,19 +27,27 @@ class TableFormatter:
             self.normalised_rows = tables.extend_each_sub_list_to_max_sub_list_length(table.rows, [])
             self.columns = tables.transpose(self.normalised_rows)
 
+        num_column_separators = 0 if not self.normalised_rows else (len(self.normalised_rows[0]) - 1)
+        self.available_width_for_column_contents = (available_width -
+                                                    num_column_separators * len(table.format.column_separator))
+
     def apply(self) -> list:
         if not self.table.rows:
             return []
+        if self.available_width_for_column_contents <= 0:
+            return []
         column_widths = self._derive_column_content_widths()
+        if 0 in column_widths:
+            return []
         column_formatters = [self.paragraph_items_formatter_for_given_width(width) for width in column_widths]
         row_column_cell_lines = self._format_cell_contents(column_formatters)
         return self._combine_cell_contents_into_lines(row_column_cell_lines, column_widths)
 
     def _derive_column_content_widths(self) -> list:
         columns_with_max_line_width = derive_column_max_widths(self.paragraph_items_formatter_for_given_width,
-                                                               self.available_width,
+                                                               self.available_width_for_column_contents,
                                                                self.columns)
-        return distribute_width(columns_with_max_line_width, self.available_width)
+        return distribute_width(columns_with_max_line_width, self.available_width_for_column_contents)
 
     def _format_cell_contents(self, column_formatters):
         ret_val = []
