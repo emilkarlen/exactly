@@ -35,7 +35,7 @@ def empty_dir(name: str) -> DirWithSubDirs:
 
 execution_directories = [
     empty_dir('testcase'),
-    empty_dir('act'),
+    empty_dir(SUB_DIRECTORY__ACT),
     DirWithSubDirs('tmp', [
         empty_dir('internal'),
         empty_dir('user')

@@ -20,8 +20,8 @@ class SectionName:
         self._formats = {
             self.SYNTAX: section_header(name),
             self.PLAIN: name,
-            self.EMPHASIS: quote(name),
-            self.DEFAULT: quote(name),
+            self.EMPHASIS: emphasis(name),
+            self.DEFAULT: emphasis(name),
         }
 
     @property
@@ -46,5 +46,5 @@ class SectionName:
             raise ValueError('Invalid section format: "%s"' % format_spec)
 
 
-def quote(s: str) -> str:
+def emphasis(s: str) -> str:
     return '"' + s + '"'

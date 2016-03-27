@@ -1,16 +1,17 @@
 from shellcheck_lib.help.program_modes.test_case.contents.main.setup import Setup
 from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCasePhaseDocumentation
+from shellcheck_lib.util.textformat.structure import document as doc
 from shellcheck_lib.util.textformat.structure import lists
 from shellcheck_lib.util.textformat.structure.core import ParagraphItem
 from shellcheck_lib.util.textformat.structure.structures import para, list_item, \
     simple_list_with_space_between_elements_and_content
 
 
-def phases_documentation(setup: Setup) -> list:
-    return [
+def phases_documentation(setup: Setup) -> doc.SectionContents:
+    return doc.SectionContents([
         para(INTRO),
-        phases_list_in_order_of_execution(setup)
-    ]
+        phases_list_in_order_of_execution(setup)],
+        [])
 
 
 INTRO = 'Phases, in order of execution:'
