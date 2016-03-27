@@ -10,8 +10,8 @@ from shellcheck_lib.test_case.phases.result import sh
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(
-            Parser(),
-        cd_utils.TheInstructionDocumentation('pwd'))
+        Parser(),
+        cd_utils.TheInstructionDocumentation(instruction_name))
 
 
 class Parser(SingleInstructionParser):
