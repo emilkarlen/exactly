@@ -1,6 +1,7 @@
 from shellcheck_lib.help.program_modes.test_case.contents.main.intro_execution import execution_documentation
 from shellcheck_lib.help.program_modes.test_case.contents.main.intro_phases import phases_documentation
 from shellcheck_lib.help.program_modes.test_case.contents.main.intro_test_case import test_case_intro_documentation
+from shellcheck_lib.help.program_modes.test_case.contents.main.ref_test_case_files import test_case_files_documentation
 from shellcheck_lib.help.program_modes.test_case.contents.main.setup import Setup
 from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from shellcheck_lib.util.textformat.structure import document as doc
@@ -17,10 +18,17 @@ def overview_documentation(test_case_help: TestCaseHelp) -> doc.SectionContents:
     return doc.SectionContents(
         [para(ONE_LINE_DESCRIPTION)],
         [
-            doc.Section(text('TEST CASES'),
-                        test_case_intro_contents),
-            doc.Section(text('PHASES'),
-                        phases_contents),
-            doc.Section(text('EXECUTION'),
-                        execution_contents),
+            doc.Section(text('OVERVIEW'),
+                        doc.SectionContents(
+                            [],
+                            [
+                                doc.Section(text('TEST CASES'),
+                                            test_case_intro_contents),
+                                doc.Section(text('PHASES'),
+                                            phases_contents),
+                                doc.Section(text('EXECUTION'),
+                                            execution_contents),
+                            ])),
+            doc.Section(text('TEST CASE FILES'),
+                        test_case_files_documentation(setup)),
         ])
