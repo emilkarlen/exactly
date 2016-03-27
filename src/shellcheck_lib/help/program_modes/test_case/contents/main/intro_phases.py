@@ -1,5 +1,6 @@
 from shellcheck_lib.help.program_modes.test_case.contents.main.setup import Setup
 from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCasePhaseDocumentation
+from shellcheck_lib.util.textformat.parse import normalize_and_parse
 from shellcheck_lib.util.textformat.structure import document as doc
 from shellcheck_lib.util.textformat.structure import lists
 from shellcheck_lib.util.textformat.structure.core import ParagraphItem
@@ -8,13 +9,21 @@ from shellcheck_lib.util.textformat.structure.structures import para, list_item,
 
 
 def phases_documentation(setup: Setup) -> doc.SectionContents:
-    return doc.SectionContents([
-        para(INTRO),
-        phases_list_in_order_of_execution(setup)],
-        [])
+    paragraphs = normalize_and_parse(INTRO) + [phases_list_in_order_of_execution(setup)]
+    return doc.SectionContents(paragraphs,
+                               [])
 
 
-INTRO = 'Phases, in order of execution:'
+INTRO = """\
+Executing a test case means “executing” all of it’s phases.
+
+
+The phases are always executed in the same order,
+regardless of the order they appear in the test case file.
+
+
+Phases, in order of execution:
+"""
 
 
 def phases_list_in_order_of_execution(setup: Setup) -> ParagraphItem:

@@ -34,12 +34,11 @@ description = """\
 A test case file contains a sequence of “phases”.
 
 
-The {phase[act]} phase contains the program/action to test.
+The {phase[act]} phase contains the program to test.
 
 It is the only mandatory phase.
 
-
-By default, the {phase[act]} phase must contain a single command line.
+By default, it must contain a single command line.
 
 
 All other phases contain “instructions”.
@@ -50,10 +49,4 @@ The instructions in the {phase[assert]} phase determines the outcome of the test
 Each of these instructions either PASS or FAIL.
 If any of the instructions FAIL, then the outcome of the test case as a whole will be FAIL.
 Otherwise it will be PASS.
-
-
-Executing a test case means “executing” all of it’s phases.
-
-The phases are always executed in the same order,
-regardless of the order they appear in the test case file.
 """
