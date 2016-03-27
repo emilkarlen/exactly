@@ -3,8 +3,8 @@ import pathlib
 import unittest
 
 from shellcheck_lib.cli import main_program
+from shellcheck_lib.cli.cli_environment.exit_values import NO_EXECUTION_EXIT_CODE
 from shellcheck_lib.cli.main_program import HELP_COMMAND
-from shellcheck_lib.cli.program_modes.test_case.execution import NO_EXECUTION_EXIT_CODE
 from shellcheck_lib.default.program_modes.test_case.default_instructions_setup import instructions_setup
 from shellcheck_lib.default.program_modes.test_suite.reporting import INVALID_SUITE_EXIT_CODE, FAILED_TESTS_EXIT_CODE
 from shellcheck_lib.execution import phases

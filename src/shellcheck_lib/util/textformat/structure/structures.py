@@ -1,4 +1,5 @@
 from shellcheck_lib.util.textformat.structure import lists
+from shellcheck_lib.util.textformat.structure import table
 from shellcheck_lib.util.textformat.structure.core import Text, ParagraphItem
 from shellcheck_lib.util.textformat.structure.literal_layout import LiteralLayout
 from shellcheck_lib.util.textformat.structure.paragraph import Paragraph
@@ -50,3 +51,9 @@ def text(s: str) -> Text:
 
 def literal_layout(s: str) -> ParagraphItem:
     return LiteralLayout(s)
+
+
+def first_column_is_header_table(rows: list,
+                                 column_separator: str = '  ') -> ParagraphItem:
+    return table.Table(table.TableFormat(column_separator),
+                       rows)

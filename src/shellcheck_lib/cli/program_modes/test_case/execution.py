@@ -1,6 +1,7 @@
 import pathlib
 import shutil
 
+from shellcheck_lib.cli.cli_environment.exit_values import NO_EXECUTION_EXIT_CODE
 from shellcheck_lib.cli.program_modes.test_case.settings import Output, TestCaseExecutionSettings
 from shellcheck_lib.default.program_modes.test_case import processing
 from shellcheck_lib.execution import full_execution
@@ -11,8 +12,6 @@ from shellcheck_lib.test_case.instruction_setup import InstructionsSetup
 from shellcheck_lib.test_case.test_case_processing import ErrorInfo
 from shellcheck_lib.util import line_source
 from shellcheck_lib.util.std import StdOutputFiles, FilePrinter
-
-NO_EXECUTION_EXIT_CODE = 3
 
 
 class Executor:
