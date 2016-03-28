@@ -1,5 +1,45 @@
 -*- org -*-
 
+* TODO Dokumentation
+
+** TODO formatteraren ska inte bryta rad i --preprocessor
+<2016-03-28 mån>
+Den tolkar det som binestreck mellan ord och bryter rad.  Behöver stänga av
+den funktionen.
+** TODO parse == syntax?? Felkod 'PARSE' men steget heter "syntax check"
+I dok "test case processing" listas faserna.
+En av dem är "syntax checking", och den är vad som internt kallas "parse".
+Felkoden från denna är "PARSE", vilket rimmar illa m "syntax checking".
+Vore nog bättre m "SYNTAX" alt "SYNTAX_ERROR"
+* TODO Meningsfullat att validering kan ge HARD_ERROR?
+<2016-03-28 mån>
+Tror inte nån instr's validering avnänder HARD_ERROR.  Ty det är ju liksom
+valideringens uppgift att upptäcka sådant som skulle orsaka HARD_ERROR om det
+kördes, väll??
+HARD_ERROR bygger ju på att det upptäcks!  Sånt som inte upptäcks blir ju
+implementationsfel!
+* TODO Exitkod vid fel
+<2016-03-28 mån>
+FÖr CLI-parsning avslutar ArgumentParser m 2.
+
+Det är densamma som sc använder för FAIL.
+
+Samtidigt använder sc 3 för att indikera att testet inte exekverats (pga
+VALIDATE, PREPROCESS ...).  Ligger det inte mer i linje att den koden är
+densamma som för felaktig CLI-syntax?  I båda fallen så har ju inget test körts.
+
+Dock så skiljer sig fel från CLI-syntax/fil-ref från andra fel i och med att
+det i det förra fallet inte skrivs ut någon felkods-identifierare (PASS, FAIL,
+VALIDATION, PREPROCESSING ...).
+
+Ta reda på vilken fel kod som ges då programmet avslutas pga ohanterat
+undantag.  Se till att ligga i synk m det felet (borde vara samma exitkod som
+IMPLEMENTATION_ERROR, om möjl).
+
+Vore vettigt att inte försöka ändra exitkoden som python använder vid
+obehandlade undantag eftersom det ju alltid kan uppstå undantag innan den
+koden ändrats.
+
 * TODO Dokumentera syntax för flerrads-instr i InstrDoc
 <2016-03-22 tis>
 Tror inte dok nämner syntax för fler-raders instr.
@@ -15,6 +55,10 @@ shellcheck_lib.cli.main_program.MainProgram#execute
 * TODO Ska [act] vara utgångsfas?
 <2016-03-21 mån>
 Blir enklare att använda sc för att köra program i sandlåda då.
+* TODO Variant "<<EOF ...\EOF": sista raden avslutas ej m nyrad
+Enda begränsningen hos "<<EOF...EOF" är ju att sista raden måste avslutas m
+nyradstecken.  Det är naturligtvis en begränsning.
+Undrar hur skalen gör där, föresten.  Kanske har de en motsvarande syntax.
 * TODO --interpret ska heta "--actor"
 "actor" = den som agerar - den som utför "action"!
 * TODO [#A] Förtydliga att sidoeffekts-instr (dir) under "assert"
