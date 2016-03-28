@@ -29,7 +29,6 @@ The environment variable {SANDBOX_ACT_DIR} points to a directory inside the sand
 The Present Working Directory is set to this directory
 before the {phase[setup]} phase is executed.
 
-
 This will be the PWD for all phases, unless it is changed by the {pwd} instruction.
 A change of PWD will stay in effect for all following instructions and phases.
 """

@@ -76,8 +76,7 @@ The identifier may optionally be followed by arguments.
 The syntax depends on the particular instruction.
 
 
-An instruction may span several lines, if its syntax allows this.
-As with {instruction[stdout]} here:
+An instruction may span several lines, as this form of {instruction[stdout]} does:
 """
 
 INSTRUCTION_THAT_SPANS_MULTIPLE_LINES_EXAMPLE = """\
