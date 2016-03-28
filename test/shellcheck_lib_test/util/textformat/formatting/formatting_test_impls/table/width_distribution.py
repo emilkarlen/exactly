@@ -20,8 +20,22 @@ class TestSingleColumn(unittest.TestCase):
         self.assertEqual([available_width],
                          distribution)
 
+    def test_WHEN_column_contents_width_is_zero_THEN_column_width_should_be_zero(self):
+        available_width = 10
+        column_content_widths = [0]
+        distribution = sut.distribute_width(column_content_widths, available_width)
+        self.assertEqual([0],
+                         distribution)
+
 
 class TestTwoColumns(unittest.TestCase):
+    def test_WHEN_one_column_contents_width_is_zero_THEN_that_column_width_should_be_zero(self):
+        available_width = 10
+        column_content_widths = [0, 15]
+        distribution = sut.distribute_width(column_content_widths, available_width)
+        self.assertEqual([0, 10],
+                         distribution)
+
     def test_WHEN_available_width_cannot_be_equally_divided_THEN_starting_columns_should_get_one_unit_wider(self):
         column_content_widths = [100, 100, 100, 100]
         available_width = 42
