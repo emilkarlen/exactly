@@ -5,6 +5,7 @@ from shellcheck_lib.help.program_modes.test_case.contents.main.ref_test_case_fil
 from shellcheck_lib.help.program_modes.test_case.contents.main.ref_test_case_processing import \
     test_case_processing_documentation
 from shellcheck_lib.help.program_modes.test_case.contents.main.setup import Setup
+from shellcheck_lib.help.program_modes.test_case.contents.main.test_outcome import test_outcome_documentation
 from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from shellcheck_lib.util.textformat.structure import document as doc
 from shellcheck_lib.util.textformat.structure.structures import para, text
@@ -35,4 +36,6 @@ def overview_documentation(test_case_help: TestCaseHelp) -> doc.SectionContents:
                         test_case_files_documentation(setup)),
             doc.Section(text('TEST CASE PROCESSING'),
                         test_case_processing_documentation(setup)),
+            doc.Section(text('TEST OUTCOME'),
+                        test_outcome_documentation(setup)),
         ])

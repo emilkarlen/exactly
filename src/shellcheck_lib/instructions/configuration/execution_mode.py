@@ -45,7 +45,7 @@ class TheInstructionDocumentation(InstructionDocumentation):
                         lists.HeaderContentList([
                             lists.HeaderContentListItem(Text(NAME_NORMAL),
                                                         normalize_and_parse("""\
-                                                        The test case is executed and expected to pass.
+                                                        The test case is executed and expected to PASS.
 
 
                                                         This is the default mode.""")
@@ -60,7 +60,7 @@ class TheInstructionDocumentation(InstructionDocumentation):
                                                         ),
                             lists.HeaderContentListItem(Text(NAME_XFAIL),
                                                         normalize_and_parse("""\
-                                                        The test case is expected to fail.
+                                                        The test case is expected to FAIL.
 
 
                                                         Result of the test case is {on_fail}, if the test case fails.
