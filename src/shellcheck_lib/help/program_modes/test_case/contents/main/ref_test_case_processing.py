@@ -3,12 +3,11 @@ from shellcheck_lib.cli.cli_environment.command_line_options import OPTION_FOR_P
 from shellcheck_lib.help.program_modes.test_case.contents.main.setup import Setup
 from shellcheck_lib.help.utils.formatting import cli_option
 from shellcheck_lib.util.textformat.parse import normalize_and_parse
-from shellcheck_lib.util.textformat.structure import document as doc
 from shellcheck_lib.util.textformat.structure.structures import *
 
 
 def test_case_processing_documentation(setup: Setup) -> doc.SectionContents:
-    preamble_paragraphs = normalize_and_parse(BEFORE_PHASE_LIST)
+    preamble_paragraphs = normalize_and_parse(BEFORE_STEP_LIST)
     paragraphs = (
         preamble_paragraphs +
         [processing_step_list(setup)]
@@ -20,43 +19,40 @@ def test_case_processing_documentation(setup: Setup) -> doc.SectionContents:
 
 
 def processing_step_list(setup: Setup) -> ParagraphItem:
-    return lists.HeaderContentList(
-        [
-            lists.HeaderContentListItem(
-                text('preprocessing'),
-                _step_description(normalize_and_parse(PURPOSE_OF_PREPROCESSING.format(
-                    cli_option_for_preprocessor=cli_option(OPTION_FOR_PREPROCESSOR))),
-                    FAILURE_CONDITION_OF_PREPROCESSING,
-                    exit_values.NO_EXECUTION__PRE_PROCESS_ERROR)
-            ),
-            lists.HeaderContentListItem(
-                text('syntax checking'),
-                _step_description(normalize_and_parse(
-                    PURPOSE_OF_SYNTAX_CHECKING),
-                    FAILURE_CONDITION_OF_SYNTAX_CHECKING,
-                    exit_values.NO_EXECUTION__PARSE_ERROR)
-            ),
-            lists.HeaderContentListItem(
-                text('validation'),
-                _step_description(
-                    normalize_and_parse(PURPOSE_OF_VALIDATION.format(phase=setup.phase_names)),
-                    FAILURE_CONDITION_OF_VALIDATION,
-                    exit_values.EXECUTION__VALIDATE)
-            ),
-            lists.HeaderContentListItem(
-                text('execution'),
-                normalize_and_parse(EXECUTION_DESCRIPTION.format(phase=setup.phase_names)) +
-                [execution_sub_steps_description(setup)] +
-                normalize_and_parse(OUTCOME_OF_EXECUTION.format(phase=setup.phase_names))),
-        ],
-        lists.Format(lists.ListType.ORDERED_LIST,
-                     custom_separations=SEPARATION_OF_HEADER_AND_CONTENTS)
-    )
+    items = [
+        list_item('preprocessing',
+                  _step_with_single_exit_value(
+                      normalize_and_parse(PURPOSE_OF_PREPROCESSING.format(
+                          cli_option_for_preprocessor=cli_option(OPTION_FOR_PREPROCESSOR))),
+                      FAILURE_CONDITION_OF_PREPROCESSING,
+                      exit_values.NO_EXECUTION__PRE_PROCESS_ERROR)
+                  ),
+        list_item('syntax checking',
+                  _step_with_single_exit_value(
+                      normalize_and_parse(PURPOSE_OF_SYNTAX_CHECKING),
+                      FAILURE_CONDITION_OF_SYNTAX_CHECKING,
+                      exit_values.NO_EXECUTION__PARSE_ERROR)
+                  ),
+        list_item('validation',
+                  _step_with_single_exit_value(
+                      normalize_and_parse(PURPOSE_OF_VALIDATION.format(phase=setup.phase_names)),
+                      FAILURE_CONDITION_OF_VALIDATION,
+                      exit_values.EXECUTION__VALIDATE)
+                  ),
+        list_item('execution',
+                  normalize_and_parse(EXECUTION_DESCRIPTION.format(phase=setup.phase_names)) +
+                  [execution_sub_steps_description(setup)] +
+                  normalize_and_parse(OUTCOME_OF_EXECUTION.format(phase=setup.phase_names))),
+    ]
+    return lists.HeaderContentList(items,
+                                   lists.Format(lists.ListType.ORDERED_LIST,
+                                                custom_separations=SEPARATION_OF_HEADER_AND_CONTENTS)
+                                   )
 
 
-def _step_description(purpose_paragraphs: list,
-                      failure_condition: ParagraphItem,
-                      exit_value_on_error: exit_values.ExitValue) -> list:
+def _step_with_single_exit_value(purpose_paragraphs: list,
+                                 failure_condition: ParagraphItem,
+                                 exit_value_on_error: exit_values.ExitValue) -> list:
     outcome_on_error = first_column_is_header_table([
         [[para('Exit code')], [para(str(exit_value_on_error.exit_code))]],
         [[para('Stdout')], [para(exit_value_on_error.exit_identifier)]],
@@ -64,12 +60,12 @@ def _step_description(purpose_paragraphs: list,
     return purpose_paragraphs + [failure_condition, outcome_on_error]
 
 
-BEFORE_PHASE_LIST = """\
+BEFORE_STEP_LIST = """\
 A test case file is processed in a number of steps,
 where the actual execution of the test is the last step.
 
 
-The outcome of the processing is reported by an exitcode and an identifier printed as a single line on stdout.
+The outcome is reported by an exitcode and an identifier printed as a single line on stdout.
 
 
 If a step before the execution fails, then the outcome is reported and the processing is halted.
@@ -131,7 +127,8 @@ def execution_sub_steps_description(setup: Setup) -> ParagraphItem:
 
 
 OUTCOME_OF_EXECUTION = """\
-If the validation step fails, then the outcome of the test will be the same as a failure in
+If the "post {phase[setup]:syntax} validation" fails,
+then the outcome of the test will be the same as a failure in
 the validation step before execution (se above).
 
 Otherwise, the outcome depends on the outcome of the {phase[assert]} phase.
