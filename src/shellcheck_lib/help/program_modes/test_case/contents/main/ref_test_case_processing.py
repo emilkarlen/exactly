@@ -24,31 +24,30 @@ def processing_step_list(setup: Setup) -> ParagraphItem:
         [
             lists.HeaderContentListItem(
                 text('preprocessing'),
-                _step_description([
-                    para('Transforms the test case file.'),
-                    para('This step is applied only if a preprocessor has been given by %s.' %
-                         cli_option(OPTION_FOR_PREPROCESSOR))],
-                    para('Fails if the preprocessor program cannot be executed, ' +
-                         'or if it exits with a non-zero exit code.'),
+                _step_description(normalize_and_parse(PURPOSE_OF_PREPROCESSING.format(
+                    cli_option_for_preprocessor=cli_option(OPTION_FOR_PREPROCESSOR))),
+                    FAILURE_CONDITION_OF_PREPROCESSING,
                     exit_values.NO_EXECUTION__PRE_PROCESS_ERROR)
             ),
             lists.HeaderContentListItem(
                 text('syntax checking'),
-                _step_description([
-                    para('Checks the syntax of all elements in the test case file.')],
-                    para('Fails if a syntax error is found.'),
+                _step_description(normalize_and_parse(
+                    PURPOSE_OF_SYNTAX_CHECKING),
+                    FAILURE_CONDITION_OF_SYNTAX_CHECKING,
                     exit_values.NO_EXECUTION__PARSE_ERROR)
             ),
             lists.HeaderContentListItem(
                 text('validation'),
                 _step_description(
-                    normalize_and_parse(VALIDATION_PURPOSE.format(phase=setup.phase_names)),
-                    para('Fails if an unresolved file reference is found, e.g.'),
+                    normalize_and_parse(PURPOSE_OF_VALIDATION.format(phase=setup.phase_names)),
+                    FAILURE_CONDITION_OF_VALIDATION,
                     exit_values.EXECUTION__VALIDATE)
             ),
             lists.HeaderContentListItem(
                 text('execution'),
-                normalize_and_parse(EXECUTION_DESCRIPTION.format(phase=setup.phase_names))),
+                normalize_and_parse(EXECUTION_DESCRIPTION.format(phase=setup.phase_names)) +
+                [execution_sub_steps_description(setup)] +
+                normalize_and_parse(OUTCOME_OF_EXECUTION.format(phase=setup.phase_names))),
         ],
         lists.Format(lists.ListType.ORDERED_LIST,
                      custom_separations=SEPARATION_OF_HEADER_AND_CONTENTS)
@@ -76,27 +75,64 @@ The outcome of the processing is reported by an exitcode and an identifier print
 If a step before the execution fails, then the outcome is reported and the processing is halted.
 """
 
-VALIDATION_PURPOSE = """\
+PURPOSE_OF_PREPROCESSING = """\
+Transforms the test case file.
+
+
+This step is applied only if a preprocessor has been given by {cli_option_for_preprocessor}.
+"""
+
+FAILURE_CONDITION_OF_PREPROCESSING = para(
+    'Fails if the preprocessor program cannot be executed, '
+    'or if it exits with a non-zero exit code.')
+
+PURPOSE_OF_SYNTAX_CHECKING = 'Checks the syntax of all elements in the test case file.'
+
+FAILURE_CONDITION_OF_SYNTAX_CHECKING = para('Fails if a syntax error is found.')
+
+PURPOSE_OF_VALIDATION = """\
 Checks references to external resources, files etc.
 
 
-Validation is done in two steps. One before the {phase[setup]} phase and one after.
+Validation is actually done in two steps.
+Fist this step, and then one step directly after the {phase[setup]} phase has executed.
 
-The reason for this is to avoid errors in the {phase[act]} phase that results from invalid
-setup, rather than errors in the tested program.
+This second step validates the effect of the {phase[setup]} phase.
+
+
+The reason for having this second step is to avoid errors caused by errors
+in the setup, rather than errors in the tested program.
 """
+
+FAILURE_CONDITION_OF_VALIDATION = para('Fails if an unresolved file reference is found, e.g.')
 
 EXECUTION_DESCRIPTION = """\
 Executes the actual test.
 
 
-Outcome depends on the outcome of the {phase[assert]} phase.
-"""
+One validation step is embedded in the execution:"""
 
-"""
-A test case file is processed by a sequence of steps:
-preprocessing (if a preprocessor has been given)
-syntax checking (aborting the test case if a syntax error is found)
-validation (aborting the test case if an unresolved file reference is found, e.g.)
-execution
+
+def execution_sub_steps_description(setup: Setup) -> ParagraphItem:
+    return lists.HeaderContentList([
+        lists.HeaderContentListItem(
+            text('execution of {phase[setup]:syntax}'.format(phase=setup.phase_names)),
+            []),
+        lists.HeaderContentListItem(
+            text('post {phase[setup]:syntax} validation'.format(phase=setup.phase_names)),
+            []),
+        lists.HeaderContentListItem(
+            text('execution of remaining phases'),
+            []),
+    ],
+        lists.Format(lists.ListType.ORDERED_LIST,
+                     custom_separations=SEPARATION_OF_HEADER_AND_CONTENTS)
+    )
+
+
+OUTCOME_OF_EXECUTION = """\
+If the validation step fails, then the outcome of the test will be the same as a failure in
+the validation step before execution (se above).
+
+Otherwise, the outcome depends on the outcome of the {phase[assert]} phase.
 """
