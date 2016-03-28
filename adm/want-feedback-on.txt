@@ -1,0 +1,24 @@
+-*- org -*-
+
+Delar jag vill ha kommentarer, tankar o åsikter om.
+Sådant som inte är bestämt och kan ändras om bättre lösningar dyker upp.
+
+* Exitkoder och rapportering
+<2016-03-28 mån>
+Vilka exitkoder ska användas?
+Vilka fel-identifierare ska användas?
+Ska fel-identiferare användas över huvud taget?
+
+** Ta i beaktning
+*** Anpassning till andra testverktyg
+*** Anpassning till unix-konventioner
+*** Urskilja fel vid processning (exe) kontra rapportering av genomfört test
+*** Implementationsfel
+Kan inträffa dels hos intruktion och hanteras av ramverket,
+el i ramverket självt.  Vore bra om samma exitkod användes.
+
+* validering: är inte HARD_ERROR fr valideringen överflödig?
+<2016-03-28 mån>
+Tror inte nån instr's validering avnänder HARD_ERROR.  Ty det är ju liksom
+valideringens uppgift att upptäcka sådant som skulle orsaka HARD_ERROR om det
+kördes, väll??
