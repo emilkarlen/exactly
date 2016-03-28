@@ -12,6 +12,8 @@ class TableFormatter:
     Formats a single Table.
     """
 
+    UNDER_LINE_CHARACTER = '-'
+
     def __init__(self,
                  paragraph_items_formatter_for_given_width: types.FunctionType,
                  available_width: int,
@@ -27,12 +29,14 @@ class TableFormatter:
             self.normalised_rows = tables.extend_each_sub_list_to_max_sub_list_length(table.rows, [])
             self.columns = tables.transpose(self.normalised_rows)
 
-        num_column_separators = 0 if not self.normalised_rows else (len(self.normalised_rows[0]) - 1)
+        self.num_column_separators = 0 if not self.normalised_rows else (len(self.normalised_rows[0]) - 1)
         self.available_width_for_column_contents = (available_width -
-                                                    num_column_separators * len(table.format.column_separator))
+                                                    self.num_column_separators * len(table.format.column_separator))
 
     def apply(self) -> list:
-        if not self.table.rows:
+        if not self.normalised_rows:
+            return []
+        if len(self.normalised_rows[0]) == 0:
             return []
         if self.available_width_for_column_contents <= 0:
             return []
@@ -66,8 +70,10 @@ class TableFormatter:
         column_separator = self.table.format.column_separator
         cell_line_formatter_list = [fill_string_to_function(width) for width in column_widths]
         ret_val = []
-        for cells in row_cell_lines:
-            cells_with_equal_num_lines = extend_each_sub_list_to_max_sub_list_length(cells, '')
+        for row_idx, row_cells in enumerate(row_cell_lines):
+            if row_idx == 1 and self.table.format.first_row_is_header:
+                ret_val.append(self._header_row_underline(column_widths))
+            cells_with_equal_num_lines = extend_each_sub_list_to_max_sub_list_length(row_cells, '')
             num_lines_per_cell = len(cells_with_equal_num_lines[0])
             for line_idx in range(num_lines_per_cell):
                 output_line_cell_contents = []
@@ -75,3 +81,9 @@ class TableFormatter:
                     output_line_cell_contents.append(col_line_formatter(cells_with_equal_num_lines[col_idx][line_idx]))
                 ret_val.append(column_separator.join(output_line_cell_contents))
         return ret_val
+
+    def _header_row_underline(self, column_widths: list) -> str:
+        width_of_col_separators = self.num_column_separators * len(self.table.format.column_separator)
+        width_of_col_contents = sum(column_widths)
+        line_width = width_of_col_separators + width_of_col_contents
+        return line_width * self.UNDER_LINE_CHARACTER
