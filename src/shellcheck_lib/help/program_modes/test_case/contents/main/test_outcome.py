@@ -28,8 +28,9 @@ def test_outcome_documentation(setup: Setup) -> doc.SectionContents:
             section('Other errors',
                     _other_errors(setup)),
             section('Summary of exit codes and identifiers',
-                    [_exit_value_table_for(setup, sorted(ALL_EXIT_VALUES,
-                                                         key=exit_values.ExitValue.exit_identifier.fget))]),
+                    [_exit_value_table_for(setup,
+                                           sorted(ALL_EXIT_VALUES,
+                                                  key=exit_values.ExitValue.exit_identifier.fget))]),
         ]
     )
 
