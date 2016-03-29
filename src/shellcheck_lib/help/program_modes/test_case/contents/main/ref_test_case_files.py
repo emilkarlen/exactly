@@ -1,9 +1,8 @@
 from shellcheck_lib.default.program_modes.test_case.test_case_parser import DEFAULT_PHASE
 from shellcheck_lib.document.syntax import section_header
-from shellcheck_lib.help.program_modes.test_case.contents.main.setup import Setup
+from shellcheck_lib.help.program_modes.test_case.contents.main.utils import Setup
 from shellcheck_lib.help.utils.formatting import AnyInstructionNameDictionary
 from shellcheck_lib.util.textformat.parse import normalize_and_parse
-from shellcheck_lib.util.textformat.structure import document as doc
 from shellcheck_lib.util.textformat.structure.structures import *
 
 
