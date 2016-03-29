@@ -4,8 +4,8 @@ from shellcheck_lib.help.program_modes.test_case.contents.main.intro_test_case i
 from shellcheck_lib.help.program_modes.test_case.contents.main.ref_test_case_files import test_case_files_documentation
 from shellcheck_lib.help.program_modes.test_case.contents.main.ref_test_case_processing import \
     test_case_processing_documentation
-from shellcheck_lib.help.program_modes.test_case.contents.main.setup import Setup
 from shellcheck_lib.help.program_modes.test_case.contents.main.test_outcome import test_outcome_documentation
+from shellcheck_lib.help.program_modes.test_case.contents.main.utils import Setup
 from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from shellcheck_lib.util.textformat.structure import document as doc
 from shellcheck_lib.util.textformat.structure.structures import para, text

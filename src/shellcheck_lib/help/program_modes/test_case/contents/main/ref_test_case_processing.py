@@ -1,6 +1,7 @@
 from shellcheck_lib.cli.cli_environment import exit_values
 from shellcheck_lib.cli.cli_environment.command_line_options import OPTION_FOR_PREPROCESSOR
-from shellcheck_lib.help.program_modes.test_case.contents.main.setup import Setup
+from shellcheck_lib.help.program_modes.test_case.contents.main.utils import Setup, post_setup_validation_step_name, \
+    step_with_single_exit_value
 from shellcheck_lib.help.utils.formatting import cli_option
 from shellcheck_lib.util.textformat.parse import normalize_and_parse
 from shellcheck_lib.util.textformat.structure.structures import *
@@ -21,20 +22,20 @@ def test_case_processing_documentation(setup: Setup) -> doc.SectionContents:
 def processing_step_list(setup: Setup) -> ParagraphItem:
     items = [
         list_item('preprocessing',
-                  _step_with_single_exit_value(
+                  step_with_single_exit_value(
                       normalize_and_parse(PURPOSE_OF_PREPROCESSING.format(
                           cli_option_for_preprocessor=cli_option(OPTION_FOR_PREPROCESSOR))),
                       FAILURE_CONDITION_OF_PREPROCESSING,
                       exit_values.NO_EXECUTION__PRE_PROCESS_ERROR)
                   ),
         list_item('syntax checking',
-                  _step_with_single_exit_value(
+                  step_with_single_exit_value(
                       normalize_and_parse(PURPOSE_OF_SYNTAX_CHECKING),
                       FAILURE_CONDITION_OF_SYNTAX_CHECKING,
                       exit_values.NO_EXECUTION__PARSE_ERROR)
                   ),
         list_item('validation',
-                  _step_with_single_exit_value(
+                  step_with_single_exit_value(
                       normalize_and_parse(PURPOSE_OF_VALIDATION.format(phase=setup.phase_names)),
                       FAILURE_CONDITION_OF_VALIDATION,
                       exit_values.EXECUTION__VALIDATE)
@@ -48,16 +49,6 @@ def processing_step_list(setup: Setup) -> ParagraphItem:
                                    lists.Format(lists.ListType.ORDERED_LIST,
                                                 custom_separations=SEPARATION_OF_HEADER_AND_CONTENTS)
                                    )
-
-
-def _step_with_single_exit_value(purpose_paragraphs: list,
-                                 failure_condition: ParagraphItem,
-                                 exit_value_on_error: exit_values.ExitValue) -> list:
-    outcome_on_error = first_column_is_header_table([
-        [[para('Exit code')], [para(str(exit_value_on_error.exit_code))]],
-        [[para('Stdout')], [para(exit_value_on_error.exit_identifier)]],
-    ])
-    return purpose_paragraphs + [failure_condition, outcome_on_error]
 
 
 BEFORE_STEP_LIST = """\
@@ -115,7 +106,7 @@ def execution_sub_steps_description(setup: Setup) -> ParagraphItem:
             text('execution of {phase[setup]:syntax}'.format(phase=setup.phase_names)),
             []),
         lists.HeaderContentListItem(
-            text('post {phase[setup]:syntax} validation'.format(phase=setup.phase_names)),
+            text(post_setup_validation_step_name(setup)),
             []),
         lists.HeaderContentListItem(
             text('execution of remaining phases'),
