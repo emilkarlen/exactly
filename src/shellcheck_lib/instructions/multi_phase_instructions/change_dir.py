@@ -7,8 +7,6 @@ from shellcheck_lib.instructions.utils.parse_utils import split_arguments_list_s
 from shellcheck_lib.test_case.phases.result import sh
 from shellcheck_lib.util.textformat.structure.paragraph import single_para
 
-CHANGE_DIR_INSTRUCTION_NAME = 'pwd'
-
 
 class TheInstructionDocumentation(InstructionDocumentation):
     def __init__(self, name: str):
