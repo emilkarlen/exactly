@@ -1,4 +1,4 @@
-from shellcheck_lib.help.program_modes.test_case.contents.main.intro_execution import execution_documentation
+from shellcheck_lib.help.program_modes.test_case.contents.main.intro_environment import execution_documentation
 from shellcheck_lib.help.program_modes.test_case.contents.main.intro_phases import phases_documentation
 from shellcheck_lib.help.program_modes.test_case.contents.main.intro_test_case import test_case_intro_documentation
 from shellcheck_lib.help.program_modes.test_case.contents.main.ref_test_case_files import test_case_files_documentation
@@ -27,10 +27,10 @@ def overview_documentation(test_case_help: TestCaseHelp) -> doc.SectionContents:
                             [
                                 doc.Section(text('Test cases'),
                                             test_case_intro_contents),
+                                doc.Section(text('Environment'),
+                                            execution_contents),
                                 doc.Section(text('Phases'),
                                             phases_contents),
-                                doc.Section(text('Execution'),
-                                            execution_contents),
                             ])),
             doc.Section(text('TEST CASE FILES'),
                         test_case_files_documentation(setup)),
