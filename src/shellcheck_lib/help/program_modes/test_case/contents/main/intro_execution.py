@@ -1,9 +1,9 @@
 from shellcheck_lib.cli.cli_environment.command_line_options import OPTION_FOR_KEEPING_SANDBOX_DIRECTORY
+from shellcheck_lib.default.program_modes.test_case.default_instruction_names import CHANGE_DIR_INSTRUCTION_NAME
 from shellcheck_lib.execution.environment_variables import ENV_VAR_ACT
 from shellcheck_lib.execution.execution_directory_structure import SUB_DIRECTORY__ACT
 from shellcheck_lib.help.program_modes.test_case.contents.main.utils import Setup
 from shellcheck_lib.help.utils.formatting import emphasis
-from shellcheck_lib.instructions.multi_phase_instructions.change_dir import CHANGE_DIR_INSTRUCTION_NAME
 from shellcheck_lib.util.textformat.parse import normalize_and_parse
 from shellcheck_lib.util.textformat.structure import document as doc
 
