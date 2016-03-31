@@ -2,7 +2,7 @@ from shellcheck_lib.help.program_modes.test_case.contents.phase.utils import pwd
     env_vars_up_to_act__TODO_CHECK_THIS
 from shellcheck_lib.help.program_modes.test_case.phase_help_contents_structures import \
     TestCasePhaseDocumentationForPhaseWithoutInstructions, PhaseSequenceInfo, ExecutionEnvironmentInfo
-from shellcheck_lib.help.utils.description import Description, single_line_description
+from shellcheck_lib.help.utils.description import Description
 from shellcheck_lib.util.textformat.structure.paragraph import para
 
 
@@ -12,7 +12,8 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
         super().__init__(name)
 
     def purpose(self) -> Description:
-        return single_line_description('TODO the purpose of the %s phase' % self._name_as_header)
+        return Description('The action to test.',
+                           [para('TODO rest of purpose of the %s phase' % self._name_as_header)])
 
     def sequence_info(self) -> PhaseSequenceInfo:
         return PhaseSequenceInfo([para('TODO before ' + self._name_as_header)],

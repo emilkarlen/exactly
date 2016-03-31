@@ -53,7 +53,7 @@ def _description_of_full_execution(setup: Setup) -> list:
     return ret_val
 
 
-FULL_EXECUTION_OUTCOME_DEPENDS_ON_TWO_THINGS = """The outcome of a fully executed test casedepends on two things:"""
+FULL_EXECUTION_OUTCOME_DEPENDS_ON_TWO_THINGS = """The outcome of a fully executed test case depends on two things:"""
 
 
 def _what_outcome_depends_on(setup: Setup) -> ParagraphItem:
@@ -102,7 +102,7 @@ def _interrupted_execution(setup: Setup) -> list:
 
 _INTERRUPTED_EXECUTION_PREAMBLE = """\
 If an error occur during the execution of a test, then this will halt the test and
-be reported as an error.
+be reported as an error, and not as a failed test.
 
 
 Note that an error will be reported even if
