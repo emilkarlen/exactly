@@ -15,18 +15,19 @@ class ConfigurationPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInst
         super().__init__(name, instruction_set)
 
     def purpose(self) -> Description:
-        return Description('Configures how the test case will be executed.',
-                           [para('TODO rest of purpose of the %s phase' % self._name_as_header)])
+        return Description('Configures the execution of remaining phases, '
+                           'and how the outcome is interpreted.',
+                           [para('TODO rest of purpose of the %s phase' % self.name.syntax)])
 
     def sequence_info(self) -> PhaseSequenceInfo:
-        return PhaseSequenceInfo([para('TODO before ' + self._name_as_header)],
-                                 [para('TODO after ' + self._name_as_header)])
+        return PhaseSequenceInfo([para('TODO before ' + self.name.syntax)],
+                                 [para('TODO after ' + self.name.syntax)])
 
     def is_mandatory(self) -> bool:
         return False
 
     def instruction_purpose_description(self) -> list:
-        return [para('TODO purpose of an instruction in the %s phase.' % self._name_as_header)]
+        return [para('TODO purpose of an instruction in the %s phase.' % self.name.syntax)]
 
     def execution_environment_info(self) -> ExecutionEnvironmentInfo:
         return ExecutionEnvironmentInfo(pwd_at_start_of_phase_for_configuration_phase(),
