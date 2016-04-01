@@ -13,17 +13,17 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
 
     def purpose(self) -> Description:
         return Description('The action to test.',
-                           [para('TODO rest of purpose of the %s phase' % self._name_as_header)])
+                           [para('TODO rest of purpose of the %s phase' % self.name.syntax)])
 
     def sequence_info(self) -> PhaseSequenceInfo:
-        return PhaseSequenceInfo([para('TODO before ' + self._name_as_header)],
-                                 [para('TODO after ' + self._name_as_header)])
+        return PhaseSequenceInfo([para('TODO before ' + self.name.syntax)],
+                                 [para('TODO after ' + self.name.syntax)])
 
     def is_mandatory(self) -> bool:
         return True
 
     def contents_description(self) -> list:
-        return [para('TODO description of the contents of the %s phase.' % self._name_as_header)]
+        return [para('TODO description of the contents of the %s phase.' % self.name.syntax)]
 
     def execution_environment_info(self) -> ExecutionEnvironmentInfo:
         return ExecutionEnvironmentInfo(pwd_at_start_of_phase_for_non_first_phases(),
