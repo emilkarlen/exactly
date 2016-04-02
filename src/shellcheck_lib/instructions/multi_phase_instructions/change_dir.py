@@ -5,7 +5,7 @@ from shellcheck_lib.help.program_modes.test_case.instruction_documentation impor
 from shellcheck_lib.instructions.utils.destination_path import *
 from shellcheck_lib.instructions.utils.parse_utils import split_arguments_list_string
 from shellcheck_lib.test_case.phases.result import sh
-from shellcheck_lib.util.textformat.structure.paragraph import single_para
+from shellcheck_lib.util.textformat.structure.structures import paras
 
 
 class TheInstructionDocumentation(InstructionDocumentation):
@@ -16,17 +16,17 @@ class TheInstructionDocumentation(InstructionDocumentation):
         return 'Changes Present Working Directory.'
 
     def main_description_rest(self) -> list:
-        return single_para('Uses Posix syntax for paths. I.e. directories are separated by /.')
+        return paras('Uses Posix syntax for paths. I.e. directories are separated by /.')
 
     def invokation_variants(self) -> list:
         return [
             InvokationVariant('[{}] [DIRECTORY]'.format('|'.join(OPTIONS)),
-                              single_para('Changes to the given directory '
-                                          '(paths are relative present directory).')),
+                              paras('Changes to the given directory '
+                                    '(paths are relative present directory).')),
             InvokationVariant('{} [DIRECTORY]'.format(REL_ACT_OPTION),
-                              single_para('Changes to a directory relative the SHELLCHECK ACT directory.')),
+                              paras('Changes to a directory relative the SHELLCHECK ACT directory.')),
             InvokationVariant('{} [DIRECTORY]'.format(REL_TMP_OPTION),
-                              single_para('Changes to a directory relative the SHELLCHECK TMP directory.')),
+                              paras('Changes to a directory relative the SHELLCHECK TMP directory.')),
         ]
 
 

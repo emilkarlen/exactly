@@ -14,12 +14,12 @@ from shellcheck_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from shellcheck_lib.test_case.phases.result import pfh
 from shellcheck_lib.util.string import line_separated
 from shellcheck_lib.util.textformat import parse as paragraphs_parse
-from shellcheck_lib.util.textformat.structure.paragraph import single_para
+from shellcheck_lib.util.textformat.structure.structures import paras
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(
-            Parser(),
+        Parser(),
         TheInstructionDocumentation(instruction_name))
 
 
@@ -33,18 +33,18 @@ class TheInstructionDocumentation(InstructionDocumentation):
     def invokation_variants(self) -> list:
         return [
             InvokationVariant(
-                    'INTEGER',
-                    single_para('Passes iff the exit code is exactly INTEGER')),
+                'INTEGER',
+                paras('Passes iff the exit code is exactly INTEGER')),
             InvokationVariant(
-                    'OPERATOR INTEGER',
-                    paragraphs_parse.normalize_and_parse(
-                            """\
-                            Passes iff the given expression,
-                            with the actual exit code as an implicit left operand,
-                            evaluates to True.
+                'OPERATOR INTEGER',
+                paragraphs_parse.normalize_and_parse(
+                    """\
+                    Passes iff the given expression,
+                    with the actual exit code as an implicit left operand,
+                    evaluates to True.
 
-                            Operators: {}
-                            """.format(', '.join(sorted(operators.keys())))))
+                    Operators: {}
+                    """.format(', '.join(sorted(operators.keys())))))
         ]
 
 

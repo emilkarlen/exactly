@@ -3,7 +3,7 @@ from shellcheck_lib.help.program_modes.test_case.contents_structure import TestC
 from shellcheck_lib.help.program_modes.test_case.instruction_documentation import InstructionDocumentation
 from shellcheck_lib.help.utils.description import Description
 from shellcheck_lib.util.textformat.structure import document as doc
-from shellcheck_lib.util.textformat.structure.paragraph import para
+from shellcheck_lib.util.textformat.structure.structures import para
 from shellcheck_lib_test.test_resources.instruction_description import InstructionDocumentationWithConstantValues
 
 

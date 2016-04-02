@@ -21,7 +21,7 @@ from shellcheck_lib.test_case.phases.common import HomeAndEds, TestCaseInstructi
 from shellcheck_lib.test_case.phases.result import pfh
 from shellcheck_lib.test_case.phases.result import sh
 from shellcheck_lib.util.textformat import parse as paragraphs_parse
-from shellcheck_lib.util.textformat.structure.paragraph import single_para, para
+from shellcheck_lib.util.textformat.structure.structures import para, paras
 
 INTERPRET_OPTION = '--interpret'
 SOURCE_OPTION = '--source'
@@ -66,7 +66,7 @@ class TheInstructionDocumentation(InstructionDocumentation):
         return [
             SyntaxElementDescription(
                     'EXECUTABLE',
-                    single_para('Specifies an executable program.'),
+                paras('Specifies an executable program.'),
                     [
                         InvokationVariant('ABSOLUTE-PATH', [para('An absolute path.')]),
                         InvokationVariant('[{}] PATH'.format('|'.join(ALL_REL_OPTIONS)),

@@ -12,12 +12,12 @@ from shellcheck_lib.test_case.phases.result import sh
 from shellcheck_lib.test_case.phases.result import svh
 from shellcheck_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
 from shellcheck_lib.util.textformat import parse as text_parse
-from shellcheck_lib.util.textformat.structure.paragraph import single_para
+from shellcheck_lib.util.textformat.structure.structures import paras
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(
-            Parser(),
+        Parser(),
         TheInstructionDocumentation(instruction_name))
 
 
@@ -45,11 +45,11 @@ class TheInstructionDocumentation(InstructionDocumentation):
     def invokation_variants(self) -> list:
         return [
             InvokationVariant(
-                    'FILE [DESTINATION]',
-                    single_para('A plain file.')),
+                'FILE [DESTINATION]',
+                paras('A plain file.')),
             InvokationVariant(
-                    'DIRECTORY [DESTINATION]',
-                    single_para("The directory and it's contents are installed.")),
+                'DIRECTORY [DESTINATION]',
+                paras("The directory and it's contents are installed.")),
         ]
 
 

@@ -14,19 +14,19 @@ from shellcheck_lib.test_case.instruction_setup import SingleInstructionSetup
 from shellcheck_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from shellcheck_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase
 from shellcheck_lib.util.textformat import parse as text_parse
-from shellcheck_lib.util.textformat.structure.paragraph import single_para
+from shellcheck_lib.util.textformat.structure.structures import paras
 from .utils import contents_utils
 
 
 def setup_for_stdout(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(
-            ParserForContentsForStdout(),
+        ParserForContentsForStdout(),
         TheInstructionDocumentation(instruction_name, 'stdout'))
 
 
 def setup_for_stderr(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(
-            ParserForContentsForStderr(),
+        ParserForContentsForStderr(),
         TheInstructionDocumentation(instruction_name, 'stderr'))
 
 
@@ -54,23 +54,23 @@ class TheInstructionDocumentation(InstructionDocumentation):
     def invokation_variants(self) -> list:
         return [
             InvokationVariant(
-                    '{}'.format(EMPTY_ARGUMENT),
-                    single_para('%s is empty' % self.file)),
+                '{}'.format(EMPTY_ARGUMENT),
+                paras('%s is empty' % self.file)),
             InvokationVariant(
-                    '! {}'.format(EMPTY_ARGUMENT),
-                    single_para('%s is not empty' % self.file)),
+                '! {}'.format(EMPTY_ARGUMENT),
+                paras('%s is not empty' % self.file)),
             InvokationVariant(
-                    '[{}] {} FILENAME'.format(WITH_REPLACED_ENV_VARS_OPTION, REL_HOME_OPTION),
-                    single_para('Expects the contents of %s to equal the contents of FILE'
-                                '(which is a path relative home)' % self.file)),
+                '[{}] {} FILENAME'.format(WITH_REPLACED_ENV_VARS_OPTION, REL_HOME_OPTION),
+                paras('Expects the contents of %s to equal the contents of FILE'
+                      '(which is a path relative home)' % self.file)),
             InvokationVariant(
-                    '[{}] {} FILENAME'.format(WITH_REPLACED_ENV_VARS_OPTION, REL_TMP_OPTION),
-                    single_para('Expects the contents of %s to equal the contents of FILE'
-                                '(which is a path relative the shellcheck tmp directory)' % self.file)),
+                '[{}] {} FILENAME'.format(WITH_REPLACED_ENV_VARS_OPTION, REL_TMP_OPTION),
+                paras('Expects the contents of %s to equal the contents of FILE'
+                      '(which is a path relative the shellcheck tmp directory)' % self.file)),
             InvokationVariant(
-                    '[{}] {} FILENAME'.format(WITH_REPLACED_ENV_VARS_OPTION, REL_CWD_OPTION),
-                    single_para('Expects the contents of %s to equal the contents of FILE'
-                                '(which is a path relative current working directory)' % self.file)),
+                '[{}] {} FILENAME'.format(WITH_REPLACED_ENV_VARS_OPTION, REL_CWD_OPTION),
+                paras('Expects the contents of %s to equal the contents of FILE'
+                      '(which is a path relative current working directory)' % self.file)),
         ]
 
 

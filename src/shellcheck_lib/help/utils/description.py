@@ -1,6 +1,9 @@
+from shellcheck_lib.util.textformat.structure.core import Text
+
+
 class Description(tuple):
     def __new__(cls,
-                single_line_description: str,
+                single_line_description: Text,
                 rest_paragraphs: list):
         """
         :param single_line_description: Mandatory short description.
@@ -10,7 +13,7 @@ class Description(tuple):
                                    rest_paragraphs))
 
     @property
-    def single_line_description(self) -> str:
+    def single_line_description(self) -> Text:
         return self[0]
 
     @property
@@ -22,4 +25,4 @@ class Description(tuple):
 
 
 def single_line_description(line: str) -> Description:
-    return Description(line, [])
+    return Description(Text(line), [])

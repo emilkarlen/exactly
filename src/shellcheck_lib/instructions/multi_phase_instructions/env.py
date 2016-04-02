@@ -8,7 +8,7 @@ from shellcheck_lib.instructions.utils.parse_utils import split_arguments_list_s
 from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.phases.common import TestCaseInstruction
 from shellcheck_lib.test_case.phases.result import sh
-from shellcheck_lib.util.textformat.structure.paragraph import single_para
+from shellcheck_lib.util.textformat.structure.structures import paras
 
 
 class TheInstructionDocumentation(InstructionDocumentation):
@@ -24,11 +24,11 @@ class TheInstructionDocumentation(InstructionDocumentation):
     def invokation_variants(self) -> list:
         return [
             InvokationVariant(
-                    'NAME = VALUE',
-                    single_para('Sets the environment variable NAME to VALUE.')),
+                'NAME = VALUE',
+                paras('Sets the environment variable NAME to VALUE.')),
             InvokationVariant(
-                    'unset NAME',
-                    single_para('Removes the environment variable NAME.')),
+                'unset NAME',
+                paras('Removes the environment variable NAME.')),
         ]
 
 
