@@ -24,8 +24,9 @@ class TheInstructionDocumentation(InstructionDocumentation):
         return [para('The default mode (of not set by this instruction) is %s.' % NAME_DEFAULT)]
 
     def single_line_description(self) -> str:
-        from shellcheck_lib.help.concepts.configuration_parameters.configuration_parameter import EXECUTION_MODE_CONCEPT
-        return 'Sets the %s.' % EXECUTION_MODE_CONCEPT.name().singular
+        from shellcheck_lib.help.concepts.configuration_parameters.configuration_parameter import \
+            EXECUTION_MODE_CONFIGURATION_PARAMETER
+        return 'Sets the %s.' % EXECUTION_MODE_CONFIGURATION_PARAMETER.name().singular
 
     def invokation_variants(self) -> list:
         from shellcheck_lib.help.concepts.configuration_parameters.configuration_parameter import execution_modes_list
