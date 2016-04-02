@@ -3,7 +3,7 @@ from shellcheck_lib.help.program_modes.test_case.contents.phase.utils import pwd
 from shellcheck_lib.help.program_modes.test_case.phase_help_contents_structures import \
     TestCasePhaseDocumentationForPhaseWithoutInstructions, PhaseSequenceInfo, ExecutionEnvironmentInfo
 from shellcheck_lib.help.utils.description import Description
-from shellcheck_lib.util.textformat.structure.structures import para
+from shellcheck_lib.util.textformat.structure.structures import para, text
 
 
 class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstructions):
@@ -12,7 +12,7 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
         super().__init__(name)
 
     def purpose(self) -> Description:
-        return Description('The action to check.',
+        return Description(text('The action to check.'),
                            [para('TODO rest of purpose of the %s phase' % self.name.syntax)])
 
     def sequence_info(self) -> PhaseSequenceInfo:

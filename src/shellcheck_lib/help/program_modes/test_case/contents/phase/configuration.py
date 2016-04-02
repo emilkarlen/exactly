@@ -7,7 +7,7 @@ from shellcheck_lib.help.program_modes.test_case.phase_help_contents_structures 
     TestCasePhaseDocumentationForPhaseWithInstructions, PhaseSequenceInfo, ExecutionEnvironmentInfo
 from shellcheck_lib.help.utils.description import Description
 from shellcheck_lib.help.utils.formatting import SectionName
-from shellcheck_lib.util.textformat.structure.structures import para
+from shellcheck_lib.util.textformat.structure.structures import para, text
 
 
 class ConfigurationPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstructions):
@@ -17,9 +17,9 @@ class ConfigurationPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInst
         super().__init__(name, instruction_set)
 
     def purpose(self) -> Description:
-        return Description('Configures the execution of remaining phases, '
-                           'and how the outcome of {0} is interpreted.'
-                           .format(SectionName(phases.ASSERT.section_name).syntax),
+        return Description(text('Configures the execution of remaining phases, '
+                                'and how the outcome of {0} is interpreted.'
+                                .format(SectionName(phases.ASSERT.section_name).syntax)),
                            [para('TODO rest of purpose of the %s phase' % self.name.syntax)])
 
     def sequence_info(self) -> PhaseSequenceInfo:

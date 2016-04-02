@@ -4,7 +4,7 @@ from shellcheck_lib.help.program_modes.test_case.contents_structure import TestC
 from shellcheck_lib.help.program_modes.test_case.phase_help_contents_structures import \
     TestCasePhaseDocumentationForPhaseWithInstructions, PhaseSequenceInfo, ExecutionEnvironmentInfo
 from shellcheck_lib.help.utils.description import Description
-from shellcheck_lib.util.textformat.structure.structures import para
+from shellcheck_lib.util.textformat.structure.structures import para, text
 
 
 class CleanupPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstructions):
@@ -14,7 +14,7 @@ class CleanupPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstructio
         super().__init__(name, instruction_set)
 
     def purpose(self) -> Description:
-        return Description('Cleans up any pollution of the environment outside of the sandbox directory.',
+        return Description(text('Cleans up any pollution of the environment outside of the sandbox directory.'),
                            [para('TODO rest of purpose of the %s phase' % self.name.syntax)])
 
     def sequence_info(self) -> PhaseSequenceInfo:

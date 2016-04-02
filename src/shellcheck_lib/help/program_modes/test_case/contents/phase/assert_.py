@@ -4,7 +4,7 @@ from shellcheck_lib.help.program_modes.test_case.contents_structure import TestC
 from shellcheck_lib.help.program_modes.test_case.phase_help_contents_structures import \
     TestCasePhaseDocumentationForPhaseWithInstructions, PhaseSequenceInfo, ExecutionEnvironmentInfo
 from shellcheck_lib.help.utils.description import Description
-from shellcheck_lib.util.textformat.structure.structures import para
+from shellcheck_lib.util.textformat.structure.structures import para, text
 
 
 class AssertPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstructions):
@@ -14,7 +14,7 @@ class AssertPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstruction
         super().__init__(name, instruction_set)
 
     def purpose(self) -> Description:
-        return Description('Checks the outcome of the action to check.',
+        return Description(text('Checks the outcome of the action to check.'),
                            [para('TODO rest of purpose of the %s phase' % self.name.syntax)])
 
     def sequence_info(self) -> PhaseSequenceInfo:
