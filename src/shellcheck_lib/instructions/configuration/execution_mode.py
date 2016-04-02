@@ -1,21 +1,18 @@
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
-from shellcheck_lib.execution.execution_mode import ExecutionMode, NAME_NORMAL, NAME_SKIP, NAME_XFAIL, NAME_2_MODE
-from shellcheck_lib.execution.result import FullResultStatus
+from shellcheck_lib.execution.execution_mode import ExecutionMode, NAME_2_MODE, NAME_DEFAULT
 from shellcheck_lib.help.program_modes.test_case.instruction_documentation import InvokationVariant, \
     InstructionDocumentation
 from shellcheck_lib.instructions.utils.parse_utils import split_arguments_list_string
 from shellcheck_lib.test_case.instruction_setup import SingleInstructionSetup
 from shellcheck_lib.test_case.phases.anonymous import AnonymousPhaseInstruction, ConfigurationBuilder
 from shellcheck_lib.test_case.phases.result import sh
-from shellcheck_lib.util.textformat.parse import normalize_and_parse
-from shellcheck_lib.util.textformat.structure import lists
-from shellcheck_lib.util.textformat.structure.structures import para, text
+from shellcheck_lib.util.textformat.structure.structures import para
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(
-            Parser(),
+        Parser(),
         TheInstructionDocumentation(instruction_name))
 
 
@@ -23,45 +20,20 @@ class TheInstructionDocumentation(InstructionDocumentation):
     def __init__(self, name: str):
         super().__init__(name)
 
+    def main_description_rest(self) -> list:
+        return [para('The default mode (of not set by this instruction) is %s.' % NAME_DEFAULT)]
+
     def single_line_description(self) -> str:
-        return 'Sets execution mode.'
+        from shellcheck_lib.help.concepts.configuration_parameters.configuration_parameter import EXECUTION_MODE_CONCEPT
+        return 'Sets the %s.' % EXECUTION_MODE_CONCEPT.name().singular
 
     def invokation_variants(self) -> list:
+        from shellcheck_lib.help.concepts.configuration_parameters.configuration_parameter import execution_modes_list
         return [
             InvokationVariant(
-                    'MODE',
-                    [
-                        para('Where MODE is one of:'),
-                        lists.HeaderContentList([
-                            lists.HeaderContentListItem(text(NAME_NORMAL),
-                                                        normalize_and_parse("""\
-                                                        The test case is executed and expected to PASS.
-
-
-                                                        This is the default mode.""")
-                                                        ),
-                            lists.HeaderContentListItem(text(NAME_SKIP),
-                                                        normalize_and_parse("""\
-                                                        The test case is not executed.
-
-
-                                                        Result of the test case is %s."""
-                                                                            % FullResultStatus.SKIPPED.name)
-                                                        ),
-                            lists.HeaderContentListItem(text(NAME_XFAIL),
-                                                        normalize_and_parse("""\
-                                                        The test case is expected to FAIL.
-
-
-                                                        Result of the test case is {on_fail}, if the test case fails.
-
-                                                        If it passes, the result is {on_pass}.""".format(
-                                                                on_fail=FullResultStatus.XFAIL.name,
-                                                                on_pass=FullResultStatus.XPASS.name)
-                                                        )),
-                        ],
-                                lists.Format(lists.ListType.VARIABLE_LIST))
-                    ])
+                'MODE',
+                [para('Where MODE is one of:'),
+                 execution_modes_list()])
         ]
 
 
