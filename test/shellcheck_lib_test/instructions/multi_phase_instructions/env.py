@@ -4,7 +4,7 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
     SingleInstructionInvalidArgumentException
 from shellcheck_lib.instructions.multi_phase_instructions import env as sut
 from shellcheck_lib.test_case.os_services import new_with_environ
-from shellcheck_lib_test.instructions.test_resources.check_description import suite_for_description
+from shellcheck_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from shellcheck_lib_test.test_resources.parse import new_source2
 
 
@@ -81,7 +81,7 @@ class TestUnset(unittest.TestCase):
 
 def suite():
     return unittest.TestSuite([
-        suite_for_description(sut.TheInstructionDocumentation('instruction name')),
+        suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name')),
         unittest.makeSuite(TestParseSet),
         unittest.makeSuite(TestParseUnset),
         unittest.makeSuite(TestSet),

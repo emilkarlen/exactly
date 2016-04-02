@@ -13,7 +13,7 @@ def suite_for_description_instance(description: InstructionDocumentation) -> uni
     ])
 
 
-def suite_for_description(description: InstructionDocumentation) -> unittest.TestSuite:
+def suite_for_instruction_documentation(description: InstructionDocumentation) -> unittest.TestSuite:
     return unittest.TestSuite(tcc(description) for tcc in [
         TestInstructionName,
         TestSingleLineDescription,
@@ -63,6 +63,7 @@ class TestSyntaxElementDescriptions(WithDescriptionBase):
     def runTest(self):
         actual = self.description.syntax_element_descriptions()
         va.every_element('', syntax_element_description_checker).apply(self, actual)
+
 
 is_invokation_variant = va.And([
     va.IsInstance(InvokationVariant),

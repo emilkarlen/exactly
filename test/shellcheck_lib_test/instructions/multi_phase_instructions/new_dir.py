@@ -3,7 +3,7 @@ import unittest
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from shellcheck_lib.instructions.multi_phase_instructions import new_dir as sut
-from shellcheck_lib_test.instructions.test_resources.check_description import suite_for_description
+from shellcheck_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from shellcheck_lib_test.test_resources import tmp_dir_test
 from shellcheck_lib_test.test_resources.file_checks import dir_contains_exactly
 from shellcheck_lib_test.test_resources.file_structure import DirContents, empty_dir, Dir, empty_file
@@ -172,7 +172,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestSuccessfulScenariosWithEmptyCwd),
         unittest.makeSuite(TestSuccessfulScenariosWithExistingDirectories),
         unittest.makeSuite(TestFailingScenarios),
-        suite_for_description(sut.TheInstructionDocumentation('instruction name')),
+        suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name')),
     ])
 
 

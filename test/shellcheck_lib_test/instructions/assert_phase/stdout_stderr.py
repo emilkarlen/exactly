@@ -14,7 +14,7 @@ from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_ch
 from shellcheck_lib_test.instructions.test_resources import pfh_check
 from shellcheck_lib_test.instructions.test_resources import svh_check
 from shellcheck_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
-from shellcheck_lib_test.instructions.test_resources.check_description import suite_for_description
+from shellcheck_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from shellcheck_lib_test.test_resources.execution.eds_populator import act_dir_contents, tmp_user_dir_contents
 from shellcheck_lib_test.test_resources.execution.utils import ActResult
 from shellcheck_lib_test.test_resources.file_structure import DirContents, empty_dir, File
@@ -584,7 +584,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestFileContentsFileRelTmpFORStdout),
         unittest.makeSuite(TestFileContentsFileRelTmpFORStderr),
 
-        suite_for_description(sut.TheInstructionDocumentation('instruction name', 'file')),
+        suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name', 'file')),
     ])
 
 

@@ -6,7 +6,7 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
     SingleInstructionInvalidArgumentException
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.instructions.multi_phase_instructions import change_dir as sut
-from shellcheck_lib_test.instructions.test_resources.check_description import suite_for_description
+from shellcheck_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from shellcheck_lib_test.test_resources.execution import eds_test
 from shellcheck_lib_test.test_resources.execution.eds_populator import act_dir_contents, tmp_user_dir_contents
 from shellcheck_lib_test.test_resources.file_structure import DirContents, empty_dir, Dir, empty_file
@@ -204,7 +204,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestParseSet),
         unittest.makeSuite(TestSuccessfulScenarios),
         unittest.makeSuite(TestFailingScenarios),
-        suite_for_description(sut.TheInstructionDocumentation('instruction name')),
+        suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name')),
     ])
 
 
