@@ -12,7 +12,7 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
         super().__init__(name)
 
     def purpose(self) -> Description:
-        return Description('The action to test.',
+        return Description('The action to check.',
                            [para('TODO rest of purpose of the %s phase' % self.name.syntax)])
 
     def sequence_info(self) -> PhaseSequenceInfo:

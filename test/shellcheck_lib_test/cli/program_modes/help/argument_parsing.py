@@ -199,7 +199,7 @@ class TestTestCaseInstructionList(unittest.TestCase):
         self.assertEqual(expected_instruction_name,
                          value.name,
                          'Name of instruction')
-        self.assertIs(TestCaseHelpItem.INSTRUCTION_LIST,
+        self.assertIs(TestCaseHelpItem.INSTRUCTION_SEARCH,
                       value.item)
         self.assertIsInstance(value.data,
                               list,

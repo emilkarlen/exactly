@@ -1,3 +1,4 @@
+from shellcheck_lib.execution import phases
 from shellcheck_lib.help.program_modes.test_case.contents.phase.utils import \
     pwd_at_start_of_phase_for_configuration_phase, \
     env_vars_for_configuration_phase
@@ -5,6 +6,7 @@ from shellcheck_lib.help.program_modes.test_case.contents_structure import TestC
 from shellcheck_lib.help.program_modes.test_case.phase_help_contents_structures import \
     TestCasePhaseDocumentationForPhaseWithInstructions, PhaseSequenceInfo, ExecutionEnvironmentInfo
 from shellcheck_lib.help.utils.description import Description
+from shellcheck_lib.help.utils.formatting import SectionName
 from shellcheck_lib.util.textformat.structure.paragraph import para
 
 
@@ -16,7 +18,8 @@ class ConfigurationPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInst
 
     def purpose(self) -> Description:
         return Description('Configures the execution of remaining phases, '
-                           'and how the outcome is interpreted.',
+                           'and how the outcome of {0} is interpreted.'
+                           .format(SectionName(phases.ASSERT.section_name).syntax),
                            [para('TODO rest of purpose of the %s phase' % self.name.syntax)])
 
     def sequence_info(self) -> PhaseSequenceInfo:
