@@ -10,59 +10,59 @@ from shellcheck_lib_test.util.textformat.test_resources import structure as stru
 
 class TestCase(unittest.TestCase):
     def test_configuration(self):
-        # ARRANGE
+        # ARRANGE #
         tcp_help = configuration.ConfigurationPhaseDocumentation(
             'phase name',
             test_case_phase_instruction_set('phase name',
                                             ['instr 1',
                                              'instr 2']))
-        # ACT
+        # ACT #
         actual = sut.render_test_case_phase_overview(tcp_help)
-        # ASSERT
+        # ASSERT #
         struct_check.is_section_contents.apply(self, actual)
 
     def test_setup(self):
-        # ARRANGE
+        # ARRANGE #
         tcp_help = setup.SetupPhaseDocumentation(
             'phase name',
             test_case_phase_instruction_set('phase name',
                                             ['instr 1',
                                              'instr 2']))
-        # ACT
+        # ACT #
         actual = sut.render_test_case_phase_overview(tcp_help)
-        # ASSERT
+        # ASSERT #
         struct_check.is_section_contents.apply(self, actual)
 
     def test_act(self):
-        # ARRANGE
+        # ARRANGE #
         tcp_help = act.ActPhaseDocumentation('phase name')
-        # ACT
+        # ACT #
         actual = sut.render_test_case_phase_overview(tcp_help)
-        # ASSERT
+        # ASSERT #
         struct_check.is_section_contents.apply(self, actual)
 
     def test_before_assert(self):
-        # ARRANGE
+        # ARRANGE #
         tcp_help = before_assert.BeforeAssertPhaseDocumentation(
             'phase name',
             test_case_phase_instruction_set('phase name',
                                             ['instr 1',
                                              'instr 2']))
-        # ACT
+        # ACT #
         actual = sut.render_test_case_phase_overview(tcp_help)
-        # ASSERT
+        # ASSERT #
         struct_check.is_section_contents.apply(self, actual)
 
     def test_assert(self):
-        # ARRANGE
+        # ARRANGE #
         tcp_help = assert_.AssertPhaseDocumentation(
             'phase name',
             test_case_phase_instruction_set('phase name',
                                             ['instr 1',
                                              'instr 2']))
-        # ACT
+        # ACT #
         actual = sut.render_test_case_phase_overview(tcp_help)
-        # ASSERT
+        # ASSERT #
         struct_check.is_section_contents.apply(self, actual)
 
     def test_cleanup(self):
@@ -72,9 +72,9 @@ class TestCase(unittest.TestCase):
             test_case_phase_instruction_set('phase name',
                                             ['instr 1',
                                              'instr 2']))
-        # ACT
+        # ACT #
         actual = sut.render_test_case_phase_overview(tcp_help)
-        # ASSERT
+        # ASSERT #
         struct_check.is_section_contents.apply(self, actual)
 
 
@@ -84,10 +84,5 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-def run_suite():
-    runner = unittest.TextTestRunner()
-    runner.run(suite())
-
-
 if __name__ == '__main__':
-    run_suite()
+    unittest.TextTestRunner().run(suite())
