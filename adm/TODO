@@ -1,7 +1,12 @@
 -*- org -*-
 
+* TODO SHELLCHECK_HOME ska ev inte vara tillgänglig i [act]
+<2016-04-02 lör>
+Det riskerar ju att atc (action to check) kan sabba
+filer där.
+* TODO Refakt: full/partiell exekvering i separata paket
+<2016-04-02 lör>
 * TODO Dokumentation
-
 ** TODO formatteraren ska inte bryta rad i --preprocessor
 <2016-03-28 mån>
 Den tolkar det som binestreck mellan ord och bryter rad.  Behöver stänga av
@@ -11,6 +16,11 @@ I dok "test case processing" listas faserna.
 En av dem är "syntax checking", och den är vad som internt kallas "parse".
 Felkoden från denna är "PARSE", vilket rimmar illa m "syntax checking".
 Vore nog bättre m "SYNTAX" alt "SYNTAX_ERROR"
+** TODO instr ge getter av InstructionDocumentation istf obj direkt
+<2016-04-02 lör>
+Prestanda.  Vill undvika importer för hjälp under normal körning.
+Det blir svårt när ett objekt ges direkt.
+Se InstrDescr för "mode", som måste importera samma paket lokalt två ggr.
 * TODO Meningsfullat att validering kan ge HARD_ERROR?
 <2016-03-28 mån>
 Tror inte nån instr's validering avnänder HARD_ERROR.  Ty det är ju liksom
