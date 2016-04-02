@@ -9,7 +9,7 @@ from shellcheck_lib.test_case.phases.anonymous import AnonymousPhaseInstruction,
 from shellcheck_lib.test_case.phases.result import sh
 from shellcheck_lib.util.textformat.parse import normalize_and_parse
 from shellcheck_lib.util.textformat.structure import lists
-from shellcheck_lib.util.textformat.structure.paragraph import *
+from shellcheck_lib.util.textformat.structure.structures import para, text
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
@@ -43,14 +43,14 @@ class TheInstructionDocumentation(InstructionDocumentation):
                     [
                         para('Where MODE is one of:'),
                         lists.HeaderContentList([
-                            lists.HeaderContentListItem(Text(NAME_NORMAL),
+                            lists.HeaderContentListItem(text(NAME_NORMAL),
                                                         normalize_and_parse("""\
                                                         The test case is executed and expected to PASS.
 
 
                                                         This is the default mode.""")
                                                         ),
-                            lists.HeaderContentListItem(Text(NAME_SKIP),
+                            lists.HeaderContentListItem(text(NAME_SKIP),
                                                         normalize_and_parse("""\
                                                         The test case is not executed.
 
@@ -58,7 +58,7 @@ class TheInstructionDocumentation(InstructionDocumentation):
                                                         Result of the test case is %s."""
                                                                             % FullResultStatus.SKIPPED.name)
                                                         ),
-                            lists.HeaderContentListItem(Text(NAME_XFAIL),
+                            lists.HeaderContentListItem(text(NAME_XFAIL),
                                                         normalize_and_parse("""\
                                                         The test case is expected to FAIL.
 

@@ -3,7 +3,7 @@ from shellcheck_lib.cli.program_modes.help.program_modes.test_suite.help_request
 from shellcheck_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp, \
     TestSuiteSectionHelp
 from shellcheck_lib.util.textformat.structure import document as doc
-from shellcheck_lib.util.textformat.structure.paragraph import para
+from shellcheck_lib.util.textformat.structure.structures import para
 
 
 class TestSuiteHelpRenderer:

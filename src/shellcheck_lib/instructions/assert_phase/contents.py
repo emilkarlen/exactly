@@ -16,7 +16,7 @@ from shellcheck_lib.test_case.instruction_setup import SingleInstructionSetup
 from shellcheck_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from shellcheck_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase
 from shellcheck_lib.util.textformat import parse as text_parse
-from shellcheck_lib.util.textformat.structure.paragraph import single_para
+from shellcheck_lib.util.textformat.structure.structures import paras
 from .utils import contents_utils
 
 
@@ -47,26 +47,26 @@ class TheInstructionDocumentation(InstructionDocumentation):
     def invokation_variants(self) -> list:
         return [
             InvokationVariant(
-                    'FILENAME {}'.format(EMPTY_ARGUMENT),
-                    single_para('File exists, is a regular file, and is empty')),
+                'FILENAME {}'.format(EMPTY_ARGUMENT),
+                paras('File exists, is a regular file, and is empty')),
             InvokationVariant(
-                    'FILENAME ! {}'.format(EMPTY_ARGUMENT),
-                    single_para('File exists, is a regular file, and is not empty')),
+                'FILENAME ! {}'.format(EMPTY_ARGUMENT),
+                paras('File exists, is a regular file, and is not empty')),
             InvokationVariant(
-                    'FILENAME {} {} FILE'.format(WITH_REPLACED_ENV_VARS_OPTION,
-                                                 REL_HOME_OPTION),
-                    single_para('Compares contents of FILENAME to contents of FILE '
-                                '(which is a path relative home)')),
+                'FILENAME {} {} FILE'.format(WITH_REPLACED_ENV_VARS_OPTION,
+                                             REL_HOME_OPTION),
+                paras('Compares contents of FILENAME to contents of FILE '
+                      '(which is a path relative home)')),
             InvokationVariant(
-                    'FILENAME {} {} FILE'.format(WITH_REPLACED_ENV_VARS_OPTION,
-                                                 REL_TMP_OPTION),
-                    single_para('Compares contents of FILENAME to contents of FILE '
-                                '(which is a path relative the shellcheck tmp directory)')),
+                'FILENAME {} {} FILE'.format(WITH_REPLACED_ENV_VARS_OPTION,
+                                             REL_TMP_OPTION),
+                paras('Compares contents of FILENAME to contents of FILE '
+                      '(which is a path relative the shellcheck tmp directory)')),
             InvokationVariant(
-                    'FILENAME {} {} FILE'.format(WITH_REPLACED_ENV_VARS_OPTION,
-                                                 REL_CWD_OPTION),
-                    single_para('Compares contents of FILENAME to contents of FILE '
-                                '(which is a path relative current working directory)')),
+                'FILENAME {} {} FILE'.format(WITH_REPLACED_ENV_VARS_OPTION,
+                                             REL_CWD_OPTION),
+                paras('Compares contents of FILENAME to contents of FILE '
+                      '(which is a path relative current working directory)')),
         ]
 
 
@@ -106,4 +106,4 @@ class _ActualFileTransformer(ActualFileTransformer):
         except ValueError:
             # path DOES NOT reside under act_dir
             return (root_dir_path / SUB_DIR_FOR_REPLACEMENT_SOURCES_NOT_UNDER_ACT_DIR).joinpath(
-                    *absolute_src_file_path.parts[1:])
+                *absolute_src_file_path.parts[1:])

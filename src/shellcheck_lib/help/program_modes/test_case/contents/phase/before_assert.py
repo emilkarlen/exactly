@@ -6,7 +6,7 @@ from shellcheck_lib.help.program_modes.test_case.phase_help_contents_structures 
     TestCasePhaseDocumentationForPhaseWithInstructions, PhaseSequenceInfo, ExecutionEnvironmentInfo
 from shellcheck_lib.help.utils.description import Description
 from shellcheck_lib.help.utils.formatting import SectionName
-from shellcheck_lib.util.textformat.structure.paragraph import para
+from shellcheck_lib.util.textformat.structure.structures import para
 
 
 class BeforeAssertPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstructions):

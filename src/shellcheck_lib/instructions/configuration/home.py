@@ -8,12 +8,12 @@ from shellcheck_lib.instructions.utils.parse_utils import split_arguments_list_s
 from shellcheck_lib.test_case.instruction_setup import SingleInstructionSetup
 from shellcheck_lib.test_case.phases.anonymous import AnonymousPhaseInstruction, ConfigurationBuilder
 from shellcheck_lib.test_case.phases.result import sh
-from shellcheck_lib.util.textformat.structure.paragraph import single_para
+from shellcheck_lib.util.textformat.structure.structures import paras
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(
-            Parser(),
+        Parser(),
         TheInstructionDocumentation(instruction_name))
 
 
@@ -25,13 +25,13 @@ class TheInstructionDocumentation(InstructionDocumentation):
         return 'Changes the Home directory.'
 
     def main_description_rest(self) -> list:
-        return single_para('TODO')
+        return paras('TODO')
 
     def invokation_variants(self) -> list:
         return [
             InvokationVariant(
-                    'PATH',
-                    single_para('A path that is relative the current Home Directory')),
+                'PATH',
+                paras('A path that is relative the current Home Directory')),
         ]
 
 

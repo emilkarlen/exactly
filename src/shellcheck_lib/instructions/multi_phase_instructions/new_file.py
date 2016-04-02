@@ -7,7 +7,7 @@ from shellcheck_lib.instructions.utils.parse_here_document import parse_as_last_
 from shellcheck_lib.instructions.utils.parse_utils import split_arguments_list_string
 from shellcheck_lib.util.file_utils import ensure_parent_directory_does_exist_and_is_a_directory, write_new_text_file
 from shellcheck_lib.util.string import lines_content
-from shellcheck_lib.util.textformat.structure.paragraph import single_para
+from shellcheck_lib.util.textformat.structure.structures import paras
 
 
 class TheInstructionDocumentation(InstructionDocumentation):
@@ -18,13 +18,13 @@ class TheInstructionDocumentation(InstructionDocumentation):
         return 'Creates a file.'
 
     def main_description_rest(self) -> list:
-        return single_para('Uses Posix syntax for paths. I.e. directories are separated by /. ')
+        return paras('Uses Posix syntax for paths. I.e. directories are separated by /. ')
 
     def invokation_variants(self) -> list:
         return [
             InvokationVariant(
-                    '[{}] FILENAME'.format('|'.join(OPTIONS)),
-                    single_para('Creates a new file in the given directory.')),
+                '[{}] FILENAME'.format('|'.join(OPTIONS)),
+                paras('Creates a new file in the given directory.')),
         ]
 
 

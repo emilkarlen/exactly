@@ -8,7 +8,7 @@ from shellcheck_lib.instructions.utils.sub_process_execution import ExecutorThat
 from shellcheck_lib.test_case.phases.common import TestCaseInstruction, PhaseLoggingPaths
 from shellcheck_lib.test_case.phases.result import pfh
 from shellcheck_lib.test_case.phases.result import sh
-from shellcheck_lib.util.textformat.structure.paragraph import single_para
+from shellcheck_lib.util.textformat.structure.structures import paras
 
 
 class TheInstructionDocumentationBase(InstructionDocumentation):
@@ -24,8 +24,8 @@ class TheInstructionDocumentationBase(InstructionDocumentation):
     def invokation_variants(self) -> list:
         return [
             InvokationVariant(
-                    'PROGRAM ARGUMENT...',
-                    single_para('A plain file.')),
+                'PROGRAM ARGUMENT...',
+                paras('A plain file.')),
         ]
 
 
@@ -34,7 +34,7 @@ class DescriptionForNonAssertPhaseInstruction(TheInstructionDocumentationBase):
         super().__init__(name)
 
     def main_description_rest(self) -> list:
-        return single_para('The assertion passes if (and only if) the exit code from the command is 0.')
+        return paras('The assertion passes if (and only if) the exit code from the command is 0.')
 
 
 class Parser(SingleInstructionParser):

@@ -2,8 +2,7 @@ from shellcheck_lib.help.program_modes.test_case.instruction_documentation impor
     InvokationVariant, \
     SyntaxElementDescription
 from shellcheck_lib.util.textformat.structure import document as doc, paragraph, lists
-from shellcheck_lib.util.textformat.structure.core import Text
-from shellcheck_lib.util.textformat.structure.paragraph import para
+from shellcheck_lib.util.textformat.structure.structures import para, text
 
 LIST_INDENT = 2
 
@@ -13,11 +12,11 @@ def instruction_man_page(description: InstructionDocumentation) -> doc.SectionCo
     main_description_rest = description.main_description_rest()
     if description.invokation_variants():
         section_contents = _invokation_variants_content(description)
-        description_sections = [] if not main_description_rest else [doc.Section(Text('DESCRIPTION'),
+        description_sections = [] if not main_description_rest else [doc.Section(text('DESCRIPTION'),
                                                                                  doc.SectionContents(
-                                                                                         main_description_rest, []))]
+                                                                                     main_description_rest, []))]
         return doc.SectionContents(prelude_paragraphs,
-                                   [doc.Section(Text('SYNOPSIS'),
+                                   [doc.Section(text('SYNOPSIS'),
                                                 section_contents)] +
                                    description_sections)
     else:
@@ -28,7 +27,7 @@ def instruction_man_page(description: InstructionDocumentation) -> doc.SectionCo
 
 def instruction_set_list_item(description: InstructionDocumentation) -> lists.HeaderContentListItem:
     description_para = para(description.single_line_description())
-    return lists.HeaderContentListItem(Text(description.instruction_name()),
+    return lists.HeaderContentListItem(text(description.instruction_name()),
                                        [description_para])
 
 
@@ -38,7 +37,7 @@ def variants_list(invokation_variants: list,
     items = []
     for x in invokation_variants:
         assert isinstance(x, InvokationVariant)
-        items.append(lists.HeaderContentListItem(Text(x.syntax),
+        items.append(lists.HeaderContentListItem(text(x.syntax),
                                                  x.description_rest))
     return lists.HeaderContentList(items,
                                    lists.Format(lists.ListType.VARIABLE_LIST,
@@ -58,7 +57,7 @@ def _invokation_variants_content(description: InstructionDocumentation) -> doc.S
                                             variants_list(x.invokation_variants,
                                                           True,
                                                           custom_separations=blank_line_between_elements)]
-            items.append(lists.HeaderContentListItem(Text(x.element_name),
+            items.append(lists.HeaderContentListItem(text(x.element_name),
                                                      x.description_rest +
                                                      variants_list_paragraphs))
         return lists.HeaderContentList(items,

@@ -5,7 +5,7 @@ from shellcheck_lib.help.program_modes.test_case.render.instruction_set import i
 from shellcheck_lib.help.utils.formatting import SectionName
 from shellcheck_lib.util.textformat.structure import document as doc
 from shellcheck_lib.util.textformat.structure import lists
-from shellcheck_lib.util.textformat.structure.paragraph import para, text
+from shellcheck_lib.util.textformat.structure.structures import para, text
 
 
 class PhaseSequenceInfo(tuple):

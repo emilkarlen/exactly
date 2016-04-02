@@ -15,12 +15,12 @@ from shellcheck_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPh
 from shellcheck_lib.test_case.phases.result import sh
 from shellcheck_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
 from shellcheck_lib.util.string import lines_content
-from shellcheck_lib.util.textformat.structure.paragraph import single_para
+from shellcheck_lib.util.textformat.structure.structures import paras
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(
-            Parser(),
+        Parser(),
         TheInstructionDocumentation(instruction_name))
 
 
@@ -34,11 +34,11 @@ class TheInstructionDocumentation(InstructionDocumentation):
     def invokation_variants(self) -> list:
         return [
             InvokationVariant(
-                    '[{}] FILE'.format('|'.join(parse_file_ref.ALL_REL_OPTIONS)),
-                    single_para('Sets stdin to a file relative SHELLCHECK_HOME.')),
+                '[{}] FILE'.format('|'.join(parse_file_ref.ALL_REL_OPTIONS)),
+                paras('Sets stdin to a file relative SHELLCHECK_HOME.')),
             InvokationVariant(
-                    '<<EOF-MARKER'.format('|'.join(parse_file_ref.ALL_REL_OPTIONS)),
-                    single_para('Sets stdin to the contents of the given Here Document.')),
+                '<<EOF-MARKER'.format('|'.join(parse_file_ref.ALL_REL_OPTIONS)),
+                paras('Sets stdin to the contents of the given Here Document.')),
         ]
 
 

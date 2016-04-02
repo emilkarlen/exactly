@@ -3,7 +3,7 @@ from shellcheck_lib.help.program_modes.test_case.contents.phase.utils import pwd
 from shellcheck_lib.help.program_modes.test_case.phase_help_contents_structures import \
     TestCasePhaseDocumentationForPhaseWithoutInstructions, PhaseSequenceInfo, ExecutionEnvironmentInfo
 from shellcheck_lib.help.utils.description import Description
-from shellcheck_lib.util.textformat.structure.paragraph import para
+from shellcheck_lib.util.textformat.structure.structures import para
 
 
 class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstructions):

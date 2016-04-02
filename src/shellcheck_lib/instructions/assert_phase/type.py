@@ -14,12 +14,12 @@ from shellcheck_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from shellcheck_lib.test_case.phases.result import pfh
 from shellcheck_lib.util.textformat.structure import core
 from shellcheck_lib.util.textformat.structure import lists
-from shellcheck_lib.util.textformat.structure.paragraph import single_para
+from shellcheck_lib.util.textformat.structure.structures import paras
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(
-            Parser(),
+        Parser(),
         TheInstructionDocumentation(instruction_name))
 
 
@@ -38,19 +38,19 @@ class TheInstructionDocumentation(InstructionDocumentation):
         return 'Tests the type of a file.'
 
     def main_description_rest(self) -> list:
-        return single_para('All tests fails if FILENAME does not exist. (TODO symlink options/behavior)')
+        return paras('All tests fails if FILENAME does not exist. (TODO symlink options/behavior)')
 
     def invokation_variants(self) -> list:
         return [
             InvokationVariant(
-                    'FILENAME type TYPE',
-                    single_para('File exists and has given type.')),
+                'FILENAME type TYPE',
+                paras('File exists and has given type.')),
         ]
 
     def syntax_element_descriptions(self) -> list:
         def type_description(k: str) -> str:
             tn = type_name[FILE_TYPES[k]]
-            return single_para('Tests if FILENAME is a %s or, a sym-link to a %s.' % (tn, tn))
+            return paras('Tests if FILENAME is a %s or, a sym-link to a %s.' % (tn, tn))
 
         def file_type_list() -> core.ParagraphItem:
             list_items = [

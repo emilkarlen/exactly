@@ -3,7 +3,7 @@ import unittest
 from shellcheck_lib.help.program_modes.test_case.instruction_documentation import InvokationVariant, \
     SyntaxElementDescription
 from shellcheck_lib.help.program_modes.test_case.render import render_instruction as sut
-from shellcheck_lib.util.textformat.structure.paragraph import single_para
+from shellcheck_lib.util.textformat.structure.structures import paras
 from shellcheck_lib_test.test_resources.instruction_description import InstructionDocumentationWithConstantValues
 from shellcheck_lib_test.util.textformat.test_resources import structure as struct_check
 
@@ -40,7 +40,7 @@ class TestManPage(unittest.TestCase):
             'single line description',
             'main description rest',
             [InvokationVariant('invokation variant syntax',
-                               single_para('invokation variant description rest'))])
+                               paras('invokation variant description rest'))])
         actual = sut.instruction_man_page(description)
         struct_check.is_section_contents.apply(self, actual)
 
@@ -50,9 +50,9 @@ class TestManPage(unittest.TestCase):
             'single line description',
             'main description rest',
             [InvokationVariant('invokation variant syntax',
-                               single_para('invokation variant description rest'))],
+                               paras('invokation variant description rest'))],
             [SyntaxElementDescription('syntax element',
-                                      single_para('description rest'),
+                                      paras('description rest'),
                                       [])])
         actual = sut.instruction_man_page(description)
         struct_check.is_section_contents.apply(self, actual)
@@ -63,11 +63,11 @@ class TestManPage(unittest.TestCase):
             'single line description',
             'main description rest',
             [InvokationVariant('invokation variant syntax',
-                               single_para('invokation variant description rest'))],
+                               paras('invokation variant description rest'))],
             [SyntaxElementDescription('syntax element',
-                                      single_para('description rest'),
+                                      paras('description rest'),
                                       [InvokationVariant('SED/invokation variant syntax',
-                                                         single_para('SED/IV description rest'))])])
+                                                         paras('SED/IV description rest'))])])
         actual = sut.instruction_man_page(description)
         struct_check.is_section_contents.apply(self, actual)
 

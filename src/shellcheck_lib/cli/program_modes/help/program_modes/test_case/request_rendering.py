@@ -6,7 +6,7 @@ from shellcheck_lib.help.program_modes.test_case.render import instruction_set, 
 from shellcheck_lib.help.program_modes.test_case.render.test_case_phase import render_test_case_phase_overview
 from shellcheck_lib.util.textformat.structure import document as doc
 from shellcheck_lib.util.textformat.structure.core import Text
-from shellcheck_lib.util.textformat.structure.paragraph import para
+from shellcheck_lib.util.textformat.structure.structures import para
 
 
 class TestCaseHelpRenderer:
