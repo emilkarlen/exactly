@@ -44,8 +44,8 @@ class _ExecutionModeConcept(ConfigurationParameterDocumentation):
         super().__init__(Name('execution mode'))
 
     def purpose(self) -> Description:
-        Description(text(_EXECUTION_MODE_SINGLE_LINE_DESCRIPTION),
-                    [execution_modes_list()])
+        return Description(text(_EXECUTION_MODE_SINGLE_LINE_DESCRIPTION),
+                           [execution_modes_list()])
 
     def default_value_str(self) -> str:
         return execution_mode.NAME_DEFAULT

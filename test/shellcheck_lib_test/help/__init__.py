@@ -1,18 +1,14 @@
 import unittest
 
-from shellcheck_lib_test.help import program_modes
+from shellcheck_lib_test.help import program_modes, concepts
 
 
 def suite():
     ret_val = unittest.TestSuite()
     ret_val.addTest(program_modes.suite())
+    ret_val.addTest(concepts.suite())
     return ret_val
 
 
-def run_suite():
-    runner = unittest.TextTestRunner()
-    runner.run(suite())
-
-
 if __name__ == '__main__':
-    run_suite()
+    unittest.TextTestRunner().run(suite())
