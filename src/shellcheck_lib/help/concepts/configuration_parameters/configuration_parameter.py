@@ -1,42 +1,12 @@
 from shellcheck_lib.execution import execution_mode
 from shellcheck_lib.execution.result import FullResultStatus
+from shellcheck_lib.help.concepts.concept_structure import Name, ConfigurationParameterDocumentation
 from shellcheck_lib.help.utils import phase_names
 from shellcheck_lib.help.utils.description import Description
 from shellcheck_lib.util.textformat.parse import normalize_and_parse
 from shellcheck_lib.util.textformat.structure import lists
 from shellcheck_lib.util.textformat.structure.core import ParagraphItem
-from shellcheck_lib.util.textformat.structure.structures import para, text
-
-
-class Name(tuple):
-    def __new__(cls,
-                singular: str):
-        return tuple.__new__(cls, (singular,))
-
-    @property
-    def singular(self) -> str:
-        return self[0]
-
-
-class ConfigurationParameterDocumentation:
-    def __init__(self,
-                 name: Name):
-        self._name = name
-
-    def name(self) -> Name:
-        return self._name
-
-    def purpose(self) -> Description:
-        raise NotImplementedError()
-
-    def default_value_str(self) -> str:
-        """
-        :rtype: [ParagraphItem]
-        """
-        raise NotImplementedError()
-
-    def default_value_para(self) -> ParagraphItem:
-        return para(self.default_value_str())
+from shellcheck_lib.util.textformat.structure.structures import text
 
 
 class _ExecutionModeConfigurationParameter(ConfigurationParameterDocumentation):

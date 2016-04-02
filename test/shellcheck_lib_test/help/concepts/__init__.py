@@ -1,11 +1,12 @@
 import unittest
 
-from shellcheck_lib_test.help.concepts import configuration_parameters
+from shellcheck_lib_test.help.concepts import concept_structure, configuration_parameters
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        configuration_parameters.suite()
+        concept_structure.suite(),
+        configuration_parameters.suite(),
     ])
 
 

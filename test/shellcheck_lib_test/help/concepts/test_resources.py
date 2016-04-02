@@ -1,7 +1,6 @@
 import unittest
 
-from shellcheck_lib.help.concepts.configuration_parameters.configuration_parameter import \
-    ConfigurationParameterDocumentation, Name
+from shellcheck_lib.help.concepts.concept_structure import Name, ConfigurationParameterDocumentation
 from shellcheck_lib.help.utils.description import Description
 from shellcheck_lib_test.util.textformat.test_resources import structure as struct_check
 
