@@ -1,0 +1,9 @@
+from shellcheck_lib.execution import phases
+from shellcheck_lib.help.utils.formatting import SectionName
+
+CONFIGURATION_PHASE_NAME = SectionName(phases.ANONYMOUS.identifier)
+SETUP_PHASE_NAME = SectionName(phases.SETUP.section_name)
+ACT_PHASE_NAME = SectionName(phases.ACT.section_name)
+BEFORE_ASSERT_PHASE_NAME = SectionName(phases.BEFORE_ASSERT.section_name)
+ASSERT_PHASE_NAME = SectionName(phases.ASSERT.section_name)
+CLEANUP_PHASE_NAME = SectionName(phases.CLEANUP.section_name)
