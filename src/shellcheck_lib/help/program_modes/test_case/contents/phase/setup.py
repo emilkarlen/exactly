@@ -14,7 +14,7 @@ class SetupPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstructions
         super().__init__(name, instruction_set)
 
     def purpose(self) -> Description:
-        return Description('Sets up the environment that the action to test will be run in.',
+        return Description('Sets up the environment that the action to check will be executed in.',
                            [para('TODO rest of purpose of the %s phase' % self.name.syntax)])
 
     def sequence_info(self) -> PhaseSequenceInfo:

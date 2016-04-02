@@ -113,7 +113,7 @@ class Parser:
             msg = 'Neither the name of a phase nor of an instruction: "%s"' % instruction_name
             raise HelpError(msg)
         return TestCaseHelpRequest(
-            TestCaseHelpItem.INSTRUCTION_LIST,
+            TestCaseHelpItem.INSTRUCTION_SEARCH,
             instruction_name,
             phase_and_instr_descr_list)
 

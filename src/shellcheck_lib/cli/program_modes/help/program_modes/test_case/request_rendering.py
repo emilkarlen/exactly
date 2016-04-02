@@ -25,8 +25,8 @@ class TestCaseHelpRenderer:
             return self.phase_instruction_list(request.data)
         if item is TestCaseHelpItem.INSTRUCTION:
             return self.instruction(request.data)
-        if item is TestCaseHelpItem.INSTRUCTION_LIST:
-            return self.instruction_list(request.name, request.data)
+        if item is TestCaseHelpItem.INSTRUCTION_SEARCH:
+            return self.instruction_search(request.name, request.data)
         raise ValueError('Invalid %s: %s' % (str(TestCaseHelpItem), str(item)))
 
     def overview(self, test_case_help: TestCaseHelp) -> doc.SectionContents:
@@ -45,16 +45,16 @@ class TestCaseHelpRenderer:
     def instruction(self, description: InstructionDocumentation) -> doc.SectionContents:
         return render_instruction.instruction_man_page(description)
 
-    def instruction_list(self,
-                         instruction_name: str,
-                         phase_and_instruction_description_list: list) -> doc.SectionContents:
+    def instruction_search(self,
+                           instruction_name: str,
+                           phase_and_instruction_description_list: list) -> doc.SectionContents:
         sections = []
         for phase_and_instruction_description in phase_and_instruction_description_list:
             man_page = self.instruction(phase_and_instruction_description[1])
-            phase_section = doc.Section(Text(str(phase_and_instruction_description[0])),
+            phase_section = doc.Section(Text(phase_and_instruction_description[0].syntax),
                                         man_page)
             sections.append(phase_section)
         initial_paragraphs = []
         if len(phase_and_instruction_description_list) > 1:
-            initial_paragraphs = [para('The instruction "%s" is found in multiple phases.' % instruction_name)]
+            initial_paragraphs = [para('The instruction "%s" exists in multiple phases.' % instruction_name)]
         return doc.SectionContents(initial_paragraphs, sections)

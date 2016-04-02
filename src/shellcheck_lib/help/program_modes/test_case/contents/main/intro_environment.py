@@ -24,7 +24,7 @@ This sandbox is automatically removed after the execution
 (unless {cli_option_for_keeping_sandbox} is used).
 
 
-The environment variable {SANDBOX_ACT_DIR} points to a directory inside this sandbox.
+The environment variable {SANDBOX_ACT_DIR} points to a directory inside the sandbox.
 The Present Working Directory is set to this directory.
 
 This will be the PWD for all phases, unless it is changed by the {pwd} instruction.

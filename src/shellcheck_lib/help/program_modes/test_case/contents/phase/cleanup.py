@@ -14,7 +14,7 @@ class CleanupPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstructio
         super().__init__(name, instruction_set)
 
     def purpose(self) -> Description:
-        return Description('Cleans up any pollution of the environment that is outside of the sandbox directory.',
+        return Description('Cleans up any pollution of the environment outside of the sandbox directory.',
                            [para('TODO rest of purpose of the %s phase' % self.name.syntax)])
 
     def sequence_info(self) -> PhaseSequenceInfo:

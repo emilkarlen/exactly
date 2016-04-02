@@ -16,8 +16,8 @@ class BeforeAssertPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstr
         super().__init__(name, instruction_set)
 
     def purpose(self) -> Description:
-        return Description('Prepares the environment for the {assert_phase} phase.'.
-                           format(assert_phase=SectionName(phases.ASSERT.section_name)),
+        return Description('Prepares the environment for {0}.'.
+                           format(SectionName(phases.ASSERT.section_name).syntax),
                            [para('TODO rest of purpose of the %s phase' % self.name.syntax)])
 
     def sequence_info(self) -> PhaseSequenceInfo:

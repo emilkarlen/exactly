@@ -34,7 +34,7 @@ DESCRIPTION = """\
 A test case file contains a sequence of “phases”.
 
 
-The {phase[act]} phase contains the action to test.
+The {phase[act]} phase contains the action to check.
 
 It is the only mandatory phase.
 

@@ -14,7 +14,7 @@ class AssertPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstruction
         super().__init__(name, instruction_set)
 
     def purpose(self) -> Description:
-        return Description('Checks the result of the action to test.',
+        return Description('Checks the outcome of the action to check.',
                            [para('TODO rest of purpose of the %s phase' % self.name.syntax)])
 
     def sequence_info(self) -> PhaseSequenceInfo:

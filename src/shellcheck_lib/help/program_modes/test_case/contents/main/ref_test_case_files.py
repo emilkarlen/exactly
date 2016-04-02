@@ -40,7 +40,7 @@ def test_case_files_documentation(setup: Setup) -> doc.SectionContents:
 PHASES_DOC = """\
 "{phase_declaration_for_NAME}" on a single line declares the start of phase NAME.
 
-The content on the following lines will belong to this phase.
+The following lines will belong to this phase.
 
 
 File contents before the first phase declaration will belong to the default phase,

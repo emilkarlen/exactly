@@ -21,7 +21,7 @@ def help_invokation_variants() -> ParagraphItem:
         HeaderContentListItem(
             _help(argument_parsing.INSTRUCTIONS),
             normalize_and_parse(
-                'Lists instructions per test-case phase.')),
+                'Lists test-case instructions per phase.')),
         HeaderContentListItem(
             _help('PHASE'),
             normalize_and_parse(
@@ -37,7 +37,7 @@ def help_invokation_variants() -> ParagraphItem:
         HeaderContentListItem(
             _help('INSTRUCTION'),
             normalize_and_parse(
-                'Help for an test-case instruction (in any phase).')),
+                'Help for all test-case instructions with the given name.')),
         HeaderContentListItem(
             _help(argument_parsing.TEST_SUITE),
             normalize_and_parse(

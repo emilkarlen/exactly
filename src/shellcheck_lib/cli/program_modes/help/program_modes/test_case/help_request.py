@@ -8,7 +8,7 @@ class TestCaseHelpItem(Enum):
     INSTRUCTION_SET = 1
     PHASE = 2
     INSTRUCTION = 3
-    INSTRUCTION_LIST = 4
+    INSTRUCTION_SEARCH = 4
     PHASE_INSTRUCTION_LIST = 5
 
 
