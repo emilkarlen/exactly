@@ -1,8 +1,8 @@
 import unittest
 
+from shellcheck_lib.execution.execution_mode import ExecutionMode
 from shellcheck_lib.execution.full_execution import translate_status
 from shellcheck_lib.execution.result import FullResultStatus, PartialResultStatus
-from shellcheck_lib.test_case.phases.anonymous import ExecutionMode
 
 
 class Test(unittest.TestCase):

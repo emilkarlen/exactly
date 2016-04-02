@@ -1,8 +1,8 @@
+from shellcheck_lib.execution.execution_mode import ExecutionMode
 from shellcheck_lib.test_case.os_services import OsServices
 from shellcheck_lib.test_case.phases import common as instrs
 from shellcheck_lib.test_case.phases.act.instruction import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
-from shellcheck_lib.test_case.phases.anonymous import AnonymousPhaseInstruction, ExecutionMode, \
-    ConfigurationBuilder
+from shellcheck_lib.test_case.phases.anonymous import AnonymousPhaseInstruction, ConfigurationBuilder
 from shellcheck_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from shellcheck_lib.test_case.phases.before_assert import BeforeAssertPhaseInstruction
 from shellcheck_lib.test_case.phases.cleanup import CleanupPhaseInstruction, PreviousPhase

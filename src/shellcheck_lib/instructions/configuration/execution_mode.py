@@ -1,11 +1,12 @@
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
+from shellcheck_lib.execution.execution_mode import ExecutionMode, NAME_NORMAL, NAME_SKIP, NAME_XFAIL, NAME_2_MODE
 from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib.help.program_modes.test_case.instruction_documentation import InvokationVariant, \
     InstructionDocumentation
 from shellcheck_lib.instructions.utils.parse_utils import split_arguments_list_string
 from shellcheck_lib.test_case.instruction_setup import SingleInstructionSetup
-from shellcheck_lib.test_case.phases.anonymous import AnonymousPhaseInstruction, ConfigurationBuilder, ExecutionMode
+from shellcheck_lib.test_case.phases.anonymous import AnonymousPhaseInstruction, ConfigurationBuilder
 from shellcheck_lib.test_case.phases.result import sh
 from shellcheck_lib.util.textformat.parse import normalize_and_parse
 from shellcheck_lib.util.textformat.structure import lists
@@ -16,17 +17,6 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(
             Parser(),
         TheInstructionDocumentation(instruction_name))
-
-
-NAME_NORMAL = 'NORMAL'
-NAME_SKIP = 'SKIP'
-NAME_XFAIL = 'XFAIL'
-
-NAME_2_MODE = {
-    NAME_NORMAL: ExecutionMode.NORMAL,
-    NAME_SKIP: ExecutionMode.SKIP,
-    NAME_XFAIL: ExecutionMode.XFAIL,
-}
 
 
 class TheInstructionDocumentation(InstructionDocumentation):

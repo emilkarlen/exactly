@@ -1,3 +1,4 @@
+import shellcheck_lib.execution.execution_mode
 from shellcheck_lib.cli.cli_environment import exit_values
 from shellcheck_lib.cli.cli_environment.exit_values import ALL_EXIT_VALUES, ExitValue
 from shellcheck_lib.execution.result import PartialResultStatus, FullResultStatus
@@ -5,7 +6,6 @@ from shellcheck_lib.help.program_modes.test_case.contents.main.ref_test_case_pro
     FAILURE_CONDITION_OF_PREPROCESSING
 from shellcheck_lib.help.program_modes.test_case.contents.main.utils import Setup, post_setup_validation_step_name, \
     step_with_single_exit_value, singe_exit_value_display
-from shellcheck_lib.instructions.configuration import execution_mode
 from shellcheck_lib.util.textformat.parse import normalize_and_parse
 from shellcheck_lib.util.textformat.structure.structures import *
 
@@ -59,7 +59,8 @@ FULL_EXECUTION_OUTCOME_DEPENDS_ON_TWO_THINGS = """The outcome of a fully execute
 def _what_outcome_depends_on(setup: Setup) -> ParagraphItem:
     items = [
         list_item("""The "execution mode" set by the {phase[configuration]} phase""".format(phase=setup.phase_names),
-                  [para('The default mode is {default_mode}.'.format(default_mode=execution_mode.NAME_NORMAL))]),
+                  [para('The default mode is {default_mode}.'.format(
+                      default_mode=shellcheck_lib.execution.execution_mode.NAME_NORMAL))]),
         list_item("""The outcome of the {phase[assert]} phase""".format(phase=setup.phase_names),
                   []),
     ]
@@ -80,13 +81,13 @@ def _outcomes_per_mode_and_assert(setup: Setup) -> ParagraphItem:
             paras('Mode'),
             paras('{phase[assert]:syntax}'.format(phase=setup.phase_names)),
             paras('Test Case')],
-        _row(execution_mode.NAME_NORMAL, PartialResultStatus.PASS, FullResultStatus.PASS),
-        _row(execution_mode.NAME_NORMAL, PartialResultStatus.FAIL, FullResultStatus.FAIL),
+        _row(shellcheck_lib.execution.execution_mode.NAME_NORMAL, PartialResultStatus.PASS, FullResultStatus.PASS),
+        _row(shellcheck_lib.execution.execution_mode.NAME_NORMAL, PartialResultStatus.FAIL, FullResultStatus.FAIL),
 
-        _row(execution_mode.NAME_XFAIL, PartialResultStatus.PASS, FullResultStatus.XPASS),
-        _row(execution_mode.NAME_XFAIL, PartialResultStatus.FAIL, FullResultStatus.XFAIL),
+        _row(shellcheck_lib.execution.execution_mode.NAME_XFAIL, PartialResultStatus.PASS, FullResultStatus.XPASS),
+        _row(shellcheck_lib.execution.execution_mode.NAME_XFAIL, PartialResultStatus.FAIL, FullResultStatus.XFAIL),
 
-        _row(execution_mode.NAME_SKIP, None, FullResultStatus.SKIPPED),
+        _row(shellcheck_lib.execution.execution_mode.NAME_SKIP, None, FullResultStatus.SKIPPED),
     ],
         '  ')
 
