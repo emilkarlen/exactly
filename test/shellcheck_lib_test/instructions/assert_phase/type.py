@@ -7,7 +7,7 @@ from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_ch
     arrangement, Expectation, is_pass
 from shellcheck_lib_test.instructions.test_resources import pfh_check
 from shellcheck_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
-from shellcheck_lib_test.instructions.test_resources.check_description import suite_for_description
+from shellcheck_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from shellcheck_lib_test.test_resources.execution.eds_populator import act_dir_contents
 from shellcheck_lib_test.test_resources.file_structure import DirContents, empty_file, empty_dir, Link
 from shellcheck_lib_test.test_resources.parse import new_source2
@@ -157,7 +157,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestCheckForRegularFile),
         unittest.makeSuite(TestCheckForDirectory),
         unittest.makeSuite(TestCheckForSymLink),
-        suite_for_description(sut.TheInstructionDocumentation('instruction name')),
+        suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name')),
     ])
 
 

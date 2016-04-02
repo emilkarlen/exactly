@@ -7,7 +7,7 @@ from shellcheck_lib_test.instructions.setup.test_resources.instruction_check imp
     Expectation
 from shellcheck_lib_test.instructions.test_resources import sh_check
 from shellcheck_lib_test.instructions.test_resources import svh_check
-from shellcheck_lib_test.instructions.test_resources.check_description import suite_for_description
+from shellcheck_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from shellcheck_lib_test.test_resources.execution import eds_populator, eds_contents_check
 from shellcheck_lib_test.test_resources.file_structure import DirContents, File, Dir, empty_file, empty_dir
 from shellcheck_lib_test.test_resources.parse import new_source2
@@ -180,7 +180,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestParse),
         unittest.makeSuite(TestValidationErrorScenarios),
         unittest.makeSuite(TestFailingScenarios),
-        suite_for_description(sut.TheInstructionDocumentation('instruction name')),
+        suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name')),
     ])
 
 

@@ -8,7 +8,7 @@ from shellcheck_lib_test.instructions.configuration.test_resources import config
 from shellcheck_lib_test.instructions.configuration.test_resources.instruction_check import TestCaseBase, \
     Arrangement, Expectation
 from shellcheck_lib_test.instructions.test_resources import sh_check
-from shellcheck_lib_test.instructions.test_resources.check_description import suite_for_description
+from shellcheck_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from shellcheck_lib_test.test_resources.file_structure import DirContents, empty_file, empty_dir, Dir
 from shellcheck_lib_test.test_resources.parse import new_source2
 
@@ -119,7 +119,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestParse),
         unittest.makeSuite(TestFailingExecution),
         unittest.makeSuite(TestSuccessfulExecution),
-        suite_for_description(sut.TheInstructionDocumentation('instruction mame')),
+        suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction mame')),
     ])
 
 

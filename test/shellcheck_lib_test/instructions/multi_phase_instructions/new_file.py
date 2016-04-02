@@ -5,7 +5,7 @@ from shellcheck_lib.document.parser_implementations.instruction_parser_for_singl
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.instructions.multi_phase_instructions import new_file as sut
 from shellcheck_lib.util.string import lines_content
-from shellcheck_lib_test.instructions.test_resources.check_description import suite_for_description
+from shellcheck_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from shellcheck_lib_test.test_resources.execution import eds_test
 from shellcheck_lib_test.test_resources.execution.eds_contents_check import ActRootContainsExactly, \
     TmpUserRootContainsExactly
@@ -193,7 +193,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestSuccessfulScenariosWithContent),
         unittest.makeSuite(TestFailingScenarios),
         unittest.makeSuite(TestParseWithContents),
-        suite_for_description(sut.TheInstructionDocumentation('instruction name')),
+        suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name')),
     ])
 
 

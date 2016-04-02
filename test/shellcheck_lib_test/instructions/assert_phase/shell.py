@@ -7,7 +7,7 @@ from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_ch
 from shellcheck_lib_test.instructions.multi_phase_instructions.test_resources.shell_instruction_test import \
     Configuration, suite_for
 from shellcheck_lib_test.instructions.test_resources import pfh_check
-from shellcheck_lib_test.instructions.test_resources.check_description import suite_for_description
+from shellcheck_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 
 
 class TheConfiguration(AssertConfigurationBase, Configuration):
@@ -24,7 +24,7 @@ class TheConfiguration(AssertConfigurationBase, Configuration):
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         suite_for(TheConfiguration()),
-        suite_for_description(sut.TheDescription('instruction-name')),
+        suite_for_instruction_documentation(sut.TheDescription('instruction-name')),
     ])
 
 

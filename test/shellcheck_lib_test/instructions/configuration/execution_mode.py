@@ -10,7 +10,7 @@ from shellcheck_lib.test_case.phases.anonymous import ConfigurationBuilder
 from shellcheck_lib_test.instructions.configuration.test_resources import configuration_check as config_check
 from shellcheck_lib_test.instructions.configuration.test_resources.instruction_check import TestCaseBase, \
     Arrangement, Expectation
-from shellcheck_lib_test.instructions.test_resources.check_description import suite_for_description
+from shellcheck_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from shellcheck_lib_test.test_resources.parse import new_source2
 
 
@@ -74,7 +74,7 @@ def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestParse),
         unittest.makeSuite(TestChangeMode),
-        suite_for_description(sut.TheInstructionDocumentation('instruction name')),
+        suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name')),
     ])
 
 

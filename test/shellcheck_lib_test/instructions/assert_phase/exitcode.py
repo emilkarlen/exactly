@@ -9,7 +9,7 @@ from shellcheck_lib_test.instructions.assert_phase.test_resources.instruction_ch
     arrangement, Expectation, is_pass
 from shellcheck_lib_test.instructions.test_resources import pfh_check
 from shellcheck_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
-from shellcheck_lib_test.instructions.test_resources.check_description import suite_for_description
+from shellcheck_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from shellcheck_lib_test.test_resources.execution import utils
 from shellcheck_lib_test.test_resources.parse import new_source2
 
@@ -216,7 +216,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestParseAndExecuteTwoArgumentsLe),
         unittest.makeSuite(TestParseAndExecuteTwoArgumentsGt),
         unittest.makeSuite(TestParseAndExecuteTwoArgumentsGe),
-        suite_for_description(sut.TheInstructionDocumentation('instruction name')),
+        suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name')),
     ])
 
 
