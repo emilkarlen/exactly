@@ -1,10 +1,12 @@
 import pathlib
 import unittest
 
+import shellcheck_lib.execution.execution_mode
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from shellcheck_lib.execution.execution_mode import ExecutionMode
 from shellcheck_lib.instructions.configuration import execution_mode as sut
-from shellcheck_lib.test_case.phases.anonymous import ConfigurationBuilder, ExecutionMode
+from shellcheck_lib.test_case.phases.anonymous import ConfigurationBuilder
 from shellcheck_lib_test.instructions.configuration.test_resources import configuration_check as config_check
 from shellcheck_lib_test.instructions.configuration.test_resources.instruction_check import TestCaseBase, \
     Arrangement, Expectation
@@ -41,17 +43,17 @@ class TestChangeMode(TestCaseBaseForParser):
     def test_NORMAL(self):
         self._run(expected=ExecutionMode.NORMAL,
                   initial=ExecutionMode.SKIP,
-                  argument=sut.NAME_NORMAL)
+                  argument=shellcheck_lib.execution.execution_mode.NAME_NORMAL)
 
     def test_SKIP(self):
         self._run(expected=ExecutionMode.SKIP,
                   initial=ExecutionMode.NORMAL,
-                  argument=sut.NAME_SKIP)
+                  argument=shellcheck_lib.execution.execution_mode.NAME_SKIP)
 
     def test_XFAIL(self):
         self._run(expected=ExecutionMode.XFAIL,
                   initial=ExecutionMode.NORMAL,
-                  argument=sut.NAME_XFAIL)
+                  argument=shellcheck_lib.execution.execution_mode.NAME_XFAIL)
 
 
 class AssertExecutionMode(config_check.Assertion):

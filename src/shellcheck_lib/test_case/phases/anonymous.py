@@ -1,14 +1,8 @@
 import pathlib
-from enum import Enum
 
+from shellcheck_lib.execution.execution_mode import ExecutionMode
 from shellcheck_lib.test_case.phases.common import TestCaseInstruction
 from shellcheck_lib.test_case.phases.result.sh import SuccessOrHardError
-
-
-class ExecutionMode(Enum):
-    NORMAL = 0
-    SKIP = 1
-    XFAIL = 2
 
 
 class ConfigurationBuilder:
