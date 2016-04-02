@@ -6,7 +6,8 @@ from shellcheck_lib_test.help.concepts.test_resources import suite_for_configura
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        suite_for_configuration_parameter_documentation(sut.EXECUTION_MODE_CONCEPT)
+        suite_for_configuration_parameter_documentation(sut.EXECUTION_MODE_CONFIGURATION_PARAMETER),
+        suite_for_configuration_parameter_documentation(sut.HOME_DIRECTORY_CONFIGURATION_PARAMETER),
     ])
 
 
