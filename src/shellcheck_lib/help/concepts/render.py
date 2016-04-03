@@ -4,7 +4,7 @@ from shellcheck_lib.help.concepts.utils import sorted_concepts_list
 from shellcheck_lib.help.program_modes.test_case.contents_structure import ConceptsHelp
 from shellcheck_lib.help.utils.render import SectionContentsRenderer
 from shellcheck_lib.util.textformat.structure import document as doc
-from shellcheck_lib.util.textformat.structure.structures import para
+from shellcheck_lib.util.textformat.structure.structures import para, section
 
 
 class AllConceptsListRenderer(SectionContentsRenderer):
@@ -24,15 +24,22 @@ class IndividualConceptRenderer(SectionContentsRenderer, ConceptDocumentationVis
 
     def visit_plain_concept(self, x: PlainConceptDocumentation) -> doc.SectionContents:
         purpose = x.purpose()
-        paragraphs = []
-        paragraphs.append(para(purpose.single_line_description))
-        paragraphs.extend(purpose.rest)
-        return doc.SectionContents(paragraphs, [])
+        initial_paragraphs = [para(purpose.single_line_description)]
+        sub_sections = []
+        if purpose.rest:
+            sub_sections.append(self._rest_section(purpose))
+        return doc.SectionContents(initial_paragraphs, sub_sections)
 
     def visit_configuration_parameter(self, x: ConfigurationParameterDocumentation) -> doc.SectionContents:
         purpose = x.purpose()
-        paragraphs = []
-        paragraphs.append(para(purpose.single_line_description))
-        paragraphs.append(x.default_value_para())
-        paragraphs.extend(purpose.rest)
-        return doc.SectionContents(paragraphs, [])
+        initial_paragraphs = [para(purpose.single_line_description)]
+        sub_sections = []
+        sub_sections.append(section('Default Value',
+                                    [x.default_value_para()]))
+        if purpose.rest:
+            sub_sections.append(self._rest_section(purpose))
+        return doc.SectionContents(initial_paragraphs, sub_sections)
+
+    def _rest_section(self, purpose):
+        return section('Description',
+                       purpose.rest)

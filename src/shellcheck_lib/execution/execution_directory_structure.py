@@ -13,6 +13,18 @@ SUB_DIR_FOR_REPLACEMENT_SOURCES_NOT_UNDER_ACT_DIR = 'global'
 
 SUB_DIRECTORY__ACT = 'act'
 
+SUB_DIRECTORY__RESULT = 'result'
+
+RESULT_FILE__STDERR = 'stderr'
+RESULT_FILE__STDOUT = 'stdout'
+RESULT_FILE__EXITCODE = 'exitcode'
+
+RESULT_FILE_ALL = (
+    RESULT_FILE__STDERR,
+    RESULT_FILE__STDOUT,
+    RESULT_FILE__EXITCODE,
+)
+
 
 class DirWithSubDirs:
     """Name of a directory together with a list of sub directories"""
@@ -40,7 +52,7 @@ execution_directories = [
         empty_dir('internal'),
         empty_dir('user')
     ]),
-    empty_dir('result'),
+    empty_dir(SUB_DIRECTORY__RESULT),
     empty_dir('log'),
 ]
 
@@ -58,9 +70,9 @@ class DirWithRoot:
 class Result(DirWithRoot):
     def __init__(self, root_dir: Path):
         super().__init__(root_dir)
-        self.__exitcode_file = self.root_dir / 'exitcode'
-        self.__stdout_file = self.root_dir / 'stdout'
-        self.__stderr_file = self.root_dir / 'stderr'
+        self.__exitcode_file = self.root_dir / RESULT_FILE__EXITCODE
+        self.__stdout_file = self.root_dir / RESULT_FILE__STDOUT
+        self.__stderr_file = self.root_dir / RESULT_FILE__STDERR
 
     @property
     def exitcode_file(self) -> Path:
@@ -96,7 +108,7 @@ class ExecutionDirectoryStructure(DirWithRoot):
         self.__test_case_dir = self.root_dir / 'testcase'
         self.__act_dir = self.root_dir / SUB_DIRECTORY__ACT
         self.__tmp = Tmp(self.root_dir / 'tmp')
-        self.__result = Result(self.root_dir / 'result')
+        self.__result = Result(self.root_dir / SUB_DIRECTORY__RESULT)
         self.__log_dir = self.root_dir / 'log'
 
     @property

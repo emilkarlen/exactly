@@ -3,6 +3,7 @@ from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib.help.concepts.concept_structure import Name, ConfigurationParameterDocumentation
 from shellcheck_lib.help.utils import phase_names
 from shellcheck_lib.help.utils.description import Description
+from shellcheck_lib.help.utils.phase_names import phase_name_dictionary
 from shellcheck_lib.util.textformat.parse import normalize_and_parse
 from shellcheck_lib.util.textformat.structure import lists
 from shellcheck_lib.util.textformat.structure.core import ParagraphItem
@@ -37,7 +38,8 @@ class _HomeDirectoryConfigurationParameter(ConfigurationParameterDocumentation):
 
     def purpose(self) -> Description:
         return Description(text(_HOME_DIRECTORY_SINGLE_LINE_DESCRIPTION),
-                           normalize_and_parse(_HOME_DIRECTORY_REST_DESCRIPTION))
+                           normalize_and_parse(_HOME_DIRECTORY_REST_DESCRIPTION
+                                               .format(phase=phase_name_dictionary())))
 
     def default_value_str(self) -> str:
         return 'The directory where the test case file is located.'
@@ -93,7 +95,7 @@ Instructions and phases may use files that are supposed to exist before the test
 case is executed.
 
 
-E.g., the {act_phase} phase (by default) references an program that is expected
+E.g., the {phase[act]} phase (by default) references an program that is expected
 to be an executable file.
 
 If the path to this file is relative, then it is relative the Home Directory.
