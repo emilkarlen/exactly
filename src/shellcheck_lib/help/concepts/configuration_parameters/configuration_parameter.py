@@ -25,7 +25,8 @@ class _ExecutionModeConfigurationParameter(ConfigurationParameterDocumentation):
         super().__init__(Name('execution mode'))
 
     def purpose(self) -> Description:
-        return Description(text(_EXECUTION_MODE_SINGLE_LINE_DESCRIPTION),
+        return Description(text(_EXECUTION_MODE_SINGLE_LINE_DESCRIPTION
+                                .format(phase=phase_name_dictionary())),
                            [execution_modes_list()])
 
     def default_value_str(self) -> str:
@@ -50,7 +51,7 @@ EXECUTION_MODE_CONFIGURATION_PARAMETER = _ExecutionModeConfigurationParameter()
 HOME_DIRECTORY_CONFIGURATION_PARAMETER = _HomeDirectoryConfigurationParameter()
 
 _EXECUTION_MODE_SINGLE_LINE_DESCRIPTION = """\
-Determines how the outcome of the {assert_phase} phase should be interpreted,
+Determines how the outcome of the {phase[assert]} phase should be interpreted,
 or if the test case should be skipped."""
 
 

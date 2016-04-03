@@ -6,7 +6,7 @@ def test_case_overview_help() -> list:
 
 
 _test_case_overview_help_text = """\
-Runs a program in a temporary directory, and tests the result,
+TODO Runs a program in a temporary directory, and tests the result,
 according to specifications in a test-case file.
 
 
