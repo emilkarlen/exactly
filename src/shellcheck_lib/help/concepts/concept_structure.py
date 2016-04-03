@@ -1,3 +1,4 @@
+from shellcheck_lib.help.cross_reference import ConceptCrossReference
 from shellcheck_lib.help.utils.description import Description
 from shellcheck_lib.util.textformat.structure.core import ParagraphItem
 from shellcheck_lib.util.textformat.structure.structures import para
@@ -24,6 +25,9 @@ class ConceptDocumentation:
 
     def name(self) -> Name:
         return self._name
+
+    def cross_reference(self) -> ConceptCrossReference:
+        return ConceptCrossReference(self._name.singular)
 
     def purpose(self) -> Description:
         raise NotImplementedError()
