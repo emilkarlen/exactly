@@ -24,6 +24,12 @@ class ConceptDocumentation:
     def purpose(self) -> Description:
         raise NotImplementedError()
 
+    def summary_paragraphs(self) -> list:
+        """
+        :rtype: [ParagraphItem]
+        """
+        return [para(self.purpose().single_line_description)]
+
 
 class PlainConceptDocumentation(ConceptDocumentation):
     pass
@@ -38,6 +44,10 @@ class ConfigurationParameterDocumentation(ConceptDocumentation):
 
     def default_value_para(self) -> ParagraphItem:
         return para(self.default_value_str())
+
+    def summary_paragraphs(self) -> list:
+        return [para(self.purpose().single_line_description),
+                para('Default value: ' + self.default_value_str())]
 
 
 class ConceptDocumentationVisitor:
