@@ -1,6 +1,6 @@
 import unittest
 
-from shellcheck_lib_test.help.concepts import concept_structure, concept, configuration_parameters
+from shellcheck_lib_test.help.concepts import concept_structure, concept, configuration_parameters, render
 
 
 def suite() -> unittest.TestSuite:
@@ -8,6 +8,7 @@ def suite() -> unittest.TestSuite:
         concept_structure.suite(),
         concept.suite(),
         configuration_parameters.suite(),
+        render.suite(),
     ])
 
 

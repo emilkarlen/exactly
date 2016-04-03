@@ -9,6 +9,16 @@ from shellcheck_lib.util.textformat.structure.core import ParagraphItem
 from shellcheck_lib.util.textformat.structure.structures import text
 
 
+def all_configuration_parameters() -> list:
+    """
+    :rtype [ConfigurationParameterDocumentation]
+    """
+    return [
+        EXECUTION_MODE_CONFIGURATION_PARAMETER,
+        HOME_DIRECTORY_CONFIGURATION_PARAMETER,
+    ]
+
+
 class _ExecutionModeConfigurationParameter(ConfigurationParameterDocumentation):
     def __init__(self):
         super().__init__(Name('execution mode'))

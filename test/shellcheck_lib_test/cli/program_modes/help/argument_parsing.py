@@ -1,12 +1,14 @@
 import unittest
 
 from shellcheck_lib.cli.program_modes.help import argument_parsing as sut
+from shellcheck_lib.cli.program_modes.help.concepts.help_request import ConceptHelpRequest, ConceptHelpItem
 from shellcheck_lib.cli.program_modes.help.program_modes.main_program.help_request import *
 from shellcheck_lib.cli.program_modes.help.program_modes.test_case.help_request import *
 from shellcheck_lib.cli.program_modes.help.program_modes.test_suite.help_request import *
 from shellcheck_lib.help.contents_structure import ApplicationHelp
 from shellcheck_lib.help.program_modes.main_program.contents_structure import MainProgramHelp
-from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCasePhaseDocumentation, TestCaseHelp
+from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCasePhaseDocumentation, TestCaseHelp, \
+    ConceptsHelp
 from shellcheck_lib.help.program_modes.test_case.instruction_documentation import InstructionDocumentation
 from shellcheck_lib.help.program_modes.test_suite.contents_structure import TestSuiteSectionHelp, \
     TestSuiteHelp
@@ -292,15 +294,32 @@ class TestTestSuiteHelp(unittest.TestCase):
 
 
 def _app_help_for(test_case_phase_helps: list,
-                  suite_sections=()) -> ApplicationHelp:
+                  suite_sections=(),
+                  concepts=()) -> ApplicationHelp:
     return ApplicationHelp(MainProgramHelp(),
+                           ConceptsHelp(concepts),
                            TestCaseHelp(test_case_phase_helps),
                            TestSuiteHelp(suite_sections))
 
 
-def suite():
+class TestConceptHelp(unittest.TestCase):
+    def test_concept_list(self):
+        actual = sut.parse(_app_help_for([]),
+                           arguments_for.concept_list())
+        self.assertIsInstance(actual,
+                              ConceptHelpRequest,
+                              'Expecting settings for concepts')
+        assert isinstance(actual,
+                          ConceptHelpRequest)
+        self.assertIs(ConceptHelpItem.ALL_CONCEPTS_LIST,
+                      actual.item,
+                      'Item should denote help for ' + ConceptHelpItem.ALL_CONCEPTS_LIST.name)
+
+
+def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestProgramHelp))
+    ret_val.addTest(unittest.makeSuite(TestConceptHelp))
     ret_val.addTest(unittest.makeSuite(TestTestCaseHelp))
     ret_val.addTest(unittest.makeSuite(TestTestCaseInstructionSet))
     ret_val.addTest(unittest.makeSuite(TestTestCaseSingleInstructionInPhase))
@@ -310,4 +329,4 @@ def suite():
 
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.TextTestRunner().run(suite())

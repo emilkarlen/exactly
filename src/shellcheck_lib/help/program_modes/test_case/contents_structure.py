@@ -76,3 +76,19 @@ class TestCaseHelp(tuple):
         """
         return dict(map(lambda ph_help: (ph_help.name.plain, ph_help),
                         self.phase_helps_in_order_of_execution))
+
+
+class ConceptsHelp(tuple):
+    def __new__(cls,
+                concepts: iter):
+        """
+        :type concepts: [ConceptDocumentation]
+        """
+        return tuple.__new__(cls, (list(concepts),))
+
+    @property
+    def all_concepts(self) -> list:
+        """
+        :type: [ConceptDocumentation]
+        """
+        return self[0]

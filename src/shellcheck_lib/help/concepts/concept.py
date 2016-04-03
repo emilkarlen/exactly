@@ -1,11 +1,21 @@
 from shellcheck_lib.execution.execution_directory_structure import execution_directories
 from shellcheck_lib.help.concepts.concept_structure import Name, PlainConceptDocumentation
-from shellcheck_lib.help.concepts.configuration_parameters import ALL_CONFIGURATION_PARAMETERS
+from shellcheck_lib.help.concepts.configuration_parameters.configuration_parameter import all_configuration_parameters
 from shellcheck_lib.help.utils.description import Description
 from shellcheck_lib.help.utils.phase_names import CONFIGURATION_PHASE_NAME
 from shellcheck_lib.util.textformat.structure import lists
 from shellcheck_lib.util.textformat.structure.core import ParagraphItem
 from shellcheck_lib.util.textformat.structure.structures import text, para
+
+
+def all_plain_concepts() -> list:
+    """
+    :rtype [PlainConceptDocumentation]
+    """
+    return [
+        SANDBOX_CONCEPT,
+        CONFIGURATION_PARAMETER_CONCEPT,
+    ]
 
 
 class _Sandbox(PlainConceptDocumentation):
@@ -40,7 +50,7 @@ class _ConfigurationParameterConcept(PlainConceptDocumentation):
 
     def purpose(self) -> Description:
         return Description(text(_CONFIGURATION_PARAMETER_SINGLE_LINE_DESCRIPTION.format(CONFIGURATION_PHASE_NAME)),
-                           [configuration_parameters_list()])
+                           [all_configuration_parameters_list()])
 
 
 CONFIGURATION_PARAMETER_CONCEPT = _ConfigurationParameterConcept()
@@ -49,10 +59,11 @@ _CONFIGURATION_PARAMETER_SINGLE_LINE_DESCRIPTION = """\
 Values that are set by the {0} phase and determines how the remaining phases are executed."""
 
 
-def configuration_parameters_list() -> ParagraphItem:
-    all_cps = sorted(ALL_CONFIGURATION_PARAMETERS, key=lambda cd: cd.name().singular)
+def all_configuration_parameters_list() -> ParagraphItem:
+    all_cps = sorted(all_configuration_parameters(), key=lambda cd: cd.name().singular)
     items = [lists.HeaderContentListItem(text(cp.name().singular),
-                                         [para(cp.purpose().single_line_description)])
+                                         [para(cp.purpose().single_line_description),
+                                          para('Default: ' + cp.default_value_str())])
              for cp in all_cps]
     return lists.HeaderContentList(items,
                                    lists.Format(lists.ListType.VARIABLE_LIST))
