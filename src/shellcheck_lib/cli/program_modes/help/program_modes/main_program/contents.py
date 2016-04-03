@@ -19,6 +19,10 @@ def help_invokation_variants() -> ParagraphItem:
             normalize_and_parse(
                 'Describes the test-case functionality.')),
         HeaderContentListItem(
+            _help(argument_parsing.CONCEPT),
+            normalize_and_parse(
+                'Lists concepts.')),
+        HeaderContentListItem(
             _help(argument_parsing.INSTRUCTIONS),
             normalize_and_parse(
                 'Lists test-case instructions per phase.')),

@@ -1,3 +1,4 @@
+from shellcheck_lib.cli.program_modes.help.concepts.help_request import ConceptHelpRequest, ConceptHelpItem
 from shellcheck_lib.cli.program_modes.help.program_modes import help_request
 from shellcheck_lib.cli.program_modes.help.program_modes.main_program.help_request import *
 from shellcheck_lib.cli.program_modes.help.program_modes.test_case.help_request import *
@@ -9,6 +10,7 @@ HELP = 'help'
 INSTRUCTIONS = 'instructions'
 TEST_CASE = 'case'
 TEST_SUITE = 'suite'
+CONCEPT = 'concept'
 
 
 class HelpError(Exception):
@@ -39,6 +41,8 @@ class Parser:
             return MainProgramHelpRequest(MainProgramHelpItem.PROGRAM)
         if help_command_arguments[0] == HELP:
             return MainProgramHelpRequest(MainProgramHelpItem.HELP)
+        if help_command_arguments[0] == CONCEPT:
+            return self._parse_concept_help(help_command_arguments[1:])
         if help_command_arguments[0] == TEST_CASE:
             if len(help_command_arguments) > 1:
                 raise HelpError('Invalid number of arguments for help command. Use help help, for help.')
@@ -116,6 +120,10 @@ class Parser:
             TestCaseHelpItem.INSTRUCTION_SEARCH,
             instruction_name,
             phase_and_instr_descr_list)
+
+    def _parse_concept_help(self, concept_arguments: list) -> ConceptHelpRequest:
+        if not concept_arguments:
+            return ConceptHelpRequest(ConceptHelpItem.ALL_CONCEPTS_LIST, None)
 
 
 def _is_name_of_phase(name: str):

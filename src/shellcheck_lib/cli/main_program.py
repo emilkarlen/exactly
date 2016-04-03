@@ -64,12 +64,12 @@ class MainProgram:
     def _parse_and_execute_help(self, help_command_arguments: list) -> int:
         try:
             application_help = application_help_for(self._instruction_set)
-            settings = parse_help.parse(application_help,
-                                        help_command_arguments)
+            help_request = parse_help.parse(application_help,
+                                            help_command_arguments)
         except parse_help.HelpError as ex:
             self._output.err.write(ex.msg + os.linesep)
             return EXIT_INVALID_USAGE
-        print_help(self._output.out, application_help, settings)
+        print_help(self._output.out, application_help, help_request)
         return 0
 
     def _parse_and_exit_on_error(self, parse_arguments_and_execute_callable, arguments: list) -> int:

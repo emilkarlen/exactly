@@ -1,4 +1,5 @@
-from shellcheck_lib.cli.program_modes.help.argument_parsing import INSTRUCTIONS, TEST_SUITE, TEST_CASE, HELP
+from shellcheck_lib.cli.program_modes.help.argument_parsing import INSTRUCTIONS, TEST_SUITE, TEST_CASE, HELP, \
+    CONCEPT
 from shellcheck_lib.execution import phases
 from shellcheck_lib.help.program_modes.test_case.config import phase_help_name
 
@@ -9,6 +10,10 @@ def program() -> list:
 
 def help_help() -> list:
     return [HELP]
+
+
+def concept_list() -> list:
+    return [CONCEPT]
 
 
 def instructions() -> list:
