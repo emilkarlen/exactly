@@ -124,6 +124,12 @@ class Parser:
     def _parse_concept_help(self, concept_arguments: list) -> ConceptHelpRequest:
         if not concept_arguments:
             return ConceptHelpRequest(ConceptHelpItem.ALL_CONCEPTS_LIST, None)
+        concept_name = ' '.join(concept_arguments)
+        try:
+            concept = self.application_help.concepts_help.lookup_by_name_in_singular(concept_name)
+            return ConceptHelpRequest(ConceptHelpItem.INDIVIDUAL_CONCEPT, concept)
+        except KeyError:
+            raise HelpError('Concept does not exist: "%s"' % concept_name)
 
 
 def _is_name_of_phase(name: str):

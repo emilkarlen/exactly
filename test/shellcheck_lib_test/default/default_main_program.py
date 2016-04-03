@@ -13,11 +13,12 @@ from shellcheck_lib.help.program_modes.test_case.config import phase_help_name
 from shellcheck_lib.test_case.test_case_processing import AccessErrorType
 from shellcheck_lib.test_suite.parser import SECTION_NAME__SUITS, SECTION_NAME__CASES
 from shellcheck_lib.util.string import lines_content
-from shellcheck_lib_test.cli.cases import default_main_program_wildcard as wildcard
 from shellcheck_lib_test.cli.program_modes.help.test_resources import arguments_for
-from shellcheck_lib_test.cli.utils.execute_main_program import execute_main_program, ARGUMENTS_FOR_TEST_INTERPRETER
-from shellcheck_lib_test.default.test_impls import default_main_program_case_preprocessing
-from shellcheck_lib_test.default.test_impls import default_main_program_suite_preprocessing as pre_proc_tests
+from shellcheck_lib_test.cli.test_resources.execute_main_program import execute_main_program, \
+    ARGUMENTS_FOR_TEST_INTERPRETER
+from shellcheck_lib_test.default.test_resources import default_main_program_case_preprocessing
+from shellcheck_lib_test.default.test_resources import default_main_program_suite_preprocessing as pre_proc_tests
+from shellcheck_lib_test.default.test_resources import default_main_program_wildcard as wildcard
 from shellcheck_lib_test.test_resources.file_structure import DirContents, File
 from shellcheck_lib_test.test_resources.file_utils import tmp_file_containing, tmp_file_containing_lines
 from shellcheck_lib_test.test_resources.main_program import main_program_check_for_test_case
@@ -308,7 +309,7 @@ class TestTestSuite(main_program_check_for_test_suite.TestsForSetupWithoutPrepro
 
 
 class TestTestSuiteWithWildcardFileReferencesToCaseFiles(
-        main_program_check_for_test_suite.TestsForSetupWithoutPreprocessorInternally):
+    main_program_check_for_test_suite.TestsForSetupWithoutPreprocessorInternally):
     def test_references_to_case_files_that_matches_no_files(self):
         self._check([], wildcard.ReferencesToCaseFilesThatMatchesNoFiles())
 
@@ -335,7 +336,7 @@ class TestTestSuiteWithWildcardFileReferencesToCaseFiles(
 
 
 class TestTestSuiteWithWildcardFileReferencesToSuiteFiles(
-        main_program_check_for_test_suite.TestsForSetupWithoutPreprocessorInternally):
+    main_program_check_for_test_suite.TestsForSetupWithoutPreprocessorInternally):
     def test_references_to_suite_files_that_matches_no_files(self):
         self._check([], wildcard.ReferencesToCaseFilesThatMatchesNoFiles())
 

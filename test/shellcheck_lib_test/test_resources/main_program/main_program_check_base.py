@@ -4,7 +4,8 @@ import tempfile
 import unittest
 
 from shellcheck_lib.util.file_utils import resolved_path
-from shellcheck_lib_test.cli.utils.execute_main_program import execute_main_program, ARGUMENTS_FOR_TEST_INTERPRETER
+from shellcheck_lib_test.cli.test_resources.execute_main_program import execute_main_program, \
+    ARGUMENTS_FOR_TEST_INTERPRETER
 from shellcheck_lib_test.test_resources.cli_main_program_via_shell_utils.run import run_shellcheck_in_sub_process
 from shellcheck_lib_test.test_resources.file_structure import DirContents
 from shellcheck_lib_test.test_resources.process import SubProcessResult

@@ -12,4 +12,6 @@ class ConceptHelpRequestRendererResolver:
         item = request.item
         if item is ConceptHelpItem.ALL_CONCEPTS_LIST:
             return render.AllConceptsListRenderer(self.concepts_help)
-        raise ValueError('Invalid %s: %s' % (str(ConceptHelpRequestRendererResolver), str(item)))
+        if item is ConceptHelpItem.INDIVIDUAL_CONCEPT:
+            return render.IndividualConceptRenderer(request.individual_concept)
+        raise ValueError('Invalid %s: %s' % (str(ConceptHelpItem), str(item)))

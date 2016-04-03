@@ -14,6 +14,10 @@ class Name(tuple):
 
 
 class ConceptDocumentation:
+    """
+    Abstract base class for concepts.
+    """
+
     def __init__(self,
                  name: Name):
         self._name = name
