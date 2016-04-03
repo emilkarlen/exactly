@@ -124,7 +124,7 @@ class Parser:
     def _parse_concept_help(self, concept_arguments: list) -> ConceptHelpRequest:
         if not concept_arguments:
             return ConceptHelpRequest(ConceptHelpItem.ALL_CONCEPTS_LIST, None)
-        concept_name = ' '.join(concept_arguments)
+        concept_name = ' '.join(concept_arguments).lower()
         try:
             concept = self.application_help.concepts_help.lookup_by_name_in_singular(concept_name)
             return ConceptHelpRequest(ConceptHelpItem.INDIVIDUAL_CONCEPT, concept)
