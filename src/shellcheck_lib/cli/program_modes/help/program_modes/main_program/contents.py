@@ -17,11 +17,15 @@ def help_invokation_variants() -> ParagraphItem:
         HeaderContentListItem(
             _help(argument_parsing.TEST_CASE),
             normalize_and_parse(
-                'Describes the test-case functionality.')),
+                'Describes the Test Case functionality.')),
         HeaderContentListItem(
             _help(argument_parsing.CONCEPT),
             normalize_and_parse(
-                'Lists concepts.')),
+                'Lists all concepts.')),
+        HeaderContentListItem(
+            _help(argument_parsing.CONCEPT + ' CONCEPT'),
+            normalize_and_parse(
+                'Describes a given concept.')),
         HeaderContentListItem(
             _help(argument_parsing.INSTRUCTIONS),
             normalize_and_parse(
@@ -29,27 +33,27 @@ def help_invokation_variants() -> ParagraphItem:
         HeaderContentListItem(
             _help('PHASE'),
             normalize_and_parse(
-                'Help for a test-case phase.')),
+                'Describes a given Test Case phase.')),
         HeaderContentListItem(
             _help('PHASE ' + argument_parsing.INSTRUCTIONS),
             normalize_and_parse(
-                'Lists instructions for a test-case phase.')),
+                'Lists instructions for a Test Case phase.')),
         HeaderContentListItem(
             _help('PHASE INSTRUCTION'),
             normalize_and_parse(
-                'Describes a test-case instruction in a phase.')),
+                'Describes a given Test Case instruction in a given Phase.')),
         HeaderContentListItem(
             _help('INSTRUCTION'),
             normalize_and_parse(
-                'Help for all test-case instructions with the given name.')),
+                'Describes all Test Case instructions with the given name.')),
         HeaderContentListItem(
             _help(argument_parsing.TEST_SUITE),
             normalize_and_parse(
-                'Describes the test-suite functionality.')),
+                'Describes the Test Suite functionality.')),
         HeaderContentListItem(
             _help(argument_parsing.TEST_SUITE + ' SECTION'),
             normalize_and_parse(
-                'Describes a test-suite section.')),
+                'Describes a given Test Suite section.')),
     ]
 
     return un_indented_variable_list(items)

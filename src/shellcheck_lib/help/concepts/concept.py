@@ -144,4 +144,4 @@ class _ConfigurationParameterConcept(PlainConceptDocumentation):
 CONFIGURATION_PARAMETER_CONCEPT = _ConfigurationParameterConcept()
 
 _CONFIGURATION_PARAMETER_SINGLE_LINE_DESCRIPTION = """\
-Values that are set by the {0} phase and determines how the remaining phases are executed."""
+Values set by the {0} phase that determine how the remaining phases are executed."""
