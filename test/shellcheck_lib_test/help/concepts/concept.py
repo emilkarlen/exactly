@@ -7,6 +7,7 @@ from shellcheck_lib_test.help.concepts.test_resources import suite_for_plain_con
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         suite_for_plain_concept_documentation(sut.SANDBOX_CONCEPT),
+        suite_for_plain_concept_documentation(sut.CONFIGURATION_PARAMETER_CONCEPT),
     ])
 
 
