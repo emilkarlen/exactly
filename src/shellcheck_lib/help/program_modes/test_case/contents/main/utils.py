@@ -1,8 +1,14 @@
 from shellcheck_lib.cli.cli_environment import exit_values
 from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from shellcheck_lib.help.utils.phase_names import phase_name_dictionary
+from shellcheck_lib.help.utils.render import SectionContentsRenderer
 from shellcheck_lib.util.textformat.structure.core import ParagraphItem
 from shellcheck_lib.util.textformat.structure.structures import first_column_is_header_table, para
+
+
+class TestCaseHelpRendererBase(SectionContentsRenderer):
+    def __init__(self, test_case_help: TestCaseHelp):
+        self.test_case_help = test_case_help
 
 
 class Setup(tuple):

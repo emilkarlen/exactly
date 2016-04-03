@@ -1,10 +1,19 @@
 from shellcheck_lib.help.program_modes.test_case.instruction_documentation import InstructionDocumentation, \
     InvokationVariant, \
     SyntaxElementDescription
+from shellcheck_lib.help.utils.render import SectionContentsRenderer
 from shellcheck_lib.util.textformat.structure import document as doc, paragraph, lists
 from shellcheck_lib.util.textformat.structure.structures import para, text
 
 LIST_INDENT = 2
+
+
+class InstructionManPageRenderer(SectionContentsRenderer):
+    def __init__(self, documentation: InstructionDocumentation):
+        self.documentation = documentation
+
+    def apply(self) -> doc.SectionContents:
+        return instruction_man_page(self.documentation)
 
 
 def instruction_man_page(description: InstructionDocumentation) -> doc.SectionContents:

@@ -1,24 +1,27 @@
-from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCasePhaseInstructionSet, \
-    TestCaseHelp
+from shellcheck_lib.help.program_modes.test_case.contents.main.utils import TestCaseHelpRendererBase
+from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCasePhaseInstructionSet
 from shellcheck_lib.help.program_modes.test_case.render.render_instruction import instruction_set_list_item
+from shellcheck_lib.help.program_modes.test_case.render.utils import TestCasePhaseInstructionSetRendererBase
 from shellcheck_lib.util.textformat.structure import document as doc
 from shellcheck_lib.util.textformat.structure import lists
 from shellcheck_lib.util.textformat.structure.core import Text
 
 
-def phase_instruction_set(instruction_set: TestCasePhaseInstructionSet) -> doc.SectionContents:
-    instruction_list = instruction_set_list(instruction_set)
-    return doc.SectionContents([instruction_list], [])
+class PhaseInstructionSetRenderer(TestCasePhaseInstructionSetRendererBase):
+    def apply(self) -> doc.SectionContents:
+        instruction_list = instruction_set_list(self.instruction_set)
+        return doc.SectionContents([instruction_list], [])
 
 
-def instruction_set_per_phase(test_case_help: TestCaseHelp) -> doc.SectionContents:
-    sections = []
-    for test_case_phase_help in test_case_help.phase_helps_in_order_of_execution:
-        if test_case_phase_help.is_phase_with_instructions:
-            instruction_list = instruction_set_list(test_case_phase_help.instruction_set)
-            sections.append(doc.Section(Text(test_case_phase_help.name.syntax),
-                                        doc.SectionContents([instruction_list], [])))
-    return doc.SectionContents([], sections)
+class InstructionSetPerPhaseRenderer(TestCaseHelpRendererBase):
+    def apply(self) -> doc.SectionContents:
+        sections = []
+        for test_case_phase_help in self.test_case_help.phase_helps_in_order_of_execution:
+            if test_case_phase_help.is_phase_with_instructions:
+                instruction_list = instruction_set_list(test_case_phase_help.instruction_set)
+                sections.append(doc.Section(Text(test_case_phase_help.name.syntax),
+                                            doc.SectionContents([instruction_list], [])))
+        return doc.SectionContents([], sections)
 
 
 def instruction_set_list(instruction_set: TestCasePhaseInstructionSet) -> lists.HeaderContentList:

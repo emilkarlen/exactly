@@ -17,7 +17,7 @@ class TestCase(unittest.TestCase):
                                             ['instr 1',
                                              'instr 2']))
         # ACT #
-        actual = sut.render_test_case_phase_overview(tcp_help)
+        actual = sut.TestCasePhaseOverviewRenderer(tcp_help).apply()
         # ASSERT #
         struct_check.is_section_contents.apply(self, actual)
 
@@ -29,7 +29,7 @@ class TestCase(unittest.TestCase):
                                             ['instr 1',
                                              'instr 2']))
         # ACT #
-        actual = sut.render_test_case_phase_overview(tcp_help)
+        actual = sut.TestCasePhaseOverviewRenderer(tcp_help).apply()
         # ASSERT #
         struct_check.is_section_contents.apply(self, actual)
 
@@ -37,7 +37,7 @@ class TestCase(unittest.TestCase):
         # ARRANGE #
         tcp_help = act.ActPhaseDocumentation('phase name')
         # ACT #
-        actual = sut.render_test_case_phase_overview(tcp_help)
+        actual = sut.TestCasePhaseOverviewRenderer(tcp_help).apply()
         # ASSERT #
         struct_check.is_section_contents.apply(self, actual)
 
@@ -49,7 +49,7 @@ class TestCase(unittest.TestCase):
                                             ['instr 1',
                                              'instr 2']))
         # ACT #
-        actual = sut.render_test_case_phase_overview(tcp_help)
+        actual = sut.TestCasePhaseOverviewRenderer(tcp_help).apply()
         # ASSERT #
         struct_check.is_section_contents.apply(self, actual)
 
@@ -61,7 +61,7 @@ class TestCase(unittest.TestCase):
                                             ['instr 1',
                                              'instr 2']))
         # ACT #
-        actual = sut.render_test_case_phase_overview(tcp_help)
+        actual = sut.TestCasePhaseOverviewRenderer(tcp_help).apply()
         # ASSERT #
         struct_check.is_section_contents.apply(self, actual)
 
@@ -73,7 +73,7 @@ class TestCase(unittest.TestCase):
                                             ['instr 1',
                                              'instr 2']))
         # ACT #
-        actual = sut.render_test_case_phase_overview(tcp_help)
+        actual = sut.TestCasePhaseOverviewRenderer(tcp_help).apply()
         # ASSERT #
         struct_check.is_section_contents.apply(self, actual)
 
