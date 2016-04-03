@@ -345,6 +345,20 @@ class TestConceptHelp(unittest.TestCase):
         # ASSERT #
         self._assert_result_is_individual_concept(actual, 'a b c')
 
+    def test_individual_concept_with_multiple_words_and_different_case_name(self):
+        # ARRANGE #
+        concepts = [
+            ConceptTestImpl('first'),
+            ConceptTestImpl('a b c'),
+            ConceptTestImpl('last'),
+        ]
+        application_help = _app_help_for([], concepts=concepts)
+        # ACT #
+        actual = sut.parse(application_help,
+                           arguments_for.individual_concept('a B C'))
+        # ASSERT #
+        self._assert_result_is_individual_concept(actual, 'a b c')
+
     def test_search_for_non_existing_concept_SHOULD_raise_HelpError(self):
         # ARRANGE #
         concepts = [
