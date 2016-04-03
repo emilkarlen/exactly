@@ -1,5 +1,6 @@
 import unittest
 
+from shellcheck_lib.help.cross_reference import CrossReference
 from shellcheck_lib.help.program_modes.test_case.instruction_documentation import InstructionDocumentation, \
     InvokationVariant, \
     SyntaxElementDescription
@@ -20,6 +21,7 @@ def suite_for_instruction_documentation(description: InstructionDocumentation) -
         TestMainDescriptionRest,
         TestInvokationVariants,
         TestSyntaxElementDescriptions,
+        TestCrossReferences,
     ])
 
 
@@ -39,6 +41,12 @@ class TestInstructionName(WithDescriptionBase):
     def runTest(self):
         actual = self.description.instruction_name()
         self.assertIsInstance(actual, str)
+
+
+class TestCrossReferences(WithDescriptionBase):
+    def runTest(self):
+        actual = self.description.cross_references()
+        va.every_element('cross references', va.IsInstance(CrossReference)).apply(self, actual)
 
 
 class TestSingleLineDescription(WithDescriptionBase):

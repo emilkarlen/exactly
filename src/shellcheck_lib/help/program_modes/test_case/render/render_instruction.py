@@ -3,7 +3,7 @@ from shellcheck_lib.help.program_modes.test_case.instruction_documentation impor
     SyntaxElementDescription
 from shellcheck_lib.help.utils.render import SectionContentsRenderer
 from shellcheck_lib.util.textformat.structure import document as doc, paragraph, lists
-from shellcheck_lib.util.textformat.structure.structures import para, text
+from shellcheck_lib.util.textformat.structure.structures import para, text, section
 
 LIST_INDENT = 2
 
@@ -13,25 +13,22 @@ class InstructionManPageRenderer(SectionContentsRenderer):
         self.documentation = documentation
 
     def apply(self) -> doc.SectionContents:
-        return instruction_man_page(self.documentation)
-
-
-def instruction_man_page(description: InstructionDocumentation) -> doc.SectionContents:
-    prelude_paragraphs = [(para(description.single_line_description()))]
-    main_description_rest = description.main_description_rest()
-    if description.invokation_variants():
-        section_contents = _invokation_variants_content(description)
-        description_sections = [] if not main_description_rest else [doc.Section(text('DESCRIPTION'),
-                                                                                 doc.SectionContents(
-                                                                                     main_description_rest, []))]
+        description = self.documentation
+        sub_sections = []
+        if description.invokation_variants():
+            sub_sections.append(doc.Section(text('SYNOPSIS'),
+                                            _invokation_variants_content(description)))
+        main_description_rest = description.main_description_rest()
+        if main_description_rest:
+            sub_sections.append(section('DESCRIPTION',
+                                        main_description_rest))
+        cross_references = description.cross_references()
+        if cross_references:
+            sub_sections.append(section('SEE ALSO',
+                                        [para('TODO cross references')]))
+        prelude_paragraphs = [para(description.single_line_description())]
         return doc.SectionContents(prelude_paragraphs,
-                                   [doc.Section(text('SYNOPSIS'),
-                                                section_contents)] +
-                                   description_sections)
-    else:
-        return doc.SectionContents(prelude_paragraphs +
-                                   main_description_rest,
-                                   [])
+                                   sub_sections)
 
 
 def instruction_set_list_item(description: InstructionDocumentation) -> lists.HeaderContentListItem:

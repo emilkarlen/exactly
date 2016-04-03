@@ -43,18 +43,24 @@ class InstructionDocumentation:
 
     def main_description_rest(self) -> list:
         """
-        :return: [ParagraphItem]
+        :rtype [ParagraphItem]
         """
         return []
 
     def invokation_variants(self) -> list:
         """
-        :return: [InvokationVariant]
+        :rtype [InvokationVariant]
         """
         return []
 
     def syntax_element_descriptions(self) -> list:
         """
-        :return: [SyntaxElementDescription]
+        :rtype [SyntaxElementDescription]
+        """
+        return []
+
+    def cross_references(self) -> list:
+        """
+        :rtype [CrossReference]
         """
         return []
