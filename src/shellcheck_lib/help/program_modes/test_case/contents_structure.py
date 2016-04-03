@@ -1,3 +1,4 @@
+from shellcheck_lib.help.concepts.concept_structure import ConceptDocumentation
 from shellcheck_lib.help.program_modes.test_case.instruction_documentation import InstructionDocumentation
 from shellcheck_lib.help.utils import formatting
 from shellcheck_lib.help.utils.description import Description
@@ -92,3 +93,9 @@ class ConceptsHelp(tuple):
         :type: [ConceptDocumentation]
         """
         return self[0]
+
+    def lookup_by_name_in_singular(self, concept_name: str) -> ConceptDocumentation:
+        matches = list(filter(lambda c: c.name().singular == concept_name, self.all_concepts))
+        if not matches:
+            raise KeyError('Not a concept: ' + concept_name)
+        return matches[0]

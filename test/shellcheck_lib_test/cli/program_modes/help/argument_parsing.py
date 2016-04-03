@@ -1,10 +1,12 @@
 import unittest
 
 from shellcheck_lib.cli.program_modes.help import argument_parsing as sut
+from shellcheck_lib.cli.program_modes.help.argument_parsing import HelpError
 from shellcheck_lib.cli.program_modes.help.concepts.help_request import ConceptHelpRequest, ConceptHelpItem
 from shellcheck_lib.cli.program_modes.help.program_modes.main_program.help_request import *
 from shellcheck_lib.cli.program_modes.help.program_modes.test_case.help_request import *
 from shellcheck_lib.cli.program_modes.help.program_modes.test_suite.help_request import *
+from shellcheck_lib.help.concepts.concept_structure import PlainConceptDocumentation, Name, ConceptDocumentation
 from shellcheck_lib.help.contents_structure import ApplicationHelp
 from shellcheck_lib.help.program_modes.main_program.contents_structure import MainProgramHelp
 from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCasePhaseDocumentation, TestCaseHelp, \
@@ -13,6 +15,7 @@ from shellcheck_lib.help.program_modes.test_case.instruction_documentation impor
 from shellcheck_lib.help.program_modes.test_suite.contents_structure import TestSuiteSectionHelp, \
     TestSuiteHelp
 from shellcheck_lib.help.utils import formatting
+from shellcheck_lib.help.utils.description import Description, single_line_description
 from shellcheck_lib_test.cli.program_modes.help.test_resources import arguments_for
 from shellcheck_lib_test.help.test_resources import test_case_phase_help, \
     single_line_description_that_identifies_instruction_and_phase
@@ -314,6 +317,72 @@ class TestConceptHelp(unittest.TestCase):
         self.assertIs(ConceptHelpItem.ALL_CONCEPTS_LIST,
                       actual.item,
                       'Item should denote help for ' + ConceptHelpItem.ALL_CONCEPTS_LIST.name)
+
+    def test_individual_concept_with_single_word_name(self):
+        # ARRANGE #
+        concepts = [
+            ConceptTestImpl('first'),
+            ConceptTestImpl('second'),
+        ]
+        application_help = _app_help_for([], concepts=concepts)
+        # ACT #
+        actual = sut.parse(application_help,
+                           arguments_for.individual_concept('second'))
+        # ASSERT #
+        self._assert_result_is_individual_concept(actual, 'second')
+
+    def test_individual_concept_with_multiple_words_name(self):
+        # ARRANGE #
+        concepts = [
+            ConceptTestImpl('first'),
+            ConceptTestImpl('a b c'),
+            ConceptTestImpl('last'),
+        ]
+        application_help = _app_help_for([], concepts=concepts)
+        # ACT #
+        actual = sut.parse(application_help,
+                           arguments_for.individual_concept('a b c'))
+        # ASSERT #
+        self._assert_result_is_individual_concept(actual, 'a b c')
+
+    def test_search_for_non_existing_concept_SHOULD_raise_HelpError(self):
+        # ARRANGE #
+        concepts = [
+            ConceptTestImpl('first'),
+            ConceptTestImpl('second'),
+        ]
+        application_help = _app_help_for([], concepts=concepts)
+        # ACT & ASSERT #
+        with self.assertRaises(HelpError):
+            sut.parse(application_help,
+                      arguments_for.individual_concept('non-existing concept'))
+
+    def _assert_result_is_individual_concept(self,
+                                             actual: HelpRequest,
+                                             concept_name: str):
+        self.assertIsInstance(actual,
+                              ConceptHelpRequest,
+                              'Expecting settings for concepts')
+        assert isinstance(actual,
+                          ConceptHelpRequest)
+        self.assertIs(ConceptHelpItem.INDIVIDUAL_CONCEPT,
+                      actual.item,
+                      'Item should denote help for ' + ConceptHelpItem.INDIVIDUAL_CONCEPT.name)
+
+        self.assertIsInstance(actual.individual_concept,
+                              ConceptDocumentation,
+                              'Individual concept is expected to an instance of ' + str(ConceptDocumentation))
+
+        self.assertEqual(concept_name,
+                         actual.individual_concept.name().singular)
+
+
+class ConceptTestImpl(PlainConceptDocumentation):
+    def __init__(self, singular_name: str):
+        super().__init__(Name(singular_name))
+
+    def purpose(self) -> Description:
+        return single_line_description('single line description')
 
 
 def suite() -> unittest.TestSuite:

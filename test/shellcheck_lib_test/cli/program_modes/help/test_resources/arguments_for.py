@@ -16,6 +16,10 @@ def concept_list() -> list:
     return [CONCEPT]
 
 
+def individual_concept(concept_name: str) -> list:
+    return [CONCEPT] + concept_name.split()
+
+
 def instructions() -> list:
     return [INSTRUCTIONS]
 
