@@ -11,9 +11,8 @@ from shellcheck_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSe
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(
-            parser(instruction_name),
-        execute.TheInstructionDocumentation(instruction_name,
-                                   'Executes a program.'))
+        parser(instruction_name),
+        execute.TheInstructionDocumentation(instruction_name))
 
 
 def parser(instruction_name: str) -> SingleInstructionParser:
