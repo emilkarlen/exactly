@@ -37,6 +37,11 @@ class TheInstructionDocumentation(InstructionDocumentation):
                  execution_modes_list()])
         ]
 
+    def cross_references(self) -> list:
+        from shellcheck_lib.help.concepts.configuration_parameters.configuration_parameter import \
+            EXECUTION_MODE_CONFIGURATION_PARAMETER
+        return [EXECUTION_MODE_CONFIGURATION_PARAMETER.cross_reference()]
+
 
 class Parser(SingleInstructionParser):
     def apply(self, source: SingleInstructionParserSource) -> AnonymousPhaseInstruction:
