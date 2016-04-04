@@ -7,6 +7,7 @@ from shellcheck_lib.help.program_modes.test_case.contents.main.ref_test_case_pro
 from shellcheck_lib.help.program_modes.test_case.contents.main.utils import Setup, post_setup_validation_step_name, \
     step_with_single_exit_value, singe_exit_value_display
 from shellcheck_lib.util.textformat.parse import normalize_and_parse
+from shellcheck_lib.util.textformat.structure.core import ParagraphItem
 from shellcheck_lib.util.textformat.structure.structures import *
 
 EXIT_CODE_FROM_ARGUMENT_PARSER = 2
