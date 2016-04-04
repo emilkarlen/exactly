@@ -2,9 +2,11 @@ import unittest
 from xml.etree.ElementTree import Element
 
 from shellcheck_lib.util.textformat.formatting.html import paragraph as sut
+from shellcheck_lib.util.textformat.formatting.html.text import TextRenderer
 from shellcheck_lib.util.textformat.structure import core
 from shellcheck_lib.util.textformat.structure.paragraph import Paragraph
-from shellcheck_lib_test.util.textformat.formatting.html.test_resources import as_unicode_str
+from shellcheck_lib_test.util.textformat.formatting.html.test_resources import as_unicode_str, CrossReferenceTarget, \
+    TARGET_RENDERER
 
 
 def suite() -> unittest.TestSuite:
@@ -21,7 +23,7 @@ class TestParagraph(unittest.TestCase):
         root = Element('root')
         para = Paragraph([])
         # ACT #
-        ret_val = sut.render(TARGET_RENDERER, root, para)
+        ret_val = sut.render(TextRenderer(TARGET_RENDERER), root, para)
         # ASSERT #
         xml_string = as_unicode_str(root)
         self.assertEqual('<root />',
@@ -33,7 +35,7 @@ class TestParagraph(unittest.TestCase):
         root = Element('root')
         para = Paragraph([core.StringText('string text')])
         # ACT #
-        ret_val = sut.render(TARGET_RENDERER, root, para)
+        ret_val = sut.render(TextRenderer(TARGET_RENDERER), root, para)
         # ASSERT #
         xml_string = as_unicode_str(root)
         self.assertEqual('<root><p>string text</p></root>',
@@ -47,7 +49,7 @@ class TestParagraph(unittest.TestCase):
         para = Paragraph([core.StringText('_1_'),
                           core.StringText('_2_')])
         # ACT #
-        ret_val = sut.render(TARGET_RENDERER, root, para)
+        ret_val = sut.render(TextRenderer(TARGET_RENDERER), root, para)
         # ASSERT #
         xml_string = as_unicode_str(root)
         self.assertEqual('<root><p>_1_<br />_2_</p></root>',
@@ -62,7 +64,7 @@ class TestParagraph(unittest.TestCase):
                                                   CrossReferenceTarget('target')),
                           ])
         # ACT #
-        ret_val = sut.render(TARGET_RENDERER, root, para)
+        ret_val = sut.render(TextRenderer(TARGET_RENDERER), root, para)
         # ASSERT #
         xml_string = as_unicode_str(root)
         self.assertEqual('<root><p><a href="target">title</a></p></root>',
@@ -78,7 +80,7 @@ class TestParagraph(unittest.TestCase):
                           core.CrossReferenceText('title 2',
                                                   CrossReferenceTarget('target 2'))])
         # ACT #
-        ret_val = sut.render(TARGET_RENDERER, root, para)
+        ret_val = sut.render(TextRenderer(TARGET_RENDERER), root, para)
         # ASSERT #
         xml_string = as_unicode_str(root)
         self.assertEqual('<root><p><a href="target 1">title 1</a><br /><a href="target 2">title 2</a></p></root>',
@@ -93,7 +95,7 @@ class TestParagraph(unittest.TestCase):
                                                   CrossReferenceTarget('target')),
                           core.StringText('string')])
         # ACT #
-        ret_val = sut.render(TARGET_RENDERER, root, para)
+        ret_val = sut.render(TextRenderer(TARGET_RENDERER), root, para)
         # ASSERT #
         xml_string = as_unicode_str(root)
         self.assertEqual('<root><p><a href="target">title</a><br />string</p></root>',
@@ -108,7 +110,7 @@ class TestParagraph(unittest.TestCase):
                                           core.StringText('concrete string')),
                           ])
         # ACT #
-        ret_val = sut.render(TARGET_RENDERER, root, para)
+        ret_val = sut.render(TextRenderer(TARGET_RENDERER), root, para)
         # ASSERT #
         xml_string = as_unicode_str(root)
         self.assertEqual('<root><p><a name="target">concrete string</a></p></root>',
@@ -125,7 +127,7 @@ class TestParagraph(unittest.TestCase):
                                                     CrossReferenceTarget('cross ref target'))),
         ])
         # ACT #
-        ret_val = sut.render(TARGET_RENDERER, root, para)
+        ret_val = sut.render(TextRenderer(TARGET_RENDERER), root, para)
         # ASSERT #
         xml_string = as_unicode_str(root)
         self.assertEqual(
@@ -133,17 +135,3 @@ class TestParagraph(unittest.TestCase):
             xml_string)
         self.assertIs(list(root)[0],
                       ret_val)
-
-
-class CrossReferenceTarget(core.CrossReferenceTarget):
-    def __init__(self, name: str):
-        self.name = name
-
-
-class TargetRenderer(sut.TargetRenderer):
-    def apply(self, target: core.CrossReferenceTarget) -> str:
-        assert isinstance(target, CrossReferenceTarget)
-        return target.name
-
-
-TARGET_RENDERER = TargetRenderer()
