@@ -5,6 +5,7 @@ import unittest
 from shellcheck_lib.cli import main_program
 from shellcheck_lib.cli.cli_environment.exit_values import NO_EXECUTION_EXIT_CODE
 from shellcheck_lib.cli.main_program import HELP_COMMAND
+from shellcheck_lib.cli.program_modes.help import arguments_for
 from shellcheck_lib.default.program_modes.test_case.default_instructions_setup import instructions_setup
 from shellcheck_lib.default.program_modes.test_suite.reporting import INVALID_SUITE_EXIT_CODE, FAILED_TESTS_EXIT_CODE
 from shellcheck_lib.execution import phases
@@ -13,7 +14,6 @@ from shellcheck_lib.help.program_modes.test_case.config import phase_help_name
 from shellcheck_lib.test_case.test_case_processing import AccessErrorType
 from shellcheck_lib.test_suite.parser import SECTION_NAME__SUITS, SECTION_NAME__CASES
 from shellcheck_lib.util.string import lines_content
-from shellcheck_lib_test.cli.program_modes.help.test_resources import arguments_for
 from shellcheck_lib_test.cli.test_resources.execute_main_program import execute_main_program, \
     ARGUMENTS_FOR_TEST_INTERPRETER
 from shellcheck_lib_test.default.test_resources import default_main_program_case_preprocessing

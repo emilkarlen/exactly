@@ -1,15 +1,19 @@
 from shellcheck_lib.help.program_modes.test_case.instruction_documentation import InstructionDocumentation, \
     InvokationVariant, \
     SyntaxElementDescription
+from shellcheck_lib.help.utils.cross_reference import CrossReferenceTextConstructor
 from shellcheck_lib.help.utils.render import SectionContentsRenderer
 from shellcheck_lib.util.textformat.structure import document as doc, paragraph, lists
-from shellcheck_lib.util.textformat.structure.structures import para, text, section
+from shellcheck_lib.util.textformat.structure.structures import para, text, section, simple_header_only_list
 
 LIST_INDENT = 2
 
 
 class InstructionManPageRenderer(SectionContentsRenderer):
-    def __init__(self, documentation: InstructionDocumentation):
+    def __init__(self,
+                 cross_ref_text_constructor: CrossReferenceTextConstructor,
+                 documentation: InstructionDocumentation):
+        self.cross_ref_text_constructor = cross_ref_text_constructor
         self.documentation = documentation
 
     def apply(self) -> doc.SectionContents:
@@ -24,8 +28,11 @@ class InstructionManPageRenderer(SectionContentsRenderer):
                                         main_description_rest))
         cross_references = description.cross_references()
         if cross_references:
+            cross_reference_list = simple_header_only_list([self.cross_ref_text_constructor.apply(cross_ref)
+                                                            for cross_ref in cross_references],
+                                                           lists.ListType.ITEMIZED_LIST)
             sub_sections.append(section('SEE ALSO',
-                                        [para('TODO cross references')]))
+                                        [cross_reference_list]))
         prelude_paragraphs = [para(description.single_line_description())]
         return doc.SectionContents(prelude_paragraphs,
                                    sub_sections)
