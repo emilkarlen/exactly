@@ -19,7 +19,7 @@ def test_case_processing_documentation(setup: Setup) -> doc.SectionContents:
     )
 
 
-def processing_step_list(setup: Setup) -> ParagraphItem:
+def processing_step_list(setup: Setup) -> core.ParagraphItem:
     items = [
         list_item('preprocessing',
                   step_with_single_exit_value(
@@ -100,7 +100,7 @@ Executes the actual test.
 One validation step is embedded in the execution:"""
 
 
-def execution_sub_steps_description(setup: Setup) -> ParagraphItem:
+def execution_sub_steps_description(setup: Setup) -> core.ParagraphItem:
     return lists.HeaderContentList([
         lists.HeaderContentListItem(
             text('execution of {phase[setup]:syntax}'.format(phase=setup.phase_names)),
