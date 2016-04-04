@@ -1,10 +1,12 @@
 from xml.etree.ElementTree import Element
 
+from shellcheck_lib.util.textformat.formatting.html.interfaces import ParagraphItemRenderer
+
 from shellcheck_lib.util.textformat.formatting.html import lists as list_rendering
-from shellcheck_lib.util.textformat.formatting.html import literal_layout, paragraph
+from shellcheck_lib.util.textformat.formatting.html import paragraph
 from shellcheck_lib.util.textformat.formatting.html import table as table_rendering
 from shellcheck_lib.util.textformat.formatting.html import text
-from shellcheck_lib.util.textformat.formatting.html.interfaces import ParagraphItemRenderer
+from shellcheck_lib.util.textformat.formatting.html.paragraph_item import literal_layout
 from shellcheck_lib.util.textformat.structure import lists
 from shellcheck_lib.util.textformat.structure.core import ParagraphItem
 from shellcheck_lib.util.textformat.structure.literal_layout import LiteralLayout

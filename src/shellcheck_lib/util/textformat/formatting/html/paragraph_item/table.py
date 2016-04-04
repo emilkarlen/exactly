@@ -1,6 +1,6 @@
 from xml.etree.ElementTree import Element, SubElement
 
-from shellcheck_lib.util.textformat.formatting.html.interfaces import ParagraphItemRenderer
+from shellcheck_lib.util.textformat.formatting.html.paragraph_item.interfaces import ParagraphItemRenderer
 from shellcheck_lib.util.textformat.structure.table import Table, TableFormat
 
 
