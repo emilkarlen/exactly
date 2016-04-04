@@ -1,6 +1,6 @@
 import unittest
 
-from shellcheck_lib.util.textformat.formatting.table import width_distribution as sut
+from shellcheck_lib.util.textformat.formatting.text.table import width_distribution as sut
 
 
 class TestSingleColumn(unittest.TestCase):

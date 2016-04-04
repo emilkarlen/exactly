@@ -1,24 +1,11 @@
 import unittest
 
-from . import lists
-from . import paragraph_item
-from . import section
-from . import wrapper
+from shellcheck_lib_test.util.textformat.formatting import text
 
 
-def suite():
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(wrapper.suite())
-    ret_val.addTest(lists.suite())
-    ret_val.addTest(paragraph_item.suite())
-    ret_val.addTest(section.suite())
-    return ret_val
-
-
-def run_suite():
-    runner = unittest.TextTestRunner()
-    runner.run(suite())
+def suite() -> unittest.TestSuite:
+    return text.suite()
 
 
 if __name__ == '__main__':
-    run_suite()
+    unittest.TextTestRunner().run(suite())

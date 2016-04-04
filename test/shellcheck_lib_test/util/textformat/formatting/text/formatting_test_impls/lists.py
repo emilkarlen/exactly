@@ -1,10 +1,10 @@
 import unittest
 
 import shellcheck_lib.util.textformat.structure.lists
-from shellcheck_lib.util.textformat.formatting import lists as lf
-from shellcheck_lib.util.textformat.formatting import paragraph_item as sut
-from shellcheck_lib.util.textformat.formatting.lists import list_formats_with
-from shellcheck_lib.util.textformat.formatting.text import TextFormatter
+from shellcheck_lib.util.textformat.formatting.text import lists as lf
+from shellcheck_lib.util.textformat.formatting.text import paragraph_item as sut
+from shellcheck_lib.util.textformat.formatting.text.lists import list_formats_with
+from shellcheck_lib.util.textformat.formatting.text.text import TextFormatter
 from shellcheck_lib.util.textformat.structure import core
 from shellcheck_lib.util.textformat.structure import lists
 from shellcheck_lib_test.util.textformat.test_resources.constr import single_text_para, item, header_only_item, \

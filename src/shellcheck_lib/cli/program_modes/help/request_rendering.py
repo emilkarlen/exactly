@@ -17,10 +17,10 @@ from shellcheck_lib.help import cross_reference_id
 from shellcheck_lib.help.contents_structure import ApplicationHelp
 from shellcheck_lib.help.utils.cross_reference import CrossReferenceTextConstructor
 from shellcheck_lib.help.utils.render import SectionContentsRenderer
-from shellcheck_lib.util.textformat.formatting import section, paragraph_item
-from shellcheck_lib.util.textformat.formatting import text
-from shellcheck_lib.util.textformat.formatting.lists import list_formats_with
-from shellcheck_lib.util.textformat.formatting.wrapper import Wrapper
+from shellcheck_lib.util.textformat.formatting.text import section, paragraph_item
+from shellcheck_lib.util.textformat.formatting.text import text
+from shellcheck_lib.util.textformat.formatting.text.lists import list_formats_with
+from shellcheck_lib.util.textformat.formatting.text.wrapper import Wrapper
 from shellcheck_lib.util.textformat.structure import core
 
 
