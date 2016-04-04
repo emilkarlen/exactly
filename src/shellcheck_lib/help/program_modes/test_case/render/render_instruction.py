@@ -8,6 +8,8 @@ from shellcheck_lib.util.textformat.structure.structures import para, text, sect
 
 LIST_INDENT = 2
 
+BLANK_LINE_BETWEEN_ELEMENTS = lists.Separations(1, 0)
+
 
 class InstructionManPageRenderer(SectionContentsRenderer):
     def __init__(self,
@@ -17,23 +19,23 @@ class InstructionManPageRenderer(SectionContentsRenderer):
         self.documentation = documentation
 
     def apply(self) -> doc.SectionContents:
-        description = self.documentation
+        documentation = self.documentation
         sub_sections = []
-        if description.invokation_variants():
+        if documentation.invokation_variants():
             sub_sections.append(doc.Section(text('SYNOPSIS'),
-                                            _invokation_variants_content(description)))
-        main_description_rest = description.main_description_rest()
+                                            _invokation_variants_content(documentation)))
+        main_description_rest = documentation.main_description_rest()
         if main_description_rest:
             sub_sections.append(section('DESCRIPTION',
                                         main_description_rest))
-        cross_references = description.cross_references()
+        cross_references = documentation.cross_references()
         if cross_references:
             cross_reference_list = simple_header_only_list([self.cross_ref_text_constructor.apply(cross_ref)
                                                             for cross_ref in cross_references],
                                                            lists.ListType.ITEMIZED_LIST)
             sub_sections.append(section('SEE ALSO',
                                         [cross_reference_list]))
-        prelude_paragraphs = [para(description.single_line_description())]
+        prelude_paragraphs = [para(documentation.single_line_description())]
         return doc.SectionContents(prelude_paragraphs,
                                    sub_sections)
 
@@ -44,13 +46,15 @@ def instruction_set_list_item(description: InstructionDocumentation) -> lists.He
                                        [description_para])
 
 
-def variants_list(invokation_variants: list,
+def variants_list(instruction_name: str,
+                  invokation_variants: list,
                   indented: bool = False,
                   custom_separations: lists.Separations = None) -> paragraph.ParagraphItem:
+    title_prefix = instruction_name + ' ' if instruction_name else ''
     items = []
     for x in invokation_variants:
         assert isinstance(x, InvokationVariant)
-        items.append(lists.HeaderContentListItem(text(x.syntax),
+        items.append(lists.HeaderContentListItem(text(title_prefix + x.syntax),
                                                  x.description_rest))
     return lists.HeaderContentList(items,
                                    lists.Format(lists.ListType.VARIABLE_LIST,
@@ -58,34 +62,36 @@ def variants_list(invokation_variants: list,
                                                 custom_separations=custom_separations))
 
 
-def _invokation_variants_content(description: InstructionDocumentation) -> doc.SectionContents:
+def _invokation_variants_content(instr_doc: InstructionDocumentation) -> doc.SectionContents:
     def syntax_element_description_list() -> paragraph.ParagraphItem:
-        blank_line_between_elements = lists.Separations(1, 0)
         items = []
-        for x in description.syntax_element_descriptions():
+        for x in instr_doc.syntax_element_descriptions():
             assert isinstance(x, SyntaxElementDescription)
             variants_list_paragraphs = []
             if x.invokation_variants:
                 variants_list_paragraphs = [para('Forms:'),
-                                            variants_list(x.invokation_variants,
+                                            variants_list(None,
+                                                          x.invokation_variants,
                                                           True,
-                                                          custom_separations=blank_line_between_elements)]
+                                                          custom_separations=BLANK_LINE_BETWEEN_ELEMENTS)]
             items.append(lists.HeaderContentListItem(text(x.element_name),
                                                      x.description_rest +
                                                      variants_list_paragraphs))
         return lists.HeaderContentList(items,
                                        lists.Format(lists.ListType.VARIABLE_LIST,
                                                     custom_indent_spaces=_custom_list_indent(True),
-                                                    custom_separations=blank_line_between_elements))
+                                                    custom_separations=BLANK_LINE_BETWEEN_ELEMENTS))
 
     def syntax_element_description_paragraph_items() -> list:
-        if not description.syntax_element_descriptions():
+        if not instr_doc.syntax_element_descriptions():
             return []
         return [para('where'),
                 syntax_element_description_list()
                 ]
 
-    return doc.SectionContents([variants_list(description.invokation_variants())] +
+    return doc.SectionContents([variants_list(instr_doc.instruction_name(),
+                                              instr_doc.invokation_variants(),
+                                              custom_separations=BLANK_LINE_BETWEEN_ELEMENTS)] +
                                syntax_element_description_paragraph_items(),
                                [])
 
