@@ -1,25 +1,34 @@
-import enum
 import unittest
 
 from shellcheck_lib.util.textformat.structure import core
 from shellcheck_lib.util.textformat.structure import lists
 from shellcheck_lib.util.textformat.structure import utils as sut
+from shellcheck_lib.util.textformat.structure.core import StringText
 from shellcheck_lib.util.textformat.structure.literal_layout import LiteralLayout
 from shellcheck_lib.util.textformat.structure.paragraph import Paragraph
 from shellcheck_lib.util.textformat.structure.table import Table, TableFormat
-from shellcheck_lib_test.util.textformat.test_resources.constr import single_text_para
+
+
+def suite() -> unittest.TestSuite:
+    return unittest.makeSuite(TestParagraphItemVisitor)
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())
 
 
 class TestParagraphItemVisitor(unittest.TestCase):
     def test_visit_paragraph(self):
         # ARRANGE #
-        item = single_text_para('paragraph text')
+        item = Paragraph([StringText('string text')])
         visitor = AVisitorThatRecordsVisitedMethods()
         # ACT #
-        visitor.visit(item)
+        ret_val = visitor.visit(item)
         # ASSERT #
-        self.assertEqual([ItemType.PARAGRAPH],
+        self.assertEqual([Paragraph],
                          visitor.visited_types)
+        self.assertIs(item,
+                      ret_val)
 
     def test_visit_list(self):
         # ARRANGE #
@@ -28,30 +37,36 @@ class TestParagraphItemVisitor(unittest.TestCase):
                                        lists.Format(lists.ListType.ITEMIZED_LIST))
         visitor = AVisitorThatRecordsVisitedMethods()
         # ACT #
-        visitor.visit(item)
+        ret_val = visitor.visit(item)
         # ASSERT #
-        self.assertEqual([ItemType.LIST],
+        self.assertEqual([lists.HeaderContentList],
                          visitor.visited_types)
+        self.assertIs(item,
+                      ret_val)
 
     def test_visit_literal_layout(self):
         # ARRANGE #
         item = LiteralLayout('literal text')
         visitor = AVisitorThatRecordsVisitedMethods()
         # ACT #
-        visitor.visit(item)
+        ret_val = visitor.visit(item)
         # ASSERT #
-        self.assertEqual([ItemType.LITERAL_LAYOUT],
+        self.assertEqual([LiteralLayout],
                          visitor.visited_types)
+        self.assertIs(item,
+                      ret_val)
 
     def test_visit_table(self):
         # ARRANGE #
         item = Table(TableFormat('column separator'), [])
         visitor = AVisitorThatRecordsVisitedMethods()
         # ACT #
-        visitor.visit(item)
+        ret_val = visitor.visit(item)
         # ASSERT #
-        self.assertEqual([ItemType.TABLE],
+        self.assertEqual([Table],
                          visitor.visited_types)
+        self.assertIs(item,
+                      ret_val)
 
     def test_visit_unknown_object(self):
         # ARRANGE #
@@ -70,33 +85,17 @@ class AVisitorThatRecordsVisitedMethods(sut.ParagraphItemVisitor):
         self.visited_types = []
 
     def visit_paragraph(self, paragraph: Paragraph):
-        self.visited_types.append(ItemType.PARAGRAPH)
+        self.visited_types.append(Paragraph)
+        return paragraph
 
     def visit_header_value_list(self, header_value_list: lists.HeaderContentList):
-        self.visited_types.append(ItemType.LIST)
+        self.visited_types.append(lists.HeaderContentList)
+        return header_value_list
 
     def visit_literal_layout(self, x: LiteralLayout):
-        self.visited_types.append(ItemType.LITERAL_LAYOUT)
+        self.visited_types.append(LiteralLayout)
+        return x
 
     def visit_table(self, table: Table):
-        self.visited_types.append(ItemType.TABLE)
-
-
-class ItemType(enum.Enum):
-    PARAGRAPH = 1
-    LIST = 2
-    LITERAL_LAYOUT = 3
-    TABLE = 4
-
-
-def suite() -> unittest.TestSuite:
-    return unittest.makeSuite(TestParagraphItemVisitor)
-
-
-def run_suite():
-    runner = unittest.TextTestRunner()
-    runner.run(suite())
-
-
-if __name__ == '__main__':
-    run_suite()
+        self.visited_types.append(Table)
+        return table
