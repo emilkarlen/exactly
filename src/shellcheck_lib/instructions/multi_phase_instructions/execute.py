@@ -30,7 +30,7 @@ SOURCE_OPTION = '--source'
 class TheInstructionDocumentation(InstructionDocumentation):
     def __init__(self,
                  name: str,
-                 single_line_description: str):
+                 single_line_description: str = 'Runs a program.'):
         super().__init__(name)
         self._single_line_description = single_line_description
 
@@ -40,53 +40,51 @@ class TheInstructionDocumentation(InstructionDocumentation):
     def invokation_variants(self) -> list:
         return [
             InvokationVariant(
-                    'EXECUTABLE [--] ARGUMENT...',
-                    paragraphs_parse.normalize_and_parse(
-                            """\
-                            Executes the given executable with the given command line arguments.
-                            The arguments are splitted according to shell syntax.
-                            """)),
+                'EXECUTABLE [--] ARGUMENT...',
+                paragraphs_parse.normalize_and_parse(
+                    """\
+                    Executes the given executable with the given command line arguments.
+                    The arguments are splitted according to shell syntax.
+                    """)),
             InvokationVariant(
-                    'EXECUTABLE %s SOURCE-FILE [--] ARGUMENT...' % INTERPRET_OPTION,
-                    paragraphs_parse.normalize_and_parse(
-                            """\
-                            Interprets the given SOURCE-FILE using EXECUTABLE.
-                            ARGUMENTS... are splitted according to shell syntax.
-                            """)),
+                'EXECUTABLE %s SOURCE-FILE [--] ARGUMENT...' % INTERPRET_OPTION,
+                paragraphs_parse.normalize_and_parse(
+                    """\
+                    Interprets the given SOURCE-FILE using EXECUTABLE.
+                    ARGUMENTS... are splitted according to shell syntax.
+                    """)),
             InvokationVariant(
-                    'EXECUTABLE %s SOURCE' % SOURCE_OPTION,
-                    paragraphs_parse.normalize_and_parse(
-                            """\
-                            Interprets the given SOURCE using EXECUTABLE.
-                            SOURCE is taken literary, and is given as a single argument to EXECUTABLE.
-                            """)),
+                'EXECUTABLE %s SOURCE' % SOURCE_OPTION,
+                paragraphs_parse.normalize_and_parse(
+                    """\
+                    Interprets the given SOURCE using EXECUTABLE.
+                    SOURCE is taken literary, and is given as a single argument to EXECUTABLE.
+                    """)),
         ]
 
     def syntax_element_descriptions(self) -> list:
         return [
             SyntaxElementDescription(
-                    'EXECUTABLE',
-                paras('Specifies an executable program.'),
-                    [
-                        InvokationVariant('ABSOLUTE-PATH', [para('An absolute path.')]),
-                        InvokationVariant('[{}] PATH'.format('|'.join(ALL_REL_OPTIONS)),
-                                          paragraphs_parse.normalize_and_parse("""\
-                                          A path that is relative the given directory
-                                          under the Execution Directory Structure.""")),
-                        InvokationVariant('( EXECUTABLE ARGUMENT-TO-EXECUTABLE... )',
-                                          paragraphs_parse.normalize_and_parse("""\
-                                          An executable program with arguments. (Must be inside parentheses.)""")),
-                    ]),
+                'EXECUTABLE',
+                paras('Specifies a program by giving the path to an executable file.'),
+                [
+                    InvokationVariant('ABSOLUTE-PATH', [para('An absolute path.')]),
+                    InvokationVariant('[{}] PATH'.format('|'.join(ALL_REL_OPTIONS)),
+                                      paras('A path that is relative the given directory '
+                                            'under the Execution Directory Structure.')),
+                    InvokationVariant('( EXECUTABLE ARGUMENT-TO-EXECUTABLE... )',
+                                      paras('An executable program with arguments. (Must be inside parentheses.)')),
+                ]),
             SyntaxElementDescription(
-                    'SOURCE-FILE',
-                    paragraphs_parse.normalize_and_parse(
-                            """\
-                            Specifies a plain file.
-                            By default, SOURCE-FILE is assumed to be relative the home dir.
+                'SOURCE-FILE',
+                paragraphs_parse.normalize_and_parse(
+                    """\
+                    Specifies a plain file.
+                    By default, SOURCE-FILE is assumed to be relative the home dir.
 
-                            Other locations can be specified using %s.
-                            """ % '|'.join(ALL_REL_OPTIONS)),
-                    []),
+                    Other locations can be specified using %s.
+                    """ % '|'.join(ALL_REL_OPTIONS)),
+                []),
         ]
 
 
@@ -202,10 +200,10 @@ class SetupParser:
                  exe_file: ExecutableFile,
                  remaining_arguments_str: str) -> SetupForExecutableWithArguments:
         return SetupForExecute(
-                sub_process_execution.InstructionSourceInfo(source.line_sequence.first_line.line_number,
-                                                            self.instruction_name),
-                exe_file,
-                shlex.split(remaining_arguments_str))
+            sub_process_execution.InstructionSourceInfo(source.line_sequence.first_line.line_number,
+                                                        self.instruction_name),
+            exe_file,
+            shlex.split(remaining_arguments_str))
 
     def _interpret(self,
                    source: SingleInstructionParserSource,
@@ -214,11 +212,11 @@ class SetupParser:
         remaining_arguments = shlex.split(remaining_arguments_str)
         (file_to_interpret, remaining_arguments) = parse_file_ref.parse_file_ref__list(remaining_arguments)
         return SetupForInterpret(
-                sub_process_execution.InstructionSourceInfo(source.line_sequence.first_line.line_number,
-                                                            self.instruction_name),
-                exe_file,
-                file_to_interpret,
-                remaining_arguments)
+            sub_process_execution.InstructionSourceInfo(source.line_sequence.first_line.line_number,
+                                                        self.instruction_name),
+            exe_file,
+            file_to_interpret,
+            remaining_arguments)
 
     def _source(self,
                 source: SingleInstructionParserSource,
@@ -227,10 +225,10 @@ class SetupParser:
         if not remaining_arguments_str:
             raise SingleInstructionInvalidArgumentException('Missing SOURCE argument for option %s' % SOURCE_OPTION)
         return SetupForSource(
-                sub_process_execution.InstructionSourceInfo(source.line_sequence.first_line.line_number,
-                                                            self.instruction_name),
-                exe_file,
-                remaining_arguments_str)
+            sub_process_execution.InstructionSourceInfo(source.line_sequence.first_line.line_number,
+                                                        self.instruction_name),
+            exe_file,
+            remaining_arguments_str)
 
 
 class InstructionParser(SingleInstructionParser):

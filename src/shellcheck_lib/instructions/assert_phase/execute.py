@@ -11,9 +11,9 @@ from shellcheck_lib.test_case.phases.result import svh
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(
-            parser(instruction_name),
+        parser(instruction_name),
         execute.TheInstructionDocumentation(instruction_name,
-                                   "Runs a program and succeeds if it's exit-code is 0."))
+                                            "Runs a program and PASS iff it's exit code is 0."))
 
 
 def parser(instruction_name: str) -> SingleInstructionParser:
