@@ -1,10 +1,10 @@
 from xml.etree.ElementTree import Element, SubElement
 
-from shellcheck_lib.util.textformat.formatting.html.interfaces import AnyParagraphItemRenderer
+from shellcheck_lib.util.textformat.formatting.html.interfaces import ParagraphItemRenderer
 from shellcheck_lib.util.textformat.structure.table import Table, TableFormat
 
 
-def render(paragraph_item_renderer: AnyParagraphItemRenderer,
+def render(paragraph_item_renderer: ParagraphItemRenderer,
            parent: Element,
            table: Table) -> Element:
     """

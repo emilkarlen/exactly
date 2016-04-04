@@ -1,7 +1,7 @@
 from xml.etree.ElementTree import Element, tostring, SubElement
 
 import shellcheck_lib.util
-from shellcheck_lib.util.textformat.formatting.html.interfaces import AnyParagraphItemRenderer
+from shellcheck_lib.util.textformat.formatting.html.interfaces import ParagraphItemRenderer
 from shellcheck_lib.util.textformat.structure import core
 
 
@@ -23,7 +23,7 @@ class TargetRenderer(shellcheck_lib.util.textformat.formatting.html.text.TargetR
 TARGET_RENDERER = TargetRenderer()
 
 
-class ConstantPRenderer(AnyParagraphItemRenderer):
+class ConstantPRenderer(ParagraphItemRenderer):
     def __init__(self, paragraph_contents: str):
         self.paragraph_contents = paragraph_contents
 

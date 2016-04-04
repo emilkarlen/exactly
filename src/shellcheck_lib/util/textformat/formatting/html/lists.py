@@ -1,13 +1,13 @@
 from xml.etree.ElementTree import Element, SubElement
 
 from shellcheck_lib.util.textformat.formatting.html import text
-from shellcheck_lib.util.textformat.formatting.html.interfaces import AnyParagraphItemRenderer
+from shellcheck_lib.util.textformat.formatting.html.interfaces import ParagraphItemRenderer
 from shellcheck_lib.util.textformat.formatting.html.text import Position
 from shellcheck_lib.util.textformat.structure import lists
 
 
 def render(text_renderer: text.TextRenderer,
-           paragraph_item_renderer: AnyParagraphItemRenderer,
+           paragraph_item_renderer: ParagraphItemRenderer,
            parent: Element,
            list_: lists.HeaderContentList) -> Element:
     """
@@ -22,7 +22,7 @@ def render(text_renderer: text.TextRenderer,
 
 
 def _render_standard_list(text_renderer: text.TextRenderer,
-                          paragraph_item_renderer: AnyParagraphItemRenderer,
+                          paragraph_item_renderer: ParagraphItemRenderer,
                           parent: Element,
                           list_: lists.HeaderContentList) -> Element:
     """
@@ -38,7 +38,7 @@ def _render_standard_list(text_renderer: text.TextRenderer,
 
 
 def _render_definition_list(text_renderer: text.TextRenderer,
-                            paragraph_item_renderer: AnyParagraphItemRenderer,
+                            paragraph_item_renderer: ParagraphItemRenderer,
                             parent: Element,
                             list_: lists.HeaderContentList) -> Element:
     """
