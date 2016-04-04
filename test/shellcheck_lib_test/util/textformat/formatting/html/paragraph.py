@@ -1,9 +1,10 @@
 import unittest
-from xml.etree.ElementTree import Element, tostring
+from xml.etree.ElementTree import Element
 
 from shellcheck_lib.util.textformat.formatting.html import paragraph as sut
 from shellcheck_lib.util.textformat.structure import core
 from shellcheck_lib.util.textformat.structure.paragraph import Paragraph
+from shellcheck_lib_test.util.textformat.formatting.html.test_resources import as_unicode_str
 
 
 def suite() -> unittest.TestSuite:
@@ -22,7 +23,7 @@ class TestParagraph(unittest.TestCase):
         # ACT #
         ret_val = sut.render(TARGET_RENDERER, root, para)
         # ASSERT #
-        xml_string = to_unicode_str(root)
+        xml_string = as_unicode_str(root)
         self.assertEqual('<root />',
                          xml_string)
         self.assertIs(root, ret_val)
@@ -34,7 +35,7 @@ class TestParagraph(unittest.TestCase):
         # ACT #
         ret_val = sut.render(TARGET_RENDERER, root, para)
         # ASSERT #
-        xml_string = to_unicode_str(root)
+        xml_string = as_unicode_str(root)
         self.assertEqual('<root><p>string text</p></root>',
                          xml_string)
         self.assertIs(list(root)[0],
@@ -48,7 +49,7 @@ class TestParagraph(unittest.TestCase):
         # ACT #
         ret_val = sut.render(TARGET_RENDERER, root, para)
         # ASSERT #
-        xml_string = to_unicode_str(root)
+        xml_string = as_unicode_str(root)
         self.assertEqual('<root><p>_1_<br />_2_</p></root>',
                          xml_string)
         self.assertIs(list(root)[0],
@@ -63,7 +64,7 @@ class TestParagraph(unittest.TestCase):
         # ACT #
         ret_val = sut.render(TARGET_RENDERER, root, para)
         # ASSERT #
-        xml_string = to_unicode_str(root)
+        xml_string = as_unicode_str(root)
         self.assertEqual('<root><p><a href="target">title</a></p></root>',
                          xml_string)
         self.assertIs(list(root)[0],
@@ -79,7 +80,7 @@ class TestParagraph(unittest.TestCase):
         # ACT #
         ret_val = sut.render(TARGET_RENDERER, root, para)
         # ASSERT #
-        xml_string = to_unicode_str(root)
+        xml_string = as_unicode_str(root)
         self.assertEqual('<root><p><a href="target 1">title 1</a><br /><a href="target 2">title 2</a></p></root>',
                          xml_string)
         self.assertIs(list(root)[0],
@@ -94,7 +95,7 @@ class TestParagraph(unittest.TestCase):
         # ACT #
         ret_val = sut.render(TARGET_RENDERER, root, para)
         # ASSERT #
-        xml_string = to_unicode_str(root)
+        xml_string = as_unicode_str(root)
         self.assertEqual('<root><p><a href="target">title</a><br />string</p></root>',
                          xml_string)
         self.assertIs(list(root)[0],
@@ -109,7 +110,7 @@ class TestParagraph(unittest.TestCase):
         # ACT #
         ret_val = sut.render(TARGET_RENDERER, root, para)
         # ASSERT #
-        xml_string = to_unicode_str(root)
+        xml_string = as_unicode_str(root)
         self.assertEqual('<root><p><a name="target">concrete string</a></p></root>',
                          xml_string)
         self.assertIs(list(root)[0],
@@ -126,7 +127,7 @@ class TestParagraph(unittest.TestCase):
         # ACT #
         ret_val = sut.render(TARGET_RENDERER, root, para)
         # ASSERT #
-        xml_string = to_unicode_str(root)
+        xml_string = as_unicode_str(root)
         self.assertEqual(
             '<root><p><a name="anchor target"><a href="cross ref target">cross ref title</a></a></p></root>',
             xml_string)
@@ -146,7 +147,3 @@ class TargetRenderer(sut.TargetRenderer):
 
 
 TARGET_RENDERER = TargetRenderer()
-
-
-def to_unicode_str(root: Element):
-    return tostring(root, encoding="unicode")

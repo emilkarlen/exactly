@@ -1,8 +1,9 @@
 import unittest
-from xml.etree.ElementTree import Element, tostring
+from xml.etree.ElementTree import Element
 
 from shellcheck_lib.util.textformat.formatting.html import literal_layout as sut
 from shellcheck_lib.util.textformat.structure.literal_layout import LiteralLayout
+from shellcheck_lib_test.util.textformat.formatting.html.test_resources import as_unicode_str
 
 
 def suite() -> unittest.TestSuite:
@@ -21,7 +22,7 @@ class TestLiteralLayout(unittest.TestCase):
         # ACT #
         ret_val = sut.render(root, ll)
         # ASSERT #
-        xml_string = to_unicode_str(root)
+        xml_string = as_unicode_str(root)
         self.assertEqual(LITERAL_MULTI_LINE_TEXT_RESULT,
                          xml_string)
         self.assertIs(list(root)[0],
@@ -39,7 +40,3 @@ LITERAL_MULTI_LINE_TEXT_RESULT = """\
 
 second line
 </pre></root>"""
-
-
-def to_unicode_str(root: Element):
-    return tostring(root, encoding="unicode")
