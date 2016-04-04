@@ -18,7 +18,7 @@ class TextFormatter(core.TextVisitor):
         return self._cross_reference_formatter.apply(text)
 
     def visit_anchor(self, text: core.AnchorText):
-        return self.apply(text.concrete_text)
+        return self.apply(text.anchored_text)
 
     def visit_string(self, text: core.StringText):
         return text.value
