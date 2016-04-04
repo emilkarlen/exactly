@@ -4,7 +4,7 @@ from shellcheck_lib.help.program_modes.test_case.render.render_instruction impor
 from shellcheck_lib.help.program_modes.test_case.render.utils import TestCasePhaseInstructionSetRendererBase
 from shellcheck_lib.util.textformat.structure import document as doc
 from shellcheck_lib.util.textformat.structure import lists
-from shellcheck_lib.util.textformat.structure.core import Text
+from shellcheck_lib.util.textformat.structure.structures import text
 
 
 class PhaseInstructionSetRenderer(TestCasePhaseInstructionSetRendererBase):
@@ -19,7 +19,7 @@ class InstructionSetPerPhaseRenderer(TestCaseHelpRendererBase):
         for test_case_phase_help in self.test_case_help.phase_helps_in_order_of_execution:
             if test_case_phase_help.is_phase_with_instructions:
                 instruction_list = instruction_set_list(test_case_phase_help.instruction_set)
-                sections.append(doc.Section(Text(test_case_phase_help.name.syntax),
+                sections.append(doc.Section(text(test_case_phase_help.name.syntax),
                                             doc.SectionContents([instruction_list], [])))
         return doc.SectionContents([], sections)
 

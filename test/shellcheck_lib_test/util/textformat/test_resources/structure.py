@@ -13,11 +13,26 @@ def is_paragraph_item_list(name: str = '') -> va.ValueAssertion:
     return va.every_element(name, is_paragraph_item)
 
 
-is_text = va.And([
-    va.IsInstance(core.Text),
+is_string_text = va.And([
+    va.IsInstance(core.StringText),
     va.sub_component('value',
-                     core.Text.value.fget,
+                     core.StringText.value.fget,
                      va.IsInstance(str))
+])
+
+is_cross_reference_text = va.And([
+    va.IsInstance(core.CrossReferenceText),
+    va.sub_component('target',
+                     core.CrossReferenceText.target.fget,
+                     va.IsInstance(core.CrossReferenceTarget)),
+    va.sub_component('title',
+                     core.CrossReferenceText.title.fget,
+                     va.IsInstance(str))
+])
+
+is_text = va.Or([
+    is_string_text,
+    is_cross_reference_text,
 ])
 
 

@@ -1,11 +1,34 @@
-class Text(tuple):
-    def __new__(cls,
-                value: str):
-        return tuple.__new__(cls, (value,))
+class Text:
+    pass
+
+
+class StringText(Text):
+    def __init__(self, value: str):
+        self._value = value
 
     @property
     def value(self) -> str:
-        return self[0]
+        return self._value
+
+
+class CrossReferenceTarget:
+    pass
+
+
+class CrossReferenceText(Text):
+    def __init__(self,
+                 title: str,
+                 target: CrossReferenceTarget):
+        self._title = title
+        self._target = target
+
+    @property
+    def title(self) -> str:
+        return self._title
+
+    @property
+    def target(self) -> CrossReferenceTarget:
+        return self._target
 
 
 class ParagraphItem:

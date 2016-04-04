@@ -1,3 +1,4 @@
+from shellcheck_lib.util.textformat.formatting.text import TextFormatter
 from shellcheck_lib.util.textformat.structure.core import Text
 
 from shellcheck_lib.util.textformat.structure.lists import ListType, Separations
@@ -7,8 +8,10 @@ class HeaderAndIndentFormat:
     def header_text(self,
                     element_number: int,
                     total_number_of_elements: int,
-                    header: Text) -> Text:
+                    text_formatter: TextFormatter,
+                    header: Text) -> str:
         """
+        :param text_formatter: Formats text.
         :param element_number: 1, 2, ...
         :param total_number_of_elements: Number of elements in the list
         :param header:
@@ -80,8 +83,9 @@ class HeaderAndIndentFormatPlain(HeaderAndIndentFormatWithConstantValueIndentBas
     def header_text(self,
                     element_number: int,
                     total_number_of_elements: int,
-                    header: Text) -> Text:
-        return header
+                    text_formatter: TextFormatter,
+                    header: Text) -> str:
+        return text_formatter.apply(header)
 
     def following_header_lines_indent(self,
                                       element_number: int,
@@ -99,8 +103,9 @@ class HeaderAndIndentFormatWithMarker(HeaderAndIndentFormatWithConstantValueInde
     def header_text(self,
                     element_number: int,
                     total_number_of_elements: int,
-                    header: Text) -> Text:
-        return Text(self.marker + ' ' + header.value)
+                    text_formatter: TextFormatter,
+                    header: Text) -> str:
+        return self.marker + ' ' + text_formatter.apply(header)
 
     def following_header_lines_indent(self,
                                       element_number: int,
@@ -116,8 +121,9 @@ class HeaderAndIndentFormatWithNumbering(HeaderAndIndentFormatWithConstantValueI
     def header_text(self,
                     element_number: int,
                     total_number_of_elements: int,
-                    header: Text) -> Text:
-        return Text(self._prefix(element_number) + header.value)
+                    text_formatter: TextFormatter,
+                    header: Text) -> str:
+        return self._prefix(element_number) + text_formatter.apply(header)
 
     def following_header_lines_indent(self,
                                       element_number: int,
@@ -152,13 +158,13 @@ def list_formats_with(separations: Separations = Separations(0, 0),
                       indent_str: str = '  ',
                       itemized_list_marker: str = '*') -> ListFormats:
     return ListFormats(
-            itemized_list_format=ListFormat(HeaderAndIndentFormatWithMarker(itemized_list_marker),
-                                            separations,
-                                            indent_str=indent_str),
-            ordered_list_format=ListFormat(HeaderAndIndentFormatWithNumbering(),
-                                           separations,
-                                           indent_str=indent_str),
-            variable_list_format=ListFormat(HeaderAndIndentFormatPlain(),
-                                            separations,
-                                            indent_str=indent_str)
+        itemized_list_format=ListFormat(HeaderAndIndentFormatWithMarker(itemized_list_marker),
+                                        separations,
+                                        indent_str=indent_str),
+        ordered_list_format=ListFormat(HeaderAndIndentFormatWithNumbering(),
+                                       separations,
+                                       indent_str=indent_str),
+        variable_list_format=ListFormat(HeaderAndIndentFormatPlain(),
+                                        separations,
+                                        indent_str=indent_str)
     )

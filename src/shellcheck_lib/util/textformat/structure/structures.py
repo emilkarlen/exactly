@@ -1,7 +1,7 @@
 from shellcheck_lib.util.textformat.structure import document as doc
 from shellcheck_lib.util.textformat.structure import lists
 from shellcheck_lib.util.textformat.structure import table
-from shellcheck_lib.util.textformat.structure.core import Text, ParagraphItem
+from shellcheck_lib.util.textformat.structure.core import Text, ParagraphItem, StringText
 from shellcheck_lib.util.textformat.structure.literal_layout import LiteralLayout
 from shellcheck_lib.util.textformat.structure.paragraph import Paragraph
 
@@ -60,7 +60,7 @@ def paras(str_or_text) -> list:
 
 
 def text(s: str) -> Text:
-    return Text(s)
+    return StringText(s)
 
 
 def literal_layout(s: str) -> ParagraphItem:
@@ -84,7 +84,7 @@ def _text_from_unknown(str_or_text) -> Text:
     if isinstance(str_or_text, Text):
         return str_or_text
     else:
-        return Text(str_or_text)
+        return StringText(str_or_text)
 
 
 def _empty_list_if_none(content) -> list:

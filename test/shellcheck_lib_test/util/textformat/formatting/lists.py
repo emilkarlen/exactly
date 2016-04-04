@@ -1,16 +1,16 @@
 import unittest
 
 from shellcheck_lib.util.textformat.formatting import lists as sut
-from shellcheck_lib_test.util.textformat.test_resources.constr import text
+from shellcheck_lib_test.util.textformat.test_resources.constr import text, CROSS_REF_TITLE_ONLY_TEXT_FORMATTER
 
 
 class TestHeaderAndIndentFormatWithMarker(unittest.TestCase):
     def test_header_text(self):
         formatter = sut.HeaderAndIndentFormatWithMarker(marker='MARKER',
                                                         contents_indent_spaces=3)
-        actual = formatter.header_text(1, 1, text('header'))
-        self.assertEqual(text('MARKER header').value,
-                         actual.value)
+        actual = formatter.header_text(1, 1, CROSS_REF_TITLE_ONLY_TEXT_FORMATTER, text('header'))
+        self.assertEqual('MARKER header',
+                         actual)
 
     def test_value_indent(self):
         formatter = sut.HeaderAndIndentFormatWithMarker(marker='MARKER',
@@ -30,9 +30,9 @@ class TestHeaderAndIndentFormatWithMarker(unittest.TestCase):
 class TestHeaderAndIndentFormatPlain(unittest.TestCase):
     def test_header_text(self):
         formatter = sut.HeaderAndIndentFormatPlain(contents_indent_spaces=5)
-        actual = formatter.header_text(1, 1, text('header'))
-        self.assertEqual(text('header').value,
-                         actual.value)
+        actual = formatter.header_text(1, 1, CROSS_REF_TITLE_ONLY_TEXT_FORMATTER, text('header'))
+        self.assertEqual('header',
+                         actual)
 
     def test_value_indent(self):
         formatter = sut.HeaderAndIndentFormatPlain(contents_indent_spaces=7)
@@ -50,15 +50,15 @@ class TestHeaderAndIndentFormatPlain(unittest.TestCase):
 class TestHeaderAndIndentFormatWithNumbering(unittest.TestCase):
     def test_header_text__element_number_1(self):
         formatter = sut.HeaderAndIndentFormatWithNumbering(contents_indent_spaces=5)
-        actual = formatter.header_text(1, 1, text('header'))
-        self.assertEqual(text('1. header').value,
-                         actual.value)
+        actual = formatter.header_text(1, 1, CROSS_REF_TITLE_ONLY_TEXT_FORMATTER, text('header'))
+        self.assertEqual('1. header',
+                         actual)
 
     def test_header_text__element_number_2(self):
         formatter = sut.HeaderAndIndentFormatWithNumbering(contents_indent_spaces=5)
-        actual = formatter.header_text(2, 1, text('header'))
-        self.assertEqual(text('2. header').value,
-                         actual.value)
+        actual = formatter.header_text(2, 1, CROSS_REF_TITLE_ONLY_TEXT_FORMATTER, text('header'))
+        self.assertEqual('2. header',
+                         actual)
 
     def test_value_indent(self):
         formatter = sut.HeaderAndIndentFormatWithNumbering(contents_indent_spaces=7)

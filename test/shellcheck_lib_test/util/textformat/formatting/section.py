@@ -6,19 +6,19 @@ from shellcheck_lib.util.textformat.formatting import section as sut
 from shellcheck_lib.util.textformat.structure import lists
 from shellcheck_lib.util.textformat.structure.document import SectionContents, Section, empty_contents
 from shellcheck_lib_test.util.textformat.test_resources.constr import single_text_para, header_only_item, \
-    BLANK_LINE, text
+    BLANK_LINE, text, CROSS_REF_TITLE_ONLY_TEXT_FORMATTER
 
 
 class TestSectionContents(unittest.TestCase):
     def test_only_initial_paragraphs(self):
-        paragraph_item_formatter = paragraph_item.Formatter(
-                paragraph_item.Wrapper(page_width=5),
-                num_item_separator_lines=1,
-                list_formats=lf.ListFormats(
-                        variable_list_format=lf.ListFormat(
-                                lf.HeaderAndIndentFormatPlain(),
-                                lists.Separations(0, 0),
-                                indent_str='')))
+        paragraph_item_formatter = paragraph_item.Formatter(CROSS_REF_TITLE_ONLY_TEXT_FORMATTER,
+                                                            paragraph_item.Wrapper(page_width=5),
+                                                            num_item_separator_lines=1,
+                                                            list_formats=lf.ListFormats(
+                                                                variable_list_format=lf.ListFormat(
+                                                                    lf.HeaderAndIndentFormatPlain(),
+                                                                    lists.Separations(0, 0),
+                                                                    indent_str='')))
         formatter = sut.Formatter(paragraph_item_formatter)
         section_contents = SectionContents([single_text_para('12345 123 5'),
                                             lists.HeaderContentList([header_only_item('12345 123')],
@@ -34,7 +34,8 @@ class TestSectionContents(unittest.TestCase):
                          actual)
 
     def test_multiple_and_nested_sub_sections(self):
-        paragraph_item_formatter = paragraph_item.Formatter(paragraph_item.Wrapper(page_width=100),
+        paragraph_item_formatter = paragraph_item.Formatter(CROSS_REF_TITLE_ONLY_TEXT_FORMATTER,
+                                                            paragraph_item.Wrapper(page_width=100),
                                                             num_item_separator_lines=0)
         formatter = sut.Formatter(paragraph_item_formatter,
                                   sut.Separation(between_sections=1,
@@ -44,8 +45,8 @@ class TestSectionContents(unittest.TestCase):
                                            [empty_section('Section 1'),
                                             sut.Section(text('Section 2'),
                                                         sut.SectionContents(
-                                                                [],
-                                                                [empty_section('Section 2.1')]))
+                                                            [],
+                                                            [empty_section('Section 2.1')]))
                                             ])
         actual = formatter.format_section_contents(section_contents)
         self.assertEqual(['Section 1',
@@ -58,7 +59,8 @@ class TestSectionContents(unittest.TestCase):
                          actual)
 
     def test_initial_paragraph_and_single_sub_section(self):
-        paragraph_item_formatter = paragraph_item.Formatter(paragraph_item.Wrapper(page_width=100),
+        paragraph_item_formatter = paragraph_item.Formatter(CROSS_REF_TITLE_ONLY_TEXT_FORMATTER,
+                                                            paragraph_item.Wrapper(page_width=100),
                                                             num_item_separator_lines=0)
         formatter = sut.Formatter(paragraph_item_formatter,
                                   sut.Separation(between_sections=1,
@@ -78,7 +80,8 @@ class TestSectionContents(unittest.TestCase):
 
 class TestSection(unittest.TestCase):
     def test_empty_section(self):
-        paragraph_item_formatter = paragraph_item.Formatter(paragraph_item.Wrapper(page_width=100),
+        paragraph_item_formatter = paragraph_item.Formatter(CROSS_REF_TITLE_ONLY_TEXT_FORMATTER,
+                                                            paragraph_item.Wrapper(page_width=100),
                                                             num_item_separator_lines=0)
         formatter = sut.Formatter(paragraph_item_formatter,
                                   sut.Separation(between_sections=1,
@@ -91,7 +94,8 @@ class TestSection(unittest.TestCase):
                          actual)
 
     def test_separation_between_header_and_content__with_initial_paragraphs(self):
-        paragraph_item_formatter = paragraph_item.Formatter(paragraph_item.Wrapper(page_width=100),
+        paragraph_item_formatter = paragraph_item.Formatter(CROSS_REF_TITLE_ONLY_TEXT_FORMATTER,
+                                                            paragraph_item.Wrapper(page_width=100),
                                                             num_item_separator_lines=0)
         formatter = sut.Formatter(paragraph_item_formatter,
                                   sut.Separation(between_sections=1,
@@ -109,7 +113,8 @@ class TestSection(unittest.TestCase):
                          actual)
 
     def test_separation_between_header_and_content__with_only_sub_sections(self):
-        paragraph_item_formatter = paragraph_item.Formatter(paragraph_item.Wrapper(page_width=100),
+        paragraph_item_formatter = paragraph_item.Formatter(CROSS_REF_TITLE_ONLY_TEXT_FORMATTER,
+                                                            paragraph_item.Wrapper(page_width=100),
                                                             num_item_separator_lines=0)
         formatter = sut.Formatter(paragraph_item_formatter,
                                   sut.Separation(between_sections=1,
@@ -127,7 +132,8 @@ class TestSection(unittest.TestCase):
                          actual)
 
     def test_separation_between_header_and_content__with_both_initial_paragraphs_and_sub_sections(self):
-        paragraph_item_formatter = paragraph_item.Formatter(paragraph_item.Wrapper(page_width=100),
+        paragraph_item_formatter = paragraph_item.Formatter(CROSS_REF_TITLE_ONLY_TEXT_FORMATTER,
+                                                            paragraph_item.Wrapper(page_width=100),
                                                             num_item_separator_lines=0)
         formatter = sut.Formatter(paragraph_item_formatter,
                                   sut.Separation(between_sections=1,
@@ -149,7 +155,8 @@ class TestSection(unittest.TestCase):
                          actual)
 
     def test_section_content_indent(self):
-        paragraph_item_formatter = paragraph_item.Formatter(paragraph_item.Wrapper(page_width=100),
+        paragraph_item_formatter = paragraph_item.Formatter(CROSS_REF_TITLE_ONLY_TEXT_FORMATTER,
+                                                            paragraph_item.Wrapper(page_width=100),
                                                             num_item_separator_lines=0)
         content_indent = '  '
         formatter = sut.Formatter(paragraph_item_formatter,
@@ -174,7 +181,8 @@ class TestSection(unittest.TestCase):
                          actual)
 
     def test_section_content_indent__for_nested_sections(self):
-        paragraph_item_formatter = paragraph_item.Formatter(paragraph_item.Wrapper(page_width=100),
+        paragraph_item_formatter = paragraph_item.Formatter(CROSS_REF_TITLE_ONLY_TEXT_FORMATTER,
+                                                            paragraph_item.Wrapper(page_width=100),
                                                             num_item_separator_lines=0)
         content_indent = '  '
         formatter = sut.Formatter(paragraph_item_formatter,
@@ -184,15 +192,15 @@ class TestSection(unittest.TestCase):
                                                             between_initial_paragraphs_and_sub_sections=3))
         section = Section(text('Section 1'),
                           SectionContents(
-                                  [],
-                                  [Section(
-                                          text('Section 1.1'),
-                                          SectionContents(
-                                                  [single_text_para('paragraph in section 1.1')],
-                                                  [Section(text('Section 1.1.1'),
-                                                           SectionContents(
-                                                                   [single_text_para('paragraph in section 1.1.1')],
-                                                                   []))]))]))
+                              [],
+                              [Section(
+                                  text('Section 1.1'),
+                                  SectionContents(
+                                      [single_text_para('paragraph in section 1.1')],
+                                      [Section(text('Section 1.1.1'),
+                                               SectionContents(
+                                                   [single_text_para('paragraph in section 1.1.1')],
+                                                   []))]))]))
         actual = formatter.format_section(section)
         self.assertEqual(['Section 1',
                           BLANK_LINE,

@@ -23,7 +23,7 @@ class TestParagraphItemVisitor(unittest.TestCase):
 
     def test_visit_list(self):
         # ARRANGE #
-        list_item = lists.HeaderContentListItem(core.Text('item text'), [])
+        list_item = lists.HeaderContentListItem(core.StringText('item text'), [])
         item = lists.HeaderContentList([list_item],
                                        lists.Format(lists.ListType.ITEMIZED_LIST))
         visitor = AVisitorThatRecordsVisitedMethods()

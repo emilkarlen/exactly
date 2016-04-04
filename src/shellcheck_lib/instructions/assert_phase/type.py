@@ -14,7 +14,7 @@ from shellcheck_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from shellcheck_lib.test_case.phases.result import pfh
 from shellcheck_lib.util.textformat.structure import core
 from shellcheck_lib.util.textformat.structure import lists
-from shellcheck_lib.util.textformat.structure.structures import paras
+from shellcheck_lib.util.textformat.structure.structures import paras, text
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
@@ -54,7 +54,7 @@ class TheInstructionDocumentation(InstructionDocumentation):
 
         def file_type_list() -> core.ParagraphItem:
             list_items = [
-                lists.HeaderContentListItem(core.Text(k),
+                lists.HeaderContentListItem(text(k),
                                             type_description(k))
                 for k in sorted(FILE_TYPES.keys())]
             return lists.HeaderContentList(list_items,
