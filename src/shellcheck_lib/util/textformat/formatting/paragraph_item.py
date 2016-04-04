@@ -1,6 +1,7 @@
 from shellcheck_lib.util.textformat.formatting.lists import ListFormats, ListFormat, list_format_with_indent_str, \
     list_format_with_separations
 from shellcheck_lib.util.textformat.formatting.table.formatter import TableFormatter
+from shellcheck_lib.util.textformat.formatting.text import TextFormatter
 from shellcheck_lib.util.textformat.formatting.wrapper import Indent, Wrapper, identical_indent
 from shellcheck_lib.util.textformat.structure.core import Text, ParagraphItem
 from shellcheck_lib.util.textformat.structure.lists import HeaderContentList, HeaderContentListItem, Format
@@ -12,9 +13,11 @@ from shellcheck_lib.util.textformat.structure.utils import ParagraphItemVisitor
 
 class Formatter:
     def __init__(self,
+                 text_formatter: TextFormatter,
                  wrapper: Wrapper = Wrapper(),
                  num_item_separator_lines: int = 1,
                  list_formats: ListFormats = ListFormats()):
+        self.text_formatter = text_formatter
         self.list_formats = list_formats
         self.wrapper = wrapper
         self.num_item_separator_lines = num_item_separator_lines
@@ -40,7 +43,10 @@ class Formatter:
         return ret_val
 
     def format_text(self, text: Text) -> list:
-        return self.wrapper.wrap(text.value)
+        return self.wrapper.wrap(self.text_formatter.apply(text))
+
+    def format_str(self, s: str) -> list:
+        return self.wrapper.wrap(s)
 
     def format_literal_layout(self, literal_layout: LiteralLayout) -> list:
         lines = literal_layout.literal_text.splitlines()
@@ -55,6 +61,7 @@ class Formatter:
                                                      items: iter,
                                                      list_format: ListFormat) -> list:
         """
+        :param list_format:
         :type items: [HeaderValueListItem]
         """
         return _ListFormatter(self, list_format, items).apply()
@@ -80,7 +87,8 @@ class Formatter:
         return [first_line_indent + line for line in un_indented_lines]
 
     def _paragraph_items_formatter_for_given_width_for_table_formatter(self, width: int):
-        formatter = Formatter(Wrapper(page_width=width),
+        formatter = Formatter(self.text_formatter,
+                              Wrapper(page_width=width),
                               num_item_separator_lines=self.num_item_separator_lines,
                               list_formats=self.list_formats)
         return lambda paragraph_item_list: formatter.format_paragraph_items(paragraph_item_list)
@@ -116,11 +124,12 @@ class _ListFormatter:
         return ret_val
 
     def _format_header(self, item, item_number):
-        header_text = self.list_format.header_format.header_text(item_number,
-                                                                 self.num_items,
-                                                                 item.header)
+        header_string = self.list_format.header_format.header_text(item_number,
+                                                                   self.num_items,
+                                                                   self.formatter.text_formatter,
+                                                                   item.header)
         with self.wrapper.indent_increase(self.header_indent(item_number)):
-            self.ret_val.extend(self.formatter.format_text(header_text))
+            self.ret_val.extend(self.formatter.format_str(header_string))
 
     def _format_content(self, item, item_number):
         content_items_list = list(item.content_paragraph_items)

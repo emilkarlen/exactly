@@ -15,8 +15,10 @@ from shellcheck_lib.cli.program_modes.help.program_modes.test_suite.request_rend
 from shellcheck_lib.help.contents_structure import ApplicationHelp
 from shellcheck_lib.help.utils.render import SectionContentsRenderer
 from shellcheck_lib.util.textformat.formatting import section, paragraph_item
+from shellcheck_lib.util.textformat.formatting import text
 from shellcheck_lib.util.textformat.formatting.lists import list_formats_with
 from shellcheck_lib.util.textformat.formatting.wrapper import Wrapper
+from shellcheck_lib.util.textformat.structure import core
 
 
 def print_help(file,
@@ -32,9 +34,16 @@ def print_help(file,
 
 
 def _formatter(page_width):
-    return section.Formatter(paragraph_item.Formatter(Wrapper(page_width=page_width),
+    text_formatter = text.TextFormatter(HelpCrossReferenceFormatter())
+    return section.Formatter(paragraph_item.Formatter(text_formatter,
+                                                      Wrapper(page_width=page_width),
                                                       list_formats=list_formats_with(indent_str='  ')),
                              section_content_indent_str='   ')
+
+
+class HelpCrossReferenceFormatter(text.CrossReferenceFormatter):
+    def apply(self, cross_reference: core.CrossReferenceText) -> str:
+        return 'TODO ' + cross_reference.title
 
 
 def _renderer(application_help: ApplicationHelp,

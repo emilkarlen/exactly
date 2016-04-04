@@ -1,6 +1,6 @@
 import textwrap
 
-from shellcheck_lib.util.textformat.structure.core import ParagraphItem, Text
+from shellcheck_lib.util.textformat.structure.core import ParagraphItem, Text, StringText
 from shellcheck_lib.util.textformat.structure.paragraph import Paragraph
 
 NUM_TEXT_SEPARATOR_LINES = 1
@@ -56,7 +56,7 @@ class _Parser:
         while self.has_more_lines() and not self.is_at_separator():
             lines.append(self.consume_current_line().strip())
         contents = ' '.join(lines)
-        return Text(contents)
+        return StringText(contents)
 
     def has_more_lines(self) -> bool:
         return self.lines

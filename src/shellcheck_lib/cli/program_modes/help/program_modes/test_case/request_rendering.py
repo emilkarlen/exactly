@@ -6,8 +6,7 @@ from shellcheck_lib.help.program_modes.test_case.render import instruction_set, 
 from shellcheck_lib.help.program_modes.test_case.render.test_case_phase import TestCasePhaseOverviewRenderer
 from shellcheck_lib.help.utils.render import SectionContentsRenderer
 from shellcheck_lib.util.textformat.structure import document as doc
-from shellcheck_lib.util.textformat.structure.core import Text
-from shellcheck_lib.util.textformat.structure.structures import para
+from shellcheck_lib.util.textformat.structure.structures import para, text
 
 
 class TestCaseHelpRendererResolver:
@@ -42,7 +41,7 @@ class InstructionSearchRenderer(SectionContentsRenderer):
         sections = []
         for phase_and_instruction_description in self.phase_and_instruction_description_list:
             man_page_renderer = render_instruction.InstructionManPageRenderer(phase_and_instruction_description[1])
-            phase_section = doc.Section(Text(phase_and_instruction_description[0].syntax),
+            phase_section = doc.Section(text(phase_and_instruction_description[0].syntax),
                                         man_page_renderer.apply())
             sections.append(phase_section)
         initial_paragraphs = []

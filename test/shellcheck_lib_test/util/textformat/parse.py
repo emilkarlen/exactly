@@ -48,7 +48,7 @@ class TestParseEmpty(unittest.TestCase):
 class TestSingleParagraphWithSingleText(unittest.TestCase):
     def test_single_text_block_on_single_line(self):
         test_resource.check(self,
-                            [sut.Paragraph([sut.Text('the text block')])],
+                            [sut.Paragraph([sut.StringText('the text block')])],
                             sut.parse(['the text block']))
 
     def test_single_text_block_on_multiple_lines(self):
@@ -57,20 +57,20 @@ class TestSingleParagraphWithSingleText(unittest.TestCase):
                        'block'
                        ]
         test_resource.check(self,
-                            [sut.Paragraph([sut.Text(' '.join(input_lines))])],
+                            [sut.Paragraph([sut.StringText(' '.join(input_lines))])],
                             sut.parse(input_lines))
 
     def test_strip_text_strings(self):
         test_resource.check(self,
-                            [sut.Paragraph([sut.Text('the text block')])],
+                            [sut.Paragraph([sut.StringText('the text block')])],
                             sut.parse(['  the text block   ']))
 
 
 class TestSingleParagraphWithMultipleTexts(unittest.TestCase):
     def test_single_line_text_blocks(self):
         test_resource.check(self,
-                            [sut.Paragraph([sut.Text('text 1'),
-                                            sut.Text('text 2')])],
+                            [sut.Paragraph([sut.StringText('text 1'),
+                                            sut.StringText('text 2')])],
                             sut.parse(['text 1'] +
                                       sut.TEXT_SEPARATOR_LINES +
                                       ['text 2']))
@@ -82,26 +82,26 @@ class TestSingleParagraphWithMultipleTexts(unittest.TestCase):
                       ['text',
                        '2']
         test_resource.check(self,
-                            [sut.Paragraph([sut.Text('text 1'),
-                                            sut.Text('text 2')])],
+                            [sut.Paragraph([sut.StringText('text 1'),
+                                            sut.StringText('text 2')])],
                             sut.parse(input_lines))
 
 
 class TestMultipleParagraphs(unittest.TestCase):
     def test_single_line_text_blocks(self):
         test_resource.check(self,
-                            [sut.Paragraph([sut.Text('text in para 1')]),
-                             sut.Paragraph([sut.Text('text in para 2')])],
+                            [sut.Paragraph([sut.StringText('text in para 1')]),
+                             sut.Paragraph([sut.StringText('text in para 2')])],
                             sut.parse(['text in para 1'] +
                                       sut.PARAGRAPH_SEPARATOR_LINES +
                                       ['text in para 2']))
 
     def test_single_multiple_text_blocks(self):
         test_resource.check(self,
-                            [sut.Paragraph([sut.Text('text 1 in para 1'),
-                                            sut.Text('text 2 in para 1')]),
-                             sut.Paragraph([sut.Text('text 1 in para 2'),
-                                            sut.Text('text 2 in para 2')])],
+                            [sut.Paragraph([sut.StringText('text 1 in para 1'),
+                                            sut.StringText('text 2 in para 1')]),
+                             sut.Paragraph([sut.StringText('text 1 in para 2'),
+                                            sut.StringText('text 2 in para 2')])],
                             sut.parse(['text 1 in para 1'] +
                                       sut.TEXT_SEPARATOR_LINES +
                                       ['text 2 in para 1'] +
@@ -114,8 +114,8 @@ class TestMultipleParagraphs(unittest.TestCase):
 class TestMultipleParagraphsWithAlternateSeparator(unittest.TestCase):
     def test_larger_paragraph_separator(self):
         test_resource.check(self,
-                            [sut.Paragraph([sut.Text('text in para 1')]),
-                             sut.Paragraph([sut.Text('text in para 2')])],
+                            [sut.Paragraph([sut.StringText('text in para 1')]),
+                             sut.Paragraph([sut.StringText('text in para 2')])],
                             sut.parse(['text in para 1'] +
                                       sut.PARAGRAPH_SEPARATOR_LINES +
                                       sut.PARAGRAPH_SEPARATOR_LINES +
@@ -140,10 +140,10 @@ class TestNormalizeAndParse(unittest.TestCase):
         indented_lines = ['  ' + line for line in lines]
         actual = sut.normalize_and_parse(lines_content(indented_lines))
         test_resource.check(self,
-                            [sut.Paragraph([sut.Text('para 1 text 1')]),
-                             sut.Paragraph([sut.Text('para 2 text 1'),
-                                            sut.Text('para 2 text 2'),
-                                            sut.Text('para 2 text 3')])],
+                            [sut.Paragraph([sut.StringText('para 1 text 1')]),
+                             sut.Paragraph([sut.StringText('para 2 text 1'),
+                                            sut.StringText('para 2 text 2'),
+                                            sut.StringText('para 2 text 3')])],
                             actual)
 
 
