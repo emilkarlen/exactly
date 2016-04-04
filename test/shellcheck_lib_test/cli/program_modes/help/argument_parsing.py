@@ -1,6 +1,7 @@
 import unittest
 
 from shellcheck_lib.cli.program_modes.help import argument_parsing as sut
+from shellcheck_lib.cli.program_modes.help import arguments_for
 from shellcheck_lib.cli.program_modes.help.argument_parsing import HelpError
 from shellcheck_lib.cli.program_modes.help.concepts.help_request import ConceptHelpRequest, ConceptHelpItem
 from shellcheck_lib.cli.program_modes.help.program_modes.main_program.help_request import *
@@ -16,7 +17,6 @@ from shellcheck_lib.help.program_modes.test_suite.contents_structure import Test
     TestSuiteHelp
 from shellcheck_lib.help.utils import formatting
 from shellcheck_lib.help.utils.description import Description, single_line_description
-from shellcheck_lib_test.cli.program_modes.help.test_resources import arguments_for
 from shellcheck_lib_test.help.test_resources import test_case_phase_help, \
     single_line_description_that_identifies_instruction_and_phase
 

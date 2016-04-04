@@ -16,9 +16,9 @@ def section(header_str_or_text,
                                            _empty_list_if_none(sub_sections)))
 
 
-def simple_header_only_list(string_headers: iter,
+def simple_header_only_list(str_or_text_headers: iter,
                             list_type: lists.ListType) -> lists.HeaderContentList:
-    items = [header_only_item(header) for header in string_headers]
+    items = [header_only_item(header) for header in str_or_text_headers]
     return lists.HeaderContentList(items,
                                    lists.Format(list_type))
 
@@ -42,8 +42,8 @@ def list_item(header_str_or_text,
                                        _empty_list_if_none(content))
 
 
-def header_only_item(header: str) -> lists.HeaderContentListItem:
-    return list_item(header, [])
+def header_only_item(header_str_or_text) -> lists.HeaderContentListItem:
+    return list_item(header_str_or_text, [])
 
 
 def para(str_or_text) -> core.ParagraphItem:
