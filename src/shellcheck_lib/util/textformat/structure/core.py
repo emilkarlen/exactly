@@ -48,9 +48,9 @@ class AnchorText(Text):
 
     def __init__(self,
                  anchor: CrossReferenceTarget,
-                 concrete_text: ConcreteText):
+                 anchored_text: ConcreteText):
         self.anchor = anchor
-        self.concrete_text = concrete_text
+        self.anchored_text = anchored_text
 
 
 class TextVisitor:

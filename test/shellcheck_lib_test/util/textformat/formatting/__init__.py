@@ -1,10 +1,13 @@
 import unittest
 
-from shellcheck_lib_test.util.textformat.formatting import text
+from shellcheck_lib_test.util.textformat.formatting import text, html
 
 
 def suite() -> unittest.TestSuite:
-    return text.suite()
+    return unittest.TestSuite([
+        text.suite(),
+        html.suite(),
+    ])
 
 
 if __name__ == '__main__':
