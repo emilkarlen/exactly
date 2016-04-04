@@ -1,7 +1,7 @@
+from shellcheck_lib.util.textformat.structure import core
 from shellcheck_lib.util.textformat.structure import document as doc
 from shellcheck_lib.util.textformat.structure import lists
 from shellcheck_lib.util.textformat.structure import table
-from shellcheck_lib.util.textformat.structure.core import Text, ParagraphItem, StringText
 from shellcheck_lib.util.textformat.structure.literal_layout import LiteralLayout
 from shellcheck_lib.util.textformat.structure.paragraph import Paragraph
 
@@ -46,7 +46,7 @@ def header_only_item(header: str) -> lists.HeaderContentListItem:
     return list_item(header, [])
 
 
-def para(str_or_text) -> ParagraphItem:
+def para(str_or_text) -> core.ParagraphItem:
     return Paragraph([_text_from_unknown(str_or_text)])
 
 
@@ -59,32 +59,37 @@ def paras(str_or_text) -> list:
     return [para(str_or_text)]
 
 
-def text(s: str) -> Text:
-    return StringText(s)
+def text(s: str) -> core.Text:
+    return core.StringText(s)
 
 
-def literal_layout(s: str) -> ParagraphItem:
+def cross_reference(title: str,
+                    target: core.CrossReferenceTarget) -> core.Text:
+    return core.CrossReferenceText(title, target)
+
+
+def literal_layout(s: str) -> core.ParagraphItem:
     return LiteralLayout(s)
 
 
 def first_column_is_header_table(rows: list,
-                                 column_separator: str = '  ') -> ParagraphItem:
+                                 column_separator: str = '  ') -> core.ParagraphItem:
     return table.Table(table.TableFormat(column_separator),
                        rows)
 
 
 def first_row_is_header_table(rows: list,
-                              column_separator: str = '  ') -> ParagraphItem:
+                              column_separator: str = '  ') -> core.ParagraphItem:
     return table.Table(table.TableFormat(column_separator,
                                          first_row_is_header=True),
                        rows)
 
 
-def _text_from_unknown(str_or_text) -> Text:
-    if isinstance(str_or_text, Text):
+def _text_from_unknown(str_or_text) -> core.Text:
+    if isinstance(str_or_text, core.Text):
         return str_or_text
     else:
-        return StringText(str_or_text)
+        return core.StringText(str_or_text)
 
 
 def _empty_list_if_none(content) -> list:
