@@ -16,6 +16,8 @@ class TextFormatter:
             return text.value
         elif isinstance(text, core.CrossReferenceText):
             return self._cross_reference_formatter.apply(text)
+        elif isinstance(text, core.AnchorText):
+            return self.apply(text.concrete_text)
         else:
             raise ValueError('Text is neither a %s nor a %s: %s' % (str(core.Text),
                                                                     str(core.CrossReferenceText),
