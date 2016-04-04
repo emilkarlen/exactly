@@ -2,8 +2,9 @@ from xml.etree.ElementTree import Element
 
 from shellcheck_lib.util.textformat.formatting.html import lists as list_rendering
 from shellcheck_lib.util.textformat.formatting.html import literal_layout, paragraph
+from shellcheck_lib.util.textformat.formatting.html import table as table_rendering
 from shellcheck_lib.util.textformat.formatting.html import text
-from shellcheck_lib.util.textformat.formatting.html.interfaces import AnyParagraphItemRenderer
+from shellcheck_lib.util.textformat.formatting.html.interfaces import ParagraphItemRenderer
 from shellcheck_lib.util.textformat.structure import lists
 from shellcheck_lib.util.textformat.structure.core import ParagraphItem
 from shellcheck_lib.util.textformat.structure.literal_layout import LiteralLayout
@@ -11,7 +12,7 @@ from shellcheck_lib.util.textformat.structure.paragraph import Paragraph
 from shellcheck_lib.util.textformat.structure.table import Table
 
 
-class ParagraphItemRenderer(AnyParagraphItemRenderer):
+class FullParagraphItemRenderer(ParagraphItemRenderer):
     def __init__(self,
                  text_renderer: text.TextRenderer):
         self.text_renderer = text_renderer
@@ -38,4 +39,4 @@ class ParagraphItemRenderer(AnyParagraphItemRenderer):
         return list_rendering.render(self.text_renderer, self, parent, x)
 
     def render_table(self, parent: Element, x: Table):
-        raise NotImplementedError()
+        return table_rendering.render(self, parent, x)
