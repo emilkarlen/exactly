@@ -1,13 +1,12 @@
 import unittest
-from xml.etree.ElementTree import Element, SubElement
+from xml.etree.ElementTree import Element
 
 from shellcheck_lib.util.textformat.formatting.html import lists as sut
-from shellcheck_lib.util.textformat.formatting.html.interfaces import AnyParagraphItemRenderer
 from shellcheck_lib.util.textformat.formatting.html.text import TextRenderer
-from shellcheck_lib.util.textformat.structure import core
 from shellcheck_lib.util.textformat.structure import lists
 from shellcheck_lib.util.textformat.structure.structures import text, paras, para
-from shellcheck_lib_test.util.textformat.formatting.html.test_resources import as_unicode_str, TARGET_RENDERER
+from shellcheck_lib_test.util.textformat.formatting.html.test_resources import as_unicode_str, TARGET_RENDERER, \
+    ConstantPRenderer
 
 
 def suite() -> unittest.TestSuite:
@@ -194,13 +193,3 @@ class TestVariableListType(unittest.TestCase):
                          xml_string)
         self.assertIs(list(root)[0],
                       ret_val)
-
-
-class ConstantPRenderer(AnyParagraphItemRenderer):
-    def __init__(self, paragraph_contents: str):
-        self.paragraph_contents = paragraph_contents
-
-    def apply(self, parent: Element, x: core.ParagraphItem) -> Element:
-        p = SubElement(parent, 'p')
-        p.text = self.paragraph_contents
-        return p

@@ -73,13 +73,13 @@ def literal_layout(s: str) -> core.ParagraphItem:
 
 
 def first_column_is_header_table(rows: list,
-                                 column_separator: str = '  ') -> core.ParagraphItem:
+                                 column_separator: str = '  ') -> table.Table:
     return table.Table(table.TableFormat(column_separator),
                        rows)
 
 
 def first_row_is_header_table(rows: list,
-                              column_separator: str = '  ') -> core.ParagraphItem:
+                              column_separator: str = '  ') -> table.Table:
     return table.Table(table.TableFormat(column_separator,
                                          first_row_is_header=True),
                        rows)
