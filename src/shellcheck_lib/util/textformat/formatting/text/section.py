@@ -1,5 +1,5 @@
-from shellcheck_lib.util.textformat.formatting import paragraph_item
-from shellcheck_lib.util.textformat.formatting.wrapper import Indent
+from shellcheck_lib.util.textformat.formatting.text import paragraph_item
+from shellcheck_lib.util.textformat.formatting.text.wrapper import Indent
 from shellcheck_lib.util.textformat.structure.document import SectionContents, Section
 
 

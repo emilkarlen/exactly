@@ -1,7 +1,8 @@
 import unittest
 
-from shellcheck_lib_test.util.textformat.formatting.formatting_test_impls.table import \
-    main, column_max_width, width_distribution
+from shellcheck_lib_test.util.textformat.formatting.text.formatting_test_impls.table import \
+    column_max_width, width_distribution
+from shellcheck_lib_test.util.textformat.formatting.text.formatting_test_impls.table import main
 
 
 def suite():

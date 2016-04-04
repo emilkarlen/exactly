@@ -2,8 +2,8 @@ import types
 
 from shellcheck_lib.util import tables
 from shellcheck_lib.util.tables import extend_each_sub_list_to_max_sub_list_length
-from shellcheck_lib.util.textformat.formatting.table.column_max_width import derive_column_max_widths
-from shellcheck_lib.util.textformat.formatting.table.width_distribution import distribute_width
+from shellcheck_lib.util.textformat.formatting.text.table.column_max_width import derive_column_max_widths
+from shellcheck_lib.util.textformat.formatting.text.table.width_distribution import distribute_width
 from shellcheck_lib.util.textformat.structure.table import Table
 
 

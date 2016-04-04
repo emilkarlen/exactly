@@ -1,4 +1,4 @@
-from shellcheck_lib.util.textformat.formatting.text import TextFormatter
+from shellcheck_lib.util.textformat.formatting.text.text import TextFormatter
 from shellcheck_lib.util.textformat.structure.core import Text
 
 from shellcheck_lib.util.textformat.structure.lists import ListType, Separations
