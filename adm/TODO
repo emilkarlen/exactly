@@ -1,5 +1,8 @@
 -*- org -*-
 
+
+* TODO Ändra --rel-cwd -> --rel-pwd
+<2016-04-03 sön>
 * TODO SHELLCHECK_HOME ska ev inte vara tillgänglig i [act]
 <2016-04-02 lör>
 Det riskerar ju att atc (action to check) kan sabba
