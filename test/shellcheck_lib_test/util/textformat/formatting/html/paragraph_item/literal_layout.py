@@ -1,9 +1,9 @@
 import unittest
 from xml.etree.ElementTree import Element
 
-from shellcheck_lib.util.textformat.formatting.html import literal_layout as sut
+from shellcheck_lib.util.textformat.formatting.html.paragraph_item import literal_layout as sut
 from shellcheck_lib.util.textformat.structure.literal_layout import LiteralLayout
-from shellcheck_lib_test.util.textformat.formatting.html.test_resources import as_unicode_str
+from shellcheck_lib_test.util.textformat.formatting.html.paragraph_item.test_resources import as_unicode_str
 
 
 def suite() -> unittest.TestSuite:

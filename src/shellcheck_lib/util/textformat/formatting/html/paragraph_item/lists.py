@@ -1,8 +1,8 @@
 from xml.etree.ElementTree import Element, SubElement
 
-from shellcheck_lib.util.textformat.formatting.html import text
-from shellcheck_lib.util.textformat.formatting.html.interfaces import ParagraphItemRenderer
-from shellcheck_lib.util.textformat.formatting.html.text import Position
+from shellcheck_lib.util.textformat.formatting.html.paragraph_item import text
+from shellcheck_lib.util.textformat.formatting.html.paragraph_item.interfaces import ParagraphItemRenderer
+from shellcheck_lib.util.textformat.formatting.html.paragraph_item.text import Position
 from shellcheck_lib.util.textformat.structure import lists
 
 

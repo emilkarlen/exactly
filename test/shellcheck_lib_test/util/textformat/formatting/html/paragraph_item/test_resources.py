@@ -1,7 +1,7 @@
 from xml.etree.ElementTree import Element, tostring, SubElement
 
-import shellcheck_lib.util
-from shellcheck_lib.util.textformat.formatting.html.interfaces import ParagraphItemRenderer
+from shellcheck_lib.util.textformat.formatting.html.paragraph_item.interfaces import ParagraphItemRenderer
+from shellcheck_lib.util.textformat.formatting.html.paragraph_item.text import TargetRenderer
 from shellcheck_lib.util.textformat.structure import core
 
 
@@ -14,13 +14,13 @@ class CrossReferenceTarget(core.CrossReferenceTarget):
         self.name = name
 
 
-class TargetRenderer(shellcheck_lib.util.textformat.formatting.html.text.TargetRenderer):
+class TargetRendererTestImpl(TargetRenderer):
     def apply(self, target: core.CrossReferenceTarget) -> str:
         assert isinstance(target, CrossReferenceTarget)
         return target.name
 
 
-TARGET_RENDERER = TargetRenderer()
+TARGET_RENDERER = TargetRendererTestImpl()
 
 
 class ConstantPRenderer(ParagraphItemRenderer):
