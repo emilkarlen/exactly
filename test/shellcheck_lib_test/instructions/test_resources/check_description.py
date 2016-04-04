@@ -1,6 +1,6 @@
 import unittest
 
-from shellcheck_lib.help.cross_reference import CrossReference
+from shellcheck_lib.help.cross_reference_id import CrossReferenceId
 from shellcheck_lib.help.program_modes.test_case.instruction_documentation import InstructionDocumentation, \
     InvokationVariant, \
     SyntaxElementDescription
@@ -46,7 +46,7 @@ class TestInstructionName(WithDescriptionBase):
 class TestCrossReferences(WithDescriptionBase):
     def runTest(self):
         actual = self.description.cross_references()
-        va.every_element('cross references', va.IsInstance(CrossReference)).apply(self, actual)
+        va.every_element('cross references', va.IsInstance(CrossReferenceId)).apply(self, actual)
 
 
 class TestSingleLineDescription(WithDescriptionBase):
