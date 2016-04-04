@@ -39,7 +39,9 @@ class TestParagraph(unittest.TestCase):
         ret_val = sut.render(TextRenderer(TARGET_RENDERER), root, para)
         # ASSERT #
         xml_string = as_unicode_str(root)
-        self.assertEqual('<root><p>string text</p></root>',
+        self.assertEqual('<root>'
+                         '<p>string text</p>'
+                         '</root>',
                          xml_string)
         self.assertIs(list(root)[0],
                       ret_val)
@@ -53,7 +55,9 @@ class TestParagraph(unittest.TestCase):
         ret_val = sut.render(TextRenderer(TARGET_RENDERER), root, para)
         # ASSERT #
         xml_string = as_unicode_str(root)
-        self.assertEqual('<root><p>_1_<br />_2_</p></root>',
+        self.assertEqual('<root>'
+                         '<p>_1_<br />_2_</p>'
+                         '</root>',
                          xml_string)
         self.assertIs(list(root)[0],
                       ret_val)
@@ -68,7 +72,11 @@ class TestParagraph(unittest.TestCase):
         ret_val = sut.render(TextRenderer(TARGET_RENDERER), root, para)
         # ASSERT #
         xml_string = as_unicode_str(root)
-        self.assertEqual('<root><p><a href="target">title</a></p></root>',
+        self.assertEqual('<root>'
+                         '<p>'
+                         '<a href="target">title</a>'
+                         '</p>'
+                         '</root>',
                          xml_string)
         self.assertIs(list(root)[0],
                       ret_val)
@@ -84,7 +92,13 @@ class TestParagraph(unittest.TestCase):
         ret_val = sut.render(TextRenderer(TARGET_RENDERER), root, para)
         # ASSERT #
         xml_string = as_unicode_str(root)
-        self.assertEqual('<root><p><a href="target 1">title 1</a><br /><a href="target 2">title 2</a></p></root>',
+        self.assertEqual('<root>'
+                         '<p>'
+                         '<a href="target 1">'
+                         'title 1</a><br /><a href="target 2">title 2'
+                         '</a>'
+                         '</p>'
+                         '</root>',
                          xml_string)
         self.assertIs(list(root)[0],
                       ret_val)
@@ -99,7 +113,11 @@ class TestParagraph(unittest.TestCase):
         ret_val = sut.render(TextRenderer(TARGET_RENDERER), root, para)
         # ASSERT #
         xml_string = as_unicode_str(root)
-        self.assertEqual('<root><p><a href="target">title</a><br />string</p></root>',
+        self.assertEqual('<root>'
+                         '<p>'
+                         '<a href="target">title</a><br />string'
+                         '</p>'
+                         '</root>',
                          xml_string)
         self.assertIs(list(root)[0],
                       ret_val)
@@ -114,7 +132,11 @@ class TestParagraph(unittest.TestCase):
         ret_val = sut.render(TextRenderer(TARGET_RENDERER), root, para)
         # ASSERT #
         xml_string = as_unicode_str(root)
-        self.assertEqual('<root><p><a name="target">concrete string</a></p></root>',
+        self.assertEqual('<root>'
+                         '<p>'
+                         '<a name="target">concrete string</a>'
+                         '</p>'
+                         '</root>',
                          xml_string)
         self.assertIs(list(root)[0],
                       ret_val)
@@ -131,8 +153,13 @@ class TestParagraph(unittest.TestCase):
         ret_val = sut.render(TextRenderer(TARGET_RENDERER), root, para)
         # ASSERT #
         xml_string = as_unicode_str(root)
-        self.assertEqual(
-            '<root><p><a name="anchor target"><a href="cross ref target">cross ref title</a></a></p></root>',
-            xml_string)
+        self.assertEqual('<root>'
+                         '<p>'
+                         '<a name="anchor target">'
+                         '<a href="cross ref target">cross ref title</a>'
+                         '</a>'
+                         '</p>'
+                         '</root>',
+                         xml_string)
         self.assertIs(list(root)[0],
                       ret_val)
