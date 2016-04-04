@@ -3,7 +3,7 @@ from shellcheck_lib.util.textformat.structure.core import ParagraphItem
 
 class TableFormat:
     def __init__(self,
-                 column_separator: str,
+                 column_separator: str = '  ',
                  first_row_is_header: bool = False,
                  first_column_is_header: bool = False):
         self._column_separator = column_separator

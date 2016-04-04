@@ -1,6 +1,6 @@
 import unittest
 
-from shellcheck_lib_test.util.textformat.formatting.html import paragraph, literal_layout, lists
+from shellcheck_lib_test.util.textformat.formatting.html import paragraph, literal_layout, lists, table
 
 
 def suite() -> unittest.TestSuite:
@@ -8,6 +8,7 @@ def suite() -> unittest.TestSuite:
         literal_layout.suite(),
         paragraph.suite(),
         lists.suite(),
+        table.suite(),
     ])
 
 
