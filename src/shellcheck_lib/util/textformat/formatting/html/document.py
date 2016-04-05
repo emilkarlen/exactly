@@ -4,9 +4,19 @@ from shellcheck_lib.util.textformat.formatting.html.section import SectionRender
 from shellcheck_lib.util.textformat.structure.document import SectionContents
 
 
+class ElementPopulator:
+    def apply(self, parent: Element):
+        pass
+
+
 class DocumentSetup:
-    def __init__(self, page_title: str):
+    def __init__(self,
+                 page_title: str,
+                 header_populator: ElementPopulator = ElementPopulator(),
+                 footer_populator: ElementPopulator = ElementPopulator()):
         self.page_title = page_title
+        self.header_populator = header_populator
+        self.footer_populator = footer_populator
 
 
 class DocumentRenderer:
@@ -32,9 +42,11 @@ class DocumentRenderer:
         html = Element('html')
         html.append(self._head_element(document_setup))
         body = SubElement(html, 'body')
+        document_setup.header_populator.apply(body)
         self.section_renderer.render_section_contents(Environment(0),
                                                       body,
                                                       section_contents)
+        document_setup.footer_populator.apply(body)
         return html
 
     def _head_element(self, document_setup: DocumentSetup) -> Element:
