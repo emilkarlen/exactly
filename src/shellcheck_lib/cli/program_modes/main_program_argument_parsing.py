@@ -3,6 +3,7 @@ import pathlib
 import shlex
 
 from shellcheck_lib.cli.argument_parsing_of_act_phase_setup import resolve_act_phase_setup_from_argparse_argument
+from shellcheck_lib.cli.cli_environment import program_info
 from shellcheck_lib.cli.cli_environment.command_line_options import OPTION_FOR_KEEPING_SANDBOX_DIRECTORY, \
     OPTION_FOR_PREPROCESSOR
 from shellcheck_lib.cli.program_modes.test_case.settings import Output, TestCaseExecutionSettings
@@ -47,7 +48,10 @@ def _new_argument_parser(commands: dict) -> argparse.ArgumentParser:
         return '%s - %s' % (n_d[0], n_d[1])
 
     command_descriptions = '\n'.join(map(command_description, commands.items()))
-    ret_val = argparse.ArgumentParser(description='Execute Shellcheck test case or test suite.')
+    ret_val = argparse.ArgumentParser(prog=program_info.PROGRAM_NAME,
+                                      description='Execute Shellcheck test case or test suite.')
+    ret_val.add_argument('--version', action='version', version='%(prog)s ' + program_info.VERSION)
+
     ret_val.add_argument('file',
                          metavar='[FILE|COMMAND]',
                          type=str,
