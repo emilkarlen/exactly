@@ -17,6 +17,7 @@ def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestDocument),
         unittest.makeSuite(TestHeaderAndFooterPopulator),
+        unittest.makeSuite(TestHeadPopulator),
     ])
 
 
@@ -138,12 +139,48 @@ class TestHeaderAndFooterPopulator(unittest.TestCase):
                          actual)
 
 
+class TestHeadPopulator(unittest.TestCase):
+    def test_header_populator(self):
+        # ARRANGE #
+        section_contents = SectionContents(
+            [para('main contents')],
+            [])
+        head_populator = HeadStylePopulator('p {color:blue;}')
+        document_setup = sut.DocumentSetup('page title',
+                                           head_populator=head_populator)
+        # ACT #
+        output_file = io.StringIO()
+        DOCUMENT_RENDERER.apply(output_file, document_setup, section_contents)
+        actual = output_file.getvalue()
+        # ASSERT #
+        expected = (DOCTYPE_XHTML1_0 +
+                    '<html>'
+                    '<head>'
+                    '<title>page title</title>'
+                    '<style>p {color:blue;}</style>'
+                    '</head>'
+                    '<body>'
+                    '<p>main contents</p>'
+                    '</body>'
+                    '</html>')
+        self.assertEqual(expected,
+                         actual)
+
+
 class SingleParaPopulator(sut.ElementPopulator):
     def __init__(self, para_text: str):
         self.para_text = para_text
 
     def apply(self, parent: Element):
         SubElement(parent, 'p').text = self.para_text
+
+
+class HeadStylePopulator(sut.ElementPopulator):
+    def __init__(self, style: str):
+        self.style = style
+
+    def apply(self, parent: Element):
+        SubElement(parent, 'style').text = self.style
 
 
 TEST_SECTION_RENDERER = sut.SectionRenderer(HnSectionHeaderRenderer(TextRenderer(TargetRendererTestImpl())),
