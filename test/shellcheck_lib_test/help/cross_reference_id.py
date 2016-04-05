@@ -25,12 +25,25 @@ class CrossReferenceIdVisitorTest(unittest.TestCase):
                       returned,
                       'The object itself is expected to be returned by the visitor')
 
+    def test_visit_CustomCrossReferenceId(self):
+        # ARRANGE #
+        x = sut.CustomCrossReferenceId('custom name')
+        visitor = VisitorThatRegistersVisitedClassesAndReturnsTheArgument()
+        # ACT #
+        returned = visitor.visit(x)
+        # ASSERT #
+        self.assertEqual([sut.CustomCrossReferenceId],
+                         visitor.visited_classes)
+        self.assertIs(x,
+                      returned,
+                      'The object itself is expected to be returned by the visitor')
+
     def test_visit_SHOULD_raise_exception_WHEN_an_unknown_class_is_visited(self):
         # ARRANGE #
         x = sut.ProgramCrossReferenceId()
         visitor = VisitorThatRegistersVisitedClassesAndReturnsTheArgument()
         # ACT & ASSERT#
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             visitor.visit(x)
 
 
@@ -40,4 +53,8 @@ class VisitorThatRegistersVisitedClassesAndReturnsTheArgument(sut.CrossReference
 
     def visit_concept(self, x: sut.ConceptCrossReferenceId):
         self.visited_classes.append(sut.ConceptCrossReferenceId)
+        return x
+
+    def visit_custom(self, x: sut.CustomCrossReferenceId):
+        self.visited_classes.append(sut.CustomCrossReferenceId)
         return x

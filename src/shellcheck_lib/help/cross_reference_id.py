@@ -8,6 +8,11 @@ class CrossReferenceId(CrossReferenceTarget):
     pass
 
 
+class CustomCrossReferenceId(CrossReferenceId):
+    def __init__(self, target_name: str):
+        self.target_name = target_name
+
+
 class ProgramCrossReferenceId(CrossReferenceId):
     pass
 
@@ -41,9 +46,14 @@ class CrossReferenceIdVisitor:
     def visit(self, x: CrossReferenceId):
         if isinstance(x, ConceptCrossReferenceId):
             return self.visit_concept(x)
+        if isinstance(x, CustomCrossReferenceId):
+            return self.visit_custom(x)
         else:
-            raise ValueError('Not a concrete %s: %s' % (str(CrossReferenceId),
-                                                        str(x)))
+            raise TypeError('Not a concrete %s: %s' % (str(CrossReferenceId),
+                                                       str(x)))
 
     def visit_concept(self, x: ConceptCrossReferenceId):
+        raise NotImplementedError()
+
+    def visit_custom(self, x: CustomCrossReferenceId):
         raise NotImplementedError()
