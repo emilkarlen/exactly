@@ -10,9 +10,9 @@ from shellcheck_lib.cli.program_modes.help.program_modes.test_case.request_rende
 from shellcheck_lib.cli.program_modes.help.program_modes.test_suite.help_request import TestSuiteHelpRequest
 from shellcheck_lib.cli.program_modes.help.program_modes.test_suite.request_rendering import \
     TestSuiteHelpRendererResolver
-from shellcheck_lib.cli.program_modes.help.request_handling_.console_help import ConsoleHelpRequestHandler
-from shellcheck_lib.cli.program_modes.help.request_handling_.html_generation import HtmlGenerationRequestHandler
-from shellcheck_lib.cli.program_modes.help.request_handling_.request_handler import RequestHandler
+from shellcheck_lib.cli.program_modes.help.request_handling.console_help import ConsoleHelpRequestHandler
+from shellcheck_lib.cli.program_modes.help.request_handling.html_generation import HtmlGenerationRequestHandler
+from shellcheck_lib.cli.program_modes.help.request_handling.request_handler import RequestHandler
 from shellcheck_lib.help.contents_structure import ApplicationHelp
 from shellcheck_lib.help.utils.render import SectionContentsRenderer
 from shellcheck_lib.util.std import StdOutputFiles
