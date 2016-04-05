@@ -5,8 +5,9 @@ from shellcheck_lib.util.textformat.formatting.html.paragraph_item import paragr
 from shellcheck_lib.util.textformat.formatting.html.text import TextRenderer
 from shellcheck_lib.util.textformat.structure import core
 from shellcheck_lib.util.textformat.structure.paragraph import Paragraph
-from shellcheck_lib_test.util.textformat.formatting.html.paragraph_item.test_resources import as_unicode_str, \
-    CrossReferenceTarget, TargetRendererTestImpl
+from shellcheck_lib_test.util.textformat.formatting.html.paragraph_item.test_resources import CrossReferenceTarget, \
+    TargetRendererTestImpl
+from shellcheck_lib_test.util.textformat.formatting.html.test_resources import as_unicode_str
 
 
 def suite() -> unittest.TestSuite:

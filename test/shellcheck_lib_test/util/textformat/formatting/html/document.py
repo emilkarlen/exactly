@@ -2,6 +2,7 @@ import io
 import unittest
 from xml.etree.ElementTree import Element, SubElement
 
+import shellcheck_lib.util.textformat.formatting.html.utils
 from shellcheck_lib.util.textformat.formatting.html import document as sut
 from shellcheck_lib.util.textformat.formatting.html.document import DOCTYPE_XHTML1_0
 from shellcheck_lib.util.textformat.formatting.html.section import HnSectionHeaderRenderer
@@ -23,6 +24,38 @@ def suite() -> unittest.TestSuite:
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())
+
+
+class TestComplexElementPopulator(unittest.TestCase):
+    def test_simple_document(self):
+        # ARRANGE #
+        root = Element('root')
+        section_contents = SectionContents(
+            [para('para 0')],
+            [Section(StringText('header 1'),
+                     SectionContents([para('para 1'),
+                                      para('')],
+                                     []))])
+        document_setup = sut.DocumentSetup('page title')
+        # ACT #
+        output_file = io.StringIO()
+        DOCUMENT_RENDERER.apply(output_file, document_setup, section_contents)
+        actual = output_file.getvalue()
+        # ASSERT #
+        expected = (DOCTYPE_XHTML1_0 +
+                    '<html>'
+                    '<head>'
+                    '<title>page title</title>'
+                    '</head>'
+                    '<body>'
+                    '<p>para 0</p>'
+                    '<h1>header 1</h1>'
+                    '<p>para 1</p>'
+                    '<p />'
+                    '</body>'
+                    '</html>')
+        self.assertEqual(expected,
+                         actual)
 
 
 class TestDocument(unittest.TestCase):
@@ -167,7 +200,7 @@ class TestHeadPopulator(unittest.TestCase):
                          actual)
 
 
-class SingleParaPopulator(sut.ElementPopulator):
+class SingleParaPopulator(shellcheck_lib.util.textformat.formatting.html.utils.ElementPopulator):
     def __init__(self, para_text: str):
         self.para_text = para_text
 
@@ -175,7 +208,7 @@ class SingleParaPopulator(sut.ElementPopulator):
         SubElement(parent, 'p').text = self.para_text
 
 
-class HeadStylePopulator(sut.ElementPopulator):
+class HeadStylePopulator(shellcheck_lib.util.textformat.formatting.html.utils.ElementPopulator):
     def __init__(self, style: str):
         self.style = style
 

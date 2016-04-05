@@ -7,8 +7,10 @@ from shellcheck_lib.util.textformat.formatting.html.text import TextRenderer
 from shellcheck_lib.util.textformat.structure.core import StringText
 from shellcheck_lib.util.textformat.structure.document import SectionContents, Section
 from shellcheck_lib.util.textformat.structure.structures import para
-from shellcheck_lib_test.util.textformat.formatting.html.paragraph_item.test_resources import as_unicode_str, \
-    TargetRendererTestImpl, ParaWithSingleStrTextRenderer, assert_contents_and_that_last_child_is_returned
+from shellcheck_lib_test.util.textformat.formatting.html.paragraph_item.test_resources import TargetRendererTestImpl, \
+    ParaWithSingleStrTextRenderer
+from shellcheck_lib_test.util.textformat.formatting.html.test_resources import as_unicode_str, \
+    assert_contents_and_that_last_child_is_returned
 
 
 def suite() -> unittest.TestSuite:
