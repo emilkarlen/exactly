@@ -1,4 +1,5 @@
 from shellcheck_lib.cli.program_modes.help.concepts.help_request import ConceptHelpRequest, ConceptHelpItem
+from shellcheck_lib.cli.program_modes.help.html_page.help_request import XHtmlHelpRequest
 from shellcheck_lib.cli.program_modes.help.program_modes import help_request
 from shellcheck_lib.cli.program_modes.help.program_modes.main_program.help_request import *
 from shellcheck_lib.cli.program_modes.help.program_modes.test_case.help_request import *
@@ -11,6 +12,7 @@ INSTRUCTIONS = 'instructions'
 TEST_CASE = 'case'
 TEST_SUITE = 'suite'
 CONCEPT = 'concept'
+HTML_GENERATION = 'htmlpage'
 
 
 class HelpError(Exception):
@@ -43,6 +45,8 @@ class Parser:
             return MainProgramHelpRequest(MainProgramHelpItem.HELP)
         if help_command_arguments[0] == CONCEPT:
             return self._parse_concept_help(help_command_arguments[1:])
+        if help_command_arguments[0] == HTML_GENERATION:
+            return self._parse_xhtml_help(help_command_arguments[1:])
         if help_command_arguments[0] == TEST_CASE:
             if len(help_command_arguments) > 1:
                 raise HelpError('Invalid number of arguments for help command. Use help help, for help.')
@@ -130,6 +134,11 @@ class Parser:
             return ConceptHelpRequest(ConceptHelpItem.INDIVIDUAL_CONCEPT, concept)
         except KeyError:
             raise HelpError('Concept does not exist: "%s"' % concept_name)
+
+    def _parse_xhtml_help(self, arguments: list) -> ConceptHelpRequest:
+        if arguments:
+            raise HelpError('The %s command expects no arguments.' % HTML_GENERATION)
+        return XHtmlHelpRequest()
 
 
 def _is_name_of_phase(name: str):

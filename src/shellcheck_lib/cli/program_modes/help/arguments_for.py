@@ -1,11 +1,15 @@
 from shellcheck_lib.cli.program_modes.help.argument_parsing import INSTRUCTIONS, TEST_SUITE, TEST_CASE, HELP, \
-    CONCEPT
+    CONCEPT, HTML_GENERATION
 from shellcheck_lib.execution import phases
 from shellcheck_lib.help.program_modes.test_case.config import phase_help_name
 
 
 def program() -> list:
     return []
+
+
+def html_generation() -> list:
+    return [HTML_GENERATION]
 
 
 def help_help() -> list:

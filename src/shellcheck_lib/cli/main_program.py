@@ -2,7 +2,7 @@ import os
 
 from shellcheck_lib.cli.program_modes import main_program_argument_parsing as case_argument_parsing
 from shellcheck_lib.cli.program_modes.help import argument_parsing as parse_help
-from shellcheck_lib.cli.program_modes.help.request_rendering import print_help
+from shellcheck_lib.cli.program_modes.help.request_handling import handle_help_request
 from shellcheck_lib.cli.program_modes.test_case.settings import TestCaseExecutionSettings
 from shellcheck_lib.cli.program_modes.test_suite import argument_parsing as suite_argument_parsing
 from shellcheck_lib.cli.program_modes.test_suite.settings import Settings
@@ -69,7 +69,7 @@ class MainProgram:
         except parse_help.HelpError as ex:
             self._output.err.write(ex.msg + os.linesep)
             return EXIT_INVALID_USAGE
-        print_help(self._output.out, application_help, help_request)
+        handle_help_request(self._output, application_help, help_request)
         return 0
 
     def _parse_and_exit_on_error(self, parse_arguments_and_execute_callable, arguments: list) -> int:

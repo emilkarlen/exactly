@@ -10,6 +10,7 @@ from shellcheck_lib.default.program_modes.test_case.default_instructions_setup i
 from shellcheck_lib.default.program_modes.test_suite.reporting import INVALID_SUITE_EXIT_CODE, FAILED_TESTS_EXIT_CODE
 from shellcheck_lib.execution import phases
 from shellcheck_lib.execution.result import FullResultStatus
+from shellcheck_lib.help.concepts.concept import SANDBOX_CONCEPT
 from shellcheck_lib.help.program_modes.test_case.config import phase_help_name
 from shellcheck_lib.test_case.test_case_processing import AccessErrorType
 from shellcheck_lib.test_suite.parser import SECTION_NAME__SUITS, SECTION_NAME__CASES
@@ -375,6 +376,15 @@ class TestHelp(unittest.TestCase):
 
     def test_program(self):
         self._assert_is_successful_invokation(arguments_for.program())
+
+    def test_concept_list(self):
+        self._assert_is_successful_invokation(arguments_for.concept_list())
+
+    def test_individual_concept(self):
+        self._assert_is_successful_invokation(arguments_for.individual_concept(SANDBOX_CONCEPT.name().singular))
+
+    def test_html_generation(self):
+        self._assert_is_successful_invokation(arguments_for.html_generation())
 
     def test_case_phases(self):
         for ph in phases.ALL:
