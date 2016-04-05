@@ -1,6 +1,6 @@
 from xml.etree.ElementTree import Element, SubElement
 
-from shellcheck_lib.util.textformat.formatting.html.paragraph_item.text import TextRenderer, Position
+from shellcheck_lib.util.textformat.formatting.html.text import TextRenderer, Position
 from shellcheck_lib.util.textformat.structure.paragraph import Paragraph
 
 

@@ -1,7 +1,7 @@
 from xml.etree.ElementTree import Element, tostring, SubElement
 
 from shellcheck_lib.util.textformat.formatting.html.paragraph_item.interfaces import ParagraphItemRenderer
-from shellcheck_lib.util.textformat.formatting.html.paragraph_item.text import TargetRenderer
+from shellcheck_lib.util.textformat.formatting.html.text import TargetRenderer
 from shellcheck_lib.util.textformat.structure import core
 
 
