@@ -62,11 +62,32 @@ class TestParagraph(unittest.TestCase):
         self.assertIs(list(root)[0],
                       ret_val)
 
-    def test_single_cross_reference(self):
+    def test_single_cross_reference_to_id_in_same_document(self):
         # ARRANGE #
         root = Element('root')
         para = Paragraph([core.CrossReferenceText('title',
-                                                  CrossReferenceTarget('target')),
+                                                  CrossReferenceTarget('target'),
+                                                  target_is_id_in_same_document=True),
+                          ])
+        # ACT #
+        ret_val = sut.render(TextRenderer(TARGET_RENDERER), root, para)
+        # ASSERT #
+        xml_string = as_unicode_str(root)
+        self.assertEqual('<root>'
+                         '<p>'
+                         '<a href="#target">title</a>'
+                         '</p>'
+                         '</root>',
+                         xml_string)
+        self.assertIs(list(root)[0],
+                      ret_val)
+
+    def test_single_cross_reference_to_not_id_in_same_document(self):
+        # ARRANGE #
+        root = Element('root')
+        para = Paragraph([core.CrossReferenceText('title',
+                                                  CrossReferenceTarget('target'),
+                                                  target_is_id_in_same_document=False),
                           ])
         # ACT #
         ret_val = sut.render(TextRenderer(TARGET_RENDERER), root, para)
@@ -94,8 +115,8 @@ class TestParagraph(unittest.TestCase):
         xml_string = as_unicode_str(root)
         self.assertEqual('<root>'
                          '<p>'
-                         '<a href="target 1">'
-                         'title 1</a><br /><a href="target 2">title 2'
+                         '<a href="#target 1">'
+                         'title 1</a><br /><a href="#target 2">title 2'
                          '</a>'
                          '</p>'
                          '</root>',
@@ -107,7 +128,8 @@ class TestParagraph(unittest.TestCase):
         # ARRANGE #
         root = Element('root')
         para = Paragraph([core.CrossReferenceText('title',
-                                                  CrossReferenceTarget('target')),
+                                                  CrossReferenceTarget('target'),
+                                                  target_is_id_in_same_document=True),
                           core.StringText('string')])
         # ACT #
         ret_val = sut.render(TextRenderer(TARGET_RENDERER), root, para)
@@ -115,7 +137,7 @@ class TestParagraph(unittest.TestCase):
         xml_string = as_unicode_str(root)
         self.assertEqual('<root>'
                          '<p>'
-                         '<a href="target">title</a><br />string'
+                         '<a href="#target">title</a><br />string'
                          '</p>'
                          '</root>',
                          xml_string)
@@ -134,7 +156,7 @@ class TestParagraph(unittest.TestCase):
         xml_string = as_unicode_str(root)
         self.assertEqual('<root>'
                          '<p>'
-                         '<a name="target">concrete string</a>'
+                         '<span id="target">concrete string</span>'
                          '</p>'
                          '</root>',
                          xml_string)
@@ -147,7 +169,8 @@ class TestParagraph(unittest.TestCase):
         para = Paragraph([
             core.AnchorText(CrossReferenceTarget('anchor target'),
                             core.CrossReferenceText('cross ref title',
-                                                    CrossReferenceTarget('cross ref target'))),
+                                                    CrossReferenceTarget('cross ref target'),
+                                                    target_is_id_in_same_document=True)),
         ])
         # ACT #
         ret_val = sut.render(TextRenderer(TARGET_RENDERER), root, para)
@@ -155,9 +178,9 @@ class TestParagraph(unittest.TestCase):
         xml_string = as_unicode_str(root)
         self.assertEqual('<root>'
                          '<p>'
-                         '<a name="anchor target">'
-                         '<a href="cross ref target">cross ref title</a>'
-                         '</a>'
+                         '<span id="anchor target">'
+                         '<a href="#cross ref target">cross ref title</a>'
+                         '</span>'
                          '</p>'
                          '</root>',
                          xml_string)

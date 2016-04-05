@@ -50,13 +50,16 @@ class ContentSetter(core.TextVisitor):
 
     def visit_cross_reference(self, text: core.CrossReferenceText):
         a = SubElement(self.content_root, 'a')
-        a.set('href', self.target_renderer.apply(text.target))
+        target_str = self.target_renderer.apply(text.target)
+        if text.target_is_id_in_same_document:
+            target_str = '#' + target_str
+        a.set('href', target_str)
         a.text = text.title
         return a
 
     def visit_anchor(self, text: core.AnchorText):
-        a = SubElement(self.content_root, 'a')
-        a.set('name', self.target_renderer.apply(text.anchor))
+        a = SubElement(self.content_root, 'span')
+        a.set('id', self.target_renderer.apply(text.anchor))
         anchor_content_setter = ContentSetter(self.target_renderer,
                                               a,
                                               set_text_inside(a))
