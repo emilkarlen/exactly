@@ -2,7 +2,7 @@ import os
 import shutil
 
 from shellcheck_lib.cli.program_modes.help import arguments_for
-from shellcheck_lib.cli.program_modes.help.request_handling_.request_handler import RequestHandler
+from shellcheck_lib.cli.program_modes.help.request_handling.request_handler import RequestHandler
 from shellcheck_lib.help import cross_reference_id
 from shellcheck_lib.help.contents_structure import ApplicationHelp
 from shellcheck_lib.help.utils.cross_reference import CrossReferenceTextConstructor

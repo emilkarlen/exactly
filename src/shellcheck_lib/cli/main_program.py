@@ -2,7 +2,7 @@ import os
 
 from shellcheck_lib.cli.program_modes import main_program_argument_parsing as case_argument_parsing
 from shellcheck_lib.cli.program_modes.help import argument_parsing as parse_help
-from shellcheck_lib.cli.program_modes.help.request_handling import handle_help_request
+from shellcheck_lib.cli.program_modes.help.request_handling.resolving_and_handling import handle_help_request
 from shellcheck_lib.cli.program_modes.test_case.settings import TestCaseExecutionSettings
 from shellcheck_lib.cli.program_modes.test_suite import argument_parsing as suite_argument_parsing
 from shellcheck_lib.cli.program_modes.test_suite.settings import Settings
