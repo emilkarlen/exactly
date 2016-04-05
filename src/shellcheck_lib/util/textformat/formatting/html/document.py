@@ -1,12 +1,8 @@
 from xml.etree.ElementTree import Element, SubElement, ElementTree
 
 from shellcheck_lib.util.textformat.formatting.html.section import SectionRenderer, Environment
+from shellcheck_lib.util.textformat.formatting.html.utils import ElementPopulator
 from shellcheck_lib.util.textformat.structure.document import SectionContents
-
-
-class ElementPopulator:
-    def apply(self, parent: Element):
-        pass
 
 
 class DocumentSetup:
