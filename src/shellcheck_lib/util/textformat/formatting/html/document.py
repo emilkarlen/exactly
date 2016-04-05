@@ -12,9 +12,11 @@ class ElementPopulator:
 class DocumentSetup:
     def __init__(self,
                  page_title: str,
+                 head_populator: ElementPopulator = ElementPopulator(),
                  header_populator: ElementPopulator = ElementPopulator(),
                  footer_populator: ElementPopulator = ElementPopulator()):
         self.page_title = page_title
+        self.head_populator = head_populator
         self.header_populator = header_populator
         self.footer_populator = footer_populator
 
@@ -53,6 +55,7 @@ class DocumentRenderer:
         ret_val = Element('head')
         title = SubElement(ret_val, 'title')
         title.text = document_setup.page_title
+        document_setup.head_populator.apply(ret_val)
         return ret_val
 
 
