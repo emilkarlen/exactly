@@ -4,6 +4,7 @@ from shellcheck_lib.cli.program_modes.help import argument_parsing as sut
 from shellcheck_lib.cli.program_modes.help import arguments_for
 from shellcheck_lib.cli.program_modes.help.argument_parsing import HelpError
 from shellcheck_lib.cli.program_modes.help.concepts.help_request import ConceptHelpRequest, ConceptHelpItem
+from shellcheck_lib.cli.program_modes.help.html_page.help_request import XHtmlHelpRequest
 from shellcheck_lib.cli.program_modes.help.program_modes.main_program.help_request import *
 from shellcheck_lib.cli.program_modes.help.program_modes.test_case.help_request import *
 from shellcheck_lib.cli.program_modes.help.program_modes.test_suite.help_request import *
@@ -43,6 +44,20 @@ class TestProgramHelp(unittest.TestCase):
         self.assertIs(MainProgramHelpItem.HELP,
                       actual.item,
                       'Expects MainProgram help for help')
+
+
+class TestXhtmlHelp(unittest.TestCase):
+    def test_valid_usage(self):
+        actual = sut.parse(_app_help_for([]),
+                           [sut.HTML_GENERATION])
+        self.assertIsInstance(actual,
+                              XHtmlHelpRequest,
+                              'Expecting settings for XHTML')
+
+    def test_invalid_usage(self):
+        with self.assertRaises(HelpError):
+            sut.parse(_app_help_for([]),
+                      [sut.HTML_GENERATION, 'superfluous argument'])
 
 
 class TestTestCasePhase(unittest.TestCase):
@@ -402,6 +417,7 @@ class ConceptTestImpl(PlainConceptDocumentation):
 def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestProgramHelp))
+    ret_val.addTest(unittest.makeSuite(TestXhtmlHelp))
     ret_val.addTest(unittest.makeSuite(TestConceptHelp))
     ret_val.addTest(unittest.makeSuite(TestTestCaseHelp))
     ret_val.addTest(unittest.makeSuite(TestTestCaseInstructionSet))
