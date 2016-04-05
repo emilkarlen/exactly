@@ -15,6 +15,12 @@ from shellcheck_lib.util.textformat.formatting.html.utils import ElementPopulato
 from shellcheck_lib.util.textformat.structure import core
 from shellcheck_lib.util.textformat.structure.document import SectionContents
 
+ELEMENT_STYLES = """\
+pre {
+background: lightgray;
+}
+"""
+
 TITLE_STYLE = """\
 font-size: 250%;
 font-weight: bold;
@@ -37,8 +43,10 @@ class HtmlGenerationRequestHandler(RequestHandler):
         renderer.apply(output.out, setup, contents)
 
     def _setup(self) -> doc_rendering.DocumentSetup:
+        head_populator = StylePopulator(ELEMENT_STYLES)
         header_populator = TitleAndVersionPopulator()
         setup = doc_rendering.DocumentSetup(PAGE_TITLE,
+                                            head_populator=head_populator,
                                             header_populator=header_populator)
         return setup
 
@@ -62,11 +70,19 @@ class _TargetRenderer(text.TargetRenderer):
         return 'TODO TargetRenderer'
 
 
+class StylePopulator(ElementPopulator):
+    def __init__(self, style: str):
+        self.style = style
+
+    def apply(self, parent: Element):
+        SubElement(parent, 'style').text = self.style
+
+
 class TitleAndVersionPopulator(ElementPopulator):
     def apply(self, parent: Element):
         div = SubElement(parent, 'div')
         div.text = PAGE_TITLE
         div.set('style', TITLE_STYLE)
         version = SubElement(parent, 'p')
-        version.text = 'Version ' + program_info.VERSION
+        version.text = program_info.PROGRAM_NAME + ' version ' + program_info.VERSION
         SubElement(parent, 'hr')
