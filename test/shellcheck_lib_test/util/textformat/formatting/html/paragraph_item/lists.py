@@ -6,8 +6,7 @@ from shellcheck_lib.util.textformat.formatting.html.text import TextRenderer
 from shellcheck_lib.util.textformat.structure import lists
 from shellcheck_lib.util.textformat.structure.structures import text, paras, para
 from shellcheck_lib_test.util.textformat.formatting.html.paragraph_item.test_resources import as_unicode_str, \
-    TARGET_RENDERER, \
-    ConstantPRenderer
+    ConstantPRenderer, TargetRendererTestImpl
 
 
 def suite() -> unittest.TestSuite:
@@ -194,3 +193,6 @@ class TestVariableListType(unittest.TestCase):
                          xml_string)
         self.assertIs(list(root)[0],
                       ret_val)
+
+
+TARGET_RENDERER = TargetRendererTestImpl()
