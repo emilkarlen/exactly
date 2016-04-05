@@ -6,7 +6,7 @@ from shellcheck_lib.cli.program_modes.help.request_handling_.request_handler imp
 from shellcheck_lib.help import cross_reference_id
 from shellcheck_lib.help.contents_structure import ApplicationHelp
 from shellcheck_lib.help.utils.cross_reference import CrossReferenceTextConstructor
-from shellcheck_lib.help.utils.render import SectionContentsRenderer
+from shellcheck_lib.help.utils.render import SectionContentsRenderer, RenderingEnvironment
 from shellcheck_lib.util.std import StdOutputFiles
 from shellcheck_lib.util.textformat.formatting.text import section, paragraph_item
 from shellcheck_lib.util.textformat.formatting.text import text
@@ -26,7 +26,8 @@ class ConsoleHelpRequestHandler(RequestHandler):
                output: StdOutputFiles):
         page_width = shutil.get_terminal_size().columns
         formatter = _formatter(page_width)
-        lines = formatter.format_section_contents(self.section_contents_renderer.apply())
+        environment = RenderingEnvironment(_cross_ref_text_constructor())
+        lines = formatter.format_section_contents(self.section_contents_renderer.apply(environment))
         file = output.out
         for line in lines:
             file.write(line)

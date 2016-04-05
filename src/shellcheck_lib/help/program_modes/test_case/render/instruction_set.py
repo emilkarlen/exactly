@@ -2,19 +2,20 @@ from shellcheck_lib.help.program_modes.test_case.contents.main.utils import Test
 from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCasePhaseInstructionSet
 from shellcheck_lib.help.program_modes.test_case.render.render_instruction import instruction_set_list_item
 from shellcheck_lib.help.program_modes.test_case.render.utils import TestCasePhaseInstructionSetRendererBase
+from shellcheck_lib.help.utils.render import RenderingEnvironment
 from shellcheck_lib.util.textformat.structure import document as doc
 from shellcheck_lib.util.textformat.structure import lists
 from shellcheck_lib.util.textformat.structure.structures import text
 
 
 class PhaseInstructionSetRenderer(TestCasePhaseInstructionSetRendererBase):
-    def apply(self) -> doc.SectionContents:
+    def apply(self, environment: RenderingEnvironment) -> doc.SectionContents:
         instruction_list = instruction_set_list(self.instruction_set)
         return doc.SectionContents([instruction_list], [])
 
 
 class InstructionSetPerPhaseRenderer(TestCaseHelpRendererBase):
-    def apply(self) -> doc.SectionContents:
+    def apply(self, environment: RenderingEnvironment) -> doc.SectionContents:
         sections = []
         for test_case_phase_help in self.test_case_help.phase_helps_in_order_of_execution:
             if test_case_phase_help.is_phase_with_instructions:
