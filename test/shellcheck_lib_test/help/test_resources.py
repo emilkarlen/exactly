@@ -1,8 +1,11 @@
+from shellcheck_lib.help.cross_reference_id import CrossReferenceId
 from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCasePhaseInstructionSet, \
     TestCasePhaseDocumentation
 from shellcheck_lib.help.program_modes.test_case.instruction_documentation import InstructionDocumentation
+from shellcheck_lib.help.utils.cross_reference import CrossReferenceTextConstructor
 from shellcheck_lib.help.utils.description import Description
 from shellcheck_lib.util.textformat.structure import document as doc
+from shellcheck_lib.util.textformat.structure.core import Text
 from shellcheck_lib.util.textformat.structure.structures import para, text
 from shellcheck_lib_test.test_resources.instruction_description import InstructionDocumentationWithConstantValues
 
@@ -57,3 +60,8 @@ class TestCasePhaseHelpForPhaseWithInstructionsTestImpl(TestCasePhaseDocumentati
     @property
     def instruction_set(self) -> TestCasePhaseInstructionSet:
         return self._instruction_set
+
+
+class CrossReferenceTextConstructorTestImpl(CrossReferenceTextConstructor):
+    def apply(self, x: CrossReferenceId) -> Text:
+        return 'Reference to ' + str(x)

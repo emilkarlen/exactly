@@ -6,6 +6,7 @@ from shellcheck_lib.help.program_modes.test_case.contents.main.ref_test_case_pro
     test_case_processing_documentation
 from shellcheck_lib.help.program_modes.test_case.contents.main.test_outcome import test_outcome_documentation
 from shellcheck_lib.help.program_modes.test_case.contents.main.utils import Setup, TestCaseHelpRendererBase
+from shellcheck_lib.help.utils.render import RenderingEnvironment
 from shellcheck_lib.util.textformat.structure import document as doc
 from shellcheck_lib.util.textformat.structure.structures import para, text
 
@@ -13,7 +14,7 @@ ONE_LINE_DESCRIPTION = "Executes a program in a temporary sandbox directory and 
 
 
 class OverviewRenderer(TestCaseHelpRendererBase):
-    def apply(self) -> doc.SectionContents:
+    def apply(self, environment: RenderingEnvironment) -> doc.SectionContents:
         setup = Setup(self.test_case_help)
         test_case_intro_contents = test_case_intro_documentation(setup)
         phases_contents = phases_documentation(setup)

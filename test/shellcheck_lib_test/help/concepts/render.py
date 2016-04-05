@@ -6,7 +6,9 @@ from shellcheck_lib.help.concepts.concept_structure import PlainConceptDocumenta
     ConfigurationParameterDocumentation
 from shellcheck_lib.help.program_modes.test_case.contents_structure import ConceptsHelp
 from shellcheck_lib.help.utils.description import Description
+from shellcheck_lib.help.utils.render import RenderingEnvironment
 from shellcheck_lib.util.textformat.structure.structures import text, para
+from shellcheck_lib_test.help.test_resources import CrossReferenceTextConstructorTestImpl
 from shellcheck_lib_test.util.textformat.test_resources import structure as struct_check
 
 
@@ -27,7 +29,7 @@ class TestAllConceptsList(unittest.TestCase):
         # ARRANGE #
         renderer = sut.AllConceptsListRenderer(ConceptsHelp(all_concepts()))
         # ACT #
-        actual = renderer.apply()
+        actual = renderer.apply(RENDERING_ENVIRONMENT)
         # ASSERT #
         struct_check.is_section_contents.apply(self, actual)
 
@@ -40,7 +42,7 @@ class TestPlainIndividualConcept(unittest.TestCase):
                                                    []))
         renderer = sut.IndividualConceptRenderer(concept)
         # ACT #
-        actual = renderer.apply()
+        actual = renderer.apply(RENDERING_ENVIRONMENT)
         # ASSERT #
         struct_check.is_section_contents.apply(self, actual)
 
@@ -51,7 +53,7 @@ class TestPlainIndividualConcept(unittest.TestCase):
                                                    [para('rest paragraph')]))
         renderer = sut.IndividualConceptRenderer(concept)
         # ACT #
-        actual = renderer.apply()
+        actual = renderer.apply(RENDERING_ENVIRONMENT)
         # ASSERT #
         struct_check.is_section_contents.apply(self, actual)
 
@@ -65,7 +67,7 @@ class TestIndividualConfigurationParameter(unittest.TestCase):
                                                  'default value')
         renderer = sut.IndividualConceptRenderer(concept)
         # ACT #
-        actual = renderer.apply()
+        actual = renderer.apply(RENDERING_ENVIRONMENT)
         # ASSERT #
         struct_check.is_section_contents.apply(self, actual)
 
@@ -77,7 +79,7 @@ class TestIndividualConfigurationParameter(unittest.TestCase):
                                                  'default value')
         renderer = sut.IndividualConceptRenderer(concept)
         # ACT #
-        actual = renderer.apply()
+        actual = renderer.apply(RENDERING_ENVIRONMENT)
         # ASSERT #
         struct_check.is_section_contents.apply(self, actual)
 
@@ -107,3 +109,6 @@ class ConfigurationParameterTestImpl(ConfigurationParameterDocumentation):
 
     def purpose(self) -> Description:
         return self.description
+
+
+RENDERING_ENVIRONMENT = RenderingEnvironment(CrossReferenceTextConstructorTestImpl())

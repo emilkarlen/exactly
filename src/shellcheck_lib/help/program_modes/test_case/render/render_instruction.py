@@ -1,8 +1,7 @@
 from shellcheck_lib.help.program_modes.test_case.instruction_documentation import InstructionDocumentation, \
     InvokationVariant, \
     SyntaxElementDescription
-from shellcheck_lib.help.utils.cross_reference import CrossReferenceTextConstructor
-from shellcheck_lib.help.utils.render import SectionContentsRenderer
+from shellcheck_lib.help.utils.render import SectionContentsRenderer, RenderingEnvironment
 from shellcheck_lib.util.textformat.structure import document as doc, paragraph, lists
 from shellcheck_lib.util.textformat.structure.structures import para, text, section, simple_header_only_list
 
@@ -13,12 +12,10 @@ BLANK_LINE_BETWEEN_ELEMENTS = lists.Separations(1, 0)
 
 class InstructionManPageRenderer(SectionContentsRenderer):
     def __init__(self,
-                 cross_ref_text_constructor: CrossReferenceTextConstructor,
                  documentation: InstructionDocumentation):
-        self.cross_ref_text_constructor = cross_ref_text_constructor
         self.documentation = documentation
 
-    def apply(self) -> doc.SectionContents:
+    def apply(self, environment: RenderingEnvironment) -> doc.SectionContents:
         documentation = self.documentation
         sub_sections = []
         if documentation.invokation_variants():
@@ -30,7 +27,7 @@ class InstructionManPageRenderer(SectionContentsRenderer):
                                         main_description_rest))
         cross_references = documentation.cross_references()
         if cross_references:
-            cross_reference_list = simple_header_only_list([self.cross_ref_text_constructor.apply(cross_ref)
+            cross_reference_list = simple_header_only_list([environment.cross_ref_text_constructor.apply(cross_ref)
                                                             for cross_ref in cross_references],
                                                            lists.ListType.ITEMIZED_LIST)
             sub_sections.append(section('SEE ALSO',
