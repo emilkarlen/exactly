@@ -24,10 +24,11 @@ This sandbox is automatically removed after the execution
 (unless {cli_option_for_keeping_sandbox} is used).
 
 
-The environment variable {SANDBOX_ACT_DIR} points to a directory inside the sandbox.
-The Present Working Directory is set to this directory.
+This sandbox directory contains a sub directory {act_subdir}/.
+This is the Present Working Directory (PWD) at the start of the test case.
 
-This will be the PWD for all phases, unless it is changed by the {pwd} instruction.
+
+This is the PWD for all phases, unless it is changed by the {pwd} instruction.
 
 A change of PWD will stay in effect for all following instructions and phases.
 """
