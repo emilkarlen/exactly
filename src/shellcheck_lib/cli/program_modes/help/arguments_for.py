@@ -1,5 +1,5 @@
 from shellcheck_lib.cli.program_modes.help.argument_parsing import INSTRUCTIONS, TEST_SUITE, TEST_CASE, HELP, \
-    CONCEPT, HTML_GENERATION
+    CONCEPT, HTML_DOCUMENTATION
 from shellcheck_lib.execution import phases
 from shellcheck_lib.help.program_modes.test_case.config import phase_help_name
 
@@ -9,7 +9,7 @@ def program() -> list:
 
 
 def html_generation() -> list:
-    return [HTML_GENERATION]
+    return [HTML_DOCUMENTATION]
 
 
 def help_help() -> list:
