@@ -84,6 +84,31 @@ class TargetInfo(tuple):
                            self.target)
 
 
+class TargetInfoNode(tuple):
+    def __new__(cls,
+                data: TargetInfo,
+                children: list):
+        """
+        :type children: [TargetInfoNode]
+        """
+        return tuple.__new__(cls, (data, children))
+
+    @property
+    def data(self) -> TargetInfo:
+        return self[0]
+
+    @property
+    def children(self) -> list:
+        """
+        :rtype [TargetInfoNode]
+        """
+        return self[1]
+
+
+def target_info_leaf(ti: TargetInfo) -> TargetInfoNode:
+    return TargetInfoNode(ti, [])
+
+
 class CustomTargetInfoFactory:
     def __init__(self, prefix: str):
         self.prefix = prefix
@@ -92,9 +117,12 @@ class CustomTargetInfoFactory:
              presentation: str,
              local_target_name: str) -> TargetInfo:
         return TargetInfo(presentation,
-                          CustomCrossReferenceId(self.prefix + local_target_name))
+                          CustomCrossReferenceId(self.prefix + _COMPONENT_SEPARATOR + local_target_name))
 
 
 def sub_component_factory(local_name: str,
                           root: CustomTargetInfoFactory) -> CustomTargetInfoFactory:
-    return CustomTargetInfoFactory(root.prefix + '.' + local_name)
+    return CustomTargetInfoFactory(root.prefix + _COMPONENT_SEPARATOR + local_name)
+
+
+_COMPONENT_SEPARATOR = '.'

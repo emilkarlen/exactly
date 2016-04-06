@@ -5,6 +5,7 @@ from shellcheck_lib.help.program_modes.test_case.contents.main.overview import O
 from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from shellcheck_lib.help.utils.render import RenderingEnvironment
 from shellcheck_lib_test.help.test_resources import test_case_phase_help, CrossReferenceTextConstructorTestImpl
+from shellcheck_lib_test.help.utils.test_resources_.table_of_contents import is_target_info_hierarchy
 from shellcheck_lib_test.util.textformat.test_resources import structure as struct_check
 
 
@@ -26,6 +27,14 @@ class TestCase(unittest.TestCase):
         actual = OverviewRenderer(TEST_CASE_HELP_WITH_PRODUCTION_PHASES).apply(rendering_environment)
         # ASSERT #
         struct_check.is_section_contents.apply(self, actual)
+
+    def test_overview_documentation_target_info_hierarchy(self):
+        # ARRANGE #
+        overview_renderer = OverviewRenderer(TEST_CASE_HELP_WITH_PRODUCTION_PHASES)
+        # ACT #
+        actual = overview_renderer.target_info_hierarchy()
+        # ASSERT #
+        is_target_info_hierarchy.apply(self, actual)
 
 
 TEST_CASE_HELP_WITH_PRODUCTION_PHASES = TestCaseHelp([
