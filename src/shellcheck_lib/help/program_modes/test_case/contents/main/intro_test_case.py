@@ -31,7 +31,7 @@ EOF\
 """
 
 DESCRIPTION = """\
-A test case file contains a sequence of “phases”.
+A test case file contains a sequence of "phases".
 
 
 The {phase[act]} phase contains the action to check.
@@ -41,8 +41,8 @@ It is the only mandatory phase.
 By default, it must contain a single command line.
 
 
-All other phases contain “instructions”.
-E.g., “exitcode” and “stdout” are instructions of the {phase[assert]} phase.
+All other phases contain "instructions".
+E.g., "exitcode" and "stdout" are instructions of the {phase[assert]} phase.
 
 
 The instructions in the {phase[assert]} phase determines the outcome of the test case.
