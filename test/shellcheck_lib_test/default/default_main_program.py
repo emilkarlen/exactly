@@ -377,6 +377,12 @@ class TestHelp(unittest.TestCase):
     def test_program(self):
         self._assert_is_successful_invokation(arguments_for.program())
 
+    def test_help(self):
+        self._assert_is_successful_invokation(arguments_for.help_help())
+
+    def test_htmldoc(self):
+        self._assert_is_successful_invokation(arguments_for.html_generation())
+
     def test_concept_list(self):
         self._assert_is_successful_invokation(arguments_for.concept_list())
 
@@ -438,6 +444,7 @@ def suite():
     ret_val.addTest(unittest.makeSuite(TestTestSuiteWithWildcardFileReferencesToSuiteFiles))
     ret_val.addTest(unittest.makeSuite(TestTestSuitePreprocessing))
     ret_val.addTest(unittest.makeSuite(TestHelp))
+    ret_val.addTest(unittest.makeSuite(TestHtmlDoc))
     return ret_val
 
 

@@ -1,7 +1,7 @@
 from shellcheck_lib.cli.program_modes.help import argument_parsing
 from shellcheck_lib.util.textformat.parse import normalize_and_parse
 from shellcheck_lib.util.textformat.structure import lists
-from shellcheck_lib.util.textformat.structure.core import ParagraphItem, Text
+from shellcheck_lib.util.textformat.structure.core import ParagraphItem, Text, StringText
 from shellcheck_lib.util.textformat.structure.lists import HeaderContentListItem
 
 
@@ -14,6 +14,10 @@ def help_invokation_variants() -> ParagraphItem:
             _help(''),
             normalize_and_parse(
                 'Describes the program.')),
+        HeaderContentListItem(
+            _help(argument_parsing.HTML_GENERATION),
+            normalize_and_parse(
+                'Generates a HTML version of all help information available in the program.')),
         HeaderContentListItem(
             _help(argument_parsing.TEST_CASE),
             normalize_and_parse(
@@ -68,4 +72,4 @@ def un_indented_variable_list(items: list,
 
 
 def _help(syntax: str) -> Text:
-    return Text(argument_parsing.HELP + ' ' + syntax)
+    return StringText(argument_parsing.HELP + ' ' + syntax)

@@ -24,9 +24,10 @@ TOC_TITLE = 'Table of Contents'
 
 ELEMENT_STYLES = """\
 pre {
-background-color : #EEE8AA;
+background-color : #EEFFCC;
 padding: 7px;
-border-radius     : 2px;
+border: 1px solid #cEdFaC;
+border-radius     : 3px;
 }
 
 h1 {
