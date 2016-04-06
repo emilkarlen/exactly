@@ -55,8 +55,16 @@ class AnchorText(Text):
     def __init__(self,
                  anchor: CrossReferenceTarget,
                  anchored_text: ConcreteText):
-        self.anchor = anchor
-        self.anchored_text = anchored_text
+        self._anchor = anchor
+        self._anchored_text = anchored_text
+
+    @property
+    def anchor(self) -> CrossReferenceTarget:
+        return self._anchor
+
+    @property
+    def anchored_text(self) -> ConcreteText:
+        return self._anchored_text
 
 
 class TextVisitor:
