@@ -30,9 +30,24 @@ is_cross_reference_text = va.And([
                      va.IsInstance(str))
 ])
 
-is_text = va.Or([
+is_concrete_text = va.Or([
     is_string_text,
     is_cross_reference_text,
+])
+
+is_anchor_text = va.And([
+    va.IsInstance(core.AnchorText),
+    va.sub_component('anchor',
+                     core.AnchorText.anchor.fget,
+                     va.IsInstance(core.CrossReferenceTarget)),
+    va.sub_component('anchored_text',
+                     core.AnchorText.anchored_text.fget,
+                     is_concrete_text)
+])
+
+is_text = va.Or([
+    is_concrete_text,
+    is_anchor_text,
 ])
 
 

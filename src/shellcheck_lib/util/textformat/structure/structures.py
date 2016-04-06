@@ -59,13 +59,20 @@ def paras(str_or_text) -> list:
     return [para(str_or_text)]
 
 
-def text(s: str) -> core.Text:
+def text(s: str) -> core.ConcreteText:
     return core.StringText(s)
 
 
 def cross_reference(title: str,
-                    target: core.CrossReferenceTarget) -> core.Text:
+                    target: core.CrossReferenceTarget) -> core.ConcreteText:
     return core.CrossReferenceText(title, target)
+
+
+def anchor_text(anchored_text: core.ConcreteText,
+                anchor: core.CrossReferenceTarget = None) -> core.Text:
+    if anchor is None:
+        return anchored_text
+    return core.AnchorText(anchor, anchored_text)
 
 
 def literal_layout(s: str) -> core.ParagraphItem:

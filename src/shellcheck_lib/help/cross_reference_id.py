@@ -1,4 +1,6 @@
+from shellcheck_lib.util.textformat.structure import core
 from shellcheck_lib.util.textformat.structure.core import CrossReferenceTarget
+from shellcheck_lib.util.textformat.structure.structures import text, anchor_text
 
 
 class CrossReferenceId(CrossReferenceTarget):
@@ -57,3 +59,42 @@ class CrossReferenceIdVisitor:
 
     def visit_custom(self, x: CustomCrossReferenceId):
         raise NotImplementedError()
+
+
+class TargetInfo(tuple):
+    def __new__(cls,
+                presentation: str,
+                target: core.CrossReferenceTarget):
+        return tuple.__new__(cls, (presentation, target))
+
+    @property
+    def presentation_str(self) -> str:
+        return self[0]
+
+    @property
+    def presentation_text(self) -> core.ConcreteText:
+        return text(self[0])
+
+    @property
+    def target(self) -> core.CrossReferenceTarget:
+        return self[1]
+
+    def anchor_text(self) -> core.Text:
+        return anchor_text(self.presentation_text,
+                           self.target)
+
+
+class CustomTargetInfoFactory:
+    def __init__(self, prefix: str):
+        self.prefix = prefix
+
+    def make(self,
+             presentation: str,
+             local_target_name: str) -> TargetInfo:
+        return TargetInfo(presentation,
+                          CustomCrossReferenceId(self.prefix + local_target_name))
+
+
+def sub_component_factory(local_name: str,
+                          root: CustomTargetInfoFactory) -> CustomTargetInfoFactory:
+    return CustomTargetInfoFactory(root.prefix + '.' + local_name)
