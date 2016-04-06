@@ -19,7 +19,7 @@ def execution_documentation(setup: Setup) -> doc.SectionContents:
 
 
 DESCRIPTION = """\
-Each test case is executed in it’s own temporary sandbox directory.
+Each test case is executed in it's own temporary sandbox directory.
 This sandbox is automatically removed after the execution
 (unless {cli_option_for_keeping_sandbox} is used).
 

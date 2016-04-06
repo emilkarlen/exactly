@@ -15,7 +15,7 @@ def phases_documentation(setup: Setup) -> doc.SectionContents:
 
 
 INTRO = """\
-Executing a test case means executing all of it’s phases.
+Executing a test case means executing all of it's phases.
 
 
 The phases are always executed in the same order,
