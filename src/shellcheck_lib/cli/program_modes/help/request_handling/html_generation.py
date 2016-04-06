@@ -8,6 +8,7 @@ from shellcheck_lib.help.cross_reference_id import CustomTargetInfoFactory
 from shellcheck_lib.help.program_modes.test_case.contents.main import overview as overview_content
 from shellcheck_lib.help.utils.cross_reference import CrossReferenceTextConstructor
 from shellcheck_lib.help.utils.render import RenderingEnvironment
+from shellcheck_lib.help.utils.table_of_contents import toc_list
 from shellcheck_lib.util.std import StdOutputFiles
 from shellcheck_lib.util.textformat.formatting.html import document as doc_rendering
 from shellcheck_lib.util.textformat.formatting.html import text
@@ -15,9 +16,8 @@ from shellcheck_lib.util.textformat.formatting.html.paragraph_item.full_paragrap
 from shellcheck_lib.util.textformat.formatting.html.section import HnSectionHeaderRenderer
 from shellcheck_lib.util.textformat.formatting.html.utils import ElementPopulator
 from shellcheck_lib.util.textformat.structure import core as doc
-from shellcheck_lib.util.textformat.structure import lists as doc_list
-from shellcheck_lib.util.textformat.structure import structures as docs
 from shellcheck_lib.util.textformat.structure.document import SectionContents
+from shellcheck_lib.util.textformat.structure.lists import ListType
 
 ELEMENT_STYLES = """\
 pre {
@@ -59,7 +59,7 @@ class HtmlGenerationRequestHandler(RequestHandler):
         target_info_hierarchy, main_contents = self._main_contents(
             cross_ref.sub_component_factory('tc-overview',
                                             root_targets_factory))
-        toc_paragraph = toc_list(target_info_hierarchy)
+        toc_paragraph = toc_list(target_info_hierarchy, ListType.ITEMIZED_LIST)
         main_contents.initial_paragraphs.insert(0, toc_paragraph)
         return main_contents
 
@@ -107,24 +107,3 @@ class TitleAndVersionPopulator(ElementPopulator):
         version = SubElement(parent, 'p')
         version.text = program_info.PROGRAM_NAME + ' version ' + program_info.VERSION
         SubElement(parent, 'hr')
-
-
-def toc_list(target_info_hierarchy: list) -> doc.ParagraphItem:
-    items = []
-    for x in target_info_hierarchy:
-        if isinstance(x, cross_ref.TargetInfo):
-            item = doc_list.HeaderContentListItem(docs.cross_reference(x.presentation_str,
-                                                                       x.target),
-                                                  [])
-            items.append(item)
-        elif isinstance(x, list):
-            item = toc_list(x)
-            items.append(item)
-        else:
-            msg = 'An element in a TargetInfo hierarchy must be either a %s or a %s. Found: %s' % (
-                str(cross_ref.TargetInfo),
-                str(list),
-                str(x))
-            raise TypeError(msg)
-    return doc_list.HeaderContentList(items,
-                                      doc_list.Format(doc_list.ListType.ORDERED_LIST))
