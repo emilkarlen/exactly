@@ -444,7 +444,6 @@ def suite():
     ret_val.addTest(unittest.makeSuite(TestTestSuiteWithWildcardFileReferencesToSuiteFiles))
     ret_val.addTest(unittest.makeSuite(TestTestSuitePreprocessing))
     ret_val.addTest(unittest.makeSuite(TestHelp))
-    ret_val.addTest(unittest.makeSuite(TestHtmlDoc))
     return ret_val
 
 

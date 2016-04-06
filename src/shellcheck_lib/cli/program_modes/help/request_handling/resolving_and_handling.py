@@ -1,6 +1,6 @@
 from shellcheck_lib.cli.program_modes.help.concepts.help_request import ConceptHelpRequest
 from shellcheck_lib.cli.program_modes.help.concepts.request_rendering import ConceptHelpRequestRendererResolver
-from shellcheck_lib.cli.program_modes.help.html_page.help_request import XHtmlHelpRequest
+from shellcheck_lib.cli.program_modes.help.html_documentation.help_request import XHtmlHelpRequest
 from shellcheck_lib.cli.program_modes.help.program_modes.help_request import *
 from shellcheck_lib.cli.program_modes.help.program_modes.main_program.help_request import MainProgramHelpRequest
 from shellcheck_lib.cli.program_modes.help.program_modes.main_program.request_rendering import \

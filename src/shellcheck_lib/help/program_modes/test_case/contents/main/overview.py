@@ -10,19 +10,10 @@ from shellcheck_lib.help.program_modes.test_case.contents.main.test_outcome impo
 from shellcheck_lib.help.program_modes.test_case.contents.main.utils import Setup, TestCaseHelpRendererBase
 from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from shellcheck_lib.help.utils.render import RenderingEnvironment
-from shellcheck_lib.util.textformat.structure import core
 from shellcheck_lib.util.textformat.structure import document as doc
 from shellcheck_lib.util.textformat.structure.structures import para
 
 ONE_LINE_DESCRIPTION = "Executes a program in a temporary sandbox directory and checks it's result."
-
-
-class OverviewTargets:
-    def __init__(self,
-                 overview_target: core.CrossReferenceTarget = None,
-                 outcome_target: core.CrossReferenceTarget = None):
-        self.overview_target = overview_target
-        self.outcome_target = outcome_target
 
 
 class OverviewRenderer(TestCaseHelpRendererBase):

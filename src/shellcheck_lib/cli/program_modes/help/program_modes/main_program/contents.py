@@ -15,7 +15,7 @@ def help_invokation_variants() -> ParagraphItem:
             normalize_and_parse(
                 'Describes the program.')),
         HeaderContentListItem(
-            _help(argument_parsing.HTML_GENERATION),
+            _help(argument_parsing.HTML_DOCUMENTATION),
             normalize_and_parse(
                 'Generates a HTML version of all help information available in the program.')),
         HeaderContentListItem(
