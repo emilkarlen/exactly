@@ -1,34 +1,13 @@
 from shellcheck_lib.help.program_modes.test_case.contents.main.utils import Setup
 from shellcheck_lib.util.textformat.parse import normalize_and_parse
 from shellcheck_lib.util.textformat.structure import document as doc
-from shellcheck_lib.util.textformat.structure.structures import para, literal_layout
 
 
 def test_case_intro_documentation(setup: Setup) -> doc.SectionContents:
-    paragraphs = ([
-                      para(A_TEST_CASE_IS_A_PLAIN_TEXT_FILE),
-                      literal_layout(EXAMPLE_TEST_CASE)
-                  ] +
-                  normalize_and_parse(DESCRIPTION.format(phase=setup.phase_names))
-                  )
-    return doc.SectionContents(paragraphs, [])
+    ps = []
+    ps.extend(normalize_and_parse(DESCRIPTION.format(phase=setup.phase_names)))
+    return doc.SectionContents(ps, [])
 
-
-A_TEST_CASE_IS_A_PLAIN_TEXT_FILE = 'A test case is written as a plain text file:'
-
-EXAMPLE_TEST_CASE = """\
-[act]
-
-helloworld
-
-[assert]
-
-exitcode 0
-
-stdout <<EOF
-Hello, World!
-EOF\
-"""
 
 DESCRIPTION = """\
 A test case file contains a sequence of "phases".

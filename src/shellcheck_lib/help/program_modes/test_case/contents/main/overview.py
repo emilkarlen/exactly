@@ -1,5 +1,6 @@
 from shellcheck_lib.help import cross_reference_id as cross_ref
 from shellcheck_lib.help.program_modes.test_case.contents.main.intro_environment import execution_documentation
+from shellcheck_lib.help.program_modes.test_case.contents.main.intro_intro import intro_intro_documentation
 from shellcheck_lib.help.program_modes.test_case.contents.main.intro_phases import phases_documentation
 from shellcheck_lib.help.program_modes.test_case.contents.main.intro_test_case import test_case_intro_documentation
 from shellcheck_lib.help.program_modes.test_case.contents.main.ref_test_case_files import test_case_files_documentation
@@ -37,6 +38,9 @@ class OverviewRenderer(TestCaseHelpRendererBase):
         self._OVERVIEW_TI = target_factory.make('Overview',
                                                 'overview')
 
+        self._OV__INTRO_TI = ow_taget_factory.make('Introduction',
+                                                   'introduction')
+
         self._OV__TEST_CASES_TI = ow_taget_factory.make('Test cases',
                                                         'test-cases')
 
@@ -58,6 +62,7 @@ class OverviewRenderer(TestCaseHelpRendererBase):
     def target_info_hierarchy(self) -> list:
         return [
             cross_ref.TargetInfoNode(self._OVERVIEW_TI, [
+                _leaf(self._OV__INTRO_TI),
                 _leaf(self._OV__TEST_CASES_TI),
                 _leaf(self._OV__ENVIRONMENT_TI),
                 _leaf(self._OV__PHASES_TI),
@@ -80,6 +85,8 @@ class OverviewRenderer(TestCaseHelpRendererBase):
                             doc.SectionContents(
                                 [],
                                 [
+                                    doc.Section(self._OV__INTRO_TI.anchor_text(),
+                                                intro_intro_documentation(setup)),
                                     doc.Section(self._OV__TEST_CASES_TI.anchor_text(),
                                                 test_case_intro_contents),
                                     doc.Section(self._OV__ENVIRONMENT_TI.anchor_text(),
