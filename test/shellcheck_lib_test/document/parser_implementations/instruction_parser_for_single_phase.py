@@ -220,7 +220,7 @@ class Instruction(model.Instruction):
         self.argument = argument
 
 
-def suite():
+def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestFailingSplitter))
     ret_val.addTest(unittest.makeSuite(TestParse))
@@ -229,4 +229,4 @@ def suite():
 
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.TextTestRunner().run(suite())
