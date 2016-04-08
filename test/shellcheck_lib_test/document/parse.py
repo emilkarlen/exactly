@@ -488,15 +488,19 @@ class TestParseMultiLineElements(ParseTestBase):
         self._check_document(expected_document, actual_document)
 
     def test_mix_of_instructions_without_anonymous_phase(self):
-        actual_document = self._parse_lines(parser_without_anonymous_phase(),
-                                            ['',
-                                             '[phase 1]',
-                                             'instruction 1',
-                                             'MULTI-LINE-INSTRUCTION 2-1',
-                                             'MULTI-LINE-INSTRUCTION 2-2',
-                                             'MULTI-LINE-INSTRUCTION 2-3',
-                                             'instruction 3'])
-
+        # ARRANGE #
+        parser = parser_for_sections(['phase 1'])
+        source_lines = ['',
+                        '[phase 1]',
+                        'instruction 1',
+                        'MULTI-LINE-INSTRUCTION 2-1',
+                        'MULTI-LINE-INSTRUCTION 2-2',
+                        'MULTI-LINE-INSTRUCTION 2-3',
+                        'instruction 3']
+        # ACT #
+        actual_document = self._parse_lines(parser,
+                                            source_lines)
+        # ASSERT #
         phase1_instructions = (
             new_instruction(3, 'instruction 1',
                             'phase 1'),
