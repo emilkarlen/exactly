@@ -142,8 +142,6 @@ def parser_for_sections(section_names: list,
     return parse.new_parser_for(configuration)
 
 
-_DEFAULT_PHASE_NAME = 'anonymous'
-
 
 # class TestGroupByPhase(unittest.TestCase):
 #     def test_valid(self):
@@ -286,8 +284,8 @@ class TestParseSingleLineElements(ParseTestBase):
 
     def test_valid_anonymous_and_named_phase(self):
         # ARRANGE #
-        sections = parser_for_sections(['phase 1', 'anonymous'],
-                                       default_section_name='anonymous')
+        sections = parser_for_sections(['phase 1', 'default'],
+                                       default_section_name='default')
         input_lines = ['COMMENT anonymous',
                        '',
                        'instruction anonymous',
@@ -301,14 +299,14 @@ class TestParseSingleLineElements(ParseTestBase):
         anonymous_instructions = (
             new_comment(1, 'COMMENT anonymous'),
             new_empty(2, ''),
-            new_instruction(3, 'instruction anonymous', 'anonymous')
+            new_instruction(3, 'instruction anonymous', 'default')
         )
         phase1_instructions = (
             new_comment(5, 'COMMENT 1'),
             new_instruction(6, 'instruction 1', 'phase 1')
         )
         expected_phase2instructions = {
-            'anonymous': model.PhaseContents(anonymous_instructions),
+            'default': model.PhaseContents(anonymous_instructions),
             'phase 1': model.PhaseContents(phase1_instructions)
         }
         expected_document = model.Document(expected_phase2instructions)
@@ -416,8 +414,8 @@ class TestParseMultiLineElements(ParseTestBase):
 
     def test_single_multi_line_instruction_in_anonymous_phase_that_occupies_whole_doc(self):
         # ARRANGE #
-        parser = parser_for_sections(['phase 1', 'anonymous'],
-                                     default_section_name='anonymous')
+        parser = parser_for_sections(['phase 1', 'default'],
+                                     default_section_name='default')
         source_lines = ['MULTI-LINE-INSTRUCTION 1',
                         'MULTI-LINE-INSTRUCTION 2']
         # ACT #
@@ -428,10 +426,10 @@ class TestParseMultiLineElements(ParseTestBase):
             new_instruction__multi_line(1,
                                         ['MULTI-LINE-INSTRUCTION 1',
                                          'MULTI-LINE-INSTRUCTION 2'],
-                                        'anonymous'),
+                                        'default'),
         )
         expected_phase2instructions = {
-            'anonymous': model.PhaseContents(anonymous_phase_instructions),
+            'default': model.PhaseContents(anonymous_phase_instructions),
         }
         expected_document = model.Document(expected_phase2instructions)
         self._check_document(expected_document, actual_document)
@@ -458,26 +456,32 @@ class TestParseMultiLineElements(ParseTestBase):
         self._check_document(expected_document, actual_document)
 
     def test_single_multi_line_instruction_in_anonymous_phase_ended_by_section_header(self):
-        actual_document = self._parse_lines(parser_with_anonymous_phase(),
-                                            ['',
-                                             'MULTI-LINE-INSTRUCTION 1',
-                                             'MULTI-LINE-INSTRUCTION 2',
-                                             '[phase 1]',
-                                             'instruction 1'])
-
+        # ARRANGE #
+        parser = parser_for_sections(['phase 1', 'default'],
+                                     default_section_name='default')
+        source_lines = ['',
+                        'MULTI-LINE-INSTRUCTION 1',
+                        'MULTI-LINE-INSTRUCTION 2',
+                        '[phase 1]',
+                        'instruction 1',
+                        ]
+        # ACT #
+        actual_document = self._parse_lines(parser,
+                                            source_lines)
+        # ASSERT #
         anonymous_phase_instructions = (
             new_empty(1, ''),
             new_instruction__multi_line(2,
                                         ['MULTI-LINE-INSTRUCTION 1',
                                          'MULTI-LINE-INSTRUCTION 2'],
-                                        None),
+                                        'default'),
         )
         phase1_instructions = (
             new_instruction(5, 'instruction 1',
                             'phase 1'),
         )
         expected_phase2instructions = {
-            None: model.PhaseContents(anonymous_phase_instructions),
+            'default': model.PhaseContents(anonymous_phase_instructions),
             'phase 1': model.PhaseContents(phase1_instructions),
         }
         expected_document = model.Document(expected_phase2instructions)
