@@ -400,14 +400,20 @@ class TestParseSingleLineElements(ParseTestBase):
 
 class TestParseMultiLineElements(ParseTestBase):
     def test_single_multi_line_instruction_that_is_actually_only_a_single_line_in_anonymous_phase(self):
-        actual_document = self._parse_lines(parser_with_anonymous_phase(),
-                                            ['MULTI-LINE-INSTRUCTION 1'])
-
+        # ARRANGE #
+        parser = parser_for_sections(['default'],
+                                     default_section_name='default')
+        source_lines = ['MULTI-LINE-INSTRUCTION 1'
+                        ]
+        # ACT #
+        actual_document = self._parse_lines(parser,
+                                            source_lines)
+        # ASSERT #
         anonymous_phase_instructions = (
-            new_instruction(1, 'MULTI-LINE-INSTRUCTION 1', None),
+            new_instruction(1, 'MULTI-LINE-INSTRUCTION 1', 'default'),
         )
         expected_phase2instructions = {
-            None: model.PhaseContents(anonymous_phase_instructions),
+            'default': model.PhaseContents(anonymous_phase_instructions),
         }
         expected_document = model.Document(expected_phase2instructions)
         self._check_document(expected_document, actual_document)
