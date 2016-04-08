@@ -93,27 +93,27 @@ class InstructionParserThatFails(parse.SectionElementParser):
 
 def parser_without_anonymous_phase() -> PlainDocumentParser:
     configuration = parse.SectionsConfiguration(
-            None,
-            parsers_for_named_phases()
+        None,
+        parsers_for_named_phases()
     )
     return parse.new_parser_for(configuration)
 
 
 def parser_with_anonymous_phase() -> PlainDocumentParser:
     configuration = parse.SectionsConfiguration(
-            InstructionParserForPhase(None),
-            parsers_for_named_phases()
+        InstructionParserForPhase(None),
+        parsers_for_named_phases()
     )
     return parse.new_parser_for(configuration)
 
 
 def parser_for_phase2_that_fails_unconditionally() -> PlainDocumentParser:
     configuration = parse.SectionsConfiguration(
-            None,
-            (parse.SectionConfiguration('phase 1',
-                                        InstructionParserForPhase('phase 1')),
-             parse.SectionConfiguration('phase 2',
-                                        InstructionParserThatFails()))
+        None,
+        (parse.SectionConfiguration('phase 1',
+                                    InstructionParserForPhase('phase 1')),
+         parse.SectionConfiguration('phase 2',
+                                    InstructionParserThatFails()))
     )
     return parse.new_parser_for(configuration)
 
@@ -123,6 +123,26 @@ def parsers_for_named_phases():
                                        InstructionParserForPhase('phase 1')),
             parse.SectionConfiguration('phase 2',
                                        InstructionParserForPhase('phase 2')))
+
+
+def parser_for_sections(section_names: list,
+                        default_section_name: str = None):
+    sections = [parse.SectionConfiguration(name, InstructionParserForPhase(name))
+                for name in section_names]
+    if default_section_name is not None:
+        if default_section_name not in section_names:
+            raise ValueError('Test setup: The given default section %s is not the name of a section (%s)' % (
+                default_section_name,
+                section_names,
+            ))
+    configuration = parse.SectionsConfiguration(
+        None,
+        tuple(sections),
+        default_phase_name=default_section_name)
+    return parse.new_parser_for(configuration)
+
+
+_DEFAULT_PHASE_NAME = 'anonymous'
 
 
 # class TestGroupByPhase(unittest.TestCase):
@@ -215,12 +235,20 @@ class ParseTestBase(unittest.TestCase):
                          len(actual_document.phases),
                          'Number of phases')
         for phase_name in expected_document.phases:
-            expected_instructions = expected_document.elements_for_phase(phase_name)
-            self.assertTrue(phase_name in actual_document.phases,
-                            'The actual test case contains the expected phase "%s"' % phase_name)
+            expected_elements = expected_document.elements_for_phase(phase_name)
+            self.assertIn(phase_name,
+                          actual_document.phases,
+                          'The actual test case should contain the expected phase "%s"' % phase_name)
             actual_elements = actual_document.elements_for_phase(phase_name)
-            ElementChecker(self, phase_name).check_equal_phase_contents(expected_instructions,
+            ElementChecker(self, phase_name).check_equal_phase_contents(expected_elements,
                                                                         actual_elements)
+        # for phase_name in actual_document.phases:
+        #     self.assertIn(phase_name,
+        #                   expected_document.phases,
+        #                   'Phase %s in actual document is not found in expected document (%s)' % (
+        #                       phase_name,
+        #                       str(expected_document.phases.keys())
+        #                   ))
 
 
 class TestParseSingleLineElements(ParseTestBase):
@@ -257,7 +285,8 @@ class TestParseSingleLineElements(ParseTestBase):
         self._check_document(expected_document, actual_document)
 
     def test_valid_anonymous_and_named_phase(self):
-        actual_document = self._parse_lines(parser_with_anonymous_phase(),
+        actual_document = self._parse_lines(parser_for_sections(['phase 1', 'anonymous'],
+                                                                'anonymous'),
                                             ['COMMENT anonymous',
                                              '',
                                              'instruction anonymous',
@@ -268,14 +297,14 @@ class TestParseSingleLineElements(ParseTestBase):
         anonymous_instructions = (
             new_comment(1, 'COMMENT anonymous'),
             new_empty(2, ''),
-            new_instruction(3, 'instruction anonymous', None)
+            new_instruction(3, 'instruction anonymous', 'anonymous')
         )
         phase1_instructions = (
             new_comment(5, 'COMMENT 1'),
             new_instruction(6, 'instruction 1', 'phase 1')
         )
         expected_phase2instructions = {
-            None: model.PhaseContents(anonymous_instructions),
+            'anonymous': model.PhaseContents(anonymous_instructions),
             'phase 1': model.PhaseContents(phase1_instructions)
         }
         expected_document = model.Document(expected_phase2instructions)
@@ -327,12 +356,12 @@ class TestParseSingleLineElements(ParseTestBase):
     def test_instruction_in_anonymous_phase_should_not_be_allowed_when_there_is_no_anonymous_phase(self):
         with self.assertRaises(FileSourceError) as cm:
             self._parse_lines(
-                    parser_without_anonymous_phase(),
-                    [
-                        'instruction anonymous',
-                        '[phase 1]',
-                        'instruction 1'
-                    ])
+                parser_without_anonymous_phase(),
+                [
+                    'instruction anonymous',
+                    '[phase 1]',
+                    'instruction 1'
+                ])
         assert_equals_line(self,
                            Line(1, 'instruction anonymous'),
                            cm.exception.source_error.line)
@@ -342,11 +371,11 @@ class TestParseSingleLineElements(ParseTestBase):
     def test_parse_should_fail_when_instruction_parser_fails(self):
         with self.assertRaises(FileSourceError) as cm:
             self._parse_lines(
-                    parser_for_phase2_that_fails_unconditionally(),
-                    [
-                        '[phase 2]',
-                        'instruction 2'
-                    ])
+                parser_for_phase2_that_fails_unconditionally(),
+                [
+                    '[phase 2]',
+                    'instruction 2'
+                ])
         self.assertEqual('phase 2',
                          cm.exception.maybe_section_name)
 
@@ -537,7 +566,10 @@ class ElementChecker(TestCaseWithMessageHeader):
                                    actual_elements: model.PhaseContents):
         self.tc.assertEqual(len(expected_elements.elements),
                             len(actual_elements.elements),
-                            self.msg('Number of elements in the phase'))
+                            self.msg('Expected %d elements. Actual: %d' % (
+                                len(expected_elements.elements),
+                                len(actual_elements.elements),
+                            )))
         for expected_element, actual_element in zip(expected_elements.elements,
                                                     actual_elements.elements):
             self.check_equal_element(expected_element, actual_element)
