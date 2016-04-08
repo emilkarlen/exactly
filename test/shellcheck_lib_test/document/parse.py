@@ -242,13 +242,13 @@ class ParseTestBase(unittest.TestCase):
             actual_elements = actual_document.elements_for_phase(phase_name)
             ElementChecker(self, phase_name).check_equal_phase_contents(expected_elements,
                                                                         actual_elements)
-        # for phase_name in actual_document.phases:
-        #     self.assertIn(phase_name,
-        #                   expected_document.phases,
-        #                   'Phase %s in actual document is not found in expected document (%s)' % (
-        #                       phase_name,
-        #                       str(expected_document.phases.keys())
-        #                   ))
+        for phase_name in actual_document.phases:
+            self.assertIn(phase_name,
+                          expected_document.phases,
+                          'Phase %s in actual document is not found in expected document (%s)' % (
+                              phase_name,
+                              str(expected_document.phases)
+                          ))
 
 
 class TestParseSingleLineElements(ParseTestBase):
