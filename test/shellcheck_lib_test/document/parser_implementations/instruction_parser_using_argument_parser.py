@@ -77,11 +77,11 @@ def source(instruction_argument: str) -> SingleInstructionParserSource:
         instruction_argument)
 
 
-def suite():
+def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestParse))
     return ret_val
 
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.TextTestRunner().run(suite())
