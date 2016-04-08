@@ -23,7 +23,6 @@ def suite() -> unittest.TestSuite:
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())
 
-
 _COMMENT_START = 'COMMENT'
 
 _MULTI_LINE_INSTRUCTION_LINE_START = 'MULTI-LINE-INSTRUCTION'
@@ -62,9 +61,14 @@ class ParseTestBase(unittest.TestCase):
 
 class TestParseSingleLineElements(ParseTestBase):
     def test_phases_without_elements_are_registered(self):
-        actual_document = self._parse_lines(parser_without_anonymous_phase(),
-                                            ['[phase 1]',
-                                             '[phase 2]'])
+        # ARRANGE #
+        parser = parser_for_sections(['phase 1', 'phase 2'])
+        source_lines = ['[phase 1]',
+                        '[phase 2]',
+                        ]
+        # ACT #
+        actual_document = self._parse_lines(parser,
+                                            source_lines)
 
         expected_phase2instructions = {
             'phase 1': model.PhaseContents(()),
@@ -74,14 +78,19 @@ class TestParseSingleLineElements(ParseTestBase):
         self._check_document(expected_document, actual_document)
 
     def test_initial_empty_lines_and_comment_lines_should_be_ignored_when_there_is_no_anonymous_phase(self):
-        actual_document = self._parse_lines(parser_without_anonymous_phase(),
-                                            ['# standard-comment anonymous',
-                                             '',
-                                             '[phase 1]',
-                                             'COMMENT 1',
-                                             '',
-                                             'instruction 1'])
-
+        # ARRANGE #
+        parser = parser_for_sections(['phase 1', 'phase 2'])
+        source_lines = ['# standard-comment anonymous',
+                        '',
+                        '[phase 1]',
+                        'COMMENT 1',
+                        '',
+                        'instruction 1',
+                        ]
+        # ACT #
+        actual_document = self._parse_lines(parser,
+                                            source_lines)
+        # ASSERT #
         phase1_instructions = (
             new_comment(4, 'COMMENT 1'),
             new_empty(5, ''),
@@ -124,11 +133,16 @@ class TestParseSingleLineElements(ParseTestBase):
         self._check_document(expected_document, actual_document)
 
     def test_valid_phase_with_comment_and_instruction(self):
-        actual_document = self._parse_lines(parser_without_anonymous_phase(),
-                                            ['[phase 1]',
-                                             'COMMENT',
-                                             'instruction'])
-
+        # ARRANGE #
+        parser = parser_for_sections(['phase 1', 'phase 2'])
+        source_lines = ['[phase 1]',
+                        'COMMENT',
+                        'instruction'
+                        ]
+        # ACT #
+        actual_document = self._parse_lines(parser,
+                                            source_lines)
+        # ASSERT #
         phase1_instructions = (
             new_comment(2, 'COMMENT'),
             new_instruction(3, 'instruction', 'phase 1')
@@ -140,15 +154,20 @@ class TestParseSingleLineElements(ParseTestBase):
         self._check_document(expected_document, actual_document)
 
     def test_valid_phase_with_fragmented_phases(self):
-        actual_document = self._parse_lines(parser_without_anonymous_phase(),
-                                            ['[phase 1]',
-                                             'COMMENT 1',
-                                             '',
-                                             '[phase 2]',
-                                             'instruction 2',
-                                             '[phase 1]',
-                                             'instruction 1'])
-
+        # ARRANGE #
+        parser = parser_for_sections(['phase 1', 'phase 2'])
+        source_lines = ['[phase 1]',
+                        'COMMENT 1',
+                        '',
+                        '[phase 2]',
+                        'instruction 2',
+                        '[phase 1]',
+                        'instruction 1'
+                        ]
+        # ACT #
+        actual_document = self._parse_lines(parser,
+                                            source_lines)
+        # ASSERT #
         phase1_instructions = (
             new_comment(2, 'COMMENT 1'),
             new_empty(3, ''),
@@ -172,7 +191,7 @@ class TestParseSingleLineElements(ParseTestBase):
         source_lines = ['instruction anonymous',
                         '[phase 1]',
                         'instruction 1']
-        # ACT #
+        # ACT & ASSERT #
         with self.assertRaises(FileSourceError) as cm:
             self._parse_lines(parser,
                               source_lines)
@@ -184,22 +203,30 @@ class TestParseSingleLineElements(ParseTestBase):
                           'Section name')
 
     def test_parse_should_fail_when_instruction_parser_fails(self):
+        # ARRANGE #
+        parser = parser_for_phase2_that_fails_unconditionally()
+        source_lines = ['[phase 2]',
+                        'instruction 2',
+                        ]
+        # ACT & ASSERT #
         with self.assertRaises(FileSourceError) as cm:
             self._parse_lines(
-                parser_for_phase2_that_fails_unconditionally(),
-                [
-                    '[phase 2]',
-                    'instruction 2'
-                ])
+                parser,
+                source_lines)
+        # ASSERT #
         self.assertEqual('phase 2',
                          cm.exception.maybe_section_name)
 
     def test_the_instruction_parser_for_the_current_phase_should_be_used(self):
-        actual_document = self._parse_lines(parser_for_phase2_that_fails_unconditionally(),
-                                            [
-                                                '[phase 1]',
-                                                'instruction 1'
-                                            ])
+        # ARRANGE #
+        parser = parser_for_phase2_that_fails_unconditionally()
+        source_lines = ['[phase 1]',
+                        'instruction 1',
+                        ]
+        # ACT #
+        actual_document = self._parse_lines(parser,
+                                            source_lines)
+        # ASSERT #
         phase1_instructions = (
             new_instruction(2, 'instruction 1',
                             'phase 1'),
@@ -344,14 +371,19 @@ class TestParseMultiLineElements(ParseTestBase):
         self._check_document(expected_document, actual_document)
 
     def test_multi_line_instruction_at_end_of_file_inside_phase(self):
-        actual_document = self._parse_lines(parser_without_anonymous_phase(),
-                                            ['',
-                                             '[phase 1]',
-                                             'instruction 1',
-                                             'MULTI-LINE-INSTRUCTION 2-1',
-                                             'MULTI-LINE-INSTRUCTION 2-2',
-                                             'MULTI-LINE-INSTRUCTION 2-3'])
-
+        # ARRANGE #
+        parser = parser_for_sections(['phase 1', 'phase 2'])
+        source_lines = ['',
+                        '[phase 1]',
+                        'instruction 1',
+                        'MULTI-LINE-INSTRUCTION 2-1',
+                        'MULTI-LINE-INSTRUCTION 2-2',
+                        'MULTI-LINE-INSTRUCTION 2-3',
+                        ]
+        # ACT #
+        actual_document = self._parse_lines(parser,
+                                            source_lines)
+        # ASSERT #
         phase1_instructions = (
             new_instruction(3, 'instruction 1',
                             'phase 1'),
@@ -368,16 +400,21 @@ class TestParseMultiLineElements(ParseTestBase):
         self._check_document(expected_document, actual_document)
 
     def test_adjacent_phase_lines(self):
-        actual_document = self._parse_lines(parser_without_anonymous_phase(),
-                                            ['[phase 1]',
-                                             'instruction 1',
-                                             '[phase 1]',
-                                             '[phase 2]',
-                                             '[phase 1]',
-                                             'MULTI-LINE-INSTRUCTION 2-1',
-                                             'MULTI-LINE-INSTRUCTION 2-2',
-                                             'MULTI-LINE-INSTRUCTION 2-3'])
-
+        # ARRANGE #
+        parser = parser_for_sections(['phase 1', 'phase 2'])
+        source_lines = ['[phase 1]',
+                        'instruction 1',
+                        '[phase 1]',
+                        '[phase 2]',
+                        '[phase 1]',
+                        'MULTI-LINE-INSTRUCTION 2-1',
+                        'MULTI-LINE-INSTRUCTION 2-2',
+                        'MULTI-LINE-INSTRUCTION 2-3',
+                        ]
+        # ACT #
+        actual_document = self._parse_lines(parser,
+                                            source_lines)
+        # ASSERT #
         phase1_instructions = (
             new_instruction(2, 'instruction 1',
                             'phase 1'),
@@ -547,10 +584,6 @@ class InstructionParserThatFails(parse.SectionElementParser):
                           'Unconditional failure')
 
 
-def parser_without_anonymous_phase() -> PlainDocumentParser:
-    return parser_for_sections(['phase 1', 'phase 2'])
-
-
 def parser_for_phase2_that_fails_unconditionally() -> PlainDocumentParser:
     configuration = parse.SectionsConfiguration(
         None,
@@ -560,13 +593,6 @@ def parser_for_phase2_that_fails_unconditionally() -> PlainDocumentParser:
                                     InstructionParserThatFails()))
     )
     return parse.new_parser_for(configuration)
-
-
-def parsers_for_named_phases():
-    return (parse.SectionConfiguration('phase 1',
-                                       InstructionParserForPhase('phase 1')),
-            parse.SectionConfiguration('phase 2',
-                                       InstructionParserForPhase('phase 2')))
 
 
 def parser_for_sections(section_names: list,
