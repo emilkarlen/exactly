@@ -11,198 +11,22 @@ from shellcheck_lib_test.document.test_resources import assert_equals_line, asse
 from shellcheck_lib_test.test_resources.assert_utils import TestCaseWithMessageHeader, \
     MessageWithHeaderConstructor
 
+
+def suite() -> unittest.TestSuite:
+    ret_val = unittest.TestSuite()
+    # ret_val.addTest(unittest.makeSuite(TestGroupByPhase))
+    ret_val.addTest(unittest.makeSuite(TestParseSingleLineElements))
+    ret_val.addTest(unittest.makeSuite(TestParseMultiLineElements))
+    return ret_val
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())
+
+
 _COMMENT_START = 'COMMENT'
 
 _MULTI_LINE_INSTRUCTION_LINE_START = 'MULTI-LINE-INSTRUCTION'
-
-
-def is_multi_line_instruction_line(line: str) -> bool:
-    return line[:len(_MULTI_LINE_INSTRUCTION_LINE_START)] == _MULTI_LINE_INSTRUCTION_LINE_START
-
-
-def is_comment_line(line: str) -> bool:
-    return line[:len(_COMMENT_START)] == _COMMENT_START
-
-
-class InstructionInSection(model.Instruction):
-    def __init__(self,
-                 section_name: str):
-        self._section_name = section_name
-
-    @property
-    def phase_name(self):
-        return self._section_name
-
-
-def new_instruction(line_number: int,
-                    line_text: str,
-                    phase_name: str) -> model.PhaseContentElement:
-    return model.new_instruction_e(line_source.LineSequence(line_number,
-                                                            (line_text,)),
-                                   InstructionInSection(phase_name))
-
-
-def new_instruction__multi_line(line_number: int,
-                                lines: list,
-                                phase_name: str) -> model.PhaseContentElement:
-    return model.new_instruction_e(line_source.LineSequence(line_number,
-                                                            tuple(lines)),
-                                   InstructionInSection(phase_name))
-
-
-def new_comment(line_number: int,
-                line_text: str) -> model.PhaseContentElement:
-    return model.new_comment_e(line_source.LineSequence(line_number,
-                                                        (line_text,)))
-
-
-def new_empty(line_number: int,
-              line_text: str) -> model.PhaseContentElement:
-    return model.new_empty_e(line_source.LineSequence(line_number,
-                                                      (line_text,)))
-
-
-class InstructionParserForPhase(parse.SectionElementParser):
-    def __init__(self, section_name: str):
-        self._section_name = section_name
-
-    def apply(self, source: line_source.LineSequenceBuilder) -> model.PhaseContentElement:
-        the_line = source.lines[0]
-        if the_line == '':
-            return model.new_empty_e(source.build())
-        if is_comment_line(the_line):
-            return model.new_comment_e(source.build())
-        if is_multi_line_instruction_line(the_line):
-            # Eat additional lines
-            while source.has_next():
-                next_line = source.next_line()
-                if not is_multi_line_instruction_line(next_line):
-                    source.return_line()
-                    break
-            return model.new_instruction_e(source.build(),
-                                           InstructionInSection(self._section_name))
-        return model.new_instruction_e(source.build(),
-                                       InstructionInSection(self._section_name))
-
-
-class InstructionParserThatFails(parse.SectionElementParser):
-    def apply(self, source: line_source.LineSequenceBuilder) -> model.PhaseContentElement:
-        raise SourceError(source.build().first_line,
-                          'Unconditional failure')
-
-
-def parser_without_anonymous_phase() -> PlainDocumentParser:
-    return parser_for_sections(['phase 1', 'phase 2'])
-
-
-def parser_for_phase2_that_fails_unconditionally() -> PlainDocumentParser:
-    configuration = parse.SectionsConfiguration(
-        None,
-        (parse.SectionConfiguration('phase 1',
-                                    InstructionParserForPhase('phase 1')),
-         parse.SectionConfiguration('phase 2',
-                                    InstructionParserThatFails()))
-    )
-    return parse.new_parser_for(configuration)
-
-
-def parsers_for_named_phases():
-    return (parse.SectionConfiguration('phase 1',
-                                       InstructionParserForPhase('phase 1')),
-            parse.SectionConfiguration('phase 2',
-                                       InstructionParserForPhase('phase 2')))
-
-
-def parser_for_sections(section_names: list,
-                        default_section_name: str = None) -> PlainDocumentParser:
-    sections = [parse.SectionConfiguration(name, InstructionParserForPhase(name))
-                for name in section_names]
-    if default_section_name is not None:
-        if default_section_name not in section_names:
-            raise ValueError('Test setup: The given default section %s is not the name of a section (%s)' % (
-                default_section_name,
-                section_names,
-            ))
-    configuration = parse.SectionsConfiguration(
-        None,
-        tuple(sections),
-        default_phase_name=default_section_name)
-    return parse.new_parser_for(configuration)
-
-
-# class TestGroupByPhase(unittest.TestCase):
-#     def test_valid(self):
-#         lines_for_anonymous = [
-#             (syntax.TYPE_INSTRUCTION, Line(1, 'i0/1'))
-#         ]
-#
-#         phase1_line = Line(20, '[phase 1]')
-#         lines_for_phase1 = [
-#             (syntax.TYPE_INSTRUCTION, Line(1, 'i1/1')),
-#             (syntax.TYPE_COMMENT, Line(2, '#1')),
-#             (syntax.TYPE_INSTRUCTION, Line(3, 'i1/2')),
-#         ]
-#
-#         phase2_line = Line(30, '[phase 2]')
-#         lines_for_phase2 = [
-#         ]
-#
-#         phase3_line = Line(40, '[phase 3]')
-#         lines_for_phase3 = [
-#             (syntax.TYPE_INSTRUCTION, Line(1, 'i3/1')),
-#             (syntax.TYPE_COMMENT, Line(2, '#3')),
-#         ]
-#
-#         lines = lines_for_anonymous + \
-#                 [(syntax.TYPE_PHASE, phase1_line)] + \
-#                 lines_for_phase1 + \
-#                 [(syntax.TYPE_PHASE, phase2_line)] + \
-#                 lines_for_phase2 + \
-#                 [(syntax.TYPE_PHASE, phase3_line)] + \
-#                 lines_for_phase3
-#
-#         expected = [
-#             parse2.PhaseWithLines(None,
-#                                   None,
-#                                   tuple(lines_for_anonymous)),
-#             parse2.PhaseWithLines('phase 1',
-#                                   phase1_line,
-#                                   tuple(lines_for_phase1)),
-#             parse2.PhaseWithLines('phase 2',
-#                                   phase2_line,
-#                                   tuple(lines_for_phase2)),
-#             parse2.PhaseWithLines('phase 3',
-#                                   phase3_line,
-#                                   tuple(lines_for_phase3)),
-#         ]
-#
-#         actual = parse2.group_by_phase(lines)
-#         self.assertEqual(expected, actual)
-#
-#     def test_lines_in_anonymous_phase_should_not_be_required(self):
-#         phase1_line = Line(20, '[phase 1]')
-#         lines_for_phase1 = [
-#             (syntax.TYPE_INSTRUCTION, Line(1, 'i1/1')),
-#         ]
-#         lines = [(syntax.TYPE_PHASE, phase1_line)] + \
-#                 lines_for_phase1
-#
-#         expected = [
-#             parse2.PhaseWithLines('phase 1',
-#                                   phase1_line,
-#                                   tuple(lines_for_phase1)),
-#         ]
-#
-#         actual = parse2.group_by_phase(lines)
-#         self.assertEqual(expected, actual)
-#
-#     def test_invalid_phase_name_should_raise_exception(self):
-#         self.assertRaises(SourceError,
-#                           parse2.group_by_phase,
-#                           [
-#                               (syntax.TYPE_PHASE,
-#                                Line(1, '[phase-name-without-closing-bracket'))
-#                           ])
 
 
 class ParseTestBase(unittest.TestCase):
@@ -572,6 +396,196 @@ class TestParseMultiLineElements(ParseTestBase):
         self._check_document(expected_document, actual_document)
 
 
+# class TestGroupByPhase(unittest.TestCase):
+#     def test_valid(self):
+#         lines_for_anonymous = [
+#             (syntax.TYPE_INSTRUCTION, Line(1, 'i0/1'))
+#         ]
+#
+#         phase1_line = Line(20, '[phase 1]')
+#         lines_for_phase1 = [
+#             (syntax.TYPE_INSTRUCTION, Line(1, 'i1/1')),
+#             (syntax.TYPE_COMMENT, Line(2, '#1')),
+#             (syntax.TYPE_INSTRUCTION, Line(3, 'i1/2')),
+#         ]
+#
+#         phase2_line = Line(30, '[phase 2]')
+#         lines_for_phase2 = [
+#         ]
+#
+#         phase3_line = Line(40, '[phase 3]')
+#         lines_for_phase3 = [
+#             (syntax.TYPE_INSTRUCTION, Line(1, 'i3/1')),
+#             (syntax.TYPE_COMMENT, Line(2, '#3')),
+#         ]
+#
+#         lines = lines_for_anonymous + \
+#                 [(syntax.TYPE_PHASE, phase1_line)] + \
+#                 lines_for_phase1 + \
+#                 [(syntax.TYPE_PHASE, phase2_line)] + \
+#                 lines_for_phase2 + \
+#                 [(syntax.TYPE_PHASE, phase3_line)] + \
+#                 lines_for_phase3
+#
+#         expected = [
+#             parse2.PhaseWithLines(None,
+#                                   None,
+#                                   tuple(lines_for_anonymous)),
+#             parse2.PhaseWithLines('phase 1',
+#                                   phase1_line,
+#                                   tuple(lines_for_phase1)),
+#             parse2.PhaseWithLines('phase 2',
+#                                   phase2_line,
+#                                   tuple(lines_for_phase2)),
+#             parse2.PhaseWithLines('phase 3',
+#                                   phase3_line,
+#                                   tuple(lines_for_phase3)),
+#         ]
+#
+#         actual = parse2.group_by_phase(lines)
+#         self.assertEqual(expected, actual)
+#
+#     def test_lines_in_anonymous_phase_should_not_be_required(self):
+#         phase1_line = Line(20, '[phase 1]')
+#         lines_for_phase1 = [
+#             (syntax.TYPE_INSTRUCTION, Line(1, 'i1/1')),
+#         ]
+#         lines = [(syntax.TYPE_PHASE, phase1_line)] + \
+#                 lines_for_phase1
+#
+#         expected = [
+#             parse2.PhaseWithLines('phase 1',
+#                                   phase1_line,
+#                                   tuple(lines_for_phase1)),
+#         ]
+#
+#         actual = parse2.group_by_phase(lines)
+#         self.assertEqual(expected, actual)
+#
+#     def test_invalid_phase_name_should_raise_exception(self):
+#         self.assertRaises(SourceError,
+#                           parse2.group_by_phase,
+#                           [
+#                               (syntax.TYPE_PHASE,
+#                                Line(1, '[phase-name-without-closing-bracket'))
+#                           ])
+
+
+
+def is_multi_line_instruction_line(line: str) -> bool:
+    return line[:len(_MULTI_LINE_INSTRUCTION_LINE_START)] == _MULTI_LINE_INSTRUCTION_LINE_START
+
+
+def is_comment_line(line: str) -> bool:
+    return line[:len(_COMMENT_START)] == _COMMENT_START
+
+
+class InstructionInSection(model.Instruction):
+    def __init__(self,
+                 section_name: str):
+        self._section_name = section_name
+
+    @property
+    def phase_name(self):
+        return self._section_name
+
+
+def new_instruction(line_number: int,
+                    line_text: str,
+                    phase_name: str) -> model.PhaseContentElement:
+    return model.new_instruction_e(line_source.LineSequence(line_number,
+                                                            (line_text,)),
+                                   InstructionInSection(phase_name))
+
+
+def new_instruction__multi_line(line_number: int,
+                                lines: list,
+                                phase_name: str) -> model.PhaseContentElement:
+    return model.new_instruction_e(line_source.LineSequence(line_number,
+                                                            tuple(lines)),
+                                   InstructionInSection(phase_name))
+
+
+def new_comment(line_number: int,
+                line_text: str) -> model.PhaseContentElement:
+    return model.new_comment_e(line_source.LineSequence(line_number,
+                                                        (line_text,)))
+
+
+def new_empty(line_number: int,
+              line_text: str) -> model.PhaseContentElement:
+    return model.new_empty_e(line_source.LineSequence(line_number,
+                                                      (line_text,)))
+
+
+class InstructionParserForPhase(parse.SectionElementParser):
+    def __init__(self, section_name: str):
+        self._section_name = section_name
+
+    def apply(self, source: line_source.LineSequenceBuilder) -> model.PhaseContentElement:
+        the_line = source.lines[0]
+        if the_line == '':
+            return model.new_empty_e(source.build())
+        if is_comment_line(the_line):
+            return model.new_comment_e(source.build())
+        if is_multi_line_instruction_line(the_line):
+            # Eat additional lines
+            while source.has_next():
+                next_line = source.next_line()
+                if not is_multi_line_instruction_line(next_line):
+                    source.return_line()
+                    break
+            return model.new_instruction_e(source.build(),
+                                           InstructionInSection(self._section_name))
+        return model.new_instruction_e(source.build(),
+                                       InstructionInSection(self._section_name))
+
+
+class InstructionParserThatFails(parse.SectionElementParser):
+    def apply(self, source: line_source.LineSequenceBuilder) -> model.PhaseContentElement:
+        raise SourceError(source.build().first_line,
+                          'Unconditional failure')
+
+
+def parser_without_anonymous_phase() -> PlainDocumentParser:
+    return parser_for_sections(['phase 1', 'phase 2'])
+
+
+def parser_for_phase2_that_fails_unconditionally() -> PlainDocumentParser:
+    configuration = parse.SectionsConfiguration(
+        None,
+        (parse.SectionConfiguration('phase 1',
+                                    InstructionParserForPhase('phase 1')),
+         parse.SectionConfiguration('phase 2',
+                                    InstructionParserThatFails()))
+    )
+    return parse.new_parser_for(configuration)
+
+
+def parsers_for_named_phases():
+    return (parse.SectionConfiguration('phase 1',
+                                       InstructionParserForPhase('phase 1')),
+            parse.SectionConfiguration('phase 2',
+                                       InstructionParserForPhase('phase 2')))
+
+
+def parser_for_sections(section_names: list,
+                        default_section_name: str = None) -> PlainDocumentParser:
+    sections = [parse.SectionConfiguration(name, InstructionParserForPhase(name))
+                for name in section_names]
+    if default_section_name is not None:
+        if default_section_name not in section_names:
+            raise ValueError('Test setup: The given default section %s is not the name of a section (%s)' % (
+                default_section_name,
+                section_names,
+            ))
+    configuration = parse.SectionsConfiguration(
+        None,
+        tuple(sections),
+        default_phase_name=default_section_name)
+    return parse.new_parser_for(configuration)
+
+
 class ElementChecker(TestCaseWithMessageHeader):
     def __init__(self,
                  test_case: unittest.TestCase,
@@ -616,15 +630,3 @@ class ElementChecker(TestCaseWithMessageHeader):
         else:
             self.tc.assertIsNone(expected_element.instruction,
                                  'Instruction should not be present for non-instruction elements')
-
-
-def suite():
-    ret_val = unittest.TestSuite()
-    # ret_val.addTest(unittest.makeSuite(TestGroupByPhase))
-    ret_val.addTest(unittest.makeSuite(TestParseSingleLineElements))
-    ret_val.addTest(unittest.makeSuite(TestParseMultiLineElements))
-    return ret_val
-
-
-if __name__ == '__main__':
-    unittest.main()

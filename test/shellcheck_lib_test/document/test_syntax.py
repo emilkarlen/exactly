@@ -4,7 +4,6 @@ from shellcheck_lib.document import syntax
 
 
 class TestExtractPhaseNameFromPhaseLine(unittest.TestCase):
-
     def test_valid_phase_line_without_initial_space(self):
         name = 'name'
         actual = syntax.extract_phase_name_from_phase_line(syntax.section_header(name))
@@ -61,11 +60,9 @@ class TestExtractPhaseNameFromPhaseLine(unittest.TestCase):
                           '[invalid-content-after-header]#not even a comment is allowed')
 
 
-def suite():
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestExtractPhaseNameFromPhaseLine))
-    return ret_val
+def suite() -> unittest.TestSuite:
+    return unittest.makeSuite(TestExtractPhaseNameFromPhaseLine)
 
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.TextTestRunner().run(suite())
