@@ -92,11 +92,7 @@ class InstructionParserThatFails(parse.SectionElementParser):
 
 
 def parser_without_anonymous_phase() -> PlainDocumentParser:
-    configuration = parse.SectionsConfiguration(
-        None,
-        parsers_for_named_phases()
-    )
-    return parse.new_parser_for(configuration)
+    return parser_for_sections(['phase 1', 'phase 2'])
 
 
 def parser_with_anonymous_phase() -> PlainDocumentParser:
@@ -126,7 +122,7 @@ def parsers_for_named_phases():
 
 
 def parser_for_sections(section_names: list,
-                        default_section_name: str = None):
+                        default_section_name: str = None) -> PlainDocumentParser:
     sections = [parse.SectionConfiguration(name, InstructionParserForPhase(name))
                 for name in section_names]
     if default_section_name is not None:
