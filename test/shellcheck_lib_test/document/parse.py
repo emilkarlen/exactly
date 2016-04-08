@@ -285,15 +285,18 @@ class TestParseSingleLineElements(ParseTestBase):
         self._check_document(expected_document, actual_document)
 
     def test_valid_anonymous_and_named_phase(self):
-        actual_document = self._parse_lines(parser_for_sections(['phase 1', 'anonymous'],
-                                                                'anonymous'),
-                                            ['COMMENT anonymous',
-                                             '',
-                                             'instruction anonymous',
-                                             '[phase 1]',
-                                             'COMMENT 1',
-                                             'instruction 1'])
-
+        # ARRANGE #
+        sections = parser_for_sections(['phase 1', 'anonymous'], 'anonymous')
+        input_lines = ['COMMENT anonymous',
+                       '',
+                       'instruction anonymous',
+                       '[phase 1]',
+                       'COMMENT 1',
+                       'instruction 1']
+        # ACT #
+        actual_document = self._parse_lines(sections,
+                                            input_lines)
+        # ASSERT #
         anonymous_instructions = (
             new_comment(1, 'COMMENT anonymous'),
             new_empty(2, ''),
