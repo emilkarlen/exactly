@@ -142,7 +142,6 @@ def parser_for_sections(section_names: list,
     return parse.new_parser_for(configuration)
 
 
-
 # class TestGroupByPhase(unittest.TestCase):
 #     def test_valid(self):
 #         lines_for_anonymous = [
@@ -356,14 +355,16 @@ class TestParseSingleLineElements(ParseTestBase):
         self._check_document(expected_document, actual_document)
 
     def test_instruction_in_anonymous_phase_should_not_be_allowed_when_there_is_no_anonymous_phase(self):
+        # ARRANGE #
+        parser = parser_for_sections(['phase 1'])
+        source_lines = ['instruction anonymous',
+                        '[phase 1]',
+                        'instruction 1']
+        # ACT #
         with self.assertRaises(FileSourceError) as cm:
-            self._parse_lines(
-                parser_without_anonymous_phase(),
-                [
-                    'instruction anonymous',
-                    '[phase 1]',
-                    'instruction 1'
-                ])
+            self._parse_lines(parser,
+                              source_lines)
+        # ASSERT #
         assert_equals_line(self,
                            Line(1, 'instruction anonymous'),
                            cm.exception.source_error.line)
