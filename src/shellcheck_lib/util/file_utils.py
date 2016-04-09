@@ -33,6 +33,8 @@ def ensure_directory_exists_as_a_directory(dir_path: pathlib.Path) -> str:
         ensure_directory_exists(dir_path)
     except NotADirectoryError as ex:
         return 'Not a directory: {}'.format(dir_path)
+    except FileExistsError:
+        return 'Part of path exists, but perhaps one in-the-middle-component is not a directory: %s' % str(dir_path)
 
 
 def ensure_parent_directory_does_exist(dst_file_path: pathlib.Path):
