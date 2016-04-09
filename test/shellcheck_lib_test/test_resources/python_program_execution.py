@@ -1,4 +1,3 @@
-import shlex
 import sys
 import unittest
 
@@ -22,7 +21,7 @@ def command_line_for_interpreting(python_source_file,
 
 
 def shell_command_line_for_interpreting(python_source_file,
-                                  arguments: iter = ()) -> str:
+                                        arguments: iter = ()) -> str:
     """Introduced for Windows port. May be removed."""
     str_arguments = _str_elements(arguments)
     arguments_string = '' if not str_arguments else ' ' + ' '.join(str_arguments)
