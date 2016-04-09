@@ -1,5 +1,7 @@
 import shlex
 
+import io
+
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 
@@ -29,7 +31,15 @@ def ensure_is_not_option_argument(argument: str):
 class TokenStream:
     def __init__(self, source: str):
         self._source = source
-        self.t_and_tail_source = [] if source is None else source.split(maxsplit=1)
+        if source is None:
+            self._head = None
+            self._tail_source_or_empty_string = ''
+        else:
+            source_io = io.StringIO(source)
+            lexer = shlex.shlex(source_io, posix=True)
+            lexer.whitespace_split = True
+            self._head = lexer.get_token()
+            self._tail_source_or_empty_string = source[source_io.tell():].lstrip()
 
     @property
     def source(self) -> str:
@@ -37,11 +47,11 @@ class TokenStream:
 
     @property
     def is_null(self) -> bool:
-        return not self.t_and_tail_source
+        return self._head is None
 
     @property
     def head(self) -> str:
-        return self.t_and_tail_source[0]
+        return self._head
 
     @property
     def tail(self):  # -> TokenStream
@@ -49,12 +59,11 @@ class TokenStream:
 
     @property
     def tail_source_or_empty_string(self) -> str:
-        ts = self.tail_source
-        return '' if ts is None else ts
+        return self._tail_source_or_empty_string
 
     @property
     def tail_source(self) -> str:
-        if len(self.t_and_tail_source) == 1:
-            return None
+        if self._tail_source_or_empty_string:
+            return self._tail_source_or_empty_string
         else:
-            return self.t_and_tail_source[1]
+            return None
