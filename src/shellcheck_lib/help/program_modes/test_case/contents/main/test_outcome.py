@@ -59,7 +59,7 @@ FULL_EXECUTION_OUTCOME_DEPENDS_ON_TWO_THINGS = """The outcome of a fully execute
 
 def _what_outcome_depends_on(setup: Setup) -> ParagraphItem:
     items = [
-        list_item("""The "execution mode" set by the {phase[configuration]} phase""".format(phase=setup.phase_names),
+        list_item("""The "execution mode" set by the {phase[conf]} phase""".format(phase=setup.phase_names),
                   [para('The default mode is {default_mode}.'.format(
                       default_mode=shellcheck_lib.execution.execution_mode.NAME_NORMAL))]),
         list_item("""The outcome of the {phase[assert]} phase""".format(phase=setup.phase_names),
