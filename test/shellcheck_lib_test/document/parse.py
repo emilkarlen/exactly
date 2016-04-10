@@ -15,6 +15,7 @@ from shellcheck_lib_test.test_resources.assert_utils import TestCaseWithMessageH
 def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     # ret_val.addTest(unittest.makeSuite(TestGroupByPhase))
+    ret_val.addTest(unittest.makeSuite(TestSectionsConfiguration))
     ret_val.addTest(unittest.makeSuite(TestParseSingleLineElements))
     ret_val.addTest(unittest.makeSuite(TestParseMultiLineElements))
     return ret_val
@@ -57,6 +58,21 @@ class ParseTestBase(unittest.TestCase):
                               phase_name,
                               str(expected_document.phases)
                           ))
+
+
+class TestSectionsConfiguration(ParseTestBase):
+    def test_WHEN_the_default_section_name_is_not_a_name_of_a_section_THEN_an_exception_SHOULD_be_raised(self):
+        # ARRANGE #
+        section_names = ['section 1', 'section 2']
+        sections = [parse.SectionConfiguration(name, InstructionParserForPhase(name))
+                    for name in section_names]
+        default_section_name = 'not the name of a section'
+        # ACT & ASSERT #
+        with self.assertRaises(ValueError):
+            parse.SectionsConfiguration(
+                None,
+                tuple(sections),
+                default_phase_name=default_section_name)
 
 
 class TestParseSingleLineElements(ParseTestBase):
