@@ -50,6 +50,50 @@ class TestTokenStream(unittest.TestCase):
         self.assertEquals('',
                           actual.tail_source_or_empty_string)
 
+    def test_single_token_with_quoted_windows_file_name(self):
+        actual = sut.TokenStream('c:\\\\dir ')
+        self.assertFalse(actual.is_null)
+        self.assertEqual('c:\\dir',
+                         actual.head)
+        self.assertEqual('c:\\\\dir ',
+                         actual.source)
+        self.assertIsNone(actual.tail_source)
+        self.assertEquals('',
+                          actual.tail_source_or_empty_string)
+
+    def test_single_token_with_multiple_trailing_ws(self):
+        actual = sut.TokenStream('a   ')
+        self.assertFalse(actual.is_null)
+        self.assertEqual('a',
+                         actual.head)
+        self.assertEqual('a   ',
+                         actual.source)
+        self.assertIsNone(actual.tail_source)
+        self.assertEquals('',
+                          actual.tail_source_or_empty_string)
+
+    def test_single_token_quoted(self):
+        actual = sut.TokenStream('"a b" ')
+        self.assertFalse(actual.is_null)
+        self.assertEqual('a b',
+                         actual.head)
+        self.assertEqual('"a b" ',
+                         actual.source)
+        self.assertIsNone(actual.tail_source)
+        self.assertEquals('',
+                          actual.tail_source_or_empty_string)
+
+    def test_single_token_quoted_empty_string(self):
+        actual = sut.TokenStream('"" ')
+        self.assertFalse(actual.is_null)
+        self.assertEqual('',
+                         actual.head)
+        self.assertEqual('"" ',
+                         actual.source)
+        self.assertIsNone(actual.tail_source)
+        self.assertEquals('',
+                          actual.tail_source_or_empty_string)
+
     def test_multiple_tokens(self):
         actual = sut.TokenStream('a b  ')
         self.assertFalse(actual.is_null)
