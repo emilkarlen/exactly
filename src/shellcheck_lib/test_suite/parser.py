@@ -10,7 +10,6 @@ SECTION_NAME__SUITS = 'suites'
 SECTION_NAME__CASES = 'cases'
 
 PARSER_CONFIGURATION = parse.SectionsConfiguration(
-    None,
     (
         parse.SectionConfiguration(SECTION_NAME__CONF, anonymous.new_parser()),
         parse.SectionConfiguration(SECTION_NAME__SUITS, suites.new_parser()),

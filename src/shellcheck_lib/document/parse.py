@@ -94,21 +94,15 @@ class SectionsConfiguration:
     """
 
     def __init__(self,
-                 parser_for_anonymous_section: SectionElementParser,
                  parsers_for_named_sections: tuple,
                  default_phase_name: str = None):
         """
-        :param parser_for_anonymous_section: Parser for the top-level/anonymous phase. None if that phase
-         is not used.
         :param parsers_for_named_sections: sequence of SectionConfiguration.
         """
-        self._parser_for_anonymous_section = parser_for_anonymous_section
+        self._parser_for_anonymous_section = None
         self._parsers_for_named_sections = parsers_for_named_sections
         section_names = []
         section2parser = {}
-        if parser_for_anonymous_section:
-            section_names.append(None)
-            section2parser[None] = parser_for_anonymous_section
         for pfp in parsers_for_named_sections:
             section_names.append(pfp.section_name)
             section2parser[pfp.section_name] = pfp.parser
@@ -116,8 +110,6 @@ class SectionsConfiguration:
         self._section2parser = section2parser
 
         self.default_phase_name = None
-        if parser_for_anonymous_section is not None:
-            self.default_phase_name = (None,)
         if default_phase_name is not None:
             try:
                 self._parser_for_anonymous_section = self._section2parser[default_phase_name]
