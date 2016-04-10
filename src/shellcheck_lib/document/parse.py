@@ -99,7 +99,6 @@ class SectionsConfiguration:
         """
         :param parsers_for_named_sections: sequence of SectionConfiguration.
         """
-        self._parser_for_anonymous_section = None
         self._parsers_for_named_sections = parsers_for_named_sections
         section_names = []
         section2parser = {}
@@ -109,11 +108,12 @@ class SectionsConfiguration:
         self._section_list_as_tuple = tuple(section_names)
         self._section2parser = section2parser
 
-        self.default_phase_name = None
+        self._parser_for_default_section = None
+        self.default_section_name = None
         if default_phase_name is not None:
             try:
-                self._parser_for_anonymous_section = self._section2parser[default_phase_name]
-                self.default_phase_name = (default_phase_name,)
+                self._parser_for_default_section = self._section2parser[default_phase_name]
+                self.default_section_name = (default_phase_name,)
             except KeyError:
                 raise ValueError('The name of the default section "%s" does not correspond to any section: %s' %
                                  (default_phase_name,
@@ -223,8 +223,8 @@ class _Impl:
             self.switch_section_according_to_last_section_line_and_consume_section_lines()
             self.read_rest_of_document_from_inside_section_or_at_eof()
         else:
-            if self.configuration.default_phase_name is not None:
-                self.set_current_section(self.configuration.default_phase_name[0])
+            if self.configuration.default_section_name is not None:
+                self.set_current_section(self.configuration.default_section_name[0])
                 self.read_rest_of_document_from_inside_section_or_at_eof()
             else:
                 self.skip_standard_comment_and_empty_lines()
