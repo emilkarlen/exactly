@@ -1,6 +1,9 @@
 -*- org -*-
 
 
+* Oanvänd kod
+TestsForSetupWithPreprocessorExternally
+o klasserna direkt ovanför används inte.
 * TODO Rendering
 
 ** TODO Extrahera test av textrenderare till eget test
@@ -427,6 +430,14 @@ oavsett kommer att finnas iom makroprocessor.
 ** TODO Users Guide
 ** TODO Reference Manual
 * TODO Tester som inte är skrivna
+** TODO Preprocessor med mellanslag
+Utmaningen är att själva exekverbara preprocessorna kan innehålla mellanslag o därför inte får splittas,
+samtidigt som det ska gå att ge argument till den som ska splittas.
+T ex
+ Själva preprocessorn: "c:\prog files\python.exe"
+ Argument: "-c", "<något>"
+Ett alt är att ge exe o arg m separata växlar.
+Samtidigt är det bekvämt att kunna ge preprocessorn i en enda växel.
 ** TODO content/stdout/stderr --with-replaced-env-vars körd > 1 gång
 Eftersom befintliga transformerade filer återanvänds är beteendet annorlunda
 för användning nr > 1, än första gången. Måste alltså testas.
