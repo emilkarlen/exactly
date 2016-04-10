@@ -70,7 +70,6 @@ class TestSectionsConfiguration(ParseTestBase):
         # ACT & ASSERT #
         with self.assertRaises(ValueError):
             parse.SectionsConfiguration(
-                None,
                 tuple(sections),
                 default_phase_name=default_section_name)
 
@@ -602,7 +601,6 @@ class InstructionParserThatFails(parse.SectionElementParser):
 
 def parser_for_phase2_that_fails_unconditionally() -> PlainDocumentParser:
     configuration = parse.SectionsConfiguration(
-        None,
         (parse.SectionConfiguration('phase 1',
                                     InstructionParserForPhase('phase 1')),
          parse.SectionConfiguration('phase 2',
@@ -622,7 +620,6 @@ def parser_for_sections(section_names: list,
                 section_names,
             ))
     configuration = parse.SectionsConfiguration(
-        None,
         tuple(sections),
         default_phase_name=default_section_name)
     return parse.new_parser_for(configuration)

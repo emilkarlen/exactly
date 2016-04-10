@@ -38,7 +38,6 @@ def new_parser(split_line_into_name_and_argument_function,
                                                                instruction_set)
 
     configuration = parse.SectionsConfiguration(
-        None,
         (
             parse.SectionConfiguration(phases.ANONYMOUS.section_name,
                                        dict_parser(instructions_setup.config_instruction_set)),
