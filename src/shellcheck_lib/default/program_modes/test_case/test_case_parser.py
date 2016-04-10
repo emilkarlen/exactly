@@ -52,7 +52,7 @@ def new_parser(split_line_into_name_and_argument_function,
             parse.SectionConfiguration(phases.CLEANUP.section_name,
                                        dict_parser(instructions_setup.cleanup_instruction_set)),
         ),
-        default_phase_name=DEFAULT_PHASE.section_name
+        default_section_name=DEFAULT_PHASE.section_name
     )
     return Parser(parse.new_parser_for(configuration))
 

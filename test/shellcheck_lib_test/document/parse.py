@@ -71,7 +71,7 @@ class TestSectionsConfiguration(ParseTestBase):
         with self.assertRaises(ValueError):
             parse.SectionsConfiguration(
                 tuple(sections),
-                default_phase_name=default_section_name)
+                default_section_name=default_section_name)
 
 
 class TestParseSingleLineElements(ParseTestBase):
@@ -621,7 +621,7 @@ def parser_for_sections(section_names: list,
             ))
     configuration = parse.SectionsConfiguration(
         tuple(sections),
-        default_phase_name=default_section_name)
+        default_section_name=default_section_name)
     return parse.new_parser_for(configuration)
 
 

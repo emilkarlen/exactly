@@ -15,7 +15,7 @@ PARSER_CONFIGURATION = parse.SectionsConfiguration(
         parse.SectionConfiguration(SECTION_NAME__SUITS, suites.new_parser()),
         parse.SectionConfiguration(SECTION_NAME__CASES, cases.new_parser()),
     ),
-    default_phase_name=SECTION_NAME__CONF
+    default_section_name=SECTION_NAME__CONF
 )
 
 
