@@ -95,7 +95,7 @@ class SectionsConfiguration:
 
     def __init__(self,
                  parsers_for_named_sections: tuple,
-                 default_phase_name: str = None):
+                 default_section_name: str = None):
         """
         :param parsers_for_named_sections: sequence of SectionConfiguration.
         """
@@ -110,13 +110,13 @@ class SectionsConfiguration:
 
         self._parser_for_default_section = None
         self.default_section_name = None
-        if default_phase_name is not None:
+        if default_section_name is not None:
             try:
-                self._parser_for_default_section = self._section2parser[default_phase_name]
-                self.default_section_name = (default_phase_name,)
+                self._parser_for_default_section = self._section2parser[default_section_name]
+                self.default_section_name = (default_section_name,)
             except KeyError:
                 raise ValueError('The name of the default section "%s" does not correspond to any section: %s' %
-                                 (default_phase_name,
+                                 (default_section_name,
                                   str(self._section2parser.keys()))
                                  )
 
