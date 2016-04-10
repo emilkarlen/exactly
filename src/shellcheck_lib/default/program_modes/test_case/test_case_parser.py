@@ -9,7 +9,7 @@ from shellcheck_lib.test_case.phases.act.instruction import ActPhaseInstruction,
 from shellcheck_lib.test_case.phases.result import sh
 from shellcheck_lib.util import line_source
 
-DEFAULT_PHASE = phases.ANONYMOUS
+DEFAULT_PHASE = phases.ACT
 
 
 class Parser:
@@ -21,12 +21,12 @@ class Parser:
               plain_test_case: line_source.LineSource) -> test_case_doc.TestCase:
         document = self.__plain_file_parser.apply(plain_test_case)
         return test_case_doc.TestCase(
-                document.elements_for_phase_or_empty_if_phase_not_present(phases.ANONYMOUS.section_name),
-                document.elements_for_phase_or_empty_if_phase_not_present(phases.SETUP.section_name),
-                document.elements_for_phase_or_empty_if_phase_not_present(phases.ACT.section_name),
-                document.elements_for_phase_or_empty_if_phase_not_present(phases.BEFORE_ASSERT.section_name),
-                document.elements_for_phase_or_empty_if_phase_not_present(phases.ASSERT.section_name),
-                document.elements_for_phase_or_empty_if_phase_not_present(phases.CLEANUP.section_name),
+            document.elements_for_phase_or_empty_if_phase_not_present(phases.ANONYMOUS.section_name),
+            document.elements_for_phase_or_empty_if_phase_not_present(phases.SETUP.section_name),
+            document.elements_for_phase_or_empty_if_phase_not_present(phases.ACT.section_name),
+            document.elements_for_phase_or_empty_if_phase_not_present(phases.BEFORE_ASSERT.section_name),
+            document.elements_for_phase_or_empty_if_phase_not_present(phases.ASSERT.section_name),
+            document.elements_for_phase_or_empty_if_phase_not_present(phases.CLEANUP.section_name),
         )
 
 
@@ -37,21 +37,23 @@ def new_parser(split_line_into_name_and_argument_function,
         return SectionElementParserForDictionaryOfInstructions(split_line_into_name_and_argument_function,
                                                                instruction_set)
 
-    anonymous_phase = dict_parser(instructions_setup.config_instruction_set)
     configuration = parse.SectionsConfiguration(
-            anonymous_phase,
-            (
-                parse.SectionConfiguration(phases.SETUP.section_name,
-                                           dict_parser(instructions_setup.setup_instruction_set)),
-                parse.SectionConfiguration(phases.ACT.section_name,
-                                           act_phase_parser),
-                parse.SectionConfiguration(phases.BEFORE_ASSERT.section_name,
-                                           dict_parser(instructions_setup.before_assert_instruction_set)),
-                parse.SectionConfiguration(phases.ASSERT.section_name,
-                                           dict_parser(instructions_setup.assert_instruction_set)),
-                parse.SectionConfiguration(phases.CLEANUP.section_name,
-                                           dict_parser(instructions_setup.cleanup_instruction_set)),
-            )
+        None,
+        (
+            parse.SectionConfiguration(phases.ANONYMOUS.section_name,
+                                       dict_parser(instructions_setup.config_instruction_set)),
+            parse.SectionConfiguration(phases.SETUP.section_name,
+                                       dict_parser(instructions_setup.setup_instruction_set)),
+            parse.SectionConfiguration(phases.ACT.section_name,
+                                       act_phase_parser),
+            parse.SectionConfiguration(phases.BEFORE_ASSERT.section_name,
+                                       dict_parser(instructions_setup.before_assert_instruction_set)),
+            parse.SectionConfiguration(phases.ASSERT.section_name,
+                                       dict_parser(instructions_setup.assert_instruction_set)),
+            parse.SectionConfiguration(phases.CLEANUP.section_name,
+                                       dict_parser(instructions_setup.cleanup_instruction_set)),
+        ),
+        default_phase_name=DEFAULT_PHASE.section_name
     )
     return Parser(parse.new_parser_for(configuration))
 
