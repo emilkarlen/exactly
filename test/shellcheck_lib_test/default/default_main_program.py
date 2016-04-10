@@ -431,7 +431,7 @@ class TestHelp(unittest.TestCase):
 
 
 class TestTestSuitePreprocessing(main_program_check_for_test_suite.TestsForSetupWithPreprocessorInternally):
-    def test_empty_file(self):
+    def test_that_preprocessor_is_applied_with_test_case_file_as_argument(self):
         self._check([], pre_proc_tests.PreprocessorIsAppliedWithTestCaseFileAsArgument())
 
 
