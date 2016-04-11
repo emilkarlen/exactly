@@ -1,10 +1,10 @@
 from xml.etree.ElementTree import Element, SubElement
 
 from shellcheck_lib.cli.cli_environment import program_info
-from shellcheck_lib.cli.program_modes.help.request_handling.request_handler import RequestHandler
 from shellcheck_lib.help import cross_reference_id as cross_ref
 from shellcheck_lib.help.contents_structure import ApplicationHelp
 from shellcheck_lib.help.cross_reference_id import CustomTargetInfoFactory
+from shellcheck_lib.help.html_doc.cross_ref_target_renderer import HtmlTargetRenderer
 from shellcheck_lib.help.program_modes.test_case.contents.main import overview as overview_content
 from shellcheck_lib.help.utils.cross_reference import CrossReferenceTextConstructor
 from shellcheck_lib.help.utils.render import RenderingEnvironment
@@ -15,7 +15,6 @@ from shellcheck_lib.util.textformat.formatting.html import text
 from shellcheck_lib.util.textformat.formatting.html.paragraph_item.full_paragraph_item import FullParagraphItemRenderer
 from shellcheck_lib.util.textformat.formatting.html.section import HnSectionHeaderRenderer
 from shellcheck_lib.util.textformat.formatting.html.utils import ElementPopulator, ComplexElementPopulator
-from shellcheck_lib.util.textformat.structure import core as doc
 from shellcheck_lib.util.textformat.structure.document import SectionContents
 from shellcheck_lib.util.textformat.structure.lists import ListType
 
@@ -72,12 +71,12 @@ class HtmlDocGenerator:
 
     def _contents(self) -> SectionContents:
         root_targets_factory = CustomTargetInfoFactory('')
-        target_info_hierarchy, main_contents = self._main_contents(
+        target_info_hierarchy, ret_val_contents = self._main_contents(
             cross_ref.sub_component_factory('tc-overview',
                                             root_targets_factory))
         toc_paragraph = toc_list(target_info_hierarchy, ListType.ITEMIZED_LIST)
-        main_contents.initial_paragraphs.insert(0, toc_paragraph)
-        return main_contents
+        ret_val_contents.initial_paragraphs.insert(0, toc_paragraph)
+        return ret_val_contents
 
     def _main_contents(self, targets_factory: CustomTargetInfoFactory) -> (list, SectionContents):
         generator = overview_content.OverviewRenderer(self.application_help.test_case_help,
@@ -89,22 +88,11 @@ class HtmlDocGenerator:
 
 
 def _section_renderer() -> doc_rendering.SectionRenderer:
-    target_renderer = _TargetRenderer()
+    target_renderer = HtmlTargetRenderer()
     text_renderer = text.TextRenderer(target_renderer)
     section_header_renderer = HnSectionHeaderRenderer(text_renderer)
     paragraph_item_renderer = FullParagraphItemRenderer(text_renderer)
     return doc_rendering.SectionRenderer(section_header_renderer, paragraph_item_renderer)
-
-
-class _TargetRenderer(text.TargetRenderer, cross_ref.CrossReferenceIdVisitor):
-    def apply(self, target: doc.CrossReferenceTarget) -> str:
-        return self.visit(target)
-
-    def visit_concept(self, x: cross_ref.ConceptCrossReferenceId):
-        return x.concept_name
-
-    def visit_custom(self, x: cross_ref.CustomCrossReferenceId):
-        return x.target_name
 
 
 class StylePopulator(ElementPopulator):

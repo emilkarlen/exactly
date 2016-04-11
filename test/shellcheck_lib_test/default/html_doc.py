@@ -2,7 +2,7 @@ import unittest
 
 from shellcheck_lib.default.program_modes.test_case import default_instructions_setup
 from shellcheck_lib.help.contents_structure import application_help_for
-from shellcheck_lib.help.html import main as sut
+from shellcheck_lib.help.html_doc import main as sut
 from shellcheck_lib_test.test_resources.str_std_out_files import null_output_files
 
 
