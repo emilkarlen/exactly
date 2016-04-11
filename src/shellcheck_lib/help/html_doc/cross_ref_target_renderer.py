@@ -10,5 +10,8 @@ class HtmlTargetRenderer(text.TargetRenderer, cross_ref.CrossReferenceIdVisitor)
     def visit_concept(self, x: cross_ref.ConceptCrossReferenceId):
         return 'concept.' + x.concept_name
 
+    def visit_test_case_phase(self, x: cross_ref.TestCasePhaseCrossReference):
+        return 'test-case-phase.' + x.name
+
     def visit_custom(self, x: cross_ref.CustomCrossReferenceId):
         return 'custom.' + x.target_name
