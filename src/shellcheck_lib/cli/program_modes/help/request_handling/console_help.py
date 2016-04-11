@@ -47,8 +47,11 @@ class HelpCrossReferenceFormatter(text.CrossReferenceFormatter):
         self.command_line_getter = _HelpCommandLineGetterVisitor()
 
     def apply(self, cross_reference: core.CrossReferenceText) -> str:
-        command_line = self.command_line_getter.visit(cross_reference.target)
-        return cross_reference.title + ' (' + command_line + ')'
+        if cross_reference.allow_rendering_of_visible_extra_target_text:
+            command_line = self.command_line_getter.visit(cross_reference.target)
+            return cross_reference.title + ' (' + command_line + ')'
+        else:
+            return cross_reference.title
 
 
 def _cross_ref_text_constructor() -> CrossReferenceTextConstructor:

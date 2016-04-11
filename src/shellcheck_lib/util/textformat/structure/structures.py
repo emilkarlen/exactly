@@ -64,8 +64,14 @@ def text(s: str) -> core.ConcreteText:
 
 
 def cross_reference(title: str,
-                    target: core.CrossReferenceTarget) -> core.ConcreteText:
-    return core.CrossReferenceText(title, target)
+                    target: core.CrossReferenceTarget,
+                    target_is_id_in_same_document: bool = True,
+                    allow_rendering_of_visible_extra_target_text: bool = True) -> core.ConcreteText:
+    return core.CrossReferenceText(
+        title,
+        target,
+        target_is_id_in_same_document=target_is_id_in_same_document,
+        allow_rendering_of_visible_extra_target_text=allow_rendering_of_visible_extra_target_text)
 
 
 def anchor_text(anchored_text: core.ConcreteText,
