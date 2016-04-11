@@ -1,8 +1,8 @@
 from shellcheck_lib.help import cross_reference_id as cross_ref
 from shellcheck_lib.help.contents_structure import ApplicationHelp
 from shellcheck_lib.help.cross_reference_id import CustomTargetInfoFactory
-from shellcheck_lib.help.html_doc.cross_ref_target_renderer import HtmlTargetRenderer
 from shellcheck_lib.help.html_doc import page_setup
+from shellcheck_lib.help.html_doc.cross_ref_target_renderer import HtmlTargetRenderer
 from shellcheck_lib.help.program_modes.test_case.contents.main import overview as overview_content
 from shellcheck_lib.help.utils.cross_reference import CrossReferenceTextConstructor
 from shellcheck_lib.help.utils.render import RenderingEnvironment
@@ -24,13 +24,13 @@ class HtmlDocGenerator:
         self.application_help = application_help
 
     def apply(self):
-        setup = self._setup()
+        setup = self._page_setup()
+        contents = self._contents()
         section_renderer = _section_renderer()
         renderer = doc_rendering.DocumentRenderer(section_renderer)
-        contents = self._contents()
         renderer.apply(self.output.out, setup, contents)
 
-    def _setup(self) -> doc_rendering.DocumentSetup:
+    def _page_setup(self) -> doc_rendering.DocumentSetup:
         head_populator = page_setup.StylePopulator(page_setup.ELEMENT_STYLES)
         setup = doc_rendering.DocumentSetup(page_setup.PAGE_TITLE,
                                             head_populator=head_populator,
@@ -39,14 +39,16 @@ class HtmlDocGenerator:
 
     def _contents(self) -> SectionContents:
         root_targets_factory = CustomTargetInfoFactory('')
-        target_info_hierarchy, ret_val_contents = self._main_contents(
-            cross_ref.sub_component_factory('tc-overview',
-                                            root_targets_factory))
+        target_info_hierarchy, ret_val_contents = self._main_contents(root_targets_factory)
         toc_paragraph = toc_list(target_info_hierarchy, ListType.ITEMIZED_LIST)
         ret_val_contents.initial_paragraphs.insert(0, toc_paragraph)
         return ret_val_contents
 
     def _main_contents(self, targets_factory: CustomTargetInfoFactory) -> (list, SectionContents):
+        return self._tc_overview_contents(cross_ref.sub_component_factory('tc-overview',
+                                                                          targets_factory))
+
+    def _tc_overview_contents(self, targets_factory: CustomTargetInfoFactory) -> (list, SectionContents):
         generator = overview_content.OverviewRenderer(self.application_help.test_case_help,
                                                       targets_factory)
         cross_reference_text_constructor = CrossReferenceTextConstructor()
@@ -61,5 +63,3 @@ def _section_renderer() -> doc_rendering.SectionRenderer:
     section_header_renderer = HnSectionHeaderRenderer(text_renderer)
     paragraph_item_renderer = FullParagraphItemRenderer(text_renderer)
     return doc_rendering.SectionRenderer(section_header_renderer, paragraph_item_renderer)
-
-
