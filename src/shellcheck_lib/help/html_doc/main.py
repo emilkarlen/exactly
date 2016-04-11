@@ -165,16 +165,26 @@ class HtmlDocGenerator:
             phase_instruction_targets = []
             for instruction_doc in phase.instruction_set.instruction_descriptions:
                 assert isinstance(instruction_doc, InstructionDocumentation)
-                instruction_section = doc.Section(docs.text(instruction_doc.instruction_name()),
+                instruction_cross_ref_target = cross_ref.TestCasePhaseInstructionCrossReference(
+                    phase.name.plain,
+                    instruction_doc.instruction_name())
+                header = docs.anchor_text(docs.text(instruction_doc.instruction_name()),
+                                          instruction_cross_ref_target)
+                instruction_section = doc.Section(header,
                                                   doc.SectionContents([], []))
+                instruction_target_info = cross_ref.TargetInfoNode(
+                    cross_ref.TargetInfo(instruction_doc.instruction_name(),
+                                         instruction_cross_ref_target),
+                    [])
                 phase_instruction_sections.append(instruction_section)
-            section = doc.Section(phase_target.anchor_text(),
-                                  doc.SectionContents([],
-                                                      phase_instruction_sections))
+                phase_instruction_targets.append(instruction_target_info)
+            phase_section = doc.Section(phase_target.anchor_text(),
+                                        doc.SectionContents([],
+                                                            phase_instruction_sections))
             phase_target_info_node = cross_ref.TargetInfoNode(phase_target,
                                                               phase_instruction_targets)
             ret_val_targets.append(phase_target_info_node)
-            ret_val_sections.append(section)
+            ret_val_sections.append(phase_section)
         return ret_val_targets, doc.SectionContents([], ret_val_sections)
 
     def _test_suite_contents(self, targets_factory: CustomTargetInfoFactory) -> (list, doc.SectionContents):
