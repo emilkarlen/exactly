@@ -6,7 +6,8 @@ from shellcheck_lib.help.contents_structure import ApplicationHelp
 from shellcheck_lib.help.cross_reference_id import CustomTargetInfoFactory
 from shellcheck_lib.help.html_doc import page_setup
 from shellcheck_lib.help.html_doc.cross_ref_target_renderer import HtmlTargetRenderer
-from shellcheck_lib.help.program_modes.test_case.contents.main import overview as overview_content
+from shellcheck_lib.help.program_modes.test_case.contents.main import overview as test_case_overview_rendering
+from shellcheck_lib.help.program_modes.test_suite import render as test_suite_rendering
 from shellcheck_lib.help.utils.cross_reference import CrossReferenceTextConstructor
 from shellcheck_lib.help.utils.render import RenderingEnvironment
 from shellcheck_lib.help.utils.table_of_contents import toc_list
@@ -55,6 +56,11 @@ class HtmlDocGenerator:
         test_case_target = test_case_targets_factory.root('Test Case')
         test_case_sub_targets, test_case_contents = self._test_case_contents(test_case_targets_factory)
 
+        test_suite_targets_factory = cross_ref.sub_component_factory('test-suite',
+                                                                     targets_factory)
+        test_suite_target = test_suite_targets_factory.root('Test Suites (TODO)')
+        test_suite_sub_targets, test_suite_contents = self._test_suite_contents(test_suite_targets_factory)
+
         concepts_targets_factory = cross_ref.sub_component_factory('concepts',
                                                                    targets_factory)
         concepts_target = concepts_targets_factory.root('Concepts')
@@ -65,6 +71,8 @@ class HtmlDocGenerator:
             [
                 doc.Section(test_case_target.anchor_text(),
                             test_case_contents),
+                doc.Section(test_suite_target.anchor_text(),
+                            test_suite_contents),
                 doc.Section(concepts_target.anchor_text(),
                             concepts_contents)
             ]
@@ -72,16 +80,23 @@ class HtmlDocGenerator:
         ret_val_targets = [
             cross_ref.TargetInfoNode(test_case_target,
                                      test_case_sub_targets),
+            cross_ref.TargetInfoNode(test_suite_target,
+                                     test_suite_sub_targets),
             cross_ref.TargetInfoNode(concepts_target,
                                      concepts_sub_targets),
         ]
         return ret_val_targets, ret_val_contents
 
     def _test_case_contents(self, targets_factory: CustomTargetInfoFactory) -> (list, doc.SectionContents):
-        generator = overview_content.OverviewRenderer(self.application_help.test_case_help,
-                                                      targets_factory)
+        generator = test_case_overview_rendering.OverviewRenderer(self.application_help.test_case_help,
+                                                                  targets_factory)
         section_contents = generator.apply(self.rendering_environment)
         return generator.target_info_hierarchy(), section_contents
+
+    def _test_suite_contents(self, targets_factory: CustomTargetInfoFactory) -> (list, doc.SectionContents):
+        generator = test_suite_rendering.OverviewRenderer(self.application_help.test_suite_help)
+        section_contents = generator.apply(self.rendering_environment)
+        return [], section_contents
 
     def _concepts_contents(self, targets_factory: CustomTargetInfoFactory) -> (list, doc.SectionContents):
         ret_val_sections = []
