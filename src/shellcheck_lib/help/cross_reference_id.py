@@ -47,15 +47,20 @@ class ConceptCrossReferenceId(CrossReferenceId):
 
 class CrossReferenceIdVisitor:
     def visit(self, x: CrossReferenceId):
-        if isinstance(x, ConceptCrossReferenceId):
-            return self.visit_concept(x)
         if isinstance(x, CustomCrossReferenceId):
             return self.visit_custom(x)
+        if isinstance(x, TestCasePhaseCrossReference):
+            return self.visit_test_case_phase(x)
+        if isinstance(x, ConceptCrossReferenceId):
+            return self.visit_concept(x)
         else:
             raise TypeError('Not a concrete %s: %s' % (str(CrossReferenceId),
                                                        str(x)))
 
     def visit_concept(self, x: ConceptCrossReferenceId):
+        raise NotImplementedError()
+
+    def visit_test_case_phase(self, x: TestCasePhaseCrossReference):
         raise NotImplementedError()
 
     def visit_custom(self, x: CustomCrossReferenceId):
