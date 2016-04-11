@@ -13,7 +13,10 @@ class _TitleRenderer(cross_reference_id.CrossReferenceIdVisitor):
         return 'TODO should this be removed?'
 
     def visit_test_case_phase(self, x: cross_reference_id.TestCasePhaseCrossReference):
-        return 'TODO is this correct? "%s"' % x.name
+        return 'TODO is this correct? "%s"' % x.phase_name
+
+    def visit_test_case_phase_instruction(self, x: cross_reference_id.TestCasePhaseInstructionCrossReference):
+        return 'TODO phase/instr %s/%s' % (x.phase_name, x.instruction_name)
 
     def visit_concept(self, x: cross_reference_id.ConceptCrossReferenceId):
         return 'Concept "' + x.concept_name + '"'
