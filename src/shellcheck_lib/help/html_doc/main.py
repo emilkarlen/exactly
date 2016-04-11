@@ -1,4 +1,7 @@
 from shellcheck_lib.help import cross_reference_id as cross_ref
+from shellcheck_lib.help.concepts.all_concepts import all_concepts
+from shellcheck_lib.help.concepts.concept_structure import ConceptDocumentation
+from shellcheck_lib.help.concepts.render import IndividualConceptRenderer
 from shellcheck_lib.help.contents_structure import ApplicationHelp
 from shellcheck_lib.help.cross_reference_id import CustomTargetInfoFactory
 from shellcheck_lib.help.html_doc import page_setup
@@ -23,6 +26,7 @@ class HtmlDocGenerator:
                  application_help: ApplicationHelp):
         self.output = output
         self.application_help = application_help
+        self.rendering_environment = RenderingEnvironment(CrossReferenceTextConstructor())
 
     def apply(self):
         setup = self._page_setup()
@@ -76,14 +80,25 @@ class HtmlDocGenerator:
     def _test_case_contents(self, targets_factory: CustomTargetInfoFactory) -> (list, doc.SectionContents):
         generator = overview_content.OverviewRenderer(self.application_help.test_case_help,
                                                       targets_factory)
-        cross_reference_text_constructor = CrossReferenceTextConstructor()
-        environment = RenderingEnvironment(cross_reference_text_constructor)
-        section_contents = generator.apply(environment)
+        section_contents = generator.apply(self.rendering_environment)
         return generator.target_info_hierarchy(), section_contents
 
     def _concepts_contents(self, targets_factory: CustomTargetInfoFactory) -> (list, doc.SectionContents):
-        return ([], doc.SectionContents([docs.para('Concepts contents')],
-                                        []))
+        ret_val_sections = []
+        ret_val_targets = []
+        for concept in sorted(all_concepts(), key=lambda cn: cn.name().singular):
+            assert isinstance(concept, ConceptDocumentation)
+            concept_presentation_str = concept.name().singular
+            header = docs.anchor_text(docs.text(concept_presentation_str),
+                                      concept.cross_reference_target())
+            section = doc.Section(header,
+                                  IndividualConceptRenderer(concept).apply(self.rendering_environment))
+            target_info_node = cross_ref.TargetInfoNode(cross_ref.TargetInfo(concept_presentation_str,
+                                                                             concept.cross_reference_target()),
+                                                        [])
+            ret_val_sections.append(section)
+            ret_val_targets.append(target_info_node)
+        return ret_val_targets, doc.SectionContents([], ret_val_sections)
 
 
 def _section_renderer() -> doc_rendering.SectionRenderer:
