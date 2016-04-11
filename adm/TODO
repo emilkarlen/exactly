@@ -4,6 +4,10 @@
 * TODO html doc
 ** TODO Ska in i ApplictionHelp: program -namn & -version
 De ska inte behöva härledas via globala saker.
+----------
+PAGE_TITLE = '%s Reference Manual' % program_info.PROGRAM_NAME
+version.text = program_info.PROGRAM_NAME + ' version ' + program_info.VERSION
+----------
 
 ** TODO _application_help_with_phases
 Saknar concepts_help arg till ApplicationHelp.
