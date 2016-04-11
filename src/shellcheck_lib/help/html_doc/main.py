@@ -8,6 +8,7 @@ from shellcheck_lib.help.html_doc.cross_ref_target_renderer import HtmlTargetRen
 from shellcheck_lib.help.program_modes.test_case.contents.main import overview as test_case_overview_rendering
 from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCasePhaseDocumentation
 from shellcheck_lib.help.program_modes.test_case.instruction_documentation import InstructionDocumentation
+from shellcheck_lib.help.program_modes.test_case.render.render_instruction import InstructionManPageRenderer
 from shellcheck_lib.help.program_modes.test_suite import render as test_suite_rendering
 from shellcheck_lib.help.utils.cross_reference import CrossReferenceTextConstructor
 from shellcheck_lib.help.utils.render import RenderingEnvironment
@@ -170,8 +171,10 @@ class HtmlDocGenerator:
                     instruction_doc.instruction_name())
                 header = docs.anchor_text(docs.text(instruction_doc.instruction_name()),
                                           instruction_cross_ref_target)
+                man_page_renderer = InstructionManPageRenderer(instruction_doc)
+                instruction_section_contents = man_page_renderer.apply(self.rendering_environment)
                 instruction_section = doc.Section(header,
-                                                  doc.SectionContents([], []))
+                                                  instruction_section_contents)
                 instruction_target_info = cross_ref.TargetInfoNode(
                     cross_ref.TargetInfo(instruction_doc.instruction_name(),
                                          instruction_cross_ref_target),
