@@ -1,6 +1,6 @@
 from shellcheck_lib.cli.program_modes.help.request_handling.request_handler import RequestHandler
 from shellcheck_lib.help.contents_structure import ApplicationHelp
-from shellcheck_lib.help.html.main import HtmlDocGenerator
+from shellcheck_lib.help.html_doc.main import HtmlDocGenerator
 from shellcheck_lib.util.std import StdOutputFiles
 
 
