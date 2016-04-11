@@ -23,9 +23,21 @@ class TestCaseCrossReferenceId(CrossReferenceId):
     pass
 
 
-class TestCasePhaseCrossReference(TestCaseCrossReferenceId):
-    def __init__(self, name: str):
-        self.name = name
+class TestCasePhaseCrossReferenceBase(TestCaseCrossReferenceId):
+    def __init__(self, phase_name: str):
+        self.phase_name = phase_name
+
+
+class TestCasePhaseCrossReference(TestCasePhaseCrossReferenceBase):
+    pass
+
+
+class TestCasePhaseInstructionCrossReference(TestCasePhaseCrossReferenceBase):
+    def __init__(self,
+                 phase_name: str,
+                 instruction_name: str):
+        super().__init__(phase_name)
+        self.instruction_name = instruction_name
 
 
 class TestSuiteCrossReferenceId(CrossReferenceId):
@@ -51,6 +63,8 @@ class CrossReferenceIdVisitor:
             return self.visit_custom(x)
         if isinstance(x, TestCasePhaseCrossReference):
             return self.visit_test_case_phase(x)
+        if isinstance(x, TestCasePhaseInstructionCrossReference):
+            return self.visit_test_case_phase_instruction(x)
         if isinstance(x, ConceptCrossReferenceId):
             return self.visit_concept(x)
         else:
@@ -61,6 +75,9 @@ class CrossReferenceIdVisitor:
         raise NotImplementedError()
 
     def visit_test_case_phase(self, x: TestCasePhaseCrossReference):
+        raise NotImplementedError()
+
+    def visit_test_case_phase_instruction(self, x: TestCasePhaseInstructionCrossReference):
         raise NotImplementedError()
 
     def visit_custom(self, x: CustomCrossReferenceId):
