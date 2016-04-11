@@ -8,7 +8,7 @@ class HtmlTargetRenderer(text.TargetRenderer, cross_ref.CrossReferenceIdVisitor)
         return self.visit(target)
 
     def visit_concept(self, x: cross_ref.ConceptCrossReferenceId):
-        return x.concept_name
+        return 'concept.' + x.concept_name
 
     def visit_custom(self, x: cross_ref.CustomCrossReferenceId):
-        return x.target_name
+        return 'custom.' + x.target_name
