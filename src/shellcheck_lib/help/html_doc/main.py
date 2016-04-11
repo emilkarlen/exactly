@@ -127,8 +127,7 @@ class HtmlDocGenerator:
         for phase in self.application_help.test_case_help.phase_helps_in_order_of_execution:
             assert isinstance(phase, TestCasePhaseDocumentation)
             phase_presentation_str = phase.name.syntax
-            # cross_reference_target = cross_ref.TestCasePhaseCrossReference(phase.name.plain)
-            cross_reference_target = targets_factory.sub(phase.name.plain, phase.name.plain).target
+            cross_reference_target = cross_ref.TestCasePhaseCrossReference(phase.name.plain)
             header = docs.anchor_text(docs.text(phase_presentation_str),
                                       cross_reference_target)
             section = doc.Section(header,
