@@ -1,10 +1,8 @@
-from xml.etree.ElementTree import Element, SubElement
-
-from shellcheck_lib.cli.cli_environment import program_info
 from shellcheck_lib.help import cross_reference_id as cross_ref
 from shellcheck_lib.help.contents_structure import ApplicationHelp
 from shellcheck_lib.help.cross_reference_id import CustomTargetInfoFactory
 from shellcheck_lib.help.html_doc.cross_ref_target_renderer import HtmlTargetRenderer
+from shellcheck_lib.help.html_doc import page_setup
 from shellcheck_lib.help.program_modes.test_case.contents.main import overview as overview_content
 from shellcheck_lib.help.utils.cross_reference import CrossReferenceTextConstructor
 from shellcheck_lib.help.utils.render import RenderingEnvironment
@@ -14,38 +12,8 @@ from shellcheck_lib.util.textformat.formatting.html import document as doc_rende
 from shellcheck_lib.util.textformat.formatting.html import text
 from shellcheck_lib.util.textformat.formatting.html.paragraph_item.full_paragraph_item import FullParagraphItemRenderer
 from shellcheck_lib.util.textformat.formatting.html.section import HnSectionHeaderRenderer
-from shellcheck_lib.util.textformat.formatting.html.utils import ElementPopulator, ComplexElementPopulator
 from shellcheck_lib.util.textformat.structure.document import SectionContents
 from shellcheck_lib.util.textformat.structure.lists import ListType
-
-PAGE_TITLE = '%s Reference Manual' % program_info.PROGRAM_NAME
-TOC_TITLE = 'Table of Contents'
-
-ELEMENT_STYLES = """\
-pre {
-background-color : #EEFFCC;
-padding: 7px;
-border: 1px solid #cEdFaC;
-border-radius     : 3px;
-}
-
-h1 {
-background-color: #E6E6FA;
-border-radius     : 4px;
-padding: 5px;
-}
-
-"""
-
-TITLE_STYLE = """\
-font-size: 250%;
-font-weight: bold;
-"""
-
-TOC_TITLE_STYLE = """\
-font-size: 200%;
-font-weight: bold;
-"""
 
 
 class HtmlDocGenerator:
@@ -63,10 +31,10 @@ class HtmlDocGenerator:
         renderer.apply(self.output.out, setup, contents)
 
     def _setup(self) -> doc_rendering.DocumentSetup:
-        head_populator = StylePopulator(ELEMENT_STYLES)
-        setup = doc_rendering.DocumentSetup(PAGE_TITLE,
+        head_populator = page_setup.StylePopulator(page_setup.ELEMENT_STYLES)
+        setup = doc_rendering.DocumentSetup(page_setup.PAGE_TITLE,
                                             head_populator=head_populator,
-                                            header_populator=HEADER_POPULATOR)
+                                            header_populator=page_setup.HEADER_POPULATOR)
         return setup
 
     def _contents(self) -> SectionContents:
@@ -95,36 +63,3 @@ def _section_renderer() -> doc_rendering.SectionRenderer:
     return doc_rendering.SectionRenderer(section_header_renderer, paragraph_item_renderer)
 
 
-class StylePopulator(ElementPopulator):
-    def __init__(self, style: str):
-        self.style = style
-
-    def apply(self, parent: Element):
-        SubElement(parent, 'style').text = self.style
-
-
-class DivWithTextAndStylePopulator(ElementPopulator):
-    def __init__(self,
-                 contents: str,
-                 style: str):
-        self.contents = contents
-        self.style = style
-
-    def apply(self, parent: Element):
-        div = SubElement(parent, 'div')
-        div.text = self.contents
-        div.set('style', self.style)
-
-
-class VersionPopulator(ElementPopulator):
-    def apply(self, parent: Element):
-        version = SubElement(parent, 'p')
-        version.text = program_info.PROGRAM_NAME + ' version ' + program_info.VERSION
-        SubElement(parent, 'hr')
-
-
-HEADER_POPULATOR = ComplexElementPopulator([
-    DivWithTextAndStylePopulator(PAGE_TITLE, TITLE_STYLE),
-    VersionPopulator(),
-    DivWithTextAndStylePopulator(TOC_TITLE, TOC_TITLE_STYLE),
-])
