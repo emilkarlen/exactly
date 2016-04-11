@@ -113,16 +113,25 @@ class CustomTargetInfoFactory:
     def __init__(self, prefix: str):
         self.prefix = prefix
 
-    def make(self,
-             presentation: str,
-             local_target_name: str) -> TargetInfo:
+    def sub(self,
+            presentation: str,
+            local_target_name: str) -> TargetInfo:
         return TargetInfo(presentation,
                           CustomCrossReferenceId(self.prefix + _COMPONENT_SEPARATOR + local_target_name))
+
+    def root(self,
+             presentation: str) -> TargetInfo:
+        return TargetInfo(presentation,
+                          CustomCrossReferenceId(self.prefix))
 
 
 def sub_component_factory(local_name: str,
                           root: CustomTargetInfoFactory) -> CustomTargetInfoFactory:
-    return CustomTargetInfoFactory(root.prefix + _COMPONENT_SEPARATOR + local_name)
+    if not root.prefix:
+        prefix = local_name
+    else:
+        prefix = root.prefix + _COMPONENT_SEPARATOR + local_name
+    return CustomTargetInfoFactory(prefix)
 
 
 _COMPONENT_SEPARATOR = '.'
