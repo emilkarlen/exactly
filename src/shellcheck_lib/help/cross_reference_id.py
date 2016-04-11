@@ -24,7 +24,8 @@ class TestCaseCrossReferenceId(CrossReferenceId):
 
 
 class TestCasePhaseCrossReference(TestCaseCrossReferenceId):
-    pass
+    def __init__(self, name: str):
+        self.name = name
 
 
 class TestSuiteCrossReferenceId(CrossReferenceId):
