@@ -11,4 +11,4 @@ def default_main_program() -> main_program.MainProgram:
     return MainProgram(StdOutputFiles(sys.stdout,
                                       sys.stderr),
                        instruction_name_and_argument_splitter.splitter,
-                       default_instructions_setup.instructions_setup)
+                       default_instructions_setup.INSTRUCTIONS_SETUP)

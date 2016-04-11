@@ -52,3 +52,7 @@ def tmp_file_containing_lines(content_lines: list,
     """
     return tmp_file_containing(lines_content(content_lines),
                                suffix=suffix)
+
+
+class NullFile(object):
+    def write(self, *_): pass

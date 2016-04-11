@@ -1,6 +1,7 @@
 from shellcheck_lib.cli.program_modes.help.concepts.help_request import ConceptHelpRequest
 from shellcheck_lib.cli.program_modes.help.concepts.request_rendering import ConceptHelpRequestRendererResolver
-from shellcheck_lib.cli.program_modes.help.html_documentation.help_request import XHtmlHelpRequest
+from shellcheck_lib.cli.program_modes.help.html_documentation.help_request import HtmlDocHelpRequest
+from shellcheck_lib.cli.program_modes.help.html_documentation.request_rendering import HtmlGenerationRequestHandler
 from shellcheck_lib.cli.program_modes.help.program_modes.help_request import *
 from shellcheck_lib.cli.program_modes.help.program_modes.main_program.help_request import MainProgramHelpRequest
 from shellcheck_lib.cli.program_modes.help.program_modes.main_program.request_rendering import \
@@ -11,7 +12,6 @@ from shellcheck_lib.cli.program_modes.help.program_modes.test_suite.help_request
 from shellcheck_lib.cli.program_modes.help.program_modes.test_suite.request_rendering import \
     TestSuiteHelpRendererResolver
 from shellcheck_lib.cli.program_modes.help.request_handling.console_help import ConsoleHelpRequestHandler
-from shellcheck_lib.cli.program_modes.help.request_handling.html_generation import HtmlGenerationRequestHandler
 from shellcheck_lib.cli.program_modes.help.request_handling.request_handler import RequestHandler
 from shellcheck_lib.help.contents_structure import ApplicationHelp
 from shellcheck_lib.help.utils.render import SectionContentsRenderer
@@ -28,7 +28,7 @@ def handle_help_request(output: StdOutputFiles,
 
 def _resolve_handler(application_help: ApplicationHelp,
                      request: HelpRequest) -> RequestHandler:
-    if isinstance(request, XHtmlHelpRequest):
+    if isinstance(request, HtmlDocHelpRequest):
         return HtmlGenerationRequestHandler(application_help)
     else:
         renderer = _renderer(application_help, request)

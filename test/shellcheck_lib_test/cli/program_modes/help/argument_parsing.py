@@ -4,27 +4,26 @@ from shellcheck_lib.cli.program_modes.help import argument_parsing as sut
 from shellcheck_lib.cli.program_modes.help import arguments_for
 from shellcheck_lib.cli.program_modes.help.argument_parsing import HelpError
 from shellcheck_lib.cli.program_modes.help.concepts.help_request import ConceptHelpRequest, ConceptHelpItem
-from shellcheck_lib.cli.program_modes.help.html_documentation.help_request import XHtmlHelpRequest
+from shellcheck_lib.cli.program_modes.help.html_documentation.help_request import HtmlDocHelpRequest
 from shellcheck_lib.cli.program_modes.help.program_modes.main_program.help_request import *
 from shellcheck_lib.cli.program_modes.help.program_modes.test_case.help_request import *
 from shellcheck_lib.cli.program_modes.help.program_modes.test_suite.help_request import *
 from shellcheck_lib.help.concepts.concept_structure import PlainConceptDocumentation, Name, ConceptDocumentation
 from shellcheck_lib.help.contents_structure import ApplicationHelp
 from shellcheck_lib.help.program_modes.main_program.contents_structure import MainProgramHelp
-from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCasePhaseDocumentation, TestCaseHelp, \
-    ConceptsHelp
+from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCasePhaseDocumentation, TestCaseHelp
 from shellcheck_lib.help.program_modes.test_case.instruction_documentation import InstructionDocumentation
 from shellcheck_lib.help.program_modes.test_suite.contents_structure import TestSuiteSectionHelp, \
     TestSuiteHelp
 from shellcheck_lib.help.utils import formatting
 from shellcheck_lib.help.utils.description import Description, single_line_description
 from shellcheck_lib_test.help.test_resources import test_case_phase_help, \
-    single_line_description_that_identifies_instruction_and_phase
+    single_line_description_that_identifies_instruction_and_phase, application_help_for
 
 
 class TestProgramHelp(unittest.TestCase):
     def test_program_help(self):
-        actual = sut.parse(_app_help_for([]),
+        actual = sut.parse(application_help_for([]),
                            [])
         self.assertIsInstance(actual,
                               MainProgramHelpRequest,
@@ -35,7 +34,7 @@ class TestProgramHelp(unittest.TestCase):
                       'Expects program help')
 
     def test_help_help(self):
-        actual = sut.parse(_app_help_for([]),
+        actual = sut.parse(application_help_for([]),
                            [sut.HELP])
         self.assertIsInstance(actual,
                               MainProgramHelpRequest,
@@ -48,15 +47,15 @@ class TestProgramHelp(unittest.TestCase):
 
 class TestXhtmlHelp(unittest.TestCase):
     def test_valid_usage(self):
-        actual = sut.parse(_app_help_for([]),
+        actual = sut.parse(application_help_for([]),
                            [sut.HTML_DOCUMENTATION])
         self.assertIsInstance(actual,
-                              XHtmlHelpRequest,
+                              HtmlDocHelpRequest,
                               'Expecting settings for XHTML')
 
     def test_invalid_usage(self):
         with self.assertRaises(HelpError):
-            sut.parse(_app_help_for([]),
+            sut.parse(application_help_for([]),
                       [sut.HTML_DOCUMENTATION, 'superfluous argument'])
 
 
@@ -107,7 +106,7 @@ class TestTestCasePhase(unittest.TestCase):
 
 class TestTestCaseSingleInstructionInPhase(unittest.TestCase):
     def test_unknown_phase(self):
-        application_help = _app_help_for([
+        application_help = application_help_for([
             test_case_phase_help('phase', ['instruction-name'])
         ])
         with self.assertRaises(sut.HelpError):
@@ -115,7 +114,7 @@ class TestTestCaseSingleInstructionInPhase(unittest.TestCase):
                       arguments_for.instruction_in_phase('non-existing-phase', 'instruction-name'))
 
     def test_unknown_instruction(self):
-        application_help = _app_help_for([
+        application_help = application_help_for([
             test_case_phase_help('phase-1', ['instruction']),
             test_case_phase_help('empty-phase', []),
         ])
@@ -126,7 +125,7 @@ class TestTestCaseSingleInstructionInPhase(unittest.TestCase):
     def test_single_instruction_for_phases_with_instructions(self):
         phase_name = 'the phase name'
         instructions = [phase_name, 'name-that-is-not-the-name-of-a-phase']
-        application_help = _app_help_for([
+        application_help = application_help_for([
             test_case_phase_help(phase_name, instructions),
             test_case_phase_help('other phase than ' + phase_name, instructions)
         ])
@@ -169,8 +168,8 @@ class TestTestCaseSingleInstructionInPhase(unittest.TestCase):
 
 class TestTestCaseInstructionList(unittest.TestCase):
     def test_instruction_in_single_phase(self):
-        application_help = _app_help_for([test_case_phase_help('phase-a', ['a-instruction']),
-                                          test_case_phase_help('phase-with-target', ['target-instruction'])])
+        application_help = application_help_for([test_case_phase_help('phase-a', ['a-instruction']),
+                                                 test_case_phase_help('phase-with-target', ['target-instruction'])])
         actual = sut.parse(application_help, arguments_for.instruction_search('target-instruction'))
         actual = self._assert_is_valid_instruction_list_settings('target-instruction',
                                                                  actual)
@@ -182,7 +181,7 @@ class TestTestCaseInstructionList(unittest.TestCase):
                          'The instruction is expected to be found in the %s phase.' % 'phase-with-target')
 
     def test_instruction_in_multiple_phase(self):
-        application_help = _app_help_for([
+        application_help = application_help_for([
             test_case_phase_help('phase-a', ['a-instr']),
             test_case_phase_help('phase-b', ['the-instr']),
             test_case_phase_help('phase-c', ['c-instr']),
@@ -204,7 +203,7 @@ class TestTestCaseInstructionList(unittest.TestCase):
 
     def test_unknown_instruction(self):
         instructions = ['known-instruction']
-        application_help = _app_help_for([test_case_phase_help('phase', instructions)])
+        application_help = application_help_for([test_case_phase_help('phase', instructions)])
         with self.assertRaises(sut.HelpError):
             sut.parse(application_help,
                       arguments_for.instruction_search('unknown-instruction'))
@@ -249,7 +248,7 @@ class TestTestCaseInstructionList(unittest.TestCase):
 
 class TestTestCaseInstructionSet(unittest.TestCase):
     def test_instruction_set(self):
-        actual = sut.parse(_app_help_for([]),
+        actual = sut.parse(application_help_for([]),
                            arguments_for.instructions())
         self.assertIsInstance(actual, TestCaseHelpRequest,
                               'Expecting settings for Test Case')
@@ -262,7 +261,7 @@ class TestTestCaseInstructionSet(unittest.TestCase):
 
 class TestTestCaseHelp(unittest.TestCase):
     def test_overview(self):
-        actual = sut.parse(_app_help_for([]),
+        actual = sut.parse(application_help_for([]),
                            arguments_for.test_case())
         self.assertIsInstance(actual,
                               TestCaseHelpRequest,
@@ -276,7 +275,7 @@ class TestTestCaseHelp(unittest.TestCase):
 
 class TestTestSuiteHelp(unittest.TestCase):
     def test_overview(self):
-        actual = sut.parse(_app_help_for([]),
+        actual = sut.parse(application_help_for([]),
                            arguments_for.suite())
         self.assertIsInstance(actual,
                               TestSuiteHelpRequest,
@@ -288,8 +287,8 @@ class TestTestSuiteHelp(unittest.TestCase):
                       'Item should denote help for test-suite overview')
 
     def test_known_section(self):
-        actual = sut.parse(_app_help_for([],
-                                         suite_sections=[TestSuiteSectionHelp('section A'),
+        actual = sut.parse(application_help_for([],
+                                                suite_sections=[TestSuiteSectionHelp('section A'),
                                                          TestSuiteSectionHelp('section B')]),
                            arguments_for.suite_section('section A'))
         self.assertIsInstance(actual,
@@ -304,25 +303,16 @@ class TestTestSuiteHelp(unittest.TestCase):
                               TestSuiteSectionHelp)
 
     def test_unknown_section(self):
-        application_help = _app_help_for([],
-                                         suite_sections=[TestSuiteSectionHelp('section A')])
+        application_help = application_help_for([],
+                                                suite_sections=[TestSuiteSectionHelp('section A')])
         with self.assertRaises(sut.HelpError):
             sut.parse(application_help,
                       arguments_for.suite_section('unknown section'))
 
 
-def _app_help_for(test_case_phase_helps: list,
-                  suite_sections=(),
-                  concepts=()) -> ApplicationHelp:
-    return ApplicationHelp(MainProgramHelp(),
-                           ConceptsHelp(concepts),
-                           TestCaseHelp(test_case_phase_helps),
-                           TestSuiteHelp(suite_sections))
-
-
 class TestConceptHelp(unittest.TestCase):
     def test_concept_list(self):
-        actual = sut.parse(_app_help_for([]),
+        actual = sut.parse(application_help_for([]),
                            arguments_for.concept_list())
         self.assertIsInstance(actual,
                               ConceptHelpRequest,
@@ -339,7 +329,7 @@ class TestConceptHelp(unittest.TestCase):
             ConceptTestImpl('first'),
             ConceptTestImpl('second'),
         ]
-        application_help = _app_help_for([], concepts=concepts)
+        application_help = application_help_for([], concepts=concepts)
         # ACT #
         actual = sut.parse(application_help,
                            arguments_for.individual_concept('second'))
@@ -353,7 +343,7 @@ class TestConceptHelp(unittest.TestCase):
             ConceptTestImpl('a b c'),
             ConceptTestImpl('last'),
         ]
-        application_help = _app_help_for([], concepts=concepts)
+        application_help = application_help_for([], concepts=concepts)
         # ACT #
         actual = sut.parse(application_help,
                            arguments_for.individual_concept('a b c'))
@@ -367,7 +357,7 @@ class TestConceptHelp(unittest.TestCase):
             ConceptTestImpl('a b c'),
             ConceptTestImpl('last'),
         ]
-        application_help = _app_help_for([], concepts=concepts)
+        application_help = application_help_for([], concepts=concepts)
         # ACT #
         actual = sut.parse(application_help,
                            arguments_for.individual_concept('a B C'))
@@ -380,7 +370,7 @@ class TestConceptHelp(unittest.TestCase):
             ConceptTestImpl('first'),
             ConceptTestImpl('second'),
         ]
-        application_help = _app_help_for([], concepts=concepts)
+        application_help = application_help_for([], concepts=concepts)
         # ACT & ASSERT #
         with self.assertRaises(HelpError):
             sut.parse(application_help,
