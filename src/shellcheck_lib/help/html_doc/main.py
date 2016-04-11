@@ -12,8 +12,9 @@ from shellcheck_lib.util.textformat.formatting.html import document as doc_rende
 from shellcheck_lib.util.textformat.formatting.html import text
 from shellcheck_lib.util.textformat.formatting.html.paragraph_item.full_paragraph_item import FullParagraphItemRenderer
 from shellcheck_lib.util.textformat.formatting.html.section import HnSectionHeaderRenderer
-from shellcheck_lib.util.textformat.structure.document import SectionContents
-from shellcheck_lib.util.textformat.structure.lists import ListType
+from shellcheck_lib.util.textformat.structure import document  as doc
+from shellcheck_lib.util.textformat.structure import lists
+from shellcheck_lib.util.textformat.structure import structures  as docs
 
 
 class HtmlDocGenerator:
@@ -37,24 +38,52 @@ class HtmlDocGenerator:
                                             header_populator=page_setup.HEADER_POPULATOR)
         return setup
 
-    def _contents(self) -> SectionContents:
+    def _contents(self) -> doc.SectionContents:
         root_targets_factory = CustomTargetInfoFactory('')
         target_info_hierarchy, ret_val_contents = self._main_contents(root_targets_factory)
-        toc_paragraph = toc_list(target_info_hierarchy, ListType.ITEMIZED_LIST)
+        toc_paragraph = toc_list(target_info_hierarchy, lists.ListType.ITEMIZED_LIST)
         ret_val_contents.initial_paragraphs.insert(0, toc_paragraph)
         return ret_val_contents
 
-    def _main_contents(self, targets_factory: CustomTargetInfoFactory) -> (list, SectionContents):
-        return self._tc_overview_contents(cross_ref.sub_component_factory('tc-overview',
-                                                                          targets_factory))
+    def _main_contents(self, targets_factory: CustomTargetInfoFactory) -> (list, doc.SectionContents):
+        test_case_targets_factory = cross_ref.sub_component_factory('test-case',
+                                                                    targets_factory)
+        test_case_target = test_case_targets_factory.root('Test Case')
+        test_case_sub_targets, test_case_contents = self._test_case_contents(test_case_targets_factory)
 
-    def _tc_overview_contents(self, targets_factory: CustomTargetInfoFactory) -> (list, SectionContents):
+        concepts_targets_factory = cross_ref.sub_component_factory('concepts',
+                                                                   targets_factory)
+        concepts_target = concepts_targets_factory.root('Concepts')
+        concepts_sub_targets, concepts_contents = self._concepts_contents(concepts_targets_factory)
+
+        ret_val_contents = doc.SectionContents(
+            [],
+            [
+                doc.Section(test_case_target.anchor_text(),
+                            test_case_contents),
+                doc.Section(concepts_target.anchor_text(),
+                            concepts_contents)
+            ]
+        )
+        ret_val_targets = [
+            cross_ref.TargetInfoNode(test_case_target,
+                                     test_case_sub_targets),
+            cross_ref.TargetInfoNode(concepts_target,
+                                     concepts_sub_targets),
+        ]
+        return ret_val_targets, ret_val_contents
+
+    def _test_case_contents(self, targets_factory: CustomTargetInfoFactory) -> (list, doc.SectionContents):
         generator = overview_content.OverviewRenderer(self.application_help.test_case_help,
                                                       targets_factory)
         cross_reference_text_constructor = CrossReferenceTextConstructor()
         environment = RenderingEnvironment(cross_reference_text_constructor)
         section_contents = generator.apply(environment)
         return generator.target_info_hierarchy(), section_contents
+
+    def _concepts_contents(self, targets_factory: CustomTargetInfoFactory) -> (list, doc.SectionContents):
+        return ([], doc.SectionContents([docs.para('Concepts contents')],
+                                        []))
 
 
 def _section_renderer() -> doc_rendering.SectionRenderer:
