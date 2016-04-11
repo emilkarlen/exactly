@@ -49,18 +49,19 @@ font-weight: bold;
 """
 
 
-class HtmlGenerationRequestHandler(RequestHandler):
+class HtmlDocGenerator:
     def __init__(self,
+                 output: StdOutputFiles,
                  application_help: ApplicationHelp):
+        self.output = output
         self.application_help = application_help
 
-    def handle(self,
-               output: StdOutputFiles):
+    def apply(self):
         setup = self._setup()
         section_renderer = _section_renderer()
         renderer = doc_rendering.DocumentRenderer(section_renderer)
         contents = self._contents()
-        renderer.apply(output.out, setup, contents)
+        renderer.apply(self.output.out, setup, contents)
 
     def _setup(self) -> doc_rendering.DocumentSetup:
         head_populator = StylePopulator(ELEMENT_STYLES)

@@ -8,7 +8,7 @@ def program() -> list:
     return []
 
 
-def html_generation() -> list:
+def html_doc() -> list:
     return [HTML_DOCUMENTATION]
 
 

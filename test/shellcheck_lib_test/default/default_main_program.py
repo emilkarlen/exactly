@@ -6,7 +6,7 @@ from shellcheck_lib.cli import main_program
 from shellcheck_lib.cli.cli_environment.exit_values import NO_EXECUTION_EXIT_CODE
 from shellcheck_lib.cli.main_program import HELP_COMMAND
 from shellcheck_lib.cli.program_modes.help import arguments_for
-from shellcheck_lib.default.program_modes.test_case.default_instructions_setup import instructions_setup
+from shellcheck_lib.default.program_modes.test_case.default_instructions_setup import INSTRUCTIONS_SETUP
 from shellcheck_lib.default.program_modes.test_suite.reporting import INVALID_SUITE_EXIT_CODE, FAILED_TESTS_EXIT_CODE
 from shellcheck_lib.execution import phases
 from shellcheck_lib.execution.result import FullResultStatus
@@ -380,17 +380,14 @@ class TestHelp(unittest.TestCase):
     def test_help(self):
         self._assert_is_successful_invokation(arguments_for.help_help())
 
-    def test_htmldoc(self):
-        self._assert_is_successful_invokation(arguments_for.html_generation())
+    def test_html_doc(self):
+        self._assert_is_successful_invokation(arguments_for.html_doc())
 
     def test_concept_list(self):
         self._assert_is_successful_invokation(arguments_for.concept_list())
 
     def test_individual_concept(self):
         self._assert_is_successful_invokation(arguments_for.individual_concept(SANDBOX_CONCEPT.name().singular))
-
-    def test_html_generation(self):
-        self._assert_is_successful_invokation(arguments_for.html_generation())
 
     def test_case_phases(self):
         for ph in phases.ALL:
@@ -420,7 +417,7 @@ class TestHelp(unittest.TestCase):
                                          msg_header: str = ''):
         command_line_arguments = self._cl(help_command_arguments)
         sub_process_result = execute_main_program(command_line_arguments,
-                                                  instructions_setup=instructions_setup)
+                                                  instructions_setup=INSTRUCTIONS_SETUP)
         self.assertEqual(0,
                          sub_process_result.exitcode,
                          msg_header + 'Exit Status')
