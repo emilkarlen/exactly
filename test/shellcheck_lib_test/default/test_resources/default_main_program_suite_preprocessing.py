@@ -4,6 +4,7 @@ from shellcheck_lib.default.program_modes.test_suite.reporting import FAILED_TES
 from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib.test_case.test_case_processing import AccessErrorType
 from shellcheck_lib.util.string import lines_content
+from shellcheck_lib_test.test_resources import quoting
 from shellcheck_lib_test.test_resources.file_structure import DirContents, File
 from shellcheck_lib_test.test_resources.main_program import main_program_check_for_test_suite
 
@@ -29,9 +30,12 @@ else:
     def file_structure(self, root_path: pathlib.Path,
                        python_executable_file_name: str,
                        preprocessor_source_file_name: str) -> DirContents:
+        preprocessor = '%s %s' % (quoting.file_name(python_executable_file_name),
+                                  quoting.file_name(preprocessor_source_file_name))
         return DirContents([
             File('main.suite',
-                 lines_content(['preprocessor ' + python_executable_file_name + ' ' + preprocessor_source_file_name,
+                 lines_content(['preprocessor ' + preprocessor
+                                   ,
                                 '[cases]',
                                 'pass',
                                 'parser-error'])),
