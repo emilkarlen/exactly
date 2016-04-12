@@ -67,7 +67,7 @@ class _SummaryConstructor(ConceptDocumentationVisitor):
 
     def visit_configuration_parameter(self, x: ConfigurationParameterDocumentation):
         header = x.summary_paragraphs()
-        footer = paras('This is a {cp} that can be set in the {phase[configuration]} phase.'
+        footer = paras('This is a {cp} that can be set in the {phase[conf]} phase.'
                        .format(cp=CONFIGURATION_PARAMETER_CONCEPT.name().singular,
                                phase=phase_name_dictionary()))
         return header + footer

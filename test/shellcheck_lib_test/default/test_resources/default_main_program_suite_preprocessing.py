@@ -1,9 +1,13 @@
+import os
 import pathlib
 
 from shellcheck_lib.default.program_modes.test_suite.reporting import FAILED_TESTS_EXIT_CODE
+from shellcheck_lib.document.syntax import section_header
+from shellcheck_lib.execution import phases
 from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib.test_case.test_case_processing import AccessErrorType
 from shellcheck_lib.util.string import lines_content
+from shellcheck_lib_test.test_resources import quoting
 from shellcheck_lib_test.test_resources.file_structure import DirContents, File
 from shellcheck_lib_test.test_resources.main_program import main_program_check_for_test_suite
 
@@ -12,13 +16,14 @@ class PreprocessorIsAppliedWithTestCaseFileAsArgument(main_program_check_for_tes
     if_basename_is_pass_then_empty_tc_else_tc_that_will_cause_parser_error = """
 import sys
 import os.path
+import os
 
 basename = os.path.basename(sys.argv[1])
 if basename == 'pass':
-    print('# valid empty test case that PASS')
+    print('{section_header_for_phase_with_instructions}' + os.linesep + '# valid empty test case that PASS')
 else:
-    print('invalid test case that will cause PARSER-ERROR')
-"""
+    print('{section_header_for_phase_with_instructions}' + os.linesep + 'invalid test case that will cause PARSER-ERROR')
+""".format(section_header_for_phase_with_instructions=section_header(phases.SETUP.section_name))
 
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
@@ -29,9 +34,12 @@ else:
     def file_structure(self, root_path: pathlib.Path,
                        python_executable_file_name: str,
                        preprocessor_source_file_name: str) -> DirContents:
+        preprocessor = '%s %s' % (quoting.file_name(python_executable_file_name),
+                                  quoting.file_name(preprocessor_source_file_name))
         return DirContents([
             File('main.suite',
-                 lines_content(['preprocessor ' + python_executable_file_name + ' ' + preprocessor_source_file_name,
+                 lines_content(['preprocessor ' + preprocessor
+                                   ,
                                 '[cases]',
                                 'pass',
                                 'parser-error'])),
