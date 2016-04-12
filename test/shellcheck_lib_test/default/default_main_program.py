@@ -428,11 +428,11 @@ class TestHelp(unittest.TestCase):
 
 
 class TestTestSuitePreprocessing(main_program_check_for_test_suite.TestsForSetupWithPreprocessorInternally):
-    def test_empty_file(self):
+    def test_that_preprocessor_is_applied_with_test_case_file_as_argument(self):
         self._check([], pre_proc_tests.PreprocessorIsAppliedWithTestCaseFileAsArgument())
 
 
-def suite():
+def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestTestCaseWithoutInstructions))
     ret_val.addTest(unittest.makeSuite(TestTestCasePreprocessing))
@@ -445,4 +445,4 @@ def suite():
 
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.TextTestRunner().run(suite())
