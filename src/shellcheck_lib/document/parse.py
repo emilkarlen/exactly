@@ -94,25 +94,31 @@ class SectionsConfiguration:
     """
 
     def __init__(self,
-                 parser_for_anonymous_section: SectionElementParser,
-                 parsers_for_named_sections: tuple):
+                 parsers_for_named_sections: tuple,
+                 default_section_name: str = None):
         """
-        :param parser_for_anonymous_section: Parser for the top-level/anonymous phase. None if that phase
-         is not used.
         :param parsers_for_named_sections: sequence of SectionConfiguration.
         """
-        self._parser_for_anonymous_section = parser_for_anonymous_section
         self._parsers_for_named_sections = parsers_for_named_sections
         section_names = []
         section2parser = {}
-        if parser_for_anonymous_section:
-            section_names.append(None)
-            section2parser[None] = parser_for_anonymous_section
         for pfp in parsers_for_named_sections:
             section_names.append(pfp.section_name)
             section2parser[pfp.section_name] = pfp.parser
         self._section_list_as_tuple = tuple(section_names)
         self._section2parser = section2parser
+
+        self._parser_for_default_section = None
+        self.default_section_name = None
+        if default_section_name is not None:
+            try:
+                self._parser_for_default_section = self._section2parser[default_section_name]
+                self.default_section_name = (default_section_name,)
+            except KeyError:
+                raise ValueError('The name of the default section "%s" does not correspond to any section: %s' %
+                                 (default_section_name,
+                                  str(self._section2parser.keys()))
+                                 )
 
     def section_names(self) -> tuple:
         """
@@ -217,8 +223,8 @@ class _Impl:
             self.switch_section_according_to_last_section_line_and_consume_section_lines()
             self.read_rest_of_document_from_inside_section_or_at_eof()
         else:
-            if self.has_section(None):
-                self.set_current_section(None)
+            if self.configuration.default_section_name is not None:
+                self.set_current_section(self.configuration.default_section_name[0])
                 self.read_rest_of_document_from_inside_section_or_at_eof()
             else:
                 self.skip_standard_comment_and_empty_lines()
