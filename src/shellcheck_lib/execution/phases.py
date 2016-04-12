@@ -34,7 +34,7 @@ class Phase(tuple):
         return self[2]
 
 
-ANONYMOUS = Phase(PhaseEnum.ANONYMOUS, None, 'configuration')
+ANONYMOUS = Phase(PhaseEnum.ANONYMOUS, 'conf', 'conf')
 SETUP = Phase(PhaseEnum.SETUP, 'setup', 'setup')
 ACT = Phase(PhaseEnum.ACT, 'act', 'act')
 BEFORE_ASSERT = Phase(PhaseEnum.BEFORE_ASSERT, 'before-assert', 'before-assert')

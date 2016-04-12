@@ -5,14 +5,17 @@ from shellcheck_lib.test_suite.instruction_set.sections import cases
 from shellcheck_lib.test_suite.instruction_set.sections import suites
 from shellcheck_lib.util import line_source
 
+SECTION_NAME__CONF = 'conf'
 SECTION_NAME__SUITS = 'suites'
 SECTION_NAME__CASES = 'cases'
 
 PARSER_CONFIGURATION = parse.SectionsConfiguration(
-    anonymous.new_parser(),
-    (parse.SectionConfiguration(SECTION_NAME__SUITS, suites.new_parser()),
-     parse.SectionConfiguration(SECTION_NAME__CASES, cases.new_parser()),
-     )
+    (
+        parse.SectionConfiguration(SECTION_NAME__CONF, anonymous.new_parser()),
+        parse.SectionConfiguration(SECTION_NAME__SUITS, suites.new_parser()),
+        parse.SectionConfiguration(SECTION_NAME__CASES, cases.new_parser()),
+    ),
+    default_section_name=SECTION_NAME__CONF
 )
 
 
@@ -24,7 +27,7 @@ class Parser:
               plain_test_case: line_source.LineSource) -> test_suite_doc.TestSuiteDocument:
         document = self.__plain_file_parser.apply(plain_test_case)
         return test_suite_doc.TestSuiteDocument(
-            document.elements_for_phase_or_empty_if_phase_not_present(None),
+            document.elements_for_phase_or_empty_if_phase_not_present(SECTION_NAME__CONF),
             document.elements_for_phase_or_empty_if_phase_not_present(SECTION_NAME__SUITS),
             document.elements_for_phase_or_empty_if_phase_not_present(SECTION_NAME__CASES),
         )

@@ -3,7 +3,7 @@ import unittest
 from shellcheck_lib_test.document import parse, test_syntax, parser_implementations
 
 
-def suite():
+def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(parse.suite())
     ret_val.addTest(test_syntax.suite())
@@ -11,10 +11,5 @@ def suite():
     return ret_val
 
 
-def run_suite():
-    runner = unittest.TextTestRunner()
-    runner.run(suite())
-
-
 if __name__ == '__main__':
-    run_suite()
+    unittest.TextTestRunner().run(suite())
