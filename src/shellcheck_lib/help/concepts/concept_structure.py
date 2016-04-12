@@ -26,7 +26,7 @@ class ConceptDocumentation:
     def name(self) -> Name:
         return self._name
 
-    def cross_reference(self) -> ConceptCrossReferenceId:
+    def cross_reference_target(self) -> ConceptCrossReferenceId:
         return ConceptCrossReferenceId(self._name.singular)
 
     def purpose(self) -> Description:

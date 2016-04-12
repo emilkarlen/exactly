@@ -37,7 +37,7 @@ class TheInstructionDocumentation(InstructionDocumentation):
     def cross_references(self) -> list:
         from shellcheck_lib.help.concepts.configuration_parameters.configuration_parameter import \
             HOME_DIRECTORY_CONFIGURATION_PARAMETER
-        return [HOME_DIRECTORY_CONFIGURATION_PARAMETER.cross_reference()]
+        return [HOME_DIRECTORY_CONFIGURATION_PARAMETER.cross_reference_target()]
 
 
 class Parser(SingleInstructionParser):

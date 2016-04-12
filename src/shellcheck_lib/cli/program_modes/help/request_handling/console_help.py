@@ -47,8 +47,14 @@ class HelpCrossReferenceFormatter(text.CrossReferenceFormatter):
         self.command_line_getter = _HelpCommandLineGetterVisitor()
 
     def apply(self, cross_reference: core.CrossReferenceText) -> str:
-        command_line = self.command_line_getter.visit(cross_reference.target)
-        return cross_reference.title + ' (' + command_line + ')'
+        if cross_reference.allow_rendering_of_visible_extra_target_text:
+            if not isinstance(cross_reference.target, cross_reference_id.CrossReferenceId):
+                raise TypeError('Encountered a cross-reference that is not an instance of ' +
+                                str(cross_reference_id.CrossReferenceId))
+            command_line = self.command_line_getter.visit(cross_reference.target)
+            return cross_reference.title + ' (' + command_line + ')'
+        else:
+            return cross_reference.title
 
 
 def _cross_ref_text_constructor() -> CrossReferenceTextConstructor:
@@ -56,8 +62,18 @@ def _cross_ref_text_constructor() -> CrossReferenceTextConstructor:
 
 
 class _HelpCommandLineGetterVisitor(cross_reference_id.CrossReferenceIdVisitor):
+    def visit_custom(self, x: cross_reference_id.CustomCrossReferenceId):
+        raise ValueError('A Custom Cross Reference IDs cannot be displayed as a command line')
+
     def visit_concept(self, x: cross_reference_id.ConceptCrossReferenceId):
         return _command_line_display_for_help_arguments(arguments_for.individual_concept(x.concept_name))
+
+    def visit_test_case_phase(self, x: cross_reference_id.TestCasePhaseCrossReference):
+        return _command_line_display_for_help_arguments(arguments_for.phase_for_name(x.phase_name))
+
+    def visit_test_case_phase_instruction(self, x: cross_reference_id.TestCasePhaseInstructionCrossReference):
+        return _command_line_display_for_help_arguments(arguments_for.instruction_in_phase(x.phase_name,
+                                                                                           x.instruction_name))
 
 
 def _command_line_display_for_help_arguments(arguments: list) -> str:

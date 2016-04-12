@@ -1,6 +1,12 @@
 import io
 
 from shellcheck_lib.util.std import StdOutputFiles
+from shellcheck_lib_test.test_resources.file_utils import NullFile
+
+
+def null_output_files() -> StdOutputFiles:
+    return StdOutputFiles(NullFile(),
+                          NullFile())
 
 
 class StringStdOutFiles:

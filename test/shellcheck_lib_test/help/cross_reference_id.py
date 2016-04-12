@@ -25,6 +25,32 @@ class CrossReferenceIdVisitorTest(unittest.TestCase):
                       returned,
                       'The object itself is expected to be returned by the visitor')
 
+    def test_visit_TestCasePhaseCrossReference(self):
+        # ARRANGE #
+        x = sut.TestCasePhaseCrossReference('phase name')
+        visitor = VisitorThatRegistersVisitedClassesAndReturnsTheArgument()
+        # ACT #
+        returned = visitor.visit(x)
+        # ASSERT #
+        self.assertEqual([sut.TestCasePhaseCrossReference],
+                         visitor.visited_classes)
+        self.assertIs(x,
+                      returned,
+                      'The object itself is expected to be returned by the visitor')
+
+    def test_visit_TestCasePhaseInstructionCrossReference(self):
+        # ARRANGE #
+        x = sut.TestCasePhaseInstructionCrossReference('phase name', 'instruction name')
+        visitor = VisitorThatRegistersVisitedClassesAndReturnsTheArgument()
+        # ACT #
+        returned = visitor.visit(x)
+        # ASSERT #
+        self.assertEqual([sut.TestCasePhaseInstructionCrossReference],
+                         visitor.visited_classes)
+        self.assertIs(x,
+                      returned,
+                      'The object itself is expected to be returned by the visitor')
+
     def test_visit_CustomCrossReferenceId(self):
         # ARRANGE #
         x = sut.CustomCrossReferenceId('custom name')
@@ -53,6 +79,14 @@ class VisitorThatRegistersVisitedClassesAndReturnsTheArgument(sut.CrossReference
 
     def visit_concept(self, x: sut.ConceptCrossReferenceId):
         self.visited_classes.append(sut.ConceptCrossReferenceId)
+        return x
+
+    def visit_test_case_phase(self, x: sut.TestCasePhaseCrossReference):
+        self.visited_classes.append(sut.TestCasePhaseCrossReference)
+        return x
+
+    def visit_test_case_phase_instruction(self, x: sut.TestCasePhaseInstructionCrossReference):
+        self.visited_classes.append(sut.TestCasePhaseInstructionCrossReference)
         return x
 
     def visit_custom(self, x: sut.CustomCrossReferenceId):

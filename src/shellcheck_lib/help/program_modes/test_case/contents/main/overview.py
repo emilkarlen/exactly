@@ -26,28 +26,28 @@ class OverviewRenderer(TestCaseHelpRendererBase):
         ow_taget_factory = cross_ref.sub_component_factory('overview',
                                                            target_factory)
 
-        self._OVERVIEW_TI = target_factory.make('Overview',
+        self._OVERVIEW_TI = target_factory.sub('Overview',
                                                 'overview')
 
-        self._OV__INTRO_TI = ow_taget_factory.make('Introduction',
+        self._OV__INTRO_TI = ow_taget_factory.sub('Introduction',
                                                    'introduction')
 
-        self._OV__TEST_CASES_TI = ow_taget_factory.make('Test cases',
+        self._OV__TEST_CASES_TI = ow_taget_factory.sub('Test cases',
                                                         'test-cases')
 
-        self._OV__ENVIRONMENT_TI = ow_taget_factory.make('Environment',
+        self._OV__ENVIRONMENT_TI = ow_taget_factory.sub('Environment',
                                                          'environment')
 
-        self._OV__PHASES_TI = ow_taget_factory.make('Phases',
+        self._OV__PHASES_TI = ow_taget_factory.sub('Phases',
                                                     'phases')
 
-        self._OUTCOME_TI = target_factory.make('Test Outcome',
+        self._OUTCOME_TI = target_factory.sub('Test Outcome',
                                                'outcome')
 
-        self._TEST_CASE_FILES_TI = target_factory.make('Test Case Files',
+        self._TEST_CASE_FILES_TI = target_factory.sub('Test Case Files',
                                                        'test-case-files')
 
-        self._TEST_CASE_PROCESSING_TI = target_factory.make('Test Case Processing',
+        self._TEST_CASE_PROCESSING_TI = target_factory.sub('Test Case Processing',
                                                             'test-case-processing')
 
     def target_info_hierarchy(self) -> list:

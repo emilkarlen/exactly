@@ -23,8 +23,21 @@ class TestCaseCrossReferenceId(CrossReferenceId):
     pass
 
 
-class TestCasePhaseCrossReference(TestCaseCrossReferenceId):
+class TestCasePhaseCrossReferenceBase(TestCaseCrossReferenceId):
+    def __init__(self, phase_name: str):
+        self.phase_name = phase_name
+
+
+class TestCasePhaseCrossReference(TestCasePhaseCrossReferenceBase):
     pass
+
+
+class TestCasePhaseInstructionCrossReference(TestCasePhaseCrossReferenceBase):
+    def __init__(self,
+                 phase_name: str,
+                 instruction_name: str):
+        super().__init__(phase_name)
+        self.instruction_name = instruction_name
 
 
 class TestSuiteCrossReferenceId(CrossReferenceId):
@@ -46,15 +59,25 @@ class ConceptCrossReferenceId(CrossReferenceId):
 
 class CrossReferenceIdVisitor:
     def visit(self, x: CrossReferenceId):
-        if isinstance(x, ConceptCrossReferenceId):
-            return self.visit_concept(x)
         if isinstance(x, CustomCrossReferenceId):
             return self.visit_custom(x)
+        if isinstance(x, TestCasePhaseCrossReference):
+            return self.visit_test_case_phase(x)
+        if isinstance(x, TestCasePhaseInstructionCrossReference):
+            return self.visit_test_case_phase_instruction(x)
+        if isinstance(x, ConceptCrossReferenceId):
+            return self.visit_concept(x)
         else:
             raise TypeError('Not a concrete %s: %s' % (str(CrossReferenceId),
                                                        str(x)))
 
     def visit_concept(self, x: ConceptCrossReferenceId):
+        raise NotImplementedError()
+
+    def visit_test_case_phase(self, x: TestCasePhaseCrossReference):
+        raise NotImplementedError()
+
+    def visit_test_case_phase_instruction(self, x: TestCasePhaseInstructionCrossReference):
         raise NotImplementedError()
 
     def visit_custom(self, x: CustomCrossReferenceId):
@@ -113,16 +136,25 @@ class CustomTargetInfoFactory:
     def __init__(self, prefix: str):
         self.prefix = prefix
 
-    def make(self,
-             presentation: str,
-             local_target_name: str) -> TargetInfo:
+    def sub(self,
+            presentation: str,
+            local_target_name: str) -> TargetInfo:
         return TargetInfo(presentation,
                           CustomCrossReferenceId(self.prefix + _COMPONENT_SEPARATOR + local_target_name))
+
+    def root(self,
+             presentation: str) -> TargetInfo:
+        return TargetInfo(presentation,
+                          CustomCrossReferenceId(self.prefix))
 
 
 def sub_component_factory(local_name: str,
                           root: CustomTargetInfoFactory) -> CustomTargetInfoFactory:
-    return CustomTargetInfoFactory(root.prefix + _COMPONENT_SEPARATOR + local_name)
+    if not root.prefix:
+        prefix = local_name
+    else:
+        prefix = root.prefix + _COMPONENT_SEPARATOR + local_name
+    return CustomTargetInfoFactory(prefix)
 
 
 _COMPONENT_SEPARATOR = '.'
