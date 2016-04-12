@@ -2,6 +2,7 @@ import pathlib
 import unittest
 
 from shellcheck_lib.cli.cli_environment.command_line_options import OPTION_FOR_PREPROCESSOR
+from shellcheck_lib_test.test_resources import quoting
 from shellcheck_lib_test.test_resources.file_structure import File, DirContents
 from shellcheck_lib_test.test_resources.main_program import main_program_check_base
 from shellcheck_lib_test.test_resources.process import SubProcessResult, ExpectedSubProcessResult
@@ -13,7 +14,8 @@ class SetupWithPreprocessor(main_program_check_base.SetupWithPreprocessor):
                         python_executable_file_name: str,
                         preprocessor_source_file_name: str) -> list:
         return [OPTION_FOR_PREPROCESSOR,
-                '%s %s' % (python_executable_file_name, preprocessor_source_file_name)
+                '%s %s' % (quoting.file_name(python_executable_file_name),
+                           quoting.file_name(preprocessor_source_file_name))
                 ]
 
     def file_structure(self,

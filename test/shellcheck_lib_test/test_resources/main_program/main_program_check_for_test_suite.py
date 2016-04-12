@@ -44,11 +44,11 @@ class SetupBase:
                       put: unittest.TestCase,
                       root_path: pathlib.Path,
                       actual_result: SubProcessResult):
-        stdout_lines = self.expected_stdout_lines(root_path)
-        if stdout_lines is not None:
-            expected_output = lines_content(stdout_lines)
-            put.assertEqual(expected_output,
-                            actual_result.stdout,
+        expected_lines = self.expected_stdout_lines(root_path)
+        if expected_lines is not None:
+            actual_lines = actual_result.stdout.splitlines()
+            put.assertEqual(expected_lines,
+                            actual_lines,
                             'Output on stdout')
 
 

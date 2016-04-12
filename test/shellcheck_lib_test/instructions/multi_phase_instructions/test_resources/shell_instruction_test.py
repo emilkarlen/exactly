@@ -42,7 +42,7 @@ sys.exit(0)
                                  suffix='.py') as script_file_path:
             self.conf.run_test(
                     self,
-                    new_source2(py_exe.command_line_for_interpreting(script_file_path)),
+                    new_source2(py_exe.shell_command_line_for_interpreting(script_file_path)),
                     self.conf.empty_arrangement(),
                     self.conf.expectation_for_zero_exitcode(),
             )
