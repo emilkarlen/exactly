@@ -29,10 +29,12 @@ class CrossReferenceText(ConcreteText):
     def __init__(self,
                  title: str,
                  target: CrossReferenceTarget,
-                 target_is_id_in_same_document: bool = True):
+                 target_is_id_in_same_document: bool = True,
+                 allow_rendering_of_visible_extra_target_text: bool = True):
         self._title = title
         self._target = target
         self._target_is_id_in_same_document = target_is_id_in_same_document
+        self._allow_rendering_of_visible_extra_target_text = allow_rendering_of_visible_extra_target_text
 
     @property
     def title(self) -> str:
@@ -45,6 +47,10 @@ class CrossReferenceText(ConcreteText):
     @property
     def target_is_id_in_same_document(self) -> bool:
         return self._target_is_id_in_same_document
+
+    @property
+    def allow_rendering_of_visible_extra_target_text(self) -> bool:
+        return self._allow_rendering_of_visible_extra_target_text
 
 
 class AnchorText(Text):

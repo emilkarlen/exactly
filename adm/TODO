@@ -1,5 +1,29 @@
 -*- org -*-
 
+
+* TODO html doc
+** TODO Ska in i ApplictionHelp: program -namn & -version
+De ska inte behöva härledas via globala saker.
+----------
+PAGE_TITLE = '%s Reference Manual' % program_info.PROGRAM_NAME
+version.text = program_info.PROGRAM_NAME + ' version ' + program_info.VERSION
+----------
+
+** TODO _application_help_with_phases
+Saknar concepts_help arg till ApplicationHelp.
+
+** TODO htmldoc ska vara nytt program-mode
+Nu genereras html via help htmldoc. Det kommandot borde ge _hjälp_ om html-rendering - inte
+utför själva renderingen.
+
+Har påbörjat det här. Men i cli-paketet är det fortfarnde en form av hjälp.
+Fortsätt m att införa ny funktion i MainProgram.
+
+** TODO hjälpkommandot ska ha egen metod i MainProgram
+I dag är det en specialare som inte invokerar en medlemsmetod pss som "test-case", "test-suite".
+
+shellcheck_lib.cli.main_program.MainProgram#_parse_and_execute_help
+
 * Bör ersättas med funktionerna i python_program_execution?
 Tror det är precis det här de funktionerna används till.
 ----------

@@ -18,7 +18,7 @@ class TestCasePhaseInstructionSet(tuple):
     @property
     def instruction_descriptions(self) -> list:
         """
-        :type: [Description]
+        :type: [InstructionDocumentation]
         """
         return self[0]
 

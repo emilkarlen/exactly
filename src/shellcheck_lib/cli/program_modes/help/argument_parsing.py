@@ -1,5 +1,5 @@
 from shellcheck_lib.cli.program_modes.help.concepts.help_request import ConceptHelpRequest, ConceptHelpItem
-from shellcheck_lib.cli.program_modes.help.html_documentation.help_request import XHtmlHelpRequest
+from shellcheck_lib.cli.program_modes.help.html_documentation.help_request import HtmlDocHelpRequest
 from shellcheck_lib.cli.program_modes.help.program_modes import help_request
 from shellcheck_lib.cli.program_modes.help.program_modes.main_program.help_request import *
 from shellcheck_lib.cli.program_modes.help.program_modes.test_case.help_request import *
@@ -138,7 +138,7 @@ class Parser:
     def _parse_xhtml_help(self, arguments: list) -> ConceptHelpRequest:
         if arguments:
             raise HelpError('The %s command expects no arguments.' % HTML_DOCUMENTATION)
-        return XHtmlHelpRequest()
+        return HtmlDocHelpRequest()
 
 
 def _is_name_of_phase(name: str):

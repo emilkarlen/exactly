@@ -40,7 +40,7 @@ class TheInstructionDocumentation(InstructionDocumentation):
     def cross_references(self) -> list:
         from shellcheck_lib.help.concepts.configuration_parameters.configuration_parameter import \
             EXECUTION_MODE_CONFIGURATION_PARAMETER
-        return [EXECUTION_MODE_CONFIGURATION_PARAMETER.cross_reference()]
+        return [EXECUTION_MODE_CONFIGURATION_PARAMETER.cross_reference_target()]
 
 
 class Parser(SingleInstructionParser):
