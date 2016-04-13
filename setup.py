@@ -37,9 +37,9 @@ setup(
         'Operating System :: POSIX :: Linux',
         'Operating System :: MacOS :: MacOS X',
     ],
-    # entry_points={
-    #     'console_scripts': [
-    #         'shellcheck = my_test_package.main_prog:main_func',
-    #     ]
-    # }
+    entry_points={
+        'console_scripts': [
+            'shellcheck = shellcheck_lib.default.shellcheck:main',
+        ]
+    }
 )
