@@ -1,8 +1,11 @@
 *~
-*.pyc
 __pycache__
 .idea/workspace.xml
+.idea/shelf/
 *.vpp~*
 test/shellcheck_lib_test/tmp/
-.idea/shelf/
 tmp/
+# Used by setuptools
+build/
+dist/
+src/shellcheck.egg-info/
