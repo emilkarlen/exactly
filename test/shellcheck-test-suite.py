@@ -3,7 +3,7 @@ import sys
 import unittest
 
 import shellcheck_lib_test
-from shellcheck_lib_test.test_resources.main_program.main_program_check_base import RunViaOsInSubProcess
+from shellcheck_lib_test.test_resources.main_program.main_program_runner import RunViaOsInSubProcess
 
 SRC_DIR_NAME = 'src'
 

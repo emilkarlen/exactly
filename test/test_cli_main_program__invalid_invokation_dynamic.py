@@ -2,8 +2,7 @@ import unittest
 
 from shellcheck_lib.cli.main_program import EXIT_INVALID_USAGE, SUITE_COMMAND, HELP_COMMAND
 from shellcheck_lib_test.test_resources.file_utils import tmp_file_containing
-from shellcheck_lib_test.test_resources.main_program.main_program_check_base import MainProgramRunner, \
-    RunViaOsInSubProcess
+from shellcheck_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
 from shellcheck_lib_test.test_resources.process import SubProcessResultInfo
 
 
