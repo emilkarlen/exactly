@@ -8,7 +8,7 @@ from shellcheck_lib_test.test_resources.process import ExpectedSubProcessResult,
     run_subprocess, run_subprocess_with_file_arg__full, SubProcessResult
 
 SRC_DIR_NAME = 'src'
-MAIN_PROGRAM_FILE_NAME = 'main_program_executor.py'
+MAIN_PROGRAM_FILE_NAME = 'main_program_executor_for_test.py'
 
 
 def shellcheck_src_path(dir_of_this_file: pathlib.Path) -> pathlib.Path:
