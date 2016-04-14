@@ -292,7 +292,7 @@ class TestTestSuitePreprocessing(main_program_check_for_test_suite.TestsForSetup
         self._check([], pre_proc_tests.PreprocessorIsAppliedWithTestCaseFileAsArgument())
 
 
-def suite():
+def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestsInvokation))
     ret_val.addTest(unittest.makeSuite(BasicTestsWithNoCliFlags))
@@ -306,4 +306,4 @@ def suite():
 
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.TextTestRunner().run(suite())

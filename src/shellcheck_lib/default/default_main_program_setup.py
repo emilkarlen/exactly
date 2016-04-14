@@ -12,3 +12,7 @@ def default_main_program() -> main_program.MainProgram:
                                       sys.stderr),
                        instruction_name_and_argument_splitter.splitter,
                        default_instructions_setup.INSTRUCTIONS_SETUP)
+
+
+def main() -> int:
+    return default_main_program().execute(sys.argv[1:])
