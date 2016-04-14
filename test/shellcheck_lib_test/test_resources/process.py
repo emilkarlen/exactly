@@ -146,14 +146,6 @@ class SubProcessResultInfo(tuple):
         return self[1]
 
 
-def run_subprocess_with_file_arg(cmd_and_args_except_file_arg: list,
-                                 file_contents: str,
-                                 stdin_contents: str='') -> SubProcessResult:
-    return run_subprocess_with_file_arg__full(cmd_and_args_except_file_arg,
-                                              file_contents,
-                                              stdin_contents).sub_process_result
-
-
 def run_subprocess_with_file_arg__full(cmd_and_args_except_file_arg: list,
                                        file_contents: str,
                                        stdin_contents: str='') -> SubProcessResultInfo:

@@ -66,7 +66,7 @@ class RunViaOsInSubProcess(MainProgramRunner):
         return run_in_sub_process(put, arguments)
 
 
-class RunMainProgramInternally(MainProgramRunner):
+class RunViaMainProgramInternally(MainProgramRunner):
     def run(self, put: unittest.TestCase, arguments: list) -> SubProcessResult:
         return run_internally(put, arguments)
 
@@ -125,35 +125,3 @@ def check_with_pre_proc(additional_arguments: list,
             setup.check(put,
                         tmp_dir_path,
                         sub_process_result)
-
-
-class TestsForSetupWithoutPreprocessorInternally(unittest.TestCase):
-    def _check(self,
-               additional_arguments: list,
-               setup: SetupWithoutPreprocessor):
-        check(additional_arguments, setup, self,
-              run_internally)
-
-
-class TestsForSetupWithoutPreprocessorExternally(unittest.TestCase):
-    def _check(self,
-               additional_arguments: list,
-               setup: SetupWithoutPreprocessor):
-        check(additional_arguments, setup, self,
-              run_in_sub_process)
-
-
-class TestsForSetupWithPreprocessorInternally(unittest.TestCase):
-    def _check(self,
-               additional_arguments: list,
-               setup: SetupWithPreprocessor):
-        check_with_pre_proc(additional_arguments, setup, self,
-                            run_internally)
-
-
-class TestsForSetupWithPreprocessorExternally(unittest.TestCase):
-    def _check(self,
-               additional_arguments: list,
-               setup: SetupWithPreprocessor):
-        check_with_pre_proc(additional_arguments, setup, self,
-                            run_in_sub_process)
