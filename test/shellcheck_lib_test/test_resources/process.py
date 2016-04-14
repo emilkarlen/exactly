@@ -92,7 +92,6 @@ class ProcessExecutorForSubProcess(ProcessExecutor):
 
 def capture_subprocess(cmd_and_args: list,
                        tmp_dir: pathlib.Path,
-                       cwd: str=None,
                        stdin_contents: str='') -> SubProcessResult:
     return capture_process_executor_result(ProcessExecutorForSubProcess(cmd_and_args),
                                            tmp_dir,
