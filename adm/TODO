@@ -1,6 +1,22 @@
 -*- org -*-
 
+* TODO Namnge "genererade tester" mha 'shortDescription'
+Se test_cli_main_program__invalid_invokation_dynamic.TestCaseBase:
+----------------------------------------
+    def shortDescription(self):
+        return str(type(self))
+----------------------------------------
+Den ger den konkreta testklassens namn som test-namn.
+* TODO Installation
+** TODO main-funktion
+** TODO Distribuera filer
+*** TODO LICENCE
+*** TODO README
+** TODO Funk att testa installerad version
+** TODO Ska exemplen distribureras?
+* TODO doc
 
+** TODO I avsnitt om att [act] ä utgångsfas: exempel /bin/rm -rf *
 * TODO html doc
 ** TODO Ska in i ApplictionHelp: program -namn & -version
 De ska inte behöva härledas via globala saker.
@@ -33,9 +49,6 @@ Tror det är precis det här de funktionerna används till.
         preprocessor = '%s %s' % (quoting.file_name(python_executable_file_name),
                                   quoting.file_name(preprocessor_source_file_name))
 ----------
-* Oanvänd kod
-TestsForSetupWithPreprocessorExternally
-o klasserna direkt ovanför används inte.
 * TODO Rendering
 
 ** TODO Extrahera test av textrenderare till eget test
