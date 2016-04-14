@@ -52,6 +52,25 @@ class SetupWithoutPreprocessor(SetupBase):
         raise NotImplementedError()
 
 
+class MainProgramRunner:
+    def run(self, put: unittest.TestCase,
+            arguments: list) -> SubProcessResult:
+        raise NotImplementedError()
+
+    def __call__(self, put: unittest.TestCase, arguments: list) -> SubProcessResult:
+        return self.run(put, arguments)
+
+
+class RunViaOsInSubProcess(MainProgramRunner):
+    def run(self, put: unittest.TestCase, arguments: list) -> SubProcessResult:
+        return run_in_sub_process(put, arguments)
+
+
+class RunMainProgramInternally(MainProgramRunner):
+    def run(self, put: unittest.TestCase, arguments: list) -> SubProcessResult:
+        return run_internally(put, arguments)
+
+
 def run_in_sub_process(put: unittest.TestCase,
                        arguments: list) -> SubProcessResult:
     return run_shellcheck_in_sub_process(put, arguments)

@@ -39,7 +39,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'shellcheck = shellcheck_lib.default.shellcheck:main',
+            'shellcheck = shellcheck_lib.default.default_main_program_setup:main',
         ]
     }
 )
