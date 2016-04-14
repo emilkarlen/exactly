@@ -146,14 +146,12 @@ class SubProcessResultInfo(tuple):
 
 
 def run_subprocess_with_file_arg__full(cmd_and_args_except_file_arg: list,
-                                       file_contents: str,
-                                       stdin_contents: str='') -> SubProcessResultInfo:
+                                       file_contents: str) -> SubProcessResultInfo:
     with tempfile.TemporaryDirectory(prefix='shellcheck-test-') as tmp_dir_name:
         tmp_dir_path = pathlib.Path(tmp_dir_name).resolve()
         with tmp_file_containing(file_contents, directory=str(tmp_dir_path)) as file_path:
             cmd_and_args = cmd_and_args_except_file_arg + [str(file_path)]
             sub_process_result = capture_subprocess(cmd_and_args,
-                                                    tmp_dir_path,
-                                                    stdin_contents=stdin_contents)
+                                                    tmp_dir_path)
             return SubProcessResultInfo(file_path,
                                         sub_process_result)

@@ -39,51 +39,6 @@ class UnitTestCaseWithUtils(unittest.TestCase):
                                                                 flags=flags)
 
 
-class TestsInvokation(UnitTestCaseWithUtils):
-    def test_exit_status_with_invalid_invokation_for_test_case(self):
-        # ARRANGE #
-        test_case_source = ''
-        # ACT #
-        actual = self._run_shellcheck_in_sub_process(test_case_source,
-                                                     flags=('--illegal-flag-42847920189',)).sub_process_result
-        # ASSERT #
-        self.assertEqual(EXIT_INVALID_USAGE,
-                         actual.exitcode,
-                         'Expected exit code for invalid invokation')
-        self.assertEqual('',
-                         actual.stdout,
-                         'Expects no output on stdout for invalid invokation')
-
-    def test_exit_status_with_invalid_invokation_for_test_suite(self):
-        # ARRANGE #
-        test_suite_source = ''
-        # ACT #
-        actual = self._run_shellcheck_in_sub_process(test_suite_source,
-                                                     flags=('suite', '--illegal-flag-42847920189')).sub_process_result
-        # ASSERT #
-        self.assertEqual(EXIT_INVALID_USAGE,
-                         actual.exitcode,
-                         'Expected exit code for invalid invokation')
-        self.assertEqual('',
-                         actual.stdout,
-                         'Expects no output on stdout for invalid invokation')
-
-    def test_exit_status_with_invalid_invokation_for_help(self):
-        # ARRANGE #
-        test_suite_source = ''
-        # ACT #
-        actual = self._run_shellcheck_in_sub_process(
-            test_suite_source,
-            flags=('help', '--illegal-flag-42847920189')).sub_process_result
-        # ASSERT #
-        self.assertEqual(EXIT_INVALID_USAGE,
-                         actual.exitcode,
-                         'Expected exit code for invalid invokation')
-        self.assertEqual('',
-                         actual.stdout,
-                         'Expects no output on stdout for invalid invokation')
-
-
 class BasicTestsWithNoCliFlags(UnitTestCaseWithUtils):
     def test_empty_test_case(self):
         # ARRANGE #
@@ -232,7 +187,6 @@ class TestTestCasePreprocessing(
 
 def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestsInvokation))
     ret_val.addTest(unittest.makeSuite(BasicTestsWithNoCliFlags))
     ret_val.addTest(unittest.makeSuite(TestsWithPreservedExecutionDirectoryStructure))
     ret_val.addTest(unittest.makeSuite(TestsExecuteActPhase))
