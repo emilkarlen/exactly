@@ -1,0 +1,3 @@
+#!/bin/sh
+here=$(dirname $0)
+python3 $here/../test/shellcheck-test-suite-towards-installed-program.py
