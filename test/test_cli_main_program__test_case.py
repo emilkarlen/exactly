@@ -74,32 +74,37 @@ class TestNoCliFlagsANDTestCaseWithOnlyPhaseHeaders(TestCaseBase):
         return expect_pass()
 
 
-class TestsWithPreservedExecutionDirectoryStructure(UnitTestCaseWithUtils):
-    def test_flag_for_printing_and_preserving_eds(self):
-        # ARRANGE #
-        test_case_source = ''
-        # ACT #
-        actual = self._run_shellcheck_with_test_interpreter_in_sub_process(
-            test_case_source,
-            flags_before_interpreter_arg=(OPTION_FOR_KEEPING_SANDBOX_DIRECTORY,)).sub_process_result
-        # ASSERT #
-        actual_eds_directory = self._get_printed_eds_or_fail(actual)
+class TestTestFlagForPrintingAndPreservingSandbox(TestCaseBase):
+    def _arrangement(self) -> TestCaseFileArgumentArrangement:
+        return TestCaseFileArgumentArrangementWithTestActor(
+            test_case_contents='',
+            arguments_before_file_argument=(OPTION_FOR_KEEPING_SANDBOX_DIRECTORY,)
+        )
+
+    def _expectation(self) -> SubProcessResultExpectation:
+        return ExpectSandboxDirectoryIsPrintedAndPreserved()
+
+
+class ExpectSandboxDirectoryIsPrintedAndPreserved(SubProcessResultExpectation):
+    def apply(self, put: unittest.TestCase, actual: SubProcessResultInfo):
+        actual_eds_directory = _get_printed_eds_or_fail(put, actual.sub_process_result)
         actual_eds_path = pathlib.Path(actual_eds_directory)
         if actual_eds_path.exists():
             if actual_eds_path.is_dir():
                 is_execution_directory_structure_after_execution(
-                    FileChecker(self, 'Not an Execution Directory Structure'),
+                    FileChecker(put, 'Not an sandbox directory structure'),
                     actual_eds_directory)
-                self._remove_if_is_directory(actual_eds_directory)
+                _remove_if_is_directory(actual_eds_directory)
             else:
-                self.fail('Output from program is not the EDS (not a directory): "%s"' % actual_eds_directory)
+                put.fail('Output from program is not the sandbox (not a directory): "%s"' % actual_eds_directory)
         else:
-            self.fail('The output from the program is not the EDS: "%s"' % actual_eds_directory)
+            put.fail('The output from the program is not the sandbox: "%s"' % actual_eds_directory)
         expected = ExpectedSubProcessResult(exitcode=FullResultStatus.PASS.value,
                                             stderr='')
-        expected.assert_matches(self,
-                                actual)
+        expected.assert_matches(put, actual.sub_process_result)
 
+
+class TestsWithPreservedExecutionDirectoryStructure(UnitTestCaseWithUtils):
     def test_environment_variables(self):
         # ARRANGE #
         test_case_source_lines = [
@@ -154,6 +159,29 @@ class TestsWithPreservedExecutionDirectoryStructure(UnitTestCaseWithUtils):
     def _get_act_output_to_stdout(self,
                                   eds: execution_directory_structure.ExecutionDirectoryStructure) -> str:
         return contents_of_file(eds.result.stdout_file)
+
+
+def _remove_if_is_directory(actual_eds_directory: str):
+    actual_eds_path = pathlib.Path(actual_eds_directory)
+    if actual_eds_path.is_dir():
+        shutil.rmtree(actual_eds_directory)
+
+
+def _get_printed_eds_or_fail(put: unittest.TestCase, actual: SubProcessResult) -> str:
+    printed_lines = actual.stdout.splitlines()
+    put.assertEqual(1,
+                    len(printed_lines),
+                    'Number of printed printed lines should be exactly 1')
+    actual_eds_directory = printed_lines[0]
+    return actual_eds_directory
+
+
+def _print_variable_name__equals__variable_value(variable_name: str) -> str:
+    return 'print("%s=" + os.environ["%s"])' % (variable_name, variable_name)
+
+
+def _get_act_output_to_stdout(eds: execution_directory_structure.ExecutionDirectoryStructure) -> str:
+    return contents_of_file(eds.result.stdout_file)
 
 
 class TestsExecuteActPhase(UnitTestCaseWithUtils):
@@ -211,5 +239,6 @@ def suite_for(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
     ret_val.addTest(unittest.TestSuite([
         TestNoCliFlagsANDEmptyTestCase(main_program_runner),
         TestNoCliFlagsANDTestCaseWithOnlyPhaseHeaders(main_program_runner),
+        TestTestFlagForPrintingAndPreservingSandbox(main_program_runner),
     ]))
     return ret_val
