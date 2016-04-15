@@ -46,27 +46,35 @@ def run_test(arrangement: TestCaseFileArgumentArrangement,
         expectation.apply(put, sub_process_result_info)
 
 
-class ExitCodeAndStdOutExpectation(SubProcessResultExpectation):
+class ExitCodeAndStdOutputExpectation(SubProcessResultExpectation):
     def __init__(self,
-                 exit_code: int,
-                 std_out: str):
+                 exit_code: int=None,
+                 std_out: str=None,
+                 std_err: str=None):
         self.exit_code = exit_code
         self.std_out = std_out
+        self.std_err = std_err
 
     def apply(self,
               put: unittest.TestCase,
               actual: SubProcessResultInfo):
-        put.assertEqual(self.exit_code,
-                        actual.sub_process_result.exitcode,
-                        'Exit code')
-        put.assertEqual(self.std_out,
-                        actual.sub_process_result.stdout,
-                        'stdout')
+        if self.exit_code is not None:
+            put.assertEqual(self.exit_code,
+                            actual.sub_process_result.exitcode,
+                            'Exit code')
+        if self.std_out is not None:
+            put.assertEqual(self.std_out,
+                            actual.sub_process_result.stdout,
+                            'stdout')
+        if self.std_err is not None:
+            put.assertEqual(self.std_err,
+                            actual.sub_process_result.stderr,
+                            'stderr')
 
 
 def invalid_usage() -> SubProcessResultExpectation:
-    return ExitCodeAndStdOutExpectation(exit_code=EXIT_INVALID_USAGE,
-                                        std_out='')
+    return ExitCodeAndStdOutputExpectation(exit_code=EXIT_INVALID_USAGE,
+                                           std_out='')
 
 
 class TestCaseBase(unittest.TestCase):

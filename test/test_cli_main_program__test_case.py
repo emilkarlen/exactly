@@ -2,20 +2,19 @@ import pathlib
 import shutil
 import unittest
 
-from shellcheck_lib.cli.cli_environment.command_line_options import OPTION_FOR_KEEPING_SANDBOX_DIRECTORY
+from shellcheck_lib.cli.cli_environment.command_line_options import OPTION_FOR_KEEPING_SANDBOX_DIRECTORY, \
+    OPTION_FOR_EXECUTING_ACT_PHASE
 from shellcheck_lib.execution import environment_variables
 from shellcheck_lib.execution import execution_directory_structure
 from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib.util.string import lines_content
-from shellcheck_lib_test.cli.test_resources.execute_main_program import arguments_for_test_interpreter_and_more_tuple
 from shellcheck_lib_test.default.test_resources import default_main_program_case_preprocessing
 from shellcheck_lib_test.execution.test_execution_directory_structure import \
     is_execution_directory_structure_after_execution
 from shellcheck_lib_test.test_resources.cli_main_program_via_shell_utils.program_modes.test_case import TestCaseBase, \
     SubProcessResultExpectation, TestCaseFileArgumentArrangement, TestCaseFileArgumentArrangementWithTestActor, \
-    ExitCodeAndStdOutExpectation
+    ExitCodeAndStdOutputExpectation
 from shellcheck_lib_test.test_resources.cli_main_program_via_shell_utils.run import \
-    run_shellcheck_in_sub_process_with_file_argument, \
     contents_of_file
 from shellcheck_lib_test.test_resources.file_checks import FileChecker
 from shellcheck_lib_test.test_resources.main_program import main_program_check_for_test_case
@@ -24,27 +23,9 @@ from shellcheck_lib_test.test_resources.process import SubProcessResult, \
     ExpectedSubProcessResult, SubProcessResultInfo
 
 
-class UnitTestCaseWithUtils(unittest.TestCase):
-    def _run_shellcheck_in_sub_process(self,
-                                       test_case_source: str,
-                                       flags: tuple = ()) -> SubProcessResultInfo:
-        return run_shellcheck_in_sub_process_with_file_argument(self,
-                                                                file_contents=test_case_source,
-                                                                flags=flags)
-
-    def _run_shellcheck_with_test_interpreter_in_sub_process(
-            self,
-            test_case_source: str,
-            flags_before_interpreter_arg: tuple = ()) -> SubProcessResultInfo:
-        flags = arguments_for_test_interpreter_and_more_tuple(flags_before_interpreter_arg)
-        return run_shellcheck_in_sub_process_with_file_argument(self,
-                                                                file_contents=test_case_source,
-                                                                flags=flags)
-
-
-def expect_pass() -> ExitCodeAndStdOutExpectation:
-    return ExitCodeAndStdOutExpectation(exit_code=FullResultStatus.PASS.value,
-                                        std_out=lines_content([FullResultStatus.PASS.name]))
+def expect_pass() -> ExitCodeAndStdOutputExpectation:
+    return ExitCodeAndStdOutputExpectation(exit_code=FullResultStatus.PASS.value,
+                                           std_out=lines_content([FullResultStatus.PASS.name]))
 
 
 class TestNoCliFlagsANDEmptyTestCase(TestCaseBase):
@@ -165,9 +146,8 @@ def _get_act_output_to_stdout(eds: execution_directory_structure.ExecutionDirect
     return contents_of_file(eds.result.stdout_file)
 
 
-class TestsExecuteActPhase(UnitTestCaseWithUtils):
-    def test_that_output_and_exit_code_from_act_phase_is_emitted_as_result_of_shellcheck(self):
-        # ARRANGE #
+class TestThatOutputAndExitCodeFromActPhaseIsEmittedAsResultWhenOptionForExecutingActPhaseIsGiven(TestCaseBase):
+    def _arrangement(self) -> TestCaseFileArgumentArrangement:
         test_case_source = """
 [act]
 import os
@@ -176,20 +156,17 @@ sys.stdout.write("output to stdout")
 sys.stderr.write("output to stderr\\n")
 sys.exit(72)
 """
-        # ACT #
-        actual = self._run_shellcheck_in_sub_process(
-            test_case_source,
-            flags=arguments_for_test_interpreter_and_more_tuple(['--act'])).sub_process_result
-        # ASSERT #
-        self.assertEqual(72,
-                         actual.exitcode,
-                         'Program is expected to exit with same exit code as act script')
-        self.assertEqual('output to stdout',
-                         actual.stdout,
-                         'Output on stdout is expected to be same as that of act script')
-        self.assertEqual('output to stderr\n',
-                         actual.stderr,
-                         'Output on stderr is expected to be same as that of act script')
+        return TestCaseFileArgumentArrangementWithTestActor(
+            test_case_contents=test_case_source,
+            arguments_before_file_argument=(OPTION_FOR_EXECUTING_ACT_PHASE,)
+        )
+
+    def _expectation(self) -> SubProcessResultExpectation:
+        return ExitCodeAndStdOutputExpectation(
+            exit_code=72,
+            std_out='output to stdout',
+            std_err='output to stderr\n',
+        )
 
 
 class TestTestCasePreprocessing(
@@ -205,7 +182,6 @@ class TestTestCasePreprocessing(
 
 def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestsExecuteActPhase))
     ret_val.addTest(unittest.makeSuite(TestTestCasePreprocessing))
     return ret_val
 
@@ -221,5 +197,7 @@ def suite_for(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
         TestNoCliFlagsANDTestCaseWithOnlyPhaseHeaders(main_program_runner),
         TestTestFlagForPrintingAndPreservingSandbox(main_program_runner),
         TestEnvironmentVariablesAreSetCorrectly(main_program_runner),
+        TestThatOutputAndExitCodeFromActPhaseIsEmittedAsResultWhenOptionForExecutingActPhaseIsGiven(
+            main_program_runner),
     ]))
     return ret_val
