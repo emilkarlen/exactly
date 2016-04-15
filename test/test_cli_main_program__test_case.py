@@ -14,7 +14,7 @@ from shellcheck_lib_test.execution.test_execution_directory_structure import \
 from shellcheck_lib_test.test_resources.cli_main_program_via_shell_utils.program_modes.test_case import TestCaseBase, \
     SubProcessResultExpectation, TestCaseFileArgumentArrangement, TestCaseFileArgumentArrangementWithTestActor, \
     ExitCodeAndStdOutExpectation
-from shellcheck_lib_test.test_resources.cli_main_program_via_shell_utils.run import SUCCESSFUL_RESULT, \
+from shellcheck_lib_test.test_resources.cli_main_program_via_shell_utils.run import \
     run_shellcheck_in_sub_process_with_file_argument, \
     contents_of_file
 from shellcheck_lib_test.test_resources.file_checks import FileChecker
@@ -57,21 +57,21 @@ class TestNoCliFlagsANDEmptyTestCase(TestCaseBase):
         return expect_pass()
 
 
-class BasicTestsWithNoCliFlags(UnitTestCaseWithUtils):
-    def test_test_case_with_only_phase_headers(self):
-        # ARRANGE #
-        test_case_source_lines = [
-            '[setup]',
-            '[act]',
-            '[assert]',
-            '[cleanup]',
-        ]
-        test_case_source = lines_content(test_case_source_lines)
-        # ACT #
-        actual = self._run_shellcheck_with_test_interpreter_in_sub_process(test_case_source).sub_process_result
-        # ASSERT #
-        SUCCESSFUL_RESULT.assert_matches(self,
-                                         actual)
+class TestNoCliFlagsANDTestCaseWithOnlyPhaseHeaders(TestCaseBase):
+    def _arrangement(self) -> TestCaseFileArgumentArrangement:
+        return TestCaseFileArgumentArrangementWithTestActor(
+            test_case_contents=lines_content([
+                '[conf]',
+                '[setup]',
+                '[act]',
+                '[before-assert]',
+                '[assert]',
+                '[cleanup]',
+            ])
+        )
+
+    def _expectation(self) -> SubProcessResultExpectation:
+        return expect_pass()
 
 
 class TestsWithPreservedExecutionDirectoryStructure(UnitTestCaseWithUtils):
@@ -196,7 +196,6 @@ class TestTestCasePreprocessing(
 
 def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(BasicTestsWithNoCliFlags))
     ret_val.addTest(unittest.makeSuite(TestsWithPreservedExecutionDirectoryStructure))
     ret_val.addTest(unittest.makeSuite(TestsExecuteActPhase))
     ret_val.addTest(unittest.makeSuite(TestTestCasePreprocessing))
@@ -211,5 +210,6 @@ def suite_for(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.TestSuite([
         TestNoCliFlagsANDEmptyTestCase(main_program_runner),
+        TestNoCliFlagsANDTestCaseWithOnlyPhaseHeaders(main_program_runner),
     ]))
     return ret_val
