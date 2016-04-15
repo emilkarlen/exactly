@@ -104,61 +104,42 @@ class ExpectSandboxDirectoryIsPrintedAndPreserved(SubProcessResultExpectation):
         expected.assert_matches(put, actual.sub_process_result)
 
 
-class TestsWithPreservedExecutionDirectoryStructure(UnitTestCaseWithUtils):
-    def test_environment_variables(self):
-        # ARRANGE #
+class TestEnvironmentVariablesAreSetCorrectly(TestCaseBase):
+    def _arrangement(self) -> TestCaseFileArgumentArrangement:
         test_case_source_lines = [
             '[act]',
             'import os',
-            self._print_variable_name__equals__variable_value(
-                environment_variables.ENV_VAR_HOME),
-            self._print_variable_name__equals__variable_value(
-                environment_variables.ENV_VAR_ACT),
-            self._print_variable_name__equals__variable_value(
-                environment_variables.ENV_VAR_TMP),
+            _print_variable_name__equals__variable_value(environment_variables.ENV_VAR_HOME),
+            _print_variable_name__equals__variable_value(environment_variables.ENV_VAR_ACT),
+            _print_variable_name__equals__variable_value(environment_variables.ENV_VAR_TMP),
         ]
         test_case_source = lines_content(test_case_source_lines)
-        # ACT #
-        actual = self._run_shellcheck_with_test_interpreter_in_sub_process(
-            test_case_source,
-            flags_before_interpreter_arg=(OPTION_FOR_KEEPING_SANDBOX_DIRECTORY,))
-        # ASSERT #
-        self.assertEqual(FullResultStatus.PASS.value,
-                         actual.sub_process_result.exitcode,
-                         'Program is expected to have executed successfully')
-        actual_eds_directory = self._get_printed_eds_or_fail(actual.sub_process_result)
+        return TestCaseFileArgumentArrangementWithTestActor(
+            test_case_contents=test_case_source,
+            arguments_before_file_argument=(OPTION_FOR_KEEPING_SANDBOX_DIRECTORY,)
+        )
+
+    def _expectation(self) -> SubProcessResultExpectation:
+        return ExpectedTestEnvironmentVariablesAreSetCorrectly()
+
+
+class ExpectedTestEnvironmentVariablesAreSetCorrectly(SubProcessResultExpectation):
+    def apply(self, put: unittest.TestCase, actual: SubProcessResultInfo):
+        put.assertEqual(FullResultStatus.PASS.value,
+                        actual.sub_process_result.exitcode,
+                        'Program is expected to have executed successfully')
+        actual_eds_directory = _get_printed_eds_or_fail(put, actual.sub_process_result)
         eds = execution_directory_structure.ExecutionDirectoryStructure(actual_eds_directory)
-        actually_printed_variables = self._get_act_output_to_stdout(eds).splitlines()
+        actually_printed_variables = _get_act_output_to_stdout(eds).splitlines()
         expected_printed_variables = [
             '%s=%s' % (environment_variables.ENV_VAR_HOME, str(actual.file_argument.parent)),
             '%s=%s' % (environment_variables.ENV_VAR_ACT, str(eds.act_dir)),
             '%s=%s' % (environment_variables.ENV_VAR_TMP, str(eds.tmp.user_dir)),
         ]
-        self.assertEqual(expected_printed_variables,
-                         actually_printed_variables,
-                         'Environment variables printed by the act script')
-        self._remove_if_is_directory(actual_eds_directory)
-
-    def _remove_if_is_directory(self, actual_eds_directory: str):
-        actual_eds_path = pathlib.Path(actual_eds_directory)
-        if actual_eds_path.is_dir():
-            shutil.rmtree(actual_eds_directory)
-
-    def _get_printed_eds_or_fail(self, actual: SubProcessResult) -> str:
-        printed_lines = actual.stdout.splitlines()
-        self.assertEqual(1,
-                         len(printed_lines),
-                         'Number of printed printed lines should be exactly 1')
-        actual_eds_directory = printed_lines[0]
-        return actual_eds_directory
-
-    @staticmethod
-    def _print_variable_name__equals__variable_value(variable_name: str) -> str:
-        return 'print("%s=" + os.environ["%s"])' % (variable_name, variable_name)
-
-    def _get_act_output_to_stdout(self,
-                                  eds: execution_directory_structure.ExecutionDirectoryStructure) -> str:
-        return contents_of_file(eds.result.stdout_file)
+        put.assertEqual(expected_printed_variables,
+                        actually_printed_variables,
+                        'Environment variables printed by the act script')
+        _remove_if_is_directory(actual_eds_directory)
 
 
 def _remove_if_is_directory(actual_eds_directory: str):
@@ -224,7 +205,6 @@ class TestTestCasePreprocessing(
 
 def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestsWithPreservedExecutionDirectoryStructure))
     ret_val.addTest(unittest.makeSuite(TestsExecuteActPhase))
     ret_val.addTest(unittest.makeSuite(TestTestCasePreprocessing))
     return ret_val
@@ -240,5 +220,6 @@ def suite_for(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
         TestNoCliFlagsANDEmptyTestCase(main_program_runner),
         TestNoCliFlagsANDTestCaseWithOnlyPhaseHeaders(main_program_runner),
         TestTestFlagForPrintingAndPreservingSandbox(main_program_runner),
+        TestEnvironmentVariablesAreSetCorrectly(main_program_runner),
     ]))
     return ret_val
