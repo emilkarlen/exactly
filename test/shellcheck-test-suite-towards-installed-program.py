@@ -1,7 +1,8 @@
 import unittest
 
 import shellcheck_lib_test
-from shellcheck_lib_test.test_resources.main_program.main_program_runner import RunInstalledProgramViaOsInSubProcess
+from shellcheck_lib_test.test_resources.cli_main_program_via_shell_utils.main_program_runner import \
+    RunInstalledProgramViaOsInSubProcess
 
 import test_cli_main_program__test_case
 import test_cli_main_program__invalid_invokation_dynamic
