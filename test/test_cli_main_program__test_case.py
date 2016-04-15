@@ -3,7 +3,6 @@ import shutil
 import unittest
 
 from shellcheck_lib.cli.cli_environment.command_line_options import OPTION_FOR_KEEPING_SANDBOX_DIRECTORY
-from shellcheck_lib.cli.main_program import EXIT_INVALID_USAGE
 from shellcheck_lib.execution import environment_variables
 from shellcheck_lib.execution import execution_directory_structure
 from shellcheck_lib.execution.result import FullResultStatus
@@ -12,11 +11,15 @@ from shellcheck_lib_test.cli.test_resources.execute_main_program import argument
 from shellcheck_lib_test.default.test_resources import default_main_program_case_preprocessing
 from shellcheck_lib_test.execution.test_execution_directory_structure import \
     is_execution_directory_structure_after_execution
+from shellcheck_lib_test.test_resources.cli_main_program_via_shell_utils.program_modes.test_case import TestCaseBase, \
+    SubProcessResultExpectation, TestCaseFileArgumentArrangement, TestCaseFileArgumentArrangementWithTestActor, \
+    ExitCodeAndStdOutExpectation
 from shellcheck_lib_test.test_resources.cli_main_program_via_shell_utils.run import SUCCESSFUL_RESULT, \
     run_shellcheck_in_sub_process_with_file_argument, \
     contents_of_file
 from shellcheck_lib_test.test_resources.file_checks import FileChecker
 from shellcheck_lib_test.test_resources.main_program import main_program_check_for_test_case
+from shellcheck_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
 from shellcheck_lib_test.test_resources.process import SubProcessResult, \
     ExpectedSubProcessResult, SubProcessResultInfo
 
@@ -39,16 +42,22 @@ class UnitTestCaseWithUtils(unittest.TestCase):
                                                                 flags=flags)
 
 
-class BasicTestsWithNoCliFlags(UnitTestCaseWithUtils):
-    def test_empty_test_case(self):
-        # ARRANGE #
-        test_case_source = ''
-        # ACT #
-        actual = self._run_shellcheck_with_test_interpreter_in_sub_process(test_case_source).sub_process_result
-        # ASSERT #
-        SUCCESSFUL_RESULT.assert_matches(self,
-                                         actual)
+def expect_pass() -> ExitCodeAndStdOutExpectation:
+    return ExitCodeAndStdOutExpectation(exit_code=FullResultStatus.PASS.value,
+                                        std_out=lines_content([FullResultStatus.PASS.name]))
 
+
+class TestNoCliFlagsANDEmptyTestCase(TestCaseBase):
+    def _arrangement(self) -> TestCaseFileArgumentArrangement:
+        return TestCaseFileArgumentArrangementWithTestActor(
+            test_case_contents=''
+        )
+
+    def _expectation(self) -> SubProcessResultExpectation:
+        return expect_pass()
+
+
+class BasicTestsWithNoCliFlags(UnitTestCaseWithUtils):
     def test_test_case_with_only_phase_headers(self):
         # ARRANGE #
         test_case_source_lines = [
@@ -196,3 +205,11 @@ def suite() -> unittest.TestSuite:
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())
+
+
+def suite_for(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
+    ret_val = unittest.TestSuite()
+    ret_val.addTest(unittest.TestSuite([
+        TestNoCliFlagsANDEmptyTestCase(main_program_runner),
+    ]))
+    return ret_val

@@ -9,15 +9,24 @@ class MainProgramRunner:
             arguments: list) -> SubProcessResult:
         raise NotImplementedError()
 
+    def description_for_test_name(self) -> str:
+        raise NotImplementedError()
+
     def __call__(self, put: unittest.TestCase, arguments: list) -> SubProcessResult:
         return self.run(put, arguments)
 
 
 class RunViaOsInSubProcess(MainProgramRunner):
+    def description_for_test_name(self) -> str:
+        return 'run via OS in sub-process'
+
     def run(self, put: unittest.TestCase, arguments: list) -> SubProcessResult:
         return run_in_sub_process(put, arguments)
 
 
 class RunViaMainProgramInternally(MainProgramRunner):
+    def description_for_test_name(self) -> str:
+        return 'run internally'
+
     def run(self, put: unittest.TestCase, arguments: list) -> SubProcessResult:
         return run_internally(put, arguments)

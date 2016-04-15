@@ -1,6 +1,7 @@
 import unittest
 
 from shellcheck_lib.cli.main_program import EXIT_INVALID_USAGE
+from shellcheck_lib_test.cli.test_resources.execute_main_program import arguments_for_test_interpreter_and_more_tuple
 from shellcheck_lib_test.test_resources.file_utils import tmp_file_containing
 from shellcheck_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
 from shellcheck_lib_test.test_resources.process import SubProcessResultInfo
@@ -15,6 +16,16 @@ class TestCaseFileArgumentArrangement:
 
     def arguments_before_file_argument(self) -> list:
         return self._arguments_before_file_argument
+
+
+class TestCaseFileArgumentArrangementWithTestActor(TestCaseFileArgumentArrangement):
+    def __init__(self,
+                 test_case_contents: str = '',
+                 arguments_before_file_argument: iter = ()):
+        super().__init__(test_case_contents, arguments_before_file_argument)
+
+    def arguments_before_file_argument(self) -> list:
+        return arguments_for_test_interpreter_and_more_tuple(self._arguments_before_file_argument)
 
 
 class SubProcessResultExpectation:
@@ -76,4 +87,4 @@ class TestCaseBase(unittest.TestCase):
         raise NotImplementedError()
 
     def shortDescription(self):
-        return str(type(self))
+        return str(type(self)) + '/' + self.main_program_runner.description_for_test_name()
