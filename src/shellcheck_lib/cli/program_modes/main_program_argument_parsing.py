@@ -5,7 +5,7 @@ import shlex
 from shellcheck_lib.cli.argument_parsing_of_act_phase_setup import resolve_act_phase_setup_from_argparse_argument
 from shellcheck_lib.cli.cli_environment import program_info
 from shellcheck_lib.cli.cli_environment.command_line_options import OPTION_FOR_KEEPING_SANDBOX_DIRECTORY, \
-    OPTION_FOR_PREPROCESSOR
+    OPTION_FOR_PREPROCESSOR, OPTION_FOR_EXECUTING_ACT_PHASE
 from shellcheck_lib.cli.program_modes.test_case.settings import Output, TestCaseExecutionSettings
 from shellcheck_lib.test_case.preprocessor import IdentityPreprocessor, PreprocessorViaExternalProgram
 from shellcheck_lib.util import argument_parsing_utils
@@ -65,7 +65,7 @@ def _new_argument_parser(commands: dict) -> argparse.ArgumentParser:
                          help="""\
                         Executes a test case as normal, but Execution Directory Structure is preserved,
                         and it's root directory is the only output on stdout.""")
-    ret_val.add_argument('--act',
+    ret_val.add_argument(OPTION_FOR_EXECUTING_ACT_PHASE,
                          default=False,
                          action="store_true",
                          help="""\
