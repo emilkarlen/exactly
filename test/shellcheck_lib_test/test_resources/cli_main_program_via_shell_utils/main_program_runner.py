@@ -11,6 +11,9 @@ class RunInstalledProgramViaOsInSubProcess(MainProgramRunner):
         self._executable_file_name_base = executable_file_name_base
         self._main_program_path = _find_executable(executable_file_name_base)
 
+    def description_for_test_name(self) -> str:
+        return 'run installed program'
+
     def run(self, put: unittest.TestCase, arguments: list) -> SubProcessResult:
         if self._main_program_path is None:
             put.fail('Cannot find executable "%s" in path.' % self._executable_file_name_base)

@@ -22,6 +22,7 @@ main_program_runner = RunViaOsInSubProcess()
 suite = unittest.TestSuite()
 suite.addTest(shellcheck_lib_test.suite())
 suite.addTest(test_cli_main_program__test_case.suite())
+suite.addTest(test_cli_main_program__test_case.suite_for(main_program_runner))
 suite.addTest(test_cli_main_program__invalid_invokation_dynamic.suite_for(main_program_runner))
 suite.addTest(test_cli_main_program__test_suite.suite())
 
