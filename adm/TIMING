@@ -473,10 +473,11 @@ testas, o lägga till nya.)
 ** Införa SHELLCHECK_RESULT_DIR
    CLOCK: [2015-11-05 tor 20:21]--[2015-11-06 fre 00:09] =>  3:48
 * Installations
-  CLOCK: [2016-04-14 tor 18:07]--[2016-04-15 fre 01:32] =>  7:25
   CLOCK: [2016-04-13 ons 16:54]--[2016-04-13 ons 18:14] =>  1:20
   CLOCK: [2016-04-13 ons 16:49]--[2016-04-13 ons 16:53] =>  0:04
-
+** Möjl att köra testsviten mot installerad version
+   CLOCK: [2016-04-15 fre 18:32]--[2016-04-15 fre 19:21] =>  0:49
+   CLOCK: [2016-04-14 tor 18:07]--[2016-04-15 fre 01:32] =>  7:25
 * Portning
 ** OS X
    CLOCK: [2016-03-16 Thu 21:30]--[2016-03-17 Thu 00:04] =>  2:34
