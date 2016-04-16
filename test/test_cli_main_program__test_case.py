@@ -8,7 +8,7 @@ from shellcheck_lib.execution import environment_variables
 from shellcheck_lib.execution import execution_directory_structure
 from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib.util.string import lines_content
-from shellcheck_lib_test.default.default_main_program import suite_for_test_case_preprocessing
+from shellcheck_lib_test.default.program_modes.test_case import suite_for_test_case_preprocessing
 from shellcheck_lib_test.default.test_resources import default_main_program_case_preprocessing
 from shellcheck_lib_test.execution.test_execution_directory_structure import \
     is_execution_directory_structure_after_execution
