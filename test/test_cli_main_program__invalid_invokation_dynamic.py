@@ -15,15 +15,6 @@ class TestExitStatusWithInvalidInvokationForTestCase(TestCaseBase):
         return invalid_usage()
 
 
-class TestExitStatusWithInvalidInvokationForTestSuite(TestCaseBase):
-    def _arrangement(self) -> TestCaseFileArgumentArrangement:
-        return TestCaseFileArgumentArrangement(
-            arguments_before_file_argument=(SUITE_COMMAND, '--illegal-flag-42847920189'))
-
-    def _expectation(self) -> SubProcessResultExpectation:
-        return invalid_usage()
-
-
 class TestExitStatusWithInvalidInvokationForHelp(TestCaseBase):
     def _arrangement(self) -> TestCaseFileArgumentArrangement:
         return TestCaseFileArgumentArrangement(
@@ -37,7 +28,6 @@ def suite_for(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.TestSuite([
         TestExitStatusWithInvalidInvokationForTestCase(main_program_runner),
-        TestExitStatusWithInvalidInvokationForTestSuite(main_program_runner),
         TestExitStatusWithInvalidInvokationForHelp(main_program_runner),
     ]))
     return ret_val
