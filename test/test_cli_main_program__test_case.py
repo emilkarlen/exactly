@@ -9,7 +9,6 @@ from shellcheck_lib.execution import execution_directory_structure
 from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib.util.string import lines_content
 from shellcheck_lib_test.default.program_modes.test_case import suite_for_test_case_preprocessing
-from shellcheck_lib_test.default.test_resources import default_main_program_case_preprocessing
 from shellcheck_lib_test.execution.test_execution_directory_structure import \
     is_execution_directory_structure_after_execution
 from shellcheck_lib_test.test_resources.cli_main_program_via_shell_utils.program_modes.test_case import TestCaseBase, \
@@ -18,7 +17,6 @@ from shellcheck_lib_test.test_resources.cli_main_program_via_shell_utils.program
 from shellcheck_lib_test.test_resources.cli_main_program_via_shell_utils.run import \
     contents_of_file
 from shellcheck_lib_test.test_resources.file_checks import FileChecker
-from shellcheck_lib_test.test_resources.main_program import main_program_check_for_test_case
 from shellcheck_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
 from shellcheck_lib_test.test_resources.process import SubProcessResult, \
     ExpectedSubProcessResult, SubProcessResultInfo
