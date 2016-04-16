@@ -8,6 +8,7 @@ from shellcheck_lib.execution import environment_variables
 from shellcheck_lib.execution import execution_directory_structure
 from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib.util.string import lines_content
+from shellcheck_lib_test.default.default_main_program import suite_for_test_case_preprocessing
 from shellcheck_lib_test.default.test_resources import default_main_program_case_preprocessing
 from shellcheck_lib_test.execution.test_execution_directory_structure import \
     is_execution_directory_structure_after_execution
@@ -169,27 +170,6 @@ sys.exit(72)
         )
 
 
-class TestTestCasePreprocessing(
-    main_program_check_for_test_case.TestsForSetupWithPreprocessorExternally):
-    def test_transformation_into_test_case_that_pass(self):
-        self._check([],
-                    default_main_program_case_preprocessing.TransformationIntoTestCaseThatPass())
-
-    def test_transformation_into_test_case_that_parser_error(self):
-        self._check([],
-                    default_main_program_case_preprocessing.TransformationIntoTestCaseThatParserError())
-
-
-def suite() -> unittest.TestSuite:
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestTestCasePreprocessing))
-    return ret_val
-
-
-if __name__ == '__main__':
-    unittest.TextTestRunner().run(suite())
-
-
 def suite_for(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.TestSuite([
@@ -200,4 +180,5 @@ def suite_for(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
         TestThatOutputAndExitCodeFromActPhaseIsEmittedAsResultWhenOptionForExecutingActPhaseIsGiven(
             main_program_runner),
     ]))
+    ret_val.addTest(suite_for_test_case_preprocessing(main_program_runner))
     return ret_val

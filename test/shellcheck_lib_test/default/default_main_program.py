@@ -24,6 +24,8 @@ from shellcheck_lib_test.test_resources.file_structure import DirContents, File
 from shellcheck_lib_test.test_resources.file_utils import tmp_file_containing, tmp_file_containing_lines
 from shellcheck_lib_test.test_resources.main_program import main_program_check_for_test_case
 from shellcheck_lib_test.test_resources.main_program import main_program_check_for_test_suite
+from shellcheck_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner, \
+    RunViaMainProgramInternally
 
 
 class TestTestCaseWithoutInstructions(unittest.TestCase):
@@ -107,6 +109,17 @@ class TestTestCasePreprocessing(main_program_check_for_test_case.TestsForSetupWi
                     default_main_program_case_preprocessing.TransformationIntoTestCaseThatParserError())
 
 
+def suite_for_test_case_preprocessing(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
+    ret_val = unittest.TestSuite()
+    ret_val.addTest(main_program_check_for_test_case.TestForSetupWithPreprocessor(
+        default_main_program_case_preprocessing.TransformationIntoTestCaseThatPass(),
+        main_program_runner))
+    ret_val.addTest(main_program_check_for_test_case.TestForSetupWithPreprocessor(
+        default_main_program_case_preprocessing.TransformationIntoTestCaseThatParserError(),
+        main_program_runner))
+    return ret_val
+
+
 class EmptySuite(main_program_check_for_test_suite.SetupWithoutPreprocessor):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'empty.suite'
@@ -157,9 +170,11 @@ class SuiteWithSingleTestCaseWithOnlySectionHeaders(main_program_check_for_test_
                                               'the.case'])),
             File('the.case',
                  lines_content([
+                     '[conf]',
                      '[setup]',
                      '[act]',
                      '[assert]',
+                     '[before-assert]',
                      '[cleanup]',
                  ])),
         ])
@@ -436,6 +451,7 @@ def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestTestCaseWithoutInstructions))
     ret_val.addTest(unittest.makeSuite(TestTestCasePreprocessing))
+    ret_val.addTest(suite_for_test_case_preprocessing(RunViaMainProgramInternally()))
     ret_val.addTest(unittest.makeSuite(TestTestSuite))
     ret_val.addTest(unittest.makeSuite(TestTestSuiteWithWildcardFileReferencesToCaseFiles))
     ret_val.addTest(unittest.makeSuite(TestTestSuiteWithWildcardFileReferencesToSuiteFiles))
