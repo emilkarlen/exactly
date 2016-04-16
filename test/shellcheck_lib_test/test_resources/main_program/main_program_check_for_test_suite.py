@@ -1,6 +1,7 @@
 import pathlib
 import unittest
 
+from shellcheck_lib.cli import main_program
 from shellcheck_lib_test.test_resources.file_structure import DirContents
 from shellcheck_lib_test.test_resources.main_program import main_program_check_base
 from shellcheck_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
@@ -76,7 +77,7 @@ class SetupWithPreprocessor(main_program_check_base.SetupWithPreprocessor,
                         root_path: pathlib.Path,
                         python_executable_file_name: str,
                         preprocessor_source_file_name: str) -> list:
-        return ['suite']
+        return [main_program.SUITE_COMMAND]
 
     def expected_stdout_lines(self, root_path: pathlib.Path) -> list:
         raise NotImplementedError()
@@ -114,7 +115,7 @@ class SetupWithoutPreprocessor(main_program_check_base.SetupWithoutPreprocessor,
 
     def first_arguments(self,
                         root_path: pathlib.Path) -> list:
-        return ['suite']
+        return [main_program.SUITE_COMMAND]
 
     def expected_stdout_lines(self, root_path: pathlib.Path) -> list:
         raise NotImplementedError()

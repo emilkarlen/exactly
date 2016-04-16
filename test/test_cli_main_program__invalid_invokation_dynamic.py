@@ -1,6 +1,6 @@
 import unittest
 
-from shellcheck_lib.cli.main_program import SUITE_COMMAND, HELP_COMMAND
+from shellcheck_lib.cli.main_program import HELP_COMMAND
 from shellcheck_lib_test.test_resources.cli_main_program_via_shell_utils.program_modes.test_case import \
     TestCaseFileArgumentArrangement, SubProcessResultExpectation, invalid_usage, TestCaseBase
 from shellcheck_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
