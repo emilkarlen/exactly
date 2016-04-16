@@ -1,6 +1,6 @@
 import unittest
 
-from shellcheck_lib_test.default import default_main_program
+from shellcheck_lib_test.default.program_modes import test_suite
 from shellcheck_lib_test.default.test_resources import default_main_program_suite_preprocessing as pre_proc_tests
 from shellcheck_lib_test.default.test_resources import default_main_program_wildcard as wildcard
 from shellcheck_lib_test.test_resources.main_program import main_program_check_for_test_suite
@@ -8,25 +8,25 @@ from shellcheck_lib_test.test_resources.main_program import main_program_check_f
 
 class TestTestSuite(main_program_check_for_test_suite.TestsForSetupWithoutPreprocessorExternally):
     def test_empty_file(self):
-        self._check([], default_main_program.EmptySuite())
+        self._check([], test_suite.EmptySuite())
 
     def test_suite_with_single_empty_case(self):
-        self._check([], default_main_program.SuiteWithSingleEmptyTestCase())
+        self._check([], test_suite.SuiteWithSingleEmptyTestCase())
 
     def test_suite_with_single_test_case_with_only_section_headers(self):
-        self._check([], default_main_program.SuiteWithSingleTestCaseWithOnlySectionHeaders())
+        self._check([], test_suite.SuiteWithSingleTestCaseWithOnlySectionHeaders())
 
     def test_suite_reference_to_non_existing_case_file(self):
-        self._check([], default_main_program.SuiteReferenceToNonExistingCaseFile())
+        self._check([], test_suite.SuiteReferenceToNonExistingCaseFile())
 
     def test_suite_reference_to_non_existing_suite_file(self):
-        self._check([], default_main_program.SuiteReferenceToNonExistingSuiteFile())
+        self._check([], test_suite.SuiteReferenceToNonExistingSuiteFile())
 
     def test_suite_with_single_case_with_invalid_syntax(self):
-        self._check([], default_main_program.SuiteWithSingleCaseWithInvalidSyntax())
+        self._check([], test_suite.SuiteWithSingleCaseWithInvalidSyntax())
 
     def test_complex_successful_suite(self):
-        self._check([], default_main_program.ComplexSuccessfulSuite())
+        self._check([], test_suite.ComplexSuccessfulSuite())
 
 
 class TestTestSuitesWithWildcardFileReferences(
