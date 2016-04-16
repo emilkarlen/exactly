@@ -49,22 +49,6 @@ class SetupWithPreprocessor(main_program_check_base.SetupWithPreprocessor):
         self.expected_result().assert_matches(put, actual_result)
 
 
-class TestsForSetupWithPreprocessorBase(unittest.TestCase):
-    def __init__(self, main_program_runner: MainProgramRunner):
-        super().__init__()
-        self.main_program_runner = main_program_runner
-
-    def setup(self) -> SetupWithPreprocessor:
-        raise NotImplementedError()
-
-    def runTest(self):
-        setup = self.setup()
-        check_with_pre_proc([],
-                            setup,
-                            self,
-                            self.main_program_runner)
-
-
 class TestForSetupWithPreprocessor(unittest.TestCase):
     def __init__(self,
                  setup: SetupWithPreprocessor,
@@ -78,25 +62,6 @@ class TestForSetupWithPreprocessor(unittest.TestCase):
                             self.setup,
                             self,
                             self.main_program_runner)
-        # with tempfile.TemporaryDirectory(prefix='shellcheck-suite-test-preprocessor-') as pre_proc_dir:
-        #     preprocessor_file_path = resolved_path(pre_proc_dir) / 'preprocessor.py'
-        #     with preprocessor_file_path.open('w') as f:
-        #         f.write(setup.preprocessor_source())
-        #     with tempfile.TemporaryDirectory(prefix='shellcheck-suite-test-dir-contents-') as tmp_dir:
-        #         tmp_dir_path = resolved_path(tmp_dir)
-        #         file_structure = setup.file_structure(tmp_dir_path,
-        #                                               sys.executable,
-        #                                               str(preprocessor_file_path))
-        #         file_structure.write_to(tmp_dir_path)
-        #         file_argument = str(setup.file_argument_based_at(tmp_dir_path))
-        #         first_arguments = setup.first_arguments(tmp_dir_path,
-        #                                                 sys.executable,
-        #                                                 str(preprocessor_file_path))
-        #         arguments = first_arguments + ARGUMENTS_FOR_TEST_INTERPRETER + [file_argument]
-        #         sub_process_result = self.main_program_runner.run(self, arguments)
-        #         setup.check(self,
-        #                     tmp_dir_path,
-        #                     sub_process_result)
 
     def shortDescription(self):
         return str(type(self.setup)) + '/' + self.main_program_runner.description_for_test_name()
