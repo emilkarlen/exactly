@@ -99,16 +99,6 @@ class TestTestCaseWithoutInstructions(unittest.TestCase):
                          'Output on stdout')
 
 
-class TestTestCasePreprocessing(main_program_check_for_test_case.TestsForSetupWithPreprocessorInternally):
-    def test_transformation_into_test_case_that_pass(self):
-        self._check([],
-                    default_main_program_case_preprocessing.TransformationIntoTestCaseThatPass())
-
-    def test_transformation_into_test_case_that_parser_error(self):
-        self._check([],
-                    default_main_program_case_preprocessing.TransformationIntoTestCaseThatParserError())
-
-
 def suite_for_test_case_preprocessing(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(main_program_check_for_test_case.TestForSetupWithPreprocessor(
@@ -123,7 +113,6 @@ def suite_for_test_case_preprocessing(main_program_runner: MainProgramRunner) ->
 def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestTestCaseWithoutInstructions))
-    ret_val.addTest(unittest.makeSuite(TestTestCasePreprocessing))
     ret_val.addTest(suite_for_test_case_preprocessing(RunViaMainProgramInternally()))
     return ret_val
 
