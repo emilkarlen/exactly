@@ -211,81 +211,81 @@ class TestTestSuite(main_program_check_for_test_suite.TestsForSetupWithoutPrepro
                         'An error message should be printed on stderr')
 
     def test_empty_file(self):
-        self._check([], EmptySuite())
+        self._check(EmptySuite())
 
     def test_suite_with_single_empty_case(self):
-        self._check([], SuiteWithSingleEmptyTestCase())
+        self._check(SuiteWithSingleEmptyTestCase())
 
     def test_suite_with_single_test_case_with_only_section_headers(self):
-        self._check([], SuiteWithSingleTestCaseWithOnlySectionHeaders())
+        self._check(SuiteWithSingleTestCaseWithOnlySectionHeaders())
 
     def test_suite_reference_to_non_existing_case_file(self):
-        self._check([], SuiteReferenceToNonExistingCaseFile())
+        self._check(SuiteReferenceToNonExistingCaseFile())
 
     def test_suite_reference_to_non_existing_suite_file(self):
-        self._check([], SuiteReferenceToNonExistingSuiteFile())
+        self._check(SuiteReferenceToNonExistingSuiteFile())
 
     def test_suite_with_single_case_with_invalid_syntax(self):
-        self._check([], SuiteWithSingleCaseWithInvalidSyntax())
+        self._check(SuiteWithSingleCaseWithInvalidSyntax())
 
     def test_complex_successful_suite(self):
-        self._check([], ComplexSuccessfulSuite())
+        self._check(ComplexSuccessfulSuite())
 
 
 class TestTestSuiteWithWildcardFileReferencesToCaseFiles(
     main_program_check_for_test_suite.TestsForSetupWithoutPreprocessorInternally):
     def test_references_to_case_files_that_matches_no_files(self):
-        self._check([], wildcard.ReferencesToCaseFilesThatMatchesNoFiles())
+        self._check(wildcard.ReferencesToCaseFilesThatMatchesNoFiles())
 
     def test_references_to_case_files_that_are_directories(self):
-        self._check([], wildcard.ReferencesToCaseFilesThatAreDirectories())
+        self._check(wildcard.ReferencesToCaseFilesThatAreDirectories())
 
     def test_references_to_case_files_that_matches_files__type_question_mark(self):
-        self._check([], wildcard.ReferencesToCaseFilesThatMatchesFilesTypeQuestionMark())
+        self._check(wildcard.ReferencesToCaseFilesThatMatchesFilesTypeQuestionMark())
 
     def test_references_to_case_files_that_matches_files__type_character_range(self):
-        self._check([], wildcard.ReferencesToCaseFilesThatMatchesFilesTypeCharacterRange())
+        self._check(wildcard.ReferencesToCaseFilesThatMatchesFilesTypeCharacterRange())
 
     def test_references_to_case_files_that_matches_files__type_negated_character_range(self):
-        self._check([], wildcard.ReferencesToCaseFilesThatMatchesFilesTypeNegatedCharacterRange())
+        self._check(wildcard.ReferencesToCaseFilesThatMatchesFilesTypeNegatedCharacterRange())
 
     def test_references_to_case_files_in_subdir_that_matches(self):
-        self._check([], wildcard.ReferencesToCaseFilesInSubDirThatMatchesFiles())
+        self._check(wildcard.ReferencesToCaseFilesInSubDirThatMatchesFiles())
 
     def test_references_to_case_files_in_any_direct_sub_dir(self):
-        self._check([], wildcard.ReferencesToCaseFilesInAnyDirectSubDir())
+        self._check(wildcard.ReferencesToCaseFilesInAnyDirectSubDir())
 
     def test_references_to_case_files_in_any_sub_dir(self):
-        self._check([], wildcard.ReferencesToCaseFilesInAnySubDir())
+        self._check(wildcard.ReferencesToCaseFilesInAnySubDir())
 
 
 class TestTestSuiteWithWildcardFileReferencesToSuiteFiles(
     main_program_check_for_test_suite.TestsForSetupWithoutPreprocessorInternally):
     def test_references_to_suite_files_that_matches_no_files(self):
-        self._check([], wildcard.ReferencesToCaseFilesThatMatchesNoFiles())
+        self._check(wildcard.ReferencesToCaseFilesThatMatchesNoFiles())
 
     def test_references_to_suite_files_that_are_directories(self):
-        self._check([], wildcard.ReferencesToSuiteFilesThatAreDirectories())
+        self._check(wildcard.ReferencesToSuiteFilesThatAreDirectories())
 
     def test_references_to_suite_files_that_matches_files__type_question_mark(self):
-        self._check([], wildcard.ReferencesToSuiteFilesThatMatchesFilesTypeQuestionMark())
+        self._check(wildcard.ReferencesToSuiteFilesThatMatchesFilesTypeQuestionMark())
 
     def test_references_to_suite_files_that_matches_files__type_character_range(self):
-        self._check([], wildcard.ReferencesToSuiteFilesThatMatchesFilesTypeCharacterRange())
+        self._check(wildcard.ReferencesToSuiteFilesThatMatchesFilesTypeCharacterRange())
 
     def test_references_to_suite_files_that_matches_files__type_negated_character_range(self):
-        self._check([], wildcard.ReferencesToSuiteFilesThatMatchesFilesTypeNegatedCharacterRange())
+        self._check(wildcard.ReferencesToSuiteFilesThatMatchesFilesTypeNegatedCharacterRange())
 
     def test_references_to_suite_files_in_any_direct_subdir(self):
-        self._check([], wildcard.ReferencesToSuiteFilesInAnyDirectSubDir())
+        self._check(wildcard.ReferencesToSuiteFilesInAnyDirectSubDir())
 
     def test_references_to_suite_files_in_any_sub_dir(self):
-        self._check([], wildcard.ReferencesToSuiteFilesInAnySubDir())
+        self._check(wildcard.ReferencesToSuiteFilesInAnySubDir())
 
 
 class TestTestSuitePreprocessing(main_program_check_for_test_suite.TestsForSetupWithPreprocessorInternally):
     def test_that_preprocessor_is_applied_with_test_case_file_as_argument(self):
-        self._check([], pre_proc_tests.PreprocessorIsAppliedWithTestCaseFileAsArgument())
+        self._check(pre_proc_tests.PreprocessorIsAppliedWithTestCaseFileAsArgument())
 
 
 def suite() -> unittest.TestSuite:
