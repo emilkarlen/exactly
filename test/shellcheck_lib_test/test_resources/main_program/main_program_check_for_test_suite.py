@@ -1,9 +1,9 @@
 import pathlib
 import unittest
 
-from shellcheck_lib.util.string import lines_content
 from shellcheck_lib_test.test_resources.file_structure import DirContents
 from shellcheck_lib_test.test_resources.main_program import main_program_check_base
+from shellcheck_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
 from shellcheck_lib_test.test_resources.process import SubProcessResult
 
 
@@ -25,6 +25,13 @@ class SetupBase:
 
     def case(self, file_path: pathlib.Path, status: str) -> str:
         return 'CASE  ' + str(file_path) + ': ' + status
+
+    def additional_arguments(self) -> list:
+        """
+        Arguments that appears before the suite file argument.
+        :return:
+        """
+        return []
 
     def _check_base(self,
                     put: unittest.TestCase,
@@ -132,32 +139,58 @@ class SetupWithoutPreprocessor(main_program_check_base.SetupWithoutPreprocessor,
 
 
 class TestsForSetupWithPreprocessorInternally(unittest.TestCase):
-    def _check(self,
-               additional_arguments: list,
-               setup: SetupWithPreprocessor):
-        main_program_check_base.check_with_pre_proc(additional_arguments, setup, self,
+    def _check(self, setup: SetupWithPreprocessor):
+        main_program_check_base.check_with_pre_proc(setup.additional_arguments(), setup, self,
                                                     main_program_check_base.run_internally)
 
 
 class TestsForSetupWithPreprocessorExternally(unittest.TestCase):
-    def _check(self,
-               additional_arguments: list,
-               setup: SetupWithPreprocessor):
-        main_program_check_base.check_with_pre_proc(additional_arguments, setup, self,
+    def _check(self, setup: SetupWithPreprocessor):
+        main_program_check_base.check_with_pre_proc(setup.additional_arguments(), setup, self,
                                                     main_program_check_base.run_in_sub_process)
 
 
 class TestsForSetupWithoutPreprocessorInternally(unittest.TestCase):
-    def _check(self,
-               additional_arguments: list,
-               setup: SetupWithoutPreprocessor):
-        main_program_check_base.check(additional_arguments, setup, self,
+    def _check(self, setup: SetupWithoutPreprocessor):
+        main_program_check_base.check(setup.additional_arguments(), setup, self,
                                       main_program_check_base.run_internally)
 
 
 class TestsForSetupWithoutPreprocessorExternally(unittest.TestCase):
-    def _check(self,
-               additional_arguments: list,
-               setup: SetupWithoutPreprocessor):
-        main_program_check_base.check(additional_arguments, setup, self,
+    def _check(self, setup: SetupWithoutPreprocessor):
+        main_program_check_base.check(setup.additional_arguments(), setup, self,
                                       main_program_check_base.run_in_sub_process)
+
+
+class TestForSetupWithoutPreprocessor(unittest.TestCase):
+    def __init__(self,
+                 setup: SetupWithoutPreprocessor,
+                 main_program_runner: MainProgramRunner):
+        super().__init__()
+        self.setup = setup
+        self.main_program_runner = main_program_runner
+
+    def runTest(self):
+        main_program_check_base.check(self.setup.additional_arguments(),
+                                      self.setup, self,
+                                      self.main_program_runner)
+
+    def shortDescription(self):
+        return str(type(self.setup)) + '/' + self.main_program_runner.description_for_test_name()
+
+
+class TestForSetupWithPreprocessor(unittest.TestCase):
+    def __init__(self,
+                 setup: SetupWithPreprocessor,
+                 main_program_runner: MainProgramRunner):
+        super().__init__()
+        self.setup = setup
+        self.main_program_runner = main_program_runner
+
+    def runTest(self):
+        main_program_check_base.check_with_pre_proc(self.setup.additional_arguments(),
+                                                    self.setup, self,
+                                                    self.main_program_runner)
+
+    def shortDescription(self):
+        return str(type(self.setup)) + '/' + self.main_program_runner.description_for_test_name()
