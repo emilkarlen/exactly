@@ -65,19 +65,3 @@ class TestForSetupWithPreprocessor(unittest.TestCase):
 
     def shortDescription(self):
         return str(type(self.setup)) + '/' + self.main_program_runner.description_for_test_name()
-
-
-class TestsForSetupWithPreprocessorInternally(unittest.TestCase):
-    def _check(self,
-               additional_arguments: list,
-               setup: SetupWithPreprocessor):
-        main_program_check_base.check_with_pre_proc(additional_arguments, setup, self,
-                                                    main_program_check_base.run_internally)
-
-
-class TestsForSetupWithPreprocessorExternally(unittest.TestCase):
-    def _check(self,
-               additional_arguments: list,
-               setup: SetupWithPreprocessor):
-        main_program_check_base.check_with_pre_proc(additional_arguments, setup, self,
-                                                    main_program_check_base.run_in_sub_process)
