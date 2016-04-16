@@ -375,73 +375,6 @@ class TestTestSuiteWithWildcardFileReferencesToSuiteFiles(
         self._check([], wildcard.ReferencesToSuiteFilesInAnySubDir())
 
 
-class TestHelp(unittest.TestCase):
-    def test_invalid_usage(self):
-        # ARRANGE #
-        command_line_arguments = self._cl(['too', 'many', 'arguments', ',', 'indeed'])
-        sub_process_result = execute_main_program(command_line_arguments)
-        # ASSERT #
-        self.assertEqual(main_program.EXIT_INVALID_USAGE,
-                         sub_process_result.exitcode,
-                         'Exit Status')
-        self.assertEqual('',
-                         sub_process_result.stdout,
-                         'Output on stdout')
-        self.assertTrue(len(sub_process_result.stderr) > 0)
-
-    def test_program(self):
-        self._assert_is_successful_invokation(arguments_for.program())
-
-    def test_help(self):
-        self._assert_is_successful_invokation(arguments_for.help_help())
-
-    def test_html_doc(self):
-        self._assert_is_successful_invokation(arguments_for.html_doc())
-
-    def test_concept_list(self):
-        self._assert_is_successful_invokation(arguments_for.concept_list())
-
-    def test_individual_concept(self):
-        self._assert_is_successful_invokation(arguments_for.individual_concept(SANDBOX_CONCEPT.name().singular))
-
-    def test_case_phases(self):
-        for ph in phases.ALL:
-            self._assert_is_successful_invokation(arguments_for.phase(ph),
-                                                  msg_header='Phase %s: ' + ph.identifier)
-
-    def test_instructions(self):
-        self._assert_is_successful_invokation(arguments_for.instructions())
-
-    def test_instruction_search(self):
-        self._assert_is_successful_invokation(arguments_for.instruction_search('home'))
-
-    def test_instruction_in_phase(self):
-        self._assert_is_successful_invokation(arguments_for.instruction_in_phase(phase_help_name(phases.ANONYMOUS),
-                                                                                 'home'))
-
-    def test_suite(self):
-        self._assert_is_successful_invokation(arguments_for.suite())
-
-    def test_suite_section__suites(self):
-        self._assert_is_successful_invokation(arguments_for.suite_section(SECTION_NAME__SUITS))
-
-    def test_suite_section__cases(self):
-        self._assert_is_successful_invokation(arguments_for.suite_section(SECTION_NAME__CASES))
-
-    def _assert_is_successful_invokation(self, help_command_arguments: list,
-                                         msg_header: str = ''):
-        command_line_arguments = self._cl(help_command_arguments)
-        sub_process_result = execute_main_program(command_line_arguments,
-                                                  instructions_setup=INSTRUCTIONS_SETUP)
-        self.assertEqual(0,
-                         sub_process_result.exitcode,
-                         msg_header + 'Exit Status')
-
-    @staticmethod
-    def _cl(help_command_arguments: list) -> list:
-        return [HELP_COMMAND] + help_command_arguments
-
-
 class TestTestSuitePreprocessing(main_program_check_for_test_suite.TestsForSetupWithPreprocessorInternally):
     def test_that_preprocessor_is_applied_with_test_case_file_as_argument(self):
         self._check([], pre_proc_tests.PreprocessorIsAppliedWithTestCaseFileAsArgument())
@@ -456,7 +389,6 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(unittest.makeSuite(TestTestSuiteWithWildcardFileReferencesToCaseFiles))
     ret_val.addTest(unittest.makeSuite(TestTestSuiteWithWildcardFileReferencesToSuiteFiles))
     ret_val.addTest(unittest.makeSuite(TestTestSuitePreprocessing))
-    ret_val.addTest(unittest.makeSuite(TestHelp))
     return ret_val
 
 
