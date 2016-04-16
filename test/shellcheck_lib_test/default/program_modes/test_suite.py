@@ -27,6 +27,7 @@ from shellcheck_lib_test.test_resources.main_program import main_program_check_f
 from shellcheck_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner, \
     RunViaMainProgramInternally
 
+
 class EmptySuite(main_program_check_for_test_suite.SetupWithoutPreprocessor):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'empty.suite'
