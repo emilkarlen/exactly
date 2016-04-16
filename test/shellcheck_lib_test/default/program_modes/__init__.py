@@ -8,7 +8,7 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(help.suite())
     ret_val.addTest(html_doc.suite())
     ret_val.addTest(test_case.suite())
-    ret_val.addTest(test_suite.suite())
+    ret_val.addTest(test_suite.suite_for_running_main_program_internally())
     return ret_val
 
 

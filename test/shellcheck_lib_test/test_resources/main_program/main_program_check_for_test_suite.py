@@ -133,35 +133,6 @@ class SetupWithoutPreprocessor(main_program_check_base.SetupWithoutPreprocessor,
         raise NotImplementedError()
 
 
-# class SetupWithoutPreprocessor(SetupBase):
-#     def file_structure(self, root_path: pathlib.Path) -> DirContents:
-#         raise NotImplementedError()
-
-
-class TestsForSetupWithPreprocessorInternally(unittest.TestCase):
-    def _check(self, setup: SetupWithPreprocessor):
-        main_program_check_base.check_with_pre_proc(setup.additional_arguments(), setup, self,
-                                                    main_program_check_base.run_internally)
-
-
-class TestsForSetupWithPreprocessorExternally(unittest.TestCase):
-    def _check(self, setup: SetupWithPreprocessor):
-        main_program_check_base.check_with_pre_proc(setup.additional_arguments(), setup, self,
-                                                    main_program_check_base.run_in_sub_process)
-
-
-class TestsForSetupWithoutPreprocessorInternally(unittest.TestCase):
-    def _check(self, setup: SetupWithoutPreprocessor):
-        main_program_check_base.check(setup.additional_arguments(), setup, self,
-                                      main_program_check_base.run_internally)
-
-
-class TestsForSetupWithoutPreprocessorExternally(unittest.TestCase):
-    def _check(self, setup: SetupWithoutPreprocessor):
-        main_program_check_base.check(setup.additional_arguments(), setup, self,
-                                      main_program_check_base.run_in_sub_process)
-
-
 class TestForSetupWithoutPreprocessor(unittest.TestCase):
     def __init__(self,
                  setup: SetupWithoutPreprocessor,
@@ -194,3 +165,21 @@ class TestForSetupWithPreprocessor(unittest.TestCase):
 
     def shortDescription(self):
         return str(type(self.setup)) + '/' + self.main_program_runner.description_for_test_name()
+
+
+def tests_for_setup_without_preprocessor(setups: list,
+                                         main_program_runner: MainProgramRunner) -> unittest.TestSuite:
+    """
+    :type setups: [SetupWithoutPreprocessor]
+    """
+    return unittest.TestSuite([TestForSetupWithoutPreprocessor(setup, main_program_runner)
+                               for setup in setups])
+
+
+def tests_for_setup_with_preprocessor(setups: list,
+                                      main_program_runner: MainProgramRunner) -> unittest.TestSuite:
+    """
+    :type setups: [SetupWithPreprocessor]
+    """
+    return unittest.TestSuite([TestForSetupWithPreprocessor(setup, main_program_runner)
+                               for setup in setups])
