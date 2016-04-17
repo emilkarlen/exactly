@@ -15,21 +15,6 @@ def shellcheck_src_path(dir_of_this_file: pathlib.Path) -> pathlib.Path:
     return dir_of_this_file.parent / SRC_DIR_NAME / MAIN_PROGRAM_FILE_NAME
 
 
-SUCCESSFUL_RESULT = ExpectedSubProcessResult(exitcode=FullResultStatus.PASS.value,
-                                             stdout=lines_content([FullResultStatus.PASS.name]),
-                                             stderr='')
-
-
-def run_shellcheck_in_sub_process_with_file_argument(puc: unittest.TestCase,
-                                                     file_contents: str,
-                                                     flags: tuple = ()) -> SubProcessResultInfo:
-    cwd = pathlib.Path.cwd()
-    py_exe.assert_interpreter_is_available(puc)
-    shellcheck_path = shellcheck_src_path(cwd)
-    args_without_file = py_exe.args_for_interpreting(shellcheck_path, flags)
-    return run_subprocess_with_file_arg__full(args_without_file, file_contents)
-
-
 def run_shellcheck_in_sub_process(puc: unittest.TestCase,
                                   arguments: list,
                                   stdin_contents: str = '') -> SubProcessResult:
