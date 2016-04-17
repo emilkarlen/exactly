@@ -1,104 +1,89 @@
-import os
 import unittest
 
 from shellcheck_lib.cli import main_program
-from shellcheck_lib.cli.cli_environment.exit_values import NO_EXECUTION_EXIT_CODE
-from shellcheck_lib.execution.result import FullResultStatus
-from shellcheck_lib.test_case.test_case_processing import AccessErrorType
-from shellcheck_lib_test.cli.test_resources.execute_main_program import execute_main_program, \
-    ARGUMENTS_FOR_TEST_INTERPRETER
+from shellcheck_lib.cli.cli_environment import exit_values
+from shellcheck_lib.document.syntax import section_header
+from shellcheck_lib.execution import phases
+from shellcheck_lib.util.string import lines_content
 from shellcheck_lib_test.default.test_resources import default_main_program_case_preprocessing
-from shellcheck_lib_test.test_resources.file_utils import tmp_file_containing, tmp_file_containing_lines
-from shellcheck_lib_test.test_resources.main_program.main_program_check_base import tests_for_setup_with_preprocessor
+from shellcheck_lib_test.default.test_resources.test_case_file_elements import phase_header_line
+from shellcheck_lib_test.test_resources.main_program.main_program_check_base import tests_for_setup_with_preprocessor, \
+    tests_for_setup_without_preprocessor
+from shellcheck_lib_test.test_resources.main_program.main_program_check_for_test_case import SetupWithoutPreprocessor
 from shellcheck_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
 from shellcheck_lib_test.test_resources.main_program.main_program_runners import RunViaMainProgramInternally
+from shellcheck_lib_test.test_resources.main_program.main_program_test_utils import process_result_for
+from shellcheck_lib_test.test_resources.process import ExpectedSubProcessResult
 
 
-class TestTestCaseWithoutInstructions(unittest.TestCase):
-    def test_invalid_usage(self):
-        # ARRANGE #
-        test_case_source = ''
-        with tmp_file_containing(test_case_source) as file_path:
-            argv = ['--invalid-option-that-should-cause-failure', str(file_path)]
-            # ACT #
-            sub_process_result = execute_main_program(argv)
-        # ASSERT #
-        self.assertEqual(main_program.EXIT_INVALID_USAGE,
-                         sub_process_result.exitcode,
-                         'Exit Status')
-        self.assertEqual('',
-                         sub_process_result.stdout,
-                         'Output on stdout')
-        self.assertTrue(len(sub_process_result.stderr) > 0,
-                        'An error message should be printed on stderr')
+class InvalidCommandLineOptionShouldExitWithInvalidUsageStatus(SetupWithoutPreprocessor):
+    def additional_arguments(self) -> list:
+        return ['--invalid-option-that-should-cause-failure']
 
-    def test_empty_file(self):
-        # ARRANGE #
-        test_case_source = ''
-        with tmp_file_containing(test_case_source) as file_path:
-            argv = ARGUMENTS_FOR_TEST_INTERPRETER + [str(file_path)]
-            # ACT #
-            sub_process_result = execute_main_program(argv)
-        # ASSERT #
-        self.assertEqual(0,
-                         sub_process_result.exitcode,
-                         'Exit Status')
-        self.assertEqual(FullResultStatus.PASS.name + os.linesep,
-                         sub_process_result.stdout,
-                         'Output on stdout')
+    def expected_result(self) -> ExpectedSubProcessResult:
+        return ExpectedSubProcessResult(exitcode=main_program.EXIT_INVALID_USAGE,
+                                        stdout='')
 
-    def test_empty_phases(self):
-        # ARRANGE #
+    def test_case(self) -> str:
+        return ''
+
+
+class EmptyTestCaseShouldPass(SetupWithoutPreprocessor):
+    def expected_result(self) -> ExpectedSubProcessResult:
+        return process_result_for(exit_values.EXECUTION__PASS)
+
+    def test_case(self) -> str:
+        return ''
+
+
+class AllPhasesEmptyShouldPass(SetupWithoutPreprocessor):
+    def expected_result(self) -> ExpectedSubProcessResult:
+        return process_result_for(exit_values.EXECUTION__PASS)
+
+    def test_case(self) -> str:
+        test_case_lines = [phase_header_line(phase)
+                           for phase in phases.ALL]
+        return lines_content(test_case_lines)
+
+
+class WhenAPhaseHasInvalidPhaseNameThenExitStatusShouldIndicateThis(SetupWithoutPreprocessor):
+    def expected_result(self) -> ExpectedSubProcessResult:
+        return process_result_for(exit_values.NO_EXECUTION__PARSE_ERROR)
+
+    def test_case(self) -> str:
         test_case_lines = [
-            '[setup]',
-            '[act]',
-            '[assert]',
-            '[cleanup]',
+            section_header('invalid phase name'),
         ]
-        with tmp_file_containing_lines(test_case_lines) as file_path:
-            argv = ARGUMENTS_FOR_TEST_INTERPRETER + [str(file_path)]
-            # ACT #
-            sub_process_result = execute_main_program(argv)
-        # ASSERT #
-        self.assertEqual(0,
-                         sub_process_result.exitcode,
-                         'Exit Status')
-        self.assertEqual(FullResultStatus.PASS.name + os.linesep,
-                         sub_process_result.stdout,
-                         'Output on stdout')
+        return lines_content(test_case_lines)
 
-    def test_parse_error(self):
-        # ARRANGE #
-        test_case_lines = [
-            '[invalid phase]',
-        ]
-        with tmp_file_containing_lines(test_case_lines) as file_path:
-            argv = ARGUMENTS_FOR_TEST_INTERPRETER + [str(file_path)]
-            # ACT #
-            sub_process_result = execute_main_program(argv)
-        # ASSERT #
-        self.assertEqual(sub_process_result.exitcode,
-                         NO_EXECUTION_EXIT_CODE,
-                         'Exit Status')
-        self.assertEqual(AccessErrorType.PARSE_ERROR.name + os.linesep,
-                         sub_process_result.stdout,
-                         'Output on stdout')
+
+MISC = [
+    InvalidCommandLineOptionShouldExitWithInvalidUsageStatus(),
+    EmptyTestCaseShouldPass(),
+    AllPhasesEmptyShouldPass(),
+    WhenAPhaseHasInvalidPhaseNameThenExitStatusShouldIndicateThis(),
+]
+
+PREPROCESSING_TESTS = [
+    default_main_program_case_preprocessing.TransformationIntoTestCaseThatPass(),
+    default_main_program_case_preprocessing.TransformationIntoTestCaseThatParserError(),
+]
 
 
 def suite_for_test_case_preprocessing(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
-    return tests_for_setup_with_preprocessor(
-        [
-            default_main_program_case_preprocessing.TransformationIntoTestCaseThatPass(),
-            default_main_program_case_preprocessing.TransformationIntoTestCaseThatParserError(),
-        ],
-        main_program_runner)
+    return tests_for_setup_with_preprocessor(PREPROCESSING_TESTS,
+                                             main_program_runner)
+
+
+def suite_for(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
+    ret_val = unittest.TestSuite()
+    ret_val.addTest(tests_for_setup_without_preprocessor(MISC, main_program_runner))
+    ret_val.addTest(suite_for_test_case_preprocessing(main_program_runner))
+    return ret_val
 
 
 def suite() -> unittest.TestSuite:
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestTestCaseWithoutInstructions))
-    ret_val.addTest(suite_for_test_case_preprocessing(RunViaMainProgramInternally()))
-    return ret_val
+    return suite_for(RunViaMainProgramInternally())
 
 
 if __name__ == '__main__':
