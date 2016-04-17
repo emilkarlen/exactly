@@ -1,7 +1,7 @@
 -*- org -*-
 
 * TODO Namnge "genererade tester" mha 'shortDescription'
-Se test_cli_main_program__invalid_invokation_dynamic.TestCaseBase:
+Se shellcheck_lib_test.test_resources.main_program.main_program_check_base.TestForSetupWithoutPreprocessor#shortDescription:
 ----------------------------------------
     def shortDescription(self):
         return str(type(self))
