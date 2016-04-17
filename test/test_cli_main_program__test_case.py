@@ -8,7 +8,7 @@ from shellcheck_lib.execution import environment_variables
 from shellcheck_lib.execution import execution_directory_structure
 from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib.util.string import lines_content
-from shellcheck_lib_test.default.program_modes.test_case import suite_for_test_case_preprocessing
+from shellcheck_lib_test.default.program_modes import test_case
 from shellcheck_lib_test.execution.test_execution_directory_structure import \
     is_execution_directory_structure_after_execution
 from shellcheck_lib_test.test_resources.cli_main_program_via_shell_utils.program_modes.test_case import TestCaseBase, \
@@ -25,33 +25,6 @@ from shellcheck_lib_test.test_resources.process import SubProcessResult, \
 def expect_pass() -> ExitCodeAndStdOutputExpectation:
     return ExitCodeAndStdOutputExpectation(exit_code=FullResultStatus.PASS.value,
                                            std_out=lines_content([FullResultStatus.PASS.name]))
-
-
-class TestNoCliFlagsANDEmptyTestCase(TestCaseBase):
-    def _arrangement(self) -> TestCaseFileArgumentArrangement:
-        return TestCaseFileArgumentArrangementWithTestActor(
-            test_case_contents=''
-        )
-
-    def _expectation(self) -> SubProcessResultExpectation:
-        return expect_pass()
-
-
-class TestNoCliFlagsANDTestCaseWithOnlyPhaseHeaders(TestCaseBase):
-    def _arrangement(self) -> TestCaseFileArgumentArrangement:
-        return TestCaseFileArgumentArrangementWithTestActor(
-            test_case_contents=lines_content([
-                '[conf]',
-                '[setup]',
-                '[act]',
-                '[before-assert]',
-                '[assert]',
-                '[cleanup]',
-            ])
-        )
-
-    def _expectation(self) -> SubProcessResultExpectation:
-        return expect_pass()
 
 
 class TestTestFlagForPrintingAndPreservingSandbox(TestCaseBase):
@@ -171,12 +144,10 @@ sys.exit(72)
 def suite_for(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.TestSuite([
-        TestNoCliFlagsANDEmptyTestCase(main_program_runner),
-        TestNoCliFlagsANDTestCaseWithOnlyPhaseHeaders(main_program_runner),
         TestTestFlagForPrintingAndPreservingSandbox(main_program_runner),
         TestEnvironmentVariablesAreSetCorrectly(main_program_runner),
         TestThatOutputAndExitCodeFromActPhaseIsEmittedAsResultWhenOptionForExecutingActPhaseIsGiven(
             main_program_runner),
     ]))
-    ret_val.addTest(suite_for_test_case_preprocessing(main_program_runner))
+    ret_val.addTest(test_case.suite_for(main_program_runner))
     return ret_val
