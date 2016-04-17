@@ -14,7 +14,7 @@ os.chdir(this_dir)
 import test_cli_main_program__test_case
 import test_cli_main_program__invalid_invokation_dynamic
 import shellcheck_lib_test
-from shellcheck_lib_test.test_resources.main_program.main_program_runner import RunViaOsInSubProcess
+from shellcheck_lib_test.test_resources.main_program.main_program_runners import RunViaOsInSubProcess
 
 main_program_runner = RunViaOsInSubProcess()
 suite = unittest.TestSuite()
