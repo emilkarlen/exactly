@@ -52,4 +52,4 @@ class TransformationIntoTestCaseThatParserError(main_program_check_for_test_case
         return IF_BASENAME_IS_PASS_THEN_EMPTY_TC_ELSE_TC_THAT_WILL_CAUSE_PARSER_ERROR
 
     def expected_result(self) -> ExpectedSubProcessResult:
-        return assertions.process_result_for_exit_code(NO_EXECUTION_EXIT_CODE)
+        return assertions.is_process_result_for_exit_code(NO_EXECUTION_EXIT_CODE)

@@ -7,7 +7,7 @@ from shellcheck_lib.execution import phases
 from shellcheck_lib.util.string import lines_content
 from shellcheck_lib_test.default.test_resources import default_main_program_case_preprocessing
 from shellcheck_lib_test.default.test_resources.assertions import process_result_for_exit_value, \
-    process_result_for_exit_code
+    is_process_result_for_exit_code
 from shellcheck_lib_test.default.test_resources.test_case_file_elements import phase_header_line
 from shellcheck_lib_test.test_resources import value_assertion as va
 from shellcheck_lib_test.test_resources.main_program.main_program_check_base import tests_for_setup_with_preprocessor, \
@@ -22,7 +22,7 @@ class InvalidCommandLineOptionShouldExitWithInvalidUsageStatus(SetupWithoutPrepr
         return ['--invalid-option-that-should-cause-failure']
 
     def expected_result(self) -> va.ValueAssertion:
-        return process_result_for_exit_code(main_program.EXIT_INVALID_USAGE)
+        return is_process_result_for_exit_code(main_program.EXIT_INVALID_USAGE)
 
     def test_case(self) -> str:
         return ''

@@ -18,7 +18,7 @@ def process_result_for_exit_value(exit_value: exit_values.ExitValue) -> va.Value
     )
 
 
-def process_result_for_exit_code(exit_code: int) -> va.ValueAssertion:
+def is_process_result_for_exit_code(exit_code: int) -> va.ValueAssertion:
     return assertion_on_process_result(
         va.sub_component('exit code',
                          SubProcessResult.exitcode.fget,
