@@ -9,9 +9,9 @@ from shellcheck_lib_test.cli.test_resources.execute_main_program import execute_
     ARGUMENTS_FOR_TEST_INTERPRETER
 from shellcheck_lib_test.default.test_resources import default_main_program_case_preprocessing
 from shellcheck_lib_test.test_resources.file_utils import tmp_file_containing, tmp_file_containing_lines
-from shellcheck_lib_test.test_resources.main_program import main_program_check_for_test_case
-from shellcheck_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner, \
-    RunViaMainProgramInternally
+from shellcheck_lib_test.test_resources.main_program.main_program_check_base import tests_for_setup_with_preprocessor
+from shellcheck_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
+from shellcheck_lib_test.test_resources.main_program.main_program_runners import RunViaMainProgramInternally
 
 
 class TestTestCaseWithoutInstructions(unittest.TestCase):
@@ -86,7 +86,7 @@ class TestTestCaseWithoutInstructions(unittest.TestCase):
 
 
 def suite_for_test_case_preprocessing(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
-    return main_program_check_for_test_case.tests_for_setup_with_preprocessor(
+    return tests_for_setup_with_preprocessor(
         [
             default_main_program_case_preprocessing.TransformationIntoTestCaseThatPass(),
             default_main_program_case_preprocessing.TransformationIntoTestCaseThatParserError(),

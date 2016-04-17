@@ -8,12 +8,20 @@ from shellcheck_lib_test.cli.test_resources.execute_main_program import execute_
     ARGUMENTS_FOR_TEST_INTERPRETER
 from shellcheck_lib_test.test_resources.cli_main_program_via_shell_utils.run import run_shellcheck_in_sub_process
 from shellcheck_lib_test.test_resources.file_structure import DirContents
+from shellcheck_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
 from shellcheck_lib_test.test_resources.process import SubProcessResult
 
 
 class SetupBase:
     def file_argument_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         raise NotImplementedError()
+
+    def additional_arguments(self) -> list:
+        """
+        Arguments that appears before the suite file argument.
+        :return:
+        """
+        return []
 
     def check(self,
               put: unittest.TestCase,
@@ -106,3 +114,55 @@ def check_with_pre_proc(additional_arguments: list,
             setup.check(put,
                         tmp_dir_path,
                         sub_process_result)
+
+
+class TestForSetupWithoutPreprocessor(unittest.TestCase):
+    def __init__(self,
+                 setup: SetupWithoutPreprocessor,
+                 main_program_runner: MainProgramRunner):
+        super().__init__()
+        self.setup = setup
+        self.main_program_runner = main_program_runner
+
+    def runTest(self):
+        check(self.setup.additional_arguments(),
+              self.setup, self,
+              self.main_program_runner)
+
+    def shortDescription(self):
+        return str(type(self.setup)) + '/' + self.main_program_runner.description_for_test_name()
+
+
+class TestForSetupWithPreprocessor(unittest.TestCase):
+    def __init__(self,
+                 setup: SetupWithPreprocessor,
+                 main_program_runner: MainProgramRunner):
+        super().__init__()
+        self.setup = setup
+        self.main_program_runner = main_program_runner
+
+    def runTest(self):
+        check_with_pre_proc(self.setup.additional_arguments(),
+                            self.setup, self,
+                            self.main_program_runner)
+
+    def shortDescription(self):
+        return str(type(self.setup)) + '/' + self.main_program_runner.description_for_test_name()
+
+
+def tests_for_setup_without_preprocessor(setups: list,
+                                         main_program_runner: MainProgramRunner) -> unittest.TestSuite:
+    """
+    :type setups: [SetupWithoutPreprocessor]
+    """
+    return unittest.TestSuite([TestForSetupWithoutPreprocessor(setup, main_program_runner)
+                               for setup in setups])
+
+
+def tests_for_setup_with_preprocessor(setups: list,
+                                      main_program_runner: MainProgramRunner) -> unittest.TestSuite:
+    """
+    :type setups: [SetupWithPreprocessor]
+    """
+    return unittest.TestSuite([TestForSetupWithPreprocessor(setup, main_program_runner)
+                               for setup in setups])
