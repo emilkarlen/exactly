@@ -5,7 +5,7 @@ from shellcheck_lib.cli.cli_environment.command_line_options import OPTION_FOR_P
 from shellcheck_lib_test.test_resources import quoting
 from shellcheck_lib_test.test_resources.file_structure import File, DirContents
 from shellcheck_lib_test.test_resources.main_program import main_program_check_base
-from shellcheck_lib_test.test_resources.process import SubProcessResult, ExpectedSubProcessResult, SubProcessResultInfo
+from shellcheck_lib_test.test_resources.process import SubProcessResult, SubProcessResultInfo
 from shellcheck_lib_test.test_resources.value_assertion import ValueAssertion
 
 
@@ -72,11 +72,16 @@ class SetupWithPreprocessor(main_program_check_base.SetupWithPreprocessor):
     def test_case(self) -> str:
         raise NotImplementedError()
 
-    def expected_result(self) -> ExpectedSubProcessResult:
+    def expected_result(self) -> ValueAssertion:
+        """
+        :return: A ValueAssertion where the value argument is SubProcessResultInfo
+        """
         raise NotImplementedError()
 
     def check(self,
               put: unittest.TestCase,
               root_path: pathlib.Path,
               actual_result: SubProcessResult):
-        self.expected_result().assert_matches(put, actual_result)
+        result_info = SubProcessResultInfo(self.file_argument_based_at(root_path),
+                                           actual_result)
+        self.expected_result().apply(put, result_info)
