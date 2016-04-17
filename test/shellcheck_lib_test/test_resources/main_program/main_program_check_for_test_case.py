@@ -65,3 +65,12 @@ class TestForSetupWithPreprocessor(unittest.TestCase):
 
     def shortDescription(self):
         return str(type(self.setup)) + '/' + self.main_program_runner.description_for_test_name()
+
+
+def tests_for_setup_with_preprocessor(setups: list,
+                                      main_program_runner: MainProgramRunner) -> unittest.TestSuite:
+    """
+    :type setups: [SetupWithPreprocessor]
+    """
+    return unittest.TestSuite([TestForSetupWithPreprocessor(setup, main_program_runner)
+                               for setup in setups])
