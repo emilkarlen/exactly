@@ -142,9 +142,8 @@ sys.exit(72)
 class AssertStdoutIsNameOfExistingSandboxDirectory(value_assertion.ValueAssertion):
     def apply(self,
               put: unittest.TestCase,
-              value,
+              value: SubProcessResult,
               message_builder: value_assertion.MessageBuilder = value_assertion.MessageBuilder()):
-        assert isinstance(value, SubProcessResult)
         actual_eds_directory = _get_printed_eds_or_fail(put, value)
         actual_eds_path = pathlib.Path(actual_eds_directory)
         if actual_eds_path.exists():
@@ -183,9 +182,8 @@ class EnvironmentVariablesAreSetCorrectly(SetupWithoutPreprocessor):
 class ExpectedTestEnvironmentVariablesAreSetCorrectlyVa(value_assertion.ValueAssertion):
     def apply(self,
               put: unittest.TestCase,
-              value,
+              value: SubProcessResultInfo,
               message_builder: value_assertion.MessageBuilder = value_assertion.MessageBuilder()):
-        assert isinstance(value, SubProcessResultInfo)
         actual_eds_directory = _get_printed_eds_or_fail(put, value.sub_process_result)
         eds = execution_directory_structure.ExecutionDirectoryStructure(actual_eds_directory)
         actually_printed_variables = _get_act_output_to_stdout(eds).splitlines()
