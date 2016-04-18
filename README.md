@@ -12,11 +12,19 @@ Install using setuptools (`python3 setup.py build; sudo python3 setup.py install
 
 A first version is planned to be released this year.
 
-See the `examples` directory for examples.
+See the `examples/` directory for examples.
+
+To run the test suite:
+
+    python3 test/run-test-suite.py
+
+To run the test suite towards an installed program:
+
+    python3 test/run-test-suite-towards-installed-program.py
 
 
-Example
-=======
+Test Cases
+==========
 
 The following test case (and more) is supported by the current version.
 
