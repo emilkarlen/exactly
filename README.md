@@ -48,7 +48,17 @@ If the file 'helloworld.case' contains this test case, then shellcheck can execu
 
 What this means is that the action to check - the 'helloworld' program - is in fact an executable program,
 and that this program is found in the same directory as the test case file,
-and that it printed the expected text to stdout.
+and also that it behaved as expected.
+
+The "act" phase is default
+--------------------------
+
+The [act] is not needed to indicate what is being checked, since [act] is the default "phase".
+ 
+The following is a valid shellcheck test case,
+and if run by shellcheck, it won't remove anything:
+
+    /bin/rm -rf *
 
 
 Test Suites
