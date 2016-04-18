@@ -5,19 +5,20 @@ UNDER CONSTRUCTION
 
 shellcheck is under construction.
 
-Current version is fully functional, though, but syntax may change in the future.
+Current version is fully functional, and has a lot of features, including a help system.
+But syntax may change in the future.
 
-Alo lacks an installer.
+Install using setuptools (`python3 setup.py build; sudo python3 setup.py install`).
 
-A first version is planned to be released before summer.
+A first version is planned to be released this year.
 
-shellcheck is a Python 3 application. `src/shellcheck.py` is the man program.
+See the `examples` directory for examples.
 
 
 Example
 =======
 
-The following test case is supported by the current version.
+The following test case (and more) is supported by the current version.
 
 
 
@@ -50,12 +51,39 @@ and that this program is found in the same directory as the test case file,
 and that it printed the expected text to stdout.
 
 
+Test Suites
+===========
+
+
+Tests can be grouped in suites:
+
+
+    [cases]
+
+    helloworld.case
+    *.case
+    
+
+    [suites]
+
+    subsuite.suite
+    *.suite
+    pkg/suite.suite
+
+
+Run a suite using `shellcheck suite mysuite.suite`
+
 
 Help
 ====
+
+
+The help system is fully functional, but some parts are incomplete.
 
 Use `---help` and `help ...` to get help.
 
 `help help` displays a summary of help options.
 
-`help htmldoc` generates a html file that is an introduction to the program (under construction).
+`help instructions` lists the instructions that are available in each "phase".
+
+`help htmldoc` generates a html file that is an introduction to the program.
