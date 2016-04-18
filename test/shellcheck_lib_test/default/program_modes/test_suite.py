@@ -12,7 +12,7 @@ from shellcheck_lib_test.test_resources.file_structure import DirContents, File
 from shellcheck_lib_test.test_resources.main_program import main_program_check_for_test_suite
 from shellcheck_lib_test.test_resources.main_program.main_program_check_base import \
     tests_for_setup_without_preprocessor, tests_for_setup_with_preprocessor
-from shellcheck_lib_test.test_resources.main_program.main_program_runners import RunViaMainProgramInternally
+from shellcheck_lib_test.default.test_resources.internal_main_program_runner import RunViaMainProgramInternally
 from shellcheck_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
 
 

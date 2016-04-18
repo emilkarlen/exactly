@@ -9,7 +9,7 @@ from shellcheck_lib.help.program_modes.test_case.contents_structure import TestC
 from shellcheck_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp, \
     TestSuiteSectionHelp
 from shellcheck_lib.test_case.instruction_setup import InstructionsSetup
-from shellcheck_lib.test_suite.parser import SECTION_NAME__SUITS, SECTION_NAME__CASES
+from shellcheck_lib.test_suite.parser import SECTION_NAME__SUITS, SECTION_NAME__CASES, SECTION_NAME__CONF
 
 
 class ApplicationHelp(tuple):
@@ -45,6 +45,7 @@ def application_help_for(instructions_setup: InstructionsSetup) -> ApplicationHe
                            ConceptsHelp(all_concepts()),
                            TestCaseHelp(phase_helps_for(instructions_setup)),
                            TestSuiteHelp([
+                               TestSuiteSectionHelp(SECTION_NAME__CONF),
                                TestSuiteSectionHelp(SECTION_NAME__SUITS),
                                TestSuiteSectionHelp(SECTION_NAME__CASES),
                            ]))
