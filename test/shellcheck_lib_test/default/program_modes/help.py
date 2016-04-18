@@ -9,22 +9,49 @@ from shellcheck_lib.help.concepts.concept import SANDBOX_CONCEPT
 from shellcheck_lib.help.program_modes.test_case.config import phase_help_name
 from shellcheck_lib.test_suite.parser import SECTION_NAME__SUITS, SECTION_NAME__CASES
 from shellcheck_lib_test.cli.test_resources.execute_main_program import execute_main_program
+from shellcheck_lib_test.test_resources import process_result_assertions as pr
+from shellcheck_lib_test.test_resources import value_assertion as va
+from shellcheck_lib_test.test_resources.main_program.constant_arguments_check import ProcessTestCase, Arrangement
+from shellcheck_lib_test.test_resources.main_program.constant_arguments_check_execution import test_suite_for_test_cases
+from shellcheck_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
+from shellcheck_lib_test.test_resources.value_assertion_str import is_empty
+
+
+def suite() -> unittest.TestSuite:
+    return unittest.makeSuite(TestHelp)
+
+
+def suite_for_main_program(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
+    return test_suite_for_test_cases(main_program_test_cases(), main_program_runner)
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())
+
+
+def main_program_test_cases() -> list:
+    return [
+        ProcessTestCase('WHEN command line arguments are invalid THEN'
+                        ' exit code SHOULD indicate this'
+                        ' AND stdout SHOULD be empty',
+                        HelpInvokationArrangement(['too', 'many', 'arguments', ',', 'indeed']),
+                        va.And([
+                            pr.is_result_for_exit_code(main_program.EXIT_INVALID_USAGE),
+                            pr.stdout(is_empty())
+                        ])),
+    ]
+
+
+class HelpInvokationArrangement(Arrangement):
+    def __init__(self,
+                 help_arguments: list):
+        self.help_arguments = help_arguments
+
+    def command_line_arguments(self) -> list:
+        return [main_program.HELP_COMMAND] + self.help_arguments
 
 
 class TestHelp(unittest.TestCase):
-    def test_invalid_usage(self):
-        # ARRANGE #
-        command_line_arguments = self._cl(['too', 'many', 'arguments', ',', 'indeed'])
-        sub_process_result = execute_main_program(command_line_arguments)
-        # ASSERT #
-        self.assertEqual(main_program.EXIT_INVALID_USAGE,
-                         sub_process_result.exitcode,
-                         'Exit Status')
-        self.assertEqual('',
-                         sub_process_result.stdout,
-                         'Output on stdout')
-        self.assertTrue(len(sub_process_result.stderr) > 0)
-
     def test_program(self):
         self._assert_is_successful_invokation(arguments_for.program())
 
@@ -76,11 +103,3 @@ class TestHelp(unittest.TestCase):
     @staticmethod
     def _cl(help_command_arguments: list) -> list:
         return [HELP_COMMAND] + help_command_arguments
-
-
-def suite() -> unittest.TestSuite:
-    return unittest.makeSuite(TestHelp)
-
-
-if __name__ == '__main__':
-    unittest.TextTestRunner().run(suite())
