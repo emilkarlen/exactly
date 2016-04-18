@@ -11,15 +11,14 @@ from shellcheck_lib_test.test_resources import value_assertion as va
 from shellcheck_lib_test.test_resources.main_program.constant_arguments_check import ProcessTestCase, PlainArrangement
 from shellcheck_lib_test.test_resources.main_program.constant_arguments_check_execution import test_suite_for_test_cases
 from shellcheck_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
-from shellcheck_lib_test.test_resources.main_program.main_program_runners import RunViaMainProgramInternally
 from shellcheck_lib_test.test_resources.str_std_out_files import null_output_files
 from shellcheck_lib_test.test_resources.value_assertion_str import begins_with
 
 
-def suite() -> unittest.TestSuite:
+def suite_for(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestHtmlDoc))
-    ret_val.addTest(suite_for_main_program(RunViaMainProgramInternally()))
+    ret_val.addTest(suite_for_main_program(main_program_runner))
     return ret_val
 
 
@@ -38,10 +37,6 @@ def main_program_test_cases() -> list:
                         ])
                         )
     ]
-
-
-if __name__ == '__main__':
-    unittest.TextTestRunner().run(suite())
 
 
 class TestHtmlDoc(unittest.TestCase):

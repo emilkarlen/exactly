@@ -4,7 +4,6 @@ Especially, no temporary files need to be generated.
 """
 import unittest
 
-from shellcheck_lib.cli import main_program
 from shellcheck_lib_test.test_resources import value_assertion
 from shellcheck_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
 
@@ -63,7 +62,8 @@ class TestCaseForProcessTestCase(unittest.TestCase):
     def runTest(self):
         command_line_arguments = self.test_case.arrangement.command_line_arguments()
         sub_process_result = self.main_program_runner.run(self, command_line_arguments)
-        self.test_case.assertion.apply(self, sub_process_result)
+        message_builder = value_assertion.MessageBuilder('(stderr = "%s")' % sub_process_result.stderr)
+        self.test_case.assertion.apply(self, sub_process_result, message_builder)
 
     def shortDescription(self):
         return self.test_case.name + '/' + self.main_program_runner.description_for_test_name()
