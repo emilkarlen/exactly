@@ -1,10 +1,11 @@
 from shellcheck_lib.cli.argument_parsing_of_act_phase_setup import INTERPRETER_FOR_TEST
+from shellcheck_lib.cli.cli_environment.command_line_options import OPTION_FOR_ACTOR
 from shellcheck_lib.default import default_main_program as sut
 from shellcheck_lib.test_case.instruction_setup import InstructionsSetup
 from shellcheck_lib_test.test_resources.process import SubProcessResult
 from shellcheck_lib_test.test_resources.str_std_out_files import StringStdOutFiles
 
-ARGUMENTS_FOR_TEST_INTERPRETER_TUPLE = ('--interpreter', INTERPRETER_FOR_TEST)
+ARGUMENTS_FOR_TEST_INTERPRETER_TUPLE = (OPTION_FOR_ACTOR, INTERPRETER_FOR_TEST)
 
 ARGUMENTS_FOR_TEST_INTERPRETER = list(ARGUMENTS_FOR_TEST_INTERPRETER_TUPLE)
 

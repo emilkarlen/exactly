@@ -2,6 +2,7 @@ import argparse
 import pathlib
 
 from shellcheck_lib.cli.argument_parsing_of_act_phase_setup import resolve_act_phase_setup_from_argparse_argument
+from shellcheck_lib.cli.cli_environment.command_line_options import OPTION_FOR_ACTOR
 from shellcheck_lib.util import argument_parsing_utils
 from .settings import Settings
 
@@ -15,7 +16,7 @@ def parse(argv: list) -> Settings:
     argument_parser = _new_argument_parser()
     namespace = argument_parsing_utils.raise_exception_instead_of_exiting_on_error(argument_parser,
                                                                                    argv)
-    return Settings(resolve_act_phase_setup_from_argparse_argument(namespace.interpreter),
+    return Settings(resolve_act_phase_setup_from_argparse_argument(namespace.actor),
                     pathlib.Path(namespace.file).resolve())
 
 
@@ -26,11 +27,11 @@ def _new_argument_parser() -> argparse.ArgumentParser:
                          metavar='FILE',
                          type=str,
                          help='The file containing the Test Suite')
-    ret_val.add_argument('--interpreter',
+    ret_val.add_argument(OPTION_FOR_ACTOR,
                          metavar="INTERPRETER",
                          nargs=1,
                          help="""\
                         Executable that executes the script of the act phase.
-                        The interpreter is given a single argument, which is the file
+                        The interpreter is given a single command line argument, which is the file
                         that contains the contents of the act phase.""")
     return ret_val
