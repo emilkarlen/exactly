@@ -74,7 +74,6 @@ def main_program_test_cases_for_all_suite_sections() -> list:
                         HelpInvokation(arguments_for.suite_section(section_name)),
                         _RESULT_IS_SUCCESSFUL)
         for section_name in ALL_SECTION_NAMES
-        # for section_name in ['conf', 'suites', 'cases']
         ]
 
 
