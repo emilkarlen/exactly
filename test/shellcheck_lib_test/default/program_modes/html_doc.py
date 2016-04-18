@@ -13,6 +13,7 @@ from shellcheck_lib_test.test_resources.main_program.constant_arguments_check_ex
 from shellcheck_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
 from shellcheck_lib_test.test_resources.main_program.main_program_runners import RunViaMainProgramInternally
 from shellcheck_lib_test.test_resources.str_std_out_files import null_output_files
+from shellcheck_lib_test.test_resources.value_assertion_str import begins_with
 
 
 def suite() -> unittest.TestSuite:
@@ -33,7 +34,7 @@ def main_program_test_cases() -> list:
                         PlainArrangement([main_program.HELP_COMMAND] + arguments_for.html_doc()),
                         va.And([
                             pr.is_result_for_exit_code(0),
-                            pr.stdout_is(_BeginsWith(DOCTYPE_XHTML1_0))
+                            pr.stdout(begins_with(DOCTYPE_XHTML1_0))
                         ])
                         )
     ]
@@ -51,17 +52,3 @@ class TestHtmlDoc(unittest.TestCase):
         generator = sut.HtmlDocGenerator(output, application_help)
         # ACT & ASSERT #
         generator.apply()
-
-
-class _BeginsWith(va.ValueAssertion):
-    def __init__(self, initial: str):
-        self.initial = initial
-
-    def apply(self,
-              put: unittest.TestCase,
-              value: str,
-              message_builder: va.MessageBuilder = va.MessageBuilder()):
-        actual = value[:len(self.initial)]
-        put.assertEqual(self.initial,
-                        actual,
-                        'Initial characters of string.')

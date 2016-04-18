@@ -23,15 +23,6 @@ class PlainArrangement(Arrangement):
         return self._command_line_arguments
 
 
-class HelpInvokationArrangement(Arrangement):
-    def __init__(self,
-                 help_arguments: list):
-        self.help_arguments = help_arguments
-
-    def command_line_arguments(self) -> list:
-        return [main_program.HELP_COMMAND] + self.help_arguments
-
-
 class ProcessTestCase:
     """
     A test case with name, arrangement and expectation.
