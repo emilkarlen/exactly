@@ -29,6 +29,7 @@ def is_process_result_for_exit_code(exit_code: int) -> va.ValueAssertion:
 def assertion_on_process_result(assertion: va.ValueAssertion) -> va.ValueAssertion:
     """
     :type assertion: A ValueAssertion on a SubProcessResult.
+    :rtype: A ValueAssertion on a SubProcessResultInfo.
     """
     return va.sub_component(
         'sub process result',
