@@ -5,7 +5,7 @@ import shlex
 from shellcheck_lib.cli.argument_parsing_of_act_phase_setup import resolve_act_phase_setup_from_argparse_argument
 from shellcheck_lib.cli.cli_environment import program_info
 from shellcheck_lib.cli.cli_environment.command_line_options import OPTION_FOR_KEEPING_SANDBOX_DIRECTORY, \
-    OPTION_FOR_PREPROCESSOR, OPTION_FOR_EXECUTING_ACT_PHASE
+    OPTION_FOR_PREPROCESSOR, OPTION_FOR_EXECUTING_ACT_PHASE, OPTION_FOR_ACTOR
 from shellcheck_lib.cli.program_modes.test_case.settings import Output, TestCaseExecutionSettings
 from shellcheck_lib.test_case.preprocessor import IdentityPreprocessor, PreprocessorViaExternalProgram
 from shellcheck_lib.util import argument_parsing_utils
@@ -33,7 +33,7 @@ def parse(argv: list,
     elif namespace.keep:
         output = Output.EXECUTION_DIRECTORY_STRUCTURE_ROOT
         is_keep_execution_directory_root = True
-    act_phase_setup = resolve_act_phase_setup_from_argparse_argument(namespace.interpreter)
+    act_phase_setup = resolve_act_phase_setup_from_argparse_argument(namespace.actor)
     preprocessor = _parse_preprocessor(namespace.preprocessor)
     return TestCaseExecutionSettings(pathlib.Path(namespace.file),
                                      pathlib.Path(namespace.file).parent.resolve(),
@@ -73,11 +73,14 @@ def _new_argument_parser(commands: dict) -> argparse.ArgumentParser:
                         the output from the act phase script is emitted:
                         Output on stdout/stderr from the script is printed to stdout/stderr.
                         The exit code from the act script becomes the exit code from the program.""")
-    ret_val.add_argument('--interpreter',
-                         metavar="INTERPRETER",
+    ret_val.add_argument(OPTION_FOR_ACTOR,
+                         metavar="ACTOR",
                          nargs=1,
                          help="""\
-                        Executable that executes the script of the act phase.""")
+                        Executable that executes the script of the "act" phase.
+
+                        The executable is given a single command line argument, which is the file
+                        that contains the contents of the act phase.""")
     ret_val.add_argument(OPTION_FOR_PREPROCESSOR,
                          metavar="SHELL-COMMAND",
                          nargs=1,
