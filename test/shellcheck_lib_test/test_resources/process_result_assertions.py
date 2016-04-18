@@ -13,9 +13,7 @@ def is_result_for_exit_value(exit_value: exit_values.ExitValue) -> va.ValueAsser
         va.sub_component('exit code',
                          SubProcessResult.exitcode.fget,
                          va.Equals(exit_value.exit_code)),
-        va.sub_component('stdout',
-                         SubProcessResult.stdout.fget,
-                         va.Equals(exit_value.exit_identifier + os.linesep)),
+        stdout_is(va.Equals(exit_value.exit_identifier + os.linesep)),
     ])
 
 
@@ -26,3 +24,13 @@ def is_result_for_exit_code(exit_code: int) -> va.ValueAssertion:
     return va.sub_component('exit code',
                             SubProcessResult.exitcode.fget,
                             va.Equals(exit_code))
+
+
+def stdout_is(assertion_on_str: va.ValueAssertion) -> va.ValueAssertion:
+    """
+    :type assertion_on_str: An assertion on a str.
+    :rtype: A ValueAssertion on a SubProcessResult.
+    """
+    return va.sub_component('stdout',
+                            SubProcessResult.stdout.fget,
+                            assertion_on_str)
