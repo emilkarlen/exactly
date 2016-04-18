@@ -1,19 +1,37 @@
 import unittest
 
+from shellcheck_lib.cli import main_program
+from shellcheck_lib.cli.program_modes.help import arguments_for
 from shellcheck_lib.default.program_modes.test_case import default_instructions_setup
 from shellcheck_lib.help.contents_structure import application_help_for
 from shellcheck_lib.help.html_doc import main as sut
+from shellcheck_lib_test.test_resources import process_result_assertions as pr
+from shellcheck_lib_test.test_resources.main_program.constant_arguments_check import ProcessTestCase, PlainArrangement
+from shellcheck_lib_test.test_resources.main_program.constant_arguments_check_execution import test_suite_for_test_cases
+from shellcheck_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
+from shellcheck_lib_test.test_resources.main_program.main_program_runners import RunViaMainProgramInternally
 from shellcheck_lib_test.test_resources.str_std_out_files import null_output_files
 
 
 def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestHtmlDoc))
+    ret_val.addTest(suite_for_main_program(RunViaMainProgramInternally()))
     return ret_val
+
+
+def suite_for_main_program(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
+    return test_suite_for_test_cases(MAIN_PROGRAM_TEST_CASES, main_program_runner)
 
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())
+
+MAIN_PROGRAM_TEST_CASES = [
+    ProcessTestCase('Generation of html-doc SHOULD exit with 0 exitcode',
+                    PlainArrangement([main_program.HELP_COMMAND] + arguments_for.html_doc()),
+                    pr.is_result_for_exit_code(0))
+]
 
 
 class TestHtmlDoc(unittest.TestCase):

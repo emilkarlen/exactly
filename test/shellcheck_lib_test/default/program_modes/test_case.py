@@ -11,15 +11,12 @@ from shellcheck_lib.execution import environment_variables
 from shellcheck_lib.execution import execution_directory_structure
 from shellcheck_lib.execution import phases
 from shellcheck_lib.util.string import lines_content
-from shellcheck_lib_test.default.test_resources import assertions
 from shellcheck_lib_test.default.test_resources import default_main_program_case_preprocessing
-from shellcheck_lib_test.default.test_resources.assertions import process_result_for_exit_value, \
-    is_process_result_for_exit_code
 from shellcheck_lib_test.default.test_resources.test_case_file_elements import phase_header_line
 from shellcheck_lib_test.execution.test_execution_directory_structure import \
     is_execution_directory_structure_after_execution
-from shellcheck_lib_test.test_resources import value_assertion as va
 from shellcheck_lib_test.test_resources import value_assertion
+from shellcheck_lib_test.test_resources import value_assertion as va, process_result_info_assertions
 from shellcheck_lib_test.test_resources.cli_main_program_via_shell_utils.run import \
     contents_of_file
 from shellcheck_lib_test.test_resources.file_checks import FileChecker
@@ -30,6 +27,8 @@ from shellcheck_lib_test.test_resources.main_program.main_program_runner import 
 from shellcheck_lib_test.test_resources.main_program.main_program_runners import RunViaMainProgramInternally
 from shellcheck_lib_test.test_resources.process import SubProcessResult, \
     SubProcessResultInfo
+from shellcheck_lib_test.test_resources.process_result_info_assertions import process_result_for_exit_value, \
+    is_process_result_for_exit_code
 
 
 def suite_for(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
@@ -96,7 +95,7 @@ class FlagForPrintingAndPreservingSandbox(SetupWithoutPreprocessor):
         return [OPTION_FOR_KEEPING_SANDBOX_DIRECTORY]
 
     def expected_result(self) -> value_assertion.ValueAssertion:
-        return assertions.assertion_on_process_result(
+        return process_result_info_assertions.assertion_on_process_result(
             value_assertion.And([
                 value_assertion.sub_component('exit code',
                                               SubProcessResult.exitcode.fget,
@@ -124,7 +123,7 @@ sys.exit(72)
         exit_code = 72
         std_out = 'output to stdout'
         std_err = 'output to stderr\n'
-        return assertions.assertion_on_process_result(
+        return process_result_info_assertions.assertion_on_process_result(
             value_assertion.And([
                 value_assertion.sub_component('exit code',
                                               SubProcessResult.exitcode.fget,
@@ -174,7 +173,7 @@ class EnvironmentVariablesAreSetCorrectly(SetupWithoutPreprocessor):
 
     def expected_result(self) -> value_assertion.ValueAssertion:
         return value_assertion.And([
-            assertions.is_process_result_for_exit_code(exit_values.EXECUTION__PASS.exit_code),
+            process_result_info_assertions.is_process_result_for_exit_code(exit_values.EXECUTION__PASS.exit_code),
             ExpectedTestEnvironmentVariablesAreSetCorrectlyVa(),
         ])
 
