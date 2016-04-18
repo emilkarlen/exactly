@@ -14,7 +14,7 @@ from shellcheck_lib_test.test_resources import value_assertion as va
 from shellcheck_lib_test.test_resources.main_program.constant_arguments_check import ProcessTestCase, Arrangement
 from shellcheck_lib_test.test_resources.main_program.constant_arguments_check_execution import test_suite_for_test_cases
 from shellcheck_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
-from shellcheck_lib_test.test_resources.value_assertion_str import is_empty
+from shellcheck_lib_test.test_resources.value_assertion_str import is_empty, is_not_only_space
 
 
 def suite() -> unittest.TestSuite:
@@ -34,15 +34,18 @@ def main_program_test_cases() -> list:
         ProcessTestCase('WHEN command line arguments are invalid THEN'
                         ' exit code SHOULD indicate this'
                         ' AND stdout SHOULD be empty',
-                        HelpInvokationArrangement(['too', 'many', 'arguments', ',', 'indeed']),
+                        HelpInvokation(['too', 'many', 'arguments', ',', 'indeed']),
                         va.And([
                             pr.is_result_for_exit_code(main_program.EXIT_INVALID_USAGE),
                             pr.stdout(is_empty())
                         ])),
+        ProcessTestCase('help for "program" SHOULD be successful',
+                        HelpInvokation(arguments_for.program()),
+                        _RESULT_IS_SUCCESSFUL),
     ]
 
 
-class HelpInvokationArrangement(Arrangement):
+class HelpInvokation(Arrangement):
     def __init__(self,
                  help_arguments: list):
         self.help_arguments = help_arguments
@@ -52,9 +55,6 @@ class HelpInvokationArrangement(Arrangement):
 
 
 class TestHelp(unittest.TestCase):
-    def test_program(self):
-        self._assert_is_successful_invokation(arguments_for.program())
-
     def test_help(self):
         self._assert_is_successful_invokation(arguments_for.help_help())
 
@@ -103,3 +103,6 @@ class TestHelp(unittest.TestCase):
     @staticmethod
     def _cl(help_command_arguments: list) -> list:
         return [HELP_COMMAND] + help_command_arguments
+
+
+_RESULT_IS_SUCCESSFUL = va.And([pr.is_result_for_exit_code(0), pr.stdout(is_not_only_space())])
