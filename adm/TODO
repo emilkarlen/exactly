@@ -9,11 +9,9 @@ Se shellcheck_lib_test.test_resources.main_program.main_program_check_base.TestF
 ----------------------------------------
 Den ger den konkreta testklassens namn som test-namn.
 * TODO Installation
-** TODO main-funktion
 ** TODO Distribuera filer
 *** TODO LICENCE
 *** TODO README
-** TODO Funk att testa installerad version
 ** TODO Ska exemplen distribureras?
 * TODO doc
 
@@ -131,9 +129,6 @@ Tror detta ska kunna lösas m lokala importer.
 
 Koden som köra case/suite/help:
 shellcheck_lib.cli.main_program.MainProgram#execute
-* TODO Ska [act] vara utgångsfas?
-<2016-03-21 mån>
-Blir enklare att använda sc för att köra program i sandlåda då.
 * TODO Variant "<<EOF ...\EOF": sista raden avslutas ej m nyrad
 Enda begränsningen hos "<<EOF...EOF" är ju att sista raden måste avslutas m
 nyradstecken.  Det är naturligtvis en begränsning.
