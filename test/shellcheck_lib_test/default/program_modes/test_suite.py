@@ -2,8 +2,9 @@ import pathlib
 import unittest
 
 from shellcheck_lib.cli import main_program
-from shellcheck_lib.cli.cli_environment.program_modes.test_case.exit_values import NO_EXECUTION__PARSE_ERROR, EXECUTION__PASS
-from shellcheck_lib.default.program_modes.test_suite.reporting import INVALID_SUITE_EXIT_CODE, FAILED_TESTS_EXIT_CODE
+from shellcheck_lib.cli.cli_environment.program_modes.test_case.exit_values import NO_EXECUTION__PARSE_ERROR, \
+    EXECUTION__PASS
+from shellcheck_lib.cli.cli_environment.program_modes.test_suite import exit_values
 from shellcheck_lib.util.string import lines_content
 from shellcheck_lib_test.default.test_resources import default_main_program_suite_preprocessing as pre_proc_tests
 from shellcheck_lib_test.default.test_resources import default_main_program_wildcard as wildcard
@@ -30,7 +31,7 @@ class InvalidOptions(main_program_check_for_test_suite.SetupWithoutPreprocessor)
         return []
 
     def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
-        return reporting_output.summary(root_path)
+        return []
 
     def expected_exit_code(self) -> int:
         return main_program.EXIT_INVALID_USAGE
@@ -52,10 +53,10 @@ class EmptySuite(main_program_check_for_test_suite.SetupWithoutPreprocessor):
         ]
 
     def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
-        return reporting_output.summary(root_path)
+        return reporting_output.summary(root_path, exit_values.ALL_PASS)
 
     def expected_exit_code(self) -> int:
-        return 0
+        return exit_values.ALL_PASS.exit_code
 
 
 class SuiteWithSingleEmptyTestCase(main_program_check_for_test_suite.SetupWithoutPreprocessor):
@@ -76,10 +77,10 @@ class SuiteWithSingleEmptyTestCase(main_program_check_for_test_suite.SetupWithou
         ]
 
     def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
-        return reporting_output.summary(root_path)
+        return reporting_output.summary(root_path, exit_values.ALL_PASS)
 
     def expected_exit_code(self) -> int:
-        return 0
+        return exit_values.ALL_PASS.exit_code
 
 
 class SuiteWithSingleTestCaseWithOnlySectionHeaders(main_program_check_for_test_suite.SetupWithoutPreprocessor):
@@ -109,10 +110,10 @@ class SuiteWithSingleTestCaseWithOnlySectionHeaders(main_program_check_for_test_
         ]
 
     def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
-        return reporting_output.summary(root_path)
+        return reporting_output.summary(root_path, exit_values.ALL_PASS)
 
     def expected_exit_code(self) -> int:
-        return 0
+        return exit_values.ALL_PASS.exit_code
 
 
 class SuiteReferenceToNonExistingCaseFile(main_program_check_for_test_suite.SetupWithoutPreprocessor):
@@ -129,10 +130,10 @@ class SuiteReferenceToNonExistingCaseFile(main_program_check_for_test_suite.Setu
         return []
 
     def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
-        return reporting_output.summary(root_path)
+        return reporting_output.summary(root_path, exit_values.INVALID_SUITE)
 
     def expected_exit_code(self) -> int:
-        return INVALID_SUITE_EXIT_CODE
+        return exit_values.INVALID_SUITE.exit_code
 
 
 class SuiteReferenceToNonExistingSuiteFile(main_program_check_for_test_suite.SetupWithoutPreprocessor):
@@ -149,10 +150,10 @@ class SuiteReferenceToNonExistingSuiteFile(main_program_check_for_test_suite.Set
         return []
 
     def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
-        return reporting_output.summary(root_path)
+        return reporting_output.summary(root_path, exit_values.INVALID_SUITE)
 
     def expected_exit_code(self) -> int:
-        return INVALID_SUITE_EXIT_CODE
+        return exit_values.INVALID_SUITE.exit_code
 
 
 class SuiteWithSingleCaseWithInvalidSyntax(main_program_check_for_test_suite.SetupWithoutPreprocessor):
@@ -175,10 +176,10 @@ class SuiteWithSingleCaseWithInvalidSyntax(main_program_check_for_test_suite.Set
         ]
 
     def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
-        return reporting_output.summary(root_path)
+        return reporting_output.summary(root_path, exit_values.FAILED_TESTS)
 
     def expected_exit_code(self) -> int:
-        return FAILED_TESTS_EXIT_CODE
+        return exit_values.FAILED_TESTS.exit_code
 
 
 class ComplexSuccessfulSuite(main_program_check_for_test_suite.SetupWithoutPreprocessor):
@@ -215,11 +216,10 @@ class ComplexSuccessfulSuite(main_program_check_for_test_suite.SetupWithoutPrepr
         ]
 
     def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
-        return reporting_output.summary(root_path)
+        return reporting_output.summary(root_path, exit_values.ALL_PASS)
 
     def expected_exit_code(self) -> int:
-        return 0
-
+        return exit_values.ALL_PASS.exit_code
 
 BASIC_TESTS = [
     InvalidOptions(),

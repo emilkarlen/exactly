@@ -1,7 +1,7 @@
 import pathlib
 
 from shellcheck_lib.cli.cli_environment.program_modes.test_case.exit_values import EXECUTION__PASS
-from shellcheck_lib.default.program_modes.test_suite.reporting import INVALID_SUITE_EXIT_CODE
+from shellcheck_lib.cli.cli_environment.program_modes.test_suite import exit_values
 from shellcheck_lib.util.string import lines_content
 from shellcheck_lib_test.test_resources.file_structure import DirContents, Dir, File, empty_file
 from shellcheck_lib_test.test_resources.main_program import main_program_check_for_test_suite
@@ -25,10 +25,10 @@ class ReferencesToCaseFilesThatMatchesNoFiles(main_program_check_for_test_suite.
         ]
 
     def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
-        return reporting_output.summary(root_path)
+        return reporting_output.summary(root_path, exit_values.ALL_PASS)
 
     def expected_exit_code(self) -> int:
-        return 0
+        return exit_values.ALL_PASS.exit_code
 
 
 class ReferencesToSuiteFilesThatMatchesNoFiles(main_program_check_for_test_suite.SetupWithoutPreprocessor):
@@ -48,10 +48,10 @@ class ReferencesToSuiteFilesThatMatchesNoFiles(main_program_check_for_test_suite
         ]
 
     def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
-        return reporting_output.summary(root_path)
+        return reporting_output.summary(root_path, exit_values.ALL_PASS)
 
     def expected_exit_code(self) -> int:
-        return 0
+        return exit_values.ALL_PASS.exit_code
 
 
 class ReferencesToCaseFilesThatMatchesFilesTypeQuestionMark(main_program_check_for_test_suite.SetupWithoutPreprocessor):
@@ -75,10 +75,10 @@ class ReferencesToCaseFilesThatMatchesFilesTypeQuestionMark(main_program_check_f
         ]
 
     def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
-        return reporting_output.summary(root_path)
+        return reporting_output.summary(root_path, exit_values.ALL_PASS)
 
     def expected_exit_code(self) -> int:
-        return 0
+        return exit_values.ALL_PASS.exit_code
 
 
 class ReferencesToSuiteFilesThatMatchesFilesTypeQuestionMark(
@@ -105,10 +105,10 @@ class ReferencesToSuiteFilesThatMatchesFilesTypeQuestionMark(
         ]
 
     def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
-        return reporting_output.summary(root_path)
+        return reporting_output.summary(root_path, exit_values.ALL_PASS)
 
     def expected_exit_code(self) -> int:
-        return 0
+        return exit_values.ALL_PASS.exit_code
 
 
 class ReferencesToCaseFilesThatMatchesFilesTypeCharacterRange(
@@ -136,10 +136,10 @@ class ReferencesToCaseFilesThatMatchesFilesTypeCharacterRange(
         ]
 
     def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
-        return reporting_output.summary(root_path)
+        return reporting_output.summary(root_path, exit_values.ALL_PASS)
 
     def expected_exit_code(self) -> int:
-        return 0
+        return exit_values.ALL_PASS.exit_code
 
 
 class ReferencesToSuiteFilesThatMatchesFilesTypeCharacterRange(
@@ -170,10 +170,10 @@ class ReferencesToSuiteFilesThatMatchesFilesTypeCharacterRange(
         ]
 
     def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
-        return reporting_output.summary(root_path)
+        return reporting_output.summary(root_path, exit_values.ALL_PASS)
 
     def expected_exit_code(self) -> int:
-        return 0
+        return exit_values.ALL_PASS.exit_code
 
 
 class ReferencesToSuiteFilesThatMatchesFilesTypeNegatedCharacterRange(
@@ -200,10 +200,10 @@ class ReferencesToSuiteFilesThatMatchesFilesTypeNegatedCharacterRange(
         ]
 
     def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
-        return reporting_output.summary(root_path)
+        return reporting_output.summary(root_path, exit_values.ALL_PASS)
 
     def expected_exit_code(self) -> int:
-        return 0
+        return exit_values.ALL_PASS.exit_code
 
 
 class ReferencesToCaseFilesThatMatchesFilesTypeNegatedCharacterRange(
@@ -229,10 +229,10 @@ class ReferencesToCaseFilesThatMatchesFilesTypeNegatedCharacterRange(
         ]
 
     def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
-        return reporting_output.summary(root_path)
+        return reporting_output.summary(root_path, exit_values.ALL_PASS)
 
     def expected_exit_code(self) -> int:
-        return 0
+        return exit_values.ALL_PASS.exit_code
 
 
 class ReferencesToCaseFilesInAnyDirectSubDir(main_program_check_for_test_suite.SetupWithoutPreprocessor):
@@ -269,10 +269,10 @@ class ReferencesToCaseFilesInAnyDirectSubDir(main_program_check_for_test_suite.S
         ]
 
     def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
-        return reporting_output.summary(root_path)
+        return reporting_output.summary(root_path, exit_values.ALL_PASS)
 
     def expected_exit_code(self) -> int:
-        return 0
+        return exit_values.ALL_PASS.exit_code
 
 
 class ReferencesToSuiteFilesInAnyDirectSubDir(main_program_check_for_test_suite.SetupWithoutPreprocessor):
@@ -313,10 +313,10 @@ class ReferencesToSuiteFilesInAnyDirectSubDir(main_program_check_for_test_suite.
         ]
 
     def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
-        return reporting_output.summary(root_path)
+        return reporting_output.summary(root_path, exit_values.ALL_PASS)
 
     def expected_exit_code(self) -> int:
-        return 0
+        return exit_values.ALL_PASS.exit_code
 
 
 class ReferencesToCaseFilesInAnySubDir(main_program_check_for_test_suite.SetupWithoutPreprocessor):
@@ -357,10 +357,10 @@ class ReferencesToCaseFilesInAnySubDir(main_program_check_for_test_suite.SetupWi
         ]
 
     def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
-        return reporting_output.summary(root_path)
+        return reporting_output.summary(root_path, exit_values.ALL_PASS)
 
     def expected_exit_code(self) -> int:
-        return 0
+        return exit_values.ALL_PASS.exit_code
 
 
 class ReferencesToSuiteFilesInAnySubDir(main_program_check_for_test_suite.SetupWithoutPreprocessor):
@@ -407,10 +407,10 @@ class ReferencesToSuiteFilesInAnySubDir(main_program_check_for_test_suite.SetupW
         ]
 
     def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
-        return reporting_output.summary(root_path)
+        return reporting_output.summary(root_path, exit_values.ALL_PASS)
 
     def expected_exit_code(self) -> int:
-        return 0
+        return exit_values.ALL_PASS.exit_code
 
 
 class ReferencesToCaseFilesThatAreDirectories(main_program_check_for_test_suite.SetupWithoutPreprocessor):
@@ -430,10 +430,10 @@ class ReferencesToCaseFilesThatAreDirectories(main_program_check_for_test_suite.
         return []
 
     def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
-        return reporting_output.summary(root_path)
+        return reporting_output.summary(root_path, exit_values.INVALID_SUITE)
 
     def expected_exit_code(self) -> int:
-        return INVALID_SUITE_EXIT_CODE
+        return exit_values.INVALID_SUITE.exit_code
 
 
 class ReferencesToSuiteFilesThatAreDirectories(main_program_check_for_test_suite.SetupWithoutPreprocessor):
@@ -453,10 +453,10 @@ class ReferencesToSuiteFilesThatAreDirectories(main_program_check_for_test_suite
         return []
 
     def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
-        return reporting_output.summary(root_path)
+        return reporting_output.summary(root_path, exit_values.INVALID_SUITE)
 
     def expected_exit_code(self) -> int:
-        return INVALID_SUITE_EXIT_CODE
+        return exit_values.INVALID_SUITE.exit_code
 
 
 class ReferencesToCaseFilesInSubDirThatMatchesFiles(main_program_check_for_test_suite.SetupWithoutPreprocessor):
@@ -489,7 +489,7 @@ class ReferencesToCaseFilesInSubDirThatMatchesFiles(main_program_check_for_test_
         ]
 
     def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
-        return reporting_output.summary(root_path)
+        return reporting_output.summary(root_path, exit_values.ALL_PASS)
 
     def expected_exit_code(self) -> int:
-        return 0
+        return exit_values.ALL_PASS.exit_code
