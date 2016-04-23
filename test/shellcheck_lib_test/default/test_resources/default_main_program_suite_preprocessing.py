@@ -1,7 +1,8 @@
 import pathlib
 
-from shellcheck_lib.cli.cli_environment.program_modes.test_case.exit_values import EXECUTION__PASS, NO_EXECUTION__PARSE_ERROR
-from shellcheck_lib.default.program_modes.test_suite.reporting import FAILED_TESTS_EXIT_CODE
+from shellcheck_lib.cli.cli_environment.program_modes.test_case.exit_values import EXECUTION__PASS, \
+    NO_EXECUTION__PARSE_ERROR
+from shellcheck_lib.cli.cli_environment.program_modes.test_suite import exit_values
 from shellcheck_lib.document.syntax import section_header
 from shellcheck_lib.execution import phases
 from shellcheck_lib.util.string import lines_content
@@ -55,7 +56,7 @@ else:
         ]
 
     def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
-        return reporting_output.summary(root_path)
+        return reporting_output.summary(root_path, exit_values.FAILED_TESTS)
 
     def expected_exit_code(self) -> int:
-        return FAILED_TESTS_EXIT_CODE
+        return exit_values.FAILED_TESTS.exit_code

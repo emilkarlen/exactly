@@ -1,14 +1,11 @@
 import os
 
+from shellcheck_lib.cli.cli_environment.program_modes.test_suite import exit_values
 from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib.test_case import test_case_processing
 from shellcheck_lib.test_case.test_case_processing import Status
 from shellcheck_lib.test_suite import reporting, structure
 from shellcheck_lib.util.std import StdOutputFiles
-
-ALL_TESTS_PASS_EXIT_CODE = 0
-INVALID_SUITE_EXIT_CODE = 3
-FAILED_TESTS_EXIT_CODE = 4
 
 SUCCESS_STATUSES = {FullResultStatus.PASS,
                     FullResultStatus.SKIPPED,
@@ -68,17 +65,17 @@ class DefaultRootSuiteReporter(reporting.RootSuiteReporter):
         return reporter
 
     def invalid_suite_exit_code(self) -> int:
-        return INVALID_SUITE_EXIT_CODE
+        return exit_values.INVALID_SUITE.exit_code
 
     def valid_suite_exit_code(self) -> int:
         for suite_reporter in self._sub_reporters:
             assert isinstance(suite_reporter, reporting.SubSuiteReporter)
             for case, result in suite_reporter.result():
                 if result.status is not Status.EXECUTED:
-                    return FAILED_TESTS_EXIT_CODE
+                    return exit_values.FAILED_TESTS.exit_code
                 if result.execution_result.status not in SUCCESS_STATUSES:
-                    return FAILED_TESTS_EXIT_CODE
-        return ALL_TESTS_PASS_EXIT_CODE
+                    return exit_values.FAILED_TESTS.exit_code
+        return exit_values.ALL_PASS.exit_code
 
     def report_final_results(self):
         pass
