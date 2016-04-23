@@ -1,5 +1,11 @@
 -*- org -*-
 
+* TODO Byta namn: main_program_executor_for_test.py -> main-program-executor-for-test.py
+* TODO Färgläggning av exit-identifierare
+OK grön, FAIL röd ...
+VALIDATE ... orange
+* TODO svit
+** TODO Förbättrad summering
 * TODO Byt namn: "anonymous" -> "configuration"
 * TODO Namnge "genererade tester" mha 'shortDescription'
 Se shellcheck_lib_test.test_resources.main_program.main_program_check_base.TestForSetupWithoutPreprocessor#shortDescription:
@@ -8,46 +14,19 @@ Se shellcheck_lib_test.test_resources.main_program.main_program_check_base.TestF
         return str(type(self))
 ----------------------------------------
 Den ger den konkreta testklassens namn som test-namn.
-* TODO Installation
+* TODO Exempel
+** TODO Ska de levereras m installation?
+** TODO Makefile
+som skapar/rensar exekverbara, kör svit.
+** TODO gitignore på genererade filer?
+* TODO Installation och distribution
 ** TODO Distribuera filer
 *** TODO LICENCE
 *** TODO README
 ** TODO Ska exemplen distribureras?
-* TODO doc
-
-** TODO I avsnitt om att [act] ä utgångsfas: exempel /bin/rm -rf *
-* TODO html doc
-** TODO Ska in i ApplictionHelp: program -namn & -version
-De ska inte behöva härledas via globala saker.
-----------
-PAGE_TITLE = '%s Reference Manual' % program_info.PROGRAM_NAME
-version.text = program_info.PROGRAM_NAME + ' version ' + program_info.VERSION
-----------
-
-** TODO _application_help_with_phases
-Saknar concepts_help arg till ApplicationHelp.
-
-** TODO htmldoc ska vara nytt program-mode
-Nu genereras html via help htmldoc. Det kommandot borde ge _hjälp_ om html-rendering - inte
-utför själva renderingen.
-
-Har påbörjat det här. Men i cli-paketet är det fortfarnde en form av hjälp.
-Fortsätt m att införa ny funktion i MainProgram.
-
-** TODO hjälpkommandot ska ha egen metod i MainProgram
-I dag är det en specialare som inte invokerar en medlemsmetod pss som "test-case", "test-suite".
-
-shellcheck_lib.cli.main_program.MainProgram#_parse_and_execute_help
-
-* Bör ersättas med funktionerna i python_program_execution?
-Tror det är precis det här de funktionerna används till.
-----------
-    def file_structure(self, root_path: pathlib.Path,
-                       python_executable_file_name: str,
-                       preprocessor_source_file_name: str) -> DirContents:
-        preprocessor = '%s %s' % (quoting.file_name(python_executable_file_name),
-                                  quoting.file_name(preprocessor_source_file_name))
-----------
+** TODO licensfiler
+Vet inte vilka licensfiler som behövs, var de ska ligga, vad de ska innehålla,
+vad README ska innehålla.
 * TODO Rendering
 
 ** TODO Extrahera test av textrenderare till eget test
@@ -71,9 +50,84 @@ Inflexibel vad gäller möjlighet att ha skiftande cell-egenskaper.
 <2016-04-02 lör>
 Det riskerar ju att atc (action to check) kan sabba
 filer där.
-* TODO Refakt: full/partiell exekvering i separata paket
+* TODO Refaktoreringar
+** TODO Refakt: full/partiell exekvering i separata paket
 <2016-04-02 lör>
+** TODO Bör ersättas med funktionerna i python_program_execution?
+Tror det är precis det här de funktionerna används till.
+----------
+    def file_structure(self, root_path: pathlib.Path,
+                       python_executable_file_name: str,
+                       preprocessor_source_file_name: str) -> DirContents:
+        preprocessor = '%s %s' % (quoting.file_name(python_executable_file_name),
+                                  quoting.file_name(preprocessor_source_file_name))
+----------
+** TODO InstructionDocumentation ska använda Description
+<2016-03-20 sön>
+Extraherade den klassen för impl av TCPhaseHelp.
+
+** TODO Validate_post_eds_if_applicable ska ta (EDS,home_dir)
+<2016-01-09 lör>
+klass: PreOrPostEdsSvhValidationErrorValidator
+
+I nuläget tas enbart EDS.
+Onödigt att begränsa till att ta enbart EDS.
+Skulle ju kunna finnas en instruktion som använder både EDS och home_dir.
+
+** TODO Byt till ValueAssertion där det går
+*** TODO instruction_checks
+*** TODO text-structure tests
+** TODO Extrahera gemensam kod för Expectation
+<2016-01-09 lör>
+*** TODO Extrahera basklasser
+*** TODO config
+*** TODO setup
+*** TODO assert
+*** TODO cleanup
+** TODO <2016-01-06 ons> Byt namn: Anonymous -> Config
+** TODO <2016-01-06 ons> Byt namn: GlobalEnvironmentForX -> EnvironmentForX
+Gäller typerna för arg till instruktionernas steg-metoder.
+** TODO Göra sig av med fel-typen som är överflödig (fr UML, Failure?)
+** TODO Argument till instruktionernas steg
+Spikade först två generella miljöer: global miljö och fas-miljö.
+Iom att den modellen inte längre används kan mer ändamålsenliga argument
+användas.
+*** TODO act/script-gen
+Två argument:
+1. Skriptbyggare
+2. Inställningssättare (för t ex stdin).
+** TODO Använda nya TestCaseSetup i äldre tester
+Som du finns flera instruktions-klasser som enbart returnerar ett visst värde
+eller kastar undantag.  Alla de fallen kan hanteras av nya TestCaseSetup.
 * TODO Dokumentation
+** TODO Programmets namn ska "konfas" i ApplicationHelp
+** TODO Users Guide
+** TODO I avsnitt om att [act] ä utgångsfas: exempel /bin/rm -rf *
+** TODO html doc
+*** TODO Ska in i ApplictionHelp: program -namn & -version
+De ska inte behöva härledas via globala saker.
+----------
+PAGE_TITLE = '%s Reference Manual' % program_info.PROGRAM_NAME
+version.text = program_info.PROGRAM_NAME + ' version ' + program_info.VERSION
+----------
+
+*** TODO _application_help_with_phases
+Saknar concepts_help arg till ApplicationHelp.
+
+*** TODO htmldoc ska vara nytt program-mode
+Nu genereras html via help htmldoc. Det kommandot borde ge _hjälp_ om html-rendering - inte
+utför själva renderingen.
+
+Har påbörjat det här. Men i cli-paketet är det fortfarnde en form av hjälp.
+Fortsätt m att införa ny funktion i MainProgram.
+
+*** TODO hjälpkommandot ska ha egen metod i MainProgram
+I dag är det en specialare som inte invokerar en medlemsmetod pss som "test-case", "test-suite".
+
+shellcheck_lib.cli.main_program.MainProgram#_parse_and_execute_help
+
+** TODO README.md
+** TODO Resten av dok (faser, svit)
 ** TODO formatteraren ska inte bryta rad i --preprocessor
 <2016-03-28 mån>
 Den tolkar det som binestreck mellan ord och bryter rad.  Behöver stänga av
@@ -88,6 +142,20 @@ Vore nog bättre m "SYNTAX" alt "SYNTAX_ERROR"
 Prestanda.  Vill undvika importer för hjälp under normal körning.
 Det blir svårt när ett objekt ges direkt.
 Se InstrDescr för "mode", som måste importera samma paket lokalt två ggr.
+** TODO Dokumentera syntax för flerrads-instr i InstrDoc
+<2016-03-22 tis>
+Tror inte dok nämner syntax för fler-raders instr.
+Får klura på hur det dokumenteras enklast.
+
+** TODO [#A] Förtydliga att sidoeffekts-instr (dir) under "assert"
+<2016-03-20 sön>
+Eric undrade vad "dir" gjorde i "assert"-fasen.
+
+Det behöver förtydligas att de finns där först o främst för sidoeffekternas
+skull - att de fungerar mer som hjälpmedel än som assertions.
+(Hur fungerar det egentligen?? Om dir misslyckas, antar att det blir
+HARD_ERROR då. Men är inte 100!!! Behöver förtydligas.)
+
 * TODO Meningsfullat att validering kan ge HARD_ERROR?
 <2016-03-28 mån>
 Tror inte nån instr's validering avnänder HARD_ERROR.  Ty det är ju liksom
@@ -117,10 +185,6 @@ Vore vettigt att inte försöka ändra exitkoden som python använder vid
 obehandlade undantag eftersom det ju alltid kan uppstå undantag innan den
 koden ändrats.
 
-* TODO Dokumentera syntax för flerrads-instr i InstrDoc
-<2016-03-22 tis>
-Tror inte dok nämner syntax för fler-raders instr.
-Får klura på hur det dokumenteras enklast.
 * TODO Optimera gnm att importera valfria moduler lokalt
 <2016-03-21 mån>
 Moduler ska laddas vid behov.  T ex modulen för hjälp ska laddas enbart om
@@ -133,20 +197,6 @@ shellcheck_lib.cli.main_program.MainProgram#execute
 Enda begränsningen hos "<<EOF...EOF" är ju att sista raden måste avslutas m
 nyradstecken.  Det är naturligtvis en begränsning.
 Undrar hur skalen gör där, föresten.  Kanske har de en motsvarande syntax.
-* TODO --interpret ska heta "--actor"
-"actor" = den som agerar - den som utför "action"!
-* TODO [#A] Förtydliga att sidoeffekts-instr (dir) under "assert"
-<2016-03-20 sön>
-Eric undrade vad "dir" gjorde i "assert"-fasen.
-
-Det behöver förtydligas att de finns där först o främst för sidoeffekternas
-skull - att de fungerar mer som hjälpmedel än som assertions.
-(Hur fungerar det egentligen?? Om dir misslyckas, antar att det blir
-HARD_ERROR då. Men är inte 100!!! Behöver förtydligas.)
-
-* TODO InstructionDocumentation ska använda Description
-<2016-03-20 sön>
-Extraherade den klassen för impl av TCPhaseHelp.
 * TODO <2015-05-03 sön> Nya refaktoreringar
 ** TODO Nya modulnamn
 - document (dok m faser o instr, syntax, parsning)
@@ -158,10 +208,6 @@ Om faserna måste skrivas m versaler kan ev göra testfallen tydligare.
 
 Alternativt ska fasnamn vara skiftokänsliga.
 * TODO Byt namn: Anonymous -> Configuration
-* TODO Parser: alla faser namngivna + möjl att ange utgångsfas
-Ska inte längre finnas någon annonym fas.
-Istället ska alla faser ha ett namn.  Samt möjligheten att ange en av faserna
-som utgångsfas.
 * TODO Bugg m --interpreter
 
 Testfall:
@@ -212,8 +258,6 @@ Ev två olika setup: en som resolvar relativa sökvagar, o en som inte gör det.
 ** TODO Exekverare för shell-kommando
 Väldigt lik utgångsexekveraren.  Skilnnaden är att köra m shell=True,
 o ev inte splitta kommandoraden.
-* TODO Svit: Summering i rapporten
-Avslutande utskrift: Antal lyckade, fallerade, <andra typer av fel>
 * TODO Exekvering av fall: Rapportera mha "Rapportör" (pss som svit)
 * TODO Kring instruktioner
 ** TODO PassOrFailOrHardError: FAIL ska kunna ta olika varianter av felmeddelande
@@ -230,20 +274,6 @@ Funk kan antingen
 Tror bäst att skicka obj till main.  Då kan infrastrukturen säkerställa att
 alla instruktioner får samma objekt.  Därmed kan objektet lagra privat data då
 den efterfrågats (prestanda)
-* TODO Extrahera gemensam kod för Expectation
-<2016-01-09 lör>
-** TODO Extrahera basklasser
-** TODO config
-** TODO setup
-** TODO assert
-** TODO cleanup
-* TODO Refakt: validate_post_eds_if_applicable ska ta (EDS,home_dir)
-<2016-01-09 lör>
-klass: PreOrPostEdsSvhValidationErrorValidator
-
-I nuläget tas enbart EDS.
-Onödigt att begränsa till att ta enbart EDS.
-Skulle ju kunna finnas en instruktion som använder både EDS och home_dir.
 * TODO <2016-01-08 fre> Arg till olika Expectation har olika namn
 Namnen ska strömlinjeformas.
 * TODO <2016-01-08 fre> instr/main har olika ordning på arg (env, os_servc)
@@ -397,9 +427,6 @@ Använda samma namn i alla varianter av Expectation (dvs för de olika faserna).
 Nu finns t ex
  - validate_pre_eds_result
  - validation_pre_eds
-* TODO Byt till ValueAssertion där det går
-** TODO instruction_checks
-** TODO text-structure tests
 * TODO [#C] dokument-parser ska använda expl given fas för instr i anonym fas
 I dag finns en anonym fas.
 Den ska inte längre finnas.
@@ -466,10 +493,6 @@ Speciellt
 Dock, ett alt är naturligtvis att skapa alias m makron.  Är nog det enklaste,
 trots allt, iom att det förenklar programmets struktur, och funktionalliteten
 oavsett kommer att finnas iom makroprocessor.
-* TODO Dokumentation
-** TODO Hjälpsystem
-** TODO Users Guide
-** TODO Reference Manual
 * TODO Tester som inte är skrivna
 ** TODO Preprocessor med mellanslag
 Utmaningen är att själva exekverbara preprocessorna kan innehålla mellanslag o därför inte får splittas,
@@ -862,22 +885,6 @@ Alternativ ändrar man spec till att göra som idag.
 Införa argument som ges till alla metoder i alla instruktioner.
 Skulle erbjuda mölighet att skräddarsy den information som instruktionerna har
 tillgång till.
-* TODO Refaktoreringar
-** TODO <2016-01-06 ons> Byt namn: Anonymous -> Config
-** TODO <2016-01-06 ons> Byt namn: GlobalEnvironmentForX -> EnvironmentForX
-Gäller typerna för arg till instruktionernas steg-metoder.
-** TODO Göra sig av med fel-typen som är överflödig (fr UML, Failure?)
-** TODO Argument till instruktionernas steg
-Spikade först två generella miljöer: global miljö och fas-miljö.
-Iom att den modellen inte längre används kan mer ändamålsenliga argument
-användas.
-*** TODO act/script-gen
-Två argument:
-1. Skriptbyggare
-2. Inställningssättare (för t ex stdin).
-** TODO Använda nya TestCaseSetup i äldre tester
-Som du finns flera instruktions-klasser som enbart returnerar ett visst värde
-eller kastar undantag.  Alla de fallen kan hanteras av nya TestCaseSetup.
 * TODO Parsning av multi-rader
 Har spånat (o experimenterat m två varianter)
 ** b-sne:
