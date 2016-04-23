@@ -56,7 +56,7 @@ else:
         ]
 
     def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
-        return reporting_output.summary(root_path, exit_values.FAILED_TESTS)
+        return reporting_output.summary_for_valid_suite(root_path, 2, exit_values.FAILED_TESTS)
 
     def expected_exit_code(self) -> int:
         return exit_values.FAILED_TESTS.exit_code

@@ -15,6 +15,16 @@ def case(file_path: pathlib.Path, status: str) -> str:
     return 'CASE  ' + str(file_path) + ': ' + status
 
 
-def summary(file_path: pathlib.Path, exit_value: ExitValue) -> list:
+def summary_for_invalid_suite(file_path: pathlib.Path, exit_value: ExitValue) -> list:
     return ['',
+            exit_value.exit_identifier]
+
+
+def summary_for_valid_suite(file_path: pathlib.Path,
+                            num_cases: int,
+                            exit_value: ExitValue) -> list:
+    num_tests_line = 'Ran 1 test' if num_cases == 1 else 'Ran %d tests' % num_cases
+    return ['',
+            num_tests_line,
+            '',
             exit_value.exit_identifier]

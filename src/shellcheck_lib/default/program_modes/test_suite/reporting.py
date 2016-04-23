@@ -68,21 +68,30 @@ class DefaultRootSuiteReporter(reporting.RootSuiteReporter):
         return self._print_and_return_exit_code(exit_values.INVALID_SUITE)
 
     def report_final_results_for_valid_suite(self) -> int:
-        exit_value = self._valid_suite_exit_value()
+        num_cases, exit_value = self._valid_suite_exit_value()
+        self._line_printer.write(os.linesep)
+        num_tests_line = 'Ran 1 test' if num_cases == 1 else 'Ran %d tests' % num_cases
+        self._print_line(num_tests_line)
         return self._print_and_return_exit_code(exit_value)
 
-    def _valid_suite_exit_value(self) -> exit_values.ExitValue:
+    def _valid_suite_exit_value(self) -> (int, exit_values.ExitValue):
+        num_tests = 0
+        exit_value = exit_values.ALL_PASS
         for suite_reporter in self._sub_reporters:
             assert isinstance(suite_reporter, reporting.SubSuiteReporter)
             for case, result in suite_reporter.result():
+                num_tests += 1
                 if result.status is not Status.EXECUTED:
-                    return exit_values.FAILED_TESTS
-                if result.execution_result.status not in SUCCESS_STATUSES:
-                    return exit_values.FAILED_TESTS
-        return exit_values.ALL_PASS
+                    exit_value = exit_values.FAILED_TESTS
+                elif result.execution_result.status not in SUCCESS_STATUSES:
+                    exit_value = exit_values.FAILED_TESTS
+        return num_tests, exit_value
 
     def _print_and_return_exit_code(self, exit_value: exit_values.ExitValue) -> int:
         self._line_printer.write(os.linesep)
-        self._line_printer.write(exit_value.exit_identifier)
-        self._line_printer.write(os.linesep)
+        self._print_line(exit_value.exit_identifier)
         return exit_value.exit_code
+
+    def _print_line(self, s):
+        self._line_printer.write(s)
+        self._line_printer.write(os.linesep)
