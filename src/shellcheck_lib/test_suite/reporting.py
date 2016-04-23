@@ -51,6 +51,12 @@ class RootSuiteReporter:
     Reports the test process to the outside world.
     """
 
+    def root_suite_begin(self):
+        pass
+
+    def root_suite_end(self):
+        pass
+
     def new_sub_suite_reporter(self,
                                sub_suite: structure.TestSuite) -> SubSuiteReporter:
         raise NotImplementedError()

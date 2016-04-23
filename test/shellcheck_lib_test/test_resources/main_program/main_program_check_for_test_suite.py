@@ -44,9 +44,18 @@ class SetupBase:
         expected_lines = self.expected_stdout_lines(root_path)
         if expected_lines is not None:
             actual_lines = actual_result.stdout.splitlines()
-            put.assertEqual(expected_lines,
-                            actual_lines,
-                            'Output on stdout')
+            line_number = 0
+            for expected_line, actual_line in zip(expected_lines, actual_lines):
+                if isinstance(expected_line, str):
+                    put.assertEqual(expected_line, actual_line,
+                                    'Output of line ' + str(line_number))
+                else:
+                    match = expected_line.fullmatch(actual_line)
+                    if match is None:
+                        put.fail('Expecting match of "%s" (actual: "%s")' % (str(expected_line), actual_line))
+            put.assertEqual(len(expected_lines),
+                            len(actual_lines),
+                            'Expecting ' + str(len(expected_lines)) + ' lines')
 
 
 class SetupWithPreprocessor(main_program_check_base.SetupWithPreprocessor,
