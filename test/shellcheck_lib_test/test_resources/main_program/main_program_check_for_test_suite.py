@@ -15,6 +15,12 @@ class SetupBase:
         raise NotImplementedError()
 
     def expected_stdout_lines(self, root_path: pathlib.Path) -> list:
+        return self.expected_stdout_run_lines(root_path) + self.expected_stdout_reporting_lines(root_path)
+
+    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
+        raise NotImplementedError()
+
+    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
         raise NotImplementedError()
 
     def _check_base(self,
@@ -62,7 +68,7 @@ class SetupWithPreprocessor(main_program_check_base.SetupWithPreprocessor,
                         preprocessor_source_file_name: str) -> list:
         return [main_program.SUITE_COMMAND]
 
-    def expected_stdout_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
         raise NotImplementedError()
 
     def file_argument_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
@@ -100,7 +106,7 @@ class SetupWithoutPreprocessor(main_program_check_base.SetupWithoutPreprocessor,
                         root_path: pathlib.Path) -> list:
         return [main_program.SUITE_COMMAND]
 
-    def expected_stdout_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
         raise NotImplementedError()
 
     def file_argument_based_at(self, root_path: pathlib.Path) -> pathlib.Path:

@@ -1,4 +1,3 @@
-import os
 import pathlib
 
 from shellcheck_lib.default.program_modes.test_suite.reporting import FAILED_TESTS_EXIT_CODE
@@ -48,13 +47,16 @@ else:
             File('parser-error', '# empty content that would PASS, if it was not preprocessed'),
         ])
 
-    def expected_stdout_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
         return [
             reporting_output.suite_begin(root_path / 'main.suite'),
             reporting_output.case(root_path / 'pass', FullResultStatus.PASS.name),
             reporting_output.case(root_path / 'parser-error', AccessErrorType.PARSE_ERROR.name),
             reporting_output.suite_end(root_path / 'main.suite'),
         ]
+
+    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
+        return reporting_output.summary(root_path)
 
     def expected_exit_code(self) -> int:
         return FAILED_TESTS_EXIT_CODE
