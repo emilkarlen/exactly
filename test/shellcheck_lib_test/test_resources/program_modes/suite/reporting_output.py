@@ -16,4 +16,5 @@ def case(file_path: pathlib.Path, status: str) -> str:
 
 
 def summary(file_path: pathlib.Path, exit_value: ExitValue) -> list:
-    return []
+    return ['',
+            exit_value.exit_identifier]

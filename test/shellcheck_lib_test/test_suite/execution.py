@@ -390,14 +390,12 @@ class ExecutionTracingRootSuiteReporter(reporting.RootSuiteReporter):
         self.sub_suite_reporters.append(reporter)
         return reporter
 
-    def valid_suite_exit_code(self) -> int:
-        return self.VALID_SUITE_EXIT_CODE
-
-    def invalid_suite_exit_code(self) -> int:
+    def report_final_results_for_invalid_suite(self) -> int:
         return self.INVALID_SUITE_EXIT_CODE
 
-    def report_final_results(self):
+    def report_final_results_for_valid_suite(self) -> int:
         self.num_report_final_result_invocations += 1
+        return self.VALID_SUITE_EXIT_CODE
 
 
 class ExecutionTracingReporterFactory(reporting.RootSuiteReporterFactory):

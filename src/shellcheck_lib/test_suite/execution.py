@@ -39,7 +39,7 @@ class Executor:
             exit_code = self._process_suits(suits_in_processing_order)
             return exit_code
         except SuiteReadError:
-            exit_code = self._reporter.invalid_suite_exit_code()
+            exit_code = self._reporter.report_final_results_for_invalid_suite()
             return exit_code
 
     def _read_structure(self,
@@ -54,7 +54,7 @@ class Executor:
         """
         for suite in suits_in_processing_order:
             self._process_single_sub_suite(suite)
-        return self._reporter.valid_suite_exit_code()
+        return self._reporter.report_final_results_for_valid_suite()
 
     def _process_single_sub_suite(self,
                                   suite: structure.TestSuite):
