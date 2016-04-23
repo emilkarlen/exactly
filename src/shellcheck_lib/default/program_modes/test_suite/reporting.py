@@ -64,18 +64,25 @@ class DefaultRootSuiteReporter(reporting.RootSuiteReporter):
         self._sub_reporters.append(reporter)
         return reporter
 
-    def invalid_suite_exit_code(self) -> int:
-        return exit_values.INVALID_SUITE.exit_code
+    def report_final_results_for_invalid_suite(self) -> int:
+        return self._print_and_return_exit_code(exit_values.INVALID_SUITE)
 
-    def valid_suite_exit_code(self) -> int:
+    def report_final_results_for_valid_suite(self) -> int:
+        exit_value = self._valid_suite_exit_value()
+        return self._print_and_return_exit_code(exit_value)
+
+    def _valid_suite_exit_value(self) -> exit_values.ExitValue:
         for suite_reporter in self._sub_reporters:
             assert isinstance(suite_reporter, reporting.SubSuiteReporter)
             for case, result in suite_reporter.result():
                 if result.status is not Status.EXECUTED:
-                    return exit_values.FAILED_TESTS.exit_code
+                    return exit_values.FAILED_TESTS
                 if result.execution_result.status not in SUCCESS_STATUSES:
-                    return exit_values.FAILED_TESTS.exit_code
-        return exit_values.ALL_PASS.exit_code
+                    return exit_values.FAILED_TESTS
+        return exit_values.ALL_PASS
 
-    def report_final_results(self):
-        pass
+    def _print_and_return_exit_code(self, exit_value: exit_values.ExitValue) -> int:
+        self._line_printer.write(os.linesep)
+        self._line_printer.write(exit_value.exit_identifier)
+        self._line_printer.write(os.linesep)
+        return exit_value.exit_code

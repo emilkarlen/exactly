@@ -51,7 +51,11 @@ class RootSuiteReporter:
     Reports the test process to the outside world.
     """
 
-    def invalid_suite_exit_code(self) -> int:
+    def new_sub_suite_reporter(self,
+                               sub_suite: structure.TestSuite) -> SubSuiteReporter:
+        raise NotImplementedError()
+
+    def report_final_results_for_invalid_suite(self) -> int:
         """
         Executed iff the suite is invalid, so that no test cases can be executed.
         Note that this does not include invalid test cases, since these should not
@@ -60,21 +64,11 @@ class RootSuiteReporter:
         """
         raise NotImplementedError()
 
-    def valid_suite_exit_code(self) -> int:
+    def report_final_results_for_valid_suite(self) -> int:
         """
         Gives the number that shall be the exit code of the main program.
-        Called after the whole suite has been executed and reported.
-        :return: An integer in [0, 255]
-        """
-        raise NotImplementedError()
-
-    def new_sub_suite_reporter(self,
-                               sub_suite: structure.TestSuite) -> SubSuiteReporter:
-        raise NotImplementedError()
-
-    def report_final_results(self):
-        """
-        Called when all sub suites has been processed.
+        Called after all sub suites have been executed and reported.
+        :return: The exit code from the main program.
         """
         raise NotImplementedError()
 
