@@ -41,7 +41,7 @@ class MainProgram(main_program.MainProgram):
                                                  suite_hierarchy_reading.Reader(
                                                          suite_hierarchy_reading.Environment(
                                                                  default_configuration.preprocessor)),
-                                                 suite_reporting.ReporterFactory(),
+                                                 suite_reporting.DefaultRootSuiteReporterFactory(),
                                                  enumeration.DepthFirstEnumerator(),
                                                  case_processing.new_processor_that_should_not_pollute_current_process,
                                                  settings.suite_root_file_path)
