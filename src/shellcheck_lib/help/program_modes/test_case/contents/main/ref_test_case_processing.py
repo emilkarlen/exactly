@@ -1,5 +1,5 @@
-from shellcheck_lib.cli.cli_environment import exit_values
 from shellcheck_lib.cli.cli_environment.command_line_options import OPTION_FOR_PREPROCESSOR
+from shellcheck_lib.cli.cli_environment.program_modes.test_case import exit_values
 from shellcheck_lib.help.program_modes.test_case.contents.main.utils import Setup, post_setup_validation_step_name, \
     step_with_single_exit_value
 from shellcheck_lib.help.utils.formatting import cli_option

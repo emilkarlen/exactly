@@ -2,7 +2,7 @@ import pathlib
 import unittest
 
 from shellcheck_lib.cli import main_program
-from shellcheck_lib.cli.cli_environment.exit_values import NO_EXECUTION__PARSE_ERROR, EXECUTION__PASS
+from shellcheck_lib.cli.cli_environment.program_modes.test_case.exit_values import NO_EXECUTION__PARSE_ERROR, EXECUTION__PASS
 from shellcheck_lib.default.program_modes.test_suite.reporting import INVALID_SUITE_EXIT_CODE, FAILED_TESTS_EXIT_CODE
 from shellcheck_lib.util.string import lines_content
 from shellcheck_lib_test.default.test_resources import default_main_program_suite_preprocessing as pre_proc_tests

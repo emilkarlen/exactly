@@ -3,15 +3,16 @@ import shutil
 import unittest
 
 from shellcheck_lib.cli import main_program
-from shellcheck_lib.cli.cli_environment import exit_values
 from shellcheck_lib.cli.cli_environment.command_line_options import OPTION_FOR_KEEPING_SANDBOX_DIRECTORY, \
     OPTION_FOR_EXECUTING_ACT_PHASE
+from shellcheck_lib.cli.cli_environment.program_modes.test_case import exit_values
 from shellcheck_lib.document.syntax import section_header
 from shellcheck_lib.execution import environment_variables
 from shellcheck_lib.execution import execution_directory_structure
 from shellcheck_lib.execution import phases
 from shellcheck_lib.util.string import lines_content
 from shellcheck_lib_test.default.test_resources import default_main_program_case_preprocessing
+from shellcheck_lib_test.default.test_resources.internal_main_program_runner import RunViaMainProgramInternally
 from shellcheck_lib_test.default.test_resources.test_case_file_elements import phase_header_line
 from shellcheck_lib_test.execution.test_execution_directory_structure import \
     is_execution_directory_structure_after_execution
@@ -24,7 +25,6 @@ from shellcheck_lib_test.test_resources.main_program.main_program_check_base imp
 from shellcheck_lib_test.test_resources.main_program.main_program_check_base import tests_for_setup_without_preprocessor
 from shellcheck_lib_test.test_resources.main_program.main_program_check_for_test_case import SetupWithoutPreprocessor
 from shellcheck_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
-from shellcheck_lib_test.default.test_resources.internal_main_program_runner import RunViaMainProgramInternally
 from shellcheck_lib_test.test_resources.process import SubProcessResult, \
     SubProcessResultInfo
 from shellcheck_lib_test.test_resources.process_result_info_assertions import process_result_for_exit_value, \

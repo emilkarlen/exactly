@@ -1,7 +1,6 @@
 import shellcheck_lib.execution.execution_mode
-from shellcheck_lib.cli.cli_environment import exit_values
 from shellcheck_lib.cli.cli_environment.exit_value import ExitValue
-from shellcheck_lib.cli.cli_environment.exit_values import ALL_EXIT_VALUES
+from shellcheck_lib.cli.cli_environment.program_modes.test_case import exit_values
 from shellcheck_lib.execution.result import PartialResultStatus, FullResultStatus
 from shellcheck_lib.help.program_modes.test_case.contents.main.ref_test_case_processing import \
     FAILURE_CONDITION_OF_PREPROCESSING
@@ -31,7 +30,7 @@ def test_outcome_documentation(setup: Setup) -> doc.SectionContents:
                     _other_errors(setup)),
             section('Summary of exit codes and identifiers',
                     [_exit_value_table_for(setup,
-                                           sorted(ALL_EXIT_VALUES,
+                                           sorted(exit_values.ALL_EXIT_VALUES,
                                                   key=ExitValue.exit_identifier.fget))]),
         ]
     )
@@ -156,7 +155,7 @@ If validation fails, the test case is not executed.
 
 
 def _exit_value_table_for_all_exit_values(setup: Setup) -> ParagraphItem:
-    return _outcome_and_exit_value_table_for(setup, ALL_EXIT_VALUES)
+    return _outcome_and_exit_value_table_for(setup, exit_values.ALL_EXIT_VALUES)
 
 
 def _exit_value_table_for(setup: Setup,

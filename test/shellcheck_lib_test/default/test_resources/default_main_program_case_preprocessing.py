@@ -1,6 +1,4 @@
-from shellcheck_lib.cli.cli_environment import exit_values
-
-from shellcheck_lib.cli.cli_environment.exit_values import NO_EXECUTION_EXIT_CODE
+from shellcheck_lib.cli.cli_environment.program_modes.test_case import exit_values
 from shellcheck_lib.document.syntax import section_header
 from shellcheck_lib.execution import phases
 from shellcheck_lib.util.string import lines_content
@@ -52,4 +50,4 @@ class TransformationIntoTestCaseThatParserError(main_program_check_for_test_case
         return IF_BASENAME_IS_PASS_THEN_EMPTY_TC_ELSE_TC_THAT_WILL_CAUSE_PARSER_ERROR
 
     def expected_result(self) -> ExpectedSubProcessResult:
-        return process_result_info_assertions.is_process_result_for_exit_code(NO_EXECUTION_EXIT_CODE)
+        return process_result_info_assertions.is_process_result_for_exit_code(exit_values.NO_EXECUTION_EXIT_CODE)

@@ -1,7 +1,7 @@
 import pathlib
 import shutil
 
-from shellcheck_lib.cli.cli_environment.exit_values import NO_EXECUTION_EXIT_CODE
+from shellcheck_lib.cli.cli_environment.program_modes.test_case.exit_values import NO_EXECUTION_EXIT_CODE
 from shellcheck_lib.cli.program_modes.test_case.settings import Output, TestCaseExecutionSettings
 from shellcheck_lib.default.program_modes.test_case import processing
 from shellcheck_lib.execution import full_execution
