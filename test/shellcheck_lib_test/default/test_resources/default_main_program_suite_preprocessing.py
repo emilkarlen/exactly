@@ -10,6 +10,7 @@ from shellcheck_lib.util.string import lines_content
 from shellcheck_lib_test.test_resources import quoting
 from shellcheck_lib_test.test_resources.file_structure import DirContents, File
 from shellcheck_lib_test.test_resources.main_program import main_program_check_for_test_suite
+from shellcheck_lib_test.test_resources.program_modes.suite import reporting_output
 
 
 class PreprocessorIsAppliedWithTestCaseFileAsArgument(main_program_check_for_test_suite.SetupWithPreprocessor):
@@ -49,10 +50,10 @@ else:
 
     def expected_stdout_lines(self, root_path: pathlib.Path) -> list:
         return [
-            self.suite_begin(root_path / 'main.suite'),
-            self.case(root_path / 'pass', FullResultStatus.PASS.name),
-            self.case(root_path / 'parser-error', AccessErrorType.PARSE_ERROR.name),
-            self.suite_end(root_path / 'main.suite'),
+            reporting_output.suite_begin(root_path / 'main.suite'),
+            reporting_output.case(root_path / 'pass', FullResultStatus.PASS.name),
+            reporting_output.case(root_path / 'parser-error', AccessErrorType.PARSE_ERROR.name),
+            reporting_output.suite_end(root_path / 'main.suite'),
         ]
 
     def expected_exit_code(self) -> int:
