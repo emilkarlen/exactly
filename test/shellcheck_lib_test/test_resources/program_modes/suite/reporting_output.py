@@ -11,3 +11,7 @@ def suite_end(file_path: pathlib.Path) -> str:
 
 def case(file_path: pathlib.Path, status: str) -> str:
     return 'CASE  ' + str(file_path) + ': ' + status
+
+
+def summary(file_path: pathlib.Path) -> list:
+    return []

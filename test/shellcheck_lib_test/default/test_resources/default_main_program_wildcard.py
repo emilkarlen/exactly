@@ -18,11 +18,14 @@ class ReferencesToCaseFilesThatMatchesNoFiles(main_program_check_for_test_suite.
                                               '?.case'])),
         ])
 
-    def expected_stdout_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
         return [
             reporting_output.suite_begin(root_path / 'main.suite'),
             reporting_output.suite_end(root_path / 'main.suite'),
         ]
+
+    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
+        return reporting_output.summary(root_path)
 
     def expected_exit_code(self) -> int:
         return 0
@@ -38,11 +41,14 @@ class ReferencesToSuiteFilesThatMatchesNoFiles(main_program_check_for_test_suite
                                               '?.suite'])),
         ])
 
-    def expected_stdout_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
         return [
             reporting_output.suite_begin(root_path / 'main.suite'),
             reporting_output.suite_end(root_path / 'main.suite'),
         ]
+
+    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
+        return reporting_output.summary(root_path)
 
     def expected_exit_code(self) -> int:
         return 0
@@ -60,13 +66,16 @@ class ReferencesToCaseFilesThatMatchesFilesTypeQuestionMark(main_program_check_f
             empty_file('a.case'),
         ])
 
-    def expected_stdout_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
         return [
             reporting_output.suite_begin(root_path / 'main.suite'),
             reporting_output.case(root_path / 'a.case', FullResultStatus.PASS.name),
             reporting_output.case(root_path / 'b.case', FullResultStatus.PASS.name),
             reporting_output.suite_end(root_path / 'main.suite'),
         ]
+
+    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
+        return reporting_output.summary(root_path)
 
     def expected_exit_code(self) -> int:
         return 0
@@ -85,7 +94,7 @@ class ReferencesToSuiteFilesThatMatchesFilesTypeQuestionMark(
             empty_file('a.suite'),
         ])
 
-    def expected_stdout_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
         return [
             reporting_output.suite_begin(root_path / 'a.suite'),
             reporting_output.suite_end(root_path / 'a.suite'),
@@ -94,6 +103,9 @@ class ReferencesToSuiteFilesThatMatchesFilesTypeQuestionMark(
             reporting_output.suite_begin(root_path / 'main.suite'),
             reporting_output.suite_end(root_path / 'main.suite'),
         ]
+
+    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
+        return reporting_output.summary(root_path)
 
     def expected_exit_code(self) -> int:
         return 0
@@ -114,7 +126,7 @@ class ReferencesToCaseFilesThatMatchesFilesTypeCharacterRange(
             empty_file('_c.case'),
         ])
 
-    def expected_stdout_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
         return [
             reporting_output.suite_begin(root_path / 'main.suite'),
             reporting_output.case(root_path / '_a.case', FullResultStatus.PASS.name),
@@ -122,6 +134,9 @@ class ReferencesToCaseFilesThatMatchesFilesTypeCharacterRange(
             reporting_output.case(root_path / '_x.case', FullResultStatus.PASS.name),
             reporting_output.suite_end(root_path / 'main.suite'),
         ]
+
+    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
+        return reporting_output.summary(root_path)
 
     def expected_exit_code(self) -> int:
         return 0
@@ -142,7 +157,7 @@ class ReferencesToSuiteFilesThatMatchesFilesTypeCharacterRange(
             empty_file('_c.suite'),
         ])
 
-    def expected_stdout_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
         return [
             reporting_output.suite_begin(root_path / '_a.suite'),
             reporting_output.suite_end(root_path / '_a.suite'),
@@ -153,6 +168,9 @@ class ReferencesToSuiteFilesThatMatchesFilesTypeCharacterRange(
             reporting_output.suite_begin(root_path / 'main.suite'),
             reporting_output.suite_end(root_path / 'main.suite'),
         ]
+
+    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
+        return reporting_output.summary(root_path)
 
     def expected_exit_code(self) -> int:
         return 0
@@ -173,13 +191,16 @@ class ReferencesToSuiteFilesThatMatchesFilesTypeNegatedCharacterRange(
             empty_file('_c.suite'),
         ])
 
-    def expected_stdout_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
         return [
             reporting_output.suite_begin(root_path / '_c.suite'),
             reporting_output.suite_end(root_path / '_c.suite'),
             reporting_output.suite_begin(root_path / 'main.suite'),
             reporting_output.suite_end(root_path / 'main.suite'),
         ]
+
+    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
+        return reporting_output.summary(root_path)
 
     def expected_exit_code(self) -> int:
         return 0
@@ -200,12 +221,15 @@ class ReferencesToCaseFilesThatMatchesFilesTypeNegatedCharacterRange(
             empty_file('_c.case'),
         ])
 
-    def expected_stdout_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
         return [
             reporting_output.suite_begin(root_path / 'main.suite'),
             reporting_output.case(root_path / '_c.case', FullResultStatus.PASS.name),
             reporting_output.suite_end(root_path / 'main.suite'),
         ]
+
+    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
+        return reporting_output.summary(root_path)
 
     def expected_exit_code(self) -> int:
         return 0
@@ -234,7 +258,7 @@ class ReferencesToCaseFilesInAnyDirectSubDir(main_program_check_for_test_suite.S
             empty_file('2.case'),
         ])
 
-    def expected_stdout_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
         return [
             reporting_output.suite_begin(root_path / 'main.suite'),
             reporting_output.case(root_path / 'sub-dir-1' / 'a.case', FullResultStatus.PASS.name),
@@ -243,6 +267,9 @@ class ReferencesToCaseFilesInAnyDirectSubDir(main_program_check_for_test_suite.S
             reporting_output.case(root_path / 'sub-dir-2' / 'y.case', FullResultStatus.PASS.name),
             reporting_output.suite_end(root_path / 'main.suite'),
         ]
+
+    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
+        return reporting_output.summary(root_path)
 
     def expected_exit_code(self) -> int:
         return 0
@@ -271,7 +298,7 @@ class ReferencesToSuiteFilesInAnyDirectSubDir(main_program_check_for_test_suite.
             empty_file('2.suite'),
         ])
 
-    def expected_stdout_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
         return [
             reporting_output.suite_begin(root_path / 'sub-dir-1' / 'a.suite'),
             reporting_output.suite_end(root_path / 'sub-dir-1' / 'a.suite'),
@@ -284,6 +311,9 @@ class ReferencesToSuiteFilesInAnyDirectSubDir(main_program_check_for_test_suite.
             reporting_output.suite_begin(root_path / 'main.suite'),
             reporting_output.suite_end(root_path / 'main.suite'),
         ]
+
+    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
+        return reporting_output.summary(root_path)
 
     def expected_exit_code(self) -> int:
         return 0
@@ -312,7 +342,7 @@ class ReferencesToCaseFilesInAnySubDir(main_program_check_for_test_suite.SetupWi
             empty_file('2.case'),
         ])
 
-    def expected_stdout_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
         return [
             reporting_output.suite_begin(root_path / 'main.suite'),
             reporting_output.case(root_path / '1.case', FullResultStatus.PASS.name),
@@ -324,6 +354,9 @@ class ReferencesToCaseFilesInAnySubDir(main_program_check_for_test_suite.SetupWi
             reporting_output.case(root_path / 'sub-dir-2' / 'y.case', FullResultStatus.PASS.name),
             reporting_output.suite_end(root_path / 'main.suite'),
         ]
+
+    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
+        return reporting_output.summary(root_path)
 
     def expected_exit_code(self) -> int:
         return 0
@@ -352,7 +385,7 @@ class ReferencesToSuiteFilesInAnySubDir(main_program_check_for_test_suite.SetupW
             empty_file('_2.suite'),
         ])
 
-    def expected_stdout_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
         return [
             reporting_output.suite_begin(root_path / '_1.suite'),
             reporting_output.suite_end(root_path / '_1.suite'),
@@ -372,6 +405,9 @@ class ReferencesToSuiteFilesInAnySubDir(main_program_check_for_test_suite.SetupW
             reporting_output.suite_end(root_path / 'main.suite'),
         ]
 
+    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
+        return reporting_output.summary(root_path)
+
     def expected_exit_code(self) -> int:
         return 0
 
@@ -389,8 +425,11 @@ class ReferencesToCaseFilesThatAreDirectories(main_program_check_for_test_suite.
             empty_file('3'),
         ])
 
-    def expected_stdout_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
         return []
+
+    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
+        return reporting_output.summary(root_path)
 
     def expected_exit_code(self) -> int:
         return INVALID_SUITE_EXIT_CODE
@@ -409,8 +448,11 @@ class ReferencesToSuiteFilesThatAreDirectories(main_program_check_for_test_suite
             empty_file('3'),
         ])
 
-    def expected_stdout_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
         return []
+
+    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
+        return reporting_output.summary(root_path)
 
     def expected_exit_code(self) -> int:
         return INVALID_SUITE_EXIT_CODE
@@ -435,7 +477,7 @@ class ReferencesToCaseFilesInSubDirThatMatchesFiles(main_program_check_for_test_
             ]),
         ])
 
-    def expected_stdout_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
         return [
             reporting_output.suite_begin(root_path / 'main.suite'),
             reporting_output.case(root_path / 'sub-dir-1' / 'a.case', FullResultStatus.PASS.name),
@@ -444,6 +486,9 @@ class ReferencesToCaseFilesInSubDirThatMatchesFiles(main_program_check_for_test_
             reporting_output.case(root_path / 'sub-dir-2' / '22.case', FullResultStatus.PASS.name),
             reporting_output.suite_end(root_path / 'main.suite'),
         ]
+
+    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
+        return reporting_output.summary(root_path)
 
     def expected_exit_code(self) -> int:
         return 0
