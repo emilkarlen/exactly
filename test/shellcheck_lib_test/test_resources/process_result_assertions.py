@@ -1,11 +1,11 @@
 import os
 
-from shellcheck_lib.cli.cli_environment import exit_values
+from shellcheck_lib.cli.cli_environment.exit_value import ExitValue
 from shellcheck_lib_test.test_resources import value_assertion as va
 from shellcheck_lib_test.test_resources.process import SubProcessResult
 
 
-def is_result_for_exit_value(exit_value: exit_values.ExitValue) -> va.ValueAssertion:
+def is_result_for_exit_value(exit_value: ExitValue) -> va.ValueAssertion:
     """
     :rtype: A ValueAssertion on a SubProcessResult.
     """
