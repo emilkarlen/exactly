@@ -3,7 +3,12 @@ from shellcheck_lib.util.std import StdOutputFiles
 from . import structure
 
 
-class SubSuiteReporter:
+class SubSuiteProgressReporter:
+    """
+    A listener that may reports the progress of the execution of the test cases
+    in a single suite (TestSuite).
+    """
+
     def suite_begin(self):
         raise NotImplementedError()
 
@@ -20,7 +25,28 @@ class SubSuiteReporter:
         raise NotImplementedError()
 
 
-class CompleteSuiteReporter:
+class SubSuiteReporter:
+    def __init__(self,
+                 listener: SubSuiteProgressReporter):
+        self._listener = listener
+        self._result = []
+
+    def listener(self) -> SubSuiteProgressReporter:
+        return self._listener
+
+    def case_end(self,
+                 case: test_case_processing.TestCaseSetup,
+                 result: test_case_processing.Result):
+        self._result.append((case, result))
+
+    def result(self) -> list:
+        """
+        :rtype: [(TestCaseSetup, test_case_processing.Result)]
+        """
+        return self._result
+
+
+class RootSuiteReporter:
     """
     Reports the test process to the outside world.
     """
@@ -46,8 +72,14 @@ class CompleteSuiteReporter:
                                sub_suite: structure.TestSuite) -> SubSuiteReporter:
         raise NotImplementedError()
 
+    def report_final_results(self):
+        """
+        Called when all sub suites has been processed.
+        """
+        raise NotImplementedError()
 
-class ReporterFactory:
+
+class RootSuiteReporterFactory:
     def new_reporter(self,
-                     std_output_files: StdOutputFiles) -> CompleteSuiteReporter:
+                     std_output_files: StdOutputFiles) -> RootSuiteReporter:
         raise NotImplementedError()

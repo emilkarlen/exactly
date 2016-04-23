@@ -1,6 +1,7 @@
 import pathlib
 
 from shellcheck_lib.default.program_modes.test_case import processing as case_processing
+from shellcheck_lib.test_case import error_description
 from shellcheck_lib.test_case import test_case_processing
 from shellcheck_lib.test_suite import reporting
 from shellcheck_lib.test_suite import structure
@@ -10,14 +11,12 @@ from shellcheck_lib.test_suite.suite_hierarchy_reading import SuiteHierarchyRead
 from shellcheck_lib.util.std import StdOutputFiles
 
 
-# case_processing.new_processor(default_configuration),
-
 class Executor:
     def __init__(self,
                  default_case_configuration: case_processing.Configuration,
                  output: StdOutputFiles,
                  suite_hierarchy_reader: SuiteHierarchyReader,
-                 reporter_factory: reporting.ReporterFactory,
+                 reporter_factory: reporting.RootSuiteReporterFactory,
                  suite_enumerator: SuiteEnumerator,
                  test_case_processor_constructor,
                  suite_root_file_path: pathlib.Path):
@@ -63,15 +62,17 @@ class Executor:
         Executes a single suite (i.e. not it's sub suites).
         """
         sub_suite_reporter = self._reporter.new_sub_suite_reporter(suite)
-        sub_suite_reporter.suite_begin()
+        sub_suite_reporter.listener().suite_begin()
         configuration = self.configuration_for_cases_in_suite(suite)
         case_processor = self._test_case_processor_constructor(configuration)
         for case in suite.test_cases:
-            sub_suite_reporter.case_begin(case)
+            sub_suite_reporter.listener().case_begin(case)
             result = self._process_case(case_processor, case)
+            sub_suite_reporter.listener().case_end(case,
+                                                   result)
             sub_suite_reporter.case_end(case,
                                         result)
-        sub_suite_reporter.suite_end()
+        sub_suite_reporter.listener().suite_end()
         pass
 
     @staticmethod
@@ -80,7 +81,9 @@ class Executor:
         try:
             return case_processor.apply(case)
         except Exception as ex:
-            return test_case_processing.new_internal_error(str(ex))
+            error_info = test_case_processing.ErrorInfo(error_description.of_exception(ex),
+                                                        file_path=case.file_path)
+            return test_case_processing.new_internal_error(error_info)
 
     def configuration_for_cases_in_suite(self, suite):
         return case_processing.Configuration(

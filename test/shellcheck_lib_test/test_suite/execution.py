@@ -50,7 +50,7 @@ class TestError(unittest.TestCase):
         exit_code = executor.execute()
         # ASSERT #
         check_exit_code_and_empty_stdout(self,
-                                         ExecutionTracingCompleteSuiteReporter.INVALID_SUITE_EXIT_CODE,
+                                         ExecutionTracingRootSuiteReporter.INVALID_SUITE_EXIT_CODE,
                                          exit_code,
                                          str_std_out_files)
         ExpectedSuiteReporting.check_list(self, [], reporter_factory.complete_suite_reporter)
@@ -73,13 +73,13 @@ class TestError(unittest.TestCase):
         exit_code = executor.execute()
         # ASSERT #
         check_exit_code_and_empty_stdout(self,
-                                         ExecutionTracingCompleteSuiteReporter.VALID_SUITE_EXIT_CODE,
+                                         ExecutionTracingRootSuiteReporter.VALID_SUITE_EXIT_CODE,
                                          exit_code,
                                          str_std_out_files)
         ExpectedSuiteReporting.check_list(
-                self,
-                [ExpectedSuiteReporting(root, [(test_case, test_case_processing.Status.INTERNAL_ERROR)])],
-                reporter_factory.complete_suite_reporter)
+            self,
+            [ExpectedSuiteReporting(root, [(test_case, test_case_processing.Status.INTERNAL_ERROR)])],
+            reporter_factory.complete_suite_reporter)
 
 
 class TestReturnValueFromTestCaseProcessor(unittest.TestCase):
@@ -119,13 +119,13 @@ class TestReturnValueFromTestCaseProcessor(unittest.TestCase):
         exit_code = executor.execute()
         # ASSERT #
         check_exit_code_and_empty_stdout(self,
-                                         ExecutionTracingCompleteSuiteReporter.VALID_SUITE_EXIT_CODE,
+                                         ExecutionTracingRootSuiteReporter.VALID_SUITE_EXIT_CODE,
                                          exit_code,
                                          str_std_out_files)
         ExpectedSuiteReporting.check_list(
-                self,
-                [ExpectedSuiteReporting(root, [(test_case, result.status)])],
-                reporter_factory.complete_suite_reporter)
+            self,
+            [ExpectedSuiteReporting(root, [(test_case, result.status)])],
+            reporter_factory.complete_suite_reporter)
 
 
 class TestComplexSuite(unittest.TestCase):
@@ -137,17 +137,17 @@ class TestComplexSuite(unittest.TestCase):
         tc_access_error = TestCaseSetup(Path('access error'))
         tc_executed = TestCaseSetup(Path('executed'))
         root = new_test_suite(
-                'root',
-                [],
-                [
-                    tc_internal_error,
-                    tc_access_error,
-                    tc_executed,
-                ])
+            'root',
+            [],
+            [
+                tc_internal_error,
+                tc_access_error,
+                tc_executed,
+            ])
         test_case_processor = TestCaseProcessorThatGivesConstantPerCase({
             id(tc_internal_error): test_case_processing.new_internal_error(error_info.of_message('message')),
             id(tc_access_error): test_case_processing.new_access_error(
-                    test_case_processing.AccessErrorType.PARSE_ERROR, error_info.of_message('parse error')),
+                test_case_processing.AccessErrorType.PARSE_ERROR, error_info.of_message('parse error')),
             id(tc_executed): test_case_processing.new_executed(FULL_RESULT_PASS),
         })
         expected_suites = [
@@ -170,13 +170,13 @@ class TestComplexSuite(unittest.TestCase):
         exit_code = executor.execute()
         # ASSERT #
         check_exit_code_and_empty_stdout(self,
-                                         ExecutionTracingCompleteSuiteReporter.VALID_SUITE_EXIT_CODE,
+                                         ExecutionTracingRootSuiteReporter.VALID_SUITE_EXIT_CODE,
                                          exit_code,
                                          str_std_out_files)
         ExpectedSuiteReporting.check_list(
-                self,
-                expected_suites,
-                reporter_factory.complete_suite_reporter)
+            self,
+            expected_suites,
+            reporter_factory.complete_suite_reporter)
 
     def test_suite_execution_order_using_empty_suites(self):
         # ARRANGE #
@@ -209,13 +209,13 @@ class TestComplexSuite(unittest.TestCase):
         exit_code = executor.execute()
         # ASSERT #
         check_exit_code_and_empty_stdout(self,
-                                         ExecutionTracingCompleteSuiteReporter.VALID_SUITE_EXIT_CODE,
+                                         ExecutionTracingRootSuiteReporter.VALID_SUITE_EXIT_CODE,
                                          exit_code,
                                          str_std_out_files)
         ExpectedSuiteReporting.check_list(
-                self,
-                expected_suites,
-                reporter_factory.complete_suite_reporter)
+            self,
+            expected_suites,
+            reporter_factory.complete_suite_reporter)
 
     def test_complex_suite_structure_with_test_cases(self):
         # ARRANGE #
@@ -234,9 +234,9 @@ class TestComplexSuite(unittest.TestCase):
             id(tc_internal_error_11): test_case_processing.new_internal_error(error_info.of_message('message A')),
             id(tc_internal_error_21): test_case_processing.new_internal_error(error_info.of_message('message B')),
             id(tc_access_error_1): test_case_processing.new_access_error(
-                    test_case_processing.AccessErrorType.PARSE_ERROR, error_info.of_message('parse error')),
+                test_case_processing.AccessErrorType.PARSE_ERROR, error_info.of_message('parse error')),
             id(tc_access_error_12): test_case_processing.new_access_error(
-                    test_case_processing.AccessErrorType.FILE_ACCESS_ERROR, error_info.of_message('file access error')),
+                test_case_processing.AccessErrorType.FILE_ACCESS_ERROR, error_info.of_message('file access error')),
             id(tc_executed_11): test_case_processing.new_executed(FULL_RESULT_PASS),
             id(tc_executed_12): test_case_processing.new_executed(FULL_RESULT_PASS),
             id(tc_executed_1): test_case_processing.new_executed(FULL_RESULT_PASS),
@@ -278,13 +278,13 @@ class TestComplexSuite(unittest.TestCase):
         exit_code = executor.execute()
         # ASSERT #
         check_exit_code_and_empty_stdout(self,
-                                         ExecutionTracingCompleteSuiteReporter.VALID_SUITE_EXIT_CODE,
+                                         ExecutionTracingRootSuiteReporter.VALID_SUITE_EXIT_CODE,
                                          exit_code,
                                          str_std_out_files)
         ExpectedSuiteReporting.check_list(
-                self,
-                expected_suites,
-                reporter_factory.complete_suite_reporter)
+            self,
+            expected_suites,
+            reporter_factory.complete_suite_reporter)
 
 
 def check_exit_code_and_empty_stdout(put: unittest.TestCase,
@@ -352,7 +352,7 @@ class EventType(enum.Enum):
     SUITE_END = 4
 
 
-class ExecutionTracingSubSuiteReporter(reporting.SubSuiteReporter):
+class ExecutionTracingSubSuiteProgressReporter(reporting.SubSuiteProgressReporter):
     def __init__(self,
                  sub_suite: structure.TestSuite):
         self.sub_suite = sub_suite
@@ -377,15 +377,16 @@ class ExecutionTracingSubSuiteReporter(reporting.SubSuiteReporter):
         self.case_end_list.append((case, result))
 
 
-class ExecutionTracingCompleteSuiteReporter(reporting.CompleteSuiteReporter):
+class ExecutionTracingRootSuiteReporter(reporting.RootSuiteReporter):
     VALID_SUITE_EXIT_CODE = 72
     INVALID_SUITE_EXIT_CODE = 87
 
     def __init__(self):
         self.sub_suite_reporters = []
+        self.num_report_final_result_invocations = 0
 
     def new_sub_suite_reporter(self, sub_suite: structure.TestSuite) -> reporting.SubSuiteReporter:
-        reporter = ExecutionTracingSubSuiteReporter(sub_suite)
+        reporter = reporting.SubSuiteReporter(ExecutionTracingSubSuiteProgressReporter(sub_suite))
         self.sub_suite_reporters.append(reporter)
         return reporter
 
@@ -395,12 +396,15 @@ class ExecutionTracingCompleteSuiteReporter(reporting.CompleteSuiteReporter):
     def invalid_suite_exit_code(self) -> int:
         return self.INVALID_SUITE_EXIT_CODE
 
+    def report_final_results(self):
+        self.num_report_final_result_invocations += 1
 
-class ExecutionTracingReporterFactory(reporting.ReporterFactory):
+
+class ExecutionTracingReporterFactory(reporting.RootSuiteReporterFactory):
     def __init__(self):
-        self.complete_suite_reporter = ExecutionTracingCompleteSuiteReporter()
+        self.complete_suite_reporter = ExecutionTracingRootSuiteReporter()
 
-    def new_reporter(self, std_output_files: std.StdOutputFiles) -> reporting.CompleteSuiteReporter:
+    def new_reporter(self, std_output_files: std.StdOutputFiles) -> reporting.RootSuiteReporter:
         return self.complete_suite_reporter
 
 
@@ -409,14 +413,14 @@ class ExpectedSuiteReporting(tuple):
                 test_suite: structure.TestSuite,
                 case_and_result_status_list: list):
         """
-        :param case_and_result_status_list: [(TestCase, test_case_processing.TestCaseProcessingStatus)]
+        :param case_and_result_status_list: [(TestCase, test_case_processing.Status)]
         """
         return tuple.__new__(cls, (test_suite, case_and_result_status_list))
 
     @staticmethod
     def check_list(put: unittest.TestCase,
                    expected: list,
-                   actual: ExecutionTracingCompleteSuiteReporter):
+                   actual: ExecutionTracingRootSuiteReporter):
         """
         :param expected: [ExpectedSuiteReporting]
         """
@@ -436,35 +440,70 @@ class ExpectedSuiteReporting(tuple):
 
     def check(self,
               put: unittest.TestCase,
-              sr: ExecutionTracingSubSuiteReporter,
+              sr: reporting.SubSuiteReporter,
               msg_header=''):
+        listener = sr.listener()
+        assert isinstance(listener, ExecutionTracingSubSuiteProgressReporter)
         put.assertIs(self.suite,
-                     sr.sub_suite,
+                     listener.sub_suite,
                      msg_header + 'Suite instance')
         put.assertEqual(len(self.case_and_result_status_list),
-                        len(sr.case_begin_list),
+                        len(listener.case_begin_list),
                         msg_header + 'Number of invocations of case-begin')
+        self._assert_correct_progress_reporter_invocations(listener, msg_header, put)
+        self._assert_correct_sub_suite_reporter_invocations(sr, msg_header, put)
+
+    def _assert_correct_sub_suite_reporter_invocations(self,
+                                                       sr: reporting.SubSuiteReporter,
+                                                       msg_header, put):
         put.assertEqual(len(self.case_and_result_status_list),
-                        len(sr.case_end_list),
+                        len(sr.result()),
+                        msg_header + 'Number of registered results in ' + str(reporting.SubSuiteReporter))
+        for (expected_case, expected_status), (test_case_setup, result) in zip(self.case_and_result_status_list,
+                                                                               sr.result()):
+            put.assertIs(expected_case,
+                         test_case_setup,
+                         msg_header + 'Registered %s instance for case-begin' % str(TestCaseSetup))
+            put.assertIs(expected_status,
+                         result.status,
+                         msg_header + 'Registered %s instance for case-end' % str(test_case_processing.Status))
+
+    def _assert_correct_progress_reporter_invocations(self, listener, msg_header, put):
+        put.assertEqual(len(self.case_and_result_status_list),
+                        len(listener.case_end_list),
                         msg_header + 'Number of invocations of case-end')
         for (exp_case, exp_status), begin_case, (end_case, end_proc_result) in zip(self.case_and_result_status_list,
-                                                                                   sr.case_begin_list,
-                                                                                   sr.case_end_list):
-            put.assertIs(exp_case,
-                         begin_case,
-                         msg_header + 'Registered TestCase instance for case-begin')
-            put.assertIs(exp_case,
-                         end_case,
-                         msg_header + 'Registered TestCase instance for case-end')
-            put.assertIs(exp_status,
-                         end_proc_result.status,
-                         msg_header + 'Registered status instance for case-end')
+                                                                                   listener.case_begin_list,
+                                                                                   listener.case_end_list):
+            self._assert_case_is_registered_correctly(exp_case,
+                                                      exp_status,
+                                                      begin_case,
+                                                      end_case,
+                                                      end_proc_result,
+                                                      msg_header, put)
+        self._check_invokation_sequence(put, listener, msg_header)
 
-        self._check_invokation_sequence(put, sr, msg_header)
+    @staticmethod
+    def _assert_case_is_registered_correctly(expected_case: TestCaseSetup,
+                                             expected_status: test_case_processing.Status,
+                                             actual_begin_case,
+                                             actual_end_case,
+                                             actual_end_proc_result,
+                                             msg_header,
+                                             put):
+        put.assertIs(expected_case,
+                     actual_begin_case,
+                     msg_header + 'Registered %s instance for case-begin' % str(TestCaseSetup))
+        put.assertIs(expected_case,
+                     actual_end_case,
+                     msg_header + 'Registered %s instance for case-end' % str(TestCaseSetup))
+        put.assertIs(expected_status,
+                     actual_end_proc_result.status,
+                     msg_header + 'Registered %s instance for case-end' % str(test_case_processing.Status))
 
     def _check_invokation_sequence(self,
                                    put: unittest.TestCase,
-                                   sr: ExecutionTracingSubSuiteReporter,
+                                   sr: ExecutionTracingSubSuiteProgressReporter,
                                    msg_header=''):
         expected_num_cases = len(self.case_and_result_status_list)
         actual_num_events = len(sr.event_type_list)
@@ -492,11 +531,11 @@ DUMMY_EDS = ExecutionDirectoryStructure('test-root-dir')
 FULL_RESULT_PASS = new_pass(DUMMY_EDS)
 
 DEFAULT_CASE_PROCESSING = case_processing.Configuration(
-        lambda x: ((), ()),
-        InstructionsSetup({}, {}, {}, {}, {}),
-        new_for_script_language_setup(script_language_setup()),
-        IDENTITY_PREPROCESSOR,
-        False)
+    lambda x: ((), ()),
+    InstructionsSetup({}, {}, {}, {}, {}),
+    new_for_script_language_setup(script_language_setup()),
+    IDENTITY_PREPROCESSOR,
+    False)
 
 
 def suite():
