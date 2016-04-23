@@ -2,9 +2,8 @@ import pathlib
 import unittest
 
 from shellcheck_lib.cli import main_program
+from shellcheck_lib.cli.cli_environment.exit_values import NO_EXECUTION__PARSE_ERROR, EXECUTION__PASS
 from shellcheck_lib.default.program_modes.test_suite.reporting import INVALID_SUITE_EXIT_CODE, FAILED_TESTS_EXIT_CODE
-from shellcheck_lib.execution.result import FullResultStatus
-from shellcheck_lib.test_case.test_case_processing import AccessErrorType
 from shellcheck_lib.util.string import lines_content
 from shellcheck_lib_test.default.test_resources import default_main_program_suite_preprocessing as pre_proc_tests
 from shellcheck_lib_test.default.test_resources import default_main_program_wildcard as wildcard
@@ -72,7 +71,7 @@ class SuiteWithSingleEmptyTestCase(main_program_check_for_test_suite.SetupWithou
     def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
         return [
             reporting_output.suite_begin(root_path / 'main.suite'),
-            reporting_output.case(root_path / 'the.case', FullResultStatus.PASS.name),
+            reporting_output.case(root_path / 'the.case', EXECUTION__PASS.exit_identifier),
             reporting_output.suite_end(root_path / 'main.suite'),
         ]
 
@@ -105,7 +104,7 @@ class SuiteWithSingleTestCaseWithOnlySectionHeaders(main_program_check_for_test_
     def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
         return [
             reporting_output.suite_begin(root_path / 'main.suite'),
-            reporting_output.case(root_path / 'the.case', FullResultStatus.PASS.name),
+            reporting_output.case(root_path / 'the.case', EXECUTION__PASS.exit_identifier),
             reporting_output.suite_end(root_path / 'main.suite'),
         ]
 
@@ -171,7 +170,7 @@ class SuiteWithSingleCaseWithInvalidSyntax(main_program_check_for_test_suite.Set
     def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
         return [
             reporting_output.suite_begin(root_path / 'main.suite'),
-            reporting_output.case(root_path / 'invalid-syntax.case', AccessErrorType.PARSE_ERROR.name),
+            reporting_output.case(root_path / 'invalid-syntax.case', NO_EXECUTION__PARSE_ERROR.exit_identifier),
             reporting_output.suite_end(root_path / 'main.suite'),
         ]
 
@@ -207,11 +206,11 @@ class ComplexSuccessfulSuite(main_program_check_for_test_suite.SetupWithoutPrepr
             reporting_output.suite_end(root_path / 'sub-sub.suite'),
 
             reporting_output.suite_begin(root_path / 'sub.suite'),
-            reporting_output.case(root_path / 'sub.case', FullResultStatus.PASS.name),
+            reporting_output.case(root_path / 'sub.case', EXECUTION__PASS.exit_identifier),
             reporting_output.suite_end(root_path / 'sub.suite'),
 
             reporting_output.suite_begin(root_path / 'main.suite'),
-            reporting_output.case(root_path / 'main.case', FullResultStatus.PASS.name),
+            reporting_output.case(root_path / 'main.case', EXECUTION__PASS.exit_identifier),
             reporting_output.suite_end(root_path / 'main.suite'),
         ]
 

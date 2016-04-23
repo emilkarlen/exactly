@@ -1,7 +1,7 @@
 import pathlib
 
+from shellcheck_lib.cli.cli_environment.exit_values import EXECUTION__PASS
 from shellcheck_lib.default.program_modes.test_suite.reporting import INVALID_SUITE_EXIT_CODE
-from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib.util.string import lines_content
 from shellcheck_lib_test.test_resources.file_structure import DirContents, Dir, File, empty_file
 from shellcheck_lib_test.test_resources.main_program import main_program_check_for_test_suite
@@ -69,8 +69,8 @@ class ReferencesToCaseFilesThatMatchesFilesTypeQuestionMark(main_program_check_f
     def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
         return [
             reporting_output.suite_begin(root_path / 'main.suite'),
-            reporting_output.case(root_path / 'a.case', FullResultStatus.PASS.name),
-            reporting_output.case(root_path / 'b.case', FullResultStatus.PASS.name),
+            reporting_output.case(root_path / 'a.case', EXECUTION__PASS.exit_identifier),
+            reporting_output.case(root_path / 'b.case', EXECUTION__PASS.exit_identifier),
             reporting_output.suite_end(root_path / 'main.suite'),
         ]
 
@@ -129,9 +129,9 @@ class ReferencesToCaseFilesThatMatchesFilesTypeCharacterRange(
     def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
         return [
             reporting_output.suite_begin(root_path / 'main.suite'),
-            reporting_output.case(root_path / '_a.case', FullResultStatus.PASS.name),
-            reporting_output.case(root_path / '_b.case', FullResultStatus.PASS.name),
-            reporting_output.case(root_path / '_x.case', FullResultStatus.PASS.name),
+            reporting_output.case(root_path / '_a.case', EXECUTION__PASS.exit_identifier),
+            reporting_output.case(root_path / '_b.case', EXECUTION__PASS.exit_identifier),
+            reporting_output.case(root_path / '_x.case', EXECUTION__PASS.exit_identifier),
             reporting_output.suite_end(root_path / 'main.suite'),
         ]
 
@@ -224,7 +224,7 @@ class ReferencesToCaseFilesThatMatchesFilesTypeNegatedCharacterRange(
     def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
         return [
             reporting_output.suite_begin(root_path / 'main.suite'),
-            reporting_output.case(root_path / '_c.case', FullResultStatus.PASS.name),
+            reporting_output.case(root_path / '_c.case', EXECUTION__PASS.exit_identifier),
             reporting_output.suite_end(root_path / 'main.suite'),
         ]
 
@@ -261,10 +261,10 @@ class ReferencesToCaseFilesInAnyDirectSubDir(main_program_check_for_test_suite.S
     def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
         return [
             reporting_output.suite_begin(root_path / 'main.suite'),
-            reporting_output.case(root_path / 'sub-dir-1' / 'a.case', FullResultStatus.PASS.name),
-            reporting_output.case(root_path / 'sub-dir-1' / 'b.case', FullResultStatus.PASS.name),
-            reporting_output.case(root_path / 'sub-dir-2' / 'x.case', FullResultStatus.PASS.name),
-            reporting_output.case(root_path / 'sub-dir-2' / 'y.case', FullResultStatus.PASS.name),
+            reporting_output.case(root_path / 'sub-dir-1' / 'a.case', EXECUTION__PASS.exit_identifier),
+            reporting_output.case(root_path / 'sub-dir-1' / 'b.case', EXECUTION__PASS.exit_identifier),
+            reporting_output.case(root_path / 'sub-dir-2' / 'x.case', EXECUTION__PASS.exit_identifier),
+            reporting_output.case(root_path / 'sub-dir-2' / 'y.case', EXECUTION__PASS.exit_identifier),
             reporting_output.suite_end(root_path / 'main.suite'),
         ]
 
@@ -345,13 +345,14 @@ class ReferencesToCaseFilesInAnySubDir(main_program_check_for_test_suite.SetupWi
     def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
         return [
             reporting_output.suite_begin(root_path / 'main.suite'),
-            reporting_output.case(root_path / '1.case', FullResultStatus.PASS.name),
-            reporting_output.case(root_path / '2.case', FullResultStatus.PASS.name),
-            reporting_output.case(root_path / 'sub-dir-1' / 'a.case', FullResultStatus.PASS.name),
-            reporting_output.case(root_path / 'sub-dir-1' / 'b.case', FullResultStatus.PASS.name),
-            reporting_output.case(root_path / 'sub-dir-1' / 'sub-dir-1-1' / '1-1.case', FullResultStatus.PASS.name),
-            reporting_output.case(root_path / 'sub-dir-2' / 'x.case', FullResultStatus.PASS.name),
-            reporting_output.case(root_path / 'sub-dir-2' / 'y.case', FullResultStatus.PASS.name),
+            reporting_output.case(root_path / '1.case', EXECUTION__PASS.exit_identifier),
+            reporting_output.case(root_path / '2.case', EXECUTION__PASS.exit_identifier),
+            reporting_output.case(root_path / 'sub-dir-1' / 'a.case', EXECUTION__PASS.exit_identifier),
+            reporting_output.case(root_path / 'sub-dir-1' / 'b.case', EXECUTION__PASS.exit_identifier),
+            reporting_output.case(root_path / 'sub-dir-1' / 'sub-dir-1-1' / '1-1.case',
+                                  EXECUTION__PASS.exit_identifier),
+            reporting_output.case(root_path / 'sub-dir-2' / 'x.case', EXECUTION__PASS.exit_identifier),
+            reporting_output.case(root_path / 'sub-dir-2' / 'y.case', EXECUTION__PASS.exit_identifier),
             reporting_output.suite_end(root_path / 'main.suite'),
         ]
 
@@ -480,10 +481,10 @@ class ReferencesToCaseFilesInSubDirThatMatchesFiles(main_program_check_for_test_
     def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
         return [
             reporting_output.suite_begin(root_path / 'main.suite'),
-            reporting_output.case(root_path / 'sub-dir-1' / 'a.case', FullResultStatus.PASS.name),
-            reporting_output.case(root_path / 'sub-dir-1' / 'b.case', FullResultStatus.PASS.name),
-            reporting_output.case(root_path / 'sub-dir-2' / '11.case', FullResultStatus.PASS.name),
-            reporting_output.case(root_path / 'sub-dir-2' / '22.case', FullResultStatus.PASS.name),
+            reporting_output.case(root_path / 'sub-dir-1' / 'a.case', EXECUTION__PASS.exit_identifier),
+            reporting_output.case(root_path / 'sub-dir-1' / 'b.case', EXECUTION__PASS.exit_identifier),
+            reporting_output.case(root_path / 'sub-dir-2' / '11.case', EXECUTION__PASS.exit_identifier),
+            reporting_output.case(root_path / 'sub-dir-2' / '22.case', EXECUTION__PASS.exit_identifier),
             reporting_output.suite_end(root_path / 'main.suite'),
         ]
 
