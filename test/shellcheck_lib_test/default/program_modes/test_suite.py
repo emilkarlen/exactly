@@ -8,12 +8,13 @@ from shellcheck_lib.test_case.test_case_processing import AccessErrorType
 from shellcheck_lib.util.string import lines_content
 from shellcheck_lib_test.default.test_resources import default_main_program_suite_preprocessing as pre_proc_tests
 from shellcheck_lib_test.default.test_resources import default_main_program_wildcard as wildcard
+from shellcheck_lib_test.default.test_resources.internal_main_program_runner import RunViaMainProgramInternally
 from shellcheck_lib_test.test_resources.file_structure import DirContents, File
 from shellcheck_lib_test.test_resources.main_program import main_program_check_for_test_suite
 from shellcheck_lib_test.test_resources.main_program.main_program_check_base import \
     tests_for_setup_without_preprocessor, tests_for_setup_with_preprocessor
-from shellcheck_lib_test.default.test_resources.internal_main_program_runner import RunViaMainProgramInternally
 from shellcheck_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
+from shellcheck_lib_test.test_resources.program_modes.suite import reporting_output
 
 
 class InvalidOptions(main_program_check_for_test_suite.SetupWithoutPreprocessor):
@@ -44,8 +45,8 @@ class EmptySuite(main_program_check_for_test_suite.SetupWithoutPreprocessor):
 
     def expected_stdout_lines(self, root_path: pathlib.Path) -> list:
         return [
-            self.suite_begin(root_path / 'empty.suite'),
-            self.suite_end(root_path / 'empty.suite'),
+            reporting_output.suite_begin(root_path / 'empty.suite'),
+            reporting_output.suite_end(root_path / 'empty.suite'),
         ]
 
     def expected_exit_code(self) -> int:
@@ -64,9 +65,9 @@ class SuiteWithSingleEmptyTestCase(main_program_check_for_test_suite.SetupWithou
 
     def expected_stdout_lines(self, root_path: pathlib.Path) -> list:
         return [
-            self.suite_begin(root_path / 'main.suite'),
-            self.case(root_path / 'the.case', FullResultStatus.PASS.name),
-            self.suite_end(root_path / 'main.suite'),
+            reporting_output.suite_begin(root_path / 'main.suite'),
+            reporting_output.case(root_path / 'the.case', FullResultStatus.PASS.name),
+            reporting_output.suite_end(root_path / 'main.suite'),
         ]
 
     def expected_exit_code(self) -> int:
@@ -94,9 +95,9 @@ class SuiteWithSingleTestCaseWithOnlySectionHeaders(main_program_check_for_test_
 
     def expected_stdout_lines(self, root_path: pathlib.Path) -> list:
         return [
-            self.suite_begin(root_path / 'main.suite'),
-            self.case(root_path / 'the.case', FullResultStatus.PASS.name),
-            self.suite_end(root_path / 'main.suite'),
+            reporting_output.suite_begin(root_path / 'main.suite'),
+            reporting_output.case(root_path / 'the.case', FullResultStatus.PASS.name),
+            reporting_output.suite_end(root_path / 'main.suite'),
         ]
 
     def expected_exit_code(self) -> int:
@@ -151,9 +152,9 @@ class SuiteWithSingleCaseWithInvalidSyntax(main_program_check_for_test_suite.Set
 
     def expected_stdout_lines(self, root_path: pathlib.Path) -> list:
         return [
-            self.suite_begin(root_path / 'main.suite'),
-            self.case(root_path / 'invalid-syntax.case', AccessErrorType.PARSE_ERROR.name),
-            self.suite_end(root_path / 'main.suite'),
+            reporting_output.suite_begin(root_path / 'main.suite'),
+            reporting_output.case(root_path / 'invalid-syntax.case', AccessErrorType.PARSE_ERROR.name),
+            reporting_output.suite_end(root_path / 'main.suite'),
         ]
 
     def expected_exit_code(self) -> int:
@@ -181,16 +182,16 @@ class ComplexSuccessfulSuite(main_program_check_for_test_suite.SetupWithoutPrepr
 
     def expected_stdout_lines(self, root_path: pathlib.Path) -> list:
         return [
-            self.suite_begin(root_path / 'sub-sub.suite'),
-            self.suite_end(root_path / 'sub-sub.suite'),
+            reporting_output.suite_begin(root_path / 'sub-sub.suite'),
+            reporting_output.suite_end(root_path / 'sub-sub.suite'),
 
-            self.suite_begin(root_path / 'sub.suite'),
-            self.case(root_path / 'sub.case', FullResultStatus.PASS.name),
-            self.suite_end(root_path / 'sub.suite'),
+            reporting_output.suite_begin(root_path / 'sub.suite'),
+            reporting_output.case(root_path / 'sub.case', FullResultStatus.PASS.name),
+            reporting_output.suite_end(root_path / 'sub.suite'),
 
-            self.suite_begin(root_path / 'main.suite'),
-            self.case(root_path / 'main.case', FullResultStatus.PASS.name),
-            self.suite_end(root_path / 'main.suite'),
+            reporting_output.suite_begin(root_path / 'main.suite'),
+            reporting_output.case(root_path / 'main.case', FullResultStatus.PASS.name),
+            reporting_output.suite_end(root_path / 'main.suite'),
         ]
 
     def expected_exit_code(self) -> int:

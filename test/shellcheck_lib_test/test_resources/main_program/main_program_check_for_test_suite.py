@@ -17,15 +17,6 @@ class SetupBase:
     def expected_stdout_lines(self, root_path: pathlib.Path) -> list:
         raise NotImplementedError()
 
-    def suite_begin(self, file_path: pathlib.Path) -> str:
-        return 'SUITE ' + str(file_path) + ': BEGIN'
-
-    def suite_end(self, file_path: pathlib.Path) -> str:
-        return 'SUITE ' + str(file_path) + ': END'
-
-    def case(self, file_path: pathlib.Path, status: str) -> str:
-        return 'CASE  ' + str(file_path) + ': ' + status
-
     def _check_base(self,
                     put: unittest.TestCase,
                     root_path: pathlib.Path,
