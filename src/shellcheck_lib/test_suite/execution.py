@@ -52,8 +52,10 @@ class Executor:
         :param suits_in_processing_order: [TestSuite]
         :return: Exit code from main program.
         """
+        self._reporter.root_suite_begin()
         for suite in suits_in_processing_order:
             self._process_single_sub_suite(suite)
+        self._reporter.root_suite_end()
         return self._reporter.report_final_results_for_valid_suite()
 
     def _process_single_sub_suite(self,

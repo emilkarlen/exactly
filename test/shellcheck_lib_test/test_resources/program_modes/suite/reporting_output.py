@@ -1,4 +1,5 @@
 import pathlib
+import re
 
 from shellcheck_lib.cli.cli_environment.exit_value import ExitValue
 
@@ -23,8 +24,13 @@ def summary_for_invalid_suite(file_path: pathlib.Path, exit_value: ExitValue) ->
 def summary_for_valid_suite(file_path: pathlib.Path,
                             num_cases: int,
                             exit_value: ExitValue) -> list:
-    num_tests_line = 'Ran 1 test' if num_cases == 1 else 'Ran %d tests' % num_cases
+    parts = ['Ran']
+    num_tests_prefix = '1 test' if num_cases == 1 else '%d tests' % num_cases
+    parts.append(num_tests_prefix)
+    parts.append('in')
+    parts.append('.*')
+    num_tests_line_re = re.compile(' '.join(parts))
     return ['',
-            num_tests_line,
+            num_tests_line_re,
             '',
             exit_value.exit_identifier]
