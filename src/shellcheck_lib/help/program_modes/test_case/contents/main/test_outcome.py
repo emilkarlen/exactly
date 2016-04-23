@@ -1,6 +1,7 @@
 import shellcheck_lib.execution.execution_mode
 from shellcheck_lib.cli.cli_environment import exit_values
-from shellcheck_lib.cli.cli_environment.exit_values import ALL_EXIT_VALUES, ExitValue
+from shellcheck_lib.cli.cli_environment.exit_value import ExitValue
+from shellcheck_lib.cli.cli_environment.exit_values import ALL_EXIT_VALUES
 from shellcheck_lib.execution.result import PartialResultStatus, FullResultStatus
 from shellcheck_lib.help.program_modes.test_case.contents.main.ref_test_case_processing import \
     FAILURE_CONDITION_OF_PREPROCESSING
@@ -31,7 +32,7 @@ def test_outcome_documentation(setup: Setup) -> doc.SectionContents:
             section('Summary of exit codes and identifiers',
                     [_exit_value_table_for(setup,
                                            sorted(ALL_EXIT_VALUES,
-                                                  key=exit_values.ExitValue.exit_identifier.fget))]),
+                                                  key=ExitValue.exit_identifier.fget))]),
         ]
     )
 

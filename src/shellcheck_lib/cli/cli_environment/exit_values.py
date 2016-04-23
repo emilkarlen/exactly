@@ -1,22 +1,8 @@
+from shellcheck_lib.cli.cli_environment.exit_value import ExitValue
 from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib.test_case.test_case_processing import AccessErrorType
 
 NO_EXECUTION_EXIT_CODE = 3
-
-
-class ExitValue(tuple):
-    def __new__(cls,
-                exit_code: int,
-                exit_identifier: str):
-        return tuple.__new__(cls, (exit_code, exit_identifier))
-
-    @property
-    def exit_code(self) -> int:
-        return self[0]
-
-    @property
-    def exit_identifier(self) -> int:
-        return self[1]
 
 
 def _from_full_result(result: FullResultStatus) -> ExitValue:

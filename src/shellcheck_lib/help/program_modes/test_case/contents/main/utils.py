@@ -1,4 +1,4 @@
-from shellcheck_lib.cli.cli_environment import exit_values
+from shellcheck_lib.cli.cli_environment.exit_value import ExitValue
 from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from shellcheck_lib.help.utils.phase_names import phase_name_dictionary
 from shellcheck_lib.help.utils.render import SectionContentsRenderer
@@ -38,6 +38,6 @@ def post_setup_validation_step_name(setup: Setup) -> str:
 
 def step_with_single_exit_value(purpose_paragraphs: list,
                                 failure_condition: ParagraphItem,
-                                exit_value_on_error: exit_values.ExitValue) -> list:
+                                exit_value_on_error: ExitValue) -> list:
     outcome_on_error = singe_exit_value_display(exit_value_on_error)
     return purpose_paragraphs + [failure_condition, outcome_on_error]
