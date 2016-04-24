@@ -4,29 +4,29 @@
 # Basic examples.
 #
 
-first-step/shellcheck.suite
+first-step/package.suite
 
 #
 # Setup using the "setup" phase.
 #
 
-setup/shellcheck.suite
+setup/package.suite
 
 #
 # Cleanup using the "cleanup" phase.
 #
 
-cleanup/shellcheck.suite
+cleanup/package.suite
 
 #
 # Implementing custom behaviour using external programs
 # and the OS shell.
 #
 
-external-programs/shellcheck.suite
+external-programs/package.suite
 
 #
 # Organizing a test package in sub-directories
 #
 
-organize/shellcheck.suite
+organize/package.suite
