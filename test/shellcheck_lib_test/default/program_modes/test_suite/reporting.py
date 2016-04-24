@@ -16,10 +16,7 @@ class TestFinalResultFormatting(unittest.TestCase):
         num_test_cases = 5
         errors = {}
         # ACT #
-        actual_lines = sut.format_final_result_for_valid_suite(num_test_cases,
-                                                               elapsed_time,
-                                                               exit_identifier,
-                                                               errors)
+        actual_lines = sut.format_final_result_for_valid_suite(num_test_cases, elapsed_time, errors)
         # ASSERT #
         self._assert_at_least_one_line_was_generated(actual_lines)
         self._assert_line_is_number_of_executed_tests_line(actual_lines[0], num_test_cases)
@@ -36,10 +33,7 @@ class TestFinalResultFormatting(unittest.TestCase):
                   'longer_identifier_12': 12,
                   }
         # ACT #
-        actual_lines = sut.format_final_result_for_valid_suite(num_test_cases,
-                                                               elapsed_time,
-                                                               exit_identifier,
-                                                               errors)
+        actual_lines = sut.format_final_result_for_valid_suite(num_test_cases, elapsed_time, errors)
         # ASSERT #
         self._assert_at_least_one_line_was_generated(actual_lines)
         self._assert_line_is_number_of_executed_tests_line(actual_lines[0], num_test_cases)

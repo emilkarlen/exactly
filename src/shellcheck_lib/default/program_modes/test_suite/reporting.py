@@ -2,8 +2,8 @@ import datetime
 import os
 import pathlib
 
-from shellcheck_lib.cli.cli_environment.program_modes.test_suite import exit_values
 from shellcheck_lib.cli.cli_environment.program_modes.test_case import exit_values as test_case_exit_values
+from shellcheck_lib.cli.cli_environment.program_modes.test_suite import exit_values
 from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib.test_case import test_case_processing
 from shellcheck_lib.test_case.test_case_processing import Status
@@ -89,10 +89,7 @@ class DefaultRootSuiteReporter(reporting.RootSuiteReporter):
 
     def report_final_results_for_valid_suite(self, text_output_file: FilePrinter) -> exit_values.ExitValue:
         num_cases, errors, exit_value = self._valid_suite_exit_value()
-        lines = format_final_result_for_valid_suite(num_cases,
-                                                    self._total_time_timedelta,
-                                                    exit_value.exit_identifier,
-                                                    errors)
+        lines = format_final_result_for_valid_suite(num_cases, self._total_time_timedelta, errors)
         lines.insert(0, '')
         text_output_file.write_line(os.linesep.join(lines))
         return exit_value
@@ -100,7 +97,8 @@ class DefaultRootSuiteReporter(reporting.RootSuiteReporter):
     def _valid_suite_exit_value(self) -> (int, dict, exit_values.ExitValue):
         errors = {}
 
-        def add_error(identifier: str):
+        def add_error(exit_value: exit_values.ExitValue):
+            identifier = exit_value.exit_identifier
             current = errors.setdefault(identifier, 0)
             errors[identifier] = current + 1
 
@@ -110,18 +108,18 @@ class DefaultRootSuiteReporter(reporting.RootSuiteReporter):
             assert isinstance(suite_reporter, reporting.SubSuiteReporter)
             for case, result in suite_reporter.result():
                 num_tests += 1
+                case_exit_value = test_case_exit_values.from_result(result)
                 if result.status is not Status.EXECUTED:
                     exit_value = exit_values.FAILED_TESTS
-                    add_error(result.access_error_type.name)
+                    add_error(case_exit_value)
                 elif result.execution_result.status not in SUCCESS_STATUSES:
                     exit_value = exit_values.FAILED_TESTS
-                    add_error(result.execution_result.status.name)
+                    add_error(case_exit_value)
         return num_tests, errors, exit_value
 
 
 def format_final_result_for_valid_suite(num_cases: int,
                                         elapsed_time: datetime.timedelta,
-                                        exit_identifier: str,
                                         errors: dict) -> list:
     """
     :return: The list of lines that should be reported.
