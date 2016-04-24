@@ -6,10 +6,10 @@ from shellcheck_lib.cli.cli_environment.program_modes.test_suite import exit_val
 from shellcheck_lib.document.syntax import section_header
 from shellcheck_lib.execution import phases
 from shellcheck_lib.util.string import lines_content
+from shellcheck_lib_test.default.test_resources import suite_reporting_output
 from shellcheck_lib_test.test_resources import quoting
 from shellcheck_lib_test.test_resources.file_structure import DirContents, File
 from shellcheck_lib_test.test_resources.main_program import main_program_check_for_test_suite
-from shellcheck_lib_test.test_resources.program_modes.suite import reporting_output
 
 
 class PreprocessorIsAppliedWithTestCaseFileAsArgument(main_program_check_for_test_suite.SetupWithPreprocessor):
@@ -48,15 +48,15 @@ else:
 
     def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
         return [
-            reporting_output.suite_begin(root_path / 'main.suite'),
-            reporting_output.case(root_path / 'pass', EXECUTION__PASS.exit_identifier),
-            reporting_output.case(root_path / 'parser-error', NO_EXECUTION__PARSE_ERROR.exit_identifier),
-            reporting_output.suite_end(root_path / 'main.suite'),
+            suite_reporting_output.suite_begin(root_path / 'main.suite'),
+            suite_reporting_output.case(root_path / 'pass', EXECUTION__PASS.exit_identifier),
+            suite_reporting_output.case(root_path / 'parser-error', NO_EXECUTION__PARSE_ERROR.exit_identifier),
+            suite_reporting_output.suite_end(root_path / 'main.suite'),
         ]
 
     def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
         errors = {NO_EXECUTION__PARSE_ERROR: 1}
-        return reporting_output.summary_for_valid_suite(root_path, 2, exit_values.FAILED_TESTS, errors)
+        return suite_reporting_output.summary_for_valid_suite(root_path, exit_values.FAILED_TESTS)
 
     def expected_exit_code(self) -> int:
         return exit_values.FAILED_TESTS.exit_code

@@ -1,5 +1,6 @@
+from shellcheck_lib.cli.cli_environment.exit_value import ExitValue
 from shellcheck_lib.test_case import test_case_processing
-from shellcheck_lib.util.std import StdOutputFiles
+from shellcheck_lib.util.std import StdOutputFiles, FilePrinter
 from . import structure
 
 
@@ -61,7 +62,7 @@ class RootSuiteReporter:
                                sub_suite: structure.TestSuite) -> SubSuiteReporter:
         raise NotImplementedError()
 
-    def report_final_results_for_invalid_suite(self) -> int:
+    def report_final_results_for_invalid_suite(self, text_output_file: FilePrinter) -> ExitValue:
         """
         Executed iff the suite is invalid, so that no test cases can be executed.
         Note that this does not include invalid test cases, since these should not
@@ -70,7 +71,7 @@ class RootSuiteReporter:
         """
         raise NotImplementedError()
 
-    def report_final_results_for_valid_suite(self) -> int:
+    def report_final_results_for_valid_suite(self, text_output_file: FilePrinter) -> ExitValue:
         """
         Gives the number that shall be the exit code of the main program.
         Called after all sub suites have been executed and reported.
