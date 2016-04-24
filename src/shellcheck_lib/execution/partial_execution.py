@@ -488,4 +488,4 @@ class _ActInstructionHeaderExecutor(ElementHeaderExecutor):
         self.__phase_environment = phase_environment
 
     def apply(self, line: line_source.Line):
-        self.__phase_environment.append.source_line_header(line)
+        pass
