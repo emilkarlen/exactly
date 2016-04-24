@@ -1,26 +1,5 @@
 -*- org -*-
 
-* TODO [#A] Bugg m --interpreter
-
-Testfall:
-----------
-[act]
-
-import sys
-sys.exit(1)
-
-[assert]
-
-exitcode 1
-----------
-
-Kör: --interpreter /usr/bin/python3
-Får:
-----------
-INTERNAL_ERROR
-Exception:
-comment_lines() missing 1 required positional argument: 'lines'
-----------
 * TODO Se till att tester inte körs två ggr
 T ex TestFinalResultFormatting körs nu två ggr
 (en gång m intern MainProgramRunner, eng gång m extern), trots att det inte
@@ -766,6 +745,13 @@ som därför ska valideras för "existens".
 Själva exekveringen är annars identisk: EXECUTABLE ARGUMENT...
 * TODO Faser
 ** TODO Act
+*** TODO Ändra script-generering: ta bort ScriptSourceAccumulator#source_line_header
+Tankarna kring script-generering är helt o hållet förändrad från tidpunkten då
+det designades.  Då infördes struktur som idag är överflödig.
+Låt skript-genereringen skyffla in alla rader i skriptet precis så som de står
+i testfallet.
+Ta bort allt som har att göra med automatisk formattering o kännedom om syntax
+(kommentarer, raw_script_statement, ...).
 *** TODO <2015-09-26 lör> Parser ska ha syntax för att inkl [abc]-rader i källkoden
 Dessa rader är ju sektionsrubriker, och är därför omöjliga att inkludera i
 källkod.  Parsern ska ha syntax som löser detta.
