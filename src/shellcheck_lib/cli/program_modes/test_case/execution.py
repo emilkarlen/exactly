@@ -157,11 +157,11 @@ def _output_location(printer: FilePrinter,
     if test_case_file:
         printer.write_line('File: ' + str(test_case_file))
         has_output_header = True
+    if phase_name:
+        printer.write_line('In phase "%s"' % phase_name)
+        has_output_header = True
     if line:
         printer.write_line('Line {}: `{}\''.format(line.line_number, line.text))
-        has_output_header = True
-    if phase_name:
-        printer.write_line('In phase %s' % phase_name)
         has_output_header = True
 
     if has_output_header:
