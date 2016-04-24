@@ -51,12 +51,8 @@ def assertions(utc: unittest.TestCase,
     home_dir_name = str(actual.home_dir_path)
     test_root_dir_name = str(actual.partial_result.execution_directory_structure.act_dir)
 
-    expected_contents = os.linesep.join(['# Line 1',
-                                         '# source for line one',
-                                         HOME_DIR_HEADER + home_dir_name,
+    expected_contents = os.linesep.join([HOME_DIR_HEADER + home_dir_name,
                                          '# comment on line two',
-                                         '# Line 3',
-                                         '# source for line three',
                                          TEST_ROOT_DIR_HEADER + test_root_dir_name,
                                          ''])
 
