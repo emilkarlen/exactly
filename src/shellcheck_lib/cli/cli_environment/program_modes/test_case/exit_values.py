@@ -1,41 +1,50 @@
 from shellcheck_lib.cli.cli_environment.exit_value import ExitValue
 from shellcheck_lib.execution.result import FullResultStatus
-from shellcheck_lib.test_case.test_case_processing import AccessErrorType
+from shellcheck_lib.test_case import test_case_processing as processing
 
 NO_EXECUTION_EXIT_CODE = 3
 
 
-def _from_full_result(result: FullResultStatus) -> ExitValue:
+def from_full_result(result: FullResultStatus) -> ExitValue:
     return ExitValue(result.value,
                      result.name)
 
 
-def _from_access_error(result: AccessErrorType) -> ExitValue:
+def from_access_error(result: processing.AccessErrorType) -> ExitValue:
     return ExitValue(NO_EXECUTION_EXIT_CODE,
                      result.name)
 
 
-NO_EXECUTION__FILE_ACCESS_ERROR = _from_access_error(AccessErrorType.FILE_ACCESS_ERROR)
+def from_result(result: processing.Result) -> ExitValue:
+    if result.status is processing.Status.EXECUTED:
+        return from_full_result(result.execution_result.status)
+    elif result.status is processing.Status.ACCESS_ERROR:
+        return from_access_error(result.access_error_type)
+    else:
+        return EXECUTION__IMPLEMENTATION_ERROR
 
-NO_EXECUTION__PRE_PROCESS_ERROR = _from_access_error(AccessErrorType.PRE_PROCESS_ERROR)
 
-NO_EXECUTION__PARSE_ERROR = _from_access_error(AccessErrorType.PARSE_ERROR)
+NO_EXECUTION__FILE_ACCESS_ERROR = from_access_error(processing.AccessErrorType.FILE_ACCESS_ERROR)
 
-EXECUTION__PASS = _from_full_result(FullResultStatus.PASS)
+NO_EXECUTION__PRE_PROCESS_ERROR = from_access_error(processing.AccessErrorType.PRE_PROCESS_ERROR)
 
-EXECUTION__VALIDATE = _from_full_result(FullResultStatus.VALIDATE)
+NO_EXECUTION__PARSE_ERROR = from_access_error(processing.AccessErrorType.PARSE_ERROR)
 
-EXECUTION__FAIL = _from_full_result(FullResultStatus.FAIL)
+EXECUTION__PASS = from_full_result(FullResultStatus.PASS)
 
-EXECUTION__SKIPPED = _from_full_result(FullResultStatus.SKIPPED)
+EXECUTION__VALIDATE = from_full_result(FullResultStatus.VALIDATE)
 
-EXECUTION__XFAIL = _from_full_result(FullResultStatus.XFAIL)
+EXECUTION__FAIL = from_full_result(FullResultStatus.FAIL)
 
-EXECUTION__XPASS = _from_full_result(FullResultStatus.XPASS)
+EXECUTION__SKIPPED = from_full_result(FullResultStatus.SKIPPED)
 
-EXECUTION__HARD_ERROR = _from_full_result(FullResultStatus.HARD_ERROR)
+EXECUTION__XFAIL = from_full_result(FullResultStatus.XFAIL)
 
-EXECUTION__IMPLEMENTATION_ERROR = _from_full_result(FullResultStatus.IMPLEMENTATION_ERROR)
+EXECUTION__XPASS = from_full_result(FullResultStatus.XPASS)
+
+EXECUTION__HARD_ERROR = from_full_result(FullResultStatus.HARD_ERROR)
+
+EXECUTION__IMPLEMENTATION_ERROR = from_full_result(FullResultStatus.IMPLEMENTATION_ERROR)
 
 ALL_EXIT_VALUES = [
     NO_EXECUTION__FILE_ACCESS_ERROR,
