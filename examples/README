@@ -1,13 +1,19 @@
-Generate the executable files needed by the examples using
+NOTE!
+Some test cases may fail because some
+external programs used by the examples may not be found on the current OS.
+E.g. /usr/bin/python.
 
-python3 make-executables.py all
+The examples need some executable test programs to be generated first.
+Generate them using:
+
+>python3 make-executables.py all
 
 
-Remove them using
+Remove them using:
 
-python3 make-executables.py clean
+>python3 make-executables.py clean
 
 
-All examples can be run using
+All examples can be run using:
 
 >shellcheck suite examples.suite
