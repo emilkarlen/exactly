@@ -3,6 +3,7 @@ import os
 import pathlib
 
 from shellcheck_lib.cli.cli_environment.program_modes.test_suite import exit_values
+from shellcheck_lib.cli.cli_environment.program_modes.test_case import exit_values as test_case_exit_values
 from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib.test_case import test_case_processing
 from shellcheck_lib.test_case.test_case_processing import Status
@@ -37,14 +38,8 @@ class DefaultSubSuiteProgressReporter(reporting.SubSuiteProgressReporter):
     def case_end(self,
                  case: test_case_processing.TestCaseSetup,
                  result: test_case_processing.Result):
-        if result.status is not test_case_processing.Status.EXECUTED:
-            if result.status is test_case_processing.Status.INTERNAL_ERROR:
-                self.output_file.write_line(result.status.name)
-            else:
-                self.output_file.write_line(result.access_error_type.name)
-        else:
-            status = result.execution_result.status
-            self.output_file.write_line(status.name)
+        exit_value = test_case_exit_values.from_result(result)
+        self.output_file.write_line(exit_value.exit_identifier)
 
     def _file_path_pres(self, file: pathlib.Path):
         try:
