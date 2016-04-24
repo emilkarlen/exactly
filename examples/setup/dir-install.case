@@ -6,8 +6,8 @@ dir a-directory
 dir even/more/directories
 
 #
-# "install" installes existing files and directories into the
-# temporyary execution directory.
+# "install" installs existing files and directories into the
+# temporary execution directory.
 #
 
 install dir-with-1-dir-and-2-plain-files
