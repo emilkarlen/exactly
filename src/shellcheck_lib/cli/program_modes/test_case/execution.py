@@ -1,7 +1,7 @@
 import pathlib
 import shutil
 
-from shellcheck_lib.cli.cli_environment.program_modes.test_case.exit_values import NO_EXECUTION_EXIT_CODE
+from shellcheck_lib.cli.cli_environment.program_modes.test_case import exit_values
 from shellcheck_lib.cli.program_modes.test_case.settings import Output, TestCaseExecutionSettings
 from shellcheck_lib.cli.util.error_message_printing import output_location
 from shellcheck_lib.default.program_modes.test_case import processing
@@ -35,18 +35,13 @@ class Executor:
 
     def _execute_normal(self) -> int:
         result = self._process(self._settings.is_keep_execution_directory_root)
+        exit_value = exit_values.from_result(result)
         if result.status is test_case_processing.Status.EXECUTED:
-            full_result = result.execution_result
-            self._report_full_result(full_result)
-            return full_result.status.value
+            self._report_full_result(result.execution_result)
         else:
-            if result.status is test_case_processing.Status.INTERNAL_ERROR:
-                self.__output_error_result(result.status.name,
-                                           result.error_info)
-            else:
-                self.__output_error_result(result.access_error_type.name,
-                                           result.error_info)
-            return NO_EXECUTION_EXIT_CODE
+            self.__output_error_result(exit_value.exit_identifier,
+                                       result.error_info)
+        return exit_value.exit_code
 
     def __output_error_result(self,
                               stdout_error_code: str,
