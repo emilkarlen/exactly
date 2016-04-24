@@ -1,16 +1,32 @@
 -*- org -*-
 
+* TODO [#A] Bugg m --interpreter
+
+Testfall:
+----------
+[act]
+
+import sys
+sys.exit(1)
+
+[assert]
+
+exitcode 1
+----------
+
+Kör: --interpreter /usr/bin/python3
+Får:
+----------
+INTERNAL_ERROR
+Exception:
+comment_lines() missing 1 required positional argument: 'lines'
+----------
 * TODO Se till att tester inte körs två ggr
 T ex TestFinalResultFormatting körs nu två ggr
 (en gång m intern MainProgramRunner, eng gång m extern), trots att det inte
 använder någon MainProgramRunner.
 Orsaken är att det enbart finns en suite(), som används både för att
 sammanställa enhetstester och tester mot MainProgramRunner.
-* TODO Ny funktionallitet
-** TODO Köra flera tester på CL som "anonym" svit
-** TODO Färgläggning av exit-identifierare
-OK grön, FAIL röd ...
-VALIDATE ... orange
 * TODO Byta namn: main_program_executor_for_test.py -> main-program-executor-for-test.py
 * TODO Byt namn: "anonymous" -> "configuration"
 * TODO Namnge "genererade tester" mha 'shortDescription'
@@ -24,7 +40,6 @@ Den ger den konkreta testklassens namn som test-namn.
 ** TODO Ska de levereras m installation?
 ** TODO Makefile
 som skapar/rensar exekverbara, kör svit.
-** TODO gitignore på genererade filer?
 * TODO Installation och distribution
 ** TODO Distribuera filer
 *** TODO LICENCE
@@ -33,22 +48,6 @@ som skapar/rensar exekverbara, kör svit.
 ** TODO licensfiler
 Vet inte vilka licensfiler som behövs, var de ska ligga, vad de ska innehålla,
 vad README ska innehålla.
-* TODO Rendering
-
-** TODO Extrahera test av textrenderare till eget test
-Idag är del av test av paragraph.
-
-** ParagraphItemRenderer för test ska kunna rendera riktiga Para[StrText]
-Idag enbart konstant värde.
-Om en renderare av endat ett enda fall men som renderar riktig data så
-förbättras testerna genom att verifiera att rätt element renderas.
-
-** TODO Test av FullParagraphItemRenderer
-
-* TODO textformat/Table: Bör ha separat klass för TableCell
-Idag är det en lista av PI.  Knölig o inflexibel struktur.
-Svår att förstå o skapa tabeller.
-Inflexibel vad gäller möjlighet att ha skiftande cell-egenskaper.
 * TODO TypeError ist för ValueError för visitorer appl på felaktigt objekt
 * TODO Ändra --rel-cwd -> --rel-pwd
 <2016-04-03 sön>
@@ -56,63 +55,6 @@ Inflexibel vad gäller möjlighet att ha skiftande cell-egenskaper.
 <2016-04-02 lör>
 Det riskerar ju att atc (action to check) kan sabba
 filer där.
-* TODO Refaktoreringar
-** TODO Modulorganisation
-*** TODO [#A] script_language
-
-*** TODO instructions, act_phase_setups
-Var ska de ligga!!!???
-De har det gemensamt att de tillhör test-case och att de är "utvidningsbar"
-funktionallitet.  Vill inte ha dem på högsta nivå.
-*** TODO document -> section_document
-** TODO Refakt: full/partiell exekvering i separata paket
-<2016-04-02 lör>
-** TODO Bör ersättas med funktionerna i python_program_execution?
-Tror det är precis det här de funktionerna används till.
-----------
-    def file_structure(self, root_path: pathlib.Path,
-                       python_executable_file_name: str,
-                       preprocessor_source_file_name: str) -> DirContents:
-        preprocessor = '%s %s' % (quoting.file_name(python_executable_file_name),
-                                  quoting.file_name(preprocessor_source_file_name))
-----------
-** TODO InstructionDocumentation ska använda Description
-<2016-03-20 sön>
-Extraherade den klassen för impl av TCPhaseHelp.
-
-** TODO Validate_post_eds_if_applicable ska ta (EDS,home_dir)
-<2016-01-09 lör>
-klass: PreOrPostEdsSvhValidationErrorValidator
-
-I nuläget tas enbart EDS.
-Onödigt att begränsa till att ta enbart EDS.
-Skulle ju kunna finnas en instruktion som använder både EDS och home_dir.
-
-** TODO Byt till ValueAssertion där det går
-*** TODO instruction_checks
-*** TODO text-structure tests
-** TODO Extrahera gemensam kod för Expectation
-<2016-01-09 lör>
-*** TODO Extrahera basklasser
-*** TODO config
-*** TODO setup
-*** TODO assert
-*** TODO cleanup
-** TODO <2016-01-06 ons> Byt namn: Anonymous -> Config
-** TODO <2016-01-06 ons> Byt namn: GlobalEnvironmentForX -> EnvironmentForX
-Gäller typerna för arg till instruktionernas steg-metoder.
-** TODO Göra sig av med fel-typen som är överflödig (fr UML, Failure?)
-** TODO Argument till instruktionernas steg
-Spikade först två generella miljöer: global miljö och fas-miljö.
-Iom att den modellen inte längre används kan mer ändamålsenliga argument
-användas.
-*** TODO act/script-gen
-Två argument:
-1. Skriptbyggare
-2. Inställningssättare (för t ex stdin).
-** TODO Använda nya TestCaseSetup i äldre tester
-Som du finns flera instruktions-klasser som enbart returnerar ett visst värde
-eller kastar undantag.  Alla de fallen kan hanteras av nya TestCaseSetup.
 * TODO Dokumentation
 ** TODO Dok tanken att instr tar arg pss som unix-kommandon m växlar
 Det här är ju en genomgående tanke.  Som sådan bör den dokumenteras/nämnas.
@@ -209,10 +151,6 @@ Tror detta ska kunna lösas m lokala importer.
 
 Koden som köra case/suite/help:
 shellcheck_lib.cli.main_program.MainProgram#execute
-* TODO Variant "<<EOF ...\EOF": sista raden avslutas ej m nyrad
-Enda begränsningen hos "<<EOF...EOF" är ju att sista raden måste avslutas m
-nyradstecken.  Det är naturligtvis en begränsning.
-Undrar hur skalen gör där, föresten.  Kanske har de en motsvarande syntax.
 * TODO <2015-05-03 sön> Nya refaktoreringar
 ** TODO Nya modulnamn
 - document (dok m faser o instr, syntax, parsning)
@@ -224,27 +162,6 @@ Om faserna måste skrivas m versaler kan ev göra testfallen tydligare.
 
 Alternativt ska fasnamn vara skiftokänsliga.
 * TODO Byt namn: Anonymous -> Configuration
-* TODO Bugg m --interpreter
-
-Testfall:
-----------
-[act]
-
-import sys
-sys.exit(1)
-
-[assert]
-
-exitcode 1
-----------
-
-Kör: --interpreter /usr/bin/python3
-Får:
-----------
-INTERNAL_ERROR
-Exception:
-comment_lines() missing 1 required positional argument: 'lines'
-----------
 * TODO __main__ ska köra run_suite (inte unittest.main())
 <2016-01-19 tis>
 if __name__ == '__main__':
@@ -332,11 +249,6 @@ Skulle t ex kunna finnas i InstructionWithStdValidation:
 En fördel är att det gör det möjligt att "typ-säkert" återanvända
 steg-exkeverare (de som partial_execution använder för att köra steg).
 
-* DONE <2016-01-08 fre> Test av exekverings-sekvens
-För att testa felhantering måste de faser där felet uppstår ha en instruktion
-efter den som orsakar felet.
-Annars testas det inte att fasen avbryts direkt vid instruktions-fel.
-(Idag testas enbart hur efterföljande faser o steg exekveras.)
 * TODO <2016-01-06 ons> execute: La till --rel-act: Ta bort?
 Finns en anledning till att jag inte laggt dit den från början?
 T ex att det inte ska gå att lägga program i act som ska köras?
@@ -453,10 +365,6 @@ Lägg i ett paket som enbart innehåller "utdvidningar".
 Dvs separera
  - infrastruktur
  - användning av infrastrukturen
-* DONE Paketstruktur: flytta act_phase_setup till test_case.act
-Kanske.
-El är test_case.act till för enbart instruktoner?
-act_phase_setup kanske tillhör exekvering mer
 * TODO main-program: möjl att köra flera tester m en o samma kommandorad
 Typ: Om fler än en tesfalls-fil anges så körs de som en test-svit.
 
@@ -476,21 +384,6 @@ tmp/internal.
 Vill ha funktion, typ: tmp_file_for_instruction(prefix,suffix,contents)
 -> pathlib.Path
 som automatiskt lägger den i tmp/internal.
-* DONE cwd för act-exekveringen
-Ser ut som det är fel idag, dvs att act_dir används ovillkorligt.
-Ska vara: cwd.
-                exitcode = self.__script_handling.executor.execute(
-                    self.__source_setup,
-                    self.execution_directory_structure.act_dir,
-                    self.configuration.home_dir,
-                    self.__execution_directory_structure,
-                    StdFiles(f_stdin,
-                             StdOutputFiles(f_stdout,
-                                            f_stderr)))
-
-** Säkerställ: om stdin ska omdirigeras att filen hittas
-Idag är cwd alltid (troligtvis) act-dir. Då kan sökvägar vara relativa denna.
-Ev måste det hanteras om cwd kan vara nått annat.
 * TODO Syntax för instruktioner: vänta till EXPECTED ACTUAL??
 Bör se på om det är möjligt.
 T ex
@@ -872,14 +765,6 @@ Enda skillnaden är att interpret tar ett argument som förutsätts är en fil o
 som därför ska valideras för "existens".
 Själva exekveringen är annars identisk: EXECUTABLE ARGUMENT...
 * TODO Faser
-** TODO Byt namn "anonymous" -> "configuration"
-** TODO Configuration
-*** TODO <2015-09-26 lör> Builder för att modifiera conf + icke-builder
-En builder som har en metod build() som ger ett immutabelt conf-objekt.
-** TODO Setup
-*** TODO <2015-09-26 lör> Builder för att modifiera conf + icke-builder
-En builder som har en metod build() som ger ett immutabelt conf-objekt.
-
 ** TODO Act
 *** TODO <2015-09-26 lör> Parser ska ha syntax för att inkl [abc]-rader i källkoden
 Dessa rader är ju sektionsrubriker, och är därför omöjliga att inkludera i
@@ -892,62 +777,15 @@ Förslag:
 Det är alltså enbart första o ev andra tecknet som hanteras speciellt.
 Därefter är allt som vanligt.
 * TODO Förbättringar
+** TODO Variant "<<EOF ...\EOF": sista raden avslutas ej m nyrad
+Enda begränsningen hos "<<EOF...EOF" är ju att sista raden måste avslutas m
+nyradstecken.  Det är naturligtvis en begränsning.
+Undrar hur skalen gör där, föresten.  Kanske har de en motsvarande syntax.
 ** TODO <2015-05-17 sön> Bevara glob tillstånd
 Idag sparas omgivningsvariabler "runt" partiell exekvering.  Borde sparas runt
 "full" exekvering, naturligtvis.
 Vore bäst (känns nu) om hela exekveringen kunde ske i sub-process.
 (se modul concurrent.futures)
-** TODO <2015-05-18 mån> Ev skapa EDS senare
-Enl diagram ska den skapas precis efter setup/validate.
-Idag skapas den precis innan setup/validate.
-Ingen stor grej, men kan ev ändras.
-Alternativ ändrar man spec till att göra som idag.
-** TODO <2015-05-22 fre> Konfbar gemensam miljö för alla instruktioner
-Införa argument som ges till alla metoder i alla instruktioner.
-Skulle erbjuda mölighet att skräddarsy den information som instruktionerna har
-tillgång till.
-* TODO Parsning av multi-rader
-Har spånat (o experimenterat m två varianter)
-** b-sne:
-rad\
-fortsätter\
-mha b-sne
-
-Har experimenterat m pythons shell-parsning.  (finns ev exempel nånstans).
-Har kommit fram till att det går hyfsat att detektera b-sne på slutet av
-raden - som inte ingår i quotade strängkonstanter.
-** here-dokument
-<<<EOF
-Anger en sekvens av rader
-på samma
-sätt som HERE-dokument i shell.
-EOF
-** BNF
-Tänker mig dok-syntax ("nivå 0") ung
-rad ::= tom
-      | kommentar
-      | fasrubrik
-      | instruktion
-instruktion ::= enkel-radare
-              | here-block
-              | bne-separerade rader
-* TODO Preprocessor
-** TODO Inbyggd preprocessor
-Vore bäst om programmet innehöll en egen preprocessor.
-På så vis maximeras oberoende av yttre miljön.
-Funktionallitet:
-- filinklusion
-- definitioner av konstanter
-- definitioner av funktioner
-Har tittat på:
-*** PYM (mest lovande)
-http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.25.400
-Men hittar inte källkoden för den här.
-*** Pythons inbyggda stängformattering (format())
-file:///usr/share/doc/python3.4/html/library/string.html#string-formatting
-Kanske är denna tillräckligt kraftfull för att fungera som preprocessor.
-Dock förutom filinkludering, förutsätter jag.
-** TODO Testa ange preprocessor för TF via kommandoraden
 * TODO Härleda interpretator
 bash, sh, csh ...???
 Går det att ta reda på ett utgångsvärde för interpretator för varje plattform
@@ -1033,17 +871,6 @@ Ytterligare ett alternativ är att
 Detta är dock krångligt!!
 
 * TODO Loggning
-* TODO Preprocessning
-* TODO Faser och steg
-** DONE Nytt steg cleanup/validate
-T ex för att göra möjligt för en instruktion "interpret PROGRAM" att validera
-att en reffade programfil existerar --rel-home.
-** DONE Instr i alla faser borde ha validering pre-EDS
-Eftersom en instruktion i varje fall (ev utom config) kan referera filer i
-home.  O fel där kan upptäckas innan man skapar EDS.
-----------------------------------------
-Typ: validate_pre_eds(eds: ExecutionDirectoryStructure)
-----------------------------------------
 * TODO Blandat
 ** TODO <2015-09-26 lör> Funktioner för att läsa act-resultat
 Ska finnas hjälpfunktioner i "biblioteket" för att läsa t ex statuskod på
@@ -1058,8 +885,111 @@ Ska istället finnas funktioner på global nivå:
 def get_document() -> Description:
   return Description(...)
 
+* TODO Refaktoreringar
+** TODO Rendering
+*** TODO Extrahera test av textrenderare till eget test
+Idag är del av test av paragraph.
+
+*** ParagraphItemRenderer för test ska kunna rendera riktiga Para[StrText]
+Idag enbart konstant värde.
+Om en renderare av endat ett enda fall men som renderar riktig data så
+förbättras testerna genom att verifiera att rätt element renderas.
+
+*** TODO Test av FullParagraphItemRenderer
+** TODO Byt namn "anonymous" -> "configuration"
+
+** TODO textformat/Table: Bör ha separat klass för TableCell
+Idag är det en lista av PI.  Knölig o inflexibel struktur.
+Svår att förstå o skapa tabeller.
+Inflexibel vad gäller möjlighet att ha skiftande cell-egenskaper.
+** TODO Modulorganisation
+*** TODO [#A] script_language
+
+*** TODO instructions, act_phase_setups
+Var ska de ligga!!!???
+De har det gemensamt att de tillhör test-case och att de är "utvidningsbar"
+funktionallitet.  Vill inte ha dem på högsta nivå.
+*** TODO document -> section_document
+** TODO Refakt: full/partiell exekvering i separata paket
+<2016-04-02 lör>
+** TODO Bör ersättas med funktionerna i python_program_execution?
+Tror det är precis det här de funktionerna används till.
+----------
+    def file_structure(self, root_path: pathlib.Path,
+                       python_executable_file_name: str,
+                       preprocessor_source_file_name: str) -> DirContents:
+        preprocessor = '%s %s' % (quoting.file_name(python_executable_file_name),
+                                  quoting.file_name(preprocessor_source_file_name))
+----------
+** TODO InstructionDocumentation ska använda Description
+<2016-03-20 sön>
+Extraherade den klassen för impl av TCPhaseHelp.
+
+** TODO Validate_post_eds_if_applicable ska ta (EDS,home_dir)
+<2016-01-09 lör>
+klass: PreOrPostEdsSvhValidationErrorValidator
+
+I nuläget tas enbart EDS.
+Onödigt att begränsa till att ta enbart EDS.
+Skulle ju kunna finnas en instruktion som använder både EDS och home_dir.
+
+** TODO Byt till ValueAssertion där det går
+*** TODO instruction_checks
+*** TODO text-structure tests
+** TODO Extrahera gemensam kod för Expectation
+<2016-01-09 lör>
+*** TODO Extrahera basklasser
+*** TODO config
+*** TODO setup
+*** TODO assert
+*** TODO cleanup
+** TODO <2016-01-06 ons> Byt namn: Anonymous -> Config
+** TODO <2016-01-06 ons> Byt namn: GlobalEnvironmentForX -> EnvironmentForX
+Gäller typerna för arg till instruktionernas steg-metoder.
+** TODO Göra sig av med fel-typen som är överflödig (fr UML, Failure?)
+** TODO Argument till instruktionernas steg
+Spikade först två generella miljöer: global miljö och fas-miljö.
+Iom att den modellen inte längre används kan mer ändamålsenliga argument
+användas.
+*** TODO act/script-gen
+Två argument:
+1. Skriptbyggare
+2. Inställningssättare (för t ex stdin).
+** TODO Använda nya TestCaseSetup i äldre tester
+Som du finns flera instruktions-klasser som enbart returnerar ett visst värde
+eller kastar undantag.  Alla de fallen kan hanteras av nya TestCaseSetup.
 * TODO Finputs
-** TODO Tidtagning för svit
-à la Python - endast 3 decimaler för mikrosekunder (idag 6):
-Ran 1103 tests in 21.761s
+** TODO Tidtagning för testfall i svit
+Liknande den för hela sviten.
+** TODO <2015-05-18 mån> Ev skapa EDS senare
+Enl diagram ska den skapas precis efter setup/validate.
+Idag skapas den precis innan setup/validate.
+Ingen stor grej, men kan ev ändras.
+Alternativ ändrar man spec till att göra som idag.
+* TODO Ny funktionallitet
+** TODO Testa ange preprocessor för TF via kommandoraden
+** TODO Inbyggd preprocessor
+Vore bäst om programmet innehöll en egen preprocessor.
+På så vis maximeras oberoende av yttre miljön.
+Funktionallitet:
+- filinklusion
+- definitioner av konstanter
+- definitioner av funktioner
+Har tittat på:
+*** PYM (mest lovande)
+http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.25.400
+Men hittar inte källkoden för den här.
+*** Pythons inbyggda stängformattering (format())
+file:///usr/share/doc/python3.4/html/library/string.html#string-formatting
+Kanske är denna tillräckligt kraftfull för att fungera som preprocessor.
+Dock förutom filinkludering, förutsätter jag.
+** TODO Köra flera tester på CL som "anonym" svit
+** TODO Färgläggning av exit-identifierare
+OK grön, FAIL röd ...
+VALIDATE ... orange
+** TODO <2015-05-22 fre> Konfbar gemensam miljö för alla instruktioner
+Införa argument som ges till alla metoder i alla instruktioner.
+Skulle erbjuda mölighet att skräddarsy den information som instruktionerna har
+tillgång till.
+
 
