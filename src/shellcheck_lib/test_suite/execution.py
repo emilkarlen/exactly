@@ -32,7 +32,7 @@ class Executor:
         self._reporter_factory = reporter_factory
         self._test_case_processor_constructor = test_case_processor_constructor
         self._suite_root_file_path = suite_root_file_path
-        self._reporter = self._reporter_factory.new_reporter(output)
+        self._reporter = self._reporter_factory.new_reporter(output, suite_root_file_path)
 
     def execute(self) -> int:
         final_result_output_file = FilePrinter(self._std.err)

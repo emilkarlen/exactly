@@ -1,3 +1,5 @@
+import pathlib
+
 from shellcheck_lib.cli.cli_environment.exit_value import ExitValue
 from shellcheck_lib.test_case import test_case_processing
 from shellcheck_lib.util.std import StdOutputFiles, FilePrinter
@@ -82,5 +84,6 @@ class RootSuiteReporter:
 
 class RootSuiteReporterFactory:
     def new_reporter(self,
-                     std_output_files: StdOutputFiles) -> RootSuiteReporter:
+                     std_output_files: StdOutputFiles,
+                     root_suite_file: pathlib.Path) -> RootSuiteReporter:
         raise NotImplementedError()
