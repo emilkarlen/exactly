@@ -5,12 +5,12 @@ from shellcheck_lib.cli.program_modes.test_case import execution as test_case_ex
 from shellcheck_lib.cli.program_modes.test_case.settings import TestCaseExecutionSettings
 from shellcheck_lib.cli.program_modes.test_suite.settings import Settings
 from shellcheck_lib.default.program_modes.test_case import processing as case_processing
-from shellcheck_lib.default.program_modes.test_suite import reporting as suite_reporting
 from shellcheck_lib.test_case.instruction_setup import InstructionsSetup
 from shellcheck_lib.test_case.preprocessor import IdentityPreprocessor
 from shellcheck_lib.test_suite import enumeration
 from shellcheck_lib.test_suite import execution as test_suite_execution
 from shellcheck_lib.test_suite import suite_hierarchy_reading
+from shellcheck_lib.test_suite.reporting import RootSuiteReporterFactory
 from shellcheck_lib.util.std import StdOutputFiles
 
 
@@ -18,9 +18,11 @@ class MainProgram(main_program.MainProgram):
     def __init__(self,
                  output: StdOutputFiles,
                  split_line_into_name_and_argument_function,
-                 instruction_setup: InstructionsSetup):
+                 instruction_setup: InstructionsSetup,
+                 root_suite_reporter_factory: RootSuiteReporterFactory):
         super().__init__(output, instruction_setup)
         self._split_line_into_name_and_argument_function = split_line_into_name_and_argument_function
+        self.root_suite_reporter_factory = root_suite_reporter_factory
 
     def execute_test_case(self, settings: TestCaseExecutionSettings) -> int:
         executor = test_case_execution.Executor(self._std,
@@ -39,9 +41,9 @@ class MainProgram(main_program.MainProgram):
         executor = test_suite_execution.Executor(default_configuration,
                                                  self._output,
                                                  suite_hierarchy_reading.Reader(
-                                                         suite_hierarchy_reading.Environment(
-                                                                 default_configuration.preprocessor)),
-                                                 suite_reporting.DefaultRootSuiteReporterFactory(),
+                                                     suite_hierarchy_reading.Environment(
+                                                         default_configuration.preprocessor)),
+                                                 self.root_suite_reporter_factory,
                                                  enumeration.DepthFirstEnumerator(),
                                                  case_processing.new_processor_that_should_not_pollute_current_process,
                                                  settings.suite_root_file_path)
