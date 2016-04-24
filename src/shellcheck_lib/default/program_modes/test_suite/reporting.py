@@ -1,6 +1,5 @@
-import os
-
 import datetime
+import os
 
 from shellcheck_lib.cli.cli_environment.program_modes.test_suite import exit_values
 from shellcheck_lib.execution.result import FullResultStatus
@@ -81,24 +80,22 @@ class DefaultRootSuiteReporter(reporting.RootSuiteReporter):
         return self._print_and_return_exit_code(exit_values.INVALID_SUITE)
 
     def report_final_results_for_valid_suite(self) -> int:
-        num_cases, exit_value = self._valid_suite_exit_value()
+        num_cases, errors, exit_value = self._valid_suite_exit_value()
+        lines = format_final_result_for_valid_suite(num_cases,
+                                                    self._total_time_timedelta,
+                                                    exit_value.exit_identifier,
+                                                    errors)
         self._line_printer.write(os.linesep)
-        num_tests_line = self._num_tests_line(num_cases)
-        self._print_line(num_tests_line)
-        return self._print_and_return_exit_code(exit_value)
+        self._print_line(os.linesep.join(lines))
+        return exit_value.exit_code
 
-    def _num_tests_line(self, num_cases: int) -> str:
-        ret_val = ['Ran']
-        num_tests = '1 test' if num_cases == 1 else '%d tests' % num_cases
-        ret_val.append(num_tests)
-        ret_val.append('in')
-        ret_val.extend(self._elapsed_time_str())
-        return ' '.join(ret_val)
+    def _valid_suite_exit_value(self) -> (int, dict, exit_values.ExitValue):
+        errors = {}
 
-    def _elapsed_time_str(self) -> list:
-        return list(elapsed_time_value_and_unit(self._total_time_timedelta))
+        def add_error(identifier: str):
+            current = errors.setdefault(identifier, 0)
+            errors[identifier] = current + 1
 
-    def _valid_suite_exit_value(self) -> (int, exit_values.ExitValue):
         num_tests = 0
         exit_value = exit_values.ALL_PASS
         for suite_reporter in self._sub_reporters:
@@ -107,9 +104,11 @@ class DefaultRootSuiteReporter(reporting.RootSuiteReporter):
                 num_tests += 1
                 if result.status is not Status.EXECUTED:
                     exit_value = exit_values.FAILED_TESTS
+                    add_error(result.access_error_type.name)
                 elif result.execution_result.status not in SUCCESS_STATUSES:
                     exit_value = exit_values.FAILED_TESTS
-        return num_tests, exit_value
+                    add_error(result.execution_result.status.name)
+        return num_tests, errors, exit_value
 
     def _print_and_return_exit_code(self, exit_value: exit_values.ExitValue) -> int:
         self._line_printer.write(os.linesep)
@@ -119,3 +118,37 @@ class DefaultRootSuiteReporter(reporting.RootSuiteReporter):
     def _print_line(self, s):
         self._line_printer.write(s)
         self._line_printer.write(os.linesep)
+
+
+def format_final_result_for_valid_suite(num_cases: int,
+                                        elapsed_time: datetime.timedelta,
+                                        exit_identifier: str,
+                                        errors: dict) -> list:
+    """
+    :return: The list of lines that should be reported.
+    """
+
+    def num_tests_line() -> str:
+        ret_val = ['Ran']
+        num_tests = '1 test' if num_cases == 1 else '%d tests' % num_cases
+        ret_val.append(num_tests)
+        ret_val.append('in')
+        ret_val.extend(list(elapsed_time_value_and_unit(elapsed_time)))
+        return ' '.join(ret_val)
+
+    def error_lines() -> list:
+        ret_val = []
+        sorted_exit_identifiers = sorted(errors.keys())
+        max_ident_len = max(map(len, sorted_exit_identifiers))
+        format_str = '%-' + str(max_ident_len) + 's : %d'
+        for ident in sorted_exit_identifiers:
+            ret_val.append(format_str % (ident, errors[ident]))
+        return ret_val
+
+    ret_val = []
+    ret_val.append(num_tests_line())
+    if errors:
+        ret_val.append('')
+        ret_val.extend(error_lines())
+    ret_val.extend(['', exit_identifier])
+    return ret_val
