@@ -1,8 +1,6 @@
-*~
 __pycache__
 .idea/workspace.xml
 .idea/shelf/
-*.vpp~*
 test/shellcheck_lib_test/tmp/
 tmp/
 # Used by setuptools
