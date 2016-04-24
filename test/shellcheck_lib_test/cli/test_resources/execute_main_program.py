@@ -1,6 +1,7 @@
 from shellcheck_lib.cli.argument_parsing_of_act_phase_setup import INTERPRETER_FOR_TEST
 from shellcheck_lib.cli.cli_environment.command_line_options import OPTION_FOR_ACTOR
 from shellcheck_lib.default import default_main_program as sut
+from shellcheck_lib.default.program_modes.test_suite.reporting import DefaultRootSuiteReporterFactory
 from shellcheck_lib.test_case.instruction_setup import InstructionsSetup
 from shellcheck_lib_test.test_resources.process import SubProcessResult
 from shellcheck_lib_test.test_resources.str_std_out_files import StringStdOutFiles
@@ -31,7 +32,8 @@ def execute_main_program(arguments: list,
     str_std_out_files = StringStdOutFiles()
     program = sut.MainProgram(str_std_out_files.stdout_files,
                               name_argument_splitter,
-                              instructions_setup)
+                              instructions_setup,
+                              DefaultRootSuiteReporterFactory())
     exit_status = program.execute(arguments)
     str_std_out_files.finish()
     return SubProcessResult(exit_status,
