@@ -1,5 +1,6 @@
 import datetime
 import os
+import pathlib
 
 from shellcheck_lib.cli.cli_environment.program_modes.test_suite import exit_values
 from shellcheck_lib.execution.result import FullResultStatus
@@ -18,18 +19,20 @@ SUCCESS_STATUSES = {FullResultStatus.PASS,
 class DefaultSubSuiteProgressReporter(reporting.SubSuiteProgressReporter):
     def __init__(self,
                  output_file: FilePrinter,
-                 suite: structure.TestSuite):
+                 suite: structure.TestSuite,
+                 root_suite_dir_abs_path: pathlib.Path):
         self.output_file = output_file
         self.suite = suite
+        self.root_suite_dir_abs_path = root_suite_dir_abs_path
 
     def suite_begin(self):
-        self.output_file.write_line('suite ' + str(self.suite.source_file) + ': begin')
+        self.output_file.write_line('suite ' + self._file_path_pres(self.suite.source_file) + ': begin')
 
     def suite_end(self):
-        self.output_file.write_line('suite ' + str(self.suite.source_file) + ': end')
+        self.output_file.write_line('suite ' + self._file_path_pres(self.suite.source_file) + ': end')
 
     def case_begin(self, case: test_case_processing.TestCaseSetup):
-        self.output_file.write('case  ' + str(case.file_path) + ': ')
+        self.output_file.write('case  ' + self._file_path_pres(case.file_path) + ': ')
 
     def case_end(self,
                  case: test_case_processing.TestCaseSetup,
@@ -43,20 +46,31 @@ class DefaultSubSuiteProgressReporter(reporting.SubSuiteProgressReporter):
             status = result.execution_result.status
             self.output_file.write_line(status.name)
 
+    def _file_path_pres(self, file: pathlib.Path):
+        try:
+            return str(file.relative_to(self.root_suite_dir_abs_path))
+        except ValueError:
+            return str(file)
+
 
 class DefaultRootSuiteReporterFactory(reporting.RootSuiteReporterFactory):
     def new_reporter(self,
-                     std_output_files: StdOutputFiles) -> reporting.RootSuiteReporter:
-        return DefaultRootSuiteReporter(std_output_files)
+                     std_output_files: StdOutputFiles,
+                     root_suite_file: pathlib.Path) -> reporting.RootSuiteReporter:
+        root_suite_dir_abs_path = root_suite_file.resolve().parent
+        return DefaultRootSuiteReporter(std_output_files,
+                                        root_suite_dir_abs_path)
 
 
 class DefaultRootSuiteReporter(reporting.RootSuiteReporter):
     def __init__(self,
-                 std_output_files: StdOutputFiles):
+                 std_output_files: StdOutputFiles,
+                 root_suite_dir_abs_path: pathlib.Path):
         self._output_file = FilePrinter(std_output_files.out)
         self._sub_reporters = []
         self._start_time = None
         self._total_time_timedelta = None
+        self._root_suite_dir_abs_path = root_suite_dir_abs_path
 
     def root_suite_begin(self):
         self._start_time = datetime.datetime.now()
@@ -68,7 +82,10 @@ class DefaultRootSuiteReporter(reporting.RootSuiteReporter):
 
     def new_sub_suite_reporter(self,
                                sub_suite: structure.TestSuite) -> reporting.SubSuiteReporter:
-        reporter = reporting.SubSuiteReporter(DefaultSubSuiteProgressReporter(self._output_file, sub_suite))
+        progress_reporter = DefaultSubSuiteProgressReporter(self._output_file,
+                                                            sub_suite,
+                                                            self._root_suite_dir_abs_path)
+        reporter = reporting.SubSuiteReporter(progress_reporter)
         self._sub_reporters.append(reporter)
         return reporter
 
