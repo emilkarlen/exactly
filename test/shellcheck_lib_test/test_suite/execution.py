@@ -303,7 +303,7 @@ def check_exit_code_and_empty_stdout(put: unittest.TestCase,
 
 class TestCaseProcessorThatRaisesUnconditionally(test_case_processing.Processor):
     def apply(self, test_case: TestCaseSetup) -> test_case_processing.Result:
-        raise NotImplementedError()
+        raise NotImplementedError('Unconditional expected exception from test implementation')
 
 
 class TestCaseProcessorThatGivesConstant(test_case_processing.Processor):
