@@ -47,16 +47,17 @@ else:
         ])
 
     def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
+        expected_line = suite_reporting_output.ExpectedLine(root_path)
         return [
-            suite_reporting_output.suite_begin(root_path / 'main.suite'),
-            suite_reporting_output.case(root_path / 'pass', EXECUTION__PASS.exit_identifier),
-            suite_reporting_output.case(root_path / 'parser-error', NO_EXECUTION__PARSE_ERROR.exit_identifier),
-            suite_reporting_output.suite_end(root_path / 'main.suite'),
+            expected_line.suite_begin(root_path / 'main.suite'),
+            expected_line.case(root_path / 'pass', EXECUTION__PASS.exit_identifier),
+            expected_line.case(root_path / 'parser-error', NO_EXECUTION__PARSE_ERROR.exit_identifier),
+            expected_line.suite_end(root_path / 'main.suite'),
         ]
 
     def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
-        errors = {NO_EXECUTION__PARSE_ERROR: 1}
-        return suite_reporting_output.summary_for_valid_suite(root_path, exit_values.FAILED_TESTS)
+        expected_line = suite_reporting_output.ExpectedLine(root_path)
+        return expected_line.summary_for_valid_suite(root_path, exit_values.FAILED_TESTS)
 
     def expected_exit_code(self) -> int:
         return exit_values.FAILED_TESTS.exit_code

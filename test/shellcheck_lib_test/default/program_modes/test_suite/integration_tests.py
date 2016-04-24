@@ -47,13 +47,15 @@ class EmptySuite(main_program_check_for_test_suite.SetupWithoutPreprocessor):
         ])
 
     def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
+        expected_line = suite_reporting_output.ExpectedLine(root_path)
         return [
-            suite_reporting_output.suite_begin(root_path / 'empty.suite'),
-            suite_reporting_output.suite_end(root_path / 'empty.suite'),
+            expected_line.suite_begin(root_path / 'empty.suite'),
+            expected_line.suite_end(root_path / 'empty.suite'),
         ]
 
     def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
-        return suite_reporting_output.summary_for_valid_suite(root_path, exit_values.ALL_PASS)
+        expected_line = suite_reporting_output.ExpectedLine(root_path)
+        return expected_line.summary_for_valid_suite(root_path, exit_values.ALL_PASS)
 
     def expected_exit_code(self) -> int:
         return exit_values.ALL_PASS.exit_code
@@ -70,14 +72,16 @@ class SuiteWithSingleEmptyTestCase(main_program_check_for_test_suite.SetupWithou
         ])
 
     def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
+        expected_line = suite_reporting_output.ExpectedLine(root_path)
         return [
-            suite_reporting_output.suite_begin(root_path / 'main.suite'),
-            suite_reporting_output.case(root_path / 'the.case', EXECUTION__PASS.exit_identifier),
-            suite_reporting_output.suite_end(root_path / 'main.suite'),
+            expected_line.suite_begin(root_path / 'main.suite'),
+            expected_line.case(root_path / 'the.case', EXECUTION__PASS.exit_identifier),
+            expected_line.suite_end(root_path / 'main.suite'),
         ]
 
     def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
-        return suite_reporting_output.summary_for_valid_suite(root_path, exit_values.ALL_PASS)
+        expected_line = suite_reporting_output.ExpectedLine(root_path)
+        return expected_line.summary_for_valid_suite(root_path, exit_values.ALL_PASS)
 
     def expected_exit_code(self) -> int:
         return exit_values.ALL_PASS.exit_code
@@ -103,14 +107,16 @@ class SuiteWithSingleTestCaseWithOnlySectionHeaders(main_program_check_for_test_
         ])
 
     def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
+        expected_line = suite_reporting_output.ExpectedLine(root_path)
         return [
-            suite_reporting_output.suite_begin(root_path / 'main.suite'),
-            suite_reporting_output.case(root_path / 'the.case', EXECUTION__PASS.exit_identifier),
-            suite_reporting_output.suite_end(root_path / 'main.suite'),
+            expected_line.suite_begin(root_path / 'main.suite'),
+            expected_line.case(root_path / 'the.case', EXECUTION__PASS.exit_identifier),
+            expected_line.suite_end(root_path / 'main.suite'),
         ]
 
     def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
-        return suite_reporting_output.summary_for_valid_suite(root_path, exit_values.ALL_PASS)
+        expected_line = suite_reporting_output.ExpectedLine(root_path)
+        return expected_line.summary_for_valid_suite(root_path, exit_values.ALL_PASS)
 
     def expected_exit_code(self) -> int:
         return exit_values.ALL_PASS.exit_code
@@ -130,7 +136,8 @@ class SuiteReferenceToNonExistingCaseFile(main_program_check_for_test_suite.Setu
         return []
 
     def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
-        return suite_reporting_output.summary_for_invalid_suite(root_path, exit_values.INVALID_SUITE)
+        expected_line = suite_reporting_output.ExpectedLine(root_path)
+        return expected_line.summary_for_invalid_suite(root_path, exit_values.INVALID_SUITE)
 
     def expected_exit_code(self) -> int:
         return exit_values.INVALID_SUITE.exit_code
@@ -150,7 +157,8 @@ class SuiteReferenceToNonExistingSuiteFile(main_program_check_for_test_suite.Set
         return []
 
     def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
-        return suite_reporting_output.summary_for_invalid_suite(root_path, exit_values.INVALID_SUITE)
+        expected_line = suite_reporting_output.ExpectedLine(root_path)
+        return expected_line.summary_for_invalid_suite(root_path, exit_values.INVALID_SUITE)
 
     def expected_exit_code(self) -> int:
         return exit_values.INVALID_SUITE.exit_code
@@ -169,14 +177,16 @@ class SuiteWithSingleCaseWithInvalidSyntax(main_program_check_for_test_suite.Set
         ])
 
     def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
+        expected_line = suite_reporting_output.ExpectedLine(root_path)
         return [
-            suite_reporting_output.suite_begin(root_path / 'main.suite'),
-            suite_reporting_output.case(root_path / 'invalid-syntax.case', NO_EXECUTION__PARSE_ERROR.exit_identifier),
-            suite_reporting_output.suite_end(root_path / 'main.suite'),
+            expected_line.suite_begin(root_path / 'main.suite'),
+            expected_line.case(root_path / 'invalid-syntax.case', NO_EXECUTION__PARSE_ERROR.exit_identifier),
+            expected_line.suite_end(root_path / 'main.suite'),
         ]
 
     def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
-        return suite_reporting_output.summary_for_valid_suite(root_path, exit_values.FAILED_TESTS)
+        expected_line = suite_reporting_output.ExpectedLine(root_path)
+        return expected_line.summary_for_valid_suite(root_path, exit_values.FAILED_TESTS)
 
     def expected_exit_code(self) -> int:
         return exit_values.FAILED_TESTS.exit_code
@@ -202,21 +212,23 @@ class ComplexSuccessfulSuite(main_program_check_for_test_suite.SetupWithoutPrepr
         ])
 
     def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
+        expected_line = suite_reporting_output.ExpectedLine(root_path)
         return [
-            suite_reporting_output.suite_begin(root_path / 'sub-sub.suite'),
-            suite_reporting_output.suite_end(root_path / 'sub-sub.suite'),
+            expected_line.suite_begin(root_path / 'sub-sub.suite'),
+            expected_line.suite_end(root_path / 'sub-sub.suite'),
 
-            suite_reporting_output.suite_begin(root_path / 'sub.suite'),
-            suite_reporting_output.case(root_path / 'sub.case', EXECUTION__PASS.exit_identifier),
-            suite_reporting_output.suite_end(root_path / 'sub.suite'),
+            expected_line.suite_begin(root_path / 'sub.suite'),
+            expected_line.case(root_path / 'sub.case', EXECUTION__PASS.exit_identifier),
+            expected_line.suite_end(root_path / 'sub.suite'),
 
-            suite_reporting_output.suite_begin(root_path / 'main.suite'),
-            suite_reporting_output.case(root_path / 'main.case', EXECUTION__PASS.exit_identifier),
-            suite_reporting_output.suite_end(root_path / 'main.suite'),
+            expected_line.suite_begin(root_path / 'main.suite'),
+            expected_line.case(root_path / 'main.case', EXECUTION__PASS.exit_identifier),
+            expected_line.suite_end(root_path / 'main.suite'),
         ]
 
     def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
-        return suite_reporting_output.summary_for_valid_suite(root_path, exit_values.ALL_PASS)
+        expected_line = suite_reporting_output.ExpectedLine(root_path)
+        return expected_line.summary_for_valid_suite(root_path, exit_values.ALL_PASS)
 
     def expected_exit_code(self) -> int:
         return exit_values.ALL_PASS.exit_code
