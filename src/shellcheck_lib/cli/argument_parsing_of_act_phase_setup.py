@@ -30,4 +30,4 @@ def new_for_generic_script_language_setup(interpreter: str) -> ActPhaseSetup:
             standard_script_language.StandardScriptFileManager('src',
                                                                interpreter,
                                                                []),
-            standard_script_language.StandardScriptLanguage))
+            standard_script_language.StandardScriptLanguage()))

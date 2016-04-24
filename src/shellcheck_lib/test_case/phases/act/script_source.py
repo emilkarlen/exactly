@@ -48,7 +48,7 @@ class ScriptSourceAccumulator:
         """
         self._source_lines.extend(self._script_language.comment_line(comment))
 
-    def comment_lines(self, lines: list) -> list:
+    def comment_lines(self, lines: list):
         """
         Appends a comment that stretches multiple lines.
         """
