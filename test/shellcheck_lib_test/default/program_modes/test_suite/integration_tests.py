@@ -176,7 +176,8 @@ class SuiteWithSingleCaseWithInvalidSyntax(main_program_check_for_test_suite.Set
         ]
 
     def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
-        return reporting_output.summary_for_valid_suite(root_path, 1, exit_values.FAILED_TESTS)
+        errors = {NO_EXECUTION__PARSE_ERROR: 1}
+        return reporting_output.summary_for_valid_suite(root_path, 1, exit_values.FAILED_TESTS, errors)
 
     def expected_exit_code(self) -> int:
         return exit_values.FAILED_TESTS.exit_code
@@ -220,6 +221,7 @@ class ComplexSuccessfulSuite(main_program_check_for_test_suite.SetupWithoutPrepr
 
     def expected_exit_code(self) -> int:
         return exit_values.ALL_PASS.exit_code
+
 
 BASIC_TESTS = [
     InvalidOptions(),

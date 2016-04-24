@@ -38,8 +38,7 @@ else:
                                   quoting.file_name(preprocessor_source_file_name))
         return DirContents([
             File('main.suite',
-                 lines_content(['preprocessor ' + preprocessor
-                                   ,
+                 lines_content(['preprocessor ' + preprocessor,
                                 '[cases]',
                                 'pass',
                                 'parser-error'])),
@@ -56,7 +55,8 @@ else:
         ]
 
     def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
-        return reporting_output.summary_for_valid_suite(root_path, 2, exit_values.FAILED_TESTS)
+        errors = {NO_EXECUTION__PARSE_ERROR: 1}
+        return reporting_output.summary_for_valid_suite(root_path, 2, exit_values.FAILED_TESTS, errors)
 
     def expected_exit_code(self) -> int:
         return exit_values.FAILED_TESTS.exit_code
