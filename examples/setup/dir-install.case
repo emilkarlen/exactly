@@ -26,6 +26,7 @@ stdout <<EOF
 a-directory/
 dir-with-1-dir-and-2-plain-files/
 dir-with-1-dir-and-2-plain-files/a-dir/
+dir-with-1-dir-and-2-plain-files/a-dir/a-file.txt
 dir-with-1-dir-and-2-plain-files/file-1.txt
 dir-with-1-dir-and-2-plain-files/file-2.txt
 even/
