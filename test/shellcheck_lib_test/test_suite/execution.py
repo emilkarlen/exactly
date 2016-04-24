@@ -4,6 +4,7 @@ import unittest
 from pathlib import Path
 
 from shellcheck_lib.act_phase_setups.script_language_setup import new_for_script_language_setup
+from shellcheck_lib.cli.cli_environment.exit_value import ExitValue
 from shellcheck_lib.default.program_modes.test_case import processing as case_processing
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.execution.result import new_skipped, new_pass
@@ -21,6 +22,7 @@ from shellcheck_lib.test_suite.instruction_set.parse import SuiteSyntaxError
 from shellcheck_lib.test_suite.suite_hierarchy_reading import SuiteHierarchyReader
 from shellcheck_lib.util import line_source
 from shellcheck_lib.util import std
+from shellcheck_lib.util.std import FilePrinter
 from shellcheck_lib_test.test_case.test_resources import error_info
 from shellcheck_lib_test.test_resources.str_std_out_files import StringStdOutFiles
 
@@ -390,12 +392,12 @@ class ExecutionTracingRootSuiteReporter(reporting.RootSuiteReporter):
         self.sub_suite_reporters.append(reporter)
         return reporter
 
-    def report_final_results_for_invalid_suite(self) -> int:
-        return self.INVALID_SUITE_EXIT_CODE
+    def report_final_results_for_invalid_suite(self, text_output_file: FilePrinter) -> ExitValue:
+        return ExitValue(self.INVALID_SUITE_EXIT_CODE, 'invalid suite')
 
-    def report_final_results_for_valid_suite(self) -> int:
+    def report_final_results_for_valid_suite(self, text_output_file: FilePrinter) -> ExitValue:
         self.num_report_final_result_invocations += 1
-        return self.VALID_SUITE_EXIT_CODE
+        return ExitValue(self.VALID_SUITE_EXIT_CODE, 'valid suite')
 
 
 class ExecutionTracingReporterFactory(reporting.RootSuiteReporterFactory):

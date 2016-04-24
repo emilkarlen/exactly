@@ -49,6 +49,9 @@ class FilePrinter:
     def __init__(self, file):
         self.file = file
 
+    def write(self, s: str):
+        self.file.write(s)
+
     def write_line(self, line: str):
         self.file.write(line)
         self.file.write(os.linesep)
@@ -57,5 +60,6 @@ class FilePrinter:
         if line:
             self.write_line(line)
 
-    def write(self, s: str):
-        self.file.write(s)
+    def write_lines(self, lines: iter):
+        for line in lines:
+            self.write_line(line)

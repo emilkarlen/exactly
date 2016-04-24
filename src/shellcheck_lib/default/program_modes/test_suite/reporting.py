@@ -6,7 +6,7 @@ from shellcheck_lib.execution.result import FullResultStatus
 from shellcheck_lib.test_case import test_case_processing
 from shellcheck_lib.test_case.test_case_processing import Status
 from shellcheck_lib.test_suite import reporting, structure
-from shellcheck_lib.util.std import StdOutputFiles
+from shellcheck_lib.util.std import StdOutputFiles, FilePrinter
 from shellcheck_lib.util.timedelta_format import elapsed_time_value_and_unit
 
 SUCCESS_STATUSES = {FullResultStatus.PASS,
@@ -17,16 +17,16 @@ SUCCESS_STATUSES = {FullResultStatus.PASS,
 
 class DefaultSubSuiteProgressReporter(reporting.SubSuiteProgressReporter):
     def __init__(self,
-                 output_file,
+                 output_file: FilePrinter,
                  suite: structure.TestSuite):
         self.output_file = output_file
         self.suite = suite
 
     def suite_begin(self):
-        self._write_ln('suite ' + str(self.suite.source_file) + ': begin')
+        self.output_file.write_line('suite ' + str(self.suite.source_file) + ': begin')
 
     def suite_end(self):
-        self._write_ln('suite ' + str(self.suite.source_file) + ': end')
+        self.output_file.write_line('suite ' + str(self.suite.source_file) + ': end')
 
     def case_begin(self, case: test_case_processing.TestCaseSetup):
         self.output_file.write('case  ' + str(case.file_path) + ': ')
@@ -36,16 +36,12 @@ class DefaultSubSuiteProgressReporter(reporting.SubSuiteProgressReporter):
                  result: test_case_processing.Result):
         if result.status is not test_case_processing.Status.EXECUTED:
             if result.status is test_case_processing.Status.INTERNAL_ERROR:
-                self._write_ln(result.status.name)
+                self.output_file.write_line(result.status.name)
             else:
-                self._write_ln(result.access_error_type.name)
+                self.output_file.write_line(result.access_error_type.name)
         else:
             status = result.execution_result.status
-            self._write_ln(status.name)
-
-    def _write_ln(self, s: str):
-        self.output_file.write(s)
-        self.output_file.write(os.linesep)
+            self.output_file.write_line(status.name)
 
 
 class DefaultRootSuiteReporterFactory(reporting.RootSuiteReporterFactory):
@@ -57,7 +53,7 @@ class DefaultRootSuiteReporterFactory(reporting.RootSuiteReporterFactory):
 class DefaultRootSuiteReporter(reporting.RootSuiteReporter):
     def __init__(self,
                  std_output_files: StdOutputFiles):
-        self._line_printer = std_output_files.out
+        self._output_file = FilePrinter(std_output_files.out)
         self._sub_reporters = []
         self._start_time = None
         self._total_time_timedelta = None
@@ -72,22 +68,22 @@ class DefaultRootSuiteReporter(reporting.RootSuiteReporter):
 
     def new_sub_suite_reporter(self,
                                sub_suite: structure.TestSuite) -> reporting.SubSuiteReporter:
-        reporter = reporting.SubSuiteReporter(DefaultSubSuiteProgressReporter(self._line_printer, sub_suite))
+        reporter = reporting.SubSuiteReporter(DefaultSubSuiteProgressReporter(self._output_file, sub_suite))
         self._sub_reporters.append(reporter)
         return reporter
 
-    def report_final_results_for_invalid_suite(self) -> int:
-        return self._print_and_return_exit_code(exit_values.INVALID_SUITE)
+    def report_final_results_for_invalid_suite(self, text_output_file: FilePrinter) -> exit_values.ExitValue:
+        return exit_values.INVALID_SUITE
 
-    def report_final_results_for_valid_suite(self) -> int:
+    def report_final_results_for_valid_suite(self, text_output_file: FilePrinter) -> exit_values.ExitValue:
         num_cases, errors, exit_value = self._valid_suite_exit_value()
         lines = format_final_result_for_valid_suite(num_cases,
                                                     self._total_time_timedelta,
                                                     exit_value.exit_identifier,
                                                     errors)
-        self._line_printer.write(os.linesep)
-        self._print_line(os.linesep.join(lines))
-        return exit_value.exit_code
+        lines.insert(0, '')
+        text_output_file.write_line(os.linesep.join(lines))
+        return exit_value
 
     def _valid_suite_exit_value(self) -> (int, dict, exit_values.ExitValue):
         errors = {}
@@ -109,15 +105,6 @@ class DefaultRootSuiteReporter(reporting.RootSuiteReporter):
                     exit_value = exit_values.FAILED_TESTS
                     add_error(result.execution_result.status.name)
         return num_tests, errors, exit_value
-
-    def _print_and_return_exit_code(self, exit_value: exit_values.ExitValue) -> int:
-        self._line_printer.write(os.linesep)
-        self._print_line(exit_value.exit_identifier)
-        return exit_value.exit_code
-
-    def _print_line(self, s):
-        self._line_printer.write(s)
-        self._line_printer.write(os.linesep)
 
 
 def format_final_result_for_valid_suite(num_cases: int,
@@ -150,5 +137,4 @@ def format_final_result_for_valid_suite(num_cases: int,
     if errors:
         ret_val.append('')
         ret_val.extend(error_lines())
-    ret_val.extend(['', exit_identifier])
     return ret_val

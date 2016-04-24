@@ -3,6 +3,7 @@ import shutil
 
 from shellcheck_lib.cli.cli_environment.program_modes.test_case.exit_values import NO_EXECUTION_EXIT_CODE
 from shellcheck_lib.cli.program_modes.test_case.settings import Output, TestCaseExecutionSettings
+from shellcheck_lib.cli.util.error_message_printing import output_location
 from shellcheck_lib.default.program_modes.test_case import processing
 from shellcheck_lib.execution import full_execution
 from shellcheck_lib.execution.result import FailureInfoVisitor, PhaseFailureInfo, InstructionFailureInfo
@@ -10,7 +11,6 @@ from shellcheck_lib.test_case import error_description
 from shellcheck_lib.test_case import test_case_processing
 from shellcheck_lib.test_case.instruction_setup import InstructionsSetup
 from shellcheck_lib.test_case.test_case_processing import ErrorInfo
-from shellcheck_lib.util import line_source
 from shellcheck_lib.util.std import StdOutputFiles, FilePrinter
 
 
@@ -52,10 +52,10 @@ class Executor:
                               stdout_error_code: str,
                               error_info: ErrorInfo):
         self._out_printer.write_line(stdout_error_code)
-        _output_location(self._err_printer,
-                         error_info.file,
-                         error_info.maybe_section_name,
-                         error_info.line)
+        output_location(self._err_printer,
+                        error_info.file,
+                        error_info.maybe_section_name,
+                        error_info.line)
         _ErrorDescriptionDisplayer(self._err_printer).visit(error_info.description)
 
     def _execute_act_phase(self) -> int:
@@ -137,32 +137,13 @@ class _SourceDisplayer(FailureInfoVisitor):
         self.out = out
 
     def _visit_phase_failure(self, failure_info: PhaseFailureInfo):
-        _output_location(self.out,
-                         None,
-                         failure_info.phase_step.phase.identifier,
-                         None)
+        output_location(self.out,
+                        None,
+                        failure_info.phase_step.phase.identifier,
+                        None)
 
     def _visit_instruction_failure(self, failure_info: InstructionFailureInfo):
-        _output_location(self.out,
-                         None,
-                         failure_info.phase_step.phase.identifier,
-                         failure_info.source_line)
-
-
-def _output_location(printer: FilePrinter,
-                     test_case_file: pathlib.Path,
-                     phase_name: str,
-                     line: line_source.Line):
-    has_output_header = False
-    if test_case_file:
-        printer.write_line('File: ' + str(test_case_file))
-        has_output_header = True
-    if phase_name:
-        printer.write_line('In phase "%s"' % phase_name)
-        has_output_header = True
-    if line:
-        printer.write_line('Line {}: `{}\''.format(line.line_number, line.text))
-        has_output_header = True
-
-    if has_output_header:
-        printer.write_line('')
+        output_location(self.out,
+                        None,
+                        failure_info.phase_step.phase.identifier,
+                        failure_info.source_line)

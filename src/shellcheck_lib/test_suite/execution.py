@@ -1,5 +1,7 @@
 import pathlib
 
+from shellcheck_lib.cli.cli_environment.exit_value import ExitValue
+from shellcheck_lib.cli.util.error_message_printing import output_location
 from shellcheck_lib.default.program_modes.test_case import processing as case_processing
 from shellcheck_lib.test_case import error_description
 from shellcheck_lib.test_case import test_case_processing
@@ -8,7 +10,7 @@ from shellcheck_lib.test_suite import structure
 from shellcheck_lib.test_suite.enumeration import SuiteEnumerator
 from shellcheck_lib.test_suite.instruction_set.parse import SuiteReadError
 from shellcheck_lib.test_suite.suite_hierarchy_reading import SuiteHierarchyReader
-from shellcheck_lib.util.std import StdOutputFiles
+from shellcheck_lib.util.std import StdOutputFiles, FilePrinter
 
 
 class Executor:
@@ -33,21 +35,37 @@ class Executor:
         self._reporter = self._reporter_factory.new_reporter(output)
 
     def execute(self) -> int:
+        final_result_output_file = FilePrinter(self._std.err)
+        exit_identifier_output_file = FilePrinter(self._std.out)
+        exit_value = self._execute_and_let_reporter_report_final_result(final_result_output_file)
+        self._std.err.flush()
+        exit_identifier_output_file.write_line(exit_value.exit_identifier)
+        return exit_value.exit_code
+
+    def _execute_and_let_reporter_report_final_result(self,
+                                                      reporter_out: FilePrinter) -> ExitValue:
         try:
             root_suite = self._read_structure(self._suite_root_file_path)
             suits_in_processing_order = self._suite_enumerator.apply(root_suite)
-            exit_code = self._process_suits(suits_in_processing_order)
-            return exit_code
-        except SuiteReadError:
-            exit_code = self._reporter.report_final_results_for_invalid_suite()
-            return exit_code
+            self._process_suits(suits_in_processing_order)
+            return self._reporter.report_final_results_for_valid_suite(reporter_out)
+        except SuiteReadError as ex:
+            file_printer = FilePrinter(self._std.err)
+            output_location(file_printer,
+                            ex.suite_file,
+                            ex.maybe_section_name,
+                            ex.line,
+                            'section')
+            file_printer.write_lines(ex.error_message_lines())
+
+            return self._reporter.report_final_results_for_invalid_suite(reporter_out)
 
     def _read_structure(self,
                         suite_file_path: pathlib.Path) -> structure.TestSuite:
         return self._suite_hierarchy_reader.apply(suite_file_path)
 
     def _process_suits(self,
-                       suits_in_processing_order: list) -> int:
+                       suits_in_processing_order: list):
         """
         :param suits_in_processing_order: [TestSuite]
         :return: Exit code from main program.
@@ -56,7 +74,6 @@ class Executor:
         for suite in suits_in_processing_order:
             self._process_single_sub_suite(suite)
         self._reporter.root_suite_end()
-        return self._reporter.report_final_results_for_valid_suite()
 
     def _process_single_sub_suite(self,
                                   suite: structure.TestSuite):
@@ -65,7 +82,7 @@ class Executor:
         """
         sub_suite_reporter = self._reporter.new_sub_suite_reporter(suite)
         sub_suite_reporter.listener().suite_begin()
-        configuration = self.configuration_for_cases_in_suite(suite)
+        configuration = self._configuration_for_cases_in_suite(suite)
         case_processor = self._test_case_processor_constructor(configuration)
         for case in suite.test_cases:
             sub_suite_reporter.listener().case_begin(case)
@@ -87,7 +104,7 @@ class Executor:
                                                         file_path=case.file_path)
             return test_case_processing.new_internal_error(error_info)
 
-    def configuration_for_cases_in_suite(self, suite):
+    def _configuration_for_cases_in_suite(self, suite):
         return case_processing.Configuration(
             self._default_case_configuration.split_line_into_name_and_argument_function,
             self._default_case_configuration.instruction_setup,

@@ -24,8 +24,7 @@ class TestFinalResultFormatting(unittest.TestCase):
         self._assert_at_least_one_line_was_generated(actual_lines)
         self._assert_line_is_number_of_executed_tests_line(actual_lines[0], num_test_cases)
         self.assertListEqual(actual_lines[1:],
-                             ['',
-                              exit_identifier],
+                             [],
                              'Lines after "Ran ..."')
 
     def test_with_multiple_errors(self):
@@ -44,12 +43,11 @@ class TestFinalResultFormatting(unittest.TestCase):
         # ASSERT #
         self._assert_at_least_one_line_was_generated(actual_lines)
         self._assert_line_is_number_of_executed_tests_line(actual_lines[0], num_test_cases)
-        self.assertListEqual(actual_lines[1:],
-                             ['',
+        self.assertListEqual(['',
                               'identifier_4         : 4',
                               'longer_identifier_12 : 12',
-                              '',
-                              exit_identifier],
+                              ],
+                             actual_lines[1:],
                              'Lines after "Ran ..."')
 
     def _assert_at_least_one_line_was_generated(self, actual_lines):
