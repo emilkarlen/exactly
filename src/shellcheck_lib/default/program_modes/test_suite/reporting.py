@@ -23,13 +23,13 @@ class DefaultSubSuiteProgressReporter(reporting.SubSuiteProgressReporter):
         self.suite = suite
 
     def suite_begin(self):
-        self._write_ln('SUITE ' + str(self.suite.source_file) + ': BEGIN')
+        self._write_ln('suite ' + str(self.suite.source_file) + ': begin')
 
     def suite_end(self):
-        self._write_ln('SUITE ' + str(self.suite.source_file) + ': END')
+        self._write_ln('suite ' + str(self.suite.source_file) + ': end')
 
     def case_begin(self, case: test_case_processing.TestCaseSetup):
-        self.output_file.write('CASE  ' + str(case.file_path) + ': ')
+        self.output_file.write('case  ' + str(case.file_path) + ': ')
 
     def case_end(self,
                  case: test_case_processing.TestCaseSetup,
