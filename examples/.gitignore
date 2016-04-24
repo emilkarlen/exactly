@@ -1,0 +1,11 @@
+cleanup/manipulate-database-contents
+cleanup/my-helper-program
+external-programs/my-assert-helper-program
+external-programs/my-setup-helper-program
+external-programs/system-under-test
+first-step/hello-world
+first-step/remove-all-files-in-the-current-directory
+organize/bin/do-something-good-with
+setup/copy-stdin-to-stdout
+setup/list-files-under-pwd
+setup/remove-all-files-in-the-current-directory
