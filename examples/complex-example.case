@@ -1,0 +1,77 @@
+[conf]
+
+
+mode SKIP
+
+
+[setup]
+
+
+install this-is-an-existing-file-in-same-dir-as-test-case.txt
+
+dir first/second/third
+
+file in/a/dir/file-name.txt <<EOF
+contents of the file
+<<EOF
+
+stdin <<EOF
+this will be stdin for the program in the "act" phase
+EOF
+# (It is also possible to have stdin redirected to an existing file.)
+
+dir root-dir-for-act-phase
+
+pwd root-dir-for-act-phase
+# This will be PWD for the "act" phase. 
+
+env MY_VAR = 'value of my environment variable'
+
+env unset VARIABLE_THAT_SHOULD_NOT_BE_SET
+
+run my-prog-in-same-dir-as-teset-case-that-does-some-more-setup
+
+
+[act]
+
+
+the-system-under-test
+
+
+[before-assert]
+
+
+pwd ..
+# Moves back to the original PWD.
+
+shell sort root-dir-for-act-phase/output-from-sut.txt > sorted.txt
+
+
+[assert]
+
+
+exitcode != 0
+
+stdout <<EOF
+Hello, World!
+EOF
+
+stderr empty
+
+contents a-file.txt empty
+
+contents another-file.txt --with-replaced-env-vars expected-content.txt
+
+type actual-file directory
+
+pwd this-dir-is-where-we-should-be-for-the-following-assertions
+
+run my-prog-in-same-dir-as-test-case-that-does-some-assertions
+
+
+[cleanup]
+
+
+shell umount my-test-mount-point
+
+run my-prog-that-removes-database 'my test database'
