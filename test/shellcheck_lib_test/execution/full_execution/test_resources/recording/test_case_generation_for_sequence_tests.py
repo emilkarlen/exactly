@@ -1,8 +1,8 @@
-from shellcheck_lib.document import model
-from shellcheck_lib.document.model import PhaseContentElement
-from shellcheck_lib.execution import phase_step_simple as phase_step
-from shellcheck_lib.execution import phases
-from shellcheck_lib.test_case.phases.common import TestCaseInstruction
+from exactly_lib.document import model
+from exactly_lib.document.model import PhaseContentElement
+from exactly_lib.execution import phase_step_simple as phase_step
+from exactly_lib.execution import phases
+from exactly_lib.test_case.phases.common import TestCaseInstruction
 from shellcheck_lib_test.execution.full_execution.test_resources.test_case_generator import \
     TestCaseGeneratorForFullExecutionBase
 from shellcheck_lib_test.execution.test_resources.execution_recording.recorder import \

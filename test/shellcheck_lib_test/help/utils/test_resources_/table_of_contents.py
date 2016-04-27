@@ -1,7 +1,7 @@
 import unittest
 
-from shellcheck_lib.help.cross_reference_id import TargetInfoNode, TargetInfo
-from shellcheck_lib.util.textformat.structure import core
+from exactly_lib.help.cross_reference_id import TargetInfoNode, TargetInfo
+from exactly_lib.util.textformat.structure import core
 from shellcheck_lib_test.test_resources import value_assertion as va
 
 

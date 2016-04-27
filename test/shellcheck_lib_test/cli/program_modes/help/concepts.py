@@ -1,9 +1,9 @@
 import unittest
 
-from shellcheck_lib.cli.program_modes.help.concepts import request_rendering
-from shellcheck_lib.cli.program_modes.help.concepts.help_request import ConceptHelpRequest, ConceptHelpItem
-from shellcheck_lib.help.program_modes.test_case.contents_structure import ConceptsHelp
-from shellcheck_lib.help.utils.render import SectionContentsRenderer
+from exactly_lib.cli.program_modes.help.concepts import request_rendering
+from exactly_lib.cli.program_modes.help.concepts.help_request import ConceptHelpRequest, ConceptHelpItem
+from exactly_lib.help.program_modes.test_case.contents_structure import ConceptsHelp
+from exactly_lib.help.utils.render import SectionContentsRenderer
 from shellcheck_lib_test.cli.program_modes.help.argument_parsing import ConceptTestImpl
 
 

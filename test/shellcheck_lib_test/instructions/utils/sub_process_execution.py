@@ -1,7 +1,7 @@
 import unittest
 
-from shellcheck_lib.instructions.utils import sub_process_execution as sut
-from shellcheck_lib.instructions.utils.sub_process_execution import InstructionSourceInfo
+from exactly_lib.instructions.utils import sub_process_execution as sut
+from exactly_lib.instructions.utils.sub_process_execution import InstructionSourceInfo
 from shellcheck_lib_test.test_resources import file_checks
 from shellcheck_lib_test.test_resources import python_program_execution as py_exe
 from shellcheck_lib_test.test_resources.execution.eds_populator import act_dir_contents

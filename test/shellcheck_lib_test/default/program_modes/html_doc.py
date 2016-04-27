@@ -1,11 +1,11 @@
 import unittest
 
-from shellcheck_lib.cli import main_program
-from shellcheck_lib.cli.program_modes.help import arguments_for
-from shellcheck_lib.default.program_modes.test_case import default_instructions_setup
-from shellcheck_lib.help.contents_structure import application_help_for
-from shellcheck_lib.help.html_doc import main as sut
-from shellcheck_lib.util.textformat.formatting.html.document import DOCTYPE_XHTML1_0
+from exactly_lib.cli import main_program
+from exactly_lib.cli.program_modes.help import arguments_for
+from exactly_lib.default.program_modes.test_case import default_instructions_setup
+from exactly_lib.help.contents_structure import application_help_for
+from exactly_lib.help.html_doc import main as sut
+from exactly_lib.util.textformat.formatting.html.document import DOCTYPE_XHTML1_0
 from shellcheck_lib_test.test_resources import process_result_assertions as pr
 from shellcheck_lib_test.test_resources import value_assertion as va
 from shellcheck_lib_test.test_resources.main_program.constant_arguments_check import ProcessTestCase, PlainArrangement

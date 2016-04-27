@@ -1,10 +1,10 @@
 import unittest
 
-from shellcheck_lib.help.program_modes.test_case.instruction_documentation import InvokationVariant, \
+from exactly_lib.help.program_modes.test_case.instruction_documentation import InvokationVariant, \
     SyntaxElementDescription
-from shellcheck_lib.help.program_modes.test_case.render import render_instruction as sut
-from shellcheck_lib.help.utils.render import RenderingEnvironment
-from shellcheck_lib.util.textformat.structure.structures import paras
+from exactly_lib.help.program_modes.test_case.render import render_instruction as sut
+from exactly_lib.help.utils.render import RenderingEnvironment
+from exactly_lib.util.textformat.structure.structures import paras
 from shellcheck_lib_test.help.test_resources import CrossReferenceTextConstructorTestImpl
 from shellcheck_lib_test.test_resources.instruction_description import InstructionDocumentationWithConstantValues
 from shellcheck_lib_test.util.textformat.test_resources import structure as struct_check

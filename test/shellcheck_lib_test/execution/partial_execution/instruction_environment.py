@@ -1,14 +1,14 @@
 import functools
 import unittest
 
-from shellcheck_lib.execution import partial_execution as sut
-from shellcheck_lib.execution import phases
-from shellcheck_lib.execution.execution_directory_structure import eds_log_phase_dir
-from shellcheck_lib.execution.phases import PhaseEnum
-from shellcheck_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase
-from shellcheck_lib.test_case.phases.result import pfh
-from shellcheck_lib.test_case.phases.result import sh
-from shellcheck_lib.test_case.phases.result import svh
+from exactly_lib.execution import partial_execution as sut
+from exactly_lib.execution import phases
+from exactly_lib.execution.execution_directory_structure import eds_log_phase_dir
+from exactly_lib.execution.phases import PhaseEnum
+from exactly_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase
+from exactly_lib.test_case.phases.result import pfh
+from exactly_lib.test_case.phases.result import sh
+from exactly_lib.test_case.phases.result import svh
 from shellcheck_lib_test.execution.partial_execution.test_resources.basic import py3_test, \
     TestCaseWithCommonDefaultInstructions, Result
 

@@ -1,9 +1,9 @@
 import unittest
 from xml.etree.ElementTree import Element
 
-from shellcheck_lib.util.textformat.formatting.html.paragraph_item import table as sut
-from shellcheck_lib.util.textformat.structure.structures import paras
-from shellcheck_lib.util.textformat.structure.table import Table, TableFormat
+from exactly_lib.util.textformat.formatting.html.paragraph_item import table as sut
+from exactly_lib.util.textformat.structure.structures import paras
+from exactly_lib.util.textformat.structure.table import Table, TableFormat
 from shellcheck_lib_test.util.textformat.formatting.html.paragraph_item.test_resources import ConstantPRenderer
 from shellcheck_lib_test.util.textformat.formatting.html.test_resources import as_unicode_str
 

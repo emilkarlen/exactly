@@ -1,9 +1,9 @@
 from xml.etree.ElementTree import Element, SubElement
 
-from shellcheck_lib.util.textformat.formatting.html.paragraph_item.interfaces import ParagraphItemRenderer
-from shellcheck_lib.util.textformat.formatting.html.text import TargetRenderer
-from shellcheck_lib.util.textformat.structure import core
-from shellcheck_lib.util.textformat.structure.paragraph import Paragraph
+from exactly_lib.util.textformat.formatting.html.paragraph_item.interfaces import ParagraphItemRenderer
+from exactly_lib.util.textformat.formatting.html.text import TargetRenderer
+from exactly_lib.util.textformat.structure import core
+from exactly_lib.util.textformat.structure.paragraph import Paragraph
 
 
 class CrossReferenceTarget(core.CrossReferenceTarget):

@@ -1,12 +1,12 @@
 import unittest
 
-from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
+from exactly_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException, SingleInstructionParserSource
-from shellcheck_lib.instructions.setup import stdin as sut
-from shellcheck_lib.instructions.utils import file_ref
-from shellcheck_lib.test_case.phases import common
-from shellcheck_lib.test_case.phases.setup import SetupSettingsBuilder
-from shellcheck_lib.util.string import lines_content
+from exactly_lib.instructions.setup import stdin as sut
+from exactly_lib.instructions.utils import file_ref
+from exactly_lib.test_case.phases import common
+from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
+from exactly_lib.util.string import lines_content
 from shellcheck_lib_test.instructions.setup.test_resources.instruction_check import TestCaseBase, Arrangement, \
     Expectation
 from shellcheck_lib_test.instructions.setup.test_resources.settings_check import Assertion

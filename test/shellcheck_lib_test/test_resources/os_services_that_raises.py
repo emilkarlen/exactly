@@ -1,5 +1,5 @@
-from shellcheck_lib.test_case.os_services import OsServices
-from shellcheck_lib.test_case.phases.result import sh
+from exactly_lib.test_case.os_services import OsServices
+from exactly_lib.test_case.phases.result import sh
 
 
 class OsServicesThatRaises(OsServices):

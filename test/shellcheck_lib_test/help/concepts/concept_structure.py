@@ -1,8 +1,8 @@
 import unittest
 
-from shellcheck_lib.help.concepts import concept_structure as sut
-from shellcheck_lib.help.utils.description import Description
-from shellcheck_lib.util.textformat.structure.structures import text
+from exactly_lib.help.concepts import concept_structure as sut
+from exactly_lib.help.utils.description import Description
+from exactly_lib.util.textformat.structure.structures import text
 
 
 def suite() -> unittest.TestSuite:

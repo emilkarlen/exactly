@@ -1,8 +1,8 @@
 import unittest
 
-from shellcheck_lib.help.cross_reference_id import TargetInfo, TargetInfoNode, target_info_leaf
-from shellcheck_lib.help.utils import table_of_contents as sut
-from shellcheck_lib.util.textformat.structure import lists
+from exactly_lib.help.cross_reference_id import TargetInfo, TargetInfoNode, target_info_leaf
+from exactly_lib.help.utils import table_of_contents as sut
+from exactly_lib.util.textformat.structure import lists
 from shellcheck_lib_test.util.textformat.formatting.html.paragraph_item.test_resources import CrossReferenceTarget
 from shellcheck_lib_test.util.textformat.test_resources import structure as struct_check
 

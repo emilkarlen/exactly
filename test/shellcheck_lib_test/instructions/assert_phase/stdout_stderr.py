@@ -1,10 +1,10 @@
 import unittest
 
-from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
+from exactly_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException, SingleInstructionParser, SingleInstructionParserSource
-from shellcheck_lib.instructions.assert_phase import stdout_stderr as sut
-from shellcheck_lib.instructions.utils.relative_path_options import REL_HOME_OPTION
-from shellcheck_lib.util.string import lines_content
+from exactly_lib.instructions.assert_phase import stdout_stderr as sut
+from exactly_lib.instructions.utils.relative_path_options import REL_HOME_OPTION
+from exactly_lib.util.string import lines_content
 from shellcheck_lib_test.instructions.assert_phase.test_resources import instruction_check
 from shellcheck_lib_test.instructions.assert_phase.test_resources.contents_resources import \
     ActResultProducerForContentsWithAllReplacedEnvVars, \

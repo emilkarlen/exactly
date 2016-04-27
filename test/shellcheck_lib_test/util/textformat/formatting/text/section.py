@@ -1,10 +1,10 @@
 import unittest
 
-from shellcheck_lib.util.textformat.formatting.text import lists as lf
-from shellcheck_lib.util.textformat.formatting.text import paragraph_item
-from shellcheck_lib.util.textformat.formatting.text import section as sut
-from shellcheck_lib.util.textformat.structure import lists
-from shellcheck_lib.util.textformat.structure.document import SectionContents, Section, empty_contents
+from exactly_lib.util.textformat.formatting.text import lists as lf
+from exactly_lib.util.textformat.formatting.text import paragraph_item
+from exactly_lib.util.textformat.formatting.text import section as sut
+from exactly_lib.util.textformat.structure import lists
+from exactly_lib.util.textformat.structure.document import SectionContents, Section, empty_contents
 from shellcheck_lib_test.util.textformat.test_resources.constr import single_text_para, header_only_item, \
     BLANK_LINE, text, CROSS_REF_TITLE_ONLY_TEXT_FORMATTER
 

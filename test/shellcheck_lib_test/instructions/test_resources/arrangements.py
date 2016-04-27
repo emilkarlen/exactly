@@ -1,5 +1,5 @@
-from shellcheck_lib.test_case.os_services import OsServices, new_default
-from shellcheck_lib.test_case.phases import common as i
+from exactly_lib.test_case.os_services import OsServices, new_default
+from exactly_lib.test_case.phases import common as i
 from shellcheck_lib_test.test_resources import file_structure
 from shellcheck_lib_test.test_resources.execution import eds_populator, utils
 

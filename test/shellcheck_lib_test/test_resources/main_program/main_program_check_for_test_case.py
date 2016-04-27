@@ -1,7 +1,7 @@
 import pathlib
 import unittest
 
-from shellcheck_lib.cli.cli_environment.command_line_options import OPTION_FOR_PREPROCESSOR
+from exactly_lib.cli.cli_environment.command_line_options import OPTION_FOR_PREPROCESSOR
 from shellcheck_lib_test.test_resources import quoting
 from shellcheck_lib_test.test_resources.file_structure import File, DirContents
 from shellcheck_lib_test.test_resources.main_program import main_program_check_base

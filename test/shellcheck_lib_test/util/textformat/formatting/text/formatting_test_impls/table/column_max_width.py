@@ -1,7 +1,7 @@
 import types
 import unittest
 
-from shellcheck_lib.util.textformat.formatting.text.table import column_max_width as sut
+from exactly_lib.util.textformat.formatting.text.table import column_max_width as sut
 
 
 class TestCase(unittest.TestCase):

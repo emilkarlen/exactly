@@ -4,14 +4,14 @@ Test of test-infrastructure: instruction_check.
 import unittest
 
 import shellcheck_lib_test.test_resources.parse
-from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
+from exactly_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParserSource
-from shellcheck_lib.test_case.os_services import OsServices
-from shellcheck_lib.test_case.phases import common
-from shellcheck_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase
-from shellcheck_lib.test_case.phases.result import sh
-from shellcheck_lib.test_case.phases.result import svh
-from shellcheck_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
+from exactly_lib.test_case.os_services import OsServices
+from exactly_lib.test_case.phases import common
+from exactly_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase
+from exactly_lib.test_case.phases.result import sh
+from exactly_lib.test_case.phases.result import svh
+from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
 from shellcheck_lib_test.execution.test_resources.instruction_test_resources import \
     setup_phase_instruction_that
 from shellcheck_lib_test.instructions.setup.test_resources import instruction_check

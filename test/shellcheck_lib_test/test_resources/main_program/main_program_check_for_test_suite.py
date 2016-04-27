@@ -1,7 +1,7 @@
 import pathlib
 import unittest
 
-from shellcheck_lib.cli import main_program
+from exactly_lib.cli import main_program
 from shellcheck_lib_test.test_resources.file_structure import DirContents
 from shellcheck_lib_test.test_resources.main_program import main_program_check_base
 from shellcheck_lib_test.test_resources.process import SubProcessResult

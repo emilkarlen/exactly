@@ -1,6 +1,6 @@
 import unittest
 
-from shellcheck_lib.help.html_doc import main as sut
+from exactly_lib.help.html_doc import main as sut
 from shellcheck_lib_test.help.test_resources import application_help_for
 from shellcheck_lib_test.test_resources.str_std_out_files import null_output_files
 

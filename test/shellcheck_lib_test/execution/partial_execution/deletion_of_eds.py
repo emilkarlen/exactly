@@ -1,6 +1,6 @@
 import unittest
 
-from shellcheck_lib.execution import partial_execution as sut
+from exactly_lib.execution import partial_execution as sut
 from shellcheck_lib_test.execution.partial_execution.test_resources.basic import py3_test, \
     TestCaseWithCommonDefaultInstructions, Result
 

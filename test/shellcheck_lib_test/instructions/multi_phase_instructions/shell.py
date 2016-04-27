@@ -1,6 +1,6 @@
 import unittest
 
-from shellcheck_lib.instructions.multi_phase_instructions import shell as sut
+from exactly_lib.instructions.multi_phase_instructions import shell as sut
 from shellcheck_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 
 

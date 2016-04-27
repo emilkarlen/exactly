@@ -1,9 +1,9 @@
 import pathlib
 import unittest
 
-from shellcheck_lib.instructions.utils import executable_file as sut
-from shellcheck_lib.instructions.utils.parse_utils import TokenStream
-from shellcheck_lib.test_case.phases.common import HomeAndEds
+from exactly_lib.instructions.utils import executable_file as sut
+from exactly_lib.instructions.utils.parse_utils import TokenStream
+from exactly_lib.test_case.phases.common import HomeAndEds
 from shellcheck_lib_test.instructions.test_resources import pre_or_post_eds_validator as validator_util
 from shellcheck_lib_test.test_resources.execution import eds_populator
 from shellcheck_lib_test.test_resources.execution.utils import home_and_eds_and_test_as_curr_dir

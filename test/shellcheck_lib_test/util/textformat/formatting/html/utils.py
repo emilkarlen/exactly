@@ -1,10 +1,10 @@
 import unittest
 from xml.etree.ElementTree import Element, SubElement
 
-import shellcheck_lib.util.textformat.formatting.html.utils
-from shellcheck_lib.util.textformat.formatting.html import utils as sut
-from shellcheck_lib.util.textformat.formatting.html.text import TextRenderer
-from shellcheck_lib.util.textformat.structure.structures import para
+import exactly_lib.util.textformat.formatting.html.utils
+from exactly_lib.util.textformat.formatting.html import utils as sut
+from exactly_lib.util.textformat.formatting.html.text import TextRenderer
+from exactly_lib.util.textformat.structure.structures import para
 from shellcheck_lib_test.util.textformat.formatting.html.test_resources import as_unicode_str
 
 
@@ -37,7 +37,7 @@ class TestComplexElementPopulator(unittest.TestCase):
                          xml_string)
 
 
-class SingleParaPopulator(shellcheck_lib.util.textformat.formatting.html.utils.ElementPopulator):
+class SingleParaPopulator(exactly_lib.util.textformat.formatting.html.utils.ElementPopulator):
     def __init__(self, para_text: str):
         self.para_text = para_text
 

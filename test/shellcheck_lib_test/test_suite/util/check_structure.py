@@ -2,11 +2,11 @@ import pathlib
 import tempfile
 import unittest
 
-from shellcheck_lib import program_info
-from shellcheck_lib.test_case.test_case_processing import TestCaseSetup
-from shellcheck_lib.test_suite import structure
-from shellcheck_lib.test_suite.suite_hierarchy_reading import Reader, default_environment
-from shellcheck_lib.util.file_utils import resolved_path
+from exactly_lib import program_info
+from exactly_lib.test_case.test_case_processing import TestCaseSetup
+from exactly_lib.test_suite import structure
+from exactly_lib.test_suite.suite_hierarchy_reading import Reader, default_environment
+from exactly_lib.util.file_utils import resolved_path
 from shellcheck_lib_test.test_resources.file_structure import DirContents
 
 

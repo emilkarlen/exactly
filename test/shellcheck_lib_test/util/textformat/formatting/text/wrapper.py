@@ -1,6 +1,6 @@
 import unittest
 
-from shellcheck_lib.util.textformat.formatting.text import wrapper as sut
+from exactly_lib.util.textformat.formatting.text import wrapper as sut
 
 
 class TestIndent(unittest.TestCase):

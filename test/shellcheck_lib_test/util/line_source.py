@@ -1,7 +1,7 @@
 import os
 import unittest
 
-from shellcheck_lib.util import line_source
+from exactly_lib.util import line_source
 from shellcheck_lib_test.test_resources.file_utils import tmp_file_containing
 
 

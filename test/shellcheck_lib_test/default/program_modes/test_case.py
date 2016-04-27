@@ -2,15 +2,15 @@ import pathlib
 import shutil
 import unittest
 
-from shellcheck_lib.cli import main_program
-from shellcheck_lib.cli.cli_environment.command_line_options import OPTION_FOR_KEEPING_SANDBOX_DIRECTORY, \
+from exactly_lib.cli import main_program
+from exactly_lib.cli.cli_environment.command_line_options import OPTION_FOR_KEEPING_SANDBOX_DIRECTORY, \
     OPTION_FOR_EXECUTING_ACT_PHASE
-from shellcheck_lib.cli.cli_environment.program_modes.test_case import exit_values
-from shellcheck_lib.document.syntax import section_header
-from shellcheck_lib.execution import environment_variables
-from shellcheck_lib.execution import execution_directory_structure
-from shellcheck_lib.execution import phases
-from shellcheck_lib.util.string import lines_content
+from exactly_lib.cli.cli_environment.program_modes.test_case import exit_values
+from exactly_lib.document.syntax import section_header
+from exactly_lib.execution import environment_variables
+from exactly_lib.execution import execution_directory_structure
+from exactly_lib.execution import phases
+from exactly_lib.util.string import lines_content
 from shellcheck_lib_test.default.test_resources import default_main_program_case_preprocessing
 from shellcheck_lib_test.default.test_resources.internal_main_program_runner import RunViaMainProgramInternally
 from shellcheck_lib_test.default.test_resources.test_case_file_elements import phase_header_line

@@ -1,8 +1,8 @@
 import unittest
 
-from shellcheck_lib.execution import phase_step_simple as phase_step
-from shellcheck_lib.execution.result import PartialResultStatus
-from shellcheck_lib.test_case.phases.cleanup import PreviousPhase
+from exactly_lib.execution import phase_step_simple as phase_step
+from exactly_lib.execution.result import PartialResultStatus
+from exactly_lib.test_case.phases.cleanup import PreviousPhase
 from shellcheck_lib_test.execution.partial_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr
 from shellcheck_lib_test.execution.partial_execution.test_resources.recording.test_case_that_records_phase_execution import \

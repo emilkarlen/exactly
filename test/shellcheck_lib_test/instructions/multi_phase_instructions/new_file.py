@@ -1,10 +1,10 @@
 import unittest
 
-from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
+from exactly_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException, SingleInstructionParserSource
-from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
-from shellcheck_lib.instructions.multi_phase_instructions import new_file as sut
-from shellcheck_lib.util.string import lines_content
+from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
+from exactly_lib.instructions.multi_phase_instructions import new_file as sut
+from exactly_lib.util.string import lines_content
 from shellcheck_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from shellcheck_lib_test.test_resources.execution import eds_test
 from shellcheck_lib_test.test_resources.execution.eds_contents_check import ActRootContainsExactly, \

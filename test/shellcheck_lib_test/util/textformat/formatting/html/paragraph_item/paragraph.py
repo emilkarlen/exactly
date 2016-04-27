@@ -1,10 +1,10 @@
 import unittest
 from xml.etree.ElementTree import Element
 
-from shellcheck_lib.util.textformat.formatting.html.paragraph_item import paragraph as sut
-from shellcheck_lib.util.textformat.formatting.html.text import TextRenderer
-from shellcheck_lib.util.textformat.structure import core
-from shellcheck_lib.util.textformat.structure.paragraph import Paragraph
+from exactly_lib.util.textformat.formatting.html.paragraph_item import paragraph as sut
+from exactly_lib.util.textformat.formatting.html.text import TextRenderer
+from exactly_lib.util.textformat.structure import core
+from exactly_lib.util.textformat.structure.paragraph import Paragraph
 from shellcheck_lib_test.util.textformat.formatting.html.paragraph_item.test_resources import CrossReferenceTarget, \
     TargetRendererTestImpl
 from shellcheck_lib_test.util.textformat.formatting.html.test_resources import as_unicode_str

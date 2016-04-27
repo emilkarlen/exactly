@@ -1,7 +1,7 @@
 import pathlib
 import unittest
 
-from shellcheck_lib.test_case.phases.common import HomeAndEds
+from exactly_lib.test_case.phases.common import HomeAndEds
 from shellcheck_lib_test.test_resources.value_assertion import ValueAssertion
 
 

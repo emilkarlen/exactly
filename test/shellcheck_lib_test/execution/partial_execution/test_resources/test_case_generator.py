@@ -1,7 +1,7 @@
 from enum import Enum
 
-from shellcheck_lib.document import model
-from shellcheck_lib.execution.partial_execution import TestCase
+from exactly_lib.document import model
+from exactly_lib.execution.partial_execution import TestCase
 
 
 class PartialPhase(Enum):

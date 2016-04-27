@@ -1,6 +1,6 @@
 import unittest
 
-from shellcheck_lib.util.textformat.structure import core as sut
+from exactly_lib.util.textformat.structure import core as sut
 
 
 def suite() -> unittest.TestSuite:

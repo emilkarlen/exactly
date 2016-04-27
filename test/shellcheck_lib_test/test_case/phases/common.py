@@ -1,7 +1,7 @@
 import pathlib
 import unittest
 
-from shellcheck_lib.test_case.phases import common as sut
+from exactly_lib.test_case.phases import common as sut
 
 
 class TestPhaseLoggingPaths(unittest.TestCase):

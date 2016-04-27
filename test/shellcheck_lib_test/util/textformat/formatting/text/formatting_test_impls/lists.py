@@ -1,12 +1,12 @@
 import unittest
 
-import shellcheck_lib.util.textformat.structure.lists
-from shellcheck_lib.util.textformat.formatting.text import lists as lf
-from shellcheck_lib.util.textformat.formatting.text import paragraph_item as sut
-from shellcheck_lib.util.textformat.formatting.text.lists import list_formats_with
-from shellcheck_lib.util.textformat.formatting.text.text import TextFormatter
-from shellcheck_lib.util.textformat.structure import core
-from shellcheck_lib.util.textformat.structure import lists
+import exactly_lib.util.textformat.structure.lists
+from exactly_lib.util.textformat.formatting.text import lists as lf
+from exactly_lib.util.textformat.formatting.text import paragraph_item as sut
+from exactly_lib.util.textformat.formatting.text.lists import list_formats_with
+from exactly_lib.util.textformat.formatting.text.text import TextFormatter
+from exactly_lib.util.textformat.structure import core
+from exactly_lib.util.textformat.structure import lists
 from shellcheck_lib_test.util.textformat.test_resources.constr import single_text_para, item, header_only_item, \
     BLANK_LINE, CROSS_REF_TITLE_ONLY_TEXT_FORMATTER
 
@@ -218,7 +218,7 @@ class TestWholeListIndent(unittest.TestCase):
 
 class TestSeparations(unittest.TestCase):
     list_format = lf.ListFormat(lf.HeaderAndIndentFormatWithNumbering(contents_indent_spaces=1),
-                                shellcheck_lib.util.textformat.structure.lists.Separations(
+                                exactly_lib.util.textformat.structure.lists.Separations(
                                     num_blank_lines_between_elements=2,
                                     num_blank_lines_between_header_and_contents=1))
 

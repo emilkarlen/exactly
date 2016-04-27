@@ -1,8 +1,8 @@
 import unittest
 
-from shellcheck_lib.test_case.phases.common import HomeAndEds
-from shellcheck_lib.test_case.phases.result import sh
-from shellcheck_lib.test_case.phases.result import svh
+from exactly_lib.test_case.phases.common import HomeAndEds
+from exactly_lib.test_case.phases.result import sh
+from exactly_lib.test_case.phases.result import svh
 from shellcheck_lib_test.instructions.test_resources.arrangements import ArrangementWithEds
 from shellcheck_lib_test.instructions.test_resources.expectations import ExpectationBase
 from shellcheck_lib_test.test_resources import value_assertion as va

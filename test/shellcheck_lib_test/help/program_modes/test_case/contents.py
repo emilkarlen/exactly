@@ -1,10 +1,10 @@
 import unittest
 
-from shellcheck_lib.help.program_modes.test_case.contents.phase import act
-from shellcheck_lib.help.program_modes.test_case.contents.phase import \
+from exactly_lib.help.program_modes.test_case.contents.phase import act
+from exactly_lib.help.program_modes.test_case.contents.phase import \
     assert_, configuration, before_assert, cleanup, setup
-from shellcheck_lib.help.program_modes.test_case.render import test_case_phase as sut
-from shellcheck_lib.help.utils.render import RenderingEnvironment
+from exactly_lib.help.program_modes.test_case.render import test_case_phase as sut
+from exactly_lib.help.utils.render import RenderingEnvironment
 from shellcheck_lib_test.help.test_resources import test_case_phase_instruction_set, \
     CrossReferenceTextConstructorTestImpl
 from shellcheck_lib_test.util.textformat.test_resources import structure as struct_check

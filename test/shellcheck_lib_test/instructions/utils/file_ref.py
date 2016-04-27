@@ -1,6 +1,6 @@
 import unittest
 
-from shellcheck_lib.instructions.utils import file_ref as sut
+from exactly_lib.instructions.utils import file_ref as sut
 from shellcheck_lib_test.test_resources.execution.eds_populator import act_dir_contents, tmp_user_dir_contents, \
     tmp_internal_dir_contents
 from shellcheck_lib_test.test_resources.execution.utils import home_and_eds_and_test_as_curr_dir

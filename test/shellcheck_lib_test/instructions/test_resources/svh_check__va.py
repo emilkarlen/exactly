@@ -1,4 +1,4 @@
-from shellcheck_lib.test_case.phases.result import svh
+from exactly_lib.test_case.phases.result import svh
 from shellcheck_lib_test.test_resources import value_assertion as va
 
 

@@ -1,12 +1,12 @@
 import unittest
 
-from shellcheck_lib.cli import main_program
-from shellcheck_lib.cli.program_modes.help import arguments_for
-from shellcheck_lib.default.program_modes.test_case.default_instruction_names import CHANGE_DIR_INSTRUCTION_NAME
-from shellcheck_lib.execution import phases
-from shellcheck_lib.help.concepts.concept import SANDBOX_CONCEPT
-from shellcheck_lib.help.program_modes.test_case.config import phase_help_name
-from shellcheck_lib.test_suite.parser import ALL_SECTION_NAMES
+from exactly_lib.cli import main_program
+from exactly_lib.cli.program_modes.help import arguments_for
+from exactly_lib.default.program_modes.test_case.default_instruction_names import CHANGE_DIR_INSTRUCTION_NAME
+from exactly_lib.execution import phases
+from exactly_lib.help.concepts.concept import SANDBOX_CONCEPT
+from exactly_lib.help.program_modes.test_case.config import phase_help_name
+from exactly_lib.test_suite.parser import ALL_SECTION_NAMES
 from shellcheck_lib_test.test_resources import process_result_assertions as pr
 from shellcheck_lib_test.test_resources import value_assertion as va
 from shellcheck_lib_test.test_resources.main_program.constant_arguments_check import ProcessTestCase, Arrangement

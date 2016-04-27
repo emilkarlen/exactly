@@ -1,15 +1,15 @@
-from shellcheck_lib.help.contents_structure import ApplicationHelp
-from shellcheck_lib.help.cross_reference_id import CrossReferenceId
-from shellcheck_lib.help.program_modes.main_program.contents_structure import MainProgramHelp
-from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCasePhaseInstructionSet, \
+from exactly_lib.help.contents_structure import ApplicationHelp
+from exactly_lib.help.cross_reference_id import CrossReferenceId
+from exactly_lib.help.program_modes.main_program.contents_structure import MainProgramHelp
+from exactly_lib.help.program_modes.test_case.contents_structure import TestCasePhaseInstructionSet, \
     TestCasePhaseDocumentation, ConceptsHelp, TestCaseHelp
-from shellcheck_lib.help.program_modes.test_case.instruction_documentation import InstructionDocumentation
-from shellcheck_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
-from shellcheck_lib.help.utils.cross_reference import CrossReferenceTextConstructor
-from shellcheck_lib.help.utils.description import Description
-from shellcheck_lib.util.textformat.structure import document as doc
-from shellcheck_lib.util.textformat.structure.core import Text
-from shellcheck_lib.util.textformat.structure.structures import para, text
+from exactly_lib.help.program_modes.test_case.instruction_documentation import InstructionDocumentation
+from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
+from exactly_lib.help.utils.cross_reference import CrossReferenceTextConstructor
+from exactly_lib.help.utils.description import Description
+from exactly_lib.util.textformat.structure import document as doc
+from exactly_lib.util.textformat.structure.core import Text
+from exactly_lib.util.textformat.structure.structures import para, text
 from shellcheck_lib_test.test_resources.instruction_description import InstructionDocumentationWithConstantValues
 
 
