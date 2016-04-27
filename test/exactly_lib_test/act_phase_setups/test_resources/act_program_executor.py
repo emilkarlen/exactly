@@ -141,7 +141,7 @@ class TestExitCodeIsReturned(TestBase):
 
 class TestEnvironmentVariablesAreAccessibleByProgram(TestBase):
     def runTest(self):
-        var_name = 'SHELLCHECK_TEST_VAR'
+        var_name = 'THIS_IS_A_TEST_VAR_23026509234'
         var_value = str(random.getrandbits(32))
         os.environ[var_name] = var_value
         with self.test_setup.program_that_prints_value_of_environment_variable_to_stdout(var_name) as program:

@@ -4,7 +4,7 @@
 # It executes a command using the OS's shell.
 #
 # Which OS shell is used depends on the OS.  So tests that uses "shell"
-# only works on platforms that has a shall that supportes the features
+# only works on platforms that has a shall that supports the features
 # and commands that are used in the test.
 #
 
@@ -14,7 +14,7 @@
 
 shell touch empty-file.txt
 
-shell cp ${SHELLCHECK_HOME}/shell.case .
+shell cp ${EXACTLY_HOME}/shell.case .
 
 
 [act]

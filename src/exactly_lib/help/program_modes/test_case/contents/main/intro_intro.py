@@ -8,7 +8,7 @@ from exactly_lib.util.textformat.structure.structures import para, literal_layou
 def intro_intro_documentation(setup: Setup) -> doc.SectionContents:
     format_values = {
         'test_case_file': 'helloworld.case',
-        'SHELLCHECK_EXECUTABLE': PROGRAM_NAME,
+        'EXECUTABLE_PROGRAM': PROGRAM_NAME,
         'action_to_check': 'helloworld',
         'phase': setup.phase_names
     }
@@ -40,11 +40,11 @@ EOF\
 
 A_TEST_CASE_IS_EXECUTED_BY_GIVING_THE_FILE_AS_THE_SINGLE_ARGUMENT = """\
 If the file '{test_case_file}' contains this test case,
-then {SHELLCHECK_EXECUTABLE} can execute it:
+then {EXECUTABLE_PROGRAM} can execute it:
 """
 
 EXAMPLE_EXECUTION_OF_TEST_CASE = """\
-> {SHELLCHECK_EXECUTABLE} {test_case_file}
+> {EXECUTABLE_PROGRAM} {test_case_file}
 PASS
 """
 

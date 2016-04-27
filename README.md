@@ -3,7 +3,7 @@ Checks command line program by executing them in a temporary sandbox directory a
 UNDER CONSTRUCTION
 ==================
 
-shellcheck is under construction.
+`exactly` is under construction.
 
 Current version is fully functional, and has a lot of features, including a help system.
 But syntax may change in the future.
@@ -45,10 +45,10 @@ A test case is written as a plain text file:
     EOF
 
 
-If the file 'helloworld.case' contains this test case, then shellcheck can execute it:
+If the file 'helloworld.case' contains this test case, then `exactly` can execute it:
 
 
-    > shellcheck helloworld.case
+    > exactly helloworld.case
     PASS
 
 
@@ -63,8 +63,8 @@ The "act" phase is default
 
 The [act] is not needed to indicate what is being checked, since [act] is the default "phase".
  
-The following is a valid shellcheck test case,
-and if run by shellcheck, it won't remove anything:
+The following is a valid test case,
+and if run by shellcheck, it won't remove anything (since it is executed inside a temporary sandbox directory):
 
     /bin/rm -rf *
 
@@ -89,7 +89,7 @@ Tests can be grouped in suites:
     pkg/suite.suite
 
 
-Run a suite using `shellcheck suite mysuite.suite`
+Run a suite using `exactly suite mysuite.suite`
 
 
 Help

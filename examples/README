@@ -16,4 +16,4 @@ Remove them using:
 
 All examples can be run using:
 
->shellcheck suite examples.suite
+>exactly suite examples.suite
