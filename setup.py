@@ -1,4 +1,5 @@
 import os
+import sys
 
 from setuptools import setup, find_packages
 
@@ -7,21 +8,28 @@ def read(file_name):
     return open(os.path.join(os.path.dirname(__file__), file_name)).read()
 
 
+SRC_DIR_NAME = 'src'
+
+prj_root_dir = sys.path[0]
+src_dir = os.path.join(prj_root_dir, SRC_DIR_NAME)
+sys.path.insert(0, src_dir)
+
+from shellcheck_lib import program_info
+
 setup(
-    name='shellcheck',
-    version='0.7',
+    name=program_info.PROGRAM_NAME,
+    version=program_info.VERSION,
     author='Emil Karlen',
-    # author_email="emil@member.fsf.org",
-    author_email='emilkarlen@aim.com',
+    author_email="emil@member.fsf.org",
     description=('Checks a command line program by executing it in a temporary sandbox directory and '
-                 'inspecting the result.'),
+                 'inspecting its result.'),
     license='GPLv3+',
-    keywords='test case suite check script shell console command line program',
+    keywords='test case suite check assert script shell console command line program execute',
     url='https://github.com/emilkarlen/shellcheck',
     package_dir={
         '': 'src',
     },
-    packages=find_packages('src'),
+    packages=find_packages(SRC_DIR_NAME),
     long_description=read('README'),
     classifiers=[
         'Development Status :: 4 - Beta',
@@ -35,7 +43,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'shellcheck = shellcheck_lib.default.default_main_program_setup:main',
+            program_info.PROGRAM_NAME + ' = shellcheck_lib.default.default_main_program_setup:main',
         ]
     }
 )
