@@ -4,6 +4,7 @@ import tempfile
 from contextlib import contextmanager
 from time import strftime, localtime
 
+from shellcheck_lib import program_info
 from shellcheck_lib.execution import execution_directory_structure as eds_module
 from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib.test_case.phases import common as i
@@ -49,7 +50,7 @@ def act_phase_result(exitcode: int = 0,
                      stderr_contents: str = '') -> i.GlobalEnvironmentForPostEdsPhase:
     cwd_before = os.getcwd()
     home_dir_path = pathlib.Path(cwd_before)
-    with tempfile.TemporaryDirectory(prefix='shellcheck-test-') as eds_root_dir:
+    with tempfile.TemporaryDirectory(prefix=program_info.PROGRAM_NAME + '-test-') as eds_root_dir:
         eds = eds_module.construct_at(resolved_path_name(eds_root_dir))
         write_file(eds.result.exitcode_file, str(exitcode))
         write_file(eds.result.stdout_file, stdout_contents)
@@ -83,7 +84,7 @@ def home_and_eds_and_test_as_curr_dir(
         home_dir_contents: DirContents = empty_dir_contents(),
         eds_contents: eds_populator.EdsPopulator = eds_populator.empty()) -> HomeAndEds:
     cwd_before = os.getcwd()
-    prefix = strftime("shellcheck-test-%Y-%m-%d-%H-%M-%S", localtime())
+    prefix = strftime(program_info.PROGRAM_NAME + '-test-%Y-%m-%d-%H-%M-%S', localtime())
     with tempfile.TemporaryDirectory(prefix=prefix + "-home-") as home_dir:
         home_dir_path = resolved_path(home_dir)
         home_dir_contents.write_to(home_dir_path)
@@ -99,7 +100,8 @@ def home_and_eds_and_test_as_curr_dir(
 
 @contextmanager
 def execution_directory_structure(contents: eds_populator.EdsPopulator = eds_populator.empty(),
-                                  prefix: str = 'shellcheck-test-eds-') -> eds_module.ExecutionDirectoryStructure:
+                                  prefix: str = program_info.PROGRAM_NAME + '-test-eds-') \
+        -> eds_module.ExecutionDirectoryStructure:
     with tempfile.TemporaryDirectory(prefix=prefix) as eds_root_dir:
         eds = eds_module.construct_at(resolved_path_name(eds_root_dir))
         contents.apply(eds)

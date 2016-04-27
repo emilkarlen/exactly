@@ -4,6 +4,7 @@ import sys
 import tempfile
 from contextlib import contextmanager
 
+from shellcheck_lib import program_info
 from shellcheck_lib.util.file_utils import resolved_path
 from shellcheck_lib.util.string import lines_content
 
@@ -31,7 +32,7 @@ def tmp_file_containing(contents: str,
     """
     path = None
     try:
-        fd, absolute_file_path = tempfile.mkstemp(prefix='shellcheck-test-',
+        fd, absolute_file_path = tempfile.mkstemp(prefix=program_info.PROGRAM_NAME + '-test-',
                                                   suffix=suffix,
                                                   dir=directory,
                                                   text=True)

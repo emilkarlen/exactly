@@ -1,6 +1,7 @@
 import argparse
 import pathlib
 
+from shellcheck_lib import program_info
 from shellcheck_lib.cli.argument_parsing_of_act_phase_setup import resolve_act_phase_setup_from_argparse_argument
 from shellcheck_lib.cli.cli_environment.command_line_options import OPTION_FOR_ACTOR
 from shellcheck_lib.util import argument_parsing_utils
@@ -21,8 +22,8 @@ def parse(argv: list) -> Settings:
 
 
 def _new_argument_parser() -> argparse.ArgumentParser:
-    ret_val = argparse.ArgumentParser(description='Execute a shellcheck Test Suite',
-                                      prog='shellcheck suite')
+    ret_val = argparse.ArgumentParser(description='Execute a Test Suite',
+                                      prog=program_info.PROGRAM_NAME + ' suite')
     ret_val.add_argument('file',
                          metavar='FILE',
                          type=str,

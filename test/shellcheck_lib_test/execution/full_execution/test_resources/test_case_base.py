@@ -3,6 +3,7 @@ import pathlib
 import shutil
 import unittest
 
+from shellcheck_lib import program_info
 from shellcheck_lib.act_phase_setups import python3
 from shellcheck_lib.default.program_modes.test_case.processing import script_handling_for_setup
 from shellcheck_lib.execution import full_execution
@@ -35,7 +36,7 @@ class FullExecutionTestCaseBase:
                 self.__script_handling,
                 self._test_case(),
                 self.initial_home_dir_path,
-                'shellcheck-test-',
+            program_info.PROGRAM_NAME + '-test-',
                 True)
 
         # ASSERT #

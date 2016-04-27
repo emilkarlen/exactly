@@ -2,6 +2,7 @@ import pathlib
 import tempfile
 import unittest
 
+from shellcheck_lib import program_info
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from shellcheck_lib.instructions.utils import parse_file_ref as sut
@@ -59,7 +60,7 @@ class TestParsesCorrectValue(unittest.TestCase):
     def test_absolute(self):
         abs_path_str = str(pathlib.Path.cwd().resolve())
         (file_reference, _) = sut.parse_file_ref__list([abs_path_str])
-        with tempfile.TemporaryDirectory(prefix="shellcheck-home-") as home_dir:
+        with tempfile.TemporaryDirectory(prefix=program_info.PROGRAM_NAME + '-home-') as home_dir:
             home_dir_path = pathlib.Path(home_dir)
             self.assertTrue(file_reference.file_path_pre_eds(home_dir_path).exists())
 
@@ -117,7 +118,7 @@ class TestParsesCorrectValueFromTokenStream(unittest.TestCase):
     def test_absolute(self):
         abs_path_str = str(pathlib.Path.cwd().resolve())
         (file_reference, _) = sut.parse_file_ref(TokenStream(abs_path_str))
-        with tempfile.TemporaryDirectory(prefix="shellcheck-home-") as home_dir:
+        with tempfile.TemporaryDirectory(prefix=program_info.PROGRAM_NAME + '-home-') as home_dir:
             home_dir_path = pathlib.Path(home_dir)
             self.assertTrue(file_reference.file_path_pre_eds(home_dir_path).exists())
 

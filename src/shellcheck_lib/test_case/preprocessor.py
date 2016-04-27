@@ -2,6 +2,7 @@ import pathlib
 import subprocess
 import tempfile
 
+from shellcheck_lib import program_info
 from shellcheck_lib.test_case import error_description
 from shellcheck_lib.test_case.test_case_processing import Preprocessor, ProcessError, ErrorInfo
 
@@ -36,9 +37,9 @@ class PreprocessorViaExternalProgram(Preprocessor):
               test_case_source: str) -> str:
         command_line = self.external_program + [str(test_case_file_path.name)]
         try:
-            with tempfile.TemporaryFile(prefix='shellcheck-stdout-',
+            with tempfile.TemporaryFile(prefix=program_info.PROGRAM_NAME + '-stdout-',
                                         mode='w+') as stdout_file:
-                with tempfile.TemporaryFile(prefix='shellcheck-stderr-',
+                with tempfile.TemporaryFile(prefix=program_info.PROGRAM_NAME + '-stderr-',
                                             mode='w+') as stderr_file:
                     exitcode = subprocess.call(command_line,
                                                cwd=str(test_case_file_path.parent),

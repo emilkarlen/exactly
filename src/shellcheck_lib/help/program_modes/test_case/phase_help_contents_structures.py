@@ -49,7 +49,7 @@ class ExecutionEnvironmentInfo(tuple):
     @property
     def environment_variables(self) -> list:
         """
-        The names of the shellcheck environment variables that are available in the phase.
+        The names of the special environment variables that are available in the phase.
         :return: [str]
         """
         return self[1]

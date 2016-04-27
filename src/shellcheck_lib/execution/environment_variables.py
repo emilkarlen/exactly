@@ -14,6 +14,8 @@ SET_AT_ASSERT__ENV_VARS = [ENV_VAR_RESULT_DIR]
 
 ALL_ENV_VARS = SET_AT_SETUP__ENV_VARS + SET_AT_EDS__ENV_VARS + SET_AT_ASSERT__ENV_VARS
 
+ALL_REPLACED_ENV_VARS = SET_AT_SETUP__ENV_VARS + SET_AT_EDS__ENV_VARS
+
 
 def set_at_setup_pre_validate(home_dir_path: pathlib.Path) -> dict:
     return {
@@ -58,14 +60,9 @@ def exists_at_assert(home_dir_path: pathlib.Path,
     return ret_val
 
 
-ALL_REPLACED_ENV_VARS = SET_AT_SETUP__ENV_VARS + SET_AT_EDS__ENV_VARS
-
 def replaced(home_dir_path: pathlib.Path,
              eds: ExecutionDirectoryStructure) -> dict:
     """
     The environment variables that are replaced by the --with-replaced-env-vars.
-    :param home_dir_path:
-    :param eds:
-    :return:
     """
     return exists_at_setup_main(home_dir_path, eds)

@@ -5,6 +5,7 @@ import tempfile
 import unittest
 from time import strftime, localtime
 
+from shellcheck_lib import program_info
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, SingleInstructionParserSource
 from shellcheck_lib.execution import execution_directory_structure
@@ -95,16 +96,16 @@ class Executor:
                                   SetupPhaseInstruction,
                                   'The instruction must be an instance of ' + str(SetupPhaseInstruction))
         assert isinstance(instruction, SetupPhaseInstruction)
-        prefix = strftime("shellcheck-test-%Y-%m-%d-%H-%M-%S", localtime())
+        prefix = strftime(program_info.PROGRAM_NAME + '-test-%Y-%m-%d-%H-%M-%S', localtime())
         initial_cwd = os.getcwd()
         try:
-            with tempfile.TemporaryDirectory(prefix=prefix + "-home-") as home_dir_name:
+            with tempfile.TemporaryDirectory(prefix=prefix + '-home-') as home_dir_name:
                 home_dir_path = pathlib.Path(home_dir_name).resolve()
                 self.arrangement.home_contents.write_to(home_dir_path)
                 pre_validate_result = self._execute_pre_validate(home_dir_path, instruction)
                 if not pre_validate_result.is_success:
                     return
-                with tempfile.TemporaryDirectory(prefix=prefix + "-eds-") as eds_root_dir_name:
+                with tempfile.TemporaryDirectory(prefix=prefix + '-eds-') as eds_root_dir_name:
                     eds = execution_directory_structure.construct_at(resolved_path_name(eds_root_dir_name))
                     os.chdir(str(eds.act_dir))
                     global_environment_with_eds = i.GlobalEnvironmentForPostEdsPhase(home_dir_path,

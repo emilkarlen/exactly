@@ -125,7 +125,7 @@ def execute(script_handling: ScriptHandling,
 
     Perhaps the test case should be executed in a sub process, so that
     Environment Variables and Current Working Directory of the process that executes
-    shellcheck is not modified.
+    the main program is not modified.
 
     The responsibility of this method is not the most natural!!
     Please refactor if a more natural responsibility evolves!

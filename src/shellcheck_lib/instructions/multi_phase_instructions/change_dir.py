@@ -1,5 +1,6 @@
 import os
 
+from shellcheck_lib.execution.environment_variables import ENV_VAR_ACT, ENV_VAR_TMP
 from shellcheck_lib.help.program_modes.test_case.instruction_documentation import InvokationVariant, \
     InstructionDocumentation
 from shellcheck_lib.instructions.utils.destination_path import *
@@ -24,9 +25,11 @@ class TheInstructionDocumentation(InstructionDocumentation):
                               paras('Changes to the given directory '
                                     '(paths are relative present directory).')),
             InvokationVariant('{} [DIRECTORY]'.format(REL_ACT_OPTION),
-                              paras('Changes to a directory relative the SHELLCHECK ACT directory.')),
+                              paras('Changes to a directory relative the %s directory.'
+                                    % ENV_VAR_ACT)),
             InvokationVariant('{} [DIRECTORY]'.format(REL_TMP_OPTION),
-                              paras('Changes to a directory relative the SHELLCHECK TMP directory.')),
+                              paras('Changes to a directory relative the %s directory.'
+                                    % ENV_VAR_TMP)),
         ]
 
 

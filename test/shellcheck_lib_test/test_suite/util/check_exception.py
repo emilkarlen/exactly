@@ -2,6 +2,7 @@ import pathlib
 import tempfile
 import unittest
 
+from shellcheck_lib import program_info
 from shellcheck_lib.test_suite.suite_hierarchy_reading import Reader, default_environment
 from shellcheck_lib.util.file_utils import resolved_path
 from shellcheck_lib_test.test_resources.file_structure import DirContents
@@ -26,7 +27,7 @@ class Setup:
 
 def check(setup: Setup,
           put: unittest.TestCase):
-    with tempfile.TemporaryDirectory(prefix='shellcheck-test-') as tmp_dir:
+    with tempfile.TemporaryDirectory(prefix=program_info.PROGRAM_NAME + '-test-') as tmp_dir:
         tmp_dir_path = resolved_path(tmp_dir)
         setup.file_structure_to_read().write_to(tmp_dir_path)
         with put.assertRaises(Exception) as cm:

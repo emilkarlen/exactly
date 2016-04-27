@@ -1,5 +1,6 @@
 import datetime
 
+from shellcheck_lib import program_info
 from shellcheck_lib.cli import main_program
 from shellcheck_lib.cli.program_modes.test_case import execution as test_case_execution
 from shellcheck_lib.cli.program_modes.test_case.settings import TestCaseExecutionSettings
@@ -53,5 +54,5 @@ class MainProgram(main_program.MainProgram):
     def _eds_root_name_prefix_for_suite():
         today = datetime.datetime.today()
         datetime_suffix = today.strftime('%Y-%m-%d-%H-%M-%S')
-        execution_directory_root_name_prefix = 'shellcheck-suite-' + datetime_suffix + '-'
+        execution_directory_root_name_prefix = program_info.PROGRAM_NAME + '-suite-' + datetime_suffix + '-'
         return execution_directory_root_name_prefix

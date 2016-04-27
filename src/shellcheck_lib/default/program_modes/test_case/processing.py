@@ -2,6 +2,7 @@ import copy
 import os
 import pathlib
 
+from shellcheck_lib import program_info
 from shellcheck_lib.default.program_modes.test_case import test_case_parser
 from shellcheck_lib.document import parse as document_parser
 from shellcheck_lib.document.parse import SectionElementParser
@@ -25,7 +26,7 @@ class Configuration:
                  act_phase_setup: ActPhaseSetup,
                  preprocessor: Preprocessor,
                  is_keep_execution_directory_root: bool,
-                 execution_directory_root_name_prefix: str = 'shellcheck-'):
+                 execution_directory_root_name_prefix: str = program_info.PROGRAM_NAME + '-'):
         self.act_phase_setup = act_phase_setup
         self.instruction_setup = instruction_setup
         self.split_line_into_name_and_argument_function = split_line_into_name_and_argument_function
@@ -112,7 +113,7 @@ class _Executor(processing_utils.Executor):
     def __init__(self,
                  act_phase_setup: ActPhaseSetup,
                  is_keep_execution_directory_root: bool,
-                 execution_directory_root_name_prefix: str = 'shellcheck-'):
+                 execution_directory_root_name_prefix: str = program_info.PROGRAM_NAME + '-'):
         self._act_phase_setup = act_phase_setup
         self._is_keep_execution_directory_root = is_keep_execution_directory_root
         self._execution_directory_root_name_prefix = execution_directory_root_name_prefix
@@ -131,7 +132,7 @@ class _ExecutorThatSavesAndRestoresEnvironmentVariables(processing_utils.Executo
     def __init__(self,
                  act_phase_setup: ActPhaseSetup,
                  is_keep_execution_directory_root: bool,
-                 execution_directory_root_name_prefix: str = 'shellcheck-'):
+                 execution_directory_root_name_prefix: str = program_info.PROGRAM_NAME + '-'):
         self._polluting_executor = _Executor(act_phase_setup,
                                              is_keep_execution_directory_root,
                                              execution_directory_root_name_prefix)

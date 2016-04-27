@@ -11,7 +11,8 @@ from shellcheck_lib.cli.program_modes.help.program_modes.test_suite.help_request
 from shellcheck_lib.help.concepts.concept_structure import PlainConceptDocumentation, Name, ConceptDocumentation
 from shellcheck_lib.help.contents_structure import ApplicationHelp
 from shellcheck_lib.help.program_modes.main_program.contents_structure import MainProgramHelp
-from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCasePhaseDocumentation, TestCaseHelp
+from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCasePhaseDocumentation, TestCaseHelp, \
+    ConceptsHelp
 from shellcheck_lib.help.program_modes.test_case.instruction_documentation import InstructionDocumentation
 from shellcheck_lib.help.program_modes.test_suite.contents_structure import TestSuiteSectionHelp, \
     TestSuiteHelp
@@ -99,6 +100,7 @@ class TestTestCasePhase(unittest.TestCase):
 
     def _application_help_with_phases(self, all_phases):
         return ApplicationHelp(MainProgramHelp(),
+                               ConceptsHelp(()),
                                TestCaseHelp(map(lambda ph_name: test_case_phase_help(ph_name, []),
                                                 all_phases)),
                                TestSuiteHelp({}))

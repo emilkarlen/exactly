@@ -1,6 +1,8 @@
 import tempfile
 from pathlib import Path
 
+from shellcheck_lib import program_info
+
 TMP_INTERNAL__STDIN_CONTENTS = 'stdin.txt'
 
 TMP_INTERNAL__WITH_REPLACED_ENV_VARS_SUB_DIR = 'with-replaced-env-vars'
@@ -12,6 +14,12 @@ SUB_DIR_FOR_REPLACEMENT_SOURCES_UNDER_ACT_DIR = 'act'
 SUB_DIR_FOR_REPLACEMENT_SOURCES_NOT_UNDER_ACT_DIR = 'global'
 
 SUB_DIRECTORY__ACT = 'act'
+
+SUB_DIRECTORY__TMP = 'tmp'
+SUB_DIRECTORY__TMP_USER = 'user'
+SUB_DIRECTORY__TMP_INTERNAL = 'internal'
+
+PATH__TMP_USER = SUB_DIRECTORY__TMP + '/' + SUB_DIRECTORY__TMP_USER
 
 SUB_DIRECTORY__RESULT = 'result'
 
@@ -48,9 +56,9 @@ def empty_dir(name: str) -> DirWithSubDirs:
 execution_directories = [
     empty_dir('testcase'),
     empty_dir(SUB_DIRECTORY__ACT),
-    DirWithSubDirs('tmp', [
-        empty_dir('internal'),
-        empty_dir('user')
+    DirWithSubDirs(SUB_DIRECTORY__TMP, [
+        empty_dir(SUB_DIRECTORY__TMP_INTERNAL),
+        empty_dir(SUB_DIRECTORY__TMP_USER)
     ]),
     empty_dir(SUB_DIRECTORY__RESULT),
     empty_dir('log'),
@@ -90,8 +98,8 @@ class Result(DirWithRoot):
 class Tmp(DirWithRoot):
     def __init__(self, root_dir: Path):
         super().__init__(root_dir)
-        self.__internal_dir = self.root_dir / 'internal'
-        self.__user_dir = self.root_dir / 'user'
+        self.__internal_dir = self.root_dir / SUB_DIRECTORY__TMP_INTERNAL
+        self.__user_dir = self.root_dir / SUB_DIRECTORY__TMP_USER
 
     @property
     def internal_dir(self) -> Path:
@@ -107,7 +115,7 @@ class ExecutionDirectoryStructure(DirWithRoot):
         super().__init__(Path(dir_name))
         self.__test_case_dir = self.root_dir / 'testcase'
         self.__act_dir = self.root_dir / SUB_DIRECTORY__ACT
-        self.__tmp = Tmp(self.root_dir / 'tmp')
+        self.__tmp = Tmp(self.root_dir / SUB_DIRECTORY__TMP)
         self.__result = Result(self.root_dir / SUB_DIRECTORY__RESULT)
         self.__log_dir = self.root_dir / 'log'
 
@@ -139,7 +147,7 @@ def construct_at(execution_directory_root: str) -> ExecutionDirectoryStructure:
 
 
 def construct_at_tmp_root() -> ExecutionDirectoryStructure:
-    root_dir_name = tempfile.mkdtemp(prefix='shellcheck-')
+    root_dir_name = tempfile.mkdtemp(prefix=program_info.PROGRAM_NAME + '-')
     return construct_at(root_dir_name)
 
 

@@ -4,6 +4,7 @@ import shutil
 import types
 import unittest
 
+from shellcheck_lib import program_info
 from shellcheck_lib.act_phase_setups import python3
 from shellcheck_lib.default.program_modes.test_case.processing import script_handling_for_setup
 from shellcheck_lib.execution import partial_execution
@@ -196,7 +197,7 @@ def _execute(test_case: partial_execution.TestCase,
             script_handling,
             test_case,
             home_dir_path,
-            'shellcheck-test-',
+        program_info.PROGRAM_NAME + '-test-',
             is_keep_execution_directory_root)
     return Result(home_dir_path,
                   partial_result)
