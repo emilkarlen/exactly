@@ -43,7 +43,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            program_info.PROGRAM_NAME + ' = shellcheck_lib.default.default_main_program_setup:main',
+            program_info.PROGRAM_NAME + ' = exactly_lib.default.default_main_program_setup:main',
         ]
     }
 )

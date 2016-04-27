@@ -35,7 +35,7 @@ class TheInstructionDocumentation(InstructionDocumentation):
         return [
             InvokationVariant(
                 '[{}] FILE'.format('|'.join(parse_file_ref.ALL_REL_OPTIONS)),
-                paras('Sets stdin to a file relative SHELLCHECK_HOME.')),
+                paras('Sets stdin to a file relative the Home Directory.')),
             InvokationVariant(
                 '<<EOF-MARKER'.format('|'.join(parse_file_ref.ALL_REL_OPTIONS)),
                 paras('Sets stdin to the contents of the given Here Document.')),
