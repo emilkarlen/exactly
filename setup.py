@@ -30,7 +30,7 @@ setup(
         '': 'src',
     },
     packages=find_packages(SRC_DIR_NAME),
-    long_description=read('README'),
+    long_description=read('README.md'),
     classifiers=[
         'Development Status :: 4 - Beta',
         'Programming Language :: Python :: 3.4',
