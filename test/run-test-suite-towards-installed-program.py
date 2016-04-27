@@ -1,6 +1,6 @@
 import complete_test_suite
 from exactly_lib import program_info
-from shellcheck_lib_test.test_resources.cli_main_program_via_shell_utils.main_program_runner import \
+from exactly_lib_test.test_resources.cli_main_program_via_shell_utils.main_program_runner import \
     RunInstalledProgramViaOsInSubProcess
 
 # This value is from setup.py

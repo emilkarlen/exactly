@@ -10,7 +10,7 @@ sys.path.insert(0, src_dir)
 
 os.chdir(this_dir)
 
-from shellcheck_lib_test.test_resources.main_program.main_program_runners import RunViaOsInSubProcess
+from exactly_lib_test.test_resources.main_program.main_program_runners import RunViaOsInSubProcess
 import complete_test_suite
 
 main_program_runner = RunViaOsInSubProcess()

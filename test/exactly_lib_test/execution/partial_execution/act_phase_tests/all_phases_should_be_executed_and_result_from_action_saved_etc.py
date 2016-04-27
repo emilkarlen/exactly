@@ -1,0 +1,177 @@
+import os
+import pathlib
+import unittest
+
+from exactly_lib.execution import environment_variables
+from exactly_lib.execution import phases
+from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
+from exactly_lib.execution.phases import PhaseEnum
+from exactly_lib.test_case.phases import common
+from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
+from exactly_lib.test_case.phases.result import sh
+from exactly_lib_test.execution.partial_execution.test_resources.basic import \
+    TestCaseWithCommonDefaultInstructions, Result
+from exactly_lib_test.execution.test_resources import py_unit_test_case_with_file_output as with_file_output
+from exactly_lib_test.execution.test_resources import utils
+from exactly_lib_test.execution.test_resources.py_unit_test_case_with_file_output import \
+    write_to_standard_phase_file
+from exactly_lib_test.test_resources.execution.eds_test import ResultFilesCheck
+
+HOME_DIR_HEADER = 'Home Dir'
+TEST_ROOT_DIR_HEADER = 'Test Root Dir'
+CURRENT_DIR_HEADER = 'Current Dir'
+
+EXIT_CODE = 5
+
+
+class TestCaseDocument(TestCaseWithCommonDefaultInstructions):
+    def _default_instructions(self, phase: phases.PhaseEnum) -> list:
+        return [
+            write_to_standard_phase_file(phase, get_directory_paths_from_env)
+        ]
+
+    def _act_phase(self) -> list:
+        return self.instruction_line_constructor.apply_list([
+            ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr()
+        ])
+
+
+def assertions(utc: unittest.TestCase,
+               actual: Result):
+    result_check = ResultFilesCheck(EXIT_CODE,
+                                    expected_output_on('sys.stdout',
+                                                       actual.home_dir_path,
+                                                       actual.partial_result.execution_directory_structure.act_dir),
+                                    expected_output_on('sys.stderr',
+                                                       actual.home_dir_path,
+                                                       actual.partial_result.execution_directory_structure.act_dir))
+    result_check.apply(utc, actual.execution_directory_structure)
+
+    file_name_from_py_cmd_list = [with_file_output.standard_phase_file_base_name(phase)
+                                  for phase in [PhaseEnum.SETUP, PhaseEnum.ASSERT, PhaseEnum.CLEANUP]]
+    assert_files_in_test_root_that_contain_name_of_test_root_dir(
+            utc,
+            actual.partial_result.execution_directory_structure,
+            actual.home_dir_path,
+            file_name_from_py_cmd_list)
+
+
+def assert_files_in_test_root_that_contain_name_of_test_root_dir(
+        utc: unittest.TestCase,
+        eds: ExecutionDirectoryStructure,
+        home_dir_path: pathlib.Path,
+        file_name_from_py_cmd_list: list):
+    expected_contents = utils.un_lines(py_cmd_file_lines(eds.act_dir,
+                                                         home_dir_path,
+                                                         eds))
+    for base_name in file_name_from_py_cmd_list:
+        file_path = eds.act_dir / base_name
+        file_name = str(file_path)
+        utc.assertTrue(
+                file_path.exists(),
+                'py-cmd File should exist: ' + file_name)
+        utc.assertTrue(
+                file_path.is_file(),
+                'py-cmd Should be a regular file: ' + file_name)
+        with open(str(file_path)) as f:
+            actual_contents = f.read()
+            utc.assertEqual(expected_contents,
+                            actual_contents,
+                            'py-cmd Contents of py-cmd generated file ' + file_name)
+
+
+def py_cmd_file_lines(cwd: pathlib.Path,
+                      home_directory: pathlib.Path,
+                      eds: ExecutionDirectoryStructure) -> list:
+    def fmt(header: str, value: str):
+        return '%-20s%s' % (header, value)
+
+    return [fmt(CURRENT_DIR_HEADER, str(cwd)),
+            fmt(HOME_DIR_HEADER, str(home_directory)),
+            fmt(TEST_ROOT_DIR_HEADER, str(eds.act_dir))]
+
+
+def get_directory_paths_from_env(environment: common.GlobalEnvironmentForPostEdsPhase) -> list:
+    return py_cmd_file_lines(
+            pathlib.Path().resolve(),
+            environment.home_directory,
+            environment.eds)
+
+
+class ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr(ActPhaseInstruction):
+    def __init__(self):
+        super().__init__()
+
+    def main(self,
+             global_environment: common.GlobalEnvironmentForPostEdsPhase,
+             phase_environment: PhaseEnvironmentForScriptGeneration) -> sh.SuccessOrHardError:
+        statements = [
+                         'import sys',
+                         'import os',
+                         'import pathlib',
+                     ] + \
+                     self.print_on('sys.stdout', global_environment) + \
+                     self.print_on('sys.stderr', global_environment) + \
+                     ['sys.exit(%d)' % EXIT_CODE]
+        phase_environment.append.raw_script_statements(statements)
+        return sh.new_sh_success()
+
+    def print_on(self,
+                 file_object: str,
+                 global_environment: common.GlobalEnvironmentForPostEdsPhase) -> list:
+        return [
+            self.write_line(file_object, file_object),
+            self.write_path_line(file_object, HOME_DIR_HEADER, global_environment.home_directory),
+            self.write_path_line(file_object, TEST_ROOT_DIR_HEADER, global_environment.eds.act_dir),
+            self.write_prefix_and_expr(file_object, CURRENT_DIR_HEADER, 'str(pathlib.Path().resolve())'),
+            self.write_env_var(file_object, environment_variables.ENV_VAR_HOME),
+            self.write_env_var(file_object, environment_variables.ENV_VAR_ACT),
+        ]
+
+    @staticmethod
+    def write_path_line(output_file: str,
+                        line_prefix: str,
+                        dir_path: pathlib.Path) -> str:
+        return ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr.write_prefix_and_expr(
+                output_file,
+                line_prefix,
+                '\'' + str(dir_path) + '\'')
+
+    @staticmethod
+    def write_env_var(output_file: str,
+                      var_name: str) -> str:
+        return ActPhaseInstructionThatPrintsPathsOnStdoutAndStderr.write_prefix_and_expr(
+                output_file,
+                var_name,
+                'os.environ[\'%s\']' % var_name)
+
+    @staticmethod
+    def write_prefix_and_expr(output_file: str,
+                              prefix: str,
+                              expr: str) -> str:
+        return 'print(\'%-20s\' + %s, file=%s)' % (prefix, expr, output_file)
+
+    @staticmethod
+    def write_line(output_file: str,
+                   line: str) -> str:
+        return 'print(\'%s\', file=%s)' % (line, output_file)
+
+
+def expected_output_on(file_object: str,
+                       home_dir_path: pathlib.Path,
+                       act_dir_path: pathlib.Path) -> str:
+    return os.linesep.join([
+        file_object,
+
+        output_with_header(HOME_DIR_HEADER, str(home_dir_path)),
+        output_with_header(TEST_ROOT_DIR_HEADER, str(act_dir_path)),
+        output_with_header(CURRENT_DIR_HEADER, str(act_dir_path)),
+
+        output_with_header(environment_variables.ENV_VAR_HOME, str(home_dir_path)),
+        output_with_header(environment_variables.ENV_VAR_ACT, str(act_dir_path)),
+        ''
+    ])
+
+
+def output_with_header(header: str, value: str) -> str:
+    return '%-20s%s' % (header, value)
