@@ -1,6 +1,6 @@
-from shellcheck_lib.document import model
-from shellcheck_lib.execution import phases
-from shellcheck_lib.test_case import test_case_doc
+from exactly_lib.document import model
+from exactly_lib.execution import phases
+from exactly_lib.test_case import test_case_doc
 
 
 class TestCaseGeneratorForFullExecutionBase:

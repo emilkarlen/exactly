@@ -3,13 +3,13 @@ import pathlib
 import shutil
 import unittest
 
-from shellcheck_lib import program_info
-from shellcheck_lib.act_phase_setups import python3
-from shellcheck_lib.default.program_modes.test_case.processing import script_handling_for_setup
-from shellcheck_lib.execution import partial_execution
-from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
-from shellcheck_lib.execution.partial_execution import ScriptHandling, TestCase
-from shellcheck_lib.execution.result import PartialResult
+from exactly_lib import program_info
+from exactly_lib.act_phase_setups import python3
+from exactly_lib.default.program_modes.test_case.processing import script_handling_for_setup
+from exactly_lib.execution import partial_execution
+from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
+from exactly_lib.execution.partial_execution import ScriptHandling, TestCase
+from exactly_lib.execution.result import PartialResult
 from shellcheck_lib_test.execution.test_resources import utils
 
 

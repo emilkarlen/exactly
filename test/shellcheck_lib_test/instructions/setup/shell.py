@@ -1,7 +1,7 @@
 import unittest
 
-from shellcheck_lib.instructions.setup import shell as sut
-from shellcheck_lib.test_case.instruction_setup import SingleInstructionSetup
+from exactly_lib.instructions.setup import shell as sut
+from exactly_lib.test_case.instruction_setup import SingleInstructionSetup
 from shellcheck_lib_test.instructions.multi_phase_instructions.test_resources.shell_instruction_test import \
     Configuration, suite_for
 from shellcheck_lib_test.instructions.setup.test_resources.configuration import SetupConfigurationBase

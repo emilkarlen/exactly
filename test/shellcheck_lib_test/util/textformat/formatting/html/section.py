@@ -1,12 +1,12 @@
 import unittest
 from xml.etree.ElementTree import Element
 
-from shellcheck_lib.util.textformat.formatting.html import section as sut
-from shellcheck_lib.util.textformat.formatting.html.section import HnSectionHeaderRenderer
-from shellcheck_lib.util.textformat.formatting.html.text import TextRenderer
-from shellcheck_lib.util.textformat.structure.core import StringText
-from shellcheck_lib.util.textformat.structure.document import SectionContents, Section
-from shellcheck_lib.util.textformat.structure.structures import para
+from exactly_lib.util.textformat.formatting.html import section as sut
+from exactly_lib.util.textformat.formatting.html.section import HnSectionHeaderRenderer
+from exactly_lib.util.textformat.formatting.html.text import TextRenderer
+from exactly_lib.util.textformat.structure.core import StringText
+from exactly_lib.util.textformat.structure.document import SectionContents, Section
+from exactly_lib.util.textformat.structure.structures import para
 from shellcheck_lib_test.util.textformat.formatting.html.paragraph_item.test_resources import TargetRendererTestImpl, \
     ParaWithSingleStrTextRenderer
 from shellcheck_lib_test.util.textformat.formatting.html.test_resources import as_unicode_str, \

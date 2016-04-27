@@ -1,9 +1,9 @@
 import unittest
 
-from shellcheck_lib.execution import phases
-from shellcheck_lib.help.program_modes.test_case.contents.main.overview import OverviewRenderer
-from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
-from shellcheck_lib.help.utils.render import RenderingEnvironment
+from exactly_lib.execution import phases
+from exactly_lib.help.program_modes.test_case.contents.main.overview import OverviewRenderer
+from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
+from exactly_lib.help.utils.render import RenderingEnvironment
 from shellcheck_lib_test.help.test_resources import test_case_phase_help, CrossReferenceTextConstructorTestImpl
 from shellcheck_lib_test.help.utils.test_resources_.table_of_contents import is_target_info_hierarchy
 from shellcheck_lib_test.util.textformat.test_resources import structure as struct_check

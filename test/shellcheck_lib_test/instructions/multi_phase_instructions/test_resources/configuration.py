@@ -1,10 +1,10 @@
 import unittest
 
-from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
+from exactly_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParserSource, SingleInstructionParser
-from shellcheck_lib.help.program_modes.test_case.instruction_documentation import InstructionDocumentation
-from shellcheck_lib.test_case.instruction_setup import SingleInstructionSetup
-from shellcheck_lib.test_case.os_services import new_default, OsServices
+from exactly_lib.help.program_modes.test_case.instruction_documentation import InstructionDocumentation
+from exactly_lib.test_case.instruction_setup import SingleInstructionSetup
+from exactly_lib.test_case.os_services import new_default, OsServices
 from shellcheck_lib_test.instructions.test_resources.arrangements import ArrangementBase
 from shellcheck_lib_test.instructions.test_resources.check_description import suite_for_description_instance
 from shellcheck_lib_test.test_resources.execution import eds_populator

@@ -1,7 +1,7 @@
 import unittest
 
-from shellcheck_lib.util.string import lines_content
-from shellcheck_lib.util.textformat import parse as sut
+from exactly_lib.util.string import lines_content
+from exactly_lib.util.textformat import parse as sut
 from shellcheck_lib_test.util.textformat.test_resources import parse as test_resource
 
 

@@ -1,8 +1,8 @@
 import pathlib
 
-from shellcheck_lib.cli.cli_environment.program_modes.test_case.exit_values import EXECUTION__PASS
-from shellcheck_lib.cli.cli_environment.program_modes.test_suite import exit_values
-from shellcheck_lib.util.string import lines_content
+from exactly_lib.cli.cli_environment.program_modes.test_case.exit_values import EXECUTION__PASS
+from exactly_lib.cli.cli_environment.program_modes.test_suite import exit_values
+from exactly_lib.util.string import lines_content
 from shellcheck_lib_test.default.test_resources import suite_reporting_output
 from shellcheck_lib_test.test_resources.file_structure import DirContents, Dir, File, empty_file
 from shellcheck_lib_test.test_resources.main_program import main_program_check_for_test_suite

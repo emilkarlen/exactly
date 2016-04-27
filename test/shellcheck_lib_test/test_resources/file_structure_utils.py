@@ -3,7 +3,7 @@ import pathlib
 import tempfile
 from contextlib import contextmanager
 
-from shellcheck_lib.util.file_utils import resolved_path
+from exactly_lib.util.file_utils import resolved_path
 from shellcheck_lib_test.test_resources.file_structure import DirContents, empty_dir_contents, FileSystemElement
 
 

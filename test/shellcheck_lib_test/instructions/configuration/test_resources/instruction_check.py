@@ -4,11 +4,11 @@ import tempfile
 import unittest
 from time import strftime, localtime
 
-from shellcheck_lib import program_info
-from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
+from exactly_lib import program_info
+from exactly_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, SingleInstructionParserSource
-from shellcheck_lib.test_case.phases.anonymous import AnonymousPhaseInstruction, ConfigurationBuilder
-from shellcheck_lib.test_case.phases.result import sh
+from exactly_lib.test_case.phases.anonymous import AnonymousPhaseInstruction, ConfigurationBuilder
+from exactly_lib.test_case.phases.result import sh
 from shellcheck_lib_test.instructions.configuration.test_resources import configuration_check as config_check
 from shellcheck_lib_test.instructions.test_resources import sh_check
 from shellcheck_lib_test.instructions.test_resources.arrangements import ArrangementBase

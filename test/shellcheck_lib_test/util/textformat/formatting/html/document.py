@@ -2,14 +2,14 @@ import io
 import unittest
 from xml.etree.ElementTree import Element, SubElement
 
-import shellcheck_lib.util.textformat.formatting.html.utils
-from shellcheck_lib.util.textformat.formatting.html import document as sut
-from shellcheck_lib.util.textformat.formatting.html.document import DOCTYPE_XHTML1_0
-from shellcheck_lib.util.textformat.formatting.html.section import HnSectionHeaderRenderer
-from shellcheck_lib.util.textformat.formatting.html.text import TextRenderer
-from shellcheck_lib.util.textformat.structure.core import StringText
-from shellcheck_lib.util.textformat.structure.document import SectionContents, Section
-from shellcheck_lib.util.textformat.structure.structures import para
+import exactly_lib.util.textformat.formatting.html.utils
+from exactly_lib.util.textformat.formatting.html import document as sut
+from exactly_lib.util.textformat.formatting.html.document import DOCTYPE_XHTML1_0
+from exactly_lib.util.textformat.formatting.html.section import HnSectionHeaderRenderer
+from exactly_lib.util.textformat.formatting.html.text import TextRenderer
+from exactly_lib.util.textformat.structure.core import StringText
+from exactly_lib.util.textformat.structure.document import SectionContents, Section
+from exactly_lib.util.textformat.structure.structures import para
 from shellcheck_lib_test.util.textformat.formatting.html.paragraph_item.test_resources import TargetRendererTestImpl, \
     ParaWithSingleStrTextRenderer
 
@@ -200,7 +200,7 @@ class TestHeadPopulator(unittest.TestCase):
                          actual)
 
 
-class SingleParaPopulator(shellcheck_lib.util.textformat.formatting.html.utils.ElementPopulator):
+class SingleParaPopulator(exactly_lib.util.textformat.formatting.html.utils.ElementPopulator):
     def __init__(self, para_text: str):
         self.para_text = para_text
 
@@ -208,7 +208,7 @@ class SingleParaPopulator(shellcheck_lib.util.textformat.formatting.html.utils.E
         SubElement(parent, 'p').text = self.para_text
 
 
-class HeadStylePopulator(shellcheck_lib.util.textformat.formatting.html.utils.ElementPopulator):
+class HeadStylePopulator(exactly_lib.util.textformat.formatting.html.utils.ElementPopulator):
     def __init__(self, style: str):
         self.style = style
 

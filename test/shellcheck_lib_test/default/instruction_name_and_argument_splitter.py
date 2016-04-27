@@ -1,6 +1,6 @@
 import unittest
 
-from shellcheck_lib.default.program_modes.test_case.instruction_name_and_argument_splitter import splitter
+from exactly_lib.default.program_modes.test_case.instruction_name_and_argument_splitter import splitter
 
 
 class TestCase(unittest.TestCase):

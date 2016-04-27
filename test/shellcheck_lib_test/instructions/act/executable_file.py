@@ -1,7 +1,7 @@
 import os
 import types
 
-from shellcheck_lib.instructions.act import executable_file as sut
+from exactly_lib.instructions.act import executable_file as sut
 from shellcheck_lib_test.instructions.act.test_resources.instruction_check import *
 from shellcheck_lib_test.instructions.test_resources import svh_check__va
 from shellcheck_lib_test.test_resources.file_structure import DirContents, executable_file

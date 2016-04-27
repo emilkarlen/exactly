@@ -1,5 +1,5 @@
 import complete_test_suite
-from shellcheck_lib import program_info
+from exactly_lib import program_info
 from shellcheck_lib_test.test_resources.cli_main_program_via_shell_utils.main_program_runner import \
     RunInstalledProgramViaOsInSubProcess
 

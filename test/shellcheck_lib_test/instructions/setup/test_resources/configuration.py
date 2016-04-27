@@ -1,8 +1,8 @@
 import unittest
 
-from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
+from exactly_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParserSource
-from shellcheck_lib.test_case.os_services import OsServices, new_default
+from exactly_lib.test_case.os_services import OsServices, new_default
 from shellcheck_lib_test.instructions.multi_phase_instructions.test_resources.configuration import ConfigurationBase
 from shellcheck_lib_test.instructions.setup.test_resources.instruction_check import arrangement, check, is_success, \
     Expectation

@@ -1,14 +1,14 @@
 import types
 import unittest
 
-from shellcheck_lib.document.model import PhaseContentElement, new_instruction_e
-from shellcheck_lib.execution.result import FailureDetails, new_failure_details_from_message, \
+from exactly_lib.document.model import PhaseContentElement, new_instruction_e
+from exactly_lib.execution.result import FailureDetails, new_failure_details_from_message, \
     PartialResultStatus, \
     new_failure_details_from_exception
-from shellcheck_lib.execution.single_instruction_executor import execute_element, ControlledInstructionExecutor, \
+from exactly_lib.execution.single_instruction_executor import execute_element, ControlledInstructionExecutor, \
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum, SingleInstructionExecutionFailure
-from shellcheck_lib.test_case.phases.common import TestCaseInstruction
-from shellcheck_lib.util import line_source
+from exactly_lib.test_case.phases.common import TestCaseInstruction
+from exactly_lib.util import line_source
 from shellcheck_lib_test.test_resources.model_utils import new_ls_from_line
 
 

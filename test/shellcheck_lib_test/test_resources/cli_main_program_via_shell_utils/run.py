@@ -1,11 +1,8 @@
 import pathlib
 import unittest
 
-from shellcheck_lib.execution.result import FullResultStatus
-from shellcheck_lib.util.string import lines_content
 from shellcheck_lib_test.test_resources import python_program_execution as py_exe
-from shellcheck_lib_test.test_resources.process import ExpectedSubProcessResult, SubProcessResultInfo, \
-    run_subprocess, run_subprocess_with_file_arg__full, SubProcessResult
+from shellcheck_lib_test.test_resources.process import run_subprocess, SubProcessResult
 
 SRC_DIR_NAME = 'src'
 MAIN_PROGRAM_FILE_NAME = 'main-program-executor-for-test.py'

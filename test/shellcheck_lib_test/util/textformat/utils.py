@@ -1,12 +1,12 @@
 import unittest
 
-from shellcheck_lib.util.textformat.structure import core
-from shellcheck_lib.util.textformat.structure import lists
-from shellcheck_lib.util.textformat.structure import utils as sut
-from shellcheck_lib.util.textformat.structure.core import StringText
-from shellcheck_lib.util.textformat.structure.literal_layout import LiteralLayout
-from shellcheck_lib.util.textformat.structure.paragraph import Paragraph
-from shellcheck_lib.util.textformat.structure.table import Table, TableFormat
+from exactly_lib.util.textformat.structure import core
+from exactly_lib.util.textformat.structure import lists
+from exactly_lib.util.textformat.structure import utils as sut
+from exactly_lib.util.textformat.structure.core import StringText
+from exactly_lib.util.textformat.structure.literal_layout import LiteralLayout
+from exactly_lib.util.textformat.structure.paragraph import Paragraph
+from exactly_lib.util.textformat.structure.table import Table, TableFormat
 
 
 def suite() -> unittest.TestSuite:

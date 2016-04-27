@@ -2,8 +2,8 @@ import tempfile
 from contextlib import contextmanager
 from time import strftime, localtime
 
-from shellcheck_lib import program_info
-from shellcheck_lib.util.file_utils import resolved_path
+from exactly_lib import program_info
+from exactly_lib.util.file_utils import resolved_path
 
 
 @contextmanager

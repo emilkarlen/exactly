@@ -1,7 +1,7 @@
 import unittest
 
-from shellcheck_lib.help.cross_reference_id import CrossReferenceId
-from shellcheck_lib.help.program_modes.test_case.instruction_documentation import InstructionDocumentation, \
+from exactly_lib.help.cross_reference_id import CrossReferenceId
+from exactly_lib.help.program_modes.test_case.instruction_documentation import InstructionDocumentation, \
     InvokationVariant, \
     SyntaxElementDescription
 from shellcheck_lib_test.test_resources import value_assertion as va

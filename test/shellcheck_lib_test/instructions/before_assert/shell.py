@@ -1,7 +1,7 @@
 import unittest
 
-from shellcheck_lib.instructions.before_assert import shell as sut
-from shellcheck_lib.test_case.instruction_setup import SingleInstructionSetup
+from exactly_lib.instructions.before_assert import shell as sut
+from exactly_lib.test_case.instruction_setup import SingleInstructionSetup
 from shellcheck_lib_test.instructions.before_assert.test_resources.configuration import BeforeAssertConfigurationBase
 from shellcheck_lib_test.instructions.before_assert.test_resources.instruction_check import Expectation
 from shellcheck_lib_test.instructions.multi_phase_instructions.test_resources.shell_instruction_test import \

@@ -1,9 +1,9 @@
 import unittest
 
-from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
+from exactly_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from shellcheck_lib.instructions.multi_phase_instructions import env as sut
-from shellcheck_lib.test_case.os_services import new_with_environ
+from exactly_lib.instructions.multi_phase_instructions import env as sut
+from exactly_lib.test_case.os_services import new_with_environ
 from shellcheck_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from shellcheck_lib_test.test_resources.parse import new_source2
 

@@ -1,23 +1,23 @@
 import unittest
 
-from shellcheck_lib.cli.program_modes.help import argument_parsing as sut
-from shellcheck_lib.cli.program_modes.help import arguments_for
-from shellcheck_lib.cli.program_modes.help.argument_parsing import HelpError
-from shellcheck_lib.cli.program_modes.help.concepts.help_request import ConceptHelpRequest, ConceptHelpItem
-from shellcheck_lib.cli.program_modes.help.html_documentation.help_request import HtmlDocHelpRequest
-from shellcheck_lib.cli.program_modes.help.program_modes.main_program.help_request import *
-from shellcheck_lib.cli.program_modes.help.program_modes.test_case.help_request import *
-from shellcheck_lib.cli.program_modes.help.program_modes.test_suite.help_request import *
-from shellcheck_lib.help.concepts.concept_structure import PlainConceptDocumentation, Name, ConceptDocumentation
-from shellcheck_lib.help.contents_structure import ApplicationHelp
-from shellcheck_lib.help.program_modes.main_program.contents_structure import MainProgramHelp
-from shellcheck_lib.help.program_modes.test_case.contents_structure import TestCasePhaseDocumentation, TestCaseHelp, \
+from exactly_lib.cli.program_modes.help import argument_parsing as sut
+from exactly_lib.cli.program_modes.help import arguments_for
+from exactly_lib.cli.program_modes.help.argument_parsing import HelpError
+from exactly_lib.cli.program_modes.help.concepts.help_request import ConceptHelpRequest, ConceptHelpItem
+from exactly_lib.cli.program_modes.help.html_documentation.help_request import HtmlDocHelpRequest
+from exactly_lib.cli.program_modes.help.program_modes.main_program.help_request import *
+from exactly_lib.cli.program_modes.help.program_modes.test_case.help_request import *
+from exactly_lib.cli.program_modes.help.program_modes.test_suite.help_request import *
+from exactly_lib.help.concepts.concept_structure import PlainConceptDocumentation, Name, ConceptDocumentation
+from exactly_lib.help.contents_structure import ApplicationHelp
+from exactly_lib.help.program_modes.main_program.contents_structure import MainProgramHelp
+from exactly_lib.help.program_modes.test_case.contents_structure import TestCasePhaseDocumentation, TestCaseHelp, \
     ConceptsHelp
-from shellcheck_lib.help.program_modes.test_case.instruction_documentation import InstructionDocumentation
-from shellcheck_lib.help.program_modes.test_suite.contents_structure import TestSuiteSectionHelp, \
+from exactly_lib.help.program_modes.test_case.instruction_documentation import InstructionDocumentation
+from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteSectionHelp, \
     TestSuiteHelp
-from shellcheck_lib.help.utils import formatting
-from shellcheck_lib.help.utils.description import Description, single_line_description
+from exactly_lib.help.utils import formatting
+from exactly_lib.help.utils.description import Description, single_line_description
 from shellcheck_lib_test.help.test_resources import test_case_phase_help, \
     single_line_description_that_identifies_instruction_and_phase, application_help_for
 

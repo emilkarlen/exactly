@@ -1,9 +1,9 @@
 import unittest
 
-from shellcheck_lib.execution import phase_step_simple as phase_step
-from shellcheck_lib.test_case.phases.cleanup import PreviousPhase
-from shellcheck_lib.test_case.phases.common import TestCaseInstruction
-from shellcheck_lib.test_case.phases.result import svh
+from exactly_lib.execution import phase_step_simple as phase_step
+from exactly_lib.test_case.phases.cleanup import PreviousPhase
+from exactly_lib.test_case.phases.common import TestCaseInstruction
+from exactly_lib.test_case.phases.result import svh
 from shellcheck_lib_test.execution.partial_execution.test_resources.recording import validate_post_setup_utils as utils
 from shellcheck_lib_test.execution.partial_execution.test_resources.test_case_generator import PartialPhase
 from shellcheck_lib_test.execution.test_resources import instruction_test_resources as test

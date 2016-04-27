@@ -1,10 +1,10 @@
 import pathlib
 import unittest
 
-from shellcheck_lib.test_case.preprocessor import IDENTITY_PREPROCESSOR
-from shellcheck_lib.test_suite.enumeration import DepthFirstEnumerator
-from shellcheck_lib.test_suite.structure import TestSuite
-from shellcheck_lib.test_case.test_case_processing import TestCaseSetup
+from exactly_lib.test_case.preprocessor import IDENTITY_PREPROCESSOR
+from exactly_lib.test_suite.enumeration import DepthFirstEnumerator
+from exactly_lib.test_suite.structure import TestSuite
+from exactly_lib.test_case.test_case_processing import TestCaseSetup
 
 IP = IDENTITY_PREPROCESSOR
 

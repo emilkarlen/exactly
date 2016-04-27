@@ -1,6 +1,6 @@
 import io
 
-from shellcheck_lib.util.std import StdOutputFiles
+from exactly_lib.util.std import StdOutputFiles
 from shellcheck_lib_test.test_resources.file_utils import NullFile
 
 

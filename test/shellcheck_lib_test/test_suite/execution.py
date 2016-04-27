@@ -3,26 +3,26 @@ import pathlib
 import unittest
 from pathlib import Path
 
-from shellcheck_lib.act_phase_setups.script_language_setup import new_for_script_language_setup
-from shellcheck_lib.cli.cli_environment.exit_value import ExitValue
-from shellcheck_lib.default.program_modes.test_case import processing as case_processing
-from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
-from shellcheck_lib.execution.result import new_skipped, new_pass
-from shellcheck_lib.script_language.python3 import script_language_setup
-from shellcheck_lib.test_case import test_case_processing
-from shellcheck_lib.test_case.instruction_setup import InstructionsSetup
-from shellcheck_lib.test_case.preprocessor import IDENTITY_PREPROCESSOR
-from shellcheck_lib.test_case.test_case_doc import TestCase
-from shellcheck_lib.test_case.test_case_processing import TestCaseSetup
-from shellcheck_lib.test_suite import reporting
-from shellcheck_lib.test_suite import structure
-from shellcheck_lib.test_suite.enumeration import DepthFirstEnumerator
-from shellcheck_lib.test_suite.execution import Executor
-from shellcheck_lib.test_suite.instruction_set.parse import SuiteSyntaxError
-from shellcheck_lib.test_suite.suite_hierarchy_reading import SuiteHierarchyReader
-from shellcheck_lib.util import line_source
-from shellcheck_lib.util import std
-from shellcheck_lib.util.std import FilePrinter
+from exactly_lib.act_phase_setups.script_language_setup import new_for_script_language_setup
+from exactly_lib.cli.cli_environment.exit_value import ExitValue
+from exactly_lib.default.program_modes.test_case import processing as case_processing
+from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
+from exactly_lib.execution.result import new_skipped, new_pass
+from exactly_lib.script_language.python3 import script_language_setup
+from exactly_lib.test_case import test_case_processing
+from exactly_lib.test_case.instruction_setup import InstructionsSetup
+from exactly_lib.test_case.preprocessor import IDENTITY_PREPROCESSOR
+from exactly_lib.test_case.test_case_doc import TestCase
+from exactly_lib.test_case.test_case_processing import TestCaseSetup
+from exactly_lib.test_suite import reporting
+from exactly_lib.test_suite import structure
+from exactly_lib.test_suite.enumeration import DepthFirstEnumerator
+from exactly_lib.test_suite.execution import Executor
+from exactly_lib.test_suite.instruction_set.parse import SuiteSyntaxError
+from exactly_lib.test_suite.suite_hierarchy_reading import SuiteHierarchyReader
+from exactly_lib.util import line_source
+from exactly_lib.util import std
+from exactly_lib.util.std import FilePrinter
 from shellcheck_lib_test.test_case.test_resources import error_info
 from shellcheck_lib_test.test_resources.str_std_out_files import StringStdOutFiles
 

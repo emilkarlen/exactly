@@ -1,7 +1,7 @@
 import unittest
 
-from shellcheck_lib.test_case.phases import common
-from shellcheck_lib.test_case.phases.setup import SetupSettingsBuilder
+from exactly_lib.test_case.phases import common
+from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
 
 
 class Assertion:

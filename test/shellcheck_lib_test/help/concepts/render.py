@@ -1,13 +1,13 @@
 import unittest
 
-from shellcheck_lib.help.concepts import render as sut
-from shellcheck_lib.help.concepts.all_concepts import all_concepts
-from shellcheck_lib.help.concepts.concept_structure import PlainConceptDocumentation, Name, \
+from exactly_lib.help.concepts import render as sut
+from exactly_lib.help.concepts.all_concepts import all_concepts
+from exactly_lib.help.concepts.concept_structure import PlainConceptDocumentation, Name, \
     ConfigurationParameterDocumentation
-from shellcheck_lib.help.program_modes.test_case.contents_structure import ConceptsHelp
-from shellcheck_lib.help.utils.description import Description
-from shellcheck_lib.help.utils.render import RenderingEnvironment
-from shellcheck_lib.util.textformat.structure.structures import text, para
+from exactly_lib.help.program_modes.test_case.contents_structure import ConceptsHelp
+from exactly_lib.help.utils.description import Description
+from exactly_lib.help.utils.render import RenderingEnvironment
+from exactly_lib.util.textformat.structure.structures import text, para
 from shellcheck_lib_test.help.test_resources import CrossReferenceTextConstructorTestImpl
 from shellcheck_lib_test.util.textformat.test_resources import structure as struct_check
 

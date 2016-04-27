@@ -2,12 +2,12 @@ import pathlib
 import tempfile
 import unittest
 
-from shellcheck_lib import program_info
-from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
+from exactly_lib import program_info
+from exactly_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from shellcheck_lib.instructions.utils import parse_file_ref as sut
-from shellcheck_lib.instructions.utils.parse_utils import TokenStream
-from shellcheck_lib.instructions.utils.relative_path_options import REL_CWD_OPTION, REL_HOME_OPTION, REL_TMP_OPTION
+from exactly_lib.instructions.utils import parse_file_ref as sut
+from exactly_lib.instructions.utils.parse_utils import TokenStream
+from exactly_lib.instructions.utils.relative_path_options import REL_CWD_OPTION, REL_HOME_OPTION, REL_TMP_OPTION
 from shellcheck_lib_test.test_resources.execution.eds_populator import act_dir_contents, tmp_user_dir_contents
 from shellcheck_lib_test.test_resources.execution.utils import home_and_eds_and_test_as_curr_dir
 from shellcheck_lib_test.test_resources.file_structure import DirContents, empty_file

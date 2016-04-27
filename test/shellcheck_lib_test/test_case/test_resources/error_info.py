@@ -1,5 +1,5 @@
-from shellcheck_lib.test_case import error_description
-from shellcheck_lib.test_case.test_case_processing import ErrorInfo
+from exactly_lib.test_case import error_description
+from exactly_lib.test_case.test_case_processing import ErrorInfo
 
 
 def of_message(message: str) -> ErrorInfo:

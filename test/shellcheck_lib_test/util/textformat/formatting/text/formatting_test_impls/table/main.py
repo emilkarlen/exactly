@@ -1,6 +1,6 @@
 import unittest
 
-from shellcheck_lib.util.textformat.structure.table import Table, TableFormat, single_paragraph_cell, empty_cell
+from exactly_lib.util.textformat.structure.table import Table, TableFormat, single_paragraph_cell, empty_cell
 from shellcheck_lib_test.util.textformat.test_resources.constr import formatter_with_page_width, single_text_para
 
 

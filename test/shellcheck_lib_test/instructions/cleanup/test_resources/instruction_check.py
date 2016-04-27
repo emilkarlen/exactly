@@ -1,15 +1,15 @@
 import pathlib
 import unittest
 
-from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
+from exactly_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, SingleInstructionParserSource
-from shellcheck_lib.execution import phases
-from shellcheck_lib.test_case.os_services import OsServices, new_default
-from shellcheck_lib.test_case.phases import common as i
-from shellcheck_lib.test_case.phases.cleanup import CleanupPhaseInstruction, PreviousPhase
-from shellcheck_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
-from shellcheck_lib.test_case.phases.result import pfh
-from shellcheck_lib.test_case.phases.result import svh
+from exactly_lib.execution import phases
+from exactly_lib.test_case.os_services import OsServices, new_default
+from exactly_lib.test_case.phases import common as i
+from exactly_lib.test_case.phases.cleanup import CleanupPhaseInstruction, PreviousPhase
+from exactly_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
+from exactly_lib.test_case.phases.result import pfh
+from exactly_lib.test_case.phases.result import svh
 from shellcheck_lib_test.instructions.test_resources import sh_check
 from shellcheck_lib_test.instructions.test_resources import svh_check
 from shellcheck_lib_test.instructions.test_resources.arrangements import ArrangementWithEds

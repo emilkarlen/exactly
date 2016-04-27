@@ -2,12 +2,12 @@ import pathlib
 import sys
 import unittest
 
-from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
+from exactly_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from shellcheck_lib.instructions.utils import executable_file as sut
-from shellcheck_lib.instructions.utils import relative_path_options as option
-from shellcheck_lib.instructions.utils.parse_utils import TokenStream
-from shellcheck_lib.test_case.phases.common import HomeAndEds
+from exactly_lib.instructions.utils import executable_file as sut
+from exactly_lib.instructions.utils import relative_path_options as option
+from exactly_lib.instructions.utils.parse_utils import TokenStream
+from exactly_lib.test_case.phases.common import HomeAndEds
 from shellcheck_lib_test.instructions.test_resources import pre_or_post_eds_validator as validator_util
 from shellcheck_lib_test.instructions.test_resources.executable_file_test_utils import Configuration, suite_for
 from shellcheck_lib_test.test_resources import python_program_execution as py_exe

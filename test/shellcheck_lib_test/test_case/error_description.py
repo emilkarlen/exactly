@@ -1,7 +1,7 @@
 import enum
 import unittest
 
-from shellcheck_lib.test_case import error_description as sut
+from exactly_lib.test_case import error_description as sut
 
 
 class ReturnValueEnum(enum.Enum):

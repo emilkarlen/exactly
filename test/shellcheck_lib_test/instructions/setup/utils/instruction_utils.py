@@ -1,12 +1,12 @@
 import unittest
 
-from shellcheck_lib.instructions.setup.utils.instruction_utils import InstructionWithFileRefsBase
-from shellcheck_lib.instructions.utils import file_ref
-from shellcheck_lib.instructions.utils.file_ref_check import FileRefCheck
-from shellcheck_lib.test_case.os_services import OsServices
-from shellcheck_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
-from shellcheck_lib.test_case.phases.result import sh
-from shellcheck_lib.test_case.phases.setup import SetupSettingsBuilder
+from exactly_lib.instructions.setup.utils.instruction_utils import InstructionWithFileRefsBase
+from exactly_lib.instructions.utils import file_ref
+from exactly_lib.instructions.utils.file_ref_check import FileRefCheck
+from exactly_lib.test_case.os_services import OsServices
+from exactly_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
+from exactly_lib.test_case.phases.result import sh
+from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
 from shellcheck_lib_test.instructions.utils.file_properties import FileCheckThatEvaluatesTo
 from shellcheck_lib_test.test_resources.execution.utils import home_and_eds_and_test_as_curr_dir, HomeAndEds
 

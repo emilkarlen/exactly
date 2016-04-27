@@ -1,20 +1,20 @@
 import types
 from pathlib import Path
 
-from shellcheck_lib.document import model
-from shellcheck_lib.execution import phases, phase_step
-from shellcheck_lib.execution.phase_step import PhaseStep
-from shellcheck_lib.test_case.phases import common as i
-from shellcheck_lib.test_case.phases.act.instruction import PhaseEnvironmentForScriptGeneration, ActPhaseInstruction
-from shellcheck_lib.test_case.phases.anonymous import ConfigurationBuilder, \
+from exactly_lib.document import model
+from exactly_lib.execution import phases, phase_step
+from exactly_lib.execution.phase_step import PhaseStep
+from exactly_lib.test_case.phases import common as i
+from exactly_lib.test_case.phases.act.instruction import PhaseEnvironmentForScriptGeneration, ActPhaseInstruction
+from exactly_lib.test_case.phases.anonymous import ConfigurationBuilder, \
     AnonymousPhaseInstruction
-from shellcheck_lib.test_case.phases.assert_ import AssertPhaseInstruction
-from shellcheck_lib.test_case.phases.before_assert import BeforeAssertPhaseInstruction
-from shellcheck_lib.test_case.phases.cleanup import CleanupPhaseInstruction
-from shellcheck_lib.test_case.phases.result import pfh
-from shellcheck_lib.test_case.phases.result import sh
-from shellcheck_lib.test_case.phases.result import svh
-from shellcheck_lib.test_case.phases.setup import SetupPhaseInstruction
+from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
+from exactly_lib.test_case.phases.before_assert import BeforeAssertPhaseInstruction
+from exactly_lib.test_case.phases.cleanup import CleanupPhaseInstruction
+from exactly_lib.test_case.phases.result import pfh
+from exactly_lib.test_case.phases.result import sh
+from exactly_lib.test_case.phases.result import svh
+from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
 from shellcheck_lib_test.execution.full_execution.test_resources.test_case_generator import \
     TestCaseGeneratorForFullExecutionBase
 from shellcheck_lib_test.execution.test_resources import python_code_gen as py

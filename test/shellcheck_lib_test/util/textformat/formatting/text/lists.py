@@ -1,6 +1,6 @@
 import unittest
 
-from shellcheck_lib.util.textformat.formatting.text import lists as sut
+from exactly_lib.util.textformat.formatting.text import lists as sut
 from shellcheck_lib_test.util.textformat.test_resources.constr import text, CROSS_REF_TITLE_ONLY_TEXT_FORMATTER
 
 

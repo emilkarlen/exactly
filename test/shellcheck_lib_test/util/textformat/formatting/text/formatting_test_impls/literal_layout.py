@@ -1,6 +1,6 @@
 import unittest
 
-from shellcheck_lib.util.textformat.structure.literal_layout import LiteralLayout
+from exactly_lib.util.textformat.structure.literal_layout import LiteralLayout
 from shellcheck_lib_test.util.textformat.test_resources.constr import formatter_with_page_width
 
 

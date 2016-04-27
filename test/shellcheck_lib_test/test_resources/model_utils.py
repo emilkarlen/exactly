@@ -1,6 +1,6 @@
-from shellcheck_lib.document.model import PhaseContentElement, ElementType, Instruction
-from shellcheck_lib.util import line_source
-from shellcheck_lib.util.line_source import Line, LineSequence
+from exactly_lib.document.model import PhaseContentElement, ElementType, Instruction
+from exactly_lib.util import line_source
+from exactly_lib.util.line_source import Line, LineSequence
 
 
 def new_comment_element(source_line: line_source.Line) -> PhaseContentElement:

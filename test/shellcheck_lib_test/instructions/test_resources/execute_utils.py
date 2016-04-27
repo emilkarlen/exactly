@@ -1,6 +1,6 @@
-from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
+from exactly_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParserSource
-from shellcheck_lib.instructions.multi_phase_instructions.execute import INTERPRET_OPTION
+from exactly_lib.instructions.multi_phase_instructions.execute import INTERPRET_OPTION
 from shellcheck_lib_test.test_resources import python_program_execution as py_exe
 from shellcheck_lib_test.test_resources.parse import single_line_source
 

@@ -1,9 +1,9 @@
 import unittest
 
-from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
+from exactly_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParserSource
-from shellcheck_lib.instructions.setup import new_file as sut
-from shellcheck_lib.util.string import lines_content
+from exactly_lib.instructions.setup import new_file as sut
+from exactly_lib.util.string import lines_content
 from shellcheck_lib_test.instructions.setup.test_resources.instruction_check import TestCaseBase, Arrangement, \
     Expectation
 from shellcheck_lib_test.instructions.test_resources import sh_check

@@ -1,6 +1,6 @@
 import unittest
 
-from shellcheck_lib.util import tables as sut
+from exactly_lib.util import tables as sut
 
 
 class TestExtendLengths(unittest.TestCase):

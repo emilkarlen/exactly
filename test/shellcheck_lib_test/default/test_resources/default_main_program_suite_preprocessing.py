@@ -1,11 +1,11 @@
 import pathlib
 
-from shellcheck_lib.cli.cli_environment.program_modes.test_case.exit_values import EXECUTION__PASS, \
+from exactly_lib.cli.cli_environment.program_modes.test_case.exit_values import EXECUTION__PASS, \
     NO_EXECUTION__PARSE_ERROR
-from shellcheck_lib.cli.cli_environment.program_modes.test_suite import exit_values
-from shellcheck_lib.document.syntax import section_header
-from shellcheck_lib.execution import phases
-from shellcheck_lib.util.string import lines_content
+from exactly_lib.cli.cli_environment.program_modes.test_suite import exit_values
+from exactly_lib.document.syntax import section_header
+from exactly_lib.execution import phases
+from exactly_lib.util.string import lines_content
 from shellcheck_lib_test.default.test_resources import suite_reporting_output
 from shellcheck_lib_test.test_resources import quoting
 from shellcheck_lib_test.test_resources.file_structure import DirContents, File

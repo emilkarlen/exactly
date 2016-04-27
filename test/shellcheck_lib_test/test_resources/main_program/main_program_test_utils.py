@@ -1,6 +1,6 @@
 import os
 
-from shellcheck_lib.cli.cli_environment.exit_value import ExitValue
+from exactly_lib.cli.cli_environment.exit_value import ExitValue
 from shellcheck_lib_test.test_resources.process import ExpectedSubProcessResult
 
 

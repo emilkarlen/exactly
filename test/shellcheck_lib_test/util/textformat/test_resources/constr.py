@@ -1,6 +1,6 @@
-from shellcheck_lib.util.textformat.formatting.text import paragraph_item as sut
-from shellcheck_lib.util.textformat.formatting.text.text import CrossReferenceFormatter, TextFormatter
-from shellcheck_lib.util.textformat.structure import core, paragraph, lists
+from exactly_lib.util.textformat.formatting.text import paragraph_item as sut
+from exactly_lib.util.textformat.formatting.text.text import CrossReferenceFormatter, TextFormatter
+from exactly_lib.util.textformat.structure import core, paragraph, lists
 
 BLANK_LINE = ''
 

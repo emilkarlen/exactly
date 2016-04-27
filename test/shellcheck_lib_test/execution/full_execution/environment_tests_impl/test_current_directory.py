@@ -3,12 +3,12 @@ import os
 import pathlib
 import unittest
 
-from shellcheck_lib.execution import phase_step
-from shellcheck_lib.execution.phase_step import PhaseStep
-from shellcheck_lib.execution.result import FullResultStatus
-from shellcheck_lib.test_case import test_case_doc
-from shellcheck_lib.test_case.phases import common
-from shellcheck_lib.test_case.phases.anonymous import ConfigurationBuilder
+from exactly_lib.execution import phase_step
+from exactly_lib.execution.phase_step import PhaseStep
+from exactly_lib.execution.result import FullResultStatus
+from exactly_lib.test_case import test_case_doc
+from exactly_lib.test_case.phases import common
+from exactly_lib.test_case.phases.anonymous import ConfigurationBuilder
 from shellcheck_lib_test.execution.full_execution.test_resources.test_case_base import FullExecutionTestCaseBase
 from shellcheck_lib_test.execution.test_resources import instruction_that_record_and_return as instr_setup
 from shellcheck_lib_test.execution.test_resources import python_code_gen

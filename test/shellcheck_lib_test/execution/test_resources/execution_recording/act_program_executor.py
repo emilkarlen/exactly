@@ -1,11 +1,11 @@
 import pathlib
 
-from shellcheck_lib.execution import phase_step_simple as phase_step
-from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
-from shellcheck_lib.test_case.phases.act.phase_setup import ActProgramExecutor, SourceSetup
-from shellcheck_lib.test_case.phases.act.script_source import ScriptSourceBuilder
-from shellcheck_lib.test_case.phases.result import svh
-from shellcheck_lib.util.std import StdFiles
+from exactly_lib.execution import phase_step_simple as phase_step
+from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
+from exactly_lib.test_case.phases.act.phase_setup import ActProgramExecutor, SourceSetup
+from exactly_lib.test_case.phases.act.script_source import ScriptSourceBuilder
+from exactly_lib.test_case.phases.result import svh
+from exactly_lib.util.std import StdFiles
 from shellcheck_lib_test.execution.test_resources.execution_recording.recorder import ListRecorder
 
 

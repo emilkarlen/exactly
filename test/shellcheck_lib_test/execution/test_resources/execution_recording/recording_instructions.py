@@ -1,12 +1,12 @@
-from shellcheck_lib.test_case.phases.act.instruction import ActPhaseInstruction
-from shellcheck_lib.test_case.phases.anonymous import AnonymousPhaseInstruction
-from shellcheck_lib.test_case.phases.assert_ import AssertPhaseInstruction
-from shellcheck_lib.test_case.phases.before_assert import BeforeAssertPhaseInstruction
-from shellcheck_lib.test_case.phases.cleanup import CleanupPhaseInstruction
-from shellcheck_lib.test_case.phases.result import pfh
-from shellcheck_lib.test_case.phases.result import sh
-from shellcheck_lib.test_case.phases.result import svh
-from shellcheck_lib.test_case.phases.setup import SetupPhaseInstruction
+from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
+from exactly_lib.test_case.phases.anonymous import AnonymousPhaseInstruction
+from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
+from exactly_lib.test_case.phases.before_assert import BeforeAssertPhaseInstruction
+from exactly_lib.test_case.phases.cleanup import CleanupPhaseInstruction
+from exactly_lib.test_case.phases.result import pfh
+from exactly_lib.test_case.phases.result import sh
+from exactly_lib.test_case.phases.result import svh
+from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
 from shellcheck_lib_test.execution.test_resources.execution_recording.recorder import ListElementRecorder, ListRecorder
 from shellcheck_lib_test.execution.test_resources.instruction_test_resources import cleanup_phase_instruction_that, \
     assert_phase_instruction_that, setup_phase_instruction_that, anonymous_phase_instruction_that, \

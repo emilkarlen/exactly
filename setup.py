@@ -14,7 +14,7 @@ prj_root_dir = sys.path[0]
 src_dir = os.path.join(prj_root_dir, SRC_DIR_NAME)
 sys.path.insert(0, src_dir)
 
-from shellcheck_lib import program_info
+from exactly_lib import program_info
 
 setup(
     name=program_info.PROGRAM_NAME,

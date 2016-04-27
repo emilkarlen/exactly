@@ -1,6 +1,6 @@
 import unittest
 
-from shellcheck_lib.test_case.phases.result import svh
+from exactly_lib.test_case.phases.result import svh
 
 
 class Assertion:

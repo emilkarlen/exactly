@@ -1,6 +1,6 @@
 import unittest
 
-from shellcheck_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
+from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from shellcheck_lib_test.test_resources import file_structure, file_checks
 from shellcheck_lib_test.test_resources.value_assertion import ValueAssertion
 
