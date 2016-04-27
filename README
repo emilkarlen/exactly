@@ -1,9 +1,0 @@
-Copyright 2016 Emil Karlen.
-
-shellcheck is free software made available under the GNU GPL License.
-For details see the LICENSE file.
-
-This README file and the LICENCE file, must be included in all distributions
-of the program.
-E.g., if the test-suite is not distributed, then these two files must be
-included in the root folder of the distributed part.
