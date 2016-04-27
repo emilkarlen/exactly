@@ -2,20 +2,18 @@ import pathlib
 
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionInvalidArgumentException, SingleInstructionParserSource
-from shellcheck_lib.execution import environment_variables
 from shellcheck_lib.execution.execution_directory_structure import \
     root_dir_for_non_stdout_or_stderr_files_with_replaced_env_vars, SUB_DIR_FOR_REPLACEMENT_SOURCES_UNDER_ACT_DIR, \
-    SUB_DIR_FOR_REPLACEMENT_SOURCES_NOT_UNDER_ACT_DIR
+    SUB_DIR_FOR_REPLACEMENT_SOURCES_NOT_UNDER_ACT_DIR, PATH__TMP_USER
 from shellcheck_lib.help.program_modes.test_case.instruction_documentation import InvokationVariant, \
     InstructionDocumentation
 from shellcheck_lib.instructions.assert_phase.utils.contents_utils import ActualFileTransformer, EMPTY_ARGUMENT, \
-    WITH_REPLACED_ENV_VARS_OPTION, parse_actual_file_argument
+    WITH_REPLACED_ENV_VARS_OPTION, parse_actual_file_argument, with_replaced_env_vars_help
 from shellcheck_lib.instructions.utils.parse_utils import split_arguments_list_string
 from shellcheck_lib.instructions.utils.relative_path_options import REL_HOME_OPTION, REL_TMP_OPTION, REL_CWD_OPTION
 from shellcheck_lib.test_case.instruction_setup import SingleInstructionSetup
 from shellcheck_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from shellcheck_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase
-from shellcheck_lib.util.textformat import parse as text_parse
 from shellcheck_lib.util.textformat.structure.structures import paras
 from .utils import contents_utils
 
@@ -33,16 +31,7 @@ class TheInstructionDocumentation(InstructionDocumentation):
         return 'Tests the contents of a file.'
 
     def main_description_rest(self) -> list:
-        text = """\
-            {} replaces all occurrences of any of the shellcheck environment variables to the name of the variable.
-            (Variable values are replaced with variable names.)
-
-            These environment variables are:
-
-            {}.
-            """.format(WITH_REPLACED_ENV_VARS_OPTION,
-                       ', '.join(environment_variables.ALL_ENV_VARS))
-        return text_parse.normalize_and_parse(text)
+        return with_replaced_env_vars_help()
 
     def invokation_variants(self) -> list:
         return [
@@ -61,7 +50,8 @@ class TheInstructionDocumentation(InstructionDocumentation):
                 'FILENAME {} {} FILE'.format(WITH_REPLACED_ENV_VARS_OPTION,
                                              REL_TMP_OPTION),
                 paras('Compares contents of FILENAME to contents of FILE '
-                      '(which is a path relative the shellcheck tmp directory)')),
+                      '(which is a path relative the {user_tmp_dir} directory inside of the sandbox)'
+                      .format(user_tmp_dir=PATH__TMP_USER))),
             InvokationVariant(
                 'FILENAME {} {} FILE'.format(WITH_REPLACED_ENV_VARS_OPTION,
                                              REL_CWD_OPTION),

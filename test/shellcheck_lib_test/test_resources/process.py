@@ -3,6 +3,7 @@ import subprocess
 import tempfile
 import unittest
 
+from shellcheck_lib import program_info
 from shellcheck_lib.util.file_utils import resolved_path
 from shellcheck_lib.util.std import StdFiles, StdOutputFiles
 from shellcheck_lib_test.test_resources.file_utils import tmp_file_containing
@@ -124,7 +125,7 @@ def _contents_of_file(path: pathlib.Path) -> str:
 
 def run_subprocess(cmd_and_args: list,
                    stdin_contents: str='') -> SubProcessResult:
-    with tempfile.TemporaryDirectory(prefix='shellcheck-test-') as tmp_dir:
+    with tempfile.TemporaryDirectory(prefix=program_info.PROGRAM_NAME + '-test-') as tmp_dir:
         return capture_subprocess(cmd_and_args,
                                   resolved_path(tmp_dir),
                                   stdin_contents=stdin_contents)
@@ -147,7 +148,7 @@ class SubProcessResultInfo(tuple):
 
 def run_subprocess_with_file_arg__full(cmd_and_args_except_file_arg: list,
                                        file_contents: str) -> SubProcessResultInfo:
-    with tempfile.TemporaryDirectory(prefix='shellcheck-test-') as tmp_dir_name:
+    with tempfile.TemporaryDirectory(prefix=program_info.PROGRAM_NAME + '-test-') as tmp_dir_name:
         tmp_dir_path = pathlib.Path(tmp_dir_name).resolve()
         with tmp_file_containing(file_contents, directory=str(tmp_dir_path)) as file_path:
             cmd_and_args = cmd_and_args_except_file_arg + [str(file_path)]

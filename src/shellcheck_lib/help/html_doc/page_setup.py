@@ -1,6 +1,6 @@
 from xml.etree.ElementTree import Element, SubElement
 
-from shellcheck_lib.cli.cli_environment import program_info
+from shellcheck_lib import program_info
 from shellcheck_lib.util.textformat.formatting.html.utils import ElementPopulator, ComplexElementPopulator
 
 PAGE_TITLE = '%s Reference Manual' % program_info.PROGRAM_NAME

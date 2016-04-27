@@ -1,4 +1,5 @@
 import shellcheck_lib.execution.execution_mode
+from shellcheck_lib import program_info
 from shellcheck_lib.cli.cli_environment.exit_value import ExitValue
 from shellcheck_lib.cli.cli_environment.program_modes.test_case import exit_values
 from shellcheck_lib.execution.result import PartialResultStatus, FullResultStatus
@@ -216,7 +217,7 @@ def _failure_condition_of_hard_error(setup: Setup) -> ParagraphItem:
 
 
 def _failure_condition_of_implementation_error(setup: Setup) -> ParagraphItem:
-    return para("""An error in the implementation of shellcheck is detected.""")
+    return para("""An error in the implementation of %s is detected.""" % program_info.PROGRAM_NAME)
 
 
 OUTCOME_IS_EXIT_CODE_AND_IDENTIFIER = (
@@ -226,7 +227,8 @@ OUTCOME_IS_EXIT_CODE_AND_IDENTIFIER = (
 
 def _other_errors(setup: Setup) -> list:
     ret_val = []
-    ret_val.extend(normalize_and_parse(_CLI_PARSING_ERROR.format(EXIT_CODE=EXIT_CODE_FROM_ARGUMENT_PARSER)))
+    ret_val.extend(normalize_and_parse(_CLI_PARSING_ERROR.format(program_name=program_info.PROGRAM_NAME,
+                                                                 EXIT_CODE=EXIT_CODE_FROM_ARGUMENT_PARSER)))
     ret_val.extend(normalize_and_parse(_OTHER_NON_CLI_ERRORS))
     ret_val.append(_other_non_cli_errors(setup))
     return ret_val
@@ -234,7 +236,7 @@ def _other_errors(setup: Setup) -> list:
 
 _CLI_PARSING_ERROR = """\
 If parsing of command line arguments fails,
-shellcheck halts with exit code {EXIT_CODE} (no exit identifier is printed).
+{program_name} halts with exit code {EXIT_CODE} (no exit identifier is printed).
 """
 
 _OTHER_NON_CLI_ERRORS = """\

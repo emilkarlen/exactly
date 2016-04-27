@@ -3,6 +3,7 @@ import sys
 import tempfile
 import unittest
 
+from shellcheck_lib import program_info
 from shellcheck_lib.util.file_utils import resolved_path
 from shellcheck_lib_test.cli.test_resources.execute_main_program import execute_main_program, \
     ARGUMENTS_FOR_TEST_INTERPRETER
@@ -77,7 +78,7 @@ def check(additional_arguments: list,
     """
     :param runner: (unittest.TestCase, list) -> SubProcessResult
     """
-    with tempfile.TemporaryDirectory(prefix='shellcheck-suite-test-') as tmp_dir:
+    with tempfile.TemporaryDirectory(prefix=program_info.PROGRAM_NAME + '-suite-test-') as tmp_dir:
         tmp_dir_path = resolved_path(tmp_dir)
         setup.file_structure(tmp_dir_path).write_to(tmp_dir_path)
         file_argument = str(setup.file_argument_based_at(tmp_dir_path))
@@ -97,11 +98,11 @@ def check_with_pre_proc(additional_arguments: list,
     """
     :param runner: (unittest.TestCase, list) -> SubProcessResult
     """
-    with tempfile.TemporaryDirectory(prefix='shellcheck-suite-test-preprocessor-') as pre_proc_dir:
+    with tempfile.TemporaryDirectory(prefix=program_info.PROGRAM_NAME + '-suite-test-preprocessor-') as pre_proc_dir:
         preprocessor_file_path = resolved_path(pre_proc_dir) / 'preprocessor.py'
         with preprocessor_file_path.open('w') as f:
             f.write(setup.preprocessor_source())
-        with tempfile.TemporaryDirectory(prefix='shellcheck-suite-test-dir-contents-') as tmp_dir:
+        with tempfile.TemporaryDirectory(prefix=program_info.PROGRAM_NAME + '-suite-test-dir-contents-') as tmp_dir:
             tmp_dir_path = resolved_path(tmp_dir)
             file_structure = setup.file_structure(tmp_dir_path,
                                                   sys.executable,

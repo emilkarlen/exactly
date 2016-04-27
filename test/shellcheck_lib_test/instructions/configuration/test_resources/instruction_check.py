@@ -4,6 +4,7 @@ import tempfile
 import unittest
 from time import strftime, localtime
 
+from shellcheck_lib import program_info
 from shellcheck_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, SingleInstructionParserSource
 from shellcheck_lib.test_case.phases.anonymous import AnonymousPhaseInstruction, ConfigurationBuilder
@@ -59,7 +60,7 @@ class Executor:
                                   AnonymousPhaseInstruction,
                                   'The instruction must be an instance of ' + str(AnonymousPhaseInstruction))
         assert isinstance(instruction, AnonymousPhaseInstruction)
-        prefix = strftime("shellcheck-test-%Y-%m-%d-%H-%M-%S", localtime())
+        prefix = strftime(program_info.PROGRAM_NAME + '-test-%Y-%m-%d-%H-%M-%S', localtime())
         with tempfile.TemporaryDirectory(prefix=prefix + "-home-") as home_dir_name:
             home_dir_path = pathlib.Path(home_dir_name).resolve()
             self.arrangement.home_contents.write_to(home_dir_path)

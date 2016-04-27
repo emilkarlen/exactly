@@ -1,6 +1,7 @@
 import enum
 import pathlib
 
+from shellcheck_lib import program_info
 from shellcheck_lib.test_case.phases.act.phase_setup import ActPhaseSetup
 from shellcheck_lib.test_case.test_case_processing import Preprocessor
 
@@ -19,7 +20,7 @@ class TestCaseExecutionSettings:
                  preprocessor: Preprocessor,
                  act_phase_setup: ActPhaseSetup,
                  is_keep_execution_directory_root: bool=False,
-                 execution_directory_root_name_prefix: str='shellcheck-'):
+                 execution_directory_root_name_prefix: str= program_info.PROGRAM_NAME + '-'):
         self.__file_path = file_path
         self.__initial_home_dir_path = initial_home_dir_path
         self.__output = output
