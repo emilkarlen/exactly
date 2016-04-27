@@ -16,7 +16,7 @@ setup(
     description=('Checks a command line program by executing it in a temporary sandbox directory and '
                  'inspecting the result.'),
     license='GPLv3+',
-    keywords='test script shell console command line',
+    keywords='test case suite check script shell console command line program',
     url='https://github.com/emilkarlen/shellcheck',
     package_dir={
         '': 'src',
