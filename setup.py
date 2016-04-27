@@ -21,10 +21,6 @@ setup(
     package_dir={
         '': 'src',
     },
-    # package_dir={
-    #     'my_test_package': 'src/my_test_package',
-    #     'test_module': 'test_module',
-    # },
     packages=find_packages('src'),
     long_description=read('README'),
     classifiers=[
