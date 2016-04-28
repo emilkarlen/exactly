@@ -1,7 +1,7 @@
 -*- org -*-
 
 * Main purpose
-shellcheck is aimd at testing ...
+exactly is aimd at testing ...
 - programs that are executed via the OS shell
 - programs who's input is stdin
 - programs who's input is files (including stdin)
@@ -11,22 +11,22 @@ shellcheck is aimd at testing ...
 - programs that modify the contents of the Present Working Directory
 * Dependencies
 
-shellcheck (base version) DOES not depend on anything not included in the
+exactly (base version) DOES not depend on anything not included in the
 standard library of it's implementation language.
 
 MOTIVATION
 
-It should be easy to include the implementation of shellcheck (except for the
+It should be easy to include the implementation of exactly (except for the
 implementation of the langugage it uses (python 3)) in a project that uses
-shellcheck.
+exactly.
 
 The implementation language is choosen to be a language that contains a large
 standard library that does not make this restriction a great limitation.
 
 * Portability
-** Portability of shellcheck itself
+** Portability of exactly itself
 
-The goal is that shellcheck is portable to
+The goal is that exactly is portable to
 - Linux
 - BSD
 - OS X
@@ -37,20 +37,20 @@ these systems.
 
 MOTIVATION
 
-Usefullness of shellcheck.
+Usefullness of exactly.
 
 
 ** Portability of tests
 
 
 Individual tests, on the other hand, should not be limitied to the portability
-requirements of shellcheck itself.
+requirements of exactly itself.
 The instruction "shell" is the main source of non-portability.
 
 MOTIVATION
 
 The requirement of having all tests to be portable to all systems that
-shellcheck itself is ported to would prevent usage of many usefull features
+exactly itself is ported to would prevent usage of many usefull features
 that are available only on a specific system.
 
 Many programs are not required to be portable but they are _required to
@@ -73,7 +73,7 @@ infinitely large.
 
 *** Functionality for working with files
 The program should supply a "core" instruction set that covers the
-most common needs of tests covered by shellcheck's main purpose.
+most common needs of tests covered by exactly's main purpose.
 This means that the "core" instruction set mostly covers working with files -
 attributes of files and the contents of files.
 
@@ -82,8 +82,8 @@ attributes of files and the contents of files.
 The core instruction set makes it possible to extend the "built-in"
 functionality by executing external programs.
 This is usefull both as a way of incorporating functionalty offered by
-existing programs (so that it does not have to be duplicated by shellcheck),
-and as a convenient way to extend shellcheck's functionality by writing custom
+existing programs (so that it does not have to be duplicated by exactly),
+and as a convenient way to extend exactly's functionality by writing custom
 external programs (when this is more convenient than implementing the
 functionality as custom instructions).
 
@@ -95,12 +95,12 @@ the union of the core instruction set and a custom instruction set.
 
 * Preprocessing of test cases
 
-shellcheck uses preprocessing of test cases as a way to resuse test-code and to
+exactly uses preprocessing of test cases as a way to resuse test-code and to
 avoid test-code duplication.
 
 It should be easy to  use a custom preprocessor in the form av an executable
 program.
-shellcheck also should offer a built-in preprocessor that (of course) works
+exactly also should offer a built-in preprocessor that (of course) works
 identically on all supported platforms.  Currently, this is a TODO.
 
 * Instructions in assert phase
@@ -110,7 +110,7 @@ FORM: ACTUAL EXPECTED
 
 Motivation:
 Although the opposite form - EXPECTED ACTUAL - often is more easy to read and
-understand, shellcheck uses the opposite form.  Reasons for this is
+understand, exactly uses the opposite form.  Reasons for this is
 possibility to have shorter (=more readable) assertions.  The reason for this
 is that the instruction must start the line.  And the instruction may specify
 what is tested, i.e. the ACTUAL value.

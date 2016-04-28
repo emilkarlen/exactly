@@ -6,4 +6,4 @@ tmp/
 # Used by setuptools
 build/
 dist/
-src/shellcheck.egg-info/
+src/exactly.egg-info/

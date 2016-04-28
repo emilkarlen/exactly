@@ -20,5 +20,5 @@ existerar som hjälp för att skriva assertions.
 Kanske inte behövs.
 Själva act-programmet kör redan idag i sub-process.
 Problemet är omgivningsvariabler.  Men ev går det att ange dem för
-sub-processen utan att ändra dem i förälderprocessen (shellcheck).  I sådana
+sub-processen utan att ändra dem i förälderprocessen (exactly).  I sådana
 fall känns det onödigt att köra hela act-fasen i sub-process.

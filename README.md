@@ -64,7 +64,7 @@ The "act" phase is default
 The [act] is not needed to indicate what is being checked, since [act] is the default "phase".
  
 The following is a valid test case,
-and if run by shellcheck, it won't remove anything (since it is executed inside a temporary sandbox directory):
+and if run by `exactly`, it won't remove anything (since it is executed inside a temporary sandbox directory):
 
     /bin/rm -rf *
 
