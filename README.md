@@ -80,6 +80,7 @@ Tests can be grouped in suites:
 
     helloworld.case
     *.case
+    **/*.case
     
 
     [suites]
@@ -87,6 +88,7 @@ Tests can be grouped in suites:
     subsuite.suite
     *.suite
     pkg/suite.suite
+    **/*.suite
 
 
 Run a suite using `exactly suite mysuite.suite`
