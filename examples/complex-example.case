@@ -2,6 +2,7 @@
 
 
 mode SKIP
+# This will case the test case to not be executed.
 
 
 [setup]
@@ -15,21 +16,21 @@ file in/a/dir/file-name.txt <<EOF
 contents of the file
 <<EOF
 
+dir root-dir-for-act-phase
+
+pwd root-dir-for-act-phase
+# This will be PWD for the [act] phase.
+
 stdin <<EOF
 this will be stdin for the program in the "act" phase
 EOF
 # (It is also possible to have stdin redirected to an existing file.)
 
-dir root-dir-for-act-phase
-
-pwd root-dir-for-act-phase
-# This will be PWD for the "act" phase. 
-
 env MY_VAR = 'value of my environment variable'
 
 env unset VARIABLE_THAT_SHOULD_NOT_BE_SET
 
-run my-prog-in-same-dir-as-teset-case-that-does-some-more-setup
+run my-prog-in-same-dir-as-test-case-that-does-some-more-setup
 
 
 [act]
@@ -53,12 +54,14 @@ shell sort root-dir-for-act-phase/output-from-sut.txt > sorted.txt
 exitcode != 0
 
 stdout <<EOF
-Hello, World!
+This is the expected output from the-system-under-test
 EOF
 
 stderr empty
 
 contents a-file.txt empty
+
+contents a-second-file.txt ! empty
 
 contents another-file.txt --with-replaced-env-vars expected-content.txt
 
