@@ -8,7 +8,7 @@ Orsaken är att det enbart finns en suite(), som används både för att
 sammanställa enhetstester och tester mot MainProgramRunner.
 * TODO Byt namn: "anonymous" -> "configuration"
 * TODO Namnge "genererade tester" mha 'shortDescription'
-Se shellcheck_lib_test.test_resources.main_program.main_program_check_base.TestForSetupWithoutPreprocessor#shortDescription:
+Se exactly_lib_test.test_resources.main_program.main_program_check_base.TestForSetupWithoutPreprocessor#shortDescription:
 ----------------------------------------
     def shortDescription(self):
         return str(type(self))
@@ -29,7 +29,7 @@ vad README ska innehålla.
 * TODO TypeError ist för ValueError för visitorer appl på felaktigt objekt
 * TODO Ändra --rel-cwd -> --rel-pwd
 <2016-04-03 sön>
-* TODO SHELLCHECK_HOME ska ev inte vara tillgänglig i [act]
+* TODO EXACTLY_HOME ska ev inte vara tillgänglig i [act]
 <2016-04-02 lör>
 Det riskerar ju att atc (action to check) kan sabba
 filer där.
@@ -60,7 +60,7 @@ Fortsätt m att införa ny funktion i MainProgram.
 *** TODO hjälpkommandot ska ha egen metod i MainProgram
 I dag är det en specialare som inte invokerar en medlemsmetod pss som "test-case", "test-suite".
 
-shellcheck_lib.cli.main_program.MainProgram#_parse_and_execute_help
+exactly_lib.cli.main_program.MainProgram#_parse_and_execute_help
 
 ** TODO README.md
 ** TODO Resten av dok (faser, svit)
@@ -128,7 +128,7 @@ hjälp efterfrågas.
 Tror detta ska kunna lösas m lokala importer.
 
 Koden som köra case/suite/help:
-shellcheck_lib.cli.main_program.MainProgram#execute
+exactly_lib.cli.main_program.MainProgram#execute
 * TODO <2015-05-03 sön> Nya refaktoreringar
 ** TODO Nya modulnamn
 - document (dok m faser o instr, syntax, parsning)
@@ -351,7 +351,7 @@ En temporär testsvit skapas bakom kulisserna.
 
 ** TODO Är klasser py3? Ska det vara MyClass(object)?
 Ev ska varje klass explicit ärva object för att vara en py-3-klass.
-* DONE shell: Vad händer m stdout, stderr? blir del av stdout för shellcheck?
+* DONE shell: Vad händer m stdout, stderr? blir del av stdout för exactly?
 Verkar så.  Väldigt dåligt i så fall.  Måste ändras.
 ** TODO stdout, stderr
 Skriv dessa till fil pss som görs för execute.
@@ -401,7 +401,7 @@ Alla tester passerades
 men gick inte att köra programmet pga att instruktionsuppsättningen var fel.
 Instruktionerna för fasX låg i fasY, typ.
 Felet var felaktig sekvens av argumenten till InstructionsSetup i
-shellcheck_lib/default/execution_mode/test_case/default_instructions_setup.py
+exactly_lib/default/execution_mode/test_case/default_instructions_setup.py
 ----------
 
 Lösning, typ: test som kör testfall m en "unik" instruktion från varje fas.
@@ -434,11 +434,11 @@ Känns vettigt.  Tydligare, helt enkelt.
 O tror innehållet i filer där omgivningsvariablerna bytits ut blir tydligare:
 Utan _DIR:
 ----------------------------------------
-SHELLCHECK_ACT/data/dir/existing-file.txt
+EXACTLY_ACT/data/dir/existing-file.txt
 ----------------------------------------
 med _DIR:
 ----------------------------------------
-SHELLCHECK_ACT_DIR/data/dir/existing-file.txt
+EXACTLY_ACT_DIR/data/dir/existing-file.txt
 ----------------------------------------
 Det blir helt enkelt tydligt att man pratar kataloger.
 
@@ -462,7 +462,7 @@ Finns även en
 os.path.expanduser
 för att expanera ~user.
 ** TODO Lägga till _DIR i slutet av katalog-variabler (ev skippa!!)
-** DONE Ny miljövariabel: SHELLCHECK_RESULT_DIR
+** DONE Ny miljövariabel: EXACTLY_RESULT_DIR
 * TODO Kommandorads-program
 ** TODO Hjälpsystem via CLI
 Förslag:
@@ -483,7 +483,7 @@ Tänkt användning:
 3. Kör assert/execute på given EDS.
 4. Upprepa 2-3 tills assert ger förväntat resultat.
 5. Rätta till felet (i SUT, setup, act, el assert).
-6. Radera EDS manuellt, eller kör shellcheck m växel som enbart kör cleanup,
+6. Radera EDS manuellt, eller kör exactly m växel som enbart kör cleanup,
    inklusive automatisk radering av EDS.  Kör denna mot angiven EDS.
 ** TODO Dok för enskild instr ska ges av funktion
 Optimering: För att undvika att programmet alltid lägger tid på att ta fram
@@ -583,14 +583,14 @@ Därför vore det bra med en instruktion som byter till denna katalog.
 
 Problem ... hur ser man till att aktuell katalog bevaras från act-fasen om
 den kör i en egen process??
-** TODO Sätt systemets TMP-katalog till ${SHELLCHECK_TMP}
+** TODO Sätt systemets TMP-katalog till ${EXACTLY_TMP}
 Används antingen i setup eller anonyma fasen.
 Eller kanske införa ny katalog under tmp för att separera testfallets
 hjälpfiler från sut:ens.
 Helt klart vettigast att separera.  Finns ingen bra anledning till att inte
 göra det.
 Inför t ex tmp/act/.
-** TODO Skapa temporär fil (filnamn tas fram automatiskt, läggs i SHELLCHECK_TMP)
+** TODO Skapa temporär fil (filnamn tas fram automatiskt, läggs i EXACTLY_TMP)
 ** TODO file
 *** TODO Använda syntax mer lik unix "test" och "find"?
 Fördel iom att den är välkänd.
@@ -602,7 +602,7 @@ Nu:
 ----------------------------------------
 Line 68: `stdout    --rel-home output/absolute-file-paths-existing.txt'
 
-Unexpected content in file: /tmp/shellcheck-290sqrhe/result/std/stdout
+Unexpected content in file: /tmp/exactly-290sqrhe/result/std/stdout
 ----------------------------------------
 Det framgår inte tydligt att det handlar om stdout. Man får själv ana det,
 genom att leta reda på "stdout".
@@ -626,8 +626,8 @@ Idag är beteendet för DESTINATION som innehåller flera path-komponenter
 (t ex a/b/c) odefinierat.
 *** TODO <2015-11-03 tis> Sök+ersätt i filer som installeras
 Har ett testfall för filelist som gör just detta mha ex.
-Ersättningsvärdet är absolut sökväg för testets rot (SHELLCHECK_ACT).
-Antar att detta är relativt vanligt.  Därför borde shellcheck ha en sådan
+Ersättningsvärdet är absolut sökväg för testets rot (EXACTLY_ACT).
+Antar att detta är relativt vanligt.  Därför borde exactly ha en sådan
 funktion inbyggd.
 ** TODO mkdir
 *** TODO Byt namn till "dir" el "directory"
@@ -840,7 +840,7 @@ för unix/övrigt.
 
 Har för mig att i dagsläget så sparar+återställer full_execution alla
 miljövariabler.  Det ska den inte behöva göra.  Speciellt när ett enda
-test-fall körs är det helt onödigt eftersom shellcheck kör i en separat
+test-fall körs är det helt onödigt eftersom exactly kör i en separat
 process, vars sidoeffekter i form av miljövariabler försvinner när det
 avslutas.
 
