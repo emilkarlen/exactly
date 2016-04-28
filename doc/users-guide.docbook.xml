@@ -3,7 +3,7 @@
 "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
 <book>
   <bookinfo>
-    <title>Shellcheck Users Guide And Reference Manual</title>
+    <title>Exactly Users Guide And Reference Manual</title>
 
     <author>
       <firstname>Emil</firstname>
@@ -18,12 +18,12 @@
     <section>
       <title>Vill ta med</title>
 
-      <para>Olika sätt att köra shellcheck för att debugga tester.</para>
+      <para>Olika sätt att köra exactly för att debugga tester.</para>
 
       <section>
         <title>Vad kommer ut från programmet? Experimentera med detta</title>
 
-        <para>shellcheck --execute</para>
+        <para>exactly --execute</para>
 
         <para>Ekvivalent med att köra programmet med de förutsättningar som
         anges i [setup]</para>
@@ -61,7 +61,7 @@
               mänsklikt öga att inspektera dem.</para>
 
               <para>Ett sätt att göra dem inspekterbara är att bygga in en
-              funktion i shellcheck för att visa dem på ett human-readable
+              funktion i exactly för att visa dem på ett human-readable
               sätt.</para>
             </listitem>
           </varlistentry>
@@ -86,7 +86,7 @@
 
         <orderedlist>
           <listitem>
-            <para>shellcheck --setup</para>
+            <para>exactly --setup</para>
 
             <para>Kör testet till och med [setup]. Rapportera EDS rot.</para>
           </listitem>
@@ -103,7 +103,7 @@
           <listitem>
             <para>Fortsätt testet i den befintliga EDS</para>
 
-            <para>shellcheck --continue-from-act EDS</para>
+            <para>exactly --continue-from-act EDS</para>
           </listitem>
         </orderedlist>
       </section>
@@ -118,12 +118,12 @@
         eller genom att debugga det med debugger för det språk i vilket
         programmet är skrivet.</para>
 
-        <para>Man har kört ett test fram till en viss fas med shellcheck
+        <para>Man har kört ett test fram till en viss fas med exactly
         --to-PHASE.</para>
 
         <para>Man vill fortsätta, men inte ändra fram till slutet:</para>
 
-        <para>shellcheck --from-PHASE+1 --to-PHASE+(n&gt;1).</para>
+        <para>exactly --from-PHASE+1 --to-PHASE+(n&gt;1).</para>
 
         <para/>
       </section>

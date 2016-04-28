@@ -2,6 +2,7 @@
   <dictionary name="karlen">
     <words>
       <w>argv</w>
+      <w>exactly</w>
       <w>identation</w>
       <w>instrs</w>
       <w>invokation</w>
@@ -11,7 +12,6 @@
       <w>preprocesses</w>
       <w>preprocessing</w>
       <w>proc</w>
-      <w>shellcheck</w>
       <w>splitted</w>
       <w>stderr</w>
       <w>stdin</w>

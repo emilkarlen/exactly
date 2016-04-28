@@ -5,7 +5,7 @@
     <inspection_tool class="PyUnresolvedReferencesInspection" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="ignoredIdentifiers">
         <list>
-          <option value="shellcheck_lib_test.cli.default_main_program_case_preprocessing.SetupWithPreprocessor" />
+          <option value="exactly_lib_test.cli.default_main_program_case_preprocessing.SetupWithPreprocessor" />
         </list>
       </option>
     </inspection_tool>
