@@ -2,7 +2,7 @@ from exactly_lib.execution.execution_mode import ExecutionMode
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as instrs
 from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
-from exactly_lib.test_case.phases.anonymous import AnonymousPhaseInstruction, ConfigurationBuilder
+from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.before_assert import BeforeAssertPhaseInstruction
 from exactly_lib.test_case.phases.cleanup import CleanupPhaseInstruction, PreviousPhase
@@ -30,8 +30,8 @@ class ImplementationErrorTestException(Exception):
     pass
 
 
-def anonymous_phase_instruction_that(main=do_return(sh.SuccessOrHardError)) -> AnonymousPhaseInstruction:
-    return _AnonymousPhaseInstructionThat(main=main)
+def configuration_phase_instruction_that(main=do_return(sh.SuccessOrHardError)) -> ConfigurationPhaseInstruction:
+    return _ConfigurationPhaseInstructionThat(main=main)
 
 
 def setup_phase_instruction_that(validate_pre_eds=do_return(svh.new_svh_success()),
@@ -72,7 +72,7 @@ def cleanup_phase_instruction_that(validate_pre_eds=do_return(svh.new_svh_succes
                                         main)
 
 
-class AnonymousPhaseInstructionThatSetsExecutionMode(AnonymousPhaseInstruction):
+class ConfigurationPhaseInstructionThatSetsExecutionMode(ConfigurationPhaseInstruction):
     def __init__(self,
                  value_to_set: ExecutionMode):
         self.value_to_set = value_to_set
@@ -83,7 +83,7 @@ class AnonymousPhaseInstructionThatSetsExecutionMode(AnonymousPhaseInstruction):
         return sh.new_sh_success()
 
 
-class _AnonymousPhaseInstructionThat(AnonymousPhaseInstruction):
+class _ConfigurationPhaseInstructionThat(ConfigurationPhaseInstruction):
     def __init__(self,
                  main):
         self.do_main = main

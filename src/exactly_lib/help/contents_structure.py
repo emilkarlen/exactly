@@ -53,7 +53,7 @@ def application_help_for(instructions_setup: InstructionsSetup) -> ApplicationHe
 
 def phase_helps_for(instructions_setup: InstructionsSetup) -> iter:
     return [
-        configuration.ConfigurationPhaseDocumentation(phase_help_name(phases.ANONYMOUS),
+        configuration.ConfigurationPhaseDocumentation(phase_help_name(phases.CONFIGURATION),
                                                       instruction_set_help(
                                                           instructions_setup.config_instruction_set.values())),
         setup.SetupPhaseDocumentation(phase_help_name(phases.SETUP),

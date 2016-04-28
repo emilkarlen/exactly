@@ -1,6 +1,6 @@
 from exactly_lib.document import parse
 from exactly_lib.test_suite import test_suite_doc
-from exactly_lib.test_suite.instruction_set.sections import anonymous
+from exactly_lib.test_suite.instruction_set.sections import configuration
 from exactly_lib.test_suite.instruction_set.sections import cases
 from exactly_lib.test_suite.instruction_set.sections import suites
 from exactly_lib.util import line_source
@@ -15,7 +15,7 @@ ALL_SECTION_NAMES = (SECTION_NAME__CONF,
 
 PARSER_CONFIGURATION = parse.SectionsConfiguration(
     (
-        parse.SectionConfiguration(SECTION_NAME__CONF, anonymous.new_parser()),
+        parse.SectionConfiguration(SECTION_NAME__CONF, configuration.new_parser()),
         parse.SectionConfiguration(SECTION_NAME__SUITS, suites.new_parser()),
         parse.SectionConfiguration(SECTION_NAME__CASES, cases.new_parser()),
     ),

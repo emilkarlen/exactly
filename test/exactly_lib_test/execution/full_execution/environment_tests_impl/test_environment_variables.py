@@ -9,7 +9,7 @@ from exactly_lib.execution.phase_step import PhaseStep
 from exactly_lib.execution.result import FullResultStatus
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.phases import common
-from exactly_lib.test_case.phases.anonymous import ConfigurationBuilder
+from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib_test.execution.full_execution.test_resources.test_case_base import FullExecutionTestCaseBase
 from exactly_lib_test.execution.test_resources import instruction_that_record_and_return as instr_setup
 from exactly_lib_test.execution.test_resources.instruction_that_do_and_return import \
@@ -27,9 +27,9 @@ def env_vars_dict() -> dict:
     return ret_val
 
 
-def _set_home_dir_to_parent__anonymous_phase(recorder: instr_setup.Recorder,
-                                             phase_step: PhaseStep,
-                                             phase_environment: ConfigurationBuilder):
+def _set_home_dir_to_parent__configuration_phase(recorder: instr_setup.Recorder,
+                                                 phase_step: PhaseStep,
+                                                 phase_environment: ConfigurationBuilder):
     recorder.set_phase_step_recording(phase_step, env_vars_dict())
     phase_environment.set_home_dir(phase_environment.home_dir_path.parent)
 
@@ -56,7 +56,7 @@ class Test(FullExecutionTestCaseBase):
 
     def _test_case(self) -> test_case_doc.TestCase:
         setup = instr_setup.TestCaseSetupWithRecorder(
-            anonymous_phase_action=_set_home_dir_to_parent__anonymous_phase,
+            configuration_phase_action=_set_home_dir_to_parent__configuration_phase,
             validation_action__without_eds=_action__without_eds,
             validation_action__with_eds=_action__with_eds,
             execution_action__with_eds=_action__with_eds,
@@ -79,24 +79,24 @@ class Test(FullExecutionTestCaseBase):
 
     def _assertions(self):
         self.__assert_test_sanity()
-        for_anonymous_phase = {}
-        home_dir_after_anonymous = str(self.initial_home_dir_path.parent)
+        for_configuration_phase = {}
+        home_dir_after_configuration = str(self.initial_home_dir_path.parent)
         for_pre_eds = {
-            environment_variables.ENV_VAR_HOME: home_dir_after_anonymous
+            environment_variables.ENV_VAR_HOME: home_dir_after_configuration
         }
         set_at_eds_creation = {
-            environment_variables.ENV_VAR_HOME: home_dir_after_anonymous,
+            environment_variables.ENV_VAR_HOME: home_dir_after_configuration,
             environment_variables.ENV_VAR_ACT: str(self.eds.act_dir),
             environment_variables.ENV_VAR_TMP: str(self.eds.tmp.user_dir),
         }
         set_after_act = {
-            environment_variables.ENV_VAR_HOME: home_dir_after_anonymous,
+            environment_variables.ENV_VAR_HOME: home_dir_after_configuration,
             environment_variables.ENV_VAR_ACT: str(self.eds.act_dir),
             environment_variables.ENV_VAR_TMP: str(self.eds.tmp.user_dir),
             environment_variables.ENV_VAR_RESULT_DIR: str(self.eds.result.root_dir),
         }
         expected_recorded_internally = {
-            phase_step.ANONYMOUS__MAIN: for_anonymous_phase,
+            phase_step.CONFIGURATION__MAIN: for_configuration_phase,
             phase_step.SETUP__VALIDATE_PRE_EDS: for_pre_eds,
             phase_step.ACT__VALIDATE_PRE_EDS: for_pre_eds,
             phase_step.BEFORE_ASSERT__VALIDATE_PRE_EDS: for_pre_eds,
@@ -114,7 +114,7 @@ class Test(FullExecutionTestCaseBase):
         }
         expected_act_output = ''.join([
             '%s=%s%s' % (
-                environment_variables.ENV_VAR_HOME, home_dir_after_anonymous, os.linesep),
+                environment_variables.ENV_VAR_HOME, home_dir_after_configuration, os.linesep),
             '%s=%s%s' % (
                 environment_variables.ENV_VAR_ACT, str(self.eds.act_dir), os.linesep),
             '%s=%s%s' % (environment_variables.ENV_VAR_TMP, str(self.eds.tmp.user_dir),

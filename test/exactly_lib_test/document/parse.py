@@ -92,10 +92,10 @@ class TestParseSingleLineElements(ParseTestBase):
         expected_document = model.Document(expected_phase2instructions)
         self._check_document(expected_document, actual_document)
 
-    def test_initial_empty_lines_and_comment_lines_should_be_ignored_when_there_is_no_anonymous_phase(self):
+    def test_initial_empty_lines_and_comment_lines_should_be_ignored_when_there_is_no_default_phase(self):
         # ARRANGE #
         parser = parser_for_sections(['phase 1', 'phase 2'])
-        source_lines = ['# standard-comment anonymous',
+        source_lines = ['# standard-comment default',
                         '',
                         '[phase 1]',
                         'COMMENT 1',
@@ -117,13 +117,13 @@ class TestParseSingleLineElements(ParseTestBase):
         expected_document = model.Document(expected_phase2instructions)
         self._check_document(expected_document, actual_document)
 
-    def test_valid_anonymous_and_named_phase(self):
+    def test_valid_default_and_named_phase(self):
         # ARRANGE #
         sections = parser_for_sections(['phase 1', 'default'],
                                        default_section_name='default')
-        input_lines = ['COMMENT anonymous',
+        input_lines = ['COMMENT default',
                        '',
-                       'instruction anonymous',
+                       'instruction default',
                        '[phase 1]',
                        'COMMENT 1',
                        'instruction 1']
@@ -131,17 +131,17 @@ class TestParseSingleLineElements(ParseTestBase):
         actual_document = self._parse_lines(sections,
                                             input_lines)
         # ASSERT #
-        anonymous_instructions = (
-            new_comment(1, 'COMMENT anonymous'),
+        default_instructions = (
+            new_comment(1, 'COMMENT default'),
             new_empty(2, ''),
-            new_instruction(3, 'instruction anonymous', 'default')
+            new_instruction(3, 'instruction default', 'default')
         )
         phase1_instructions = (
             new_comment(5, 'COMMENT 1'),
             new_instruction(6, 'instruction 1', 'phase 1')
         )
         expected_phase2instructions = {
-            'default': model.PhaseContents(anonymous_instructions),
+            'default': model.PhaseContents(default_instructions),
             'phase 1': model.PhaseContents(phase1_instructions)
         }
         expected_document = model.Document(expected_phase2instructions)
@@ -200,10 +200,10 @@ class TestParseSingleLineElements(ParseTestBase):
         expected_document = model.Document(expected_phase2instructions)
         self._check_document(expected_document, actual_document)
 
-    def test_instruction_in_anonymous_phase_should_not_be_allowed_when_there_is_no_anonymous_phase(self):
+    def test_instruction_in_default_phase_should_not_be_allowed_when_there_is_no_default_phase(self):
         # ARRANGE #
         parser = parser_for_sections(['phase 1'])
-        source_lines = ['instruction anonymous',
+        source_lines = ['instruction default',
                         '[phase 1]',
                         'instruction 1']
         # ACT & ASSERT #
@@ -212,7 +212,7 @@ class TestParseSingleLineElements(ParseTestBase):
                               source_lines)
         # ASSERT #
         assert_equals_line(self,
-                           Line(1, 'instruction anonymous'),
+                           Line(1, 'instruction default'),
                            cm.exception.source_error.line)
         self.assertIsNone(cm.exception.maybe_section_name,
                           'Section name')
@@ -254,7 +254,7 @@ class TestParseSingleLineElements(ParseTestBase):
 
 
 class TestParseMultiLineElements(ParseTestBase):
-    def test_single_multi_line_instruction_that_is_actually_only_a_single_line_in_anonymous_phase(self):
+    def test_single_multi_line_instruction_that_is_actually_only_a_single_line_in_default_phase(self):
         # ARRANGE #
         parser = parser_for_sections(['default'],
                                      default_section_name='default')
@@ -264,16 +264,16 @@ class TestParseMultiLineElements(ParseTestBase):
         actual_document = self._parse_lines(parser,
                                             source_lines)
         # ASSERT #
-        anonymous_phase_instructions = (
+        default_phase_instructions = (
             new_instruction(1, 'MULTI-LINE-INSTRUCTION 1', 'default'),
         )
         expected_phase2instructions = {
-            'default': model.PhaseContents(anonymous_phase_instructions),
+            'default': model.PhaseContents(default_phase_instructions),
         }
         expected_document = model.Document(expected_phase2instructions)
         self._check_document(expected_document, actual_document)
 
-    def test_single_multi_line_instruction_in_anonymous_phase_that_occupies_whole_doc(self):
+    def test_single_multi_line_instruction_in_default_phase_that_occupies_whole_doc(self):
         # ARRANGE #
         parser = parser_for_sections(['phase 1', 'default'],
                                      default_section_name='default')
@@ -283,19 +283,19 @@ class TestParseMultiLineElements(ParseTestBase):
         actual_document = self._parse_lines(parser,
                                             source_lines)
         # ASSERT #
-        anonymous_phase_instructions = (
+        default_phase_instructions = (
             new_instruction__multi_line(1,
                                         ['MULTI-LINE-INSTRUCTION 1',
                                          'MULTI-LINE-INSTRUCTION 2'],
                                         'default'),
         )
         expected_phase2instructions = {
-            'default': model.PhaseContents(anonymous_phase_instructions),
+            'default': model.PhaseContents(default_phase_instructions),
         }
         expected_document = model.Document(expected_phase2instructions)
         self._check_document(expected_document, actual_document)
 
-    def test_single_multi_line_instruction_in_anonymous_phase_surrounded_by_empty_lines(self):
+    def test_single_multi_line_instruction_in_default_phase_surrounded_by_empty_lines(self):
         # ARRANGE #
         parser = parser_for_sections(['phase 1', 'default'],
                                      default_section_name='default')
@@ -308,7 +308,7 @@ class TestParseMultiLineElements(ParseTestBase):
         actual_document = self._parse_lines(parser,
                                             source_lines)
         # ASSERT #
-        anonymous_phase_instructions = (
+        default_phase_instructions = (
             new_empty(1, ''),
             new_instruction__multi_line(2,
                                         ['MULTI-LINE-INSTRUCTION 1',
@@ -317,12 +317,12 @@ class TestParseMultiLineElements(ParseTestBase):
             new_empty(4, ''),
         )
         expected_phase2instructions = {
-            'default': model.PhaseContents(anonymous_phase_instructions),
+            'default': model.PhaseContents(default_phase_instructions),
         }
         expected_document = model.Document(expected_phase2instructions)
         self._check_document(expected_document, actual_document)
 
-    def test_single_multi_line_instruction_in_anonymous_phase_ended_by_section_header(self):
+    def test_single_multi_line_instruction_in_default_phase_ended_by_section_header(self):
         # ARRANGE #
         parser = parser_for_sections(['phase 1', 'default'],
                                      default_section_name='default')
@@ -336,7 +336,7 @@ class TestParseMultiLineElements(ParseTestBase):
         actual_document = self._parse_lines(parser,
                                             source_lines)
         # ASSERT #
-        anonymous_phase_instructions = (
+        default_phase_instructions = (
             new_empty(1, ''),
             new_instruction__multi_line(2,
                                         ['MULTI-LINE-INSTRUCTION 1',
@@ -348,13 +348,13 @@ class TestParseMultiLineElements(ParseTestBase):
                             'phase 1'),
         )
         expected_phase2instructions = {
-            'default': model.PhaseContents(anonymous_phase_instructions),
+            'default': model.PhaseContents(default_phase_instructions),
             'phase 1': model.PhaseContents(phase1_instructions),
         }
         expected_document = model.Document(expected_phase2instructions)
         self._check_document(expected_document, actual_document)
 
-    def test_mix_of_instructions_without_anonymous_phase(self):
+    def test_mix_of_instructions_without_default_phase(self):
         # ARRANGE #
         parser = parser_for_sections(['phase 1'])
         source_lines = ['',
@@ -450,7 +450,7 @@ class TestParseMultiLineElements(ParseTestBase):
 
 # class TestGroupByPhase(unittest.TestCase):
 #     def test_valid(self):
-#         lines_for_anonymous = [
+#         lines_for_default = [
 #             (syntax.TYPE_INSTRUCTION, Line(1, 'i0/1'))
 #         ]
 #
@@ -471,7 +471,7 @@ class TestParseMultiLineElements(ParseTestBase):
 #             (syntax.TYPE_COMMENT, Line(2, '#3')),
 #         ]
 #
-#         lines = lines_for_anonymous + \
+#         lines = lines_for_default + \
 #                 [(syntax.TYPE_PHASE, phase1_line)] + \
 #                 lines_for_phase1 + \
 #                 [(syntax.TYPE_PHASE, phase2_line)] + \
@@ -482,7 +482,7 @@ class TestParseMultiLineElements(ParseTestBase):
 #         expected = [
 #             parse2.PhaseWithLines(None,
 #                                   None,
-#                                   tuple(lines_for_anonymous)),
+#                                   tuple(lines_for_default)),
 #             parse2.PhaseWithLines('phase 1',
 #                                   phase1_line,
 #                                   tuple(lines_for_phase1)),
@@ -497,7 +497,7 @@ class TestParseMultiLineElements(ParseTestBase):
 #         actual = parse2.group_by_phase(lines)
 #         self.assertEqual(expected, actual)
 #
-#     def test_lines_in_anonymous_phase_should_not_be_required(self):
+#     def test_lines_in_default_phase_should_not_be_required(self):
 #         phase1_line = Line(20, '[phase 1]')
 #         lines_for_phase1 = [
 #             (syntax.TYPE_INSTRUCTION, Line(1, 'i1/1')),

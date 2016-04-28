@@ -22,8 +22,8 @@ class Test(TestCaseBase):
                 Arrangement(TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr()),
                 Expectation(FullResultStatus.PASS,
                             ExpectedFailureForNoFailure(),
-                            [phase_step.ANONYMOUS__MAIN,
-                             phase_step.ANONYMOUS__MAIN] +
+                            [phase_step.CONFIGURATION__MAIN,
+                             phase_step.CONFIGURATION__MAIN] +
                             PRE_EDS_VALIDATION_STEPS__TWICE +
                             [phase_step.SETUP__MAIN,
                              phase_step.SETUP__MAIN,
@@ -48,33 +48,33 @@ class Test(TestCaseBase):
                              ],
                             True))
 
-    def test_hard_error_in_anonymous_phase(self):
+    def test_hard_error_in_configuration_phase(self):
         test_case_generator = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
-            .add(phases.ANONYMOUS,
-                 test.anonymous_phase_instruction_that(do_return(sh.new_sh_hard_error('hard error msg'))))
+            .add(phases.CONFIGURATION,
+                 test.configuration_phase_instruction_that(do_return(sh.new_sh_hard_error('hard error msg'))))
         self._check(
                 Arrangement(test_case_generator),
                 Expectation(FullResultStatus.HARD_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_message(
-                                    phase_step.ANONYMOUS__MAIN,
-                                    test_case_generator.the_extra(phases.ANONYMOUS)[0].first_line,
+                                    phase_step.CONFIGURATION__MAIN,
+                                    test_case_generator.the_extra(phases.CONFIGURATION)[0].first_line,
                                     'hard error msg'),
-                            [phase_step.ANONYMOUS__MAIN],
+                            [phase_step.CONFIGURATION__MAIN],
                             False))
 
-    def test_implementation_error_in_anonymous_phase(self):
+    def test_implementation_error_in_configuration_phase(self):
         test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
-            .add(phases.ANONYMOUS,
-                 test.anonymous_phase_instruction_that(
+            .add(phases.CONFIGURATION,
+                 test.configuration_phase_instruction_that(
                          main=test.do_raise(test.ImplementationErrorTestException())))
         self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.IMPLEMENTATION_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_exception(
-                                    phase_step.ANONYMOUS__MAIN,
-                                    test_case.the_extra(phases.ANONYMOUS)[0].first_line,
+                                    phase_step.CONFIGURATION__MAIN,
+                                    test_case.the_extra(phases.CONFIGURATION)[0].first_line,
                                     test.ImplementationErrorTestException),
-                            [phase_step.ANONYMOUS__MAIN],
+                            [phase_step.CONFIGURATION__MAIN],
                             False))
 
 

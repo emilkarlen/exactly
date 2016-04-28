@@ -8,8 +8,6 @@ class GeneralError(Exception):
     pass
 
 
-ANONYMOUS_PHASE_PRESENTATION_NAME = '<top-level>'
-
 PHASE_SYNTAX = '[PHASE-NAME]'
 
 TYPE_EMPTY = 0

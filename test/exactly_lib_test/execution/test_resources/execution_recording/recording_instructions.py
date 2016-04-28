@@ -1,5 +1,5 @@
 from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
-from exactly_lib.test_case.phases.anonymous import AnonymousPhaseInstruction
+from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.before_assert import BeforeAssertPhaseInstruction
 from exactly_lib.test_case.phases.cleanup import CleanupPhaseInstruction
@@ -9,7 +9,7 @@ from exactly_lib.test_case.phases.result import svh
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
 from exactly_lib_test.execution.test_resources.execution_recording.recorder import ListElementRecorder, ListRecorder
 from exactly_lib_test.execution.test_resources.instruction_test_resources import cleanup_phase_instruction_that, \
-    assert_phase_instruction_that, setup_phase_instruction_that, anonymous_phase_instruction_that, \
+    assert_phase_instruction_that, setup_phase_instruction_that, configuration_phase_instruction_that, \
     act_phase_instruction_that, before_assert_phase_instruction_that
 
 
@@ -17,8 +17,8 @@ class RecordingInstructions:
     def __init__(self, recorder: ListRecorder):
         self.recorder = recorder
 
-    def new_anonymous_instruction(self, value) -> AnonymousPhaseInstruction:
-        return anonymous_phase_instruction_that(main=self._do_record_and_return_sh(value))
+    def new_configuration_instruction(self, value) -> ConfigurationPhaseInstruction:
+        return configuration_phase_instruction_that(main=self._do_record_and_return_sh(value))
 
     def new_setup_instruction(self,
                               value_for_validate_pre_eds,

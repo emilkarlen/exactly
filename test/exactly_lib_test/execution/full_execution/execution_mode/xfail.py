@@ -21,8 +21,8 @@ from exactly_lib_test.test_resources.expected_instruction_failure import Expecte
 class Test(TestCaseBase):
     def test_with_assert_phase_that_fails(self):
         test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
-            .add(phases.ANONYMOUS,
-                 test.AnonymousPhaseInstructionThatSetsExecutionMode(ExecutionMode.XFAIL)) \
+            .add(phases.CONFIGURATION,
+                 test.ConfigurationPhaseInstructionThatSetsExecutionMode(ExecutionMode.XFAIL)) \
             .add(phases.ASSERT,
                  test.assert_phase_instruction_that(
                          main=test.do_return(pfh.new_pfh_fail('fail message'))))
@@ -32,8 +32,8 @@ class Test(TestCaseBase):
                                         phase_step.ASSERT__MAIN,
                                         test_case.the_extra(phases.ASSERT)[0].first_line,
                                         'fail message'),
-                                [phase_step.ANONYMOUS__MAIN,
-                                 phase_step.ANONYMOUS__MAIN] +
+                                [phase_step.CONFIGURATION__MAIN,
+                                 phase_step.CONFIGURATION__MAIN] +
                                 PRE_EDS_VALIDATION_STEPS__TWICE +
                                 [phase_step.SETUP__MAIN,
                                  phase_step.SETUP__MAIN,
@@ -59,14 +59,14 @@ class Test(TestCaseBase):
 
     def test_with_assert_phase_that_passes(self):
         test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
-            .add(phases.ANONYMOUS,
-                 test.AnonymousPhaseInstructionThatSetsExecutionMode(ExecutionMode.XFAIL))
+            .add(phases.CONFIGURATION,
+                 test.ConfigurationPhaseInstructionThatSetsExecutionMode(ExecutionMode.XFAIL))
         self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.XPASS,
                             ExpectedFailureForNoFailure(),
-                            [phase_step.ANONYMOUS__MAIN,
-                             phase_step.ANONYMOUS__MAIN] +
+                            [phase_step.CONFIGURATION__MAIN,
+                             phase_step.CONFIGURATION__MAIN] +
                             PRE_EDS_VALIDATION_STEPS__TWICE +
                             [phase_step.SETUP__MAIN,
                              phase_step.SETUP__MAIN,
@@ -91,26 +91,26 @@ class Test(TestCaseBase):
                              ],
                             True))
 
-    def test_with_anonymous_phase_with_hard_error(self):
+    def test_with_configuration_phase_with_hard_error(self):
         test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
-            .add(phases.ANONYMOUS,
-                 test.AnonymousPhaseInstructionThatSetsExecutionMode(ExecutionMode.XFAIL)) \
-            .add(phases.ANONYMOUS,
-                 test.anonymous_phase_instruction_that(do_return(sh.new_sh_hard_error('hard error msg'))))
+            .add(phases.CONFIGURATION,
+                 test.ConfigurationPhaseInstructionThatSetsExecutionMode(ExecutionMode.XFAIL)) \
+            .add(phases.CONFIGURATION,
+                 test.configuration_phase_instruction_that(do_return(sh.new_sh_hard_error('hard error msg'))))
         self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.HARD_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_message(
-                                    phase_step.ANONYMOUS__MAIN,
-                                    test_case.the_extra(phases.ANONYMOUS)[1].first_line,
+                                    phase_step.CONFIGURATION__MAIN,
+                                    test_case.the_extra(phases.CONFIGURATION)[1].first_line,
                                     'hard error msg'),
-                            [phase_step.ANONYMOUS__MAIN],
+                            [phase_step.CONFIGURATION__MAIN],
                             False))
 
     def test_with_implementation_error(self):
         test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
-            .add(phases.ANONYMOUS,
-                 test.AnonymousPhaseInstructionThatSetsExecutionMode(ExecutionMode.XFAIL)) \
+            .add(phases.CONFIGURATION,
+                 test.ConfigurationPhaseInstructionThatSetsExecutionMode(ExecutionMode.XFAIL)) \
             .add(phases.CLEANUP,
                  test.cleanup_phase_instruction_that(
                          main=test.do_raise(test.ImplementationErrorTestException())))
@@ -121,8 +121,8 @@ class Test(TestCaseBase):
                                     phase_step.CLEANUP__MAIN,
                                     test_case.the_extra(phases.CLEANUP)[0].first_line,
                                     test.ImplementationErrorTestException),
-                            [phase_step.ANONYMOUS__MAIN,
-                             phase_step.ANONYMOUS__MAIN] +
+                            [phase_step.CONFIGURATION__MAIN,
+                             phase_step.CONFIGURATION__MAIN] +
                             PRE_EDS_VALIDATION_STEPS__TWICE +
                             [phase_step.SETUP__MAIN,
                              phase_step.SETUP__MAIN,

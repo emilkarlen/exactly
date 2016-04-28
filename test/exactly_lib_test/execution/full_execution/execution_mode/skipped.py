@@ -18,49 +18,49 @@ from exactly_lib_test.test_resources.expected_instruction_failure import Expecte
 class Test(TestCaseBase):
     def test_execution_mode_skipped(self):
         test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
-            .add(phases.ANONYMOUS,
-                 test.AnonymousPhaseInstructionThatSetsExecutionMode(
+            .add(phases.CONFIGURATION,
+                 test.ConfigurationPhaseInstructionThatSetsExecutionMode(
                          ExecutionMode.SKIP))
         self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.SKIPPED,
                             ExpectedFailureForNoFailure(),
-                            [phase_step.ANONYMOUS__MAIN,
-                             phase_step.ANONYMOUS__MAIN],
+                            [phase_step.CONFIGURATION__MAIN,
+                             phase_step.CONFIGURATION__MAIN],
                             False))
 
-    def test_execution_mode_skipped_but_failing_instruction_in_anonymous_phase_before_setting_execution_mode(self):
+    def test_execution_mode_skipped_but_failing_instruction_in_configuration_phase_before_setting_execution_mode(self):
         test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
-            .add(phases.ANONYMOUS,
-                 test.anonymous_phase_instruction_that(do_return(sh.new_sh_hard_error('hard error msg')))) \
-            .add(phases.ANONYMOUS,
-                 test.AnonymousPhaseInstructionThatSetsExecutionMode(
+            .add(phases.CONFIGURATION,
+                 test.configuration_phase_instruction_that(do_return(sh.new_sh_hard_error('hard error msg')))) \
+            .add(phases.CONFIGURATION,
+                 test.ConfigurationPhaseInstructionThatSetsExecutionMode(
                          ExecutionMode.SKIP))
         self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.HARD_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_message(
-                                    phase_step.ANONYMOUS__MAIN,
-                                    test_case.the_extra(phases.ANONYMOUS)[0].first_line,
+                                    phase_step.CONFIGURATION__MAIN,
+                                    test_case.the_extra(phases.CONFIGURATION)[0].first_line,
                                     'hard error msg'),
-                            [phase_step.ANONYMOUS__MAIN],
+                            [phase_step.CONFIGURATION__MAIN],
                             False))
 
-    def test_execution_mode_skipped_but_failing_instruction_in_anonymous_phase_after_setting_execution_mode(self):
+    def test_execution_mode_skipped_but_failing_instruction_in_configuration_phase_after_setting_execution_mode(self):
         test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
-            .add(phases.ANONYMOUS,
-                 test.AnonymousPhaseInstructionThatSetsExecutionMode(
+            .add(phases.CONFIGURATION,
+                 test.ConfigurationPhaseInstructionThatSetsExecutionMode(
                          ExecutionMode.SKIP)) \
-            .add(phases.ANONYMOUS,
-                 test.anonymous_phase_instruction_that(do_return(sh.new_sh_hard_error('hard error msg'))))
+            .add(phases.CONFIGURATION,
+                 test.configuration_phase_instruction_that(do_return(sh.new_sh_hard_error('hard error msg'))))
         self._check(
                 Arrangement(test_case),
                 Expectation(FullResultStatus.HARD_ERROR,
                             ExpectedFailureForInstructionFailure.new_with_message(
-                                    phase_step.ANONYMOUS__MAIN,
-                                    test_case.the_extra(phases.ANONYMOUS)[1].first_line,
+                                    phase_step.CONFIGURATION__MAIN,
+                                    test_case.the_extra(phases.CONFIGURATION)[1].first_line,
                                     'hard error msg'),
-                            [phase_step.ANONYMOUS__MAIN],
+                            [phase_step.CONFIGURATION__MAIN],
                             False))
 
         if __name__ == '__main__':

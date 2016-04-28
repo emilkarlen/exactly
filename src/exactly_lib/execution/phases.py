@@ -2,7 +2,7 @@ from enum import Enum
 
 
 class PhaseEnum(Enum):
-    ANONYMOUS = 0
+    CONFIGURATION = 0
     SETUP = 1
     ACT = 2
     BEFORE_ASSERT = 3
@@ -34,7 +34,7 @@ class Phase(tuple):
         return self[2]
 
 
-ANONYMOUS = Phase(PhaseEnum.ANONYMOUS, 'conf', 'conf')
+CONFIGURATION = Phase(PhaseEnum.CONFIGURATION, 'conf', 'conf')
 SETUP = Phase(PhaseEnum.SETUP, 'setup', 'setup')
 ACT = Phase(PhaseEnum.ACT, 'act', 'act')
 BEFORE_ASSERT = Phase(PhaseEnum.BEFORE_ASSERT, 'before-assert', 'before-assert')
@@ -43,6 +43,6 @@ CLEANUP = Phase(PhaseEnum.CLEANUP, 'cleanup', 'cleanup')
 
 ALL_NAMED = (SETUP, ACT, BEFORE_ASSERT, ASSERT, CLEANUP)
 
-ALL = (ANONYMOUS,) + ALL_NAMED
+ALL = (CONFIGURATION,) + ALL_NAMED
 
-ALL_WITH_INSTRUCTIONS = (ANONYMOUS, SETUP, BEFORE_ASSERT, ASSERT, CLEANUP)
+ALL_WITH_INSTRUCTIONS = (CONFIGURATION, SETUP, BEFORE_ASSERT, ASSERT, CLEANUP)

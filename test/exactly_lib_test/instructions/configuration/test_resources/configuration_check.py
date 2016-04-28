@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.test_case.phases.anonymous import ConfigurationBuilder
+from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 
 
 class Assertion:

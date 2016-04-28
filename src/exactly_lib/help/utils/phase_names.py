@@ -1,7 +1,7 @@
 from exactly_lib.execution import phases
 from exactly_lib.help.utils.formatting import SectionName
 
-CONFIGURATION_PHASE_NAME = SectionName(phases.ANONYMOUS.identifier)
+CONFIGURATION_PHASE_NAME = SectionName(phases.CONFIGURATION.identifier)
 SETUP_PHASE_NAME = SectionName(phases.SETUP.section_name)
 ACT_PHASE_NAME = SectionName(phases.ACT.section_name)
 BEFORE_ASSERT_PHASE_NAME = SectionName(phases.BEFORE_ASSERT.section_name)

@@ -1,6 +1,6 @@
 from exactly_lib.document.model import PhaseContents, ElementType
 from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
-from exactly_lib.test_case.phases.anonymous import AnonymousPhaseInstruction
+from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.before_assert import BeforeAssertPhaseInstruction
 from exactly_lib.test_case.phases.cleanup import CleanupPhaseInstruction
@@ -9,14 +9,14 @@ from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
 
 class TestCase(tuple):
     def __new__(cls,
-                anonymous_phase: PhaseContents,
+                configuration_phase: PhaseContents,
                 setup_phase: PhaseContents,
                 act_phase: PhaseContents,
                 before_assert_phase: PhaseContents,
                 assert_phase: PhaseContents,
                 cleanup_phase: PhaseContents):
-        TestCase.__assert_instruction_class(anonymous_phase,
-                                            AnonymousPhaseInstruction)
+        TestCase.__assert_instruction_class(configuration_phase,
+                                            ConfigurationPhaseInstruction)
         TestCase.__assert_instruction_class(setup_phase,
                                             SetupPhaseInstruction)
         TestCase.__assert_instruction_class(act_phase,
@@ -27,7 +27,7 @@ class TestCase(tuple):
                                             AssertPhaseInstruction)
         TestCase.__assert_instruction_class(cleanup_phase,
                                             CleanupPhaseInstruction)
-        return tuple.__new__(cls, (anonymous_phase,
+        return tuple.__new__(cls, (configuration_phase,
                                    setup_phase,
                                    act_phase,
                                    before_assert_phase,
@@ -35,7 +35,7 @@ class TestCase(tuple):
                                    cleanup_phase))
 
     @property
-    def anonymous_phase(self) -> PhaseContents:
+    def configuration_phase(self) -> PhaseContents:
         return self[0]
 
     @property

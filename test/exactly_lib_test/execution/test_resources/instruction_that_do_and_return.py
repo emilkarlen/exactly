@@ -6,8 +6,8 @@ from exactly_lib.execution import phases, phase_step
 from exactly_lib.execution.phase_step import PhaseStep
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.act.instruction import PhaseEnvironmentForScriptGeneration, ActPhaseInstruction
-from exactly_lib.test_case.phases.anonymous import ConfigurationBuilder, \
-    AnonymousPhaseInstruction
+from exactly_lib.test_case.phases.configuration import ConfigurationBuilder, \
+    ConfigurationPhaseInstruction
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.before_assert import BeforeAssertPhaseInstruction
 from exactly_lib.test_case.phases.cleanup import CleanupPhaseInstruction
@@ -19,14 +19,14 @@ from exactly_lib_test.execution.full_execution.test_resources.test_case_generato
     TestCaseGeneratorForFullExecutionBase
 from exactly_lib_test.execution.test_resources import python_code_gen as py
 from exactly_lib_test.execution.test_resources.instruction_test_resources import cleanup_phase_instruction_that, \
-    before_assert_phase_instruction_that, setup_phase_instruction_that, anonymous_phase_instruction_that, \
+    before_assert_phase_instruction_that, setup_phase_instruction_that, configuration_phase_instruction_that, \
     assert_phase_instruction_that, act_phase_instruction_that
 from exactly_lib_test.execution.test_resources.test_case_generation import instruction_line_constructor, \
     phase_contents
 
 
-def do_nothing__anonymous_phase(phase_step: PhaseStep,
-                                phase_environment: ConfigurationBuilder):
+def do_nothing__configuration_phase(phase_step: PhaseStep,
+                                    phase_environment: ConfigurationBuilder):
     pass
 
 
@@ -51,7 +51,7 @@ class TestCaseSetup(tuple):
                 ret_val_from_main: sh.SuccessOrHardError = sh.new_sh_success(),
                 ret_val_from_assert_main: pfh.PassOrFailOrHardError = pfh.new_pfh_pass(),
                 validation_action__pre_eds: types.FunctionType = do_nothing__pre_eds,
-                anonymous_phase_action: types.FunctionType = do_nothing__anonymous_phase,
+                configuration_phase_action: types.FunctionType = do_nothing__configuration_phase,
                 validation_action__post_eds: types.FunctionType = do_nothing__post_eds,
                 main_action__post_eds: types.FunctionType = do_nothing__post_eds,
                 main__generate_script: types.FunctionType = do_nothing__generate_script,
@@ -60,14 +60,14 @@ class TestCaseSetup(tuple):
                                    ret_val_from_main,
                                    ret_val_from_assert_main,
                                    validation_action__pre_eds,
-                                   anonymous_phase_action,
+                                   configuration_phase_action,
                                    validation_action__post_eds,
                                    main_action__post_eds,
                                    main__generate_script,
                                    ))
 
-    def as_anonymous_phase_instruction(self) -> AnonymousPhaseInstruction:
-        return anonymous_phase_instruction_that(main=self._do_anonymous_main())
+    def as_configuration_phase_instruction(self) -> ConfigurationPhaseInstruction:
+        return configuration_phase_instruction_that(main=self._do_configuration_main())
 
     def as_setup_phase_instruction(self) -> SetupPhaseInstruction:
         return setup_phase_instruction_that(
@@ -115,7 +115,7 @@ class TestCaseSetup(tuple):
         return self[3]
 
     @property
-    def anonymous_phase_action(self) -> types.FunctionType:
+    def configuration_phase_action(self) -> types.FunctionType:
         return self[4]
 
     @property
@@ -157,10 +157,10 @@ class TestCaseSetup(tuple):
 
         return ret_val
 
-    def _do_anonymous_main(self):
+    def _do_configuration_main(self):
         def ret_val(global_environment, configuration_builder: ConfigurationBuilder) -> sh.SuccessOrHardError:
-            self.anonymous_phase_action(phase_step.ANONYMOUS__MAIN,
-                                        configuration_builder)
+            self.configuration_phase_action(phase_step.CONFIGURATION__MAIN,
+                                            configuration_builder)
             return self.ret_val_from_main
 
         return ret_val
@@ -199,8 +199,8 @@ class TestCaseGeneratorForTestCaseSetup(TestCaseGeneratorForFullExecutionBase):
 
     def phase_contents_for(self, phase: phases.Phase) -> model.PhaseContents:
         instr = None
-        if phase == phases.ANONYMOUS:
-            instr = self.setup.as_anonymous_phase_instruction()
+        if phase == phases.CONFIGURATION:
+            instr = self.setup.as_configuration_phase_instruction()
         if phase == phases.SETUP:
             instr = self.setup.as_setup_phase_instruction()
         if phase == phases.ACT:
