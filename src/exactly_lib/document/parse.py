@@ -123,14 +123,14 @@ class SectionsConfiguration:
     def section_names(self) -> tuple:
         """
         Sequence of all Phase Names (same order as given to constructor.
-        The Phase Name None represents the anonymous Phase.
+        The Phase Name None represents the configuration Phase.
         :return: tuple of str:s
         """
         return self._section_list_as_tuple
 
     def parser_for_section(self, section_name: str) -> SectionElementParser:
         """
-        :param section_name None denotes the anonymous section.
+        :param section_name None denotes the configuration section.
         """
         return self._section2parser[section_name]
 

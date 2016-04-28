@@ -8,7 +8,7 @@ from exactly_lib.execution.phase_step import PhaseStep
 from exactly_lib.execution.result import FullResultStatus
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.phases import common
-from exactly_lib.test_case.phases.anonymous import ConfigurationBuilder
+from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib_test.execution.full_execution.test_resources.test_case_base import FullExecutionTestCaseBase
 from exactly_lib_test.execution.test_resources import instruction_that_record_and_return as instr_setup
 from exactly_lib_test.execution.test_resources import python_code_gen
@@ -25,9 +25,9 @@ def current_directory() -> str:
 SUB_DIR_NAME = 'sub-dir'
 
 
-def _set_home_dir_to_parent__anonymous_phase(recorder: instr_setup.Recorder,
-                                             phase_step: PhaseStep,
-                                             phase_environment: ConfigurationBuilder):
+def _set_home_dir_to_parent__configuration_phase(recorder: instr_setup.Recorder,
+                                                 phase_step: PhaseStep,
+                                                 phase_environment: ConfigurationBuilder):
     pass
 
 

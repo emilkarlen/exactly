@@ -30,9 +30,9 @@ class ConfigurationBuilder:
         self.__home_dir_path = x
 
 
-class AnonymousPhaseInstruction(TestCaseInstruction):
+class ConfigurationPhaseInstruction(TestCaseInstruction):
     """
-    Abstract base class for instructions of the anonymous phase.
+    Abstract base class for instructions of the configuration phase.
     """
 
     def main(self,

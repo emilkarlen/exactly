@@ -6,7 +6,7 @@ from exactly_lib.document.parser_implementations.instruction_parser_for_single_p
     SingleInstructionInvalidArgumentException
 from exactly_lib.execution.execution_mode import ExecutionMode
 from exactly_lib.instructions.configuration import execution_mode as sut
-from exactly_lib.test_case.phases.anonymous import ConfigurationBuilder
+from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib_test.instructions.configuration.test_resources import configuration_check as config_check
 from exactly_lib_test.instructions.configuration.test_resources.instruction_check import TestCaseBase, \
     Arrangement, Expectation

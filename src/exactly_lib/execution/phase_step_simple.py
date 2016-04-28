@@ -1,6 +1,6 @@
 from exactly_lib.execution import phase_step
 
-ANONYMOUS__MAIN = phase_step.ANONYMOUS__MAIN.simple
+CONFIGURATION__MAIN = phase_step.CONFIGURATION__MAIN.simple
 
 SETUP__VALIDATE_PRE_EDS = phase_step.SETUP__VALIDATE_PRE_EDS.simple
 SETUP__VALIDATE_POST_SETUP = phase_step.SETUP__VALIDATE_POST_SETUP.simple

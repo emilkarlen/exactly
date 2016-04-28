@@ -23,7 +23,7 @@ class TestCaseGeneratorForFullExecutionBase:
 
     def _generate(self) -> test_case_doc.TestCase:
         return test_case_doc.TestCase(
-                self.phase_contents_for(phases.ANONYMOUS),
+                self.phase_contents_for(phases.CONFIGURATION),
                 self.phase_contents_for(phases.SETUP),
                 self.phase_contents_for(phases.ACT),
                 self.phase_contents_for(phases.BEFORE_ASSERT),

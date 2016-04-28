@@ -24,8 +24,8 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorForFullExecutionBa
 
         recording_instructions = RecordingInstructions(self.__recorder)
         self.__recorders = {
-            phases.ANONYMOUS:
-                recording_instructions.new_anonymous_instruction(phase_step.ANONYMOUS__MAIN),
+            phases.CONFIGURATION:
+                recording_instructions.new_configuration_instruction(phase_step.CONFIGURATION__MAIN),
             phases.SETUP:
                 recording_instructions.new_setup_instruction(phase_step.SETUP__VALIDATE_PRE_EDS,
                                                              phase_step.SETUP__MAIN,

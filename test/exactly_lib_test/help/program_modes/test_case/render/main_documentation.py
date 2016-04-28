@@ -38,7 +38,7 @@ class TestCase(unittest.TestCase):
 
 
 TEST_CASE_HELP_WITH_PRODUCTION_PHASES = TestCaseHelp([
-    test_case_phase_help(phases.ANONYMOUS.identifier, []),
+    test_case_phase_help(phases.CONFIGURATION.identifier, []),
     test_case_phase_help(phases.SETUP.identifier, []),
     test_case_phase_help(phases.ACT.identifier, []),
     test_case_phase_help(phases.BEFORE_ASSERT.identifier, []),

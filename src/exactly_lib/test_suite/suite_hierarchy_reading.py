@@ -8,7 +8,7 @@ from exactly_lib.test_case import test_case_processing
 from exactly_lib.test_case.preprocessor import IDENTITY_PREPROCESSOR
 from exactly_lib.test_case.test_case_processing import Preprocessor
 from exactly_lib.test_suite.instruction_set import parse, instruction
-from exactly_lib.test_suite.instruction_set.sections.anonymous import AnonymousSectionEnvironment
+from exactly_lib.test_suite.instruction_set.sections.configuration import ConfigurationSectionEnvironment
 from exactly_lib.util import line_source
 from . import structure
 from . import test_suite_doc
@@ -67,7 +67,7 @@ class _SingleFileReader:
                                          ex.source_error.line,
                                          ex.source_error.message,
                                          maybe_section_name=ex.maybe_section_name)
-        anonymous_section_environment = self._resolve_preprocessor(test_suite)
+        configuration_section_environment = self._resolve_preprocessor(test_suite)
         suite_file_path_list, case_file_path_list = self._resolve_paths(test_suite,
                                                                         suite_file_path)
         sub_inclusions = inclusions + [suite_file_path]
@@ -76,7 +76,7 @@ class _SingleFileReader:
         case_list = list(map(test_case_processing.TestCaseSetup, case_file_path_list))
         return structure.TestSuite(suite_file_path,
                                    inclusions,
-                                   anonymous_section_environment.preprocessor,
+                                   configuration_section_environment.preprocessor,
                                    suite_list,
                                    case_list)
 
@@ -112,9 +112,9 @@ class _SingleFileReader:
                 paths_for_instructions(environment, test_suite.cases_section, False))
 
     def _resolve_preprocessor(self,
-                              test_suite: test_suite_doc.TestSuiteDocument) -> AnonymousSectionEnvironment:
-        ret_val = AnonymousSectionEnvironment(self.environment.preprocessor)
-        for section_element in test_suite.anonymous_section.elements:
+                              test_suite: test_suite_doc.TestSuiteDocument) -> ConfigurationSectionEnvironment:
+        ret_val = ConfigurationSectionEnvironment(self.environment.preprocessor)
+        for section_element in test_suite.configuration_section.elements:
             if section_element.element_type is ElementType.INSTRUCTION:
                 section_element.instruction.execute(ret_val)
         return ret_val

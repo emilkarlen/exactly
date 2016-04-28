@@ -3,7 +3,7 @@ from exactly_lib.execution.single_instruction_executor import ControlledInstruct
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as instr
 from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
-from exactly_lib.test_case.phases.anonymous import AnonymousPhaseInstruction, \
+from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, \
     ConfigurationBuilder
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.before_assert import BeforeAssertPhaseInstruction
@@ -41,13 +41,13 @@ def _from_pass_or_fail_or_hard_error(res: pfh.PassOrFailOrHardError) -> PartialI
                                                        res.failure_message)
 
 
-class AnonymousMainExecutor(ControlledInstructionExecutor):
+class ConfigurationMainExecutor(ControlledInstructionExecutor):
     def __init__(self,
                  phase_environment: ConfigurationBuilder):
         self.__phase_environment = phase_environment
         self.__global_environment = ()
 
-    def apply(self, instruction: AnonymousPhaseInstruction) -> PartialInstructionControlledFailureInfo:
+    def apply(self, instruction: ConfigurationPhaseInstruction) -> PartialInstructionControlledFailureInfo:
         return _from_success_or_hard_error(
                 instruction.main(self.__global_environment, self.__phase_environment))
 

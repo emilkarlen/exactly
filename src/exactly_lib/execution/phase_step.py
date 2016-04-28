@@ -51,7 +51,7 @@ def _validate_post_setup_step(phase: phases.Phase) -> PhaseStep:
     return PhaseStep(phase, 'validate-post-setup')
 
 
-ANONYMOUS__MAIN = _main_step(phases.ANONYMOUS)
+CONFIGURATION__MAIN = _main_step(phases.CONFIGURATION)
 
 SETUP__VALIDATE_PRE_EDS = _validate_pre_eds_step(phases.SETUP)
 SETUP__VALIDATE_POST_SETUP = _validate_post_setup_step(phases.SETUP)

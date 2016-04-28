@@ -42,7 +42,7 @@ class TestCaseSetupWithRecorder(tuple):
                 ret_val_from_execute: sh.SuccessOrHardError = sh.new_sh_success(),
                 ret_val_from_assert_execute: pfh.PassOrFailOrHardError = pfh.new_pfh_pass(),
                 validation_action__without_eds: types.FunctionType = do_nothing,
-                anonymous_phase_action: types.FunctionType = do_nothing,
+                configuration_phase_action: types.FunctionType = do_nothing,
                 validation_action__with_eds: types.FunctionType = do_nothing,
                 execution_action__with_eds: types.FunctionType = do_nothing,
                 execution__generate_script: types.FunctionType =
@@ -52,7 +52,7 @@ class TestCaseSetupWithRecorder(tuple):
                                    ret_val_from_execute,
                                    ret_val_from_assert_execute,
                                    validation_action__without_eds,
-                                   anonymous_phase_action,
+                                   configuration_phase_action,
                                    validation_action__with_eds,
                                    execution_action__with_eds,
                                    execution__generate_script,
@@ -66,8 +66,8 @@ class TestCaseSetupWithRecorder(tuple):
                 ret_val_from_assert_main=self.ret_val_from_assert_main,
                 validation_action__pre_eds=functools.partial(self.validation_action__pre_eds,
                                                              recorder),
-                anonymous_phase_action=functools.partial(self.anonymous_phase_action,
-                                                         recorder),
+                configuration_phase_action=functools.partial(self.configuration_phase_action,
+                                                             recorder),
                 validation_action__post_eds=functools.partial(self.validation_action__post_eds,
                                                               recorder),
                 main_action__post_eds=functools.partial(self.main_action__post_eds,
@@ -91,7 +91,7 @@ class TestCaseSetupWithRecorder(tuple):
         return self[3]
 
     @property
-    def anonymous_phase_action(self) -> types.FunctionType:
+    def configuration_phase_action(self) -> types.FunctionType:
         return self[4]
 
     @property

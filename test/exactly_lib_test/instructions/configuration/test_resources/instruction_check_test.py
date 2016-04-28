@@ -6,9 +6,9 @@ import unittest
 import exactly_lib_test.test_resources.parse
 from exactly_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParserSource
-from exactly_lib.test_case.phases.anonymous import ConfigurationBuilder
+from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib_test.execution.test_resources.instruction_test_resources import \
-    anonymous_phase_instruction_that
+    configuration_phase_instruction_that
 from exactly_lib_test.instructions.configuration.test_resources import configuration_check
 from exactly_lib_test.instructions.configuration.test_resources import instruction_check
 from exactly_lib_test.instructions.configuration.test_resources.instruction_check import Arrangement, Expectation
@@ -51,7 +51,7 @@ def single_line_source() -> SingleInstructionParserSource:
     return exactly_lib_test.test_resources.parse.new_source('instruction name', 'instruction arguments')
 
 
-_SUCCESSFUL_INSTRUCTION = anonymous_phase_instruction_that()
+_SUCCESSFUL_INSTRUCTION = configuration_phase_instruction_that()
 
 
 def suite():

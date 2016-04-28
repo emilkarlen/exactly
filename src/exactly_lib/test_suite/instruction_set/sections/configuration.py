@@ -19,7 +19,7 @@ def new_parser() -> parse.SectionElementParser:
     )
 
 
-class AnonymousSectionEnvironment:
+class ConfigurationSectionEnvironment:
     def __init__(self,
                  initial_preprocessor: Preprocessor):
         self._preprocessor = initial_preprocessor
@@ -33,9 +33,9 @@ class AnonymousSectionEnvironment:
         self._preprocessor = value
 
 
-class AnonymousSectionInstruction(TestSuiteInstruction):
+class ConfigurationSectionInstruction(TestSuiteInstruction):
     def execute(self,
-                environment: AnonymousSectionEnvironment):
+                environment: ConfigurationSectionEnvironment):
         """
         Updates the environment.
         """
@@ -43,20 +43,20 @@ class AnonymousSectionInstruction(TestSuiteInstruction):
 
 
 class PreprocessorInstructionParser(SingleInstructionParser):
-    def apply(self, source: SingleInstructionParserSource) -> AnonymousSectionInstruction:
+    def apply(self, source: SingleInstructionParserSource) -> ConfigurationSectionInstruction:
         arg = source.instruction_argument.strip()
         if arg == '':
             raise SingleInstructionInvalidArgumentException('A preprocessor program must be given.')
         return PreprocessorInstruction(shlex.split(arg))
 
 
-class PreprocessorInstruction(AnonymousSectionInstruction):
+class PreprocessorInstruction(ConfigurationSectionInstruction):
     def __init__(self,
                  command_and_arguments: list):
         self.command_and_arguments = command_and_arguments
 
     def execute(self,
-                environment: AnonymousSectionEnvironment):
+                environment: ConfigurationSectionEnvironment):
         """
         Updates the environment.
         """

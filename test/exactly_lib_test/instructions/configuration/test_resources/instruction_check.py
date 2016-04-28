@@ -7,7 +7,7 @@ from time import strftime, localtime
 from exactly_lib import program_info
 from exactly_lib.document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, SingleInstructionParserSource
-from exactly_lib.test_case.phases.anonymous import AnonymousPhaseInstruction, ConfigurationBuilder
+from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib_test.instructions.configuration.test_resources import configuration_check as config_check
 from exactly_lib_test.instructions.test_resources import sh_check
@@ -57,9 +57,9 @@ class Executor:
         self.put.assertIsNotNone(instruction,
                                  'Result from parser cannot be None')
         self.put.assertIsInstance(instruction,
-                                  AnonymousPhaseInstruction,
-                                  'The instruction must be an instance of ' + str(AnonymousPhaseInstruction))
-        assert isinstance(instruction, AnonymousPhaseInstruction)
+                                  ConfigurationPhaseInstruction,
+                                  'The instruction must be an instance of ' + str(ConfigurationPhaseInstruction))
+        assert isinstance(instruction, ConfigurationPhaseInstruction)
         prefix = strftime(program_info.PROGRAM_NAME + '-test-%Y-%m-%d-%H-%M-%S', localtime())
         with tempfile.TemporaryDirectory(prefix=prefix + "-home-") as home_dir_name:
             home_dir_path = pathlib.Path(home_dir_name).resolve()
@@ -71,7 +71,7 @@ class Executor:
 
     def _execute_main(self,
                       configuration_builder: ConfigurationBuilder,
-                      instruction: AnonymousPhaseInstruction) -> sh.SuccessOrHardError:
+                      instruction: ConfigurationPhaseInstruction) -> sh.SuccessOrHardError:
         initial_configuration_builder = copy.deepcopy(configuration_builder)
         main_result = instruction.main(None, configuration_builder)
         self.put.assertIsNotNone(main_result,

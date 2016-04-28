@@ -5,7 +5,7 @@ from exactly_lib.help.program_modes.test_case.instruction_documentation import I
     InstructionDocumentation
 from exactly_lib.instructions.utils.parse_utils import split_arguments_list_string
 from exactly_lib.test_case.instruction_setup import SingleInstructionSetup
-from exactly_lib.test_case.phases.anonymous import AnonymousPhaseInstruction, ConfigurationBuilder
+from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.util.textformat.structure.structures import para
 
@@ -44,7 +44,7 @@ class TheInstructionDocumentation(InstructionDocumentation):
 
 
 class Parser(SingleInstructionParser):
-    def apply(self, source: SingleInstructionParserSource) -> AnonymousPhaseInstruction:
+    def apply(self, source: SingleInstructionParserSource) -> ConfigurationPhaseInstruction:
         arguments = split_arguments_list_string(source.instruction_argument)
         if len(arguments) != 1:
             msg = 'Invalid number of arguments (exactly one expected), found {}'.format(str(len(arguments)))
@@ -57,7 +57,7 @@ class Parser(SingleInstructionParser):
         return _Instruction(target)
 
 
-class _Instruction(AnonymousPhaseInstruction):
+class _Instruction(ConfigurationPhaseInstruction):
     def __init__(self,
                  mode_to_set: ExecutionMode):
         self.mode_to_set = mode_to_set
