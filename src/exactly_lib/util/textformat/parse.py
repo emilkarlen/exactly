@@ -58,8 +58,8 @@ class _Parser:
 
     def parse_special_block(self) -> Paragraph:
         first_line = self.lines[0]
-        if first_line[1:] != 'literal{':
-            raise ValueError(MARKUP_TOKEN + ' must be followed by "literal{". Found: "%s"' %
+        if first_line[1:] != 'literal[':
+            raise ValueError(MARKUP_TOKEN + ' must be followed by "literal[". Found: "%s"' %
                              first_line[1:])
         del self.lines[0]
         return self.parse_literal_layout_from_first_content_line()
@@ -76,9 +76,9 @@ class _Parser:
         lines = []
         while True:
             if not self.has_more_lines():
-                raise ValueError('Reached end of file before end marker found: ("@}")')
+                raise ValueError('Reached end of file before end marker found: ("@]")')
             first_line = self.lines[0]
-            if first_line == MARKUP_TOKEN + '}':
+            if first_line == MARKUP_TOKEN + ']':
                 del self.lines[0]
                 self.consume_separator_lines()
                 return LiteralLayout(lines_content(lines))
