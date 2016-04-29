@@ -1,6 +1,8 @@
 import textwrap
 
+from exactly_lib.util.string import lines_content
 from exactly_lib.util.textformat.structure.core import ParagraphItem, Text, StringText
+from exactly_lib.util.textformat.structure.literal_layout import LiteralLayout
 from exactly_lib.util.textformat.structure.paragraph import Paragraph
 
 NUM_TEXT_SEPARATOR_LINES = 1
@@ -8,6 +10,8 @@ NUM_PARAGRAPH_SEPARATOR_LINES = 2
 
 TEXT_SEPARATOR_LINES = NUM_TEXT_SEPARATOR_LINES * ['']
 PARAGRAPH_SEPARATOR_LINES = NUM_PARAGRAPH_SEPARATOR_LINES * ['']
+
+MARKUP_TOKEN = '@'
 
 
 def parse(normalized_lines: list) -> list:
@@ -44,12 +48,44 @@ class _Parser:
         return self.result
 
     def parse_paragraph_item(self) -> ParagraphItem:
+        first_line = self.lines[0]
+        if first_line[0] == MARKUP_TOKEN:
+            return self.parse_special_block()
+        else:
+            if first_line[0] == '\\':
+                self.lines[0] = first_line[1:]
+            return self.parse_paragraph()
+
+    def parse_special_block(self) -> Paragraph:
+        first_line = self.lines[0]
+        if first_line[1:] != 'literal{':
+            raise ValueError(MARKUP_TOKEN + ' must be followed by "literal{". Found: "%s"' %
+                             first_line[1:])
+        del self.lines[0]
+        return self.parse_literal_layout_from_first_content_line()
+
+    def parse_paragraph(self) -> Paragraph:
         texts = []
         while self.has_more_lines() and not self.is_at_paragraph_separator():
-            self.consume_separator()
+            self.consume_separator_lines()
             texts.append(self.parse_text())
-        self.consume_separator()
+        self.consume_separator_lines()
         return Paragraph(texts)
+
+    def parse_literal_layout_from_first_content_line(self) -> LiteralLayout:
+        lines = []
+        while True:
+            if not self.has_more_lines():
+                raise ValueError('Reached end of file before end marker found: ("@}")')
+            first_line = self.lines[0]
+            if first_line == MARKUP_TOKEN + '}':
+                del self.lines[0]
+                self.consume_separator_lines()
+                return LiteralLayout(lines_content(lines))
+            if first_line and first_line[0] == '\\':
+                self.lines[0] = first_line[1:]
+            lines.append(self.lines[0])
+            del self.lines[0]
 
     def parse_text(self) -> Text:
         lines = [self.consume_current_line().strip()]
@@ -72,7 +108,7 @@ class _Parser:
         del self.lines[0]
         return ret_val
 
-    def consume_separator(self):
+    def consume_separator_lines(self):
         if self.lines:
             while not self.lines[0]:
                 del self.lines[0]
