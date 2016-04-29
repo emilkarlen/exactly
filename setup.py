@@ -25,7 +25,7 @@ setup(
                  'inspecting its result.'),
     license='GPLv3+',
     keywords='test case suite check assert script shell console command line program execute',
-    url='https://github.com/emilkarlen/shellcheck',
+    url='https://github.com/emilkarlen/exactly',
     package_dir={
         '': 'src',
     },
