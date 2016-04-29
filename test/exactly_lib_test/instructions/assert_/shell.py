@@ -1,9 +1,9 @@
 import unittest
 
-from exactly_lib.instructions.assert_phase import shell as sut
+from exactly_lib.instructions.assert_ import shell as sut
 from exactly_lib.test_case.instruction_setup import SingleInstructionSetup
-from exactly_lib_test.instructions.assert_phase.test_resources.configuration import AssertConfigurationBase
-from exactly_lib_test.instructions.assert_phase.test_resources.instruction_check import Expectation
+from exactly_lib_test.instructions.assert_.test_resources.configuration import AssertConfigurationBase
+from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.shell_instruction_test import \
     Configuration, suite_for
 from exactly_lib_test.instructions.test_resources import pfh_check

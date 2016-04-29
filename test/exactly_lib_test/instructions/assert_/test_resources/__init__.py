@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib_test.instructions.assert_phase.test_resources import instruction_check_test
+from exactly_lib_test.instructions.assert_.test_resources import instruction_check_test
 
 
 def suite():

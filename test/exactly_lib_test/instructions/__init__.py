@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib_test.instructions import act
-from exactly_lib_test.instructions import assert_phase
+from exactly_lib_test.instructions import assert_
 from exactly_lib_test.instructions import before_assert
 from exactly_lib_test.instructions import cleanup
 from exactly_lib_test.instructions import configuration
@@ -18,7 +18,7 @@ def suite():
         configuration.suite(),
         setup.suite(),
         before_assert.suite(),
-        assert_phase.suite(),
+        assert_.suite(),
         cleanup.suite(),
     ])
 

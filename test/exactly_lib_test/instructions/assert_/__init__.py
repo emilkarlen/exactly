@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib_test.instructions.assert_phase import \
+from exactly_lib_test.instructions.assert_ import \
     change_dir, \
     contents, \
     execute, \
@@ -10,7 +10,7 @@ from exactly_lib_test.instructions.assert_phase import \
     stdout_stderr, \
     type, \
     env
-from exactly_lib_test.instructions.assert_phase import test_resources
+from exactly_lib_test.instructions.assert_ import test_resources
 
 
 def suite():

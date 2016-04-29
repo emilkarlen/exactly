@@ -2,14 +2,14 @@ import unittest
 
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException, SingleInstructionParserSource
-from exactly_lib.instructions.assert_phase import contents as sut
+from exactly_lib.instructions.assert_ import contents as sut
 from exactly_lib.instructions.utils import relative_path_options as options
-from exactly_lib_test.instructions.assert_phase.test_resources import instruction_check
-from exactly_lib_test.instructions.assert_phase.test_resources.contents_resources import \
+from exactly_lib_test.instructions.assert_.test_resources import instruction_check
+from exactly_lib_test.instructions.assert_.test_resources.contents_resources import \
     ActResultProducerForContentsWithAllReplacedEnvVars, \
     StoreContentsInFileInCurrentDir, WriteFileToHomeDir, WriteFileToCurrentDir, \
     StoreContentsInFileInParentDirOfCwd
-from exactly_lib_test.instructions.assert_phase.test_resources.instruction_check import arrangement, \
+from exactly_lib_test.instructions.assert_.test_resources.instruction_check import arrangement, \
     Expectation, is_pass
 from exactly_lib_test.instructions.test_resources import pfh_check
 from exactly_lib_test.instructions.test_resources import svh_check
