@@ -2,7 +2,7 @@ import pathlib
 import unittest
 
 import exactly_lib.execution.execution_mode
-from exactly_lib.document.parser_implementations.instruction_parser_for_single_phase import \
+from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.execution.execution_mode import ExecutionMode
 from exactly_lib.instructions.configuration import execution_mode as sut

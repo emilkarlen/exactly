@@ -1,6 +1,6 @@
 import pathlib
 
-from exactly_lib.document.model import Instruction
+from exactly_lib.section_document.model import Instruction
 from exactly_lib.execution import execution_directory_structure as eds_module
 from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure, log_phase_dir
 

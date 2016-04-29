@@ -1,8 +1,8 @@
 import unittest
 
-from exactly_lib_test.document.parser_implementations import instruction_parser_for_single_phase
+from exactly_lib_test.section_document.parser_implementations import instruction_parser_for_single_phase
 
-from exactly_lib_test.document.parser_implementations import instruction_parser_using_argument_parser
+from exactly_lib_test.section_document.parser_implementations import instruction_parser_using_argument_parser
 
 
 def suite() -> unittest.TestSuite:

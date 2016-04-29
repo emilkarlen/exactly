@@ -1,8 +1,8 @@
-from exactly_lib.document import model
-from exactly_lib.document import parse
-from exactly_lib.document import syntax
-from exactly_lib.document.model import Instruction
-from exactly_lib.document.parse import SourceError
+from exactly_lib.section_document import model
+from exactly_lib.section_document import parse
+from exactly_lib.section_document import syntax
+from exactly_lib.section_document.model import Instruction
+from exactly_lib.section_document.parse import SourceError
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.util import line_source
 

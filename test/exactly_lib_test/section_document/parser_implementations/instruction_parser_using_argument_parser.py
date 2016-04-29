@@ -1,11 +1,11 @@
 import argparse
 import unittest
 
-from exactly_lib.document import parse
-from exactly_lib.document.model import Instruction
-from exactly_lib.document.parse import LineSequenceSourceFromListOfLines, ListOfLines
-from exactly_lib.document.parser_implementations import instruction_parser_using_argument_parser as sut
-from exactly_lib.document.parser_implementations.instruction_parser_for_single_phase import \
+from exactly_lib.section_document import parse
+from exactly_lib.section_document.model import Instruction
+from exactly_lib.section_document.parse import LineSequenceSourceFromListOfLines, ListOfLines
+from exactly_lib.section_document.parser_implementations import instruction_parser_using_argument_parser as sut
+from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException, SingleInstructionParserSource
 from exactly_lib.util import line_source
 

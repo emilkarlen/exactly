@@ -3,8 +3,8 @@ import pathlib
 import shlex
 
 from exactly_lib.act_phase_setups import utils
-from exactly_lib.document.parse import SectionElementParser
-from exactly_lib.document.parser_implementations.instruction_parser_for_single_phase import \
+from exactly_lib.section_document.parse import SectionElementParser
+from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SectionElementParserForStandardCommentAndEmptyLines
 from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from exactly_lib.instructions.act.executable_file import ExecutableFileInstruction

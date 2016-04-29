@@ -3,7 +3,7 @@ import unittest
 from exactly_lib_test import act_phase_setups
 from exactly_lib_test import cli
 from exactly_lib_test import default
-from exactly_lib_test import document
+from exactly_lib_test import section_document
 from exactly_lib_test import execution
 from exactly_lib_test import help
 from exactly_lib_test import instructions
@@ -15,7 +15,7 @@ from exactly_lib_test import util
 def suite():
     ret_val = unittest.TestSuite()
     ret_val.addTest(util.suite())
-    ret_val.addTest(document.suite())
+    ret_val.addTest(section_document.suite())
     ret_val.addTest(test_case.suite())
     ret_val.addTest(execution.suite())
     ret_val.addTest(cli.suite())

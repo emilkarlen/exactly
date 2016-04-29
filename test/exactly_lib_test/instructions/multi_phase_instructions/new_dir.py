@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.document.parser_implementations.instruction_parser_for_single_phase import \
+from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.instructions.multi_phase_instructions import new_dir as sut
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation

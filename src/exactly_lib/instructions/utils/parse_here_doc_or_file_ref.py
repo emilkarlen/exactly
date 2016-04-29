@@ -1,4 +1,4 @@
-from exactly_lib.document.parser_implementations.instruction_parser_for_single_phase import \
+from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException, SingleInstructionParserSource
 from exactly_lib.instructions.utils.parse_here_document import HereDocumentContentsParsingException
 from . import file_ref

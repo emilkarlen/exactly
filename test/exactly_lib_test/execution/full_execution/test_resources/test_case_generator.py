@@ -1,4 +1,4 @@
-from exactly_lib.document import model
+from exactly_lib.section_document import model
 from exactly_lib.execution import phases
 from exactly_lib.test_case import test_case_doc
 

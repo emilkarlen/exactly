@@ -1,7 +1,7 @@
 import pathlib
 import stat
 
-from exactly_lib.document.parser_implementations.instruction_parser_for_single_phase import \
+from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.instructions.utils import file_ref
 from exactly_lib.instructions.utils import parse_file_ref

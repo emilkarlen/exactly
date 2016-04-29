@@ -1,4 +1,4 @@
-from exactly_lib.document.model import PhaseContentElement, ElementType, Instruction
+from exactly_lib.section_document.model import PhaseContentElement, ElementType, Instruction
 from exactly_lib.util import line_source
 from exactly_lib.util.line_source import Line, LineSequence
 

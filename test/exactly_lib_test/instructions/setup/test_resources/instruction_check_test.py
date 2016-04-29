@@ -4,7 +4,7 @@ Test of test-infrastructure: instruction_check.
 import unittest
 
 import exactly_lib_test.test_resources.parse
-from exactly_lib.document.parser_implementations.instruction_parser_for_single_phase import \
+from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParserSource
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common

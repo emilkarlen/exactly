@@ -1,7 +1,7 @@
 import types
 from pathlib import Path
 
-from exactly_lib.document import model
+from exactly_lib.section_document import model
 from exactly_lib.execution import phases, phase_step
 from exactly_lib.execution.phase_step import PhaseStep
 from exactly_lib.test_case.phases import common as i

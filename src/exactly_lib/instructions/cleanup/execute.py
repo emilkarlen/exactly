@@ -1,4 +1,4 @@
-from exactly_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser
+from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser
 from exactly_lib.instructions.multi_phase_instructions import execute
 from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostEdsSvhValidationForSuccessOrHardError, \
     PreOrPostEdsSvhValidationErrorValidator

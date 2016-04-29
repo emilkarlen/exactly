@@ -1,7 +1,7 @@
 import shlex
 
-from exactly_lib.document import parse
-from exactly_lib.document.parser_implementations.instruction_parser_for_single_phase import \
+from exactly_lib.section_document import parse
+from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParserSource
 from exactly_lib.util import line_source
 from exactly_lib.util.line_source import LineSequenceBuilder

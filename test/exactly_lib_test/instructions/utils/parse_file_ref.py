@@ -3,7 +3,7 @@ import tempfile
 import unittest
 
 from exactly_lib import program_info
-from exactly_lib.document.parser_implementations.instruction_parser_for_single_phase import \
+from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.instructions.utils import parse_file_ref as sut
 from exactly_lib.instructions.utils.parse_utils import TokenStream

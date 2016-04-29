@@ -1,6 +1,6 @@
 from enum import Enum
 
-from exactly_lib.document import model
+from exactly_lib.section_document import model
 from exactly_lib.execution.partial_execution import TestCase
 
 

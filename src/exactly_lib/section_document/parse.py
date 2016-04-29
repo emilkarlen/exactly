@@ -1,5 +1,5 @@
-from exactly_lib.document import model
-from exactly_lib.document import syntax
+from exactly_lib.section_document import model
+from exactly_lib.section_document import syntax
 from exactly_lib.util import line_source
 from exactly_lib.util.line_source import LineSource
 

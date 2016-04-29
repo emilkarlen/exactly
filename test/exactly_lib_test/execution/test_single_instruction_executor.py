@@ -1,7 +1,7 @@
 import types
 import unittest
 
-from exactly_lib.document.model import PhaseContentElement, new_instruction_e
+from exactly_lib.section_document.model import PhaseContentElement, new_instruction_e
 from exactly_lib.execution.result import FailureDetails, new_failure_details_from_message, \
     PartialResultStatus, \
     new_failure_details_from_exception

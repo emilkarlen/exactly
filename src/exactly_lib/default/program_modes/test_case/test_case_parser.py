@@ -1,5 +1,5 @@
-from exactly_lib.document import parse
-from exactly_lib.document.parser_implementations.instruction_parser_for_single_phase import \
+from exactly_lib.section_document import parse
+from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SectionElementParserForDictionaryOfInstructions, SectionElementParserForStandardCommentAndEmptyLines
 from exactly_lib.execution import phases
 from exactly_lib.test_case import test_case_doc

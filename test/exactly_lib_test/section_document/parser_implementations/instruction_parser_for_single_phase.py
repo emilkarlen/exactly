@@ -1,14 +1,14 @@
 import unittest
 
-from exactly_lib.document import model
-from exactly_lib.document import parse
-from exactly_lib.document.model import ElementType
-from exactly_lib.document.parser_implementations import instruction_parser_for_single_phase as sut
-from exactly_lib.document.parser_implementations.instruction_parser_for_single_phase import \
+from exactly_lib.section_document import model
+from exactly_lib.section_document import parse
+from exactly_lib.section_document.model import ElementType
+from exactly_lib.section_document.parser_implementations import instruction_parser_for_single_phase as sut
+from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParserSource
 from exactly_lib.util import line_source
 from exactly_lib.util.line_source import Line
-from exactly_lib_test.document.test_resources import assert_equals_line
+from exactly_lib_test.section_document.test_resources import assert_equals_line
 
 
 def name_argument_splitter(s: str) -> (str, str):

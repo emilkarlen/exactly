@@ -1,4 +1,4 @@
-from exactly_lib.document import parse
+from exactly_lib.section_document import parse
 from exactly_lib.test_suite import test_suite_doc
 from exactly_lib.test_suite.instruction_set.sections import configuration
 from exactly_lib.test_suite.instruction_set.sections import cases

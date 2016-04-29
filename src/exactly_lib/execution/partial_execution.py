@@ -4,7 +4,7 @@ import shutil
 import subprocess
 import tempfile
 
-from exactly_lib.document.model import PhaseContents
+from exactly_lib.section_document.model import PhaseContents
 from exactly_lib.execution import environment_variables
 from exactly_lib.execution import phase_step
 from exactly_lib.execution import phase_step_executors

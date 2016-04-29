@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.document.parser_implementations.instruction_parser_for_single_phase import \
+from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParserSource
 from exactly_lib.test_case.os_services import new_default, OsServices
 from exactly_lib_test.instructions.cleanup.test_resources.instruction_check import Arrangement, check, is_success, \

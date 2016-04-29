@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib_test.document import parse, test_syntax, parser_implementations
+from exactly_lib_test.section_document import parse, test_syntax, parser_implementations
 
 
 def suite() -> unittest.TestSuite:

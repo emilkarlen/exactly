@@ -1,4 +1,4 @@
-from exactly_lib.document import model
+from exactly_lib.section_document import model
 from exactly_lib.execution import phase_step_simple as phase_step
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib_test.execution.partial_execution.test_resources.test_case_generator import \
