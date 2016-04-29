@@ -14,7 +14,7 @@ dir first/second/third
 
 file in/a/dir/file-name.txt <<EOF
 contents of the file
-<<EOF
+EOF
 
 dir root-dir-for-act-phase
 
@@ -30,7 +30,7 @@ env MY_VAR = 'value of my environment variable'
 
 env unset VARIABLE_THAT_SHOULD_NOT_BE_SET
 
-run my-prog-in-same-dir-as-test-case-that-does-some-more-setup
+run my-prog--located-in-same-dir-as-test-case--that-does-some-more-setup 'with an argument'
 
 
 [act]
@@ -69,7 +69,7 @@ type actual-file directory
 
 pwd this-dir-is-where-we-should-be-for-the-following-assertions
 
-run my-prog-in-same-dir-as-test-case-that-does-some-assertions
+run my-prog--located-in-same-dir-as-test-case--that-does-some-assertions
 
 
 [cleanup]
