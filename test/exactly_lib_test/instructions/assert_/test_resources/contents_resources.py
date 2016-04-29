@@ -3,7 +3,7 @@ import pathlib
 
 from exactly_lib.execution import environment_variables
 from exactly_lib.util import file_utils
-from exactly_lib_test.instructions.assert_phase.test_resources.instruction_check import ActEnvironment, \
+from exactly_lib_test.instructions.assert_.test_resources.instruction_check import ActEnvironment, \
     ActResultProducer
 from exactly_lib_test.test_resources.execution.utils import ActResult
 

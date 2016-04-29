@@ -17,7 +17,6 @@ class TheInstructionDocumentation(InstructionDocumentation):
         return 'Makes a directory in the current directory.'
 
     def main_description_rest(self) -> list:
-        # return single_para()
         text = """\
             Makes parent components, if needed.
 

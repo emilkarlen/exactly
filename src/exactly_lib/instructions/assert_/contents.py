@@ -7,7 +7,7 @@ from exactly_lib.execution.execution_directory_structure import \
     SUB_DIR_FOR_REPLACEMENT_SOURCES_NOT_UNDER_ACT_DIR, PATH__TMP_USER
 from exactly_lib.help.program_modes.test_case.instruction_documentation import InvokationVariant, \
     InstructionDocumentation
-from exactly_lib.instructions.assert_phase.utils.contents_utils import ActualFileTransformer, EMPTY_ARGUMENT, \
+from exactly_lib.instructions.assert_.utils.contents_utils import ActualFileTransformer, EMPTY_ARGUMENT, \
     WITH_REPLACED_ENV_VARS_OPTION, parse_actual_file_argument, with_replaced_env_vars_help
 from exactly_lib.instructions.utils.parse_utils import split_arguments_list_string
 from exactly_lib.instructions.utils.relative_path_options import REL_HOME_OPTION, REL_TMP_OPTION, REL_CWD_OPTION

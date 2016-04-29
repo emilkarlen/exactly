@@ -10,8 +10,8 @@ from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib_test.execution.test_resources.instruction_test_resources import \
     assert_phase_instruction_that
-from exactly_lib_test.instructions.assert_phase.test_resources import instruction_check
-from exactly_lib_test.instructions.assert_phase.test_resources.instruction_check import arrangement, is_pass, \
+from exactly_lib_test.instructions.assert_.test_resources import instruction_check
+from exactly_lib_test.instructions.assert_.test_resources.instruction_check import arrangement, is_pass, \
     Expectation
 from exactly_lib_test.instructions.test_resources import test_of_test_framework_utils as test_misc
 
