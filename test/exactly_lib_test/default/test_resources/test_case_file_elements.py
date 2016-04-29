@@ -1,4 +1,4 @@
-from exactly_lib.document.syntax import section_header
+from exactly_lib.section_document.syntax import section_header
 from exactly_lib.execution import phases
 
 

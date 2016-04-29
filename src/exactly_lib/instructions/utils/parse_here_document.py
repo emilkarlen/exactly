@@ -1,6 +1,6 @@
 import re
 
-from exactly_lib.document.parser_implementations.instruction_parser_for_single_phase import \
+from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
 
 DOCUMENT_TOKEN_RE = re.compile('(<<)([0-9a-zA-Z_-]+)')

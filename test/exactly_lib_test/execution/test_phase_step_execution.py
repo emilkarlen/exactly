@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.document.model import PhaseContents
+from exactly_lib.section_document.model import PhaseContents
 from exactly_lib.execution.phase_step_execution import execute_phase_prim, Failure
 from exactly_lib.execution.result import PartialResultStatus
 from exactly_lib.execution.single_instruction_executor import ControlledInstructionExecutor, \

@@ -1,7 +1,7 @@
 import os
 import pathlib
 
-from exactly_lib.document.model import PhaseContents
+from exactly_lib.section_document.model import PhaseContents
 from exactly_lib.execution import environment_variables
 from exactly_lib.execution import phase_step_executors, partial_execution, phase_step
 from exactly_lib.execution.execution_mode import ExecutionMode

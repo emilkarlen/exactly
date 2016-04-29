@@ -2,8 +2,8 @@ import functools
 import pathlib
 
 import exactly_lib.test_suite.parser
-from exactly_lib.document.model import PhaseContents, ElementType
-from exactly_lib.document.parse import FileSourceError
+from exactly_lib.section_document.model import PhaseContents, ElementType
+from exactly_lib.section_document.parse import FileSourceError
 from exactly_lib.test_case import test_case_processing
 from exactly_lib.test_case.preprocessor import IDENTITY_PREPROCESSOR
 from exactly_lib.test_case.test_case_processing import Preprocessor

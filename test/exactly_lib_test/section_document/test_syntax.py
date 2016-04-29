@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.document import syntax
+from exactly_lib.section_document import syntax
 
 
 class TestExtractPhaseNameFromPhaseLine(unittest.TestCase):

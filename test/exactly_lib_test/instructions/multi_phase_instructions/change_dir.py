@@ -2,7 +2,7 @@ import os
 import pathlib
 import unittest
 
-from exactly_lib.document.parser_implementations.instruction_parser_for_single_phase import \
+from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from exactly_lib.instructions.multi_phase_instructions import change_dir as sut

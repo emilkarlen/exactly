@@ -1,6 +1,6 @@
 import pathlib
 
-from exactly_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
+from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionInvalidArgumentException, SingleInstructionParserSource
 from exactly_lib.execution.execution_directory_structure import \
     root_dir_for_non_stdout_or_stderr_files_with_replaced_env_vars, SUB_DIR_FOR_REPLACEMENT_SOURCES_UNDER_ACT_DIR, \

@@ -1,8 +1,8 @@
 import argparse
 import shlex
 
-from exactly_lib.document.model import Instruction
-from exactly_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
+from exactly_lib.section_document.model import Instruction
+from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionInvalidArgumentException, SingleInstructionParserSource
 
 

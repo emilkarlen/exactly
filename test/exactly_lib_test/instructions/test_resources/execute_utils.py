@@ -1,4 +1,4 @@
-from exactly_lib.document.parser_implementations.instruction_parser_for_single_phase import \
+from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParserSource
 from exactly_lib.instructions.multi_phase_instructions.execute import INTERPRET_OPTION
 from exactly_lib_test.test_resources import python_program_execution as py_exe

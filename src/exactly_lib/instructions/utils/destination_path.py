@@ -1,7 +1,7 @@
 import enum
 import pathlib
 
-from exactly_lib.document.parser_implementations.instruction_parser_for_single_phase import \
+from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from exactly_lib.instructions.utils.parse_utils import ensure_is_not_option_argument, \

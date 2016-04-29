@@ -1,6 +1,6 @@
 import pathlib
 
-from exactly_lib.document.model import Instruction
+from exactly_lib.section_document.model import Instruction
 
 
 class TestSuiteInstruction(Instruction):

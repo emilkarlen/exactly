@@ -6,7 +6,7 @@ import unittest
 from time import strftime, localtime
 
 from exactly_lib import program_info
-from exactly_lib.document.parser_implementations.instruction_parser_for_single_phase import \
+from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, SingleInstructionParserSource
 from exactly_lib.execution import execution_directory_structure
 from exactly_lib.execution import phases

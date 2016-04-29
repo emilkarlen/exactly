@@ -1,4 +1,4 @@
-from exactly_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
+from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionParserSource
 from exactly_lib.instructions.multi_phase_instructions import new_file as new_file_utils
 from exactly_lib.test_case.instruction_setup import SingleInstructionSetup

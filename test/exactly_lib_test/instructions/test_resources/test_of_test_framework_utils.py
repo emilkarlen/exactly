@@ -1,7 +1,7 @@
 import os
 import unittest
 
-from exactly_lib.document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
+from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionParserSource
 from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from exactly_lib.test_case.phases.common import HomeAndEds, TestCaseInstruction

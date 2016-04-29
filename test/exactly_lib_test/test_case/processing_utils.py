@@ -1,7 +1,7 @@
 import pathlib
 import unittest
 
-from exactly_lib.document.model import new_empty_phase_contents
+from exactly_lib.section_document.model import new_empty_phase_contents
 from exactly_lib.execution.result import FullResult, new_skipped
 from exactly_lib.test_case import error_description
 from exactly_lib.test_case import processing_utils as sut

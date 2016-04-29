@@ -1,5 +1,5 @@
 import exactly_lib_test.test_resources.model_utils
-from exactly_lib.document import model
+from exactly_lib.section_document import model
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.util import line_source
 

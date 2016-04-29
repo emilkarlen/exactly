@@ -1,5 +1,5 @@
-from exactly_lib.document import model
-from exactly_lib.document.model import PhaseContentElement
+from exactly_lib.section_document import model
+from exactly_lib.section_document.model import PhaseContentElement
 from exactly_lib.execution import phase_step_simple as phase_step
 from exactly_lib.execution import phases
 from exactly_lib.test_case.phases.common import TestCaseInstruction

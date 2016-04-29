@@ -1,6 +1,6 @@
 from enum import Enum
 
-from exactly_lib.document.model import PhaseContentElement
+from exactly_lib.section_document.model import PhaseContentElement
 from exactly_lib.execution import result
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.util import line_source

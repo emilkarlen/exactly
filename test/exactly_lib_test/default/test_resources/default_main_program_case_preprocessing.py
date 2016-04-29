@@ -1,5 +1,5 @@
 from exactly_lib.cli.cli_environment.program_modes.test_case import exit_values
-from exactly_lib.document.syntax import section_header
+from exactly_lib.section_document.syntax import section_header
 from exactly_lib.execution import phases
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.test_resources import process_result_info_assertions

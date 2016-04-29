@@ -4,8 +4,8 @@ import pathlib
 
 from exactly_lib import program_info
 from exactly_lib.default.program_modes.test_case import test_case_parser
-from exactly_lib.document import parse as document_parser
-from exactly_lib.document.parse import SectionElementParser
+from exactly_lib.section_document import parse as document_parser
+from exactly_lib.section_document.parse import SectionElementParser
 from exactly_lib.execution import full_execution
 from exactly_lib.execution.partial_execution import ScriptHandling
 from exactly_lib.execution.result import FullResult

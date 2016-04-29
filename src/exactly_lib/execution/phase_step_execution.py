@@ -1,4 +1,4 @@
-from exactly_lib.document.model import PhaseContents, PhaseContentElement, ElementType
+from exactly_lib.section_document.model import PhaseContents, PhaseContentElement, ElementType
 from exactly_lib.execution.phase_step import PhaseStep
 from exactly_lib.execution.single_instruction_executor import ControlledInstructionExecutor, execute_element
 from exactly_lib.util import line_source

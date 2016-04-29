@@ -1,4 +1,4 @@
-from exactly_lib.document.model import PhaseContents, ElementType
+from exactly_lib.section_document.model import PhaseContents, ElementType
 from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
