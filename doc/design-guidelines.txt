@@ -1,14 +1,19 @@
 -*- org -*-
 
 * Main purpose
-exactly is aimd at testing ...
+
+
+exactly is aimed at testing ...
 - programs that are executed via the OS shell
+- programs who's input is command line arguments
 - programs who's input is stdin
+- programs who's "input" is environment variables
 - programs who's input is files (including stdin)
 - programs who's output is exitcode and stdout, stderr
-- programs who's "output" is side effect on files (creating and destroying)
-- programs who's input/output is environment variables
-- programs that modify the contents of the Present Working Directory
+- programs who's "output" is side effect on files
+- programs who's "output" is side effect on external resources, such as databases
+
+
 * Dependencies
 
 exactly (base version) DOES not depend on anything not included in the
@@ -17,10 +22,10 @@ standard library of it's implementation language.
 MOTIVATION
 
 It should be easy to include the implementation of exactly (except for the
-implementation of the langugage it uses (python 3)) in a project that uses
+implementation of the language it uses (python 3)) in a project that uses
 exactly.
 
-The implementation language is choosen to be a language that contains a large
+The implementation language is chosen to be a language that contains a large
 standard library that does not make this restriction a great limitation.
 
 * Portability
@@ -37,36 +42,36 @@ these systems.
 
 MOTIVATION
 
-Usefullness of exactly.
+Usefulness.
 
 
 ** Portability of tests
 
 
-Individual tests, on the other hand, should not be limitied to the portability
+Individual tests, on the other hand, should not be limited to the portability
 requirements of exactly itself.
 The instruction "shell" is the main source of non-portability.
 
 MOTIVATION
 
 The requirement of having all tests to be portable to all systems that
-exactly itself is ported to would prevent usage of many usefull features
+exactly itself is ported to would prevent usage of many useful features
 that are available only on a specific system.
 
-Many programs are not required to be portable but they are _required to
-work_ = they need to be tested.
+Many programs are not required to be portable.
 
 E.g. a utility program is developed on a Linux Debian system and is only
 intended to be used on a Debian Linux production system.
-Thus you can use all utility programs available on this system.  This can make
+Thus one can use all utility programs available on this system.  This can make
 the tests much more easy to write, and more easy to read.
 
 
 * Instruction set
 
+
 An ideal instruction set may be infinitely large, since there are infinitely
-many properties that can be tested.  But this ideal instruction set might not
-be so ideal in practice, since the size of the program also would be
+many properties that can be tested.  But this ideal instruction set is
+is not ideal in practice, since the size of the program also would be
 infinitely large.
 
 ** Core instruction set
@@ -81,27 +86,30 @@ attributes of files and the contents of files.
 
 The core instruction set makes it possible to extend the "built-in"
 functionality by executing external programs.
-This is usefull both as a way of incorporating functionalty offered by
+This is useful both as a way of incorporating functionality offered by
 existing programs (so that it does not have to be duplicated by exactly),
 and as a convenient way to extend exactly's functionality by writing custom
 external programs (when this is more convenient than implementing the
 functionality as custom instructions).
 
-** Extending the core instruction set
+** Extending the instruction set
 
-It should be easy to extend the core instruction set by custom instructions.
+It should be easy to extend the instruction set by custom instructions.
 What this means is that it should be easy to specify the instruction set as
 the union of the core instruction set and a custom instruction set.
 
+
 * Preprocessing of test cases
 
-exactly uses preprocessing of test cases as a way to resuse test-code and to
+
+exactly uses preprocessing of test cases as a way to reuse test-code and to
 avoid test-code duplication.
 
 It should be easy to  use a custom preprocessor in the form av an executable
 program.
 exactly also should offer a built-in preprocessor that (of course) works
 identically on all supported platforms.  Currently, this is a TODO.
+
 
 * Instructions in assert phase
 
@@ -118,7 +126,7 @@ what is tested, i.e. the ACTUAL value.
 Examples:
 exitcode 1
 stdout   empty
-stderr   empty
+stderr   ! empty
 
 contents actual-file.txt expected-file.txt
 
@@ -135,7 +143,7 @@ to implement using the instruction-name-at-start-of-line parser.
 If an assertion becomes difficult to read it might be appropriate to express
 it using a macro with a more readable name.
 
-Noteworthy is that mathematical "assertions" is written in the
+Noteworthy is that mathematical "assertions" are often written in the
 ACTUAL EXPECTED form:
 
 n > 1
