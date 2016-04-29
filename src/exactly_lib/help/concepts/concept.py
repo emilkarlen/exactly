@@ -1,5 +1,5 @@
 from exactly_lib.execution import execution_directory_structure as sds
-from exactly_lib.execution.environment_variables import ENV_VAR_RESULT_DIR, ENV_VAR_ACT
+from exactly_lib.execution.environment_variables import ENV_VAR_RESULT, ENV_VAR_ACT
 from exactly_lib.help.concepts.concept_structure import Name, PlainConceptDocumentation
 from exactly_lib.help.concepts.configuration_parameters.configuration_parameter import all_configuration_parameters
 from exactly_lib.help.concepts.utils import sorted_concepts_list
@@ -112,7 +112,7 @@ def _result_dir_environment_variables(phase: dict) -> list:
     return paras('{env_var}: This environment variable is set to this directory '
                  'after the {phase[act]} phase has been executed.'
                  .format(phase=phase,
-                         env_var=ENV_VAR_RESULT_DIR))
+                         env_var=ENV_VAR_RESULT))
 
 
 def _act_dir_environment_variables(phase: dict) -> list:

@@ -5,12 +5,12 @@ from exactly_lib.execution.execution_directory_structure import ExecutionDirecto
 ENV_VAR_HOME = 'EXACTLY_HOME'
 ENV_VAR_ACT = 'EXACTLY_ACT'
 ENV_VAR_TMP = 'EXACTLY_TMP'
-ENV_VAR_RESULT_DIR = 'EXACTLY_RESULT_DIR'
+ENV_VAR_RESULT = 'EXACTLY_RESULT'
 
 SET_AT_SETUP__ENV_VARS = [ENV_VAR_HOME]
 SET_AT_EDS__ENV_VARS = [ENV_VAR_ACT,
                         ENV_VAR_TMP]
-SET_AT_ASSERT__ENV_VARS = [ENV_VAR_RESULT_DIR]
+SET_AT_ASSERT__ENV_VARS = [ENV_VAR_RESULT]
 
 ALL_ENV_VARS = SET_AT_SETUP__ENV_VARS + SET_AT_EDS__ENV_VARS + SET_AT_ASSERT__ENV_VARS
 
@@ -32,7 +32,7 @@ def set_at_setup_main(eds: ExecutionDirectoryStructure) -> dict:
 
 def set_at_assert(eds: ExecutionDirectoryStructure) -> dict:
     return {
-        ENV_VAR_RESULT_DIR: str(eds.result.root_dir),
+        ENV_VAR_RESULT: str(eds.result.root_dir),
     }
 
 

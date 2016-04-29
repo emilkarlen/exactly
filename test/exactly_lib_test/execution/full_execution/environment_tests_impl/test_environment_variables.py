@@ -93,7 +93,7 @@ class Test(FullExecutionTestCaseBase):
             environment_variables.ENV_VAR_HOME: home_dir_after_configuration,
             environment_variables.ENV_VAR_ACT: str(self.eds.act_dir),
             environment_variables.ENV_VAR_TMP: str(self.eds.tmp.user_dir),
-            environment_variables.ENV_VAR_RESULT_DIR: str(self.eds.result.root_dir),
+            environment_variables.ENV_VAR_RESULT: str(self.eds.result.root_dir),
         }
         expected_recorded_internally = {
             phase_step.CONFIGURATION__MAIN: for_configuration_phase,
