@@ -1,14 +1,7 @@
 Tests a command line program by executing it in a temporary sandbox directory and inspecting its result.
 
 
-Current version is fully functional, and has a lot of features, including a help system.
-But syntax may change in the future.
-
-`exactly` is python program, and requires Python >= 3.4 (not tested on earlier version of Python 3).
-
-
-Test Cases
-==========
+# TEST CASES
 
 
 A test case is written as a plain text file:
@@ -35,8 +28,8 @@ If the file 'helloworld.case' contains this test case, then `exactly` can execut
 
 "PASS" means that all assertions were satisfied.
 
-What this means is that the action to check - the 'helloworld' program - is in fact an executable program,
-and that this program is found in the same directory as the test case file,
+It also means is that the action to check - the 'helloworld' program -
+is is found in the same directory as the test case file,
 and also that it behaved as expected.
 
 
@@ -60,7 +53,7 @@ what is currently supported.
 
     file in/a/dir/file-name.txt <<EOF
     contents of the file
-    <<EOF
+    EOF
 
     dir root-dir-for-act-phase
 
@@ -76,7 +69,7 @@ what is currently supported.
 
     env unset VARIABLE_THAT_SHOULD_NOT_BE_SET
 
-    run my-prog-in-same-dir-as-test-case-that-does-some-more-setup
+    run my-prog--located-in-same-dir-as-test-case--that-does-some-more-setup 'with an argument'
 
 
     [act]
@@ -115,7 +108,7 @@ what is currently supported.
 
     pwd this-dir-is-where-we-should-be-for-the-following-assertions
 
-    run my-prog-in-same-dir-as-test-case-that-does-some-assertions
+    run my-prog--located-in-same-dir-as-test-case--that-does-some-assertions
 
 
     [cleanup]
@@ -126,10 +119,10 @@ what is currently supported.
     run my-prog-that-removes-database 'my test database'
 
 
-[act] is the default phase
---------------------------
+#### [act] is the default phase
 
-The [act] is not needed to indicate what is being checked, since [act] is the default "phase".
+
+`[act]` is not needed to indicate what is being checked, since the "act" phase is the default "phase".
  
 The following is a valid test case,
 and if run by `exactly`, it won't remove anything (since it is executed inside a temporary sandbox directory):
@@ -137,8 +130,24 @@ and if run by `exactly`, it won't remove anything (since it is executed inside a
     /bin/rm -rf *
 
 
-Test Suites
-===========
+#### Print output from the tested program
+
+
+If `--act` is used, the output of the tested program (the "act" phase) will become the output of `exactly` -
+stdout, stderr and exit code.
+
+The test case is executed in the sandbox, as usual.
+
+
+#### Keeping the sandbox directory for later inspection
+
+
+If `--keep` is used, the sandbox directory will not be deleted, and its name will be printed. 
+
+This can be used to inspect the outcome of the "setup" phase, e.g.
+
+
+# TEST SUITES
 
 
 Tests can be grouped in suites:
@@ -162,29 +171,42 @@ Tests can be grouped in suites:
 Run a suite using `exactly suite mysuite.suite`
 
 
-Help
-====
+# HELP
 
 
-The help system is fully functional, but some parts are incomplete.
+The help system is fully functional, but some parts of the documentation are incomplete.
 
-Use `---help` and `help ...` to get help.
+Use `---help` and `help ITEM` to get help.
 
-`help help` displays a summary of help options.
+`help help` displays a summary of help items.
 
 `help instructions` lists the instructions that are available in each "phase".
 
-`help htmldoc` generates a html file that is an introduction to the program.
+`help htmldoc` generates a html file that is an introduction and reference to the program.
 
 
-Installation, examples and testing
-==================================
+# EXAMPLES
 
-Install using setuptools (`python3 setup.py build; sudo python3 setup.py install`).
-
-(The "setuptools" python package must be installed.)
 
 See the `examples/` directory for examples.
+
+
+# BUILDING, TESTING, INSTALLING
+
+
+`exactly` is python program, and requires Python >= 3.4 (not tested on earlier version of Python 3).
+
+The "setuptools" python package must be installed in order to build and install in the normal way.
+
+    python3 setup.py build
+
+    sudo python3 setup.py install
+
+
+`exactly` can also be run directly from sources:
+
+    python3 src/main-program-executor-for-test.py
+
 
 To run `exactly`'s test suite:
 
@@ -193,3 +215,19 @@ To run `exactly`'s test suite:
 To run the test suite towards an installed program:
 
     python3 test/run-test-suite-towards-installed-program.py
+
+
+# DEVELOPMENT STATUS
+
+
+Current version is fully functional, but syntax of test cases and instructions may change.
+
+Comments are welcome!
+
+
+# AUTHOR
+
+
+Emil Karlén
+
+emil@member.fsf.org
