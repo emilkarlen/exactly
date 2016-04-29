@@ -56,7 +56,13 @@ class ParagraphItemChecker(ParagraphItemVisitor):
         raise ValueError(self._msg("Cannot check %s's" % HeaderContentList))
 
     def visit_literal_layout(self, literal_layout: LiteralLayout):
-        raise ValueError(self._msg("Cannot check %s's" % LiteralLayout))
+        actual = self.actual
+        self.put.assertIsInstance(actual,
+                                  LiteralLayout,
+                                  self._msg('Expecting a %s' % LiteralLayout))
+        assert isinstance(actual, LiteralLayout)
+        self.put.assertEqual(literal_layout.literal_text,
+                             actual.literal_text)
 
     def _msg(self, tail: str) -> str:
         return self.msg_prefix + tail
