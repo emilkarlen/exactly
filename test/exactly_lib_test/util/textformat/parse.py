@@ -126,42 +126,42 @@ class TestLiteral(unittest.TestCase):
     def test_single_literal_block(self):
         test_resource.check(self,
                             [sut.LiteralLayout(lines_content(['literal line']))],
-                            sut.parse(['@literal{',
+                            sut.parse(['@literal[',
                                        'literal line',
-                                       '@}',
+                                       '@]',
                                        ]))
 
     def test_escaping_markup_token_inside_literal_block(self):
         test_resource.check(self,
-                            [sut.LiteralLayout(lines_content(['@}']))],
-                            sut.parse(['@literal{',
-                                       '\\@}',
-                                       '@}',
+                            [sut.LiteralLayout(lines_content(['@]']))],
+                            sut.parse(['@literal[',
+                                       '\\@]',
+                                       '@]',
                                        ]))
 
     def test_missing_closing_brace_should_raise_exception(self):
         with self.assertRaises(ValueError):
-            sut.parse(['@literal{',
+            sut.parse(['@literal[',
                        'literal line',
                        ])
 
     def test_invalid_markup_token_should_raise_exception(self):
         with self.assertRaises(ValueError):
-            sut.parse(['@literal{',
+            sut.parse(['@literal]',
                        '@',
                        ])
 
     def test_escaping_markup_token_should_make_contents_be_treated_as_normal_paragraph(self):
         test_resource.check(self,
-                            [sut.Paragraph([sut.StringText('@literal{ line')])],
-                            sut.parse(['\\@literal{',
+                            [sut.Paragraph([sut.StringText('@literal[ line')])],
+                            sut.parse(['\\@literal[',
                                        'line',
                                        ]))
 
     def test_escaping_backslash(self):
         test_resource.check(self,
-                            [sut.Paragraph([sut.StringText('\\@literal{ line')])],
-                            sut.parse(['\\\\@literal{',
+                            [sut.Paragraph([sut.StringText('\\@literal[ line')])],
+                            sut.parse(['\\\\@literal[',
                                        'line',
                                        ]))
 
@@ -170,11 +170,11 @@ class TestLiteral(unittest.TestCase):
                             [sut.LiteralLayout(lines_content(['first line'] +
                                                              sut.PARAGRAPH_SEPARATOR_LINES +
                                                              ['last line']))],
-                            sut.parse(['@literal{',
+                            sut.parse(['@literal[',
                                        'first line'] +
                                       sut.PARAGRAPH_SEPARATOR_LINES +
                                       ['last line',
-                                       '@}',
+                                       '@]',
                                        ]))
 
     def test_literal_block_between_paragraph_blocks(self):
@@ -186,9 +186,9 @@ class TestLiteral(unittest.TestCase):
                             ],
                             sut.parse(['para 1'] +
                                       sut.PARAGRAPH_SEPARATOR_LINES +
-                                      ['@literal{',
+                                      ['@literal[',
                                        'literal line',
-                                       '@}'] +
+                                       '@]'] +
                                       sut.PARAGRAPH_SEPARATOR_LINES +
                                       ['para 2']))
 
