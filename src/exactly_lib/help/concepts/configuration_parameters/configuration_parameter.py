@@ -1,4 +1,5 @@
 from exactly_lib.execution import execution_mode
+from exactly_lib.execution.environment_variables import ENV_VAR_HOME
 from exactly_lib.execution.result import FullResultStatus
 from exactly_lib.help.concepts.concept_structure import Name, ConfigurationParameterDocumentation
 from exactly_lib.help.utils import phase_names
@@ -40,7 +41,8 @@ class _HomeDirectoryConfigurationParameter(ConfigurationParameterDocumentation):
     def purpose(self) -> Description:
         return Description(text(_HOME_DIRECTORY_SINGLE_LINE_DESCRIPTION),
                            normalize_and_parse(_HOME_DIRECTORY_REST_DESCRIPTION
-                                               .format(phase=phase_name_dictionary())))
+                                               .format(phase=phase_name_dictionary(),
+                                                       home_dir_env_var=ENV_VAR_HOME)))
 
     def default_value_str(self) -> str:
         return 'The directory where the test case file is located.'
@@ -92,12 +94,14 @@ _HOME_DIRECTORY_SINGLE_LINE_DESCRIPTION = """\
 Default location of (external, existing) files referenced from the test case."""
 
 _HOME_DIRECTORY_REST_DESCRIPTION = """\
-Instructions and phases may use files that are supposed to exist before the test
-case is executed.
+TODO (improve description!)
 
+Instructions and phases may use predefined input in terms of files
+that are supposed to exist before the test case is executed.
 
 E.g., the {phase[act]} phase (by default) references an program that is expected
 to be an executable file.
+
 
 If the path to this file is relative, then it is relative the Home Directory.
 
@@ -105,5 +109,6 @@ If the path to this file is relative, then it is relative the Home Directory.
 Many instructions use exiting files. E.g. for installing them into the
 sandbox.
 
-If these file paths are relative then they are relative the Home Directory.
+
+The environment variable {home_dir_env_var} contains the absolute path of this directory.
 """

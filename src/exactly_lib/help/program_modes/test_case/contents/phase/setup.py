@@ -1,5 +1,5 @@
 from exactly_lib.execution.environment_variables import EXISTS_AT_SETUP_MAIN
-from exactly_lib.help.concepts.concept import SANDBOX_CONCEPT
+from exactly_lib.help.concepts.concept import SANDBOX_CONCEPT, ENVIRONMENT_VARIABLE_CONCEPT
 from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
     pwd_at_start_of_phase_first_phase_executed_in_the_sandbox
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCasePhaseInstructionSet
@@ -42,6 +42,7 @@ class SetupPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstructions
     def see_also(self) -> list:
         return [
             SANDBOX_CONCEPT.cross_reference_target(),
+            ENVIRONMENT_VARIABLE_CONCEPT.cross_reference_target(),
         ]
 
     def _parse(self, multi_line_string: str) -> list:
