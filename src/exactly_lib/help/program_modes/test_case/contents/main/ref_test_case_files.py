@@ -8,10 +8,10 @@ from exactly_lib.util.textformat.structure.structures import *
 
 def test_case_files_documentation(setup: Setup) -> doc.SectionContents:
     instruction_dict = AnyInstructionNameDictionary()
-    phases_doc = PHASES_DOC.format(phase_declaration_for_NAME=section_header('NAME'),
-                                   instruction=instruction_dict,
-                                   default_phase=setup.phase_names[DEFAULT_PHASE.identifier].syntax)
-    phases_paragraphs = normalize_and_parse(phases_doc)
+    phases_paragraphs = normalize_and_parse(PHASES_DOC.format(phase_declaration_for_NAME=section_header('NAME'),
+                                                              instruction=instruction_dict,
+                                                              default_phase=setup.phase_names[
+                                                                  DEFAULT_PHASE.identifier].syntax))
     instructions_paragraphs = normalize_and_parse(INSTRUCTIONS_DOC.format(instruction=instruction_dict))
     other_paragraphs = normalize_and_parse(OTHER_DOC.format(phase=setup.phase_names,
                                                             instruction=instruction_dict))

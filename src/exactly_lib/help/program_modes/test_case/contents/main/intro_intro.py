@@ -47,7 +47,6 @@ PASS
 "PASS" means that all assertions were satisfied.
 
 
-What this means is that the action to check - the '{action_to_check}' program -
-is in fact an executable program, and that this program is found in
-the same directory as the test case file, and that it printed the expected text to stdout.
+It also means that '{action_to_check}'
+is an executable program located in the same directory as the test case file.
 """
