@@ -1,4 +1,4 @@
-import exactly_lib.util.textformat.structure.structures
+from exactly_lib import program_info
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCasePhaseDocumentation, \
     TestCasePhaseInstructionSet
 from exactly_lib.help.program_modes.test_case.render.instruction_set import instruction_set_list
@@ -6,7 +6,8 @@ from exactly_lib.help.utils.formatting import SectionName
 from exactly_lib.help.utils.render import RenderingEnvironment, cross_reference_list, transform_list_to_table
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import lists
-from exactly_lib.util.textformat.structure.structures import para, text, section
+from exactly_lib.util.textformat.structure import structures as docs
+from exactly_lib.util.textformat.structure.core import ParagraphItem
 
 
 class PhaseSequenceInfo(tuple):
@@ -65,46 +66,47 @@ class TestCasePhaseDocumentationBase(TestCasePhaseDocumentation):
     def render(self, environment: RenderingEnvironment) -> doc.SectionContents:
         purpose = self.purpose()
         mandatory_info = self._mandatory_info_para()
-        paras = ([para(purpose.single_line_description)] +
+        paras = ([docs.para(purpose.single_line_description)] +
                  purpose.rest +
                  [mandatory_info])
-        eei = self.execution_environment_info()
         sections = []
         self._add_section_for_contents_description(sections)
-        self._add_section_for_sequence_description(sections)
-        self._add_section_for_pwd_at_start_of_phase(eei, sections)
-        self._add_section_for_environment_variables(eei, sections)
+        self._add_section_for_phase_sequence_description(sections)
+        self._add_section_for_environment(sections)
         self._add_section_for_see_also(environment, sections)
         self._add_section_for_instructions(environment, sections)
 
         return doc.SectionContents(paras, sections)
 
     def _mandatory_info_para(self):
-        return para('The {0} phase is {1}.'.format(self.name,
-                                                   'mandatory' if self.is_mandatory() else 'optional'))
+        return docs.para('The {0} phase is {1}.'.format(self.name,
+                                                        'mandatory' if self.is_mandatory() else 'optional'))
 
     def _add_section_for_contents_description(self, sections: list):
-        sections.append(section('Contents',
-                                self.contents_description()))
+        sections.append(docs.section('Contents',
+                                     self.contents_description()))
 
-    def _add_section_for_sequence_description(self, sections: list):
+    def _add_section_for_phase_sequence_description(self, sections: list):
         si = self.sequence_info()
-        sections.append(section('Phase sequence',
-                                si.preceding_phase + si.succeeding_phase))
+        sections.append(docs.section('Phase sequence',
+                                     si.preceding_phase + si.succeeding_phase))
 
-    def _add_section_for_pwd_at_start_of_phase(self, eei, sections):
-        if self.execution_environment_info().pwd_at_start_of_phase:
-            sections.append(doc.Section(text('Present Working Directory'),
-                                        doc.SectionContents(eei.pwd_at_start_of_phase, [])))
+    def _add_section_for_environment(self, sections: list):
+        eei = self.execution_environment_info()
+        paragraphs = []
+        if eei.pwd_at_start_of_phase:
+            paragraphs.extend(eei.pwd_at_start_of_phase)
+        if eei.environment_variables:
+            paragraphs.extend([docs.para('The following environment variables are set:'),
+                               self._environment_variables_list(eei.environment_variables)])
+        else:
+            paragraphs.append(docs.para('No extra environment variables have been set.'))
+        sections.append(docs.section('Environment', paragraphs))
 
-    def _add_section_for_environment_variables(self, eei, sections):
-        if self.execution_environment_info().environment_variables:
-            ev_list = exactly_lib.util.textformat.structure.structures.simple_header_only_list(
-                eei.environment_variables,
-                lists.ListType.ITEMIZED_LIST)
-            sections.append(doc.Section(text('Environment Variables (TODO check this)'),
-                                        doc.SectionContents([ev_list],
-                                                            [])))
+    @staticmethod
+    def _environment_variables_list(environment_variable_names: list) -> ParagraphItem:
+        return docs.simple_header_only_list(environment_variable_names,
+                                            lists.ListType.ITEMIZED_LIST)
 
     def _add_section_for_instructions(self,
                                       environment: RenderingEnvironment,
@@ -113,13 +115,12 @@ class TestCasePhaseDocumentationBase(TestCasePhaseDocumentation):
             il = instruction_set_list(self.instruction_set)
             if environment.render_simple_header_value_lists_as_tables:
                 il = transform_list_to_table(il)
-            sections.append(doc.Section(text('Instructions'),
-                                        doc.SectionContents([il], [])))
+            sections.append(docs.section('Instructions', [il]))
 
     def _add_section_for_see_also(self, environment: RenderingEnvironment, sections: list):
         if self.see_also:
             cross_ref_list = cross_reference_list(self.see_also, environment)
-            sections.append(section('See also', [cross_ref_list]))
+            sections.append(docs.section('See also', [cross_ref_list]))
 
     def is_mandatory(self) -> bool:
         raise NotImplementedError()
@@ -156,7 +157,7 @@ class TestCasePhaseDocumentationForPhaseWithInstructions(TestCasePhaseDocumentat
         return self._instruction_set
 
     def contents_description(self) -> list:
-        return [para('Consists of zero or more instructions.')] + self.instruction_purpose_description()
+        return [docs.para('Consists of zero or more instructions.')] + self.instruction_purpose_description()
 
     def instruction_purpose_description(self) -> list:
         """
