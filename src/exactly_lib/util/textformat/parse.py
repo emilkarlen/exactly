@@ -11,7 +11,8 @@ NUM_PARAGRAPH_SEPARATOR_LINES = 2
 TEXT_SEPARATOR_LINES = NUM_TEXT_SEPARATOR_LINES * ['']
 PARAGRAPH_SEPARATOR_LINES = NUM_PARAGRAPH_SEPARATOR_LINES * ['']
 
-MARKUP_TOKEN = '@'
+_LITERAL_TOKEN = '```'
+_LITERAL_TOKEN_LEN = len(_LITERAL_TOKEN)
 
 
 def parse(normalized_lines: list) -> list:
@@ -49,20 +50,12 @@ class _Parser:
 
     def parse_paragraph_item(self) -> ParagraphItem:
         first_line = self.lines[0]
-        if first_line[0] == MARKUP_TOKEN:
-            return self.parse_special_block()
+        if self._marks_start_of_literal_block(first_line):
+            return self.parse_literal_layout_from_first_marker_line()
         else:
             if first_line[0] == '\\':
                 self.lines[0] = first_line[1:]
             return self.parse_paragraph()
-
-    def parse_special_block(self) -> Paragraph:
-        first_line = self.lines[0]
-        if first_line[1:] != 'literal[':
-            raise ValueError(MARKUP_TOKEN + ' must be followed by "literal[". Found: "%s"' %
-                             first_line[1:])
-        del self.lines[0]
-        return self.parse_literal_layout_from_first_content_line()
 
     def parse_paragraph(self) -> Paragraph:
         texts = []
@@ -72,13 +65,14 @@ class _Parser:
         self.consume_separator_lines()
         return Paragraph(texts)
 
-    def parse_literal_layout_from_first_content_line(self) -> LiteralLayout:
+    def parse_literal_layout_from_first_marker_line(self) -> LiteralLayout:
+        del self.lines[0]
         lines = []
         while True:
             if not self.has_more_lines():
-                raise ValueError('Reached end of file before end marker found: ("@]")')
+                raise ValueError('Reached end of file before end marker found: ("%s")' % _LITERAL_TOKEN)
             first_line = self.lines[0]
-            if first_line == MARKUP_TOKEN + ']':
+            if self._marks_end_of_literal_block(first_line):
                 del self.lines[0]
                 self.consume_separator_lines()
                 return LiteralLayout(lines_content(lines))
@@ -120,3 +114,11 @@ class _Parser:
         while not self.lines[idx]:
             idx += 1
         return idx
+
+    @staticmethod
+    def _marks_start_of_literal_block(line: str):
+        return line == _LITERAL_TOKEN
+
+    @staticmethod
+    def _marks_end_of_literal_block(line: str):
+        return line == _LITERAL_TOKEN
