@@ -1,5 +1,7 @@
 Tests a command line program by executing it in a temporary sandbox directory and inspecting its result.
 
+Supports individual test cases and test suites.
+
 
 # TEST CASES
 
@@ -26,15 +28,15 @@ If the file 'helloworld.case' contains this test case, then `exactly` can execut
     PASS
 
 
-"PASS" means that all assertions were satisfied.
+"PASS" means that the two assertions were satisfied.
 
 It also means is that the action to check - the 'helloworld' program -
 is is found in the same directory as the test case file,
 and also that it behaved as expected.
 
 
-The following test case displays a potpurri of functionality. It does not make sense! but displays
-what is currently supported.
+The following test case displays a potpurri of functionality. (Beware that this test case does not make sense! -
+it just displays some of `exactly`'s functionality.)
 
 
     [conf]
