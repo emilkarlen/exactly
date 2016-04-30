@@ -7,6 +7,11 @@ def pwd_at_start_of_phase_for_configuration_phase() -> list:
     return []
 
 
+def pwd_at_start_of_phase_first_phase_executed_in_the_sandbox() -> list:
+    return normalize_and_parse('The Present Working Directory is the %s/ sub directory of the sandbox.'
+                               % SUB_DIRECTORY__ACT)
+
+
 def pwd_at_start_of_phase_for_non_first_phases() -> list:
     return normalize_and_parse("""\
     The Present Working Directory is the same as at the end of the previous phase.
@@ -23,4 +28,4 @@ def env_vars_up_to_act__TODO_CHECK_THIS() -> list:
 
 
 def env_vars_after_act__TODO_CHECK_THIS() -> list:
-    return env_vars_up_to_act__TODO_CHECK_THIS() + environment_variables.SET_AT_ASSERT__ENV_VARS
+    return env_vars_up_to_act__TODO_CHECK_THIS() + environment_variables.SET_AT_BEFORE_ASSERT__ENV_VARS
