@@ -1,13 +1,14 @@
 from exactly_lib.execution.environment_variables import EXISTS_AT_BEFORE_ASSERT_MAIN
 from exactly_lib.help.concepts.plain_concepts.environment_variable import ENVIRONMENT_VARIABLE_CONCEPT
+from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
+from exactly_lib.help.cross_reference_id import TestCasePhaseCrossReference
 from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
     sequence_info__succeeding_phase, \
-    pwd_at_start_of_phase_for_non_first_phases
+    pwd_at_start_of_phase_for_non_first_phases, sequence_info__preceding_phase
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCasePhaseInstructionSet
 from exactly_lib.help.program_modes.test_case.phase_help_contents_structures import \
     TestCasePhaseDocumentationForPhaseWithInstructions, PhaseSequenceInfo, ExecutionEnvironmentInfo
 from exactly_lib.help.utils.description import Description
-from exactly_lib.help.utils.formatting import SectionName
 from exactly_lib.help.utils.phase_names import phase_name_dictionary, ACT_PHASE_NAME, ASSERT_PHASE_NAME
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure.structures import text
@@ -45,7 +46,10 @@ class BeforeAssertPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstr
     @property
     def see_also(self) -> list:
         return [
+            SANDBOX_CONCEPT.cross_reference_target(),
             ENVIRONMENT_VARIABLE_CONCEPT.cross_reference_target(),
+            TestCasePhaseCrossReference(ACT_PHASE_NAME.plain),
+            TestCasePhaseCrossReference(ASSERT_PHASE_NAME.plain),
         ]
 
     def _parse(self, multi_line_string: str) -> list:
@@ -76,13 +80,4 @@ executed and one will not know if any of the assertions would pass.
 INSTRUCTION_PURPOSE_DESCRIPTION = """\
 Each instruction should probably have some side effect that supports
 the instructions in the {phase[assert]} phase.
-"""
-
-
-def sequence_info__preceding_phase(following_phase: SectionName) -> list:
-    return normalize_and_parse(_SEQUENCE_INFO__PRECEDING_PHASE.format(following_phase=following_phase))
-
-
-_SEQUENCE_INFO__PRECEDING_PHASE = """\
-This phase is executed directly after the {following_phase} phase.
 """

@@ -2,7 +2,7 @@ from exactly_lib.default.program_modes.test_case.default_instruction_names impor
 from exactly_lib.execution.execution_mode import NAME_SKIP
 from exactly_lib.help.concepts.configuration_parameters.execution_mode import EXECUTION_MODE_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.plain_concepts.configuration_parameter import CONFIGURATION_PARAMETER_CONCEPT
-from exactly_lib.help.cross_reference_id import TestCasePhaseInstructionCrossReference
+from exactly_lib.help.cross_reference_id import TestCasePhaseInstructionCrossReference, TestCasePhaseCrossReference
 from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
     pwd_at_start_of_phase_for_configuration_phase, \
     env_vars_for_configuration_phase
@@ -54,7 +54,8 @@ class ConfigurationPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInst
             CONFIGURATION_PARAMETER_CONCEPT.cross_reference_target(),
             EXECUTION_MODE_CONFIGURATION_PARAMETER.cross_reference_target(),
             TestCasePhaseInstructionCrossReference(self.name.plain,
-                                                   EXECUTION_MODE_INSTRUCTION_NAME)
+                                                   EXECUTION_MODE_INSTRUCTION_NAME),
+            TestCasePhaseCrossReference(SETUP_PHASE_NAME.plain),
         ]
 
 
