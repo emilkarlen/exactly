@@ -19,7 +19,7 @@ TEXT = """\
 A test case is written as a plain text file:
 
 
-@literal[
+```
 [act]
 
 {action_to_check}
@@ -31,17 +31,17 @@ exitcode 0
 stdout <<EOF
 Hello, World!
 EOF
-@]
+```
 
 
 If the file '{test_case_file}' contains this test case,
 then {EXECUTABLE_PROGRAM} can execute it:
 
 
-@literal[
+```
 > {EXECUTABLE_PROGRAM} {test_case_file}
 PASS
-@]
+```
 
 
 "PASS" means that all assertions were satisfied.

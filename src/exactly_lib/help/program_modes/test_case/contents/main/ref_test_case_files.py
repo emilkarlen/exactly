@@ -47,7 +47,7 @@ Contents of multiple declarations are merged, and executed in the order it appea
 In following example, {instruction[exitcode]} is executed before {instruction[stderr]}:
 
 
-@literal[
+```
 [assert]
 
 exitcode 0
@@ -59,7 +59,7 @@ helloworld
 [assert]
 
 stderr empty
-@]
+```
 """
 
 INSTRUCTIONS_DOC = """\
@@ -72,11 +72,11 @@ The syntax depends on the particular instruction.
 An instruction may span several lines, as this form of {instruction[stdout]} does:
 
 
-@literal[
+```
 stdout <<EOF
 Hello, World!
 EOF
-@]
+```
 """
 
 OTHER_DOC = """\
@@ -93,12 +93,12 @@ can decide how lines are interpreted.
 As {instruction[stdout]} does here:
 
 
-@literal[
+```
 stdout <<EOF
 this assertion expects 4 lines of output
 # this is the second line of the expected output
 
 the above empty line is part of the expected output
 EOF
-@]
+```
 """
