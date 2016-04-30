@@ -166,23 +166,11 @@ class HtmlDocGenerator:
             phase_instruction_sections = []
             phase_instruction_targets = []
             for instruction_doc in phase.instruction_set.instruction_descriptions:
-                # TODO refactor this into separate method
                 assert isinstance(instruction_doc, InstructionDocumentation)
-                instruction_cross_ref_target = cross_ref.TestCasePhaseInstructionCrossReference(
-                    phase.name.plain,
-                    instruction_doc.instruction_name())
-                header = docs.anchor_text(docs.text(instruction_doc.instruction_name()),
-                                          instruction_cross_ref_target)
-                man_page_renderer = InstructionManPageRenderer(instruction_doc)
-                instruction_section_contents = man_page_renderer.apply(self.rendering_environment)
-                instruction_section = doc.Section(header,
-                                                  instruction_section_contents)
-                instruction_target_info = cross_ref.TargetInfoNode(
-                    cross_ref.TargetInfo(instruction_doc.instruction_name(),
-                                         instruction_cross_ref_target),
-                    [])
-                phase_instruction_sections.append(instruction_section)
-                phase_instruction_targets.append(instruction_target_info)
+                instr_section, instr_target_info = self._instruction_documentation(instruction_doc,
+                                                                                   phase)
+                phase_instruction_sections.append(instr_section)
+                phase_instruction_targets.append(instr_target_info)
             phase_section = doc.Section(phase_target.anchor_text(),
                                         doc.SectionContents([],
                                                             phase_instruction_sections))
@@ -191,6 +179,24 @@ class HtmlDocGenerator:
             ret_val_targets.append(phase_target_info_node)
             ret_val_sections.append(phase_section)
         return ret_val_targets, doc.SectionContents([], ret_val_sections)
+
+    def _instruction_documentation(self,
+                                   instruction_doc: InstructionDocumentation,
+                                   phase: TestCasePhaseDocumentation):
+        instruction_cross_ref_target = cross_ref.TestCasePhaseInstructionCrossReference(
+            phase.name.plain,
+            instruction_doc.instruction_name())
+        header = docs.anchor_text(docs.text(instruction_doc.instruction_name()),
+                                  instruction_cross_ref_target)
+        man_page_renderer = InstructionManPageRenderer(instruction_doc)
+        instruction_section_contents = man_page_renderer.apply(self.rendering_environment)
+        instruction_section = doc.Section(header,
+                                          instruction_section_contents)
+        instruction_target_info = cross_ref.TargetInfoNode(
+            cross_ref.TargetInfo(instruction_doc.instruction_name(),
+                                 instruction_cross_ref_target),
+            [])
+        return instruction_section, instruction_target_info
 
     def _test_suite_contents(self, targets_factory: CustomTargetInfoFactory) -> (list, doc.SectionContents):
         generator = test_suite_rendering.OverviewRenderer(self.application_help.test_suite_help)
