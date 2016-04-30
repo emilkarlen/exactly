@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.help.concepts import concept as sut
+from exactly_lib.help.concepts.plain_concepts import all_plain_concepts as sut
 from exactly_lib_test.help.concepts.test_resources import suite_for_plain_concept_documentation
 
 
