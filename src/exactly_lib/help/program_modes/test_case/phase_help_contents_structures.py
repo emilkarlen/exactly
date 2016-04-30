@@ -3,7 +3,7 @@ from exactly_lib.help.program_modes.test_case.contents_structure import TestCase
     TestCasePhaseInstructionSet
 from exactly_lib.help.program_modes.test_case.render.instruction_set import instruction_set_list
 from exactly_lib.help.utils.formatting import SectionName
-from exactly_lib.help.utils.render import RenderingEnvironment, cross_reference_list
+from exactly_lib.help.utils.render import RenderingEnvironment, cross_reference_list, transform_list_to_table
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure.structures import para, text, section
@@ -75,7 +75,7 @@ class TestCasePhaseDocumentationBase(TestCasePhaseDocumentation):
         self._add_section_for_pwd_at_start_of_phase(eei, sections)
         self._add_section_for_environment_variables(eei, sections)
         self._add_section_for_see_also(environment, sections)
-        self._add_section_for_instructions(sections)
+        self._add_section_for_instructions(environment, sections)
 
         return doc.SectionContents(paras, sections)
 
@@ -106,9 +106,13 @@ class TestCasePhaseDocumentationBase(TestCasePhaseDocumentation):
                                         doc.SectionContents([ev_list],
                                                             [])))
 
-    def _add_section_for_instructions(self, sections: list):
+    def _add_section_for_instructions(self,
+                                      environment: RenderingEnvironment,
+                                      sections: list):
         if self.is_phase_with_instructions:
             il = instruction_set_list(self.instruction_set)
+            if environment.render_simple_header_value_lists_as_tables:
+                il = transform_list_to_table(il)
             sections.append(doc.Section(text('Instructions'),
                                         doc.SectionContents([il], [])))
 

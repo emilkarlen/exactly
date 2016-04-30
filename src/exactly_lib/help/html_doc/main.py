@@ -29,7 +29,8 @@ class HtmlDocGenerator:
                  application_help: ApplicationHelp):
         self.output = output
         self.application_help = application_help
-        self.rendering_environment = RenderingEnvironment(CrossReferenceTextConstructor())
+        self.rendering_environment = RenderingEnvironment(CrossReferenceTextConstructor(),
+                                                          render_simple_header_value_lists_as_tables=True)
 
     def apply(self):
         setup = self._page_setup()
