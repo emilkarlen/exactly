@@ -69,7 +69,7 @@ def sandbox_directories_info(phase_name_dictionary: dict,
                                                 custom_separations=SEPARATION_OF_HEADER_AND_CONTENTS))
 
 
-def _act_dir_description_paragraphs(instruction, phase: dict):
+def _act_dir_description_paragraphs(instruction: AnyInstructionNameDictionary, phase: dict):
     ret_val = []
     ret_val.extend(normalize_and_parse(
         _ACT_DIR_DESCRIPTION.format(phase=phase,
@@ -78,7 +78,7 @@ def _act_dir_description_paragraphs(instruction, phase: dict):
     return ret_val
 
 
-def _result_dir_description_paragraphs(instruction, phase: dict):
+def _result_dir_description_paragraphs(instruction: AnyInstructionNameDictionary, phase: dict):
     ret_val = []
     ret_val.extend(normalize_and_parse(
         _RESULT_DIR_DESCRIPTION.format(phase=phase,
@@ -90,7 +90,7 @@ def _result_dir_description_paragraphs(instruction, phase: dict):
 
 
 _ACT_DIR_DESCRIPTION = """\
-This directory is the Present Working Directory (PWD) initially.
+This directory is the Present Working Directory (PWD) when the {phase[setup]} phase begin.
 
 
 (The PWD can be changed using the {instruction[pwd]} instruction.)
@@ -104,19 +104,19 @@ _RESULT_DIR_DESCRIPTION = """\
 This directory is initially empty.
 
 It is populated when the {phase[act]} phase is executed
-with the following files:
+with the following files (with obvious contents):
 """
 
 
 def _result_dir_environment_variables(phase: dict) -> list:
-    return paras('{env_var}: This environment variable is set to this directory '
-                 'after the {phase[act]} phase has been executed.'
+    return paras('{env_var}: The value of this environment variable is the absolute path of this directory '
+                 '(after the {phase[act]} phase has been executed).'
                  .format(phase=phase,
                          env_var=ENV_VAR_RESULT))
 
 
 def _act_dir_environment_variables(phase: dict) -> list:
-    return paras('{env_var}: This environment variable is set to this directory.'
+    return paras('{env_var}: The value of this environment variable is the absolute path of this directory.'
                  .format(phase=phase,
                          env_var=ENV_VAR_ACT))
 
