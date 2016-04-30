@@ -34,7 +34,7 @@ class TheInstructionDocumentation(InstructionDocumentation):
                 paras('A path that is relative the current Home Directory')),
         ]
 
-    def cross_references(self) -> list:
+    def see_also(self) -> list:
         from exactly_lib.help.concepts.configuration_parameters.configuration_parameter import \
             HOME_DIRECTORY_CONFIGURATION_PARAMETER
         return [HOME_DIRECTORY_CONFIGURATION_PARAMETER.cross_reference_target()]

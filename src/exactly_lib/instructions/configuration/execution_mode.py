@@ -37,7 +37,7 @@ class TheInstructionDocumentation(InstructionDocumentation):
                  execution_modes_list()])
         ]
 
-    def cross_references(self) -> list:
+    def see_also(self) -> list:
         from exactly_lib.help.concepts.configuration_parameters.configuration_parameter import \
             EXECUTION_MODE_CONFIGURATION_PARAMETER
         return [EXECUTION_MODE_CONFIGURATION_PARAMETER.cross_reference_target()]

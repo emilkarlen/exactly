@@ -62,7 +62,8 @@ class VisitorThatRegisterClassOfVisitMethod(sut.ConceptDocumentationVisitor):
 
 class _PlainConceptDocumentationTestImpl(sut.PlainConceptDocumentation):
     def __init__(self):
-        super().__init__(sut.Name(str(type(self))))
+        singular = str(type(self))
+        super().__init__(sut.Name(singular, 'plural of ' + singular))
 
     def purpose(self) -> Description:
         return Description(text('PlainConceptDocumentation'), [])
@@ -70,7 +71,8 @@ class _PlainConceptDocumentationTestImpl(sut.PlainConceptDocumentation):
 
 class _ConfigurationParameterDocumentationTestImpl(sut.ConfigurationParameterDocumentation):
     def __init__(self):
-        super().__init__(sut.Name(str(type(self))))
+        singular = str(type(self))
+        super().__init__(sut.Name(singular, 'plural of ' + singular))
 
     def default_value_str(self) -> str:
         return 'default value str'

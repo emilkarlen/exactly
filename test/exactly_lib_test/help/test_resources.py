@@ -7,6 +7,7 @@ from exactly_lib.help.program_modes.test_case.instruction_documentation import I
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
 from exactly_lib.help.utils.cross_reference import CrossReferenceTextConstructor
 from exactly_lib.help.utils.description import Description
+from exactly_lib.help.utils.render import RenderingEnvironment
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure.core import Text
 from exactly_lib.util.textformat.structure.structures import para, text
@@ -61,7 +62,7 @@ class TestCasePhaseHelpForPhaseWithInstructionsTestImpl(TestCasePhaseDocumentati
         return Description(text('Single line purpose for phase ' + self.name.syntax),
                            [para('Rest of purpose for phase ' + self.name.syntax)])
 
-    def render(self) -> doc.SectionContents:
+    def render(self, environment: RenderingEnvironment) -> doc.SectionContents:
         return doc.SectionContents([para('Rendition of phase {0:emphasis}'.format(self.name))],
                                    [])
 

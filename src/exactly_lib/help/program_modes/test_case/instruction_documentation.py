@@ -59,7 +59,7 @@ class InstructionDocumentation:
         """
         return []
 
-    def cross_references(self) -> list:
+    def see_also(self) -> list:
         """
         :rtype [CrossReference]
         """

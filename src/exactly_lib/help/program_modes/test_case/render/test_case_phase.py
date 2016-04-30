@@ -5,4 +5,4 @@ from exactly_lib.util.textformat.structure import document as doc
 
 class TestCasePhaseOverviewRenderer(TestCasePhaseRendererBase):
     def apply(self, environment: RenderingEnvironment) -> doc.SectionContents:
-        return self.test_case_phase_documentation.render()
+        return self.test_case_phase_documentation.render(environment)

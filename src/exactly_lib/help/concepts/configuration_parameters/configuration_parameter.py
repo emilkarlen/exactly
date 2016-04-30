@@ -22,7 +22,7 @@ def all_configuration_parameters() -> list:
 
 class _ExecutionModeConfigurationParameter(ConfigurationParameterDocumentation):
     def __init__(self):
-        super().__init__(Name('execution mode'))
+        super().__init__(Name('execution mode', 'execution modes'))
 
     def purpose(self) -> Description:
         return Description(text(_EXECUTION_MODE_SINGLE_LINE_DESCRIPTION
@@ -35,7 +35,7 @@ class _ExecutionModeConfigurationParameter(ConfigurationParameterDocumentation):
 
 class _HomeDirectoryConfigurationParameter(ConfigurationParameterDocumentation):
     def __init__(self):
-        super().__init__(Name('home directory'))
+        super().__init__(Name('home directory', 'home directories'))
 
     def purpose(self) -> Description:
         return Description(text(_HOME_DIRECTORY_SINGLE_LINE_DESCRIPTION),

@@ -3,7 +3,7 @@ from exactly_lib.cli.program_modes.help.program_modes.test_suite.help_request im
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp, \
     TestSuiteSectionHelp
 from exactly_lib.help.program_modes.test_suite.render import OverviewRenderer, SectionRenderer
-from exactly_lib.help.utils.render import SectionContentsRenderer
+from exactly_lib.help.utils.render import SectionContentsRenderer, RenderingEnvironment
 from exactly_lib.util.textformat.structure import document as doc
 
 
@@ -20,11 +20,12 @@ class TestSuiteHelpRendererResolver:
             return SectionRenderer(request.data)
         raise ValueError('Invalid %s: %s' % (str(TestSuiteHelpItem), str(item)))
 
-    def render(self, request: TestSuiteHelpRequest) -> doc.SectionContents:
+    def render(self, request: TestSuiteHelpRequest,
+               environment: RenderingEnvironment) -> doc.SectionContents:
         item = request.item
         if item is TestSuiteHelpItem.OVERVIEW:
-            return OverviewRenderer(self._contents).apply()
+            return OverviewRenderer(self._contents).apply(environment)
         if item is TestSuiteHelpItem.SECTION:
             assert isinstance(request.data, TestSuiteSectionHelp)
-            return SectionRenderer(request.data).apply()
+            return SectionRenderer(request.data).apply(environment)
         raise ValueError('Invalid %s: %s' % (str(TestSuiteHelpItem), str(item)))

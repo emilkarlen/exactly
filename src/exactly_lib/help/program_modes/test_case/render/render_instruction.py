@@ -1,9 +1,9 @@
 from exactly_lib.help.program_modes.test_case.instruction_documentation import InstructionDocumentation, \
     InvokationVariant, \
     SyntaxElementDescription
-from exactly_lib.help.utils.render import SectionContentsRenderer, RenderingEnvironment
+from exactly_lib.help.utils.render import SectionContentsRenderer, RenderingEnvironment, cross_reference_list
 from exactly_lib.util.textformat.structure import document as doc, paragraph, lists
-from exactly_lib.util.textformat.structure.structures import para, text, section, simple_header_only_list
+from exactly_lib.util.textformat.structure.structures import para, text, section
 
 LIST_INDENT = 2
 
@@ -25,13 +25,10 @@ class InstructionManPageRenderer(SectionContentsRenderer):
         if main_description_rest:
             sub_sections.append(section('DESCRIPTION',
                                         main_description_rest))
-        cross_references = documentation.cross_references()
+        cross_references = documentation.see_also()
         if cross_references:
-            cross_reference_list = simple_header_only_list([environment.cross_ref_text_constructor.apply(cross_ref)
-                                                            for cross_ref in cross_references],
-                                                           lists.ListType.ITEMIZED_LIST)
-            sub_sections.append(section('SEE ALSO',
-                                        [cross_reference_list]))
+            cross_ref_list = cross_reference_list(cross_references, environment)
+            sub_sections.append(section('SEE ALSO', [cross_ref_list]))
         prelude_paragraphs = [para(documentation.single_line_description())]
         return doc.SectionContents(prelude_paragraphs,
                                    sub_sections)

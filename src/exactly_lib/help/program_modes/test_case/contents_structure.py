@@ -2,6 +2,7 @@ from exactly_lib.help.concepts.concept_structure import ConceptDocumentation
 from exactly_lib.help.program_modes.test_case.instruction_documentation import InstructionDocumentation
 from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.description import Description
+from exactly_lib.help.utils.render import RenderingEnvironment
 from exactly_lib.util.textformat.structure import document as doc
 
 
@@ -40,7 +41,7 @@ class TestCasePhaseDocumentation:
     def purpose(self) -> Description:
         raise NotImplementedError()
 
-    def render(self) -> doc.SectionContents:
+    def render(self, environment: RenderingEnvironment) -> doc.SectionContents:
         raise NotImplementedError()
 
     @property
@@ -53,6 +54,13 @@ class TestCasePhaseDocumentation:
         :return: None if this phase does not have instructions.
         """
         raise NotImplementedError()
+
+    @property
+    def see_also(self) -> list:
+        """
+        :rtype [CrossReferenceTarget]
+        """
+        return []
 
 
 class TestCaseHelp(tuple):
