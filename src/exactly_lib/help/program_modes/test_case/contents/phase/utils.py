@@ -8,8 +8,8 @@ def pwd_at_start_of_phase_for_configuration_phase() -> list:
 
 
 def pwd_at_start_of_phase_first_phase_executed_in_the_sandbox() -> list:
-    return normalize_and_parse('The Present Working Directory is the %s/ sub directory of the sandbox.'
-                               % SUB_DIRECTORY__ACT)
+    return normalize_and_parse('At the beginning of the phase, the Present Working Directory (PWD) '
+                               'is the %s/ sub directory of the sandbox.' % SUB_DIRECTORY__ACT)
 
 
 def pwd_at_start_of_phase_for_non_first_phases() -> list:

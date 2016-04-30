@@ -20,6 +20,7 @@ def all_plain_concepts() -> list:
     return [
         SANDBOX_CONCEPT,
         CONFIGURATION_PARAMETER_CONCEPT,
+        ENVIRONMENT_VARIABLE_CONCEPT,
     ]
 
 
@@ -41,7 +42,7 @@ class _Sandbox(PlainConceptDocumentation):
 SANDBOX_CONCEPT = _Sandbox()
 
 _SANDBOX_SINGLE_LINE_DESCRIPTION = """\
-The temporary directory structure where the phases of a test case are executed."""
+The temporary directory structure where a test case are executed."""
 
 _SANDBOX_PRE_DIRECTORY_TREE = """\
 Every test case uses its own sandbox.
@@ -130,6 +131,24 @@ def directory_structure_list(dir_with_sub_dir_list: list) -> ParagraphItem:
         items.append(lists.HeaderContentListItem(text(dir_wsd.name + '/'), sub_dirs_items))
     return lists.HeaderContentList(items,
                                    lists.Format(lists.ListType.VARIABLE_LIST))
+
+
+class _EnvironmentVariableConcept(PlainConceptDocumentation):
+    def __init__(self):
+        super().__init__(Name('environment variable', 'environment variables'))
+
+    def purpose(self) -> Description:
+        return Description(text(_ENVIRONMENT_VARIABLE_SINGLE_LINE_DESCRIPTION),
+                           normalize_and_parse(_ENVIRONMENT_VARIABLE_REST_DESCRIPTION))
+
+
+_ENVIRONMENT_VARIABLE_SINGLE_LINE_DESCRIPTION = """\
+Environment variables that are available to instructions."""
+
+_ENVIRONMENT_VARIABLE_REST_DESCRIPTION = """\
+TODO _ENVIRONMENT_VARIABLE_REST_DESCRIPTION"""
+
+ENVIRONMENT_VARIABLE_CONCEPT = _EnvironmentVariableConcept()
 
 
 class _ConfigurationParameterConcept(PlainConceptDocumentation):
