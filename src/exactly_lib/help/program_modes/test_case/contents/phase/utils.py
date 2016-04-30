@@ -9,8 +9,9 @@ def pwd_at_start_of_phase_for_configuration_phase() -> list:
 
 def pwd_at_start_of_phase_for_non_first_phases() -> list:
     return normalize_and_parse("""\
-    TODO PWD is what the phase before set it to.
-    Or the %s/ sub directory of the sandbox.""" % SUB_DIRECTORY__ACT)
+    The Present Working Directory is the same as at the end of the previous phase.
+
+    (PWD is the %s/ sub directory of the sandbox, if it has not been changed.)""" % SUB_DIRECTORY__ACT)
 
 
 def env_vars_for_configuration_phase() -> list:
