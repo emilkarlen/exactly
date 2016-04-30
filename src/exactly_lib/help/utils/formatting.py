@@ -102,3 +102,9 @@ def cli_option(s: str) -> str:
 
 def emphasis(s: str) -> str:
     return '"' + s + '"'
+
+
+def term(s: str) -> str:
+    return '"' + s + '"'
+
+
