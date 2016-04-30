@@ -24,12 +24,12 @@ class TheInstructionDocumentation(InstructionDocumentation):
         return [para('The default mode (of not set by this instruction) is %s.' % NAME_DEFAULT)]
 
     def single_line_description(self) -> str:
-        from exactly_lib.help.concepts.configuration_parameters.configuration_parameter import \
+        from exactly_lib.help.concepts.configuration_parameters.execution_mode import \
             EXECUTION_MODE_CONFIGURATION_PARAMETER
         return 'Sets the %s.' % EXECUTION_MODE_CONFIGURATION_PARAMETER.name().singular
 
     def invokation_variants(self) -> list:
-        from exactly_lib.help.concepts.configuration_parameters.configuration_parameter import execution_modes_list
+        from exactly_lib.help.concepts.configuration_parameters.execution_mode import execution_modes_list
         return [
             InvokationVariant(
                 'MODE',
@@ -38,7 +38,7 @@ class TheInstructionDocumentation(InstructionDocumentation):
         ]
 
     def see_also(self) -> list:
-        from exactly_lib.help.concepts.configuration_parameters.configuration_parameter import \
+        from exactly_lib.help.concepts.configuration_parameters.execution_mode import \
             EXECUTION_MODE_CONFIGURATION_PARAMETER
         return [EXECUTION_MODE_CONFIGURATION_PARAMETER.cross_reference_target()]
 

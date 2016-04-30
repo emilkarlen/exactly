@@ -1,7 +1,7 @@
 from exactly_lib.execution import execution_directory_structure as sds
 from exactly_lib.execution.environment_variables import ENV_VAR_RESULT, ENV_VAR_ACT
 from exactly_lib.help.concepts.concept_structure import Name, PlainConceptDocumentation
-from exactly_lib.help.concepts.configuration_parameters.configuration_parameter import all_configuration_parameters
+from exactly_lib.help.concepts.configuration_parameters.all_configuration_parameters import all_configuration_parameters
 from exactly_lib.help.concepts.utils import sorted_concepts_list
 from exactly_lib.help.utils.description import Description
 from exactly_lib.help.utils.formatting import AnyInstructionNameDictionary
