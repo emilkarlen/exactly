@@ -44,3 +44,12 @@ and the test case halts with an error.
 
 Otherwise, the {following_phase} phase follows.
 """
+
+
+def sequence_info__preceding_phase(following_phase: SectionName) -> list:
+    return normalize_and_parse(_SEQUENCE_INFO__PRECEDING_PHASE.format(following_phase=following_phase))
+
+
+_SEQUENCE_INFO__PRECEDING_PHASE = """\
+This phase is executed directly after the {following_phase} phase.
+"""

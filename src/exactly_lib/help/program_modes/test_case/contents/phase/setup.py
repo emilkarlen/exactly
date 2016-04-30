@@ -1,13 +1,14 @@
 from exactly_lib.execution.environment_variables import EXISTS_AT_SETUP_MAIN
 from exactly_lib.help.concepts.plain_concepts.environment_variable import ENVIRONMENT_VARIABLE_CONCEPT
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
+from exactly_lib.help.cross_reference_id import TestCasePhaseCrossReference
 from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
     pwd_at_start_of_phase_first_phase_executed_in_the_sandbox, sequence_info__succeeding_phase
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCasePhaseInstructionSet
 from exactly_lib.help.program_modes.test_case.phase_help_contents_structures import \
     TestCasePhaseDocumentationForPhaseWithInstructions, PhaseSequenceInfo, ExecutionEnvironmentInfo
 from exactly_lib.help.utils.description import Description
-from exactly_lib.help.utils.phase_names import phase_name_dictionary, ACT_PHASE_NAME
+from exactly_lib.help.utils.phase_names import phase_name_dictionary, ACT_PHASE_NAME, CONFIGURATION_PHASE_NAME
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure.structures import text
 
@@ -46,6 +47,8 @@ class SetupPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstructions
         return [
             SANDBOX_CONCEPT.cross_reference_target(),
             ENVIRONMENT_VARIABLE_CONCEPT.cross_reference_target(),
+            TestCasePhaseCrossReference(CONFIGURATION_PHASE_NAME.plain),
+            TestCasePhaseCrossReference(ACT_PHASE_NAME.plain),
         ]
 
     def _parse(self, multi_line_string: str) -> list:

@@ -21,5 +21,9 @@ ALL = (
 def phase_name_dictionary() -> dict:
     phase_names = {}
     for phase in ALL:
-        phase_names[phase.plain.replace('-', '_')] = phase
+        phase_names[phase_name_dict_key_for(phase.plain)] = phase
     return phase_names
+
+
+def phase_name_dict_key_for(phase_name: str) -> str:
+    return phase_name.replace('-', '_')
