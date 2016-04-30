@@ -35,7 +35,7 @@ class TheInstructionDocumentation(InstructionDocumentation):
         ]
 
     def see_also(self) -> list:
-        from exactly_lib.help.concepts.configuration_parameters.configuration_parameter import \
+        from exactly_lib.help.concepts.configuration_parameters.home_directory import \
             HOME_DIRECTORY_CONFIGURATION_PARAMETER
         return [HOME_DIRECTORY_CONFIGURATION_PARAMETER.cross_reference_target()]
 

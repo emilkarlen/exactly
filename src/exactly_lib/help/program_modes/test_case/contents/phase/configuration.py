@@ -1,8 +1,7 @@
 from exactly_lib.default.program_modes.test_case.default_instruction_names import EXECUTION_MODE_INSTRUCTION_NAME
 from exactly_lib.execution.execution_mode import NAME_SKIP
 from exactly_lib.help.concepts.concept import CONFIGURATION_PARAMETER_CONCEPT
-from exactly_lib.help.concepts.configuration_parameters.configuration_parameter import \
-    EXECUTION_MODE_CONFIGURATION_PARAMETER
+from exactly_lib.help.concepts.configuration_parameters.execution_mode import EXECUTION_MODE_CONFIGURATION_PARAMETER
 from exactly_lib.help.cross_reference_id import TestCasePhaseInstructionCrossReference
 from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
     pwd_at_start_of_phase_for_configuration_phase, \
