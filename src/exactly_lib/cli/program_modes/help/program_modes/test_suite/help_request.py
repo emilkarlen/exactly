@@ -27,5 +27,5 @@ class TestSuiteHelpRequest(HelpRequest):
         return self._name
 
     @property
-    def data(self) -> str:
+    def data(self):
         return self._data

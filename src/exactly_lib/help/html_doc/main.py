@@ -143,7 +143,7 @@ class HtmlDocGenerator:
             header = docs.anchor_text(docs.text(phase_presentation_str),
                                       cross_reference_target)
             section = doc.Section(header,
-                                  phase.render())
+                                  phase.render(self.rendering_environment))
             target_info_node = cross_ref.TargetInfoNode(cross_ref.TargetInfo(phase_presentation_str,
                                                                              cross_reference_target),
                                                         [])
@@ -165,6 +165,7 @@ class HtmlDocGenerator:
             phase_instruction_sections = []
             phase_instruction_targets = []
             for instruction_doc in phase.instruction_set.instruction_descriptions:
+                # TODO refactor this into separate method
                 assert isinstance(instruction_doc, InstructionDocumentation)
                 instruction_cross_ref_target = cross_ref.TestCasePhaseInstructionCrossReference(
                     phase.name.plain,

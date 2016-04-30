@@ -25,7 +25,7 @@ def all_plain_concepts() -> list:
 
 class _Sandbox(PlainConceptDocumentation):
     def __init__(self):
-        super().__init__(Name('sandbox'))
+        super().__init__(Name('sandbox', 'sandboxes'))
 
     def purpose(self) -> Description:
         phase = phase_name_dictionary()
@@ -134,7 +134,7 @@ def directory_structure_list(dir_with_sub_dir_list: list) -> ParagraphItem:
 
 class _ConfigurationParameterConcept(PlainConceptDocumentation):
     def __init__(self):
-        super().__init__(Name('configuration parameter'))
+        super().__init__(Name('configuration parameter', 'configuration parameters'))
 
     def purpose(self) -> Description:
         return Description(text(_CONFIGURATION_PARAMETER_SINGLE_LINE_DESCRIPTION.format(CONFIGURATION_PHASE_NAME)),

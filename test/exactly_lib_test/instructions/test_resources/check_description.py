@@ -45,7 +45,7 @@ class TestInstructionName(WithDescriptionBase):
 
 class TestCrossReferences(WithDescriptionBase):
     def runTest(self):
-        actual = self.description.cross_references()
+        actual = self.description.see_also()
         va.every_element('cross references', va.IsInstance(CrossReferenceId)).apply(self, actual)
 
 

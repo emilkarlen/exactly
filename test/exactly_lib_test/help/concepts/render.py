@@ -37,7 +37,7 @@ class TestAllConceptsList(unittest.TestCase):
 class TestPlainIndividualConcept(unittest.TestCase):
     def test_concept_with_only_single_line_description(self):
         # ARRANGE #
-        concept = PlainConceptTestImpl(Name('name'),
+        concept = PlainConceptTestImpl(Name('name', 'names'),
                                        Description(text('single line name'),
                                                    []))
         renderer = sut.IndividualConceptRenderer(concept)
@@ -48,7 +48,7 @@ class TestPlainIndividualConcept(unittest.TestCase):
 
     def test_concept_with_complex_description(self):
         # ARRANGE #
-        concept = PlainConceptTestImpl(Name('name'),
+        concept = PlainConceptTestImpl(Name('name', 'names'),
                                        Description(text('single line name'),
                                                    [para('rest paragraph')]))
         renderer = sut.IndividualConceptRenderer(concept)
@@ -61,7 +61,7 @@ class TestPlainIndividualConcept(unittest.TestCase):
 class TestIndividualConfigurationParameter(unittest.TestCase):
     def test_concept_with_only_single_line_description(self):
         # ARRANGE #
-        concept = ConfigurationParameterTestImpl(Name('name'),
+        concept = ConfigurationParameterTestImpl(Name('name', 'names'),
                                                  Description(text('single line name'),
                                                              []),
                                                  'default value')
@@ -73,7 +73,7 @@ class TestIndividualConfigurationParameter(unittest.TestCase):
 
     def test_concept_with_complex_description(self):
         # ARRANGE #
-        concept = ConfigurationParameterTestImpl(Name('name'),
+        concept = ConfigurationParameterTestImpl(Name('name', 'names'),
                                                  Description(text('single line name'),
                                                              [para('rest paragraph')]),
                                                  'default value')

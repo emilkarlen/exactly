@@ -400,7 +400,7 @@ class TestConceptHelp(unittest.TestCase):
 
 class ConceptTestImpl(PlainConceptDocumentation):
     def __init__(self, singular_name: str):
-        super().__init__(Name(singular_name))
+        super().__init__(Name(singular_name, 'plural of ' + singular_name))
 
     def purpose(self) -> Description:
         return single_line_description('single line description')

@@ -1,4 +1,5 @@
 from exactly_lib.help import cross_reference_id
+from exactly_lib.help.utils.formatting import SectionName
 from exactly_lib.util.textformat.structure.core import Text, CrossReferenceText
 
 
@@ -10,16 +11,17 @@ class CrossReferenceTextConstructor(object):
 
 class _TitleRenderer(cross_reference_id.CrossReferenceIdVisitor):
     def visit_custom(self, x: cross_reference_id.CustomCrossReferenceId):
-        return 'TODO should this be removed?'
+        raise ValueError('Rendering of custom cross references is not supported ("%s")' %
+                         x.target_name)
 
     def visit_test_case_phase(self, x: cross_reference_id.TestCasePhaseCrossReference):
-        return 'TODO is this correct? "%s"' % x.phase_name
+        return 'Phase "%s"' % x.phase_name
 
     def visit_test_case_phase_instruction(self, x: cross_reference_id.TestCasePhaseInstructionCrossReference):
-        return 'TODO phase/instr %s/%s' % (x.phase_name, x.instruction_name)
+        return 'Instruction "{i}" (in phase {p})'.format(i=x.instruction_name,
+                                                         p=SectionName(x.phase_name))
 
     def visit_concept(self, x: cross_reference_id.ConceptCrossReferenceId):
         return 'Concept "' + x.concept_name + '"'
-
 
 _TITLE_RENDERER = _TitleRenderer()
