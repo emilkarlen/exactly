@@ -1,6 +1,6 @@
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet
+from exactly_lib.help.program_modes.common.render_instruction import instruction_set_list_item
 from exactly_lib.help.program_modes.test_case.contents.main.utils import TestCaseHelpRendererBase
-from exactly_lib.help.program_modes.test_case.render.render_instruction import instruction_set_list_item
 from exactly_lib.help.program_modes.test_case.render.utils import TestCasePhaseInstructionSetRendererBase
 from exactly_lib.help.utils.render import RenderingEnvironment
 from exactly_lib.util.textformat.structure import document as doc
