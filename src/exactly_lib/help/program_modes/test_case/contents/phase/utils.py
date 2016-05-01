@@ -1,9 +1,13 @@
-from exactly_lib.execution import environment_variables
+from exactly_lib.execution import environment_variables, execution_directory_structure
+from exactly_lib.execution import execution_directory_structure as sds
+from exactly_lib.execution.environment_variables import ENV_VAR_RESULT
 from exactly_lib.execution.execution_directory_structure import SUB_DIRECTORY__ACT
 from exactly_lib.execution.execution_mode import NAME_SKIP
 from exactly_lib.help.concepts.configuration_parameters.execution_mode import EXECUTION_MODE_CONFIGURATION_PARAMETER
+from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
 from exactly_lib.help.utils.formatting import SectionName
 from exactly_lib.util.textformat.parse import normalize_and_parse
+from exactly_lib.util.textformat.structure import structures as docs, table
 
 
 def pwd_at_start_of_phase_for_configuration_phase() -> list:
@@ -12,14 +16,14 @@ def pwd_at_start_of_phase_for_configuration_phase() -> list:
 
 def pwd_at_start_of_phase_first_phase_executed_in_the_sandbox() -> list:
     return normalize_and_parse('At the beginning of the phase, the Present Working Directory (PWD) '
-                               'is the %s/ sub directory of the sandbox.' % SUB_DIRECTORY__ACT)
+                               'is the %s/ sub directory of the sandbox.' % sds.SUB_DIRECTORY__ACT)
 
 
 def pwd_at_start_of_phase_for_non_first_phases() -> list:
     return normalize_and_parse("""\
     The Present Working Directory is the same as at the end of the previous phase.
 
-    (which is the %s/ sub directory of the sandbox, if it has not been changed.)""" % SUB_DIRECTORY__ACT)
+    (which is the %s/ sub directory of the sandbox, if it has not been changed.)""" % sds.SUB_DIRECTORY__ACT)
 
 
 def env_vars_for_configuration_phase() -> list:
@@ -67,4 +71,40 @@ _SEQUENCE_INFO__NOT_EXECUTED_IF_EXECUTION_MODE_IS_SKIP = """\
 If the {execution_mode} is set to {SKIP}, then this phase is not executed.
 
 Otherwise:
+"""
+
+
+def result_sub_dir_files_table() -> docs.ParagraphItem:
+    def row(name: str, file_name: str):
+        return [docs.cell(docs.paras(name)),
+                docs.cell(docs.paras(sds.SUB_DIRECTORY__RESULT + '/' + file_name))]
+
+    rows = [
+        row('exit code', sds.RESULT_FILE__EXITCODE),
+        row('stdout', sds.RESULT_FILE__STDOUT),
+        row('stderr', sds.RESULT_FILE__STDERR),
+    ]
+
+    return table.Table(table.TableFormat(),
+                       rows)
+
+
+def execution_environment_prologue_for_post_act_phase() -> list:
+    format_map = {
+        'result_subdir': sds.SUB_DIRECTORY__RESULT,
+        'sandbox': SANDBOX_CONCEPT.name().singular,
+        'ENV_VAR_RESULT': ENV_VAR_RESULT,
+    }
+    return (normalize_and_parse(_ENVIRONMENT_PROLOGUE_POST_ACT_RESULT_DIR.format_map(format_map)) +
+            [result_sub_dir_files_table()] +
+            normalize_and_parse(_ENVIRONMENT_PROLOGUE_POST_ACT_RESULT_ENV_VARIABLE.format_map(format_map)))
+
+
+_ENVIRONMENT_PROLOGUE_POST_ACT_RESULT_DIR = """\
+Instructions have access to the result of the SUT via
+the files in the {result_subdir}/ sub directory of the {sandbox}:
+"""
+_ENVIRONMENT_PROLOGUE_POST_ACT_RESULT_ENV_VARIABLE = """\
+The value of the {ENV_VAR_RESULT} environment variable is the absolute path of
+the {result_subdir}/ directory.
 """
