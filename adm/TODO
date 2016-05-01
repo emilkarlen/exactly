@@ -1,5 +1,25 @@
 -*- org -*-
 
+* TODO Test som inte skrivits: target-renderare för html
+* TODO Lägg till instr "file" till "cleanup"
+Finns ingen vettig anledning t att den inte skulle finns även här.
+* TODO Dok README/wiki
+Faser m instrukioner.
+Instruktioner härmar unix-kommandon m argument o växlar.
+
+Instr använder en deklarativ stil (namn o syntax).
+* TODO Nytt tc-exempel med skräddarsydd test av stdout/stderr/fil
+Verkar vara många befintliga shellcheck-likn verktyg som hanterar sånt, så
+känns vettigt att ha med ett här.
+Blir troligtvis behandling m externt program.
+
+Ev är det vettigt att bygga in funk för detta, nån form av reg-ex hantering.
+* TODO Snygga till rendering av html-tabeller
+Alldeles för mkt mellanrum mellan element.
+* TODO Se över namngivning av paket (singluaris/pluralis)
+"program_modes"
+"phase"
+"phases"
 * TODO Se till att tester inte körs två ggr
 T ex TestFinalResultFormatting körs nu två ggr
 (en gång m intern MainProgramRunner, eng gång m extern), trots att det inte
@@ -34,8 +54,25 @@ vad README ska innehålla.
 Det riskerar ju att atc (action to check) kan sabba
 filer där.
 * TODO Dokumentation
+** TODO Sortera "see also" på något lämpligt vis
+Ev automatisk sortering, men ä inte säker på att det finns något enkelt
+vettigt att tillgå att anv som sorteringsvärde.
+** TODO Byt ut "action to check" mot "system under test"
+action to check reffar visserligen till [act], men
+SUT ä den vedertagna benämningen.  O tror kan göra pgm mer lättillgängligt om
+den används.
+** TODO Dok på nätet: använd begrepp som används av likn pgm (googla!)
+... så att excactly hittas då man gör en likn sökning.
+
+"test command line application" dök upp som förslag nä ja googlade fr mobilen.
+** TODO Fas: fas-följd: nämna att faser hoppas över om fel inträffar
+Enda faserna som garranterat körs är conf/setup o cleanup.
+** TODO Koncept "environment variable"
+Lista env-vars o när de sätts.
+** TODO Förbättra koncept "home directory"
 ** TODO Dok tanken att instr tar arg pss som unix-kommandon m växlar
 Det här är ju en genomgående tanke.  Som sådan bör den dokumenteras/nämnas.
+Samt att unix-skal syntax används för quotning.
 ** TODO Programmets namn ska "konfas" i ApplicationHelp
 ** TODO Users Guide
 ** TODO I avsnitt om att [act] ä utgångsfas: exempel /bin/rm -rf *
@@ -952,6 +989,12 @@ Idag skapas den precis innan setup/validate.
 Ingen stor grej, men kan ev ändras.
 Alternativ ändrar man spec till att göra som idag.
 * TODO Ny funktionallitet
+** TODO Ny växel "--rel-res" för reffa filer i sandbox/result
+<2016-05-01 sön>
+** TODO Integration m perls TAP (Test Anything Protocol)
+<2016-05-01 sön>
+Om möjligt att anvnda programmet fr TAP skulle det troligtvis bli mer
+användbart.
 ** TODO Testa ange preprocessor för TF via kommandoraden
 ** TODO Inbyggd preprocessor
 Vore bäst om programmet innehöll en egen preprocessor.
