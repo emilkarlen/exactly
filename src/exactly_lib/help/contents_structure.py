@@ -12,6 +12,7 @@ from exactly_lib.help.program_modes.test_suite.section.cases import CasesSection
 from exactly_lib.help.program_modes.test_suite.section.configuration import ConfigurationSectionDocumentation
 from exactly_lib.help.program_modes.test_suite.section.suites import SuitesSectionDocumentation
 from exactly_lib.test_case.instruction_setup import InstructionsSetup
+from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_set import CONFIGURATION_INSTRUCTIONS
 from exactly_lib.test_suite.parser import SECTION_NAME__SUITS, SECTION_NAME__CASES, SECTION_NAME__CONF
 
 
@@ -48,7 +49,9 @@ def application_help_for(instructions_setup: InstructionsSetup) -> ApplicationHe
                            ConceptsHelp(all_concepts()),
                            TestCaseHelp(phase_helps_for(instructions_setup)),
                            TestSuiteHelp([
-                               ConfigurationSectionDocumentation(SECTION_NAME__CONF),
+                               ConfigurationSectionDocumentation(SECTION_NAME__CONF,
+                                                                 instruction_set_help(
+                                                                     CONFIGURATION_INSTRUCTIONS)),
                                CasesSectionDocumentation(SECTION_NAME__SUITS),
                                SuitesSectionDocumentation(SECTION_NAME__CASES),
                            ]))
@@ -58,19 +61,19 @@ def phase_helps_for(instructions_setup: InstructionsSetup) -> iter:
     return [
         configuration.ConfigurationPhaseDocumentation(phase_help_name(phases.CONFIGURATION),
                                                       instruction_set_help(
-                                                          instructions_setup.config_instruction_set.values())),
+                                                          instructions_setup.config_instruction_set)),
         setup.SetupPhaseDocumentation(phase_help_name(phases.SETUP),
-                                      instruction_set_help(instructions_setup.setup_instruction_set.values())),
+                                      instruction_set_help(instructions_setup.setup_instruction_set)),
         act.ActPhaseDocumentation(phase_help_name(phases.ACT)),
         before_assert.BeforeAssertPhaseDocumentation(phase_help_name(phases.BEFORE_ASSERT),
                                                      instruction_set_help(
-                                                         instructions_setup.before_assert_instruction_set.values())),
+                                                         instructions_setup.before_assert_instruction_set)),
         assert_.AssertPhaseDocumentation(phase_help_name(phases.ASSERT),
-                                         instruction_set_help(instructions_setup.assert_instruction_set.values())),
+                                         instruction_set_help(instructions_setup.assert_instruction_set)),
         cleanup.CleanupPhaseDocumentation(phase_help_name(phases.CLEANUP),
-                                          instruction_set_help(instructions_setup.cleanup_instruction_set.values())),
+                                          instruction_set_help(instructions_setup.cleanup_instruction_set)),
     ]
 
 
-def instruction_set_help(single_instruction_setup_list: iter) -> SectionInstructionSet:
-    return SectionInstructionSet(map(lambda x: x.description, single_instruction_setup_list))
+def instruction_set_help(single_instruction_setup_dic: dict) -> SectionInstructionSet:
+    return SectionInstructionSet(map(lambda x: x.description, single_instruction_setup_dic.values()))
