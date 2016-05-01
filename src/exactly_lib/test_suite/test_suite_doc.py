@@ -13,7 +13,8 @@ class TestSuiteDocument(tuple):
                                                      ConfigurationSectionInstruction)
         TestSuiteDocument.__assert_instruction_class(suites_section,
                                                      TestSuiteSectionInstruction)
-        TestSuiteDocument.__assert_instruction_class(cases_section, TestCaseSectionInstruction)
+        TestSuiteDocument.__assert_instruction_class(cases_section,
+                                                     TestCaseSectionInstruction)
         return tuple.__new__(cls, (configuration_section,
                                    suites_section,
                                    cases_section))

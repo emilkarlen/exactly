@@ -5,7 +5,7 @@ from exactly_lib.help.concepts.concept_structure import PlainConceptDocumentatio
 from exactly_lib.help.concepts.configuration_parameters.home_directory import HOME_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
 from exactly_lib.help.utils.description import DescriptionWithSubSections
-from exactly_lib.help.utils.formatting import SectionName
+from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.phase_names import SETUP_PHASE_NAME, BEFORE_ASSERT_PHASE_NAME
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import lists
@@ -17,8 +17,8 @@ class _EnvironmentVariableConcept(PlainConceptDocumentation):
     def __init__(self):
         super().__init__(Name('environment variable', 'environment variables'))
         self.format_map = {
-            'program_name': program_info.PROGRAM_NAME,
-            'home_directory': HOME_DIRECTORY_CONFIGURATION_PARAMETER.name().singular,
+            'program_name': formatting.program_name(program_info.PROGRAM_NAME),
+            'home_directory': formatting.term(HOME_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
             'act_sub_dir': sds.SUB_DIRECTORY__ACT,
             'tmp_sub_dir': sds.PATH__TMP_USER,
             'result_sub_dir': sds.SUB_DIRECTORY__RESULT,
@@ -26,7 +26,7 @@ class _EnvironmentVariableConcept(PlainConceptDocumentation):
 
     def purpose(self) -> DescriptionWithSubSections:
         return DescriptionWithSubSections(
-            docs.text(_ENVIRONMENT_VARIABLE_SINGLE_LINE_DESCRIPTION),
+            docs.text(_ENVIRONMENT_VARIABLE_SINGLE_LINE_DESCRIPTION.format_map(self.format_map)),
             SectionContents([],
                             [self._variables_from_setup(),
                              self._variables_from_before_assert()]))
@@ -58,7 +58,7 @@ class _EnvironmentVariableConcept(PlainConceptDocumentation):
                                            normalize_and_parse(description.format_map(self.format_map)))
 
 
-def _variables_section(first_phase_name: SectionName,
+def _variables_section(first_phase_name: formatting.SectionName,
                        paragraphs: list) -> docs.Section:
     return docs.section(
         'Variables available in {first_phase_name} and later phases'.format(first_phase_name=first_phase_name.emphasis),
@@ -70,7 +70,7 @@ def _variables_list_paragraphs(items: list) -> list:
 
 
 _ENVIRONMENT_VARIABLE_SINGLE_LINE_DESCRIPTION = """\
-Environment variables {program_name} sets."""
+Environment variables set by {program_name}."""
 
 ENVIRONMENT_VARIABLE_CONCEPT = _EnvironmentVariableConcept()
 
