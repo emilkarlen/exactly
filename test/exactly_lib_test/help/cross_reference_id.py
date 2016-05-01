@@ -51,6 +51,32 @@ class CrossReferenceIdVisitorTest(unittest.TestCase):
                       returned,
                       'The object itself is expected to be returned by the visitor')
 
+    def test_visit_TestSuiteSectionCrossReference(self):
+        # ARRANGE #
+        x = sut.TestSuiteSectionCrossReference('section name')
+        visitor = VisitorThatRegistersVisitedClassesAndReturnsTheArgument()
+        # ACT #
+        returned = visitor.visit(x)
+        # ASSERT #
+        self.assertEqual([sut.TestSuiteSectionCrossReference],
+                         visitor.visited_classes)
+        self.assertIs(x,
+                      returned,
+                      'The object itself is expected to be returned by the visitor')
+
+    def test_visit_TestSuiteSectionInstructionCrossReference(self):
+        # ARRANGE #
+        x = sut.TestSuiteSectionInstructionCrossReference('section name', 'instruction name')
+        visitor = VisitorThatRegistersVisitedClassesAndReturnsTheArgument()
+        # ACT #
+        returned = visitor.visit(x)
+        # ASSERT #
+        self.assertEqual([sut.TestSuiteSectionInstructionCrossReference],
+                         visitor.visited_classes)
+        self.assertIs(x,
+                      returned,
+                      'The object itself is expected to be returned by the visitor')
+
     def test_visit_CustomCrossReferenceId(self):
         # ARRANGE #
         x = sut.CustomCrossReferenceId('custom name')
@@ -87,6 +113,14 @@ class VisitorThatRegistersVisitedClassesAndReturnsTheArgument(sut.CrossReference
 
     def visit_test_case_phase_instruction(self, x: sut.TestCasePhaseInstructionCrossReference):
         self.visited_classes.append(sut.TestCasePhaseInstructionCrossReference)
+        return x
+
+    def visit_test_suite_section(self, x: sut.TestSuiteSectionCrossReference):
+        self.visited_classes.append(sut.TestSuiteSectionCrossReference)
+        return x
+
+    def visit_test_suite_section_instruction(self, x: sut.TestSuiteSectionInstructionCrossReference):
+        self.visited_classes.append(sut.TestSuiteSectionInstructionCrossReference)
         return x
 
     def visit_custom(self, x: sut.CustomCrossReferenceId):

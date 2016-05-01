@@ -1,6 +1,7 @@
 from exactly_lib.help import cross_reference_id
 from exactly_lib.help.utils.formatting import AnyInstructionNameDictionary
 from exactly_lib.help.utils.phase_names import phase_name_dictionary, phase_name_dict_key_for
+from exactly_lib.help.utils.suite_section_names import suite_section_name_dictionary, suite_section_name_dict_key_for
 from exactly_lib.util.textformat.structure.core import Text, CrossReferenceText
 
 
@@ -14,6 +15,7 @@ class _TitleRenderer(cross_reference_id.CrossReferenceIdVisitor):
     def __init__(self):
         self.any_instruction = AnyInstructionNameDictionary()
         self.phase_name_dict = phase_name_dictionary()
+        self.suite_section_name_dict = suite_section_name_dictionary()
 
     def visit_custom(self, x: cross_reference_id.CustomCrossReferenceId):
         raise ValueError('Rendering of custom cross references is not supported ("%s")' %
@@ -26,6 +28,14 @@ class _TitleRenderer(cross_reference_id.CrossReferenceIdVisitor):
         return 'Instruction {i} (in phase {p})'.format(
             i=self.any_instruction[x.instruction_name],
             p=self.phase_name_dict[phase_name_dict_key_for(x.phase_name)].emphasis)
+
+    def visit_test_suite_section(self, x: cross_reference_id.TestSuiteSectionCrossReference):
+        return 'Suite section %s' % self.suite_section_name_dict[suite_section_name_dict_key_for(x.section_name)].emphasis
+
+    def visit_test_suite_section_instruction(self, x: cross_reference_id.TestSuiteSectionInstructionCrossReference):
+        return 'Suite instruction {i} (in section {p})'.format(
+            i=self.any_instruction[x.instruction_name],
+            p=self.suite_section_name_dict[suite_section_name_dict_key_for(x.section_name)].emphasis)
 
     def visit_concept(self, x: cross_reference_id.ConceptCrossReferenceId):
         return 'Concept "' + x.concept_name + '"'
