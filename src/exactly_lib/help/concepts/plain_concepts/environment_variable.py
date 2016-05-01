@@ -1,4 +1,6 @@
+from exactly_lib import program_info
 from exactly_lib.execution import environment_variables
+from exactly_lib.execution import execution_directory_structure as sds
 from exactly_lib.help.concepts.concept_structure import PlainConceptDocumentation, Name
 from exactly_lib.help.concepts.configuration_parameters.home_directory import HOME_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
@@ -14,11 +16,18 @@ from exactly_lib.util.textformat.structure.document import SectionContents
 class _EnvironmentVariableConcept(PlainConceptDocumentation):
     def __init__(self):
         super().__init__(Name('environment variable', 'environment variables'))
+        self.format_map = {
+            'program_name': program_info.PROGRAM_NAME,
+            'home_directory': HOME_DIRECTORY_CONFIGURATION_PARAMETER.name().singular,
+            'act_sub_dir': sds.SUB_DIRECTORY__ACT,
+            'tmp_sub_dir': sds.PATH__TMP_USER,
+            'result_sub_dir': sds.SUB_DIRECTORY__RESULT,
+        }
 
     def purpose(self) -> DescriptionWithSubSections:
         return DescriptionWithSubSections(
             docs.text(_ENVIRONMENT_VARIABLE_SINGLE_LINE_DESCRIPTION),
-            SectionContents(normalize_and_parse(_ENVIRONMENT_VARIABLE_REST_DESCRIPTION),
+            SectionContents([],
                             [self._variables_from_setup(),
                              self._variables_from_before_assert()]))
 
@@ -46,7 +55,7 @@ class _EnvironmentVariableConcept(PlainConceptDocumentation):
               var_name: str,
               description: str) -> lists.HeaderContentListItem:
         return lists.HeaderContentListItem(docs.text(var_name),
-                                           normalize_and_parse(description))
+                                           normalize_and_parse(description.format_map(self.format_map)))
 
 
 def _variables_section(first_phase_name: SectionName,
@@ -61,25 +70,22 @@ def _variables_list_paragraphs(items: list) -> list:
 
 
 _ENVIRONMENT_VARIABLE_SINGLE_LINE_DESCRIPTION = """\
-Environment variables that are available to instructions."""
-
-_ENVIRONMENT_VARIABLE_REST_DESCRIPTION = """\
-TODO _ENVIRONMENT_VARIABLE_REST_DESCRIPTION"""
+Environment variables {program_name} sets."""
 
 ENVIRONMENT_VARIABLE_CONCEPT = _EnvironmentVariableConcept()
 
 _DESCRIPTION_HOME = """\
-TODO
+The absolute path of the {home_directory}.
 """
 
 _DESCRIPTION_ACT = """\
-TODO
+The absolute path of the {act_sub_dir}/ sub directory of the sandbox directory.
 """
 
 _DESCRIPTION_TMP = """\
-TODO
+The absolute path of the {tmp_sub_dir}/ sub directory of the sandbox directory.
 """
 
 _DESCRIPTION_RESULT = """\
-TODO
+The absolute path of the {result_sub_dir}/ sub directory of the sandbox directory.
 """
