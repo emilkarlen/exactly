@@ -3,7 +3,7 @@ from xml.etree.ElementTree import Element, SubElement
 from exactly_lib import program_info
 from exactly_lib.util.textformat.formatting.html.utils import ElementPopulator, ComplexElementPopulator
 
-PAGE_TITLE = '%s Reference Manual' % program_info.PROGRAM_NAME
+PAGE_TITLE = 'Reference Manual for %s' % program_info.PROGRAM_NAME.capitalize()
 TOC_TITLE = 'Table of Contents'
 ELEMENT_STYLES = """\
 pre {
