@@ -1,8 +1,9 @@
 from exactly_lib.help.contents_structure import ApplicationHelp
 from exactly_lib.help.cross_reference_id import CrossReferenceId
+from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet, \
+    SectionDocumentation, ConceptsHelp
 from exactly_lib.help.program_modes.main_program.contents_structure import MainProgramHelp
-from exactly_lib.help.program_modes.test_case.contents_structure import TestCasePhaseInstructionSet, \
-    TestCasePhaseDocumentation, ConceptsHelp, TestCaseHelp
+from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from exactly_lib.help.program_modes.test_case.instruction_documentation import InstructionDocumentation
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
 from exactly_lib.help.utils.cross_reference import CrossReferenceTextConstructor
@@ -29,17 +30,17 @@ def single_line_description_that_identifies_instruction_and_phase(phase_name: st
 
 
 def test_case_phase_help(phase_name: str,
-                         instruction_names: list) -> TestCasePhaseDocumentation:
+                         instruction_names: list) -> SectionDocumentation:
     instruction_set = test_case_phase_instruction_set(phase_name, instruction_names)
     return TestCasePhaseHelpForPhaseWithInstructionsTestImpl(phase_name,
                                                              instruction_set)
 
 
 def test_case_phase_instruction_set(phase_name: str,
-                                    instruction_names: list) -> TestCasePhaseInstructionSet:
+                                    instruction_names: list) -> SectionInstructionSet:
     instruction_descriptions = map(lambda name: instr_descr(phase_name, name),
                                    instruction_names)
-    return TestCasePhaseInstructionSet(instruction_descriptions)
+    return SectionInstructionSet(instruction_descriptions)
 
 
 def application_help_for(test_case_phase_helps: list,
@@ -51,10 +52,10 @@ def application_help_for(test_case_phase_helps: list,
                            TestSuiteHelp(suite_sections))
 
 
-class TestCasePhaseHelpForPhaseWithInstructionsTestImpl(TestCasePhaseDocumentation):
+class TestCasePhaseHelpForPhaseWithInstructionsTestImpl(SectionDocumentation):
     def __init__(self,
                  name: str,
-                 instruction_set: TestCasePhaseInstructionSet):
+                 instruction_set: SectionInstructionSet):
         super().__init__(name)
         self._instruction_set = instruction_set
 
@@ -71,7 +72,7 @@ class TestCasePhaseHelpForPhaseWithInstructionsTestImpl(TestCasePhaseDocumentati
         return True
 
     @property
-    def instruction_set(self) -> TestCasePhaseInstructionSet:
+    def instruction_set(self) -> SectionInstructionSet:
         return self._instruction_set
 
 

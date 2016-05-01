@@ -31,7 +31,7 @@ class InstructionsSetup(tuple):
                 before_assert_instruction_set: dict,
                 cleanup_instruction_set: dict):
         """
-        Each dictionary is a mapping: instruction-name -> SingleInstructionSetup.
+        Each dictionary is a mapping: instruction-name -> `SingleInstructionSetup`.
 
         Each SingleInstructionSetup should parse and construct an instruction for
          the correct phase (of course). I.e., sub classes of Instruction.

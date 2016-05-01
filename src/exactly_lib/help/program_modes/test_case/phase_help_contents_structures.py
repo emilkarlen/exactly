@@ -1,5 +1,5 @@
-from exactly_lib.help.program_modes.test_case.contents_structure import TestCasePhaseDocumentation, \
-    TestCasePhaseInstructionSet
+from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet, \
+    SectionDocumentation
 from exactly_lib.help.program_modes.test_case.render.instruction_set import instruction_set_list
 from exactly_lib.help.utils.formatting import SectionName
 from exactly_lib.help.utils.render import RenderingEnvironment, cross_reference_list, transform_list_to_table
@@ -71,7 +71,7 @@ class ExecutionEnvironmentInfo(tuple):
         return self[2]
 
 
-class TestCasePhaseDocumentationBase(TestCasePhaseDocumentation):
+class SectionDocumentationBase(SectionDocumentation):
     def __init__(self,
                  name: str):
         super().__init__(name)
@@ -152,10 +152,10 @@ class TestCasePhaseDocumentationBase(TestCasePhaseDocumentation):
         raise NotImplementedError()
 
 
-class TestCasePhaseDocumentationForPhaseWithInstructions(TestCasePhaseDocumentationBase):
+class TestCasePhaseDocumentationForPhaseWithInstructions(SectionDocumentationBase):
     def __init__(self,
                  name: str,
-                 instruction_set: TestCasePhaseInstructionSet):
+                 instruction_set: SectionInstructionSet):
         """
         :param instruction_set: None if this phase does not have instructions.
         """
@@ -167,7 +167,7 @@ class TestCasePhaseDocumentationForPhaseWithInstructions(TestCasePhaseDocumentat
         return True
 
     @property
-    def instruction_set(self) -> TestCasePhaseInstructionSet:
+    def instruction_set(self) -> SectionInstructionSet:
         return self._instruction_set
 
     def contents_description(self) -> list:
@@ -180,7 +180,7 @@ class TestCasePhaseDocumentationForPhaseWithInstructions(TestCasePhaseDocumentat
         raise NotImplementedError()
 
 
-class TestCasePhaseDocumentationForPhaseWithoutInstructions(TestCasePhaseDocumentationBase):
+class TestCasePhaseDocumentationForPhaseWithoutInstructions(SectionDocumentationBase):
     def __init__(self,
                  name: str):
         super().__init__(name)
@@ -190,5 +190,5 @@ class TestCasePhaseDocumentationForPhaseWithoutInstructions(TestCasePhaseDocumen
         return False
 
     @property
-    def instruction_set(self) -> TestCasePhaseInstructionSet:
+    def instruction_set(self) -> SectionInstructionSet:
         return None

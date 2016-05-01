@@ -3,10 +3,10 @@ from exactly_lib.execution.execution_mode import NAME_SKIP
 from exactly_lib.help.concepts.configuration_parameters.execution_mode import EXECUTION_MODE_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.plain_concepts.configuration_parameter import CONFIGURATION_PARAMETER_CONCEPT
 from exactly_lib.help.cross_reference_id import TestCasePhaseInstructionCrossReference, TestCasePhaseCrossReference
+from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet
 from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
     pwd_at_start_of_phase_for_configuration_phase, \
     env_vars_for_configuration_phase
-from exactly_lib.help.program_modes.test_case.contents_structure import TestCasePhaseInstructionSet
 from exactly_lib.help.program_modes.test_case.phase_help_contents_structures import \
     TestCasePhaseDocumentationForPhaseWithInstructions, PhaseSequenceInfo, ExecutionEnvironmentInfo
 from exactly_lib.help.utils.description import Description
@@ -18,7 +18,7 @@ from exactly_lib.util.textformat.structure import structures as docs
 class ConfigurationPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstructions):
     def __init__(self,
                  name: str,
-                 instruction_set: TestCasePhaseInstructionSet):
+                 instruction_set: SectionInstructionSet):
         super().__init__(name, instruction_set)
 
     def purpose(self) -> Description:

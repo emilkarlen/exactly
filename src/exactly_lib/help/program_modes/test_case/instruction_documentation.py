@@ -4,7 +4,7 @@ class InvokationVariant:
                  description_rest: list):
         """
         :param syntax:
-        :type description_rest: [ParagraphItem]
+        :type description_rest: [`ParagraphItem`]
         """
         self.syntax = syntax
         self.description_rest = description_rest
@@ -17,8 +17,8 @@ class SyntaxElementDescription:
                  invokation_variants: list):
         """
         :param element_name:
-        :type description_rest: [ParagraphItem]
-        :type invokation_variants: [InvokationVariant]
+        :type description_rest: [`ParagraphItem`]
+        :type invokation_variants: [`InvokationVariant`]
         """
         self.element_name = element_name
         self.invokation_variants = invokation_variants
@@ -43,24 +43,24 @@ class InstructionDocumentation:
 
     def main_description_rest(self) -> list:
         """
-        :rtype [ParagraphItem]
+        :rtype [`ParagraphItem`]
         """
         return []
 
     def invokation_variants(self) -> list:
         """
-        :rtype [InvokationVariant]
+        :rtype [`InvokationVariant`]
         """
         return []
 
     def syntax_element_descriptions(self) -> list:
         """
-        :rtype [SyntaxElementDescription]
+        :rtype [`SyntaxElementDescription`]
         """
         return []
 
     def see_also(self) -> list:
         """
-        :rtype [CrossReference]
+        :rtype [`CrossReference`]
         """
         return []
