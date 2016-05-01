@@ -24,12 +24,12 @@ def env_vars_for_configuration_phase() -> list:
     return []
 
 
-def env_vars_up_to_act__TODO_CHECK_THIS() -> list:
+def env_vars_up_to_act() -> list:
     return environment_variables.SET_AT_SETUP__ENV_VARS + environment_variables.SET_AT_EDS__ENV_VARS
 
 
-def env_vars_after_act__TODO_CHECK_THIS() -> list:
-    return env_vars_up_to_act__TODO_CHECK_THIS() + environment_variables.SET_AT_BEFORE_ASSERT__ENV_VARS
+def env_vars_after_act() -> list:
+    return env_vars_up_to_act() + environment_variables.SET_AT_BEFORE_ASSERT__ENV_VARS
 
 
 def sequence_info__succeeding_phase(phase_name_dictionary: dict,
