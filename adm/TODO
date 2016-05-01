@@ -54,6 +54,9 @@ vad README ska innehålla.
 Det riskerar ju att atc (action to check) kan sabba
 filer där.
 * TODO Dokumentation
+** TODO För sviter ska "valfrihets-infon" använda ordet "section"
+Nu används "phase":
+The "conf" phase is optional
 ** TODO Sortera "see also" på något lämpligt vis
 Ev automatisk sortering, men ä inte säker på att det finns något enkelt
 vettigt att tillgå att anv som sorteringsvärde.
