@@ -1,11 +1,11 @@
 from exactly_lib.execution import phases
 from exactly_lib.help.concepts.all_concepts import all_concepts
+from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet, ConceptsHelp
 from exactly_lib.help.program_modes.main_program.contents_structure import MainProgramHelp
 from exactly_lib.help.program_modes.test_case.config import phase_help_name
 from exactly_lib.help.program_modes.test_case.contents.phase import act, assert_, before_assert, configuration, \
     setup, cleanup
-from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp, TestCasePhaseInstructionSet, \
-    ConceptsHelp
+from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp, \
     TestSuiteSectionHelp
 from exactly_lib.test_case.instruction_setup import InstructionsSetup
@@ -69,5 +69,5 @@ def phase_helps_for(instructions_setup: InstructionsSetup) -> iter:
     ]
 
 
-def instruction_set_help(single_instruction_setup_list: iter) -> TestCasePhaseInstructionSet:
-    return TestCasePhaseInstructionSet(map(lambda x: x.description, single_instruction_setup_list))
+def instruction_set_help(single_instruction_setup_list: iter) -> SectionInstructionSet:
+    return SectionInstructionSet(map(lambda x: x.description, single_instruction_setup_list))

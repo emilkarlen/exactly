@@ -1,5 +1,5 @@
+from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet
 from exactly_lib.help.program_modes.test_case.contents.main.utils import TestCaseHelpRendererBase
-from exactly_lib.help.program_modes.test_case.contents_structure import TestCasePhaseInstructionSet
 from exactly_lib.help.program_modes.test_case.render.render_instruction import instruction_set_list_item
 from exactly_lib.help.program_modes.test_case.render.utils import TestCasePhaseInstructionSetRendererBase
 from exactly_lib.help.utils.render import RenderingEnvironment
@@ -25,7 +25,7 @@ class InstructionSetPerPhaseRenderer(TestCaseHelpRendererBase):
         return doc.SectionContents([], sections)
 
 
-def instruction_set_list(instruction_set: TestCasePhaseInstructionSet) -> lists.HeaderContentList:
+def instruction_set_list(instruction_set: SectionInstructionSet) -> lists.HeaderContentList:
     instruction_list_items = []
     for description in instruction_set.instruction_descriptions:
         list_item = instruction_set_list_item(description)

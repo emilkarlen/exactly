@@ -10,9 +10,9 @@ from exactly_lib.cli.program_modes.help.program_modes.test_case.help_request imp
 from exactly_lib.cli.program_modes.help.program_modes.test_suite.help_request import *
 from exactly_lib.help.concepts.concept_structure import PlainConceptDocumentation, Name, ConceptDocumentation
 from exactly_lib.help.contents_structure import ApplicationHelp
+from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation, ConceptsHelp
 from exactly_lib.help.program_modes.main_program.contents_structure import MainProgramHelp
-from exactly_lib.help.program_modes.test_case.contents_structure import TestCasePhaseDocumentation, TestCaseHelp, \
-    ConceptsHelp
+from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from exactly_lib.help.program_modes.test_case.instruction_documentation import InstructionDocumentation
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteSectionHelp, \
     TestSuiteHelp
@@ -93,7 +93,7 @@ class TestTestCasePhase(unittest.TestCase):
         self.assertIs(TestCaseHelpItem.PHASE,
                       actual.item)
         self.assertIsInstance(actual.data,
-                              TestCasePhaseDocumentation)
+                              SectionDocumentation)
 
         self.assertEqual(expected_phase_name,
                          actual.data.name)

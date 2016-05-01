@@ -5,8 +5,8 @@ from exactly_lib.help.contents_structure import ApplicationHelp
 from exactly_lib.help.cross_reference_id import CustomTargetInfoFactory
 from exactly_lib.help.html_doc import page_setup
 from exactly_lib.help.html_doc.cross_ref_target_renderer import HtmlTargetRenderer
+from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
 from exactly_lib.help.program_modes.test_case.contents.main import overview as test_case_overview_rendering
-from exactly_lib.help.program_modes.test_case.contents_structure import TestCasePhaseDocumentation
 from exactly_lib.help.program_modes.test_case.instruction_documentation import InstructionDocumentation
 from exactly_lib.help.program_modes.test_case.render.render_instruction import InstructionManPageRenderer
 from exactly_lib.help.program_modes.test_suite import render as test_suite_rendering
@@ -138,7 +138,7 @@ class HtmlDocGenerator:
         ret_val_sections = []
         ret_val_targets = []
         for phase in self.application_help.test_case_help.phase_helps_in_order_of_execution:
-            assert isinstance(phase, TestCasePhaseDocumentation)
+            assert isinstance(phase, SectionDocumentation)
             phase_presentation_str = phase.name.syntax
             cross_reference_target = cross_ref.TestCasePhaseCrossReference(phase.name.plain)
             header = docs.anchor_text(docs.text(phase_presentation_str),
@@ -156,7 +156,7 @@ class HtmlDocGenerator:
         ret_val_sections = []
         ret_val_targets = []
         for phase in self.application_help.test_case_help.phase_helps_in_order_of_execution:
-            assert isinstance(phase, TestCasePhaseDocumentation)
+            assert isinstance(phase, SectionDocumentation)
             if not phase.is_phase_with_instructions:
                 continue
             phase_target_factory = cross_ref.sub_component_factory(phase.name.plain,
@@ -182,7 +182,7 @@ class HtmlDocGenerator:
 
     def _instruction_documentation(self,
                                    instruction_doc: InstructionDocumentation,
-                                   phase: TestCasePhaseDocumentation):
+                                   phase: SectionDocumentation):
         instruction_cross_ref_target = cross_ref.TestCasePhaseInstructionCrossReference(
             phase.name.plain,
             instruction_doc.instruction_name())

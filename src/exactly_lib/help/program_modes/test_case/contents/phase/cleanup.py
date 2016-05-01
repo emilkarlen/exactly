@@ -5,9 +5,9 @@ from exactly_lib.help.concepts.configuration_parameters.execution_mode import EX
 from exactly_lib.help.concepts.plain_concepts.environment_variable import ENVIRONMENT_VARIABLE_CONCEPT
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
 from exactly_lib.help.cross_reference_id import TestCasePhaseCrossReference, TestCasePhaseInstructionCrossReference
+from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet
 from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
     pwd_at_start_of_phase_for_non_first_phases, sequence_info__not_executed_if_execution_mode_is_skip
-from exactly_lib.help.program_modes.test_case.contents_structure import TestCasePhaseInstructionSet
 from exactly_lib.help.program_modes.test_case.phase_help_contents_structures import \
     TestCasePhaseDocumentationForPhaseWithInstructions, PhaseSequenceInfo, ExecutionEnvironmentInfo
 from exactly_lib.help.utils import formatting
@@ -20,7 +20,7 @@ from exactly_lib.util.textformat.structure.structures import text
 class CleanupPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstructions):
     def __init__(self,
                  name: str,
-                 instruction_set: TestCasePhaseInstructionSet):
+                 instruction_set: SectionInstructionSet):
         super().__init__(name, instruction_set)
         self.phase_name_dictionary = phase_name_dictionary()
         self.format_map = {
