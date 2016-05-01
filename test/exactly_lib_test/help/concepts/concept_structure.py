@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.help.concepts import concept_structure as sut
+from exactly_lib.help.concepts import contents_structure as sut
 from exactly_lib.help.utils.description import Description, DescriptionWithSubSections, \
     single_line_description_with_sub_sections
 from exactly_lib.util.textformat.structure.structures import text

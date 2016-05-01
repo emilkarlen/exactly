@@ -2,9 +2,8 @@ import unittest
 
 from exactly_lib.help.concepts import render as sut
 from exactly_lib.help.concepts.all_concepts import all_concepts
-from exactly_lib.help.concepts.concept_structure import PlainConceptDocumentation, Name, \
-    ConfigurationParameterDocumentation
-from exactly_lib.help.concepts.contents_structure import ConceptsHelp
+from exactly_lib.help.concepts.contents_structure import PlainConceptDocumentation, Name, \
+    ConfigurationParameterDocumentation, ConceptsHelp
 from exactly_lib.help.utils.description import Description, DescriptionWithSubSections, from_simple_description
 from exactly_lib.help.utils.render import RenderingEnvironment
 from exactly_lib.util.textformat.structure.document import SectionContents

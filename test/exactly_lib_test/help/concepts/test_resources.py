@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.help.concepts.concept_structure import Name, ConfigurationParameterDocumentation
+from exactly_lib.help.concepts.contents_structure import Name, ConfigurationParameterDocumentation
 from exactly_lib.help.utils.description import Description, DescriptionWithSubSections
 from exactly_lib_test.util.textformat.test_resources import structure as struct_check
 
