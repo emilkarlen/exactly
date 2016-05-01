@@ -17,7 +17,7 @@ from exactly_lib.help.program_modes.test_case.instruction_documentation import I
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteSectionHelp, \
     TestSuiteHelp
 from exactly_lib.help.utils import formatting
-from exactly_lib.help.utils.description import Description, single_line_description
+from exactly_lib.help.utils.description import single_line_description_with_sub_sections, DescriptionWithSubSections
 from exactly_lib_test.help.test_resources import test_case_phase_help, \
     single_line_description_that_identifies_instruction_and_phase, application_help_for
 
@@ -291,7 +291,7 @@ class TestTestSuiteHelp(unittest.TestCase):
     def test_known_section(self):
         actual = sut.parse(application_help_for([],
                                                 suite_sections=[TestSuiteSectionHelp('section A'),
-                                                         TestSuiteSectionHelp('section B')]),
+                                                                TestSuiteSectionHelp('section B')]),
                            arguments_for.suite_section('section A'))
         self.assertIsInstance(actual,
                               TestSuiteHelpRequest,
@@ -402,8 +402,8 @@ class ConceptTestImpl(PlainConceptDocumentation):
     def __init__(self, singular_name: str):
         super().__init__(Name(singular_name, 'plural of ' + singular_name))
 
-    def purpose(self) -> Description:
-        return single_line_description('single line description')
+    def purpose(self) -> DescriptionWithSubSections:
+        return single_line_description_with_sub_sections('single line description')
 
 
 def suite() -> unittest.TestSuite:

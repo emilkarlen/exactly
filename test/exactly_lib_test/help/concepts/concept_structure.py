@@ -1,7 +1,8 @@
 import unittest
 
 from exactly_lib.help.concepts import concept_structure as sut
-from exactly_lib.help.utils.description import Description
+from exactly_lib.help.utils.description import Description, DescriptionWithSubSections, \
+    single_line_description_with_sub_sections
 from exactly_lib.util.textformat.structure.structures import text
 
 
@@ -65,8 +66,8 @@ class _PlainConceptDocumentationTestImpl(sut.PlainConceptDocumentation):
         singular = str(type(self))
         super().__init__(sut.Name(singular, 'plural of ' + singular))
 
-    def purpose(self) -> Description:
-        return Description(text('PlainConceptDocumentation'), [])
+    def purpose(self) -> DescriptionWithSubSections:
+        return single_line_description_with_sub_sections('PlainConceptDocumentation')
 
 
 class _ConfigurationParameterDocumentationTestImpl(sut.ConfigurationParameterDocumentation):
@@ -77,5 +78,5 @@ class _ConfigurationParameterDocumentationTestImpl(sut.ConfigurationParameterDoc
     def default_value_str(self) -> str:
         return 'default value str'
 
-    def purpose(self) -> Description:
-        return Description(text('ConfigurationParameterDocumentation'), [])
+    def purpose(self) -> DescriptionWithSubSections:
+        return single_line_description_with_sub_sections('ConfigurationParameterDocumentation')

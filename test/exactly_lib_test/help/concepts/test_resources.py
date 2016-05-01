@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.help.concepts.concept_structure import Name, ConfigurationParameterDocumentation
-from exactly_lib.help.utils.description import Description
+from exactly_lib.help.utils.description import Description, DescriptionWithSubSections
 from exactly_lib_test.util.textformat.test_resources import structure as struct_check
 
 
@@ -45,9 +45,9 @@ class TestPurpose(WithConceptDocumentationBase):
         # ACT #
         purpose = self.documentation.purpose()
         # ASSERT #
-        self.assertIsInstance(purpose, Description)
+        self.assertIsInstance(purpose, DescriptionWithSubSections)
         struct_check.is_text.apply(self, purpose.single_line_description)
-        struct_check.is_paragraph_item_list().apply(self, purpose.rest)
+        struct_check.is_section_contents.apply(self, purpose.rest)
 
 
 class TestSummaryParagraphs(WithConceptDocumentationBase):
