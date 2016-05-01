@@ -23,7 +23,7 @@ class _TitleRenderer(cross_reference_id.CrossReferenceIdVisitor):
         return 'Phase %s' % self.phase_name_dict[phase_name_dict_key_for(x.phase_name)].emphasis
 
     def visit_test_case_phase_instruction(self, x: cross_reference_id.TestCasePhaseInstructionCrossReference):
-        return 'Instruction "{i}" (in phase {p})'.format(
+        return 'Instruction {i} (in phase {p})'.format(
             i=self.any_instruction[x.instruction_name],
             p=self.phase_name_dict[phase_name_dict_key_for(x.phase_name)].emphasis)
 

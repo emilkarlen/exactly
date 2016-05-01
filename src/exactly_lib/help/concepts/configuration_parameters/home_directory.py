@@ -1,7 +1,9 @@
+from exactly_lib.default.program_modes.test_case.default_instruction_names import HOME_DIRECTORY_INSTRUCTION_NAME
 from exactly_lib.execution.environment_variables import ENV_VAR_HOME
 from exactly_lib.help.concepts.concept_structure import ConfigurationParameterDocumentation, Name
+from exactly_lib.help.cross_reference_id import TestCasePhaseInstructionCrossReference
 from exactly_lib.help.utils.description import Description
-from exactly_lib.help.utils.phase_names import phase_name_dictionary
+from exactly_lib.help.utils.phase_names import phase_name_dictionary, CONFIGURATION_PHASE_NAME
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure.structures import text
 
@@ -18,6 +20,12 @@ class _HomeDirectoryConfigurationParameter(ConfigurationParameterDocumentation):
 
     def default_value_str(self) -> str:
         return 'The directory where the test case file is located.'
+
+    def see_also(self) -> list:
+        return [
+            TestCasePhaseInstructionCrossReference(CONFIGURATION_PHASE_NAME.plain,
+                                                   HOME_DIRECTORY_INSTRUCTION_NAME),
+        ]
 
 
 HOME_DIRECTORY_CONFIGURATION_PARAMETER = _HomeDirectoryConfigurationParameter()
