@@ -53,7 +53,7 @@ class IndividualConceptRenderer(SectionContentsRenderer, ConceptDocumentationVis
                        purpose.rest)
 
     def _see_also_sections(self) -> list:
-        if not self.concept.see_also:
+        if not self.concept.see_also():
             return []
         else:
             return [section('See also',
