@@ -1,8 +1,9 @@
 from exactly_lib.cli.program_modes.help.program_modes.test_case.help_request import TestCaseHelpItem, \
     TestCaseHelpRequest
+from exactly_lib.help.program_modes.common import render_instruction
 from exactly_lib.help.program_modes.test_case.contents.main.overview import OverviewRenderer
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
-from exactly_lib.help.program_modes.test_case.render import instruction_set, render_instruction
+from exactly_lib.help.program_modes.test_case.render import instruction_set
 from exactly_lib.help.program_modes.test_case.render.test_case_phase import TestCasePhaseOverviewRenderer
 from exactly_lib.help.utils.render import SectionContentsRenderer, RenderingEnvironment
 from exactly_lib.util.textformat.structure import document as doc

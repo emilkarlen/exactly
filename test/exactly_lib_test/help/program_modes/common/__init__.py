@@ -1,11 +1,11 @@
 import unittest
 
-from exactly_lib_test.help.program_modes.test_case.render import main_documentation
+from exactly_lib_test.help.program_modes.common import render_instruction
 
 
 def suite():
     return unittest.TestSuite([
-        main_documentation.suite(),
+        render_instruction.suite(),
     ])
 
 
