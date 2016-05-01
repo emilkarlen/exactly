@@ -1,6 +1,7 @@
 from exactly_lib.help.cross_reference_id import ConceptCrossReferenceId
-from exactly_lib.help.utils.description import Description
+from exactly_lib.help.utils.description import Description, DescriptionWithSubSections
 from exactly_lib.util.textformat.structure.core import ParagraphItem
+from exactly_lib.util.textformat.structure.document import SectionContents
 from exactly_lib.util.textformat.structure.structures import para
 
 
@@ -34,18 +35,18 @@ class ConceptDocumentation:
     def cross_reference_target(self) -> ConceptCrossReferenceId:
         return ConceptCrossReferenceId(self._name.singular)
 
-    def purpose(self) -> Description:
+    def purpose(self) -> DescriptionWithSubSections:
         raise NotImplementedError()
 
     def summary_paragraphs(self) -> list:
         """
-        :rtype: [ParagraphItem]
+        :rtype: [`ParagraphItem`]
         """
         return [para(self.purpose().single_line_description)]
 
     def see_also(self) -> list:
         """
-        :rtype [CrossReference]
+        :rtype [`CrossReferenceTarget`]
         """
         return []
 
@@ -57,7 +58,7 @@ class PlainConceptDocumentation(ConceptDocumentation):
 class ConfigurationParameterDocumentation(ConceptDocumentation):
     def default_value_str(self) -> str:
         """
-        :rtype: [ParagraphItem]
+        :rtype: [`ParagraphItem`]
         """
         raise NotImplementedError()
 

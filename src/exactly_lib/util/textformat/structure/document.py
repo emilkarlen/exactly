@@ -25,6 +25,10 @@ class SectionContents(tuple):
         """
         return self[1]
 
+    @property
+    def is_empty(self) -> bool:
+        return not self.initial_paragraphs and not self.sections
+
 
 def empty_contents() -> SectionContents:
     return SectionContents([], [])

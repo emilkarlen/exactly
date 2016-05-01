@@ -2,7 +2,7 @@ from exactly_lib.execution import execution_mode
 from exactly_lib.execution.result import FullResultStatus
 from exactly_lib.help.concepts.concept_structure import ConfigurationParameterDocumentation, Name
 from exactly_lib.help.utils import phase_names
-from exactly_lib.help.utils.description import Description
+from exactly_lib.help.utils.description import Description, DescriptionWithSubSections, from_simple_description
 from exactly_lib.help.utils.phase_names import phase_name_dictionary
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import lists
@@ -14,10 +14,11 @@ class _ExecutionModeConfigurationParameter(ConfigurationParameterDocumentation):
     def __init__(self):
         super().__init__(Name('execution mode', 'execution modes'))
 
-    def purpose(self) -> Description:
-        return Description(text(_EXECUTION_MODE_SINGLE_LINE_DESCRIPTION
-                                .format(phase=phase_name_dictionary())),
-                           [execution_modes_list()])
+    def purpose(self) -> DescriptionWithSubSections:
+        return from_simple_description(
+            Description(text(_EXECUTION_MODE_SINGLE_LINE_DESCRIPTION
+                             .format(phase=phase_name_dictionary())),
+                        [execution_modes_list()]))
 
     def default_value_str(self) -> str:
         return execution_mode.NAME_DEFAULT
