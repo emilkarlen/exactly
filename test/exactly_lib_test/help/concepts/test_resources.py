@@ -30,6 +30,9 @@ class WithConceptDocumentationBase(unittest.TestCase):
         super().__init__()
         self.documentation = documentation
 
+    def shortDescription(self):
+        return str(type(self)) + '/' + str(type(self.documentation))
+
 
 class TestName(WithConceptDocumentationBase):
     def runTest(self):
