@@ -32,6 +32,11 @@ class TheInstructionDocumentation(InstructionDocumentation):
                                     % ENV_VAR_TMP)),
         ]
 
+    def see_also(self) -> list:
+        from exactly_lib.help.concepts.plain_concepts.sandbox import \
+            SANDBOX_CONCEPT
+        return [SANDBOX_CONCEPT.cross_reference_target()]
+
 
 def parse(argument: str) -> DestinationPath:
     arguments = split_arguments_list_string(argument)
