@@ -1,7 +1,8 @@
-from exactly_lib.util.textformat.structure import core
-from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure import table
+from exactly_lib.util.textformat.structure.core import ParagraphItem, ConcreteText, StringText, CrossReferenceTarget, \
+    CrossReferenceText, Text, AnchorText
+from exactly_lib.util.textformat.structure.document import Section, SectionContents
 from exactly_lib.util.textformat.structure.literal_layout import LiteralLayout
 from exactly_lib.util.textformat.structure.paragraph import Paragraph
 
@@ -10,10 +11,10 @@ SEPARATION_OF_HEADER_AND_CONTENTS = lists.Separations(1, 1)
 
 def section(header_str_or_text,
             paragraphs: list,
-            sub_sections: list = None) -> doc.Section:
-    return doc.Section(_text_from_unknown(header_str_or_text),
-                       doc.SectionContents(paragraphs,
-                                           _empty_list_if_none(sub_sections)))
+            sub_sections: list = None) -> Section:
+    return Section(_text_from_unknown(header_str_or_text),
+                   SectionContents(paragraphs,
+                                   _empty_list_if_none(sub_sections)))
 
 
 def simple_header_only_list(str_or_text_headers: iter,
@@ -46,7 +47,7 @@ def header_only_item(header_str_or_text) -> lists.HeaderContentListItem:
     return list_item(header_str_or_text, [])
 
 
-def para(str_or_text) -> core.ParagraphItem:
+def para(str_or_text) -> ParagraphItem:
     return Paragraph([_text_from_unknown(str_or_text)])
 
 
@@ -59,51 +60,61 @@ def paras(str_or_text) -> list:
     return [para(str_or_text)]
 
 
-def text(s: str) -> core.ConcreteText:
-    return core.StringText(s)
+def text(s: str) -> ConcreteText:
+    return StringText(s)
 
 
 def cross_reference(title: str,
-                    target: core.CrossReferenceTarget,
+                    target: CrossReferenceTarget,
                     target_is_id_in_same_document: bool = True,
-                    allow_rendering_of_visible_extra_target_text: bool = True) -> core.ConcreteText:
-    return core.CrossReferenceText(
+                    allow_rendering_of_visible_extra_target_text: bool = True) -> ConcreteText:
+    return CrossReferenceText(
         title,
         target,
         target_is_id_in_same_document=target_is_id_in_same_document,
         allow_rendering_of_visible_extra_target_text=allow_rendering_of_visible_extra_target_text)
 
 
-def anchor_text(anchored_text: core.ConcreteText,
-                anchor: core.CrossReferenceTarget = None) -> core.Text:
+def anchor_text(anchored_text: ConcreteText,
+                anchor: CrossReferenceTarget = None) -> Text:
     if anchor is None:
         return anchored_text
-    return core.AnchorText(anchor, anchored_text)
+    return AnchorText(anchor, anchored_text)
 
 
-def literal_layout(s: str) -> core.ParagraphItem:
+def literal_layout(s: str) -> ParagraphItem:
     return LiteralLayout(s)
 
 
 def first_column_is_header_table(rows: list,
-                                 column_separator: str = '  ') -> core.ParagraphItem:
+                                 column_separator: str = '  ') -> ParagraphItem:
     return table.Table(table.TableFormat(column_separator),
                        rows)
 
 
 def first_row_is_header_table(rows: list,
-                              column_separator: str = '  ') -> core.ParagraphItem:
+                              column_separator: str = '  ') -> ParagraphItem:
     return table.Table(table.TableFormat(column_separator,
                                          first_row_is_header=True),
                        rows)
 
 
-def _text_from_unknown(str_or_text) -> core.Text:
-    if isinstance(str_or_text, core.Text):
+def _text_from_unknown(str_or_text) -> Text:
+    if isinstance(str_or_text, Text):
         return str_or_text
     else:
-        return core.StringText(str_or_text)
+        return StringText(str_or_text)
 
 
 def _empty_list_if_none(content) -> list:
     return [] if content is None else content
+
+
+def cell(paragraph_items: list) -> list:
+    """
+    Currently, this function exists only to centralize construction of cell elements,
+    to make future refactoring easy (introduction of TableCell class).
+    :param paragraph_items:
+    :return:
+    """
+    return paragraph_items

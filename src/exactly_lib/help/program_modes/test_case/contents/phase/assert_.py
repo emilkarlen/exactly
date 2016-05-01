@@ -4,7 +4,8 @@ from exactly_lib.help.concepts.plain_concepts.environment_variable import ENVIRO
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
 from exactly_lib.help.cross_reference_id import TestCasePhaseCrossReference
 from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
-    pwd_at_start_of_phase_for_non_first_phases, sequence_info__preceding_phase
+    pwd_at_start_of_phase_for_non_first_phases, sequence_info__preceding_phase, \
+    sequence_info__not_executed_if_execution_mode_is_skip
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCasePhaseInstructionSet
 from exactly_lib.help.program_modes.test_case.phase_help_contents_structures import \
     TestCasePhaseDocumentationForPhaseWithInstructions, PhaseSequenceInfo, ExecutionEnvironmentInfo
@@ -32,7 +33,8 @@ class AssertPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstruction
 
     def sequence_info(self) -> PhaseSequenceInfo:
         return PhaseSequenceInfo(sequence_info__preceding_phase(BEFORE_ASSERT_PHASE_NAME),
-                                 self._parse(_SEQUENCE_INFO__SUCCEEDING_PHASE))
+                                 self._parse(_SEQUENCE_INFO__SUCCEEDING_PHASE),
+                                 prelude=sequence_info__not_executed_if_execution_mode_is_skip())
 
     def is_mandatory(self) -> bool:
         return False
