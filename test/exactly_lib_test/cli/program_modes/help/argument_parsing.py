@@ -294,7 +294,7 @@ class TestTestSuiteHelp(unittest.TestCase):
             [],
             suite_sections=[SectionDocumentationForSectionWithoutInstructionsTestImpl('section A'),
                             SectionDocumentationForSectionWithoutInstructionsTestImpl('section B')]),
-            arguments_for.suite_section('section A'))
+            arguments_for.suite_section_for_name('section A'))
         self.assertIsInstance(actual,
                               TestSuiteHelpRequest,
                               'Expecting help for Suite Section')
@@ -312,7 +312,7 @@ class TestTestSuiteHelp(unittest.TestCase):
             suite_sections=[SectionDocumentationForSectionWithoutInstructionsTestImpl('section A')])
         with self.assertRaises(sut.HelpError):
             sut.parse(application_help,
-                      arguments_for.suite_section('unknown section'))
+                      arguments_for.suite_section_for_name('unknown section'))
 
 
 class TestConceptHelp(unittest.TestCase):

@@ -44,8 +44,21 @@ class TestSuiteCrossReferenceId(CrossReferenceId):
     pass
 
 
-class TestSuiteSectionCrossReference(TestSuiteCrossReferenceId):
+class TestSuiteSectionCrossReferenceBase(TestSuiteCrossReferenceId):
+    def __init__(self, section_name: str):
+        self.section_name = section_name
+
+
+class TestSuiteSectionCrossReference(TestSuiteSectionCrossReferenceBase):
     pass
+
+
+class TestSuiteSectionInstructionCrossReference(TestSuiteSectionCrossReferenceBase):
+    def __init__(self,
+                 section_name: str,
+                 instruction_name: str):
+        super().__init__(section_name)
+        self.instruction_name = instruction_name
 
 
 class ConceptCrossReferenceId(CrossReferenceId):
@@ -65,6 +78,10 @@ class CrossReferenceIdVisitor:
             return self.visit_test_case_phase(x)
         if isinstance(x, TestCasePhaseInstructionCrossReference):
             return self.visit_test_case_phase_instruction(x)
+        if isinstance(x, TestSuiteSectionCrossReference):
+            return self.visit_test_suite_section(x)
+        if isinstance(x, TestSuiteSectionInstructionCrossReference):
+            return self.visit_test_suite_section_instruction(x)
         if isinstance(x, ConceptCrossReferenceId):
             return self.visit_concept(x)
         else:
@@ -78,6 +95,12 @@ class CrossReferenceIdVisitor:
         raise NotImplementedError()
 
     def visit_test_case_phase_instruction(self, x: TestCasePhaseInstructionCrossReference):
+        raise NotImplementedError()
+
+    def visit_test_suite_section(self, x: TestSuiteSectionCrossReference):
+        raise NotImplementedError()
+
+    def visit_test_suite_section_instruction(self, x: TestSuiteSectionInstructionCrossReference):
         raise NotImplementedError()
 
     def visit_custom(self, x: CustomCrossReferenceId):

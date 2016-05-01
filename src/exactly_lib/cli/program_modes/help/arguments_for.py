@@ -49,8 +49,13 @@ def suite() -> list:
     return [TEST_SUITE]
 
 
-def suite_section(section_name: str) -> list:
+def suite_section_for_name(section_name: str) -> list:
     return [TEST_SUITE, section_name]
+
+
+def suite_instruction_in_section(section_name: str,
+                                 instruction_name: str) -> list:
+    return [TEST_SUITE, section_name, instruction_name]
 
 
 def phase_for_name(phase_name: str) -> list:
