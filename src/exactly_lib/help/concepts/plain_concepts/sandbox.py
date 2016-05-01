@@ -1,7 +1,7 @@
 from exactly_lib.default.program_modes.test_case.default_instruction_names import CHANGE_DIR_INSTRUCTION_NAME
 from exactly_lib.execution import execution_directory_structure as sds
 from exactly_lib.execution.environment_variables import ENV_VAR_RESULT, ENV_VAR_ACT
-from exactly_lib.help.concepts.concept_structure import PlainConceptDocumentation, Name
+from exactly_lib.help.concepts.contents_structure import PlainConceptDocumentation, Name
 from exactly_lib.help.cross_reference_id import TestCasePhaseInstructionCrossReference
 from exactly_lib.help.utils.description import DescriptionWithSubSections
 from exactly_lib.help.utils.formatting import AnyInstructionNameDictionary

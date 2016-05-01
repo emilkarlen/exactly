@@ -1,6 +1,6 @@
 from exactly_lib.common.instruction_documentation import InstructionDocumentation
 from exactly_lib.help import cross_reference_id as cross_ref
-from exactly_lib.help.concepts.concept_structure import ConceptDocumentation
+from exactly_lib.help.concepts.contents_structure import ConceptDocumentation
 from exactly_lib.help.concepts.render import IndividualConceptRenderer
 from exactly_lib.help.contents_structure import ApplicationHelp
 from exactly_lib.help.cross_reference_id import CustomTargetInfoFactory

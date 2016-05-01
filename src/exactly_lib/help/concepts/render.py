@@ -1,7 +1,6 @@
-from exactly_lib.help.concepts.concept_structure import ConceptDocumentation, ConceptDocumentationVisitor, \
-    PlainConceptDocumentation, ConfigurationParameterDocumentation
+from exactly_lib.help.concepts.contents_structure import ConceptDocumentation, ConceptDocumentationVisitor, \
+    PlainConceptDocumentation, ConfigurationParameterDocumentation, ConceptsHelp
 from exactly_lib.help.concepts.plain_concepts.configuration_parameter import CONFIGURATION_PARAMETER_CONCEPT
-from exactly_lib.help.concepts.contents_structure import ConceptsHelp
 from exactly_lib.help.utils.description import DescriptionWithSubSections
 from exactly_lib.help.utils.phase_names import phase_name_dictionary
 from exactly_lib.help.utils.render import SectionContentsRenderer, RenderingEnvironment, cross_reference_list
