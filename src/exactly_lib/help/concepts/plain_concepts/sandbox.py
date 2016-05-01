@@ -1,9 +1,11 @@
+from exactly_lib.default.program_modes.test_case.default_instruction_names import CHANGE_DIR_INSTRUCTION_NAME
 from exactly_lib.execution import execution_directory_structure as sds
 from exactly_lib.execution.environment_variables import ENV_VAR_RESULT, ENV_VAR_ACT
 from exactly_lib.help.concepts.concept_structure import PlainConceptDocumentation, Name
+from exactly_lib.help.cross_reference_id import TestCasePhaseInstructionCrossReference
 from exactly_lib.help.utils.description import Description
 from exactly_lib.help.utils.formatting import AnyInstructionNameDictionary
-from exactly_lib.help.utils.phase_names import phase_name_dictionary
+from exactly_lib.help.utils.phase_names import phase_name_dictionary, SETUP_PHASE_NAME
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure.core import ParagraphItem
@@ -21,14 +23,21 @@ class _Sandbox(PlainConceptDocumentation):
         rest_paragraphs = []
         rest_paragraphs.extend(normalize_and_parse(_SANDBOX_PRE_DIRECTORY_TREE.format(phase=phase)))
         rest_paragraphs.append(directory_structure_list(sds.execution_directories))
+        rest_paragraphs.extend(sandbox_directories_info_header())
         rest_paragraphs.append(sandbox_directories_info(phase, instruction))
         return Description(text(_SANDBOX_SINGLE_LINE_DESCRIPTION),
                            rest_paragraphs)
 
+    def see_also(self) -> list:
+        return [
+            TestCasePhaseInstructionCrossReference(SETUP_PHASE_NAME.plain,
+                                                   CHANGE_DIR_INSTRUCTION_NAME),
+        ]
+
 
 SANDBOX_CONCEPT = _Sandbox()
 _SANDBOX_SINGLE_LINE_DESCRIPTION = """\
-The temporary directory structure where a test case are executed."""
+The temporary directory structure where a test case is executed."""
 _SANDBOX_PRE_DIRECTORY_TREE = """\
 Every test case uses its own sandbox.
 
@@ -38,6 +47,10 @@ The sandbox is created just before the {phase[setup]} phase is executed.
 
 It consists of the following directory tree:
 """
+
+
+def sandbox_directories_info_header() -> list:
+    return paras('Description:')
 
 
 def sandbox_directories_info(phase_name_dictionary: dict,
@@ -79,7 +92,7 @@ _ACT_DIR_DESCRIPTION = """\
 This directory is the Present Working Directory (PWD) when the {phase[setup]} phase begin.
 
 
-(The PWD can be changed using the {instruction[pwd]} instruction.)
+If it is not changed, it will also be the PWD for the {phase[act]} phase (hence its name).
 
 
 (Files and directories that {phase[setup]:syntax} creates
