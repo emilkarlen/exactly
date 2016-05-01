@@ -18,5 +18,4 @@ class SectionRenderer(SectionContentsRenderer):
         self.section_help = section_help
 
     def apply(self, environment: RenderingEnvironment) -> doc.SectionContents:
-        return doc.SectionContents(paras('TODO suite help for section ' + self.section_help.name.syntax),
-                                   [])
+        return self.section_help.render(environment)
