@@ -1,10 +1,10 @@
 import pathlib
 
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionInvalidArgumentException
-from exactly_lib.help.program_modes.test_case.instruction_documentation import InvokationVariant, \
+from exactly_lib.common.instruction_documentation import InvokationVariant, \
     InstructionDocumentation
 from exactly_lib.instructions.utils.parse_utils import split_arguments_list_string, ensure_is_not_option_argument
+from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
+    SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.util.textformat import parse as text_parse
 

@@ -1,7 +1,6 @@
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
-    SingleInstructionParserSource, SingleInstructionInvalidArgumentException
-from exactly_lib.help.program_modes.test_case.instruction_documentation import InvokationVariant, \
+from exactly_lib.common.instruction_documentation import InvokationVariant, \
     InstructionDocumentation
+from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.instructions.setup.utils.instruction_utils import InstructionWithFileRefsBase
 from exactly_lib.instructions.utils import file_properties
 from exactly_lib.instructions.utils import file_ref, parse_file_ref
@@ -9,7 +8,8 @@ from exactly_lib.instructions.utils import parse_here_doc_or_file_ref
 from exactly_lib.instructions.utils.file_properties import FileType
 from exactly_lib.instructions.utils.file_ref_check import FileRefCheck
 from exactly_lib.instructions.utils.parse_utils import split_arguments_list_string
-from exactly_lib.test_case.instruction_setup import SingleInstructionSetup
+from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
+    SingleInstructionParserSource, SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase
 from exactly_lib.test_case.phases.result import sh

@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.instructions.assert_ import shell as sut
-from exactly_lib.test_case.instruction_setup import SingleInstructionSetup
+from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib_test.instructions.assert_.test_resources.configuration import AssertConfigurationBase
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.shell_instruction_test import \

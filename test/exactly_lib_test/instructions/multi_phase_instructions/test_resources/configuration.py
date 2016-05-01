@@ -1,9 +1,9 @@
 import unittest
 
+from exactly_lib.common.instruction_documentation import InstructionDocumentation
+from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParserSource, SingleInstructionParser
-from exactly_lib.help.program_modes.test_case.instruction_documentation import InstructionDocumentation
-from exactly_lib.test_case.instruction_setup import SingleInstructionSetup
 from exactly_lib.test_case.os_services import new_default, OsServices
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementBase
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_description_instance

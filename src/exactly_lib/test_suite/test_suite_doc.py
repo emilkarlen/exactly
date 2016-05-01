@@ -1,6 +1,6 @@
 from exactly_lib.section_document.model import PhaseContents, ElementType
 from exactly_lib.test_suite.instruction_set.sections.cases import TestCaseSectionInstruction
-from exactly_lib.test_suite.instruction_set.sections.configuration import ConfigurationSectionInstruction
+from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_definition import ConfigurationSectionInstruction
 from exactly_lib.test_suite.instruction_set.sections.suites import TestSuiteSectionInstruction
 
 

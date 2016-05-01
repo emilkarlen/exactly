@@ -1,8 +1,6 @@
 import shlex
 
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionParser, SingleInstructionParserSource, SingleInstructionInvalidArgumentException
-from exactly_lib.help.program_modes.test_case.instruction_documentation import InvokationVariant, \
+from exactly_lib.common.instruction_documentation import InvokationVariant, \
     SyntaxElementDescription, \
     InstructionDocumentation
 from exactly_lib.instructions.utils import executable_file
@@ -17,6 +15,8 @@ from exactly_lib.instructions.utils.parse_utils import TokenStream
 from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostEdsValidator, AndValidator
 from exactly_lib.instructions.utils.sub_process_execution import ResultAndStderr, ExecuteInfo, \
     ExecutorThatStoresResultInFilesInDir, execute_and_read_stderr_if_non_zero_exitcode, result_to_sh, result_to_pfh
+from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
+    SingleInstructionParser, SingleInstructionParserSource, SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.phases.common import HomeAndEds, TestCaseInstruction, PhaseLoggingPaths
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import sh

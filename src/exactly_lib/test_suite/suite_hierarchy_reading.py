@@ -1,14 +1,14 @@
 import functools
 import pathlib
 
-import exactly_lib.test_suite.parser
+from exactly_lib.test_suite import parser as test_suite_parser
 from exactly_lib.section_document.model import PhaseContents, ElementType
 from exactly_lib.section_document.parse import FileSourceError
 from exactly_lib.test_case import test_case_processing
 from exactly_lib.test_case.preprocessor import IDENTITY_PREPROCESSOR
 from exactly_lib.test_case.test_case_processing import Preprocessor
 from exactly_lib.test_suite.instruction_set import parse, instruction
-from exactly_lib.test_suite.instruction_set.sections.configuration import ConfigurationSectionEnvironment
+from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_definition import ConfigurationSectionEnvironment
 from exactly_lib.util import line_source
 from . import structure
 from . import test_suite_doc
@@ -61,7 +61,7 @@ class _SingleFileReader:
                  suite_file_path: pathlib.Path) -> structure.TestSuite:
         source = line_source.new_for_file(suite_file_path)
         try:
-            test_suite = exactly_lib.test_suite.parser.PARSER.apply(source)
+            test_suite = test_suite_parser.Parser().apply(source)
         except FileSourceError as ex:
             raise parse.SuiteSyntaxError(suite_file_path,
                                          ex.source_error.line,

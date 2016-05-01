@@ -1,4 +1,4 @@
-from exactly_lib.help.program_modes.test_case.instruction_documentation import InstructionDocumentation, \
+from exactly_lib.common.instruction_documentation import InstructionDocumentation, \
     InvokationVariant, \
     SyntaxElementDescription
 from exactly_lib.help.utils.render import SectionContentsRenderer, RenderingEnvironment, cross_reference_list

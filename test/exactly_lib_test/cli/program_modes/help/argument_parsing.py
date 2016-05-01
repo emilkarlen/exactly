@@ -8,12 +8,13 @@ from exactly_lib.cli.program_modes.help.html_documentation.help_request import H
 from exactly_lib.cli.program_modes.help.program_modes.main_program.help_request import *
 from exactly_lib.cli.program_modes.help.program_modes.test_case.help_request import *
 from exactly_lib.cli.program_modes.help.program_modes.test_suite.help_request import *
+from exactly_lib.common.instruction_documentation import InstructionDocumentation
 from exactly_lib.help.concepts.concept_structure import PlainConceptDocumentation, Name, ConceptDocumentation
 from exactly_lib.help.contents_structure import ApplicationHelp
-from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation, ConceptsHelp
+from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
+from exactly_lib.help.concepts.contents_structure import ConceptsHelp
 from exactly_lib.help.program_modes.main_program.contents_structure import MainProgramHelp
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
-from exactly_lib.help.program_modes.test_case.instruction_documentation import InstructionDocumentation
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteSectionHelp, \
     TestSuiteHelp
 from exactly_lib.help.utils import formatting

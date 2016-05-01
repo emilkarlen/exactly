@@ -1,10 +1,10 @@
+from exactly_lib.common.instruction_documentation import InvokationVariant, \
+    InstructionDocumentation
+from exactly_lib.common.instruction_setup import SingleInstructionSetup
+from exactly_lib.execution.execution_mode import ExecutionMode, NAME_2_MODE, NAME_DEFAULT
+from exactly_lib.instructions.utils.parse_utils import split_arguments_list_string
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
-from exactly_lib.execution.execution_mode import ExecutionMode, NAME_2_MODE, NAME_DEFAULT
-from exactly_lib.help.program_modes.test_case.instruction_documentation import InvokationVariant, \
-    InstructionDocumentation
-from exactly_lib.instructions.utils.parse_utils import split_arguments_list_string
-from exactly_lib.test_case.instruction_setup import SingleInstructionSetup
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.util.textformat.structure.structures import para

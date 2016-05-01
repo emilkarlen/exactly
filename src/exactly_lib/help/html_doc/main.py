@@ -1,3 +1,4 @@
+from exactly_lib.common.instruction_documentation import InstructionDocumentation
 from exactly_lib.help import cross_reference_id as cross_ref
 from exactly_lib.help.concepts.concept_structure import ConceptDocumentation
 from exactly_lib.help.concepts.render import IndividualConceptRenderer
@@ -7,7 +8,6 @@ from exactly_lib.help.html_doc import page_setup
 from exactly_lib.help.html_doc.cross_ref_target_renderer import HtmlTargetRenderer
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
 from exactly_lib.help.program_modes.test_case.contents.main import overview as test_case_overview_rendering
-from exactly_lib.help.program_modes.test_case.instruction_documentation import InstructionDocumentation
 from exactly_lib.help.program_modes.test_case.render.render_instruction import InstructionManPageRenderer
 from exactly_lib.help.program_modes.test_suite import render as test_suite_rendering
 from exactly_lib.help.utils.cross_reference import CrossReferenceTextConstructor

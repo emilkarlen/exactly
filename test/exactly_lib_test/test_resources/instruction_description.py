@@ -1,4 +1,4 @@
-from exactly_lib.help.program_modes.test_case.instruction_documentation import InstructionDocumentation
+from exactly_lib.common.instruction_documentation import InstructionDocumentation
 from exactly_lib.util.textformat import parse as text_parse
 
 

@@ -2,7 +2,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.instructions.multi_phase_instructions import execute
 from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostEdsSvhValidationForSuccessOrHardError, \
     PreOrPostEdsSvhValidationErrorValidator
-from exactly_lib.test_case.instruction_setup import SingleInstructionSetup
+from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.cleanup import CleanupPhaseInstruction, PreviousPhase
 from exactly_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
