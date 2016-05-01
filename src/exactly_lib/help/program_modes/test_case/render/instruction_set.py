@@ -18,7 +18,7 @@ class InstructionSetPerPhaseRenderer(TestCaseHelpRendererBase):
     def apply(self, environment: RenderingEnvironment) -> doc.SectionContents:
         sections = []
         for test_case_phase_help in self.test_case_help.phase_helps_in_order_of_execution:
-            if test_case_phase_help.is_phase_with_instructions:
+            if test_case_phase_help.has_instructions:
                 instruction_list = instruction_set_list(test_case_phase_help.instruction_set)
                 sections.append(doc.Section(text(test_case_phase_help.name.syntax),
                                             doc.SectionContents([instruction_list], [])))

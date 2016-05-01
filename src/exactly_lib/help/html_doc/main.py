@@ -157,7 +157,7 @@ class HtmlDocGenerator:
         ret_val_targets = []
         for phase in self.application_help.test_case_help.phase_helps_in_order_of_execution:
             assert isinstance(phase, SectionDocumentation)
-            if not phase.is_phase_with_instructions:
+            if not phase.has_instructions:
                 continue
             phase_target_factory = cross_ref.sub_component_factory(phase.name.plain,
                                                                    targets_factory)

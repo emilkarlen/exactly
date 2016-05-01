@@ -47,7 +47,7 @@ class SectionDocumentation:
         raise NotImplementedError()
 
     @property
-    def is_phase_with_instructions(self) -> bool:
+    def has_instructions(self) -> bool:
         raise NotImplementedError()
 
     @property

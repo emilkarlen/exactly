@@ -1,9 +1,9 @@
 from exactly_lib.common.instruction_documentation import InstructionDocumentation
+from exactly_lib.help.concepts.contents_structure import ConceptsHelp
 from exactly_lib.help.contents_structure import ApplicationHelp
 from exactly_lib.help.cross_reference_id import CrossReferenceId
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet, \
     SectionDocumentation
-from exactly_lib.help.concepts.contents_structure import ConceptsHelp
 from exactly_lib.help.program_modes.main_program.contents_structure import MainProgramHelp
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
@@ -33,8 +33,8 @@ def single_line_description_that_identifies_instruction_and_phase(phase_name: st
 def test_case_phase_help(phase_name: str,
                          instruction_names: list) -> SectionDocumentation:
     instruction_set = test_case_phase_instruction_set(phase_name, instruction_names)
-    return TestCasePhaseHelpForPhaseWithInstructionsTestImpl(phase_name,
-                                                             instruction_set)
+    return SectionDocumentationForSectionWithInstructionsTestImpl(phase_name,
+                                                                  instruction_set)
 
 
 def test_case_phase_instruction_set(phase_name: str,
@@ -53,7 +53,29 @@ def application_help_for(test_case_phase_helps: list,
                            TestSuiteHelp(suite_sections))
 
 
-class TestCasePhaseHelpForPhaseWithInstructionsTestImpl(SectionDocumentation):
+class SectionDocumentationForSectionWithoutInstructionsTestImpl(SectionDocumentation):
+    def __init__(self,
+                 name: str):
+        super().__init__(name)
+
+    def purpose(self) -> Description:
+        return Description(text('Single line purpose for phase ' + self.name.syntax),
+                           [para('Rest of purpose for phase ' + self.name.syntax)])
+
+    def render(self, environment: RenderingEnvironment) -> doc.SectionContents:
+        return doc.SectionContents([para('Rendition of section {0:emphasis}'.format(self.name))],
+                                   [])
+
+    @property
+    def has_instructions(self) -> bool:
+        return False
+
+    @property
+    def instruction_set(self) -> SectionInstructionSet:
+        raise NotImplementedError('This section does not have instructions.')
+
+
+class SectionDocumentationForSectionWithInstructionsTestImpl(SectionDocumentation):
     def __init__(self,
                  name: str,
                  instruction_set: SectionInstructionSet):
@@ -65,11 +87,11 @@ class TestCasePhaseHelpForPhaseWithInstructionsTestImpl(SectionDocumentation):
                            [para('Rest of purpose for phase ' + self.name.syntax)])
 
     def render(self, environment: RenderingEnvironment) -> doc.SectionContents:
-        return doc.SectionContents([para('Rendition of phase {0:emphasis}'.format(self.name))],
+        return doc.SectionContents([para('Rendition of section {0:emphasis}'.format(self.name))],
                                    [])
 
     @property
-    def is_phase_with_instructions(self) -> bool:
+    def has_instructions(self) -> bool:
         return True
 
     @property

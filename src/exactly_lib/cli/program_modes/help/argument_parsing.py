@@ -88,7 +88,7 @@ class Parser:
                                     instruction_name: str) -> TestCaseHelpRequest:
         try:
             test_case_phase_help = self.application_help.test_case_help.phase_name_2_phase_help[phase_name]
-            if not test_case_phase_help.is_phase_with_instructions:
+            if not test_case_phase_help.has_instructions:
                 msg = 'The phase %s does not use instructions.' % instruction_name
                 raise HelpError(msg)
             if instruction_name == INSTRUCTIONS:
@@ -112,7 +112,7 @@ class Parser:
         phase_and_instr_descr_list = []
         test_case_phase_helps = self.application_help.test_case_help.phase_helps_in_order_of_execution
         for test_case_phase_help in test_case_phase_helps:
-            if test_case_phase_help.is_phase_with_instructions:
+            if test_case_phase_help.has_instructions:
                 name_2_description = test_case_phase_help.instruction_set.name_2_description
                 if instruction_name in name_2_description:
                     phase_and_instr_descr_list.append((test_case_phase_help.name,
