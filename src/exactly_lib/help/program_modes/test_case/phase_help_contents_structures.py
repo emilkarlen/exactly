@@ -113,10 +113,9 @@ class TestCasePhaseDocumentationBase(TestCasePhaseDocumentation):
         if eei.environment_variables:
             paragraphs.extend([docs.para('The following environment variables are set:'),
                                self._environment_variables_list(eei.environment_variables)])
-        else:
-            paragraphs.append(docs.para('No extra environment variables have been set.'))
         paragraphs.extend(eei.prologue)
-        sections.append(docs.section('Environment', paragraphs))
+        if paragraphs:
+            sections.append(docs.section('Environment', paragraphs))
 
     @staticmethod
     def _environment_variables_list(environment_variable_names: list) -> ParagraphItem:
