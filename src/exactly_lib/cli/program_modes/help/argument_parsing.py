@@ -77,7 +77,7 @@ class Parser:
             raise HelpError('Invalid help syntax. Use help help, for help.')
         section_name = arguments[0]
         for test_suite_section_help in self.application_help.test_suite_help.section_helps:
-            if test_suite_section_help.name == section_name:
+            if test_suite_section_help.name.plain == section_name:
                 return TestSuiteHelpRequest(TestSuiteHelpItem.SECTION,
                                             section_name,
                                             test_suite_section_help)

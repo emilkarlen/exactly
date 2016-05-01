@@ -15,12 +15,12 @@ from exactly_lib.help.contents_structure import ApplicationHelp
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
 from exactly_lib.help.program_modes.main_program.contents_structure import MainProgramHelp
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
-from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteSectionHelp, \
-    TestSuiteHelp
+from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
 from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.description import single_line_description_with_sub_sections, DescriptionWithSubSections
 from exactly_lib_test.help.test_resources import test_case_phase_help, \
-    single_line_description_that_identifies_instruction_and_phase, application_help_for
+    single_line_description_that_identifies_instruction_and_phase, application_help_for, \
+    SectionDocumentationForSectionWithoutInstructionsTestImpl
 
 
 class TestProgramHelp(unittest.TestCase):
@@ -97,7 +97,7 @@ class TestTestCasePhase(unittest.TestCase):
                               SectionDocumentation)
 
         self.assertEqual(expected_phase_name,
-                         actual.data.name)
+                         actual.data.name.plain)
 
     def _application_help_with_phases(self, all_phases):
         return ApplicationHelp(MainProgramHelp(),
@@ -290,10 +290,11 @@ class TestTestSuiteHelp(unittest.TestCase):
                       'Item should denote help for test-suite overview')
 
     def test_known_section(self):
-        actual = sut.parse(application_help_for([],
-                                                suite_sections=[TestSuiteSectionHelp('section A'),
-                                                                TestSuiteSectionHelp('section B')]),
-                           arguments_for.suite_section('section A'))
+        actual = sut.parse(application_help_for(
+            [],
+            suite_sections=[SectionDocumentationForSectionWithoutInstructionsTestImpl('section A'),
+                            SectionDocumentationForSectionWithoutInstructionsTestImpl('section B')]),
+            arguments_for.suite_section('section A'))
         self.assertIsInstance(actual,
                               TestSuiteHelpRequest,
                               'Expecting help for Suite Section')
@@ -303,11 +304,12 @@ class TestTestSuiteHelp(unittest.TestCase):
                       actual.item,
                       'Item should denote help for a Section')
         self.assertIsInstance(actual.data,
-                              TestSuiteSectionHelp)
+                              SectionDocumentation)
 
     def test_unknown_section(self):
-        application_help = application_help_for([],
-                                                suite_sections=[TestSuiteSectionHelp('section A')])
+        application_help = application_help_for(
+            [],
+            suite_sections=[SectionDocumentationForSectionWithoutInstructionsTestImpl('section A')])
         with self.assertRaises(sut.HelpError):
             sut.parse(application_help,
                       arguments_for.suite_section('unknown section'))

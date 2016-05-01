@@ -9,69 +9,7 @@ from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 
 
-class PhaseSequenceInfo(tuple):
-    def __new__(cls,
-                preceding_phase: list,
-                succeeding_phase: list,
-                prelude: iter = ()):
-        """
-        :param preceding_phase: [ParagraphItem]
-        :param succeeding_phase: [ParagraphItem]
-        :param prelude: [ParagraphItem]
-        """
-        return tuple.__new__(cls, (list(prelude), preceding_phase, succeeding_phase))
-
-    @property
-    def prelude(self) -> list:
-        return self[0]
-
-    @property
-    def preceding_phase(self) -> list:
-        return self[1]
-
-    @property
-    def succeeding_phase(self) -> list:
-        return self[2]
-
-
-class ExecutionEnvironmentInfo(tuple):
-    def __new__(cls,
-                pwd_at_start_of_phase: list,
-                environment_variables: list,
-                prologue: iter = ()):
-        """
-        :param pwd_at_start_of_phase: [ParagraphItem]
-        :param environment_variables: [str]
-        """
-        return tuple.__new__(cls, (pwd_at_start_of_phase,
-                                   environment_variables,
-                                   list(prologue)))
-
-    @property
-    def pwd_at_start_of_phase(self) -> list:
-        """
-        Description of the Present Workding Directory, at the start of the phase.
-        :rtype: [ParagraphItem]
-        """
-        return self[0]
-
-    @property
-    def environment_variables(self) -> list:
-        """
-        The names of the special environment variables that are available in the phase.
-        :rtype: [str]
-        """
-        return self[1]
-
-    @property
-    def prologue(self) -> list:
-        """
-        :rtype: [ParagraphItem]
-        """
-        return self[2]
-
-
-class TestCasePhaseDocumentationBase(SectionDocumentation):
+class TestSuiteSectionDocumentationBase(SectionDocumentation):
     def __init__(self,
                  name: str):
         super().__init__(name)
@@ -80,16 +18,10 @@ class TestCasePhaseDocumentationBase(SectionDocumentation):
     def is_mandatory(self) -> bool:
         raise NotImplementedError()
 
-    def sequence_info(self) -> PhaseSequenceInfo:
-        raise NotImplementedError()
-
     def contents_description(self) -> list:
         """
         :return: [`ParagraphItem`]
         """
-        raise NotImplementedError()
-
-    def execution_environment_info(self) -> ExecutionEnvironmentInfo:
         raise NotImplementedError()
 
     def render(self, environment: RenderingEnvironment) -> doc.SectionContents:
@@ -100,8 +32,6 @@ class TestCasePhaseDocumentationBase(SectionDocumentation):
                  [mandatory_info])
         sections = []
         self._add_section_for_contents_description(sections)
-        self._add_section_for_phase_sequence_description(sections)
-        self._add_section_for_environment(sections)
         self._add_section_for_see_also(environment, sections)
         self._add_section_for_instructions(environment, sections)
 
@@ -114,28 +44,6 @@ class TestCasePhaseDocumentationBase(SectionDocumentation):
     def _add_section_for_contents_description(self, sections: list):
         sections.append(docs.section('Contents',
                                      self.contents_description()))
-
-    def _add_section_for_phase_sequence_description(self, sections: list):
-        si = self.sequence_info()
-        sections.append(docs.section('Phase execution order',
-                                     si.prelude + si.preceding_phase + si.succeeding_phase))
-
-    def _add_section_for_environment(self, sections: list):
-        eei = self.execution_environment_info()
-        paragraphs = []
-        if eei.pwd_at_start_of_phase:
-            paragraphs.extend(eei.pwd_at_start_of_phase)
-        if eei.environment_variables:
-            paragraphs.extend([docs.para('The following environment variables are set:'),
-                               self._environment_variables_list(eei.environment_variables)])
-        paragraphs.extend(eei.prologue)
-        if paragraphs:
-            sections.append(docs.section('Environment', paragraphs))
-
-    @staticmethod
-    def _environment_variables_list(environment_variable_names: list) -> ParagraphItem:
-        return docs.simple_header_only_list(environment_variable_names,
-                                            lists.ListType.ITEMIZED_LIST)
 
     def _add_section_for_instructions(self,
                                       environment: RenderingEnvironment,
@@ -152,7 +60,7 @@ class TestCasePhaseDocumentationBase(SectionDocumentation):
             sections.append(docs.section('See also', [cross_ref_list]))
 
 
-class TestCasePhaseDocumentationForPhaseWithInstructions(TestCasePhaseDocumentationBase):
+class TestSuiteSectionDocumentationForSectionWithInstructions(TestSuiteSectionDocumentationBase):
     def __init__(self,
                  name: str,
                  instruction_set: SectionInstructionSet):
@@ -180,7 +88,7 @@ class TestCasePhaseDocumentationForPhaseWithInstructions(TestCasePhaseDocumentat
         raise NotImplementedError()
 
 
-class TestCasePhaseDocumentationForPhaseWithoutInstructions(TestCasePhaseDocumentationBase):
+class TestSuiteSectionDocumentationBaseForSectionWithoutInstructions(TestSuiteSectionDocumentationBase):
     def __init__(self,
                  name: str):
         super().__init__(name)
