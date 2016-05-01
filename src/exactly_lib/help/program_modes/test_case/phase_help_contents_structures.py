@@ -125,7 +125,7 @@ class SectionDocumentationBase(SectionDocumentation):
     def _add_section_for_instructions(self,
                                       environment: RenderingEnvironment,
                                       sections: list):
-        if self.is_phase_with_instructions:
+        if self.has_instructions:
             il = instruction_set_list(self.instruction_set)
             if environment.render_simple_header_value_lists_as_tables:
                 il = transform_list_to_table(il)
@@ -163,7 +163,7 @@ class TestCasePhaseDocumentationForPhaseWithInstructions(SectionDocumentationBas
         self._instruction_set = instruction_set
 
     @property
-    def is_phase_with_instructions(self) -> bool:
+    def has_instructions(self) -> bool:
         return True
 
     @property
@@ -186,7 +186,7 @@ class TestCasePhaseDocumentationForPhaseWithoutInstructions(SectionDocumentation
         super().__init__(name)
 
     @property
-    def is_phase_with_instructions(self) -> bool:
+    def has_instructions(self) -> bool:
         return False
 
     @property
