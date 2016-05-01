@@ -1,28 +1,3 @@
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionParser, SingleInstructionParserSource
-from exactly_lib.help.program_modes.test_case.instruction_documentation import InstructionDocumentation
-from exactly_lib.test_case.phases.common import TestCaseInstruction
-
-
-class SingleInstructionSetup(SingleInstructionParser):
-    def __init__(self,
-                 parser: SingleInstructionParser,
-                 description: InstructionDocumentation):
-        self._parser = parser
-        self._description = description
-
-    @property
-    def description(self) -> InstructionDocumentation:
-        return self._description
-
-    def apply(self, source: SingleInstructionParserSource) -> TestCaseInstruction:
-        return self._parser.apply(source)
-
-
-def instruction_set_from_name_and_setup_constructor_list(name_and_setup_pair_list: list) -> dict:
-    return dict(map(_name_and_setup, name_and_setup_pair_list))
-
-
 class InstructionsSetup(tuple):
     def __new__(cls,
                 config_instruction_set: dict,
@@ -61,10 +36,3 @@ class InstructionsSetup(tuple):
     @property
     def cleanup_instruction_set(self) -> dict:
         return self[4]
-
-
-def _name_and_setup(instruction_name__and__setup_constructor) -> (str, SingleInstructionSetup):
-    instruction_name = instruction_name__and__setup_constructor[0]
-    setup_constructor = instruction_name__and__setup_constructor[1]
-    return (instruction_name,
-            setup_constructor(instruction_name))

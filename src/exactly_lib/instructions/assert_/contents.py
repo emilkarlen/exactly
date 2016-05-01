@@ -1,17 +1,17 @@
 import pathlib
 
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
-    SingleInstructionInvalidArgumentException, SingleInstructionParserSource
+from exactly_lib.common.instruction_documentation import InvokationVariant, \
+    InstructionDocumentation
+from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.execution.execution_directory_structure import \
     root_dir_for_non_stdout_or_stderr_files_with_replaced_env_vars, SUB_DIR_FOR_REPLACEMENT_SOURCES_UNDER_ACT_DIR, \
     SUB_DIR_FOR_REPLACEMENT_SOURCES_NOT_UNDER_ACT_DIR, PATH__TMP_USER
-from exactly_lib.help.program_modes.test_case.instruction_documentation import InvokationVariant, \
-    InstructionDocumentation
 from exactly_lib.instructions.assert_.utils.contents_utils import ActualFileTransformer, EMPTY_ARGUMENT, \
     WITH_REPLACED_ENV_VARS_OPTION, parse_actual_file_argument, with_replaced_env_vars_help
 from exactly_lib.instructions.utils.parse_utils import split_arguments_list_string
 from exactly_lib.instructions.utils.relative_path_options import REL_HOME_OPTION, REL_TMP_OPTION, REL_CWD_OPTION
-from exactly_lib.test_case.instruction_setup import SingleInstructionSetup
+from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
+    SingleInstructionInvalidArgumentException, SingleInstructionParserSource
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase
 from exactly_lib.util.textformat.structure.structures import paras

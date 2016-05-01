@@ -1,6 +1,7 @@
 from exactly_lib.execution import phases
 from exactly_lib.help.concepts.all_concepts import all_concepts
-from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet, ConceptsHelp
+from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet
+from exactly_lib.help.concepts.contents_structure import ConceptsHelp
 from exactly_lib.help.program_modes.main_program.contents_structure import MainProgramHelp
 from exactly_lib.help.program_modes.test_case.config import phase_help_name
 from exactly_lib.help.program_modes.test_case.contents.phase import act, assert_, before_assert, configuration, \

@@ -1,9 +1,9 @@
 import unittest
 
-from exactly_lib.help.cross_reference_id import CrossReferenceId
-from exactly_lib.help.program_modes.test_case.instruction_documentation import InstructionDocumentation, \
+from exactly_lib.common.instruction_documentation import InstructionDocumentation, \
     InvokationVariant, \
     SyntaxElementDescription
+from exactly_lib.help.cross_reference_id import CrossReferenceId
 from exactly_lib_test.test_resources import value_assertion as va
 from exactly_lib_test.util.textformat.test_resources import structure as struct_check
 

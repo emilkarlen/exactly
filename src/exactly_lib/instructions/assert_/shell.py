@@ -2,7 +2,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.instructions.multi_phase_instructions import shell as shell_common
 from exactly_lib.instructions.multi_phase_instructions.shell import TheInstructionDocumentationBase
 from exactly_lib.instructions.utils.sub_process_execution import ExecuteInfo
-from exactly_lib.test_case.instruction_setup import SingleInstructionSetup
+from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase

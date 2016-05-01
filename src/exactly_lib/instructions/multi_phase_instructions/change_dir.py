@@ -1,8 +1,8 @@
 import os
 
-from exactly_lib.execution.environment_variables import ENV_VAR_ACT, ENV_VAR_TMP
-from exactly_lib.help.program_modes.test_case.instruction_documentation import InvokationVariant, \
+from exactly_lib.common.instruction_documentation import InvokationVariant, \
     InstructionDocumentation
+from exactly_lib.execution.environment_variables import ENV_VAR_ACT, ENV_VAR_TMP
 from exactly_lib.instructions.utils.destination_path import *
 from exactly_lib.instructions.utils.parse_utils import split_arguments_list_string
 from exactly_lib.test_case.phases.result import sh
