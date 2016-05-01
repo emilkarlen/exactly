@@ -8,10 +8,9 @@ from exactly_lib.help.utils.formatting import AnyInstructionNameDictionary
 from exactly_lib.help.utils.phase_names import phase_name_dictionary, SETUP_PHASE_NAME
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import lists
+from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem
-from exactly_lib.util.textformat.structure.document import SectionContents
-from exactly_lib.util.textformat.structure.structures import text, SEPARATION_OF_HEADER_AND_CONTENTS, \
-    simple_header_only_list, paras
+from exactly_lib.util.textformat.structure.document import SectionContents, Section
 
 
 class _Sandbox(PlainConceptDocumentation):
@@ -22,12 +21,12 @@ class _Sandbox(PlainConceptDocumentation):
         phase = phase_name_dictionary()
         instruction = AnyInstructionNameDictionary()
         rest_paragraphs = []
+        sub_sections = []
         rest_paragraphs.extend(normalize_and_parse(_SANDBOX_PRE_DIRECTORY_TREE.format(phase=phase)))
-        rest_paragraphs.append(directory_structure_list(sds.execution_directories))
-        rest_paragraphs.extend(sandbox_directories_info_header())
-        rest_paragraphs.append(sandbox_directories_info(phase, instruction))
-        return DescriptionWithSubSections(text(_SANDBOX_SINGLE_LINE_DESCRIPTION),
-                                          SectionContents(rest_paragraphs, []))
+        sub_sections.append(directory_structure_list_section(sds.execution_directories))
+        sub_sections.extend(sandbox_directories_info_sections(phase, instruction))
+        return DescriptionWithSubSections(docs.text(_SANDBOX_SINGLE_LINE_DESCRIPTION),
+                                          SectionContents(rest_paragraphs, sub_sections))
 
     def see_also(self) -> list:
         return [
@@ -42,36 +41,28 @@ _SANDBOX_SINGLE_LINE_DESCRIPTION = """\
 The temporary directory structure where a test case is executed."""
 
 _SANDBOX_PRE_DIRECTORY_TREE = """\
-Every test case uses its own sandbox.
+Each test case uses its own sandbox.
 
 
 The sandbox is created just before the {phase[setup]} phase is executed.
-
-
-It consists of the following directory tree:
 """
 
 
-def sandbox_directories_info_header() -> list:
-    return paras('Description:')
+def sandbox_directories_info_sections(phase_name_dictionary: dict,
+                                      instruction: AnyInstructionNameDictionary) -> list:
+    def section(directory_name: str, paragraph_items: list) -> Section:
+        return docs.section('%s/' % directory_name,
+                            paragraph_items)
+
+    return [
+        section(sds.SUB_DIRECTORY__ACT,
+                _act_dir_description_paragraphs(instruction, phase_name_dictionary)),
+        section(sds.SUB_DIRECTORY__RESULT,
+                _result_dir_description_paragraphs(instruction, phase_name_dictionary)),
+    ]
 
 
-def sandbox_directories_info(phase_name_dictionary: dict,
-                             instruction: AnyInstructionNameDictionary) -> ParagraphItem:
-    items = []
-    items.append(lists.HeaderContentListItem(
-        text('%s/' % sds.SUB_DIRECTORY__ACT),
-        _act_dir_description_paragraphs(instruction, phase_name_dictionary)))
-    items.append(lists.HeaderContentListItem(
-        text('%s/' % sds.SUB_DIRECTORY__RESULT),
-        _result_dir_description_paragraphs(instruction, phase_name_dictionary)))
-    return lists.HeaderContentList(items,
-                                   lists.Format(lists.ListType.VARIABLE_LIST,
-                                                custom_indent_spaces=0,
-                                                custom_separations=SEPARATION_OF_HEADER_AND_CONTENTS))
-
-
-def _act_dir_description_paragraphs(instruction: AnyInstructionNameDictionary, phase: dict):
+def _act_dir_description_paragraphs(instruction: AnyInstructionNameDictionary, phase: dict) -> list:
     ret_val = []
     ret_val.extend(normalize_and_parse(
         _ACT_DIR_DESCRIPTION.format(phase=phase,
@@ -85,8 +76,8 @@ def _result_dir_description_paragraphs(instruction: AnyInstructionNameDictionary
     ret_val.extend(normalize_and_parse(
         _RESULT_DIR_DESCRIPTION.format(phase=phase,
                                        instruction=instruction)))
-    ret_val.append(simple_header_only_list(sds.RESULT_FILE_ALL,
-                                           lists.ListType.VARIABLE_LIST))
+    ret_val.append(docs.simple_header_only_list(sds.RESULT_FILE_ALL,
+                                                lists.ListType.VARIABLE_LIST))
     ret_val.extend(_result_dir_environment_variables(phase))
     return ret_val
 
@@ -110,24 +101,29 @@ with the following files (with obvious contents):
 
 
 def _result_dir_environment_variables(phase: dict) -> list:
-    return paras('{env_var}: The value of this environment variable is the absolute path of this directory '
-                 '(after the {phase[act]} phase has been executed).'
-                 .format(phase=phase,
-                         env_var=ENV_VAR_RESULT))
+    return docs.paras('{env_var}: The value of this environment variable is the absolute path of this directory '
+                      '(after the {phase[act]} phase has been executed).'
+                      .format(phase=phase,
+                              env_var=ENV_VAR_RESULT))
 
 
 def _act_dir_environment_variables(phase: dict) -> list:
-    return paras('{env_var}: The value of this environment variable is the absolute path of this directory.'
-                 .format(phase=phase,
-                         env_var=ENV_VAR_ACT))
+    return docs.paras('{env_var}: The value of this environment variable is the absolute path of this directory.'
+                      .format(phase=phase,
+                              env_var=ENV_VAR_ACT))
 
 
-def directory_structure_list(dir_with_sub_dir_list: list) -> ParagraphItem:
+def directory_structure_list_section(dir_with_sub_dir_list: list) -> Section:
+    return docs.section('Directory structure',
+                        [_directory_structure_list(dir_with_sub_dir_list)])
+
+
+def _directory_structure_list(dir_with_sub_dir_list: list) -> ParagraphItem:
     items = []
     for dir_wsd in sorted(dir_with_sub_dir_list, key=lambda x: x.name):
         sub_dirs_items = []
         if dir_wsd.sub_dirs:
-            sub_dirs_items = [directory_structure_list(dir_wsd.sub_dirs)]
-        items.append(lists.HeaderContentListItem(text(dir_wsd.name + '/'), sub_dirs_items))
+            sub_dirs_items = [_directory_structure_list(dir_wsd.sub_dirs)]
+        items.append(lists.HeaderContentListItem(docs.text(dir_wsd.name + '/'), sub_dirs_items))
     return lists.HeaderContentList(items,
                                    lists.Format(lists.ListType.VARIABLE_LIST))
