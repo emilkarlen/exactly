@@ -3,10 +3,10 @@ from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup
 from exactly_lib.help.utils.formatting import AnyInstructionNameDictionary
 from exactly_lib.section_document.syntax import section_header
 from exactly_lib.util.textformat.parse import normalize_and_parse
-from exactly_lib.util.textformat.structure.structures import *
+from exactly_lib.util.textformat.structure import structures as docs
 
 
-def test_case_files_documentation(setup: Setup) -> doc.SectionContents:
+def test_case_files_documentation(setup: Setup) -> docs.SectionContents:
     instruction_dict = AnyInstructionNameDictionary()
     phases_paragraphs = normalize_and_parse(PHASES_DOC.format(phase_declaration_for_NAME=section_header('NAME'),
                                                               instruction=instruction_dict,
@@ -15,18 +15,18 @@ def test_case_files_documentation(setup: Setup) -> doc.SectionContents:
     instructions_paragraphs = normalize_and_parse(INSTRUCTIONS_DOC.format(instruction=instruction_dict))
     other_paragraphs = normalize_and_parse(OTHER_DOC.format(phase=setup.phase_names,
                                                             instruction=instruction_dict))
-    return doc.SectionContents(
+    return docs.SectionContents(
         [],
         [
-            doc.Section(text('Phases'),
-                        doc.SectionContents(phases_paragraphs,
-                                            [])),
-            doc.Section(text('Instructions'),
-                        doc.SectionContents(instructions_paragraphs,
-                                            [])),
-            doc.Section(text('Comments and empty lines'),
-                        doc.SectionContents(other_paragraphs,
-                                            [])),
+            docs.Section(docs.text('Phases'),
+                         docs.SectionContents(phases_paragraphs,
+                                              [])),
+            docs.Section(docs.text('Instructions'),
+                         docs.SectionContents(instructions_paragraphs,
+                                              [])),
+            docs.Section(docs.text('Comments and empty lines'),
+                         docs.SectionContents(other_paragraphs,
+                                              [])),
         ])
 
 

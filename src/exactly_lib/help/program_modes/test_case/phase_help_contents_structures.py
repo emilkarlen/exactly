@@ -1,4 +1,3 @@
-from exactly_lib import program_info
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCasePhaseDocumentation, \
     TestCasePhaseInstructionSet
 from exactly_lib.help.program_modes.test_case.render.instruction_set import instruction_set_list
@@ -13,20 +12,26 @@ from exactly_lib.util.textformat.structure.core import ParagraphItem
 class PhaseSequenceInfo(tuple):
     def __new__(cls,
                 preceding_phase: list,
-                succeeding_phase: list):
+                succeeding_phase: list,
+                prelude: iter = ()):
         """
         :param preceding_phase: [ParagraphItem]
         :param succeeding_phase: [ParagraphItem]
+        :param prelude: [ParagraphItem]
         """
-        return tuple.__new__(cls, (preceding_phase, succeeding_phase))
+        return tuple.__new__(cls, (list(prelude), preceding_phase, succeeding_phase))
 
     @property
-    def preceding_phase(self) -> list:
+    def prelude(self) -> list:
         return self[0]
 
     @property
-    def succeeding_phase(self) -> list:
+    def preceding_phase(self) -> list:
         return self[1]
+
+    @property
+    def succeeding_phase(self) -> list:
+        return self[2]
 
 
 class ExecutionEnvironmentInfo(tuple):
@@ -89,7 +94,7 @@ class TestCasePhaseDocumentationBase(TestCasePhaseDocumentation):
     def _add_section_for_phase_sequence_description(self, sections: list):
         si = self.sequence_info()
         sections.append(docs.section('Phase sequence',
-                                     si.preceding_phase + si.succeeding_phase))
+                                     si.prelude + si.preceding_phase + si.succeeding_phase))
 
     def _add_section_for_environment(self, sections: list):
         eei = self.execution_environment_info()

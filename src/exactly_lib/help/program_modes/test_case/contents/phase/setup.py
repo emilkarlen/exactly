@@ -3,7 +3,8 @@ from exactly_lib.help.concepts.plain_concepts.environment_variable import ENVIRO
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
 from exactly_lib.help.cross_reference_id import TestCasePhaseCrossReference
 from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
-    pwd_at_start_of_phase_first_phase_executed_in_the_sandbox, sequence_info__succeeding_phase
+    pwd_at_start_of_phase_first_phase_executed_in_the_sandbox, sequence_info__succeeding_phase, \
+    sequence_info__not_executed_if_execution_mode_is_skip
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCasePhaseInstructionSet
 from exactly_lib.help.program_modes.test_case.phase_help_contents_structures import \
     TestCasePhaseDocumentationForPhaseWithInstructions, PhaseSequenceInfo, ExecutionEnvironmentInfo
@@ -30,7 +31,8 @@ class SetupPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstructions
     def sequence_info(self) -> PhaseSequenceInfo:
         return PhaseSequenceInfo(self._parse(SEQUENCE_INFO__PRECEDING_PHASE),
                                  sequence_info__succeeding_phase(self.phase_name_dictionary,
-                                                                 ACT_PHASE_NAME))
+                                                                 ACT_PHASE_NAME),
+                                 prelude=sequence_info__not_executed_if_execution_mode_is_skip())
 
     def is_mandatory(self) -> bool:
         return False

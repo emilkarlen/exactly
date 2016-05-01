@@ -1,5 +1,7 @@
 from exactly_lib.execution import environment_variables
 from exactly_lib.execution.execution_directory_structure import SUB_DIRECTORY__ACT
+from exactly_lib.execution.execution_mode import NAME_SKIP
+from exactly_lib.help.concepts.configuration_parameters.execution_mode import EXECUTION_MODE_CONFIGURATION_PARAMETER
 from exactly_lib.help.utils.formatting import SectionName
 from exactly_lib.util.textformat.parse import normalize_and_parse
 
@@ -32,6 +34,13 @@ def env_vars_after_act() -> list:
     return env_vars_up_to_act() + environment_variables.SET_AT_BEFORE_ASSERT__ENV_VARS
 
 
+def sequence_info__not_executed_if_execution_mode_is_skip() -> list:
+    return normalize_and_parse(_SEQUENCE_INFO__NOT_EXECUTED_IF_EXECUTION_MODE_IS_SKIP.format(
+        execution_mode=EXECUTION_MODE_CONFIGURATION_PARAMETER.name().singular,
+        SKIP=NAME_SKIP,
+    ))
+
+
 def sequence_info__succeeding_phase(phase_name_dictionary: dict,
                                     following_phase: SectionName) -> list:
     return normalize_and_parse(_SEQUENCE_INFO__SUCCEEDING_PHASE.format(phase=phase_name_dictionary,
@@ -52,4 +61,10 @@ def sequence_info__preceding_phase(following_phase: SectionName) -> list:
 
 _SEQUENCE_INFO__PRECEDING_PHASE = """\
 This phase is executed directly after the {following_phase} phase.
+"""
+
+_SEQUENCE_INFO__NOT_EXECUTED_IF_EXECUTION_MODE_IS_SKIP = """\
+If the {execution_mode} is set to {SKIP}, then this phase is not executed.
+
+Otherwise:
 """
