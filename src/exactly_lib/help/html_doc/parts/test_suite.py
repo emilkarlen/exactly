@@ -29,7 +29,7 @@ class HtmlDocGeneratorForTestSuiteHelp(HtmlDocGeneratorForSectionDocumentBase):
 
         instructions_targets_factory = cross_ref.sub_component_factory('instructions',
                                                                        targets_factory)
-        instructions_target = instructions_targets_factory.root('Instructions')
+        instructions_target = instructions_targets_factory.root('Instructions per section')
         instructions_sub_targets, instructions_contents = self._instructions_contents(
             instructions_targets_factory,
             self.test_suite_help.section_helps)
