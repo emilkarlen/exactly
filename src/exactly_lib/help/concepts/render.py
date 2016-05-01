@@ -3,7 +3,7 @@ from exactly_lib.help.concepts.concept_structure import ConceptDocumentation, Co
 from exactly_lib.help.concepts.plain_concepts.configuration_parameter import CONFIGURATION_PARAMETER_CONCEPT
 from exactly_lib.help.program_modes.test_case.contents_structure import ConceptsHelp
 from exactly_lib.help.utils.phase_names import phase_name_dictionary
-from exactly_lib.help.utils.render import SectionContentsRenderer, RenderingEnvironment
+from exactly_lib.help.utils.render import SectionContentsRenderer, RenderingEnvironment, cross_reference_list
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure.core import ParagraphItem
@@ -22,8 +22,10 @@ class AllConceptsListRenderer(SectionContentsRenderer):
 class IndividualConceptRenderer(SectionContentsRenderer, ConceptDocumentationVisitor):
     def __init__(self, concept: ConceptDocumentation):
         self.concept = concept
+        self.rendering_environment = None
 
     def apply(self, environment: RenderingEnvironment) -> doc.SectionContents:
+        self.rendering_environment = environment
         return self.visit(self.concept)
 
     def visit_plain_concept(self, x: PlainConceptDocumentation) -> doc.SectionContents:
@@ -32,6 +34,7 @@ class IndividualConceptRenderer(SectionContentsRenderer, ConceptDocumentationVis
         sub_sections = []
         if purpose.rest:
             sub_sections.append(self._rest_section(purpose))
+        sub_sections.extend(self._see_also_sections())
         return doc.SectionContents(initial_paragraphs, sub_sections)
 
     def visit_configuration_parameter(self, x: ConfigurationParameterDocumentation) -> doc.SectionContents:
@@ -42,11 +45,20 @@ class IndividualConceptRenderer(SectionContentsRenderer, ConceptDocumentationVis
                                     [x.default_value_para()]))
         if purpose.rest:
             sub_sections.append(self._rest_section(purpose))
+        sub_sections.extend(self._see_also_sections())
         return doc.SectionContents(initial_paragraphs, sub_sections)
 
     def _rest_section(self, purpose):
         return section('Description',
                        purpose.rest)
+
+    def _see_also_sections(self) -> list:
+        if not self.concept.see_also:
+            return []
+        else:
+            return [section('See also',
+                            [cross_reference_list(self.concept.see_also(),
+                                                  self.rendering_environment)])]
 
 
 def _sorted_concepts_list(concepts: iter) -> ParagraphItem:
