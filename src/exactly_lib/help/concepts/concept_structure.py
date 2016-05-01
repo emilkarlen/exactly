@@ -43,6 +43,12 @@ class ConceptDocumentation:
         """
         return [para(self.purpose().single_line_description)]
 
+    def see_also(self) -> list:
+        """
+        :rtype [CrossReference]
+        """
+        return []
+
 
 class PlainConceptDocumentation(ConceptDocumentation):
     pass
