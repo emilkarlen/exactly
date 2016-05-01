@@ -37,19 +37,21 @@ class PhaseSequenceInfo(tuple):
 class ExecutionEnvironmentInfo(tuple):
     def __new__(cls,
                 pwd_at_start_of_phase: list,
-                environment_variables: list):
+                environment_variables: list,
+                prologue: iter=()):
         """
         :param pwd_at_start_of_phase: [ParagraphItem]
         :param environment_variables: [str]
         """
         return tuple.__new__(cls, (pwd_at_start_of_phase,
-                                   environment_variables))
+                                   environment_variables,
+                                   list(prologue)))
 
     @property
     def pwd_at_start_of_phase(self) -> list:
         """
         Description of the Present Workding Directory, at the start of the phase.
-        :return: [ParagraphItem]
+        :rtype: [ParagraphItem]
         """
         return self[0]
 
@@ -57,9 +59,16 @@ class ExecutionEnvironmentInfo(tuple):
     def environment_variables(self) -> list:
         """
         The names of the special environment variables that are available in the phase.
-        :return: [str]
+        :rtype: [str]
         """
         return self[1]
+
+    @property
+    def prologue(self) -> list:
+        """
+        :rtype: [ParagraphItem]
+        """
+        return self[2]
 
 
 class TestCasePhaseDocumentationBase(TestCasePhaseDocumentation):
@@ -93,7 +102,7 @@ class TestCasePhaseDocumentationBase(TestCasePhaseDocumentation):
 
     def _add_section_for_phase_sequence_description(self, sections: list):
         si = self.sequence_info()
-        sections.append(docs.section('Phase sequence',
+        sections.append(docs.section('Phase execution order',
                                      si.prelude + si.preceding_phase + si.succeeding_phase))
 
     def _add_section_for_environment(self, sections: list):
@@ -106,6 +115,7 @@ class TestCasePhaseDocumentationBase(TestCasePhaseDocumentation):
                                self._environment_variables_list(eei.environment_variables)])
         else:
             paragraphs.append(docs.para('No extra environment variables have been set.'))
+        paragraphs.extend(eei.prologue)
         sections.append(docs.section('Environment', paragraphs))
 
     @staticmethod

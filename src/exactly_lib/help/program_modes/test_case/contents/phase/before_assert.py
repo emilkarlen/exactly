@@ -5,7 +5,7 @@ from exactly_lib.help.cross_reference_id import TestCasePhaseCrossReference
 from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
     sequence_info__succeeding_phase, \
     pwd_at_start_of_phase_for_non_first_phases, sequence_info__preceding_phase, \
-    sequence_info__not_executed_if_execution_mode_is_skip
+    sequence_info__not_executed_if_execution_mode_is_skip, execution_environment_prologue_for_post_act_phase
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCasePhaseInstructionSet
 from exactly_lib.help.program_modes.test_case.phase_help_contents_structures import \
     TestCasePhaseDocumentationForPhaseWithInstructions, PhaseSequenceInfo, ExecutionEnvironmentInfo
@@ -43,7 +43,8 @@ class BeforeAssertPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstr
 
     def execution_environment_info(self) -> ExecutionEnvironmentInfo:
         return ExecutionEnvironmentInfo(pwd_at_start_of_phase_for_non_first_phases(),
-                                        EXISTS_AT_BEFORE_ASSERT_MAIN)
+                                        EXISTS_AT_BEFORE_ASSERT_MAIN,
+                                        prologue=execution_environment_prologue_for_post_act_phase())
 
     @property
     def see_also(self) -> list:
