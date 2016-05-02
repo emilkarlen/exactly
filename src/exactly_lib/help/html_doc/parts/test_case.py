@@ -56,8 +56,7 @@ class HtmlDocGeneratorForTestCaseHelp(HtmlDocGeneratorForSectionDocumentBase):
         return ret_val_targets, ret_val_contents
 
     def _test_case_overview_contents(self, targets_factory: CustomTargetInfoFactory) -> (list, doc.SectionContents):
-        generator = test_case_overview_rendering.OverviewRenderer(self.test_case_help,
-                                                                  targets_factory)
+        generator = test_case_overview_rendering.OverviewRenderer(self.test_case_help, targets_factory)
         section_contents = generator.apply(self.rendering_environment)
         return generator.target_info_hierarchy(), section_contents
 

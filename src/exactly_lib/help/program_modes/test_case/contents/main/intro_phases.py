@@ -1,15 +1,12 @@
-from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
+from exactly_lib.help.program_modes.common.renderers import sections_short_list
 from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import document as doc
-from exactly_lib.util.textformat.structure import lists
-from exactly_lib.util.textformat.structure.core import ParagraphItem
-from exactly_lib.util.textformat.structure.structures import para, list_item, \
-    simple_list_with_space_between_elements_and_content
 
 
 def phases_documentation(setup: Setup) -> doc.SectionContents:
-    paragraphs = normalize_and_parse(INTRO) + [phases_list_in_order_of_execution(setup)]
+    paragraphs = (normalize_and_parse(INTRO) +
+                  [sections_short_list(setup.test_case_help.phase_helps_in_order_of_execution)])
     return doc.SectionContents(paragraphs,
                                [])
 
@@ -24,14 +21,3 @@ regardless of the order they appear in the test case file.
 
 The phases are (in order of execution):
 """
-
-
-def phases_list_in_order_of_execution(setup: Setup) -> ParagraphItem:
-    items = []
-    for phase in setup.test_case_help.phase_helps_in_order_of_execution:
-        assert isinstance(phase, SectionDocumentation)
-        items.append(list_item(phase.name.syntax,
-                               [para(phase.purpose().single_line_description)]))
-    return simple_list_with_space_between_elements_and_content(
-        items,
-        lists.ListType.VARIABLE_LIST)

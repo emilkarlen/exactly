@@ -52,8 +52,8 @@ def application_help_for(instructions_setup: InstructionsSetup) -> ApplicationHe
                                ConfigurationSectionDocumentation(SECTION_NAME__CONF,
                                                                  instruction_set_help(
                                                                      CONFIGURATION_INSTRUCTIONS)),
-                               CasesSectionDocumentation(SECTION_NAME__SUITS),
-                               SuitesSectionDocumentation(SECTION_NAME__CASES),
+                               CasesSectionDocumentation(SECTION_NAME__CASES),
+                               SuitesSectionDocumentation(SECTION_NAME__SUITS),
                            ]))
 
 

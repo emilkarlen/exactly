@@ -1,9 +1,10 @@
 import unittest
 
+import exactly_lib.help.program_modes.common.renderers
+import exactly_lib.help.utils.render
 from exactly_lib.help.program_modes.test_case.contents.phase import act
 from exactly_lib.help.program_modes.test_case.contents.phase import \
     assert_, configuration, before_assert, cleanup, setup
-from exactly_lib.help.program_modes.test_case.render import test_case_phase as sut
 from exactly_lib.help.utils.render import RenderingEnvironment
 from exactly_lib_test.help.test_resources import test_case_phase_instruction_set, \
     CrossReferenceTextConstructorTestImpl
@@ -29,7 +30,7 @@ class TestCase(unittest.TestCase):
                                             ['instr 1',
                                              'instr 2']))
         # ACT #
-        actual = sut.TestCasePhaseOverviewRenderer(tcp_help).apply(RENDERING_ENVIRONMENT)
+        actual = exactly_lib.help.program_modes.common.renderers.SectionDocumentationRenderer(tcp_help).apply(RENDERING_ENVIRONMENT)
         # ASSERT #
         struct_check.is_section_contents.apply(self, actual)
 
@@ -41,7 +42,7 @@ class TestCase(unittest.TestCase):
                                             ['instr 1',
                                              'instr 2']))
         # ACT #
-        actual = sut.TestCasePhaseOverviewRenderer(tcp_help).apply(RENDERING_ENVIRONMENT)
+        actual = exactly_lib.help.program_modes.common.renderers.SectionDocumentationRenderer(tcp_help).apply(RENDERING_ENVIRONMENT)
         # ASSERT #
         struct_check.is_section_contents.apply(self, actual)
 
@@ -49,7 +50,7 @@ class TestCase(unittest.TestCase):
         # ARRANGE #
         tcp_help = act.ActPhaseDocumentation('phase name')
         # ACT #
-        actual = sut.TestCasePhaseOverviewRenderer(tcp_help).apply(RENDERING_ENVIRONMENT)
+        actual = exactly_lib.help.program_modes.common.renderers.SectionDocumentationRenderer(tcp_help).apply(RENDERING_ENVIRONMENT)
         # ASSERT #
         struct_check.is_section_contents.apply(self, actual)
 
@@ -61,7 +62,7 @@ class TestCase(unittest.TestCase):
                                             ['instr 1',
                                              'instr 2']))
         # ACT #
-        actual = sut.TestCasePhaseOverviewRenderer(tcp_help).apply(RENDERING_ENVIRONMENT)
+        actual = exactly_lib.help.program_modes.common.renderers.SectionDocumentationRenderer(tcp_help).apply(RENDERING_ENVIRONMENT)
         # ASSERT #
         struct_check.is_section_contents.apply(self, actual)
 
@@ -73,7 +74,7 @@ class TestCase(unittest.TestCase):
                                             ['instr 1',
                                              'instr 2']))
         # ACT #
-        actual = sut.TestCasePhaseOverviewRenderer(tcp_help).apply(RENDERING_ENVIRONMENT)
+        actual = exactly_lib.help.program_modes.common.renderers.SectionDocumentationRenderer(tcp_help).apply(RENDERING_ENVIRONMENT)
         # ASSERT #
         struct_check.is_section_contents.apply(self, actual)
 
@@ -85,7 +86,7 @@ class TestCase(unittest.TestCase):
                                             ['instr 1',
                                              'instr 2']))
         # ACT #
-        actual = sut.TestCasePhaseOverviewRenderer(tcp_help).apply(RENDERING_ENVIRONMENT)
+        actual = exactly_lib.help.program_modes.common.renderers.SectionDocumentationRenderer(tcp_help).apply(RENDERING_ENVIRONMENT)
         # ASSERT #
         struct_check.is_section_contents.apply(self, actual)
 
