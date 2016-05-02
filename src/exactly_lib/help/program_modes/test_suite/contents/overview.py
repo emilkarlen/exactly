@@ -129,7 +129,10 @@ _FILE_SYNTAX = """\
 "[NAME]" on a single line declares the start of section NAME.
 
 
-A section may appear any number of times in a suite file.
+The order of sections is irrelevant.
+
+
+A section may appear any number of times.
 The contents of all appearances are accumulated.
 
 
