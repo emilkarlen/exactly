@@ -54,6 +54,27 @@ vad README ska innehålla.
 Det riskerar ju att atc (action to check) kan sabba
 filer där.
 * TODO Dokumentation
+** Enkla test-falls-exemplen ska ha med [setup]
+Både i inbyggd hjälp o i README.md
+Typ
+----------------------------
+[setup]
+
+stdin test-telephone-book.txt
+
+[act]
+
+my-telephone-book --get city --for-name 'Per Karlsson'
+
+[assert]
+
+exitcode 0
+
+stdout <<EOF
+Vetlanda
+EOF
+----------------------------
+
 ** TODO Test case overview: Förbättra "intro-raden"
 Idag
 ----------------------------------------
