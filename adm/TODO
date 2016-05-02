@@ -54,6 +54,13 @@ vad README ska innehålla.
 Det riskerar ju att atc (action to check) kan sabba
 filer där.
 * TODO Dokumentation
+** TODO Test case overview: Förbättra "intro-raden"
+Idag
+----------------------------------------
+Test Case Overview
+
+Executes a program in a temporary sandbox directory and checks it's result.
+----------------------------------------
 ** TODO För sviter ska "valfrihets-infon" använda ordet "section"
 Nu används "phase":
 The "conf" phase is optional
