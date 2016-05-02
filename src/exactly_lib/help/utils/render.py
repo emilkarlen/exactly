@@ -7,7 +7,7 @@ from exactly_lib.util.textformat.structure.structures import simple_header_only_
 
 class RenderingEnvironment(tuple):
     def __new__(cls, cross_ref_text_constructor: CrossReferenceTextConstructor,
-                render_simple_header_value_lists_as_tables: bool=False):
+                render_simple_header_value_lists_as_tables: bool = False):
         return tuple.__new__(cls, (cross_ref_text_constructor,
                                    render_simple_header_value_lists_as_tables))
 
