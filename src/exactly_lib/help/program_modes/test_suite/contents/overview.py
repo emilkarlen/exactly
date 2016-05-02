@@ -27,7 +27,7 @@ class OverviewRenderer(SectionContentsRenderer):
                                                 'structure')
 
         self._FILE_SYNTAX_TI = target_factory.sub('Suite file syntax',
-                                                  'test-case-files')
+                                                  'file-syntax')
 
     def target_info_hierarchy(self) -> list:
         return [
