@@ -2,6 +2,7 @@ import shlex
 
 from exactly_lib.common.instruction_documentation import InstructionDocumentation, InvokationVariant
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
+from exactly_lib.help.concepts.plain_concepts.preprocessor import PREPROCESSOR_CONCEPT
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, SingleInstructionParserSource, SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.preprocessor import PreprocessorViaExternalProgram
@@ -25,8 +26,13 @@ class _TheInstructionDocumentation(InstructionDocumentation):
     def invokation_variants(self) -> list:
         return [
             InvokationVariant(
-                'EXECUTABLE',
+                'EXECUTABLE [ARGUMENT...]',
                 paras('An executable program that will be given the test case file as single argument')),
+        ]
+
+    def see_also(self) -> list:
+        return [
+            PREPROCESSOR_CONCEPT.cross_reference_target(),
         ]
 
 
