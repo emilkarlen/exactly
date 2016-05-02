@@ -5,3 +5,5 @@ OPTION_FOR_EXECUTING_ACT_PHASE = '--act'
 OPTION_FOR_PREPROCESSOR = '--preprocessor'
 
 OPTION_FOR_ACTOR = '--actor'
+HELP_COMMAND = 'help'
+SUITE_COMMAND = 'suite'

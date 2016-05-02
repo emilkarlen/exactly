@@ -1,4 +1,5 @@
 from exactly_lib import program_info
+from exactly_lib.cli.cli_environment.command_line_options import SUITE_COMMAND
 from exactly_lib.help import cross_reference_id as cross_ref
 from exactly_lib.help.program_modes.common.renderers import sections_short_list
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
@@ -14,6 +15,7 @@ class OverviewRenderer(SectionContentsRenderer):
         self._suite_help = suite_help
         self._format_map = {
             'program_name': program_info.PROGRAM_NAME,
+            'suite_program_mode': SUITE_COMMAND,
         }
         if target_factory is None:
             target_factory = cross_ref.CustomTargetInfoFactory('')
@@ -59,7 +61,8 @@ class OverviewRenderer(SectionContentsRenderer):
 _leaf = cross_ref.target_info_leaf
 
 _INTRODUCTION_SUMMARY = """\
-TODO suite intro summary."""
+{program_name} has functionality for organizing test cases in test suites.
+"""
 
 _FILES_AND_EXECUTION_TEXT = """\
 A test suite is written as a plain text file:
@@ -82,7 +85,7 @@ If the file 'example.suite' contains this text, then {program_name} can execute 
 
 
 ```
-> {program_name} suite example.suite
+> {program_name} {suite_program_mode} example.suite
 ...
 OK
 ```
