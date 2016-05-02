@@ -1,11 +1,10 @@
 from exactly_lib import program_info
 from exactly_lib.help import cross_reference_id as cross_ref
+from exactly_lib.help.program_modes.common.renderers import sections_short_list
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
 from exactly_lib.help.utils.render import RenderingEnvironment, SectionContentsRenderer
-from exactly_lib.test_suite import parser
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import document as doc
-from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure import structures as docs
 
 
@@ -53,25 +52,8 @@ class OverviewRenderer(SectionContentsRenderer):
     def _suite_structure(self) -> list:
         ret_val = []
         ret_val.extend(self._parse(_STRUCTURE_INTRO))
-        ret_val.append(self._suite_structure_sections_list())
+        ret_val.append(sections_short_list(self._suite_help.section_helps))
         return ret_val
-
-    def _suite_structure_sections_list(self) -> docs.ParagraphItem:
-        return docs.simple_list([
-            self._item(parser.SECTION_NAME__CASES,
-                       _STRUCTURE_CASES_TEXT),
-            self._item(parser.SECTION_NAME__SUITS,
-                       _STRUCTURE_SUITES_TEXT),
-            self._item(parser.SECTION_NAME__CONF,
-                       _STRUCTURE_CONFIGURATION_TEXT),
-        ],
-            lists.ListType.VARIABLE_LIST)
-
-    def _item(self,
-              section_name: str,
-              section_description: str) -> lists.HeaderContentListItem:
-        return lists.HeaderContentListItem(docs.text(section_name),
-                                           self._parse(section_description))
 
 
 _leaf = cross_ref.target_info_leaf
@@ -111,18 +93,6 @@ A suite file can have any name - {program_name} does not put any restriction on 
 
 _STRUCTURE_INTRO = """\
 A suite file is a sequence of "sections". The sections are:
-"""
-
-_STRUCTURE_CASES_TEXT = """\
-Lists test cases.
-"""
-
-_STRUCTURE_SUITES_TEXT = """\
-Lists sub suites.
-"""
-
-_STRUCTURE_CONFIGURATION_TEXT = """\
-Configuration for the execution of every test case listed in the suite file.
 """
 
 _FILE_SYNTAX = """\
