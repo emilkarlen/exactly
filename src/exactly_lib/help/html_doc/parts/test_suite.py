@@ -1,7 +1,7 @@
 from exactly_lib.help import cross_reference_id as cross_ref
 from exactly_lib.help.cross_reference_id import CustomTargetInfoFactory, CrossReferenceId
 from exactly_lib.help.html_doc.parts.utils import HtmlDocGeneratorForSectionDocumentBase
-from exactly_lib.help.program_modes.test_suite import render
+from exactly_lib.help.program_modes.test_suite.contents.overview import OverviewRenderer
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
 from exactly_lib.help.utils.render import RenderingEnvironment
 from exactly_lib.util.textformat.structure import document as doc
@@ -17,7 +17,7 @@ class HtmlDocGeneratorForTestSuiteHelp(HtmlDocGeneratorForSectionDocumentBase):
     def apply(self, targets_factory: CustomTargetInfoFactory) -> (list, doc.SectionContents):
         overview_targets_factory = cross_ref.sub_component_factory('overview',
                                                                    targets_factory)
-        overview_target = overview_targets_factory.root('Test Suite Overview')
+        overview_target = overview_targets_factory.root('Overview')
         overview_sub_targets, overview_contents = self._test_case_overview_contents(overview_targets_factory)
 
         phases_targets_factory = cross_ref.sub_component_factory('sections',
@@ -56,9 +56,9 @@ class HtmlDocGeneratorForTestSuiteHelp(HtmlDocGeneratorForSectionDocumentBase):
         return ret_val_targets, ret_val_contents
 
     def _test_case_overview_contents(self, targets_factory: CustomTargetInfoFactory) -> (list, doc.SectionContents):
-        generator = render.OverviewRenderer(self.test_suite_help)
+        generator = OverviewRenderer(self.test_suite_help, targets_factory)
         section_contents = generator.apply(self.rendering_environment)
-        return [], section_contents
+        return generator.target_info_hierarchy(), section_contents
 
     def _section_cross_ref_target(self, phase):
         return cross_ref.TestSuiteSectionCrossReference(phase.name.plain)

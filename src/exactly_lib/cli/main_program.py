@@ -1,5 +1,6 @@
 import os
 
+from exactly_lib.cli.cli_environment.command_line_options import HELP_COMMAND, SUITE_COMMAND
 from exactly_lib.cli.program_modes import main_program_argument_parsing as case_argument_parsing
 from exactly_lib.cli.program_modes.help import argument_parsing as parse_help
 from exactly_lib.cli.program_modes.help.request_handling.resolving_and_handling import handle_help_request
@@ -12,9 +13,6 @@ from exactly_lib.util import argument_parsing_utils
 from exactly_lib.util.std import StdOutputFiles
 
 EXIT_INVALID_USAGE = 2
-
-HELP_COMMAND = 'help'
-SUITE_COMMAND = 'suite'
 
 COMMAND_DESCRIPTIONS = {
     HELP_COMMAND: 'Help system (use "help help" for help on help.)',

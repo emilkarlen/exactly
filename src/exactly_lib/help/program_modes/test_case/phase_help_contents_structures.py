@@ -1,8 +1,8 @@
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet, \
     SectionDocumentation
-from exactly_lib.help.program_modes.test_case.render.instruction_set import instruction_set_list
 from exactly_lib.help.utils.formatting import SectionName
 from exactly_lib.help.utils.render import RenderingEnvironment, cross_reference_list, transform_list_to_table
+from exactly_lib.help.program_modes.common.renderers import instruction_set_list
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure import structures as docs

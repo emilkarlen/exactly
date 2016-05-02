@@ -1,6 +1,7 @@
 import pathlib
 import unittest
 
+import exactly_lib.cli.cli_environment.command_line_options
 from exactly_lib.cli import main_program
 from exactly_lib_test.test_resources.file_structure import DirContents
 from exactly_lib_test.test_resources.main_program import main_program_check_base
@@ -75,7 +76,7 @@ class SetupWithPreprocessor(main_program_check_base.SetupWithPreprocessor,
                         root_path: pathlib.Path,
                         python_executable_file_name: str,
                         preprocessor_source_file_name: str) -> list:
-        return [main_program.SUITE_COMMAND]
+        return [exactly_lib.cli.cli_environment.command_line_options.SUITE_COMMAND]
 
     def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
         raise NotImplementedError()
@@ -113,7 +114,7 @@ class SetupWithoutPreprocessor(main_program_check_base.SetupWithoutPreprocessor,
 
     def first_arguments(self,
                         root_path: pathlib.Path) -> list:
-        return [main_program.SUITE_COMMAND]
+        return [exactly_lib.cli.cli_environment.command_line_options.SUITE_COMMAND]
 
     def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
         raise NotImplementedError()
