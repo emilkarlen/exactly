@@ -75,10 +75,12 @@ class Parser:
     def _parse_suite_help(self,
                           arguments: list) -> TestSuiteHelpRequest:
         if not arguments:
-            return TestSuiteHelpRequest(TestSuiteHelpItem.OVERVIEW,
+            return TestSuiteHelpRequest(TestSuiteHelpItem.CLI_SYNTAX,
                                         None, None)
         if len(arguments) != 1:
             raise HelpError('Invalid help syntax. Use help help, for help.')
+        if arguments[0] == OVERVIEW:
+            return TestSuiteHelpRequest(TestSuiteHelpItem.OVERVIEW, None, None)
         section_name = arguments[0]
         for test_suite_section_help in self.application_help.test_suite_help.section_helps:
             if test_suite_section_help.name.plain == section_name:
