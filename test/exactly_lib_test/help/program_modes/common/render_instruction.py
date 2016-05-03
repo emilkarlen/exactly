@@ -4,7 +4,7 @@ from exactly_lib.common.instruction_documentation import InvokationVariant, \
     SyntaxElementDescription
 from exactly_lib.help.program_modes.common import render_instruction as sut
 from exactly_lib.help.utils.render import RenderingEnvironment
-from exactly_lib.util.textformat.structure.structures import paras
+from exactly_lib.util.textformat.structure.structures import paras, text
 from exactly_lib_test.help.test_resources import CrossReferenceTextConstructorTestImpl
 from exactly_lib_test.test_resources.instruction_description import InstructionDocumentationWithConstantValues
 from exactly_lib_test.util.textformat.test_resources import structure as struct_check
@@ -26,7 +26,8 @@ class TestListItem(unittest.TestCase):
         actual = sut.instruction_set_list_item(InstructionDocumentationWithConstantValues('instruction name',
                                                                                           'single line description',
                                                                                           '',
-                                                                                          []))
+                                                                                          []),
+                                               text)
         struct_check.is_list_item.apply(self, actual)
 
 

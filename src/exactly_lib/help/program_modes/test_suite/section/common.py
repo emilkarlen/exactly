@@ -1,3 +1,4 @@
+from exactly_lib.help.cross_reference_id import TestSuiteSectionInstructionCrossReference
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet, \
     SectionDocumentation
 from exactly_lib.help.program_modes.common.renderers import instruction_set_list
@@ -11,7 +12,7 @@ class TestSuiteSectionDocumentationBase(SectionDocumentation):
     def __init__(self,
                  name: str):
         super().__init__(name)
-        self._phase_name = SectionName(name)
+        self._section_name = SectionName(name)
 
     def is_mandatory(self) -> bool:
         raise NotImplementedError()
@@ -39,23 +40,29 @@ class TestSuiteSectionDocumentationBase(SectionDocumentation):
         return docs.para('The {0} phase is {1}.'.format(self.name,
                                                         'mandatory' if self.is_mandatory() else 'optional'))
 
-    def _add_section_for_contents_description(self, sections: list):
-        sections.append(docs.section('Contents',
-                                     self.contents_description()))
+    def _add_section_for_contents_description(self, output: list):
+        output.append(docs.section('Contents',
+                                   self.contents_description()))
 
     def _add_section_for_instructions(self,
                                       environment: RenderingEnvironment,
-                                      sections: list):
+                                      output: list):
         if self.has_instructions:
-            il = instruction_set_list(self.instruction_set)
+            il = instruction_set_list(self.instruction_set, self._cross_ref_text)
             if environment.render_simple_header_value_lists_as_tables:
                 il = transform_list_to_table(il)
-            sections.append(docs.section('Instructions', [il]))
+            output.append(docs.section('Instructions', [il]))
 
     def _add_section_for_see_also(self, environment: RenderingEnvironment, sections: list):
         if self.see_also:
             cross_ref_list = cross_reference_list(self.see_also, environment)
             sections.append(docs.section('See also', [cross_ref_list]))
+
+    def _cross_ref_text(self, instr_name: str) -> docs.Text:
+        return docs.cross_reference(instr_name,
+                                    TestSuiteSectionInstructionCrossReference(self._section_name.plain,
+                                                                              instr_name),
+                                    allow_rendering_of_visible_extra_target_text=False)
 
 
 class TestSuiteSectionDocumentationForSectionWithInstructions(TestSuiteSectionDocumentationBase):
