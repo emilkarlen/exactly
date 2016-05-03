@@ -21,10 +21,13 @@ class TextParser:
         """
         return normalize_and_parse(s.format_map(self.format_map))
 
-    def section(self, header: str, paragraphs_text: str) -> docs.Section:
+    def section(self, header_or_text, paragraphs_text: str) -> docs.Section:
         """
-        :param header: Formatted using `self.format`.
+        :param header_or_text: If a `str` it is formatted using `self.format`.
         :param paragraphs_text: Parsed using `self.fnap`.
         """
-        return docs.section(docs.text(header.format_map(self.format_map)),
+        header = header_or_text
+        if not isinstance(header_or_text, docs.Text):
+            header = docs.text(header_or_text.format_map(self.format_map))
+        return docs.section(header,
                             self.fnap(paragraphs_text))

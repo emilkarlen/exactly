@@ -2,6 +2,7 @@ from exactly_lib.cli.program_modes.help.program_modes.test_suite.help_request im
     TestSuiteHelpRequest
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
 from exactly_lib.help.program_modes.common.renderers import SectionDocumentationRenderer
+from exactly_lib.help.program_modes.test_suite.contents.cli_syntax import CliSyntaxRenderer
 from exactly_lib.help.program_modes.test_suite.contents.overview import OverviewRenderer
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
 from exactly_lib.help.utils.render import SectionContentsRenderer, RenderingEnvironment
@@ -14,6 +15,8 @@ class TestSuiteHelpRendererResolver:
 
     def resolve(self, request: TestSuiteHelpRequest) -> SectionContentsRenderer:
         item = request.item
+        if item is TestSuiteHelpItem.CLI_SYNTAX:
+            return CliSyntaxRenderer()
         if item is TestSuiteHelpItem.OVERVIEW:
             return OverviewRenderer(self._contents)
         if item is TestSuiteHelpItem.SECTION:
