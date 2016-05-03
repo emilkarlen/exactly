@@ -262,7 +262,7 @@ class TestTestCaseInstructionSet(unittest.TestCase):
             'Item should denote help for Instruction Set')
 
 
-class TestTestCaseOverviewHelp(unittest.TestCase):
+class TestTestCaseCliAndOverviewHelp(unittest.TestCase):
     def test_overview(self):
         actual = sut.parse(application_help_for([]),
                            arguments_for.test_case_overview())
@@ -275,9 +275,7 @@ class TestTestCaseOverviewHelp(unittest.TestCase):
                       actual.item,
                       'Item should denote help for test-case overview')
 
-
-class TestTestCaseCliSyntaxHelp(unittest.TestCase):
-    def test_overview(self):
+    def test_cli_syntax(self):
         actual = sut.parse(application_help_for([]),
                            arguments_for.test_case_cli_syntax())
         self.assertIsInstance(actual,
@@ -294,6 +292,18 @@ class TestTestSuiteHelp(unittest.TestCase):
     def test_cli_syntax(self):
         actual = sut.parse(application_help_for([]),
                            arguments_for.test_suite_cli_syntax())
+        self.assertIsInstance(actual,
+                              TestSuiteHelpRequest,
+                              'Expecting settings for test-suite')
+        assert isinstance(actual,
+                          TestSuiteHelpRequest)
+        self.assertIs(TestSuiteHelpItem.CLI_SYNTAX,
+                      actual.item,
+                      'Item should denote help for test-suite overview')
+
+    def test_overview(self):
+        actual = sut.parse(application_help_for([]),
+                           arguments_for.test_suite_overview())
         self.assertIsInstance(actual,
                               TestSuiteHelpRequest,
                               'Expecting settings for test-suite')
@@ -428,8 +438,7 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(unittest.makeSuite(TestProgramHelp))
     ret_val.addTest(unittest.makeSuite(TestHtmlDocHelp))
     ret_val.addTest(unittest.makeSuite(TestConceptHelp))
-    ret_val.addTest(unittest.makeSuite(TestTestCaseOverviewHelp))
-    ret_val.addTest(unittest.makeSuite(TestTestCaseCliSyntaxHelp))
+    ret_val.addTest(unittest.makeSuite(TestTestCaseCliAndOverviewHelp))
     ret_val.addTest(unittest.makeSuite(TestTestCaseInstructionSet))
     ret_val.addTest(unittest.makeSuite(TestTestCaseSingleInstructionInPhase))
     ret_val.addTest(unittest.makeSuite(TestTestCaseInstructionList))
