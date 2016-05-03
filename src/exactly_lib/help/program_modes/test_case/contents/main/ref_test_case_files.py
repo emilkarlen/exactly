@@ -65,8 +65,11 @@ stderr empty
 INSTRUCTIONS_DOC = """\
 Instructions start at the beginning of the line with a space separated identifier.
 
-The identifier may optionally be followed by arguments.
-The syntax depends on the particular instruction.
+
+The identifier may optionally be followed by arguments. Most instructions use a syntax for
+options, arguments and quoting that resembles the unix shell.
+
+The syntax depends on the particular instruction, though.
 
 
 An instruction may span several lines, as this form of {instruction[stdout]} does:
@@ -80,7 +83,7 @@ EOF
 """
 
 OTHER_DOC = """\
-Lines beginning with # are comments.
+Lines beginning with "#" are comments.
 
 Comments are not allowed on other lines.
 
