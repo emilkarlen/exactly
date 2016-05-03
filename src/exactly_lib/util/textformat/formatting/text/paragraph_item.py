@@ -116,7 +116,8 @@ class _ListFormatter:
         with self.wrapper.indent_increase(identical_indent(self.list_format.indent_str)):
             for (item_number, item) in enumerate(self.items_list, start=1):
                 assert isinstance(item, HeaderContentListItem), (
-                    'The list item is not a %s' % str(HeaderContentListItem))
+                    'The list item is not a %s: %s' % (str(HeaderContentListItem),
+                                                       str(item)))
                 if item_number > 1:
                     ret_val.extend(self.blank_lines_between_elements)
                 self._format_header(item, item_number)
