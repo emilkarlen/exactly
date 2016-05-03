@@ -11,6 +11,7 @@ HELP = 'help'
 INSTRUCTIONS = 'instructions'
 TEST_CASE = 'case'
 TEST_SUITE = 'suite'
+OVERVIEW = 'overview'
 CONCEPT = 'concept'
 HTML_DOCUMENTATION = 'htmldoc'
 
@@ -48,9 +49,12 @@ class Parser:
         if help_command_arguments[0] == HTML_DOCUMENTATION:
             return self._parse_xhtml_help(help_command_arguments[1:])
         if help_command_arguments[0] == TEST_CASE:
-            if len(help_command_arguments) > 1:
+            if len(help_command_arguments) == 1:
+                return TestCaseHelpRequest(TestCaseHelpItem.CLI_SYNTAX, None, None)
+            elif help_command_arguments[1:] == [OVERVIEW]:
+                return TestCaseHelpRequest(TestCaseHelpItem.OVERVIEW, None, None)
+            else:
                 raise HelpError('Invalid number of arguments for help command. Use help help, for help.')
-            return TestCaseHelpRequest(TestCaseHelpItem.OVERVIEW, None, None)
         if help_command_arguments[0] == TEST_SUITE:
             return self._parse_suite_help(help_command_arguments[1:])
         if len(help_command_arguments) == 2:

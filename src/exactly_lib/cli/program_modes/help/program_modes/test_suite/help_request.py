@@ -6,14 +6,14 @@ from exactly_lib.cli.program_modes.help.program_modes.help_request import HelpRe
 class TestSuiteHelpItem(Enum):
     OVERVIEW = 0
     SECTION = 1
+    CLI_SYNTAX = 6
 
 
 class TestSuiteHelpRequest(HelpRequest):
     def __init__(self,
                  item: TestSuiteHelpItem,
                  name: str,
-                 data
-                 ):
+                 data):
         self._item = item
         self._name = name
         self._data = data
