@@ -13,5 +13,5 @@ class CasesSectionDocumentation(TestSuiteSectionDocumentationBaseForSectionWitho
         return file_ref_contents_description('case')
 
     def purpose(self) -> Description:
-        return Description(docs.text('Lists the test cases that should be part of the suite.'),
+        return Description(docs.text('Lists the test cases that are part of the suite.'),
                            [])
