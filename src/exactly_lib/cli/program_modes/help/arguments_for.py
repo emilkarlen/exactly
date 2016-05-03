@@ -1,5 +1,5 @@
 from exactly_lib.cli.program_modes.help.argument_parsing import INSTRUCTIONS, TEST_SUITE, TEST_CASE, HELP, \
-    CONCEPT, HTML_DOCUMENTATION
+    CONCEPT, HTML_DOCUMENTATION, OVERVIEW
 from exactly_lib.execution import phases
 from exactly_lib.help.program_modes.test_case.config import phase_help_name
 
@@ -41,12 +41,20 @@ def instruction_search(instruction_name: str) -> list:
     return [instruction_name]
 
 
-def test_case() -> list:
+def test_case_cli_syntax() -> list:
     return [TEST_CASE]
 
 
-def suite() -> list:
+def test_case_overview() -> list:
+    return [TEST_CASE, OVERVIEW]
+
+
+def test_suite_cli_syntax() -> list:
     return [TEST_SUITE]
+
+
+def test_suite_overview() -> list:
+    return [TEST_SUITE, OVERVIEW]
 
 
 def suite_section_for_name(section_name: str) -> list:

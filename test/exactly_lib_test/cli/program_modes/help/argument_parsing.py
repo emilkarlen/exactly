@@ -47,7 +47,7 @@ class TestProgramHelp(unittest.TestCase):
                       'Expects MainProgram help for help')
 
 
-class TestXhtmlHelp(unittest.TestCase):
+class TestHtmlDocHelp(unittest.TestCase):
     def test_valid_usage(self):
         actual = sut.parse(application_help_for([]),
                            [sut.HTML_DOCUMENTATION])
@@ -262,10 +262,10 @@ class TestTestCaseInstructionSet(unittest.TestCase):
             'Item should denote help for Instruction Set')
 
 
-class TestTestCaseHelp(unittest.TestCase):
+class TestTestCaseOverviewHelp(unittest.TestCase):
     def test_overview(self):
         actual = sut.parse(application_help_for([]),
-                           arguments_for.test_case())
+                           arguments_for.test_case_overview())
         self.assertIsInstance(actual,
                               TestCaseHelpRequest,
                               'Expecting settings for test-case')
@@ -276,10 +276,24 @@ class TestTestCaseHelp(unittest.TestCase):
                       'Item should denote help for test-case overview')
 
 
-class TestTestSuiteHelp(unittest.TestCase):
+class TestTestCaseCliSyntaxHelp(unittest.TestCase):
     def test_overview(self):
         actual = sut.parse(application_help_for([]),
-                           arguments_for.suite())
+                           arguments_for.test_case_cli_syntax())
+        self.assertIsInstance(actual,
+                              TestCaseHelpRequest,
+                              'Expecting settings for test-case')
+        assert isinstance(actual,
+                          TestCaseHelpRequest)
+        self.assertIs(TestCaseHelpItem.CLI_SYNTAX,
+                      actual.item,
+                      'Item should denote help for test-case CLI syntax')
+
+
+class TestTestSuiteHelp(unittest.TestCase):
+    def test_cli_syntax(self):
+        actual = sut.parse(application_help_for([]),
+                           arguments_for.test_suite_cli_syntax())
         self.assertIsInstance(actual,
                               TestSuiteHelpRequest,
                               'Expecting settings for test-suite')
@@ -412,9 +426,10 @@ class ConceptTestImpl(PlainConceptDocumentation):
 def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestProgramHelp))
-    ret_val.addTest(unittest.makeSuite(TestXhtmlHelp))
+    ret_val.addTest(unittest.makeSuite(TestHtmlDocHelp))
     ret_val.addTest(unittest.makeSuite(TestConceptHelp))
-    ret_val.addTest(unittest.makeSuite(TestTestCaseHelp))
+    ret_val.addTest(unittest.makeSuite(TestTestCaseOverviewHelp))
+    ret_val.addTest(unittest.makeSuite(TestTestCaseCliSyntaxHelp))
     ret_val.addTest(unittest.makeSuite(TestTestCaseInstructionSet))
     ret_val.addTest(unittest.makeSuite(TestTestCaseSingleInstructionInPhase))
     ret_val.addTest(unittest.makeSuite(TestTestCaseInstructionList))
