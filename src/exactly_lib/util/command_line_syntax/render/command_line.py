@@ -33,13 +33,13 @@ class ArgumentOnCommandLineRenderer(argument.ArgumentVisitor):
     LONG_OPTION_PREFIX = '--'
     SHORT_OPTION_PREFIX = '-'
 
-    def visit_as_is(self, x: argument.AsIsArgument):
+    def visit_as_is(self, x: argument.Constant):
         return x.name
 
-    def visit_positional(self, x: argument.PositionalArgument):
+    def visit_positional(self, x: argument.Positional):
         return x.name
 
-    def visit_plain_option(self, x: argument.PlainOptionArgument):
+    def visit_plain_option(self, x: argument.PlainOption):
         ret_val = ''
         if x.long_name:
             ret_val = self.LONG_OPTION_PREFIX + x.long_name
@@ -50,5 +50,5 @@ class ArgumentOnCommandLineRenderer(argument.ArgumentVisitor):
         else:
             return ret_val
 
-    def visit_syntax_element(self, x: argument.SyntaxElementArgument):
+    def visit_syntax_element(self, x: argument.SyntaxElement):
         return x.name

@@ -12,5 +12,5 @@ class CliSyntaxRenderer(SectionContentsRenderer):
 
 
 _COMMAND_LINE = CommandLine(program_info.PROGRAM_NAME,
-                            [argument.ArgumentUsage(argument.PositionalArgument('FILE'),
+                            [argument.ArgumentUsage(argument.Positional('FILE'),
                                                     argument.ArgumentUsageType.MANDATORY)])
