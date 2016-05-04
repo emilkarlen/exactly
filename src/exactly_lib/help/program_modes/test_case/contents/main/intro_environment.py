@@ -24,8 +24,8 @@ This sandbox is automatically removed after the execution
 (unless {cli_option_for_keeping_sandbox} is used).
 
 
-This sandbox directory contains a sub directory {act_subdir}/.
-This is the Present Working Directory (PWD) at the start of the test case.
+The sandbox directory contains a sub directory {act_subdir}/, which
+is the Present Working Directory (PWD) at the start of the test case.
 
 
 This is the PWD for all phases, unless it is changed by the {pwd} instruction.
