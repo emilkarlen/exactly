@@ -6,7 +6,7 @@ class Argument:
     pass
 
 
-class AsIsArgument(Argument):
+class Constant(Argument):
     def __init__(self, name: str):
         self._name = name
 
@@ -15,7 +15,7 @@ class AsIsArgument(Argument):
         return self._name
 
 
-class SyntaxElementArgument(Argument):
+class SyntaxElement(Argument):
     def __init__(self,
                  name: str):
         self._name = name
@@ -25,7 +25,7 @@ class SyntaxElementArgument(Argument):
         return self._name
 
 
-class PlainOptionArgument(Argument):
+class PlainOption(Argument):
     def __init__(self,
                  short_name: str = '',
                  long_name: str = '',
@@ -56,7 +56,7 @@ class PlainOptionArgument(Argument):
 #         return self._name
 
 
-class PositionalArgument(tuple):
+class Positional(tuple):
     def __new__(cls,
                 name: str):
         return tuple.__new__(cls, (name,))
@@ -88,26 +88,26 @@ class ArgumentUsage(tuple):
 
 class ArgumentVisitor:
     def visit(self, x: Argument):
-        if isinstance(x, AsIsArgument):
+        if isinstance(x, Constant):
             return self.visit_as_is(x)
-        if isinstance(x, PositionalArgument):
+        if isinstance(x, Positional):
             return self.visit_positional(x)
-        if isinstance(x, PlainOptionArgument):
+        if isinstance(x, PlainOption):
             return self.visit_plain_option(x)
-        if isinstance(x, SyntaxElementArgument):
+        if isinstance(x, SyntaxElement):
             return self.visit_syntax_element(x)
         raise TypeError('Not an instance of %s: %s' % (str(Argument), str(x)))
 
-    def visit_as_is(self, x: AsIsArgument):
+    def visit_as_is(self, x: Constant):
         raise NotImplementedError()
 
-    def visit_positional(self, x: PositionalArgument):
+    def visit_positional(self, x: Positional):
         raise NotImplementedError()
 
-    def visit_syntax_element(self, x: SyntaxElementArgument):
+    def visit_syntax_element(self, x: SyntaxElement):
         raise NotImplementedError()
 
-    def visit_plain_option(self, x: PlainOptionArgument):
+    def visit_plain_option(self, x: PlainOption):
         raise NotImplementedError()
 
 
@@ -115,35 +115,35 @@ class ArgumentRecordingArgumentVisitor(ArgumentVisitor):
     def __init__(self):
         self.visited_classes = []
 
-    def visit_as_is(self, x: AsIsArgument):
-        self.visited_classes.append(AsIsArgument)
+    def visit_as_is(self, x: Constant):
+        self.visited_classes.append(Constant)
         return x
 
-    def visit_positional(self, x: PositionalArgument):
-        self.visited_classes.append(PositionalArgument)
+    def visit_positional(self, x: Positional):
+        self.visited_classes.append(Positional)
         return x
 
-    def visit_syntax_element(self, x: SyntaxElementArgument):
-        self.visited_classes.append(SyntaxElementArgument)
+    def visit_syntax_element(self, x: SyntaxElement):
+        self.visited_classes.append(SyntaxElement)
         return x
 
-    def visit_plain_option(self, x: PlainOptionArgument):
-        self.visited_classes.append(PlainOptionArgument)
+    def visit_plain_option(self, x: PlainOption):
+        self.visited_classes.append(PlainOption)
         return x
 
 
 class ArgumentVisitorTest(unittest.TestCase):
     def test_as_is(self):
-        self._check(AsIsArgument('name'), AsIsArgument)
+        self._check(Constant('name'), Constant)
 
     def test_positional(self):
-        self._check(PositionalArgument('name'), PositionalArgument)
+        self._check(Positional('name'), Positional)
 
     def test_plain_option(self):
-        self._check(PlainOptionArgument('name'), PlainOptionArgument)
+        self._check(PlainOption('name'), PlainOption)
 
     def test_syntax_element(self):
-        self._check(SyntaxElementArgument('name'), SyntaxElementArgument)
+        self._check(SyntaxElement('name'), SyntaxElement)
 
     def test_visit_SHOULD_raise_TypeError_WHEN_argument_is_not_a_sub_class_of_argument(self):
         visitor = ArgumentRecordingArgumentVisitor()
