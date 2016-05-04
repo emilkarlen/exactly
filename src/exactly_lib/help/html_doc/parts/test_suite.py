@@ -21,7 +21,7 @@ class HtmlDocGeneratorForTestSuiteHelp(HtmlDocGeneratorForSectionDocumentBase):
         overview_target = overview_targets_factory.root('Overview')
         overview_sub_targets, overview_contents = self._test_case_overview_contents(overview_targets_factory)
 
-        cli_syntax_targets_factory = cross_ref.sub_component_factory('sections',
+        cli_syntax_targets_factory = cross_ref.sub_component_factory('cli-syntax',
                                                                      targets_factory)
         cli_syntax_target = cli_syntax_targets_factory.root('Command Line Syntax')
         cli_syntax_contents = CliSyntaxRenderer().apply(self.rendering_environment)
