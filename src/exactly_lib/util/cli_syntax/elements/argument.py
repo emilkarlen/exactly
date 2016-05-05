@@ -1,4 +1,3 @@
-import unittest
 from enum import Enum
 
 
@@ -7,6 +6,10 @@ class Argument:
 
 
 class Constant(Argument):
+    """
+    A constant string. E.g. "-" denoting stdin.
+    """
+
     def __init__(self, name: str):
         self._name = name
 
@@ -16,6 +19,11 @@ class Constant(Argument):
 
 
 class Named(Argument):
+    """
+    A named element. May be a positional argument (such as "FILE"),
+    or the name of a group of arguments, e.g.
+    """
+
     def __init__(self, name: str):
         self._name = name
 
@@ -25,6 +33,10 @@ class Named(Argument):
 
 
 class Option(Argument):
+    """
+    A traditional command line option.
+    """
+
     def __init__(self,
                  short_name: str = '',
                  long_name: str = '',
@@ -58,6 +70,7 @@ class ArgumentUsage:
     """
     How one or more `Argument`s are used.
     """
+
     def __init__(self,
                  usage_type: Multiplicity):
         self._usage_type = usage_type
@@ -71,6 +84,7 @@ class Single(ArgumentUsage):
     """
     A single `Argument`
     """
+
     def __init__(self,
                  usage_type: Multiplicity,
                  argument: Argument):
@@ -86,6 +100,7 @@ class Choice(ArgumentUsage):
     """
     A choice between two or more `Argument`s.
     """
+
     def __init__(self,
                  usage_type: Multiplicity,
                  arguments: list):
@@ -145,15 +160,28 @@ class ArgumentUsageVisitor:
 
 
 class CommandLine:
+    """
+    A command line made up of a sequence of arguments.
+
+    Has an optional prefix and suffix, for display purposes
+    (e.g. for displaying a program name in front of the arguments).
+    """
+
     def __init__(self,
-                 program_name: str,
-                 argument_usages: list):
-        self._program_name = program_name
+                 argument_usages: list,
+                 prefix: str = '',
+                 suffix: str = ''):
         self._argument_usages = argument_usages
+        self._prefix = prefix
+        self._suffix = suffix
 
     @property
-    def program_name(self) -> str:
-        return self._program_name
+    def prefix(self) -> str:
+        return self._prefix
+
+    @property
+    def suffix(self) -> str:
+        return self._suffix
 
     @property
     def argument_usages(self) -> list:
@@ -161,48 +189,3 @@ class CommandLine:
         :rtype: [`ArgumentUsage`]
         """
         return self._argument_usages
-
-
-class ArgumentRecordingArgumentVisitor(ArgumentVisitor):
-    def __init__(self):
-        self.visited_classes = []
-
-    def visit_constant(self, x: Constant):
-        self.visited_classes.append(Constant)
-        return x
-
-    def visit_named(self, x: Named):
-        self.visited_classes.append(Named)
-        return x
-
-    def visit_option(self, x: Option):
-        self.visited_classes.append(Option)
-        return x
-
-
-class ArgumentVisitorTest(unittest.TestCase):
-    def test_as_is(self):
-        self._check(Constant('name'), Constant)
-
-    def test_positional(self):
-        self._check(Named('value-element'), Named)
-
-    def test_plain_option(self):
-        self._check(Option('n'), Option)
-
-    def test_visit_SHOULD_raise_TypeError_WHEN_argument_is_not_a_sub_class_of_argument(self):
-        visitor = ArgumentRecordingArgumentVisitor()
-        with self.assertRaises(TypeError):
-            visitor.visit('not an argument')
-
-    def _check(self, x: Argument, expected_class):
-        # ARRANGE #
-        visitor = ArgumentRecordingArgumentVisitor()
-        # ACT #
-        returned = visitor.visit(x)
-        # ASSERT #
-        self.assertListEqual([expected_class],
-                             visitor.visited_classes)
-        self.assertIs(x,
-                      returned,
-                      'Visitor should return the return-value of the visited method')

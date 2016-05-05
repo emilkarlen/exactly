@@ -19,6 +19,7 @@ class _ActorConcept(PlainConceptDocumentation):
             'actor_option': formatting.cli_option(OPTION_FOR_ACTOR),
             'phase': phase_name_dictionary(),
             'home_directory': formatting.concept(HOME_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
+            'interpreter_actor': formatting.term(INTERPRETER_ACTOR_TERM),
         })
         return DescriptionWithSubSections(docs.text(parse.format(_SINGLE_LINE_DESCRIPTION)),
                                           docs.SectionContents(
@@ -38,6 +39,8 @@ class _ActorConcept(PlainConceptDocumentation):
 
 ACTOR_CONCEPT = _ActorConcept()
 
+INTERPRETER_ACTOR_TERM = 'interpreter actor'
+
 _SINGLE_LINE_DESCRIPTION = """Executes the {phase[act]} phase."""
 
 _DEFAULT_DESCRIPTION_REST = """\
@@ -53,7 +56,7 @@ The path is relative to the {home_directory}.
 """
 
 _INTERPRETER_ACTOR_DESCRIPTION_REST = """\
-The "interpreter actor" treats the contents of the {phase[act]} phase as source code
+The {interpreter_actor} treats the contents of the {phase[act]} phase as source code
 to be interpreted by an interpreter.
 
 

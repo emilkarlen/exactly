@@ -10,6 +10,9 @@ Each line specifies zero or more test {case}s to include in the suite,
 by giving the names of files that contain individual test {case}s.
 
 
+File names are relative the location of the test suite file.
+
+
 A test {case} file can have any name - exactly does not put any restriction on file names.
 
 
