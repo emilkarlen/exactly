@@ -1,5 +1,7 @@
 from exactly_lib import program_info
-from exactly_lib.cli.cli_environment.command_line_options import SUITE_COMMAND
+from exactly_lib.cli.cli_environment.common_cli_options import SUITE_COMMAND
+
+from exactly_lib.cli.cli_environment.program_modes.test_suite.command_line_options import OPTION_FOR_ACTOR__LONG
 from exactly_lib.help.concepts.plain_concepts import actor
 from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.description import DescriptionWithSubSections
@@ -63,7 +65,7 @@ Specifies an {interpreter_actor}, by giving the executable program that serves a
 (using shell syntax).
 """
 
-_ACTOR_OPTION = arg.Option(long_name='actor',
+_ACTOR_OPTION = arg.Option(long_name=OPTION_FOR_ACTOR__LONG,
                            argument='PROGRAM')
 
 _FILE_ARGUMENT = arg.Named('FILE')
