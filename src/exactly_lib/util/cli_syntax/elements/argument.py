@@ -65,6 +65,7 @@ class Multiplicity(Enum):
     OPTIONAL = 1
     MANDATORY = 2
     ZERO_OR_MORE = 3
+    ONE_OR_MORE = 4
 
 
 class ArgumentUsage:

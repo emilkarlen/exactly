@@ -18,7 +18,7 @@ class ProgramDocumentationRenderer:
     def __init__(self, environment: RenderingEnvironment):
         self.environment = environment
         self.cmd_line_syntax_renderer = CommandLineSyntaxRenderer()
-        self.arg_in_description_renderer = _ArgumentInArgumentDescriptionRenderer()
+        self.arg_in_description_renderer = ArgumentInArgumentDescriptionRenderer()
 
     def apply(self, program: CliProgramSyntaxDocumentation) -> docs.SectionContents:
         sections = []
@@ -90,21 +90,51 @@ class ArgumentUsageOnCommandLineRenderer(arg.ArgumentUsageVisitor):
     CHOICE_SEPARATOR = '|'
 
     def __init__(self):
-        self._arg_renderer = _ArgumentOnCommandLineRenderer()
+        self._arg_renderer = ArgumentOnCommandLineRenderer()
 
     def visit_single(self, x: arg.Single) -> str:
-        return self._multiplicity(self._arg_renderer.visit(x.argument),
-                                  x.multiplicity)
+        arg_str = self._arg_renderer.visit(x.argument)
+        if x.multiplicity is arg.Multiplicity.OPTIONAL:
+            return self._optional(arg_str)
+        elif x.multiplicity is arg.Multiplicity.MANDATORY:
+            return arg_str
+        elif x.multiplicity is arg.Multiplicity.ZERO_OR_MORE:
+            return self._and_more(self._optional(arg_str))
+        elif x.multiplicity is arg.Multiplicity.ONE_OR_MORE:
+            return self._and_more(arg_str)
+        else:
+            raise ValueError('Invalid %s: %s' % (str(arg.Multiplicity), str(x.multiplicity)))
 
     def visit_choice(self, x: arg.Choice) -> str:
         arg_str = self.CHOICE_SEPARATOR.join(map(self._arg_renderer, x.arguments))
-        return self._multiplicity(arg_str, x.multiplicity)
+        if x.multiplicity is arg.Multiplicity.OPTIONAL:
+            return self._optional(arg_str)
+        elif x.multiplicity is arg.Multiplicity.MANDATORY:
+            return self._mandatory_group(arg_str)
+        elif x.multiplicity is arg.Multiplicity.ZERO_OR_MORE:
+            return self._and_more(self._optional(arg_str))
+        elif x.multiplicity is arg.Multiplicity.ONE_OR_MORE:
+            return self._and_more(self._mandatory_group(arg_str))
+        else:
+            raise ValueError('Invalid %s: %s' % (str(arg.Multiplicity), str(x.multiplicity)))
 
     def _multiplicity(self, arg_str: str, multiplicity: arg.Multiplicity) -> str:
         return arg_str if multiplicity is arg.Multiplicity.MANDATORY else '[' + arg_str + ']'
 
+    @staticmethod
+    def _optional(arg_str) -> str:
+        return '[' + arg_str + ']'
 
-class _ArgumentOnCommandLineRenderer(arg.ArgumentVisitor):
+    @staticmethod
+    def _mandatory_group(arg_str) -> str:
+        return '(' + arg_str + ')'
+
+    @staticmethod
+    def _and_more(arg_str) -> str:
+        return arg_str + '...'
+
+
+class ArgumentOnCommandLineRenderer(arg.ArgumentVisitor):
     def visit_constant(self, x: arg.Constant) -> str:
         return x.name
 
@@ -112,18 +142,17 @@ class _ArgumentOnCommandLineRenderer(arg.ArgumentVisitor):
         return x.name
 
     def visit_option(self, x: arg.Option) -> str:
-        ret_val = ''
-        if x.long_name:
-            ret_val = x.long_name
+        if x.short_name:
+            option_str = x.short_name
         else:
-            ret_val = x.short_name
+            option_str = x.long_name
         if x.argument:
-            return ret_val + ' ' + x.argument
+            return option_str + ' ' + x.argument
         else:
-            return ret_val
+            return option_str
 
 
-class _ArgumentInArgumentDescriptionRenderer(arg.ArgumentVisitor):
+class ArgumentInArgumentDescriptionRenderer(arg.ArgumentVisitor):
     def visit_constant(self, x: arg.Constant) -> str:
         return x.name
 
