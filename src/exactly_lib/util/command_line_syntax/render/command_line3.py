@@ -1,3 +1,4 @@
+from exactly_lib.help.utils.render import RenderingEnvironment
 from exactly_lib.util.command_line_syntax.elements import argument3 as arg
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure import structures as docs
@@ -6,17 +7,22 @@ from exactly_lib.util.textformat.structure import structures as docs
 class DescribedArgument:
     def __init__(self,
                  argument: arg.Argument,
-                 description: list):
+                 description: list,
+                 see_also: list = ()):
         """
         :type description: [`ParagraphItem`]
+        :type see_also: [`CrossReferenceTarget`]
         """
         self.argument = argument
         self.description = description
+        self.see_also = list(see_also)
 
 
 class ProgramDocumentationRenderer:
-    def __init__(self):
+    def __init__(self, environment: RenderingEnvironment):
+        self.environment = environment
         self.cmd_line_syntax_renderer = CommandLineSyntaxRenderer()
+        self.arg_in_description_renderer = _ArgumentInArgumentDescriptionRenderer()
 
     def apply(self, command_line: arg.CommandLine,
               argument_descriptions: list) -> docs.SectionContents:
@@ -27,7 +33,7 @@ class ProgramDocumentationRenderer:
     def _options_sections(self, argument_descriptions: list) -> list:
         if not argument_descriptions:
             return []
-        l = lists.HeaderContentList(list(map(_arg_description_list_item, argument_descriptions)),
+        l = lists.HeaderContentList(map(self._arg_description_list_item, argument_descriptions),
                                     lists.Format(lists.ListType.VARIABLE_LIST,
                                                  custom_indent_spaces=0,
                                                  custom_separations=docs.SEPARATION_OF_HEADER_AND_CONTENTS))
@@ -35,10 +41,9 @@ class ProgramDocumentationRenderer:
         return [docs.section(docs.text('OPTIONS'),
                              [l])]
 
-
-def _arg_description_list_item(argument: DescribedArgument) -> lists.HeaderContentListItem:
-    header = docs.text(_ArgumentInArgumentDescriptionRenderer().visit(argument.argument))
-    return lists.HeaderContentListItem(header, argument.description)
+    def _arg_description_list_item(self, argument: DescribedArgument) -> lists.HeaderContentListItem:
+        header = docs.text(self.arg_in_description_renderer.visit(argument.argument))
+        return lists.HeaderContentListItem(header, argument.description)
 
 
 class CommandLineSyntaxRenderer:
