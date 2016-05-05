@@ -10,6 +10,7 @@ def suite() -> unittest.TestSuite:
         suite_for_plain_concept_documentation(sut.CONFIGURATION_PARAMETER_CONCEPT),
         suite_for_plain_concept_documentation(sut.ENVIRONMENT_VARIABLE_CONCEPT),
         suite_for_plain_concept_documentation(sut.PREPROCESSOR_CONCEPT),
+        suite_for_plain_concept_documentation(sut.ACTOR_CONCEPT),
     ])
 
 
