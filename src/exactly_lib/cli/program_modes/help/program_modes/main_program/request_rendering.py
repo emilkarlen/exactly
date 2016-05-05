@@ -1,7 +1,9 @@
 from exactly_lib.cli.program_modes.help.program_modes.main_program.help_request import MainProgramHelpRequest, \
     MainProgramHelpItem
+from exactly_lib.help.program_modes.help.cli_syntax import HelpCliSyntaxDocumentation
 from exactly_lib.help.program_modes.main_program.contents_structure import MainProgramHelp
 from exactly_lib.help.utils.render import SectionContentsRenderer
+from exactly_lib.util.cli_syntax.render.cli_program_syntax import ProgramDocumentationSectionContentsRenderer
 
 
 class MainProgramHelpRendererResolver:
@@ -14,5 +16,5 @@ class MainProgramHelpRendererResolver:
         if item is MainProgramHelpItem.PROGRAM:
             return render.OverviewRenderer()
         if item is MainProgramHelpItem.HELP:
-            return render.InvokationVariantsRenderer()
+            return ProgramDocumentationSectionContentsRenderer(HelpCliSyntaxDocumentation())
         raise ValueError('Invalid %s: %s' % (str(MainProgramHelpItem), str(item)))

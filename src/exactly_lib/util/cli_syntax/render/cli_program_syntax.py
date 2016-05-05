@@ -23,7 +23,7 @@ class ProgramDocumentationRenderer:
     def apply(self, program: CliProgramSyntaxDocumentation) -> docs.SectionContents:
         sections = []
         sections.append(self._synopsis_section(program))
-        sections.append(self._description_section(program))
+        sections.extend(self._description_sections(program))
         sections.extend(self._options_sections(program.argument_descriptions()))
         return docs.SectionContents([docs.para(program.description().single_line_description)],
                                     sections)
@@ -32,8 +32,11 @@ class ProgramDocumentationRenderer:
         return docs.section(docs.text('SYNOPSIS'),
                             [self._list(map(self._synopsis_list_item, program.synopsises()))])
 
-    def _description_section(self, program: CliProgramSyntaxDocumentation) -> docs.Section:
+    @staticmethod
+    def _description_sections(program: CliProgramSyntaxDocumentation) -> list:
         description = program.description()
+        if description.rest.is_empty:
+            return []
         return docs.Section(docs.text('DESCRIPTION'),
                             description.rest)
 
