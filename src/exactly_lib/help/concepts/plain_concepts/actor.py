@@ -41,7 +41,10 @@ ACTOR_CONCEPT = _ActorConcept()
 
 INTERPRETER_ACTOR_TERM = 'interpreter actor'
 
-_SINGLE_LINE_DESCRIPTION = """Executes the {phase[act]} phase."""
+_SINGLE_LINE_DESCRIPTION = """\
+Responsible for reading the contents of the {phase[act]} phase,
+and executing it as part of executing the test case.
+"""
 
 _DEFAULT_DESCRIPTION_REST = """\
 By default, the {phase[act]} phase must consist of a single command line.
