@@ -1,12 +1,12 @@
 import unittest
 
-from exactly_lib_test.help.concepts import concept_structure, concept, configuration_parameters, render
+from exactly_lib_test.help.concepts import concept_structure, plain_concept, configuration_parameters, render
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         concept_structure.suite(),
-        concept.suite(),
+        plain_concept.suite(),
         configuration_parameters.suite(),
         render.suite(),
     ])

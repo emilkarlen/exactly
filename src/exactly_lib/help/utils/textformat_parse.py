@@ -4,8 +4,8 @@ from exactly_lib.util.textformat.structure import structures as docs
 
 class TextParser:
     def __init__(self,
-                 format_map: dict):
-        self.format_map = format_map
+                 format_map: dict=None):
+        self.format_map = {} if format_map is None else format_map
 
     def format(self, s: str) -> str:
         """
