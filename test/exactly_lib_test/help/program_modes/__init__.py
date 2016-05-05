@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib_test.help.program_modes import common, test_case, test_suite, html_doc
+from exactly_lib_test.help.program_modes import common, test_case, test_suite, help, html_doc
 
 
 def suite():
@@ -8,6 +8,7 @@ def suite():
     ret_val.addTest(common.suite())
     ret_val.addTest(test_case.suite())
     ret_val.addTest(test_suite.suite())
+    ret_val.addTest(help.suite())
     ret_val.addTest(html_doc.suite())
     return ret_val
 
