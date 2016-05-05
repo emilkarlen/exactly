@@ -37,8 +37,8 @@ class ProgramDocumentationRenderer:
         description = program.description()
         if description.rest.is_empty:
             return []
-        return docs.Section(docs.text('DESCRIPTION'),
-                            description.rest)
+        return [docs.Section(docs.text('DESCRIPTION'),
+                             description.rest)]
 
     def _options_sections(self, argument_descriptions: list) -> list:
         if not argument_descriptions:
