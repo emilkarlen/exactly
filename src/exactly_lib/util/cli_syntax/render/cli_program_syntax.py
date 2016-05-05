@@ -73,7 +73,7 @@ class ProgramDocumentationRenderer:
 
 class CommandLineSyntaxRenderer:
     def __init__(self):
-        self.arg_usage_renderer = _ArgumentUsageOnCommandLineRenderer()
+        self.arg_usage_renderer = ArgumentUsageOnCommandLineRenderer()
 
     def apply(self, command_line: arg.CommandLine) -> docs.Text:
         components = []
@@ -86,7 +86,7 @@ class CommandLineSyntaxRenderer:
         return docs.text(' '.join(components))
 
 
-class _ArgumentUsageOnCommandLineRenderer(arg.ArgumentUsageVisitor):
+class ArgumentUsageOnCommandLineRenderer(arg.ArgumentUsageVisitor):
     CHOICE_SEPARATOR = '|'
 
     def __init__(self):
@@ -136,7 +136,7 @@ class _ArgumentInArgumentDescriptionRenderer(arg.ArgumentVisitor):
             ret_val.append(x.short_name)
         if x.long_name:
             if ret_val:
-                ret_val.append(',')
+                ret_val.append(', ')
             ret_val.append(x.long_name)
         if x.argument:
             ret_val.append(' ')

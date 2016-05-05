@@ -1,7 +1,7 @@
 from exactly_lib import program_info
-from exactly_lib.cli.cli_environment.common_cli_options import SUITE_COMMAND
-
-from exactly_lib.cli.cli_environment.program_modes.test_suite.command_line_options import OPTION_FOR_ACTOR__LONG
+from exactly_lib.cli.cli_environment import common_cli_options as common_opts
+from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options as case_opts
+from exactly_lib.cli.cli_environment.program_modes.test_suite import command_line_options as opts
 from exactly_lib.help.concepts.plain_concepts import actor
 from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.description import DescriptionWithSubSections
@@ -15,7 +15,7 @@ class SuiteCliSyntaxDocumentation(render.CliProgramSyntaxDocumentation):
     def __init__(self):
         super().__init__(program_info.PROGRAM_NAME)
         self.parser = TextParser({
-            'interpreter_actor': formatting.term(actor.INTERPRETER_ACTOR_TERM),
+            'interpreter_actor': formatting.term(case_opts.INTERPRETER_ACTOR_TERM),
             'TEST_SUITE_FILE': _FILE_ARGUMENT.name,
         })
 
@@ -28,7 +28,7 @@ class SuiteCliSyntaxDocumentation(render.CliProgramSyntaxDocumentation):
         return [
             render.Synopsis(
                 arg.CommandLine([arg.Single(arg.Multiplicity.MANDATORY,
-                                            arg.Constant(SUITE_COMMAND)),
+                                            arg.Constant(common_opts.SUITE_COMMAND)),
                                  arg.Single(arg.Multiplicity.OPTIONAL,
                                             _ACTOR_OPTION),
                                  arg.Single(arg.Multiplicity.MANDATORY,
@@ -58,14 +58,14 @@ Runs the test suite in file {TEST_SUITE_FILE}.
 """
 
 _ACTOR_OPTION_DESCRIPTION = """\
-Specifies an {interpreter_actor}, by giving the executable program that serves as the interpreter.
+Specifies an {interpreter_actor} to use for every test case in the suite.
 
 
-{interpreter_program} is an absolute path followed by optional arguments
-(using shell syntax).
+{interpreter_program} is the absolute path of an executable program,
+followed by optional arguments (using shell syntax).
 """
 
-_ACTOR_OPTION = arg.Option(long_name=OPTION_FOR_ACTOR__LONG,
-                           argument='PROGRAM')
+_ACTOR_OPTION = arg.Option(long_name=opts.OPTION_FOR_ACTOR__LONG,
+                           argument=case_opts.ACTOR_OPTION_ARGUMENT)
 
-_FILE_ARGUMENT = arg.Named('FILE')
+_FILE_ARGUMENT = arg.Named(opts.TEST_SUITE_FILE_ARGUMENT)
