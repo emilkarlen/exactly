@@ -1,12 +1,15 @@
 import unittest
 
+from exactly_lib.util.cli_syntax.elements import argument as arg
 from exactly_lib.util.cli_syntax.render import cli_program_syntax as sut
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        unittest.makeSuite(ArgumentRecordingArgumentVisitor),
-        unittest.makeSuite(ArgumentVisitorTest),
+        unittest.makeSuite(ArgumentOnCommandLineRendererTest),
+        unittest.makeSuite(ArgumentUsageOnCommandLineRendererForMandatoryArgumentTest),
+        unittest.makeSuite(ArgumentUsageOnCommandLineRendererForOptionalArgumentTest),
+        unittest.makeSuite(ArgumentUsageOnCommandLineRendererForZeroOrMoreArgumentTest),
     ])
 
 
@@ -14,46 +17,150 @@ if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())
 
 
-class ArgumentRecordingArgumentVisitor(sut.ArgumentVisitor):
-    def __init__(self):
-        self.visited_classes = []
-
-    def visit_constant(self, x: sut.Constant):
-        self.visited_classes.append(sut.Constant)
-        return x
-
-    def visit_named(self, x: sut.Named):
-        self.visited_classes.append(sut.Named)
-        return x
-
-    def visit_option(self, x: sut.Option):
-        self.visited_classes.append(sut.Option)
-        return x
-
-
-class ArgumentVisitorTest(unittest.TestCase):
-    def test_as_is(self):
-        self._check(sut.Constant('name'), sut.Constant)
-
-    def test_positional(self):
-        self._check(sut.Named('value-element'), sut.Named)
-
-    def test_plain_option(self):
-        self._check(sut.Option('n'), sut.Option)
-
-    def test_visit_SHOULD_raise_TypeError_WHEN_argument_is_not_a_sub_class_of_argument(self):
-        visitor = ArgumentRecordingArgumentVisitor()
-        with self.assertRaises(TypeError):
-            visitor.visit('not an argument')
-
-    def _check(self, x: sut.Argument, expected_class):
+class ArgumentUsageOnCommandLineRendererForMandatoryArgumentTest(unittest.TestCase):
+    def test_single(self):
         # ARRANGE #
-        visitor = ArgumentRecordingArgumentVisitor()
+        renderer = sut.ArgumentUsageOnCommandLineRenderer()
+        argument_usage = arg.Single(arg.Multiplicity.MANDATORY,
+                                    arg.Named('name'))
         # ACT #
-        returned = visitor.visit(x)
+        actual = renderer.visit(argument_usage)
         # ASSERT #
-        self.assertListEqual([expected_class],
-                             visitor.visited_classes)
-        self.assertIs(x,
-                      returned,
-                      'Visitor should return the return-value of the visited method')
+        self.assertEqual('name',
+                         actual)
+
+    def test_choice(self):
+        # ARRANGE #
+        renderer = sut.ArgumentUsageOnCommandLineRenderer()
+        argument_usage = arg.Choice(arg.Multiplicity.MANDATORY,
+                                    [arg.Named('name1'), arg.Named('name2')])
+        # ACT #
+        actual = renderer.visit(argument_usage)
+        # ASSERT #
+        self.assertEqual('(name1|name2)',
+                         actual)
+
+
+class ArgumentUsageOnCommandLineRendererForOptionalArgumentTest(unittest.TestCase):
+    def test_single(self):
+        # ARRANGE #
+        renderer = sut.ArgumentUsageOnCommandLineRenderer()
+        argument_usage = arg.Single(arg.Multiplicity.OPTIONAL,
+                                    arg.Named('name'))
+        # ACT #
+        actual = renderer.visit(argument_usage)
+        # ASSERT #
+        self.assertEqual('[name]',
+                         actual)
+
+    def test_choice(self):
+        # ARRANGE #
+        renderer = sut.ArgumentUsageOnCommandLineRenderer()
+        argument_usage = arg.Choice(arg.Multiplicity.OPTIONAL,
+                                    [arg.Named('name1'), arg.Named('name2')])
+        # ACT #
+        actual = renderer.visit(argument_usage)
+        # ASSERT #
+        self.assertEqual('[name1|name2]',
+                         actual)
+
+
+class ArgumentUsageOnCommandLineRendererForZeroOrMoreArgumentTest(unittest.TestCase):
+    def test_single(self):
+        # ARRANGE #
+        renderer = sut.ArgumentUsageOnCommandLineRenderer()
+        argument_usage = arg.Single(arg.Multiplicity.ZERO_OR_MORE,
+                                    arg.Named('name'))
+        # ACT #
+        actual = renderer.visit(argument_usage)
+        # ASSERT #
+        self.assertEqual('[name]...',
+                         actual)
+
+    def test_choice(self):
+        # ARRANGE #
+        renderer = sut.ArgumentUsageOnCommandLineRenderer()
+        argument_usage = arg.Choice(arg.Multiplicity.ZERO_OR_MORE,
+                                    [arg.Named('name1'), arg.Named('name2')])
+        # ACT #
+        actual = renderer.visit(argument_usage)
+        # ASSERT #
+        self.assertEqual('[name1|name2]...',
+                         actual)
+
+
+class ArgumentUsageOnCommandLineRendererForOneOrMoreArgumentTest(unittest.TestCase):
+    def test_single(self):
+        # ARRANGE #
+        renderer = sut.ArgumentUsageOnCommandLineRenderer()
+        argument_usage = arg.Single(arg.Multiplicity.ONE_OR_MORE,
+                                    arg.Named('name'))
+        # ACT #
+        actual = renderer.visit(argument_usage)
+        # ASSERT #
+        self.assertEqual('name...',
+                         actual)
+
+    def test_choice(self):
+        # ARRANGE #
+        renderer = sut.ArgumentUsageOnCommandLineRenderer()
+        argument_usage = arg.Choice(arg.Multiplicity.ONE_OR_MORE,
+                                    [arg.Named('name1'), arg.Named('name2')])
+        # ACT #
+        actual = renderer.visit(argument_usage)
+        # ASSERT #
+        self.assertEqual('(name1|name2)...',
+                         actual)
+
+
+class ArgumentOnCommandLineRendererTest(unittest.TestCase):
+    def test_option_with_both_long_and_short_name_SHOULD_produce_short_name(self):
+        # ARRANGE #
+        renderer = sut.ArgumentOnCommandLineRenderer()
+        argument_usage = arg.Option(short_name='-s',
+                                    long_name='--long')
+        # ACT #
+        actual = renderer.visit(argument_usage)
+        # ASSERT #
+        self.assertEqual('-s',
+                         actual)
+
+    def test_option_only_short_name_SHOULD_produce_short_name(self):
+        # ARRANGE #
+        renderer = sut.ArgumentOnCommandLineRenderer()
+        argument_usage = arg.Option(short_name='-s')
+        # ACT #
+        actual = renderer.visit(argument_usage)
+        # ASSERT #
+        self.assertEqual('-s',
+                         actual)
+
+    def test_option_only_long_name_SHOULD_produce_long_name(self):
+        # ARRANGE #
+        renderer = sut.ArgumentOnCommandLineRenderer()
+        argument_usage = arg.Option(long_name='--long')
+        # ACT #
+        actual = renderer.visit(argument_usage)
+        # ASSERT #
+        self.assertEqual('--long',
+                         actual)
+
+    def test_named_argument_SHOULD_produce_name(self):
+        # ARRANGE #
+        renderer = sut.ArgumentOnCommandLineRenderer()
+        argument_usage = arg.Named('the_name')
+        # ACT #
+        actual = renderer.visit(argument_usage)
+        # ASSERT #
+        self.assertEqual('the_name',
+                         actual)
+
+    def test_constant_argument_should_produce_constant_string(self):
+        # ARRANGE #
+        renderer = sut.ArgumentOnCommandLineRenderer()
+        argument_usage = arg.Constant('the_constant')
+        # ACT #
+        actual = renderer.visit(argument_usage)
+        # ASSERT #
+        self.assertEqual('the_constant',
+                         actual)
