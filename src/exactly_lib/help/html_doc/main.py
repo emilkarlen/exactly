@@ -4,6 +4,7 @@ from exactly_lib.help.cross_reference_id import CustomTargetInfoFactory
 from exactly_lib.help.html_doc import page_setup
 from exactly_lib.help.html_doc.cross_ref_target_renderer import HtmlTargetRenderer
 from exactly_lib.help.html_doc.parts.concepts import HtmlDocGeneratorForConceptsHelp
+from exactly_lib.help.html_doc.parts.help import HtmlDocGeneratorForHelpHelp
 from exactly_lib.help.html_doc.parts.test_case import HtmlDocGeneratorForTestCaseHelp
 from exactly_lib.help.html_doc.parts.test_suite import HtmlDocGeneratorForTestSuiteHelp
 from exactly_lib.help.utils.cross_reference import CrossReferenceTextConstructor
@@ -32,6 +33,7 @@ class HtmlDocGenerator:
                                                                      application_help.test_suite_help)
         self.concepts_generator = HtmlDocGeneratorForConceptsHelp(rendering_environment,
                                                                   application_help.concepts_help)
+        self.help_generator = HtmlDocGeneratorForHelpHelp(rendering_environment)
 
     def apply(self):
         setup = self._page_setup()
@@ -70,6 +72,11 @@ class HtmlDocGenerator:
         concepts_target = concepts_targets_factory.root('Concepts')
         concepts_sub_targets, concepts_contents = self.concepts_generator.apply(concepts_targets_factory)
 
+        help_targets_factory = cross_ref.sub_component_factory('help',
+                                                               targets_factory)
+        help_target = help_targets_factory.root('Getting help')
+        help_sub_targets, help_contents = self.help_generator.apply(help_targets_factory)
+
         ret_val_contents = doc.SectionContents(
             [],
             [
@@ -78,7 +85,9 @@ class HtmlDocGenerator:
                 doc.Section(test_suite_target.anchor_text(),
                             test_suite_contents),
                 doc.Section(concepts_target.anchor_text(),
-                            concepts_contents)
+                            concepts_contents),
+                doc.Section(help_target.anchor_text(),
+                            help_contents),
             ]
         )
         ret_val_targets = [
@@ -88,6 +97,8 @@ class HtmlDocGenerator:
                                      test_suite_sub_targets),
             cross_ref.TargetInfoNode(concepts_target,
                                      concepts_sub_targets),
+            cross_ref.TargetInfoNode(help_target,
+                                     help_sub_targets),
         ]
         return ret_val_targets, ret_val_contents
 
