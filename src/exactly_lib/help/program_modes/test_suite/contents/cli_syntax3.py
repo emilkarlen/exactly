@@ -12,7 +12,7 @@ from exactly_lib.util.textformat.structure import structures as docs
 
 class CliSyntaxRenderer(SectionContentsRenderer):
     def apply(self, environment: RenderingEnvironment) -> doc.SectionContents:
-        return render.ProgramDocumentationRenderer().apply(_COMMAND_LINE, _ARGUMENT_DESCRIPTIONS)
+        return render.ProgramDocumentationRenderer(environment).apply(_COMMAND_LINE, _ARGUMENT_DESCRIPTIONS)
 
 
 _ACTOR = render.DescribedArgument(arg.Option(long_name='actor',
