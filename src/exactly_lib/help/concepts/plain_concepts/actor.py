@@ -1,5 +1,5 @@
 from exactly_lib import program_info
-from exactly_lib.cli.cli_environment.command_line_options import OPTION_FOR_ACTOR
+from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_options import OPTION_FOR_ACTOR__LONG
 from exactly_lib.help.concepts.configuration_parameters.home_directory import HOME_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.contents_structure import PlainConceptDocumentation, Name
 from exactly_lib.help.utils import formatting
@@ -16,7 +16,7 @@ class _ActorConcept(PlainConceptDocumentation):
     def purpose(self) -> DescriptionWithSubSections:
         parse = TextParser({
             'program_name': program_info.PROGRAM_NAME,
-            'actor_option': formatting.cli_option(OPTION_FOR_ACTOR),
+            'actor_option': formatting.cli_option(OPTION_FOR_ACTOR__LONG),
             'phase': phase_name_dictionary(),
             'home_directory': formatting.concept(HOME_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
             'interpreter_actor': formatting.term(INTERPRETER_ACTOR_TERM),
@@ -43,7 +43,7 @@ INTERPRETER_ACTOR_TERM = 'interpreter actor'
 
 _SINGLE_LINE_DESCRIPTION = """\
 Responsible for reading the contents of the {phase[act]} phase,
-and executing it as part of executing the test case.
+and executing it as part of the execution of the test case.
 """
 
 _DEFAULT_DESCRIPTION_REST = """\

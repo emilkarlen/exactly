@@ -1,4 +1,5 @@
-from exactly_lib.cli.cli_environment.command_line_options import OPTION_FOR_KEEPING_SANDBOX_DIRECTORY
+from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_options import \
+    OPTION_FOR_KEEPING_SANDBOX_DIRECTORY__LONG
 from exactly_lib.default.program_modes.test_case.default_instruction_names import CHANGE_DIR_INSTRUCTION_NAME
 from exactly_lib.execution.environment_variables import ENV_VAR_ACT
 from exactly_lib.execution.execution_directory_structure import SUB_DIRECTORY__ACT
@@ -13,7 +14,7 @@ def execution_documentation(setup: Setup) -> doc.SectionContents:
                                           pwd=emphasis(CHANGE_DIR_INSTRUCTION_NAME),
                                           SANDBOX_ACT_DIR=ENV_VAR_ACT,
                                           act_subdir=SUB_DIRECTORY__ACT,
-                                          cli_option_for_keeping_sandbox=OPTION_FOR_KEEPING_SANDBOX_DIRECTORY)
+                                          cli_option_for_keeping_sandbox=OPTION_FOR_KEEPING_SANDBOX_DIRECTORY__LONG)
     paragraphs = normalize_and_parse(description_text)
     return doc.SectionContents(paragraphs, [])
 

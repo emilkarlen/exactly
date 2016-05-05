@@ -1,7 +1,6 @@
 import unittest
 
-import exactly_lib.cli.cli_environment.command_line_options
-from exactly_lib.cli import main_program
+from exactly_lib.cli.cli_environment.common_cli_options import HELP_COMMAND
 from exactly_lib.cli.program_modes.help import arguments_for
 from exactly_lib.default.program_modes.test_case import default_instructions_setup
 from exactly_lib.help.contents_structure import application_help_for
@@ -32,7 +31,7 @@ def main_program_test_cases() -> list:
         ProcessTestCase('Generation of html-doc SHOULD exit with 0 exitcode '
                         'AND output html',
                         PlainArrangement([
-                                             exactly_lib.cli.cli_environment.command_line_options.HELP_COMMAND] + arguments_for.html_doc()),
+                                             HELP_COMMAND] + arguments_for.html_doc()),
                         va.And([
                             pr.is_result_for_exit_code(0),
                             pr.stdout(begins_with(DOCTYPE_XHTML1_0))

@@ -1,4 +1,4 @@
-from exactly_lib.cli.cli_environment.command_line_options import OPTION_FOR_PREPROCESSOR
+from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_options import OPTION_FOR_PREPROCESSOR__LONG
 from exactly_lib.help.concepts.contents_structure import PlainConceptDocumentation, Name
 from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.description import Description, DescriptionWithSubSections, from_simple_description
@@ -12,7 +12,7 @@ class _PreprocessorConcept(PlainConceptDocumentation):
 
     def purpose(self) -> DescriptionWithSubSections:
         tp = TextParser({
-            'preprocessor_option': formatting.cli_option(OPTION_FOR_PREPROCESSOR),
+            'preprocessor_option': formatting.cli_option(OPTION_FOR_PREPROCESSOR__LONG),
         })
         return from_simple_description(
             Description(text(_SINGLE_LINE_DESCRIPTION),

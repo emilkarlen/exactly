@@ -1,6 +1,6 @@
 import os
 
-from exactly_lib.cli.cli_environment.command_line_options import HELP_COMMAND, SUITE_COMMAND
+from exactly_lib.cli.cli_environment.common_cli_options import HELP_COMMAND, SUITE_COMMAND
 from exactly_lib.cli.program_modes import main_program_argument_parsing as case_argument_parsing
 from exactly_lib.cli.program_modes.help import argument_parsing as parse_help
 from exactly_lib.cli.program_modes.help.request_handling.resolving_and_handling import handle_help_request

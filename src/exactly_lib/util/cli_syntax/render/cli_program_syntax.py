@@ -114,9 +114,9 @@ class _ArgumentOnCommandLineRenderer(arg.ArgumentVisitor):
     def visit_option(self, x: arg.Option) -> str:
         ret_val = ''
         if x.long_name:
-            ret_val = _long_option(x.long_name)
+            ret_val = x.long_name
         else:
-            ret_val = _short_option(x.short_name)
+            ret_val = x.short_name
         if x.argument:
             return ret_val + ' ' + x.argument
         else:
@@ -124,9 +124,6 @@ class _ArgumentOnCommandLineRenderer(arg.ArgumentVisitor):
 
 
 class _ArgumentInArgumentDescriptionRenderer(arg.ArgumentVisitor):
-    LONG_OPTION_PREFIX = '--'
-    SHORT_OPTION_PREFIX = '-'
-
     def visit_constant(self, x: arg.Constant) -> str:
         return x.name
 
@@ -135,18 +132,13 @@ class _ArgumentInArgumentDescriptionRenderer(arg.ArgumentVisitor):
 
     def visit_option(self, x: arg.Option) -> str:
         ret_val = []
-        if x.long_name:
-            ret_val.append(_long_option(x.long_name))
         if x.short_name:
-            ret_val.append(_short_option(x.short_name))
+            ret_val.append(x.short_name)
+        if x.long_name:
+            if ret_val:
+                ret_val.append(',')
+            ret_val.append(x.long_name)
         if x.argument:
+            ret_val.append(' ')
             ret_val.append(x.argument)
-        return ' '.join(ret_val) + ' (TODO)'
-
-
-def _long_option(name: str) -> str:
-    return '--' + name
-
-
-def _short_option(name: str) -> str:
-    return '-' + name
+        return ''.join(ret_val)

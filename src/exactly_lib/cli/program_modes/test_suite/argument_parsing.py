@@ -3,7 +3,7 @@ import pathlib
 
 from exactly_lib import program_info
 from exactly_lib.cli.argument_parsing_of_act_phase_setup import resolve_act_phase_setup_from_argparse_argument
-from exactly_lib.cli.cli_environment.command_line_options import OPTION_FOR_ACTOR
+from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_options import OPTION_FOR_ACTOR__LONG
 from exactly_lib.util import argument_parsing_utils
 from .settings import Settings
 
@@ -28,7 +28,7 @@ def _new_argument_parser() -> argparse.ArgumentParser:
                          metavar='FILE',
                          type=str,
                          help='The file containing the Test Suite')
-    ret_val.add_argument(OPTION_FOR_ACTOR,
+    ret_val.add_argument(OPTION_FOR_ACTOR__LONG,
                          metavar="INTERPRETER",
                          nargs=1,
                          help="""\
