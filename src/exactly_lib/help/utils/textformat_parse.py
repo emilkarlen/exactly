@@ -4,30 +4,35 @@ from exactly_lib.util.textformat.structure import structures as docs
 
 class TextParser:
     def __init__(self,
-                 format_map: dict=None):
+                 format_map: dict = None):
         self.format_map = {} if format_map is None else format_map
 
-    def format(self, s: str) -> str:
+    def format(self, s: str, extra: dict = None) -> str:
         """
         Formats the given string using the format map given in the constructor.
         """
-        return s.format_map(self.format_map)
+        if extra is None:
+            d = self.format_map
+        else:
+            d = dict(self.format_map)
+            d.update(extra)
+        return s.format_map(d)
 
-    def fnap(self, s: str) -> list:
+    def fnap(self, s: str, extra: dict = None) -> list:
         """
         1. Text replacements according to `format_map` given to the constructor.
         2. normalize lines
         3. parse result
         """
-        return normalize_and_parse(s.format_map(self.format_map))
+        return normalize_and_parse(self.format(s, extra))
 
-    def section(self, header_or_text, paragraphs_text: str) -> docs.Section:
+    def section(self, header_or_text, paragraphs_text: str, extra: dict = None) -> docs.Section:
         """
         :param header_or_text: If a `str` it is formatted using `self.format`.
         :param paragraphs_text: Parsed using `self.fnap`.
         """
         header = header_or_text
         if not isinstance(header_or_text, docs.Text):
-            header = docs.text(header_or_text.format_map(self.format_map))
+            header = docs.text(self.format(header_or_text, extra))
         return docs.section(header,
-                            self.fnap(paragraphs_text))
+                            self.fnap(paragraphs_text, extra))

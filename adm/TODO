@@ -1,5 +1,10 @@
 -*- org -*-
 
+* TODO Gör "actor" till en "configuration parameter"
+<2016-05-05 tor>
+Lägg till instruktion ("actor") till "conf" för att sätt actor.
+
+Gör ACTOR_CONCEPT till en conf-param.
 * TODO Test som inte skrivits: target-renderare för html
 * TODO Lägg till instr "file" till "cleanup"
 Finns ingen vettig anledning t att den inte skulle finns även här.
