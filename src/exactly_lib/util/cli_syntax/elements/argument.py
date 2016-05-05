@@ -64,6 +64,7 @@ class Option(Argument):
 class Multiplicity(Enum):
     OPTIONAL = 1
     MANDATORY = 2
+    ZERO_OR_MORE = 3
 
 
 class ArgumentUsage:

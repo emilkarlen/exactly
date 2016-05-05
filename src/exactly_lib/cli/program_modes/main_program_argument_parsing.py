@@ -74,7 +74,7 @@ def _new_argument_parser(commands: dict) -> argparse.ArgumentParser:
                         Output on stdout/stderr from the script is printed to stdout/stderr.
                         The exit code from the act script becomes the exit code from the program.""")
     ret_val.add_argument(opt.OPTION_FOR_ACTOR__LONG,
-                         metavar="ACTOR",
+                         metavar=opt.ACTOR_OPTION_ARGUMENT,
                          nargs=1,
                          help="""\
                         Executable that executes the script of the "act" phase.
@@ -82,7 +82,7 @@ def _new_argument_parser(commands: dict) -> argparse.ArgumentParser:
                         The executable is given a single command line argument, which is the file
                         that contains the contents of the act phase.""")
     ret_val.add_argument(opt.OPTION_FOR_PREPROCESSOR__LONG,
-                         metavar="SHELL-COMMAND",
+                         metavar=opt.PREPROCESSOR_OPTION_ARGUMENT,
                          nargs=1,
                          help="""\
                         Command that preprocesses the test case before it is parsed.
@@ -91,9 +91,9 @@ def _new_argument_parser(commands: dict) -> argparse.ArgumentParser:
 
                         The command should output the processed test case on stdout.
 
-                        SHELL-COMMAND is parsed according to shell syntax.
+                        {preprocessor} is parsed according to shell syntax.
 
                         If the exit code from the preprocessor is non-zero,
                         then processing is considered to have failed.
-                        """)
+                        """.format(preprocessor=opt.PREPROCESSOR_OPTION_ARGUMENT))
     return ret_val

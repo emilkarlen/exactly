@@ -1,5 +1,5 @@
 from exactly_lib import program_info
-from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_options import OPTION_FOR_ACTOR__LONG
+from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options as opt
 from exactly_lib.help.concepts.configuration_parameters.home_directory import HOME_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.contents_structure import PlainConceptDocumentation, Name
 from exactly_lib.help.utils import formatting
@@ -15,11 +15,11 @@ class _ActorConcept(PlainConceptDocumentation):
 
     def purpose(self) -> DescriptionWithSubSections:
         parse = TextParser({
-            'program_name': program_info.PROGRAM_NAME,
-            'actor_option': formatting.cli_option(OPTION_FOR_ACTOR__LONG),
+            'program_name': formatting.program_name(program_info.PROGRAM_NAME),
+            'actor_option': formatting.cli_option(opt.OPTION_FOR_ACTOR__LONG),
             'phase': phase_name_dictionary(),
             'home_directory': formatting.concept(HOME_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
-            'interpreter_actor': formatting.term(INTERPRETER_ACTOR_TERM),
+            'interpreter_actor': formatting.term(opt.INTERPRETER_ACTOR_TERM),
         })
         return DescriptionWithSubSections(docs.text(parse.format(_SINGLE_LINE_DESCRIPTION)),
                                           docs.SectionContents(
@@ -38,8 +38,6 @@ class _ActorConcept(PlainConceptDocumentation):
 
 
 ACTOR_CONCEPT = _ActorConcept()
-
-INTERPRETER_ACTOR_TERM = 'interpreter actor'
 
 _SINGLE_LINE_DESCRIPTION = """\
 Responsible for reading the contents of the {phase[act]} phase,
@@ -60,12 +58,13 @@ The path is relative to the {home_directory}.
 
 _INTERPRETER_ACTOR_DESCRIPTION_REST = """\
 The {interpreter_actor} treats the contents of the {phase[act]} phase as source code
-to be interpreted by an interpreter.
+to be executed by an interpreter.
 
 
-The interpreter is an executable program that {program_name} gives a single argument:
-a file containing the contents of the {phase[act]} phase.
+The interpreter is an executable program (with optional arguments) that
+{program_name} gives a single argument:
+the absolute path of a file containing the contents of the {phase[act]} phase.
 
 
-The "interpreter actor" is specified, e.g., via the {actor_option} option.
+The {interpreter_actor} is specified, e.g., via the {actor_option} option.
 """
