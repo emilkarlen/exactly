@@ -73,12 +73,12 @@ class ArgumentUsage:
     """
 
     def __init__(self,
-                 usage_type: Multiplicity):
-        self._usage_type = usage_type
+                 multiplicity: Multiplicity):
+        self._multiplicity = multiplicity
 
     @property
     def multiplicity(self) -> Multiplicity:
-        return self._usage_type
+        return self._multiplicity
 
 
 class Single(ArgumentUsage):
@@ -87,9 +87,9 @@ class Single(ArgumentUsage):
     """
 
     def __init__(self,
-                 usage_type: Multiplicity,
+                 multiplicity: Multiplicity,
                  argument: Argument):
-        super().__init__(usage_type)
+        super().__init__(multiplicity)
         self._argument = argument
 
     @property
@@ -103,12 +103,12 @@ class Choice(ArgumentUsage):
     """
 
     def __init__(self,
-                 usage_type: Multiplicity,
+                 multiplicity: Multiplicity,
                  arguments: list):
         """
         :type arguments: [`Argument`]
         """
-        super().__init__(usage_type)
+        super().__init__(multiplicity)
         self._arguments = arguments
 
     @property
