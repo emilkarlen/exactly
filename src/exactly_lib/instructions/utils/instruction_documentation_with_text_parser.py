@@ -1,6 +1,8 @@
 from exactly_lib.common.instruction_documentation import InstructionDocumentation
 from exactly_lib.help.utils.formatting import InstructionName
 from exactly_lib.help.utils.textformat_parse import TextParser
+from exactly_lib.util.cli_syntax.elements import argument
+from exactly_lib.util.cli_syntax.render.cli_program_syntax import CommandLineSyntaxRenderer
 
 
 class InstructionDocumentationWithTextParserBase(InstructionDocumentation):
@@ -31,3 +33,18 @@ class InstructionDocumentationWithTextParserBase(InstructionDocumentation):
         :rtype: [`ParagraphItem`]
         """
         return self._parser.fnap(s, extra)
+
+
+class InstructionDocumentationWithCommandLineRenderingBase(InstructionDocumentationWithTextParserBase):
+    def __init__(self,
+                 instruction_name: str,
+                 format_map: dict):
+        super().__init__(instruction_name, format_map)
+
+    def _cl_syntax_for_args(self, argument_usages: list) -> str:
+        cl = argument.CommandLine(argument_usages)
+        return self._cl_syntax(cl)
+
+    def _cl_syntax(self, command_line: argument.CommandLine) -> str:
+        cl_renderer = CommandLineSyntaxRenderer()
+        return cl_renderer.as_str(command_line)
