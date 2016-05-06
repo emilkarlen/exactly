@@ -8,8 +8,8 @@ from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
     sequence_info__not_executed_if_execution_mode_is_skip
 from exactly_lib.help.program_modes.test_case.phase_help_contents_structures import \
     TestCasePhaseDocumentationForPhaseWithInstructions, PhaseSequenceInfo, ExecutionEnvironmentInfo
-from exactly_lib.help.utils.description import Description
 from exactly_lib.help.utils.phase_names import phase_name_dictionary, ACT_PHASE_NAME, CONFIGURATION_PHASE_NAME
+from exactly_lib.util.description import Description
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure.structures import text
 

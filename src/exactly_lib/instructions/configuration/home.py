@@ -3,6 +3,9 @@ import pathlib
 from exactly_lib.common.instruction_documentation import InvokationVariant, \
     InstructionDocumentation
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
+from exactly_lib.help.concepts.configuration_parameters.home_directory import HOME_DIRECTORY_CONFIGURATION_PARAMETER
+from exactly_lib.help.utils import formatting
+from exactly_lib.help.utils.textformat_parse import TextParser
 from exactly_lib.instructions.utils.parse_utils import split_arguments_list_string
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
@@ -20,9 +23,12 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
 class TheInstructionDocumentation(InstructionDocumentation):
     def __init__(self, name: str):
         super().__init__(name)
+        self.parser = TextParser({
+            'home_directory': formatting.concept(HOME_DIRECTORY_CONFIGURATION_PARAMETER.name().singular)
+        })
 
     def single_line_description(self) -> str:
-        return 'Changes the Home directory.'
+        return self.parser.format('Sets the {home_directory}.')
 
     def main_description_rest(self) -> list:
         return paras('TODO')
@@ -35,8 +41,6 @@ class TheInstructionDocumentation(InstructionDocumentation):
         ]
 
     def see_also(self) -> list:
-        from exactly_lib.help.concepts.configuration_parameters.home_directory import \
-            HOME_DIRECTORY_CONFIGURATION_PARAMETER
         return [HOME_DIRECTORY_CONFIGURATION_PARAMETER.cross_reference_target()]
 
 

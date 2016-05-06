@@ -2,9 +2,9 @@ from exactly_lib import program_info
 from exactly_lib.cli.cli_environment.common_cli_options import HELP_COMMAND
 from exactly_lib.cli.program_modes.help import argument_parsing as opt
 from exactly_lib.cli.program_modes.help import arguments_for
-from exactly_lib.help.utils.description import DescriptionWithSubSections
 from exactly_lib.util.cli_syntax.elements import argument as arg
 from exactly_lib.util.cli_syntax.render import cli_program_syntax as syntax
+from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.structure import structures as docs
 
 

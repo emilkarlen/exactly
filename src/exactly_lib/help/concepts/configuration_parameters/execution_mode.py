@@ -2,8 +2,8 @@ from exactly_lib.execution import execution_mode
 from exactly_lib.execution.result import FullResultStatus
 from exactly_lib.help.concepts.contents_structure import ConfigurationParameterDocumentation, Name
 from exactly_lib.help.utils import phase_names
-from exactly_lib.help.utils.description import Description, DescriptionWithSubSections, from_simple_description
 from exactly_lib.help.utils.phase_names import phase_name_dictionary
+from exactly_lib.util.description import Description, DescriptionWithSubSections, from_simple_description
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure.core import ParagraphItem
