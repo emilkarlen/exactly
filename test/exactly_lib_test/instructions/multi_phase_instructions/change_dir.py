@@ -2,10 +2,13 @@ import os
 import pathlib
 import unittest
 
+from exactly_lib.help.program_modes.common.render_instruction import InstructionManPageRenderer
+from exactly_lib.help.utils.render import RenderingEnvironment
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from exactly_lib.instructions.multi_phase_instructions import change_dir as sut
+from exactly_lib_test.help.test_resources import CrossReferenceTextConstructorTestImpl
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.test_resources.execution import eds_test
 from exactly_lib_test.test_resources.execution.eds_populator import act_dir_contents, tmp_user_dir_contents
@@ -208,5 +211,11 @@ def suite() -> unittest.TestSuite:
     ])
 
 
+class Test(unittest.TestCase):
+    def test(self):
+        renderer = InstructionManPageRenderer(sut.TheInstructionDocumentation('instruction name'))
+        actual = renderer.apply(RenderingEnvironment(CrossReferenceTextConstructorTestImpl()))
+
+
 if __name__ == '__main__':
-    unittest.main()
+    unittest.TextTestRunner().run(suite())

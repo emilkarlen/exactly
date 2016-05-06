@@ -81,6 +81,9 @@ class CommandLineSyntaxRenderer:
         self.arg_usage_renderer = ArgumentUsageOnCommandLineRenderer()
 
     def apply(self, command_line: arg.CommandLine) -> docs.Text:
+        return docs.text(self.as_str(command_line))
+
+    def as_str(self, command_line: arg.CommandLine) -> str:
         components = []
         if command_line.prefix:
             components.append(command_line.prefix)
@@ -88,7 +91,7 @@ class CommandLineSyntaxRenderer:
         components.append(arguments_str)
         if command_line.suffix:
             components.append(command_line.suffix)
-        return docs.text(' '.join(components))
+        return ' '.join(components)
 
 
 class ArgumentUsageOnCommandLineRenderer(arg.ArgumentUsageVisitor):
