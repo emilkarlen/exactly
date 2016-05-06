@@ -23,7 +23,7 @@ class InstructionManPageRenderer(SectionContentsRenderer):
         if documentation.invokation_variants():
             sub_sections.append(doc.Section(text('SYNOPSIS'),
                                             _invokation_variants_content(documentation)))
-        main_description_rest = documentation.main_description_rest()
+        main_description_rest = documentation.description().rest
         if main_description_rest:
             sub_sections.append(section('DESCRIPTION',
                                         main_description_rest))
