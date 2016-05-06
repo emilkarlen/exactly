@@ -1,7 +1,6 @@
 from exactly_lib.help.cross_reference_id import ConceptCrossReferenceId
-from exactly_lib.help.utils.description import Description, DescriptionWithSubSections
+from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.structure.core import ParagraphItem
-from exactly_lib.util.textformat.structure.document import SectionContents
 from exactly_lib.util.textformat.structure.structures import para
 
 

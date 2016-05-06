@@ -9,8 +9,8 @@ from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
     env_vars_for_configuration_phase
 from exactly_lib.help.program_modes.test_case.phase_help_contents_structures import \
     TestCasePhaseDocumentationForPhaseWithInstructions, PhaseSequenceInfo, ExecutionEnvironmentInfo
-from exactly_lib.help.utils.description import Description
 from exactly_lib.help.utils.phase_names import SETUP_PHASE_NAME
+from exactly_lib.util.description import Description
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import structures as docs
 

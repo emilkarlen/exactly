@@ -5,6 +5,7 @@ from exactly_lib.common.instruction_documentation import InstructionDocumentatio
     SyntaxElementDescription
 from exactly_lib.help.cross_reference_id import CrossReferenceId
 from exactly_lib_test.test_resources import value_assertion as va
+from exactly_lib_test.util.test_resources.description import is_description
 from exactly_lib_test.util.textformat.test_resources import structure as struct_check
 
 
@@ -17,8 +18,7 @@ def suite_for_description_instance(description: InstructionDocumentation) -> uni
 def suite_for_instruction_documentation(description: InstructionDocumentation) -> unittest.TestSuite:
     return unittest.TestSuite(tcc(description) for tcc in [
         TestInstructionName,
-        TestSingleLineDescription,
-        TestMainDescriptionRest,
+        TestDescription,
         TestInvokationVariants,
         TestSyntaxElementDescriptions,
         TestCrossReferences,
@@ -29,6 +29,9 @@ class WithDescriptionBase(unittest.TestCase):
     def __init__(self, description: InstructionDocumentation):
         super().__init__()
         self.description = description
+
+    def shortDescription(self):
+        return str(type(self)) + ' checking ' + str(type(self.description))
 
 
 class TestIsDescriptionInstance(WithDescriptionBase):
@@ -49,16 +52,10 @@ class TestCrossReferences(WithDescriptionBase):
         va.every_element('cross references', va.IsInstance(CrossReferenceId)).apply(self, actual)
 
 
-class TestSingleLineDescription(WithDescriptionBase):
+class TestDescription(WithDescriptionBase):
     def runTest(self):
-        actual = self.description.single_line_description()
-        self.assertIsInstance(actual, str)
-
-
-class TestMainDescriptionRest(WithDescriptionBase):
-    def runTest(self):
-        actual = self.description.main_description_rest()
-        struct_check.is_paragraph_item_list().apply(self, actual)
+        actual = self.description.description()
+        is_description.apply(self, actual)
 
 
 class TestInvokationVariants(WithDescriptionBase):

@@ -1,5 +1,5 @@
-from exactly_lib.help.utils.description import DescriptionWithSubSections
 from exactly_lib.util.cli_syntax.elements import argument as arg
+from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.structure import structures as docs
 
 

@@ -1,3 +1,7 @@
+from exactly_lib.util.description import Description
+from exactly_lib.util.textformat.structure import structures as docs
+
+
 class InvokationVariant:
     def __init__(self,
                  syntax: str,
@@ -37,6 +41,10 @@ class InstructionDocumentation:
 
     def instruction_name(self) -> str:
         return self._instruction_name
+
+    def description(self) -> Description:
+        return Description(docs.text(self.single_line_description()),
+                           self.main_description_rest())
 
     def single_line_description(self) -> str:
         raise NotImplementedError()

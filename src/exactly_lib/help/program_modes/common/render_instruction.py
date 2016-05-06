@@ -31,7 +31,7 @@ class InstructionManPageRenderer(SectionContentsRenderer):
         if cross_references:
             cross_ref_list = cross_reference_list(cross_references, environment)
             sub_sections.append(section('SEE ALSO', [cross_ref_list]))
-        prelude_paragraphs = [para(documentation.single_line_description())]
+        prelude_paragraphs = [para(documentation.description().single_line_description)]
         return doc.SectionContents(prelude_paragraphs,
                                    sub_sections)
 
@@ -41,7 +41,7 @@ def instruction_set_list_item(description: InstructionDocumentation,
     """
     :type name_2_name_text_fun: `str` -> `Text`
     """
-    description_para = para(description.single_line_description())
+    description_para = para(description.description().single_line_description)
     return lists.HeaderContentListItem(name_2_name_text_fun(description.instruction_name()),
                                        [description_para])
 

@@ -1,7 +1,7 @@
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet
 from exactly_lib.help.program_modes.test_suite.section.common import \
     TestSuiteSectionDocumentationForSectionWithInstructions
-from exactly_lib.help.utils.description import Description
+from exactly_lib.util.description import Description
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import structures as docs
 

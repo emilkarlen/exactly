@@ -3,9 +3,9 @@ from exactly_lib.execution import execution_directory_structure as sds
 from exactly_lib.execution.environment_variables import ENV_VAR_RESULT, ENV_VAR_ACT
 from exactly_lib.help.concepts.contents_structure import PlainConceptDocumentation, Name
 from exactly_lib.help.cross_reference_id import TestCasePhaseInstructionCrossReference
-from exactly_lib.help.utils.description import DescriptionWithSubSections
 from exactly_lib.help.utils.formatting import AnyInstructionNameDictionary
 from exactly_lib.help.utils.phase_names import phase_name_dictionary, SETUP_PHASE_NAME
+from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure import structures as docs

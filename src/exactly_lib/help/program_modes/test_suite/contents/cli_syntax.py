@@ -4,10 +4,10 @@ from exactly_lib.cli.cli_environment.program_modes.test_case import command_line
 from exactly_lib.cli.cli_environment.program_modes.test_suite import command_line_options as opts
 from exactly_lib.help.concepts.plain_concepts import actor
 from exactly_lib.help.utils import formatting
-from exactly_lib.help.utils.description import DescriptionWithSubSections
 from exactly_lib.help.utils.textformat_parse import TextParser
 from exactly_lib.util.cli_syntax.elements import argument as arg
 from exactly_lib.util.cli_syntax.render import cli_program_syntax as render
+from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.structure import structures as docs
 
 
