@@ -16,7 +16,7 @@ class _ActorConcept(PlainConceptDocumentation):
     def purpose(self) -> DescriptionWithSubSections:
         parse = TextParser({
             'program_name': formatting.program_name(program_info.PROGRAM_NAME),
-            'actor_option': formatting.cli_option(opt.OPTION_FOR_ACTOR__LONG),
+            'actor_option': formatting.cli_option(opt.OPTION_FOR_ACTOR),
             'phase': phase_name_dictionary(),
             'home_directory': formatting.concept(HOME_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
             'interpreter_actor': formatting.term(opt.INTERPRETER_ACTOR_TERM),

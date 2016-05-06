@@ -65,7 +65,7 @@ Specifies an {interpreter_actor} to use for every test case in the suite.
 followed by optional arguments (using shell syntax).
 """
 
-_ACTOR_OPTION = arg.Option(long_name=opts.OPTION_FOR_ACTOR__LONG,
+_ACTOR_OPTION = arg.option(long_name=opts.OPTION_FOR_ACTOR__LONG,
                            argument=case_opts.ACTOR_OPTION_ARGUMENT)
 
 _FILE_ARGUMENT = arg.Named(opts.TEST_SUITE_FILE_ARGUMENT)

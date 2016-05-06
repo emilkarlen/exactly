@@ -2,6 +2,8 @@ from exactly_lib.help.utils.render import RenderingEnvironment, cross_reference_
 from exactly_lib.util.cli_syntax.elements import argument as arg
 from exactly_lib.util.cli_syntax.elements.cli_program_syntax import CliProgramSyntaxDocumentation, \
     DescribedArgument, Synopsis
+from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
+from exactly_lib.util.cli_syntax.option_syntax import short_option_syntax
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure import structures as docs
 
@@ -146,9 +148,9 @@ class ArgumentOnCommandLineRenderer(arg.ArgumentVisitor):
 
     def visit_option(self, x: arg.Option) -> str:
         if x.short_name:
-            option_str = x.short_name
+            option_str = short_option_syntax(x.name.short)
         else:
-            option_str = x.long_name
+            option_str = long_option_syntax(x.name.long)
         if x.argument:
             return option_str + ' ' + x.argument
         else:
@@ -165,11 +167,11 @@ class ArgumentInArgumentDescriptionRenderer(arg.ArgumentVisitor):
     def visit_option(self, x: arg.Option) -> str:
         ret_val = []
         if x.short_name:
-            ret_val.append(x.short_name)
+            ret_val.append(short_option_syntax(x.name.short))
         if x.long_name:
             if ret_val:
                 ret_val.append(', ')
-            ret_val.append(x.long_name)
+            ret_val.append(long_option_syntax(x.name.long))
         if x.argument:
             ret_val.append(' ')
             ret_val.append(x.argument)

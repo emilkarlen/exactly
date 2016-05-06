@@ -117,8 +117,8 @@ class ArgumentOnCommandLineRendererTest(unittest.TestCase):
     def test_option_with_both_long_and_short_name_SHOULD_produce_short_name(self):
         # ARRANGE #
         renderer = sut.ArgumentOnCommandLineRenderer()
-        argument_usage = arg.Option(short_name='-s',
-                                    long_name='--long')
+        argument_usage = arg.option(short_name='s',
+                                    long_name='long')
         # ACT #
         actual = renderer.visit(argument_usage)
         # ASSERT #
@@ -128,7 +128,7 @@ class ArgumentOnCommandLineRendererTest(unittest.TestCase):
     def test_option_only_short_name_SHOULD_produce_short_name(self):
         # ARRANGE #
         renderer = sut.ArgumentOnCommandLineRenderer()
-        argument_usage = arg.Option(short_name='-s')
+        argument_usage = arg.option(short_name='s')
         # ACT #
         actual = renderer.visit(argument_usage)
         # ASSERT #
@@ -138,7 +138,7 @@ class ArgumentOnCommandLineRendererTest(unittest.TestCase):
     def test_option_only_long_name_SHOULD_produce_long_name(self):
         # ARRANGE #
         renderer = sut.ArgumentOnCommandLineRenderer()
-        argument_usage = arg.Option(long_name='--long')
+        argument_usage = arg.option(long_name='long')
         # ACT #
         actual = renderer.visit(argument_usage)
         # ASSERT #

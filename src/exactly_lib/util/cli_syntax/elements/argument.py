@@ -32,26 +32,47 @@ class Named(Argument):
         return self._name
 
 
+class OptionName(tuple):
+    """
+    An option with either a short name, a long name, or both.
+    """
+
+    def __new__(cls,
+                short_name: str = '',
+                long_name: str = ''):
+        return tuple.__new__(cls, (short_name, long_name))
+
+    @property
+    def short(self) -> str:
+        return self[0]
+
+    @property
+    def long(self) -> str:
+        return self[1]
+
+
 class Option(Argument):
     """
     A traditional command line option.
     """
 
     def __init__(self,
-                 short_name: str = '',
-                 long_name: str = '',
+                 name: OptionName,
                  argument: str = ''):
-        self._short_name = short_name
-        self._long_name = long_name
+        self._name = name
         self._argument = argument
 
     @property
+    def name(self) -> OptionName:
+        return self._name
+
+    @property
     def short_name(self) -> str:
-        return self._short_name
+        return self._name.short
 
     @property
     def long_name(self) -> str:
-        return self._long_name
+        return self._name.long
 
     @property
     def argument(self) -> str:
@@ -59,6 +80,14 @@ class Option(Argument):
         :return: Empty `str` if option does not have an argument.
         """
         return self._argument
+
+
+def option(short_name: str = '',
+           long_name: str = '',
+           argument: str = '') -> Option:
+    return Option(OptionName(short_name=short_name,
+                             long_name=long_name),
+                  argument=argument)
 
 
 class Multiplicity(Enum):
