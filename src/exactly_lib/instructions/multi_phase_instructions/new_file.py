@@ -1,30 +1,54 @@
-from exactly_lib.common.instruction_documentation import InvokationVariant, \
-    InstructionDocumentation
+from exactly_lib.common.instruction_documentation import InvokationVariant, SyntaxElementDescription
+from exactly_lib.help.concepts.plain_concepts.present_working_directory import PRESENT_WORKING_DIRECTORY_CONCEPT
+from exactly_lib.help.utils import formatting
+from exactly_lib.instructions.utils import documentation_text
 from exactly_lib.instructions.utils.destination_path import *
+from exactly_lib.instructions.utils.instruction_documentation_with_text_parser import \
+    InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.instructions.utils.parse_here_document import parse_as_last_argument
 from exactly_lib.instructions.utils.parse_utils import split_arguments_list_string
+from exactly_lib.instructions.utils.relative_path_options_documentation import RelOptionRenderer
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParserSource
+from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.file_utils import ensure_parent_directory_does_exist_and_is_a_directory, write_new_text_file
 from exactly_lib.util.string import lines_content
-from exactly_lib.util.textformat.structure.structures import paras
+from exactly_lib.util.textformat.structure import structures as docs
 
 
-class TheInstructionDocumentation(InstructionDocumentation):
+class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
+    PATH_ARG_NAME = 'PATH'
+
     def __init__(self, name: str):
-        super().__init__(name)
+        super().__init__(name, {})
+        self.path_arg = a.Named(self.PATH_ARG_NAME)
+        self.relativity_arg = a.Named('RELATIVITY')
 
     def single_line_description(self) -> str:
-        return 'Creates a file.'
+        return 'Creates a file'
 
     def main_description_rest(self) -> list:
-        return paras('Uses Posix syntax for paths. I.e. directories are separated by /. ')
+        pwd_concept_name = formatting.concept(PRESENT_WORKING_DIRECTORY_CONCEPT.name().singular)
+        return (documentation_text.default_relativity(self.PATH_ARG_NAME,
+                                                      pwd_concept_name) +
+                documentation_text.paths_uses_posix_syntax())
 
     def invokation_variants(self) -> list:
+        arguments = [a.Single(a.Multiplicity.OPTIONAL, self.relativity_arg),
+                     a.Single(a.Multiplicity.MANDATORY, self.path_arg), ]
         return [
-            InvokationVariant(
-                '[{}] FILENAME'.format('|'.join(OPTIONS)),
-                paras('Creates a new file in the given directory.')),
+            InvokationVariant(self._cl_syntax_for_args(arguments),
+                              docs.paras('Creates an empty file.')),
+            InvokationVariant(self._cl_syntax(a.CommandLine(arguments,
+                                                            suffix=documentation_text.HERE_DOC_SUFFIX)),
+                              docs.paras('Creates a file with contents given by a here document.')),
+        ]
+
+    def syntax_element_descriptions(self) -> list:
+        renderer = RelOptionRenderer(self.path_arg.name)
+        return [
+            SyntaxElementDescription(self.relativity_arg.name,
+                                     [renderer.list_for(ALL_OPTIONS)]),
         ]
 
 
