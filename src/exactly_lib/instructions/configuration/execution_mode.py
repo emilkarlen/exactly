@@ -1,9 +1,9 @@
 from exactly_lib.common.instruction_documentation import SyntaxElementDescription, InvokationVariant
-from exactly_lib.common.instruction_documentation_with_text_parser import InstructionDocumentationWithTextParserBase
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.execution.execution_mode import ExecutionMode, NAME_2_MODE, NAME_DEFAULT
 from exactly_lib.help.concepts.configuration_parameters.execution_mode import EXECUTION_MODE_CONFIGURATION_PARAMETER
 from exactly_lib.help.utils import formatting
+from exactly_lib.instructions.utils.instruction_documentation_with_text_parser import InstructionDocumentationWithTextParserBase
 from exactly_lib.instructions.utils.parse_utils import split_arguments_list_string
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, \
@@ -28,8 +28,8 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
         })
 
     def description(self) -> Description:
-        return Description(self._format('Sets the {execution_mode_config_param}'),
-                           self._fnap('The default mode (if not changed by this instruction) is {default_mode}.'))
+        return Description(self._text('Sets the {execution_mode_config_param}'),
+                           self._paragraphs('The default mode (if not changed by this instruction) is {default_mode}.'))
 
     def invokation_variants(self) -> list:
         return [
