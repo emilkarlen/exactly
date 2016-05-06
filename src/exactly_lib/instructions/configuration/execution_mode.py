@@ -1,13 +1,16 @@
-from exactly_lib.common.instruction_documentation import InvokationVariant, \
-    InstructionDocumentation
+from exactly_lib.common.instruction_documentation import SyntaxElementDescription, InvokationVariant
+from exactly_lib.common.instruction_documentation_with_text_parser import InstructionDocumentationWithTextParserBase
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.execution.execution_mode import ExecutionMode, NAME_2_MODE, NAME_DEFAULT
+from exactly_lib.help.concepts.configuration_parameters.execution_mode import EXECUTION_MODE_CONFIGURATION_PARAMETER
+from exactly_lib.help.utils import formatting
 from exactly_lib.instructions.utils.parse_utils import split_arguments_list_string
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
+from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
+    SingleInstructionParser, \
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.phases.result import sh
-from exactly_lib.util.textformat.structure.structures import para
+from exactly_lib.util.description import Description
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
@@ -16,31 +19,35 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
         TheInstructionDocumentation(instruction_name))
 
 
-class TheInstructionDocumentation(InstructionDocumentation):
+class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
     def __init__(self, name: str):
-        super().__init__(name)
+        super().__init__(name, {
+            'MODE': _ARG_NAME,
+            'execution_mode_config_param': formatting.concept(EXECUTION_MODE_CONFIGURATION_PARAMETER.name().singular),
+            'default_mode': NAME_DEFAULT,
+        })
 
-    def main_description_rest(self) -> list:
-        return [para('The default mode (of not set by this instruction) is %s.' % NAME_DEFAULT)]
-
-    def single_line_description(self) -> str:
-        from exactly_lib.help.concepts.configuration_parameters.execution_mode import \
-            EXECUTION_MODE_CONFIGURATION_PARAMETER
-        return 'Sets the %s.' % EXECUTION_MODE_CONFIGURATION_PARAMETER.name().singular
+    def description(self) -> Description:
+        return Description(self._format('Sets the {execution_mode_config_param}'),
+                           self._fnap('The default mode (if not changed by this instruction) is {default_mode}.'))
 
     def invokation_variants(self) -> list:
+        return [
+            InvokationVariant(_ARG_NAME, []),
+        ]
+
+    def syntax_element_descriptions(self) -> list:
         from exactly_lib.help.concepts.configuration_parameters.execution_mode import execution_modes_list
         return [
-            InvokationVariant(
-                'MODE',
-                [para('Where MODE is one of:'),
-                 execution_modes_list()])
+            SyntaxElementDescription(_ARG_NAME,
+                                     [execution_modes_list()])
         ]
 
     def see_also(self) -> list:
-        from exactly_lib.help.concepts.configuration_parameters.execution_mode import \
-            EXECUTION_MODE_CONFIGURATION_PARAMETER
         return [EXECUTION_MODE_CONFIGURATION_PARAMETER.cross_reference_target()]
+
+
+_ARG_NAME = 'MODE'
 
 
 class Parser(SingleInstructionParser):
