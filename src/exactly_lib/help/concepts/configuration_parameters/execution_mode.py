@@ -26,7 +26,7 @@ class _ExecutionModeConfigurationParameter(ConfigurationParameterDocumentation):
 
 EXECUTION_MODE_CONFIGURATION_PARAMETER = _ExecutionModeConfigurationParameter()
 _EXECUTION_MODE_SINGLE_LINE_DESCRIPTION = """\
-Determines how the outcome of the {phase[assert]} phase should be interpreted,
+Determines how the outcome of the {phase[assert]} phase is interpreted,
 or if the test case should be skipped."""
 
 
