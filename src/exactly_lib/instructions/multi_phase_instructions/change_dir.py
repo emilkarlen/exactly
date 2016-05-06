@@ -1,7 +1,6 @@
 import os
 
-from exactly_lib.common.instruction_documentation import InvokationVariant
-from exactly_lib.execution.environment_variables import ENV_VAR_ACT, ENV_VAR_TMP
+from exactly_lib.common.instruction_documentation import InvokationVariant, SyntaxElementDescription
 from exactly_lib.help.concepts.plain_concepts.present_working_directory import PRESENT_WORKING_DIRECTORY_CONCEPT
 from exactly_lib.help.utils import formatting
 from exactly_lib.instructions.utils import documentation_text
@@ -9,32 +8,49 @@ from exactly_lib.instructions.utils.destination_path import *
 from exactly_lib.instructions.utils.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithTextParserBase
 from exactly_lib.instructions.utils.parse_utils import split_arguments_list_string
+from exactly_lib.instructions.utils.relative_path_options_documentation import RelOptionRenderer
 from exactly_lib.test_case.phases.result import sh
+from exactly_lib.util.cli_syntax.elements import argument
+from exactly_lib.util.cli_syntax.render.cli_program_syntax import CommandLineSyntaxRenderer
 from exactly_lib.util.description import Description
-from exactly_lib.util.textformat.structure.structures import paras
 
 
 class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
+    DIR_ARG_NAME = 'DIR'
+
     def __init__(self, name: str):
         super().__init__(name, {
             'pwd_concept': formatting.concept(PRESENT_WORKING_DIRECTORY_CONCEPT.name().singular),
+            'dir_argument': self.DIR_ARG_NAME,
         })
+        self.dir_arg = argument.Named(self.DIR_ARG_NAME)
+        self.relativity = 'RELATIVITY'
+        self.relativity_arg = argument.Named(self.relativity)
 
     def description(self) -> Description:
         return Description(self._text('Sets the {pwd_concept}'),
+                           self._paragraphs(_DEFAULT_RELATIVITY) +
+                           self._paragraphs(_NO_DIR_ARG_MEANING) +
                            documentation_text.paths_uses_posix_syntax())
 
     def invokation_variants(self) -> list:
+        cl = argument.CommandLine([
+            argument.Single(argument.Multiplicity.OPTIONAL,
+                            self.relativity_arg),
+            argument.Single(argument.Multiplicity.OPTIONAL,
+                            self.dir_arg),
+        ])
+
+        cl_renderer = CommandLineSyntaxRenderer()
         return [
-            InvokationVariant('[{}] [DIRECTORY]'.format('|'.join(OPTIONS)),
-                              paras('Changes to the given directory '
-                                    '(paths are relative present directory).')),
-            InvokationVariant('{} [DIRECTORY]'.format(REL_ACT_OPTION),
-                              paras('Changes to a directory relative the %s directory.'
-                                    % ENV_VAR_ACT)),
-            InvokationVariant('{} [DIRECTORY]'.format(REL_TMP_OPTION),
-                              paras('Changes to a directory relative the %s directory.'
-                                    % ENV_VAR_TMP)),
+            InvokationVariant(cl_renderer.as_str(cl), []),
+        ]
+
+    def syntax_element_descriptions(self) -> list:
+        renderer = RelOptionRenderer(self.dir_arg.name)
+        return [
+            SyntaxElementDescription(self.relativity_arg.name,
+                                     [renderer.list_for(ALL_OPTIONS)]),
         ]
 
     def see_also(self) -> list:
@@ -44,6 +60,15 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
             PRESENT_WORKING_DIRECTORY_CONCEPT.cross_reference_target(),
             SANDBOX_CONCEPT.cross_reference_target(),
         ]
+
+
+_DEFAULT_RELATIVITY = """\
+By default {dir_argument} is relative the {pwd_concept}.
+"""
+
+_NO_DIR_ARG_MEANING = """\
+Omitting the {dir_argument} is the same as giving ".".
+"""
 
 
 def parse(argument: str) -> DestinationPath:
