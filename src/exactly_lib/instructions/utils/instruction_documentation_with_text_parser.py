@@ -23,5 +23,11 @@ class InstructionDocumentationWithTextParserBase(InstructionDocumentation):
     def _format(self, s: str, extra: dict = None) -> str:
         return self._parser.format(s, extra)
 
-    def _fnap(self, s: str, extra: dict = None) -> list:
+    def _text(self, s: str, extra: dict = None) -> str:
+        return self._parser.text(s, extra)
+
+    def _paragraphs(self, s: str, extra: dict = None) -> list:
+        """
+        :rtype: [`ParagraphItem`]
+        """
         return self._parser.fnap(s, extra)

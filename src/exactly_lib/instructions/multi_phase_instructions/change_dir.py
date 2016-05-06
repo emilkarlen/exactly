@@ -1,23 +1,28 @@
 import os
 
-from exactly_lib.common.instruction_documentation import InvokationVariant, \
-    InstructionDocumentation
+from exactly_lib.common.instruction_documentation import InvokationVariant
 from exactly_lib.execution.environment_variables import ENV_VAR_ACT, ENV_VAR_TMP
+from exactly_lib.help.concepts.plain_concepts.present_working_directory import PRESENT_WORKING_DIRECTORY_CONCEPT
+from exactly_lib.help.utils import formatting
+from exactly_lib.instructions.utils import documentation_text
 from exactly_lib.instructions.utils.destination_path import *
+from exactly_lib.instructions.utils.instruction_documentation_with_text_parser import \
+    InstructionDocumentationWithTextParserBase
 from exactly_lib.instructions.utils.parse_utils import split_arguments_list_string
 from exactly_lib.test_case.phases.result import sh
+from exactly_lib.util.description import Description
 from exactly_lib.util.textformat.structure.structures import paras
 
 
-class TheInstructionDocumentation(InstructionDocumentation):
+class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
     def __init__(self, name: str):
-        super().__init__(name)
+        super().__init__(name, {
+            'pwd_concept': formatting.concept(PRESENT_WORKING_DIRECTORY_CONCEPT.name().singular),
+        })
 
-    def single_line_description(self) -> str:
-        return 'Changes Present Working Directory.'
-
-    def main_description_rest(self) -> list:
-        return paras('Uses Posix syntax for paths. I.e. directories are separated by /.')
+    def description(self) -> Description:
+        return Description(self._text('Sets the {pwd_concept}'),
+                           documentation_text.paths_uses_posix_syntax())
 
     def invokation_variants(self) -> list:
         return [
@@ -35,7 +40,10 @@ class TheInstructionDocumentation(InstructionDocumentation):
     def see_also(self) -> list:
         from exactly_lib.help.concepts.plain_concepts.sandbox import \
             SANDBOX_CONCEPT
-        return [SANDBOX_CONCEPT.cross_reference_target()]
+        return [
+            PRESENT_WORKING_DIRECTORY_CONCEPT.cross_reference_target(),
+            SANDBOX_CONCEPT.cross_reference_target(),
+        ]
 
 
 def parse(argument: str) -> DestinationPath:

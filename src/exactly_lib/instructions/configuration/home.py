@@ -2,10 +2,12 @@ import pathlib
 
 from exactly_lib.common.instruction_documentation import InvokationVariant, \
     SyntaxElementDescription
-from exactly_lib.common.instruction_documentation_with_text_parser import InstructionDocumentationWithTextParserBase
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help.concepts.configuration_parameters.home_directory import HOME_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.utils import formatting
+from exactly_lib.instructions.utils import documentation_text
+from exactly_lib.instructions.utils.instruction_documentation_with_text_parser import \
+    InstructionDocumentationWithTextParserBase
 from exactly_lib.instructions.utils.parse_utils import split_arguments_list_string
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, \
@@ -39,7 +41,8 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
     def syntax_element_descriptions(self) -> list:
         return [
             SyntaxElementDescription(_ARG_NAME,
-                                     self._fnap(_PATH_DESCRIPTION)),
+                                     self._paragraphs(_PATH_DESCRIPTION) +
+                                     documentation_text.paths_uses_posix_syntax()),
         ]
 
     def see_also(self) -> list:
@@ -52,10 +55,7 @@ _PATH_DESCRIPTION = """\
 An absolute or relative name of an existing directory.
 
 
-If {PATH} is relative, then it is relative the current {home_directory}.
-
-
-Paths use unix syntax.
+If {PATH} is relative, then it's relative to the current {home_directory}.
 """
 
 
