@@ -1,9 +1,11 @@
 from exactly_lib.help import cross_reference_id as cross_ref
 from exactly_lib.help.cross_reference_id import CustomTargetInfoFactory, CrossReferenceId
 from exactly_lib.help.html_doc.parts.utils import HtmlDocGeneratorForSectionDocumentBase
+from exactly_lib.help.program_modes.test_case.contents.cli_syntax import TestCaseCliSyntaxDocumentation
 from exactly_lib.help.program_modes.test_case.contents.main import overview as test_case_overview_rendering
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from exactly_lib.help.utils.render import RenderingEnvironment
+from exactly_lib.util.cli_syntax.render.cli_program_syntax import ProgramDocumentationSectionContentsRenderer
 from exactly_lib.util.textformat.structure import document  as doc
 
 
@@ -19,6 +21,11 @@ class HtmlDocGeneratorForTestCaseHelp(HtmlDocGeneratorForSectionDocumentBase):
                                                                    targets_factory)
         overview_target = overview_targets_factory.root('Test Case Overview')
         overview_sub_targets, overview_contents = self._test_case_overview_contents(overview_targets_factory)
+
+        cli_syntax_targets_factory = cross_ref.sub_component_factory('cli-syntax',
+                                                                     targets_factory)
+        cli_syntax_target = cli_syntax_targets_factory.root('Command Line Syntax')
+        cli_syntax_contents = self._cli_syntax_contents()
 
         phases_targets_factory = cross_ref.sub_component_factory('phases',
                                                                  targets_factory)
@@ -41,6 +48,8 @@ class HtmlDocGeneratorForTestCaseHelp(HtmlDocGeneratorForSectionDocumentBase):
                             overview_contents),
                 doc.Section(phases_target.anchor_text(),
                             phases_contents),
+                doc.Section(cli_syntax_target.anchor_text(),
+                            cli_syntax_contents),
                 doc.Section(instructions_target.anchor_text(),
                             instructions_contents),
             ]
@@ -50,6 +59,7 @@ class HtmlDocGeneratorForTestCaseHelp(HtmlDocGeneratorForSectionDocumentBase):
                                      overview_sub_targets),
             cross_ref.TargetInfoNode(phases_target,
                                      phases_sub_targets),
+            cross_ref.TargetInfoNode(cli_syntax_target, []),
             cross_ref.TargetInfoNode(instructions_target,
                                      instructions_sub_targets),
         ]
@@ -59,6 +69,10 @@ class HtmlDocGeneratorForTestCaseHelp(HtmlDocGeneratorForSectionDocumentBase):
         generator = test_case_overview_rendering.OverviewRenderer(self.test_case_help, targets_factory)
         section_contents = generator.apply(self.rendering_environment)
         return generator.target_info_hierarchy(), section_contents
+
+    def _cli_syntax_contents(self) -> doc.SectionContents:
+        renderer = ProgramDocumentationSectionContentsRenderer(TestCaseCliSyntaxDocumentation())
+        return renderer.apply(self.rendering_environment)
 
     def _section_cross_ref_target(self, phase):
         return cross_ref.TestCasePhaseCrossReference(phase.name.plain)

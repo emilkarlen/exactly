@@ -1,4 +1,4 @@
-from exactly_lib.cli.cli_environment.command_line_options import OPTION_FOR_ACTOR
+from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_options import OPTION_FOR_ACTOR__LONG
 from exactly_lib.execution import execution_directory_structure as sds
 from exactly_lib.help.concepts.configuration_parameters.home_directory import HOME_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.plain_concepts.environment_variable import ENVIRONMENT_VARIABLE_CONCEPT
@@ -28,7 +28,7 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
             'home_directory': HOME_DIRECTORY_CONFIGURATION_PARAMETER.name().singular,
             'sandbox': SANDBOX_CONCEPT.name().singular,
             'result_subdir': sds.SUB_DIRECTORY__RESULT,
-            'actor_option': OPTION_FOR_ACTOR,
+            'actor_option': OPTION_FOR_ACTOR__LONG,
         }
 
     def purpose(self) -> Description:

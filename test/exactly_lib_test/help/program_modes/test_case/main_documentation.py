@@ -10,9 +10,7 @@ from exactly_lib_test.util.textformat.test_resources import structure as struct_
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.TestSuite([
-        unittest.makeSuite(TestCase),
-    ])
+    return unittest.makeSuite(TestCase)
 
 
 if __name__ == '__main__':

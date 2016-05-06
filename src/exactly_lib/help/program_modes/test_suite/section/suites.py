@@ -13,5 +13,5 @@ class SuitesSectionDocumentation(TestSuiteSectionDocumentationBaseForSectionWith
         return file_ref_contents_description('suite')
 
     def purpose(self) -> Description:
-        return Description(docs.text('Lists test suites (sub suites) that should be part of the suite.'),
+        return Description(docs.text('Lists test suites (sub suites) that are part of the suite.'),
                            [])

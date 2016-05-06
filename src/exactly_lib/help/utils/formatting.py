@@ -108,5 +108,9 @@ def term(s: str) -> str:
     return '"' + s + '"'
 
 
+def concept(s: str) -> str:
+    return '"' + s + '"'
+
+
 def program_name(name: str) -> str:
     return '"' + name + '"'

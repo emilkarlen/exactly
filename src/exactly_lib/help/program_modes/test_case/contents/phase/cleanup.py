@@ -26,7 +26,7 @@ class CleanupPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstructio
         self.format_map = {
             'phase': phase_name_dictionary(),
             'SKIP': NAME_SKIP,
-            'execution_mode': formatting.term(EXECUTION_MODE_CONFIGURATION_PARAMETER.name().singular),
+            'execution_mode': formatting.concept(EXECUTION_MODE_CONFIGURATION_PARAMETER.name().singular),
         }
 
     def purpose(self) -> Description:

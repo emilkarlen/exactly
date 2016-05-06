@@ -61,7 +61,7 @@ class _EnvironmentVariableConcept(PlainConceptDocumentation):
 def _variables_section(first_phase_name: formatting.SectionName,
                        paragraphs: list) -> docs.Section:
     return docs.section(
-        'Variables available in {first_phase_name} and later phases'.format(first_phase_name=first_phase_name.emphasis),
+        'Variables available in {first_phase_name} and later phases'.format(first_phase_name=first_phase_name.syntax),
         paragraphs)
 
 
