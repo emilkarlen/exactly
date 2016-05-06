@@ -1,32 +1,24 @@
 from exactly_lib.default.program_modes.test_case.test_case_parser import DEFAULT_PHASE
 from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup
 from exactly_lib.help.utils.formatting import AnyInstructionNameDictionary
+from exactly_lib.help.utils.textformat_parse import TextParser
 from exactly_lib.section_document.syntax import section_header
-from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import structures as docs
 
 
 def test_case_files_documentation(setup: Setup) -> docs.SectionContents:
-    instruction_dict = AnyInstructionNameDictionary()
-    phases_paragraphs = normalize_and_parse(PHASES_DOC.format(phase_declaration_for_NAME=section_header('NAME'),
-                                                              instruction=instruction_dict,
-                                                              default_phase=setup.phase_names[
-                                                                  DEFAULT_PHASE.identifier].syntax))
-    instructions_paragraphs = normalize_and_parse(INSTRUCTIONS_DOC.format(instruction=instruction_dict))
-    other_paragraphs = normalize_and_parse(OTHER_DOC.format(phase=setup.phase_names,
-                                                            instruction=instruction_dict))
+    parser = TextParser({
+        'phase_declaration_for_NAME': section_header('NAME'),
+        'instruction': AnyInstructionNameDictionary(),
+        'default_phase': setup.phase_names[DEFAULT_PHASE.identifier].syntax,
+        'phase': setup.phase_names,
+    })
     return docs.SectionContents(
         [],
         [
-            docs.Section(docs.text('Phases'),
-                         docs.SectionContents(phases_paragraphs,
-                                              [])),
-            docs.Section(docs.text('Instructions'),
-                         docs.SectionContents(instructions_paragraphs,
-                                              [])),
-            docs.Section(docs.text('Comments and empty lines'),
-                         docs.SectionContents(other_paragraphs,
-                                              [])),
+            parser.section('Phases', PHASES_DOC),
+            parser.section('Instructions', INSTRUCTIONS_DOC),
+            parser.section('Comments and empty lines', OTHER_DOC),
         ])
 
 
@@ -65,8 +57,11 @@ stderr empty
 INSTRUCTIONS_DOC = """\
 Instructions start at the beginning of the line with a space separated identifier.
 
-The identifier may optionally be followed by arguments.
-The syntax depends on the particular instruction.
+
+The identifier may optionally be followed by arguments. Most instructions use a syntax for
+options, arguments and quoting that resembles the unix shell.
+
+The exact syntax depends on the particular instruction, though.
 
 
 An instruction may span several lines, as this form of {instruction[stdout]} does:
@@ -80,7 +75,7 @@ EOF
 """
 
 OTHER_DOC = """\
-Lines beginning with # are comments.
+Lines beginning with "#" are comments.
 
 Comments are not allowed on other lines.
 

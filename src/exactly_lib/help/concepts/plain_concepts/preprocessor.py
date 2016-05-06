@@ -1,7 +1,8 @@
+from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_options import OPTION_FOR_PREPROCESSOR__LONG
 from exactly_lib.help.concepts.contents_structure import PlainConceptDocumentation, Name
+from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.description import Description, DescriptionWithSubSections, from_simple_description
-from exactly_lib.help.utils.phase_names import CONFIGURATION_PHASE_NAME
-from exactly_lib.util.textformat.parse import normalize_and_parse
+from exactly_lib.help.utils.textformat_parse import TextParser
 from exactly_lib.util.textformat.structure.structures import text
 
 
@@ -10,25 +11,31 @@ class _PreprocessorConcept(PlainConceptDocumentation):
         super().__init__(Name('preprocessor', 'preprocessors'))
 
     def purpose(self) -> DescriptionWithSubSections:
+        tp = TextParser({
+            'preprocessor_option': formatting.cli_option(OPTION_FOR_PREPROCESSOR__LONG),
+        })
         return from_simple_description(
-            Description(text(_SINGLE_LINE_DESCRIPTION.format(CONFIGURATION_PHASE_NAME)),
-                        normalize_and_parse(_DESCRIPTION_REST)))
+            Description(text(_SINGLE_LINE_DESCRIPTION),
+                        tp.fnap(_DESCRIPTION_REST)))
 
 
 PREPROCESSOR_CONCEPT = _PreprocessorConcept()
 
 _SINGLE_LINE_DESCRIPTION = """\
-A program that may transform a test case file before it is processed."""
+A program that transforms a test case file as the first step in the processing of it."""
 
 _DESCRIPTION_REST = """\
-A preprocessor is an executable program, with optional command line arguments.
+A preprocessor is an executable program, together with optional command line arguments.
 
 
-It is given a single argument - the name of the test case file that it should process.
+When executed, it is given a single (additional) argument: the name of the test case file to preprocess.
 
 
-It must output the result of the processing on stdout.
-
+It must output the result of the preprocessing on stdout.
 
 An exit code other than 0 indicates error.
+
+
+A test case is preprocessed only if a preprocessor is given via the {preprocessor_option} option,
+or via a test suite.
 """

@@ -1,8 +1,9 @@
+from exactly_lib.help.cross_reference_id import TestCasePhaseInstructionCrossReference
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet, \
     SectionDocumentation
+from exactly_lib.help.program_modes.common.renderers import instruction_set_list
 from exactly_lib.help.utils.formatting import SectionName
 from exactly_lib.help.utils.render import RenderingEnvironment, cross_reference_list, transform_list_to_table
-from exactly_lib.help.program_modes.common.renderers import instruction_set_list
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure import structures as docs
@@ -132,6 +133,12 @@ class TestCasePhaseDocumentationBase(SectionDocumentation):
         if paragraphs:
             sections.append(docs.section('Environment', paragraphs))
 
+    def _cross_ref_text(self, instr_name: str) -> docs.Text:
+        return docs.cross_reference(instr_name,
+                                    TestCasePhaseInstructionCrossReference(self._phase_name.plain,
+                                                                           instr_name),
+                                    allow_rendering_of_visible_extra_target_text=False)
+
     @staticmethod
     def _environment_variables_list(environment_variable_names: list) -> ParagraphItem:
         return docs.simple_header_only_list(environment_variable_names,
@@ -141,7 +148,7 @@ class TestCasePhaseDocumentationBase(SectionDocumentation):
                                       environment: RenderingEnvironment,
                                       sections: list):
         if self.has_instructions:
-            il = instruction_set_list(self.instruction_set)
+            il = instruction_set_list(self.instruction_set, self._cross_ref_text)
             if environment.render_simple_header_value_lists_as_tables:
                 il = transform_list_to_table(il)
             sections.append(docs.section('Instructions', [il]))

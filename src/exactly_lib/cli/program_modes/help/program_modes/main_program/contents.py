@@ -1,4 +1,5 @@
 from exactly_lib.cli.program_modes.help import argument_parsing
+from exactly_lib.cli.program_modes.help import arguments_for
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure.core import ParagraphItem, Text, StringText
@@ -18,10 +19,10 @@ def help_invokation_variants() -> ParagraphItem:
             _help(argument_parsing.HTML_DOCUMENTATION),
             normalize_and_parse(
                 'Generates a HTML version of all help information available in the program.')),
-        HeaderContentListItem(
-            _help(argument_parsing.TEST_CASE),
-            normalize_and_parse(
-                'Describes the Test Case functionality.')),
+        _item(_help_args(arguments_for.test_case_overview()),
+              'Describes the Test Case functionality.'),
+        _item(_help_args(arguments_for.test_case_cli_syntax()),
+              'Describes the Test Case command line syntax.'),
         HeaderContentListItem(
             _help(argument_parsing.CONCEPT),
             normalize_and_parse(
@@ -50,10 +51,10 @@ def help_invokation_variants() -> ParagraphItem:
             _help('INSTRUCTION'),
             normalize_and_parse(
                 'Describes all Test Case instructions with the given name.')),
-        HeaderContentListItem(
-            _help(argument_parsing.TEST_SUITE),
-            normalize_and_parse(
-                'Describes the Test Suite functionality.')),
+        _item(_help_args(arguments_for.test_suite_overview()),
+              'Describes the Test Suite functionality.'),
+        _item(_help_args(arguments_for.test_suite_cli_syntax()),
+              'Describes the Test Suite command line syntax.'),
         HeaderContentListItem(
             _help(argument_parsing.TEST_SUITE + ' SECTION'),
             normalize_and_parse(
@@ -71,5 +72,13 @@ def un_indented_variable_list(items: list,
                                                 custom_indent_spaces=0))
 
 
+def _item(cmd_line: Text, text_str: str) -> HeaderContentListItem:
+    return HeaderContentListItem(cmd_line, normalize_and_parse(text_str))
+
+
 def _help(syntax: str) -> Text:
     return StringText(argument_parsing.HELP + ' ' + syntax)
+
+
+def _help_args(args: list) -> Text:
+    return StringText(argument_parsing.HELP + ' ' + ' '.join(args))

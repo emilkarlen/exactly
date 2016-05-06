@@ -1,3 +1,5 @@
+import types
+
 from exactly_lib.common.instruction_documentation import InstructionDocumentation, \
     InvokationVariant, \
     SyntaxElementDescription
@@ -34,9 +36,13 @@ class InstructionManPageRenderer(SectionContentsRenderer):
                                    sub_sections)
 
 
-def instruction_set_list_item(description: InstructionDocumentation) -> lists.HeaderContentListItem:
+def instruction_set_list_item(description: InstructionDocumentation,
+                              name_2_name_text_fun: types.FunctionType) -> lists.HeaderContentListItem:
+    """
+    :type name_2_name_text_fun: `str` -> `Text`
+    """
     description_para = para(description.single_line_description())
-    return lists.HeaderContentListItem(text(description.instruction_name()),
+    return lists.HeaderContentListItem(name_2_name_text_fun(description.instruction_name()),
                                        [description_para])
 
 

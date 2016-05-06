@@ -3,11 +3,13 @@ import exactly_lib.help.utils.render
 from exactly_lib.cli.program_modes.help.program_modes.test_case.help_request import TestCaseHelpItem, \
     TestCaseHelpRequest
 from exactly_lib.help.program_modes.common import render_instruction
+from exactly_lib.help.program_modes.common.renderers import SectionDocumentationRenderer
+from exactly_lib.help.program_modes.test_case.contents.cli_syntax import TestCaseCliSyntaxDocumentation
 from exactly_lib.help.program_modes.test_case.contents.main.overview import OverviewRenderer
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from exactly_lib.help.program_modes.test_case.render import instruction_set
 from exactly_lib.help.utils.render import SectionContentsRenderer, RenderingEnvironment
-from exactly_lib.help.program_modes.common.renderers import SectionDocumentationRenderer
+from exactly_lib.util.cli_syntax.render.cli_program_syntax import ProgramDocumentationSectionContentsRenderer
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure.structures import para, text
 
@@ -19,6 +21,8 @@ class TestCaseHelpRendererResolver:
 
     def resolve(self, request: TestCaseHelpRequest) -> SectionContentsRenderer:
         item = request.item
+        if item is TestCaseHelpItem.CLI_SYNTAX:
+            return ProgramDocumentationSectionContentsRenderer(TestCaseCliSyntaxDocumentation())
         if item is TestCaseHelpItem.OVERVIEW:
             return OverviewRenderer(self._contents)
         if item is TestCaseHelpItem.INSTRUCTION_SET:

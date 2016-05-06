@@ -10,6 +10,7 @@ class TestCaseHelpItem(Enum):
     INSTRUCTION = 3
     INSTRUCTION_SEARCH = 4
     PHASE_INSTRUCTION_LIST = 5
+    CLI_SYNTAX = 6
 
 
 class TestCaseHelpRequest(HelpRequest):
