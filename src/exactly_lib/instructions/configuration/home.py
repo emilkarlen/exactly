@@ -1,17 +1,18 @@
 import pathlib
 
 from exactly_lib.common.instruction_documentation import InvokationVariant, \
-    InstructionDocumentation
+    SyntaxElementDescription
+from exactly_lib.common.instruction_documentation_with_text_parser import InstructionDocumentationWithTextParserBase
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help.concepts.configuration_parameters.home_directory import HOME_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.utils import formatting
-from exactly_lib.help.utils.textformat_parse import TextParser
 from exactly_lib.instructions.utils.parse_utils import split_arguments_list_string
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
+from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
+    SingleInstructionParser, \
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.phases.result import sh
-from exactly_lib.util.textformat.structure.structures import paras
+from exactly_lib.util.description import Description, single_line_description
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
@@ -20,28 +21,42 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
         TheInstructionDocumentation(instruction_name))
 
 
-class TheInstructionDocumentation(InstructionDocumentation):
+class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
     def __init__(self, name: str):
-        super().__init__(name)
-        self.parser = TextParser({
-            'home_directory': formatting.concept(HOME_DIRECTORY_CONFIGURATION_PARAMETER.name().singular)
+        super().__init__(name, {
+            'home_directory': formatting.concept(HOME_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
+            'PATH': _ARG_NAME
         })
 
-    def single_line_description(self) -> str:
-        return self.parser.format('Sets the {home_directory}.')
-
-    def main_description_rest(self) -> list:
-        return paras('TODO')
+    def description(self) -> Description:
+        return single_line_description(self._format('Sets the {home_directory}'))
 
     def invokation_variants(self) -> list:
         return [
-            InvokationVariant(
-                'PATH',
-                paras('A path that is relative the current Home Directory')),
+            InvokationVariant(_ARG_NAME, []),
+        ]
+
+    def syntax_element_descriptions(self) -> list:
+        return [
+            SyntaxElementDescription(_ARG_NAME,
+                                     self._fnap(_PATH_DESCRIPTION)),
         ]
 
     def see_also(self) -> list:
         return [HOME_DIRECTORY_CONFIGURATION_PARAMETER.cross_reference_target()]
+
+
+_ARG_NAME = 'PATH'
+
+_PATH_DESCRIPTION = """\
+An absolute or relative name of an existing directory.
+
+
+If {PATH} is relative, then it is relative the current {home_directory}.
+
+
+Paths use unix syntax.
+"""
 
 
 class Parser(SingleInstructionParser):
