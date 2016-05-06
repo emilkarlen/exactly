@@ -1,5 +1,6 @@
 from exactly_lib import program_info
-from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_options import OPTION_FOR_PREPROCESSOR__LONG
+from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_options import OPTION_FOR_PREPROCESSOR__LONG, \
+    OPTION_FOR_PREPROCESSOR
 from exactly_lib.default.program_modes.test_case.default_instruction_names import CHANGE_DIR_INSTRUCTION_NAME
 from exactly_lib.execution.execution_directory_structure import SUB_DIRECTORY__ACT
 from exactly_lib.help.concepts.contents_structure import PlainConceptDocumentation, Name
@@ -18,7 +19,7 @@ class _PresentWorkingDirectoryConcept(PlainConceptDocumentation):
 
     def purpose(self) -> DescriptionWithSubSections:
         tp = TextParser({
-            'preprocessor_option': formatting.cli_option(OPTION_FOR_PREPROCESSOR__LONG),
+            'preprocessor_option': formatting.cli_option(OPTION_FOR_PREPROCESSOR),
             'phase': phase_name_dictionary(),
             'act_dir': SUB_DIRECTORY__ACT,
             'program_name': formatting.program_name(program_info.PROGRAM_NAME),

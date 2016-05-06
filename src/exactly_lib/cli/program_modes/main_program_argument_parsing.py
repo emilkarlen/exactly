@@ -8,6 +8,8 @@ from exactly_lib.cli.cli_environment.program_modes.test_case import command_line
 from exactly_lib.cli.program_modes.test_case.settings import Output, TestCaseExecutionSettings
 from exactly_lib.test_case.preprocessor import IdentityPreprocessor, PreprocessorViaExternalProgram
 from exactly_lib.util import argument_parsing_utils
+from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
+from exactly_lib.util.cli_syntax.render.cli_program_syntax import short_option_syntax
 
 
 def _parse_preprocessor(preprocessor_argument):
@@ -58,14 +60,14 @@ def _new_argument_parser(commands: dict) -> argparse.ArgumentParser:
                          {command_descriptions}
                          """.format(commands='|'.join(commands.keys()),
                                     command_descriptions=command_descriptions))
-    ret_val.add_argument(opt.OPTION_FOR_KEEPING_SANDBOX_DIRECTORY__SHORT,
-                         opt.OPTION_FOR_KEEPING_SANDBOX_DIRECTORY__LONG,
+    ret_val.add_argument(short_option_syntax(opt.OPTION_FOR_KEEPING_SANDBOX_DIRECTORY__SHORT),
+                         long_option_syntax(opt.OPTION_FOR_KEEPING_SANDBOX_DIRECTORY__LONG),
                          default=False,
                          action="store_true",
                          help="""\
                         Executes a test case as normal, but Execution Directory Structure is preserved,
                         and it's root directory is the only output on stdout.""")
-    ret_val.add_argument(opt.OPTION_FOR_EXECUTING_ACT_PHASE__LONG,
+    ret_val.add_argument(long_option_syntax(opt.OPTION_FOR_EXECUTING_ACT_PHASE__LONG),
                          default=False,
                          action="store_true",
                          help="""\
@@ -73,7 +75,7 @@ def _new_argument_parser(commands: dict) -> argparse.ArgumentParser:
                         the output from the act phase script is emitted:
                         Output on stdout/stderr from the script is printed to stdout/stderr.
                         The exit code from the act script becomes the exit code from the program.""")
-    ret_val.add_argument(opt.OPTION_FOR_ACTOR__LONG,
+    ret_val.add_argument(long_option_syntax(opt.OPTION_FOR_ACTOR__LONG),
                          metavar=opt.ACTOR_OPTION_ARGUMENT,
                          nargs=1,
                          help="""\
@@ -81,7 +83,7 @@ def _new_argument_parser(commands: dict) -> argparse.ArgumentParser:
 
                         The executable is given a single command line argument, which is the file
                         that contains the contents of the act phase.""")
-    ret_val.add_argument(opt.OPTION_FOR_PREPROCESSOR__LONG,
+    ret_val.add_argument(long_option_syntax(opt.OPTION_FOR_PREPROCESSOR__LONG),
                          metavar=opt.PREPROCESSOR_OPTION_ARGUMENT,
                          nargs=1,
                          help="""\

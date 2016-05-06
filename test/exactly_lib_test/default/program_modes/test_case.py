@@ -6,7 +6,7 @@ from exactly_lib.cli import main_program
 from exactly_lib.cli.cli_environment.program_modes.test_case import exit_values
 from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_options import \
     OPTION_FOR_KEEPING_SANDBOX_DIRECTORY__LONG, \
-    OPTION_FOR_EXECUTING_ACT_PHASE__LONG
+    OPTION_FOR_EXECUTING_ACT_PHASE, OPTION_FOR_KEEPING_SANDBOX_DIRECTORY
 from exactly_lib.execution import environment_variables
 from exactly_lib.execution import execution_directory_structure
 from exactly_lib.execution import phases
@@ -93,7 +93,7 @@ class FlagForPrintingAndPreservingSandbox(SetupWithoutPreprocessor):
         return ''
 
     def additional_arguments(self) -> list:
-        return [OPTION_FOR_KEEPING_SANDBOX_DIRECTORY__LONG]
+        return [OPTION_FOR_KEEPING_SANDBOX_DIRECTORY]
 
     def expected_result(self) -> value_assertion.ValueAssertion:
         return process_result_info_assertions.assertion_on_process_result(
@@ -107,7 +107,7 @@ class FlagForPrintingAndPreservingSandbox(SetupWithoutPreprocessor):
 
 class OutputAndExitCodeFromActPhaseIsEmittedAsResultWhenOptionForExecutingActPhaseIsGiven(SetupWithoutPreprocessor):
     def additional_arguments(self) -> list:
-        return [OPTION_FOR_EXECUTING_ACT_PHASE__LONG]
+        return [OPTION_FOR_EXECUTING_ACT_PHASE]
 
     def test_case(self) -> str:
         test_case_source = """
@@ -160,7 +160,7 @@ class AssertStdoutIsNameOfExistingSandboxDirectory(value_assertion.ValueAssertio
 
 class EnvironmentVariablesAreSetCorrectly(SetupWithoutPreprocessor):
     def additional_arguments(self) -> list:
-        return [OPTION_FOR_KEEPING_SANDBOX_DIRECTORY__LONG]
+        return [OPTION_FOR_KEEPING_SANDBOX_DIRECTORY]
 
     def test_case(self) -> str:
         test_case_source_lines = [

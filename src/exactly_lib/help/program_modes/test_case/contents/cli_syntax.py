@@ -98,7 +98,7 @@ Specifies an {interpreter_actor}, by giving the executable program that serves a
 (using shell syntax).
 """
 
-_ACTOR_OPTION = arg.Option(long_name=opt.OPTION_FOR_ACTOR__LONG,
+_ACTOR_OPTION = arg.option(long_name=opt.OPTION_FOR_ACTOR__LONG,
                            argument=opt.ACTOR_OPTION_ARGUMENT)
 
 _KEEPING_SANDBOX_OPTION_DESCRIPTION = """\
@@ -106,7 +106,7 @@ Executes a test case as normal, but the {sandbox} is preserved,
 and it's root directory is the only output on stdout.
 """
 
-_KEEP_SANDBOX_OPTION = arg.Option(long_name=opt.OPTION_FOR_KEEPING_SANDBOX_DIRECTORY__LONG,
+_KEEP_SANDBOX_OPTION = arg.option(long_name=opt.OPTION_FOR_KEEPING_SANDBOX_DIRECTORY__LONG,
                                   short_name=opt.OPTION_FOR_KEEPING_SANDBOX_DIRECTORY__SHORT)
 
 _EXECUTING_ACT_PHASE_OPTION_DESCRIPTION = """\
@@ -116,7 +116,7 @@ the outcome of {phase[act]:syntax} is emitted:
 output on stdout/stderr from {phase[act]:syntax} becomes the output on stdout/stderr;
 the exit code from {phase[act]:syntax} becomes the exit code from the program."""
 
-_EXECUTING_ACT_PHASE_OPTION = arg.Option(long_name=opt.OPTION_FOR_EXECUTING_ACT_PHASE__LONG)
+_EXECUTING_ACT_PHASE_OPTION = arg.option(long_name=opt.OPTION_FOR_EXECUTING_ACT_PHASE__LONG)
 
 _PREPROCESSOR_OPTION_DESCRIPTION = """\
 A program that transforms the test case file as the first step in the processing of it.
@@ -129,5 +129,5 @@ A program that transforms the test case file as the first step in the processing
 When executed, it is given a single (additional) argument: the name of the test case file to preprocess.
 """
 
-_PREPROCESSOR_OPTION = arg.Option(long_name=opt.OPTION_FOR_PREPROCESSOR__LONG,
+_PREPROCESSOR_OPTION = arg.option(long_name=opt.OPTION_FOR_PREPROCESSOR__LONG,
                                   argument=opt.PREPROCESSOR_OPTION_ARGUMENT)

@@ -7,6 +7,7 @@ from exactly_lib.cli.cli_environment import common_cli_options as common_opts
 from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options as case_opts
 from exactly_lib.cli.cli_environment.program_modes.test_suite import command_line_options as opts
 from exactly_lib.util import argument_parsing_utils
+from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from .settings import Settings
 
 
@@ -28,7 +29,7 @@ def _new_argument_parser() -> argparse.ArgumentParser:
                          metavar=opts.TEST_SUITE_FILE_ARGUMENT,
                          type=str,
                          help='The test suite file.')
-    ret_val.add_argument(opts.OPTION_FOR_ACTOR__LONG,
+    ret_val.add_argument(long_option_syntax(opts.OPTION_FOR_ACTOR__LONG),
                          metavar=case_opts.ACTOR_OPTION_ARGUMENT,
                          nargs=1,
                          help=_ACTOR_OPTION_DESCRIPTION.format(
