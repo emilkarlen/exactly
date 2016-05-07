@@ -32,11 +32,11 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
     def invokation_variants(self) -> list:
         arguments = [a.Single(a.Multiplicity.OPTIONAL, dt.RELATIVITY_ARGUMENT),
                      a.Single(a.Multiplicity.MANDATORY, self.path_arg), ]
+        here_doc_arg = a.Single(a.Multiplicity.MANDATORY, dt.HERE_DOCUMENT)
         return [
             InvokationVariant(self._cl_syntax_for_args(arguments),
                               docs.paras('Creates an empty file.')),
-            InvokationVariant(self._cl_syntax(a.CommandLine(arguments,
-                                                            suffix=dt.HERE_DOC_SUFFIX)),
+            InvokationVariant(self._cl_syntax_for_args(arguments + [here_doc_arg]),
                               docs.paras('Creates a file with contents given by a here document.')),
         ]
 
@@ -44,6 +44,8 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         return [
             dt.relativity_syntax_element_description(self.path_arg,
                                                      ALL_OPTIONS),
+            dt.here_document_syntax_element_description(self.instruction_name(),
+                                                        dt.HERE_DOCUMENT),
         ]
 
     def see_also(self) -> list:
