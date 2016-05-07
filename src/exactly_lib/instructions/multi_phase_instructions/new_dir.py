@@ -3,7 +3,7 @@ import pathlib
 from exactly_lib.common.instruction_documentation import InvokationVariant
 from exactly_lib.help.concepts.plain_concepts.present_working_directory import PRESENT_WORKING_DIRECTORY_CONCEPT
 from exactly_lib.help.utils import formatting
-from exactly_lib.instructions.utils.documentation_text import paths_uses_posix_syntax
+from exactly_lib.instructions.utils import documentation_text as dt
 from exactly_lib.instructions.utils.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.instructions.utils.parse_utils import split_arguments_list_string, ensure_is_not_option_argument
@@ -18,6 +18,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         super().__init__(name, {
             'pwd': formatting.concept(PRESENT_WORKING_DIRECTORY_CONCEPT.name().singular),
         })
+        self.path_arg = dt.PATH_ARGUMENT
 
     def single_line_description(self) -> str:
         return self._format('Creates a directory in the {pwd}')
@@ -29,14 +30,20 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
             Does nothing if the given directory already exists.
             """
-        return self._paragraphs(text) + paths_uses_posix_syntax()
+        return self._paragraphs(text) + dt.paths_uses_posix_syntax()
 
     def invokation_variants(self) -> list:
         return [
             InvokationVariant(self._cl_syntax_for_args([
                 a.Single(a.Multiplicity.MANDATORY,
-                         a.Named('PATH'))]),
+                         self.path_arg)]),
                 []),
+        ]
+
+    def syntax_element_descriptions(self) -> list:
+        return [
+            dt.a_path_that_is_relative_the(self.path_arg,
+                                           PRESENT_WORKING_DIRECTORY_CONCEPT),
         ]
 
     def see_also(self) -> list:
