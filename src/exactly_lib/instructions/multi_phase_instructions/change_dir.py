@@ -24,7 +24,6 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
             'dir_argument': self.PATH_ARG_NAME,
         })
         self.dir_arg = a.Named(self.PATH_ARG_NAME)
-        self.relativity_arg = a.Named('RELATIVITY')
 
     def description(self) -> Description:
         return Description(self._text('Sets the {pwd_concept}'),
@@ -37,7 +36,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         return [
             InvokationVariant(self._cl_syntax_for_args([
                 a.Single(a.Multiplicity.OPTIONAL,
-                         self.relativity_arg),
+                         documentation_text.RELATIVITY_ARGUMENT),
                 a.Single(a.Multiplicity.OPTIONAL,
                          self.dir_arg),
             ])),
@@ -46,7 +45,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
     def syntax_element_descriptions(self) -> list:
         renderer = RelOptionRenderer(self.dir_arg.name)
         return [
-            SyntaxElementDescription(self.relativity_arg.name,
+            SyntaxElementDescription(documentation_text.RELATIVITY_ARGUMENT.name,
                                      [renderer.list_for(ALL_OPTIONS)]),
         ]
 
