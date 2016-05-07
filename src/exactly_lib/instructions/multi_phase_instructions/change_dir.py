@@ -1,52 +1,48 @@
 import os
 
-from exactly_lib.common.instruction_documentation import InvokationVariant, SyntaxElementDescription
+from exactly_lib.common.instruction_documentation import InvokationVariant
 from exactly_lib.help.concepts.plain_concepts.present_working_directory import PRESENT_WORKING_DIRECTORY_CONCEPT
 from exactly_lib.help.utils import formatting
-from exactly_lib.instructions.utils import documentation_text
+from exactly_lib.instructions.utils import documentation_text as dt
 from exactly_lib.instructions.utils.destination_path import *
 from exactly_lib.instructions.utils.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.instructions.utils.parse_utils import split_arguments_list_string
-from exactly_lib.instructions.utils.relative_path_options_documentation import RelOptionRenderer
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.description import Description
 
 
 class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
-    PATH_ARG_NAME = 'DIR'
-
     def __init__(self, name: str):
         self.pwd_concept_name = formatting.concept(PRESENT_WORKING_DIRECTORY_CONCEPT.name().singular)
+        self.dir_arg = dt.DIR_ARGUMENT
         super().__init__(name, {
             'pwd_concept': self.pwd_concept_name,
-            'dir_argument': self.PATH_ARG_NAME,
+            'dir_argument': self.dir_arg,
         })
-        self.dir_arg = a.Named(self.PATH_ARG_NAME)
 
     def description(self) -> Description:
         return Description(self._text('Sets the {pwd_concept}'),
-                           documentation_text.default_relativity(self.PATH_ARG_NAME,
-                                                                 self.pwd_concept_name) +
+                           dt.default_relativity(self.dir_arg.name,
+                                                 self.pwd_concept_name) +
                            self._paragraphs(_NO_DIR_ARG_MEANING) +
-                           documentation_text.paths_uses_posix_syntax())
+                           dt.paths_uses_posix_syntax())
 
     def invokation_variants(self) -> list:
         return [
             InvokationVariant(self._cl_syntax_for_args([
                 a.Single(a.Multiplicity.OPTIONAL,
-                         documentation_text.RELATIVITY_ARGUMENT),
+                         dt.RELATIVITY_ARGUMENT),
                 a.Single(a.Multiplicity.OPTIONAL,
                          self.dir_arg),
             ])),
         ]
 
     def syntax_element_descriptions(self) -> list:
-        renderer = RelOptionRenderer(self.dir_arg.name)
         return [
-            SyntaxElementDescription(documentation_text.RELATIVITY_ARGUMENT.name,
-                                     [renderer.list_for(ALL_OPTIONS)]),
+            dt.relativity_syntax_element_description(self.dir_arg,
+                                                     ALL_OPTIONS),
         ]
 
     def see_also(self) -> list:
