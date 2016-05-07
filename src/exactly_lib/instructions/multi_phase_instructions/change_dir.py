@@ -19,7 +19,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         self.dir_arg = dt.DIR_ARGUMENT
         super().__init__(name, {
             'pwd_concept': self.pwd_concept_name,
-            'dir_argument': self.dir_arg,
+            'dir_argument': self.dir_arg.name,
         })
 
     def description(self) -> Description:
