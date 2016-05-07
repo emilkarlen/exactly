@@ -1,41 +1,54 @@
 import pathlib
 
-from exactly_lib.common.instruction_documentation import InvokationVariant, \
-    InstructionDocumentation
+from exactly_lib.common.instruction_documentation import InvokationVariant
+from exactly_lib.help.concepts.plain_concepts.present_working_directory import PRESENT_WORKING_DIRECTORY_CONCEPT
+from exactly_lib.help.utils import formatting
+from exactly_lib.instructions.utils.documentation_text import paths_uses_posix_syntax
+from exactly_lib.instructions.utils.instruction_documentation_with_text_parser import \
+    InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.instructions.utils.parse_utils import split_arguments_list_string, ensure_is_not_option_argument
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.phases.result import sh
-from exactly_lib.util.textformat import parse as text_parse
+from exactly_lib.util.cli_syntax.elements import argument as a
 
 
-class TheInstructionDocumentation(InstructionDocumentation):
+class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
     def __init__(self, name: str):
-        super().__init__(name)
+        super().__init__(name, {
+            'pwd': formatting.concept(PRESENT_WORKING_DIRECTORY_CONCEPT.name().singular),
+        })
 
     def single_line_description(self) -> str:
-        return 'Makes a directory in the current directory.'
+        return self._format('Creates a directory in the {pwd}')
 
     def main_description_rest(self) -> list:
         text = """\
-            Makes parent components, if needed.
+            Creates parent directories if needed.
 
 
             Does nothing if the given directory already exists.
             """
-        return text_parse.normalize_and_parse(text)
+        return self._paragraphs(text) + paths_uses_posix_syntax()
 
     def invokation_variants(self) -> list:
         return [
-            InvokationVariant('DIRECTORY',
-                              []),
+            InvokationVariant(self._cl_syntax_for_args([
+                a.Single(a.Multiplicity.MANDATORY,
+                         a.Named('PATH'))]),
+                []),
+        ]
+
+    def see_also(self) -> list:
+        return [
+            PRESENT_WORKING_DIRECTORY_CONCEPT.cross_reference_target(),
         ]
 
 
 def parse(argument: str) -> str:
     arguments = split_arguments_list_string(argument)
     if len(arguments) != 1:
-        raise SingleInstructionInvalidArgumentException('Usage: DIRECTORY')
+        raise SingleInstructionInvalidArgumentException('Usage: PATH')
     directory_argument = arguments[0]
     ensure_is_not_option_argument(directory_argument)
     return directory_argument
