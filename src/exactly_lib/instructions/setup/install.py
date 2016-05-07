@@ -1,17 +1,23 @@
 import pathlib
 
-from exactly_lib.common.instruction_documentation import InvokationVariant, \
-    InstructionDocumentation
+from exactly_lib.common.instruction_documentation import InvokationVariant
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
+from exactly_lib.help.concepts.configuration_parameters.home_directory import HOME_DIRECTORY_CONFIGURATION_PARAMETER
+from exactly_lib.help.concepts.plain_concepts.present_working_directory import PRESENT_WORKING_DIRECTORY_CONCEPT
+from exactly_lib.help.utils import formatting
+from exactly_lib.instructions.utils import documentation_text as dt
+from exactly_lib.instructions.utils.instruction_documentation_with_text_parser import \
+    InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.instructions.utils.parse_utils import split_arguments_list_string
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
+from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
+    SingleInstructionParser, \
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
-from exactly_lib.util.textformat import parse as text_parse
+from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure.structures import paras
 
 
@@ -21,35 +27,65 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
         TheInstructionDocumentation(instruction_name))
 
 
-class TheInstructionDocumentation(InstructionDocumentation):
+class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
     def __init__(self, name: str):
-        super().__init__(name)
+        self.dst_arg = a.Named('DESTINATION')
+        super().__init__(name, {
+            'home_dir': formatting.concept(HOME_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
+            'current_dir': formatting.concept(PRESENT_WORKING_DIRECTORY_CONCEPT.name().singular),
+            'DESTINATION': self.dst_arg.name,
+        })
 
     def single_line_description(self) -> str:
-        return 'Install existing files in the home directory into the current directory.'
+        return self._format('Install existing files from the {home_dir} into the {current_dir}')
 
     def main_description_rest(self) -> list:
         text = """\
-            As many attributes as possible of the files are preserved (this depends on Python implementation).
+            As many attributes as possible of the copied files are preserved
+            (this depends on Python implementation).
 
-            Mimics the behaviour of Unix cp, when a DESTINATION is given.
-            If DESTINATION does not exist, then the source is installed under the name DESTINATION.
 
-            If DESTINATION does exist, it must be a directory, and FILE is installed inside that directory.
+            Mimics the behaviour of Unix cp, when a {DESTINATION} is given.
 
-            NOTE: DESTINATION:s with multiple path components are NOT handled intelligently.
+            If {DESTINATION} does not exist, then the source is installed under the name {DESTINATION}.
+
+            If {DESTINATION} does exist, it must be a directory, and FILE is installed inside that directory.
+
+
+            NOTE: {DESTINATION}:s with multiple path components are NOT handled intelligently.
             The behaviour is undefined.
             """
-        return text_parse.normalize_and_parse(text)
+        return dt.paths_uses_posix_syntax() + self._paragraphs(text)
 
     def invokation_variants(self) -> list:
+        dst_arg_usage = a.Single(a.Multiplicity.OPTIONAL, self.dst_arg)
         return [
-            InvokationVariant(
-                'FILE [DESTINATION]',
-                paras('A plain file.')),
-            InvokationVariant(
-                'DIRECTORY [DESTINATION]',
-                paras("The directory and it's contents are installed.")),
+            InvokationVariant(self._cl_syntax_for_args([
+                a.Single(a.Multiplicity.MANDATORY, dt.FILE_ARGUMENT),
+                dst_arg_usage,
+            ]),
+                paras('Installs a plain file.')),
+            InvokationVariant(self._cl_syntax_for_args([
+                a.Single(a.Multiplicity.MANDATORY, dt.DIR_ARGUMENT),
+                dst_arg_usage,
+            ]),
+                paras("Installs the directory and its contents.")),
+        ]
+
+    def syntax_element_descriptions(self) -> list:
+        return [
+            dt.a_path_that_is_relative_the(dt.FILE_ARGUMENT,
+                                           HOME_DIRECTORY_CONFIGURATION_PARAMETER),
+            dt.a_path_that_is_relative_the(dt.DIR_ARGUMENT,
+                                           HOME_DIRECTORY_CONFIGURATION_PARAMETER),
+            dt.a_path_that_is_relative_the(self.dst_arg,
+                                           PRESENT_WORKING_DIRECTORY_CONCEPT),
+        ]
+
+    def see_also(self) -> list:
+        return [
+            HOME_DIRECTORY_CONFIGURATION_PARAMETER.cross_reference_target(),
+            PRESENT_WORKING_DIRECTORY_CONCEPT.cross_reference_target(),
         ]
 
 
