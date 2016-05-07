@@ -1,13 +1,12 @@
-from exactly_lib.common.instruction_documentation import InvokationVariant, SyntaxElementDescription
+from exactly_lib.common.instruction_documentation import InvokationVariant
 from exactly_lib.help.concepts.plain_concepts.present_working_directory import PRESENT_WORKING_DIRECTORY_CONCEPT
 from exactly_lib.help.utils import formatting
-from exactly_lib.instructions.utils import documentation_text
+from exactly_lib.instructions.utils import documentation_text as dt
 from exactly_lib.instructions.utils.destination_path import *
 from exactly_lib.instructions.utils.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.instructions.utils.parse_here_document import parse_as_last_argument
 from exactly_lib.instructions.utils.parse_utils import split_arguments_list_string
-from exactly_lib.instructions.utils.relative_path_options_documentation import RelOptionRenderer
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParserSource
 from exactly_lib.util.cli_syntax.elements import argument as a
@@ -17,37 +16,34 @@ from exactly_lib.util.textformat.structure import structures as docs
 
 
 class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
-    PATH_ARG_NAME = 'PATH'
-
     def __init__(self, name: str):
         super().__init__(name, {})
-        self.path_arg = a.Named(self.PATH_ARG_NAME)
+        self.path_arg = dt.PATH_ARGUMENT
 
     def single_line_description(self) -> str:
         return 'Creates a file'
 
     def main_description_rest(self) -> list:
         pwd_concept_name = formatting.concept(PRESENT_WORKING_DIRECTORY_CONCEPT.name().singular)
-        return (documentation_text.default_relativity(self.PATH_ARG_NAME,
-                                                      pwd_concept_name) +
-                documentation_text.paths_uses_posix_syntax())
+        return (dt.default_relativity(self.path_arg.name,
+                                      pwd_concept_name) +
+                dt.paths_uses_posix_syntax())
 
     def invokation_variants(self) -> list:
-        arguments = [a.Single(a.Multiplicity.OPTIONAL, documentation_text.RELATIVITY_ARGUMENT),
+        arguments = [a.Single(a.Multiplicity.OPTIONAL, dt.RELATIVITY_ARGUMENT),
                      a.Single(a.Multiplicity.MANDATORY, self.path_arg), ]
         return [
             InvokationVariant(self._cl_syntax_for_args(arguments),
                               docs.paras('Creates an empty file.')),
             InvokationVariant(self._cl_syntax(a.CommandLine(arguments,
-                                                            suffix=documentation_text.HERE_DOC_SUFFIX)),
+                                                            suffix=dt.HERE_DOC_SUFFIX)),
                               docs.paras('Creates a file with contents given by a here document.')),
         ]
 
     def syntax_element_descriptions(self) -> list:
-        renderer = RelOptionRenderer(self.path_arg.name)
         return [
-            SyntaxElementDescription(documentation_text.RELATIVITY_ARGUMENT.name,
-                                     [renderer.list_for(ALL_OPTIONS)]),
+            dt.relativity_syntax_element_description(self.path_arg,
+                                                     ALL_OPTIONS),
         ]
 
     def see_also(self) -> list:
