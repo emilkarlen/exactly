@@ -22,7 +22,6 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
     def __init__(self, name: str):
         super().__init__(name, {})
         self.path_arg = a.Named(self.PATH_ARG_NAME)
-        self.relativity_arg = a.Named('RELATIVITY')
 
     def single_line_description(self) -> str:
         return 'Creates a file'
@@ -34,7 +33,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                 documentation_text.paths_uses_posix_syntax())
 
     def invokation_variants(self) -> list:
-        arguments = [a.Single(a.Multiplicity.OPTIONAL, self.relativity_arg),
+        arguments = [a.Single(a.Multiplicity.OPTIONAL, documentation_text.RELATIVITY_ARGUMENT),
                      a.Single(a.Multiplicity.MANDATORY, self.path_arg), ]
         return [
             InvokationVariant(self._cl_syntax_for_args(arguments),
@@ -47,7 +46,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
     def syntax_element_descriptions(self) -> list:
         renderer = RelOptionRenderer(self.path_arg.name)
         return [
-            SyntaxElementDescription(self.relativity_arg.name,
+            SyntaxElementDescription(documentation_text.RELATIVITY_ARGUMENT.name,
                                      [renderer.list_for(ALL_OPTIONS)]),
         ]
 
