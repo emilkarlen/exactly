@@ -1,6 +1,7 @@
 from exactly_lib.common.instruction_documentation import SyntaxElementDescription
 from exactly_lib.help.concepts.contents_structure import ConceptDocumentation
 from exactly_lib.help.utils import formatting
+from exactly_lib.instructions.utils.relative_path_options_documentation import RelOptionRenderer
 from exactly_lib.util.cli_syntax.elements.argument import Named
 from exactly_lib.util.textformat.structure import structures as docs
 
@@ -14,6 +15,13 @@ def default_relativity(path_arg_name: str,
     return docs.paras(_DEFAULT_RELATIVITY
                       .format(path=path_arg_name,
                               default_relativity_location=default_relativity_location))
+
+
+def relativity_syntax_element_description(path_that_may_be_relative: Named,
+                                          iter_of_rel_option_type: iter) -> SyntaxElementDescription:
+    renderer = RelOptionRenderer(path_that_may_be_relative.name)
+    return SyntaxElementDescription(RELATIVITY_ARGUMENT.name,
+                                    [renderer.list_for(iter_of_rel_option_type)])
 
 
 RELATIVITY_ARGUMENT = Named('RELATIVITY')
