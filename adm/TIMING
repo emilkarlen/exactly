@@ -40,6 +40,8 @@ weird simptest behaviour / data-root-dir
 **** kommandoradsfunktioner (ej tidrapporterat början)
      CLOCK: [2016-04-05 tis 20:12]--[2016-04-06 ons 04:49] =>  8:37
 *** help-strukturer
+    CLOCK: [2016-05-06 fre 17:20]--[2016-05-06 fre 21:45] =>  4:25
+    CLOCK: [2016-05-06 fre 13:32]--[2016-05-06 fre 13:52] =>  0:20
     CLOCK: [2016-05-05 tor 09:36]--[2016-05-05 tor 14:49] =>  5:13
     CLOCK: [2016-05-05 tor 08:25]--[2016-05-05 tor 09:03] =>  0:38
     CLOCK: [2016-05-04 ons 21:31]--[2016-05-04 ons 22:57] =>  1:26
@@ -67,6 +69,7 @@ weird simptest behaviour / data-root-dir
     CLOCK: [2015-12-21 mån 19:29]--[2015-12-22 tis 01:02] =>  5:33
 
 *** hjälpinnehåll
+    CLOCK: [2016-05-07 lör 21:00]--[2016-05-07 lör 22:03] =>  1:03
     CLOCK: [2016-05-05 tor 19:48]--[2016-05-06 fre 01:15] =>  5:27
     CLOCK: [2016-05-05 tor 18:06]--[2016-05-05 tor 19:10] =>  1:04
     CLOCK: [2016-05-03 tis 17:07]--[2016-05-03 tis 22:48] =>  5:41

@@ -1,5 +1,76 @@
 -*- org -*-
 
+* TODO Förbättra instr-dok
+** DONE [conf]
+*** DONE home
+      Changes the Home directory.
+*** DONE mode
+      Sets the execution mode.
+
+** TODO [setup]
+*** DONE dir
+      Makes a directory in the current directory.
+*** DONE env
+      Manipulates environment variables.
+*** DONE file
+      Creates a file.
+*** DONE install
+      Install existing files in the home directory into the current directory.
+*** DONE pwd
+      Changes Present Working Directory.
+*** TODO run
+      Runs a program.
+*** TODO shell
+      Executes the given program using the system's shell.
+*** TODO stdin
+      Redirects stdin, for the act program, to a given file, or string.
+
+** TODO [before-assert]
+*** TODO dir
+      Makes a directory in the current directory.
+*** TODO env
+      Manipulates environment variables.
+*** TODO pwd
+      Changes Present Working Directory.
+*** TODO run
+      Runs a program.
+*** TODO shell
+      Executes the given program using the system's shell.
+
+** TODO [assert]
+*** TODO contents
+      Tests the contents of a file.
+*** TODO dir
+      Makes a directory in the current directory.
+*** TODO env
+      Manipulates environment variables.
+*** TODO exitcode
+      Tests the exitcode.
+*** TODO pwd
+      Changes Present Working Directory.
+*** TODO run
+      Runs a program and PASS iff it's exit code is 0.
+*** TODO shell
+      Executes the given program using the system's shell.
+*** TODO stderr
+      Tests the contents of stderr.
+*** TODO stdout
+      Tests the contents of stdout.
+*** TODO type
+      Tests the type of a file.
+
+** TODO [cleanup]
+*** TODO dir
+      Makes a directory in the current directory.
+*** TODO env
+      Manipulates environment variables.
+*** TODO pwd
+      Changes Present Working Directory.
+*** TODO run
+      Runs a program.
+*** TODO shell
+      Executes the given program using the system's shell.
+
 * TODO Gör "actor" till en "configuration parameter"
 <2016-05-05 tor>
 Lägg till instruktion ("actor") till "conf" för att sätt actor.
