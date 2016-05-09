@@ -15,6 +15,34 @@ from exactly_lib.util.textformat.structure import structures as docs
 RELATIVITY_ARGUMENT = Named('RELATIVITY')
 
 
+def default_relativity_for_rel_opt_type(path_arg_name: str,
+                                        default_relativity_type: options.RelOptionType) -> list:
+    return docs.paras(_DEFAULT_RELATIVITY
+                      .format(path=path_arg_name,
+                              default_relativity_location=_ALL[default_relativity_type].relativity_root_description))
+
+
+def relativity_syntax_element_description(path_that_may_be_relative: Named,
+                                          iter_of_rel_option_type: iter,
+                                          relativity_argument: Named = RELATIVITY_ARGUMENT) -> SyntaxElementDescription:
+    renderer = RelOptionRenderer(path_that_may_be_relative.name)
+    return SyntaxElementDescription(relativity_argument.name,
+                                    [renderer.list_for(iter_of_rel_option_type)])
+
+
+def see_also_concepts(iter_of_rel_option_type: iter) -> list:
+    """
+    :rtype: [`ConceptDocumentation`]
+    """
+    ret_val = []
+    for rel_option_type in iter_of_rel_option_type:
+        concepts_for_type = _ALL[rel_option_type].see_also
+        for concept in concepts_for_type:
+            if concept not in ret_val:
+                ret_val.append(concept)
+    return ret_val
+
+
 class _RelOptionInfo(tuple):
     def __new__(cls,
                 name: Option,
@@ -143,42 +171,6 @@ _ALL = {
                                                _REL_HOME_DESCRIPTION,
                                                [HOME_DIRECTORY_CONFIGURATION_PARAMETER]),
 }
-
-
-def default_relativity(path_arg_name: str,
-                       default_relativity_location: str) -> list:
-    return docs.paras(_DEFAULT_RELATIVITY
-                      .format(path=path_arg_name,
-                              default_relativity_location=default_relativity_location))
-
-
-def default_relativity_for_rel_opt_type(path_arg_name: str,
-                                        default_relativity_type: options.RelOptionType) -> list:
-    return docs.paras(_DEFAULT_RELATIVITY
-                      .format(path=path_arg_name,
-                              default_relativity_location=_ALL[default_relativity_type].relativity_root_description))
-
-
-def relativity_syntax_element_description(path_that_may_be_relative: Named,
-                                          iter_of_rel_option_type: iter,
-                                          relativity_argument: Named = RELATIVITY_ARGUMENT) -> SyntaxElementDescription:
-    renderer = RelOptionRenderer(path_that_may_be_relative.name)
-    return SyntaxElementDescription(relativity_argument.name,
-                                    [renderer.list_for(iter_of_rel_option_type)])
-
-
-def see_also_concepts(iter_of_rel_option_type: iter) -> list:
-    """
-    :rtype: [`ConceptDocumentation`]
-    """
-    ret_val = []
-    for rel_option_type in iter_of_rel_option_type:
-        concepts_for_type = _ALL[rel_option_type].see_also
-        for concept in concepts_for_type:
-            if concept not in ret_val:
-                ret_val.append(concept)
-    return ret_val
-
 
 _DEFAULT_RELATIVITY = """\
 By default, {path} is relative the {default_relativity_location}.

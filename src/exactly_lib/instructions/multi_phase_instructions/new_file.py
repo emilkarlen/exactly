@@ -1,6 +1,5 @@
 from exactly_lib.common.instruction_documentation import InvokationVariant
 from exactly_lib.help.concepts.plain_concepts.present_working_directory import PRESENT_WORKING_DIRECTORY_CONCEPT
-from exactly_lib.help.utils import formatting
 from exactly_lib.instructions.utils import documentation_text as dt
 from exactly_lib.instructions.utils import relative_path_options_documentation as rel_path_doc
 from exactly_lib.instructions.utils.destination_path import *
@@ -25,10 +24,9 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         return 'Creates a file'
 
     def main_description_rest(self) -> list:
-        pwd_concept_name = formatting.concept(PRESENT_WORKING_DIRECTORY_CONCEPT.name().singular)
         return (
-            rel_path_doc.default_relativity(self.path_arg.name,
-                                            pwd_concept_name) +
+            rel_path_doc.default_relativity_for_rel_opt_type(self.path_arg.name,
+                                                             rel_path_doc.RelOptionType.REL_PWD) +
             dt.paths_uses_posix_syntax())
 
     def invokation_variants(self) -> list:
