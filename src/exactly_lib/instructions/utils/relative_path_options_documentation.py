@@ -1,6 +1,7 @@
 from exactly_lib.common.instruction_documentation import SyntaxElementDescription
 from exactly_lib.execution import environment_variables as env
 from exactly_lib.help.concepts.configuration_parameters.home_directory import HOME_DIRECTORY_CONFIGURATION_PARAMETER
+from exactly_lib.help.concepts.plain_concepts.environment_variable import ENVIRONMENT_VARIABLE_CONCEPT
 from exactly_lib.help.concepts.plain_concepts.present_working_directory import PRESENT_WORKING_DIRECTORY_CONCEPT
 from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.textformat_parse import TextParser
@@ -45,8 +46,7 @@ class _RelOptionTypeInfo(tuple):
                 paragraph_items_text: str,
                 see_also: list):
         """
-        :type paragraph_items: [`ParagraphItem`]
-        :type see_also:
+        :type see_also: [`ConceptDocumentation`]
         """
         return tuple.__new__(cls, (name, paragraph_items_text, see_also, relativity_root_description))
 
@@ -127,21 +127,21 @@ _ALL = {
     RelOptionType.REL_TMP: _RelOptionTypeInfo(options.REL_TMP_OPTION_NAME,
                                               env.ENV_VAR_TMP,
                                               _REL_TMP_DESCRIPTION,
-                                              [],
+                                              [ENVIRONMENT_VARIABLE_CONCEPT],
                                               ),
     RelOptionType.REL_ACT: _RelOptionTypeInfo(options.REL_ACT_OPTION_NAME,
                                               env.ENV_VAR_ACT,
                                               _REL_ACT_DESCRIPTION,
-                                              []),
+                                              [ENVIRONMENT_VARIABLE_CONCEPT]),
     RelOptionType.REL_PWD: _RelOptionTypeInfo(options.REL_CWD_OPTION_NAME,
                                               formatting.concept(PRESENT_WORKING_DIRECTORY_CONCEPT.name().singular),
                                               _REL_PWD_DESCRIPTION,
-                                              [PRESENT_WORKING_DIRECTORY_CONCEPT.cross_reference_target()]),
+                                              [PRESENT_WORKING_DIRECTORY_CONCEPT]),
     RelOptionType.REL_HOME: _RelOptionTypeInfo(options.REL_HOME_OPTION_NAME,
                                                formatting.concept(
                                                    HOME_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
                                                _REL_HOME_DESCRIPTION,
-                                               [HOME_DIRECTORY_CONFIGURATION_PARAMETER.cross_reference_target()]),
+                                               [HOME_DIRECTORY_CONFIGURATION_PARAMETER]),
 }
 
 
@@ -165,6 +165,19 @@ def relativity_syntax_element_description(path_that_may_be_relative: Named,
     renderer = RelOptionRenderer(path_that_may_be_relative.name)
     return SyntaxElementDescription(relativity_argument.name,
                                     [renderer.list_for(iter_of_rel_option_type)])
+
+
+def see_also_concepts(iter_of_rel_option_type: iter) -> list:
+    """
+    :rtype: [`ConceptDocumentation`]
+    """
+    ret_val = []
+    for rel_option_type in iter_of_rel_option_type:
+        concepts_for_type = _ALL[rel_option_type].see_also
+        for concept in concepts_for_type:
+            if concept not in ret_val:
+                ret_val.append(concept)
+    return ret_val
 
 
 _DEFAULT_RELATIVITY = """\

@@ -123,6 +123,10 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                                                                PARSE_FILE_REF_CONFIGURATION.accepted_options),
         ]
 
+    def see_also(self) -> list:
+        concepts = rel_path_doc.see_also_concepts(PARSE_FILE_REF_CONFIGURATION.accepted_options)
+        return [concept.cross_reference_target() for concept in concepts]
+
 
 class SetupForExecutableWithArguments:
     def __init__(self,
