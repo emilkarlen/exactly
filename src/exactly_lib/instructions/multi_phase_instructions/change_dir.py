@@ -4,6 +4,7 @@ from exactly_lib.common.instruction_documentation import InvokationVariant
 from exactly_lib.help.concepts.plain_concepts.present_working_directory import PRESENT_WORKING_DIRECTORY_CONCEPT
 from exactly_lib.help.utils import formatting
 from exactly_lib.instructions.utils import documentation_text as dt
+from exactly_lib.instructions.utils import relative_path_options_documentation
 from exactly_lib.instructions.utils.destination_path import *
 from exactly_lib.instructions.utils.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
@@ -24,8 +25,9 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
     def description(self) -> Description:
         return Description(self._text('Sets the {pwd_concept}'),
-                           dt.default_relativity(self.dir_arg.name,
-                                                 self.pwd_concept_name) +
+                           relative_path_options_documentation.default_relativity_for_rel_opt_type(
+                               self.dir_arg.name,
+                               relative_path_options_documentation.RelOptionType.REL_PWD) +
                            self._paragraphs(_NO_DIR_ARG_MEANING) +
                            dt.paths_uses_posix_syntax())
 
@@ -33,7 +35,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         return [
             InvokationVariant(self._cl_syntax_for_args([
                 a.Single(a.Multiplicity.OPTIONAL,
-                         dt.RELATIVITY_ARGUMENT),
+                         relative_path_options_documentation.RELATIVITY_ARGUMENT),
                 a.Single(a.Multiplicity.OPTIONAL,
                          self.dir_arg),
             ])),
@@ -41,8 +43,8 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
     def syntax_element_descriptions(self) -> list:
         return [
-            dt.relativity_syntax_element_description(self.dir_arg,
-                                                     ALL_OPTIONS),
+            relative_path_options_documentation.relativity_syntax_element_description(self.dir_arg,
+                                                                                      ALL_OPTIONS),
         ]
 
     def see_also(self) -> list:

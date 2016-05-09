@@ -1,7 +1,6 @@
 from exactly_lib.common.instruction_documentation import SyntaxElementDescription
 from exactly_lib.help.concepts.contents_structure import ConceptDocumentation
 from exactly_lib.help.utils import formatting
-from exactly_lib.instructions.utils.relative_path_options_documentation import RelOptionRenderer
 from exactly_lib.util.cli_syntax.elements.argument import Named
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import structures as docs
@@ -11,21 +10,12 @@ def paths_uses_posix_syntax() -> list:
     return docs.paras("""Paths uses posix syntax.""")
 
 
-def default_relativity(path_arg_name: str,
-                       default_relativity_location: str) -> list:
-    return docs.paras(_DEFAULT_RELATIVITY
-                      .format(path=path_arg_name,
-                              default_relativity_location=default_relativity_location))
-
-
 def here_document_syntax_element_description(instruction_name: str,
                                              here_document_argument: Named) -> SyntaxElementDescription:
     s = _HERE_DOCUMENT_DESCRIPTION.format(instruction_name=instruction_name)
     return SyntaxElementDescription(here_document_argument.name,
                                     normalize_and_parse(s))
 
-
-RELATIVITY_ARGUMENT = Named('RELATIVITY')
 
 PATH_ARGUMENT = Named('PATH')
 
@@ -34,19 +24,6 @@ FILE_ARGUMENT = Named('FILE')
 DIR_ARGUMENT = Named('DIR')
 
 HERE_DOCUMENT = Named('HERE-DOCUMENT')
-
-
-def relativity_syntax_element_description(path_that_may_be_relative: Named,
-                                          iter_of_rel_option_type: iter,
-                                          relativity_argument: Named = RELATIVITY_ARGUMENT) -> SyntaxElementDescription:
-    renderer = RelOptionRenderer(path_that_may_be_relative.name)
-    return SyntaxElementDescription(relativity_argument.name,
-                                    [renderer.list_for(iter_of_rel_option_type)])
-
-
-_DEFAULT_RELATIVITY = """\
-By default {path} is relative the {default_relativity_location}.
-"""
 
 _HERE_DOCUMENT_DESCRIPTION = """\
 A sequence of lines, given using the shell "here document" syntax.
