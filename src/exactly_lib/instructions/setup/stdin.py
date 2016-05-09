@@ -8,7 +8,8 @@ from exactly_lib.instructions.utils import parse_here_doc_or_file_ref
 from exactly_lib.instructions.utils.file_properties import FileType
 from exactly_lib.instructions.utils.file_ref_check import FileRefCheck
 from exactly_lib.instructions.utils.parse_utils import split_arguments_list_string
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
+from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
+    SingleInstructionParser, \
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase
@@ -32,12 +33,13 @@ class TheInstructionDocumentation(InstructionDocumentation):
         return 'Redirects stdin, for the act program, to a given file, or string.'
 
     def invokation_variants(self) -> list:
+        rel_opt_strs = parse_file_ref.all_rel_option_strs()
         return [
             InvokationVariant(
-                '[{}] FILE'.format('|'.join(parse_file_ref.ALL_REL_OPTIONS)),
+                '[{}] FILE'.format('|'.join(rel_opt_strs)),
                 paras('Sets stdin to a file relative the Home Directory.')),
             InvokationVariant(
-                '<<EOF-MARKER'.format('|'.join(parse_file_ref.ALL_REL_OPTIONS)),
+                '<<EOF-MARKER'.format('|'.join(rel_opt_strs)),
                 paras('Sets stdin to the contents of the given Here Document.')),
         ]
 

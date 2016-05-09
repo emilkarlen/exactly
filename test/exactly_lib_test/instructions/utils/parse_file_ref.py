@@ -26,8 +26,11 @@ class TestParse(unittest.TestCase):
                           remaining_arguments)
 
     def test_parse_with_option(self):
-        (file_ref, remaining_arguments) = sut.parse_file_ref__list(
-            [REL_CWD_OPTION, 'FILE NAME', 'arg3', 'arg4'])
+        # ARRANGE #
+        arguments = [REL_CWD_OPTION, 'FILE NAME', 'arg3', 'arg4']
+        # ACT #
+        (file_ref, remaining_arguments) = sut.parse_file_ref__list(arguments)
+        # ASSERT #
         self.assertEquals('FILE NAME',
                           file_ref.file_name)
         self.assertEquals(['arg3', 'arg4'],
@@ -139,4 +142,4 @@ def suite():
 
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.TextTestRunner().run(suite())

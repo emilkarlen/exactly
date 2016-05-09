@@ -1,42 +1,51 @@
 import pathlib
 import types
 
+from exactly_lib.instructions.utils import relative_path_options as rel_opts
+from exactly_lib.instructions.utils.parse_utils import TokenStream, is_option_argument
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.instructions.utils.parse_utils import TokenStream, is_option_argument
-from exactly_lib.instructions.utils.relative_path_options import REL_TMP_OPTION, REL_CWD_OPTION, REL_HOME_OPTION, \
-    REL_ACT_OPTION
+from exactly_lib.util.cli_syntax import option_parsing
+from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from . import file_ref
 
-_REL_OPTION_TO_FILE_REF_CONSTRUCTOR = {
-    REL_HOME_OPTION:
-        file_ref.rel_home,
-    REL_CWD_OPTION:
-        file_ref.rel_cwd,
-    REL_ACT_OPTION:
-        file_ref.rel_act,
-    REL_TMP_OPTION:
-        file_ref.rel_tmp_user,
+_REL_OPTION_2_FILE_REF_CONSTRUCTOR = {
+    rel_opts.RelOptionType.REL_HOME: file_ref.rel_home,
+    rel_opts.RelOptionType.REL_PWD: file_ref.rel_cwd,
+    rel_opts.RelOptionType.REL_ACT: file_ref.rel_act,
+    rel_opts.RelOptionType.REL_TMP: file_ref.rel_tmp_user,
 }
 
-ALL_REL_OPTIONS = _REL_OPTION_TO_FILE_REF_CONSTRUCTOR.keys()
+ALL_REL_OPTIONS = _REL_OPTION_2_FILE_REF_CONSTRUCTOR.keys()
+
+
+def all_rel_option_strs(all_types: iter = ALL_REL_OPTIONS) -> list:
+    return [long_option_syntax(opt_name.long) for opt_name in
+            [rel_opts.REL_OPTIONS_MAP[rel_opt_type] for rel_opt_type in
+             all_types]]
 
 
 class Configuration(tuple):
     def __new__(cls,
-                accepted_options,
-                default_option: str,
+                accepted_options: iter,
+                default_option: rel_opts.RelOptionType,
                 argument_syntax_name: str):
+        """
+        :type accepted_options: Iterable of `RelOptionType`
+        """
         return tuple.__new__(cls, (accepted_options,
                                    default_option,
                                    argument_syntax_name))
 
     @property
-    def accepted_options(self):
+    def accepted_options(self) -> iter:
+        """
+        :rtype: Iterable of `RelOptionType`
+        """
         return self[0]
 
     @property
-    def default_option(self) -> str:
+    def default_option(self) -> rel_opts.RelOptionType:
         return self[1]
 
     @property
@@ -45,11 +54,11 @@ class Configuration(tuple):
 
 
 DEFAULT_CONFIG = Configuration(ALL_REL_OPTIONS,
-                               REL_HOME_OPTION,
+                               rel_opts.RelOptionType.REL_HOME,
                                'FILE')
 
-NON_HOME_CONFIG = Configuration(ALL_REL_OPTIONS - {REL_HOME_OPTION},
-                                REL_CWD_OPTION,
+NON_HOME_CONFIG = Configuration(ALL_REL_OPTIONS - {rel_opts.RelOptionType.REL_HOME},
+                                rel_opts.RelOptionType.REL_PWD,
                                 'FILE')
 
 
@@ -83,8 +92,6 @@ def parse_file_ref__list(arguments: list,
 def parse_file_ref(tokens: TokenStream,
                    conf: Configuration = DEFAULT_CONFIG) -> (file_ref.FileRef, TokenStream):
     """
-    If no relativity-option is specified, the file is assumed to be rel-home.
-
     :param tokens: Argument list
     :return: The parsed FileRef, remaining arguments after file was parsed.
     """
@@ -114,24 +121,18 @@ def _read_absolute_or_default_file_ref(argument: str,
     if argument_path.is_absolute():
         return file_ref.absolute_file_name(argument)
     else:
-        file_ref_constructor = _option_constructor_for(conf.default_option)
+        file_ref_constructor = _REL_OPTION_2_FILE_REF_CONSTRUCTOR[conf.default_option]
         return file_ref_constructor(argument)
 
 
 def _get_file_ref_constructor(option_argument: str,
                               conf: Configuration) -> types.FunctionType:
-    if option_argument not in conf.accepted_options:
-        msg = 'Invalid option for reference to %s: %s' % (conf.argument_syntax_name, option_argument)
-        raise SingleInstructionInvalidArgumentException(msg)
-    return _option_constructor_for(option_argument)
-
-
-def _option_constructor_for(relativity_option: str) -> types.FunctionType:
-    try:
-        return _REL_OPTION_TO_FILE_REF_CONSTRUCTOR[relativity_option]
-    except KeyError:
-        msg = 'parse_file_ref: Invalid relativity-option: {}'.format(relativity_option)
-        raise ValueError(msg)
+    for relativity_type in conf.accepted_options:
+        option_name = rel_opts.REL_OPTIONS_MAP[relativity_type]
+        if option_parsing.matches(option_name, option_argument):
+            return _REL_OPTION_2_FILE_REF_CONSTRUCTOR[relativity_type]
+    msg = 'Invalid option for reference to %s: %s' % (conf.argument_syntax_name, option_argument)
+    raise SingleInstructionInvalidArgumentException(msg)
 
 
 def _raise_missing_option_argument_exception(option: str,
