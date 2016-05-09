@@ -1,6 +1,9 @@
 -*- org -*-
 
 * TODO Förbättra instr-dok
+** TODO S&R exactly_lib.instructions.utils.relative_path_options_documentation
+Har blivit hela sökvägen vid refaktorering.
+** TODO Ta bort all_rel_option_strs när ej används längre
 ** DONE [conf]
 *** DONE home
       Changes the Home directory.
@@ -18,7 +21,7 @@
       Install existing files in the home directory into the current directory.
 *** DONE pwd
       Changes Present Working Directory.
-*** TODO run
+*** DONE run
       Runs a program.
 *** TODO shell
       Executes the given program using the system's shell.
@@ -71,6 +74,10 @@
 *** TODO shell
       Executes the given program using the system's shell.
 
+* TODO Förbättrin av instr
+** TODO dir: möjl att ange path rel annat än pwd (mha --rel...)
+
+** TODO install: möjl att ange path rel annat än pwd (mha --rel...)
 * TODO Gör "actor" till en "configuration parameter"
 <2016-05-05 tor>
 Lägg till instruktion ("actor") till "conf" för att sätt actor.
@@ -130,7 +137,7 @@ vad README ska innehålla.
 Det riskerar ju att atc (action to check) kan sabba
 filer där.
 * TODO Dokumentation
-** Enkla test-falls-exemplen ska ha med [setup]
+** TODO Enkla test-falls-exemplen ska ha med [setup]
 Både i inbyggd hjälp o i README.md
 Typ
 ----------------------------
@@ -151,6 +158,10 @@ Vetlanda
 EOF
 ----------------------------
 
+** TODO "Konsistensera" punkt på slutet av single-line-descr ja/nej
+<2016-05-09 mån>
+Kan inte bestämma hur ja vill ah det.
+Så nu finns båda varianterna.
 ** TODO Test case overview: Förbättra "intro-raden"
 Idag
 ----------------------------------------
