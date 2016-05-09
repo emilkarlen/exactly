@@ -18,6 +18,14 @@ REL_CWD_OPTION_NAME = argument.OptionName(long_name='rel-cwd')
 REL_HOME_OPTION_NAME = argument.OptionName(long_name='rel-home')
 REL_SYSTEM_OPTION_NAME = argument.OptionName(long_name='system')
 
+REL_OPTIONS_MAP = {
+    RelOptionType.REL_HOME: REL_HOME_OPTION_NAME,
+    RelOptionType.REL_PWD: REL_CWD_OPTION_NAME,
+    RelOptionType.REL_ACT: REL_ACT_OPTION_NAME,
+    RelOptionType.REL_TMP: REL_TMP_OPTION_NAME,
+    RelOptionType.REL_SYSTEM: REL_SYSTEM_OPTION_NAME,
+}
+
 REL_TMP_OPTION = long_option_syntax(REL_TMP_OPTION_NAME.long)
 REL_ACT_OPTION = long_option_syntax(REL_ACT_OPTION_NAME.long)
 REL_CWD_OPTION = long_option_syntax(REL_CWD_OPTION_NAME.long)

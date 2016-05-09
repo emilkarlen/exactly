@@ -18,13 +18,6 @@ def default_relativity(path_arg_name: str,
                               default_relativity_location=default_relativity_location))
 
 
-def relativity_syntax_element_description(path_that_may_be_relative: Named,
-                                          iter_of_rel_option_type: iter) -> SyntaxElementDescription:
-    renderer = RelOptionRenderer(path_that_may_be_relative.name)
-    return SyntaxElementDescription(RELATIVITY_ARGUMENT.name,
-                                    [renderer.list_for(iter_of_rel_option_type)])
-
-
 def here_document_syntax_element_description(instruction_name: str,
                                              here_document_argument: Named) -> SyntaxElementDescription:
     s = _HERE_DOCUMENT_DESCRIPTION.format(instruction_name=instruction_name)
@@ -41,6 +34,15 @@ FILE_ARGUMENT = Named('FILE')
 DIR_ARGUMENT = Named('DIR')
 
 HERE_DOCUMENT = Named('HERE-DOCUMENT')
+
+
+def relativity_syntax_element_description(path_that_may_be_relative: Named,
+                                          iter_of_rel_option_type: iter,
+                                          relativity_argument: Named = RELATIVITY_ARGUMENT) -> SyntaxElementDescription:
+    renderer = RelOptionRenderer(path_that_may_be_relative.name)
+    return SyntaxElementDescription(relativity_argument.name,
+                                    [renderer.list_for(iter_of_rel_option_type)])
+
 
 _DEFAULT_RELATIVITY = """\
 By default {path} is relative the {default_relativity_location}.
