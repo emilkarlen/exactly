@@ -1,17 +1,18 @@
 import shlex
 
 from exactly_lib.common.instruction_documentation import InvokationVariant, \
-    SyntaxElementDescription, \
-    InstructionDocumentation
+    SyntaxElementDescription
 from exactly_lib.instructions.utils import documentation_text as dt
 from exactly_lib.instructions.utils import executable_file
 from exactly_lib.instructions.utils import file_properties
 from exactly_lib.instructions.utils import parse_file_ref
+from exactly_lib.instructions.utils import relative_path_options_documentation as rel_path_doc
 from exactly_lib.instructions.utils import sub_process_execution
-from exactly_lib.instructions.utils.executable_file import ExecutableFile
+from exactly_lib.instructions.utils.executable_file import ExecutableFile, PARSE_FILE_REF_CONFIGURATION
 from exactly_lib.instructions.utils.file_ref import FileRef
 from exactly_lib.instructions.utils.file_ref_check import FileRefCheckValidator, FileRefCheck
-from exactly_lib.instructions.utils.parse_file_ref import all_rel_option_strs
+from exactly_lib.instructions.utils.instruction_documentation_with_text_parser import \
+    InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.instructions.utils.parse_utils import TokenStream
 from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostEdsValidator, AndValidator
 from exactly_lib.instructions.utils.sub_process_execution import ResultAndStderr, ExecuteInfo, \
@@ -21,10 +22,9 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.test_case.phases.common import HomeAndEds, TestCaseInstruction, PhaseLoggingPaths
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import sh
+from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.elements.argument import OptionName
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
-from exactly_lib.util.textformat import parse as paragraphs_parse
-from exactly_lib.util.textformat.structure.structures import para, paras
 
 INTERPRET_OPTION_NAME = OptionName(long_name='interpret')
 INTERPRET_OPTION = long_option_syntax(INTERPRET_OPTION_NAME.long)
@@ -32,14 +32,28 @@ INTERPRET_OPTION = long_option_syntax(INTERPRET_OPTION_NAME.long)
 SOURCE_OPTION_NAME = OptionName(long_name='source')
 SOURCE_OPTION = long_option_syntax(SOURCE_OPTION_NAME.long)
 
+OPTIONS_SEPARATOR_ARGUMENT = '--'
 
-class TheInstructionDocumentation(InstructionDocumentation):
+
+class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
     def __init__(self,
                  name: str,
                  single_line_description: str = 'Runs a program.'):
-        super().__init__(name)
+        self.executable_arg = a.Named('EXECUTABLE')
+        super().__init__(name, {'EXECUTABLE': self.executable_arg.name})
         self.relativity_arg_path = dt.PATH_ARGUMENT
-        self.relativity_arg = dt.RELATIVITY_ARGUMENT
+        self.mandatory_path = a.Single(a.Multiplicity.MANDATORY,
+                                       dt.PATH_ARGUMENT)
+        self.relativity_arg = rel_path_doc.RELATIVITY_ARGUMENT
+        self.optional_relativity = a.Single(a.Multiplicity.OPTIONAL,
+                                            self.relativity_arg)
+        self.mandatory_executable = a.Single(a.Multiplicity.MANDATORY,
+                                             self.executable_arg)
+        self.generic_arg = a.Named('ARGUMENT')
+        self.zero_or_more_generic_args = a.Single(a.Multiplicity.ZERO_OR_MORE,
+                                                  self.generic_arg)
+        self.optional_arg_sep = a.Single(a.Multiplicity.OPTIONAL,
+                                         a.Constant(OPTIONS_SEPARATOR_ARGUMENT))
         self._single_line_description = single_line_description
 
     def single_line_description(self) -> str:
@@ -47,55 +61,66 @@ class TheInstructionDocumentation(InstructionDocumentation):
 
     def invokation_variants(self) -> list:
         return [
-            InvokationVariant(
-                'EXECUTABLE [--] ARGUMENT...',
-                paragraphs_parse.normalize_and_parse(
+            InvokationVariant(self._cl_syntax_for_args([
+                self.mandatory_executable,
+                self.optional_arg_sep,
+                self.zero_or_more_generic_args]),
+                self._paragraphs(
                     """\
                     Executes the given executable with the given command line arguments.
+
                     The arguments are splitted according to shell syntax.
                     """)),
-            InvokationVariant(
-                'EXECUTABLE %s SOURCE-FILE [--] ARGUMENT...' % INTERPRET_OPTION,
-                paragraphs_parse.normalize_and_parse(
+            InvokationVariant(self._cl_syntax_for_args([
+                self.mandatory_executable,
+                a.Single(a.Multiplicity.MANDATORY, a.Option(INTERPRET_OPTION_NAME)),
+                self.optional_relativity,
+                self.mandatory_path,
+                self.optional_arg_sep,
+                self.zero_or_more_generic_args]),
+                self._paragraphs(
                     """\
-                    Interprets the given SOURCE-FILE using EXECUTABLE.
-                    ARGUMENTS... are splitted according to shell syntax.
+                    Interprets the given file using {EXECUTABLE}.
+
+                    Arguments are splitted according to shell syntax.
                     """)),
-            InvokationVariant(
-                'EXECUTABLE %s SOURCE' % SOURCE_OPTION,
-                paragraphs_parse.normalize_and_parse(
+            InvokationVariant(self._cl_syntax_for_args([
+                self.mandatory_executable,
+                a.Single(a.Multiplicity.MANDATORY, a.Option(SOURCE_OPTION_NAME)),
+                a.Single(a.Multiplicity.MANDATORY, a.Named('SOURCE'))]),
+                self._paragraphs(
                     """\
-                    Interprets the given SOURCE using EXECUTABLE.
-                    SOURCE is taken literary, and is given as a single argument to EXECUTABLE.
+                    Interprets the given SOURCE using {EXECUTABLE}.
+
+                    SOURCE is taken literary, and is given as a single argument to {EXECUTABLE}.
                     """)),
         ]
 
     def syntax_element_descriptions(self) -> list:
-        opt_strs = all_rel_option_strs()
+        executable_path_arguments = [self.optional_relativity,
+                                     self.mandatory_path]
+        executable_in_parenthesis_arguments = ([a.Single(a.Multiplicity.MANDATORY, a.Constant('('))] +
+                                               executable_path_arguments +
+                                               [self.zero_or_more_generic_args,
+                                                a.Single(a.Multiplicity.MANDATORY, a.Constant(')'))])
+        default_relativity_desc = rel_path_doc.default_relativity_for_rel_opt_type(
+            dt.PATH_ARGUMENT.name,
+            PARSE_FILE_REF_CONFIGURATION.default_option)
         return [
             SyntaxElementDescription(
-                'EXECUTABLE',
-                paras('Specifies a program by giving the path to an executable file.'),
+                self.executable_arg.name,
+                self._paragraphs('Specifies a program by giving the path to an executable file, '
+                                 'and optionally also arguments to the program.'),
                 [
-                    InvokationVariant('ABSOLUTE-PATH', [para('An absolute path.')]),
-                    InvokationVariant('[{}] PATH'.format('|'.join(opt_strs)),
-                                      paras('A path that is relative the given directory '
-                                            'under the Execution Directory Structure.')),
-                    InvokationVariant('( EXECUTABLE ARGUMENT-TO-EXECUTABLE... )',
-                                      paras('An executable program with arguments. (Must be inside parentheses.)')),
+                    InvokationVariant(self._cl_syntax_for_args(executable_path_arguments),
+                                      default_relativity_desc),
+                    InvokationVariant(self._cl_syntax_for_args(executable_in_parenthesis_arguments),
+                                      self._paragraphs('An executable program with arguments. '
+                                                       '(Must be inside parentheses.)') +
+                                      default_relativity_desc),
                 ]),
-            # dt.relativity_syntax_element_description(self.relativity_arg_path,
-            #                                          ),
-            SyntaxElementDescription(
-                'SOURCE-FILE',
-                paragraphs_parse.normalize_and_parse(
-                    """\
-                    Specifies a plain file.
-                    By default, SOURCE-FILE is assumed to be relative the home dir.
-
-                    Other locations can be specified using %s.
-                    """ % '|'.join(opt_strs)),
-                []),
+            rel_path_doc.relativity_syntax_element_description(self.relativity_arg_path,
+                                                               PARSE_FILE_REF_CONFIGURATION.accepted_options),
         ]
 
 
@@ -202,7 +227,7 @@ class SetupParser:
             return self._interpret(source, exe_file, arg_tokens.tail_source_or_empty_string)
         if arg_tokens.head == SOURCE_OPTION:
             return self._source(source, exe_file, arg_tokens.tail_source)
-        if arg_tokens.head == '--':
+        if arg_tokens.head == OPTIONS_SEPARATOR_ARGUMENT:
             return self._execute(source, exe_file, arg_tokens.tail.source)
         return self._execute(source, exe_file, arg_tokens.source)
 

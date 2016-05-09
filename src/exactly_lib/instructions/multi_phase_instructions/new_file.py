@@ -2,6 +2,7 @@ from exactly_lib.common.instruction_documentation import InvokationVariant
 from exactly_lib.help.concepts.plain_concepts.present_working_directory import PRESENT_WORKING_DIRECTORY_CONCEPT
 from exactly_lib.help.utils import formatting
 from exactly_lib.instructions.utils import documentation_text as dt
+from exactly_lib.instructions.utils import relative_path_options_documentation as rel_path_doc
 from exactly_lib.instructions.utils.destination_path import *
 from exactly_lib.instructions.utils.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
@@ -25,12 +26,14 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
     def main_description_rest(self) -> list:
         pwd_concept_name = formatting.concept(PRESENT_WORKING_DIRECTORY_CONCEPT.name().singular)
-        return (dt.default_relativity(self.path_arg.name,
-                                      pwd_concept_name) +
-                dt.paths_uses_posix_syntax())
+        return (
+            rel_path_doc.default_relativity(self.path_arg.name,
+                                            pwd_concept_name) +
+            dt.paths_uses_posix_syntax())
 
     def invokation_variants(self) -> list:
-        arguments = [a.Single(a.Multiplicity.OPTIONAL, dt.RELATIVITY_ARGUMENT),
+        arguments = [a.Single(a.Multiplicity.OPTIONAL,
+                              rel_path_doc.RELATIVITY_ARGUMENT),
                      a.Single(a.Multiplicity.MANDATORY, self.path_arg), ]
         here_doc_arg = a.Single(a.Multiplicity.MANDATORY, dt.HERE_DOCUMENT)
         return [
@@ -42,8 +45,8 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
     def syntax_element_descriptions(self) -> list:
         return [
-            dt.relativity_syntax_element_description(self.path_arg,
-                                                     ALL_OPTIONS),
+            rel_path_doc.relativity_syntax_element_description(self.path_arg,
+                                                               ALL_OPTIONS),
             dt.here_document_syntax_element_description(self.instruction_name(),
                                                         dt.HERE_DOCUMENT),
         ]

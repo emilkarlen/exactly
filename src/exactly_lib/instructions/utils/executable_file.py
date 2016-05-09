@@ -14,6 +14,9 @@ LIST_DELIMITER_START = '('
 LIST_DELIMITER_END = ')'
 
 
+PARSE_FILE_REF_CONFIGURATION = parse_file_ref.DEFAULT_CONFIG
+
+
 class ExecutableFile:
     def __init__(self,
                  file_reference: file_ref.FileRef,
@@ -51,13 +54,15 @@ def parse(tokens: TokenStream) -> (ExecutableFile, TokenStream):
     :raise SingleInstructionInvalidArgumentException: Invalid file syntax
     """
     if tokens.is_null:
-        parse_file_ref.parse_file_ref(tokens)  # will raise exception
+        parse_file_ref.parse_file_ref(tokens, conf=PARSE_FILE_REF_CONFIGURATION)  # will raise exception
     if tokens.head == LIST_DELIMITER_START:
-        (the_file_ref, remaining_tokens) = parse_file_ref.parse_file_ref(tokens.tail)
+        (the_file_ref, remaining_tokens) = parse_file_ref.parse_file_ref(tokens.tail,
+                                                                         conf=PARSE_FILE_REF_CONFIGURATION)
         (exe_argument_list, tail_tokens) = _parse_arguments_and_end_delimiter(remaining_tokens)
         return ExecutableFile(the_file_ref, exe_argument_list), tail_tokens
     else:
-        (the_file_ref, remaining_tokens) = parse_file_ref.parse_file_ref(tokens)
+        (the_file_ref, remaining_tokens) = parse_file_ref.parse_file_ref(tokens,
+                                                                         conf=PARSE_FILE_REF_CONFIGURATION)
         return ExecutableFile(the_file_ref, []), remaining_tokens
 
 
