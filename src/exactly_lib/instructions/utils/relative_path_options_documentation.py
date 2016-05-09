@@ -104,7 +104,7 @@ _ALL = {
     RelOptionType.REL_PWD: (options.REL_CWD_OPTION_NAME,
                             [PRESENT_WORKING_DIRECTORY_CONCEPT.cross_reference_target()],
                             _REL_PWD_DESCRIPTION),
-    RelOptionType.REL_HOME: (options.REL_HOME_OPTION,
+    RelOptionType.REL_HOME: (options.REL_HOME_OPTION_NAME,
                              [HOME_DIRECTORY_CONFIGURATION_PARAMETER.cross_reference_target()],
                              _REL_HOME_DESCRIPTION),
 }
