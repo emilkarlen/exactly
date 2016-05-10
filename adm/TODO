@@ -23,7 +23,7 @@ Har blivit hela sökvägen vid refaktorering.
       Changes Present Working Directory.
 *** DONE run
       Runs a program.
-*** TODO shell
+*** DONE shell
       Executes the given program using the system's shell.
 *** TODO stdin
       Redirects stdin, for the act program, to a given file, or string.
