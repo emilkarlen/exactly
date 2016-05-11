@@ -4,18 +4,18 @@ import os
 import pathlib
 
 from exactly_lib import program_info
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionInvalidArgumentException, SingleInstructionParserSource
 from exactly_lib.execution import environment_variables
-from exactly_lib.instructions.utils import parse_file_ref
-from exactly_lib.instructions.utils import parse_here_doc_or_file_ref
+from exactly_lib.instructions.utils.arg_parse import parse_file_ref
+from exactly_lib.instructions.utils.arg_parse import parse_here_doc_or_file_ref
+from exactly_lib.instructions.utils.arg_parse.parse_here_doc_or_file_ref import HereDocOrFileRef
 from exactly_lib.instructions.utils.file_properties import must_exist_as, FileType
 from exactly_lib.instructions.utils.file_ref import FileRef
 from exactly_lib.instructions.utils.file_ref_check import FileRefCheck, \
     pre_or_post_eds_failure_message_or_none, FileRefCheckValidator
-from exactly_lib.instructions.utils.parse_here_doc_or_file_ref import HereDocOrFileRef
 from exactly_lib.instructions.utils.pre_or_post_validation import ConstantSuccessValidator, \
     PreOrPostEdsSvhValidationErrorValidator
+from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
+    SingleInstructionInvalidArgumentException, SingleInstructionParserSource
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction

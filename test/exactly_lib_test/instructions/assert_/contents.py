@@ -1,9 +1,9 @@
 import unittest
 
+from exactly_lib.instructions.assert_ import contents as sut
+from exactly_lib.instructions.utils.arg_parse import relative_path_options as options
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException, SingleInstructionParserSource
-from exactly_lib.instructions.assert_ import contents as sut
-from exactly_lib.instructions.utils import relative_path_options as options
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.contents_resources import \
     ActResultProducerForContentsWithAllReplacedEnvVars, \

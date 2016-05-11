@@ -1,9 +1,9 @@
+from exactly_lib.instructions.utils import file_ref
+from exactly_lib.instructions.utils.arg_parse import parse_file_ref
+from exactly_lib.instructions.utils.arg_parse import parse_here_document
+from exactly_lib.instructions.utils.arg_parse.parse_here_document import HereDocumentContentsParsingException
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException, SingleInstructionParserSource
-from exactly_lib.instructions.utils.parse_here_document import HereDocumentContentsParsingException
-from . import file_ref
-from . import parse_file_ref
-from . import parse_here_document
 
 
 class HereDocOrFileRef(tuple):

@@ -6,9 +6,9 @@ from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.execution.environment_variables import ENV_VAR_TMP
 from exactly_lib.instructions.assert_.utils.contents_utils import ActualFileTransformer, \
     WITH_REPLACED_ENV_VARS_OPTION, EMPTY_ARGUMENT, with_replaced_env_vars_help
-from exactly_lib.instructions.utils.parse_utils import split_arguments_list_string
-from exactly_lib.instructions.utils.relative_path_options import REL_HOME_OPTION, REL_CWD_OPTION
-from exactly_lib.instructions.utils.relative_path_options import REL_TMP_OPTION
+from exactly_lib.instructions.utils.arg_parse.parse_utils import split_arguments_list_string
+from exactly_lib.instructions.utils.arg_parse.relative_path_options import REL_HOME_OPTION, REL_CWD_OPTION
+from exactly_lib.instructions.utils.arg_parse.relative_path_options import REL_TMP_OPTION
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionInvalidArgumentException, SingleInstructionParserSource
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction

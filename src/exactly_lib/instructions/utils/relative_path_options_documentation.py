@@ -5,8 +5,8 @@ from exactly_lib.help.concepts.plain_concepts.environment_variable import ENVIRO
 from exactly_lib.help.concepts.plain_concepts.present_working_directory import PRESENT_WORKING_DIRECTORY_CONCEPT
 from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.textformat_parse import TextParser
-from exactly_lib.instructions.utils import relative_path_options as options
-from exactly_lib.instructions.utils.relative_path_options import RelOptionType
+from exactly_lib.instructions.utils.arg_parse import relative_path_options as options
+from exactly_lib.instructions.utils.arg_parse.relative_path_options import RelOptionType
 from exactly_lib.util.cli_syntax.elements.argument import OptionName, Option, Named
 from exactly_lib.util.cli_syntax.render.cli_program_syntax import ArgumentInArgumentDescriptionRenderer
 from exactly_lib.util.textformat.structure import lists

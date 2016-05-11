@@ -1,13 +1,13 @@
 import pathlib
 import stat
 
+from exactly_lib.instructions.utils import file_ref
+from exactly_lib.instructions.utils.arg_parse import parse_file_ref
+from exactly_lib.instructions.utils.arg_parse.parse_utils import TokenStream
+from exactly_lib.instructions.utils.file_ref import FileRefValidatorBase
+from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostEdsValidator
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.instructions.utils import file_ref
-from exactly_lib.instructions.utils import parse_file_ref
-from exactly_lib.instructions.utils.file_ref import FileRefValidatorBase
-from exactly_lib.instructions.utils.parse_utils import TokenStream
-from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostEdsValidator
 from exactly_lib.test_case.phases.common import HomeAndEds
 
 LIST_DELIMITER_START = '('

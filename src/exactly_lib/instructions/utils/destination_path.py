@@ -2,9 +2,9 @@ import enum
 import pathlib
 
 from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
-from exactly_lib.instructions.utils.parse_utils import ensure_is_not_option_argument, \
+from exactly_lib.instructions.utils.arg_parse.parse_utils import ensure_is_not_option_argument, \
     is_option_argument
-from exactly_lib.instructions.utils.relative_path_options import REL_ACT_OPTION, REL_TMP_OPTION, RelOptionType
+from exactly_lib.instructions.utils.arg_parse.relative_path_options import REL_ACT_OPTION, REL_TMP_OPTION, RelOptionType
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 
