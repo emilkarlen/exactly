@@ -10,7 +10,7 @@ Har blivit hela sökvägen vid refaktorering.
 *** DONE mode
       Sets the execution mode.
 
-** TODO [setup]
+** DONE [setup]
 *** DONE dir
       Makes a directory in the current directory.
 *** DONE env
@@ -25,19 +25,19 @@ Har blivit hela sökvägen vid refaktorering.
       Runs a program.
 *** DONE shell
       Executes the given program using the system's shell.
-*** TODO stdin
+*** DONE stdin
       Redirects stdin, for the act program, to a given file, or string.
 
-** TODO [before-assert]
-*** TODO dir
+** DONE [before-assert]
+*** DONE dir
       Makes a directory in the current directory.
-*** TODO env
+*** DONE env
       Manipulates environment variables.
-*** TODO pwd
+*** DONE pwd
       Changes Present Working Directory.
-*** TODO run
+*** DONE run
       Runs a program.
-*** TODO shell
+*** DONE shell
       Executes the given program using the system's shell.
 
 ** TODO [assert]
@@ -62,16 +62,16 @@ Har blivit hela sökvägen vid refaktorering.
 *** TODO type
       Tests the type of a file.
 
-** TODO [cleanup]
-*** TODO dir
+** DONE [cleanup]
+*** DONE dir
       Makes a directory in the current directory.
-*** TODO env
+*** DONE env
       Manipulates environment variables.
-*** TODO pwd
+*** DONE pwd
       Changes Present Working Directory.
-*** TODO run
+*** DONE run
       Runs a program.
-*** TODO shell
+*** DONE shell
       Executes the given program using the system's shell.
 
 * TODO Förbättrin av instr
