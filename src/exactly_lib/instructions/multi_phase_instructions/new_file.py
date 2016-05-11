@@ -51,9 +51,10 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         ]
 
     def see_also(self) -> list:
-        return [
-            PRESENT_WORKING_DIRECTORY_CONCEPT.cross_reference_target(),
-        ]
+        concepts = rel_path_doc.see_also_concepts(ALL_OPTIONS)
+        if PRESENT_WORKING_DIRECTORY_CONCEPT not in concepts:
+            concepts.append(PRESENT_WORKING_DIRECTORY_CONCEPT)
+        return [concept.cross_reference_target() for concept in concepts]
 
 
 class FileInfo(tuple):
