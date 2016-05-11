@@ -140,6 +140,9 @@ class FileRefValidatorBase(PreOrPostEdsValidator):
         self.file_ref = file_ref
 
     def _validate_path(self, file_path: pathlib.Path) -> str:
+        """
+        :return: Error message iff validation was applicable and validation failed.
+        """
         raise NotImplementedError()
 
     def validate_pre_eds_if_applicable(self, home_dir_path: pathlib.Path) -> str:
