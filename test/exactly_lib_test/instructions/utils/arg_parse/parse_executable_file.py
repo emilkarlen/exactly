@@ -2,7 +2,7 @@ import pathlib
 import sys
 import unittest
 
-from exactly_lib.instructions.utils import executable_file as sut
+from exactly_lib.instructions.utils.arg_parse import parse_executable_file as sut
 from exactly_lib.instructions.utils.arg_parse import relative_path_options as option
 from exactly_lib.instructions.utils.arg_parse.parse_utils import TokenStream
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
@@ -205,7 +205,7 @@ def configurations() -> list:
     ]
 
 
-class TestAbsolutePath(unittest.TestCase):
+class TestParseAbsolutePath(unittest.TestCase):
     def test_existing_file(self):
         arguments_str = py_exe.command_line_for_arguments(['remaining', 'args'])
         arguments = TokenStream(arguments_str)
@@ -247,16 +247,11 @@ def suite():
     ret_val.addTest(unittest.makeSuite(TestParseValidSyntaxWithArguments))
     ret_val.addTest(unittest.makeSuite(TestParseInvalidSyntaxWithArguments))
     ret_val.addTest(unittest.makeSuite(TestParseInvalidSyntax))
-    ret_val.addTest(unittest.makeSuite(TestAbsolutePath))
+    ret_val.addTest(unittest.makeSuite(TestParseAbsolutePath))
     ret_val.addTests(suite_for(conf)
                      for conf in configurations())
     return ret_val
 
 
-def run_suite():
-    runner = unittest.TextTestRunner()
-    runner.run(suite())
-
-
 if __name__ == '__main__':
-    run_suite()
+    unittest.TextTestRunner().run(suite())

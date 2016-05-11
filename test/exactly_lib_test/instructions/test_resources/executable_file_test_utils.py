@@ -1,6 +1,7 @@
 import pathlib
 import unittest
 
+import exactly_lib.instructions.utils.arg_parse.parse_executable_file
 from exactly_lib.instructions.utils import executable_file as sut
 from exactly_lib.instructions.utils.arg_parse.parse_utils import TokenStream
 from exactly_lib.test_case.phases.common import HomeAndEds
@@ -68,7 +69,8 @@ class CheckExistingFile(CheckBase):
         conf = self.configuration
         arguments_str = '{} file.exe remaining args'.format(conf.option)
         arguments = TokenStream(arguments_str)
-        (exe_file, remaining_arguments) = sut.parse(arguments)
+        (exe_file, remaining_arguments) = exactly_lib.instructions.utils.arg_parse.parse_executable_file.parse(
+            arguments)
         self.assertEqual('remaining args',
                          remaining_arguments.source,
                          'Remaining arguments')
@@ -86,7 +88,8 @@ class CheckExistingFileWithArguments(CheckBase):
         conf = self.configuration
         arguments_str = '( {} file.exe arg1 -arg2 ) remaining args'.format(conf.option)
         arguments = TokenStream(arguments_str)
-        (exe_file, remaining_arguments) = sut.parse(arguments)
+        (exe_file, remaining_arguments) = exactly_lib.instructions.utils.arg_parse.parse_executable_file.parse(
+            arguments)
         self.assertEqual(['arg1', '-arg2'],
                          exe_file.arguments,
                          'Arguments to executable')
@@ -107,7 +110,8 @@ class CheckExistingButNonExecutableFile(CheckBase):
         conf = self.configuration
         arguments_str = '{} file.exe remaining args'.format(conf.option)
         arguments = TokenStream(arguments_str)
-        (exe_file, remaining_arguments) = sut.parse(arguments)
+        (exe_file, remaining_arguments) = exactly_lib.instructions.utils.arg_parse.parse_executable_file.parse(
+            arguments)
         with self._home_and_eds_and_test_as_curr_dir(empty_file('file.exe')) as home_and_eds:
             self._assert_does_not_pass_validation(exe_file, home_and_eds)
 
@@ -120,7 +124,8 @@ class CheckNonExistingFile(CheckBase):
         conf = self.configuration
         arguments_str = '{} file.exe remaining args'.format(conf.option)
         arguments = TokenStream(arguments_str)
-        (exe_file, remaining_arguments) = sut.parse(arguments)
+        (exe_file, remaining_arguments) = exactly_lib.instructions.utils.arg_parse.parse_executable_file.parse(
+            arguments)
         self.assertEqual('remaining args',
                          remaining_arguments.source,
                          'Remaining arguments')
