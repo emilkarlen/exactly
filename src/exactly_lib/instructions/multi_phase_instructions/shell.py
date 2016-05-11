@@ -1,5 +1,5 @@
 from exactly_lib.common.instruction_documentation import InvokationVariant, SyntaxElementDescription
-from exactly_lib.instructions.utils.instruction_documentation_with_text_parser import \
+from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.instructions.utils.sub_process_execution import ExecutorThatStoresResultInFilesInDir, \
     InstructionSourceInfo, ExecuteInfo, \

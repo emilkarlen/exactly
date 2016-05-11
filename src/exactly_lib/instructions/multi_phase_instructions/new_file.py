@@ -1,11 +1,11 @@
 from exactly_lib.common.instruction_documentation import InvokationVariant
 from exactly_lib.help.concepts.plain_concepts.present_working_directory import PRESENT_WORKING_DIRECTORY_CONCEPT
-from exactly_lib.instructions.utils import documentation_text as dt
-from exactly_lib.instructions.utils import relative_path_options_documentation as rel_path_doc
 from exactly_lib.instructions.utils.arg_parse.parse_here_document import parse_as_last_argument
 from exactly_lib.instructions.utils.arg_parse.parse_utils import split_arguments_list_string
 from exactly_lib.instructions.utils.destination_path import *
-from exactly_lib.instructions.utils.instruction_documentation_with_text_parser import \
+from exactly_lib.instructions.utils.documentation import documentation_text as dt
+from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
+from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParserSource

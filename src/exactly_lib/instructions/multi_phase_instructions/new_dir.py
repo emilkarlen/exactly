@@ -3,10 +3,10 @@ import pathlib
 from exactly_lib.common.instruction_documentation import InvokationVariant
 from exactly_lib.help.concepts.plain_concepts.present_working_directory import PRESENT_WORKING_DIRECTORY_CONCEPT
 from exactly_lib.help.utils import formatting
-from exactly_lib.instructions.utils import documentation_text as dt
 from exactly_lib.instructions.utils.arg_parse.parse_utils import split_arguments_list_string, \
     ensure_is_not_option_argument
-from exactly_lib.instructions.utils.instruction_documentation_with_text_parser import \
+from exactly_lib.instructions.utils.documentation import documentation_text as dt
+from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
