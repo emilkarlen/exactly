@@ -39,7 +39,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
             InvokationVariant(self._cl_syntax_for_args(arguments),
                               docs.paras('Creates an empty file.')),
             InvokationVariant(self._cl_syntax_for_args(arguments + [here_doc_arg]),
-                              docs.paras('Creates a file with contents given by a here document.')),
+                              docs.paras('Creates a file with contents given by a "here document".')),
         ]
 
     def syntax_element_descriptions(self) -> list:

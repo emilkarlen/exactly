@@ -5,6 +5,8 @@ from exactly_lib.instructions.utils.arg_parse.parse_here_document import HereDoc
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException, SingleInstructionParserSource
 
+CONFIGURATION = parse_file_ref.DEFAULT_CONFIG
+
 
 class HereDocOrFileRef(tuple):
     def __new__(cls,
@@ -34,8 +36,9 @@ def parse(first_line_arguments: list,
         raise ex
     except SingleInstructionInvalidArgumentException:
         try:
-            (file_reference, remaining_arguments) = parse_file_ref.parse_file_ref__list(first_line_arguments)
+            (file_reference, remaining_arguments) = parse_file_ref.parse_file_ref__list(first_line_arguments,
+                                                                                        CONFIGURATION)
             return HereDocOrFileRef(None, file_reference), remaining_arguments
         except SingleInstructionInvalidArgumentException:
-            msg = 'Neither Here Document or File Reference: {}'.format(first_line_arguments)
+            msg = 'Neither A "here document" nor a file reference: {}'.format(first_line_arguments)
             raise SingleInstructionInvalidArgumentException(msg)
