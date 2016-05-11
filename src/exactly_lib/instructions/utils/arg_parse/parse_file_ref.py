@@ -1,13 +1,13 @@
 import pathlib
 import types
 
-from exactly_lib.instructions.utils import relative_path_options as rel_opts
-from exactly_lib.instructions.utils.parse_utils import TokenStream, is_option_argument
+from exactly_lib.instructions.utils import file_ref
+from exactly_lib.instructions.utils.arg_parse import relative_path_options as rel_opts
+from exactly_lib.instructions.utils.arg_parse.parse_utils import TokenStream, is_option_argument
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.util.cli_syntax import option_parsing
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
-from . import file_ref
 
 _REL_OPTION_2_FILE_REF_CONSTRUCTOR = {
     rel_opts.RelOptionType.REL_HOME: file_ref.rel_home,

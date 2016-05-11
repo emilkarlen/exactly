@@ -2,7 +2,7 @@ import types
 
 from exactly_lib.common.instruction_documentation import InvokationVariant, \
     InstructionDocumentation
-from exactly_lib.instructions.utils.parse_utils import split_arguments_list_string
+from exactly_lib.instructions.utils.arg_parse.parse_utils import split_arguments_list_string
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.os_services import OsServices

@@ -2,7 +2,7 @@ import pathlib
 import unittest
 
 from exactly_lib.instructions.utils import executable_file as sut
-from exactly_lib.instructions.utils.parse_utils import TokenStream
+from exactly_lib.instructions.utils.arg_parse.parse_utils import TokenStream
 from exactly_lib.test_case.phases.common import HomeAndEds
 from exactly_lib_test.instructions.test_resources import pre_or_post_eds_validator as validator_util
 from exactly_lib_test.test_resources.execution import eds_populator

@@ -3,9 +3,10 @@ from exactly_lib.common.instruction_documentation import InvokationVariant, \
     SyntaxElementDescription
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.instructions.utils import file_ref
+from exactly_lib.instructions.utils.arg_parse.parse_utils import split_arguments_list_string, \
+    ensure_is_not_option_argument
 from exactly_lib.instructions.utils.file_properties import FileType, must_exist_as, FilePropertiesCheck, type_name
 from exactly_lib.instructions.utils.file_ref_check import pre_or_post_eds_failure_message_or_none, FileRefCheck
-from exactly_lib.instructions.utils.parse_utils import split_arguments_list_string, ensure_is_not_option_argument
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionInvalidArgumentException, SingleInstructionParserSource
 from exactly_lib.test_case.os_services import OsServices

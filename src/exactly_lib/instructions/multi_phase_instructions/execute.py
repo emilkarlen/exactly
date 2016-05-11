@@ -5,15 +5,15 @@ from exactly_lib.common.instruction_documentation import InvokationVariant, \
 from exactly_lib.instructions.utils import documentation_text as dt
 from exactly_lib.instructions.utils import executable_file
 from exactly_lib.instructions.utils import file_properties
-from exactly_lib.instructions.utils import parse_file_ref
 from exactly_lib.instructions.utils import relative_path_options_documentation as rel_path_doc
 from exactly_lib.instructions.utils import sub_process_execution
+from exactly_lib.instructions.utils.arg_parse import parse_file_ref
+from exactly_lib.instructions.utils.arg_parse.parse_utils import TokenStream
 from exactly_lib.instructions.utils.executable_file import ExecutableFile, PARSE_FILE_REF_CONFIGURATION
 from exactly_lib.instructions.utils.file_ref import FileRef
 from exactly_lib.instructions.utils.file_ref_check import FileRefCheckValidator, FileRefCheck
 from exactly_lib.instructions.utils.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
-from exactly_lib.instructions.utils.parse_utils import TokenStream
 from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostEdsValidator, AndValidator
 from exactly_lib.instructions.utils.sub_process_execution import ResultAndStderr, ExecuteInfo, \
     ExecutorThatStoresResultInFilesInDir, execute_and_read_stderr_if_non_zero_exitcode, result_to_sh, result_to_pfh

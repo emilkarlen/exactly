@@ -1,8 +1,8 @@
 import unittest
 
+from exactly_lib.instructions.utils.arg_parse import parse_here_document as sut
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.instructions.utils import parse_here_document as sut
 from exactly_lib_test.test_resources.parse import argument_list_source
 
 

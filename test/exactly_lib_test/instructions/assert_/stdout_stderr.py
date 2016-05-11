@@ -1,9 +1,9 @@
 import unittest
 
+from exactly_lib.instructions.assert_ import stdout_stderr as sut
+from exactly_lib.instructions.utils.arg_parse.relative_path_options import REL_HOME_OPTION
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException, SingleInstructionParser, SingleInstructionParserSource
-from exactly_lib.instructions.assert_ import stdout_stderr as sut
-from exactly_lib.instructions.utils.relative_path_options import REL_HOME_OPTION
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.contents_resources import \
