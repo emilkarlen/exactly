@@ -25,17 +25,17 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
 
 
 class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
-    _INTEGER_ARG_OPTION_NAME = a.Named('INTEGER')
-    _OPERATOR_OPTION_NAME = a.Named('OPERATOR')
+    _INTEGER_ARGUMENT = a.Named('INTEGER')
+    _OPERATOR_ARGUMENT = a.Named('OPERATOR')
 
     def __init__(self, name: str):
         self.integer_arg = a.Single(a.Multiplicity.MANDATORY,
-                                    self._INTEGER_ARG_OPTION_NAME)
+                                    self._INTEGER_ARGUMENT)
         self.op_arg = a.Single(a.Multiplicity.MANDATORY,
-                               self._OPERATOR_OPTION_NAME)
+                               self._OPERATOR_ARGUMENT)
         super().__init__(name, {
-            'INTEGER': self._INTEGER_ARG_OPTION_NAME.name,
-            'OPERATOR': self._OPERATOR_OPTION_NAME.name,
+            'INTEGER': self._INTEGER_ARGUMENT.name,
+            'OPERATOR': self._OPERATOR_ARGUMENT.name,
         })
 
     def single_line_description(self) -> str:
@@ -62,9 +62,9 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         operator_text = 'One of: ' + operators_list + '.'
         integer_text = 'An integer in the interval [0, 255].'
         return [
-            SyntaxElementDescription(self._INTEGER_ARG_OPTION_NAME.name,
+            SyntaxElementDescription(self._INTEGER_ARGUMENT.name,
                                      self._paragraphs(integer_text)),
-            SyntaxElementDescription(self._OPERATOR_OPTION_NAME.name,
+            SyntaxElementDescription(self._OPERATOR_ARGUMENT.name,
                                      self._paragraphs(operator_text))
         ]
 
