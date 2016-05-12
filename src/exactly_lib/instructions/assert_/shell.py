@@ -20,9 +20,9 @@ class TheDescription(TheInstructionDocumentationBase):
     def __init__(self, name: str):
         super().__init__(name)
 
-    def _main_description_rest_prefix(self) -> list:
+    def _main_description_rest_prelude(self) -> list:
         text = """\
-            The assertion PASSes if (and only if) the exit code from the command is 0.
+            The assertion PASS if, and only if, the exit code from {COMMAND} is 0.
 
             All other exit codes makes the assertion FAIL.
             """

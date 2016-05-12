@@ -1,6 +1,6 @@
 from exactly_lib.common.instruction_documentation import InvokationVariant, SyntaxElementDescription
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
-    InstructionDocumentationWithCommandLineRenderingBase
+    InstructionDocumentationWithCommandLineRenderingAndSplittedPartsForRestDocBase
 from exactly_lib.instructions.utils.sub_process_execution import ExecutorThatStoresResultInFilesInDir, \
     InstructionSourceInfo, ExecuteInfo, \
     ResultAndStderr, execute_and_read_stderr_if_non_zero_exitcode, result_to_sh, result_to_pfh
@@ -15,24 +15,13 @@ from exactly_lib.util.cli_syntax.elements import argument as a
 _COMMAND_SYNTAX_ELEMENT = 'COMMAND'
 
 
-class TheInstructionDocumentationBase(InstructionDocumentationWithCommandLineRenderingBase):
+class TheInstructionDocumentationBase(InstructionDocumentationWithCommandLineRenderingAndSplittedPartsForRestDocBase):
     def __init__(self, name: str):
         super().__init__(name, {'COMMAND': _COMMAND_SYNTAX_ELEMENT})
         self.command_arg = a.Named(_COMMAND_SYNTAX_ELEMENT)
 
     def single_line_description(self) -> str:
         return "Executes a command using the current system's shell."
-
-    def main_description_rest(self) -> list:
-        return (self._main_description_rest_prefix() +
-                self._main_description_rest_body() +
-                self._main_description_rest_suffix())
-
-    def _main_description_rest_prefix(self) -> list:
-        return []
-
-    def _main_description_rest_suffix(self) -> list:
-        return []
 
     def _main_description_rest_body(self) -> list:
         text = """\
@@ -75,6 +64,12 @@ class TheInstructionDocumentationBase(InstructionDocumentationWithCommandLineRen
 class DescriptionForNonAssertPhaseInstruction(TheInstructionDocumentationBase):
     def __init__(self, name: str):
         super().__init__(name)
+
+    def _main_description_rest_prelude(self) -> list:
+        text = """\
+        It is considered an error if {COMMAND} exits with a non-zero exit code.
+        """
+        return self._paragraphs(text)
 
 
 class Parser(SingleInstructionParser):
