@@ -18,7 +18,6 @@ from exactly_lib.help.program_modes.test_case.contents_structure import TestCase
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
 from exactly_lib.help.utils import formatting
 from exactly_lib.util.description import single_line_description_with_sub_sections, DescriptionWithSubSections
-from exactly_lib.util.textformat.structure.core import StringText
 from exactly_lib_test.help.test_resources import test_case_phase_help, \
     single_line_description_that_identifies_instruction_and_phase, application_help_for, \
     SectionDocumentationForSectionWithoutInstructionsTestImpl
@@ -151,9 +150,7 @@ class TestTestCaseSingleInstructionInPhase(unittest.TestCase):
         self.assertEqual(actual.name,
                          instruction_name,
                          'Name of instruction')
-        single_line_description = actual.data.description().single_line_description
-        assert isinstance(single_line_description, StringText)
-        single_line_desc_str = single_line_description.value
+        single_line_desc_str = actual.data.single_line_description()
         self.assertEqual(single_line_description_that_identifies_instruction_and_phase(phase_name,
                                                                                        instruction_name),
                          single_line_desc_str,
