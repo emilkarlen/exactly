@@ -7,24 +7,27 @@ from exactly_lib.instructions.utils.arg_parse.parse_utils import split_arguments
     ensure_is_not_option_argument
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
-    InstructionDocumentationWithCommandLineRenderingBase
+    InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.util.cli_syntax.elements import argument as a
 
 
-class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
-    def __init__(self, name: str):
-        super().__init__(name, {
+class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase):
+    def __init__(self, name: str, additional_format_map: dict = None, is_in_assert_phase: bool = False):
+        format_map = {
             'pwd': formatting.concept(PRESENT_WORKING_DIRECTORY_CONCEPT.name().singular),
-        })
+        }
+        if additional_format_map is not None:
+            format_map.update(additional_format_map)
+        super().__init__(name, format_map, is_in_assert_phase)
         self.path_arg = dt.PATH_ARGUMENT
 
     def single_line_description(self) -> str:
         return self._format('Creates a directory in the {pwd}')
 
-    def main_description_rest(self) -> list:
+    def _main_description_rest_body(self) -> list:
         text = """\
             Creates parent directories if needed.
 

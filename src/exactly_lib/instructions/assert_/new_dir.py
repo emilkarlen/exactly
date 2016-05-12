@@ -12,7 +12,7 @@ from exactly_lib.test_case.phases.result import pfh
 def setup(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(
         Parser(),
-        mkdir_utils.TheInstructionDocumentation(instruction_name))
+        mkdir_utils.TheInstructionDocumentation(instruction_name, is_in_assert_phase=True))
 
 
 class Parser(SingleInstructionParser):
