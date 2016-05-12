@@ -1,20 +1,21 @@
 import operator
 import pathlib
 
-from exactly_lib.common.instruction_documentation import InvokationVariant, \
-    InstructionDocumentation
+from exactly_lib.common.instruction_documentation import InvokationVariant, SyntaxElementDescription
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from exactly_lib.instructions.utils.arg_parse.parse_utils import split_arguments_list_string
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
+from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
+    InstructionDocumentationWithCommandLineRenderingBase
+from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
+    SingleInstructionParser, \
     SingleInstructionInvalidArgumentException, SingleInstructionParserSource
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.result import pfh
+from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.string import line_separated
-from exactly_lib.util.textformat import parse as paragraphs_parse
-from exactly_lib.util.textformat.structure.structures import paras
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
@@ -23,28 +24,48 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
         TheInstructionDocumentation(instruction_name))
 
 
-class TheInstructionDocumentation(InstructionDocumentation):
+class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
+    _INTEGER_ARG_OPTION_NAME = a.Named('INTEGER')
+    _OPERATOR_OPTION_NAME = a.Named('OPERATOR')
+
     def __init__(self, name: str):
-        super().__init__(name)
+        self.integer_arg = a.Single(a.Multiplicity.MANDATORY,
+                                    self._INTEGER_ARG_OPTION_NAME)
+        self.op_arg = a.Single(a.Multiplicity.MANDATORY,
+                               self._OPERATOR_OPTION_NAME)
+        super().__init__(name, {
+            'INTEGER': self._INTEGER_ARG_OPTION_NAME.name,
+            'OPERATOR': self._OPERATOR_OPTION_NAME.name,
+        })
 
     def single_line_description(self) -> str:
-        return 'Tests the exitcode.'
+        return 'Tests the exit code.'
 
     def invokation_variants(self) -> list:
         return [
-            InvokationVariant(
-                'INTEGER',
-                paras('Passes iff the exit code is exactly INTEGER')),
-            InvokationVariant(
-                'OPERATOR INTEGER',
-                paragraphs_parse.normalize_and_parse(
-                    """\
-                    Passes iff the given expression,
-                    with the actual exit code as an implicit left operand,
-                    evaluates to True.
+            InvokationVariant(self._cl_syntax_for_args([self.integer_arg]),
+                              self._paragraphs(
+                                  """\
+                                  PASS if, and only if, the exit code is exactly {INTEGER}.
+                                  """)),
+            InvokationVariant(self._cl_syntax_for_args([self.op_arg, self.integer_arg]),
+                              self._paragraphs(
+                                  """\
+                                  PASS if, and only if, the given expression evaluates to True.
 
-                    Operators: {}
-                    """.format(', '.join(sorted(operators.keys())))))
+                                  The actual exit code is the left operand.
+                                  """))
+        ]
+
+    def syntax_element_descriptions(self) -> list:
+        operators_list = ', '.join(sorted(operators.keys()))
+        operator_text = 'One of: ' + operators_list + '.'
+        integer_text = 'An integer in the interval [0, 255].'
+        return [
+            SyntaxElementDescription(self._INTEGER_ARG_OPTION_NAME.name,
+                                     self._paragraphs(integer_text)),
+            SyntaxElementDescription(self._OPERATOR_OPTION_NAME.name,
+                                     self._paragraphs(operator_text))
         ]
 
 
@@ -112,7 +133,7 @@ def _parse_int_argument(argument) -> int:
     except ValueError:
         raise SingleInstructionInvalidArgumentException('Argument must be an integer')
     if expected < 0 or expected > 255:
-        raise SingleInstructionInvalidArgumentException('Argument must be an integer in the range [0, 255]')
+        raise SingleInstructionInvalidArgumentException('Argument must be an integer in the interval [0, 255]')
     return expected
 
 

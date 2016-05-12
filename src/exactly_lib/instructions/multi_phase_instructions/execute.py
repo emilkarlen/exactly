@@ -24,13 +24,12 @@ from exactly_lib.test_case.phases.common import HomeAndEds, TestCaseInstruction,
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.util.cli_syntax.elements import argument as a
-from exactly_lib.util.cli_syntax.elements.argument import OptionName
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 
-INTERPRET_OPTION_NAME = OptionName(long_name='interpret')
+INTERPRET_OPTION_NAME = a.OptionName(long_name='interpret')
 INTERPRET_OPTION = long_option_syntax(INTERPRET_OPTION_NAME.long)
 
-SOURCE_OPTION_NAME = OptionName(long_name='source')
+SOURCE_OPTION_NAME = a.OptionName(long_name='source')
 SOURCE_OPTION = long_option_syntax(SOURCE_OPTION_NAME.long)
 
 OPTIONS_SEPARATOR_ARGUMENT = '--'
