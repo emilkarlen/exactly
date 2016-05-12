@@ -4,6 +4,7 @@ from exactly_lib.help.utils.phase_names import ASSERT_PHASE_NAME
 from exactly_lib.help.utils.textformat_parse import TextParser
 from exactly_lib.util.cli_syntax.elements import argument
 from exactly_lib.util.cli_syntax.render.cli_program_syntax import CommandLineSyntaxRenderer
+from exactly_lib.util.textformat.structure.core import Text
 
 
 class InstructionDocumentationWithTextParserBase(InstructionDocumentation):
@@ -26,7 +27,7 @@ class InstructionDocumentationWithTextParserBase(InstructionDocumentation):
     def _format(self, s: str, extra: dict = None) -> str:
         return self._parser.format(s, extra)
 
-    def _text(self, s: str, extra: dict = None) -> str:
+    def _text(self, s: str, extra: dict = None) -> Text:
         return self._parser.text(s, extra)
 
     def _paragraphs(self, s: str, extra: dict = None) -> list:
