@@ -35,13 +35,23 @@ SOURCE_OPTION = long_option_syntax(SOURCE_OPTION_NAME.long)
 
 OPTIONS_SEPARATOR_ARGUMENT = '--'
 
+NON_ASSERT_PHASE_DESCRIPTION_REST = """\
+It is considered an error if the program exits with a non-zero exit code.
+"""
+
 
 class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
     def __init__(self,
                  name: str,
-                 single_line_description: str = 'Runs a program.'):
+                 single_line_description: str = 'Runs a program.',
+                 additional_format_map: dict = None,
+                 description_rest_text: str = None):
+        self.description_rest_text = description_rest_text
         self.executable_arg = a.Named('EXECUTABLE')
-        super().__init__(name, {'EXECUTABLE': self.executable_arg.name})
+        format_map = {'EXECUTABLE': self.executable_arg.name}
+        if additional_format_map:
+            format_map.update(additional_format_map)
+        super().__init__(name, format_map)
         self.relativity_arg_path = dt.PATH_ARGUMENT
         self.mandatory_path = a.Single(a.Multiplicity.MANDATORY,
                                        dt.PATH_ARGUMENT)
@@ -59,6 +69,11 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
     def single_line_description(self) -> str:
         return self._single_line_description
+
+    def main_description_rest(self) -> list:
+        if self.description_rest_text:
+            return self._paragraphs(self.description_rest_text)
+        return []
 
     def invokation_variants(self) -> list:
         return [
