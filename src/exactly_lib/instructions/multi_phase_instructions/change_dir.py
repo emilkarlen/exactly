@@ -8,30 +8,32 @@ from exactly_lib.instructions.utils.arg_parse.parse_utils import split_arguments
 from exactly_lib.instructions.utils.destination_path import *
 from exactly_lib.instructions.utils.documentation import documentation_text as dt, relative_path_options_documentation
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
-    InstructionDocumentationWithCommandLineRenderingBase
+    InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.util.cli_syntax.elements import argument as a
-from exactly_lib.util.description import Description
 
 
-class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
-    def __init__(self, name: str):
+class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase):
+    def __init__(self, name: str, is_in_assert_phase: bool = False):
         self.pwd_concept_name = formatting.concept(PRESENT_WORKING_DIRECTORY_CONCEPT.name().singular)
         self.dir_arg = dt.DIR_ARGUMENT
         super().__init__(name, {
             'pwd_concept': self.pwd_concept_name,
             'dir_argument': self.dir_arg.name,
-        })
+        },
+                         is_in_assert_phase)
 
-    def description(self) -> Description:
-        return Description(self._text('Sets the {pwd_concept}'),
-                           relative_path_options_documentation.default_relativity_for_rel_opt_type(
-                               self.dir_arg.name,
-                               relative_path_options_documentation.RelOptionType.REL_PWD) +
-                           self._paragraphs(_NO_DIR_ARG_MEANING) +
-                           dt.paths_uses_posix_syntax())
+    def single_line_description(self) -> str:
+        return self._format('Sets the {pwd_concept}')
+
+    def _main_description_rest_body(self) -> list:
+        return (relative_path_options_documentation.default_relativity_for_rel_opt_type(
+            self.dir_arg.name,
+            relative_path_options_documentation.RelOptionType.REL_PWD) +
+                self._paragraphs(_NO_DIR_ARG_MEANING) +
+                dt.paths_uses_posix_syntax())
 
     def invokation_variants(self) -> list:
         return [

@@ -1,7 +1,7 @@
+from exactly_lib.common.instruction_setup import SingleInstructionSetup
+from exactly_lib.instructions.multi_phase_instructions import change_dir as cd_utils
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionParserSource
-from exactly_lib.instructions.multi_phase_instructions import change_dir as cd_utils
-from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase
@@ -10,7 +10,8 @@ from exactly_lib.test_case.phases.result import pfh
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(Parser(),
-                                  cd_utils.TheInstructionDocumentation(instruction_name))
+                                  cd_utils.TheInstructionDocumentation(instruction_name,
+                                                                       is_in_assert_phase=True))
 
 
 class Parser(SingleInstructionParser):
