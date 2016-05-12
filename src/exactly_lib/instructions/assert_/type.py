@@ -29,10 +29,15 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
         TheInstructionDocumentation(instruction_name))
 
 
+TYPE_NAME_SYMLINK = 'symlink'
+TYPE_NAME_REGULAR = 'regular'
+TYPE_NAME_DIRECTORY = 'directory'
+
+
 FILE_TYPES = {
-    "symlink": FileType.SYMLINK,
-    "regular": FileType.REGULAR,
-    "directory": FileType.DIRECTORY
+    TYPE_NAME_SYMLINK: FileType.SYMLINK,
+    TYPE_NAME_REGULAR: FileType.REGULAR,
+    TYPE_NAME_DIRECTORY: FileType.DIRECTORY
 }
 
 _TYPE_ARGUMENT_STR = 'TYPE'
