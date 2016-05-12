@@ -1,7 +1,8 @@
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser
+from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.instructions.multi_phase_instructions import execute
 from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostEdsSvhValidationErrorValidator
-from exactly_lib.common.instruction_setup import SingleInstructionSetup
+from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
+    SingleInstructionParser
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
@@ -13,7 +14,7 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(
         parser(instruction_name),
         execute.TheInstructionDocumentation(instruction_name,
-                                            "Runs a program and PASS iff it's exit code is 0."))
+                                            "Runs a program and PASS if, and only if, its exit code is 0."))
 
 
 def parser(instruction_name: str) -> SingleInstructionParser:
