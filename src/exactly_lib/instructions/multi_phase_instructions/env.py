@@ -1,8 +1,9 @@
 import types
 
-from exactly_lib.common.instruction_documentation import InvokationVariant, \
-    InstructionDocumentation
+from exactly_lib.common.instruction_documentation import InvokationVariant
 from exactly_lib.instructions.utils.arg_parse.parse_utils import split_arguments_list_string
+from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
+    InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.os_services import OsServices
@@ -11,14 +12,14 @@ from exactly_lib.test_case.phases.result import sh
 from exactly_lib.util.textformat.structure.structures import paras
 
 
-class TheInstructionDocumentation(InstructionDocumentation):
-    def __init__(self, name: str):
-        super().__init__(name)
+class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase):
+    def __init__(self, name: str, is_in_assert_phase: bool = False):
+        super().__init__(name, {}, is_in_assert_phase)
 
     def single_line_description(self) -> str:
         return 'Manipulates environment variables.'
 
-    def main_description_rest(self) -> list:
+    def _main_description_rest_body(self) -> list:
         return []
 
     def invokation_variants(self) -> list:
