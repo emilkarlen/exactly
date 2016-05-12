@@ -105,6 +105,7 @@ class InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase(
 
 
 _NOT_AN_ASSERTION_IN_ASSERT_PHASE = """\
+Note:
 In the {assert_phase} phase, this instruction is mostly useful as a helper for writing
 assertions.  The instruction is not an assertion on its own.
 """
