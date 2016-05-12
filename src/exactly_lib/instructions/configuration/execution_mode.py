@@ -10,7 +10,6 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.phases.result import sh
-from exactly_lib.util.description import Description
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
@@ -27,9 +26,11 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
             'default_mode': NAME_DEFAULT,
         })
 
-    def description(self) -> Description:
-        return Description(self._text('Sets the {execution_mode_config_param}'),
-                           self._paragraphs('The default mode (if not changed by this instruction) is {default_mode}.'))
+    def single_line_description(self) -> str:
+        return self._format('Sets the {execution_mode_config_param}')
+
+    def main_description_rest(self) -> list:
+        return self._paragraphs('The default mode (if not changed by this instruction) is {default_mode}.')
 
     def invokation_variants(self) -> list:
         return [

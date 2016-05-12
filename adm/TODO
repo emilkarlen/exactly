@@ -43,13 +43,13 @@ Har blivit hela sökvägen vid refaktorering.
 ** TODO [assert]
 *** TODO contents
       Tests the contents of a file.
-*** TODO dir
+*** DONE dir
       Makes a directory in the current directory.
-*** TODO env
+*** DONE env
       Manipulates environment variables.
 *** TODO exitcode
       Tests the exitcode.
-*** TODO pwd
+*** DONE pwd
       Changes Present Working Directory.
 *** TODO run
       Runs a program and PASS iff it's exit code is 0.
