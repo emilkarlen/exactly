@@ -1,7 +1,5 @@
 from exactly_lib.common.instruction_documentation import InstructionDocumentation
-from exactly_lib.util.description import Description
 from exactly_lib.util.textformat import parse as text_parse
-from exactly_lib.util.textformat.structure import structures as docs
 
 
 class InstructionDocumentationWithConstantValues(InstructionDocumentation):
@@ -20,10 +18,6 @@ class InstructionDocumentationWithConstantValues(InstructionDocumentation):
         self.__main_description_rest = main_description_rest
         self.__invokation_variants = invokation_variants
         self.__syntax_element_descriptions = list(syntax_element_descriptions)
-
-    def description(self) -> Description:
-        return Description(docs.text(self.__single_line_description),
-                           text_parse.normalize_and_parse(self.__main_description_rest))
 
     def single_line_description(self) -> str:
         return self.__single_line_description

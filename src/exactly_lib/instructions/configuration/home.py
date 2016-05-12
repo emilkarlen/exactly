@@ -14,7 +14,6 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.phases.result import sh
-from exactly_lib.util.description import Description, single_line_description
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
@@ -30,8 +29,8 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
             'PATH': _ARG_NAME
         })
 
-    def description(self) -> Description:
-        return single_line_description(self._format('Sets the {home_directory}'))
+    def single_line_description(self) -> str:
+        return self._format('Sets the {home_directory}')
 
     def invokation_variants(self) -> list:
         return [
