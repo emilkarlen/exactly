@@ -1,6 +1,6 @@
 import pathlib
 
-from exactly_lib.common.instruction_documentation import InvokationVariant
+from exactly_lib.common.instruction_documentation import InvokationVariant, SyntaxElementDescription
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.execution.execution_directory_structure import \
     root_dir_for_non_stdout_or_stderr_files_with_replaced_env_vars, SUB_DIR_FOR_REPLACEMENT_SOURCES_UNDER_ACT_DIR, \
@@ -34,65 +34,98 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
 class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
     def __init__(self, name: str):
         self.expected_file_arg = a.Named(parse_here_doc_or_file_ref.CONFIGURATION.argument_syntax_name)
-        self.actual_file_arg = a.Named(_ACTUAL_RELATIVITY_CONFIGURATION.argument_syntax_name)
+        # self.actual_file_arg = a.Named(_ACTUAL_RELATIVITY_CONFIGURATION.argument_syntax_name)
+        self.actual_file_arg = a.Named('ACTUAL-PATH')
+        self.expected_file_arg = a.Named('EXPECTED-FILE')
         super().__init__(name, {
             'checked_file': self.actual_file_arg.name,
             'EXPECTED_FILE_ARG': self.expected_file_arg.name,
         })
         self.with_replaced_env_vars_option = a.Option(contents_utils.WITH_REPLACED_ENV_VARS_OPTION_NAME)
+        self.actual_file_relativity = a.Single(a.Multiplicity.OPTIONAL,
+                                               a.Named('ACTUAL-REL'))
+        self.actual_file = a.Single(a.Multiplicity.MANDATORY,
+                                    self.actual_file_arg)
 
     def single_line_description(self) -> str:
         return 'Tests the contents of a file.'
 
     def main_description_rest(self) -> list:
-        file_must_exist_paragraphs = self._paragraphs("""\
-        FAILs if {checked_file} is not an existing file.""")
-        default_rel_paragraphs = rel_opts.default_relativity_for_rel_opt_type(
-            parse_here_doc_or_file_ref.CONFIGURATION.argument_syntax_name,
-            parse_here_doc_or_file_ref.CONFIGURATION.default_option)
-        return file_must_exist_paragraphs + default_rel_paragraphs
+        return self._paragraphs("""\
+        FAILs if {checked_file} is not an existing regular file.
+        """)
 
     def invokation_variants(self) -> list:
-        actual_file = a.Single(a.Multiplicity.MANDATORY,
-                               self.actual_file_arg)
         mandatory_empty_arg = a.Single(a.Multiplicity.MANDATORY,
                                        doc_utils.EMPTY_ARGUMENT_CONSTANT)
         mandatory_not_arg = a.Single(a.Multiplicity.MANDATORY,
                                      doc_utils.NOT_ARGUMENT_CONSTANT)
-        mandatory_file_arg = a.Single(a.Multiplicity.MANDATORY,
-                                      self.expected_file_arg)
+        expected_file_arg = a.Single(a.Multiplicity.MANDATORY,
+                                     self.expected_file_arg)
         optional_replace_env_vars_option = a.Single(a.Multiplicity.OPTIONAL,
                                                     self.with_replaced_env_vars_option)
         here_doc_arg = a.Single(a.Multiplicity.MANDATORY, dt.HERE_DOCUMENT)
         return [
-            InvokationVariant(self._cl_syntax_for_args([actual_file, mandatory_empty_arg]),
+            InvokationVariant(self._cls([mandatory_empty_arg]),
                               self._paragraphs('Asserts that {checked_file} is an empty file.')),
-            InvokationVariant(self._cl_syntax_for_args([actual_file, mandatory_not_arg, mandatory_empty_arg]),
+            InvokationVariant(self._cls([mandatory_not_arg, mandatory_empty_arg]),
                               self._paragraphs('Asserts that {checked_file} is a non-empty file.')),
-            InvokationVariant(self._cl_syntax_for_args([actual_file,
-                                                        optional_replace_env_vars_option,
-                                                        rel_opts.OPTIONAL_RELATIVITY_ARGUMENT_USAGE,
-                                                        mandatory_file_arg,
-                                                        ]),
-                              self._paragraphs("""\
-                              Asserts that the contents of {checked_file}
-                              is equal to the contents of {EXPECTED_FILE_ARG}.
-                              """)),
-            InvokationVariant(self._cl_syntax_for_args([actual_file,
-                                                        optional_replace_env_vars_option,
-                                                        here_doc_arg,
-                                                        ]),
+            InvokationVariant(self._cls([optional_replace_env_vars_option,
+                                         here_doc_arg,
+                                         ]),
                               self._paragraphs("""\
                               Asserts that the contents of {checked_file}
                               is equal to the contents of a "here document".
                               """)),
+            InvokationVariant(self._cls([optional_replace_env_vars_option,
+                                         # rel_opts.OPTIONAL_RELATIVITY_ARGUMENT_USAGE,
+                                         expected_file_arg,
+                                         ]),
+                              self._paragraphs("""\
+                              Asserts that the contents of {checked_file}
+                              is equal to the contents of {EXPECTED_FILE_ARG}.
+                              """)),
         ]
 
+    def _cls(self, additional_argument_usages: list) -> str:
+        return self._cl_syntax_for_args([self.actual_file] + additional_argument_usages)
+        # return self._cl_syntax_for_args([self.actual_file_relativity, self.actual_file] + additional_argument_usages)
+
     def syntax_element_descriptions(self) -> list:
+        mandatory_path = a.Single(a.Multiplicity.MANDATORY,
+                                  dt.PATH_ARGUMENT)
+        relativity_of_actual_arg = a.Named('RELATIVITY-OF-ACTUAL-FILE')
+        optional_relativity_of_actual = a.Single(a.Multiplicity.OPTIONAL,
+                                                 relativity_of_actual_arg)
+        relativity_of_expected_arg = a.Named('RELATIVITY-OF-EXPECTED-FILE')
+        optional_relativity_of_expected = a.Single(a.Multiplicity.OPTIONAL,
+                                                   relativity_of_expected_arg)
         return [
-            rel_opts.relativity_syntax_element_description(self.expected_file_arg,
+            SyntaxElementDescription(self.actual_file_arg.name,
+                                     self._paragraphs("The file who's contents is checked."),
+                                     [InvokationVariant(self._cl_syntax_for_args(
+                                         [optional_relativity_of_actual,
+                                          mandatory_path]),
+                                         rel_opts.default_relativity_for_rel_opt_type(
+                                             dt.PATH_ARGUMENT.name,
+                                             _ACTUAL_RELATIVITY_CONFIGURATION.default_option))]
+                                     ),
+            SyntaxElementDescription(self.expected_file_arg.name,
+                                     self._paragraphs("The file that contains the expected contents."),
+                                     [InvokationVariant(self._cl_syntax_for_args(
+                                         [optional_relativity_of_expected,
+                                          mandatory_path]),
+                                         rel_opts.default_relativity_for_rel_opt_type(
+                                             parse_here_doc_or_file_ref.CONFIGURATION.argument_syntax_name,
+                                             parse_here_doc_or_file_ref.CONFIGURATION.default_option)
+                                     )]
+                                     ),
+            rel_opts.relativity_syntax_element_description(dt.PATH_ARGUMENT,
                                                            parse_here_doc_or_file_ref.CONFIGURATION.accepted_options,
-                                                           rel_opts.RELATIVITY_ARGUMENT),
+                                                           relativity_of_expected_arg),
+            rel_opts.relativity_syntax_element_description(dt.PATH_ARGUMENT,
+                                                           _ACTUAL_RELATIVITY_CONFIGURATION.accepted_options,
+                                                           relativity_of_actual_arg),
             self._cli_argument_syntax_element_description(self.with_replaced_env_vars_option,
                                                           with_replaced_env_vars_help('the contents of ' +
                                                                                       self.actual_file_arg.name)),

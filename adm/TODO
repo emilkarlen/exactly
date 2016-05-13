@@ -50,6 +50,12 @@ Har blivit hela sökvägen vid refaktorering.
 ** DONE [assert]
 *** DONE contents
       Tests the contents of a file.
+**** DONE doc here-doc
+**** DONE anv rätt CONFIGURATION i stdout/err
+**** DONE beskriv default-relativity
+***** DONE stdout/err
+***** DONE contents
+**** DONE here-doc för stdout/err
 *** DONE dir
       Makes a directory in the current directory.
 *** DONE env

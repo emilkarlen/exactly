@@ -71,18 +71,18 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
             InvokationVariant(self._cl_syntax_for_args([mandatory_not_arg, mandatory_empty_arg]),
                               self._paragraphs('Asserts that {checked_file} is not empty.')),
             InvokationVariant(self._cl_syntax_for_args([optional_replace_env_vars_option,
-                                                        rel_opts.OPTIONAL_RELATIVITY_ARGUMENT_USAGE,
-                                                        mandatory_file_arg,
-                                                        ]),
-                              self._paragraphs("""\
-                              Asserts that the contents of {checked_file} is equal to the contents of {FILE_ARG}.
-                              """)),
-            InvokationVariant(self._cl_syntax_for_args([optional_replace_env_vars_option,
                                                         here_doc_arg,
                                                         ]),
                               self._paragraphs("""\
                               Asserts that the contents of {checked_file} is equal to
                               the contents of a "here document".
+                              """)),
+            InvokationVariant(self._cl_syntax_for_args([optional_replace_env_vars_option,
+                                                        rel_opts.OPTIONAL_RELATIVITY_ARGUMENT_USAGE,
+                                                        mandatory_file_arg,
+                                                        ]),
+                              self._paragraphs("""\
+                              Asserts that the contents of {checked_file} is equal to the contents of {FILE_ARG}.
                               """)),
         ]
 
