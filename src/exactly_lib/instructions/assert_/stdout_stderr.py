@@ -2,6 +2,8 @@ import pathlib
 
 from exactly_lib.common.instruction_documentation import InvokationVariant
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
+from exactly_lib.help.concepts.contents_structure import ConceptDocumentation
+from exactly_lib.help.concepts.plain_concepts.environment_variable import ENVIRONMENT_VARIABLE_CONCEPT
 from exactly_lib.instructions.assert_.utils.contents_utils import ActualFileTransformer, \
     with_replaced_env_vars_help
 from exactly_lib.instructions.utils.arg_parse.parse_utils import split_arguments_list_string
@@ -39,7 +41,6 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
             'FILE_ARG': self.file_arg.name,
         })
         self.checked_file = name_of_checked_file
-
         self.with_replaced_env_vars_option = a.Option(contents_utils.WITH_REPLACED_ENV_VARS_OPTION_NAME)
 
     def single_line_description(self) -> str:
@@ -80,6 +81,12 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
             self._cli_argument_syntax_element_description(self.with_replaced_env_vars_option,
                                                           with_replaced_env_vars_help(self.checked_file))
         ]
+
+    def see_also(self) -> list:
+        concepts = rel_opts.see_also_concepts(contents_utils.RELATIVITY_CONFIGURATION.accepted_options)
+        if not ENVIRONMENT_VARIABLE_CONCEPT in concepts:
+            concepts.append(ENVIRONMENT_VARIABLE_CONCEPT)
+        return list(map(ConceptDocumentation.cross_reference_target, concepts))
 
 
 _WITH_REPLACED_ENV_VARS_STEM_SUFFIX = '-with-replaced-env-vars.txt'
