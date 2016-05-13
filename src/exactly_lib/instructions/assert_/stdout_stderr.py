@@ -1,20 +1,21 @@
 import pathlib
 
-from exactly_lib.common.instruction_documentation import InvokationVariant, \
-    InstructionDocumentation
+from exactly_lib.common.instruction_documentation import InvokationVariant
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
-from exactly_lib.execution.environment_variables import ENV_VAR_TMP
 from exactly_lib.instructions.assert_.utils.contents_utils import ActualFileTransformer, \
-    WITH_REPLACED_ENV_VARS_OPTION, EMPTY_ARGUMENT, with_replaced_env_vars_help
+    with_replaced_env_vars_help
 from exactly_lib.instructions.utils.arg_parse.parse_utils import split_arguments_list_string
-from exactly_lib.instructions.utils.arg_parse.relative_path_options import REL_HOME_OPTION, REL_CWD_OPTION
-from exactly_lib.instructions.utils.arg_parse.relative_path_options import REL_TMP_OPTION
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
+from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_opts
+from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
+    InstructionDocumentationWithCommandLineRenderingBase
+from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
+    SingleInstructionParser, \
     SingleInstructionInvalidArgumentException, SingleInstructionParserSource
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase
-from exactly_lib.util.textformat.structure.structures import paras
+from exactly_lib.util.cli_syntax.elements import argument as a
 from .utils import contents_utils
+from .utils import contents_utils_for_instr_doc as doc_utils
 
 
 def setup_for_stdout(instruction_name: str) -> SingleInstructionSetup:
@@ -29,38 +30,55 @@ def setup_for_stderr(instruction_name: str) -> SingleInstructionSetup:
         TheInstructionDocumentation(instruction_name, 'stderr'))
 
 
-class TheInstructionDocumentation(InstructionDocumentation):
+class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
     def __init__(self, name: str,
-                 file: str):
-        super().__init__(name)
-        self.file = file
+                 name_of_checked_file: str):
+        self.file_arg = a.Named(contents_utils.RELATIVITY_CONFIGURATION.argument_syntax_name)
+        super().__init__(name, {
+            'checked_file': name_of_checked_file,
+            'FILE_ARG': self.file_arg.name,
+        })
+        self.checked_file = name_of_checked_file
+
+        self.with_replaced_env_vars_option = a.Option(contents_utils.WITH_REPLACED_ENV_VARS_OPTION_NAME)
 
     def single_line_description(self) -> str:
-        return 'Tests the contents of {}.'.format(self.file)
+        return self._format('Tests the contents of {checked_file}.')
 
     def main_description_rest(self) -> list:
-        return with_replaced_env_vars_help()
+        return rel_opts.default_relativity_for_rel_opt_type(self.file_arg.name,
+                                                            contents_utils.RELATIVITY_CONFIGURATION.default_option)
 
     def invokation_variants(self) -> list:
+        mandatory_empty_arg = a.Single(a.Multiplicity.MANDATORY,
+                                       doc_utils.EMPTY_ARGUMENT_CONSTANT)
+        mandatory_not_arg = a.Single(a.Multiplicity.MANDATORY,
+                                     doc_utils.NOT_ARGUMENT_CONSTANT)
+        mandatory_file_arg = a.Single(a.Multiplicity.MANDATORY,
+                                      self.file_arg)
+        optional_replace_env_vars_option = a.Single(a.Multiplicity.OPTIONAL,
+                                                    self.with_replaced_env_vars_option)
         return [
-            InvokationVariant(
-                '{}'.format(EMPTY_ARGUMENT),
-                paras('%s is empty' % self.file)),
-            InvokationVariant(
-                '! {}'.format(EMPTY_ARGUMENT),
-                paras('%s is not empty' % self.file)),
-            InvokationVariant(
-                '[{}] {} FILENAME'.format(WITH_REPLACED_ENV_VARS_OPTION, REL_HOME_OPTION),
-                paras('Expects the contents of %s to equal the contents of FILE'
-                      '(which is a path relative to the home directory)' % self.file)),
-            InvokationVariant(
-                '[{}] {} FILENAME'.format(WITH_REPLACED_ENV_VARS_OPTION, REL_TMP_OPTION),
-                paras('Expects the contents of %s to equal the contents of FILE'
-                      '(which is a path relative to the %s directory)' % (ENV_VAR_TMP, self.file))),
-            InvokationVariant(
-                '[{}] {} FILENAME'.format(WITH_REPLACED_ENV_VARS_OPTION, REL_CWD_OPTION),
-                paras('Expects the contents of %s to equal the contents of FILE'
-                      '(which is a path relative current working directory)' % self.file)),
+            InvokationVariant(self._cl_syntax_for_args([mandatory_empty_arg]),
+                              self._paragraphs('Asserts that {checked_file} is empty.')),
+            InvokationVariant(self._cl_syntax_for_args([mandatory_not_arg, mandatory_empty_arg]),
+                              self._paragraphs('Asserts that {checked_file} is not empty.')),
+            InvokationVariant(self._cl_syntax_for_args([optional_replace_env_vars_option,
+                                                        rel_opts.OPTIONAL_RELATIVITY_ARGUMENT_USAGE,
+                                                        mandatory_file_arg,
+                                                        ]),
+                              self._paragraphs("""\
+                              Asserts that the contents of {checked_file} is equal to the contents of {FILE_ARG}.
+                              """)),
+        ]
+
+    def syntax_element_descriptions(self) -> list:
+        return [
+            rel_opts.relativity_syntax_element_description(self.file_arg,
+                                                           contents_utils.RELATIVITY_CONFIGURATION.accepted_options,
+                                                           rel_opts.RELATIVITY_ARGUMENT),
+            self._arg_syntax_element_description(self.with_replaced_env_vars_option,
+                                                 with_replaced_env_vars_help(self.checked_file))
         ]
 
 
