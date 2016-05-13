@@ -24,9 +24,10 @@ def default_relativity_for_rel_opt_type(path_arg_name: str,
                               default_relativity_location=_ALL[default_relativity_type].relativity_root_description))
 
 
-def relativity_syntax_element_description(path_that_may_be_relative: a.Named,
-                                          iter_of_rel_option_type: iter,
-                                          relativity_argument: a.Named = RELATIVITY_ARGUMENT) -> SyntaxElementDescription:
+def relativity_syntax_element_description(
+        path_that_may_be_relative: a.Named,
+        iter_of_rel_option_type: iter,
+        relativity_argument: a.Named = RELATIVITY_ARGUMENT) -> SyntaxElementDescription:
     renderer = RelOptionRenderer(path_that_may_be_relative.name)
     return SyntaxElementDescription(relativity_argument.name,
                                     [renderer.list_for(iter_of_rel_option_type)])
