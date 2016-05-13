@@ -89,10 +89,6 @@ Typ alla ställen där RELATIVITY_ARGUMENT packas in i ArgumentUsage.
 *** DONE shell
       Executes the given program using the system's shell.
 
-* TODO Förbättrin av instr
-** TODO dir: möjl att ange path rel annat än pwd (mha --rel...)
-
-** TODO install: möjl att ange path rel annat än pwd (mha --rel...)
 * TODO Gör "actor" till en "configuration parameter"
 <2016-05-05 tor>
 Lägg till instruktion ("actor") till "conf" för att sätt actor.
@@ -197,7 +193,7 @@ Test Case Overview
 
 Executes a program in a temporary sandbox directory and checks it's result.
 ----------------------------------------
-** TODO För sviter ska "valfrihets-infon" använda ordet "section"
+** DONE För sviter ska "valfrihets-infon" använda ordet "section"
 Nu används "phase":
 The "conf" phase is optional
 ** TODO Sortera "see also" på något lämpligt vis
@@ -1135,6 +1131,9 @@ Idag skapas den precis innan setup/validate.
 Ingen stor grej, men kan ev ändras.
 Alternativ ändrar man spec till att göra som idag.
 * TODO Ny funktionallitet
+* TODO Förbättrin av instr
+** TODO dir: möjl att ange path rel annat än pwd (mha --rel...)
+** TODO install: möjl att ange path rel annat än pwd (mha --rel...)
 ** TODO Ny växel "--rel-res" för reffa filer i sandbox/result
 <2016-05-01 sön>
 ** TODO Integration m perls TAP (Test Anything Protocol)

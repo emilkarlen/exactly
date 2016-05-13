@@ -37,8 +37,8 @@ class TestSuiteSectionDocumentationBase(SectionDocumentation):
         return doc.SectionContents(paras, sections)
 
     def _mandatory_info_para(self):
-        return docs.para('The {0} phase is {1}.'.format(self.name,
-                                                        'mandatory' if self.is_mandatory() else 'optional'))
+        return docs.para('The {0} section is {1}.'.format(self.name,
+                                                          'mandatory' if self.is_mandatory() else 'optional'))
 
     def _add_section_for_contents_description(self, output: list):
         output.append(docs.section('Contents',
