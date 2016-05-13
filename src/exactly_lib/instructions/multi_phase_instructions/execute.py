@@ -54,9 +54,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         self.relativity_arg_path = dt.PATH_ARGUMENT
         self.mandatory_path = a.Single(a.Multiplicity.MANDATORY,
                                        dt.PATH_ARGUMENT)
-        self.relativity_arg = rel_path_doc.RELATIVITY_ARGUMENT
-        self.optional_relativity = a.Single(a.Multiplicity.OPTIONAL,
-                                            self.relativity_arg)
+        self.optional_relativity = rel_path_doc.OPTIONAL_RELATIVITY_ARGUMENT_USAGE
         self.mandatory_executable = a.Single(a.Multiplicity.MANDATORY,
                                              self.executable_arg)
         self.generic_arg = a.Named('ARGUMENT')

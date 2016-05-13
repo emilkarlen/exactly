@@ -31,8 +31,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
             dt.paths_uses_posix_syntax())
 
     def invokation_variants(self) -> list:
-        arguments = [a.Single(a.Multiplicity.OPTIONAL,
-                              rel_path_doc.RELATIVITY_ARGUMENT),
+        arguments = [rel_path_doc.OPTIONAL_RELATIVITY_ARGUMENT_USAGE,
                      a.Single(a.Multiplicity.MANDATORY, self.path_arg), ]
         here_doc_arg = a.Single(a.Multiplicity.MANDATORY, dt.HERE_DOCUMENT)
         return [

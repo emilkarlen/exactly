@@ -38,8 +38,7 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
     def invokation_variants(self) -> list:
         return [
             InvokationVariant(self._cl_syntax_for_args([
-                a.Single(a.Multiplicity.OPTIONAL,
-                         relative_path_options_documentation.RELATIVITY_ARGUMENT),
+                relative_path_options_documentation.OPTIONAL_RELATIVITY_ARGUMENT_USAGE,
                 a.Single(a.Multiplicity.OPTIONAL,
                          self.dir_arg),
             ])),
