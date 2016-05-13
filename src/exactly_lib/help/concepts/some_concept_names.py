@@ -5,4 +5,4 @@ need to import each other, which is not possible in Python.
 """
 from exactly_lib.help.concepts.contents_structure import Name
 
-PRESENT_WORKING_DIRECTORY_CONCEPT_NAME = Name('present working directory', 'present working directories')
+PRESENT_WORKING_DIRECTORY_CONCEPT_NAME = Name('current directory', 'current directories')

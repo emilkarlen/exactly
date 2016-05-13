@@ -1,8 +1,8 @@
 #
 # Instructions in the "setup" phase are executed before the tested program.
 #
-# The Present Working Directory at the start of the phase is the same
-# temporary directory that becomes the PWD for the tested program.
+# The current directory at the start of the phase is the same
+# temporary directory that becomes the current directory for the tested program.
 #
 
 [setup]
@@ -23,7 +23,7 @@ EOF
 [act]
 
 
-list-files-under-pwd
+list-files-under-current-directory
 
 
 [assert]

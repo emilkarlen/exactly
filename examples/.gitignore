@@ -7,5 +7,5 @@ first-step/hello-world
 first-step/remove-all-files-in-the-current-directory
 organize/bin/do-something-good-with
 setup/copy-stdin-to-stdout
-setup/list-files-under-pwd
+setup/list-files-under-current-directory
 setup/remove-all-files-in-the-current-directory

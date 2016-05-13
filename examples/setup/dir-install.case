@@ -16,7 +16,7 @@ install dir-with-1-dir-and-2-plain-files
 [act]
 
 
-list-files-under-pwd
+list-files-under-current-directory
 
 
 [assert]

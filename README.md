@@ -59,8 +59,8 @@ it just displays some of `exactly`'s functionality.)
 
     dir root-dir-for-act-phase
 
-    pwd root-dir-for-act-phase
-    # This will be PWD for the "act" phase. 
+    cd root-dir-for-act-phase
+    # This will be current directory for the "act" phase. 
 
     stdin <<EOF
     this will be stdin for the program in the "act" phase
@@ -83,8 +83,8 @@ it just displays some of `exactly`'s functionality.)
     [before-assert]
 
 
-    pwd ..
-    # Moves back to the original PWD.
+    cd ..
+    # Moves back to the original current directory.
 
     shell sort root-dir-for-act-phase/output-from-sut.txt > sorted.txt
 
@@ -108,7 +108,7 @@ it just displays some of `exactly`'s functionality.)
 
     type actual-file directory
 
-    pwd this-dir-is-where-we-should-be-for-the-following-assertions
+    cd this-dir-is-where-we-should-be-for-the-following-assertions
 
     run my-prog--located-in-same-dir-as-test-case--that-does-some-assertions
 
