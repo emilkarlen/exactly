@@ -7,12 +7,14 @@ from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.textformat_parse import TextParser
 from exactly_lib.instructions.utils.arg_parse import relative_path_options as options
 from exactly_lib.instructions.utils.arg_parse.relative_path_options import RelOptionType
-from exactly_lib.util.cli_syntax.elements.argument import OptionName, Option, Named
+from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.render.cli_program_syntax import ArgumentInArgumentDescriptionRenderer
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure import structures as docs
 
-RELATIVITY_ARGUMENT = Named('RELATIVITY')
+RELATIVITY_ARGUMENT = a.Named('RELATIVITY')
+OPTIONAL_RELATIVITY_ARGUMENT_USAGE = a.Single(a.Multiplicity.OPTIONAL,
+                                              RELATIVITY_ARGUMENT)
 
 
 def default_relativity_for_rel_opt_type(path_arg_name: str,
@@ -22,9 +24,9 @@ def default_relativity_for_rel_opt_type(path_arg_name: str,
                               default_relativity_location=_ALL[default_relativity_type].relativity_root_description))
 
 
-def relativity_syntax_element_description(path_that_may_be_relative: Named,
+def relativity_syntax_element_description(path_that_may_be_relative: a.Named,
                                           iter_of_rel_option_type: iter,
-                                          relativity_argument: Named = RELATIVITY_ARGUMENT) -> SyntaxElementDescription:
+                                          relativity_argument: a.Named = RELATIVITY_ARGUMENT) -> SyntaxElementDescription:
     renderer = RelOptionRenderer(path_that_may_be_relative.name)
     return SyntaxElementDescription(relativity_argument.name,
                                     [renderer.list_for(iter_of_rel_option_type)])
@@ -45,7 +47,7 @@ def see_also_concepts(iter_of_rel_option_type: iter) -> list:
 
 class _RelOptionInfo(tuple):
     def __new__(cls,
-                name: Option,
+                name: a.Option,
                 paragraph_items: list,
                 see_also: iter = ()):
         """
@@ -55,7 +57,7 @@ class _RelOptionInfo(tuple):
         return tuple.__new__(cls, (name, paragraph_items, list(see_also)))
 
     @property
-    def option(self) -> Option:
+    def option(self) -> a.Option:
         return self[0]
 
     @property
@@ -69,7 +71,7 @@ class _RelOptionInfo(tuple):
 
 class _RelOptionTypeInfo(tuple):
     def __new__(cls,
-                name: OptionName,
+                name: a.OptionName,
                 relativity_root_description: str,
                 paragraph_items_text: str,
                 see_also: list):
@@ -79,7 +81,7 @@ class _RelOptionTypeInfo(tuple):
         return tuple.__new__(cls, (name, paragraph_items_text, see_also, relativity_root_description))
 
     @property
-    def option_name(self) -> OptionName:
+    def option_name(self) -> a.OptionName:
         return self[0]
 
     @property
@@ -114,8 +116,8 @@ class RelOptionRenderer:
 
     def option_info(self,
                     option_type_info: _RelOptionTypeInfo) -> _RelOptionInfo:
-        return _RelOptionInfo(Option(option_type_info.option_name,
-                                     argument=self.argument_name),
+        return _RelOptionInfo(a.Option(option_type_info.option_name,
+                                       argument=self.argument_name),
                               self.paragraphs(option_type_info.paragraph_items_text),
                               option_type_info.see_also)
 
