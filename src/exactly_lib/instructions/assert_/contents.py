@@ -32,7 +32,7 @@ class TheInstructionDocumentation(InstructionDocumentation):
         return 'Tests the contents of a file.'
 
     def main_description_rest(self) -> list:
-        return with_replaced_env_vars_help()
+        return with_replaced_env_vars_help('FILENAME')
 
     def invokation_variants(self) -> list:
         return [
