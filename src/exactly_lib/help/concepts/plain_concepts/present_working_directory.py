@@ -35,7 +35,7 @@ class _PresentWorkingDirectoryConcept(PlainConceptDocumentation):
 PRESENT_WORKING_DIRECTORY_CONCEPT = _PresentWorkingDirectoryConcept()
 
 _SINGLE_LINE_DESCRIPTION = """\
-The present working directory of the environment in which an instruction is executed."""
+The current directory of the environment in which an instruction is executed."""
 
 _DESCRIPTION_REST = """\
 The {phase[setup]} phase, and all following phases, has a {concept},
@@ -46,7 +46,7 @@ The {concept} is also the {concept} for the {program_name} process, so that exte
 and shell commands have the same {concept} as instructions.
 
 
-At the beginning the {concept} is the {act_dir}/ subdirectory of the {sandbox}.
+At the beginning, the {concept} is the {act_dir}/ subdirectory of the {sandbox}.
 
 
 It can be changed using the {pwd_instruction} instruction.

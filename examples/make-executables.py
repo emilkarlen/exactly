@@ -172,7 +172,7 @@ files = itertools.chain.from_iterable([
     sts(setup_dir,
         ['copy-stdin-to-stdout',
          'remove-all-files-in-the-current-directory',
-         'list-files-under-pwd']),
+         'list-files-under-current-directory']),
 ])
 
 if __name__ == '__main__':

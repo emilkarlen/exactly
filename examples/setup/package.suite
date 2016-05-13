@@ -10,4 +10,4 @@ dir-install.case
 
 env.case
 
-present-working-directory.case
+current-directory.case

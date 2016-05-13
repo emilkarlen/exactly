@@ -1,5 +1,5 @@
 #
-# The "pwd" instruction sets the Present Working Directory.
+# The "cd" instruction sets the "current directory".
 #
 
 
@@ -10,7 +10,7 @@ file in-root-dir.txt
 
 dir execution-dir
 
-pwd execution-dir
+cd execution-dir
 
 file in-execution-dir.txt
 
@@ -18,7 +18,7 @@ file in-execution-dir.txt
 [act]
 
 
-list-files-under-pwd
+list-files-under-current-directory
 
 
 [assert]
@@ -30,7 +30,7 @@ EOF
 
 type in-execution-dir.txt regular
 
-pwd ..
+cd ..
 
 type in-root-dir.txt regular
 

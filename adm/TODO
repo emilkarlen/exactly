@@ -1,10 +1,9 @@
 -*- org -*-
 
-* TODO Byta namn "pwd" -> "cd" ("current directory")
+* DONE Byta namn "pwd" -> "cd" ("current directory")
 <2016-05-12 tor>
 Rimmar hyfsat väl både m befintliga unix-kommanot _och_ 
 begreppet "current directory".
-
 * TODO assert/type: Bestäm beteende för sym-link t icke-existerande fil
 O dokumentera i hjälptext.
 * DONE Förbättra instr-dok
