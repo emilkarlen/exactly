@@ -7,14 +7,10 @@ begreppet "current directory".
 
 * TODO assert/type: Bestäm beteende för sym-link t icke-existerande fil
 O dokumentera i hjälptext.
-* TODO Förbättra instr-dok
-** TODO Konsekvensifiera begrepp för assertion ("Tests/checks if ...")
-<2016-05-12 tor>
-type, exitcode anv "Tests ...".
-Har inte riktigt koll på vilka begrepp som översikten använder.
-** TODO S&R exactly_lib.instructions.utils.relative_path_options_documentation
+* DONE Förbättra instr-dok
+** DONE S&R exactly_lib.instructions.utils.relative_path_options_documentation
 Har blivit hela sökvägen vid refaktorering.
-** TODO Ta bort all_rel_option_strs när ej används längre
+** DONE Ta bort all_rel_option_strs när ej används längre
 ** DONE [conf]
 *** DONE home
       Changes the Home directory.
@@ -51,8 +47,8 @@ Har blivit hela sökvägen vid refaktorering.
 *** DONE shell
       Executes the given program using the system's shell.
 
-** TODO [assert]
-*** TODO contents
+** DONE [assert]
+*** DONE contents
       Tests the contents of a file.
 *** DONE dir
       Makes a directory in the current directory.
@@ -66,10 +62,12 @@ Har blivit hela sökvägen vid refaktorering.
       Runs a program and PASS iff it's exit code is 0.
 *** DONE shell
       Executes the given program using the system's shell.
-*** TODO stderr
+*** DONE stderr
       Tests the contents of stderr.
-*** TODO stdout
+*** DONE stdout
       Tests the contents of stdout.
+**** DONE Använda OPTIONAL_RELATIVITY_ARGUMENT_USAGE på fler ställen
+Typ alla ställen där RELATIVITY_ARGUMENT packas in i ArgumentUsage.
 *** DONE type
       Tests the type of a file.
 
@@ -148,6 +146,19 @@ vad README ska innehålla.
 Det riskerar ju att atc (action to check) kan sabba
 filer där.
 * TODO Dokumentation
+** TODO Konsekvensifiera begrepp för assertion ("Tests/checks if ...")
+<2016-05-12 tor>
+type, exitcode anv "Tests ...".
+Har inte riktigt koll på vilka begrepp som översikten använder.
+Ev ä "check" bättre iom att "test" benämner testet som helhet.
+Eg är "assertion" bäst iom att fasen är assert o assert är det begrepp
+som används i testramverk (Assert.assertEqual ...)
+
+Ev bryta ut beskrivnings-strängen för instr-doc t variabel för att
+konsekvensifiera beskrivningarna:
+("Asserts that ").
+(Skulle behöva gå igenom beskrivningarna för det.
+Både en-rads-beskrivningarna o användningen i bekrivningar.)
 ** TODO Enkla test-falls-exemplen ska ha med [setup]
 Både i inbyggd hjälp o i README.md
 Typ

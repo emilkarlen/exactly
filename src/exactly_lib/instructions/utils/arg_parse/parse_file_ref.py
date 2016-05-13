@@ -7,7 +7,6 @@ from exactly_lib.instructions.utils.arg_parse.parse_utils import TokenStream, is
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.util.cli_syntax import option_parsing
-from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 
 _REL_OPTION_2_FILE_REF_CONSTRUCTOR = {
     rel_opts.RelOptionType.REL_HOME: file_ref.rel_home,
@@ -17,12 +16,6 @@ _REL_OPTION_2_FILE_REF_CONSTRUCTOR = {
 }
 
 ALL_REL_OPTIONS = _REL_OPTION_2_FILE_REF_CONSTRUCTOR.keys()
-
-
-def all_rel_option_strs(all_types: iter = ALL_REL_OPTIONS) -> list:
-    return [long_option_syntax(opt_name.long) for opt_name in
-            [rel_opts.REL_OPTIONS_MAP[rel_opt_type] for rel_opt_type in
-             all_types]]
 
 
 class Configuration(tuple):
