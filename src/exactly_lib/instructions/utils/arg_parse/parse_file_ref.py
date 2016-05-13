@@ -53,9 +53,11 @@ class Configuration(tuple):
         return self[2]
 
 
-DEFAULT_CONFIG = Configuration(ALL_REL_OPTIONS,
-                               rel_opts.RelOptionType.REL_HOME,
-                               'FILE')
+ALL_REL_OPTIONS_CONFIG = Configuration(ALL_REL_OPTIONS,
+                                       rel_opts.RelOptionType.REL_HOME,
+                                       'FILE')
+
+DEFAULT_CONFIG = ALL_REL_OPTIONS_CONFIG
 
 NON_HOME_CONFIG = Configuration(ALL_REL_OPTIONS - {rel_opts.RelOptionType.REL_HOME},
                                 rel_opts.RelOptionType.REL_PWD,

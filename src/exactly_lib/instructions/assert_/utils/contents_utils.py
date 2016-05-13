@@ -4,9 +4,12 @@ import os
 import pathlib
 
 from exactly_lib import program_info
+from exactly_lib.cli.util.cli_argument_syntax import long_option_name
 from exactly_lib.execution import environment_variables
+from exactly_lib.help.utils import formatting
 from exactly_lib.instructions.utils.arg_parse import parse_file_ref
 from exactly_lib.instructions.utils.arg_parse import parse_here_doc_or_file_ref
+from exactly_lib.instructions.utils.arg_parse import relative_path_options as rel_opts
 from exactly_lib.instructions.utils.arg_parse.parse_here_doc_or_file_ref import HereDocOrFileRef
 from exactly_lib.instructions.utils.file_properties import must_exist_as, FileType
 from exactly_lib.instructions.utils.file_ref import FileRef
@@ -24,24 +27,34 @@ from exactly_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util import file_utils
+from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.file_utils import ensure_parent_directory_does_exist, tmp_text_file_containing
 from exactly_lib.util.string import lines_content
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import structures as docs
 
-WITH_REPLACED_ENV_VARS_OPTION = '--with-replaced-env-vars'
+WITH_REPLACED_ENV_VARS_OPTION_NAME = a.OptionName(long_name='with-replaced-env-vars')
+WITH_REPLACED_ENV_VARS_OPTION = long_option_name(WITH_REPLACED_ENV_VARS_OPTION_NAME.long)
+
 EMPTY_ARGUMENT = 'empty'
+NOT_ARGUMENT = '!'
+
+RELATIVITY_CONFIGURATION = parse_file_ref.Configuration(parse_file_ref.ALL_REL_OPTIONS,
+                                                        rel_opts.RelOptionType.REL_HOME,
+                                                        'FILE')
 
 
-def with_replaced_env_vars_help() -> list:
+def with_replaced_env_vars_help(checked_file: str) -> list:
     header_text = """\
-    {option} replaces all occurrences of any of the {program_name} environment variables to the name of the variable.
+    Every occurrence of a path that matches any of the {program_name} environment variables
+    in {checked_file} is replaced with the name of the matching variable.
     (Variable values are replaced with variable names.)
 
 
     These environment variables are:
-    """.format(program_name=program_info.PROGRAM_NAME,
-               option=WITH_REPLACED_ENV_VARS_OPTION)
+    """.format(program_name=formatting.program_name(program_info.PROGRAM_NAME),
+               option=WITH_REPLACED_ENV_VARS_OPTION,
+               checked_file=checked_file)
     variables_list = [docs.simple_header_only_list(sorted(environment_variables.ALL_REPLACED_ENV_VARS),
                                                    docs.lists.ListType.VARIABLE_LIST)]
     return normalize_and_parse(header_text) + variables_list
@@ -60,7 +73,7 @@ class ComparisonActualFile:
 
 def parse_actual_file_argument(arguments: list) -> (ComparisonActualFile, list):
     (file_ref, remaining_arguments) = parse_file_ref.parse_file_ref__list(arguments,
-                                                                          parse_file_ref.NON_HOME_CONFIG)
+                                                                          RELATIVITY_CONFIGURATION)
     return ActComparisonActualFileForFileRef(file_ref), remaining_arguments
 
 
@@ -289,7 +302,7 @@ def try_parse_content(actual_file: ComparisonActualFile,
 
     if arguments[0] == EMPTY_ARGUMENT:
         return _parse_empty(actual_file, arguments[1:])
-    elif arguments[:2] == ['!', EMPTY_ARGUMENT]:
+    elif arguments[:2] == [NOT_ARGUMENT, EMPTY_ARGUMENT]:
         return _parse_non_empty(actual_file, arguments[2:])
     else:
         return _parse_contents(actual_file, arguments)

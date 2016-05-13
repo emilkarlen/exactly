@@ -1,9 +1,9 @@
-from exactly_lib.common.instruction_documentation import InstructionDocumentation
+from exactly_lib.common.instruction_documentation import InstructionDocumentation, SyntaxElementDescription
 from exactly_lib.help.utils.formatting import InstructionName
 from exactly_lib.help.utils.phase_names import ASSERT_PHASE_NAME
 from exactly_lib.help.utils.textformat_parse import TextParser
-from exactly_lib.util.cli_syntax.elements import argument
-from exactly_lib.util.cli_syntax.render.cli_program_syntax import CommandLineSyntaxRenderer
+from exactly_lib.util.cli_syntax.elements import argument as a
+from exactly_lib.util.cli_syntax.render import cli_program_syntax
 from exactly_lib.util.textformat.structure.core import Text
 
 
@@ -43,18 +43,30 @@ class InstructionDocumentationWithCommandLineRenderingBase(InstructionDocumentat
     command lines made up of a `CommandLine`.
     """
 
+    CL_SYNTAX_RENDERER = cli_program_syntax.CommandLineSyntaxRenderer()
+
+    ARG_SYNTAX_RENDERER = cli_program_syntax.ArgumentInArgumentDescriptionRenderer()
+
     def __init__(self,
                  instruction_name: str,
                  format_map: dict):
         super().__init__(instruction_name, format_map)
 
     def _cl_syntax_for_args(self, argument_usages: list) -> str:
-        cl = argument.CommandLine(argument_usages)
+        cl = a.CommandLine(argument_usages)
         return self._cl_syntax(cl)
 
-    def _cl_syntax(self, command_line: argument.CommandLine) -> str:
-        cl_renderer = CommandLineSyntaxRenderer()
-        return cl_renderer.as_str(command_line)
+    def _cl_syntax(self, command_line: a.CommandLine) -> str:
+        return self.CL_SYNTAX_RENDERER.as_str(command_line)
+
+    def _arg_syntax(self, arg: a.Argument) -> str:
+        return self.ARG_SYNTAX_RENDERER.visit(arg)
+
+    def _cli_argument_syntax_element_description(self,
+                                                 argument: a.Argument,
+                                                 description_rest: list) -> SyntaxElementDescription:
+        return SyntaxElementDescription(self._arg_syntax(argument),
+                                        description_rest)
 
 
 class InstructionDocumentationWithCommandLineRenderingAndSplittedPartsForRestDocBase(
