@@ -17,6 +17,8 @@ _REL_OPTION_2_FILE_REF_CONSTRUCTOR = {
 
 ALL_REL_OPTIONS = _REL_OPTION_2_FILE_REF_CONSTRUCTOR.keys()
 
+ALL_REL_OPTIONS_WITH_TARGETS_INSIDE_SANDBOX = ALL_REL_OPTIONS - {rel_opts.RelOptionType.REL_HOME}
+
 
 class Configuration(tuple):
     def __new__(cls,
@@ -46,15 +48,24 @@ class Configuration(tuple):
         return self[2]
 
 
-ALL_REL_OPTIONS_CONFIG = Configuration(ALL_REL_OPTIONS,
-                                       rel_opts.RelOptionType.REL_HOME,
-                                       'FILE')
+def all_rel_options_config(argument_syntax_name: str) -> Configuration:
+    return Configuration(ALL_REL_OPTIONS,
+                         rel_opts.RelOptionType.REL_HOME,
+                         argument_syntax_name)
+
+
+ALL_REL_OPTIONS_CONFIG = all_rel_options_config('FILE')
 
 DEFAULT_CONFIG = ALL_REL_OPTIONS_CONFIG
 
-NON_HOME_CONFIG = Configuration(ALL_REL_OPTIONS - {rel_opts.RelOptionType.REL_HOME},
-                                rel_opts.RelOptionType.REL_PWD,
-                                'FILE')
+
+def non_home_config(argument_syntax_name: str) -> Configuration:
+    return Configuration(ALL_REL_OPTIONS - {rel_opts.RelOptionType.REL_HOME},
+                         rel_opts.RelOptionType.REL_PWD,
+                         argument_syntax_name)
+
+
+NON_HOME_CONFIG = non_home_config('FILE')
 
 
 def parse_file_ref__list(arguments: list,

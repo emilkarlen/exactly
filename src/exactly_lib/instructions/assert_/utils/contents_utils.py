@@ -7,9 +7,7 @@ from exactly_lib import program_info
 from exactly_lib.cli.util.cli_argument_syntax import long_option_name
 from exactly_lib.execution import environment_variables
 from exactly_lib.help.utils import formatting
-from exactly_lib.instructions.utils.arg_parse import parse_file_ref
 from exactly_lib.instructions.utils.arg_parse import parse_here_doc_or_file_ref
-from exactly_lib.instructions.utils.arg_parse import relative_path_options as rel_opts
 from exactly_lib.instructions.utils.arg_parse.parse_here_doc_or_file_ref import HereDocOrFileRef
 from exactly_lib.instructions.utils.file_properties import must_exist_as, FileType
 from exactly_lib.instructions.utils.file_ref import FileRef
@@ -39,10 +37,6 @@ WITH_REPLACED_ENV_VARS_OPTION = long_option_name(WITH_REPLACED_ENV_VARS_OPTION_N
 EMPTY_ARGUMENT = 'empty'
 NOT_ARGUMENT = '!'
 
-RELATIVITY_CONFIGURATION = parse_file_ref.Configuration(parse_file_ref.ALL_REL_OPTIONS,
-                                                        rel_opts.RelOptionType.REL_HOME,
-                                                        'FILE')
-
 
 def with_replaced_env_vars_help(checked_file: str) -> list:
     header_text = """\
@@ -69,12 +63,6 @@ class ComparisonActualFile:
 
     def file_path(self, environment: i.GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
         raise NotImplementedError()
-
-
-def parse_actual_file_argument(arguments: list) -> (ComparisonActualFile, list):
-    (file_ref, remaining_arguments) = parse_file_ref.parse_file_ref__list(arguments,
-                                                                          RELATIVITY_CONFIGURATION)
-    return ActComparisonActualFileForFileRef(file_ref), remaining_arguments
 
 
 class ActComparisonActualFileForFileRef(ComparisonActualFile):
