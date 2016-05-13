@@ -51,7 +51,7 @@ class ExecutionEnvironmentInfo(tuple):
     @property
     def pwd_at_start_of_phase(self) -> list:
         """
-        Description of the Present Workding Directory, at the start of the phase.
+        Description of the Present Working Directory, at the start of the phase.
         :rtype: [ParagraphItem]
         """
         return self[0]

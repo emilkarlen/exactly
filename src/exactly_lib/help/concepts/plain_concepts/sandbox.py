@@ -2,7 +2,9 @@ from exactly_lib.default.program_modes.test_case.default_instruction_names impor
 from exactly_lib.execution import execution_directory_structure as sds
 from exactly_lib.execution.environment_variables import ENV_VAR_RESULT, ENV_VAR_ACT
 from exactly_lib.help.concepts.contents_structure import PlainConceptDocumentation, Name
+from exactly_lib.help.concepts.some_concept_names import PRESENT_WORKING_DIRECTORY_CONCEPT_NAME
 from exactly_lib.help.cross_reference_id import TestCasePhaseInstructionCrossReference
+from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.formatting import AnyInstructionNameDictionary
 from exactly_lib.help.utils.phase_names import phase_name_dictionary, SETUP_PHASE_NAME
 from exactly_lib.util.description import DescriptionWithSubSections
@@ -66,7 +68,8 @@ def _act_dir_description_paragraphs(instruction: AnyInstructionNameDictionary, p
     ret_val = []
     ret_val.extend(normalize_and_parse(
         _ACT_DIR_DESCRIPTION.format(phase=phase,
-                                    instruction=instruction)))
+                                    instruction=instruction,
+                                    pwd=formatting.concept(PRESENT_WORKING_DIRECTORY_CONCEPT_NAME.singular))))
     ret_val.extend(_act_dir_environment_variables(phase=phase))
     return ret_val
 
@@ -83,14 +86,14 @@ def _result_dir_description_paragraphs(instruction: AnyInstructionNameDictionary
 
 
 _ACT_DIR_DESCRIPTION = """\
-This directory is the Present Working Directory (PWD) when the {phase[setup]} phase begin.
+This directory is the {pwd} when the {phase[setup]} phase begin.
 
 
-If it is not changed, it will also be the PWD for the {phase[act]} phase (hence its name).
+If it is not changed, it will also be the {pwd} for the {phase[act]} phase (hence its name).
 
 
 (Files and directories that {phase[setup]:syntax} creates
-are installed into the PWD, if no instruction options are used to change this.)
+are installed into the {pwd}, if no instruction options are used to change this.)
 """
 _RESULT_DIR_DESCRIPTION = """\
 This directory is initially empty.
