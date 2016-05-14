@@ -15,7 +15,7 @@ from exactly_lib.util.textformat.formatting.html import document as doc_renderin
 from exactly_lib.util.textformat.formatting.html import text
 from exactly_lib.util.textformat.formatting.html.paragraph_item.full_paragraph_item import FullParagraphItemRenderer
 from exactly_lib.util.textformat.formatting.html.section import HnSectionHeaderRenderer
-from exactly_lib.util.textformat.structure import document  as doc
+from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import lists
 
 
