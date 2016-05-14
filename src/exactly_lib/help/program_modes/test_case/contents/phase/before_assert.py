@@ -6,12 +6,14 @@ from exactly_lib.help.cross_reference_id import TestCasePhaseCrossReference
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet
 from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
     sequence_info__succeeding_phase, \
-    pwd_at_start_of_phase_for_non_first_phases, sequence_info__preceding_phase, \
-    sequence_info__not_executed_if_execution_mode_is_skip, execution_environment_prologue_for_post_act_phase
+    sequence_info__preceding_phase, \
+    sequence_info__not_executed_if_execution_mode_is_skip, execution_environment_prologue_for_post_act_phase, \
+    pwd_at_start_of_phase_is_same_as_at_end_of_the
 from exactly_lib.help.program_modes.test_case.phase_help_contents_structures import \
     TestCasePhaseDocumentationForPhaseWithInstructions, PhaseSequenceInfo, ExecutionEnvironmentInfo
 from exactly_lib.help.utils import formatting
-from exactly_lib.help.utils.phase_names import phase_name_dictionary, ACT_PHASE_NAME, ASSERT_PHASE_NAME
+from exactly_lib.help.utils.phase_names import phase_name_dictionary, ACT_PHASE_NAME, ASSERT_PHASE_NAME, \
+    SETUP_PHASE_NAME
 from exactly_lib.util.description import Description
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure.structures import text
@@ -45,7 +47,8 @@ class BeforeAssertPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstr
         return self._parse(INSTRUCTION_PURPOSE_DESCRIPTION)
 
     def execution_environment_info(self) -> ExecutionEnvironmentInfo:
-        return ExecutionEnvironmentInfo(pwd_at_start_of_phase_for_non_first_phases(),
+        previous = '{setup} phase'.format(setup=SETUP_PHASE_NAME.emphasis)
+        return ExecutionEnvironmentInfo(pwd_at_start_of_phase_is_same_as_at_end_of_the(previous),
                                         EXISTS_AT_BEFORE_ASSERT_MAIN,
                                         prologue=execution_environment_prologue_for_post_act_phase())
 
