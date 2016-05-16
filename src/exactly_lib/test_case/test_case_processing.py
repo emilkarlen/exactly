@@ -53,7 +53,7 @@ class Status(Enum):
 class AccessErrorType(Enum):
     FILE_ACCESS_ERROR = 1
     PRE_PROCESS_ERROR = 2
-    PARSE_ERROR = 3
+    SYNTAX_ERROR = 3
 
 
 class Result(tuple):

@@ -9,7 +9,7 @@
 ** DONE små bokstäver i titlar
 ** DONE Suite structure -> Sections
 * DONE Inkludera [setup] i exempel i readme
-* parse_error -> syntax_error
+* DONE parse_error -> syntax_error
 * Ta bort adm-filer
 Flytta till separat repo?
 * Ta bort tools/

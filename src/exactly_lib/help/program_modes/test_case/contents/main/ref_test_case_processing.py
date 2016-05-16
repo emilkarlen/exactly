@@ -1,6 +1,5 @@
 from exactly_lib.cli.cli_environment.program_modes.test_case import exit_values
-from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_options import OPTION_FOR_PREPROCESSOR__LONG, \
-    OPTION_FOR_PREPROCESSOR
+from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_options import OPTION_FOR_PREPROCESSOR
 from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup, post_setup_validation_step_name, \
     step_with_single_exit_value
 from exactly_lib.help.utils.formatting import cli_option
@@ -34,7 +33,7 @@ def processing_step_list(setup: Setup) -> docs.ParagraphItem:
                        step_with_single_exit_value(
                            normalize_and_parse(PURPOSE_OF_SYNTAX_CHECKING),
                            FAILURE_CONDITION_OF_SYNTAX_CHECKING,
-                           exit_values.NO_EXECUTION__PARSE_ERROR)
+                           exit_values.NO_EXECUTION__SYNTAX_ERROR)
                        ),
         docs.list_item('validation',
                        step_with_single_exit_value(

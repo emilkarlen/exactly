@@ -54,7 +54,7 @@ class AccessorFromParts(Accessor):
                                           test_case_file_path,
                                           source)
         return self._apply(self._parser.apply,
-                           processing.AccessErrorType.PARSE_ERROR,
+                           processing.AccessErrorType.SYNTAX_ERROR,
                            test_case_file_path,
                            preprocessed_source
                            )

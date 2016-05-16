@@ -5,7 +5,6 @@ import unittest
 from exactly_lib.cli import main_program
 from exactly_lib.cli.cli_environment.program_modes.test_case import exit_values
 from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_options import \
-    OPTION_FOR_KEEPING_SANDBOX_DIRECTORY__LONG, \
     OPTION_FOR_EXECUTING_ACT_PHASE, OPTION_FOR_KEEPING_SANDBOX_DIRECTORY
 from exactly_lib.execution import environment_variables
 from exactly_lib.execution import execution_directory_structure
@@ -85,7 +84,7 @@ class WhenAPhaseHasInvalidPhaseNameThenExitStatusShouldIndicateThis(SetupWithout
         return lines_content(test_case_lines)
 
     def expected_result(self) -> va.ValueAssertion:
-        return process_result_for_exit_value(exit_values.NO_EXECUTION__PARSE_ERROR)
+        return process_result_for_exit_value(exit_values.NO_EXECUTION__SYNTAX_ERROR)
 
 
 class FlagForPrintingAndPreservingSandbox(SetupWithoutPreprocessor):

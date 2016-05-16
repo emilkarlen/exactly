@@ -2,7 +2,7 @@ import pathlib
 import unittest
 
 from exactly_lib.cli import main_program
-from exactly_lib.cli.cli_environment.program_modes.test_case.exit_values import NO_EXECUTION__PARSE_ERROR, \
+from exactly_lib.cli.cli_environment.program_modes.test_case.exit_values import NO_EXECUTION__SYNTAX_ERROR, \
     EXECUTION__PASS
 from exactly_lib.cli.cli_environment.program_modes.test_suite import exit_values
 from exactly_lib.util.string import lines_content
@@ -180,7 +180,7 @@ class SuiteWithSingleCaseWithInvalidSyntax(main_program_check_for_test_suite.Set
         expected_line = suite_reporting_output.ExpectedLine(root_path)
         return [
             expected_line.suite_begin(root_path / 'main.suite'),
-            expected_line.case(root_path / 'invalid-syntax.case', NO_EXECUTION__PARSE_ERROR.exit_identifier),
+            expected_line.case(root_path / 'invalid-syntax.case', NO_EXECUTION__SYNTAX_ERROR.exit_identifier),
             expected_line.suite_end(root_path / 'main.suite'),
         ]
 

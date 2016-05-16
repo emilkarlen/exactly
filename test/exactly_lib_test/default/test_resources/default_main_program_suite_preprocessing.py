@@ -1,10 +1,10 @@
 import pathlib
 
 from exactly_lib.cli.cli_environment.program_modes.test_case.exit_values import EXECUTION__PASS, \
-    NO_EXECUTION__PARSE_ERROR
+    NO_EXECUTION__SYNTAX_ERROR
 from exactly_lib.cli.cli_environment.program_modes.test_suite import exit_values
-from exactly_lib.section_document.syntax import section_header
 from exactly_lib.execution import phases
+from exactly_lib.section_document.syntax import section_header
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.default.test_resources import suite_reporting_output
 from exactly_lib_test.test_resources import quoting
@@ -41,9 +41,9 @@ else:
                  lines_content(['preprocessor ' + preprocessor,
                                 '[cases]',
                                 'pass',
-                                'parser-error'])),
+                                'syntax-error'])),
             File('pass', 'original content that would PARSE-ERROR, if it was not preprocessed'),
-            File('parser-error', '# empty content that would PASS, if it was not preprocessed'),
+            File('syntax-error', '# empty content that would PASS, if it was not preprocessed'),
         ])
 
     def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
@@ -51,7 +51,7 @@ else:
         return [
             expected_line.suite_begin(root_path / 'main.suite'),
             expected_line.case(root_path / 'pass', EXECUTION__PASS.exit_identifier),
-            expected_line.case(root_path / 'parser-error', NO_EXECUTION__PARSE_ERROR.exit_identifier),
+            expected_line.case(root_path / 'syntax-error', NO_EXECUTION__SYNTAX_ERROR.exit_identifier),
             expected_line.suite_end(root_path / 'main.suite'),
         ]
 
