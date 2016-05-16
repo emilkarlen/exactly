@@ -30,6 +30,15 @@ text-align: left;
 padding-right: 5px;
 }
 
+a:link {
+text-decoration: none;
+}
+
+
+a:hover {
+text-decoration: underline;
+}
+
 """
 TITLE_STYLE = """\
 font-size: 250%;
