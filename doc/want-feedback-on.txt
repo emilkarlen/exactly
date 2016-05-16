@@ -1,0 +1,34 @@
+-*- org -*-
+
+* Exit codes and exit identifiers
+
+
+Are there better exit codes?
+
+Are the "exit identifiers" a good thing, or are they clumsy?
+Are there better exit identifiers?
+
+
+* Instruction names
+
+A goal is to have "declarative" names.
+
+Does it work?
+
+
+Assertions are designed to have the form
+ACTUAL EXPECTED
+
+E.g.
+
+exitcode 0
+stdout empty
+type my-file.txt regular
+
+
+Is this a good choice?
+Usually the form "EXPECTED ACTUAL" is better (in my opinion),
+but this works not well since the instruction name as the beginning
+of the line takes the role of ACTUAL.
+
+
