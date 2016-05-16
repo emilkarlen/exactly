@@ -11,7 +11,10 @@ from exactly_lib_test.util.textformat.formatting.html.test_resources import as_u
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.makeSuite(TestParagraph)
+    return unittest.TestSuite([
+        unittest.makeSuite(TestParagraph),
+        unittest.makeSuite(TestParagraphWithSkippingOfSurroundingPElement),
+    ])
 
 
 if __name__ == '__main__':
