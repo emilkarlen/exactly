@@ -18,6 +18,6 @@ Flytta till separat repo?
 ** integration with test suite runner (TAP)
 How to integrate into external test suites.
 * wiki
-* html
-** finare tabeller
-** icke understrykning av länkar
+* DONE html
+** DONE finare tabeller
+** DONE icke understrykning av länkar

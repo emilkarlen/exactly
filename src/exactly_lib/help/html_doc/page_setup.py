@@ -7,36 +7,36 @@ PAGE_TITLE = 'Reference Manual for %s' % program_info.PROGRAM_NAME.capitalize()
 TOC_TITLE = 'Table of Contents'
 ELEMENT_STYLES = """\
 pre {
-background-color : #EEFFCC;
-padding: 7px;
-border: 1px solid #cEdFaC;
-border-radius     : 3px;
+  background-color : #EEFFCC;
+  padding: 7px;
+  border: 1px solid #cEdFaC;
+  border-radius     : 3px;
 }
 
 h1 {
-background-color: #E6E6FA;
-border-radius     : 4px;
-padding: 5px;
+  background-color: #E6E6FA;
+  border-radius     : 4px;
+  padding: 5px;
 }
 
 table {
-border-collapse: collapse;
+  border-collapse: collapse;
 }
 
 th {
-font-weight: normal;
-background-color: #f4f4f4;
-text-align: left;
-padding-right: 5px;
+  font-weight: normal;
+  background-color: #f4f4f4;
+  text-align: left;
+  padding-right: 5px;
 }
 
 a:link {
-text-decoration: none;
+  text-decoration: none;
 }
 
 
 a:hover {
-text-decoration: underline;
+  text-decoration: underline;
 }
 
 """
