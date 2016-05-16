@@ -1,6 +1,10 @@
 -*- org -*-
 
-* exactly help
+* DONE exactly help
+** köra fall
+** köra svit
+** få hjälp (help help)
+** få enkel hjälp (-h)
 * Ändra overview -> (spec)ification
 * Inkludera [setup] i exempel i readme
 * Ta bort adm-filer

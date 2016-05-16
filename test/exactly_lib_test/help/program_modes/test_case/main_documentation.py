@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.execution import phases
-from exactly_lib.help.program_modes.test_case.contents.main.overview import OverviewRenderer
+from exactly_lib.help.program_modes.test_case.contents.main.specification import SpecificationRenderer
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from exactly_lib.help.utils.render import RenderingEnvironment
 from exactly_lib_test.help.test_resources import test_case_phase_help, CrossReferenceTextConstructorTestImpl
@@ -22,13 +22,13 @@ class TestCase(unittest.TestCase):
         # ARRANGE #
         rendering_environment = RenderingEnvironment(CrossReferenceTextConstructorTestImpl())
         # ACT #
-        actual = OverviewRenderer(TEST_CASE_HELP_WITH_PRODUCTION_PHASES).apply(rendering_environment)
+        actual = SpecificationRenderer(TEST_CASE_HELP_WITH_PRODUCTION_PHASES).apply(rendering_environment)
         # ASSERT #
         struct_check.is_section_contents.apply(self, actual)
 
     def test_overview_documentation_target_info_hierarchy(self):
         # ARRANGE #
-        overview_renderer = OverviewRenderer(TEST_CASE_HELP_WITH_PRODUCTION_PHASES)
+        overview_renderer = SpecificationRenderer(TEST_CASE_HELP_WITH_PRODUCTION_PHASES)
         # ACT #
         actual = overview_renderer.target_info_hierarchy()
         # ASSERT #

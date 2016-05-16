@@ -9,7 +9,7 @@ from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
 
 
-class OverviewRenderer(SectionContentsRenderer):
+class SpecificationRenderer(SectionContentsRenderer):
     def __init__(self, suite_help: TestSuiteHelp,
                  target_factory: cross_ref.CustomTargetInfoFactory = None):
         self._suite_help = suite_help
@@ -23,8 +23,8 @@ class OverviewRenderer(SectionContentsRenderer):
         self._FILES_AND_EXECUTION_TI = target_factory.sub('Suite files and execution',
                                                           'files-and-execution')
 
-        self._STRUCTURE_TI = target_factory.sub('Suite structure',
-                                                'structure')
+        self._STRUCTURE_TI = target_factory.sub('Sections',
+                                                'sections')
 
         self._FILE_SYNTAX_TI = target_factory.sub('Suite file syntax',
                                                   'file-syntax')
@@ -95,7 +95,7 @@ A suite file can have any name - {program_name} does not put any restriction on 
 """
 
 _STRUCTURE_INTRO = """\
-A suite file is a sequence of "sections". The sections are:
+A suite is made up of "sections". The sections are:
 """
 
 _FILE_SYNTAX = """\

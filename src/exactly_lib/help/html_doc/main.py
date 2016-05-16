@@ -74,7 +74,7 @@ class HtmlDocGenerator:
 
         help_targets_factory = cross_ref.sub_component_factory('help',
                                                                targets_factory)
-        help_target = help_targets_factory.root('Getting help')
+        help_target = help_targets_factory.root('Getting Help')
         help_sub_targets, help_contents = self.help_generator.apply(help_targets_factory)
 
         ret_val_contents = doc.SectionContents(
