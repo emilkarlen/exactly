@@ -2,7 +2,7 @@ from exactly_lib.help import cross_reference_id as cross_ref
 from exactly_lib.help.cross_reference_id import CustomTargetInfoFactory, CrossReferenceId
 from exactly_lib.help.html_doc.parts.utils import HtmlDocGeneratorForSectionDocumentBase
 from exactly_lib.help.program_modes.test_suite.contents.cli_syntax import SuiteCliSyntaxDocumentation
-from exactly_lib.help.program_modes.test_suite.contents.overview import OverviewRenderer
+from exactly_lib.help.program_modes.test_suite.contents.specification import SpecificationRenderer
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
 from exactly_lib.help.utils.render import RenderingEnvironment
 from exactly_lib.util.cli_syntax.render.cli_program_syntax import ProgramDocumentationSectionContentsRenderer
@@ -17,14 +17,14 @@ class HtmlDocGeneratorForTestSuiteHelp(HtmlDocGeneratorForSectionDocumentBase):
         self.test_suite_help = test_suite_help
 
     def apply(self, targets_factory: CustomTargetInfoFactory) -> (list, doc.SectionContents):
-        overview_targets_factory = cross_ref.sub_component_factory('overview',
-                                                                   targets_factory)
-        overview_target = overview_targets_factory.root('Overview')
-        overview_sub_targets, overview_contents = self._test_case_overview_contents(overview_targets_factory)
+        specification_targets_factory = cross_ref.sub_component_factory('spec',
+                                                                        targets_factory)
+        specification_target = specification_targets_factory.root('Specification of test suite functionality')
+        specification_sub_targets, overview_contents = self._specification_contents(specification_targets_factory)
 
         cli_syntax_targets_factory = cross_ref.sub_component_factory('cli-syntax',
                                                                      targets_factory)
-        cli_syntax_target = cli_syntax_targets_factory.root('Command Line Syntax')
+        cli_syntax_target = cli_syntax_targets_factory.root('Command line syntax')
         cli_syntax_contents = self._cli_syntax_contents()
 
         phases_targets_factory = cross_ref.sub_component_factory('sections',
@@ -44,7 +44,7 @@ class HtmlDocGeneratorForTestSuiteHelp(HtmlDocGeneratorForSectionDocumentBase):
         ret_val_contents = doc.SectionContents(
             [],
             [
-                doc.Section(overview_target.anchor_text(),
+                doc.Section(specification_target.anchor_text(),
                             overview_contents),
                 doc.Section(phases_target.anchor_text(),
                             phases_contents),
@@ -55,8 +55,8 @@ class HtmlDocGeneratorForTestSuiteHelp(HtmlDocGeneratorForSectionDocumentBase):
             ]
         )
         ret_val_targets = [
-            cross_ref.TargetInfoNode(overview_target,
-                                     overview_sub_targets),
+            cross_ref.TargetInfoNode(specification_target,
+                                     specification_sub_targets),
             cross_ref.TargetInfoNode(phases_target,
                                      phases_sub_targets),
             cross_ref.TargetInfoNode(cli_syntax_target, []),
@@ -65,8 +65,8 @@ class HtmlDocGeneratorForTestSuiteHelp(HtmlDocGeneratorForSectionDocumentBase):
         ]
         return ret_val_targets, ret_val_contents
 
-    def _test_case_overview_contents(self, targets_factory: CustomTargetInfoFactory) -> (list, doc.SectionContents):
-        generator = OverviewRenderer(self.test_suite_help, targets_factory)
+    def _specification_contents(self, targets_factory: CustomTargetInfoFactory) -> (list, doc.SectionContents):
+        generator = SpecificationRenderer(self.test_suite_help, targets_factory)
         section_contents = generator.apply(self.rendering_environment)
         return generator.target_info_hierarchy(), section_contents
 

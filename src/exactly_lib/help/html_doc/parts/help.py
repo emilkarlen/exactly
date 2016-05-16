@@ -15,7 +15,7 @@ class HtmlDocGeneratorForHelpHelp(HtmlDocGeneratorForSectionDocumentBase):
     def apply(self, targets_factory: CustomTargetInfoFactory) -> (list, doc.SectionContents):
         cli_syntax_targets_factory = cross_ref.sub_component_factory('cli-syntax',
                                                                      targets_factory)
-        cli_syntax_target = cli_syntax_targets_factory.root('Command Line Syntax')
+        cli_syntax_target = cli_syntax_targets_factory.root('Command line syntax')
         cli_syntax_contents = self._cli_syntax_contents()
 
         ret_val_contents = doc.SectionContents(

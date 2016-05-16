@@ -16,7 +16,7 @@ from exactly_lib.util.textformat.structure.structures import para
 ONE_LINE_DESCRIPTION = "Executes a program in a temporary sandbox directory and checks it's result."
 
 
-class OverviewRenderer(TestCaseHelpRendererBase):
+class SpecificationRenderer(TestCaseHelpRendererBase):
     def __init__(self, test_case_help: TestCaseHelp,
                  target_factory: cross_ref.CustomTargetInfoFactory = None):
         super().__init__(test_case_help)
@@ -41,13 +41,13 @@ class OverviewRenderer(TestCaseHelpRendererBase):
         self._OV__PHASES_TI = ow_target_factory.sub('Phases',
                                                     'phases')
 
-        self._OUTCOME_TI = target_factory.sub('Test Outcome',
+        self._OUTCOME_TI = target_factory.sub('Test outcome',
                                               'outcome')
 
-        self._TEST_CASE_FILES_TI = target_factory.sub('Test Case Files',
+        self._TEST_CASE_FILES_TI = target_factory.sub('Test case file syntax',
                                                       'test-case-files')
 
-        self._TEST_CASE_PROCESSING_TI = target_factory.sub('Test Case Processing',
+        self._TEST_CASE_PROCESSING_TI = target_factory.sub('Test case processing',
                                                            'test-case-processing')
 
     def target_info_hierarchy(self) -> list:

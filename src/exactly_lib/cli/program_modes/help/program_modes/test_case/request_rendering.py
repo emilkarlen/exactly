@@ -5,7 +5,7 @@ from exactly_lib.cli.program_modes.help.program_modes.test_case.help_request imp
 from exactly_lib.help.program_modes.common import render_instruction
 from exactly_lib.help.program_modes.common.renderers import SectionDocumentationRenderer
 from exactly_lib.help.program_modes.test_case.contents.cli_syntax import TestCaseCliSyntaxDocumentation
-from exactly_lib.help.program_modes.test_case.contents.main.overview import OverviewRenderer
+from exactly_lib.help.program_modes.test_case.contents.main.specification import SpecificationRenderer
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from exactly_lib.help.program_modes.test_case.render import instruction_set
 from exactly_lib.help.utils.render import SectionContentsRenderer, RenderingEnvironment
@@ -24,7 +24,7 @@ class TestCaseHelpRendererResolver:
         if item is TestCaseHelpItem.CLI_SYNTAX:
             return ProgramDocumentationSectionContentsRenderer(TestCaseCliSyntaxDocumentation())
         if item is TestCaseHelpItem.OVERVIEW:
-            return OverviewRenderer(self._contents)
+            return SpecificationRenderer(self._contents)
         if item is TestCaseHelpItem.INSTRUCTION_SET:
             return instruction_set.InstructionSetPerPhaseRenderer(self._contents)
         if item is TestCaseHelpItem.PHASE:
