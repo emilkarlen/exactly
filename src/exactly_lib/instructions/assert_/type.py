@@ -53,7 +53,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         })
 
     def single_line_description(self) -> str:
-        return 'Tests the type of a file.'
+        return 'Tests the type of a file'
 
     def main_description_rest(self) -> list:
         text = """\

@@ -17,7 +17,7 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
         super().__init__(name, {}, is_in_assert_phase)
 
     def single_line_description(self) -> str:
-        return 'Manipulates environment variables.'
+        return 'Manipulates environment variables'
 
     def _main_description_rest_body(self) -> list:
         return []

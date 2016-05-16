@@ -21,7 +21,7 @@ class TheInstructionDocumentationBase(InstructionDocumentationWithCommandLineRen
         self.command_arg = a.Named(_COMMAND_SYNTAX_ELEMENT)
 
     def single_line_description(self) -> str:
-        return "Executes a command using the current system's shell."
+        return "Executes a command using the current system's shell"
 
     def _main_description_rest_body(self) -> list:
         text = """\
