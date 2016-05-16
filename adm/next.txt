@@ -1,5 +1,7 @@
 -*- org -*-
 
+* Hjälptext för "home directory" "TODO (improve description!)"
+* Hjälptext för "cd" "TODO"
 * DONE exactly help
 ** köra fall
 ** köra svit
