@@ -149,7 +149,7 @@ class TestComplexSuite(unittest.TestCase):
         test_case_processor = TestCaseProcessorThatGivesConstantPerCase({
             id(tc_internal_error): test_case_processing.new_internal_error(error_info.of_message('message')),
             id(tc_access_error): test_case_processing.new_access_error(
-                test_case_processing.AccessErrorType.PARSE_ERROR, error_info.of_message('parse error')),
+                test_case_processing.AccessErrorType.SYNTAX_ERROR, error_info.of_message('syntax error')),
             id(tc_executed): test_case_processing.new_executed(FULL_RESULT_PASS),
         })
         expected_suites = [
@@ -236,7 +236,7 @@ class TestComplexSuite(unittest.TestCase):
             id(tc_internal_error_11): test_case_processing.new_internal_error(error_info.of_message('message A')),
             id(tc_internal_error_21): test_case_processing.new_internal_error(error_info.of_message('message B')),
             id(tc_access_error_1): test_case_processing.new_access_error(
-                test_case_processing.AccessErrorType.PARSE_ERROR, error_info.of_message('parse error')),
+                test_case_processing.AccessErrorType.SYNTAX_ERROR, error_info.of_message('syntax error')),
             id(tc_access_error_12): test_case_processing.new_access_error(
                 test_case_processing.AccessErrorType.FILE_ACCESS_ERROR, error_info.of_message('file access error')),
             id(tc_executed_11): test_case_processing.new_executed(FULL_RESULT_PASS),

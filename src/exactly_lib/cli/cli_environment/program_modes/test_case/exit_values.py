@@ -28,7 +28,7 @@ NO_EXECUTION__FILE_ACCESS_ERROR = from_access_error(processing.AccessErrorType.F
 
 NO_EXECUTION__PRE_PROCESS_ERROR = from_access_error(processing.AccessErrorType.PRE_PROCESS_ERROR)
 
-NO_EXECUTION__PARSE_ERROR = from_access_error(processing.AccessErrorType.PARSE_ERROR)
+NO_EXECUTION__SYNTAX_ERROR = from_access_error(processing.AccessErrorType.SYNTAX_ERROR)
 
 EXECUTION__PASS = from_full_result(FullResultStatus.PASS)
 
@@ -49,7 +49,7 @@ EXECUTION__IMPLEMENTATION_ERROR = from_full_result(FullResultStatus.IMPLEMENTATI
 ALL_EXIT_VALUES = [
     NO_EXECUTION__FILE_ACCESS_ERROR,
     NO_EXECUTION__PRE_PROCESS_ERROR,
-    NO_EXECUTION__PARSE_ERROR,
+    NO_EXECUTION__SYNTAX_ERROR,
     EXECUTION__PASS,
     EXECUTION__VALIDATE,
     EXECUTION__FAIL,

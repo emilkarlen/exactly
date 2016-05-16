@@ -1,8 +1,8 @@
 import pathlib
 import unittest
 
-from exactly_lib.section_document.model import new_empty_phase_contents
 from exactly_lib.execution.result import FullResult, new_skipped
+from exactly_lib.section_document.model import new_empty_phase_contents
 from exactly_lib.test_case import error_description
 from exactly_lib.test_case import processing_utils as sut
 from exactly_lib.test_case import test_case_doc
@@ -55,7 +55,7 @@ class TestAccessor(unittest.TestCase):
             accessor.apply(PATH)
         # ASSERT #
         self.assertEqual(cm.exception.error,
-                         tcp.AccessErrorType.PARSE_ERROR)
+                         tcp.AccessErrorType.SYNTAX_ERROR)
 
     def test_successful_application(self):
         # ARRANGE #

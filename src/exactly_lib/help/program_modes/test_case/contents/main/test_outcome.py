@@ -264,7 +264,7 @@ def _other_non_cli_errors(setup: Setup) -> ParagraphItem:
                   step_with_single_exit_value(
                       [],
                       para('Fails if the test case contains a syntax error.'),
-                      exit_values.NO_EXECUTION__PARSE_ERROR)
+                      exit_values.NO_EXECUTION__SYNTAX_ERROR)
                   ),
     ]
     return lists.HeaderContentList(items,
