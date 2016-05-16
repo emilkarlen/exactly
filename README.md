@@ -8,31 +8,35 @@ Supports individual test cases and test suites.
 
 A test case is written as a plain text file:
 
+    [setup]
+
+    stdin an-address-book.txt
+
     [act]
 
-    helloworld
+    addressbook --get-email-of --name 'Test Testingson'
 
     [assert]
 
     exitcode 0
 
     stdout <<EOF
-    Hello, World!
+    expected@email.org
     EOF
 
 
-If the file 'helloworld.case' contains this test case, then `exactly` can execute it:
+If the file 'addressbook.case' contains this test case, then `exactly` can execute it:
 
 
-    > exactly helloworld.case
+    > exactly addressbook.case
     PASS
 
 
 "PASS" means that the two assertions were satisfied.
 
-It also means is that the action to check - the 'helloworld' program -
+It also means is that the system under test - the `addressbook` program -
 is is found in the same directory as the test case file,
-and also that it behaved as expected.
+and that it behaved as expected.
 
 
 The following test case displays a potpurri of functionality. (Beware that this test case does not make sense! -
