@@ -20,23 +20,17 @@ class TestCaseCliSyntaxDocumentation(render.CliProgramSyntaxDocumentation):
             'TEST_CASE_FILE': _FILE_ARGUMENT.name,
             'phase': phase_name_dictionary(),
         })
+        self.synopsis = synopsis()
 
     def description(self) -> DescriptionWithSubSections:
-        return DescriptionWithSubSections(docs.text('Runs a test case.'),
+        return DescriptionWithSubSections(self.synopsis.maybe_single_line_description,
                                           docs.SectionContents(self.parser.fnap(_DESCRIPTION),
                                                                []))
 
     def synopsises(self) -> list:
         return [
-            render.Synopsis(
-                arg.CommandLine([
-                    arg.Single(arg.Multiplicity.ZERO_OR_MORE,
-                               _OPTION_PLACEHOLDER_ARGUMENT),
-                    arg.Single(arg.Multiplicity.MANDATORY,
-                               _FILE_ARGUMENT),
-                ],
-                    prefix=self.program_name)
-            )]
+            render.Synopsis(self.synopsis.command_line)
+        ]
 
     def argument_descriptions(self) -> list:
         return [
@@ -80,6 +74,17 @@ class TestCaseCliSyntaxDocumentation(render.CliProgramSyntaxDocumentation):
                                         see_also=[
                                             PREPROCESSOR_CONCEPT.cross_reference_target(),
                                         ])
+
+
+def synopsis() -> render.Synopsis:
+    command_line = arg.CommandLine([
+        arg.Single(arg.Multiplicity.ZERO_OR_MORE,
+                   _OPTION_PLACEHOLDER_ARGUMENT),
+        arg.Single(arg.Multiplicity.MANDATORY,
+                   _FILE_ARGUMENT)],
+        prefix=program_info.PROGRAM_NAME)
+    return render.Synopsis(command_line,
+                           docs.text('Runs a test case.'))
 
 
 _DESCRIPTION = """\

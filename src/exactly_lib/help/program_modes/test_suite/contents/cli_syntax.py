@@ -18,24 +18,17 @@ class SuiteCliSyntaxDocumentation(render.CliProgramSyntaxDocumentation):
             'interpreter_actor': formatting.term(case_opts.INTERPRETER_ACTOR_TERM),
             'TEST_SUITE_FILE': _FILE_ARGUMENT.name,
         })
+        self.synopsis = synopsis()
 
     def description(self) -> DescriptionWithSubSections:
-        return DescriptionWithSubSections(docs.text('Runs a test suite.'),
+        return DescriptionWithSubSections(self.synopsis.maybe_single_line_description,
                                           docs.SectionContents(self.parser.fnap(_DESCRIPTION),
                                                                []))
 
     def synopsises(self) -> list:
         return [
-            render.Synopsis(
-                arg.CommandLine([arg.Single(arg.Multiplicity.MANDATORY,
-                                            arg.Constant(common_opts.SUITE_COMMAND)),
-                                 arg.Single(arg.Multiplicity.OPTIONAL,
-                                            _ACTOR_OPTION),
-                                 arg.Single(arg.Multiplicity.MANDATORY,
-                                            _FILE_ARGUMENT),
-                                 ],
-                                prefix=self.program_name)
-            )]
+            render.Synopsis(self.synopsis.command_line)
+        ]
 
     def argument_descriptions(self) -> list:
         return [
@@ -51,6 +44,20 @@ class SuiteCliSyntaxDocumentation(render.CliProgramSyntaxDocumentation):
                                         see_also=[
                                             actor.ACTOR_CONCEPT.cross_reference_target(),
                                         ])
+
+
+def synopsis() -> render.Synopsis:
+    command_line = arg.CommandLine([
+        arg.Single(arg.Multiplicity.MANDATORY,
+                   arg.Constant(common_opts.SUITE_COMMAND)),
+        arg.Single(arg.Multiplicity.OPTIONAL,
+                   _ACTOR_OPTION),
+        arg.Single(arg.Multiplicity.MANDATORY,
+                   _FILE_ARGUMENT),
+    ],
+        prefix=program_info.PROGRAM_NAME)
+    return render.Synopsis(command_line,
+                           docs.text('Runs a test suite.'))
 
 
 _DESCRIPTION = """\
