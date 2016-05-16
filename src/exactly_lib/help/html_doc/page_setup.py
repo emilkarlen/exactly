@@ -19,6 +19,10 @@ border-radius     : 4px;
 padding: 5px;
 }
 
+th {
+text-align: left;
+}
+
 """
 TITLE_STYLE = """\
 font-size: 250%;
