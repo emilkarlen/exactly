@@ -1,1 +1,10 @@
 -*- org -*-
+
+* exactly help
+* Ändra overview -> (spec)ification
+* Inkludera [setup] i exempel i readme
+* Ta bort adm-filer
+Flytta till separat repo?
+* Ta bort tools/
+* Översätt want-feedback-on.txt t eng
+* wiki

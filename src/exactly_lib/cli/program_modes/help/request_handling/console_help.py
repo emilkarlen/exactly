@@ -57,6 +57,10 @@ class HelpCrossReferenceFormatter(text.CrossReferenceFormatter):
             return cross_reference.title
 
 
+def rendering_environment() -> RenderingEnvironment:
+    return RenderingEnvironment(_cross_ref_text_constructor())
+
+
 def _cross_ref_text_constructor() -> CrossReferenceTextConstructor:
     return CrossReferenceTextConstructor()
 
