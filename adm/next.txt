@@ -9,10 +9,11 @@
 ** DONE små bokstäver i titlar
 ** DONE Suite structure -> Sections
 * DONE Inkludera [setup] i exempel i readme
+* parse_error -> syntax_error
 * Ta bort adm-filer
 Flytta till separat repo?
 * Ta bort tools/
-* Översätt want-feedback-on.txt t eng
+* DONE Översätt want-feedback-on.txt t eng
 ** exit codes
 ** integration with test suite runner (TAP)
 How to integrate into external test suites.

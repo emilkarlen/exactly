@@ -31,9 +31,8 @@ standard library that does not make this restriction a great limitation.
 * Portability
 ** Portability of exactly itself
 
-The goal is that exactly is portable to
+The goal is that exactly is ported to
 - Linux
-- BSD
 - OS X
 - Windows
 
