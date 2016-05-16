@@ -88,7 +88,8 @@ def literal_layout(s: str) -> ParagraphItem:
 
 def first_column_is_header_table(rows: list,
                                  column_separator: str = '  ') -> ParagraphItem:
-    return table.Table(table.TableFormat(column_separator),
+    return table.Table(table.TableFormat(column_separator,
+                                         first_column_is_header=True),
                        rows)
 
 

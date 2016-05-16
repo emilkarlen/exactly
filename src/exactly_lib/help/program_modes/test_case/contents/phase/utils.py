@@ -98,7 +98,7 @@ def result_sub_dir_files_table() -> docs.ParagraphItem:
         row('stderr', sds.RESULT_FILE__STDERR),
     ]
 
-    return table.Table(table.TableFormat(),
+    return table.Table(table.TableFormat(first_column_is_header=True),
                        rows)
 
 
