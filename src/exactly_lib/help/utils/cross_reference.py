@@ -22,12 +22,12 @@ class _TitleRenderer(cross_reference_id.CrossReferenceIdVisitor):
                          x.target_name)
 
     def visit_test_case_phase(self, x: cross_reference_id.TestCasePhaseCrossReference):
-        return 'Phase %s' % self.phase_name_dict[phase_name_dict_key_for(x.phase_name)].emphasis
+        return 'Phase %s' % self.phase_name_dict[phase_name_dict_key_for(x.phase_name)].syntax
 
     def visit_test_case_phase_instruction(self, x: cross_reference_id.TestCasePhaseInstructionCrossReference):
         return 'Instruction {i} (in phase {p})'.format(
             i=self.any_instruction[x.instruction_name],
-            p=self.phase_name_dict[phase_name_dict_key_for(x.phase_name)].emphasis)
+            p=self.phase_name_dict[phase_name_dict_key_for(x.phase_name)].syntax)
 
     def visit_test_suite_section(self, x: cross_reference_id.TestSuiteSectionCrossReference):
         return 'Suite section %s' % self.suite_section_name_dict[suite_section_name_dict_key_for(x.section_name)].emphasis
@@ -35,7 +35,7 @@ class _TitleRenderer(cross_reference_id.CrossReferenceIdVisitor):
     def visit_test_suite_section_instruction(self, x: cross_reference_id.TestSuiteSectionInstructionCrossReference):
         return 'Suite instruction {i} (in section {p})'.format(
             i=self.any_instruction[x.instruction_name],
-            p=self.suite_section_name_dict[suite_section_name_dict_key_for(x.section_name)].emphasis)
+            p=self.suite_section_name_dict[suite_section_name_dict_key_for(x.section_name)].syntax)
 
     def visit_concept(self, x: cross_reference_id.ConceptCrossReferenceId):
         return 'Concept "' + x.concept_name + '"'
