@@ -19,8 +19,15 @@ border-radius     : 4px;
 padding: 5px;
 }
 
+table {
+border-collapse: collapse;
+}
+
 th {
+font-weight: normal;
+background-color: #f4f4f4;
 text-align: left;
+padding-right: 5px;
 }
 
 """
