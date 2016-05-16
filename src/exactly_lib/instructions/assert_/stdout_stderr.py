@@ -48,7 +48,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         self.with_replaced_env_vars_option = a.Option(contents_utils.WITH_REPLACED_ENV_VARS_OPTION_NAME)
 
     def single_line_description(self) -> str:
-        return self._format('Tests the contents of {checked_file}.')
+        return self._format('Tests the contents of {checked_file}')
 
     def main_description_rest(self) -> list:
         return rel_opts.default_relativity_for_rel_opt_type(self.file_arg.name,

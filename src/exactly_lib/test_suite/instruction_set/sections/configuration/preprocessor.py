@@ -21,7 +21,7 @@ class _TheInstructionDocumentation(InstructionDocumentation):
         super().__init__(name)
 
     def single_line_description(self) -> str:
-        return 'Sets a preprocessor to use for each test case in the suite.'
+        return 'Sets a preprocessor to use for each test case in the suite'
 
     def invokation_variants(self) -> list:
         return [

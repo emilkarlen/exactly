@@ -34,7 +34,6 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
 class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
     def __init__(self, name: str):
         self.expected_file_arg = a.Named(parse_here_doc_or_file_ref.CONFIGURATION.argument_syntax_name)
-        # self.actual_file_arg = a.Named(_ACTUAL_RELATIVITY_CONFIGURATION.argument_syntax_name)
         self.actual_file_arg = a.Named('ACTUAL-PATH')
         self.expected_file_arg = a.Named('EXPECTED-FILE')
         super().__init__(name, {
@@ -48,7 +47,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                                     self.actual_file_arg)
 
     def single_line_description(self) -> str:
-        return 'Tests the contents of a file.'
+        return 'Tests the contents of a file'
 
     def main_description_rest(self) -> list:
         return self._paragraphs("""\

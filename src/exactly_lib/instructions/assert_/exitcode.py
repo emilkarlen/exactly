@@ -39,7 +39,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         })
 
     def single_line_description(self) -> str:
-        return 'Tests the exit code.'
+        return 'Tests the exit code'
 
     def invokation_variants(self) -> list:
         return [

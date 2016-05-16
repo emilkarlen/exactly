@@ -42,7 +42,7 @@ It is considered an error if the program exits with a non-zero exit code.
 class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
     def __init__(self,
                  name: str,
-                 single_line_description: str = 'Runs a program.',
+                 single_line_description: str = 'Runs a program',
                  additional_format_map: dict = None,
                  description_rest_text: str = None):
         self.description_rest_text = description_rest_text

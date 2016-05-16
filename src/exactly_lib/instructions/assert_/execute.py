@@ -14,7 +14,7 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(
         parser(instruction_name),
         execute.TheInstructionDocumentation(instruction_name,
-                                            "Runs a program and PASS if, and only if, its exit code is 0."))
+                                            "Runs a program and PASS if, and only if, its exit code is 0"))
 
 
 def parser(instruction_name: str) -> SingleInstructionParser:

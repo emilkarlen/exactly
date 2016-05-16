@@ -35,7 +35,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         self.path_arg = dt.FILE_ARGUMENT
 
     def single_line_description(self) -> str:
-        return 'Sets the contents of stdin for the act phase program.'
+        return 'Sets the contents of stdin for the act phase program'
 
     def main_description_rest(self) -> list:
         return (
