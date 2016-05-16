@@ -19,8 +19,11 @@ def render(paragraph_item_renderer: ParagraphItemRenderer,
         tr = SubElement(table_root, 'tr')
         for col_idx, cell in enumerate(row):
             cell_element = cell_element_for(tr, t_format, row_idx, col_idx)
-            for paragraph_item in cell:
-                paragraph_item_renderer.apply(cell_element, paragraph_item)
+            if len(cell) == 1:
+                paragraph_item_renderer.apply(cell_element, cell[0], skip_surrounding_p_element=True)
+            else:
+                for paragraph_item in cell:
+                    paragraph_item_renderer.apply(cell_element, paragraph_item)
     return table_root
 
 

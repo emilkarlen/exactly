@@ -18,9 +18,10 @@ class FullParagraphItemRenderer(ParagraphItemRenderer):
                  text_renderer: text.TextRenderer):
         self.text_renderer = text_renderer
 
-    def apply(self, parent: Element, x: ParagraphItem) -> Element:
+    def apply(self, parent: Element, x: ParagraphItem,
+              skip_surrounding_p_element=False) -> Element:
         if isinstance(x, Paragraph):
-            return self.render_paragraph(parent, x)
+            return self.render_paragraph(parent, x, skip_surrounding_p_element)
         if isinstance(x, lists.HeaderContentList):
             return self.render_header_value_list(parent, x)
         if isinstance(x, LiteralLayout):
@@ -33,8 +34,10 @@ class FullParagraphItemRenderer(ParagraphItemRenderer):
     def render_literal_layout(self, parent: Element, x: LiteralLayout):
         return literal_layout.render(parent, x)
 
-    def render_paragraph(self, parent: Element, x: Paragraph):
-        return paragraph.render(self.text_renderer, parent, x)
+    def render_paragraph(self, parent: Element, x: Paragraph,
+                         skip_surrounding_p_element: bool):
+        return paragraph.render(self.text_renderer, parent, x,
+                                skip_surrounding_p_element)
 
     def render_header_value_list(self, parent: Element, x: lists.HeaderContentList):
         return list_rendering.render(self.text_renderer, self, parent, x)
