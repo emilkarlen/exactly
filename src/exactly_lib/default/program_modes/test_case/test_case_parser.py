@@ -1,12 +1,9 @@
+from exactly_lib.execution import phases
 from exactly_lib.section_document import parse
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SectionElementParserForDictionaryOfInstructions, SectionElementParserForStandardCommentAndEmptyLines
-from exactly_lib.execution import phases
+    SectionElementParserForDictionaryOfInstructions
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.instruction_setup import InstructionsSetup
-from exactly_lib.test_case.phases import common
-from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
-from exactly_lib.test_case.phases.result import sh
 from exactly_lib.util import line_source
 
 DEFAULT_PHASE = phases.ACT
@@ -55,19 +52,3 @@ def new_parser(split_line_into_name_and_argument_function,
         default_section_name=DEFAULT_PHASE.section_name
     )
     return Parser(parse.new_parser_for(configuration))
-
-
-class PlainSourceActPhaseParser(SectionElementParserForStandardCommentAndEmptyLines):
-    def _parse_instruction(self, source: line_source.LineSequenceBuilder) -> ActPhaseInstruction:
-        return SourceCodeInstruction(source.first_line.text)
-
-
-class SourceCodeInstruction(ActPhaseInstruction):
-    def __init__(self,
-                 source_code: str):
-        self.source_code = source_code
-
-    def main(self, global_environment: common.GlobalEnvironmentForPostEdsPhase,
-             script_generator: PhaseEnvironmentForScriptGeneration) -> sh.SuccessOrHardError:
-        script_generator.append.raw_script_statement(self.source_code)
-        return sh.new_sh_success()
