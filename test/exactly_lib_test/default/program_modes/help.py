@@ -64,7 +64,7 @@ def main_program_test_cases() -> list:
                         _RESULT_IS_SUCCESSFUL),
 
         ProcessTestCase('help for "suite" SHOULD be successful',
-                        HelpInvokation(arguments_for.test_suite_overview()),
+                        HelpInvokation(arguments_for.test_suite_specification()),
                         _RESULT_IS_SUCCESSFUL),
     ]
 

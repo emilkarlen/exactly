@@ -11,7 +11,7 @@ HELP = 'help'
 INSTRUCTIONS = 'instructions'
 TEST_CASE = 'case'
 TEST_SUITE = 'suite'
-OVERVIEW = 'overview'
+SPECIFICATION = 'spec'
 CONCEPT = 'concept'
 HTML_DOCUMENTATION = 'htmldoc'
 
@@ -51,7 +51,7 @@ class Parser:
         if help_command_arguments[0] == TEST_CASE:
             if len(help_command_arguments) == 1:
                 return TestCaseHelpRequest(TestCaseHelpItem.CLI_SYNTAX, None, None)
-            elif help_command_arguments[1:] == [OVERVIEW]:
+            elif help_command_arguments[1:] == [SPECIFICATION]:
                 return TestCaseHelpRequest(TestCaseHelpItem.OVERVIEW, None, None)
             else:
                 raise HelpError('Invalid number of arguments for help command. Use help help, for help.')
@@ -79,7 +79,7 @@ class Parser:
                                         None, None)
         if len(arguments) != 1:
             raise HelpError('Invalid help syntax. Use help help, for help.')
-        if arguments[0] == OVERVIEW:
+        if arguments[0] == SPECIFICATION:
             return TestSuiteHelpRequest(TestSuiteHelpItem.OVERVIEW, None, None)
         section_name = arguments[0]
         for test_suite_section_help in self.application_help.test_suite_help.section_helps:

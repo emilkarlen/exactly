@@ -19,7 +19,7 @@ def help_invokation_variants() -> ParagraphItem:
             _help(argument_parsing.HTML_DOCUMENTATION),
             normalize_and_parse(
                 'Generates a HTML version of all help information available in the program.')),
-        _item(_help_args(arguments_for.test_case_overview()),
+        _item(_help_args(arguments_for.test_case_specification()),
               'Describes the Test Case functionality.'),
         _item(_help_args(arguments_for.test_case_cli_syntax()),
               'Describes the Test Case command line syntax.'),
@@ -51,7 +51,7 @@ def help_invokation_variants() -> ParagraphItem:
             _help('INSTRUCTION'),
             normalize_and_parse(
                 'Describes all Test Case instructions with the given name.')),
-        _item(_help_args(arguments_for.test_suite_overview()),
+        _item(_help_args(arguments_for.test_suite_specification()),
               'Describes the Test Suite functionality.'),
         _item(_help_args(arguments_for.test_suite_cli_syntax()),
               'Describes the Test Suite command line syntax.'),
