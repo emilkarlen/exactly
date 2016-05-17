@@ -1,7 +1,7 @@
-from exactly_lib.section_document import model
-from exactly_lib.section_document.model import PhaseContentElement
 from exactly_lib.execution import phase_step_simple as phase_step
 from exactly_lib.execution import phases
+from exactly_lib.section_document import model
+from exactly_lib.section_document.model import SectionContentElement
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib_test.execution.full_execution.test_resources.test_case_generator import \
     TestCaseGeneratorForFullExecutionBase
@@ -64,7 +64,7 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorForFullExecutionBa
             self.__the_extra[phase] = self.ilc.apply_list(self.__extra[phase])
         return self.__the_extra[phase]
 
-    def recorder_for(self, phase: phases.Phase) -> PhaseContentElement:
+    def recorder_for(self, phase: phases.Phase) -> SectionContentElement:
         return self.ilc.apply(self.__recorders[phase])
 
     @property
@@ -75,7 +75,7 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorForFullExecutionBa
     def internal_instruction_recorder(self) -> list:
         return self.__recorder.recorded_elements
 
-    def phase_contents_for(self, phase: phases.Phase) -> model.PhaseContents:
+    def phase_contents_for(self, phase: phases.Phase) -> model.SectionContents:
         return phase_contents(self._all_elements_for(phase))
 
     def _all_elements_for(self, phase: phases.Phase) -> list:

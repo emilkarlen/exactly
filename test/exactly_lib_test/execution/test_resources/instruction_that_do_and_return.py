@@ -1,16 +1,16 @@
 import types
 from pathlib import Path
 
-from exactly_lib.section_document import model
 from exactly_lib.execution import phases, phase_step
 from exactly_lib.execution.phase_step import PhaseStep
+from exactly_lib.section_document import model
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.act.instruction import PhaseEnvironmentForScriptGeneration, ActPhaseInstruction
-from exactly_lib.test_case.phases.configuration import ConfigurationBuilder, \
-    ConfigurationPhaseInstruction
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.before_assert import BeforeAssertPhaseInstruction
 from exactly_lib.test_case.phases.cleanup import CleanupPhaseInstruction
+from exactly_lib.test_case.phases.configuration import ConfigurationBuilder, \
+    ConfigurationPhaseInstruction
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
@@ -197,7 +197,7 @@ class TestCaseGeneratorForTestCaseSetup(TestCaseGeneratorForFullExecutionBase):
         self.setup = setup
         self.instruction_line_constructor = instruction_line_constructor()
 
-    def phase_contents_for(self, phase: phases.Phase) -> model.PhaseContents:
+    def phase_contents_for(self, phase: phases.Phase) -> model.SectionContents:
         instr = None
         if phase == phases.CONFIGURATION:
             instr = self.setup.as_configuration_phase_instruction()

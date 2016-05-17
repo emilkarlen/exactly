@@ -69,9 +69,9 @@ class TestParse(unittest.TestCase):
                          'All following lines should remain in in the source')
 
     def _assert_is_instruction_element_with_correct_type_of_instruction(self, element) -> sut.SourceCodeInstruction:
-        self.assertIsInstance(element, model.PhaseContentElement,
-                              'Expecting the parser to have returned a ' + str(model.PhaseContentElement))
-        assert isinstance(element, model.PhaseContentElement)
+        self.assertIsInstance(element, model.SectionContentElement,
+                              'Expecting the parser to have returned a ' + str(model.SectionContentElement))
+        assert isinstance(element, model.SectionContentElement)
         instruction = element.instruction
         self.assertIsInstance(instruction, sut.ActPhaseInstruction,
                               'Expecting the instruction to be a ' + str(sut.ActPhaseInstruction))

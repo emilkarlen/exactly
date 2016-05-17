@@ -1,7 +1,7 @@
 from enum import Enum
 
-from exactly_lib.section_document import model
 from exactly_lib.execution.partial_execution import TestCase
+from exactly_lib.section_document import model
 
 
 class PartialPhase(Enum):
@@ -21,7 +21,7 @@ class TestCaseGeneratorForPartialExecutionBase:
         super().__init__()
         self.__test_case = None
 
-    def phase_contents_for(self, phase: PartialPhase) -> model.PhaseContents:
+    def phase_contents_for(self, phase: PartialPhase) -> model.SectionContents:
         raise NotImplementedError()
 
     @property

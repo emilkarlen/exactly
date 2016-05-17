@@ -1,12 +1,12 @@
 import functools
 import pathlib
 
-from exactly_lib.test_suite import parser as test_suite_parser
-from exactly_lib.section_document.model import PhaseContents, ElementType
+from exactly_lib.section_document.model import SectionContents, ElementType
 from exactly_lib.section_document.parse import FileSourceError
 from exactly_lib.test_case import test_case_processing
 from exactly_lib.test_case.preprocessor import IDENTITY_PREPROCESSOR
 from exactly_lib.test_case.test_case_processing import Preprocessor
+from exactly_lib.test_suite import parser as test_suite_parser
 from exactly_lib.test_suite.instruction_set import parse, instruction
 from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_definition import ConfigurationSectionEnvironment
 from exactly_lib.util import line_source
@@ -84,7 +84,7 @@ class _SingleFileReader:
                        test_suite: test_suite_doc.TestSuiteDocument,
                        suite_file_path: pathlib.Path) -> (list, list):
         def paths_for_instructions(env: instruction.Environment,
-                                   section_contents: PhaseContents,
+                                   section_contents: SectionContents,
                                    check_visited: bool) -> list:
             ret_val = []
             for element in section_contents.elements:

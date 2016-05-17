@@ -1,7 +1,7 @@
 from enum import Enum
 
-from exactly_lib.section_document.model import PhaseContentElement
 from exactly_lib.execution import result
+from exactly_lib.section_document.model import SectionContentElement
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.util import line_source
 
@@ -91,7 +91,7 @@ class SingleInstructionExecutionFailure(tuple):
 
 
 def execute_element(executor: ControlledInstructionExecutor,
-                    element: PhaseContentElement) -> SingleInstructionExecutionFailure:
+                    element: SectionContentElement) -> SingleInstructionExecutionFailure:
     """
     :param element: Must be an instruction (i.e., element.is_instruction is True)
     :return: If None, then the execution was successful.
