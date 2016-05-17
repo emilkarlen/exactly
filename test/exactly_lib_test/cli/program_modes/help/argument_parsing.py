@@ -266,7 +266,7 @@ class TestTestCaseInstructionSet(unittest.TestCase):
 class TestTestCaseCliAndOverviewHelp(unittest.TestCase):
     def test_overview(self):
         actual = sut.parse(application_help_for([]),
-                           arguments_for.test_case_overview())
+                           arguments_for.test_case_specification())
         self.assertIsInstance(actual,
                               TestCaseHelpRequest,
                               'Expecting settings for test-case')
@@ -304,7 +304,7 @@ class TestTestSuiteHelp(unittest.TestCase):
 
     def test_overview(self):
         actual = sut.parse(application_help_for([]),
-                           arguments_for.test_suite_overview())
+                           arguments_for.test_suite_specification())
         self.assertIsInstance(actual,
                               TestSuiteHelpRequest,
                               'Expecting settings for test-suite')
