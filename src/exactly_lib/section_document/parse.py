@@ -288,7 +288,7 @@ class _Impl:
         self.next_line()
 
     def extract_section_name_and_consume_line(self) -> str:
-        section_name = syntax.extract_phase_name_from_phase_line(self._current_line.text)
+        section_name = syntax.extract_section_name_from_section_line(self._current_line.text)
         self.next_line()
         return section_name
 
@@ -315,7 +315,7 @@ class _Impl:
         return self._current_line is None
 
     def current_line_is_section_line(self) -> bool:
-        return syntax.PHASE_LINE_RE.match(self._current_line.text)
+        return syntax.is_section_header_line(self._current_line.text)
 
         # @property
         # def configuration(self) -> SectionsConfiguration:
