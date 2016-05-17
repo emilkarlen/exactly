@@ -24,7 +24,7 @@ class InstructionLineConstructor:
                  lines_generator: LinesGenerator):
         self.lines_generator = lines_generator
 
-    def apply(self, instruction: TestCaseInstruction) -> model.PhaseContentElement:
+    def apply(self, instruction: TestCaseInstruction) -> model.SectionContentElement:
         return exactly_lib_test.test_resources.model_utils.new_instruction_element(
                 self.lines_generator.next_line(),
                 instruction)
@@ -39,24 +39,24 @@ def instruction_line_constructor() -> InstructionLineConstructor:
     return InstructionLineConstructor(LinesGenerator())
 
 
-def phase_contents(phase_content_elements: list) -> model.PhaseContents:
-    return model.PhaseContents(tuple(phase_content_elements))
+def phase_contents(phase_content_elements: list) -> model.SectionContents:
+    return model.SectionContents(tuple(phase_content_elements))
 
 
 class TestCaseGeneratorBase:
-    def setup_phase(self) -> model.PhaseContents:
+    def setup_phase(self) -> model.SectionContents:
         return phase_contents(self._setup_phase())
 
-    def act_phase(self) -> model.PhaseContents:
+    def act_phase(self) -> model.SectionContents:
         return phase_contents(self._act_phase())
 
-    def before_assert_phase(self) -> model.PhaseContents:
+    def before_assert_phase(self) -> model.SectionContents:
         return phase_contents(self._before_assert_phase())
 
-    def assert_phase(self) -> model.PhaseContents:
+    def assert_phase(self) -> model.SectionContents:
         return phase_contents(self._assert_phase())
 
-    def cleanup_phase(self) -> model.PhaseContents:
+    def cleanup_phase(self) -> model.SectionContents:
         return phase_contents(self._cleanup_phase())
 
     def _setup_phase(self) -> list:

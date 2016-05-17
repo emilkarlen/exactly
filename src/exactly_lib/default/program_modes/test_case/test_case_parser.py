@@ -18,12 +18,12 @@ class Parser:
               plain_test_case: line_source.LineSource) -> test_case_doc.TestCase:
         document = self.__plain_file_parser.apply(plain_test_case)
         return test_case_doc.TestCase(
-            document.elements_for_phase_or_empty_if_phase_not_present(phases.CONFIGURATION.section_name),
-            document.elements_for_phase_or_empty_if_phase_not_present(phases.SETUP.section_name),
-            document.elements_for_phase_or_empty_if_phase_not_present(phases.ACT.section_name),
-            document.elements_for_phase_or_empty_if_phase_not_present(phases.BEFORE_ASSERT.section_name),
-            document.elements_for_phase_or_empty_if_phase_not_present(phases.ASSERT.section_name),
-            document.elements_for_phase_or_empty_if_phase_not_present(phases.CLEANUP.section_name),
+            document.elements_for_section_or_empty_if_phase_not_present(phases.CONFIGURATION.section_name),
+            document.elements_for_section_or_empty_if_phase_not_present(phases.SETUP.section_name),
+            document.elements_for_section_or_empty_if_phase_not_present(phases.ACT.section_name),
+            document.elements_for_section_or_empty_if_phase_not_present(phases.BEFORE_ASSERT.section_name),
+            document.elements_for_section_or_empty_if_phase_not_present(phases.ASSERT.section_name),
+            document.elements_for_section_or_empty_if_phase_not_present(phases.CLEANUP.section_name),
         )
 
 

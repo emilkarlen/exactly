@@ -64,7 +64,7 @@ class SingleInstructionParser:
 
 
 class SectionElementParserForStandardCommentAndEmptyLines(parse.SectionElementParser):
-    def apply(self, source: line_source.LineSequenceBuilder) -> model.PhaseContentElement:
+    def apply(self, source: line_source.LineSequenceBuilder) -> model.SectionContentElement:
         first_line = source.first_line
         if syntax.is_empty_line(first_line.text):
             return model.new_empty_e(source.build())

@@ -16,9 +16,9 @@ class ElementType(enum.Enum):
     INSTRUCTION = 3
 
 
-class PhaseContentElement:
+class SectionContentElement:
     """
-    Element of the contents of a phase: either a comment or an instruction.
+    Element of the contents of a section: either a comment or an instruction.
 
     Construct elements with either new_comment_element or new_instruction_element.
     """
@@ -51,33 +51,33 @@ class PhaseContentElement:
         return self._instruction
 
 
-def new_empty_e(source: line_source.LineSequence) -> PhaseContentElement:
-    return PhaseContentElement(ElementType.EMPTY,
-                               source,
-                               None)
+def new_empty_e(source: line_source.LineSequence) -> SectionContentElement:
+    return SectionContentElement(ElementType.EMPTY,
+                                 source,
+                                 None)
 
 
-def new_comment_e(source: line_source.LineSequence) -> PhaseContentElement:
-    return PhaseContentElement(ElementType.COMMENT,
-                               source,
-                               None)
+def new_comment_e(source: line_source.LineSequence) -> SectionContentElement:
+    return SectionContentElement(ElementType.COMMENT,
+                                 source,
+                                 None)
 
 
 def new_instruction_e(source: line_source.LineSequence,
-                      instruction: Instruction) -> PhaseContentElement:
-    return PhaseContentElement(ElementType.INSTRUCTION,
-                               source,
-                               instruction)
+                      instruction: Instruction) -> SectionContentElement:
+    return SectionContentElement(ElementType.INSTRUCTION,
+                                 source,
+                                 instruction)
 
 
-class PhaseContents:
+class SectionContents:
     """
-    A sequence/list of PhaseContentElement:s.
+    A sequence/list of SectionContentElement:s.
     """
 
     def __init__(self, elements: tuple):
         """
-        :param elements: List of PhaseContentElement.
+        :param elements: List of `SectionContentElement`.
         """
         self._elements = elements
 
@@ -86,8 +86,8 @@ class PhaseContents:
         return self._elements
 
 
-def new_empty_phase_contents() -> PhaseContents:
-    return PhaseContents(())
+def new_empty_section_contents() -> SectionContents:
+    return SectionContents(())
 
 
 class Document:
@@ -95,24 +95,24 @@ class Document:
     The result of parsing a file without encountering any errors.
     """
 
-    def __init__(self, phase2elements: dict):
+    def __init__(self, section2elements: dict):
         """
-        :param phase2elements dictionary str -> PhaseContents
+        :param section2elements dictionary str -> PhaseContents
         """
-        self._phase2elements = phase2elements
+        self._section2elements = section2elements
 
     @property
-    def phases(self) -> frozenset:
-        return self._phase2elements.keys()
+    def section(self) -> frozenset:
+        return self._section2elements.keys()
 
-    def elements_for_phase(self, phase_name: str) -> PhaseContents:
-        return self._phase2elements[phase_name]
+    def elements_for_section(self, phase_name: str) -> SectionContents:
+        return self._section2elements[phase_name]
 
-    def elements_for_phase_or_empty_if_phase_not_present(self, phase_name: str) -> PhaseContents:
-        if phase_name in self._phase2elements:
-            return self.elements_for_phase(phase_name)
+    def elements_for_section_or_empty_if_phase_not_present(self, phase_name: str) -> SectionContents:
+        if phase_name in self._section2elements:
+            return self.elements_for_section(phase_name)
         else:
-            return PhaseContents(())
+            return SectionContents(())
 
 
 def empty_document() -> Document:

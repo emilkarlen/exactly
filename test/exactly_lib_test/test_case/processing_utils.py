@@ -2,7 +2,7 @@ import pathlib
 import unittest
 
 from exactly_lib.execution.result import FullResult, new_skipped
-from exactly_lib.section_document.model import new_empty_phase_contents
+from exactly_lib.section_document.model import new_empty_section_contents
 from exactly_lib.test_case import error_description
 from exactly_lib.test_case import processing_utils as sut
 from exactly_lib.test_case import test_case_doc
@@ -262,12 +262,12 @@ PROCESS_ERROR = tcp.ProcessError(tcp.ErrorInfo(error_description.of_exception(Va
 
 PATH = pathlib.Path('path')
 
-TEST_CASE = test_case_doc.TestCase(new_empty_phase_contents(),
-                                   new_empty_phase_contents(),
-                                   new_empty_phase_contents(),
-                                   new_empty_phase_contents(),
-                                   new_empty_phase_contents(),
-                                   new_empty_phase_contents())
+TEST_CASE = test_case_doc.TestCase(new_empty_section_contents(),
+                                   new_empty_section_contents(),
+                                   new_empty_section_contents(),
+                                   new_empty_section_contents(),
+                                   new_empty_section_contents(),
+                                   new_empty_section_contents())
 
 
 def suite():

@@ -9,7 +9,7 @@ from exactly_lib.util import line_source
 
 
 class PlainSourceActPhaseParser(parse.SectionElementParser):
-    def apply(self, source: line_source.LineSequenceBuilder) -> model.PhaseContentElement:
+    def apply(self, source: line_source.LineSequenceBuilder) -> model.SectionContentElement:
         while source.has_next():
             next_line = source.next_line()
             if syntax.is_section_header_line(next_line):
@@ -17,9 +17,9 @@ class PlainSourceActPhaseParser(parse.SectionElementParser):
                 break
         line_sequence = source.build()
         source_code = line_sequence.text
-        return model.PhaseContentElement(model.ElementType.INSTRUCTION,
-                                         line_sequence,
-                                         SourceCodeInstruction(source_code))
+        return model.SectionContentElement(model.ElementType.INSTRUCTION,
+                                           line_sequence,
+                                           SourceCodeInstruction(source_code))
 
 
 class SourceCodeInstruction(ActPhaseInstruction):

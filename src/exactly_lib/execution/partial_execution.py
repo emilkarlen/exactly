@@ -4,7 +4,6 @@ import shutil
 import subprocess
 import tempfile
 
-from exactly_lib.section_document.model import PhaseContents
 from exactly_lib.execution import environment_variables
 from exactly_lib.execution import phase_step
 from exactly_lib.execution import phase_step_executors
@@ -12,6 +11,7 @@ from exactly_lib.execution import phases
 from exactly_lib.execution.phase_step import PhaseStep
 from exactly_lib.execution.phase_step_execution import ElementHeaderExecutor
 from exactly_lib.execution.single_instruction_executor import ControlledInstructionExecutor
+from exactly_lib.section_document.model import SectionContents
 from exactly_lib.test_case.os_services import new_default, OsServices
 from exactly_lib.test_case.phases import common
 from exactly_lib.test_case.phases.act.phase_setup import PhaseEnvironmentForScriptGeneration, ActProgramExecutor, \
@@ -45,11 +45,11 @@ class Configuration(tuple):
 
 class TestCase(tuple):
     def __new__(cls,
-                setup_phase: PhaseContents,
-                act_phase: PhaseContents,
-                before_assert_phase: PhaseContents,
-                assert_phase: PhaseContents,
-                cleanup_phase: PhaseContents):
+                setup_phase: SectionContents,
+                act_phase: SectionContents,
+                before_assert_phase: SectionContents,
+                assert_phase: SectionContents,
+                cleanup_phase: SectionContents):
         return tuple.__new__(cls, (setup_phase,
                                    act_phase,
                                    before_assert_phase,
@@ -57,23 +57,23 @@ class TestCase(tuple):
                                    cleanup_phase))
 
     @property
-    def setup_phase(self) -> PhaseContents:
+    def setup_phase(self) -> SectionContents:
         return self[0]
 
     @property
-    def act_phase(self) -> PhaseContents:
+    def act_phase(self) -> SectionContents:
         return self[1]
 
     @property
-    def before_assert_phase(self) -> PhaseContents:
+    def before_assert_phase(self) -> SectionContents:
         return self[2]
 
     @property
-    def assert_phase(self) -> PhaseContents:
+    def assert_phase(self) -> SectionContents:
         return self[3]
 
     @property
-    def cleanup_phase(self) -> PhaseContents:
+    def cleanup_phase(self) -> SectionContents:
         return self[4]
 
 
@@ -455,7 +455,7 @@ class PartialExecutor:
     def __run_internal_instructions_phase_step(self,
                                                step: PhaseStep,
                                                instruction_executor: ControlledInstructionExecutor,
-                                               phase_contents: PhaseContents) -> PartialResult:
+                                               phase_contents: SectionContents) -> PartialResult:
         return phase_step_execution.execute_phase(phase_contents,
                                                   phase_step_execution.ElementHeaderExecutorThatDoesNothing(),
                                                   phase_step_execution.ElementHeaderExecutorThatDoesNothing(),

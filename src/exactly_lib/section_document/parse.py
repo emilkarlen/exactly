@@ -64,7 +64,7 @@ class SectionElementParser:
     Parses a single element in a section.
     """
 
-    def apply(self, source: line_source.LineSequenceBuilder) -> model.PhaseContentElement:
+    def apply(self, source: line_source.LineSequenceBuilder) -> model.SectionContentElement:
         """
         :param source: The first line is not a section-header.
 
@@ -273,17 +273,17 @@ class _Impl:
             self.add_element_to_current_section(element)
             self.forward_line_source_according_lines_consumed_by(element)
 
-    def parse_element_at_current_line_using_current_section_element_parser(self) -> model.PhaseContentElement:
+    def parse_element_at_current_line_using_current_section_element_parser(self) -> model.SectionContentElement:
         sequence_source = LineSequenceSourceFromListOfLines(self._list_of_lines.copy())
         line_sequence_builder = line_source.LineSequenceBuilder(sequence_source,
                                                                 self._current_line.line_number,
                                                                 self._current_line.text)
         return self._parser_for_current_section.apply(line_sequence_builder)
 
-    def add_element_to_current_section(self, element: model.PhaseContentElement):
+    def add_element_to_current_section(self, element: model.SectionContentElement):
         self._elements_for_current_section.append(element)
 
-    def forward_line_source_according_lines_consumed_by(self, element: model.PhaseContentElement):
+    def forward_line_source_according_lines_consumed_by(self, element: model.SectionContentElement):
         self.list_of_lines.forward(len(element.source.lines) - 1)
         self.next_line()
 
@@ -295,7 +295,7 @@ class _Impl:
     def build_document(self) -> model.Document:
         sections = {}
         for section_name, elements in self._section_name_2_element_list.items():
-            sections[section_name] = model.PhaseContents(tuple(elements))
+            sections[section_name] = model.SectionContents(tuple(elements))
         return model.Document(sections)
 
     def set_current_section(self, section_name: str):

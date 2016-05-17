@@ -1,10 +1,10 @@
 import unittest
 
-from exactly_lib.section_document.model import PhaseContents
 from exactly_lib.execution.phase_step_execution import execute_phase_prim, Failure
 from exactly_lib.execution.result import PartialResultStatus
 from exactly_lib.execution.single_instruction_executor import ControlledInstructionExecutor, \
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum
+from exactly_lib.section_document.model import SectionContents
 from exactly_lib.util.line_source import Line
 from exactly_lib_test.execution.test_resources.phase_step_execution import ExpectedResult, expected_success, \
     RecordingMedia, \
@@ -20,15 +20,15 @@ from exactly_lib_test.test_resources.model_utils import new_comment_element, new
 
 class Test(unittest.TestCase):
     def test_when_there_are_no_elements_no_executor_should_be_invoked_and_the_result_should_be_pass(self):
-        phase_contents = PhaseContents(())
+        phase_contents = SectionContents(())
         self._standard_test_with_successful_instruction_executor(
             phase_contents,
             expected_success(),
             [])
 
     def test_when_there_are_only_comment_elements_than_the_result_should_be_pass(self):
-        phase_contents = PhaseContents((new_comment_element(Line(1, '1')),
-                                        new_comment_element(Line(2, '2'))))
+        phase_contents = SectionContents((new_comment_element(Line(1, '1')),
+                                          new_comment_element(Line(2, '2'))))
         self._standard_test_with_successful_instruction_executor(
             phase_contents,
             expected_success(),
@@ -36,9 +36,9 @@ class Test(unittest.TestCase):
              'comment header for source line number: 2'])
 
     def test_successful_execution_of_single_instruction(self):
-        phase_contents = PhaseContents((new_instruction_element(Line(1, '1'),
-                                                                TestInstruction('The instruction')),
-                                        ))
+        phase_contents = SectionContents((new_instruction_element(Line(1, '1'),
+                                                                  TestInstruction('The instruction')),
+                                          ))
         self._standard_test_with_successful_instruction_executor(
             phase_contents,
             expected_success(),
@@ -46,19 +46,19 @@ class Test(unittest.TestCase):
              'instruction executor: The instruction'])
 
     def test_successful_sequence(self):
-        phase_contents = PhaseContents((new_instruction_element(Line(1, '1'),
-                                                                TestInstruction('First instruction')),
-                                        new_comment_element(Line(2, '2')),
-                                        new_instruction_element(Line(3, '3'),
+        phase_contents = SectionContents((new_instruction_element(Line(1, '1'),
+                                                                  TestInstruction('First instruction')),
+                                          new_comment_element(Line(2, '2')),
+                                          new_instruction_element(Line(3, '3'),
                                                                 TestInstruction('Second instruction')),
-                                        new_comment_element(Line(4, '4')),
-                                        new_comment_element(Line(50, '50')),
-                                        new_instruction_element(Line(60, '60'),
+                                          new_comment_element(Line(4, '4')),
+                                          new_comment_element(Line(50, '50')),
+                                          new_instruction_element(Line(60, '60'),
                                                                 TestInstruction('Third instruction')),
-                                        new_instruction_element(Line(70, '70'),
-                                                                TestInstruction('Fourth instruction')),
-                                        new_comment_element(Line(80, '80')),
-                                        ))
+                                          new_instruction_element(Line(70, '70'),
+                                                                  TestInstruction('Fourth instruction')),
+                                          new_comment_element(Line(80, '80')),
+                                          ))
         self._standard_test_with_successful_instruction_executor(
             phase_contents,
             expected_success(),
@@ -91,9 +91,9 @@ class Test(unittest.TestCase):
             PartialInstructionControlledFailureInfo(PartialControlledFailureEnum.FAIL,
                                                     'fail message')
         )
-        phase_contents = PhaseContents((new_instruction_element(Line(1, '1'),
-                                                                TestInstruction('The instruction')),
-                                        ))
+        phase_contents = SectionContents((new_instruction_element(Line(1, '1'),
+                                                                  TestInstruction('The instruction')),
+                                          ))
         self._standard_test(
             recording_media,
             phase_contents,
@@ -112,9 +112,9 @@ class Test(unittest.TestCase):
             PartialInstructionControlledFailureInfo(PartialControlledFailureEnum.HARD_ERROR,
                                                     'hard error message')
         )
-        phase_contents = PhaseContents((new_instruction_element(Line(1, '1'),
-                                                                TestInstruction('The instruction')),
-                                        ))
+        phase_contents = SectionContents((new_instruction_element(Line(1, '1'),
+                                                                  TestInstruction('The instruction')),
+                                          ))
         self._standard_test(
             recording_media,
             phase_contents,
@@ -132,9 +132,9 @@ class Test(unittest.TestCase):
             recording_media.new_recorder_with_header('instruction executor'),
             TestException()
         )
-        phase_contents = PhaseContents((new_instruction_element(Line(1, '1'),
-                                                                TestInstruction('The instruction')),
-                                        ))
+        phase_contents = SectionContents((new_instruction_element(Line(1, '1'),
+                                                                  TestInstruction('The instruction')),
+                                          ))
         self._standard_test(
             recording_media,
             phase_contents,
@@ -153,11 +153,11 @@ class Test(unittest.TestCase):
             PartialInstructionControlledFailureInfo(PartialControlledFailureEnum.FAIL,
                                                     'fail message')
         )
-        phase_contents = PhaseContents((new_instruction_element(Line(1, '1'),
-                                                                TestInstruction('First instruction')),
-                                        new_instruction_element(Line(2, '2'),
+        phase_contents = SectionContents((new_instruction_element(Line(1, '1'),
+                                                                  TestInstruction('First instruction')),
+                                          new_instruction_element(Line(2, '2'),
                                                                 TestInstruction('Second instruction'))
-                                        ))
+                                          ))
         self._standard_test(
             recording_media,
             phase_contents,
@@ -176,13 +176,13 @@ class Test(unittest.TestCase):
             PartialInstructionControlledFailureInfo(PartialControlledFailureEnum.FAIL,
                                                     'fail message')
         )
-        phase_contents = PhaseContents((new_instruction_element(Line(1, '1'),
-                                                                TestInstruction('First instruction')),
-                                        new_instruction_element(Line(2, '2'),
+        phase_contents = SectionContents((new_instruction_element(Line(1, '1'),
+                                                                  TestInstruction('First instruction')),
+                                          new_instruction_element(Line(2, '2'),
                                                                 TestInstruction('Middle instruction')),
-                                        new_instruction_element(Line(3, '3'),
-                                                                TestInstruction('Last instruction')),
-                                        ))
+                                          new_instruction_element(Line(3, '3'),
+                                                                  TestInstruction('Last instruction')),
+                                          ))
         self._standard_test(
             recording_media,
             phase_contents,
@@ -204,11 +204,11 @@ class Test(unittest.TestCase):
             PartialInstructionControlledFailureInfo(PartialControlledFailureEnum.FAIL,
                                                     'fail message')
         )
-        phase_contents = PhaseContents((new_instruction_element(Line(1, '1'),
-                                                                TestInstruction('First instruction')),
-                                        new_instruction_element(Line(2, '2'),
+        phase_contents = SectionContents((new_instruction_element(Line(1, '1'),
+                                                                  TestInstruction('First instruction')),
+                                          new_instruction_element(Line(2, '2'),
                                                                 TestInstruction('Last instruction'))
-                                        ))
+                                          ))
         self._standard_test(
             recording_media,
             phase_contents,
@@ -230,10 +230,10 @@ class Test(unittest.TestCase):
             PartialInstructionControlledFailureInfo(PartialControlledFailureEnum.FAIL,
                                                     'fail message')
         )
-        phase_contents = PhaseContents((new_instruction_element(Line(1, '1'),
-                                                                TestInstruction('First instruction')),
-                                        new_comment_element(Line(50, '50')),
-                                        ))
+        phase_contents = SectionContents((new_instruction_element(Line(1, '1'),
+                                                                  TestInstruction('First instruction')),
+                                          new_comment_element(Line(50, '50')),
+                                          ))
         self._standard_test(
             recording_media,
             phase_contents,
@@ -246,7 +246,7 @@ class Test(unittest.TestCase):
              ])
 
     def _standard_test_with_successful_instruction_executor(self,
-                                                            phase_contents: PhaseContents,
+                                                            phase_contents: SectionContents,
                                                             expected_result: ExpectedResult,
                                                             expected_recordings: list):
         recording_media = RecordingMedia()
@@ -263,7 +263,7 @@ class Test(unittest.TestCase):
 
     def _standard_test(self,
                        recording_media: RecordingMedia,
-                       phase_contents: PhaseContents,
+                       phase_contents: SectionContents,
                        instruction_executor: ControlledInstructionExecutor,
                        expected_result: ExpectedResult,
                        expected_recordings: list):
@@ -278,7 +278,7 @@ class Test(unittest.TestCase):
 
     def _run_std(self,
                  recording_media: RecordingMedia,
-                 phase_contents: PhaseContents,
+                 phase_contents: SectionContents,
                  instruction_executor: ControlledInstructionExecutor) -> Failure:
         return execute_phase_prim(
             phase_contents,

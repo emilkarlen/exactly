@@ -1,11 +1,11 @@
 import os
 import pathlib
 
-from exactly_lib.section_document.model import PhaseContents
 from exactly_lib.execution import environment_variables
 from exactly_lib.execution import phase_step_executors, partial_execution, phase_step
 from exactly_lib.execution.execution_mode import ExecutionMode
 from exactly_lib.execution.partial_execution import ScriptHandling
+from exactly_lib.section_document.model import SectionContents
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from . import phase_step_execution
@@ -78,7 +78,7 @@ def _prepare_environment_variables():
 
 
 def _execute_configuration_phase(phase_environment: ConfigurationBuilder,
-                                 configuration_phase: PhaseContents) -> PartialResult:
+                                 configuration_phase: SectionContents) -> PartialResult:
     return phase_step_execution.execute_phase(configuration_phase,
                                               phase_step_execution.ElementHeaderExecutorThatDoesNothing(),
                                               phase_step_execution.ElementHeaderExecutorThatDoesNothing(),

@@ -40,23 +40,23 @@ class ParseTestBase(unittest.TestCase):
     def _check_document(self,
                         expected_document: model.Document,
                         actual_document: model.Document):
-        self.assertEqual(len(expected_document.phases),
-                         len(actual_document.phases),
+        self.assertEqual(len(expected_document.section),
+                         len(actual_document.section),
                          'Number of phases')
-        for phase_name in expected_document.phases:
-            expected_elements = expected_document.elements_for_phase(phase_name)
+        for phase_name in expected_document.section:
+            expected_elements = expected_document.elements_for_section(phase_name)
             self.assertIn(phase_name,
-                          actual_document.phases,
+                          actual_document.section,
                           'The actual test case should contain the expected phase "%s"' % phase_name)
-            actual_elements = actual_document.elements_for_phase(phase_name)
+            actual_elements = actual_document.elements_for_section(phase_name)
             ElementChecker(self, phase_name).check_equal_phase_contents(expected_elements,
                                                                         actual_elements)
-        for phase_name in actual_document.phases:
+        for phase_name in actual_document.section:
             self.assertIn(phase_name,
-                          expected_document.phases,
+                          expected_document.section,
                           'Phase %s in actual document is not found in expected document (%s)' % (
                               phase_name,
-                              str(expected_document.phases)
+                              str(expected_document.section)
                           ))
 
 
@@ -86,8 +86,8 @@ class TestParseSingleLineElements(ParseTestBase):
                                             source_lines)
 
         expected_phase2instructions = {
-            'phase 1': model.PhaseContents(()),
-            'phase 2': model.PhaseContents(()),
+            'phase 1': model.SectionContents(()),
+            'phase 2': model.SectionContents(()),
         }
         expected_document = model.Document(expected_phase2instructions)
         self._check_document(expected_document, actual_document)
@@ -112,7 +112,7 @@ class TestParseSingleLineElements(ParseTestBase):
             new_instruction(6, 'instruction 1', 'phase 1')
         )
         expected_phase2instructions = {
-            'phase 1': model.PhaseContents(phase1_instructions),
+            'phase 1': model.SectionContents(phase1_instructions),
         }
         expected_document = model.Document(expected_phase2instructions)
         self._check_document(expected_document, actual_document)
@@ -141,8 +141,8 @@ class TestParseSingleLineElements(ParseTestBase):
             new_instruction(6, 'instruction 1', 'phase 1')
         )
         expected_phase2instructions = {
-            'default': model.PhaseContents(default_instructions),
-            'phase 1': model.PhaseContents(phase1_instructions)
+            'default': model.SectionContents(default_instructions),
+            'phase 1': model.SectionContents(phase1_instructions)
         }
         expected_document = model.Document(expected_phase2instructions)
         self._check_document(expected_document, actual_document)
@@ -163,7 +163,7 @@ class TestParseSingleLineElements(ParseTestBase):
             new_instruction(3, 'instruction', 'phase 1')
         )
         expected_phase2instructions = {
-            'phase 1': model.PhaseContents(phase1_instructions)
+            'phase 1': model.SectionContents(phase1_instructions)
         }
         expected_document = model.Document(expected_phase2instructions)
         self._check_document(expected_document, actual_document)
@@ -194,8 +194,8 @@ class TestParseSingleLineElements(ParseTestBase):
                             'phase 2'),
         )
         expected_phase2instructions = {
-            'phase 1': model.PhaseContents(phase1_instructions),
-            'phase 2': model.PhaseContents(phase2_instructions)
+            'phase 1': model.SectionContents(phase1_instructions),
+            'phase 2': model.SectionContents(phase2_instructions)
         }
         expected_document = model.Document(expected_phase2instructions)
         self._check_document(expected_document, actual_document)
@@ -247,7 +247,7 @@ class TestParseSingleLineElements(ParseTestBase):
                             'phase 1'),
         )
         expected_phase2instructions = {
-            'phase 1': model.PhaseContents(phase1_instructions)
+            'phase 1': model.SectionContents(phase1_instructions)
         }
         expected_document = model.Document(expected_phase2instructions)
         self._check_document(expected_document, actual_document)
@@ -268,7 +268,7 @@ class TestParseMultiLineElements(ParseTestBase):
             new_instruction(1, 'MULTI-LINE-INSTRUCTION 1', 'default'),
         )
         expected_phase2instructions = {
-            'default': model.PhaseContents(default_phase_instructions),
+            'default': model.SectionContents(default_phase_instructions),
         }
         expected_document = model.Document(expected_phase2instructions)
         self._check_document(expected_document, actual_document)
@@ -290,7 +290,7 @@ class TestParseMultiLineElements(ParseTestBase):
                                         'default'),
         )
         expected_phase2instructions = {
-            'default': model.PhaseContents(default_phase_instructions),
+            'default': model.SectionContents(default_phase_instructions),
         }
         expected_document = model.Document(expected_phase2instructions)
         self._check_document(expected_document, actual_document)
@@ -317,7 +317,7 @@ class TestParseMultiLineElements(ParseTestBase):
             new_empty(4, ''),
         )
         expected_phase2instructions = {
-            'default': model.PhaseContents(default_phase_instructions),
+            'default': model.SectionContents(default_phase_instructions),
         }
         expected_document = model.Document(expected_phase2instructions)
         self._check_document(expected_document, actual_document)
@@ -348,8 +348,8 @@ class TestParseMultiLineElements(ParseTestBase):
                             'phase 1'),
         )
         expected_phase2instructions = {
-            'default': model.PhaseContents(default_phase_instructions),
-            'phase 1': model.PhaseContents(phase1_instructions),
+            'default': model.SectionContents(default_phase_instructions),
+            'phase 1': model.SectionContents(phase1_instructions),
         }
         expected_document = model.Document(expected_phase2instructions)
         self._check_document(expected_document, actual_document)
@@ -380,7 +380,7 @@ class TestParseMultiLineElements(ParseTestBase):
                             'phase 1'),
         )
         expected_phase2instructions = {
-            'phase 1': model.PhaseContents(phase1_instructions),
+            'phase 1': model.SectionContents(phase1_instructions),
         }
         expected_document = model.Document(expected_phase2instructions)
         self._check_document(expected_document, actual_document)
@@ -409,7 +409,7 @@ class TestParseMultiLineElements(ParseTestBase):
                                         'phase 1'),
         )
         expected_phase2instructions = {
-            'phase 1': model.PhaseContents(phase1_instructions),
+            'phase 1': model.SectionContents(phase1_instructions),
         }
         expected_document = model.Document(expected_phase2instructions)
         self._check_document(expected_document, actual_document)
@@ -441,8 +441,8 @@ class TestParseMultiLineElements(ParseTestBase):
         )
         phase2_instructions = ()
         expected_phase2instructions = {
-            'phase 1': model.PhaseContents(phase1_instructions),
-            'phase 2': model.PhaseContents(phase2_instructions),
+            'phase 1': model.SectionContents(phase1_instructions),
+            'phase 2': model.SectionContents(phase2_instructions),
         }
         expected_document = model.Document(expected_phase2instructions)
         self._check_document(expected_document, actual_document)
@@ -544,7 +544,7 @@ class InstructionInSection(model.Instruction):
 
 def new_instruction(line_number: int,
                     line_text: str,
-                    phase_name: str) -> model.PhaseContentElement:
+                    phase_name: str) -> model.SectionContentElement:
     return model.new_instruction_e(line_source.LineSequence(line_number,
                                                             (line_text,)),
                                    InstructionInSection(phase_name))
@@ -552,20 +552,20 @@ def new_instruction(line_number: int,
 
 def new_instruction__multi_line(line_number: int,
                                 lines: list,
-                                phase_name: str) -> model.PhaseContentElement:
+                                phase_name: str) -> model.SectionContentElement:
     return model.new_instruction_e(line_source.LineSequence(line_number,
                                                             tuple(lines)),
                                    InstructionInSection(phase_name))
 
 
 def new_comment(line_number: int,
-                line_text: str) -> model.PhaseContentElement:
+                line_text: str) -> model.SectionContentElement:
     return model.new_comment_e(line_source.LineSequence(line_number,
                                                         (line_text,)))
 
 
 def new_empty(line_number: int,
-              line_text: str) -> model.PhaseContentElement:
+              line_text: str) -> model.SectionContentElement:
     return model.new_empty_e(line_source.LineSequence(line_number,
                                                       (line_text,)))
 
@@ -574,7 +574,7 @@ class InstructionParserForPhase(parse.SectionElementParser):
     def __init__(self, section_name: str):
         self._section_name = section_name
 
-    def apply(self, source: line_source.LineSequenceBuilder) -> model.PhaseContentElement:
+    def apply(self, source: line_source.LineSequenceBuilder) -> model.SectionContentElement:
         the_line = source.lines[0]
         if the_line == '':
             return model.new_empty_e(source.build())
@@ -594,7 +594,7 @@ class InstructionParserForPhase(parse.SectionElementParser):
 
 
 class InstructionParserThatFails(parse.SectionElementParser):
-    def apply(self, source: line_source.LineSequenceBuilder) -> model.PhaseContentElement:
+    def apply(self, source: line_source.LineSequenceBuilder) -> model.SectionContentElement:
         raise SourceError(source.build().first_line,
                           'Unconditional failure')
 
@@ -633,8 +633,8 @@ class ElementChecker(TestCaseWithMessageHeader):
                          MessageWithHeaderConstructor('Phase "%s"' % phase_name))
 
     def check_equal_phase_contents(self,
-                                   expected_elements: model.PhaseContents,
-                                   actual_elements: model.PhaseContents):
+                                   expected_elements: model.SectionContents,
+                                   actual_elements: model.SectionContents):
         self.tc.assertEqual(len(expected_elements.elements),
                             len(actual_elements.elements),
                             self.msg('Expected %d elements. Actual: %d' % (
@@ -646,8 +646,8 @@ class ElementChecker(TestCaseWithMessageHeader):
             self.check_equal_element(expected_element, actual_element)
 
     def check_equal_element(self,
-                            expected_element: model.PhaseContentElement,
-                            actual_element: model.PhaseContentElement):
+                            expected_element: model.SectionContentElement,
+                            actual_element: model.SectionContentElement):
         self.tc.assertEqual(expected_element.element_type,
                             actual_element.element_type,
                             self.msg('Element type'))

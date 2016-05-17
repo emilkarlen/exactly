@@ -1,12 +1,12 @@
 import types
 import unittest
 
-from exactly_lib.section_document.model import PhaseContentElement, new_instruction_e
 from exactly_lib.execution.result import FailureDetails, new_failure_details_from_message, \
     PartialResultStatus, \
     new_failure_details_from_exception
 from exactly_lib.execution.single_instruction_executor import execute_element, ControlledInstructionExecutor, \
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum, SingleInstructionExecutionFailure
+from exactly_lib.section_document.model import SectionContentElement, new_instruction_e
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.util import line_source
 from exactly_lib_test.test_resources.model_utils import new_ls_from_line
@@ -142,7 +142,7 @@ def assert_equal_lines(unit_tc: unittest.TestCase,
                         'Source text')
 
 
-def new_dummy_instruction_element() -> PhaseContentElement:
+def new_dummy_instruction_element() -> SectionContentElement:
     return new_instruction_e(new_ls_from_line(line_source.Line(100, '100')),
                              TestCaseInstruction())
 

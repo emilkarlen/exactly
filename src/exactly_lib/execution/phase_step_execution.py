@@ -1,6 +1,6 @@
-from exactly_lib.section_document.model import PhaseContents, PhaseContentElement, ElementType
 from exactly_lib.execution.phase_step import PhaseStep
 from exactly_lib.execution.single_instruction_executor import ControlledInstructionExecutor, execute_element
+from exactly_lib.section_document.model import SectionContents, SectionContentElement, ElementType
 from exactly_lib.util import line_source
 from .execution_directory_structure import ExecutionDirectoryStructure
 from .result import PartialResult, InstructionFailureInfo, new_partial_result_pass, PartialResultStatus, \
@@ -44,7 +44,7 @@ def non_instruction_failure(status: PartialResultStatus,
                    failure_details)
 
 
-def execute_phase(phase_contents: PhaseContents,
+def execute_phase(phase_contents: SectionContents,
                   header_executor_for_comment: ElementHeaderExecutor,
                   header_executor_for_instruction: ElementHeaderExecutor,
                   instruction_executor: ControlledInstructionExecutor,
@@ -82,7 +82,7 @@ def execute_phase(phase_contents: PhaseContents,
         )
 
 
-def execute_phase_prim(phase_contents: PhaseContents,
+def execute_phase_prim(phase_contents: SectionContents,
                        header_executor_for_comment: ElementHeaderExecutor,
                        header_executor_for_instruction: ElementHeaderExecutor,
                        instruction_executor: ControlledInstructionExecutor) -> Failure:
@@ -103,7 +103,7 @@ def execute_phase_prim(phase_contents: PhaseContents,
     :return: PASS status, if there was no error. Otherwise, the first error.
     """
     for element in phase_contents.elements:
-        assert isinstance(element, PhaseContentElement)
+        assert isinstance(element, SectionContentElement)
         if element.element_type is ElementType.COMMENT:
             header_executor_for_comment.apply(element.first_line)
         elif element.element_type is ElementType.INSTRUCTION:
