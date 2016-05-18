@@ -4,11 +4,11 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.preprocessor import PreprocessorViaExternalProgram
 from exactly_lib.test_suite.instruction_set.sections.configuration import preprocessor as sut
-from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_definition import \
-    ConfigurationSectionEnvironment
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.test_case.processing_utils import PreprocessorThat
 from exactly_lib_test.test_resources.parse import new_source2
+from exactly_lib_test.test_suite.instruction_set.sections.configuration.test_resources import \
+    configuration_section_environment
 
 
 def suite() -> unittest.TestSuite:
@@ -43,7 +43,7 @@ class TestSuccessfulParseAndInstructionExecution(unittest.TestCase):
         # ARRANGE #
         source = new_source2(instruction_argument_source)
         instruction = sut.Parser().apply(source)
-        environment = ConfigurationSectionEnvironment(self.DEFAULT_PREPROCESSOR)
+        environment = configuration_section_environment()
         # ACT #
         instruction.execute(environment)
         # ASSERT #

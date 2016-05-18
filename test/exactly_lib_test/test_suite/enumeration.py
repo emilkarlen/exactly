@@ -1,12 +1,23 @@
 import pathlib
 import unittest
 
+from exactly_lib.act_phase_setups import single_command_setup
+from exactly_lib.cli.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.test_case.preprocessor import IDENTITY_PREPROCESSOR
+from exactly_lib.test_case.test_case_processing import TestCaseSetup
 from exactly_lib.test_suite.enumeration import DepthFirstEnumerator
 from exactly_lib.test_suite.structure import TestSuite
-from exactly_lib.test_case.test_case_processing import TestCaseSetup
 
-IP = IDENTITY_PREPROCESSOR
+
+def suite() -> unittest.TestSuite:
+    return unittest.makeSuite(TestDepthFirstEnumerator)
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())
+
+T_C_H_S = TestCaseHandlingSetup(single_command_setup.act_phase_setup(),
+                                IDENTITY_PREPROCESSOR)
 
 
 class TestDepthFirstEnumerator(unittest.TestCase):
@@ -14,7 +25,7 @@ class TestDepthFirstEnumerator(unittest.TestCase):
         root_suite = TestSuite(
             pathlib.Path('root-file'),
             [],
-            IP,
+            T_C_H_S,
             [],
             [TestCaseSetup(pathlib.Path('case-file'))])
         suite_list = DepthFirstEnumerator().apply(root_suite)
@@ -27,12 +38,12 @@ class TestDepthFirstEnumerator(unittest.TestCase):
 
     def test_hierarchy(self):
         # ARRANGE #
-        sub11 = TestSuite(pathlib.Path('11'), [], IP, [], [])
-        sub12 = TestSuite(pathlib.Path('12'), [], IP, [], [])
-        sub1 = TestSuite(pathlib.Path('1'), [], IP, [sub11, sub12], [])
-        sub21 = TestSuite(pathlib.Path('21'), [], IP, [], [])
-        sub2 = TestSuite(pathlib.Path('2'), [], IP, [sub21], [])
-        root = TestSuite(pathlib.Path('root'), [], IP, [sub1, sub2], [])
+        sub11 = TestSuite(pathlib.Path('11'), [], T_C_H_S, [], [])
+        sub12 = TestSuite(pathlib.Path('12'), [], T_C_H_S, [], [])
+        sub1 = TestSuite(pathlib.Path('1'), [], T_C_H_S, [sub11, sub12], [])
+        sub21 = TestSuite(pathlib.Path('21'), [], T_C_H_S, [], [])
+        sub2 = TestSuite(pathlib.Path('2'), [], T_C_H_S, [sub21], [])
+        root = TestSuite(pathlib.Path('root'), [], T_C_H_S, [sub1, sub2], [])
         # ACT #
         actual = DepthFirstEnumerator().apply(root)
         # ASSERT #
@@ -51,13 +62,3 @@ class TestDepthFirstEnumerator(unittest.TestCase):
             self.assertIs(e,
                           a,
                           'Suite object')
-
-
-def suite():
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestDepthFirstEnumerator))
-    return ret_val
-
-
-if __name__ == '__main__':
-    unittest.main()
