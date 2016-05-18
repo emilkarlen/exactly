@@ -1,5 +1,4 @@
 from exactly_lib.util.cli_syntax.elements import argument as arg
-from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.structure import structures as docs
 
 
@@ -37,23 +36,3 @@ class Synopsis(tuple):
         :return: `None` if this isn't needed.
         """
         return self[1]
-
-
-class CliProgramSyntaxDocumentation:
-    def __init__(self, program_name: str):
-        self.program_name = program_name
-
-    def description(self) -> DescriptionWithSubSections:
-        raise NotImplementedError()
-
-    def synopsises(self) -> list:
-        """
-        :rtype: [`Synopsis`]
-        """
-        raise NotImplementedError()
-
-    def argument_descriptions(self) -> list:
-        """
-        :rtype: [`DescribedArgument`]
-        """
-        return []

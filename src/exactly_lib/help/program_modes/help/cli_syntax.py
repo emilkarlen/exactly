@@ -2,13 +2,14 @@ from exactly_lib import program_info
 from exactly_lib.cli.cli_environment.common_cli_options import HELP_COMMAND
 from exactly_lib.cli.program_modes.help import argument_parsing as opt
 from exactly_lib.cli.program_modes.help import arguments_for
+from exactly_lib.help.utils.cli_program_documentation import CliProgramSyntaxDocumentation
 from exactly_lib.util.cli_syntax.elements import argument as arg
-from exactly_lib.util.cli_syntax.render import cli_program_syntax as syntax
+from exactly_lib.util.cli_syntax.elements import cli_program_syntax as cli_syntax
 from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.structure import structures as docs
 
 
-class HelpCliSyntaxDocumentation(syntax.CliProgramSyntaxDocumentation):
+class HelpCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
     def __init__(self):
         super().__init__(program_info.PROGRAM_NAME)
 
@@ -44,10 +45,10 @@ class HelpCliSyntaxDocumentation(syntax.CliProgramSyntaxDocumentation):
 
 
 def _synopsis(additional_arguments: list,
-              single_line_description: str) -> syntax.Synopsis:
+              single_line_description: str) -> cli_syntax.Synopsis:
     arguments = [_c(opt.HELP)] + additional_arguments
-    return syntax.Synopsis(arg.CommandLine(list(map(_single_mandatory_arg, arguments))),
-                           docs.text(single_line_description))
+    return cli_syntax.Synopsis(arg.CommandLine(list(map(_single_mandatory_arg, arguments))),
+                               docs.text(single_line_description))
 
 
 def _ns(names: list) -> list:
