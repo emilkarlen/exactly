@@ -14,14 +14,18 @@ from exactly_lib.util.cli_syntax.elements import argument as a
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
-    return SingleInstructionSetup(_InstructionParser(),
-                                  _TheInstructionDocumentation(instruction_name))
+    return SingleInstructionSetup(Parser(),
+                                  TheInstructionDocumentation(instruction_name))
 
 
-class _TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
+class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
     def __init__(self, name: str):
-        super().__init__(name, {})
         self.executable = a.Named('EXECUTABLE')
+        self.argument = a.Named('ARGUMENT')
+        super().__init__(name, {
+            'EXECUTABLE': self.executable.name,
+            'ARGUMENT': self.argument.name,
+        })
 
     def single_line_description(self) -> str:
         return 'Sets a preprocessor to use for each test case in the suite'
@@ -30,7 +34,7 @@ class _TheInstructionDocumentation(InstructionDocumentationWithCommandLineRender
         executable_arg = a.Single(a.Multiplicity.MANDATORY,
                                   self.executable)
         optional_arguments_arg = a.Single(a.Multiplicity.ZERO_OR_MORE,
-                                          a.Named('ARGUMENT'))
+                                          self.argument)
         return [
             InvokationVariant(self._cl_syntax_for_args([executable_arg,
                                                         optional_arguments_arg])),
@@ -55,19 +59,23 @@ _DESCRIPTION = """\
 An executable program that will be given the test case file as single (additional) argument.
 
 
-The command line uses shell syntax.
+{EXECUTABLE} and {ARGUMENT} uses shell syntax.
 """
 
 
-class _InstructionParser(SingleInstructionParser):
+class Parser(SingleInstructionParser):
     def apply(self, source: SingleInstructionParserSource) -> ConfigurationSectionInstruction:
         arg = source.instruction_argument.strip()
         if arg == '':
             raise SingleInstructionInvalidArgumentException('A preprocessor program must be given.')
-        return _Instruction(shlex.split(arg))
+        try:
+            command_and_arguments = shlex.split(arg)
+        except:
+            raise SingleInstructionInvalidArgumentException('Invalid quoting: ' + arg)
+        return Instruction(command_and_arguments)
 
 
-class _Instruction(ConfigurationSectionInstruction):
+class Instruction(ConfigurationSectionInstruction):
     def __init__(self,
                  command_and_arguments: list):
         self.command_and_arguments = command_and_arguments
