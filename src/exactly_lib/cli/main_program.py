@@ -1,6 +1,5 @@
 import os
 
-from exactly_lib.act_phase_setups import single_command_setup
 from exactly_lib.cli.cli_environment.common_cli_options import HELP_COMMAND, SUITE_COMMAND
 from exactly_lib.cli.program_modes import main_program_argument_parsing as case_argument_parsing
 from exactly_lib.cli.program_modes.help import argument_parsing as parse_help
@@ -11,7 +10,6 @@ from exactly_lib.cli.program_modes.test_suite.settings import Settings
 from exactly_lib.cli.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.help.contents_structure import application_help_for
 from exactly_lib.test_case.instruction_setup import InstructionsSetup
-from exactly_lib.test_case.preprocessor import IdentityPreprocessor
 from exactly_lib.util import argument_parsing_utils
 from exactly_lib.util.std import StdOutputFiles
 
@@ -26,11 +24,11 @@ COMMAND_DESCRIPTIONS = {
 class MainProgram:
     def __init__(self,
                  output: StdOutputFiles,
-                 instruction_set: InstructionsSetup):
+                 instruction_set: InstructionsSetup,
+                 default: TestCaseHandlingSetup):
         self._output = output
         self._instruction_set = instruction_set
-        self._default = TestCaseHandlingSetup(single_command_setup.act_phase_setup(),
-                                              IdentityPreprocessor())
+        self._default = default
 
     def execute(self, command_line_arguments: list) -> int:
         if len(command_line_arguments) > 0:
