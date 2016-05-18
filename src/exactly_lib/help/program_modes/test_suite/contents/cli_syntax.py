@@ -4,14 +4,15 @@ from exactly_lib.cli.cli_environment.program_modes.test_case import command_line
 from exactly_lib.cli.cli_environment.program_modes.test_suite import command_line_options as opts
 from exactly_lib.help.concepts.plain_concepts import actor
 from exactly_lib.help.utils import formatting
+from exactly_lib.help.utils.cli_program_documentation import CliProgramSyntaxDocumentation
 from exactly_lib.help.utils.textformat_parse import TextParser
 from exactly_lib.util.cli_syntax.elements import argument as arg
-from exactly_lib.util.cli_syntax.render import cli_program_syntax as render
+from exactly_lib.util.cli_syntax.elements import cli_program_syntax as cli_syntax
 from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.structure import structures as docs
 
 
-class SuiteCliSyntaxDocumentation(render.CliProgramSyntaxDocumentation):
+class SuiteCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
     def __init__(self):
         super().__init__(program_info.PROGRAM_NAME)
         self.parser = TextParser({
@@ -27,7 +28,7 @@ class SuiteCliSyntaxDocumentation(render.CliProgramSyntaxDocumentation):
 
     def synopsises(self) -> list:
         return [
-            render.Synopsis(self.synopsis.command_line)
+            cli_syntax.Synopsis(self.synopsis.command_line)
         ]
 
     def argument_descriptions(self) -> list:
@@ -35,18 +36,18 @@ class SuiteCliSyntaxDocumentation(render.CliProgramSyntaxDocumentation):
             self._actor_argument(),
         ]
 
-    def _actor_argument(self) -> render.DescribedArgument:
+    def _actor_argument(self) -> cli_syntax.DescribedArgument:
         extra_format_map = {
             'interpreter_program': _ACTOR_OPTION.argument,
         }
-        return render.DescribedArgument(_ACTOR_OPTION,
-                                        self.parser.fnap(_ACTOR_OPTION_DESCRIPTION, extra_format_map),
-                                        see_also=[
-                                            actor.ACTOR_CONCEPT.cross_reference_target(),
-                                        ])
+        return cli_syntax.DescribedArgument(_ACTOR_OPTION,
+                                            self.parser.fnap(_ACTOR_OPTION_DESCRIPTION, extra_format_map),
+                                            see_also=[
+                                                actor.ACTOR_CONCEPT.cross_reference_target(),
+                                            ])
 
 
-def synopsis() -> render.Synopsis:
+def synopsis() -> cli_syntax.Synopsis:
     command_line = arg.CommandLine([
         arg.Single(arg.Multiplicity.MANDATORY,
                    arg.Constant(common_opts.SUITE_COMMAND)),
@@ -56,8 +57,8 @@ def synopsis() -> render.Synopsis:
                    _FILE_ARGUMENT),
     ],
         prefix=program_info.PROGRAM_NAME)
-    return render.Synopsis(command_line,
-                           docs.text('Runs a test suite.'))
+    return cli_syntax.Synopsis(command_line,
+                               docs.text('Runs a test suite.'))
 
 
 _DESCRIPTION = """\
