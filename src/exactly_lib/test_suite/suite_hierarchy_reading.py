@@ -1,14 +1,16 @@
 import functools
 import pathlib
 
+from exactly_lib.cli.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.section_document.model import SectionContents, ElementType
 from exactly_lib.section_document.parse import FileSourceError
 from exactly_lib.test_case import test_case_processing
-from exactly_lib.test_case.preprocessor import IDENTITY_PREPROCESSOR
+from exactly_lib.test_case.phases.act.phase_setup import ActPhaseSetup
 from exactly_lib.test_case.test_case_processing import Preprocessor
 from exactly_lib.test_suite import parser as test_suite_parser
 from exactly_lib.test_suite.instruction_set import parse, instruction
-from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_definition import ConfigurationSectionEnvironment
+from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_definition import \
+    ConfigurationSectionEnvironment
 from exactly_lib.util import line_source
 from . import structure
 from . import test_suite_doc
@@ -24,16 +26,17 @@ class SuiteHierarchyReader:
 
 class Environment(tuple):
     def __new__(cls,
-                preprocessor: Preprocessor):
-        return tuple.__new__(cls, (preprocessor,))
+                preprocessor: Preprocessor,
+                act_phase_setup: ActPhaseSetup):
+        return tuple.__new__(cls, (preprocessor, act_phase_setup))
 
     @property
     def preprocessor(self) -> Preprocessor:
         return self[0]
 
-
-def default_environment() -> Environment:
-    return Environment(IDENTITY_PREPROCESSOR)
+    @property
+    def act_phase_setup(self) -> ActPhaseSetup:
+        return self[1]
 
 
 class Reader(SuiteHierarchyReader):
@@ -67,7 +70,7 @@ class _SingleFileReader:
                                          ex.source_error.line,
                                          ex.source_error.message,
                                          maybe_section_name=ex.maybe_section_name)
-        configuration_section_environment = self._resolve_preprocessor(test_suite)
+        configuration_section_environment = self._resolve_configuration_section_environment(test_suite)
         suite_file_path_list, case_file_path_list = self._resolve_paths(test_suite,
                                                                         suite_file_path)
         sub_inclusions = inclusions + [suite_file_path]
@@ -76,7 +79,8 @@ class _SingleFileReader:
         case_list = list(map(test_case_processing.TestCaseSetup, case_file_path_list))
         return structure.TestSuite(suite_file_path,
                                    inclusions,
-                                   configuration_section_environment.preprocessor,
+                                   TestCaseHandlingSetup(configuration_section_environment.act_phase_setup,
+                                                         configuration_section_environment.preprocessor),
                                    suite_list,
                                    case_list)
 
@@ -111,9 +115,11 @@ class _SingleFileReader:
         return (paths_for_instructions(environment, test_suite.suites_section, True),
                 paths_for_instructions(environment, test_suite.cases_section, False))
 
-    def _resolve_preprocessor(self,
-                              test_suite: test_suite_doc.TestSuiteDocument) -> ConfigurationSectionEnvironment:
-        ret_val = ConfigurationSectionEnvironment(self.environment.preprocessor)
+    def _resolve_configuration_section_environment(
+            self,
+            test_suite: test_suite_doc.TestSuiteDocument) -> ConfigurationSectionEnvironment:
+        ret_val = ConfigurationSectionEnvironment(self.environment.preprocessor,
+                                                  self.environment.act_phase_setup)
         for section_element in test_suite.configuration_section.elements:
             if section_element.element_type is ElementType.INSTRUCTION:
                 section_element.instruction.execute(ret_val)

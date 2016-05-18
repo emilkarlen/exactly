@@ -6,22 +6,19 @@ from exactly_lib import program_info
 from exactly_lib.cli.argument_parsing_of_act_phase_setup import resolve_act_phase_setup_from_argparse_argument
 from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options as opt
 from exactly_lib.cli.program_modes.test_case.settings import Output, TestCaseExecutionSettings
-from exactly_lib.test_case.preprocessor import IdentityPreprocessor, PreprocessorViaExternalProgram
+from exactly_lib.cli.test_case_handling_setup import TestCaseHandlingSetup
+from exactly_lib.test_case.preprocessor import PreprocessorViaExternalProgram
+from exactly_lib.test_case.test_case_processing import Preprocessor
 from exactly_lib.util import argument_parsing_utils
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib.util.cli_syntax.render.cli_program_syntax import short_option_syntax
 
 
-def _parse_preprocessor(preprocessor_argument):
-    if preprocessor_argument is None:
-        return IdentityPreprocessor()
-    else:
-        return PreprocessorViaExternalProgram(shlex.split(preprocessor_argument[0]))
-
-
-def parse(argv: list,
+def parse(default: TestCaseHandlingSetup,
+          argv: list,
           commands: dict) -> TestCaseExecutionSettings:
     """
+    :param default_preprocessor:
     :raises ArgumentParsingError Invalid usage
     """
     output = Output.STATUS_CODE
@@ -34,8 +31,9 @@ def parse(argv: list,
     elif namespace.keep:
         output = Output.EXECUTION_DIRECTORY_STRUCTURE_ROOT
         is_keep_execution_directory_root = True
-    act_phase_setup = resolve_act_phase_setup_from_argparse_argument(namespace.actor)
-    preprocessor = _parse_preprocessor(namespace.preprocessor)
+    act_phase_setup = resolve_act_phase_setup_from_argparse_argument(default.act_phase_setup,
+                                                                     namespace.actor)
+    preprocessor = _parse_preprocessor(default.preprocessor, namespace.preprocessor)
     return TestCaseExecutionSettings(pathlib.Path(namespace.file),
                                      pathlib.Path(namespace.file).parent.resolve(),
                                      output,
@@ -99,3 +97,11 @@ def _new_argument_parser(commands: dict) -> argparse.ArgumentParser:
                         then processing is considered to have failed.
                         """.format(preprocessor=opt.PREPROCESSOR_OPTION_ARGUMENT))
     return ret_val
+
+
+def _parse_preprocessor(default_preprocessor: Preprocessor,
+                        preprocessor_argument) -> Preprocessor:
+    if preprocessor_argument is None:
+        return default_preprocessor
+    else:
+        return PreprocessorViaExternalProgram(shlex.split(preprocessor_argument[0]))

@@ -7,7 +7,6 @@ from exactly_lib.cli.program_modes.test_case.settings import TestCaseExecutionSe
 from exactly_lib.cli.program_modes.test_suite.settings import Settings
 from exactly_lib.default.program_modes.test_case import processing as case_processing
 from exactly_lib.test_case.instruction_setup import InstructionsSetup
-from exactly_lib.test_case.preprocessor import IdentityPreprocessor
 from exactly_lib.test_suite import enumeration
 from exactly_lib.test_suite import execution as test_suite_execution
 from exactly_lib.test_suite import suite_hierarchy_reading
@@ -36,14 +35,15 @@ class MainProgram(main_program.MainProgram):
         default_configuration = case_processing.Configuration(self._split_line_into_name_and_argument_function,
                                                               self._instruction_set,
                                                               settings.act_phase_setup,
-                                                              IdentityPreprocessor(),
+                                                              self._default.preprocessor,
                                                               False,
                                                               self._eds_root_name_prefix_for_suite())
         executor = test_suite_execution.Executor(default_configuration,
                                                  self._output,
                                                  suite_hierarchy_reading.Reader(
                                                      suite_hierarchy_reading.Environment(
-                                                         default_configuration.preprocessor)),
+                                                         default_configuration.preprocessor,
+                                                         default_configuration.act_phase_setup)),
                                                  self.root_suite_reporter_factory,
                                                  enumeration.DepthFirstEnumerator(),
                                                  case_processing.new_processor_that_should_not_pollute_current_process,

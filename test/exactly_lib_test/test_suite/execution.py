@@ -25,12 +25,18 @@ from exactly_lib.util import std
 from exactly_lib.util.std import FilePrinter
 from exactly_lib_test.test_case.test_resources import error_info
 from exactly_lib_test.test_resources.str_std_out_files import StringStdOutFiles
+from exactly_lib_test.test_suite.test_resources.test_case_handling_setup import \
+    test_case_handling_setup_with_identity_preprocessor
+
+T_C_H_S = test_case_handling_setup_with_identity_preprocessor()
 
 
 def new_test_suite(source_file_name: str,
                    sub_test_suites: list,
                    test_cases: list) -> structure.TestSuite:
-    return structure.TestSuite(pathlib.Path(source_file_name), [], IDENTITY_PREPROCESSOR,
+    return structure.TestSuite(pathlib.Path(source_file_name),
+                               [],
+                               T_C_H_S,
                                sub_test_suites,
                                test_cases)
 

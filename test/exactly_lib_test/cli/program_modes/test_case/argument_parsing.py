@@ -1,7 +1,16 @@
 import unittest
 
 from exactly_lib.cli.program_modes import main_program_argument_parsing as sut
+from exactly_lib_test.cli.test_resources.test_case_handling_setup import test_case_handling_setup
 from exactly_lib_test.test_resources.file_utils import tmp_file_containing
+
+
+def suite() -> unittest.TestSuite:
+    return unittest.makeSuite(TestCase)
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())
 
 
 class TestCase(unittest.TestCase):
@@ -11,18 +20,9 @@ class TestCase(unittest.TestCase):
             argv = [str(file_path)]
             expected_home_path = file_path.parent.resolve()
             # ACT #
-            result = sut.parse(argv, {})
+            result = sut.parse(test_case_handling_setup(),
+                               argv, {})
         # ASSERT #
         self.assertEqual(expected_home_path,
                          result.initial_home_dir_path,
                          'Initial Home Directory')
-
-
-def suite():
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestCase))
-    return ret_val
-
-
-if __name__ == '__main__':
-    unittest.main()

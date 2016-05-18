@@ -1,6 +1,6 @@
 import pathlib
 
-from exactly_lib.test_case.test_case_processing import Preprocessor
+from exactly_lib.cli.test_case_handling_setup import TestCaseHandlingSetup
 
 
 class TestSuite:
@@ -11,12 +11,12 @@ class TestSuite:
     def __init__(self,
                  source_file: pathlib.Path,
                  file_inclusions_leading_to_this_file: list,
-                 preprocessor: Preprocessor,
+                 test_case_handling_setup: TestCaseHandlingSetup,
                  sub_test_suites: list,
                  test_cases: list):
         self.__source_file = source_file
         self.__file_inclusions_leading_to_this_file = file_inclusions_leading_to_this_file
-        self.__preprocessor = preprocessor
+        self.__test_case_handling_setup = test_case_handling_setup
         self.__sub_test_suites = sub_test_suites
         self.__test_cases = test_cases
 
@@ -29,8 +29,8 @@ class TestSuite:
         return self.__file_inclusions_leading_to_this_file
 
     @property
-    def preprocessor(self) -> Preprocessor:
-        return self.__preprocessor
+    def test_case_handling_setup(self) -> TestCaseHandlingSetup:
+        return self.__test_case_handling_setup
 
     @property
     def sub_test_suites(self) -> list:
