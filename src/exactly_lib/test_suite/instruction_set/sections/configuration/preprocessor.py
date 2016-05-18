@@ -3,6 +3,7 @@ import shlex
 from exactly_lib.common.instruction_documentation import InvokationVariant, SyntaxElementDescription
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help.concepts.plain_concepts.preprocessor import PREPROCESSOR_CONCEPT
+from exactly_lib.help.utils import formatting
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
@@ -25,10 +26,11 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         super().__init__(name, {
             'EXECUTABLE': self.executable.name,
             'ARGUMENT': self.argument.name,
+            'preprocessor': formatting.concept(PREPROCESSOR_CONCEPT.name().singular),
         })
 
     def single_line_description(self) -> str:
-        return 'Sets a preprocessor to use for each test case in the suite'
+        return self._format('Sets a {preprocessor} to use for each test case in the suite')
 
     def invokation_variants(self) -> list:
         executable_arg = a.Single(a.Multiplicity.MANDATORY,
@@ -56,7 +58,11 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
 
 _DESCRIPTION = """\
-An executable program that will be given the test case file as single (additional) argument.
+The program will be given the test case file as single (additional) argument.
+
+
+The {preprocessor} is only used for the test cases in the current suite -
+not in sub suites.
 
 
 {EXECUTABLE} and {ARGUMENT} uses shell syntax.

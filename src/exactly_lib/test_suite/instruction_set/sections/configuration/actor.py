@@ -35,7 +35,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         })
 
     def single_line_description(self) -> str:
-        return 'Sets an {actor} to use for each test case in the suite'
+        return self._format('Sets an {actor} to use for each test case in the suite')
 
     def invokation_variants(self) -> list:
         executable_arg = a.Single(a.Multiplicity.MANDATORY,
@@ -65,6 +65,10 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 _DESCRIPTION = """\
 The actor will treat the contents of the {act_phase} phase as source code
 to be interpreted by the given program.
+
+
+The {actor} is only used for the test cases in the current suite -
+not in sub suites.
 
 
 {EXECUTABLE} and {ARGUMENT} uses shell syntax.
