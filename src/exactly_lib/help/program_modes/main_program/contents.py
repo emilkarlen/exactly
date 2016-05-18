@@ -3,13 +3,14 @@ from exactly_lib.cli.program_modes.help import argument_parsing as opt
 from exactly_lib.cli.program_modes.help import arguments_for as help_arguments
 from exactly_lib.help.program_modes.test_case.contents import cli_syntax as test_case_cli_syntax
 from exactly_lib.help.program_modes.test_suite.contents import cli_syntax as test_suite_cli_syntax
+from exactly_lib.help.utils.cli_program_documentation import CliProgramSyntaxDocumentation
 from exactly_lib.util.cli_syntax.elements import argument as arg
-from exactly_lib.util.cli_syntax.render import cli_program_syntax as syntax
+from exactly_lib.util.cli_syntax.elements import cli_program_syntax as cli_syntax
 from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.structure import structures as docs
 
 
-class MainCliSyntaxDocumentation(syntax.CliProgramSyntaxDocumentation):
+class MainCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
     def __init__(self):
         super().__init__(program_info.PROGRAM_NAME)
 
@@ -33,17 +34,17 @@ class MainCliSyntaxDocumentation(syntax.CliProgramSyntaxDocumentation):
 _SINGLE_LINE_DESCRIPTION = 'Runs a test case, a test suite, or displays help.'
 
 
-def _help_toc_synopsis() -> syntax.Synopsis:
+def _help_toc_synopsis() -> cli_syntax.Synopsis:
     return _help_synopsis(help_arguments.help_help(),
                           'Displays a "table of contents" of all available help.')
 
 
-def _html_help_synopsis() -> syntax.Synopsis:
+def _html_help_synopsis() -> cli_syntax.Synopsis:
     return _help_synopsis(help_arguments.html_doc(),
                           'Outputs all available help as html.')
 
 
-def _simple_argument_synopsis() -> syntax.Synopsis:
+def _simple_argument_synopsis() -> cli_syntax.Synopsis:
     help_arg = arg.Single(arg.Multiplicity.MANDATORY,
                           arg.Option(arg.OptionName(long_name='help')))
     return _synopsis_for_args([help_arg],
@@ -51,7 +52,7 @@ def _simple_argument_synopsis() -> syntax.Synopsis:
 
 
 def _help_synopsis(additional_mandatory_constant_arguments: list,
-                   single_line_description: str) -> syntax.Synopsis:
+                   single_line_description: str) -> cli_syntax.Synopsis:
     constants = [opt.HELP] + additional_mandatory_constant_arguments
     return _synopsis_for_args(list(map(_single_mandatory_constant, constants)),
                               single_line_description)
@@ -59,9 +60,9 @@ def _help_synopsis(additional_mandatory_constant_arguments: list,
 
 def _synopsis_for_args(argument_usages: list,
                        single_line_description: str) -> arg.CommandLine:
-    return syntax.Synopsis(arg.CommandLine(argument_usages,
-                                           prefix=program_info.PROGRAM_NAME),
-                           docs.text(single_line_description))
+    return cli_syntax.Synopsis(arg.CommandLine(argument_usages,
+                                               prefix=program_info.PROGRAM_NAME),
+                               docs.text(single_line_description))
 
 
 def _single_mandatory_constant(constant: str) -> arg.ArgumentUsage:
