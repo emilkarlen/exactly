@@ -5,6 +5,7 @@ from exactly_lib.cli import main_program
 from exactly_lib.cli.program_modes.test_case import execution as test_case_execution
 from exactly_lib.cli.program_modes.test_case.settings import TestCaseExecutionSettings
 from exactly_lib.cli.program_modes.test_suite.settings import Settings
+from exactly_lib.cli.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.default.program_modes.test_case import processing as case_processing
 from exactly_lib.test_case.instruction_setup import InstructionsSetup
 from exactly_lib.test_suite import enumeration
@@ -19,8 +20,9 @@ class MainProgram(main_program.MainProgram):
                  output: StdOutputFiles,
                  split_line_into_name_and_argument_function,
                  instruction_setup: InstructionsSetup,
+                 default: TestCaseHandlingSetup,
                  root_suite_reporter_factory: RootSuiteReporterFactory):
-        super().__init__(output, instruction_setup)
+        super().__init__(output, instruction_setup, default)
         self._split_line_into_name_and_argument_function = split_line_into_name_and_argument_function
         self.root_suite_reporter_factory = root_suite_reporter_factory
 
