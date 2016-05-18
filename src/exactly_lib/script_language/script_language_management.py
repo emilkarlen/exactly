@@ -24,6 +24,14 @@ class ScriptLanguageSetup:
         self.__file_manager = file_manager
         self.__language = language
 
+    @property
+    def language(self) -> ScriptLanguage:
+        return self.__language
+
+    @property
+    def file_manager(self) -> ScriptFileManager:
+        return self.__file_manager
+
     def new_builder(self) -> ScriptSourceBuilder:
         return ScriptSourceBuilder(self.__language)
 
