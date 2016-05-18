@@ -1,5 +1,6 @@
 import shlex
 
+from exactly_lib.act_phase_setups.script_language_setup import new_for_script_language_setup
 from exactly_lib.common.instruction_documentation import InvokationVariant, SyntaxElementDescription
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help.concepts.plain_concepts.actor import ACTOR_CONCEPT
@@ -7,9 +8,11 @@ from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.phase_names import ACT_PHASE_NAME
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
+from exactly_lib.script_language import standard_script_language
+from exactly_lib.script_language.script_language_management import ScriptLanguageSetup
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, SingleInstructionParserSource, SingleInstructionInvalidArgumentException
-from exactly_lib.test_case.preprocessor import PreprocessorViaExternalProgram
+from exactly_lib.test_case.phases.act.phase_setup import ActPhaseSetup
 from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_definition import \
     ConfigurationSectionInstruction, ConfigurationSectionEnvironment
 from exactly_lib.util.cli_syntax.elements import argument as a
@@ -77,17 +80,23 @@ class Parser(SingleInstructionParser):
             command_and_arguments = shlex.split(arg)
         except:
             raise SingleInstructionInvalidArgumentException('Invalid quoting: ' + arg)
-        return Instruction(command_and_arguments)
+        act_phase_setup = new_for_script_language_setup(
+            ScriptLanguageSetup(
+                standard_script_language.StandardScriptFileManager('src',
+                                                                   command_and_arguments[0],
+                                                                   command_and_arguments[1:]),
+                standard_script_language.StandardScriptLanguage()))
+        return Instruction(act_phase_setup)
 
 
 class Instruction(ConfigurationSectionInstruction):
     def __init__(self,
-                 command_and_arguments: list):
-        self.command_and_arguments = command_and_arguments
+                 act_phase_setup: ActPhaseSetup):
+        self.act_phase_setup = act_phase_setup
 
     def execute(self,
                 environment: ConfigurationSectionEnvironment):
         """
         Updates the environment.
         """
-        environment.preprocessor = PreprocessorViaExternalProgram(self.command_and_arguments)
+        environment.act_phase_setup = self.act_phase_setup
