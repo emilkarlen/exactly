@@ -34,6 +34,12 @@ class FailureDetails:
     def exception(self) -> Exception:
         return self.__exception
 
+    def __str__(self) -> str:
+        if self.is_error_message:
+            return self.__failure_message
+        else:
+            return str(self.exception)
+
 
 def new_failure_details_from_exception(exception: Exception) -> FailureDetails:
     return FailureDetails(None, exception)
