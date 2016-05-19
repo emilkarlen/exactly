@@ -8,10 +8,10 @@ from exactly_lib.default.program_modes.test_case import test_case_parser
 from exactly_lib.execution import full_execution
 from exactly_lib.execution.partial_execution import ScriptHandling
 from exactly_lib.execution.result import FullResult
+from exactly_lib.processing import processing_utils
 from exactly_lib.section_document import parse as document_parser
 from exactly_lib.section_document.parse import SectionElementParser
 from exactly_lib.test_case import error_description
-from exactly_lib.test_case import processing_utils
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case import test_case_processing as processing
 from exactly_lib.test_case.instruction_setup import InstructionsSetup

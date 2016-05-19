@@ -7,10 +7,10 @@ from exactly_lib.cli.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.default.program_modes.test_case import processing as case_processing
 from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from exactly_lib.execution.result import new_skipped, new_pass
+from exactly_lib.processing.preprocessor import IDENTITY_PREPROCESSOR
 from exactly_lib.script_language.python3 import script_language_setup
 from exactly_lib.test_case import test_case_processing
 from exactly_lib.test_case.instruction_setup import InstructionsSetup
-from exactly_lib.test_case.preprocessor import IDENTITY_PREPROCESSOR
 from exactly_lib.test_case.test_case_processing import TestCaseSetup
 from exactly_lib.test_suite import reporting
 from exactly_lib.test_suite import structure
