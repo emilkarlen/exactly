@@ -12,8 +12,7 @@ from exactly_lib.util import line_source
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.section_document.test_resources import assert_equals_line
 from exactly_lib_test.test_resources.file_structure import DirContents, File, Dir
-from exactly_lib_test.test_suite.util import check_exception
-from exactly_lib_test.test_suite.util import check_structure
+from exactly_lib_test.test_suite.test_resources import check_exception, check_structure
 
 T_C_H_S = TestCaseHandlingSetup(single_command_setup.act_phase_setup(),
                                 IDENTITY_PREPROCESSOR)
