@@ -15,8 +15,8 @@ from exactly_lib_test.test_resources.file_structure import DirContents, File, Di
 from exactly_lib_test.test_suite.util import check_exception
 from exactly_lib_test.test_suite.util import check_structure
 
-TCHS = TestCaseHandlingSetup(single_command_setup.act_phase_setup(),
-                             IDENTITY_PREPROCESSOR)
+T_C_H_S = TestCaseHandlingSetup(single_command_setup.act_phase_setup(),
+                                IDENTITY_PREPROCESSOR)
 
 
 class MainSuiteWithTwoReferencedCases(check_structure.Setup):
@@ -27,7 +27,7 @@ class MainSuiteWithTwoReferencedCases(check_structure.Setup):
         return structure.TestSuite(
             self.root_suite_based_at(root_path),
             [],
-            TCHS,
+            T_C_H_S,
             [],
             [
                 TestCaseSetup(root_path / '1.case'),
@@ -53,7 +53,7 @@ class InvalidCaseContentShouldNotCauseParsingToFail(check_structure.Setup):
         return structure.TestSuite(
             self.root_suite_based_at(root_path),
             [],
-            TCHS,
+            T_C_H_S,
             [],
             [
                 TestCaseSetup(root_path / 'case-with-invalid-content.case'),
@@ -77,15 +77,15 @@ class MainSuiteWithTwoReferencedSuites(check_structure.Setup):
         return structure.TestSuite(
             self.root_suite_based_at(root_path),
             [],
-            TCHS,
+            T_C_H_S,
             [
                 structure.TestSuite(
                     root_path / '1.suite', [self.root_suite_based_at(root_path)],
-                    TCHS,
+                    T_C_H_S,
                     [], []),
                 structure.TestSuite(
                     root_path / 'sub' / '2.suite', [self.root_suite_based_at(root_path)],
-                    TCHS,
+                    T_C_H_S,
                     [], [])
             ],
             [],
@@ -110,11 +110,11 @@ class MainSuiteWithAbsoluteReferencesToSuitesAndCases(check_structure.Setup):
         return structure.TestSuite(
             self.root_suite_based_at(root_path),
             [],
-            TCHS,
+            T_C_H_S,
             [
                 structure.TestSuite(root_path / '1.suite',
                                     [self.root_suite_based_at(root_path)],
-                                    TCHS,
+                                    T_C_H_S,
                                     [], []),
             ],
             [
@@ -142,15 +142,15 @@ class MainSuiteWithReferencedSuitesAndCasesAndMixedSections(check_structure.Setu
         return structure.TestSuite(
             self.root_suite_based_at(root_path),
             [],
-            TCHS,
+            T_C_H_S,
             [
                 structure.TestSuite(
                     root_path / '1.suite', [self.root_suite_based_at(root_path)],
-                    TCHS,
+                    T_C_H_S,
                     [], []),
                 structure.TestSuite(
                     root_path / 'sub' / '2.suite', [self.root_suite_based_at(root_path)],
-                    TCHS,
+                    T_C_H_S,
                     [], [])
             ],
             [
@@ -185,22 +185,22 @@ class ComplexStructure(check_structure.Setup):
         return structure.TestSuite(
             self.root_suite_based_at(root_path),
             [],
-            TCHS,
+            T_C_H_S,
             [
                 structure.TestSuite(
                     root_path / 'local.suite',
                     [self.root_suite_based_at(root_path)],
-                    TCHS,
+                    T_C_H_S,
                     [],
                     [TestCaseSetup(root_path / 'from-local-suite.case')]),
                 structure.TestSuite(
                     root_path / 'sub' / 'sub.suite',
                     [self.root_suite_based_at(root_path)],
-                    TCHS,
+                    T_C_H_S,
                     [structure.TestSuite(
                         root_path / 'sub' / 'sub-sub.suite',
                         [self.root_suite_based_at(root_path), root_path / 'sub' / 'sub.suite'],
-                        TCHS,
+                        T_C_H_S,
                         [],
                         [TestCaseSetup(root_path / 'sub' / 'sub-sub.case')]
                     )],
