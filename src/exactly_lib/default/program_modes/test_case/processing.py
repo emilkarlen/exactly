@@ -3,19 +3,20 @@ import os
 import pathlib
 
 from exactly_lib import program_info
+from exactly_lib.cli.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.default.program_modes.test_case import test_case_parser
-from exactly_lib.section_document import parse as document_parser
-from exactly_lib.section_document.parse import SectionElementParser
 from exactly_lib.execution import full_execution
 from exactly_lib.execution.partial_execution import ScriptHandling
 from exactly_lib.execution.result import FullResult
+from exactly_lib.section_document import parse as document_parser
+from exactly_lib.section_document.parse import SectionElementParser
 from exactly_lib.test_case import error_description
 from exactly_lib.test_case import processing_utils
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case import test_case_processing as processing
 from exactly_lib.test_case.instruction_setup import InstructionsSetup
 from exactly_lib.test_case.phases.act.phase_setup import ActPhaseSetup
-from exactly_lib.test_case.test_case_processing import ErrorInfo, ProcessError, Preprocessor
+from exactly_lib.test_case.test_case_processing import ErrorInfo, ProcessError
 from exactly_lib.util import line_source
 
 
@@ -23,14 +24,12 @@ class Configuration:
     def __init__(self,
                  split_line_into_name_and_argument_function,
                  instruction_setup: InstructionsSetup,
-                 act_phase_setup: ActPhaseSetup,
-                 preprocessor: Preprocessor,
+                 handling_setup: TestCaseHandlingSetup,
                  is_keep_execution_directory_root: bool,
                  execution_directory_root_name_prefix: str = program_info.PROGRAM_NAME + '-'):
-        self.act_phase_setup = act_phase_setup
+        self.handling_setup = handling_setup
         self.instruction_setup = instruction_setup
         self.split_line_into_name_and_argument_function = split_line_into_name_and_argument_function
-        self.preprocessor = preprocessor
         self.is_keep_execution_directory_root = is_keep_execution_directory_root
         self.execution_directory_root_name_prefix = execution_directory_root_name_prefix
 
@@ -49,20 +48,20 @@ def new_processor_that_is_allowed_to_pollute_current_process(configuration: Conf
 
 def new_accessor(configuration: Configuration) -> processing.Accessor:
     return processing_utils.AccessorFromParts(_SourceReader(),
-                                              configuration.preprocessor,
+                                              configuration.handling_setup.preprocessor,
                                               _Parser(configuration.split_line_into_name_and_argument_function,
-                                                      configuration.act_phase_setup.parser,
+                                                      configuration.handling_setup.act_phase_setup.parser,
                                                       configuration.instruction_setup))
 
 
 def new_executor_that_should_not_pollute_current_processes(configuration: Configuration) -> processing_utils.Executor:
-    return _ExecutorThatSavesAndRestoresEnvironmentVariables(configuration.act_phase_setup,
+    return _ExecutorThatSavesAndRestoresEnvironmentVariables(configuration.handling_setup.act_phase_setup,
                                                              configuration.is_keep_execution_directory_root,
                                                              configuration.execution_directory_root_name_prefix)
 
 
 def new_executor_that_may_pollute_current_processes(configuration: Configuration) -> processing_utils.Executor:
-    return _Executor(configuration.act_phase_setup,
+    return _Executor(configuration.handling_setup.act_phase_setup,
                      configuration.is_keep_execution_directory_root,
                      configuration.execution_directory_root_name_prefix)
 

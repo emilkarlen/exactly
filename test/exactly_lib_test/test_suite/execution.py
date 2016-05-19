@@ -5,6 +5,7 @@ from pathlib import Path
 
 from exactly_lib.act_phase_setups.script_language_setup import new_for_script_language_setup
 from exactly_lib.cli.cli_environment.exit_value import ExitValue
+from exactly_lib.cli.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.default.program_modes.test_case import processing as case_processing
 from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from exactly_lib.execution.result import new_skipped, new_pass
@@ -541,12 +542,12 @@ FULL_RESULT_PASS = new_pass(DUMMY_EDS)
 DEFAULT_CASE_PROCESSING = case_processing.Configuration(
     lambda x: ((), ()),
     InstructionsSetup({}, {}, {}, {}, {}),
-    new_for_script_language_setup(script_language_setup()),
-    IDENTITY_PREPROCESSOR,
+    TestCaseHandlingSetup(new_for_script_language_setup(script_language_setup()),
+                          IDENTITY_PREPROCESSOR),
     False)
 
 
-def suite():
+def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestError))
     ret_val.addTest(unittest.makeSuite(TestReturnValueFromTestCaseProcessor))
@@ -555,4 +556,4 @@ def suite():
 
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.TextTestRunner().run(suite())

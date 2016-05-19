@@ -4,7 +4,7 @@ from exactly_lib import program_info
 from exactly_lib.cli import main_program
 from exactly_lib.cli.program_modes.test_case import execution as test_case_execution
 from exactly_lib.cli.program_modes.test_case.settings import TestCaseExecutionSettings
-from exactly_lib.cli.program_modes.test_suite.settings import Settings
+from exactly_lib.cli.program_modes.test_suite.settings import TestSuiteExecutionSettings
 from exactly_lib.cli.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.default.program_modes.test_case import processing as case_processing
 from exactly_lib.test_case.instruction_setup import InstructionsSetup
@@ -33,19 +33,18 @@ class MainProgram(main_program.MainProgram):
                                                 settings)
         return executor.execute()
 
-    def execute_test_suite(self, settings: Settings) -> int:
+    def execute_test_suite(self, settings: TestSuiteExecutionSettings) -> int:
         default_configuration = case_processing.Configuration(self._split_line_into_name_and_argument_function,
                                                               self._instruction_set,
-                                                              settings.act_phase_setup,
-                                                              self._default.preprocessor,
+                                                              settings.handling_setup,
                                                               False,
                                                               self._eds_root_name_prefix_for_suite())
         executor = test_suite_execution.Executor(default_configuration,
                                                  self._output,
                                                  suite_hierarchy_reading.Reader(
                                                      suite_hierarchy_reading.Environment(
-                                                         default_configuration.preprocessor,
-                                                         default_configuration.act_phase_setup)),
+                                                         default_configuration.handling_setup.preprocessor,
+                                                         default_configuration.handling_setup.act_phase_setup)),
                                                  self.root_suite_reporter_factory,
                                                  enumeration.DepthFirstEnumerator(),
                                                  case_processing.new_processor_that_should_not_pollute_current_process,
