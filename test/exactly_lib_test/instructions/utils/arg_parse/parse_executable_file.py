@@ -32,6 +32,20 @@ class TestParseValidSyntaxWithoutArguments(unittest.TestCase):
         self.assertEqual('arg2',
                          remaining_arguments.source)
 
+    def test_relative_file_name_with_space(self):
+        (ef, remaining_arguments) = sut.parse(TokenStream('"the file"'))
+        self.assertEqual('the file',
+                         ef.file_reference.file_name)
+        self.assertFalse(ef.arguments, 'The executable should have no arguments')
+
+    def test_relative_file_name_with_space_and_arguments(self):
+        (ef, remaining_arguments) = sut.parse(TokenStream('"the file" "an argument"'))
+        self.assertEqual('the file',
+                         ef.file_reference.file_name)
+        self.assertFalse(ef.arguments, 'The executable should have no arguments')
+        self.assertEqual('"an argument"',
+                         remaining_arguments.source)
+
     def test_option_without_tail(self):
         (ef, remaining_arguments) = sut.parse(TokenStream('%s THE_FILE' % option.REL_HOME_OPTION))
         self.assertEqual('THE_FILE',
@@ -52,6 +66,13 @@ class TestParseValidSyntaxWithArguments(unittest.TestCase):
     def test_plain_path_without_tail(self):
         (ef, remaining_arguments) = sut.parse(TokenStream('( FILE )'))
         self.assertEqual('FILE',
+                         ef.file_reference.file_name)
+        self.assertFalse(ef.arguments, 'The executable should have no arguments')
+        self.assertTrue(remaining_arguments.is_null)
+
+    def test_plain_path_with_space(self):
+        (ef, remaining_arguments) = sut.parse(TokenStream('( "A FILE" )'))
+        self.assertEqual('A FILE',
                          ef.file_reference.file_name)
         self.assertFalse(ef.arguments, 'The executable should have no arguments')
         self.assertTrue(remaining_arguments.is_null)
