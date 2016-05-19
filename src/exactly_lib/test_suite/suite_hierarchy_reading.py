@@ -2,11 +2,11 @@ import functools
 import pathlib
 
 from exactly_lib.cli.test_case_handling_setup import TestCaseHandlingSetup
+from exactly_lib.processing import test_case_processing
+from exactly_lib.processing.test_case_processing import Preprocessor
 from exactly_lib.section_document.model import SectionContents, ElementType
 from exactly_lib.section_document.parse import FileSourceError
-from exactly_lib.test_case import test_case_processing
 from exactly_lib.test_case.phases.act.phase_setup import ActPhaseSetup
-from exactly_lib.test_case.test_case_processing import Preprocessor
 from exactly_lib.test_suite import parser as test_suite_parser
 from exactly_lib.test_suite.instruction_set import parse, instruction
 from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_definition import \

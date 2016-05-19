@@ -1,10 +1,10 @@
 import pathlib
 
 from exactly_lib.execution.result import FullResult
+from exactly_lib.processing import test_case_processing as processing
+from exactly_lib.processing.test_case_processing import AccessorError, Accessor, ProcessError, Preprocessor, ErrorInfo
 from exactly_lib.test_case import error_description
 from exactly_lib.test_case import test_case_doc
-from exactly_lib.test_case import test_case_processing as processing
-from exactly_lib.test_case.test_case_processing import AccessorError, Accessor, ProcessError, Preprocessor, ErrorInfo
 
 
 class SourceReader:

@@ -4,7 +4,7 @@ import unittest
 from contextlib import contextmanager
 
 from exactly_lib.processing.preprocessor import IdentityPreprocessor, PreprocessorViaExternalProgram
-from exactly_lib.test_case.test_case_processing import ProcessError
+from exactly_lib.processing.test_case_processing import ProcessError
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.test_resources import python_program_execution as py_exe
 from exactly_lib_test.test_resources.file_structure import DirContents, File

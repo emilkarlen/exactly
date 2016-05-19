@@ -2,9 +2,9 @@ import enum
 import pathlib
 
 from exactly_lib.cli.cli_environment.exit_value import ExitValue
-from exactly_lib.test_case import test_case_processing
+from exactly_lib.processing import test_case_processing
+from exactly_lib.processing.test_case_processing import TestCaseSetup
 from exactly_lib.test_case.test_case_doc import TestCase
-from exactly_lib.test_case.test_case_processing import TestCaseSetup
 from exactly_lib.test_suite import reporting, structure
 from exactly_lib.util import std
 from exactly_lib.util.std import FilePrinter

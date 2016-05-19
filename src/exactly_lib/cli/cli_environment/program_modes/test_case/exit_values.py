@@ -1,6 +1,6 @@
 from exactly_lib.cli.cli_environment.exit_value import ExitValue
 from exactly_lib.execution.result import FullResultStatus
-from exactly_lib.test_case import test_case_processing as processing
+from exactly_lib.processing import test_case_processing as processing
 
 NO_EXECUTION_EXIT_CODE = 3
 

@@ -1,7 +1,7 @@
 import pathlib
 
 from exactly_lib.cli.cli_environment.exit_value import ExitValue
-from exactly_lib.test_case import test_case_processing
+from exactly_lib.processing import test_case_processing
 from exactly_lib.util.std import StdOutputFiles, FilePrinter
 from . import structure
 

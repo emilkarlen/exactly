@@ -3,8 +3,8 @@ import subprocess
 import tempfile
 
 from exactly_lib import program_info
+from exactly_lib.processing.test_case_processing import Preprocessor, ProcessError, ErrorInfo
 from exactly_lib.test_case import error_description
-from exactly_lib.test_case.test_case_processing import Preprocessor, ProcessError, ErrorInfo
 
 
 class IdentityPreprocessor(Preprocessor):

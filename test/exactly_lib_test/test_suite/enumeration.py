@@ -4,7 +4,7 @@ import unittest
 from exactly_lib.act_phase_setups import single_command_setup
 from exactly_lib.cli.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.processing.preprocessor import IDENTITY_PREPROCESSOR
-from exactly_lib.test_case.test_case_processing import TestCaseSetup
+from exactly_lib.processing.test_case_processing import TestCaseSetup
 from exactly_lib.test_suite.enumeration import DepthFirstEnumerator
 from exactly_lib.test_suite.structure import TestSuite
 
