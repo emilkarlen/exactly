@@ -3,8 +3,8 @@ import unittest
 
 from exactly_lib.act_phase_setups import single_command_setup
 from exactly_lib.execution.result import FullResultStatus
+from exactly_lib.processing.preprocessor import IDENTITY_PREPROCESSOR
 from exactly_lib.test_case import test_case_processing
-from exactly_lib.test_case.preprocessor import IDENTITY_PREPROCESSOR
 from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_set import INSTRUCTION_NAME__ACTOR
 from exactly_lib.test_suite.reporting import SubSuiteReporter
 from exactly_lib.test_suite.suite_hierarchy_reading import Environment

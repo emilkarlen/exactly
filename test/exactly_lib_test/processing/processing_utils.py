@@ -2,12 +2,12 @@ import pathlib
 import unittest
 
 from exactly_lib.execution.result import FullResult, new_skipped
+from exactly_lib.processing import processing_utils as sut
+from exactly_lib.processing.preprocessor import IdentityPreprocessor
 from exactly_lib.section_document.model import new_empty_section_contents
 from exactly_lib.test_case import error_description
-from exactly_lib.test_case import processing_utils as sut
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case import test_case_processing as tcp
-from exactly_lib.test_case.preprocessor import IdentityPreprocessor
 from exactly_lib_test.test_case.test_resources import error_info
 
 
