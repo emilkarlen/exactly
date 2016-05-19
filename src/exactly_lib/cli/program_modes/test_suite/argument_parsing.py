@@ -6,7 +6,7 @@ from exactly_lib.cli.argument_parsing_of_act_phase_setup import resolve_act_phas
 from exactly_lib.cli.cli_environment import common_cli_options as common_opts
 from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options as case_opts
 from exactly_lib.cli.cli_environment.program_modes.test_suite import command_line_options as opts
-from exactly_lib.cli.test_case_handling_setup import TestCaseHandlingSetup
+from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.util import argument_parsing_utils
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from .settings import TestSuiteExecutionSettings

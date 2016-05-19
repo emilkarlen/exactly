@@ -5,11 +5,11 @@ import unittest
 
 from exactly_lib import program_info
 from exactly_lib.act_phase_setups import python3
-from exactly_lib.default.program_modes.test_case.processing import script_handling_for_setup
 from exactly_lib.execution import partial_execution
 from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from exactly_lib.execution.partial_execution import ScriptHandling, TestCase
 from exactly_lib.execution.result import PartialResult
+from exactly_lib.processing.processors import script_handling_for_setup
 from exactly_lib_test.execution.test_resources import utils
 
 

@@ -2,7 +2,7 @@ import pathlib
 
 from exactly_lib.cli.cli_environment.exit_value import ExitValue
 from exactly_lib.cli.util.error_message_printing import output_location
-from exactly_lib.default.program_modes.test_case import processing as case_processing
+from exactly_lib.processing import processors as case_processing
 from exactly_lib.processing import test_case_processing
 from exactly_lib.test_case import error_description
 from exactly_lib.test_suite import reporting

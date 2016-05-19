@@ -4,10 +4,9 @@ import shutil
 from exactly_lib.cli.cli_environment.program_modes.test_case import exit_values
 from exactly_lib.cli.program_modes.test_case.settings import Output, TestCaseExecutionSettings
 from exactly_lib.cli.util.error_message_printing import output_location
-from exactly_lib.default.program_modes.test_case import processing
 from exactly_lib.execution import full_execution
 from exactly_lib.execution.result import FailureInfoVisitor, PhaseFailureInfo, InstructionFailureInfo
-from exactly_lib.processing import test_case_processing
+from exactly_lib.processing import test_case_processing, processors
 from exactly_lib.processing.test_case_processing import ErrorInfo
 from exactly_lib.test_case import error_description
 from exactly_lib.test_case.instruction_setup import InstructionsSetup
@@ -96,12 +95,12 @@ class Executor:
 
     def _process(self,
                  is_keep_eds: bool) -> test_case_processing.Result:
-        configuration = processing.Configuration(self._split_line_into_name_and_argument_function,
+        configuration = processors.Configuration(self._split_line_into_name_and_argument_function,
                                                  self._instruction_setup,
                                                  self._settings.handling_setup,
                                                  is_keep_eds,
                                                  self._settings.execution_directory_root_name_prefix)
-        processor = processing.new_processor_that_is_allowed_to_pollute_current_process(configuration)
+        processor = processors.new_processor_that_is_allowed_to_pollute_current_process(configuration)
         return processor.apply(test_case_processing.TestCaseSetup(self._settings.file_path))
 
 
