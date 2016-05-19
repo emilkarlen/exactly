@@ -51,6 +51,21 @@ class EventType(enum.Enum):
     SUITE_END = 4
 
 
+class CaseEndInfo(tuple):
+    def __new__(cls,
+                case: TestCaseSetup,
+                result: test_case_processing.Result):
+        return tuple.__new__(cls, (case, result))
+
+    @property
+    def case(self) -> TestCaseSetup:
+        return self[0]
+
+    @property
+    def result(self) -> test_case_processing.Result:
+        return self[1]
+
+
 class ExecutionTracingSubSuiteProgressReporter(reporting.SubSuiteProgressReporter):
     def __init__(self,
                  sub_suite: structure.TestSuite):
@@ -73,4 +88,4 @@ class ExecutionTracingSubSuiteProgressReporter(reporting.SubSuiteProgressReporte
                  case: TestCaseSetup,
                  result: test_case_processing.Result):
         self.event_type_list.append(EventType.CASE_END)
-        self.case_end_list.append((case, result))
+        self.case_end_list.append(CaseEndInfo(case, result))

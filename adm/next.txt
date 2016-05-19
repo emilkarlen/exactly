@@ -1,5 +1,20 @@
 -*- org -*-
 
+* DONE Integrationstest för suite/configuration/actor
+Den ska sätta act-phase-setup till script-exekvering
+som ska användas för varje tc i sviten.
+
+* DONE Använd Option/matches för WITH_REPLACED_ENV_VARS_OPTION
+if extra_arguments and extra_arguments[0] == WITH_REPLACED_ENV_VARS_OPTION:
+
+* TODO Flytta test-case/processing till eget paket
+* Dokumentera vad --actor A betyder som arg t svit
+Dok att actor instr i configuration har företräde.
+* Lägg till kommando för hjälp om suite/section/instruction
+Går inte att få hjälp om en instruktion i en svits section idag.
+Beyöver nytt hjälp-kommando
+help suite SECTION INSTRUCTION
+
 * Hjälptext för "home directory" "TODO (improve description!)"
 * Hjälptext för "cd" "TODO"
 * DONE exactly help

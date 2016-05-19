@@ -26,6 +26,7 @@ from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util import file_utils
 from exactly_lib.util.cli_syntax.elements import argument as a
+from exactly_lib.util.cli_syntax.option_parsing import matches
 from exactly_lib.util.file_utils import ensure_parent_directory_does_exist, tmp_text_file_containing
 from exactly_lib.util.string import lines_content
 from exactly_lib.util.textformat.parse import normalize_and_parse
@@ -272,7 +273,7 @@ def try_parse_content(actual_file: ComparisonActualFile,
     def _parse_contents(actual: ComparisonActualFile,
                         extra_arguments: list) -> AssertPhaseInstruction:
         with_replaced_env_vars = False
-        if extra_arguments and extra_arguments[0] == WITH_REPLACED_ENV_VARS_OPTION:
+        if extra_arguments and matches(WITH_REPLACED_ENV_VARS_OPTION_NAME, extra_arguments[0]):
             with_replaced_env_vars = True
             del extra_arguments[0]
         (here_doc_or_file_ref_for_expected, remaining_arguments) = parse_here_doc_or_file_ref.parse(extra_arguments,
