@@ -1,5 +1,7 @@
 -*- org -*-
 
+* TODO FLytta exactly_lib/default/program_modes/test_case/processing.py
+till eget paket processing
 * DONE Byta namn "pwd" -> "cd" ("current directory")
 <2016-05-12 tor>
 Rimmar hyfsat väl både m befintliga unix-kommanot _och_ 
