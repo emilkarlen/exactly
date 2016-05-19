@@ -1,10 +1,8 @@
-import enum
 import pathlib
 import unittest
 from pathlib import Path
 
 from exactly_lib.act_phase_setups.script_language_setup import new_for_script_language_setup
-from exactly_lib.cli.cli_environment.exit_value import ExitValue
 from exactly_lib.cli.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.default.program_modes.test_case import processing as case_processing
 from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
@@ -13,7 +11,6 @@ from exactly_lib.script_language.python3 import script_language_setup
 from exactly_lib.test_case import test_case_processing
 from exactly_lib.test_case.instruction_setup import InstructionsSetup
 from exactly_lib.test_case.preprocessor import IDENTITY_PREPROCESSOR
-from exactly_lib.test_case.test_case_doc import TestCase
 from exactly_lib.test_case.test_case_processing import TestCaseSetup
 from exactly_lib.test_suite import reporting
 from exactly_lib.test_suite import structure
@@ -22,10 +19,10 @@ from exactly_lib.test_suite.execution import Executor
 from exactly_lib.test_suite.instruction_set.parse import SuiteSyntaxError
 from exactly_lib.test_suite.suite_hierarchy_reading import SuiteHierarchyReader
 from exactly_lib.util import line_source
-from exactly_lib.util import std
-from exactly_lib.util.std import FilePrinter
 from exactly_lib_test.test_case.test_resources import error_info
 from exactly_lib_test.test_resources.str_std_out_files import StringStdOutFiles
+from exactly_lib_test.test_suite.test_resources.suite_reporting import ExecutionTracingReporterFactory, \
+    ExecutionTracingRootSuiteReporter, EventType, ExecutionTracingSubSuiteProgressReporter
 from exactly_lib_test.test_suite.test_resources.test_case_handling_setup import \
     test_case_handling_setup_with_identity_preprocessor
 
@@ -349,72 +346,6 @@ class ReaderThatGivesConstantSuite(SuiteHierarchyReader):
 
     def apply(self, suite_file_path: pathlib.Path) -> structure.TestSuite:
         return self.constant
-
-
-class EventType(enum.Enum):
-    """
-    Type for tracking sequence of invocations of methods of SubSuiteReporter.
-    """
-    SUITE_BEGIN = 1
-    CASE_BEGIN = 2
-    CASE_END = 3
-    SUITE_END = 4
-
-
-class ExecutionTracingSubSuiteProgressReporter(reporting.SubSuiteProgressReporter):
-    def __init__(self,
-                 sub_suite: structure.TestSuite):
-        self.sub_suite = sub_suite
-        self.event_type_list = []
-        self.case_begin_list = []
-        self.case_end_list = []
-
-    def suite_begin(self):
-        self.event_type_list.append(EventType.SUITE_BEGIN)
-
-    def suite_end(self):
-        self.event_type_list.append(EventType.SUITE_END)
-
-    def case_begin(self, case: TestCase):
-        self.event_type_list.append(EventType.CASE_BEGIN)
-        self.case_begin_list.append(case)
-
-    def case_end(self,
-                 case: TestCaseSetup,
-                 result: test_case_processing.Result):
-        self.event_type_list.append(EventType.CASE_END)
-        self.case_end_list.append((case, result))
-
-
-class ExecutionTracingRootSuiteReporter(reporting.RootSuiteReporter):
-    VALID_SUITE_EXIT_CODE = 72
-    INVALID_SUITE_EXIT_CODE = 87
-
-    def __init__(self):
-        self.sub_suite_reporters = []
-        self.num_report_final_result_invocations = 0
-
-    def new_sub_suite_reporter(self, sub_suite: structure.TestSuite) -> reporting.SubSuiteReporter:
-        reporter = reporting.SubSuiteReporter(ExecutionTracingSubSuiteProgressReporter(sub_suite))
-        self.sub_suite_reporters.append(reporter)
-        return reporter
-
-    def report_final_results_for_invalid_suite(self, text_output_file: FilePrinter) -> ExitValue:
-        return ExitValue(self.INVALID_SUITE_EXIT_CODE, 'invalid suite')
-
-    def report_final_results_for_valid_suite(self, text_output_file: FilePrinter) -> ExitValue:
-        self.num_report_final_result_invocations += 1
-        return ExitValue(self.VALID_SUITE_EXIT_CODE, 'valid suite')
-
-
-class ExecutionTracingReporterFactory(reporting.RootSuiteReporterFactory):
-    def __init__(self):
-        self.complete_suite_reporter = ExecutionTracingRootSuiteReporter()
-
-    def new_reporter(self,
-                     std_output_files: std.StdOutputFiles,
-                     root_suite_file: pathlib.Path) -> reporting.RootSuiteReporter:
-        return self.complete_suite_reporter
 
 
 class ExpectedSuiteReporting(tuple):

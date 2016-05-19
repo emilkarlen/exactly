@@ -56,4 +56,8 @@ def tmp_file_containing_lines(content_lines: list,
 
 
 class NullFile(object):
-    def write(self, *_): pass
+    def write(self, *_):
+        pass
+
+    def flush(self):
+        pass

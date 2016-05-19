@@ -23,7 +23,7 @@ class Executor:
                  test_case_processor_constructor,
                  suite_root_file_path: pathlib.Path):
         """
-        :param test_case_processor_constructor: case_processing.Configuration -> test_case_processing.Processor
+        :param test_case_processor_constructor: `case_processing.Configuration` -> `test_case_processing.Processor`
         """
         self._default_case_configuration = default_case_configuration
         self._std = output
@@ -104,7 +104,7 @@ class Executor:
                                                         file_path=case.file_path)
             return test_case_processing.new_internal_error(error_info)
 
-    def _configuration_for_cases_in_suite(self, suite: structure.TestSuite):
+    def _configuration_for_cases_in_suite(self, suite: structure.TestSuite) -> case_processing.Configuration:
         return case_processing.Configuration(
             self._default_case_configuration.split_line_into_name_and_argument_function,
             self._default_case_configuration.instruction_setup,
