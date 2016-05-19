@@ -9,20 +9,22 @@ from exactly_lib.cli.cli_environment.program_modes.test_suite import command_lin
 from exactly_lib.cli.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.util import argument_parsing_utils
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
-from .settings import Settings
+from .settings import TestSuiteExecutionSettings
 
 
 def parse(default: TestCaseHandlingSetup,
-          argv: list) -> Settings:
+          argv: list) -> TestSuiteExecutionSettings:
     """
     :raises ArgumentParsingError Invalid usage
     """
     argument_parser = _new_argument_parser()
     namespace = argument_parsing_utils.raise_exception_instead_of_exiting_on_error(argument_parser,
                                                                                    argv)
-    return Settings(resolve_act_phase_setup_from_argparse_argument(default.act_phase_setup,
-                                                                   namespace.actor),
-                    pathlib.Path(namespace.file).resolve())
+    act_phase_setup = resolve_act_phase_setup_from_argparse_argument(default.act_phase_setup,
+                                                                     namespace.actor)
+    return TestSuiteExecutionSettings(TestCaseHandlingSetup(act_phase_setup,
+                                                            default.preprocessor),
+                                      pathlib.Path(namespace.file).resolve())
 
 
 def _new_argument_parser() -> argparse.ArgumentParser:

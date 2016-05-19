@@ -1,18 +1,18 @@
 import pathlib
 
-from exactly_lib.test_case.phases.act.phase_setup import ActPhaseSetup
+from exactly_lib.cli.test_case_handling_setup import TestCaseHandlingSetup
 
 
-class Settings:
+class TestSuiteExecutionSettings:
     def __init__(self,
-                 act_phase_setup: ActPhaseSetup,
+                 handling_setup: TestCaseHandlingSetup,
                  suite_root_file_path: pathlib.Path):
-        self.__act_phase_setup = act_phase_setup
+        self.__handling_setup = handling_setup
         self.__suite_root_file_path = suite_root_file_path
 
     @property
-    def act_phase_setup(self) -> ActPhaseSetup:
-        return self.__act_phase_setup
+    def handling_setup(self) -> TestCaseHandlingSetup:
+        return self.__handling_setup
 
     @property
     def suite_root_file_path(self) -> pathlib.Path:

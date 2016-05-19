@@ -98,8 +98,7 @@ class Executor:
                  is_keep_eds: bool) -> test_case_processing.Result:
         configuration = processing.Configuration(self._split_line_into_name_and_argument_function,
                                                  self._instruction_setup,
-                                                 self._settings.act_phase_setup,
-                                                 self._settings.preprocessor,
+                                                 self._settings.handling_setup,
                                                  is_keep_eds,
                                                  self._settings.execution_directory_root_name_prefix)
         processor = processing.new_processor_that_is_allowed_to_pollute_current_process(configuration)

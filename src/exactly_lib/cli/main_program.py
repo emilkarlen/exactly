@@ -6,7 +6,7 @@ from exactly_lib.cli.program_modes.help import argument_parsing as parse_help
 from exactly_lib.cli.program_modes.help.request_handling.resolving_and_handling import handle_help_request
 from exactly_lib.cli.program_modes.test_case.settings import TestCaseExecutionSettings
 from exactly_lib.cli.program_modes.test_suite import argument_parsing as suite_argument_parsing
-from exactly_lib.cli.program_modes.test_suite.settings import Settings
+from exactly_lib.cli.program_modes.test_suite.settings import TestSuiteExecutionSettings
 from exactly_lib.cli.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.help.contents_structure import application_help_for
 from exactly_lib.test_case.instruction_setup import InstructionsSetup
@@ -46,7 +46,7 @@ class MainProgram:
         raise NotImplementedError()
 
     def execute_test_suite(self,
-                           settings: Settings) -> int:
+                           settings: TestSuiteExecutionSettings) -> int:
         raise NotImplementedError()
 
     @property

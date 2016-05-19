@@ -33,12 +33,13 @@ def parse(default: TestCaseHandlingSetup,
         is_keep_execution_directory_root = True
     act_phase_setup = resolve_act_phase_setup_from_argparse_argument(default.act_phase_setup,
                                                                      namespace.actor)
-    preprocessor = _parse_preprocessor(default.preprocessor, namespace.preprocessor)
+    preprocessor = _parse_preprocessor(default.preprocessor,
+                                       namespace.preprocessor)
+    actual_handling_setup = TestCaseHandlingSetup(act_phase_setup, preprocessor)
     return TestCaseExecutionSettings(pathlib.Path(namespace.file),
                                      pathlib.Path(namespace.file).parent.resolve(),
                                      output,
-                                     preprocessor,
-                                     act_phase_setup,
+                                     actual_handling_setup,
                                      is_keep_execution_directory_root=is_keep_execution_directory_root)
 
 

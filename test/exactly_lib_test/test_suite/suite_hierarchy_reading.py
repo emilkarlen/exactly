@@ -439,7 +439,7 @@ class TestInvalidFileSyntax(unittest.TestCase):
         check_exception.check(SuiteFileSyntaxError(), self)
 
 
-def suite():
+def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestInvalidFileSyntax))
     ret_val.addTest(unittest.makeSuite(TestInvalidFileReferences))
@@ -448,4 +448,4 @@ def suite():
 
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.TextTestRunner().run(suite())
