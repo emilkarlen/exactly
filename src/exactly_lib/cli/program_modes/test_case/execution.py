@@ -7,10 +7,10 @@ from exactly_lib.cli.util.error_message_printing import output_location
 from exactly_lib.default.program_modes.test_case import processing
 from exactly_lib.execution import full_execution
 from exactly_lib.execution.result import FailureInfoVisitor, PhaseFailureInfo, InstructionFailureInfo
+from exactly_lib.processing import test_case_processing
+from exactly_lib.processing.test_case_processing import ErrorInfo
 from exactly_lib.test_case import error_description
-from exactly_lib.test_case import test_case_processing
 from exactly_lib.test_case.instruction_setup import InstructionsSetup
-from exactly_lib.test_case.test_case_processing import ErrorInfo
 from exactly_lib.util.std import StdOutputFiles, FilePrinter
 
 

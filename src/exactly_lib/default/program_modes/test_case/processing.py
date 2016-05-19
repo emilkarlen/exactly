@@ -9,14 +9,14 @@ from exactly_lib.execution import full_execution
 from exactly_lib.execution.partial_execution import ScriptHandling
 from exactly_lib.execution.result import FullResult
 from exactly_lib.processing import processing_utils
+from exactly_lib.processing import test_case_processing as processing
+from exactly_lib.processing.test_case_processing import ErrorInfo, ProcessError
 from exactly_lib.section_document import parse as document_parser
 from exactly_lib.section_document.parse import SectionElementParser
 from exactly_lib.test_case import error_description
 from exactly_lib.test_case import test_case_doc
-from exactly_lib.test_case import test_case_processing as processing
 from exactly_lib.test_case.instruction_setup import InstructionsSetup
 from exactly_lib.test_case.phases.act.phase_setup import ActPhaseSetup
-from exactly_lib.test_case.test_case_processing import ErrorInfo, ProcessError
 from exactly_lib.util import line_source
 
 
@@ -36,14 +36,14 @@ class Configuration:
 
 def new_processor_that_should_not_pollute_current_process(configuration: Configuration) -> processing.Processor:
     return processing_utils.ProcessorFromAccessorAndExecutor(
-            new_accessor(configuration),
-            new_executor_that_should_not_pollute_current_processes(configuration))
+        new_accessor(configuration),
+        new_executor_that_should_not_pollute_current_processes(configuration))
 
 
 def new_processor_that_is_allowed_to_pollute_current_process(configuration: Configuration) -> processing.Processor:
     return processing_utils.ProcessorFromAccessorAndExecutor(
-            new_accessor(configuration),
-            new_executor_that_may_pollute_current_processes(configuration))
+        new_accessor(configuration),
+        new_executor_that_may_pollute_current_processes(configuration))
 
 
 def new_accessor(configuration: Configuration) -> processing.Accessor:
