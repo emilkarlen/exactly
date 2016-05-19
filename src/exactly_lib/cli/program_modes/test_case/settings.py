@@ -2,7 +2,7 @@ import enum
 import pathlib
 
 from exactly_lib import program_info
-from exactly_lib.cli.test_case_handling_setup import TestCaseHandlingSetup
+from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 
 
 class Output(enum.Enum):

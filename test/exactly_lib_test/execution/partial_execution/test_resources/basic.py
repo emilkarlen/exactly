@@ -6,11 +6,11 @@ import unittest
 
 from exactly_lib import program_info
 from exactly_lib.act_phase_setups import python3
-from exactly_lib.default.program_modes.test_case.processing import script_handling_for_setup
 from exactly_lib.execution import partial_execution
 from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from exactly_lib.execution.phases import PhaseEnum
 from exactly_lib.execution.result import PartialResult
+from exactly_lib.processing.processors import script_handling_for_setup
 from exactly_lib.util.functional import Composition
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that, \
     before_assert_phase_instruction_that, assert_phase_instruction_that, cleanup_phase_instruction_that, \

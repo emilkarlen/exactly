@@ -2,9 +2,9 @@ import types
 import unittest
 
 from exactly_lib.act_phase_setups import python3
-from exactly_lib.default.program_modes.test_case.processing import script_handling_for_setup
 from exactly_lib.execution.partial_execution import ScriptHandling
 from exactly_lib.execution.result import PartialResultStatus
+from exactly_lib.processing.processors import script_handling_for_setup
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib_test.execution.partial_execution.test_resources.recording.test_case_generation_for_sequence_tests import \

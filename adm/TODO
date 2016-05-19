@@ -3,96 +3,8 @@
 * TODO ExecutableFileInstruction ska kunna hantera quotade filnamn
 Har visat sig lite svårt att testa m nuvarande uppsättning.
 Behöver få till det här, dels för att göra tester enklare
-* TODO FLytta exactly_lib/default/program_modes/test_case/processing.py
-till eget paket processing
-* DONE Byta namn "pwd" -> "cd" ("current directory")
-<2016-05-12 tor>
-Rimmar hyfsat väl både m befintliga unix-kommanot _och_ 
-begreppet "current directory".
 * TODO assert/type: Bestäm beteende för sym-link t icke-existerande fil
 O dokumentera i hjälptext.
-* DONE Förbättra instr-dok
-** DONE S&R exactly_lib.instructions.utils.relative_path_options_documentation
-Har blivit hela sökvägen vid refaktorering.
-** DONE Ta bort all_rel_option_strs när ej används längre
-** DONE [conf]
-*** DONE home
-      Changes the Home directory.
-*** DONE mode
-      Sets the execution mode.
-
-** DONE [setup]
-*** DONE dir
-      Makes a directory in the current directory.
-*** DONE env
-      Manipulates environment variables.
-*** DONE file
-      Creates a file.
-*** DONE install
-      Install existing files in the home directory into the current directory.
-*** DONE pwd
-      Changes Present Working Directory.
-*** DONE run
-      Runs a program.
-*** DONE shell
-      Executes the given program using the system's shell.
-*** DONE stdin
-      Redirects stdin, for the act program, to a given file, or string.
-
-** DONE [before-assert]
-*** DONE dir
-      Makes a directory in the current directory.
-*** DONE env
-      Manipulates environment variables.
-*** DONE pwd
-      Changes Present Working Directory.
-*** DONE run
-      Runs a program.
-*** DONE shell
-      Executes the given program using the system's shell.
-
-** DONE [assert]
-*** DONE contents
-      Tests the contents of a file.
-**** DONE doc here-doc
-**** DONE anv rätt CONFIGURATION i stdout/err
-**** DONE beskriv default-relativity
-***** DONE stdout/err
-***** DONE contents
-**** DONE here-doc för stdout/err
-*** DONE dir
-      Makes a directory in the current directory.
-*** DONE env
-      Manipulates environment variables.
-*** DONE exitcode
-      Tests the exitcode.
-*** DONE pwd
-      Changes Present Working Directory.
-*** DONE run
-      Runs a program and PASS iff it's exit code is 0.
-*** DONE shell
-      Executes the given program using the system's shell.
-*** DONE stderr
-      Tests the contents of stderr.
-*** DONE stdout
-      Tests the contents of stdout.
-**** DONE Använda OPTIONAL_RELATIVITY_ARGUMENT_USAGE på fler ställen
-Typ alla ställen där RELATIVITY_ARGUMENT packas in i ArgumentUsage.
-*** DONE type
-      Tests the type of a file.
-
-** DONE [cleanup]
-*** DONE dir
-      Makes a directory in the current directory.
-*** DONE env
-      Manipulates environment variables.
-*** DONE pwd
-      Changes Present Working Directory.
-*** DONE run
-      Runs a program.
-*** DONE shell
-      Executes the given program using the system's shell.
-
 * TODO Gör "actor" till en "configuration parameter"
 <2016-05-05 tor>
 Lägg till instruktion ("actor") till "conf" för att sätt actor.
@@ -145,13 +57,11 @@ som skapar/rensar exekverbara, kör svit.
 Vet inte vilka licensfiler som behövs, var de ska ligga, vad de ska innehålla,
 vad README ska innehålla.
 * TODO TypeError ist för ValueError för visitorer appl på felaktigt objekt
-* TODO Ändra --rel-cwd -> --rel-pwd
+* TODO Ändra --rel-cwd -> --rel-cd
 <2016-04-03 sön>
-* TODO EXACTLY_HOME ska ev inte vara tillgänglig i [act]
-<2016-04-02 lör>
-Det riskerar ju att atc (action to check) kan sabba
-filer där.
 * TODO Dokumentation
+** TODO Hjälptext för "home directory" "TODO (improve description!)"
+** TODO Hjälptext för "cd" "TODO"
 ** TODO Konsekvensifiera begrepp för assertion ("Tests/checks if ...")
 <2016-05-12 tor>
 type, exitcode anv "Tests ...".
@@ -197,9 +107,6 @@ Test Case Overview
 
 Executes a program in a temporary sandbox directory and checks it's result.
 ----------------------------------------
-** DONE För sviter ska "valfrihets-infon" använda ordet "section"
-Nu används "phase":
-The "conf" phase is optional
 ** TODO Sortera "see also" på något lämpligt vis
 Ev automatisk sortering, men ä inte säker på att det finns något enkelt
 vettigt att tillgå att anv som sorteringsvärde.
@@ -245,7 +152,6 @@ I dag är det en specialare som inte invokerar en medlemsmetod pss som "test-cas
 
 exactly_lib.cli.main_program.MainProgram#_parse_and_execute_help
 
-** TODO README.md
 ** TODO Resten av dok (faser, svit)
 ** TODO formatteraren ska inte bryta rad i --preprocessor
 <2016-03-28 mån>
@@ -516,10 +422,6 @@ Använda samma namn i alla varianter av Expectation (dvs för de olika faserna).
 Nu finns t ex
  - validate_pre_eds_result
  - validation_pre_eds
-* TODO [#C] dokument-parser ska använda expl given fas för instr i anonym fas
-I dag finns en anonym fas.
-Den ska inte längre finnas.
-Ist ska en av faserna anges (valfritt) som den som används för ev "anonym" fas.
 * TODO Paketstruktur: ev lägga instructions o act_phase_setups i gemensamt pkt
 <2016-01-13 ons>
 Lägg i ett paket som enbart innehåller "utdvidningar".
@@ -531,13 +433,8 @@ Typ: Om fler än en tesfalls-fil anges så körs de som en test-svit.
 
 En temporär testsvit skapas bakom kulisserna.
 * TODO Python-saker
-
 ** TODO Är klasser py3? Ska det vara MyClass(object)?
 Ev ska varje klass explicit ärva object för att vara en py-3-klass.
-* DONE shell: Vad händer m stdout, stderr? blir del av stdout för exactly?
-Verkar så.  Väldigt dåligt i så fall.  Måste ändras.
-** TODO stdout, stderr
-Skriv dessa till fil pss som görs för execute.
 * TODO tmp-filer för instruktioner
 Bör införa hjälpfunktion för att skapa tmp-filer för instruktioner.
 Nu: contents/stdout/stderr: Ser själva till att lägga tmp-fil i
@@ -589,13 +486,6 @@ exactly_lib/default/execution_mode/test_case/default_instructions_setup.py
 
 Lösning, typ: test som kör testfall m en "unik" instruktion från varje fas.
 ("unik" = instruktion som inte finns i någon annan fas.)
-** TODO [#A] Exekveringsflödet: fler instr per fas
-Idag finns inget test (vad jag vet) som kollar hur flera instruktioner körs
-inom en o samma fas.
-Det som behövs är testet för "full_execution" med med åtminstonne två
-instruktioner per fas.
-Bäst vore om varje intsruktion hade egen unik identiferare som kunde "spelas
-in" för att järmföras mot förväntad "inspelning".
 * TODO Misc
 ** TODO <2015-01-05 mån> abs_syn_gen.TestCase instances must be valid
 The constructor should validate all arguments
@@ -640,12 +530,14 @@ Antingen ska det
  - specificeras med en typ o innehåll
  - tas bort
 * TODO Miljövariabler
+** TODO EXACTLY_HOME ska ev inte vara tillgänglig i [act]
+<2016-04-02 lör>
+Det riskerar ju att atc (action to check) kan sabba
+filer där.
 ** TODO Instruktioner: os.path.expandvars för att expandera miljövariabler
 Finns även en
 os.path.expanduser
 för att expanera ~user.
-** TODO Lägga till _DIR i slutet av katalog-variabler (ev skippa!!)
-** DONE Ny miljövariabel: EXACTLY_RESULT_DIR
 * TODO Kommandorads-program
 ** TODO Hjälpsystem via CLI
 Förslag:

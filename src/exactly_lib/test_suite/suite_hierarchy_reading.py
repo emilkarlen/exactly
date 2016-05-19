@@ -1,8 +1,8 @@
 import functools
 import pathlib
 
-from exactly_lib.cli.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.processing import test_case_processing
+from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.processing.test_case_processing import Preprocessor
 from exactly_lib.section_document.model import SectionContents, ElementType
 from exactly_lib.section_document.parse import FileSourceError

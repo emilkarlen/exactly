@@ -6,8 +6,8 @@ from exactly_lib import program_info
 from exactly_lib.cli.argument_parsing_of_act_phase_setup import resolve_act_phase_setup_from_argparse_argument
 from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options as opt
 from exactly_lib.cli.program_modes.test_case.settings import Output, TestCaseExecutionSettings
-from exactly_lib.cli.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.processing.preprocessor import PreprocessorViaExternalProgram
+from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.processing.test_case_processing import Preprocessor
 from exactly_lib.util import argument_parsing_utils
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
