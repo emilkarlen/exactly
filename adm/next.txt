@@ -1,14 +1,33 @@
 -*- org -*-
 
+* Rename: ExecutionDirectoryStructure -> SandboxDirectoryStructure
+eds -> sds
+* Ändra --rel-pwd -> --rel-cd
 * Icke IMPLEMENTATION_ERROR när act-fasens pgm icke går att exekvera
 Fick IMPL_ERR när syntax-fel i #!/bin/bash i skript.
-* Ta bort --actour/ Dokumentera vad --actor A betyder som arg t svit
-Dok att actor instr i configuration har företräde.
-* Lägg till kommando för hjälp om suite/section/instruction
-Går inte att få hjälp om en instruktion i en svits section idag.
-Beyöver nytt hjälp-kommando
-help suite SECTION INSTRUCTION
+** TODO execute_cmd_and_args
+Ska nog inte kasta impl error.
+Ska nog rapportera fel på ngt sätt så att anroparen själv kan välja hur det
+ska hanteras.
+** TODO ActProgramExecutor
+*** Möjligheter till relrapportering
+Test av ActProgramExecutor:
+**** validate: skulle kunna rapportera HARD_ERROR
+- interpreter: t ex om interpreter icke är en exekverbar fil
+- single cmd: t ex om cmd icke är exekverbar fil
+**** execute: skulle kunna rapportera HARD_ERROR
+om icke går att exekvera
+T ex om Exception kastas vid exekvering
+** Testa
+*** TODO ActProgramExecutorForScriptLanguage
+*** TODO _ActProgramExecutorForSingleCommand
+** TODO act_phase_should_be_transformed_to_script_file.py ska vara test av script-actor
+Nu är det generellt test av act-fasen.  Det är fel.  Det ska vara upp till
+act-setup:en huruvida den vill spara sin info i fil el ej.
 
+Sparande av källkoden i fil är del av script-setup actorn.
+** DONE Flytta ActSourceBuilderForScriptLanguage o ScriptLanguage
+Till paket som använder sig av script-language.
 * Wiki: Lägga till todo: builtin preprocessor
 * Ta bort adm-filer
 Flytta till separat repo?
