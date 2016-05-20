@@ -6,7 +6,7 @@ from contextlib import contextmanager
 
 from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from exactly_lib.test_case.phases.act.phase_setup import ActSourceExecutor, SourceSetup
-from exactly_lib.test_case.phases.act.script_source import ActSourceBuilder
+from exactly_lib.test_case.phases.act.program_source import ActSourceBuilder
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.std import StdFiles
 from exactly_lib_test.test_resources.execution.eds_populator import act_dir_contents

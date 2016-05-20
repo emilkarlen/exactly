@@ -4,7 +4,7 @@ import unittest
 from exactly_lib.execution.partial_execution import ActPhaseHandling
 from exactly_lib.execution.result import PartialResultStatus
 from exactly_lib.test_case import test_case_doc
-from exactly_lib.test_case.phases.act.script_source import ActSourceBuilderForStatementLines
+from exactly_lib.test_case.phases.act.program_source import ActSourceBuilderForStatementLines
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib_test.execution.partial_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorForExecutionRecording

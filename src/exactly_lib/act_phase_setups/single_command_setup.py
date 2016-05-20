@@ -10,7 +10,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SectionElementParserForStandardCommentAndEmptyLines
 from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
 from exactly_lib.test_case.phases.act.phase_setup import ActSourceExecutor, SourceSetup, ActPhaseSetup
-from exactly_lib.test_case.phases.act.script_source import ActSourceBuilder, ActSourceBuilderForStatementLines
+from exactly_lib.test_case.phases.act.program_source import ActSourceBuilder, ActSourceBuilderForStatementLines
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util import line_source
 from exactly_lib.util.std import StdFiles
