@@ -14,44 +14,37 @@ from exactly_lib_test.test_resources.expected_instruction_failure import Expecte
 class Test(TestCaseBase):
     def test_full_sequence(self):
         self._check(
-                Arrangement(TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr()),
-                Expectation(PartialResultStatus.PASS,
-                            ExpectedFailureForNoFailure(),
-                            PRE_EDS_VALIDATION_STEPS__TWICE +
-                            [phase_step.SETUP__MAIN,
-                             phase_step.SETUP__MAIN,
-                             phase_step.SETUP__VALIDATE_POST_SETUP,
-                             phase_step.SETUP__VALIDATE_POST_SETUP,
-                             phase_step.ACT__VALIDATE_POST_SETUP,
-                             phase_step.ACT__VALIDATE_POST_SETUP,
-                             phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
-                             phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
-                             phase_step.ASSERT__VALIDATE_POST_SETUP,
-                             phase_step.ASSERT__VALIDATE_POST_SETUP,
-                             phase_step.ACT__MAIN,
-                             phase_step.ACT__MAIN,
-                             phase_step.ACT__SCRIPT_VALIDATE,
-                             phase_step.ACT__SCRIPT_EXECUTE,
-                             phase_step.BEFORE_ASSERT__MAIN,
-                             phase_step.BEFORE_ASSERT__MAIN,
-                             phase_step.ASSERT__MAIN,
-                             phase_step.ASSERT__MAIN,
-                             (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
-                             (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
-                             ],
-                            True))
+            Arrangement(TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr()),
+            Expectation(PartialResultStatus.PASS,
+                        ExpectedFailureForNoFailure(),
+                        PRE_EDS_VALIDATION_STEPS__TWICE +
+                        [phase_step.SETUP__MAIN,
+                         phase_step.SETUP__MAIN,
+                         phase_step.SETUP__VALIDATE_POST_SETUP,
+                         phase_step.SETUP__VALIDATE_POST_SETUP,
+                         phase_step.ACT__VALIDATE_POST_SETUP,
+                         phase_step.ACT__VALIDATE_POST_SETUP,
+                         phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
+                         phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
+                         phase_step.ASSERT__VALIDATE_POST_SETUP,
+                         phase_step.ASSERT__VALIDATE_POST_SETUP,
+                         phase_step.ACT__MAIN,
+                         phase_step.ACT__MAIN,
+                         phase_step.ACT__SCRIPT_VALIDATE,
+                         phase_step.ACT__SCRIPT_EXECUTE,
+                         phase_step.BEFORE_ASSERT__MAIN,
+                         phase_step.BEFORE_ASSERT__MAIN,
+                         phase_step.ASSERT__MAIN,
+                         phase_step.ASSERT__MAIN,
+                         (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
+                         (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
+                         ],
+                        True))
 
 
-def suite():
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(Test))
-    return ret_val
-
-
-def run_suite():
-    runner = unittest.TextTestRunner()
-    runner.run(suite())
+def suite() -> unittest.TestSuite:
+    return unittest.makeSuite(Test)
 
 
 if __name__ == '__main__':
-    run_suite()
+    unittest.TextTestRunner().run(suite())
