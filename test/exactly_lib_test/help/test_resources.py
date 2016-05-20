@@ -19,27 +19,27 @@ from exactly_lib_test.test_resources.instruction_description import InstructionD
 def instr_descr(phase_name: str, name: str) -> InstructionDocumentation:
     return InstructionDocumentationWithConstantValues(
         name,
-        single_line_description_that_identifies_instruction_and_phase(phase_name,
-                                                                      name),
+        single_line_description_that_identifies_instruction_and_section(phase_name,
+                                                                        name),
         '',
         [])
 
 
-def single_line_description_that_identifies_instruction_and_phase(phase_name: str,
-                                                                  instruction_name: str) -> str:
+def single_line_description_that_identifies_instruction_and_section(phase_name: str,
+                                                                    instruction_name: str) -> str:
     return phase_name + '/' + instruction_name
 
 
-def test_case_phase_help(phase_name: str,
-                         instruction_names: list) -> SectionDocumentation:
-    instruction_set = test_case_phase_instruction_set(phase_name, instruction_names)
+def section_documentation(phase_name: str,
+                          instruction_names: list) -> SectionDocumentation:
+    instruction_set = section_instruction_set(phase_name, instruction_names)
     return SectionDocumentationForSectionWithInstructionsTestImpl(phase_name,
                                                                   instruction_set)
 
 
-def test_case_phase_instruction_set(phase_name: str,
-                                    instruction_names: list) -> SectionInstructionSet:
-    instruction_descriptions = map(lambda name: instr_descr(phase_name, name),
+def section_instruction_set(section_name: str,
+                            instruction_names: list) -> SectionInstructionSet:
+    instruction_descriptions = map(lambda name: instr_descr(section_name, name),
                                    instruction_names)
     return SectionInstructionSet(instruction_descriptions)
 
@@ -50,6 +50,13 @@ def application_help_for(test_case_phase_helps: list,
     return ApplicationHelp(MainProgramHelp(),
                            ConceptsHelp(concepts),
                            TestCaseHelp(test_case_phase_helps),
+                           TestSuiteHelp(suite_sections))
+
+
+def application_help_for_suite_sections(suite_sections: list) -> ApplicationHelp:
+    return ApplicationHelp(MainProgramHelp(),
+                           ConceptsHelp([]),
+                           TestCaseHelp([]),
                            TestSuiteHelp(suite_sections))
 
 

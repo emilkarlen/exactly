@@ -6,6 +6,7 @@ from exactly_lib.cli.program_modes.help.program_modes.test_case.help_request imp
 from exactly_lib.cli.program_modes.help.program_modes.test_suite.help_request import *
 from exactly_lib.execution import phases
 from exactly_lib.help.contents_structure import ApplicationHelp
+from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
 
 HELP = 'help'
 INSTRUCTIONS = 'instructions'
@@ -77,16 +78,33 @@ class Parser:
         if not arguments:
             return TestSuiteHelpRequest(TestSuiteHelpItem.CLI_SYNTAX,
                                         None, None)
-        if len(arguments) != 1:
-            raise HelpError('Invalid help syntax. Use help help, for help.')
-        if arguments[0] == SPECIFICATION:
+        if arguments[0] == SPECIFICATION and len(arguments) == 1:
             return TestSuiteHelpRequest(TestSuiteHelpItem.OVERVIEW, None, None)
-        section_name = arguments[0]
+        section_name = arguments.pop(0)
+        test_suite_section_help = self._lookup_suite_section(section_name)
+        if not arguments:
+            return TestSuiteHelpRequest(TestSuiteHelpItem.SECTION,
+                                        section_name,
+                                        test_suite_section_help)
+        if len(arguments) != 1:
+            raise HelpError('Invalid help request: too many arguments.')
+        if not test_suite_section_help.has_instructions:
+            raise HelpError('Section "%s" does not have instructions.')
+        instruction_name = arguments[0]
+        try:
+            description = test_suite_section_help.instruction_set.name_2_description[instruction_name]
+            return TestSuiteHelpRequest(
+                TestSuiteHelpItem.INSTRUCTION,
+                instruction_name,
+                description)
+        except KeyError:
+            msg = 'The section %s does not contain the instruction: %s' % (section_name, instruction_name)
+            raise HelpError(msg)
+
+    def _lookup_suite_section(self, section_name: str) -> SectionDocumentation:
         for test_suite_section_help in self.application_help.test_suite_help.section_helps:
             if test_suite_section_help.name.plain == section_name:
-                return TestSuiteHelpRequest(TestSuiteHelpItem.SECTION,
-                                            section_name,
-                                            test_suite_section_help)
+                return test_suite_section_help
         raise HelpError('Not a test-suite section: "%s"' % section_name)
 
     def _parse_instruction_in_phase(self,
