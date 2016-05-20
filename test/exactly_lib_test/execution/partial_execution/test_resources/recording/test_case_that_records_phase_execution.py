@@ -118,10 +118,10 @@ class TestCaseBase(unittest.TestCase):
                arrangement: Arrangement,
                expectation: Expectation,
                dbg_do_not_delete_dir_structure=False):
-        execute_test_case_with_recording(self,
-                                         arrangement,
-                                         expectation,
-                                         dbg_do_not_delete_dir_structure)
+        execute_test_case_with_recording_2(self,
+                                           arrangement,
+                                           expectation,
+                                           dbg_do_not_delete_dir_structure)
 
 
 def execute_test_case_with_recording_2(put: unittest.TestCase,
