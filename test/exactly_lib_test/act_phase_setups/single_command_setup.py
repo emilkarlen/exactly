@@ -6,7 +6,7 @@ from contextlib import contextmanager
 
 from exactly_lib.act_phase_setups import single_command_setup as sut
 from exactly_lib.test_case.phases.act.phase_setup import SourceSetup
-from exactly_lib.test_case.phases.act.script_source import ActSourceBuilder
+from exactly_lib.test_case.phases.act.program_source import ActSourceBuilder
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.std import std_files_dev_null
 from exactly_lib_test.act_phase_setups.test_resources import py_program

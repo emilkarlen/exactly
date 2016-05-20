@@ -1,6 +1,6 @@
 import sys
 
-from exactly_lib.test_case.phases.act import script_source
+import exactly_lib.script_language.script_language_management
 from . import script_language_management
 from . import standard_script_language
 
@@ -10,7 +10,7 @@ def script_language_setup() -> script_language_management.ScriptLanguageSetup:
                                                           language())
 
 
-def language() -> script_source.ScriptLanguage:
+def language() -> exactly_lib.script_language.script_language_management.ScriptLanguage:
     return standard_script_language.StandardScriptLanguage()
 
 

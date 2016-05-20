@@ -5,7 +5,7 @@ from exactly_lib.act_phase_setups.source_parser_and_instruction import PlainSour
 from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from exactly_lib.script_language.script_language_management import ScriptLanguageSetup
 from exactly_lib.test_case.phases.act.phase_setup import ActPhaseSetup, ActSourceExecutor, SourceSetup
-from exactly_lib.test_case.phases.act.script_source import ActSourceBuilder
+from exactly_lib.test_case.phases.act.program_source import ActSourceBuilder
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.std import StdFiles
 
