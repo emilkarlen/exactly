@@ -77,7 +77,7 @@ class ScriptSourceAccumulator:
                             line_contents])
 
 
-class ScriptSourceBuilder(ScriptSourceAccumulator):
+class ActSourceBuilder(ScriptSourceAccumulator):
     """
     An ScriptSourceAccumulator extended with the functionality to
     generates the final source lines of the complete script.

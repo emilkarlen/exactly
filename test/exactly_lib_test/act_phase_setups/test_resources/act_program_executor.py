@@ -5,8 +5,8 @@ import unittest
 from contextlib import contextmanager
 
 from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
-from exactly_lib.test_case.phases.act.phase_setup import ActProgramExecutor, SourceSetup
-from exactly_lib.test_case.phases.act.script_source import ScriptSourceBuilder
+from exactly_lib.test_case.phases.act.phase_setup import ActSourceExecutor, SourceSetup
+from exactly_lib.test_case.phases.act.script_source import ActSourceBuilder
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.std import StdFiles
 from exactly_lib_test.test_resources.execution.eds_populator import act_dir_contents
@@ -17,31 +17,31 @@ from exactly_lib_test.test_resources.process import capture_process_executor_res
 
 
 class Configuration:
-    def __init__(self, sut: ActProgramExecutor):
+    def __init__(self, sut: ActSourceExecutor):
         self.sut = sut
 
     @contextmanager
-    def program_that_copes_stdin_to_stdout(self) -> ScriptSourceBuilder:
+    def program_that_copes_stdin_to_stdout(self) -> ActSourceBuilder:
         raise NotImplementedError()
 
     @contextmanager
-    def program_that_prints_to_stdout(self, string_to_print: str) -> ScriptSourceBuilder:
+    def program_that_prints_to_stdout(self, string_to_print: str) -> ActSourceBuilder:
         raise NotImplementedError()
 
     @contextmanager
-    def program_that_prints_to_stderr(self, string_to_print: str) -> ScriptSourceBuilder:
+    def program_that_prints_to_stderr(self, string_to_print: str) -> ActSourceBuilder:
         raise NotImplementedError()
 
     @contextmanager
-    def program_that_exits_with_code(self, exit_code: int) -> ScriptSourceBuilder:
+    def program_that_exits_with_code(self, exit_code: int) -> ActSourceBuilder:
         raise NotImplementedError()
 
     @contextmanager
-    def program_that_prints_cwd_without_new_line_to_stdout(self) -> ScriptSourceBuilder:
+    def program_that_prints_cwd_without_new_line_to_stdout(self) -> ActSourceBuilder:
         raise NotImplementedError()
 
     @contextmanager
-    def program_that_prints_value_of_environment_variable_to_stdout(self, var_name: str) -> ScriptSourceBuilder:
+    def program_that_prints_value_of_environment_variable_to_stdout(self, var_name: str) -> ActSourceBuilder:
         raise NotImplementedError()
 
 
@@ -61,7 +61,7 @@ class _ProcessExecutorForProgramExecutor(ProcessExecutor):
                  source_setup: SourceSetup,
                  home_dir_path: pathlib.Path,
                  eds: ExecutionDirectoryStructure,
-                 program_executor: ActProgramExecutor):
+                 program_executor: ActSourceExecutor):
         self.program_executor = program_executor
         self.source_setup = source_setup
         self.home_dir_path = home_dir_path
@@ -81,7 +81,7 @@ class TestBase(unittest.TestCase):
         self.test_setup = test_setup
 
     def _execute(self,
-                 source: ScriptSourceBuilder,
+                 source: ActSourceBuilder,
                  stdin_contents: str = '') -> SubProcessResult:
         act_program_executor = self.test_setup.sut
         home_dir = pathlib.Path()

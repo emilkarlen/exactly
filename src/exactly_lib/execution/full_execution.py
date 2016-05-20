@@ -4,7 +4,7 @@ import pathlib
 from exactly_lib.execution import environment_variables
 from exactly_lib.execution import phase_step_executors, partial_execution, phase_step
 from exactly_lib.execution.execution_mode import ExecutionMode
-from exactly_lib.execution.partial_execution import ScriptHandling
+from exactly_lib.execution.partial_execution import ActPhaseHandling
 from exactly_lib.section_document.model import SectionContents
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
@@ -13,7 +13,7 @@ from . import result
 from .result import FullResult, PartialResult, PartialResultStatus, FullResultStatus
 
 
-def execute(script_handling: ScriptHandling,
+def execute(act_phase_handling: ActPhaseHandling,
             test_case: test_case_doc.TestCase,
             initial_home_dir_path: pathlib.Path,
             execution_directory_root_name_prefix: str,
@@ -29,7 +29,7 @@ def execute(script_handling: ScriptHandling,
         return new_configuration_phase_failure_from(partial_result)
     if configuration_phase_environment.execution_mode is ExecutionMode.SKIP:
         return result.new_skipped()
-    partial_result = partial_execution.execute(script_handling,
+    partial_result = partial_execution.execute(act_phase_handling,
                                                partial_execution.TestCase(test_case.setup_phase,
                                                                           test_case.act_phase,
                                                                           test_case.before_assert_phase,

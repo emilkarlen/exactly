@@ -2,17 +2,17 @@ import pathlib
 
 from exactly_lib.execution import phase_step_simple as phase_step
 from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
-from exactly_lib.test_case.phases.act.phase_setup import ActProgramExecutor, SourceSetup
-from exactly_lib.test_case.phases.act.script_source import ScriptSourceBuilder
+from exactly_lib.test_case.phases.act.phase_setup import ActSourceExecutor, SourceSetup
+from exactly_lib.test_case.phases.act.script_source import ActSourceBuilder
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.std import StdFiles
 from exactly_lib_test.execution.test_resources.execution_recording.recorder import ListRecorder
 
 
-class ActProgramExecutorWrapperThatRecordsSteps(ActProgramExecutor):
+class ActSourceExecutorWrapperThatRecordsSteps(ActSourceExecutor):
     def __init__(self,
                  recorder: ListRecorder,
-                 wrapped: ActProgramExecutor,
+                 wrapped: ActSourceExecutor,
                  validate_test_action,
                  execute_test_action):
         self.__recorder = recorder
@@ -22,7 +22,7 @@ class ActProgramExecutorWrapperThatRecordsSteps(ActProgramExecutor):
 
     def validate(self,
                  home_dir: pathlib.Path(),
-                 source: ScriptSourceBuilder) -> svh.SuccessOrValidationErrorOrHardError:
+                 source: ActSourceBuilder) -> svh.SuccessOrValidationErrorOrHardError:
         self.__recorder.recording_of(phase_step.ACT__SCRIPT_VALIDATE).record()
         test_action_result = self.__validate_test_action()
         if not test_action_result.is_success:

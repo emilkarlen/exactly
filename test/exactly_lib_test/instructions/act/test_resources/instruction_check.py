@@ -6,7 +6,7 @@ from exactly_lib.test_case.os_services import OsServices, new_default
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
 from exactly_lib.test_case.phases.act.phase_setup import PhaseEnvironmentForScriptGeneration
-from exactly_lib.test_case.phases.act.script_source import ScriptSourceBuilder
+from exactly_lib.test_case.phases.act.script_source import ActSourceBuilder
 from exactly_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep, \
     HomeAndEds
 from exactly_lib.test_case.phases.result import pfh
@@ -23,20 +23,20 @@ from exactly_lib_test.test_resources.execution import eds_populator, utils
 
 class Arrangement(ArrangementWithEds):
     def __init__(self,
-                 source_builder: ScriptSourceBuilder = None,
+                 source_builder: ActSourceBuilder = None,
                  home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
                  eds_contents_before_main: eds_populator.EdsPopulator = eds_populator.empty(),
                  os_services: OsServices = new_default()):
         super().__init__(home_dir_contents, eds_contents_before_main, os_services)
         if source_builder is None:
-            source_builder = ScriptSourceBuilder(StandardScriptLanguage())
+            source_builder = ActSourceBuilder(StandardScriptLanguage())
         self.source_builder = source_builder
 
 
 class SourceBuilderCheckInfo(tuple):
     def __new__(cls,
                 home_and_eds: HomeAndEds,
-                source_builder: ScriptSourceBuilder):
+                source_builder: ActSourceBuilder):
         return tuple.__new__(cls, (home_and_eds,
                                    source_builder))
 
@@ -45,7 +45,7 @@ class SourceBuilderCheckInfo(tuple):
         return self[0]
 
     @property
-    def source_builder(self) -> ScriptSourceBuilder:
+    def source_builder(self) -> ActSourceBuilder:
         return self[1]
 
 

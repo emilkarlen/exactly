@@ -7,9 +7,9 @@ from exactly_lib import program_info
 from exactly_lib.act_phase_setups import python3
 from exactly_lib.execution import partial_execution
 from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
-from exactly_lib.execution.partial_execution import ScriptHandling, TestCase
+from exactly_lib.execution.partial_execution import ActPhaseHandling, TestCase
 from exactly_lib.execution.result import PartialResult
-from exactly_lib.processing.processors import script_handling_for_setup
+from exactly_lib.processing.processors import act_phase_handling_for_setup
 from exactly_lib_test.execution.test_resources import utils
 
 
@@ -17,26 +17,26 @@ class PartialExecutionTestCaseBase:
     def __init__(self,
                  unittest_case: unittest.TestCase,
                  dbg_do_not_delete_dir_structure=False,
-                 script_handling: ScriptHandling = None):
-        self.__unittest_case = unittest_case
+                 act_phase_handling: ActPhaseHandling = None):
+        self.__put = unittest_case
         self.__dbg_do_not_delete_dir_structure = dbg_do_not_delete_dir_structure
         self.__partial_result = None
         self.__execution_directory_structure = None
         self.__initial_home_dir_path = None
-        self.__script_handling = script_handling
-        if self.__script_handling is None:
-            self.__script_handling = script_handling_for_setup(python3.new_act_phase_setup())
+        self.__act_phase_handling = act_phase_handling
+        if self.__act_phase_handling is None:
+            self.__act_phase_handling = act_phase_handling_for_setup(python3.new_act_phase_setup())
 
     def execute(self):
         # SETUP #
         self.__initial_home_dir_path = pathlib.Path().resolve()
         # ACT #
         partial_result = partial_execution.execute(
-                self.__script_handling,
-                self._test_case(),
-                self.initial_home_dir_path,
+            self.__act_phase_handling,
+            self._test_case(),
+            self.initial_home_dir_path,
             program_info.PROGRAM_NAME + '-test-',
-                self.__dbg_do_not_delete_dir_structure)
+            self.__dbg_do_not_delete_dir_structure)
 
         # ASSERT #
         self.__partial_result = partial_result
@@ -57,8 +57,8 @@ class PartialExecutionTestCaseBase:
         raise NotImplementedError()
 
     @property
-    def utc(self) -> unittest.TestCase:
-        return self.__unittest_case
+    def put(self) -> unittest.TestCase:
+        return self.__put
 
     @property
     def initial_home_dir_path(self) -> pathlib.Path:
@@ -79,7 +79,7 @@ class PartialExecutionTestCaseBase:
         """
         Helper for test cases that check the contents of files.
         """
-        utils.assert_is_file_with_contents(self.utc,
+        utils.assert_is_file_with_contents(self.put,
                                            path,
                                            expected_contents,
                                            msg)

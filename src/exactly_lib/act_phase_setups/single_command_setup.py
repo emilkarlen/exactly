@@ -3,15 +3,15 @@ import pathlib
 import shlex
 
 from exactly_lib.act_phase_setups import utils
+from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
+from exactly_lib.instructions.act.executable_file import ExecutableFileInstruction
 from exactly_lib.section_document.parse import SectionElementParser
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SectionElementParserForStandardCommentAndEmptyLines
-from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
-from exactly_lib.instructions.act.executable_file import ExecutableFileInstruction
 from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
-from exactly_lib.test_case.phases.act.phase_setup import ActProgramExecutor, SourceSetup, ActPhaseSetup
+from exactly_lib.test_case.phases.act.phase_setup import ActSourceExecutor, SourceSetup, ActPhaseSetup
+from exactly_lib.test_case.phases.act.script_source import ActSourceBuilder
 from exactly_lib.test_case.phases.act.script_source import ScriptLanguage
-from exactly_lib.test_case.phases.act.script_source import ScriptSourceBuilder
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util import line_source
 from exactly_lib.util.std import StdFiles
@@ -25,11 +25,11 @@ class _ActPhaseParser(SectionElementParserForStandardCommentAndEmptyLines):
 def act_phase_setup(parser: SectionElementParser = _ActPhaseParser()) -> ActPhaseSetup:
     return ActPhaseSetup(parser,
                          _script_source_builder,
-                         _ActProgramExecutorForSingleCommand())
+                         _ActSourceExecutorForSingleCommand())
 
 
-def _script_source_builder() -> ScriptSourceBuilder:
-    return ScriptSourceBuilder(_ScriptLanguage())
+def _script_source_builder() -> ActSourceBuilder:
+    return ActSourceBuilder(_ScriptLanguage())
 
 
 class _ScriptLanguage(ScriptLanguage):
@@ -40,10 +40,10 @@ class _ScriptLanguage(ScriptLanguage):
         return []
 
 
-class _ActProgramExecutorForSingleCommand(ActProgramExecutor):
+class _ActSourceExecutorForSingleCommand(ActSourceExecutor):
     def validate(self,
                  home_dir: pathlib.Path,
-                 source: ScriptSourceBuilder) -> svh.SuccessOrValidationErrorOrHardError:
+                 source: ActSourceBuilder) -> svh.SuccessOrValidationErrorOrHardError:
         num_source_lines = len(source.source_lines)
         if num_source_lines != 1:
             header = 'There must be a single command. Found {}'.format(num_source_lines)

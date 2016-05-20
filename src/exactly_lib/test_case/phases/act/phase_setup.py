@@ -1,9 +1,9 @@
 import pathlib
 import types
 
-from exactly_lib.section_document.parse import SectionElementParser
 from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
-from exactly_lib.test_case.phases.act.script_source import ScriptSourceAccumulator, ScriptSourceBuilder
+from exactly_lib.section_document.parse import SectionElementParser
+from exactly_lib.test_case.phases.act.script_source import ScriptSourceAccumulator, ActSourceBuilder
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.std import StdFiles
 
@@ -24,7 +24,7 @@ class PhaseEnvironmentForScriptGeneration:
 
 class SourceSetup:
     def __init__(self,
-                 script_builder: ScriptSourceBuilder,
+                 script_builder: ActSourceBuilder,
                  script_output_dir_path: pathlib.Path,
                  script_file_stem: str):
         self.script_builder = script_builder
@@ -32,10 +32,10 @@ class SourceSetup:
         self.script_file_stem = script_file_stem
 
 
-class ActProgramExecutor:
+class ActSourceExecutor:
     def validate(self,
                  home_dir: pathlib.Path,
-                 source: ScriptSourceBuilder) -> svh.SuccessOrValidationErrorOrHardError:
+                 source: ActSourceBuilder) -> svh.SuccessOrValidationErrorOrHardError:
         """
         Validates the given source.
 
@@ -73,7 +73,7 @@ class ActPhaseSetup(tuple):
     def __new__(cls,
                 parser: SectionElementParser,
                 script_builder_constructor,
-                executor: ActProgramExecutor):
+                executor: ActSourceExecutor):
         """
         :param script_builder_constructor: () -> ScriptSourceBuilder
         """
@@ -93,5 +93,5 @@ class ActPhaseSetup(tuple):
         return self[1]
 
     @property
-    def executor(self) -> ActProgramExecutor:
+    def executor(self) -> ActSourceExecutor:
         return self[2]

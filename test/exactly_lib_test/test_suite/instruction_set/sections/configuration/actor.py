@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.act_phase_setups.script_language_setup import ActProgramExecutorForScriptLanguage
+from exactly_lib.act_phase_setups.script_language_setup import ActSourceExecutorForScriptLanguage
 from exactly_lib.script_language.script_language_management import ScriptLanguageSetup
 from exactly_lib.script_language.standard_script_language import StandardScriptLanguage, StandardScriptFileManager
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
@@ -56,8 +56,8 @@ class TestSuccessfulParseAndInstructionExecution(unittest.TestCase):
         assert isinstance(act_phase_setup, ActPhaseSetup)
         executor = act_phase_setup.executor
         self.assertIsInstance(executor,
-                              ActProgramExecutorForScriptLanguage)
-        assert isinstance(executor, ActProgramExecutorForScriptLanguage)
+                              ActSourceExecutorForScriptLanguage)
+        assert isinstance(executor, ActSourceExecutorForScriptLanguage)
         script_language_setup = executor.script_language_setup
         self.assertIsInstance(script_language_setup,
                               ScriptLanguageSetup)

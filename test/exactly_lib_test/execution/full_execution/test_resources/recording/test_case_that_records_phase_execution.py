@@ -2,16 +2,16 @@ import types
 import unittest
 
 from exactly_lib.act_phase_setups import python3
-from exactly_lib.execution.partial_execution import ScriptHandling
+from exactly_lib.execution.partial_execution import ActPhaseHandling
 from exactly_lib.execution.result import FullResultStatus
-from exactly_lib.processing.processors import script_handling_for_setup
+from exactly_lib.processing.processors import act_phase_handling_for_setup
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib_test.execution.full_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorForExecutionRecording, TestCaseGeneratorWithRecordingInstrFollowedByExtraInstrsInEachPhase
 from exactly_lib_test.execution.full_execution.test_resources.test_case_base import FullExecutionTestCaseBase
 from exactly_lib_test.execution.test_resources.execution_recording.act_program_executor import \
-    ActProgramExecutorWrapperThatRecordsSteps
+    ActSourceExecutorWrapperThatRecordsSteps
 from exactly_lib_test.execution.test_resources.execution_recording.recorder import \
     ListRecorder
 from exactly_lib_test.execution.test_resources.test_actions import validate_action_that_returns, \
@@ -79,11 +79,11 @@ class _TestCaseThatRecordsExecution(FullExecutionTestCaseBase):
                  test_case_generator: TestCaseGeneratorForExecutionRecording,
                  expectation: Expectation,
                  dbg_do_not_delete_dir_structure=False,
-                 script_handling: ScriptHandling = None,
+                 act_phase_handling: ActPhaseHandling = None,
                  recorder: ListRecorder = None):
         super().__init__(unittest_case,
                          dbg_do_not_delete_dir_structure,
-                         script_handling)
+                         act_phase_handling)
         self._test_case_generator = test_case_generator
         self.__expectation = expectation
         self.__recorder = recorder
@@ -126,28 +126,28 @@ class TestCaseBase(unittest.TestCase):
                                       arrangement: Arrangement,
                                       expectation: Expectation,
                                       dbg_do_not_delete_dir_structure=False) -> _TestCaseThatRecordsExecution:
-        script_handling = self._with_recording_act_program_executor(
+        act_phase_handling = self._with_recording_act_program_executor(
                 arrangement.test_case_generator.recorder,
-                script_handling_for_setup(python3.new_act_phase_setup()),
+            act_phase_handling_for_setup(python3.new_act_phase_setup()),
                 arrangement.validate_test_action,
                 arrangement.execute_test_action)
         return _TestCaseThatRecordsExecution(self,
                                              arrangement.test_case_generator,
                                              expectation,
                                              dbg_do_not_delete_dir_structure,
-                                             script_handling,
+                                             act_phase_handling,
                                              arrangement.test_case_generator.recorder)
 
     def _with_recording_act_program_executor(self,
                                              recorder: ListRecorder,
-                                             script_handling: ScriptHandling,
+                                             act_phase_handling: ActPhaseHandling,
                                              validate_test_action,
-                                             execute_test_action) -> ScriptHandling:
-        return ScriptHandling(script_handling.builder,
-                              ActProgramExecutorWrapperThatRecordsSteps(recorder,
-                                                                        script_handling.executor,
-                                                                        validate_test_action,
-                                                                        execute_test_action))
+                                             execute_test_action) -> ActPhaseHandling:
+        return ActPhaseHandling(act_phase_handling.source_builder,
+                                ActSourceExecutorWrapperThatRecordsSteps(recorder,
+                                                                         act_phase_handling.executor,
+                                                                         validate_test_action,
+                                                                         execute_test_action))
 
 
 def one_successful_instruction_in_each_phase() -> TestCaseGeneratorForExecutionRecording:
