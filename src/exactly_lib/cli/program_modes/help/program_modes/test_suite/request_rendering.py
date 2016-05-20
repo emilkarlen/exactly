@@ -19,7 +19,7 @@ class TestSuiteHelpRendererResolver:
         item = request.item
         if item is TestSuiteHelpItem.CLI_SYNTAX:
             return ProgramDocumentationSectionContentsRenderer(SuiteCliSyntaxDocumentation())
-        if item is TestSuiteHelpItem.OVERVIEW:
+        if item is TestSuiteHelpItem.SPECIFICATION:
             return SpecificationRenderer(self._contents)
         if item is TestSuiteHelpItem.SECTION:
             assert isinstance(request.data, SectionDocumentation)

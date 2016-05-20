@@ -53,7 +53,7 @@ class Parser:
             if len(help_command_arguments) == 1:
                 return TestCaseHelpRequest(TestCaseHelpItem.CLI_SYNTAX, None, None)
             elif help_command_arguments[1:] == [SPECIFICATION]:
-                return TestCaseHelpRequest(TestCaseHelpItem.OVERVIEW, None, None)
+                return TestCaseHelpRequest(TestCaseHelpItem.SPECIFICATION, None, None)
             else:
                 raise HelpError('Invalid number of arguments for help command. Use help help, for help.')
         if help_command_arguments[0] == TEST_SUITE:
@@ -79,7 +79,7 @@ class Parser:
             return TestSuiteHelpRequest(TestSuiteHelpItem.CLI_SYNTAX,
                                         None, None)
         if arguments[0] == SPECIFICATION and len(arguments) == 1:
-            return TestSuiteHelpRequest(TestSuiteHelpItem.OVERVIEW, None, None)
+            return TestSuiteHelpRequest(TestSuiteHelpItem.SPECIFICATION, None, None)
         section_name = arguments.pop(0)
         test_suite_section_help = self._lookup_suite_section(section_name)
         if not arguments:

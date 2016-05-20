@@ -4,7 +4,7 @@ from exactly_lib.cli.program_modes.help.program_modes.help_request import HelpRe
 
 
 class TestSuiteHelpItem(Enum):
-    OVERVIEW = 0
+    SPECIFICATION = 0
     SECTION = 1
     INSTRUCTION = 3
     CLI_SYNTAX = 6
