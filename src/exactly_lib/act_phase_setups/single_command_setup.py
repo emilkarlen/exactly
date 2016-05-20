@@ -10,8 +10,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SectionElementParserForStandardCommentAndEmptyLines
 from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
 from exactly_lib.test_case.phases.act.phase_setup import ActSourceExecutor, SourceSetup, ActPhaseSetup
-from exactly_lib.test_case.phases.act.script_source import ActSourceBuilder
-from exactly_lib.test_case.phases.act.script_source import ScriptLanguage
+from exactly_lib.test_case.phases.act.script_source import ActSourceBuilder, ActSourceBuilderForStatementLines
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util import line_source
 from exactly_lib.util.std import StdFiles
@@ -29,15 +28,7 @@ def act_phase_setup(parser: SectionElementParser = _ActPhaseParser()) -> ActPhas
 
 
 def _script_source_builder() -> ActSourceBuilder:
-    return ActSourceBuilder(_ScriptLanguage())
-
-
-class _ScriptLanguage(ScriptLanguage):
-    def raw_script_statement(self, statement: str) -> list:
-        return [statement]
-
-    def comment_line(self, comment: str) -> list:
-        return []
+    return ActSourceBuilderForStatementLines()
 
 
 class _ActSourceExecutorForSingleCommand(ActSourceExecutor):
