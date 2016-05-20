@@ -11,7 +11,7 @@ from exactly_lib_test.execution.partial_execution.test_resources.recording.test_
 from exactly_lib_test.execution.partial_execution.test_resources.test_case_base import PartialExecutionTestCaseBase
 from exactly_lib_test.execution.test_resources.act_source_executor import ActSourceExecutorThatRunsConstantActions
 from exactly_lib_test.execution.test_resources.execution_recording.act_program_executor import \
-    ActSourceExecutorWrapperThatRecordsSteps2
+    ActSourceExecutorWrapperThatRecordsSteps
 from exactly_lib_test.execution.test_resources.execution_recording.recorder import \
     ListRecorder
 from exactly_lib_test.execution.test_resources.test_actions import validate_action_that_returns, \
@@ -128,7 +128,7 @@ def execute_test_case_with_recording(put: unittest.TestCase,
                                      dbg_do_not_delete_dir_structure=False):
     act_phase_handling = ActPhaseHandling(
         ActSourceBuilderForStatementLines(),
-        ActSourceExecutorWrapperThatRecordsSteps2(
+        ActSourceExecutorWrapperThatRecordsSteps(
             arrangement.test_case_generator.recorder,
             ActSourceExecutorThatRunsConstantActions(arrangement.validate_test_action,
                                                      arrangement.execute_test_action)))
