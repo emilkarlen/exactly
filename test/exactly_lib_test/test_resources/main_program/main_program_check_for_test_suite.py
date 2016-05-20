@@ -35,7 +35,7 @@ class SetupBase:
                         actual_result: SubProcessResult):
         put.assertEqual(self.expected_exit_code(),
                         actual_result.exitcode,
-                        'Exit Code')
+                        'Exit Code\n' + actual_result.stderr)
 
     def _check_stdout(self,
                       put: unittest.TestCase,

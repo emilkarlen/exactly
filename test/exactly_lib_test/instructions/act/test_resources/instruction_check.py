@@ -1,12 +1,11 @@
 import unittest
 
 from exactly_lib.execution import phases
-from exactly_lib.script_language.standard_script_language import StandardScriptLanguage
 from exactly_lib.test_case.os_services import OsServices, new_default
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
 from exactly_lib.test_case.phases.act.phase_setup import PhaseEnvironmentForScriptGeneration
-from exactly_lib.test_case.phases.act.script_source import ActSourceBuilder
+from exactly_lib.test_case.phases.act.script_source import ActSourceBuilder, ActSourceBuilderForStatementLines
 from exactly_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep, \
     HomeAndEds
 from exactly_lib.test_case.phases.result import pfh
@@ -29,7 +28,7 @@ class Arrangement(ArrangementWithEds):
                  os_services: OsServices = new_default()):
         super().__init__(home_dir_contents, eds_contents_before_main, os_services)
         if source_builder is None:
-            source_builder = ActSourceBuilder(StandardScriptLanguage())
+            source_builder = ActSourceBuilderForStatementLines()
         self.source_builder = source_builder
 
 

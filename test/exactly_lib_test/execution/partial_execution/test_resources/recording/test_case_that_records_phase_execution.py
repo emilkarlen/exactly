@@ -6,12 +6,14 @@ from exactly_lib.execution.partial_execution import ActPhaseHandling
 from exactly_lib.execution.result import PartialResultStatus
 from exactly_lib.processing.processors import act_phase_handling_for_setup
 from exactly_lib.test_case import test_case_doc
+from exactly_lib.test_case.phases.act.script_source import ActSourceBuilderForStatementLines
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib_test.execution.partial_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorForExecutionRecording, TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList
 from exactly_lib_test.execution.partial_execution.test_resources.test_case_base import PartialExecutionTestCaseBase
 from exactly_lib_test.execution.test_resources.execution_recording.act_program_executor import \
-    ActSourceExecutorWrapperThatRecordsSteps
+    ActSourceExecutorWrapperThatRecordsSteps, ActSourceExecutorThatRunsConstantActions, \
+    ActSourceExecutorWrapperThatRecordsSteps2
 from exactly_lib_test.execution.test_resources.execution_recording.recorder import \
     ListRecorder
 from exactly_lib_test.execution.test_resources.test_actions import validate_action_that_returns, \
@@ -120,6 +122,25 @@ class TestCaseBase(unittest.TestCase):
                                          arrangement,
                                          expectation,
                                          dbg_do_not_delete_dir_structure)
+
+
+def execute_test_case_with_recording_2(put: unittest.TestCase,
+                                       arrangement: Arrangement,
+                                       expectation: Expectation,
+                                       dbg_do_not_delete_dir_structure=False):
+    act_phase_handling = ActPhaseHandling(
+        ActSourceBuilderForStatementLines(),
+        ActSourceExecutorWrapperThatRecordsSteps2(
+            arrangement.test_case_generator.recorder,
+            ActSourceExecutorThatRunsConstantActions(arrangement.validate_test_action,
+                                                     arrangement.execute_test_action)))
+    test_case = _TestCaseThatRecordsExecution(put,
+                                              arrangement.test_case_generator,
+                                              expectation,
+                                              dbg_do_not_delete_dir_structure,
+                                              act_phase_handling,
+                                              arrangement.test_case_generator.recorder)
+    test_case.execute()
 
 
 def execute_test_case_with_recording(put: unittest.TestCase,
