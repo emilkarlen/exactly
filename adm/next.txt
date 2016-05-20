@@ -1,12 +1,15 @@
 -*- org -*-
 
-* Dokumentera vad --actor A betyder som arg t svit
+* Icke IMPLEMENTATION_ERROR när act-fasens pgm icke går att exekvera
+Fick IMPL_ERR när syntax-fel i #!/bin/bash i skript.
+* Ta bort --actour/ Dokumentera vad --actor A betyder som arg t svit
 Dok att actor instr i configuration har företräde.
 * Lägg till kommando för hjälp om suite/section/instruction
 Går inte att få hjälp om en instruktion i en svits section idag.
 Beyöver nytt hjälp-kommando
 help suite SECTION INSTRUCTION
 
+* Wiki: Lägga till todo: builtin preprocessor
 * Ta bort adm-filer
 Flytta till separat repo?
 * Ta bort tools/
