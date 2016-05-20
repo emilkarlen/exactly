@@ -1,4 +1,4 @@
-from exactly_lib.test_case.phases.act.script_source import ScriptLanguage, ScriptSourceBuilder
+from exactly_lib.test_case.phases.act.script_source import ScriptLanguage, ActSourceBuilder
 
 
 class ScriptFileManager:
@@ -32,8 +32,8 @@ class ScriptLanguageSetup:
     def file_manager(self) -> ScriptFileManager:
         return self.__file_manager
 
-    def new_builder(self) -> ScriptSourceBuilder:
-        return ScriptSourceBuilder(self.__language)
+    def new_builder(self) -> ActSourceBuilder:
+        return ActSourceBuilder(self.__language)
 
     def base_name_from_stem(self, stem: str) -> str:
         return self.__file_manager.base_name_from_stem(stem)

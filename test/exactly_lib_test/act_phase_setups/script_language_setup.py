@@ -3,7 +3,7 @@ from contextlib import contextmanager
 
 from exactly_lib.act_phase_setups import script_language_setup as sut
 from exactly_lib.script_language import python3
-from exactly_lib.test_case.phases.act.script_source import ScriptSourceBuilder
+from exactly_lib.test_case.phases.act.script_source import ActSourceBuilder
 from exactly_lib_test.act_phase_setups.test_resources import py_program
 from exactly_lib_test.act_phase_setups.test_resources.act_program_executor import \
     Configuration, suite_for_execution
@@ -15,15 +15,15 @@ class TheConfiguration(Configuration):
         super().__init__(self.setup.executor)
 
     @contextmanager
-    def program_that_copes_stdin_to_stdout(self) -> ScriptSourceBuilder:
+    def program_that_copes_stdin_to_stdout(self) -> ActSourceBuilder:
         yield self._builder_for(py_program.copy_stdin_to_stdout())
 
     @contextmanager
-    def program_that_prints_to_stderr(self, string_to_print: str) -> ScriptSourceBuilder:
+    def program_that_prints_to_stderr(self, string_to_print: str) -> ActSourceBuilder:
         yield self._builder_for(py_program.write_string_to_stderr(string_to_print))
 
     @contextmanager
-    def program_that_prints_to_stdout(self, string_to_print: str) -> ScriptSourceBuilder:
+    def program_that_prints_to_stdout(self, string_to_print: str) -> ActSourceBuilder:
         yield self._builder_for(py_program.write_string_to_stdout(string_to_print))
 
     @contextmanager
@@ -35,10 +35,10 @@ class TheConfiguration(Configuration):
         yield self._builder_for(py_program.write_cwd_to_stdout())
 
     @contextmanager
-    def program_that_prints_value_of_environment_variable_to_stdout(self, var_name: str) -> ScriptSourceBuilder:
+    def program_that_prints_value_of_environment_variable_to_stdout(self, var_name: str) -> ActSourceBuilder:
         yield self._builder_for(py_program.write_value_of_environment_variable_to_stdout(var_name))
 
-    def _builder_for(self, statements: list) -> ScriptSourceBuilder:
+    def _builder_for(self, statements: list) -> ActSourceBuilder:
         ret_val = self.setup.script_builder_constructor()
         ret_val.raw_script_statements(statements)
         return ret_val

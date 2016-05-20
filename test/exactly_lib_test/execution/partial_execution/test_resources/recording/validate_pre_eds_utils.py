@@ -30,13 +30,13 @@ class Configuration:
         raise NotImplementedError()
 
 
-class TestBaseBase(unittest.TestCase):
+class TestCaseBase(unittest.TestCase):
     def __init__(self, configuration: Configuration):
         super().__init__()
         self.configuration = configuration
 
 
-class TestValidationError(TestBaseBase):
+class TestValidationError(TestCaseBase):
     def runTest(self):
         conf = self.configuration
         test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
@@ -55,7 +55,7 @@ class TestValidationError(TestBaseBase):
         )
 
 
-class TestHardError(TestBaseBase):
+class TestHardError(TestCaseBase):
     def runTest(self):
         conf = self.configuration
         test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
@@ -73,7 +73,7 @@ class TestHardError(TestBaseBase):
                             False))
 
 
-class TestImplementationError(TestBaseBase):
+class TestImplementationError(TestCaseBase):
     def runTest(self):
         conf = self.configuration
         test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \

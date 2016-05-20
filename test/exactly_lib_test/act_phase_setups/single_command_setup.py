@@ -6,7 +6,7 @@ from contextlib import contextmanager
 
 from exactly_lib.act_phase_setups import single_command_setup as sut
 from exactly_lib.test_case.phases.act.phase_setup import SourceSetup
-from exactly_lib.test_case.phases.act.script_source import ScriptSourceBuilder
+from exactly_lib.test_case.phases.act.script_source import ActSourceBuilder
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.std import std_files_dev_null
 from exactly_lib_test.act_phase_setups.test_resources import py_program
@@ -66,7 +66,7 @@ class TestValidation(unittest.TestCase):
                       svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                       'Validation result')
 
-    def _empty_builder(self) -> ScriptSourceBuilder:
+    def _empty_builder(self) -> ActSourceBuilder:
         return self.setup.script_builder_constructor()
 
 
@@ -76,15 +76,15 @@ class TheConfiguration(Configuration):
         super().__init__(self.setup.executor)
 
     @contextmanager
-    def program_that_copes_stdin_to_stdout(self) -> ScriptSourceBuilder:
+    def program_that_copes_stdin_to_stdout(self) -> ActSourceBuilder:
         return self._builder_for_executing_source_from_py_file(py_program.copy_stdin_to_stdout())
 
     @contextmanager
-    def program_that_prints_to_stderr(self, string_to_print: str) -> ScriptSourceBuilder:
+    def program_that_prints_to_stderr(self, string_to_print: str) -> ActSourceBuilder:
         return self._builder_for_executing_source_from_py_file(py_program.write_string_to_stderr(string_to_print))
 
     @contextmanager
-    def program_that_prints_to_stdout(self, string_to_print: str) -> ScriptSourceBuilder:
+    def program_that_prints_to_stdout(self, string_to_print: str) -> ActSourceBuilder:
         return self._builder_for_executing_source_from_py_file(py_program.write_string_to_stdout(string_to_print))
 
     @contextmanager
@@ -96,15 +96,15 @@ class TheConfiguration(Configuration):
         return self._builder_for_executing_source_from_py_file(py_program.write_cwd_to_stdout())
 
     @contextmanager
-    def program_that_prints_value_of_environment_variable_to_stdout(self, var_name: str) -> ScriptSourceBuilder:
+    def program_that_prints_value_of_environment_variable_to_stdout(self, var_name: str) -> ActSourceBuilder:
         return self._builder_for_executing_source_from_py_file(
                 py_program.write_value_of_environment_variable_to_stdout(var_name))
 
-    def _builder_for_executing_source_from_py_file(self, statements: list) -> ScriptSourceBuilder:
+    def _builder_for_executing_source_from_py_file(self, statements: list) -> ActSourceBuilder:
         with tmp_file_containing_lines(statements) as src_path:
             yield self._builder_for_executing_py_file(src_path)
 
-    def _builder_for_executing_py_file(self, src_path: pathlib.Path) -> ScriptSourceBuilder:
+    def _builder_for_executing_py_file(self, src_path: pathlib.Path) -> ActSourceBuilder:
         ret_val = self.setup.script_builder_constructor()
         cmd = py_exe.command_line_for_interpreting(src_path)
         ret_val.raw_script_statement(cmd)
