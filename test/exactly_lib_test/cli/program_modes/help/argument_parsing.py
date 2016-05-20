@@ -272,7 +272,7 @@ class TestTestCaseCliAndOverviewHelp(unittest.TestCase):
                               'Expecting settings for test-case')
         assert isinstance(actual,
                           TestCaseHelpRequest)
-        self.assertIs(TestCaseHelpItem.OVERVIEW,
+        self.assertIs(TestCaseHelpItem.SPECIFICATION,
                       actual.item,
                       'Item should denote help for test-case overview')
 
@@ -310,7 +310,7 @@ class TestTestSuiteHelp(unittest.TestCase):
                               'Expecting settings for test-suite')
         assert isinstance(actual,
                           TestSuiteHelpRequest)
-        self.assertIs(TestSuiteHelpItem.OVERVIEW,
+        self.assertIs(TestSuiteHelpItem.SPECIFICATION,
                       actual.item,
                       'Item should denote help for test-suite overview')
 

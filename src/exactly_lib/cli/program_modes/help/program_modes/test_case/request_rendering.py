@@ -23,7 +23,7 @@ class TestCaseHelpRendererResolver:
         item = request.item
         if item is TestCaseHelpItem.CLI_SYNTAX:
             return ProgramDocumentationSectionContentsRenderer(TestCaseCliSyntaxDocumentation())
-        if item is TestCaseHelpItem.OVERVIEW:
+        if item is TestCaseHelpItem.SPECIFICATION:
             return SpecificationRenderer(self._contents)
         if item is TestCaseHelpItem.INSTRUCTION_SET:
             return instruction_set.InstructionSetPerPhaseRenderer(self._contents)
