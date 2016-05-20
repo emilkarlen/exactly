@@ -4,7 +4,7 @@ from exactly_lib.execution import phases
 from exactly_lib.help.program_modes.test_case.contents.main.specification import SpecificationRenderer
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from exactly_lib.help.utils.render import RenderingEnvironment
-from exactly_lib_test.help.test_resources import test_case_phase_help, CrossReferenceTextConstructorTestImpl
+from exactly_lib_test.help.test_resources import section_documentation, CrossReferenceTextConstructorTestImpl
 from exactly_lib_test.help.utils.test_resources_.table_of_contents import is_target_info_hierarchy
 from exactly_lib_test.util.textformat.test_resources import structure as struct_check
 
@@ -36,10 +36,10 @@ class TestCase(unittest.TestCase):
 
 
 TEST_CASE_HELP_WITH_PRODUCTION_PHASES = TestCaseHelp([
-    test_case_phase_help(phases.CONFIGURATION.identifier, []),
-    test_case_phase_help(phases.SETUP.identifier, []),
-    test_case_phase_help(phases.ACT.identifier, []),
-    test_case_phase_help(phases.BEFORE_ASSERT.identifier, []),
-    test_case_phase_help(phases.ASSERT.identifier, []),
-    test_case_phase_help(phases.CLEANUP.identifier, []),
+    section_documentation(phases.CONFIGURATION.identifier, []),
+    section_documentation(phases.SETUP.identifier, []),
+    section_documentation(phases.ACT.identifier, []),
+    section_documentation(phases.BEFORE_ASSERT.identifier, []),
+    section_documentation(phases.ASSERT.identifier, []),
+    section_documentation(phases.CLEANUP.identifier, []),
 ])

@@ -18,9 +18,9 @@ from exactly_lib.help.program_modes.test_case.contents_structure import TestCase
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
 from exactly_lib.help.utils import formatting
 from exactly_lib.util.description import single_line_description_with_sub_sections, DescriptionWithSubSections
-from exactly_lib_test.help.test_resources import test_case_phase_help, \
-    single_line_description_that_identifies_instruction_and_phase, application_help_for, \
-    SectionDocumentationForSectionWithoutInstructionsTestImpl
+from exactly_lib_test.help.test_resources import section_documentation, \
+    single_line_description_that_identifies_instruction_and_section, application_help_for, \
+    SectionDocumentationForSectionWithoutInstructionsTestImpl, application_help_for_suite_sections
 
 
 class TestProgramHelp(unittest.TestCase):
@@ -102,7 +102,7 @@ class TestTestCasePhase(unittest.TestCase):
     def _application_help_with_phases(self, all_phases):
         return ApplicationHelp(MainProgramHelp(),
                                ConceptsHelp(()),
-                               TestCaseHelp(map(lambda ph_name: test_case_phase_help(ph_name, []),
+                               TestCaseHelp(map(lambda ph_name: section_documentation(ph_name, []),
                                                 all_phases)),
                                TestSuiteHelp({}))
 
@@ -110,7 +110,7 @@ class TestTestCasePhase(unittest.TestCase):
 class TestTestCaseSingleInstructionInPhase(unittest.TestCase):
     def test_unknown_phase(self):
         application_help = application_help_for([
-            test_case_phase_help('phase', ['instruction-name'])
+            section_documentation('phase', ['instruction-name'])
         ])
         with self.assertRaises(sut.HelpError):
             sut.parse(application_help,
@@ -118,8 +118,8 @@ class TestTestCaseSingleInstructionInPhase(unittest.TestCase):
 
     def test_unknown_instruction(self):
         application_help = application_help_for([
-            test_case_phase_help('phase-1', ['instruction']),
-            test_case_phase_help('empty-phase', []),
+            section_documentation('phase-1', ['instruction']),
+            section_documentation('empty-phase', []),
         ])
         with self.assertRaises(sut.HelpError):
             sut.parse(application_help,
@@ -129,8 +129,8 @@ class TestTestCaseSingleInstructionInPhase(unittest.TestCase):
         phase_name = 'the phase name'
         instructions = [phase_name, 'name-that-is-not-the-name-of-a-phase']
         application_help = application_help_for([
-            test_case_phase_help(phase_name, instructions),
-            test_case_phase_help('other phase than ' + phase_name, instructions)
+            section_documentation(phase_name, instructions),
+            section_documentation('other phase than ' + phase_name, instructions)
         ])
         self._assert_is_existing_instruction_in_phase(application_help,
                                                       phase_name,
@@ -151,8 +151,8 @@ class TestTestCaseSingleInstructionInPhase(unittest.TestCase):
                          instruction_name,
                          'Name of instruction')
         single_line_desc_str = actual.data.single_line_description()
-        self.assertEqual(single_line_description_that_identifies_instruction_and_phase(phase_name,
-                                                                                       instruction_name),
+        self.assertEqual(single_line_description_that_identifies_instruction_and_section(phase_name,
+                                                                                         instruction_name),
                          single_line_desc_str,
                          'The single-line-description in this test is expected to identify (phase,instruction-name)')
 
@@ -172,8 +172,8 @@ class TestTestCaseSingleInstructionInPhase(unittest.TestCase):
 
 class TestTestCaseInstructionList(unittest.TestCase):
     def test_instruction_in_single_phase(self):
-        application_help = application_help_for([test_case_phase_help('phase-a', ['a-instruction']),
-                                                 test_case_phase_help('phase-with-target', ['target-instruction'])])
+        application_help = application_help_for([section_documentation('phase-a', ['a-instruction']),
+                                                 section_documentation('phase-with-target', ['target-instruction'])])
         actual = sut.parse(application_help, arguments_for.instruction_search('target-instruction'))
         actual = self._assert_is_valid_instruction_list_settings('target-instruction',
                                                                  actual)
@@ -186,10 +186,10 @@ class TestTestCaseInstructionList(unittest.TestCase):
 
     def test_instruction_in_multiple_phase(self):
         application_help = application_help_for([
-            test_case_phase_help('phase-a', ['a-instr']),
-            test_case_phase_help('phase-b', ['the-instr']),
-            test_case_phase_help('phase-c', ['c-instr']),
-            test_case_phase_help('phase-d', ['the-instr']),
+            section_documentation('phase-a', ['a-instr']),
+            section_documentation('phase-b', ['the-instr']),
+            section_documentation('phase-c', ['c-instr']),
+            section_documentation('phase-d', ['the-instr']),
         ])
         actual = sut.parse(application_help,
                            arguments_for.instruction_search('the-instr'))
@@ -207,7 +207,7 @@ class TestTestCaseInstructionList(unittest.TestCase):
 
     def test_unknown_instruction(self):
         instructions = ['known-instruction']
-        application_help = application_help_for([test_case_phase_help('phase', instructions)])
+        application_help = application_help_for([section_documentation('phase', instructions)])
         with self.assertRaises(sut.HelpError):
             sut.parse(application_help,
                       arguments_for.instruction_search('unknown-instruction'))
@@ -340,6 +340,67 @@ class TestTestSuiteHelp(unittest.TestCase):
                       arguments_for.suite_section_for_name('unknown section'))
 
 
+class TestTestSuiteSingleInstructionInSection(unittest.TestCase):
+    def test_unknown_section(self):
+        application_help = application_help_for_suite_sections([
+            section_documentation('section', ['instruction-name'])
+        ])
+        with self.assertRaises(sut.HelpError):
+            sut.parse(application_help,
+                      arguments_for.suite_instruction_in_section('non-existing-section', 'instruction-name'))
+
+    def test_unknown_instruction(self):
+        application_help = application_help_for_suite_sections([
+            section_documentation('section-1', ['instruction']),
+            section_documentation('empty-section', []),
+        ])
+        with self.assertRaises(sut.HelpError):
+            sut.parse(application_help,
+                      arguments_for.suite_instruction_in_section('empty-section', 'instruction'))
+
+    def test_single_instruction_for_section_with_instructions(self):
+        section_name = 'the section name'
+        instructions = [section_name, 'name-that-is-not-the-name-of-a-section']
+        application_help = application_help_for_suite_sections([
+            section_documentation(section_name, instructions),
+            section_documentation('other section than ' + section_name, instructions)
+        ])
+        self._assert_is_existing_instruction_in_section(application_help,
+                                                        section_name,
+                                                        'name-that-is-not-the-name-of-a-section')
+        self._assert_is_existing_instruction_in_section(application_help,
+                                                        section_name,
+                                                        section_name)
+
+    def _assert_is_existing_instruction_in_section(self,
+                                                   application_help: ApplicationHelp,
+                                                   section_name: str,
+                                                   instruction_name: str):
+        actual = sut.parse(application_help,
+                           arguments_for.suite_instruction_in_section(section_name,
+                                                                      instruction_name))
+        actual = self._check_is_test_suite_settings_for_single_instruction(actual)
+        self.assertEqual(actual.name,
+                         instruction_name,
+                         'Name of instruction')
+        single_line_desc_str = actual.data.single_line_description()
+        self.assertEqual(single_line_description_that_identifies_instruction_and_section(section_name,
+                                                                                         instruction_name),
+                         single_line_desc_str,
+                         'The single-line-description in this test is expected to identify (section,instruction-name)')
+
+    def _check_is_test_suite_settings_for_single_instruction(self, value) -> TestSuiteHelpRequest:
+        self.assertIsInstance(value, TestSuiteHelpRequest,
+                              'Should be help for Test Case')
+        assert isinstance(value, TestSuiteHelpRequest)
+        self.assertIs(TestSuiteHelpItem.INSTRUCTION,
+                      value.item)
+        self.assertIsInstance(value.data,
+                              InstructionDocumentation,
+                              'The value is expected to be the description of the instruction')
+        return value
+
+
 class TestConceptHelp(unittest.TestCase):
     def test_concept_list(self):
         actual = sut.parse(application_help_for([]),
@@ -444,6 +505,7 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(unittest.makeSuite(TestTestCaseSingleInstructionInPhase))
     ret_val.addTest(unittest.makeSuite(TestTestCaseInstructionList))
     ret_val.addTest(unittest.makeSuite(TestTestSuiteHelp))
+    ret_val.addTest(unittest.makeSuite(TestTestSuiteSingleInstructionInSection))
     return ret_val
 
 

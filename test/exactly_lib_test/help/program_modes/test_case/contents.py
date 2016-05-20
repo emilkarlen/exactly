@@ -5,7 +5,7 @@ from exactly_lib.help.program_modes.test_case.contents.phase import act
 from exactly_lib.help.program_modes.test_case.contents.phase import \
     assert_, configuration, before_assert, cleanup, setup
 from exactly_lib.help.utils.render import RenderingEnvironment
-from exactly_lib_test.help.test_resources import test_case_phase_instruction_set, \
+from exactly_lib_test.help.test_resources import section_instruction_set, \
     CrossReferenceTextConstructorTestImpl
 from exactly_lib_test.util.textformat.test_resources import structure as struct_check
 
@@ -23,8 +23,8 @@ class TestCase(unittest.TestCase):
         # ARRANGE #
         tcp_help = configuration.ConfigurationPhaseDocumentation(
             'phase name',
-            test_case_phase_instruction_set('phase name',
-                                            ['instr 1',
+            section_instruction_set('phase name',
+                                    ['instr 1',
                                              'instr 2']))
         # ACT #
         actual = sut.SectionDocumentationRenderer(tcp_help).apply(RENDERING_ENVIRONMENT)
@@ -35,8 +35,8 @@ class TestCase(unittest.TestCase):
         # ARRANGE #
         tcp_help = setup.SetupPhaseDocumentation(
             'phase name',
-            test_case_phase_instruction_set('phase name',
-                                            ['instr 1',
+            section_instruction_set('phase name',
+                                    ['instr 1',
                                              'instr 2']))
         # ACT #
         actual = sut.SectionDocumentationRenderer(tcp_help).apply(RENDERING_ENVIRONMENT)
@@ -55,8 +55,8 @@ class TestCase(unittest.TestCase):
         # ARRANGE #
         tcp_help = before_assert.BeforeAssertPhaseDocumentation(
             'phase name',
-            test_case_phase_instruction_set('phase name',
-                                            ['instr 1',
+            section_instruction_set('phase name',
+                                    ['instr 1',
                                              'instr 2']))
         # ACT #
         actual = sut.SectionDocumentationRenderer(tcp_help).apply(RENDERING_ENVIRONMENT)
@@ -67,8 +67,8 @@ class TestCase(unittest.TestCase):
         # ARRANGE #
         tcp_help = assert_.AssertPhaseDocumentation(
             'phase name',
-            test_case_phase_instruction_set('phase name',
-                                            ['instr 1',
+            section_instruction_set('phase name',
+                                    ['instr 1',
                                              'instr 2']))
         # ACT #
         actual = sut.SectionDocumentationRenderer(tcp_help).apply(RENDERING_ENVIRONMENT)
@@ -79,8 +79,8 @@ class TestCase(unittest.TestCase):
         # ARRANGE
         tcp_help = cleanup.CleanupPhaseDocumentation(
             'phase name',
-            test_case_phase_instruction_set('phase name',
-                                            ['instr 1',
+            section_instruction_set('phase name',
+                                    ['instr 1',
                                              'instr 2']))
         # ACT #
         actual = sut.SectionDocumentationRenderer(tcp_help).apply(RENDERING_ENVIRONMENT)

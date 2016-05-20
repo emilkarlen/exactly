@@ -32,6 +32,10 @@ def phase(ph: phases.Phase) -> list:
     return phase_for_name(phase_help_name(ph))
 
 
+def phase_for_name(phase_name: str) -> list:
+    return [phase_name]
+
+
 def instruction_in_phase(phase_name: str,
                          instruction_name: str) -> list:
     return [phase_name, instruction_name]
@@ -64,7 +68,3 @@ def suite_section_for_name(section_name: str) -> list:
 def suite_instruction_in_section(section_name: str,
                                  instruction_name: str) -> list:
     return [TEST_SUITE, section_name, instruction_name]
-
-
-def phase_for_name(phase_name: str) -> list:
-    return [phase_name]
