@@ -3,9 +3,12 @@ from exactly_lib.cli.cli_environment import common_cli_options as common_opts
 from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options as case_opts
 from exactly_lib.cli.cli_environment.program_modes.test_suite import command_line_options as opts
 from exactly_lib.help.concepts.plain_concepts import actor
+from exactly_lib.help.cross_reference_id import TestSuiteSectionInstructionCrossReference
 from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.cli_program_documentation import CliProgramSyntaxDocumentation
 from exactly_lib.help.utils.textformat_parse import TextParser
+from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_set import INSTRUCTION_NAME__ACTOR
+from exactly_lib.test_suite.parser import SECTION_NAME__CONF
 from exactly_lib.util.cli_syntax.elements import argument as arg
 from exactly_lib.util.cli_syntax.elements import cli_program_syntax as cli_syntax
 from exactly_lib.util.description import DescriptionWithSubSections
@@ -16,6 +19,7 @@ class SuiteCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
     def __init__(self):
         super().__init__(program_info.PROGRAM_NAME)
         self.parser = TextParser({
+            'actor': formatting.concept(actor.ACTOR_CONCEPT.name().singular),
             'interpreter_actor': formatting.term(case_opts.INTERPRETER_ACTOR_TERM),
             'TEST_SUITE_FILE': _FILE_ARGUMENT.name,
         })
@@ -44,6 +48,8 @@ class SuiteCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
                                             self.parser.fnap(_ACTOR_OPTION_DESCRIPTION, extra_format_map),
                                             see_also=[
                                                 actor.ACTOR_CONCEPT.cross_reference_target(),
+                                                TestSuiteSectionInstructionCrossReference(SECTION_NAME__CONF,
+                                                                                          INSTRUCTION_NAME__ACTOR),
                                             ])
 
 
@@ -66,7 +72,11 @@ Runs the test suite in file {TEST_SUITE_FILE}.
 """
 
 _ACTOR_OPTION_DESCRIPTION = """\
-Specifies an {interpreter_actor} to use for every test case in the suite.
+Specifies a default {interpreter_actor} to use for every test case in the suite.
+
+
+Note: An {actor} specified in the suite will have precedence over the {actor}
+specified by this option.
 
 
 {interpreter_program} is the absolute path of an executable program,
