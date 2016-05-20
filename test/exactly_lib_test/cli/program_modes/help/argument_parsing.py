@@ -423,7 +423,7 @@ class TestConceptHelp(unittest.TestCase):
         application_help = application_help_for([], concepts=concepts)
         # ACT #
         actual = sut.parse(application_help,
-                           arguments_for.individual_concept('second'))
+                           arguments_for.concept_single('second'))
         # ASSERT #
         self._assert_result_is_individual_concept(actual, 'second')
 
@@ -437,7 +437,7 @@ class TestConceptHelp(unittest.TestCase):
         application_help = application_help_for([], concepts=concepts)
         # ACT #
         actual = sut.parse(application_help,
-                           arguments_for.individual_concept('a b c'))
+                           arguments_for.concept_single('a b c'))
         # ASSERT #
         self._assert_result_is_individual_concept(actual, 'a b c')
 
@@ -451,7 +451,7 @@ class TestConceptHelp(unittest.TestCase):
         application_help = application_help_for([], concepts=concepts)
         # ACT #
         actual = sut.parse(application_help,
-                           arguments_for.individual_concept('a B C'))
+                           arguments_for.concept_single('a B C'))
         # ASSERT #
         self._assert_result_is_individual_concept(actual, 'a b c')
 
@@ -465,7 +465,7 @@ class TestConceptHelp(unittest.TestCase):
         # ACT & ASSERT #
         with self.assertRaises(HelpError):
             sut.parse(application_help,
-                      arguments_for.individual_concept('non-existing concept'))
+                      arguments_for.concept_single('non-existing concept'))
 
     def _assert_result_is_individual_concept(self,
                                              actual: HelpRequest,

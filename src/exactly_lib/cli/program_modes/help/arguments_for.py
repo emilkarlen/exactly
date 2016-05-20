@@ -20,8 +20,16 @@ def concept_list() -> list:
     return [CONCEPT]
 
 
-def individual_concept(concept_name: str) -> list:
+def concept_single(concept_name: str) -> list:
     return [CONCEPT] + concept_name.split()
+
+
+def case_cli_syntax() -> list:
+    return [TEST_CASE]
+
+
+def case_specification() -> list:
+    return [TEST_CASE, SPECIFICATION]
 
 
 def case_instructions() -> list:
@@ -43,14 +51,6 @@ def case_instruction_in_phase(phase_name: str,
 
 def case_instruction_search(instruction_name: str) -> list:
     return [instruction_name]
-
-
-def case_cli_syntax() -> list:
-    return [TEST_CASE]
-
-
-def case_specification() -> list:
-    return [TEST_CASE, SPECIFICATION]
 
 
 def suite_cli_syntax() -> list:

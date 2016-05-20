@@ -82,7 +82,7 @@ def main_program_test_cases() -> list:
                         _RESULT_IS_SUCCESSFUL),
 
         ProcessTestCase('help for "individual concept" SHOULD be successful',
-                        HelpInvokation(arguments_for.individual_concept(SANDBOX_CONCEPT.name().singular)),
+                        HelpInvokation(arguments_for.concept_single(SANDBOX_CONCEPT.name().singular)),
                         _RESULT_IS_SUCCESSFUL),
     ]
 
