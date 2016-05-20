@@ -1,8 +1,7 @@
 import unittest
 from contextlib import contextmanager
 
-from exactly_lib.act_phase_setups import script_language_setup as sut
-from exactly_lib.script_language import python3
+from exactly_lib.act_phase_setups.script_interpretation import script_language_setup as sut, python3
 from exactly_lib.test_case.phases.act.program_source import ActSourceBuilder
 from exactly_lib_test.act_phase_setups.test_resources import py_program
 from exactly_lib_test.act_phase_setups.test_resources.act_program_executor import \

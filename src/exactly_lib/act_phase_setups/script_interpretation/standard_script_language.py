@@ -1,5 +1,5 @@
-import exactly_lib.script_language.script_language_management
-from exactly_lib.script_language.script_language_management import ScriptFileManager
+from exactly_lib.act_phase_setups.script_interpretation.script_language_management import ScriptFileManager, \
+    ScriptLanguage
 
 
 class StandardScriptFileManager(ScriptFileManager):
@@ -18,7 +18,7 @@ class StandardScriptFileManager(ScriptFileManager):
         return [self.interpreter] + self.command_line_options_before_file_argument + [script_file_name]
 
 
-class StandardScriptLanguage(exactly_lib.script_language.script_language_management.ScriptLanguage):
+class StandardScriptLanguage(ScriptLanguage):
     def comment_line(self, comment: str) -> list:
         return ['# ' + comment]
 

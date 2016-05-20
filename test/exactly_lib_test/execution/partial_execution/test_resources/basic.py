@@ -4,8 +4,8 @@ import shutil
 import types
 import unittest
 
+import exactly_lib.act_phase_setups.script_interpretation.python3
 from exactly_lib import program_info
-from exactly_lib.act_phase_setups import python3
 from exactly_lib.execution import partial_execution
 from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from exactly_lib.execution.phases import PhaseEnum
@@ -69,11 +69,11 @@ class TestCaseGeneratorForPartialExecutionBase(TestCaseGeneratorBase):
 
 def build(tc: TestCaseGeneratorBase) -> partial_execution.TestCase:
     return partial_execution.TestCase(
-            tc.setup_phase(),
-            tc.act_phase(),
-            tc.before_assert_phase(),
-            tc.assert_phase(),
-            tc.cleanup_phase()
+        tc.setup_phase(),
+        tc.act_phase(),
+        tc.before_assert_phase(),
+        tc.assert_phase(),
+        tc.cleanup_phase()
     )
 
 
@@ -122,7 +122,8 @@ def py3_test(unittest_case: unittest.TestCase,
              is_keep_execution_directory_root: bool = True,
              dbg_do_not_delete_dir_structure=False):
     result = _execute(test_case,
-                      act_phase_handling_for_setup(python3.new_act_phase_setup()),
+                      act_phase_handling_for_setup(
+                          exactly_lib.act_phase_setups.script_interpretation.python3.new_act_phase_setup()),
                       is_keep_execution_directory_root=is_keep_execution_directory_root)
 
     assertions(unittest_case,
@@ -147,7 +148,8 @@ class PartialExecutionTestCaseBase:
         self.__act_phase_handling = act_phase_handling
         self.__result = None
         if self.__act_phase_handling is None:
-            self.__act_phase_handling = act_phase_handling_for_setup(python3.new_act_phase_setup())
+            self.__act_phase_handling = act_phase_handling_for_setup(
+                exactly_lib.act_phase_setups.script_interpretation.python3.new_act_phase_setup())
 
     def execute(self):
         # SETUP #
@@ -195,9 +197,9 @@ def _execute(test_case: partial_execution.TestCase,
     home_dir_path = pathlib.Path().resolve()
     partial_result = partial_execution.execute(
         act_phase_handling,
-            test_case,
-            home_dir_path,
+        test_case,
+        home_dir_path,
         program_info.PROGRAM_NAME + '-test-',
-            is_keep_execution_directory_root)
+        is_keep_execution_directory_root)
     return Result(home_dir_path,
                   partial_result)
