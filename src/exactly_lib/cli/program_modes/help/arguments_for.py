@@ -24,40 +24,40 @@ def individual_concept(concept_name: str) -> list:
     return [CONCEPT] + concept_name.split()
 
 
-def instructions() -> list:
+def case_instructions() -> list:
     return [INSTRUCTIONS]
 
 
-def phase(ph: phases.Phase) -> list:
-    return phase_for_name(phase_help_name(ph))
+def case_phase(ph: phases.Phase) -> list:
+    return case_phase_for_name(phase_help_name(ph))
 
 
-def phase_for_name(phase_name: str) -> list:
+def case_phase_for_name(phase_name: str) -> list:
     return [phase_name]
 
 
-def instruction_in_phase(phase_name: str,
-                         instruction_name: str) -> list:
+def case_instruction_in_phase(phase_name: str,
+                              instruction_name: str) -> list:
     return [phase_name, instruction_name]
 
 
-def instruction_search(instruction_name: str) -> list:
+def case_instruction_search(instruction_name: str) -> list:
     return [instruction_name]
 
 
-def test_case_cli_syntax() -> list:
+def case_cli_syntax() -> list:
     return [TEST_CASE]
 
 
-def test_case_specification() -> list:
+def case_specification() -> list:
     return [TEST_CASE, SPECIFICATION]
 
 
-def test_suite_cli_syntax() -> list:
+def suite_cli_syntax() -> list:
     return [TEST_SUITE]
 
 
-def test_suite_specification() -> list:
+def suite_specification() -> list:
     return [TEST_SUITE, SPECIFICATION]
 
 

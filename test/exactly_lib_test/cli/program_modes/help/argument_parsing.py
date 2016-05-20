@@ -72,14 +72,14 @@ class TestTestCasePhase(unittest.TestCase):
     def test_non_existing_phases(self):
         application_help = self._application_help_with_phases(['phase 1',
                                                                'phase 2'])
-        arguments = arguments_for.phase_for_name('non existing phase')
+        arguments = arguments_for.case_phase_for_name('non existing phase')
         with self.assertRaises(sut.HelpError):
             sut.parse(application_help, arguments)
 
     def _assert_successful_parsing_of_existing_phase(self,
                                                      application_help: ApplicationHelp,
                                                      phase_name: str):
-        arguments = arguments_for.phase_for_name(phase_name)
+        arguments = arguments_for.case_phase_for_name(phase_name)
         actual = sut.parse(application_help, arguments)
         self._assert_is_single_phase_help(phase_name, actual)
 
@@ -114,7 +114,7 @@ class TestTestCaseSingleInstructionInPhase(unittest.TestCase):
         ])
         with self.assertRaises(sut.HelpError):
             sut.parse(application_help,
-                      arguments_for.instruction_in_phase('non-existing-phase', 'instruction-name'))
+                      arguments_for.case_instruction_in_phase('non-existing-phase', 'instruction-name'))
 
     def test_unknown_instruction(self):
         application_help = application_help_for([
@@ -123,7 +123,7 @@ class TestTestCaseSingleInstructionInPhase(unittest.TestCase):
         ])
         with self.assertRaises(sut.HelpError):
             sut.parse(application_help,
-                      arguments_for.instruction_in_phase('empty-phase', 'instruction'))
+                      arguments_for.case_instruction_in_phase('empty-phase', 'instruction'))
 
     def test_single_instruction_for_phases_with_instructions(self):
         phase_name = 'the phase name'
@@ -144,8 +144,8 @@ class TestTestCaseSingleInstructionInPhase(unittest.TestCase):
                                                  phase_name: str,
                                                  instruction_name: str):
         actual = sut.parse(application_help,
-                           arguments_for.instruction_in_phase(phase_name,
-                                                              instruction_name))
+                           arguments_for.case_instruction_in_phase(phase_name,
+                                                                   instruction_name))
         actual = self._check_is_test_case_settings_for_single_instruction(actual)
         self.assertEqual(actual.name,
                          instruction_name,
@@ -174,7 +174,7 @@ class TestTestCaseInstructionList(unittest.TestCase):
     def test_instruction_in_single_phase(self):
         application_help = application_help_for([section_documentation('phase-a', ['a-instruction']),
                                                  section_documentation('phase-with-target', ['target-instruction'])])
-        actual = sut.parse(application_help, arguments_for.instruction_search('target-instruction'))
+        actual = sut.parse(application_help, arguments_for.case_instruction_search('target-instruction'))
         actual = self._assert_is_valid_instruction_list_settings('target-instruction',
                                                                  actual)
         self.assertEqual(1,
@@ -192,7 +192,7 @@ class TestTestCaseInstructionList(unittest.TestCase):
             section_documentation('phase-d', ['the-instr']),
         ])
         actual = sut.parse(application_help,
-                           arguments_for.instruction_search('the-instr'))
+                           arguments_for.case_instruction_search('the-instr'))
         actual = self._assert_is_valid_instruction_list_settings('the-instr',
                                                                  actual)
         self.assertEqual(2,
@@ -210,7 +210,7 @@ class TestTestCaseInstructionList(unittest.TestCase):
         application_help = application_help_for([section_documentation('phase', instructions)])
         with self.assertRaises(sut.HelpError):
             sut.parse(application_help,
-                      arguments_for.instruction_search('unknown-instruction'))
+                      arguments_for.case_instruction_search('unknown-instruction'))
 
     def _assert_is_valid_instruction_list_settings(
             self,
@@ -253,7 +253,7 @@ class TestTestCaseInstructionList(unittest.TestCase):
 class TestTestCaseInstructionSet(unittest.TestCase):
     def test_instruction_set(self):
         actual = sut.parse(application_help_for([]),
-                           arguments_for.instructions())
+                           arguments_for.case_instructions())
         self.assertIsInstance(actual, TestCaseHelpRequest,
                               'Expecting settings for Test Case')
         assert isinstance(actual, TestCaseHelpRequest)
@@ -266,7 +266,7 @@ class TestTestCaseInstructionSet(unittest.TestCase):
 class TestTestCaseCliAndOverviewHelp(unittest.TestCase):
     def test_overview(self):
         actual = sut.parse(application_help_for([]),
-                           arguments_for.test_case_specification())
+                           arguments_for.case_specification())
         self.assertIsInstance(actual,
                               TestCaseHelpRequest,
                               'Expecting settings for test-case')
@@ -278,7 +278,7 @@ class TestTestCaseCliAndOverviewHelp(unittest.TestCase):
 
     def test_cli_syntax(self):
         actual = sut.parse(application_help_for([]),
-                           arguments_for.test_case_cli_syntax())
+                           arguments_for.case_cli_syntax())
         self.assertIsInstance(actual,
                               TestCaseHelpRequest,
                               'Expecting settings for test-case')
@@ -292,7 +292,7 @@ class TestTestCaseCliAndOverviewHelp(unittest.TestCase):
 class TestTestSuiteHelp(unittest.TestCase):
     def test_cli_syntax(self):
         actual = sut.parse(application_help_for([]),
-                           arguments_for.test_suite_cli_syntax())
+                           arguments_for.suite_cli_syntax())
         self.assertIsInstance(actual,
                               TestSuiteHelpRequest,
                               'Expecting settings for test-suite')
@@ -304,7 +304,7 @@ class TestTestSuiteHelp(unittest.TestCase):
 
     def test_overview(self):
         actual = sut.parse(application_help_for([]),
-                           arguments_for.test_suite_specification())
+                           arguments_for.suite_specification())
         self.assertIsInstance(actual,
                               TestSuiteHelpRequest,
                               'Expecting settings for test-suite')

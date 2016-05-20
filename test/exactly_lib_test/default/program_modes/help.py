@@ -7,7 +7,8 @@ from exactly_lib.default.program_modes.test_case.default_instruction_names impor
 from exactly_lib.execution import phases
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
 from exactly_lib.help.program_modes.test_case.config import phase_help_name
-from exactly_lib.test_suite.parser import ALL_SECTION_NAMES
+from exactly_lib.test_suite import parser as suite_parser
+from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_set import INSTRUCTION_NAME__ACTOR
 from exactly_lib_test.test_resources import process_result_assertions as pr
 from exactly_lib_test.test_resources import value_assertion as va
 from exactly_lib_test.test_resources.main_program.constant_arguments_check import ProcessTestCase, Arrangement
@@ -42,29 +43,46 @@ def main_program_test_cases() -> list:
                         HelpInvokation(arguments_for.help_help()),
                         _RESULT_IS_SUCCESSFUL),
 
+        ProcessTestCase('help for "case cli syntax" SHOULD be successful',
+                        HelpInvokation(arguments_for.case_cli_syntax()),
+                        _RESULT_IS_SUCCESSFUL),
+
+        ProcessTestCase('help for "case specification" SHOULD be successful',
+                        HelpInvokation(arguments_for.case_specification()),
+                        _RESULT_IS_SUCCESSFUL),
+
+        ProcessTestCase('help for "case instruction in phase" SHOULD be successful',
+                        HelpInvokation(arguments_for.case_instruction_in_phase(phase_help_name(phases.SETUP),
+                                                                               CHANGE_DIR_INSTRUCTION_NAME)),
+                        _RESULT_IS_SUCCESSFUL),
+
+        ProcessTestCase('help for "case instructions" SHOULD be successful',
+                        HelpInvokation(arguments_for.case_instructions()),
+                        _RESULT_IS_SUCCESSFUL),
+
+        ProcessTestCase('help for "case instruction search" SHOULD be successful',
+                        HelpInvokation(arguments_for.case_instruction_search(CHANGE_DIR_INSTRUCTION_NAME)),
+                        _RESULT_IS_SUCCESSFUL),
+
+        ProcessTestCase('help for "suite cli syntax" SHOULD be successful',
+                        HelpInvokation(arguments_for.suite_cli_syntax()),
+                        _RESULT_IS_SUCCESSFUL),
+
+        ProcessTestCase('help for "suite specification" SHOULD be successful',
+                        HelpInvokation(arguments_for.suite_specification()),
+                        _RESULT_IS_SUCCESSFUL),
+
+        ProcessTestCase('help for "suite section instruction" SHOULD be successful',
+                        HelpInvokation(arguments_for.suite_instruction_in_section(suite_parser.SECTION_NAME__CONF,
+                                                                                  INSTRUCTION_NAME__ACTOR)),
+                        _RESULT_IS_SUCCESSFUL),
+
         ProcessTestCase('help for "concept list" SHOULD be successful',
                         HelpInvokation(arguments_for.concept_list()),
                         _RESULT_IS_SUCCESSFUL),
 
         ProcessTestCase('help for "individual concept" SHOULD be successful',
                         HelpInvokation(arguments_for.individual_concept(SANDBOX_CONCEPT.name().singular)),
-                        _RESULT_IS_SUCCESSFUL),
-
-        ProcessTestCase('help for "instructions" SHOULD be successful',
-                        HelpInvokation(arguments_for.instructions()),
-                        _RESULT_IS_SUCCESSFUL),
-
-        ProcessTestCase('help for "instruction search" SHOULD be successful',
-                        HelpInvokation(arguments_for.instruction_search(CHANGE_DIR_INSTRUCTION_NAME)),
-                        _RESULT_IS_SUCCESSFUL),
-
-        ProcessTestCase('help for "instruction in phase" SHOULD be successful',
-                        HelpInvokation(arguments_for.instruction_in_phase(phase_help_name(phases.SETUP),
-                                                                          CHANGE_DIR_INSTRUCTION_NAME)),
-                        _RESULT_IS_SUCCESSFUL),
-
-        ProcessTestCase('help for "suite" SHOULD be successful',
-                        HelpInvokation(arguments_for.test_suite_specification()),
                         _RESULT_IS_SUCCESSFUL),
     ]
 
@@ -74,14 +92,14 @@ def main_program_test_cases_for_all_suite_sections() -> list:
         ProcessTestCase("""help for "suite/section '%s'" SHOULD be successful""" % section_name,
                         HelpInvokation(arguments_for.suite_section_for_name(section_name)),
                         _RESULT_IS_SUCCESSFUL)
-        for section_name in ALL_SECTION_NAMES
+        for section_name in suite_parser.ALL_SECTION_NAMES
         ]
 
 
 def main_program_test_cases_for_all_case_phases() -> list:
     return [
         ProcessTestCase("""help for "case/phase '%s'" SHOULD be successful""" % phase.section_name,
-                        HelpInvokation(arguments_for.phase(phase)),
+                        HelpInvokation(arguments_for.case_phase(phase)),
                         _RESULT_IS_SUCCESSFUL)
         for phase in phases.ALL
         ]
