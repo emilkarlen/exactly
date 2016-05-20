@@ -12,45 +12,6 @@ from exactly_lib_test.execution.test_resources.execution_recording.recorder impo
 class ActSourceExecutorWrapperThatRecordsSteps(ActSourceExecutor):
     def __init__(self,
                  recorder: ListRecorder,
-                 wrapped: ActSourceExecutor,
-                 validate_test_action,
-                 execute_test_action):
-        self.__recorder = recorder
-        self.__wrapped = wrapped
-        self.__validate_test_action = validate_test_action
-        self.__execute_test_action = execute_test_action
-
-    def validate(self,
-                 home_dir: pathlib.Path(),
-                 source: ActSourceBuilder) -> svh.SuccessOrValidationErrorOrHardError:
-        self.__recorder.recording_of(phase_step.ACT__SCRIPT_VALIDATE).record()
-        test_action_result = self.__validate_test_action()
-        if not test_action_result.is_success:
-            return test_action_result
-        return self.__wrapped.validate(home_dir, source)
-
-    def prepare(self,
-                source_setup: SourceSetup,
-                home_dir_path: pathlib.Path,
-                eds: ExecutionDirectoryStructure):
-        self.__wrapped.prepare(source_setup, home_dir_path, eds)
-
-    def execute(self,
-                source_setup: SourceSetup,
-                home_dir: pathlib.Path,
-                eds: ExecutionDirectoryStructure,
-                std_files: StdFiles) -> int:
-        self.__recorder.recording_of(phase_step.ACT__SCRIPT_EXECUTE).record()
-        self.__execute_test_action()
-        return self.__wrapped.execute(source_setup,
-                                      home_dir,
-                                      eds,
-                                      std_files)
-
-
-class ActSourceExecutorWrapperThatRecordsSteps2(ActSourceExecutor):
-    def __init__(self,
-                 recorder: ListRecorder,
                  wrapped: ActSourceExecutor):
         self.__recorder = recorder
         self.__wrapped = wrapped

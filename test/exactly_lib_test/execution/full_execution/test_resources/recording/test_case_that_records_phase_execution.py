@@ -1,15 +1,15 @@
 import types
 import unittest
 
-from exactly_lib.act_phase_setups import python3
 from exactly_lib.execution.partial_execution import ActPhaseHandling
 from exactly_lib.execution.result import FullResultStatus
-from exactly_lib.processing.processors import act_phase_handling_for_setup
 from exactly_lib.test_case import test_case_doc
+from exactly_lib.test_case.phases.act.script_source import ActSourceBuilderForStatementLines
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib_test.execution.full_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorForExecutionRecording, TestCaseGeneratorWithRecordingInstrFollowedByExtraInstrsInEachPhase
 from exactly_lib_test.execution.full_execution.test_resources.test_case_base import FullExecutionTestCaseBase
+from exactly_lib_test.execution.test_resources.act_source_executor import ActSourceExecutorThatRunsConstantActions
 from exactly_lib_test.execution.test_resources.execution_recording.act_program_executor import \
     ActSourceExecutorWrapperThatRecordsSteps
 from exactly_lib_test.execution.test_resources.execution_recording.recorder import \
@@ -106,8 +106,8 @@ class _TestCaseThatRecordsExecution(FullExecutionTestCaseBase):
         if self.__expectation.execution_directory_structure_should_exist:
             self.utc.assertIsNotNone(self.eds)
             self.utc.assertTrue(
-                    self.eds.root_dir.is_dir(),
-                    'Execution Directory Structure root is expected to be a directory')
+                self.eds.root_dir.is_dir(),
+                'Execution Directory Structure root is expected to be a directory')
         else:
             self.utc.assertIsNone(self.eds,
                                   'Execution Directory Structure is expected to not be created')
@@ -126,11 +126,7 @@ class TestCaseBase(unittest.TestCase):
                                       arrangement: Arrangement,
                                       expectation: Expectation,
                                       dbg_do_not_delete_dir_structure=False) -> _TestCaseThatRecordsExecution:
-        act_phase_handling = self._with_recording_act_program_executor(
-                arrangement.test_case_generator.recorder,
-            act_phase_handling_for_setup(python3.new_act_phase_setup()),
-                arrangement.validate_test_action,
-                arrangement.execute_test_action)
+        act_phase_handling = self._with_recording_act_program_executor(arrangement)
         return _TestCaseThatRecordsExecution(self,
                                              arrangement.test_case_generator,
                                              expectation,
@@ -139,15 +135,13 @@ class TestCaseBase(unittest.TestCase):
                                              arrangement.test_case_generator.recorder)
 
     def _with_recording_act_program_executor(self,
-                                             recorder: ListRecorder,
-                                             act_phase_handling: ActPhaseHandling,
-                                             validate_test_action,
-                                             execute_test_action) -> ActPhaseHandling:
-        return ActPhaseHandling(act_phase_handling.source_builder,
-                                ActSourceExecutorWrapperThatRecordsSteps(recorder,
-                                                                         act_phase_handling.executor,
-                                                                         validate_test_action,
-                                                                         execute_test_action))
+                                             arrangement: Arrangement) -> ActPhaseHandling:
+        act_source_executor = ActSourceExecutorWrapperThatRecordsSteps(
+            arrangement.test_case_generator.recorder,
+            ActSourceExecutorThatRunsConstantActions(arrangement.validate_test_action,
+                                                     arrangement.execute_test_action))
+        return ActPhaseHandling(ActSourceBuilderForStatementLines(),
+                                act_source_executor)
 
 
 def one_successful_instruction_in_each_phase() -> TestCaseGeneratorForExecutionRecording:
