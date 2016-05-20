@@ -1,7 +1,5 @@
 import os
 
-from exactly_lib.util.line_source import Line
-
 
 class ScriptLanguage:
     def comment_line(self, comment: str) -> list:
@@ -21,12 +19,6 @@ class ScriptLanguage:
         for statement in statements:
             ret_val.extend(self.raw_script_statement(statement))
         return ret_val
-
-    def source_line_header(self, source_line: Line) -> list:
-        line_ref = 'Line %d' % source_line.line_number
-        line_contents = source_line.text
-        return self.comment_lines([line_ref,
-                                   line_contents])
 
 
 class ScriptSourceAccumulator:
@@ -69,12 +61,6 @@ class ScriptSourceAccumulator:
         Each statement will be terminated by a new-line.
         """
         self._source_lines.extend(self._script_language.raw_script_statements(statements))
-
-    def source_line_header(self, source_line: Line):
-        line_ref = 'Line %d' % source_line.line_number
-        line_contents = source_line.text
-        self.comment_lines([line_ref,
-                            line_contents])
 
 
 class ActSourceBuilder(ScriptSourceAccumulator):
