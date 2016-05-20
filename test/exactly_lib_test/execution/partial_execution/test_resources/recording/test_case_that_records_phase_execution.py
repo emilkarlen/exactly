@@ -9,8 +9,8 @@ from exactly_lib.test_case.phases.result import svh
 from exactly_lib_test.execution.partial_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorForExecutionRecording
 from exactly_lib_test.execution.partial_execution.test_resources.test_case_base import PartialExecutionTestCaseBase
+from exactly_lib_test.execution.test_resources.act_source_executor import ActSourceExecutorThatRunsConstantActions
 from exactly_lib_test.execution.test_resources.execution_recording.act_program_executor import \
-    ActSourceExecutorThatRunsConstantActions, \
     ActSourceExecutorWrapperThatRecordsSteps2
 from exactly_lib_test.execution.test_resources.execution_recording.recorder import \
     ListRecorder

@@ -9,32 +9,6 @@ from exactly_lib.util.std import StdFiles
 from exactly_lib_test.execution.test_resources.execution_recording.recorder import ListRecorder
 
 
-class ActSourceExecutorThatRunsConstantActions(ActSourceExecutor):
-    def __init__(self,
-                 validate_test_action,
-                 execute_test_action):
-        self.__validate_test_action = validate_test_action
-        self.__execute_test_action = execute_test_action
-
-    def validate(self,
-                 home_dir: pathlib.Path(),
-                 source: ActSourceBuilder) -> svh.SuccessOrValidationErrorOrHardError:
-        return self.__validate_test_action()
-
-    def prepare(self,
-                source_setup: SourceSetup,
-                home_dir_path: pathlib.Path,
-                eds: ExecutionDirectoryStructure):
-        pass
-
-    def execute(self,
-                source_setup: SourceSetup,
-                home_dir: pathlib.Path,
-                eds: ExecutionDirectoryStructure,
-                std_files: StdFiles) -> int:
-        return self.__execute_test_action()
-
-
 class ActSourceExecutorWrapperThatRecordsSteps(ActSourceExecutor):
     def __init__(self,
                  recorder: ListRecorder,
