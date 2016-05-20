@@ -42,15 +42,15 @@ class TestValidationError(TestCaseBase):
             .add(conf.phase,
                  conf.instruction_that_returns(svh.new_svh_validation_error('validation error message')))
         execute_test_case_with_recording(
-                self,
-                Arrangement(test_case),
-                Expectation(PartialResultStatus.VALIDATE,
-                            ExpectedFailureForInstructionFailure.new_with_message(
-                                    conf.step,
-                                    test_case.the_extra(conf.phase)[0].first_line,
-                                    'validation error message'),
-                            conf.expected_steps,
-                            True)
+            self,
+            Arrangement(test_case),
+            Expectation(PartialResultStatus.VALIDATE,
+                        ExpectedFailureForInstructionFailure.new_with_message(
+                            conf.step,
+                            test_case.the_extra(conf.phase)[0].first_line,
+                            'validation error message'),
+                        conf.expected_steps,
+                        True)
         )
 
 
@@ -61,15 +61,15 @@ class TestHardError(TestCaseBase):
             .add(conf.phase,
                  conf.instruction_that_returns(svh.new_svh_hard_error('Error message from hard error')))
         execute_test_case_with_recording(
-                self,
-                Arrangement(test_case),
-                Expectation(PartialResultStatus.HARD_ERROR,
-                            ExpectedFailureForInstructionFailure.new_with_message(
-                                    conf.step,
-                                    test_case.the_extra(conf.phase)[0].first_line,
-                                    'Error message from hard error'),
-                            conf.expected_steps,
-                            True))
+            self,
+            Arrangement(test_case),
+            Expectation(PartialResultStatus.HARD_ERROR,
+                        ExpectedFailureForInstructionFailure.new_with_message(
+                            conf.step,
+                            test_case.the_extra(conf.phase)[0].first_line,
+                            'Error message from hard error'),
+                        conf.expected_steps,
+                        True))
 
 
 class TestImplementationError(TestCaseBase):
@@ -79,15 +79,15 @@ class TestImplementationError(TestCaseBase):
             .add(conf.phase,
                  conf.instruction_that_raises(test.ImplementationErrorTestException()))
         execute_test_case_with_recording(
-                self,
-                Arrangement(test_case),
-                Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
-                            ExpectedFailureForInstructionFailure.new_with_exception(
-                                    conf.step,
-                                    test_case.the_extra(conf.phase)[0].first_line,
-                                    test.ImplementationErrorTestException),
-                            conf.expected_steps,
-                            True))
+            self,
+            Arrangement(test_case),
+            Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
+                        ExpectedFailureForInstructionFailure.new_with_exception(
+                            conf.step,
+                            test_case.the_extra(conf.phase)[0].first_line,
+                            test.ImplementationErrorTestException),
+                        conf.expected_steps,
+                        True))
 
 
 def suite_for(configuration: Configuration) -> list:
