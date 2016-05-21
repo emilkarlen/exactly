@@ -9,6 +9,7 @@ from exactly_lib.execution.execution_directory_structure import ExecutionDirecto
 from exactly_lib.test_case.phases.act.program_source import ActSourceBuilder
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.std import StdFiles, std_files_dev_null
+from exactly_lib_test.test_resources.execution import eds_contents_check
 from exactly_lib_test.test_resources.execution.eds_populator import act_dir_contents
 from exactly_lib_test.test_resources.execution.utils import execution_directory_structure
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir
@@ -95,8 +96,7 @@ class TestWithActSourceExecutorBase(unittest.TestCase):
                          validation_result.status)
         with execution_directory_structure() as eds:
             program_setup = SourceSetup(source,
-                                        eds.test_case_dir,
-                                        'file-name-stem')
+                                        eds.test_case_dir)
             act_program_executor.prepare(program_setup, home_dir, eds)
             process_executor = _ProcessExecutorForProgramExecutor(program_setup,
                                                                   home_dir,
@@ -110,16 +110,50 @@ class TestWithActSourceExecutorBase(unittest.TestCase):
 def run_execute(put: unittest.TestCase,
                 executor: ActSourceExecutor,
                 source: ActSourceBuilder) -> ExitCodeOrHardError:
+    return check_execution(put,
+                           Arrangement(executor, source),
+                           Expectation())
+
+
+class Arrangement(tuple):
+    def __new__(cls,
+                executor: ActSourceExecutor,
+                source: ActSourceBuilder):
+        return tuple.__new__(cls, (executor, source))
+
+    @property
+    def executor(self) -> ActSourceExecutor:
+        return self[0]
+
+    @property
+    def source(self) -> ActSourceBuilder:
+        return self[1]
+
+
+class Expectation(tuple):
+    def __new__(cls,
+                main_side_effects_on_files: eds_contents_check.Assertion = eds_contents_check.AnythingGoes()):
+        return tuple.__new__(cls, (main_side_effects_on_files,))
+
+    @property
+    def main_side_effects_on_files(self) -> eds_contents_check.Assertion:
+        return self[0]
+
+
+def check_execution(put: unittest.TestCase,
+                    arrangement: Arrangement,
+                    expectation: Expectation) -> ExitCodeOrHardError:
     home_dir = pathlib.Path()
-    validation_result = executor.validate(home_dir, source)
+    validation_result = arrangement.executor.validate(home_dir, arrangement.source)
     put.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                     validation_result.status)
     with execution_directory_structure() as eds:
-        program_setup = SourceSetup(source,
-                                    eds.test_case_dir,
-                                    'file-name-stem')
-        executor.prepare(program_setup, home_dir, eds)
-        return executor.execute(program_setup, home_dir, eds, std_files_dev_null())
+        program_setup = SourceSetup(arrangement.source,
+                                    eds.test_case_dir)
+        arrangement.executor.prepare(program_setup, home_dir, eds)
+        ret_val = arrangement.executor.execute(program_setup, home_dir, eds, std_files_dev_null())
+        expectation.main_side_effects_on_files.apply(put, eds)
+        return ret_val
 
 
 class TestBase(TestWithActSourceExecutorBase):
@@ -189,8 +223,7 @@ class TestInitialCwdIsCurrentDirAndThatCwdIsRestoredAfterwards(TestBase):
                                  validation_result)
                 with execution_directory_structure(act_dir_contents(DirContents([empty_dir('expected-cwd')]))) as eds:
                     program_setup = SourceSetup(source,
-                                                eds.test_case_dir,
-                                                'file-name-stem')
+                                                eds.test_case_dir)
                     process_cwd = str(eds.act_dir / 'expected-cwd')
                     os.chdir(process_cwd)
                     assert process_cwd == os.getcwd()

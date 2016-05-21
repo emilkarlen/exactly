@@ -18,6 +18,8 @@ def new_for_script_language_setup(script_language_setup: ScriptLanguageSetup) ->
 
 
 class ActSourceExecutorForScriptLanguage(ActSourceExecutor):
+    FILE_NAME_STEM = 'act-script'
+
     def __init__(self,
                  script_language_setup: ScriptLanguageSetup):
         self.script_language_setup = script_language_setup
@@ -48,5 +50,5 @@ class ActSourceExecutorForScriptLanguage(ActSourceExecutor):
 
     def _script_path(self,
                      source_setup: SourceSetup) -> pathlib.Path:
-        base_name = self.script_language_setup.base_name_from_stem(source_setup.script_file_stem)
+        base_name = self.script_language_setup.base_name_from_stem(self.FILE_NAME_STEM)
         return source_setup.script_output_dir_path / base_name

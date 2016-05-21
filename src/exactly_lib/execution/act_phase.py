@@ -60,11 +60,9 @@ def new_eh_hard_error(failure_details: FailureDetails) -> ExitCodeOrHardError:
 class SourceSetup:
     def __init__(self,
                  script_builder: ActSourceBuilder,
-                 script_output_dir_path: pathlib.Path,
-                 script_file_stem: str):
+                 script_output_dir_path: pathlib.Path):
         self.script_builder = script_builder
         self.script_output_dir_path = script_output_dir_path
-        self.script_file_stem = script_file_stem
 
 
 class ActSourceExecutor:

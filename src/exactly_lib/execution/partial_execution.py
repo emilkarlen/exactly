@@ -440,8 +440,7 @@ class _ActProgramExecution:
 
     def _prepare(self):
         self.__source_setup = SourceSetup(self.act_phase_handling.source_builder,
-                                          self._eds.test_case_dir,
-                                          phases.ACT.section_name)
+                                          self._eds.test_case_dir)
         self.act_phase_handling.executor.prepare(self.__source_setup,
                                                  self.home_dir,
                                                  self._eds)

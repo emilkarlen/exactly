@@ -1,5 +1,14 @@
 -*- org -*-
 
+* TODO Finns inget PhaseStep för ActSourceExecutor#prepare
+och alltså kollas inte om den körs eller ej.
+
+Se ActSourceExecutorWrapperThatRecordsSteps:
+Den spelar inte in ngt för prepare.
+
+O känns naturligt att HARD_ERROR kan inträffa även i prepare.
+Så dess signatur bör ändras till att tillåta det.
+O detta ska naturligtvis testas.
 * TODO ExecutableFileInstruction ska kunna hantera quotade filnamn
 Har visat sig lite svårt att testa m nuvarande uppsättning.
 Behöver få till det här, dels för att göra tester enklare
