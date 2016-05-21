@@ -4,9 +4,9 @@ from exactly_lib.act_phase_setups.script_interpretation.generic_script_language 
 from exactly_lib.act_phase_setups.script_interpretation.script_language_management import ScriptLanguageSetup, \
     StandardScriptFileManager
 from exactly_lib.act_phase_setups.script_interpretation.script_language_setup import ActSourceExecutorForScriptLanguage
+from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.test_case.phases.act.phase_setup import ActPhaseSetup
 from exactly_lib.test_suite.instruction_set.sections.configuration import actor as sut
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.test_resources.parse import new_source2

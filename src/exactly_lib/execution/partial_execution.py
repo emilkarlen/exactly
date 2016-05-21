@@ -8,14 +8,15 @@ from exactly_lib.execution import environment_variables
 from exactly_lib.execution import phase_step
 from exactly_lib.execution import phase_step_executors
 from exactly_lib.execution import phases
+from exactly_lib.execution.act_phase import SourceSetup, ActSourceExecutor
 from exactly_lib.execution.phase_step import PhaseStep
 from exactly_lib.execution.phase_step_execution import ElementHeaderExecutor
 from exactly_lib.execution.single_instruction_executor import ControlledInstructionExecutor
 from exactly_lib.section_document.model import SectionContents
 from exactly_lib.test_case.os_services import new_default, OsServices
 from exactly_lib.test_case.phases import common
-from exactly_lib.test_case.phases.act.phase_setup import PhaseEnvironmentForScriptGeneration, ActSourceExecutor, \
-    SourceSetup, ActSourceBuilder
+from exactly_lib.test_case.phases.act.instruction import PhaseEnvironmentForScriptGeneration
+from exactly_lib.test_case.phases.act.program_source import ActSourceBuilder
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
 from exactly_lib.test_case.phases.common import GlobalEnvironmentForPreEdsStep
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder, StdinSettings

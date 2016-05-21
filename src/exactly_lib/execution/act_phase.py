@@ -1,25 +1,9 @@
 import pathlib
-import types
 
 from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
-from exactly_lib.section_document.parse import SectionElementParser
-from exactly_lib.test_case.phases.act.program_source import ScriptSourceAccumulator, ActSourceBuilder
+from exactly_lib.test_case.phases.act.program_source import ActSourceBuilder
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.std import StdFiles
-
-
-class PhaseEnvironmentForScriptGeneration:
-    """
-    The phase-environment for phases that generate a script.
-    """
-
-    def __init__(self,
-                 script_source_accumulator: ScriptSourceAccumulator):
-        self.__script_source_accumulator = script_source_accumulator
-
-    @property
-    def append(self) -> ScriptSourceAccumulator:
-        return self.__script_source_accumulator
 
 
 class SourceSetup:
@@ -67,31 +51,3 @@ class ActSourceExecutor:
         :returns exit code of executed program
         """
         raise NotImplementedError()
-
-
-class ActPhaseSetup(tuple):
-    def __new__(cls,
-                parser: SectionElementParser,
-                script_builder_constructor,
-                executor: ActSourceExecutor):
-        """
-        :param script_builder_constructor: () -> ScriptSourceBuilder
-        """
-        return tuple.__new__(cls, (parser,
-                                   script_builder_constructor,
-                                   executor))
-
-    @property
-    def parser(self) -> SectionElementParser:
-        return self[0]
-
-    @property
-    def script_builder_constructor(self) -> types.FunctionType:
-        """
-        :return: () -> ScriptSourceBuilder
-        """
-        return self[1]
-
-    @property
-    def executor(self) -> ActSourceExecutor:
-        return self[2]

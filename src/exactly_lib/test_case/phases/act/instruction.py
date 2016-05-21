@@ -1,9 +1,23 @@
-from exactly_lib.test_case.phases.act.phase_setup import PhaseEnvironmentForScriptGeneration
+from exactly_lib.test_case.phases.act.program_source import ScriptSourceAccumulator
 from exactly_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase, TestCaseInstruction, \
     GlobalEnvironmentForPreEdsStep
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.test_case.phases.result.sh import SuccessOrHardError
 
+
+class PhaseEnvironmentForScriptGeneration:
+    """
+    The phase-environment for phases that generate a script.
+    """
+
+    def __init__(self,
+                 script_source_accumulator: ScriptSourceAccumulator):
+        self.__script_source_accumulator = script_source_accumulator
+
+    @property
+    def append(self) -> ScriptSourceAccumulator:
+        return self.__script_source_accumulator
+    
 
 class ActPhaseInstruction(TestCaseInstruction):
     """

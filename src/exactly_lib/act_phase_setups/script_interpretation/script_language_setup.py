@@ -3,8 +3,9 @@ import pathlib
 from exactly_lib.act_phase_setups import utils
 from exactly_lib.act_phase_setups.script_interpretation.script_language_management import ScriptLanguageSetup
 from exactly_lib.act_phase_setups.source_parser_and_instruction import PlainSourceActPhaseParser
+from exactly_lib.execution.act_phase import SourceSetup, ActSourceExecutor
 from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
-from exactly_lib.test_case.phases.act.phase_setup import ActPhaseSetup, ActSourceExecutor, SourceSetup
+from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.test_case.phases.act.program_source import ActSourceBuilder
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.std import StdFiles
