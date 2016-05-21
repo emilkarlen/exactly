@@ -1,3 +1,4 @@
+from exactly_lib.execution.act_phase import ExitCodeOrHardError, new_eh_exit_code
 from exactly_lib.test_case.phases.result import svh
 
 
@@ -15,9 +16,9 @@ def validate_action_that_raises(ex: Exception):
     return f
 
 
-def execute_action_that_does_nothing():
-    def f():
-        pass
+def execute_action_that_returns_exit_code(exit_code: int = 0):
+    def f() -> ExitCodeOrHardError:
+        return new_eh_exit_code(exit_code)
 
     return f
 

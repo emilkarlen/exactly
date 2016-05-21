@@ -1,6 +1,6 @@
 import pathlib
 
-from exactly_lib.execution.act_phase import SourceSetup, ActSourceExecutor
+from exactly_lib.execution.act_phase import SourceSetup, ActSourceExecutor, ExitCodeOrHardError
 from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from exactly_lib.test_case.phases.act.program_source import ActSourceBuilder
 from exactly_lib.test_case.phases.result import svh
@@ -29,5 +29,5 @@ class ActSourceExecutorThatRunsConstantActions(ActSourceExecutor):
                 source_setup: SourceSetup,
                 home_dir: pathlib.Path,
                 eds: ExecutionDirectoryStructure,
-                std_files: StdFiles) -> int:
+                std_files: StdFiles) -> ExitCodeOrHardError:
         return self.__execute_test_action()

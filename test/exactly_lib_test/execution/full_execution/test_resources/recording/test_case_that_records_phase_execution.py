@@ -15,7 +15,7 @@ from exactly_lib_test.execution.test_resources.execution_recording.act_program_e
 from exactly_lib_test.execution.test_resources.execution_recording.recorder import \
     ListRecorder
 from exactly_lib_test.execution.test_resources.test_actions import validate_action_that_returns, \
-    execute_action_that_does_nothing
+    execute_action_that_returns_exit_code
 from exactly_lib_test.test_resources.expected_instruction_failure import ExpectedFailure
 
 
@@ -23,7 +23,7 @@ class Arrangement(tuple):
     def __new__(cls,
                 test_case_generator: TestCaseGeneratorForExecutionRecording,
                 validate_test_action=validate_action_that_returns(svh.new_svh_success()),
-                execute_test_action=execute_action_that_does_nothing()):
+                execute_test_action=execute_action_that_returns_exit_code()):
         return tuple.__new__(cls, (test_case_generator,
                                    validate_test_action,
                                    execute_test_action))
