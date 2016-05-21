@@ -176,75 +176,57 @@ class _PartialExecutor:
         # Tror det behövs för att undvika att sätta omgivningen mm, o därmed
         # påverka huvudprocessen.
         self.__set_pre_eds_environment_variables()
-        res = self.__setup__validate_pre_eds()
-        if res.status is not PartialResultStatus.PASS:
+        res = self._sequence([
+            self.__setup__validate_pre_eds,
+            self.__act__validate_pre_eds,
+            self.__before_assert__validate_pre_eds,
+            self.__assert__validate_pre_eds,
+            self.__cleanup__validate_pre_eds,
+        ])
+        if res.is_failure:
             return res
-        res = self.__act__validate_pre_eds()
-        if res.status is not PartialResultStatus.PASS:
-            return res
-        res = self.__before_assert__validate_pre_eds()
-        if res.status is not PartialResultStatus.PASS:
-            return res
-        res = self.__assert__validate_pre_eds()
-        if res.status is not PartialResultStatus.PASS:
-            return res
-        res = self.__cleanup__validate_pre_eds()
-        if res.status is not PartialResultStatus.PASS:
-            return res
-        self.__construct_and_set_eds()
-        self.os_services = new_default()
-        self.__set_cwd_to_act_dir()
-        self.__set_post_eds_environment_variables()
-        res = self.__setup__main()
-        previous_phase = PreviousPhase.SETUP
-        if res.status is not PartialResultStatus.PASS:
-            self.__cleanup_main(previous_phase)
-            return res
-        res = self.__setup__validate_post_setup()
-        if res.status is not PartialResultStatus.PASS:
-            self.__cleanup_main(previous_phase)
-            return res
-        res = self.__act__validate_post_setup()
-        if res.status is not PartialResultStatus.PASS:
-            self.__cleanup_main(previous_phase)
-            return res
-        res = self.__before_assert__validate_post_setup()
-        if res.status is not PartialResultStatus.PASS:
-            self.__cleanup_main(previous_phase)
-            return res
-        res = self.__assert__validate_post_setup()
-        if res.status is not PartialResultStatus.PASS:
-            self.__cleanup_main(previous_phase)
-            return res
-        res = self.__act__main()
-        if res.status is not PartialResultStatus.PASS:
-            self.__cleanup_main(previous_phase)
-            return res
+        self._setup_post_eds_environment()
         act_program_executor = self.__act_program_executor()
-        res = act_program_executor.validate()
-        if res.status is not PartialResultStatus.PASS:
-            self.__cleanup_main(previous_phase)
+        res = self._sequence_with_cleanup(
+            PreviousPhase.SETUP,
+            [
+                self.__setup__main,
+                self.__setup__validate_post_setup,
+                self.__act__validate_post_setup,
+                self.__before_assert__validate_post_setup,
+                self.__assert__validate_post_setup,
+                self.__act__main,
+                act_program_executor.validate,
+                act_program_executor.prepare,
+                act_program_executor.execute,
+            ])
+        if res.is_failure:
             return res
-        res = act_program_executor.prepare()
-        if res.status is not PartialResultStatus.PASS:
-            self.__cleanup_main(previous_phase)
-            return res
-        res = act_program_executor.execute()
-        if res.status is not PartialResultStatus.PASS:
-            self.__cleanup_main(previous_phase)
-            return res
-        previous_phase = PreviousPhase.BEFORE_ASSERT
         self.__set_assert_environment_variables()
         res = self.__before_assert__main()
-        if res.status is not PartialResultStatus.PASS:
-            self.__cleanup_main(previous_phase)
+        if res.is_failure:
+            self.__cleanup_main(PreviousPhase.BEFORE_ASSERT)
             return res
-        previous_phase = PreviousPhase.ASSERT
         ret_val = self.__assert__main()
-        res = self.__cleanup_main(previous_phase)
+        res = self.__cleanup_main(PreviousPhase.ASSERT)
         if res.is_failure:
             ret_val = res
         return ret_val
+
+    def _sequence(self, actions: list) -> PartialResult:
+        for action in actions:
+            res = action()
+            if res.is_failure:
+                return res
+        return new_partial_result_pass(self._eds)
+
+    def _sequence_with_cleanup(self, previous_phase: PreviousPhase, actions: list) -> PartialResult:
+        for action in actions:
+            res = action()
+            if res.is_failure:
+                self.__cleanup_main(previous_phase)
+                return res
+        return new_partial_result_pass(self._eds)
 
     @property
     def _eds(self) -> ExecutionDirectoryStructure:
@@ -253,6 +235,12 @@ class _PartialExecutor:
     @property
     def configuration(self) -> Configuration:
         return self.__configuration
+
+    def _setup_post_eds_environment(self):
+        self.__construct_and_set_eds()
+        self.os_services = new_default()
+        self.__set_cwd_to_act_dir()
+        self.__set_post_eds_environment_variables()
 
     def __setup__validate_pre_eds(self) -> PartialResult:
         return self.__run_internal_instructions_phase_step(phase_step.SETUP__VALIDATE_PRE_EDS,
