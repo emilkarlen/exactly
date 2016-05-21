@@ -9,12 +9,16 @@ from exactly_lib.execution.execution_directory_structure import ExecutionDirecto
 from exactly_lib.test_case.phases.act.program_source import ActSourceBuilder
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.std import StdFiles, std_files_dev_null
+from exactly_lib_test.execution.test_resources import eh_check
+from exactly_lib_test.instructions.test_resources import sh_check__va as sh_check
+from exactly_lib_test.test_resources import value_assertion as va
 from exactly_lib_test.test_resources.execution import eds_contents_check
 from exactly_lib_test.test_resources.execution.eds_populator import act_dir_contents
 from exactly_lib_test.test_resources.execution.utils import execution_directory_structure
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir
 from exactly_lib_test.test_resources.process import ProcessExecutor, SubProcessResult
 from exactly_lib_test.test_resources.process import capture_process_executor_result
+from exactly_lib_test.test_resources.value_assertion import MessageBuilder
 
 
 class Configuration:
@@ -107,37 +111,24 @@ class TestWithActSourceExecutorBase(unittest.TestCase):
                                                    stdin_contents=stdin_contents)
 
 
-def run_execute(put: unittest.TestCase,
-                executor: ActSourceExecutor,
-                source: ActSourceBuilder) -> ExitCodeOrHardError:
-    return check_execution(put,
-                           Arrangement(executor, source),
-                           Expectation())
+class Arrangement:
+    def __init__(self,
+                 executor: ActSourceExecutor,
+                 source: ActSourceBuilder):
+        self.executor = executor
+        self.source = source
 
 
-class Arrangement(tuple):
-    def __new__(cls,
-                executor: ActSourceExecutor,
-                source: ActSourceBuilder):
-        return tuple.__new__(cls, (executor, source))
-
-    @property
-    def executor(self) -> ActSourceExecutor:
-        return self[0]
-
-    @property
-    def source(self) -> ActSourceBuilder:
-        return self[1]
-
-
-class Expectation(tuple):
-    def __new__(cls,
-                main_side_effects_on_files: eds_contents_check.Assertion = eds_contents_check.AnythingGoes()):
-        return tuple.__new__(cls, (main_side_effects_on_files,))
-
-    @property
-    def main_side_effects_on_files(self) -> eds_contents_check.Assertion:
-        return self[0]
+class Expectation:
+    def __init__(self,
+                 side_effects_on_files_after_execute: eds_contents_check.Assertion = eds_contents_check.AnythingGoes(),
+                 side_effects_on_files_after_prepare: eds_contents_check.Assertion = eds_contents_check.AnythingGoes(),
+                 result_of_prepare: va.ValueAssertion = sh_check.is_success(),
+                 result_of_execute: va.ValueAssertion = eh_check.is_any_exit_code):
+        self.side_effects_on_files_after_prepare = side_effects_on_files_after_prepare
+        self.side_effects_on_files_after_execute = side_effects_on_files_after_execute
+        self.result_of_prepare = result_of_prepare
+        self.result_of_execute = result_of_execute
 
 
 def check_execution(put: unittest.TestCase,
@@ -150,10 +141,17 @@ def check_execution(put: unittest.TestCase,
     with execution_directory_structure() as eds:
         program_setup = SourceSetup(arrangement.source,
                                     eds.test_case_dir)
-        arrangement.executor.prepare(program_setup, home_dir, eds)
-        ret_val = arrangement.executor.execute(program_setup, home_dir, eds, std_files_dev_null())
-        expectation.main_side_effects_on_files.apply(put, eds)
-        return ret_val
+        actual = arrangement.executor.prepare(program_setup, home_dir, eds)
+        expectation.side_effects_on_files_after_prepare.apply(put, eds)
+        expectation.result_of_prepare.apply(put, actual,
+                                            MessageBuilder('Result of prepare'))
+        if not actual.is_success:
+            return
+        actual = arrangement.executor.execute(program_setup, home_dir, eds, std_files_dev_null())
+        expectation.result_of_execute.apply(put, actual,
+                                            MessageBuilder('Result of execute'))
+        expectation.side_effects_on_files_after_execute.apply(put, eds)
+        return actual
 
 
 class TestBase(TestWithActSourceExecutorBase):

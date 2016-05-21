@@ -7,7 +7,8 @@ from exactly_lib.test_case.phases.act.program_source import ActSourceBuilder, Ac
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib_test.act_phase_setups.test_resources import py_program
 from exactly_lib_test.act_phase_setups.test_resources.act_program_executor import Configuration, \
-    suite_for_execution, run_execute
+    suite_for_execution, check_execution, Arrangement, Expectation
+from exactly_lib_test.execution.test_resources import eh_check
 from exactly_lib_test.test_resources import python_program_execution as py_exe
 from exactly_lib_test.test_resources.file_utils import tmp_file_containing_lines
 
@@ -104,15 +105,14 @@ class TheConfiguration(Configuration):
         return ret_val
 
 
-class TestWhenInterpreterDoesNotExistThanTheResultShouldBeHardError(unittest.TestCase):
+class TestWhenInterpreterDoesNotExistThanExecuteShouldGiveHardError(unittest.TestCase):
     def runTest(self):
         executor = sut.ActSourceExecutorForSingleCommand()
         source = self._source_that_references_non_existing_program()
-        exit_code_or_hard_error = run_execute(self,
-                                              executor,
-                                              source)
-        self.assertTrue(exit_code_or_hard_error.is_hard_error,
-                        'Expecting a HARD ERROR')
+        check_execution(self,
+                        Arrangement(executor,
+                                    source),
+                        Expectation(result_of_execute=eh_check.is_hard_error))
 
     def _source_that_references_non_existing_program(self) -> ActSourceBuilderForStatementLines:
         source = ActSourceBuilderForStatementLines()
@@ -124,7 +124,7 @@ class TestWhenInterpreterDoesNotExistThanTheResultShouldBeHardError(unittest.Tes
 def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestValidation))
-    ret_val.addTest(unittest.makeSuite(TestWhenInterpreterDoesNotExistThanTheResultShouldBeHardError))
+    ret_val.addTest(unittest.makeSuite(TestWhenInterpreterDoesNotExistThanExecuteShouldGiveHardError))
     ret_val.addTest(suite_for_execution(TheConfiguration()))
     return ret_val
 
