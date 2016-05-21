@@ -1,7 +1,6 @@
 import unittest
 
 from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
-from exactly_lib.execution.result import PartialResult
 from exactly_lib.execution.partial_execution import PartialResultStatus, PartialResult
 from exactly_lib_test.test_resources.expected_instruction_failure import ExpectedFailure, \
     ExpectedFailureForNoFailure

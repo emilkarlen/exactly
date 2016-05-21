@@ -5,6 +5,7 @@ from exactly_lib.execution.partial_execution import ActPhaseHandling
 from exactly_lib.execution.result import FullResultStatus
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.phases.act.program_source import ActSourceBuilderForStatementLines
+from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib_test.execution.full_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorForExecutionRecording, TestCaseGeneratorWithRecordingInstrFollowedByExtraInstrsInEachPhase
@@ -15,7 +16,7 @@ from exactly_lib_test.execution.test_resources.execution_recording.act_program_e
 from exactly_lib_test.execution.test_resources.execution_recording.recorder import \
     ListRecorder
 from exactly_lib_test.execution.test_resources.test_actions import validate_action_that_returns, \
-    execute_action_that_returns_exit_code
+    execute_action_that_returns_exit_code, prepare_action_that_returns
 from exactly_lib_test.test_resources.expected_instruction_failure import ExpectedFailure
 
 
@@ -23,9 +24,11 @@ class Arrangement(tuple):
     def __new__(cls,
                 test_case_generator: TestCaseGeneratorForExecutionRecording,
                 validate_test_action=validate_action_that_returns(svh.new_svh_success()),
+                prepare_test_action=prepare_action_that_returns(sh.new_sh_success()),
                 execute_test_action=execute_action_that_returns_exit_code()):
         return tuple.__new__(cls, (test_case_generator,
                                    validate_test_action,
+                                   prepare_test_action,
                                    execute_test_action))
 
     @property
@@ -37,8 +40,12 @@ class Arrangement(tuple):
         return self[1]
 
     @property
-    def execute_test_action(self) -> types.FunctionType:
+    def prepare_test_action(self) -> types.FunctionType:
         return self[2]
+
+    @property
+    def execute_test_action(self) -> types.FunctionType:
+        return self[3]
 
 
 class Expectation(tuple):
@@ -139,6 +146,7 @@ class TestCaseBase(unittest.TestCase):
         act_source_executor = ActSourceExecutorWrapperThatRecordsSteps(
             arrangement.test_case_generator.recorder,
             ActSourceExecutorThatRunsConstantActions(arrangement.validate_test_action,
+                                                     arrangement.prepare_test_action,
                                                      arrangement.execute_test_action))
         return ActPhaseHandling(ActSourceBuilderForStatementLines(),
                                 act_source_executor)

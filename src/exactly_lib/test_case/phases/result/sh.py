@@ -29,10 +29,6 @@ class SuccessOrHardError(tuple):
             return 'FAILURE:{}'.format(self.failure_message)
 
 
-
-__SH_SUCCESS = SuccessOrHardError(None)
-
-
 def new_sh_success() -> SuccessOrHardError:
     return __SH_SUCCESS
 
@@ -41,3 +37,6 @@ def new_sh_hard_error(failure_message: str) -> SuccessOrHardError:
     if failure_message is None:
         raise ValueError('A HARD ERROR must have a failure message (that is not None)')
     return SuccessOrHardError(failure_message)
+
+
+__SH_SUCCESS = SuccessOrHardError(None)

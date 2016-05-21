@@ -8,7 +8,7 @@ from exactly_lib.execution import environment_variables
 from exactly_lib.execution import phase_step
 from exactly_lib.execution import phase_step_executors
 from exactly_lib.execution import phases
-from exactly_lib.execution.act_phase import SourceSetup, ActSourceExecutor
+from exactly_lib.execution.act_phase import SourceSetup, ActSourceExecutor, ExitCodeOrHardError
 from exactly_lib.execution.phase_step import PhaseStep
 from exactly_lib.execution.phase_step_execution import ElementHeaderExecutor
 from exactly_lib.execution.single_instruction_executor import ControlledInstructionExecutor
@@ -26,7 +26,8 @@ from exactly_lib.util.std import StdOutputFiles, StdFiles
 from . import phase_step_execution
 from . import result
 from .execution_directory_structure import construct_at, ExecutionDirectoryStructure, stdin_contents_file
-from .result import PartialResult, PartialResultStatus, new_partial_result_pass, PhaseFailureInfo, FailureDetails
+from .result import PartialResult, PartialResultStatus, new_partial_result_pass, PhaseFailureInfo, FailureDetails, \
+    new_failure_details_from_message
 
 
 class Configuration(tuple):
@@ -218,11 +219,16 @@ class PartialExecutor:
         if res.status is not PartialResultStatus.PASS:
             self.__cleanup_main(previous_phase, os_services)
             return res
-        res = self.__act__program_validate()
+        act_program_executor = self.__act_program_executor()
+        res = act_program_executor.validate()
         if res.status is not PartialResultStatus.PASS:
             self.__cleanup_main(previous_phase, os_services)
             return res
-        res = self.__act__program_execute()
+        res = act_program_executor.prepare()
+        if res.status is not PartialResultStatus.PASS:
+            self.__cleanup_main(previous_phase, os_services)
+            return res
+        res = act_program_executor.execute()
         if res.status is not PartialResultStatus.PASS:
             self.__cleanup_main(previous_phase, os_services)
             return res
@@ -321,30 +327,11 @@ class PartialExecutor:
         self.___step_execution_result.script_source = script_builder.build()
         return ret_val
 
-    def __act__program_validate(self) -> PartialResult:
-        the_phase_step = phase_step.ACT__SCRIPT_VALIDATE
-        try:
-            res = self.__act_phase_handling.executor.validate(self.configuration.home_dir,
-                                                              self.__act_phase_handling.source_builder)
-            if res.is_success:
-                return new_partial_result_pass(self.__execution_directory_structure)
-            else:
-                return PartialResult(PartialResultStatus(res.status.value),
-                                     self.__execution_directory_structure,
-                                     PhaseFailureInfo(the_phase_step,
-                                                      result.new_failure_details_from_message(res.failure_message)))
-        except Exception as ex:
-            return PartialResult(PartialResultStatus.IMPLEMENTATION_ERROR,
-                                 self.__execution_directory_structure,
-                                 PhaseFailureInfo(the_phase_step,
-                                                  result.new_failure_details_from_exception(ex)))
-
-    def __act__program_execute(self) -> PartialResult:
-        executor = _ActProgramExecution(self.__act_phase_handling,
-                                        self._eds,
-                                        self.__configuration.home_dir,
-                                        self.___step_execution_result)
-        return executor.run()
+    def __act_program_executor(self):
+        return _ActProgramExecution(self.__act_phase_handling,
+                                    self._eds,
+                                    self.__configuration.home_dir,
+                                    self.___step_execution_result)
 
     def __before_assert__validate_post_setup(self) -> PartialResult:
         return self.__run_internal_instructions_phase_step(
@@ -426,37 +413,70 @@ class _ActProgramExecution:
                  home_dir: pathlib.Path,
                  step_execution_result: _StepExecutionResult()):
         self.act_phase_handling = act_phase_handling
+        self.executor = act_phase_handling.executor
         self.home_dir = home_dir
         self.step_execution_result = step_execution_result
         self._eds = eds
-
-    def run(self) -> PartialResult:
-        try:
-            self._prepare()
-            return self._execute()
-        except Exception as ex:
-            return self._partial_result(PartialResultStatus.IMPLEMENTATION_ERROR,
-                                        result.new_failure_details_from_exception(ex))
-
-    def _prepare(self):
         self.__source_setup = SourceSetup(self.act_phase_handling.source_builder,
                                           self._eds.test_case_dir)
-        self.act_phase_handling.executor.prepare(self.__source_setup,
-                                                 self.home_dir,
-                                                 self._eds)
 
-    def _execute(self) -> PartialResult:
+    def validate(self) -> PartialResult:
+        step = phase_step.ACT__SCRIPT_VALIDATE
+
+        def action():
+            res = self.executor.validate(self.home_dir,
+                                         self.act_phase_handling.source_builder)
+            if res.is_success:
+                return self._pass()
+            else:
+                return self._failure_from(step,
+                                          PartialResultStatus(res.status.value),
+                                          result.new_failure_details_from_message(res.failure_message))
+
+        return self._with_implementation_exception_handling(step, action)
+
+    def prepare(self) -> PartialResult:
+        step = phase_step.ACT__SCRIPT_PREPARE
+
+        def action():
+            res = self.act_phase_handling.executor.prepare(self.__source_setup,
+                                                           self.home_dir,
+                                                           self._eds)
+            if res.is_success:
+                return self._pass()
+            else:
+                return self._failure_from(step,
+                                          PartialResultStatus.HARD_ERROR,
+                                          new_failure_details_from_message(res.failure_message))
+
+        return self._with_implementation_exception_handling(step, action)
+
+    def execute(self) -> PartialResult:
+        step = phase_step.ACT__SCRIPT_EXECUTE
+
+        def action():
+            exit_code_or_hard_error = self._execute_with_stdin_handling()
+            if exit_code_or_hard_error.is_exit_code:
+                return self._pass()
+            else:
+                return self._failure_from(step,
+                                          PartialResultStatus.HARD_ERROR,
+                                          exit_code_or_hard_error.failure_details)
+
+        return self._with_implementation_exception_handling(step, action)
+
+    def _execute_with_stdin_handling(self) -> ExitCodeOrHardError:
         if self.step_execution_result.has_custom_stdin:
             file_name = self._custom_stdin_file_name()
             return self._run_act_program_with_opened_stdin_file(file_name)
         else:
             return self._run_act_program_with_stdin_file(subprocess.DEVNULL)
 
-    def _run_act_program_with_opened_stdin_file(self, file_name: str) -> PartialResult:
+    def _run_act_program_with_opened_stdin_file(self, file_name: str) -> ExitCodeOrHardError:
         with open(file_name) as f_stdin:
             return self._run_act_program_with_stdin_file(f_stdin)
 
-    def _run_act_program_with_stdin_file(self, f_stdin) -> PartialResult:
+    def _run_act_program_with_stdin_file(self, f_stdin) -> ExitCodeOrHardError:
         """
         Pre-condition: write has been executed.
         """
@@ -471,22 +491,11 @@ class _ActProgramExecution:
                                             f_stderr)))
                 if exit_code_or_hard_error.is_exit_code:
                     self._store_exit_code(exit_code_or_hard_error.exit_code)
-                    return new_partial_result_pass(self._eds)
-                else:
-                    return self._partial_result(PartialResultStatus.HARD_ERROR,
-                                                exit_code_or_hard_error.failure_details)
+                return exit_code_or_hard_error
 
     def _store_exit_code(self, exitcode: int):
         with open(str(self._eds.result.exitcode_file), 'w') as f:
             f.write(str(exitcode))
-
-    def _partial_result(self,
-                        status: PartialResultStatus,
-                        failure_details: FailureDetails) -> PartialResult:
-        return PartialResult(status,
-                             self._eds,
-                             result.PhaseFailureInfo(phase_step.ACT__SCRIPT_EXECUTE,
-                                                     failure_details))
 
     def _custom_stdin_file_name(self) -> str:
         settings = self.step_execution_result.stdin_settings
@@ -496,6 +505,27 @@ class _ActProgramExecution:
             file_path = stdin_contents_file(self._eds)
             write_new_text_file(file_path, settings.contents)
             return str(file_path)
+
+    def _with_implementation_exception_handling(self, step: phase_step.PhaseStep, action) -> PartialResult:
+        try:
+            return action()
+        except Exception as ex:
+            return PartialResult(PartialResultStatus.IMPLEMENTATION_ERROR,
+                                 self._eds,
+                                 PhaseFailureInfo(step,
+                                                  result.new_failure_details_from_exception(ex)))
+
+    def _pass(self) -> PartialResult:
+        return new_partial_result_pass(self._eds)
+
+    def _failure_from(self,
+                      step: PhaseStep,
+                      status: PartialResultStatus,
+                      failure_details: FailureDetails) -> PartialResult:
+        return PartialResult(status,
+                             self._eds,
+                             result.PhaseFailureInfo(step,
+                                                     failure_details))
 
 
 class _ActCommentHeaderExecutor(ElementHeaderExecutor):
