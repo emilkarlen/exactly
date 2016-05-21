@@ -13,7 +13,7 @@ from exactly_lib.execution.phase_step import PhaseStep
 from exactly_lib.execution.phase_step_execution import ElementHeaderExecutor
 from exactly_lib.execution.single_instruction_executor import ControlledInstructionExecutor
 from exactly_lib.section_document.model import SectionContents
-from exactly_lib.test_case.os_services import new_default, OsServices
+from exactly_lib.test_case.os_services import new_default
 from exactly_lib.test_case.phases import common
 from exactly_lib.test_case.phases.act.instruction import PhaseEnvironmentForScriptGeneration
 from exactly_lib.test_case.phases.act.program_source import ActSourceBuilder
@@ -169,6 +169,7 @@ class _PartialExecutor:
         self.__configuration = configuration
         self.___step_execution_result = _StepExecutionResult()
         self.__source_setup = None
+        self.os_services = None
 
     def execute(self) -> PartialResult:
         # TODO Köra det här i sub-process?
@@ -191,56 +192,56 @@ class _PartialExecutor:
         if res.status is not PartialResultStatus.PASS:
             return res
         self.__construct_and_set_eds()
-        os_services = new_default()
+        self.os_services = new_default()
         self.__set_cwd_to_act_dir()
         self.__set_post_eds_environment_variables()
-        res = self.__setup__main(os_services)
+        res = self.__setup__main()
         previous_phase = PreviousPhase.SETUP
         if res.status is not PartialResultStatus.PASS:
-            self.__cleanup_main(previous_phase, os_services)
+            self.__cleanup_main(previous_phase)
             return res
         res = self.__setup__validate_post_setup()
         if res.status is not PartialResultStatus.PASS:
-            self.__cleanup_main(previous_phase, os_services)
+            self.__cleanup_main(previous_phase)
             return res
         res = self.__act__validate_post_setup()
         if res.status is not PartialResultStatus.PASS:
-            self.__cleanup_main(previous_phase, os_services)
+            self.__cleanup_main(previous_phase)
             return res
         res = self.__before_assert__validate_post_setup()
         if res.status is not PartialResultStatus.PASS:
-            self.__cleanup_main(previous_phase, os_services)
+            self.__cleanup_main(previous_phase)
             return res
         res = self.__assert__validate_post_setup()
         if res.status is not PartialResultStatus.PASS:
-            self.__cleanup_main(previous_phase, os_services)
+            self.__cleanup_main(previous_phase)
             return res
         res = self.__act__main()
         if res.status is not PartialResultStatus.PASS:
-            self.__cleanup_main(previous_phase, os_services)
+            self.__cleanup_main(previous_phase)
             return res
         act_program_executor = self.__act_program_executor()
         res = act_program_executor.validate()
         if res.status is not PartialResultStatus.PASS:
-            self.__cleanup_main(previous_phase, os_services)
+            self.__cleanup_main(previous_phase)
             return res
         res = act_program_executor.prepare()
         if res.status is not PartialResultStatus.PASS:
-            self.__cleanup_main(previous_phase, os_services)
+            self.__cleanup_main(previous_phase)
             return res
         res = act_program_executor.execute()
         if res.status is not PartialResultStatus.PASS:
-            self.__cleanup_main(previous_phase, os_services)
+            self.__cleanup_main(previous_phase)
             return res
         previous_phase = PreviousPhase.BEFORE_ASSERT
         self.__set_assert_environment_variables()
-        res = self.__before_assert__main(os_services)
+        res = self.__before_assert__main()
         if res.status is not PartialResultStatus.PASS:
-            self.__cleanup_main(previous_phase, os_services)
+            self.__cleanup_main(previous_phase)
             return res
         previous_phase = PreviousPhase.ASSERT
-        ret_val = self.__assert__main(os_services)
-        res = self.__cleanup_main(previous_phase, os_services)
+        ret_val = self.__assert__main()
+        res = self.__cleanup_main(previous_phase)
         if res.is_failure:
             ret_val = res
         return ret_val
@@ -283,11 +284,11 @@ class _PartialExecutor:
                                                                self.__global_environment_pre_eds),
                                                            self.__test_case.cleanup_phase)
 
-    def __setup__main(self, os_services: OsServices) -> PartialResult:
+    def __setup__main(self) -> PartialResult:
         setup_settings_builder = SetupSettingsBuilder()
         ret_val = self.__run_internal_instructions_phase_step(phase_step.SETUP__MAIN,
                                                               phase_step_executors.SetupMainExecutor(
-                                                                  os_services,
+                                                                  self.os_services,
                                                                   self.__post_eds_environment(phases.SETUP),
                                                                   setup_settings_builder),
                                                               self.__test_case.setup_phase)
@@ -349,29 +350,29 @@ class _PartialExecutor:
                 self.__post_eds_environment(phases.ASSERT)),
             self.__test_case.assert_phase)
 
-    def __assert__main(self, phase_env) -> PartialResult:
+    def __assert__main(self) -> PartialResult:
         return self.__run_internal_instructions_phase_step(
             phase_step.ASSERT__MAIN,
             phase_step_executors.AssertMainExecutor(
                 self.__post_eds_environment(phases.ASSERT),
-                phase_env),
+                self.os_services),
             self.__test_case.assert_phase)
 
-    def __cleanup_main(self, previous_phase: PreviousPhase, os_services) -> PartialResult:
+    def __cleanup_main(self, previous_phase: PreviousPhase) -> PartialResult:
         return self.__run_internal_instructions_phase_step(
             phase_step.CLEANUP__MAIN,
             phase_step_executors.CleanupMainExecutor(
                 self.__post_eds_environment(phases.CLEANUP),
                 previous_phase,
-                os_services),
+                self.os_services),
             self.__test_case.cleanup_phase)
 
-    def __before_assert__main(self, os_services) -> PartialResult:
+    def __before_assert__main(self) -> PartialResult:
         return self.__run_internal_instructions_phase_step(
             phase_step.BEFORE_ASSERT__MAIN,
             phase_step_executors.BeforeAssertMainExecutor(
                 self.__post_eds_environment(phases.BEFORE_ASSERT),
-                os_services),
+                self.os_services),
             self.__test_case.before_assert_phase)
 
     def __set_pre_eds_environment_variables(self):
