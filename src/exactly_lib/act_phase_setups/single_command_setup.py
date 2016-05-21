@@ -3,7 +3,7 @@ import pathlib
 import shlex
 
 from exactly_lib.act_phase_setups import utils
-from exactly_lib.execution.act_phase import SourceSetup, ActSourceExecutor, new_eh_exit_code, ExitCodeOrHardError
+from exactly_lib.execution.act_phase import SourceSetup, ActSourceExecutor, ExitCodeOrHardError
 from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from exactly_lib.instructions.act.executable_file import ExecutableFileInstruction
 from exactly_lib.processing.act_phase import ActPhaseSetup
@@ -61,6 +61,5 @@ class _ActSourceExecutorForSingleCommand(ActSourceExecutor):
                 std_files: StdFiles) -> ExitCodeOrHardError:
         command_string = source_setup.script_builder.source_lines[0]
         cmd_and_args = shlex.split(command_string)
-        exit_code = utils.execute_cmd_and_args(cmd_and_args,
-                                               std_files)
-        return new_eh_exit_code(exit_code)
+        return utils.execute_cmd_and_args(cmd_and_args,
+                                          std_files)

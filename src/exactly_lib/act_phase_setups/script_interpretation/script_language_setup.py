@@ -3,7 +3,7 @@ import pathlib
 from exactly_lib.act_phase_setups import utils
 from exactly_lib.act_phase_setups.script_interpretation.script_language_management import ScriptLanguageSetup
 from exactly_lib.act_phase_setups.source_parser_and_instruction import PlainSourceActPhaseParser
-from exactly_lib.execution.act_phase import SourceSetup, ActSourceExecutor, ExitCodeOrHardError, new_eh_exit_code
+from exactly_lib.execution.act_phase import SourceSetup, ActSourceExecutor, ExitCodeOrHardError
 from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.test_case.phases.act.program_source import ActSourceBuilder
@@ -43,9 +43,8 @@ class ActSourceExecutorForScriptLanguage(ActSourceExecutor):
         script_file_path = self._script_path(source_setup)
         cmd_and_args = self.script_language_setup.command_and_args_for_executing_script_file(
             str(script_file_path))
-        exit_code = utils.execute_cmd_and_args(cmd_and_args,
-                                               std_files)
-        return new_eh_exit_code(exit_code)
+        return utils.execute_cmd_and_args(cmd_and_args,
+                                          std_files)
 
     def _script_path(self,
                      source_setup: SourceSetup) -> pathlib.Path:
