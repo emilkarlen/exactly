@@ -4,6 +4,7 @@ import shutil
 import subprocess
 import tempfile
 
+import exactly_lib.util.failure_details
 from exactly_lib.execution import environment_variables
 from exactly_lib.execution import phase_step
 from exactly_lib.execution import phase_step_executors
@@ -21,13 +22,13 @@ from exactly_lib.test_case.phases.cleanup import PreviousPhase
 from exactly_lib.test_case.phases.common import GlobalEnvironmentForPreEdsStep
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder, StdinSettings
 from exactly_lib.util import line_source
+from exactly_lib.util.failure_details import FailureDetails, new_failure_details_from_message
 from exactly_lib.util.file_utils import write_new_text_file, resolved_path_name
 from exactly_lib.util.std import StdOutputFiles, StdFiles
 from . import phase_step_execution
 from . import result
 from .execution_directory_structure import construct_at, ExecutionDirectoryStructure, stdin_contents_file
-from .result import PartialResult, PartialResultStatus, new_partial_result_pass, PhaseFailureInfo, FailureDetails, \
-    new_failure_details_from_message
+from .result import PartialResult, PartialResultStatus, new_partial_result_pass, PhaseFailureInfo
 
 
 class Configuration(tuple):
@@ -422,7 +423,8 @@ class _ActProgramExecution:
             else:
                 return self._failure_from(step,
                                           PartialResultStatus(res.status.value),
-                                          result.new_failure_details_from_message(res.failure_message))
+                                          exactly_lib.util.failure_details.new_failure_details_from_message(
+                                              res.failure_message))
 
         return self._with_implementation_exception_handling(step, action)
 
@@ -504,7 +506,8 @@ class _ActProgramExecution:
             return PartialResult(PartialResultStatus.IMPLEMENTATION_ERROR,
                                  self._eds,
                                  PhaseFailureInfo(step,
-                                                  result.new_failure_details_from_exception(ex)))
+                                                  exactly_lib.util.failure_details.new_failure_details_from_exception(
+                                                      ex)))
 
     def _pass(self) -> PartialResult:
         return new_partial_result_pass(self._eds)

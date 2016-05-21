@@ -1,5 +1,6 @@
 from enum import Enum
 
+import exactly_lib.util.failure_details
 from exactly_lib.execution import result
 from exactly_lib.section_document.model import SectionContentElement
 from exactly_lib.test_case.phases.common import TestCaseInstruction
@@ -69,7 +70,7 @@ class SingleInstructionExecutionFailure(tuple):
     def __new__(cls,
                 status: result.PartialResultStatus,
                 source_line: line_source.Line,
-                failure_details: result.FailureDetails):
+                failure_details: exactly_lib.util.failure_details.FailureDetails):
         return tuple.__new__(cls, (status,
                                    source_line,
                                    failure_details))
@@ -86,7 +87,7 @@ class SingleInstructionExecutionFailure(tuple):
         return self[1]
 
     @property
-    def failure_details(self) -> result.FailureDetails:
+    def failure_details(self) -> exactly_lib.util.failure_details.FailureDetails:
         return self[2]
 
 
@@ -103,8 +104,10 @@ def execute_element(executor: ControlledInstructionExecutor,
             return None
         return SingleInstructionExecutionFailure(result.PartialResultStatus(fail_info.status.value),
                                                  element.first_line,
-                                                 result.new_failure_details_from_message(fail_info.error_message))
+                                                 exactly_lib.util.failure_details.new_failure_details_from_message(
+                                                     fail_info.error_message))
     except Exception as ex:
         return SingleInstructionExecutionFailure(result.PartialResultStatus.IMPLEMENTATION_ERROR,
                                                  element.first_line,
-                                                 result.new_failure_details_from_exception(ex))
+                                                 exactly_lib.util.failure_details.new_failure_details_from_exception(
+                                                     ex))

@@ -1,14 +1,14 @@
 import types
 import unittest
 
-from exactly_lib.execution.result import FailureDetails, new_failure_details_from_message, \
-    PartialResultStatus, \
-    new_failure_details_from_exception
+from exactly_lib.execution.result import PartialResultStatus
 from exactly_lib.execution.single_instruction_executor import execute_element, ControlledInstructionExecutor, \
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum, SingleInstructionExecutionFailure
 from exactly_lib.section_document.model import SectionContentElement, new_instruction_e
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.util import line_source
+from exactly_lib.util.failure_details import FailureDetails, new_failure_details_from_exception, \
+    new_failure_details_from_message
 from exactly_lib_test.test_resources.model_utils import new_ls_from_line
 
 
@@ -80,9 +80,9 @@ class Test(unittest.TestCase):
         element = new_dummy_instruction_element()
         exception = TestException()
         result = execute_element(
-                ExceptionRaisingExecutor(NameRecorder().new_function_that_records('s'),
-                                         exception),
-                element)
+            ExceptionRaisingExecutor(NameRecorder().new_function_that_records('s'),
+                                     exception),
+            element)
         self._check_failure_result(PartialResultStatus.IMPLEMENTATION_ERROR,
                                    result,
                                    new_failure_details_from_exception(exception))
@@ -92,10 +92,10 @@ class Test(unittest.TestCase):
                                               expected_status: PartialResultStatus):
         element = new_dummy_instruction_element()
         result = execute_element(
-                FailingExecutor(NameRecorder().new_function_that_records('s'),
-                                PartialInstructionControlledFailureInfo(failure_status_of_executor,
-                                                                        'error message')),
-                element)
+            FailingExecutor(NameRecorder().new_function_that_records('s'),
+                            PartialInstructionControlledFailureInfo(failure_status_of_executor,
+                                                                    'error message')),
+            element)
         self._check_failure_result(expected_status,
                                    result,
                                    new_failure_details_from_message('error message'))

@@ -2,9 +2,9 @@ from exactly_lib.execution.phase_step import PhaseStep
 from exactly_lib.execution.single_instruction_executor import ControlledInstructionExecutor, execute_element
 from exactly_lib.section_document.model import SectionContents, SectionContentElement, ElementType
 from exactly_lib.util import line_source
+from exactly_lib.util.failure_details import FailureDetails
 from .execution_directory_structure import ExecutionDirectoryStructure
-from .result import PartialResult, InstructionFailureInfo, new_partial_result_pass, PartialResultStatus, \
-    FailureDetails
+from .result import PartialResult, InstructionFailureInfo, new_partial_result_pass, PartialResultStatus
 
 
 class ElementHeaderExecutor:

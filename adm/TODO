@@ -1,5 +1,18 @@
 -*- org -*-
 
+* TODO Fel (sh, svh, ...) ska representera fel i form av FailureDetails
+Har gjort FailureDetails till util-klass.
+Den ger möjl till utförligare felinformation än dagens sh, svh
+som enbart innehåller en sträng.
+
+I många fall vore det bra att ha både text och Exception.
+Ett ex är ActSourceExecutor#prepare() - vid IO-fel vill användaren
+veta både Exceptionet och sammanhanget det inträffade i.
+(Ev borde ramverket propagera själva steget ut till användaren,
+så att den infon inte behöver finnas i form av explicit felmeddelande.)
+
+Har infört FailureDetails i ExitCodeOrHardError.
+Se den.
 * TODO Finns inget PhaseStep för ActSourceExecutor#prepare
 och alltså kollas inte om den körs eller ej.
 
