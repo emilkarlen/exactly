@@ -6,9 +6,9 @@
 ** DONE Ändra signatur
 ** DONE implementera i flödet
 Få testerna av flödet att funka.
-** TODO sätts previous phase korrekt?
+** DONE sätts previous phase korrekt?
 ser inte att den sätts efter SETUP
-** TODO impl act-hanterarna
+** DONE impl act-hanterarna
 Helst få med i tester av godtl act-fas
 ** TODO göra möjl att ha FailureDetails i SuccsessOrHardError
 * Ändra --rel-pwd -> --rel-cd

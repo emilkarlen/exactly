@@ -1,10 +1,10 @@
 import pathlib
 
 from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
-from exactly_lib.execution.result import FailureDetails
 from exactly_lib.test_case.phases.act.program_source import ActSourceBuilder
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
+from exactly_lib.util.failure_details import FailureDetails
 from exactly_lib.util.std import StdFiles
 
 

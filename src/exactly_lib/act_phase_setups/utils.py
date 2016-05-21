@@ -1,7 +1,7 @@
 import subprocess
 
 from exactly_lib.execution.act_phase import ExitCodeOrHardError, new_eh_exit_code, new_eh_hard_error
-from exactly_lib.execution.result import new_failure_details_from_exception
+from exactly_lib.util.failure_details import new_failure_details_from_exception
 from exactly_lib.util.std import StdFiles
 
 
