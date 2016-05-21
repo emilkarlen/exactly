@@ -7,6 +7,7 @@ from exactly_lib.execution.act_phase import SourceSetup, ActSourceExecutor, Exit
 from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.test_case.phases.act.program_source import ActSourceBuilder
+from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.std import StdFiles
 
@@ -32,10 +33,14 @@ class ActSourceExecutorForScriptLanguage(ActSourceExecutor):
     def prepare(self,
                 source_setup: SourceSetup,
                 home_dir_path: pathlib.Path,
-                eds: ExecutionDirectoryStructure):
+                eds: ExecutionDirectoryStructure) -> sh.SuccessOrHardError:
         script_file_path = self._script_path(source_setup)
-        with open(str(script_file_path), 'w') as f:
-            f.write(source_setup.script_builder.build())
+        try:
+            with open(str(script_file_path), 'w') as f:
+                f.write(source_setup.script_builder.build())
+            return sh.new_sh_success()
+        except OSError as ex:
+            return sh.new_sh_hard_error(str(ex))
 
     def execute(self,
                 source_setup: SourceSetup,

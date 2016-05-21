@@ -15,9 +15,18 @@ from exactly_lib_test.execution.test_resources import instruction_test_resources
 from exactly_lib_test.execution.test_resources.execution_recording.phase_steps import PRE_EDS_VALIDATION_STEPS__TWICE
 from exactly_lib_test.execution.test_resources.instruction_test_resources import do_raise, do_return
 from exactly_lib_test.execution.test_resources.test_actions import validate_action_that_returns, \
-    validate_action_that_raises, execute_action_that_raises, execute_action_that_returns_hard_error_with_message
+    validate_action_that_raises, execute_action_that_raises, execute_action_that_returns_hard_error_with_message, \
+    prepare_action_that_returns_hard_error_with_message
 from exactly_lib_test.test_resources.expected_instruction_failure import ExpectedFailureForInstructionFailure, \
     ExpectedFailureForPhaseFailure
+
+
+def suite() -> unittest.TestSuite:
+    return unittest.makeSuite(Test)
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())
 
 
 class Test(TestCaseBase):
@@ -204,6 +213,66 @@ class Test(TestCaseBase):
                          ],
                         True))
 
+    def test_hard_error_in_act_program_prepare(self):
+        test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr()
+        self._check(
+            Arrangement(test_case,
+                        prepare_test_action=prepare_action_that_returns_hard_error_with_message(
+                            'error in act/prepare')),
+            Expectation(PartialResultStatus.HARD_ERROR,
+                        ExpectedFailureForPhaseFailure.new_with_message(
+                            phase_step.ACT__SCRIPT_PREPARE,
+                            'error in act/prepare'),
+                        PRE_EDS_VALIDATION_STEPS__TWICE +
+                        [phase_step.SETUP__MAIN,
+                         phase_step.SETUP__MAIN,
+                         phase_step.SETUP__VALIDATE_POST_SETUP,
+                         phase_step.SETUP__VALIDATE_POST_SETUP,
+                         phase_step.ACT__VALIDATE_POST_SETUP,
+                         phase_step.ACT__VALIDATE_POST_SETUP,
+                         phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
+                         phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
+                         phase_step.ASSERT__VALIDATE_POST_SETUP,
+                         phase_step.ASSERT__VALIDATE_POST_SETUP,
+                         phase_step.ACT__MAIN,
+                         phase_step.ACT__MAIN,
+                         phase_step.ACT__SCRIPT_VALIDATE,
+                         phase_step.ACT__SCRIPT_PREPARE,
+                         (phase_step.CLEANUP__MAIN, PreviousPhase.SETUP),
+                         (phase_step.CLEANUP__MAIN, PreviousPhase.SETUP),
+                         ],
+                        True))
+
+    def test_implementation_error_in_act_program_prepare(self):
+        test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr()
+        self._check(
+            Arrangement(test_case,
+                        prepare_test_action=execute_action_that_raises(
+                            test.ImplementationErrorTestException())),
+            Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
+                        ExpectedFailureForPhaseFailure.new_with_exception(
+                            phase_step.ACT__SCRIPT_PREPARE,
+                            test.ImplementationErrorTestException),
+                        PRE_EDS_VALIDATION_STEPS__TWICE +
+                        [phase_step.SETUP__MAIN,
+                         phase_step.SETUP__MAIN,
+                         phase_step.SETUP__VALIDATE_POST_SETUP,
+                         phase_step.SETUP__VALIDATE_POST_SETUP,
+                         phase_step.ACT__VALIDATE_POST_SETUP,
+                         phase_step.ACT__VALIDATE_POST_SETUP,
+                         phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
+                         phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
+                         phase_step.ASSERT__VALIDATE_POST_SETUP,
+                         phase_step.ASSERT__VALIDATE_POST_SETUP,
+                         phase_step.ACT__MAIN,
+                         phase_step.ACT__MAIN,
+                         phase_step.ACT__SCRIPT_VALIDATE,
+                         phase_step.ACT__SCRIPT_PREPARE,
+                         (phase_step.CLEANUP__MAIN, PreviousPhase.SETUP),
+                         (phase_step.CLEANUP__MAIN, PreviousPhase.SETUP),
+                         ],
+                        True))
+
     def test_hard_error_in_act_program_execute(self):
         test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr()
         self._check(
@@ -228,6 +297,7 @@ class Test(TestCaseBase):
                          phase_step.ACT__MAIN,
                          phase_step.ACT__MAIN,
                          phase_step.ACT__SCRIPT_VALIDATE,
+                         phase_step.ACT__SCRIPT_PREPARE,
                          phase_step.ACT__SCRIPT_EXECUTE,
                          (phase_step.CLEANUP__MAIN, PreviousPhase.SETUP),
                          (phase_step.CLEANUP__MAIN, PreviousPhase.SETUP),
@@ -258,6 +328,7 @@ class Test(TestCaseBase):
                          phase_step.ACT__MAIN,
                          phase_step.ACT__MAIN,
                          phase_step.ACT__SCRIPT_VALIDATE,
+                         phase_step.ACT__SCRIPT_PREPARE,
                          phase_step.ACT__SCRIPT_EXECUTE,
                          (phase_step.CLEANUP__MAIN, PreviousPhase.SETUP),
                          (phase_step.CLEANUP__MAIN, PreviousPhase.SETUP),
@@ -290,6 +361,7 @@ class Test(TestCaseBase):
                          phase_step.ACT__MAIN,
                          phase_step.ACT__MAIN,
                          phase_step.ACT__SCRIPT_VALIDATE,
+                         phase_step.ACT__SCRIPT_PREPARE,
                          phase_step.ACT__SCRIPT_EXECUTE,
                          phase_step.BEFORE_ASSERT__MAIN,
                          (phase_step.CLEANUP__MAIN, PreviousPhase.BEFORE_ASSERT),
@@ -323,6 +395,7 @@ class Test(TestCaseBase):
                          phase_step.ACT__MAIN,
                          phase_step.ACT__MAIN,
                          phase_step.ACT__SCRIPT_VALIDATE,
+                         phase_step.ACT__SCRIPT_PREPARE,
                          phase_step.ACT__SCRIPT_EXECUTE,
                          phase_step.BEFORE_ASSERT__MAIN,
                          (phase_step.CLEANUP__MAIN, PreviousPhase.BEFORE_ASSERT),
@@ -356,6 +429,7 @@ class Test(TestCaseBase):
                          phase_step.ACT__MAIN,
                          phase_step.ACT__MAIN,
                          phase_step.ACT__SCRIPT_VALIDATE,
+                         phase_step.ACT__SCRIPT_PREPARE,
                          phase_step.ACT__SCRIPT_EXECUTE,
                          phase_step.BEFORE_ASSERT__MAIN,
                          phase_step.BEFORE_ASSERT__MAIN,
@@ -391,6 +465,7 @@ class Test(TestCaseBase):
                          phase_step.ACT__MAIN,
                          phase_step.ACT__MAIN,
                          phase_step.ACT__SCRIPT_VALIDATE,
+                         phase_step.ACT__SCRIPT_PREPARE,
                          phase_step.ACT__SCRIPT_EXECUTE,
                          phase_step.BEFORE_ASSERT__MAIN,
                          phase_step.BEFORE_ASSERT__MAIN,
@@ -426,6 +501,7 @@ class Test(TestCaseBase):
                          phase_step.ACT__MAIN,
                          phase_step.ACT__MAIN,
                          phase_step.ACT__SCRIPT_VALIDATE,
+                         phase_step.ACT__SCRIPT_PREPARE,
                          phase_step.ACT__SCRIPT_EXECUTE,
                          phase_step.BEFORE_ASSERT__MAIN,
                          phase_step.BEFORE_ASSERT__MAIN,
@@ -461,6 +537,7 @@ class Test(TestCaseBase):
                          phase_step.ACT__MAIN,
                          phase_step.ACT__MAIN,
                          phase_step.ACT__SCRIPT_VALIDATE,
+                         phase_step.ACT__SCRIPT_PREPARE,
                          phase_step.ACT__SCRIPT_EXECUTE,
                          phase_step.BEFORE_ASSERT__MAIN,
                          phase_step.BEFORE_ASSERT__MAIN,
@@ -496,6 +573,7 @@ class Test(TestCaseBase):
                          phase_step.ACT__MAIN,
                          phase_step.ACT__MAIN,
                          phase_step.ACT__SCRIPT_VALIDATE,
+                         phase_step.ACT__SCRIPT_PREPARE,
                          phase_step.ACT__SCRIPT_EXECUTE,
                          phase_step.BEFORE_ASSERT__MAIN,
                          phase_step.BEFORE_ASSERT__MAIN,
@@ -504,18 +582,3 @@ class Test(TestCaseBase):
                          (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
                          ],
                         True))
-
-
-def suite():
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(Test))
-    return ret_val
-
-
-def run_suite():
-    runner = unittest.TextTestRunner()
-    runner.run(suite())
-
-
-if __name__ == '__main__':
-    run_suite()

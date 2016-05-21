@@ -38,6 +38,7 @@ class Test(TestCaseBase):
                              phase_step.ACT__MAIN,
                              phase_step.ACT__MAIN,
                              phase_step.ACT__SCRIPT_VALIDATE,
+                             phase_step.ACT__SCRIPT_PREPARE,
                              phase_step.ACT__SCRIPT_EXECUTE,
                              phase_step.BEFORE_ASSERT__MAIN,
                              phase_step.BEFORE_ASSERT__MAIN,

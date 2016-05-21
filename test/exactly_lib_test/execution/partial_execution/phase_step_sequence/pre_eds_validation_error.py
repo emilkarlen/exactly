@@ -9,6 +9,13 @@ from exactly_lib_test.execution.test_resources import instruction_test_resources
 from exactly_lib_test.execution.test_resources.instruction_test_resources import do_raise, do_return
 
 
+def suite() -> unittest.TestSuite:
+    ret_val = unittest.TestSuite()
+    ret_val.addTests(validate_pre_eds_utils.suite_for(conf)
+                     for conf in _instruction_validation_invocations())
+    return ret_val
+
+
 class ConfigForSetupValidatePreEds(validate_pre_eds_utils.Configuration):
     def __init__(self):
         super().__init__(PartialPhase.SETUP,
@@ -99,7 +106,7 @@ class ConfigForCleanupValidatePreEds(validate_pre_eds_utils.Configuration):
         return test.cleanup_phase_instruction_that(validate_pre_eds=do_raise(exception))
 
 
-def instruction_validation_invocations() -> list:
+def _instruction_validation_invocations() -> list:
     return [ConfigForSetupValidatePreEds(),
             ConfigForActValidatePreEds(),
             ConfigForBeforeAssertValidatePreEds(),
@@ -108,17 +115,5 @@ def instruction_validation_invocations() -> list:
             ]
 
 
-def suite():
-    ret_val = unittest.TestSuite()
-    ret_val.addTests(validate_pre_eds_utils.suite_for(conf)
-                     for conf in instruction_validation_invocations())
-    return ret_val
-
-
-def run_suite():
-    runner = unittest.TextTestRunner()
-    runner.run(suite())
-
-
 if __name__ == '__main__':
-    run_suite()
+    unittest.TextTestRunner().run(suite())

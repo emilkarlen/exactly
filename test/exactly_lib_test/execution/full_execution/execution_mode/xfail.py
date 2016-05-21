@@ -18,6 +18,14 @@ from exactly_lib_test.test_resources.expected_instruction_failure import Expecte
     ExpectedFailureForNoFailure
 
 
+def suite() -> unittest.TestSuite:
+    return unittest.makeSuite(Test)
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())
+
+
 class Test(TestCaseBase):
     def test_with_assert_phase_that_fails(self):
         test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
@@ -25,13 +33,13 @@ class Test(TestCaseBase):
                  test.ConfigurationPhaseInstructionThatSetsExecutionMode(ExecutionMode.XFAIL)) \
             .add(phases.ASSERT,
                  test.assert_phase_instruction_that(
-                         main=test.do_return(pfh.new_pfh_fail('fail message'))))
+                     main=test.do_return(pfh.new_pfh_fail('fail message'))))
         self._check(Arrangement(test_case),
                     Expectation(FullResultStatus.XFAIL,
                                 ExpectedFailureForInstructionFailure.new_with_message(
-                                        phase_step.ASSERT__MAIN,
-                                        test_case.the_extra(phases.ASSERT)[0].first_line,
-                                        'fail message'),
+                                    phase_step.ASSERT__MAIN,
+                                    test_case.the_extra(phases.ASSERT)[0].first_line,
+                                    'fail message'),
                                 [phase_step.CONFIGURATION__MAIN,
                                  phase_step.CONFIGURATION__MAIN] +
                                 PRE_EDS_VALIDATION_STEPS__TWICE +
@@ -48,6 +56,7 @@ class Test(TestCaseBase):
                                  phase_step.ACT__MAIN,
                                  phase_step.ACT__MAIN,
                                  phase_step.ACT__SCRIPT_VALIDATE,
+                                 phase_step.ACT__SCRIPT_PREPARE,
                                  phase_step.ACT__SCRIPT_EXECUTE,
                                  phase_step.BEFORE_ASSERT__MAIN,
                                  phase_step.BEFORE_ASSERT__MAIN,
@@ -62,34 +71,35 @@ class Test(TestCaseBase):
             .add(phases.CONFIGURATION,
                  test.ConfigurationPhaseInstructionThatSetsExecutionMode(ExecutionMode.XFAIL))
         self._check(
-                Arrangement(test_case),
-                Expectation(FullResultStatus.XPASS,
-                            ExpectedFailureForNoFailure(),
-                            [phase_step.CONFIGURATION__MAIN,
-                             phase_step.CONFIGURATION__MAIN] +
-                            PRE_EDS_VALIDATION_STEPS__TWICE +
-                            [phase_step.SETUP__MAIN,
-                             phase_step.SETUP__MAIN,
-                             phase_step.SETUP__VALIDATE_POST_SETUP,
-                             phase_step.SETUP__VALIDATE_POST_SETUP,
-                             phase_step.ACT__VALIDATE_POST_SETUP,
-                             phase_step.ACT__VALIDATE_POST_SETUP,
-                             phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
-                             phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
-                             phase_step.ASSERT__VALIDATE_POST_SETUP,
-                             phase_step.ASSERT__VALIDATE_POST_SETUP,
-                             phase_step.ACT__MAIN,
-                             phase_step.ACT__MAIN,
-                             phase_step.ACT__SCRIPT_VALIDATE,
-                             phase_step.ACT__SCRIPT_EXECUTE,
-                             phase_step.BEFORE_ASSERT__MAIN,
-                             phase_step.BEFORE_ASSERT__MAIN,
-                             phase_step.ASSERT__MAIN,
-                             phase_step.ASSERT__MAIN,
-                             (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
-                             (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
-                             ],
-                            True))
+            Arrangement(test_case),
+            Expectation(FullResultStatus.XPASS,
+                        ExpectedFailureForNoFailure(),
+                        [phase_step.CONFIGURATION__MAIN,
+                         phase_step.CONFIGURATION__MAIN] +
+                        PRE_EDS_VALIDATION_STEPS__TWICE +
+                        [phase_step.SETUP__MAIN,
+                         phase_step.SETUP__MAIN,
+                         phase_step.SETUP__VALIDATE_POST_SETUP,
+                         phase_step.SETUP__VALIDATE_POST_SETUP,
+                         phase_step.ACT__VALIDATE_POST_SETUP,
+                         phase_step.ACT__VALIDATE_POST_SETUP,
+                         phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
+                         phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
+                         phase_step.ASSERT__VALIDATE_POST_SETUP,
+                         phase_step.ASSERT__VALIDATE_POST_SETUP,
+                         phase_step.ACT__MAIN,
+                         phase_step.ACT__MAIN,
+                         phase_step.ACT__SCRIPT_VALIDATE,
+                         phase_step.ACT__SCRIPT_PREPARE,
+                         phase_step.ACT__SCRIPT_EXECUTE,
+                         phase_step.BEFORE_ASSERT__MAIN,
+                         phase_step.BEFORE_ASSERT__MAIN,
+                         phase_step.ASSERT__MAIN,
+                         phase_step.ASSERT__MAIN,
+                         (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
+                         (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
+                         ],
+                        True))
 
     def test_with_configuration_phase_with_hard_error(self):
         test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
@@ -98,14 +108,14 @@ class Test(TestCaseBase):
             .add(phases.CONFIGURATION,
                  test.configuration_phase_instruction_that(do_return(sh.new_sh_hard_error('hard error msg'))))
         self._check(
-                Arrangement(test_case),
-                Expectation(FullResultStatus.HARD_ERROR,
-                            ExpectedFailureForInstructionFailure.new_with_message(
-                                    phase_step.CONFIGURATION__MAIN,
-                                    test_case.the_extra(phases.CONFIGURATION)[1].first_line,
-                                    'hard error msg'),
-                            [phase_step.CONFIGURATION__MAIN],
-                            False))
+            Arrangement(test_case),
+            Expectation(FullResultStatus.HARD_ERROR,
+                        ExpectedFailureForInstructionFailure.new_with_message(
+                            phase_step.CONFIGURATION__MAIN,
+                            test_case.the_extra(phases.CONFIGURATION)[1].first_line,
+                            'hard error msg'),
+                        [phase_step.CONFIGURATION__MAIN],
+                        False))
 
     def test_with_implementation_error(self):
         test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
@@ -113,46 +123,36 @@ class Test(TestCaseBase):
                  test.ConfigurationPhaseInstructionThatSetsExecutionMode(ExecutionMode.XFAIL)) \
             .add(phases.CLEANUP,
                  test.cleanup_phase_instruction_that(
-                         main=test.do_raise(test.ImplementationErrorTestException())))
+                     main=test.do_raise(test.ImplementationErrorTestException())))
         self._check(
-                Arrangement(test_case),
-                Expectation(FullResultStatus.IMPLEMENTATION_ERROR,
-                            ExpectedFailureForInstructionFailure.new_with_exception(
-                                    phase_step.CLEANUP__MAIN,
-                                    test_case.the_extra(phases.CLEANUP)[0].first_line,
-                                    test.ImplementationErrorTestException),
-                            [phase_step.CONFIGURATION__MAIN,
-                             phase_step.CONFIGURATION__MAIN] +
-                            PRE_EDS_VALIDATION_STEPS__TWICE +
-                            [phase_step.SETUP__MAIN,
-                             phase_step.SETUP__MAIN,
-                             phase_step.SETUP__VALIDATE_POST_SETUP,
-                             phase_step.SETUP__VALIDATE_POST_SETUP,
-                             phase_step.ACT__VALIDATE_POST_SETUP,
-                             phase_step.ACT__VALIDATE_POST_SETUP,
-                             phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
-                             phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
-                             phase_step.ASSERT__VALIDATE_POST_SETUP,
-                             phase_step.ASSERT__VALIDATE_POST_SETUP,
-                             phase_step.ACT__MAIN,
-                             phase_step.ACT__MAIN,
-                             phase_step.ACT__SCRIPT_VALIDATE,
-                             phase_step.ACT__SCRIPT_EXECUTE,
-                             phase_step.BEFORE_ASSERT__MAIN,
-                             phase_step.BEFORE_ASSERT__MAIN,
-                             phase_step.ASSERT__MAIN,
-                             phase_step.ASSERT__MAIN,
-                             (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
-                             ],
-                            True))
-
-
-def suite():
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(Test))
-    return ret_val
-
-
-if __name__ == '__main__':
-    runner = unittest.TextTestRunner()
-    runner.run(suite())
+            Arrangement(test_case),
+            Expectation(FullResultStatus.IMPLEMENTATION_ERROR,
+                        ExpectedFailureForInstructionFailure.new_with_exception(
+                            phase_step.CLEANUP__MAIN,
+                            test_case.the_extra(phases.CLEANUP)[0].first_line,
+                            test.ImplementationErrorTestException),
+                        [phase_step.CONFIGURATION__MAIN,
+                         phase_step.CONFIGURATION__MAIN] +
+                        PRE_EDS_VALIDATION_STEPS__TWICE +
+                        [phase_step.SETUP__MAIN,
+                         phase_step.SETUP__MAIN,
+                         phase_step.SETUP__VALIDATE_POST_SETUP,
+                         phase_step.SETUP__VALIDATE_POST_SETUP,
+                         phase_step.ACT__VALIDATE_POST_SETUP,
+                         phase_step.ACT__VALIDATE_POST_SETUP,
+                         phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
+                         phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
+                         phase_step.ASSERT__VALIDATE_POST_SETUP,
+                         phase_step.ASSERT__VALIDATE_POST_SETUP,
+                         phase_step.ACT__MAIN,
+                         phase_step.ACT__MAIN,
+                         phase_step.ACT__SCRIPT_VALIDATE,
+                         phase_step.ACT__SCRIPT_PREPARE,
+                         phase_step.ACT__SCRIPT_EXECUTE,
+                         phase_step.BEFORE_ASSERT__MAIN,
+                         phase_step.BEFORE_ASSERT__MAIN,
+                         phase_step.ASSERT__MAIN,
+                         phase_step.ASSERT__MAIN,
+                         (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
+                         ],
+                        True))

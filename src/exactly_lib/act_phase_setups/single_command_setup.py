@@ -12,6 +12,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SectionElementParserForStandardCommentAndEmptyLines
 from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
 from exactly_lib.test_case.phases.act.program_source import ActSourceBuilder, ActSourceBuilderForStatementLines
+from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util import line_source
 from exactly_lib.util.std import StdFiles
@@ -51,8 +52,8 @@ class ActSourceExecutorForSingleCommand(ActSourceExecutor):
     def prepare(self,
                 source_setup: SourceSetup,
                 home_dir_path: pathlib.Path,
-                eds: ExecutionDirectoryStructure):
-        pass
+                eds: ExecutionDirectoryStructure) -> sh.SuccessOrHardError:
+        return sh.new_sh_success()
 
     def execute(self,
                 source_setup: SourceSetup,

@@ -11,6 +11,14 @@ from exactly_lib_test.execution.test_resources.execution_recording.phase_steps i
 from exactly_lib_test.test_resources.expected_instruction_failure import ExpectedFailureForNoFailure
 
 
+def suite() -> unittest.TestSuite:
+    return unittest.makeSuite(Test)
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())
+
+
 class Test(TestCaseBase):
     def test_full_sequence(self):
         self._check(
@@ -31,6 +39,7 @@ class Test(TestCaseBase):
                          phase_step.ACT__MAIN,
                          phase_step.ACT__MAIN,
                          phase_step.ACT__SCRIPT_VALIDATE,
+                         phase_step.ACT__SCRIPT_PREPARE,
                          phase_step.ACT__SCRIPT_EXECUTE,
                          phase_step.BEFORE_ASSERT__MAIN,
                          phase_step.BEFORE_ASSERT__MAIN,
@@ -40,11 +49,3 @@ class Test(TestCaseBase):
                          (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
                          ],
                         True))
-
-
-def suite() -> unittest.TestSuite:
-    return unittest.makeSuite(Test)
-
-
-if __name__ == '__main__':
-    unittest.TextTestRunner().run(suite())

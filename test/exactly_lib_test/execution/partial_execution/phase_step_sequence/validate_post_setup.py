@@ -11,6 +11,13 @@ from exactly_lib_test.execution.test_resources.execution_recording.phase_steps i
 from exactly_lib_test.execution.test_resources.instruction_test_resources import do_raise, do_return
 
 
+def suite() -> unittest.TextTestRunner:
+    ret_val = unittest.TestSuite()
+    ret_val.addTests(utils.suite_for(conf)
+                     for conf in _instruction_validation_invocations())
+    return ret_val
+
+
 class SetupConfig(utils.Configuration):
     def __init__(self):
         super().__init__(PartialPhase.SETUP,
@@ -26,7 +33,7 @@ class SetupConfig(utils.Configuration):
 
     def instruction_that_returns(self, return_value: svh.SuccessOrValidationErrorOrHardError) -> TestCaseInstruction:
         return test.setup_phase_instruction_that(
-                validate_post_setup=do_return(return_value))
+            validate_post_setup=do_return(return_value))
 
     def instruction_that_raises(self, exception: Exception) -> TestCaseInstruction:
         return test.setup_phase_instruction_that(validate_post_setup=do_raise(exception))
@@ -49,7 +56,7 @@ class ActConfig(utils.Configuration):
 
     def instruction_that_returns(self, return_value: svh.SuccessOrValidationErrorOrHardError) -> TestCaseInstruction:
         return test.act_phase_instruction_that(
-                validate_post_setup=do_return(return_value))
+            validate_post_setup=do_return(return_value))
 
     def instruction_that_raises(self, exception: Exception) -> TestCaseInstruction:
         return test.act_phase_instruction_that(validate_post_setup=do_raise(exception))
@@ -74,7 +81,7 @@ class BeforeAssertConfig(utils.Configuration):
 
     def instruction_that_returns(self, return_value: svh.SuccessOrValidationErrorOrHardError) -> TestCaseInstruction:
         return test.before_assert_phase_instruction_that(
-                validate_post_setup=do_return(return_value))
+            validate_post_setup=do_return(return_value))
 
     def instruction_that_raises(self, exception: Exception) -> TestCaseInstruction:
         return test.before_assert_phase_instruction_that(validate_post_setup=do_raise(exception))
@@ -101,13 +108,13 @@ class AssertConfig(utils.Configuration):
 
     def instruction_that_returns(self, return_value: svh.SuccessOrValidationErrorOrHardError) -> TestCaseInstruction:
         return test.assert_phase_instruction_that(
-                validate_post_setup=do_return(return_value))
+            validate_post_setup=do_return(return_value))
 
     def instruction_that_raises(self, exception: Exception) -> TestCaseInstruction:
         return test.assert_phase_instruction_that(validate_post_setup=do_raise(exception))
 
 
-def instruction_validation_invocations() -> list:
+def _instruction_validation_invocations() -> list:
     return [
         SetupConfig(),
         ActConfig(),
@@ -116,17 +123,5 @@ def instruction_validation_invocations() -> list:
     ]
 
 
-def suite():
-    ret_val = unittest.TestSuite()
-    ret_val.addTests(utils.suite_for(conf)
-                     for conf in instruction_validation_invocations())
-    return ret_val
-
-
-def run_suite():
-    runner = unittest.TextTestRunner()
-    runner.run(suite())
-
-
 if __name__ == '__main__':
-    run_suite()
+    unittest.TextTestRunner().run(suite())
