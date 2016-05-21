@@ -1,9 +1,6 @@
 -*- org -*-
 
-* Rename: ExecutionDirectoryStructure -> SandboxDirectoryStructure
-eds -> sds
 * Ändra --rel-pwd -> --rel-cd
-* Wiki: Lägga till todo: builtin preprocessor
 * Ta bort adm-filer
 Flytta till separat repo?
 * Ta bort tools/
