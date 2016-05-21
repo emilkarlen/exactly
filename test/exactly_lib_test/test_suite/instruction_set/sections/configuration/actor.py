@@ -1,9 +1,9 @@
 import unittest
 
-from exactly_lib.act_phase_setups.script_interpretation.script_language_management import ScriptLanguageSetup
-from exactly_lib.act_phase_setups.script_interpretation.script_language_setup import ActSourceExecutorForScriptLanguage
-from exactly_lib.act_phase_setups.script_interpretation.standard_script_language import StandardScriptLanguage, \
+from exactly_lib.act_phase_setups.script_interpretation.generic_script_language import StandardScriptLanguage
+from exactly_lib.act_phase_setups.script_interpretation.script_language_management import ScriptLanguageSetup, \
     StandardScriptFileManager
+from exactly_lib.act_phase_setups.script_interpretation.script_language_setup import ActSourceExecutorForScriptLanguage
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.phases.act.phase_setup import ActPhaseSetup
