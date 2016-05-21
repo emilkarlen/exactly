@@ -101,7 +101,9 @@ class TestWithActSourceExecutorBase(unittest.TestCase):
         with execution_directory_structure() as eds:
             program_setup = SourceSetup(source,
                                         eds.test_case_dir)
-            act_program_executor.prepare(program_setup, home_dir, eds)
+            result_of_prepare = act_program_executor.prepare(program_setup, home_dir, eds)
+            self.assertTrue(result_of_prepare.is_success,
+                            'Expecting success from prepare (found hard error)')
             process_executor = _ProcessExecutorForProgramExecutor(program_setup,
                                                                   home_dir,
                                                                   eds,
