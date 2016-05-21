@@ -11,9 +11,9 @@ from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.phase_names import ACT_PHASE_NAME
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
+from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, SingleInstructionParserSource, SingleInstructionInvalidArgumentException
-from exactly_lib.test_case.phases.act.phase_setup import ActPhaseSetup
 from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_definition import \
     ConfigurationSectionInstruction, ConfigurationSectionEnvironment
 from exactly_lib.util.cli_syntax.elements import argument as a

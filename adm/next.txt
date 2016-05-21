@@ -28,6 +28,13 @@ act-setup:en huruvida den vill spara sin info i fil el ej.
 Sparande av källkoden i fil är del av script-setup actorn.
 ** DONE Flytta ActSourceBuilderForScriptLanguage o ScriptLanguage
 Till paket som använder sig av script-language.
+** TODO SourceSetup: flytta script_file_stem t script-language
+Den är ju numera specifik för exekverare som kör script.
+El ... är dess syfte att ge alla möjlighet att lagra sitt "program"
+under ett gemensamt namn.  Men vad skulle vara meningen med det???
+Skulle vara att undvika namnkrockar i katalogen som lagrar programmen,
+men den katalogen ska väll vara helt tom, så att det blir helt upp till
+exekveraren att avgöra vad o hur den vill/behöver lagra saker.
 * Wiki: Lägga till todo: builtin preprocessor
 * Ta bort adm-filer
 Flytta till separat repo?

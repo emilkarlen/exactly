@@ -1,5 +1,5 @@
+from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.processing.test_case_processing import Preprocessor
-from exactly_lib.test_case.phases.act.phase_setup import ActPhaseSetup
 from exactly_lib.test_suite.instruction_set.instruction import TestSuiteInstruction
 
 

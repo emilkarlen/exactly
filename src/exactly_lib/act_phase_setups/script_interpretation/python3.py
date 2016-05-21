@@ -4,7 +4,7 @@ import exactly_lib.act_phase_setups.script_interpretation.script_language_manage
 from exactly_lib.act_phase_setups.script_interpretation import script_language_management
 from exactly_lib.act_phase_setups.script_interpretation.script_language_management import ScriptLanguage
 from exactly_lib.act_phase_setups.script_interpretation.script_language_setup import new_for_script_language_setup
-from exactly_lib.test_case.phases.act.phase_setup import ActPhaseSetup
+from exactly_lib.processing.act_phase import ActPhaseSetup
 
 
 def script_language_setup() -> script_language_management.ScriptLanguageSetup:

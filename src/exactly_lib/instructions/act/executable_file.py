@@ -2,8 +2,7 @@ import pathlib
 import re
 
 from exactly_lib.test_case.phases import common
-from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
-from exactly_lib.test_case.phases.act.phase_setup import PhaseEnvironmentForScriptGeneration
+from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
 from exactly_lib.test_case.phases.result import sh, svh
 
 

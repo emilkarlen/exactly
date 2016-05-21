@@ -3,8 +3,7 @@ import unittest
 from exactly_lib.execution import phases
 from exactly_lib.test_case.os_services import OsServices, new_default
 from exactly_lib.test_case.phases import common as i
-from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
-from exactly_lib.test_case.phases.act.phase_setup import PhaseEnvironmentForScriptGeneration
+from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
 from exactly_lib.test_case.phases.act.program_source import ActSourceBuilder, ActSourceBuilderForStatementLines
 from exactly_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep, \
     HomeAndEds

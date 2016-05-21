@@ -3,7 +3,7 @@ import exactly_lib.act_phase_setups.script_interpretation.script_language_manage
 from exactly_lib.act_phase_setups.script_interpretation import generic_script_language
 from exactly_lib.act_phase_setups.script_interpretation.script_language_management import ScriptLanguageSetup
 from exactly_lib.act_phase_setups.script_interpretation.script_language_setup import new_for_script_language_setup
-from exactly_lib.test_case.phases.act.phase_setup import ActPhaseSetup
+from exactly_lib.processing.act_phase import ActPhaseSetup
 
 INTERPRETER_FOR_TEST = 'test-language'
 
