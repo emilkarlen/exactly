@@ -20,6 +20,6 @@ def execute_cmd_and_args(cmd_and_args: list,
 
 
 def _exception(ex: Exception) -> ExitCodeOrHardError:
-    msg = 'Error executing act program in sub process'
+    msg = 'Error executing act program in sub process.'
     return new_eh_hard_error(new_failure_details_from_exception(ex,
                                                                 message=msg))
