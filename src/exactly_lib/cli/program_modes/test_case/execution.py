@@ -87,7 +87,7 @@ class Executor:
         if the_full_result.is_failure:
             failure_info = the_full_result.failure_info
             _SourceDisplayer(self._err_printer).visit(failure_info)
-            if failure_info.failure_details.is_error_message:
+            if failure_info.failure_details.is_only_failure_message:
                 ed = error_description.of_message(failure_info.failure_details.failure_message)
             else:
                 ed = error_description.of_exception(failure_info.failure_details.exception)

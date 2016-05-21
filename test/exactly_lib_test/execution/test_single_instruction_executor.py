@@ -117,14 +117,14 @@ class Test(unittest.TestCase):
 def assert_equal_failure_details(unit_tc: unittest.TestCase,
                                  expected: FailureDetails,
                                  actual: FailureDetails):
-    if expected.is_error_message:
-        unit_tc.assertTrue(actual.is_error_message,
+    if expected.is_only_failure_message:
+        unit_tc.assertTrue(actual.is_only_failure_message,
                            'An error message is expected')
         unit_tc.assertEqual(expected.failure_message,
                             actual.failure_message,
                             'The failure message should be the expected')
     else:
-        unit_tc.assertFalse(actual.is_error_message,
+        unit_tc.assertFalse(actual.is_only_failure_message,
                             'An exception is expected')
         unit_tc.assertEqual(expected.exception,
                             actual.exception,

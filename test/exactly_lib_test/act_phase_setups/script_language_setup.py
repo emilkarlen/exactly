@@ -1,11 +1,26 @@
+import pathlib
 import unittest
 from contextlib import contextmanager
 
 from exactly_lib.act_phase_setups.script_interpretation import script_language_setup as sut, python3
-from exactly_lib.test_case.phases.act.program_source import ActSourceBuilder
+from exactly_lib.act_phase_setups.script_interpretation.generic_script_language import StandardScriptLanguage
+from exactly_lib.act_phase_setups.script_interpretation.script_language_management import ScriptFileManager, \
+    ScriptLanguageSetup
+from exactly_lib.test_case.phases.act.program_source import ActSourceBuilder, ActSourceBuilderForPlainStringsBase
 from exactly_lib_test.act_phase_setups.test_resources import py_program
 from exactly_lib_test.act_phase_setups.test_resources.act_program_executor import \
-    Configuration, suite_for_execution
+    Configuration, suite_for_execution, run_execute
+
+
+def suite() -> unittest.TestSuite:
+    return unittest.TestSuite([
+        suite_for_execution(TheConfiguration()),
+        unittest.makeSuite(TestWhenInterpreterDoesNotExistThanTheResultShouldBeHardError)
+    ])
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())
 
 
 class TheConfiguration(Configuration):
@@ -43,9 +58,21 @@ class TheConfiguration(Configuration):
         return ret_val
 
 
-def suite() -> unittest.TestSuite:
-    return suite_for_execution(TheConfiguration())
+class TestWhenInterpreterDoesNotExistThanTheResultShouldBeHardError(unittest.TestCase):
+    def runTest(self):
+        language_setup = ScriptLanguageSetup(_ScriptFileManagerWithNonExistingInterpreter(),
+                                             StandardScriptLanguage())
+        executor = sut.ActSourceExecutorForScriptLanguage(language_setup)
+        empty_source = ActSourceBuilderForPlainStringsBase()
+        exit_code_or_hard_error = run_execute(self, executor, empty_source)
+        self.assertTrue(exit_code_or_hard_error.is_hard_error,
+                        'Expecting a HARD ERROR')
 
 
-if __name__ == '__main__':
-    unittest.main()
+class _ScriptFileManagerWithNonExistingInterpreter(ScriptFileManager):
+    def command_and_args_for_executing_script_file(self, script_file_name: str) -> list:
+        interpreter_path = pathlib.Path().cwd().resolve() / 'non-existing-interpreter'
+        return [str(interpreter_path), script_file_name]
+
+    def base_name_from_stem(self, stem: str) -> str:
+        return stem + '.src'

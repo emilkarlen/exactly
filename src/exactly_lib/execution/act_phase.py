@@ -22,6 +22,10 @@ class ExitCodeOrHardError(tuple):
         return self[0] is not None
 
     @property
+    def is_hard_error(self) -> bool:
+        return self[0] is None
+
+    @property
     def exit_code(self) -> int:
         return self[0]
 

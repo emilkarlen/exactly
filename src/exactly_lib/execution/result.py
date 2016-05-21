@@ -15,16 +15,10 @@ class FailureDetails:
                  exception: Exception):
         self.__failure_message = failure_message
         self.__exception = exception
-        if self.__failure_message is None:
-            if self.__exception is None:
-                raise ValueError('Must specify either an error_message or an exception')
-        else:
-            if self.__exception is not None:
-                raise ValueError('Must specify either an error_message or an exception - not both')
 
     @property
-    def is_error_message(self) -> bool:
-        return self.__failure_message is not None
+    def is_only_failure_message(self) -> bool:
+        return self.__exception is None
 
     @property
     def failure_message(self) -> str:
@@ -35,14 +29,15 @@ class FailureDetails:
         return self.__exception
 
     def __str__(self) -> str:
-        if self.is_error_message:
+        if self.is_only_failure_message:
             return self.__failure_message
         else:
             return str(self.exception)
 
 
-def new_failure_details_from_exception(exception: Exception) -> FailureDetails:
-    return FailureDetails(None, exception)
+def new_failure_details_from_exception(exception: Exception,
+                                       message: str = None) -> FailureDetails:
+    return FailureDetails(message, exception)
 
 
 def new_failure_details_from_message(error_message: str) -> FailureDetails:
