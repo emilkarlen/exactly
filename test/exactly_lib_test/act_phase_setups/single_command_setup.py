@@ -6,12 +6,12 @@ from contextlib import contextmanager
 
 from exactly_lib.act_phase_setups import single_command_setup as sut
 from exactly_lib.execution.act_phase import SourceSetup
-from exactly_lib.test_case.phases.act.program_source import ActSourceBuilder
+from exactly_lib.test_case.phases.act.program_source import ActSourceBuilder, ActSourceBuilderForStatementLines
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.std import std_files_dev_null
 from exactly_lib_test.act_phase_setups.test_resources import py_program
 from exactly_lib_test.act_phase_setups.test_resources.act_program_executor import Configuration, \
-    suite_for_execution
+    suite_for_execution, run_execute
 from exactly_lib_test.test_resources import python_program_execution as py_exe
 from exactly_lib_test.test_resources.execution.utils import execution_directory_structure
 from exactly_lib_test.test_resources.file_structure import File
@@ -98,7 +98,7 @@ class TheConfiguration(Configuration):
     @contextmanager
     def program_that_prints_value_of_environment_variable_to_stdout(self, var_name: str) -> ActSourceBuilder:
         return self._builder_for_executing_source_from_py_file(
-                py_program.write_value_of_environment_variable_to_stdout(var_name))
+            py_program.write_value_of_environment_variable_to_stdout(var_name))
 
     def _builder_for_executing_source_from_py_file(self, statements: list) -> ActSourceBuilder:
         with tmp_file_containing_lines(statements) as src_path:
@@ -109,6 +109,23 @@ class TheConfiguration(Configuration):
         cmd = py_exe.command_line_for_interpreting(src_path)
         ret_val.raw_script_statement(cmd)
         return ret_val
+
+
+class TestWhenInterpreterDoesNotExistThanTheResultShouldBeHardError(unittest.TestCase):
+    def runTest(self):
+        executor = sut.ActSourceExecutorForSingleCommand()
+        source = self._source_that_references_non_existing_program()
+        exit_code_or_hard_error = run_execute(self,
+                                              executor,
+                                              source)
+        self.assertTrue(exit_code_or_hard_error.is_hard_error,
+                        'Expecting a HARD ERROR')
+
+    def _source_that_references_non_existing_program(self) -> ActSourceBuilderForStatementLines:
+        source = ActSourceBuilderForStatementLines()
+        interpreter_path = pathlib.Path().cwd().resolve() / 'non-existing-interpreter'
+        source.raw_script_statement(str(interpreter_path))
+        return source
 
 
 def execute_program_rel_home_that_returns_number_of_arguments(puc: unittest.TestCase,
@@ -174,9 +191,10 @@ sys.exit(len(sys.argv) - 1)
 """
 
 
-def suite():
+def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestValidation))
+    ret_val.addTest(unittest.makeSuite(TestWhenInterpreterDoesNotExistThanTheResultShouldBeHardError))
     ret_val.addTest(suite_for_execution(TheConfiguration()))
     return ret_val
 

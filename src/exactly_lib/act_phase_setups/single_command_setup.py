@@ -25,14 +25,14 @@ class _ActPhaseParser(SectionElementParserForStandardCommentAndEmptyLines):
 def act_phase_setup(parser: SectionElementParser = _ActPhaseParser()) -> ActPhaseSetup:
     return ActPhaseSetup(parser,
                          _script_source_builder,
-                         _ActSourceExecutorForSingleCommand())
+                         ActSourceExecutorForSingleCommand())
 
 
 def _script_source_builder() -> ActSourceBuilder:
     return ActSourceBuilderForStatementLines()
 
 
-class _ActSourceExecutorForSingleCommand(ActSourceExecutor):
+class ActSourceExecutorForSingleCommand(ActSourceExecutor):
     def validate(self,
                  home_dir: pathlib.Path,
                  source: ActSourceBuilder) -> svh.SuccessOrValidationErrorOrHardError:
