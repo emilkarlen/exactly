@@ -139,9 +139,9 @@ def execute(act_phase_handling: ActPhaseHandling,
         configuration = Configuration(home_dir_path,
                                       execution_directory_root_name_prefix)
 
-        test_case_execution = PartialExecutor(configuration,
-                                              act_phase_handling,
-                                              test_case)
+        test_case_execution = _PartialExecutor(configuration,
+                                               act_phase_handling,
+                                               test_case)
         ret_val = test_case_execution.execute()
         return ret_val
     finally:
@@ -157,7 +157,7 @@ def construct_eds(execution_directory_root_name_prefix: str) -> ExecutionDirecto
     return construct_at(resolved_path_name(eds_structure_root))
 
 
-class PartialExecutor:
+class _PartialExecutor:
     def __init__(self,
                  configuration: Configuration,
                  act_phase_handling: ActPhaseHandling,
@@ -232,13 +232,15 @@ class PartialExecutor:
         if res.status is not PartialResultStatus.PASS:
             self.__cleanup_main(previous_phase, os_services)
             return res
+        previous_phase = PreviousPhase.BEFORE_ASSERT
         self.__set_assert_environment_variables()
         res = self.__before_assert__main(os_services)
         if res.status is not PartialResultStatus.PASS:
-            self.__cleanup_main(PreviousPhase.BEFORE_ASSERT, os_services)
+            self.__cleanup_main(previous_phase, os_services)
             return res
+        previous_phase = PreviousPhase.ASSERT
         ret_val = self.__assert__main(os_services)
-        res = self.__cleanup_main(PreviousPhase.ASSERT, os_services)
+        res = self.__cleanup_main(previous_phase, os_services)
         if res.is_failure:
             ret_val = res
         return ret_val
