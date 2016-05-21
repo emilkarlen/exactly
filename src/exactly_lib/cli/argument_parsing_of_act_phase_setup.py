@@ -1,5 +1,6 @@
 import exactly_lib.act_phase_setups.script_interpretation.python3
-from exactly_lib.act_phase_setups.script_interpretation import standard_script_language
+import exactly_lib.act_phase_setups.script_interpretation.script_language_management
+from exactly_lib.act_phase_setups.script_interpretation import generic_script_language
 from exactly_lib.act_phase_setups.script_interpretation.script_language_management import ScriptLanguageSetup
 from exactly_lib.act_phase_setups.script_interpretation.script_language_setup import new_for_script_language_setup
 from exactly_lib.test_case.phases.act.phase_setup import ActPhaseSetup
@@ -28,7 +29,8 @@ def resolve_act_phase_setup(default_setup: ActPhaseSetup,
 def new_for_generic_script_language_setup(interpreter: str) -> ActPhaseSetup:
     return new_for_script_language_setup(
         ScriptLanguageSetup(
-            standard_script_language.StandardScriptFileManager('src',
-                                                               interpreter,
-                                                               []),
-            standard_script_language.StandardScriptLanguage()))
+            exactly_lib.act_phase_setups.script_interpretation.script_language_management.StandardScriptFileManager(
+                'src',
+                interpreter,
+                []),
+            generic_script_language.StandardScriptLanguage()))
