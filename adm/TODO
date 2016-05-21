@@ -990,6 +990,8 @@ def get_document() -> Description:
   return Description(...)
 
 * TODO Refaktoreringar
+** TODO Rename: ExecutionDirectoryStructure -> SandboxDirectoryStructure
+eds -> sds
 ** TODO Rendering
 *** TODO Extrahera test av textrenderare till eget test
 Idag är del av test av paragraph.
@@ -1000,8 +1002,6 @@ Om en renderare av endat ett enda fall men som renderar riktig data så
 förbättras testerna genom att verifiera att rätt element renderas.
 
 *** TODO Test av FullParagraphItemRenderer
-** TODO Byt namn "anonymous" -> "configuration"
-
 ** TODO textformat/Table: Bör ha separat klass för TableCell
 Idag är det en lista av PI.  Knölig o inflexibel struktur.
 Svår att förstå o skapa tabeller.
@@ -1025,10 +1025,6 @@ Tror det är precis det här de funktionerna används till.
         preprocessor = '%s %s' % (quoting.file_name(python_executable_file_name),
                                   quoting.file_name(preprocessor_source_file_name))
 ----------
-** TODO InstructionDocumentation ska använda Description
-<2016-03-20 sön>
-Extraherade den klassen för impl av TCPhaseHelp.
-
 ** TODO Validate_post_eds_if_applicable ska ta (EDS,home_dir)
 <2016-01-09 lör>
 klass: PreOrPostEdsSvhValidationErrorValidator
