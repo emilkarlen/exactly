@@ -4,11 +4,11 @@ import random
 import unittest
 from contextlib import contextmanager
 
-from exactly_lib.execution.act_phase import SourceSetup, ActSourceExecutor
+from exactly_lib.execution.act_phase import SourceSetup, ActSourceExecutor, ExitCodeOrHardError
 from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from exactly_lib.test_case.phases.act.program_source import ActSourceBuilder
 from exactly_lib.test_case.phases.result import svh
-from exactly_lib.util.std import StdFiles
+from exactly_lib.util.std import StdFiles, std_files_dev_null
 from exactly_lib_test.test_resources.execution.eds_populator import act_dir_contents
 from exactly_lib_test.test_resources.execution.utils import execution_directory_structure
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir
@@ -80,15 +80,15 @@ class _ProcessExecutorForProgramExecutor(ProcessExecutor):
         raise ValueError(msg)
 
 
-class TestBase(unittest.TestCase):
-    def __init__(self, test_setup: Configuration):
+class TestWithActSourceExecutorBase(unittest.TestCase):
+    def __init__(self, act_source_executor: ActSourceExecutor):
         super().__init__()
-        self.test_setup = test_setup
+        self.act_source_executor = act_source_executor
 
     def _execute(self,
                  source: ActSourceBuilder,
                  stdin_contents: str = '') -> SubProcessResult:
-        act_program_executor = self.test_setup.sut
+        act_program_executor = self.act_source_executor
         home_dir = pathlib.Path()
         validation_result = act_program_executor.validate(home_dir, source)
         self.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
@@ -105,6 +105,27 @@ class TestBase(unittest.TestCase):
             return capture_process_executor_result(process_executor,
                                                    eds.result.root_dir,
                                                    stdin_contents=stdin_contents)
+
+
+def run_execute(put: unittest.TestCase,
+                executor: ActSourceExecutor,
+                source: ActSourceBuilder) -> ExitCodeOrHardError:
+    home_dir = pathlib.Path()
+    validation_result = executor.validate(home_dir, source)
+    put.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                    validation_result.status)
+    with execution_directory_structure() as eds:
+        program_setup = SourceSetup(source,
+                                    eds.test_case_dir,
+                                    'file-name-stem')
+        executor.prepare(program_setup, home_dir, eds)
+        return executor.execute(program_setup, home_dir, eds, std_files_dev_null())
+
+
+class TestBase(TestWithActSourceExecutorBase):
+    def __init__(self, test_setup: Configuration):
+        super().__init__(test_setup.sut)
+        self.test_setup = test_setup
 
 
 class TestStdoutIsConnectedToProgram(TestBase):
