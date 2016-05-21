@@ -1,7 +1,7 @@
 import pathlib
 
 from exactly_lib.execution import phase_step_simple as phase_step
-from exactly_lib.execution.act_phase import SourceSetup, ActSourceExecutor
+from exactly_lib.execution.act_phase import SourceSetup, ActSourceExecutor, ExitCodeOrHardError
 from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from exactly_lib.test_case.phases.act.program_source import ActSourceBuilder
 from exactly_lib.test_case.phases.result import svh
@@ -32,7 +32,7 @@ class ActSourceExecutorWrapperThatRecordsSteps(ActSourceExecutor):
                 source_setup: SourceSetup,
                 home_dir: pathlib.Path,
                 eds: ExecutionDirectoryStructure,
-                std_files: StdFiles) -> int:
+                std_files: StdFiles) -> ExitCodeOrHardError:
         self.__recorder.recording_of(phase_step.ACT__SCRIPT_EXECUTE).record()
         return self.__wrapped.execute(source_setup,
                                       home_dir,

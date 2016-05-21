@@ -69,10 +69,15 @@ class _ProcessExecutorForProgramExecutor(ProcessExecutor):
 
     def execute(self,
                 files: StdFiles) -> int:
-        return self.program_executor.execute(self.source_setup,
-                                             self.home_dir_path,
-                                             self.eds,
-                                             files)
+        exit_code_or_hard_error = self.program_executor.execute(self.source_setup,
+                                                                self.home_dir_path,
+                                                                self.eds,
+                                                                files)
+        if exit_code_or_hard_error.is_exit_code:
+            return exit_code_or_hard_error.exit_code
+        msg = '%s returned HARD ERROR: %s' % (str(ActSourceExecutor),
+                                              str(exit_code_or_hard_error.failure_details))
+        raise ValueError(msg)
 
 
 class TestBase(unittest.TestCase):

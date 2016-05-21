@@ -382,7 +382,25 @@ class PartialExecutor:
                 os_services),
             self.__test_case.before_assert_phase)
 
-    def __write_and_store_script_file_path(self):
+    def __act__script_execute(self) -> PartialResult:
+        """
+        Pre-condition: write has been executed.
+        """
+        the_phase_step = phase_step.ACT__SCRIPT_EXECUTE
+        try:
+            self.__act__execute_prepare()
+            if self.___step_execution_result.has_custom_stdin:
+                file_name = self._custom_stdin_file_name()
+                return self._run_act_program_with_opened_stdin_file(file_name)
+            else:
+                return self._run_act_program_with_stdin_file(subprocess.DEVNULL)
+        except Exception as ex:
+            return PartialResult(PartialResultStatus.IMPLEMENTATION_ERROR,
+                                 self.__execution_directory_structure,
+                                 PhaseFailureInfo(the_phase_step,
+                                                  result.new_failure_details_from_exception(ex)))
+
+    def __act__execute_prepare(self):
         self.__source_setup = SourceSetup(self.__act_phase_handling.source_builder,
                                           self.__execution_directory_structure.test_case_dir,
                                           phases.ACT.section_name)
@@ -390,46 +408,34 @@ class PartialExecutor:
                                                    self.configuration.home_dir,
                                                    self.__execution_directory_structure)
 
-    def __act__script_execute(self) -> PartialResult:
-        """
-        Pre-condition: write has been executed.
-        """
-        the_phase_step = phase_step.ACT__SCRIPT_EXECUTE
-        try:
-            self.__write_and_store_script_file_path()
-            if self.___step_execution_result.has_custom_stdin:
-                file_name = self._custom_stdin_file_name()
-                self._run_act_script_with_opened_stdin_file(file_name)
-            else:
-                self._run_act_script_with_stdin_file(subprocess.DEVNULL)
-            return new_partial_result_pass(self.__execution_directory_structure)
-        except Exception as ex:
-            return PartialResult(PartialResultStatus.IMPLEMENTATION_ERROR,
-                                 self.__execution_directory_structure,
-                                 PhaseFailureInfo(the_phase_step,
-                                                  result.new_failure_details_from_exception(ex)))
-
-    def _run_act_script_with_opened_stdin_file(self, file_name: str):
+    def _run_act_program_with_opened_stdin_file(self, file_name: str) -> PartialResult:
         try:
             f_stdin = open(file_name)
-            self._run_act_script_with_stdin_file(f_stdin)
+            return self._run_act_program_with_stdin_file(f_stdin)
         finally:
             f_stdin.close()
 
-    def _run_act_script_with_stdin_file(self, f_stdin):
+    def _run_act_program_with_stdin_file(self, f_stdin) -> PartialResult:
         """
         Pre-condition: write has been executed.
         """
         with open(str(self._eds.result.stdout_file), 'w') as f_stdout:
             with open(str(self._eds.result.stderr_file), 'w') as f_stderr:
-                exitcode = self.__act_phase_handling.executor.execute(
+                exit_code_or_hard_error = self.__act_phase_handling.executor.execute(
                     self.__source_setup,
                     self.configuration.home_dir,
                     self.__execution_directory_structure,
                     StdFiles(f_stdin,
                              StdOutputFiles(f_stdout,
                                             f_stderr)))
-                self._store_exit_code(exitcode)
+                if exit_code_or_hard_error.is_exit_code:
+                    self._store_exit_code(exit_code_or_hard_error.exit_code)
+                    return new_partial_result_pass(self.__execution_directory_structure)
+                else:
+                    return PartialResult(PartialResultStatus.HARD_ERROR,
+                                         self.__execution_directory_structure,
+                                         PhaseFailureInfo(phase_step.ACT__SCRIPT_EXECUTE,
+                                                          exit_code_or_hard_error.failure_details))
 
     def __set_pre_eds_environment_variables(self):
         os.environ.update(environment_variables.set_at_setup_pre_validate(self.configuration.home_dir))
