@@ -1,21 +1,14 @@
-import os
 import pathlib
-import sys
 import unittest
 from contextlib import contextmanager
 
 from exactly_lib.act_phase_setups import single_command_setup as sut
-from exactly_lib.execution.act_phase import SourceSetup
 from exactly_lib.test_case.phases.act.program_source import ActSourceBuilder, ActSourceBuilderForStatementLines
 from exactly_lib.test_case.phases.result import svh
-from exactly_lib.util.std import std_files_dev_null
 from exactly_lib_test.act_phase_setups.test_resources import py_program
 from exactly_lib_test.act_phase_setups.test_resources.act_program_executor import Configuration, \
     suite_for_execution, run_execute
 from exactly_lib_test.test_resources import python_program_execution as py_exe
-from exactly_lib_test.test_resources.execution.utils import execution_directory_structure
-from exactly_lib_test.test_resources.file_structure import File
-from exactly_lib_test.test_resources.file_structure_utils import tmp_dir_with
 from exactly_lib_test.test_resources.file_utils import tmp_file_containing_lines
 
 
@@ -126,69 +119,6 @@ class TestWhenInterpreterDoesNotExistThanTheResultShouldBeHardError(unittest.Tes
         interpreter_path = pathlib.Path().cwd().resolve() / 'non-existing-interpreter'
         source.raw_script_statement(str(interpreter_path))
         return source
-
-
-def execute_program_rel_home_that_returns_number_of_arguments(puc: unittest.TestCase,
-                                                              arguments) -> int:
-    setup = sut.act_phase_setup()
-    source = setup.script_builder_constructor()
-    executor = setup.executor
-    python_interpreter_name = 'python-interpreter'
-    command_file_name = 'program.py'
-    with tmp_dir_with(File(command_file_name, exit_code_is_number_of_arguments)) as home_dir_path:
-        os.symlink(sys.executable, str(home_dir_path / python_interpreter_name), False)
-        source.raw_script_statement('{} {}{}'.format(python_interpreter_name,
-                                                     home_dir_path / command_file_name,
-                                                     arguments))
-        actual = executor.validate(home_dir_path, source)
-        puc.assertIs(actual.status,
-                     svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
-                     'Validation result')
-        with execution_directory_structure() as eds:
-            source_setup = SourceSetup(source,
-                                       eds.act_dir,
-                                       'script-file-stem')
-            executor.prepare(source_setup,
-                             home_dir_path,
-                             eds)
-            std_files = std_files_dev_null()
-            return executor.execute(source_setup,
-                                    home_dir_path,
-                                    eds,
-                                    std_files)
-
-
-def execute_absolute_program_that_returns_number_of_arguments(puc: unittest.TestCase,
-                                                              arguments: list) -> int:
-    setup = sut.act_phase_setup()
-    source = setup.script_builder_constructor()
-    executor = setup.executor
-    command_file_name = 'program.py'
-    with tmp_dir_with(File(command_file_name, exit_code_is_number_of_arguments)) as home_dir_path:
-        source.raw_script_statement(py_exe.command_line_for_interpreting(home_dir_path / command_file_name,
-                                                                         arguments))
-        actual = executor.validate(home_dir_path, source)
-        puc.assertIs(actual.status,
-                     svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
-                     'Validation result')
-        with execution_directory_structure() as eds:
-            source_setup = SourceSetup(source,
-                                       eds.act_dir,
-                                       'script-file-stem')
-            executor.prepare(source_setup,
-                             home_dir_path,
-                             eds)
-            std_files = std_files_dev_null()
-            return executor.execute(source_setup,
-                                    home_dir_path,
-                                    eds,
-                                    std_files)
-
-
-exit_code_is_number_of_arguments = """
-import sys
-sys.exit(len(sys.argv) - 1)
-"""
 
 
 def suite() -> unittest.TestSuite:
