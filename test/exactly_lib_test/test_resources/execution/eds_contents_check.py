@@ -40,6 +40,20 @@ class ActRootContainsExactly(Assertion):
                                                     self.expected_contents)
 
 
+class TestCaseRootContainsExactly(Assertion):
+    def __init__(self,
+                 expected_contents: file_structure.DirContents):
+        self.expected_contents = expected_contents
+
+    def apply(self,
+              put: unittest.TestCase,
+              eds: ExecutionDirectoryStructure):
+        checker = file_checks.FileChecker(put,
+                                          message_header='Contents of testcase directory')
+        checker.assert_dir_contents_matches_exactly(eds.test_case_dir,
+                                                    self.expected_contents)
+
+
 class TmpUserRootContainsExactly(Assertion):
     def __init__(self,
                  expected_contents: file_structure.DirContents):
