@@ -10,7 +10,8 @@ from exactly_lib.test_case.phases.act.program_source import ActSourceBuilder
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.act_phase_setups.test_resources import py_program
 from exactly_lib_test.act_phase_setups.test_resources.act_program_executor import \
-    Configuration, suite_for_execution, run_execute, check_execution, Arrangement, Expectation
+    Configuration, suite_for_execution, check_execution, Arrangement, Expectation
+from exactly_lib_test.execution.test_resources import eh_check
 from exactly_lib_test.test_resources.execution.eds_contents_check import TestCaseRootContainsExactly
 from exactly_lib_test.test_resources.file_structure import DirContents, File
 
@@ -19,7 +20,7 @@ def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         suite_for_execution(TheConfiguration()),
         unittest.makeSuite(TestThatScriptSourceIsWrittenToTestCaseDir),
-        unittest.makeSuite(TestWhenInterpreterDoesNotExistThanTheResultShouldBeHardError),
+        unittest.makeSuite(TestWhenInterpreterDoesNotExistThanExecuteShouldGiveHardError),
     ])
 
 
@@ -62,17 +63,16 @@ class TheConfiguration(Configuration):
         return ret_val
 
 
-class TestWhenInterpreterDoesNotExistThanTheResultShouldBeHardError(unittest.TestCase):
+class TestWhenInterpreterDoesNotExistThanExecuteShouldGiveHardError(unittest.TestCase):
     def runTest(self):
         language_setup = ScriptLanguageSetup(_ScriptFileManagerWithNonExistingInterpreter(),
                                              StandardScriptLanguage())
         act_phase_setup = sut.new_for_script_language_setup(language_setup)
         empty_source = act_phase_setup.script_builder_constructor()
-        exit_code_or_hard_error = run_execute(self,
-                                              act_phase_setup.executor,
-                                              empty_source)
-        self.assertTrue(exit_code_or_hard_error.is_hard_error,
-                        'Expecting a HARD ERROR')
+        check_execution(self,
+                        Arrangement(act_phase_setup.executor,
+                                    empty_source),
+                        Expectation(result_of_execute=eh_check.is_hard_error))
 
 
 class TestThatScriptSourceIsWrittenToTestCaseDir(unittest.TestCase):
@@ -82,13 +82,15 @@ class TestThatScriptSourceIsWrittenToTestCaseDir(unittest.TestCase):
         act_phase_setup = sut.new_for_script_language_setup(language_setup)
         source = act_phase_setup.script_builder_constructor()
         source.raw_script_statement('print(1)')
-        arrangement = Arrangement(act_phase_setup.executor, source)
         expected_file_name = language_setup.base_name_from_stem(sut.ActSourceExecutorForScriptLanguage.FILE_NAME_STEM)
-        expectation = Expectation(TestCaseRootContainsExactly(DirContents([
-            File(expected_file_name,
-                 lines_content(['print(1)']))
-        ])))
-        exit_code_or_hard_error = check_execution(self, arrangement, expectation)
+        exit_code_or_hard_error = check_execution(
+            self,
+            Arrangement(act_phase_setup.executor, source),
+            Expectation(result_of_execute=eh_check.is_hard_error,
+                        side_effects_on_files_after_execute=TestCaseRootContainsExactly(DirContents([
+                            File(expected_file_name,
+                                 lines_content(['print(1)']))
+                        ]))))
         self.assertTrue(exit_code_or_hard_error.is_hard_error,
                         'Expecting a HARD ERROR')
 
