@@ -516,6 +516,7 @@ testas, o lägga till nya.)
   CLOCK: [2015-10-02 fre 16:34]--[2015-10-02 fre 16:59] =>  0:25
   CLOCK: [2015-09-30 ons 22:01]--[2015-09-30 ons 22:15] =>  0:14
 * Blandat
+  CLOCK: [2016-05-26 tor 18:23]--[2016-05-26 tor 18:43] =>  0:20
 ** Flytta result/std/... -> result/
    CLOCK: [2015-11-05 tor 20:00]--[2015-11-05 tor 20:20] =>  0:20
 ** Införa EXACTLY_RESULT_DIR

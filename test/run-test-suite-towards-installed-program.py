@@ -1,3 +1,6 @@
+"""
+A python 3 program that runs the test suite towards an installed program.
+"""
 import complete_test_suite
 from exactly_lib import program_info
 from exactly_lib_test.test_resources.cli_main_program_via_shell_utils.main_program_runner import \
