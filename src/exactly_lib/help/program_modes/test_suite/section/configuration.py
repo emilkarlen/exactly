@@ -26,7 +26,7 @@ class ConfigurationSectionDocumentation(TestSuiteSectionDocumentationForSectionW
                            normalize_and_parse(_PURPOSE_REST_TEXT))
 
 
-_PURPOSE_SINGLE_LINE_DESCRIPTION_TEXT = 'Configures for how individual test case are executed.'
+_PURPOSE_SINGLE_LINE_DESCRIPTION_TEXT = 'Configures how individual test case are executed.'
 
 _PURPOSE_REST_TEXT = """\
 The configuration is used for all test cases listed in the file, but not for test cases listed in sub suites.
