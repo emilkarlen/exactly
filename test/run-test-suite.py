@@ -1,3 +1,6 @@
+"""
+A python 3 program that runs the test suite towards the source file structure.
+"""
 import os
 import sys
 
