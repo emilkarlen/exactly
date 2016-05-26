@@ -28,8 +28,13 @@ PHASES_DOC = """\
 The following lines will belong to this phase.
 
 
-File contents before the first phase declaration will belong to the default phase,
+File contents before the first phase declaration belong to the default phase,
 which is {default_phase}.
+
+
+The order of the different phases in the test case file is irrelevant.
+The phases are always executed in the same order,
+regardless of the order they appear in the test case file.
 
 
 A phase can be declared more than once.

@@ -20,8 +20,8 @@ def test_outcome_documentation(setup: Setup) -> SectionContents:
         [
             section('Reporting',
                     normalize_and_parse(REPORTING)),
-            section('Successful execution of test case',
-                    _description_of_full_execution(setup)),
+            section('Complete execution',
+                    _description_of_complete_execution(setup)),
             section('Error during execution',
                     _interrupted_execution(setup)),
             section('Error during validation (before execution)',
@@ -44,9 +44,9 @@ line on stdout.
 """
 
 
-def _description_of_full_execution(setup: Setup) -> list:
+def _description_of_complete_execution(setup: Setup) -> list:
     ret_val = []
-    ret_val.extend(normalize_and_parse(FULL_EXECUTION_OUTCOME_DEPENDS_ON_TWO_THINGS))
+    ret_val.extend(normalize_and_parse(COMPLETE_EXECUTION_OUTCOME_DEPENDS_ON_TWO_THINGS))
     ret_val.append(_what_outcome_depends_on(setup))
     ret_val.append(_outcomes_per_mode_and_assert(setup))
     ret_val.append(para(OUTCOME_IS_EXIT_CODE_AND_IDENTIFIER))
@@ -54,7 +54,8 @@ def _description_of_full_execution(setup: Setup) -> list:
     return ret_val
 
 
-FULL_EXECUTION_OUTCOME_DEPENDS_ON_TWO_THINGS = """The outcome of a fully executed test case depends on two things:"""
+COMPLETE_EXECUTION_OUTCOME_DEPENDS_ON_TWO_THINGS = """\
+The outcome of a completely executed test case depends on two things:"""
 
 
 def _what_outcome_depends_on(setup: Setup) -> ParagraphItem:

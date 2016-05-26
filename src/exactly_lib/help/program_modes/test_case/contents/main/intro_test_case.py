@@ -26,6 +26,6 @@ E.g., "exitcode" and "stdout" are instructions of the {phase[assert]} phase.
 
 The instructions in the {phase[assert]} phase determines the outcome of the test case.
 Each of these instructions is an assertion that either PASS or FAIL.
-If any of the instructions FAIL, then the outcome of the test case as a whole will be FAIL.
-Otherwise it will be PASS.
+If any of the instructions FAIL, then the outcome of the test case as a whole is FAIL.
+Otherwise it is PASS.
 """
