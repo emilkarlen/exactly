@@ -5,7 +5,7 @@ from exactly_lib_test.test_resources import python_program_execution as py_exe
 from exactly_lib_test.test_resources.process import run_subprocess, SubProcessResult
 
 SRC_DIR_NAME = 'src'
-MAIN_PROGRAM_FILE_NAME = 'main-program-executor-for-test.py'
+MAIN_PROGRAM_FILE_NAME = 'default-main-program-runner.py'
 
 
 def main_program_src_path(dir_of_this_file: pathlib.Path) -> pathlib.Path:

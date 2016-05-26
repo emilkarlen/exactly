@@ -211,7 +211,7 @@ The "setuptools" python package must be installed in order to build and install 
 
 `exactly` can also be run directly from sources:
 
-    python3 src/main-program-executor-for-test.py
+    python3 src/default-main-program-runner.py
 
 
 To run `exactly`'s test suite:
