@@ -19,6 +19,7 @@ from exactly_lib import program_info
 setup(
     name=program_info.PROGRAM_NAME,
     version=program_info.VERSION,
+    zip_safe=False,
     author='Emil Karlen',
     author_email="emil@member.fsf.org",
     description=('Checks a command line program by executing it in a temporary sandbox directory and '
