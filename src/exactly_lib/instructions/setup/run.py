@@ -1,5 +1,5 @@
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
-from exactly_lib.instructions.multi_phase_instructions import execute
+from exactly_lib.instructions.multi_phase_instructions import run
 from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostEdsSvhValidationErrorValidator
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser
@@ -13,18 +13,18 @@ from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSetti
 def setup(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(
         parser(instruction_name),
-        execute.TheInstructionDocumentation(instruction_name,
-                                            description_rest_text=execute.NON_ASSERT_PHASE_DESCRIPTION_REST))
+        run.TheInstructionDocumentation(instruction_name,
+                                        description_rest_text=run.NON_ASSERT_PHASE_DESCRIPTION_REST))
 
 
 def parser(instruction_name: str) -> SingleInstructionParser:
-    return execute.InstructionParser(instruction_name,
-                                     lambda setup: _Instruction(setup))
+    return run.InstructionParser(instruction_name,
+                                 lambda setup: _Instruction(setup))
 
 
 class _Instruction(SetupPhaseInstruction):
     def __init__(self,
-                 setup: execute.SetupForExecutableWithArguments):
+                 setup: run.SetupForExecutableWithArguments):
         self.setup = setup
         self.svh_validator = PreOrPostEdsSvhValidationErrorValidator(setup.validator)
 
@@ -39,6 +39,6 @@ class _Instruction(SetupPhaseInstruction):
         failure_message = self.setup.validator.validate_post_eds_if_applicable(environment.eds)
         if failure_message is not None:
             return sh.new_sh_hard_error(failure_message)
-        return execute.run_and_return_sh(self.setup,
-                                         environment.home_and_eds,
-                                         environment.phase_logging)
+        return run.run_and_return_sh(self.setup,
+                                     environment.home_and_eds,
+                                     environment.phase_logging)

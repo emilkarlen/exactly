@@ -1,5 +1,5 @@
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
-from exactly_lib.instructions.multi_phase_instructions import execute
+from exactly_lib.instructions.multi_phase_instructions import run
 from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostEdsSvhValidationForSuccessOrHardError, \
     PreOrPostEdsSvhValidationErrorValidator
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
@@ -14,18 +14,18 @@ from exactly_lib.test_case.phases.result import svh
 def setup(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(
         parser(instruction_name),
-        execute.TheInstructionDocumentation(instruction_name,
-                                            description_rest_text=execute.NON_ASSERT_PHASE_DESCRIPTION_REST))
+        run.TheInstructionDocumentation(instruction_name,
+                                        description_rest_text=run.NON_ASSERT_PHASE_DESCRIPTION_REST))
 
 
 def parser(instruction_name: str) -> SingleInstructionParser:
-    return execute.InstructionParser(instruction_name,
-                                     _Instruction)
+    return run.InstructionParser(instruction_name,
+                                 _Instruction)
 
 
 class _Instruction(CleanupPhaseInstruction):
     def __init__(self,
-                 setup: execute.SetupForExecutableWithArguments):
+                 setup: run.SetupForExecutableWithArguments):
         self.setup = setup
 
     def validate_pre_eds(self,
@@ -46,6 +46,6 @@ class _Instruction(CleanupPhaseInstruction):
         validation_result = self._validate_from_main(environment)
         if validation_result.is_hard_error:
             return validation_result
-        return execute.run_and_return_sh(self.setup,
-                                         environment.home_and_eds,
-                                         environment.phase_logging)
+        return run.run_and_return_sh(self.setup,
+                                     environment.home_and_eds,
+                                     environment.phase_logging)

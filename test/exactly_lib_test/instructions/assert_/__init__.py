@@ -3,7 +3,7 @@ import unittest
 from exactly_lib_test.instructions.assert_ import \
     change_dir, \
     contents, \
-    execute, \
+    run, \
     exitcode, \
     new_dir, \
     shell, \
@@ -22,7 +22,7 @@ def suite():
     ret_val.addTest(type.suite())
     ret_val.addTest(new_dir.suite())
     ret_val.addTest(change_dir.suite())
-    ret_val.addTest(execute.suite())
+    ret_val.addTest(run.suite())
     ret_val.addTest(shell.suite())
     ret_val.addTest(env.suite())
     return ret_val

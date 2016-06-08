@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib_test.instructions.multi_phase_instructions import new_dir, change_dir, execute, new_file, env, shell
+from exactly_lib_test.instructions.multi_phase_instructions import new_dir, change_dir, run, new_file, env, shell
 
 
 def suite() -> unittest.TestSuite:
@@ -8,7 +8,7 @@ def suite() -> unittest.TestSuite:
         new_dir.suite(),
         change_dir.suite(),
         new_file.suite(),
-        execute.suite(),
+        run.suite(),
         env.suite(),
         shell.suite(),
     ])
