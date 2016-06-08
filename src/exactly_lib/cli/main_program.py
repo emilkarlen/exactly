@@ -3,7 +3,6 @@ import os
 from exactly_lib.cli.cli_environment.common_cli_options import HELP_COMMAND, SUITE_COMMAND
 from exactly_lib.cli.program_modes import main_program_argument_parsing as case_argument_parsing
 from exactly_lib.cli.program_modes.test_case.settings import TestCaseExecutionSettings
-from exactly_lib.cli.program_modes.test_suite import argument_parsing as suite_argument_parsing
 from exactly_lib.cli.program_modes.test_suite.settings import TestSuiteExecutionSettings
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.test_case.instruction_setup import InstructionsSetup
@@ -43,7 +42,7 @@ class MainProgram:
         raise NotImplementedError()
 
     def execute_test_suite(self,
-                           settings: TestSuiteExecutionSettings) -> int:
+                           test_suite_execution_settings: TestSuiteExecutionSettings) -> int:
         raise NotImplementedError()
 
     @property
@@ -57,6 +56,7 @@ class MainProgram:
         return self.execute_test_case(settings)
 
     def _parse_and_execute_test_suite(self, command_line_arguments: list) -> int:
+        from exactly_lib.cli.program_modes.test_suite import argument_parsing as suite_argument_parsing
         settings = suite_argument_parsing.parse(self._default,
                                                 command_line_arguments)
         return self.execute_test_suite(settings)

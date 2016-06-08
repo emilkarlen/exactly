@@ -4,13 +4,8 @@ from exactly_lib import program_info
 from exactly_lib.cli import main_program
 from exactly_lib.cli.program_modes.test_case import execution as test_case_execution
 from exactly_lib.cli.program_modes.test_case.settings import TestCaseExecutionSettings
-from exactly_lib.cli.program_modes.test_suite.settings import TestSuiteExecutionSettings
-from exactly_lib.processing import processors as case_processing
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.test_case.instruction_setup import InstructionsSetup
-from exactly_lib.test_suite import enumeration
-from exactly_lib.test_suite import execution as test_suite_execution
-from exactly_lib.test_suite import suite_hierarchy_reading
 from exactly_lib.test_suite.reporting import RootSuiteReporterFactory
 from exactly_lib.util.std import StdOutputFiles
 
@@ -33,10 +28,14 @@ class MainProgram(main_program.MainProgram):
                                                 settings)
         return executor.execute()
 
-    def execute_test_suite(self, settings: TestSuiteExecutionSettings) -> int:
+    def execute_test_suite(self, test_suite_execution_settings) -> int:
+        from exactly_lib.processing import processors as case_processing
+        from exactly_lib.test_suite import execution as test_suite_execution
+        from exactly_lib.test_suite import enumeration
+        from exactly_lib.test_suite import suite_hierarchy_reading
         default_configuration = case_processing.Configuration(self._split_line_into_name_and_argument_function,
                                                               self._instruction_set,
-                                                              settings.handling_setup,
+                                                              test_suite_execution_settings.handling_setup,
                                                               False,
                                                               self._eds_root_name_prefix_for_suite())
         executor = test_suite_execution.Executor(default_configuration,
@@ -48,7 +47,7 @@ class MainProgram(main_program.MainProgram):
                                                  self.root_suite_reporter_factory,
                                                  enumeration.DepthFirstEnumerator(),
                                                  case_processing.new_processor_that_should_not_pollute_current_process,
-                                                 settings.suite_root_file_path)
+                                                 test_suite_execution_settings.suite_root_file_path)
         return executor.execute()
 
     @staticmethod
