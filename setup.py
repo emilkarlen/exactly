@@ -33,7 +33,7 @@ setup(
     packages=find_packages(SRC_DIR_NAME),
     long_description=read('README.md'),
     classifiers=[
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'Programming Language :: Python :: 3.4',
         'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
         'Topic :: Software Development :: Testing',
