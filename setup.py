@@ -22,7 +22,7 @@ setup(
     zip_safe=False,
     author='Emil Karlen',
     author_email="emil@member.fsf.org",
-    description=('Checks a command line program by executing it in a temporary sandbox directory and '
+    description=('Tests a command line program by executing it in a temporary sandbox directory and '
                  'inspecting its result.'),
     license='GPLv3+',
     keywords='test case suite check assert script shell console command line program execute',
