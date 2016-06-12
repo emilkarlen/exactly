@@ -25,7 +25,7 @@ setup(
     description=('Tests a command line program by executing it in a temporary sandbox directory and '
                  'inspecting its result.'),
     license='GPLv3+',
-    keywords='test case suite check assert script shell console command line program execute',
+    keywords='test case suite check assert script shell console command line program execute sandbox',
     url='https://github.com/emilkarlen/exactly',
     package_dir={
         '': 'src',
