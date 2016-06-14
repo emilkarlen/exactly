@@ -131,7 +131,7 @@ it just displays some of ``exactly``'s functionality.)
 --------------------------
 
 
-``[act]`` is not needed to indicate what is being checked, since the "act" phase is the default "phase".
+``[act]`` is not needed to indicate what is being checked, since the "act" phase is the default phase.
  
 The following is a valid test case,
 and if run by ``exactly``, it won't remove anything (since it is executed inside a temporary sandbox directory)::
@@ -146,7 +146,7 @@ Print output from the tested program
 If ``--act`` is used, the output of the tested program (the "act" phase) will become the output of ``exactly`` -
 stdout, stderr and exit code.
 
-The test case is executed in the sandbox, as usual.
+The test case is executed in a sandbox, as usual.
 
 
 Keeping the sandbox directory for later inspection
