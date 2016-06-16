@@ -36,11 +36,11 @@ If the file 'addressbook.case' contains this test case, then ``exactly`` can exe
 
 It also means that the prerequisites for running the test were satisfied:
 
-- the system under test - ``addressbook`` program is found in the same directory as the test case file
-- test test input file ``a-test-address-book.txt`` is found in the same directory as the test case file
+- the system under test - the ``addressbook`` program - is found in the same directory as the test case file
+- the test input file ``a-test-address-book.txt`` is found in the same directory as the test case file
 
 
-The following test case displays a potpurri of functionality. (Beware that this test case does not make sense! -
+The following test case displays a potpurri of functionality. (Be aware that this test case does not make sense -
 it just displays some of ``exactly``'s functionality.)
 
 ::
@@ -49,7 +49,7 @@ it just displays some of ``exactly``'s functionality.)
 
 
     mode SKIP
-    # This will case the test case to not be executed.
+    # This will cause the test case to not be executed.
 
 
     [setup]
@@ -189,48 +189,33 @@ HELP
 ====
 
 
-Use ``--help``.
+Use ``exactly --help`` or ``exactly help`` to get brief help.
 
-``help help`` displays a summary of help items.
+``exactly help help`` displays a summary of help options.
 
-``help instructions`` lists the instructions that are available in each "phase".
+``exactly help instructions`` lists the instructions that are available in each "phase".
 
-``help htmldoc`` outputs html that is an introduction and reference to the program.
+``exactly help htmldoc`` outputs html that is an introduction and reference to the program.
 
 
 EXAMPLES
 ========
 
 
-The ``examples/`` directory contains examples.
+The ``examples/`` directory of the source repository contains examples.
 
 
-BUILDING, TESTING, INSTALLING
-=============================
+INSTALLING
+==========
+
 
 ``exactly`` is written entirely in Python and does not require any external libraries.
 
-``exactly`` is python program, and requires Python >= 3.4 (not tested on earlier version of Python 3).
+``exactly`` requires Python >= 3.4 (not tested on earlier version of Python 3).
 
-The "setuptools" python package must be installed in order to build and install in the normal way::
+Use ``pip`` to install::
 
-    $ python3 setup.py build
-
-    $ sudo python3 setup.py install
-
-
-``exactly`` can also be run directly from sources::
-
-    $ python3 src/default-main-program-runner.py
-
-
-To run ``exactly``'s test suite::
-
-    $ python3 test/run-test-suite.py
-
-To run the test suite towards an installed program::
-
-    $ python3 test/run-test-suite-towards-installed-program.py
+    $ pip install exactly
 
 
 DEVELOPMENT STATUS
