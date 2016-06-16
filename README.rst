@@ -202,7 +202,7 @@ EXAMPLES
 ========
 
 
-The ``examples/`` directory of the source repository contains examples.
+The ``examples/`` directory of the source distribution contains examples.
 
 
 INSTALLING
