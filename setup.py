@@ -26,7 +26,7 @@ setup(
                  'inspecting its result.'),
     license='GPLv3+',
     keywords='test case suite check assert script shell console command line program execute sandbox',
-    url='https://github.com/emilkarlen/exactly',
+    url='https://github.com/emilkarlen/exactly/wiki',
     package_dir={
         '': 'src',
     },
