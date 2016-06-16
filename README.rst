@@ -217,6 +217,10 @@ Use ``pip`` to install::
 
     $ pip install exactly
 
+The program can also be run from a source distribution::
+
+    $ python3 src/default-main-program-runner.py
+
 
 DEVELOPMENT STATUS
 ==================
