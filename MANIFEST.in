@@ -1,3 +1,5 @@
 include src/default-main-program-runner.py
 include LICENSE
 include COPYRIGHT
+recursive-include examples *
+recursive-include doc *
