@@ -2,6 +2,11 @@ Tests a command line program by executing it in a temporary sandbox directory an
 
 Supports individual test cases and test suites.
 
+Exactly has a [Wiki](https://github.com/emilkarlen/exactly/wiki),
+and an [introduction by examples](https://github.com/emilkarlen/exactly/wiki/Exactly-by-example)
+
+It also has a [Reference manual](http://htmlpreview.github.io/?https://raw.githubusercontent.com/wiki/emilkarlen/exactly/Reference.html).
+
 
 TEST CASES
 ==========
