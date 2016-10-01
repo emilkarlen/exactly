@@ -1,8 +1,6 @@
 import pathlib
-import tempfile
 import unittest
 
-from exactly_lib import program_info
 from exactly_lib.instructions.utils.arg_parse import parse_file_ref as sut
 from exactly_lib.instructions.utils.arg_parse.parse_utils import TokenStream
 from exactly_lib.instructions.utils.arg_parse.relative_path_options import REL_CWD_OPTION, REL_HOME_OPTION, \
@@ -124,12 +122,15 @@ class TestParseFromTokenStream(unittest.TestCase):
             sut.parse_file_ref(TokenStream(REL_CWD_OPTION))
 
 
-class TestParsesCorrectValueFromTokenStream(unittest.TestCase):
+class TestParsesCorrectValueFromTokenStream(TestParsesBase):
     def test_rel_home(self):
         (file_reference, _) = sut.parse_file_ref(TokenStream('%s file.txt' % REL_HOME_OPTION))
         with home_and_eds_and_test_as_curr_dir(
                 home_dir_contents=DirContents([empty_file('file.txt')])) as home_and_eds:
-            self.assertTrue(file_reference.file_path_pre_or_post_eds(home_and_eds).exists())
+            expected_path = home_and_eds.home_dir_path / 'file.txt'
+            self.assert_file_exists_pre_eds(expected_path,
+                                            home_and_eds,
+                                            file_reference)
 
     def test_rel_cwd(self):
         (file_reference, _) = sut.parse_file_ref(TokenStream('%s file.txt' % REL_CWD_OPTION))
@@ -144,17 +145,22 @@ class TestParsesCorrectValueFromTokenStream(unittest.TestCase):
             self.assertTrue(file_reference.file_path_pre_or_post_eds(home_and_eds).exists())
 
     def test_absolute(self):
-        abs_path_str = str(pathlib.Path.cwd().resolve())
+        abs_path = pathlib.Path.cwd().resolve()
+        abs_path_str = str(abs_path)
         (file_reference, _) = sut.parse_file_ref(TokenStream(abs_path_str))
-        with tempfile.TemporaryDirectory(prefix=program_info.PROGRAM_NAME + '-home-') as home_dir:
-            home_dir_path = pathlib.Path(home_dir)
-            self.assertTrue(file_reference.file_path_pre_eds(home_dir_path).exists())
+        with home_and_eds_and_test_as_curr_dir() as home_and_eds:
+            self.assert_file_exists_pre_eds(abs_path,
+                                            home_and_eds,
+                                            file_reference)
 
     def test_rel_home_is_default(self):
         (file_reference, _) = sut.parse_file_ref(TokenStream('file.txt'))
         with home_and_eds_and_test_as_curr_dir(
                 home_dir_contents=DirContents([empty_file('file.txt')])) as home_and_eds:
-            self.assertTrue(file_reference.file_path_pre_or_post_eds(home_and_eds).exists())
+            expected_path = home_and_eds.home_dir_path / 'file.txt'
+            self.assert_file_exists_pre_eds(expected_path,
+                                            home_and_eds,
+                                            file_reference)
 
 
 def suite():
