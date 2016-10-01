@@ -20,9 +20,18 @@ class TestParsesBase(unittest.TestCase):
                                    home_and_eds: HomeAndEds,
                                    actual: FileRef):
         self.assertTrue(actual.exists_pre_eds)
-        self.assertTrue(actual.file_path_pre_eds(home_and_eds.home_dir_path).exists())
         self.assertTrue(actual.file_path_pre_or_post_eds(home_and_eds).exists())
         self.assertEqual(actual.file_path_pre_eds(home_and_eds.home_dir_path),
+                         expected_path)
+        self.assertEqual(actual.file_path_pre_or_post_eds(home_and_eds),
+                         expected_path)
+
+    def assert_file_does_not_exists_pre_eds(self,
+                                            expected_path: pathlib.Path,
+                                            home_and_eds: HomeAndEds,
+                                            actual: FileRef):
+        self.assertFalse(actual.exists_pre_eds)
+        self.assertEqual(actual.file_path_post_eds(home_and_eds.eds),
                          expected_path)
         self.assertEqual(actual.file_path_pre_or_post_eds(home_and_eds),
                          expected_path)
@@ -56,7 +65,7 @@ class TestParse(unittest.TestCase):
             sut.parse_file_ref__list([REL_CWD_OPTION])
 
 
-class TestParsesCorrectValue(TestParsesBase):
+class TestParsesCorrectValueFromList(TestParsesBase):
     def test_rel_home(self):
         (file_reference, _) = sut.parse_file_ref__list([REL_HOME_OPTION, 'file.txt'])
         with home_and_eds_and_test_as_curr_dir(
@@ -166,7 +175,7 @@ class TestParsesCorrectValueFromTokenStream(TestParsesBase):
 def suite():
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestParse))
-    ret_val.addTest(unittest.makeSuite(TestParsesCorrectValue))
+    ret_val.addTest(unittest.makeSuite(TestParsesCorrectValueFromList))
     ret_val.addTest(unittest.makeSuite(TestParseFromTokenStream))
     ret_val.addTest(unittest.makeSuite(TestParsesCorrectValueFromTokenStream))
     return ret_val
