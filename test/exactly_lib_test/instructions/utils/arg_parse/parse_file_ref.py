@@ -2,6 +2,7 @@ import pathlib
 import unittest
 
 from exactly_lib.instructions.utils.arg_parse import parse_file_ref as sut
+from exactly_lib.instructions.utils.arg_parse import relative_path_options as rel_opts
 from exactly_lib.instructions.utils.arg_parse.parse_utils import TokenStream
 from exactly_lib.instructions.utils.arg_parse.relative_path_options import REL_CWD_OPTION, REL_HOME_OPTION, \
     REL_TMP_OPTION
@@ -108,6 +109,20 @@ class TestParsesCorrectValueFromListWithDefaultConfiguration(TestParsesBase):
                                             file_reference)
 
 
+class TestParsesCorrectValueFromListWithCustomConfiguration(TestParsesBase):
+    def test_default_relativity_is_different_than_that_of_default_configuration(self):
+        custom_configuration = sut.Configuration({rel_opts.RelOptionType.REL_ACT},
+                                                 rel_opts.RelOptionType.REL_ACT,
+                                                 'FILE')
+        (file_reference, _) = sut.parse_file_ref__list(['file.txt'],
+                                                       custom_configuration)
+        with home_and_eds_and_test_as_curr_dir() as home_and_eds:
+            expected_path = home_and_eds.eds.act_dir / 'file.txt'
+            self.assert_file_does_not_exist_pre_eds(expected_path,
+                                                    home_and_eds,
+                                                    file_reference)
+
+
 class TestParseFromTokenStream(unittest.TestCase):
     def test_fail_when_no_arguments(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
@@ -131,6 +146,20 @@ class TestParseFromTokenStream(unittest.TestCase):
     def test_fail_when_option_is_only_argument(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             sut.parse_file_ref(TokenStream(REL_CWD_OPTION))
+
+
+class TestParsesCorrectValueFromTokenStreamWithCustomConfiguration(TestParsesBase):
+    def test_default_relativity_is_different_than_that_of_default_configuration(self):
+        custom_configuration = sut.Configuration({rel_opts.RelOptionType.REL_ACT},
+                                                 rel_opts.RelOptionType.REL_ACT,
+                                                 'FILE')
+        (file_reference, _) = sut.parse_file_ref(TokenStream('file.txt'),
+                                                 custom_configuration)
+        with home_and_eds_and_test_as_curr_dir() as home_and_eds:
+            expected_path = home_and_eds.eds.act_dir / 'file.txt'
+            self.assert_file_does_not_exist_pre_eds(expected_path,
+                                                    home_and_eds,
+                                                    file_reference)
 
 
 class TestParsesCorrectValueFromTokenStreamWithDefaultConfiguration(TestParsesBase):
@@ -180,8 +209,10 @@ class TestParsesCorrectValueFromTokenStreamWithDefaultConfiguration(TestParsesBa
 def suite():
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestParse))
+    ret_val.addTest(unittest.makeSuite(TestParsesCorrectValueFromListWithCustomConfiguration))
     ret_val.addTest(unittest.makeSuite(TestParsesCorrectValueFromListWithDefaultConfiguration))
     ret_val.addTest(unittest.makeSuite(TestParseFromTokenStream))
+    ret_val.addTest(unittest.makeSuite(TestParsesCorrectValueFromTokenStreamWithCustomConfiguration))
     ret_val.addTest(unittest.makeSuite(TestParsesCorrectValueFromTokenStreamWithDefaultConfiguration))
     return ret_val
 
