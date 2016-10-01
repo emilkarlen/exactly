@@ -15,6 +15,17 @@ from exactly_lib_test.test_resources.execution.utils import home_and_eds_and_tes
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file
 
 
+def suite() -> unittest.TestSuite:
+    ret_val = unittest.TestSuite()
+    ret_val.addTest(unittest.makeSuite(TestParse))
+    ret_val.addTest(unittest.makeSuite(TestParsesCorrectValueFromListWithCustomConfiguration))
+    ret_val.addTest(unittest.makeSuite(TestParsesCorrectValueFromListWithDefaultConfiguration))
+    ret_val.addTest(unittest.makeSuite(TestParseFromTokenStream))
+    ret_val.addTest(unittest.makeSuite(TestParsesCorrectValueFromTokenStreamWithCustomConfiguration))
+    ret_val.addTest(unittest.makeSuite(TestParsesCorrectValueFromTokenStreamWithDefaultConfiguration))
+    return ret_val
+
+
 class TestParsesBase(unittest.TestCase):
     def assert_is_file_that_exists_pre_eds(self,
                                            expected_path: pathlib.Path,
@@ -204,17 +215,6 @@ class TestParsesCorrectValueFromTokenStreamWithDefaultConfiguration(TestParsesBa
             self.assert_is_file_that_exists_pre_eds(expected_path,
                                                     home_and_eds,
                                                     file_reference)
-
-
-def suite() -> unittest.TestSuite:
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestParse))
-    ret_val.addTest(unittest.makeSuite(TestParsesCorrectValueFromListWithCustomConfiguration))
-    ret_val.addTest(unittest.makeSuite(TestParsesCorrectValueFromListWithDefaultConfiguration))
-    ret_val.addTest(unittest.makeSuite(TestParseFromTokenStream))
-    ret_val.addTest(unittest.makeSuite(TestParsesCorrectValueFromTokenStreamWithCustomConfiguration))
-    ret_val.addTest(unittest.makeSuite(TestParsesCorrectValueFromTokenStreamWithDefaultConfiguration))
-    return ret_val
 
 
 if __name__ == '__main__':
