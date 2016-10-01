@@ -64,7 +64,7 @@ class TestParse(unittest.TestCase):
             sut.parse_file_ref__list([REL_CWD_OPTION])
 
 
-class TestParsesCorrectValueFromList(TestParsesBase):
+class TestParsesCorrectValueFromListWithDefaultConfiguration(TestParsesBase):
     def test_rel_home(self):
         (file_reference, _) = sut.parse_file_ref__list([REL_HOME_OPTION, 'file.txt'])
         with home_and_eds_and_test_as_curr_dir() as home_and_eds:
@@ -133,7 +133,7 @@ class TestParseFromTokenStream(unittest.TestCase):
             sut.parse_file_ref(TokenStream(REL_CWD_OPTION))
 
 
-class TestParsesCorrectValueFromTokenStream(TestParsesBase):
+class TestParsesCorrectValueFromTokenStreamWithDefaultConfiguration(TestParsesBase):
     def test_rel_home(self):
         (file_reference, _) = sut.parse_file_ref(TokenStream('%s file.txt' % REL_HOME_OPTION))
         with home_and_eds_and_test_as_curr_dir() as home_and_eds:
@@ -180,9 +180,9 @@ class TestParsesCorrectValueFromTokenStream(TestParsesBase):
 def suite():
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestParse))
-    ret_val.addTest(unittest.makeSuite(TestParsesCorrectValueFromList))
+    ret_val.addTest(unittest.makeSuite(TestParsesCorrectValueFromListWithDefaultConfiguration))
     ret_val.addTest(unittest.makeSuite(TestParseFromTokenStream))
-    ret_val.addTest(unittest.makeSuite(TestParsesCorrectValueFromTokenStream))
+    ret_val.addTest(unittest.makeSuite(TestParsesCorrectValueFromTokenStreamWithDefaultConfiguration))
     return ret_val
 
 
