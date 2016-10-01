@@ -1,10 +1,10 @@
 import shlex
 
-import exactly_lib.instructions.utils.arg_parse.parse_executable_file
 from exactly_lib.common.instruction_documentation import InvokationVariant, \
     SyntaxElementDescription
 from exactly_lib.instructions.utils import file_properties
 from exactly_lib.instructions.utils import sub_process_execution
+from exactly_lib.instructions.utils.arg_parse import parse_executable_file
 from exactly_lib.instructions.utils.arg_parse import parse_file_ref
 from exactly_lib.instructions.utils.arg_parse.parse_executable_file import PARSE_FILE_REF_CONFIGURATION
 from exactly_lib.instructions.utils.arg_parse.parse_utils import TokenStream
@@ -237,7 +237,7 @@ class SetupParser:
 
     def apply(self, source: SingleInstructionParserSource) -> SetupForExecutableWithArguments:
         tokens = TokenStream(source.instruction_argument)
-        (exe_file, arg_tokens) = exactly_lib.instructions.utils.arg_parse.parse_executable_file.parse(tokens)
+        (exe_file, arg_tokens) = parse_executable_file.parse(tokens)
         if arg_tokens.is_null:
             return self._execute(source, exe_file, '')
         if arg_tokens.head == INTERPRET_OPTION:

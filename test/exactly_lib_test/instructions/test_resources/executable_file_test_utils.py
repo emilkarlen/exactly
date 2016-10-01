@@ -1,8 +1,8 @@
 import pathlib
 import unittest
 
-import exactly_lib.instructions.utils.arg_parse.parse_executable_file
 from exactly_lib.instructions.utils import executable_file as sut
+from exactly_lib.instructions.utils.arg_parse import parse_executable_file
 from exactly_lib.instructions.utils.arg_parse.parse_utils import TokenStream
 from exactly_lib.test_case.phases.common import HomeAndEds
 from exactly_lib_test.instructions.test_resources import pre_or_post_eds_validator as validator_util
@@ -17,8 +17,6 @@ class Configuration:
                  exists_pre_eds: bool):
         self.option = option
         self.exists_pre_eds = exists_pre_eds
-        # self.passes_validation_pre_eds = passes_validation_pre_eds
-        # self.passes_validation_post_eds = passes_validation_post_eds
 
     def file_installation(self, file: File) -> (DirContents, eds_populator.EdsPopulator):
         raise NotImplementedError()
@@ -47,8 +45,8 @@ class CheckBase(unittest.TestCase):
     def _home_and_eds_and_test_as_curr_dir(self, file: File) -> HomeAndEds:
         contents = self.configuration.file_installation(file)
         return home_and_eds_and_test_as_curr_dir(
-                home_dir_contents=contents[0],
-                eds_contents=contents[1])
+            home_dir_contents=contents[0],
+            eds_contents=contents[1])
 
     def _assert_passes_validation(self, actual: sut.ExecutableFile, home_and_eds: HomeAndEds):
         validator_util.check(self, actual.validator, home_and_eds)
@@ -69,8 +67,7 @@ class CheckExistingFile(CheckBase):
         conf = self.configuration
         arguments_str = '{} file.exe remaining args'.format(conf.option)
         arguments = TokenStream(arguments_str)
-        (exe_file, remaining_arguments) = exactly_lib.instructions.utils.arg_parse.parse_executable_file.parse(
-            arguments)
+        (exe_file, remaining_arguments) = parse_executable_file.parse(arguments)
         self.assertEqual('remaining args',
                          remaining_arguments.source,
                          'Remaining arguments')
@@ -88,8 +85,7 @@ class CheckExistingFileWithArguments(CheckBase):
         conf = self.configuration
         arguments_str = '( {} file.exe arg1 -arg2 ) remaining args'.format(conf.option)
         arguments = TokenStream(arguments_str)
-        (exe_file, remaining_arguments) = exactly_lib.instructions.utils.arg_parse.parse_executable_file.parse(
-            arguments)
+        (exe_file, remaining_arguments) = parse_executable_file.parse(arguments)
         self.assertEqual(['arg1', '-arg2'],
                          exe_file.arguments,
                          'Arguments to executable')
@@ -110,8 +106,7 @@ class CheckExistingButNonExecutableFile(CheckBase):
         conf = self.configuration
         arguments_str = '{} file.exe remaining args'.format(conf.option)
         arguments = TokenStream(arguments_str)
-        (exe_file, remaining_arguments) = exactly_lib.instructions.utils.arg_parse.parse_executable_file.parse(
-            arguments)
+        (exe_file, remaining_arguments) = parse_executable_file.parse(arguments)
         with self._home_and_eds_and_test_as_curr_dir(empty_file('file.exe')) as home_and_eds:
             self._assert_does_not_pass_validation(exe_file, home_and_eds)
 
@@ -124,8 +119,7 @@ class CheckNonExistingFile(CheckBase):
         conf = self.configuration
         arguments_str = '{} file.exe remaining args'.format(conf.option)
         arguments = TokenStream(arguments_str)
-        (exe_file, remaining_arguments) = exactly_lib.instructions.utils.arg_parse.parse_executable_file.parse(
-            arguments)
+        (exe_file, remaining_arguments) = parse_executable_file.parse(arguments)
         self.assertEqual('remaining args',
                          remaining_arguments.source,
                          'Remaining arguments')
