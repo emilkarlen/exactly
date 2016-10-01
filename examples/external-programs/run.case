@@ -1,5 +1,5 @@
 #
-# The "external" instruction can be used in all phases except "act".
+# The "run" instruction can be used in all phases except "act".
 #
 
 [setup]
