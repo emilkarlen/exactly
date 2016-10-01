@@ -26,10 +26,10 @@ class TestParsesBase(unittest.TestCase):
         self.assertEqual(actual.file_path_pre_or_post_eds(home_and_eds),
                          expected_path)
 
-    def assert_file_does_not_exists_pre_eds(self,
-                                            expected_path: pathlib.Path,
-                                            home_and_eds: HomeAndEds,
-                                            actual: FileRef):
+    def assert_file_does_not_exist_pre_eds(self,
+                                           expected_path: pathlib.Path,
+                                           home_and_eds: HomeAndEds,
+                                           actual: FileRef):
         self.assertFalse(actual.exists_pre_eds)
         self.assertEqual(actual.file_path_post_eds(home_and_eds.eds),
                          expected_path)
@@ -85,7 +85,10 @@ class TestParsesCorrectValueFromList(TestParsesBase):
         (file_reference, _) = sut.parse_file_ref__list([REL_TMP_OPTION, 'file.txt'])
         with home_and_eds_and_test_as_curr_dir(
                 eds_contents=tmp_user_dir_contents(DirContents([empty_file('file.txt')]))) as home_and_eds:
-            self.assertTrue(file_reference.file_path_pre_or_post_eds(home_and_eds).exists())
+            expected_path = home_and_eds.eds.tmp.user_dir / 'file.txt'
+            self.assert_file_does_not_exist_pre_eds(expected_path,
+                                                    home_and_eds,
+                                                    file_reference)
 
     def test_absolute(self):
         abs_path = pathlib.Path.cwd().resolve()
@@ -151,7 +154,10 @@ class TestParsesCorrectValueFromTokenStream(TestParsesBase):
         (file_reference, _) = sut.parse_file_ref(TokenStream('%s file.txt' % REL_TMP_OPTION))
         with home_and_eds_and_test_as_curr_dir(
                 eds_contents=tmp_user_dir_contents(DirContents([empty_file('file.txt')]))) as home_and_eds:
-            self.assertTrue(file_reference.file_path_pre_or_post_eds(home_and_eds).exists())
+            expected_path = home_and_eds.eds.tmp.user_dir / 'file.txt'
+            self.assert_file_does_not_exist_pre_eds(expected_path,
+                                                    home_and_eds,
+                                                    file_reference)
 
     def test_absolute(self):
         abs_path = pathlib.Path.cwd().resolve()
