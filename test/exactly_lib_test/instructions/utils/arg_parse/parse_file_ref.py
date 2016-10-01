@@ -133,6 +133,14 @@ class TestParsesCorrectValueFromListWithCustomConfiguration(TestParsesBase):
                                                             home_and_eds,
                                                             file_reference)
 
+    def test_WHEN_an_unsupported_option_is_used_THEN_an_exception_should_be_raised(self):
+        custom_configuration = sut.Configuration({rel_opts.RelOptionType.REL_ACT},
+                                                 rel_opts.RelOptionType.REL_ACT,
+                                                 'FILE')
+        with self.assertRaises(SingleInstructionInvalidArgumentException):
+            sut.parse_file_ref__list([REL_TMP_OPTION, 'file.txt'],
+                                     custom_configuration)
+
 
 class TestParseFromTokenStream(unittest.TestCase):
     def test_fail_when_no_arguments(self):
@@ -171,6 +179,14 @@ class TestParsesCorrectValueFromTokenStreamWithCustomConfiguration(TestParsesBas
             self.assert_is_file_that_does_not_exist_pre_eds(expected_path,
                                                             home_and_eds,
                                                             file_reference)
+
+    def test_WHEN_an_unsupported_option_is_used_THEN_an_exception_should_be_raised(self):
+        custom_configuration = sut.Configuration({rel_opts.RelOptionType.REL_ACT},
+                                                 rel_opts.RelOptionType.REL_ACT,
+                                                 'FILE')
+        with self.assertRaises(SingleInstructionInvalidArgumentException):
+            sut.parse_file_ref(TokenStream('%s file.txt' % REL_TMP_OPTION),
+                               custom_configuration)
 
 
 class TestParsesCorrectValueFromTokenStreamWithDefaultConfiguration(TestParsesBase):
