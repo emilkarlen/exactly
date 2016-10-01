@@ -7,11 +7,27 @@ from exactly_lib.instructions.utils.arg_parse import parse_file_ref as sut
 from exactly_lib.instructions.utils.arg_parse.parse_utils import TokenStream
 from exactly_lib.instructions.utils.arg_parse.relative_path_options import REL_CWD_OPTION, REL_HOME_OPTION, \
     REL_TMP_OPTION
+from exactly_lib.instructions.utils.file_ref import FileRef
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.test_case.phases.common import HomeAndEds
 from exactly_lib_test.test_resources.execution.eds_populator import act_dir_contents, tmp_user_dir_contents
 from exactly_lib_test.test_resources.execution.utils import home_and_eds_and_test_as_curr_dir
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file
+
+
+class TestParsesBase(unittest.TestCase):
+    def assert_file_exists_pre_eds(self,
+                                   expected_path: pathlib.Path,
+                                   home_and_eds: HomeAndEds,
+                                   actual: FileRef):
+        self.assertTrue(actual.exists_pre_eds)
+        self.assertTrue(actual.file_path_pre_eds(home_and_eds.home_dir_path).exists())
+        self.assertTrue(actual.file_path_pre_or_post_eds(home_and_eds).exists())
+        self.assertEqual(actual.file_path_pre_eds(home_and_eds.home_dir_path),
+                         expected_path)
+        self.assertEqual(actual.file_path_pre_or_post_eds(home_and_eds),
+                         expected_path)
 
 
 class TestParse(unittest.TestCase):
@@ -42,12 +58,15 @@ class TestParse(unittest.TestCase):
             sut.parse_file_ref__list([REL_CWD_OPTION])
 
 
-class TestParsesCorrectValue(unittest.TestCase):
+class TestParsesCorrectValue(TestParsesBase):
     def test_rel_home(self):
         (file_reference, _) = sut.parse_file_ref__list([REL_HOME_OPTION, 'file.txt'])
         with home_and_eds_and_test_as_curr_dir(
                 home_dir_contents=DirContents([empty_file('file.txt')])) as home_and_eds:
-            self.assertTrue(file_reference.file_path_pre_or_post_eds(home_and_eds).exists())
+            expected_path = home_and_eds.home_dir_path / 'file.txt'
+            self.assert_file_exists_pre_eds(expected_path,
+                                            home_and_eds,
+                                            file_reference)
 
     def test_rel_cwd(self):
         (file_reference, _) = sut.parse_file_ref__list([REL_CWD_OPTION, 'file.txt'])
@@ -62,17 +81,22 @@ class TestParsesCorrectValue(unittest.TestCase):
             self.assertTrue(file_reference.file_path_pre_or_post_eds(home_and_eds).exists())
 
     def test_absolute(self):
-        abs_path_str = str(pathlib.Path.cwd().resolve())
+        abs_path = pathlib.Path.cwd().resolve()
+        abs_path_str = str(abs_path)
         (file_reference, _) = sut.parse_file_ref__list([abs_path_str])
-        with tempfile.TemporaryDirectory(prefix=program_info.PROGRAM_NAME + '-home-') as home_dir:
-            home_dir_path = pathlib.Path(home_dir)
-            self.assertTrue(file_reference.file_path_pre_eds(home_dir_path).exists())
+        with home_and_eds_and_test_as_curr_dir() as home_and_eds:
+            self.assert_file_exists_pre_eds(abs_path,
+                                            home_and_eds,
+                                            file_reference)
 
     def test_rel_home_is_default(self):
-        (file_reference, _) = sut.parse_file_ref__list(['file.txt'])
+        (file_reference, _) = sut.parse_file_ref__list(['file-in-home-dir.txt'])
         with home_and_eds_and_test_as_curr_dir(
-                home_dir_contents=DirContents([empty_file('file.txt')])) as home_and_eds:
-            self.assertTrue(file_reference.file_path_pre_or_post_eds(home_and_eds).exists())
+                home_dir_contents=DirContents([empty_file('file-in-home-dir.txt')])) as home_and_eds:
+            expected_path = home_and_eds.home_dir_path / 'file-in-home-dir.txt'
+            self.assert_file_exists_pre_eds(expected_path,
+                                            home_and_eds,
+                                            file_reference)
 
 
 class TestParseFromTokenStream(unittest.TestCase):
