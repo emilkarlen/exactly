@@ -9,7 +9,7 @@ from exactly_lib.execution import environment_variables
 from exactly_lib.execution import phase_step
 from exactly_lib.execution import phase_step_executors
 from exactly_lib.execution import phases
-from exactly_lib.execution.act_phase import SourceSetup, ActSourceExecutor, ExitCodeOrHardError
+from exactly_lib.execution.act_phase import ActSourceExecutor, ExitCodeOrHardError, ActSourceAndExecutor
 from exactly_lib.execution.phase_step import PhaseStep
 from exactly_lib.execution.phase_step_execution import ElementHeaderExecutor
 from exactly_lib.execution.single_instruction_executor import ControlledInstructionExecutor
@@ -19,11 +19,12 @@ from exactly_lib.test_case.phases import common
 from exactly_lib.test_case.phases.act.instruction import PhaseEnvironmentForScriptGeneration
 from exactly_lib.test_case.phases.act.program_source import ActSourceBuilder
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
-from exactly_lib.test_case.phases.common import GlobalEnvironmentForPreEdsStep
+from exactly_lib.test_case.phases.common import GlobalEnvironmentForPreEdsStep, HomeAndEds
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder, StdinSettings
 from exactly_lib.util import line_source
 from exactly_lib.util.failure_details import FailureDetails, new_failure_details_from_message
 from exactly_lib.util.file_utils import write_new_text_file, resolved_path_name
+from exactly_lib.util.line_source import LineSequenceBuilder
 from exactly_lib.util.std import StdOutputFiles, StdFiles
 from . import phase_step_execution
 from . import result
@@ -49,7 +50,7 @@ class Configuration(tuple):
 class TestCase(tuple):
     def __new__(cls,
                 setup_phase: SectionContents,
-                act_phase: SectionContents,
+                act_phase: LineSequenceBuilder,
                 before_assert_phase: SectionContents,
                 assert_phase: SectionContents,
                 cleanup_phase: SectionContents):
@@ -64,7 +65,7 @@ class TestCase(tuple):
         return self[0]
 
     @property
-    def act_phase(self) -> SectionContents:
+    def act_phase(self) -> LineSequenceBuilder:
         return self[1]
 
     @property
@@ -107,12 +108,27 @@ class _StepExecutionResult:
         self.__stdin_settings = x
 
 
+class ActPhaseParser:
+    """
+    Parses the contents of the act phase
+    (after it has been extracted from the test case file).
+
+    Does syntax checking/validation while parsing - and reports syntax errors
+    in terms of exceptions.
+    """
+
+    def apply(self, source: LineSequenceBuilder) -> ActSourceAndExecutor:
+        raise NotImplementedError()
+
+
 class ActPhaseHandling:
     def __init__(self,
                  source_builder: ActSourceBuilder,
-                 executor: ActSourceExecutor):
+                 executor: ActSourceExecutor,
+                 parser: ActPhaseParser):
         self.source_builder = source_builder
         self.executor = executor
+        self.parser = parser
 
 
 def execute(act_phase_handling: ActPhaseHandling,
@@ -171,6 +187,7 @@ class _PartialExecutor:
         self.___step_execution_result = _StepExecutionResult()
         self.__source_setup = None
         self.os_services = None
+        self.__act_source_and_executor = None
 
     def execute(self) -> PartialResult:
         # TODO Köra det här i sub-process?
@@ -179,7 +196,7 @@ class _PartialExecutor:
         self.__set_pre_eds_environment_variables()
         res = self._sequence([
             self.__setup__validate_pre_eds,
-            self.__act__validate_pre_eds,
+            self.__act__parse_and_validate_pre_eds,
             self.__before_assert__validate_pre_eds,
             self.__assert__validate_pre_eds,
             self.__cleanup__validate_pre_eds,
@@ -193,11 +210,8 @@ class _PartialExecutor:
             [
                 self.__setup__main,
                 self.__setup__validate_post_setup,
-                self.__act__validate_post_setup,
                 self.__before_assert__validate_post_setup,
                 self.__assert__validate_post_setup,
-                self.__act__main,
-                act_program_executor.validate,
                 act_program_executor.prepare,
                 act_program_executor.execute,
             ])
@@ -249,11 +263,11 @@ class _PartialExecutor:
                                                                self.__global_environment_pre_eds),
                                                            self.__test_case.setup_phase)
 
-    def __act__validate_pre_eds(self) -> PartialResult:
-        return self.__run_internal_instructions_phase_step(phase_step.ACT__VALIDATE_PRE_EDS,
-                                                           phase_step_executors.ActValidatePreEdsExecutor(
-                                                               self.__global_environment_pre_eds),
-                                                           self.__test_case.act_phase)
+    def __act__parse_and_validate_pre_eds(self) -> PartialResult:
+        try:
+            self.__act_source_and_executor = self.__act_phase_handling.parser.apply(self.__test_case.act_phase)
+        except:
+            raise NotImplementedError('Handling of exceptions of act phase parsing not implemented yet')
 
     def __before_assert__validate_pre_eds(self) -> PartialResult:
         return self.__run_internal_instructions_phase_step(
@@ -292,37 +306,29 @@ class _PartialExecutor:
                 self.__post_eds_environment(phases.SETUP)),
             self.__test_case.setup_phase)
 
-    def __act__validate_post_setup(self) -> PartialResult:
-        return self.__run_internal_instructions_phase_step(
-            phase_step.ACT__VALIDATE_POST_SETUP,
-            phase_step_executors.ActValidatePostSetupExecutor(
-                self.__post_eds_environment(phases.ACT)),
-            self.__test_case.act_phase)
-
-    def __act__main(self) -> PartialResult:
-        """
-        Accumulates the script source by executing all instructions, and adding
-        comments from the test case file.
-
-        :param act_environment: Post-condition: Contains the accumulated script source.
-        """
-        script_builder = self.__act_phase_handling.source_builder
-        environment = PhaseEnvironmentForScriptGeneration(script_builder)
-        ret_val = phase_step_execution.execute_phase(
-            self.__test_case.act_phase,
-            _ActCommentHeaderExecutor(environment),
-            _ActInstructionHeaderExecutor(environment),
-            phase_step_executors.ActMainExecutor(self.__post_eds_environment(phases.ACT),
-                                                 environment),
-            phase_step.ACT__MAIN,
-            self._eds)
-        self.___step_execution_result.script_source = script_builder.build()
-        return ret_val
+    # def __act__main(self) -> PartialResult:
+    #     """
+    #     Accumulates the script source by executing all instructions, and adding
+    #     comments from the test case file.
+    #
+    #     :param act_environment: Post-condition: Contains the accumulated script source.
+    #     """
+    #     script_builder = self.__act_phase_handling.source_builder
+    #     environment = PhaseEnvironmentForScriptGeneration(script_builder)
+    #     ret_val = phase_step_execution.execute_phase(
+    #         self.__test_case.act_phase,
+    #         _ActCommentHeaderExecutor(environment),
+    #         _ActInstructionHeaderExecutor(environment),
+    #         phase_step_executors.ActMainExecutor(self.__post_eds_environment(phases.ACT),
+    #                                              environment),
+    #         phase_step.ACT__MAIN,
+    #         self._eds)
+    #     self.___step_execution_result.script_source = script_builder.build()
+    #     return ret_val
 
     def __act_program_executor(self):
-        return _ActProgramExecution(self.__act_phase_handling,
-                                    self._eds,
-                                    self.__configuration.home_dir,
+        return _ActProgramExecution(self.__act_source_and_executor,
+                                    HomeAndEds(self.__configuration.home_dir, self._eds),
                                     self.___step_execution_result)
 
     def __before_assert__validate_post_setup(self) -> PartialResult:
@@ -400,41 +406,34 @@ class _PartialExecutor:
 
 class _ActProgramExecution:
     def __init__(self,
-                 act_phase_handling: ActPhaseHandling,
-                 eds: ExecutionDirectoryStructure,
-                 home_dir: pathlib.Path,
+                 act_source_and_executor: ActSourceAndExecutor,
+                 home_and_eds: HomeAndEds,
                  step_execution_result: _StepExecutionResult()):
-        self.act_phase_handling = act_phase_handling
-        self.executor = act_phase_handling.executor
-        self.home_dir = home_dir
+        self.act_source_and_executor = act_source_and_executor
+        self.home_and_eds = home_and_eds
         self.step_execution_result = step_execution_result
-        self._eds = eds
-        self.__source_setup = SourceSetup(self.act_phase_handling.source_builder,
-                                          self._eds.test_case_dir)
 
-    def validate(self) -> PartialResult:
-        step = phase_step.ACT__SCRIPT_VALIDATE
-
-        def action():
-            res = self.executor.validate(self.home_dir,
-                                         self.act_phase_handling.source_builder)
-            if res.is_success:
-                return self._pass()
-            else:
-                return self._failure_from(step,
-                                          PartialResultStatus(res.status.value),
-                                          exactly_lib.util.failure_details.new_failure_details_from_message(
-                                              res.failure_message))
-
-        return self._with_implementation_exception_handling(step, action)
+    # def validate(self) -> PartialResult:
+    #     step = phase_step.ACT__SCRIPT_VALIDATE
+    #
+    #     def action():
+    #         res = self.executor.validate(self.home_dir,
+    #                                      self.act_source_and_executor.source_builder)
+    #         if res.is_success:
+    #             return self._pass()
+    #         else:
+    #             return self._failure_from(step,
+    #                                       PartialResultStatus(res.status.value),
+    #                                       exactly_lib.util.failure_details.new_failure_details_from_message(
+    #                                           res.failure_message))
+    #
+    #     return self._with_implementation_exception_handling(step, action)
 
     def prepare(self) -> PartialResult:
         step = phase_step.ACT__SCRIPT_PREPARE
 
         def action():
-            res = self.act_phase_handling.executor.prepare(self.__source_setup,
-                                                           self.home_dir,
-                                                           self._eds)
+            res = self.act_source_and_executor.prepare(self.home_and_eds)
             if res.is_success:
                 return self._pass()
             else:
@@ -473,12 +472,11 @@ class _ActProgramExecution:
         """
         Pre-condition: write has been executed.
         """
-        with open(str(self._eds.result.stdout_file), 'w') as f_stdout:
-            with open(str(self._eds.result.stderr_file), 'w') as f_stderr:
-                exit_code_or_hard_error = self.act_phase_handling.executor.execute(
-                    self.__source_setup,
-                    self.home_dir,
-                    self._eds,
+        eds = self.home_and_eds.eds
+        with open(str(eds.result.stdout_file), 'w') as f_stdout:
+            with open(str(eds.result.stderr_file), 'w') as f_stderr:
+                exit_code_or_hard_error = self.act_source_and_executor.execute(
+                    self.home_and_eds,
                     StdFiles(f_stdin,
                              StdOutputFiles(f_stdout,
                                             f_stderr)))
@@ -487,7 +485,7 @@ class _ActProgramExecution:
                 return exit_code_or_hard_error
 
     def _store_exit_code(self, exitcode: int):
-        with open(str(self._eds.result.exitcode_file), 'w') as f:
+        with open(str(self.home_and_eds.eds.result.exitcode_file), 'w') as f:
             f.write(str(exitcode))
 
     def _custom_stdin_file_name(self) -> str:
@@ -495,7 +493,7 @@ class _ActProgramExecution:
         if settings.file_name is not None:
             return settings.file_name
         else:
-            file_path = stdin_contents_file(self._eds)
+            file_path = stdin_contents_file(self.home_and_eds.eds)
             write_new_text_file(file_path, settings.contents)
             return str(file_path)
 
@@ -504,20 +502,20 @@ class _ActProgramExecution:
             return action()
         except Exception as ex:
             return PartialResult(PartialResultStatus.IMPLEMENTATION_ERROR,
-                                 self._eds,
+                                 self.home_and_eds.eds,
                                  PhaseFailureInfo(step,
                                                   exactly_lib.util.failure_details.new_failure_details_from_exception(
                                                       ex)))
 
     def _pass(self) -> PartialResult:
-        return new_partial_result_pass(self._eds)
+        return new_partial_result_pass(self.home_and_eds.eds)
 
     def _failure_from(self,
                       step: PhaseStep,
                       status: PartialResultStatus,
                       failure_details: FailureDetails) -> PartialResult:
         return PartialResult(status,
-                             self._eds,
+                             self.home_and_eds.eds,
                              result.PhaseFailureInfo(step,
                                                      failure_details))
 
