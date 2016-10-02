@@ -105,8 +105,8 @@ class Document:
     def section(self) -> frozenset:
         return self._section2elements.keys()
 
-    def elements_for_section(self, phase_name: str) -> SectionContents:
-        return self._section2elements[phase_name]
+    def elements_for_section(self, section_name: str) -> SectionContents:
+        return self._section2elements[section_name]
 
     def elements_for_section_or_empty_if_phase_not_present(self, phase_name: str) -> SectionContents:
         if phase_name in self._section2elements:
