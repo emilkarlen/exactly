@@ -2,6 +2,7 @@ import pathlib
 
 from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from exactly_lib.test_case.phases.act.program_source import ActSourceBuilder
+from exactly_lib.test_case.phases.common import HomeAndEds
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.failure_details import FailureDetails
@@ -67,6 +68,9 @@ class SourceSetup:
 
 
 class ActSourceExecutor:
+    """
+    Deprecated - or make it an implementation detail of some act-phase-setups.
+    """
     def validate(self,
                  home_dir: pathlib.Path,
                  source: ActSourceBuilder) -> svh.SuccessOrValidationErrorOrHardError:
@@ -94,6 +98,32 @@ class ActSourceExecutor:
                 source_setup: SourceSetup,
                 home_dir: pathlib.Path,
                 eds: ExecutionDirectoryStructure,
+                std_files: StdFiles) -> ExitCodeOrHardError:
+        """
+        Executed after prepare.
+
+        :returns exit code of executed program, or error
+        """
+        raise NotImplementedError()
+
+
+class ActSourceAndExecutor:
+    """
+    Valid act phase source together with functionality for executing it.
+    """
+
+    def prepare(self, home_and_eds: HomeAndEds) -> sh.SuccessOrHardError:
+        """
+        Executed after validate.
+
+        An opportunity to prepare for execution.
+
+        E.g. write the source code to file.
+        """
+        raise NotImplementedError()
+
+    def execute(self,
+                home_and_eds: HomeAndEds,
                 std_files: StdFiles) -> ExitCodeOrHardError:
         """
         Executed after prepare.
