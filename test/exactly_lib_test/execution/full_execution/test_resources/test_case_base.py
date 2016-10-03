@@ -3,8 +3,8 @@ import pathlib
 import shutil
 import unittest
 
-import exactly_lib.act_phase_setups.script_interpretation.python3
 from exactly_lib import program_info
+from exactly_lib.act_phase_setups.script_interpretation import python3
 from exactly_lib.execution import full_execution
 from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from exactly_lib.execution.partial_execution import ActPhaseHandling
@@ -25,16 +25,13 @@ class FullExecutionTestCaseBase:
         self.__execution_directory_structure = None
         self.__initial_home_dir_path = None
         self.__act_phase_handling = act_phase_handling
-        if self.__act_phase_handling is None:
-            self.__act_phase_handling = act_phase_handling_for_setup(
-                exactly_lib.act_phase_setups.script_interpretation.python3.new_act_phase_setup())
 
     def execute(self):
         # SETUP #
         self.__initial_home_dir_path = pathlib.Path().resolve()
         # ACT #
         full_result = full_execution.execute(
-            self.__act_phase_handling,
+            self._act_phase_handling(),
             self._test_case(),
             self.initial_home_dir_path,
             program_info.PROGRAM_NAME + '-test-',
@@ -50,6 +47,11 @@ class FullExecutionTestCaseBase:
         else:
             if self.eds:
                 print(str(self.eds.root_dir))
+
+    def _act_phase_handling(self) -> ActPhaseHandling:
+        if self.__act_phase_handling is None:
+            return act_phase_handling_for_setup(python3.new_act_phase_setup())
+        return self.__act_phase_handling
 
     def _test_case(self) -> test_case_doc.TestCase:
         raise NotImplementedError()

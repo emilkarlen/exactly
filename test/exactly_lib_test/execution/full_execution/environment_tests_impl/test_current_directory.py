@@ -64,7 +64,11 @@ class Test(FullExecutionTestCaseBase):
                  unittest_case: unittest.TestCase,
                  dbg_do_not_delete_dir_structure=False):
         self.recorder = instr_setup.Recorder()
-        act_phase_handling = ActPhaseHandling(
+        super().__init__(unittest_case,
+                         dbg_do_not_delete_dir_structure)
+
+    def _act_phase_handling(self) -> ActPhaseHandling:
+        return ActPhaseHandling(
             ActSourceBuilderForPlainStringsBase(),
             ActSourceExecutorThatRunsConstantActions(
                 validate_action=_RecordCurrDirAndReturn(self.recorder,
@@ -73,9 +77,6 @@ class Test(FullExecutionTestCaseBase):
                 execute_action=_RecordCurrDirAndReturn(self.recorder,
                                                        phase_step.ACT__EXECUTE,
                                                        new_eh_exit_code(0))))
-        super().__init__(unittest_case,
-                         dbg_do_not_delete_dir_structure,
-                         act_phase_handling)
 
     def _test_case(self) -> test_case_doc.TestCase:
         return full_test_case_with_instructions(
