@@ -1,21 +1,22 @@
-import functools
 import os
-import pathlib
 import unittest
 
 from exactly_lib.execution import phase_step
+from exactly_lib.execution.act_phase import new_eh_exit_code
+from exactly_lib.execution.partial_execution import ActPhaseHandling
 from exactly_lib.execution.phase_step import PhaseStep
 from exactly_lib.execution.result import FullResultStatus
 from exactly_lib.test_case import test_case_doc
-from exactly_lib.test_case.phases import common
-from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
+from exactly_lib.test_case.phases.act.program_source import ActSourceBuilderForPlainStringsBase
+from exactly_lib.test_case.phases.result import svh
+from exactly_lib.util.line_source import LineSequence
 from exactly_lib_test.execution.full_execution.test_resources.test_case_base import FullExecutionTestCaseBase
 from exactly_lib_test.execution.test_resources import instruction_that_record_and_return as instr_setup
-from exactly_lib_test.execution.test_resources import python_code_gen
-from exactly_lib_test.execution.test_resources.instruction_that_do_and_return import \
-    TestCaseGeneratorForTestCaseSetup, \
-    print_to_file__generate_script
-from exactly_lib_test.execution.test_resources.py_unit_test_case_with_file_output import ModulesAndStatements
+from exactly_lib_test.execution.test_resources.act_source_executor import ActSourceExecutorThatRunsConstantActions
+from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that, \
+    act_phase_instruction_with, before_assert_phase_instruction_that, assert_phase_instruction_that, \
+    cleanup_phase_instruction_that, configuration_phase_instruction_that
+from exactly_lib_test.execution.test_resources.test_case_generation import full_test_case_with_instructions
 
 
 def current_directory() -> str:
@@ -25,67 +26,111 @@ def current_directory() -> str:
 SUB_DIR_NAME = 'sub-dir'
 
 
-def _set_home_dir_to_parent__configuration_phase(recorder: instr_setup.Recorder,
-                                                 phase_step: PhaseStep,
-                                                 phase_environment: ConfigurationBuilder):
-    pass
+class _ActionWithPhaseStepAndRecording:
+    def __init__(self,
+                 recorder: instr_setup.Recorder,
+                 my_phase_step: PhaseStep):
+        self.recorder = recorder
+        self.my_phase_step = my_phase_step
 
 
-def _action__without_eds(recorder: instr_setup.Recorder,
-                         phase_step: PhaseStep,
-                         home_dir: pathlib.Path):
-    pass
+class _RecordCurrDirThenMakeDirAndChangeToIt(_ActionWithPhaseStepAndRecording):
+    def __call__(self, *args):
+        self.recorder.set_phase_step_recording(self.my_phase_step, current_directory())
+        os.mkdir(SUB_DIR_NAME)
+        os.chdir(SUB_DIR_NAME)
 
 
-def _action__that_just_records_curr_dir(recorder: instr_setup.Recorder,
-                                        phase_step: PhaseStep,
-                                        global_environment: common.GlobalEnvironmentForPostEdsPhase):
-    recorder.set_phase_step_recording(phase_step, current_directory())
+class _RecordCurrDir(_ActionWithPhaseStepAndRecording):
+    def __call__(self, *args):
+        self.recorder.set_phase_step_recording(self.my_phase_step, current_directory())
 
 
-def _action__make_dir_and_change_to_it(recorder: instr_setup.Recorder,
-                                       phase_step: PhaseStep,
-                                       global_environment: common.GlobalEnvironmentForPostEdsPhase):
-    recorder.set_phase_step_recording(phase_step, current_directory())
-    os.mkdir(SUB_DIR_NAME)
-    os.chdir(SUB_DIR_NAME)
+class _RecordCurrDirAndReturn(_ActionWithPhaseStepAndRecording):
+    def __init__(self,
+                 recorder: instr_setup.Recorder,
+                 my_phase_step: PhaseStep,
+                 return_value):
+        super().__init__(recorder, my_phase_step)
+        self.return_value = return_value
+
+    def __call__(self, *args):
+        self.recorder.set_phase_step_recording(self.my_phase_step, current_directory())
+        return self.return_value
 
 
 class Test(FullExecutionTestCaseBase):
     def __init__(self,
                  unittest_case: unittest.TestCase,
                  dbg_do_not_delete_dir_structure=False):
-        super().__init__(unittest_case,
-                         dbg_do_not_delete_dir_structure)
         self.recorder = instr_setup.Recorder()
+        act_phase_handling = ActPhaseHandling(
+            ActSourceBuilderForPlainStringsBase(),
+            ActSourceExecutorThatRunsConstantActions(
+                validate_action=_RecordCurrDirAndReturn(self.recorder,
+                                                        phase_step.ACT__VALIDATE_POST_SETUP,
+                                                        svh.new_svh_success()),
+                execute_action=_RecordCurrDirAndReturn(self.recorder,
+                                                       phase_step.ACT__EXECUTE,
+                                                       new_eh_exit_code(0))))
+        super().__init__(unittest_case,
+                         dbg_do_not_delete_dir_structure,
+                         act_phase_handling)
 
     def _test_case(self) -> test_case_doc.TestCase:
-        setup = instr_setup.TestCaseSetupWithRecorder(
-            validation_action__with_eds=_action__that_just_records_curr_dir,
-            execution_action__with_eds=_action__make_dir_and_change_to_it,
-            execution__generate_script=script_for_print_current_directory_to_file,
+        return full_test_case_with_instructions(
+            [configuration_phase_instruction_that(
+                main_initial_action=_RecordCurrDir(self.recorder,
+                                                   phase_step.CONFIGURATION__MAIN))],
+            [setup_phase_instruction_that(
+                validate_post_setup_initial_action=_RecordCurrDir(self.recorder,
+                                                                  phase_step.SETUP__VALIDATE_POST_SETUP),
+                main_initial_action=_RecordCurrDirThenMakeDirAndChangeToIt(self.recorder,
+                                                                           phase_step.SETUP__MAIN))],
+            [act_phase_instruction_with(LineSequence(1, ('not used',)))],
+            [before_assert_phase_instruction_that(
+                validate_post_setup_initial_action=_RecordCurrDir(self.recorder,
+                                                                  phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP),
+                main_initial_action=_RecordCurrDirThenMakeDirAndChangeToIt(self.recorder,
+                                                                           phase_step.BEFORE_ASSERT__MAIN))],
+            [assert_phase_instruction_that(
+                validate_post_setup_initial_action=_RecordCurrDir(self.recorder,
+                                                                  phase_step.ASSERT__VALIDATE_POST_SETUP),
+                main_initial_action=_RecordCurrDirThenMakeDirAndChangeToIt(self.recorder,
+                                                                           phase_step.ASSERT__MAIN))],
+            [cleanup_phase_instruction_that(
+                main_initial_action=_RecordCurrDirThenMakeDirAndChangeToIt(self.recorder,
+                                                                           phase_step.CLEANUP__MAIN))],
         )
-        plain_test_case_setup = setup.as_plain_test_case_setup(self.recorder)
-        return TestCaseGeneratorForTestCaseSetup(plain_test_case_setup).test_case
 
     def _assertions(self):
         self.__assert_test_sanity()
         initial_dir = self.eds.act_dir
         initial_dir_recording = str(initial_dir)
-        expected_recorded_internally = {
-            phase_step.SETUP__MAIN: initial_dir_recording,
-            phase_step.ACT__VALIDATE_POST_SETUP: str(initial_dir / SUB_DIR_NAME),
-            phase_step.ACT__MAIN: str(initial_dir / SUB_DIR_NAME),
-            phase_step.SETUP__VALIDATE_POST_SETUP: str(initial_dir / SUB_DIR_NAME),
-            phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP: str(initial_dir / SUB_DIR_NAME),
-            phase_step.ASSERT__VALIDATE_POST_SETUP: str(initial_dir / SUB_DIR_NAME),
-            phase_step.BEFORE_ASSERT__MAIN: str(initial_dir / SUB_DIR_NAME / SUB_DIR_NAME),
-            phase_step.ASSERT__MAIN: str(initial_dir / SUB_DIR_NAME / SUB_DIR_NAME / SUB_DIR_NAME),
-            phase_step.CLEANUP__MAIN: str(initial_dir / SUB_DIR_NAME / SUB_DIR_NAME / SUB_DIR_NAME / SUB_DIR_NAME),
+        home_dir = str(self.initial_home_dir_path)
+        expected_recordings = {
+            phase_step.CONFIGURATION__MAIN:
+                home_dir,
+            phase_step.SETUP__MAIN:
+                initial_dir_recording,
+            phase_step.SETUP__VALIDATE_POST_SETUP:
+                str(initial_dir / SUB_DIR_NAME),
+            phase_step.ACT__VALIDATE_POST_SETUP:
+                str(initial_dir / SUB_DIR_NAME),
+            phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP:
+                str(initial_dir / SUB_DIR_NAME),
+            phase_step.ASSERT__VALIDATE_POST_SETUP:
+                str(initial_dir / SUB_DIR_NAME),
+            phase_step.ACT__EXECUTE:
+                str(initial_dir / SUB_DIR_NAME),
+            phase_step.BEFORE_ASSERT__MAIN:
+                str(initial_dir / SUB_DIR_NAME),
+            phase_step.ASSERT__MAIN:
+                str(initial_dir / SUB_DIR_NAME / SUB_DIR_NAME),
+            phase_step.CLEANUP__MAIN:
+                str(initial_dir / SUB_DIR_NAME / SUB_DIR_NAME / SUB_DIR_NAME),
         }
-        self.__assert_expected_internally_recorded_variables(expected_recorded_internally)
-        cwd_for_program_executor = str(initial_dir / SUB_DIR_NAME / SUB_DIR_NAME) + os.linesep
-        self.__assert_expected_act_script_execution_recorded_variables(cwd_for_program_executor)
+        self.__assert_expected_internally_recorded_variables(expected_recordings)
 
     def __assert_test_sanity(self):
         self.utc.assertEqual(self.full_result.status,
@@ -120,24 +165,3 @@ class Test(FullExecutionTestCaseBase):
             self.utc.assertEqual(expected[k],
                                  actual[k],
                                  'Value for %s %s' % (key_entity, str(k)))
-
-    def __assert_expected_act_script_execution_recorded_variables(self, expected_act_output: str):
-        self.assert_is_regular_file_with_contents(
-            self.full_result.execution_directory_structure.act_dir / ACT_SCRIPT_OUTPUT_FILE_NAME,
-            expected_act_output,
-            'Environment Variables printed from act/script execution')
-
-
-ACT_SCRIPT_OUTPUT_FILE_NAME = 'act-script-output.txt'
-
-
-def python_code_for_print_current_directory(file_variable: str) -> ModulesAndStatements:
-    statement = python_code_gen.print_value('os.getcwd()', file_variable)
-    code = [statement]
-    return ModulesAndStatements({'os'},
-                                code)
-
-
-script_for_print_current_directory_to_file = functools.partial(print_to_file__generate_script,
-                                                               python_code_for_print_current_directory,
-                                                               ACT_SCRIPT_OUTPUT_FILE_NAME)
