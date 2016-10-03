@@ -3,8 +3,10 @@ from exactly_lib.section_document import parse
 from exactly_lib.section_document import syntax
 from exactly_lib.test_case.phases import common
 from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
+from exactly_lib.test_case.phases.common import GlobalEnvironmentForPreEdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.util import line_source
+from exactly_lib.util.line_source import LineSequence
 
 
 class PlainSourceActPhaseParser(parse.SectionElementParser):
@@ -15,18 +17,20 @@ class PlainSourceActPhaseParser(parse.SectionElementParser):
                 source.return_line()
                 break
         line_sequence = source.build()
-        source_code = line_sequence.text
         return model.SectionContentElement(model.ElementType.INSTRUCTION,
                                            line_sequence,
-                                           SourceCodeInstruction(source_code))
+                                           SourceCodeInstruction(line_sequence))
 
 
 class SourceCodeInstruction(ActPhaseInstruction):
     def __init__(self,
-                 source_code: str):
-        self.source_code = source_code
+                 source_code: LineSequence):
+        self._source_code = source_code
+
+    def source_code(self, environment: GlobalEnvironmentForPreEdsStep) -> LineSequence:
+        return self._source_code
 
     def main(self, global_environment: common.GlobalEnvironmentForPostEdsPhase,
              script_generator: PhaseEnvironmentForScriptGeneration) -> sh.SuccessOrHardError:
-        script_generator.append.raw_script_statement(self.source_code)
+        script_generator.append.raw_script_statement(self._source_code.text)
         return sh.new_sh_success()

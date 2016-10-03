@@ -10,13 +10,14 @@ from exactly_lib.execution import phase_step
 from exactly_lib.execution import phase_step_executors
 from exactly_lib.execution import phases
 from exactly_lib.execution.act_phase import ActSourceExecutor, ExitCodeOrHardError, ActSourceAndExecutor
+from exactly_lib.execution.act_phase_handling_utils import ActSourceParserUsingActSourceExecutor
 from exactly_lib.execution.phase_step import PhaseStep
 from exactly_lib.execution.phase_step_execution import ElementHeaderExecutor
 from exactly_lib.execution.single_instruction_executor import ControlledInstructionExecutor
-from exactly_lib.section_document.model import SectionContents
+from exactly_lib.section_document.model import SectionContents, ElementType
 from exactly_lib.test_case.os_services import new_default
 from exactly_lib.test_case.phases import common
-from exactly_lib.test_case.phases.act.instruction import PhaseEnvironmentForScriptGeneration
+from exactly_lib.test_case.phases.act.instruction import PhaseEnvironmentForScriptGeneration, ActPhaseInstruction
 from exactly_lib.test_case.phases.act.program_source import ActSourceBuilder
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
 from exactly_lib.test_case.phases.common import GlobalEnvironmentForPreEdsStep, HomeAndEds
@@ -24,7 +25,6 @@ from exactly_lib.test_case.phases.setup import SetupSettingsBuilder, StdinSettin
 from exactly_lib.util import line_source
 from exactly_lib.util.failure_details import FailureDetails, new_failure_details_from_message
 from exactly_lib.util.file_utils import write_new_text_file, resolved_path_name
-from exactly_lib.util.line_source import LineSequenceBuilder
 from exactly_lib.util.std import StdOutputFiles, StdFiles
 from . import phase_step_execution
 from . import result
@@ -50,7 +50,7 @@ class Configuration(tuple):
 class TestCase(tuple):
     def __new__(cls,
                 setup_phase: SectionContents,
-                act_phase: LineSequenceBuilder,
+                act_phase: SectionContents,
                 before_assert_phase: SectionContents,
                 assert_phase: SectionContents,
                 cleanup_phase: SectionContents):
@@ -65,7 +65,7 @@ class TestCase(tuple):
         return self[0]
 
     @property
-    def act_phase(self) -> LineSequenceBuilder:
+    def act_phase(self) -> SectionContents:
         return self[1]
 
     @property
@@ -108,27 +108,12 @@ class _StepExecutionResult:
         self.__stdin_settings = x
 
 
-class ActPhaseParser:
-    """
-    Parses the contents of the act phase
-    (after it has been extracted from the test case file).
-
-    Does syntax checking/validation while parsing - and reports syntax errors
-    in terms of exceptions.
-    """
-
-    def apply(self, source: LineSequenceBuilder) -> ActSourceAndExecutor:
-        raise NotImplementedError()
-
-
 class ActPhaseHandling:
     def __init__(self,
                  source_builder: ActSourceBuilder,
-                 executor: ActSourceExecutor,
-                 parser: ActPhaseParser):
+                 executor: ActSourceExecutor):
         self.source_builder = source_builder
         self.executor = executor
-        self.parser = parser
 
 
 def execute(act_phase_handling: ActPhaseHandling,
@@ -188,6 +173,7 @@ class _PartialExecutor:
         self.__source_setup = None
         self.os_services = None
         self.__act_source_and_executor = None
+        self.__act_source_parser = ActSourceParserUsingActSourceExecutor(act_phase_handling.executor)
 
     def execute(self) -> PartialResult:
         # TODO Köra det här i sub-process?
@@ -210,6 +196,7 @@ class _PartialExecutor:
             [
                 self.__setup__main,
                 self.__setup__validate_post_setup,
+                act_program_executor.validate,
                 self.__before_assert__validate_post_setup,
                 self.__assert__validate_post_setup,
                 act_program_executor.prepare,
@@ -264,10 +251,16 @@ class _PartialExecutor:
                                                            self.__test_case.setup_phase)
 
     def __act__parse_and_validate_pre_eds(self) -> PartialResult:
-        try:
-            self.__act_source_and_executor = self.__act_phase_handling.parser.apply(self.__test_case.act_phase)
-        except:
-            raise NotImplementedError('Handling of exceptions of act phase parsing not implemented yet')
+        section_contents = self.__test_case.act_phase
+        if len(section_contents.elements) != 1:
+            raise NotImplementedError('Not handled yet: Contents of act phase is not a single element')
+        element = section_contents.elements[0]
+        if element.element_type is not ElementType.INSTRUCTION:
+            raise NotImplementedError('Not handled yet: The single element of the act phase is not an instruction')
+        instruction = element.instruction
+        assert isinstance(instruction, ActPhaseInstruction)
+        self.__act_source_and_executor = self.__act_source_parser.apply(self.__global_environment_pre_eds, instruction)
+        return new_partial_result_pass(self._eds)
 
     def __before_assert__validate_pre_eds(self) -> PartialResult:
         return self.__run_internal_instructions_phase_step(
@@ -412,28 +405,29 @@ class _ActProgramExecution:
         self.act_source_and_executor = act_source_and_executor
         self.home_and_eds = home_and_eds
         self.step_execution_result = step_execution_result
+        self.script_output_dir_path = self.home_and_eds.eds.test_case_dir
 
-    # def validate(self) -> PartialResult:
-    #     step = phase_step.ACT__SCRIPT_VALIDATE
-    #
-    #     def action():
-    #         res = self.executor.validate(self.home_dir,
-    #                                      self.act_source_and_executor.source_builder)
-    #         if res.is_success:
-    #             return self._pass()
-    #         else:
-    #             return self._failure_from(step,
-    #                                       PartialResultStatus(res.status.value),
-    #                                       exactly_lib.util.failure_details.new_failure_details_from_message(
-    #                                           res.failure_message))
-    #
-    #     return self._with_implementation_exception_handling(step, action)
-
-    def prepare(self) -> PartialResult:
-        step = phase_step.ACT__SCRIPT_PREPARE
+    def validate(self) -> PartialResult:
+        step = phase_step.ACT__VALIDATE_POST_SETUP
 
         def action():
-            res = self.act_source_and_executor.prepare(self.home_and_eds)
+            res = self.act_source_and_executor.validate(self.home_and_eds)
+            if res.is_success:
+                return self._pass()
+            else:
+                return self._failure_from(step,
+                                          PartialResultStatus(res.status.value),
+                                          exactly_lib.util.failure_details.new_failure_details_from_message(
+                                              res.failure_message))
+
+        return self._with_implementation_exception_handling(step, action)
+
+    def prepare(self) -> PartialResult:
+        step = phase_step.ACT__PREPARE
+
+        def action():
+            res = self.act_source_and_executor.prepare(self.home_and_eds,
+                                                       self.script_output_dir_path)
             if res.is_success:
                 return self._pass()
             else:
@@ -444,7 +438,7 @@ class _ActProgramExecution:
         return self._with_implementation_exception_handling(step, action)
 
     def execute(self) -> PartialResult:
-        step = phase_step.ACT__SCRIPT_EXECUTE
+        step = phase_step.ACT__EXECUTE
 
         def action():
             exit_code_or_hard_error = self._execute_with_stdin_handling()
@@ -477,6 +471,7 @@ class _ActProgramExecution:
             with open(str(eds.result.stderr_file), 'w') as f_stderr:
                 exit_code_or_hard_error = self.act_source_and_executor.execute(
                     self.home_and_eds,
+                    self.script_output_dir_path,
                     StdFiles(f_stdin,
                              StdOutputFiles(f_stdout,
                                             f_stderr)))

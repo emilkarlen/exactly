@@ -1,12 +1,15 @@
 from exactly_lib.execution import phase_step_simple as phase_step
 from exactly_lib.section_document import model
+from exactly_lib.section_document.model import new_instruction_e
 from exactly_lib.test_case.phases.common import TestCaseInstruction
+from exactly_lib.util.line_source import LineSequence
 from exactly_lib_test.execution.partial_execution.test_resources.test_case_generator import \
     TestCaseGeneratorForPartialExecutionBase, PartialPhase
 from exactly_lib_test.execution.test_resources.execution_recording.recorder import \
     ListRecorder
 from exactly_lib_test.execution.test_resources.execution_recording.recording_instructions import \
     RecordingInstructions
+from exactly_lib_test.execution.test_resources.instruction_test_resources import act_phase_instruction_with
 from exactly_lib_test.execution.test_resources.test_case_generation import instruction_line_constructor, \
     phase_contents
 
@@ -25,10 +28,6 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorForPartialExecutio
                 recording_instructions.new_setup_instruction(phase_step.SETUP__VALIDATE_PRE_EDS,
                                                              phase_step.SETUP__MAIN,
                                                              phase_step.SETUP__VALIDATE_POST_SETUP),
-            PartialPhase.ACT:
-                recording_instructions.new_act_instruction(phase_step.ACT__VALIDATE_PRE_EDS,
-                                                           phase_step.ACT__VALIDATE_POST_SETUP,
-                                                           phase_step.ACT__MAIN),
             PartialPhase.BEFORE_ASSERT:
                 recording_instructions.new_before_assert_instruction(phase_step.BEFORE_ASSERT__VALIDATE_PRE_EDS,
                                                                      phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
@@ -81,8 +80,14 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorForPartialExecutio
 
 class TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList(TestCaseGeneratorForExecutionRecording):
     def __init__(self,
-                 recorder: ListRecorder = None):
+                 recorder: ListRecorder = None,
+                 act_phase_source: LineSequence = LineSequence(99, ('act phase line',))):
         super().__init__(recorder)
+        self.act_phase_source = act_phase_source
+
+    def phase_contents_for_act(self, act_phase: PartialPhase) -> model.SectionContents:
+        return phase_contents(
+            [new_instruction_e(self.act_phase_source, act_phase_instruction_with(self.act_phase_source))])
 
     def _all_elements_for(self, phase: PartialPhase) -> list:
         """
@@ -93,8 +98,14 @@ class TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList(TestCaseGene
 
 class TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr(TestCaseGeneratorForExecutionRecording):
     def __init__(self,
-                 recorder: ListRecorder = None):
+                 recorder: ListRecorder = None,
+                 act_phase_source: LineSequence = LineSequence(99, ('act phase line',))):
         super().__init__(recorder)
+        self.act_phase_source = act_phase_source
+
+    def phase_contents_for_act(self, act_phase: PartialPhase) -> model.SectionContents:
+        return phase_contents(
+            [new_instruction_e(self.act_phase_source, act_phase_instruction_with(self.act_phase_source))])
 
     def _all_elements_for(self, phase: PartialPhase) -> list:
         return [self.recorder_for(phase)] + self.the_extra(phase) + [self.recorder_for(phase)]

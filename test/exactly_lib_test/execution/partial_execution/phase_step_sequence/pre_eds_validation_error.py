@@ -30,30 +30,13 @@ class ConfigForSetupValidatePreEds(validate_pre_eds_utils.Configuration):
         return test.setup_phase_instruction_that(validate_pre_eds=do_raise(exception))
 
 
-class ConfigForActValidatePreEds(validate_pre_eds_utils.Configuration):
-    def __init__(self):
-        super().__init__(PartialPhase.ACT,
-                         phase_step.ACT__VALIDATE_PRE_EDS,
-                         expected_steps=[phase_step.SETUP__VALIDATE_PRE_EDS,
-                                         phase_step.SETUP__VALIDATE_PRE_EDS,
-                                         phase_step.ACT__VALIDATE_PRE_EDS])
-
-    def instruction_that_returns(self, return_value: svh.SuccessOrValidationErrorOrHardError) -> TestCaseInstruction:
-        return test.act_phase_instruction_that(
-                validate_pre_eds=do_return(return_value))
-
-    def instruction_that_raises(self, exception: Exception) -> TestCaseInstruction:
-        return test.act_phase_instruction_that(validate_pre_eds=do_raise(exception))
-
-
 class ConfigForBeforeAssertValidatePreEds(validate_pre_eds_utils.Configuration):
     def __init__(self):
         super().__init__(PartialPhase.BEFORE_ASSERT,
                          phase_step.BEFORE_ASSERT__VALIDATE_PRE_EDS,
                          expected_steps=[phase_step.SETUP__VALIDATE_PRE_EDS,
                                          phase_step.SETUP__VALIDATE_PRE_EDS,
-                                         phase_step.ACT__VALIDATE_PRE_EDS,
-                                         phase_step.ACT__VALIDATE_PRE_EDS,
+                                         # phase_step.ACT__VALIDATE_PRE_EDS,
                                          phase_step.BEFORE_ASSERT__VALIDATE_PRE_EDS])
 
     def instruction_that_returns(self, return_value: svh.SuccessOrValidationErrorOrHardError) -> TestCaseInstruction:
@@ -70,8 +53,7 @@ class ConfigForAssertValidatePreEds(validate_pre_eds_utils.Configuration):
                          phase_step.ASSERT__VALIDATE_PRE_EDS,
                          expected_steps=[phase_step.SETUP__VALIDATE_PRE_EDS,
                                          phase_step.SETUP__VALIDATE_PRE_EDS,
-                                         phase_step.ACT__VALIDATE_PRE_EDS,
-                                         phase_step.ACT__VALIDATE_PRE_EDS,
+                                         # phase_step.ACT__VALIDATE_PRE_EDS,
                                          phase_step.BEFORE_ASSERT__VALIDATE_PRE_EDS,
                                          phase_step.BEFORE_ASSERT__VALIDATE_PRE_EDS,
                                          phase_step.ASSERT__VALIDATE_PRE_EDS])
@@ -90,8 +72,7 @@ class ConfigForCleanupValidatePreEds(validate_pre_eds_utils.Configuration):
                          phase_step.CLEANUP__VALIDATE_PRE_EDS,
                          expected_steps=[phase_step.SETUP__VALIDATE_PRE_EDS,
                                          phase_step.SETUP__VALIDATE_PRE_EDS,
-                                         phase_step.ACT__VALIDATE_PRE_EDS,
-                                         phase_step.ACT__VALIDATE_PRE_EDS,
+                                         # phase_step.ACT__VALIDATE_PRE_EDS,
                                          phase_step.BEFORE_ASSERT__VALIDATE_PRE_EDS,
                                          phase_step.BEFORE_ASSERT__VALIDATE_PRE_EDS,
                                          phase_step.ASSERT__VALIDATE_PRE_EDS,
@@ -108,7 +89,6 @@ class ConfigForCleanupValidatePreEds(validate_pre_eds_utils.Configuration):
 
 def _instruction_validation_invocations() -> list:
     return [ConfigForSetupValidatePreEds(),
-            ConfigForActValidatePreEds(),
             ConfigForBeforeAssertValidatePreEds(),
             ConfigForAssertValidatePreEds(),
             ConfigForCleanupValidatePreEds(),

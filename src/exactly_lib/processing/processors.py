@@ -105,8 +105,7 @@ class _Parser(processing_utils.Parser):
 
 def act_phase_handling_for_setup(setup: ActPhaseSetup) -> ActPhaseHandling:
     return ActPhaseHandling(setup.script_builder_constructor(),
-                            setup.executor,
-                            setup.phase_contents_parser)
+                            setup.executor)
 
 
 class _Executor(processing_utils.Executor):

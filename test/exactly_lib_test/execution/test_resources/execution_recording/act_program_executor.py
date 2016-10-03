@@ -21,14 +21,14 @@ class ActSourceExecutorWrapperThatRecordsSteps(ActSourceExecutor):
     def validate(self,
                  home_dir: pathlib.Path(),
                  source: ActSourceBuilder) -> svh.SuccessOrValidationErrorOrHardError:
-        self.__recorder.recording_of(phase_step.ACT__SCRIPT_VALIDATE).record()
+        self.__recorder.recording_of(phase_step.ACT__VALIDATE_POST_SETUP).record()
         return self.__wrapped.validate(home_dir, source)
 
     def prepare(self,
                 source_setup: SourceSetup,
                 home_dir_path: pathlib.Path,
                 eds: ExecutionDirectoryStructure) -> sh.SuccessOrHardError:
-        self.__recorder.recording_of(phase_step.ACT__SCRIPT_PREPARE).record()
+        self.__recorder.recording_of(phase_step.ACT__PREPARE).record()
         return self.__wrapped.prepare(source_setup, home_dir_path, eds)
 
     def execute(self,
@@ -36,7 +36,7 @@ class ActSourceExecutorWrapperThatRecordsSteps(ActSourceExecutor):
                 home_dir: pathlib.Path,
                 eds: ExecutionDirectoryStructure,
                 std_files: StdFiles) -> ExitCodeOrHardError:
-        self.__recorder.recording_of(phase_step.ACT__SCRIPT_EXECUTE).record()
+        self.__recorder.recording_of(phase_step.ACT__EXECUTE).record()
         return self.__wrapped.execute(source_setup,
                                       home_dir,
                                       eds,
@@ -50,10 +50,18 @@ class ActSourceAndExecutorWrapperThatRecordsSteps(ActSourceAndExecutor):
         self.__recorder = recorder
         self.__wrapped = wrapped
 
-    def execute(self, home_and_eds: HomeAndEds, std_files: StdFiles) -> ExitCodeOrHardError:
-        self.__recorder.recording_of(phase_step.ACT__SCRIPT_EXECUTE).record()
-        return self.__wrapped.execute(home_and_eds, std_files)
+    def validate(self, home_and_eds: HomeAndEds) -> svh.SuccessOrValidationErrorOrHardError:
+        raise NotImplementedError("refactoring - do not know what do do here yet!")
 
-    def prepare(self, home_and_eds: HomeAndEds) -> sh.SuccessOrHardError:
-        self.__recorder.recording_of(phase_step.ACT__SCRIPT_PREPARE).record()
-        return self.__wrapped.prepare(home_and_eds)
+    def prepare(self,
+                home_and_eds: HomeAndEds,
+                script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
+        self.__recorder.recording_of(phase_step.ACT__PREPARE).record()
+        return self.__wrapped.prepare(home_and_eds, script_output_dir_path)
+
+    def execute(self,
+                home_and_eds: HomeAndEds,
+                script_output_dir_path: pathlib.Path,
+                std_files: StdFiles) -> ExitCodeOrHardError:
+        self.__recorder.recording_of(phase_step.ACT__EXECUTE).record()
+        return self.__wrapped.execute(home_and_eds, script_output_dir_path, std_files)

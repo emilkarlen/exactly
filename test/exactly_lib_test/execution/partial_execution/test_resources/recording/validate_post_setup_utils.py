@@ -34,6 +34,9 @@ class TestCaseBase(unittest.TestCase):
         super().__init__()
         self.configuration = configuration
 
+    def shortDescription(self):
+        return str(type(self)) + ': ' + str(type(self.configuration))
+
 
 class TestValidationError(TestCaseBase):
     def runTest(self):
