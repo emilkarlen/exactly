@@ -2,14 +2,16 @@ from exactly_lib.execution.execution_mode import ExecutionMode
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as instrs
 from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
-from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.before_assert import BeforeAssertPhaseInstruction
 from exactly_lib.test_case.phases.cleanup import CleanupPhaseInstruction, PreviousPhase
+from exactly_lib.test_case.phases.common import GlobalEnvironmentForPreEdsStep
+from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
+from exactly_lib.util.line_source import LineSequence
 
 
 def do_return(x):
@@ -48,6 +50,10 @@ def act_phase_instruction_that(validate_pre_eds=do_return(svh.new_svh_success())
     return _ActPhaseInstructionThat(validate_pre_eds=validate_pre_eds,
                                     validate_post_setup=validate_post_setup,
                                     main=main)
+
+
+def act_phase_instruction_with(source: LineSequence) -> ActPhaseInstruction:
+    return _ActPhaseInstructionWithConstantSource(source)
 
 
 def before_assert_phase_instruction_that(validate_pre_eds=do_return(svh.new_svh_success()),
@@ -142,6 +148,30 @@ class _ActPhaseInstructionThat(ActPhaseInstruction):
             global_environment: instrs.GlobalEnvironmentForPostEdsPhase,
             phase_environment: PhaseEnvironmentForScriptGeneration) -> sh.SuccessOrHardError:
         return self._main(global_environment, phase_environment)
+
+
+class _ActPhaseInstructionWithConstantSource(ActPhaseInstruction):
+    def __init__(self,
+                 source: LineSequence):
+        self.source = source
+
+    def source_code(self, environment: GlobalEnvironmentForPreEdsStep) -> LineSequence:
+        return self.source
+
+    def validate_pre_eds(self,
+                         environment: instrs.GlobalEnvironmentForPreEdsStep) -> svh.SuccessOrValidationErrorOrHardError:
+        raise RuntimeError('deprecated - should not be used')
+
+    def validate_post_setup(self,
+                            global_environment: instrs.GlobalEnvironmentForPostEdsPhase) \
+            -> svh.SuccessOrValidationErrorOrHardError:
+        raise RuntimeError('deprecated - should not be used')
+
+    def main(
+            self,
+            global_environment: instrs.GlobalEnvironmentForPostEdsPhase,
+            phase_environment: PhaseEnvironmentForScriptGeneration) -> sh.SuccessOrHardError:
+        raise RuntimeError('deprecated - should not be used')
 
 
 class _BeforeAssertPhaseInstructionThat(BeforeAssertPhaseInstruction):

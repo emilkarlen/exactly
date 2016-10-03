@@ -2,14 +2,15 @@ import types
 import unittest
 
 from exactly_lib.execution import phase_step
-from exactly_lib.execution.act_phase import ActSourceAndExecutor
-from exactly_lib.execution.partial_execution import ActPhaseHandling, ActPhaseParser
+from exactly_lib.execution.act_phase import ActSourceAndExecutor, ActSourceParser
+from exactly_lib.execution.partial_execution import ActPhaseHandling
 from exactly_lib.execution.result import FullResultStatus
 from exactly_lib.test_case import test_case_doc
+from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
 from exactly_lib.test_case.phases.act.program_source import ActSourceBuilderForStatementLines
+from exactly_lib.test_case.phases.common import GlobalEnvironmentForPreEdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
-from exactly_lib.util.line_source import LineSequenceBuilder
 from exactly_lib_test.execution.full_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorForExecutionRecording, TestCaseGeneratorWithRecordingInstrFollowedByExtraInstrsInEachPhase
 from exactly_lib_test.execution.full_execution.test_resources.test_case_base import FullExecutionTestCaseBase
@@ -147,8 +148,10 @@ class TestCaseBase(unittest.TestCase):
 
     def _with_recording_act_program_executor(self,
                                              arrangement: Arrangement) -> ActPhaseHandling:
-        class ActPhaseParserThat(ActPhaseParser):
-            def apply(self, source: LineSequenceBuilder) -> ActSourceAndExecutor:
+        class ActSourceParserThat(ActSourceParser):
+            def apply(self,
+                      environment: GlobalEnvironmentForPreEdsStep,
+                      act_phase: ActPhaseInstruction) -> ActSourceAndExecutor:
                 recorder = arrangement.test_case_generator.recorder
                 recorder.recording_of(phase_step.ACT__SCRIPT_VALIDATE).record()
                 # TODO Should the return value from validate_test_action be used in any way, or removed?
@@ -169,8 +172,3 @@ class TestCaseBase(unittest.TestCase):
 
 def one_successful_instruction_in_each_phase() -> TestCaseGeneratorForExecutionRecording:
     return TestCaseGeneratorWithRecordingInstrFollowedByExtraInstrsInEachPhase()
-
-
-class ActPhaseParserThat(ActPhaseParser):
-    def apply(self, source: LineSequenceBuilder) -> ActSourceAndExecutor:
-        pass

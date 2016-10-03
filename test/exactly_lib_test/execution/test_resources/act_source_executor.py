@@ -44,8 +44,9 @@ class ActSourceAndExecutorThatRunsConstantActions(ActSourceAndExecutor):
         self.__prepare_action = prepare_action
         self.__execute_action = execute_action
 
-    def prepare(self, home_and_eds: HomeAndEds) -> sh.SuccessOrHardError:
+    def prepare(self, home_and_eds: HomeAndEds, script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
         return self.__prepare_action()
 
-    def execute(self, home_and_eds: HomeAndEds, std_files: StdFiles) -> ExitCodeOrHardError:
+    def execute(self, home_and_eds: HomeAndEds, script_output_dir_path: pathlib.Path,
+                std_files: StdFiles) -> ExitCodeOrHardError:
         return self.__execute_action()

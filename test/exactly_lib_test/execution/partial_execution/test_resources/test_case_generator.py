@@ -24,6 +24,9 @@ class TestCaseGeneratorForPartialExecutionBase:
     def phase_contents_for(self, phase: PartialPhase) -> model.SectionContents:
         raise NotImplementedError()
 
+    def phase_contents_for_act(self, act_phase: PartialPhase) -> model.SectionContents:
+        raise NotImplementedError()
+
     @property
     def test_case(self) -> TestCase:
         if self.__test_case is None:
@@ -33,7 +36,7 @@ class TestCaseGeneratorForPartialExecutionBase:
     def _generate(self) -> TestCase:
         return TestCase(
                 self.phase_contents_for(PartialPhase.SETUP),
-                self.phase_contents_for(PartialPhase.ACT),
+            self.phase_contents_for_act(PartialPhase.ACT),
                 self.phase_contents_for(PartialPhase.BEFORE_ASSERT),
                 self.phase_contents_for(PartialPhase.ASSERT),
                 self.phase_contents_for(PartialPhase.CLEANUP)

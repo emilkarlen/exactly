@@ -39,29 +39,6 @@ class SetupConfig(utils.Configuration):
         return test.setup_phase_instruction_that(validate_post_setup=do_raise(exception))
 
 
-class ActConfig(utils.Configuration):
-    def __init__(self):
-        super().__init__(PartialPhase.ACT,
-                         phase_step.ACT__VALIDATE_POST_SETUP,
-                         expected_steps=
-                         PRE_EDS_VALIDATION_STEPS__TWICE + [
-                             phase_step.SETUP__MAIN,
-                             phase_step.SETUP__MAIN,
-                             phase_step.SETUP__VALIDATE_POST_SETUP,
-                             phase_step.SETUP__VALIDATE_POST_SETUP,
-                             phase_step.ACT__VALIDATE_POST_SETUP,
-                             (phase_step.CLEANUP__MAIN, PreviousPhase.SETUP),
-                             (phase_step.CLEANUP__MAIN, PreviousPhase.SETUP),
-                         ])
-
-    def instruction_that_returns(self, return_value: svh.SuccessOrValidationErrorOrHardError) -> TestCaseInstruction:
-        return test.act_phase_instruction_that(
-            validate_post_setup=do_return(return_value))
-
-    def instruction_that_raises(self, exception: Exception) -> TestCaseInstruction:
-        return test.act_phase_instruction_that(validate_post_setup=do_raise(exception))
-
-
 class BeforeAssertConfig(utils.Configuration):
     def __init__(self):
         super().__init__(PartialPhase.BEFORE_ASSERT,
@@ -72,7 +49,6 @@ class BeforeAssertConfig(utils.Configuration):
                              phase_step.SETUP__MAIN,
                              phase_step.SETUP__VALIDATE_POST_SETUP,
                              phase_step.SETUP__VALIDATE_POST_SETUP,
-                             phase_step.ACT__VALIDATE_POST_SETUP,
                              phase_step.ACT__VALIDATE_POST_SETUP,
                              phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
                              (phase_step.CLEANUP__MAIN, PreviousPhase.SETUP),
@@ -98,7 +74,6 @@ class AssertConfig(utils.Configuration):
                              phase_step.SETUP__VALIDATE_POST_SETUP,
                              phase_step.SETUP__VALIDATE_POST_SETUP,
                              phase_step.ACT__VALIDATE_POST_SETUP,
-                             phase_step.ACT__VALIDATE_POST_SETUP,
                              phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
                              phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
                              phase_step.ASSERT__VALIDATE_POST_SETUP,
@@ -117,7 +92,6 @@ class AssertConfig(utils.Configuration):
 def _instruction_validation_invocations() -> list:
     return [
         SetupConfig(),
-        ActConfig(),
         BeforeAssertConfig(),
         AssertConfig(),
     ]

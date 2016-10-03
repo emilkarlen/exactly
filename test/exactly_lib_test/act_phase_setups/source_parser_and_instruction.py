@@ -27,7 +27,7 @@ class TestParse(unittest.TestCase):
         element = sut.PlainSourceActPhaseParser().apply(source_builder)
         # ASSERT #
         instruction = self._assert_is_instruction_element_with_correct_type_of_instruction(element)
-        self.assertEqual(instruction.source_code,
+        self.assertEqual(instruction._source_code,
                          'first line')
         self.assertFalse(source.has_next(),
                          'There should be no remaining lines in the source')
@@ -42,7 +42,7 @@ class TestParse(unittest.TestCase):
         element = sut.PlainSourceActPhaseParser().apply(source_builder)
         # ASSERT #
         instruction = self._assert_is_instruction_element_with_correct_type_of_instruction(element)
-        self.assertEqual(instruction.source_code,
+        self.assertEqual(instruction._source_code,
                          line_separated(['first line',
                                          'second line',
                                          'third line']))
@@ -59,7 +59,7 @@ class TestParse(unittest.TestCase):
         element = sut.PlainSourceActPhaseParser().apply(source_builder)
         # ASSERT #
         instruction = self._assert_is_instruction_element_with_correct_type_of_instruction(element)
-        self.assertEqual(instruction.source_code,
+        self.assertEqual(instruction._source_code,
                          line_separated(['first line',
                                          'second line']))
         self.assertTrue(source.has_next(),

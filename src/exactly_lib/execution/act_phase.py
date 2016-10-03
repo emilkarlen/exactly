@@ -1,8 +1,9 @@
 import pathlib
 
 from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
+from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
 from exactly_lib.test_case.phases.act.program_source import ActSourceBuilder
-from exactly_lib.test_case.phases.common import HomeAndEds
+from exactly_lib.test_case.phases.common import HomeAndEds, GlobalEnvironmentForPreEdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.failure_details import FailureDetails
@@ -68,9 +69,6 @@ class SourceSetup:
 
 
 class ActSourceExecutor:
-    """
-    Deprecated - or make it an implementation detail of some act-phase-setups.
-    """
     def validate(self,
                  home_dir: pathlib.Path,
                  source: ActSourceBuilder) -> svh.SuccessOrValidationErrorOrHardError:
@@ -112,7 +110,18 @@ class ActSourceAndExecutor:
     Valid act phase source together with functionality for executing it.
     """
 
-    def prepare(self, home_and_eds: HomeAndEds) -> sh.SuccessOrHardError:
+    def validate(self,
+                 home_and_eds: HomeAndEds) -> svh.SuccessOrValidationErrorOrHardError:
+        """
+        post-setup validation of the source that this object represents.
+
+        If success is not returned, then the test is aborted.
+        """
+        raise NotImplementedError()
+
+    def prepare(self,
+                home_and_eds: HomeAndEds,
+                script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
         """
         Executed after validate.
 
@@ -124,10 +133,26 @@ class ActSourceAndExecutor:
 
     def execute(self,
                 home_and_eds: HomeAndEds,
+                script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
         """
         Executed after prepare.
 
         :returns exit code of executed program, or error
         """
+        raise NotImplementedError()
+
+
+class ActSourceParser:
+    """
+    Parses the contents of the act phase which is the source that is to be executed as the act phase.
+    (after it has been extracted from the test case file).
+
+    Does syntax checking/validation while parsing - and reports syntax errors
+    in terms of exceptions.
+    """
+
+    def apply(self,
+              environment: GlobalEnvironmentForPreEdsStep,
+              act_phase: ActPhaseInstruction) -> ActSourceAndExecutor:
         raise NotImplementedError()

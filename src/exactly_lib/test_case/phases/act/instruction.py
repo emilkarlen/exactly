@@ -3,6 +3,7 @@ from exactly_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase
     GlobalEnvironmentForPreEdsStep
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.test_case.phases.result.sh import SuccessOrHardError
+from exactly_lib.util.line_source import LineSequence
 
 
 class PhaseEnvironmentForScriptGeneration:
@@ -17,12 +18,16 @@ class PhaseEnvironmentForScriptGeneration:
     @property
     def append(self) -> ScriptSourceAccumulator:
         return self.__script_source_accumulator
-    
+
 
 class ActPhaseInstruction(TestCaseInstruction):
     """
     Abstract base class for instructions of the ACT phase.
     """
+
+    def source_code(self,
+                    environment: GlobalEnvironmentForPreEdsStep) -> LineSequence:
+        raise NotImplementedError()
 
     def validate_pre_eds(self,
                          environment: GlobalEnvironmentForPreEdsStep) -> svh.SuccessOrValidationErrorOrHardError:
