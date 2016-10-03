@@ -38,11 +38,11 @@ class InstructionLineConstructor:
 
 
 def partial_test_case_with_instructions(
-        setup_phase_instructions: list,
-        act_phase_instructions: list,
-        before_assert_phase_instructions: list,
-        assert_phase_instructions: list,
-        cleanup_phase_instructions: list) -> partial_execution.TestCase:
+        setup_phase_instructions: list = (),
+        act_phase_instructions: list = (),
+        before_assert_phase_instructions: list = (),
+        assert_phase_instructions: list = (),
+        cleanup_phase_instructions: list = ()) -> partial_execution.TestCase:
     instruction_line_con = instruction_line_constructor()
 
     def section_contents(instructions: list) -> SectionContents:
