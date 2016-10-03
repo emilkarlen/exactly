@@ -29,8 +29,8 @@ class Test(unittest.TestCase):
         test(
             self,
             test_case,
-            functools.partial(log_dir_is_correct_for_each_phase, recorder),
             dummy_act_phase_handling(),
+            functools.partial(log_dir_is_correct_for_each_phase, recorder),
             is_keep_execution_directory_root=False)
 
 

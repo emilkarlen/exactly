@@ -147,8 +147,8 @@ def dummy_act_phase_handling() -> ActPhaseHandling:
 
 def test(unittest_case: unittest.TestCase,
          test_case: partial_execution.TestCase,
-         assertions: types.FunctionType,
          act_phase_handling: ActPhaseHandling,
+         assertions: types.FunctionType,
          is_keep_execution_directory_root: bool = True,
          dbg_do_not_delete_dir_structure=False):
     result = _execute(test_case,
