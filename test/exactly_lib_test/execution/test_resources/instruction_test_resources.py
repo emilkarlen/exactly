@@ -38,11 +38,13 @@ def configuration_phase_instruction_that(main=do_return(sh.SuccessOrHardError),
 
 
 def setup_phase_instruction_that(validate_pre_eds=do_return(svh.new_svh_success()),
+                                 validate_pre_eds_initial_action=None,
                                  validate_post_setup=do_return(svh.new_svh_success()),
+                                 validate_post_setup_initial_action=None,
                                  main=do_return(sh.new_sh_success()),
                                  main_initial_action=None) -> SetupPhaseInstruction:
-    return _SetupPhaseInstructionThat(validate_pre_eds,
-                                      validate_post_setup,
+    return _SetupPhaseInstructionThat(_action_of(validate_pre_eds_initial_action, validate_pre_eds),
+                                      _action_of(validate_post_setup_initial_action, validate_post_setup),
                                       _action_of(main_initial_action, main))
 
 
@@ -59,27 +61,32 @@ def act_phase_instruction_with(source: LineSequence) -> ActPhaseInstruction:
 
 
 def before_assert_phase_instruction_that(validate_pre_eds=do_return(svh.new_svh_success()),
+                                         validate_pre_eds_initial_action=None,
                                          validate_post_setup=do_return(svh.new_svh_success()),
+                                         validate_post_setup_initial_action=None,
                                          main=do_return(sh.new_sh_success()),
                                          main_initial_action=None) -> AssertPhaseInstruction:
-    return _BeforeAssertPhaseInstructionThat(validate_pre_eds,
-                                             validate_post_setup,
+    return _BeforeAssertPhaseInstructionThat(_action_of(validate_pre_eds_initial_action, validate_pre_eds),
+                                             _action_of(validate_post_setup_initial_action, validate_post_setup),
                                              _action_of(main_initial_action, main))
 
 
 def assert_phase_instruction_that(validate_pre_eds=do_return(svh.new_svh_success()),
+                                  validate_pre_eds_initial_action=None,
                                   validate_post_setup=do_return(svh.new_svh_success()),
+                                  validate_post_setup_initial_action=None,
                                   main=do_return(pfh.new_pfh_pass()),
                                   main_initial_action=None) -> AssertPhaseInstruction:
-    return _AssertPhaseInstructionThat(validate_pre_eds,
-                                       validate_post_setup,
+    return _AssertPhaseInstructionThat(_action_of(validate_pre_eds_initial_action, validate_pre_eds),
+                                       _action_of(validate_post_setup_initial_action, validate_post_setup),
                                        _action_of(main_initial_action, main))
 
 
 def cleanup_phase_instruction_that(validate_pre_eds=do_return(svh.new_svh_success()),
+                                   validate_pre_eds_initial_action=None,
                                    main=do_return(sh.new_sh_success()),
                                    main_initial_action=None) -> CleanupPhaseInstruction:
-    return _CleanupPhaseInstructionThat(validate_pre_eds,
+    return _CleanupPhaseInstructionThat(_action_of(validate_pre_eds_initial_action, validate_pre_eds),
                                         _action_of(main_initial_action, main))
 
 
