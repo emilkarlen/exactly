@@ -8,10 +8,13 @@ import exactly_lib.act_phase_setups.script_interpretation.python3
 from exactly_lib import program_info
 from exactly_lib.execution import partial_execution
 from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
+from exactly_lib.execution.partial_execution import ActPhaseHandling
 from exactly_lib.execution.phases import PhaseEnum
 from exactly_lib.execution.result import PartialResult
 from exactly_lib.processing.processors import act_phase_handling_for_setup
+from exactly_lib.test_case.phases.act.program_source import ActSourceBuilderForPlainStringsBase
 from exactly_lib.util.functional import Composition
+from exactly_lib_test.execution.test_resources.act_source_executor import ActSourceExecutorThatRunsConstantActions
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that, \
     before_assert_phase_instruction_that, assert_phase_instruction_that, cleanup_phase_instruction_that, \
     act_phase_instruction_that
@@ -124,6 +127,32 @@ def py3_test(unittest_case: unittest.TestCase,
     result = _execute(test_case,
                       act_phase_handling_for_setup(
                           exactly_lib.act_phase_setups.script_interpretation.python3.new_act_phase_setup()),
+                      is_keep_execution_directory_root=is_keep_execution_directory_root)
+
+    assertions(unittest_case,
+               result)
+    # CLEANUP #
+    os.chdir(str(result.home_dir_path))
+    if not dbg_do_not_delete_dir_structure:
+        if result.execution_directory_structure.root_dir.exists():
+            shutil.rmtree(str(result.execution_directory_structure.root_dir))
+    else:
+        print(str(result.execution_directory_structure.root_dir))
+
+
+def dummy_act_phase_handling() -> ActPhaseHandling:
+    return ActPhaseHandling(ActSourceBuilderForPlainStringsBase(),
+                            ActSourceExecutorThatRunsConstantActions())
+
+
+def test(unittest_case: unittest.TestCase,
+         test_case: partial_execution.TestCase,
+         assertions: types.FunctionType,
+         act_phase_handling: ActPhaseHandling,
+         is_keep_execution_directory_root: bool = True,
+         dbg_do_not_delete_dir_structure=False):
+    result = _execute(test_case,
+                      act_phase_handling,
                       is_keep_execution_directory_root=is_keep_execution_directory_root)
 
     assertions(unittest_case,

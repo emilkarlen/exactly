@@ -158,7 +158,8 @@ class TestCaseBase(unittest.TestCase):
                 arrangement.validate_test_action()
                 return ActSourceAndExecutorWrapperThatRecordsSteps(
                     recorder,
-                    ActSourceAndExecutorThatRunsConstantActions(arrangement.prepare_test_action,
+                    ActSourceAndExecutorThatRunsConstantActions(arrangement.validate_test_action,
+                                                                arrangement.prepare_test_action,
                                                                 arrangement.execute_test_action))
 
         act_source_executor = ActSourceExecutorWrapperThatRecordsSteps(

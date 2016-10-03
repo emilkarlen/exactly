@@ -7,8 +7,8 @@ from exactly_lib.execution.execution_directory_structure import eds_log_phase_di
 from exactly_lib.execution.phases import PhaseEnum
 from exactly_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase
 from exactly_lib.util.line_source import LineSequence
-from exactly_lib_test.execution.partial_execution.test_resources.basic import py3_test, \
-    TestCaseWithCommonDefaultInstructions, Result
+from exactly_lib_test.execution.partial_execution.test_resources.basic import test, \
+    TestCaseWithCommonDefaultInstructions, Result, dummy_act_phase_handling
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that, \
     act_phase_instruction_with, before_assert_phase_instruction_that, assert_phase_instruction_that, \
     cleanup_phase_instruction_that
@@ -26,10 +26,11 @@ class Test(unittest.TestCase):
             [assert_phase_instruction_that(main_initial_action=RecordLogDirForPhase(PhaseEnum.ASSERT, recorder))],
             [cleanup_phase_instruction_that(main_initial_action=RecordLogDirForPhase(PhaseEnum.CLEANUP, recorder))],
         )
-        py3_test(
+        test(
             self,
             test_case,
             functools.partial(log_dir_is_correct_for_each_phase, recorder),
+            dummy_act_phase_handling(),
             is_keep_execution_directory_root=False)
 
 
