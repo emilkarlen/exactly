@@ -32,16 +32,34 @@ class ImplementationErrorTestException(Exception):
     pass
 
 
-def configuration_phase_instruction_that(main=do_return(sh.SuccessOrHardError)) -> ConfigurationPhaseInstruction:
-    return _ConfigurationPhaseInstructionThat(main=main)
+def configuration_phase_instruction_that(main=do_return(sh.SuccessOrHardError),
+                                         main_first_action=None) -> ConfigurationPhaseInstruction:
+    if main_first_action:
+        def complete_main(global_environment, configuration_builder):
+            main_first_action(global_environment, configuration_builder)
+            return main(global_environment, configuration_builder)
+
+        return _ConfigurationPhaseInstructionThat(complete_main)
+    else:
+        return _ConfigurationPhaseInstructionThat(main=main)
 
 
 def setup_phase_instruction_that(validate_pre_eds=do_return(svh.new_svh_success()),
                                  validate_post_setup=do_return(svh.new_svh_success()),
-                                 main=do_return(sh.new_sh_success()), ) -> SetupPhaseInstruction:
-    return _SetupPhaseInstructionThat(validate_pre_eds,
-                                      validate_post_setup,
-                                      main)
+                                 main=do_return(sh.new_sh_success()),
+                                 main_initial_action=None) -> SetupPhaseInstruction:
+    if main_initial_action:
+        def complete_main(environment, os_services, settings_builder):
+            main_initial_action(environment, os_services, settings_builder)
+            return main(environment, os_services, settings_builder)
+
+        return _SetupPhaseInstructionThat(validate_pre_eds,
+                                          validate_post_setup,
+                                          complete_main)
+    else:
+        return _SetupPhaseInstructionThat(validate_pre_eds,
+                                          validate_post_setup,
+                                          main)
 
 
 def act_phase_instruction_that(validate_pre_eds=do_return(svh.new_svh_success()),
@@ -58,24 +76,53 @@ def act_phase_instruction_with(source: LineSequence) -> ActPhaseInstruction:
 
 def before_assert_phase_instruction_that(validate_pre_eds=do_return(svh.new_svh_success()),
                                          validate_post_setup=do_return(svh.new_svh_success()),
-                                         main=do_return(sh.new_sh_success())) -> AssertPhaseInstruction:
-    return _BeforeAssertPhaseInstructionThat(validate_pre_eds,
-                                             validate_post_setup,
-                                             main)
+                                         main=do_return(sh.new_sh_success()),
+                                         main_initial_action=None) -> AssertPhaseInstruction:
+    if main_initial_action:
+        def complete_main(environment, os_services):
+            main_initial_action(environment, os_services)
+            return main(environment, os_services)
+
+        return _BeforeAssertPhaseInstructionThat(validate_pre_eds,
+                                                 validate_post_setup,
+                                                 complete_main)
+    else:
+        return _BeforeAssertPhaseInstructionThat(validate_pre_eds,
+                                                 validate_post_setup,
+                                                 main)
 
 
 def assert_phase_instruction_that(validate_pre_eds=do_return(svh.new_svh_success()),
                                   validate_post_setup=do_return(svh.new_svh_success()),
-                                  main=do_return(pfh.new_pfh_pass())) -> AssertPhaseInstruction:
-    return _AssertPhaseInstructionThat(validate_pre_eds,
-                                       validate_post_setup,
-                                       main)
+                                  main=do_return(pfh.new_pfh_pass()),
+                                  main_initial_action=None) -> AssertPhaseInstruction:
+    if main_initial_action:
+        def complete_main(environment, os_services):
+            main_initial_action(environment, os_services)
+            return main(environment, os_services)
+
+        return _AssertPhaseInstructionThat(validate_pre_eds,
+                                           validate_post_setup,
+                                           complete_main)
+    else:
+        return _AssertPhaseInstructionThat(validate_pre_eds,
+                                           validate_post_setup,
+                                           main)
 
 
 def cleanup_phase_instruction_that(validate_pre_eds=do_return(svh.new_svh_success()),
-                                   main=do_return(sh.new_sh_success())) -> CleanupPhaseInstruction:
-    return _CleanupPhaseInstructionThat(validate_pre_eds,
-                                        main)
+                                   main=do_return(sh.new_sh_success()),
+                                   main_initial_action=None) -> CleanupPhaseInstruction:
+    if main_initial_action:
+        def complete_main(environment, previous_phase, os_services):
+            main_initial_action(environment, previous_phase, os_services)
+            return main(environment, previous_phase, os_services)
+
+        return _CleanupPhaseInstructionThat(validate_pre_eds,
+                                            complete_main)
+    else:
+        return _CleanupPhaseInstructionThat(validate_pre_eds,
+                                            main)
 
 
 class ConfigurationPhaseInstructionThatSetsExecutionMode(ConfigurationPhaseInstruction):
