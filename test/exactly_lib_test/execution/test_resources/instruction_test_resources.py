@@ -145,6 +145,9 @@ class _ActPhaseInstructionThat(ActPhaseInstruction):
         self._validate_post_setup = validate_post_setup
         self._main = main
 
+    def source_code(self) -> LineSequence:
+        return LineSequence(72, ('Dummy source code from ' + str(type(self)),))
+
     def validate_pre_eds(self,
                          environment: instrs.GlobalEnvironmentForPreEdsStep) -> svh.SuccessOrValidationErrorOrHardError:
         return self._validate_pre_eds(environment)

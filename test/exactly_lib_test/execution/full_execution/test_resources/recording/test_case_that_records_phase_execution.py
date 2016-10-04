@@ -25,9 +25,11 @@ class Arrangement(tuple):
                 test_case_generator: TestCaseGeneratorForExecutionRecording,
                 validate_test_action=validate_action_that_returns(svh.new_svh_success()),
                 prepare_test_action=prepare_action_that_returns(sh.new_sh_success()),
-                execute_test_action=execute_action_that_returns_exit_code()):
+                execute_test_action=execute_action_that_returns_exit_code(),
+                act_executor_validate_pre_eds=validate_action_that_returns(svh.new_svh_success())):
         return tuple.__new__(cls, (test_case_generator,
                                    validate_test_action,
+                                   act_executor_validate_pre_eds,
                                    prepare_test_action,
                                    execute_test_action))
 
@@ -40,12 +42,16 @@ class Arrangement(tuple):
         return self[1]
 
     @property
-    def prepare_test_action(self) -> types.FunctionType:
+    def act_executor_validate_pre_eds(self) -> types.FunctionType:
         return self[2]
 
     @property
-    def execute_test_action(self) -> types.FunctionType:
+    def prepare_test_action(self) -> types.FunctionType:
         return self[3]
+
+    @property
+    def execute_test_action(self) -> types.FunctionType:
+        return self[4]
 
 
 class Expectation(tuple):
@@ -147,7 +153,8 @@ class TestCaseBase(unittest.TestCase):
             arrangement.test_case_generator.recorder,
             ActSourceExecutorThatRunsConstantActions(arrangement.validate_test_action,
                                                      arrangement.prepare_test_action,
-                                                     arrangement.execute_test_action))
+                                                     arrangement.execute_test_action,
+                                                     validate_pre_eds_action=arrangement.act_executor_validate_pre_eds))
         return ActPhaseHandling(ActSourceBuilderForStatementLines(),
                                 act_source_executor)
 
