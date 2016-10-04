@@ -45,19 +45,18 @@ class Test(TestCaseBase):
                                 PRE_EDS_VALIDATION_STEPS__TWICE +
                                 [phase_step.SETUP__MAIN,
                                  phase_step.SETUP__MAIN,
+
                                  phase_step.SETUP__VALIDATE_POST_SETUP,
                                  phase_step.SETUP__VALIDATE_POST_SETUP,
-                                 phase_step.ACT__VALIDATE_POST_SETUP,
                                  phase_step.ACT__VALIDATE_POST_SETUP,
                                  phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
                                  phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
                                  phase_step.ASSERT__VALIDATE_POST_SETUP,
                                  phase_step.ASSERT__VALIDATE_POST_SETUP,
-                                 phase_step.ACT__MAIN,
-                                 phase_step.ACT__MAIN,
-                                 phase_step.ACT__SCRIPT_VALIDATE,
+
                                  phase_step.ACT__PREPARE,
                                  phase_step.ACT__EXECUTE,
+
                                  phase_step.BEFORE_ASSERT__MAIN,
                                  phase_step.BEFORE_ASSERT__MAIN,
                                  phase_step.ASSERT__MAIN,
@@ -79,19 +78,18 @@ class Test(TestCaseBase):
                         PRE_EDS_VALIDATION_STEPS__TWICE +
                         [phase_step.SETUP__MAIN,
                          phase_step.SETUP__MAIN,
+
                          phase_step.SETUP__VALIDATE_POST_SETUP,
                          phase_step.SETUP__VALIDATE_POST_SETUP,
-                         phase_step.ACT__VALIDATE_POST_SETUP,
                          phase_step.ACT__VALIDATE_POST_SETUP,
                          phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
                          phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
                          phase_step.ASSERT__VALIDATE_POST_SETUP,
                          phase_step.ASSERT__VALIDATE_POST_SETUP,
-                         phase_step.ACT__MAIN,
-                         phase_step.ACT__MAIN,
-                         phase_step.ACT__SCRIPT_VALIDATE,
+
                          phase_step.ACT__PREPARE,
                          phase_step.ACT__EXECUTE,
+
                          phase_step.BEFORE_ASSERT__MAIN,
                          phase_step.BEFORE_ASSERT__MAIN,
                          phase_step.ASSERT__MAIN,
@@ -136,19 +134,18 @@ class Test(TestCaseBase):
                         PRE_EDS_VALIDATION_STEPS__TWICE +
                         [phase_step.SETUP__MAIN,
                          phase_step.SETUP__MAIN,
+
                          phase_step.SETUP__VALIDATE_POST_SETUP,
                          phase_step.SETUP__VALIDATE_POST_SETUP,
-                         phase_step.ACT__VALIDATE_POST_SETUP,
                          phase_step.ACT__VALIDATE_POST_SETUP,
                          phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
                          phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
                          phase_step.ASSERT__VALIDATE_POST_SETUP,
                          phase_step.ASSERT__VALIDATE_POST_SETUP,
-                         phase_step.ACT__MAIN,
-                         phase_step.ACT__MAIN,
-                         phase_step.ACT__SCRIPT_VALIDATE,
+
                          phase_step.ACT__PREPARE,
                          phase_step.ACT__EXECUTE,
+
                          phase_step.BEFORE_ASSERT__MAIN,
                          phase_step.BEFORE_ASSERT__MAIN,
                          phase_step.ASSERT__MAIN,
