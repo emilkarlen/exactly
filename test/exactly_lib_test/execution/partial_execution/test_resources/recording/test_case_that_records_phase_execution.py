@@ -25,11 +25,14 @@ class Arrangement(tuple):
                 test_case_generator: TestCaseGeneratorForExecutionRecording,
                 validate_test_action=validate_action_that_returns(svh.new_svh_success()),
                 prepare_test_action=prepare_action_that_returns(sh.new_sh_success()),
-                execute_test_action=execute_action_that_returns_exit_code()):
+                execute_test_action=execute_action_that_returns_exit_code(),
+                validate_pre_eds_test_action=validate_action_that_returns(svh.new_svh_success()),
+                ):
         return tuple.__new__(cls, (test_case_generator,
                                    validate_test_action,
                                    prepare_test_action,
-                                   execute_test_action))
+                                   execute_test_action,
+                                   validate_pre_eds_test_action))
 
     @property
     def test_case_generator(self) -> TestCaseGeneratorForExecutionRecording:
@@ -38,6 +41,10 @@ class Arrangement(tuple):
     @property
     def validate_test_action(self) -> types.FunctionType:
         return self[1]
+
+    @property
+    def validate_pre_eds_test_action(self) -> types.FunctionType:
+        return self[4]
 
     @property
     def prepare_test_action(self) -> types.FunctionType:
@@ -137,9 +144,11 @@ def execute_test_case_with_recording(put: unittest.TestCase,
         ActSourceBuilderForStatementLines(),
         ActSourceExecutorWrapperThatRecordsSteps(
             arrangement.test_case_generator.recorder,
-            ActSourceExecutorThatRunsConstantActions(arrangement.validate_test_action,
-                                                     arrangement.prepare_test_action,
-                                                     arrangement.execute_test_action)))
+            ActSourceExecutorThatRunsConstantActions(
+                validate_pre_eds_action=arrangement.validate_pre_eds_test_action,
+                validate_action=arrangement.validate_test_action,
+                prepare_action=arrangement.prepare_test_action,
+                execute_action=arrangement.execute_test_action)))
     test_case = _TestCaseThatRecordsExecution(put,
                                               arrangement.test_case_generator,
                                               expectation,
