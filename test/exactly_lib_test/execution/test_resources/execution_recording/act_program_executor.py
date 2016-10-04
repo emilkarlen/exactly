@@ -90,7 +90,7 @@ class ActSourceAndExecutorWrapperThatRecordsSteps(ActSourceAndExecutor):
         self.__recorder = recorder
         self.__wrapped = wrapped
 
-    def validate(self, home_and_eds: HomeAndEds) -> svh.SuccessOrValidationErrorOrHardError:
+    def validate_post_setup(self, home_and_eds: HomeAndEds) -> svh.SuccessOrValidationErrorOrHardError:
         raise NotImplementedError("refactoring - do not know what do do here yet!")
 
     def prepare(self,

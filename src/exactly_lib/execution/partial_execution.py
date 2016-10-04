@@ -411,7 +411,7 @@ class _ActProgramExecution:
         step = phase_step.ACT__VALIDATE_POST_SETUP
 
         def action():
-            res = self.act_source_and_executor.validate(self.home_and_eds)
+            res = self.act_source_and_executor.validate_post_setup(self.home_and_eds)
             if res.is_success:
                 return self._pass()
             else:

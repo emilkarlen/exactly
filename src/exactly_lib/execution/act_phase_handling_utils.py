@@ -40,8 +40,8 @@ class ActSourceAndExecutorAdapterForActSourceExecutor(ActSourceAndExecutor):
         self.source_builder = ActSourceBuilderForStatementLines()
         self.source_builder.raw_script_statements(source.lines)
 
-    def validate(self,
-                 home_and_eds: HomeAndEds) -> svh.SuccessOrValidationErrorOrHardError:
+    def validate_post_setup(self,
+                            home_and_eds: HomeAndEds) -> svh.SuccessOrValidationErrorOrHardError:
         return self.adapted.validate(home_and_eds.home_dir_path, self.source_builder)
 
     def prepare(self,

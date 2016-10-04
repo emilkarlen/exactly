@@ -110,8 +110,15 @@ class ActSourceAndExecutor:
     Valid act phase source together with functionality for executing it.
     """
 
-    def validate(self,
-                 home_and_eds: HomeAndEds) -> svh.SuccessOrValidationErrorOrHardError:
+    def validate_pre_eds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
+        """
+        pre-eds validation of the source that this object represents.
+
+        If success is not returned, then the test is aborted.
+        """
+        raise NotImplementedError()
+
+    def validate_post_setup(self, home_and_eds: HomeAndEds) -> svh.SuccessOrValidationErrorOrHardError:
         """
         post-setup validation of the source that this object represents.
 
