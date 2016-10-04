@@ -75,6 +75,69 @@ class Test(TestCaseBase):
                         ],
                         execution_directory_structure_should_exist=False))
 
+    def test_validation_error_in_validate_post_setup(self):
+        test_case = _single_successful_instruction_in_each_phase()
+        self._check(
+            Arrangement(test_case,
+                        act_executor_validate_post_setup=validate_action_that_returns(
+                            svh.new_svh_validation_error('error in act/validate-post-setup'))),
+            Expectation(PartialResultStatus.VALIDATE,
+                        ExpectedFailureForPhaseFailure.new_with_message(
+                            phase_step.ACT__VALIDATE_POST_SETUP,
+                            'error in act/validate-post-setup'),
+                        PRE_EDS_VALIDATION_STEPS__ONCE +
+                        [
+                            phase_step.SETUP__MAIN,
+
+                            phase_step.SETUP__VALIDATE_POST_SETUP,
+                            phase_step.ACT__VALIDATE_POST_SETUP,
+
+                            (phase_step.CLEANUP__MAIN, PreviousPhase.SETUP),
+                        ],
+                        execution_directory_structure_should_exist=True))
+
+    def test_hard_error_in_validate_post_setup(self):
+        test_case = _single_successful_instruction_in_each_phase()
+        self._check(
+            Arrangement(test_case,
+                        act_executor_validate_post_setup=validate_action_that_returns(
+                            svh.new_svh_hard_error('error in act/validate-post-setup'))),
+            Expectation(PartialResultStatus.HARD_ERROR,
+                        ExpectedFailureForPhaseFailure.new_with_message(
+                            phase_step.ACT__VALIDATE_POST_SETUP,
+                            'error in act/validate-post-setup'),
+                        PRE_EDS_VALIDATION_STEPS__ONCE +
+                        [
+                            phase_step.SETUP__MAIN,
+
+                            phase_step.SETUP__VALIDATE_POST_SETUP,
+                            phase_step.ACT__VALIDATE_POST_SETUP,
+
+                            (phase_step.CLEANUP__MAIN, PreviousPhase.SETUP),
+                        ],
+                        execution_directory_structure_should_exist=True))
+
+    def test_exception_in_validate_post_setup(self):
+        test_case = _single_successful_instruction_in_each_phase()
+        self._check(
+            Arrangement(test_case,
+                        act_executor_validate_post_setup=validate_action_that_raises(
+                            test.ImplementationErrorTestException())),
+            Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
+                        ExpectedFailureForPhaseFailure.new_with_exception(
+                            phase_step.ACT__VALIDATE_POST_SETUP,
+                            test.ImplementationErrorTestException),
+                        PRE_EDS_VALIDATION_STEPS__ONCE +
+                        [
+                            phase_step.SETUP__MAIN,
+
+                            phase_step.SETUP__VALIDATE_POST_SETUP,
+                            phase_step.ACT__VALIDATE_POST_SETUP,
+
+                            (phase_step.CLEANUP__MAIN, PreviousPhase.SETUP),
+                        ],
+                        execution_directory_structure_should_exist=True))
+
     def test_hard_error_in_prepare(self):
         test_case = _single_successful_instruction_in_each_phase()
         self._check(
