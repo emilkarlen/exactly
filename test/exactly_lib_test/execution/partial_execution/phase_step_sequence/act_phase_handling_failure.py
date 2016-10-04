@@ -30,7 +30,7 @@ class Test(TestCaseBase):
         test_case = _single_successful_instruction_in_each_phase()
         self._check(
             Arrangement(test_case,
-                        prepare_test_action=prepare_action_that_returns_hard_error_with_message(
+                        act_executor_prepare=prepare_action_that_returns_hard_error_with_message(
                             'error in act/prepare')),
             Expectation(PartialResultStatus.HARD_ERROR,
                         ExpectedFailureForPhaseFailure.new_with_message(
@@ -54,7 +54,7 @@ class Test(TestCaseBase):
         test_case = _single_successful_instruction_in_each_phase()
         self._check(
             Arrangement(test_case,
-                        prepare_test_action=execute_action_that_raises(
+                        act_executor_prepare=execute_action_that_raises(
                             test.ImplementationErrorTestException())),
             Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
                         ExpectedFailureForPhaseFailure.new_with_exception(
@@ -78,7 +78,7 @@ class Test(TestCaseBase):
         test_case = _single_successful_instruction_in_each_phase()
         self._check(
             Arrangement(test_case,
-                        execute_test_action=execute_action_that_returns_hard_error_with_message(
+                        act_executor_execute=execute_action_that_returns_hard_error_with_message(
                             'error in execute')),
             Expectation(PartialResultStatus.HARD_ERROR,
                         ExpectedFailureForPhaseFailure.new_with_message(
@@ -103,7 +103,7 @@ class Test(TestCaseBase):
         test_case = _single_successful_instruction_in_each_phase()
         self._check(
             Arrangement(test_case,
-                        execute_test_action=execute_action_that_raises(
+                        act_executor_execute=execute_action_that_raises(
                             test.ImplementationErrorTestException())),
             Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
                         ExpectedFailureForPhaseFailure.new_with_exception(

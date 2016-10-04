@@ -23,35 +23,35 @@ from exactly_lib_test.test_resources.expected_instruction_failure import Expecte
 class Arrangement(tuple):
     def __new__(cls,
                 test_case_generator: TestCaseGeneratorForExecutionRecording,
-                validate_test_action=validate_action_that_returns(svh.new_svh_success()),
-                prepare_test_action=prepare_action_that_returns(sh.new_sh_success()),
-                execute_test_action=execute_action_that_returns_exit_code(),
-                validate_pre_eds_test_action=validate_action_that_returns(svh.new_svh_success()),
+                act_executor_validate_post_setup=validate_action_that_returns(svh.new_svh_success()),
+                act_executor_prepare=prepare_action_that_returns(sh.new_sh_success()),
+                act_executor_execute=execute_action_that_returns_exit_code(),
+                act_executor_validate_pre_eds=validate_action_that_returns(svh.new_svh_success()),
                 ):
         return tuple.__new__(cls, (test_case_generator,
-                                   validate_test_action,
-                                   prepare_test_action,
-                                   execute_test_action,
-                                   validate_pre_eds_test_action))
+                                   act_executor_validate_post_setup,
+                                   act_executor_prepare,
+                                   act_executor_execute,
+                                   act_executor_validate_pre_eds))
 
     @property
     def test_case_generator(self) -> TestCaseGeneratorForExecutionRecording:
         return self[0]
 
     @property
-    def validate_test_action(self) -> types.FunctionType:
+    def act_executor_validate_post_setup(self) -> types.FunctionType:
         return self[1]
 
     @property
-    def validate_pre_eds_test_action(self) -> types.FunctionType:
+    def act_executor_validate_pre_eds(self) -> types.FunctionType:
         return self[4]
 
     @property
-    def prepare_test_action(self) -> types.FunctionType:
+    def act_executor_prepare(self) -> types.FunctionType:
         return self[2]
 
     @property
-    def execute_test_action(self) -> types.FunctionType:
+    def act_executor_execute(self) -> types.FunctionType:
         return self[3]
 
 
@@ -145,10 +145,10 @@ def execute_test_case_with_recording(put: unittest.TestCase,
         ActSourceExecutorWrapperThatRecordsSteps(
             arrangement.test_case_generator.recorder,
             ActSourceExecutorThatRunsConstantActions(
-                validate_pre_eds_action=arrangement.validate_pre_eds_test_action,
-                validate_action=arrangement.validate_test_action,
-                prepare_action=arrangement.prepare_test_action,
-                execute_action=arrangement.execute_test_action)))
+                validate_pre_eds_action=arrangement.act_executor_validate_pre_eds,
+                validate_action=arrangement.act_executor_validate_post_setup,
+                prepare_action=arrangement.act_executor_prepare,
+                execute_action=arrangement.act_executor_execute)))
     test_case = _TestCaseThatRecordsExecution(put,
                                               arrangement.test_case_generator,
                                               expectation,
