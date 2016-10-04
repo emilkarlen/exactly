@@ -4,7 +4,6 @@ import shutil
 import subprocess
 import tempfile
 
-import exactly_lib.util.failure_details
 from exactly_lib.execution import environment_variables
 from exactly_lib.execution import phase_step
 from exactly_lib.execution import phase_step_executors
@@ -23,7 +22,8 @@ from exactly_lib.test_case.phases.cleanup import PreviousPhase
 from exactly_lib.test_case.phases.common import GlobalEnvironmentForPreEdsStep, HomeAndEds
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder, StdinSettings
 from exactly_lib.util import line_source
-from exactly_lib.util.failure_details import FailureDetails, new_failure_details_from_message
+from exactly_lib.util.failure_details import FailureDetails, new_failure_details_from_message, \
+    new_failure_details_from_exception
 from exactly_lib.util.file_utils import write_new_text_file, resolved_path_name
 from exactly_lib.util.std import StdOutputFiles, StdFiles
 from . import phase_step_execution
@@ -182,7 +182,7 @@ class _PartialExecutor:
         self.__set_pre_eds_environment_variables()
         res = self._sequence([
             self.__setup__validate_pre_eds,
-            self.__act__parse_and_validate_pre_eds,
+            self.__act__create_executor_and_validate_pre_eds,
             self.__before_assert__validate_pre_eds,
             self.__assert__validate_pre_eds,
             self.__cleanup__validate_pre_eds,
@@ -250,18 +250,39 @@ class _PartialExecutor:
                                                                self.__global_environment_pre_eds),
                                                            self.__test_case.setup_phase)
 
-    def __act__parse_and_validate_pre_eds(self) -> PartialResult:
-        section_contents = self.__test_case.act_phase
-        if len(section_contents.elements) != 1:
-            raise NotImplementedError('Not handled yet: Contents of act phase is not a single element')
-        element = section_contents.elements[0]
-        if element.element_type is not ElementType.INSTRUCTION:
-            raise NotImplementedError('Not handled yet: The single element of the act phase is not an instruction')
-        instruction = element.instruction
-        assert isinstance(instruction, ActPhaseInstruction)
-        self.__act_source_and_executor = self.__act_source_parser.apply(self.__global_environment_pre_eds, instruction)
-        self.__act_source_and_executor.validate_pre_eds(self.__global_environment_pre_eds.home_directory)
-        return new_partial_result_pass(self._eds)
+    def __act__create_executor_and_validate_pre_eds(self) -> PartialResult:
+        failure_con = _PhaseFailureResultConstructor(phase_step.ACT__VALIDATE_PRE_EDS, None)
+
+        def action():
+            section_contents = self.__test_case.act_phase
+            instructions = []
+            for element in section_contents.elements:
+                if element.element_type is ElementType.INSTRUCTION:
+                    instruction = element.instruction
+                    if not isinstance(instruction, ActPhaseInstruction):
+                        msg = 'Instruction is not an instance of ' + str(ActPhaseInstruction)
+                        return failure_con.implementation_error_msg(msg)
+                    instructions.append(instruction)
+                else:
+                    msg = 'Act phase contains an element that is not an instruction: ' + str(element.element_type)
+                    return failure_con.implementation_error_msg(msg)
+
+            self.__act_source_and_executor = self.__act_source_parser.apply(self.__global_environment_pre_eds,
+                                                                            instructions)
+            res = self.__act_source_and_executor.validate_pre_eds(self.__global_environment_pre_eds.home_directory)
+            if res.is_success:
+                return new_partial_result_pass(None)
+            else:
+                return failure_con.apply(PartialResultStatus(res.status.value),
+                                         new_failure_details_from_message(res.failure_message))
+
+        try:
+            return action()
+        except Exception as ex:
+            return PartialResult(PartialResultStatus.IMPLEMENTATION_ERROR,
+                                 None,
+                                 PhaseFailureInfo(phase_step.ACT__VALIDATE_PRE_EDS,
+                                                  new_failure_details_from_exception(ex)))
 
     def __before_assert__validate_pre_eds(self) -> PartialResult:
         return self.__run_internal_instructions_phase_step(
@@ -398,6 +419,30 @@ class _PartialExecutor:
                                                   self._eds)
 
 
+class _PhaseFailureResultConstructor:
+    def __init__(self,
+                 step: PhaseStep,
+                 eds: ExecutionDirectoryStructure):
+        self.step = step
+        self.eds = eds
+
+    def apply(self,
+              status: PartialResultStatus,
+              failure_details: FailureDetails) -> PartialResult:
+        return PartialResult(status,
+                             self.eds,
+                             result.PhaseFailureInfo(self.step,
+                                                     failure_details))
+
+    def implementation_error(self, ex: Exception) -> PartialResult:
+        return self.apply(PartialResultStatus.IMPLEMENTATION_ERROR,
+                          new_failure_details_from_exception(ex))
+
+    def implementation_error_msg(self, msg: str) -> PartialResult:
+        return self.apply(PartialResultStatus.IMPLEMENTATION_ERROR,
+                          new_failure_details_from_message(msg))
+
+
 class _ActProgramExecution:
     def __init__(self,
                  act_source_and_executor: ActSourceAndExecutor,
@@ -418,8 +463,7 @@ class _ActProgramExecution:
             else:
                 return self._failure_from(step,
                                           PartialResultStatus(res.status.value),
-                                          exactly_lib.util.failure_details.new_failure_details_from_message(
-                                              res.failure_message))
+                                          new_failure_details_from_message(res.failure_message))
 
         return self._with_implementation_exception_handling(step, action)
 
@@ -497,11 +541,7 @@ class _ActProgramExecution:
         try:
             return action()
         except Exception as ex:
-            return PartialResult(PartialResultStatus.IMPLEMENTATION_ERROR,
-                                 self.home_and_eds.eds,
-                                 PhaseFailureInfo(step,
-                                                  exactly_lib.util.failure_details.new_failure_details_from_exception(
-                                                      ex)))
+            return self._failure_con_for(step).implementation_error(ex)
 
     def _pass(self) -> PartialResult:
         return new_partial_result_pass(self.home_and_eds.eds)
@@ -510,10 +550,10 @@ class _ActProgramExecution:
                       step: PhaseStep,
                       status: PartialResultStatus,
                       failure_details: FailureDetails) -> PartialResult:
-        return PartialResult(status,
-                             self.home_and_eds.eds,
-                             result.PhaseFailureInfo(step,
-                                                     failure_details))
+        return self._failure_con_for(step).apply(status, failure_details)
+
+    def _failure_con_for(self, step: PhaseStep) -> _PhaseFailureResultConstructor:
+        return _PhaseFailureResultConstructor(step, self.home_and_eds.eds)
 
 
 class _ActCommentHeaderExecutor(ElementHeaderExecutor):

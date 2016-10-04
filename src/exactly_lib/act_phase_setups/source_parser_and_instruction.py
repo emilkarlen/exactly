@@ -3,7 +3,6 @@ from exactly_lib.section_document import parse
 from exactly_lib.section_document import syntax
 from exactly_lib.test_case.phases import common
 from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
-from exactly_lib.test_case.phases.common import GlobalEnvironmentForPreEdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.util import line_source
 from exactly_lib.util.line_source import LineSequence
@@ -27,7 +26,7 @@ class SourceCodeInstruction(ActPhaseInstruction):
                  source_code: LineSequence):
         self._source_code = source_code
 
-    def source_code(self, environment: GlobalEnvironmentForPreEdsStep) -> LineSequence:
+    def source_code(self) -> LineSequence:
         return self._source_code
 
     def main(self, global_environment: common.GlobalEnvironmentForPostEdsPhase,

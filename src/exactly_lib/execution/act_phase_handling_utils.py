@@ -6,25 +6,27 @@ The feeling is that these will be removed, or moved, after the refactoring is do
 import pathlib
 
 from exactly_lib.execution.act_phase import ActSourceExecutor, ActSourceAndExecutor, SourceSetup, ExitCodeOrHardError, \
-    ActSourceParser
+    ActSourceAndExecutorConstructor
 from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
 from exactly_lib.test_case.phases.act.program_source import ActSourceBuilderForStatementLines
 from exactly_lib.test_case.phases.common import HomeAndEds, GlobalEnvironmentForPreEdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
-from exactly_lib.util.line_source import LineSequence
 from exactly_lib.util.std import StdFiles
 
 
-class ActSourceParserUsingActSourceExecutor(ActSourceParser):
+class ActSourceParserUsingActSourceExecutor(ActSourceAndExecutorConstructor):
     def __init__(self,
                  adapted: ActSourceExecutor):
         self.adapted = adapted
 
     def apply(self,
               environment: GlobalEnvironmentForPreEdsStep,
-              act_phase: ActPhaseInstruction) -> ActSourceAndExecutor:
-        return ActSourceAndExecutorAdapterForActSourceExecutor(act_phase.source_code(environment),
+              act_phase_instructions: list) -> ActSourceAndExecutor:
+        """
+        :param act_phase_instructions: [ActPhaseInstruction]
+        """
+        return ActSourceAndExecutorAdapterForActSourceExecutor(act_phase_instructions,
                                                                self.adapted)
 
 
@@ -34,11 +36,13 @@ class ActSourceAndExecutorAdapterForActSourceExecutor(ActSourceAndExecutor):
     """
 
     def __init__(self,
-                 source: LineSequence,
+                 act_phase_instructions: list,
                  adapted: ActSourceExecutor):
         self.adapted = adapted
         self.source_builder = ActSourceBuilderForStatementLines()
-        self.source_builder.raw_script_statements(source.lines)
+        for instruction in act_phase_instructions:
+            assert isinstance(instruction, ActPhaseInstruction)
+            self.source_builder.raw_script_statements(instruction.source_code().lines)
 
     def validate_pre_eds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
         return self.adapted.validate_pre_eds(self.source_builder, home_dir_path)
