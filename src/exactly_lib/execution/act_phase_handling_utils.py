@@ -40,6 +40,9 @@ class ActSourceAndExecutorAdapterForActSourceExecutor(ActSourceAndExecutor):
         self.source_builder = ActSourceBuilderForStatementLines()
         self.source_builder.raw_script_statements(source.lines)
 
+    def validate_pre_eds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
+        raise NotImplementedError('Wrapped object does not have a corresponding method: validate_pre_eds')
+
     def validate_post_setup(self,
                             home_and_eds: HomeAndEds) -> svh.SuccessOrValidationErrorOrHardError:
         return self.adapted.validate(home_and_eds.home_dir_path, self.source_builder)
