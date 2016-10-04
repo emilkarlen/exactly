@@ -18,8 +18,14 @@ class ActSourceExecutorWrapperThatRecordsSteps(ActSourceExecutor):
         self.__recorder = recorder
         self.__wrapped = wrapped
 
+    def validate_pre_eds(self,
+                         source_setup: SourceSetup,
+                         home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
+        self.__recorder.recording_of(phase_step.ACT__VALIDATE_PRE_EDS).record()
+        return self.__wrapped.validate_pre_eds(source_setup, home_dir_path)
+
     def validate(self,
-                 home_dir: pathlib.Path(),
+                 home_dir: pathlib.Path,
                  source: ActSourceBuilder) -> svh.SuccessOrValidationErrorOrHardError:
         self.__recorder.recording_of(phase_step.ACT__VALIDATE_POST_SETUP).record()
         return self.__wrapped.validate(home_dir, source)
@@ -52,11 +58,19 @@ class ActSourceExecutorWrapperWithActions(ActSourceExecutor):
                  wrapped: ActSourceExecutor,
                  before_wrapped_validate=do_nothing,
                  before_wrapped_prepare=do_nothing,
-                 before_wrapped_execute=do_nothing):
+                 before_wrapped_execute=do_nothing,
+                 before_wrapped_validate_pre_eds=do_nothing):
         self.__wrapped = wrapped
         self.before_wrapped_validate = before_wrapped_validate
+        self.before_wrapped_validate_pre_eds = before_wrapped_validate_pre_eds
         self.before_wrapped_prepare = before_wrapped_prepare
         self.before_wrapped_execute = before_wrapped_execute
+
+    def validate_pre_eds(self,
+                         source_setup: SourceSetup,
+                         home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
+        self.before_wrapped_validate_pre_eds()
+        return self.__wrapped.validate_pre_eds(source_setup, home_dir_path)
 
     def validate(self,
                  home_dir: pathlib.Path(),

@@ -14,10 +14,17 @@ class ActSourceExecutorThatRunsConstantActions(ActSourceExecutor):
     def __init__(self,
                  validate_action=test_actions.validate_action_that_returns(svh.new_svh_success()),
                  prepare_action=test_actions.prepare_action_that_returns(sh.new_sh_success()),
-                 execute_action=test_actions.execute_action_that_returns_exit_code()):
+                 execute_action=test_actions.execute_action_that_returns_exit_code(),
+                 validate_pre_eds_action=test_actions.validate_action_that_returns(svh.new_svh_success())):
         self.__validate_action = validate_action
+        self.__validate_pre_eds_action = validate_pre_eds_action
         self.__prepare_action = prepare_action
         self.__execute_action = execute_action
+
+    def validate_pre_eds(self,
+                         source_setup: SourceSetup,
+                         home_and_eds: HomeAndEds) -> svh.SuccessOrValidationErrorOrHardError:
+        return self.__validate_pre_eds_action()
 
     def validate(self,
                  home_dir: pathlib.Path(),

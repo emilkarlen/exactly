@@ -69,6 +69,11 @@ class SourceSetup:
 
 
 class ActSourceExecutor:
+    def validate_pre_eds(self,
+                         source_setup: SourceSetup,
+                         home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
+        raise NotImplementedError()
+
     def validate(self,
                  home_dir: pathlib.Path,
                  source: ActSourceBuilder) -> svh.SuccessOrValidationErrorOrHardError:
