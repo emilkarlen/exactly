@@ -12,6 +12,16 @@ from exactly_lib.util.failure_details import FailureDetails, new_failure_details
 from exactly_lib_test.test_resources.model_utils import new_ls_from_line
 
 
+def suite() -> unittest.TestSuite:
+    ret_val = unittest.TestSuite()
+    ret_val.addTest(unittest.makeSuite(Test))
+    return ret_val
+
+
+if __name__ == '__main__':
+    unittest.main()
+
+
 class NameRecorder:
     def __init__(self):
         self.__list = []
@@ -145,13 +155,3 @@ def assert_equal_lines(unit_tc: unittest.TestCase,
 def new_dummy_instruction_element() -> SectionContentElement:
     return new_instruction_e(new_ls_from_line(line_source.Line(100, '100')),
                              TestCaseInstruction())
-
-
-def suite():
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(Test))
-    return ret_val
-
-
-if __name__ == '__main__':
-    unittest.main()
