@@ -1,3 +1,4 @@
+import pathlib
 import types
 from pathlib import Path
 
@@ -71,32 +72,32 @@ class TestCaseSetup(tuple):
 
     def as_setup_phase_instruction(self) -> SetupPhaseInstruction:
         return setup_phase_instruction_that(
-                validate_pre_eds=self._do_validate_pre_eds(phase_step.SETUP__VALIDATE_PRE_EDS),
-                validate_post_setup=self._do_validate_post_eds(phase_step.SETUP__VALIDATE_POST_SETUP),
-                main=self._do_main(phase_step.SETUP__MAIN))
+            validate_pre_eds=self._do_validate_pre_eds(phase_step.SETUP__VALIDATE_PRE_EDS),
+            validate_post_setup=self._do_validate_post_eds(phase_step.SETUP__VALIDATE_POST_SETUP),
+            main=self._do_main(phase_step.SETUP__MAIN))
 
     def as_act_phase_instruction(self) -> ActPhaseInstruction:
         return act_phase_instruction_that(
-                validate_pre_eds=self._do_validate_pre_eds(phase_step.ACT__VALIDATE_PRE_EDS),
-                validate_post_setup=self._do_validate_post_eds(phase_step.ACT__VALIDATE_POST_SETUP),
-                main=self._do_act_main())
+            validate_pre_eds=self._do_validate_pre_eds(phase_step.ACT__VALIDATE_PRE_EDS),
+            validate_post_setup=self._do_validate_post_eds(phase_step.ACT__VALIDATE_POST_SETUP),
+            main=self._do_act_main())
 
     def as_before_assert_phase_instruction(self) -> BeforeAssertPhaseInstruction:
         return before_assert_phase_instruction_that(
-                validate_pre_eds=self._do_validate_pre_eds(phase_step.BEFORE_ASSERT__VALIDATE_PRE_EDS),
-                validate_post_setup=self._do_validate_post_eds(phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP),
-                main=self._do_main(phase_step.BEFORE_ASSERT__MAIN))
+            validate_pre_eds=self._do_validate_pre_eds(phase_step.BEFORE_ASSERT__VALIDATE_PRE_EDS),
+            validate_post_setup=self._do_validate_post_eds(phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP),
+            main=self._do_main(phase_step.BEFORE_ASSERT__MAIN))
 
     def as_assert_phase_instruction(self) -> AssertPhaseInstruction:
         return assert_phase_instruction_that(
-                validate_pre_eds=self._do_validate_pre_eds(phase_step.ASSERT__VALIDATE_PRE_EDS),
-                validate_post_setup=self._do_validate_post_eds(phase_step.ASSERT__VALIDATE_POST_SETUP),
-                main=self._do_assert_main())
+            validate_pre_eds=self._do_validate_pre_eds(phase_step.ASSERT__VALIDATE_PRE_EDS),
+            validate_post_setup=self._do_validate_post_eds(phase_step.ASSERT__VALIDATE_POST_SETUP),
+            main=self._do_assert_main())
 
     def as_cleanup_phase_instruction(self) -> CleanupPhaseInstruction:
         return cleanup_phase_instruction_that(
-                validate_pre_eds=self._do_validate_pre_eds(phase_step.CLEANUP__VALIDATE_PRE_EDS),
-                main=self._do_main(phase_step.CLEANUP__MAIN))
+            validate_pre_eds=self._do_validate_pre_eds(phase_step.CLEANUP__VALIDATE_PRE_EDS),
+            main=self._do_main(phase_step.CLEANUP__MAIN))
 
     @property
     def ret_val_from_validate(self) -> svh.SuccessOrValidationErrorOrHardError:
@@ -241,3 +242,27 @@ def print_to_file__generate_script(code_using_file_opened_for_writing: types.Fun
     program = py.program_lines(mas.used_modules,
                                all_statements)
     phase_environment.append.raw_script_statements(program)
+
+
+def print_to_file__generate_script2(code_using_file_opened_for_writing: types.FunctionType,
+                                    file_name: str):
+    """
+    Function that is designed as the execution__generate_script argument to TestCaseSetup, after
+    giving the first two arguments using partial application.
+
+    :param code_using_file_opened_for_writing: function: file_variable: str -> ModulesAndStatements
+    :param file_name: the name of the file to output to.
+    :param global_environment: Environment from act instruction
+    :param phase_environment: Environment from act instruction
+    """
+    file_path = pathlib.Path() / file_name
+    file_name = str(file_path)
+    file_var = '_file_var'
+    mas = code_using_file_opened_for_writing(file_var)
+    all_statements = py.with_opened_file(file_name,
+                                         file_var,
+                                         'w',
+                                         mas.statements)
+
+    return py.program_lines(mas.used_modules,
+                            all_statements)

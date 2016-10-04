@@ -43,6 +43,46 @@ class ActSourceExecutorWrapperThatRecordsSteps(ActSourceExecutor):
                                       std_files)
 
 
+def do_nothing():
+    pass
+
+
+class ActSourceExecutorWrapperWithActions(ActSourceExecutor):
+    def __init__(self,
+                 wrapped: ActSourceExecutor,
+                 before_wrapped_validate=do_nothing,
+                 before_wrapped_prepare=do_nothing,
+                 before_wrapped_execute=do_nothing):
+        self.__wrapped = wrapped
+        self.before_wrapped_validate = before_wrapped_validate
+        self.before_wrapped_prepare = before_wrapped_prepare
+        self.before_wrapped_execute = before_wrapped_execute
+
+    def validate(self,
+                 home_dir: pathlib.Path(),
+                 source: ActSourceBuilder) -> svh.SuccessOrValidationErrorOrHardError:
+        self.before_wrapped_validate()
+        return self.__wrapped.validate(home_dir, source)
+
+    def prepare(self,
+                source_setup: SourceSetup,
+                home_dir_path: pathlib.Path,
+                eds: ExecutionDirectoryStructure) -> sh.SuccessOrHardError:
+        self.before_wrapped_prepare()
+        return self.__wrapped.prepare(source_setup, home_dir_path, eds)
+
+    def execute(self,
+                source_setup: SourceSetup,
+                home_dir: pathlib.Path,
+                eds: ExecutionDirectoryStructure,
+                std_files: StdFiles) -> ExitCodeOrHardError:
+        self.before_wrapped_execute()
+        return self.__wrapped.execute(source_setup,
+                                      home_dir,
+                                      eds,
+                                      std_files)
+
+
 class ActSourceAndExecutorWrapperThatRecordsSteps(ActSourceAndExecutor):
     def __init__(self,
                  recorder: ListRecorder,
