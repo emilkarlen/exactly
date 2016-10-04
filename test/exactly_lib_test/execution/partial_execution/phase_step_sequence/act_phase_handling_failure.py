@@ -14,7 +14,7 @@ from exactly_lib_test.execution.test_resources.execution_recording.phase_steps i
     PRE_EDS_VALIDATION_STEPS__ONCE
 from exactly_lib_test.execution.test_resources.test_actions import execute_action_that_raises, \
     execute_action_that_returns_hard_error_with_message, \
-    prepare_action_that_returns_hard_error_with_message, validate_action_that_returns
+    prepare_action_that_returns_hard_error_with_message, validate_action_that_returns, validate_action_that_raises
 from exactly_lib_test.test_resources.expected_instruction_failure import ExpectedFailureForPhaseFailure
 
 
@@ -53,6 +53,22 @@ class Test(TestCaseBase):
                         ExpectedFailureForPhaseFailure.new_with_message(
                             phase_step.ACT__VALIDATE_PRE_EDS,
                             'error in act/validate-pre-eds'),
+                        [
+                            phase_step.SETUP__VALIDATE_PRE_EDS,
+                            phase_step.ACT__VALIDATE_PRE_EDS,
+                        ],
+                        execution_directory_structure_should_exist=False))
+
+    def test_exception_in_validate_pre_eds(self):
+        test_case = _single_successful_instruction_in_each_phase()
+        self._check(
+            Arrangement(test_case,
+                        act_executor_validate_pre_eds=validate_action_that_raises(
+                            test.ImplementationErrorTestException())),
+            Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
+                        ExpectedFailureForPhaseFailure.new_with_exception(
+                            phase_step.ACT__VALIDATE_PRE_EDS,
+                            test.ImplementationErrorTestException),
                         [
                             phase_step.SETUP__VALIDATE_PRE_EDS,
                             phase_step.ACT__VALIDATE_PRE_EDS,
