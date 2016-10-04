@@ -1,49 +1,30 @@
 import functools
 import os
-import pathlib
 import unittest
 
+from exactly_lib.act_phase_setups.script_interpretation import python3
 from exactly_lib.execution import environment_variables
 from exactly_lib.execution import phase_step
+from exactly_lib.execution.partial_execution import ActPhaseHandling
 from exactly_lib.execution.phase_step import PhaseStep
 from exactly_lib.execution.result import FullResultStatus
 from exactly_lib.test_case import test_case_doc
-from exactly_lib.test_case.phases import common
+from exactly_lib.test_case.phases.act.program_source import ActSourceBuilderForPlainStringsBase
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
+from exactly_lib.util.line_source import LineSequence
 from exactly_lib_test.execution.full_execution.test_resources.test_case_base import FullExecutionTestCaseBase
 from exactly_lib_test.execution.test_resources import instruction_that_record_and_return as instr_setup
+from exactly_lib_test.execution.test_resources.execution_recording.act_program_executor import \
+    ActSourceExecutorWrapperWithActions
+from exactly_lib_test.execution.test_resources.instruction_test_resources import act_phase_instruction_with, \
+    before_assert_phase_instruction_that, assert_phase_instruction_that, cleanup_phase_instruction_that
+from exactly_lib_test.execution.test_resources.instruction_test_resources import configuration_phase_instruction_that
+from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that
 from exactly_lib_test.execution.test_resources.instruction_that_do_and_return import \
-    TestCaseGeneratorForTestCaseSetup, \
-    print_to_file__generate_script
+    print_to_file__generate_script, print_to_file__generate_script2
 from exactly_lib_test.execution.test_resources.py_unit_test_case_with_file_output import ModulesAndStatements
 from exactly_lib_test.execution.test_resources.python_code_gen import print_env_var_if_defined
-
-
-def env_vars_dict() -> dict:
-    ret_val = dict()
-    for env_var in environment_variables.ALL_ENV_VARS:
-        if env_var in os.environ:
-            ret_val[env_var] = os.environ[env_var]
-    return ret_val
-
-
-def _set_home_dir_to_parent__configuration_phase(recorder: instr_setup.Recorder,
-                                                 phase_step: PhaseStep,
-                                                 phase_environment: ConfigurationBuilder):
-    recorder.set_phase_step_recording(phase_step, env_vars_dict())
-    phase_environment.set_home_dir(phase_environment.home_dir_path.parent)
-
-
-def _action__without_eds(recorder: instr_setup.Recorder,
-                         phase_step: PhaseStep,
-                         home_dir: pathlib.Path):
-    recorder.set_phase_step_recording(phase_step, env_vars_dict())
-
-
-def _action__with_eds(recorder: instr_setup.Recorder,
-                      phase_step: PhaseStep,
-                      global_environment: common.GlobalEnvironmentForPostEdsPhase):
-    recorder.set_phase_step_recording(phase_step, env_vars_dict())
+from exactly_lib_test.execution.test_resources.test_case_generation import full_test_case_with_instructions
 
 
 class Test(FullExecutionTestCaseBase):
@@ -54,16 +35,53 @@ class Test(FullExecutionTestCaseBase):
                          dbg_do_not_delete_dir_structure)
         self.recorder = instr_setup.Recorder()
 
+    def _act_phase_handling(self) -> ActPhaseHandling:
+        return ActPhaseHandling(
+            ActSourceBuilderForPlainStringsBase(),
+            ActSourceExecutorWrapperWithActions(
+                python3.new_act_phase_setup().executor,
+                before_wrapped_validate=_RecordEnvVars(self.recorder,
+                                                       phase_step.ACT__VALIDATE_POST_SETUP),
+                before_wrapped_prepare=_RecordEnvVars(self.recorder,
+                                                      phase_step.ACT__PREPARE),
+                before_wrapped_execute=_RecordEnvVars(self.recorder,
+                                                      phase_step.ACT__EXECUTE)))
+
     def _test_case(self) -> test_case_doc.TestCase:
-        setup = instr_setup.TestCaseSetupWithRecorder(
-            configuration_phase_action=_set_home_dir_to_parent__configuration_phase,
-            validation_action__without_eds=_action__without_eds,
-            validation_action__with_eds=_action__with_eds,
-            execution_action__with_eds=_action__with_eds,
-            execution__generate_script=script_for_print_environment_variables_to_file,
+        py_pgm_to_print_env_vars = print_to_file__generate_script2(python_code_for_print_environment_variables,
+                                                                   ACT_SCRIPT_OUTPUT_FILE_NAME)
+        return full_test_case_with_instructions(
+            [configuration_phase_instruction_that(
+                main_initial_action=_ConfigurationPhaseActionThatRecordsEnvVarsAndSetsHomeDirToParent(self.recorder,
+                                                                                                      phase_step.CONFIGURATION__MAIN))],
+            [setup_phase_instruction_that(
+                validate_pre_eds_initial_action=_RecordEnvVars(self.recorder,
+                                                               phase_step.SETUP__VALIDATE_PRE_EDS),
+                validate_post_setup_initial_action=_RecordEnvVars(self.recorder,
+                                                                  phase_step.SETUP__VALIDATE_POST_SETUP),
+                main_initial_action=_RecordEnvVars(self.recorder,
+                                                   phase_step.SETUP__MAIN))],
+            [act_phase_instruction_with(LineSequence(72, py_pgm_to_print_env_vars))],
+            [before_assert_phase_instruction_that(
+                validate_pre_eds_initial_action=_RecordEnvVars(self.recorder,
+                                                               phase_step.BEFORE_ASSERT__VALIDATE_PRE_EDS),
+                validate_post_setup_initial_action=_RecordEnvVars(self.recorder,
+                                                                  phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP),
+                main_initial_action=_RecordEnvVars(self.recorder,
+                                                   phase_step.BEFORE_ASSERT__MAIN))],
+            [assert_phase_instruction_that(
+                validate_pre_eds_initial_action=_RecordEnvVars(self.recorder,
+                                                               phase_step.ASSERT__VALIDATE_PRE_EDS),
+                validate_post_setup_initial_action=_RecordEnvVars(self.recorder,
+                                                                  phase_step.ASSERT__VALIDATE_POST_SETUP),
+                main_initial_action=_RecordEnvVars(self.recorder,
+                                                   phase_step.ASSERT__MAIN))],
+            [cleanup_phase_instruction_that(
+                validate_pre_eds_initial_action=_RecordEnvVars(self.recorder,
+                                                               phase_step.CLEANUP__VALIDATE_PRE_EDS),
+                main_initial_action=_RecordEnvVars(self.recorder,
+                                                   phase_step.CLEANUP__MAIN))],
         )
-        plain_test_case_setup = setup.as_plain_test_case_setup(self.recorder)
-        return TestCaseGeneratorForTestCaseSetup(plain_test_case_setup).test_case
 
     def __assert_expected_internally_recorded_variables(self, expected):
         self._assert_expected_keys(expected,
@@ -98,16 +116,17 @@ class Test(FullExecutionTestCaseBase):
         expected_recorded_internally = {
             phase_step.CONFIGURATION__MAIN: for_configuration_phase,
             phase_step.SETUP__VALIDATE_PRE_EDS: for_pre_eds,
-            phase_step.ACT__VALIDATE_PRE_EDS: for_pre_eds,
+            # phase_step.ACT__VALIDATE_PRE_EDS: for_pre_eds,
             phase_step.BEFORE_ASSERT__VALIDATE_PRE_EDS: for_pre_eds,
             phase_step.ASSERT__VALIDATE_PRE_EDS: for_pre_eds,
             phase_step.CLEANUP__VALIDATE_PRE_EDS: for_pre_eds,
             phase_step.SETUP__MAIN: set_at_eds_creation,
             phase_step.SETUP__VALIDATE_POST_SETUP: set_at_eds_creation,
             phase_step.ACT__VALIDATE_POST_SETUP: set_at_eds_creation,
-            phase_step.ACT__MAIN: set_at_eds_creation,
             phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP: set_at_eds_creation,
             phase_step.ASSERT__VALIDATE_POST_SETUP: set_at_eds_creation,
+            phase_step.ACT__PREPARE: set_at_eds_creation,
+            phase_step.ACT__EXECUTE: set_at_eds_creation,
             phase_step.BEFORE_ASSERT__MAIN: set_after_act,
             phase_step.ASSERT__MAIN: set_after_act,
             phase_step.CLEANUP__MAIN: set_after_act,
@@ -171,3 +190,30 @@ def python_code_for_print_environment_variables(file_variable: str) -> ModulesAn
 script_for_print_environment_variables_to_file = functools.partial(print_to_file__generate_script,
                                                                    python_code_for_print_environment_variables,
                                                                    ACT_SCRIPT_OUTPUT_FILE_NAME)
+
+
+class _ActionWithPhaseStepAndRecording:
+    def __init__(self,
+                 recorder: instr_setup.Recorder,
+                 my_phase_step: PhaseStep):
+        self.recorder = recorder
+        self.my_phase_step = my_phase_step
+
+
+class _ConfigurationPhaseActionThatRecordsEnvVarsAndSetsHomeDirToParent(_ActionWithPhaseStepAndRecording):
+    def __call__(self, global_environment, phase_environment: ConfigurationBuilder, *args):
+        self.recorder.set_phase_step_recording(self.my_phase_step, env_vars_dict())
+        phase_environment.set_home_dir(phase_environment.home_dir_path.parent)
+
+
+class _RecordEnvVars(_ActionWithPhaseStepAndRecording):
+    def __call__(self, *args, **kwargs):
+        self.recorder.set_phase_step_recording(self.my_phase_step, env_vars_dict())
+
+
+def env_vars_dict() -> dict:
+    ret_val = dict()
+    for env_var in environment_variables.ALL_ENV_VARS:
+        if env_var in os.environ:
+            ret_val[env_var] = os.environ[env_var]
+    return ret_val
