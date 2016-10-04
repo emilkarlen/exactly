@@ -26,7 +26,7 @@ class ActSourceExecutorForScriptLanguage(ActSourceExecutor):
         self.script_language_setup = script_language_setup
 
     def validate_pre_eds(self,
-                         source_setup: SourceSetup,
+                         script_builder: ActSourceBuilder,
                          home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
         return svh.new_svh_success()
 

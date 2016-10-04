@@ -260,6 +260,7 @@ class _PartialExecutor:
         instruction = element.instruction
         assert isinstance(instruction, ActPhaseInstruction)
         self.__act_source_and_executor = self.__act_source_parser.apply(self.__global_environment_pre_eds, instruction)
+        self.__act_source_and_executor.validate_pre_eds(self.__global_environment_pre_eds.home_directory)
         return new_partial_result_pass(self._eds)
 
     def __before_assert__validate_pre_eds(self) -> PartialResult:

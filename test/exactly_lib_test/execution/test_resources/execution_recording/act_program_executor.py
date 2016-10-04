@@ -19,10 +19,10 @@ class ActSourceExecutorWrapperThatRecordsSteps(ActSourceExecutor):
         self.__wrapped = wrapped
 
     def validate_pre_eds(self,
-                         source_setup: SourceSetup,
+                         script_builder: ActSourceBuilder,
                          home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
         self.__recorder.recording_of(phase_step.ACT__VALIDATE_PRE_EDS).record()
-        return self.__wrapped.validate_pre_eds(source_setup, home_dir_path)
+        return self.__wrapped.validate_pre_eds(script_builder, home_dir_path)
 
     def validate(self,
                  home_dir: pathlib.Path,
@@ -67,10 +67,10 @@ class ActSourceExecutorWrapperWithActions(ActSourceExecutor):
         self.before_wrapped_execute = before_wrapped_execute
 
     def validate_pre_eds(self,
-                         source_setup: SourceSetup,
+                         script_builder: ActSourceBuilder,
                          home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
         self.before_wrapped_validate_pre_eds()
-        return self.__wrapped.validate_pre_eds(source_setup, home_dir_path)
+        return self.__wrapped.validate_pre_eds(script_builder, home_dir_path)
 
     def validate(self,
                  home_dir: pathlib.Path(),

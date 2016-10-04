@@ -22,7 +22,7 @@ class ActSourceExecutorThatRunsConstantActions(ActSourceExecutor):
         self.__execute_action = execute_action
 
     def validate_pre_eds(self,
-                         source_setup: SourceSetup,
+                         script_builder: ActSourceBuilder,
                          home_and_eds: HomeAndEds) -> svh.SuccessOrValidationErrorOrHardError:
         return self.__validate_pre_eds_action()
 
