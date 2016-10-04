@@ -26,7 +26,7 @@ if __name__ == '__main__':
 
 
 class Test(TestCaseBase):
-    def test_hard_error_in_act_program_prepare(self):
+    def test_hard_error_in_prepare(self):
         test_case = _single_successful_instruction_in_each_phase()
         self._check(
             Arrangement(test_case,
@@ -50,7 +50,7 @@ class Test(TestCaseBase):
                          ],
                         True))
 
-    def test_implementation_error_in_act_program_prepare(self):
+    def test_implementation_error_in_prepare(self):
         test_case = _single_successful_instruction_in_each_phase()
         self._check(
             Arrangement(test_case,
@@ -74,7 +74,7 @@ class Test(TestCaseBase):
                          ],
                         True))
 
-    def test_hard_error_in_act_program_execute(self):
+    def test_hard_error_in_execute(self):
         test_case = _single_successful_instruction_in_each_phase()
         self._check(
             Arrangement(test_case,
@@ -99,7 +99,7 @@ class Test(TestCaseBase):
                          ],
                         True))
 
-    def test_implementation_error_in_act_program_execute(self):
+    def test_implementation_error_in_execute(self):
         test_case = _single_successful_instruction_in_each_phase()
         self._check(
             Arrangement(test_case,
