@@ -5,7 +5,6 @@ from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction, Ph
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.before_assert import BeforeAssertPhaseInstruction
 from exactly_lib.test_case.phases.cleanup import CleanupPhaseInstruction, PreviousPhase
-from exactly_lib.test_case.phases.common import GlobalEnvironmentForPreEdsStep
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import sh
@@ -167,7 +166,7 @@ class _ActPhaseInstructionWithConstantSource(ActPhaseInstruction):
                  source: LineSequence):
         self.source = source
 
-    def source_code(self, environment: GlobalEnvironmentForPreEdsStep) -> LineSequence:
+    def source_code(self) -> LineSequence:
         return self.source
 
     def validate_pre_eds(self,

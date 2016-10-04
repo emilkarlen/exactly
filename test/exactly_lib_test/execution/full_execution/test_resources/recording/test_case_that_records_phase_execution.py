@@ -1,23 +1,18 @@
 import types
 import unittest
 
-from exactly_lib.execution import phase_step
-from exactly_lib.execution.act_phase import ActSourceAndExecutor, ActSourceParser
 from exactly_lib.execution.partial_execution import ActPhaseHandling
 from exactly_lib.execution.result import FullResultStatus
 from exactly_lib.test_case import test_case_doc
-from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
 from exactly_lib.test_case.phases.act.program_source import ActSourceBuilderForStatementLines
-from exactly_lib.test_case.phases.common import GlobalEnvironmentForPreEdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib_test.execution.full_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorForExecutionRecording, TestCaseGeneratorWithRecordingInstrFollowedByExtraInstrsInEachPhase
 from exactly_lib_test.execution.full_execution.test_resources.test_case_base import FullExecutionTestCaseBase
-from exactly_lib_test.execution.test_resources.act_source_executor import ActSourceExecutorThatRunsConstantActions, \
-    ActSourceAndExecutorThatRunsConstantActions
+from exactly_lib_test.execution.test_resources.act_source_executor import ActSourceExecutorThatRunsConstantActions
 from exactly_lib_test.execution.test_resources.execution_recording.act_program_executor import \
-    ActSourceExecutorWrapperThatRecordsSteps, ActSourceAndExecutorWrapperThatRecordsSteps
+    ActSourceExecutorWrapperThatRecordsSteps
 from exactly_lib_test.execution.test_resources.execution_recording.recorder import \
     ListRecorder
 from exactly_lib_test.execution.test_resources.test_actions import validate_action_that_returns, \
@@ -148,21 +143,6 @@ class TestCaseBase(unittest.TestCase):
 
     def _with_recording_act_program_executor(self,
                                              arrangement: Arrangement) -> ActPhaseHandling:
-        class ActSourceParserThat(ActSourceParser):
-            def apply(self,
-                      environment: GlobalEnvironmentForPreEdsStep,
-                      act_phase: ActPhaseInstruction) -> ActSourceAndExecutor:
-                recorder = arrangement.test_case_generator.recorder
-                recorder.recording_of(phase_step.ACT__SCRIPT_VALIDATE).record()
-                # TODO Should the return value from validate_test_action be used in any way, or removed?
-                arrangement.validate_test_action()
-                return ActSourceAndExecutorWrapperThatRecordsSteps(
-                    recorder,
-                    ActSourceAndExecutorThatRunsConstantActions(
-                        validate_post_setup_action=arrangement.validate_test_action,
-                        prepare_action=arrangement.prepare_test_action,
-                        execute_action=arrangement.execute_test_action))
-
         act_source_executor = ActSourceExecutorWrapperThatRecordsSteps(
             arrangement.test_case_generator.recorder,
             ActSourceExecutorThatRunsConstantActions(arrangement.validate_test_action,

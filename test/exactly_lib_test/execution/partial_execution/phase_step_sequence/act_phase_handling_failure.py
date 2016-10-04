@@ -41,7 +41,7 @@ class Test(TestCaseBase):
                             phase_step.SETUP__VALIDATE_PRE_EDS,
                             phase_step.ACT__VALIDATE_PRE_EDS,
                         ],
-                        True))
+                        execution_directory_structure_should_exist=False))
 
     def test_hard_error_in_prepare(self):
         test_case = _single_successful_instruction_in_each_phase()

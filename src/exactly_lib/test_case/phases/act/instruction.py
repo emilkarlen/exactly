@@ -25,8 +25,7 @@ class ActPhaseInstruction(TestCaseInstruction):
     Abstract base class for instructions of the ACT phase.
     """
 
-    def source_code(self,
-                    environment: GlobalEnvironmentForPreEdsStep) -> LineSequence:
+    def source_code(self) -> LineSequence:
         raise NotImplementedError()
 
     def validate_pre_eds(self,

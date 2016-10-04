@@ -1,7 +1,6 @@
 import pathlib
 
 from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
-from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
 from exactly_lib.test_case.phases.act.program_source import ActSourceBuilder
 from exactly_lib.test_case.phases.common import HomeAndEds, GlobalEnvironmentForPreEdsStep
 from exactly_lib.test_case.phases.result import sh
@@ -155,7 +154,7 @@ class ActSourceAndExecutor:
         raise NotImplementedError()
 
 
-class ActSourceParser:
+class ActSourceAndExecutorConstructor:
     """
     Parses the contents of the act phase which is the source that is to be executed as the act phase.
     (after it has been extracted from the test case file).
@@ -166,5 +165,5 @@ class ActSourceParser:
 
     def apply(self,
               environment: GlobalEnvironmentForPreEdsStep,
-              act_phase: ActPhaseInstruction) -> ActSourceAndExecutor:
+              act_phase_instructions: list) -> ActSourceAndExecutor:
         raise NotImplementedError()
