@@ -43,6 +43,11 @@ class ActSourceParserForSingleCommand(ActSourceParser):
 
 
 class ActSourceExecutorForSingleCommand(ActSourceExecutor):
+    def validate_pre_eds(self,
+                         source_setup: SourceSetup,
+                         home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
+        return svh.new_svh_success()
+
     def validate(self,
                  home_dir: pathlib.Path,
                  source: ActSourceBuilder) -> svh.SuccessOrValidationErrorOrHardError:
