@@ -40,15 +40,20 @@ class ActSourceExecutorThatRunsConstantActions(ActSourceExecutor):
 
 class ActSourceAndExecutorThatRunsConstantActions(ActSourceAndExecutor):
     def __init__(self,
-                 validate_action=test_actions.validate_action_that_returns(svh.new_svh_success()),
+                 validate_pre_eds_action=test_actions.validate_action_that_returns(svh.new_svh_success()),
+                 validate_post_setup_action=test_actions.validate_action_that_returns(svh.new_svh_success()),
                  prepare_action=test_actions.prepare_action_that_returns(sh.new_sh_success()),
                  execute_action=test_actions.execute_action_that_returns_exit_code()):
-        self.__validate_action = validate_action
+        self.__validate_pre_eds_action = validate_pre_eds_action
+        self.__validate_post_setup_action = validate_post_setup_action
         self.__prepare_action = prepare_action
         self.__execute_action = execute_action
 
+    def validate_pre_eds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
+        return self.__validate_pre_eds_action()
+
     def validate_post_setup(self, home_and_eds: HomeAndEds) -> svh.SuccessOrValidationErrorOrHardError:
-        return self.__validate_action()
+        return self.__validate_post_setup_action()
 
     def prepare(self, home_and_eds: HomeAndEds, script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
         return self.__prepare_action()
