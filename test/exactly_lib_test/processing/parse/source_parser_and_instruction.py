@@ -1,12 +1,11 @@
 import unittest
 
-from exactly_lib.act_phase_setups import source_parser_and_instruction as sut
+from exactly_lib.processing.parse import source_parser_and_instruction as sut
 from exactly_lib.section_document import model
 from exactly_lib.section_document.parse import LineSequenceSourceFromListOfLines, ListOfLines
 from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
 from exactly_lib.test_case.phases.act.instruction import SourceCodeInstruction
 from exactly_lib.util import line_source
-from exactly_lib.util.string import line_separated
 
 
 def suite() -> unittest.TestSuite:
@@ -29,8 +28,8 @@ class TestParse(unittest.TestCase):
         element = sut.PlainSourceActPhaseParser().apply(source_builder)
         # ASSERT #
         instruction = self._assert_is_instruction_element_with_correct_type_of_instruction(element)
-        self.assertEqual(instruction._source_code,
-                         'first line')
+        self.assertEqual(list(instruction.source_code().lines),
+                         ['first line'])
         self.assertFalse(source.has_next(),
                          'There should be no remaining lines in the source')
 
@@ -44,10 +43,10 @@ class TestParse(unittest.TestCase):
         element = sut.PlainSourceActPhaseParser().apply(source_builder)
         # ASSERT #
         instruction = self._assert_is_instruction_element_with_correct_type_of_instruction(element)
-        self.assertEqual(instruction._source_code,
-                         line_separated(['first line',
-                                         'second line',
-                                         'third line']))
+        self.assertEqual(list(instruction.source_code().lines),
+                         ['first line',
+                          'second line',
+                          'third line'])
         self.assertFalse(source.has_next(),
                          'There should be no remaining lines in the source')
 
