@@ -10,6 +10,7 @@ from exactly_lib.execution.result import FullResult
 from exactly_lib.processing import processing_utils
 from exactly_lib.processing import test_case_processing as processing
 from exactly_lib.processing.act_phase import ActPhaseSetup
+from exactly_lib.processing.parse.act_phase_source_parser import PlainSourceActPhaseParser
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.processing.test_case_processing import ErrorInfo, ProcessError
 from exactly_lib.section_document import parse as document_parser
@@ -50,7 +51,8 @@ def new_accessor(configuration: Configuration) -> processing.Accessor:
     return processing_utils.AccessorFromParts(_SourceReader(),
                                               configuration.handling_setup.preprocessor,
                                               _Parser(configuration.split_line_into_name_and_argument_function,
-                                                      configuration.handling_setup.act_phase_setup.parser,
+                                                      # configuration.handling_setup.act_phase_setup.parser,
+                                                      PlainSourceActPhaseParser(),
                                                       configuration.instruction_setup))
 
 
@@ -105,7 +107,8 @@ class _Parser(processing_utils.Parser):
 
 def act_phase_handling_for_setup(setup: ActPhaseSetup) -> ActPhaseHandling:
     return ActPhaseHandling(setup.script_builder_constructor(),
-                            setup.executor)
+                            setup.executor,
+                            setup.source_and_executor_constructor)
 
 
 class _Executor(processing_utils.Executor):
