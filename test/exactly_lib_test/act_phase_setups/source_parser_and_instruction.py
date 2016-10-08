@@ -3,6 +3,8 @@ import unittest
 from exactly_lib.act_phase_setups import source_parser_and_instruction as sut
 from exactly_lib.section_document import model
 from exactly_lib.section_document.parse import LineSequenceSourceFromListOfLines, ListOfLines
+from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
+from exactly_lib.test_case.phases.act.instruction import SourceCodeInstruction
 from exactly_lib.util import line_source
 from exactly_lib.util.string import line_separated
 
@@ -59,23 +61,22 @@ class TestParse(unittest.TestCase):
         element = sut.PlainSourceActPhaseParser().apply(source_builder)
         # ASSERT #
         instruction = self._assert_is_instruction_element_with_correct_type_of_instruction(element)
-        self.assertEqual(instruction._source_code,
-                         line_separated(['first line',
-                                         'second line']))
+        self.assertEqual(list(instruction.source_code().lines),
+                         ['first line',
+                          'second line'])
         self.assertTrue(source.has_next(),
                         'There should be remaining lines in the source')
         self.assertEqual('[section-header]',
                          source.next_line(),
                          'All following lines should remain in in the source')
 
-    def _assert_is_instruction_element_with_correct_type_of_instruction(self, element) -> sut.SourceCodeInstruction:
+    def _assert_is_instruction_element_with_correct_type_of_instruction(self,
+                                                                        element) -> SourceCodeInstruction:
         self.assertIsInstance(element, model.SectionContentElement,
                               'Expecting the parser to have returned a ' + str(model.SectionContentElement))
         assert isinstance(element, model.SectionContentElement)
         instruction = element.instruction
-        self.assertIsInstance(instruction, sut.ActPhaseInstruction,
-                              'Expecting the instruction to be a ' + str(sut.ActPhaseInstruction))
-        self.assertIsInstance(instruction, sut.SourceCodeInstruction,
-                              'Expecting the instruction to be a ' + str(sut.SourceCodeInstruction))
-        assert isinstance(instruction, sut.SourceCodeInstruction)
+        self.assertIsInstance(instruction, ActPhaseInstruction,
+                              'Expecting the instruction to be a ' + str(ActPhaseInstruction))
+        assert isinstance(instruction, SourceCodeInstruction)
         return instruction
