@@ -1,7 +1,8 @@
+from exactly_lib.test_case.phases import common
 from exactly_lib.test_case.phases.act.program_source import ScriptSourceAccumulator
 from exactly_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase, TestCaseInstruction, \
     GlobalEnvironmentForPreEdsStep
-from exactly_lib.test_case.phases.result import svh
+from exactly_lib.test_case.phases.result import svh, sh
 from exactly_lib.test_case.phases.result.sh import SuccessOrHardError
 from exactly_lib.util.line_source import LineSequence
 
@@ -47,3 +48,17 @@ class ActPhaseInstruction(TestCaseInstruction):
         :param phase_environment An object passed to all instructions in the Phase.
         """
         raise NotImplementedError()
+
+
+class SourceCodeInstruction(ActPhaseInstruction):
+    def __init__(self,
+                 source_code: LineSequence):
+        self._source_code = source_code
+
+    def source_code(self) -> LineSequence:
+        return self._source_code
+
+    def main(self, global_environment: common.GlobalEnvironmentForPostEdsPhase,
+             script_generator: PhaseEnvironmentForScriptGeneration) -> sh.SuccessOrHardError:
+        script_generator.append.raw_script_statement(self._source_code.text)
+        return sh.new_sh_success()
