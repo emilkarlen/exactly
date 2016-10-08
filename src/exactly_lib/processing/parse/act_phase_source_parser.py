@@ -16,4 +16,3 @@ class PlainSourceActPhaseParser(parse.SectionElementParser):
         return model.SectionContentElement(model.ElementType.INSTRUCTION,
                                            line_sequence,
                                            SourceCodeInstruction(line_sequence))
-

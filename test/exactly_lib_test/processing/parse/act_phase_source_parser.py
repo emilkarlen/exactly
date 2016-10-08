@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.processing.parse import source_parser_and_instruction as sut
+from exactly_lib.processing.parse import act_phase_source_parser as sut
 from exactly_lib.section_document import model
 from exactly_lib.section_document.parse import LineSequenceSourceFromListOfLines, ListOfLines
 from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
