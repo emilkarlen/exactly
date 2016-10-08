@@ -7,6 +7,7 @@ import unittest
 import exactly_lib.act_phase_setups.script_interpretation.python3
 from exactly_lib import program_info
 from exactly_lib.execution import partial_execution
+from exactly_lib.execution.act_phase_handling_utils import ConstructorAdapterForActSourceExecutor
 from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from exactly_lib.execution.partial_execution import ActPhaseHandling
 from exactly_lib.execution.phases import PhaseEnum
@@ -141,8 +142,10 @@ def py3_test(unittest_case: unittest.TestCase,
 
 
 def dummy_act_phase_handling() -> ActPhaseHandling:
+    act_source_executor = ActSourceExecutorThatRunsConstantActions()
     return ActPhaseHandling(ActSourceBuilderForPlainStringsBase(),
-                            ActSourceExecutorThatRunsConstantActions())
+                            act_source_executor,
+                            ConstructorAdapterForActSourceExecutor(act_source_executor))
 
 
 def test(unittest_case: unittest.TestCase,

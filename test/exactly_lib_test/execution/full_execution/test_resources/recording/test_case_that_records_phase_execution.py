@@ -1,6 +1,7 @@
 import types
 import unittest
 
+from exactly_lib.execution.act_phase_handling_utils import ConstructorAdapterForActSourceExecutor
 from exactly_lib.execution.partial_execution import ActPhaseHandling
 from exactly_lib.execution.result import FullResultStatus
 from exactly_lib.test_case import test_case_doc
@@ -156,7 +157,8 @@ class TestCaseBase(unittest.TestCase):
                                                      arrangement.execute_test_action,
                                                      validate_pre_eds_action=arrangement.act_executor_validate_pre_eds))
         return ActPhaseHandling(ActSourceBuilderForStatementLines(),
-                                act_source_executor)
+                                act_source_executor,
+                                ConstructorAdapterForActSourceExecutor(act_source_executor))
 
 
 def one_successful_instruction_in_each_phase() -> TestCaseGeneratorForExecutionRecording:

@@ -1,6 +1,7 @@
 import types
 import unittest
 
+from exactly_lib.execution.act_phase_handling_utils import ConstructorAdapterForActSourceExecutor
 from exactly_lib.execution.partial_execution import ActPhaseHandling
 from exactly_lib.execution.result import PartialResultStatus
 from exactly_lib.test_case import test_case_doc
@@ -140,15 +141,16 @@ def execute_test_case_with_recording(put: unittest.TestCase,
                                      arrangement: Arrangement,
                                      expectation: Expectation,
                                      dbg_do_not_delete_dir_structure=False):
+    act_source_executor = ActSourceExecutorWrapperThatRecordsSteps(arrangement.test_case_generator.recorder,
+                                                                   ActSourceExecutorThatRunsConstantActions(
+                                                                       validate_pre_eds_action=arrangement.act_executor_validate_pre_eds,
+                                                                       validate_action=arrangement.act_executor_validate_post_setup,
+                                                                       prepare_action=arrangement.act_executor_prepare,
+                                                                       execute_action=arrangement.act_executor_execute))
     act_phase_handling = ActPhaseHandling(
         ActSourceBuilderForStatementLines(),
-        ActSourceExecutorWrapperThatRecordsSteps(
-            arrangement.test_case_generator.recorder,
-            ActSourceExecutorThatRunsConstantActions(
-                validate_pre_eds_action=arrangement.act_executor_validate_pre_eds,
-                validate_action=arrangement.act_executor_validate_post_setup,
-                prepare_action=arrangement.act_executor_prepare,
-                execute_action=arrangement.act_executor_execute)))
+        act_source_executor,
+        ConstructorAdapterForActSourceExecutor(act_source_executor))
     test_case = _TestCaseThatRecordsExecution(put,
                                               arrangement.test_case_generator,
                                               expectation,

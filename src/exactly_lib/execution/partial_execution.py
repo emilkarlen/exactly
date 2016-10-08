@@ -8,8 +8,9 @@ from exactly_lib.execution import environment_variables
 from exactly_lib.execution import phase_step
 from exactly_lib.execution import phase_step_executors
 from exactly_lib.execution import phases
-from exactly_lib.execution.act_phase import ActSourceExecutor, ExitCodeOrHardError, ActSourceAndExecutor
-from exactly_lib.execution.act_phase_handling_utils import ActSourceParserUsingActSourceExecutor
+from exactly_lib.execution.act_phase import ActSourceExecutor, ExitCodeOrHardError, ActSourceAndExecutor, \
+    ActSourceAndExecutorConstructor
+from exactly_lib.execution.act_phase_handling_utils import ActSourceAndExecutorConstructorUsingActSourceExecutor
 from exactly_lib.execution.phase_step import PhaseStep
 from exactly_lib.execution.phase_step_execution import ElementHeaderExecutor
 from exactly_lib.execution.single_instruction_executor import ControlledInstructionExecutor
@@ -111,9 +112,11 @@ class _StepExecutionResult:
 class ActPhaseHandling:
     def __init__(self,
                  source_builder: ActSourceBuilder,
-                 executor: ActSourceExecutor):
+                 executor: ActSourceExecutor,
+                 source_and_executor_constructor: ActSourceAndExecutorConstructor):
         self.source_builder = source_builder
         self.executor = executor
+        self.source_and_executor_constructor = source_and_executor_constructor
 
 
 def execute(act_phase_handling: ActPhaseHandling,
@@ -173,7 +176,8 @@ class _PartialExecutor:
         self.__source_setup = None
         self.os_services = None
         self.__act_source_and_executor = None
-        self.__act_source_parser = ActSourceParserUsingActSourceExecutor(act_phase_handling.executor)
+        self.__act_source_and_executor_constructor = ActSourceAndExecutorConstructorUsingActSourceExecutor(
+            act_phase_handling.executor)
 
     def execute(self) -> PartialResult:
         # TODO Köra det här i sub-process?
@@ -267,8 +271,9 @@ class _PartialExecutor:
                     msg = 'Act phase contains an element that is not an instruction: ' + str(element.element_type)
                     return failure_con.implementation_error_msg(msg)
 
-            self.__act_source_and_executor = self.__act_source_parser.apply(self.__global_environment_pre_eds,
-                                                                            instructions)
+            self.__act_source_and_executor = self.__act_source_and_executor_constructor.apply(
+                self.__global_environment_pre_eds,
+                instructions)
             res = self.__act_source_and_executor.validate_pre_eds(self.__global_environment_pre_eds.home_directory)
             if res.is_success:
                 return new_partial_result_pass(None)
