@@ -5,6 +5,7 @@ import unittest
 from exactly_lib.act_phase_setups.script_interpretation import python3
 from exactly_lib.execution import environment_variables
 from exactly_lib.execution import phase_step
+from exactly_lib.execution.act_phase_handling_utils import ConstructorAdapterForActSourceExecutor
 from exactly_lib.execution.partial_execution import ActPhaseHandling
 from exactly_lib.execution.phase_step import PhaseStep
 from exactly_lib.execution.result import FullResultStatus
@@ -36,16 +37,18 @@ class Test(FullExecutionTestCaseBase):
         self.recorder = instr_setup.Recorder()
 
     def _act_phase_handling(self) -> ActPhaseHandling:
+        act_source_executor = ActSourceExecutorWrapperWithActions(
+            python3.new_act_phase_setup().executor,
+            before_wrapped_validate=_RecordEnvVars(self.recorder,
+                                                   phase_step.ACT__VALIDATE_POST_SETUP),
+            before_wrapped_prepare=_RecordEnvVars(self.recorder,
+                                                  phase_step.ACT__PREPARE),
+            before_wrapped_execute=_RecordEnvVars(self.recorder,
+                                                  phase_step.ACT__EXECUTE))
         return ActPhaseHandling(
             ActSourceBuilderForPlainStringsBase(),
-            ActSourceExecutorWrapperWithActions(
-                python3.new_act_phase_setup().executor,
-                before_wrapped_validate=_RecordEnvVars(self.recorder,
-                                                       phase_step.ACT__VALIDATE_POST_SETUP),
-                before_wrapped_prepare=_RecordEnvVars(self.recorder,
-                                                      phase_step.ACT__PREPARE),
-                before_wrapped_execute=_RecordEnvVars(self.recorder,
-                                                      phase_step.ACT__EXECUTE)))
+            act_source_executor,
+            ConstructorAdapterForActSourceExecutor(act_source_executor))
 
     def _test_case(self) -> test_case_doc.TestCase:
         py_pgm_to_print_env_vars = print_to_file__generate_script2(python_code_for_print_environment_variables,

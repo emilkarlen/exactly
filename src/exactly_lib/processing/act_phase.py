@@ -1,6 +1,6 @@
 import types
 
-from exactly_lib.execution.act_phase import ActSourceExecutor
+from exactly_lib.execution.act_phase import ActSourceExecutor, ActSourceAndExecutorConstructor
 from exactly_lib.section_document.parse import SectionElementParser
 
 
@@ -11,15 +11,17 @@ class ActPhaseSetup(tuple):
     """
 
     def __new__(cls,
-                parser: SectionElementParser,
-                script_builder_constructor,
-                executor: ActSourceExecutor):
+                parser: SectionElementParser,  # TODO remove since replaced by source_and_executor_constructor
+                script_builder_constructor,  # TODO remove since replaced by source_and_executor_constructor
+                executor: ActSourceExecutor,  # TODO remove since replaced by source_and_executor_constructor
+                source_and_executor_constructor: ActSourceAndExecutorConstructor):
         """
         :param script_builder_constructor: () -> ScriptSourceBuilder
         """
         return tuple.__new__(cls, (parser,
                                    script_builder_constructor,
-                                   executor))
+                                   executor,
+                                   source_and_executor_constructor))
 
     @property
     def parser(self) -> SectionElementParser:
@@ -35,3 +37,7 @@ class ActPhaseSetup(tuple):
     @property
     def executor(self) -> ActSourceExecutor:
         return self[2]
+
+    @property
+    def source_and_executor_constructor(self) -> ActSourceAndExecutorConstructor:
+        return self[3]
