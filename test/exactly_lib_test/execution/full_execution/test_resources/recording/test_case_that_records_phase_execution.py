@@ -1,8 +1,8 @@
 import types
 import unittest
 
+from exactly_lib.execution.act_phase import ActPhaseHandling
 from exactly_lib.execution.act_phase_handling_utils import ConstructorAdapterForActSourceExecutor
-from exactly_lib.execution.partial_execution import ActPhaseHandling
 from exactly_lib.execution.result import FullResultStatus
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.phases.result import sh

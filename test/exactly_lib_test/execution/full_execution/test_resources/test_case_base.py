@@ -6,8 +6,8 @@ import unittest
 from exactly_lib import program_info
 from exactly_lib.act_phase_setups.script_interpretation import python3
 from exactly_lib.execution import full_execution
+from exactly_lib.execution.act_phase import ActPhaseHandling
 from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
-from exactly_lib.execution.partial_execution import ActPhaseHandling
 from exactly_lib.execution.result import FullResult
 from exactly_lib.processing.processors import act_phase_handling_for_setup
 from exactly_lib.test_case import test_case_doc

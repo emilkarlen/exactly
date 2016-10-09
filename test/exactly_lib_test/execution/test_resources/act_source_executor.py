@@ -1,9 +1,10 @@
 import pathlib
 
-from exactly_lib.execution.act_phase import SourceSetup, ActSourceExecutor, ExitCodeOrHardError, ActSourceAndExecutor
+from exactly_lib.execution.act_phase import SourceSetup, ActSourceExecutor, ExitCodeOrHardError, ActSourceAndExecutor, \
+    ActSourceAndExecutorConstructor, ActPhaseHandling
 from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from exactly_lib.test_case.phases.act.program_source import ActSourceBuilder
-from exactly_lib.test_case.phases.common import HomeAndEds
+from exactly_lib.test_case.phases.common import HomeAndEds, GlobalEnvironmentForPreEdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.std import StdFiles
@@ -68,3 +69,38 @@ class ActSourceAndExecutorThatRunsConstantActions(ActSourceAndExecutor):
     def execute(self, home_and_eds: HomeAndEds, script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
         return self.__execute_action()
+
+
+class ActSourceAndExecutorConstructorThatRunsConstantActions(ActSourceAndExecutorConstructor):
+    def __init__(self,
+                 validate_pre_eds_action=test_actions.validate_action_that_returns(svh.new_svh_success()),
+                 validate_post_setup_action=test_actions.validate_action_that_returns(svh.new_svh_success()),
+                 prepare_action=test_actions.prepare_action_that_returns(sh.new_sh_success()),
+                 execute_action=test_actions.execute_action_that_returns_exit_code()):
+        self.validate_pre_eds_action = validate_pre_eds_action
+        self.validate_post_setup_action = validate_post_setup_action
+        self.prepare_action = prepare_action
+        self.execute_action = execute_action
+
+    def apply(self,
+              environment: GlobalEnvironmentForPreEdsStep,
+              act_phase_instructions: list) -> ActSourceAndExecutor:
+        return ActSourceAndExecutorThatRunsConstantActions(
+            validate_pre_eds_action=self.validate_pre_eds_action,
+            validate_post_setup_action=self.validate_post_setup_action,
+            prepare_action=self.prepare_action,
+            execute_action=self.execute_action)
+
+
+def act_phase_handling_that_runs_constant_actions(
+        validate_pre_eds_action=test_actions.validate_action_that_returns(svh.new_svh_success()),
+        validate_post_setup_action=test_actions.validate_action_that_returns(svh.new_svh_success()),
+        prepare_action=test_actions.prepare_action_that_returns(sh.new_sh_success()),
+        execute_action=test_actions.execute_action_that_returns_exit_code()) -> ActPhaseHandling:
+    return ActPhaseHandling(
+        ActSourceAndExecutorConstructorThatRunsConstantActions(
+            validate_pre_eds_action=validate_pre_eds_action,
+            validate_post_setup_action=validate_post_setup_action,
+            prepare_action=prepare_action,
+            execute_action=execute_action)
+    )

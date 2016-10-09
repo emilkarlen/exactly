@@ -5,11 +5,12 @@ import types
 import unittest
 
 import exactly_lib.act_phase_setups.script_interpretation.python3
+import exactly_lib.execution.act_phase
 from exactly_lib import program_info
 from exactly_lib.execution import partial_execution
+from exactly_lib.execution.act_phase import ActPhaseHandling
 from exactly_lib.execution.act_phase_handling_utils import ConstructorAdapterForActSourceExecutor
 from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
-from exactly_lib.execution.partial_execution import ActPhaseHandling
 from exactly_lib.execution.phases import PhaseEnum
 from exactly_lib.execution.result import PartialResult
 from exactly_lib.processing.processors import act_phase_handling_for_setup
@@ -170,7 +171,7 @@ class PartialExecutionTestCaseBase:
     def __init__(self,
                  unittest_case: unittest.TestCase,
                  dbg_do_not_delete_dir_structure=False,
-                 act_phase_handling: partial_execution.ActPhaseHandling = None):
+                 act_phase_handling: exactly_lib.execution.act_phase.ActPhaseHandling = None):
         self.__unittest_case = unittest_case
         self.__dbg_do_not_delete_dir_structure = dbg_do_not_delete_dir_structure
         self.__initial_home_dir_path = None
@@ -221,7 +222,7 @@ class PartialExecutionTestCaseBase:
 
 
 def _execute(test_case: partial_execution.TestCase,
-             act_phase_handling: partial_execution.ActPhaseHandling,
+             act_phase_handling: exactly_lib.execution.act_phase.ActPhaseHandling,
              is_keep_execution_directory_root: bool = True) -> Result:
     home_dir_path = pathlib.Path().resolve()
     partial_result = partial_execution.execute(
