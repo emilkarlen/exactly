@@ -4,7 +4,6 @@ from contextlib import contextmanager
 
 from exactly_lib.act_phase_setups import single_command_setup as sut
 from exactly_lib.section_document.syntax import LINE_COMMENT_MARKER
-from exactly_lib.test_case.phases.act.program_source import ActSourceBuilder, ActSourceBuilderForStatementLines
 from exactly_lib.test_case.phases.common import GlobalEnvironmentForPreEdsStep
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib_test.act_phase_setups.test_resources import py_program
@@ -95,55 +94,52 @@ class TheConfiguration(Configuration):
         super().__init__(sut.Constructor())
 
     @contextmanager
-    def program_that_copes_stdin_to_stdout(self) -> ActSourceBuilder:
+    def program_that_copes_stdin_to_stdout(self) -> list:
         return self._builder_for_executing_source_from_py_file(py_program.copy_stdin_to_stdout())
 
     @contextmanager
-    def program_that_prints_to_stderr(self, string_to_print: str) -> ActSourceBuilder:
+    def program_that_prints_to_stderr(self, string_to_print: str) -> list:
         return self._builder_for_executing_source_from_py_file(py_program.write_string_to_stderr(string_to_print))
 
     @contextmanager
-    def program_that_prints_to_stdout(self, string_to_print: str) -> ActSourceBuilder:
+    def program_that_prints_to_stdout(self, string_to_print: str) -> list:
         return self._builder_for_executing_source_from_py_file(py_program.write_string_to_stdout(string_to_print))
 
     @contextmanager
-    def program_that_exits_with_code(self, exit_code: int):
+    def program_that_exits_with_code(self, exit_code: int) -> list:
         return self._builder_for_executing_source_from_py_file(py_program.exit_with_code(exit_code))
 
     @contextmanager
-    def program_that_prints_cwd_without_new_line_to_stdout(self):
+    def program_that_prints_cwd_without_new_line_to_stdout(self) -> list:
         return self._builder_for_executing_source_from_py_file(py_program.write_cwd_to_stdout())
 
     @contextmanager
-    def program_that_prints_value_of_environment_variable_to_stdout(self, var_name: str) -> ActSourceBuilder:
+    def program_that_prints_value_of_environment_variable_to_stdout(self, var_name: str) -> list:
         return self._builder_for_executing_source_from_py_file(
             py_program.write_value_of_environment_variable_to_stdout(var_name))
 
-    def _builder_for_executing_source_from_py_file(self, statements: list) -> ActSourceBuilder:
+    def _builder_for_executing_source_from_py_file(self, statements: list) -> list:
         with tmp_file_containing_lines(statements) as src_path:
             yield self._builder_for_executing_py_file(src_path)
 
-    def _builder_for_executing_py_file(self, src_path: pathlib.Path) -> ActSourceBuilder:
-        ret_val = self.setup.script_builder_constructor()
+    def _builder_for_executing_py_file(self, src_path: pathlib.Path) -> list:
         cmd = py_exe.command_line_for_interpreting(src_path)
-        ret_val.raw_script_statement(cmd)
-        return ret_val
+        return [instr([cmd])]
 
 
 class TestWhenInterpreterDoesNotExistThanExecuteShouldGiveHardError(unittest.TestCase):
     def runTest(self):
-        executor = sut.ActSourceExecutorForSingleCommand()
+        executor_constructor = sut.Constructor()
         source = self._source_that_references_non_existing_program()
         check_execution(self,
-                        Arrangement(executor,
+                        Arrangement(executor_constructor,
                                     source),
                         Expectation(result_of_execute=eh_check.is_hard_error))
 
-    def _source_that_references_non_existing_program(self) -> ActSourceBuilderForStatementLines:
-        source = ActSourceBuilderForStatementLines()
+    def _source_that_references_non_existing_program(self) -> list:
         interpreter_path = pathlib.Path().cwd().resolve() / 'non-existing-interpreter'
-        source.raw_script_statement(str(interpreter_path))
-        return source
+        source = str(interpreter_path)
+        return [instr([source])]
 
 
 if __name__ == '__main__':
