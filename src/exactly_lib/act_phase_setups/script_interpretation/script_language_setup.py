@@ -3,7 +3,7 @@ import pathlib
 from exactly_lib.act_phase_setups import utils
 from exactly_lib.act_phase_setups.script_interpretation.script_language_management import ScriptLanguageSetup
 from exactly_lib.execution.act_phase import SourceSetup, ActSourceExecutor, ExitCodeOrHardError, \
-    ActSourceAndExecutorConstructor, ActSourceAndExecutor
+    ActSourceAndExecutorConstructor, ActSourceAndExecutor, ActPhaseHandling
 from exactly_lib.execution.act_phase_handling_utils import ActSourceAndExecutorAdapterForActSourceExecutor
 from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from exactly_lib.processing.act_phase import ActPhaseSetup
@@ -16,6 +16,10 @@ from exactly_lib.util.std import StdFiles
 
 def new_for_script_language_setup(script_language_setup: ScriptLanguageSetup) -> ActPhaseSetup:
     return ActPhaseSetup(ActSourceAndExecutorConstructorForScriptLanguage(script_language_setup))
+
+
+def new_for_script_language_handling(script_language_setup: ScriptLanguageSetup) -> ActPhaseHandling:
+    return ActPhaseHandling(ActSourceAndExecutorConstructorForScriptLanguage(script_language_setup))
 
 
 class ActSourceAndExecutorConstructorForScriptLanguage(ActSourceAndExecutorConstructor):
