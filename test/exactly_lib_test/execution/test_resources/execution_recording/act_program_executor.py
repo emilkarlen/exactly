@@ -1,10 +1,11 @@
 import pathlib
 
 from exactly_lib.execution import phase_step_simple as phase_step
-from exactly_lib.execution.act_phase import SourceSetup, ActSourceExecutor, ExitCodeOrHardError, ActSourceAndExecutor
+from exactly_lib.execution.act_phase import SourceSetup, ActSourceExecutor, ExitCodeOrHardError, ActSourceAndExecutor, \
+    ActSourceAndExecutorConstructor
 from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from exactly_lib.test_case.phases.act.program_source import ActSourceBuilder
-from exactly_lib.test_case.phases.common import HomeAndEds
+from exactly_lib.test_case.phases.common import HomeAndEds, GlobalEnvironmentForPreEdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.std import StdFiles
@@ -124,3 +125,65 @@ class ActSourceAndExecutorWrapperThatRecordsSteps(ActSourceAndExecutor):
                 std_files: StdFiles) -> ExitCodeOrHardError:
         self.__recorder.recording_of(phase_step.ACT__EXECUTE).record()
         return self.__wrapped.execute(home_and_eds, script_output_dir_path, std_files)
+
+
+class ActSourceAndExecutorWrapperWithActions(ActSourceAndExecutor):
+    def __init__(self,
+                 wrapped: ActSourceAndExecutor,
+                 before_wrapped_validate=do_nothing,
+                 before_wrapped_prepare=do_nothing,
+                 before_wrapped_execute=do_nothing,
+                 before_wrapped_validate_pre_eds=do_nothing
+                 ):
+        self.__wrapped = wrapped
+        self.before_wrapped_validate = before_wrapped_validate
+        self.before_wrapped_validate_pre_eds = before_wrapped_validate_pre_eds
+        self.before_wrapped_prepare = before_wrapped_prepare
+        self.before_wrapped_execute = before_wrapped_execute
+
+    def validate_pre_eds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
+        self.before_wrapped_validate_pre_eds()
+        return self.__wrapped.validate_pre_eds(home_dir_path)
+
+    def validate_post_setup(self, home_and_eds: HomeAndEds) -> svh.SuccessOrValidationErrorOrHardError:
+        self.before_wrapped_validate()
+        return self.__wrapped.validate_post_setup(home_and_eds)
+
+    def prepare(self,
+                home_and_eds: HomeAndEds,
+                script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
+        self.before_wrapped_prepare()
+        return self.__wrapped.prepare(home_and_eds, script_output_dir_path)
+
+    def execute(self,
+                home_and_eds: HomeAndEds,
+                script_output_dir_path: pathlib.Path,
+                std_files: StdFiles) -> ExitCodeOrHardError:
+        self.before_wrapped_execute()
+        return self.__wrapped.execute(home_and_eds, script_output_dir_path, std_files)
+
+
+class ActSourceAndExecutorConstructorWithActionsForExecutor(ActSourceAndExecutorConstructor):
+    def __init__(self,
+                 wrapped: ActSourceAndExecutorConstructor,
+                 before_wrapped_validate=do_nothing,
+                 before_wrapped_prepare=do_nothing,
+                 before_wrapped_execute=do_nothing,
+                 before_wrapped_validate_pre_eds=do_nothing
+                 ):
+        self.__wrapped = wrapped
+        self.before_wrapped_validate = before_wrapped_validate
+        self.before_wrapped_validate_pre_eds = before_wrapped_validate_pre_eds
+        self.before_wrapped_prepare = before_wrapped_prepare
+        self.before_wrapped_execute = before_wrapped_execute
+
+    def apply(self,
+              environment: GlobalEnvironmentForPreEdsStep,
+              act_phase_instructions: list) -> ActSourceAndExecutor:
+        wrapped_executor = self.__wrapped.apply(environment, act_phase_instructions)
+        return ActSourceAndExecutorWrapperWithActions(
+            wrapped_executor,
+            before_wrapped_validate=self.before_wrapped_validate,
+            before_wrapped_prepare=self.before_wrapped_prepare,
+            before_wrapped_execute=self.before_wrapped_execute,
+            before_wrapped_validate_pre_eds=self.before_wrapped_validate_pre_eds)

@@ -7,7 +7,6 @@ from exactly_lib.act_phase_setups.util.executor_made_of_parts import main as exe
 from exactly_lib.act_phase_setups.util.executor_made_of_parts.parser_for_single_line import \
     ParserForSingleLineUsingStandardSyntax
 from exactly_lib.execution.act_phase import SourceSetup, ActSourceExecutor, ExitCodeOrHardError
-from exactly_lib.execution.act_phase_handling_utils import ConstructorAdapterForActSourceExecutor
 from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from exactly_lib.instructions.act.executable_file import ExecutableFileInstruction
 from exactly_lib.processing.act_phase import ActPhaseSetup
@@ -29,11 +28,7 @@ class _ActPhaseParser(SectionElementParserForStandardCommentAndEmptyLines):
 
 
 def act_phase_setup(parser: SectionElementParser = _ActPhaseParser()) -> ActPhaseSetup:
-    act_source_executor = ActSourceExecutorForSingleCommand()
-    return ActPhaseSetup(parser,
-                         _script_source_builder,
-                         act_source_executor,
-                         ConstructorAdapterForActSourceExecutor(act_source_executor))
+    return Constructor()
 
 
 def _script_source_builder() -> ActSourceBuilder:

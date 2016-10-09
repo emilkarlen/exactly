@@ -6,7 +6,6 @@ from exactly_lib.execution.act_phase import SourceSetup, ActSourceExecutor, Exit
 from exactly_lib.execution.act_phase_handling_utils import ConstructorAdapterForActSourceExecutor
 from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from exactly_lib.processing.act_phase import ActPhaseSetup
-from exactly_lib.processing.parse.act_phase_source_parser import PlainSourceActPhaseParser
 from exactly_lib.test_case.phases.act.program_source import ActSourceBuilder
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
@@ -15,10 +14,7 @@ from exactly_lib.util.std import StdFiles
 
 def new_for_script_language_setup(script_language_setup: ScriptLanguageSetup) -> ActPhaseSetup:
     act_source_executor = ActSourceExecutorForScriptLanguage(script_language_setup)
-    return ActPhaseSetup(PlainSourceActPhaseParser(),
-                         script_language_setup.new_builder,
-                         act_source_executor,
-                         ConstructorAdapterForActSourceExecutor(act_source_executor))
+    return ActPhaseSetup(ConstructorAdapterForActSourceExecutor(act_source_executor))
 
 
 class ActSourceExecutorForScriptLanguage(ActSourceExecutor):

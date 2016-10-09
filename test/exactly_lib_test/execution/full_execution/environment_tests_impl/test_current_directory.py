@@ -8,7 +8,6 @@ from exactly_lib.execution.partial_execution import ActPhaseHandling
 from exactly_lib.execution.phase_step import PhaseStep
 from exactly_lib.execution.result import FullResultStatus
 from exactly_lib.test_case import test_case_doc
-from exactly_lib.test_case.phases.act.program_source import ActSourceBuilderForPlainStringsBase
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.line_source import LineSequence
 from exactly_lib_test.execution.full_execution.test_resources.test_case_base import FullExecutionTestCaseBase
@@ -73,9 +72,7 @@ class Test(FullExecutionTestCaseBase):
             validate_action=_RecordCurrDirAndReturn(self.recorder, phase_step.ACT__VALIDATE_POST_SETUP,
                                                     svh.new_svh_success()),
             execute_action=_RecordCurrDirAndReturn(self.recorder, phase_step.ACT__EXECUTE, new_eh_exit_code(0)))
-        return ActPhaseHandling(ActSourceBuilderForPlainStringsBase(),
-                                act_source_executor,
-                                ConstructorAdapterForActSourceExecutor(act_source_executor))
+        return ActPhaseHandling(ConstructorAdapterForActSourceExecutor(act_source_executor))
 
     def _test_case(self) -> test_case_doc.TestCase:
         return full_test_case_with_instructions(

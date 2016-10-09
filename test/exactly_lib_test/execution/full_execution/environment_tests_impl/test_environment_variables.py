@@ -5,18 +5,16 @@ import unittest
 from exactly_lib.act_phase_setups.script_interpretation import python3
 from exactly_lib.execution import environment_variables
 from exactly_lib.execution import phase_step
-from exactly_lib.execution.act_phase_handling_utils import ConstructorAdapterForActSourceExecutor
 from exactly_lib.execution.partial_execution import ActPhaseHandling
 from exactly_lib.execution.phase_step import PhaseStep
 from exactly_lib.execution.result import FullResultStatus
 from exactly_lib.test_case import test_case_doc
-from exactly_lib.test_case.phases.act.program_source import ActSourceBuilderForPlainStringsBase
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib.util.line_source import LineSequence
 from exactly_lib_test.execution.full_execution.test_resources.test_case_base import FullExecutionTestCaseBase
 from exactly_lib_test.execution.test_resources import instruction_that_record_and_return as instr_setup
 from exactly_lib_test.execution.test_resources.execution_recording.act_program_executor import \
-    ActSourceExecutorWrapperWithActions
+    ActSourceAndExecutorConstructorWithActionsForExecutor
 from exactly_lib_test.execution.test_resources.instruction_test_resources import act_phase_instruction_with, \
     before_assert_phase_instruction_that, assert_phase_instruction_that, cleanup_phase_instruction_that
 from exactly_lib_test.execution.test_resources.instruction_test_resources import configuration_phase_instruction_that
@@ -37,18 +35,18 @@ class Test(FullExecutionTestCaseBase):
         self.recorder = instr_setup.Recorder()
 
     def _act_phase_handling(self) -> ActPhaseHandling:
-        act_source_executor = ActSourceExecutorWrapperWithActions(
-            python3.new_act_phase_setup().executor,
-            before_wrapped_validate=_RecordEnvVars(self.recorder,
-                                                   phase_step.ACT__VALIDATE_POST_SETUP),
-            before_wrapped_prepare=_RecordEnvVars(self.recorder,
-                                                  phase_step.ACT__PREPARE),
-            before_wrapped_execute=_RecordEnvVars(self.recorder,
-                                                  phase_step.ACT__EXECUTE))
-        return ActPhaseHandling(
-            ActSourceBuilderForPlainStringsBase(),
-            act_source_executor,
-            ConstructorAdapterForActSourceExecutor(act_source_executor))
+        executor_constructor = ActSourceAndExecutorConstructorWithActionsForExecutor(
+            python3.new_act_phase_setup().source_and_executor_constructor,
+            before_wrapped_validate=_RecordEnvVars(
+                self.recorder,
+                phase_step.ACT__VALIDATE_POST_SETUP),
+            before_wrapped_prepare=_RecordEnvVars(
+                self.recorder,
+                phase_step.ACT__PREPARE),
+            before_wrapped_execute=_RecordEnvVars(
+                self.recorder,
+                phase_step.ACT__EXECUTE))
+        return ActPhaseHandling(executor_constructor)
 
     def _test_case(self) -> test_case_doc.TestCase:
         py_pgm_to_print_env_vars = print_to_file__generate_script2(python_code_for_print_environment_variables,

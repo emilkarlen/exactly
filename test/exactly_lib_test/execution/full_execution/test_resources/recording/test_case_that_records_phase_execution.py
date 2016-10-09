@@ -5,7 +5,6 @@ from exactly_lib.execution.act_phase_handling_utils import ConstructorAdapterFor
 from exactly_lib.execution.partial_execution import ActPhaseHandling
 from exactly_lib.execution.result import FullResultStatus
 from exactly_lib.test_case import test_case_doc
-from exactly_lib.test_case.phases.act.program_source import ActSourceBuilderForStatementLines
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib_test.execution.full_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
@@ -156,9 +155,7 @@ class TestCaseBase(unittest.TestCase):
                                                      arrangement.prepare_test_action,
                                                      arrangement.execute_test_action,
                                                      validate_pre_eds_action=arrangement.act_executor_validate_pre_eds))
-        return ActPhaseHandling(ActSourceBuilderForStatementLines(),
-                                act_source_executor,
-                                ConstructorAdapterForActSourceExecutor(act_source_executor))
+        return ActPhaseHandling(ConstructorAdapterForActSourceExecutor(act_source_executor))
 
 
 def one_successful_instruction_in_each_phase() -> TestCaseGeneratorForExecutionRecording:
