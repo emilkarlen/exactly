@@ -28,7 +28,7 @@ class _ActPhaseParser(SectionElementParserForStandardCommentAndEmptyLines):
 
 
 def act_phase_setup(parser: SectionElementParser = _ActPhaseParser()) -> ActPhaseSetup:
-    return Constructor()
+    return ActPhaseSetup(Constructor())
 
 
 def _script_source_builder() -> ActSourceBuilder:

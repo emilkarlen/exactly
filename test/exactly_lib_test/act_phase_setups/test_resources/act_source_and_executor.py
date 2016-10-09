@@ -209,6 +209,9 @@ class TestBase(TestExecuteBase):
         super().__init__(test_setup.sut)
         self.test_setup = test_setup
 
+    def shortDescription(self):
+        return str(type(self)) + '/' + str(type(self.test_setup))
+
 
 class TestStdoutIsConnectedToProgram(TestBase):
     def runTest(self):

@@ -3,7 +3,8 @@ import unittest
 from exactly_lib.act_phase_setups.script_interpretation.generic_script_language import StandardScriptLanguage
 from exactly_lib.act_phase_setups.script_interpretation.script_language_management import ScriptLanguageSetup, \
     StandardScriptFileManager
-from exactly_lib.act_phase_setups.script_interpretation.script_language_setup import ActSourceExecutorForScriptLanguage
+from exactly_lib.act_phase_setups.script_interpretation.script_language_setup import \
+    ActSourceAndExecutorConstructorForScriptLanguage
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
@@ -41,7 +42,7 @@ class TestFailingParse(unittest.TestCase):
 class TestSuccessfulParseAndInstructionExecution(unittest.TestCase):
     def _check(self, instruction_argument_source: str,
                expected_command_and_arguments: list):
-        # Quite bad test, since it checks too many internal details.
+        # TODO Quite bad test, since it checks too many internal details.
         # It should instead test the behaviour of the act-phase-setup
         # by executing it.
 
@@ -55,10 +56,9 @@ class TestSuccessfulParseAndInstructionExecution(unittest.TestCase):
         act_phase_setup = environment.act_phase_setup
         self.assertIsInstance(act_phase_setup, ActPhaseSetup)
         assert isinstance(act_phase_setup, ActPhaseSetup)
-        executor = act_phase_setup.executor
+        executor = act_phase_setup.source_and_executor_constructor
         self.assertIsInstance(executor,
-                              ActSourceExecutorForScriptLanguage)
-        assert isinstance(executor, ActSourceExecutorForScriptLanguage)
+                              ActSourceAndExecutorConstructorForScriptLanguage)
         script_language_setup = executor.script_language_setup
         self.assertIsInstance(script_language_setup,
                               ScriptLanguageSetup)
