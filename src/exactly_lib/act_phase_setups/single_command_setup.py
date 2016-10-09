@@ -10,7 +10,6 @@ from exactly_lib.execution.act_phase import SourceSetup, ActSourceExecutor, Exit
 from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from exactly_lib.instructions.act.executable_file import ExecutableFileInstruction
 from exactly_lib.processing.act_phase import ActPhaseSetup
-from exactly_lib.section_document.parse import SectionElementParser
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SectionElementParserForStandardCommentAndEmptyLines
 from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
@@ -27,7 +26,7 @@ class _ActPhaseParser(SectionElementParserForStandardCommentAndEmptyLines):
         return ExecutableFileInstruction(source.first_line.text)
 
 
-def act_phase_setup(parser: SectionElementParser = _ActPhaseParser()) -> ActPhaseSetup:
+def act_phase_setup() -> ActPhaseSetup:
     return ActPhaseSetup(Constructor())
 
 
