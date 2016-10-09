@@ -3,8 +3,10 @@ import pathlib
 import shlex
 
 from exactly_lib.act_phase_setups import utils
-from exactly_lib.execution.act_phase import SourceSetup, ActSourceExecutor, ExitCodeOrHardError
-from exactly_lib.execution.act_phase_handling_utils import ConstructorAdapterForActSourceExecutor
+from exactly_lib.execution.act_phase import SourceSetup, ActSourceExecutor, ExitCodeOrHardError, \
+    ActSourceAndExecutorConstructor, ActSourceAndExecutor
+from exactly_lib.execution.act_phase_handling_utils import ConstructorAdapterForActSourceExecutor, \
+    ActSourceAndExecutorAdapterForActSourceExecutor
 from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from exactly_lib.instructions.act.executable_file import ExecutableFileInstruction
 from exactly_lib.processing.act_phase import ActPhaseSetup
@@ -13,6 +15,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SectionElementParserForStandardCommentAndEmptyLines
 from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
 from exactly_lib.test_case.phases.act.program_source import ActSourceBuilder, ActSourceBuilderForStatementLines
+from exactly_lib.test_case.phases.common import GlobalEnvironmentForPreEdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util import line_source
@@ -34,6 +37,14 @@ def act_phase_setup(parser: SectionElementParser = _ActPhaseParser()) -> ActPhas
 
 def _script_source_builder() -> ActSourceBuilder:
     return ActSourceBuilderForStatementLines()
+
+
+class Constructor(ActSourceAndExecutorConstructor):
+    def apply(self,
+              environment: GlobalEnvironmentForPreEdsStep,
+              act_phase_instructions: list) -> ActSourceAndExecutor:
+        return ActSourceAndExecutorAdapterForActSourceExecutor(act_phase_instructions,
+                                                               ActSourceExecutorForSingleCommand())
 
 
 class ActSourceExecutorForSingleCommand(ActSourceExecutor):

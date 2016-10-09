@@ -9,6 +9,8 @@ TYPE_INSTRUCTION = 3
 
 _OPTIONAL_SPACE = '[ \t]*'
 
+LINE_COMMENT_MARKER = '#'
+
 EMPTY_LINE_RE = re.compile(_OPTIONAL_SPACE + '$')
 COMMENT_LINE_RE = re.compile(_OPTIONAL_SPACE + '#')
 SECTION_LINE_RE = re.compile(_OPTIONAL_SPACE + '\[')
