@@ -17,6 +17,7 @@ from exactly_lib_test.test_resources.act_phase_instruction import instr
 def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestConstructor))
+    return ret_val
 
 
 class TestConstructor(unittest.TestCase):
