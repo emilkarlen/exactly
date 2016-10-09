@@ -1,5 +1,8 @@
 -*- org -*-
 
+* TODO Name of act-phase actor for error messages
+Since the actor (of the act phase) is configurable, it would be informative to the user
+to see which actor reports errors.
 * TODO Fel (sh, svh, ...) ska representera fel i form av FailureDetails
 Har gjort FailureDetails till util-klass.
 Den ger möjl till utförligare felinformation än dagens sh, svh
