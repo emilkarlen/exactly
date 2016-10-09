@@ -2,11 +2,12 @@ import pathlib
 import unittest
 
 import exactly_lib.execution.execution_mode
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionInvalidArgumentException
 from exactly_lib.execution.execution_mode import ExecutionMode
 from exactly_lib.instructions.configuration import execution_mode as sut
+from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
+    SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
+from exactly_lib_test.execution.test_resources.act_source_executor import act_phase_handling_that_runs_constant_actions
 from exactly_lib_test.instructions.configuration.test_resources import configuration_check as config_check
 from exactly_lib_test.instructions.configuration.test_resources.instruction_check import TestCaseBase, \
     Arrangement, Expectation
@@ -31,7 +32,8 @@ class TestCaseBaseForParser(TestCaseBase):
              expected: ExecutionMode,
              initial: ExecutionMode,
              argument: str):
-        initial_configuration_builder = ConfigurationBuilder(pathlib.Path())
+        initial_configuration_builder = ConfigurationBuilder(pathlib.Path(),
+                                                             act_phase_handling_that_runs_constant_actions())
         initial_configuration_builder.set_execution_mode(initial)
         self._check(sut.Parser(),
                     new_source2(argument),

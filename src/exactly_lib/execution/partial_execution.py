@@ -9,7 +9,7 @@ from exactly_lib.execution import phase_step
 from exactly_lib.execution import phase_step_executors
 from exactly_lib.execution import phases
 from exactly_lib.execution.act_phase import ExitCodeOrHardError, ActSourceAndExecutor, \
-    ActSourceAndExecutorConstructor
+    ActPhaseHandling
 from exactly_lib.execution.phase_step import PhaseStep
 from exactly_lib.execution.phase_step_execution import ElementHeaderExecutor
 from exactly_lib.execution.single_instruction_executor import ControlledInstructionExecutor
@@ -105,11 +105,6 @@ class _StepExecutionResult:
     @stdin_settings.setter
     def stdin_settings(self, x: StdinSettings):
         self.__stdin_settings = x
-
-
-class ActPhaseHandling:
-    def __init__(self, source_and_executor_constructor: ActSourceAndExecutorConstructor):
-        self.source_and_executor_constructor = source_and_executor_constructor
 
 
 def execute(act_phase_handling: ActPhaseHandling,

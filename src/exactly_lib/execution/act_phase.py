@@ -167,3 +167,8 @@ class ActSourceAndExecutorConstructor:
               environment: GlobalEnvironmentForPreEdsStep,
               act_phase_instructions: list) -> ActSourceAndExecutor:
         raise NotImplementedError()
+
+
+class ActPhaseHandling:
+    def __init__(self, source_and_executor_constructor: ActSourceAndExecutorConstructor):
+        self.source_and_executor_constructor = source_and_executor_constructor

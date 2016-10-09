@@ -1,13 +1,17 @@
 import pathlib
 
+from exactly_lib.execution.act_phase import ActPhaseHandling
 from exactly_lib.execution.execution_mode import ExecutionMode
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.test_case.phases.result.sh import SuccessOrHardError
 
 
 class ConfigurationBuilder:
-    def __init__(self, home_dir_path: pathlib.Path):
+    def __init__(self,
+                 home_dir_path: pathlib.Path,
+                 act_phase_handling: ActPhaseHandling):
         self.__home_dir_path = home_dir_path
+        self.__act_phase_handling = act_phase_handling
         self.__execution_mode = ExecutionMode.NORMAL
 
     @property
@@ -28,6 +32,13 @@ class ConfigurationBuilder:
 
     def set_home_dir(self, x: pathlib.Path):
         self.__home_dir_path = x
+
+    @property
+    def act_phase_handling(self) -> ActPhaseHandling:
+        return self.__act_phase_handling
+
+    def set_act_phase_handling(self, x: ActPhaseHandling):
+        self.__act_phase_handling = x
 
 
 class ConfigurationPhaseInstruction(TestCaseInstruction):

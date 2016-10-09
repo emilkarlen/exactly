@@ -5,7 +5,7 @@ import pathlib
 from exactly_lib import program_info
 from exactly_lib.default.program_modes.test_case import test_case_parser
 from exactly_lib.execution import full_execution
-from exactly_lib.execution.partial_execution import ActPhaseHandling
+from exactly_lib.execution.act_phase import ActPhaseHandling
 from exactly_lib.execution.result import FullResult
 from exactly_lib.processing import processing_utils
 from exactly_lib.processing import test_case_processing as processing
@@ -112,17 +112,17 @@ def act_phase_handling_for_setup(setup: ActPhaseSetup) -> ActPhaseHandling:
 
 class _Executor(processing_utils.Executor):
     def __init__(self,
-                 act_phase_setup: ActPhaseSetup,
+                 default_act_phase_setup: ActPhaseSetup,
                  is_keep_execution_directory_root: bool,
                  execution_directory_root_name_prefix: str = program_info.PROGRAM_NAME + '-'):
-        self._act_phase_setup = act_phase_setup
+        self.default_act_phase_setup = default_act_phase_setup
         self._is_keep_execution_directory_root = is_keep_execution_directory_root
         self._execution_directory_root_name_prefix = execution_directory_root_name_prefix
 
     def apply(self,
               test_case_file_path: pathlib.Path,
               test_case: test_case_doc.TestCase) -> FullResult:
-        return full_execution.execute(act_phase_handling_for_setup(self._act_phase_setup),
+        return full_execution.execute(act_phase_handling_for_setup(self.default_act_phase_setup),
                                       test_case,
                                       test_case_file_path.parent,
                                       self._execution_directory_root_name_prefix,

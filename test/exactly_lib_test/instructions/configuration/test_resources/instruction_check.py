@@ -9,6 +9,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionParser, SingleInstructionParserSource
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.phases.result import sh
+from exactly_lib_test.execution.test_resources.act_source_executor import act_phase_handling_that_runs_constant_actions
 from exactly_lib_test.instructions.configuration.test_resources import configuration_check as config_check
 from exactly_lib_test.instructions.test_resources import sh_check
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementBase
@@ -18,7 +19,8 @@ from exactly_lib_test.test_resources import file_structure
 class Arrangement(ArrangementBase):
     def __init__(self,
                  home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
-                 initial_configuration_builder: ConfigurationBuilder = ConfigurationBuilder(pathlib.Path('.'))):
+                 initial_configuration_builder: ConfigurationBuilder = ConfigurationBuilder(pathlib.Path('.'),
+                                                                                            act_phase_handling_that_runs_constant_actions())):
         super().__init__(home_dir_contents)
         self.initial_configuration_builder = initial_configuration_builder
 
