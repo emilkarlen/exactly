@@ -25,10 +25,10 @@ class Configuration:
     def __init__(self,
                  split_line_into_name_and_argument_function,
                  instruction_setup: InstructionsSetup,
-                 handling_setup: TestCaseHandlingSetup,
+                 default_handling_setup: TestCaseHandlingSetup,
                  is_keep_execution_directory_root: bool,
                  execution_directory_root_name_prefix: str = program_info.PROGRAM_NAME + '-'):
-        self.handling_setup = handling_setup
+        self.default_handling_setup = default_handling_setup
         self.instruction_setup = instruction_setup
         self.split_line_into_name_and_argument_function = split_line_into_name_and_argument_function
         self.is_keep_execution_directory_root = is_keep_execution_directory_root
@@ -49,7 +49,7 @@ def new_processor_that_is_allowed_to_pollute_current_process(configuration: Conf
 
 def new_accessor(configuration: Configuration) -> processing.Accessor:
     return processing_utils.AccessorFromParts(_SourceReader(),
-                                              configuration.handling_setup.preprocessor,
+                                              configuration.default_handling_setup.preprocessor,
                                               _Parser(configuration.split_line_into_name_and_argument_function,
                                                       # configuration.handling_setup.act_phase_setup.parser,
                                                       PlainSourceActPhaseParser(),
@@ -57,13 +57,13 @@ def new_accessor(configuration: Configuration) -> processing.Accessor:
 
 
 def new_executor_that_should_not_pollute_current_processes(configuration: Configuration) -> processing_utils.Executor:
-    return _ExecutorThatSavesAndRestoresEnvironmentVariables(configuration.handling_setup.act_phase_setup,
+    return _ExecutorThatSavesAndRestoresEnvironmentVariables(configuration.default_handling_setup.act_phase_setup,
                                                              configuration.is_keep_execution_directory_root,
                                                              configuration.execution_directory_root_name_prefix)
 
 
 def new_executor_that_may_pollute_current_processes(configuration: Configuration) -> processing_utils.Executor:
-    return _Executor(configuration.handling_setup.act_phase_setup,
+    return _Executor(configuration.default_handling_setup.act_phase_setup,
                      configuration.is_keep_execution_directory_root,
                      configuration.execution_directory_root_name_prefix)
 
