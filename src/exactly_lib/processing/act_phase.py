@@ -11,33 +11,27 @@ class ActPhaseSetup(tuple):
     """
 
     def __new__(cls,
-                parser: SectionElementParser,  # TODO remove since replaced by source_and_executor_constructor
-                script_builder_constructor,  # TODO remove since replaced by source_and_executor_constructor
-                executor: ActSourceExecutor,  # TODO remove since replaced by source_and_executor_constructor
                 source_and_executor_constructor: ActSourceAndExecutorConstructor):
         """
         :param script_builder_constructor: () -> ScriptSourceBuilder
         """
-        return tuple.__new__(cls, (parser,
-                                   script_builder_constructor,
-                                   executor,
-                                   source_and_executor_constructor))
+        return tuple.__new__(cls, (source_and_executor_constructor,))
 
     @property
     def parser(self) -> SectionElementParser:
-        return self[0]
+        raise ValueError('Should not be used anymore: ' + str(ActPhaseSetup))
 
     @property
     def script_builder_constructor(self) -> types.FunctionType:
         """
         :return: () -> ScriptSourceBuilder
         """
-        return self[1]
+        raise ValueError('Should not be used anymore: ' + str(ActPhaseSetup))
 
     @property
     def executor(self) -> ActSourceExecutor:
-        return self[2]
+        raise ValueError('Should not be used anymore: ' + str(ActPhaseSetup))
 
     @property
     def source_and_executor_constructor(self) -> ActSourceAndExecutorConstructor:
-        return self[3]
+        return self[0]

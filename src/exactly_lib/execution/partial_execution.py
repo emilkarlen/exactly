@@ -8,7 +8,7 @@ from exactly_lib.execution import environment_variables
 from exactly_lib.execution import phase_step
 from exactly_lib.execution import phase_step_executors
 from exactly_lib.execution import phases
-from exactly_lib.execution.act_phase import ActSourceExecutor, ExitCodeOrHardError, ActSourceAndExecutor, \
+from exactly_lib.execution.act_phase import ExitCodeOrHardError, ActSourceAndExecutor, \
     ActSourceAndExecutorConstructor
 from exactly_lib.execution.phase_step import PhaseStep
 from exactly_lib.execution.phase_step_execution import ElementHeaderExecutor
@@ -17,7 +17,6 @@ from exactly_lib.section_document.model import SectionContents, ElementType
 from exactly_lib.test_case.os_services import new_default
 from exactly_lib.test_case.phases import common
 from exactly_lib.test_case.phases.act.instruction import PhaseEnvironmentForScriptGeneration, ActPhaseInstruction
-from exactly_lib.test_case.phases.act.program_source import ActSourceBuilder
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
 from exactly_lib.test_case.phases.common import GlobalEnvironmentForPreEdsStep, HomeAndEds
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder, StdinSettings
@@ -109,13 +108,16 @@ class _StepExecutionResult:
 
 
 class ActPhaseHandling:
-    def __init__(self,
-                 source_builder: ActSourceBuilder,
-                 executor: ActSourceExecutor,
-                 source_and_executor_constructor: ActSourceAndExecutorConstructor):
-        self.source_builder = source_builder
-        self.executor = executor
+    def __init__(self, source_and_executor_constructor: ActSourceAndExecutorConstructor):
         self.source_and_executor_constructor = source_and_executor_constructor
+
+    @property
+    def source_builder(self):
+        raise ValueError('Removed during act phase restructuring')
+
+    @property
+    def executor(self):
+        raise ValueError('Removed during act phase restructuring')
 
 
 def execute(act_phase_handling: ActPhaseHandling,
