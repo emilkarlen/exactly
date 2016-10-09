@@ -31,7 +31,7 @@ def parse(default: TestCaseHandlingSetup,
     elif namespace.keep:
         output = Output.EXECUTION_DIRECTORY_STRUCTURE_ROOT
         is_keep_execution_directory_root = True
-    act_phase_setup = resolve_act_phase_setup_from_argparse_argument(default.act_phase_setup,
+    act_phase_setup = resolve_act_phase_setup_from_argparse_argument(default.default_act_phase_setup,
                                                                      namespace.actor)
     preprocessor = _parse_preprocessor(default.preprocessor,
                                        namespace.preprocessor)

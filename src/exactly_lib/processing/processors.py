@@ -57,13 +57,14 @@ def new_accessor(configuration: Configuration) -> processing.Accessor:
 
 
 def new_executor_that_should_not_pollute_current_processes(configuration: Configuration) -> processing_utils.Executor:
-    return _ExecutorThatSavesAndRestoresEnvironmentVariables(configuration.default_handling_setup.act_phase_setup,
-                                                             configuration.is_keep_execution_directory_root,
-                                                             configuration.execution_directory_root_name_prefix)
+    return _ExecutorThatSavesAndRestoresEnvironmentVariables(
+        configuration.default_handling_setup.default_act_phase_setup,
+        configuration.is_keep_execution_directory_root,
+        configuration.execution_directory_root_name_prefix)
 
 
 def new_executor_that_may_pollute_current_processes(configuration: Configuration) -> processing_utils.Executor:
-    return _Executor(configuration.default_handling_setup.act_phase_setup,
+    return _Executor(configuration.default_handling_setup.default_act_phase_setup,
                      configuration.is_keep_execution_directory_root,
                      configuration.execution_directory_root_name_prefix)
 

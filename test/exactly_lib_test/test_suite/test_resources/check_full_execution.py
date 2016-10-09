@@ -40,7 +40,7 @@ def check(setup: Setup,
         setup.file_structure_to_read(tmp_dir_path).write_to(tmp_dir_path)
         test_case_handling_setup = setup.test_case_handling_setup()
         suite_reading_environment = Environment(test_case_handling_setup.preprocessor,
-                                                test_case_handling_setup.act_phase_setup)
+                                                test_case_handling_setup.default_act_phase_setup)
         hierarchy_reader = Reader(suite_reading_environment)
         reporter_factory = ExecutionTracingReporterFactory()
         executor = Executor(_default_case_configuration(test_case_handling_setup),
