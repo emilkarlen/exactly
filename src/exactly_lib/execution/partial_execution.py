@@ -111,14 +111,6 @@ class ActPhaseHandling:
     def __init__(self, source_and_executor_constructor: ActSourceAndExecutorConstructor):
         self.source_and_executor_constructor = source_and_executor_constructor
 
-    @property
-    def source_builder(self):
-        raise ValueError('Removed during act phase restructuring')
-
-    @property
-    def executor(self):
-        raise ValueError('Removed during act phase restructuring')
-
 
 def execute(act_phase_handling: ActPhaseHandling,
             test_case: TestCase,
