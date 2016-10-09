@@ -5,9 +5,9 @@ from exactly_lib.act_phase_setups import single_command_setup
 from exactly_lib.execution.result import FullResultStatus
 from exactly_lib.processing import test_case_processing
 from exactly_lib.processing.preprocessor import IDENTITY_PREPROCESSOR
+from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_set import INSTRUCTION_NAME__ACTOR
 from exactly_lib.test_suite.reporting import SubSuiteReporter
-from exactly_lib.test_suite.suite_hierarchy_reading import Environment
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.test_resources.file_structure import DirContents, File
 from exactly_lib_test.test_resources.python_program_execution import abs_path_to_interpreter_quoted_for_exactly, \
@@ -39,9 +39,9 @@ if __name__ == '__main__':
 
 
 class SetupForSuccessfulExecution(Setup):
-    def test_case_handling_setup(self) -> Environment:
-        return Environment(IDENTITY_PREPROCESSOR,
-                           single_command_setup.act_phase_setup())
+    def test_case_handling_setup(self) -> TestCaseHandlingSetup:
+        return TestCaseHandlingSetup(single_command_setup.act_phase_setup(),
+                                     IDENTITY_PREPROCESSOR)
 
     def assertions(self,
                    put: unittest.TestCase,

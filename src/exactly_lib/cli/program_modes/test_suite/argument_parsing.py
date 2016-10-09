@@ -20,7 +20,7 @@ def parse(default: TestCaseHandlingSetup,
     argument_parser = _new_argument_parser()
     namespace = argument_parsing_utils.raise_exception_instead_of_exiting_on_error(argument_parser,
                                                                                    argv)
-    act_phase_setup = resolve_act_phase_setup_from_argparse_argument(default.act_phase_setup,
+    act_phase_setup = resolve_act_phase_setup_from_argparse_argument(default.default_act_phase_setup,
                                                                      namespace.actor)
     return TestSuiteExecutionSettings(TestCaseHandlingSetup(act_phase_setup,
                                                             default.preprocessor),
