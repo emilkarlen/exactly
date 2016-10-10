@@ -36,7 +36,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         })
 
     def single_line_description(self) -> str:
-        return self._format('Sets an {actor} to use for each test case in the suite')
+        return self._format('Sets the {actor} that will execute the {act_phase} phase')
 
     def invokation_variants(self) -> list:
         executable_arg = a.Single(a.Multiplicity.MANDATORY,
