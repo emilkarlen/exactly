@@ -19,7 +19,9 @@ def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestFailingParse),
         unittest.makeSuite(TestSuccessfulParseAndInstructionExecution),
-        suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction mame')),
+        suite_for_instruction_documentation(sut.actor_utils.InstructionDocumentation('instruction mame',
+                                                                                     'single line description',
+                                                                                     'description-rest')),
     ])
 
 
