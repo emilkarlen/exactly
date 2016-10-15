@@ -107,3 +107,7 @@ class TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr(TestCaseGeneratorFor
         :rtype [PhaseContentElement]
         """
         return [self.recorder_for(phase)] + self.the_extra(phase) + [self.recorder_for(phase)]
+
+
+def test_case_with_two_instructions_in_each_phase() -> TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr:
+    return TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr()

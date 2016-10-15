@@ -8,7 +8,7 @@ from exactly_lib.test_case.phases.cleanup import PreviousPhase
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib_test.execution.full_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
-    TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr
+    test_case_with_two_instructions_in_each_phase
 from exactly_lib_test.execution.full_execution.test_resources.recording.test_case_that_records_phase_execution import \
     Expectation, Arrangement, TestCaseBase
 from exactly_lib_test.execution.test_resources import instruction_test_resources as test
@@ -28,7 +28,7 @@ if __name__ == '__main__':
 
 class Test(TestCaseBase):
     def test_with_assert_phase_that_fails(self):
-        test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
+        test_case = test_case_with_two_instructions_in_each_phase() \
             .add(phases.CONFIGURATION,
                  test.ConfigurationPhaseInstructionThatSetsExecutionMode(ExecutionMode.XFAIL)) \
             .add(phases.ASSERT,
@@ -66,7 +66,7 @@ class Test(TestCaseBase):
                                 True))
 
     def test_with_assert_phase_that_passes(self):
-        test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
+        test_case = test_case_with_two_instructions_in_each_phase() \
             .add(phases.CONFIGURATION,
                  test.ConfigurationPhaseInstructionThatSetsExecutionMode(ExecutionMode.XFAIL))
         self._check(
@@ -100,7 +100,7 @@ class Test(TestCaseBase):
                         True))
 
     def test_with_configuration_phase_with_hard_error(self):
-        test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
+        test_case = test_case_with_two_instructions_in_each_phase() \
             .add(phases.CONFIGURATION,
                  test.ConfigurationPhaseInstructionThatSetsExecutionMode(ExecutionMode.XFAIL)) \
             .add(phases.CONFIGURATION,
@@ -116,7 +116,7 @@ class Test(TestCaseBase):
                         False))
 
     def test_with_implementation_error(self):
-        test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
+        test_case = test_case_with_two_instructions_in_each_phase() \
             .add(phases.CONFIGURATION,
                  test.ConfigurationPhaseInstructionThatSetsExecutionMode(ExecutionMode.XFAIL)) \
             .add(phases.CLEANUP,
