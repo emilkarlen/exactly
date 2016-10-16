@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib_test.default.program_modes import test_case, test_suite, help, html_doc
+from exactly_lib_test.default.program_modes.test_case import misc, preprocessing, act_phase
 from exactly_lib_test.default.test_resources.internal_main_program_runner import RunViaMainProgramInternally
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
 
@@ -11,10 +11,9 @@ def suite() -> unittest.TestSuite:
 
 def suite_for(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
-    ret_val.addTest(test_case.suite_for(main_program_runner))
-    ret_val.addTest(test_suite.suite_for(main_program_runner))
-    ret_val.addTest(help.suite_for(main_program_runner))
-    ret_val.addTest(html_doc.suite_for(main_program_runner))
+    ret_val.addTest(misc.suite_for(main_program_runner))
+    ret_val.addTest(preprocessing.suite_for(main_program_runner))
+    ret_val.addTest(act_phase.suite_for(main_program_runner))
     return ret_val
 
 

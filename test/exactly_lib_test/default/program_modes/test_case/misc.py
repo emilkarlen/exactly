@@ -11,7 +11,6 @@ from exactly_lib.execution import execution_directory_structure
 from exactly_lib.execution import phases
 from exactly_lib.section_document.syntax import section_header
 from exactly_lib.util.string import lines_content
-from exactly_lib_test.default.test_resources import default_main_program_case_preprocessing
 from exactly_lib_test.default.test_resources.internal_main_program_runner import RunViaMainProgramInternally
 from exactly_lib_test.default.test_resources.test_case_file_elements import phase_header_line
 from exactly_lib_test.execution.test_execution_directory_structure import \
@@ -21,7 +20,6 @@ from exactly_lib_test.test_resources import value_assertion as va, process_resul
 from exactly_lib_test.test_resources.cli_main_program_via_shell_utils.run import \
     contents_of_file
 from exactly_lib_test.test_resources.file_checks import FileChecker
-from exactly_lib_test.test_resources.main_program.main_program_check_base import tests_for_setup_with_preprocessor
 from exactly_lib_test.test_resources.main_program.main_program_check_base import tests_for_setup_without_preprocessor
 from exactly_lib_test.test_resources.main_program.main_program_check_for_test_case import \
     SetupWithoutPreprocessorAndTestActor
@@ -36,7 +34,6 @@ def suite_for(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(tests_for_setup_without_preprocessor(MISC_TESTS, main_program_runner))
     ret_val.addTest(tests_for_setup_without_preprocessor(SPECIAL_EXECUTION_CONFIGURATIONS_TESTS, main_program_runner))
-    ret_val.addTest(tests_for_setup_with_preprocessor(PREPROCESSING_TESTS, main_program_runner))
     return ret_val
 
 
@@ -230,12 +227,5 @@ SPECIAL_EXECUTION_CONFIGURATIONS_TESTS = [
 MISC_TESTS = [
     InvalidCommandLineOptionShouldExitWithInvalidUsageStatus(),
     WhenAPhaseHasInvalidPhaseNameThenExitStatusShouldIndicateThis(),
-    EmptyTestCaseShouldPass(),
-    AllPhasesEmptyShouldPass(),
     EnvironmentVariablesAreSetCorrectly(),
-]
-
-PREPROCESSING_TESTS = [
-    default_main_program_case_preprocessing.TransformationIntoTestCaseThatPass(),
-    default_main_program_case_preprocessing.TransformationIntoTestCaseThatParserError(),
 ]
