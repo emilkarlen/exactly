@@ -15,7 +15,6 @@ from exactly_lib_test.default.test_resources.internal_main_program_runner import
 from exactly_lib_test.default.test_resources.test_case_file_elements import phase_header_line
 from exactly_lib_test.execution.test_execution_directory_structure import \
     is_execution_directory_structure_after_execution
-from exactly_lib_test.test_resources import process_result_info_assertions
 from exactly_lib_test.test_resources.cli_main_program_via_shell_utils.run import \
     contents_of_file
 from exactly_lib_test.test_resources.file_checks import FileChecker
@@ -25,9 +24,10 @@ from exactly_lib_test.test_resources.main_program.main_program_check_for_test_ca
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
 from exactly_lib_test.test_resources.process import SubProcessResult, \
     SubProcessResultInfo
-from exactly_lib_test.test_resources.process_result_info_assertions import process_result_for_exit_value, \
+from exactly_lib_test.test_resources.value_assertions import value_assertion as va, process_result_info_assertions
+from exactly_lib_test.test_resources.value_assertions.process_result_info_assertions import \
+    process_result_for_exit_value, \
     is_process_result_for_exit_code
-from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 
 def suite_for(main_program_runner: MainProgramRunner) -> unittest.TestSuite:

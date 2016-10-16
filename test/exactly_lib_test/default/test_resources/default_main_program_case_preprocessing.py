@@ -2,9 +2,9 @@ from exactly_lib.cli.cli_environment.program_modes.test_case import exit_values
 from exactly_lib.execution import phases
 from exactly_lib.section_document.syntax import section_header
 from exactly_lib.util.string import lines_content
-from exactly_lib_test.test_resources import process_result_info_assertions
 from exactly_lib_test.test_resources.main_program import main_program_check_for_test_case
 from exactly_lib_test.test_resources.process import ExpectedSubProcessResult
+from exactly_lib_test.test_resources.value_assertions import process_result_info_assertions
 
 IF_BASENAME_IS_PASS_THEN_EMPTY_TC_ELSE_TC_THAT_WILL_CAUSE_PARSER_ERROR = """
 import sys
