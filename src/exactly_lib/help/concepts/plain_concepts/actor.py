@@ -60,15 +60,15 @@ or the {actor_instruction} instruction.
 """
 
 _DEFAULT_DESCRIPTION_REST = """\
-By default, the {phase[act]} phase must consist of a single command line.
+The default {actor_concept} executes a single command.
+
+It assumes that the {phase[act]} phase consists of a single command line,
+where the first element is the path of an executable program.
+
+This path is relative to the {home_directory} (if it is not an absolute path).
 
 
 The command line uses shell syntax.
-
-
-The first element of the command line must be the path of an executable program.
-
-The path is relative to the {home_directory}.
 """
 
 _INTERPRETER_ACTOR_DESCRIPTION_REST = """\
