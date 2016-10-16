@@ -11,7 +11,8 @@ from exactly_lib.execution import execution_directory_structure
 from exactly_lib.execution import phases
 from exactly_lib.section_document.syntax import section_header
 from exactly_lib.util.string import lines_content
-from exactly_lib_test.default.test_resources.internal_main_program_runner import RunViaMainProgramInternally
+from exactly_lib_test.default.test_resources.internal_main_program_runner import \
+    run_via_main_program_internally_with_default_setup
 from exactly_lib_test.default.test_resources.test_case_file_elements import phase_header_line
 from exactly_lib_test.execution.test_execution_directory_structure import \
     is_execution_directory_structure_after_execution
@@ -38,7 +39,7 @@ def suite_for(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
 
 
 def suite() -> unittest.TestSuite:
-    return suite_for(RunViaMainProgramInternally())
+    return suite_for(run_via_main_program_internally_with_default_setup())
 
 
 if __name__ == '__main__':

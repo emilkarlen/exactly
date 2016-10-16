@@ -16,7 +16,7 @@ def arguments_for_test_interpreter_and_more_tuple(additional_args: iter) -> tupl
     return ARGUMENTS_FOR_TEST_INTERPRETER_TUPLE + tuple(additional_args)
 
 
-def name_argument_splitter(s: str) -> (str, str):
+def first_char_is_name_and_rest_is_argument__splitter(s: str) -> (str, str):
     return s[0], s[1:]
 
 
@@ -29,10 +29,11 @@ EMPTY_INSTRUCTIONS_SETUP = InstructionsSetup(
 
 
 def execute_main_program(arguments: list,
-                         instructions_setup: InstructionsSetup = EMPTY_INSTRUCTIONS_SETUP) -> SubProcessResult:
+                         instructions_setup: InstructionsSetup = EMPTY_INSTRUCTIONS_SETUP,
+                         name_and_argument_splitter=first_char_is_name_and_rest_is_argument__splitter) -> SubProcessResult:
     str_std_out_files = StringStdOutFiles()
     program = sut.MainProgram(str_std_out_files.stdout_files,
-                              name_argument_splitter,
+                              name_and_argument_splitter,
                               instructions_setup,
                               test_case_handling_setup(),
                               DefaultRootSuiteReporterFactory())

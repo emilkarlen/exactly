@@ -1,7 +1,8 @@
 import unittest
 
 from exactly_lib_test.default.test_resources import default_main_program_case_preprocessing
-from exactly_lib_test.default.test_resources.internal_main_program_runner import RunViaMainProgramInternally
+from exactly_lib_test.default.test_resources.internal_main_program_runner import \
+    run_via_main_program_internally_with_default_setup
 from exactly_lib_test.test_resources.main_program.main_program_check_base import tests_for_setup_with_preprocessor
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
 
@@ -13,7 +14,7 @@ def suite_for(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
 
 
 def suite() -> unittest.TestSuite:
-    return suite_for(RunViaMainProgramInternally())
+    return suite_for(run_via_main_program_internally_with_default_setup())
 
 
 if __name__ == '__main__':
