@@ -10,9 +10,12 @@ from exactly_lib_test.act_phase_setups.test_resources import py_program
 from exactly_lib_test.act_phase_setups.test_resources.act_source_and_executor import Configuration, \
     suite_for_execution, check_execution, Arrangement, Expectation
 from exactly_lib_test.execution.test_resources import eh_check
+from exactly_lib_test.test_resources import file_structure as fs
+from exactly_lib_test.test_resources import file_structure_utils as fs_utils
 from exactly_lib_test.test_resources import python_program_execution as py_exe
 from exactly_lib_test.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_resources.file_utils import tmp_file_containing_lines
+from exactly_lib_test.test_resources.python_program_execution import abs_path_to_interpreter_quoted_for_exactly
 
 
 def suite() -> unittest.TestSuite:
@@ -33,50 +36,86 @@ class TestValidation(unittest.TestCase):
     def test_fails_when_there_are_no_instructions(self):
         act_phase_instructions = []
         actual = self._do_validate_pre_eds(act_phase_instructions)
-        self.assertIs(actual.status,
-                      svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
+        self.assertIs(svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
+                      actual.status,
                       'Validation result')
 
     def test_fails_when_there_is_more_than_one_instruction(self):
         act_phase_instructions = [instr(['']),
                                   instr([''])]
         actual = self._do_validate_pre_eds(act_phase_instructions)
-        self.assertIs(actual.status,
-                      svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
+        self.assertIs(svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
+                      actual.status,
                       'Validation result')
 
     def test_fails_when_there_are_no_statements(self):
         act_phase_instructions = [instr([''])]
         actual = self._do_validate_pre_eds(act_phase_instructions)
-        self.assertIs(actual.status,
-                      svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
+        self.assertIs(svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
+                      actual.status,
                       'Validation result')
 
     def test_fails_when_there_is_more_than_one_statement(self):
-        act_phase_instructions = [instr(['statement 1',
-                                         'statement 2'])]
+        existing_file = abs_path_to_interpreter_quoted_for_exactly()
+        act_phase_instructions = [instr([existing_file,
+                                         existing_file])]
         actual = self._do_validate_pre_eds(act_phase_instructions)
-        self.assertIs(actual.status,
-                      svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
-                      'Validation result')
-
-    def test_succeeds_when_there_is_exactly_one_statement(self):
-        act_phase_instructions = [instr(['statement 1'])]
-        actual = self._do_validate_pre_eds(act_phase_instructions)
-        self.assertIs(actual.status,
-                      svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+        self.assertIs(svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
+                      actual.status,
                       'Validation result')
 
     def test_succeeds_when_there_is_exactly_one_statement_but_surrounded_by_empty_and_comment_lines(self):
+        existing_file = abs_path_to_interpreter_quoted_for_exactly()
         act_phase_instructions = [instr(['',
                                          '             ',
                                          LINE_COMMENT_MARKER + ' line comment text',
-                                         'statement 1',
+                                         existing_file,
                                          LINE_COMMENT_MARKER + ' line comment text',
                                          ''])]
         actual = self._do_validate_pre_eds(act_phase_instructions)
-        self.assertIs(actual.status,
-                      svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+        self.assertIs(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                      actual.status,
+                      'Validation result')
+
+    def test_validate_pre_eds_SHOULD_fail_WHEN_statement_line_is_not_an_existing_file_rel_home(self):
+        act_phase_instructions = [instr(['name-of-non-existing-file'])]
+        actual = self._do_validate_pre_eds(act_phase_instructions)
+        self.assertIs(svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
+                      actual.status,
+                      'Validation result')
+
+    def test_validate_pre_eds_SHOULD_fail_WHEN_statement_line_is_not_an_existing_file__absolute_file_name(self):
+        absolute_name_of_non_existing_file = str(pathlib.Path().resolve() / 'non' / 'existing' / 'file' / 'oiasdlkv')
+        act_phase_instructions = [instr([absolute_name_of_non_existing_file])]
+        actual = self._do_validate_pre_eds(act_phase_instructions)
+        self.assertIs(svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
+                      actual.status,
+                      'Validation result')
+
+    def test_validate_pre_eds_SHOULD_succeed_WHEN_statement_line_is_absolute_name_of_existing_file_not_under_home(self):
+        existing_file = abs_path_to_interpreter_quoted_for_exactly()
+        act_phase_instructions = [instr([existing_file])]
+        actual = self._do_validate_pre_eds(act_phase_instructions)
+        self.assertIs(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                      actual.status,
+                      'Validation result')
+
+    def test_validate_pre_eds_SHOULD_succeed_WHEN_statement_line_is_absolute_name_of_existing_file__and_arguments(self):
+        existing_file = abs_path_to_interpreter_quoted_for_exactly()
+        abs_path_and_arguments = ' '.join([existing_file, 'arg1', '"quoted arg"'])
+        act_phase_instructions = [instr([abs_path_and_arguments])]
+        actual = self._do_validate_pre_eds(act_phase_instructions)
+        self.assertIs(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                      actual.status,
+                      'Validation result')
+
+    def test_validate_pre_eds_SHOULD_succeed_WHEN_statement_line_is_relative_name_of_an_existing_file_rel_home(self):
+        act_phase_instructions = [instr(['system-under-test'])]
+        executor = self.constructor.apply(self.pre_eds_env, act_phase_instructions)
+        with fs_utils.tmp_dir(fs.DirContents([fs.empty_file('system-under-test')])) as home_dir_path:
+            actual = executor.validate_pre_eds(home_dir_path)
+        self.assertIs(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                      actual.status,
                       'Validation result')
 
     @staticmethod
