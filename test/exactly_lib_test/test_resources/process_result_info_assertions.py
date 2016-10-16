@@ -1,6 +1,6 @@
 from exactly_lib.cli.cli_environment.exit_value import ExitValue
-from exactly_lib_test.test_resources import process_result_assertions as pr
 from exactly_lib_test.test_resources.process import SubProcessResultInfo
+from exactly_lib_test.test_resources.value_assertions import process_result_assertions as pr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 

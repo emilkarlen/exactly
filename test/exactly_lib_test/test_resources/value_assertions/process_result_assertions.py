@@ -11,12 +11,6 @@ def is_result_for_exit_value(exit_value: ExitValue) -> va.ValueAssertion:
     :rtype: A ValueAssertion on a SubProcessResult.
     """
     return SubProcessExitValueAssertion(exit_value)
-    # return va.And([
-    #     va.sub_component('exit code',
-    #                      SubProcessResult.exitcode.fget,
-    #                      va.Equals(exit_value.exit_code)),
-    #     stdout(va.Equals(exit_value.exit_identifier + os.linesep)),
-    # ])
 
 
 def is_result_for_exit_code(exit_code: int) -> va.ValueAssertion:
