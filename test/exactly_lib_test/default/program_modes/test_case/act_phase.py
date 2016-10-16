@@ -2,15 +2,13 @@ import pathlib
 import unittest
 
 from exactly_lib.cli.cli_environment.program_modes.test_case import exit_values
-from exactly_lib.execution import phases
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.default.test_resources.internal_main_program_runner import RunViaMainProgramInternally
-from exactly_lib_test.default.test_resources.test_case_file_elements import phase_header_line
 from exactly_lib_test.test_resources import file_structure as fs
 from exactly_lib_test.test_resources.main_program.main_program_check_base import tests_for_setup_without_preprocessor, \
     TestForSetupWithoutPreprocessor
 from exactly_lib_test.test_resources.main_program.main_program_check_for_test_case import \
-    SetupWithoutPreprocessorAndTestActor, SetupWithoutPreprocessorAndDefaultActor
+    SetupWithoutPreprocessorAndDefaultActor
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
 from exactly_lib_test.test_resources.process_result_info_assertions import process_result_for_exit_value
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
@@ -37,12 +35,12 @@ class EmptyTestCaseShouldFailDueToMissingActPhase(SetupWithoutPreprocessorAndDef
 class TCForDebugging(unittest.TestCase):
     def runTest(self):
         tc = TestForSetupWithoutPreprocessor(
-            ActPhaseShouldBeDefaultPhaseAndDefaultActorShouldBeActorForSingleExecutableProgramRelHome(),
+            DefaultActorShouldSucceedWhenActPhaseIsASingleCommandLineOfAnExecutableProgramRelHome(),
             RunViaMainProgramInternally())
         tc.runTest()
 
 
-class ActPhaseShouldBeDefaultPhaseAndDefaultActorShouldBeActorForSingleExecutableProgramRelHome(
+class DefaultActorShouldSucceedWhenActPhaseIsASingleCommandLineOfAnExecutableProgramRelHome(
     SetupWithoutPreprocessorAndDefaultActor):
     def expected_result(self) -> va.ValueAssertion:
         return process_result_for_exit_value(exit_values.EXECUTION__PASS)
@@ -57,20 +55,26 @@ class ActPhaseShouldBeDefaultPhaseAndDefaultActorShouldBeActorForSingleExecutabl
         return lines_content(['system-under-test'])
 
 
-class AllPhasesEmptyShouldPass(SetupWithoutPreprocessorAndTestActor):
-    def test_case(self) -> str:
-        test_case_lines = [phase_header_line(phase)
-                           for phase in phases.ALL]
-        return lines_content(test_case_lines)
-
+class DefaultActorShouldFailWhenActPhaseIsMultipleCommandLines(
+    SetupWithoutPreprocessorAndDefaultActor):
     def expected_result(self) -> va.ValueAssertion:
-        return process_result_for_exit_value(exit_values.EXECUTION__PASS)
+        return process_result_for_exit_value(exit_values.EXECUTION__VALIDATE)
+
+    def _additional_files_in_file_structure(self, root_path: pathlib.Path) -> list:
+        return [
+            fs.python_executable_file('system-under-test',
+                                      _PYTHON_PROGRAM_THAT_EXISTS_WITH_STATUS_0)
+        ]
+
+    def test_case(self) -> str:
+        return lines_content(['system-under-test',
+                              'system-under-test'])
 
 
 TESTS = [
     EmptyTestCaseShouldFailDueToMissingActPhase(),
-    ActPhaseShouldBeDefaultPhaseAndDefaultActorShouldBeActorForSingleExecutableProgramRelHome(),
-    AllPhasesEmptyShouldPass(),
+    DefaultActorShouldSucceedWhenActPhaseIsASingleCommandLineOfAnExecutableProgramRelHome(),
+    DefaultActorShouldFailWhenActPhaseIsMultipleCommandLines(),
 ]
 
 _PYTHON_PROGRAM_THAT_EXISTS_WITH_STATUS_0 = lines_content(['import sys',
