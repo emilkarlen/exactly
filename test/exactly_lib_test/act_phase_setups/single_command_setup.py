@@ -6,16 +6,19 @@ from exactly_lib.act_phase_setups import single_command_setup as sut
 from exactly_lib.section_document.syntax import LINE_COMMENT_MARKER
 from exactly_lib.test_case.phases.common import GlobalEnvironmentForPreEdsStep
 from exactly_lib.test_case.phases.result import svh
+from exactly_lib.util.string import lines_content
 from exactly_lib_test.act_phase_setups.test_resources import py_program
 from exactly_lib_test.act_phase_setups.test_resources.act_source_and_executor import Configuration, \
     suite_for_execution, check_execution, Arrangement, Expectation
 from exactly_lib_test.execution.test_resources import eh_check
 from exactly_lib_test.test_resources import file_structure as fs
 from exactly_lib_test.test_resources import file_structure_utils as fs_utils
+from exactly_lib_test.test_resources import process_result_assertions as pr
 from exactly_lib_test.test_resources import python_program_execution as py_exe
 from exactly_lib_test.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_resources.file_utils import tmp_file_containing_lines
 from exactly_lib_test.test_resources.python_program_execution import abs_path_to_interpreter_quoted_for_exactly
+from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 
 def suite() -> unittest.TestSuite:
@@ -176,7 +179,7 @@ for arg in sys.argv[1:]:
     def runTest(self):
         executor_constructor = sut.Constructor()
         act_phase_instructions = [
-            instr(['system-under-test'])
+            instr(['system-under-test first-argument "quoted argument"'])
         ]
         arrangement = Arrangement(executor_constructor,
                                   act_phase_instructions,
@@ -185,9 +188,12 @@ for arg in sys.argv[1:]:
                                           'system-under-test',
                                           self._PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
                                   ]))
-        check_execution(self,
-                        arrangement,
-                        Expectation(result_of_execute=eh_check.is_exit_code(0)))
+        expected_output = lines_content(['first-argument',
+                                         'quoted argument'])
+        expectation = Expectation(result_of_execute=eh_check.is_exit_code(0),
+                                  sub_process_result_from_execute=pr.stdout(va.Equals(expected_output,
+                                                                                      'CLI arguments, one per line')))
+        check_execution(self, arrangement, expectation)
 
 
 if __name__ == '__main__':

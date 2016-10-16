@@ -4,12 +4,13 @@ import random
 import unittest
 from contextlib import contextmanager
 
-from exactly_lib.execution.act_phase import ActSourceExecutor, ExitCodeOrHardError, \
-    ActSourceAndExecutorConstructor, ActSourceAndExecutor
+from exactly_lib.execution.act_phase import ExitCodeOrHardError, \
+    ActSourceAndExecutorConstructor, ActSourceAndExecutor, new_eh_exit_code
 from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import GlobalEnvironmentForPreEdsStep, HomeAndEds
 from exactly_lib.test_case.phases.result import svh
-from exactly_lib.util.std import StdFiles, std_files_dev_null
+from exactly_lib.util.failure_details import FailureDetails
+from exactly_lib.util.std import StdFiles
 from exactly_lib_test.execution.test_resources import eh_check
 from exactly_lib_test.instructions.test_resources import sh_check__va as sh_check
 from exactly_lib_test.test_resources import file_structure
@@ -82,7 +83,19 @@ def suite_for_execution(setup: Configuration) -> unittest.TestSuite:
                                ])
 
 
+class HardErrorResultError(Exception):
+    def __init__(self,
+                 result: ExitCodeOrHardError,
+                 failure_details: FailureDetails):
+        self.result = result
+        self.failure_details = failure_details
+
+
 class _ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(ProcessExecutor):
+    """
+    An executor that raises HardErrorResultError if result is not an exit code.
+    """
+
     def __init__(self,
                  home_and_eds: HomeAndEds,
                  script_output_path: pathlib.Path,
@@ -93,14 +106,16 @@ class _ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(ProcessE
 
     def execute(self,
                 files: StdFiles) -> int:
+        """
+         :raises HardErrorResultError: Return value from executor is not an exit code.
+        """
         exit_code_or_hard_error = self.program_executor.execute(self.home_and_eds,
                                                                 self.script_output_path,
                                                                 files)
         if exit_code_or_hard_error.is_exit_code:
             return exit_code_or_hard_error.exit_code
-        msg = '%s returned HARD ERROR: %s' % (str(ActSourceExecutor),
-                                              str(exit_code_or_hard_error.failure_details))
-        raise ValueError(msg)
+        raise HardErrorResultError(exit_code_or_hard_error,
+                                   exit_code_or_hard_error.failure_details)
 
 
 class TestExecuteBase(unittest.TestCase):
@@ -159,11 +174,13 @@ class Expectation:
                  side_effects_on_files_after_execute: eds_contents_check.Assertion = eds_contents_check.AnythingGoes(),
                  side_effects_on_files_after_prepare: eds_contents_check.Assertion = eds_contents_check.AnythingGoes(),
                  result_of_prepare: va.ValueAssertion = sh_check.is_success(),
-                 result_of_execute: va.ValueAssertion = eh_check.is_any_exit_code):
+                 result_of_execute: va.ValueAssertion = eh_check.is_any_exit_code,
+                 sub_process_result_from_execute: va.ValueAssertion = va.anything_goes()):
         self.side_effects_on_files_after_prepare = side_effects_on_files_after_prepare
         self.side_effects_on_files_after_execute = side_effects_on_files_after_execute
         self.result_of_prepare = result_of_prepare
         self.result_of_execute = result_of_execute
+        self.sub_process_result_from_execute = sub_process_result_from_execute
 
 
 def simple_success() -> Expectation:
@@ -199,14 +216,26 @@ def check_execution(put: unittest.TestCase,
                                                     MessageBuilder('Result of prepare'))
                 if not step_result.is_success:
                     return
-                step_result = sut.execute(home_and_eds, script_output_dir_path, std_files_dev_null())
-                if step_result.is_hard_error:
-                    error_msg_extra_info = os.linesep + str(step_result.failure_details) + os.linesep
-                else:
-                    error_msg_extra_info = ''
+
+                process_executor = _ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(home_and_eds,
+                                                                                                     script_output_dir_path,
+                                                                                                     sut)
+                error_msg_extra_info = ''
+                sub_process_result = None
+                try:
+                    sub_process_result = capture_process_executor_result(process_executor,
+                                                                         eds.result.root_dir)
+                    step_result = new_eh_exit_code(sub_process_result.exitcode)
+                except HardErrorResultError as ex:
+                    step_result = ex.result
+                    error_msg_extra_info = os.linesep + str(ex.failure_details) + os.linesep
+
                 expectation.result_of_execute.apply(put,
                                                     step_result,
                                                     MessageBuilder('Result of execute' + error_msg_extra_info))
+                if sub_process_result:
+                    msg_builder = MessageBuilder('Sub process output from execute' + error_msg_extra_info)
+                    expectation.sub_process_result_from_execute.apply(put, sub_process_result, msg_builder)
                 expectation.side_effects_on_files_after_execute.apply(put, eds)
                 return step_result
             finally:

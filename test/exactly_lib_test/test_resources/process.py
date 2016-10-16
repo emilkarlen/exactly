@@ -28,12 +28,16 @@ class SubProcessResult(tuple):
     def stderr(self) -> str:
         return self[2]
 
+    @property
+    def output_files(self) -> StdOutputFiles:
+        return StdOutputFiles(self.stdout, self.stderr)
+
 
 class ExpectedSubProcessResult(tuple):
     def __new__(cls,
-                exitcode: int=None,
-                stdout: str=None,
-                stderr: str=None):
+                exitcode: int = None,
+                stdout: str = None,
+                stderr: str = None):
         return tuple.__new__(cls, (exitcode, stdout, stderr))
 
     def assert_matches(self,
@@ -93,7 +97,7 @@ class ProcessExecutorForSubProcess(ProcessExecutor):
 
 def capture_subprocess(cmd_and_args: list,
                        tmp_dir: pathlib.Path,
-                       stdin_contents: str='') -> SubProcessResult:
+                       stdin_contents: str = '') -> SubProcessResult:
     return capture_process_executor_result(ProcessExecutorForSubProcess(cmd_and_args),
                                            tmp_dir,
                                            stdin_contents)
@@ -101,7 +105,7 @@ def capture_subprocess(cmd_and_args: list,
 
 def capture_process_executor_result(executor: ProcessExecutor,
                                     tmp_dir: pathlib.Path,
-                                    stdin_contents: str='') -> SubProcessResult:
+                                    stdin_contents: str = '') -> SubProcessResult:
     stdout_path = tmp_dir / stdout_file_name
     stderr_path = tmp_dir / stderr_file_name
     stdin_path = tmp_dir / stdin_file_name
@@ -124,7 +128,7 @@ def _contents_of_file(path: pathlib.Path) -> str:
 
 
 def run_subprocess(cmd_and_args: list,
-                   stdin_contents: str='') -> SubProcessResult:
+                   stdin_contents: str = '') -> SubProcessResult:
     with tempfile.TemporaryDirectory(prefix=program_info.PROGRAM_NAME + '-test-') as tmp_dir:
         return capture_subprocess(cmd_and_args,
                                   resolved_path(tmp_dir),
