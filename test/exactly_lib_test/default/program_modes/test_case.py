@@ -23,7 +23,8 @@ from exactly_lib_test.test_resources.cli_main_program_via_shell_utils.run import
 from exactly_lib_test.test_resources.file_checks import FileChecker
 from exactly_lib_test.test_resources.main_program.main_program_check_base import tests_for_setup_with_preprocessor
 from exactly_lib_test.test_resources.main_program.main_program_check_base import tests_for_setup_without_preprocessor
-from exactly_lib_test.test_resources.main_program.main_program_check_for_test_case import SetupWithoutPreprocessor
+from exactly_lib_test.test_resources.main_program.main_program_check_for_test_case import \
+    SetupWithoutPreprocessorAndTestActor
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
 from exactly_lib_test.test_resources.process import SubProcessResult, \
     SubProcessResultInfo
@@ -47,7 +48,7 @@ if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())
 
 
-class InvalidCommandLineOptionShouldExitWithInvalidUsageStatus(SetupWithoutPreprocessor):
+class InvalidCommandLineOptionShouldExitWithInvalidUsageStatus(SetupWithoutPreprocessorAndTestActor):
     def additional_arguments(self) -> list:
         return ['--invalid-option-that-should-cause-failure']
 
@@ -58,7 +59,7 @@ class InvalidCommandLineOptionShouldExitWithInvalidUsageStatus(SetupWithoutPrepr
         return ''
 
 
-class EmptyTestCaseShouldPass(SetupWithoutPreprocessor):
+class EmptyTestCaseShouldPass(SetupWithoutPreprocessorAndTestActor):
     def expected_result(self) -> va.ValueAssertion:
         return process_result_for_exit_value(exit_values.EXECUTION__PASS)
 
@@ -66,7 +67,7 @@ class EmptyTestCaseShouldPass(SetupWithoutPreprocessor):
         return ''
 
 
-class AllPhasesEmptyShouldPass(SetupWithoutPreprocessor):
+class AllPhasesEmptyShouldPass(SetupWithoutPreprocessorAndTestActor):
     def test_case(self) -> str:
         test_case_lines = [phase_header_line(phase)
                            for phase in phases.ALL]
@@ -76,7 +77,7 @@ class AllPhasesEmptyShouldPass(SetupWithoutPreprocessor):
         return process_result_for_exit_value(exit_values.EXECUTION__PASS)
 
 
-class WhenAPhaseHasInvalidPhaseNameThenExitStatusShouldIndicateThis(SetupWithoutPreprocessor):
+class WhenAPhaseHasInvalidPhaseNameThenExitStatusShouldIndicateThis(SetupWithoutPreprocessorAndTestActor):
     def test_case(self) -> str:
         test_case_lines = [
             section_header('invalid phase name'),
@@ -87,7 +88,7 @@ class WhenAPhaseHasInvalidPhaseNameThenExitStatusShouldIndicateThis(SetupWithout
         return process_result_for_exit_value(exit_values.NO_EXECUTION__SYNTAX_ERROR)
 
 
-class FlagForPrintingAndPreservingSandbox(SetupWithoutPreprocessor):
+class FlagForPrintingAndPreservingSandbox(SetupWithoutPreprocessorAndTestActor):
     def test_case(self) -> str:
         return ''
 
@@ -104,7 +105,8 @@ class FlagForPrintingAndPreservingSandbox(SetupWithoutPreprocessor):
             ]))
 
 
-class OutputAndExitCodeFromActPhaseIsEmittedAsResultWhenOptionForExecutingActPhaseIsGiven(SetupWithoutPreprocessor):
+class OutputAndExitCodeFromActPhaseIsEmittedAsResultWhenOptionForExecutingActPhaseIsGiven(
+    SetupWithoutPreprocessorAndTestActor):
     def additional_arguments(self) -> list:
         return [OPTION_FOR_EXECUTING_ACT_PHASE]
 
@@ -157,7 +159,7 @@ class AssertStdoutIsNameOfExistingSandboxDirectory(value_assertion.ValueAssertio
             put.fail('The output from the program is not the sandbox: "%s"' % actual_eds_directory)
 
 
-class EnvironmentVariablesAreSetCorrectly(SetupWithoutPreprocessor):
+class EnvironmentVariablesAreSetCorrectly(SetupWithoutPreprocessorAndTestActor):
     def additional_arguments(self) -> list:
         return [OPTION_FOR_KEEPING_SANDBOX_DIRECTORY]
 

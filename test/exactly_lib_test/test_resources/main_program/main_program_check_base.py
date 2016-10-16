@@ -60,6 +60,9 @@ class SetupWithoutPreprocessor(SetupBase):
     def first_arguments(self, root_path: pathlib.Path) -> list:
         raise NotImplementedError()
 
+    def arguments_for_interpreter(self) -> list:
+        return ARGUMENTS_FOR_TEST_INTERPRETER
+
 
 def run_in_sub_process(put: unittest.TestCase,
                        arguments: list) -> SubProcessResult:
@@ -83,7 +86,8 @@ def check(additional_arguments: list,
         setup.file_structure(tmp_dir_path).write_to(tmp_dir_path)
         file_argument = str(setup.file_argument_based_at(tmp_dir_path))
         first_arguments = setup.first_arguments(tmp_dir_path)
-        arguments = first_arguments + ARGUMENTS_FOR_TEST_INTERPRETER + additional_arguments + [file_argument]
+        arguments_for_interpreter = setup.arguments_for_interpreter()
+        arguments = first_arguments + arguments_for_interpreter + additional_arguments + [file_argument]
         sub_process_result = runner(put, arguments)
         # print(sub_process_result.stderr)
         setup.check(put,
