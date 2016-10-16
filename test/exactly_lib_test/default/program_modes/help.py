@@ -7,7 +7,7 @@ from exactly_lib.default.program_modes.test_case.default_instruction_names impor
 from exactly_lib.execution import phases
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
 from exactly_lib.help.program_modes.test_case.config import phase_help_name
-from exactly_lib.test_suite import parser as suite_parser
+from exactly_lib.test_suite import section_names
 from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_set import INSTRUCTION_NAME__ACTOR
 from exactly_lib_test.test_resources.main_program.constant_arguments_check import ProcessTestCase, Arrangement
 from exactly_lib_test.test_resources.main_program.constant_arguments_check_execution import test_suite_for_test_cases
@@ -73,8 +73,9 @@ def main_program_test_cases() -> list:
                         _RESULT_IS_SUCCESSFUL),
 
         ProcessTestCase('help for "suite section instruction" SHOULD be successful',
-                        HelpInvokation(arguments_for.suite_instruction_in_section(suite_parser.SECTION_NAME__CONF,
-                                                                                  INSTRUCTION_NAME__ACTOR)),
+                        HelpInvokation(arguments_for.suite_instruction_in_section(
+                            section_names.SECTION_NAME__CONF,
+                            INSTRUCTION_NAME__ACTOR)),
                         _RESULT_IS_SUCCESSFUL),
 
         ProcessTestCase('help for "concept list" SHOULD be successful',
@@ -92,7 +93,7 @@ def main_program_test_cases_for_all_suite_sections() -> list:
         ProcessTestCase("""help for "suite/section '%s'" SHOULD be successful""" % section_name,
                         HelpInvokation(arguments_for.suite_section_for_name(section_name)),
                         _RESULT_IS_SUCCESSFUL)
-        for section_name in suite_parser.ALL_SECTION_NAMES
+        for section_name in section_names.ALL_SECTION_NAMES
         ]
 
 

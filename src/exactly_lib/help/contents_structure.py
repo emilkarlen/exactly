@@ -13,7 +13,7 @@ from exactly_lib.help.program_modes.test_suite.section.configuration import Conf
 from exactly_lib.help.program_modes.test_suite.section.suites import SuitesSectionDocumentation
 from exactly_lib.test_case.instruction_setup import InstructionsSetup
 from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_set import CONFIGURATION_INSTRUCTIONS
-from exactly_lib.test_suite.parser import SECTION_NAME__SUITS, SECTION_NAME__CASES, SECTION_NAME__CONF
+from exactly_lib.test_suite.section_names import SECTION_NAME__CONF, SECTION_NAME__SUITS, SECTION_NAME__CASES
 
 
 class ApplicationHelp(tuple):

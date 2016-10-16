@@ -1,9 +1,13 @@
 from exactly_lib import program_info
 from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options as opt
+from exactly_lib.default.program_modes.test_case.default_instruction_names import ACTOR_INSTRUCTION_NAME
 from exactly_lib.help.concepts.configuration_parameters.home_directory import HOME_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.contents_structure import PlainConceptDocumentation, Name
+from exactly_lib.help.cross_reference_id import TestCasePhaseInstructionCrossReference, \
+    TestSuiteSectionInstructionCrossReference
 from exactly_lib.help.utils import formatting
-from exactly_lib.help.utils.phase_names import phase_name_dictionary
+from exactly_lib.help.utils import suite_section_names
+from exactly_lib.help.utils.phase_names import phase_name_dictionary, CONFIGURATION_PHASE_NAME
 from exactly_lib.help.utils.textformat_parse import TextParser
 from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.structure import structures as docs
@@ -15,15 +19,17 @@ class _ActorConcept(PlainConceptDocumentation):
 
     def purpose(self) -> DescriptionWithSubSections:
         parse = TextParser({
+            'actor_concept': formatting.concept(self.name().singular),
             'program_name': formatting.program_name(program_info.PROGRAM_NAME),
             'actor_option': formatting.cli_option(opt.OPTION_FOR_ACTOR),
+            'actor_instruction': formatting.InstructionName(ACTOR_INSTRUCTION_NAME),
             'phase': phase_name_dictionary(),
             'home_directory': formatting.concept(HOME_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
             'interpreter_actor': formatting.term(opt.INTERPRETER_ACTOR_TERM),
         })
-        return DescriptionWithSubSections(docs.text(parse.format(_SINGLE_LINE_DESCRIPTION)),
+        return DescriptionWithSubSections(parse.text(_SINGLE_LINE_DESCRIPTION),
                                           docs.SectionContents(
-                                              [],
+                                              parse.fnap(_AFTER_SINGLE_LINE_DESCRIPTION),
                                               [
                                                   docs.section(docs.text('Default actor'),
                                                                parse.fnap(_DEFAULT_DESCRIPTION_REST)),
@@ -34,6 +40,10 @@ class _ActorConcept(PlainConceptDocumentation):
     def see_also(self) -> list:
         return [
             HOME_DIRECTORY_CONFIGURATION_PARAMETER.cross_reference_target(),
+            TestCasePhaseInstructionCrossReference(CONFIGURATION_PHASE_NAME.plain,
+                                                   ACTOR_INSTRUCTION_NAME),
+            TestSuiteSectionInstructionCrossReference(suite_section_names.CONFIGURATION_SECTION_NAME.plain,
+                                                      ACTOR_INSTRUCTION_NAME),
         ]
 
 
@@ -42,6 +52,11 @@ ACTOR_CONCEPT = _ActorConcept()
 _SINGLE_LINE_DESCRIPTION = """\
 Responsible for reading the contents of the {phase[act]} phase,
 and executing it as part of the execution of the test case.
+"""
+
+_AFTER_SINGLE_LINE_DESCRIPTION = """\
+The {actor_concept} may be specified, via the {actor_option} option,
+or the {actor_instruction} instruction.
 """
 
 _DEFAULT_DESCRIPTION_REST = """\
@@ -64,7 +79,4 @@ to be executed by an interpreter.
 The interpreter is an executable program (with optional arguments) that
 {program_name} gives a single argument:
 the absolute path of a file containing the contents of the {phase[act]} phase.
-
-
-The {interpreter_actor} is specified, e.g., via the {actor_option} option.
 """
