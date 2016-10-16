@@ -1,6 +1,6 @@
 from exactly_lib.cli.cli_environment.program_modes.test_case import exit_values
-from exactly_lib.section_document.syntax import section_header
 from exactly_lib.execution import phases
+from exactly_lib.section_document.syntax import section_header
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.test_resources import process_result_info_assertions
 from exactly_lib_test.test_resources.main_program import main_program_check_for_test_case
@@ -19,7 +19,7 @@ else:
 """.format(section_header_for_phase_with_instructions=section_header(phases.SETUP.section_name))
 
 
-class TransformationIntoTestCaseThatPass(main_program_check_for_test_case.SetupWithPreprocessor):
+class TransformationIntoTestCaseThatPass(main_program_check_for_test_case.SetupWithPreprocessorAndTestActor):
     def file_argument_base_name(self) -> str:
         return 'pass'
 
@@ -36,7 +36,7 @@ class TransformationIntoTestCaseThatPass(main_program_check_for_test_case.SetupW
         return process_result_info_assertions.process_result_for_exit_value(exit_values.EXECUTION__PASS)
 
 
-class TransformationIntoTestCaseThatParserError(main_program_check_for_test_case.SetupWithPreprocessor):
+class TransformationIntoTestCaseThatParserError(main_program_check_for_test_case.SetupWithPreprocessorAndTestActor):
     def file_argument_base_name(self) -> str:
         return 'invalid'
 

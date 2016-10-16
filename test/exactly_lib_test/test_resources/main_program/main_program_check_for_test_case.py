@@ -1,8 +1,7 @@
 import pathlib
 import unittest
 
-from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_options import OPTION_FOR_PREPROCESSOR__LONG, \
-    OPTION_FOR_PREPROCESSOR
+from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_options import OPTION_FOR_PREPROCESSOR
 from exactly_lib_test.test_resources import quoting
 from exactly_lib_test.test_resources.file_structure import File, DirContents
 from exactly_lib_test.test_resources.main_program import main_program_check_base
@@ -46,7 +45,32 @@ class SetupWithoutPreprocessor(SetupForTestCaseBase, main_program_check_base.Set
                                  self.test_case())])
 
 
-class SetupWithPreprocessor(SetupForTestCaseBase, main_program_check_base.SetupWithPreprocessor):
+class SetupWithoutPreprocessorAndTestActor(SetupWithoutPreprocessor):
+    def first_arguments(self,
+                        root_path: pathlib.Path) -> list:
+        return []
+
+    def file_structure(self,
+                       root_path: pathlib.Path) -> DirContents:
+        return DirContents([File(self.file_argument_base_name(),
+                                 self.test_case())])
+
+
+class SetupWithoutPreprocessorAndDefaultActor(SetupWithoutPreprocessor):
+    def first_arguments(self,
+                        root_path: pathlib.Path) -> list:
+        return []
+
+    def file_structure(self,
+                       root_path: pathlib.Path) -> DirContents:
+        return DirContents([File(self.file_argument_base_name(),
+                                 self.test_case())])
+
+    def arguments_for_interpreter(self) -> list:
+        return []
+
+
+class SetupWithPreprocessorAndTestActor(SetupForTestCaseBase, main_program_check_base.SetupWithPreprocessor):
     def first_arguments(self,
                         root_path: pathlib.Path,
                         python_executable_file_name: str,
