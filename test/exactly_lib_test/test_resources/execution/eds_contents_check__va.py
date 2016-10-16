@@ -1,6 +1,6 @@
 from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from exactly_lib_test.test_resources import file_structure, file_checks
-from exactly_lib_test.test_resources import value_assertion as va
+from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 
 def act_dir_contains_exactly(expected_contents: file_structure.DirContents) -> va.ValueAssertion:

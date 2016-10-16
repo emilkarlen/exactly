@@ -1,9 +1,9 @@
 import unittest
 
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionInvalidArgumentException, SingleInstructionParserSource
 from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from exactly_lib.instructions.multi_phase_instructions import new_file as sut
+from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
+    SingleInstructionInvalidArgumentException, SingleInstructionParserSource
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.test_resources.execution import eds_test
@@ -12,7 +12,7 @@ from exactly_lib_test.test_resources.execution.eds_contents_check import ActRoot
 from exactly_lib_test.test_resources.execution.eds_populator import act_dir_contents
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, Dir, empty_file, File
 from exactly_lib_test.test_resources.parse import single_line_source, argument_list_source
-from exactly_lib_test.test_resources.value_assertion import ValueAssertion, ValueIsNone, ValueIsNotNone
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueIsNone, ValueIsNotNone
 
 
 class TestParseWithNoContents(unittest.TestCase):

@@ -1,14 +1,14 @@
 import unittest
 
-from exactly_lib.instructions.assert_ import change_dir as sut
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
+from exactly_lib.instructions.assert_ import change_dir as sut
 from exactly_lib_test.instructions.assert_.test_resources.configuration import AssertConfigurationBase
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.change_dir_instruction_test import \
     Configuration, suite_for
 from exactly_lib_test.instructions.test_resources import pfh_check
 from exactly_lib_test.instructions.test_resources.assertion_utils.side_effects import AdaptVa
-from exactly_lib_test.test_resources.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 class TheConfiguration(AssertConfigurationBase, Configuration):

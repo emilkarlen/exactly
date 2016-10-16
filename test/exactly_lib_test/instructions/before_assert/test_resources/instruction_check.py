@@ -1,8 +1,8 @@
 import unittest
 
+from exactly_lib.execution import phases
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, SingleInstructionParserSource
-from exactly_lib.execution import phases
 from exactly_lib.test_case.os_services import OsServices, new_default
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.before_assert import BeforeAssertPhaseInstruction
@@ -16,9 +16,9 @@ from exactly_lib_test.instructions.test_resources.arrangements import Arrangemen
 from exactly_lib_test.instructions.test_resources.expectations import ExpectationBase
 from exactly_lib_test.instructions.test_resources.instruction_check_utils import InstructionExecutionBase
 from exactly_lib_test.test_resources import file_structure
-from exactly_lib_test.test_resources import value_assertion as va
 from exactly_lib_test.test_resources.execution import eds_populator, utils
 from exactly_lib_test.test_resources.execution.utils import write_act_result
+from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 
 def arrangement(home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),

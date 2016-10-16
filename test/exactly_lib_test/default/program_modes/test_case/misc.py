@@ -15,8 +15,7 @@ from exactly_lib_test.default.test_resources.internal_main_program_runner import
 from exactly_lib_test.default.test_resources.test_case_file_elements import phase_header_line
 from exactly_lib_test.execution.test_execution_directory_structure import \
     is_execution_directory_structure_after_execution
-from exactly_lib_test.test_resources import value_assertion
-from exactly_lib_test.test_resources import value_assertion as va, process_result_info_assertions
+from exactly_lib_test.test_resources import process_result_info_assertions
 from exactly_lib_test.test_resources.cli_main_program_via_shell_utils.run import \
     contents_of_file
 from exactly_lib_test.test_resources.file_checks import FileChecker
@@ -28,6 +27,7 @@ from exactly_lib_test.test_resources.process import SubProcessResult, \
     SubProcessResultInfo
 from exactly_lib_test.test_resources.process_result_info_assertions import process_result_for_exit_value, \
     is_process_result_for_exit_code
+from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 
 def suite_for(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
@@ -92,12 +92,12 @@ class FlagForPrintingAndPreservingSandbox(SetupWithoutPreprocessorAndTestActor):
     def additional_arguments(self) -> list:
         return [OPTION_FOR_KEEPING_SANDBOX_DIRECTORY]
 
-    def expected_result(self) -> value_assertion.ValueAssertion:
+    def expected_result(self) -> va.ValueAssertion:
         return process_result_info_assertions.assertion_on_process_result(
-            value_assertion.And([
-                value_assertion.sub_component('exit code',
-                                              SubProcessResult.exitcode.fget,
-                                              value_assertion.Equals(exit_values.EXECUTION__PASS.exit_code)),
+            va.And([
+                va.sub_component('exit code',
+                                 SubProcessResult.exitcode.fget,
+                                 va.Equals(exit_values.EXECUTION__PASS.exit_code)),
                 AssertStdoutIsNameOfExistingSandboxDirectory(),
             ]))
 
@@ -118,30 +118,30 @@ sys.exit(72)
 """
         return test_case_source
 
-    def expected_result(self) -> value_assertion.ValueAssertion:
+    def expected_result(self) -> va.ValueAssertion:
         exit_code = 72
         std_out = 'output to stdout'
         std_err = 'output to stderr\n'
         return process_result_info_assertions.assertion_on_process_result(
-            value_assertion.And([
-                value_assertion.sub_component('exit code',
-                                              SubProcessResult.exitcode.fget,
-                                              value_assertion.Equals(exit_code)),
-                value_assertion.sub_component('stdout',
-                                              SubProcessResult.stdout.fget,
-                                              value_assertion.Equals(std_out)),
-                value_assertion.sub_component('stderr',
-                                              SubProcessResult.stderr.fget,
-                                              value_assertion.Equals(std_err)),
+            va.And([
+                va.sub_component('exit code',
+                                 SubProcessResult.exitcode.fget,
+                                 va.Equals(exit_code)),
+                va.sub_component('stdout',
+                                 SubProcessResult.stdout.fget,
+                                 va.Equals(std_out)),
+                va.sub_component('stderr',
+                                 SubProcessResult.stderr.fget,
+                                 va.Equals(std_err)),
             ])
         )
 
 
-class AssertStdoutIsNameOfExistingSandboxDirectory(value_assertion.ValueAssertion):
+class AssertStdoutIsNameOfExistingSandboxDirectory(va.ValueAssertion):
     def apply(self,
               put: unittest.TestCase,
               value: SubProcessResult,
-              message_builder: value_assertion.MessageBuilder = value_assertion.MessageBuilder()):
+              message_builder: va.MessageBuilder = va.MessageBuilder()):
         actual_eds_directory = _get_printed_eds_or_fail(put, value)
         actual_eds_path = pathlib.Path(actual_eds_directory)
         if actual_eds_path.exists():
@@ -170,18 +170,18 @@ class EnvironmentVariablesAreSetCorrectly(SetupWithoutPreprocessorAndTestActor):
         ]
         return lines_content(test_case_source_lines)
 
-    def expected_result(self) -> value_assertion.ValueAssertion:
-        return value_assertion.And([
+    def expected_result(self) -> va.ValueAssertion:
+        return va.And([
             process_result_info_assertions.is_process_result_for_exit_code(exit_values.EXECUTION__PASS.exit_code),
             ExpectedTestEnvironmentVariablesAreSetCorrectlyVa(),
         ])
 
 
-class ExpectedTestEnvironmentVariablesAreSetCorrectlyVa(value_assertion.ValueAssertion):
+class ExpectedTestEnvironmentVariablesAreSetCorrectlyVa(va.ValueAssertion):
     def apply(self,
               put: unittest.TestCase,
               value: SubProcessResultInfo,
-              message_builder: value_assertion.MessageBuilder = value_assertion.MessageBuilder()):
+              message_builder: va.MessageBuilder = va.MessageBuilder()):
         actual_eds_directory = _get_printed_eds_or_fail(put, value.sub_process_result)
         eds = execution_directory_structure.ExecutionDirectoryStructure(actual_eds_directory)
         actually_printed_variables = _get_act_output_to_stdout(eds).splitlines()

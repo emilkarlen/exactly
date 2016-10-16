@@ -9,7 +9,7 @@ from exactly_lib_test.instructions.multi_phase_instructions.test_resources.confi
 from exactly_lib_test.instructions.test_resources import sh_check__va
 from exactly_lib_test.instructions.test_resources import svh_check__va
 from exactly_lib_test.test_resources.execution import eds_populator
-from exactly_lib_test.test_resources.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 class BeforeAssertConfigurationBase(ConfigurationBase):

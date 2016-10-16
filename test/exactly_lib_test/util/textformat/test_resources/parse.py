@@ -5,7 +5,7 @@ from exactly_lib.util.textformat.structure.lists import HeaderContentList
 from exactly_lib.util.textformat.structure.literal_layout import LiteralLayout
 from exactly_lib.util.textformat.structure.paragraph import Paragraph
 from exactly_lib.util.textformat.structure.utils import ParagraphItemVisitor
-from exactly_lib_test.test_resources import value_assertion as va
+from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 from exactly_lib_test.util.textformat.test_resources import structure as structure_assert
 
 

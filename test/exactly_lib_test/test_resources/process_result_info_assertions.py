@@ -1,7 +1,7 @@
 from exactly_lib.cli.cli_environment.exit_value import ExitValue
 from exactly_lib_test.test_resources import process_result_assertions as pr
-from exactly_lib_test.test_resources import value_assertion as va
 from exactly_lib_test.test_resources.process import SubProcessResultInfo
+from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 
 def process_result_for_exit_value(exit_value: ExitValue) -> va.ValueAssertion:

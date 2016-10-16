@@ -6,7 +6,7 @@ from exactly_lib.util.textformat.structure.literal_layout import LiteralLayout
 from exactly_lib.util.textformat.structure.paragraph import Paragraph
 from exactly_lib.util.textformat.structure.table import Table, TableFormat
 from exactly_lib.util.textformat.structure.utils import ParagraphItemVisitor
-from exactly_lib_test.test_resources import value_assertion as va
+from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 
 def is_paragraph_item_list(name: str = '') -> va.ValueAssertion:

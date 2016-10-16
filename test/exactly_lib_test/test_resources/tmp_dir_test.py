@@ -3,7 +3,7 @@ import unittest
 from exactly_lib_test.test_resources import file_checks
 from exactly_lib_test.test_resources import file_structure
 from exactly_lib_test.test_resources.file_structure_utils import tmp_dir_as_cwd
-from . import value_assertion
+from exactly_lib_test.test_resources.value_assertions import value_assertion
 
 
 class Check:

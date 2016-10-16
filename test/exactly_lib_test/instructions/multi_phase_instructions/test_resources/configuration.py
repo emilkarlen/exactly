@@ -8,7 +8,7 @@ from exactly_lib.test_case.os_services import new_default, OsServices
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementBase
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_description_instance
 from exactly_lib_test.test_resources.execution import eds_populator
-from exactly_lib_test.test_resources.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 class ConfigurationBase:

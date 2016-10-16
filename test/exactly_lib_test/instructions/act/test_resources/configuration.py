@@ -10,7 +10,7 @@ from exactly_lib_test.instructions.test_resources import sh_check
 from exactly_lib_test.instructions.test_resources import svh_check
 from exactly_lib_test.test_resources.execution import eds_populator
 from exactly_lib_test.test_resources.execution.eds_contents_check import AdaptVa
-from exactly_lib_test.test_resources.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 class CleanupConfigurationBase(ConfigurationBase):
