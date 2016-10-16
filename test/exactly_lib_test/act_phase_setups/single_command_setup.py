@@ -21,7 +21,7 @@ from exactly_lib_test.test_resources.python_program_execution import abs_path_to
 def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestValidation))
-    ret_val.addTest(unittest.makeSuite(TestWhenInterpreterDoesNotExistThanExecuteShouldGiveHardError))
+    ret_val.addTest(unittest.makeSuite(TestSuccessfulExecutionOfProgramRelHomeWithCommandLineArguments))
     ret_val.addTest(suite_for_execution(TheConfiguration()))
     return ret_val
 
@@ -166,19 +166,28 @@ class TheConfiguration(Configuration):
         return [instr([cmd])]
 
 
-class TestWhenInterpreterDoesNotExistThanExecuteShouldGiveHardError(unittest.TestCase):
+class TestSuccessfulExecutionOfProgramRelHomeWithCommandLineArguments(unittest.TestCase):
+    _PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES = """\
+import sys
+for arg in sys.argv[1:]:
+  print(arg)
+"""
+
     def runTest(self):
         executor_constructor = sut.Constructor()
-        source = self._source_that_references_non_existing_program()
+        act_phase_instructions = [
+            instr(['system-under-test'])
+        ]
+        arrangement = Arrangement(executor_constructor,
+                                  act_phase_instructions,
+                                  home_dir_contents=fs.DirContents([
+                                      fs.python_executable_file(
+                                          'system-under-test',
+                                          self._PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES)
+                                  ]))
         check_execution(self,
-                        Arrangement(executor_constructor,
-                                    source),
-                        Expectation(result_of_execute=eh_check.is_hard_error))
-
-    def _source_that_references_non_existing_program(self) -> list:
-        interpreter_path = pathlib.Path().cwd().resolve() / 'non-existing-interpreter'
-        source = str(interpreter_path)
-        return [instr([source])]
+                        arrangement,
+                        Expectation(result_of_execute=eh_check.is_exit_code(0)))
 
 
 if __name__ == '__main__':

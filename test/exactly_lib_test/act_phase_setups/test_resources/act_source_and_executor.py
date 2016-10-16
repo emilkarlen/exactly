@@ -12,6 +12,8 @@ from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.std import StdFiles, std_files_dev_null
 from exactly_lib_test.execution.test_resources import eh_check
 from exactly_lib_test.instructions.test_resources import sh_check__va as sh_check
+from exactly_lib_test.test_resources import file_structure
+from exactly_lib_test.test_resources import file_structure_utils as fs_utils
 from exactly_lib_test.test_resources.execution import eds_contents_check
 from exactly_lib_test.test_resources.execution.eds_populator import act_dir_contents
 from exactly_lib_test.test_resources.execution.utils import execution_directory_structure
@@ -144,9 +146,12 @@ class TestExecuteBase(unittest.TestCase):
 class Arrangement:
     def __init__(self,
                  executor_constructor: ActSourceAndExecutorConstructor,
-                 act_phase_instructions: list):
+                 act_phase_instructions: list,
+                 home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
+                 ):
         self.executor_constructor = executor_constructor
         self.act_phase_instructions = act_phase_instructions
+        self.home_dir_contents = home_dir_contents
 
 
 class Expectation:
@@ -171,37 +176,41 @@ def check_execution(put: unittest.TestCase,
     _assert_is_list_of_act_phase_instructions(put, arrangement.act_phase_instructions)
 
     cwd_before_test = os.getcwd()
-    home_dir = pathlib.Path()
-    environment = GlobalEnvironmentForPreEdsStep(home_dir)
-    sut = arrangement.executor_constructor.apply(environment, arrangement.act_phase_instructions)
-    step_result = sut.validate_pre_eds(home_dir)
-    put.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
-                    step_result.status,
-                    'Result of validation/pre-eds')
-    with execution_directory_structure() as eds:
-        try:
-            os.chdir(str(eds.act_dir))
-            home_and_eds = HomeAndEds(home_dir, eds)
-            step_result = sut.validate_post_setup(home_and_eds)
-            put.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
-                            step_result.status,
-                            'Result of validation/post-setup')
-            script_output_dir_path = eds.test_case_dir
-            step_result = sut.prepare(home_and_eds, script_output_dir_path)
-            expectation.side_effects_on_files_after_prepare.apply(put, eds)
-            expectation.result_of_prepare.apply(put,
-                                                step_result,
-                                                MessageBuilder('Result of prepare'))
-            if not step_result.is_success:
-                return
-            step_result = sut.execute(home_and_eds, script_output_dir_path, std_files_dev_null())
-            expectation.result_of_execute.apply(put,
-                                                step_result,
-                                                MessageBuilder('Result of execute'))
-            expectation.side_effects_on_files_after_execute.apply(put, eds)
-            return step_result
-        finally:
-            os.chdir(cwd_before_test)
+    with fs_utils.tmp_dir(arrangement.home_dir_contents) as home_dir:
+        environment = GlobalEnvironmentForPreEdsStep(home_dir)
+        sut = arrangement.executor_constructor.apply(environment, arrangement.act_phase_instructions)
+        step_result = sut.validate_pre_eds(home_dir)
+        put.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                        step_result.status,
+                        'Result of validation/pre-eds')
+        with execution_directory_structure() as eds:
+            try:
+                os.chdir(str(eds.act_dir))
+                home_and_eds = HomeAndEds(home_dir, eds)
+                step_result = sut.validate_post_setup(home_and_eds)
+                put.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
+                                step_result.status,
+                                'Result of validation/post-setup')
+                script_output_dir_path = eds.test_case_dir
+                step_result = sut.prepare(home_and_eds, script_output_dir_path)
+                expectation.side_effects_on_files_after_prepare.apply(put, eds)
+                expectation.result_of_prepare.apply(put,
+                                                    step_result,
+                                                    MessageBuilder('Result of prepare'))
+                if not step_result.is_success:
+                    return
+                step_result = sut.execute(home_and_eds, script_output_dir_path, std_files_dev_null())
+                if step_result.is_hard_error:
+                    error_msg_extra_info = os.linesep + str(step_result.failure_details) + os.linesep
+                else:
+                    error_msg_extra_info = ''
+                expectation.result_of_execute.apply(put,
+                                                    step_result,
+                                                    MessageBuilder('Result of execute' + error_msg_extra_info))
+                expectation.side_effects_on_files_after_execute.apply(put, eds)
+                return step_result
+            finally:
+                os.chdir(cwd_before_test)
 
 
 class TestBase(TestExecuteBase):

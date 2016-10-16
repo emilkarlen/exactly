@@ -70,6 +70,11 @@ class Executor(executor_made_of_parts.Executor):
 
     def execute(self, home_and_eds: HomeAndEds, script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
+        cmd = self.cmd_and_args[0]
+        cmd_path = pathlib.Path(cmd)
+        if not cmd_path.is_absolute():
+            cmd_path = home_and_eds.home_dir_path / cmd_path
+            self.cmd_and_args[0] = str(cmd_path)
         return utils.execute_cmd_and_args(self.cmd_and_args,
                                           std_files)
 

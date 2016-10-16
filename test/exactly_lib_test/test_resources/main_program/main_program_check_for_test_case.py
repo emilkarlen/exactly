@@ -63,8 +63,12 @@ class SetupWithoutPreprocessorAndDefaultActor(SetupWithoutPreprocessor):
 
     def file_structure(self,
                        root_path: pathlib.Path) -> DirContents:
-        return DirContents([File(self.file_argument_base_name(),
-                                 self.test_case())])
+        test_case_file_list = [File(self.file_argument_base_name(), self.test_case())]
+        return DirContents(test_case_file_list +
+                           self._additional_files_in_file_structure(root_path))
+
+    def _additional_files_in_file_structure(self, root_path: pathlib.Path) -> list:
+        return []
 
     def arguments_for_interpreter(self) -> list:
         return []
