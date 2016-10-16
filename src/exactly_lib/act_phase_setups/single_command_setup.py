@@ -5,7 +5,7 @@ import shlex
 from exactly_lib.act_phase_setups import utils
 from exactly_lib.act_phase_setups.util.executor_made_of_parts import main as executor_made_of_parts
 from exactly_lib.act_phase_setups.util.executor_made_of_parts.parser_for_single_line import \
-    ParserForSingleLineUsingStandardSyntax
+    ParserForSingleLineUsingStandardSyntaxSplitAccordingToShellSyntax
 from exactly_lib.execution.act_phase import SourceSetup, ActSourceExecutor, ExitCodeOrHardError
 from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from exactly_lib.instructions.act.executable_file import ExecutableFileInstruction
@@ -36,16 +36,25 @@ def _script_source_builder() -> ActSourceBuilder:
 
 class Constructor(executor_made_of_parts.Constructor):
     def __init__(self):
-        super().__init__(ParserForSingleLineUsingStandardSyntax(),
+        super().__init__(ParserForSingleLineUsingStandardSyntaxSplitAccordingToShellSyntax(),
                          Validator,
                          Executor)
 
 
 class Validator(executor_made_of_parts.Validator):
-    def __init__(self, single_source_line: str):
-        self.single_source_line = single_source_line
+    def __init__(self, cmd_and_args: list):
+        self.cmd_and_args = cmd_and_args
 
     def validate_pre_eds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
+        cmd = self.cmd_and_args[0]
+        cmd_path = pathlib.Path(cmd)
+        if cmd_path.is_absolute():
+            if not cmd_path.exists():
+                return svh.new_svh_validation_error('File does not exist: ' + cmd)
+        else:
+            cmd_abs_path = home_dir_path / cmd
+            if not cmd_abs_path.exists():
+                return svh.new_svh_validation_error('Not a file relative home-dir: ' + str(cmd_abs_path))
         return svh.new_svh_success()
 
     def validate_post_setup(self, home_and_eds: HomeAndEds) -> svh.SuccessOrValidationErrorOrHardError:
@@ -53,16 +62,15 @@ class Validator(executor_made_of_parts.Validator):
 
 
 class Executor(executor_made_of_parts.Executor):
-    def __init__(self, single_source_line: str):
-        self.single_source_line = single_source_line
+    def __init__(self, cmd_and_args: list):
+        self.cmd_and_args = cmd_and_args
 
     def prepare(self, home_and_eds: HomeAndEds, script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
         return sh.new_sh_success()
 
     def execute(self, home_and_eds: HomeAndEds, script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
-        cmd_and_args = shlex.split(self.single_source_line)
-        return utils.execute_cmd_and_args(cmd_and_args,
+        return utils.execute_cmd_and_args(self.cmd_and_args,
                                           std_files)
 
 
