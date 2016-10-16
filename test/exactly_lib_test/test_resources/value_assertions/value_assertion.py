@@ -18,6 +18,12 @@ class MessageBuilder:
         else:
             return '' if tail is None else tail
 
+    def for_sub_component(self, component_name: str,
+                          component_separator: str = '/'):
+        return sub_component_builder(component_name,
+                                     self,
+                                     component_separator)
+
 
 class ValueAssertion:
     def apply(self,

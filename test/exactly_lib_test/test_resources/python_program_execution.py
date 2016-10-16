@@ -1,5 +1,9 @@
+import os
+import pathlib
 import sys
 import unittest
+
+from exactly_lib_test.test_resources.files.executable_files import make_executable_by_os
 
 
 def interpreter_that_executes_argument() -> str:
@@ -60,3 +64,28 @@ def abs_path_to_interpreter() -> str:
 
 def _str_elements(elements: iter) -> list:
     return [str(x) for x in elements]
+
+
+def write_executable_file_with_python_source(executable_file_name_for_invokation_at_command_line: pathlib.Path,
+                                             python_source_code: str = ''):
+    if sys.platform == 'win32':
+        _write_windows_python_executable(executable_file_name_for_invokation_at_command_line, python_source_code)
+    else:
+        _write_unix_python_executable(executable_file_name_for_invokation_at_command_line, python_source_code)
+
+
+def _write_unix_python_executable(executable_file_name_for_invokation_at_command_line: pathlib.Path,
+                                  python_source_code: str = ''):
+    with open(str(executable_file_name_for_invokation_at_command_line), 'w') as f:
+        f.write(_unix_interpreter_specification())
+        f.write(python_source_code)
+    make_executable_by_os(executable_file_name_for_invokation_at_command_line)
+
+
+def _write_windows_python_executable(executable_file_name_for_invokation_at_command_line: pathlib.Path,
+                                     python_source_code: str = ''):
+    raise NotImplementedError("Not implemented ")
+
+
+def _unix_interpreter_specification() -> str:
+    return '#! ' + sys.executable + os.linesep
