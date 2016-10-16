@@ -4,8 +4,8 @@ Especially, no temporary files need to be generated.
 """
 import unittest
 
-from exactly_lib_test.test_resources import value_assertion
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
+from exactly_lib_test.test_resources.value_assertions import value_assertion
 
 
 class Arrangement:

@@ -15,8 +15,8 @@ from exactly_lib_test.instructions.test_resources.arrangements import Arrangemen
 from exactly_lib_test.instructions.test_resources.expectations import ExpectationBase
 from exactly_lib_test.instructions.test_resources.instruction_check_utils import InstructionExecutionBase
 from exactly_lib_test.test_resources import file_structure
-from exactly_lib_test.test_resources import value_assertion as va
 from exactly_lib_test.test_resources.execution import eds_populator, utils
+from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 
 class Arrangement(ArrangementWithEds):

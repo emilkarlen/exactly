@@ -15,11 +15,10 @@ from exactly_lib_test.instructions.act.test_resources import instruction_check a
 from exactly_lib_test.instructions.act.test_resources.instruction_check import SourceBuilderCheckInfo
 from exactly_lib_test.instructions.test_resources import sh_check__va
 from exactly_lib_test.instructions.test_resources import svh_check__va
-from exactly_lib_test.test_resources import value_assertion as va
 from exactly_lib_test.test_resources.execution.eds_contents_check__va import act_dir_contains_exactly
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file
-from exactly_lib_test.test_resources.value_assertion_test import \
-    TestException
+from exactly_lib_test.test_resources.value_assertions import value_assertion as va
+from exactly_lib_test.test_resources.value_assertions.value_assertion_test import TestException
 
 
 class ConcreteTestCase(sut.TestCaseBase):

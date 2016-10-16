@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib_test.test_resources import value_assertion as sut
+from exactly_lib_test.test_resources.value_assertions import value_assertion as sut
 
 
 class TestException(Exception):

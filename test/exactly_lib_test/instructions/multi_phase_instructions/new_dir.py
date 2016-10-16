@@ -1,14 +1,14 @@
 import unittest
 
+from exactly_lib.instructions.multi_phase_instructions import new_dir as sut
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.instructions.multi_phase_instructions import new_dir as sut
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.test_resources import tmp_dir_test
 from exactly_lib_test.test_resources.file_checks import dir_contains_exactly
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, Dir, empty_file
 from exactly_lib_test.test_resources.tmp_dir_test import Check
-from exactly_lib_test.test_resources.value_assertion import ValueAssertion, ValueIsNone, ValueIsNotNone
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueIsNone, ValueIsNotNone
 
 
 class TestParseSet(unittest.TestCase):

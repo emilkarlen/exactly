@@ -5,7 +5,7 @@ from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithEds
 from exactly_lib_test.instructions.test_resources.expectations import ExpectationBase
-from exactly_lib_test.test_resources import value_assertion as va
+from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 
 class InstructionExecutionToBeReplacedByVaBase:

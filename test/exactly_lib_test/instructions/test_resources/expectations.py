@@ -1,5 +1,5 @@
 from exactly_lib_test.instructions.test_resources import svh_check__va
-from exactly_lib_test.test_resources import value_assertion as va
+from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 
 class ExpectationBase:

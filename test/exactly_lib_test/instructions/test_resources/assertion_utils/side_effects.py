@@ -2,7 +2,7 @@ import pathlib
 import unittest
 
 from exactly_lib.test_case.phases.common import HomeAndEds
-from exactly_lib_test.test_resources.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 class SideEffectsCheck:

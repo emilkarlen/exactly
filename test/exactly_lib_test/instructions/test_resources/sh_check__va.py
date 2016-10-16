@@ -1,5 +1,5 @@
 from exactly_lib.test_case.phases.result import sh
-from exactly_lib_test.test_resources import value_assertion as va
+from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 
 def is_success() -> va.ValueAssertion:

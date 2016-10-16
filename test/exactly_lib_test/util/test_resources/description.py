@@ -1,5 +1,5 @@
 from exactly_lib.util.description import Description, DescriptionWithSubSections
-from exactly_lib_test.test_resources import value_assertion as va
+from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 from exactly_lib_test.util.textformat.test_resources import structure as struct_check
 
 is_description = va.And([

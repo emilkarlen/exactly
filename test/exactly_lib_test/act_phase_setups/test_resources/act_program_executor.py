@@ -11,14 +11,14 @@ from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.std import StdFiles, std_files_dev_null
 from exactly_lib_test.execution.test_resources import eh_check
 from exactly_lib_test.instructions.test_resources import sh_check__va as sh_check
-from exactly_lib_test.test_resources import value_assertion as va
 from exactly_lib_test.test_resources.execution import eds_contents_check
 from exactly_lib_test.test_resources.execution.eds_populator import act_dir_contents
 from exactly_lib_test.test_resources.execution.utils import execution_directory_structure
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir
 from exactly_lib_test.test_resources.process import ProcessExecutor, SubProcessResult
 from exactly_lib_test.test_resources.process import capture_process_executor_result
-from exactly_lib_test.test_resources.value_assertion import MessageBuilder
+from exactly_lib_test.test_resources.value_assertions import value_assertion as va
+from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
 
 
 class Configuration:
