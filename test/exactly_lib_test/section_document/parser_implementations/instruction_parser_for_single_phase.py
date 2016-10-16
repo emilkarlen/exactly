@@ -8,7 +8,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionParserSource
 from exactly_lib.util import line_source
 from exactly_lib.util.line_source import Line
-from exactly_lib_test.section_document.test_resources import assert_equals_line
+from exactly_lib_test.section_document.test_resources.assertions import assert_equals_line
 
 
 def name_argument_splitter(s: str) -> (str, str):
