@@ -1,9 +1,9 @@
 from exactly_lib.help.utils.formatting import SectionName
-from exactly_lib.test_suite import parser
+from exactly_lib.test_suite import section_names
 
-CONFIGURATION_SECTION_NAME = SectionName(parser.SECTION_NAME__CONF)
-CASES_SECTION_NAME = SectionName(parser.SECTION_NAME__CASES)
-SUITES_SECTION_NAME = SectionName(parser.SECTION_NAME__SUITS)
+CONFIGURATION_SECTION_NAME = SectionName(section_names.SECTION_NAME__CONF)
+CASES_SECTION_NAME = SectionName(section_names.SECTION_NAME__CASES)
+SUITES_SECTION_NAME = SectionName(section_names.SECTION_NAME__SUITS)
 
 ALL = (
     CONFIGURATION_SECTION_NAME,

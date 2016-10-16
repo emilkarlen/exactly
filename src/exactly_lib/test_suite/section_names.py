@@ -1,0 +1,7 @@
+SECTION_NAME__CONF = 'conf'
+SECTION_NAME__SUITS = 'suites'
+SECTION_NAME__CASES = 'cases'
+
+ALL_SECTION_NAMES = (SECTION_NAME__CONF,
+                     SECTION_NAME__SUITS,
+                     SECTION_NAME__CASES)
