@@ -1,4 +1,4 @@
-import exactly_lib_test.test_resources.model_utils
+import exactly_lib_test.section_document.test_resources.elements
 from exactly_lib.execution import partial_execution
 from exactly_lib.section_document import model
 from exactly_lib.section_document.model import SectionContents
@@ -28,7 +28,7 @@ class InstructionLineConstructor:
         self.lines_generator = lines_generator
 
     def apply(self, instruction: TestCaseInstruction) -> model.SectionContentElement:
-        return exactly_lib_test.test_resources.model_utils.new_instruction_element(
+        return exactly_lib_test.section_document.test_resources.elements.new_instruction_element(
             self.lines_generator.next_line(),
             instruction)
 

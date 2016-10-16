@@ -5,7 +5,7 @@ from exactly_lib.execution.result import InstructionFailureInfo, FullResultStatu
     PhaseFailureInfo
 from exactly_lib.util import line_source
 from exactly_lib.util.failure_details import FailureDetails
-from exactly_lib_test.section_document.test_resources import assert_equals_line
+from exactly_lib_test.section_document.test_resources.assertions import assert_equals_line
 from exactly_lib_test.test_resources.assert_utils import assertion_message
 
 

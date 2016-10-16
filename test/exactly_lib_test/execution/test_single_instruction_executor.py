@@ -9,7 +9,7 @@ from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.util import line_source
 from exactly_lib.util.failure_details import FailureDetails, new_failure_details_from_exception, \
     new_failure_details_from_message
-from exactly_lib_test.test_resources.model_utils import new_ls_from_line
+from exactly_lib_test.section_document.test_resources.elements import new_ls_from_line
 
 
 def suite() -> unittest.TestSuite:

@@ -6,7 +6,7 @@ from exactly_lib.execution.single_instruction_executor import ControlledInstruct
     PartialInstructionControlledFailureInfo
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.util import line_source
-from exactly_lib_test.section_document.test_resources import assert_equals_line
+from exactly_lib_test.section_document.test_resources.assertions import assert_equals_line
 from exactly_lib_test.test_resources.expected_instruction_failure import ExpectedFailureDetails
 
 

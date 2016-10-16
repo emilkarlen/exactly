@@ -12,10 +12,10 @@ from exactly_lib_test.execution.test_resources.phase_step_execution import Expec
     InstructionExecutorThatRecordsInstructionNameAndReturnsSuccess, \
     InstructionExecutorThatRecordsInstructionNameAndFailsFor, TestException, \
     InstructionExecutorThatRecordsInstructionNameAndRaisesExceptionFor, any_instruction, instruction_with_name
+from exactly_lib_test.section_document.test_resources.elements import new_comment_element, new_instruction_element
 from exactly_lib_test.test_resources.expected_instruction_failure import \
     new_expected_failure_message, \
     new_expected_exception
-from exactly_lib_test.test_resources.model_utils import new_comment_element, new_instruction_element
 
 
 class Test(unittest.TestCase):
