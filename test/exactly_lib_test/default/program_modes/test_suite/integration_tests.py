@@ -9,7 +9,8 @@ from exactly_lib.util.string import lines_content
 from exactly_lib_test.default.test_resources import default_main_program_suite_preprocessing as pre_proc_tests, \
     suite_reporting_output
 from exactly_lib_test.default.test_resources import default_main_program_wildcard as wildcard
-from exactly_lib_test.default.test_resources.internal_main_program_runner import RunViaMainProgramInternally
+from exactly_lib_test.default.test_resources.internal_main_program_runner import \
+    run_via_main_program_internally_with_default_setup
 from exactly_lib_test.test_resources.file_structure import DirContents, File
 from exactly_lib_test.test_resources.main_program import main_program_check_for_test_suite
 from exactly_lib_test.test_resources.main_program.main_program_check_base import \
@@ -17,7 +18,7 @@ from exactly_lib_test.test_resources.main_program.main_program_check_base import
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
 
 
-class InvalidOptions(main_program_check_for_test_suite.SetupWithoutPreprocessor):
+class InvalidOptions(main_program_check_for_test_suite.SetupWithoutPreprocessorWithTestActor):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -37,7 +38,7 @@ class InvalidOptions(main_program_check_for_test_suite.SetupWithoutPreprocessor)
         return main_program.EXIT_INVALID_USAGE
 
 
-class EmptySuite(main_program_check_for_test_suite.SetupWithoutPreprocessor):
+class EmptySuite(main_program_check_for_test_suite.SetupWithoutPreprocessorWithTestActor):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'empty.suite'
 
@@ -61,7 +62,7 @@ class EmptySuite(main_program_check_for_test_suite.SetupWithoutPreprocessor):
         return exit_values.ALL_PASS.exit_code
 
 
-class SuiteWithSingleEmptyTestCase(main_program_check_for_test_suite.SetupWithoutPreprocessor):
+class SuiteWithSingleEmptyTestCase(main_program_check_for_test_suite.SetupWithoutPreprocessorWithTestActor):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -87,7 +88,8 @@ class SuiteWithSingleEmptyTestCase(main_program_check_for_test_suite.SetupWithou
         return exit_values.ALL_PASS.exit_code
 
 
-class SuiteWithSingleTestCaseWithOnlySectionHeaders(main_program_check_for_test_suite.SetupWithoutPreprocessor):
+class SuiteWithSingleTestCaseWithOnlySectionHeaders(
+    main_program_check_for_test_suite.SetupWithoutPreprocessorWithTestActor):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -122,7 +124,7 @@ class SuiteWithSingleTestCaseWithOnlySectionHeaders(main_program_check_for_test_
         return exit_values.ALL_PASS.exit_code
 
 
-class SuiteReferenceToNonExistingCaseFile(main_program_check_for_test_suite.SetupWithoutPreprocessor):
+class SuiteReferenceToNonExistingCaseFile(main_program_check_for_test_suite.SetupWithoutPreprocessorWithTestActor):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -143,7 +145,7 @@ class SuiteReferenceToNonExistingCaseFile(main_program_check_for_test_suite.Setu
         return exit_values.INVALID_SUITE.exit_code
 
 
-class SuiteReferenceToNonExistingSuiteFile(main_program_check_for_test_suite.SetupWithoutPreprocessor):
+class SuiteReferenceToNonExistingSuiteFile(main_program_check_for_test_suite.SetupWithoutPreprocessorWithTestActor):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -164,7 +166,7 @@ class SuiteReferenceToNonExistingSuiteFile(main_program_check_for_test_suite.Set
         return exit_values.INVALID_SUITE.exit_code
 
 
-class SuiteWithSingleCaseWithInvalidSyntax(main_program_check_for_test_suite.SetupWithoutPreprocessor):
+class SuiteWithSingleCaseWithInvalidSyntax(main_program_check_for_test_suite.SetupWithoutPreprocessorWithTestActor):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -192,7 +194,7 @@ class SuiteWithSingleCaseWithInvalidSyntax(main_program_check_for_test_suite.Set
         return exit_values.FAILED_TESTS.exit_code
 
 
-class ComplexSuccessfulSuite(main_program_check_for_test_suite.SetupWithoutPreprocessor):
+class ComplexSuccessfulSuite(main_program_check_for_test_suite.SetupWithoutPreprocessorWithTestActor):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -288,7 +290,7 @@ def suite_for(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
 
 
 def suite_for_running_main_program_internally() -> unittest.TestSuite:
-    return suite_for(RunViaMainProgramInternally())
+    return suite_for(run_via_main_program_internally_with_default_setup())
 
 
 if __name__ == '__main__':

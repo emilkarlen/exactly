@@ -2,6 +2,7 @@ import pathlib
 import unittest
 
 import exactly_lib.cli.cli_environment.common_cli_options as opt
+from exactly_lib_test.cli.test_resources.execute_main_program import ARGUMENTS_FOR_TEST_INTERPRETER
 from exactly_lib_test.test_resources.file_structure import DirContents
 from exactly_lib_test.test_resources.main_program import main_program_check_base
 from exactly_lib_test.test_resources.process import SubProcessResult
@@ -130,3 +131,22 @@ class SetupWithoutPreprocessor(main_program_check_base.SetupWithoutPreprocessor,
     def file_structure(self,
                        root_path: pathlib.Path) -> DirContents:
         raise NotImplementedError()
+
+
+class SetupWithoutPreprocessorWithTestActor(SetupWithoutPreprocessor):
+    """
+    Setup that executes a suite that does not use a preprocessor,
+    and uses the test actor as default for test cases.
+    """
+
+    def arguments_for_interpreter(self) -> list:
+        return ARGUMENTS_FOR_TEST_INTERPRETER
+
+
+class SetupWithoutPreprocessorWithDefaultActor(SetupWithoutPreprocessor):
+    """
+    Setup that executes a suite that does not use a preprocessor.
+    """
+
+    def arguments_for_interpreter(self) -> list:
+        return []
