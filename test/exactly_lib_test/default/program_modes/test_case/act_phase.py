@@ -10,8 +10,9 @@ from exactly_lib_test.test_resources.main_program.main_program_check_base import
 from exactly_lib_test.test_resources.main_program.main_program_check_for_test_case import \
     SetupWithoutPreprocessorAndDefaultActor
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
-from exactly_lib_test.test_resources.process_result_info_assertions import process_result_for_exit_value
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
+from exactly_lib_test.test_resources.value_assertions.process_result_info_assertions import \
+    process_result_for_exit_value
 
 
 def suite_for(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
