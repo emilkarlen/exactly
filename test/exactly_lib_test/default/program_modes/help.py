@@ -9,10 +9,10 @@ from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
 from exactly_lib.help.program_modes.test_case.config import phase_help_name
 from exactly_lib.test_suite import parser as suite_parser
 from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_set import INSTRUCTION_NAME__ACTOR
-from exactly_lib_test.test_resources import process_result_assertions as pr
 from exactly_lib_test.test_resources.main_program.constant_arguments_check import ProcessTestCase, Arrangement
 from exactly_lib_test.test_resources.main_program.constant_arguments_check_execution import test_suite_for_test_cases
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
+from exactly_lib_test.test_resources.value_assertions import process_result_assertions as pr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 from exactly_lib_test.test_resources.value_assertions.value_assertion_str import is_empty, is_not_only_space
 

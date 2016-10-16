@@ -6,11 +6,11 @@ from exactly_lib.default.program_modes.test_case import default_instructions_set
 from exactly_lib.help.contents_structure import application_help_for
 from exactly_lib.help.html_doc import main as sut
 from exactly_lib.util.textformat.formatting.html.document import DOCTYPE_XHTML1_0
-from exactly_lib_test.test_resources import process_result_assertions as pr
 from exactly_lib_test.test_resources.main_program.constant_arguments_check import ProcessTestCase, PlainArrangement
 from exactly_lib_test.test_resources.main_program.constant_arguments_check_execution import test_suite_for_test_cases
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
 from exactly_lib_test.test_resources.str_std_out_files import null_output_files
+from exactly_lib_test.test_resources.value_assertions import process_result_assertions as pr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 from exactly_lib_test.test_resources.value_assertions.value_assertion_str import begins_with
 
