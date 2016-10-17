@@ -15,6 +15,17 @@ class Validator:
         raise NotImplementedError(str(type(self)))
 
 
+class UnconditionallySuccessfulValidator(Validator):
+    def __init__(self, *args, **kwargs):
+        pass
+
+    def validate_pre_eds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
+        return svh.new_svh_success()
+
+    def validate_post_setup(self, home_and_eds: HomeAndEds) -> svh.SuccessOrValidationErrorOrHardError:
+        return svh.new_svh_success()
+
+
 class Executor:
     def prepare(self, home_and_eds: HomeAndEds, script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
         raise NotImplementedError(str(type(self)))
