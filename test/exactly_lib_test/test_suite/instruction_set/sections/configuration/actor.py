@@ -1,10 +1,9 @@
 import unittest
 
+from exactly_lib.act_phase_setups.script_interpretation import script_language_setup
 from exactly_lib.act_phase_setups.script_interpretation.generic_script_language import StandardScriptLanguage
 from exactly_lib.act_phase_setups.script_interpretation.script_language_management import ScriptLanguageSetup, \
     StandardScriptFileManager
-from exactly_lib.act_phase_setups.script_interpretation.script_language_setup import \
-    ActSourceAndExecutorConstructorForScriptLanguage
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
@@ -58,18 +57,18 @@ class TestSuccessfulParseAndInstructionExecution(unittest.TestCase):
         act_phase_setup = environment.act_phase_setup
         self.assertIsInstance(act_phase_setup, ActPhaseSetup)
         assert isinstance(act_phase_setup, ActPhaseSetup)
-        executor = act_phase_setup.source_and_executor_constructor
-        self.assertIsInstance(executor,
-                              ActSourceAndExecutorConstructorForScriptLanguage)
-        script_language_setup = executor.script_language_setup
-        self.assertIsInstance(script_language_setup,
+        constructor = act_phase_setup.source_and_executor_constructor
+        self.assertIsInstance(constructor,
+                              script_language_setup.Constructor)
+        language_setup = constructor.script_language_setup
+        self.assertIsInstance(language_setup,
                               ScriptLanguageSetup)
-        assert isinstance(script_language_setup, ScriptLanguageSetup)
-        language = script_language_setup.language
+        assert isinstance(language_setup, ScriptLanguageSetup)
+        language = language_setup.language
         self.assertIsInstance(language,
                               StandardScriptLanguage)
         assert isinstance(language, StandardScriptLanguage)
-        file_manager = script_language_setup.file_manager
+        file_manager = language_setup.file_manager
         self.assertIsInstance(file_manager,
                               StandardScriptFileManager)
         assert isinstance(file_manager, StandardScriptFileManager)

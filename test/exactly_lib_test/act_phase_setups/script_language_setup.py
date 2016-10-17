@@ -67,7 +67,7 @@ class TestThatScriptSourceIsWrittenToTestCaseDir(unittest.TestCase):
                                              StandardScriptLanguage())
         act_phase_setup = sut.new_for_script_language_setup(language_setup)
         source = [instr(['print(1)'])]
-        expected_file_name = language_setup.base_name_from_stem(sut.ActSourceExecutorForScriptLanguage.FILE_NAME_STEM)
+        expected_file_name = language_setup.base_name_from_stem(sut.Executor.FILE_NAME_STEM)
         exit_code_or_hard_error = check_execution(
             self,
             Arrangement(act_phase_setup.source_and_executor_constructor, source),
