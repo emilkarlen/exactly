@@ -127,6 +127,17 @@ class ActSourceAndExecutorWrapperThatRecordsSteps(ActSourceAndExecutor):
         return self.__wrapped.execute(home_and_eds, script_output_dir_path, std_files)
 
 
+class ActSourceAndExecutorWrapperConstructorThatRecordsSteps(ActSourceAndExecutorConstructor):
+    def __init__(self,
+                 recorder: ListRecorder,
+                 wrapped: ActSourceAndExecutor):
+        self.__recorder = recorder
+        self.__wrapped = wrapped
+
+    def apply(self, environment: GlobalEnvironmentForPreEdsStep, act_phase_instructions: list) -> ActSourceAndExecutor:
+        return ActSourceAndExecutorWrapperThatRecordsSteps(self.__recorder, self.__wrapped)
+
+
 class ActSourceAndExecutorWrapperWithActions(ActSourceAndExecutor):
     def __init__(self,
                  wrapped: ActSourceAndExecutor,
