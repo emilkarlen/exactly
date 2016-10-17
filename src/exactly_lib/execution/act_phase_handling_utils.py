@@ -5,29 +5,13 @@ The feeling is that these will be removed, or moved, after the refactoring is do
 """
 import pathlib
 
-from exactly_lib.execution.act_phase import ActSourceExecutor, ActSourceAndExecutor, SourceSetup, ExitCodeOrHardError, \
-    ActSourceAndExecutorConstructor
+from exactly_lib.execution.act_phase import ActSourceExecutor, ActSourceAndExecutor, SourceSetup, ExitCodeOrHardError
 from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
 from exactly_lib.test_case.phases.act.program_source import ActSourceBuilderForStatementLines
-from exactly_lib.test_case.phases.common import HomeAndEds, GlobalEnvironmentForPreEdsStep
+from exactly_lib.test_case.phases.common import HomeAndEds
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.std import StdFiles
-
-
-class ActSourceAndExecutorConstructorUsingActSourceExecutor(ActSourceAndExecutorConstructor):
-    def __init__(self,
-                 adapted: ActSourceExecutor):
-        self.adapted = adapted
-
-    def apply(self,
-              environment: GlobalEnvironmentForPreEdsStep,
-              act_phase_instructions: list) -> ActSourceAndExecutor:
-        """
-        :param act_phase_instructions: [ActPhaseInstruction]
-        """
-        return ActSourceAndExecutorAdapterForActSourceExecutor(act_phase_instructions,
-                                                               self.adapted)
 
 
 class ActSourceAndExecutorAdapterForActSourceExecutor(ActSourceAndExecutor):
