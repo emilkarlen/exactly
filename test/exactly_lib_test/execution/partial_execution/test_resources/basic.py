@@ -9,13 +9,13 @@ import exactly_lib.execution.act_phase
 from exactly_lib import program_info
 from exactly_lib.execution import partial_execution
 from exactly_lib.execution.act_phase import ActPhaseHandling
-from exactly_lib.execution.act_phase_handling_utils import ActSourceAndExecutorConstructorUsingActSourceExecutor
 from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from exactly_lib.execution.phases import PhaseEnum
 from exactly_lib.execution.result import PartialResult
 from exactly_lib.processing.processors import act_phase_handling_for_setup
 from exactly_lib.util.functional import Composition
-from exactly_lib_test.execution.test_resources.act_source_executor import ActSourceExecutorThatRunsConstantActions
+from exactly_lib_test.execution.test_resources.act_source_executor import \
+    ActSourceAndExecutorConstructorThatRunsConstantActions
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that, \
     before_assert_phase_instruction_that, assert_phase_instruction_that, cleanup_phase_instruction_that, \
     act_phase_instruction_that
@@ -142,8 +142,7 @@ def py3_test(unittest_case: unittest.TestCase,
 
 
 def dummy_act_phase_handling() -> ActPhaseHandling:
-    act_source_executor = ActSourceExecutorThatRunsConstantActions()
-    return ActPhaseHandling(ActSourceAndExecutorConstructorUsingActSourceExecutor(act_source_executor))
+    return ActPhaseHandling(ActSourceAndExecutorConstructorThatRunsConstantActions())
 
 
 def test(unittest_case: unittest.TestCase,
