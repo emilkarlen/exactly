@@ -1,10 +1,8 @@
 import pathlib
 
 from exactly_lib.execution import phase_step_simple as phase_step
-from exactly_lib.execution.act_phase import SourceSetup, ActSourceExecutor, ExitCodeOrHardError, ActSourceAndExecutor, \
+from exactly_lib.execution.act_phase import ExitCodeOrHardError, ActSourceAndExecutor, \
     ActSourceAndExecutorConstructor
-from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
-from exactly_lib.test_case.phases.act.program_source import ActSourceBuilder
 from exactly_lib.test_case.phases.common import HomeAndEds, GlobalEnvironmentForPreEdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
@@ -14,50 +12,6 @@ from exactly_lib_test.execution.test_resources.execution_recording.recorder impo
 
 def do_nothing():
     pass
-
-
-class ActSourceExecutorWrapperWithActions(ActSourceExecutor):
-    def __init__(self,
-                 wrapped: ActSourceExecutor,
-                 before_wrapped_validate=do_nothing,
-                 before_wrapped_prepare=do_nothing,
-                 before_wrapped_execute=do_nothing,
-                 before_wrapped_validate_pre_eds=do_nothing):
-        self.__wrapped = wrapped
-        self.before_wrapped_validate = before_wrapped_validate
-        self.before_wrapped_validate_pre_eds = before_wrapped_validate_pre_eds
-        self.before_wrapped_prepare = before_wrapped_prepare
-        self.before_wrapped_execute = before_wrapped_execute
-
-    def validate_pre_eds(self,
-                         script_builder: ActSourceBuilder,
-                         home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
-        self.before_wrapped_validate_pre_eds()
-        return self.__wrapped.validate_pre_eds(script_builder, home_dir_path)
-
-    def validate(self,
-                 home_dir: pathlib.Path(),
-                 source: ActSourceBuilder) -> svh.SuccessOrValidationErrorOrHardError:
-        self.before_wrapped_validate()
-        return self.__wrapped.validate(home_dir, source)
-
-    def prepare(self,
-                source_setup: SourceSetup,
-                home_dir_path: pathlib.Path,
-                eds: ExecutionDirectoryStructure) -> sh.SuccessOrHardError:
-        self.before_wrapped_prepare()
-        return self.__wrapped.prepare(source_setup, home_dir_path, eds)
-
-    def execute(self,
-                source_setup: SourceSetup,
-                home_dir: pathlib.Path,
-                eds: ExecutionDirectoryStructure,
-                std_files: StdFiles) -> ExitCodeOrHardError:
-        self.before_wrapped_execute()
-        return self.__wrapped.execute(source_setup,
-                                      home_dir,
-                                      eds,
-                                      std_files)
 
 
 class ActSourceAndExecutorWrapperThatRecordsSteps(ActSourceAndExecutor):
