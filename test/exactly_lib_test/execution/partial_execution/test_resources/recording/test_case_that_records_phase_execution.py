@@ -2,7 +2,7 @@ import types
 import unittest
 
 from exactly_lib.execution.act_phase import ActPhaseHandling
-from exactly_lib.execution.act_phase_handling_utils import ConstructorAdapterForActSourceExecutor
+from exactly_lib.execution.act_phase_handling_utils import ActSourceAndExecutorConstructorUsingActSourceExecutor
 from exactly_lib.execution.result import PartialResultStatus
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.phases.result import sh
@@ -147,7 +147,7 @@ def execute_test_case_with_recording(put: unittest.TestCase,
                                                                        prepare_action=arrangement.act_executor_prepare,
                                                                        execute_action=arrangement.act_executor_execute))
     act_phase_handling = ActPhaseHandling(
-        ConstructorAdapterForActSourceExecutor(act_source_executor))
+        ActSourceAndExecutorConstructorUsingActSourceExecutor(act_source_executor))
     test_case = _TestCaseThatRecordsExecution(put,
                                               arrangement.test_case_generator,
                                               expectation,

@@ -3,7 +3,7 @@ import unittest
 
 from exactly_lib.execution import phase_step
 from exactly_lib.execution.act_phase import new_eh_exit_code
-from exactly_lib.execution.act_phase_handling_utils import ConstructorAdapterForActSourceExecutor
+from exactly_lib.execution.act_phase_handling_utils import ActSourceAndExecutorConstructorUsingActSourceExecutor
 from exactly_lib.execution.partial_execution import ActPhaseHandling
 from exactly_lib.execution.phase_step import PhaseStep
 from exactly_lib.execution.result import FullResultStatus
@@ -72,7 +72,7 @@ class Test(FullExecutionTestCaseBase):
             validate_action=_RecordCurrDirAndReturn(self.recorder, phase_step.ACT__VALIDATE_POST_SETUP,
                                                     svh.new_svh_success()),
             execute_action=_RecordCurrDirAndReturn(self.recorder, phase_step.ACT__EXECUTE, new_eh_exit_code(0)))
-        return ActPhaseHandling(ConstructorAdapterForActSourceExecutor(act_source_executor))
+        return ActPhaseHandling(ActSourceAndExecutorConstructorUsingActSourceExecutor(act_source_executor))
 
     def _test_case(self) -> test_case_doc.TestCase:
         return full_test_case_with_instructions(
