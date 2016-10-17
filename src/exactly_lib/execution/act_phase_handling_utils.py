@@ -66,16 +66,3 @@ class ActSourceAndExecutorAdapterForActSourceExecutor(ActSourceAndExecutor):
                                     home_and_eds.home_dir_path,
                                     home_and_eds.eds,
                                     std_files)
-
-
-class ConstructorAdapterForActSourceExecutor(ActSourceAndExecutorConstructor):
-    """
-    Adapter used while refactoring act phase handling.
-    """
-
-    def apply(self, environment: GlobalEnvironmentForPreEdsStep, act_phase_instructions: list) -> ActSourceAndExecutor:
-        return ActSourceAndExecutorAdapterForActSourceExecutor(act_phase_instructions, self.adapted)
-
-    def __init__(self,
-                 adapted: ActSourceExecutor):
-        self.adapted = adapted
