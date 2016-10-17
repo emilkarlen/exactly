@@ -2,7 +2,6 @@ import types
 import unittest
 
 from exactly_lib.execution.act_phase import ActPhaseHandling
-from exactly_lib.execution.act_phase_handling_utils import ActSourceAndExecutorConstructorUsingActSourceExecutor
 from exactly_lib.execution.result import FullResultStatus
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.phases.result import sh
@@ -10,9 +9,9 @@ from exactly_lib.test_case.phases.result import svh
 from exactly_lib_test.execution.full_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorForExecutionRecording, TestCaseGeneratorWithRecordingInstrFollowedByExtraInstrsInEachPhase
 from exactly_lib_test.execution.full_execution.test_resources.test_case_base import FullExecutionTestCaseBase
-from exactly_lib_test.execution.test_resources.act_source_executor import ActSourceExecutorThatRunsConstantActions
+from exactly_lib_test.execution.test_resources.act_source_executor import ActSourceAndExecutorThatRunsConstantActions
 from exactly_lib_test.execution.test_resources.execution_recording.act_program_executor import \
-    ActSourceExecutorWrapperThatRecordsSteps
+    ActSourceAndExecutorWrapperConstructorThatRecordsSteps
 from exactly_lib_test.execution.test_resources.execution_recording.recorder import \
     ListRecorder
 from exactly_lib_test.execution.test_resources.test_actions import validate_action_that_returns, \
@@ -149,13 +148,15 @@ class TestCaseBase(unittest.TestCase):
 
     def _with_recording_act_program_executor(self,
                                              arrangement: Arrangement) -> ActPhaseHandling:
-        act_source_executor = ActSourceExecutorWrapperThatRecordsSteps(
+        constant_actions_runner = ActSourceAndExecutorThatRunsConstantActions(
+            validate_post_setup_action=arrangement.validate_test_action,
+            prepare_action=arrangement.prepare_test_action,
+            execute_action=arrangement.execute_test_action,
+            validate_pre_eds_action=arrangement.act_executor_validate_pre_eds)
+        constructor = ActSourceAndExecutorWrapperConstructorThatRecordsSteps(
             arrangement.test_case_generator.recorder,
-            ActSourceExecutorThatRunsConstantActions(arrangement.validate_test_action,
-                                                     arrangement.prepare_test_action,
-                                                     arrangement.execute_test_action,
-                                                     validate_pre_eds_action=arrangement.act_executor_validate_pre_eds))
-        return ActPhaseHandling(ActSourceAndExecutorConstructorUsingActSourceExecutor(act_source_executor))
+            constant_actions_runner)
+        return ActPhaseHandling(constructor)
 
 
 def one_successful_instruction_in_each_phase() -> TestCaseGeneratorForExecutionRecording:
