@@ -1,6 +1,5 @@
 import pathlib
 
-from exactly_lib.test_case.phases.act.program_source import ActSourceBuilder
 from exactly_lib.test_case.phases.common import HomeAndEds, GlobalEnvironmentForPreEdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
@@ -56,14 +55,6 @@ def new_eh_hard_error(failure_details: FailureDetails) -> ExitCodeOrHardError:
     if failure_details is None:
         raise ValueError('A HARD ERROR must have failure details (that is not None)')
     return ExitCodeOrHardError(None, failure_details)
-
-
-class SourceSetup:
-    def __init__(self,
-                 script_builder: ActSourceBuilder,
-                 script_output_dir_path: pathlib.Path):
-        self.script_builder = script_builder
-        self.script_output_dir_path = script_output_dir_path
 
 
 class ActSourceAndExecutor:
