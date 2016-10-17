@@ -1,7 +1,6 @@
 import unittest
 
 from exactly_lib.act_phase_setups.script_interpretation import script_language_setup
-from exactly_lib.act_phase_setups.script_interpretation.generic_script_language import StandardScriptLanguage
 from exactly_lib.act_phase_setups.script_interpretation.script_language_management import ScriptLanguageSetup, \
     StandardScriptFileManager
 from exactly_lib.processing.act_phase import ActPhaseSetup
@@ -64,10 +63,6 @@ class TestSuccessfulParseAndInstructionExecution(unittest.TestCase):
         self.assertIsInstance(language_setup,
                               ScriptLanguageSetup)
         assert isinstance(language_setup, ScriptLanguageSetup)
-        language = language_setup.language
-        self.assertIsInstance(language,
-                              StandardScriptLanguage)
-        assert isinstance(language, StandardScriptLanguage)
         file_manager = language_setup.file_manager
         self.assertIsInstance(file_manager,
                               StandardScriptFileManager)

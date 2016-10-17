@@ -80,10 +80,6 @@ class ScriptLanguageSetup:
         self.__language = language
 
     @property
-    def language(self) -> ScriptLanguage:
-        return self.__language
-
-    @property
     def file_manager(self) -> ScriptFileManager:
         return self.__file_manager
 
