@@ -73,11 +73,8 @@ class ScriptFileManager:
 
 
 class ScriptLanguageSetup:
-    def __init__(self,
-                 file_manager: ScriptFileManager,
-                 language: ScriptLanguage):
+    def __init__(self, file_manager: ScriptFileManager):
         self.__file_manager = file_manager
-        self.__language = language
 
     @property
     def file_manager(self) -> ScriptFileManager:

@@ -8,8 +8,7 @@ from exactly_lib.processing.act_phase import ActPhaseSetup
 
 
 def script_language_setup() -> script_language_management.ScriptLanguageSetup:
-    return script_language_management.ScriptLanguageSetup(_file_manager(),
-                                                          _PythonScriptLanguage())
+    return script_language_management.ScriptLanguageSetup(_file_manager())
 
 
 def _file_manager() -> script_language_management.ScriptFileManager:

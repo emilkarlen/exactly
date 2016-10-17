@@ -1,6 +1,5 @@
 import shlex
 
-from exactly_lib.act_phase_setups.script_interpretation import generic_script_language
 from exactly_lib.act_phase_setups.script_interpretation.script_language_management import ScriptLanguageSetup
 from exactly_lib.act_phase_setups.script_interpretation.script_language_management import StandardScriptFileManager
 from exactly_lib.act_phase_setups.script_interpretation.script_language_setup import new_for_script_language_handling
@@ -72,10 +71,8 @@ def parse(source: SingleInstructionParserSource) -> ActPhaseHandling:
     except:
         raise SingleInstructionInvalidArgumentException('Invalid quoting: ' + arg)
     act_phase_setup = new_for_script_language_handling(
-        ScriptLanguageSetup(
-            StandardScriptFileManager(
-                'src',
-                command_and_arguments[0],
-                command_and_arguments[1:]),
-            generic_script_language.StandardScriptLanguage()))
+        ScriptLanguageSetup(StandardScriptFileManager(
+            'src',
+            command_and_arguments[0],
+            command_and_arguments[1:])))
     return act_phase_setup
