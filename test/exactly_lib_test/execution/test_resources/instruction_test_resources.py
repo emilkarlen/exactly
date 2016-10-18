@@ -158,30 +158,6 @@ class _ActPhaseInstructionThat(ActPhaseInstruction):
         return self._main(global_environment, phase_environment)
 
 
-class _ActPhaseInstructionWithConstantSource(ActPhaseInstruction):
-    def __init__(self,
-                 source: LineSequence):
-        self.source = source
-
-    def source_code(self) -> LineSequence:
-        return self.source
-
-    def validate_pre_eds(self,
-                         environment: instrs.GlobalEnvironmentForPreEdsStep) -> svh.SuccessOrValidationErrorOrHardError:
-        raise RuntimeError('deprecated - should not be used')
-
-    def validate_post_setup(self,
-                            global_environment: instrs.GlobalEnvironmentForPostEdsPhase) \
-            -> svh.SuccessOrValidationErrorOrHardError:
-        raise RuntimeError('deprecated - should not be used')
-
-    def main(
-            self,
-            global_environment: instrs.GlobalEnvironmentForPostEdsPhase,
-            phase_environment: PhaseEnvironmentForScriptGeneration) -> sh.SuccessOrHardError:
-        raise RuntimeError('deprecated - should not be used')
-
-
 class _BeforeAssertPhaseInstructionThat(BeforeAssertPhaseInstruction):
     def __init__(self,
                  validate_pre_eds,
