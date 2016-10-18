@@ -8,6 +8,11 @@ to see which actor reports errors.
 ... relative home_dir
 
 Currently, it is reported as an hard error in execute.
+* Timeout
+** for the act phase
+** for external commands in other phases
+* Report test suite by JUnit XML
+To make it easier to integrate Exactly with other test frameworks
 * TODO Fel (sh, svh, ...) ska representera fel i form av FailureDetails
 Har gjort FailureDetails till util-klass.
 Den ger möjl till utförligare felinformation än dagens sh, svh
