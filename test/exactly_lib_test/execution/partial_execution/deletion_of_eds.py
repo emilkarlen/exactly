@@ -4,7 +4,7 @@ from exactly_lib.execution import partial_execution as sut
 from exactly_lib.util.line_source import LineSequence
 from exactly_lib_test.execution.partial_execution.test_resources.basic import test, dummy_act_phase_handling, \
     Result
-from exactly_lib_test.execution.test_resources.instruction_test_resources import act_phase_instruction_with
+from exactly_lib_test.execution.test_resources.instruction_test_resources import act_phase_instruction_with_source
 from exactly_lib_test.execution.test_resources.test_case_generation import partial_test_case_with_instructions
 
 
@@ -45,7 +45,7 @@ def _common_assertions(actual, put):
 
 def test_case_that_does_nothing() -> sut.TestCase:
     return partial_test_case_with_instructions(
-        act_phase_instructions=[act_phase_instruction_with(LineSequence(1, ('line',)))],
+        act_phase_instructions=[act_phase_instruction_with_source(LineSequence(1, ('line',)))],
     )
 
 

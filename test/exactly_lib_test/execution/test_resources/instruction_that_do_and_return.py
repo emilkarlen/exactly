@@ -21,7 +21,7 @@ from exactly_lib_test.execution.full_execution.test_resources.test_case_generato
 from exactly_lib_test.execution.test_resources import python_code_gen as py
 from exactly_lib_test.execution.test_resources.instruction_test_resources import cleanup_phase_instruction_that, \
     before_assert_phase_instruction_that, setup_phase_instruction_that, configuration_phase_instruction_that, \
-    assert_phase_instruction_that, act_phase_instruction_that
+    assert_phase_instruction_that, act_phase_instruction_with_source
 from exactly_lib_test.execution.test_resources.test_case_generation import instruction_line_constructor, \
     phase_contents
 
@@ -77,10 +77,7 @@ class TestCaseSetup(tuple):
             main=self._do_main(phase_step.SETUP__MAIN))
 
     def as_act_phase_instruction(self) -> ActPhaseInstruction:
-        return act_phase_instruction_that(
-            validate_pre_eds=self._do_validate_pre_eds(phase_step.ACT__VALIDATE_PRE_EDS),
-            validate_post_setup=self._do_validate_post_eds(phase_step.ACT__VALIDATE_POST_SETUP),
-            main=self._do_act_main())
+        return act_phase_instruction_with_source()
 
     def as_before_assert_phase_instruction(self) -> BeforeAssertPhaseInstruction:
         return before_assert_phase_instruction_that(

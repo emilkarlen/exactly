@@ -1,4 +1,5 @@
 from exactly_lib.execution.execution_mode import ExecutionMode
+from exactly_lib.processing.parse.act_phase_source_parser import SourceCodeInstruction
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as instrs
 from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
@@ -47,16 +48,9 @@ def setup_phase_instruction_that(validate_pre_eds=do_return(svh.new_svh_success(
                                       _action_of(main_initial_action, main))
 
 
-def act_phase_instruction_that(validate_pre_eds=do_return(svh.new_svh_success()),
-                               validate_post_setup=do_return(svh.new_svh_success()),
-                               main=do_return(sh.new_sh_success())) -> ActPhaseInstruction:
-    return _ActPhaseInstructionThat(validate_pre_eds=validate_pre_eds,
-                                    validate_post_setup=validate_post_setup,
-                                    main=main)
-
-
-def act_phase_instruction_with(source: LineSequence) -> ActPhaseInstruction:
-    return _ActPhaseInstructionWithConstantSource(source)
+def act_phase_instruction_with_source(source_code: LineSequence = LineSequence(72, (
+        'Dummy source code from act_phase_instruction_with_source',))) -> ActPhaseInstruction:
+    return SourceCodeInstruction(source_code)
 
 
 def before_assert_phase_instruction_that(validate_pre_eds=do_return(svh.new_svh_success()),

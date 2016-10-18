@@ -1,6 +1,5 @@
 import unittest
 
-from exactly_lib_test.instructions import act
 from exactly_lib_test.instructions import assert_
 from exactly_lib_test.instructions import before_assert
 from exactly_lib_test.instructions import cleanup
@@ -13,7 +12,6 @@ from exactly_lib_test.instructions import utils
 def suite():
     return unittest.TestSuite([
         utils.suite(),
-        act.suite(),
         multi_phase_instructions.suite(),
         configuration.suite(),
         setup.suite(),
