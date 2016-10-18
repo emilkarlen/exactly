@@ -18,7 +18,7 @@ from exactly_lib_test.execution.test_resources.act_source_executor import \
     ActSourceAndExecutorConstructorThatRunsConstantActions
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that, \
     before_assert_phase_instruction_that, assert_phase_instruction_that, cleanup_phase_instruction_that, \
-    act_phase_instruction_that
+    act_phase_instruction_with_source
 from exactly_lib_test.execution.test_resources.test_case_generation import TestCaseGeneratorBase, \
     instruction_line_constructor
 
@@ -91,7 +91,7 @@ class TestCaseWithCommonDefaultInstructions(TestCaseGeneratorForPartialExecution
                                     PhaseEnum.SETUP)
 
     def _act_phase(self) -> list:
-        return self._phase_elements(lambda main: act_phase_instruction_that(main=main),
+        return self._phase_elements(lambda main: act_phase_instruction_with_source(),
                                     PhaseEnum.ACT)
 
     def _before_assert_phase(self) -> list:

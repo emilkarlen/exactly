@@ -15,8 +15,9 @@ from exactly_lib_test.execution.full_execution.test_resources.test_case_base imp
 from exactly_lib_test.execution.test_resources import instruction_that_record_and_return as instr_setup
 from exactly_lib_test.execution.test_resources.execution_recording.act_program_executor import \
     ActSourceAndExecutorConstructorWithActionsForExecutor
-from exactly_lib_test.execution.test_resources.instruction_test_resources import act_phase_instruction_with, \
-    before_assert_phase_instruction_that, assert_phase_instruction_that, cleanup_phase_instruction_that
+from exactly_lib_test.execution.test_resources.instruction_test_resources import before_assert_phase_instruction_that, \
+    assert_phase_instruction_that, cleanup_phase_instruction_that, \
+    act_phase_instruction_with_source
 from exactly_lib_test.execution.test_resources.instruction_test_resources import configuration_phase_instruction_that
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that
 from exactly_lib_test.execution.test_resources.instruction_that_do_and_return import \
@@ -62,7 +63,7 @@ class Test(FullExecutionTestCaseBase):
                                                                   phase_step.SETUP__VALIDATE_POST_SETUP),
                 main_initial_action=_RecordEnvVars(self.recorder,
                                                    phase_step.SETUP__MAIN))],
-            [act_phase_instruction_with(LineSequence(72, py_pgm_to_print_env_vars))],
+            [act_phase_instruction_with_source(LineSequence(72, py_pgm_to_print_env_vars))],
             [before_assert_phase_instruction_that(
                 validate_pre_eds_initial_action=_RecordEnvVars(self.recorder,
                                                                phase_step.BEFORE_ASSERT__VALIDATE_PRE_EDS),
