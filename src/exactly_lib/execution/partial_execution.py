@@ -187,7 +187,7 @@ class _PartialExecutor:
             [
                 self.__setup__main,
                 self.__setup__validate_post_setup,
-                act_program_executor.validate,
+                act_program_executor.validate_post_setup,
                 self.__before_assert__validate_post_setup,
                 self.__assert__validate_post_setup,
                 act_program_executor.prepare,
@@ -445,7 +445,7 @@ class _ActProgramExecution:
         self.step_execution_result = step_execution_result
         self.script_output_dir_path = self.home_and_eds.eds.test_case_dir
 
-    def validate(self) -> PartialResult:
+    def validate_post_setup(self) -> PartialResult:
         step = phase_step.ACT__VALIDATE_POST_SETUP
 
         def action():
