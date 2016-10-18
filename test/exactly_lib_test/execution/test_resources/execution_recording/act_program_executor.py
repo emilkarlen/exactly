@@ -90,6 +90,16 @@ class ActSourceAndExecutorWrapperWithActions(ActSourceAndExecutor):
         return self.__wrapped.execute(home_and_eds, script_output_dir_path, std_files)
 
 
+class ActSourceAndExecutorConstructorForConstantExecutor(ActSourceAndExecutorConstructor):
+    def __init__(self, executor: ActSourceAndExecutor):
+        self.executor = executor
+
+    def apply(self,
+              environment: GlobalEnvironmentForPreEdsStep,
+              act_phase_instructions: list) -> ActSourceAndExecutor:
+        return self.executor
+
+
 class ActSourceAndExecutorConstructorWithActionsForExecutor(ActSourceAndExecutorConstructor):
     def __init__(self,
                  wrapped: ActSourceAndExecutorConstructor,
