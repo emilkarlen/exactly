@@ -13,6 +13,19 @@ Currently, it is reported as an hard error in execute.
 ** for external commands in other phases
 * Report test suite by JUnit XML
 To make it easier to integrate Exactly with other test frameworks
+* TODO Suite
+** TODO Set test case config that serves as default for each test case
+Possibility to use all instructions in [conf] for test cases
+All instructions in [conf] for test cases should be possible to use
+in [conf] for test suites.
+The config set by these instructions should serve as the default conf
+for each test case (directly) in the test suite.
+** TODO Set setup/cleanup to use for each test case
+All instructions in [setup]/ [cleanup] of test cases should be possible to use
+in a new section [case-setup]/ [case-cleanup]
+This setup should be prepended to the setup/cleanup of test cases in the suite
+** TODO Set setup and cleanup to execute once before/after the test cases
+in the suite are executed.
 * TODO Fel (sh, svh, ...) ska representera fel i form av FailureDetails
 Har gjort FailureDetails till util-klass.
 Den ger möjl till utförligare felinformation än dagens sh, svh
