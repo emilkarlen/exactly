@@ -10,6 +10,10 @@ class StdinSettings:
         self.__stdin_file_name = None
         self.__stdin_contents = None
 
+    def set_empty(self):
+        self.__stdin_file_name = None
+        self.__stdin_contents = None
+
     @property
     def contents(self) -> str:
         return self.__stdin_contents
@@ -36,6 +40,10 @@ class SetupSettingsBuilder:
     @property
     def stdin(self) -> StdinSettings:
         return self.__stdin_settings
+
+
+def default_settings() -> SetupSettingsBuilder:
+    return SetupSettingsBuilder()
 
 
 class SetupPhaseInstruction(TestCaseInstruction):

@@ -1,7 +1,5 @@
 import pathlib
 
-from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
-from exactly_lib.test_case.phases.act.program_source import ActSourceBuilder
 from exactly_lib.test_case.phases.common import HomeAndEds, GlobalEnvironmentForPreEdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
@@ -57,56 +55,6 @@ def new_eh_hard_error(failure_details: FailureDetails) -> ExitCodeOrHardError:
     if failure_details is None:
         raise ValueError('A HARD ERROR must have failure details (that is not None)')
     return ExitCodeOrHardError(None, failure_details)
-
-
-class SourceSetup:
-    def __init__(self,
-                 script_builder: ActSourceBuilder,
-                 script_output_dir_path: pathlib.Path):
-        self.script_builder = script_builder
-        self.script_output_dir_path = script_output_dir_path
-
-
-class ActSourceExecutor:
-    def validate_pre_eds(self,
-                         script_builder: ActSourceBuilder,
-                         home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
-        raise NotImplementedError()
-
-    def validate(self,
-                 home_dir: pathlib.Path,
-                 source: ActSourceBuilder) -> svh.SuccessOrValidationErrorOrHardError:
-        """
-        Validates the given source.
-
-        If success is not returned, then the test is aborted.
-        """
-        raise NotImplementedError()
-
-    def prepare(self,
-                source_setup: SourceSetup,
-                home_dir_path: pathlib.Path,
-                eds: ExecutionDirectoryStructure) -> sh.SuccessOrHardError:
-        """
-        Executed after validate.
-
-        An opportunity to prepare for execution.
-
-        E.g. write the source code to file.
-        """
-        raise NotImplementedError()
-
-    def execute(self,
-                source_setup: SourceSetup,
-                home_dir: pathlib.Path,
-                eds: ExecutionDirectoryStructure,
-                std_files: StdFiles) -> ExitCodeOrHardError:
-        """
-        Executed after prepare.
-
-        :returns exit code of executed program, or error
-        """
-        raise NotImplementedError()
 
 
 class ActSourceAndExecutor:

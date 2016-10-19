@@ -2,7 +2,8 @@ from exactly_lib import program_info
 from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options as opt
 from exactly_lib.default.program_modes.test_case.default_instruction_names import ACTOR_INSTRUCTION_NAME
 from exactly_lib.help.concepts.configuration_parameters.home_directory import HOME_DIRECTORY_CONFIGURATION_PARAMETER
-from exactly_lib.help.concepts.contents_structure import PlainConceptDocumentation, Name
+from exactly_lib.help.concepts.contents_structure import Name, \
+    ConfigurationParameterDocumentation
 from exactly_lib.help.cross_reference_id import TestCasePhaseInstructionCrossReference, \
     TestSuiteSectionInstructionCrossReference
 from exactly_lib.help.utils import formatting
@@ -13,7 +14,7 @@ from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.structure import structures as docs
 
 
-class _ActorConcept(PlainConceptDocumentation):
+class _ActorConcept(ConfigurationParameterDocumentation):
     def __init__(self):
         super().__init__(Name('actor', 'actors'))
 
@@ -36,6 +37,9 @@ class _ActorConcept(PlainConceptDocumentation):
                                                   docs.section(docs.text('Source code interpreter actor'),
                                                                parse.fnap(_INTERPRETER_ACTOR_DESCRIPTION_REST)),
                                               ]))
+
+    def default_value_str(self) -> str:
+        return "Executes a single command line, consisting of a program and optional arguments."
 
     def see_also(self) -> list:
         return [

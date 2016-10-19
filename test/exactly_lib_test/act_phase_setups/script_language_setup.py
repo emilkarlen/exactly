@@ -3,7 +3,6 @@ import unittest
 from contextlib import contextmanager
 
 from exactly_lib.act_phase_setups.script_interpretation import script_language_setup as sut, python3
-from exactly_lib.act_phase_setups.script_interpretation.generic_script_language import StandardScriptLanguage
 from exactly_lib.act_phase_setups.script_interpretation.script_language_management import ScriptFileManager, \
     ScriptLanguageSetup
 from exactly_lib.util.string import lines_content
@@ -51,8 +50,7 @@ class TheConfiguration(Configuration):
 
 class TestWhenInterpreterDoesNotExistThanExecuteShouldGiveHardError(unittest.TestCase):
     def runTest(self):
-        language_setup = ScriptLanguageSetup(_ScriptFileManagerWithNonExistingInterpreter(),
-                                             StandardScriptLanguage())
+        language_setup = ScriptLanguageSetup(_ScriptFileManagerWithNonExistingInterpreter())
         act_phase_setup = sut.new_for_script_language_setup(language_setup)
         empty_source = []
         check_execution(self,
@@ -63,11 +61,10 @@ class TestWhenInterpreterDoesNotExistThanExecuteShouldGiveHardError(unittest.Tes
 
 class TestThatScriptSourceIsWrittenToTestCaseDir(unittest.TestCase):
     def runTest(self):
-        language_setup = ScriptLanguageSetup(_ScriptFileManagerWithNonExistingInterpreter(),
-                                             StandardScriptLanguage())
+        language_setup = ScriptLanguageSetup(_ScriptFileManagerWithNonExistingInterpreter())
         act_phase_setup = sut.new_for_script_language_setup(language_setup)
         source = [instr(['print(1)'])]
-        expected_file_name = language_setup.base_name_from_stem(sut.ActSourceExecutorForScriptLanguage.FILE_NAME_STEM)
+        expected_file_name = language_setup.base_name_from_stem(sut.Executor.FILE_NAME_STEM)
         exit_code_or_hard_error = check_execution(
             self,
             Arrangement(act_phase_setup.source_and_executor_constructor, source),

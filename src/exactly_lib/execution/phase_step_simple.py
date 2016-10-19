@@ -9,7 +9,6 @@ SETUP__MAIN = phase_step.SETUP__MAIN.simple
 ACT__VALIDATE_PRE_EDS = phase_step.ACT__VALIDATE_PRE_EDS.simple
 ACT__VALIDATE_POST_SETUP = phase_step.ACT__VALIDATE_POST_SETUP.simple
 ACT__MAIN = phase_step.ACT__MAIN.simple
-ACT__SCRIPT_VALIDATE = phase_step.ACT__SCRIPT_VALIDATE.simple
 ACT__PREPARE = phase_step.ACT__PREPARE.simple
 ACT__EXECUTE = phase_step.ACT__EXECUTE.simple
 
