@@ -20,7 +20,7 @@ from exactly_lib_test.execution.test_resources.instruction_test_resources import
 from exactly_lib_test.execution.test_resources.instruction_test_resources import configuration_phase_instruction_that
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that
 from exactly_lib_test.execution.test_resources.instruction_that_do_and_return import \
-    print_to_file__generate_script2
+    print_to_file__generate_script
 from exactly_lib_test.execution.test_resources.py_unit_test_case_with_file_output import ModulesAndStatements
 from exactly_lib_test.execution.test_resources.python_code_gen import print_env_var_if_defined
 from exactly_lib_test.execution.test_resources.test_case_generation import full_test_case_with_instructions
@@ -52,8 +52,8 @@ class Test(FullExecutionTestCaseBase):
         return ActPhaseHandling(executor_constructor)
 
     def _test_case(self) -> test_case_doc.TestCase:
-        py_pgm_to_print_env_vars = print_to_file__generate_script2(python_code_for_print_environment_variables,
-                                                                   ACT_SCRIPT_OUTPUT_FILE_NAME)
+        py_pgm_to_print_env_vars = print_to_file__generate_script(python_code_for_print_environment_variables,
+                                                                  ACT_SCRIPT_OUTPUT_FILE_NAME)
         return full_test_case_with_instructions(
             [configuration_phase_instruction_that(
                 main_initial_action=_ConfigurationPhaseActionThatRecordsEnvVarsAndSetsHomeDirToParent(self.recorder,
