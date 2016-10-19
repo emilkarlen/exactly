@@ -11,6 +11,7 @@ from exactly_lib.execution.execution_directory_structure import ExecutionDirecto
 from exactly_lib.execution.partial_execution import TestCase
 from exactly_lib.execution.result import PartialResult
 from exactly_lib.processing.processors import act_phase_handling_for_setup
+from exactly_lib.test_case.phases import setup
 from exactly_lib_test.execution.test_resources import utils
 
 
@@ -37,6 +38,7 @@ class PartialExecutionTestCaseBase:
             self.__act_phase_handling,
             self._test_case(),
             self.initial_home_dir_path,
+            setup.default_settings(),
             program_info.PROGRAM_NAME + '-test-',
             self.__dbg_do_not_delete_dir_structure)
 

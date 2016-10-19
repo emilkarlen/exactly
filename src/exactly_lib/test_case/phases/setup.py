@@ -38,6 +38,10 @@ class SetupSettingsBuilder:
         return self.__stdin_settings
 
 
+def default_settings() -> SetupSettingsBuilder:
+    return SetupSettingsBuilder()
+
+
 class SetupPhaseInstruction(TestCaseInstruction):
     """
     Abstract base class for instructions of the SETUP phase.

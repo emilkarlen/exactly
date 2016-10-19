@@ -13,6 +13,7 @@ from exactly_lib.execution.execution_directory_structure import ExecutionDirecto
 from exactly_lib.execution.phases import PhaseEnum
 from exactly_lib.execution.result import PartialResult
 from exactly_lib.processing.processors import act_phase_handling_for_setup
+from exactly_lib.test_case.phases import setup
 from exactly_lib.util.functional import Composition
 from exactly_lib_test.execution.test_resources.act_source_executor import \
     ActSourceAndExecutorConstructorThatRunsConstantActions
@@ -228,6 +229,7 @@ def _execute(test_case: partial_execution.TestCase,
         act_phase_handling,
         test_case,
         home_dir_path,
+        setup.default_settings(),
         program_info.PROGRAM_NAME + '-test-',
         is_keep_execution_directory_root)
     return Result(home_dir_path,
