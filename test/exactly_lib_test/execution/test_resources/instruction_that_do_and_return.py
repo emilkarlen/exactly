@@ -124,10 +124,6 @@ class TestCaseSetup(tuple):
     def execution_action__with_eds(self) -> types.FunctionType:
         return self[6]
 
-    @property
-    def execution__generate_script(self) -> types.FunctionType:
-        return self[7]
-
     def _do_validate_pre_eds(self,
                              the_phase_step: PhaseStep):
         def ret_val(environment: i.GlobalEnvironmentForPreEdsStep) -> svh.SuccessOrValidationErrorOrHardError:
@@ -159,16 +155,6 @@ class TestCaseSetup(tuple):
         def ret_val(global_environment, configuration_builder: ConfigurationBuilder) -> sh.SuccessOrHardError:
             self.configuration_phase_action(phase_step.CONFIGURATION__MAIN,
                                             configuration_builder)
-            return self.ret_val_from_main
-
-        return ret_val
-
-    def _do_act_main(self) -> types.FunctionType:
-        def ret_val(glob_env, phase_env) -> sh.SuccessOrHardError:
-            self.execution_action__with_eds(phase_step.ACT__MAIN,
-                                            glob_env)
-            self.execution__generate_script(glob_env,
-                                            phase_env)
             return self.ret_val_from_main
 
         return ret_val
