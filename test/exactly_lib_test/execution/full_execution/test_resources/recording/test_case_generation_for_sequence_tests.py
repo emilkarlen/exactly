@@ -9,6 +9,7 @@ from exactly_lib_test.execution.test_resources.execution_recording.recorder impo
     ListRecorder, ListElementRecorder
 from exactly_lib_test.execution.test_resources.execution_recording.recording_instructions import \
     RecordingInstructions
+from exactly_lib_test.execution.test_resources.instruction_test_resources import act_phase_instruction_with_source
 from exactly_lib_test.execution.test_resources.test_case_generation import instruction_line_constructor, \
     phase_contents
 
@@ -31,9 +32,7 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorForFullExecutionBa
                                                              phase_step.SETUP__MAIN,
                                                              phase_step.SETUP__VALIDATE_POST_SETUP),
             phases.ACT:
-                recording_instructions.new_act_instruction(phase_step.ACT__VALIDATE_PRE_EDS,
-                                                           phase_step.ACT__VALIDATE_POST_SETUP,
-                                                           phase_step.ACT__MAIN),
+                act_phase_instruction_with_source(),
             phases.BEFORE_ASSERT:
                 recording_instructions.new_before_assert_instruction(phase_step.BEFORE_ASSERT__VALIDATE_PRE_EDS,
                                                                      phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,

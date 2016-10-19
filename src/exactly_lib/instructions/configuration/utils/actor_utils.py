@@ -1,6 +1,5 @@
 import shlex
 
-from exactly_lib.act_phase_setups.script_interpretation import generic_script_language
 from exactly_lib.act_phase_setups.script_interpretation.script_language_management import ScriptLanguageSetup
 from exactly_lib.act_phase_setups.script_interpretation.script_language_management import StandardScriptFileManager
 from exactly_lib.act_phase_setups.script_interpretation.script_language_setup import new_for_script_language_handling
@@ -23,7 +22,7 @@ class InstructionDocumentation(InstructionDocumentationWithCommandLineRenderingB
         self.argument = a.Named('ARGUMENT')
         self.single_line_description_unformatted = single_line_description_unformatted
         self.main_description_rest_unformatted = main_description_rest_unformatted
-        from exactly_lib.help.concepts.plain_concepts.actor import ACTOR_CONCEPT
+        from exactly_lib.help.concepts.configuration_parameters.actor import ACTOR_CONCEPT
         super().__init__(name, {
             'EXECUTABLE': self.executable.name,
             'ARGUMENT': self.argument.name,
@@ -54,7 +53,7 @@ class InstructionDocumentation(InstructionDocumentationWithCommandLineRenderingB
         return self._paragraphs(self.main_description_rest_unformatted)
 
     def see_also(self) -> list:
-        from exactly_lib.help.concepts.plain_concepts.actor import ACTOR_CONCEPT
+        from exactly_lib.help.concepts.configuration_parameters.actor import ACTOR_CONCEPT
         return [
             ACTOR_CONCEPT.cross_reference_target(),
         ]
@@ -72,10 +71,8 @@ def parse(source: SingleInstructionParserSource) -> ActPhaseHandling:
     except:
         raise SingleInstructionInvalidArgumentException('Invalid quoting: ' + arg)
     act_phase_setup = new_for_script_language_handling(
-        ScriptLanguageSetup(
-            StandardScriptFileManager(
-                'src',
-                command_and_arguments[0],
-                command_and_arguments[1:]),
-            generic_script_language.StandardScriptLanguage()))
+        ScriptLanguageSetup(StandardScriptFileManager(
+            'src',
+            command_and_arguments[0],
+            command_and_arguments[1:])))
     return act_phase_setup

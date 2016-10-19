@@ -1,61 +1,3 @@
-from exactly_lib.test_case.phases.act.program_source import ActSourceBuilder, ActSourceBuilderForPlainStringsBase
-
-
-class ScriptLanguage:
-    def comment_line(self, comment: str) -> list:
-        raise NotImplementedError()
-
-    def comment_lines(self, lines: list) -> list:
-        ret_val = []
-        for l in lines:
-            ret_val.extend(self.comment_line(l))
-        return ret_val
-
-    def raw_script_statement(self, statement: str) -> list:
-        raise NotImplementedError()
-
-    def raw_script_statements(self, statements: iter) -> list:
-        ret_val = []
-        for statement in statements:
-            ret_val.extend(self.raw_script_statement(statement))
-        return ret_val
-
-
-class ActSourceBuilderForScriptLanguage(ActSourceBuilderForPlainStringsBase):
-    def __init__(self,
-                 script_language: ScriptLanguage):
-        super().__init__()
-        self._script_language = script_language
-
-    def comment_line(self, comment: str):
-        """
-        Appends a comment that stretches a single line.
-        """
-        self._source_lines.extend(self._script_language.comment_line(comment))
-
-    def comment_lines(self, lines: list):
-        """
-        Appends a comment that stretches multiple lines.
-        """
-        self._source_lines.extend(self._script_language.comment_lines(lines))
-
-    def raw_script_statement(self, statement: str):
-        """
-        Appends a statement in the script language.
-
-        The statement will be terminated by a new-line.
-        """
-        self._source_lines.extend(self._script_language.raw_script_statement(statement))
-
-    def raw_script_statements(self, statements: iter):
-        """
-        Appends multiple statements in the script script.
-
-        Each statement will be terminated by a new-line.
-        """
-        self._source_lines.extend(self._script_language.raw_script_statements(statements))
-
-
 class ScriptFileManager:
     """
     Manages generation of a file-name and execution of an existing file.
@@ -73,22 +15,12 @@ class ScriptFileManager:
 
 
 class ScriptLanguageSetup:
-    def __init__(self,
-                 file_manager: ScriptFileManager,
-                 language: ScriptLanguage):
+    def __init__(self, file_manager: ScriptFileManager):
         self.__file_manager = file_manager
-        self.__language = language
-
-    @property
-    def language(self) -> ScriptLanguage:
-        return self.__language
 
     @property
     def file_manager(self) -> ScriptFileManager:
         return self.__file_manager
-
-    def new_builder(self) -> ActSourceBuilder:
-        return ActSourceBuilderForScriptLanguage(self.__language)
 
     def base_name_from_stem(self, stem: str) -> str:
         return self.__file_manager.base_name_from_stem(stem)

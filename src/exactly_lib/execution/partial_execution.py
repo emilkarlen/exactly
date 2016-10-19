@@ -9,18 +9,16 @@ from exactly_lib.execution import phase_step
 from exactly_lib.execution import phase_step_executors
 from exactly_lib.execution import phases
 from exactly_lib.execution.act_phase import ExitCodeOrHardError, ActSourceAndExecutor, \
-    ActPhaseHandling
+    ActPhaseHandling, new_eh_hard_error
 from exactly_lib.execution.phase_step import PhaseStep
-from exactly_lib.execution.phase_step_execution import ElementHeaderExecutor
 from exactly_lib.execution.single_instruction_executor import ControlledInstructionExecutor
 from exactly_lib.section_document.model import SectionContents, ElementType
 from exactly_lib.test_case.os_services import new_default
 from exactly_lib.test_case.phases import common
-from exactly_lib.test_case.phases.act.instruction import PhaseEnvironmentForScriptGeneration, ActPhaseInstruction
+from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
 from exactly_lib.test_case.phases.common import GlobalEnvironmentForPreEdsStep, HomeAndEds
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder, StdinSettings
-from exactly_lib.util import line_source
 from exactly_lib.util.failure_details import FailureDetails, new_failure_details_from_message, \
     new_failure_details_from_exception
 from exactly_lib.util.file_utils import write_new_text_file, resolved_path_name
@@ -110,6 +108,7 @@ class _StepExecutionResult:
 def execute(act_phase_handling: ActPhaseHandling,
             test_case: TestCase,
             home_dir_path: pathlib.Path,
+            initial_setup_settings: SetupSettingsBuilder,
             execution_directory_root_name_prefix: str,
             is_keep_execution_directory_root: bool) -> PartialResult:
     """
@@ -134,7 +133,8 @@ def execute(act_phase_handling: ActPhaseHandling,
 
         test_case_execution = _PartialExecutor(configuration,
                                                act_phase_handling,
-                                               test_case)
+                                               test_case,
+                                               initial_setup_settings)
         ret_val = test_case_execution.execute()
         return ret_val
     finally:
@@ -154,12 +154,14 @@ class _PartialExecutor:
     def __init__(self,
                  configuration: Configuration,
                  act_phase_handling: ActPhaseHandling,
-                 test_case: TestCase):
+                 test_case: TestCase,
+                 setup_settings_builder: SetupSettingsBuilder):
         self.__execution_directory_structure = None
         self.__global_environment_pre_eds = GlobalEnvironmentForPreEdsStep(configuration.home_dir)
         self.__act_phase_handling = act_phase_handling
         self.__test_case = test_case
         self.__configuration = configuration
+        self.__setup_settings_builder = setup_settings_builder
         self.___step_execution_result = _StepExecutionResult()
         self.__source_setup = None
         self.os_services = None
@@ -187,7 +189,7 @@ class _PartialExecutor:
             [
                 self.__setup__main,
                 self.__setup__validate_post_setup,
-                act_program_executor.validate,
+                act_program_executor.validate_post_setup,
                 self.__before_assert__validate_post_setup,
                 self.__assert__validate_post_setup,
                 act_program_executor.prepare,
@@ -295,14 +297,13 @@ class _PartialExecutor:
                                                            self.__test_case.cleanup_phase)
 
     def __setup__main(self) -> PartialResult:
-        setup_settings_builder = SetupSettingsBuilder()
         ret_val = self.__run_internal_instructions_phase_step(phase_step.SETUP__MAIN,
                                                               phase_step_executors.SetupMainExecutor(
                                                                   self.os_services,
                                                                   self.__post_eds_environment(phases.SETUP),
-                                                                  setup_settings_builder),
+                                                                  self.__setup_settings_builder),
                                                               self.__test_case.setup_phase)
-        self.___step_execution_result.stdin_settings = setup_settings_builder.stdin
+        self.___step_execution_result.stdin_settings = self.__setup_settings_builder.stdin
 
         return ret_val
 
@@ -312,26 +313,6 @@ class _PartialExecutor:
             phase_step_executors.SetupValidatePostSetupExecutor(
                 self.__post_eds_environment(phases.SETUP)),
             self.__test_case.setup_phase)
-
-    # def __act__main(self) -> PartialResult:
-    #     """
-    #     Accumulates the script source by executing all instructions, and adding
-    #     comments from the test case file.
-    #
-    #     :param act_environment: Post-condition: Contains the accumulated script source.
-    #     """
-    #     script_builder = self.__act_phase_handling.source_builder
-    #     environment = PhaseEnvironmentForScriptGeneration(script_builder)
-    #     ret_val = phase_step_execution.execute_phase(
-    #         self.__test_case.act_phase,
-    #         _ActCommentHeaderExecutor(environment),
-    #         _ActInstructionHeaderExecutor(environment),
-    #         phase_step_executors.ActMainExecutor(self.__post_eds_environment(phases.ACT),
-    #                                              environment),
-    #         phase_step.ACT__MAIN,
-    #         self._eds)
-    #     self.___step_execution_result.script_source = script_builder.build()
-    #     return ret_val
 
     def __act_program_executor(self):
         return _ActProgramExecution(self.__act_source_and_executor,
@@ -445,7 +426,7 @@ class _ActProgramExecution:
         self.step_execution_result = step_execution_result
         self.script_output_dir_path = self.home_and_eds.eds.test_case_dir
 
-    def validate(self) -> PartialResult:
+    def validate_post_setup(self) -> PartialResult:
         step = phase_step.ACT__VALIDATE_POST_SETUP
 
         def action():
@@ -496,8 +477,12 @@ class _ActProgramExecution:
             return self._run_act_program_with_stdin_file(subprocess.DEVNULL)
 
     def _run_act_program_with_opened_stdin_file(self, file_name: str) -> ExitCodeOrHardError:
-        with open(file_name) as f_stdin:
-            return self._run_act_program_with_stdin_file(f_stdin)
+        try:
+            with open(file_name) as f_stdin:
+                return self._run_act_program_with_stdin_file(f_stdin)
+        except IOError as ex:
+            return new_eh_hard_error(new_failure_details_from_exception(ex,
+                                                                        'Failure to open stdin file: ' + file_name))
 
     def _run_act_program_with_stdin_file(self, f_stdin) -> ExitCodeOrHardError:
         """
@@ -546,21 +531,3 @@ class _ActProgramExecution:
 
     def _failure_con_for(self, step: PhaseStep) -> _PhaseFailureResultConstructor:
         return _PhaseFailureResultConstructor(step, self.home_and_eds.eds)
-
-
-class _ActCommentHeaderExecutor(ElementHeaderExecutor):
-    def __init__(self,
-                 phase_environment: PhaseEnvironmentForScriptGeneration):
-        self.__phase_environment = phase_environment
-
-    def apply(self, line: line_source.Line):
-        self.__phase_environment.append.comment_line(line.text)
-
-
-class _ActInstructionHeaderExecutor(ElementHeaderExecutor):
-    def __init__(self,
-                 phase_environment: PhaseEnvironmentForScriptGeneration):
-        self.__phase_environment = phase_environment
-
-    def apply(self, line: line_source.Line):
-        pass

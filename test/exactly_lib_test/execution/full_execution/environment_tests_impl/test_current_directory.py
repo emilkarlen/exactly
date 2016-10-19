@@ -3,7 +3,6 @@ import unittest
 
 from exactly_lib.execution import phase_step
 from exactly_lib.execution.act_phase import new_eh_exit_code
-from exactly_lib.execution.act_phase_handling_utils import ConstructorAdapterForActSourceExecutor
 from exactly_lib.execution.partial_execution import ActPhaseHandling
 from exactly_lib.execution.phase_step import PhaseStep
 from exactly_lib.execution.result import FullResultStatus
@@ -11,11 +10,12 @@ from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.line_source import LineSequence
 from exactly_lib_test.execution.full_execution.test_resources.test_case_base import FullExecutionTestCaseBase
-from exactly_lib_test.execution.test_resources import instruction_that_record_and_return as instr_setup
-from exactly_lib_test.execution.test_resources.act_source_executor import ActSourceExecutorThatRunsConstantActions
+from exactly_lib_test.execution.test_resources import recorder as instr_setup
+from exactly_lib_test.execution.test_resources.act_source_executor import \
+    ActSourceAndExecutorConstructorThatRunsConstantActions
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that, \
-    act_phase_instruction_with, before_assert_phase_instruction_that, assert_phase_instruction_that, \
-    cleanup_phase_instruction_that, configuration_phase_instruction_that
+    before_assert_phase_instruction_that, assert_phase_instruction_that, \
+    cleanup_phase_instruction_that, configuration_phase_instruction_that, act_phase_instruction_with_source
 from exactly_lib_test.execution.test_resources.test_case_generation import full_test_case_with_instructions
 
 
@@ -68,11 +68,12 @@ class Test(FullExecutionTestCaseBase):
                          dbg_do_not_delete_dir_structure)
 
     def _act_phase_handling(self) -> ActPhaseHandling:
-        act_source_executor = ActSourceExecutorThatRunsConstantActions(
-            validate_action=_RecordCurrDirAndReturn(self.recorder, phase_step.ACT__VALIDATE_POST_SETUP,
-                                                    svh.new_svh_success()),
-            execute_action=_RecordCurrDirAndReturn(self.recorder, phase_step.ACT__EXECUTE, new_eh_exit_code(0)))
-        return ActPhaseHandling(ConstructorAdapterForActSourceExecutor(act_source_executor))
+        constructor = ActSourceAndExecutorConstructorThatRunsConstantActions(
+            validate_post_setup_action=_RecordCurrDirAndReturn(self.recorder, phase_step.ACT__VALIDATE_POST_SETUP,
+                                                               svh.new_svh_success()),
+            execute_action=_RecordCurrDirAndReturn(self.recorder, phase_step.ACT__EXECUTE,
+                                                   new_eh_exit_code(0)))
+        return ActPhaseHandling(constructor)
 
     def _test_case(self) -> test_case_doc.TestCase:
         return full_test_case_with_instructions(
@@ -84,7 +85,7 @@ class Test(FullExecutionTestCaseBase):
                                                                   phase_step.SETUP__VALIDATE_POST_SETUP),
                 main_initial_action=_RecordCurrDirThenMakeDirAndChangeToIt(self.recorder,
                                                                            phase_step.SETUP__MAIN))],
-            [act_phase_instruction_with(LineSequence(1, ('not used',)))],
+            [act_phase_instruction_with_source(LineSequence(1, ('not used',)))],
             [before_assert_phase_instruction_that(
                 validate_post_setup_initial_action=_RecordCurrDir(self.recorder,
                                                                   phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP),

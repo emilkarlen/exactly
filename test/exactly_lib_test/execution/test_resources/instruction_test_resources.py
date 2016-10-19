@@ -1,7 +1,8 @@
 from exactly_lib.execution.execution_mode import ExecutionMode
+from exactly_lib.processing.parse.act_phase_source_parser import SourceCodeInstruction
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as instrs
-from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction, PhaseEnvironmentForScriptGeneration
+from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.before_assert import BeforeAssertPhaseInstruction
 from exactly_lib.test_case.phases.cleanup import CleanupPhaseInstruction, PreviousPhase
@@ -47,16 +48,9 @@ def setup_phase_instruction_that(validate_pre_eds=do_return(svh.new_svh_success(
                                       _action_of(main_initial_action, main))
 
 
-def act_phase_instruction_that(validate_pre_eds=do_return(svh.new_svh_success()),
-                               validate_post_setup=do_return(svh.new_svh_success()),
-                               main=do_return(sh.new_sh_success())) -> ActPhaseInstruction:
-    return _ActPhaseInstructionThat(validate_pre_eds=validate_pre_eds,
-                                    validate_post_setup=validate_post_setup,
-                                    main=main)
-
-
-def act_phase_instruction_with(source: LineSequence) -> ActPhaseInstruction:
-    return _ActPhaseInstructionWithConstantSource(source)
+def act_phase_instruction_with_source(source_code: LineSequence = LineSequence(72, (
+        'Dummy source code from act_phase_instruction_with_source',))) -> ActPhaseInstruction:
+    return SourceCodeInstruction(source_code)
 
 
 def before_assert_phase_instruction_that(validate_pre_eds=do_return(svh.new_svh_success()),
@@ -134,58 +128,6 @@ class _SetupPhaseInstructionThat(SetupPhaseInstruction):
                             environment: instrs.GlobalEnvironmentForPostEdsPhase) \
             -> svh.SuccessOrValidationErrorOrHardError:
         return self._validate_post_setup(environment)
-
-
-class _ActPhaseInstructionThat(ActPhaseInstruction):
-    def __init__(self,
-                 validate_pre_eds,
-                 validate_post_setup,
-                 main):
-        self._validate_pre_eds = validate_pre_eds
-        self._validate_post_setup = validate_post_setup
-        self._main = main
-
-    def source_code(self) -> LineSequence:
-        return LineSequence(72, ('Dummy source code from ' + str(type(self)),))
-
-    def validate_pre_eds(self,
-                         environment: instrs.GlobalEnvironmentForPreEdsStep) -> svh.SuccessOrValidationErrorOrHardError:
-        return self._validate_pre_eds(environment)
-
-    def validate_post_setup(self,
-                            global_environment: instrs.GlobalEnvironmentForPostEdsPhase) \
-            -> svh.SuccessOrValidationErrorOrHardError:
-        return self._validate_post_setup(global_environment)
-
-    def main(
-            self,
-            global_environment: instrs.GlobalEnvironmentForPostEdsPhase,
-            phase_environment: PhaseEnvironmentForScriptGeneration) -> sh.SuccessOrHardError:
-        return self._main(global_environment, phase_environment)
-
-
-class _ActPhaseInstructionWithConstantSource(ActPhaseInstruction):
-    def __init__(self,
-                 source: LineSequence):
-        self.source = source
-
-    def source_code(self) -> LineSequence:
-        return self.source
-
-    def validate_pre_eds(self,
-                         environment: instrs.GlobalEnvironmentForPreEdsStep) -> svh.SuccessOrValidationErrorOrHardError:
-        raise RuntimeError('deprecated - should not be used')
-
-    def validate_post_setup(self,
-                            global_environment: instrs.GlobalEnvironmentForPostEdsPhase) \
-            -> svh.SuccessOrValidationErrorOrHardError:
-        raise RuntimeError('deprecated - should not be used')
-
-    def main(
-            self,
-            global_environment: instrs.GlobalEnvironmentForPostEdsPhase,
-            phase_environment: PhaseEnvironmentForScriptGeneration) -> sh.SuccessOrHardError:
-        raise RuntimeError('deprecated - should not be used')
 
 
 class _BeforeAssertPhaseInstructionThat(BeforeAssertPhaseInstruction):

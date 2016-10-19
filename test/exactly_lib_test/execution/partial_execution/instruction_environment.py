@@ -10,8 +10,8 @@ from exactly_lib.util.line_source import LineSequence
 from exactly_lib_test.execution.partial_execution.test_resources.basic import test, \
     TestCaseWithCommonDefaultInstructions, Result, dummy_act_phase_handling
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that, \
-    act_phase_instruction_with, before_assert_phase_instruction_that, assert_phase_instruction_that, \
-    cleanup_phase_instruction_that
+    before_assert_phase_instruction_that, assert_phase_instruction_that, \
+    cleanup_phase_instruction_that, act_phase_instruction_with_source
 from exactly_lib_test.execution.test_resources.test_case_generation import partial_test_case_with_instructions
 
 
@@ -20,7 +20,7 @@ class Test(unittest.TestCase):
         recorder = {}
         test_case = partial_test_case_with_instructions(
             [setup_phase_instruction_that(main_initial_action=RecordLogDirForPhase(PhaseEnum.SETUP, recorder))],
-            [act_phase_instruction_with(LineSequence(1, ('line',)))],
+            [act_phase_instruction_with_source(LineSequence(1, ('line',)))],
             [before_assert_phase_instruction_that(main_initial_action=RecordLogDirForPhase(PhaseEnum.BEFORE_ASSERT,
                                                                                            recorder))],
             [assert_phase_instruction_that(main_initial_action=RecordLogDirForPhase(PhaseEnum.ASSERT, recorder))],

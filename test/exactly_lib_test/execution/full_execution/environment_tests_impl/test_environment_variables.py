@@ -1,4 +1,3 @@
-import functools
 import os
 import unittest
 
@@ -12,15 +11,16 @@ from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib.util.line_source import LineSequence
 from exactly_lib_test.execution.full_execution.test_resources.test_case_base import FullExecutionTestCaseBase
-from exactly_lib_test.execution.test_resources import instruction_that_record_and_return as instr_setup
+from exactly_lib_test.execution.test_resources import recorder as instr_setup
 from exactly_lib_test.execution.test_resources.execution_recording.act_program_executor import \
     ActSourceAndExecutorConstructorWithActionsForExecutor
-from exactly_lib_test.execution.test_resources.instruction_test_resources import act_phase_instruction_with, \
-    before_assert_phase_instruction_that, assert_phase_instruction_that, cleanup_phase_instruction_that
+from exactly_lib_test.execution.test_resources.instruction_test_resources import before_assert_phase_instruction_that, \
+    assert_phase_instruction_that, cleanup_phase_instruction_that, \
+    act_phase_instruction_with_source
 from exactly_lib_test.execution.test_resources.instruction_test_resources import configuration_phase_instruction_that
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that
 from exactly_lib_test.execution.test_resources.instruction_that_do_and_return import \
-    print_to_file__generate_script, print_to_file__generate_script2
+    print_to_file__generate_script
 from exactly_lib_test.execution.test_resources.py_unit_test_case_with_file_output import ModulesAndStatements
 from exactly_lib_test.execution.test_resources.python_code_gen import print_env_var_if_defined
 from exactly_lib_test.execution.test_resources.test_case_generation import full_test_case_with_instructions
@@ -37,7 +37,10 @@ class Test(FullExecutionTestCaseBase):
     def _act_phase_handling(self) -> ActPhaseHandling:
         executor_constructor = ActSourceAndExecutorConstructorWithActionsForExecutor(
             python3.new_act_phase_setup().source_and_executor_constructor,
-            before_wrapped_validate=_RecordEnvVars(
+            before_wrapped_validate_pre_eds=_RecordEnvVars(
+                self.recorder,
+                phase_step.ACT__VALIDATE_PRE_EDS),
+            before_wrapped_validate_post_setup=_RecordEnvVars(
                 self.recorder,
                 phase_step.ACT__VALIDATE_POST_SETUP),
             before_wrapped_prepare=_RecordEnvVars(
@@ -49,8 +52,8 @@ class Test(FullExecutionTestCaseBase):
         return ActPhaseHandling(executor_constructor)
 
     def _test_case(self) -> test_case_doc.TestCase:
-        py_pgm_to_print_env_vars = print_to_file__generate_script2(python_code_for_print_environment_variables,
-                                                                   ACT_SCRIPT_OUTPUT_FILE_NAME)
+        py_pgm_to_print_env_vars = print_to_file__generate_script(python_code_for_print_environment_variables,
+                                                                  ACT_SCRIPT_OUTPUT_FILE_NAME)
         return full_test_case_with_instructions(
             [configuration_phase_instruction_that(
                 main_initial_action=_ConfigurationPhaseActionThatRecordsEnvVarsAndSetsHomeDirToParent(self.recorder,
@@ -62,7 +65,7 @@ class Test(FullExecutionTestCaseBase):
                                                                   phase_step.SETUP__VALIDATE_POST_SETUP),
                 main_initial_action=_RecordEnvVars(self.recorder,
                                                    phase_step.SETUP__MAIN))],
-            [act_phase_instruction_with(LineSequence(72, py_pgm_to_print_env_vars))],
+            [act_phase_instruction_with_source(LineSequence(72, py_pgm_to_print_env_vars))],
             [before_assert_phase_instruction_that(
                 validate_pre_eds_initial_action=_RecordEnvVars(self.recorder,
                                                                phase_step.BEFORE_ASSERT__VALIDATE_PRE_EDS),
@@ -117,7 +120,7 @@ class Test(FullExecutionTestCaseBase):
         expected_recorded_internally = {
             phase_step.CONFIGURATION__MAIN: for_configuration_phase,
             phase_step.SETUP__VALIDATE_PRE_EDS: for_pre_eds,
-            # phase_step.ACT__VALIDATE_PRE_EDS: for_pre_eds,
+            phase_step.ACT__VALIDATE_PRE_EDS: for_pre_eds,
             phase_step.BEFORE_ASSERT__VALIDATE_PRE_EDS: for_pre_eds,
             phase_step.ASSERT__VALIDATE_PRE_EDS: for_pre_eds,
             phase_step.CLEANUP__VALIDATE_PRE_EDS: for_pre_eds,
@@ -186,11 +189,6 @@ def python_code_for_print_environment_variables(file_variable: str) -> ModulesAn
         code.extend(print_env_var_if_defined(env_var, file_variable))
     return ModulesAndStatements({'os'},
                                 code)
-
-
-script_for_print_environment_variables_to_file = functools.partial(print_to_file__generate_script,
-                                                                   python_code_for_print_environment_variables,
-                                                                   ACT_SCRIPT_OUTPUT_FILE_NAME)
 
 
 class _ActionWithPhaseStepAndRecording:

@@ -7,6 +7,7 @@ from exactly_lib.execution.act_phase import ActPhaseHandling
 from exactly_lib.execution.execution_mode import ExecutionMode
 from exactly_lib.section_document.model import SectionContents
 from exactly_lib.test_case import test_case_doc
+from exactly_lib.test_case.phases import setup
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from . import phase_step_execution
 from . import result
@@ -37,6 +38,7 @@ def execute(default_act_phase_handling: ActPhaseHandling,
                                                                           test_case.assert_phase,
                                                                           test_case.cleanup_phase),
                                                configuration_phase_environment.home_dir_path,
+                                               setup.default_settings(),
                                                execution_directory_root_name_prefix,
                                                is_keep_execution_directory_root)
     return new_named_phases_result_from(configuration_phase_environment.execution_mode,
