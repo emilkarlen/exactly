@@ -2,7 +2,7 @@ import pathlib
 
 from exactly_lib.execution import phase_step_simple as phase_step
 from exactly_lib.execution.act_phase import ExitCodeOrHardError, ActSourceAndExecutor, \
-    ActSourceAndExecutorConstructor
+    ActSourceAndExecutorConstructor, new_eh_exit_code
 from exactly_lib.test_case.phases.common import HomeAndEds, GlobalEnvironmentForPreEdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
@@ -12,6 +12,21 @@ from exactly_lib_test.execution.test_resources.execution_recording.recorder impo
 
 def do_nothing():
     pass
+
+
+class ActSourceAndExecutorThatJustReturnsSuccess(ActSourceAndExecutor):
+    def validate_pre_eds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
+        return svh.new_svh_success()
+
+    def validate_post_setup(self, home_and_eds: HomeAndEds) -> svh.SuccessOrValidationErrorOrHardError:
+        return svh.new_svh_success()
+
+    def prepare(self, home_and_eds: HomeAndEds, script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
+        return sh.new_sh_success()
+
+    def execute(self, home_and_eds: HomeAndEds, script_output_dir_path: pathlib.Path,
+                std_files: StdFiles) -> ExitCodeOrHardError:
+        return new_eh_exit_code(0)
 
 
 class ActSourceAndExecutorWrapperThatRecordsSteps(ActSourceAndExecutor):

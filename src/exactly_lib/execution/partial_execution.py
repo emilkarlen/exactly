@@ -9,7 +9,7 @@ from exactly_lib.execution import phase_step
 from exactly_lib.execution import phase_step_executors
 from exactly_lib.execution import phases
 from exactly_lib.execution.act_phase import ExitCodeOrHardError, ActSourceAndExecutor, \
-    ActPhaseHandling
+    ActPhaseHandling, new_eh_hard_error
 from exactly_lib.execution.phase_step import PhaseStep
 from exactly_lib.execution.phase_step_execution import ElementHeaderExecutor
 from exactly_lib.execution.single_instruction_executor import ControlledInstructionExecutor
@@ -499,8 +499,12 @@ class _ActProgramExecution:
             return self._run_act_program_with_stdin_file(subprocess.DEVNULL)
 
     def _run_act_program_with_opened_stdin_file(self, file_name: str) -> ExitCodeOrHardError:
-        with open(file_name) as f_stdin:
-            return self._run_act_program_with_stdin_file(f_stdin)
+        try:
+            with open(file_name) as f_stdin:
+                return self._run_act_program_with_stdin_file(f_stdin)
+        except IOError as ex:
+            return new_eh_hard_error(new_failure_details_from_exception(ex,
+                                                                        'Failure to open stdin file: ' + file_name))
 
     def _run_act_program_with_stdin_file(self, f_stdin) -> ExitCodeOrHardError:
         """
