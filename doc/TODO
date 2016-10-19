@@ -867,48 +867,6 @@ som därför ska valideras för "existens".
 Själva exekveringen är annars identisk: EXECUTABLE ARGUMENT...
 * TODO Faser
 ** TODO Act
-*** DONE Ändra script-generering: ta bort ScriptSourceAccumulator#source_line_header
-Tankarna kring script-generering är helt o hållet förändrad från tidpunkten då
-det designades.  Då infördes struktur som idag är överflödig.
-Låt skript-genereringen skyffla in alla rader i skriptet precis så som de står
-i testfallet.
-Ta bort allt som har att göra med automatisk formattering o kännedom om syntax
-(kommentarer, raw_script_statement, ...).
-*** TODO Ta bort ScriptLanguage
-ActSourceBuilder är klassen som "används utåt": det är en sådan som
-ActPhaseSetup (indirekt) kan skapa.
-Därmed är det ActSourceBuilder som utgör konf för hur act-fasens
-section-element:s ska hanteras: genom att skapa olika sådana styr
-ActPhaseSetup vad som ska ske med de SectionElement (empty line, comment,
-instruction) ska hanteras.
-Det betyder att ActSourceBuilder själv utgör konf - och då ska basklassen
-(ActSourceBuilder) inte påtvingas specifik struktur så som görs idag gnm att
-den alltid har en ScriptLanguage.
-
-
-Alltså:
-**** TODO ta bort argumentet ScriptLanguage till ActSourceBuilder och sub-klassa
-den vid behov.
-**** TODO partiella exe av act-fas ska anropa funktioner i ActSourceBuilder
-... som motsvarar SectionContentElement: en metod vardera för
-- ElementType.EMPTY
-- ElementType.COMMENT
-- ElementType.INSTRUCTION
-
-Detta gör det möjligt att synka parsern (som genererar
-SectionContentElement:s) o hanteringen av dessa (via anropen till metoder i
-ActSourceBuilder).
-
-Hmmm.
-Finns ju även ActPhaseInstruction.
-Det är de som körs i act-fasen för instruktioner, o därmed de som bestämer vad
-som ska göras då.
-
-Konf för act-phase setup består alltså av
-- ActPhaseInstruction (hanterar SectionContentElement/INSTRUCTION)
-  (anges indirekt via parsern iom att parsern skapar ActPhaseInstruction:s.)
-- ActSourceBuilder
-
 *** TODO <2015-09-26 lör> Parser ska ha syntax för att inkl [abc]-rader i källkoden
 Dessa rader är ju sektionsrubriker, och är därför omöjliga att inkludera i
 källkod.  Parsern ska ha syntax som löser detta.
