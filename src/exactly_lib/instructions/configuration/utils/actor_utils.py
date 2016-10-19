@@ -22,7 +22,7 @@ class InstructionDocumentation(InstructionDocumentationWithCommandLineRenderingB
         self.argument = a.Named('ARGUMENT')
         self.single_line_description_unformatted = single_line_description_unformatted
         self.main_description_rest_unformatted = main_description_rest_unformatted
-        from exactly_lib.help.concepts.plain_concepts.actor import ACTOR_CONCEPT
+        from exactly_lib.help.concepts.configuration_parameters.actor import ACTOR_CONCEPT
         super().__init__(name, {
             'EXECUTABLE': self.executable.name,
             'ARGUMENT': self.argument.name,
@@ -53,7 +53,7 @@ class InstructionDocumentation(InstructionDocumentationWithCommandLineRenderingB
         return self._paragraphs(self.main_description_rest_unformatted)
 
     def see_also(self) -> list:
-        from exactly_lib.help.concepts.plain_concepts.actor import ACTOR_CONCEPT
+        from exactly_lib.help.concepts.configuration_parameters.actor import ACTOR_CONCEPT
         return [
             ACTOR_CONCEPT.cross_reference_target(),
         ]

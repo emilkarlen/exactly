@@ -59,8 +59,6 @@ Lägg till instruktion ("actor") till "conf" för att sätt actor.
 
 Gör ACTOR_CONCEPT till en conf-param.
 * TODO Test som inte skrivits: target-renderare för html
-* TODO Lägg till instr "file" till "cleanup"
-Finns ingen vettig anledning t att den inte skulle finns även här.
 * TODO Dok README/wiki
 Faser m instrukioner.
 Instruktioner härmar unix-kommandon m argument o växlar.
@@ -69,11 +67,10 @@ Instr använder en deklarativ stil (namn o syntax).
 * TODO Nytt tc-exempel med skräddarsydd test av stdout/stderr/fil
 Verkar vara många befintliga shellcheck-likn verktyg som hanterar sånt, så
 känns vettigt att ha med ett här.
+T ex koll av att filens innehåll följer given syntax/grammatik?
 Blir troligtvis behandling m externt program.
 
 Ev är det vettigt att bygga in funk för detta, nån form av reg-ex hantering.
-* TODO Snygga till rendering av html-tabeller
-Alldeles för mkt mellanrum mellan element.
 * TODO Se över namngivning av paket (singluaris/pluralis)
 "program_modes"
 "phase"
@@ -84,7 +81,6 @@ T ex TestFinalResultFormatting körs nu två ggr
 använder någon MainProgramRunner.
 Orsaken är att det enbart finns en suite(), som används både för att
 sammanställa enhetstester och tester mot MainProgramRunner.
-* TODO Byt namn: "anonymous" -> "configuration"
 * TODO Namnge "genererade tester" mha 'shortDescription'
 Se exactly_lib_test.test_resources.main_program.main_program_check_base.TestForSetupWithoutPreprocessor#shortDescription:
 ----------------------------------------
@@ -285,20 +281,9 @@ if __name__ == '__main__':
 * TODO [#A] timeout för programmet i act-fasen
 * TODO timeout för instruktioner som kör subprocesser
 subprocess.call(timeout=...)
-* TODO Test av default main-program som kör enkelt testfall
-Idag finns inget test som kör default-setuppen m default act-phase-executor.
-
 * TODO Skräddarsy act-fasen
 ** TODO Dokumetera ny utökad sekvens i UML
 Nytt är act-exekverarens faser.
-** TODO (Ev) förbättra script-byggaren
-Så att det går att separera på typ av rad (även på "färdiga" script):
-- kommentar
-- tom
-- källkod
-På så vis går det t ex att enkelt plocka ut enbart källkodsrader.  O m hjälp
-av det skulle en singel-kommando-exekverare enkelt kunna verifiera att angivet
-program verkligen består av ett enda kommando.
 ** TODO Då interpretator anges via CLA: resolva abs-sökväg till denna
 ... så att det går att ange relativa sökvägar på kommandoraden (o ev, i en
 senare framtid, även i testsviter).
@@ -329,33 +314,6 @@ Olika hos bl a BeforeAssertPhaseInstruction o AssertPhaseInstruction.
 * TODO <2016-01-07 tor> Funderare på exekveringsflödet
 ** När ska cleanup-instruktionerna köras?
 Se separat dok om detta under "cleanup".
-** Exekveringstrategi för instruktionerna inom en fas
-(Gäller ej validate/pre-eds, troligtvis.  Känns naturligt att köra dem på det
-sätt de körs idag).
-*** Alternativ
-**** ett STEG i taget
-instr(i).step1
-...
-instr(n).step1
-
-...
-
-instr(i).stepM
-...
-instr(n).stepM
-**** en INSTRUKTION i taget
-instr(i).step1
-...
-instr(i).stepM
-
-...
-
-instr(n).step1
-...
-instr(n).stepM
-*** Olika strategier för olika faser?
-Eftersom fasernas uppgifter/roller skiljer sig åt kanske inte en o samma
-strategi passar alla faser.
 * TODO <2016-01-07 tor> Gemensam basklass för instr m std-validering?
 Skulle t ex kunna finnas i InstructionWithStdValidation:
  - validate_pre_eds
@@ -632,25 +590,6 @@ Kanske är det av den orsaken värt att skapa EDS innan setup/validate.
 Osäker på hur användbart det är att ha olika act-phase-setup.  Men vore hur
 som helst en "skyddande felxibilitet" om det vore enkelt (dvs på något sätt
 förberett så att det inte krockar med något).
-* TODO Test result
-** TODO <2015-05-03 sön> Enhetstester för fast-steg-exekverare
-Blir redundans om alla dess varianter ska testas via integrationstest.
-Fallet som för tillfället orsakar problem är huruvida en fallerande
-instruktion är den sista i raden eller ej.  (O borde kanske även testa då den
-är den första ... dvs behöver UTFÖRLIGA tester av det här!)
-** TODO <2015-05-03 sön> Använd mest informationsbärande status-koder internt
-Fler fördelar:
- - möjliggör mest utförliga testerna
- - detfinns fler "externa" standarder: om har interna kan man översätta till
-   godtycklig extern standard och kan på så vis integrera programmet i flera
-   olika ramverk.
-** TODO <2015-01-05 mån> Handle implementation errors
-** TODO <2015-01-05 mån> Handle parse errors
-** TODO <2015-01-05 mån> Handle errors correctly according to phase
-* TODO Komplettera befintliga instruktioner
-** TODO contents: env-var replacement
-Notis i koden:
-"TODO: Implement env-var replacement for arbitrary file."
 * TODO Specifika instruktioner
 ** TODO Se över instruktionsnamn
 Har nu valt att använda deklarativa namn.
@@ -689,23 +628,6 @@ uttrycket.  Hur ska det göras?? Inte enkelt. Måste ha en syntax för att komma
 en början med, i varje fall) använda shell-syntax: ${ABC_abc_123}.
 Om en annan syntax ska användas ska det vara en som krockar så lite som
 möjligt med reg-ex syntax.
-** TODO alla faser: Byta katalog till testrooten
-Tycker för tillfället det är vettigast att varje fas inte inleds med att
-automatiskt byta katalog till testroten.  Främsta anledningen är att
-act-fasens byte av katalog måste betraktas som en sidoeffekt av programmet
-som testsas och därmed som något man vill testa.
-
-Även vettigt att setup-fasen kan skapa tmp-katalog och byta till den för att
-köra act-fasen innifrån den (användbart t ex om act-fasen raderar aktuell
-katalog).  Därmed är det vettigt att inte heller act-fasen inleds med att
-automatiskt byta katalog.
-
-Dock.  Vore bra om det enkelt gick att byta till testroten för att ha en fast
-ugångspunkt för assert, cleanup, ...
-Därför vore det bra med en instruktion som byter till denna katalog.
-
-Problem ... hur ser man till att aktuell katalog bevaras från act-fasen om
-den kör i en egen process??
 ** TODO Sätt systemets TMP-katalog till ${EXACTLY_TMP}
 Används antingen i setup eller anonyma fasen.
 Eller kanske införa ny katalog under tmp för att separera testfallets
@@ -742,8 +664,6 @@ Möjlighet att sätta max gräns.
 Ev även möjlighet att sätta övre gräns på antalet rader i diffen som visas.
 Kanske räcker det med att hårdkoda ett max.
 ** TODO setup/install
-*** DONE <2015-11-03 tis> Ska installera under Current Work Dir
-Idag installeras hårdkodat under act-dir.
 *** TODO <2015-11-03 tis> Hantering av multi-path-comp DESTINATION
 Idag är beteendet för DESTINATION som innehåller flera path-komponenter
 (t ex a/b/c) odefinierat.
@@ -753,118 +673,15 @@ Ersättningsvärdet är absolut sökväg för testets rot (EXACTLY_ACT).
 Antar att detta är relativt vanligt.  Därför borde exactly ha en sådan
 funktion inbyggd.
 ** TODO mkdir
-*** TODO Byt namn till "dir" el "directory"
-Mer deklarativt.
-*** TODO Lägg till till cleanup-fasen
 *** TODO mkdir --rel-tmp DIRECTORY
 Skapar katalog under tmp/user.
 ** TODO interpret/execute/source
-Instruktion som kör/interpreterar kommando.
-Kan göras via shell.  Men om det görs via skräddarsydd instruktion kan
-programmet som ska köras reffas rel-home, och valideringssteget kan validera
-att det reffade programmet verkligen existerar.
-Namn?
- - run
- - exec (i Unix: denna byter ut aktuell process ... så inte helt rätt)
- - execute (rimmar bra med att det som körs måste vara exekverbart)
- - interpret (ev är detta en variant som tar interpreter som 1:a arg)
- - program
- - source
-Finn något namn som andas deklarativt synsätt??
- - checker
- - assert
-*** DONE För Unix: kör sh-kommandon (visat sig gå mha "shell")
-T ex [ $(wc -l FILE) = 4 ]
-
-Impl genom att ta raden (förutom instruktionen) o lägg i fil, o interpretera
-den m sh/bash.
-*** DONE Spara exitcode, stdout, stderr i filer
-Kan skapa katalog som heter execute-line-LINENUM/{exitcode, stdout, stderr}
 *** TODO Validering: att filen är exekverbar
 Använd stat.S_IXUSR
 Den kollar om filen är exekverbar för användaren.
 Men ä osäker på om den enbart kollar om exekverings-flaggan är satt för
 användaren.  Det räcker ju inte.  Ty den kan vara satt för gruppen, o aktuell
 användare är medlem i gruppen som äger filen.
-*** Syntax
-Tre (1) olika instruktioner, eller (2) en enda m växlar???
-Fördelar m separata instruktioner:
- - kan ge kortare syntax
-Fördelar m en instruktion:
- - färre instruktioner att hålla reda på
- - skräpar ner namnrymnden mindre
-Om man har enkel tillgång till makroprocessor så erbjuder
-en-intruktions-alternativet fördelar i kombination med att det går att
-"skriva" egna skräddarsydda "instruktioner" om man föredrar det.
-Samt har sett att man kan ge skräddarsytt skal-program för shell/shell=True.
-(dvs kan ange /bin/bash, t ex)
-**** Varianter
-***** Alla tar program/"interpretator" som arg
-***** Kör: källkod
-****** Källkod finns i fil
-****** Källkod anges på som argument
-***** Argument till körbart program: ja/nej
-**** interpret INTERPRETER SOURCE-FILE ARGUMENTS
-INTERPRETER är troligtvis ett globalt program.  Så utgångsvärde för
-"relativitet" bör vara --global|--in-path|--system
-(Om det inte är ett globalt program så borde man istället skrivit ett program
-som kunnat exekveras med "execute".)
-
-SOURCE-FILE är troligtvis något som skrivits just för testsvitens skull, så
-där är --rel-home en lämpligt utgång.
-
-ARGUMENTS är trol helt vanliga argument, dvs de shell-splittas.
-**** execute   PROGRAM                 ARGUMENTS
-PROGRAM kan både vara --rel-home och --system.  Svårt att välja utgång.
-
-Dock, "shell" kan köra program som är i --system.  Med det i åtanke blir
---rel-home en naturligare utgång.
-
-ARGUMENTS är trol helt vanliga argument, dvs de shell-splittas.
-**** source    INTERPRETER             SOURCE
-INTERPRETER är trol --in-system.  Om inte bör man skriva om det så att det
-blir så - dvs att man skriver ett program som körs m "execute" och tar
-ARGUMENTS istället för SOURCE som argument.  Sådana program är ju troligtvis
-enklare att både skriva och läsa.
-**** run: instruktion som hanterar alla fall
-***** run PROGRAM ARGUMENTS
-Exekverar: call([PROGRAM] ++ shell-split(ARGUMENTS))
-Ex: run --rel-home my-property-checking-pgm PROPERTY-DEFINITION
-***** run PROGRAM --interpret [--rel-X] FILE ARGUMENTS
-Exekverar: call([PROGRAM,FILE] ++ shell-split(ARGUMENTS))
-Här splittas ARGUMENT... enl shell-regler
-***** run PROGRAM --source [SOURCE|<<EOF SOURCE EOF]
-Exekverar: call([PROGRAM, SOURCE])
-***** Former av PROGRAM
-****** --rel-home|--rel-pwd|--rel-act|--rel-tmp PROGRAM
-****** --system PROGRAM-IN-PATH
-Bra för t ex "standardprogram" som awk, sed, där absolut sökväg kan variera
-mellan OS.
-*** Implementation
-**** Växlar
-***** För exekverbart program
-   --system
-   --rel-home
-   --rel-pwd
-   --rel-act
-   --rel-tmp
-***** För källkodsfil
-   --rel-home
-   --rel-pwd
-   --rel-act
-   --rel-tmp
-**** Alla kommandon: 1:a arg är ett exekverbart program
-Ev meningsfullt att införa koncept/klass ExecutableFile.
-En skräddarsydd parser parsar en sådan.  Och den kan validera sig själv (för
-"existens").
-
-En sådan ExecutableFile är antingen en FileRef eller en system-global sak.  En
-FileRef kan alltid resolvas till en abolut sökväg.
-
-**** execute/interpret mkt lika varandra
-Enda skillnaden är att interpret tar ett argument som förutsätts är en fil och
-som därför ska valideras för "existens".
-Själva exekveringen är annars identisk: EXECUTABLE ARGUMENT...
 * TODO Faser
 ** TODO Act
 *** TODO <2015-09-26 lör> Parser ska ha syntax för att inkl [abc]-rader i källkoden

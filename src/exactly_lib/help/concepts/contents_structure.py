@@ -56,9 +56,6 @@ class PlainConceptDocumentation(ConceptDocumentation):
 
 class ConfigurationParameterDocumentation(ConceptDocumentation):
     def default_value_str(self) -> str:
-        """
-        :rtype: [`ParagraphItem`]
-        """
         raise NotImplementedError()
 
     def default_value_para(self) -> ParagraphItem:
