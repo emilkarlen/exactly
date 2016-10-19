@@ -4,8 +4,8 @@ import types
 from exactly_lib_test.execution.test_resources import python_code_gen as py
 
 
-def print_to_file__generate_script2(code_using_file_opened_for_writing: types.FunctionType,
-                                    file_name: str):
+def print_to_file__generate_script(code_using_file_opened_for_writing: types.FunctionType,
+                                   file_name: str):
     """
     Function that is designed as the execution__generate_script argument to TestCaseSetup, after
     giving the first two arguments using partial application.
