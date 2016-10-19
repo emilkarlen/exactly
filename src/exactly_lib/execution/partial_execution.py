@@ -110,6 +110,7 @@ class _StepExecutionResult:
 def execute(act_phase_handling: ActPhaseHandling,
             test_case: TestCase,
             home_dir_path: pathlib.Path,
+            initial_setup_settings: SetupSettingsBuilder,
             execution_directory_root_name_prefix: str,
             is_keep_execution_directory_root: bool) -> PartialResult:
     """
@@ -134,7 +135,8 @@ def execute(act_phase_handling: ActPhaseHandling,
 
         test_case_execution = _PartialExecutor(configuration,
                                                act_phase_handling,
-                                               test_case)
+                                               test_case,
+                                               initial_setup_settings)
         ret_val = test_case_execution.execute()
         return ret_val
     finally:
@@ -154,12 +156,14 @@ class _PartialExecutor:
     def __init__(self,
                  configuration: Configuration,
                  act_phase_handling: ActPhaseHandling,
-                 test_case: TestCase):
+                 test_case: TestCase,
+                 setup_settings_builder: SetupSettingsBuilder):
         self.__execution_directory_structure = None
         self.__global_environment_pre_eds = GlobalEnvironmentForPreEdsStep(configuration.home_dir)
         self.__act_phase_handling = act_phase_handling
         self.__test_case = test_case
         self.__configuration = configuration
+        self.__setup_settings_builder = setup_settings_builder
         self.___step_execution_result = _StepExecutionResult()
         self.__source_setup = None
         self.os_services = None
@@ -295,14 +299,13 @@ class _PartialExecutor:
                                                            self.__test_case.cleanup_phase)
 
     def __setup__main(self) -> PartialResult:
-        setup_settings_builder = SetupSettingsBuilder()
         ret_val = self.__run_internal_instructions_phase_step(phase_step.SETUP__MAIN,
                                                               phase_step_executors.SetupMainExecutor(
                                                                   self.os_services,
                                                                   self.__post_eds_environment(phases.SETUP),
-                                                                  setup_settings_builder),
+                                                                  self.__setup_settings_builder),
                                                               self.__test_case.setup_phase)
-        self.___step_execution_result.stdin_settings = setup_settings_builder.stdin
+        self.___step_execution_result.stdin_settings = self.__setup_settings_builder.stdin
 
         return ret_val
 

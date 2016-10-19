@@ -10,6 +10,7 @@ from exactly_lib.execution import phase_step_simple as phase_step
 from exactly_lib.execution.act_phase import ActSourceAndExecutor, ExitCodeOrHardError, new_eh_exit_code, \
     ActPhaseHandling, ActSourceAndExecutorConstructor
 from exactly_lib.section_document.model import new_empty_section_contents
+from exactly_lib.test_case.phases import setup
 from exactly_lib.test_case.phases.common import HomeAndEds
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
@@ -169,6 +170,7 @@ def _execute(constructor: ActSourceAndExecutorConstructor,
         ActPhaseHandling(constructor),
         test_case,
         home_dir_path,
+        setup.default_settings(),
         program_info.PROGRAM_NAME + '-test-',
         is_keep_execution_directory_root)
 
