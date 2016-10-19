@@ -1,9 +1,7 @@
-import os
 import pathlib
 import subprocess
 import sys
 import unittest
-from contextlib import contextmanager
 
 from exactly_lib import program_info
 from exactly_lib.execution import partial_execution as sut
@@ -18,10 +16,10 @@ from exactly_lib.test_case.phases.result import svh
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
 from exactly_lib.util.std import StdFiles
 from exactly_lib_test.execution.test_resources.execution_recording.act_program_executor import \
-    ActSourceAndExecutorConstructorForConstantExecutor
+    ActSourceAndExecutorConstructorForConstantExecutor, ActSourceAndExecutorThatJustReturnsSuccess
 from exactly_lib_test.test_resources import file_structure as fs
 from exactly_lib_test.test_resources.file_checks import FileChecker
-from exactly_lib_test.test_resources.file_structure_utils import tmp_dir
+from exactly_lib_test.test_resources.file_structure_utils import tmp_dir, preserved_cwd
 
 
 def suite() -> unittest.TestSuite:
@@ -66,10 +64,21 @@ class TestExecute(unittest.TestCase):
     def test_stdout_should_be_saved_in_file(self):
         self.fail('not impl')
 
-    def test_WHEN_stdin_set_to_file_THEN_it_SHOULD_consist_of_contents_of_this_file__absolute_file_name(self):
+    def test_WHEN_stdin_set_to_file_that_does_not_exist_THEN_execution_should_result_in_hard_error(self):
+        # ARRANGE #
+        setup_settings = setup.default_settings()
+        setup_settings.stdin.file_name = 'this-is-not-the-name-of-an-existing-file.txt'
+        constructor = ActSourceAndExecutorConstructorForConstantExecutor(ActSourceAndExecutorThatJustReturnsSuccess())
+        test_case = _empty_test_case()
+        # ACT #
+        result = _execute(constructor, test_case, setup_settings)
+        # ASSERT #
+        self.assertTrue(result.is_failure)
+
+    def test_WHEN_stdin_set_to_file_THEN_it_SHOULD_consist_of_contents_of_this_file(self):
         file_to_redirect = fs.File('redirected-to-stdin.txt', 'contents of file to redirect')
-        with tmp_dir(fs.DirContents([file_to_redirect])) as tmp_dir_path:
-            absolute_name_of_file_to_redirect = (tmp_dir_path / 'redirected-to-stdin.txt').resolve()
+        with tmp_dir(fs.DirContents([file_to_redirect])) as abs_tmp_dir_path:
+            absolute_name_of_file_to_redirect = abs_tmp_dir_path / 'redirected-to-stdin.txt'
             setup_settings = setup.default_settings()
             setup_settings.stdin.file_name = str(absolute_name_of_file_to_redirect)
             _check_contents_of_stdin_for_setup_settings(self,
@@ -94,7 +103,8 @@ class TestExecute(unittest.TestCase):
 
 def _check_contents_of_stdin_for_setup_settings(put: unittest.TestCase,
                                                 setup_settings: SetupSettingsBuilder,
-                                                expected_contents_of_stdin: str):
+                                                expected_contents_of_stdin: str,
+                                                home_dir_path: pathlib.Path = pathlib.Path().resolve()) -> sut.PartialResult:
     """
     Tests contents of stdin by executing a Python program that stores
     the contents of stdin in a file.
@@ -109,19 +119,12 @@ def _check_contents_of_stdin_for_setup_settings(put: unittest.TestCase,
             constructor = ActSourceAndExecutorConstructorForConstantExecutor(executor_that_records_contents_of_stdin)
             test_case = _empty_test_case()
             # ACT #
-            _execute(constructor, test_case, setup_settings)
+            result = _execute(constructor, test_case, setup_settings, home_dir_path=home_dir_path)
             # ASSERT #
             file_checker = FileChecker(put)
             file_checker.assert_file_contents(output_file_path,
                                               expected_contents_of_stdin)
-
-
-@contextmanager
-def preserved_cwd():
-    cwd_to_preserve = os.getcwd()
-    yield
-    if os.getcwd() != cwd_to_preserve:
-        os.chdir(cwd_to_preserve)
+            return result
 
 
 class _ExecutorThatRecordsCurrentDir(ActSourceAndExecutor):
@@ -155,22 +158,7 @@ class _ExecutorThatRecordsCurrentDir(ActSourceAndExecutor):
         return self._home_and_eds
 
 
-class _ExecutorBaseWithSuccessfulSteps(ActSourceAndExecutor):
-    def validate_pre_eds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
-        return svh.new_svh_success()
-
-    def validate_post_setup(self, home_and_eds: HomeAndEds) -> svh.SuccessOrValidationErrorOrHardError:
-        return svh.new_svh_success()
-
-    def prepare(self, home_and_eds: HomeAndEds, script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
-        return sh.new_sh_success()
-
-    def execute(self, home_and_eds: HomeAndEds, script_output_dir_path: pathlib.Path,
-                std_files: StdFiles) -> ExitCodeOrHardError:
-        return new_eh_exit_code(0)
-
-
-class _ExecutorThatExecutesPythonProgram(_ExecutorBaseWithSuccessfulSteps):
+class _ExecutorThatExecutesPythonProgram(ActSourceAndExecutorThatJustReturnsSuccess):
     def __init__(self, python_program_file: pathlib.Path):
         self.python_program_file = python_program_file
 
