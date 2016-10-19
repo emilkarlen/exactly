@@ -4,15 +4,12 @@ import shutil
 import types
 import unittest
 
-import exactly_lib.act_phase_setups.script_interpretation.python3
-import exactly_lib.execution.act_phase
 from exactly_lib import program_info
 from exactly_lib.execution import partial_execution
 from exactly_lib.execution.act_phase import ActPhaseHandling
 from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from exactly_lib.execution.phases import PhaseEnum
 from exactly_lib.execution.result import PartialResult
-from exactly_lib.processing.processors import act_phase_handling_for_setup
 from exactly_lib.test_case.phases import setup
 from exactly_lib.util.functional import Composition
 from exactly_lib_test.execution.test_resources.act_source_executor import \
@@ -121,27 +118,6 @@ class TestCaseWithCommonDefaultInstructions(TestCaseGeneratorForPartialExecution
         return []
 
 
-def py3_test(unittest_case: unittest.TestCase,
-             test_case: partial_execution.TestCase,
-             assertions: types.FunctionType,
-             is_keep_execution_directory_root: bool = True,
-             dbg_do_not_delete_dir_structure=False):
-    result = _execute(test_case,
-                      act_phase_handling_for_setup(
-                          exactly_lib.act_phase_setups.script_interpretation.python3.new_act_phase_setup()),
-                      is_keep_execution_directory_root=is_keep_execution_directory_root)
-
-    assertions(unittest_case,
-               result)
-    # CLEANUP #
-    os.chdir(str(result.home_dir_path))
-    if not dbg_do_not_delete_dir_structure:
-        if result.execution_directory_structure.root_dir.exists():
-            shutil.rmtree(str(result.execution_directory_structure.root_dir))
-    else:
-        print(str(result.execution_directory_structure.root_dir))
-
-
 def dummy_act_phase_handling() -> ActPhaseHandling:
     return ActPhaseHandling(ActSourceAndExecutorConstructorThatRunsConstantActions())
 
@@ -165,60 +141,6 @@ def test(unittest_case: unittest.TestCase,
             shutil.rmtree(str(result.execution_directory_structure.root_dir))
     else:
         print(str(result.execution_directory_structure.root_dir))
-
-
-class PartialExecutionTestCaseBase:
-    def __init__(self,
-                 unittest_case: unittest.TestCase,
-                 dbg_do_not_delete_dir_structure=False,
-                 act_phase_handling: exactly_lib.execution.act_phase.ActPhaseHandling = None):
-        self.__unittest_case = unittest_case
-        self.__dbg_do_not_delete_dir_structure = dbg_do_not_delete_dir_structure
-        self.__initial_home_dir_path = None
-        self.__act_phase_handling = act_phase_handling
-        self.__result = None
-        if self.__act_phase_handling is None:
-            self.__act_phase_handling = act_phase_handling_for_setup(
-                exactly_lib.act_phase_setups.script_interpretation.python3.new_act_phase_setup())
-
-    def execute(self):
-        # SETUP #
-        self.__initial_home_dir_path = pathlib.Path().resolve()
-        # ACT #
-        self.__result = _execute(self._test_case(),
-                                 self.__act_phase_handling)
-
-        # ASSERT #
-        self._assertions()
-        # CLEANUP #
-        os.chdir(str(self.__initial_home_dir_path))
-        if not self.__dbg_do_not_delete_dir_structure and self.eds:
-            shutil.rmtree(str(self.eds.root_dir))
-        else:
-            if self.eds:
-                print(str(self.eds.root_dir))
-
-    def _test_case(self) -> partial_execution.TestCase:
-        raise NotImplementedError()
-
-    def _assertions(self):
-        raise NotImplementedError()
-
-    @property
-    def utc(self) -> unittest.TestCase:
-        return self.__unittest_case
-
-    @property
-    def initial_home_dir_path(self) -> pathlib.Path:
-        return self.__initial_home_dir_path
-
-    @property
-    def result(self) -> Result:
-        return self.__result
-
-    @property
-    def eds(self) -> ExecutionDirectoryStructure:
-        return self.result.execution_directory_structure
 
 
 def _execute(test_case: partial_execution.TestCase,
