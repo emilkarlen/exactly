@@ -118,13 +118,12 @@ class ActSourceAndExecutorConstructorForConstantExecutor(ActSourceAndExecutorCon
 class ActSourceAndExecutorConstructorWithActionsForExecutor(ActSourceAndExecutorConstructor):
     def __init__(self,
                  wrapped: ActSourceAndExecutorConstructor,
-                 before_wrapped_validate=do_nothing,
+                 before_wrapped_validate_pre_eds=do_nothing,
+                 before_wrapped_validate_post_setup=do_nothing,
                  before_wrapped_prepare=do_nothing,
-                 before_wrapped_execute=do_nothing,
-                 before_wrapped_validate_pre_eds=do_nothing
-                 ):
+                 before_wrapped_execute=do_nothing):
         self.__wrapped = wrapped
-        self.before_wrapped_validate = before_wrapped_validate
+        self.before_wrapped_validate = before_wrapped_validate_post_setup
         self.before_wrapped_validate_pre_eds = before_wrapped_validate_pre_eds
         self.before_wrapped_prepare = before_wrapped_prepare
         self.before_wrapped_execute = before_wrapped_execute
