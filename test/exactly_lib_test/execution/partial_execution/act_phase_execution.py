@@ -66,8 +66,12 @@ class TestExecute(unittest.TestCase):
     def test_stdout_should_be_saved_in_file(self):
         self.fail('not impl')
 
-    def test_stdin_should_be_available(self):
-        self.fail('not impl')
+    def test_WHEN_stdin_set_to_string_THEN_it_SHOULD_consist_of_this_string(self):
+        setup_settings = setup.default_settings()
+        setup_settings.stdin.contents = 'contents of stdin'
+        _check_contents_of_stdin_for_setup_settings(self,
+                                                    setup_settings,
+                                                    'contents of stdin')
 
     def test_WHEN_stdin_is_not_set_in_setup_THEN_it_should_be_empty(self):
         setup_settings = setup.default_settings()
