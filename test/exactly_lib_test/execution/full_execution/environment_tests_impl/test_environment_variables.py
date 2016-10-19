@@ -12,7 +12,7 @@ from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib.util.line_source import LineSequence
 from exactly_lib_test.execution.full_execution.test_resources.test_case_base import FullExecutionTestCaseBase
-from exactly_lib_test.execution.test_resources import instruction_that_record_and_return as instr_setup
+from exactly_lib_test.execution.test_resources import recorder as instr_setup
 from exactly_lib_test.execution.test_resources.execution_recording.act_program_executor import \
     ActSourceAndExecutorConstructorWithActionsForExecutor
 from exactly_lib_test.execution.test_resources.instruction_test_resources import before_assert_phase_instruction_that, \
