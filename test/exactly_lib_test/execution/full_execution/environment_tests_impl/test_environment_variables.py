@@ -38,7 +38,10 @@ class Test(FullExecutionTestCaseBase):
     def _act_phase_handling(self) -> ActPhaseHandling:
         executor_constructor = ActSourceAndExecutorConstructorWithActionsForExecutor(
             python3.new_act_phase_setup().source_and_executor_constructor,
-            before_wrapped_validate=_RecordEnvVars(
+            before_wrapped_validate_pre_eds=_RecordEnvVars(
+                self.recorder,
+                phase_step.ACT__VALIDATE_PRE_EDS),
+            before_wrapped_validate_post_setup=_RecordEnvVars(
                 self.recorder,
                 phase_step.ACT__VALIDATE_POST_SETUP),
             before_wrapped_prepare=_RecordEnvVars(
@@ -118,7 +121,7 @@ class Test(FullExecutionTestCaseBase):
         expected_recorded_internally = {
             phase_step.CONFIGURATION__MAIN: for_configuration_phase,
             phase_step.SETUP__VALIDATE_PRE_EDS: for_pre_eds,
-            # phase_step.ACT__VALIDATE_PRE_EDS: for_pre_eds,
+            phase_step.ACT__VALIDATE_PRE_EDS: for_pre_eds,
             phase_step.BEFORE_ASSERT__VALIDATE_PRE_EDS: for_pre_eds,
             phase_step.ASSERT__VALIDATE_PRE_EDS: for_pre_eds,
             phase_step.CLEANUP__VALIDATE_PRE_EDS: for_pre_eds,
