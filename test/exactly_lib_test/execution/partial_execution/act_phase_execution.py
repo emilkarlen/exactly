@@ -15,11 +15,15 @@ from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
 from exactly_lib.util.std import StdFiles
+from exactly_lib_test.execution.partial_execution.test_resources.arrange_and_expect import execute_and_check, \
+    Arrangement, Expectation
 from exactly_lib_test.execution.test_resources.execution_recording.act_program_executor import \
     ActSourceAndExecutorConstructorForConstantExecutor, ActSourceAndExecutorThatJustReturnsSuccess
 from exactly_lib_test.test_resources import file_structure as fs
 from exactly_lib_test.test_resources.file_checks import FileChecker
 from exactly_lib_test.test_resources.file_structure_utils import tmp_dir, preserved_cwd
+from exactly_lib_test.test_resources.value_assertions import file_assertions as fa
+from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 
 def suite() -> unittest.TestSuite:
@@ -59,7 +63,16 @@ class TestCurrentDirectory(unittest.TestCase):
 
 class TestExecute(unittest.TestCase):
     def test_exitcode_should_be_saved_in_file(self):
-        self.fail('not impl')
+        # ARRANGE #
+        exit_code_from_execution = 72
+        executor = _ExecutorThatReturnsConstantExitCode(exit_code_from_execution)
+        constructor = ActSourceAndExecutorConstructorForConstantExecutor(executor)
+        arrangement = Arrangement(test_case=_empty_test_case(),
+                                  act_phase_handling=ActPhaseHandling(constructor))
+        # ASSERT #
+        expectation = Expectation(assertion_on_sds=_exit_code_file_contains(str(exit_code_from_execution)))
+        # APPLY #
+        execute_and_check(self, arrangement, expectation)
 
     def test_stdout_should_be_saved_in_file(self):
         self.fail('not impl')
@@ -101,6 +114,12 @@ class TestExecute(unittest.TestCase):
                                                     expected_contents_of_stdin)
 
 
+def _exit_code_file_contains(expected_contents: str) -> va.ValueAssertion:
+    return va.sub_component('file for exit code',
+                            lambda sds: sds.result.exitcode_file,
+                            fa.PathIsFileWithContents(expected_contents))
+
+
 def _check_contents_of_stdin_for_setup_settings(put: unittest.TestCase,
                                                 setup_settings: SetupSettingsBuilder,
                                                 expected_contents_of_stdin: str,
@@ -111,7 +130,7 @@ def _check_contents_of_stdin_for_setup_settings(put: unittest.TestCase,
     """
     with preserved_cwd():
         with tmp_dir() as tmp_dir_path:
-            # ARRANGE
+            # ARRANGE #
             output_file_path = tmp_dir_path / 'output.txt'
             python_program_file = fs.File('program.py', _python_program_that_prints_stdin_to(output_file_path))
             python_program_file.write_to(tmp_dir_path)
@@ -171,6 +190,17 @@ class _ExecutorThatExecutesPythonProgram(ActSourceAndExecutorThatJustReturnsSucc
                                     stdout=std_files.output.out,
                                     stderr=std_files.output.err)
         return new_eh_exit_code(exit_code)
+
+
+class _ExecutorThatReturnsConstantExitCode(ActSourceAndExecutorThatJustReturnsSuccess):
+    def __init__(self, exit_code: int):
+        self.exit_code = exit_code
+
+    def execute(self,
+                home_and_eds: HomeAndEds,
+                script_output_dir_path: pathlib.Path,
+                std_files: StdFiles) -> ExitCodeOrHardError:
+        return new_eh_exit_code(self.exit_code)
 
 
 def _empty_test_case() -> sut.TestCase:
