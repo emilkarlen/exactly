@@ -11,16 +11,14 @@ from exactly_lib.execution import phases
 from exactly_lib.execution.act_phase import ExitCodeOrHardError, ActSourceAndExecutor, \
     ActPhaseHandling, new_eh_hard_error
 from exactly_lib.execution.phase_step import PhaseStep
-from exactly_lib.execution.phase_step_execution import ElementHeaderExecutor
 from exactly_lib.execution.single_instruction_executor import ControlledInstructionExecutor
 from exactly_lib.section_document.model import SectionContents, ElementType
 from exactly_lib.test_case.os_services import new_default
 from exactly_lib.test_case.phases import common
-from exactly_lib.test_case.phases.act.instruction import PhaseEnvironmentForScriptGeneration, ActPhaseInstruction
+from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
 from exactly_lib.test_case.phases.common import GlobalEnvironmentForPreEdsStep, HomeAndEds
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder, StdinSettings
-from exactly_lib.util import line_source
 from exactly_lib.util.failure_details import FailureDetails, new_failure_details_from_message, \
     new_failure_details_from_exception
 from exactly_lib.util.file_utils import write_new_text_file, resolved_path_name
@@ -533,21 +531,3 @@ class _ActProgramExecution:
 
     def _failure_con_for(self, step: PhaseStep) -> _PhaseFailureResultConstructor:
         return _PhaseFailureResultConstructor(step, self.home_and_eds.eds)
-
-
-class _ActCommentHeaderExecutor(ElementHeaderExecutor):
-    def __init__(self,
-                 phase_environment: PhaseEnvironmentForScriptGeneration):
-        self.__phase_environment = phase_environment
-
-    def apply(self, line: line_source.Line):
-        self.__phase_environment.append.comment_line(line.text)
-
-
-class _ActInstructionHeaderExecutor(ElementHeaderExecutor):
-    def __init__(self,
-                 phase_environment: PhaseEnvironmentForScriptGeneration):
-        self.__phase_environment = phase_environment
-
-    def apply(self, line: line_source.Line):
-        pass
