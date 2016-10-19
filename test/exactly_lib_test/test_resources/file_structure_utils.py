@@ -23,6 +23,8 @@ def tmp_dir_as_cwd(contents: DirContents = empty_dir_contents()) -> pathlib.Path
             contents.write_to(dir_path)
             os.chdir(str(dir_path))
             yield dir_path
+        finally:
+            os.chdir(original_cwd)
 
 
 def tmp_dir_with(file_element: FileSystemElement) -> pathlib.Path:
