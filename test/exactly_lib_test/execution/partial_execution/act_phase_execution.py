@@ -3,6 +3,7 @@ import pathlib
 import subprocess
 import sys
 import unittest
+from contextlib import contextmanager
 
 from exactly_lib import program_info
 from exactly_lib.execution import partial_execution as sut
@@ -14,6 +15,7 @@ from exactly_lib.test_case.phases import setup
 from exactly_lib.test_case.phases.common import HomeAndEds
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
+from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
 from exactly_lib.util.std import StdFiles
 from exactly_lib_test.execution.test_resources.execution_recording.act_program_executor import \
     ActSourceAndExecutorConstructorForConstantExecutor
@@ -68,29 +70,44 @@ class TestExecute(unittest.TestCase):
         self.fail('not impl')
 
     def test_WHEN_stdin_is_not_set_in_setup_THEN_it_should_be_empty(self):
-        """
-        Tests contents of stdin by executing a Python program that stores
-        the contents of stdin in a file.
-        """
-        # ARRANGE
-        cwd_before_test = os.getcwd()
+        setup_settings = setup.default_settings()
+        setup_settings.stdin.set_empty()
+        expected_contents_of_stdin = ''
+        _check_contents_of_stdin_for_setup_settings(self,
+                                                    setup_settings,
+                                                    expected_contents_of_stdin)
+
+
+def _check_contents_of_stdin_for_setup_settings(put: unittest.TestCase,
+                                                setup_settings: SetupSettingsBuilder,
+                                                expected_contents_of_stdin: str):
+    """
+    Tests contents of stdin by executing a Python program that stores
+    the contents of stdin in a file.
+    """
+    with preserved_cwd():
         with tmp_dir() as tmp_dir_path:
+            # ARRANGE
             output_file_path = tmp_dir_path / 'output.txt'
-            python_program_file = fs.File('program.py',
-                                          _python_program_that_prints_stdin_to(output_file_path))
+            python_program_file = fs.File('program.py', _python_program_that_prints_stdin_to(output_file_path))
             python_program_file.write_to(tmp_dir_path)
             executor_that_records_contents_of_stdin = _ExecutorThatExecutesPythonProgram(tmp_dir_path / 'program.py')
             constructor = ActSourceAndExecutorConstructorForConstantExecutor(executor_that_records_contents_of_stdin)
             test_case = _empty_test_case()
             # ACT #
-            _execute(constructor, test_case)
+            _execute(constructor, test_case, setup_settings)
             # ASSERT #
-            file_checker = FileChecker(self)
-            expected_contents_of_stdin = ''
+            file_checker = FileChecker(put)
             file_checker.assert_file_contents(output_file_path,
                                               expected_contents_of_stdin)
-        # CLEANUP #
-        os.chdir(cwd_before_test)
+
+
+@contextmanager
+def preserved_cwd():
+    cwd_to_preserve = os.getcwd()
+    yield
+    if os.getcwd() != cwd_to_preserve:
+        os.chdir(cwd_to_preserve)
 
 
 class _ExecutorThatRecordsCurrentDir(ActSourceAndExecutor):
@@ -164,13 +181,14 @@ def _empty_test_case() -> sut.TestCase:
 
 def _execute(constructor: ActSourceAndExecutorConstructor,
              test_case: sut.TestCase,
+             setup_settings: SetupSettingsBuilder = setup.default_settings(),
              is_keep_execution_directory_root: bool = False) -> sut.PartialResult:
     home_dir_path = pathlib.Path().resolve()
     return sut.execute(
         ActPhaseHandling(constructor),
         test_case,
         home_dir_path,
-        setup.default_settings(),
+        setup_settings,
         program_info.PROGRAM_NAME + '-test-',
         is_keep_execution_directory_root)
 
