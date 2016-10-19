@@ -1,11 +1,14 @@
+import os
 import pathlib
+import subprocess
+import sys
 import unittest
 
 from exactly_lib import program_info
 from exactly_lib.execution import partial_execution as sut
 from exactly_lib.execution import phase_step_simple as phase_step
 from exactly_lib.execution.act_phase import ActSourceAndExecutor, ExitCodeOrHardError, new_eh_exit_code, \
-    ActPhaseHandling
+    ActPhaseHandling, ActSourceAndExecutorConstructor
 from exactly_lib.section_document.model import new_empty_section_contents
 from exactly_lib.test_case.phases.common import HomeAndEds
 from exactly_lib.test_case.phases.result import sh
@@ -13,6 +16,9 @@ from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.std import StdFiles
 from exactly_lib_test.execution.test_resources.execution_recording.act_program_executor import \
     ActSourceAndExecutorConstructorForConstantExecutor
+from exactly_lib_test.test_resources import file_structure as fs
+from exactly_lib_test.test_resources.file_checks import FileChecker
+from exactly_lib_test.test_resources.file_structure_utils import tmp_dir
 
 
 def suite() -> unittest.TestSuite:
@@ -26,14 +32,9 @@ class TestCurrentDirectory(unittest.TestCase):
     def runTest(self):
         # ARRANGE
         executor_that_records_current_dir = _ExecutorThatRecordsCurrentDir()
-        home_dir_path = pathlib.Path().resolve()
+        constructor = ActSourceAndExecutorConstructorForConstantExecutor(executor_that_records_current_dir)
         # ACT #
-        sut.execute(
-            ActPhaseHandling(ActSourceAndExecutorConstructorForConstantExecutor(executor_that_records_current_dir)),
-            _empty_test_case(),
-            home_dir_path,
-            program_info.PROGRAM_NAME + '-test-',
-            False)
+        _execute(constructor, _empty_test_case())
         # ASSERT #
         phase_step_2_cwd = executor_that_records_current_dir.phase_step_2_cwd
         home_and_eds = executor_that_records_current_dir.actual_home_and_eds
@@ -64,6 +65,31 @@ class TestExecute(unittest.TestCase):
 
     def test_stdin_should_be_available(self):
         self.fail('not impl')
+
+    def test_WHEN_stdin_is_not_set_in_setup_THEN_it_should_be_empty(self):
+        """
+        Tests contents of stdin by executing a Python program that stores
+        the contents of stdin in a file.
+        """
+        # ARRANGE
+        cwd_before_test = os.getcwd()
+        with tmp_dir() as tmp_dir_path:
+            output_file_path = tmp_dir_path / 'output.txt'
+            python_program_file = fs.File('program.py',
+                                          _python_program_that_prints_stdin_to(output_file_path))
+            python_program_file.write_to(tmp_dir_path)
+            executor_that_records_contents_of_stdin = _ExecutorThatExecutesPythonProgram(tmp_dir_path / 'program.py')
+            constructor = ActSourceAndExecutorConstructorForConstantExecutor(executor_that_records_contents_of_stdin)
+            test_case = _empty_test_case()
+            # ACT #
+            _execute(constructor, test_case)
+            # ASSERT #
+            file_checker = FileChecker(self)
+            expected_contents_of_stdin = ''
+            file_checker.assert_file_contents(output_file_path,
+                                              expected_contents_of_stdin)
+        # CLEANUP #
+        os.chdir(cwd_before_test)
 
 
 class _ExecutorThatRecordsCurrentDir(ActSourceAndExecutor):
@@ -97,6 +123,36 @@ class _ExecutorThatRecordsCurrentDir(ActSourceAndExecutor):
         return self._home_and_eds
 
 
+class _ExecutorBaseWithSuccessfulSteps(ActSourceAndExecutor):
+    def validate_pre_eds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
+        return svh.new_svh_success()
+
+    def validate_post_setup(self, home_and_eds: HomeAndEds) -> svh.SuccessOrValidationErrorOrHardError:
+        return svh.new_svh_success()
+
+    def prepare(self, home_and_eds: HomeAndEds, script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
+        return sh.new_sh_success()
+
+    def execute(self, home_and_eds: HomeAndEds, script_output_dir_path: pathlib.Path,
+                std_files: StdFiles) -> ExitCodeOrHardError:
+        return new_eh_exit_code(0)
+
+
+class _ExecutorThatExecutesPythonProgram(_ExecutorBaseWithSuccessfulSteps):
+    def __init__(self, python_program_file: pathlib.Path):
+        self.python_program_file = python_program_file
+
+    def execute(self,
+                home_and_eds: HomeAndEds,
+                script_output_dir_path: pathlib.Path,
+                std_files: StdFiles) -> ExitCodeOrHardError:
+        exit_code = subprocess.call([sys.executable, str(self.python_program_file)],
+                                    stdin=std_files.stdin,
+                                    stdout=std_files.output.out,
+                                    stderr=std_files.output.err)
+        return new_eh_exit_code(exit_code)
+
+
 def _empty_test_case() -> sut.TestCase:
     return sut.TestCase(new_empty_section_contents(),
                         new_empty_section_contents(),
@@ -104,6 +160,31 @@ def _empty_test_case() -> sut.TestCase:
                         new_empty_section_contents(),
                         new_empty_section_contents())
 
+
+def _execute(constructor: ActSourceAndExecutorConstructor,
+             test_case: sut.TestCase,
+             is_keep_execution_directory_root: bool = False) -> sut.PartialResult:
+    home_dir_path = pathlib.Path().resolve()
+    return sut.execute(
+        ActPhaseHandling(constructor),
+        test_case,
+        home_dir_path,
+        program_info.PROGRAM_NAME + '-test-',
+        is_keep_execution_directory_root)
+
+
+def _python_program_that_prints_stdin_to(output_file_path: pathlib.Path) -> str:
+    return _PYTHON_PROGRAM_THAT_PRINTS_STDIN_TO_FILE_NAME.format(file_name=str(output_file_path))
+
+
+_PYTHON_PROGRAM_THAT_PRINTS_STDIN_TO_FILE_NAME = """\
+import sys
+
+output_file = '{file_name}'
+
+with open(output_file, mode='w') as f:
+    f.write(sys.stdin.read())
+"""
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())
