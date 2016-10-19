@@ -316,26 +316,6 @@ class _PartialExecutor:
                 self.__post_eds_environment(phases.SETUP)),
             self.__test_case.setup_phase)
 
-    # def __act__main(self) -> PartialResult:
-    #     """
-    #     Accumulates the script source by executing all instructions, and adding
-    #     comments from the test case file.
-    #
-    #     :param act_environment: Post-condition: Contains the accumulated script source.
-    #     """
-    #     script_builder = self.__act_phase_handling.source_builder
-    #     environment = PhaseEnvironmentForScriptGeneration(script_builder)
-    #     ret_val = phase_step_execution.execute_phase(
-    #         self.__test_case.act_phase,
-    #         _ActCommentHeaderExecutor(environment),
-    #         _ActInstructionHeaderExecutor(environment),
-    #         phase_step_executors.ActMainExecutor(self.__post_eds_environment(phases.ACT),
-    #                                              environment),
-    #         phase_step.ACT__MAIN,
-    #         self._eds)
-    #     self.___step_execution_result.script_source = script_builder.build()
-    #     return ret_val
-
     def __act_program_executor(self):
         return _ActProgramExecution(self.__act_source_and_executor,
                                     HomeAndEds(self.__configuration.home_dir, self._eds),
