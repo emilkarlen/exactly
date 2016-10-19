@@ -20,11 +20,11 @@ class FileChecker:
         self.assert_exists_dir(p)
         directory_contents = list(p.iterdir())
         self.put.assertEquals(
-                expected_number_of_files,
-                len(directory_contents),
-                self._msg('The directory "%s" should contain exactly %s files. Found %s' % (str(p),
-                                                                                            expected_number_of_files,
-                                                                                            str(directory_contents))))
+            expected_number_of_files,
+            len(directory_contents),
+            self._msg('The directory "%s" should contain exactly %s files. Found %s' % (str(p),
+                                                                                        expected_number_of_files,
+                                                                                        str(directory_contents))))
 
     def assert_exists_dir(self, p: pathlib.Path):
         self.put.assertTrue(p.exists(), self._msg('"%s" should exist (as a directory)' % p.name))
@@ -41,8 +41,8 @@ class FileChecker:
             actual_contents = f.read()
             self.put.assertEqual(expected_contents,
                                  actual_contents,
-                                 'The file {} should contain exactly {}'.format(str(p),
-                                                                                expected_contents))
+                                 'The file {} should contain exactly "{}"'.format(str(p),
+                                                                                  expected_contents))
 
     def assert_is_plain_file_with_contents(self,
                                            p: pathlib.Path,

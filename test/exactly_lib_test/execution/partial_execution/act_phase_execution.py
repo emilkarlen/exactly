@@ -76,13 +76,25 @@ class TestExecute(unittest.TestCase):
 
     def test_stdout_should_be_saved_in_file(self):
         # ARRANGE #
-        python_source = _PYTHON_PROGRAM_THAT_WRITES_VALUE_TO_STDOUT.format(value='output from program')
-        executor = _ExecutorThatExecutesPythonProgramSource(python_source)
-        constructor = ActSourceAndExecutorConstructorForConstantExecutor(executor)
+        python_source = _PYTHON_PROGRAM_THAT_WRITES_VALUE_TO_FILE.format(file='stdout',
+                                                                         value='output from program')
+        act_phase_handling = _act_phase_handling_for_execution_of_python_source(python_source)
         arrangement = Arrangement(test_case=_empty_test_case(),
-                                  act_phase_handling=ActPhaseHandling(constructor))
+                                  act_phase_handling=act_phase_handling)
         # ASSERT #
         expectation = Expectation(assertion_on_sds=_stdout_result_file_contains('output from program'))
+        # APPLY #
+        execute_and_check(self, arrangement, expectation)
+
+    def test_stderr_should_be_saved_in_file(self):
+        # ARRANGE #
+        python_source = _PYTHON_PROGRAM_THAT_WRITES_VALUE_TO_FILE.format(file='stderr',
+                                                                         value='output from program')
+        act_phase_handling = _act_phase_handling_for_execution_of_python_source(python_source)
+        arrangement = Arrangement(test_case=_empty_test_case(),
+                                  act_phase_handling=act_phase_handling)
+        # ASSERT #
+        expectation = Expectation(assertion_on_sds=_stderr_result_file_contains('output from program'))
         # APPLY #
         execute_and_check(self, arrangement, expectation)
 
@@ -130,8 +142,14 @@ def _exit_code_result_file_contains(expected_contents: str) -> va.ValueAssertion
 
 
 def _stdout_result_file_contains(expected_contents: str) -> va.ValueAssertion:
-    return va.sub_component('file for exit code',
+    return va.sub_component('file for stdout',
                             lambda sds: sds.result.stdout_file,
+                            fa.PathIsFileWithContents(expected_contents))
+
+
+def _stderr_result_file_contains(expected_contents: str) -> va.ValueAssertion:
+    return va.sub_component('file for stderr',
+                            lambda sds: sds.result.stderr_file,
                             fa.PathIsFileWithContents(expected_contents))
 
 
@@ -229,6 +247,12 @@ class _ExecutorThatExecutesPythonProgramSource(ActSourceAndExecutorThatJustRetur
         return new_eh_exit_code(exit_code)
 
 
+def _act_phase_handling_for_execution_of_python_source(python_source: str) -> ActPhaseHandling:
+    executor = _ExecutorThatExecutesPythonProgramSource(python_source)
+    constructor = ActSourceAndExecutorConstructorForConstantExecutor(executor)
+    return ActPhaseHandling(constructor)
+
+
 class _ExecutorThatReturnsConstantExitCode(ActSourceAndExecutorThatJustReturnsSuccess):
     def __init__(self, exit_code: int):
         self.exit_code = exit_code
@@ -275,10 +299,10 @@ with open(output_file, mode='w') as f:
     f.write(sys.stdin.read())
 """
 
-_PYTHON_PROGRAM_THAT_WRITES_VALUE_TO_STDOUT = """\
+_PYTHON_PROGRAM_THAT_WRITES_VALUE_TO_FILE = """\
 import sys
 
-sys.stdout.write('{value}')
+sys.{file}.write('{value}')
 """
 
 if __name__ == '__main__':
