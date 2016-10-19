@@ -70,12 +70,21 @@ class TestExecute(unittest.TestCase):
         arrangement = Arrangement(test_case=_empty_test_case(),
                                   act_phase_handling=ActPhaseHandling(constructor))
         # ASSERT #
-        expectation = Expectation(assertion_on_sds=_exit_code_file_contains(str(exit_code_from_execution)))
+        expectation = Expectation(assertion_on_sds=_exit_code_result_file_contains(str(exit_code_from_execution)))
         # APPLY #
         execute_and_check(self, arrangement, expectation)
 
     def test_stdout_should_be_saved_in_file(self):
-        self.fail('not impl')
+        # ARRANGE #
+        python_source = _PYTHON_PROGRAM_THAT_WRITES_VALUE_TO_STDOUT.format(value='output from program')
+        executor = _ExecutorThatExecutesPythonProgramSource(python_source)
+        constructor = ActSourceAndExecutorConstructorForConstantExecutor(executor)
+        arrangement = Arrangement(test_case=_empty_test_case(),
+                                  act_phase_handling=ActPhaseHandling(constructor))
+        # ASSERT #
+        expectation = Expectation(assertion_on_sds=_stdout_result_file_contains('output from program'))
+        # APPLY #
+        execute_and_check(self, arrangement, expectation)
 
     def test_WHEN_stdin_set_to_file_that_does_not_exist_THEN_execution_should_result_in_hard_error(self):
         # ARRANGE #
@@ -114,9 +123,15 @@ class TestExecute(unittest.TestCase):
                                                     expected_contents_of_stdin)
 
 
-def _exit_code_file_contains(expected_contents: str) -> va.ValueAssertion:
+def _exit_code_result_file_contains(expected_contents: str) -> va.ValueAssertion:
     return va.sub_component('file for exit code',
                             lambda sds: sds.result.exitcode_file,
+                            fa.PathIsFileWithContents(expected_contents))
+
+
+def _stdout_result_file_contains(expected_contents: str) -> va.ValueAssertion:
+    return va.sub_component('file for exit code',
+                            lambda sds: sds.result.stdout_file,
                             fa.PathIsFileWithContents(expected_contents))
 
 
@@ -134,7 +149,8 @@ def _check_contents_of_stdin_for_setup_settings(put: unittest.TestCase,
             output_file_path = tmp_dir_path / 'output.txt'
             python_program_file = fs.File('program.py', _python_program_that_prints_stdin_to(output_file_path))
             python_program_file.write_to(tmp_dir_path)
-            executor_that_records_contents_of_stdin = _ExecutorThatExecutesPythonProgram(tmp_dir_path / 'program.py')
+            executor_that_records_contents_of_stdin = _ExecutorThatExecutesPythonProgramFile(
+                tmp_dir_path / 'program.py')
             constructor = ActSourceAndExecutorConstructorForConstantExecutor(executor_that_records_contents_of_stdin)
             test_case = _empty_test_case()
             # ACT #
@@ -177,7 +193,7 @@ class _ExecutorThatRecordsCurrentDir(ActSourceAndExecutor):
         return self._home_and_eds
 
 
-class _ExecutorThatExecutesPythonProgram(ActSourceAndExecutorThatJustReturnsSuccess):
+class _ExecutorThatExecutesPythonProgramFile(ActSourceAndExecutorThatJustReturnsSuccess):
     def __init__(self, python_program_file: pathlib.Path):
         self.python_program_file = python_program_file
 
@@ -186,6 +202,27 @@ class _ExecutorThatExecutesPythonProgram(ActSourceAndExecutorThatJustReturnsSucc
                 script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
         exit_code = subprocess.call([sys.executable, str(self.python_program_file)],
+                                    stdin=std_files.stdin,
+                                    stdout=std_files.output.out,
+                                    stderr=std_files.output.err)
+        return new_eh_exit_code(exit_code)
+
+
+class _ExecutorThatExecutesPythonProgramSource(ActSourceAndExecutorThatJustReturnsSuccess):
+    PYTHON_FILE_NAME = 'program.py'
+
+    def __init__(self, python_program_source: str):
+        self.python_program_source = python_program_source
+
+    def execute(self,
+                home_and_eds: HomeAndEds,
+                script_output_dir_path: pathlib.Path,
+                std_files: StdFiles) -> ExitCodeOrHardError:
+        python_file = pathlib.Path() / self.PYTHON_FILE_NAME
+        with python_file.open(mode='w') as f:
+            f.write(self.python_program_source)
+
+        exit_code = subprocess.call([sys.executable, str(python_file)],
                                     stdin=std_files.stdin,
                                     stdout=std_files.output.out,
                                     stderr=std_files.output.err)
@@ -236,6 +273,12 @@ output_file = '{file_name}'
 
 with open(output_file, mode='w') as f:
     f.write(sys.stdin.read())
+"""
+
+_PYTHON_PROGRAM_THAT_WRITES_VALUE_TO_STDOUT = """\
+import sys
+
+sys.stdout.write('{value}')
 """
 
 if __name__ == '__main__':
