@@ -222,7 +222,7 @@ class PartialExecutionTestCaseBase:
 
 
 def _execute(test_case: partial_execution.TestCase,
-             act_phase_handling: exactly_lib.execution.act_phase.ActPhaseHandling,
+             act_phase_handling: ActPhaseHandling,
              is_keep_execution_directory_root: bool = True) -> Result:
     home_dir_path = pathlib.Path().resolve()
     partial_result = partial_execution.execute(
