@@ -1,4 +1,3 @@
-import functools
 import os
 import unittest
 
@@ -21,7 +20,7 @@ from exactly_lib_test.execution.test_resources.instruction_test_resources import
 from exactly_lib_test.execution.test_resources.instruction_test_resources import configuration_phase_instruction_that
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that
 from exactly_lib_test.execution.test_resources.instruction_that_do_and_return import \
-    print_to_file__generate_script, print_to_file__generate_script2
+    print_to_file__generate_script2
 from exactly_lib_test.execution.test_resources.py_unit_test_case_with_file_output import ModulesAndStatements
 from exactly_lib_test.execution.test_resources.python_code_gen import print_env_var_if_defined
 from exactly_lib_test.execution.test_resources.test_case_generation import full_test_case_with_instructions
@@ -190,11 +189,6 @@ def python_code_for_print_environment_variables(file_variable: str) -> ModulesAn
         code.extend(print_env_var_if_defined(env_var, file_variable))
     return ModulesAndStatements({'os'},
                                 code)
-
-
-script_for_print_environment_variables_to_file = functools.partial(print_to_file__generate_script,
-                                                                   python_code_for_print_environment_variables,
-                                                                   ACT_SCRIPT_OUTPUT_FILE_NAME)
 
 
 class _ActionWithPhaseStepAndRecording:
