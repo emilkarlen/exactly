@@ -66,6 +66,16 @@ class TestExecute(unittest.TestCase):
     def test_stdout_should_be_saved_in_file(self):
         self.fail('not impl')
 
+    def test_WHEN_stdin_set_to_file_THEN_it_SHOULD_consist_of_contents_of_this_file__absolute_file_name(self):
+        file_to_redirect = fs.File('redirected-to-stdin.txt', 'contents of file to redirect')
+        with tmp_dir(fs.DirContents([file_to_redirect])) as tmp_dir_path:
+            absolute_name_of_file_to_redirect = (tmp_dir_path / 'redirected-to-stdin.txt').resolve()
+            setup_settings = setup.default_settings()
+            setup_settings.stdin.file_name = str(absolute_name_of_file_to_redirect)
+            _check_contents_of_stdin_for_setup_settings(self,
+                                                        setup_settings,
+                                                        'contents of file to redirect')
+
     def test_WHEN_stdin_set_to_string_THEN_it_SHOULD_consist_of_this_string(self):
         setup_settings = setup.default_settings()
         setup_settings.stdin.contents = 'contents of stdin'
@@ -186,8 +196,8 @@ def _empty_test_case() -> sut.TestCase:
 def _execute(constructor: ActSourceAndExecutorConstructor,
              test_case: sut.TestCase,
              setup_settings: SetupSettingsBuilder = setup.default_settings(),
-             is_keep_execution_directory_root: bool = False) -> sut.PartialResult:
-    home_dir_path = pathlib.Path().resolve()
+             is_keep_execution_directory_root: bool = False,
+             home_dir_path: pathlib.Path = pathlib.Path().resolve()) -> sut.PartialResult:
     return sut.execute(
         ActPhaseHandling(constructor),
         test_case,
