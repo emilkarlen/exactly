@@ -1,5 +1,4 @@
 import pathlib
-import sys
 import unittest
 from contextlib import contextmanager
 
@@ -11,6 +10,7 @@ from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.line_source import LineSequence
 from exactly_lib_test.act_phase_setups.test_resources.act_source_and_executor import Configuration, \
     suite_for_execution
+from exactly_lib_test.test_resources import shell_commands
 from exactly_lib_test.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_resources.python_program_execution import abs_path_to_interpreter_quoted_for_exactly
 
@@ -89,70 +89,32 @@ class TheConfiguration(Configuration):
 
     @contextmanager
     def program_that_copes_stdin_to_stdout(self) -> list:
-        yield self._instruction_for(_program_that_copes_stdin_to_stdout())
+        yield self._instruction_for(shell_commands.command_that_copes_stdin_to_stdout())
 
     @contextmanager
     def program_that_prints_to_stderr(self, string_to_print: str) -> list:
-        yield self._instruction_for(_program_that_prints_to_stderr(string_to_print))
+        yield self._instruction_for(shell_commands.command_that_prints_to_stderr(string_to_print))
 
     @contextmanager
     def program_that_prints_to_stdout(self, string_to_print: str) -> list:
-        yield self._instruction_for(_program_that_prints_to_stdout(string_to_print))
+        yield self._instruction_for(shell_commands.command_that_prints_to_stdout(string_to_print))
 
     @contextmanager
     def program_that_exits_with_code(self, exit_code: int) -> list:
-        yield self._instruction_for(_program_that_exits_with_code(exit_code))
+        yield self._instruction_for(shell_commands.command_that_exits_with_code(exit_code))
 
     @contextmanager
     def program_that_prints_cwd_without_new_line_to_stdout(self) -> list:
-        yield self._instruction_for(_program_that_prints_cwd_without_new_line_to_stdout())
+        yield self._instruction_for(shell_commands.command_that_prints_cwd_without_new_line_to_stdout())
 
     @contextmanager
     def program_that_prints_value_of_environment_variable_to_stdout(self, var_name: str) -> list:
-        yield self._instruction_for(_program_that_prints_value_of_environment_variable_to_stdout(var_name))
+        yield self._instruction_for(
+            shell_commands.command_that_prints_value_of_environment_variable_to_stdout(var_name))
 
     @staticmethod
     def _instruction_for(command: str) -> list:
         return [SourceCodeInstruction(LineSequence(1, (command,)))]
-
-
-def _program_that_copes_stdin_to_stdout() -> str:
-    if sys.platform == 'win32':
-        return 'echo'
-    else:
-        return 'cat'
-
-
-def _program_that_prints_to_stderr(string_to_print: str) -> str:
-    if sys.platform == 'win32':
-        return 'Write-Error "{}"'.format(string_to_print)  # do not know how to suppress new-line
-    else:
-        return "echo -n '{}' >&2".format(string_to_print)
-
-
-def _program_that_prints_to_stdout(string_to_print: str) -> str:
-    if sys.platform == 'win32':
-        return 'Write-Output "{}"'.format(string_to_print)  # do not know how to suppress new-line
-    else:
-        return "echo -n '{}'".format(string_to_print)
-
-
-def _program_that_exits_with_code(exit_code: int) -> str:
-    return 'exit {}'.format(exit_code)
-
-
-def _program_that_prints_cwd_without_new_line_to_stdout() -> str:
-    if sys.platform == 'win32':
-        return 'Write-Output %cd%'  # do not know how to suppress new-line
-    else:
-        return 'echo -n $PWD'
-
-
-def _program_that_prints_value_of_environment_variable_to_stdout(var_name: str) -> str:
-    if sys.platform == 'win32':
-        return 'echo %{}%'.format(var_name)
-    else:
-        return 'echo -n ${}'.format(var_name)
 
 
 if __name__ == '__main__':

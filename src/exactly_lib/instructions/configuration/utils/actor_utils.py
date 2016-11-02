@@ -1,5 +1,6 @@
 import shlex
 
+from exactly_lib.act_phase_setups import shell_command
 from exactly_lib.act_phase_setups.script_interpretation.script_language_management import ScriptLanguageSetup
 from exactly_lib.act_phase_setups.script_interpretation.script_language_management import StandardScriptFileManager
 from exactly_lib.act_phase_setups.script_interpretation.script_language_setup import new_for_script_language_handling
@@ -12,6 +13,10 @@ from exactly_lib.instructions.utils.documentation.instruction_documentation_with
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
 from exactly_lib.util.cli_syntax.elements import argument as a
+
+SHELL_COMMAND_ACTOR_KEYWORD = 'shell'
+
+INTERPRETER_ACTOR_KEYWORD = 'interpreter'
 
 
 class InstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
@@ -65,11 +70,22 @@ def parse(source: SingleInstructionParserSource) -> ActPhaseHandling:
     """
     arg = source.instruction_argument.strip()
     if arg == '':
-        raise SingleInstructionInvalidArgumentException('A preprocessor program must be given.')
+        raise SingleInstructionInvalidArgumentException('An actor must be given.')
+    if arg == SHELL_COMMAND_ACTOR_KEYWORD:
+        return shell_command.act_phase_setup()
+    args = arg.split(maxsplit=1)
+    if args:
+        if args[0] == SHELL_COMMAND_ACTOR_KEYWORD and len(args) > 1:
+            raise SingleInstructionInvalidArgumentException('Superfluous argument to ' + SHELL_COMMAND_ACTOR_KEYWORD)
     try:
         command_and_arguments = shlex.split(arg)
     except:
         raise SingleInstructionInvalidArgumentException('Invalid quoting: ' + arg)
+    if len(command_and_arguments) > 0 and command_and_arguments[0] == INTERPRETER_ACTOR_KEYWORD:
+        del command_and_arguments[0]
+    if not command_and_arguments:
+        raise SingleInstructionInvalidArgumentException('Missing interpreter')
+
     act_phase_setup = new_for_script_language_handling(
         ScriptLanguageSetup(StandardScriptFileManager(
             'src',
