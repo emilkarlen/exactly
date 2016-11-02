@@ -11,7 +11,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.phases.common import GlobalEnvironmentForPreEdsStep
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
-from exactly_lib_test.act_phase_setups.test_resources import act_source_and_executor as test_utils
+from exactly_lib_test.act_phase_setups.test_resources import act_phase_execution
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.test_resources import shell_commands
 from exactly_lib_test.test_resources.act_phase_instruction import instr
@@ -128,11 +128,12 @@ def _check(put: unittest.TestCase,
     instruction.main(global_environment, configuration_builder)
     act_phase_instructions = [instr(arrangement.act_phase_source_lines)]
     executor_constructor = configuration_builder.act_phase_handling.source_and_executor_constructor
-    test_utils.check_execution(put,
-                               test_utils.Arrangement(executor_constructor=executor_constructor,
-                                                      act_phase_instructions=act_phase_instructions),
-                               test_utils.Expectation(
-                                   sub_process_result_from_execute=expectation.sub_process_result_from_execute))
+    act_phase_execution.check_execution(put,
+                                        act_phase_execution.Arrangement(executor_constructor=executor_constructor,
+                                                                        act_phase_instructions=act_phase_instructions),
+                                        act_phase_execution.Expectation(
+                                            sub_process_result_from_execute=expectation.sub_process_result_from_execute)
+                                        )
 
 
 def suite() -> unittest.TestSuite:
