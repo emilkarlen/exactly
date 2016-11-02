@@ -7,8 +7,19 @@ from exactly_lib.util.std import StdFiles
 
 def execute_cmd_and_args(cmd_and_args: list,
                          std_files: StdFiles) -> ExitCodeOrHardError:
+    return _execute_sub_process(cmd_and_args, std_files)
+
+
+def execute_shell_command(command_line: str, std_files: StdFiles) -> ExitCodeOrHardError:
+    return _execute_sub_process(command_line, std_files, shell=True)
+
+
+def _execute_sub_process(args,
+                         std_files: StdFiles,
+                         shell=False) -> ExitCodeOrHardError:
     try:
-        exit_code = subprocess.call(cmd_and_args,
+        exit_code = subprocess.call(args,
+                                    shell=shell,
                                     stdin=std_files.stdin,
                                     stdout=std_files.output.out,
                                     stderr=std_files.output.err)
