@@ -7,8 +7,10 @@ from exactly_lib.act_phase_setups.script_interpretation.script_language_manageme
     ScriptLanguageSetup
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.act_phase_setups.test_resources import py_program
+from exactly_lib_test.act_phase_setups.test_resources.act_phase_execution import Arrangement, Expectation, \
+    check_execution
 from exactly_lib_test.act_phase_setups.test_resources.act_source_and_executor import \
-    Configuration, suite_for_execution, check_execution, Arrangement, Expectation
+    Configuration, suite_for_execution
 from exactly_lib_test.execution.test_resources import eh_check
 from exactly_lib_test.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_resources.execution.eds_contents_check import TestCaseRootContainsExactly

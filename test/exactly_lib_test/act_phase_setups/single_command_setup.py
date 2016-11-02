@@ -8,8 +8,10 @@ from exactly_lib.test_case.phases.common import GlobalEnvironmentForPreEdsStep
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.act_phase_setups.test_resources import py_program
+from exactly_lib_test.act_phase_setups.test_resources.act_phase_execution import Arrangement, Expectation, \
+    check_execution
 from exactly_lib_test.act_phase_setups.test_resources.act_source_and_executor import Configuration, \
-    suite_for_execution, check_execution, Arrangement, Expectation
+    suite_for_execution
 from exactly_lib_test.execution.test_resources import eh_check
 from exactly_lib_test.test_resources import file_structure as fs
 from exactly_lib_test.test_resources import file_structure_utils as fs_utils
