@@ -1,5 +1,14 @@
 -*- org -*-
 
+* TODO env instruction should not set global environment variables
+The env instruction sets environment variables via OsServices.
+The default OsServices modifies the whole process' environment variables.
+So the problem is not the "env" instruction, but the OsServices object,
+and how act-phase executors set the variables - today they use
+the process' variables.  They should instead give them explicitly by
+passing the dictionary used by OsServices.
+To accomplish this, ActSourceAndExecutorConstructor must be passed
+these environment variables (probably by beeing passed an OsServices object).
 * TODO Act phase
 ** TODO Name of act-phase actor for error messages
 Since the actor (of the act phase) is configurable, it would be informative to the user
