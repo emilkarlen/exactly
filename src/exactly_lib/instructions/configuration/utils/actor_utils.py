@@ -22,7 +22,7 @@ INTERPRETER_ACTOR_KEYWORD = 'interpreter'
 class InstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
     def __init__(self, name: str,
                  single_line_description_unformatted: str,
-                 main_description_rest_unformatted: str):
+                 main_description_rest_unformatted: str = None):
         self.executable = a.Named('EXECUTABLE')
         self.argument = a.Named('ARGUMENT')
         self.single_line_description_unformatted = single_line_description_unformatted
@@ -39,29 +39,44 @@ class InstructionDocumentation(InstructionDocumentationWithCommandLineRenderingB
         return self._format(self.single_line_description_unformatted)
 
     def invokation_variants(self) -> list:
-        executable_arg = a.Single(a.Multiplicity.MANDATORY,
-                                  self.executable)
-        optional_arguments_arg = a.Single(a.Multiplicity.ZERO_OR_MORE,
-                                          self.argument)
+        shell_arg = a.Single(a.Multiplicity.MANDATORY, a.Named(SHELL_COMMAND_ACTOR_KEYWORD))
+        interpreter_arg = a.Single(a.Multiplicity.OPTIONAL, a.Named(INTERPRETER_ACTOR_KEYWORD))
+        executable_arg = a.Single(a.Multiplicity.MANDATORY, self.executable)
+        optional_arguments_arg = a.Single(a.Multiplicity.ZERO_OR_MORE, self.argument)
         return [
-            InvokationVariant(self._cl_syntax_for_args([executable_arg,
-                                                        optional_arguments_arg])),
+            InvokationVariant(self._cl_syntax_for_args([shell_arg]),
+                              self._description_of_shell()),
+            InvokationVariant(self._cl_syntax_for_args([interpreter_arg,
+                                                        executable_arg,
+                                                        optional_arguments_arg]),
+                              self._description_of_interpreter()),
         ]
 
     def syntax_element_descriptions(self) -> list:
         return [
             SyntaxElementDescription(self.executable.name,
-                                     self._paragraphs('The path of an existing executable file.'))
+                                     self._paragraphs(_DESCRIPTION_OF_EXECUTABLE)),
+            SyntaxElementDescription(self.argument.name,
+                                     self._paragraphs(_DESCRIPTION_OF_ARGUMENTS))
         ]
 
     def main_description_rest(self) -> list:
-        return self._paragraphs(self.main_description_rest_unformatted)
+        if self.main_description_rest_unformatted:
+            return self._paragraphs(self.main_description_rest_unformatted)
+        else:
+            return []
 
     def see_also(self) -> list:
         from exactly_lib.help.concepts.configuration_parameters.actor import ACTOR_CONCEPT
         return [
             ACTOR_CONCEPT.cross_reference_target(),
         ]
+
+    def _description_of_interpreter(self) -> list:
+        return self._paragraphs(_DESCRIPTION_OF_INTERPRETER)
+
+    def _description_of_shell(self) -> list:
+        return self._paragraphs(_DESCRIPTION_OF_SHELL)
 
 
 def parse(source: SingleInstructionParserSource) -> ActPhaseHandling:
@@ -92,3 +107,31 @@ def parse(source: SingleInstructionParserSource) -> ActPhaseHandling:
             command_and_arguments[0],
             command_and_arguments[1:])))
     return act_phase_setup
+
+
+_DESCRIPTION_OF_INTERPRETER = """\
+The {act_phase} phase is source code, to be interpreted by the given {EXECUTABLE}.
+
+
+{EXECUTABLE} is an executable program which is given {ARGUMENT}, followed by the name of a file
+containing the contents of the {act_phase} phase, as arguments.
+"""
+
+_DESCRIPTION_OF_SHELL = """\
+The {act_phase} phase is a single command line, which is execute it via the
+systems' shell.
+"""
+
+_DESCRIPTION_OF_EXECUTABLE = """\
+The path of an existing executable file.
+
+
+Uses shell syntax.
+"""
+
+_DESCRIPTION_OF_ARGUMENTS = """\
+Arguments given to {EXECUTABLE}.
+
+
+Uses shell syntax.
+"""

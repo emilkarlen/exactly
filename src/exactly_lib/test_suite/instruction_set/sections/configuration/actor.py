@@ -23,9 +23,6 @@ The {actor} may be overridden by configuration in test cases.
 
 The {actor} is only used for the test cases in the current suite -
 not in sub suites.
-
-
-{EXECUTABLE} and {ARGUMENT} uses shell syntax.
 """
 
 
