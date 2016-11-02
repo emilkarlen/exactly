@@ -10,18 +10,10 @@ from exactly_lib.test_case.phases.result import sh
 def setup(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(Parser(),
                                   actor_utils.InstructionDocumentation(instruction_name,
-                                                                       _SINGLE_LINE_DESCRIPTION_UNFORMATTED,
-                                                                       _DESCRIPTION))
+                                                                       _SINGLE_LINE_DESCRIPTION_UNFORMATTED))
 
 
 _SINGLE_LINE_DESCRIPTION_UNFORMATTED = 'Sets the {actor} that will execute the {act_phase} phase'
-_DESCRIPTION = """\
-The actor will treat the contents of the {act_phase} phase as source code
-to be interpreted by the given program.
-
-
-{EXECUTABLE} and {ARGUMENT} uses shell syntax.
-"""
 
 
 class Parser(SingleInstructionParser):
