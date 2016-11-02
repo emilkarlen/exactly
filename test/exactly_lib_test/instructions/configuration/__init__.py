@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib_test.instructions.configuration import home, execution_mode
+from exactly_lib_test.instructions.configuration import home, execution_mode, actor
 from exactly_lib_test.instructions.configuration import test_resources
 
 
@@ -9,6 +9,7 @@ def suite():
     ret_val.addTest(test_resources.suite())
     ret_val.addTest(execution_mode.suite())
     ret_val.addTest(home.suite())
+    ret_val.addTest(actor.suite())
     return ret_val
 
 
