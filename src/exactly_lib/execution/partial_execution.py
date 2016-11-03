@@ -31,12 +31,31 @@ from .result import PartialResult, PartialResultStatus, new_partial_result_pass,
 
 class Configuration(tuple):
     def __new__(cls,
-                home_dir: pathlib.Path,
-                execution_directory_root_name_prefix: str):
-        return tuple.__new__(cls, (home_dir, execution_directory_root_name_prefix))
+                home_dir_path: pathlib.Path,
+                timeout_in_seconds: int = None):
+        """
+        :param home_dir_path:
+        :param timeout_in_seconds: None if no timeout
+        """
+        return tuple.__new__(cls, (home_dir_path, timeout_in_seconds))
 
     @property
-    def home_dir(self) -> pathlib.Path:
+    def home_dir_path(self) -> pathlib.Path:
+        return self[0]
+
+    @property
+    def timeout_in_seconds(self) -> int:
+        return self[1]
+
+
+class _ExecutionConfiguration(tuple):
+    def __new__(cls,
+                configuration: Configuration,
+                execution_directory_root_name_prefix: str):
+        return tuple.__new__(cls, (configuration, execution_directory_root_name_prefix))
+
+    @property
+    def configuration(self) -> Configuration:
         return self[0]
 
     @property
@@ -107,7 +126,7 @@ class _StepExecutionResult:
 
 def execute(act_phase_handling: ActPhaseHandling,
             test_case: TestCase,
-            home_dir_path: pathlib.Path,
+            configuration: Configuration,
             initial_setup_settings: SetupSettingsBuilder,
             execution_directory_root_name_prefix: str,
             is_keep_execution_directory_root: bool) -> PartialResult:
@@ -128,10 +147,10 @@ def execute(act_phase_handling: ActPhaseHandling,
     ret_val = None
     try:
         cwd_before = os.getcwd()
-        configuration = Configuration(home_dir_path,
-                                      execution_directory_root_name_prefix)
+        exe_configuration = _ExecutionConfiguration(configuration,
+                                                    execution_directory_root_name_prefix)
 
-        test_case_execution = _PartialExecutor(configuration,
+        test_case_execution = _PartialExecutor(exe_configuration,
                                                act_phase_handling,
                                                test_case,
                                                initial_setup_settings)
@@ -152,15 +171,17 @@ def construct_eds(execution_directory_root_name_prefix: str) -> ExecutionDirecto
 
 class _PartialExecutor:
     def __init__(self,
-                 configuration: Configuration,
+                 exe_configuration: _ExecutionConfiguration,
                  act_phase_handling: ActPhaseHandling,
                  test_case: TestCase,
                  setup_settings_builder: SetupSettingsBuilder):
         self.__execution_directory_structure = None
-        self.__global_environment_pre_eds = GlobalEnvironmentForPreEdsStep(configuration.home_dir)
+        self.__global_environment_pre_eds = GlobalEnvironmentForPreEdsStep(
+            exe_configuration.configuration.home_dir_path)
         self.__act_phase_handling = act_phase_handling
         self.__test_case = test_case
-        self.__configuration = configuration
+        self.__exe_configuration = exe_configuration
+        self.__configuration = exe_configuration.configuration
         self.__setup_settings_builder = setup_settings_builder
         self.___step_execution_result = _StepExecutionResult()
         self.__source_setup = None
@@ -226,6 +247,10 @@ class _PartialExecutor:
     @property
     def _eds(self) -> ExecutionDirectoryStructure:
         return self.__execution_directory_structure
+
+    @property
+    def exe_configuration(self) -> _ExecutionConfiguration:
+        return self.__exe_configuration
 
     @property
     def configuration(self) -> Configuration:
@@ -316,7 +341,7 @@ class _PartialExecutor:
 
     def __act_program_executor(self):
         return _ActProgramExecution(self.__act_source_and_executor,
-                                    HomeAndEds(self.__configuration.home_dir, self._eds),
+                                    HomeAndEds(self.__configuration.home_dir_path, self._eds),
                                     self.___step_execution_result)
 
     def __before_assert__validate_post_setup(self) -> PartialResult:
@@ -359,18 +384,18 @@ class _PartialExecutor:
             self.__test_case.before_assert_phase)
 
     def __set_pre_eds_environment_variables(self):
-        os.environ.update(environment_variables.set_at_setup_pre_validate(self.configuration.home_dir))
+        os.environ.update(environment_variables.set_at_setup_pre_validate(self.__configuration.home_dir_path))
 
     def __set_cwd_to_act_dir(self):
         os.chdir(str(self._eds.act_dir))
 
     def __construct_and_set_eds(self) -> ExecutionDirectoryStructure:
-        eds_structure_root = tempfile.mkdtemp(prefix=self.__configuration.execution_directory_root_name_prefix)
+        eds_structure_root = tempfile.mkdtemp(prefix=self.__exe_configuration.execution_directory_root_name_prefix)
         self.__execution_directory_structure = construct_eds(eds_structure_root)
 
     def __post_eds_environment(self,
                                phase: phases.Phase) -> common.GlobalEnvironmentForPostEdsPhase:
-        return common.GlobalEnvironmentForPostEdsPhase(self.__configuration.home_dir,
+        return common.GlobalEnvironmentForPostEdsPhase(self.__configuration.home_dir_path,
                                                        self.__execution_directory_structure,
                                                        phase.identifier)
 

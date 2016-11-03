@@ -38,7 +38,7 @@ def execute_and_check(put: unittest.TestCase,
         partial_result = partial_execution.execute(
             arrangement.act_phase_handling,
             arrangement.test_case,
-            home_dir_path,
+            partial_execution.Configuration(home_dir_path),
             arrangement.initial_setup_settings,
             program_info.PROGRAM_NAME + '-test-',
             is_keep_execution_directory_root=True)

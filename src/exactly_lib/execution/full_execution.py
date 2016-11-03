@@ -23,25 +23,27 @@ def execute(default_act_phase_handling: ActPhaseHandling,
     The main method for executing a Test Case.
     """
     _prepare_environment_variables()
-    configuration_phase_environment = ConfigurationBuilder(initial_home_dir_path.resolve(),
-                                                           default_act_phase_handling)
-    partial_result = _execute_configuration_phase(configuration_phase_environment,
+    configuration_builder = ConfigurationBuilder(initial_home_dir_path.resolve(),
+                                                 default_act_phase_handling)
+    partial_result = _execute_configuration_phase(configuration_builder,
                                                   test_case.configuration_phase)
     if partial_result.status is not PartialResultStatus.PASS:
         return new_configuration_phase_failure_from(partial_result)
-    if configuration_phase_environment.execution_mode is ExecutionMode.SKIP:
+    if configuration_builder.execution_mode is ExecutionMode.SKIP:
         return result.new_skipped()
-    partial_result = partial_execution.execute(configuration_phase_environment.act_phase_handling,
+    partial_execution_configuration = partial_execution.Configuration(configuration_builder.home_dir_path,
+                                                                      configuration_builder.timeout_in_seconds)
+    partial_result = partial_execution.execute(configuration_builder.act_phase_handling,
                                                partial_execution.TestCase(test_case.setup_phase,
                                                                           test_case.act_phase,
                                                                           test_case.before_assert_phase,
                                                                           test_case.assert_phase,
                                                                           test_case.cleanup_phase),
-                                               configuration_phase_environment.home_dir_path,
+                                               partial_execution_configuration,
                                                setup.default_settings(),
                                                execution_directory_root_name_prefix,
                                                is_keep_execution_directory_root)
-    return new_named_phases_result_from(configuration_phase_environment.execution_mode,
+    return new_named_phases_result_from(configuration_builder.execution_mode,
                                         partial_result)
 
 

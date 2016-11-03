@@ -280,7 +280,7 @@ def _execute(constructor: ActSourceAndExecutorConstructor,
     return sut.execute(
         ActPhaseHandling(constructor),
         test_case,
-        home_dir_path,
+        sut.Configuration(home_dir_path),
         setup_settings,
         program_info.PROGRAM_NAME + '-test-',
         is_keep_execution_directory_root)
