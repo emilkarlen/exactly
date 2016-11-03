@@ -45,11 +45,10 @@ class ConfigurationMainExecutor(ControlledInstructionExecutor):
     def __init__(self,
                  phase_environment: ConfigurationBuilder):
         self.__phase_environment = phase_environment
-        self.__global_environment = ()
 
     def apply(self, instruction: ConfigurationPhaseInstruction) -> PartialInstructionControlledFailureInfo:
         return _from_success_or_hard_error(
-            instruction.main(self.__global_environment, self.__phase_environment))
+            instruction.main(self.__phase_environment))
 
 
 class SetupValidatePreEdsExecutor(ControlledInstructionExecutor):

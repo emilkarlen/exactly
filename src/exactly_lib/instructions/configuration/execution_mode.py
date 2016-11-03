@@ -70,8 +70,6 @@ class _Instruction(ConfigurationPhaseInstruction):
                  mode_to_set: ExecutionMode):
         self.mode_to_set = mode_to_set
 
-    def main(self,
-             global_environment,
-             configuration_builder: ConfigurationBuilder) -> sh.SuccessOrHardError:
+    def main(self, configuration_builder: ConfigurationBuilder) -> sh.SuccessOrHardError:
         configuration_builder.set_execution_mode(self.mode_to_set)
         return sh.new_sh_success()
