@@ -36,3 +36,10 @@ def write_cwd_to_stdout() -> list:
         'import os',
         "sys.stdout.write(os.getcwd())"
     ]
+
+
+def program_that_sleeps_at_least(number_of_seconds: int) -> list:
+    return [
+        'import time',
+        'time.sleep({})'.format(number_of_seconds),
+    ]

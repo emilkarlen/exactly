@@ -33,10 +33,12 @@ class Arrangement:
                  executor_constructor: ActSourceAndExecutorConstructor,
                  act_phase_instructions: list,
                  home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
+                 timeout_in_seconds: int = None
                  ):
         self.executor_constructor = executor_constructor
         self.act_phase_instructions = act_phase_instructions
         self.home_dir_contents = home_dir_contents
+        self.timeout_in_seconds = timeout_in_seconds
 
 
 class Expectation:
@@ -64,7 +66,7 @@ def check_execution(put: unittest.TestCase,
 
     cwd_before_test = os.getcwd()
     with fs_utils.tmp_dir(arrangement.home_dir_contents) as home_dir:
-        environment = GlobalEnvironmentForPreEdsStep(home_dir)
+        environment = GlobalEnvironmentForPreEdsStep(home_dir, arrangement.timeout_in_seconds)
         sut = arrangement.executor_constructor.apply(environment, arrangement.act_phase_instructions)
         step_result = sut.validate_pre_eds(home_dir)
         put.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,

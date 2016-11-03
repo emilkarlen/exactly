@@ -177,7 +177,8 @@ class _PartialExecutor:
                  setup_settings_builder: SetupSettingsBuilder):
         self.__execution_directory_structure = None
         self.__global_environment_pre_eds = GlobalEnvironmentForPreEdsStep(
-            exe_configuration.configuration.home_dir_path)
+            exe_configuration.configuration.home_dir_path,
+            exe_configuration.configuration.timeout_in_seconds)
         self.__act_phase_handling = act_phase_handling
         self.__test_case = test_case
         self.__exe_configuration = exe_configuration
