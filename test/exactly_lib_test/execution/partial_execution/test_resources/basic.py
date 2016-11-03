@@ -44,11 +44,6 @@ class Result(tuple):
     def execution_directory_structure(self) -> ExecutionDirectoryStructure:
         return self.partial_result.execution_directory_structure
 
-    @property
-    def configuration(self) -> partial_execution.Configuration:
-        return partial_execution.Configuration(self.home_dir_path,
-                                               str(self.execution_directory_structure.act_dir))
-
 
 class TestCaseGeneratorForPartialExecutionBase(TestCaseGeneratorBase):
     """
