@@ -46,6 +46,10 @@ class TheConfiguration(Configuration):
     def program_that_prints_value_of_environment_variable_to_stdout(self, var_name: str) -> list:
         yield self._builder_for(py_program.write_value_of_environment_variable_to_stdout(var_name))
 
+    @contextmanager
+    def program_that_sleeps_at_least(self, number_of_seconds: int) -> list:
+        yield self._builder_for(py_program.program_that_sleeps_at_least(number_of_seconds))
+
     def _builder_for(self, statements: list) -> list:
         return list(map(lambda stmt: instr([stmt]), statements))
 

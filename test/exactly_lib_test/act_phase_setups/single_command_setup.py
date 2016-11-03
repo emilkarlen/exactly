@@ -162,6 +162,11 @@ class TheConfiguration(Configuration):
         return self._builder_for_executing_source_from_py_file(
             py_program.write_value_of_environment_variable_to_stdout(var_name))
 
+    @contextmanager
+    def program_that_sleeps_at_least(self, number_of_seconds: int) -> list:
+        yield self._builder_for_executing_source_from_py_file(
+            py_program.program_that_sleeps_at_least(number_of_seconds))
+
     def _builder_for_executing_source_from_py_file(self, statements: list) -> list:
         with tmp_file_containing_lines(statements) as src_path:
             yield self._builder_for_executing_py_file(src_path)

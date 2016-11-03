@@ -7,8 +7,10 @@ from contextlib import contextmanager
 from exactly_lib.execution.act_phase import ActSourceAndExecutorConstructor
 from exactly_lib.test_case.phases.common import GlobalEnvironmentForPreEdsStep, HomeAndEds
 from exactly_lib.test_case.phases.result import svh
+from exactly_lib_test.act_phase_setups.test_resources import act_phase_execution
 from exactly_lib_test.act_phase_setups.test_resources.act_phase_execution import \
     assert_is_list_of_act_phase_instructions, ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode
+from exactly_lib_test.execution.test_resources import eh_check
 from exactly_lib_test.test_resources.execution.eds_populator import act_dir_contents
 from exactly_lib_test.test_resources.execution.utils import execution_directory_structure
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir
@@ -62,6 +64,13 @@ class Configuration:
         """
         raise NotImplementedError()
 
+    @contextmanager
+    def program_that_sleeps_at_least(self, number_of_seconds: int) -> list:
+        """
+        :return: List of ActPhaseInstruction
+        """
+        raise NotImplementedError()
+
 
 def suite_for_execution(setup: Configuration) -> unittest.TestSuite:
     return unittest.TestSuite(tcc(setup) for tcc in
@@ -71,6 +80,7 @@ def suite_for_execution(setup: Configuration) -> unittest.TestSuite:
                                TestExitCodeIsReturned,
                                TestEnvironmentVariablesAreAccessibleByProgram,
                                TestInitialCwdIsCurrentDirAndThatCwdIsRestoredAfterwards,
+                               TestTimeoutValueIsUsed,
                                ])
 
 
@@ -214,3 +224,17 @@ class TestInitialCwdIsCurrentDirAndThatCwdIsRestoredAfterwards(TestBase):
             os.chdir(cwd_before)
 
 
+class TestTimeoutValueIsUsed(unittest.TestCase):
+    def __init__(self, configuration: Configuration):
+        super().__init__()
+        self.configuration = configuration
+
+    def shortDescription(self):
+        return str(type(self)) + '/' + str(type(self.configuration))
+
+    def runTest(self):
+        with self.configuration.program_that_sleeps_at_least(5) as act_phase_instructions:
+            arrangement = act_phase_execution.Arrangement(self.configuration.sut, act_phase_instructions,
+                                                          timeout_in_seconds=1)
+        expectation = act_phase_execution.Expectation(result_of_execute=eh_check.is_hard_error)
+        act_phase_execution.check_execution(self, arrangement, expectation)

@@ -45,3 +45,10 @@ def command_that_prints_value_of_environment_variable_to_stdout(var_name: str) -
         return 'echo %{}%'.format(var_name)
     else:
         return 'echo -n ${}'.format(var_name)
+
+
+def program_that_sleeps_at_least(number_of_seconds: int) -> str:
+    if sys.platform == 'win32':
+        return 'timeout {}'.format(number_of_seconds)
+    else:
+        return 'sleep {}'.format(number_of_seconds)

@@ -112,6 +112,11 @@ class TheConfiguration(Configuration):
         yield self._instruction_for(
             shell_commands.command_that_prints_value_of_environment_variable_to_stdout(var_name))
 
+    @contextmanager
+    def program_that_sleeps_at_least(self, number_of_seconds: int) -> list:
+        yield self._instruction_for(
+            shell_commands.program_that_sleeps_at_least(number_of_seconds))
+
     @staticmethod
     def _instruction_for(command: str) -> list:
         return [SourceCodeInstruction(LineSequence(1, (command,)))]
