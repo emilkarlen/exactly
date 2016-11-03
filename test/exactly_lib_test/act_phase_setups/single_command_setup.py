@@ -164,7 +164,7 @@ class TheConfiguration(Configuration):
 
     @contextmanager
     def program_that_sleeps_at_least(self, number_of_seconds: int) -> list:
-        yield self._builder_for_executing_source_from_py_file(
+        return self._builder_for_executing_source_from_py_file(
             py_program.program_that_sleeps_at_least(number_of_seconds))
 
     def _builder_for_executing_source_from_py_file(self, statements: list) -> list:

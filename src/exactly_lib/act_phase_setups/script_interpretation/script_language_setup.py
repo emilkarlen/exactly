@@ -7,7 +7,7 @@ from exactly_lib.execution.act_phase import ExitCodeOrHardError, \
     ActPhaseHandling
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
-from exactly_lib.test_case.phases.common import HomeAndEds
+from exactly_lib.test_case.phases.common import HomeAndEds, GlobalEnvironmentForPreEdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.util.std import StdFiles
 
@@ -24,7 +24,7 @@ class Constructor(executor_made_of_parts.Constructor):
     def __init__(self, script_language_setup: ScriptLanguageSetup):
         super().__init__(Parser(),
                          executor_made_of_parts.UnconditionallySuccessfulValidator,
-                         lambda source_code: Executor(script_language_setup, source_code))
+                         lambda environment, source_code: Executor(environment, script_language_setup, source_code))
         self.script_language_setup = script_language_setup
 
 
@@ -46,7 +46,11 @@ class Parser(executor_made_of_parts.Parser):
 class Executor(executor_made_of_parts.Executor):
     FILE_NAME_STEM = 'act-script'
 
-    def __init__(self, script_language_setup: ScriptLanguageSetup, source_code: str):
+    def __init__(self,
+                 environment: GlobalEnvironmentForPreEdsStep,
+                 script_language_setup: ScriptLanguageSetup,
+                 source_code: str):
+        self.environment = environment
         self.script_language_setup = script_language_setup
         self.source_code = source_code
 
@@ -67,7 +71,8 @@ class Executor(executor_made_of_parts.Executor):
                 std_files: StdFiles) -> ExitCodeOrHardError:
         script_file_path = self._script_path(script_output_dir_path)
         cmd_and_args = self.script_language_setup.command_and_args_for_executing_script_file(str(script_file_path))
-        return utils.execute_cmd_and_args(cmd_and_args, std_files)
+        return utils.execute_cmd_and_args(cmd_and_args, std_files,
+                                          timeout=self.environment.timeout_in_seconds)
 
     def _script_path(self,
                      script_output_dir_path: pathlib.Path) -> pathlib.Path:

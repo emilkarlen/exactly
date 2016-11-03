@@ -236,5 +236,5 @@ class TestTimeoutValueIsUsed(unittest.TestCase):
         with self.configuration.program_that_sleeps_at_least(5) as act_phase_instructions:
             arrangement = act_phase_execution.Arrangement(self.configuration.sut, act_phase_instructions,
                                                           timeout_in_seconds=1)
-        expectation = act_phase_execution.Expectation(result_of_execute=eh_check.is_hard_error)
-        act_phase_execution.check_execution(self, arrangement, expectation)
+            expectation = act_phase_execution.Expectation(result_of_execute=eh_check.is_hard_error)
+            act_phase_execution.check_execution(self, arrangement, expectation)
