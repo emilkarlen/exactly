@@ -6,7 +6,7 @@ from exactly_lib.act_phase_setups.util.executor_made_of_parts.parser_for_single_
     ParserForSingleLineUsingStandardSyntaxSplitAccordingToShellSyntax
 from exactly_lib.execution.act_phase import ExitCodeOrHardError
 from exactly_lib.processing.act_phase import ActPhaseSetup
-from exactly_lib.test_case.phases.common import HomeAndEds
+from exactly_lib.test_case.phases.common import HomeAndEds, GlobalEnvironmentForPreEdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.std import StdFiles
@@ -24,7 +24,9 @@ class Constructor(executor_made_of_parts.Constructor):
 
 
 class Validator(executor_made_of_parts.Validator):
-    def __init__(self, cmd_and_args: list):
+    def __init__(self,
+                 environment: GlobalEnvironmentForPreEdsStep,
+                 cmd_and_args: list):
         self.cmd_and_args = cmd_and_args
 
     def validate_pre_eds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
@@ -44,7 +46,10 @@ class Validator(executor_made_of_parts.Validator):
 
 
 class Executor(executor_made_of_parts.Executor):
-    def __init__(self, cmd_and_args: list):
+    def __init__(self,
+                 environment: GlobalEnvironmentForPreEdsStep,
+                 cmd_and_args: list):
+        self.environment = environment
         self.cmd_and_args = cmd_and_args
 
     def prepare(self, home_and_eds: HomeAndEds, script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
@@ -58,4 +63,5 @@ class Executor(executor_made_of_parts.Executor):
             cmd_path = home_and_eds.home_dir_path / cmd_path
             self.cmd_and_args[0] = str(cmd_path)
         return utils.execute_cmd_and_args(self.cmd_and_args,
-                                          std_files)
+                                          std_files,
+                                          timeout=self.environment.timeout_in_seconds)

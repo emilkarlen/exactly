@@ -70,6 +70,7 @@ class Constructor(ActSourceAndExecutorConstructor):
         return ActSourceAndExecutorMadeFromParserValidatorAndExecutor(self.parser,
                                                                       self.validator_constructor,
                                                                       self.executor_constructor,
+                                                                      environment,
                                                                       act_phase_instructions)
 
 
@@ -82,10 +83,12 @@ class ActSourceAndExecutorMadeFromParserValidatorAndExecutor(ActSourceAndExecuto
                  parser: Parser,
                  validator_constructor,
                  executor_constructor,
+                 environment: GlobalEnvironmentForPreEdsStep,
                  act_phase_instructions: list):
         self.parser = parser
         self.validator_constructor = validator_constructor
         self.executor_constructor = executor_constructor
+        self.environment = environment
         self.act_phase_instructions = act_phase_instructions
 
         self.__validator = None
@@ -112,10 +115,10 @@ class ActSourceAndExecutorMadeFromParserValidatorAndExecutor(ActSourceAndExecuto
     def _parse_and_construct_validator_and_executor(self) -> svh.SuccessOrValidationErrorOrHardError:
         try:
             object_to_execute = self.parser.apply(self.act_phase_instructions)
-            self.__validator = self.validator_constructor(object_to_execute)
+            self.__validator = self.validator_constructor(self.environment, object_to_execute)
             assert isinstance(self.__validator, Validator), \
                 'Constructed validator must be instance of ' + str(Validator)
-            self.__executor = self.executor_constructor(object_to_execute)
+            self.__executor = self.executor_constructor(self.environment, object_to_execute)
             assert isinstance(self.__executor, Executor), \
                 'Constructed executor must be instance of ' + str(Executor)
             return svh.new_svh_success()

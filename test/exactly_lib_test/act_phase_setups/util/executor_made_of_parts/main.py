@@ -40,10 +40,10 @@ class TestConstructor(unittest.TestCase):
         parser = ParserThatExpectsSingleInstructionAndReturnsTheTextOfThatInstruction()
         step_recorder = dict()
 
-        def validator_constructor(x):
+        def validator_constructor(environment, x):
             return ValidatorThatRecordsSteps(step_recorder, x)
 
-        def executor_constructor(x):
+        def executor_constructor(environment, x):
             return ExecutorThatRecordsSteps(step_recorder, x)
 
         constructor = sut.Constructor(parser,
@@ -84,11 +84,11 @@ class ParserThatExpectsSingleInstructionAndReturnsTheTextOfThatInstruction(sut.P
         return instruction.source_code().text
 
 
-def validator_constructor_that_raises():
+def validator_constructor_that_raises(*args):
     raise ValueError('validator_constructor_that_raises')
 
 
-def executor_constructor_that_raises():
+def executor_constructor_that_raises(*args):
     raise ValueError('executor_constructor_that_raises')
 
 
