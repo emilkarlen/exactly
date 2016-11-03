@@ -88,8 +88,7 @@ class ConfigurationPhaseInstructionThatSetsExecutionMode(ConfigurationPhaseInstr
                  value_to_set: ExecutionMode):
         self.value_to_set = value_to_set
 
-    def main(self, global_environment,
-             configuration_builder: ConfigurationBuilder) -> sh.SuccessOrHardError:
+    def main(self, configuration_builder: ConfigurationBuilder) -> sh.SuccessOrHardError:
         configuration_builder.set_execution_mode(self.value_to_set)
         return sh.new_sh_success()
 
@@ -99,9 +98,8 @@ class _ConfigurationPhaseInstructionThat(ConfigurationPhaseInstruction):
                  main):
         self.do_main = main
 
-    def main(self, global_environment,
-             configuration_builder: ConfigurationBuilder) -> sh.SuccessOrHardError:
-        return self.do_main(global_environment, configuration_builder)
+    def main(self, configuration_builder: ConfigurationBuilder) -> sh.SuccessOrHardError:
+        return self.do_main(configuration_builder)
 
 
 class _SetupPhaseInstructionThat(SetupPhaseInstruction):

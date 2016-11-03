@@ -72,9 +72,7 @@ class _Instruction(ConfigurationPhaseInstruction):
                  argument: str):
         self.argument = argument
 
-    def main(self,
-             global_environment,
-             configuration_builder: ConfigurationBuilder) -> sh.SuccessOrHardError:
+    def main(self, configuration_builder: ConfigurationBuilder) -> sh.SuccessOrHardError:
         new_home_dir_path = self._new_home(configuration_builder)
         if not new_home_dir_path.exists():
             return sh.new_sh_hard_error('Directory does not exist: {}'.format(new_home_dir_path))

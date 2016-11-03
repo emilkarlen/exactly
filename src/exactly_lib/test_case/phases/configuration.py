@@ -46,12 +46,8 @@ class ConfigurationPhaseInstruction(TestCaseInstruction):
     Abstract base class for instructions of the configuration phase.
     """
 
-    def main(self,
-             global_environment,
-             configuration_builder: ConfigurationBuilder) -> SuccessOrHardError:
+    def main(self, configuration_builder: ConfigurationBuilder) -> SuccessOrHardError:
         """
-        Does whatever this instruction should do.
-        :param global_environment An object passed to all instructions in the Document.
-        :param configuration_builder An object passed to all instructions in the Phase.
+        :param configuration_builder Collects the settings set by the instruction.
         """
         raise NotImplementedError()

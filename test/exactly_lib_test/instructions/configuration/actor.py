@@ -57,9 +57,8 @@ class TestSuccessfulParseAndInstructionExecutionForInterpreterActor(unittest.Tes
         source = new_source2(instruction_argument_source)
         instruction = sut.Parser().apply(source)
         # ACT #
-        global_environment = None
         configuration_builder = _configuration_builder_with_exception_throwing_act_phase_setup()
-        instruction.main(global_environment, configuration_builder)
+        instruction.main(configuration_builder)
         # ASSERT #
         act_phase_handling = configuration_builder.act_phase_handling
         self.assertIsInstance(act_phase_handling, ActPhaseHandling)
@@ -123,9 +122,8 @@ def _check(put: unittest.TestCase,
            expectation: Expectation):
     source = new_source2(arrangement.instruction_argument)
     instruction = sut.Parser().apply(source)
-    global_environment = "type of this object is undefined, and it is not used - should probably be removed"
     configuration_builder = _configuration_builder_with_exception_throwing_act_phase_setup()
-    instruction.main(global_environment, configuration_builder)
+    instruction.main(configuration_builder)
     act_phase_instructions = [instr(arrangement.act_phase_source_lines)]
     executor_constructor = configuration_builder.act_phase_handling.source_and_executor_constructor
     act_phase_execution.check_execution(put,

@@ -200,7 +200,7 @@ class _ActionWithPhaseStepAndRecording:
 
 
 class _ConfigurationPhaseActionThatRecordsEnvVarsAndSetsHomeDirToParent(_ActionWithPhaseStepAndRecording):
-    def __call__(self, global_environment, phase_environment: ConfigurationBuilder, *args):
+    def __call__(self, phase_environment: ConfigurationBuilder, *args):
         self.recorder.set_phase_step_recording(self.my_phase_step, env_vars_dict())
         phase_environment.set_home_dir(phase_environment.home_dir_path.parent)
 

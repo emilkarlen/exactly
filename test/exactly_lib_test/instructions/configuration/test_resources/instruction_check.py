@@ -75,7 +75,7 @@ class Executor:
                       configuration_builder: ConfigurationBuilder,
                       instruction: ConfigurationPhaseInstruction) -> sh.SuccessOrHardError:
         initial_configuration_builder = copy.deepcopy(configuration_builder)
-        main_result = instruction.main(None, configuration_builder)
+        main_result = instruction.main(configuration_builder)
         self.put.assertIsNotNone(main_result,
                                  'Result from main method cannot be None')
         self.expectation.main_result.apply(self.put, main_result)

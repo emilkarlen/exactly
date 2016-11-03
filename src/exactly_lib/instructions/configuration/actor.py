@@ -27,8 +27,6 @@ class Instruction(ConfigurationPhaseInstruction):
                  act_phase_handling: ActPhaseHandling):
         self.act_phase_handling = act_phase_handling
 
-    def main(self,
-             global_environment,
-             configuration_builder: ConfigurationBuilder) -> sh.SuccessOrHardError:
+    def main(self, configuration_builder: ConfigurationBuilder) -> sh.SuccessOrHardError:
         configuration_builder.set_act_phase_handling(self.act_phase_handling)
         return sh.new_sh_success()
