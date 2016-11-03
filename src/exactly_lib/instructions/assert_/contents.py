@@ -88,7 +88,6 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
     def _cls(self, additional_argument_usages: list) -> str:
         return self._cl_syntax_for_args([self.actual_file] + additional_argument_usages)
-        # return self._cl_syntax_for_args([self.actual_file_relativity, self.actual_file] + additional_argument_usages)
 
     def syntax_element_descriptions(self) -> list:
         mandatory_path = a.Single(a.Multiplicity.MANDATORY,

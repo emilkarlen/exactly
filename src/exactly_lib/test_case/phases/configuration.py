@@ -50,7 +50,7 @@ class ConfigurationBuilder:
         return self.__timeout_in_seconds
 
     def set_timeout_in_seconds(self, num_seconds: int):
-        self.__act_phase_handling = num_seconds
+        self.__timeout_in_seconds = num_seconds
 
 
 class ConfigurationPhaseInstruction(TestCaseInstruction):
