@@ -39,7 +39,9 @@ class ActSourceAndExecutorConstructorThatRunsConstantActions(ActSourceAndExecuto
                  validate_pre_eds_action=test_actions.validate_action_that_returns(svh.new_svh_success()),
                  validate_post_setup_action=test_actions.validate_action_that_returns(svh.new_svh_success()),
                  prepare_action=test_actions.prepare_action_that_returns(sh.new_sh_success()),
-                 execute_action=test_actions.execute_action_that_returns_exit_code()):
+                 execute_action=test_actions.execute_action_that_returns_exit_code(),
+                 apply_action_before_executor_is_constructed=test_actions.do_nothing):
+        self.apply_action_before_executor_is_constructed = apply_action_before_executor_is_constructed
         self.validate_pre_eds_action = validate_pre_eds_action
         self.validate_post_setup_action = validate_post_setup_action
         self.prepare_action = prepare_action
@@ -48,6 +50,7 @@ class ActSourceAndExecutorConstructorThatRunsConstantActions(ActSourceAndExecuto
     def apply(self,
               environment: GlobalEnvironmentForPreEdsStep,
               act_phase_instructions: list) -> ActSourceAndExecutor:
+        self.apply_action_before_executor_is_constructed(environment, act_phase_instructions)
         return ActSourceAndExecutorThatRunsConstantActions(
             validate_pre_eds_action=self.validate_pre_eds_action,
             validate_post_setup_action=self.validate_post_setup_action,

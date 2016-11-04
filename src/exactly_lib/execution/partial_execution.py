@@ -176,19 +176,19 @@ class _PartialExecutor:
                  test_case: TestCase,
                  setup_settings_builder: SetupSettingsBuilder):
         self.__execution_directory_structure = None
-        self.__global_environment_pre_eds = GlobalEnvironmentForPreEdsStep(
-            exe_configuration.configuration.home_dir_path,
-            exe_configuration.configuration.timeout_in_seconds)
-        self.__act_phase_handling = act_phase_handling
-        self.__test_case = test_case
         self.__exe_configuration = exe_configuration
         self.__configuration = exe_configuration.configuration
+        self.__act_phase_handling = act_phase_handling
+        self.__test_case = test_case
         self.__setup_settings_builder = setup_settings_builder
         self.___step_execution_result = _StepExecutionResult()
         self.__source_setup = None
         self.os_services = None
         self.__act_source_and_executor = None
         self.__act_source_and_executor_constructor = act_phase_handling.source_and_executor_constructor
+        self.__global_environment_pre_eds = GlobalEnvironmentForPreEdsStep(
+            self.__configuration.home_dir_path,
+            self.__configuration.timeout_in_seconds)
 
     def execute(self) -> PartialResult:
         # TODO Köra det här i sub-process?
@@ -398,7 +398,8 @@ class _PartialExecutor:
                                phase: phases.Phase) -> common.GlobalEnvironmentForPostEdsPhase:
         return common.GlobalEnvironmentForPostEdsPhase(self.__configuration.home_dir_path,
                                                        self.__execution_directory_structure,
-                                                       phase.identifier)
+                                                       phase.identifier,
+                                                       timeout_in_seconds=self.__configuration.timeout_in_seconds)
 
     def __set_post_eds_environment_variables(self):
         os.environ.update(environment_variables.set_at_setup_main(self._eds))
