@@ -20,6 +20,16 @@ the process' variables.  They should instead give them explicitly by
 passing the dictionary used by OsServices.
 To accomplish this, ActSourceAndExecutorConstructor must be passed
 these environment variables (probably by beeing passed an OsServices object).
+
+** Alternatives
+*** non-act phases and act phase have identical environment
+Modifications of env (by "env" instruction) affects all instructions and the
+act phase.
+*** non-act phases have original env, act-phase has env set by "env" instr
+Modifications of env does only affect act-phase.
+All other phases have the original env.
+*** Ability to configure if env should be shared between act and other phases
+
 * TODO Act phase
 ** TODO Name of act-phase actor for error messages
 Since the actor (of the act phase) is configurable, it would be informative to the user
