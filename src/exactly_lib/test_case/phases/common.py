@@ -79,8 +79,9 @@ class GlobalEnvironmentForPostEdsPhase(GlobalEnvironmentForPreEdsStep):
     def __init__(self,
                  home_dir: pathlib.Path,
                  eds: ExecutionDirectoryStructure,
-                 phase_identifier: str):
-        super().__init__(home_dir)
+                 phase_identifier: str,
+                 timeout_in_seconds: int = None):
+        super().__init__(home_dir, timeout_in_seconds)
         self.__eds = eds
         self._phase_logging = PhaseLoggingPaths(eds.log_dir, phase_identifier)
 

@@ -15,6 +15,12 @@ class SimplePhaseStep(tuple):
     def step(self) -> str:
         return self[1]
 
+    def __str__(self):
+        return self[0].name + '/' + self[1]
+
+    def __repr__(self):
+        return str(self)
+
 
 class PhaseStep(tuple):
     def __new__(cls,

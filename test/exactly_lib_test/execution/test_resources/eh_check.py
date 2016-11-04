@@ -1,3 +1,7 @@
+"""
+ValueAssertion:s on ExitCodeOrHardError
+"""
+
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 is_any_exit_code = va.OnTransformed(lambda value: value.is_exit_code,
