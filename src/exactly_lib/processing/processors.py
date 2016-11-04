@@ -18,6 +18,7 @@ from exactly_lib.section_document.parse import SectionElementParser
 from exactly_lib.test_case import error_description
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.instruction_setup import InstructionsSetup
+from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib.util import line_source
 
 
@@ -122,9 +123,9 @@ class _Executor(processing_utils.Executor):
     def apply(self,
               test_case_file_path: pathlib.Path,
               test_case: test_case_doc.TestCase) -> FullResult:
-        return full_execution.execute(act_phase_handling_for_setup(self.default_act_phase_setup),
-                                      test_case,
-                                      test_case_file_path.parent,
+        return full_execution.execute(test_case,
+                                      ConfigurationBuilder(test_case_file_path.parent.resolve(),
+                                                           act_phase_handling_for_setup(self.default_act_phase_setup)),
                                       self._execution_directory_root_name_prefix,
                                       self._is_keep_execution_directory_root)
 

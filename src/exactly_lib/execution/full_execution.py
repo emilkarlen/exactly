@@ -1,9 +1,7 @@
 import os
-import pathlib
 
 from exactly_lib.execution import environment_variables
 from exactly_lib.execution import phase_step_executors, partial_execution, phase_step
-from exactly_lib.execution.act_phase import ActPhaseHandling
 from exactly_lib.execution.execution_mode import ExecutionMode
 from exactly_lib.section_document.model import SectionContents
 from exactly_lib.test_case import test_case_doc
@@ -14,17 +12,14 @@ from . import result
 from .result import FullResult, PartialResult, PartialResultStatus, FullResultStatus
 
 
-def execute(default_act_phase_handling: ActPhaseHandling,
-            test_case: test_case_doc.TestCase,
-            initial_home_dir_path: pathlib.Path,
+def execute(test_case: test_case_doc.TestCase,
+            configuration_builder: ConfigurationBuilder,
             execution_directory_root_name_prefix: str,
             is_keep_execution_directory_root: bool) -> FullResult:
     """
     The main method for executing a Test Case.
     """
     _prepare_environment_variables()
-    configuration_builder = ConfigurationBuilder(initial_home_dir_path.resolve(),
-                                                 default_act_phase_handling)
     partial_result = _execute_configuration_phase(configuration_builder,
                                                   test_case.configuration_phase)
     if partial_result.status is not PartialResultStatus.PASS:

@@ -11,6 +11,7 @@ from exactly_lib.execution.execution_directory_structure import ExecutionDirecto
 from exactly_lib.execution.result import FullResult
 from exactly_lib.processing.processors import act_phase_handling_for_setup
 from exactly_lib.test_case import test_case_doc
+from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib_test.execution.test_resources import utils
 
 
@@ -31,9 +32,9 @@ class FullExecutionTestCaseBase:
         self.__initial_home_dir_path = pathlib.Path().resolve()
         # ACT #
         full_result = full_execution.execute(
-            self._act_phase_handling(),
             self._test_case(),
-            self.initial_home_dir_path,
+            ConfigurationBuilder(self.initial_home_dir_path.resolve(),
+                                 self._act_phase_handling()),
             program_info.PROGRAM_NAME + '-test-',
             True)
 
