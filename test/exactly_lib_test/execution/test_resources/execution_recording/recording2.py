@@ -33,13 +33,14 @@ class PropertyRecorderBuilder:
         return ret_val
 
 
-def _test_case_that_records_for_each_step_of_partial_execution(
+def test_case_that_records_property_of_env_for_each_step_of_partial_execution(
         property_recorder: PropertyRecorderBuilder) -> TestCaseWithOnlyInstructionElementsBuilder:
     builder = TestCaseWithOnlyInstructionElementsBuilder()
-    builder.setup_phase = [setup_phase_instruction_that_records_for_each_step(property_recorder)]
-    builder.before_assert_phase = [before_assert_phase_instruction_that_records_for_each_step(property_recorder)]
-    builder.assert_phase = [assert_phase_instruction_that_records_for_each_step(property_recorder)]
-    builder.cleanup_phase = [cleanup_phase_instruction_that_records_for_each_step(property_recorder)]
+    builder.setup_phase = [setup_phase_instruction_that_records_property_of_env_for_each_step(property_recorder)]
+    builder.before_assert_phase = [before_assert_phase_instruction_that_records_property_of_env_for_each_step(
+        property_recorder)]
+    builder.assert_phase = [assert_phase_instruction_that_records_property_of_env_for_each_step(property_recorder)]
+    builder.cleanup_phase = [cleanup_phase_instruction_that_records_property_of_env_for_each_step(property_recorder)]
     return builder
 
 
@@ -51,7 +52,7 @@ def act_phase_handling_that_records_property_of_constructor_argument(
     ))
 
 
-def setup_phase_instruction_that_records_for_each_step(
+def setup_phase_instruction_that_records_property_of_env_for_each_step(
         property_recorder: PropertyRecorderBuilder) -> SetupPhaseInstruction:
     return setup_phase_instruction_that(
         validate_pre_eds_initial_action=property_recorder.of_first_arg(step.SETUP__VALIDATE_PRE_EDS),
@@ -59,7 +60,7 @@ def setup_phase_instruction_that_records_for_each_step(
         main_initial_action=property_recorder.of_first_arg(step.SETUP__MAIN))
 
 
-def before_assert_phase_instruction_that_records_for_each_step(
+def before_assert_phase_instruction_that_records_property_of_env_for_each_step(
         property_recorder: PropertyRecorderBuilder) -> BeforeAssertPhaseInstruction:
     return before_assert_phase_instruction_that(
         validate_pre_eds_initial_action=property_recorder.of_first_arg(step.BEFORE_ASSERT__VALIDATE_PRE_EDS),
@@ -67,7 +68,7 @@ def before_assert_phase_instruction_that_records_for_each_step(
         main_initial_action=property_recorder.of_first_arg(step.BEFORE_ASSERT__MAIN))
 
 
-def assert_phase_instruction_that_records_for_each_step(
+def assert_phase_instruction_that_records_property_of_env_for_each_step(
         property_recorder: PropertyRecorderBuilder) -> AssertPhaseInstruction:
     return assert_phase_instruction_that(
         validate_pre_eds_initial_action=property_recorder.of_first_arg(step.ASSERT__VALIDATE_PRE_EDS),
@@ -75,7 +76,7 @@ def assert_phase_instruction_that_records_for_each_step(
         main_initial_action=property_recorder.of_first_arg(step.ASSERT__MAIN))
 
 
-def cleanup_phase_instruction_that_records_for_each_step(
+def cleanup_phase_instruction_that_records_property_of_env_for_each_step(
         property_recorder: PropertyRecorderBuilder) -> CleanupPhaseInstruction:
     return cleanup_phase_instruction_that(
         validate_pre_eds_initial_action=property_recorder.of_first_arg(step.CLEANUP__VALIDATE_PRE_EDS),
