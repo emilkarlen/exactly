@@ -1,4 +1,6 @@
 import os
+import pathlib
+import types
 import unittest
 
 from exactly_lib.act_phase_setups.script_interpretation import python3
@@ -11,6 +13,7 @@ from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib.util.line_source import LineSequence
 from exactly_lib_test.execution.full_execution.test_resources.test_case_base import FullExecutionTestCaseBase
+from exactly_lib_test.execution.test_resources import python_code_gen as py
 from exactly_lib_test.execution.test_resources import recorder as instr_setup
 from exactly_lib_test.execution.test_resources.execution_recording.act_program_executor import \
     ActSourceAndExecutorConstructorWithActionsForExecutor
@@ -19,8 +22,6 @@ from exactly_lib_test.execution.test_resources.instruction_test_resources import
     act_phase_instruction_with_source
 from exactly_lib_test.execution.test_resources.instruction_test_resources import configuration_phase_instruction_that
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that
-from exactly_lib_test.execution.test_resources.instruction_that_do_and_return import \
-    print_to_file__generate_script
 from exactly_lib_test.execution.test_resources.py_unit_test_case_with_file_output import ModulesAndStatements
 from exactly_lib_test.execution.test_resources.python_code_gen import print_env_var_if_defined
 from exactly_lib_test.execution.test_resources.test_case_generation import full_test_case_with_instructions
@@ -216,3 +217,27 @@ def env_vars_dict() -> dict:
         if env_var in os.environ:
             ret_val[env_var] = os.environ[env_var]
     return ret_val
+
+
+def print_to_file__generate_script(code_using_file_opened_for_writing: types.FunctionType,
+                                   file_name: str):
+    """
+    Function that is designed as the execution__generate_script argument to TestCaseSetup, after
+    giving the first two arguments using partial application.
+
+    :param code_using_file_opened_for_writing: function: file_variable: str -> ModulesAndStatements
+    :param file_name: the name of the file to output to.
+    :param global_environment: Environment from act instruction
+    :param phase_environment: Environment from act instruction
+    """
+    file_path = pathlib.Path() / file_name
+    file_name = str(file_path)
+    file_var = '_file_var'
+    mas = code_using_file_opened_for_writing(file_var)
+    all_statements = py.with_opened_file(file_name,
+                                         file_var,
+                                         'w',
+                                         mas.statements)
+
+    return py.program_lines(mas.used_modules,
+                            all_statements)
