@@ -122,7 +122,7 @@ class Executor:
                               home_dir_path: pathlib.Path,
                               instruction: SetupPhaseInstruction) -> svh.SuccessOrValidationErrorOrHardError:
         pre_validation_environment = InstructionEnvironmentForPreSdsStep(home_dir_path)
-        pre_validate_result = instruction.validate_pre_eds(pre_validation_environment)
+        pre_validate_result = instruction.validate_pre_sds(pre_validation_environment)
         self.put.assertIsInstance(pre_validate_result,
                                   svh.SuccessOrValidationErrorOrHardError,
                                   'pre_validate must return a ' + str(svh.SuccessOrValidationErrorOrHardError))

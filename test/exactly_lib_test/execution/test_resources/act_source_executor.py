@@ -20,7 +20,7 @@ class ActSourceAndExecutorThatRunsConstantActions(ActSourceAndExecutor):
         self.__prepare_action = prepare_action
         self.__execute_action = execute_action
 
-    def validate_pre_eds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
+    def validate_pre_sds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
         return self.__validate_pre_eds_action()
 
     def validate_post_setup(self, home_and_eds: HomeAndEds) -> svh.SuccessOrValidationErrorOrHardError:

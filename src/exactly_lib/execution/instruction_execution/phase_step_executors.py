@@ -57,7 +57,7 @@ class SetupValidatePreEdsExecutor(ControlledInstructionExecutor):
 
     def apply(self, instruction: SetupPhaseInstruction) -> PartialInstructionControlledFailureInfo:
         return _from_success_or_validation_error_or_hard_error(
-            instruction.validate_pre_eds(self.__global_environment))
+            instruction.validate_pre_sds(self.__global_environment))
 
 
 class SetupValidatePostSetupExecutor(ControlledInstructionExecutor):
@@ -125,7 +125,7 @@ class BeforeAssertValidatePreEdsExecutor(ControlledInstructionExecutor):
 
     def apply(self, instruction: BeforeAssertPhaseInstruction) -> PartialInstructionControlledFailureInfo:
         return _from_success_or_validation_error_or_hard_error(
-            instruction.validate_pre_eds(self.__global_environment))
+            instruction.validate_pre_sds(self.__global_environment))
 
 
 class BeforeAssertMainExecutor(ControlledInstructionExecutor):
@@ -147,7 +147,7 @@ class AssertValidatePreEdsExecutor(ControlledInstructionExecutor):
 
     def apply(self, instruction: AssertPhaseInstruction) -> PartialInstructionControlledFailureInfo:
         return _from_success_or_validation_error_or_hard_error(
-            instruction.validate_pre_eds(self.__global_environment))
+            instruction.validate_pre_sds(self.__global_environment))
 
 
 class CleanupValidatePreEdsExecutor(ControlledInstructionExecutor):
@@ -157,7 +157,7 @@ class CleanupValidatePreEdsExecutor(ControlledInstructionExecutor):
 
     def apply(self, instruction: CleanupPhaseInstruction) -> PartialInstructionControlledFailureInfo:
         return _from_success_or_validation_error_or_hard_error(
-            instruction.validate_pre_eds(self.__global_environment))
+            instruction.validate_pre_sds(self.__global_environment))
 
 
 class CleanupMainExecutor(ControlledInstructionExecutor):

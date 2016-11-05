@@ -185,7 +185,7 @@ class _ExecutorThatRecordsCurrentDir(ActSourceAndExecutor):
         self._home_and_eds = None
         self.phase_step_2_cwd = {}
 
-    def validate_pre_eds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
+    def validate_pre_sds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
         self._register_cwd_for(phase_step.ACT__VALIDATE_PRE_EDS)
         return svh.new_svh_success()
 

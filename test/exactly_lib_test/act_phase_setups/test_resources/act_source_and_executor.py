@@ -98,7 +98,7 @@ class TestExecuteBase(unittest.TestCase):
         home_dir = pathlib.Path()
         environment = InstructionEnvironmentForPreSdsStep(home_dir)
         sut = self.source_and_executor_constructor.apply(environment, act_phase_instructions)
-        step_result = sut.validate_pre_eds(home_dir)
+        step_result = sut.validate_pre_sds(home_dir)
         self.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                          step_result.status,
                          'Result of validation/pre-eds')
@@ -191,7 +191,7 @@ class TestInitialCwdIsCurrentDirAndThatCwdIsRestoredAfterwards(TestBase):
                 home_dir = pathlib.Path.cwd()
                 environment = InstructionEnvironmentForPreSdsStep(home_dir)
                 sut = executor_constructor.apply(environment, source)
-                step_result = sut.validate_pre_eds(home_dir)
+                step_result = sut.validate_pre_sds(home_dir)
                 self.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                                  step_result.status,
                                  'Result of validation/pre-eds')

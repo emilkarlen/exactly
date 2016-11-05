@@ -29,7 +29,7 @@ class Validator(executor_made_of_parts.Validator):
                  cmd_and_args: list):
         self.cmd_and_args = cmd_and_args
 
-    def validate_pre_eds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
+    def validate_pre_sds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
         cmd = self.cmd_and_args[0]
         cmd_path = pathlib.Path(cmd)
         if cmd_path.is_absolute():

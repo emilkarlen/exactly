@@ -28,7 +28,7 @@ class TestValidationShouldBeInPreValidateIfFileDoesExistPreEds(unittest.TestCase
         instruction = TestInstruction((FileRefCheck(file_ref.rel_home('file.txt'),
                                                     FileCheckThatEvaluatesTo(True)),))
         with home_and_eds_and_test_as_curr_dir() as home_and_eds:
-            pre_validate = instruction.validate_pre_eds(InstructionEnvironmentForPreSdsStep(home_and_eds.home_dir_path))
+            pre_validate = instruction.validate_pre_sds(InstructionEnvironmentForPreSdsStep(home_and_eds.home_dir_path))
             self.assertTrue(pre_validate.is_success)
 
             post_validate = instruction.validate_post_setup(_env_from(home_and_eds))
@@ -38,7 +38,7 @@ class TestValidationShouldBeInPreValidateIfFileDoesExistPreEds(unittest.TestCase
         instruction = TestInstruction((FileRefCheck(file_ref.rel_home('file.txt'),
                                                     FileCheckThatEvaluatesTo(False)),))
         with home_and_eds_and_test_as_curr_dir() as home_and_eds:
-            pre_validate = instruction.validate_pre_eds(InstructionEnvironmentForPreSdsStep(home_and_eds.home_dir_path))
+            pre_validate = instruction.validate_pre_sds(InstructionEnvironmentForPreSdsStep(home_and_eds.home_dir_path))
             self.assertFalse(pre_validate.is_success)
 
             post_validate = instruction.validate_post_setup(_env_from(home_and_eds))
@@ -50,7 +50,7 @@ class TestValidationShouldBeInPostValidateIfFileDoesNotExistPreEds(unittest.Test
         instruction = TestInstruction((FileRefCheck(file_ref.rel_cwd('file.txt'),
                                                     FileCheckThatEvaluatesTo(True)),))
         with home_and_eds_and_test_as_curr_dir() as home_and_eds:
-            pre_validate = instruction.validate_pre_eds(InstructionEnvironmentForPreSdsStep(home_and_eds.home_dir_path))
+            pre_validate = instruction.validate_pre_sds(InstructionEnvironmentForPreSdsStep(home_and_eds.home_dir_path))
             self.assertTrue(pre_validate.is_success)
 
             post_validate = instruction.validate_post_setup(_env_from(home_and_eds))
@@ -60,7 +60,7 @@ class TestValidationShouldBeInPostValidateIfFileDoesNotExistPreEds(unittest.Test
         instruction = TestInstruction((FileRefCheck(file_ref.rel_cwd('file.txt'),
                                                     FileCheckThatEvaluatesTo(False)),))
         with home_and_eds_and_test_as_curr_dir() as home_and_eds:
-            pre_validate = instruction.validate_pre_eds(InstructionEnvironmentForPreSdsStep(home_and_eds.home_dir_path))
+            pre_validate = instruction.validate_pre_sds(InstructionEnvironmentForPreSdsStep(home_and_eds.home_dir_path))
             self.assertTrue(pre_validate.is_success)
 
             post_validate = instruction.validate_post_setup(_env_from(home_and_eds))

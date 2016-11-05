@@ -68,7 +68,7 @@ def check_execution(put: unittest.TestCase,
     with fs_utils.tmp_dir(arrangement.home_dir_contents) as home_dir:
         environment = InstructionEnvironmentForPreSdsStep(home_dir, arrangement.timeout_in_seconds)
         sut = arrangement.executor_constructor.apply(environment, arrangement.act_phase_instructions)
-        step_result = sut.validate_pre_eds(home_dir)
+        step_result = sut.validate_pre_sds(home_dir)
         put.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                         step_result.status,
                         'Result of validation/pre-eds')

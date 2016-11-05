@@ -31,7 +31,7 @@ class TestConstructor(unittest.TestCase):
         act_phase_instructions = []
         # ACT #
         executor = constructor.apply(environment, act_phase_instructions)
-        actual = executor.validate_pre_eds(environment.home_directory)
+        actual = executor.validate_pre_sds(environment.home_directory)
         # ASSERT #
         self.assertIs(parser_error, actual)
 
@@ -97,7 +97,7 @@ class ValidatorThatRecordsSteps(sut.Validator):
         self.recorder = recorder
         self.act_phase_source = act_phase_source
 
-    def validate_pre_eds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
+    def validate_pre_sds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
         self.recorder[phase_step.ACT__VALIDATE_PRE_EDS] = self.act_phase_source
         return svh.new_svh_success()
 

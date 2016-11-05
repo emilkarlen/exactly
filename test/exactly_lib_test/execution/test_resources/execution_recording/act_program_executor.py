@@ -15,7 +15,7 @@ def do_nothing():
 
 
 class ActSourceAndExecutorThatJustReturnsSuccess(ActSourceAndExecutor):
-    def validate_pre_eds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
+    def validate_pre_sds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
         return svh.new_svh_success()
 
     def validate_post_setup(self, home_and_eds: HomeAndEds) -> svh.SuccessOrValidationErrorOrHardError:
@@ -36,9 +36,9 @@ class ActSourceAndExecutorWrapperThatRecordsSteps(ActSourceAndExecutor):
         self.__recorder = recorder
         self.__wrapped = wrapped
 
-    def validate_pre_eds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
+    def validate_pre_sds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
         self.__recorder.recording_of(phase_step.ACT__VALIDATE_PRE_EDS).record()
-        return self.__wrapped.validate_pre_eds(home_dir_path)
+        return self.__wrapped.validate_pre_sds(home_dir_path)
 
     def validate_post_setup(self, home_and_eds: HomeAndEds) -> svh.SuccessOrValidationErrorOrHardError:
         self.__recorder.recording_of(phase_step.ACT__VALIDATE_POST_SETUP).record()
@@ -84,9 +84,9 @@ class ActSourceAndExecutorWrapperWithActions(ActSourceAndExecutor):
         self.before_wrapped_prepare = before_wrapped_prepare
         self.before_wrapped_execute = before_wrapped_execute
 
-    def validate_pre_eds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
+    def validate_pre_sds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
         self.before_wrapped_validate_pre_eds()
-        return self.__wrapped.validate_pre_eds(home_dir_path)
+        return self.__wrapped.validate_pre_sds(home_dir_path)
 
     def validate_post_setup(self, home_and_eds: HomeAndEds) -> svh.SuccessOrValidationErrorOrHardError:
         self.before_wrapped_validate()

@@ -289,7 +289,7 @@ class _PartialExecutor:
             self.__act_source_and_executor = self.__act_phase_handling.source_and_executor_constructor.apply(
                 self.__global_environment_pre_eds,
                 instructions)
-            res = self.__act_source_and_executor.validate_pre_eds(self.__global_environment_pre_eds.home_directory)
+            res = self.__act_source_and_executor.validate_pre_sds(self.__global_environment_pre_eds.home_directory)
             if res.is_success:
                 return new_partial_result_pass(None)
             else:

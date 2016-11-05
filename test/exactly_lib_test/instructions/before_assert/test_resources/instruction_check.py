@@ -115,7 +115,7 @@ class Executor(InstructionExecutionBase):
             self,
             global_environment: InstructionEnvironmentForPreSdsStep,
             instruction: BeforeAssertPhaseInstruction) -> svh.SuccessOrValidationErrorOrHardError:
-        result = instruction.validate_pre_eds(global_environment)
+        result = instruction.validate_pre_sds(global_environment)
         self._check_result_of_validate_pre_eds(result)
         return result
 
