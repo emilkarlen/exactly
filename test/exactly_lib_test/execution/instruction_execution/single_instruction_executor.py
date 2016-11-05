@@ -1,9 +1,10 @@
 import types
 import unittest
 
-from exactly_lib.execution.result import PartialResultStatus
-from exactly_lib.execution.single_instruction_executor import execute_element, ControlledInstructionExecutor, \
+from exactly_lib.execution.instruction_execution.single_instruction_executor import execute_element, \
+    ControlledInstructionExecutor, \
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum, SingleInstructionExecutionFailure
+from exactly_lib.execution.result import PartialResultStatus
 from exactly_lib.section_document.model import SectionContentElement, new_instruction_e
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.util import line_source

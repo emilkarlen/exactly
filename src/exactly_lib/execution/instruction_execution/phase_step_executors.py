@@ -1,4 +1,4 @@
-from exactly_lib.execution.single_instruction_executor import ControlledInstructionExecutor, \
+from exactly_lib.execution.instruction_execution.single_instruction_executor import ControlledInstructionExecutor, \
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as instr
