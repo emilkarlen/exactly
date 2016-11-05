@@ -1,6 +1,4 @@
-from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_options import OPTION_FOR_ACTOR__LONG, \
-    OPTION_FOR_ACTOR
-from exactly_lib.execution import execution_directory_structure as sds
+from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_options import OPTION_FOR_ACTOR
 from exactly_lib.help.concepts.configuration_parameters.home_directory import HOME_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.plain_concepts.environment_variable import ENVIRONMENT_VARIABLE_CONCEPT
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
@@ -14,6 +12,7 @@ from exactly_lib.help.program_modes.test_case.phase_help_contents_structures imp
     TestCasePhaseDocumentationForPhaseWithoutInstructions
 from exactly_lib.help.utils.phase_names import phase_name_dictionary, SETUP_PHASE_NAME, BEFORE_ASSERT_PHASE_NAME, \
     ASSERT_PHASE_NAME
+from exactly_lib.test_case import sandbox_directory_structure as sds
 from exactly_lib.util.description import Description
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import structures as docs

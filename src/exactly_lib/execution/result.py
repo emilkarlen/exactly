@@ -1,9 +1,9 @@
 from enum import Enum
 
 from exactly_lib.execution.phase_step_identifiers.phase_step import PhaseStep
+from exactly_lib.test_case.sandbox_directory_structure import ExecutionDirectoryStructure
 from exactly_lib.util import line_source
 from exactly_lib.util.failure_details import FailureDetails
-from .execution_directory_structure import ExecutionDirectoryStructure
 
 
 class FailureInfo:

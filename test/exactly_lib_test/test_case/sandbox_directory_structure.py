@@ -3,7 +3,7 @@ import unittest
 from pathlib import Path
 
 from exactly_lib import program_info
-from exactly_lib.execution import execution_directory_structure
+from exactly_lib.test_case import sandbox_directory_structure
 from exactly_lib.util.file_utils import resolved_path
 from exactly_lib_test.test_resources.file_checks import FileChecker
 
@@ -13,7 +13,7 @@ class TestConstructExecutionDirectoryStructure(unittest.TestCase):
         with tempfile.TemporaryDirectory(prefix=program_info.PROGRAM_NAME + '-test-') as tmp_dir_name:
             root = resolved_path(tmp_dir_name)
             tmp_dir_name = str(root)
-            eds = execution_directory_structure.construct_at(tmp_dir_name)
+            eds = sandbox_directory_structure.construct_at(tmp_dir_name)
 
             self._assert_is_existing_dir_with_given_number_of_files_in_it(eds.root_dir,
                                                                           5)
@@ -68,7 +68,7 @@ class TestConstructExecutionDirectoryStructure(unittest.TestCase):
 
 def is_execution_directory_structure_after_execution(fc: FileChecker,
                                                      root_dir_name: str):
-    eds = execution_directory_structure.ExecutionDirectoryStructure(root_dir_name)
+    eds = sandbox_directory_structure.ExecutionDirectoryStructure(root_dir_name)
     fc.assert_exists_dir_with_given_number_of_files_in_it(eds.root_dir,
                                                           5)
     fc.assert_exists_dir(eds.test_case_dir)

@@ -3,11 +3,11 @@ import unittest
 
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionParserSource
-from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from exactly_lib.test_case.phases.common import HomeAndEds, TestCaseInstruction
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
+from exactly_lib.test_case.sandbox_directory_structure import ExecutionDirectoryStructure
 from exactly_lib_test.instructions.test_resources import pfh_check
 from exactly_lib_test.instructions.test_resources import sh_check
 from exactly_lib_test.instructions.test_resources import svh_check

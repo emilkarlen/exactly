@@ -1,14 +1,13 @@
 import pathlib
 
-from exactly_lib.execution import execution_directory_structure as eds_module
-from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure, log_phase_dir
 from exactly_lib.section_document.model import Instruction
+from exactly_lib.test_case import sandbox_directory_structure as _sds
 
 
 class HomeAndEds:
     def __init__(self,
                  home_path: pathlib.Path,
-                 eds: eds_module.ExecutionDirectoryStructure):
+                 eds: _sds.ExecutionDirectoryStructure):
         self._home_path = home_path
         self._eds = eds
 
@@ -17,7 +16,7 @@ class HomeAndEds:
         return self._home_path
 
     @property
-    def eds(self) -> eds_module.ExecutionDirectoryStructure:
+    def eds(self) -> _sds.ExecutionDirectoryStructure:
         return self._eds
 
 
@@ -46,7 +45,7 @@ class PhaseLoggingPaths:
     def __init__(self,
                  log_root_dir: pathlib.Path,
                  phase_identifier: str):
-        self._phase_dir_path = log_phase_dir(log_root_dir, phase_identifier)
+        self._phase_dir_path = _sds.log_phase_dir(log_root_dir, phase_identifier)
         self._visited_line_numbers = []
 
     @property
@@ -78,7 +77,7 @@ class PhaseLoggingPaths:
 class InstructionEnvironmentForPostSdsStep(InstructionEnvironmentForPreSdsStep):
     def __init__(self,
                  home_dir: pathlib.Path,
-                 eds: ExecutionDirectoryStructure,
+                 eds: _sds.ExecutionDirectoryStructure,
                  phase_identifier: str,
                  timeout_in_seconds: int = None):
         super().__init__(home_dir, timeout_in_seconds)
@@ -86,11 +85,11 @@ class InstructionEnvironmentForPostSdsStep(InstructionEnvironmentForPreSdsStep):
         self._phase_logging = PhaseLoggingPaths(eds.log_dir, phase_identifier)
 
     @property
-    def execution_directory_structure(self) -> ExecutionDirectoryStructure:
+    def execution_directory_structure(self) -> _sds.ExecutionDirectoryStructure:
         return self.__eds
 
     @property
-    def eds(self) -> ExecutionDirectoryStructure:
+    def eds(self) -> _sds.ExecutionDirectoryStructure:
         return self.__eds
 
     @property

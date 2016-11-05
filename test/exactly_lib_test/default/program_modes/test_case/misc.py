@@ -7,14 +7,13 @@ from exactly_lib.cli.cli_environment.program_modes.test_case import exit_values
 from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_options import \
     OPTION_FOR_EXECUTING_ACT_PHASE, OPTION_FOR_KEEPING_SANDBOX_DIRECTORY
 from exactly_lib.execution import environment_variables
-from exactly_lib.execution import execution_directory_structure
 from exactly_lib.section_document.syntax import section_header
-from exactly_lib.test_case import phase_identifier
+from exactly_lib.test_case import phase_identifier, sandbox_directory_structure
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.default.test_resources.internal_main_program_runner import \
     run_via_main_program_internally_with_default_setup
 from exactly_lib_test.default.test_resources.test_case_file_elements import phase_header_line
-from exactly_lib_test.execution.test_execution_directory_structure import \
+from exactly_lib_test.test_case.sandbox_directory_structure import \
     is_execution_directory_structure_after_execution
 from exactly_lib_test.test_resources.cli_main_program_via_shell_utils.run import \
     contents_of_file
@@ -184,7 +183,7 @@ class ExpectedTestEnvironmentVariablesAreSetCorrectlyVa(va.ValueAssertion):
               value: SubProcessResultInfo,
               message_builder: va.MessageBuilder = va.MessageBuilder()):
         actual_eds_directory = _get_printed_eds_or_fail(put, value.sub_process_result)
-        eds = execution_directory_structure.ExecutionDirectoryStructure(actual_eds_directory)
+        eds = sandbox_directory_structure.ExecutionDirectoryStructure(actual_eds_directory)
         actually_printed_variables = _get_act_output_to_stdout(eds).splitlines()
         expected_printed_variables = [
             '%s=%s' % (environment_variables.ENV_VAR_HOME, str(value.file_argument.parent)),
@@ -216,7 +215,7 @@ def _print_variable_name__equals__variable_value(variable_name: str) -> str:
     return 'print("%s=" + os.environ["%s"])' % (variable_name, variable_name)
 
 
-def _get_act_output_to_stdout(eds: execution_directory_structure.ExecutionDirectoryStructure) -> str:
+def _get_act_output_to_stdout(eds: sandbox_directory_structure.ExecutionDirectoryStructure) -> str:
     return contents_of_file(eds.result.stdout_file)
 
 

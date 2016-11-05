@@ -1,4 +1,4 @@
-from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
+from exactly_lib.test_case.sandbox_directory_structure import ExecutionDirectoryStructure
 from exactly_lib_test.test_resources.file_structure import DirContents
 
 

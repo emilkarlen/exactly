@@ -7,11 +7,11 @@ import exactly_lib.act_phase_setups.script_interpretation.python3
 from exactly_lib import program_info
 from exactly_lib.execution import partial_execution
 from exactly_lib.execution.act_phase import ActPhaseHandling
-from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from exactly_lib.execution.partial_execution import TestCase
 from exactly_lib.execution.result import PartialResult
 from exactly_lib.processing.processors import act_phase_handling_for_setup
 from exactly_lib.test_case.phases import setup
+from exactly_lib.test_case.sandbox_directory_structure import ExecutionDirectoryStructure
 from exactly_lib_test.execution.test_resources import utils
 
 
