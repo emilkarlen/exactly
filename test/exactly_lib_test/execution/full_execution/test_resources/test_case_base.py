@@ -11,7 +11,7 @@ from exactly_lib.execution.result import FullResult
 from exactly_lib.processing.processors import act_phase_handling_for_setup
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
-from exactly_lib.test_case.sandbox_directory_structure import ExecutionDirectoryStructure
+from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib_test.execution.test_resources import utils
 
 
@@ -73,7 +73,7 @@ class FullExecutionTestCaseBase:
         return self.__full_result
 
     @property
-    def eds(self) -> ExecutionDirectoryStructure:
+    def eds(self) -> SandboxDirectoryStructure:
         return self.__full_result.execution_directory_structure
 
     def assert_is_regular_file_with_contents(self,

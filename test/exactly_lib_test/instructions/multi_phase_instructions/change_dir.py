@@ -7,7 +7,7 @@ from exactly_lib.help.utils.render import RenderingEnvironment
 from exactly_lib.instructions.multi_phase_instructions import change_dir as sut
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.test_case.sandbox_directory_structure import ExecutionDirectoryStructure
+from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib_test.help.test_resources import CrossReferenceTextConstructorTestImpl
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.test_resources.execution import eds_test
@@ -88,7 +88,7 @@ class ParseAndChangeDirAction(eds_test.Action):
                  arguments: str):
         self.arguments = arguments
 
-    def apply(self, eds: ExecutionDirectoryStructure):
+    def apply(self, eds: SandboxDirectoryStructure):
         destination_directory = sut.parse(self.arguments)
         return sut.change_dir(destination_directory, eds)
 
@@ -114,12 +114,12 @@ class ChangeDirTo(eds_test.Action):
     def __init__(self, eds2dir_fun):
         self.eds2dir_fun = eds2dir_fun
 
-    def apply(self, eds: ExecutionDirectoryStructure):
+    def apply(self, eds: SandboxDirectoryStructure):
         os.chdir(str(self.eds2dir_fun(eds)))
 
 
 class CwdIsActDir(eds_test.PostActionCheck):
-    def apply(self, put: unittest.TestCase, eds: ExecutionDirectoryStructure):
+    def apply(self, put: unittest.TestCase, eds: SandboxDirectoryStructure):
         put.assertEqual(str(eds.act_dir),
                         os.getcwd(),
                         'Current Working Directory')
@@ -129,7 +129,7 @@ class CwdIsSubDirOfActDir(eds_test.PostActionCheck):
     def __init__(self, sub_dir_name: str):
         self.sub_dir_name = sub_dir_name
 
-    def apply(self, put: unittest.TestCase, eds: ExecutionDirectoryStructure):
+    def apply(self, put: unittest.TestCase, eds: SandboxDirectoryStructure):
         put.assertEqual(str(eds.act_dir / self.sub_dir_name),
                         os.getcwd(),
                         'Current Working Directory')
@@ -139,7 +139,7 @@ class CwdIs(eds_test.PostActionCheck):
     def __init__(self, eds2dir_fun):
         self.eds2dir_fun = eds2dir_fun
 
-    def apply(self, put: unittest.TestCase, eds: ExecutionDirectoryStructure):
+    def apply(self, put: unittest.TestCase, eds: SandboxDirectoryStructure):
         put.assertEqual(str(self.eds2dir_fun(eds)),
                         os.getcwd(),
                         'Current Working Directory')

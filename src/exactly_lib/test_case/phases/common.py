@@ -7,7 +7,7 @@ from exactly_lib.test_case import sandbox_directory_structure as _sds
 class HomeAndEds:
     def __init__(self,
                  home_path: pathlib.Path,
-                 eds: _sds.ExecutionDirectoryStructure):
+                 eds: _sds.SandboxDirectoryStructure):
         self._home_path = home_path
         self._eds = eds
 
@@ -16,7 +16,7 @@ class HomeAndEds:
         return self._home_path
 
     @property
-    def eds(self) -> _sds.ExecutionDirectoryStructure:
+    def eds(self) -> _sds.SandboxDirectoryStructure:
         return self._eds
 
 
@@ -77,7 +77,7 @@ class PhaseLoggingPaths:
 class InstructionEnvironmentForPostSdsStep(InstructionEnvironmentForPreSdsStep):
     def __init__(self,
                  home_dir: pathlib.Path,
-                 eds: _sds.ExecutionDirectoryStructure,
+                 eds: _sds.SandboxDirectoryStructure,
                  phase_identifier: str,
                  timeout_in_seconds: int = None):
         super().__init__(home_dir, timeout_in_seconds)
@@ -85,11 +85,11 @@ class InstructionEnvironmentForPostSdsStep(InstructionEnvironmentForPreSdsStep):
         self._phase_logging = PhaseLoggingPaths(eds.log_dir, phase_identifier)
 
     @property
-    def execution_directory_structure(self) -> _sds.ExecutionDirectoryStructure:
+    def execution_directory_structure(self) -> _sds.SandboxDirectoryStructure:
         return self.__eds
 
     @property
-    def eds(self) -> _sds.ExecutionDirectoryStructure:
+    def eds(self) -> _sds.SandboxDirectoryStructure:
         return self.__eds
 
     @property

@@ -19,7 +19,7 @@ from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, HomeAndEds
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder, StdinSettings
-from exactly_lib.test_case.sandbox_directory_structure import construct_at, ExecutionDirectoryStructure, \
+from exactly_lib.test_case.sandbox_directory_structure import construct_at, SandboxDirectoryStructure, \
     stdin_contents_file
 from exactly_lib.util.failure_details import FailureDetails, new_failure_details_from_message, \
     new_failure_details_from_exception
@@ -164,7 +164,7 @@ def execute(act_phase_handling: ActPhaseHandling,
                 shutil.rmtree(str(ret_val.execution_directory_structure.root_dir))
 
 
-def construct_eds(execution_directory_root_name_prefix: str) -> ExecutionDirectoryStructure:
+def construct_eds(execution_directory_root_name_prefix: str) -> SandboxDirectoryStructure:
     eds_structure_root = tempfile.mkdtemp(prefix=execution_directory_root_name_prefix)
     return construct_at(resolved_path_name(eds_structure_root))
 
@@ -246,7 +246,7 @@ class _PartialExecutor:
         return new_partial_result_pass(self._eds)
 
     @property
-    def _eds(self) -> ExecutionDirectoryStructure:
+    def _eds(self) -> SandboxDirectoryStructure:
         return self.__execution_directory_structure
 
     @property
@@ -390,7 +390,7 @@ class _PartialExecutor:
     def __set_cwd_to_act_dir(self):
         os.chdir(str(self._eds.act_dir))
 
-    def __construct_and_set_eds(self) -> ExecutionDirectoryStructure:
+    def __construct_and_set_eds(self) -> SandboxDirectoryStructure:
         eds_structure_root = tempfile.mkdtemp(prefix=self.__exe_configuration.execution_directory_root_name_prefix)
         self.__execution_directory_structure = construct_eds(eds_structure_root)
 
@@ -422,7 +422,7 @@ class _PartialExecutor:
 class _PhaseFailureResultConstructor:
     def __init__(self,
                  step: PhaseStep,
-                 eds: ExecutionDirectoryStructure):
+                 eds: SandboxDirectoryStructure):
         self.step = step
         self.eds = eds
 

@@ -83,7 +83,7 @@ def parse(source: SingleInstructionParserSource) -> FileInfo:
 
 
 def create_file(file_info: FileInfo,
-                eds: ExecutionDirectoryStructure) -> str:
+                eds: SandboxDirectoryStructure) -> str:
     """
     :return: None iff success. Otherwise an error message.
     """

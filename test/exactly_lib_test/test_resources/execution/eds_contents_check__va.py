@@ -1,4 +1,4 @@
-from exactly_lib.test_case.sandbox_directory_structure import ExecutionDirectoryStructure
+from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib_test.test_resources import file_structure
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 from exactly_lib_test.test_resources.value_assertions.file_assertions import DirContainsExactly__Va
@@ -6,7 +6,7 @@ from exactly_lib_test.test_resources.value_assertions.file_assertions import Dir
 
 def act_dir_contains_exactly(expected_contents: file_structure.DirContents) -> va.ValueAssertion:
     return va.sub_component('act dir',
-                            ExecutionDirectoryStructure.act_dir.fget,
+                            SandboxDirectoryStructure.act_dir.fget,
                             DirContainsExactly__Va(expected_contents))
 
 

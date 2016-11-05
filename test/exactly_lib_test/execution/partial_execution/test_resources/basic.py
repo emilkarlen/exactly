@@ -10,7 +10,7 @@ from exactly_lib.execution.act_phase import ActPhaseHandling
 from exactly_lib.execution.result import PartialResult
 from exactly_lib.test_case.phase_identifier import PhaseEnum
 from exactly_lib.test_case.phases import setup
-from exactly_lib.test_case.sandbox_directory_structure import ExecutionDirectoryStructure
+from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.functional import Composition
 from exactly_lib_test.execution.test_resources.act_source_executor import \
     ActSourceAndExecutorConstructorThatRunsConstantActions
@@ -41,7 +41,7 @@ class Result(tuple):
         return self[1]
 
     @property
-    def execution_directory_structure(self) -> ExecutionDirectoryStructure:
+    def execution_directory_structure(self) -> SandboxDirectoryStructure:
         return self.partial_result.execution_directory_structure
 
 

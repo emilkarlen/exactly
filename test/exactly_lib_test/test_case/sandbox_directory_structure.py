@@ -68,7 +68,7 @@ class TestConstructExecutionDirectoryStructure(unittest.TestCase):
 
 def is_execution_directory_structure_after_execution(fc: FileChecker,
                                                      root_dir_name: str):
-    eds = sandbox_directory_structure.ExecutionDirectoryStructure(root_dir_name)
+    eds = sandbox_directory_structure.SandboxDirectoryStructure(root_dir_name)
     fc.assert_exists_dir_with_given_number_of_files_in_it(eds.root_dir,
                                                           5)
     fc.assert_exists_dir(eds.test_case_dir)

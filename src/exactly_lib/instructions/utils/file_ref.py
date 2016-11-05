@@ -2,7 +2,7 @@ import pathlib
 
 from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostEdsValidator
 from exactly_lib.test_case.phases.common import HomeAndEds
-from exactly_lib.test_case.sandbox_directory_structure import ExecutionDirectoryStructure
+from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 
 
 class FileRef:
@@ -22,7 +22,7 @@ class FileRef:
         """
         raise NotImplementedError()
 
-    def file_path_post_eds(self, eds: ExecutionDirectoryStructure) -> pathlib.Path:
+    def file_path_post_eds(self, eds: SandboxDirectoryStructure) -> pathlib.Path:
         """
         :raises ValueError: This file exists pre-EDS.
         """
@@ -49,10 +49,10 @@ class FileRefRelEds(FileRef):
         """
         raise ValueError('This file does not exist before EDS is constructed')
 
-    def file_path_rel_eds(self, eds: ExecutionDirectoryStructure) -> pathlib.Path:
+    def file_path_rel_eds(self, eds: SandboxDirectoryStructure) -> pathlib.Path:
         raise NotImplementedError()
 
-    def file_path_post_eds(self, eds: ExecutionDirectoryStructure) -> pathlib.Path:
+    def file_path_post_eds(self, eds: SandboxDirectoryStructure) -> pathlib.Path:
         return self.file_path_post_eds(eds)
 
 
@@ -87,7 +87,7 @@ class _FileRefAbsolute(FileRef):
     def file_path_pre_eds(self, home_dir_path: pathlib.Path) -> pathlib.Path:
         return pathlib.Path(self._file_name)
 
-    def file_path_post_eds(self, eds: ExecutionDirectoryStructure) -> pathlib.Path:
+    def file_path_post_eds(self, eds: SandboxDirectoryStructure) -> pathlib.Path:
         raise ValueError('This file exists pre-EDS')
 
 
@@ -98,7 +98,7 @@ class _FileRefRelHome(FileRef):
     def file_path_pre_eds(self, home_dir_path: pathlib.Path) -> pathlib.Path:
         return home_dir_path / self._file_name
 
-    def file_path_post_eds(self, eds: ExecutionDirectoryStructure) -> pathlib.Path:
+    def file_path_post_eds(self, eds: SandboxDirectoryStructure) -> pathlib.Path:
         raise ValueError('This file exists pre-EDS')
 
 
@@ -106,7 +106,7 @@ class _FileRefRelCwd(FileRefRelEds):
     def __init__(self, file_name: str):
         super().__init__(file_name)
 
-    def file_path_post_eds(self, eds: ExecutionDirectoryStructure):
+    def file_path_post_eds(self, eds: SandboxDirectoryStructure):
         return pathlib.Path.cwd() / self._file_name
 
 
@@ -114,7 +114,7 @@ class _FileRefRelAct(FileRefRelEds):
     def __init__(self, file_name: str):
         super().__init__(file_name)
 
-    def file_path_post_eds(self, eds: ExecutionDirectoryStructure):
+    def file_path_post_eds(self, eds: SandboxDirectoryStructure):
         return eds.act_dir / self._file_name
 
 
@@ -122,7 +122,7 @@ class _FileRefRelTmpUser(FileRefRelEds):
     def __init__(self, file_name: str):
         super().__init__(file_name)
 
-    def file_path_post_eds(self, eds: ExecutionDirectoryStructure):
+    def file_path_post_eds(self, eds: SandboxDirectoryStructure):
         return eds.tmp.user_dir / self._file_name
 
 
@@ -130,7 +130,7 @@ class _FileRefRelTmpInternal(FileRefRelEds):
     def __init__(self, file_name: str):
         super().__init__(file_name)
 
-    def file_path_post_eds(self, eds: ExecutionDirectoryStructure):
+    def file_path_post_eds(self, eds: SandboxDirectoryStructure):
         return eds.tmp.internal_dir / self._file_name
 
 
@@ -150,7 +150,7 @@ class FileRefValidatorBase(PreOrPostEdsValidator):
             return self._validate_path(self.file_ref.file_path_pre_eds(home_dir_path))
         return None
 
-    def validate_post_eds_if_applicable(self, eds: ExecutionDirectoryStructure) -> str:
+    def validate_post_eds_if_applicable(self, eds: SandboxDirectoryStructure) -> str:
         if not self.file_ref.exists_pre_eds:
             return self._validate_path(self.file_ref.file_path_post_eds(eds))
         return None

@@ -183,7 +183,7 @@ class ExpectedTestEnvironmentVariablesAreSetCorrectlyVa(va.ValueAssertion):
               value: SubProcessResultInfo,
               message_builder: va.MessageBuilder = va.MessageBuilder()):
         actual_eds_directory = _get_printed_eds_or_fail(put, value.sub_process_result)
-        eds = sandbox_directory_structure.ExecutionDirectoryStructure(actual_eds_directory)
+        eds = sandbox_directory_structure.SandboxDirectoryStructure(actual_eds_directory)
         actually_printed_variables = _get_act_output_to_stdout(eds).splitlines()
         expected_printed_variables = [
             '%s=%s' % (environment_variables.ENV_VAR_HOME, str(value.file_argument.parent)),
@@ -215,7 +215,7 @@ def _print_variable_name__equals__variable_value(variable_name: str) -> str:
     return 'print("%s=" + os.environ["%s"])' % (variable_name, variable_name)
 
 
-def _get_act_output_to_stdout(eds: sandbox_directory_structure.ExecutionDirectoryStructure) -> str:
+def _get_act_output_to_stdout(eds: sandbox_directory_structure.SandboxDirectoryStructure) -> str:
     return contents_of_file(eds.result.stdout_file)
 
 

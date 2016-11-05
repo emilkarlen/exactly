@@ -13,7 +13,7 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.result import pfh
-from exactly_lib.test_case.sandbox_directory_structure import ExecutionDirectoryStructure
+from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.string import line_separated
 
@@ -166,7 +166,7 @@ class FileOpenEnvironmentError(InstructionEnvironmentError):
                          (file_purpose, str(path)))
 
 
-def read_exitcode(eds: ExecutionDirectoryStructure) -> int:
+def read_exitcode(eds: SandboxDirectoryStructure) -> int:
     try:
         f = eds.result.exitcode_file.open()
     except IOError:

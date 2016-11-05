@@ -1,7 +1,7 @@
 import os
 import unittest
 
-from exactly_lib.test_case.sandbox_directory_structure import ExecutionDirectoryStructure
+from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib_test.test_resources.execution import eds_populator, eds_contents_check
 from exactly_lib_test.test_resources.execution.utils import execution_directory_structure
 from exactly_lib_test.test_resources.file_checks import FileChecker
@@ -11,12 +11,12 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 class PostActionCheck:
     def apply(self,
               put: unittest.TestCase,
-              eds: ExecutionDirectoryStructure):
+              eds: SandboxDirectoryStructure):
         pass
 
 
 class Action:
-    def apply(self, eds: ExecutionDirectoryStructure):
+    def apply(self, eds: SandboxDirectoryStructure):
         return None
 
 
@@ -68,7 +68,7 @@ class ResultFilesCheck(PostActionCheck):
         self.expected_stdout_contents = expected_stdout_contents
         self.expected_stderr_contents = expected_stderr_contents
 
-    def apply(self, put: unittest.TestCase, eds: ExecutionDirectoryStructure):
+    def apply(self, put: unittest.TestCase, eds: SandboxDirectoryStructure):
         fc = FileChecker(put, 'Result files: ')
         fc.assert_is_plain_file_with_contents(eds.result.exitcode_file,
                                               str(self.expected_exitcode))
