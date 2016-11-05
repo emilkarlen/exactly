@@ -12,7 +12,7 @@ from exactly_lib_test.instructions.test_resources import pre_or_post_eds_validat
 from exactly_lib_test.instructions.test_resources.executable_file_test_utils import Configuration, suite_for
 from exactly_lib_test.test_resources import python_program_execution as py_exe
 from exactly_lib_test.test_resources.execution import eds_populator
-from exactly_lib_test.test_resources.execution.utils import home_and_eds_and_test_as_curr_dir
+from exactly_lib_test.test_resources.execution.utils import home_and_sds_and_test_as_curr_dir
 from exactly_lib_test.test_resources.file_structure import DirContents, File
 
 
@@ -236,7 +236,7 @@ class TestParseAbsolutePath(unittest.TestCase):
                          'Remaining arguments')
         self.assertTrue(exe_file.exists_pre_eds,
                         'File is expected to exist pre EDS')
-        with home_and_eds_and_test_as_curr_dir(
+        with home_and_sds_and_test_as_curr_dir(
                 home_dir_contents=DirContents([])) as home_and_sds:
             self.assertEqual(sys.executable,
                              exe_file.path_string(home_and_sds),
@@ -253,7 +253,7 @@ class TestParseAbsolutePath(unittest.TestCase):
                          'Remaining arguments')
         self.assertTrue(exe_file.exists_pre_eds,
                         'File is expected to exist pre EDS')
-        with home_and_eds_and_test_as_curr_dir(
+        with home_and_sds_and_test_as_curr_dir(
                 home_dir_contents=DirContents([])) as home_and_sds:
             self.assertEqual(non_existing_file,
                              exe_file.path_string(home_and_sds),

@@ -90,7 +90,7 @@ class Executor(InstructionExecutionBase):
         instruction = parser.apply(source)
         self._check_instruction(BeforeAssertPhaseInstruction, instruction)
         assert isinstance(instruction, BeforeAssertPhaseInstruction)
-        with utils.home_and_eds_and_test_as_curr_dir(
+        with utils.home_and_sds_and_test_as_curr_dir(
                 home_dir_contents=self.arrangement.home_contents,
                 eds_contents=self.arrangement.eds_contents) as home_and_sds:
             environment = i.InstructionEnvironmentForPreSdsStep(home_and_sds.home_dir_path)

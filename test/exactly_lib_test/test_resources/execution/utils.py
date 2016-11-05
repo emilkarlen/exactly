@@ -80,7 +80,7 @@ class HomeAndSdsContents(tuple):
 
 
 @contextmanager
-def home_and_eds_and_test_as_curr_dir(
+def home_and_sds_and_test_as_curr_dir(
         home_dir_contents: DirContents = empty_dir_contents(),
         eds_contents: eds_populator.EdsPopulator = eds_populator.empty()) -> HomeAndSds:
     cwd_before = os.getcwd()
