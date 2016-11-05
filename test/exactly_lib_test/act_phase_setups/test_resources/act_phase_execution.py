@@ -14,7 +14,7 @@ from exactly_lib_test.instructions.test_resources import sh_check__va as sh_chec
 from exactly_lib_test.test_resources import file_structure
 from exactly_lib_test.test_resources import file_structure_utils as fs_utils
 from exactly_lib_test.test_resources.execution import eds_contents_check
-from exactly_lib_test.test_resources.execution.utils import execution_directory_structure
+from exactly_lib_test.test_resources.execution.utils import sandbox_directory_structure
 from exactly_lib_test.test_resources.process import capture_process_executor_result, ProcessExecutor
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
@@ -72,7 +72,7 @@ def check_execution(put: unittest.TestCase,
         put.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                         step_result.status,
                         'Result of validation/pre-eds')
-        with execution_directory_structure() as eds:
+        with sandbox_directory_structure() as eds:
             try:
                 os.chdir(str(eds.act_dir))
                 home_and_sds = HomeAndSds(home_dir, eds)

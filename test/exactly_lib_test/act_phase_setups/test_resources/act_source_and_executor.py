@@ -12,7 +12,7 @@ from exactly_lib_test.act_phase_setups.test_resources.act_phase_execution import
     assert_is_list_of_act_phase_instructions, ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode
 from exactly_lib_test.execution.test_resources import eh_check
 from exactly_lib_test.test_resources.execution.eds_populator import act_dir_contents
-from exactly_lib_test.test_resources.execution.utils import execution_directory_structure
+from exactly_lib_test.test_resources.execution.utils import sandbox_directory_structure
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.process import capture_process_executor_result
@@ -102,7 +102,7 @@ class TestExecuteBase(unittest.TestCase):
         self.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                          step_result.status,
                          'Result of validation/pre-eds')
-        with execution_directory_structure() as eds:
+        with sandbox_directory_structure() as eds:
             try:
                 os.chdir(str(eds.act_dir))
                 home_and_sds = HomeAndSds(home_dir, eds)
@@ -195,7 +195,7 @@ class TestInitialCwdIsCurrentDirAndThatCwdIsRestoredAfterwards(TestBase):
                 self.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                                  step_result.status,
                                  'Result of validation/pre-eds')
-                with execution_directory_structure(act_dir_contents(DirContents([empty_dir('expected-cwd')]))) as eds:
+                with sandbox_directory_structure(act_dir_contents(DirContents([empty_dir('expected-cwd')]))) as eds:
                     home_and_sds = HomeAndSds(home_dir, eds)
                     process_cwd = str(eds.act_dir / 'expected-cwd')
                     os.chdir(process_cwd)

@@ -3,7 +3,7 @@ import unittest
 
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib_test.test_resources.execution import eds_populator, eds_contents_check
-from exactly_lib_test.test_resources.execution.utils import execution_directory_structure
+from exactly_lib_test.test_resources.execution.utils import sandbox_directory_structure
 from exactly_lib_test.test_resources.file_checks import FileChecker
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, anything_goes
 
@@ -47,7 +47,7 @@ def execute(put: unittest.TestCase,
             action: Action,
             check: Check):
     original_cwd = os.getcwd()
-    with execution_directory_structure(check.eds_contents_before) as eds:
+    with sandbox_directory_structure(check.eds_contents_before) as eds:
         os.chdir(str(eds.act_dir))
         try:
             check.pre_action_action.apply(eds)

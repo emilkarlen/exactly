@@ -5,7 +5,7 @@ from exactly_lib.instructions.utils.sub_process_execution import InstructionSour
 from exactly_lib_test.test_resources import file_checks
 from exactly_lib_test.test_resources import python_program_execution as py_exe
 from exactly_lib_test.test_resources.execution.eds_populator import act_dir_contents
-from exactly_lib_test.test_resources.execution.utils import execution_directory_structure
+from exactly_lib_test.test_resources.execution.utils import sandbox_directory_structure
 from exactly_lib_test.test_resources.file_structure import DirContents, File
 
 
@@ -19,7 +19,7 @@ import sys
 sys.exit(%d)
 """ % exit_code
 
-        with execution_directory_structure(contents=act_dir_contents(
+        with sandbox_directory_structure(contents=act_dir_contents(
                 DirContents([
                     File('program.py', py_pgm_that_exits_with_exit_code)
                 ]))) as eds:
@@ -34,7 +34,7 @@ sys.exit(%d)
                              'Exit code')
 
     def test_invalid_executable(self):
-        with execution_directory_structure() as eds:
+        with sandbox_directory_structure() as eds:
             executor = sut.ExecutorThatStoresResultInFilesInDir(False)
             result = executor.apply(self.source_info,
                                     eds.log_dir,
@@ -44,7 +44,7 @@ sys.exit(%d)
 
     def test_storage_of_result_in_files__existing_dir(self):
         setup = TestStorageOfResultInFilesSetup()
-        with execution_directory_structure(contents=act_dir_contents(
+        with sandbox_directory_structure(contents=act_dir_contents(
                 DirContents([
                     File('program.py', setup.py_pgm_that_prints_and_exits_with_exit_code)
                 ]))) as eds:
@@ -56,7 +56,7 @@ sys.exit(%d)
 
     def test_storage_of_result_in_files__non_existing_dir(self):
         setup = TestStorageOfResultInFilesSetup()
-        with execution_directory_structure(contents=act_dir_contents(
+        with sandbox_directory_structure(contents=act_dir_contents(
                 DirContents([
                     File('program.py', setup.py_pgm_that_prints_and_exits_with_exit_code)
                 ]))) as eds:
