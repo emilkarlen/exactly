@@ -1,6 +1,6 @@
 import pathlib
 
-from exactly_lib.execution.act_phase import ActSourceAndExecutor, ExitCodeOrHardError, new_eh_exit_code
+from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutor, ExitCodeOrHardError, new_eh_exit_code
 from exactly_lib.test_case.phases.common import HomeAndSds
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
