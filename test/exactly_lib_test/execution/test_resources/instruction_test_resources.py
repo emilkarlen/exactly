@@ -1,5 +1,5 @@
-from exactly_lib.execution.execution_mode import ExecutionMode
 from exactly_lib.processing.parse.act_phase_source_parser import SourceCodeInstruction
+from exactly_lib.test_case.execution_mode import ExecutionMode
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as instrs
 from exactly_lib.test_case.phases.act import ActPhaseInstruction

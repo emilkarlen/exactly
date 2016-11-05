@@ -1,4 +1,4 @@
-import exactly_lib.execution.execution_mode
+import exactly_lib.test_case.execution_mode
 from exactly_lib import program_info
 from exactly_lib.cli.cli_environment.exit_value import ExitValue
 from exactly_lib.cli.cli_environment.program_modes.test_case import exit_values
@@ -62,7 +62,7 @@ def _what_outcome_depends_on(setup: Setup) -> ParagraphItem:
     items = [
         list_item("""The "execution mode" set by the {phase[conf]} phase""".format(phase=setup.phase_names),
                   [para('The default mode is {default_mode}.'.format(
-                      default_mode=exactly_lib.execution.execution_mode.NAME_NORMAL))]),
+                      default_mode=exactly_lib.test_case.execution_mode.NAME_NORMAL))]),
         list_item("""The outcome of the {phase[assert]} phase""".format(phase=setup.phase_names),
                   []),
     ]
@@ -83,13 +83,13 @@ def _outcomes_per_mode_and_assert(setup: Setup) -> ParagraphItem:
             paras('Mode'),
             paras('{phase[assert]:syntax}'.format(phase=setup.phase_names)),
             paras('Test Case')],
-        _row(exactly_lib.execution.execution_mode.NAME_NORMAL, PartialResultStatus.PASS, FullResultStatus.PASS),
-        _row(exactly_lib.execution.execution_mode.NAME_NORMAL, PartialResultStatus.FAIL, FullResultStatus.FAIL),
+        _row(exactly_lib.test_case.execution_mode.NAME_NORMAL, PartialResultStatus.PASS, FullResultStatus.PASS),
+        _row(exactly_lib.test_case.execution_mode.NAME_NORMAL, PartialResultStatus.FAIL, FullResultStatus.FAIL),
 
-        _row(exactly_lib.execution.execution_mode.NAME_XFAIL, PartialResultStatus.PASS, FullResultStatus.XPASS),
-        _row(exactly_lib.execution.execution_mode.NAME_XFAIL, PartialResultStatus.FAIL, FullResultStatus.XFAIL),
+        _row(exactly_lib.test_case.execution_mode.NAME_XFAIL, PartialResultStatus.PASS, FullResultStatus.XPASS),
+        _row(exactly_lib.test_case.execution_mode.NAME_XFAIL, PartialResultStatus.FAIL, FullResultStatus.XFAIL),
 
-        _row(exactly_lib.execution.execution_mode.NAME_SKIP, None, FullResultStatus.SKIPPED),
+        _row(exactly_lib.test_case.execution_mode.NAME_SKIP, None, FullResultStatus.SKIPPED),
     ],
         '  ')
 

@@ -1,6 +1,5 @@
 from exactly_lib.common.instruction_documentation import SyntaxElementDescription, InvokationVariant
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
-from exactly_lib.execution.execution_mode import ExecutionMode, NAME_2_MODE, NAME_DEFAULT
 from exactly_lib.help.concepts.configuration_parameters.execution_mode import EXECUTION_MODE_CONFIGURATION_PARAMETER
 from exactly_lib.help.utils import formatting
 from exactly_lib.instructions.utils.arg_parse.parse_utils import split_arguments_list_string
@@ -8,6 +7,7 @@ from exactly_lib.instructions.utils.documentation.instruction_documentation_with
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, \
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
+from exactly_lib.test_case.execution_mode import ExecutionMode, NAME_2_MODE, NAME_DEFAULT
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.phases.result import sh
 
