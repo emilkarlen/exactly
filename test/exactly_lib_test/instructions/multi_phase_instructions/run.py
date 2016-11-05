@@ -17,7 +17,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 class ExecuteAction(home_and_eds_test.Action):
     def __init__(self,
-                 setup: sut.SetupForExecutableWithArguments):
+                 setup: sut.Setup):
         self.setup = setup
 
     def apply(self,
