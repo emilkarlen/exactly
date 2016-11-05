@@ -7,12 +7,12 @@ import tempfile
 from exactly_lib.execution import environment_variables
 from exactly_lib.execution import phase_step
 from exactly_lib.execution import phase_step_executors
-from exactly_lib.execution import phases
 from exactly_lib.execution.act_phase import ExitCodeOrHardError, ActSourceAndExecutor, \
     ActPhaseHandling, new_eh_hard_error
 from exactly_lib.execution.phase_step import PhaseStep
 from exactly_lib.execution.single_instruction_executor import ControlledInstructionExecutor
 from exactly_lib.section_document.model import SectionContents, ElementType
+from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.os_services import new_default
 from exactly_lib.test_case.phases import common
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
@@ -326,7 +326,7 @@ class _PartialExecutor:
         ret_val = self.__run_internal_instructions_phase_step(phase_step.SETUP__MAIN,
                                                               phase_step_executors.SetupMainExecutor(
                                                                   self.os_services,
-                                                                  self.__post_eds_environment(phases.SETUP),
+                                                                  self.__post_eds_environment(phase_identifier.SETUP),
                                                                   self.__setup_settings_builder),
                                                               self.__test_case.setup_phase)
         self.___step_execution_result.stdin_settings = self.__setup_settings_builder.stdin
@@ -337,7 +337,7 @@ class _PartialExecutor:
         return self.__run_internal_instructions_phase_step(
             phase_step.SETUP__VALIDATE_POST_SETUP,
             phase_step_executors.SetupValidatePostSetupExecutor(
-                self.__post_eds_environment(phases.SETUP)),
+                self.__post_eds_environment(phase_identifier.SETUP)),
             self.__test_case.setup_phase)
 
     def __act_program_executor(self):
@@ -349,21 +349,21 @@ class _PartialExecutor:
         return self.__run_internal_instructions_phase_step(
             phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
             phase_step_executors.BeforeAssertValidatePostSetupExecutor(
-                self.__post_eds_environment(phases.BEFORE_ASSERT)),
+                self.__post_eds_environment(phase_identifier.BEFORE_ASSERT)),
             self.__test_case.before_assert_phase)
 
     def __assert__validate_post_setup(self) -> PartialResult:
         return self.__run_internal_instructions_phase_step(
             phase_step.ASSERT__VALIDATE_POST_SETUP,
             phase_step_executors.AssertValidatePostSetupExecutor(
-                self.__post_eds_environment(phases.ASSERT)),
+                self.__post_eds_environment(phase_identifier.ASSERT)),
             self.__test_case.assert_phase)
 
     def __assert__main(self) -> PartialResult:
         return self.__run_internal_instructions_phase_step(
             phase_step.ASSERT__MAIN,
             phase_step_executors.AssertMainExecutor(
-                self.__post_eds_environment(phases.ASSERT),
+                self.__post_eds_environment(phase_identifier.ASSERT),
                 self.os_services),
             self.__test_case.assert_phase)
 
@@ -371,7 +371,7 @@ class _PartialExecutor:
         return self.__run_internal_instructions_phase_step(
             phase_step.CLEANUP__MAIN,
             phase_step_executors.CleanupMainExecutor(
-                self.__post_eds_environment(phases.CLEANUP),
+                self.__post_eds_environment(phase_identifier.CLEANUP),
                 previous_phase,
                 self.os_services),
             self.__test_case.cleanup_phase)
@@ -380,7 +380,7 @@ class _PartialExecutor:
         return self.__run_internal_instructions_phase_step(
             phase_step.BEFORE_ASSERT__MAIN,
             phase_step_executors.BeforeAssertMainExecutor(
-                self.__post_eds_environment(phases.BEFORE_ASSERT),
+                self.__post_eds_environment(phase_identifier.BEFORE_ASSERT),
                 self.os_services),
             self.__test_case.before_assert_phase)
 
@@ -395,7 +395,7 @@ class _PartialExecutor:
         self.__execution_directory_structure = construct_eds(eds_structure_root)
 
     def __post_eds_environment(self,
-                               phase: phases.Phase) -> common.InstructionEnvironmentForPostSdsStep:
+                               phase: phase_identifier.Phase) -> common.InstructionEnvironmentForPostSdsStep:
         return common.InstructionEnvironmentForPostSdsStep(self.__configuration.home_dir_path,
                                                            self.__execution_directory_structure,
                                                            phase.identifier,

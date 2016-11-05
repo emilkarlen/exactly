@@ -1,7 +1,7 @@
 from exactly_lib.cli.program_modes.help.argument_parsing import INSTRUCTIONS, TEST_SUITE, TEST_CASE, HELP, \
     CONCEPT, HTML_DOCUMENTATION, SPECIFICATION
-from exactly_lib.execution import phases
 from exactly_lib.help.program_modes.test_case.config import phase_help_name
+from exactly_lib.test_case import phase_identifier
 
 
 def program() -> list:
@@ -36,7 +36,7 @@ def case_instructions() -> list:
     return [INSTRUCTIONS]
 
 
-def case_phase(ph: phases.Phase) -> list:
+def case_phase(ph: phase_identifier.Phase) -> list:
     return case_phase_for_name(phase_help_name(ph))
 
 

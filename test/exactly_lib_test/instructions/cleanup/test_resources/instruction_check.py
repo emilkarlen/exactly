@@ -1,9 +1,9 @@
 import pathlib
 import unittest
 
-from exactly_lib.execution import phases
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, SingleInstructionParserSource
+from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.os_services import OsServices, new_default
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.cleanup import CleanupPhaseInstruction, PreviousPhase
@@ -91,7 +91,7 @@ class Executor(InstructionExecutionToBeReplacedByVaBase):
                 return
             environment = i.InstructionEnvironmentForPostSdsStep(home_and_eds.home_dir_path,
                                                                  home_and_eds.eds,
-                                                                 phases.CLEANUP.identifier)
+                                                                 phase_identifier.CLEANUP.identifier)
             self._execute_main(environment, instruction)
             self.expectation.main_side_effects_on_files.apply(self.put, environment.eds)
             self.expectation.side_effects_check.apply(self.put, home_and_eds)
