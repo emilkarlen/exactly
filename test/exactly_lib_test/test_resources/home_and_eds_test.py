@@ -48,7 +48,7 @@ def execute(put: unittest.TestCase,
             action: Action,
             check: Check):
     with home_and_sds_and_test_as_curr_dir(home_dir_contents=check.home_dir_contents_before,
-                                           eds_contents=check.eds_contents_before) as home_and_sds:
+                                           sds_contents=check.eds_contents_before) as home_and_sds:
         check.pre_action_action.apply(home_and_sds)
         result = action.apply(home_and_sds)
         check.expected_action_result.apply(put, result)

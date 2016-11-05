@@ -87,7 +87,7 @@ class Executor:
         assert isinstance(instruction, AssertPhaseInstruction)
         with utils.home_and_sds_and_test_as_curr_dir(
                 home_dir_contents=self.arrangement.home_contents,
-                eds_contents=self.arrangement.eds_contents) as home_and_sds:
+                sds_contents=self.arrangement.eds_contents) as home_and_sds:
             act_result = self.arrangement.act_result_producer.apply(ActEnvironment(home_and_sds))
             write_act_result(home_and_sds.sds, act_result)
             # TODO Execution of validate/pre-eds should be done before act-result is written.

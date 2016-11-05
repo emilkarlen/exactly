@@ -88,7 +88,7 @@ class TestParsesCorrectValueFromListWithDefaultConfiguration(TestParsesBase):
     def test_rel_cwd(self):
         (file_reference, _) = sut.parse_file_ref__list([REL_CWD_OPTION, 'file.txt'])
         with home_and_sds_and_test_as_curr_dir(
-                eds_contents=act_dir_contents(DirContents([empty_file('file.txt')]))) as home_and_sds:
+                sds_contents=act_dir_contents(DirContents([empty_file('file.txt')]))) as home_and_sds:
             expected_path = home_and_sds.sds.act_dir / 'file.txt'
             self.assert_is_file_that_does_not_exist_pre_eds(expected_path,
                                                             home_and_sds,
@@ -201,7 +201,7 @@ class TestParsesCorrectValueFromTokenStreamWithDefaultConfiguration(TestParsesBa
     def test_rel_cwd(self):
         (file_reference, _) = sut.parse_file_ref(TokenStream('%s file.txt' % REL_CWD_OPTION))
         with home_and_sds_and_test_as_curr_dir(
-                eds_contents=act_dir_contents(DirContents([empty_file('file.txt')]))) as home_and_sds:
+                sds_contents=act_dir_contents(DirContents([empty_file('file.txt')]))) as home_and_sds:
             expected_path = home_and_sds.sds.act_dir / 'file.txt'
             self.assert_is_file_that_does_not_exist_pre_eds(expected_path,
                                                             home_and_sds,
