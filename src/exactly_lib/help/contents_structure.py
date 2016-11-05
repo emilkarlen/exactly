@@ -10,8 +10,8 @@ from exactly_lib.help.program_modes.test_suite.contents_structure import TestSui
 from exactly_lib.help.program_modes.test_suite.section.cases import CasesSectionDocumentation
 from exactly_lib.help.program_modes.test_suite.section.configuration import ConfigurationSectionDocumentation
 from exactly_lib.help.program_modes.test_suite.section.suites import SuitesSectionDocumentation
+from exactly_lib.processing.instruction_setup import InstructionsSetup
 from exactly_lib.test_case import phase_identifier
-from exactly_lib.test_case.instruction_setup import InstructionsSetup
 from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_set import CONFIGURATION_INSTRUCTIONS
 from exactly_lib.test_suite.section_names import SECTION_NAME__CONF, SECTION_NAME__SUITS, SECTION_NAME__CASES
 

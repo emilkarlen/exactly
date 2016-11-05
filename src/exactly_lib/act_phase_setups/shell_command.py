@@ -4,8 +4,8 @@ from exactly_lib.act_phase_setups import utils
 from exactly_lib.act_phase_setups.util.executor_made_of_parts import main as executor_made_of_parts
 from exactly_lib.act_phase_setups.util.executor_made_of_parts.parser_for_single_line import \
     ParserForSingleLineUsingStandardSyntax
-from exactly_lib.execution.act_phase import ExitCodeOrHardError
 from exactly_lib.processing.act_phase import ActPhaseSetup
+from exactly_lib.test_case.act_phase_handling import ExitCodeOrHardError
 from exactly_lib.test_case.phases.common import HomeAndSds, InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.util.std import StdFiles

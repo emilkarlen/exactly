@@ -1,4 +1,4 @@
-from exactly_lib.execution.act_phase import ExitCodeOrHardError, new_eh_exit_code, new_eh_hard_error
+from exactly_lib.test_case.act_phase_handling import ExitCodeOrHardError, new_eh_exit_code, new_eh_hard_error
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.failure_details import new_failure_details_from_message

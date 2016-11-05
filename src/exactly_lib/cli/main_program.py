@@ -4,8 +4,8 @@ from exactly_lib.cli.cli_environment.common_cli_options import HELP_COMMAND, SUI
 from exactly_lib.cli.program_modes import main_program_argument_parsing as case_argument_parsing
 from exactly_lib.cli.program_modes.test_case.settings import TestCaseExecutionSettings
 from exactly_lib.cli.program_modes.test_suite.settings import TestSuiteExecutionSettings
+from exactly_lib.processing.instruction_setup import InstructionsSetup
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
-from exactly_lib.test_case.instruction_setup import InstructionsSetup
 from exactly_lib.util import argument_parsing_utils
 from exactly_lib.util.std import StdOutputFiles
 

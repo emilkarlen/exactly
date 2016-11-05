@@ -5,14 +5,14 @@ import subprocess
 import tempfile
 
 from exactly_lib.execution import environment_variables
-from exactly_lib.execution.act_phase import ExitCodeOrHardError, ActSourceAndExecutor, \
-    ActPhaseHandling, new_eh_hard_error
 from exactly_lib.execution.instruction_execution import phase_step_executors, phase_step_execution
 from exactly_lib.execution.instruction_execution.single_instruction_executor import ControlledInstructionExecutor
 from exactly_lib.execution.phase_step_identifiers import phase_step
 from exactly_lib.execution.phase_step_identifiers.phase_step import PhaseStep
 from exactly_lib.section_document.model import SectionContents, ElementType
 from exactly_lib.test_case import phase_identifier
+from exactly_lib.test_case.act_phase_handling import ExitCodeOrHardError, ActSourceAndExecutor, \
+    ActPhaseHandling, new_eh_hard_error
 from exactly_lib.test_case.os_services import new_default
 from exactly_lib.test_case.phases import common
 from exactly_lib.test_case.phases.act import ActPhaseInstruction

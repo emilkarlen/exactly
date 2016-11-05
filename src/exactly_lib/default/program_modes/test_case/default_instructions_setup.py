@@ -4,7 +4,7 @@ from exactly_lib.default.program_modes.test_case.phases import \
     cleanup, \
     configuration, \
     setup
-from exactly_lib.test_case.instruction_setup import InstructionsSetup
+from exactly_lib.processing.instruction_setup import InstructionsSetup
 
 INSTRUCTIONS_SETUP = InstructionsSetup(
     configuration.INSTRUCTIONS,

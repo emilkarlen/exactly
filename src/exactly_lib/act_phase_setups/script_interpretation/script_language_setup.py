@@ -3,9 +3,9 @@ import pathlib
 from exactly_lib.act_phase_setups import utils
 from exactly_lib.act_phase_setups.script_interpretation.script_language_management import ScriptLanguageSetup
 from exactly_lib.act_phase_setups.util.executor_made_of_parts import main as executor_made_of_parts
-from exactly_lib.execution.act_phase import ExitCodeOrHardError, \
-    ActPhaseHandling
 from exactly_lib.processing.act_phase import ActPhaseSetup
+from exactly_lib.test_case.act_phase_handling import ExitCodeOrHardError, \
+    ActPhaseHandling
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import HomeAndSds, InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import sh

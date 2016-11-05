@@ -1,4 +1,4 @@
-from exactly_lib.execution.act_phase import ActSourceAndExecutorConstructor
+from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutorConstructor
 
 
 class ActPhaseSetup(tuple):
