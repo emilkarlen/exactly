@@ -2,7 +2,8 @@ import os
 import pathlib
 import unittest
 
-from exactly_lib.execution.act_phase import ExitCodeOrHardError, ActSourceAndExecutorConstructor, new_eh_exit_code, \
+from exactly_lib.test_case.act_phase_handling import ExitCodeOrHardError, ActSourceAndExecutorConstructor, \
+    new_eh_exit_code, \
     ActSourceAndExecutor
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, HomeAndSds

@@ -1,7 +1,7 @@
 import pathlib
 
-from exactly_lib.execution.act_phase import ActPhaseHandling
 from exactly_lib.test_case import phase_identifier
+from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.test_case.execution_mode import ExecutionMode
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.test_case.phases.result.sh import SuccessOrHardError

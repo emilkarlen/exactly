@@ -5,7 +5,6 @@ import pathlib
 from exactly_lib import program_info
 from exactly_lib.default.program_modes.test_case import test_case_parser
 from exactly_lib.execution import full_execution
-from exactly_lib.execution.act_phase import ActPhaseHandling
 from exactly_lib.execution.result import FullResult
 from exactly_lib.processing import processing_utils
 from exactly_lib.processing import test_case_processing as processing
@@ -17,6 +16,7 @@ from exactly_lib.section_document import parse as document_parser
 from exactly_lib.section_document.parse import SectionElementParser
 from exactly_lib.test_case import error_description
 from exactly_lib.test_case import test_case_doc
+from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.test_case.instruction_setup import InstructionsSetup
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib.util import line_source

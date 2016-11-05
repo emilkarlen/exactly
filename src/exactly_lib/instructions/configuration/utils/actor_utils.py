@@ -5,13 +5,13 @@ from exactly_lib.act_phase_setups.script_interpretation.script_language_manageme
 from exactly_lib.act_phase_setups.script_interpretation.script_language_management import StandardScriptFileManager
 from exactly_lib.act_phase_setups.script_interpretation.script_language_setup import new_for_script_language_handling
 from exactly_lib.common.instruction_documentation import InvokationVariant, SyntaxElementDescription
-from exactly_lib.execution.act_phase import ActPhaseHandling
 from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.phase_names import ACT_PHASE_NAME
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
+from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.util.cli_syntax.elements import argument as a
 
 SHELL_COMMAND_ACTOR_KEYWORD = 'shell'
