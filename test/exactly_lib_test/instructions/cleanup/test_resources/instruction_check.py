@@ -85,16 +85,16 @@ class Executor(InstructionExecutionToBeReplacedByVaBase):
         assert isinstance(instruction, CleanupPhaseInstruction)
         with utils.home_and_eds_and_test_as_curr_dir(
                 home_dir_contents=self.arrangement.home_contents,
-                eds_contents=self.arrangement.eds_contents) as home_and_eds:
-            result_of_validate_pre_eds = self._execute_pre_validate(home_and_eds.home_dir_path, instruction)
+                eds_contents=self.arrangement.eds_contents) as home_and_sds:
+            result_of_validate_pre_eds = self._execute_pre_validate(home_and_sds.home_dir_path, instruction)
             if not result_of_validate_pre_eds.is_success:
                 return
-            environment = i.InstructionEnvironmentForPostSdsStep(home_and_eds.home_dir_path,
-                                                                 home_and_eds.eds,
+            environment = i.InstructionEnvironmentForPostSdsStep(home_and_sds.home_dir_path,
+                                                                 home_and_sds.sds,
                                                                  phase_identifier.CLEANUP.identifier)
             self._execute_main(environment, instruction)
             self.expectation.main_side_effects_on_files.apply(self.put, environment.eds)
-            self.expectation.side_effects_check.apply(self.put, home_and_eds)
+            self.expectation.side_effects_check.apply(self.put, home_and_sds)
 
     def _execute_pre_validate(self,
                               home_dir_path: pathlib.Path,

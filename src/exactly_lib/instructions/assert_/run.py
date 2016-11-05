@@ -41,5 +41,5 @@ class _Instruction(AssertPhaseInstruction):
              environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
         return run.run_and_return_pfh(self.setup,
-                                      environment.home_and_eds,
+                                      environment.home_and_sds,
                                       environment.phase_logging)

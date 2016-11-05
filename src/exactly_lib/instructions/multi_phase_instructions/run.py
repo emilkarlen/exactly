@@ -20,7 +20,7 @@ from exactly_lib.instructions.utils.sub_process_execution import ResultAndStderr
     ExecutorThatStoresResultInFilesInDir, execute_and_read_stderr_if_non_zero_exitcode, result_to_sh, result_to_pfh
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, SingleInstructionParserSource, SingleInstructionInvalidArgumentException
-from exactly_lib.test_case.phases.common import HomeAndEds, TestCaseInstruction, PhaseLoggingPaths
+from exactly_lib.test_case.phases.common import HomeAndSds, TestCaseInstruction, PhaseLoggingPaths
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.util.cli_syntax.elements import argument as a
@@ -148,13 +148,13 @@ class SetupForExecutableWithArguments:
         self.instruction_source_info = instruction_source_info
         self.__executable = executable
 
-    def _arguments(self, home_and_eds: HomeAndEds) -> list:
+    def _arguments(self, home_and_sds: HomeAndSds) -> list:
         raise NotImplementedError()
 
-    def cmd_and_args(self, home_and_eds: HomeAndEds) -> list:
-        return [self.__executable.path_string(home_and_eds)] + \
+    def cmd_and_args(self, home_and_sds: HomeAndSds) -> list:
+        return [self.__executable.path_string(home_and_sds)] + \
                self.__executable.arguments + \
-               self._arguments(home_and_eds)
+               self._arguments(home_and_sds)
 
     @property
     def validator(self) -> PreOrPostEdsValidator:
@@ -169,7 +169,7 @@ class SetupForExecute(SetupForExecutableWithArguments):
         super().__init__(instruction_source_info, executable)
         self.argument_list = argument_list
 
-    def _arguments(self, home_and_eds: HomeAndEds) -> list:
+    def _arguments(self, home_and_sds: HomeAndSds) -> list:
         return self.argument_list
 
 
@@ -187,8 +187,8 @@ class SetupForInterpret(SetupForExecutableWithArguments):
         self._validator = AndValidator((executable.validator,
                                         FileRefCheckValidator(file_to_interpret_check)))
 
-    def _arguments(self, home_and_eds: HomeAndEds) -> list:
-        return [str(self.file_to_interpret.file_path_pre_or_post_eds(home_and_eds))] + self.argument_list
+    def _arguments(self, home_and_sds: HomeAndSds) -> list:
+        return [str(self.file_to_interpret.file_path_pre_or_post_eds(home_and_sds))] + self.argument_list
 
     @property
     def validator(self) -> PreOrPostEdsValidator:
@@ -203,30 +203,30 @@ class SetupForSource(SetupForExecutableWithArguments):
         super().__init__(instruction_source_info, executable)
         self.source = source
 
-    def _arguments(self, home_and_eds: HomeAndEds) -> list:
+    def _arguments(self, home_and_sds: HomeAndSds) -> list:
         return [self.source]
 
 
 def run(setup: SetupForExecutableWithArguments,
-        home_and_eds: HomeAndEds,
+        home_and_sds: HomeAndSds,
         phase_logging_paths: PhaseLoggingPaths) -> ResultAndStderr:
     execute_info = ExecuteInfo(setup.instruction_source_info,
-                               setup.cmd_and_args(home_and_eds))
+                               setup.cmd_and_args(home_and_sds))
     executor = ExecutorThatStoresResultInFilesInDir(is_shell=False)
     return execute_and_read_stderr_if_non_zero_exitcode(execute_info, executor, phase_logging_paths)
 
 
 def run_and_return_sh(setup: SetupForExecutableWithArguments,
-                      home_and_eds: HomeAndEds,
+                      home_and_sds: HomeAndSds,
                       phase_logging_paths: PhaseLoggingPaths) -> sh.SuccessOrHardError:
-    result = run(setup, home_and_eds, phase_logging_paths)
+    result = run(setup, home_and_sds, phase_logging_paths)
     return result_to_sh(result)
 
 
 def run_and_return_pfh(setup: SetupForExecutableWithArguments,
-                       home_and_eds: HomeAndEds,
+                       home_and_sds: HomeAndSds,
                        phase_logging_paths: PhaseLoggingPaths) -> pfh.PassOrFailOrHardError:
-    result = run(setup, home_and_eds, phase_logging_paths)
+    result = run(setup, home_and_sds, phase_logging_paths)
     return result_to_pfh(result)
 
 

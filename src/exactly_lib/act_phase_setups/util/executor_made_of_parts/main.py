@@ -1,7 +1,7 @@
 import pathlib
 
 from exactly_lib.execution.act_phase import ActSourceAndExecutor, ExitCodeOrHardError, ActSourceAndExecutorConstructor
-from exactly_lib.test_case.phases.common import HomeAndEds, InstructionEnvironmentForPreSdsStep
+from exactly_lib.test_case.phases.common import HomeAndSds, InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.std import StdFiles
@@ -11,7 +11,7 @@ class Validator:
     def validate_pre_sds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
         raise NotImplementedError(str(type(self)))
 
-    def validate_post_setup(self, home_and_eds: HomeAndEds) -> svh.SuccessOrValidationErrorOrHardError:
+    def validate_post_setup(self, home_and_sds: HomeAndSds) -> svh.SuccessOrValidationErrorOrHardError:
         raise NotImplementedError(str(type(self)))
 
 
@@ -22,16 +22,16 @@ class UnconditionallySuccessfulValidator(Validator):
     def validate_pre_sds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
         return svh.new_svh_success()
 
-    def validate_post_setup(self, home_and_eds: HomeAndEds) -> svh.SuccessOrValidationErrorOrHardError:
+    def validate_post_setup(self, home_and_sds: HomeAndSds) -> svh.SuccessOrValidationErrorOrHardError:
         return svh.new_svh_success()
 
 
 class Executor:
-    def prepare(self, home_and_eds: HomeAndEds, script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
+    def prepare(self, home_and_sds: HomeAndSds, script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
         raise NotImplementedError(str(type(self)))
 
     def execute(self,
-                home_and_eds: HomeAndEds,
+                home_and_sds: HomeAndSds,
                 script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
         raise NotImplementedError(str(type(self)))
@@ -100,17 +100,17 @@ class ActSourceAndExecutorMadeFromParserValidatorAndExecutor(ActSourceAndExecuto
             return status
         return self._validator.validate_pre_sds(home_dir_path)
 
-    def validate_post_setup(self, home_and_eds: HomeAndEds) -> svh.SuccessOrValidationErrorOrHardError:
-        return self._validator.validate_post_setup(home_and_eds)
+    def validate_post_setup(self, home_and_sds: HomeAndSds) -> svh.SuccessOrValidationErrorOrHardError:
+        return self._validator.validate_post_setup(home_and_sds)
 
-    def prepare(self, home_and_eds: HomeAndEds, script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
-        return self._executor.prepare(home_and_eds, script_output_dir_path)
+    def prepare(self, home_and_sds: HomeAndSds, script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
+        return self._executor.prepare(home_and_sds, script_output_dir_path)
 
     def execute(self,
-                home_and_eds: HomeAndEds,
+                home_and_sds: HomeAndSds,
                 script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
-        return self._executor.execute(home_and_eds, script_output_dir_path, std_files)
+        return self._executor.execute(home_and_sds, script_output_dir_path, std_files)
 
     def _parse_and_construct_validator_and_executor(self) -> svh.SuccessOrValidationErrorOrHardError:
         try:

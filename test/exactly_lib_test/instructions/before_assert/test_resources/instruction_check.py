@@ -38,8 +38,8 @@ class Expectation(ExpectationBase):
                  validation_post_setup: va.ValueAssertion = svh_check__va.is_success(),
                  main_result: va.ValueAssertion = sh_check__va.is_success(),
                  main_side_effects_on_files: va.ValueAssertion = va.anything_goes(),
-                 home_and_eds: va.ValueAssertion = va.anything_goes()):
-        super().__init__(validation_pre_eds, main_side_effects_on_files, home_and_eds)
+                 home_and_sds: va.ValueAssertion = va.anything_goes()):
+        super().__init__(validation_pre_eds, main_side_effects_on_files, home_and_sds)
         self.validation_post_setup = validation_post_setup
         self.main_result = sh_check__va.is_sh_and(main_result)
 
@@ -92,24 +92,24 @@ class Executor(InstructionExecutionBase):
         assert isinstance(instruction, BeforeAssertPhaseInstruction)
         with utils.home_and_eds_and_test_as_curr_dir(
                 home_dir_contents=self.arrangement.home_contents,
-                eds_contents=self.arrangement.eds_contents) as home_and_eds:
-            environment = i.InstructionEnvironmentForPreSdsStep(home_and_eds.home_dir_path)
+                eds_contents=self.arrangement.eds_contents) as home_and_sds:
+            environment = i.InstructionEnvironmentForPreSdsStep(home_and_sds.home_dir_path)
             validate_result = self._execute_validate_pre_eds(environment, instruction)
             if not validate_result.is_success:
                 return
-            environment = i.InstructionEnvironmentForPostSdsStep(home_and_eds.home_dir_path,
-                                                                 home_and_eds.eds,
+            environment = i.InstructionEnvironmentForPostSdsStep(home_and_sds.home_dir_path,
+                                                                 home_and_sds.sds,
                                                                  phase_identifier.BEFORE_ASSERT.identifier)
             validate_result = self._execute_validate_post_setup(environment, instruction)
             if not validate_result.is_success:
                 return
 
-            act_result = self.arrangement.act_result_producer.apply(ActEnvironment(home_and_eds))
-            write_act_result(home_and_eds.eds, act_result)
+            act_result = self.arrangement.act_result_producer.apply(ActEnvironment(home_and_sds))
+            write_act_result(home_and_sds.sds, act_result)
 
             self._execute_main(environment, instruction)
-            self._check_main_side_effects_on_files(home_and_eds)
-            self._check_side_effects_on_home_and_eds(home_and_eds)
+            self._check_main_side_effects_on_files(home_and_sds)
+            self._check_side_effects_on_home_and_eds(home_and_sds)
 
     def _execute_validate_pre_eds(
             self,

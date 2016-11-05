@@ -1,7 +1,7 @@
 import pathlib
 import unittest
 
-from exactly_lib.test_case.phases.common import HomeAndEds
+from exactly_lib.test_case.phases.common import HomeAndSds
 from exactly_lib_test.instructions.test_resources.assertion_utils.side_effects import SideEffectsCheck
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
@@ -12,9 +12,9 @@ class AssertCwdIsSubDirOfActDir(va.ValueAssertion):
 
     def apply(self,
               put: unittest.TestCase,
-              value: HomeAndEds,
+              value: HomeAndSds,
               message_builder: va.MessageBuilder = va.MessageBuilder()):
-        put.assertEqual(value.eds.act_dir / self.expected_sub_dir_of_act_dir,
+        put.assertEqual(value.sds.act_dir / self.expected_sub_dir_of_act_dir,
                         pathlib.Path.cwd(),
                         message_builder.apply('CWD expected to be sub-dir of EDS/act'))
 
@@ -26,6 +26,6 @@ class SideEffectsCheckAsVa(va.ValueAssertion):
 
     def apply(self,
               put: unittest.TestCase,
-              value: HomeAndEds,
+              value: HomeAndSds,
               message_builder: va.MessageBuilder = va.MessageBuilder()):
         self.other.apply(put, value)

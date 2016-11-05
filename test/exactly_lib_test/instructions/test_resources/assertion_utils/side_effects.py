@@ -1,14 +1,14 @@
 import pathlib
 import unittest
 
-from exactly_lib.test_case.phases.common import HomeAndEds
+from exactly_lib.test_case.phases.common import HomeAndSds
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 class SideEffectsCheck:
     def apply(self,
               put: unittest.TestCase,
-              home_and_eds: HomeAndEds):
+              home_and_sds: HomeAndSds):
         pass
 
 
@@ -18,8 +18,8 @@ class AssertCwdIsSubDirOfActDir(SideEffectsCheck):
 
     def apply(self,
               put: unittest.TestCase,
-              home_and_eds: HomeAndEds):
-        put.assertEqual(home_and_eds.eds.act_dir / self.expected_sub_dir_of_act_dir,
+              home_and_sds: HomeAndSds):
+        put.assertEqual(home_and_sds.sds.act_dir / self.expected_sub_dir_of_act_dir,
                         pathlib.Path.cwd())
 
 
@@ -30,5 +30,5 @@ class AdaptVa(SideEffectsCheck):
 
     def apply(self,
               put: unittest.TestCase,
-              home_and_eds: HomeAndEds):
-        self.va.apply(put, home_and_eds)
+              home_and_sds: HomeAndSds):
+        self.va.apply(put, home_and_sds)

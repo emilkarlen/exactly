@@ -5,7 +5,7 @@ from exactly_lib.act_phase_setups.util.executor_made_of_parts import main as sut
 from exactly_lib.execution.act_phase import ExitCodeOrHardError, new_eh_exit_code
 from exactly_lib.execution.phase_step_identifiers import phase_step
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, HomeAndEds
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, HomeAndSds
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.std import StdFiles
@@ -101,7 +101,7 @@ class ValidatorThatRecordsSteps(sut.Validator):
         self.recorder[phase_step.ACT__VALIDATE_PRE_EDS] = self.act_phase_source
         return svh.new_svh_success()
 
-    def validate_post_setup(self, home_and_eds: HomeAndEds) -> svh.SuccessOrValidationErrorOrHardError:
+    def validate_post_setup(self, home_and_sds: HomeAndSds) -> svh.SuccessOrValidationErrorOrHardError:
         self.recorder[phase_step.ACT__VALIDATE_POST_SETUP] = self.act_phase_source
         return svh.new_svh_success()
 
@@ -111,11 +111,11 @@ class ExecutorThatRecordsSteps(sut.Executor):
         self.recorder = recorder
         self.act_phase_source = act_phase_source
 
-    def prepare(self, home_and_eds: HomeAndEds, script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
+    def prepare(self, home_and_sds: HomeAndSds, script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
         self.recorder[phase_step.ACT__PREPARE] = self.act_phase_source
         return sh.new_sh_success()
 
-    def execute(self, home_and_eds: HomeAndEds, script_output_dir_path: pathlib.Path,
+    def execute(self, home_and_sds: HomeAndSds, script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
         self.recorder[phase_step.ACT__EXECUTE] = self.act_phase_source
         return new_eh_exit_code(0)

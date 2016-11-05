@@ -14,9 +14,9 @@ class _ReplacedEnvVarsFileContentsConstructor:
 
     def contents_before_replacement(self,
                                     act_environment: ActEnvironment) -> str:
-        home_and_eds = act_environment.home_and_eds
-        env_vars_dict = environment_variables.replaced(home_and_eds.home_dir_path,
-                                                       home_and_eds.eds)
+        home_and_sds = act_environment.home_and_sds
+        env_vars_dict = environment_variables.replaced(home_and_sds.home_dir_path,
+                                                       home_and_sds.sds)
         values_in_determined_order = list(map(env_vars_dict.get, self.sorted_env_var_keys))
         return self.content_from_values(values_in_determined_order,
                                         act_environment)
@@ -40,7 +40,7 @@ class _ReplacedEnvVarsFileContentsConstructor:
         all_values_concatenated = ''.join(values_in_determined_order)
         all_values_on_separate_lines = os.linesep.join(values_in_determined_order)
         all_values_concatenated_in_reverse_order = ''.join(reversed(values_in_determined_order))
-        eds = act_environment.home_and_eds.eds
+        eds = act_environment.home_and_sds.sds
         should_not_be_replaced_values = os.linesep.join([str(eds.root_dir),
                                                          str(eds.result.root_dir)])
         return os.linesep.join([all_values_concatenated,
@@ -95,7 +95,7 @@ class ActResultProducerForContentsWithAllReplacedEnvVars(ActResultProducer):
 
 class WriteFileToHomeDir(FileWriter):
     def _get_directory(self, act_environment: ActEnvironment) -> pathlib.Path:
-        return act_environment.home_and_eds.home_dir_path
+        return act_environment.home_and_sds.home_dir_path
 
 
 class WriteFileToCurrentDir(FileWriter):

@@ -5,7 +5,7 @@ import unittest
 from contextlib import contextmanager
 
 from exactly_lib.execution.act_phase import ActSourceAndExecutorConstructor
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, HomeAndEds
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, HomeAndSds
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib_test.act_phase_setups.test_resources import act_phase_execution
 from exactly_lib_test.act_phase_setups.test_resources.act_phase_execution import \
@@ -105,16 +105,16 @@ class TestExecuteBase(unittest.TestCase):
         with execution_directory_structure() as eds:
             try:
                 os.chdir(str(eds.act_dir))
-                home_and_eds = HomeAndEds(home_dir, eds)
-                step_result = sut.validate_post_setup(home_and_eds)
+                home_and_sds = HomeAndSds(home_dir, eds)
+                step_result = sut.validate_post_setup(home_and_sds)
                 self.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                                  step_result.status,
                                  'Result of validation/post-setup')
                 script_output_path = eds.test_case_dir
-                step_result = sut.prepare(home_and_eds, script_output_path)
+                step_result = sut.prepare(home_and_sds, script_output_path)
                 self.assertTrue(step_result.is_success,
                                 'Expecting success from prepare (found hard error)')
-                process_executor = ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(home_and_eds,
+                process_executor = ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(home_and_sds,
                                                                                                     script_output_path,
                                                                                                     sut)
                 return capture_process_executor_result(process_executor,
@@ -196,19 +196,19 @@ class TestInitialCwdIsCurrentDirAndThatCwdIsRestoredAfterwards(TestBase):
                                  step_result.status,
                                  'Result of validation/pre-eds')
                 with execution_directory_structure(act_dir_contents(DirContents([empty_dir('expected-cwd')]))) as eds:
-                    home_and_eds = HomeAndEds(home_dir, eds)
+                    home_and_sds = HomeAndSds(home_dir, eds)
                     process_cwd = str(eds.act_dir / 'expected-cwd')
                     os.chdir(process_cwd)
                     assert process_cwd == os.getcwd()
-                    step_result = sut.validate_post_setup(home_and_eds)
+                    step_result = sut.validate_post_setup(home_and_sds)
                     self.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                                      step_result.status,
                                      'Result of validation/post-setup')
                     script_output_dir_path = eds.test_case_dir
-                    step_result = sut.prepare(home_and_eds, script_output_dir_path)
+                    step_result = sut.prepare(home_and_sds, script_output_dir_path)
                     self.assertTrue(step_result.is_success,
                                     'Expecting success from prepare (found hard error)')
-                    process_executor = ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(home_and_eds,
+                    process_executor = ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(home_and_sds,
                                                                                                         script_output_dir_path,
                                                                                                         sut)
                     process_result = capture_process_executor_result(process_executor,

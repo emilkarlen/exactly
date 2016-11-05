@@ -7,7 +7,7 @@ from exactly_lib.execution.act_phase import ExitCodeOrHardError, \
     ActPhaseHandling
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
-from exactly_lib.test_case.phases.common import HomeAndEds, InstructionEnvironmentForPreSdsStep
+from exactly_lib.test_case.phases.common import HomeAndSds, InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.util.std import StdFiles
 
@@ -55,7 +55,7 @@ class Executor(executor_made_of_parts.Executor):
         self.source_code = source_code
 
     def prepare(self,
-                home_and_eds: HomeAndEds,
+                home_and_sds: HomeAndSds,
                 script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
         script_file_path = self._script_path(script_output_dir_path)
         try:
@@ -66,7 +66,7 @@ class Executor(executor_made_of_parts.Executor):
             return sh.new_sh_hard_error(str(ex))
 
     def execute(self,
-                home_and_eds: HomeAndEds,
+                home_and_sds: HomeAndSds,
                 script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
         script_file_path = self._script_path(script_output_dir_path)

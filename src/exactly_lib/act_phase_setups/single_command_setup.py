@@ -6,7 +6,7 @@ from exactly_lib.act_phase_setups.util.executor_made_of_parts.parser_for_single_
     ParserForSingleLineUsingStandardSyntaxSplitAccordingToShellSyntax
 from exactly_lib.execution.act_phase import ExitCodeOrHardError
 from exactly_lib.processing.act_phase import ActPhaseSetup
-from exactly_lib.test_case.phases.common import HomeAndEds, InstructionEnvironmentForPreSdsStep
+from exactly_lib.test_case.phases.common import HomeAndSds, InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.std import StdFiles
@@ -41,7 +41,7 @@ class Validator(executor_made_of_parts.Validator):
                 return svh.new_svh_validation_error('Not a file relative home-dir: ' + str(cmd_abs_path))
         return svh.new_svh_success()
 
-    def validate_post_setup(self, home_and_eds: HomeAndEds) -> svh.SuccessOrValidationErrorOrHardError:
+    def validate_post_setup(self, home_and_sds: HomeAndSds) -> svh.SuccessOrValidationErrorOrHardError:
         return svh.new_svh_success()
 
 
@@ -52,15 +52,15 @@ class Executor(executor_made_of_parts.Executor):
         self.environment = environment
         self.cmd_and_args = cmd_and_args
 
-    def prepare(self, home_and_eds: HomeAndEds, script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
+    def prepare(self, home_and_sds: HomeAndSds, script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
         return sh.new_sh_success()
 
-    def execute(self, home_and_eds: HomeAndEds, script_output_dir_path: pathlib.Path,
+    def execute(self, home_and_sds: HomeAndSds, script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
         cmd = self.cmd_and_args[0]
         cmd_path = pathlib.Path(cmd)
         if not cmd_path.is_absolute():
-            cmd_path = home_and_eds.home_dir_path / cmd_path
+            cmd_path = home_and_sds.home_dir_path / cmd_path
             self.cmd_and_args[0] = str(cmd_path)
         return utils.execute_cmd_and_args(self.cmd_and_args,
                                           std_files,

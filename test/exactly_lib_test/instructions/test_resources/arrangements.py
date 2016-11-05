@@ -6,11 +6,11 @@ from exactly_lib_test.test_resources.execution import eds_populator, utils
 
 class ActEnvironment(tuple):
     def __new__(cls,
-                home_and_eds: i.HomeAndEds):
-        return tuple.__new__(cls, (home_and_eds,))
+                home_and_sds: i.HomeAndSds):
+        return tuple.__new__(cls, (home_and_sds,))
 
     @property
-    def home_and_eds(self) -> i.HomeAndEds:
+    def home_and_sds(self) -> i.HomeAndSds:
         return self[0]
 
 

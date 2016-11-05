@@ -5,7 +5,7 @@ import unittest
 from exactly_lib.execution.act_phase import ExitCodeOrHardError, ActSourceAndExecutorConstructor, new_eh_exit_code, \
     ActSourceAndExecutor
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, HomeAndEds
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, HomeAndSds
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.failure_details import FailureDetails
 from exactly_lib.util.std import StdFiles
@@ -75,13 +75,13 @@ def check_execution(put: unittest.TestCase,
         with execution_directory_structure() as eds:
             try:
                 os.chdir(str(eds.act_dir))
-                home_and_eds = HomeAndEds(home_dir, eds)
-                step_result = sut.validate_post_setup(home_and_eds)
+                home_and_sds = HomeAndSds(home_dir, eds)
+                step_result = sut.validate_post_setup(home_and_sds)
                 put.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                                 step_result.status,
                                 'Result of validation/post-setup')
                 script_output_dir_path = eds.test_case_dir
-                step_result = sut.prepare(home_and_eds, script_output_dir_path)
+                step_result = sut.prepare(home_and_sds, script_output_dir_path)
                 expectation.side_effects_on_files_after_prepare.apply(put, eds)
                 expectation.result_of_prepare.apply(put,
                                                     step_result,
@@ -89,7 +89,7 @@ def check_execution(put: unittest.TestCase,
                 if not step_result.is_success:
                     return
 
-                process_executor = ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(home_and_eds,
+                process_executor = ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(home_and_sds,
                                                                                                     script_output_dir_path,
                                                                                                     sut)
                 error_msg_extra_info = ''
@@ -131,11 +131,11 @@ class ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(ProcessEx
     """
 
     def __init__(self,
-                 home_and_eds: HomeAndEds,
+                 home_and_sds: HomeAndSds,
                  script_output_path: pathlib.Path,
                  program_executor: ActSourceAndExecutor):
         self.program_executor = program_executor
-        self.home_and_eds = home_and_eds
+        self.home_and_sds = home_and_sds
         self.script_output_path = script_output_path
 
     def execute(self,
@@ -143,7 +143,7 @@ class ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(ProcessEx
         """
          :raises HardErrorResultError: Return value from executor is not an exit code.
         """
-        exit_code_or_hard_error = self.program_executor.execute(self.home_and_eds,
+        exit_code_or_hard_error = self.program_executor.execute(self.home_and_sds,
                                                                 self.script_output_path,
                                                                 files)
         if exit_code_or_hard_error.is_exit_code:
