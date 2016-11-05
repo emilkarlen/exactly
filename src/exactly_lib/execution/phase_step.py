@@ -1,14 +1,14 @@
-from exactly_lib.execution import phases
+from exactly_lib.test_case import phase_identifier
 
 
 class SimplePhaseStep(tuple):
     def __new__(cls,
-                phase: phases.PhaseEnum,
+                phase: phase_identifier.PhaseEnum,
                 step: str):
         return tuple.__new__(cls, (phase, step))
 
     @property
-    def phase(self) -> phases.PhaseEnum:
+    def phase(self) -> phase_identifier.PhaseEnum:
         return self[0]
 
     @property
@@ -24,12 +24,12 @@ class SimplePhaseStep(tuple):
 
 class PhaseStep(tuple):
     def __new__(cls,
-                phase: phases.Phase,
+                phase: phase_identifier.Phase,
                 step: str):
         return tuple.__new__(cls, (phase, step))
 
     @property
-    def phase(self) -> phases.Phase:
+    def phase(self) -> phase_identifier.Phase:
         return self[0]
 
     @property
@@ -45,37 +45,37 @@ class PhaseStep(tuple):
         return self.phase.identifier + tail
 
 
-def _main_step(phase: phases.Phase) -> PhaseStep:
+def _main_step(phase: phase_identifier.Phase) -> PhaseStep:
     return PhaseStep(phase, 'main')
 
 
-def _validate_pre_eds_step(phase: phases.Phase) -> PhaseStep:
+def _validate_pre_eds_step(phase: phase_identifier.Phase) -> PhaseStep:
     return PhaseStep(phase, 'validate-pre-eds')
 
 
-def _validate_post_setup_step(phase: phases.Phase) -> PhaseStep:
+def _validate_post_setup_step(phase: phase_identifier.Phase) -> PhaseStep:
     return PhaseStep(phase, 'validate-post-setup')
 
 
-CONFIGURATION__MAIN = _main_step(phases.CONFIGURATION)
+CONFIGURATION__MAIN = _main_step(phase_identifier.CONFIGURATION)
 
-SETUP__VALIDATE_PRE_EDS = _validate_pre_eds_step(phases.SETUP)
-SETUP__VALIDATE_POST_SETUP = _validate_post_setup_step(phases.SETUP)
-SETUP__MAIN = _main_step(phases.SETUP)
+SETUP__VALIDATE_PRE_EDS = _validate_pre_eds_step(phase_identifier.SETUP)
+SETUP__VALIDATE_POST_SETUP = _validate_post_setup_step(phase_identifier.SETUP)
+SETUP__MAIN = _main_step(phase_identifier.SETUP)
 
-ACT__VALIDATE_PRE_EDS = _validate_pre_eds_step(phases.ACT)
-ACT__VALIDATE_POST_SETUP = _validate_post_setup_step(phases.ACT)
-ACT__MAIN = _main_step(phases.ACT)
-ACT__PREPARE = PhaseStep(phases.ACT, 'script-prepare')
-ACT__EXECUTE = PhaseStep(phases.ACT, 'script-execute')
+ACT__VALIDATE_PRE_EDS = _validate_pre_eds_step(phase_identifier.ACT)
+ACT__VALIDATE_POST_SETUP = _validate_post_setup_step(phase_identifier.ACT)
+ACT__MAIN = _main_step(phase_identifier.ACT)
+ACT__PREPARE = PhaseStep(phase_identifier.ACT, 'script-prepare')
+ACT__EXECUTE = PhaseStep(phase_identifier.ACT, 'script-execute')
 
-BEFORE_ASSERT__VALIDATE_PRE_EDS = _validate_pre_eds_step(phases.BEFORE_ASSERT)
-BEFORE_ASSERT__VALIDATE_POST_SETUP = _validate_post_setup_step(phases.BEFORE_ASSERT)
-BEFORE_ASSERT__MAIN = _main_step(phases.BEFORE_ASSERT)
+BEFORE_ASSERT__VALIDATE_PRE_EDS = _validate_pre_eds_step(phase_identifier.BEFORE_ASSERT)
+BEFORE_ASSERT__VALIDATE_POST_SETUP = _validate_post_setup_step(phase_identifier.BEFORE_ASSERT)
+BEFORE_ASSERT__MAIN = _main_step(phase_identifier.BEFORE_ASSERT)
 
-ASSERT__VALIDATE_PRE_EDS = _validate_pre_eds_step(phases.ASSERT)
-ASSERT__VALIDATE_POST_SETUP = _validate_post_setup_step(phases.ASSERT)
-ASSERT__MAIN = _main_step(phases.ASSERT)
+ASSERT__VALIDATE_PRE_EDS = _validate_pre_eds_step(phase_identifier.ASSERT)
+ASSERT__VALIDATE_POST_SETUP = _validate_post_setup_step(phase_identifier.ASSERT)
+ASSERT__MAIN = _main_step(phase_identifier.ASSERT)
 
-CLEANUP__VALIDATE_PRE_EDS = _validate_pre_eds_step(phases.CLEANUP)
-CLEANUP__MAIN = _main_step(phases.CLEANUP)
+CLEANUP__VALIDATE_PRE_EDS = _validate_pre_eds_step(phase_identifier.CLEANUP)
+CLEANUP__MAIN = _main_step(phase_identifier.CLEANUP)

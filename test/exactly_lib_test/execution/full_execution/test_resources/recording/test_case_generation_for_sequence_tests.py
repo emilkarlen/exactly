@@ -1,7 +1,7 @@
 from exactly_lib.execution import phase_step_simple as phase_step
-from exactly_lib.execution import phases
 from exactly_lib.section_document import model
 from exactly_lib.section_document.model import SectionContentElement
+from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib_test.execution.full_execution.test_resources.test_case_generator import \
     TestCaseGeneratorForFullExecutionBase
@@ -25,37 +25,37 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorForFullExecutionBa
 
         recording_instructions = RecordingInstructions(self.__recorder)
         self.__recorders = {
-            phases.CONFIGURATION:
+            phase_identifier.CONFIGURATION:
                 recording_instructions.new_configuration_instruction(phase_step.CONFIGURATION__MAIN),
-            phases.SETUP:
+            phase_identifier.SETUP:
                 recording_instructions.new_setup_instruction(phase_step.SETUP__VALIDATE_PRE_EDS,
                                                              phase_step.SETUP__MAIN,
                                                              phase_step.SETUP__VALIDATE_POST_SETUP),
-            phases.ACT:
+            phase_identifier.ACT:
                 act_phase_instruction_with_source(),
-            phases.BEFORE_ASSERT:
+            phase_identifier.BEFORE_ASSERT:
                 recording_instructions.new_before_assert_instruction(phase_step.BEFORE_ASSERT__VALIDATE_PRE_EDS,
                                                                      phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
                                                                      phase_step.BEFORE_ASSERT__MAIN),
-            phases.ASSERT:
+            phase_identifier.ASSERT:
                 recording_instructions.new_assert_instruction(phase_step.ASSERT__VALIDATE_PRE_EDS,
                                                               phase_step.ASSERT__VALIDATE_POST_SETUP,
                                                               phase_step.ASSERT__MAIN),
-            phases.CLEANUP:
+            phase_identifier.CLEANUP:
                 recording_instructions.new_cleanup_instruction(phase_step.CLEANUP__VALIDATE_PRE_EDS,
                                                                phase_step.CLEANUP__MAIN)
         }
 
         self.__extra = {}
-        for ph in phases.ALL:
+        for ph in phase_identifier.ALL:
             self.__extra[ph] = []
         self.__the_extra = {}
 
-    def add(self, phase: phases.Phase, instruction: TestCaseInstruction):
+    def add(self, phase: phase_identifier.Phase, instruction: TestCaseInstruction):
         self.__extra[phase].append(instruction)
         return self
 
-    def the_extra(self, phase: phases.Phase) -> list:
+    def the_extra(self, phase: phase_identifier.Phase) -> list:
         """
         :rtype [PhaseContentElement]
         """
@@ -63,7 +63,7 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorForFullExecutionBa
             self.__the_extra[phase] = self.ilc.apply_list(self.__extra[phase])
         return self.__the_extra[phase]
 
-    def recorder_for(self, phase: phases.Phase) -> SectionContentElement:
+    def recorder_for(self, phase: phase_identifier.Phase) -> SectionContentElement:
         return self.ilc.apply(self.__recorders[phase])
 
     @property
@@ -74,10 +74,10 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorForFullExecutionBa
     def internal_instruction_recorder(self) -> list:
         return self.__recorder.recorded_elements
 
-    def phase_contents_for(self, phase: phases.Phase) -> model.SectionContents:
+    def phase_contents_for(self, phase: phase_identifier.Phase) -> model.SectionContents:
         return phase_contents(self._all_elements_for(phase))
 
-    def _all_elements_for(self, phase: phases.Phase) -> list:
+    def _all_elements_for(self, phase: phase_identifier.Phase) -> list:
         raise NotImplementedError()
 
     def __recorder_of(self, element: str) -> ListElementRecorder:
@@ -89,7 +89,7 @@ class TestCaseGeneratorWithRecordingInstrFollowedByExtraInstrsInEachPhase(TestCa
                  recorder: ListRecorder = None):
         super().__init__(recorder)
 
-    def _all_elements_for(self, phase: phases.Phase) -> list:
+    def _all_elements_for(self, phase: phase_identifier.Phase) -> list:
         """
         :rtype [PhaseContentElement]
         """
@@ -101,7 +101,7 @@ class TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr(TestCaseGeneratorFor
                  recorder: ListRecorder = None):
         super().__init__(recorder)
 
-    def _all_elements_for(self, phase: phases.Phase) -> list:
+    def _all_elements_for(self, phase: phase_identifier.Phase) -> list:
         """
         :rtype [PhaseContentElement]
         """

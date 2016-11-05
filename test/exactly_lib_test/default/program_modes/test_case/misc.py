@@ -8,8 +8,8 @@ from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_option
     OPTION_FOR_EXECUTING_ACT_PHASE, OPTION_FOR_KEEPING_SANDBOX_DIRECTORY
 from exactly_lib.execution import environment_variables
 from exactly_lib.execution import execution_directory_structure
-from exactly_lib.execution import phases
 from exactly_lib.section_document.syntax import section_header
+from exactly_lib.test_case import phase_identifier
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.default.test_resources.internal_main_program_runner import \
     run_via_main_program_internally_with_default_setup
@@ -68,7 +68,7 @@ class EmptyTestCaseShouldPass(SetupWithoutPreprocessorAndTestActor):
 class AllPhasesEmptyShouldPass(SetupWithoutPreprocessorAndTestActor):
     def test_case(self) -> str:
         test_case_lines = [phase_header_line(phase)
-                           for phase in phases.ALL]
+                           for phase in phase_identifier.ALL]
         return lines_content(test_case_lines)
 
     def expected_result(self) -> va.ValueAssertion:

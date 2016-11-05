@@ -7,10 +7,10 @@ from time import strftime, localtime
 
 from exactly_lib import program_info
 from exactly_lib.execution import execution_directory_structure
-from exactly_lib.execution import phases
 from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, SingleInstructionParserSource
+from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.os_services import new_default, OsServices
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
@@ -110,7 +110,7 @@ class Executor:
                     os.chdir(str(eds.act_dir))
                     global_environment_with_eds = i.InstructionEnvironmentForPostSdsStep(home_dir_path,
                                                                                          eds,
-                                                                                         phases.SETUP.identifier)
+                                                                                         phase_identifier.SETUP.identifier)
                     main_result = self._execute_main(eds, global_environment_with_eds, instruction)
                     if not main_result.is_success:
                         return

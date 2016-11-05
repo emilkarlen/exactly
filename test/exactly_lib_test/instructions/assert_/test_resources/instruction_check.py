@@ -1,8 +1,8 @@
 import unittest
 
-from exactly_lib.execution import phases
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, SingleInstructionParserSource
+from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.os_services import OsServices, new_default
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
@@ -99,7 +99,7 @@ class Executor:
                 return
             environment = i.InstructionEnvironmentForPostSdsStep(home_and_eds.home_dir_path,
                                                                  home_and_eds.eds,
-                                                                 phases.ASSERT.identifier)
+                                                                 phase_identifier.ASSERT.identifier)
             validate_result = self._execute_validate_post_setup(environment, instruction)
             if not validate_result.is_success:
                 return

@@ -4,9 +4,9 @@ from exactly_lib.cli.program_modes.help.program_modes import help_request
 from exactly_lib.cli.program_modes.help.program_modes.main_program.help_request import *
 from exactly_lib.cli.program_modes.help.program_modes.test_case.help_request import *
 from exactly_lib.cli.program_modes.help.program_modes.test_suite.help_request import *
-from exactly_lib.execution import phases
 from exactly_lib.help.contents_structure import ApplicationHelp
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
+from exactly_lib.test_case import phase_identifier
 
 HELP = 'help'
 INSTRUCTIONS = 'instructions'
@@ -166,4 +166,4 @@ class Parser:
 
 
 def _is_name_of_phase(name: str):
-    return name in map(lambda x: x.identifier, phases.ALL)
+    return name in map(lambda x: x.identifier, phase_identifier.ALL)
