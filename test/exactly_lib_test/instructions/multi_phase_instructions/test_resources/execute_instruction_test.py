@@ -20,6 +20,9 @@ class TestCaseBase(unittest.TestCase):
         super().__init__()
         self.conf = conf
 
+    def shortDescription(self):
+        return str(type(self)) + '/' + str(type(self.conf))
+
 
 class TestSuccessfulExecution(TestCaseBase):
     def runTest(self):
@@ -42,41 +45,41 @@ class TestFailingExecution(TestCaseBase):
 class TestFailingValidationOfAbsolutePath(TestCaseBase):
     def runTest(self):
         self.conf.run_test(
-                self,
-                single_line_source('/absolute/path/to/program/that/does/not/exist'),
-                self.conf.empty_arrangement(),
-                self.conf.expect_failing_validation_pre_eds(),
+            self,
+            single_line_source('/absolute/path/to/program/that/does/not/exist'),
+            self.conf.empty_arrangement(),
+            self.conf.expect_failing_validation_pre_eds(),
         )
 
 
 class TestFailingValidationOfRelHomePath(TestCaseBase):
     def runTest(self):
         self.conf.run_test(
-                self,
-                source_for_interpreting(options.REL_HOME_OPTION, 'non-existing-file.py'),
-                self.conf.empty_arrangement(),
-                self.conf.expect_failing_validation_pre_eds(),
+            self,
+            source_for_interpreting(options.REL_HOME_OPTION, 'non-existing-file.py'),
+            self.conf.empty_arrangement(),
+            self.conf.expect_failing_validation_pre_eds(),
         )
 
 
 class TestFailingValidationOfRelTmpPath(TestCaseBase):
     def runTest(self):
         self.conf.run_test(
-                self,
-                source_for_interpreting(options.REL_TMP_OPTION, 'non-existing-file.py'),
-                self.conf.empty_arrangement(),
-                self.conf.expect_failure_because_specified_file_under_eds_is_missing(),
+            self,
+            source_for_interpreting(options.REL_TMP_OPTION, 'non-existing-file.py'),
+            self.conf.empty_arrangement(),
+            self.conf.expect_failure_because_specified_file_under_eds_is_missing(),
         )
 
 
 class TestSuccessfulValidation(TestCaseBase):
     def runTest(self):
         self.conf.run_test(
-                self,
-                source_for_interpreting(options.REL_TMP_OPTION, 'existing-file.py'),
+            self,
+            source_for_interpreting(options.REL_TMP_OPTION, 'existing-file.py'),
             self.conf.arrangement(eds_contents_before_main=sds_populator.tmp_user_dir_contents(
-                        DirContents([empty_file('existing-file.py')]))),
-                self.conf.expect_success(),
+                DirContents([empty_file('existing-file.py')]))),
+            self.conf.expect_success(),
         )
 
 

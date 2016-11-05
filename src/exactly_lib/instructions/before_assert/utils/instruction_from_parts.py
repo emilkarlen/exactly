@@ -14,7 +14,7 @@ class BeforeAssertPhaseInstructionFromValidatorAndExecutor(BeforeAssertPhaseInst
         self.setup = instruction_setup
         self._validator = PreOrPostEdsSvhValidationErrorValidator(instruction_setup.validator)
 
-    def validate_pre_eds(self,
+    def validate_pre_sds(self,
                          environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
         return self._validator.validate_pre_eds_if_applicable(environment.home_directory)
 
