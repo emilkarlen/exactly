@@ -2,6 +2,8 @@ import pathlib
 
 from exactly_lib.section_document.model import Instruction
 from exactly_lib.test_case import sandbox_directory_structure as _sds
+from exactly_lib.test_case.phase_identifier import Phase
+from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 
 
 class HomeAndSds:
@@ -103,4 +105,12 @@ class InstructionEnvironmentForPostSdsStep(InstructionEnvironmentForPreSdsStep):
 
 
 class TestCaseInstruction(Instruction):
-    pass
+    @property
+    def phase(self) -> Phase:
+        raise NotImplementedError()
+
+
+class TestCaseInstructionExecutedInSandbox(TestCaseInstruction):
+    @property
+    def logging_paths(self, sds: SandboxDirectoryStructure) -> PhaseLoggingPaths:
+        return PhaseLoggingPaths(sds.log_dir, self.phase.identifier)
