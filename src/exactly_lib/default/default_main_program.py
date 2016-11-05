@@ -4,8 +4,8 @@ from exactly_lib import program_info
 from exactly_lib.cli import main_program
 from exactly_lib.cli.program_modes.test_case import execution as test_case_execution
 from exactly_lib.cli.program_modes.test_case.settings import TestCaseExecutionSettings
+from exactly_lib.processing.instruction_setup import InstructionsSetup
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
-from exactly_lib.test_case.instruction_setup import InstructionsSetup
 from exactly_lib.test_suite.reporting import RootSuiteReporterFactory
 from exactly_lib.util.std import StdOutputFiles
 

@@ -7,10 +7,10 @@ from exactly_lib.act_phase_setups.script_interpretation.script_language_setup im
 from exactly_lib.execution.result import new_skipped, new_pass
 from exactly_lib.processing import processors as case_processing
 from exactly_lib.processing import test_case_processing
+from exactly_lib.processing.instruction_setup import InstructionsSetup
 from exactly_lib.processing.preprocessor import IDENTITY_PREPROCESSOR
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.processing.test_case_processing import TestCaseSetup
-from exactly_lib.test_case.instruction_setup import InstructionsSetup
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_suite import reporting
 from exactly_lib.test_suite import structure
