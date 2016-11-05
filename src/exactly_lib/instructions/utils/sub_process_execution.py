@@ -146,8 +146,8 @@ def execute_and_read_stderr_if_non_zero_exitcode(execute_info: ExecuteInfo,
                                                  executor: ExecutorThatStoresResultInFilesInDir,
                                                  phase_logging_paths: PhaseLoggingPaths) -> ResultAndStderr:
     source_info = execute_info.instruction_source_info
-    error_message_header = 'Line %d: `%s\n' % (source_info.line_number,
-                                               source_info.instruction_name)
+    error_message_header = 'Line %d: %s\n' % (source_info.line_number,
+                                              source_info.instruction_name)
     storage_dir = phase_logging_paths.for_line(source_info.line_number, source_info.instruction_name)
     result = executor.apply(error_message_header, storage_dir, execute_info.command)
     return read_stderr_if_non_zero_exitcode(result)
