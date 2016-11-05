@@ -30,7 +30,7 @@ class Arrangement(ArrangementWithEds):
     def __init__(self,
                  home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
                  os_services: OsServices = new_default(),
-                 eds_contents_before_main: sds_populator.EdsPopulator = sds_populator.empty(),
+                 eds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
                  initial_settings_builder: SetupSettingsBuilder = SetupSettingsBuilder()):
         super().__init__(home_dir_contents, eds_contents_before_main, os_services)
         self.initial_settings_builder = initial_settings_builder

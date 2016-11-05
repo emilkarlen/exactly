@@ -22,7 +22,7 @@ class Action:
 class Check:
     def __init__(self,
                  home_dir_contents_before: DirContents = empty_dir_contents(),
-                 eds_contents_before: sds_populator.EdsPopulator = sds_populator.empty(),
+                 eds_contents_before: sds_populator.SdsPopulator = sds_populator.empty(),
                  expected_action_result: ValueAssertion = anything_goes(),
                  expected_eds_contents_after: sds_contents_check.Assertion = sds_contents_check.AnythingGoes(),
                  pre_action_action: Action = Action(),

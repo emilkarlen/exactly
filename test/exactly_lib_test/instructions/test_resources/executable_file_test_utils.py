@@ -18,7 +18,7 @@ class Configuration:
         self.option = option
         self.exists_pre_eds = exists_pre_eds
 
-    def file_installation(self, file: File) -> (DirContents, sds_populator.EdsPopulator):
+    def file_installation(self, file: File) -> (DirContents, sds_populator.SdsPopulator):
         raise NotImplementedError()
 
     def installed_file_path(self,

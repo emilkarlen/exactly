@@ -150,7 +150,7 @@ class RelHomeConfiguration(Configuration):
     def __init__(self):
         super().__init__(option.REL_HOME_OPTION, True)
 
-    def file_installation(self, file: File) -> (DirContents, sds_populator.EdsPopulator):
+    def file_installation(self, file: File) -> (DirContents, sds_populator.SdsPopulator):
         return (DirContents([file]),
                 sds_populator.empty())
 
@@ -164,7 +164,7 @@ class DefaultConfiguration(Configuration):
     def __init__(self):
         super().__init__('', True)
 
-    def file_installation(self, file: File) -> (DirContents, sds_populator.EdsPopulator):
+    def file_installation(self, file: File) -> (DirContents, sds_populator.SdsPopulator):
         return (DirContents([file]),
                 sds_populator.empty())
 
@@ -178,7 +178,7 @@ class RelActConfiguration(Configuration):
     def __init__(self):
         super().__init__(option.REL_ACT_OPTION, False)
 
-    def file_installation(self, file: File) -> (DirContents, sds_populator.EdsPopulator):
+    def file_installation(self, file: File) -> (DirContents, sds_populator.SdsPopulator):
         return (DirContents([]),
                 sds_populator.act_dir_contents(DirContents([file])))
 
@@ -192,7 +192,7 @@ class RelTmpConfiguration(Configuration):
     def __init__(self):
         super().__init__(option.REL_TMP_OPTION, False)
 
-    def file_installation(self, file: File) -> (DirContents, sds_populator.EdsPopulator):
+    def file_installation(self, file: File) -> (DirContents, sds_populator.SdsPopulator):
         return (DirContents([]),
                 sds_populator.tmp_user_dir_contents(DirContents([file])))
 
@@ -206,7 +206,7 @@ class RelCwdConfiguration(Configuration):
     def __init__(self):
         super().__init__(option.REL_CWD_OPTION, False)
 
-    def file_installation(self, file: File) -> (DirContents, sds_populator.EdsPopulator):
+    def file_installation(self, file: File) -> (DirContents, sds_populator.SdsPopulator):
         return (DirContents([]),
                 sds_populator.act_dir_contents(DirContents([file])))
 

@@ -45,7 +45,7 @@ def write_act_result(sds: SandboxDirectoryStructure,
 class HomeAndSdsContents(tuple):
     def __new__(cls,
                 home_dir_contents: DirContents = empty_dir_contents(),
-                sds_contents: sds_populator.EdsPopulator = sds_populator.empty()):
+                sds_contents: sds_populator.SdsPopulator = sds_populator.empty()):
         return tuple.__new__(cls, (home_dir_contents,
                                    sds_contents))
 
@@ -54,14 +54,14 @@ class HomeAndSdsContents(tuple):
         return self[0]
 
     @property
-    def sds_contents(self) -> sds_populator.EdsPopulator:
+    def sds_contents(self) -> sds_populator.SdsPopulator:
         return self[1]
 
 
 @contextmanager
 def home_and_sds_and_test_as_curr_dir(
         home_dir_contents: DirContents = empty_dir_contents(),
-        sds_contents: sds_populator.EdsPopulator = sds_populator.empty()) -> HomeAndSds:
+        sds_contents: sds_populator.SdsPopulator = sds_populator.empty()) -> HomeAndSds:
     cwd_before = os.getcwd()
     prefix = strftime(program_info.PROGRAM_NAME + '-test-%Y-%m-%d-%H-%M-%S', localtime())
     with tempfile.TemporaryDirectory(prefix=prefix + "-home-") as home_dir:
@@ -77,7 +77,7 @@ def home_and_sds_and_test_as_curr_dir(
 
 
 @contextmanager
-def sandbox_directory_structure(contents: sds_populator.EdsPopulator = sds_populator.empty(),
+def sandbox_directory_structure(contents: sds_populator.SdsPopulator = sds_populator.empty(),
                                 prefix: str = program_info.PROGRAM_NAME + '-test-sds-') \
         -> sds_module.SandboxDirectoryStructure:
     with tempfile.TemporaryDirectory(prefix=prefix) as sds_root_dir:

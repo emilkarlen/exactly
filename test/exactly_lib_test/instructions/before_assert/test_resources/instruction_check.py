@@ -23,7 +23,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 
 def arrangement(home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
-                eds_contents_before_main: sds_populator.EdsPopulator = sds_populator.empty(),
+                eds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
                 act_result_producer: ActResultProducer = ActResultProducer(),
                 os_services: OsServices = new_default()
                 ) -> ArrangementPostAct:
