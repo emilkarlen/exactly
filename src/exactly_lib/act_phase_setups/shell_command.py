@@ -6,7 +6,7 @@ from exactly_lib.act_phase_setups.util.executor_made_of_parts.parser_for_single_
     ParserForSingleLineUsingStandardSyntax
 from exactly_lib.execution.act_phase import ExitCodeOrHardError
 from exactly_lib.processing.act_phase import ActPhaseSetup
-from exactly_lib.test_case.phases.common import HomeAndEds, GlobalEnvironmentForPreEdsStep
+from exactly_lib.test_case.phases.common import HomeAndEds, InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.util.std import StdFiles
 
@@ -24,7 +24,7 @@ class Constructor(executor_made_of_parts.Constructor):
 
 class Executor(executor_made_of_parts.Executor):
     def __init__(self,
-                 environment: GlobalEnvironmentForPreEdsStep,
+                 environment: InstructionEnvironmentForPreSdsStep,
                  command_line: str):
         self.environment = environment
         self.command_line = command_line

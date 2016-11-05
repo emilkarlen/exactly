@@ -1,9 +1,10 @@
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser
+from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.instructions.multi_phase_instructions import shell as shell_common
 from exactly_lib.instructions.utils.sub_process_execution import ExecuteInfo
-from exactly_lib.common.instruction_setup import SingleInstructionSetup
+from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
+    SingleInstructionParser
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
 
@@ -25,7 +26,7 @@ class _ShellInstruction(SetupPhaseInstruction):
         self.execute_info = execute_info
 
     def main(self,
-             environment: GlobalEnvironmentForPostEdsPhase,
+             environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         return shell_common.run_and_return_sh(self.execute_info, environment.phase_logging)

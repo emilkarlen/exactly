@@ -5,7 +5,7 @@ import unittest
 
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
-from exactly_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib_test.execution.test_resources.instruction_test_resources import \
@@ -80,11 +80,12 @@ _SUCCESSFUL_INSTRUCTION = assert_phase_instruction_that()
 
 class InstructionThatRaisesTestErrorIfCwdIsIsNotTestRoot(AssertPhaseInstruction):
     def validate_post_setup(self,
-                            environment: GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
+                            environment: InstructionEnvironmentForPostSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
         test_misc.raise_test_error_if_cwd_is_not_test_root(environment.eds)
         return svh.new_svh_success()
 
-    def main(self, environment: GlobalEnvironmentForPostEdsPhase, os_services: OsServices) -> pfh.PassOrFailOrHardError:
+    def main(self, environment: InstructionEnvironmentForPostSdsStep,
+             os_services: OsServices) -> pfh.PassOrFailOrHardError:
         test_misc.raise_test_error_if_cwd_is_not_test_root(environment.eds)
         return pfh.new_pfh_pass()
 

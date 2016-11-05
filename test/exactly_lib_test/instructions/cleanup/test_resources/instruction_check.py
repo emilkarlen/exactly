@@ -1,13 +1,14 @@
 import pathlib
 import unittest
 
+from exactly_lib.execution import phases
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, SingleInstructionParserSource
-from exactly_lib.execution import phases
 from exactly_lib.test_case.os_services import OsServices, new_default
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.cleanup import CleanupPhaseInstruction, PreviousPhase
-from exactly_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
+    InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib_test.instructions.test_resources import sh_check
@@ -88,9 +89,9 @@ class Executor(InstructionExecutionToBeReplacedByVaBase):
             result_of_validate_pre_eds = self._execute_pre_validate(home_and_eds.home_dir_path, instruction)
             if not result_of_validate_pre_eds.is_success:
                 return
-            environment = i.GlobalEnvironmentForPostEdsPhase(home_and_eds.home_dir_path,
-                                                             home_and_eds.eds,
-                                                             phases.CLEANUP.identifier)
+            environment = i.InstructionEnvironmentForPostSdsStep(home_and_eds.home_dir_path,
+                                                                 home_and_eds.eds,
+                                                                 phases.CLEANUP.identifier)
             self._execute_main(environment, instruction)
             self.expectation.main_side_effects_on_files.apply(self.put, environment.eds)
             self.expectation.side_effects_check.apply(self.put, home_and_eds)
@@ -98,14 +99,14 @@ class Executor(InstructionExecutionToBeReplacedByVaBase):
     def _execute_pre_validate(self,
                               home_dir_path: pathlib.Path,
                               instruction: CleanupPhaseInstruction) -> svh.SuccessOrValidationErrorOrHardError:
-        pre_validation_environment = GlobalEnvironmentForPreEdsStep(home_dir_path)
+        pre_validation_environment = InstructionEnvironmentForPreSdsStep(home_dir_path)
         result = instruction.validate_pre_eds(pre_validation_environment)
         self._check_result_of_validate_pre_eds(result)
         self.expectation.validate_pre_eds_result.apply(self.put, result)
         return result
 
     def _execute_main(self,
-                      environment: GlobalEnvironmentForPostEdsPhase,
+                      environment: InstructionEnvironmentForPostSdsStep,
                       instruction: CleanupPhaseInstruction) -> pfh.PassOrFailOrHardError:
         result = instruction.main(environment,
                                   self.arrangement.previous_phase,

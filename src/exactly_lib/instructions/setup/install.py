@@ -13,7 +13,8 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionParser, \
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
+    InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
@@ -109,20 +110,20 @@ class _InstallInstructionBase(SetupPhaseInstruction):
         self.source_file_name = source_file_name
 
     def validate_pre_eds(self,
-                         environment: GlobalEnvironmentForPreEdsStep) -> svh.SuccessOrValidationErrorOrHardError:
+                         environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
         path = self._src_path(environment)
         if not path.exists():
             return svh.new_svh_validation_error('File does not exist: {}'.format(str(path)))
         return svh.new_svh_success()
 
     def main(self,
-             environment: GlobalEnvironmentForPostEdsPhase,
+             environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         raise NotImplementedError()
 
     def _src_path(self,
-                  environment: GlobalEnvironmentForPreEdsStep) -> pathlib.Path:
+                  environment: InstructionEnvironmentForPreSdsStep) -> pathlib.Path:
         return environment.home_directory / self.source_file_name
 
 
@@ -131,7 +132,7 @@ class _InstallSourceWithoutExplicitDestinationInstruction(_InstallInstructionBas
         super().__init__(source_file_name)
 
     def main(self,
-             environment: GlobalEnvironmentForPostEdsPhase,
+             environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         src_path = self._src_path(environment)
@@ -150,7 +151,7 @@ class _InstallSourceWithExplicitDestinationInstruction(_InstallInstructionBase):
         self.destination_file_name = destination_file_name
 
     def main(self,
-             environment: GlobalEnvironmentForPostEdsPhase,
+             environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         src_path = self._src_path(environment)
