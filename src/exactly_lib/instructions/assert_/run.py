@@ -5,6 +5,6 @@ from exactly_lib.instructions.multi_phase_instructions import run
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(
-        run.InstructionParser2(instruction_name, AssertPhaseInstructionFromValidatorAndExecutor),
+        run.InstructionParser(instruction_name, AssertPhaseInstructionFromValidatorAndExecutor),
         run.TheInstructionDocumentation(instruction_name,
                                         "Runs a program and PASS if, and only if, its exit code is 0"))
