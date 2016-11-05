@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.execution import phase_step_simple as phase_step
+from exactly_lib.execution.phase_step_identifiers import phase_step_simple as phase_step
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib_test.execution.partial_execution.test_resources.recording import validate_pre_eds_utils

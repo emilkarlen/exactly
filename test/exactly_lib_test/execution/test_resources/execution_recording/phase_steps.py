@@ -1,4 +1,4 @@
-from exactly_lib.execution import phase_step_simple as phase_step
+from exactly_lib.execution.phase_step_identifiers import phase_step_simple as phase_step
 
 PRE_EDS_VALIDATION_STEPS__ONCE = [
     phase_step.SETUP__VALIDATE_PRE_EDS,

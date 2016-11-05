@@ -1,7 +1,8 @@
 import pathlib
 import unittest
 
-from exactly_lib.execution.phase_step_simple import ALL_SETUP, ALL_ASSERT, ALL_BEFORE_ASSERT, ALL_CLEANUP
+from exactly_lib.execution.phase_step_identifiers.phase_step_simple import ALL_SETUP, ALL_ASSERT, ALL_BEFORE_ASSERT, \
+    ALL_CLEANUP
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder, ConfigurationPhaseInstruction
 from exactly_lib.test_case.phases.result import sh
