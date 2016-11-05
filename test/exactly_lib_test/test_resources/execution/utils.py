@@ -1,12 +1,10 @@
 import os
-import pathlib
 import tempfile
 from contextlib import contextmanager
 from time import strftime, localtime
 
 from exactly_lib import program_info
 from exactly_lib.test_case import sandbox_directory_structure as eds_module
-from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.common import HomeAndSds
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.file_utils import resolved_path_name, resolved_path
@@ -37,30 +35,11 @@ class ActResult:
         return self._stderr_contents
 
 
-def write_act_result(eds: SandboxDirectoryStructure,
+def write_act_result(sds: SandboxDirectoryStructure,
                      result: ActResult):
-    write_file(eds.result.exitcode_file, str(result.exitcode))
-    write_file(eds.result.stdout_file, result.stdout_contents)
-    write_file(eds.result.stderr_file, result.stderr_contents)
-
-
-@contextmanager
-def act_phase_result(exitcode: int = 0,
-                     stdout_contents: str = '',
-                     stderr_contents: str = '') -> i.InstructionEnvironmentForPostSdsStep:
-    cwd_before = os.getcwd()
-    home_dir_path = pathlib.Path(cwd_before)
-    with tempfile.TemporaryDirectory(prefix=program_info.PROGRAM_NAME + '-test-') as eds_root_dir:
-        eds = eds_module.construct_at(resolved_path_name(eds_root_dir))
-        write_file(eds.result.exitcode_file, str(exitcode))
-        write_file(eds.result.stdout_file, stdout_contents)
-        write_file(eds.result.stderr_file, stderr_contents)
-        try:
-            os.chdir(str(eds.act_dir))
-            yield i.InstructionEnvironmentForPostSdsStep(home_dir_path,
-                                                         eds)
-        finally:
-            os.chdir(cwd_before)
+    write_file(sds.result.exitcode_file, str(result.exitcode))
+    write_file(sds.result.stdout_file, result.stdout_contents)
+    write_file(sds.result.stderr_file, result.stderr_contents)
 
 
 class HomeAndSdsContents(tuple):
@@ -88,21 +67,21 @@ def home_and_sds_and_test_as_curr_dir(
     with tempfile.TemporaryDirectory(prefix=prefix + "-home-") as home_dir:
         home_dir_path = resolved_path(home_dir)
         home_dir_contents.write_to(home_dir_path)
-        with sandbox_directory_structure(prefix=prefix + "-eds-",
-                                         contents=eds_contents) as eds:
+        with sandbox_directory_structure(prefix=prefix + "-sds-",
+                                         contents=eds_contents) as sds:
             try:
-                os.chdir(str(eds.act_dir))
+                os.chdir(str(sds.act_dir))
                 yield HomeAndSds(home_dir_path,
-                                 eds)
+                                 sds)
             finally:
                 os.chdir(cwd_before)
 
 
 @contextmanager
 def sandbox_directory_structure(contents: sds_populator.EdsPopulator = sds_populator.empty(),
-                                prefix: str = program_info.PROGRAM_NAME + '-test-eds-') \
+                                prefix: str = program_info.PROGRAM_NAME + '-test-sds-') \
         -> eds_module.SandboxDirectoryStructure:
     with tempfile.TemporaryDirectory(prefix=prefix) as eds_root_dir:
-        eds = eds_module.construct_at(resolved_path_name(eds_root_dir))
-        contents.apply(eds)
-        yield eds
+        sds = eds_module.construct_at(resolved_path_name(eds_root_dir))
+        contents.apply(sds)
+        yield sds
