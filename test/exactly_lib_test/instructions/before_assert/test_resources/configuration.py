@@ -30,7 +30,7 @@ class BeforeAssertConfigurationBase(ConfigurationBase):
         return Expectation(validation_pre_eds=svh_check__va.is_validation_error())
 
     def arrangement(self,
-                    eds_contents_before_main: sds_populator.EdsPopulator = sds_populator.empty(),
+                    eds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
                     os_services: OsServices = new_default()):
         return arrangement(eds_contents_before_main=eds_contents_before_main,
                            os_services=os_services)

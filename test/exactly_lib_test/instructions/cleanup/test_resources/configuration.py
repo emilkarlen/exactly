@@ -31,7 +31,7 @@ class CleanupConfigurationBase(ConfigurationBase):
         return Expectation(validate_pre_eds_result=svh_check.is_validation_error())
 
     def arrangement(self,
-                    eds_contents_before_main: sds_populator.EdsPopulator = sds_populator.empty(),
+                    eds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
                     os_services: OsServices = new_default()):
         return Arrangement(eds_contents_before_main=eds_contents_before_main,
                            os_services=os_services)

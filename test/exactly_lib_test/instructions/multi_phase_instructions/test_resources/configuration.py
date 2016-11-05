@@ -29,7 +29,7 @@ class ConfigurationBase:
         return self.instruction_setup().description
 
     def arrangement(self,
-                    eds_contents_before_main: sds_populator.EdsPopulator = sds_populator.empty(),
+                    eds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
                     os_services: OsServices = new_default()):
         raise NotImplementedError()
 

@@ -24,7 +24,7 @@ from exactly_lib_test.test_resources.execution import sds_populator, utils, sds_
 class Arrangement(ArrangementWithEds):
     def __init__(self,
                  home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
-                 eds_contents_before_main: sds_populator.EdsPopulator = sds_populator.empty(),
+                 eds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
                  os_services: OsServices = new_default(),
                  previous_phase: PreviousPhase = PreviousPhase.ASSERT):
         super().__init__(home_dir_contents,

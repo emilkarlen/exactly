@@ -32,7 +32,7 @@ class ArrangementBase:
 class ArrangementWithEds(ArrangementBase):
     def __init__(self,
                  home_contents: file_structure.DirContents = file_structure.DirContents([]),
-                 eds_contents: sds_populator.EdsPopulator = sds_populator.empty(),
+                 eds_contents: sds_populator.SdsPopulator = sds_populator.empty(),
                  os_services: OsServices = new_default(),
                  ):
         super().__init__(home_contents)
@@ -43,7 +43,7 @@ class ArrangementWithEds(ArrangementBase):
 class ArrangementPostAct(ArrangementWithEds):
     def __init__(self,
                  home_contents: file_structure.DirContents = file_structure.DirContents([]),
-                 eds_contents: sds_populator.EdsPopulator = sds_populator.empty(),
+                 eds_contents: sds_populator.SdsPopulator = sds_populator.empty(),
                  act_result_producer: ActResultProducer = ActResultProducer(),
                  os_services: OsServices = new_default()
                  ):
