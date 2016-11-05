@@ -1,18 +1,16 @@
 from exactly_lib.common.instruction_documentation import InvokationVariant, SyntaxElementDescription
+from exactly_lib.instructions.utils.cmd_and_args_resolvers import ConstantCmdAndArgsResolver
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingAndSplittedPartsForRestDocBase
 from exactly_lib.instructions.utils.main_step_executor import InstructionParts
-from exactly_lib.instructions.utils.main_step_executor_for_sub_process import MainStepExecutorForSubProcess
+from exactly_lib.instructions.utils.main_step_executor_for_sub_process import SubProcessExecutionSetup, \
+    MainStepExecutorForSubProcessForStandardSetup
 from exactly_lib.instructions.utils.pre_or_post_validation import ConstantSuccessValidator
-from exactly_lib.instructions.utils.sub_process_execution import ExecutorThatStoresResultInFilesInDir, \
-    InstructionSourceInfo, ExecuteInfo, \
-    ResultAndStderr, execute_and_read_stderr_if_non_zero_exitcode
+from exactly_lib.instructions.utils.sub_process_execution import InstructionSourceInfo
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, \
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
-from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases.common import TestCaseInstruction, PhaseLoggingPaths, \
-    InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.util.cli_syntax.elements import argument as a
 
 _COMMAND_SYNTAX_ELEMENT = 'COMMAND'
@@ -83,25 +81,16 @@ class Parser(SingleInstructionParser):
         self.instruction_setup_2_instruction_function = instruction_setup_2_instruction_function
 
     def apply(self, source: SingleInstructionParserSource) -> TestCaseInstruction:
-        arguments = source.instruction_argument.strip()
-        if not arguments:
+        argument = source.instruction_argument.strip()
+        if not argument:
             msg = _COMMAND_SYNTAX_ELEMENT + ' must be given as argument'
             raise SingleInstructionInvalidArgumentException(msg)
-        execute_info = ExecuteInfo(InstructionSourceInfo(source.line_sequence.first_line.line_number,
-                                                         self.instruction_name),
-                                   arguments)
-        instruction_setup = InstructionParts(ConstantSuccessValidator(),
-                                             _MainStepExecutor(execute_info))
+        setup = SubProcessExecutionSetup(
+            InstructionSourceInfo(source.line_sequence.first_line.line_number,
+                                  self.instruction_name),
+            ConstantSuccessValidator(),
+            ConstantCmdAndArgsResolver(argument),
+            is_shell=True)
+        instruction_setup = InstructionParts(setup.validator,
+                                             MainStepExecutorForSubProcessForStandardSetup(setup))
         return self.instruction_setup_2_instruction_function(instruction_setup)
-
-
-class _MainStepExecutor(MainStepExecutorForSubProcess):
-    def __init__(self, execute_info: ExecuteInfo):
-        self.execute_info = execute_info
-
-    def apply(self,
-              environment: InstructionEnvironmentForPostSdsStep,
-              logging_paths: PhaseLoggingPaths,
-              os_services: OsServices) -> ResultAndStderr:
-        executor = ExecutorThatStoresResultInFilesInDir(is_shell=True)
-        return execute_and_read_stderr_if_non_zero_exitcode(self.execute_info, executor, logging_paths)
