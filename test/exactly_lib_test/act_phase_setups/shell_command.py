@@ -80,7 +80,7 @@ class TestValidation(unittest.TestCase):
 
     def _do_validate_pre_eds(self, act_phase_instructions: list) -> svh.SuccessOrValidationErrorOrHardError:
         executor = self.constructor.apply(self.pre_eds_env, act_phase_instructions)
-        return executor.validate_pre_eds(self.pre_eds_env.home_directory)
+        return executor.validate_pre_sds(self.pre_eds_env.home_directory)
 
 
 class TheConfiguration(Configuration):

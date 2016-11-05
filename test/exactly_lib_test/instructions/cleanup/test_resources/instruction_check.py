@@ -100,7 +100,7 @@ class Executor(InstructionExecutionToBeReplacedByVaBase):
                               home_dir_path: pathlib.Path,
                               instruction: CleanupPhaseInstruction) -> svh.SuccessOrValidationErrorOrHardError:
         pre_validation_environment = InstructionEnvironmentForPreSdsStep(home_dir_path)
-        result = instruction.validate_pre_eds(pre_validation_environment)
+        result = instruction.validate_pre_sds(pre_validation_environment)
         self._check_result_of_validate_pre_eds(result)
         self.expectation.validate_pre_eds_result.apply(self.put, result)
         return result

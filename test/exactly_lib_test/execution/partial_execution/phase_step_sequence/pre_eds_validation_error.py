@@ -24,10 +24,10 @@ class ConfigForSetupValidatePreEds(validate_pre_eds_utils.Configuration):
 
     def instruction_that_returns(self, return_value: svh.SuccessOrValidationErrorOrHardError) -> TestCaseInstruction:
         return test.setup_phase_instruction_that(
-                validate_pre_eds=do_return(return_value))
+            validate_pre_sds=do_return(return_value))
 
     def instruction_that_raises(self, exception: Exception) -> TestCaseInstruction:
-        return test.setup_phase_instruction_that(validate_pre_eds=do_raise(exception))
+        return test.setup_phase_instruction_that(validate_pre_sds=do_raise(exception))
 
 
 class ConfigForBeforeAssertValidatePreEds(validate_pre_eds_utils.Configuration):
@@ -41,10 +41,10 @@ class ConfigForBeforeAssertValidatePreEds(validate_pre_eds_utils.Configuration):
 
     def instruction_that_returns(self, return_value: svh.SuccessOrValidationErrorOrHardError) -> TestCaseInstruction:
         return test.before_assert_phase_instruction_that(
-                validate_pre_eds=do_return(return_value))
+            validate_pre_sds=do_return(return_value))
 
     def instruction_that_raises(self, exception: Exception) -> TestCaseInstruction:
-        return test.before_assert_phase_instruction_that(validate_pre_eds=do_raise(exception))
+        return test.before_assert_phase_instruction_that(validate_pre_sds=do_raise(exception))
 
 
 class ConfigForAssertValidatePreEds(validate_pre_eds_utils.Configuration):
@@ -60,10 +60,10 @@ class ConfigForAssertValidatePreEds(validate_pre_eds_utils.Configuration):
 
     def instruction_that_returns(self, return_value: svh.SuccessOrValidationErrorOrHardError) -> TestCaseInstruction:
         return test.assert_phase_instruction_that(
-                validate_pre_eds=do_return(return_value))
+            validate_pre_sds=do_return(return_value))
 
     def instruction_that_raises(self, exception: Exception) -> TestCaseInstruction:
-        return test.assert_phase_instruction_that(validate_pre_eds=do_raise(exception))
+        return test.assert_phase_instruction_that(validate_pre_sds=do_raise(exception))
 
 
 class ConfigForCleanupValidatePreEds(validate_pre_eds_utils.Configuration):
@@ -81,10 +81,10 @@ class ConfigForCleanupValidatePreEds(validate_pre_eds_utils.Configuration):
 
     def instruction_that_returns(self, return_value: svh.SuccessOrValidationErrorOrHardError) -> TestCaseInstruction:
         return test.cleanup_phase_instruction_that(
-                validate_pre_eds=do_return(return_value))
+            validate_pre_sds=do_return(return_value))
 
     def instruction_that_raises(self, exception: Exception) -> TestCaseInstruction:
-        return test.cleanup_phase_instruction_that(validate_pre_eds=do_raise(exception))
+        return test.cleanup_phase_instruction_that(validate_pre_sds=do_raise(exception))
 
 
 def _instruction_validation_invocations() -> list:

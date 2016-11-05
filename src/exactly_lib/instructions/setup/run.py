@@ -29,7 +29,7 @@ class _Instruction(SetupPhaseInstruction):
         self.setup = setup
         self.svh_validator = PreOrPostEdsSvhValidationErrorValidator(setup.validator)
 
-    def validate_pre_eds(self,
+    def validate_pre_sds(self,
                          environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
         return self.svh_validator.validate_pre_eds_if_applicable(environment.home_directory)
 

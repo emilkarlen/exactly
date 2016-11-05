@@ -13,7 +13,7 @@ class InstructionWithFileRefsBase(SetupPhaseInstruction):
         """
         self.file_ref_check_list_tuple = file_ref_check_list_tuple
 
-    def validate_pre_eds(self,
+    def validate_pre_sds(self,
                          environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
         for file_ref_check in self.file_ref_check_list_tuple:
             assert isinstance(file_ref_check, FileRefCheck)

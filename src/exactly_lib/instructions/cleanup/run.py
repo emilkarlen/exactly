@@ -29,7 +29,7 @@ class _Instruction(CleanupPhaseInstruction):
                  setup: run.SetupForExecutableWithArguments):
         self.setup = setup
 
-    def validate_pre_eds(self,
+    def validate_pre_sds(self,
                          environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
         validator = PreOrPostEdsSvhValidationErrorValidator(self.setup.validator)
         return validator.validate_pre_eds_if_applicable(environment.home_directory)

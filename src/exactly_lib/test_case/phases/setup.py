@@ -52,7 +52,7 @@ class SetupPhaseInstruction(TestCaseInstruction):
     Abstract base class for instructions of the SETUP phase.
     """
 
-    def validate_pre_eds(self,
+    def validate_pre_sds(self,
                          environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
         return svh.new_svh_success()
 

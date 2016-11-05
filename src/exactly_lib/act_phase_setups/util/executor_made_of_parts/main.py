@@ -8,7 +8,7 @@ from exactly_lib.util.std import StdFiles
 
 
 class Validator:
-    def validate_pre_eds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
+    def validate_pre_sds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
         raise NotImplementedError(str(type(self)))
 
     def validate_post_setup(self, home_and_eds: HomeAndEds) -> svh.SuccessOrValidationErrorOrHardError:
@@ -19,7 +19,7 @@ class UnconditionallySuccessfulValidator(Validator):
     def __init__(self, *args, **kwargs):
         pass
 
-    def validate_pre_eds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
+    def validate_pre_sds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
         return svh.new_svh_success()
 
     def validate_post_setup(self, home_and_eds: HomeAndEds) -> svh.SuccessOrValidationErrorOrHardError:
@@ -94,11 +94,11 @@ class ActSourceAndExecutorMadeFromParserValidatorAndExecutor(ActSourceAndExecuto
         self.__validator = None
         self.__executor = None
 
-    def validate_pre_eds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
+    def validate_pre_sds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
         status = self._parse_and_construct_validator_and_executor()
         if not status.is_success:
             return status
-        return self._validator.validate_pre_eds(home_dir_path)
+        return self._validator.validate_pre_sds(home_dir_path)
 
     def validate_post_setup(self, home_and_eds: HomeAndEds) -> svh.SuccessOrValidationErrorOrHardError:
         return self._validator.validate_post_setup(home_and_eds)

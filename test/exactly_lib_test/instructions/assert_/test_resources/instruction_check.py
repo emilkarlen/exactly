@@ -110,7 +110,7 @@ class Executor:
     def _execute_validate_pre_eds(self,
                                   global_environment: InstructionEnvironmentForPreSdsStep,
                                   instruction: AssertPhaseInstruction) -> svh.SuccessOrValidationErrorOrHardError:
-        result = instruction.validate_pre_eds(global_environment)
+        result = instruction.validate_pre_sds(global_environment)
         self.put.assertIsNotNone(result,
                                  'Result from validate method cannot be None')
         self.expectation.validation_pre_eds.apply(self.put, result)
