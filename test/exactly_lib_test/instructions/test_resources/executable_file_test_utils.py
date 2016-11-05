@@ -46,7 +46,7 @@ class CheckBase(unittest.TestCase):
         contents = self.configuration.file_installation(file)
         return home_and_sds_and_test_as_curr_dir(
             home_dir_contents=contents[0],
-            eds_contents=contents[1])
+            sds_contents=contents[1])
 
     def _assert_passes_validation(self, actual: sut.ExecutableFile, home_and_sds: HomeAndSds):
         validator_util.check(self, actual.validator, home_and_sds)

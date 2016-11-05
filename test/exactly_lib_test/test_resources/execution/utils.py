@@ -4,7 +4,7 @@ from contextlib import contextmanager
 from time import strftime, localtime
 
 from exactly_lib import program_info
-from exactly_lib.test_case import sandbox_directory_structure as eds_module
+from exactly_lib.test_case import sandbox_directory_structure as sds_module
 from exactly_lib.test_case.phases.common import HomeAndSds
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.file_utils import resolved_path_name, resolved_path
@@ -45,9 +45,9 @@ def write_act_result(sds: SandboxDirectoryStructure,
 class HomeAndSdsContents(tuple):
     def __new__(cls,
                 home_dir_contents: DirContents = empty_dir_contents(),
-                eds_contents: sds_populator.EdsPopulator = sds_populator.empty()):
+                sds_contents: sds_populator.EdsPopulator = sds_populator.empty()):
         return tuple.__new__(cls, (home_dir_contents,
-                                   eds_contents))
+                                   sds_contents))
 
     @property
     def home_dir_contents(self) -> DirContents:
@@ -61,18 +61,17 @@ class HomeAndSdsContents(tuple):
 @contextmanager
 def home_and_sds_and_test_as_curr_dir(
         home_dir_contents: DirContents = empty_dir_contents(),
-        eds_contents: sds_populator.EdsPopulator = sds_populator.empty()) -> HomeAndSds:
+        sds_contents: sds_populator.EdsPopulator = sds_populator.empty()) -> HomeAndSds:
     cwd_before = os.getcwd()
     prefix = strftime(program_info.PROGRAM_NAME + '-test-%Y-%m-%d-%H-%M-%S', localtime())
     with tempfile.TemporaryDirectory(prefix=prefix + "-home-") as home_dir:
         home_dir_path = resolved_path(home_dir)
         home_dir_contents.write_to(home_dir_path)
         with sandbox_directory_structure(prefix=prefix + "-sds-",
-                                         contents=eds_contents) as sds:
+                                         contents=sds_contents) as sds:
             try:
                 os.chdir(str(sds.act_dir))
-                yield HomeAndSds(home_dir_path,
-                                 sds)
+                yield HomeAndSds(home_dir_path, sds)
             finally:
                 os.chdir(cwd_before)
 
@@ -80,8 +79,8 @@ def home_and_sds_and_test_as_curr_dir(
 @contextmanager
 def sandbox_directory_structure(contents: sds_populator.EdsPopulator = sds_populator.empty(),
                                 prefix: str = program_info.PROGRAM_NAME + '-test-sds-') \
-        -> eds_module.SandboxDirectoryStructure:
-    with tempfile.TemporaryDirectory(prefix=prefix) as eds_root_dir:
-        sds = eds_module.construct_at(resolved_path_name(eds_root_dir))
+        -> sds_module.SandboxDirectoryStructure:
+    with tempfile.TemporaryDirectory(prefix=prefix) as sds_root_dir:
+        sds = sds_module.construct_at(resolved_path_name(sds_root_dir))
         contents.apply(sds)
         yield sds

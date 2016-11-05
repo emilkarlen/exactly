@@ -36,7 +36,7 @@ class TestRelCwd(unittest.TestCase):
     def test_existing_file(self):
         file_reference = sut.rel_cwd('file.txt')
         with home_and_sds_and_test_as_curr_dir(
-                eds_contents=act_dir_contents(DirContents([empty_file('file.txt')]))) as home_and_sds:
+                sds_contents=act_dir_contents(DirContents([empty_file('file.txt')]))) as home_and_sds:
             self.assertTrue(file_reference.file_path_pre_or_post_eds(home_and_sds).exists())
 
     def test_non_existing_file(self):
@@ -54,7 +54,7 @@ class TestRelTmpUser(unittest.TestCase):
     def test_existing_file(self):
         file_reference = sut.rel_tmp_user('file.txt')
         with home_and_sds_and_test_as_curr_dir(
-                eds_contents=tmp_user_dir_contents(DirContents([empty_file('file.txt')]))) as home_and_sds:
+                sds_contents=tmp_user_dir_contents(DirContents([empty_file('file.txt')]))) as home_and_sds:
             self.assertTrue(file_reference.file_path_pre_or_post_eds(home_and_sds).exists())
 
     def test_non_existing_file(self):
@@ -72,7 +72,7 @@ class TestRelTmpInternal(unittest.TestCase):
     def test_existing_file(self):
         file_reference = sut.rel_tmp_internal('file.txt')
         with home_and_sds_and_test_as_curr_dir(
-                eds_contents=tmp_internal_dir_contents(DirContents([empty_file('file.txt')]))) as home_and_sds:
+                sds_contents=tmp_internal_dir_contents(DirContents([empty_file('file.txt')]))) as home_and_sds:
             self.assertTrue(file_reference.file_path_pre_or_post_eds(home_and_sds).exists())
 
     def test_non_existing_file(self):
