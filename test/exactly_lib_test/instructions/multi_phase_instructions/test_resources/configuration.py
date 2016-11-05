@@ -7,7 +7,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.test_case.os_services import new_default, OsServices
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementBase
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_description_instance
-from exactly_lib_test.test_resources.execution import eds_populator
+from exactly_lib_test.test_resources.execution import sds_populator
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
@@ -29,12 +29,12 @@ class ConfigurationBase:
         return self.instruction_setup().description
 
     def arrangement(self,
-                    eds_contents_before_main: eds_populator.EdsPopulator = eds_populator.empty(),
+                    eds_contents_before_main: sds_populator.EdsPopulator = sds_populator.empty(),
                     os_services: OsServices = new_default()):
         raise NotImplementedError()
 
     def empty_arrangement(self) -> ArrangementBase:
-        return self.arrangement(eds_contents_before_main=eds_populator.empty())
+        return self.arrangement(eds_contents_before_main=sds_populator.empty())
 
     def expect_success_and_side_effects_on_files(self,
                                                  main_side_effects_on_files: ValueAssertion):

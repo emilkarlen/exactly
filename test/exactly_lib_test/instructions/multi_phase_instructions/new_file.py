@@ -9,7 +9,7 @@ from exactly_lib_test.instructions.test_resources.check_description import suite
 from exactly_lib_test.test_resources.execution import sds_test
 from exactly_lib_test.test_resources.execution.eds_contents_check import ActRootContainsExactly, \
     TmpUserRootContainsExactly
-from exactly_lib_test.test_resources.execution.eds_populator import act_dir_contents
+from exactly_lib_test.test_resources.execution.sds_populator import act_dir_contents
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, Dir, empty_file, File
 from exactly_lib_test.test_resources.parse import single_line_source, argument_list_source
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, ValueIsNone, ValueIsNotNone

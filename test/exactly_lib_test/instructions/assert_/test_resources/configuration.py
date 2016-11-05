@@ -8,7 +8,7 @@ from exactly_lib_test.instructions.assert_.test_resources.instruction_check impo
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.configuration import ConfigurationBase
 from exactly_lib_test.instructions.test_resources import pfh_check
 from exactly_lib_test.instructions.test_resources import svh_check
-from exactly_lib_test.test_resources.execution import eds_populator
+from exactly_lib_test.test_resources.execution import sds_populator
 from exactly_lib_test.test_resources.execution.eds_contents_check import AdaptVa
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -31,7 +31,7 @@ class AssertConfigurationBase(ConfigurationBase):
         return Expectation(validation_pre_eds=svh_check.is_validation_error())
 
     def arrangement(self,
-                    eds_contents_before_main: eds_populator.EdsPopulator = eds_populator.empty(),
+                    eds_contents_before_main: sds_populator.EdsPopulator = sds_populator.empty(),
                     os_services: OsServices = new_default()):
         return arrangement(eds_contents_before_main=eds_contents_before_main,
                            os_services=os_services)

@@ -10,7 +10,7 @@ from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.common import HomeAndSds
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.file_utils import resolved_path_name, resolved_path
-from exactly_lib_test.test_resources.execution import eds_populator
+from exactly_lib_test.test_resources.execution import sds_populator
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir_contents
 from exactly_lib_test.test_resources.file_utils import write_file
 
@@ -66,7 +66,7 @@ def act_phase_result(exitcode: int = 0,
 class HomeAndSdsContents(tuple):
     def __new__(cls,
                 home_dir_contents: DirContents = empty_dir_contents(),
-                eds_contents: eds_populator.EdsPopulator = eds_populator.empty()):
+                eds_contents: sds_populator.EdsPopulator = sds_populator.empty()):
         return tuple.__new__(cls, (home_dir_contents,
                                    eds_contents))
 
@@ -75,14 +75,14 @@ class HomeAndSdsContents(tuple):
         return self[0]
 
     @property
-    def sds_contents(self) -> eds_populator.EdsPopulator:
+    def sds_contents(self) -> sds_populator.EdsPopulator:
         return self[1]
 
 
 @contextmanager
 def home_and_sds_and_test_as_curr_dir(
         home_dir_contents: DirContents = empty_dir_contents(),
-        eds_contents: eds_populator.EdsPopulator = eds_populator.empty()) -> HomeAndSds:
+        eds_contents: sds_populator.EdsPopulator = sds_populator.empty()) -> HomeAndSds:
     cwd_before = os.getcwd()
     prefix = strftime(program_info.PROGRAM_NAME + '-test-%Y-%m-%d-%H-%M-%S', localtime())
     with tempfile.TemporaryDirectory(prefix=prefix + "-home-") as home_dir:
@@ -99,7 +99,7 @@ def home_and_sds_and_test_as_curr_dir(
 
 
 @contextmanager
-def sandbox_directory_structure(contents: eds_populator.EdsPopulator = eds_populator.empty(),
+def sandbox_directory_structure(contents: sds_populator.EdsPopulator = sds_populator.empty(),
                                 prefix: str = program_info.PROGRAM_NAME + '-test-eds-') \
         -> eds_module.SandboxDirectoryStructure:
     with tempfile.TemporaryDirectory(prefix=prefix) as eds_root_dir:

@@ -11,7 +11,7 @@ from exactly_lib_test.act_phase_setups.test_resources import act_phase_execution
 from exactly_lib_test.act_phase_setups.test_resources.act_phase_execution import \
     assert_is_list_of_act_phase_instructions, ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode
 from exactly_lib_test.execution.test_resources import eh_check
-from exactly_lib_test.test_resources.execution.eds_populator import act_dir_contents
+from exactly_lib_test.test_resources.execution.sds_populator import act_dir_contents
 from exactly_lib_test.test_resources.execution.utils import sandbox_directory_structure
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir
 from exactly_lib_test.test_resources.process import SubProcessResult
