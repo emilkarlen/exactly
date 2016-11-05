@@ -93,7 +93,7 @@ class Executor(InstructionExecutionToBeReplacedByVaBase):
                                                                  home_and_sds.sds,
                                                                  phase_identifier.CLEANUP.identifier)
             self._execute_main(environment, instruction)
-            self.expectation.main_side_effects_on_files.apply(self.put, environment.eds)
+            self.expectation.main_side_effects_on_files.apply(self.put, environment.sds)
             self.expectation.side_effects_check.apply(self.put, home_and_sds)
 
     def _execute_pre_validate(self,
@@ -113,5 +113,5 @@ class Executor(InstructionExecutionToBeReplacedByVaBase):
                                   self.arrangement.os_services)
         self._check_result_of_main__sh(result)
         self.expectation.main_result.apply(self.put, result)
-        self.expectation.main_side_effects_on_files.apply(self.put, environment.eds)
+        self.expectation.main_side_effects_on_files.apply(self.put, environment.sds)
         return result

@@ -50,7 +50,7 @@ def _main_step(phase: phase_identifier.Phase) -> PhaseStep:
 
 
 def _validate_pre_eds_step(phase: phase_identifier.Phase) -> PhaseStep:
-    return PhaseStep(phase, 'validate-pre-eds')
+    return PhaseStep(phase, 'validate-pre-sds')
 
 
 def _validate_post_setup_step(phase: phase_identifier.Phase) -> PhaseStep:

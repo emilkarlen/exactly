@@ -47,12 +47,12 @@ class PartialExecutionTestCaseBase:
         self._assertions()
         # CLEANUP #
         os.chdir(str(self.initial_home_dir_path))
-        if not self.__dbg_do_not_delete_dir_structure and self.eds:
-            if self.eds.root_dir.exists():
-                shutil.rmtree(str(self.eds.root_dir))
+        if not self.__dbg_do_not_delete_dir_structure and self.sds:
+            if self.sds.root_dir.exists():
+                shutil.rmtree(str(self.sds.root_dir))
         else:
-            if self.eds:
-                print(str(self.eds.root_dir))
+            if self.sds:
+                print(str(self.sds.root_dir))
 
     def _test_case(self) -> TestCase:
         raise NotImplementedError()
@@ -73,7 +73,7 @@ class PartialExecutionTestCaseBase:
         return self.__partial_result
 
     @property
-    def eds(self) -> SandboxDirectoryStructure:
+    def sds(self) -> SandboxDirectoryStructure:
         return self.__partial_result.execution_directory_structure
 
     def assert_is_regular_file_with_contents(self,

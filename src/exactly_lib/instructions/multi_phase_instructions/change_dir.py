@@ -74,11 +74,11 @@ def parse(argument: str) -> DestinationPath:
 
 
 def change_dir(destination: DestinationPath,
-               eds: SandboxDirectoryStructure) -> str:
+               sds: SandboxDirectoryStructure) -> str:
     """
     :return: None iff success. Otherwise an error message.
     """
-    dir_path = destination.resolved_path(eds)
+    dir_path = destination.resolved_path(sds)
     try:
         os.chdir(str(dir_path))
     except FileNotFoundError:
@@ -89,6 +89,6 @@ def change_dir(destination: DestinationPath,
 
 
 def execute_with_sh_result(destination: DestinationPath,
-                           eds: SandboxDirectoryStructure) -> sh.SuccessOrHardError:
-    error_message = change_dir(destination, eds)
+                           sds: SandboxDirectoryStructure) -> sh.SuccessOrHardError:
+    error_message = change_dir(destination, sds)
     return sh.new_sh_success() if error_message is None else sh.new_sh_hard_error(error_message)

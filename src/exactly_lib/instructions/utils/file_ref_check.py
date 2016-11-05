@@ -19,8 +19,8 @@ class FileRefCheck:
     def pre_eds_condition_result(self, home_dir_path: pathlib.Path) -> CheckResult:
         return self.file_properties.apply(self.file_reference.file_path_pre_eds(home_dir_path))
 
-    def post_eds_condition_result(self, eds: SandboxDirectoryStructure) -> CheckResult:
-        return self.file_properties.apply(self.file_reference.file_path_post_eds(eds))
+    def post_eds_condition_result(self, sds: SandboxDirectoryStructure) -> CheckResult:
+        return self.file_properties.apply(self.file_reference.file_path_post_eds(sds))
 
     def pre_or_post_eds_condition_result(self, home_and_sds: HomeAndSds) -> CheckResult:
         return self.file_properties.apply(self.file_reference.file_path_pre_or_post_eds(home_and_sds))
@@ -50,10 +50,10 @@ def pre_eds_failure_message_or_none(file_ref_check: FileRefCheck,
 
 
 def post_eds_failure_message_or_none(file_ref_check: FileRefCheck,
-                                     eds: SandboxDirectoryStructure) -> str:
-    validation_result = file_ref_check.post_eds_condition_result(eds)
+                                     sds: SandboxDirectoryStructure) -> str:
+    validation_result = file_ref_check.post_eds_condition_result(sds)
     if not validation_result.is_success:
-        file_path = file_ref_check.file_reference.file_path_post_eds(eds)
+        file_path = file_ref_check.file_reference.file_path_post_eds(sds)
         return render_failure(validation_result.cause,
                               file_path)
     return None

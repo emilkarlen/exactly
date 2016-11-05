@@ -43,7 +43,7 @@ class TestCurrentDirectory(unittest.TestCase):
         # ASSERT #
         phase_step_2_cwd = executor_that_records_current_dir.phase_step_2_cwd
         home_and_sds = executor_that_records_current_dir.actual_home_and_eds
-        eds = home_and_sds.sds
+        sds = home_and_sds.sds
         self.assertEqual(len(phase_step_2_cwd),
                          4,
                          'Expects recordings for 4 steps')
@@ -51,13 +51,13 @@ class TestCurrentDirectory(unittest.TestCase):
                          str(home_and_sds.home_dir_path),
                          'Current dir for ' + str(phase_step.ACT__VALIDATE_PRE_EDS))
         self.assertEqual(phase_step_2_cwd[phase_step.ACT__VALIDATE_POST_SETUP],
-                         str(eds.act_dir),
+                         str(sds.act_dir),
                          'Current dir for ' + str(phase_step.ACT__VALIDATE_POST_SETUP))
         self.assertEqual(phase_step_2_cwd[phase_step.ACT__PREPARE],
-                         str(eds.act_dir),
+                         str(sds.act_dir),
                          'Current dir for ' + str(phase_step.ACT__PREPARE))
         self.assertEqual(phase_step_2_cwd[phase_step.ACT__EXECUTE],
-                         str(eds.act_dir),
+                         str(sds.act_dir),
                          'Current dir for ' + str(phase_step.ACT__EXECUTE))
 
 

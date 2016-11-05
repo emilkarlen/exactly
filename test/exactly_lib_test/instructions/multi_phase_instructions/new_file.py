@@ -90,9 +90,9 @@ class ParseAndCreateFileAction(sds_test.Action):
                  source: SingleInstructionParserSource):
         self.source = source
 
-    def apply(self, eds: SandboxDirectoryStructure):
+    def apply(self, sds: SandboxDirectoryStructure):
         file_info = sut.parse(self.source)
-        return sut.create_file(file_info, eds)
+        return sut.create_file(file_info, sds)
 
 
 class TestCaseBase(sds_test.TestCaseBase):

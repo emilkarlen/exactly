@@ -155,7 +155,7 @@ class _ActualFileTransformer(ActualFileTransformer):
     def _dst_file_path(self,
                        environment: InstructionEnvironmentForPostSdsStep,
                        src_file_path: pathlib.Path) -> pathlib.Path:
-        root_dir_path = root_dir_for_non_stdout_or_stderr_files_with_replaced_env_vars(environment.eds)
+        root_dir_path = root_dir_for_non_stdout_or_stderr_files_with_replaced_env_vars(environment.sds)
         if not src_file_path.is_absolute():
             src_file_path = pathlib.Path.cwd().resolve() / src_file_path
         src_file_path = src_file_path.resolve()
@@ -168,7 +168,7 @@ class _ActualFileTransformer(ActualFileTransformer):
                                              root_dir_path: pathlib.Path,
                                              absolute_src_file_path: pathlib.Path) -> pathlib.Path:
         try:
-            relative_act_dir = absolute_src_file_path.relative_to(environment.eds.act_dir)
+            relative_act_dir = absolute_src_file_path.relative_to(environment.sds.act_dir)
             # path DOES reside under act_dir
             return root_dir_path / SUB_DIR_FOR_REPLACEMENT_SOURCES_UNDER_ACT_DIR / relative_act_dir
         except ValueError:

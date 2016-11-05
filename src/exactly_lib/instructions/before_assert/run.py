@@ -35,7 +35,7 @@ class _Instruction(BeforeAssertPhaseInstruction):
 
     def validate_post_setup(self,
                             environment: InstructionEnvironmentForPostSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
-        return self.validator.validate_post_eds_if_applicable(environment.eds)
+        return self.validator.validate_post_eds_if_applicable(environment.sds)
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,

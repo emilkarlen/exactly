@@ -24,13 +24,13 @@ class DestinationPath(tuple):
     def path_argument(self) -> pathlib.PurePath:
         return self[1]
 
-    def root_path(self, eds: SandboxDirectoryStructure) -> pathlib.Path:
+    def root_path(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
         if self.destination_type is DestinationType.REL_ACT_DIR:
-            return eds.act_dir
+            return sds.act_dir
         elif self.destination_type is DestinationType.REL_TMP_DIR:
-            return eds.tmp.user_dir
+            return sds.tmp.user_dir
         else:
             return pathlib.Path.cwd()
 
-    def resolved_path(self, eds: SandboxDirectoryStructure) -> pathlib.Path:
-        return self.root_path(eds) / self.path_argument
+    def resolved_path(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
+        return self.root_path(sds) / self.path_argument

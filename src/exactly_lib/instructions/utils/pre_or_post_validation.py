@@ -14,7 +14,7 @@ class PreOrPostEdsValidator:
         """
         raise NotImplementedError()
 
-    def validate_post_eds_if_applicable(self, eds: SandboxDirectoryStructure) -> str:
+    def validate_post_eds_if_applicable(self, sds: SandboxDirectoryStructure) -> str:
         """
         Validates the object if it is expected to NOT exist pre-EDS.
         :return: Error message iff validation was applicable and validation failed.
@@ -36,7 +36,7 @@ class ConstantSuccessValidator(PreOrPostEdsValidator):
     def validate_pre_eds_if_applicable(self, home_dir_path: pathlib.Path) -> str:
         return None
 
-    def validate_post_eds_if_applicable(self, eds: SandboxDirectoryStructure) -> str:
+    def validate_post_eds_if_applicable(self, sds: SandboxDirectoryStructure) -> str:
         return None
 
 
@@ -52,9 +52,9 @@ class AndValidator(PreOrPostEdsValidator):
                 return result
         return None
 
-    def validate_post_eds_if_applicable(self, eds: SandboxDirectoryStructure) -> str:
+    def validate_post_eds_if_applicable(self, sds: SandboxDirectoryStructure) -> str:
         for validator in self.validators:
-            result = validator.validate_post_eds_if_applicable(eds)
+            result = validator.validate_post_eds_if_applicable(sds)
             if result is not None:
                 return result
         return None
@@ -73,8 +73,8 @@ class PreOrPostEdsSvhValidationErrorValidator:
         return self._translate(self.validator.validate_pre_eds_if_applicable(home_dir_path))
 
     def validate_post_eds_if_applicable(self,
-                                        eds: SandboxDirectoryStructure) -> svh.SuccessOrValidationErrorOrHardError:
-        return self._translate(self.validator.validate_post_eds_if_applicable(eds))
+                                        sds: SandboxDirectoryStructure) -> svh.SuccessOrValidationErrorOrHardError:
+        return self._translate(self.validator.validate_post_eds_if_applicable(sds))
 
     def validate_pre_or_post_eds(self, home_and_sds: HomeAndSds) -> svh.SuccessOrValidationErrorOrHardError:
         return self._translate(self.validator.validate_pre_or_post_eds(home_and_sds))
@@ -98,8 +98,8 @@ class PreOrPostEdsSvhValidationForSuccessOrHardError:
     def validate_pre_eds_if_applicable(self, home_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
         return self._translate(self.validator.validate_pre_eds_if_applicable(home_dir_path))
 
-    def validate_post_eds_if_applicable(self, eds: SandboxDirectoryStructure) -> sh.SuccessOrHardError:
-        return self._translate(self.validator.validate_post_eds_if_applicable(eds))
+    def validate_post_eds_if_applicable(self, sds: SandboxDirectoryStructure) -> sh.SuccessOrHardError:
+        return self._translate(self.validator.validate_post_eds_if_applicable(sds))
 
     def validate_pre_or_post_eds(self, home_and_sds: HomeAndSds) -> sh.SuccessOrHardError:
         return self._translate(self.validator.validate_pre_or_post_eds(home_and_sds))

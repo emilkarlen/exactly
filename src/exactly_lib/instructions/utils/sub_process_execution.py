@@ -80,7 +80,7 @@ class InstructionSourceInfo(tuple):
 class Executor:
     def apply(self,
               instruction_source_info: InstructionSourceInfo,
-              eds: SandboxDirectoryStructure,
+              sds: SandboxDirectoryStructure,
               cmd_and_args) -> Result:
         raise NotImplementedError()
 

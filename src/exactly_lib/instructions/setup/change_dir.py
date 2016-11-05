@@ -30,4 +30,4 @@ class _Instruction(SetupPhaseInstruction):
              os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         return cd_utils.execute_with_sh_result(self.destination_directory,
-                                               environment.eds)
+                                               environment.sds)

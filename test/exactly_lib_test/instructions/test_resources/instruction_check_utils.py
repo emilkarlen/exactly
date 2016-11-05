@@ -27,11 +27,11 @@ class InstructionExecutionToBeReplacedByVaBase:
 
     def _check_result_of_validate_pre_eds(self, actual):
         va.IsInstance(svh.SuccessOrValidationErrorOrHardError,
-                      'Result of validate/pre-eds').apply(self.put, actual)
+                      'Result of validate/pre-sds').apply(self.put, actual)
 
     def _check_result_of_validate_post_setup(self, actual):
         va.IsInstance(svh.SuccessOrValidationErrorOrHardError,
-                      'Result of validate/pre-eds').apply(self.put, actual)
+                      'Result of validate/pre-sds').apply(self.put, actual)
 
 
 class InstructionExecutionBase:

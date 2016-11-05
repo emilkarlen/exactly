@@ -71,18 +71,18 @@ def check_execution(put: unittest.TestCase,
         step_result = sut.validate_pre_sds(home_dir)
         put.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                         step_result.status,
-                        'Result of validation/pre-eds')
-        with sandbox_directory_structure() as eds:
+                        'Result of validation/pre-sds')
+        with sandbox_directory_structure() as sds:
             try:
-                os.chdir(str(eds.act_dir))
-                home_and_sds = HomeAndSds(home_dir, eds)
+                os.chdir(str(sds.act_dir))
+                home_and_sds = HomeAndSds(home_dir, sds)
                 step_result = sut.validate_post_setup(home_and_sds)
                 put.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                                 step_result.status,
                                 'Result of validation/post-setup')
-                script_output_dir_path = eds.test_case_dir
+                script_output_dir_path = sds.test_case_dir
                 step_result = sut.prepare(home_and_sds, script_output_dir_path)
-                expectation.side_effects_on_files_after_prepare.apply(put, eds)
+                expectation.side_effects_on_files_after_prepare.apply(put, sds)
                 expectation.result_of_prepare.apply(put,
                                                     step_result,
                                                     MessageBuilder('Result of prepare'))
@@ -96,7 +96,7 @@ def check_execution(put: unittest.TestCase,
                 sub_process_result = None
                 try:
                     sub_process_result = capture_process_executor_result(process_executor,
-                                                                         eds.result.root_dir)
+                                                                         sds.result.root_dir)
                     step_result = new_eh_exit_code(sub_process_result.exitcode)
                 except HardErrorResultError as ex:
                     step_result = ex.result
@@ -108,7 +108,7 @@ def check_execution(put: unittest.TestCase,
                 if sub_process_result:
                     msg_builder = MessageBuilder('Sub process output from execute' + error_msg_extra_info)
                     expectation.sub_process_result_from_execute.apply(put, sub_process_result, msg_builder)
-                expectation.side_effects_on_files_after_execute.apply(put, eds)
+                expectation.side_effects_on_files_after_execute.apply(put, sds)
                 return step_result
             finally:
                 os.chdir(cwd_before_test)

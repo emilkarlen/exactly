@@ -42,7 +42,7 @@ class PfhRaisesTestError(pfh_check.Assertion):
 
 
 class EdsContentsRaisesTestError(sds_contents_check.Assertion):
-    def apply(self, put: unittest.TestCase, eds: SandboxDirectoryStructure):
+    def apply(self, put: unittest.TestCase, sds: SandboxDirectoryStructure):
         raise TestError()
 
 
@@ -62,7 +62,7 @@ class ParserThatGives(SingleInstructionParser):
         return self.instruction
 
 
-def raise_test_error_if_cwd_is_not_test_root(eds: SandboxDirectoryStructure):
+def raise_test_error_if_cwd_is_not_test_root(sds: SandboxDirectoryStructure):
     cwd = os.getcwd()
-    if cwd != str(eds.act_dir):
+    if cwd != str(sds.act_dir):
         raise TestError()

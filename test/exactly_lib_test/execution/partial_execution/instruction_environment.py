@@ -38,13 +38,13 @@ def log_dir_is_correct_for_each_phase(recordings: dict,
                                       put: unittest.TestCase,
                                       actual: Result):
     put.assertFalse(actual.partial_result.is_failure)
-    eds = actual.execution_directory_structure
+    sds = actual.execution_directory_structure
     expected = {
-        PhaseEnum.SETUP: sds_log_phase_dir(eds, phase_identifier.SETUP.identifier),
-        # PhaseEnum.ACT: eds_log_phase_dir(eds, phases.ACT.identifier),
-        PhaseEnum.BEFORE_ASSERT: sds_log_phase_dir(eds, phase_identifier.BEFORE_ASSERT.identifier),
-        PhaseEnum.ASSERT: sds_log_phase_dir(eds, phase_identifier.ASSERT.identifier),
-        PhaseEnum.CLEANUP: sds_log_phase_dir(eds, phase_identifier.CLEANUP.identifier),
+        PhaseEnum.SETUP: sds_log_phase_dir(sds, phase_identifier.SETUP.identifier),
+        # PhaseEnum.ACT: eds_log_phase_dir(sds, phases.ACT.identifier),
+        PhaseEnum.BEFORE_ASSERT: sds_log_phase_dir(sds, phase_identifier.BEFORE_ASSERT.identifier),
+        PhaseEnum.ASSERT: sds_log_phase_dir(sds, phase_identifier.ASSERT.identifier),
+        PhaseEnum.CLEANUP: sds_log_phase_dir(sds, phase_identifier.CLEANUP.identifier),
     }
     put.assertDictEqual(expected,
                         recordings,

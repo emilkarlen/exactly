@@ -88,9 +88,9 @@ class ParseAndChangeDirAction(sds_test.Action):
                  arguments: str):
         self.arguments = arguments
 
-    def apply(self, eds: SandboxDirectoryStructure):
+    def apply(self, sds: SandboxDirectoryStructure):
         destination_directory = sut.parse(self.arguments)
-        return sut.change_dir(destination_directory, eds)
+        return sut.change_dir(destination_directory, sds)
 
 
 class TestCaseBase(sds_test.TestCaseBase):
@@ -114,13 +114,13 @@ class ChangeDirTo(sds_test.Action):
     def __init__(self, eds2dir_fun):
         self.eds2dir_fun = eds2dir_fun
 
-    def apply(self, eds: SandboxDirectoryStructure):
-        os.chdir(str(self.eds2dir_fun(eds)))
+    def apply(self, sds: SandboxDirectoryStructure):
+        os.chdir(str(self.eds2dir_fun(sds)))
 
 
 class CwdIsActDir(sds_test.PostActionCheck):
-    def apply(self, put: unittest.TestCase, eds: SandboxDirectoryStructure):
-        put.assertEqual(str(eds.act_dir),
+    def apply(self, put: unittest.TestCase, sds: SandboxDirectoryStructure):
+        put.assertEqual(str(sds.act_dir),
                         os.getcwd(),
                         'Current Working Directory')
 
@@ -129,8 +129,8 @@ class CwdIsSubDirOfActDir(sds_test.PostActionCheck):
     def __init__(self, sub_dir_name: str):
         self.sub_dir_name = sub_dir_name
 
-    def apply(self, put: unittest.TestCase, eds: SandboxDirectoryStructure):
-        put.assertEqual(str(eds.act_dir / self.sub_dir_name),
+    def apply(self, put: unittest.TestCase, sds: SandboxDirectoryStructure):
+        put.assertEqual(str(sds.act_dir / self.sub_dir_name),
                         os.getcwd(),
                         'Current Working Directory')
 
@@ -139,8 +139,8 @@ class CwdIs(sds_test.PostActionCheck):
     def __init__(self, eds2dir_fun):
         self.eds2dir_fun = eds2dir_fun
 
-    def apply(self, put: unittest.TestCase, eds: SandboxDirectoryStructure):
-        put.assertEqual(str(self.eds2dir_fun(eds)),
+    def apply(self, put: unittest.TestCase, sds: SandboxDirectoryStructure):
+        put.assertEqual(str(self.eds2dir_fun(sds)),
                         os.getcwd(),
                         'Current Working Directory')
 
@@ -152,7 +152,7 @@ class TestSuccessfulScenarios(TestCaseBase):
                                            eds_contents_before=act_dir_contents(DirContents([
                                                empty_dir('existing-dir')
                                            ])),
-                                           post_action_check=CwdIs(lambda eds: eds.act_dir / 'existing-dir')
+                                           post_action_check=CwdIs(lambda sds: sds.act_dir / 'existing-dir')
                                            ))
 
     def test_relative_argument_should_change_dir_relative_to_cwd__from_tmp_dir(self):
@@ -163,21 +163,21 @@ class TestSuccessfulScenarios(TestCaseBase):
                                                    empty_dir('sub2')
                                                ])
                                            ])),
-                                           pre_action_action=ChangeDirTo(lambda eds: eds.tmp.user_dir),
-                                           post_action_check=CwdIs(lambda eds: eds.tmp.user_dir / 'sub1' / 'sub2')
+                                           pre_action_action=ChangeDirTo(lambda sds: sds.tmp.user_dir),
+                                           post_action_check=CwdIs(lambda sds: sds.tmp.user_dir / 'sub1' / 'sub2')
                                            ))
 
     def test_act_root_option_should_change_to_act_dir(self):
         self._test_argument('--rel-act',
                             sds_test.Check(expected_action_result=is_success(),
-                                           pre_action_action=ChangeDirTo(lambda eds: eds.root_dir),
-                                           post_action_check=CwdIs(lambda eds: eds.act_dir)
+                                           pre_action_action=ChangeDirTo(lambda sds: sds.root_dir),
+                                           post_action_check=CwdIs(lambda sds: sds.act_dir)
                                            ))
 
     def test_relative_tmp__without_argument(self):
         self._test_argument('--rel-tmp',
                             sds_test.Check(expected_action_result=is_success(),
-                                           post_action_check=CwdIs(lambda eds: eds.tmp.user_dir)
+                                           post_action_check=CwdIs(lambda sds: sds.tmp.user_dir)
                                            ))
 
     def test_relative_tmp__with_argument(self):
@@ -188,7 +188,7 @@ class TestSuccessfulScenarios(TestCaseBase):
                                                    empty_dir('sub2')
                                                ])
                                            ])),
-                                           post_action_check=CwdIs(lambda eds: eds.tmp.user_dir / 'sub1' / 'sub2')
+                                           post_action_check=CwdIs(lambda sds: sds.tmp.user_dir / 'sub1' / 'sub2')
                                            ))
 
 
