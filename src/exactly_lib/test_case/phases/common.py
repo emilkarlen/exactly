@@ -111,6 +111,5 @@ class TestCaseInstruction(Instruction):
 
 
 class TestCaseInstructionExecutedInSandbox(TestCaseInstruction):
-    @property
     def logging_paths(self, sds: SandboxDirectoryStructure) -> PhaseLoggingPaths:
         return PhaseLoggingPaths(sds.log_dir, self.phase.identifier)
