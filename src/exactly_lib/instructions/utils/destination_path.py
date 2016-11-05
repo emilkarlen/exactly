@@ -1,7 +1,7 @@
 import enum
 import pathlib
 
-from exactly_lib.test_case.sandbox_directory_structure import ExecutionDirectoryStructure
+from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 
 
 class DestinationType(enum.Enum):
@@ -24,7 +24,7 @@ class DestinationPath(tuple):
     def path_argument(self) -> pathlib.PurePath:
         return self[1]
 
-    def root_path(self, eds: ExecutionDirectoryStructure) -> pathlib.Path:
+    def root_path(self, eds: SandboxDirectoryStructure) -> pathlib.Path:
         if self.destination_type is DestinationType.REL_ACT_DIR:
             return eds.act_dir
         elif self.destination_type is DestinationType.REL_TMP_DIR:
@@ -32,5 +32,5 @@ class DestinationPath(tuple):
         else:
             return pathlib.Path.cwd()
 
-    def resolved_path(self, eds: ExecutionDirectoryStructure) -> pathlib.Path:
+    def resolved_path(self, eds: SandboxDirectoryStructure) -> pathlib.Path:
         return self.root_path(eds) / self.path_argument

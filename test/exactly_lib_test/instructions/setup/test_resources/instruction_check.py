@@ -15,7 +15,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsS
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
-from exactly_lib.test_case.sandbox_directory_structure import ExecutionDirectoryStructure
+from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.file_utils import resolved_path_name
 from exactly_lib_test.instructions.setup.test_resources import settings_check
 from exactly_lib_test.instructions.test_resources import sh_check
@@ -132,7 +132,7 @@ class Executor:
         return pre_validate_result
 
     def _execute_main(self,
-                      eds: ExecutionDirectoryStructure,
+                      eds: SandboxDirectoryStructure,
                       global_environment_with_eds: i.InstructionEnvironmentForPostSdsStep,
                       instruction: SetupPhaseInstruction) -> sh.SuccessOrHardError:
         self.arrangement.eds_contents.apply(eds)

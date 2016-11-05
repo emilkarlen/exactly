@@ -1,10 +1,10 @@
-from exactly_lib.test_case.sandbox_directory_structure import ExecutionDirectoryStructure
+from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib_test.test_resources.file_structure import DirContents
 
 
 class EdsPopulator:
     def apply(self,
-              eds: ExecutionDirectoryStructure):
+              eds: SandboxDirectoryStructure):
         raise NotImplementedError()
 
 
@@ -29,7 +29,7 @@ def tmp_internal_dir_contents(contents: DirContents) -> EdsPopulator:
 
 
 class _Empty(EdsPopulator):
-    def apply(self, eds: ExecutionDirectoryStructure):
+    def apply(self, eds: SandboxDirectoryStructure):
         pass
 
 
@@ -37,7 +37,7 @@ class _ListOfPopulators(EdsPopulator):
     def __init__(self, populator_list: list):
         self.__populator_list = populator_list
 
-    def apply(self, eds: ExecutionDirectoryStructure):
+    def apply(self, eds: SandboxDirectoryStructure):
         for populator in self.__populator_list:
             populator.apply(eds)
 
@@ -47,7 +47,7 @@ class _FilesInActDir(EdsPopulator):
                  contents: DirContents):
         self.test_root_contents = contents
 
-    def apply(self, eds: ExecutionDirectoryStructure):
+    def apply(self, eds: SandboxDirectoryStructure):
         self.test_root_contents.write_to(eds.act_dir)
 
 
@@ -56,7 +56,7 @@ class _FilesInTmpUserDir(EdsPopulator):
                  contents: DirContents):
         self.test_root_contents = contents
 
-    def apply(self, eds: ExecutionDirectoryStructure):
+    def apply(self, eds: SandboxDirectoryStructure):
         self.test_root_contents.write_to(eds.tmp.user_dir)
 
 
@@ -65,5 +65,5 @@ class _FilesInTmpInternalDir(EdsPopulator):
                  contents: DirContents):
         self.test_root_contents = contents
 
-    def apply(self, eds: ExecutionDirectoryStructure):
+    def apply(self, eds: SandboxDirectoryStructure):
         self.test_root_contents.write_to(eds.tmp.internal_dir)

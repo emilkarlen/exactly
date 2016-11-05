@@ -74,7 +74,7 @@ def parse(argument: str) -> DestinationPath:
 
 
 def change_dir(destination: DestinationPath,
-               eds: ExecutionDirectoryStructure) -> str:
+               eds: SandboxDirectoryStructure) -> str:
     """
     :return: None iff success. Otherwise an error message.
     """
@@ -89,6 +89,6 @@ def change_dir(destination: DestinationPath,
 
 
 def execute_with_sh_result(destination: DestinationPath,
-                           eds: ExecutionDirectoryStructure) -> sh.SuccessOrHardError:
+                           eds: SandboxDirectoryStructure) -> sh.SuccessOrHardError:
     error_message = change_dir(destination, eds)
     return sh.new_sh_success() if error_message is None else sh.new_sh_hard_error(error_message)

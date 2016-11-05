@@ -5,7 +5,7 @@ from exactly_lib.execution import partial_execution as sut
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.phase_identifier import PhaseEnum
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case.sandbox_directory_structure import eds_log_phase_dir
+from exactly_lib.test_case.sandbox_directory_structure import sds_log_phase_dir
 from exactly_lib.util.line_source import LineSequence
 from exactly_lib_test.execution.partial_execution.test_resources.basic import test, \
     TestCaseWithCommonDefaultInstructions, Result, dummy_act_phase_handling
@@ -40,11 +40,11 @@ def log_dir_is_correct_for_each_phase(recordings: dict,
     put.assertFalse(actual.partial_result.is_failure)
     eds = actual.execution_directory_structure
     expected = {
-        PhaseEnum.SETUP: eds_log_phase_dir(eds, phase_identifier.SETUP.identifier),
+        PhaseEnum.SETUP: sds_log_phase_dir(eds, phase_identifier.SETUP.identifier),
         # PhaseEnum.ACT: eds_log_phase_dir(eds, phases.ACT.identifier),
-        PhaseEnum.BEFORE_ASSERT: eds_log_phase_dir(eds, phase_identifier.BEFORE_ASSERT.identifier),
-        PhaseEnum.ASSERT: eds_log_phase_dir(eds, phase_identifier.ASSERT.identifier),
-        PhaseEnum.CLEANUP: eds_log_phase_dir(eds, phase_identifier.CLEANUP.identifier),
+        PhaseEnum.BEFORE_ASSERT: sds_log_phase_dir(eds, phase_identifier.BEFORE_ASSERT.identifier),
+        PhaseEnum.ASSERT: sds_log_phase_dir(eds, phase_identifier.ASSERT.identifier),
+        PhaseEnum.CLEANUP: sds_log_phase_dir(eds, phase_identifier.CLEANUP.identifier),
     }
     put.assertDictEqual(expected,
                         recordings,

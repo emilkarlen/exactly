@@ -6,7 +6,7 @@ from exactly_lib.instructions.utils import file_services
 from exactly_lib.test_case.phases.common import PhaseLoggingPaths
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import sh
-from exactly_lib.test_case.sandbox_directory_structure import ExecutionDirectoryStructure
+from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util import file_utils
 from exactly_lib.util.file_utils import write_new_text_file
 
@@ -80,7 +80,7 @@ class InstructionSourceInfo(tuple):
 class Executor:
     def apply(self,
               instruction_source_info: InstructionSourceInfo,
-              eds: ExecutionDirectoryStructure,
+              eds: SandboxDirectoryStructure,
               cmd_and_args) -> Result:
         raise NotImplementedError()
 

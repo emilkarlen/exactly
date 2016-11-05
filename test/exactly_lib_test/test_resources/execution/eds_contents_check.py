@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.test_case.sandbox_directory_structure import ExecutionDirectoryStructure
+from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib_test.test_resources import file_structure, file_checks
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
@@ -8,21 +8,21 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 class Assertion:
     def apply(self,
               put: unittest.TestCase,
-              eds: ExecutionDirectoryStructure):
+              eds: SandboxDirectoryStructure):
         raise NotImplementedError()
 
 
 class AnythingGoes(Assertion):
     def apply(self,
               put: unittest.TestCase,
-              eds: ExecutionDirectoryStructure):
+              eds: SandboxDirectoryStructure):
         pass
 
 
 class UnconditionalFail(Assertion):
     def apply(self,
               put: unittest.TestCase,
-              eds: ExecutionDirectoryStructure):
+              eds: SandboxDirectoryStructure):
         put.fail('Unconditional fail')
 
 
@@ -33,7 +33,7 @@ class ActRootContainsExactly(Assertion):
 
     def apply(self,
               put: unittest.TestCase,
-              eds: ExecutionDirectoryStructure):
+              eds: SandboxDirectoryStructure):
         checker = file_checks.FileChecker(put,
                                           message_header='Contents of act directory')
         checker.assert_dir_contents_matches_exactly(eds.act_dir,
@@ -47,7 +47,7 @@ class TestCaseRootContainsExactly(Assertion):
 
     def apply(self,
               put: unittest.TestCase,
-              eds: ExecutionDirectoryStructure):
+              eds: SandboxDirectoryStructure):
         checker = file_checks.FileChecker(put,
                                           message_header='Contents of testcase directory')
         checker.assert_dir_contents_matches_exactly(eds.test_case_dir,
@@ -61,7 +61,7 @@ class TmpUserRootContainsExactly(Assertion):
 
     def apply(self,
               put: unittest.TestCase,
-              eds: ExecutionDirectoryStructure):
+              eds: SandboxDirectoryStructure):
         checker = file_checks.FileChecker(put,
                                           message_header='Contents of tmp/user directory')
         checker.assert_dir_contents_matches_exactly(eds.tmp.user_dir,
@@ -75,5 +75,5 @@ class AdaptVa(Assertion):
 
     def apply(self,
               put: unittest.TestCase,
-              eds: ExecutionDirectoryStructure):
+              eds: SandboxDirectoryStructure):
         self.va.apply(put, eds)

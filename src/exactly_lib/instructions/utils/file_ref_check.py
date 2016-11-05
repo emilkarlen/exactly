@@ -6,7 +6,7 @@ from exactly_lib.instructions.utils.file_ref import FileRef, FileRefValidatorBas
 from exactly_lib.test_case.phases.common import HomeAndEds
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import svh
-from exactly_lib.test_case.sandbox_directory_structure import ExecutionDirectoryStructure
+from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 
 
 class FileRefCheck:
@@ -19,7 +19,7 @@ class FileRefCheck:
     def pre_eds_condition_result(self, home_dir_path: pathlib.Path) -> CheckResult:
         return self.file_properties.apply(self.file_reference.file_path_pre_eds(home_dir_path))
 
-    def post_eds_condition_result(self, eds: ExecutionDirectoryStructure) -> CheckResult:
+    def post_eds_condition_result(self, eds: SandboxDirectoryStructure) -> CheckResult:
         return self.file_properties.apply(self.file_reference.file_path_post_eds(eds))
 
     def pre_or_post_eds_condition_result(self, home_and_eds: HomeAndEds) -> CheckResult:
@@ -50,7 +50,7 @@ def pre_eds_failure_message_or_none(file_ref_check: FileRefCheck,
 
 
 def post_eds_failure_message_or_none(file_ref_check: FileRefCheck,
-                                     eds: ExecutionDirectoryStructure) -> str:
+                                     eds: SandboxDirectoryStructure) -> str:
     validation_result = file_ref_check.post_eds_condition_result(eds)
     if not validation_result.is_success:
         file_path = file_ref_check.file_reference.file_path_post_eds(eds)

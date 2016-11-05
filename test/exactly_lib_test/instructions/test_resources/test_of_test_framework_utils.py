@@ -7,7 +7,7 @@ from exactly_lib.test_case.phases.common import HomeAndEds, TestCaseInstruction
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
-from exactly_lib.test_case.sandbox_directory_structure import ExecutionDirectoryStructure
+from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib_test.instructions.test_resources import pfh_check
 from exactly_lib_test.instructions.test_resources import sh_check
 from exactly_lib_test.instructions.test_resources import svh_check
@@ -42,7 +42,7 @@ class PfhRaisesTestError(pfh_check.Assertion):
 
 
 class EdsContentsRaisesTestError(eds_contents_check.Assertion):
-    def apply(self, put: unittest.TestCase, eds: ExecutionDirectoryStructure):
+    def apply(self, put: unittest.TestCase, eds: SandboxDirectoryStructure):
         raise TestError()
 
 
@@ -62,7 +62,7 @@ class ParserThatGives(SingleInstructionParser):
         return self.instruction
 
 
-def raise_test_error_if_cwd_is_not_test_root(eds: ExecutionDirectoryStructure):
+def raise_test_error_if_cwd_is_not_test_root(eds: SandboxDirectoryStructure):
     cwd = os.getcwd()
     if cwd != str(eds.act_dir):
         raise TestError()

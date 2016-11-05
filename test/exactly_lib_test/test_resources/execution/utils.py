@@ -8,7 +8,7 @@ from exactly_lib import program_info
 from exactly_lib.test_case import sandbox_directory_structure as eds_module
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.common import HomeAndEds
-from exactly_lib.test_case.sandbox_directory_structure import ExecutionDirectoryStructure
+from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.file_utils import resolved_path_name, resolved_path
 from exactly_lib_test.test_resources.execution import eds_populator
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir_contents
@@ -37,7 +37,7 @@ class ActResult:
         return self._stderr_contents
 
 
-def write_act_result(eds: ExecutionDirectoryStructure,
+def write_act_result(eds: SandboxDirectoryStructure,
                      result: ActResult):
     write_file(eds.result.exitcode_file, str(result.exitcode))
     write_file(eds.result.stdout_file, result.stdout_contents)
@@ -101,7 +101,7 @@ def home_and_eds_and_test_as_curr_dir(
 @contextmanager
 def execution_directory_structure(contents: eds_populator.EdsPopulator = eds_populator.empty(),
                                   prefix: str = program_info.PROGRAM_NAME + '-test-eds-') \
-        -> eds_module.ExecutionDirectoryStructure:
+        -> eds_module.SandboxDirectoryStructure:
     with tempfile.TemporaryDirectory(prefix=prefix) as eds_root_dir:
         eds = eds_module.construct_at(resolved_path_name(eds_root_dir))
         contents.apply(eds)

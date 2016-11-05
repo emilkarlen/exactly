@@ -4,7 +4,7 @@ from exactly_lib.execution.phase_step_identifiers.phase_step import PhaseStep
 from exactly_lib.execution.result import PartialResult, InstructionFailureInfo, new_partial_result_pass, \
     PartialResultStatus
 from exactly_lib.section_document.model import SectionContents, SectionContentElement, ElementType
-from exactly_lib.test_case.sandbox_directory_structure import ExecutionDirectoryStructure
+from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util import line_source
 from exactly_lib.util.failure_details import FailureDetails
 
@@ -51,7 +51,7 @@ def execute_phase(phase_contents: SectionContents,
                   header_executor_for_instruction: ElementHeaderExecutor,
                   instruction_executor: ControlledInstructionExecutor,
                   phase_step: PhaseStep,
-                  eds: ExecutionDirectoryStructure) -> PartialResult:
+                  eds: SandboxDirectoryStructure) -> PartialResult:
     """
     Executes the elements of a given phase/step.
     Catches exceptions thrown by instruction-execution and "reports" them as
