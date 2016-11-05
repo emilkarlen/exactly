@@ -20,7 +20,7 @@ from exactly_lib.instructions.utils.main_step_executor import InstructionParts
 from exactly_lib.instructions.utils.main_step_executor_for_sub_process import MainStepExecutorForSubProcess
 from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostEdsValidator, AndValidator
 from exactly_lib.instructions.utils.sub_process_execution import ResultAndStderr, ExecuteInfo, \
-    ExecutorThatStoresResultInFilesInDir, execute_and_read_stderr_if_non_zero_exitcode
+    ExecutorThatStoresResultInFilesInDir, execute_and_read_stderr_if_non_zero_exitcode, CmdAndArgsResolver
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, SingleInstructionParserSource, SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.os_services import OsServices
@@ -144,38 +144,6 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         return [concept.cross_reference_target() for concept in concepts]
 
 
-class SetupForExecutableWithArguments:
-    def __init__(self,
-                 instruction_source_info: sub_process_execution.InstructionSourceInfo,
-                 executable: ExecutableFile):
-        self.instruction_source_info = instruction_source_info
-        self.__executable = executable
-
-    def _arguments(self, home_and_sds: HomeAndSds) -> list:
-        raise NotImplementedError()
-
-    def cmd_and_args(self, home_and_sds: HomeAndSds) -> list:
-        return [self.__executable.path_string(home_and_sds)] + \
-               self.__executable.arguments + \
-               self._arguments(home_and_sds)
-
-    @property
-    def validator(self) -> PreOrPostEdsValidator:
-        return self.__executable.validator
-
-
-class SetupForExecute(SetupForExecutableWithArguments):
-    def __init__(self,
-                 instruction_source_info: sub_process_execution.InstructionSourceInfo,
-                 executable: ExecutableFile,
-                 argument_list: list):
-        super().__init__(instruction_source_info, executable)
-        self.argument_list = argument_list
-
-    def _arguments(self, home_and_sds: HomeAndSds) -> list:
-        return self.argument_list
-
-
 class CmdAndArgsResolverForExecute(CmdAndArgsResolverForExecutableFileBase):
     def __init__(self,
                  executable: ExecutableFile,
@@ -185,28 +153,6 @@ class CmdAndArgsResolverForExecute(CmdAndArgsResolverForExecutableFileBase):
 
     def _arguments(self, home_and_sds: HomeAndSds) -> list:
         return self.argument_list
-
-
-class SetupForInterpret(SetupForExecutableWithArguments):
-    def __init__(self,
-                 instruction_source_info: sub_process_execution.InstructionSourceInfo,
-                 executable: ExecutableFile,
-                 file_to_interpret: FileRef,
-                 argument_list: list):
-        super().__init__(instruction_source_info, executable)
-        self.file_to_interpret = file_to_interpret
-        self.argument_list = argument_list
-        file_to_interpret_check = FileRefCheck(file_to_interpret,
-                                               file_properties.must_exist_as(file_properties.FileType.REGULAR))
-        self._validator = AndValidator((executable.validator,
-                                        FileRefCheckValidator(file_to_interpret_check)))
-
-    def _arguments(self, home_and_sds: HomeAndSds) -> list:
-        return [str(self.file_to_interpret.file_path_pre_or_post_eds(home_and_sds))] + self.argument_list
-
-    @property
-    def validator(self) -> PreOrPostEdsValidator:
-        return self._validator
 
 
 class CmdAndArgsResolverForInterpret(CmdAndArgsResolverForExecutableFileBase):
@@ -222,18 +168,6 @@ class CmdAndArgsResolverForInterpret(CmdAndArgsResolverForExecutableFileBase):
         return [str(self.file_to_interpret.file_path_pre_or_post_eds(home_and_sds))] + self.argument_list
 
 
-class SetupForSource(SetupForExecutableWithArguments):
-    def __init__(self,
-                 instruction_source_info: sub_process_execution.InstructionSourceInfo,
-                 executable: ExecutableFile,
-                 source: str):
-        super().__init__(instruction_source_info, executable)
-        self.source = source
-
-    def _arguments(self, home_and_sds: HomeAndSds) -> list:
-        return [self.source]
-
-
 class CmdAndArgsResolverForSource(CmdAndArgsResolverForExecutableFileBase):
     def __init__(self,
                  executable: ExecutableFile,
@@ -245,23 +179,16 @@ class CmdAndArgsResolverForSource(CmdAndArgsResolverForExecutableFileBase):
         return [self.source]
 
 
-class MainStepExecutor(MainStepExecutorForSubProcess):
-    def __init__(self, setup: SetupForExecutableWithArguments):
-        self._setup = setup
-
-    def _apply(self,
-               environment: InstructionEnvironmentForPostSdsStep,
-               logging_paths: PhaseLoggingPaths,
-               os_services: OsServices) -> ResultAndStderr:
-        return self.apply(environment.home_and_sds, logging_paths)
-
-    def apply(self,
-              home_and_sds: HomeAndSds,
-              phase_logging_paths: PhaseLoggingPaths) -> ResultAndStderr:
-        execute_info = ExecuteInfo(self._setup.instruction_source_info,
-                                   self._setup.cmd_and_args(home_and_sds))
-        executor = ExecutorThatStoresResultInFilesInDir(is_shell=False)
-        return execute_and_read_stderr_if_non_zero_exitcode(execute_info, executor, phase_logging_paths)
+class Setup:
+    def __init__(self,
+                 source_info: sub_process_execution.InstructionSourceInfo,
+                 validator: PreOrPostEdsValidator,
+                 cmd_and_args_resolver: CmdAndArgsResolver,
+                 is_shell: bool):
+        self.validator = validator
+        self.cmd_and_args_resolver = cmd_and_args_resolver
+        self.source_info = source_info
+        self.is_shell = is_shell
 
 
 class SetupParser:
@@ -269,52 +196,52 @@ class SetupParser:
                  instruction_name: str):
         self.instruction_name = instruction_name
 
-    def apply(self, source: SingleInstructionParserSource) -> SetupForExecutableWithArguments:
+    def apply(self, source: SingleInstructionParserSource) -> Setup:
         tokens = TokenStream(source.instruction_argument)
         (exe_file, arg_tokens) = parse_executable_file.parse(tokens)
         source_info = sub_process_execution.InstructionSourceInfo(source.line_sequence.first_line.line_number,
                                                                   self.instruction_name)
+        (validator, cmd_and_args_resolver) = self._validator__cmd_and_args_resolver(exe_file, arg_tokens)
+        return Setup(source_info, validator, cmd_and_args_resolver, False)
+
+    def _validator__cmd_and_args_resolver(self,
+                                          exe_file: ExecutableFile,
+                                          arg_tokens: TokenStream):
         if arg_tokens.is_null:
-            return self._execute(source_info, exe_file, '')
+            return self._execute(exe_file, '')
         if arg_tokens.head == INTERPRET_OPTION:
-            return self._interpret(source_info, exe_file, arg_tokens.tail_source_or_empty_string)
+            return self._interpret(exe_file, arg_tokens.tail_source_or_empty_string)
         if arg_tokens.head == SOURCE_OPTION:
-            return self._source(source_info, exe_file, arg_tokens.tail_source)
+            return self._source(exe_file, arg_tokens.tail_source)
         if arg_tokens.head == OPTIONS_SEPARATOR_ARGUMENT:
-            return self._execute(source_info, exe_file, arg_tokens.tail.source)
-        return self._execute(source_info, exe_file, arg_tokens.source)
+            return self._execute(exe_file, arg_tokens.tail.source)
+        return self._execute(exe_file, arg_tokens.source)
 
     @staticmethod
-    def _execute(source_info: sub_process_execution.InstructionSourceInfo,
-                 exe_file: ExecutableFile,
-                 remaining_arguments_str: str) -> SetupForExecutableWithArguments:
-        return SetupForExecute(
-            source_info,
-            exe_file,
-            shlex.split(remaining_arguments_str))
+    def _execute(exe_file: ExecutableFile,
+                 remaining_arguments_str: str):
+        cmd_resolver = CmdAndArgsResolverForExecute(exe_file, shlex.split(remaining_arguments_str))
+        return exe_file.validator, cmd_resolver
 
     @staticmethod
-    def _interpret(source_info: sub_process_execution.InstructionSourceInfo,
-                   exe_file: ExecutableFile,
-                   remaining_arguments_str: str) -> SetupForExecutableWithArguments:
+    def _interpret(exe_file: ExecutableFile,
+                   remaining_arguments_str: str):
         remaining_arguments = shlex.split(remaining_arguments_str)
         (file_to_interpret, remaining_arguments) = parse_file_ref.parse_file_ref__list(remaining_arguments)
-        return SetupForInterpret(
-            source_info,
-            exe_file,
-            file_to_interpret,
-            remaining_arguments)
+        file_to_interpret_check = FileRefCheck(file_to_interpret,
+                                               file_properties.must_exist_as(file_properties.FileType.REGULAR))
+        validator = AndValidator((exe_file.validator,
+                                  FileRefCheckValidator(file_to_interpret_check)))
+        cmd_resolver = CmdAndArgsResolverForInterpret(exe_file, file_to_interpret, remaining_arguments)
+        return validator, cmd_resolver
 
     @staticmethod
-    def _source(source_info: sub_process_execution.InstructionSourceInfo,
-                exe_file: ExecutableFile,
-                remaining_arguments_str: str) -> SetupForExecutableWithArguments:
+    def _source(exe_file: ExecutableFile,
+                remaining_arguments_str: str):
         if not remaining_arguments_str:
             raise SingleInstructionInvalidArgumentException('Missing SOURCE argument for option %s' % SOURCE_OPTION)
-        return SetupForSource(
-            source_info,
-            exe_file,
-            remaining_arguments_str)
+        cmd_resolver = CmdAndArgsResolverForSource(exe_file, remaining_arguments_str)
+        return exe_file.validator, cmd_resolver
 
 
 class InstructionParser(SingleInstructionParser):
@@ -328,3 +255,22 @@ class InstructionParser(SingleInstructionParser):
         setup = self.setup_parser.apply(source)
         return self._instruction_parts2instruction_function(InstructionParts(setup.validator,
                                                                              MainStepExecutor(setup)))
+
+
+class MainStepExecutor(MainStepExecutorForSubProcess):
+    def __init__(self, setup: Setup):
+        self._setup = setup
+
+    def _apply(self,
+               environment: InstructionEnvironmentForPostSdsStep,
+               logging_paths: PhaseLoggingPaths,
+               os_services: OsServices) -> ResultAndStderr:
+        return self.apply(environment.home_and_sds, logging_paths)
+
+    def apply(self,
+              home_and_sds: HomeAndSds,
+              phase_logging_paths: PhaseLoggingPaths) -> ResultAndStderr:
+        execute_info = ExecuteInfo(self._setup.source_info,
+                                   self._setup.cmd_and_args_resolver.resolve(home_and_sds))
+        executor = ExecutorThatStoresResultInFilesInDir(self._setup.is_shell)
+        return execute_and_read_stderr_if_non_zero_exitcode(execute_info, executor, phase_logging_paths)
