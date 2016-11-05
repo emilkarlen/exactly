@@ -4,7 +4,7 @@ import unittest
 
 from exactly_lib.execution.act_phase import ExitCodeOrHardError, ActSourceAndExecutorConstructor, new_eh_exit_code, \
     ActSourceAndExecutor
-from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
+from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import GlobalEnvironmentForPreEdsStep, HomeAndEds
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.failure_details import FailureDetails

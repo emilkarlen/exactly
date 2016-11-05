@@ -2,7 +2,7 @@ from exactly_lib.execution.single_instruction_executor import ControlledInstruct
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as instr
-from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
+from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.before_assert import BeforeAssertPhaseInstruction
 from exactly_lib.test_case.phases.cleanup import CleanupPhaseInstruction, PreviousPhase

@@ -6,7 +6,7 @@ from exactly_lib.act_phase_setups.util.executor_made_of_parts import main as exe
 from exactly_lib.execution.act_phase import ExitCodeOrHardError, \
     ActPhaseHandling
 from exactly_lib.processing.act_phase import ActPhaseSetup
-from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
+from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import HomeAndEds, GlobalEnvironmentForPreEdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.util.std import StdFiles
