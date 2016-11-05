@@ -4,7 +4,7 @@ from exactly_lib_test.test_resources.file_structure import DirContents
 
 class EdsPopulator:
     def apply(self,
-              eds: SandboxDirectoryStructure):
+              sds: SandboxDirectoryStructure):
         raise NotImplementedError()
 
 
@@ -29,7 +29,7 @@ def tmp_internal_dir_contents(contents: DirContents) -> EdsPopulator:
 
 
 class _Empty(EdsPopulator):
-    def apply(self, eds: SandboxDirectoryStructure):
+    def apply(self, sds: SandboxDirectoryStructure):
         pass
 
 
@@ -37,9 +37,9 @@ class _ListOfPopulators(EdsPopulator):
     def __init__(self, populator_list: list):
         self.__populator_list = populator_list
 
-    def apply(self, eds: SandboxDirectoryStructure):
+    def apply(self, sds: SandboxDirectoryStructure):
         for populator in self.__populator_list:
-            populator.apply(eds)
+            populator.apply(sds)
 
 
 class _FilesInActDir(EdsPopulator):
@@ -47,8 +47,8 @@ class _FilesInActDir(EdsPopulator):
                  contents: DirContents):
         self.test_root_contents = contents
 
-    def apply(self, eds: SandboxDirectoryStructure):
-        self.test_root_contents.write_to(eds.act_dir)
+    def apply(self, sds: SandboxDirectoryStructure):
+        self.test_root_contents.write_to(sds.act_dir)
 
 
 class _FilesInTmpUserDir(EdsPopulator):
@@ -56,8 +56,8 @@ class _FilesInTmpUserDir(EdsPopulator):
                  contents: DirContents):
         self.test_root_contents = contents
 
-    def apply(self, eds: SandboxDirectoryStructure):
-        self.test_root_contents.write_to(eds.tmp.user_dir)
+    def apply(self, sds: SandboxDirectoryStructure):
+        self.test_root_contents.write_to(sds.tmp.user_dir)
 
 
 class _FilesInTmpInternalDir(EdsPopulator):
@@ -65,5 +65,5 @@ class _FilesInTmpInternalDir(EdsPopulator):
                  contents: DirContents):
         self.test_root_contents = contents
 
-    def apply(self, eds: SandboxDirectoryStructure):
-        self.test_root_contents.write_to(eds.tmp.internal_dir)
+    def apply(self, sds: SandboxDirectoryStructure):
+        self.test_root_contents.write_to(sds.tmp.internal_dir)

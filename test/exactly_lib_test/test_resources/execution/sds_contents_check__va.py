@@ -12,17 +12,17 @@ def act_dir_contains_exactly(expected_contents: file_structure.DirContents) -> v
 
 def tmp_user_dir_contains_exactly(expected_contents: file_structure.DirContents) -> va.ValueAssertion:
     return va.sub_component('tmp/usr dir',
-                            lambda eds: eds.tmp.user_dir,
+                            lambda sds: sds.tmp.user_dir,
                             DirContainsExactly__Va(expected_contents))
 
 
 def tmp_internal_dir_contains_exactly(expected_contents: file_structure.DirContents) -> va.ValueAssertion:
     return va.sub_component('tmp/internal dir',
-                            lambda eds: eds.tmp.internal_dir,
+                            lambda sds: sds.tmp.internal_dir,
                             DirContainsExactly__Va(expected_contents))
 
 
 def result_dir_contains_exactly(expected_contents: file_structure.DirContents) -> va.ValueAssertion:
     return va.sub_component('result dir',
-                            lambda eds: eds.result.root_dir,
+                            lambda sds: sds.result.root_dir,
                             DirContainsExactly__Va(expected_contents))

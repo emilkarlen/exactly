@@ -11,12 +11,12 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 class PostActionCheck:
     def apply(self,
               put: unittest.TestCase,
-              eds: SandboxDirectoryStructure):
+              sds: SandboxDirectoryStructure):
         pass
 
 
 class Action:
-    def apply(self, eds: SandboxDirectoryStructure):
+    def apply(self, sds: SandboxDirectoryStructure):
         return None
 
 
@@ -47,14 +47,14 @@ def execute(put: unittest.TestCase,
             action: Action,
             check: Check):
     original_cwd = os.getcwd()
-    with sandbox_directory_structure(check.eds_contents_before) as eds:
-        os.chdir(str(eds.act_dir))
+    with sandbox_directory_structure(check.eds_contents_before) as sds:
+        os.chdir(str(sds.act_dir))
         try:
-            check.pre_action_action.apply(eds)
-            result = action.apply(eds)
+            check.pre_action_action.apply(sds)
+            result = action.apply(sds)
             check.expected_action_result.apply(put, result)
-            check.expected_eds_contents_after.apply(put, eds)
-            check.post_action_check.apply(put, eds)
+            check.expected_eds_contents_after.apply(put, sds)
+            check.post_action_check.apply(put, sds)
         finally:
             os.chdir(original_cwd)
 
@@ -68,11 +68,11 @@ class ResultFilesCheck(PostActionCheck):
         self.expected_stdout_contents = expected_stdout_contents
         self.expected_stderr_contents = expected_stderr_contents
 
-    def apply(self, put: unittest.TestCase, eds: SandboxDirectoryStructure):
+    def apply(self, put: unittest.TestCase, sds: SandboxDirectoryStructure):
         fc = FileChecker(put, 'Result files: ')
-        fc.assert_is_plain_file_with_contents(eds.result.exitcode_file,
+        fc.assert_is_plain_file_with_contents(sds.result.exitcode_file,
                                               str(self.expected_exitcode))
-        fc.assert_is_plain_file_with_contents(eds.result.stdout_file,
+        fc.assert_is_plain_file_with_contents(sds.result.stdout_file,
                                               self.expected_stdout_contents)
-        fc.assert_is_plain_file_with_contents(eds.result.stderr_file,
+        fc.assert_is_plain_file_with_contents(sds.result.stderr_file,
                                               self.expected_stderr_contents)
