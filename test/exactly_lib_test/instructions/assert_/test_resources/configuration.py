@@ -9,7 +9,7 @@ from exactly_lib_test.instructions.multi_phase_instructions.test_resources.confi
 from exactly_lib_test.instructions.test_resources import pfh_check
 from exactly_lib_test.instructions.test_resources import svh_check
 from exactly_lib_test.test_resources.execution import sds_populator
-from exactly_lib_test.test_resources.execution.eds_contents_check import AdaptVa
+from exactly_lib_test.test_resources.execution.sds_contents_check import AdaptVa
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 

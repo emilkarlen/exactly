@@ -12,7 +12,7 @@ from exactly_lib_test.instructions.test_resources import pfh_check
 from exactly_lib_test.instructions.test_resources import sh_check
 from exactly_lib_test.instructions.test_resources import svh_check
 from exactly_lib_test.instructions.test_resources.assertion_utils.side_effects import SideEffectsCheck
-from exactly_lib_test.test_resources.execution import eds_contents_check
+from exactly_lib_test.test_resources.execution import sds_contents_check
 from exactly_lib_test.test_resources.parse import new_source2
 
 
@@ -41,7 +41,7 @@ class PfhRaisesTestError(pfh_check.Assertion):
         raise TestError()
 
 
-class EdsContentsRaisesTestError(eds_contents_check.Assertion):
+class EdsContentsRaisesTestError(sds_contents_check.Assertion):
     def apply(self, put: unittest.TestCase, eds: SandboxDirectoryStructure):
         raise TestError()
 

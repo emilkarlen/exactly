@@ -8,7 +8,7 @@ from exactly_lib_test.instructions.setup.test_resources.instruction_check import
 from exactly_lib_test.instructions.test_resources import sh_check
 from exactly_lib_test.instructions.test_resources import svh_check
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
-from exactly_lib_test.test_resources.execution import sds_populator, eds_contents_check
+from exactly_lib_test.test_resources.execution import sds_populator, sds_contents_check
 from exactly_lib_test.test_resources.file_structure import DirContents, File, Dir, empty_file, empty_dir
 from exactly_lib_test.test_resources.parse import new_source2
 
@@ -64,7 +64,7 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
                                              'contents'))])
         self._run(new_source2(file_name),
                   Arrangement(home_dir_contents=file_to_install),
-                  Expectation(main_side_effects_on_files=eds_contents_check.ActRootContainsExactly(
+                  Expectation(main_side_effects_on_files=sds_contents_check.ActRootContainsExactly(
                           file_to_install))
                   )
 
@@ -75,7 +75,7 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
                   Arrangement(home_dir_contents=DirContents([(File(src,
                                                                    'contents'))])),
                   Expectation(
-                          main_side_effects_on_files=eds_contents_check.ActRootContainsExactly(
+                      main_side_effects_on_files=sds_contents_check.ActRootContainsExactly(
                                   DirContents([(File(dst,
                                                      'contents'))])))
                   )
@@ -92,7 +92,7 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
                           home_dir_contents=DirContents(home_dir_contents),
                       eds_contents_before_main=sds_populator.act_dir_contents(DirContents(act_dir_contents))),
                   Expectation(
-                          main_side_effects_on_files=eds_contents_check.ActRootContainsExactly(
+                      main_side_effects_on_files=sds_contents_check.ActRootContainsExactly(
                                   DirContents(act_dir_contents_after)))
                   )
 
@@ -106,7 +106,7 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
                                              ])])
         self._run(new_source2(src_dir),
                   Arrangement(home_dir_contents=files_to_install),
-                  Expectation(main_side_effects_on_files=eds_contents_check.ActRootContainsExactly(
+                  Expectation(main_side_effects_on_files=sds_contents_check.ActRootContainsExactly(
                           files_to_install))
                   )
 
@@ -126,7 +126,7 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
                           home_dir_contents=DirContents(files_to_install),
                       eds_contents_before_main=sds_populator.act_dir_contents(act_dir_contents_before)),
                   Expectation(
-                          main_side_effects_on_files=eds_contents_check.ActRootContainsExactly(
+                      main_side_effects_on_files=sds_contents_check.ActRootContainsExactly(
                                   act_dir_contents_after))
                   )
 

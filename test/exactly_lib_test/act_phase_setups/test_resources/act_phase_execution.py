@@ -13,7 +13,7 @@ from exactly_lib_test.execution.test_resources import eh_check
 from exactly_lib_test.instructions.test_resources import sh_check__va as sh_check
 from exactly_lib_test.test_resources import file_structure
 from exactly_lib_test.test_resources import file_structure_utils as fs_utils
-from exactly_lib_test.test_resources.execution import eds_contents_check
+from exactly_lib_test.test_resources.execution import sds_contents_check
 from exactly_lib_test.test_resources.execution.utils import sandbox_directory_structure
 from exactly_lib_test.test_resources.process import capture_process_executor_result, ProcessExecutor
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
@@ -43,8 +43,8 @@ class Arrangement:
 
 class Expectation:
     def __init__(self,
-                 side_effects_on_files_after_execute: eds_contents_check.Assertion = eds_contents_check.AnythingGoes(),
-                 side_effects_on_files_after_prepare: eds_contents_check.Assertion = eds_contents_check.AnythingGoes(),
+                 side_effects_on_files_after_execute: sds_contents_check.Assertion = sds_contents_check.AnythingGoes(),
+                 side_effects_on_files_after_prepare: sds_contents_check.Assertion = sds_contents_check.AnythingGoes(),
                  result_of_prepare: va.ValueAssertion = sh_check.is_success(),
                  result_of_execute: va.ValueAssertion = eh_check.is_any_exit_code,
                  sub_process_result_from_execute: va.ValueAssertion = va.anything_goes()):
