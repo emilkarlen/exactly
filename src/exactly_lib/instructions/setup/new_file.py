@@ -28,5 +28,5 @@ class _Instruction(SetupPhaseInstruction):
              environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
-        error_message = new_file_utils.create_file(self.file_info, environment.eds)
+        error_message = new_file_utils.create_file(self.file_info, environment.sds)
         return sh.new_sh_success() if error_message is None else sh.new_sh_hard_error(error_message)

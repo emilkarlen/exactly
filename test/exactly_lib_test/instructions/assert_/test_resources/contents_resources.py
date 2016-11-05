@@ -40,9 +40,9 @@ class _ReplacedEnvVarsFileContentsConstructor:
         all_values_concatenated = ''.join(values_in_determined_order)
         all_values_on_separate_lines = os.linesep.join(values_in_determined_order)
         all_values_concatenated_in_reverse_order = ''.join(reversed(values_in_determined_order))
-        eds = act_environment.home_and_sds.sds
-        should_not_be_replaced_values = os.linesep.join([str(eds.root_dir),
-                                                         str(eds.result.root_dir)])
+        sds = act_environment.home_and_sds.sds
+        should_not_be_replaced_values = os.linesep.join([str(sds.root_dir),
+                                                         str(sds.result.root_dir)])
         return os.linesep.join([all_values_concatenated,
                                 all_values_on_separate_lines,
                                 all_values_concatenated_in_reverse_order,

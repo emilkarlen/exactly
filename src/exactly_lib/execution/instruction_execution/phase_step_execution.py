@@ -51,7 +51,7 @@ def execute_phase(phase_contents: SectionContents,
                   header_executor_for_instruction: ElementHeaderExecutor,
                   instruction_executor: ControlledInstructionExecutor,
                   phase_step: PhaseStep,
-                  eds: SandboxDirectoryStructure) -> PartialResult:
+                  sds: SandboxDirectoryStructure) -> PartialResult:
     """
     Executes the elements of a given phase/step.
     Catches exceptions thrown by instruction-execution and "reports" them as
@@ -73,11 +73,11 @@ def execute_phase(phase_contents: SectionContents,
                                  header_executor_for_instruction,
                                  instruction_executor)
     if failure is None:
-        return new_partial_result_pass(eds)
+        return new_partial_result_pass(sds)
     else:
         return PartialResult(
                 failure.status,
-                eds,
+                sds,
                 InstructionFailureInfo(phase_step,
                                        failure.source_line,
                                        failure.failure_details)

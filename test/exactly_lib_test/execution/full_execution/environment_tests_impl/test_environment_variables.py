@@ -109,14 +109,14 @@ class Test(FullExecutionTestCaseBase):
         }
         set_at_eds_creation = {
             environment_variables.ENV_VAR_HOME: home_dir_after_configuration,
-            environment_variables.ENV_VAR_ACT: str(self.eds.act_dir),
-            environment_variables.ENV_VAR_TMP: str(self.eds.tmp.user_dir),
+            environment_variables.ENV_VAR_ACT: str(self.sds.act_dir),
+            environment_variables.ENV_VAR_TMP: str(self.sds.tmp.user_dir),
         }
         set_after_act = {
             environment_variables.ENV_VAR_HOME: home_dir_after_configuration,
-            environment_variables.ENV_VAR_ACT: str(self.eds.act_dir),
-            environment_variables.ENV_VAR_TMP: str(self.eds.tmp.user_dir),
-            environment_variables.ENV_VAR_RESULT: str(self.eds.result.root_dir),
+            environment_variables.ENV_VAR_ACT: str(self.sds.act_dir),
+            environment_variables.ENV_VAR_TMP: str(self.sds.tmp.user_dir),
+            environment_variables.ENV_VAR_RESULT: str(self.sds.result.root_dir),
         }
         expected_recorded_internally = {
             phase_step.CONFIGURATION__MAIN: for_configuration_phase,
@@ -140,8 +140,8 @@ class Test(FullExecutionTestCaseBase):
             '%s=%s%s' % (
                 environment_variables.ENV_VAR_HOME, home_dir_after_configuration, os.linesep),
             '%s=%s%s' % (
-                environment_variables.ENV_VAR_ACT, str(self.eds.act_dir), os.linesep),
-            '%s=%s%s' % (environment_variables.ENV_VAR_TMP, str(self.eds.tmp.user_dir),
+                environment_variables.ENV_VAR_ACT, str(self.sds.act_dir), os.linesep),
+            '%s=%s%s' % (environment_variables.ENV_VAR_TMP, str(self.sds.tmp.user_dir),
                          os.linesep),
         ])
         self.__assert_expected_internally_recorded_variables(expected_recorded_internally)

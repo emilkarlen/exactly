@@ -77,25 +77,25 @@ class PhaseLoggingPaths:
 class InstructionEnvironmentForPostSdsStep(InstructionEnvironmentForPreSdsStep):
     def __init__(self,
                  home_dir: pathlib.Path,
-                 eds: _sds.SandboxDirectoryStructure,
+                 sds: _sds.SandboxDirectoryStructure,
                  phase_identifier: str,
                  timeout_in_seconds: int = None):
         super().__init__(home_dir, timeout_in_seconds)
-        self.__eds = eds
-        self._phase_logging = PhaseLoggingPaths(eds.log_dir, phase_identifier)
+        self.__eds = sds
+        self._phase_logging = PhaseLoggingPaths(sds.log_dir, phase_identifier)
 
     @property
     def execution_directory_structure(self) -> _sds.SandboxDirectoryStructure:
         return self.__eds
 
     @property
-    def eds(self) -> _sds.SandboxDirectoryStructure:
+    def sds(self) -> _sds.SandboxDirectoryStructure:
         return self.__eds
 
     @property
     def home_and_sds(self) -> HomeAndSds:
         return HomeAndSds(self.home_directory,
-                          self.eds)
+                          self.sds)
 
     @property
     def phase_logging(self) -> PhaseLoggingPaths:

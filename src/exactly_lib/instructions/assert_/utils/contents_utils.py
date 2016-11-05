@@ -87,12 +87,12 @@ class ActComparisonActualFileForStdFileBase(ComparisonActualFile):
 
 class StdoutComparisonTarget(ActComparisonActualFileForStdFileBase):
     def file_path(self, environment: i.InstructionEnvironmentForPostSdsStep) -> pathlib.Path:
-        return environment.eds.result.stdout_file
+        return environment.sds.result.stdout_file
 
 
 class StderrComparisonTarget(ActComparisonActualFileForStdFileBase):
     def file_path(self, environment: i.InstructionEnvironmentForPostSdsStep) -> pathlib.Path:
-        return environment.eds.result.stderr_file
+        return environment.sds.result.stderr_file
 
 
 class ContentCheckerInstructionBase(AssertPhaseInstruction):
@@ -180,7 +180,7 @@ class ActualFileTransformer:
         if dst_file_path.exists():
             return dst_file_path
         env_vars_to_replace = environment_variables.replaced(environment.home_directory,
-                                                             environment.eds)
+                                                             environment.sds)
         self._replace_env_vars_and_write_result_to_dst(env_vars_to_replace,
                                                        src_file_path,
                                                        dst_file_path)

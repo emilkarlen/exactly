@@ -109,7 +109,7 @@ PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION = test_misc.ParserThatGives(before_asse
 def instruction_that_asserts_cwd_is_act_dir(put: unittest.TestCase):
     def do_assert_cwd_is_act_dir(ret_val, environment: InstructionEnvironmentForPostSdsStep, *args):
         cwd = os.getcwd()
-        put.assertEqual(str(environment.eds.act_dir),
+        put.assertEqual(str(environment.sds.act_dir),
                         cwd,
                         'Current Directory')
         return ret_val

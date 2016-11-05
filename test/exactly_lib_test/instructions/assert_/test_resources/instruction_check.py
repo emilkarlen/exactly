@@ -90,7 +90,7 @@ class Executor:
                 sds_contents=self.arrangement.eds_contents) as home_and_sds:
             act_result = self.arrangement.act_result_producer.apply(ActEnvironment(home_and_sds))
             write_act_result(home_and_sds.sds, act_result)
-            # TODO Execution of validate/pre-eds should be done before act-result is written.
+            # TODO Execution of validate/pre-sds should be done before act-result is written.
             # But cannot do this for the moment, since many tests write home-dir contents
             # as part of the act-result.
             environment = i.InstructionEnvironmentForPreSdsStep(home_and_sds.home_dir_path)
@@ -104,7 +104,7 @@ class Executor:
             if not validate_result.is_success:
                 return
             self._execute_main(environment, instruction)
-            self.expectation.main_side_effects_on_files.apply(self.put, environment.eds)
+            self.expectation.main_side_effects_on_files.apply(self.put, environment.sds)
             self.expectation.side_effects_check.apply(self.put, home_and_sds)
 
     def _execute_validate_pre_eds(self,
@@ -132,5 +132,5 @@ class Executor:
         self.put.assertIsNotNone(main_result,
                                  'Result from main method cannot be None')
         self.expectation.main_result.apply(self.put, main_result)
-        self.expectation.main_side_effects_on_files.apply(self.put, environment.eds)
+        self.expectation.main_side_effects_on_files.apply(self.put, environment.sds)
         return main_result

@@ -103,7 +103,7 @@ class Test(FullExecutionTestCaseBase):
 
     def _assertions(self):
         self.__assert_test_sanity()
-        initial_dir = self.eds.act_dir
+        initial_dir = self.sds.act_dir
         initial_dir_recording = str(initial_dir)
         home_dir = str(self.initial_home_dir_path)
         expected_recordings = {

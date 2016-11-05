@@ -101,16 +101,16 @@ class TestExecuteBase(unittest.TestCase):
         step_result = sut.validate_pre_sds(home_dir)
         self.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                          step_result.status,
-                         'Result of validation/pre-eds')
-        with sandbox_directory_structure() as eds:
+                         'Result of validation/pre-sds')
+        with sandbox_directory_structure() as sds:
             try:
-                os.chdir(str(eds.act_dir))
-                home_and_sds = HomeAndSds(home_dir, eds)
+                os.chdir(str(sds.act_dir))
+                home_and_sds = HomeAndSds(home_dir, sds)
                 step_result = sut.validate_post_setup(home_and_sds)
                 self.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                                  step_result.status,
                                  'Result of validation/post-setup')
-                script_output_path = eds.test_case_dir
+                script_output_path = sds.test_case_dir
                 step_result = sut.prepare(home_and_sds, script_output_path)
                 self.assertTrue(step_result.is_success,
                                 'Expecting success from prepare (found hard error)')
@@ -118,7 +118,7 @@ class TestExecuteBase(unittest.TestCase):
                                                                                                     script_output_path,
                                                                                                     sut)
                 return capture_process_executor_result(process_executor,
-                                                       eds.result.root_dir,
+                                                       sds.result.root_dir,
                                                        stdin_contents=stdin_contents)
             finally:
                 os.chdir(cwd_before_test)
@@ -194,17 +194,17 @@ class TestInitialCwdIsCurrentDirAndThatCwdIsRestoredAfterwards(TestBase):
                 step_result = sut.validate_pre_sds(home_dir)
                 self.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                                  step_result.status,
-                                 'Result of validation/pre-eds')
-                with sandbox_directory_structure(act_dir_contents(DirContents([empty_dir('expected-cwd')]))) as eds:
-                    home_and_sds = HomeAndSds(home_dir, eds)
-                    process_cwd = str(eds.act_dir / 'expected-cwd')
+                                 'Result of validation/pre-sds')
+                with sandbox_directory_structure(act_dir_contents(DirContents([empty_dir('expected-cwd')]))) as sds:
+                    home_and_sds = HomeAndSds(home_dir, sds)
+                    process_cwd = str(sds.act_dir / 'expected-cwd')
                     os.chdir(process_cwd)
                     assert process_cwd == os.getcwd()
                     step_result = sut.validate_post_setup(home_and_sds)
                     self.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                                      step_result.status,
                                      'Result of validation/post-setup')
-                    script_output_dir_path = eds.test_case_dir
+                    script_output_dir_path = sds.test_case_dir
                     step_result = sut.prepare(home_and_sds, script_output_dir_path)
                     self.assertTrue(step_result.is_success,
                                     'Expecting success from prepare (found hard error)')
@@ -212,7 +212,7 @@ class TestInitialCwdIsCurrentDirAndThatCwdIsRestoredAfterwards(TestBase):
                                                                                                         script_output_dir_path,
                                                                                                         sut)
                     process_result = capture_process_executor_result(process_executor,
-                                                                     eds.result.root_dir)
+                                                                     sds.result.root_dir)
                     self.assertEqual(process_cwd,
                                      process_result.stdout,
                                      'Current Working Directory for program should be act-directory')

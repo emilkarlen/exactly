@@ -64,7 +64,7 @@ class ActSourceAndExecutor:
 
     def validate_pre_sds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
         """
-        pre-eds validation of the source that this object represents.
+        pre-sds validation of the source that this object represents.
 
         If success is not returned, then the test is aborted.
         """

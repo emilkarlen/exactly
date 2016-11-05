@@ -13,34 +13,34 @@ class TestConstructExecutionDirectoryStructure(unittest.TestCase):
         with tempfile.TemporaryDirectory(prefix=program_info.PROGRAM_NAME + '-test-') as tmp_dir_name:
             root = resolved_path(tmp_dir_name)
             tmp_dir_name = str(root)
-            eds = sandbox_directory_structure.construct_at(tmp_dir_name)
+            sds = sandbox_directory_structure.construct_at(tmp_dir_name)
 
-            self._assert_is_existing_dir_with_given_number_of_files_in_it(eds.root_dir,
+            self._assert_is_existing_dir_with_given_number_of_files_in_it(sds.root_dir,
                                                                           5)
 
             self._assert_is_existing_empty_dir_with_name(root / 'testcase',
-                                                         eds.test_case_dir)
+                                                         sds.test_case_dir)
 
             self._assert_is_existing_dir_with_given_number_of_files_in_it(root / 'tmp',
                                                                           2)
 
             self._assert_is_existing_empty_dir_with_name(root / 'tmp' / 'internal',
-                                                         eds.tmp.internal_dir)
+                                                         sds.tmp.internal_dir)
 
             self._assert_is_existing_empty_dir_with_name(root / 'tmp' / 'user',
-                                                         eds.tmp.user_dir)
+                                                         sds.tmp.user_dir)
 
             self._assert_is_existing_empty_dir_with_name(root / 'testcase',
-                                                         eds.test_case_dir)
+                                                         sds.test_case_dir)
 
             self._assert_is_existing_empty_dir_with_name(root / 'act',
-                                                         eds.act_dir)
+                                                         sds.act_dir)
 
             self._assert_is_existing_empty_dir_with_name(root / 'result',
-                                                         eds.result.root_dir)
+                                                         sds.result.root_dir)
 
             self._assert_is_existing_empty_dir_with_name(root / 'log',
-                                                         eds.log_dir)
+                                                         sds.log_dir)
 
     def _assert_is_existing_empty_dir_with_name(self,
                                                 expected_path: Path,
@@ -68,22 +68,22 @@ class TestConstructExecutionDirectoryStructure(unittest.TestCase):
 
 def is_execution_directory_structure_after_execution(fc: FileChecker,
                                                      root_dir_name: str):
-    eds = sandbox_directory_structure.SandboxDirectoryStructure(root_dir_name)
-    fc.assert_exists_dir_with_given_number_of_files_in_it(eds.root_dir,
+    sds = sandbox_directory_structure.SandboxDirectoryStructure(root_dir_name)
+    fc.assert_exists_dir_with_given_number_of_files_in_it(sds.root_dir,
                                                           5)
-    fc.assert_exists_dir(eds.test_case_dir)
-    fc.assert_exists_dir(eds.tmp.root_dir)
-    fc.assert_exists_dir(eds.tmp.internal_dir)
-    fc.assert_exists_dir(eds.tmp.user_dir)
-    fc.assert_exists_dir(eds.act_dir)
+    fc.assert_exists_dir(sds.test_case_dir)
+    fc.assert_exists_dir(sds.tmp.root_dir)
+    fc.assert_exists_dir(sds.tmp.internal_dir)
+    fc.assert_exists_dir(sds.tmp.user_dir)
+    fc.assert_exists_dir(sds.act_dir)
 
-    fc.assert_exists_dir_with_given_number_of_files_in_it(eds.result.root_dir,
+    fc.assert_exists_dir_with_given_number_of_files_in_it(sds.result.root_dir,
                                                           3)
-    fc.assert_exists_plain_file(eds.result.exitcode_file)
-    fc.assert_exists_plain_file(eds.result.stdout_file)
-    fc.assert_exists_plain_file(eds.result.stderr_file)
+    fc.assert_exists_plain_file(sds.result.exitcode_file)
+    fc.assert_exists_plain_file(sds.result.stdout_file)
+    fc.assert_exists_plain_file(sds.result.stderr_file)
 
-    fc.assert_exists_dir(eds.log_dir)
+    fc.assert_exists_dir(sds.log_dir)
 
 
 def suite():

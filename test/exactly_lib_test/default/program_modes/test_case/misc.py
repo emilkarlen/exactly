@@ -183,12 +183,12 @@ class ExpectedTestEnvironmentVariablesAreSetCorrectlyVa(va.ValueAssertion):
               value: SubProcessResultInfo,
               message_builder: va.MessageBuilder = va.MessageBuilder()):
         actual_eds_directory = _get_printed_eds_or_fail(put, value.sub_process_result)
-        eds = sandbox_directory_structure.SandboxDirectoryStructure(actual_eds_directory)
-        actually_printed_variables = _get_act_output_to_stdout(eds).splitlines()
+        sds = sandbox_directory_structure.SandboxDirectoryStructure(actual_eds_directory)
+        actually_printed_variables = _get_act_output_to_stdout(sds).splitlines()
         expected_printed_variables = [
             '%s=%s' % (environment_variables.ENV_VAR_HOME, str(value.file_argument.parent)),
-            '%s=%s' % (environment_variables.ENV_VAR_ACT, str(eds.act_dir)),
-            '%s=%s' % (environment_variables.ENV_VAR_TMP, str(eds.tmp.user_dir)),
+            '%s=%s' % (environment_variables.ENV_VAR_ACT, str(sds.act_dir)),
+            '%s=%s' % (environment_variables.ENV_VAR_TMP, str(sds.tmp.user_dir)),
         ]
         put.assertEqual(expected_printed_variables,
                         actually_printed_variables,
@@ -215,8 +215,8 @@ def _print_variable_name__equals__variable_value(variable_name: str) -> str:
     return 'print("%s=" + os.environ["%s"])' % (variable_name, variable_name)
 
 
-def _get_act_output_to_stdout(eds: sandbox_directory_structure.SandboxDirectoryStructure) -> str:
-    return contents_of_file(eds.result.stdout_file)
+def _get_act_output_to_stdout(sds: sandbox_directory_structure.SandboxDirectoryStructure) -> str:
+    return contents_of_file(sds.result.stdout_file)
 
 
 SPECIAL_EXECUTION_CONFIGURATIONS_TESTS = [

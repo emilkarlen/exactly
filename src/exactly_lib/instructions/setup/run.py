@@ -37,7 +37,7 @@ class _Instruction(SetupPhaseInstruction):
              environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
-        failure_message = self.setup.validator.validate_post_eds_if_applicable(environment.eds)
+        failure_message = self.setup.validator.validate_post_eds_if_applicable(environment.sds)
         if failure_message is not None:
             return sh.new_sh_hard_error(failure_message)
         return run.run_and_return_sh(self.setup,

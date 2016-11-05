@@ -104,13 +104,13 @@ class Executor:
                 pre_validate_result = self._execute_pre_validate(home_dir_path, instruction)
                 if not pre_validate_result.is_success:
                     return
-                with tempfile.TemporaryDirectory(prefix=prefix + '-eds-') as eds_root_dir_name:
-                    eds = sandbox_directory_structure.construct_at(resolved_path_name(eds_root_dir_name))
-                    os.chdir(str(eds.act_dir))
+                with tempfile.TemporaryDirectory(prefix=prefix + '-sds-') as eds_root_dir_name:
+                    sds = sandbox_directory_structure.construct_at(resolved_path_name(eds_root_dir_name))
+                    os.chdir(str(sds.act_dir))
                     global_environment_with_eds = i.InstructionEnvironmentForPostSdsStep(home_dir_path,
-                                                                                         eds,
+                                                                                         sds,
                                                                                          phase_identifier.SETUP.identifier)
-                    main_result = self._execute_main(eds, global_environment_with_eds, instruction)
+                    main_result = self._execute_main(sds, global_environment_with_eds, instruction)
                     if not main_result.is_success:
                         return
                     self._execute_post_validate(global_environment_with_eds, instruction)
@@ -132,10 +132,10 @@ class Executor:
         return pre_validate_result
 
     def _execute_main(self,
-                      eds: SandboxDirectoryStructure,
+                      sds: SandboxDirectoryStructure,
                       global_environment_with_eds: i.InstructionEnvironmentForPostSdsStep,
                       instruction: SetupPhaseInstruction) -> sh.SuccessOrHardError:
-        self.arrangement.eds_contents.apply(eds)
+        self.arrangement.eds_contents.apply(sds)
         settings_builder = self.arrangement.initial_settings_builder
         initial_settings_builder = copy.deepcopy(settings_builder)
         main_result = instruction.main(global_environment_with_eds,
@@ -151,7 +151,7 @@ class Executor:
                                                                 global_environment_with_eds,
                                                                 initial_settings_builder,
                                                                 settings_builder)
-        self.expectation.main_side_effects_on_files.apply(self.put, eds)
+        self.expectation.main_side_effects_on_files.apply(self.put, sds)
         return main_result
 
     def _execute_post_validate(self,

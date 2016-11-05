@@ -43,11 +43,11 @@ class FullExecutionTestCaseBase:
         self._assertions()
         # CLEANUP #
         os.chdir(str(self.initial_home_dir_path))
-        if not self.__dbg_do_not_delete_dir_structure and self.eds:
-            shutil.rmtree(str(self.eds.root_dir))
+        if not self.__dbg_do_not_delete_dir_structure and self.sds:
+            shutil.rmtree(str(self.sds.root_dir))
         else:
-            if self.eds:
-                print(str(self.eds.root_dir))
+            if self.sds:
+                print(str(self.sds.root_dir))
 
     def _act_phase_handling(self) -> ActPhaseHandling:
         if self.__act_phase_handling is None:
@@ -73,7 +73,7 @@ class FullExecutionTestCaseBase:
         return self.__full_result
 
     @property
-    def eds(self) -> SandboxDirectoryStructure:
+    def sds(self) -> SandboxDirectoryStructure:
         return self.__full_result.execution_directory_structure
 
     def assert_is_regular_file_with_contents(self,

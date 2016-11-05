@@ -77,7 +77,7 @@ class InstructionForExactValue(AssertPhaseInstruction):
     def main(self,
              environment: i.InstructionEnvironmentForPostSdsStep,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
-        actual_value = read_exitcode(environment.eds)
+        actual_value = read_exitcode(environment.sds)
         if actual_value == self._expected_value:
             return pfh.new_pfh_pass()
         return pfh.new_pfh_fail(_unexpected_exit_code_message(self._expected_value, actual_value))
@@ -93,7 +93,7 @@ class InstructionForOperator(AssertPhaseInstruction):
     def main(self,
              environment: i.InstructionEnvironmentForPostSdsStep,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
-        actual_value = read_exitcode(environment.eds)
+        actual_value = read_exitcode(environment.sds)
         if self._operator_info[1](actual_value, self._value):
             return pfh.new_pfh_pass()
         condition_str = self._operator_info[0] + ' ' + str(self._value)
@@ -166,18 +166,18 @@ class FileOpenEnvironmentError(InstructionEnvironmentError):
                          (file_purpose, str(path)))
 
 
-def read_exitcode(eds: SandboxDirectoryStructure) -> int:
+def read_exitcode(sds: SandboxDirectoryStructure) -> int:
     try:
-        f = eds.result.exitcode_file.open()
+        f = sds.result.exitcode_file.open()
     except IOError:
-        raise FileOpenEnvironmentError('Exit Code', eds.result.exitcode_file)
+        raise FileOpenEnvironmentError('Exit Code', sds.result.exitcode_file)
     try:
         contents = f.read()
         return int(contents)
     except IOError:
-        raise InstructionEnvironmentError('Failed to read contents from %s' % str(eds.result.exitcode_file))
+        raise InstructionEnvironmentError('Failed to read contents from %s' % str(sds.result.exitcode_file))
     except ValueError:
-        msg = 'The contents of the file for Exit Code ("%s") is not an integer: "%s"' % (str(eds.result.exitcode_file),
+        msg = 'The contents of the file for Exit Code ("%s") is not an integer: "%s"' % (str(sds.result.exitcode_file),
                                                                                          contents)
         raise InstructionEnvironmentError(msg)
     finally:

@@ -422,15 +422,15 @@ class _PartialExecutor:
 class _PhaseFailureResultConstructor:
     def __init__(self,
                  step: PhaseStep,
-                 eds: SandboxDirectoryStructure):
+                 sds: SandboxDirectoryStructure):
         self.step = step
-        self.eds = eds
+        self.sds = sds
 
     def apply(self,
               status: PartialResultStatus,
               failure_details: FailureDetails) -> PartialResult:
         return PartialResult(status,
-                             self.eds,
+                             self.sds,
                              result.PhaseFailureInfo(self.step,
                                                      failure_details))
 
@@ -515,9 +515,9 @@ class _ActProgramExecution:
         """
         Pre-condition: write has been executed.
         """
-        eds = self.home_and_sds.sds
-        with open(str(eds.result.stdout_file), 'w') as f_stdout:
-            with open(str(eds.result.stderr_file), 'w') as f_stderr:
+        sds = self.home_and_sds.sds
+        with open(str(sds.result.stdout_file), 'w') as f_stdout:
+            with open(str(sds.result.stderr_file), 'w') as f_stderr:
                 exit_code_or_hard_error = self.act_source_and_executor.execute(
                     self.home_and_sds,
                     self.script_output_dir_path,
