@@ -11,20 +11,20 @@ class MainStepExecutorForSubProcess(MainStepExecutor):
     A MainStepExecutor for executing an external program as a sub process.
     """
 
-    def _apply(self,
-               environment: InstructionEnvironmentForPostSdsStep,
-               logging_paths: PhaseLoggingPaths,
-               os_services: OsServices) -> ResultAndStderr:
+    def apply(self,
+              environment: InstructionEnvironmentForPostSdsStep,
+              logging_paths: PhaseLoggingPaths,
+              os_services: OsServices) -> ResultAndStderr:
         raise NotImplementedError()
 
     def apply_sh(self,
                  environment: InstructionEnvironmentForPostSdsStep,
                  logging_paths: PhaseLoggingPaths,
                  os_services: OsServices) -> sh.SuccessOrHardError:
-        return result_to_sh(self._apply(environment, logging_paths, os_services))
+        return result_to_sh(self.apply(environment, logging_paths, os_services))
 
     def apply_pfh(self,
                   environment: InstructionEnvironmentForPostSdsStep,
                   logging_paths: PhaseLoggingPaths,
                   os_services: OsServices) -> pfh.PassOrFailOrHardError:
-        return result_to_pfh(self._apply(environment, logging_paths, os_services))
+        return result_to_pfh(self.apply(environment, logging_paths, os_services))

@@ -261,16 +261,11 @@ class MainStepExecutor(MainStepExecutorForSubProcess):
     def __init__(self, setup: Setup):
         self._setup = setup
 
-    def _apply(self,
-               environment: InstructionEnvironmentForPostSdsStep,
-               logging_paths: PhaseLoggingPaths,
-               os_services: OsServices) -> ResultAndStderr:
-        return self.apply(environment.home_and_sds, logging_paths)
-
     def apply(self,
-              home_and_sds: HomeAndSds,
-              phase_logging_paths: PhaseLoggingPaths) -> ResultAndStderr:
+              environment: InstructionEnvironmentForPostSdsStep,
+              logging_paths: PhaseLoggingPaths,
+              os_services: OsServices) -> ResultAndStderr:
         execute_info = ExecuteInfo(self._setup.source_info,
-                                   self._setup.cmd_and_args_resolver.resolve(home_and_sds))
+                                   self._setup.cmd_and_args_resolver.resolve(environment.home_and_sds))
         executor = ExecutorThatStoresResultInFilesInDir(self._setup.is_shell)
-        return execute_and_read_stderr_if_non_zero_exitcode(execute_info, executor, phase_logging_paths)
+        return execute_and_read_stderr_if_non_zero_exitcode(execute_info, executor, logging_paths)

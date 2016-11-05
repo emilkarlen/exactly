@@ -5,7 +5,8 @@ from exactly_lib.instructions.utils.arg_parse.relative_path_options import REL_T
 from exactly_lib.instructions.utils.sub_process_execution import ResultAndStderr
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
-from exactly_lib.test_case.phases.common import HomeAndSds, PhaseLoggingPaths
+from exactly_lib.test_case import os_services
+from exactly_lib.test_case.phases.common import HomeAndSds, PhaseLoggingPaths, InstructionEnvironmentForPostSdsStep
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.test_resources import home_and_eds_test
 from exactly_lib_test.test_resources import python_program_execution as py_exe
@@ -23,8 +24,11 @@ class ExecuteAction(home_and_eds_test.Action):
     def apply(self,
               home_and_sds: HomeAndSds) -> ResultAndStderr:
         executor = sut.MainStepExecutor(self.setup)
-        return executor.apply(home_and_sds,
-                              PhaseLoggingPaths(home_and_sds.sds.log_dir, 'the-phase'))
+        return executor.apply(InstructionEnvironmentForPostSdsStep(home_and_sds.home_dir_path,
+                                                                   home_and_sds.sds,
+                                                                   'the-phase'),
+                              PhaseLoggingPaths(home_and_sds.sds.log_dir, 'the-phase'),
+                              os_services.new_default())
 
 
 class TestCaseBase(home_and_eds_test.TestCaseBase):
