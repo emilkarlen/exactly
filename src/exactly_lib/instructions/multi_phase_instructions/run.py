@@ -8,6 +8,7 @@ from exactly_lib.instructions.utils.arg_parse import parse_executable_file
 from exactly_lib.instructions.utils.arg_parse import parse_file_ref
 from exactly_lib.instructions.utils.arg_parse.parse_executable_file import PARSE_FILE_REF_CONFIGURATION
 from exactly_lib.instructions.utils.arg_parse.parse_utils import TokenStream
+from exactly_lib.instructions.utils.cmd_and_args_resolvers import CmdAndArgsResolverForExecutableFileBase
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
@@ -175,6 +176,17 @@ class SetupForExecute(SetupForExecutableWithArguments):
         return self.argument_list
 
 
+class CmdAndArgsResolverForExecute(CmdAndArgsResolverForExecutableFileBase):
+    def __init__(self,
+                 executable: ExecutableFile,
+                 argument_list: list):
+        super().__init__(executable)
+        self.argument_list = argument_list
+
+    def _arguments(self, home_and_sds: HomeAndSds) -> list:
+        return self.argument_list
+
+
 class SetupForInterpret(SetupForExecutableWithArguments):
     def __init__(self,
                  instruction_source_info: sub_process_execution.InstructionSourceInfo,
@@ -197,12 +209,36 @@ class SetupForInterpret(SetupForExecutableWithArguments):
         return self._validator
 
 
+class CmdAndArgsResolverForInterpret(CmdAndArgsResolverForExecutableFileBase):
+    def __init__(self,
+                 executable: ExecutableFile,
+                 file_to_interpret: FileRef,
+                 argument_list: list):
+        super().__init__(executable)
+        self.file_to_interpret = file_to_interpret
+        self.argument_list = argument_list
+
+    def _arguments(self, home_and_sds: HomeAndSds) -> list:
+        return [str(self.file_to_interpret.file_path_pre_or_post_eds(home_and_sds))] + self.argument_list
+
+
 class SetupForSource(SetupForExecutableWithArguments):
     def __init__(self,
                  instruction_source_info: sub_process_execution.InstructionSourceInfo,
                  executable: ExecutableFile,
                  source: str):
         super().__init__(instruction_source_info, executable)
+        self.source = source
+
+    def _arguments(self, home_and_sds: HomeAndSds) -> list:
+        return [self.source]
+
+
+class CmdAndArgsResolverForSource(CmdAndArgsResolverForExecutableFileBase):
+    def __init__(self,
+                 executable: ExecutableFile,
+                 source: str):
+        super().__init__(executable)
         self.source = source
 
     def _arguments(self, home_and_sds: HomeAndSds) -> list:
