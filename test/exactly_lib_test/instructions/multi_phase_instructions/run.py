@@ -18,12 +18,12 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 class ExecuteAction(home_and_eds_test.Action):
     def __init__(self,
-                 setup: sut.Setup):
+                 setup: sut.SubProcessExecutionSetup):
         self.setup = setup
 
     def apply(self,
               home_and_sds: HomeAndSds) -> ResultAndStderr:
-        executor = sut.MainStepExecutor(self.setup)
+        executor = sut.MainStepExecutorForSubProcessForStandardSetup(self.setup)
         return executor.apply(InstructionEnvironmentForPostSdsStep(home_and_sds.home_dir_path,
                                                                    home_and_sds.sds,
                                                                    'the-phase'),
