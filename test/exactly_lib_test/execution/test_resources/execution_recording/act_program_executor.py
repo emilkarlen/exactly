@@ -3,7 +3,7 @@ import pathlib
 from exactly_lib.execution.act_phase import ExitCodeOrHardError, ActSourceAndExecutor, \
     ActSourceAndExecutorConstructor, new_eh_exit_code
 from exactly_lib.execution.phase_step_identifiers import phase_step_simple as phase_step
-from exactly_lib.test_case.phases.common import HomeAndEds, InstructionEnvironmentForPreSdsStep
+from exactly_lib.test_case.phases.common import HomeAndSds, InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.std import StdFiles
@@ -18,13 +18,13 @@ class ActSourceAndExecutorThatJustReturnsSuccess(ActSourceAndExecutor):
     def validate_pre_sds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
         return svh.new_svh_success()
 
-    def validate_post_setup(self, home_and_eds: HomeAndEds) -> svh.SuccessOrValidationErrorOrHardError:
+    def validate_post_setup(self, home_and_sds: HomeAndSds) -> svh.SuccessOrValidationErrorOrHardError:
         return svh.new_svh_success()
 
-    def prepare(self, home_and_eds: HomeAndEds, script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
+    def prepare(self, home_and_sds: HomeAndSds, script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
         return sh.new_sh_success()
 
-    def execute(self, home_and_eds: HomeAndEds, script_output_dir_path: pathlib.Path,
+    def execute(self, home_and_sds: HomeAndSds, script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
         return new_eh_exit_code(0)
 
@@ -40,22 +40,22 @@ class ActSourceAndExecutorWrapperThatRecordsSteps(ActSourceAndExecutor):
         self.__recorder.recording_of(phase_step.ACT__VALIDATE_PRE_EDS).record()
         return self.__wrapped.validate_pre_sds(home_dir_path)
 
-    def validate_post_setup(self, home_and_eds: HomeAndEds) -> svh.SuccessOrValidationErrorOrHardError:
+    def validate_post_setup(self, home_and_sds: HomeAndSds) -> svh.SuccessOrValidationErrorOrHardError:
         self.__recorder.recording_of(phase_step.ACT__VALIDATE_POST_SETUP).record()
-        return self.__wrapped.validate_post_setup(home_and_eds)
+        return self.__wrapped.validate_post_setup(home_and_sds)
 
     def prepare(self,
-                home_and_eds: HomeAndEds,
+                home_and_sds: HomeAndSds,
                 script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
         self.__recorder.recording_of(phase_step.ACT__PREPARE).record()
-        return self.__wrapped.prepare(home_and_eds, script_output_dir_path)
+        return self.__wrapped.prepare(home_and_sds, script_output_dir_path)
 
     def execute(self,
-                home_and_eds: HomeAndEds,
+                home_and_sds: HomeAndSds,
                 script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
         self.__recorder.recording_of(phase_step.ACT__EXECUTE).record()
-        return self.__wrapped.execute(home_and_eds, script_output_dir_path, std_files)
+        return self.__wrapped.execute(home_and_sds, script_output_dir_path, std_files)
 
 
 class ActSourceAndExecutorWrapperConstructorThatRecordsSteps(ActSourceAndExecutorConstructor):
@@ -88,22 +88,22 @@ class ActSourceAndExecutorWrapperWithActions(ActSourceAndExecutor):
         self.before_wrapped_validate_pre_eds()
         return self.__wrapped.validate_pre_sds(home_dir_path)
 
-    def validate_post_setup(self, home_and_eds: HomeAndEds) -> svh.SuccessOrValidationErrorOrHardError:
+    def validate_post_setup(self, home_and_sds: HomeAndSds) -> svh.SuccessOrValidationErrorOrHardError:
         self.before_wrapped_validate()
-        return self.__wrapped.validate_post_setup(home_and_eds)
+        return self.__wrapped.validate_post_setup(home_and_sds)
 
     def prepare(self,
-                home_and_eds: HomeAndEds,
+                home_and_sds: HomeAndSds,
                 script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
         self.before_wrapped_prepare()
-        return self.__wrapped.prepare(home_and_eds, script_output_dir_path)
+        return self.__wrapped.prepare(home_and_sds, script_output_dir_path)
 
     def execute(self,
-                home_and_eds: HomeAndEds,
+                home_and_sds: HomeAndSds,
                 script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
         self.before_wrapped_execute()
-        return self.__wrapped.execute(home_and_eds, script_output_dir_path, std_files)
+        return self.__wrapped.execute(home_and_sds, script_output_dir_path, std_files)
 
 
 class ActSourceAndExecutorConstructorForConstantExecutor(ActSourceAndExecutorConstructor):

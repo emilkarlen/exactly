@@ -7,7 +7,7 @@ from time import strftime, localtime
 from exactly_lib import program_info
 from exactly_lib.test_case import sandbox_directory_structure as eds_module
 from exactly_lib.test_case.phases import common as i
-from exactly_lib.test_case.phases.common import HomeAndEds
+from exactly_lib.test_case.phases.common import HomeAndSds
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.file_utils import resolved_path_name, resolved_path
 from exactly_lib_test.test_resources.execution import eds_populator
@@ -82,7 +82,7 @@ class HomeAndEdsContents(tuple):
 @contextmanager
 def home_and_eds_and_test_as_curr_dir(
         home_dir_contents: DirContents = empty_dir_contents(),
-        eds_contents: eds_populator.EdsPopulator = eds_populator.empty()) -> HomeAndEds:
+        eds_contents: eds_populator.EdsPopulator = eds_populator.empty()) -> HomeAndSds:
     cwd_before = os.getcwd()
     prefix = strftime(program_info.PROGRAM_NAME + '-test-%Y-%m-%d-%H-%M-%S', localtime())
     with tempfile.TemporaryDirectory(prefix=prefix + "-home-") as home_dir:
@@ -92,7 +92,7 @@ def home_and_eds_and_test_as_curr_dir(
                                            contents=eds_contents) as eds:
             try:
                 os.chdir(str(eds.act_dir))
-                yield HomeAndEds(home_dir_path,
+                yield HomeAndSds(home_dir_path,
                                  eds)
             finally:
                 os.chdir(cwd_before)

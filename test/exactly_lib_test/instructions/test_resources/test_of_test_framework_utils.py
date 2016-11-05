@@ -3,7 +3,7 @@ import unittest
 
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionParserSource
-from exactly_lib.test_case.phases.common import HomeAndEds, TestCaseInstruction
+from exactly_lib.test_case.phases.common import HomeAndSds, TestCaseInstruction
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
@@ -49,7 +49,7 @@ class EdsContentsRaisesTestError(eds_contents_check.Assertion):
 class SideEffectsCheckThatRaisesTestError(SideEffectsCheck):
     def apply(self,
               put: unittest.TestCase,
-              home_and_eds: HomeAndEds):
+              home_and_sds: HomeAndSds):
         raise TestError()
 
 

@@ -1,6 +1,6 @@
 import pathlib
 
-from exactly_lib.test_case.phases.common import HomeAndEds
+from exactly_lib.test_case.phases.common import HomeAndSds
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
@@ -21,15 +21,15 @@ class PreOrPostEdsValidator:
         """
         raise NotImplementedError()
 
-    def validate_pre_or_post_eds(self, home_and_eds: HomeAndEds) -> str:
+    def validate_pre_or_post_eds(self, home_and_sds: HomeAndSds) -> str:
         """
         Validates the object using either pre- or post- EDS.
         :return: Error message iff validation failed.
         """
-        error_message = self.validate_pre_eds_if_applicable(home_and_eds.home_dir_path)
+        error_message = self.validate_pre_eds_if_applicable(home_and_sds.home_dir_path)
         if error_message is not None:
             return error_message
-        return self.validate_post_eds_if_applicable(home_and_eds.eds)
+        return self.validate_post_eds_if_applicable(home_and_sds.sds)
 
 
 class ConstantSuccessValidator(PreOrPostEdsValidator):
@@ -76,8 +76,8 @@ class PreOrPostEdsSvhValidationErrorValidator:
                                         eds: SandboxDirectoryStructure) -> svh.SuccessOrValidationErrorOrHardError:
         return self._translate(self.validator.validate_post_eds_if_applicable(eds))
 
-    def validate_pre_or_post_eds(self, home_and_eds: HomeAndEds) -> svh.SuccessOrValidationErrorOrHardError:
-        return self._translate(self.validator.validate_pre_or_post_eds(home_and_eds))
+    def validate_pre_or_post_eds(self, home_and_sds: HomeAndSds) -> svh.SuccessOrValidationErrorOrHardError:
+        return self._translate(self.validator.validate_pre_or_post_eds(home_and_sds))
 
     @staticmethod
     def _translate(error_message_or_none: str) -> svh.SuccessOrValidationErrorOrHardError:
@@ -101,8 +101,8 @@ class PreOrPostEdsSvhValidationForSuccessOrHardError:
     def validate_post_eds_if_applicable(self, eds: SandboxDirectoryStructure) -> sh.SuccessOrHardError:
         return self._translate(self.validator.validate_post_eds_if_applicable(eds))
 
-    def validate_pre_or_post_eds(self, home_and_eds: HomeAndEds) -> sh.SuccessOrHardError:
-        return self._translate(self.validator.validate_pre_or_post_eds(home_and_eds))
+    def validate_pre_or_post_eds(self, home_and_sds: HomeAndSds) -> sh.SuccessOrHardError:
+        return self._translate(self.validator.validate_pre_or_post_eds(home_and_sds))
 
     @staticmethod
     def _translate(error_message_or_none: str) -> sh.SuccessOrHardError:

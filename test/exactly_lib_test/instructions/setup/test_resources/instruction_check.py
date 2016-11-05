@@ -114,7 +114,7 @@ class Executor:
                     if not main_result.is_success:
                         return
                     self._execute_post_validate(global_environment_with_eds, instruction)
-                    self.expectation.side_effects_check.apply(self.put, global_environment_with_eds.home_and_eds)
+                    self.expectation.side_effects_check.apply(self.put, global_environment_with_eds.home_and_sds)
         finally:
             os.chdir(initial_cwd)
 

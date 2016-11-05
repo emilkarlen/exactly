@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.test_case.phases.common import HomeAndEds
+from exactly_lib.test_case.phases.common import HomeAndSds
 from exactly_lib_test.test_resources.execution import eds_populator, eds_contents_check
 from exactly_lib_test.test_resources.execution.utils import home_and_eds_and_test_as_curr_dir
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir_contents
@@ -10,12 +10,12 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 class PostActionCheck:
     def apply(self,
               put: unittest.TestCase,
-              home_and_eds: HomeAndEds):
+              home_and_sds: HomeAndSds):
         pass
 
 
 class Action:
-    def apply(self, home_and_eds: HomeAndEds):
+    def apply(self, home_and_sds: HomeAndSds):
         return None
 
 
@@ -48,9 +48,9 @@ def execute(put: unittest.TestCase,
             action: Action,
             check: Check):
     with home_and_eds_and_test_as_curr_dir(home_dir_contents=check.home_dir_contents_before,
-                                           eds_contents=check.eds_contents_before) as home_and_eds:
-        check.pre_action_action.apply(home_and_eds)
-        result = action.apply(home_and_eds)
+                                           eds_contents=check.eds_contents_before) as home_and_sds:
+        check.pre_action_action.apply(home_and_sds)
+        result = action.apply(home_and_sds)
         check.expected_action_result.apply(put, result)
-        check.expected_eds_contents_after.apply(put, home_and_eds.eds)
-        check.post_action_check.apply(put, home_and_eds.eds)
+        check.expected_eds_contents_after.apply(put, home_and_sds.sds)
+        check.post_action_check.apply(put, home_and_sds.sds)

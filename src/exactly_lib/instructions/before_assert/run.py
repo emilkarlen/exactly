@@ -41,5 +41,5 @@ class _Instruction(BeforeAssertPhaseInstruction):
              environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices) -> sh.SuccessOrHardError:
         return run.run_and_return_sh(self.setup,
-                                     environment.home_and_eds,
+                                     environment.home_and_sds,
                                      environment.phase_logging)

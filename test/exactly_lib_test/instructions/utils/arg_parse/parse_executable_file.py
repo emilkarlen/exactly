@@ -7,7 +7,7 @@ from exactly_lib.instructions.utils.arg_parse import relative_path_options as op
 from exactly_lib.instructions.utils.arg_parse.parse_utils import TokenStream
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.test_case.phases.common import HomeAndEds
+from exactly_lib.test_case.phases.common import HomeAndSds
 from exactly_lib_test.instructions.test_resources import pre_or_post_eds_validator as validator_util
 from exactly_lib_test.instructions.test_resources.executable_file_test_utils import Configuration, suite_for
 from exactly_lib_test.test_resources import python_program_execution as py_exe
@@ -156,8 +156,8 @@ class RelHomeConfiguration(Configuration):
 
     def installed_file_path(self,
                             file_name: str,
-                            home_and_eds: HomeAndEds) -> pathlib.Path:
-        return home_and_eds.home_dir_path / file_name
+                            home_and_sds: HomeAndSds) -> pathlib.Path:
+        return home_and_sds.home_dir_path / file_name
 
 
 class DefaultConfiguration(Configuration):
@@ -170,8 +170,8 @@ class DefaultConfiguration(Configuration):
 
     def installed_file_path(self,
                             file_name: str,
-                            home_and_eds: HomeAndEds) -> pathlib.Path:
-        return home_and_eds.home_dir_path / file_name
+                            home_and_sds: HomeAndSds) -> pathlib.Path:
+        return home_and_sds.home_dir_path / file_name
 
 
 class RelActConfiguration(Configuration):
@@ -184,8 +184,8 @@ class RelActConfiguration(Configuration):
 
     def installed_file_path(self,
                             file_name: str,
-                            home_and_eds: HomeAndEds) -> pathlib.Path:
-        return home_and_eds.eds.act_dir / file_name
+                            home_and_sds: HomeAndSds) -> pathlib.Path:
+        return home_and_sds.sds.act_dir / file_name
 
 
 class RelTmpConfiguration(Configuration):
@@ -198,8 +198,8 @@ class RelTmpConfiguration(Configuration):
 
     def installed_file_path(self,
                             file_name: str,
-                            home_and_eds: HomeAndEds) -> pathlib.Path:
-        return home_and_eds.eds.tmp.user_dir / file_name
+                            home_and_sds: HomeAndSds) -> pathlib.Path:
+        return home_and_sds.sds.tmp.user_dir / file_name
 
 
 class RelCwdConfiguration(Configuration):
@@ -212,8 +212,8 @@ class RelCwdConfiguration(Configuration):
 
     def installed_file_path(self,
                             file_name: str,
-                            home_and_eds: HomeAndEds) -> pathlib.Path:
-        return home_and_eds.eds.act_dir / file_name
+                            home_and_sds: HomeAndSds) -> pathlib.Path:
+        return home_and_sds.sds.act_dir / file_name
 
 
 def configurations() -> list:
@@ -237,11 +237,11 @@ class TestParseAbsolutePath(unittest.TestCase):
         self.assertTrue(exe_file.exists_pre_eds,
                         'File is expected to exist pre EDS')
         with home_and_eds_and_test_as_curr_dir(
-                home_dir_contents=DirContents([])) as home_and_eds:
+                home_dir_contents=DirContents([])) as home_and_sds:
             self.assertEqual(sys.executable,
-                             exe_file.path_string(home_and_eds),
+                             exe_file.path_string(home_and_sds),
                              'Path string')
-            validator_util.check(self, exe_file.validator, home_and_eds)
+            validator_util.check(self, exe_file.validator, home_and_sds)
 
     def test_non_existing_file(self):
         non_existing_file = '/this/file/is/assumed/to/not/exist'
@@ -254,11 +254,11 @@ class TestParseAbsolutePath(unittest.TestCase):
         self.assertTrue(exe_file.exists_pre_eds,
                         'File is expected to exist pre EDS')
         with home_and_eds_and_test_as_curr_dir(
-                home_dir_contents=DirContents([])) as home_and_eds:
+                home_dir_contents=DirContents([])) as home_and_sds:
             self.assertEqual(non_existing_file,
-                             exe_file.path_string(home_and_eds),
+                             exe_file.path_string(home_and_sds),
                              'Path string')
-            validator_util.check(self, exe_file.validator, home_and_eds,
+            validator_util.check(self, exe_file.validator, home_and_sds,
                                  passes_pre_eds=False)
 
 

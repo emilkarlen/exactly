@@ -99,7 +99,7 @@ class TestCases(sut.TestCaseBase):
                     PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
                     single_line_source(),
                     sut.arrangement(),
-                    sut.Expectation(home_and_eds=va.IsInstance(bool)),
+                sut.Expectation(home_and_sds=va.IsInstance(bool)),
             )
 
 

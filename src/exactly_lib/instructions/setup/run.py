@@ -41,5 +41,5 @@ class _Instruction(SetupPhaseInstruction):
         if failure_message is not None:
             return sh.new_sh_hard_error(failure_message)
         return run.run_and_return_sh(self.setup,
-                                     environment.home_and_eds,
+                                     environment.home_and_sds,
                                      environment.phase_logging)

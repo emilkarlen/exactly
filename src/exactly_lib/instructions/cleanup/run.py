@@ -38,7 +38,7 @@ class _Instruction(CleanupPhaseInstruction):
             self,
             environment: InstructionEnvironmentForPostSdsStep) -> sh.SuccessOrHardError:
         validator = PreOrPostEdsSvhValidationForSuccessOrHardError(self.setup.validator)
-        return validator.validate_pre_or_post_eds(environment.home_and_eds)
+        return validator.validate_pre_or_post_eds(environment.home_and_sds)
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
@@ -48,5 +48,5 @@ class _Instruction(CleanupPhaseInstruction):
         if validation_result.is_hard_error:
             return validation_result
         return run.run_and_return_sh(self.setup,
-                                     environment.home_and_eds,
+                                     environment.home_and_sds,
                                      environment.phase_logging)

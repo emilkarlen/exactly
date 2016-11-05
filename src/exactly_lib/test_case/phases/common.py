@@ -4,20 +4,20 @@ from exactly_lib.section_document.model import Instruction
 from exactly_lib.test_case import sandbox_directory_structure as _sds
 
 
-class HomeAndEds:
+class HomeAndSds:
     def __init__(self,
                  home_path: pathlib.Path,
-                 eds: _sds.SandboxDirectoryStructure):
+                 sds: _sds.SandboxDirectoryStructure):
         self._home_path = home_path
-        self._eds = eds
+        self._sds = sds
 
     @property
     def home_dir_path(self) -> pathlib.Path:
         return self._home_path
 
     @property
-    def eds(self) -> _sds.SandboxDirectoryStructure:
-        return self._eds
+    def sds(self) -> _sds.SandboxDirectoryStructure:
+        return self._sds
 
 
 class InstructionEnvironmentForPreSdsStep:
@@ -93,8 +93,8 @@ class InstructionEnvironmentForPostSdsStep(InstructionEnvironmentForPreSdsStep):
         return self.__eds
 
     @property
-    def home_and_eds(self) -> HomeAndEds:
-        return HomeAndEds(self.home_directory,
+    def home_and_sds(self) -> HomeAndSds:
+        return HomeAndSds(self.home_directory,
                           self.eds)
 
     @property

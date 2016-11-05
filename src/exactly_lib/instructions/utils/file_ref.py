@@ -1,7 +1,7 @@
 import pathlib
 
 from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostEdsValidator
-from exactly_lib.test_case.phases.common import HomeAndEds
+from exactly_lib.test_case.phases.common import HomeAndSds
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 
 
@@ -28,11 +28,11 @@ class FileRef:
         """
         raise NotImplementedError()
 
-    def file_path_pre_or_post_eds(self, home_and_eds: HomeAndEds) -> pathlib.Path:
+    def file_path_pre_or_post_eds(self, home_and_sds: HomeAndSds) -> pathlib.Path:
         if self.exists_pre_eds:
-            return self.file_path_pre_eds(home_and_eds.home_dir_path)
+            return self.file_path_pre_eds(home_and_sds.home_dir_path)
         else:
-            return self.file_path_post_eds(home_and_eds.eds)
+            return self.file_path_post_eds(home_and_sds.sds)
 
     @property
     def exists_pre_eds(self) -> bool:
