@@ -1,11 +1,11 @@
 import pathlib
 import unittest
 
-import exactly_lib.execution.execution_mode
-from exactly_lib.execution.execution_mode import ExecutionMode
+import exactly_lib.test_case.execution_mode
 from exactly_lib.instructions.configuration import execution_mode as sut
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.test_case.execution_mode import ExecutionMode
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib_test.execution.test_resources.act_source_executor import act_phase_handling_that_runs_constant_actions
 from exactly_lib_test.instructions.configuration.test_resources import configuration_check as config_check
@@ -45,17 +45,17 @@ class TestChangeMode(TestCaseBaseForParser):
     def test_NORMAL(self):
         self._run(expected=ExecutionMode.NORMAL,
                   initial=ExecutionMode.SKIP,
-                  argument=exactly_lib.execution.execution_mode.NAME_NORMAL)
+                  argument=exactly_lib.test_case.execution_mode.NAME_NORMAL)
 
     def test_SKIP(self):
         self._run(expected=ExecutionMode.SKIP,
                   initial=ExecutionMode.NORMAL,
-                  argument=exactly_lib.execution.execution_mode.NAME_SKIP)
+                  argument=exactly_lib.test_case.execution_mode.NAME_SKIP)
 
     def test_XFAIL(self):
         self._run(expected=ExecutionMode.XFAIL,
                   initial=ExecutionMode.NORMAL,
-                  argument=exactly_lib.execution.execution_mode.NAME_XFAIL)
+                  argument=exactly_lib.test_case.execution_mode.NAME_XFAIL)
 
 
 class AssertExecutionMode(config_check.Assertion):

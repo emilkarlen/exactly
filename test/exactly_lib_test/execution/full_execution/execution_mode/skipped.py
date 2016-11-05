@@ -1,9 +1,9 @@
 import unittest
 
-from exactly_lib.execution.execution_mode import ExecutionMode
 from exactly_lib.execution.phase_step_identifiers import phase_step_simple as phase_step
 from exactly_lib.execution.result import FullResultStatus
 from exactly_lib.test_case import phase_identifier
+from exactly_lib.test_case.execution_mode import ExecutionMode
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib_test.execution.full_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
     test_case_with_two_instructions_in_each_phase
