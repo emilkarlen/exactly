@@ -1,14 +1,14 @@
 import os
 
 from exactly_lib.execution import environment_variables
-from exactly_lib.execution import phase_step_executors, partial_execution
+from exactly_lib.execution import partial_execution
 from exactly_lib.execution.execution_mode import ExecutionMode
+from exactly_lib.execution.instruction_execution import phase_step_executors, phase_step_execution
 from exactly_lib.execution.phase_step_identifiers import phase_step
 from exactly_lib.section_document.model import SectionContents
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.phases import setup
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
-from . import phase_step_execution
 from . import result
 from .result import FullResult, PartialResult, PartialResultStatus, FullResultStatus
 

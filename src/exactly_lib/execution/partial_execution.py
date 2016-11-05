@@ -5,12 +5,12 @@ import subprocess
 import tempfile
 
 from exactly_lib.execution import environment_variables
-from exactly_lib.execution import phase_step_executors
 from exactly_lib.execution.act_phase import ExitCodeOrHardError, ActSourceAndExecutor, \
     ActPhaseHandling, new_eh_hard_error
+from exactly_lib.execution.instruction_execution import phase_step_executors, phase_step_execution
+from exactly_lib.execution.instruction_execution.single_instruction_executor import ControlledInstructionExecutor
 from exactly_lib.execution.phase_step_identifiers import phase_step
 from exactly_lib.execution.phase_step_identifiers.phase_step import PhaseStep
-from exactly_lib.execution.single_instruction_executor import ControlledInstructionExecutor
 from exactly_lib.section_document.model import SectionContents, ElementType
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.os_services import new_default
@@ -23,7 +23,6 @@ from exactly_lib.util.failure_details import FailureDetails, new_failure_details
     new_failure_details_from_exception
 from exactly_lib.util.file_utils import write_new_text_file, resolved_path_name
 from exactly_lib.util.std import StdOutputFiles, StdFiles
-from . import phase_step_execution
 from . import result
 from .execution_directory_structure import construct_at, ExecutionDirectoryStructure, stdin_contents_file
 from .result import PartialResult, PartialResultStatus, new_partial_result_pass, PhaseFailureInfo
