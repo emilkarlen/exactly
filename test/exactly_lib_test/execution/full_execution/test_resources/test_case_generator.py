@@ -1,6 +1,5 @@
-from exactly_lib.execution import phases
 from exactly_lib.section_document import model
-from exactly_lib.test_case import test_case_doc
+from exactly_lib.test_case import test_case_doc, phase_identifier
 
 
 class TestCaseGeneratorForFullExecutionBase:
@@ -12,7 +11,7 @@ class TestCaseGeneratorForFullExecutionBase:
         super().__init__()
         self.__test_case = None
 
-    def phase_contents_for(self, phase: phases.Phase) -> model.SectionContents:
+    def phase_contents_for(self, phase: phase_identifier.Phase) -> model.SectionContents:
         raise NotImplementedError()
 
     @property
@@ -23,10 +22,10 @@ class TestCaseGeneratorForFullExecutionBase:
 
     def _generate(self) -> test_case_doc.TestCase:
         return test_case_doc.TestCase(
-                self.phase_contents_for(phases.CONFIGURATION),
-                self.phase_contents_for(phases.SETUP),
-                self.phase_contents_for(phases.ACT),
-                self.phase_contents_for(phases.BEFORE_ASSERT),
-                self.phase_contents_for(phases.ASSERT),
-                self.phase_contents_for(phases.CLEANUP)
+            self.phase_contents_for(phase_identifier.CONFIGURATION),
+            self.phase_contents_for(phase_identifier.SETUP),
+            self.phase_contents_for(phase_identifier.ACT),
+            self.phase_contents_for(phase_identifier.BEFORE_ASSERT),
+            self.phase_contents_for(phase_identifier.ASSERT),
+            self.phase_contents_for(phase_identifier.CLEANUP)
         )

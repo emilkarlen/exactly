@@ -1,8 +1,7 @@
-from exactly_lib.execution.single_instruction_executor import ControlledInstructionExecutor, \
+from exactly_lib.execution.instruction_execution.single_instruction_executor import ControlledInstructionExecutor, \
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as instr
-from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.before_assert import BeforeAssertPhaseInstruction
 from exactly_lib.test_case.phases.cleanup import CleanupPhaseInstruction, PreviousPhase
@@ -58,7 +57,7 @@ class SetupValidatePreEdsExecutor(ControlledInstructionExecutor):
 
     def apply(self, instruction: SetupPhaseInstruction) -> PartialInstructionControlledFailureInfo:
         return _from_success_or_validation_error_or_hard_error(
-            instruction.validate_pre_eds(self.__global_environment))
+            instruction.validate_pre_sds(self.__global_environment))
 
 
 class SetupValidatePostSetupExecutor(ControlledInstructionExecutor):
@@ -85,16 +84,6 @@ class SetupMainExecutor(ControlledInstructionExecutor):
             instruction.main(self.__environment,
                              self.__os_services,
                              self.__setup_settings_builder))
-
-
-class ActValidatePostSetupExecutor(ControlledInstructionExecutor):
-    def __init__(self,
-                 global_environment: instr.InstructionEnvironmentForPostSdsStep):
-        self.__global_environment = global_environment
-
-    def apply(self, instruction: ActPhaseInstruction) -> PartialInstructionControlledFailureInfo:
-        return _from_success_or_validation_error_or_hard_error(
-            instruction.validate_post_setup(self.__global_environment))
 
 
 class BeforeAssertValidatePostSetupExecutor(ControlledInstructionExecutor):
@@ -129,16 +118,6 @@ class AssertMainExecutor(ControlledInstructionExecutor):
             instruction.main(self.__environment, self.__os_services))
 
 
-class ActValidatePreEdsExecutor(ControlledInstructionExecutor):
-    def __init__(self,
-                 global_environment: instr.InstructionEnvironmentForPreSdsStep):
-        self.__global_environment = global_environment
-
-    def apply(self, instruction: ActPhaseInstruction) -> PartialInstructionControlledFailureInfo:
-        return _from_success_or_validation_error_or_hard_error(
-            instruction.validate_pre_eds(self.__global_environment))
-
-
 class BeforeAssertValidatePreEdsExecutor(ControlledInstructionExecutor):
     def __init__(self,
                  global_environment: instr.InstructionEnvironmentForPreSdsStep):
@@ -146,7 +125,7 @@ class BeforeAssertValidatePreEdsExecutor(ControlledInstructionExecutor):
 
     def apply(self, instruction: BeforeAssertPhaseInstruction) -> PartialInstructionControlledFailureInfo:
         return _from_success_or_validation_error_or_hard_error(
-            instruction.validate_pre_eds(self.__global_environment))
+            instruction.validate_pre_sds(self.__global_environment))
 
 
 class BeforeAssertMainExecutor(ControlledInstructionExecutor):
@@ -168,7 +147,7 @@ class AssertValidatePreEdsExecutor(ControlledInstructionExecutor):
 
     def apply(self, instruction: AssertPhaseInstruction) -> PartialInstructionControlledFailureInfo:
         return _from_success_or_validation_error_or_hard_error(
-            instruction.validate_pre_eds(self.__global_environment))
+            instruction.validate_pre_sds(self.__global_environment))
 
 
 class CleanupValidatePreEdsExecutor(ControlledInstructionExecutor):
@@ -178,7 +157,7 @@ class CleanupValidatePreEdsExecutor(ControlledInstructionExecutor):
 
     def apply(self, instruction: CleanupPhaseInstruction) -> PartialInstructionControlledFailureInfo:
         return _from_success_or_validation_error_or_hard_error(
-            instruction.validate_pre_eds(self.__global_environment))
+            instruction.validate_pre_sds(self.__global_environment))
 
 
 class CleanupMainExecutor(ControlledInstructionExecutor):

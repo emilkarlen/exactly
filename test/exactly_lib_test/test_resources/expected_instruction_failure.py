@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.execution.phase_step import PhaseStep, SimplePhaseStep
+from exactly_lib.execution.phase_step_identifiers.phase_step import PhaseStep, SimplePhaseStep
 from exactly_lib.execution.result import InstructionFailureInfo, FullResultStatus, FullResult, FailureInfo, \
     PhaseFailureInfo
 from exactly_lib.util import line_source

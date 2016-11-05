@@ -5,12 +5,12 @@ import unittest
 
 from exactly_lib import program_info
 from exactly_lib.execution import partial_execution as sut
-from exactly_lib.execution import phase_step_simple as phase_step
 from exactly_lib.execution.act_phase import ActSourceAndExecutor, ExitCodeOrHardError, new_eh_exit_code, \
     ActPhaseHandling, ActSourceAndExecutorConstructor
+from exactly_lib.execution.phase_step_identifiers import phase_step_simple as phase_step
 from exactly_lib.section_document.model import new_empty_section_contents
 from exactly_lib.test_case.phases import setup
-from exactly_lib.test_case.phases.common import HomeAndEds
+from exactly_lib.test_case.phases.common import HomeAndSds
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
@@ -42,22 +42,22 @@ class TestCurrentDirectory(unittest.TestCase):
         _execute(constructor, _empty_test_case())
         # ASSERT #
         phase_step_2_cwd = executor_that_records_current_dir.phase_step_2_cwd
-        home_and_eds = executor_that_records_current_dir.actual_home_and_eds
-        eds = home_and_eds.eds
+        home_and_sds = executor_that_records_current_dir.actual_home_and_eds
+        sds = home_and_sds.sds
         self.assertEqual(len(phase_step_2_cwd),
                          4,
                          'Expects recordings for 4 steps')
         self.assertEqual(phase_step_2_cwd[phase_step.ACT__VALIDATE_PRE_EDS],
-                         str(home_and_eds.home_dir_path),
+                         str(home_and_sds.home_dir_path),
                          'Current dir for ' + str(phase_step.ACT__VALIDATE_PRE_EDS))
         self.assertEqual(phase_step_2_cwd[phase_step.ACT__VALIDATE_POST_SETUP],
-                         str(eds.act_dir),
+                         str(sds.act_dir),
                          'Current dir for ' + str(phase_step.ACT__VALIDATE_POST_SETUP))
         self.assertEqual(phase_step_2_cwd[phase_step.ACT__PREPARE],
-                         str(eds.act_dir),
+                         str(sds.act_dir),
                          'Current dir for ' + str(phase_step.ACT__PREPARE))
         self.assertEqual(phase_step_2_cwd[phase_step.ACT__EXECUTE],
-                         str(eds.act_dir),
+                         str(sds.act_dir),
                          'Current dir for ' + str(phase_step.ACT__EXECUTE))
 
 
@@ -185,20 +185,20 @@ class _ExecutorThatRecordsCurrentDir(ActSourceAndExecutor):
         self._home_and_eds = None
         self.phase_step_2_cwd = {}
 
-    def validate_pre_eds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
+    def validate_pre_sds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
         self._register_cwd_for(phase_step.ACT__VALIDATE_PRE_EDS)
         return svh.new_svh_success()
 
-    def validate_post_setup(self, home_and_eds: HomeAndEds) -> svh.SuccessOrValidationErrorOrHardError:
-        self._home_and_eds = home_and_eds
+    def validate_post_setup(self, home_and_sds: HomeAndSds) -> svh.SuccessOrValidationErrorOrHardError:
+        self._home_and_eds = home_and_sds
         self._register_cwd_for(phase_step.ACT__VALIDATE_POST_SETUP)
         return svh.new_svh_success()
 
-    def prepare(self, home_and_eds: HomeAndEds, script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
+    def prepare(self, home_and_sds: HomeAndSds, script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
         self._register_cwd_for(phase_step.ACT__PREPARE)
         return sh.new_sh_success()
 
-    def execute(self, home_and_eds: HomeAndEds, script_output_dir_path: pathlib.Path,
+    def execute(self, home_and_sds: HomeAndSds, script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
         self._register_cwd_for(phase_step.ACT__EXECUTE)
         return new_eh_exit_code(0)
@@ -207,7 +207,7 @@ class _ExecutorThatRecordsCurrentDir(ActSourceAndExecutor):
         self.phase_step_2_cwd[step] = str(pathlib.Path().resolve())
 
     @property
-    def actual_home_and_eds(self) -> HomeAndEds:
+    def actual_home_and_eds(self) -> HomeAndSds:
         return self._home_and_eds
 
 
@@ -216,7 +216,7 @@ class _ExecutorThatExecutesPythonProgramFile(ActSourceAndExecutorThatJustReturns
         self.python_program_file = python_program_file
 
     def execute(self,
-                home_and_eds: HomeAndEds,
+                home_and_sds: HomeAndSds,
                 script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
         exit_code = subprocess.call([sys.executable, str(self.python_program_file)],
@@ -233,7 +233,7 @@ class _ExecutorThatExecutesPythonProgramSource(ActSourceAndExecutorThatJustRetur
         self.python_program_source = python_program_source
 
     def execute(self,
-                home_and_eds: HomeAndEds,
+                home_and_sds: HomeAndSds,
                 script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
         python_file = pathlib.Path() / self.PYTHON_FILE_NAME
@@ -258,7 +258,7 @@ class _ExecutorThatReturnsConstantExitCode(ActSourceAndExecutorThatJustReturnsSu
         self.exit_code = exit_code
 
     def execute(self,
-                home_and_eds: HomeAndEds,
+                home_and_sds: HomeAndSds,
                 script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
         return new_eh_exit_code(self.exit_code)

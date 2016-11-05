@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.execution import phase_step_simple as phase_step
+from exactly_lib.execution.phase_step_identifiers import phase_step_simple as phase_step
 from exactly_lib.execution.result import PartialResultStatus
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
 from exactly_lib.test_case.phases.result import svh
@@ -32,11 +32,11 @@ class Test(TestCaseBase):
         self._check(
             Arrangement(test_case,
                         act_executor_validate_pre_eds=validate_action_that_returns(
-                            svh.new_svh_hard_error('error in act/validate-pre-eds'))),
+                            svh.new_svh_hard_error('error in act/validate-pre-sds'))),
             Expectation(PartialResultStatus.HARD_ERROR,
                         ExpectedFailureForPhaseFailure.new_with_message(
                             phase_step.ACT__VALIDATE_PRE_EDS,
-                            'error in act/validate-pre-eds'),
+                            'error in act/validate-pre-sds'),
                         [
                             phase_step.SETUP__VALIDATE_PRE_EDS,
                             phase_step.ACT__VALIDATE_PRE_EDS,
@@ -48,11 +48,11 @@ class Test(TestCaseBase):
         self._check(
             Arrangement(test_case,
                         act_executor_validate_pre_eds=validate_action_that_returns(
-                            svh.new_svh_validation_error('error in act/validate-pre-eds'))),
+                            svh.new_svh_validation_error('error in act/validate-pre-sds'))),
             Expectation(PartialResultStatus.VALIDATE,
                         ExpectedFailureForPhaseFailure.new_with_message(
                             phase_step.ACT__VALIDATE_PRE_EDS,
-                            'error in act/validate-pre-eds'),
+                            'error in act/validate-pre-sds'),
                         [
                             phase_step.SETUP__VALIDATE_PRE_EDS,
                             phase_step.ACT__VALIDATE_PRE_EDS,

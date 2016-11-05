@@ -1,6 +1,6 @@
 import pathlib
 
-from exactly_lib.test_case.phases.common import HomeAndEds, InstructionEnvironmentForPreSdsStep
+from exactly_lib.test_case.phases.common import HomeAndSds, InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.failure_details import FailureDetails
@@ -62,15 +62,15 @@ class ActSourceAndExecutor:
     Valid act phase source together with functionality for executing it.
     """
 
-    def validate_pre_eds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
+    def validate_pre_sds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
         """
-        pre-eds validation of the source that this object represents.
+        pre-sds validation of the source that this object represents.
 
         If success is not returned, then the test is aborted.
         """
         raise NotImplementedError()
 
-    def validate_post_setup(self, home_and_eds: HomeAndEds) -> svh.SuccessOrValidationErrorOrHardError:
+    def validate_post_setup(self, home_and_sds: HomeAndSds) -> svh.SuccessOrValidationErrorOrHardError:
         """
         post-setup validation of the source that this object represents.
 
@@ -79,7 +79,7 @@ class ActSourceAndExecutor:
         raise NotImplementedError()
 
     def prepare(self,
-                home_and_eds: HomeAndEds,
+                home_and_sds: HomeAndSds,
                 script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
         """
         Executed after validate.
@@ -91,7 +91,7 @@ class ActSourceAndExecutor:
         raise NotImplementedError()
 
     def execute(self,
-                home_and_eds: HomeAndEds,
+                home_and_sds: HomeAndSds,
                 script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
         """

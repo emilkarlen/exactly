@@ -1,7 +1,6 @@
 from exactly_lib import program_info
 from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_options import OPTION_FOR_PREPROCESSOR
 from exactly_lib.default.program_modes.test_case.default_instruction_names import CHANGE_DIR_INSTRUCTION_NAME
-from exactly_lib.execution.execution_directory_structure import SUB_DIRECTORY__ACT
 from exactly_lib.help.concepts.contents_structure import PlainConceptDocumentation
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
 from exactly_lib.help.concepts.some_concept_names import PRESENT_WORKING_DIRECTORY_CONCEPT_NAME
@@ -9,6 +8,7 @@ from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.formatting import InstructionName
 from exactly_lib.help.utils.phase_names import phase_name_dictionary
 from exactly_lib.help.utils.textformat_parse import TextParser
+from exactly_lib.test_case.sandbox_directory_structure import SUB_DIRECTORY__ACT
 from exactly_lib.util.description import Description, DescriptionWithSubSections, from_simple_description
 from exactly_lib.util.textformat.structure.structures import text
 

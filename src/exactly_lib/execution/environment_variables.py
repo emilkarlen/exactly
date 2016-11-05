@@ -1,6 +1,6 @@
 import pathlib
 
-from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
+from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 
 ENV_VAR_HOME = 'EXACTLY_HOME'
 ENV_VAR_ACT = 'EXACTLY_ACT'
@@ -27,16 +27,16 @@ def set_at_setup_pre_validate(home_dir_path: pathlib.Path) -> dict:
     }
 
 
-def set_at_setup_main(eds: ExecutionDirectoryStructure) -> dict:
+def set_at_setup_main(sds: SandboxDirectoryStructure) -> dict:
     return {
-        ENV_VAR_ACT: str(eds.act_dir),
-        ENV_VAR_TMP: str(eds.tmp.user_dir),
+        ENV_VAR_ACT: str(sds.act_dir),
+        ENV_VAR_TMP: str(sds.tmp.user_dir),
     }
 
 
-def set_at_assert(eds: ExecutionDirectoryStructure) -> dict:
+def set_at_assert(sds: SandboxDirectoryStructure) -> dict:
     return {
-        ENV_VAR_RESULT: str(eds.result.root_dir),
+        ENV_VAR_RESULT: str(sds.result.root_dir),
     }
 
 
@@ -51,22 +51,22 @@ def exists_at_setup_pre_validate(home_dir_path: pathlib.Path) -> dict:
 
 
 def exists_at_setup_main(home_dir_path: pathlib.Path,
-                         eds: ExecutionDirectoryStructure) -> dict:
+                         sds: SandboxDirectoryStructure) -> dict:
     ret_val = set_at_setup_pre_validate(home_dir_path)
-    ret_val.update(set_at_setup_main(eds))
+    ret_val.update(set_at_setup_main(sds))
     return ret_val
 
 
 def exists_at_assert(home_dir_path: pathlib.Path,
-                     eds: ExecutionDirectoryStructure) -> dict:
-    ret_val = exists_at_setup_main(home_dir_path, eds)
-    ret_val.update(set_at_assert(eds))
+                     sds: SandboxDirectoryStructure) -> dict:
+    ret_val = exists_at_setup_main(home_dir_path, sds)
+    ret_val.update(set_at_assert(sds))
     return ret_val
 
 
 def replaced(home_dir_path: pathlib.Path,
-             eds: ExecutionDirectoryStructure) -> dict:
+             sds: SandboxDirectoryStructure) -> dict:
     """
     The environment variables that are replaced by the --with-replaced-env-vars.
     """
-    return exists_at_setup_main(home_dir_path, eds)
+    return exists_at_setup_main(home_dir_path, sds)

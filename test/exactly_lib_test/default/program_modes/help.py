@@ -4,9 +4,9 @@ from exactly_lib.cli import main_program
 from exactly_lib.cli.cli_environment.common_cli_options import HELP_COMMAND
 from exactly_lib.cli.program_modes.help import arguments_for
 from exactly_lib.default.program_modes.test_case.default_instruction_names import CHANGE_DIR_INSTRUCTION_NAME
-from exactly_lib.execution import phases
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
 from exactly_lib.help.program_modes.test_case.config import phase_help_name
+from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_suite import section_names
 from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_set import INSTRUCTION_NAME__ACTOR
 from exactly_lib_test.test_resources.main_program.constant_arguments_check import ProcessTestCase, Arrangement
@@ -52,7 +52,7 @@ def main_program_test_cases() -> list:
                         _RESULT_IS_SUCCESSFUL),
 
         ProcessTestCase('help for "case instruction in phase" SHOULD be successful',
-                        HelpInvokation(arguments_for.case_instruction_in_phase(phase_help_name(phases.SETUP),
+                        HelpInvokation(arguments_for.case_instruction_in_phase(phase_help_name(phase_identifier.SETUP),
                                                                                CHANGE_DIR_INSTRUCTION_NAME)),
                         _RESULT_IS_SUCCESSFUL),
 
@@ -102,7 +102,7 @@ def main_program_test_cases_for_all_case_phases() -> list:
         ProcessTestCase("""help for "case/phase '%s'" SHOULD be successful""" % phase.section_name,
                         HelpInvokation(arguments_for.case_phase(phase)),
                         _RESULT_IS_SUCCESSFUL)
-        for phase in phases.ALL
+        for phase in phase_identifier.ALL
         ]
 
 

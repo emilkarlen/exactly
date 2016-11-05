@@ -5,11 +5,11 @@ from exactly_lib.instructions.utils.arg_parse.relative_path_options import REL_T
 from exactly_lib.instructions.utils.sub_process_execution import ResultAndStderr
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
-from exactly_lib.test_case.phases.common import HomeAndEds, PhaseLoggingPaths
+from exactly_lib.test_case.phases.common import HomeAndSds, PhaseLoggingPaths
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.test_resources import home_and_eds_test
 from exactly_lib_test.test_resources import python_program_execution as py_exe
-from exactly_lib_test.test_resources.execution import eds_populator
+from exactly_lib_test.test_resources.execution import sds_populator
 from exactly_lib_test.test_resources.file_structure import DirContents, File
 from exactly_lib_test.test_resources.parse import single_line_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
@@ -21,10 +21,10 @@ class ExecuteAction(home_and_eds_test.Action):
         self.setup = setup
 
     def apply(self,
-              home_and_eds: HomeAndEds) -> ResultAndStderr:
+              home_and_sds: HomeAndSds) -> ResultAndStderr:
         return sut.run(self.setup,
-                       home_and_eds,
-                       PhaseLoggingPaths(home_and_eds.eds.log_dir, 'the-phase'))
+                       home_and_sds,
+                       PhaseLoggingPaths(home_and_sds.sds.log_dir, 'the-phase'))
 
 
 class TestCaseBase(home_and_eds_test.TestCaseBase):
@@ -141,7 +141,7 @@ class TestExecuteInterpret(TestCaseBase):
                                                                                 0])),
                           home_and_eds_test.Check(expected_action_result=is_success_result(0,
                                                                                            None),
-                                                  eds_contents_before=eds_populator.tmp_user_dir_contents(DirContents([
+                                                  eds_contents_before=sds_populator.tmp_user_dir_contents(DirContents([
                                                       File('exit-with-value-on-command-line.py',
                                                            py_pgm_that_exits_with_value_on_command_line(''))]))
                                                   )

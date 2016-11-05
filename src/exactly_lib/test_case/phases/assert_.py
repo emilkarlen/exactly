@@ -1,16 +1,21 @@
+from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, TestCaseInstruction, \
-    InstructionEnvironmentForPreSdsStep
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
+    InstructionEnvironmentForPreSdsStep, TestCaseInstructionExecutedInSandbox
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import svh
 
 
-class AssertPhaseInstruction(TestCaseInstruction):
+class AssertPhaseInstruction(TestCaseInstructionExecutedInSandbox):
     """
     Abstract base class for instructions of the ASSERT phase.
     """
 
-    def validate_pre_eds(self,
+    @property
+    def phase(self) -> phase_identifier.Phase:
+        return phase_identifier.ASSERT
+
+    def validate_pre_sds(self,
                          environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
         return svh.new_svh_success()
 

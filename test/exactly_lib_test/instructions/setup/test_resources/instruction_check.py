@@ -6,17 +6,16 @@ import unittest
 from time import strftime, localtime
 
 from exactly_lib import program_info
-from exactly_lib.execution import execution_directory_structure
-from exactly_lib.execution import phases
-from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, SingleInstructionParserSource
+from exactly_lib.test_case import phase_identifier, sandbox_directory_structure
 from exactly_lib.test_case.os_services import new_default, OsServices
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
+from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.file_utils import resolved_path_name
 from exactly_lib_test.instructions.setup.test_resources import settings_check
 from exactly_lib_test.instructions.test_resources import sh_check
@@ -24,14 +23,14 @@ from exactly_lib_test.instructions.test_resources import svh_check
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithEds
 from exactly_lib_test.instructions.test_resources.assertion_utils.side_effects import SideEffectsCheck
 from exactly_lib_test.test_resources import file_structure
-from exactly_lib_test.test_resources.execution import eds_populator, eds_contents_check
+from exactly_lib_test.test_resources.execution import sds_populator, sds_contents_check
 
 
 class Arrangement(ArrangementWithEds):
     def __init__(self,
                  home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
                  os_services: OsServices = new_default(),
-                 eds_contents_before_main: eds_populator.EdsPopulator = eds_populator.empty(),
+                 eds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
                  initial_settings_builder: SetupSettingsBuilder = SetupSettingsBuilder()):
         super().__init__(home_dir_contents, eds_contents_before_main, os_services)
         self.initial_settings_builder = initial_settings_builder
@@ -45,7 +44,7 @@ class Expectation:
                  pre_validation_result: svh_check.Assertion = svh_check.is_success(),
                  main_result: sh_check.Assertion = sh_check.IsSuccess(),
                  main_side_effects_on_environment: settings_check.Assertion = settings_check.AnythingGoes(),
-                 main_side_effects_on_files: eds_contents_check.Assertion = eds_contents_check.AnythingGoes(),
+                 main_side_effects_on_files: sds_contents_check.Assertion = sds_contents_check.AnythingGoes(),
                  post_validation_result: svh_check.Assertion = svh_check.is_success(),
                  side_effects_check: SideEffectsCheck = SideEffectsCheck(),
                  ):
@@ -105,17 +104,17 @@ class Executor:
                 pre_validate_result = self._execute_pre_validate(home_dir_path, instruction)
                 if not pre_validate_result.is_success:
                     return
-                with tempfile.TemporaryDirectory(prefix=prefix + '-eds-') as eds_root_dir_name:
-                    eds = execution_directory_structure.construct_at(resolved_path_name(eds_root_dir_name))
-                    os.chdir(str(eds.act_dir))
+                with tempfile.TemporaryDirectory(prefix=prefix + '-sds-') as eds_root_dir_name:
+                    sds = sandbox_directory_structure.construct_at(resolved_path_name(eds_root_dir_name))
+                    os.chdir(str(sds.act_dir))
                     global_environment_with_eds = i.InstructionEnvironmentForPostSdsStep(home_dir_path,
-                                                                                         eds,
-                                                                                         phases.SETUP.identifier)
-                    main_result = self._execute_main(eds, global_environment_with_eds, instruction)
+                                                                                         sds,
+                                                                                         phase_identifier.SETUP.identifier)
+                    main_result = self._execute_main(sds, global_environment_with_eds, instruction)
                     if not main_result.is_success:
                         return
                     self._execute_post_validate(global_environment_with_eds, instruction)
-                    self.expectation.side_effects_check.apply(self.put, global_environment_with_eds.home_and_eds)
+                    self.expectation.side_effects_check.apply(self.put, global_environment_with_eds.home_and_sds)
         finally:
             os.chdir(initial_cwd)
 
@@ -123,7 +122,7 @@ class Executor:
                               home_dir_path: pathlib.Path,
                               instruction: SetupPhaseInstruction) -> svh.SuccessOrValidationErrorOrHardError:
         pre_validation_environment = InstructionEnvironmentForPreSdsStep(home_dir_path)
-        pre_validate_result = instruction.validate_pre_eds(pre_validation_environment)
+        pre_validate_result = instruction.validate_pre_sds(pre_validation_environment)
         self.put.assertIsInstance(pre_validate_result,
                                   svh.SuccessOrValidationErrorOrHardError,
                                   'pre_validate must return a ' + str(svh.SuccessOrValidationErrorOrHardError))
@@ -133,10 +132,10 @@ class Executor:
         return pre_validate_result
 
     def _execute_main(self,
-                      eds: ExecutionDirectoryStructure,
+                      sds: SandboxDirectoryStructure,
                       global_environment_with_eds: i.InstructionEnvironmentForPostSdsStep,
                       instruction: SetupPhaseInstruction) -> sh.SuccessOrHardError:
-        self.arrangement.eds_contents.apply(eds)
+        self.arrangement.eds_contents.apply(sds)
         settings_builder = self.arrangement.initial_settings_builder
         initial_settings_builder = copy.deepcopy(settings_builder)
         main_result = instruction.main(global_environment_with_eds,
@@ -152,7 +151,7 @@ class Executor:
                                                                 global_environment_with_eds,
                                                                 initial_settings_builder,
                                                                 settings_builder)
-        self.expectation.main_side_effects_on_files.apply(self.put, eds)
+        self.expectation.main_side_effects_on_files.apply(self.put, sds)
         return main_result
 
     def _execute_post_validate(self,

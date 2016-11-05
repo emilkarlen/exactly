@@ -1,6 +1,6 @@
 from exactly_lib.cli.cli_environment.program_modes.test_case import exit_values
-from exactly_lib.execution import phases
 from exactly_lib.section_document.syntax import section_header
+from exactly_lib.test_case import phase_identifier
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.test_resources.main_program import main_program_check_for_test_case
 from exactly_lib_test.test_resources.process import ExpectedSubProcessResult
@@ -16,7 +16,7 @@ if basename == 'pass':
     print('{section_header_for_phase_with_instructions}' + os.linesep + '# valid empty test case that PASS')
 else:
     print('{section_header_for_phase_with_instructions}' + os.linesep + 'invalid test case that will cause PARSER-ERROR')
-""".format(section_header_for_phase_with_instructions=section_header(phases.SETUP.section_name))
+""".format(section_header_for_phase_with_instructions=section_header(phase_identifier.SETUP.section_name))
 
 
 class TransformationIntoTestCaseThatPass(main_program_check_for_test_case.SetupWithPreprocessorAndTestActor):
@@ -25,7 +25,7 @@ class TransformationIntoTestCaseThatPass(main_program_check_for_test_case.SetupW
 
     def test_case(self) -> str:
         return lines_content([
-            section_header(phases.SETUP.section_name),
+            section_header(phase_identifier.SETUP.section_name),
             'invalid test case that will would PARSE-ERROR, if it was not preprocessed'
         ])
 
@@ -42,7 +42,7 @@ class TransformationIntoTestCaseThatParserError(main_program_check_for_test_case
 
     def test_case(self) -> str:
         return lines_content([
-            section_header(phases.SETUP.section_name),
+            section_header(phase_identifier.SETUP.section_name),
             '# valid empty test case that would PASS, if it was not preprocessed'
         ])
 

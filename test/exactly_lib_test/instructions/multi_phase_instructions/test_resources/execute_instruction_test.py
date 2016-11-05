@@ -5,7 +5,7 @@ from exactly_lib_test.instructions.multi_phase_instructions.test_resources.confi
     suite_for_cases
 from exactly_lib_test.instructions.test_resources.execute_utils import source_for_interpreting
 from exactly_lib_test.test_resources import python_program_execution as py_exe
-from exactly_lib_test.test_resources.execution import eds_populator
+from exactly_lib_test.test_resources.execution import sds_populator
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file
 from exactly_lib_test.test_resources.parse import single_line_source
 
@@ -74,7 +74,7 @@ class TestSuccessfulValidation(TestCaseBase):
         self.conf.run_test(
                 self,
                 source_for_interpreting(options.REL_TMP_OPTION, 'existing-file.py'),
-                self.conf.arrangement(eds_contents_before_main=eds_populator.tmp_user_dir_contents(
+            self.conf.arrangement(eds_contents_before_main=sds_populator.tmp_user_dir_contents(
                         DirContents([empty_file('existing-file.py')]))),
                 self.conf.expect_success(),
         )

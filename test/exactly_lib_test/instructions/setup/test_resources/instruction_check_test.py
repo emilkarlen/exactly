@@ -107,12 +107,12 @@ class InstructionThatRaisesTestErrorIfCwdIsIsNotTestRoot(SetupPhaseInstruction):
              environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
-        test_misc.raise_test_error_if_cwd_is_not_test_root(environment.eds)
+        test_misc.raise_test_error_if_cwd_is_not_test_root(environment.sds)
         return sh.new_sh_success()
 
     def validate_post_setup(self,
                             environment: InstructionEnvironmentForPostSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
-        test_misc.raise_test_error_if_cwd_is_not_test_root(environment.eds)
+        test_misc.raise_test_error_if_cwd_is_not_test_root(environment.sds)
         return svh.new_svh_success()
 
 

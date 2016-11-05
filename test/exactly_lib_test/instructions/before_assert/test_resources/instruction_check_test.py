@@ -19,7 +19,7 @@ from exactly_lib_test.instructions.test_resources import svh_check__va
 from exactly_lib_test.instructions.test_resources import test_of_test_framework_utils as test_misc
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.instructions.test_resources.test_of_test_framework_utils import single_line_source
-from exactly_lib_test.test_resources.execution.eds_contents_check__va import act_dir_contains_exactly
+from exactly_lib_test.test_resources.execution.sds_contents_check__va import act_dir_contains_exactly
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 from exactly_lib_test.test_resources.value_assertions.value_assertion_test import TestException
@@ -99,7 +99,7 @@ class TestCases(sut.TestCaseBase):
                     PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
                     single_line_source(),
                     sut.arrangement(),
-                    sut.Expectation(home_and_eds=va.IsInstance(bool)),
+                sut.Expectation(home_and_sds=va.IsInstance(bool)),
             )
 
 
@@ -109,7 +109,7 @@ PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION = test_misc.ParserThatGives(before_asse
 def instruction_that_asserts_cwd_is_act_dir(put: unittest.TestCase):
     def do_assert_cwd_is_act_dir(ret_val, environment: InstructionEnvironmentForPostSdsStep, *args):
         cwd = os.getcwd()
-        put.assertEqual(str(environment.eds.act_dir),
+        put.assertEqual(str(environment.sds.act_dir),
                         cwd,
                         'Current Directory')
         return ret_val

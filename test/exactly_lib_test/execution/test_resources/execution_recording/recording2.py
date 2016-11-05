@@ -3,8 +3,8 @@ Utilities to record an attribute associated to execution steps to a dictionary
 """
 import types
 
-from exactly_lib.execution import phase_step_simple as step
 from exactly_lib.execution.act_phase import ActPhaseHandling
+from exactly_lib.execution.phase_step_identifiers import phase_step_simple as step
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.before_assert import BeforeAssertPhaseInstruction
 from exactly_lib.test_case.phases.cleanup import CleanupPhaseInstruction

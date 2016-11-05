@@ -6,7 +6,7 @@ from exactly_lib.act_phase_setups.util.executor_made_of_parts.parser_for_single_
     ParserForSingleLineUsingStandardSyntax
 from exactly_lib.execution.act_phase import ExitCodeOrHardError
 from exactly_lib.processing.act_phase import ActPhaseSetup
-from exactly_lib.test_case.phases.common import HomeAndEds, InstructionEnvironmentForPreSdsStep
+from exactly_lib.test_case.phases.common import HomeAndSds, InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.util.std import StdFiles
 
@@ -29,10 +29,10 @@ class Executor(executor_made_of_parts.Executor):
         self.environment = environment
         self.command_line = command_line
 
-    def prepare(self, home_and_eds: HomeAndEds, script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
+    def prepare(self, home_and_sds: HomeAndSds, script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
         return sh.new_sh_success()
 
-    def execute(self, home_and_eds: HomeAndEds, script_output_dir_path: pathlib.Path,
+    def execute(self, home_and_sds: HomeAndSds, script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
         return utils.execute_shell_command(self.command_line,
                                            std_files,

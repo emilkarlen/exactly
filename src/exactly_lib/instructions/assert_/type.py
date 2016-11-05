@@ -146,7 +146,7 @@ class _Instruction(AssertPhaseInstruction):
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
         failure_message = pre_or_post_eds_failure_message_or_none(FileRefCheck(self._file_reference,
                                                                                self._expected_file_properties),
-                                                                  environment.home_and_eds)
+                                                                  environment.home_and_sds)
         if failure_message is not None:
             return pfh.new_pfh_fail(failure_message)
         return pfh.new_pfh_pass()

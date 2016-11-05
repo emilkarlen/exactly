@@ -2,7 +2,7 @@ import pathlib
 
 from exactly_lib.execution.act_phase import ExitCodeOrHardError, ActSourceAndExecutor, \
     ActSourceAndExecutorConstructor, ActPhaseHandling
-from exactly_lib.test_case.phases.common import HomeAndEds, InstructionEnvironmentForPreSdsStep
+from exactly_lib.test_case.phases.common import HomeAndSds, InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.std import StdFiles
@@ -20,16 +20,16 @@ class ActSourceAndExecutorThatRunsConstantActions(ActSourceAndExecutor):
         self.__prepare_action = prepare_action
         self.__execute_action = execute_action
 
-    def validate_pre_eds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
+    def validate_pre_sds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
         return self.__validate_pre_eds_action()
 
-    def validate_post_setup(self, home_and_eds: HomeAndEds) -> svh.SuccessOrValidationErrorOrHardError:
+    def validate_post_setup(self, home_and_sds: HomeAndSds) -> svh.SuccessOrValidationErrorOrHardError:
         return self.__validate_post_setup_action()
 
-    def prepare(self, home_and_eds: HomeAndEds, script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
+    def prepare(self, home_and_sds: HomeAndSds, script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
         return self.__prepare_action()
 
-    def execute(self, home_and_eds: HomeAndEds, script_output_dir_path: pathlib.Path,
+    def execute(self, home_and_sds: HomeAndSds, script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
         return self.__execute_action()
 

@@ -28,4 +28,4 @@ class _Instruction(BeforeAssertPhaseInstruction):
              environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices) -> sh.SuccessOrHardError:
         return cd_utils.execute_with_sh_result(self.destination_directory,
-                                               environment.eds)
+                                               environment.sds)

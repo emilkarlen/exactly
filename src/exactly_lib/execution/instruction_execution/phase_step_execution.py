@@ -1,10 +1,12 @@
-from exactly_lib.execution.phase_step import PhaseStep
-from exactly_lib.execution.single_instruction_executor import ControlledInstructionExecutor, execute_element
+from exactly_lib.execution.instruction_execution.single_instruction_executor import ControlledInstructionExecutor, \
+    execute_element
+from exactly_lib.execution.phase_step_identifiers.phase_step import PhaseStep
+from exactly_lib.execution.result import PartialResult, InstructionFailureInfo, new_partial_result_pass, \
+    PartialResultStatus
 from exactly_lib.section_document.model import SectionContents, SectionContentElement, ElementType
+from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util import line_source
 from exactly_lib.util.failure_details import FailureDetails
-from .execution_directory_structure import ExecutionDirectoryStructure
-from .result import PartialResult, InstructionFailureInfo, new_partial_result_pass, PartialResultStatus
 
 
 class ElementHeaderExecutor:
@@ -49,7 +51,7 @@ def execute_phase(phase_contents: SectionContents,
                   header_executor_for_instruction: ElementHeaderExecutor,
                   instruction_executor: ControlledInstructionExecutor,
                   phase_step: PhaseStep,
-                  eds: ExecutionDirectoryStructure) -> PartialResult:
+                  sds: SandboxDirectoryStructure) -> PartialResult:
     """
     Executes the elements of a given phase/step.
     Catches exceptions thrown by instruction-execution and "reports" them as
@@ -71,11 +73,11 @@ def execute_phase(phase_contents: SectionContents,
                                  header_executor_for_instruction,
                                  instruction_executor)
     if failure is None:
-        return new_partial_result_pass(eds)
+        return new_partial_result_pass(sds)
     else:
         return PartialResult(
                 failure.status,
-                eds,
+                sds,
                 InstructionFailureInfo(phase_step,
                                        failure.source_line,
                                        failure.failure_details)

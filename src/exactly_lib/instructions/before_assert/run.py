@@ -29,17 +29,17 @@ class _Instruction(BeforeAssertPhaseInstruction):
         self.setup = setup
         self.validator = PreOrPostEdsSvhValidationErrorValidator(setup.validator)
 
-    def validate_pre_eds(self,
+    def validate_pre_sds(self,
                          environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
         return self.validator.validate_pre_eds_if_applicable(environment.home_directory)
 
     def validate_post_setup(self,
                             environment: InstructionEnvironmentForPostSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
-        return self.validator.validate_post_eds_if_applicable(environment.eds)
+        return self.validator.validate_post_eds_if_applicable(environment.sds)
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices) -> sh.SuccessOrHardError:
         return run.run_and_return_sh(self.setup,
-                                     environment.home_and_eds,
+                                     environment.home_and_sds,
                                      environment.phase_logging)
