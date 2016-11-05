@@ -16,7 +16,7 @@ from exactly_lib_test.instructions.test_resources.arrangements import Arrangemen
     ActEnvironment
 from exactly_lib_test.instructions.test_resources.assertion_utils.side_effects import SideEffectsCheck
 from exactly_lib_test.test_resources import file_structure
-from exactly_lib_test.test_resources.execution import sds_populator, utils, eds_contents_check
+from exactly_lib_test.test_resources.execution import sds_populator, utils, sds_contents_check
 from exactly_lib_test.test_resources.execution.utils import write_act_result
 
 
@@ -36,7 +36,7 @@ class Expectation:
                  validation_post_eds: svh_check.Assertion = svh_check.is_success(),
                  validation_pre_eds: svh_check.Assertion = svh_check.is_success(),
                  main_result: pfh_check.Assertion = pfh_check.is_pass(),
-                 main_side_effects_on_files: eds_contents_check.Assertion = eds_contents_check.AnythingGoes(),
+                 main_side_effects_on_files: sds_contents_check.Assertion = sds_contents_check.AnythingGoes(),
                  side_effects_check: SideEffectsCheck = SideEffectsCheck(),
                  ):
         self.validation_post_eds = validation_post_eds

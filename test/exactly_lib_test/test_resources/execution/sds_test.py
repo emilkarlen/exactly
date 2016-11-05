@@ -2,7 +2,7 @@ import os
 import unittest
 
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib_test.test_resources.execution import sds_populator, eds_contents_check
+from exactly_lib_test.test_resources.execution import sds_populator, sds_contents_check
 from exactly_lib_test.test_resources.execution.utils import sandbox_directory_structure
 from exactly_lib_test.test_resources.file_checks import FileChecker
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, anything_goes
@@ -24,7 +24,7 @@ class Check:
     def __init__(self,
                  eds_contents_before: sds_populator.EdsPopulator = sds_populator.empty(),
                  expected_action_result: ValueAssertion = anything_goes(),
-                 expected_eds_contents_after: eds_contents_check.Assertion = eds_contents_check.AnythingGoes(),
+                 expected_eds_contents_after: sds_contents_check.Assertion = sds_contents_check.AnythingGoes(),
                  pre_action_action: Action = Action(),
                  post_action_check: PostActionCheck = PostActionCheck()):
         self.eds_contents_before = eds_contents_before

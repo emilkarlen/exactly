@@ -7,7 +7,7 @@ from exactly_lib.util.string import lines_content
 from exactly_lib_test.instructions.setup.test_resources.instruction_check import TestCaseBase, Arrangement, \
     Expectation
 from exactly_lib_test.instructions.test_resources import sh_check
-from exactly_lib_test.test_resources.execution.eds_contents_check import ActRootContainsExactly
+from exactly_lib_test.test_resources.execution.sds_contents_check import ActRootContainsExactly
 from exactly_lib_test.test_resources.execution.sds_populator import act_dir_contents
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, Dir, empty_file, File
 from exactly_lib_test.test_resources.parse import new_source2, argument_list_source

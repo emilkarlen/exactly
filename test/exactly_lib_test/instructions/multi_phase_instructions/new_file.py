@@ -7,7 +7,7 @@ from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectorySt
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.test_resources.execution import sds_test
-from exactly_lib_test.test_resources.execution.eds_contents_check import ActRootContainsExactly, \
+from exactly_lib_test.test_resources.execution.sds_contents_check import ActRootContainsExactly, \
     TmpUserRootContainsExactly
 from exactly_lib_test.test_resources.execution.sds_populator import act_dir_contents
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, Dir, empty_file, File

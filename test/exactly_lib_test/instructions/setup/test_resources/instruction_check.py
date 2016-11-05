@@ -23,7 +23,7 @@ from exactly_lib_test.instructions.test_resources import svh_check
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithEds
 from exactly_lib_test.instructions.test_resources.assertion_utils.side_effects import SideEffectsCheck
 from exactly_lib_test.test_resources import file_structure
-from exactly_lib_test.test_resources.execution import sds_populator, eds_contents_check
+from exactly_lib_test.test_resources.execution import sds_populator, sds_contents_check
 
 
 class Arrangement(ArrangementWithEds):
@@ -44,7 +44,7 @@ class Expectation:
                  pre_validation_result: svh_check.Assertion = svh_check.is_success(),
                  main_result: sh_check.Assertion = sh_check.IsSuccess(),
                  main_side_effects_on_environment: settings_check.Assertion = settings_check.AnythingGoes(),
-                 main_side_effects_on_files: eds_contents_check.Assertion = eds_contents_check.AnythingGoes(),
+                 main_side_effects_on_files: sds_contents_check.Assertion = sds_contents_check.AnythingGoes(),
                  post_validation_result: svh_check.Assertion = svh_check.is_success(),
                  side_effects_check: SideEffectsCheck = SideEffectsCheck(),
                  ):

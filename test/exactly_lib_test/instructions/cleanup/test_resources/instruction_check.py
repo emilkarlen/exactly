@@ -18,7 +18,7 @@ from exactly_lib_test.instructions.test_resources.assertion_utils.side_effects i
 from exactly_lib_test.instructions.test_resources.instruction_check_utils import \
     InstructionExecutionToBeReplacedByVaBase
 from exactly_lib_test.test_resources import file_structure
-from exactly_lib_test.test_resources.execution import sds_populator, utils, eds_contents_check
+from exactly_lib_test.test_resources.execution import sds_populator, utils, sds_contents_check
 
 
 class Arrangement(ArrangementWithEds):
@@ -38,7 +38,7 @@ class Expectation:
                  act_result: utils.ActResult = utils.ActResult(),
                  validate_pre_eds_result: svh_check.Assertion = svh_check.is_success(),
                  main_result: sh_check.Assertion = sh_check.IsSuccess(),
-                 main_side_effects_on_files: eds_contents_check.Assertion = eds_contents_check.AnythingGoes(),
+                 main_side_effects_on_files: sds_contents_check.Assertion = sds_contents_check.AnythingGoes(),
                  side_effects_check: SideEffectsCheck = SideEffectsCheck(),
                  ):
         self.act_result = act_result
