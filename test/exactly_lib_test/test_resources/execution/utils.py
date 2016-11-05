@@ -63,7 +63,7 @@ def act_phase_result(exitcode: int = 0,
             os.chdir(cwd_before)
 
 
-class HomeAndEdsContents(tuple):
+class HomeAndSdsContents(tuple):
     def __new__(cls,
                 home_dir_contents: DirContents = empty_dir_contents(),
                 eds_contents: eds_populator.EdsPopulator = eds_populator.empty()):
@@ -75,7 +75,7 @@ class HomeAndEdsContents(tuple):
         return self[0]
 
     @property
-    def eds_contents(self) -> eds_populator.EdsPopulator:
+    def sds_contents(self) -> eds_populator.EdsPopulator:
         return self[1]
 
 
