@@ -307,18 +307,6 @@ class SetupParser:
 class InstructionParser(SingleInstructionParser):
     def __init__(self,
                  instruction_name: str,
-                 setup2instruction_function):
-        self._setup2instruction_function = setup2instruction_function
-        self.setup_parser = SetupParser(instruction_name)
-
-    def apply(self, source: SingleInstructionParserSource) -> TestCaseInstruction:
-        setup = self.setup_parser.apply(source)
-        return self._setup2instruction_function(setup)
-
-
-class InstructionParser2(SingleInstructionParser):
-    def __init__(self,
-                 instruction_name: str,
                  instruction_parts2instruction_function):
         self._instruction_parts2instruction_function = instruction_parts2instruction_function
         self.setup_parser = SetupParser(instruction_name)

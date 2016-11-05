@@ -79,24 +79,6 @@ class DescriptionForNonAssertPhaseInstruction(TheInstructionDocumentationBase):
 class Parser(SingleInstructionParser):
     def __init__(self,
                  instruction_name: str,
-                 executor_2_instruction_function):
-        self.instruction_name = instruction_name
-        self.executor_2_instruction_function = executor_2_instruction_function
-
-    def apply(self, source: SingleInstructionParserSource) -> TestCaseInstruction:
-        arguments = source.instruction_argument.strip()
-        if not arguments:
-            msg = _COMMAND_SYNTAX_ELEMENT + ' must be given as argument'
-            raise SingleInstructionInvalidArgumentException(msg)
-        execute_info = ExecuteInfo(InstructionSourceInfo(source.line_sequence.first_line.line_number,
-                                                         self.instruction_name),
-                                   arguments)
-        return self.executor_2_instruction_function(execute_info)
-
-
-class Parser2(SingleInstructionParser):
-    def __init__(self,
-                 instruction_name: str,
                  instruction_setup_2_instruction_function):
         self.instruction_name = instruction_name
         self.instruction_setup_2_instruction_function = instruction_setup_2_instruction_function
