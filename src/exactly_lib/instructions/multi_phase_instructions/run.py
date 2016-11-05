@@ -15,17 +15,16 @@ from exactly_lib.instructions.utils.documentation.instruction_documentation_with
 from exactly_lib.instructions.utils.executable_file import ExecutableFile
 from exactly_lib.instructions.utils.file_ref import FileRef
 from exactly_lib.instructions.utils.file_ref_check import FileRefCheckValidator, FileRefCheck
-from exactly_lib.instructions.utils.main_step_executor import MainStepExecutor, InstructionParts
+from exactly_lib.instructions.utils.main_step_executor import InstructionParts
+from exactly_lib.instructions.utils.main_step_executor_for_sub_process import MainStepExecutorForSubProcess
 from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostEdsValidator, AndValidator
 from exactly_lib.instructions.utils.sub_process_execution import ResultAndStderr, ExecuteInfo, \
-    ExecutorThatStoresResultInFilesInDir, execute_and_read_stderr_if_non_zero_exitcode, result_to_sh, result_to_pfh
+    ExecutorThatStoresResultInFilesInDir, execute_and_read_stderr_if_non_zero_exitcode
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, SingleInstructionParserSource, SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import HomeAndSds, TestCaseInstruction, PhaseLoggingPaths, \
     InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case.phases.result import pfh
-from exactly_lib.test_case.phases.result import sh
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 
@@ -210,44 +209,23 @@ class SetupForSource(SetupForExecutableWithArguments):
         return [self.source]
 
 
-def run(setup: SetupForExecutableWithArguments,
-        home_and_sds: HomeAndSds,
-        phase_logging_paths: PhaseLoggingPaths) -> ResultAndStderr:
-    execute_info = ExecuteInfo(setup.instruction_source_info,
-                               setup.cmd_and_args(home_and_sds))
-    executor = ExecutorThatStoresResultInFilesInDir(is_shell=False)
-    return execute_and_read_stderr_if_non_zero_exitcode(execute_info, executor, phase_logging_paths)
-
-
-def run_and_return_sh(setup: SetupForExecutableWithArguments,
-                      home_and_sds: HomeAndSds,
-                      phase_logging_paths: PhaseLoggingPaths) -> sh.SuccessOrHardError:
-    result = run(setup, home_and_sds, phase_logging_paths)
-    return result_to_sh(result)
-
-
-def run_and_return_pfh(setup: SetupForExecutableWithArguments,
-                       home_and_sds: HomeAndSds,
-                       phase_logging_paths: PhaseLoggingPaths) -> pfh.PassOrFailOrHardError:
-    result = run(setup, home_and_sds, phase_logging_paths)
-    return result_to_pfh(result)
-
-
-class RunMainStepExecutor(MainStepExecutor):
+class MainStepExecutor(MainStepExecutorForSubProcess):
     def __init__(self, setup: SetupForExecutableWithArguments):
         self._setup = setup
 
-    def apply_sh(self,
-                 environment: InstructionEnvironmentForPostSdsStep,
-                 logging_paths: PhaseLoggingPaths,
-                 os_services: OsServices) -> sh.SuccessOrHardError:
-        return run_and_return_sh(self._setup, environment.home_and_sds, logging_paths)
+    def _apply(self,
+               environment: InstructionEnvironmentForPostSdsStep,
+               logging_paths: PhaseLoggingPaths,
+               os_services: OsServices) -> ResultAndStderr:
+        return self.apply(environment.home_and_sds, logging_paths)
 
-    def apply_pfh(self,
-                  environment: InstructionEnvironmentForPostSdsStep,
-                  logging_paths: PhaseLoggingPaths,
-                  os_services: OsServices) -> pfh.PassOrFailOrHardError:
-        return run_and_return_pfh(self._setup, environment.home_and_sds, logging_paths)
+    def apply(self,
+              home_and_sds: HomeAndSds,
+              phase_logging_paths: PhaseLoggingPaths) -> ResultAndStderr:
+        execute_info = ExecuteInfo(self._setup.instruction_source_info,
+                                   self._setup.cmd_and_args(home_and_sds))
+        executor = ExecutorThatStoresResultInFilesInDir(is_shell=False)
+        return execute_and_read_stderr_if_non_zero_exitcode(execute_info, executor, phase_logging_paths)
 
 
 class SetupParser:
@@ -314,4 +292,4 @@ class InstructionParser(SingleInstructionParser):
     def apply(self, source: SingleInstructionParserSource) -> TestCaseInstruction:
         setup = self.setup_parser.apply(source)
         return self._instruction_parts2instruction_function(InstructionParts(setup.validator,
-                                                                             RunMainStepExecutor(setup)))
+                                                                             MainStepExecutor(setup)))
