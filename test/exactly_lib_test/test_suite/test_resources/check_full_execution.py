@@ -4,8 +4,8 @@ import unittest
 
 from exactly_lib import program_info
 from exactly_lib.processing import processors as case_processing
+from exactly_lib.processing.instruction_setup import InstructionsSetup
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
-from exactly_lib.test_case.instruction_setup import InstructionsSetup
 from exactly_lib.test_suite.enumeration import DepthFirstEnumerator
 from exactly_lib.test_suite.execution import Executor
 from exactly_lib.test_suite.suite_hierarchy_reading import Reader, Environment
