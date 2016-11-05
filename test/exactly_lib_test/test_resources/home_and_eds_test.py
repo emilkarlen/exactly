@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.test_case.phases.common import HomeAndSds
 from exactly_lib_test.test_resources.execution import eds_populator, eds_contents_check
-from exactly_lib_test.test_resources.execution.utils import home_and_eds_and_test_as_curr_dir
+from exactly_lib_test.test_resources.execution.utils import home_and_sds_and_test_as_curr_dir
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir_contents
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, anything_goes
 
@@ -47,7 +47,7 @@ class TestCaseBase(unittest.TestCase):
 def execute(put: unittest.TestCase,
             action: Action,
             check: Check):
-    with home_and_eds_and_test_as_curr_dir(home_dir_contents=check.home_dir_contents_before,
+    with home_and_sds_and_test_as_curr_dir(home_dir_contents=check.home_dir_contents_before,
                                            eds_contents=check.eds_contents_before) as home_and_sds:
         check.pre_action_action.apply(home_and_sds)
         result = action.apply(home_and_sds)

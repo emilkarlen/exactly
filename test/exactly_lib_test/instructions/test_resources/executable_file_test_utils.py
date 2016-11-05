@@ -7,7 +7,7 @@ from exactly_lib.instructions.utils.arg_parse.parse_utils import TokenStream
 from exactly_lib.test_case.phases.common import HomeAndSds
 from exactly_lib_test.instructions.test_resources import pre_or_post_eds_validator as validator_util
 from exactly_lib_test.test_resources.execution import eds_populator
-from exactly_lib_test.test_resources.execution.utils import home_and_eds_and_test_as_curr_dir
+from exactly_lib_test.test_resources.execution.utils import home_and_sds_and_test_as_curr_dir
 from exactly_lib_test.test_resources.file_structure import File, DirContents, executable_file, empty_file
 
 
@@ -44,7 +44,7 @@ class CheckBase(unittest.TestCase):
 
     def _home_and_eds_and_test_as_curr_dir(self, file: File) -> HomeAndSds:
         contents = self.configuration.file_installation(file)
-        return home_and_eds_and_test_as_curr_dir(
+        return home_and_sds_and_test_as_curr_dir(
             home_dir_contents=contents[0],
             eds_contents=contents[1])
 
@@ -124,7 +124,7 @@ class CheckNonExistingFile(CheckBase):
                          remaining_arguments.source,
                          'Remaining arguments')
         self._check_expectance_to_exist_pre_eds(exe_file)
-        with home_and_eds_and_test_as_curr_dir() as home_and_sds:
+        with home_and_sds_and_test_as_curr_dir() as home_and_sds:
             self._check_file_path('file.exe', exe_file, home_and_sds)
             self._assert_does_not_pass_validation(exe_file, home_and_sds)
 

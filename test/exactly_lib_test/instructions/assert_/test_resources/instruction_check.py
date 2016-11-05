@@ -85,7 +85,7 @@ class Executor:
                                   AssertPhaseInstruction,
                                   'The instruction must be an instance of ' + str(AssertPhaseInstruction))
         assert isinstance(instruction, AssertPhaseInstruction)
-        with utils.home_and_eds_and_test_as_curr_dir(
+        with utils.home_and_sds_and_test_as_curr_dir(
                 home_dir_contents=self.arrangement.home_contents,
                 eds_contents=self.arrangement.eds_contents) as home_and_sds:
             act_result = self.arrangement.act_result_producer.apply(ActEnvironment(home_and_sds))
