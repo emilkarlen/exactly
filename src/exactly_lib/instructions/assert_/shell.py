@@ -12,7 +12,7 @@ from exactly_lib.test_case.phases.result import pfh
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(
-        parser(),
+        parser(instruction_name),
         TheDescription(instruction_name))
 
 
@@ -29,8 +29,8 @@ class TheDescription(TheInstructionDocumentationBase):
         return self._paragraphs(text)
 
 
-def parser() -> SingleInstructionParser:
-    return shell_common.Parser('instruction-name',
+def parser(instruction_name: str) -> SingleInstructionParser:
+    return shell_common.Parser(instruction_name,
                                _ShellInstruction)
 
 
