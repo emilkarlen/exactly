@@ -3,7 +3,7 @@ import pathlib
 from exactly_lib.execution import phase_step_simple as phase_step
 from exactly_lib.execution.act_phase import ExitCodeOrHardError, ActSourceAndExecutor, \
     ActSourceAndExecutorConstructor, new_eh_exit_code
-from exactly_lib.test_case.phases.common import HomeAndEds, GlobalEnvironmentForPreEdsStep
+from exactly_lib.test_case.phases.common import HomeAndEds, InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.std import StdFiles
@@ -65,7 +65,8 @@ class ActSourceAndExecutorWrapperConstructorThatRecordsSteps(ActSourceAndExecuto
         self.__recorder = recorder
         self.__wrapped = wrapped
 
-    def apply(self, environment: GlobalEnvironmentForPreEdsStep, act_phase_instructions: list) -> ActSourceAndExecutor:
+    def apply(self, environment: InstructionEnvironmentForPreSdsStep,
+              act_phase_instructions: list) -> ActSourceAndExecutor:
         return ActSourceAndExecutorWrapperThatRecordsSteps(self.__recorder, self.__wrapped)
 
 
@@ -110,7 +111,7 @@ class ActSourceAndExecutorConstructorForConstantExecutor(ActSourceAndExecutorCon
         self.executor = executor
 
     def apply(self,
-              environment: GlobalEnvironmentForPreEdsStep,
+              environment: InstructionEnvironmentForPreSdsStep,
               act_phase_instructions: list) -> ActSourceAndExecutor:
         return self.executor
 
@@ -129,7 +130,7 @@ class ActSourceAndExecutorConstructorWithActionsForExecutor(ActSourceAndExecutor
         self.before_wrapped_execute = before_wrapped_execute
 
     def apply(self,
-              environment: GlobalEnvironmentForPreEdsStep,
+              environment: InstructionEnvironmentForPreSdsStep,
               act_phase_instructions: list) -> ActSourceAndExecutor:
         wrapped_executor = self.__wrapped.apply(environment, act_phase_instructions)
         return ActSourceAndExecutorWrapperWithActions(

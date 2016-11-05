@@ -24,7 +24,7 @@ def standard_phase_file_base_name(phase: phases.PhaseEnum) -> str:
 
 def write_to_standard_phase_file(phase: phases.PhaseEnum,
                                  file_lines_from_env: types.FunctionType) -> types.FunctionType:
-    def ret_val(environment: common.GlobalEnvironmentForPostEdsPhase, *args):
+    def ret_val(environment: common.InstructionEnvironmentForPostSdsStep, *args):
         file_path = standard_phase_file_path(environment.eds.act_dir, phase)
         with open(str(file_path), 'w') as f:
             contents = os.linesep.join(file_lines_from_env(environment)) + os.linesep

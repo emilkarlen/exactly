@@ -20,8 +20,8 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
-from exactly_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase, HomeAndEds, \
-    GlobalEnvironmentForPreEdsStep
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, HomeAndEds, \
+    InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util import file_utils
@@ -56,13 +56,13 @@ def with_replaced_env_vars_help(checked_file: str) -> list:
 
 
 class ComparisonActualFile:
-    def file_check_failure(self, environment: i.GlobalEnvironmentForPostEdsPhase) -> str:
+    def file_check_failure(self, environment: i.InstructionEnvironmentForPostSdsStep) -> str:
         """
         :return: None iff there is no failure.
         """
         raise NotImplementedError()
 
-    def file_path(self, environment: i.GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
+    def file_path(self, environment: i.InstructionEnvironmentForPostSdsStep) -> pathlib.Path:
         raise NotImplementedError()
 
 
@@ -71,27 +71,27 @@ class ActComparisonActualFileForFileRef(ComparisonActualFile):
                  file_ref: FileRef):
         self.file_ref = file_ref
 
-    def file_check_failure(self, environment: i.GlobalEnvironmentForPostEdsPhase) -> str:
+    def file_check_failure(self, environment: i.InstructionEnvironmentForPostSdsStep) -> str:
         return pre_or_post_eds_failure_message_or_none(FileRefCheck(self.file_ref,
                                                                     must_exist_as(FileType.REGULAR)),
                                                        environment.home_and_eds)
 
-    def file_path(self, environment: i.GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
+    def file_path(self, environment: i.InstructionEnvironmentForPostSdsStep) -> pathlib.Path:
         return self.file_ref.file_path_pre_or_post_eds(environment.home_and_eds)
 
 
 class ActComparisonActualFileForStdFileBase(ComparisonActualFile):
-    def file_check_failure(self, environment: i.GlobalEnvironmentForPostEdsPhase) -> str:
+    def file_check_failure(self, environment: i.InstructionEnvironmentForPostSdsStep) -> str:
         return None
 
 
 class StdoutComparisonTarget(ActComparisonActualFileForStdFileBase):
-    def file_path(self, environment: i.GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
+    def file_path(self, environment: i.InstructionEnvironmentForPostSdsStep) -> pathlib.Path:
         return environment.eds.result.stdout_file
 
 
 class StderrComparisonTarget(ActComparisonActualFileForStdFileBase):
-    def file_path(self, environment: i.GlobalEnvironmentForPostEdsPhase) -> pathlib.Path:
+    def file_path(self, environment: i.InstructionEnvironmentForPostSdsStep) -> pathlib.Path:
         return environment.eds.result.stderr_file
 
 
@@ -105,12 +105,12 @@ class ContentCheckerInstructionBase(AssertPhaseInstruction):
             FileRefCheckValidator(self._file_ref_check_for_expected())
 
     def validate_pre_eds(self,
-                         environment: GlobalEnvironmentForPreEdsStep) -> svh.SuccessOrValidationErrorOrHardError:
+                         environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
         validator = PreOrPostEdsSvhValidationErrorValidator(self.validator_of_expected)
         return validator.validate_pre_eds_if_applicable(environment.home_directory)
 
     def main(self,
-             environment: i.GlobalEnvironmentForPostEdsPhase,
+             environment: i.InstructionEnvironmentForPostSdsStep,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
         if not self._expected_contents.is_here_document:
             failure_message = self.validator_of_expected.validate_post_eds_if_applicable(environment.home_and_eds.eds)
@@ -152,7 +152,7 @@ class ContentCheckerInstructionBase(AssertPhaseInstruction):
 
     def _get_processed_actual_file_path(self,
                                         actual_file_path: pathlib.Path,
-                                        environment: i.GlobalEnvironmentForPostEdsPhase,
+                                        environment: i.InstructionEnvironmentForPostSdsStep,
                                         os_services: OsServices) -> pathlib.Path:
         raise NotImplementedError()
 
@@ -165,14 +165,14 @@ class ContentCheckerInstruction(ContentCheckerInstructionBase):
 
     def _get_processed_actual_file_path(self,
                                         actual_file_path: pathlib.Path,
-                                        environment: i.GlobalEnvironmentForPostEdsPhase,
+                                        environment: i.InstructionEnvironmentForPostSdsStep,
                                         os_services: OsServices) -> pathlib.Path:
         return actual_file_path
 
 
 class ActualFileTransformer:
     def replace_env_vars(self,
-                         environment: GlobalEnvironmentForPostEdsPhase,
+                         environment: InstructionEnvironmentForPostSdsStep,
                          os_services: OsServices,
                          actual_file_path: pathlib.Path) -> pathlib.Path:
         src_file_path = actual_file_path
@@ -187,7 +187,7 @@ class ActualFileTransformer:
         return dst_file_path
 
     def _dst_file_path(self,
-                       environment: GlobalEnvironmentForPostEdsPhase,
+                       environment: InstructionEnvironmentForPostSdsStep,
                        src_file_path: pathlib.Path) -> pathlib.Path:
         """
         :return: An absolute path that does/should store the transformed version of
@@ -219,7 +219,7 @@ class ContentCheckerWithTransformationInstruction(ContentCheckerInstructionBase)
 
     def _get_processed_actual_file_path(self,
                                         actual_file_path: pathlib.Path,
-                                        environment: i.GlobalEnvironmentForPostEdsPhase,
+                                        environment: i.InstructionEnvironmentForPostSdsStep,
                                         os_services: OsServices) -> pathlib.Path:
         return self.actual_file_transformer.replace_env_vars(environment,
                                                              os_services,
@@ -234,7 +234,7 @@ class EmptinessCheckerInstruction(AssertPhaseInstruction):
         self.expect_empty = expect_empty
 
     def main(self,
-             environment: i.GlobalEnvironmentForPostEdsPhase,
+             environment: i.InstructionEnvironmentForPostSdsStep,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
         failure_message = self.actual_file.file_check_failure(environment)
         if failure_message:

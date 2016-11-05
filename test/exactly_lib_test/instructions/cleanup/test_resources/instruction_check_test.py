@@ -5,7 +5,7 @@ import unittest
 
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.cleanup import CleanupPhaseInstruction, PreviousPhase
-from exactly_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib_test.execution.test_resources.instruction_test_resources import \
     cleanup_phase_instruction_that
@@ -70,7 +70,7 @@ SUCCESSFUL_INSTRUCTION = cleanup_phase_instruction_that()
 
 class InstructionThatRaisesTestErrorIfCwdIsIsNotTestRoot(CleanupPhaseInstruction):
     def main(self,
-             environment: GlobalEnvironmentForPostEdsPhase,
+             environment: InstructionEnvironmentForPostSdsStep,
              previous_phase: PreviousPhase,
              os_services: OsServices) -> sh.SuccessOrHardError:
         test_misc.raise_test_error_if_cwd_is_not_test_root(environment.eds)

@@ -6,7 +6,8 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.test_case.os_services import OsServices, new_default
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.before_assert import BeforeAssertPhaseInstruction
-from exactly_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
+    InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib_test.instructions.test_resources import sh_check__va
@@ -92,13 +93,13 @@ class Executor(InstructionExecutionBase):
         with utils.home_and_eds_and_test_as_curr_dir(
                 home_dir_contents=self.arrangement.home_contents,
                 eds_contents=self.arrangement.eds_contents) as home_and_eds:
-            environment = i.GlobalEnvironmentForPreEdsStep(home_and_eds.home_dir_path)
+            environment = i.InstructionEnvironmentForPreSdsStep(home_and_eds.home_dir_path)
             validate_result = self._execute_validate_pre_eds(environment, instruction)
             if not validate_result.is_success:
                 return
-            environment = i.GlobalEnvironmentForPostEdsPhase(home_and_eds.home_dir_path,
-                                                             home_and_eds.eds,
-                                                             phases.BEFORE_ASSERT.identifier)
+            environment = i.InstructionEnvironmentForPostSdsStep(home_and_eds.home_dir_path,
+                                                                 home_and_eds.eds,
+                                                                 phases.BEFORE_ASSERT.identifier)
             validate_result = self._execute_validate_post_setup(environment, instruction)
             if not validate_result.is_success:
                 return
@@ -112,7 +113,7 @@ class Executor(InstructionExecutionBase):
 
     def _execute_validate_pre_eds(
             self,
-            global_environment: GlobalEnvironmentForPreEdsStep,
+            global_environment: InstructionEnvironmentForPreSdsStep,
             instruction: BeforeAssertPhaseInstruction) -> svh.SuccessOrValidationErrorOrHardError:
         result = instruction.validate_pre_eds(global_environment)
         self._check_result_of_validate_pre_eds(result)
@@ -120,7 +121,7 @@ class Executor(InstructionExecutionBase):
 
     def _execute_validate_post_setup(
             self,
-            global_environment: GlobalEnvironmentForPostEdsPhase,
+            global_environment: InstructionEnvironmentForPostSdsStep,
             instruction: BeforeAssertPhaseInstruction) -> svh.SuccessOrValidationErrorOrHardError:
         result = instruction.validate_post_setup(global_environment)
         self._check('result from validate/post-setup',
@@ -129,7 +130,7 @@ class Executor(InstructionExecutionBase):
         return result
 
     def _execute_main(self,
-                      environment: GlobalEnvironmentForPostEdsPhase,
+                      environment: InstructionEnvironmentForPostSdsStep,
                       instruction: BeforeAssertPhaseInstruction) -> pfh.PassOrFailOrHardError:
         result = instruction.main(environment, self.arrangement.os_services)
         self._check('result from main',

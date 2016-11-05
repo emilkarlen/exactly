@@ -1,5 +1,6 @@
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases.common import GlobalEnvironmentForPreEdsStep, GlobalEnvironmentForPostEdsPhase, \
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
+    InstructionEnvironmentForPostSdsStep, \
     TestCaseInstruction
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
@@ -52,15 +53,15 @@ class SetupPhaseInstruction(TestCaseInstruction):
     """
 
     def validate_pre_eds(self,
-                         environment: GlobalEnvironmentForPreEdsStep) -> svh.SuccessOrValidationErrorOrHardError:
+                         environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
         return svh.new_svh_success()
 
     def validate_post_setup(self,
-                            environment: GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
+                            environment: InstructionEnvironmentForPostSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
         return svh.new_svh_success()
 
     def main(self,
-             environment: GlobalEnvironmentForPostEdsPhase,
+             environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         raise NotImplementedError()

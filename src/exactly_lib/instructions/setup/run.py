@@ -4,7 +4,8 @@ from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostEdsSv
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
+    InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
@@ -29,11 +30,11 @@ class _Instruction(SetupPhaseInstruction):
         self.svh_validator = PreOrPostEdsSvhValidationErrorValidator(setup.validator)
 
     def validate_pre_eds(self,
-                         environment: GlobalEnvironmentForPreEdsStep) -> svh.SuccessOrValidationErrorOrHardError:
+                         environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
         return self.svh_validator.validate_pre_eds_if_applicable(environment.home_directory)
 
     def main(self,
-             environment: GlobalEnvironmentForPostEdsPhase,
+             environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         failure_message = self.setup.validator.validate_post_eds_if_applicable(environment.eds)

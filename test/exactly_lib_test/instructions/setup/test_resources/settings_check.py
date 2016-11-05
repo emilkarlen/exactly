@@ -7,7 +7,7 @@ from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
 class Assertion:
     def apply(self,
               put: unittest.TestCase,
-              environment: common.GlobalEnvironmentForPostEdsPhase,
+              environment: common.InstructionEnvironmentForPostSdsStep,
               initial: SetupSettingsBuilder,
               actual_result: SetupSettingsBuilder):
         raise NotImplementedError()
@@ -16,7 +16,7 @@ class Assertion:
 class AnythingGoes(Assertion):
     def apply(self,
               put: unittest.TestCase,
-              environment: common.GlobalEnvironmentForPostEdsPhase,
+              environment: common.InstructionEnvironmentForPostSdsStep,
               initial: SetupSettingsBuilder,
               actual_result: SetupSettingsBuilder):
         pass
@@ -25,7 +25,7 @@ class AnythingGoes(Assertion):
 class UnconditionalFail(Assertion):
     def apply(self,
               put: unittest.TestCase,
-              environment: common.GlobalEnvironmentForPostEdsPhase,
+              environment: common.InstructionEnvironmentForPostSdsStep,
               initial: SetupSettingsBuilder,
               actual_result: SetupSettingsBuilder):
         put.fail('Unconditional')

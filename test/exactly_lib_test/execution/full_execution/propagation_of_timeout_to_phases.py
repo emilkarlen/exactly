@@ -2,7 +2,7 @@ import pathlib
 import unittest
 
 from exactly_lib.execution.phase_step_simple import ALL_SETUP, ALL_ASSERT, ALL_BEFORE_ASSERT, ALL_CLEANUP
-from exactly_lib.test_case.phases.common import GlobalEnvironmentForPreEdsStep
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder, ConfigurationPhaseInstruction
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib_test.execution.full_execution.test_resources import execution_check
@@ -30,7 +30,7 @@ class Test(unittest.TestCase):
         default_timeout = 72
         actual_recordings = {}
         recorder_builder = PropertyRecorderBuilder(
-            GlobalEnvironmentForPreEdsStep.timeout_in_seconds.fget,
+            InstructionEnvironmentForPreSdsStep.timeout_in_seconds.fget,
             actual_recordings)
         test_case = test_case_that_records_property_of_env_for_each_step_of_partial_execution(recorder_builder).build()
         act_phase_handling = act_phase_handling_that_records_property_of_constructor_argument(ACT_EXE_CONSTRUCTOR,
@@ -58,7 +58,7 @@ class Test(unittest.TestCase):
         expected_timeout = 87
         actual_recordings = {}
         recorder_builder = PropertyRecorderBuilder(
-            GlobalEnvironmentForPreEdsStep.timeout_in_seconds.fget,
+            InstructionEnvironmentForPreSdsStep.timeout_in_seconds.fget,
             actual_recordings)
         test_case_builder = test_case_that_records_property_of_env_for_each_step_of_partial_execution(recorder_builder)
         test_case_builder.configuration_phase = [_ConfigurationPhaseInstructionThatSetsTimeoutTo(expected_timeout)]

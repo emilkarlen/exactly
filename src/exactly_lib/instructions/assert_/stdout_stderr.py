@@ -18,7 +18,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionParser, \
     SingleInstructionInvalidArgumentException, SingleInstructionParserSource
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
-from exactly_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.util.cli_syntax.elements import argument as a
 from .utils import contents_utils
 from .utils import contents_utils_for_instr_doc as doc_utils
@@ -139,7 +139,7 @@ class ParserForContentsForStderr(ParserForContentsForActualValue):
 
 class _StdXActualFileTransformerBase(ActualFileTransformer):
     def _dst_file_path(self,
-                       environment: GlobalEnvironmentForPostEdsPhase,
+                       environment: InstructionEnvironmentForPostSdsStep,
                        src_file_path: pathlib.Path) -> pathlib.Path:
         src_stem_name = src_file_path.stem
         directory = src_file_path.parent

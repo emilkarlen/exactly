@@ -5,7 +5,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionParserSource
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
-from exactly_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.result import pfh
 
 
@@ -25,6 +25,7 @@ class _Instruction(AssertPhaseInstruction):
     def __init__(self, directory_components: str):
         self.directory_components = directory_components
 
-    def main(self, environment: GlobalEnvironmentForPostEdsPhase, os_services: OsServices) -> pfh.PassOrFailOrHardError:
+    def main(self, environment: InstructionEnvironmentForPostSdsStep,
+             os_services: OsServices) -> pfh.PassOrFailOrHardError:
         error_message = mkdir_utils.make_dir_in_current_dir(self.directory_components)
         return pfh.new_pfh_pass() if error_message is None else pfh.new_pfh_hard_error(error_message)
