@@ -15,7 +15,7 @@ from exactly_lib.execution.single_instruction_executor import ControlledInstruct
 from exactly_lib.section_document.model import SectionContents, ElementType
 from exactly_lib.test_case.os_services import new_default
 from exactly_lib.test_case.phases import common
-from exactly_lib.test_case.phases.act.instruction import ActPhaseInstruction
+from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
 from exactly_lib.test_case.phases.common import GlobalEnvironmentForPreEdsStep, HomeAndEds
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder, StdinSettings
