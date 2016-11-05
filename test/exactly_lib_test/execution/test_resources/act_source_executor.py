@@ -2,7 +2,7 @@ import pathlib
 
 from exactly_lib.execution.act_phase import ExitCodeOrHardError, ActSourceAndExecutor, \
     ActSourceAndExecutorConstructor, ActPhaseHandling
-from exactly_lib.test_case.phases.common import HomeAndEds, GlobalEnvironmentForPreEdsStep
+from exactly_lib.test_case.phases.common import HomeAndEds, InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.std import StdFiles
@@ -48,7 +48,7 @@ class ActSourceAndExecutorConstructorThatRunsConstantActions(ActSourceAndExecuto
         self.execute_action = execute_action
 
     def apply(self,
-              environment: GlobalEnvironmentForPreEdsStep,
+              environment: InstructionEnvironmentForPreSdsStep,
               act_phase_instructions: list) -> ActSourceAndExecutor:
         self.apply_action_before_executor_is_constructed(environment, act_phase_instructions)
         return ActSourceAndExecutorThatRunsConstantActions(

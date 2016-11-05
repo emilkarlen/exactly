@@ -5,7 +5,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionParserSource
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.cleanup import CleanupPhaseInstruction, PreviousPhase
-from exactly_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.result import sh
 
 
@@ -26,7 +26,7 @@ class _Instruction(CleanupPhaseInstruction):
         self.directory_components = directory_components
 
     def main(self,
-             environment: GlobalEnvironmentForPostEdsPhase,
+             environment: InstructionEnvironmentForPostSdsStep,
              previous_phase: PreviousPhase,
              os_services: OsServices) -> sh.SuccessOrHardError:
         error_message = mkdir_utils.make_dir_in_current_dir(self.directory_components)

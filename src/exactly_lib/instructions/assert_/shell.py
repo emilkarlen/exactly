@@ -6,7 +6,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionParser
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
-from exactly_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.result import pfh
 
 
@@ -40,6 +40,6 @@ class _ShellInstruction(AssertPhaseInstruction):
         self.execute_info = execute_info
 
     def main(self,
-             environment: GlobalEnvironmentForPostEdsPhase,
+             environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
         return shell_common.run_and_return_pfh(self.execute_info, environment.phase_logging)

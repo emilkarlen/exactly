@@ -5,7 +5,7 @@ import unittest
 from exactly_lib.execution.act_phase import ExitCodeOrHardError, ActSourceAndExecutorConstructor, new_eh_exit_code, \
     ActSourceAndExecutor
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
-from exactly_lib.test_case.phases.common import GlobalEnvironmentForPreEdsStep, HomeAndEds
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, HomeAndEds
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.failure_details import FailureDetails
 from exactly_lib.util.std import StdFiles
@@ -66,7 +66,7 @@ def check_execution(put: unittest.TestCase,
 
     cwd_before_test = os.getcwd()
     with fs_utils.tmp_dir(arrangement.home_dir_contents) as home_dir:
-        environment = GlobalEnvironmentForPreEdsStep(home_dir, arrangement.timeout_in_seconds)
+        environment = InstructionEnvironmentForPreSdsStep(home_dir, arrangement.timeout_in_seconds)
         sut = arrangement.executor_constructor.apply(environment, arrangement.act_phase_instructions)
         step_result = sut.validate_pre_eds(home_dir)
         put.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,

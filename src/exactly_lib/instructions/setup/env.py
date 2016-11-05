@@ -1,7 +1,7 @@
-from exactly_lib.instructions.multi_phase_instructions import env
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
+from exactly_lib.instructions.multi_phase_instructions import env
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
 
@@ -18,7 +18,7 @@ class _Instruction(SetupPhaseInstruction):
         self.executor = executor
 
     def main(self,
-             environment: GlobalEnvironmentForPostEdsPhase,
+             environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         return env.execute_and_return_sh(self.executor, os_services)

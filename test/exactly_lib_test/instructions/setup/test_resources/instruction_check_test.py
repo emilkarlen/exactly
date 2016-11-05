@@ -8,7 +8,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionParserSource
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common
-from exactly_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
@@ -89,7 +89,7 @@ class TestCases(instruction_check.TestCaseBase):
 
 class SettingsCheckRaisesTestError(settings_check.Assertion):
     def apply(self, put: unittest.TestCase,
-              environment: common.GlobalEnvironmentForPostEdsPhase,
+              environment: common.InstructionEnvironmentForPostSdsStep,
               initial: SetupSettingsBuilder,
               actual_result: SetupSettingsBuilder):
         raise test_misc.TestError()
@@ -104,14 +104,14 @@ SUCCESSFUL_INSTRUCTION = setup_phase_instruction_that()
 
 class InstructionThatRaisesTestErrorIfCwdIsIsNotTestRoot(SetupPhaseInstruction):
     def main(self,
-             environment: GlobalEnvironmentForPostEdsPhase,
+             environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         test_misc.raise_test_error_if_cwd_is_not_test_root(environment.eds)
         return sh.new_sh_success()
 
     def validate_post_setup(self,
-                            environment: GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
+                            environment: InstructionEnvironmentForPostSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
         test_misc.raise_test_error_if_cwd_is_not_test_root(environment.eds)
         return svh.new_svh_success()
 

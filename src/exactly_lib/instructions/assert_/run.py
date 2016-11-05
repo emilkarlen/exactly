@@ -5,7 +5,8 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionParser
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
-from exactly_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
+    InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import svh
 
@@ -29,15 +30,15 @@ class _Instruction(AssertPhaseInstruction):
         self.validator = PreOrPostEdsSvhValidationErrorValidator(setup.validator)
 
     def validate_pre_eds(self,
-                         environment: GlobalEnvironmentForPreEdsStep) -> svh.SuccessOrValidationErrorOrHardError:
+                         environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
         return self.validator.validate_pre_eds_if_applicable(environment.home_directory)
 
     def validate_post_setup(self,
-                            environment: GlobalEnvironmentForPostEdsPhase) -> svh.SuccessOrValidationErrorOrHardError:
+                            environment: InstructionEnvironmentForPostSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
         return self.validator.validate_post_eds_if_applicable(environment.eds)
 
     def main(self,
-             environment: GlobalEnvironmentForPostEdsPhase,
+             environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
         return run.run_and_return_pfh(self.setup,
                                       environment.home_and_eds,

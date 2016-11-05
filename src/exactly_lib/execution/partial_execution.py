@@ -17,7 +17,7 @@ from exactly_lib.test_case.os_services import new_default
 from exactly_lib.test_case.phases import common
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
-from exactly_lib.test_case.phases.common import GlobalEnvironmentForPreEdsStep, HomeAndEds
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, HomeAndEds
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder, StdinSettings
 from exactly_lib.util.failure_details import FailureDetails, new_failure_details_from_message, \
     new_failure_details_from_exception
@@ -186,7 +186,7 @@ class _PartialExecutor:
         self.os_services = None
         self.__act_source_and_executor = None
         self.__act_source_and_executor_constructor = act_phase_handling.source_and_executor_constructor
-        self.__global_environment_pre_eds = GlobalEnvironmentForPreEdsStep(
+        self.__global_environment_pre_eds = InstructionEnvironmentForPreSdsStep(
             self.__configuration.home_dir_path,
             self.__configuration.timeout_in_seconds)
 
@@ -395,11 +395,11 @@ class _PartialExecutor:
         self.__execution_directory_structure = construct_eds(eds_structure_root)
 
     def __post_eds_environment(self,
-                               phase: phases.Phase) -> common.GlobalEnvironmentForPostEdsPhase:
-        return common.GlobalEnvironmentForPostEdsPhase(self.__configuration.home_dir_path,
-                                                       self.__execution_directory_structure,
-                                                       phase.identifier,
-                                                       timeout_in_seconds=self.__configuration.timeout_in_seconds)
+                               phase: phases.Phase) -> common.InstructionEnvironmentForPostSdsStep:
+        return common.InstructionEnvironmentForPostSdsStep(self.__configuration.home_dir_path,
+                                                           self.__execution_directory_structure,
+                                                           phase.identifier,
+                                                           timeout_in_seconds=self.__configuration.timeout_in_seconds)
 
     def __set_post_eds_environment_variables(self):
         os.environ.update(environment_variables.set_at_setup_main(self._eds))
