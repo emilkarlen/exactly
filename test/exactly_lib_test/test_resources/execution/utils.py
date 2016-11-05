@@ -88,8 +88,8 @@ def home_and_eds_and_test_as_curr_dir(
     with tempfile.TemporaryDirectory(prefix=prefix + "-home-") as home_dir:
         home_dir_path = resolved_path(home_dir)
         home_dir_contents.write_to(home_dir_path)
-        with execution_directory_structure(prefix=prefix + "-eds-",
-                                           contents=eds_contents) as eds:
+        with sandbox_directory_structure(prefix=prefix + "-eds-",
+                                         contents=eds_contents) as eds:
             try:
                 os.chdir(str(eds.act_dir))
                 yield HomeAndSds(home_dir_path,
@@ -99,8 +99,8 @@ def home_and_eds_and_test_as_curr_dir(
 
 
 @contextmanager
-def execution_directory_structure(contents: eds_populator.EdsPopulator = eds_populator.empty(),
-                                  prefix: str = program_info.PROGRAM_NAME + '-test-eds-') \
+def sandbox_directory_structure(contents: eds_populator.EdsPopulator = eds_populator.empty(),
+                                prefix: str = program_info.PROGRAM_NAME + '-test-eds-') \
         -> eds_module.SandboxDirectoryStructure:
     with tempfile.TemporaryDirectory(prefix=prefix) as eds_root_dir:
         eds = eds_module.construct_at(resolved_path_name(eds_root_dir))
