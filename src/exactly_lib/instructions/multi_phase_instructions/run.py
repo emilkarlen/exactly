@@ -15,12 +15,15 @@ from exactly_lib.instructions.utils.documentation.instruction_documentation_with
 from exactly_lib.instructions.utils.executable_file import ExecutableFile
 from exactly_lib.instructions.utils.file_ref import FileRef
 from exactly_lib.instructions.utils.file_ref_check import FileRefCheckValidator, FileRefCheck
+from exactly_lib.instructions.utils.main_step_executor import MainStepExecutor, InstructionParts
 from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostEdsValidator, AndValidator
 from exactly_lib.instructions.utils.sub_process_execution import ResultAndStderr, ExecuteInfo, \
     ExecutorThatStoresResultInFilesInDir, execute_and_read_stderr_if_non_zero_exitcode, result_to_sh, result_to_pfh
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, SingleInstructionParserSource, SingleInstructionInvalidArgumentException
-from exactly_lib.test_case.phases.common import HomeAndSds, TestCaseInstruction, PhaseLoggingPaths
+from exactly_lib.test_case.os_services import OsServices
+from exactly_lib.test_case.phases.common import HomeAndSds, TestCaseInstruction, PhaseLoggingPaths, \
+    InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.util.cli_syntax.elements import argument as a
@@ -230,6 +233,23 @@ def run_and_return_pfh(setup: SetupForExecutableWithArguments,
     return result_to_pfh(result)
 
 
+class RunMainStepExecutor(MainStepExecutor):
+    def __init__(self, setup: SetupForExecutableWithArguments):
+        self._setup = setup
+
+    def apply_sh(self,
+                 environment: InstructionEnvironmentForPostSdsStep,
+                 logging_paths: PhaseLoggingPaths,
+                 os_services: OsServices) -> sh.SuccessOrHardError:
+        return run_and_return_sh(self._setup, environment.home_and_sds, logging_paths)
+
+    def apply_pfh(self,
+                  environment: InstructionEnvironmentForPostSdsStep,
+                  logging_paths: PhaseLoggingPaths,
+                  os_services: OsServices) -> pfh.PassOrFailOrHardError:
+        return run_and_return_pfh(self._setup, environment.home_and_sds, logging_paths)
+
+
 class SetupParser:
     def __init__(self,
                  instruction_name: str):
@@ -294,3 +314,16 @@ class InstructionParser(SingleInstructionParser):
     def apply(self, source: SingleInstructionParserSource) -> TestCaseInstruction:
         setup = self.setup_parser.apply(source)
         return self._setup2instruction_function(setup)
+
+
+class InstructionParser2(SingleInstructionParser):
+    def __init__(self,
+                 instruction_name: str,
+                 instruction_parts2instruction_function):
+        self._instruction_parts2instruction_function = instruction_parts2instruction_function
+        self.setup_parser = SetupParser(instruction_name)
+
+    def apply(self, source: SingleInstructionParserSource) -> TestCaseInstruction:
+        setup = self.setup_parser.apply(source)
+        return self._instruction_parts2instruction_function(InstructionParts(setup.validator,
+                                                                             RunMainStepExecutor(setup)))
