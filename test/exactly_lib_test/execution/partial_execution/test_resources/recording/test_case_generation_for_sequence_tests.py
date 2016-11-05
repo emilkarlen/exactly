@@ -1,4 +1,4 @@
-from exactly_lib.execution import phase_step_simple as phase_step
+from exactly_lib.execution.phase_step_identifiers import phase_step_simple as phase_step
 from exactly_lib.section_document import model
 from exactly_lib.section_document.model import new_instruction_e
 from exactly_lib.test_case.phases.common import TestCaseInstruction

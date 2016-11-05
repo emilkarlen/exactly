@@ -1,4 +1,4 @@
-from exactly_lib.execution.phase_step import PhaseStep
+from exactly_lib.execution.phase_step_identifiers.phase_step import PhaseStep
 
 
 class Recorder:
