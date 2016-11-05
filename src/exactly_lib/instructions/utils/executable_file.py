@@ -13,7 +13,7 @@ class ExecutableFile:
                  arguments: list):
         self._file_reference = file_reference
         self._arguments = arguments
-        self._validator = ExistingExecutableFile(file_reference)
+        self._validator = ExistingExecutableFileValidator(file_reference)
 
     def path(self, home_and_eds: HomeAndEds) -> pathlib.Path:
         return self._file_reference.file_path_pre_or_post_eds(home_and_eds)
@@ -38,7 +38,7 @@ class ExecutableFile:
         return self._validator
 
 
-class ExistingExecutableFile(FileRefValidatorBase):
+class ExistingExecutableFileValidator(FileRefValidatorBase):
     def _validate_path(self, file_path: pathlib.Path) -> str:
         if not file_path.is_file():
             return 'File does not exist: {}'.format(file_path)
