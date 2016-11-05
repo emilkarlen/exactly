@@ -4,7 +4,7 @@ import random
 import unittest
 from contextlib import contextmanager
 
-from exactly_lib.execution.act_phase import ActSourceAndExecutorConstructor
+from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutorConstructor
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, HomeAndSds
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib_test.act_phase_setups.test_resources import act_phase_execution

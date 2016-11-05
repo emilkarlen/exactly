@@ -1,8 +1,8 @@
+from exactly_lib.processing.instruction_setup import InstructionsSetup
 from exactly_lib.section_document import parse
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SectionElementParserForDictionaryOfInstructions
 from exactly_lib.test_case import test_case_doc, phase_identifier
-from exactly_lib.test_case.instruction_setup import InstructionsSetup
 from exactly_lib.util import line_source
 
 DEFAULT_PHASE = phase_identifier.ACT

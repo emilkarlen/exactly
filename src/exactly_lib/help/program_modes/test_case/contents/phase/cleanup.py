@@ -1,6 +1,5 @@
 from exactly_lib.default.program_modes.test_case.default_instruction_names import EXECUTION_MODE_INSTRUCTION_NAME
 from exactly_lib.execution.environment_variables import EXISTS_AT_BEFORE_ASSERT_MAIN
-from exactly_lib.execution.execution_mode import NAME_SKIP
 from exactly_lib.help.concepts.configuration_parameters.execution_mode import EXECUTION_MODE_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.plain_concepts.environment_variable import ENVIRONMENT_VARIABLE_CONCEPT
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
@@ -12,6 +11,7 @@ from exactly_lib.help.program_modes.test_case.phase_help_contents_structures imp
     TestCasePhaseDocumentationForPhaseWithInstructions, PhaseSequenceInfo, ExecutionEnvironmentInfo
 from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.phase_names import phase_name_dictionary, ASSERT_PHASE_NAME, CONFIGURATION_PHASE_NAME
+from exactly_lib.test_case.execution_mode import NAME_SKIP
 from exactly_lib.util.description import Description
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure.structures import text

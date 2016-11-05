@@ -5,7 +5,7 @@ import unittest
 
 from exactly_lib import program_info
 from exactly_lib.execution import partial_execution
-from exactly_lib.execution.act_phase import ActPhaseHandling
+from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.test_case.phases import setup
 from exactly_lib_test.test_resources.file_structure_utils import preserved_cwd
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
