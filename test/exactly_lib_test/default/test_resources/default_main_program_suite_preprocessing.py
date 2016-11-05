@@ -3,8 +3,8 @@ import pathlib
 from exactly_lib.cli.cli_environment.program_modes.test_case.exit_values import EXECUTION__PASS, \
     NO_EXECUTION__SYNTAX_ERROR
 from exactly_lib.cli.cli_environment.program_modes.test_suite import exit_values
-from exactly_lib.execution import phases
 from exactly_lib.section_document.syntax import section_header
+from exactly_lib.test_case import phase_identifier
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.default.test_resources import suite_reporting_output
 from exactly_lib_test.test_resources import quoting
@@ -23,7 +23,7 @@ if basename == 'pass':
     print('{section_header_for_phase_with_instructions}' + os.linesep + '# valid empty test case that PASS')
 else:
     print('{section_header_for_phase_with_instructions}' + os.linesep + 'invalid test case that will cause PARSER-ERROR')
-""".format(section_header_for_phase_with_instructions=section_header(phases.SETUP.section_name))
+""".format(section_header_for_phase_with_instructions=section_header(phase_identifier.SETUP.section_name))
 
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'

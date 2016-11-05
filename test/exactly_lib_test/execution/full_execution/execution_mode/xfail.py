@@ -1,9 +1,9 @@
 import unittest
 
-from exactly_lib.execution import phase_step_simple as phase_step
-from exactly_lib.execution import phases
 from exactly_lib.execution.execution_mode import ExecutionMode
+from exactly_lib.execution.phase_step_identifiers import phase_step_simple as phase_step
 from exactly_lib.execution.result import FullResultStatus
+from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import sh
@@ -29,16 +29,16 @@ if __name__ == '__main__':
 class Test(TestCaseBase):
     def test_with_assert_phase_that_fails(self):
         test_case = test_case_with_two_instructions_in_each_phase() \
-            .add(phases.CONFIGURATION,
+            .add(phase_identifier.CONFIGURATION,
                  test.ConfigurationPhaseInstructionThatSetsExecutionMode(ExecutionMode.XFAIL)) \
-            .add(phases.ASSERT,
+            .add(phase_identifier.ASSERT,
                  test.assert_phase_instruction_that(
                      main=test.do_return(pfh.new_pfh_fail('fail message'))))
         self._check(Arrangement(test_case),
                     Expectation(FullResultStatus.XFAIL,
                                 ExpectedFailureForInstructionFailure.new_with_message(
                                     phase_step.ASSERT__MAIN,
-                                    test_case.the_extra(phases.ASSERT)[0].first_line,
+                                    test_case.the_extra(phase_identifier.ASSERT)[0].first_line,
                                     'fail message'),
                                 [phase_step.CONFIGURATION__MAIN,
                                  phase_step.CONFIGURATION__MAIN] +
@@ -67,7 +67,7 @@ class Test(TestCaseBase):
 
     def test_with_assert_phase_that_passes(self):
         test_case = test_case_with_two_instructions_in_each_phase() \
-            .add(phases.CONFIGURATION,
+            .add(phase_identifier.CONFIGURATION,
                  test.ConfigurationPhaseInstructionThatSetsExecutionMode(ExecutionMode.XFAIL))
         self._check(
             Arrangement(test_case),
@@ -101,25 +101,25 @@ class Test(TestCaseBase):
 
     def test_with_configuration_phase_with_hard_error(self):
         test_case = test_case_with_two_instructions_in_each_phase() \
-            .add(phases.CONFIGURATION,
+            .add(phase_identifier.CONFIGURATION,
                  test.ConfigurationPhaseInstructionThatSetsExecutionMode(ExecutionMode.XFAIL)) \
-            .add(phases.CONFIGURATION,
+            .add(phase_identifier.CONFIGURATION,
                  test.configuration_phase_instruction_that(do_return(sh.new_sh_hard_error('hard error msg'))))
         self._check(
             Arrangement(test_case),
             Expectation(FullResultStatus.HARD_ERROR,
                         ExpectedFailureForInstructionFailure.new_with_message(
                             phase_step.CONFIGURATION__MAIN,
-                            test_case.the_extra(phases.CONFIGURATION)[1].first_line,
+                            test_case.the_extra(phase_identifier.CONFIGURATION)[1].first_line,
                             'hard error msg'),
                         [phase_step.CONFIGURATION__MAIN],
                         False))
 
     def test_with_implementation_error(self):
         test_case = test_case_with_two_instructions_in_each_phase() \
-            .add(phases.CONFIGURATION,
+            .add(phase_identifier.CONFIGURATION,
                  test.ConfigurationPhaseInstructionThatSetsExecutionMode(ExecutionMode.XFAIL)) \
-            .add(phases.CLEANUP,
+            .add(phase_identifier.CLEANUP,
                  test.cleanup_phase_instruction_that(
                      main=test.do_raise(test.ImplementationErrorTestException())))
         self._check(
@@ -127,7 +127,7 @@ class Test(TestCaseBase):
             Expectation(FullResultStatus.IMPLEMENTATION_ERROR,
                         ExpectedFailureForInstructionFailure.new_with_exception(
                             phase_step.CLEANUP__MAIN,
-                            test_case.the_extra(phases.CLEANUP)[0].first_line,
+                            test_case.the_extra(phase_identifier.CLEANUP)[0].first_line,
                             test.ImplementationErrorTestException),
                         [phase_step.CONFIGURATION__MAIN,
                          phase_step.CONFIGURATION__MAIN] +

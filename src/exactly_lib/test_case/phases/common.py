@@ -1,24 +1,25 @@
 import pathlib
 
-from exactly_lib.execution import execution_directory_structure as eds_module
-from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure, log_phase_dir
 from exactly_lib.section_document.model import Instruction
+from exactly_lib.test_case import sandbox_directory_structure as _sds
+from exactly_lib.test_case.phase_identifier import Phase
+from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 
 
-class HomeAndEds:
+class HomeAndSds:
     def __init__(self,
                  home_path: pathlib.Path,
-                 eds: eds_module.ExecutionDirectoryStructure):
+                 sds: _sds.SandboxDirectoryStructure):
         self._home_path = home_path
-        self._eds = eds
+        self._sds = sds
 
     @property
     def home_dir_path(self) -> pathlib.Path:
         return self._home_path
 
     @property
-    def eds(self) -> eds_module.ExecutionDirectoryStructure:
-        return self._eds
+    def sds(self) -> _sds.SandboxDirectoryStructure:
+        return self._sds
 
 
 class InstructionEnvironmentForPreSdsStep:
@@ -46,7 +47,7 @@ class PhaseLoggingPaths:
     def __init__(self,
                  log_root_dir: pathlib.Path,
                  phase_identifier: str):
-        self._phase_dir_path = log_phase_dir(log_root_dir, phase_identifier)
+        self._phase_dir_path = _sds.log_phase_dir(log_root_dir, phase_identifier)
         self._visited_line_numbers = []
 
     @property
@@ -78,25 +79,25 @@ class PhaseLoggingPaths:
 class InstructionEnvironmentForPostSdsStep(InstructionEnvironmentForPreSdsStep):
     def __init__(self,
                  home_dir: pathlib.Path,
-                 eds: ExecutionDirectoryStructure,
+                 sds: _sds.SandboxDirectoryStructure,
                  phase_identifier: str,
                  timeout_in_seconds: int = None):
         super().__init__(home_dir, timeout_in_seconds)
-        self.__eds = eds
-        self._phase_logging = PhaseLoggingPaths(eds.log_dir, phase_identifier)
+        self.__eds = sds
+        self._phase_logging = PhaseLoggingPaths(sds.log_dir, phase_identifier)
 
     @property
-    def execution_directory_structure(self) -> ExecutionDirectoryStructure:
+    def execution_directory_structure(self) -> _sds.SandboxDirectoryStructure:
         return self.__eds
 
     @property
-    def eds(self) -> ExecutionDirectoryStructure:
+    def sds(self) -> _sds.SandboxDirectoryStructure:
         return self.__eds
 
     @property
-    def home_and_eds(self) -> HomeAndEds:
-        return HomeAndEds(self.home_directory,
-                          self.eds)
+    def home_and_sds(self) -> HomeAndSds:
+        return HomeAndSds(self.home_directory,
+                          self.sds)
 
     @property
     def phase_logging(self) -> PhaseLoggingPaths:
@@ -104,4 +105,12 @@ class InstructionEnvironmentForPostSdsStep(InstructionEnvironmentForPreSdsStep):
 
 
 class TestCaseInstruction(Instruction):
-    pass
+    @property
+    def phase(self) -> Phase:
+        raise NotImplementedError()
+
+
+class TestCaseInstructionExecutedInSandbox(TestCaseInstruction):
+    @property
+    def logging_paths(self, sds: SandboxDirectoryStructure) -> PhaseLoggingPaths:
+        return PhaseLoggingPaths(sds.log_dir, self.phase.identifier)

@@ -4,8 +4,8 @@ from exactly_lib.instructions.utils import sub_process_execution as sut
 from exactly_lib.instructions.utils.sub_process_execution import InstructionSourceInfo
 from exactly_lib_test.test_resources import file_checks
 from exactly_lib_test.test_resources import python_program_execution as py_exe
-from exactly_lib_test.test_resources.execution.eds_populator import act_dir_contents
-from exactly_lib_test.test_resources.execution.utils import execution_directory_structure
+from exactly_lib_test.test_resources.execution.sds_populator import act_dir_contents
+from exactly_lib_test.test_resources.execution.utils import sandbox_directory_structure
 from exactly_lib_test.test_resources.file_structure import DirContents, File
 
 
@@ -19,14 +19,14 @@ import sys
 sys.exit(%d)
 """ % exit_code
 
-        with execution_directory_structure(contents=act_dir_contents(
+        with sandbox_directory_structure(contents=act_dir_contents(
                 DirContents([
                     File('program.py', py_pgm_that_exits_with_exit_code)
-                ]))) as eds:
+                ]))) as sds:
             executor = sut.ExecutorThatStoresResultInFilesInDir(False)
             result = executor.apply(self.source_info,
-                                    eds.log_dir,
-                                    py_exe.args_for_interpreting(eds.act_dir / 'program.py'))
+                                    sds.log_dir,
+                                    py_exe.args_for_interpreting(sds.act_dir / 'program.py'))
             self.assertTrue(result.is_success,
                             'Result should indicate success')
             self.assertEqual(exit_code,
@@ -34,36 +34,36 @@ sys.exit(%d)
                              'Exit code')
 
     def test_invalid_executable(self):
-        with execution_directory_structure() as eds:
+        with sandbox_directory_structure() as sds:
             executor = sut.ExecutorThatStoresResultInFilesInDir(False)
             result = executor.apply(self.source_info,
-                                    eds.log_dir,
-                                    [str(eds.act_dir / 'non-existing-program')])
+                                    sds.log_dir,
+                                    [str(sds.act_dir / 'non-existing-program')])
             self.assertFalse(result.is_success,
                              'Result should indicate failure')
 
     def test_storage_of_result_in_files__existing_dir(self):
         setup = TestStorageOfResultInFilesSetup()
-        with execution_directory_structure(contents=act_dir_contents(
+        with sandbox_directory_structure(contents=act_dir_contents(
                 DirContents([
                     File('program.py', setup.py_pgm_that_prints_and_exits_with_exit_code)
-                ]))) as eds:
+                ]))) as sds:
             executor = sut.ExecutorThatStoresResultInFilesInDir(False)
             result = executor.apply(self.source_info,
-                                    eds.log_dir,
-                                    py_exe.args_for_interpreting(eds.act_dir / 'program.py'))
+                                    sds.log_dir,
+                                    py_exe.args_for_interpreting(sds.act_dir / 'program.py'))
             setup.check(self, result)
 
     def test_storage_of_result_in_files__non_existing_dir(self):
         setup = TestStorageOfResultInFilesSetup()
-        with execution_directory_structure(contents=act_dir_contents(
+        with sandbox_directory_structure(contents=act_dir_contents(
                 DirContents([
                     File('program.py', setup.py_pgm_that_prints_and_exits_with_exit_code)
-                ]))) as eds:
+                ]))) as sds:
             executor = sut.ExecutorThatStoresResultInFilesInDir(False)
             result = executor.apply(self.source_info,
-                                    eds.log_dir / 'non-existing-path-component' / 'one-more-component',
-                                    py_exe.args_for_interpreting(eds.act_dir / 'program.py'))
+                                    sds.log_dir / 'non-existing-path-component' / 'one-more-component',
+                                    py_exe.args_for_interpreting(sds.act_dir / 'program.py'))
             setup.check(self, result)
 
 

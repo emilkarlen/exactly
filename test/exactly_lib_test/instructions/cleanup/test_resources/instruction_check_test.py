@@ -73,7 +73,7 @@ class InstructionThatRaisesTestErrorIfCwdIsIsNotTestRoot(CleanupPhaseInstruction
              environment: InstructionEnvironmentForPostSdsStep,
              previous_phase: PreviousPhase,
              os_services: OsServices) -> sh.SuccessOrHardError:
-        test_misc.raise_test_error_if_cwd_is_not_test_root(environment.eds)
+        test_misc.raise_test_error_if_cwd_is_not_test_root(environment.sds)
         return sh.new_sh_success()
 
 

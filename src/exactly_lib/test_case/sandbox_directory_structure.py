@@ -110,7 +110,10 @@ class Tmp(DirWithRoot):
         return self.__user_dir
 
 
-class ExecutionDirectoryStructure(DirWithRoot):
+class SandboxDirectoryStructure(DirWithRoot):
+    """
+    The temporary directory structure in which (parts of) a test case is executed
+    """
     def __init__(self, dir_name: str):
         super().__init__(Path(dir_name))
         self.__test_case_dir = self.root_dir / 'testcase'
@@ -140,28 +143,28 @@ class ExecutionDirectoryStructure(DirWithRoot):
         return self.__log_dir
 
 
-def construct_at(execution_directory_root: str) -> ExecutionDirectoryStructure:
+def construct_at(execution_directory_root: str) -> SandboxDirectoryStructure:
     for d in execution_directories:
         d.mk_dirs(Path(execution_directory_root))
-    return ExecutionDirectoryStructure(execution_directory_root)
+    return SandboxDirectoryStructure(execution_directory_root)
 
 
-def construct_at_tmp_root() -> ExecutionDirectoryStructure:
+def construct_at_tmp_root() -> SandboxDirectoryStructure:
     root_dir_name = tempfile.mkdtemp(prefix=program_info.PROGRAM_NAME + '-')
     return construct_at(root_dir_name)
 
 
-def root_dir_for_non_stdout_or_stderr_files_with_replaced_env_vars(eds: ExecutionDirectoryStructure) -> Path:
-    return eds.tmp.internal_dir / TMP_INTERNAL__WITH_REPLACED_ENV_VARS_SUB_DIR
+def root_dir_for_non_stdout_or_stderr_files_with_replaced_env_vars(sds: SandboxDirectoryStructure) -> Path:
+    return sds.tmp.internal_dir / TMP_INTERNAL__WITH_REPLACED_ENV_VARS_SUB_DIR
 
 
-def stdin_contents_file(eds: ExecutionDirectoryStructure) -> Path:
-    return eds.tmp.internal_dir / TMP_INTERNAL__STDIN_CONTENTS
+def stdin_contents_file(sds: SandboxDirectoryStructure) -> Path:
+    return sds.tmp.internal_dir / TMP_INTERNAL__STDIN_CONTENTS
 
 
-def eds_log_phase_dir(eds: ExecutionDirectoryStructure,
+def sds_log_phase_dir(sds: SandboxDirectoryStructure,
                       phase_name: str) -> Path:
-    return log_phase_dir(eds.log_dir, phase_name)
+    return log_phase_dir(sds.log_dir, phase_name)
 
 
 def log_phase_dir(log_root_dir: Path,

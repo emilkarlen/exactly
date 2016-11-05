@@ -126,7 +126,7 @@ class AssertStdinFileIsSetToFile(Assertion):
               environment: common.InstructionEnvironmentForPostSdsStep,
               initial: SetupSettingsBuilder,
               actual_result: SetupSettingsBuilder):
-        file_path = self._file_reference.file_path_pre_or_post_eds(environment.home_and_eds)
+        file_path = self._file_reference.file_path_pre_or_post_eds(environment.home_and_sds)
         put.assertIsNotNone(actual_result.stdin.file_name)
         put.assertEqual(str(file_path),
                         actual_result.stdin.file_name,

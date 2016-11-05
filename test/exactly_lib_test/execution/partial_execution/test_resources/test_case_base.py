@@ -7,11 +7,11 @@ import exactly_lib.act_phase_setups.script_interpretation.python3
 from exactly_lib import program_info
 from exactly_lib.execution import partial_execution
 from exactly_lib.execution.act_phase import ActPhaseHandling
-from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from exactly_lib.execution.partial_execution import TestCase
 from exactly_lib.execution.result import PartialResult
 from exactly_lib.processing.processors import act_phase_handling_for_setup
 from exactly_lib.test_case.phases import setup
+from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib_test.execution.test_resources import utils
 
 
@@ -47,12 +47,12 @@ class PartialExecutionTestCaseBase:
         self._assertions()
         # CLEANUP #
         os.chdir(str(self.initial_home_dir_path))
-        if not self.__dbg_do_not_delete_dir_structure and self.eds:
-            if self.eds.root_dir.exists():
-                shutil.rmtree(str(self.eds.root_dir))
+        if not self.__dbg_do_not_delete_dir_structure and self.sds:
+            if self.sds.root_dir.exists():
+                shutil.rmtree(str(self.sds.root_dir))
         else:
-            if self.eds:
-                print(str(self.eds.root_dir))
+            if self.sds:
+                print(str(self.sds.root_dir))
 
     def _test_case(self) -> TestCase:
         raise NotImplementedError()
@@ -73,7 +73,7 @@ class PartialExecutionTestCaseBase:
         return self.__partial_result
 
     @property
-    def eds(self) -> ExecutionDirectoryStructure:
+    def sds(self) -> SandboxDirectoryStructure:
         return self.__partial_result.execution_directory_structure
 
     def assert_is_regular_file_with_contents(self,

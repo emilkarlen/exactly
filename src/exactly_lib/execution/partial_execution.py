@@ -5,27 +5,27 @@ import subprocess
 import tempfile
 
 from exactly_lib.execution import environment_variables
-from exactly_lib.execution import phase_step
-from exactly_lib.execution import phase_step_executors
-from exactly_lib.execution import phases
 from exactly_lib.execution.act_phase import ExitCodeOrHardError, ActSourceAndExecutor, \
     ActPhaseHandling, new_eh_hard_error
-from exactly_lib.execution.phase_step import PhaseStep
-from exactly_lib.execution.single_instruction_executor import ControlledInstructionExecutor
+from exactly_lib.execution.instruction_execution import phase_step_executors, phase_step_execution
+from exactly_lib.execution.instruction_execution.single_instruction_executor import ControlledInstructionExecutor
+from exactly_lib.execution.phase_step_identifiers import phase_step
+from exactly_lib.execution.phase_step_identifiers.phase_step import PhaseStep
 from exactly_lib.section_document.model import SectionContents, ElementType
+from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.os_services import new_default
 from exactly_lib.test_case.phases import common
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, HomeAndEds
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, HomeAndSds
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder, StdinSettings
+from exactly_lib.test_case.sandbox_directory_structure import construct_at, SandboxDirectoryStructure, \
+    stdin_contents_file
 from exactly_lib.util.failure_details import FailureDetails, new_failure_details_from_message, \
     new_failure_details_from_exception
 from exactly_lib.util.file_utils import write_new_text_file, resolved_path_name
 from exactly_lib.util.std import StdOutputFiles, StdFiles
-from . import phase_step_execution
 from . import result
-from .execution_directory_structure import construct_at, ExecutionDirectoryStructure, stdin_contents_file
 from .result import PartialResult, PartialResultStatus, new_partial_result_pass, PhaseFailureInfo
 
 
@@ -164,7 +164,7 @@ def execute(act_phase_handling: ActPhaseHandling,
                 shutil.rmtree(str(ret_val.execution_directory_structure.root_dir))
 
 
-def construct_eds(execution_directory_root_name_prefix: str) -> ExecutionDirectoryStructure:
+def construct_eds(execution_directory_root_name_prefix: str) -> SandboxDirectoryStructure:
     eds_structure_root = tempfile.mkdtemp(prefix=execution_directory_root_name_prefix)
     return construct_at(resolved_path_name(eds_structure_root))
 
@@ -246,7 +246,7 @@ class _PartialExecutor:
         return new_partial_result_pass(self._eds)
 
     @property
-    def _eds(self) -> ExecutionDirectoryStructure:
+    def _eds(self) -> SandboxDirectoryStructure:
         return self.__execution_directory_structure
 
     @property
@@ -289,7 +289,7 @@ class _PartialExecutor:
             self.__act_source_and_executor = self.__act_phase_handling.source_and_executor_constructor.apply(
                 self.__global_environment_pre_eds,
                 instructions)
-            res = self.__act_source_and_executor.validate_pre_eds(self.__global_environment_pre_eds.home_directory)
+            res = self.__act_source_and_executor.validate_pre_sds(self.__global_environment_pre_eds.home_directory)
             if res.is_success:
                 return new_partial_result_pass(None)
             else:
@@ -326,7 +326,7 @@ class _PartialExecutor:
         ret_val = self.__run_internal_instructions_phase_step(phase_step.SETUP__MAIN,
                                                               phase_step_executors.SetupMainExecutor(
                                                                   self.os_services,
-                                                                  self.__post_eds_environment(phases.SETUP),
+                                                                  self.__post_eds_environment(phase_identifier.SETUP),
                                                                   self.__setup_settings_builder),
                                                               self.__test_case.setup_phase)
         self.___step_execution_result.stdin_settings = self.__setup_settings_builder.stdin
@@ -337,33 +337,33 @@ class _PartialExecutor:
         return self.__run_internal_instructions_phase_step(
             phase_step.SETUP__VALIDATE_POST_SETUP,
             phase_step_executors.SetupValidatePostSetupExecutor(
-                self.__post_eds_environment(phases.SETUP)),
+                self.__post_eds_environment(phase_identifier.SETUP)),
             self.__test_case.setup_phase)
 
     def __act_program_executor(self):
         return _ActProgramExecution(self.__act_source_and_executor,
-                                    HomeAndEds(self.__configuration.home_dir_path, self._eds),
+                                    HomeAndSds(self.__configuration.home_dir_path, self._eds),
                                     self.___step_execution_result)
 
     def __before_assert__validate_post_setup(self) -> PartialResult:
         return self.__run_internal_instructions_phase_step(
             phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
             phase_step_executors.BeforeAssertValidatePostSetupExecutor(
-                self.__post_eds_environment(phases.BEFORE_ASSERT)),
+                self.__post_eds_environment(phase_identifier.BEFORE_ASSERT)),
             self.__test_case.before_assert_phase)
 
     def __assert__validate_post_setup(self) -> PartialResult:
         return self.__run_internal_instructions_phase_step(
             phase_step.ASSERT__VALIDATE_POST_SETUP,
             phase_step_executors.AssertValidatePostSetupExecutor(
-                self.__post_eds_environment(phases.ASSERT)),
+                self.__post_eds_environment(phase_identifier.ASSERT)),
             self.__test_case.assert_phase)
 
     def __assert__main(self) -> PartialResult:
         return self.__run_internal_instructions_phase_step(
             phase_step.ASSERT__MAIN,
             phase_step_executors.AssertMainExecutor(
-                self.__post_eds_environment(phases.ASSERT),
+                self.__post_eds_environment(phase_identifier.ASSERT),
                 self.os_services),
             self.__test_case.assert_phase)
 
@@ -371,7 +371,7 @@ class _PartialExecutor:
         return self.__run_internal_instructions_phase_step(
             phase_step.CLEANUP__MAIN,
             phase_step_executors.CleanupMainExecutor(
-                self.__post_eds_environment(phases.CLEANUP),
+                self.__post_eds_environment(phase_identifier.CLEANUP),
                 previous_phase,
                 self.os_services),
             self.__test_case.cleanup_phase)
@@ -380,7 +380,7 @@ class _PartialExecutor:
         return self.__run_internal_instructions_phase_step(
             phase_step.BEFORE_ASSERT__MAIN,
             phase_step_executors.BeforeAssertMainExecutor(
-                self.__post_eds_environment(phases.BEFORE_ASSERT),
+                self.__post_eds_environment(phase_identifier.BEFORE_ASSERT),
                 self.os_services),
             self.__test_case.before_assert_phase)
 
@@ -390,12 +390,12 @@ class _PartialExecutor:
     def __set_cwd_to_act_dir(self):
         os.chdir(str(self._eds.act_dir))
 
-    def __construct_and_set_eds(self) -> ExecutionDirectoryStructure:
+    def __construct_and_set_eds(self) -> SandboxDirectoryStructure:
         eds_structure_root = tempfile.mkdtemp(prefix=self.__exe_configuration.execution_directory_root_name_prefix)
         self.__execution_directory_structure = construct_eds(eds_structure_root)
 
     def __post_eds_environment(self,
-                               phase: phases.Phase) -> common.InstructionEnvironmentForPostSdsStep:
+                               phase: phase_identifier.Phase) -> common.InstructionEnvironmentForPostSdsStep:
         return common.InstructionEnvironmentForPostSdsStep(self.__configuration.home_dir_path,
                                                            self.__execution_directory_structure,
                                                            phase.identifier,
@@ -422,15 +422,15 @@ class _PartialExecutor:
 class _PhaseFailureResultConstructor:
     def __init__(self,
                  step: PhaseStep,
-                 eds: ExecutionDirectoryStructure):
+                 sds: SandboxDirectoryStructure):
         self.step = step
-        self.eds = eds
+        self.sds = sds
 
     def apply(self,
               status: PartialResultStatus,
               failure_details: FailureDetails) -> PartialResult:
         return PartialResult(status,
-                             self.eds,
+                             self.sds,
                              result.PhaseFailureInfo(self.step,
                                                      failure_details))
 
@@ -446,18 +446,18 @@ class _PhaseFailureResultConstructor:
 class _ActProgramExecution:
     def __init__(self,
                  act_source_and_executor: ActSourceAndExecutor,
-                 home_and_eds: HomeAndEds,
+                 home_and_sds: HomeAndSds,
                  step_execution_result: _StepExecutionResult()):
         self.act_source_and_executor = act_source_and_executor
-        self.home_and_eds = home_and_eds
+        self.home_and_sds = home_and_sds
         self.step_execution_result = step_execution_result
-        self.script_output_dir_path = self.home_and_eds.eds.test_case_dir
+        self.script_output_dir_path = self.home_and_sds.sds.test_case_dir
 
     def validate_post_setup(self) -> PartialResult:
         step = phase_step.ACT__VALIDATE_POST_SETUP
 
         def action():
-            res = self.act_source_and_executor.validate_post_setup(self.home_and_eds)
+            res = self.act_source_and_executor.validate_post_setup(self.home_and_sds)
             if res.is_success:
                 return self._pass()
             else:
@@ -471,7 +471,7 @@ class _ActProgramExecution:
         step = phase_step.ACT__PREPARE
 
         def action():
-            res = self.act_source_and_executor.prepare(self.home_and_eds,
+            res = self.act_source_and_executor.prepare(self.home_and_sds,
                                                        self.script_output_dir_path)
             if res.is_success:
                 return self._pass()
@@ -515,11 +515,11 @@ class _ActProgramExecution:
         """
         Pre-condition: write has been executed.
         """
-        eds = self.home_and_eds.eds
-        with open(str(eds.result.stdout_file), 'w') as f_stdout:
-            with open(str(eds.result.stderr_file), 'w') as f_stderr:
+        sds = self.home_and_sds.sds
+        with open(str(sds.result.stdout_file), 'w') as f_stdout:
+            with open(str(sds.result.stderr_file), 'w') as f_stderr:
                 exit_code_or_hard_error = self.act_source_and_executor.execute(
-                    self.home_and_eds,
+                    self.home_and_sds,
                     self.script_output_dir_path,
                     StdFiles(f_stdin,
                              StdOutputFiles(f_stdout,
@@ -529,7 +529,7 @@ class _ActProgramExecution:
                 return exit_code_or_hard_error
 
     def _store_exit_code(self, exitcode: int):
-        with open(str(self.home_and_eds.eds.result.exitcode_file), 'w') as f:
+        with open(str(self.home_and_sds.sds.result.exitcode_file), 'w') as f:
             f.write(str(exitcode))
 
     def _custom_stdin_file_name(self) -> str:
@@ -537,7 +537,7 @@ class _ActProgramExecution:
         if settings.file_name is not None:
             return settings.file_name
         else:
-            file_path = stdin_contents_file(self.home_and_eds.eds)
+            file_path = stdin_contents_file(self.home_and_sds.sds)
             write_new_text_file(file_path, settings.contents)
             return str(file_path)
 
@@ -548,7 +548,7 @@ class _ActProgramExecution:
             return self._failure_con_for(step).implementation_error(ex)
 
     def _pass(self) -> PartialResult:
-        return new_partial_result_pass(self.home_and_eds.eds)
+        return new_partial_result_pass(self.home_and_sds.sds)
 
     def _failure_from(self,
                       step: PhaseStep,
@@ -557,4 +557,4 @@ class _ActProgramExecution:
         return self._failure_con_for(step).apply(status, failure_details)
 
     def _failure_con_for(self, step: PhaseStep) -> _PhaseFailureResultConstructor:
-        return _PhaseFailureResultConstructor(step, self.home_and_eds.eds)
+        return _PhaseFailureResultConstructor(step, self.home_and_sds.sds)

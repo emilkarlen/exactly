@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.test_case.phases.common import HomeAndEds
+from exactly_lib.test_case.phases.common import HomeAndSds
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithEds
@@ -27,11 +27,11 @@ class InstructionExecutionToBeReplacedByVaBase:
 
     def _check_result_of_validate_pre_eds(self, actual):
         va.IsInstance(svh.SuccessOrValidationErrorOrHardError,
-                      'Result of validate/pre-eds').apply(self.put, actual)
+                      'Result of validate/pre-sds').apply(self.put, actual)
 
     def _check_result_of_validate_post_setup(self, actual):
         va.IsInstance(svh.SuccessOrValidationErrorOrHardError,
-                      'Result of validate/pre-eds').apply(self.put, actual)
+                      'Result of validate/pre-sds').apply(self.put, actual)
 
 
 class InstructionExecutionBase:
@@ -54,14 +54,14 @@ class InstructionExecutionBase:
                                  self.expectation.validation_pre_eds,
                                  actual)
 
-    def _check_main_side_effects_on_files(self, home_and_eds: HomeAndEds):
+    def _check_main_side_effects_on_files(self, home_and_sds: HomeAndSds):
         self.expectation.main_side_effects_on_files.apply(self.put,
-                                                          home_and_eds.eds,
+                                                          home_and_sds.sds,
                                                           va.MessageBuilder('main side effects on EDS'))
 
-    def _check_side_effects_on_home_and_eds(self, home_and_eds: HomeAndEds):
+    def _check_side_effects_on_home_and_eds(self, home_and_sds: HomeAndSds):
         self.expectation.side_effects_check.apply(self.put,
-                                                  home_and_eds,
+                                                  home_and_sds,
                                                   va.MessageBuilder('side effects on HomeAndEds'))
 
     def _check_instance_and(self,

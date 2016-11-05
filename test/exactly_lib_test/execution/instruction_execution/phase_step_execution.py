@@ -1,9 +1,9 @@
 import unittest
 
-from exactly_lib.execution.phase_step_execution import execute_phase_prim, Failure
-from exactly_lib.execution.result import PartialResultStatus
-from exactly_lib.execution.single_instruction_executor import ControlledInstructionExecutor, \
+from exactly_lib.execution.instruction_execution.phase_step_execution import execute_phase_prim, Failure
+from exactly_lib.execution.instruction_execution.single_instruction_executor import ControlledInstructionExecutor, \
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum
+from exactly_lib.execution.result import PartialResultStatus
 from exactly_lib.section_document.model import SectionContents
 from exactly_lib.util.line_source import Line
 from exactly_lib_test.execution.test_resources.phase_step_execution import ExpectedResult, expected_success, \
@@ -50,11 +50,11 @@ class Test(unittest.TestCase):
                                                                   TestInstruction('First instruction')),
                                           new_comment_element(Line(2, '2')),
                                           new_instruction_element(Line(3, '3'),
-                                                                TestInstruction('Second instruction')),
+                                                                  TestInstruction('Second instruction')),
                                           new_comment_element(Line(4, '4')),
                                           new_comment_element(Line(50, '50')),
                                           new_instruction_element(Line(60, '60'),
-                                                                TestInstruction('Third instruction')),
+                                                                  TestInstruction('Third instruction')),
                                           new_instruction_element(Line(70, '70'),
                                                                   TestInstruction('Fourth instruction')),
                                           new_comment_element(Line(80, '80')),
@@ -156,7 +156,7 @@ class Test(unittest.TestCase):
         phase_contents = SectionContents((new_instruction_element(Line(1, '1'),
                                                                   TestInstruction('First instruction')),
                                           new_instruction_element(Line(2, '2'),
-                                                                TestInstruction('Second instruction'))
+                                                                  TestInstruction('Second instruction'))
                                           ))
         self._standard_test(
             recording_media,
@@ -179,7 +179,7 @@ class Test(unittest.TestCase):
         phase_contents = SectionContents((new_instruction_element(Line(1, '1'),
                                                                   TestInstruction('First instruction')),
                                           new_instruction_element(Line(2, '2'),
-                                                                TestInstruction('Middle instruction')),
+                                                                  TestInstruction('Middle instruction')),
                                           new_instruction_element(Line(3, '3'),
                                                                   TestInstruction('Last instruction')),
                                           ))
@@ -207,7 +207,7 @@ class Test(unittest.TestCase):
         phase_contents = SectionContents((new_instruction_element(Line(1, '1'),
                                                                   TestInstruction('First instruction')),
                                           new_instruction_element(Line(2, '2'),
-                                                                TestInstruction('Last instruction'))
+                                                                  TestInstruction('Last instruction'))
                                           ))
         self._standard_test(
             recording_media,

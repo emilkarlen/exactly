@@ -1,9 +1,10 @@
 import unittest
 
-from exactly_lib.execution.partial_execution import PartialResultStatus
-from exactly_lib.execution.phase_step_execution import Failure, ElementHeaderExecutor
-from exactly_lib.execution.single_instruction_executor import ControlledInstructionExecutor, \
+from exactly_lib.execution.instruction_execution.phase_step_execution import Failure, ElementHeaderExecutor
+from exactly_lib.execution.instruction_execution.single_instruction_executor import ControlledInstructionExecutor, \
     PartialInstructionControlledFailureInfo
+from exactly_lib.execution.partial_execution import PartialResultStatus
+from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.util import line_source
 from exactly_lib_test.section_document.test_resources.assertions import assert_equals_line
@@ -89,6 +90,10 @@ class TestInstruction(TestCaseInstruction):
     def __init__(self,
                  name: str):
         self.name = name
+
+    @property
+    def phase(self) -> phase_identifier.Phase:
+        raise ValueError('should not be used in test')
 
 
 class ElementHeaderExecutorThatRecordsHeaderAndLineNumber(ElementHeaderExecutor):

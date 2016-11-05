@@ -1,7 +1,7 @@
 import unittest
 
-from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from exactly_lib.execution.partial_execution import PartialResultStatus, PartialResult
+from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib_test.test_resources.expected_instruction_failure import ExpectedFailure, \
     ExpectedFailureForNoFailure
 
@@ -9,7 +9,7 @@ from exactly_lib_test.test_resources.expected_instruction_failure import Expecte
 class ExpectedPartialResult:
     def __init__(self,
                  status: PartialResultStatus,
-                 directory_structure: ExecutionDirectoryStructure,
+                 directory_structure: SandboxDirectoryStructure,
                  instruction_failure: ExpectedFailure):
         self.__status = status
         self.__execution_directory_structure = directory_structure
@@ -28,7 +28,7 @@ class ExpectedPartialResult:
                                                        actual_result.failure_info)
 
 
-def expected_pass(directory_structure: ExecutionDirectoryStructure) -> ExpectedPartialResult:
+def expected_pass(directory_structure: SandboxDirectoryStructure) -> ExpectedPartialResult:
     return ExpectedPartialResult(PartialResultStatus.PASS,
                                  directory_structure,
                                  ExpectedFailureForNoFailure())

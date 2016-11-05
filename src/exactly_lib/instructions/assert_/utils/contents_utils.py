@@ -20,7 +20,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, HomeAndEds, \
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, HomeAndSds, \
     InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import svh
@@ -74,10 +74,10 @@ class ActComparisonActualFileForFileRef(ComparisonActualFile):
     def file_check_failure(self, environment: i.InstructionEnvironmentForPostSdsStep) -> str:
         return pre_or_post_eds_failure_message_or_none(FileRefCheck(self.file_ref,
                                                                     must_exist_as(FileType.REGULAR)),
-                                                       environment.home_and_eds)
+                                                       environment.home_and_sds)
 
     def file_path(self, environment: i.InstructionEnvironmentForPostSdsStep) -> pathlib.Path:
-        return self.file_ref.file_path_pre_or_post_eds(environment.home_and_eds)
+        return self.file_ref.file_path_pre_or_post_eds(environment.home_and_sds)
 
 
 class ActComparisonActualFileForStdFileBase(ComparisonActualFile):
@@ -87,12 +87,12 @@ class ActComparisonActualFileForStdFileBase(ComparisonActualFile):
 
 class StdoutComparisonTarget(ActComparisonActualFileForStdFileBase):
     def file_path(self, environment: i.InstructionEnvironmentForPostSdsStep) -> pathlib.Path:
-        return environment.eds.result.stdout_file
+        return environment.sds.result.stdout_file
 
 
 class StderrComparisonTarget(ActComparisonActualFileForStdFileBase):
     def file_path(self, environment: i.InstructionEnvironmentForPostSdsStep) -> pathlib.Path:
-        return environment.eds.result.stderr_file
+        return environment.sds.result.stderr_file
 
 
 class ContentCheckerInstructionBase(AssertPhaseInstruction):
@@ -104,7 +104,7 @@ class ContentCheckerInstructionBase(AssertPhaseInstruction):
         self.validator_of_expected = ConstantSuccessValidator() if expected_contents.is_here_document else \
             FileRefCheckValidator(self._file_ref_check_for_expected())
 
-    def validate_pre_eds(self,
+    def validate_pre_sds(self,
                          environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
         validator = PreOrPostEdsSvhValidationErrorValidator(self.validator_of_expected)
         return validator.validate_pre_eds_if_applicable(environment.home_directory)
@@ -113,10 +113,10 @@ class ContentCheckerInstructionBase(AssertPhaseInstruction):
              environment: i.InstructionEnvironmentForPostSdsStep,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
         if not self._expected_contents.is_here_document:
-            failure_message = self.validator_of_expected.validate_post_eds_if_applicable(environment.home_and_eds.eds)
+            failure_message = self.validator_of_expected.validate_post_eds_if_applicable(environment.home_and_sds.sds)
             if failure_message:
                 return pfh.new_pfh_fail(failure_message)
-        expected_file_path = self._file_path_for_file_with_expected_contents(environment.home_and_eds)
+        expected_file_path = self._file_path_for_file_with_expected_contents(environment.home_and_sds)
 
         actual_file_path = self._actual_value.file_path(environment)
         failure_message = self._actual_value.file_check_failure(environment)
@@ -136,15 +136,15 @@ class ContentCheckerInstructionBase(AssertPhaseInstruction):
                                     diff_description)
         return pfh.new_pfh_pass()
 
-    def _file_path_for_file_with_expected_contents(self, home_and_eds: HomeAndEds) -> pathlib.Path:
+    def _file_path_for_file_with_expected_contents(self, home_and_sds: HomeAndSds) -> pathlib.Path:
         if self._expected_contents.is_here_document:
             contents = lines_content(self._expected_contents.here_document)
             return tmp_text_file_containing(contents,
                                             prefix='contents-',
                                             suffix='.txt',
-                                            directory=str(home_and_eds.eds.tmp.internal_dir))
+                                            directory=str(home_and_sds.sds.tmp.internal_dir))
         else:
-            return self._expected_contents.file_reference.file_path_pre_or_post_eds(home_and_eds)
+            return self._expected_contents.file_reference.file_path_pre_or_post_eds(home_and_sds)
 
     def _file_ref_check_for_expected(self) -> FileRefCheck:
         return FileRefCheck(self._expected_contents.file_reference,
@@ -180,7 +180,7 @@ class ActualFileTransformer:
         if dst_file_path.exists():
             return dst_file_path
         env_vars_to_replace = environment_variables.replaced(environment.home_directory,
-                                                             environment.eds)
+                                                             environment.sds)
         self._replace_env_vars_and_write_result_to_dst(env_vars_to_replace,
                                                        src_file_path,
                                                        dst_file_path)

@@ -1,4 +1,3 @@
-from exactly_lib.execution import phases
 from exactly_lib.help.concepts.all_concepts import all_concepts
 from exactly_lib.help.concepts.contents_structure import ConceptsHelp
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet
@@ -11,6 +10,7 @@ from exactly_lib.help.program_modes.test_suite.contents_structure import TestSui
 from exactly_lib.help.program_modes.test_suite.section.cases import CasesSectionDocumentation
 from exactly_lib.help.program_modes.test_suite.section.configuration import ConfigurationSectionDocumentation
 from exactly_lib.help.program_modes.test_suite.section.suites import SuitesSectionDocumentation
+from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.instruction_setup import InstructionsSetup
 from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_set import CONFIGURATION_INSTRUCTIONS
 from exactly_lib.test_suite.section_names import SECTION_NAME__CONF, SECTION_NAME__SUITS, SECTION_NAME__CASES
@@ -59,18 +59,18 @@ def application_help_for(instructions_setup: InstructionsSetup) -> ApplicationHe
 
 def phase_helps_for(instructions_setup: InstructionsSetup) -> iter:
     return [
-        configuration.ConfigurationPhaseDocumentation(phase_help_name(phases.CONFIGURATION),
+        configuration.ConfigurationPhaseDocumentation(phase_help_name(phase_identifier.CONFIGURATION),
                                                       instruction_set_help(
                                                           instructions_setup.config_instruction_set)),
-        setup.SetupPhaseDocumentation(phase_help_name(phases.SETUP),
+        setup.SetupPhaseDocumentation(phase_help_name(phase_identifier.SETUP),
                                       instruction_set_help(instructions_setup.setup_instruction_set)),
-        act.ActPhaseDocumentation(phase_help_name(phases.ACT)),
-        before_assert.BeforeAssertPhaseDocumentation(phase_help_name(phases.BEFORE_ASSERT),
+        act.ActPhaseDocumentation(phase_help_name(phase_identifier.ACT)),
+        before_assert.BeforeAssertPhaseDocumentation(phase_help_name(phase_identifier.BEFORE_ASSERT),
                                                      instruction_set_help(
                                                          instructions_setup.before_assert_instruction_set)),
-        assert_.AssertPhaseDocumentation(phase_help_name(phases.ASSERT),
+        assert_.AssertPhaseDocumentation(phase_help_name(phase_identifier.ASSERT),
                                          instruction_set_help(instructions_setup.assert_instruction_set)),
-        cleanup.CleanupPhaseDocumentation(phase_help_name(phases.CLEANUP),
+        cleanup.CleanupPhaseDocumentation(phase_help_name(phase_identifier.CLEANUP),
                                           instruction_set_help(instructions_setup.cleanup_instruction_set)),
     ]
 

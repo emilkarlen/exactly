@@ -83,11 +83,11 @@ def parse(source: SingleInstructionParserSource) -> FileInfo:
 
 
 def create_file(file_info: FileInfo,
-                eds: ExecutionDirectoryStructure) -> str:
+                sds: SandboxDirectoryStructure) -> str:
     """
     :return: None iff success. Otherwise an error message.
     """
-    file_path = file_info.destination_path.resolved_path(eds)
+    file_path = file_info.destination_path.resolved_path(sds)
     try:
         if file_path.exists():
             return 'File does already exist: {}'.format(file_path)

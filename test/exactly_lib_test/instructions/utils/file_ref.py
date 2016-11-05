@@ -1,9 +1,9 @@
 import unittest
 
 from exactly_lib.instructions.utils import file_ref as sut
-from exactly_lib_test.test_resources.execution.eds_populator import act_dir_contents, tmp_user_dir_contents, \
+from exactly_lib_test.test_resources.execution.sds_populator import act_dir_contents, tmp_user_dir_contents, \
     tmp_internal_dir_contents
-from exactly_lib_test.test_resources.execution.utils import home_and_eds_and_test_as_curr_dir
+from exactly_lib_test.test_resources.execution.utils import home_and_sds_and_test_as_curr_dir
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file
 
 
@@ -15,16 +15,16 @@ class TestRelHome(unittest.TestCase):
 
     def test_existing_file(self):
         file_reference = sut.rel_home('file.txt')
-        with home_and_eds_and_test_as_curr_dir(
-                home_dir_contents=DirContents([empty_file('file.txt')])) as home_and_eds:
-            self.assertTrue(file_reference.file_path_pre_eds(home_and_eds.home_dir_path).exists())
-            self.assertTrue(file_reference.file_path_pre_or_post_eds(home_and_eds).exists())
+        with home_and_sds_and_test_as_curr_dir(
+                home_dir_contents=DirContents([empty_file('file.txt')])) as home_and_sds:
+            self.assertTrue(file_reference.file_path_pre_eds(home_and_sds.home_dir_path).exists())
+            self.assertTrue(file_reference.file_path_pre_or_post_eds(home_and_sds).exists())
 
     def test_non_existing_file(self):
         file_reference = sut.rel_home('file.txt')
-        with home_and_eds_and_test_as_curr_dir() as home_and_eds:
-            self.assertFalse(file_reference.file_path_pre_eds(home_and_eds.home_dir_path).exists())
-            self.assertFalse(file_reference.file_path_pre_or_post_eds(home_and_eds).exists())
+        with home_and_sds_and_test_as_curr_dir() as home_and_sds:
+            self.assertFalse(file_reference.file_path_pre_eds(home_and_sds.home_dir_path).exists())
+            self.assertFalse(file_reference.file_path_pre_or_post_eds(home_and_sds).exists())
 
 
 class TestRelCwd(unittest.TestCase):
@@ -35,14 +35,14 @@ class TestRelCwd(unittest.TestCase):
 
     def test_existing_file(self):
         file_reference = sut.rel_cwd('file.txt')
-        with home_and_eds_and_test_as_curr_dir(
-                eds_contents=act_dir_contents(DirContents([empty_file('file.txt')]))) as home_and_eds:
-            self.assertTrue(file_reference.file_path_pre_or_post_eds(home_and_eds).exists())
+        with home_and_sds_and_test_as_curr_dir(
+                sds_contents=act_dir_contents(DirContents([empty_file('file.txt')]))) as home_and_sds:
+            self.assertTrue(file_reference.file_path_pre_or_post_eds(home_and_sds).exists())
 
     def test_non_existing_file(self):
         file_reference = sut.rel_cwd('file.txt')
-        with home_and_eds_and_test_as_curr_dir() as home_and_eds:
-            self.assertFalse(file_reference.file_path_pre_or_post_eds(home_and_eds).exists())
+        with home_and_sds_and_test_as_curr_dir() as home_and_sds:
+            self.assertFalse(file_reference.file_path_pre_or_post_eds(home_and_sds).exists())
 
 
 class TestRelTmpUser(unittest.TestCase):
@@ -53,14 +53,14 @@ class TestRelTmpUser(unittest.TestCase):
 
     def test_existing_file(self):
         file_reference = sut.rel_tmp_user('file.txt')
-        with home_and_eds_and_test_as_curr_dir(
-                eds_contents=tmp_user_dir_contents(DirContents([empty_file('file.txt')]))) as home_and_eds:
-            self.assertTrue(file_reference.file_path_pre_or_post_eds(home_and_eds).exists())
+        with home_and_sds_and_test_as_curr_dir(
+                sds_contents=tmp_user_dir_contents(DirContents([empty_file('file.txt')]))) as home_and_sds:
+            self.assertTrue(file_reference.file_path_pre_or_post_eds(home_and_sds).exists())
 
     def test_non_existing_file(self):
         file_reference = sut.rel_tmp_user('file.txt')
-        with home_and_eds_and_test_as_curr_dir() as home_and_eds:
-            self.assertFalse(file_reference.file_path_pre_or_post_eds(home_and_eds).exists())
+        with home_and_sds_and_test_as_curr_dir() as home_and_sds:
+            self.assertFalse(file_reference.file_path_pre_or_post_eds(home_and_sds).exists())
 
 
 class TestRelTmpInternal(unittest.TestCase):
@@ -71,14 +71,14 @@ class TestRelTmpInternal(unittest.TestCase):
 
     def test_existing_file(self):
         file_reference = sut.rel_tmp_internal('file.txt')
-        with home_and_eds_and_test_as_curr_dir(
-                eds_contents=tmp_internal_dir_contents(DirContents([empty_file('file.txt')]))) as home_and_eds:
-            self.assertTrue(file_reference.file_path_pre_or_post_eds(home_and_eds).exists())
+        with home_and_sds_and_test_as_curr_dir(
+                sds_contents=tmp_internal_dir_contents(DirContents([empty_file('file.txt')]))) as home_and_sds:
+            self.assertTrue(file_reference.file_path_pre_or_post_eds(home_and_sds).exists())
 
     def test_non_existing_file(self):
         file_reference = sut.rel_tmp_internal('file.txt')
-        with home_and_eds_and_test_as_curr_dir() as home_and_eds:
-            self.assertFalse(file_reference.file_path_pre_or_post_eds(home_and_eds).exists())
+        with home_and_sds_and_test_as_curr_dir() as home_and_sds:
+            self.assertFalse(file_reference.file_path_pre_or_post_eds(home_and_sds).exists())
 
 
 def suite():

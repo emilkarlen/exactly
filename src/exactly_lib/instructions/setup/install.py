@@ -109,7 +109,7 @@ class _InstallInstructionBase(SetupPhaseInstruction):
                  source_file_name: str):
         self.source_file_name = source_file_name
 
-    def validate_pre_eds(self,
+    def validate_pre_sds(self,
                          environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
         path = self._src_path(environment)
         if not path.exists():

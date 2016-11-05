@@ -7,12 +7,12 @@ from exactly_lib.instructions.utils.arg_parse import relative_path_options as op
 from exactly_lib.instructions.utils.arg_parse.parse_utils import TokenStream
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.test_case.phases.common import HomeAndEds
+from exactly_lib.test_case.phases.common import HomeAndSds
 from exactly_lib_test.instructions.test_resources import pre_or_post_eds_validator as validator_util
 from exactly_lib_test.instructions.test_resources.executable_file_test_utils import Configuration, suite_for
 from exactly_lib_test.test_resources import python_program_execution as py_exe
-from exactly_lib_test.test_resources.execution import eds_populator
-from exactly_lib_test.test_resources.execution.utils import home_and_eds_and_test_as_curr_dir
+from exactly_lib_test.test_resources.execution import sds_populator
+from exactly_lib_test.test_resources.execution.utils import home_and_sds_and_test_as_curr_dir
 from exactly_lib_test.test_resources.file_structure import DirContents, File
 
 
@@ -150,70 +150,70 @@ class RelHomeConfiguration(Configuration):
     def __init__(self):
         super().__init__(option.REL_HOME_OPTION, True)
 
-    def file_installation(self, file: File) -> (DirContents, eds_populator.EdsPopulator):
+    def file_installation(self, file: File) -> (DirContents, sds_populator.SdsPopulator):
         return (DirContents([file]),
-                eds_populator.empty())
+                sds_populator.empty())
 
     def installed_file_path(self,
                             file_name: str,
-                            home_and_eds: HomeAndEds) -> pathlib.Path:
-        return home_and_eds.home_dir_path / file_name
+                            home_and_sds: HomeAndSds) -> pathlib.Path:
+        return home_and_sds.home_dir_path / file_name
 
 
 class DefaultConfiguration(Configuration):
     def __init__(self):
         super().__init__('', True)
 
-    def file_installation(self, file: File) -> (DirContents, eds_populator.EdsPopulator):
+    def file_installation(self, file: File) -> (DirContents, sds_populator.SdsPopulator):
         return (DirContents([file]),
-                eds_populator.empty())
+                sds_populator.empty())
 
     def installed_file_path(self,
                             file_name: str,
-                            home_and_eds: HomeAndEds) -> pathlib.Path:
-        return home_and_eds.home_dir_path / file_name
+                            home_and_sds: HomeAndSds) -> pathlib.Path:
+        return home_and_sds.home_dir_path / file_name
 
 
 class RelActConfiguration(Configuration):
     def __init__(self):
         super().__init__(option.REL_ACT_OPTION, False)
 
-    def file_installation(self, file: File) -> (DirContents, eds_populator.EdsPopulator):
+    def file_installation(self, file: File) -> (DirContents, sds_populator.SdsPopulator):
         return (DirContents([]),
-                eds_populator.act_dir_contents(DirContents([file])))
+                sds_populator.act_dir_contents(DirContents([file])))
 
     def installed_file_path(self,
                             file_name: str,
-                            home_and_eds: HomeAndEds) -> pathlib.Path:
-        return home_and_eds.eds.act_dir / file_name
+                            home_and_sds: HomeAndSds) -> pathlib.Path:
+        return home_and_sds.sds.act_dir / file_name
 
 
 class RelTmpConfiguration(Configuration):
     def __init__(self):
         super().__init__(option.REL_TMP_OPTION, False)
 
-    def file_installation(self, file: File) -> (DirContents, eds_populator.EdsPopulator):
+    def file_installation(self, file: File) -> (DirContents, sds_populator.SdsPopulator):
         return (DirContents([]),
-                eds_populator.tmp_user_dir_contents(DirContents([file])))
+                sds_populator.tmp_user_dir_contents(DirContents([file])))
 
     def installed_file_path(self,
                             file_name: str,
-                            home_and_eds: HomeAndEds) -> pathlib.Path:
-        return home_and_eds.eds.tmp.user_dir / file_name
+                            home_and_sds: HomeAndSds) -> pathlib.Path:
+        return home_and_sds.sds.tmp.user_dir / file_name
 
 
 class RelCwdConfiguration(Configuration):
     def __init__(self):
         super().__init__(option.REL_CWD_OPTION, False)
 
-    def file_installation(self, file: File) -> (DirContents, eds_populator.EdsPopulator):
+    def file_installation(self, file: File) -> (DirContents, sds_populator.SdsPopulator):
         return (DirContents([]),
-                eds_populator.act_dir_contents(DirContents([file])))
+                sds_populator.act_dir_contents(DirContents([file])))
 
     def installed_file_path(self,
                             file_name: str,
-                            home_and_eds: HomeAndEds) -> pathlib.Path:
-        return home_and_eds.eds.act_dir / file_name
+                            home_and_sds: HomeAndSds) -> pathlib.Path:
+        return home_and_sds.sds.act_dir / file_name
 
 
 def configurations() -> list:
@@ -236,12 +236,12 @@ class TestParseAbsolutePath(unittest.TestCase):
                          'Remaining arguments')
         self.assertTrue(exe_file.exists_pre_eds,
                         'File is expected to exist pre EDS')
-        with home_and_eds_and_test_as_curr_dir(
-                home_dir_contents=DirContents([])) as home_and_eds:
+        with home_and_sds_and_test_as_curr_dir(
+                home_dir_contents=DirContents([])) as home_and_sds:
             self.assertEqual(sys.executable,
-                             exe_file.path_string(home_and_eds),
+                             exe_file.path_string(home_and_sds),
                              'Path string')
-            validator_util.check(self, exe_file.validator, home_and_eds)
+            validator_util.check(self, exe_file.validator, home_and_sds)
 
     def test_non_existing_file(self):
         non_existing_file = '/this/file/is/assumed/to/not/exist'
@@ -253,12 +253,12 @@ class TestParseAbsolutePath(unittest.TestCase):
                          'Remaining arguments')
         self.assertTrue(exe_file.exists_pre_eds,
                         'File is expected to exist pre EDS')
-        with home_and_eds_and_test_as_curr_dir(
-                home_dir_contents=DirContents([])) as home_and_eds:
+        with home_and_sds_and_test_as_curr_dir(
+                home_dir_contents=DirContents([])) as home_and_sds:
             self.assertEqual(non_existing_file,
-                             exe_file.path_string(home_and_eds),
+                             exe_file.path_string(home_and_sds),
                              'Path string')
-            validator_util.check(self, exe_file.validator, home_and_eds,
+            validator_util.check(self, exe_file.validator, home_and_sds,
                                  passes_pre_eds=False)
 
 

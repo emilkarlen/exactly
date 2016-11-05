@@ -5,7 +5,7 @@ import unittest
 from exactly_lib.execution.act_phase import ExitCodeOrHardError, ActSourceAndExecutorConstructor, new_eh_exit_code, \
     ActSourceAndExecutor
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, HomeAndEds
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, HomeAndSds
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.failure_details import FailureDetails
 from exactly_lib.util.std import StdFiles
@@ -13,8 +13,8 @@ from exactly_lib_test.execution.test_resources import eh_check
 from exactly_lib_test.instructions.test_resources import sh_check__va as sh_check
 from exactly_lib_test.test_resources import file_structure
 from exactly_lib_test.test_resources import file_structure_utils as fs_utils
-from exactly_lib_test.test_resources.execution import eds_contents_check
-from exactly_lib_test.test_resources.execution.utils import execution_directory_structure
+from exactly_lib_test.test_resources.execution import sds_contents_check
+from exactly_lib_test.test_resources.execution.utils import sandbox_directory_structure
 from exactly_lib_test.test_resources.process import capture_process_executor_result, ProcessExecutor
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
@@ -43,8 +43,8 @@ class Arrangement:
 
 class Expectation:
     def __init__(self,
-                 side_effects_on_files_after_execute: eds_contents_check.Assertion = eds_contents_check.AnythingGoes(),
-                 side_effects_on_files_after_prepare: eds_contents_check.Assertion = eds_contents_check.AnythingGoes(),
+                 side_effects_on_files_after_execute: sds_contents_check.Assertion = sds_contents_check.AnythingGoes(),
+                 side_effects_on_files_after_prepare: sds_contents_check.Assertion = sds_contents_check.AnythingGoes(),
                  result_of_prepare: va.ValueAssertion = sh_check.is_success(),
                  result_of_execute: va.ValueAssertion = eh_check.is_any_exit_code,
                  sub_process_result_from_execute: va.ValueAssertion = va.anything_goes()):
@@ -68,35 +68,35 @@ def check_execution(put: unittest.TestCase,
     with fs_utils.tmp_dir(arrangement.home_dir_contents) as home_dir:
         environment = InstructionEnvironmentForPreSdsStep(home_dir, arrangement.timeout_in_seconds)
         sut = arrangement.executor_constructor.apply(environment, arrangement.act_phase_instructions)
-        step_result = sut.validate_pre_eds(home_dir)
+        step_result = sut.validate_pre_sds(home_dir)
         put.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                         step_result.status,
-                        'Result of validation/pre-eds')
-        with execution_directory_structure() as eds:
+                        'Result of validation/pre-sds')
+        with sandbox_directory_structure() as sds:
             try:
-                os.chdir(str(eds.act_dir))
-                home_and_eds = HomeAndEds(home_dir, eds)
-                step_result = sut.validate_post_setup(home_and_eds)
+                os.chdir(str(sds.act_dir))
+                home_and_sds = HomeAndSds(home_dir, sds)
+                step_result = sut.validate_post_setup(home_and_sds)
                 put.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                                 step_result.status,
                                 'Result of validation/post-setup')
-                script_output_dir_path = eds.test_case_dir
-                step_result = sut.prepare(home_and_eds, script_output_dir_path)
-                expectation.side_effects_on_files_after_prepare.apply(put, eds)
+                script_output_dir_path = sds.test_case_dir
+                step_result = sut.prepare(home_and_sds, script_output_dir_path)
+                expectation.side_effects_on_files_after_prepare.apply(put, sds)
                 expectation.result_of_prepare.apply(put,
                                                     step_result,
                                                     MessageBuilder('Result of prepare'))
                 if not step_result.is_success:
                     return
 
-                process_executor = ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(home_and_eds,
+                process_executor = ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(home_and_sds,
                                                                                                     script_output_dir_path,
                                                                                                     sut)
                 error_msg_extra_info = ''
                 sub_process_result = None
                 try:
                     sub_process_result = capture_process_executor_result(process_executor,
-                                                                         eds.result.root_dir)
+                                                                         sds.result.root_dir)
                     step_result = new_eh_exit_code(sub_process_result.exitcode)
                 except HardErrorResultError as ex:
                     step_result = ex.result
@@ -108,7 +108,7 @@ def check_execution(put: unittest.TestCase,
                 if sub_process_result:
                     msg_builder = MessageBuilder('Sub process output from execute' + error_msg_extra_info)
                     expectation.sub_process_result_from_execute.apply(put, sub_process_result, msg_builder)
-                expectation.side_effects_on_files_after_execute.apply(put, eds)
+                expectation.side_effects_on_files_after_execute.apply(put, sds)
                 return step_result
             finally:
                 os.chdir(cwd_before_test)
@@ -131,11 +131,11 @@ class ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(ProcessEx
     """
 
     def __init__(self,
-                 home_and_eds: HomeAndEds,
+                 home_and_sds: HomeAndSds,
                  script_output_path: pathlib.Path,
                  program_executor: ActSourceAndExecutor):
         self.program_executor = program_executor
-        self.home_and_eds = home_and_eds
+        self.home_and_sds = home_and_sds
         self.script_output_path = script_output_path
 
     def execute(self,
@@ -143,7 +143,7 @@ class ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(ProcessEx
         """
          :raises HardErrorResultError: Return value from executor is not an exit code.
         """
-        exit_code_or_hard_error = self.program_executor.execute(self.home_and_eds,
+        exit_code_or_hard_error = self.program_executor.execute(self.home_and_sds,
                                                                 self.script_output_path,
                                                                 files)
         if exit_code_or_hard_error.is_exit_code:

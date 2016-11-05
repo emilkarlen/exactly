@@ -1,7 +1,8 @@
+from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep, \
-    TestCaseInstruction
+    TestCaseInstructionExecutedInSandbox
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 
@@ -47,12 +48,16 @@ def default_settings() -> SetupSettingsBuilder:
     return SetupSettingsBuilder()
 
 
-class SetupPhaseInstruction(TestCaseInstruction):
+class SetupPhaseInstruction(TestCaseInstructionExecutedInSandbox):
     """
     Abstract base class for instructions of the SETUP phase.
     """
 
-    def validate_pre_eds(self,
+    @property
+    def phase(self) -> phase_identifier.Phase:
+        return phase_identifier.SETUP
+
+    def validate_pre_sds(self,
                          environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
         return svh.new_svh_success()
 
