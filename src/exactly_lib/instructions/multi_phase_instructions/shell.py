@@ -99,9 +99,9 @@ class _MainStepExecutor(MainStepExecutorForSubProcess):
     def __init__(self, execute_info: ExecuteInfo):
         self.execute_info = execute_info
 
-    def _apply(self,
-               environment: InstructionEnvironmentForPostSdsStep,
-               logging_paths: PhaseLoggingPaths,
-               os_services: OsServices) -> ResultAndStderr:
+    def apply(self,
+              environment: InstructionEnvironmentForPostSdsStep,
+              logging_paths: PhaseLoggingPaths,
+              os_services: OsServices) -> ResultAndStderr:
         executor = ExecutorThatStoresResultInFilesInDir(is_shell=True)
         return execute_and_read_stderr_if_non_zero_exitcode(self.execute_info, executor, logging_paths)
