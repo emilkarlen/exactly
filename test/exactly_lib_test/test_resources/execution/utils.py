@@ -5,10 +5,10 @@ from contextlib import contextmanager
 from time import strftime, localtime
 
 from exactly_lib import program_info
-from exactly_lib.execution import execution_directory_structure as eds_module
-from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
+from exactly_lib.test_case import sandbox_directory_structure as eds_module
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.common import HomeAndEds
+from exactly_lib.test_case.sandbox_directory_structure import ExecutionDirectoryStructure
 from exactly_lib.util.file_utils import resolved_path_name, resolved_path
 from exactly_lib_test.test_resources.execution import eds_populator
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir_contents

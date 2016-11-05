@@ -19,12 +19,13 @@ from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, HomeAndEds
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder, StdinSettings
+from exactly_lib.test_case.sandbox_directory_structure import construct_at, ExecutionDirectoryStructure, \
+    stdin_contents_file
 from exactly_lib.util.failure_details import FailureDetails, new_failure_details_from_message, \
     new_failure_details_from_exception
 from exactly_lib.util.file_utils import write_new_text_file, resolved_path_name
 from exactly_lib.util.std import StdOutputFiles, StdFiles
 from . import result
-from .execution_directory_structure import construct_at, ExecutionDirectoryStructure, stdin_contents_file
 from .result import PartialResult, PartialResultStatus, new_partial_result_pass, PhaseFailureInfo
 
 

@@ -2,10 +2,10 @@ import functools
 import unittest
 
 from exactly_lib.execution import partial_execution as sut
-from exactly_lib.execution.execution_directory_structure import eds_log_phase_dir
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.phase_identifier import PhaseEnum
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case.sandbox_directory_structure import eds_log_phase_dir
 from exactly_lib.util.line_source import LineSequence
 from exactly_lib_test.execution.partial_execution.test_resources.basic import test, \
     TestCaseWithCommonDefaultInstructions, Result, dummy_act_phase_handling

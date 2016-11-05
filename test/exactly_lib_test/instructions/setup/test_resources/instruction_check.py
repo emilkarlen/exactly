@@ -6,17 +6,16 @@ import unittest
 from time import strftime, localtime
 
 from exactly_lib import program_info
-from exactly_lib.execution import execution_directory_structure
-from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, SingleInstructionParserSource
-from exactly_lib.test_case import phase_identifier
+from exactly_lib.test_case import phase_identifier, sandbox_directory_structure
 from exactly_lib.test_case.os_services import new_default, OsServices
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
+from exactly_lib.test_case.sandbox_directory_structure import ExecutionDirectoryStructure
 from exactly_lib.util.file_utils import resolved_path_name
 from exactly_lib_test.instructions.setup.test_resources import settings_check
 from exactly_lib_test.instructions.test_resources import sh_check
@@ -106,7 +105,7 @@ class Executor:
                 if not pre_validate_result.is_success:
                     return
                 with tempfile.TemporaryDirectory(prefix=prefix + '-eds-') as eds_root_dir_name:
-                    eds = execution_directory_structure.construct_at(resolved_path_name(eds_root_dir_name))
+                    eds = sandbox_directory_structure.construct_at(resolved_path_name(eds_root_dir_name))
                     os.chdir(str(eds.act_dir))
                     global_environment_with_eds = i.InstructionEnvironmentForPostSdsStep(home_dir_path,
                                                                                          eds,

@@ -1,7 +1,7 @@
 import enum
 import pathlib
 
-from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
+from exactly_lib.test_case.sandbox_directory_structure import ExecutionDirectoryStructure
 
 
 class DestinationType(enum.Enum):

@@ -2,11 +2,11 @@ import os
 import pathlib
 import types
 
-from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.phases import common
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import sh
+from exactly_lib.test_case.sandbox_directory_structure import ExecutionDirectoryStructure
 
 
 def standard_phase_file_path_eds(eds: ExecutionDirectoryStructure,

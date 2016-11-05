@@ -1,12 +1,12 @@
 import pathlib
 
-from exactly_lib.execution.execution_directory_structure import ExecutionDirectoryStructure
 from exactly_lib.instructions.utils.file_properties import FilePropertiesCheck, CheckResult
 from exactly_lib.instructions.utils.file_properties import render_failure
 from exactly_lib.instructions.utils.file_ref import FileRef, FileRefValidatorBase
 from exactly_lib.test_case.phases.common import HomeAndEds
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import svh
+from exactly_lib.test_case.sandbox_directory_structure import ExecutionDirectoryStructure
 
 
 class FileRefCheck:
