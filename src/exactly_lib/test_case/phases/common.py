@@ -21,7 +21,7 @@ class HomeAndEds:
         return self._eds
 
 
-class GlobalEnvironmentForPreEdsStep:
+class InstructionEnvironmentForPreSdsStep:
     def __init__(self,
                  home_dir: pathlib.Path,
                  timeout_in_seconds: int = None):
@@ -75,7 +75,7 @@ class PhaseLoggingPaths:
                 return head
 
 
-class GlobalEnvironmentForPostEdsPhase(GlobalEnvironmentForPreEdsStep):
+class InstructionEnvironmentForPostSdsStep(InstructionEnvironmentForPreSdsStep):
     def __init__(self,
                  home_dir: pathlib.Path,
                  eds: ExecutionDirectoryStructure,

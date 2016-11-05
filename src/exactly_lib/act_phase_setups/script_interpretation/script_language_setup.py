@@ -7,7 +7,7 @@ from exactly_lib.execution.act_phase import ExitCodeOrHardError, \
     ActPhaseHandling
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
-from exactly_lib.test_case.phases.common import HomeAndEds, GlobalEnvironmentForPreEdsStep
+from exactly_lib.test_case.phases.common import HomeAndEds, InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.util.std import StdFiles
 
@@ -47,7 +47,7 @@ class Executor(executor_made_of_parts.Executor):
     FILE_NAME_STEM = 'act-script'
 
     def __init__(self,
-                 environment: GlobalEnvironmentForPreEdsStep,
+                 environment: InstructionEnvironmentForPreSdsStep,
                  script_language_setup: ScriptLanguageSetup,
                  source_code: str):
         self.environment = environment

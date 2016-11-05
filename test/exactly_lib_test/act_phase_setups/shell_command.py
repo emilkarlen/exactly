@@ -5,7 +5,7 @@ from contextlib import contextmanager
 from exactly_lib.act_phase_setups import shell_command as sut
 from exactly_lib.processing.parse.act_phase_source_parser import SourceCodeInstruction
 from exactly_lib.section_document.syntax import LINE_COMMENT_MARKER
-from exactly_lib.test_case.phases.common import GlobalEnvironmentForPreEdsStep
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.line_source import LineSequence
 from exactly_lib_test.act_phase_setups.test_resources.act_source_and_executor import Configuration, \
@@ -27,7 +27,7 @@ class TestValidation(unittest.TestCase):
         super().__init__(method_name)
         self.constructor = sut.Constructor()
         self.home_dir_as_current_dir = pathlib.Path()
-        self.pre_eds_env = GlobalEnvironmentForPreEdsStep(self.home_dir_as_current_dir)
+        self.pre_eds_env = InstructionEnvironmentForPreSdsStep(self.home_dir_as_current_dir)
 
     def test_fails_when_there_are_no_instructions(self):
         act_phase_instructions = []
@@ -74,9 +74,9 @@ class TestValidation(unittest.TestCase):
                       'Validation result')
 
     @staticmethod
-    def _new_environment() -> GlobalEnvironmentForPreEdsStep:
+    def _new_environment() -> InstructionEnvironmentForPreSdsStep:
         home_dir_path = pathlib.Path()
-        return GlobalEnvironmentForPreEdsStep(home_dir_path)
+        return InstructionEnvironmentForPreSdsStep(home_dir_path)
 
     def _do_validate_pre_eds(self, act_phase_instructions: list) -> svh.SuccessOrValidationErrorOrHardError:
         executor = self.constructor.apply(self.pre_eds_env, act_phase_instructions)

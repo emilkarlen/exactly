@@ -1,9 +1,9 @@
 import unittest
 
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionInvalidArgumentException, SingleInstructionParserSource
 from exactly_lib.instructions.setup import stdin as sut
 from exactly_lib.instructions.utils import file_ref
+from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
+    SingleInstructionInvalidArgumentException, SingleInstructionParserSource
 from exactly_lib.test_case.phases import common
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
 from exactly_lib.util.string import lines_content
@@ -123,7 +123,7 @@ class AssertStdinFileIsSetToFile(Assertion):
 
     def apply(self,
               put: unittest.TestCase,
-              environment: common.GlobalEnvironmentForPostEdsPhase,
+              environment: common.InstructionEnvironmentForPostSdsStep,
               initial: SetupSettingsBuilder,
               actual_result: SetupSettingsBuilder):
         file_path = self._file_reference.file_path_pre_or_post_eds(environment.home_and_eds)
@@ -140,7 +140,7 @@ class AssertStdinIsSetToContents(Assertion):
 
     def apply(self,
               put: unittest.TestCase,
-              environment: common.GlobalEnvironmentForPostEdsPhase,
+              environment: common.InstructionEnvironmentForPostSdsStep,
               initial: SetupSettingsBuilder,
               actual_result: SetupSettingsBuilder):
         put.assertIsNotNone(actual_result.stdin.contents)

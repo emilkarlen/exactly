@@ -2,7 +2,7 @@ from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.instructions.multi_phase_instructions import env
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
-from exactly_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.result import pfh
 
 
@@ -18,7 +18,7 @@ class _Instruction(AssertPhaseInstruction):
         self.executor = executor
 
     def main(self,
-             environment: GlobalEnvironmentForPostEdsPhase,
+             environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
         self.executor.execute(os_services)
         return pfh.new_pfh_pass()

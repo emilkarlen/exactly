@@ -9,7 +9,7 @@ from exactly_lib.instructions.configuration import actor as sut
 from exactly_lib.instructions.configuration.utils import actor_utils
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.test_case.phases.common import GlobalEnvironmentForPreEdsStep
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib_test.act_phase_setups.test_resources import act_phase_execution
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
@@ -151,7 +151,7 @@ def _configuration_builder_with_exception_throwing_act_phase_setup() -> Configur
 
 
 class _ActSourceAndExecutorConstructorThatRaisesException(ActSourceAndExecutorConstructor):
-    def apply(self, environment: GlobalEnvironmentForPreEdsStep, act_phase_instructions: list):
+    def apply(self, environment: InstructionEnvironmentForPreSdsStep, act_phase_instructions: list):
         raise ValueError('the method should never be called')
 
 

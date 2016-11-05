@@ -5,7 +5,7 @@ import unittest
 from contextlib import contextmanager
 
 from exactly_lib.execution.act_phase import ActSourceAndExecutorConstructor
-from exactly_lib.test_case.phases.common import GlobalEnvironmentForPreEdsStep, HomeAndEds
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, HomeAndEds
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib_test.act_phase_setups.test_resources import act_phase_execution
 from exactly_lib_test.act_phase_setups.test_resources.act_phase_execution import \
@@ -96,7 +96,7 @@ class TestExecuteBase(unittest.TestCase):
 
         cwd_before_test = os.getcwd()
         home_dir = pathlib.Path()
-        environment = GlobalEnvironmentForPreEdsStep(home_dir)
+        environment = InstructionEnvironmentForPreSdsStep(home_dir)
         sut = self.source_and_executor_constructor.apply(environment, act_phase_instructions)
         step_result = sut.validate_pre_eds(home_dir)
         self.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
@@ -189,7 +189,7 @@ class TestInitialCwdIsCurrentDirAndThatCwdIsRestoredAfterwards(TestBase):
             with self.test_setup.program_that_prints_cwd_without_new_line_to_stdout() as source:
                 executor_constructor = self.test_setup.sut
                 home_dir = pathlib.Path.cwd()
-                environment = GlobalEnvironmentForPreEdsStep(home_dir)
+                environment = InstructionEnvironmentForPreSdsStep(home_dir)
                 sut = executor_constructor.apply(environment, source)
                 step_result = sut.validate_pre_eds(home_dir)
                 self.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,

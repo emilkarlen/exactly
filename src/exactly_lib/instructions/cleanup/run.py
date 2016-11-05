@@ -6,7 +6,8 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionParser
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.cleanup import CleanupPhaseInstruction, PreviousPhase
-from exactly_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
+    InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 
@@ -29,18 +30,18 @@ class _Instruction(CleanupPhaseInstruction):
         self.setup = setup
 
     def validate_pre_eds(self,
-                         environment: GlobalEnvironmentForPreEdsStep) -> svh.SuccessOrValidationErrorOrHardError:
+                         environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
         validator = PreOrPostEdsSvhValidationErrorValidator(self.setup.validator)
         return validator.validate_pre_eds_if_applicable(environment.home_directory)
 
     def _validate_from_main(
             self,
-            environment: GlobalEnvironmentForPostEdsPhase) -> sh.SuccessOrHardError:
+            environment: InstructionEnvironmentForPostSdsStep) -> sh.SuccessOrHardError:
         validator = PreOrPostEdsSvhValidationForSuccessOrHardError(self.setup.validator)
         return validator.validate_pre_or_post_eds(environment.home_and_eds)
 
     def main(self,
-             environment: GlobalEnvironmentForPostEdsPhase,
+             environment: InstructionEnvironmentForPostSdsStep,
              previous_phase: PreviousPhase,
              os_services: OsServices) -> sh.SuccessOrHardError:
         validation_result = self._validate_from_main(environment)

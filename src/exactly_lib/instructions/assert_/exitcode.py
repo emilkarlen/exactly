@@ -75,7 +75,7 @@ class InstructionForExactValue(AssertPhaseInstruction):
         self._expected_value = expected_value
 
     def main(self,
-             environment: i.GlobalEnvironmentForPostEdsPhase,
+             environment: i.InstructionEnvironmentForPostSdsStep,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
         actual_value = read_exitcode(environment.eds)
         if actual_value == self._expected_value:
@@ -91,7 +91,7 @@ class InstructionForOperator(AssertPhaseInstruction):
         self._operator_info = operator_info
 
     def main(self,
-             environment: i.GlobalEnvironmentForPostEdsPhase,
+             environment: i.InstructionEnvironmentForPostSdsStep,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
         actual_value = read_exitcode(environment.eds)
         if self._operator_info[1](actual_value, self._value):

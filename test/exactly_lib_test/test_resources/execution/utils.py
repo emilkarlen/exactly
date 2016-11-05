@@ -47,7 +47,7 @@ def write_act_result(eds: ExecutionDirectoryStructure,
 @contextmanager
 def act_phase_result(exitcode: int = 0,
                      stdout_contents: str = '',
-                     stderr_contents: str = '') -> i.GlobalEnvironmentForPostEdsPhase:
+                     stderr_contents: str = '') -> i.InstructionEnvironmentForPostSdsStep:
     cwd_before = os.getcwd()
     home_dir_path = pathlib.Path(cwd_before)
     with tempfile.TemporaryDirectory(prefix=program_info.PROGRAM_NAME + '-test-') as eds_root_dir:
@@ -57,8 +57,8 @@ def act_phase_result(exitcode: int = 0,
         write_file(eds.result.stderr_file, stderr_contents)
         try:
             os.chdir(str(eds.act_dir))
-            yield i.GlobalEnvironmentForPostEdsPhase(home_dir_path,
-                                                     eds)
+            yield i.InstructionEnvironmentForPostSdsStep(home_dir_path,
+                                                         eds)
         finally:
             os.chdir(cwd_before)
 

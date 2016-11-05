@@ -4,8 +4,8 @@ from exactly_lib.execution.execution_directory_structure import ExecutionDirecto
 from exactly_lib.instructions.utils.file_properties import FilePropertiesCheck, CheckResult
 from exactly_lib.instructions.utils.file_properties import render_failure
 from exactly_lib.instructions.utils.file_ref import FileRef, FileRefValidatorBase
-from exactly_lib.test_case.phases.common import GlobalEnvironmentForPreEdsStep
 from exactly_lib.test_case.phases.common import HomeAndEds
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import svh
 
 
@@ -70,7 +70,7 @@ def pre_or_post_eds_failure_message_or_none(file_ref_check: FileRefCheck,
 
 
 def pre_eds_validate(file_ref_check: FileRefCheck,
-                     environment: GlobalEnvironmentForPreEdsStep) -> svh.SuccessOrValidationErrorOrHardError:
+                     environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
     validation_result = file_ref_check.pre_eds_condition_result(environment.home_directory)
     if not validation_result.is_success:
         file_path = file_ref_check.file_reference.file_path_pre_eds(environment.home_directory)

@@ -1,7 +1,7 @@
 import pathlib
 
 from exactly_lib.execution.act_phase import ActSourceAndExecutor, ExitCodeOrHardError, ActSourceAndExecutorConstructor
-from exactly_lib.test_case.phases.common import HomeAndEds, GlobalEnvironmentForPreEdsStep
+from exactly_lib.test_case.phases.common import HomeAndEds, InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.std import StdFiles
@@ -65,7 +65,7 @@ class Constructor(ActSourceAndExecutorConstructor):
         self.executor_constructor = executor_constructor
 
     def apply(self,
-              environment: GlobalEnvironmentForPreEdsStep,
+              environment: InstructionEnvironmentForPreSdsStep,
               act_phase_instructions: list) -> ActSourceAndExecutor:
         return ActSourceAndExecutorMadeFromParserValidatorAndExecutor(self.parser,
                                                                       self.validator_constructor,
@@ -83,7 +83,7 @@ class ActSourceAndExecutorMadeFromParserValidatorAndExecutor(ActSourceAndExecuto
                  parser: Parser,
                  validator_constructor,
                  executor_constructor,
-                 environment: GlobalEnvironmentForPreEdsStep,
+                 environment: InstructionEnvironmentForPreSdsStep,
                  act_phase_instructions: list):
         self.parser = parser
         self.validator_constructor = validator_constructor

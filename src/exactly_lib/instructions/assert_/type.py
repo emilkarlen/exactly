@@ -142,7 +142,7 @@ class _Instruction(AssertPhaseInstruction):
         self._expected_file_properties = expected_file_properties
 
     def main(self,
-             environment: i.GlobalEnvironmentForPostEdsPhase,
+             environment: i.InstructionEnvironmentForPostSdsStep,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
         failure_message = pre_or_post_eds_failure_message_or_none(FileRefCheck(self._file_reference,
                                                                                self._expected_file_properties),

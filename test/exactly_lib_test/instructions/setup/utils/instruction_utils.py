@@ -4,7 +4,8 @@ from exactly_lib.instructions.setup.utils.instruction_utils import InstructionWi
 from exactly_lib.instructions.utils import file_ref
 from exactly_lib.instructions.utils.file_ref_check import FileRefCheck
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
+    InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
 from exactly_lib_test.instructions.utils.file_properties import FileCheckThatEvaluatesTo
@@ -16,7 +17,7 @@ class TestInstruction(InstructionWithFileRefsBase):
         super().__init__(file_ref_list_tuple)
 
     def main(self,
-             environment: GlobalEnvironmentForPostEdsPhase,
+             environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         return sh.new_sh_success()
@@ -27,7 +28,7 @@ class TestValidationShouldBeInPreValidateIfFileDoesExistPreEds(unittest.TestCase
         instruction = TestInstruction((FileRefCheck(file_ref.rel_home('file.txt'),
                                                     FileCheckThatEvaluatesTo(True)),))
         with home_and_eds_and_test_as_curr_dir() as home_and_eds:
-            pre_validate = instruction.validate_pre_eds(GlobalEnvironmentForPreEdsStep(home_and_eds.home_dir_path))
+            pre_validate = instruction.validate_pre_eds(InstructionEnvironmentForPreSdsStep(home_and_eds.home_dir_path))
             self.assertTrue(pre_validate.is_success)
 
             post_validate = instruction.validate_post_setup(_env_from(home_and_eds))
@@ -37,7 +38,7 @@ class TestValidationShouldBeInPreValidateIfFileDoesExistPreEds(unittest.TestCase
         instruction = TestInstruction((FileRefCheck(file_ref.rel_home('file.txt'),
                                                     FileCheckThatEvaluatesTo(False)),))
         with home_and_eds_and_test_as_curr_dir() as home_and_eds:
-            pre_validate = instruction.validate_pre_eds(GlobalEnvironmentForPreEdsStep(home_and_eds.home_dir_path))
+            pre_validate = instruction.validate_pre_eds(InstructionEnvironmentForPreSdsStep(home_and_eds.home_dir_path))
             self.assertFalse(pre_validate.is_success)
 
             post_validate = instruction.validate_post_setup(_env_from(home_and_eds))
@@ -49,7 +50,7 @@ class TestValidationShouldBeInPostValidateIfFileDoesNotExistPreEds(unittest.Test
         instruction = TestInstruction((FileRefCheck(file_ref.rel_cwd('file.txt'),
                                                     FileCheckThatEvaluatesTo(True)),))
         with home_and_eds_and_test_as_curr_dir() as home_and_eds:
-            pre_validate = instruction.validate_pre_eds(GlobalEnvironmentForPreEdsStep(home_and_eds.home_dir_path))
+            pre_validate = instruction.validate_pre_eds(InstructionEnvironmentForPreSdsStep(home_and_eds.home_dir_path))
             self.assertTrue(pre_validate.is_success)
 
             post_validate = instruction.validate_post_setup(_env_from(home_and_eds))
@@ -59,16 +60,16 @@ class TestValidationShouldBeInPostValidateIfFileDoesNotExistPreEds(unittest.Test
         instruction = TestInstruction((FileRefCheck(file_ref.rel_cwd('file.txt'),
                                                     FileCheckThatEvaluatesTo(False)),))
         with home_and_eds_and_test_as_curr_dir() as home_and_eds:
-            pre_validate = instruction.validate_pre_eds(GlobalEnvironmentForPreEdsStep(home_and_eds.home_dir_path))
+            pre_validate = instruction.validate_pre_eds(InstructionEnvironmentForPreSdsStep(home_and_eds.home_dir_path))
             self.assertTrue(pre_validate.is_success)
 
             post_validate = instruction.validate_post_setup(_env_from(home_and_eds))
             self.assertFalse(post_validate.is_success)
 
 
-def _env_from(home_and_eds: HomeAndEds) -> GlobalEnvironmentForPostEdsPhase:
-    return GlobalEnvironmentForPostEdsPhase(home_and_eds.home_dir_path,
-                                            home_and_eds.eds,
+def _env_from(home_and_eds: HomeAndEds) -> InstructionEnvironmentForPostSdsStep:
+    return InstructionEnvironmentForPostSdsStep(home_and_eds.home_dir_path,
+                                                home_and_eds.eds,
                                             'phase-identifier')
 
 

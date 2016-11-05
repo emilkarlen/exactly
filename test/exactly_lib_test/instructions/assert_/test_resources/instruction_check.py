@@ -1,12 +1,13 @@
 import unittest
 
+from exactly_lib.execution import phases
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, SingleInstructionParserSource
-from exactly_lib.execution import phases
 from exactly_lib.test_case.os_services import OsServices, new_default
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
-from exactly_lib.test_case.phases.common import GlobalEnvironmentForPostEdsPhase, GlobalEnvironmentForPreEdsStep
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
+    InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib_test.instructions.test_resources import pfh_check
@@ -92,13 +93,13 @@ class Executor:
             # TODO Execution of validate/pre-eds should be done before act-result is written.
             # But cannot do this for the moment, since many tests write home-dir contents
             # as part of the act-result.
-            environment = i.GlobalEnvironmentForPreEdsStep(home_and_eds.home_dir_path)
+            environment = i.InstructionEnvironmentForPreSdsStep(home_and_eds.home_dir_path)
             validate_result = self._execute_validate_pre_eds(environment, instruction)
             if not validate_result.is_success:
                 return
-            environment = i.GlobalEnvironmentForPostEdsPhase(home_and_eds.home_dir_path,
-                                                             home_and_eds.eds,
-                                                             phases.ASSERT.identifier)
+            environment = i.InstructionEnvironmentForPostSdsStep(home_and_eds.home_dir_path,
+                                                                 home_and_eds.eds,
+                                                                 phases.ASSERT.identifier)
             validate_result = self._execute_validate_post_setup(environment, instruction)
             if not validate_result.is_success:
                 return
@@ -107,7 +108,7 @@ class Executor:
             self.expectation.side_effects_check.apply(self.put, home_and_eds)
 
     def _execute_validate_pre_eds(self,
-                                  global_environment: GlobalEnvironmentForPreEdsStep,
+                                  global_environment: InstructionEnvironmentForPreSdsStep,
                                   instruction: AssertPhaseInstruction) -> svh.SuccessOrValidationErrorOrHardError:
         result = instruction.validate_pre_eds(global_environment)
         self.put.assertIsNotNone(result,
@@ -116,7 +117,7 @@ class Executor:
         return result
 
     def _execute_validate_post_setup(self,
-                                     global_environment: GlobalEnvironmentForPostEdsPhase,
+                                     global_environment: InstructionEnvironmentForPostSdsStep,
                                      instruction: AssertPhaseInstruction) -> svh.SuccessOrValidationErrorOrHardError:
         result = instruction.validate_post_setup(global_environment)
         self.put.assertIsNotNone(result,
@@ -125,7 +126,7 @@ class Executor:
         return result
 
     def _execute_main(self,
-                      environment: GlobalEnvironmentForPostEdsPhase,
+                      environment: InstructionEnvironmentForPostSdsStep,
                       instruction: AssertPhaseInstruction) -> pfh.PassOrFailOrHardError:
         main_result = instruction.main(environment, self.arrangement.os_services)
         self.put.assertIsNotNone(main_result,
