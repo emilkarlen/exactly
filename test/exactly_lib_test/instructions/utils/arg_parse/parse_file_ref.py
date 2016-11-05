@@ -10,7 +10,7 @@ from exactly_lib.instructions.utils.file_ref import FileRef
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.phases.common import HomeAndSds
-from exactly_lib_test.test_resources.execution.eds_populator import act_dir_contents
+from exactly_lib_test.test_resources.execution.sds_populator import act_dir_contents
 from exactly_lib_test.test_resources.execution.utils import home_and_sds_and_test_as_curr_dir
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file
 

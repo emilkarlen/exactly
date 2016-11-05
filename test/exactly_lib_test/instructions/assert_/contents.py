@@ -15,7 +15,7 @@ from exactly_lib_test.instructions.test_resources import pfh_check
 from exactly_lib_test.instructions.test_resources import svh_check
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
-from exactly_lib_test.test_resources.execution.eds_populator import act_dir_contents, tmp_user_dir_contents, \
+from exactly_lib_test.test_resources.execution.sds_populator import act_dir_contents, tmp_user_dir_contents, \
     multiple
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, empty_dir, File
 from exactly_lib_test.test_resources.parse import new_source, new_source2

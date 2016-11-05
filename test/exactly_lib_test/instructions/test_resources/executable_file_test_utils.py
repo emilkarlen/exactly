@@ -6,7 +6,7 @@ from exactly_lib.instructions.utils.arg_parse import parse_executable_file
 from exactly_lib.instructions.utils.arg_parse.parse_utils import TokenStream
 from exactly_lib.test_case.phases.common import HomeAndSds
 from exactly_lib_test.instructions.test_resources import pre_or_post_eds_validator as validator_util
-from exactly_lib_test.test_resources.execution import eds_populator
+from exactly_lib_test.test_resources.execution import sds_populator
 from exactly_lib_test.test_resources.execution.utils import home_and_sds_and_test_as_curr_dir
 from exactly_lib_test.test_resources.file_structure import File, DirContents, executable_file, empty_file
 
@@ -18,7 +18,7 @@ class Configuration:
         self.option = option
         self.exists_pre_eds = exists_pre_eds
 
-    def file_installation(self, file: File) -> (DirContents, eds_populator.EdsPopulator):
+    def file_installation(self, file: File) -> (DirContents, sds_populator.EdsPopulator):
         raise NotImplementedError()
 
     def installed_file_path(self,

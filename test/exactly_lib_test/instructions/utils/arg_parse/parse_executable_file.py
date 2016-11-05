@@ -11,7 +11,7 @@ from exactly_lib.test_case.phases.common import HomeAndSds
 from exactly_lib_test.instructions.test_resources import pre_or_post_eds_validator as validator_util
 from exactly_lib_test.instructions.test_resources.executable_file_test_utils import Configuration, suite_for
 from exactly_lib_test.test_resources import python_program_execution as py_exe
-from exactly_lib_test.test_resources.execution import eds_populator
+from exactly_lib_test.test_resources.execution import sds_populator
 from exactly_lib_test.test_resources.execution.utils import home_and_sds_and_test_as_curr_dir
 from exactly_lib_test.test_resources.file_structure import DirContents, File
 
@@ -150,9 +150,9 @@ class RelHomeConfiguration(Configuration):
     def __init__(self):
         super().__init__(option.REL_HOME_OPTION, True)
 
-    def file_installation(self, file: File) -> (DirContents, eds_populator.EdsPopulator):
+    def file_installation(self, file: File) -> (DirContents, sds_populator.EdsPopulator):
         return (DirContents([file]),
-                eds_populator.empty())
+                sds_populator.empty())
 
     def installed_file_path(self,
                             file_name: str,
@@ -164,9 +164,9 @@ class DefaultConfiguration(Configuration):
     def __init__(self):
         super().__init__('', True)
 
-    def file_installation(self, file: File) -> (DirContents, eds_populator.EdsPopulator):
+    def file_installation(self, file: File) -> (DirContents, sds_populator.EdsPopulator):
         return (DirContents([file]),
-                eds_populator.empty())
+                sds_populator.empty())
 
     def installed_file_path(self,
                             file_name: str,
@@ -178,9 +178,9 @@ class RelActConfiguration(Configuration):
     def __init__(self):
         super().__init__(option.REL_ACT_OPTION, False)
 
-    def file_installation(self, file: File) -> (DirContents, eds_populator.EdsPopulator):
+    def file_installation(self, file: File) -> (DirContents, sds_populator.EdsPopulator):
         return (DirContents([]),
-                eds_populator.act_dir_contents(DirContents([file])))
+                sds_populator.act_dir_contents(DirContents([file])))
 
     def installed_file_path(self,
                             file_name: str,
@@ -192,9 +192,9 @@ class RelTmpConfiguration(Configuration):
     def __init__(self):
         super().__init__(option.REL_TMP_OPTION, False)
 
-    def file_installation(self, file: File) -> (DirContents, eds_populator.EdsPopulator):
+    def file_installation(self, file: File) -> (DirContents, sds_populator.EdsPopulator):
         return (DirContents([]),
-                eds_populator.tmp_user_dir_contents(DirContents([file])))
+                sds_populator.tmp_user_dir_contents(DirContents([file])))
 
     def installed_file_path(self,
                             file_name: str,
@@ -206,9 +206,9 @@ class RelCwdConfiguration(Configuration):
     def __init__(self):
         super().__init__(option.REL_CWD_OPTION, False)
 
-    def file_installation(self, file: File) -> (DirContents, eds_populator.EdsPopulator):
+    def file_installation(self, file: File) -> (DirContents, sds_populator.EdsPopulator):
         return (DirContents([]),
-                eds_populator.act_dir_contents(DirContents([file])))
+                sds_populator.act_dir_contents(DirContents([file])))
 
     def installed_file_path(self,
                             file_name: str,

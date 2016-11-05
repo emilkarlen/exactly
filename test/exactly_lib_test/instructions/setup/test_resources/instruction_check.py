@@ -23,14 +23,14 @@ from exactly_lib_test.instructions.test_resources import svh_check
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithEds
 from exactly_lib_test.instructions.test_resources.assertion_utils.side_effects import SideEffectsCheck
 from exactly_lib_test.test_resources import file_structure
-from exactly_lib_test.test_resources.execution import eds_populator, eds_contents_check
+from exactly_lib_test.test_resources.execution import sds_populator, eds_contents_check
 
 
 class Arrangement(ArrangementWithEds):
     def __init__(self,
                  home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
                  os_services: OsServices = new_default(),
-                 eds_contents_before_main: eds_populator.EdsPopulator = eds_populator.empty(),
+                 eds_contents_before_main: sds_populator.EdsPopulator = sds_populator.empty(),
                  initial_settings_builder: SetupSettingsBuilder = SetupSettingsBuilder()):
         super().__init__(home_dir_contents, eds_contents_before_main, os_services)
         self.initial_settings_builder = initial_settings_builder

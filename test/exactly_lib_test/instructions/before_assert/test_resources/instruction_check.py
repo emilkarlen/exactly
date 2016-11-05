@@ -17,13 +17,13 @@ from exactly_lib_test.instructions.test_resources.arrangements import Arrangemen
 from exactly_lib_test.instructions.test_resources.expectations import ExpectationBase
 from exactly_lib_test.instructions.test_resources.instruction_check_utils import InstructionExecutionBase
 from exactly_lib_test.test_resources import file_structure
-from exactly_lib_test.test_resources.execution import eds_populator, utils
+from exactly_lib_test.test_resources.execution import sds_populator, utils
 from exactly_lib_test.test_resources.execution.utils import write_act_result
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 
 def arrangement(home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
-                eds_contents_before_main: eds_populator.EdsPopulator = eds_populator.empty(),
+                eds_contents_before_main: sds_populator.EdsPopulator = sds_populator.empty(),
                 act_result_producer: ActResultProducer = ActResultProducer(),
                 os_services: OsServices = new_default()
                 ) -> ArrangementPostAct:
