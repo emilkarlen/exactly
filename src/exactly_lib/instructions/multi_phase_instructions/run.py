@@ -236,48 +236,47 @@ class SetupParser:
     def apply(self, source: SingleInstructionParserSource) -> SetupForExecutableWithArguments:
         tokens = TokenStream(source.instruction_argument)
         (exe_file, arg_tokens) = parse_executable_file.parse(tokens)
+        source_info = sub_process_execution.InstructionSourceInfo(source.line_sequence.first_line.line_number,
+                                                                  self.instruction_name)
         if arg_tokens.is_null:
-            return self._execute(source, exe_file, '')
+            return self._execute(source_info, exe_file, '')
         if arg_tokens.head == INTERPRET_OPTION:
-            return self._interpret(source, exe_file, arg_tokens.tail_source_or_empty_string)
+            return self._interpret(source_info, exe_file, arg_tokens.tail_source_or_empty_string)
         if arg_tokens.head == SOURCE_OPTION:
-            return self._source(source, exe_file, arg_tokens.tail_source)
+            return self._source(source_info, exe_file, arg_tokens.tail_source)
         if arg_tokens.head == OPTIONS_SEPARATOR_ARGUMENT:
-            return self._execute(source, exe_file, arg_tokens.tail.source)
-        return self._execute(source, exe_file, arg_tokens.source)
+            return self._execute(source_info, exe_file, arg_tokens.tail.source)
+        return self._execute(source_info, exe_file, arg_tokens.source)
 
-    def _execute(self,
-                 source: SingleInstructionParserSource,
+    @staticmethod
+    def _execute(source_info: sub_process_execution.InstructionSourceInfo,
                  exe_file: ExecutableFile,
                  remaining_arguments_str: str) -> SetupForExecutableWithArguments:
         return SetupForExecute(
-            sub_process_execution.InstructionSourceInfo(source.line_sequence.first_line.line_number,
-                                                        self.instruction_name),
+            source_info,
             exe_file,
             shlex.split(remaining_arguments_str))
 
-    def _interpret(self,
-                   source: SingleInstructionParserSource,
+    @staticmethod
+    def _interpret(source_info: sub_process_execution.InstructionSourceInfo,
                    exe_file: ExecutableFile,
                    remaining_arguments_str: str) -> SetupForExecutableWithArguments:
         remaining_arguments = shlex.split(remaining_arguments_str)
         (file_to_interpret, remaining_arguments) = parse_file_ref.parse_file_ref__list(remaining_arguments)
         return SetupForInterpret(
-            sub_process_execution.InstructionSourceInfo(source.line_sequence.first_line.line_number,
-                                                        self.instruction_name),
+            source_info,
             exe_file,
             file_to_interpret,
             remaining_arguments)
 
-    def _source(self,
-                source: SingleInstructionParserSource,
+    @staticmethod
+    def _source(source_info: sub_process_execution.InstructionSourceInfo,
                 exe_file: ExecutableFile,
                 remaining_arguments_str: str) -> SetupForExecutableWithArguments:
         if not remaining_arguments_str:
             raise SingleInstructionInvalidArgumentException('Missing SOURCE argument for option %s' % SOURCE_OPTION)
         return SetupForSource(
-            sub_process_execution.InstructionSourceInfo(source.line_sequence.first_line.line_number,
-                                                        self.instruction_name),
+            source_info,
             exe_file,
             remaining_arguments_str)
 
