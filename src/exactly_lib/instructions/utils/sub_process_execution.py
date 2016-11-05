@@ -3,7 +3,7 @@ import pathlib
 import subprocess
 
 from exactly_lib.instructions.utils import file_services
-from exactly_lib.test_case.phases.common import PhaseLoggingPaths
+from exactly_lib.test_case.phases.common import PhaseLoggingPaths, HomeAndSds
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
@@ -75,6 +75,21 @@ class InstructionSourceInfo(tuple):
     @property
     def line_number(self) -> int:
         return self[0]
+
+
+class CmdAndArgsResolver:
+    """
+    Resolves the command string to execute.
+    """
+
+    def resolve(self, home_and_sds: HomeAndSds):
+        """
+        Resolves the "thing" to execute by Python's subprocess module.
+
+        :return: Either a string or a list consisting of the name of the command
+        followed by arguments.
+        """
+        raise NotImplementedError()
 
 
 class Executor:
