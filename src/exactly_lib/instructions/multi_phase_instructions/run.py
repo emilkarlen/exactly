@@ -17,15 +17,12 @@ from exactly_lib.instructions.utils.executable_file import ExecutableFile
 from exactly_lib.instructions.utils.file_ref import FileRef
 from exactly_lib.instructions.utils.file_ref_check import FileRefCheckValidator, FileRefCheck
 from exactly_lib.instructions.utils.main_step_executor import InstructionParts
-from exactly_lib.instructions.utils.main_step_executor_for_sub_process import MainStepExecutorForSubProcess
-from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostEdsValidator, AndValidator
-from exactly_lib.instructions.utils.sub_process_execution import ResultAndStderr, ExecuteInfo, \
-    ExecutorThatStoresResultInFilesInDir, execute_and_read_stderr_if_non_zero_exitcode, CmdAndArgsResolver
+from exactly_lib.instructions.utils.main_step_executor_for_sub_process import SubProcessExecutionSetup, \
+    MainStepExecutorForSubProcessForStandardSetup
+from exactly_lib.instructions.utils.pre_or_post_validation import AndValidator
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, SingleInstructionParserSource, SingleInstructionInvalidArgumentException
-from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases.common import HomeAndSds, TestCaseInstruction, PhaseLoggingPaths, \
-    InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case.phases.common import HomeAndSds, TestCaseInstruction
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 
@@ -179,30 +176,18 @@ class CmdAndArgsResolverForSource(CmdAndArgsResolverForExecutableFileBase):
         return [self.source]
 
 
-class Setup:
-    def __init__(self,
-                 source_info: sub_process_execution.InstructionSourceInfo,
-                 validator: PreOrPostEdsValidator,
-                 cmd_and_args_resolver: CmdAndArgsResolver,
-                 is_shell: bool):
-        self.validator = validator
-        self.cmd_and_args_resolver = cmd_and_args_resolver
-        self.source_info = source_info
-        self.is_shell = is_shell
-
-
 class SetupParser:
     def __init__(self,
                  instruction_name: str):
         self.instruction_name = instruction_name
 
-    def apply(self, source: SingleInstructionParserSource) -> Setup:
+    def apply(self, source: SingleInstructionParserSource) -> SubProcessExecutionSetup:
         tokens = TokenStream(source.instruction_argument)
         (exe_file, arg_tokens) = parse_executable_file.parse(tokens)
         source_info = sub_process_execution.InstructionSourceInfo(source.line_sequence.first_line.line_number,
                                                                   self.instruction_name)
         (validator, cmd_and_args_resolver) = self._validator__cmd_and_args_resolver(exe_file, arg_tokens)
-        return Setup(source_info, validator, cmd_and_args_resolver, False)
+        return SubProcessExecutionSetup(source_info, validator, cmd_and_args_resolver, False)
 
     def _validator__cmd_and_args_resolver(self,
                                           exe_file: ExecutableFile,
@@ -253,19 +238,6 @@ class InstructionParser(SingleInstructionParser):
 
     def apply(self, source: SingleInstructionParserSource) -> TestCaseInstruction:
         setup = self.setup_parser.apply(source)
-        return self._instruction_parts2instruction_function(InstructionParts(setup.validator,
-                                                                             MainStepExecutor(setup)))
-
-
-class MainStepExecutor(MainStepExecutorForSubProcess):
-    def __init__(self, setup: Setup):
-        self._setup = setup
-
-    def apply(self,
-              environment: InstructionEnvironmentForPostSdsStep,
-              logging_paths: PhaseLoggingPaths,
-              os_services: OsServices) -> ResultAndStderr:
-        execute_info = ExecuteInfo(self._setup.source_info,
-                                   self._setup.cmd_and_args_resolver.resolve(environment.home_and_sds))
-        executor = ExecutorThatStoresResultInFilesInDir(self._setup.is_shell)
-        return execute_and_read_stderr_if_non_zero_exitcode(execute_info, executor, logging_paths)
+        return self._instruction_parts2instruction_function(
+            InstructionParts(setup.validator,
+                             MainStepExecutorForSubProcessForStandardSetup(setup)))
