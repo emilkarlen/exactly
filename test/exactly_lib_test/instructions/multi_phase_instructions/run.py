@@ -3,7 +3,8 @@ import unittest
 from exactly_lib.instructions.multi_phase_instructions import run as sut
 from exactly_lib.instructions.utils import sub_process_execution as spe
 from exactly_lib.instructions.utils.arg_parse.relative_path_options import REL_TMP_OPTION
-from exactly_lib.instructions.utils.instruction_from_parts_for_executing_sub_process import SubProcessExecutionSetup
+from exactly_lib.instructions.utils.instruction_from_parts_for_executing_sub_process import SubProcessExecutionSetup, \
+    MainStepExecutorForSubProcess
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
 from exactly_lib.test_case import os_services
@@ -26,7 +27,7 @@ class ExecuteAction(home_and_eds_test.Action):
 
     def apply(self,
               home_and_sds: HomeAndSds) -> spe.ResultAndStderr:
-        executor = sut.MainStepExecutorForSubProcess(self.source_info, self.setup)
+        executor = MainStepExecutorForSubProcess(self.source_info, self.setup)
         return executor.apply(InstructionEnvironmentForPostSdsStep(home_and_sds.home_dir_path,
                                                                    home_and_sds.sds,
                                                                    'the-phase'),
@@ -40,7 +41,7 @@ class TestCaseBase(home_and_eds_test.TestCaseBase):
                      check: home_and_eds_test.Check):
         source_info = spe.InstructionSourceInfo(source.line_sequence.first_line.line_number,
                                                 'instruction-name')
-        setup = sut.SetupParser(source_info.instruction_name).apply(source)
+        setup = sut.SetupParser().apply(source)
         action = ExecuteAction(source_info, setup)
         self._check_action(action, check)
 
@@ -182,7 +183,7 @@ class TestExecuteInterpret(TestCaseBase):
 class TestSource(TestCaseBase):
     def test_parse_should_fail_when_no_source_argument(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            _new_parser().apply(single_line_source('EXECUTABLE %s' % sut.SOURCE_OPTION))
+            sut.SetupParser().apply(single_line_source('EXECUTABLE %s' % sut.SOURCE_OPTION))
 
     def test_check_zero_exit_code(self):
         self._test_source(self._python_interpreter_for_source_on_command_line('exit(0)'),
@@ -206,10 +207,6 @@ class TestSource(TestCaseBase):
         return single_line_source('( %s ) %s %s' % (py_exe.interpreter_that_executes_argument(),
                                                     sut.SOURCE_OPTION,
                                                     argument))
-
-
-def _new_parser() -> sut.SetupParser:
-    return sut.SetupParser('instruction-name')
 
 
 def py_pgm_that_exits_with_value_on_command_line(stderr_output) -> str:
