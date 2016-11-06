@@ -1,16 +1,14 @@
 from exactly_lib.common.instruction_documentation import InvokationVariant, SyntaxElementDescription
+from exactly_lib.instructions.utils import instruction_from_parts_for_executing_sub_process as spe_parts
 from exactly_lib.instructions.utils.cmd_and_args_resolvers import ConstantCmdAndArgsResolver
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingAndSplittedPartsForRestDocBase
 from exactly_lib.instructions.utils.instruction_from_parts_for_executing_sub_process import \
-    MainStepExecutorForSubProcess, ValidationAndSubProcessExecutionSetup
-from exactly_lib.instructions.utils.instruction_parts import InstructionParts
+    ValidationAndSubProcessExecutionSetup
 from exactly_lib.instructions.utils.pre_or_post_validation import ConstantSuccessValidator
-from exactly_lib.instructions.utils.sub_process_execution import InstructionSourceInfo
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, \
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
-from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.util.cli_syntax.elements import argument as a
 
 _COMMAND_SYNTAX_ELEMENT = 'COMMAND'
@@ -73,23 +71,18 @@ class DescriptionForNonAssertPhaseInstruction(TheInstructionDocumentationBase):
         return self._paragraphs(text)
 
 
-class Parser(SingleInstructionParser):
-    def __init__(self,
-                 instruction_name: str,
-                 instruction_setup_2_instruction_function):
-        self.instruction_name = instruction_name
-        self.instruction_setup_2_instruction_function = instruction_setup_2_instruction_function
+def instruction_parser(instruction_name: str,
+                       instruction_setup_2_instruction_function) -> SingleInstructionParser:
+    return spe_parts.InstructionParser(instruction_name, SetupParser(), instruction_setup_2_instruction_function)
 
-    def apply(self, source: SingleInstructionParserSource) -> TestCaseInstruction:
+
+class SetupParser(spe_parts.ValidationAndSubProcessExecutionSetupParser):
+    def apply(self, source: SingleInstructionParserSource) -> spe_parts.ValidationAndSubProcessExecutionSetup:
         argument = source.instruction_argument.strip()
         if not argument:
             msg = _COMMAND_SYNTAX_ELEMENT + ' must be given as argument'
             raise SingleInstructionInvalidArgumentException(msg)
-        source_info = InstructionSourceInfo(source.line_sequence.first_line.line_number, self.instruction_name)
-        setup = ValidationAndSubProcessExecutionSetup(
+        return ValidationAndSubProcessExecutionSetup(
             ConstantSuccessValidator(),
             ConstantCmdAndArgsResolver(argument),
             is_shell=True)
-        instruction_setup = InstructionParts(setup.validator,
-                                             MainStepExecutorForSubProcess(source_info, setup))
-        return self.instruction_setup_2_instruction_function(instruction_setup)

@@ -6,5 +6,5 @@ from exactly_lib.instructions.multi_phase_instructions import shell as shell_com
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(
-        shell_common.Parser(instruction_name, CleanupPhaseInstructionFromValidatorAndExecutor),
+        shell_common.instruction_parser(instruction_name, CleanupPhaseInstructionFromValidatorAndExecutor),
         shell_common.DescriptionForNonAssertPhaseInstruction(instruction_name))
