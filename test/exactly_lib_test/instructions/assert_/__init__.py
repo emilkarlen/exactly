@@ -9,13 +9,15 @@ from exactly_lib_test.instructions.assert_ import \
     shell, \
     stdout_stderr, \
     type, \
-    env
+    env, \
+    utils
 from exactly_lib_test.instructions.assert_ import test_resources
 
 
 def suite():
     ret_val = unittest.TestSuite()
     ret_val.addTest(test_resources.suite())
+    ret_val.addTest(utils.suite())
     ret_val.addTest(exitcode.suite())
     ret_val.addTest(contents.suite())
     ret_val.addTest(stdout_stderr.suite())

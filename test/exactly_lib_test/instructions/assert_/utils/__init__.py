@@ -1,0 +1,16 @@
+import unittest
+
+from exactly_lib_test.instructions.assert_.utils import instruction_from_parts_that_executes_sub_process
+
+
+def suite() -> unittest.TestSuite:
+    return instruction_from_parts_that_executes_sub_process.suite()
+
+
+def run_suite():
+    runner = unittest.TextTestRunner()
+    runner.run(suite())
+
+
+if __name__ == '__main__':
+    run_suite()
