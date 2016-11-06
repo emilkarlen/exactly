@@ -47,16 +47,16 @@ class MainStepExecutorForSubProcess(MainStepExecutor):
         executor = spe.ExecutorThatStoresResultInFilesInDir(self._setup.is_shell)
         return spe.execute_and_read_stderr_if_non_zero_exitcode(execute_info, executor, logging_paths)
 
-    def apply_sh(self,
-                 environment: InstructionEnvironmentForPostSdsStep,
-                 logging_paths: PhaseLoggingPaths,
-                 os_services: OsServices) -> sh.SuccessOrHardError:
+    def apply_as_non_assertion(self,
+                               environment: InstructionEnvironmentForPostSdsStep,
+                               logging_paths: PhaseLoggingPaths,
+                               os_services: OsServices) -> sh.SuccessOrHardError:
         return spe.result_to_sh(self.apply(environment, logging_paths, os_services))
 
-    def apply_pfh(self,
-                  environment: InstructionEnvironmentForPostSdsStep,
-                  logging_paths: PhaseLoggingPaths,
-                  os_services: OsServices) -> pfh.PassOrFailOrHardError:
+    def apply_as_assertion(self,
+                           environment: InstructionEnvironmentForPostSdsStep,
+                           logging_paths: PhaseLoggingPaths,
+                           os_services: OsServices) -> pfh.PassOrFailOrHardError:
         return spe.result_to_pfh(self.apply(environment, logging_paths, os_services))
 
 

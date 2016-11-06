@@ -25,6 +25,6 @@ class AssertPhaseInstructionFromValidatorAndExecutor(AssertPhaseInstruction):
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
-        return self.setup.executor.apply_pfh(environment,
-                                             self.logging_paths(environment.sds),
-                                             os_services)
+        return self.setup.executor.apply_as_assertion(environment,
+                                                      self.logging_paths(environment.sds),
+                                                      os_services)
