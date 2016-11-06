@@ -45,6 +45,10 @@ def args_for_interpreting(python_source_file,
     return [sys.executable, str(python_source_file)] + _str_elements(arguments)
 
 
+def non_shell_args_for_that_executes_source_on_command_line(python_source: str) -> list:
+    return [sys.executable, '-c', python_source]
+
+
 def args_for_running_with_arguments(arguments: list) -> list:
     return [sys.executable] + _str_elements(arguments)
 
