@@ -16,6 +16,7 @@ from exactly_lib.instructions.utils.documentation.instruction_documentation_with
 from exactly_lib.instructions.utils.executable_file import ExecutableFile
 from exactly_lib.instructions.utils.file_ref import FileRef
 from exactly_lib.instructions.utils.file_ref_check import FileRefCheckValidator, FileRefCheck
+from exactly_lib.instructions.utils.instruction_parts import InstructionInfoForConstructingAnInstructionFromParts
 from exactly_lib.instructions.utils.pre_or_post_validation import AndValidator
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, SingleInstructionParserSource, SingleInstructionInvalidArgumentException
@@ -24,11 +25,10 @@ from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 
 
-def instruction_parser(instruction_name: str,
-                       instruction_parts2instruction_function) -> SingleInstructionParser:
-    return spe_parts.InstructionParser(instruction_name,
-                                       SetupParser(),
-                                       instruction_parts2instruction_function)
+def instruction_parser(
+        instruction_info: InstructionInfoForConstructingAnInstructionFromParts) -> SingleInstructionParser:
+    return spe_parts.InstructionParser(instruction_info,
+                                       SetupParser())
 
 
 INTERPRET_OPTION_NAME = a.OptionName(long_name='interpret')

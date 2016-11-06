@@ -5,11 +5,18 @@ from exactly_lib.instructions.utils.documentation.instruction_documentation_with
     InstructionDocumentationWithCommandLineRenderingAndSplittedPartsForRestDocBase
 from exactly_lib.instructions.utils.instruction_from_parts_for_executing_sub_process import \
     ValidationAndSubProcessExecutionSetup
+from exactly_lib.instructions.utils.instruction_parts import InstructionInfoForConstructingAnInstructionFromParts
 from exactly_lib.instructions.utils.pre_or_post_validation import ConstantSuccessValidator
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, \
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
 from exactly_lib.util.cli_syntax.elements import argument as a
+
+
+def instruction_parser(
+        instruction_info: InstructionInfoForConstructingAnInstructionFromParts) -> SingleInstructionParser:
+    return spe_parts.InstructionParser(instruction_info, SetupParser())
+
 
 _COMMAND_SYNTAX_ELEMENT = 'COMMAND'
 
@@ -69,11 +76,6 @@ class DescriptionForNonAssertPhaseInstruction(TheInstructionDocumentationBase):
         It is considered an error if {COMMAND} exits with a non-zero exit code.
         """
         return self._paragraphs(text)
-
-
-def instruction_parser(instruction_name: str,
-                       instruction_setup_2_instruction_function) -> SingleInstructionParser:
-    return spe_parts.InstructionParser(instruction_name, SetupParser(), instruction_setup_2_instruction_function)
 
 
 class SetupParser(spe_parts.ValidationAndSubProcessExecutionSetupParser):
