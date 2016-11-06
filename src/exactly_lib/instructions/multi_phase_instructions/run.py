@@ -184,10 +184,8 @@ class SetupParser:
     def apply(self, source: SingleInstructionParserSource) -> ValidationAndSubProcessExecutionSetup:
         tokens = TokenStream(source.instruction_argument)
         (exe_file, arg_tokens) = parse_executable_file.parse(tokens)
-        source_info = sub_process_execution.InstructionSourceInfo(source.line_sequence.first_line.line_number,
-                                                                  self.instruction_name)
         (validator, cmd_and_args_resolver) = self._validator__cmd_and_args_resolver(exe_file, arg_tokens)
-        return ValidationAndSubProcessExecutionSetup(source_info, validator, cmd_and_args_resolver, False)
+        return ValidationAndSubProcessExecutionSetup(validator, cmd_and_args_resolver, False)
 
     def _validator__cmd_and_args_resolver(self,
                                           exe_file: ExecutableFile,
@@ -233,11 +231,14 @@ class InstructionParser(SingleInstructionParser):
     def __init__(self,
                  instruction_name: str,
                  instruction_parts2instruction_function):
+        self.instruction_name = instruction_name
         self._instruction_parts2instruction_function = instruction_parts2instruction_function
         self.setup_parser = SetupParser(instruction_name)
 
     def apply(self, source: SingleInstructionParserSource) -> TestCaseInstruction:
+        source_info = sub_process_execution.InstructionSourceInfo(source.line_sequence.first_line.line_number,
+                                                                  self.instruction_name)
         setup = self.setup_parser.apply(source)
         return self._instruction_parts2instruction_function(
             InstructionParts(setup.validator,
-                             MainStepExecutorForSubProcess(setup)))
+                             MainStepExecutorForSubProcess(source_info, setup)))

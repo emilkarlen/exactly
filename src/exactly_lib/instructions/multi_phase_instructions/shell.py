@@ -85,12 +85,11 @@ class Parser(SingleInstructionParser):
         if not argument:
             msg = _COMMAND_SYNTAX_ELEMENT + ' must be given as argument'
             raise SingleInstructionInvalidArgumentException(msg)
+        source_info = InstructionSourceInfo(source.line_sequence.first_line.line_number, self.instruction_name)
         setup = ValidationAndSubProcessExecutionSetup(
-            InstructionSourceInfo(source.line_sequence.first_line.line_number,
-                                  self.instruction_name),
             ConstantSuccessValidator(),
             ConstantCmdAndArgsResolver(argument),
             is_shell=True)
         instruction_setup = InstructionParts(setup.validator,
-                                             MainStepExecutorForSubProcess(setup))
+                                             MainStepExecutorForSubProcess(source_info, setup))
         return self.instruction_setup_2_instruction_function(instruction_setup)
