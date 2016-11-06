@@ -1,4 +1,5 @@
-from exactly_lib.instructions.utils.instruction_parts import InstructionParts
+from exactly_lib.instructions.utils.instruction_parts import InstructionParts, \
+    InstructionInfoForConstructingAnInstructionFromParts
 from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostEdsSvhValidationErrorValidator
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
@@ -28,3 +29,8 @@ class AssertPhaseInstructionFromValidatorAndExecutor(AssertPhaseInstruction):
         return self.setup.executor.apply_as_assertion(environment,
                                                       self.logging_paths(environment.sds),
                                                       os_services)
+
+
+def instruction_info_for(instruction_name: str) -> InstructionInfoForConstructingAnInstructionFromParts:
+    return InstructionInfoForConstructingAnInstructionFromParts(instruction_name,
+                                                                AssertPhaseInstructionFromValidatorAndExecutor)

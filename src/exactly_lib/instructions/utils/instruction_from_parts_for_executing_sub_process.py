@@ -1,5 +1,6 @@
 from exactly_lib.instructions.utils import sub_process_execution as spe
-from exactly_lib.instructions.utils.instruction_parts import MainStepExecutor, InstructionParts
+from exactly_lib.instructions.utils.instruction_parts import MainStepExecutor, InstructionParts, \
+    InstructionInfoForConstructingAnInstructionFromParts
 from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostEdsValidator
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParserSource, SingleInstructionParser
@@ -42,6 +43,12 @@ class MainStepExecutorForSubProcess(MainStepExecutor):
               environment: InstructionEnvironmentForPostSdsStep,
               logging_paths: PhaseLoggingPaths,
               os_services: OsServices) -> spe.ResultAndStderr:
+        # The structures and implementation here does not feel good, - a candidate for refactoring!
+        # E.g. ExecuteInfo may be unnecessary.
+        # This implementation was copied from earlier code that was existed in many places - so that
+        # it had the purpose of being reusable in many places!
+        # After the refactoring that introduced this class, this implementation should perhaps be refactored.
+        # But no time for this now!
         execute_info = spe.ExecuteInfo(self._source_info,
                                        self._setup.cmd_and_args_resolver.resolve(environment.home_and_sds))
         executor = spe.ExecutorThatStoresResultInFilesInDir(self._setup.is_shell)
@@ -67,17 +74,15 @@ class ValidationAndSubProcessExecutionSetupParser:
 
 class InstructionParser(SingleInstructionParser):
     def __init__(self,
-                 instruction_name: str,
-                 setup_parser: ValidationAndSubProcessExecutionSetupParser,
-                 instruction_parts2instruction_function):
-        self.instruction_name = instruction_name
-        self._instruction_parts2instruction_function = instruction_parts2instruction_function
+                 instruction_info: InstructionInfoForConstructingAnInstructionFromParts,
+                 setup_parser: ValidationAndSubProcessExecutionSetupParser):
+        self.instruction_info = instruction_info
         self.setup_parser = setup_parser
 
     def apply(self, source: SingleInstructionParserSource) -> TestCaseInstructionExecutedInSandbox:
         source_info = spe.InstructionSourceInfo(source.line_sequence.first_line.line_number,
-                                                self.instruction_name)
+                                                self.instruction_info.instruction_name)
         setup = self.setup_parser.apply(source)
-        return self._instruction_parts2instruction_function(
+        return self.instruction_info.instruction_parts_2_instruction_function(
             InstructionParts(setup.validator,
                              MainStepExecutorForSubProcess(source_info, setup)))

@@ -1,4 +1,5 @@
-from exactly_lib.instructions.utils.instruction_parts import InstructionParts
+from exactly_lib.instructions.utils.instruction_parts import InstructionParts, \
+    InstructionInfoForConstructingAnInstructionFromParts
 from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostEdsSvhValidationErrorValidator, \
     PreOrPostEdsSvhValidationForSuccessOrHardError
 from exactly_lib.test_case.os_services import OsServices
@@ -36,3 +37,8 @@ class CleanupPhaseInstructionFromValidatorAndExecutor(CleanupPhaseInstruction):
             environment: InstructionEnvironmentForPostSdsStep) -> sh.SuccessOrHardError:
         validator = PreOrPostEdsSvhValidationForSuccessOrHardError(self.setup.validator)
         return validator.validate_pre_or_post_eds(environment.home_and_sds)
+
+
+def instruction_info_for(instruction_name: str) -> InstructionInfoForConstructingAnInstructionFromParts:
+    return InstructionInfoForConstructingAnInstructionFromParts(instruction_name,
+                                                                CleanupPhaseInstructionFromValidatorAndExecutor)
