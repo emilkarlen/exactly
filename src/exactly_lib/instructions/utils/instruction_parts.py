@@ -7,7 +7,7 @@ from exactly_lib.test_case.phases.result import sh
 
 class MainStepExecutor:
     """
-    Executes the main step of an instruction in an arbitrary phase.
+    Executes the main step of an instruction in any phase.
     """
 
     def apply_sh(self,

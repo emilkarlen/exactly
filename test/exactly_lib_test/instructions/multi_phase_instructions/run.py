@@ -23,7 +23,7 @@ class ExecuteAction(home_and_eds_test.Action):
 
     def apply(self,
               home_and_sds: HomeAndSds) -> ResultAndStderr:
-        executor = sut.MainStepExecutorForSubProcessForStandardSetup(self.setup)
+        executor = sut.MainStepExecutorForSubProcess(self.setup)
         return executor.apply(InstructionEnvironmentForPostSdsStep(home_and_sds.home_dir_path,
                                                                    home_and_sds.sds,
                                                                    'the-phase'),

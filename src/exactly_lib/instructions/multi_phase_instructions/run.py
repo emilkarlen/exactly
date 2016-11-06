@@ -16,9 +16,9 @@ from exactly_lib.instructions.utils.documentation.instruction_documentation_with
 from exactly_lib.instructions.utils.executable_file import ExecutableFile
 from exactly_lib.instructions.utils.file_ref import FileRef
 from exactly_lib.instructions.utils.file_ref_check import FileRefCheckValidator, FileRefCheck
-from exactly_lib.instructions.utils.main_step_executor import InstructionParts
-from exactly_lib.instructions.utils.main_step_executor_for_sub_process import SubProcessExecutionSetup, \
-    MainStepExecutorForSubProcessForStandardSetup
+from exactly_lib.instructions.utils.instruction_from_parts_for_executing_sub_process import \
+    MainStepExecutorForSubProcess, ValidationAndSubProcessExecutionSetup
+from exactly_lib.instructions.utils.instruction_parts import InstructionParts
 from exactly_lib.instructions.utils.pre_or_post_validation import AndValidator
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, SingleInstructionParserSource, SingleInstructionInvalidArgumentException
@@ -181,13 +181,13 @@ class SetupParser:
                  instruction_name: str):
         self.instruction_name = instruction_name
 
-    def apply(self, source: SingleInstructionParserSource) -> SubProcessExecutionSetup:
+    def apply(self, source: SingleInstructionParserSource) -> ValidationAndSubProcessExecutionSetup:
         tokens = TokenStream(source.instruction_argument)
         (exe_file, arg_tokens) = parse_executable_file.parse(tokens)
         source_info = sub_process_execution.InstructionSourceInfo(source.line_sequence.first_line.line_number,
                                                                   self.instruction_name)
         (validator, cmd_and_args_resolver) = self._validator__cmd_and_args_resolver(exe_file, arg_tokens)
-        return SubProcessExecutionSetup(source_info, validator, cmd_and_args_resolver, False)
+        return ValidationAndSubProcessExecutionSetup(source_info, validator, cmd_and_args_resolver, False)
 
     def _validator__cmd_and_args_resolver(self,
                                           exe_file: ExecutableFile,
@@ -240,4 +240,4 @@ class InstructionParser(SingleInstructionParser):
         setup = self.setup_parser.apply(source)
         return self._instruction_parts2instruction_function(
             InstructionParts(setup.validator,
-                             MainStepExecutorForSubProcessForStandardSetup(setup)))
+                             MainStepExecutorForSubProcess(setup)))
