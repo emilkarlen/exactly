@@ -1,4 +1,4 @@
-from exactly_lib.instructions.utils.main_step_executor import InstructionParts
+from exactly_lib.instructions.utils.instruction_parts import InstructionParts
 from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostEdsSvhValidationErrorValidator
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.before_assert import BeforeAssertPhaseInstruction

@@ -2,9 +2,9 @@ from exactly_lib.common.instruction_documentation import InvokationVariant, Synt
 from exactly_lib.instructions.utils.cmd_and_args_resolvers import ConstantCmdAndArgsResolver
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingAndSplittedPartsForRestDocBase
-from exactly_lib.instructions.utils.main_step_executor import InstructionParts
-from exactly_lib.instructions.utils.main_step_executor_for_sub_process import SubProcessExecutionSetup, \
-    MainStepExecutorForSubProcessForStandardSetup
+from exactly_lib.instructions.utils.instruction_from_parts_for_executing_sub_process import \
+    MainStepExecutorForSubProcess, ValidationAndSubProcessExecutionSetup
+from exactly_lib.instructions.utils.instruction_parts import InstructionParts
 from exactly_lib.instructions.utils.pre_or_post_validation import ConstantSuccessValidator
 from exactly_lib.instructions.utils.sub_process_execution import InstructionSourceInfo
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
@@ -85,12 +85,12 @@ class Parser(SingleInstructionParser):
         if not argument:
             msg = _COMMAND_SYNTAX_ELEMENT + ' must be given as argument'
             raise SingleInstructionInvalidArgumentException(msg)
-        setup = SubProcessExecutionSetup(
+        setup = ValidationAndSubProcessExecutionSetup(
             InstructionSourceInfo(source.line_sequence.first_line.line_number,
                                   self.instruction_name),
             ConstantSuccessValidator(),
             ConstantCmdAndArgsResolver(argument),
             is_shell=True)
         instruction_setup = InstructionParts(setup.validator,
-                                             MainStepExecutorForSubProcessForStandardSetup(setup))
+                                             MainStepExecutorForSubProcess(setup))
         return self.instruction_setup_2_instruction_function(instruction_setup)
