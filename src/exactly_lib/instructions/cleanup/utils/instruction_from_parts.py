@@ -27,9 +27,9 @@ class CleanupPhaseInstructionFromValidatorAndExecutor(CleanupPhaseInstruction):
         validation_result = self._validate_from_main(environment)
         if validation_result.is_hard_error:
             return validation_result
-        return self.setup.executor.apply_sh(environment,
-                                            self.logging_paths(environment.sds),
-                                            os_services)
+        return self.setup.executor.apply_as_non_assertion(environment,
+                                                          self.logging_paths(environment.sds),
+                                                          os_services)
 
     def _validate_from_main(
             self,
