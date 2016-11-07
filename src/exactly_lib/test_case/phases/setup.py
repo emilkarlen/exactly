@@ -2,7 +2,7 @@ from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep, \
-    TestCaseInstructionExecutedInSandbox
+    TestCaseInstruction
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 
@@ -48,7 +48,7 @@ def default_settings() -> SetupSettingsBuilder:
     return SetupSettingsBuilder()
 
 
-class SetupPhaseInstruction(TestCaseInstructionExecutedInSandbox):
+class SetupPhaseInstruction(TestCaseInstruction):
     """
     Abstract base class for instructions of the SETUP phase.
     """
