@@ -12,12 +12,20 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 
 class ConfigurationBase:
+    def run_test_with_parser(self,
+                             put: unittest.TestCase,
+                             parser: SingleInstructionParser,
+                             source: SingleInstructionParserSource,
+                             arrangement,
+                             expectation):
+        raise NotImplementedError()
+
     def run_test(self,
                  put: unittest.TestCase,
                  source: SingleInstructionParserSource,
                  arrangement,
                  expectation):
-        raise NotImplementedError()
+        self.run_test_with_parser(put, self.parser(), source, arrangement, expectation)
 
     def instruction_setup(self) -> SingleInstructionSetup:
         raise NotImplementedError()

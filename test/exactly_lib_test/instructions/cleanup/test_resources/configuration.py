@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionParserSource
+    SingleInstructionParserSource, SingleInstructionParser
 from exactly_lib.test_case.os_services import new_default, OsServices
 from exactly_lib_test.instructions.cleanup.test_resources.instruction_check import Arrangement, check, is_success, \
     Expectation
@@ -13,12 +13,13 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 
 
 class CleanupConfigurationBase(ConfigurationBase):
-    def run_test(self,
-                 put: unittest.TestCase,
-                 source: SingleInstructionParserSource,
-                 arrangement,
-                 expectation):
-        check(put, self.parser(), source, arrangement, expectation)
+    def run_test_with_parser(self,
+                             put: unittest.TestCase,
+                             parser: SingleInstructionParser,
+                             source: SingleInstructionParserSource,
+                             arrangement,
+                             expectation):
+        check(put, parser, source, arrangement, expectation)
 
     def expect_success(self):
         return is_success()
