@@ -23,8 +23,9 @@ class SetupConfigurationBase(ConfigurationBase):
     def expect_success(self):
         return is_success()
 
-    def expect_failure_of_main(self):
-        return Expectation(main_result=sh_check.is_hard_error())
+    def expect_failure_of_main(self,
+                               assertion_on_error_message: va.ValueAssertion = va.anything_goes()):
+        return Expectation(main_result=sh_check.is_hard_error(assertion_on_error_message))
 
     def expect_failing_validation_pre_eds(self,
                                           assertion_on_error_message: va.ValueAssertion = va.anything_goes()):

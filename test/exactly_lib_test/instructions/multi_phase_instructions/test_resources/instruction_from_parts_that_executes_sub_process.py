@@ -25,6 +25,7 @@ from exactly_lib_test.test_resources.python_program_execution import \
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
+from exactly_lib_test.test_resources.value_assertions import value_assertion_str as va_str
 
 
 class Configuration(ConfigurationBase):
@@ -77,6 +78,7 @@ def suite_for(configuration: Configuration) -> unittest.TestSuite:
                          TestInstructionIsSuccessfulWhenExitStatusFromCommandIsZero,
                          TestInstructionIsErrorWhenExitStatusFromCommandIsNonZero,
                          TestOutputIsStoredInFilesInInstructionLogDir,
+                         TestWhenNonZeroExitCodeTheContentsOfStderrShouldBeIncludedInTheErrorMessage,
                          ]
     return unittest.TestSuite(
         [tcc(configuration) for tcc in test_case_classes])
@@ -161,6 +163,23 @@ class TestOutputIsStoredInFilesInInstructionLogDir(TestCaseBase):
                                                                                                   source_info,
                                                                                                   sub_process_result)),
             instruction_name=instruction_name)
+
+
+class TestWhenNonZeroExitCodeTheContentsOfStderrShouldBeIncludedInTheErrorMessage(TestCaseBase):
+    def runTest(self):
+        sub_process_result = SubProcessResult(exitcode=72,
+                                              stdout='output on stdout',
+                                              stderr='output on stderr')
+        program = program_that_prints_and_exits_with_exit_code(sub_process_result)
+        execution_setup_parser = _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(
+            pre_or_post_validation.ConstantSuccessValidator())
+        source = new_source2(program)
+        self.conf.run_sub_process_test(
+            self,
+            source,
+            execution_setup_parser,
+            self.conf.empty_arrangement(),
+            self.conf.expect_failure_of_main(va_str.contains('output on stderr')))
 
 
 class _InstructionLogDirContainsOutFiles(va.ValueAssertion):

@@ -8,10 +8,15 @@ def is_success() -> va.ValueAssertion:
                                        'Status is expected to be success'))
 
 
-def is_hard_error() -> va.ValueAssertion:
-    return va.OnTransformed(lambda value: value.is_hard_error,
-                            va.Boolean(True,
-                                       'Status is expected to be hard-error'))
+def is_hard_error(assertion_on_error_message: va.ValueAssertion = va.anything_goes()) -> va.ValueAssertion:
+    return va.And([
+        va.OnTransformed(lambda value: value.is_hard_error,
+                         va.Boolean(True,
+                                    'Status is expected to be hard-error')),
+        va.sub_component('error message',
+                         sh.SuccessOrHardError.failure_message.fget,
+                         assertion_on_error_message)
+    ])
 
 
 def is_sh_and(assertion: va.ValueAssertion) -> va.ValueAssertion:
