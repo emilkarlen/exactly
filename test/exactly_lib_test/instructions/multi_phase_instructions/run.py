@@ -150,7 +150,7 @@ class TestExecuteInterpret(TestCaseBase):
                                                                                 0])),
                           home_and_sds_test.Check(expected_action_result=is_success_result(0,
                                                                                            None),
-                                                  eds_contents_before=sds_populator.tmp_user_dir_contents(DirContents([
+                                                  sds_contents_before=sds_populator.tmp_user_dir_contents(DirContents([
                                                       File('exit-with-value-on-command-line.py',
                                                            py_pgm_that_exits_with_value_on_command_line(''))]))
                                                   )

@@ -41,7 +41,7 @@ def log_dir_is_correct_for_each_phase(recordings: dict,
     sds = actual.execution_directory_structure
     expected = {
         PhaseEnum.SETUP: sds_log_phase_dir(sds, phase_identifier.SETUP.identifier),
-        # PhaseEnum.ACT: eds_log_phase_dir(sds, phases.ACT.identifier),
+        # PhaseEnum.ACT: sds_log_phase_dir(sds, phases.ACT.identifier),
         PhaseEnum.BEFORE_ASSERT: sds_log_phase_dir(sds, phase_identifier.BEFORE_ASSERT.identifier),
         PhaseEnum.ASSERT: sds_log_phase_dir(sds, phase_identifier.ASSERT.identifier),
         PhaseEnum.CLEANUP: sds_log_phase_dir(sds, phase_identifier.CLEANUP.identifier),

@@ -24,13 +24,13 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 
 def arrangement(home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
-                eds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
+                sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
                 act_result_producer: ActResultProducer = ActResultProducer(),
                 os_services: OsServices = new_default(),
                 process_execution_settings: ProcessExecutionSettings = with_no_timeout(),
                 ) -> ArrangementPostAct:
     return ArrangementPostAct(home_dir_contents,
-                              eds_contents_before_main,
+                              sds_contents_before_main,
                               act_result_producer,
                               os_services,
                               process_execution_settings)
@@ -96,7 +96,7 @@ class Executor(InstructionExecutionBase):
         assert isinstance(instruction, BeforeAssertPhaseInstruction)
         with utils.home_and_sds_and_test_as_curr_dir(
                 home_dir_contents=self.arrangement.home_contents,
-                sds_contents=self.arrangement.eds_contents) as home_and_sds:
+                sds_contents=self.arrangement.sds_contents) as home_and_sds:
             environment = i.InstructionEnvironmentForPreSdsStep(home_and_sds.home_dir_path)
             validate_result = self._execute_validate_pre_sds(environment, instruction)
             if not validate_result.is_success:

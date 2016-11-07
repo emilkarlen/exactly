@@ -77,7 +77,7 @@ class TestSuccessfulValidation(TestCaseBase):
         self.conf.run_test(
             self,
             source_for_interpreting(options.REL_TMP_OPTION, 'existing-file.py'),
-            self.conf.arrangement(eds_contents_before_main=sds_populator.tmp_user_dir_contents(
+            self.conf.arrangement(sds_contents_before_main=sds_populator.tmp_user_dir_contents(
                 DirContents([empty_file('existing-file.py')]))),
             self.conf.expect_success(),
         )

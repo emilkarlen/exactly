@@ -37,9 +37,9 @@ class AssertConfigurationBase(ConfigurationBase):
         return Expectation(validation_pre_sds=svh_check.is_validation_error(assertion_on_error_message))
 
     def arrangement(self,
-                    eds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
+                    sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
                     os_services: OsServices = new_default()):
-        return arrangement(eds_contents_before_main=eds_contents_before_main,
+        return arrangement(sds_contents_before_main=sds_contents_before_main,
                            os_services=os_services)
 
     def expect_success_and_side_effects_on_files(self,

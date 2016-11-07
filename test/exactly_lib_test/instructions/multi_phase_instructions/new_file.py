@@ -124,7 +124,7 @@ class TestSuccessfulScenariosNoContent(TestCaseBase):
     def test_file_in_sub_dir__sub_dir_exists(self):
         self._test_argument(single_line_source('existing-directory/file-name.txt'),
                             sds_test.Check(expected_action_result=is_success(),
-                                           eds_contents_before=act_dir_contents(DirContents([
+                                           sds_contents_before=act_dir_contents(DirContents([
                                                empty_dir('existing-directory')
                                            ])),
                                            expected_sds_contents_after=act_dir_contains_exactly(DirContents([
@@ -170,7 +170,7 @@ class TestFailingScenarios(TestCaseBase):
     def test_argument_is_existing_file(self):
         self._test_argument(single_line_source('existing-file'),
                             sds_test.Check(expected_action_result=is_failure(),
-                                           eds_contents_before=act_dir_contents(DirContents([
+                                           sds_contents_before=act_dir_contents(DirContents([
                                                empty_file('existing-file')
                                            ])),
                                            ))
@@ -178,7 +178,7 @@ class TestFailingScenarios(TestCaseBase):
     def test_argument_is_under_path_that_contains_a_component_that_is_an_existing_file(self):
         self._test_argument(single_line_source('existing-directory/existing-file/directory/file-name.txt'),
                             sds_test.Check(expected_action_result=is_failure(),
-                                           eds_contents_before=act_dir_contents(DirContents([
+                                           sds_contents_before=act_dir_contents(DirContents([
                                                Dir('existing-directory', [
                                                    empty_file('existing-file')
                                                ])

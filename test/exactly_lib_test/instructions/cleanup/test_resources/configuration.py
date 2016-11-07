@@ -34,9 +34,9 @@ class CleanupConfigurationBase(ConfigurationBase):
         return Expectation(validate_pre_sds_result=svh_check.is_validation_error(assertion_on_error_message))
 
     def arrangement(self,
-                    eds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
+                    sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
                     os_services: OsServices = new_default()):
-        return Arrangement(eds_contents_before_main=eds_contents_before_main,
+        return Arrangement(sds_contents_before_main=sds_contents_before_main,
                            os_services=os_services)
 
     def arrangement_with_timeout(self, timeout_in_seconds: int):
