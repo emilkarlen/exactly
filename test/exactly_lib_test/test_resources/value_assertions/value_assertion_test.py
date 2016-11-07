@@ -325,7 +325,7 @@ def test_case_with_failure_exception_set_to_test_exception() -> unittest.TestCas
     return put
 
 
-def suite():
+def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestIsNone))
     ret_val.addTest(unittest.makeSuite(TestIsNotNone))
@@ -343,8 +343,7 @@ def suite():
 
 
 def run_suite():
-    runner = unittest.TextTestRunner()
-    runner.run(suite())
+    unittest.TextTestRunner().run(suite())
 
 
 if __name__ == '__main__':
