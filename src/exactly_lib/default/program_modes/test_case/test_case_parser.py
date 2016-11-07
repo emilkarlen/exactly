@@ -48,6 +48,7 @@ def new_parser(split_line_into_name_and_argument_function,
             parse.SectionConfiguration(phase_identifier.CLEANUP.section_name,
                                        dict_parser(instructions_setup.cleanup_instruction_set)),
         ),
-        default_section_name=DEFAULT_PHASE.section_name
+        default_section_name=DEFAULT_PHASE.section_name,
+        section_element_name_for_error_messages='phase',
     )
     return Parser(parse.new_parser_for(configuration))
