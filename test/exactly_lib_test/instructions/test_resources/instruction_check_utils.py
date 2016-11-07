@@ -54,7 +54,7 @@ class InstructionExecutionBase:
         validation.apply(self.put, actual)
 
     def _check_result_of_validate_pre_eds(self, actual):
-        self._check_instance_and('Result of validate/pre-EDS',
+        self._check_instance_and('Result of validate/pre-SDS',
                                  svh.SuccessOrValidationErrorOrHardError,
                                  self.expectation.validation_pre_eds,
                                  actual)
@@ -62,7 +62,7 @@ class InstructionExecutionBase:
     def _check_main_side_effects_on_files(self, home_and_sds: HomeAndSds):
         self.expectation.main_side_effects_on_files.apply(self.put,
                                                           home_and_sds.sds,
-                                                          va.MessageBuilder('main side effects on EDS'))
+                                                          va.MessageBuilder('main side effects on SDS'))
 
     def _check_side_effects_on_home_and_eds(self, home_and_sds: HomeAndSds):
         self.expectation.side_effects_check.apply(self.put,

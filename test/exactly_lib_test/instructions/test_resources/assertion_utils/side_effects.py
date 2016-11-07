@@ -15,4 +15,4 @@ class AssertCwdIsSubDirOfActDir(va.ValueAssertion):
               message_builder: va.MessageBuilder = va.MessageBuilder()):
         put.assertEqual(value.sds.act_dir / self.expected_sub_dir_of_act_dir,
                         pathlib.Path.cwd(),
-                        message_builder.apply('CWD expected to be sub-dir of EDS/act'))
+                        message_builder.apply('CWD expected to be sub-dir of SDS/act'))
