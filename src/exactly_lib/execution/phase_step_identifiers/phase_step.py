@@ -59,23 +59,23 @@ def _validate_post_setup_step(phase: phase_identifier.Phase) -> PhaseStep:
 
 CONFIGURATION__MAIN = _main_step(phase_identifier.CONFIGURATION)
 
-SETUP__VALIDATE_PRE_EDS = _validate_pre_eds_step(phase_identifier.SETUP)
+SETUP__VALIDATE_PRE_SDS = _validate_pre_eds_step(phase_identifier.SETUP)
 SETUP__VALIDATE_POST_SETUP = _validate_post_setup_step(phase_identifier.SETUP)
 SETUP__MAIN = _main_step(phase_identifier.SETUP)
 
-ACT__VALIDATE_PRE_EDS = _validate_pre_eds_step(phase_identifier.ACT)
+ACT__VALIDATE_PRE_SDS = _validate_pre_eds_step(phase_identifier.ACT)
 ACT__VALIDATE_POST_SETUP = _validate_post_setup_step(phase_identifier.ACT)
 ACT__MAIN = _main_step(phase_identifier.ACT)
 ACT__PREPARE = PhaseStep(phase_identifier.ACT, 'script-prepare')
 ACT__EXECUTE = PhaseStep(phase_identifier.ACT, 'script-execute')
 
-BEFORE_ASSERT__VALIDATE_PRE_EDS = _validate_pre_eds_step(phase_identifier.BEFORE_ASSERT)
+BEFORE_ASSERT__VALIDATE_PRE_SDS = _validate_pre_eds_step(phase_identifier.BEFORE_ASSERT)
 BEFORE_ASSERT__VALIDATE_POST_SETUP = _validate_post_setup_step(phase_identifier.BEFORE_ASSERT)
 BEFORE_ASSERT__MAIN = _main_step(phase_identifier.BEFORE_ASSERT)
 
-ASSERT__VALIDATE_PRE_EDS = _validate_pre_eds_step(phase_identifier.ASSERT)
+ASSERT__VALIDATE_PRE_SDS = _validate_pre_eds_step(phase_identifier.ASSERT)
 ASSERT__VALIDATE_POST_SETUP = _validate_post_setup_step(phase_identifier.ASSERT)
 ASSERT__MAIN = _main_step(phase_identifier.ASSERT)
 
-CLEANUP__VALIDATE_PRE_EDS = _validate_pre_eds_step(phase_identifier.CLEANUP)
+CLEANUP__VALIDATE_PRE_SDS = _validate_pre_eds_step(phase_identifier.CLEANUP)
 CLEANUP__MAIN = _main_step(phase_identifier.CLEANUP)

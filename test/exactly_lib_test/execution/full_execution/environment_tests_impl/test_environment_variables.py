@@ -40,7 +40,7 @@ class Test(FullExecutionTestCaseBase):
             python3.new_act_phase_setup().source_and_executor_constructor,
             before_wrapped_validate_pre_eds=_RecordEnvVars(
                 self.recorder,
-                phase_step.ACT__VALIDATE_PRE_EDS),
+                phase_step.ACT__VALIDATE_PRE_SDS),
             before_wrapped_validate_post_setup=_RecordEnvVars(
                 self.recorder,
                 phase_step.ACT__VALIDATE_POST_SETUP),
@@ -61,7 +61,7 @@ class Test(FullExecutionTestCaseBase):
                                                                                                       phase_step.CONFIGURATION__MAIN))],
             [setup_phase_instruction_that(
                 validate_pre_eds_initial_action=_RecordEnvVars(self.recorder,
-                                                               phase_step.SETUP__VALIDATE_PRE_EDS),
+                                                               phase_step.SETUP__VALIDATE_PRE_SDS),
                 validate_post_setup_initial_action=_RecordEnvVars(self.recorder,
                                                                   phase_step.SETUP__VALIDATE_POST_SETUP),
                 main_initial_action=_RecordEnvVars(self.recorder,
@@ -69,21 +69,21 @@ class Test(FullExecutionTestCaseBase):
             [act_phase_instruction_with_source(LineSequence(72, py_pgm_to_print_env_vars))],
             [before_assert_phase_instruction_that(
                 validate_pre_eds_initial_action=_RecordEnvVars(self.recorder,
-                                                               phase_step.BEFORE_ASSERT__VALIDATE_PRE_EDS),
+                                                               phase_step.BEFORE_ASSERT__VALIDATE_PRE_SDS),
                 validate_post_setup_initial_action=_RecordEnvVars(self.recorder,
                                                                   phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP),
                 main_initial_action=_RecordEnvVars(self.recorder,
                                                    phase_step.BEFORE_ASSERT__MAIN))],
             [assert_phase_instruction_that(
                 validate_pre_eds_initial_action=_RecordEnvVars(self.recorder,
-                                                               phase_step.ASSERT__VALIDATE_PRE_EDS),
+                                                               phase_step.ASSERT__VALIDATE_PRE_SDS),
                 validate_post_setup_initial_action=_RecordEnvVars(self.recorder,
                                                                   phase_step.ASSERT__VALIDATE_POST_SETUP),
                 main_initial_action=_RecordEnvVars(self.recorder,
                                                    phase_step.ASSERT__MAIN))],
             [cleanup_phase_instruction_that(
                 validate_pre_eds_initial_action=_RecordEnvVars(self.recorder,
-                                                               phase_step.CLEANUP__VALIDATE_PRE_EDS),
+                                                               phase_step.CLEANUP__VALIDATE_PRE_SDS),
                 main_initial_action=_RecordEnvVars(self.recorder,
                                                    phase_step.CLEANUP__MAIN))],
         )
@@ -120,11 +120,11 @@ class Test(FullExecutionTestCaseBase):
         }
         expected_recorded_internally = {
             phase_step.CONFIGURATION__MAIN: for_configuration_phase,
-            phase_step.SETUP__VALIDATE_PRE_EDS: for_pre_eds,
-            phase_step.ACT__VALIDATE_PRE_EDS: for_pre_eds,
-            phase_step.BEFORE_ASSERT__VALIDATE_PRE_EDS: for_pre_eds,
-            phase_step.ASSERT__VALIDATE_PRE_EDS: for_pre_eds,
-            phase_step.CLEANUP__VALIDATE_PRE_EDS: for_pre_eds,
+            phase_step.SETUP__VALIDATE_PRE_SDS: for_pre_eds,
+            phase_step.ACT__VALIDATE_PRE_SDS: for_pre_eds,
+            phase_step.BEFORE_ASSERT__VALIDATE_PRE_SDS: for_pre_eds,
+            phase_step.ASSERT__VALIDATE_PRE_SDS: for_pre_eds,
+            phase_step.CLEANUP__VALIDATE_PRE_SDS: for_pre_eds,
             phase_step.SETUP__MAIN: set_at_eds_creation,
             phase_step.SETUP__VALIDATE_POST_SETUP: set_at_eds_creation,
             phase_step.ACT__VALIDATE_POST_SETUP: set_at_eds_creation,

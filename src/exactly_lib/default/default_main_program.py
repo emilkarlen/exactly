@@ -37,7 +37,7 @@ class MainProgram(main_program.MainProgram):
                                                               self._instruction_set,
                                                               test_suite_execution_settings.handling_setup,
                                                               False,
-                                                              self._eds_root_name_prefix_for_suite())
+                                                              self._sds_root_name_prefix_for_suite())
         executor = test_suite_execution.Executor(default_configuration,
                                                  self._output,
                                                  suite_hierarchy_reading.Reader(
@@ -51,7 +51,7 @@ class MainProgram(main_program.MainProgram):
         return executor.execute()
 
     @staticmethod
-    def _eds_root_name_prefix_for_suite():
+    def _sds_root_name_prefix_for_suite():
         today = datetime.datetime.today()
         datetime_suffix = today.strftime('%Y-%m-%d-%H-%M-%S')
         execution_directory_root_name_prefix = program_info.PROGRAM_NAME + '-suite-' + datetime_suffix + '-'
