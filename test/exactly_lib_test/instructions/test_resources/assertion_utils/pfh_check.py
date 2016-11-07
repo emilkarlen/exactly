@@ -19,7 +19,3 @@ def is_fail() -> va.ValueAssertion:
 
 def is_hard_error() -> va.ValueAssertion:
     return status_is(pfh.PassOrFailOrHardErrorEnum.HARD_ERROR)
-
-
-def not_applicable() -> va.ValueAssertion:
-    return va.Constant(False, 'Not applicable')
