@@ -48,7 +48,8 @@ class TheConfiguration(Configuration):
 
     @contextmanager
     def program_that_sleeps_at_least(self, number_of_seconds: int) -> list:
-        yield self._builder_for(py_program.program_that_sleeps_at_least(number_of_seconds))
+        yield self._builder_for(
+            py_program.program_that_sleeps_at_least_and_then_exists_with_zero_exit_status(number_of_seconds))
 
     def _builder_for(self, statements: list) -> list:
         return list(map(lambda stmt: instr([stmt]), statements))

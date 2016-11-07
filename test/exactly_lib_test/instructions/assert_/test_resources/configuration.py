@@ -1,5 +1,6 @@
 import unittest
 
+from exactly_lib.instructions.utils.sub_process_execution import ProcessExecutionSettings
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParserSource, SingleInstructionParser
 from exactly_lib.test_case.os_services import new_default, OsServices
@@ -20,6 +21,9 @@ class AssertConfigurationBase(ConfigurationBase):
                              arrangement,
                              expectation):
         check(put, parser, source, arrangement, expectation)
+
+    def arrangement_with_timeout(self, timeout_in_seconds: int):
+        return arrangement(process_execution_settings=ProcessExecutionSettings(timeout_in_seconds=timeout_in_seconds))
 
     def expect_success(self):
         return is_pass()

@@ -165,7 +165,7 @@ class TheConfiguration(Configuration):
     @contextmanager
     def program_that_sleeps_at_least(self, number_of_seconds: int) -> list:
         return self._builder_for_executing_source_from_py_file(
-            py_program.program_that_sleeps_at_least(number_of_seconds))
+            py_program.program_that_sleeps_at_least_and_then_exists_with_zero_exit_status(number_of_seconds))
 
     def _builder_for_executing_source_from_py_file(self, statements: list) -> list:
         with tmp_file_containing_lines(statements) as src_path:

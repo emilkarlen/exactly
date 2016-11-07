@@ -33,6 +33,9 @@ class ConfigurationForTheAssertPhase(AssertConfigurationBase, test_impl.Configur
                                              assertion_on_error_message: va.ValueAssertion = va.anything_goes()):
         return Expectation(validation_post_eds=svh_check.is_validation_error(assertion_on_error_message))
 
+    def expect_hard_error_in_main(self) -> Expectation:
+        return Expectation(main_result=pfh_check.is_hard_error())
+
 
 def suite() -> unittest.TestSuite:
     return test_impl.suite_for(ConfigurationForTheAssertPhase())

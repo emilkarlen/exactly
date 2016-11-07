@@ -6,6 +6,8 @@ import unittest
 from time import strftime, localtime
 
 from exactly_lib import program_info
+from exactly_lib.instructions.utils.sub_process_execution import ProcessExecutionSettings
+from exactly_lib.instructions.utils.sub_process_execution import with_no_timeout
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, SingleInstructionParserSource
 from exactly_lib.test_case import phase_identifier, sandbox_directory_structure
@@ -29,9 +31,10 @@ class Arrangement(ArrangementWithEds):
     def __init__(self,
                  home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
                  os_services: OsServices = new_default(),
+                 process_execution_settings: ProcessExecutionSettings = with_no_timeout(),
                  eds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
                  initial_settings_builder: SetupSettingsBuilder = SetupSettingsBuilder()):
-        super().__init__(home_dir_contents, eds_contents_before_main, os_services)
+        super().__init__(home_dir_contents, eds_contents_before_main, os_services, process_execution_settings)
         self.initial_settings_builder = initial_settings_builder
 
 
@@ -106,9 +109,11 @@ class Executor:
                 with tempfile.TemporaryDirectory(prefix=prefix + '-sds-') as eds_root_dir_name:
                     sds = sandbox_directory_structure.construct_at(resolved_path_name(eds_root_dir_name))
                     os.chdir(str(sds.act_dir))
-                    global_environment_with_eds = i.InstructionEnvironmentForPostSdsStep(home_dir_path,
-                                                                                         sds,
-                                                                                         phase_identifier.SETUP.identifier)
+                    global_environment_with_eds = i.InstructionEnvironmentForPostSdsStep(
+                        home_dir_path,
+                        sds,
+                        phase_identifier.SETUP.identifier,
+                        timeout_in_seconds=self.arrangement.process_execution_settings.timeout_in_seconds)
                     main_result = self._execute_main(sds, global_environment_with_eds, instruction)
                     if not main_result.is_success:
                         return

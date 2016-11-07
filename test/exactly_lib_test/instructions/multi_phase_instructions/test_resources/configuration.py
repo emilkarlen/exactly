@@ -44,6 +44,9 @@ class ConfigurationBase:
     def empty_arrangement(self) -> ArrangementBase:
         return self.arrangement(eds_contents_before_main=sds_populator.empty())
 
+    def arrangement_with_timeout(self, timeout_in_seconds: int) -> ArrangementBase:
+        raise NotImplementedError()
+
     def expect_success_and_side_effects_on_files(self,
                                                  main_side_effects_on_files: va.ValueAssertion):
         """

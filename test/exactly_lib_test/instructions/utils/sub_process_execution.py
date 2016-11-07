@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.instructions.utils import sub_process_execution as sut
-from exactly_lib.instructions.utils.sub_process_execution import InstructionSourceInfo
+from exactly_lib.instructions.utils.sub_process_execution import InstructionSourceInfo, with_no_timeout
 from exactly_lib_test.act_phase_setups.test_resources.py_program import program_that_prints_and_exits_with_exit_code
 from exactly_lib_test.test_resources.execution.sds_populator import act_dir_contents
 from exactly_lib_test.test_resources.execution.utils import sandbox_directory_structure
@@ -26,7 +26,7 @@ sys.exit(%d)
                 DirContents([
                     File('program.py', py_pgm_that_exits_with_exit_code)
                 ]))) as sds:
-            executor = sut.ExecutorThatStoresResultInFilesInDir(False)
+            executor = sut.ExecutorThatStoresResultInFilesInDir(False, with_no_timeout())
             result = executor.apply(self.source_info,
                                     sds.log_dir,
                                     py_exe.args_for_interpreting(sds.act_dir / 'program.py'))
@@ -38,7 +38,7 @@ sys.exit(%d)
 
     def test_invalid_executable(self):
         with sandbox_directory_structure() as sds:
-            executor = sut.ExecutorThatStoresResultInFilesInDir(False)
+            executor = sut.ExecutorThatStoresResultInFilesInDir(False, with_no_timeout())
             result = executor.apply(self.source_info,
                                     sds.log_dir,
                                     [str(sds.act_dir / 'non-existing-program')])
@@ -51,7 +51,7 @@ sys.exit(%d)
                     File('program.py',
                          program_that_prints_and_exits_with_exit_code(PROCESS_OUTPUT_WITH_NON_ZERO_EXIT_STATUS))
                 ]))) as sds:
-            executor = sut.ExecutorThatStoresResultInFilesInDir(False)
+            executor = sut.ExecutorThatStoresResultInFilesInDir(False, with_no_timeout())
             result = executor.apply(self.source_info,
                                     sds.log_dir,
                                     py_exe.args_for_interpreting(sds.act_dir / 'program.py'))
@@ -65,7 +65,7 @@ sys.exit(%d)
                     File('program.py',
                          program_that_prints_and_exits_with_exit_code(PROCESS_OUTPUT_WITH_NON_ZERO_EXIT_STATUS))
                 ]))) as sds:
-            executor = sut.ExecutorThatStoresResultInFilesInDir(False)
+            executor = sut.ExecutorThatStoresResultInFilesInDir(False, with_no_timeout())
             result = executor.apply(self.source_info,
                                     sds.log_dir / 'non-existing-path-component' / 'one-more-component',
                                     py_exe.args_for_interpreting(sds.act_dir / 'program.py'))

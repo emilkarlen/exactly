@@ -1,6 +1,7 @@
 import pathlib
 import unittest
 
+from exactly_lib.instructions.utils.sub_process_execution import ProcessExecutionSettings, with_no_timeout
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, SingleInstructionParserSource
 from exactly_lib.test_case import phase_identifier
@@ -26,10 +27,12 @@ class Arrangement(ArrangementWithEds):
                  home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
                  eds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
                  os_services: OsServices = new_default(),
+                 process_execution_settings: ProcessExecutionSettings = with_no_timeout(),
                  previous_phase: PreviousPhase = PreviousPhase.ASSERT):
         super().__init__(home_dir_contents,
                          eds_contents_before_main,
-                         os_services)
+                         os_services,
+                         process_execution_settings)
         self.previous_phase = previous_phase
 
 
@@ -91,9 +94,11 @@ class Executor(InstructionExecutionBase):
             result_of_validate_pre_eds = self._execute_pre_validate(home_and_sds.home_dir_path, instruction)
             if not result_of_validate_pre_eds.is_success:
                 return
-            environment = i.InstructionEnvironmentForPostSdsStep(home_and_sds.home_dir_path,
-                                                                 home_and_sds.sds,
-                                                                 phase_identifier.CLEANUP.identifier)
+            environment = i.InstructionEnvironmentForPostSdsStep(
+                home_and_sds.home_dir_path,
+                home_and_sds.sds,
+                phase_identifier.CLEANUP.identifier,
+                timeout_in_seconds=self.arrangement.process_execution_settings.timeout_in_seconds)
             self._execute_main(environment, instruction)
             self.expectation.main_side_effects_on_files.apply(self.put, environment.sds)
             self.expectation.side_effects_check.apply(self.put, home_and_sds)
