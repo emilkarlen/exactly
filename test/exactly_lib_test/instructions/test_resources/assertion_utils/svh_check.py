@@ -24,7 +24,3 @@ def is_validation_error() -> va.ValueAssertion:
 def is_svh_and(assertion: va.ValueAssertion) -> va.ValueAssertion:
     return va.And([va.IsInstance(svh.SuccessOrValidationErrorOrHardError),
                    assertion])
-
-
-def not_applicable() -> va.ValueAssertion:
-    return va.Constant(False, 'Not applicable')
