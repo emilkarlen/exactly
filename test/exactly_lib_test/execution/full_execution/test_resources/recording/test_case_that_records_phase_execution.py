@@ -25,10 +25,10 @@ class Arrangement(tuple):
                 validate_test_action=validate_action_that_returns(svh.new_svh_success()),
                 prepare_test_action=prepare_action_that_returns(sh.new_sh_success()),
                 execute_test_action=execute_action_that_returns_exit_code(),
-                act_executor_validate_pre_eds=validate_action_that_returns(svh.new_svh_success())):
+                act_executor_validate_pre_sds=validate_action_that_returns(svh.new_svh_success())):
         return tuple.__new__(cls, (test_case_generator,
                                    validate_test_action,
-                                   act_executor_validate_pre_eds,
+                                   act_executor_validate_pre_sds,
                                    prepare_test_action,
                                    execute_test_action))
 
@@ -41,7 +41,7 @@ class Arrangement(tuple):
         return self[1]
 
     @property
-    def act_executor_validate_pre_eds(self) -> types.FunctionType:
+    def act_executor_validate_pre_sds(self) -> types.FunctionType:
         return self[2]
 
     @property
@@ -152,7 +152,7 @@ class TestCaseBase(unittest.TestCase):
             validate_post_setup_action=arrangement.validate_test_action,
             prepare_action=arrangement.prepare_test_action,
             execute_action=arrangement.execute_test_action,
-            validate_pre_eds_action=arrangement.act_executor_validate_pre_eds)
+            validate_pre_sds_action=arrangement.act_executor_validate_pre_sds)
         constructor = ActSourceAndExecutorWrapperConstructorThatRecordsSteps(
             arrangement.test_case_generator.recorder,
             constant_actions_runner)

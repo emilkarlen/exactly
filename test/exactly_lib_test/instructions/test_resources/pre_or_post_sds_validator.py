@@ -8,8 +8,8 @@ from exactly_lib.test_case.phases.common import HomeAndSds
 def check(put: unittest.TestCase,
           validator: PreOrPostSdsValidator,
           home_and_sds: HomeAndSds,
-          passes_pre_eds: bool = True,
-          passes_post_eds: bool = True):
+          passes_pre_sds: bool = True,
+          passes_post_sds: bool = True):
     def _check(f: types.FunctionType,
                message: str,
                expect_none: bool,
@@ -23,13 +23,13 @@ def check(put: unittest.TestCase,
 
     _check(validator.validate_pre_sds_if_applicable,
            'Validation pre SDS',
-           passes_pre_eds,
+           passes_pre_sds,
            home_and_sds.home_dir_path)
     _check(validator.validate_post_sds_if_applicable,
            'Validation post SDS',
-           passes_post_eds,
+           passes_post_sds,
            home_and_sds.sds)
     _check(validator.validate_pre_or_post_sds,
            'Validation pre or post SDS',
-           passes_pre_eds and passes_post_eds,
+           passes_pre_sds and passes_post_sds,
            home_and_sds)

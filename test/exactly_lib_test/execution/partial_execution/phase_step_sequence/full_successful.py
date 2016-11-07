@@ -7,7 +7,7 @@ from exactly_lib_test.execution.partial_execution.test_resources.recording.test_
     TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr
 from exactly_lib_test.execution.partial_execution.test_resources.recording.test_case_that_records_phase_execution import \
     Expectation, Arrangement, TestCaseBase
-from exactly_lib_test.execution.test_resources.execution_recording.phase_steps import PRE_EDS_VALIDATION_STEPS__TWICE
+from exactly_lib_test.execution.test_resources.execution_recording.phase_steps import PRE_SDS_VALIDATION_STEPS__TWICE
 from exactly_lib_test.test_resources.expected_instruction_failure import ExpectedFailureForNoFailure
 
 
@@ -25,7 +25,7 @@ class Test(TestCaseBase):
             Arrangement(TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr()),
             Expectation(PartialResultStatus.PASS,
                         ExpectedFailureForNoFailure(),
-                        PRE_EDS_VALIDATION_STEPS__TWICE +
+                        PRE_SDS_VALIDATION_STEPS__TWICE +
                         [phase_step.SETUP__MAIN,
                          phase_step.SETUP__MAIN,
 

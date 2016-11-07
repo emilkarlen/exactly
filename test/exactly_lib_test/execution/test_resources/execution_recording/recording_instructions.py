@@ -20,38 +20,38 @@ class RecordingInstructions:
         return configuration_phase_instruction_that(main=self._do_record_and_return_sh(value))
 
     def new_setup_instruction(self,
-                              value_for_validate_pre_eds,
+                              value_for_validate_pre_sds,
                               value_for_main,
-                              value_for_validate_post_eds) -> SetupPhaseInstruction:
-        return setup_phase_instruction_that(validate_pre_sds=self._do_record_and_return_svh(value_for_validate_pre_eds),
+                              value_for_validate_post_sds) -> SetupPhaseInstruction:
+        return setup_phase_instruction_that(validate_pre_sds=self._do_record_and_return_svh(value_for_validate_pre_sds),
                                             validate_post_setup=self._do_record_and_return_svh(
-                                                value_for_validate_post_eds),
+                                                value_for_validate_post_sds),
                                             main=self._do_record_and_return_sh(value_for_main))
 
     def new_before_assert_instruction(self,
-                                      value_for_validate_pre_eds,
-                                      value_for_validate_post_eds,
+                                      value_for_validate_pre_sds,
+                                      value_for_validate_post_sds,
                                       value_for_main) -> BeforeAssertPhaseInstruction:
         return before_assert_phase_instruction_that(
-            validate_pre_sds=self._do_record_and_return_svh(value_for_validate_pre_eds),
-            validate_post_setup=self._do_record_and_return_svh(value_for_validate_post_eds),
+            validate_pre_sds=self._do_record_and_return_svh(value_for_validate_pre_sds),
+            validate_post_setup=self._do_record_and_return_svh(value_for_validate_post_sds),
             main=self._do_record_and_return_sh(value_for_main))
 
     def new_assert_instruction(self,
-                               value_for_validate_pre_eds,
+                               value_for_validate_pre_sds,
                                value_for_validate,
                                value_for_execute) -> AssertPhaseInstruction:
         return assert_phase_instruction_that(
-            validate_pre_sds=self._do_record_and_return_svh(value_for_validate_pre_eds),
+            validate_pre_sds=self._do_record_and_return_svh(value_for_validate_pre_sds),
             validate_post_setup=self._do_record_and_return_svh(value_for_validate),
             main=self._do_record_and_return(value_for_execute,
                                             pfh.new_pfh_pass()))
 
     def new_cleanup_instruction(self,
-                                value_for_validate_pre_eds,
+                                value_for_validate_pre_sds,
                                 first_value_of_pair_for_main) -> CleanupPhaseInstruction:
         return cleanup_phase_instruction_that(
-            validate_pre_sds=self._do_record_and_return_svh(value_for_validate_pre_eds),
+            validate_pre_sds=self._do_record_and_return_svh(value_for_validate_pre_sds),
             main=self._do_cleanup_main(first_value_of_pair_for_main))
 
     def __recorder_of(self, element) -> ListElementRecorder:

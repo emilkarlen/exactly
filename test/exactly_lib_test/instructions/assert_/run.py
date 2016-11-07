@@ -13,8 +13,8 @@ class TheConfiguration(AssertConfigurationBase, Configuration):
     def instruction_setup(self) -> SingleInstructionSetup:
         return sut.setup('instruction name')
 
-    def expect_failure_because_specified_file_under_eds_is_missing(self):
-        return Expectation(validation_post_eds=svh_check.is_validation_error())
+    def expect_failure_because_specified_file_under_sds_is_missing(self):
+        return Expectation(validation_post_sds=svh_check.is_validation_error())
 
 
 def suite() -> unittest.TestSuite:

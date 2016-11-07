@@ -142,18 +142,18 @@ class AssertStdoutIsNameOfExistingSandboxDirectory(va.ValueAssertion):
               put: unittest.TestCase,
               value: SubProcessResult,
               message_builder: va.MessageBuilder = va.MessageBuilder()):
-        actual_eds_directory = _get_printed_eds_or_fail(put, value)
-        actual_eds_path = pathlib.Path(actual_eds_directory)
-        if actual_eds_path.exists():
-            if actual_eds_path.is_dir():
+        actual_sds_directory = _get_printed_sds_or_fail(put, value)
+        actual_sds_path = pathlib.Path(actual_sds_directory)
+        if actual_sds_path.exists():
+            if actual_sds_path.is_dir():
                 is_execution_directory_structure_after_execution(
                     FileChecker(put, 'Not an sandbox directory structure'),
-                    actual_eds_directory)
-                _remove_if_is_directory(actual_eds_directory)
+                    actual_sds_directory)
+                _remove_if_is_directory(actual_sds_directory)
             else:
-                put.fail('Output from program is not the sandbox (not a directory): "%s"' % actual_eds_directory)
+                put.fail('Output from program is not the sandbox (not a directory): "%s"' % actual_sds_directory)
         else:
-            put.fail('The output from the program is not the sandbox: "%s"' % actual_eds_directory)
+            put.fail('The output from the program is not the sandbox: "%s"' % actual_sds_directory)
 
 
 class EnvironmentVariablesAreSetCorrectly(SetupWithoutPreprocessorAndTestActor):
@@ -182,8 +182,8 @@ class ExpectedTestEnvironmentVariablesAreSetCorrectlyVa(va.ValueAssertion):
               put: unittest.TestCase,
               value: SubProcessResultInfo,
               message_builder: va.MessageBuilder = va.MessageBuilder()):
-        actual_eds_directory = _get_printed_eds_or_fail(put, value.sub_process_result)
-        sds = sandbox_directory_structure.SandboxDirectoryStructure(actual_eds_directory)
+        actual_sds_directory = _get_printed_sds_or_fail(put, value.sub_process_result)
+        sds = sandbox_directory_structure.SandboxDirectoryStructure(actual_sds_directory)
         actually_printed_variables = _get_act_output_to_stdout(sds).splitlines()
         expected_printed_variables = [
             '%s=%s' % (environment_variables.ENV_VAR_HOME, str(value.file_argument.parent)),
@@ -193,22 +193,22 @@ class ExpectedTestEnvironmentVariablesAreSetCorrectlyVa(va.ValueAssertion):
         put.assertEqual(expected_printed_variables,
                         actually_printed_variables,
                         'Environment variables printed by the act script')
-        _remove_if_is_directory(actual_eds_directory)
+        _remove_if_is_directory(actual_sds_directory)
 
 
-def _remove_if_is_directory(actual_eds_directory: str):
-    actual_eds_path = pathlib.Path(actual_eds_directory)
-    if actual_eds_path.is_dir():
-        shutil.rmtree(actual_eds_directory)
+def _remove_if_is_directory(actual_sds_directory: str):
+    actual_sds_path = pathlib.Path(actual_sds_directory)
+    if actual_sds_path.is_dir():
+        shutil.rmtree(actual_sds_directory)
 
 
-def _get_printed_eds_or_fail(put: unittest.TestCase, actual: SubProcessResult) -> str:
+def _get_printed_sds_or_fail(put: unittest.TestCase, actual: SubProcessResult) -> str:
     printed_lines = actual.stdout.splitlines()
     put.assertEqual(1,
                     len(printed_lines),
                     'Number of printed printed lines should be exactly 1')
-    actual_eds_directory = printed_lines[0]
-    return actual_eds_directory
+    actual_sds_directory = printed_lines[0]
+    return actual_sds_directory
 
 
 def _print_variable_name__equals__variable_value(variable_name: str) -> str:

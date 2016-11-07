@@ -48,13 +48,13 @@ class TestCases(sut.TestCaseBase):
                 sut.arrangement(),
                 sut.is_success())
 
-    def test_fail_due_to_unexpected_result_from__validate_pre_eds(self):
+    def test_fail_due_to_unexpected_result_from__validate_pre_sds(self):
         with self.assertRaises(TestException):
             self._check(
                     PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
                     single_line_source(),
                     sut.arrangement(),
-                sut.Expectation(validation_pre_eds=svh_check.is_hard_error()),
+                sut.Expectation(validation_pre_sds=svh_check.is_hard_error()),
             )
 
     def test_fail_due_to_unexpected_result_from__validate_post_setup(self):

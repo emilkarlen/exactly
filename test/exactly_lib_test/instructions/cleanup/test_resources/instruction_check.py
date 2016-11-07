@@ -39,15 +39,15 @@ class Arrangement(ArrangementWithEds):
 class Expectation(ExpectationBase):
     def __init__(self,
                  act_result: utils.ActResult = utils.ActResult(),
-                 validate_pre_eds_result: va.ValueAssertion = svh_check.is_success(),
+                 validate_pre_sds_result: va.ValueAssertion = svh_check.is_success(),
                  main_result: va.ValueAssertion = sh_check.is_success(),
                  main_side_effects_on_files: va.ValueAssertion = va.anything_goes(),
                  side_effects_check: va.ValueAssertion = va.anything_goes()):
-        super().__init__(validate_pre_eds_result,
+        super().__init__(validate_pre_sds_result,
                          main_side_effects_on_files,
                          side_effects_check)
         self.act_result = act_result
-        self.validate_pre_eds_result = validate_pre_eds_result
+        self.validate_pre_sds_result = validate_pre_sds_result
         self.main_result = main_result
         self.main_side_effects_on_files = main_side_effects_on_files
         self.side_effects_check = side_effects_check
@@ -91,8 +91,8 @@ class Executor(InstructionExecutionBase):
         with utils.home_and_sds_and_test_as_curr_dir(
                 home_dir_contents=self.arrangement.home_contents,
                 sds_contents=self.arrangement.eds_contents) as home_and_sds:
-            result_of_validate_pre_eds = self._execute_pre_validate(home_and_sds.home_dir_path, instruction)
-            if not result_of_validate_pre_eds.is_success:
+            result_of_validate_pre_sds = self._execute_pre_validate(home_and_sds.home_dir_path, instruction)
+            if not result_of_validate_pre_sds.is_success:
                 return
             environment = i.InstructionEnvironmentForPostSdsStep(
                 home_and_sds.home_dir_path,
@@ -108,8 +108,8 @@ class Executor(InstructionExecutionBase):
                               instruction: CleanupPhaseInstruction) -> svh.SuccessOrValidationErrorOrHardError:
         pre_validation_environment = InstructionEnvironmentForPreSdsStep(home_dir_path)
         result = instruction.validate_pre_sds(pre_validation_environment)
-        self._check_result_of_validate_pre_eds(result)
-        self.expectation.validate_pre_eds_result.apply(self.put, result)
+        self._check_result_of_validate_pre_sds(result)
+        self.expectation.validate_pre_sds_result.apply(self.put, result)
         return result
 
     def _execute_main(self,

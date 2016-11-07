@@ -133,14 +133,14 @@ class TestFileContentsFileRelHome(TestCaseBaseForParser):
         self._run(
                 new_source2('name-of-non-existing-file %s f.txt' % options.REL_HOME_OPTION),
                 arrangement(),
-                Expectation(validation_pre_eds=svh_check.is_validation_error()),
+            Expectation(validation_pre_sds=svh_check.is_validation_error()),
         )
 
     def test_validation_error__when__comparison_file_is_a_directory(self):
         self._run(
                 new_source2('name-of-non-existing-file --rel-home dir'),
                 arrangement(home_dir_contents=DirContents([empty_dir('dir')])),
-                Expectation(validation_pre_eds=svh_check.is_validation_error()),
+            Expectation(validation_pre_sds=svh_check.is_validation_error()),
         )
 
     def test_fail__when__target_file_does_not_exist(self):

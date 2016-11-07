@@ -25,7 +25,7 @@ class InstructionExecutionToBeReplacedByVaBase:
                                    'The result from main must be an instance of ' + str(sh.SuccessOrHardError))
         validation.apply(self.put, actual)
 
-    def _check_result_of_validate_pre_eds(self, actual):
+    def _check_result_of_validate_pre_sds(self, actual):
         va.IsInstance(svh.SuccessOrValidationErrorOrHardError,
                       'Result of validate/pre-sds').apply(self.put, actual)
 
@@ -53,10 +53,10 @@ class InstructionExecutionBase:
                                    'The result from main must be an instance of ' + str(sh.SuccessOrHardError))
         validation.apply(self.put, actual)
 
-    def _check_result_of_validate_pre_eds(self, actual):
+    def _check_result_of_validate_pre_sds(self, actual):
         self._check_instance_and('Result of validate/pre-SDS',
                                  svh.SuccessOrValidationErrorOrHardError,
-                                 self.expectation.validation_pre_eds,
+                                 self.expectation.validation_pre_sds,
                                  actual)
 
     def _check_main_side_effects_on_files(self, home_and_sds: HomeAndSds):
@@ -64,7 +64,7 @@ class InstructionExecutionBase:
                                                           home_and_sds.sds,
                                                           va.MessageBuilder('main side effects on SDS'))
 
-    def _check_side_effects_on_home_and_eds(self, home_and_sds: HomeAndSds):
+    def _check_side_effects_on_home_and_sds(self, home_and_sds: HomeAndSds):
         self.expectation.side_effects_check.apply(self.put,
                                                   home_and_sds,
                                                   va.MessageBuilder('side effects on HomeAndEds'))

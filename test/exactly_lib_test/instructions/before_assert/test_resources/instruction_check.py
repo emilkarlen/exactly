@@ -38,12 +38,12 @@ def arrangement(home_dir_contents: file_structure.DirContents = file_structure.D
 
 class Expectation(ExpectationBase):
     def __init__(self,
-                 validation_pre_eds: va.ValueAssertion = svh_check.is_success(),
+                 validation_pre_sds: va.ValueAssertion = svh_check.is_success(),
                  validation_post_setup: va.ValueAssertion = svh_check.is_success(),
                  main_result: va.ValueAssertion = sh_check.is_success(),
                  main_side_effects_on_files: va.ValueAssertion = va.anything_goes(),
                  home_and_sds: va.ValueAssertion = va.anything_goes()):
-        super().__init__(validation_pre_eds, main_side_effects_on_files, home_and_sds)
+        super().__init__(validation_pre_sds, main_side_effects_on_files, home_and_sds)
         self.validation_post_setup = validation_post_setup
         self.main_result = sh_check.is_sh_and(main_result)
 
@@ -98,7 +98,7 @@ class Executor(InstructionExecutionBase):
                 home_dir_contents=self.arrangement.home_contents,
                 sds_contents=self.arrangement.eds_contents) as home_and_sds:
             environment = i.InstructionEnvironmentForPreSdsStep(home_and_sds.home_dir_path)
-            validate_result = self._execute_validate_pre_eds(environment, instruction)
+            validate_result = self._execute_validate_pre_sds(environment, instruction)
             if not validate_result.is_success:
                 return
             environment = i.InstructionEnvironmentForPostSdsStep(
@@ -115,14 +115,14 @@ class Executor(InstructionExecutionBase):
 
             self._execute_main(environment, instruction)
             self._check_main_side_effects_on_files(home_and_sds)
-            self._check_side_effects_on_home_and_eds(home_and_sds)
+            self._check_side_effects_on_home_and_sds(home_and_sds)
 
-    def _execute_validate_pre_eds(
+    def _execute_validate_pre_sds(
             self,
             global_environment: InstructionEnvironmentForPreSdsStep,
             instruction: BeforeAssertPhaseInstruction) -> svh.SuccessOrValidationErrorOrHardError:
         result = instruction.validate_pre_sds(global_environment)
-        self._check_result_of_validate_pre_eds(result)
+        self._check_result_of_validate_pre_sds(result)
         return result
 
     def _execute_validate_post_setup(

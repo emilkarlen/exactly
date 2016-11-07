@@ -16,13 +16,13 @@ class FileRef:
     def file_name(self) -> str:
         return self._file_name
 
-    def file_path_pre_eds(self, home_dir_path: pathlib.Path) -> pathlib.Path:
+    def file_path_pre_sds(self, home_dir_path: pathlib.Path) -> pathlib.Path:
         """
         :raises ValueError: This file exists only post-SDS.
         """
         raise NotImplementedError()
 
-    def file_path_post_eds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
+    def file_path_post_sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
         """
         :raises ValueError: This file exists pre-SDS.
         """
@@ -30,9 +30,9 @@ class FileRef:
 
     def file_path_pre_or_post_sds(self, home_and_sds: HomeAndSds) -> pathlib.Path:
         if self.exists_pre_sds:
-            return self.file_path_pre_eds(home_and_sds.home_dir_path)
+            return self.file_path_pre_sds(home_and_sds.home_dir_path)
         else:
-            return self.file_path_post_eds(home_and_sds.sds)
+            return self.file_path_post_sds(home_and_sds.sds)
 
     @property
     def exists_pre_sds(self) -> bool:
@@ -43,17 +43,17 @@ class FileRefRelEds(FileRef):
     def __init__(self, file_name: str):
         super().__init__(False, file_name)
 
-    def file_path_pre_eds(self, home_dir_path: pathlib.Path) -> pathlib.Path:
+    def file_path_pre_sds(self, home_dir_path: pathlib.Path) -> pathlib.Path:
         """
         Can only be used if the files exists pre-SDS.
         """
         raise ValueError('This file does not exist before SDS is constructed')
 
-    def file_path_rel_eds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
+    def file_path_rel_sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
         raise NotImplementedError()
 
-    def file_path_post_eds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
-        return self.file_path_post_eds(sds)
+    def file_path_post_sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
+        return self.file_path_post_sds(sds)
 
 
 def absolute_file_name(file_name: str) -> FileRef:
@@ -84,10 +84,10 @@ class _FileRefAbsolute(FileRef):
     def __init__(self, file_name: str):
         super().__init__(True, file_name)
 
-    def file_path_pre_eds(self, home_dir_path: pathlib.Path) -> pathlib.Path:
+    def file_path_pre_sds(self, home_dir_path: pathlib.Path) -> pathlib.Path:
         return pathlib.Path(self._file_name)
 
-    def file_path_post_eds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
+    def file_path_post_sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
         raise ValueError('This file exists pre-SDS')
 
 
@@ -95,10 +95,10 @@ class _FileRefRelHome(FileRef):
     def __init__(self, file_name: str):
         super().__init__(True, file_name)
 
-    def file_path_pre_eds(self, home_dir_path: pathlib.Path) -> pathlib.Path:
+    def file_path_pre_sds(self, home_dir_path: pathlib.Path) -> pathlib.Path:
         return home_dir_path / self._file_name
 
-    def file_path_post_eds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
+    def file_path_post_sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
         raise ValueError('This file exists pre-SDS')
 
 
@@ -106,7 +106,7 @@ class _FileRefRelCwd(FileRefRelEds):
     def __init__(self, file_name: str):
         super().__init__(file_name)
 
-    def file_path_post_eds(self, sds: SandboxDirectoryStructure):
+    def file_path_post_sds(self, sds: SandboxDirectoryStructure):
         return pathlib.Path.cwd() / self._file_name
 
 
@@ -114,7 +114,7 @@ class _FileRefRelAct(FileRefRelEds):
     def __init__(self, file_name: str):
         super().__init__(file_name)
 
-    def file_path_post_eds(self, sds: SandboxDirectoryStructure):
+    def file_path_post_sds(self, sds: SandboxDirectoryStructure):
         return sds.act_dir / self._file_name
 
 
@@ -122,7 +122,7 @@ class _FileRefRelTmpUser(FileRefRelEds):
     def __init__(self, file_name: str):
         super().__init__(file_name)
 
-    def file_path_post_eds(self, sds: SandboxDirectoryStructure):
+    def file_path_post_sds(self, sds: SandboxDirectoryStructure):
         return sds.tmp.user_dir / self._file_name
 
 
@@ -130,7 +130,7 @@ class _FileRefRelTmpInternal(FileRefRelEds):
     def __init__(self, file_name: str):
         super().__init__(file_name)
 
-    def file_path_post_eds(self, sds: SandboxDirectoryStructure):
+    def file_path_post_sds(self, sds: SandboxDirectoryStructure):
         return sds.tmp.internal_dir / self._file_name
 
 
@@ -147,10 +147,10 @@ class FileRefValidatorBase(PreOrPostSdsValidator):
 
     def validate_pre_sds_if_applicable(self, home_dir_path: pathlib.Path) -> str:
         if self.file_ref.exists_pre_sds:
-            return self._validate_path(self.file_ref.file_path_pre_eds(home_dir_path))
+            return self._validate_path(self.file_ref.file_path_pre_sds(home_dir_path))
         return None
 
     def validate_post_sds_if_applicable(self, sds: SandboxDirectoryStructure) -> str:
         if not self.file_ref.exists_pre_sds:
-            return self._validate_path(self.file_ref.file_path_post_eds(sds))
+            return self._validate_path(self.file_ref.file_path_post_sds(sds))
         return None

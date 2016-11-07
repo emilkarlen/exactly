@@ -109,16 +109,16 @@ class Executor:
                 with tempfile.TemporaryDirectory(prefix=prefix + '-sds-') as eds_root_dir_name:
                     sds = sandbox_directory_structure.construct_at(resolved_path_name(eds_root_dir_name))
                     os.chdir(str(sds.act_dir))
-                    global_environment_with_eds = i.InstructionEnvironmentForPostSdsStep(
+                    global_environment_with_sds = i.InstructionEnvironmentForPostSdsStep(
                         home_dir_path,
                         sds,
                         phase_identifier.SETUP.identifier,
                         timeout_in_seconds=self.arrangement.process_execution_settings.timeout_in_seconds)
-                    main_result = self._execute_main(sds, global_environment_with_eds, instruction)
+                    main_result = self._execute_main(sds, global_environment_with_sds, instruction)
                     if not main_result.is_success:
                         return
-                    self._execute_post_validate(global_environment_with_eds, instruction)
-                    self.expectation.side_effects_check.apply(self.put, global_environment_with_eds.home_and_sds)
+                    self._execute_post_validate(global_environment_with_sds, instruction)
+                    self.expectation.side_effects_check.apply(self.put, global_environment_with_sds.home_and_sds)
         finally:
             os.chdir(initial_cwd)
 
@@ -137,12 +137,12 @@ class Executor:
 
     def _execute_main(self,
                       sds: SandboxDirectoryStructure,
-                      global_environment_with_eds: i.InstructionEnvironmentForPostSdsStep,
+                      global_environment_with_sds: i.InstructionEnvironmentForPostSdsStep,
                       instruction: SetupPhaseInstruction) -> sh.SuccessOrHardError:
         self.arrangement.eds_contents.apply(sds)
         settings_builder = self.arrangement.initial_settings_builder
         initial_settings_builder = copy.deepcopy(settings_builder)
-        main_result = instruction.main(global_environment_with_eds,
+        main_result = instruction.main(global_environment_with_sds,
                                        self.arrangement.os_services,
                                        settings_builder)
         self.put.assertIsInstance(main_result,
@@ -152,16 +152,16 @@ class Executor:
                                  'Result from main method cannot be None')
         self.expectation.main_result.apply(self.put, main_result)
         self.expectation.main_side_effects_on_environment.apply(self.put,
-                                                                global_environment_with_eds,
+                                                                global_environment_with_sds,
                                                                 initial_settings_builder,
                                                                 settings_builder)
         self.expectation.main_side_effects_on_files.apply(self.put, sds)
         return main_result
 
     def _execute_post_validate(self,
-                               global_environment_with_eds,
+                               global_environment_with_sds,
                                instruction: SetupPhaseInstruction, ) -> svh.SuccessOrValidationErrorOrHardError:
-        post_validate_result = instruction.validate_post_setup(global_environment_with_eds)
+        post_validate_result = instruction.validate_post_setup(global_environment_with_sds)
         self.put.assertIsInstance(post_validate_result,
                                   svh.SuccessOrValidationErrorOrHardError,
                                   'post_validate must return a ' + str(svh.SuccessOrValidationErrorOrHardError))

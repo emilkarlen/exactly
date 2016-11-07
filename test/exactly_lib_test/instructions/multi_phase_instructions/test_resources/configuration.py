@@ -61,7 +61,7 @@ class ConfigurationBase:
                                assertion_on_error_message: va.ValueAssertion = va.anything_goes()):
         raise NotImplementedError()
 
-    def expect_failing_validation_pre_eds(self,
+    def expect_failing_validation_pre_sds(self,
                                           assertion_on_error_message: va.ValueAssertion = va.anything_goes()):
         raise NotImplementedError()
 

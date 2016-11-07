@@ -116,7 +116,7 @@ class TestSuccessfulScenariosNoContent(TestCaseBase):
     def test_file_relative_pwd(self):
         self._test_argument(single_line_source('file-name.txt'),
                             sds_test.Check(expected_action_result=is_success(),
-                                           expected_eds_contents_after=act_dir_contains_exactly(DirContents([
+                                           expected_sds_contents_after=act_dir_contains_exactly(DirContents([
                                                empty_file('file-name.txt')
                                            ])),
                                            ))
@@ -127,7 +127,7 @@ class TestSuccessfulScenariosNoContent(TestCaseBase):
                                            eds_contents_before=act_dir_contents(DirContents([
                                                empty_dir('existing-directory')
                                            ])),
-                                           expected_eds_contents_after=act_dir_contains_exactly(DirContents([
+                                           expected_sds_contents_after=act_dir_contains_exactly(DirContents([
                                                Dir('existing-directory', [
                                                    empty_file('file-name.txt')])
                                            ])),
@@ -136,7 +136,7 @@ class TestSuccessfulScenariosNoContent(TestCaseBase):
     def test_file_in_sub_dir__sub_dir_does_not_exist(self):
         self._test_argument(single_line_source('existing-directory/file-name.txt'),
                             sds_test.Check(expected_action_result=is_success(),
-                                           expected_eds_contents_after=act_dir_contains_exactly(DirContents([
+                                           expected_sds_contents_after=act_dir_contains_exactly(DirContents([
                                                Dir('existing-directory', [
                                                    empty_file('file-name.txt')])
                                            ])),
@@ -145,7 +145,7 @@ class TestSuccessfulScenariosNoContent(TestCaseBase):
     def test_file_in_sub_dir__sub_dir_does_not_exist__rel_tmp(self):
         self._test_argument(single_line_source('--rel-tmp existing-directory/file-name.txt'),
                             sds_test.Check(expected_action_result=is_success(),
-                                           expected_eds_contents_after=tmp_user_dir_contains_exactly(DirContents([
+                                           expected_sds_contents_after=tmp_user_dir_contains_exactly(DirContents([
                                                Dir('existing-directory', [
                                                    empty_file('file-name.txt')])
                                            ])),
@@ -159,7 +159,7 @@ class TestSuccessfulScenariosWithContent(TestCaseBase):
                                        'MARKER'])
         self._test_argument(source,
                             sds_test.Check(expected_action_result=is_success(),
-                                           expected_eds_contents_after=act_dir_contains_exactly(DirContents([
+                                           expected_sds_contents_after=act_dir_contains_exactly(DirContents([
                                                File('file-name.txt',
                                                     lines_content(['single line']))
                                            ])),

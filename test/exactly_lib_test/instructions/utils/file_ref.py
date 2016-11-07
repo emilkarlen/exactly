@@ -17,13 +17,13 @@ class TestRelHome(unittest.TestCase):
         file_reference = sut.rel_home('file.txt')
         with home_and_sds_and_test_as_curr_dir(
                 home_dir_contents=DirContents([empty_file('file.txt')])) as home_and_sds:
-            self.assertTrue(file_reference.file_path_pre_eds(home_and_sds.home_dir_path).exists())
+            self.assertTrue(file_reference.file_path_pre_sds(home_and_sds.home_dir_path).exists())
             self.assertTrue(file_reference.file_path_pre_or_post_sds(home_and_sds).exists())
 
     def test_non_existing_file(self):
         file_reference = sut.rel_home('file.txt')
         with home_and_sds_and_test_as_curr_dir() as home_and_sds:
-            self.assertFalse(file_reference.file_path_pre_eds(home_and_sds.home_dir_path).exists())
+            self.assertFalse(file_reference.file_path_pre_sds(home_and_sds.home_dir_path).exists())
             self.assertFalse(file_reference.file_path_pre_or_post_sds(home_and_sds).exists())
 
 
