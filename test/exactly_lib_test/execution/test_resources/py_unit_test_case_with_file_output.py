@@ -9,7 +9,7 @@ from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 
 
-def standard_phase_file_path_eds(sds: SandboxDirectoryStructure,
+def standard_phase_file_path_sds(sds: SandboxDirectoryStructure,
                                  phase: phase_identifier.PhaseEnum) -> pathlib.Path:
     return standard_phase_file_path(sds.act_dir, phase)
 

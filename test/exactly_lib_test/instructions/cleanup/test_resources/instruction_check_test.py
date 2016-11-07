@@ -31,13 +31,13 @@ class TestCases(sut.TestCaseBase):
                 sut.Expectation(main_result=test_misc.RaisesTestError()),
             )
 
-    def test_fail_due_to_unexpected_result_from_validate_pre_eds(self):
+    def test_fail_due_to_unexpected_result_from_validate_pre_sds(self):
         with self.assertRaises(test_misc.TestError):
             self._check(
                     test_misc.ParserThatGives(SUCCESSFUL_INSTRUCTION),
                     test_misc.single_line_source(),
                     sut.Arrangement(),
-                sut.Expectation(validate_pre_eds_result=test_misc.RaisesTestError()),
+                sut.Expectation(validate_pre_sds_result=test_misc.RaisesTestError()),
             )
 
     def test_fail_due_to_fail_of_side_effects_on_files(self):

@@ -11,17 +11,17 @@ from exactly_lib_test.execution.test_resources import test_actions
 
 class ActSourceAndExecutorThatRunsConstantActions(ActSourceAndExecutor):
     def __init__(self,
-                 validate_pre_eds_action=test_actions.validate_action_that_returns(svh.new_svh_success()),
+                 validate_pre_sds_action=test_actions.validate_action_that_returns(svh.new_svh_success()),
                  validate_post_setup_action=test_actions.validate_action_that_returns(svh.new_svh_success()),
                  prepare_action=test_actions.prepare_action_that_returns(sh.new_sh_success()),
                  execute_action=test_actions.execute_action_that_returns_exit_code()):
-        self.__validate_pre_eds_action = validate_pre_eds_action
+        self.__validate_pre_sds_action = validate_pre_sds_action
         self.__validate_post_setup_action = validate_post_setup_action
         self.__prepare_action = prepare_action
         self.__execute_action = execute_action
 
     def validate_pre_sds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
-        return self.__validate_pre_eds_action()
+        return self.__validate_pre_sds_action()
 
     def validate_post_setup(self, home_and_sds: HomeAndSds) -> svh.SuccessOrValidationErrorOrHardError:
         return self.__validate_post_setup_action()
@@ -36,13 +36,13 @@ class ActSourceAndExecutorThatRunsConstantActions(ActSourceAndExecutor):
 
 class ActSourceAndExecutorConstructorThatRunsConstantActions(ActSourceAndExecutorConstructor):
     def __init__(self,
-                 validate_pre_eds_action=test_actions.validate_action_that_returns(svh.new_svh_success()),
+                 validate_pre_sds_action=test_actions.validate_action_that_returns(svh.new_svh_success()),
                  validate_post_setup_action=test_actions.validate_action_that_returns(svh.new_svh_success()),
                  prepare_action=test_actions.prepare_action_that_returns(sh.new_sh_success()),
                  execute_action=test_actions.execute_action_that_returns_exit_code(),
                  apply_action_before_executor_is_constructed=test_actions.do_nothing):
         self.apply_action_before_executor_is_constructed = apply_action_before_executor_is_constructed
-        self.validate_pre_eds_action = validate_pre_eds_action
+        self.validate_pre_sds_action = validate_pre_sds_action
         self.validate_post_setup_action = validate_post_setup_action
         self.prepare_action = prepare_action
         self.execute_action = execute_action
@@ -52,20 +52,20 @@ class ActSourceAndExecutorConstructorThatRunsConstantActions(ActSourceAndExecuto
               act_phase_instructions: list) -> ActSourceAndExecutor:
         self.apply_action_before_executor_is_constructed(environment, act_phase_instructions)
         return ActSourceAndExecutorThatRunsConstantActions(
-            validate_pre_eds_action=self.validate_pre_eds_action,
+            validate_pre_sds_action=self.validate_pre_sds_action,
             validate_post_setup_action=self.validate_post_setup_action,
             prepare_action=self.prepare_action,
             execute_action=self.execute_action)
 
 
 def act_phase_handling_that_runs_constant_actions(
-        validate_pre_eds_action=test_actions.validate_action_that_returns(svh.new_svh_success()),
+        validate_pre_sds_action=test_actions.validate_action_that_returns(svh.new_svh_success()),
         validate_post_setup_action=test_actions.validate_action_that_returns(svh.new_svh_success()),
         prepare_action=test_actions.prepare_action_that_returns(sh.new_sh_success()),
         execute_action=test_actions.execute_action_that_returns_exit_code()) -> ActPhaseHandling:
     return ActPhaseHandling(
         ActSourceAndExecutorConstructorThatRunsConstantActions(
-            validate_pre_eds_action=validate_pre_eds_action,
+            validate_pre_sds_action=validate_pre_sds_action,
             validate_post_setup_action=validate_post_setup_action,
             prepare_action=prepare_action,
             execute_action=execute_action)

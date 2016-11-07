@@ -11,7 +11,7 @@ from exactly_lib_test.test_resources.programs import python_program_execution as
 
 
 class Configuration(ConfigurationBase):
-    def expect_failure_because_specified_file_under_eds_is_missing(self):
+    def expect_failure_because_specified_file_under_sds_is_missing(self):
         raise NotImplementedError()
 
 
@@ -48,7 +48,7 @@ class TestFailingValidationOfAbsolutePath(TestCaseBase):
             self,
             single_line_source('/absolute/path/to/program/that/does/not/exist'),
             self.conf.empty_arrangement(),
-            self.conf.expect_failing_validation_pre_eds(),
+            self.conf.expect_failing_validation_pre_sds(),
         )
 
 
@@ -58,7 +58,7 @@ class TestFailingValidationOfRelHomePath(TestCaseBase):
             self,
             source_for_interpreting(options.REL_HOME_OPTION, 'non-existing-file.py'),
             self.conf.empty_arrangement(),
-            self.conf.expect_failing_validation_pre_eds(),
+            self.conf.expect_failing_validation_pre_sds(),
         )
 
 
@@ -68,7 +68,7 @@ class TestFailingValidationOfRelTmpPath(TestCaseBase):
             self,
             source_for_interpreting(options.REL_TMP_OPTION, 'non-existing-file.py'),
             self.conf.empty_arrangement(),
-            self.conf.expect_failure_because_specified_file_under_eds_is_missing(),
+            self.conf.expect_failure_because_specified_file_under_sds_is_missing(),
         )
 
 

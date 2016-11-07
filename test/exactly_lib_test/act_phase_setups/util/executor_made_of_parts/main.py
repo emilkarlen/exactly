@@ -21,7 +21,7 @@ def suite() -> unittest.TestSuite:
 
 
 class TestConstructor(unittest.TestCase):
-    def test_WHEN_parser_raises_exception_THEN_validate_pre_eds_SHOULD_return_corresponding_information(self):
+    def test_WHEN_parser_raises_exception_THEN_validate_pre_sds_SHOULD_return_corresponding_information(self):
         # ARRANGE #
         parser_error = svh.new_svh_validation_error('msg')
         constructor = sut.Constructor(ParserThatRaisesException(parser_error),

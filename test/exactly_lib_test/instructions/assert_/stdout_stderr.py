@@ -195,7 +195,7 @@ class FileContentsFileRelHome(TestWithParserBase):
         self._run(
                 new_source2('%s f.txt' % REL_HOME_OPTION),
                 arrangement(),
-                Expectation(validation_pre_eds=svh_check.is_validation_error()),
+            Expectation(validation_pre_sds=svh_check.is_validation_error()),
         )
 
     def validation_error__when__comparison_file_is_a_directory(self):
@@ -203,7 +203,7 @@ class FileContentsFileRelHome(TestWithParserBase):
                 new_source2('%s dir' % REL_HOME_OPTION),
                 arrangement(eds_contents_before_main=act_dir_contents(DirContents(
                         [empty_dir('dir')]))),
-                Expectation(validation_pre_eds=svh_check.is_validation_error()),
+            Expectation(validation_pre_sds=svh_check.is_validation_error()),
         )
 
     def fail__when__contents_differ(self,

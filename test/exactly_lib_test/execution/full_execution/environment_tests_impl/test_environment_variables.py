@@ -38,7 +38,7 @@ class Test(FullExecutionTestCaseBase):
     def _act_phase_handling(self) -> ActPhaseHandling:
         executor_constructor = ActSourceAndExecutorConstructorWithActionsForExecutor(
             python3.new_act_phase_setup().source_and_executor_constructor,
-            before_wrapped_validate_pre_eds=_RecordEnvVars(
+            before_wrapped_validate_pre_sds=_RecordEnvVars(
                 self.recorder,
                 phase_step.ACT__VALIDATE_PRE_SDS),
             before_wrapped_validate_post_setup=_RecordEnvVars(
@@ -60,7 +60,7 @@ class Test(FullExecutionTestCaseBase):
                 main_initial_action=_ConfigurationPhaseActionThatRecordsEnvVarsAndSetsHomeDirToParent(self.recorder,
                                                                                                       phase_step.CONFIGURATION__MAIN))],
             [setup_phase_instruction_that(
-                validate_pre_eds_initial_action=_RecordEnvVars(self.recorder,
+                validate_pre_sds_initial_action=_RecordEnvVars(self.recorder,
                                                                phase_step.SETUP__VALIDATE_PRE_SDS),
                 validate_post_setup_initial_action=_RecordEnvVars(self.recorder,
                                                                   phase_step.SETUP__VALIDATE_POST_SETUP),
@@ -68,21 +68,21 @@ class Test(FullExecutionTestCaseBase):
                                                    phase_step.SETUP__MAIN))],
             [act_phase_instruction_with_source(LineSequence(72, py_pgm_to_print_env_vars))],
             [before_assert_phase_instruction_that(
-                validate_pre_eds_initial_action=_RecordEnvVars(self.recorder,
+                validate_pre_sds_initial_action=_RecordEnvVars(self.recorder,
                                                                phase_step.BEFORE_ASSERT__VALIDATE_PRE_SDS),
                 validate_post_setup_initial_action=_RecordEnvVars(self.recorder,
                                                                   phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP),
                 main_initial_action=_RecordEnvVars(self.recorder,
                                                    phase_step.BEFORE_ASSERT__MAIN))],
             [assert_phase_instruction_that(
-                validate_pre_eds_initial_action=_RecordEnvVars(self.recorder,
+                validate_pre_sds_initial_action=_RecordEnvVars(self.recorder,
                                                                phase_step.ASSERT__VALIDATE_PRE_SDS),
                 validate_post_setup_initial_action=_RecordEnvVars(self.recorder,
                                                                   phase_step.ASSERT__VALIDATE_POST_SETUP),
                 main_initial_action=_RecordEnvVars(self.recorder,
                                                    phase_step.ASSERT__MAIN))],
             [cleanup_phase_instruction_that(
-                validate_pre_eds_initial_action=_RecordEnvVars(self.recorder,
+                validate_pre_sds_initial_action=_RecordEnvVars(self.recorder,
                                                                phase_step.CLEANUP__VALIDATE_PRE_SDS),
                 main_initial_action=_RecordEnvVars(self.recorder,
                                                    phase_step.CLEANUP__MAIN))],
@@ -104,10 +104,10 @@ class Test(FullExecutionTestCaseBase):
         self.__assert_test_sanity()
         for_configuration_phase = {}
         home_dir_after_configuration = str(self.initial_home_dir_path.parent)
-        for_pre_eds = {
+        for_pre_sds = {
             environment_variables.ENV_VAR_HOME: home_dir_after_configuration
         }
-        set_at_eds_creation = {
+        set_at_sds_creation = {
             environment_variables.ENV_VAR_HOME: home_dir_after_configuration,
             environment_variables.ENV_VAR_ACT: str(self.sds.act_dir),
             environment_variables.ENV_VAR_TMP: str(self.sds.tmp.user_dir),
@@ -120,18 +120,18 @@ class Test(FullExecutionTestCaseBase):
         }
         expected_recorded_internally = {
             phase_step.CONFIGURATION__MAIN: for_configuration_phase,
-            phase_step.SETUP__VALIDATE_PRE_SDS: for_pre_eds,
-            phase_step.ACT__VALIDATE_PRE_SDS: for_pre_eds,
-            phase_step.BEFORE_ASSERT__VALIDATE_PRE_SDS: for_pre_eds,
-            phase_step.ASSERT__VALIDATE_PRE_SDS: for_pre_eds,
-            phase_step.CLEANUP__VALIDATE_PRE_SDS: for_pre_eds,
-            phase_step.SETUP__MAIN: set_at_eds_creation,
-            phase_step.SETUP__VALIDATE_POST_SETUP: set_at_eds_creation,
-            phase_step.ACT__VALIDATE_POST_SETUP: set_at_eds_creation,
-            phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP: set_at_eds_creation,
-            phase_step.ASSERT__VALIDATE_POST_SETUP: set_at_eds_creation,
-            phase_step.ACT__PREPARE: set_at_eds_creation,
-            phase_step.ACT__EXECUTE: set_at_eds_creation,
+            phase_step.SETUP__VALIDATE_PRE_SDS: for_pre_sds,
+            phase_step.ACT__VALIDATE_PRE_SDS: for_pre_sds,
+            phase_step.BEFORE_ASSERT__VALIDATE_PRE_SDS: for_pre_sds,
+            phase_step.ASSERT__VALIDATE_PRE_SDS: for_pre_sds,
+            phase_step.CLEANUP__VALIDATE_PRE_SDS: for_pre_sds,
+            phase_step.SETUP__MAIN: set_at_sds_creation,
+            phase_step.SETUP__VALIDATE_POST_SETUP: set_at_sds_creation,
+            phase_step.ACT__VALIDATE_POST_SETUP: set_at_sds_creation,
+            phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP: set_at_sds_creation,
+            phase_step.ASSERT__VALIDATE_POST_SETUP: set_at_sds_creation,
+            phase_step.ACT__PREPARE: set_at_sds_creation,
+            phase_step.ACT__EXECUTE: set_at_sds_creation,
             phase_step.BEFORE_ASSERT__MAIN: set_after_act,
             phase_step.ASSERT__MAIN: set_after_act,
             phase_step.CLEANUP__MAIN: set_after_act,

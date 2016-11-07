@@ -35,14 +35,14 @@ def arrangement(home_dir_contents: file_structure.DirContents = file_structure.D
 
 class Expectation:
     def __init__(self,
-                 validation_post_eds: va.ValueAssertion = svh_check.is_success(),
-                 validation_pre_eds: va.ValueAssertion = svh_check.is_success(),
+                 validation_post_sds: va.ValueAssertion = svh_check.is_success(),
+                 validation_pre_sds: va.ValueAssertion = svh_check.is_success(),
                  main_result: va.ValueAssertion = pfh_check.is_pass(),
                  main_side_effects_on_files: va.ValueAssertion = va.anything_goes(),
                  side_effects_check: va.ValueAssertion = va.anything_goes(),
                  ):
-        self.validation_post_eds = validation_post_eds
-        self.validation_pre_eds = validation_pre_eds
+        self.validation_post_sds = validation_post_sds
+        self.validation_pre_sds = validation_pre_sds
         self.main_result = main_result
         self.main_side_effects_on_files = main_side_effects_on_files
         self.side_effects_check = side_effects_check
@@ -96,7 +96,7 @@ class Executor:
             # But cannot do this for the moment, since many tests write home-dir contents
             # as part of the act-result.
             environment = i.InstructionEnvironmentForPreSdsStep(home_and_sds.home_dir_path)
-            validate_result = self._execute_validate_pre_eds(environment, instruction)
+            validate_result = self._execute_validate_pre_sds(environment, instruction)
             if not validate_result.is_success:
                 return
             environment = i.InstructionEnvironmentForPostSdsStep(
@@ -111,13 +111,13 @@ class Executor:
             self.expectation.main_side_effects_on_files.apply(self.put, environment.sds)
             self.expectation.side_effects_check.apply(self.put, home_and_sds)
 
-    def _execute_validate_pre_eds(self,
+    def _execute_validate_pre_sds(self,
                                   global_environment: InstructionEnvironmentForPreSdsStep,
                                   instruction: AssertPhaseInstruction) -> svh.SuccessOrValidationErrorOrHardError:
         result = instruction.validate_pre_sds(global_environment)
         self.put.assertIsNotNone(result,
                                  'Result from validate method cannot be None')
-        self.expectation.validation_pre_eds.apply(self.put, result,
+        self.expectation.validation_pre_sds.apply(self.put, result,
                                                   va.MessageBuilder('result of validate/pre sds'))
         return result
 
@@ -127,7 +127,7 @@ class Executor:
         result = instruction.validate_post_setup(global_environment)
         self.put.assertIsNotNone(result,
                                  'Result from validate method cannot be None')
-        self.expectation.validation_post_eds.apply(self.put, result,
+        self.expectation.validation_post_sds.apply(self.put, result,
                                                    va.MessageBuilder('result of validate/post setup'))
         return result
 

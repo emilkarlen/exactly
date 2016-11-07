@@ -107,7 +107,7 @@ class TestResultIsValidationErrorWhenPreSdsValidationFails(TestCaseBase):
             new_source2(SCRIPT_THAT_EXISTS_WITH_STATUS_0),
             execution_setup_parser,
             self.conf.empty_arrangement(),
-            self.conf.expect_failing_validation_pre_eds(va.Equals('validation error message')))
+            self.conf.expect_failing_validation_pre_sds(va.Equals('validation error message')))
 
 
 class TestResultIsValidationErrorWhenPostSetupValidationFails(TestCaseBase):

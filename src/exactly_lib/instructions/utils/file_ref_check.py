@@ -16,13 +16,13 @@ class FileRefCheck:
         self.file_reference = file_reference
         self.file_properties = file_properties
 
-    def pre_eds_condition_result(self, home_dir_path: pathlib.Path) -> CheckResult:
-        return self.file_properties.apply(self.file_reference.file_path_pre_eds(home_dir_path))
+    def pre_sds_condition_result(self, home_dir_path: pathlib.Path) -> CheckResult:
+        return self.file_properties.apply(self.file_reference.file_path_pre_sds(home_dir_path))
 
-    def post_eds_condition_result(self, sds: SandboxDirectoryStructure) -> CheckResult:
-        return self.file_properties.apply(self.file_reference.file_path_post_eds(sds))
+    def post_sds_condition_result(self, sds: SandboxDirectoryStructure) -> CheckResult:
+        return self.file_properties.apply(self.file_reference.file_path_post_sds(sds))
 
-    def pre_or_post_eds_condition_result(self, home_and_sds: HomeAndSds) -> CheckResult:
+    def pre_or_post_sds_condition_result(self, home_and_sds: HomeAndSds) -> CheckResult:
         return self.file_properties.apply(self.file_reference.file_path_pre_or_post_sds(home_and_sds))
 
 
@@ -39,21 +39,21 @@ class FileRefCheckValidator(FileRefValidatorBase):
         return None
 
 
-def pre_eds_failure_message_or_none(file_ref_check: FileRefCheck,
+def pre_sds_failure_message_or_none(file_ref_check: FileRefCheck,
                                     home_dir_path: pathlib.Path) -> str:
-    validation_result = file_ref_check.pre_eds_condition_result(home_dir_path)
+    validation_result = file_ref_check.pre_sds_condition_result(home_dir_path)
     if not validation_result.is_success:
-        file_path = file_ref_check.file_reference.file_path_pre_eds(home_dir_path)
+        file_path = file_ref_check.file_reference.file_path_pre_sds(home_dir_path)
         return render_failure(validation_result.cause,
                               file_path)
     return None
 
 
-def post_eds_failure_message_or_none(file_ref_check: FileRefCheck,
+def post_sds_failure_message_or_none(file_ref_check: FileRefCheck,
                                      sds: SandboxDirectoryStructure) -> str:
-    validation_result = file_ref_check.post_eds_condition_result(sds)
+    validation_result = file_ref_check.post_sds_condition_result(sds)
     if not validation_result.is_success:
-        file_path = file_ref_check.file_reference.file_path_post_eds(sds)
+        file_path = file_ref_check.file_reference.file_path_post_sds(sds)
         return render_failure(validation_result.cause,
                               file_path)
     return None
@@ -61,7 +61,7 @@ def post_eds_failure_message_or_none(file_ref_check: FileRefCheck,
 
 def pre_or_post_sds_failure_message_or_none(file_ref_check: FileRefCheck,
                                             home_and_sds: HomeAndSds) -> str:
-    validation_result = file_ref_check.pre_or_post_eds_condition_result(home_and_sds)
+    validation_result = file_ref_check.pre_or_post_sds_condition_result(home_and_sds)
     if not validation_result.is_success:
         file_path = file_ref_check.file_reference.file_path_pre_or_post_sds(home_and_sds)
         return render_failure(validation_result.cause,
@@ -71,9 +71,9 @@ def pre_or_post_sds_failure_message_or_none(file_ref_check: FileRefCheck,
 
 def pre_sds_validate(file_ref_check: FileRefCheck,
                      environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
-    validation_result = file_ref_check.pre_eds_condition_result(environment.home_directory)
+    validation_result = file_ref_check.pre_sds_condition_result(environment.home_directory)
     if not validation_result.is_success:
-        file_path = file_ref_check.file_reference.file_path_pre_eds(environment.home_directory)
+        file_path = file_ref_check.file_reference.file_path_pre_sds(environment.home_directory)
         return svh.new_svh_validation_error(render_failure(validation_result.cause,
                                                            file_path))
     return svh.new_svh_success()

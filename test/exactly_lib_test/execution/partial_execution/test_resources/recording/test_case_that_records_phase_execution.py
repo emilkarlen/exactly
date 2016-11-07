@@ -25,13 +25,13 @@ class Arrangement(tuple):
                 act_executor_validate_post_setup=validate_action_that_returns(svh.new_svh_success()),
                 act_executor_prepare=prepare_action_that_returns(sh.new_sh_success()),
                 act_executor_execute=execute_action_that_returns_exit_code(),
-                act_executor_validate_pre_eds=validate_action_that_returns(svh.new_svh_success()),
+                act_executor_validate_pre_sds=validate_action_that_returns(svh.new_svh_success()),
                 ):
         return tuple.__new__(cls, (test_case_generator,
                                    act_executor_validate_post_setup,
                                    act_executor_prepare,
                                    act_executor_execute,
-                                   act_executor_validate_pre_eds))
+                                   act_executor_validate_pre_sds))
 
     @property
     def test_case_generator(self) -> TestCaseGeneratorForExecutionRecording:
@@ -42,7 +42,7 @@ class Arrangement(tuple):
         return self[1]
 
     @property
-    def act_executor_validate_pre_eds(self) -> types.FunctionType:
+    def act_executor_validate_pre_sds(self) -> types.FunctionType:
         return self[4]
 
     @property
@@ -143,7 +143,7 @@ def execute_test_case_with_recording(put: unittest.TestCase,
         validate_post_setup_action=arrangement.act_executor_validate_post_setup,
         prepare_action=arrangement.act_executor_prepare,
         execute_action=arrangement.act_executor_execute,
-        validate_pre_eds_action=arrangement.act_executor_validate_pre_eds)
+        validate_pre_sds_action=arrangement.act_executor_validate_pre_sds)
     constructor = ActSourceAndExecutorWrapperConstructorThatRecordsSteps(
         arrangement.test_case_generator.recorder,
         constant_actions_runner)

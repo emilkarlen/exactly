@@ -76,16 +76,16 @@ class ActSourceAndExecutorWrapperWithActions(ActSourceAndExecutor):
                  before_wrapped_validate=do_nothing,
                  before_wrapped_prepare=do_nothing,
                  before_wrapped_execute=do_nothing,
-                 before_wrapped_validate_pre_eds=do_nothing
+                 before_wrapped_validate_pre_sds=do_nothing
                  ):
         self.__wrapped = wrapped
         self.before_wrapped_validate = before_wrapped_validate
-        self.before_wrapped_validate_pre_eds = before_wrapped_validate_pre_eds
+        self.before_wrapped_validate_pre_sds = before_wrapped_validate_pre_sds
         self.before_wrapped_prepare = before_wrapped_prepare
         self.before_wrapped_execute = before_wrapped_execute
 
     def validate_pre_sds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
-        self.before_wrapped_validate_pre_eds()
+        self.before_wrapped_validate_pre_sds()
         return self.__wrapped.validate_pre_sds(home_dir_path)
 
     def validate_post_setup(self, home_and_sds: HomeAndSds) -> svh.SuccessOrValidationErrorOrHardError:
@@ -119,13 +119,13 @@ class ActSourceAndExecutorConstructorForConstantExecutor(ActSourceAndExecutorCon
 class ActSourceAndExecutorConstructorWithActionsForExecutor(ActSourceAndExecutorConstructor):
     def __init__(self,
                  wrapped: ActSourceAndExecutorConstructor,
-                 before_wrapped_validate_pre_eds=do_nothing,
+                 before_wrapped_validate_pre_sds=do_nothing,
                  before_wrapped_validate_post_setup=do_nothing,
                  before_wrapped_prepare=do_nothing,
                  before_wrapped_execute=do_nothing):
         self.__wrapped = wrapped
         self.before_wrapped_validate = before_wrapped_validate_post_setup
-        self.before_wrapped_validate_pre_eds = before_wrapped_validate_pre_eds
+        self.before_wrapped_validate_pre_sds = before_wrapped_validate_pre_sds
         self.before_wrapped_prepare = before_wrapped_prepare
         self.before_wrapped_execute = before_wrapped_execute
 
@@ -138,4 +138,4 @@ class ActSourceAndExecutorConstructorWithActionsForExecutor(ActSourceAndExecutor
             before_wrapped_validate=self.before_wrapped_validate,
             before_wrapped_prepare=self.before_wrapped_prepare,
             before_wrapped_execute=self.before_wrapped_execute,
-            before_wrapped_validate_pre_eds=self.before_wrapped_validate_pre_eds)
+            before_wrapped_validate_pre_sds=self.before_wrapped_validate_pre_sds)

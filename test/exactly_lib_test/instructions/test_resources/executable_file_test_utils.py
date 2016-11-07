@@ -32,7 +32,7 @@ class CheckBase(unittest.TestCase):
         super().__init__()
         self.configuration = configuration
 
-    def _check_expectance_to_exist_pre_eds(self, actual: sut.ExecutableFile):
+    def _check_expectance_to_exist_pre_sds(self, actual: sut.ExecutableFile):
         self.assertEquals(self.configuration.exists_pre_sds,
                           actual.exists_pre_sds,
                           'Existence pre SDS')
@@ -42,7 +42,7 @@ class CheckBase(unittest.TestCase):
                          actual.path_string(home_and_sds),
                          'Path string')
 
-    def _home_and_eds_and_test_as_curr_dir(self, file: File) -> HomeAndSds:
+    def _home_and_sds_and_test_as_curr_dir(self, file: File) -> HomeAndSds:
         contents = self.configuration.file_installation(file)
         return home_and_sds_and_test_as_curr_dir(
             home_dir_contents=contents[0],
@@ -52,11 +52,11 @@ class CheckBase(unittest.TestCase):
         validator_util.check(self, actual.validator, home_and_sds)
 
     def _assert_does_not_pass_validation(self, actual: sut.ExecutableFile, home_and_sds: HomeAndSds):
-        passes_pre_eds = not self.configuration.exists_pre_sds
-        passes_post_eds = not passes_pre_eds
+        passes_pre_sds = not self.configuration.exists_pre_sds
+        passes_post_sds = not passes_pre_sds
         validator_util.check(self, actual.validator, home_and_sds,
-                             passes_pre_eds=passes_pre_eds,
-                             passes_post_eds=passes_post_eds)
+                             passes_pre_sds=passes_pre_sds,
+                             passes_post_sds=passes_post_sds)
 
 
 class CheckExistingFile(CheckBase):
@@ -71,8 +71,8 @@ class CheckExistingFile(CheckBase):
         self.assertEqual('remaining args',
                          remaining_arguments.source,
                          'Remaining arguments')
-        self._check_expectance_to_exist_pre_eds(exe_file)
-        with self._home_and_eds_and_test_as_curr_dir(executable_file('file.exe')) as home_and_sds:
+        self._check_expectance_to_exist_pre_sds(exe_file)
+        with self._home_and_sds_and_test_as_curr_dir(executable_file('file.exe')) as home_and_sds:
             self._check_file_path('file.exe', exe_file, home_and_sds)
             self._assert_passes_validation(exe_file, home_and_sds)
 
@@ -92,8 +92,8 @@ class CheckExistingFileWithArguments(CheckBase):
         self.assertEqual('remaining args',
                          remaining_arguments.source,
                          'Remaining arguments')
-        self._check_expectance_to_exist_pre_eds(exe_file)
-        with self._home_and_eds_and_test_as_curr_dir(executable_file('file.exe')) as home_and_sds:
+        self._check_expectance_to_exist_pre_sds(exe_file)
+        with self._home_and_sds_and_test_as_curr_dir(executable_file('file.exe')) as home_and_sds:
             self._check_file_path('file.exe', exe_file, home_and_sds)
             self._assert_passes_validation(exe_file, home_and_sds)
 
@@ -107,7 +107,7 @@ class CheckExistingButNonExecutableFile(CheckBase):
         arguments_str = '{} file.exe remaining args'.format(conf.option)
         arguments = TokenStream(arguments_str)
         (exe_file, remaining_arguments) = parse_executable_file.parse(arguments)
-        with self._home_and_eds_and_test_as_curr_dir(empty_file('file.exe')) as home_and_sds:
+        with self._home_and_sds_and_test_as_curr_dir(empty_file('file.exe')) as home_and_sds:
             self._assert_does_not_pass_validation(exe_file, home_and_sds)
 
 
@@ -123,7 +123,7 @@ class CheckNonExistingFile(CheckBase):
         self.assertEqual('remaining args',
                          remaining_arguments.source,
                          'Remaining arguments')
-        self._check_expectance_to_exist_pre_eds(exe_file)
+        self._check_expectance_to_exist_pre_sds(exe_file)
         with home_and_sds_and_test_as_curr_dir() as home_and_sds:
             self._check_file_path('file.exe', exe_file, home_and_sds)
             self._assert_does_not_pass_validation(exe_file, home_and_sds)

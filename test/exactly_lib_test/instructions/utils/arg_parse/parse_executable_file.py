@@ -259,7 +259,7 @@ class TestParseAbsolutePath(unittest.TestCase):
                              exe_file.path_string(home_and_sds),
                              'Path string')
             validator_util.check(self, exe_file.validator, home_and_sds,
-                                 passes_pre_eds=False)
+                                 passes_pre_sds=False)
 
 
 def suite():

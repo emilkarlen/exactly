@@ -7,7 +7,7 @@ from exactly_lib.test_case.phases.result import svh
 from exactly_lib_test.execution.partial_execution.test_resources.recording import validate_post_setup_utils as utils
 from exactly_lib_test.execution.partial_execution.test_resources.test_case_generator import PartialPhase
 from exactly_lib_test.execution.test_resources import instruction_test_resources as test
-from exactly_lib_test.execution.test_resources.execution_recording.phase_steps import PRE_EDS_VALIDATION_STEPS__TWICE
+from exactly_lib_test.execution.test_resources.execution_recording.phase_steps import PRE_SDS_VALIDATION_STEPS__TWICE
 from exactly_lib_test.execution.test_resources.instruction_test_resources import do_raise, do_return
 
 
@@ -23,7 +23,7 @@ class SetupConfig(utils.Configuration):
         super().__init__(PartialPhase.SETUP,
                          phase_step.SETUP__VALIDATE_POST_SETUP,
                          expected_steps=
-                         PRE_EDS_VALIDATION_STEPS__TWICE + [
+                         PRE_SDS_VALIDATION_STEPS__TWICE + [
                              phase_step.SETUP__MAIN,
                              phase_step.SETUP__MAIN,
                              phase_step.SETUP__VALIDATE_POST_SETUP,
@@ -44,7 +44,7 @@ class BeforeAssertConfig(utils.Configuration):
         super().__init__(PartialPhase.BEFORE_ASSERT,
                          phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
                          expected_steps=
-                         PRE_EDS_VALIDATION_STEPS__TWICE + [
+                         PRE_SDS_VALIDATION_STEPS__TWICE + [
                              phase_step.SETUP__MAIN,
                              phase_step.SETUP__MAIN,
                              phase_step.SETUP__VALIDATE_POST_SETUP,
@@ -68,7 +68,7 @@ class AssertConfig(utils.Configuration):
         super().__init__(PartialPhase.ASSERT,
                          phase_step.ASSERT__VALIDATE_POST_SETUP,
                          expected_steps=
-                         PRE_EDS_VALIDATION_STEPS__TWICE + [
+                         PRE_SDS_VALIDATION_STEPS__TWICE + [
                              phase_step.SETUP__MAIN,
                              phase_step.SETUP__MAIN,
                              phase_step.SETUP__VALIDATE_POST_SETUP,

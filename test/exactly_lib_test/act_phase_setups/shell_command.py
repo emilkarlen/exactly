@@ -27,11 +27,11 @@ class TestValidation(unittest.TestCase):
         super().__init__(method_name)
         self.constructor = sut.Constructor()
         self.home_dir_as_current_dir = pathlib.Path()
-        self.pre_eds_env = InstructionEnvironmentForPreSdsStep(self.home_dir_as_current_dir)
+        self.pre_sds_env = InstructionEnvironmentForPreSdsStep(self.home_dir_as_current_dir)
 
     def test_fails_when_there_are_no_instructions(self):
         act_phase_instructions = []
-        actual = self._do_validate_pre_eds(act_phase_instructions)
+        actual = self._do_validate_pre_sds(act_phase_instructions)
         self.assertIs(svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
                       actual.status,
                       'Validation result')
@@ -39,14 +39,14 @@ class TestValidation(unittest.TestCase):
     def test_fails_when_there_is_more_than_one_instruction(self):
         act_phase_instructions = [instr(['']),
                                   instr([''])]
-        actual = self._do_validate_pre_eds(act_phase_instructions)
+        actual = self._do_validate_pre_sds(act_phase_instructions)
         self.assertIs(svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
                       actual.status,
                       'Validation result')
 
     def test_fails_when_there_are_no_statements(self):
         act_phase_instructions = [instr([''])]
-        actual = self._do_validate_pre_eds(act_phase_instructions)
+        actual = self._do_validate_pre_sds(act_phase_instructions)
         self.assertIs(svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
                       actual.status,
                       'Validation result')
@@ -55,7 +55,7 @@ class TestValidation(unittest.TestCase):
         existing_file = abs_path_to_interpreter_quoted_for_exactly()
         act_phase_instructions = [instr([existing_file,
                                          existing_file])]
-        actual = self._do_validate_pre_eds(act_phase_instructions)
+        actual = self._do_validate_pre_sds(act_phase_instructions)
         self.assertIs(svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
                       actual.status,
                       'Validation result')
@@ -68,7 +68,7 @@ class TestValidation(unittest.TestCase):
                                          existing_file,
                                          LINE_COMMENT_MARKER + ' line comment text',
                                          ''])]
-        actual = self._do_validate_pre_eds(act_phase_instructions)
+        actual = self._do_validate_pre_sds(act_phase_instructions)
         self.assertIs(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                       actual.status,
                       'Validation result')
@@ -78,9 +78,9 @@ class TestValidation(unittest.TestCase):
         home_dir_path = pathlib.Path()
         return InstructionEnvironmentForPreSdsStep(home_dir_path)
 
-    def _do_validate_pre_eds(self, act_phase_instructions: list) -> svh.SuccessOrValidationErrorOrHardError:
-        executor = self.constructor.apply(self.pre_eds_env, act_phase_instructions)
-        return executor.validate_pre_sds(self.pre_eds_env.home_directory)
+    def _do_validate_pre_sds(self, act_phase_instructions: list) -> svh.SuccessOrValidationErrorOrHardError:
+        executor = self.constructor.apply(self.pre_sds_env, act_phase_instructions)
+        return executor.validate_pre_sds(self.pre_sds_env.home_directory)
 
 
 class TheConfiguration(Configuration):

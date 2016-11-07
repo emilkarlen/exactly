@@ -466,9 +466,9 @@ class ExpectedSuiteReporting(tuple):
                          msg_header + 'Second event of case processing')
 
 
-DUMMY_EDS = SandboxDirectoryStructure('test-root-dir')
+DUMMY_SDS = SandboxDirectoryStructure('test-root-dir')
 
-FULL_RESULT_PASS = new_pass(DUMMY_EDS)
+FULL_RESULT_PASS = new_pass(DUMMY_SDS)
 
 DEFAULT_CASE_PROCESSING = case_processing.Configuration(
     lambda x: ((), ()),

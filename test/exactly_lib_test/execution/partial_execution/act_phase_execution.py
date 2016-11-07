@@ -42,7 +42,7 @@ class TestCurrentDirectory(unittest.TestCase):
         _execute(constructor, _empty_test_case())
         # ASSERT #
         phase_step_2_cwd = executor_that_records_current_dir.phase_step_2_cwd
-        home_and_sds = executor_that_records_current_dir.actual_home_and_eds
+        home_and_sds = executor_that_records_current_dir.actual_home_and_sds
         sds = home_and_sds.sds
         self.assertEqual(len(phase_step_2_cwd),
                          4,
@@ -182,7 +182,7 @@ def _check_contents_of_stdin_for_setup_settings(put: unittest.TestCase,
 
 class _ExecutorThatRecordsCurrentDir(ActSourceAndExecutor):
     def __init__(self):
-        self._home_and_eds = None
+        self._home_and_sds = None
         self.phase_step_2_cwd = {}
 
     def validate_pre_sds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
@@ -190,7 +190,7 @@ class _ExecutorThatRecordsCurrentDir(ActSourceAndExecutor):
         return svh.new_svh_success()
 
     def validate_post_setup(self, home_and_sds: HomeAndSds) -> svh.SuccessOrValidationErrorOrHardError:
-        self._home_and_eds = home_and_sds
+        self._home_and_sds = home_and_sds
         self._register_cwd_for(phase_step.ACT__VALIDATE_POST_SETUP)
         return svh.new_svh_success()
 
@@ -207,8 +207,8 @@ class _ExecutorThatRecordsCurrentDir(ActSourceAndExecutor):
         self.phase_step_2_cwd[step] = str(pathlib.Path().resolve())
 
     @property
-    def actual_home_and_eds(self) -> HomeAndSds:
-        return self._home_and_eds
+    def actual_home_and_sds(self) -> HomeAndSds:
+        return self._home_and_sds
 
 
 class _ExecutorThatExecutesPythonProgramFile(ActSourceAndExecutorThatJustReturnsSuccess):

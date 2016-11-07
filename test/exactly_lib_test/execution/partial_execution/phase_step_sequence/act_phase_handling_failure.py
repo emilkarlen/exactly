@@ -11,7 +11,7 @@ from exactly_lib_test.execution.partial_execution.test_resources.recording.test_
     Expectation, Arrangement, TestCaseBase
 from exactly_lib_test.execution.test_resources import instruction_test_resources as test
 from exactly_lib_test.execution.test_resources.execution_recording.phase_steps import \
-    PRE_EDS_VALIDATION_STEPS__ONCE
+    PRE_SDS_VALIDATION_STEPS__ONCE
 from exactly_lib_test.execution.test_resources.test_actions import execute_action_that_raises, \
     execute_action_that_returns_hard_error_with_message, \
     prepare_action_that_returns_hard_error_with_message, validate_action_that_returns, validate_action_that_raises
@@ -27,11 +27,11 @@ if __name__ == '__main__':
 
 
 class Test(TestCaseBase):
-    def test_hard_error_in_validate_pre_eds(self):
+    def test_hard_error_in_validate_pre_sds(self):
         test_case = _single_successful_instruction_in_each_phase()
         self._check(
             Arrangement(test_case,
-                        act_executor_validate_pre_eds=validate_action_that_returns(
+                        act_executor_validate_pre_sds=validate_action_that_returns(
                             svh.new_svh_hard_error('error in act/validate-pre-sds'))),
             Expectation(PartialResultStatus.HARD_ERROR,
                         ExpectedFailureForPhaseFailure.new_with_message(
@@ -43,11 +43,11 @@ class Test(TestCaseBase):
                         ],
                         execution_directory_structure_should_exist=False))
 
-    def test_validation_error_in_validate_pre_eds(self):
+    def test_validation_error_in_validate_pre_sds(self):
         test_case = _single_successful_instruction_in_each_phase()
         self._check(
             Arrangement(test_case,
-                        act_executor_validate_pre_eds=validate_action_that_returns(
+                        act_executor_validate_pre_sds=validate_action_that_returns(
                             svh.new_svh_validation_error('error in act/validate-pre-sds'))),
             Expectation(PartialResultStatus.VALIDATE,
                         ExpectedFailureForPhaseFailure.new_with_message(
@@ -59,11 +59,11 @@ class Test(TestCaseBase):
                         ],
                         execution_directory_structure_should_exist=False))
 
-    def test_exception_in_validate_pre_eds(self):
+    def test_exception_in_validate_pre_sds(self):
         test_case = _single_successful_instruction_in_each_phase()
         self._check(
             Arrangement(test_case,
-                        act_executor_validate_pre_eds=validate_action_that_raises(
+                        act_executor_validate_pre_sds=validate_action_that_raises(
                             test.ImplementationErrorTestException())),
             Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
                         ExpectedFailureForPhaseFailure.new_with_exception(
@@ -85,7 +85,7 @@ class Test(TestCaseBase):
                         ExpectedFailureForPhaseFailure.new_with_message(
                             phase_step.ACT__VALIDATE_POST_SETUP,
                             'error in act/validate-post-setup'),
-                        PRE_EDS_VALIDATION_STEPS__ONCE +
+                        PRE_SDS_VALIDATION_STEPS__ONCE +
                         [
                             phase_step.SETUP__MAIN,
 
@@ -106,7 +106,7 @@ class Test(TestCaseBase):
                         ExpectedFailureForPhaseFailure.new_with_message(
                             phase_step.ACT__VALIDATE_POST_SETUP,
                             'error in act/validate-post-setup'),
-                        PRE_EDS_VALIDATION_STEPS__ONCE +
+                        PRE_SDS_VALIDATION_STEPS__ONCE +
                         [
                             phase_step.SETUP__MAIN,
 
@@ -127,7 +127,7 @@ class Test(TestCaseBase):
                         ExpectedFailureForPhaseFailure.new_with_exception(
                             phase_step.ACT__VALIDATE_POST_SETUP,
                             test.ImplementationErrorTestException),
-                        PRE_EDS_VALIDATION_STEPS__ONCE +
+                        PRE_SDS_VALIDATION_STEPS__ONCE +
                         [
                             phase_step.SETUP__MAIN,
 
@@ -148,7 +148,7 @@ class Test(TestCaseBase):
                         ExpectedFailureForPhaseFailure.new_with_message(
                             phase_step.ACT__PREPARE,
                             'error in act/prepare'),
-                        PRE_EDS_VALIDATION_STEPS__ONCE +
+                        PRE_SDS_VALIDATION_STEPS__ONCE +
                         [phase_step.SETUP__MAIN,
 
                          phase_step.SETUP__VALIDATE_POST_SETUP,
@@ -172,7 +172,7 @@ class Test(TestCaseBase):
                         ExpectedFailureForPhaseFailure.new_with_exception(
                             phase_step.ACT__PREPARE,
                             test.ImplementationErrorTestException),
-                        PRE_EDS_VALIDATION_STEPS__ONCE +
+                        PRE_SDS_VALIDATION_STEPS__ONCE +
                         [phase_step.SETUP__MAIN,
 
                          phase_step.SETUP__VALIDATE_POST_SETUP,
@@ -196,7 +196,7 @@ class Test(TestCaseBase):
                         ExpectedFailureForPhaseFailure.new_with_message(
                             phase_step.ACT__EXECUTE,
                             'error in execute'),
-                        PRE_EDS_VALIDATION_STEPS__ONCE +
+                        PRE_SDS_VALIDATION_STEPS__ONCE +
                         [phase_step.SETUP__MAIN,
 
                          phase_step.SETUP__VALIDATE_POST_SETUP,
@@ -221,7 +221,7 @@ class Test(TestCaseBase):
                         ExpectedFailureForPhaseFailure.new_with_exception(
                             phase_step.ACT__EXECUTE,
                             test.ImplementationErrorTestException),
-                        PRE_EDS_VALIDATION_STEPS__ONCE +
+                        PRE_SDS_VALIDATION_STEPS__ONCE +
                         [phase_step.SETUP__MAIN,
 
                          phase_step.SETUP__VALIDATE_POST_SETUP,

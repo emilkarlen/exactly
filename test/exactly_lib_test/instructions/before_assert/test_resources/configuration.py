@@ -28,9 +28,9 @@ class BeforeAssertConfigurationBase(ConfigurationBase):
                                assertion_on_error_message: va.ValueAssertion = va.anything_goes()):
         return ic.Expectation(main_result=sh_check.is_hard_error(assertion_on_error_message))
 
-    def expect_failing_validation_pre_eds(self,
+    def expect_failing_validation_pre_sds(self,
                                           assertion_on_error_message: va.ValueAssertion = va.anything_goes()):
-        return ic.Expectation(validation_pre_eds=svh_check.is_validation_error(assertion_on_error_message))
+        return ic.Expectation(validation_pre_sds=svh_check.is_validation_error(assertion_on_error_message))
 
     def arrangement(self,
                     eds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),

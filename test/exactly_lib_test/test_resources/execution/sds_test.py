@@ -24,12 +24,12 @@ class Check:
     def __init__(self,
                  eds_contents_before: sds_populator.SdsPopulator = sds_populator.empty(),
                  expected_action_result: va.ValueAssertion = va.anything_goes(),
-                 expected_eds_contents_after: va.ValueAssertion = va.anything_goes(),
+                 expected_sds_contents_after: va.ValueAssertion = va.anything_goes(),
                  pre_action_action: Action = Action(),
                  post_action_check: PostActionCheck = PostActionCheck()):
         self.eds_contents_before = eds_contents_before
         self.expected_action_result = expected_action_result
-        self.expected_eds_contents_after = expected_eds_contents_after
+        self.expected_sds_contents_after = expected_sds_contents_after
         self.pre_action_action = pre_action_action
         self.post_action_check = post_action_check
 
@@ -53,7 +53,7 @@ def execute(put: unittest.TestCase,
             check.pre_action_action.apply(sds)
             result = action.apply(sds)
             check.expected_action_result.apply(put, result)
-            check.expected_eds_contents_after.apply(put, sds)
+            check.expected_sds_contents_after.apply(put, sds)
             check.post_action_check.apply(put, sds)
         finally:
             os.chdir(original_cwd)

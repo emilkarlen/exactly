@@ -13,7 +13,7 @@ class TheConfiguration(CleanupConfigurationBase, Configuration):
     def instruction_setup(self) -> SingleInstructionSetup:
         return sut.setup('instruction name')
 
-    def expect_failure_because_specified_file_under_eds_is_missing(self):
+    def expect_failure_because_specified_file_under_sds_is_missing(self):
         return Expectation(main_result=sh_check.is_hard_error())
 
 
