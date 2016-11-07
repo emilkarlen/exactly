@@ -39,7 +39,7 @@ class FileRef:
         return self.__exists_pre_sds
 
 
-class FileRefRelEds(FileRef):
+class FileRefRelSds(FileRef):
     def __init__(self, file_name: str):
         super().__init__(False, file_name)
 
@@ -64,19 +64,19 @@ def rel_home(file_name: str) -> FileRef:
     return _FileRefRelHome(file_name)
 
 
-def rel_cwd(file_name: str) -> FileRefRelEds:
+def rel_cwd(file_name: str) -> FileRefRelSds:
     return _FileRefRelCwd(file_name)
 
 
-def rel_act(file_name: str) -> FileRefRelEds:
+def rel_act(file_name: str) -> FileRefRelSds:
     return _FileRefRelAct(file_name)
 
 
-def rel_tmp_internal(file_name: str) -> FileRefRelEds:
+def rel_tmp_internal(file_name: str) -> FileRefRelSds:
     return _FileRefRelTmpInternal(file_name)
 
 
-def rel_tmp_user(file_name: str) -> FileRefRelEds:
+def rel_tmp_user(file_name: str) -> FileRefRelSds:
     return _FileRefRelTmpUser(file_name)
 
 
@@ -102,7 +102,7 @@ class _FileRefRelHome(FileRef):
         raise ValueError('This file exists pre-SDS')
 
 
-class _FileRefRelCwd(FileRefRelEds):
+class _FileRefRelCwd(FileRefRelSds):
     def __init__(self, file_name: str):
         super().__init__(file_name)
 
@@ -110,7 +110,7 @@ class _FileRefRelCwd(FileRefRelEds):
         return pathlib.Path.cwd() / self._file_name
 
 
-class _FileRefRelAct(FileRefRelEds):
+class _FileRefRelAct(FileRefRelSds):
     def __init__(self, file_name: str):
         super().__init__(file_name)
 
@@ -118,7 +118,7 @@ class _FileRefRelAct(FileRefRelEds):
         return sds.act_dir / self._file_name
 
 
-class _FileRefRelTmpUser(FileRefRelEds):
+class _FileRefRelTmpUser(FileRefRelSds):
     def __init__(self, file_name: str):
         super().__init__(file_name)
 
@@ -126,7 +126,7 @@ class _FileRefRelTmpUser(FileRefRelEds):
         return sds.tmp.user_dir / self._file_name
 
 
-class _FileRefRelTmpInternal(FileRefRelEds):
+class _FileRefRelTmpInternal(FileRefRelSds):
     def __init__(self, file_name: str):
         super().__init__(file_name)
 
