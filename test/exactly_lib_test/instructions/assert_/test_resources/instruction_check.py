@@ -10,14 +10,14 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
     InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import svh
-from exactly_lib_test.instructions.test_resources import pfh_check
-from exactly_lib_test.instructions.test_resources import svh_check
+from exactly_lib_test.instructions.test_resources import pfh_check__va as pfh_check
+from exactly_lib_test.instructions.test_resources import svh_check__va as svh_check
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct, ActResultProducer, \
     ActEnvironment
-from exactly_lib_test.instructions.test_resources.assertion_utils.side_effects import SideEffectsCheck
 from exactly_lib_test.test_resources import file_structure
-from exactly_lib_test.test_resources.execution import sds_populator, utils, sds_contents_check
+from exactly_lib_test.test_resources.execution import sds_populator, utils
 from exactly_lib_test.test_resources.execution.utils import write_act_result
+from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 
 def arrangement(home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
@@ -33,11 +33,11 @@ def arrangement(home_dir_contents: file_structure.DirContents = file_structure.D
 
 class Expectation:
     def __init__(self,
-                 validation_post_eds: svh_check.Assertion = svh_check.is_success(),
-                 validation_pre_eds: svh_check.Assertion = svh_check.is_success(),
-                 main_result: pfh_check.Assertion = pfh_check.is_pass(),
-                 main_side_effects_on_files: sds_contents_check.Assertion = sds_contents_check.AnythingGoes(),
-                 side_effects_check: SideEffectsCheck = SideEffectsCheck(),
+                 validation_post_eds: va.ValueAssertion = svh_check.is_success(),
+                 validation_pre_eds: va.ValueAssertion = svh_check.is_success(),
+                 main_result: va.ValueAssertion = pfh_check.is_pass(),
+                 main_side_effects_on_files: va.ValueAssertion = va.anything_goes(),
+                 side_effects_check: va.ValueAssertion = va.anything_goes(),
                  ):
         self.validation_post_eds = validation_post_eds
         self.validation_pre_eds = validation_pre_eds
@@ -113,7 +113,8 @@ class Executor:
         result = instruction.validate_pre_sds(global_environment)
         self.put.assertIsNotNone(result,
                                  'Result from validate method cannot be None')
-        self.expectation.validation_pre_eds.apply(self.put, result)
+        self.expectation.validation_pre_eds.apply(self.put, result,
+                                                  va.MessageBuilder('result of validate/pre sds'))
         return result
 
     def _execute_validate_post_setup(self,
@@ -122,7 +123,8 @@ class Executor:
         result = instruction.validate_post_setup(global_environment)
         self.put.assertIsNotNone(result,
                                  'Result from validate method cannot be None')
-        self.expectation.validation_post_eds.apply(self.put, result)
+        self.expectation.validation_post_eds.apply(self.put, result,
+                                                   va.MessageBuilder('result of validate/post setup'))
         return result
 
     def _execute_main(self,

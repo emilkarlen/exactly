@@ -11,8 +11,8 @@ from exactly_lib_test.instructions.assert_.test_resources.contents_resources imp
     StoreContentsInFileInParentDirOfCwd
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import arrangement, \
     Expectation, is_pass
-from exactly_lib_test.instructions.test_resources import pfh_check
-from exactly_lib_test.instructions.test_resources import svh_check
+from exactly_lib_test.instructions.test_resources import pfh_check__va as pfh_check
+from exactly_lib_test.instructions.test_resources import svh_check__va as svh_check
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.test_resources.execution.sds_populator import act_dir_contents, tmp_user_dir_contents, \

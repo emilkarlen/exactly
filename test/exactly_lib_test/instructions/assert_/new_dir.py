@@ -1,12 +1,12 @@
 import unittest
 
-from exactly_lib.instructions.assert_ import new_dir as sut
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
+from exactly_lib.instructions.assert_ import new_dir as sut
 from exactly_lib_test.instructions.assert_.test_resources.configuration import AssertConfigurationBase
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.new_dir_instruction_test import \
     Configuration, suite_for
-from exactly_lib_test.instructions.test_resources import pfh_check
+from exactly_lib_test.instructions.test_resources import pfh_check__va as pfh_check
 
 
 class TheConfiguration(AssertConfigurationBase, Configuration):

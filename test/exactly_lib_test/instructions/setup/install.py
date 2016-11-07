@@ -5,10 +5,10 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException, SingleInstructionParserSource
 from exactly_lib_test.instructions.setup.test_resources.instruction_check import TestCaseBase, Arrangement, \
     Expectation
-from exactly_lib_test.instructions.test_resources import sh_check
-from exactly_lib_test.instructions.test_resources import svh_check
+from exactly_lib_test.instructions.test_resources import sh_check__va as sh_check
+from exactly_lib_test.instructions.test_resources import svh_check__va as svh_check
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
-from exactly_lib_test.test_resources.execution import sds_populator, sds_contents_check
+from exactly_lib_test.test_resources.execution import sds_populator, sds_contents_check__va as sds_contents_check
 from exactly_lib_test.test_resources.file_structure import DirContents, File, Dir, empty_file, empty_dir
 from exactly_lib_test.test_resources.parse import new_source2
 
@@ -64,8 +64,8 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
                                              'contents'))])
         self._run(new_source2(file_name),
                   Arrangement(home_dir_contents=file_to_install),
-                  Expectation(main_side_effects_on_files=sds_contents_check.ActRootContainsExactly(
-                          file_to_install))
+                  Expectation(main_side_effects_on_files=sds_contents_check.act_dir_contains_exactly(
+                      file_to_install))
                   )
 
     def test_install_file__with_explicit_destination__non_existing_file(self):
@@ -75,9 +75,9 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
                   Arrangement(home_dir_contents=DirContents([(File(src,
                                                                    'contents'))])),
                   Expectation(
-                      main_side_effects_on_files=sds_contents_check.ActRootContainsExactly(
-                                  DirContents([(File(dst,
-                                                     'contents'))])))
+                      main_side_effects_on_files=sds_contents_check.act_dir_contains_exactly(
+                          DirContents([(File(dst,
+                                             'contents'))])))
                   )
 
     def test_install_file__with_explicit_destination__existing_directory(self):
@@ -89,11 +89,11 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
         act_dir_contents_after = [Dir(dst, [file_to_install])]
         self._run(new_source2('{} {}'.format(src, dst)),
                   Arrangement(
-                          home_dir_contents=DirContents(home_dir_contents),
+                      home_dir_contents=DirContents(home_dir_contents),
                       eds_contents_before_main=sds_populator.act_dir_contents(DirContents(act_dir_contents))),
                   Expectation(
-                      main_side_effects_on_files=sds_contents_check.ActRootContainsExactly(
-                                  DirContents(act_dir_contents_after)))
+                      main_side_effects_on_files=sds_contents_check.act_dir_contains_exactly(
+                          DirContents(act_dir_contents_after)))
                   )
 
     def test_install_directory__without_explicit_destination(self):
@@ -106,8 +106,8 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
                                              ])])
         self._run(new_source2(src_dir),
                   Arrangement(home_dir_contents=files_to_install),
-                  Expectation(main_side_effects_on_files=sds_contents_check.ActRootContainsExactly(
-                          files_to_install))
+                  Expectation(main_side_effects_on_files=sds_contents_check.act_dir_contains_exactly(
+                      files_to_install))
                   )
 
     def test_install_directory__with_explicit_destination__existing_directory(self):
@@ -123,11 +123,11 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
         act_dir_contents_after = DirContents([Dir(dst_dir, files_to_install)])
         self._run(new_source2('{} {}'.format(src_dir, dst_dir)),
                   Arrangement(
-                          home_dir_contents=DirContents(files_to_install),
+                      home_dir_contents=DirContents(files_to_install),
                       eds_contents_before_main=sds_populator.act_dir_contents(act_dir_contents_before)),
                   Expectation(
-                      main_side_effects_on_files=sds_contents_check.ActRootContainsExactly(
-                                  act_dir_contents_after))
+                      main_side_effects_on_files=sds_contents_check.act_dir_contains_exactly(
+                          act_dir_contents_after))
                   )
 
 
@@ -138,11 +138,11 @@ class TestFailingScenarios(TestCaseBaseForParser):
                                              'contents'))])
         self._run(new_source2(file_name),
                   Arrangement(
-                          home_dir_contents=file_to_install,
+                      home_dir_contents=file_to_install,
                       eds_contents_before_main=sds_populator.act_dir_contents(DirContents(
-                                  [empty_file(file_name)]))),
+                          [empty_file(file_name)]))),
                   Expectation(
-                          main_result=sh_check.IsHardError())
+                      main_result=sh_check.is_hard_error())
                   )
 
     def test_destination_already_exists__with_explicit_destination(self):
@@ -152,11 +152,11 @@ class TestFailingScenarios(TestCaseBaseForParser):
         act_dir_contents = DirContents([empty_file(dst)])
         self._run(new_source2('{} {}'.format(src, dst)),
                   Arrangement(
-                          home_dir_contents=home_dir_contents,
+                      home_dir_contents=home_dir_contents,
                       eds_contents_before_main=sds_populator.act_dir_contents(act_dir_contents)
                   ),
                   Expectation(
-                          main_result=sh_check.IsHardError()
+                      main_result=sh_check.is_hard_error()
                   )
                   )
 
@@ -168,10 +168,10 @@ class TestFailingScenarios(TestCaseBaseForParser):
                                             [empty_file(src)])])
         self._run(new_source2('{} {}'.format(src, dst)),
                   Arrangement(
-                          home_dir_contents=home_dir_contents,
+                      home_dir_contents=home_dir_contents,
                       eds_contents_before_main=sds_populator.act_dir_contents(act_dir_contents)),
                   Expectation(
-                          main_result=sh_check.IsHardError())
+                      main_result=sh_check.is_hard_error())
                   )
 
 

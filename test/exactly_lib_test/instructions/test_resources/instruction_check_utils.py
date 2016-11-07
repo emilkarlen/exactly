@@ -48,6 +48,11 @@ class InstructionExecutionBase:
                                    'The instruction must be an instance of ' + str(expected_class))
         validation.apply(self.put, instruction)
 
+    def _check_result_of_main__sh(self, actual):
+        validation = va.IsInstance(sh.SuccessOrHardError,
+                                   'The result from main must be an instance of ' + str(sh.SuccessOrHardError))
+        validation.apply(self.put, actual)
+
     def _check_result_of_validate_pre_eds(self, actual):
         self._check_instance_and('Result of validate/pre-EDS',
                                  svh.SuccessOrValidationErrorOrHardError,

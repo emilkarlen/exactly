@@ -31,7 +31,7 @@ class TestCases(instruction_check.TestCaseBase):
 
                     single_line_source(),
                     Arrangement(),
-                    Expectation(main_result=test_misc.ShRaisesTestError()))
+                Expectation(main_result=test_misc.raises_test_error()))
 
     def test_fail_due_to_fail_of_side_effects_on_configuration(self):
         with self.assertRaises(test_misc.TestError):
