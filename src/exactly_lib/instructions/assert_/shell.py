@@ -7,10 +7,10 @@ from exactly_lib.instructions.multi_phase_instructions.shell import TheInstructi
 def setup(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(
         shell_common.instruction_parser(instruction_info_for(instruction_name)),
-        TheDescription(instruction_name))
+        TheDocumentation(instruction_name))
 
 
-class TheDescription(TheInstructionDocumentationBase):
+class TheDocumentation(TheInstructionDocumentationBase):
     def __init__(self, name: str):
         super().__init__(name)
 

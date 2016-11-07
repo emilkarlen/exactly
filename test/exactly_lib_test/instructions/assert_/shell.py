@@ -24,7 +24,7 @@ class TheConfiguration(AssertConfigurationBase, Configuration):
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         suite_for(TheConfiguration()),
-        suite_for_instruction_documentation(sut.TheDescription('instruction-name')),
+        suite_for_instruction_documentation(sut.TheDocumentation('instruction-name')),
     ])
 
 
