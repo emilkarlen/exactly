@@ -1,6 +1,7 @@
 from exactly_lib.common.instruction_documentation import SyntaxElementDescription, InvokationVariant
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
-from exactly_lib.help.concepts.configuration_parameters.timeout import TIMEOUT_CONFIGURATION_PARAMETER
+from exactly_lib.help.concepts.configuration_parameters.timeout import TIMEOUT_CONFIGURATION_PARAMETER, \
+    WHAT_THE_TIMEOUT_APPLIES_TO
 from exactly_lib.help.utils.phase_names import phase_name_dictionary
 from exactly_lib.instructions.utils.arg_parse.parse_utils import split_arguments_list_string
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
@@ -29,10 +30,10 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         })
 
     def single_line_description(self) -> str:
-        return self._format('Sets a timeout for the execution of the {phase[act]} phase')
+        return self._format('Sets a timeout for the execution of instructions and the {phase[act]} phase')
 
     def main_description_rest(self) -> list:
-        return self._paragraphs('Default: {default_value_str}')
+        return self._paragraphs(_MAIN_DESCRIPTION_REST)
 
     def invokation_variants(self) -> list:
         integer_arg = a.Single(a.Multiplicity.MANDATORY,
@@ -75,3 +76,10 @@ class _Instruction(ConfigurationPhaseInstruction):
     def main(self, configuration_builder: ConfigurationBuilder) -> sh.SuccessOrHardError:
         configuration_builder.set_timeout_in_seconds(self.timeout)
         return sh.new_sh_success()
+
+
+_MAIN_DESCRIPTION_REST = """\
+Default: {default_value_str}
+
+
+""" + WHAT_THE_TIMEOUT_APPLIES_TO
