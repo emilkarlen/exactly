@@ -169,7 +169,7 @@ class CmdAndArgsResolverForInterpret(CmdAndArgsResolverForExecutableFileBase):
         self.argument_list = argument_list
 
     def _arguments(self, home_and_sds: HomeAndSds) -> list:
-        return [str(self.file_to_interpret.file_path_pre_or_post_eds(home_and_sds))] + self.argument_list
+        return [str(self.file_to_interpret.file_path_pre_or_post_sds(home_and_sds))] + self.argument_list
 
 
 class CmdAndArgsResolverForSource(CmdAndArgsResolverForExecutableFileBase):

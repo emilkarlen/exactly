@@ -23,7 +23,7 @@ class FileRefCheck:
         return self.file_properties.apply(self.file_reference.file_path_post_eds(sds))
 
     def pre_or_post_eds_condition_result(self, home_and_sds: HomeAndSds) -> CheckResult:
-        return self.file_properties.apply(self.file_reference.file_path_pre_or_post_eds(home_and_sds))
+        return self.file_properties.apply(self.file_reference.file_path_pre_or_post_sds(home_and_sds))
 
 
 class FileRefCheckValidator(FileRefValidatorBase):
@@ -59,11 +59,11 @@ def post_eds_failure_message_or_none(file_ref_check: FileRefCheck,
     return None
 
 
-def pre_or_post_eds_failure_message_or_none(file_ref_check: FileRefCheck,
+def pre_or_post_sds_failure_message_or_none(file_ref_check: FileRefCheck,
                                             home_and_sds: HomeAndSds) -> str:
     validation_result = file_ref_check.pre_or_post_eds_condition_result(home_and_sds)
     if not validation_result.is_success:
-        file_path = file_ref_check.file_reference.file_path_pre_or_post_eds(home_and_sds)
+        file_path = file_ref_check.file_reference.file_path_pre_or_post_sds(home_and_sds)
         return render_failure(validation_result.cause,
                               file_path)
     return None
@@ -81,7 +81,7 @@ def pre_eds_validate(file_ref_check: FileRefCheck,
 
 def pre_or_post_eds_validate(file_ref_check: FileRefCheck,
                              home_and_sds: HomeAndSds) -> svh.SuccessOrValidationErrorOrHardError:
-    failure_message = pre_or_post_eds_failure_message_or_none(file_ref_check, home_and_sds)
+    failure_message = pre_or_post_sds_failure_message_or_none(file_ref_check, home_and_sds)
     if failure_message is not None:
         return svh.new_svh_validation_error(failure_message)
     return svh.new_svh_success()

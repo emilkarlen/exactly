@@ -28,21 +28,21 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorForFullExecutionBa
             phase_identifier.CONFIGURATION:
                 recording_instructions.new_configuration_instruction(phase_step.CONFIGURATION__MAIN),
             phase_identifier.SETUP:
-                recording_instructions.new_setup_instruction(phase_step.SETUP__VALIDATE_PRE_EDS,
+                recording_instructions.new_setup_instruction(phase_step.SETUP__VALIDATE_PRE_SDS,
                                                              phase_step.SETUP__MAIN,
                                                              phase_step.SETUP__VALIDATE_POST_SETUP),
             phase_identifier.ACT:
                 act_phase_instruction_with_source(),
             phase_identifier.BEFORE_ASSERT:
-                recording_instructions.new_before_assert_instruction(phase_step.BEFORE_ASSERT__VALIDATE_PRE_EDS,
+                recording_instructions.new_before_assert_instruction(phase_step.BEFORE_ASSERT__VALIDATE_PRE_SDS,
                                                                      phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
                                                                      phase_step.BEFORE_ASSERT__MAIN),
             phase_identifier.ASSERT:
-                recording_instructions.new_assert_instruction(phase_step.ASSERT__VALIDATE_PRE_EDS,
+                recording_instructions.new_assert_instruction(phase_step.ASSERT__VALIDATE_PRE_SDS,
                                                               phase_step.ASSERT__VALIDATE_POST_SETUP,
                                                               phase_step.ASSERT__MAIN),
             phase_identifier.CLEANUP:
-                recording_instructions.new_cleanup_instruction(phase_step.CLEANUP__VALIDATE_PRE_EDS,
+                recording_instructions.new_cleanup_instruction(phase_step.CLEANUP__VALIDATE_PRE_SDS,
                                                                phase_step.CLEANUP__MAIN)
         }
 

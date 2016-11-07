@@ -307,7 +307,7 @@ class _PartialExecutor:
     def __before_assert__validate_pre_sds(self) -> PartialResult:
         return self.__run_internal_instructions_phase_step(
             phase_step.BEFORE_ASSERT__VALIDATE_PRE_SDS,
-            phase_step_executors.BeforeAssertValidatePreEdsExecutor(self.__global_environment_pre_sds),
+            phase_step_executors.BeforeAssertValidatePreSdsExecutor(self.__global_environment_pre_sds),
             self.__test_case.before_assert_phase)
 
     def __assert__validate_pre_sds(self) -> PartialResult:

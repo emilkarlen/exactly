@@ -240,7 +240,7 @@ class _InstructionLogDirContainsOutFiles(va.ValueAssertion):
 class _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(
     spe_parts.ValidationAndSubProcessExecutionSetupParser):
     def __init__(self,
-                 validator: pre_or_post_validation.PreOrPostEdsValidator):
+                 validator: pre_or_post_validation.PreOrPostSdsValidator):
         self.validator = validator
 
     def apply(self, source: SingleInstructionParserSource) -> ValidationAndSubProcessExecutionSetup:
@@ -253,7 +253,7 @@ class _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(
 class _SetupParserForExecutingShellCommandFromInstructionArgumentOnCommandLine(
     spe_parts.ValidationAndSubProcessExecutionSetupParser):
     def __init__(self,
-                 validator: pre_or_post_validation.PreOrPostEdsValidator):
+                 validator: pre_or_post_validation.PreOrPostSdsValidator):
         self.validator = validator
 
     def apply(self, source: SingleInstructionParserSource) -> ValidationAndSubProcessExecutionSetup:
@@ -269,14 +269,14 @@ def _resolver_for_execute_py_on_command_line(python_source: str) -> spe.CmdAndAr
 SCRIPT_THAT_EXISTS_WITH_STATUS_0 = 'import sys; sys.exit(0)'
 
 
-class ConstantResultValidator(pre_or_post_validation.PreOrPostEdsValidator):
+class ConstantResultValidator(pre_or_post_validation.PreOrPostSdsValidator):
     def __init__(self, pre_sds=None,
                  post_setup=None):
         self.pre_sds = pre_sds
         self.post_setup = post_setup
 
-    def validate_pre_eds_if_applicable(self, home_dir_path: pathlib.Path) -> str:
+    def validate_pre_sds_if_applicable(self, home_dir_path: pathlib.Path) -> str:
         return self.pre_sds
 
-    def validate_post_eds_if_applicable(self, sds: SandboxDirectoryStructure) -> str:
+    def validate_post_sds_if_applicable(self, sds: SandboxDirectoryStructure) -> str:
         return self.post_setup

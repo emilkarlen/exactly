@@ -35,11 +35,11 @@ class Test(TestCaseBase):
                             svh.new_svh_hard_error('error in act/validate-pre-sds'))),
             Expectation(PartialResultStatus.HARD_ERROR,
                         ExpectedFailureForPhaseFailure.new_with_message(
-                            phase_step.ACT__VALIDATE_PRE_EDS,
+                            phase_step.ACT__VALIDATE_PRE_SDS,
                             'error in act/validate-pre-sds'),
                         [
-                            phase_step.SETUP__VALIDATE_PRE_EDS,
-                            phase_step.ACT__VALIDATE_PRE_EDS,
+                            phase_step.SETUP__VALIDATE_PRE_SDS,
+                            phase_step.ACT__VALIDATE_PRE_SDS,
                         ],
                         execution_directory_structure_should_exist=False))
 
@@ -51,11 +51,11 @@ class Test(TestCaseBase):
                             svh.new_svh_validation_error('error in act/validate-pre-sds'))),
             Expectation(PartialResultStatus.VALIDATE,
                         ExpectedFailureForPhaseFailure.new_with_message(
-                            phase_step.ACT__VALIDATE_PRE_EDS,
+                            phase_step.ACT__VALIDATE_PRE_SDS,
                             'error in act/validate-pre-sds'),
                         [
-                            phase_step.SETUP__VALIDATE_PRE_EDS,
-                            phase_step.ACT__VALIDATE_PRE_EDS,
+                            phase_step.SETUP__VALIDATE_PRE_SDS,
+                            phase_step.ACT__VALIDATE_PRE_SDS,
                         ],
                         execution_directory_structure_should_exist=False))
 
@@ -67,11 +67,11 @@ class Test(TestCaseBase):
                             test.ImplementationErrorTestException())),
             Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
                         ExpectedFailureForPhaseFailure.new_with_exception(
-                            phase_step.ACT__VALIDATE_PRE_EDS,
+                            phase_step.ACT__VALIDATE_PRE_SDS,
                             test.ImplementationErrorTestException),
                         [
-                            phase_step.SETUP__VALIDATE_PRE_EDS,
-                            phase_step.ACT__VALIDATE_PRE_EDS,
+                            phase_step.SETUP__VALIDATE_PRE_SDS,
+                            phase_step.ACT__VALIDATE_PRE_SDS,
                         ],
                         execution_directory_structure_should_exist=False))
 

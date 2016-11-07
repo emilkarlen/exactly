@@ -34,7 +34,7 @@ class TestParsesBase(unittest.TestCase):
         self.assertTrue(actual.exists_pre_eds)
         self.assertEqual(actual.file_path_pre_eds(home_and_sds.home_dir_path),
                          expected_path)
-        self.assertEqual(actual.file_path_pre_or_post_eds(home_and_sds),
+        self.assertEqual(actual.file_path_pre_or_post_sds(home_and_sds),
                          expected_path)
 
     def assert_is_file_that_does_not_exist_pre_eds(self,
@@ -44,7 +44,7 @@ class TestParsesBase(unittest.TestCase):
         self.assertFalse(actual.exists_pre_eds)
         self.assertEqual(actual.file_path_post_eds(home_and_sds.sds),
                          expected_path)
-        self.assertEqual(actual.file_path_pre_or_post_eds(home_and_sds),
+        self.assertEqual(actual.file_path_pre_or_post_sds(home_and_sds),
                          expected_path)
 
 

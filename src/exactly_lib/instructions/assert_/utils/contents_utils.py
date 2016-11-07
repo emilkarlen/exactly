@@ -12,9 +12,9 @@ from exactly_lib.instructions.utils.arg_parse.parse_here_doc_or_file_ref import 
 from exactly_lib.instructions.utils.file_properties import must_exist_as, FileType
 from exactly_lib.instructions.utils.file_ref import FileRef
 from exactly_lib.instructions.utils.file_ref_check import FileRefCheck, \
-    pre_or_post_eds_failure_message_or_none, FileRefCheckValidator
+    pre_or_post_sds_failure_message_or_none, FileRefCheckValidator
 from exactly_lib.instructions.utils.pre_or_post_validation import ConstantSuccessValidator, \
-    PreOrPostEdsSvhValidationErrorValidator
+    PreOrPostSdsSvhValidationErrorValidator
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException, SingleInstructionParserSource
 from exactly_lib.test_case.os_services import OsServices
@@ -72,12 +72,12 @@ class ActComparisonActualFileForFileRef(ComparisonActualFile):
         self.file_ref = file_ref
 
     def file_check_failure(self, environment: i.InstructionEnvironmentForPostSdsStep) -> str:
-        return pre_or_post_eds_failure_message_or_none(FileRefCheck(self.file_ref,
+        return pre_or_post_sds_failure_message_or_none(FileRefCheck(self.file_ref,
                                                                     must_exist_as(FileType.REGULAR)),
                                                        environment.home_and_sds)
 
     def file_path(self, environment: i.InstructionEnvironmentForPostSdsStep) -> pathlib.Path:
-        return self.file_ref.file_path_pre_or_post_eds(environment.home_and_sds)
+        return self.file_ref.file_path_pre_or_post_sds(environment.home_and_sds)
 
 
 class ActComparisonActualFileForStdFileBase(ComparisonActualFile):
@@ -106,14 +106,14 @@ class ContentCheckerInstructionBase(AssertPhaseInstruction):
 
     def validate_pre_sds(self,
                          environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
-        validator = PreOrPostEdsSvhValidationErrorValidator(self.validator_of_expected)
-        return validator.validate_pre_eds_if_applicable(environment.home_directory)
+        validator = PreOrPostSdsSvhValidationErrorValidator(self.validator_of_expected)
+        return validator.validate_pre_sds_if_applicable(environment.home_directory)
 
     def main(self,
              environment: i.InstructionEnvironmentForPostSdsStep,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
         if not self._expected_contents.is_here_document:
-            failure_message = self.validator_of_expected.validate_post_eds_if_applicable(environment.home_and_sds.sds)
+            failure_message = self.validator_of_expected.validate_post_sds_if_applicable(environment.home_and_sds.sds)
             if failure_message:
                 return pfh.new_pfh_fail(failure_message)
         expected_file_path = self._file_path_for_file_with_expected_contents(environment.home_and_sds)
@@ -144,7 +144,7 @@ class ContentCheckerInstructionBase(AssertPhaseInstruction):
                                             suffix='.txt',
                                             directory=str(home_and_sds.sds.tmp.internal_dir))
         else:
-            return self._expected_contents.file_reference.file_path_pre_or_post_eds(home_and_sds)
+            return self._expected_contents.file_reference.file_path_pre_or_post_sds(home_and_sds)
 
     def _file_ref_check_for_expected(self) -> FileRefCheck:
         return FileRefCheck(self._expected_contents.file_reference,
