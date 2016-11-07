@@ -11,14 +11,15 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
     InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import svh
-from exactly_lib_test.instructions.test_resources import sh_check
-from exactly_lib_test.instructions.test_resources import svh_check
+from exactly_lib_test.instructions.test_resources import sh_check__va as sh_check
+from exactly_lib_test.instructions.test_resources import svh_check__va as svh_check
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithEds
-from exactly_lib_test.instructions.test_resources.assertion_utils.side_effects import SideEffectsCheck
+from exactly_lib_test.instructions.test_resources.expectations import ExpectationBase
 from exactly_lib_test.instructions.test_resources.instruction_check_utils import \
-    InstructionExecutionToBeReplacedByVaBase
+    InstructionExecutionBase
 from exactly_lib_test.test_resources import file_structure
-from exactly_lib_test.test_resources.execution import sds_populator, utils, sds_contents_check
+from exactly_lib_test.test_resources.execution import sds_populator, utils
+from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 
 class Arrangement(ArrangementWithEds):
@@ -33,14 +34,16 @@ class Arrangement(ArrangementWithEds):
         self.previous_phase = previous_phase
 
 
-class Expectation:
+class Expectation(ExpectationBase):
     def __init__(self,
                  act_result: utils.ActResult = utils.ActResult(),
-                 validate_pre_eds_result: svh_check.Assertion = svh_check.is_success(),
-                 main_result: sh_check.Assertion = sh_check.IsSuccess(),
-                 main_side_effects_on_files: sds_contents_check.Assertion = sds_contents_check.AnythingGoes(),
-                 side_effects_check: SideEffectsCheck = SideEffectsCheck(),
-                 ):
+                 validate_pre_eds_result: va.ValueAssertion = svh_check.is_success(),
+                 main_result: va.ValueAssertion = sh_check.is_success(),
+                 main_side_effects_on_files: va.ValueAssertion = va.anything_goes(),
+                 side_effects_check: va.ValueAssertion = va.anything_goes()):
+        super().__init__(validate_pre_eds_result,
+                         main_side_effects_on_files,
+                         side_effects_check)
         self.act_result = act_result
         self.validate_pre_eds_result = validate_pre_eds_result
         self.main_result = main_result
@@ -68,12 +71,12 @@ def check(put: unittest.TestCase,
     Executor(put, arrangement, expectation).execute(parser, source)
 
 
-class Executor(InstructionExecutionToBeReplacedByVaBase):
+class Executor(InstructionExecutionBase):
     def __init__(self,
                  put: unittest.TestCase,
                  arrangement: Arrangement,
                  expectation: Expectation):
-        super().__init__(put, arrangement)
+        super().__init__(put, arrangement, expectation)
         self.arrangement = arrangement
         self.expectation = expectation
 

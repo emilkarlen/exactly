@@ -61,8 +61,7 @@ class Configuration(ConfigurationBase):
 def suite_for(configuration: Configuration) -> unittest.TestSuite:
     test_case_classes = [TestInstructionIsSuccessfulWhenExitStatusFromCommandIsZero,
                          TestInstructionIsErrorWhenExitStatusFromCommandIsNonZero,
-                         TestResultIsValidationErrorWhenPreSdsValidationFails,
-                         TestResultIsValidationErrorWhenPostSetupValidationFails]
+                         TestResultIsValidationErrorWhenPreSdsValidationFails]
     return unittest.TestSuite(
         [tcc(configuration) for tcc in test_case_classes])
 

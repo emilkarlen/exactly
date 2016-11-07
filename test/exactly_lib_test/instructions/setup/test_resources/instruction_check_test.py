@@ -34,7 +34,7 @@ class TestCases(instruction_check.TestCaseBase):
                     ParserThatGives(SUCCESSFUL_INSTRUCTION),
                     single_line_source(),
                     Arrangement(),
-                    Expectation(pre_validation_result=test_misc.SvhRaisesTestError())
+                Expectation(pre_validation_result=test_misc.raises_test_error())
             )
 
     def test_fail_due_to_unexpected_result_from_main(self):
@@ -43,7 +43,7 @@ class TestCases(instruction_check.TestCaseBase):
                     ParserThatGives(SUCCESSFUL_INSTRUCTION),
                     single_line_source(),
                     Arrangement(),
-                    Expectation(main_result=test_misc.ShRaisesTestError())
+                Expectation(main_result=test_misc.raises_test_error())
             )
 
     def test_fail_due_to_fail_of_side_effects_on_environment(self):
@@ -60,7 +60,7 @@ class TestCases(instruction_check.TestCaseBase):
             self._check(ParserThatGives(SUCCESSFUL_INSTRUCTION),
                         single_line_source(),
                         Arrangement(),
-                        Expectation(main_side_effects_on_files=test_misc.EdsContentsRaisesTestError()))
+                        Expectation(main_side_effects_on_files=test_misc.raises_test_error()))
 
     def test_fail_due_to_unexpected_result_from_post_validation(self):
         with self.assertRaises(test_misc.TestError):
@@ -68,7 +68,7 @@ class TestCases(instruction_check.TestCaseBase):
                     ParserThatGives(SUCCESSFUL_INSTRUCTION),
                     single_line_source(),
                     Arrangement(),
-                    Expectation(post_validation_result=test_misc.SvhRaisesTestError())
+                Expectation(post_validation_result=test_misc.raises_test_error())
             )
 
     def test_fail_due_to_side_effects_check(self):
@@ -76,7 +76,7 @@ class TestCases(instruction_check.TestCaseBase):
             self._check(ParserThatGives(SUCCESSFUL_INSTRUCTION),
                         single_line_source(),
                         Arrangement(),
-                        Expectation(side_effects_check=test_misc.SideEffectsCheckThatRaisesTestError())
+                        Expectation(side_effects_check=test_misc.raises_test_error())
                         )
 
     def test_that_cwd_for_main_and_post_validation_is_test_root(self):

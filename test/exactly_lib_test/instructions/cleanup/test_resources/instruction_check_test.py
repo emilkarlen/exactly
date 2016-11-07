@@ -28,7 +28,7 @@ class TestCases(sut.TestCaseBase):
                     test_misc.ParserThatGives(SUCCESSFUL_INSTRUCTION),
                     test_misc.single_line_source(),
                     sut.Arrangement(),
-                    sut.Expectation(main_result=test_misc.ShRaisesTestError()),
+                sut.Expectation(main_result=test_misc.RaisesTestError()),
             )
 
     def test_fail_due_to_unexpected_result_from_validate_pre_eds(self):
@@ -37,7 +37,7 @@ class TestCases(sut.TestCaseBase):
                     test_misc.ParserThatGives(SUCCESSFUL_INSTRUCTION),
                     test_misc.single_line_source(),
                     sut.Arrangement(),
-                    sut.Expectation(validate_pre_eds_result=test_misc.SvhRaisesTestError()),
+                sut.Expectation(validate_pre_eds_result=test_misc.RaisesTestError()),
             )
 
     def test_fail_due_to_fail_of_side_effects_on_files(self):
@@ -46,7 +46,7 @@ class TestCases(sut.TestCaseBase):
                     test_misc.ParserThatGives(SUCCESSFUL_INSTRUCTION),
                     test_misc.single_line_source(),
                     sut.Arrangement(),
-                    sut.Expectation(main_side_effects_on_files=test_misc.EdsContentsRaisesTestError()),
+                sut.Expectation(main_side_effects_on_files=test_misc.RaisesTestError()),
             )
 
     def test_that_cwd_for_main_and_post_validation_is_test_root(self):
@@ -61,7 +61,7 @@ class TestCases(sut.TestCaseBase):
             self._check(test_misc.ParserThatGives(SUCCESSFUL_INSTRUCTION),
                         test_misc.single_line_source(),
                         sut.Arrangement(),
-                        sut.Expectation(side_effects_check=test_misc.SideEffectsCheckThatRaisesTestError()),
+                        sut.Expectation(side_effects_check=test_misc.RaisesTestError()),
                         )
 
 
@@ -77,7 +77,7 @@ class InstructionThatRaisesTestErrorIfCwdIsIsNotTestRoot(CleanupPhaseInstruction
         return sh.new_sh_success()
 
 
-def suite():
+def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestCases))
     return ret_val

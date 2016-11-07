@@ -9,15 +9,15 @@ def status_is(expected_status: svh.SuccessOrValidationErrorOrHardErrorEnum) -> v
                             )
 
 
-def is_success():
+def is_success() -> va.ValueAssertion:
     return status_is(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS)
 
 
-def is_hard_error():
+def is_hard_error() -> va.ValueAssertion:
     return status_is(svh.SuccessOrValidationErrorOrHardErrorEnum.HARD_ERROR)
 
 
-def is_validation_error():
+def is_validation_error() -> va.ValueAssertion:
     return status_is(svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR)
 
 

@@ -7,7 +7,7 @@ from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib_test.instructions.configuration.test_resources import configuration_check as config_check
 from exactly_lib_test.instructions.configuration.test_resources.instruction_check import TestCaseBase, \
     Arrangement, Expectation
-from exactly_lib_test.instructions.test_resources import sh_check
+from exactly_lib_test.instructions.test_resources import sh_check__va as sh_check
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, empty_dir, Dir
 from exactly_lib_test.test_resources.parse import new_source2
@@ -51,14 +51,14 @@ class TestFailingExecution(TestCaseBaseForParser):
         self._run(
             new_source2('non-existing-path'),
             Arrangement(),
-            Expectation(main_result=sh_check.IsHardError()))
+            Expectation(main_result=sh_check.is_hard_error()))
 
     def test_hard_error_WHEN_path_exists_but_is_a_file(self):
         file_name = 'existing-plain-file'
         self._run(
             new_source2(file_name),
             Arrangement(home_dir_contents=DirContents([empty_file(file_name)])),
-            Expectation(main_result=sh_check.IsHardError())
+            Expectation(main_result=sh_check.is_hard_error())
         )
 
 

@@ -6,7 +6,7 @@ from exactly_lib_test.instructions.multi_phase_instructions.test_resources.run_i
     Configuration
 from exactly_lib_test.instructions.setup.test_resources.configuration import SetupConfigurationBase
 from exactly_lib_test.instructions.setup.test_resources.instruction_check import Expectation
-from exactly_lib_test.instructions.test_resources import sh_check
+from exactly_lib_test.instructions.test_resources import sh_check__va as sh_check
 
 
 class TheConfiguration(SetupConfigurationBase, Configuration):
@@ -14,7 +14,7 @@ class TheConfiguration(SetupConfigurationBase, Configuration):
         return sut.setup('instruction name')
 
     def expect_failure_because_specified_file_under_eds_is_missing(self):
-        return Expectation(main_result=sh_check.IsHardError())
+        return Expectation(main_result=sh_check.is_hard_error())
 
 
 def suite() -> unittest.TestSuite:

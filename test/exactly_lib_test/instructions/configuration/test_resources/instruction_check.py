@@ -11,9 +11,10 @@ from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruc
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib_test.execution.test_resources.act_source_executor import act_phase_handling_that_runs_constant_actions
 from exactly_lib_test.instructions.configuration.test_resources import configuration_check as config_check
-from exactly_lib_test.instructions.test_resources import sh_check
+from exactly_lib_test.instructions.test_resources import sh_check__va as sh_check
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementBase
 from exactly_lib_test.test_resources import file_structure
+from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 
 class Arrangement(ArrangementBase):
@@ -27,7 +28,7 @@ class Arrangement(ArrangementBase):
 
 class Expectation:
     def __init__(self,
-                 main_result: sh_check.Assertion = sh_check.IsSuccess(),
+                 main_result: va.ValueAssertion = sh_check.is_success(),
                  configuration: config_check.Assertion = config_check.AnythingGoes(),
                  ):
         self.main_result = main_result
