@@ -8,14 +8,14 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.util.textformat.test_resources import structure as struct_check
 
 
-def suite_for_description_instance(description: InstructionDocumentation) -> unittest.TestSuite:
-    return unittest.TestSuite(tcc(description) for tcc in [
+def suite_for_documentation_instance(documentation: InstructionDocumentation) -> unittest.TestSuite:
+    return unittest.TestSuite(tcc(documentation) for tcc in [
         TestIsDescriptionInstance
     ])
 
 
-def suite_for_instruction_documentation(description: InstructionDocumentation) -> unittest.TestSuite:
-    return unittest.TestSuite(tcc(description) for tcc in [
+def suite_for_instruction_documentation(documentation: InstructionDocumentation) -> unittest.TestSuite:
+    return unittest.TestSuite(tcc(documentation) for tcc in [
         TestInstructionName,
         TestSingleLineDescription,
         TestMainDescriptionRest,
