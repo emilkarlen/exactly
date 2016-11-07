@@ -42,6 +42,9 @@ class InstructionEnvironmentForPreSdsStep:
 
 
 class PhaseLoggingPaths:
+    """
+    Generator of unique logging directories for instructions in a given phase.
+    """
     line_number_format = '{:03d}'
 
     def __init__(self,

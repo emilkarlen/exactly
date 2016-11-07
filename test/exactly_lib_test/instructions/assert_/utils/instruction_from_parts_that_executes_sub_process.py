@@ -3,6 +3,7 @@ import unittest
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.instructions.assert_.utils import instruction_from_parts
 from exactly_lib.instructions.utils.instruction_parts import InstructionInfoForConstructingAnInstructionFromParts
+from exactly_lib.test_case import phase_identifier
 from exactly_lib_test.instructions.assert_.test_resources.configuration import AssertConfigurationBase
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources import \
@@ -13,6 +14,9 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 
 class ConfigurationForTheAssertPhase(AssertConfigurationBase, test_impl.Configuration):
+    def phase(self) -> phase_identifier.Phase:
+        return phase_identifier.ASSERT
+
     def instruction_setup(self) -> SingleInstructionSetup:
         raise ValueError('this method is not used by these tests')
 

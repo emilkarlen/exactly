@@ -172,9 +172,14 @@ def execute_and_read_stderr_if_non_zero_exitcode(execute_info: ExecuteInfo,
     source_info = execute_info.instruction_source_info
     error_message_header = 'Line %d: %s\n' % (source_info.line_number,
                                               source_info.instruction_name)
-    storage_dir = phase_logging_paths.for_line(source_info.line_number, source_info.instruction_name)
+    storage_dir = instruction_log_dir(phase_logging_paths, source_info)
     result = executor.apply(error_message_header, storage_dir, execute_info.command)
     return read_stderr_if_non_zero_exitcode(result)
+
+
+def instruction_log_dir(phase_logging_paths: PhaseLoggingPaths,
+                        source_info: InstructionSourceInfo) -> pathlib.Path:
+    return phase_logging_paths.for_line(source_info.line_number, source_info.instruction_name)
 
 
 def result_to_sh(result_and_stderr: ResultAndStderr) -> sh.SuccessOrHardError:
