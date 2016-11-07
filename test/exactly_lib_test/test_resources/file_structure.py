@@ -1,6 +1,6 @@
 import pathlib
 
-import exactly_lib_test.test_resources.python_program_execution
+import exactly_lib_test.test_resources.programs.python_program_execution
 from exactly_lib_test.test_resources.file_utils import write_file
 from exactly_lib_test.test_resources.files import executable_files
 
@@ -43,8 +43,9 @@ class _ExecutableFileWithPythonSourceCode(File):
     def write_to(self,
                  parent_dir_path: pathlib.Path):
         file_path = parent_dir_path / self.file_name
-        exactly_lib_test.test_resources.python_program_execution.write_executable_file_with_python_source(file_path,
-                                                                                                          self.contents)
+        exactly_lib_test.test_resources.programs.python_program_execution.write_executable_file_with_python_source(
+            file_path,
+            self.contents)
 
 
 def executable_file(file_name: str,

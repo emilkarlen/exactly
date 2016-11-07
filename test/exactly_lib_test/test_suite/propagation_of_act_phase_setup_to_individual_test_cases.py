@@ -10,7 +10,8 @@ from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_s
 from exactly_lib.test_suite.reporting import SubSuiteReporter
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.test_resources.file_structure import DirContents, File
-from exactly_lib_test.test_resources.python_program_execution import abs_path_to_interpreter_quoted_for_exactly, \
+from exactly_lib_test.test_resources.programs.python_program_execution import \
+    abs_path_to_interpreter_quoted_for_exactly, \
     abs_path_to_interpreter
 from exactly_lib_test.test_suite.test_resources.check_full_execution import Setup, check
 from exactly_lib_test.test_suite.test_resources.suite_reporting import ExecutionTracingRootSuiteReporter, \
