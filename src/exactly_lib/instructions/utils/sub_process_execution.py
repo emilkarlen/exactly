@@ -139,7 +139,7 @@ class ExecutorThatStoresResultInFilesInDir(Executor):
               cmd_and_args) -> Result:
 
         def _err_msg(exception: Exception) -> str:
-            return '%sError executing process: %s' % (error_message_header, str(exception))
+            return '%sError executing process:\n%s' % (error_message_header, str(exception))
 
         file_services.ensure_directory_exists_as_a_directory(storage_dir)
         with open(str(storage_dir / STDOUT_FILE_NAME), 'w') as f_stdout:
@@ -208,7 +208,7 @@ def instruction_log_dir(phase_logging_paths: PhaseLoggingPaths,
 def result_to_sh(result_and_stderr: ResultAndStderr) -> sh.SuccessOrHardError:
     result = result_and_stderr.result
     if not result.is_success:
-        return sh.new_sh_hard_error("execution failure")
+        return sh.new_sh_hard_error(result.error_message)
     if result.exit_code != 0:
         return sh.new_sh_hard_error(failure_message_for_nonzero_status(result_and_stderr))
     return sh.new_sh_success()
