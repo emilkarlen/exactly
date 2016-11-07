@@ -131,7 +131,7 @@ def execute(act_phase_handling: ActPhaseHandling,
             execution_directory_root_name_prefix: str,
             is_keep_execution_directory_root: bool) -> PartialResult:
     """
-    Takes care of construction of the Execution Directory Structure, including
+    Takes care of construction of the Sandbox directory structure, including
     the root directory, and executes a given Test Case in this directory.
 
     Preserves Current Working Directory.
