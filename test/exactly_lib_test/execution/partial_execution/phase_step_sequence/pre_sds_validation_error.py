@@ -16,7 +16,7 @@ def suite() -> unittest.TestSuite:
     return ret_val
 
 
-class ConfigForSetupValidatePreEds(validate_pre_sds_utils.Configuration):
+class ConfigForSetupValidatePreSds(validate_pre_sds_utils.Configuration):
     def __init__(self):
         super().__init__(PartialPhase.SETUP,
                          phase_step.SETUP__VALIDATE_PRE_SDS,
@@ -30,7 +30,7 @@ class ConfigForSetupValidatePreEds(validate_pre_sds_utils.Configuration):
         return test.setup_phase_instruction_that(validate_pre_sds=do_raise(exception))
 
 
-class ConfigForBeforeAssertValidatePreEds(validate_pre_sds_utils.Configuration):
+class ConfigForBeforeAssertValidatePreSds(validate_pre_sds_utils.Configuration):
     def __init__(self):
         super().__init__(PartialPhase.BEFORE_ASSERT,
                          phase_step.BEFORE_ASSERT__VALIDATE_PRE_SDS,
@@ -47,7 +47,7 @@ class ConfigForBeforeAssertValidatePreEds(validate_pre_sds_utils.Configuration):
         return test.before_assert_phase_instruction_that(validate_pre_sds=do_raise(exception))
 
 
-class ConfigForAssertValidatePreEds(validate_pre_sds_utils.Configuration):
+class ConfigForAssertValidatePreSds(validate_pre_sds_utils.Configuration):
     def __init__(self):
         super().__init__(PartialPhase.ASSERT,
                          phase_step.ASSERT__VALIDATE_PRE_SDS,
@@ -66,7 +66,7 @@ class ConfigForAssertValidatePreEds(validate_pre_sds_utils.Configuration):
         return test.assert_phase_instruction_that(validate_pre_sds=do_raise(exception))
 
 
-class ConfigForCleanupValidatePreEds(validate_pre_sds_utils.Configuration):
+class ConfigForCleanupValidatePreSds(validate_pre_sds_utils.Configuration):
     def __init__(self):
         super().__init__(PartialPhase.CLEANUP,
                          phase_step.CLEANUP__VALIDATE_PRE_SDS,
@@ -88,10 +88,10 @@ class ConfigForCleanupValidatePreEds(validate_pre_sds_utils.Configuration):
 
 
 def _instruction_validation_invocations() -> list:
-    return [ConfigForSetupValidatePreEds(),
-            ConfigForBeforeAssertValidatePreEds(),
-            ConfigForAssertValidatePreEds(),
-            ConfigForCleanupValidatePreEds(),
+    return [ConfigForSetupValidatePreSds(),
+            ConfigForBeforeAssertValidatePreSds(),
+            ConfigForAssertValidatePreSds(),
+            ConfigForCleanupValidatePreSds(),
             ]
 
 

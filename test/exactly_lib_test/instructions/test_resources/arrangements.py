@@ -30,7 +30,7 @@ class ArrangementBase:
         self.home_contents = home_contents
 
 
-class ArrangementWithEds(ArrangementBase):
+class ArrangementWithSds(ArrangementBase):
     def __init__(self,
                  home_contents: file_structure.DirContents = file_structure.DirContents([]),
                  sds_contents: sds_populator.SdsPopulator = sds_populator.empty(),
@@ -43,7 +43,7 @@ class ArrangementWithEds(ArrangementBase):
         self.process_execution_settings = process_execution_settings
 
 
-class ArrangementPostAct(ArrangementWithEds):
+class ArrangementPostAct(ArrangementWithSds):
     def __init__(self,
                  home_contents: file_structure.DirContents = file_structure.DirContents([]),
                  sds_contents: sds_populator.SdsPopulator = sds_populator.empty(),

@@ -23,7 +23,7 @@ class TestInstruction(InstructionWithFileRefsBase):
         return sh.new_sh_success()
 
 
-class TestValidationShouldBeInPreValidateIfFileDoesExistPreEds(unittest.TestCase):
+class TestValidationShouldBeInPreValidateIfFileDoesExistPreSds(unittest.TestCase):
     def test_successful_validation(self):
         instruction = TestInstruction((FileRefCheck(file_ref.rel_home('file.txt'),
                                                     FileCheckThatEvaluatesTo(True)),))
@@ -45,7 +45,7 @@ class TestValidationShouldBeInPreValidateIfFileDoesExistPreEds(unittest.TestCase
             self.assertTrue(post_validate.is_success)
 
 
-class TestValidationShouldBeInPostValidateIfFileDoesNotExistPreEds(unittest.TestCase):
+class TestValidationShouldBeInPostValidateIfFileDoesNotExistPreSds(unittest.TestCase):
     def test_successful_validation(self):
         instruction = TestInstruction((FileRefCheck(file_ref.rel_cwd('file.txt'),
                                                     FileCheckThatEvaluatesTo(True)),))
@@ -75,8 +75,8 @@ def _env_from(home_and_sds: HomeAndSds) -> InstructionEnvironmentForPostSdsStep:
 
 def suite():
     ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestValidationShouldBeInPreValidateIfFileDoesExistPreEds))
-    ret_val.addTest(unittest.makeSuite(TestValidationShouldBeInPostValidateIfFileDoesNotExistPreEds))
+    ret_val.addTest(unittest.makeSuite(TestValidationShouldBeInPreValidateIfFileDoesExistPreSds))
+    ret_val.addTest(unittest.makeSuite(TestValidationShouldBeInPostValidateIfFileDoesNotExistPreSds))
     return ret_val
 
 
