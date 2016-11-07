@@ -29,6 +29,9 @@ class ConfigurationForTheSetupPhase(SetupConfigurationBase, test_impl.Configurat
     def expectation_for_non_zero_exitcode(self) -> Expectation:
         return Expectation(main_result=sh_check.is_hard_error())
 
+    def expect_hard_error_in_main(self) -> Expectation:
+        return Expectation(main_result=sh_check.is_hard_error())
+
     def expect_failing_validation_post_setup(self,
                                              assertion_on_error_message: va.ValueAssertion = va.anything_goes()):
         return Expectation(post_validation_result=svh_check.is_validation_error(assertion_on_error_message))

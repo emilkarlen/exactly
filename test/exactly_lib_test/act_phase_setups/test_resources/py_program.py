@@ -41,7 +41,7 @@ def write_cwd_to_stdout() -> list:
     ]
 
 
-def program_that_sleeps_at_least(number_of_seconds: int) -> list:
+def program_that_sleeps_at_least_and_then_exists_with_zero_exit_status(number_of_seconds: int) -> list:
     return [
         'import time',
         'time.sleep({})'.format(number_of_seconds),

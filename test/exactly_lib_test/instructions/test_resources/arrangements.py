@@ -1,3 +1,4 @@
+from exactly_lib.instructions.utils.sub_process_execution import with_no_timeout
 from exactly_lib.test_case.os_services import OsServices, new_default
 from exactly_lib.test_case.phases import common as i
 from exactly_lib_test.test_resources import file_structure
@@ -34,10 +35,12 @@ class ArrangementWithEds(ArrangementBase):
                  home_contents: file_structure.DirContents = file_structure.DirContents([]),
                  eds_contents: sds_populator.SdsPopulator = sds_populator.empty(),
                  os_services: OsServices = new_default(),
+                 process_execution_settings=with_no_timeout(),
                  ):
         super().__init__(home_contents)
         self.eds_contents = eds_contents
         self.os_services = os_services
+        self.process_execution_settings = process_execution_settings
 
 
 class ArrangementPostAct(ArrangementWithEds):
@@ -45,7 +48,8 @@ class ArrangementPostAct(ArrangementWithEds):
                  home_contents: file_structure.DirContents = file_structure.DirContents([]),
                  eds_contents: sds_populator.SdsPopulator = sds_populator.empty(),
                  act_result_producer: ActResultProducer = ActResultProducer(),
-                 os_services: OsServices = new_default()
+                 os_services: OsServices = new_default(),
+                 process_execution_settings=with_no_timeout(),
                  ):
-        super().__init__(home_contents, eds_contents, os_services)
+        super().__init__(home_contents, eds_contents, os_services, process_execution_settings)
         self.act_result_producer = act_result_producer

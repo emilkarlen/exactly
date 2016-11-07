@@ -13,7 +13,9 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.test_case.phase_identifier import Phase
 from exactly_lib.test_case.phases.common import PhaseLoggingPaths
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib_test.act_phase_setups.test_resources.py_program import program_that_prints_and_exits_with_exit_code
+from exactly_lib.util.string import lines_content
+from exactly_lib_test.act_phase_setups.test_resources.py_program import program_that_prints_and_exits_with_exit_code, \
+    program_that_sleeps_at_least_and_then_exists_with_zero_exit_status
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.configuration import ConfigurationBase
 from exactly_lib_test.instructions.utils.sub_process_execution import assert_dir_contains_at_least_result_files
@@ -71,12 +73,16 @@ class Configuration(ConfigurationBase):
     def expectation_for_zero_exitcode(self) -> Expectation:
         raise NotImplementedError()
 
+    def expect_hard_error_in_main(self) -> Expectation:
+        raise NotImplementedError()
+
 
 def suite_for(configuration: Configuration) -> unittest.TestSuite:
     test_case_classes = [TestResultIsValidationErrorWhenPreSdsValidationFails,
                          TestResultIsValidationErrorWhenPostSetupValidationFails,
                          TestInstructionIsSuccessfulWhenExitStatusFromCommandIsZero,
                          TestInstructionIsErrorWhenExitStatusFromCommandIsNonZero,
+                         TestInstructionIsErrorWhenProcessTimesOut,
                          TestOutputIsStoredInFilesInInstructionLogDir,
                          TestWhenNonZeroExitCodeTheContentsOfStderrShouldBeIncludedInTheErrorMessage,
                          TestInstructionIsSuccessfulWhenExitStatusFromShellCommandIsZero,
@@ -154,6 +160,21 @@ class TestInstructionIsErrorWhenExitStatusFromCommandIsNonZero(TestCaseBase):
             execution_setup_parser,
             self.conf.empty_arrangement(),
             self.conf.expectation_for_non_zero_exitcode())
+
+
+class TestInstructionIsErrorWhenProcessTimesOut(TestCaseBase):
+    def runTest(self):
+        timeout_in_seconds = 1
+        script_that_sleeps = lines_content(program_that_sleeps_at_least_and_then_exists_with_zero_exit_status(4))
+
+        execution_setup_parser = _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(
+            pre_or_post_validation.ConstantSuccessValidator())
+        self.conf.run_sub_process_test(
+            self,
+            new_source2(script_that_sleeps),
+            execution_setup_parser,
+            self.conf.arrangement_with_timeout(timeout_in_seconds),
+            self.conf.expect_hard_error_in_main())
 
 
 class TestOutputIsStoredInFilesInInstructionLogDir(TestCaseBase):

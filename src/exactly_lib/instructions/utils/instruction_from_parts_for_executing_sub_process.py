@@ -2,6 +2,7 @@ from exactly_lib.instructions.utils import sub_process_execution as spe
 from exactly_lib.instructions.utils.instruction_parts import MainStepExecutor, InstructionParts, \
     InstructionInfoForConstructingAnInstructionFromParts
 from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostEdsValidator
+from exactly_lib.instructions.utils.sub_process_execution import ProcessExecutionSettings
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParserSource, SingleInstructionParser
 from exactly_lib.test_case.os_services import OsServices
@@ -51,7 +52,9 @@ class MainStepExecutorForSubProcess(MainStepExecutor):
         # But no time for this now!
         execute_info = spe.ExecuteInfo(self._source_info,
                                        self._setup.cmd_and_args_resolver.resolve(environment.home_and_sds))
-        executor = spe.ExecutorThatStoresResultInFilesInDir(self._setup.is_shell)
+        executor = spe.ExecutorThatStoresResultInFilesInDir(
+            self._setup.is_shell,
+            ProcessExecutionSettings(timeout_in_seconds=environment.timeout_in_seconds))
         return spe.execute_and_read_stderr_if_non_zero_exitcode(execute_info, executor, logging_paths)
 
     def apply_as_non_assertion(self,

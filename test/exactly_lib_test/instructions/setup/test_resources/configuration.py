@@ -1,5 +1,6 @@
 import unittest
 
+from exactly_lib.instructions.utils.sub_process_execution import ProcessExecutionSettings
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParserSource, SingleInstructionParser
 from exactly_lib.test_case.os_services import OsServices, new_default
@@ -36,6 +37,10 @@ class SetupConfigurationBase(ConfigurationBase):
                     os_services: OsServices = new_default()):
         return ic.arrangement(eds_contents_before_main=eds_contents_before_main,
                               os_services=os_services)
+
+    def arrangement_with_timeout(self, timeout_in_seconds: int):
+        return ic.arrangement(
+            process_execution_settings=ProcessExecutionSettings(timeout_in_seconds=timeout_in_seconds))
 
     def expect_success_and_side_effects_on_files(self,
                                                  main_side_effects_on_files: ValueAssertion):

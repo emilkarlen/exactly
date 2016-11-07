@@ -26,6 +26,9 @@ class ConfigurationForTheBeforeAssertPhase(BeforeAssertConfigurationBase, test_i
     def expectation_for_non_zero_exitcode(self) -> Expectation:
         return Expectation(main_result=sh_check.is_hard_error())
 
+    def expect_hard_error_in_main(self) -> Expectation:
+        return Expectation(main_result=sh_check.is_hard_error())
+
     def expectation_for_zero_exitcode(self) -> Expectation:
         return Expectation(main_result=sh_check.is_success())
 

@@ -101,6 +101,23 @@ class CmdAndArgsResolver:
         raise NotImplementedError()
 
 
+class ProcessExecutionSettings(tuple):
+    def __new__(cls,
+                timeout_in_seconds: int = None):
+        return tuple.__new__(cls, (timeout_in_seconds,))
+
+    @property
+    def timeout_in_seconds(self) -> int:
+        """
+        :return: None if no timeout
+        """
+        return self[0]
+
+
+def with_no_timeout() -> ProcessExecutionSettings:
+    return ProcessExecutionSettings()
+
+
 class Executor:
     def apply(self,
               instruction_source_info: InstructionSourceInfo,
@@ -111,8 +128,10 @@ class Executor:
 
 class ExecutorThatStoresResultInFilesInDir(Executor):
     def __init__(self,
-                 is_shell: bool):
+                 is_shell: bool,
+                 process_execution_settings: ProcessExecutionSettings):
         self.is_shell = is_shell
+        self.process_execution_settings = process_execution_settings
 
     def apply(self,
               error_message_header: str,
@@ -130,6 +149,7 @@ class ExecutorThatStoresResultInFilesInDir(Executor):
                                                 stdin=subprocess.DEVNULL,
                                                 stdout=f_stdout,
                                                 stderr=f_stderr,
+                                                timeout=self.process_execution_settings.timeout_in_seconds,
                                                 shell=self.is_shell)
                     write_new_text_file(storage_dir / EXIT_CODE_FILE_NAME,
                                         str(exit_code))
@@ -140,6 +160,9 @@ class ExecutorThatStoresResultInFilesInDir(Executor):
                     msg = _err_msg(ex)
                     return Result(msg, None, None)
                 except OSError as ex:
+                    msg = _err_msg(ex)
+                    return Result(msg, None, None)
+                except subprocess.TimeoutExpired as ex:
                     msg = _err_msg(ex)
                     return Result(msg, None, None)
 
@@ -184,7 +207,9 @@ def instruction_log_dir(phase_logging_paths: PhaseLoggingPaths,
 
 def result_to_sh(result_and_stderr: ResultAndStderr) -> sh.SuccessOrHardError:
     result = result_and_stderr.result
-    if result.is_success and result.exit_code != 0:
+    if not result.is_success:
+        return sh.new_sh_hard_error("execution failure")
+    if result.exit_code != 0:
         return sh.new_sh_hard_error(failure_message_for_nonzero_status(result_and_stderr))
     return sh.new_sh_success()
 
