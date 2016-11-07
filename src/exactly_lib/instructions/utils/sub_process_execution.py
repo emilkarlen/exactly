@@ -15,6 +15,23 @@ STDOUT_FILE_NAME = 'stdout'
 STDERR_FILE_NAME = 'stderr'
 
 
+class FileNames:
+    @property
+    def exit_code(self) -> str:
+        return EXIT_CODE_FILE_NAME
+
+    @property
+    def stdout(self) -> str:
+        return STDOUT_FILE_NAME
+
+    @property
+    def stderr(self) -> str:
+        return STDERR_FILE_NAME
+
+
+FILE_NAMES = FileNames()
+
+
 class Result(tuple):
     def __new__(cls,
                 error_message: str,
@@ -41,16 +58,8 @@ class Result(tuple):
         return self[2]
 
     @property
-    def exit_code_file_name(self) -> str:
-        return EXIT_CODE_FILE_NAME
-
-    @property
-    def stdout_file_name(self) -> str:
-        return STDOUT_FILE_NAME
-
-    @property
-    def stderr_file_name(self) -> str:
-        return STDERR_FILE_NAME
+    def file_names(self) -> FileNames:
+        return FILE_NAMES
 
 
 class ResultAndStderr:
@@ -138,7 +147,7 @@ class ExecutorThatStoresResultInFilesInDir(Executor):
 def read_stderr_if_non_zero_exitcode(result: Result) -> ResultAndStderr:
     stderr_contents = None
     if result.is_success and result.exit_code != 0:
-        stderr_contents = file_utils.contents_of(result.output_dir_path / result.stderr_file_name)
+        stderr_contents = file_utils.contents_of(result.output_dir_path / result.file_names.stderr)
     return ResultAndStderr(result, stderr_contents)
 
 
