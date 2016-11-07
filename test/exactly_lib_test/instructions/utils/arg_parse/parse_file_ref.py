@@ -27,11 +27,11 @@ def suite() -> unittest.TestSuite:
 
 
 class TestParsesBase(unittest.TestCase):
-    def assert_is_file_that_exists_pre_eds(self,
+    def assert_is_file_that_exists_pre_sds(self,
                                            expected_path: pathlib.Path,
                                            home_and_sds: HomeAndSds,
                                            actual: FileRef):
-        self.assertTrue(actual.exists_pre_eds)
+        self.assertTrue(actual.exists_pre_sds)
         self.assertEqual(actual.file_path_pre_eds(home_and_sds.home_dir_path),
                          expected_path)
         self.assertEqual(actual.file_path_pre_or_post_sds(home_and_sds),
@@ -41,7 +41,7 @@ class TestParsesBase(unittest.TestCase):
                                                    expected_path: pathlib.Path,
                                                    home_and_sds: HomeAndSds,
                                                    actual: FileRef):
-        self.assertFalse(actual.exists_pre_eds)
+        self.assertFalse(actual.exists_pre_sds)
         self.assertEqual(actual.file_path_post_eds(home_and_sds.sds),
                          expected_path)
         self.assertEqual(actual.file_path_pre_or_post_sds(home_and_sds),
@@ -81,7 +81,7 @@ class TestParsesCorrectValueFromListWithDefaultConfiguration(TestParsesBase):
         (file_reference, _) = sut.parse_file_ref__list([REL_HOME_OPTION, 'file.txt'])
         with home_and_sds_and_test_as_curr_dir() as home_and_sds:
             expected_path = home_and_sds.home_dir_path / 'file.txt'
-            self.assert_is_file_that_exists_pre_eds(expected_path,
+            self.assert_is_file_that_exists_pre_sds(expected_path,
                                                     home_and_sds,
                                                     file_reference)
 
@@ -107,7 +107,7 @@ class TestParsesCorrectValueFromListWithDefaultConfiguration(TestParsesBase):
         abs_path_str = str(abs_path)
         (file_reference, _) = sut.parse_file_ref__list([abs_path_str])
         with home_and_sds_and_test_as_curr_dir() as home_and_sds:
-            self.assert_is_file_that_exists_pre_eds(abs_path,
+            self.assert_is_file_that_exists_pre_sds(abs_path,
                                                     home_and_sds,
                                                     file_reference)
 
@@ -115,7 +115,7 @@ class TestParsesCorrectValueFromListWithDefaultConfiguration(TestParsesBase):
         (file_reference, _) = sut.parse_file_ref__list(['file-in-home-dir.txt'])
         with home_and_sds_and_test_as_curr_dir() as home_and_sds:
             expected_path = home_and_sds.home_dir_path / 'file-in-home-dir.txt'
-            self.assert_is_file_that_exists_pre_eds(expected_path,
+            self.assert_is_file_that_exists_pre_sds(expected_path,
                                                     home_and_sds,
                                                     file_reference)
 
@@ -194,7 +194,7 @@ class TestParsesCorrectValueFromTokenStreamWithDefaultConfiguration(TestParsesBa
         (file_reference, _) = sut.parse_file_ref(TokenStream('%s file.txt' % REL_HOME_OPTION))
         with home_and_sds_and_test_as_curr_dir() as home_and_sds:
             expected_path = home_and_sds.home_dir_path / 'file.txt'
-            self.assert_is_file_that_exists_pre_eds(expected_path,
+            self.assert_is_file_that_exists_pre_sds(expected_path,
                                                     home_and_sds,
                                                     file_reference)
 
@@ -220,7 +220,7 @@ class TestParsesCorrectValueFromTokenStreamWithDefaultConfiguration(TestParsesBa
         abs_path_str = str(abs_path)
         (file_reference, _) = sut.parse_file_ref(TokenStream(abs_path_str))
         with home_and_sds_and_test_as_curr_dir() as home_and_sds:
-            self.assert_is_file_that_exists_pre_eds(abs_path,
+            self.assert_is_file_that_exists_pre_sds(abs_path,
                                                     home_and_sds,
                                                     file_reference)
 
@@ -228,7 +228,7 @@ class TestParsesCorrectValueFromTokenStreamWithDefaultConfiguration(TestParsesBa
         (file_reference, _) = sut.parse_file_ref(TokenStream('file.txt'))
         with home_and_sds_and_test_as_curr_dir() as home_and_sds:
             expected_path = home_and_sds.home_dir_path / 'file.txt'
-            self.assert_is_file_that_exists_pre_eds(expected_path,
+            self.assert_is_file_that_exists_pre_sds(expected_path,
                                                     home_and_sds,
                                                     file_reference)
 
