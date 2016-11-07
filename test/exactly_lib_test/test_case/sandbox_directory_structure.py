@@ -5,7 +5,7 @@ from pathlib import Path
 from exactly_lib import program_info
 from exactly_lib.test_case import sandbox_directory_structure
 from exactly_lib.util.file_utils import resolved_path
-from exactly_lib_test.test_resources.file_checks import FileChecker
+from exactly_lib_test.test_resources.assertions.file_checks import FileChecker
 
 
 class TestConstructExecutionDirectoryStructure(unittest.TestCase):

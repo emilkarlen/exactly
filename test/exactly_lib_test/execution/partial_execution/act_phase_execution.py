@@ -20,7 +20,7 @@ from exactly_lib_test.execution.partial_execution.test_resources.arrange_and_exp
 from exactly_lib_test.execution.test_resources.execution_recording.act_program_executor import \
     ActSourceAndExecutorConstructorForConstantExecutor, ActSourceAndExecutorThatJustReturnsSuccess
 from exactly_lib_test.test_resources import file_structure as fs
-from exactly_lib_test.test_resources.file_checks import FileChecker
+from exactly_lib_test.test_resources.assertions.file_checks import FileChecker
 from exactly_lib_test.test_resources.file_structure_utils import tmp_dir, preserved_cwd
 from exactly_lib_test.test_resources.value_assertions import file_assertions as fa
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va

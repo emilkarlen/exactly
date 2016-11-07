@@ -2,7 +2,7 @@ import pathlib
 import unittest
 
 from exactly_lib_test.test_resources import file_structure
-from exactly_lib_test.test_resources.file_checks import FileChecker
+from exactly_lib_test.test_resources.assertions.file_checks import FileChecker
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 
