@@ -95,10 +95,12 @@ class SectionsConfiguration:
 
     def __init__(self,
                  parsers_for_named_sections: tuple,
-                 default_section_name: str = None):
+                 default_section_name: str = None,
+                 section_element_name_for_error_messages: str = 'section'):
         """
         :param parsers_for_named_sections: sequence of SectionConfiguration.
         """
+        self.section_element_name_for_error_messages = section_element_name_for_error_messages
         self._parsers_for_named_sections = parsers_for_named_sections
         section_names = []
         section2parser = {}
@@ -233,8 +235,10 @@ class _Impl:
                         self.switch_section_according_to_last_section_line_and_consume_section_lines()
                         self.read_rest_of_document_from_inside_section_or_at_eof()
                     else:
+                        msg = 'Instruction outside of {section}'.format(
+                            section=self.configuration.section_element_name_for_error_messages)
                         raise FileSourceError(SourceError(self._current_line,
-                                                          'Instruction outside of section'),
+                                                          msg),
                                               None)
         return self.build_document()
 
@@ -249,8 +253,11 @@ class _Impl:
             section_line = self._current_line
             section_name = self.extract_section_name_and_consume_line()
             if not self.has_section(section_name):
+                msg = 'There is no {section} named "{name}"'.format(
+                    section=self.configuration.section_element_name_for_error_messages,
+                    name=section_name)
                 raise FileSourceError(SourceError(section_line,
-                                                  'There is no section named "%s"' % section_name),
+                                                  msg),
                                       None)
             self.set_current_section(section_name)
 
