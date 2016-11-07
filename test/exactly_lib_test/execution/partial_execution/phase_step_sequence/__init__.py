@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib_test.execution.partial_execution.phase_step_sequence import \
     full_successful, \
-    pre_eds_validation_error, \
+    pre_sds_validation_error, \
     validate_post_setup, \
     other_scenarios, \
     act_phase_handling_failure
@@ -11,7 +11,7 @@ from exactly_lib_test.execution.partial_execution.phase_step_sequence import \
 def suite():
     ret_val = unittest.TestSuite()
     ret_val.addTest(full_successful.suite())
-    ret_val.addTest(pre_eds_validation_error.suite())
+    ret_val.addTest(pre_sds_validation_error.suite())
     ret_val.addTest(validate_post_setup.suite())
     ret_val.addTest(act_phase_handling_failure.suite())
     ret_val.addTest(other_scenarios.suite())
