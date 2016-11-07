@@ -9,12 +9,14 @@ from exactly_lib_test import instructions
 from exactly_lib_test import processing
 from exactly_lib_test import section_document
 from exactly_lib_test import test_case
+from exactly_lib_test import test_resources
 from exactly_lib_test import test_suite
 from exactly_lib_test import util
 
 
 def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
+    ret_val.addTest(test_resources.suite())
     ret_val.addTest(util.suite())
     ret_val.addTest(section_document.suite())
     ret_val.addTest(test_case.suite())
