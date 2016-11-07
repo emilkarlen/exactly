@@ -12,7 +12,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
     InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import svh
-from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithEds
+from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check, svh_check
 from exactly_lib_test.instructions.test_resources.expectations import ExpectationBase
 from exactly_lib_test.instructions.test_resources.instruction_check_utils import \
@@ -22,7 +22,7 @@ from exactly_lib_test.test_resources.execution import sds_populator, utils
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 
-class Arrangement(ArrangementWithEds):
+class Arrangement(ArrangementWithSds):
     def __init__(self,
                  home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
                  sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),

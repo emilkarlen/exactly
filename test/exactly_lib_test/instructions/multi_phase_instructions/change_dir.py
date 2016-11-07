@@ -111,11 +111,11 @@ def is_failure() -> ValueAssertion:
 
 
 class ChangeDirTo(sds_test.Action):
-    def __init__(self, eds2dir_fun):
-        self.eds2dir_fun = eds2dir_fun
+    def __init__(self, sds2dir_fun):
+        self.sds2dir_fun = sds2dir_fun
 
     def apply(self, sds: SandboxDirectoryStructure):
-        os.chdir(str(self.eds2dir_fun(sds)))
+        os.chdir(str(self.sds2dir_fun(sds)))
 
 
 class CwdIsActDir(sds_test.PostActionCheck):
@@ -136,11 +136,11 @@ class CwdIsSubDirOfActDir(sds_test.PostActionCheck):
 
 
 class CwdIs(sds_test.PostActionCheck):
-    def __init__(self, eds2dir_fun):
-        self.eds2dir_fun = eds2dir_fun
+    def __init__(self, sds2dir_fun):
+        self.sds2dir_fun = sds2dir_fun
 
     def apply(self, put: unittest.TestCase, sds: SandboxDirectoryStructure):
-        put.assertEqual(str(self.eds2dir_fun(sds)),
+        put.assertEqual(str(self.sds2dir_fun(sds)),
                         os.getcwd(),
                         'Current Working Directory')
 
