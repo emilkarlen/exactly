@@ -19,6 +19,7 @@ from exactly_lib_test.instructions.multi_phase_instructions.test_resources.confi
 from exactly_lib_test.instructions.utils.sub_process_execution import assert_dir_contains_at_least_result_files
 from exactly_lib_test.test_resources.parse import new_source2
 from exactly_lib_test.test_resources.process import SubProcessResult
+from exactly_lib_test.test_resources.programs import shell_commands
 from exactly_lib_test.test_resources.programs.python_program_execution import \
     non_shell_args_for_that_executes_source_on_command_line
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
@@ -78,6 +79,7 @@ def suite_for(configuration: Configuration) -> unittest.TestSuite:
                          TestInstructionIsErrorWhenExitStatusFromCommandIsNonZero,
                          TestOutputIsStoredInFilesInInstructionLogDir,
                          TestWhenNonZeroExitCodeTheContentsOfStderrShouldBeIncludedInTheErrorMessage,
+                         TestInstructionIsSuccessfulWhenExitStatusFromShellCommandIsZero,
                          ]
     return unittest.TestSuite(
         [tcc(configuration) for tcc in test_case_classes])
@@ -122,6 +124,19 @@ class TestInstructionIsSuccessfulWhenExitStatusFromCommandIsZero(TestCaseBase):
         self.conf.run_sub_process_test(
             self,
             new_source2(SCRIPT_THAT_EXISTS_WITH_STATUS_0),
+            execution_setup_parser,
+            self.conf.empty_arrangement(),
+            self.conf.expectation_for_zero_exitcode())
+
+
+class TestInstructionIsSuccessfulWhenExitStatusFromShellCommandIsZero(TestCaseBase):
+    def runTest(self):
+        execution_setup_parser = _SetupParserForExecutingShellCommandFromInstructionArgumentOnCommandLine(
+            pre_or_post_validation.ConstantSuccessValidator())
+        command_that_exits_with_code = shell_commands.command_that_exits_with_code(0)
+        self.conf.run_sub_process_test(
+            self,
+            new_source2(command_that_exits_with_code),
             execution_setup_parser,
             self.conf.empty_arrangement(),
             self.conf.expectation_for_zero_exitcode())
@@ -212,6 +227,18 @@ class _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(
                                                      _resolver_for_execute_py_on_command_line(
                                                          source.instruction_argument),
                                                      is_shell=False)
+
+
+class _SetupParserForExecutingShellCommandFromInstructionArgumentOnCommandLine(
+    spe_parts.ValidationAndSubProcessExecutionSetupParser):
+    def __init__(self,
+                 validator: pre_or_post_validation.PreOrPostEdsValidator):
+        self.validator = validator
+
+    def apply(self, source: SingleInstructionParserSource) -> ValidationAndSubProcessExecutionSetup:
+        return ValidationAndSubProcessExecutionSetup(self.validator,
+                                                     ConstantCmdAndArgsResolver(source.instruction_argument),
+                                                     is_shell=True)
 
 
 def _resolver_for_execute_py_on_command_line(python_source: str) -> spe.CmdAndArgsResolver:
