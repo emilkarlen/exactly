@@ -1,9 +1,10 @@
 import unittest
 
 from exactly_lib.test_case.phases.common import HomeAndSds
-from exactly_lib_test.test_resources.execution import sds_populator, sds_contents_check
+from exactly_lib_test.test_resources.execution import sds_populator
 from exactly_lib_test.test_resources.execution.utils import home_and_sds_and_test_as_curr_dir
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir_contents
+from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, anything_goes
 
 
@@ -24,7 +25,7 @@ class Check:
                  home_dir_contents_before: DirContents = empty_dir_contents(),
                  eds_contents_before: sds_populator.SdsPopulator = sds_populator.empty(),
                  expected_action_result: ValueAssertion = anything_goes(),
-                 expected_eds_contents_after: sds_contents_check.Assertion = sds_contents_check.AnythingGoes(),
+                 expected_eds_contents_after: va.ValueAssertion = va.anything_goes(),
                  pre_action_action: Action = Action(),
                  post_action_check: PostActionCheck = PostActionCheck()):
         self.home_dir_contents_before = home_dir_contents_before

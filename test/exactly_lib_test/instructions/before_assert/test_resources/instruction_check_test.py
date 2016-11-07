@@ -18,9 +18,9 @@ from exactly_lib_test.instructions.test_resources import test_of_test_framework_
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check, svh_check
 from exactly_lib_test.instructions.test_resources.test_of_test_framework_utils import single_line_source
-from exactly_lib_test.test_resources.execution.sds_contents_check__va import act_dir_contains_exactly
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
+from exactly_lib_test.test_resources.value_assertions.sds_contents_check import act_dir_contains_exactly
 from exactly_lib_test.test_resources.value_assertions.value_assertion_test import TestException
 
 
