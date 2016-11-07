@@ -14,7 +14,6 @@ from exactly_lib.test_case.phase_identifier import Phase
 from exactly_lib.test_case.phases.common import PhaseLoggingPaths
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib_test.act_phase_setups.test_resources.py_program import program_that_prints_and_exits_with_exit_code
-from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.configuration import ConfigurationBase
 from exactly_lib_test.instructions.utils.sub_process_execution import assert_dir_contains_at_least_result_files
@@ -36,12 +35,12 @@ class Configuration(ConfigurationBase):
                              arrangement,
                              expectation,
                              instruction_name: str = 'instruction-name'):
-        instruction_check.check(put,
-                                self._parser(instruction_name,
-                                             execution_setup_parser),
-                                source,
-                                arrangement,
-                                expectation)
+        self.run_test_with_parser(put,
+                                  self._parser(instruction_name,
+                                               execution_setup_parser),
+                                  source,
+                                  arrangement,
+                                  expectation)
 
     def phase(self) -> Phase:
         raise NotImplementedError()

@@ -33,7 +33,8 @@ def arrangement(home_dir_contents: file_structure.DirContents = file_structure.D
 
 
 class Expectation(ExpectationBase):
-    def __init__(self, validation_pre_eds: va.ValueAssertion = svh_check.is_success(),
+    def __init__(self,
+                 validation_pre_eds: va.ValueAssertion = svh_check.is_success(),
                  validation_post_setup: va.ValueAssertion = svh_check.is_success(),
                  main_result: va.ValueAssertion = sh_check.is_success(),
                  main_side_effects_on_files: va.ValueAssertion = va.anything_goes(),

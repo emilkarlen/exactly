@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionParserSource
+    SingleInstructionParserSource, SingleInstructionParser
 from exactly_lib.test_case.os_services import new_default, OsServices
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import arrangement, check, is_pass, \
     Expectation
@@ -13,12 +13,13 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Val
 
 
 class AssertConfigurationBase(ConfigurationBase):
-    def run_test(self,
-                 put: unittest.TestCase,
-                 source: SingleInstructionParserSource,
-                 arrangement,
-                 expectation):
-        check(put, self.parser(), source, arrangement, expectation)
+    def run_test_with_parser(self,
+                             put: unittest.TestCase,
+                             parser: SingleInstructionParser,
+                             source: SingleInstructionParserSource,
+                             arrangement,
+                             expectation):
+        check(put, parser, source, arrangement, expectation)
 
     def expect_success(self):
         return is_pass()
