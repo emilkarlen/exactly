@@ -317,10 +317,6 @@ class _Impl:
     def current_line_is_section_line(self) -> bool:
         return syntax.is_section_header_line(self._current_line.text)
 
-        # @property
-        # def configuration(self) -> SectionsConfiguration:
-        #     raise NotImplementedError()
-
     def skip_standard_comment_and_empty_lines(self):
         while not self.is_at_eof():
             if not self.current_line_is_comment_or_empty():
