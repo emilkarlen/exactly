@@ -1,8 +1,8 @@
 import pathlib
 import unittest
 
-from exactly_lib_test.test_resources import python_program_execution as py_exe
 from exactly_lib_test.test_resources.process import run_subprocess, SubProcessResult
+from exactly_lib_test.test_resources.programs import python_program_execution as py_exe
 
 SRC_DIR_NAME = 'src'
 MAIN_PROGRAM_FILE_NAME = 'default-main-program-runner.py'

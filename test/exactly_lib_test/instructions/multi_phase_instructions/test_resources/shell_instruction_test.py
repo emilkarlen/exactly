@@ -6,9 +6,9 @@ from exactly_lib_test.instructions.assert_.test_resources.instruction_check impo
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.configuration import ConfigurationBase, \
     suite_for_cases
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_description_instance
-from exactly_lib_test.test_resources import python_program_execution as py_exe
 from exactly_lib_test.test_resources.file_utils import tmp_file_containing
 from exactly_lib_test.test_resources.parse import new_source2
+from exactly_lib_test.test_resources.programs import python_program_execution as py_exe
 
 
 class Configuration(ConfigurationBase):

@@ -10,10 +10,10 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.test_case.phases.common import HomeAndSds
 from exactly_lib_test.instructions.test_resources import pre_or_post_eds_validator as validator_util
 from exactly_lib_test.instructions.test_resources.executable_file_test_utils import Configuration, suite_for
-from exactly_lib_test.test_resources import python_program_execution as py_exe
 from exactly_lib_test.test_resources.execution import sds_populator
 from exactly_lib_test.test_resources.execution.utils import home_and_sds_and_test_as_curr_dir
 from exactly_lib_test.test_resources.file_structure import DirContents, File
+from exactly_lib_test.test_resources.programs import python_program_execution as py_exe
 
 
 class TestParseValidSyntaxWithoutArguments(unittest.TestCase):

@@ -19,7 +19,7 @@ from exactly_lib_test.instructions.multi_phase_instructions.test_resources.confi
 from exactly_lib_test.instructions.utils.sub_process_execution import assert_dir_contains_at_least_result_files
 from exactly_lib_test.test_resources.parse import new_source2
 from exactly_lib_test.test_resources.process import SubProcessResult
-from exactly_lib_test.test_resources.python_program_execution import \
+from exactly_lib_test.test_resources.programs.python_program_execution import \
     non_shell_args_for_that_executes_source_on_command_line
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
