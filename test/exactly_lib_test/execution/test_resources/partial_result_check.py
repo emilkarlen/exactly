@@ -23,7 +23,7 @@ class ExpectedPartialResult:
                                   'Status')
         unittest_case.assertEqual(self.__sandbox_directory_structure,
                                   actual_result.sandbox_directory_structure,
-                                  'Execution Directory Structure')
+                                  'Sandbox directory structure')
         self.__expected_instruction_failure.assertions(unittest_case,
                                                        actual_result.failure_info)
 

@@ -119,10 +119,10 @@ class _TestCaseThatRecordsExecution(FullExecutionTestCaseBase):
             self.utc.assertIsNotNone(self.sds)
             self.utc.assertTrue(
                 self.sds.root_dir.is_dir(),
-                'Execution Directory Structure root is expected to be a directory')
+                'Sandbox directory structure root is expected to be a directory')
         else:
             self.utc.assertIsNone(self.sds,
-                                  'Execution Directory Structure is expected to not be created')
+                                  'Sandbox directory structure is expected to not be created')
 
 
 class TestCaseBase(unittest.TestCase):

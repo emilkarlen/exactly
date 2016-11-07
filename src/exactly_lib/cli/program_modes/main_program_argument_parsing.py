@@ -64,7 +64,7 @@ def _new_argument_parser(commands: dict) -> argparse.ArgumentParser:
                          default=False,
                          action="store_true",
                          help="""\
-                        Executes a test case as normal, but Execution Directory Structure is preserved,
+                        Executes a test case as normal, but Sandbox directory structure is preserved,
                         and it's root directory is the only output on stdout.""")
     ret_val.add_argument(long_option_syntax(opt.OPTION_FOR_EXECUTING_ACT_PHASE__LONG),
                          default=False,
