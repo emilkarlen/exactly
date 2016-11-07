@@ -27,7 +27,7 @@ class AssertPhaseInstructionFromValidatorAndExecutor(AssertPhaseInstruction):
              environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
         return self.setup.executor.apply_as_assertion(environment,
-                                                      self.logging_paths(environment.sds),
+                                                      environment.phase_logging,
                                                       os_services)
 
 

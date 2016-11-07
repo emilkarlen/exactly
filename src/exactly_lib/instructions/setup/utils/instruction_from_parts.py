@@ -28,7 +28,7 @@ class SetupPhaseInstructionFromValidatorAndExecutor(SetupPhaseInstruction):
              os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
         return self.setup.executor.apply_as_non_assertion(environment,
-                                                          self.logging_paths(environment.sds),
+                                                          environment.phase_logging,
                                                           os_services)
 
 

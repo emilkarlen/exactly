@@ -29,7 +29,7 @@ class CleanupPhaseInstructionFromValidatorAndExecutor(CleanupPhaseInstruction):
         if validation_result.is_hard_error:
             return validation_result
         return self.setup.executor.apply_as_non_assertion(environment,
-                                                          self.logging_paths(environment.sds),
+                                                          environment.phase_logging,
                                                           os_services)
 
     def _validate_from_main(

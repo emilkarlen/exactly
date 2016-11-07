@@ -27,7 +27,7 @@ class BeforeAssertPhaseInstructionFromValidatorAndExecutor(BeforeAssertPhaseInst
              environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices) -> sh.SuccessOrHardError:
         return self.setup.executor.apply_as_non_assertion(environment,
-                                                          self.logging_paths(environment.sds),
+                                                          environment.phase_logging,
                                                           os_services)
 
 
