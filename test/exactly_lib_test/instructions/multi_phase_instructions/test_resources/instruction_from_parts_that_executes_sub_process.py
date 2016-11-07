@@ -58,7 +58,7 @@ class Configuration(ConfigurationBase):
 
 def suite_for(configuration: Configuration) -> unittest.TestSuite:
     test_case_classes = [TestInstructionIsSuccessfulWhenExitStatusFromCommandIsZero,
-                         TestInstructionIsHardErrorWhenExitStatusFromCommandIsNonZero]
+                         TestInstructionIsErrorWhenExitStatusFromCommandIsNonZero]
     return unittest.TestSuite(
         [tcc(configuration) for tcc in test_case_classes])
 
@@ -83,15 +83,15 @@ class TestInstructionIsSuccessfulWhenExitStatusFromCommandIsZero(TestCaseBase):
             self.conf.expectation_for_zero_exitcode())
 
 
-class TestInstructionIsHardErrorWhenExitStatusFromCommandIsNonZero(TestCaseBase):
+class TestInstructionIsErrorWhenExitStatusFromCommandIsNonZero(TestCaseBase):
     def runTest(self):
-        script_that_exists_with_status_0 = 'import sys; sys.exit(1)'
+        script_that_exists_with_non_zero_status = 'import sys; sys.exit(1)'
 
         execution_setup_parser = _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(
             pre_or_post_validation.ConstantSuccessValidator())
         self.conf.run_sub_process_test(
             self,
-            new_source2(script_that_exists_with_status_0),
+            new_source2(script_that_exists_with_non_zero_status),
             execution_setup_parser,
             self.conf.empty_arrangement(),
             self.conf.expectation_for_non_zero_exitcode())
