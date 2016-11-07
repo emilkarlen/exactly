@@ -7,9 +7,10 @@ from exactly_lib_test.instructions.setup.test_resources.instruction_check import
     Expectation
 from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check, svh_check
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
-from exactly_lib_test.test_resources.execution import sds_populator, sds_contents_check__va as sds_contents_check
+from exactly_lib_test.test_resources.execution import sds_populator
 from exactly_lib_test.test_resources.file_structure import DirContents, File, Dir, empty_file, empty_dir
 from exactly_lib_test.test_resources.parse import new_source2
+from exactly_lib_test.test_resources.value_assertions import sds_contents_check as sds_contents_check
 
 
 class TestParse(unittest.TestCase):

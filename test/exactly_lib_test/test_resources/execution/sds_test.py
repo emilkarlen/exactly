@@ -2,10 +2,10 @@ import os
 import unittest
 
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib_test.test_resources.execution import sds_populator, sds_contents_check
+from exactly_lib_test.test_resources.execution import sds_populator
 from exactly_lib_test.test_resources.execution.utils import sandbox_directory_structure
 from exactly_lib_test.test_resources.file_checks import FileChecker
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, anything_goes
+from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 
 class PostActionCheck:
@@ -23,8 +23,8 @@ class Action:
 class Check:
     def __init__(self,
                  eds_contents_before: sds_populator.SdsPopulator = sds_populator.empty(),
-                 expected_action_result: ValueAssertion = anything_goes(),
-                 expected_eds_contents_after: sds_contents_check.Assertion = sds_contents_check.AnythingGoes(),
+                 expected_action_result: va.ValueAssertion = va.anything_goes(),
+                 expected_eds_contents_after: va.ValueAssertion = va.anything_goes(),
                  pre_action_action: Action = Action(),
                  post_action_check: PostActionCheck = PostActionCheck()):
         self.eds_contents_before = eds_contents_before

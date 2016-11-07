@@ -138,19 +138,19 @@ class TestExecute(unittest.TestCase):
 def _exit_code_result_file_contains(expected_contents: str) -> va.ValueAssertion:
     return va.sub_component('file for exit code',
                             lambda sds: sds.result.exitcode_file,
-                            fa.PathIsFileWithContents(expected_contents))
+                            fa.path_is_file_with_contents(expected_contents))
 
 
 def _stdout_result_file_contains(expected_contents: str) -> va.ValueAssertion:
     return va.sub_component('file for stdout',
                             lambda sds: sds.result.stdout_file,
-                            fa.PathIsFileWithContents(expected_contents))
+                            fa.path_is_file_with_contents(expected_contents))
 
 
 def _stderr_result_file_contains(expected_contents: str) -> va.ValueAssertion:
     return va.sub_component('file for stderr',
                             lambda sds: sds.result.stderr_file,
-                            fa.PathIsFileWithContents(expected_contents))
+                            fa.path_is_file_with_contents(expected_contents))
 
 
 def _check_contents_of_stdin_for_setup_settings(put: unittest.TestCase,

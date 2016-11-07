@@ -6,6 +6,27 @@ from exactly_lib_test.test_resources.file_checks import FileChecker
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 
+def path_is_file_with_contents(expected_contents: str) -> va.ValueAssertion:
+    """
+    Assumes that the actual value is a pathlib.Path
+    """
+    return _PathIsFileWithContents(expected_contents)
+
+
+def dir_contains_exactly(expected_contents: file_structure.DirContents) -> va.ValueAssertion:
+    """
+    Assumes that the actual value is a pathlib.Path
+    """
+    return _DirContainsExactly(expected_contents)
+
+
+def dir_contains_at_least(expected_contents: file_structure.DirContents) -> va.ValueAssertion:
+    """
+    Assumes that the actual value is a pathlib.Path
+    """
+    return _DirContainsAtLeast(expected_contents)
+
+
 class PathAssertionBase(va.ValueAssertion):
     def apply(self,
               put: unittest.TestCase,
@@ -28,7 +49,7 @@ class PathAssertionBase(va.ValueAssertion):
         return FileChecker(put, header)
 
 
-class PathIsFileWithContents(PathAssertionBase):
+class _PathIsFileWithContents(PathAssertionBase):
     def __init__(self, expected_contents: str):
         self.expected_contents = expected_contents
 
@@ -41,7 +62,7 @@ class PathIsFileWithContents(PathAssertionBase):
         file_checker.assert_file_contents(value, self.expected_contents)
 
 
-class DirContainsExactly__Va(PathAssertionBase):
+class _DirContainsExactly(PathAssertionBase):
     def __init__(self,
                  expected_contents: file_structure.DirContents):
         self.expected_contents = expected_contents
@@ -55,7 +76,7 @@ class DirContainsExactly__Va(PathAssertionBase):
                                                     self.expected_contents)
 
 
-class DirContainsAtLeast__Va(PathAssertionBase):
+class _DirContainsAtLeast(PathAssertionBase):
     def __init__(self,
                  expected_contents: file_structure.DirContents):
         self.expected_contents = expected_contents

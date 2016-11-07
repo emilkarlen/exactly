@@ -2,10 +2,10 @@ import unittest
 
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.configuration import ConfigurationBase, \
     suite_for_cases
-from exactly_lib_test.test_resources.execution.sds_contents_check__va import act_dir_contains_exactly
 from exactly_lib_test.test_resources.execution.sds_populator import act_dir_contents
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, Dir, empty_file
 from exactly_lib_test.test_resources.parse import new_source2
+from exactly_lib_test.test_resources.value_assertions.sds_contents_check import act_dir_contains_exactly
 
 
 class Configuration(ConfigurationBase):

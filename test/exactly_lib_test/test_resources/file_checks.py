@@ -2,7 +2,6 @@ import pathlib
 import unittest
 
 from exactly_lib_test.test_resources import assert_utils, file_structure
-from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 
 class FileChecker:
@@ -89,97 +88,3 @@ class FileChecker:
                                     dir_path: pathlib.Path,
                                     sym_link: file_structure.Link):
         raise NotImplementedError()
-
-
-class Assertion:
-    def apply(self,
-              put: unittest.TestCase,
-              dir_path: pathlib.Path):
-        raise NotImplementedError()
-
-
-class AnythingGoes(Assertion):
-    def apply(self,
-              put: unittest.TestCase,
-              dir_path: pathlib.Path):
-        pass
-
-
-class UnconditionalFail(Assertion):
-    def apply(self,
-              put: unittest.TestCase,
-              dir_path: pathlib.Path):
-        put.fail('Unconditional fail')
-
-
-class DirContainsExactly(Assertion):
-    def __init__(self,
-                 expected_contents: file_structure.DirContents):
-        self.expected_contents = expected_contents
-
-    def apply(self,
-              put: unittest.TestCase,
-              dir_path: pathlib.Path):
-        return _DirContainsExactlyVa(self.expected_contents).apply(put, dir_path)
-
-
-class _DirContainsExactlyVa(va.ValueAssertion):
-    def __init__(self,
-                 expected_contents: file_structure.DirContents):
-        self.expected_contents = expected_contents
-
-    def apply(self,
-              put: unittest.TestCase,
-              dir_path: pathlib.Path,
-              message_builder: va.MessageBuilder = va.MessageBuilder()):
-        checker = FileChecker(put,
-                              message_header='Contents of {}'.format(dir_path))
-        checker.assert_dir_contents_matches_exactly(dir_path,
-                                                    self.expected_contents)
-
-
-class DirContainsAtLeast(Assertion):
-    def __init__(self,
-                 expected_contents: file_structure.DirContents):
-        self.expected_contents = expected_contents
-
-    def apply(self,
-              put: unittest.TestCase,
-              dir_path: pathlib.Path):
-        checker = FileChecker(put,
-                              message_header='Contents of {}'.format(dir_path))
-        checker.assert_dir_contains_at_least(dir_path,
-                                             self.expected_contents.file_system_element_contents)
-
-
-class _DirContainsAtLeastVa(va.ValueAssertion):
-    def __init__(self,
-                 expected_contents: file_structure.DirContents):
-        self.expected_contents = expected_contents
-
-    def apply(self,
-              put: unittest.TestCase,
-              dir_path: pathlib.Path,
-              message_builder: va.MessageBuilder = va.MessageBuilder()):
-        checker = FileChecker(put,
-                              message_header='Contents of {}'.format(dir_path))
-        checker.assert_dir_contains_at_least(dir_path,
-                                             self.expected_contents.file_system_element_contents)
-
-
-def dir_contains_exactly(expected_contents: file_structure.DirContents) -> Assertion:
-    return DirContainsExactly(expected_contents)
-
-
-def dir_contains_exactly__va(expected_contents: file_structure.DirContents) -> va.ValueAssertion:
-    """
-    Assumes that the actual value is a pathlib.Path
-    """
-    return _DirContainsExactlyVa(expected_contents)
-
-
-def dir_contains_at_least__va(expected_contents: file_structure.DirContents) -> va.ValueAssertion:
-    """
-    Assumes that the actual value is a pathlib.Path
-    """
-    return _DirContainsAtLeastVa(expected_contents)
