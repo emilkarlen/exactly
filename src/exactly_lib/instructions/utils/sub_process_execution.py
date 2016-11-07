@@ -6,7 +6,6 @@ from exactly_lib.instructions.utils import file_services
 from exactly_lib.test_case.phases.common import PhaseLoggingPaths, HomeAndSds
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import sh
-from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util import file_utils
 from exactly_lib.util.file_utils import write_new_text_file
 
@@ -118,15 +117,7 @@ def with_no_timeout() -> ProcessExecutionSettings:
     return ProcessExecutionSettings()
 
 
-class Executor:
-    def apply(self,
-              instruction_source_info: InstructionSourceInfo,
-              sds: SandboxDirectoryStructure,
-              cmd_and_args) -> Result:
-        raise NotImplementedError()
-
-
-class ExecutorThatStoresResultInFilesInDir(Executor):
+class ExecutorThatStoresResultInFilesInDir:
     def __init__(self,
                  is_shell: bool,
                  process_execution_settings: ProcessExecutionSettings):
