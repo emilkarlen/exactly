@@ -2,8 +2,8 @@ from exactly_lib.default.program_modes.test_case.default_instruction_names impor
 from exactly_lib.help.concepts.contents_structure import ConfigurationParameterDocumentation, Name
 from exactly_lib.help.cross_reference_id import TestCasePhaseInstructionCrossReference
 from exactly_lib.help.utils.phase_names import phase_name_dictionary, CONFIGURATION_PHASE_NAME
+from exactly_lib.help.utils.textformat_parse import TextParser
 from exactly_lib.util.description import Description, DescriptionWithSubSections, from_simple_description
-from exactly_lib.util.textformat.structure.structures import text
 
 
 class _TimeoutConfigurationParameter(ConfigurationParameterDocumentation):
@@ -11,9 +11,12 @@ class _TimeoutConfigurationParameter(ConfigurationParameterDocumentation):
         super().__init__(Name('timeout', 'timeouts'))
 
     def purpose(self) -> DescriptionWithSubSections:
+        parse = TextParser({
+            'phase': phase_name_dictionary(),
+        })
         return from_simple_description(
-            Description(text(_SINGLE_LINE_DESCRIPTION.format(phase=phase_name_dictionary())),
-                        []))
+            Description(parse.text(_SINGLE_LINE_DESCRIPTION),
+                        parse.fnap(WHAT_THE_TIMEOUT_APPLIES_TO)))
 
     def default_value_str(self) -> str:
         return 'No timeout.'
@@ -28,4 +31,9 @@ class _TimeoutConfigurationParameter(ConfigurationParameterDocumentation):
 TIMEOUT_CONFIGURATION_PARAMETER = _TimeoutConfigurationParameter()
 
 _SINGLE_LINE_DESCRIPTION = """\
-Timeout of the {phase[act]} phase, in seconds."""
+Timeout of instructions and the {phase[act]} phase, in seconds."""
+
+WHAT_THE_TIMEOUT_APPLIES_TO = """\
+The timeout is per instruction, and for the {phase[act]} phase.
+It does not apply to the whole test case.
+"""
