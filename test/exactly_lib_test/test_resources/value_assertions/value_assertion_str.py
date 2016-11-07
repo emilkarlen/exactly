@@ -25,6 +25,13 @@ def begins_with(expected: str) -> va.ValueAssertion:
     return _BeginsWith(expected)
 
 
+def contains(expected: str) -> va.ValueAssertion:
+    """
+    :rtype: An Assertion on a str.
+    """
+    return _Contains(expected)
+
+
 class _BeginsWith(va.ValueAssertion):
     def __init__(self, initial: str):
         self.initial = initial
@@ -39,6 +46,18 @@ class _BeginsWith(va.ValueAssertion):
                         'Initial characters of string.')
 
 
+class _Contains(va.ValueAssertion):
+    def __init__(self, part: str):
+        self.part = part
+
+    def apply(self,
+              put: unittest.TestCase,
+              value: str,
+              message_builder: va.MessageBuilder = va.MessageBuilder()):
+        put.assertTrue(value.find(self.part) != -1,
+                       'contains string')
+
+
 class _IsNotOnlySpace(va.ValueAssertion):
     _NON_SPACE_RE = re.compile('\\S')
 
@@ -50,5 +69,5 @@ class _IsNotOnlySpace(va.ValueAssertion):
         if match is None:
             put.fail('No non-space character found.')
 
-_IS_NOT_ONLY_SPACE = _IsNotOnlySpace()
 
+_IS_NOT_ONLY_SPACE = _IsNotOnlySpace()

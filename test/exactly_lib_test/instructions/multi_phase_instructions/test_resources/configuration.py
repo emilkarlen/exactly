@@ -8,7 +8,7 @@ from exactly_lib.test_case.os_services import new_default, OsServices
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementBase
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_description_instance
 from exactly_lib_test.test_resources.execution import sds_populator
-from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
+from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 
 class ConfigurationBase:
@@ -37,7 +37,7 @@ class ConfigurationBase:
         return self.arrangement(eds_contents_before_main=sds_populator.empty())
 
     def expect_success_and_side_effects_on_files(self,
-                                                 main_side_effects_on_files: ValueAssertion):
+                                                 main_side_effects_on_files: va.ValueAssertion):
         """
         :param main_side_effects_on_files: An assertion on the EDS
         """
@@ -49,7 +49,8 @@ class ConfigurationBase:
     def expect_failure_of_main(self):
         raise NotImplementedError()
 
-    def expect_failing_validation_pre_eds(self):
+    def expect_failing_validation_pre_eds(self,
+                                          assertion_on_error_message: va.ValueAssertion = va.anything_goes()):
         raise NotImplementedError()
 
 

@@ -8,6 +8,8 @@ from exactly_lib_test.instructions.assert_.test_resources.instruction_check impo
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources import \
     instruction_from_parts_that_executes_sub_process as test_impl
 from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check
+from exactly_lib_test.instructions.test_resources.assertion_utils import svh_check
+from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 
 class ConfigurationForTheAssertPhase(AssertConfigurationBase, test_impl.Configuration):
@@ -22,6 +24,10 @@ class ConfigurationForTheAssertPhase(AssertConfigurationBase, test_impl.Configur
 
     def expectation_for_zero_exitcode(self) -> Expectation:
         return Expectation(main_result=pfh_check.is_pass())
+
+    def expect_failing_validation_post_setup(self,
+                                             assertion_on_error_message: va.ValueAssertion = va.anything_goes()):
+        return Expectation(validation_post_eds=svh_check.is_validation_error(assertion_on_error_message))
 
 
 def suite() -> unittest.TestSuite:

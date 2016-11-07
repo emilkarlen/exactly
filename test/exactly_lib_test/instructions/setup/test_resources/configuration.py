@@ -8,6 +8,7 @@ from exactly_lib_test.instructions.setup.test_resources.instruction_check import
     Expectation
 from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check, svh_check
 from exactly_lib_test.test_resources.execution import sds_populator
+from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
@@ -25,7 +26,8 @@ class SetupConfigurationBase(ConfigurationBase):
     def expect_failure_of_main(self):
         return Expectation(main_result=sh_check.is_hard_error())
 
-    def expect_failing_validation_pre_eds(self):
+    def expect_failing_validation_pre_eds(self,
+                                          assertion_on_error_message: va.ValueAssertion = va.anything_goes()):
         return Expectation(pre_validation_result=svh_check.is_validation_error())
 
     def arrangement(self,
