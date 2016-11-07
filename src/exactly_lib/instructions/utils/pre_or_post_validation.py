@@ -9,21 +9,21 @@ from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectorySt
 class PreOrPostEdsValidator:
     def validate_pre_eds_if_applicable(self, home_dir_path: pathlib.Path) -> str:
         """
-        Validates the object if it is expected to exist pre-EDS.
+        Validates the object if it is expected to exist pre-SDS.
         :return: Error message iff validation was applicable and validation failed.
         """
         raise NotImplementedError()
 
     def validate_post_eds_if_applicable(self, sds: SandboxDirectoryStructure) -> str:
         """
-        Validates the object if it is expected to NOT exist pre-EDS.
+        Validates the object if it is expected to NOT exist pre-SDS.
         :return: Error message iff validation was applicable and validation failed.
         """
         raise NotImplementedError()
 
     def validate_pre_or_post_eds(self, home_and_sds: HomeAndSds) -> str:
         """
-        Validates the object using either pre- or post- EDS.
+        Validates the object using either pre- or post- SDS.
         :return: Error message iff validation failed.
         """
         error_message = self.validate_pre_eds_if_applicable(home_and_sds.home_dir_path)

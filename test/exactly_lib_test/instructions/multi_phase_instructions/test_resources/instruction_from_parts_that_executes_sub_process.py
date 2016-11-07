@@ -59,7 +59,7 @@ class Configuration(ConfigurationBase):
     def expect_success_and_side_effects_on_files(self,
                                                  main_side_effects_on_files: va.ValueAssertion):
         """
-        :param main_side_effects_on_files: An assertion on the EDS
+        :param main_side_effects_on_files: An assertion on the SDS
         """
         raise NotImplementedError()
 

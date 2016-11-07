@@ -22,14 +22,14 @@ def check(put: unittest.TestCase,
                                 message)
 
     _check(validator.validate_pre_eds_if_applicable,
-           'Validation pre EDS',
+           'Validation pre SDS',
            passes_pre_eds,
            home_and_sds.home_dir_path)
     _check(validator.validate_post_eds_if_applicable,
-           'Validation post EDS',
+           'Validation post SDS',
            passes_post_eds,
            home_and_sds.sds)
     _check(validator.validate_pre_or_post_eds,
-           'Validation pre or post EDS',
+           'Validation pre or post SDS',
            passes_pre_eds and passes_post_eds,
            home_and_sds)

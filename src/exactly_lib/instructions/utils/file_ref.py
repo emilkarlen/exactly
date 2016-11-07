@@ -18,13 +18,13 @@ class FileRef:
 
     def file_path_pre_eds(self, home_dir_path: pathlib.Path) -> pathlib.Path:
         """
-        :raises ValueError: This file exists only post-EDS.
+        :raises ValueError: This file exists only post-SDS.
         """
         raise NotImplementedError()
 
     def file_path_post_eds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
         """
-        :raises ValueError: This file exists pre-EDS.
+        :raises ValueError: This file exists pre-SDS.
         """
         raise NotImplementedError()
 
@@ -45,9 +45,9 @@ class FileRefRelEds(FileRef):
 
     def file_path_pre_eds(self, home_dir_path: pathlib.Path) -> pathlib.Path:
         """
-        Can only be used if the files exists pre-EDS.
+        Can only be used if the files exists pre-SDS.
         """
-        raise ValueError('This file does not exist before EDS is constructed')
+        raise ValueError('This file does not exist before SDS is constructed')
 
     def file_path_rel_eds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
         raise NotImplementedError()
@@ -88,7 +88,7 @@ class _FileRefAbsolute(FileRef):
         return pathlib.Path(self._file_name)
 
     def file_path_post_eds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
-        raise ValueError('This file exists pre-EDS')
+        raise ValueError('This file exists pre-SDS')
 
 
 class _FileRefRelHome(FileRef):
@@ -99,7 +99,7 @@ class _FileRefRelHome(FileRef):
         return home_dir_path / self._file_name
 
     def file_path_post_eds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
-        raise ValueError('This file exists pre-EDS')
+        raise ValueError('This file exists pre-SDS')
 
 
 class _FileRefRelCwd(FileRefRelEds):

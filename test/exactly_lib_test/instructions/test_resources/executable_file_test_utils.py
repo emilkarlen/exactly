@@ -35,7 +35,7 @@ class CheckBase(unittest.TestCase):
     def _check_expectance_to_exist_pre_eds(self, actual: sut.ExecutableFile):
         self.assertEquals(self.configuration.exists_pre_eds,
                           actual.exists_pre_eds,
-                          'Existence pre EDS')
+                          'Existence pre SDS')
 
     def _check_file_path(self, file_name: str, actual: sut.ExecutableFile, home_and_sds: HomeAndSds):
         self.assertEqual(str(self.configuration.installed_file_path(file_name, home_and_sds)),

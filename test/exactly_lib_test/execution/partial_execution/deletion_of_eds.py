@@ -40,7 +40,7 @@ def execution_directory_structure_does_not_exist(put: unittest.TestCase,
 
 def _common_assertions(actual, put):
     put.assertTrue(actual.partial_result.has_execution_directory_structure,
-                   'EDS is expected to have been created')
+                   'SDS is expected to have been created')
 
 
 def test_case_that_does_nothing() -> sut.TestCase:

@@ -11,7 +11,7 @@ class TestRelHome(unittest.TestCase):
     def test_exists_pre_eds(self):
         file_reference = sut.rel_home('file.txt')
         self.assertTrue(file_reference.exists_pre_eds,
-                        'File is expected to exist pre EDS')
+                        'File is expected to exist pre SDS')
 
     def test_existing_file(self):
         file_reference = sut.rel_home('file.txt')
@@ -31,7 +31,7 @@ class TestRelCwd(unittest.TestCase):
     def test_exists_pre_eds(self):
         file_reference = sut.rel_cwd('file.txt')
         self.assertFalse(file_reference.exists_pre_eds,
-                         'File is expected to not exist pre EDS')
+                         'File is expected to not exist pre SDS')
 
     def test_existing_file(self):
         file_reference = sut.rel_cwd('file.txt')
@@ -49,7 +49,7 @@ class TestRelTmpUser(unittest.TestCase):
     def test_exists_pre_eds(self):
         file_reference = sut.rel_tmp_user('file.txt')
         self.assertFalse(file_reference.exists_pre_eds,
-                         'File is expected to not exist pre EDS')
+                         'File is expected to not exist pre SDS')
 
     def test_existing_file(self):
         file_reference = sut.rel_tmp_user('file.txt')
@@ -67,7 +67,7 @@ class TestRelTmpInternal(unittest.TestCase):
     def test_exists_pre_eds(self):
         file_reference = sut.rel_tmp_internal('file.txt')
         self.assertFalse(file_reference.exists_pre_eds,
-                         'File is expected to not exist pre EDS')
+                         'File is expected to not exist pre SDS')
 
     def test_existing_file(self):
         file_reference = sut.rel_tmp_internal('file.txt')
