@@ -9,7 +9,7 @@ from exactly_lib_test.test_resources.assertions.file_checks import FileChecker
 
 
 class TestConstructExecutionDirectoryStructure(unittest.TestCase):
-    def test_construct_execution_directory_structure(self):
+    def test_construct_sandbox_directory_structure(self):
         with tempfile.TemporaryDirectory(prefix=program_info.PROGRAM_NAME + '-test-') as tmp_dir_name:
             root = resolved_path(tmp_dir_name)
             tmp_dir_name = str(root)
@@ -66,8 +66,8 @@ class TestConstructExecutionDirectoryStructure(unittest.TestCase):
         self.assertTrue(p.is_dir(), p.name + ' should be a directory')
 
 
-def is_execution_directory_structure_after_execution(fc: FileChecker,
-                                                     root_dir_name: str):
+def is_sandbox_directory_structure_after_execution(fc: FileChecker,
+                                                   root_dir_name: str):
     sds = sandbox_directory_structure.SandboxDirectoryStructure(root_dir_name)
     fc.assert_exists_dir_with_given_number_of_files_in_it(sds.root_dir,
                                                           5)

@@ -23,7 +23,7 @@ class FullExecutionTestCaseBase:
         self.__unittest_case = unittest_case
         self.__dbg_do_not_delete_dir_structure = dbg_do_not_delete_dir_structure
         self.__full_result = None
-        self.__execution_directory_structure = None
+        self.__sandbox_directory_structure = None
         self.__initial_home_dir_path = None
         self.__act_phase_handling = act_phase_handling
 
@@ -74,7 +74,7 @@ class FullExecutionTestCaseBase:
 
     @property
     def sds(self) -> SandboxDirectoryStructure:
-        return self.__full_result.execution_directory_structure
+        return self.__full_result.sandbox_directory_structure
 
     def assert_is_regular_file_with_contents(self,
                                              path: pathlib.Path,

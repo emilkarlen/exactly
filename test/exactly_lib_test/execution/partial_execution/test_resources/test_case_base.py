@@ -23,7 +23,7 @@ class PartialExecutionTestCaseBase:
         self.__put = unittest_case
         self.__dbg_do_not_delete_dir_structure = dbg_do_not_delete_dir_structure
         self.__partial_result = None
-        self.__execution_directory_structure = None
+        self.__sandbox_directory_structure = None
         self.__initial_home_dir_path = None
         self.__act_phase_handling = act_phase_handling
         if self.__act_phase_handling is None:
@@ -74,7 +74,7 @@ class PartialExecutionTestCaseBase:
 
     @property
     def sds(self) -> SandboxDirectoryStructure:
-        return self.__partial_result.execution_directory_structure
+        return self.__partial_result.sandbox_directory_structure
 
     def assert_is_regular_file_with_contents(self,
                                              path: pathlib.Path,

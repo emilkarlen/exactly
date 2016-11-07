@@ -176,7 +176,7 @@ class Test(FullExecutionTestCaseBase):
 
     def __assert_expected_act_script_execution_recorded_variables(self, expected_act_output: str):
         self.assert_is_regular_file_with_contents(
-            self.full_result.execution_directory_structure.act_dir / ACT_SCRIPT_OUTPUT_FILE_NAME,
+            self.full_result.sandbox_directory_structure.act_dir / ACT_SCRIPT_OUTPUT_FILE_NAME,
             expected_act_output,
             'Environment Variables printed from act/script execution')
 

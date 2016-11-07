@@ -38,7 +38,7 @@ def log_dir_is_correct_for_each_phase(recordings: dict,
                                       put: unittest.TestCase,
                                       actual: Result):
     put.assertFalse(actual.partial_result.is_failure)
-    sds = actual.execution_directory_structure
+    sds = actual.sandbox_directory_structure
     expected = {
         PhaseEnum.SETUP: sds_log_phase_dir(sds, phase_identifier.SETUP.identifier),
         # PhaseEnum.ACT: sds_log_phase_dir(sds, phases.ACT.identifier),

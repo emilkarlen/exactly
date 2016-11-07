@@ -41,7 +41,7 @@ class Test(TestCaseBase):
                             phase_step.SETUP__VALIDATE_PRE_SDS,
                             phase_step.ACT__VALIDATE_PRE_SDS,
                         ],
-                        execution_directory_structure_should_exist=False))
+                        sandbox_directory_structure_should_exist=False))
 
     def test_validation_error_in_validate_pre_sds(self):
         test_case = _single_successful_instruction_in_each_phase()
@@ -57,7 +57,7 @@ class Test(TestCaseBase):
                             phase_step.SETUP__VALIDATE_PRE_SDS,
                             phase_step.ACT__VALIDATE_PRE_SDS,
                         ],
-                        execution_directory_structure_should_exist=False))
+                        sandbox_directory_structure_should_exist=False))
 
     def test_exception_in_validate_pre_sds(self):
         test_case = _single_successful_instruction_in_each_phase()
@@ -73,7 +73,7 @@ class Test(TestCaseBase):
                             phase_step.SETUP__VALIDATE_PRE_SDS,
                             phase_step.ACT__VALIDATE_PRE_SDS,
                         ],
-                        execution_directory_structure_should_exist=False))
+                        sandbox_directory_structure_should_exist=False))
 
     def test_validation_error_in_validate_post_setup(self):
         test_case = _single_successful_instruction_in_each_phase()
@@ -94,7 +94,7 @@ class Test(TestCaseBase):
 
                             (phase_step.CLEANUP__MAIN, PreviousPhase.SETUP),
                         ],
-                        execution_directory_structure_should_exist=True))
+                        sandbox_directory_structure_should_exist=True))
 
     def test_hard_error_in_validate_post_setup(self):
         test_case = _single_successful_instruction_in_each_phase()
@@ -115,7 +115,7 @@ class Test(TestCaseBase):
 
                             (phase_step.CLEANUP__MAIN, PreviousPhase.SETUP),
                         ],
-                        execution_directory_structure_should_exist=True))
+                        sandbox_directory_structure_should_exist=True))
 
     def test_exception_in_validate_post_setup(self):
         test_case = _single_successful_instruction_in_each_phase()
@@ -136,7 +136,7 @@ class Test(TestCaseBase):
 
                             (phase_step.CLEANUP__MAIN, PreviousPhase.SETUP),
                         ],
-                        execution_directory_structure_should_exist=True))
+                        sandbox_directory_structure_should_exist=True))
 
     def test_hard_error_in_prepare(self):
         test_case = _single_successful_instruction_in_each_phase()

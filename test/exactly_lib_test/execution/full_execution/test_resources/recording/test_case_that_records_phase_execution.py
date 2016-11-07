@@ -58,11 +58,11 @@ class Expectation(tuple):
                 expected_status: FullResultStatus,
                 expected_failure_info: ExpectedFailure,
                 expected_internal_recording: list,
-                execution_directory_structure_should_exist: bool):
+                sandbox_directory_structure_should_exist: bool):
         return tuple.__new__(cls, (expected_status,
                                    expected_failure_info,
                                    expected_internal_recording,
-                                   execution_directory_structure_should_exist))
+                                   sandbox_directory_structure_should_exist))
 
     @property
     def status(self) -> FullResultStatus:
@@ -77,7 +77,7 @@ class Expectation(tuple):
         return self[2]
 
     @property
-    def execution_directory_structure_should_exist(self) -> bool:
+    def sandbox_directory_structure_should_exist(self) -> bool:
         return self[3]
 
 
@@ -115,7 +115,7 @@ class _TestCaseThatRecordsExecution(FullExecutionTestCaseBase):
         self.utc.assertEqual(self.__expectation.internal_recording,
                              self.__recorder.recorded_elements,
                              msg)
-        if self.__expectation.execution_directory_structure_should_exist:
+        if self.__expectation.sandbox_directory_structure_should_exist:
             self.utc.assertIsNotNone(self.sds)
             self.utc.assertTrue(
                 self.sds.root_dir.is_dir(),

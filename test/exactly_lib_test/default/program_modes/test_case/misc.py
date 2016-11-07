@@ -14,7 +14,7 @@ from exactly_lib_test.default.test_resources.internal_main_program_runner import
     run_via_main_program_internally_with_default_setup
 from exactly_lib_test.default.test_resources.test_case_file_elements import phase_header_line
 from exactly_lib_test.test_case.sandbox_directory_structure import \
-    is_execution_directory_structure_after_execution
+    is_sandbox_directory_structure_after_execution
 from exactly_lib_test.test_resources.assertions.file_checks import FileChecker
 from exactly_lib_test.test_resources.cli_main_program_via_shell_utils.run import \
     contents_of_file
@@ -146,7 +146,7 @@ class AssertStdoutIsNameOfExistingSandboxDirectory(va.ValueAssertion):
         actual_sds_path = pathlib.Path(actual_sds_directory)
         if actual_sds_path.exists():
             if actual_sds_path.is_dir():
-                is_execution_directory_structure_after_execution(
+                is_sandbox_directory_structure_after_execution(
                     FileChecker(put, 'Not an sandbox directory structure'),
                     actual_sds_directory)
                 _remove_if_is_directory(actual_sds_directory)

@@ -160,8 +160,8 @@ def execute(act_phase_handling: ActPhaseHandling,
         if cwd_before is not None:
             os.chdir(cwd_before)
         if not is_keep_execution_directory_root:
-            if ret_val is not None and ret_val.has_execution_directory_structure:
-                shutil.rmtree(str(ret_val.execution_directory_structure.root_dir))
+            if ret_val is not None and ret_val.has_sandbox_directory_structure:
+                shutil.rmtree(str(ret_val.sandbox_directory_structure.root_dir))
 
 
 def construct_sds(execution_directory_root_name_prefix: str) -> SandboxDirectoryStructure:
@@ -175,7 +175,7 @@ class _PartialExecutor:
                  act_phase_handling: ActPhaseHandling,
                  test_case: TestCase,
                  setup_settings_builder: SetupSettingsBuilder):
-        self.__execution_directory_structure = None
+        self.__sandbox_directory_structure = None
         self.__exe_configuration = exe_configuration
         self.__configuration = exe_configuration.configuration
         self.__act_phase_handling = act_phase_handling
@@ -247,7 +247,7 @@ class _PartialExecutor:
 
     @property
     def _sds(self) -> SandboxDirectoryStructure:
-        return self.__execution_directory_structure
+        return self.__sandbox_directory_structure
 
     @property
     def exe_configuration(self) -> _ExecutionConfiguration:
@@ -392,12 +392,12 @@ class _PartialExecutor:
 
     def __construct_and_set_sds(self) -> SandboxDirectoryStructure:
         sds_structure_root = tempfile.mkdtemp(prefix=self.__exe_configuration.execution_directory_root_name_prefix)
-        self.__execution_directory_structure = construct_sds(sds_structure_root)
+        self.__sandbox_directory_structure = construct_sds(sds_structure_root)
 
     def __post_sds_environment(self,
                                phase: phase_identifier.Phase) -> common.InstructionEnvironmentForPostSdsStep:
         return common.InstructionEnvironmentForPostSdsStep(self.__configuration.home_dir_path,
-                                                           self.__execution_directory_structure,
+                                                           self.__sandbox_directory_structure,
                                                            phase.identifier,
                                                            timeout_in_seconds=self.__configuration.timeout_in_seconds)
 
