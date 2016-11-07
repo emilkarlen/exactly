@@ -1,7 +1,7 @@
 from exactly_lib.instructions.utils.instruction_parts import InstructionParts, \
     InstructionInfoForConstructingAnInstructionFromParts
-from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostEdsSvhValidationErrorValidator, \
-    PreOrPostEdsSvhValidationForSuccessOrHardError
+from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostSdsSvhValidationErrorValidator, \
+    PreOrPostSdsSvhValidationForSuccessOrHardError
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.cleanup import CleanupPhaseInstruction, PreviousPhase
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
@@ -14,12 +14,12 @@ class CleanupPhaseInstructionFromValidatorAndExecutor(CleanupPhaseInstruction):
     def __init__(self,
                  instruction_setup: InstructionParts):
         self.setup = instruction_setup
-        self._validator = PreOrPostEdsSvhValidationErrorValidator(instruction_setup.validator)
+        self._validator = PreOrPostSdsSvhValidationErrorValidator(instruction_setup.validator)
 
     def validate_pre_sds(self,
                          environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
-        validator = PreOrPostEdsSvhValidationErrorValidator(self.setup.validator)
-        return validator.validate_pre_eds_if_applicable(environment.home_directory)
+        validator = PreOrPostSdsSvhValidationErrorValidator(self.setup.validator)
+        return validator.validate_pre_sds_if_applicable(environment.home_directory)
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
@@ -35,8 +35,8 @@ class CleanupPhaseInstructionFromValidatorAndExecutor(CleanupPhaseInstruction):
     def _validate_from_main(
             self,
             environment: InstructionEnvironmentForPostSdsStep) -> sh.SuccessOrHardError:
-        validator = PreOrPostEdsSvhValidationForSuccessOrHardError(self.setup.validator)
-        return validator.validate_pre_or_post_eds(environment.home_and_sds)
+        validator = PreOrPostSdsSvhValidationForSuccessOrHardError(self.setup.validator)
+        return validator.validate_pre_or_post_sds(environment.home_and_sds)
 
 
 def instruction_info_for(instruction_name: str) -> InstructionInfoForConstructingAnInstructionFromParts:

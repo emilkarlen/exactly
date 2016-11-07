@@ -118,7 +118,7 @@ class AssertMainExecutor(ControlledInstructionExecutor):
             instruction.main(self.__environment, self.__os_services))
 
 
-class BeforeAssertValidatePreEdsExecutor(ControlledInstructionExecutor):
+class BeforeAssertValidatePreSdsExecutor(ControlledInstructionExecutor):
     def __init__(self,
                  global_environment: instr.InstructionEnvironmentForPreSdsStep):
         self.__global_environment = global_environment

@@ -47,9 +47,9 @@ class TestCurrentDirectory(unittest.TestCase):
         self.assertEqual(len(phase_step_2_cwd),
                          4,
                          'Expects recordings for 4 steps')
-        self.assertEqual(phase_step_2_cwd[phase_step.ACT__VALIDATE_PRE_EDS],
+        self.assertEqual(phase_step_2_cwd[phase_step.ACT__VALIDATE_PRE_SDS],
                          str(home_and_sds.home_dir_path),
-                         'Current dir for ' + str(phase_step.ACT__VALIDATE_PRE_EDS))
+                         'Current dir for ' + str(phase_step.ACT__VALIDATE_PRE_SDS))
         self.assertEqual(phase_step_2_cwd[phase_step.ACT__VALIDATE_POST_SETUP],
                          str(sds.act_dir),
                          'Current dir for ' + str(phase_step.ACT__VALIDATE_POST_SETUP))
@@ -186,7 +186,7 @@ class _ExecutorThatRecordsCurrentDir(ActSourceAndExecutor):
         self.phase_step_2_cwd = {}
 
     def validate_pre_sds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
-        self._register_cwd_for(phase_step.ACT__VALIDATE_PRE_EDS)
+        self._register_cwd_for(phase_step.ACT__VALIDATE_PRE_SDS)
         return svh.new_svh_success()
 
     def validate_post_setup(self, home_and_sds: HomeAndSds) -> svh.SuccessOrValidationErrorOrHardError:

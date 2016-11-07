@@ -1,6 +1,6 @@
 import pathlib
 
-from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostEdsValidator
+from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case.phases.common import HomeAndSds
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 
@@ -28,7 +28,7 @@ class FileRef:
         """
         raise NotImplementedError()
 
-    def file_path_pre_or_post_eds(self, home_and_sds: HomeAndSds) -> pathlib.Path:
+    def file_path_pre_or_post_sds(self, home_and_sds: HomeAndSds) -> pathlib.Path:
         if self.exists_pre_eds:
             return self.file_path_pre_eds(home_and_sds.home_dir_path)
         else:
@@ -134,7 +134,7 @@ class _FileRefRelTmpInternal(FileRefRelEds):
         return sds.tmp.internal_dir / self._file_name
 
 
-class FileRefValidatorBase(PreOrPostEdsValidator):
+class FileRefValidatorBase(PreOrPostSdsValidator):
     def __init__(self,
                  file_ref: FileRef):
         self.file_ref = file_ref
@@ -145,12 +145,12 @@ class FileRefValidatorBase(PreOrPostEdsValidator):
         """
         raise NotImplementedError()
 
-    def validate_pre_eds_if_applicable(self, home_dir_path: pathlib.Path) -> str:
+    def validate_pre_sds_if_applicable(self, home_dir_path: pathlib.Path) -> str:
         if self.file_ref.exists_pre_eds:
             return self._validate_path(self.file_ref.file_path_pre_eds(home_dir_path))
         return None
 
-    def validate_post_eds_if_applicable(self, sds: SandboxDirectoryStructure) -> str:
+    def validate_post_sds_if_applicable(self, sds: SandboxDirectoryStructure) -> str:
         if not self.file_ref.exists_pre_eds:
             return self._validate_path(self.file_ref.file_path_post_eds(sds))
         return None

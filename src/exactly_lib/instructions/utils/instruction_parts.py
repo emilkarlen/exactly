@@ -3,7 +3,7 @@ Utilities to help constructing an instruction for a specific phase, from phase-i
 """
 import types
 
-from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostEdsValidator
+from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
 from exactly_lib.test_case.phases.result import pfh
@@ -44,12 +44,12 @@ class InstructionParts(tuple):
     """
 
     def __new__(cls,
-                validator: PreOrPostEdsValidator,
+                validator: PreOrPostSdsValidator,
                 executor: MainStepExecutor):
         return tuple.__new__(cls, (validator, executor))
 
     @property
-    def validator(self) -> PreOrPostEdsValidator:
+    def validator(self) -> PreOrPostSdsValidator:
         return self[0]
 
     @property

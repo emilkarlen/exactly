@@ -37,7 +37,7 @@ class ActSourceAndExecutorWrapperThatRecordsSteps(ActSourceAndExecutor):
         self.__wrapped = wrapped
 
     def validate_pre_sds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
-        self.__recorder.recording_of(phase_step.ACT__VALIDATE_PRE_EDS).record()
+        self.__recorder.recording_of(phase_step.ACT__VALIDATE_PRE_SDS).record()
         return self.__wrapped.validate_pre_sds(home_dir_path)
 
     def validate_post_setup(self, home_and_sds: HomeAndSds) -> svh.SuccessOrValidationErrorOrHardError:

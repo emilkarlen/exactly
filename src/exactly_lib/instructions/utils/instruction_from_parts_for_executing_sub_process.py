@@ -1,7 +1,7 @@
 from exactly_lib.instructions.utils import sub_process_execution as spe
 from exactly_lib.instructions.utils.instruction_parts import MainStepExecutor, InstructionParts, \
     InstructionInfoForConstructingAnInstructionFromParts
-from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostEdsValidator
+from exactly_lib.instructions.utils.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.instructions.utils.sub_process_execution import ProcessExecutionSettings
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParserSource, SingleInstructionParser
@@ -22,7 +22,7 @@ class SubProcessExecutionSetup:
 
 class ValidationAndSubProcessExecutionSetup(SubProcessExecutionSetup):
     def __init__(self,
-                 validator: PreOrPostEdsValidator,
+                 validator: PreOrPostSdsValidator,
                  cmd_and_args_resolver: spe.CmdAndArgsResolver,
                  is_shell: bool):
         super().__init__(cmd_and_args_resolver, is_shell)

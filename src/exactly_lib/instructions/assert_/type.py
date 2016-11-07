@@ -10,7 +10,7 @@ from exactly_lib.instructions.utils.documentation import documentation_text as d
 from exactly_lib.instructions.utils.documentation.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.instructions.utils.file_properties import FileType, must_exist_as, FilePropertiesCheck, type_name
-from exactly_lib.instructions.utils.file_ref_check import pre_or_post_eds_failure_message_or_none, FileRefCheck
+from exactly_lib.instructions.utils.file_ref_check import pre_or_post_sds_failure_message_or_none, FileRefCheck
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, \
     SingleInstructionInvalidArgumentException, SingleInstructionParserSource
@@ -144,7 +144,7 @@ class _Instruction(AssertPhaseInstruction):
     def main(self,
              environment: i.InstructionEnvironmentForPostSdsStep,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
-        failure_message = pre_or_post_eds_failure_message_or_none(FileRefCheck(self._file_reference,
+        failure_message = pre_or_post_sds_failure_message_or_none(FileRefCheck(self._file_reference,
                                                                                self._expected_file_properties),
                                                                   environment.home_and_sds)
         if failure_message is not None:

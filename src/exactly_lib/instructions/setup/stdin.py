@@ -104,5 +104,5 @@ class _InstructionForFileRef(InstructionWithFileRefsBase):
              environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
-        settings_builder.stdin.file_name = str(self.redirect_file.file_path_pre_or_post_eds(environment.home_and_sds))
+        settings_builder.stdin.file_name = str(self.redirect_file.file_path_pre_or_post_sds(environment.home_and_sds))
         return sh.new_sh_success()
