@@ -14,10 +14,9 @@ from exactly_lib.test_case.phases.result import svh
 from exactly_lib_test.execution.test_resources.instruction_test_resources import \
     before_assert_phase_instruction_that
 from exactly_lib_test.instructions.before_assert.test_resources import instruction_check as sut
-from exactly_lib_test.instructions.test_resources import sh_check__va
-from exactly_lib_test.instructions.test_resources import svh_check__va
 from exactly_lib_test.instructions.test_resources import test_of_test_framework_utils as test_misc
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
+from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check, svh_check
 from exactly_lib_test.instructions.test_resources.test_of_test_framework_utils import single_line_source
 from exactly_lib_test.test_resources.execution.sds_contents_check__va import act_dir_contains_exactly
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file
@@ -55,7 +54,7 @@ class TestCases(sut.TestCaseBase):
                     PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
                     single_line_source(),
                     sut.arrangement(),
-                    sut.Expectation(validation_pre_eds=svh_check__va.is_hard_error()),
+                sut.Expectation(validation_pre_eds=svh_check.is_hard_error()),
             )
 
     def test_fail_due_to_unexpected_result_from__validate_post_setup(self):
@@ -64,7 +63,7 @@ class TestCases(sut.TestCaseBase):
                     PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
                     single_line_source(),
                     sut.arrangement(),
-                    sut.Expectation(validation_post_setup=svh_check__va.is_hard_error()),
+                sut.Expectation(validation_post_setup=svh_check.is_hard_error()),
             )
 
     def test_fail_due_to_unexpected_result__from_main(self):
@@ -73,7 +72,7 @@ class TestCases(sut.TestCaseBase):
                     PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION,
                     single_line_source(),
                     sut.arrangement(),
-                    sut.Expectation(main_result=sh_check__va.is_hard_error()),
+                sut.Expectation(main_result=sh_check.is_hard_error()),
             )
 
     def test_fail_due_to_fail_of_side_effects_on_files(self):

@@ -6,7 +6,7 @@ from exactly_lib_test.instructions.multi_phase_instructions.test_resources.new_d
     Configuration, suite_for
 from exactly_lib_test.instructions.setup.test_resources.configuration import SetupConfigurationBase
 from exactly_lib_test.instructions.setup.test_resources.instruction_check import Expectation
-from exactly_lib_test.instructions.test_resources import sh_check__va as sh_check
+from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check
 
 
 class TheConfiguration(SetupConfigurationBase, Configuration):

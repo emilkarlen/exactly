@@ -11,7 +11,7 @@ from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.failure_details import FailureDetails
 from exactly_lib.util.std import StdFiles
 from exactly_lib_test.execution.test_resources import eh_check
-from exactly_lib_test.instructions.test_resources import sh_check__va as sh_check
+from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check
 from exactly_lib_test.test_resources import file_structure
 from exactly_lib_test.test_resources import file_structure_utils as fs_utils
 from exactly_lib_test.test_resources.execution import sds_contents_check

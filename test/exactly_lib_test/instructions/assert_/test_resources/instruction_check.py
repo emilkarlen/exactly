@@ -10,10 +10,9 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
     InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import svh
-from exactly_lib_test.instructions.test_resources import pfh_check__va as pfh_check
-from exactly_lib_test.instructions.test_resources import svh_check__va as svh_check
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct, ActResultProducer, \
     ActEnvironment
+from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check, svh_check
 from exactly_lib_test.test_resources import file_structure
 from exactly_lib_test.test_resources.execution import sds_populator, utils
 from exactly_lib_test.test_resources.execution.utils import write_act_result

@@ -7,7 +7,7 @@ from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib_test.instructions.configuration.test_resources import configuration_check as config_check
 from exactly_lib_test.instructions.configuration.test_resources.instruction_check import TestCaseBase, \
     Arrangement, Expectation
-from exactly_lib_test.instructions.test_resources import sh_check__va as sh_check
+from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, empty_dir, Dir
 from exactly_lib_test.test_resources.parse import new_source2

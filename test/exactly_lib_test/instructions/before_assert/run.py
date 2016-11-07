@@ -6,7 +6,7 @@ from exactly_lib_test.instructions.before_assert.test_resources.configuration im
 from exactly_lib_test.instructions.before_assert.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.run_instruction_test import \
     suite_for, Configuration
-from exactly_lib_test.instructions.test_resources import svh_check__va
+from exactly_lib_test.instructions.test_resources.assertion_utils import svh_check
 
 
 class TheConfiguration(BeforeAssertConfigurationBase, Configuration):
@@ -14,7 +14,7 @@ class TheConfiguration(BeforeAssertConfigurationBase, Configuration):
         return sut.setup('instruction name')
 
     def expect_failure_because_specified_file_under_eds_is_missing(self):
-        return Expectation(validation_post_setup=svh_check__va.is_validation_error())
+        return Expectation(validation_post_setup=svh_check.is_validation_error())
 
 
 def suite():

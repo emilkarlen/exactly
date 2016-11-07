@@ -6,8 +6,7 @@ from exactly_lib.test_case.os_services import OsServices, new_default
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.configuration import ConfigurationBase
 from exactly_lib_test.instructions.setup.test_resources.instruction_check import arrangement, check, is_success, \
     Expectation
-from exactly_lib_test.instructions.test_resources import sh_check__va as sh_check
-from exactly_lib_test.instructions.test_resources import svh_check__va as svh_check
+from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check, svh_check
 from exactly_lib_test.test_resources.execution import sds_populator
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
