@@ -7,8 +7,7 @@ from exactly_lib_test.instructions.before_assert.test_resources.instruction_chec
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.change_dir_instruction_test import \
     Configuration, suite_for
 from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check
-from exactly_lib_test.instructions.test_resources.assertion_utils.side_effects import SideEffectsCheck
-from exactly_lib_test.instructions.test_resources.assertion_utils.side_effects__va import SideEffectsCheckAsVa
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 
 
 class TheConfiguration(BeforeAssertConfigurationBase, Configuration):
@@ -16,8 +15,8 @@ class TheConfiguration(BeforeAssertConfigurationBase, Configuration):
         return sut.setup('instruction name')
 
     def expect_successful_execution_with_side_effect(self,
-                                                     side_effects_check: SideEffectsCheck):
-        return Expectation(home_and_sds=SideEffectsCheckAsVa(side_effects_check))
+                                                     side_effects_check: ValueAssertion):
+        return Expectation(home_and_sds=side_effects_check)
 
     def expect_target_is_not_a_directory(self):
         return Expectation(main_result=sh_check.is_hard_error())

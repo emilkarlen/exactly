@@ -3,7 +3,7 @@ import unittest
 
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.configuration import ConfigurationBase, \
     suite_for_cases
-from exactly_lib_test.instructions.test_resources.assertion_utils.side_effects__va import AssertCwdIsSubDirOfActDir
+from exactly_lib_test.instructions.test_resources.assertion_utils.side_effects import AssertCwdIsSubDirOfActDir
 from exactly_lib_test.test_resources.execution.sds_populator import act_dir_contents
 from exactly_lib_test.test_resources.file_structure import DirContents, Dir, empty_dir, empty_file
 from exactly_lib_test.test_resources.parse import new_source2
