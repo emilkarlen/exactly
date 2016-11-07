@@ -10,10 +10,9 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
     InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import svh
-from exactly_lib_test.instructions.test_resources import sh_check__va
-from exactly_lib_test.instructions.test_resources import svh_check__va
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct, ActResultProducer, \
     ActEnvironment
+from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check, svh_check
 from exactly_lib_test.instructions.test_resources.expectations import ExpectationBase
 from exactly_lib_test.instructions.test_resources.instruction_check_utils import InstructionExecutionBase
 from exactly_lib_test.test_resources import file_structure
@@ -34,14 +33,14 @@ def arrangement(home_dir_contents: file_structure.DirContents = file_structure.D
 
 
 class Expectation(ExpectationBase):
-    def __init__(self, validation_pre_eds: va.ValueAssertion = svh_check__va.is_success(),
-                 validation_post_setup: va.ValueAssertion = svh_check__va.is_success(),
-                 main_result: va.ValueAssertion = sh_check__va.is_success(),
+    def __init__(self, validation_pre_eds: va.ValueAssertion = svh_check.is_success(),
+                 validation_post_setup: va.ValueAssertion = svh_check.is_success(),
+                 main_result: va.ValueAssertion = sh_check.is_success(),
                  main_side_effects_on_files: va.ValueAssertion = va.anything_goes(),
                  home_and_sds: va.ValueAssertion = va.anything_goes()):
         super().__init__(validation_pre_eds, main_side_effects_on_files, home_and_sds)
         self.validation_post_setup = validation_post_setup
-        self.main_result = sh_check__va.is_sh_and(main_result)
+        self.main_result = sh_check.is_sh_and(main_result)
 
 
 is_success = Expectation

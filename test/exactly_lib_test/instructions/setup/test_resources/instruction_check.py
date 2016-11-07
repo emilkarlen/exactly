@@ -18,9 +18,8 @@ from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSetti
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.file_utils import resolved_path_name
 from exactly_lib_test.instructions.setup.test_resources import settings_check
-from exactly_lib_test.instructions.test_resources import sh_check__va as sh_check
-from exactly_lib_test.instructions.test_resources import svh_check__va as svh_check
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithEds
+from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check, svh_check
 from exactly_lib_test.test_resources import file_structure
 from exactly_lib_test.test_resources.execution import sds_populator
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va

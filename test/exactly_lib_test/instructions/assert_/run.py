@@ -6,7 +6,7 @@ from exactly_lib_test.instructions.assert_.test_resources.configuration import A
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.run_instruction_test import \
     suite_for, Configuration
-from exactly_lib_test.instructions.test_resources import svh_check__va as svh_check
+from exactly_lib_test.instructions.test_resources.assertion_utils import svh_check
 
 
 class TheConfiguration(AssertConfigurationBase, Configuration):

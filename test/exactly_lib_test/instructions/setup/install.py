@@ -5,8 +5,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException, SingleInstructionParserSource
 from exactly_lib_test.instructions.setup.test_resources.instruction_check import TestCaseBase, Arrangement, \
     Expectation
-from exactly_lib_test.instructions.test_resources import sh_check__va as sh_check
-from exactly_lib_test.instructions.test_resources import svh_check__va as svh_check
+from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check, svh_check
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.test_resources.execution import sds_populator, sds_contents_check__va as sds_contents_check
 from exactly_lib_test.test_resources.file_structure import DirContents, File, Dir, empty_file, empty_dir

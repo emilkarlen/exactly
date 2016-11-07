@@ -10,7 +10,7 @@ from exactly_lib.util.string import lines_content
 from exactly_lib_test.instructions.setup.test_resources.instruction_check import TestCaseBase, Arrangement, \
     Expectation
 from exactly_lib_test.instructions.setup.test_resources.settings_check import Assertion
-from exactly_lib_test.instructions.test_resources import svh_check__va as svh_check
+from exactly_lib_test.instructions.test_resources.assertion_utils import svh_check
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, empty_dir
 from exactly_lib_test.test_resources.parse import new_source2, argument_list_source
