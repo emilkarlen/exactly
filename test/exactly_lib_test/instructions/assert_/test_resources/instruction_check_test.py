@@ -90,7 +90,7 @@ class InstructionThatRaisesTestErrorIfCwdIsIsNotTestRoot(AssertPhaseInstruction)
         return pfh.new_pfh_pass()
 
 
-def suite():
+def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestCases))
     return ret_val

@@ -13,7 +13,7 @@ from exactly_lib_test import test_suite
 from exactly_lib_test import util
 
 
-def suite():
+def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(util.suite())
     ret_val.addTest(section_document.suite())
