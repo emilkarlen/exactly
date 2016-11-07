@@ -66,7 +66,7 @@ sys.exit(1)
 
 def suite_for(configuration: Configuration) -> unittest.TestSuite:
     return unittest.TestSuite([
-        suite_for_documentation_instance(configuration.description()),
+        suite_for_documentation_instance(configuration.documentation()),
         suite_for_cases(configuration,
                         [
                             TestParseFailsWhenThereAreNoArguments,

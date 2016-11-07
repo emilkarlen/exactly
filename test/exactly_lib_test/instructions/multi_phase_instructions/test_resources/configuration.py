@@ -33,8 +33,8 @@ class ConfigurationBase:
     def parser(self) -> SingleInstructionParser:
         return self.instruction_setup()
 
-    def description(self) -> InstructionDocumentation:
-        return self.instruction_setup().description
+    def documentation(self) -> InstructionDocumentation:
+        return self.instruction_setup().documentation
 
     def arrangement(self,
                     sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
@@ -69,5 +69,5 @@ class ConfigurationBase:
 def suite_for_cases(configuration: ConfigurationBase,
                     test_case_classes: list) -> unittest.TestSuite:
     return unittest.TestSuite(
-        [suite_for_documentation_instance(configuration.description())] +
+        [suite_for_documentation_instance(configuration.documentation())] +
         list(tcc(configuration) for tcc in test_case_classes))

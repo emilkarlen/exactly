@@ -141,7 +141,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestFailingParseForInterpreter),
         unittest.makeSuite(TestSuccessfulParseAndInstructionExecutionForInterpreterActor),
         unittest.makeSuite(TestShellHandlingViaExecution),
-        suite_for_instruction_documentation(sut.setup('instruction name').description),
+        suite_for_instruction_documentation(sut.setup('instruction name').documentation),
     ])
 
 

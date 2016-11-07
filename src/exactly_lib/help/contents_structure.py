@@ -76,4 +76,4 @@ def phase_helps_for(instructions_setup: InstructionsSetup) -> iter:
 
 
 def instruction_set_help(single_instruction_setup_dic: dict) -> SectionInstructionSet:
-    return SectionInstructionSet(map(lambda x: x.description, single_instruction_setup_dic.values()))
+    return SectionInstructionSet(map(lambda x: x.documentation, single_instruction_setup_dic.values()))

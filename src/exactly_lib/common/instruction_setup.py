@@ -7,13 +7,13 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 class SingleInstructionSetup(SingleInstructionParser):
     def __init__(self,
                  parser: SingleInstructionParser,
-                 description: InstructionDocumentation):
+                 documentation: InstructionDocumentation):
         self._parser = parser
-        self._description = description
+        self._documentation = documentation
 
     @property
-    def description(self) -> InstructionDocumentation:
-        return self._description
+    def documentation(self) -> InstructionDocumentation:
+        return self._documentation
 
     def apply(self, source: SingleInstructionParserSource) -> Instruction:
         return self._parser.apply(source)
