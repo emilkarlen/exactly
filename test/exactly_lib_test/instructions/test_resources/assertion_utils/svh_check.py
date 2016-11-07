@@ -12,10 +12,7 @@ def status_is(expected_status: svh.SuccessOrValidationErrorOrHardErrorEnum) -> v
 def status_is_not_success(expected_status: svh.SuccessOrValidationErrorOrHardErrorEnum,
                           assertion_on_error_message: va.ValueAssertion) -> va.ValueAssertion:
     return va.And([
-        va.sub_component('status',
-                         svh.SuccessOrValidationErrorOrHardError.status.fget,
-                         va.Equals(expected_status)
-                         ),
+        status_is(expected_status),
         va.sub_component('error message',
                          svh.SuccessOrValidationErrorOrHardError.failure_message.fget,
                          assertion_on_error_message)

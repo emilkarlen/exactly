@@ -46,7 +46,8 @@ class ConfigurationBase:
     def expect_success(self):
         raise NotImplementedError()
 
-    def expect_failure_of_main(self):
+    def expect_failure_of_main(self,
+                               assertion_on_error_message: va.ValueAssertion = va.anything_goes()):
         raise NotImplementedError()
 
     def expect_failing_validation_pre_eds(self,
@@ -57,5 +58,5 @@ class ConfigurationBase:
 def suite_for_cases(configuration: ConfigurationBase,
                     test_case_classes: list) -> unittest.TestSuite:
     return unittest.TestSuite(
-            [suite_for_description_instance(configuration.description())] +
-            list(tcc(configuration) for tcc in test_case_classes))
+        [suite_for_description_instance(configuration.description())] +
+        list(tcc(configuration) for tcc in test_case_classes))

@@ -55,7 +55,7 @@ class _Contains(va.ValueAssertion):
               value: str,
               message_builder: va.MessageBuilder = va.MessageBuilder()):
         put.assertTrue(value.find(self.part) != -1,
-                       'contains string')
+                       "contains string '{}'".format(self.part))
 
 
 class _IsNotOnlySpace(va.ValueAssertion):
