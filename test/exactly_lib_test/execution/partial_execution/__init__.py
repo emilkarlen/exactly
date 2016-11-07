@@ -3,7 +3,7 @@ import unittest
 from exactly_lib_test.execution.partial_execution import \
     act_phase_execution, \
     instruction_environment, \
-    deletion_of_eds, \
+    deletion_of_sds, \
     phase_step_sequence
 
 
@@ -11,7 +11,7 @@ def suite():
     ret_val = unittest.TestSuite()
     ret_val.addTest(act_phase_execution.suite())
     ret_val.addTest(instruction_environment.suite())
-    ret_val.addTest(deletion_of_eds.suite())
+    ret_val.addTest(deletion_of_sds.suite())
     ret_val.addTest(phase_step_sequence.suite())
     return ret_val
 
