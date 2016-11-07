@@ -1,7 +1,11 @@
+"""
+This module should probably be replaced by corresponding ValueAssertion in file_assertions
+"""
 import pathlib
 import unittest
 
-from exactly_lib_test.test_resources import assert_utils, file_structure
+from exactly_lib_test.test_resources import file_structure
+from exactly_lib_test.test_resources.assertions import assert_utils
 
 
 class FileChecker:

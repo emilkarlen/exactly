@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.util.line_source import Line, LineSequence
-from exactly_lib_test.test_resources.assert_utils import assertion_message
+from exactly_lib_test.test_resources.assertions.assert_utils import assertion_message
 
 
 def assert_equals_line(test_case: unittest.TestCase,

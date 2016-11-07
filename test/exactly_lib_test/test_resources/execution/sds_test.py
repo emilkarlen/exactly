@@ -2,9 +2,9 @@ import os
 import unittest
 
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib_test.test_resources.assertions.file_checks import FileChecker
 from exactly_lib_test.test_resources.execution import sds_populator
 from exactly_lib_test.test_resources.execution.utils import sandbox_directory_structure
-from exactly_lib_test.test_resources.file_checks import FileChecker
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 

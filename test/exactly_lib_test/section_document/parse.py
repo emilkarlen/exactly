@@ -8,7 +8,7 @@ from exactly_lib.section_document.parse import SourceError, PlainDocumentParser,
 from exactly_lib.util import line_source
 from exactly_lib.util.line_source import Line
 from exactly_lib_test.section_document.test_resources.assertions import assert_equals_line, assert_equals_line_sequence
-from exactly_lib_test.test_resources.assert_utils import TestCaseWithMessageHeader, \
+from exactly_lib_test.test_resources.assertions.assert_utils import TestCaseWithMessageHeader, \
     MessageWithHeaderConstructor
 
 
