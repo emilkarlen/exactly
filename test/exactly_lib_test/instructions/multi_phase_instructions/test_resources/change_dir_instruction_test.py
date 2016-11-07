@@ -31,7 +31,7 @@ class TestExistingDirectoryWithMultiplePathComponents(TestCaseBase):
                 self,
                 new_source2('first-component/second-component'),
                 self.conf.arrangement(
-                        eds_contents_before_main=act_dir_contents(DirContents([
+                    sds_contents_before_main=act_dir_contents(DirContents([
                             Dir('first-component', [
                                 empty_dir('second-component')
                             ])]))),
@@ -45,7 +45,7 @@ class TestArgumentExistsAsNonDirectory(TestCaseBase):
         self.conf.run_test(
                 self,
                 new_source2('file'),
-                self.conf.arrangement(eds_contents_before_main=act_dir_contents(DirContents([
+            self.conf.arrangement(sds_contents_before_main=act_dir_contents(DirContents([
                     empty_file('file')
                 ]))),
                 self.conf.expect_target_is_not_a_directory())

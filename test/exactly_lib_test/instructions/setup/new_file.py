@@ -24,7 +24,7 @@ class TestCaseBaseForParser(TestCaseBase):
 class TestCasesThatTestIntegrationByAFewRandomTests(TestCaseBaseForParser):
     def test_file_in_sub_dir__sub_dir_exists(self):
         self._run(new_source2('existing-directory/file-name.txt'),
-                  Arrangement(eds_contents_before_main=act_dir_contents(DirContents([
+                  Arrangement(sds_contents_before_main=act_dir_contents(DirContents([
                       empty_dir('existing-directory')
                   ]))
                   ),
@@ -47,7 +47,7 @@ class TestCasesThatTestIntegrationByAFewRandomTests(TestCaseBaseForParser):
 
     def test_argument_is_existing_file(self):
         self._run(new_source2('existing-file'),
-                  Arrangement(eds_contents_before_main=act_dir_contents(DirContents([
+                  Arrangement(sds_contents_before_main=act_dir_contents(DirContents([
                       empty_file('existing-file')
                   ]))),
                   Expectation(main_result=sh_check.is_hard_error())

@@ -37,12 +37,12 @@ class ConfigurationBase:
         return self.instruction_setup().description
 
     def arrangement(self,
-                    eds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
+                    sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
                     os_services: OsServices = new_default()):
         raise NotImplementedError()
 
     def empty_arrangement(self) -> ArrangementBase:
-        return self.arrangement(eds_contents_before_main=sds_populator.empty())
+        return self.arrangement(sds_contents_before_main=sds_populator.empty())
 
     def arrangement_with_timeout(self, timeout_in_seconds: int) -> ArrangementBase:
         raise NotImplementedError()

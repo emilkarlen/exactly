@@ -201,7 +201,7 @@ class FileContentsFileRelHome(TestWithParserBase):
     def validation_error__when__comparison_file_is_a_directory(self):
         self._run(
                 new_source2('%s dir' % REL_HOME_OPTION),
-                arrangement(eds_contents_before_main=act_dir_contents(DirContents(
+                arrangement(sds_contents_before_main=act_dir_contents(DirContents(
                         [empty_dir('dir')]))),
             Expectation(validation_pre_sds=svh_check.is_validation_error()),
         )
@@ -281,7 +281,7 @@ class FileContentsFileRelCwd(TestWithParserBase):
     def fail__when__comparison_file_is_a_directory(self):
         self._run(
                 new_source2('--rel-cwd dir'),
-                arrangement(eds_contents_before_main=act_dir_contents(DirContents(
+                arrangement(sds_contents_before_main=act_dir_contents(DirContents(
                         [empty_dir('dir')]))),
                 Expectation(main_result=pfh_check.is_fail()),
         )
@@ -292,7 +292,7 @@ class FileContentsFileRelCwd(TestWithParserBase):
         self._run(
                 new_source2('--rel-cwd f.txt'),
                 arrangement(
-                        eds_contents_before_main=act_dir_contents(DirContents(
+                        sds_contents_before_main=act_dir_contents(DirContents(
                                 [File('f.txt', expected_contents)])),
                         act_result_producer=ActResultProducer(act_result)),
                 Expectation(
@@ -305,7 +305,7 @@ class FileContentsFileRelCwd(TestWithParserBase):
         self._run(
                 new_source2('--rel-cwd f.txt'),
                 arrangement(
-                        eds_contents_before_main=act_dir_contents(DirContents(
+                        sds_contents_before_main=act_dir_contents(DirContents(
                                 [File('f.txt', expected_contents)])),
                         act_result_producer=ActResultProducer(act_result)),
                 is_pass(),
@@ -329,7 +329,7 @@ class FileContentsFileRelTmp(TestWithParserBase):
         self._run(
                 new_source2('--rel-tmp f.txt'),
                 arrangement(
-                        eds_contents_before_main=tmp_user_dir_contents(DirContents(
+                        sds_contents_before_main=tmp_user_dir_contents(DirContents(
                                 [File('f.txt', 'expected contents')])),
                         act_result_producer=ActResultProducer(
                                 self._act_result_with_contents('expected contents'))),

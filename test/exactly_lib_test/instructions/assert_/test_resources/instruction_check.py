@@ -21,13 +21,13 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 
 def arrangement(home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
-                eds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
+                sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
                 act_result_producer: ActResultProducer = ActResultProducer(),
                 os_services: OsServices = new_default(),
                 process_execution_settings=with_no_timeout(),
                 ) -> ArrangementPostAct:
     return ArrangementPostAct(home_dir_contents,
-                              eds_contents_before_main,
+                              sds_contents_before_main,
                               act_result_producer,
                               os_services,
                               process_execution_settings)
@@ -89,7 +89,7 @@ class Executor:
         assert isinstance(instruction, AssertPhaseInstruction)
         with utils.home_and_sds_and_test_as_curr_dir(
                 home_dir_contents=self.arrangement.home_contents,
-                sds_contents=self.arrangement.eds_contents) as home_and_sds:
+                sds_contents=self.arrangement.sds_contents) as home_and_sds:
             act_result = self.arrangement.act_result_producer.apply(ActEnvironment(home_and_sds))
             write_act_result(home_and_sds.sds, act_result)
             # TODO Execution of validate/pre-sds should be done before act-result is written.

@@ -22,12 +22,12 @@ class Action:
 
 class Check:
     def __init__(self,
-                 eds_contents_before: sds_populator.SdsPopulator = sds_populator.empty(),
+                 sds_contents_before: sds_populator.SdsPopulator = sds_populator.empty(),
                  expected_action_result: va.ValueAssertion = va.anything_goes(),
                  expected_sds_contents_after: va.ValueAssertion = va.anything_goes(),
                  pre_action_action: Action = Action(),
                  post_action_check: PostActionCheck = PostActionCheck()):
-        self.eds_contents_before = eds_contents_before
+        self.sds_contents_before = sds_contents_before
         self.expected_action_result = expected_action_result
         self.expected_sds_contents_after = expected_sds_contents_after
         self.pre_action_action = pre_action_action
@@ -47,7 +47,7 @@ def execute(put: unittest.TestCase,
             action: Action,
             check: Check):
     original_cwd = os.getcwd()
-    with sandbox_directory_structure(check.eds_contents_before) as sds:
+    with sandbox_directory_structure(check.sds_contents_before) as sds:
         os.chdir(str(sds.act_dir))
         try:
             check.pre_action_action.apply(sds)

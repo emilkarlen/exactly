@@ -39,7 +39,7 @@ class TestArgumentExistsAsNonDirectory(TestCaseBase):
         self.conf.run_test(
                 self,
                 new_source2('file'),
-                self.conf.arrangement(eds_contents_before_main=act_dir_contents(DirContents([
+            self.conf.arrangement(sds_contents_before_main=act_dir_contents(DirContents([
                     empty_file('file')
                 ]))),
                 self.conf.expect_failure_to_create_dir()

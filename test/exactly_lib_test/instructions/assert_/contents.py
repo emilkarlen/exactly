@@ -57,7 +57,7 @@ class TestFileContentsEmptyValidSyntax(TestCaseBaseForParser):
         file_name = 'name-of-existing-directory'
         self._run(
                 new_source2(file_name + ' empty'),
-                arrangement(eds_contents_before_main=act_dir_contents(
+                arrangement(sds_contents_before_main=act_dir_contents(
                         DirContents([empty_dir(file_name)]))),
                 Expectation(main_result=pfh_check.is_fail())
         )
@@ -66,7 +66,7 @@ class TestFileContentsEmptyValidSyntax(TestCaseBaseForParser):
         file_name = 'name-of-existing-file'
         self._run(
                 new_source2(file_name + ' empty'),
-                arrangement(eds_contents_before_main=act_dir_contents(
+                arrangement(sds_contents_before_main=act_dir_contents(
                         DirContents([File(file_name, 'contents')]))),
                 Expectation(main_result=pfh_check.is_fail())
         )
@@ -75,7 +75,7 @@ class TestFileContentsEmptyValidSyntax(TestCaseBaseForParser):
         file_name = 'name-of-existing-file'
         self._run(
                 new_source2(file_name + ' empty'),
-                arrangement(eds_contents_before_main=act_dir_contents(
+                arrangement(sds_contents_before_main=act_dir_contents(
                         DirContents([empty_file(file_name)]))),
                 is_pass()
         )
@@ -104,7 +104,7 @@ class TestFileContentsNonEmptyValidSyntax(TestCaseBaseForParser):
         file_name = 'name-of-existing-directory'
         self._run(
                 new_source2(file_name + ' ! empty'),
-                arrangement(eds_contents_before_main=act_dir_contents(DirContents(
+                arrangement(sds_contents_before_main=act_dir_contents(DirContents(
                         [empty_dir(file_name)]))),
                 Expectation(main_result=pfh_check.is_fail()),
         )
@@ -113,7 +113,7 @@ class TestFileContentsNonEmptyValidSyntax(TestCaseBaseForParser):
         file_name = 'name-of-existing-file'
         self._run(
                 new_source2(file_name + ' ! empty'),
-                arrangement(eds_contents_before_main=act_dir_contents(DirContents(
+                arrangement(sds_contents_before_main=act_dir_contents(DirContents(
                         [empty_file(file_name)]))),
                 Expectation(main_result=pfh_check.is_fail()),
         )
@@ -122,7 +122,7 @@ class TestFileContentsNonEmptyValidSyntax(TestCaseBaseForParser):
         file_name = 'name-of-existing-file'
         self._run(
                 new_source2(file_name + ' ! empty'),
-                arrangement(eds_contents_before_main=act_dir_contents(DirContents(
+                arrangement(sds_contents_before_main=act_dir_contents(DirContents(
                         [File(file_name, 'contents')]))),
                 is_pass(),
         )
@@ -154,7 +154,7 @@ class TestFileContentsFileRelHome(TestCaseBaseForParser):
         self._run(
                 new_source2('dir --rel-home f.txt'),
                 arrangement(home_dir_contents=DirContents([empty_file('f.txt')]),
-                            eds_contents_before_main=act_dir_contents(
+                            sds_contents_before_main=act_dir_contents(
                                     DirContents([empty_dir('dir')]))),
                 Expectation(main_result=pfh_check.is_fail()),
         )
@@ -163,7 +163,7 @@ class TestFileContentsFileRelHome(TestCaseBaseForParser):
         self._run(
                 new_source2('target.txt --rel-home f.txt'),
                 arrangement(home_dir_contents=DirContents([empty_file('f.txt')]),
-                            eds_contents_before_main=act_dir_contents(
+                            sds_contents_before_main=act_dir_contents(
                                     DirContents([File('target.txt', 'non-empty')]))),
                 Expectation(main_result=pfh_check.is_fail()),
         )
@@ -172,7 +172,7 @@ class TestFileContentsFileRelHome(TestCaseBaseForParser):
         self._run(
                 new_source2('target.txt --rel-home f.txt'),
                 arrangement(home_dir_contents=DirContents([File('f.txt', 'contents')]),
-                            eds_contents_before_main=act_dir_contents(DirContents(
+                            sds_contents_before_main=act_dir_contents(DirContents(
                                     [File('target.txt', 'contents')]))),
                 is_pass(),
         )
@@ -182,7 +182,7 @@ class TestFileContentsFileRelCwd(TestCaseBaseForParser):
     def test_fail__when__comparison_file_does_not_exist(self):
         self._run(
                 new_source2('target --rel-cwd comparison'),
-                arrangement(eds_contents_before_main=act_dir_contents(
+                arrangement(sds_contents_before_main=act_dir_contents(
                         DirContents([empty_file('target')]))),
                 Expectation(main_result=pfh_check.is_fail()),
         )
@@ -190,7 +190,7 @@ class TestFileContentsFileRelCwd(TestCaseBaseForParser):
     def test_fail__when__target_file_does_not_exist(self):
         self._run(
                 new_source2('target --rel-cwd comparison'),
-                arrangement(eds_contents_before_main=act_dir_contents(
+                arrangement(sds_contents_before_main=act_dir_contents(
                         DirContents([empty_file('comparison')]))),
                 Expectation(main_result=pfh_check.is_fail()),
         )
@@ -198,7 +198,7 @@ class TestFileContentsFileRelCwd(TestCaseBaseForParser):
     def test_validation_error__when__comparison_file_is_a_directory(self):
         self._run(
                 new_source2('target --rel-cwd comparison'),
-                arrangement(eds_contents_before_main=act_dir_contents(
+                arrangement(sds_contents_before_main=act_dir_contents(
                         DirContents([empty_file('target'),
                                      empty_dir('comparison')]))),
                 Expectation(main_result=pfh_check.is_fail()),
@@ -207,7 +207,7 @@ class TestFileContentsFileRelCwd(TestCaseBaseForParser):
     def test_validation_error__when__target_file_is_a_directory(self):
         self._run(
                 new_source2('target --rel-cwd comparison'),
-                arrangement(eds_contents_before_main=act_dir_contents(
+                arrangement(sds_contents_before_main=act_dir_contents(
                         DirContents([empty_dir('target'),
                                      empty_file('comparison')]))),
                 Expectation(main_result=pfh_check.is_fail()),
@@ -216,7 +216,7 @@ class TestFileContentsFileRelCwd(TestCaseBaseForParser):
     def test_fail__when__contents_is_different(self):
         self._run(
                 new_source2('target --rel-cwd comparison'),
-                arrangement(eds_contents_before_main=act_dir_contents(
+                arrangement(sds_contents_before_main=act_dir_contents(
                         DirContents([File('target', 'target-contents'),
                                      File('comparison', 'cmp-contents')]))),
                 Expectation(main_result=pfh_check.is_fail()),
@@ -225,7 +225,7 @@ class TestFileContentsFileRelCwd(TestCaseBaseForParser):
     def test_pass__when__contents_is_equal(self):
         self._run(
                 new_source2('target --rel-cwd comparison'),
-                arrangement(eds_contents_before_main=act_dir_contents(
+                arrangement(sds_contents_before_main=act_dir_contents(
                         DirContents([File('target', 'contents'),
                                      File('comparison', 'contents')]))),
                 is_pass(),
@@ -236,7 +236,7 @@ class TestFileContentsFileRelTmp(TestCaseBaseForParser):
     def test_fail__when__target_file_does_not_exist(self):
         self._run(
                 new_source2('target --rel-tmp comparison'),
-                arrangement(eds_contents_before_main=tmp_user_dir_contents(
+                arrangement(sds_contents_before_main=tmp_user_dir_contents(
                         DirContents([empty_file('comparison')]))),
                 Expectation(main_result=pfh_check.is_fail()),
         )
@@ -244,7 +244,7 @@ class TestFileContentsFileRelTmp(TestCaseBaseForParser):
     def test_pass__when__contents_is_equal(self):
         self._run(
                 new_source2('target --rel-tmp comparison'),
-                arrangement(eds_contents_before_main=multiple([
+                arrangement(sds_contents_before_main=multiple([
                     act_dir_contents(
                             DirContents([File('target', 'contents')])),
                     tmp_user_dir_contents(
@@ -266,7 +266,7 @@ class TestTargetFileRelTmp(TestCaseBaseForParser):
         self._run(
                 new_source2('--rel-tmp target --rel-home comparison'),
                 arrangement(home_dir_contents=DirContents([File('comparison', 'comparison-contents')]),
-                            eds_contents_before_main=tmp_user_dir_contents(
+                            sds_contents_before_main=tmp_user_dir_contents(
                                     DirContents([File('target', 'target-contents')]))),
                 Expectation(main_result=pfh_check.is_fail())
         )
@@ -275,7 +275,7 @@ class TestTargetFileRelTmp(TestCaseBaseForParser):
         self._run(
                 new_source2('--rel-tmp target --rel-home comparison'),
                 arrangement(home_dir_contents=DirContents([File('comparison', 'contents')]),
-                            eds_contents_before_main=tmp_user_dir_contents(
+                            sds_contents_before_main=tmp_user_dir_contents(
                                     DirContents([File('target', 'contents')]))),
                 is_pass(),
         )

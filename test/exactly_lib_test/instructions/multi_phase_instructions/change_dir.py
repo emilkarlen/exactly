@@ -149,7 +149,7 @@ class TestSuccessfulScenarios(TestCaseBase):
     def test_relative_argument_should_change_dir_relative_to_cwd__from_act_dir(self):
         self._test_argument('existing-dir',
                             sds_test.Check(expected_action_result=is_success(),
-                                           eds_contents_before=act_dir_contents(DirContents([
+                                           sds_contents_before=act_dir_contents(DirContents([
                                                empty_dir('existing-dir')
                                            ])),
                                            post_action_check=CwdIs(lambda sds: sds.act_dir / 'existing-dir')
@@ -158,7 +158,7 @@ class TestSuccessfulScenarios(TestCaseBase):
     def test_relative_argument_should_change_dir_relative_to_cwd__from_tmp_dir(self):
         self._test_argument('sub1/sub2',
                             sds_test.Check(expected_action_result=is_success(),
-                                           eds_contents_before=tmp_user_dir_contents(DirContents([
+                                           sds_contents_before=tmp_user_dir_contents(DirContents([
                                                Dir('sub1', [
                                                    empty_dir('sub2')
                                                ])
@@ -183,7 +183,7 @@ class TestSuccessfulScenarios(TestCaseBase):
     def test_relative_tmp__with_argument(self):
         self._test_argument('--rel-tmp sub1/sub2',
                             sds_test.Check(expected_action_result=is_success(),
-                                           eds_contents_before=tmp_user_dir_contents(DirContents([
+                                           sds_contents_before=tmp_user_dir_contents(DirContents([
                                                Dir('sub1', [
                                                    empty_dir('sub2')
                                                ])
@@ -196,7 +196,7 @@ class TestFailingScenarios(TestCaseBase):
     def test_argument_is_file(self):
         self._test_argument('existing-file',
                             sds_test.Check(expected_action_result=is_failure(),
-                                           eds_contents_before=act_dir_contents(DirContents([
+                                           sds_contents_before=act_dir_contents(DirContents([
                                                empty_file('existing-file')
                                            ])),
                                            ))

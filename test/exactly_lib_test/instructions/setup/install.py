@@ -90,7 +90,7 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
         self._run(new_source2('{} {}'.format(src, dst)),
                   Arrangement(
                       home_dir_contents=DirContents(home_dir_contents),
-                      eds_contents_before_main=sds_populator.act_dir_contents(DirContents(act_dir_contents))),
+                      sds_contents_before_main=sds_populator.act_dir_contents(DirContents(act_dir_contents))),
                   Expectation(
                       main_side_effects_on_files=sds_contents_check.act_dir_contains_exactly(
                           DirContents(act_dir_contents_after)))
@@ -124,7 +124,7 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
         self._run(new_source2('{} {}'.format(src_dir, dst_dir)),
                   Arrangement(
                       home_dir_contents=DirContents(files_to_install),
-                      eds_contents_before_main=sds_populator.act_dir_contents(act_dir_contents_before)),
+                      sds_contents_before_main=sds_populator.act_dir_contents(act_dir_contents_before)),
                   Expectation(
                       main_side_effects_on_files=sds_contents_check.act_dir_contains_exactly(
                           act_dir_contents_after))
@@ -139,7 +139,7 @@ class TestFailingScenarios(TestCaseBaseForParser):
         self._run(new_source2(file_name),
                   Arrangement(
                       home_dir_contents=file_to_install,
-                      eds_contents_before_main=sds_populator.act_dir_contents(DirContents(
+                      sds_contents_before_main=sds_populator.act_dir_contents(DirContents(
                           [empty_file(file_name)]))),
                   Expectation(
                       main_result=sh_check.is_hard_error())
@@ -153,7 +153,7 @@ class TestFailingScenarios(TestCaseBaseForParser):
         self._run(new_source2('{} {}'.format(src, dst)),
                   Arrangement(
                       home_dir_contents=home_dir_contents,
-                      eds_contents_before_main=sds_populator.act_dir_contents(act_dir_contents)
+                      sds_contents_before_main=sds_populator.act_dir_contents(act_dir_contents)
                   ),
                   Expectation(
                       main_result=sh_check.is_hard_error()
@@ -169,7 +169,7 @@ class TestFailingScenarios(TestCaseBaseForParser):
         self._run(new_source2('{} {}'.format(src, dst)),
                   Arrangement(
                       home_dir_contents=home_dir_contents,
-                      eds_contents_before_main=sds_populator.act_dir_contents(act_dir_contents)),
+                      sds_contents_before_main=sds_populator.act_dir_contents(act_dir_contents)),
                   Expectation(
                       main_result=sh_check.is_hard_error())
                   )

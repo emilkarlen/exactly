@@ -36,7 +36,7 @@ class TestCheckForDirectory(TestCaseBaseForParser):
         file_name = 'name-of-existing-directory'
         self._run(
             new_source2(file_name + ' ' + sut.TYPE_NAME_DIRECTORY),
-                arrangement(eds_contents_before_main=act_dir_contents(DirContents(
+                arrangement(sds_contents_before_main=act_dir_contents(DirContents(
                         [empty_dir(file_name)]))),
                 is_pass(),
         )
@@ -45,7 +45,7 @@ class TestCheckForDirectory(TestCaseBaseForParser):
         file_name = 'name-of-existing-directory'
         self._run(
             new_source2(file_name + ' ' + sut.TYPE_NAME_DIRECTORY),
-                arrangement(eds_contents_before_main=act_dir_contents(DirContents(
+                arrangement(sds_contents_before_main=act_dir_contents(DirContents(
                         [empty_file(file_name)]))),
                 Expectation(main_result=pfh_check.is_fail()),
         )
@@ -54,7 +54,7 @@ class TestCheckForDirectory(TestCaseBaseForParser):
         file_name = 'sym-link'
         self._run(
             new_source2(file_name + ' ' + sut.TYPE_NAME_DIRECTORY),
-                arrangement(eds_contents_before_main=act_dir_contents(DirContents(
+                arrangement(sds_contents_before_main=act_dir_contents(DirContents(
                         [empty_dir('directory'),
                          Link(file_name, 'directory')]))),
                 is_pass(),
@@ -64,7 +64,7 @@ class TestCheckForDirectory(TestCaseBaseForParser):
         file_name = 'sym-link'
         self._run(
             new_source2(file_name + ' ' + sut.TYPE_NAME_DIRECTORY),
-                arrangement(eds_contents_before_main=act_dir_contents(DirContents(
+                arrangement(sds_contents_before_main=act_dir_contents(DirContents(
                         [empty_file('existing-file'),
                          Link(file_name, 'existing-file')]))),
                 Expectation(main_result=pfh_check.is_fail()),
@@ -76,7 +76,7 @@ class TestCheckForRegularFile(TestCaseBaseForParser):
         file_name = 'name-of-existing-directory'
         self._run(
             new_source2(file_name + ' ' + sut.TYPE_NAME_REGULAR),
-                arrangement(eds_contents_before_main=act_dir_contents(DirContents(
+                arrangement(sds_contents_before_main=act_dir_contents(DirContents(
                         [empty_file(file_name)]))),
                 is_pass(),
         )
@@ -85,7 +85,7 @@ class TestCheckForRegularFile(TestCaseBaseForParser):
         file_name = 'name-of-existing-directory'
         self._run(
             new_source2(file_name + ' ' + sut.TYPE_NAME_REGULAR),
-                arrangement(eds_contents_before_main=act_dir_contents(DirContents(
+                arrangement(sds_contents_before_main=act_dir_contents(DirContents(
                         [empty_dir(file_name)]))),
                 Expectation(main_result=pfh_check.is_fail()),
         )
@@ -94,7 +94,7 @@ class TestCheckForRegularFile(TestCaseBaseForParser):
         file_name = 'sym-link'
         self._run(
             new_source2(file_name + ' ' + sut.TYPE_NAME_REGULAR),
-                arrangement(eds_contents_before_main=act_dir_contents(DirContents(
+                arrangement(sds_contents_before_main=act_dir_contents(DirContents(
                         [empty_dir('directory'),
                          Link(file_name, 'directory')]))),
                 Expectation(main_result=pfh_check.is_fail()),
@@ -104,7 +104,7 @@ class TestCheckForRegularFile(TestCaseBaseForParser):
         file_name = 'sym-link'
         self._run(
             new_source2(file_name + ' ' + sut.TYPE_NAME_REGULAR),
-                arrangement(eds_contents_before_main=act_dir_contents(DirContents(
+                arrangement(sds_contents_before_main=act_dir_contents(DirContents(
                         [empty_file('existing-file'),
                          Link(file_name, 'existing-file')]))),
                 is_pass(),
@@ -116,7 +116,7 @@ class TestCheckForSymLink(TestCaseBaseForParser):
         file_name = 'name-of-existing-file'
         self._run(
             new_source2(file_name + ' ' + sut.TYPE_NAME_SYMLINK),
-                arrangement(eds_contents_before_main=act_dir_contents(DirContents(
+                arrangement(sds_contents_before_main=act_dir_contents(DirContents(
                         [empty_file(file_name)]))),
                 Expectation(main_result=pfh_check.is_fail()),
         )
@@ -125,7 +125,7 @@ class TestCheckForSymLink(TestCaseBaseForParser):
         file_name = 'name-of-existing-directory'
         self._run(
             new_source2(file_name + ' ' + sut.TYPE_NAME_SYMLINK),
-                arrangement(eds_contents_before_main=act_dir_contents(DirContents(
+                arrangement(sds_contents_before_main=act_dir_contents(DirContents(
                         [empty_dir(file_name)]))),
                 Expectation(main_result=pfh_check.is_fail()),
         )
@@ -134,7 +134,7 @@ class TestCheckForSymLink(TestCaseBaseForParser):
         file_name = 'link-file'
         self._run(
             new_source2(file_name + ' ' + sut.TYPE_NAME_SYMLINK),
-                arrangement(eds_contents_before_main=act_dir_contents(DirContents(
+                arrangement(sds_contents_before_main=act_dir_contents(DirContents(
                         [empty_dir('dir'),
                          Link(file_name, 'dir')]))),
                 is_pass(),
@@ -144,7 +144,7 @@ class TestCheckForSymLink(TestCaseBaseForParser):
         file_name = 'link-file'
         self._run(
             new_source2(file_name + ' ' + sut.TYPE_NAME_SYMLINK),
-                arrangement(eds_contents_before_main=act_dir_contents(DirContents(
+                arrangement(sds_contents_before_main=act_dir_contents(DirContents(
                         [empty_file('file'),
                          Link(file_name, 'file')]))),
                 is_pass(),

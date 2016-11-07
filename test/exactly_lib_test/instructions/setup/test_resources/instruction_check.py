@@ -32,9 +32,9 @@ class Arrangement(ArrangementWithEds):
                  home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
                  os_services: OsServices = new_default(),
                  process_execution_settings: ProcessExecutionSettings = with_no_timeout(),
-                 eds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
+                 sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
                  initial_settings_builder: SetupSettingsBuilder = SetupSettingsBuilder()):
-        super().__init__(home_dir_contents, eds_contents_before_main, os_services, process_execution_settings)
+        super().__init__(home_dir_contents, sds_contents_before_main, os_services, process_execution_settings)
         self.initial_settings_builder = initial_settings_builder
 
 
@@ -106,8 +106,8 @@ class Executor:
                 pre_validate_result = self._execute_pre_validate(home_dir_path, instruction)
                 if not pre_validate_result.is_success:
                     return
-                with tempfile.TemporaryDirectory(prefix=prefix + '-sds-') as eds_root_dir_name:
-                    sds = sandbox_directory_structure.construct_at(resolved_path_name(eds_root_dir_name))
+                with tempfile.TemporaryDirectory(prefix=prefix + '-sds-') as sds_root_dir_name:
+                    sds = sandbox_directory_structure.construct_at(resolved_path_name(sds_root_dir_name))
                     os.chdir(str(sds.act_dir))
                     global_environment_with_sds = i.InstructionEnvironmentForPostSdsStep(
                         home_dir_path,
@@ -139,7 +139,7 @@ class Executor:
                       sds: SandboxDirectoryStructure,
                       global_environment_with_sds: i.InstructionEnvironmentForPostSdsStep,
                       instruction: SetupPhaseInstruction) -> sh.SuccessOrHardError:
-        self.arrangement.eds_contents.apply(sds)
+        self.arrangement.sds_contents.apply(sds)
         settings_builder = self.arrangement.initial_settings_builder
         initial_settings_builder = copy.deepcopy(settings_builder)
         main_result = instruction.main(global_environment_with_sds,
