@@ -234,7 +234,7 @@ class TestParseAbsolutePath(unittest.TestCase):
         self.assertEqual('remaining args',
                          remaining_arguments.source,
                          'Remaining arguments')
-        self.assertTrue(exe_file.exists_pre_eds,
+        self.assertTrue(exe_file.exists_pre_sds,
                         'File is expected to exist pre SDS')
         with home_and_sds_and_test_as_curr_dir(
                 home_dir_contents=DirContents([])) as home_and_sds:
@@ -251,7 +251,7 @@ class TestParseAbsolutePath(unittest.TestCase):
         self.assertEqual('remaining args',
                          remaining_arguments.source,
                          'Remaining arguments')
-        self.assertTrue(exe_file.exists_pre_eds,
+        self.assertTrue(exe_file.exists_pre_sds,
                         'File is expected to exist pre SDS')
         with home_and_sds_and_test_as_curr_dir(
                 home_dir_contents=DirContents([])) as home_and_sds:

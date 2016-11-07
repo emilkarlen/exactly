@@ -69,7 +69,7 @@ def pre_or_post_sds_failure_message_or_none(file_ref_check: FileRefCheck,
     return None
 
 
-def pre_eds_validate(file_ref_check: FileRefCheck,
+def pre_sds_validate(file_ref_check: FileRefCheck,
                      environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
     validation_result = file_ref_check.pre_eds_condition_result(environment.home_directory)
     if not validation_result.is_success:
@@ -79,7 +79,7 @@ def pre_eds_validate(file_ref_check: FileRefCheck,
     return svh.new_svh_success()
 
 
-def pre_or_post_eds_validate(file_ref_check: FileRefCheck,
+def pre_or_post_sds_validate(file_ref_check: FileRefCheck,
                              home_and_sds: HomeAndSds) -> svh.SuccessOrValidationErrorOrHardError:
     failure_message = pre_or_post_sds_failure_message_or_none(file_ref_check, home_and_sds)
     if failure_message is not None:

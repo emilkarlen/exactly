@@ -8,9 +8,9 @@ from exactly_lib_test.test_resources.file_structure import DirContents, empty_fi
 
 
 class TestRelHome(unittest.TestCase):
-    def test_exists_pre_eds(self):
+    def test_exists_pre_sds(self):
         file_reference = sut.rel_home('file.txt')
-        self.assertTrue(file_reference.exists_pre_eds,
+        self.assertTrue(file_reference.exists_pre_sds,
                         'File is expected to exist pre SDS')
 
     def test_existing_file(self):
@@ -28,9 +28,9 @@ class TestRelHome(unittest.TestCase):
 
 
 class TestRelCwd(unittest.TestCase):
-    def test_exists_pre_eds(self):
+    def test_exists_pre_sds(self):
         file_reference = sut.rel_cwd('file.txt')
-        self.assertFalse(file_reference.exists_pre_eds,
+        self.assertFalse(file_reference.exists_pre_sds,
                          'File is expected to not exist pre SDS')
 
     def test_existing_file(self):
@@ -46,9 +46,9 @@ class TestRelCwd(unittest.TestCase):
 
 
 class TestRelTmpUser(unittest.TestCase):
-    def test_exists_pre_eds(self):
+    def test_exists_pre_sds(self):
         file_reference = sut.rel_tmp_user('file.txt')
-        self.assertFalse(file_reference.exists_pre_eds,
+        self.assertFalse(file_reference.exists_pre_sds,
                          'File is expected to not exist pre SDS')
 
     def test_existing_file(self):
@@ -64,9 +64,9 @@ class TestRelTmpUser(unittest.TestCase):
 
 
 class TestRelTmpInternal(unittest.TestCase):
-    def test_exists_pre_eds(self):
+    def test_exists_pre_sds(self):
         file_reference = sut.rel_tmp_internal('file.txt')
-        self.assertFalse(file_reference.exists_pre_eds,
+        self.assertFalse(file_reference.exists_pre_sds,
                          'File is expected to not exist pre SDS')
 
     def test_existing_file(self):

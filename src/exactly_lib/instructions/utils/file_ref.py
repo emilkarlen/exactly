@@ -7,9 +7,9 @@ from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectorySt
 
 class FileRef:
     def __init__(self,
-                 exists_pre_eds: bool,
+                 exists_pre_sds: bool,
                  file_name: str):
-        self.__exists_pre_eds = exists_pre_eds
+        self.__exists_pre_sds = exists_pre_sds
         self._file_name = file_name
 
     @property
@@ -29,14 +29,14 @@ class FileRef:
         raise NotImplementedError()
 
     def file_path_pre_or_post_sds(self, home_and_sds: HomeAndSds) -> pathlib.Path:
-        if self.exists_pre_eds:
+        if self.exists_pre_sds:
             return self.file_path_pre_eds(home_and_sds.home_dir_path)
         else:
             return self.file_path_post_eds(home_and_sds.sds)
 
     @property
-    def exists_pre_eds(self) -> bool:
-        return self.__exists_pre_eds
+    def exists_pre_sds(self) -> bool:
+        return self.__exists_pre_sds
 
 
 class FileRefRelEds(FileRef):
@@ -146,11 +146,11 @@ class FileRefValidatorBase(PreOrPostSdsValidator):
         raise NotImplementedError()
 
     def validate_pre_sds_if_applicable(self, home_dir_path: pathlib.Path) -> str:
-        if self.file_ref.exists_pre_eds:
+        if self.file_ref.exists_pre_sds:
             return self._validate_path(self.file_ref.file_path_pre_eds(home_dir_path))
         return None
 
     def validate_post_sds_if_applicable(self, sds: SandboxDirectoryStructure) -> str:
-        if not self.file_ref.exists_pre_eds:
+        if not self.file_ref.exists_pre_sds:
             return self._validate_path(self.file_ref.file_path_post_eds(sds))
         return None

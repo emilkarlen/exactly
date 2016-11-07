@@ -14,9 +14,9 @@ from exactly_lib_test.test_resources.file_structure import File, DirContents, ex
 class Configuration:
     def __init__(self,
                  option: str,
-                 exists_pre_eds: bool):
+                 exists_pre_sds: bool):
         self.option = option
-        self.exists_pre_eds = exists_pre_eds
+        self.exists_pre_sds = exists_pre_sds
 
     def file_installation(self, file: File) -> (DirContents, sds_populator.SdsPopulator):
         raise NotImplementedError()
@@ -33,8 +33,8 @@ class CheckBase(unittest.TestCase):
         self.configuration = configuration
 
     def _check_expectance_to_exist_pre_eds(self, actual: sut.ExecutableFile):
-        self.assertEquals(self.configuration.exists_pre_eds,
-                          actual.exists_pre_eds,
+        self.assertEquals(self.configuration.exists_pre_sds,
+                          actual.exists_pre_sds,
                           'Existence pre SDS')
 
     def _check_file_path(self, file_name: str, actual: sut.ExecutableFile, home_and_sds: HomeAndSds):
@@ -52,7 +52,7 @@ class CheckBase(unittest.TestCase):
         validator_util.check(self, actual.validator, home_and_sds)
 
     def _assert_does_not_pass_validation(self, actual: sut.ExecutableFile, home_and_sds: HomeAndSds):
-        passes_pre_eds = not self.configuration.exists_pre_eds
+        passes_pre_eds = not self.configuration.exists_pre_sds
         passes_post_eds = not passes_pre_eds
         validator_util.check(self, actual.validator, home_and_sds,
                              passes_pre_eds=passes_pre_eds,
