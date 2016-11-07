@@ -164,9 +164,9 @@ def execute(act_phase_handling: ActPhaseHandling,
                 shutil.rmtree(str(ret_val.execution_directory_structure.root_dir))
 
 
-def construct_eds(execution_directory_root_name_prefix: str) -> SandboxDirectoryStructure:
-    eds_structure_root = tempfile.mkdtemp(prefix=execution_directory_root_name_prefix)
-    return construct_at(resolved_path_name(eds_structure_root))
+def construct_sds(execution_directory_root_name_prefix: str) -> SandboxDirectoryStructure:
+    sds_structure_root = tempfile.mkdtemp(prefix=execution_directory_root_name_prefix)
+    return construct_at(resolved_path_name(sds_structure_root))
 
 
 class _PartialExecutor:
@@ -186,7 +186,7 @@ class _PartialExecutor:
         self.os_services = None
         self.__act_source_and_executor = None
         self.__act_source_and_executor_constructor = act_phase_handling.source_and_executor_constructor
-        self.__global_environment_pre_eds = InstructionEnvironmentForPreSdsStep(
+        self.__global_environment_pre_sds = InstructionEnvironmentForPreSdsStep(
             self.__configuration.home_dir_path,
             self.__configuration.timeout_in_seconds)
 
@@ -194,17 +194,17 @@ class _PartialExecutor:
         # TODO Köra det här i sub-process?
         # Tror det behövs för att undvika att sätta omgivningen mm, o därmed
         # påverka huvudprocessen.
-        self.__set_pre_eds_environment_variables()
+        self.__set_pre_sds_environment_variables()
         res = self._sequence([
-            self.__setup__validate_pre_eds,
-            self.__act__create_executor_and_validate_pre_eds,
-            self.__before_assert__validate_pre_eds,
-            self.__assert__validate_pre_eds,
-            self.__cleanup__validate_pre_eds,
+            self.__setup__validate_pre_sds,
+            self.__act__create_executor_and_validate_pre_sds,
+            self.__before_assert__validate_pre_sds,
+            self.__assert__validate_pre_sds,
+            self.__cleanup__validate_pre_sds,
         ])
         if res.is_failure:
             return res
-        self._setup_post_eds_environment()
+        self._setup_post_sds_environment()
         act_program_executor = self.__act_program_executor()
         res = self._sequence_with_cleanup(
             PreviousPhase.SETUP,
@@ -235,7 +235,7 @@ class _PartialExecutor:
             res = action()
             if res.is_failure:
                 return res
-        return new_partial_result_pass(self._eds)
+        return new_partial_result_pass(self._sds)
 
     def _sequence_with_cleanup(self, previous_phase: PreviousPhase, actions: list) -> PartialResult:
         for action in actions:
@@ -243,10 +243,10 @@ class _PartialExecutor:
             if res.is_failure:
                 self.__cleanup_main(previous_phase)
                 return res
-        return new_partial_result_pass(self._eds)
+        return new_partial_result_pass(self._sds)
 
     @property
-    def _eds(self) -> SandboxDirectoryStructure:
+    def _sds(self) -> SandboxDirectoryStructure:
         return self.__execution_directory_structure
 
     @property
@@ -257,20 +257,20 @@ class _PartialExecutor:
     def configuration(self) -> Configuration:
         return self.__configuration
 
-    def _setup_post_eds_environment(self):
-        self.__construct_and_set_eds()
+    def _setup_post_sds_environment(self):
+        self.__construct_and_set_sds()
         self.os_services = new_default()
         self.__set_cwd_to_act_dir()
-        self.__set_post_eds_environment_variables()
+        self.__set_post_sds_environment_variables()
 
-    def __setup__validate_pre_eds(self) -> PartialResult:
-        return self.__run_internal_instructions_phase_step(phase_step.SETUP__VALIDATE_PRE_EDS,
-                                                           phase_step_executors.SetupValidatePreEdsExecutor(
-                                                               self.__global_environment_pre_eds),
+    def __setup__validate_pre_sds(self) -> PartialResult:
+        return self.__run_internal_instructions_phase_step(phase_step.SETUP__VALIDATE_PRE_SDS,
+                                                           phase_step_executors.SetupValidatePreSdsExecutor(
+                                                               self.__global_environment_pre_sds),
                                                            self.__test_case.setup_phase)
 
-    def __act__create_executor_and_validate_pre_eds(self) -> PartialResult:
-        failure_con = _PhaseFailureResultConstructor(phase_step.ACT__VALIDATE_PRE_EDS, None)
+    def __act__create_executor_and_validate_pre_sds(self) -> PartialResult:
+        failure_con = _PhaseFailureResultConstructor(phase_step.ACT__VALIDATE_PRE_SDS, None)
 
         def action():
             section_contents = self.__test_case.act_phase
@@ -287,9 +287,9 @@ class _PartialExecutor:
                     return failure_con.implementation_error_msg(msg)
 
             self.__act_source_and_executor = self.__act_phase_handling.source_and_executor_constructor.apply(
-                self.__global_environment_pre_eds,
+                self.__global_environment_pre_sds,
                 instructions)
-            res = self.__act_source_and_executor.validate_pre_sds(self.__global_environment_pre_eds.home_directory)
+            res = self.__act_source_and_executor.validate_pre_sds(self.__global_environment_pre_sds.home_directory)
             if res.is_success:
                 return new_partial_result_pass(None)
             else:
@@ -301,32 +301,32 @@ class _PartialExecutor:
         except Exception as ex:
             return PartialResult(PartialResultStatus.IMPLEMENTATION_ERROR,
                                  None,
-                                 PhaseFailureInfo(phase_step.ACT__VALIDATE_PRE_EDS,
+                                 PhaseFailureInfo(phase_step.ACT__VALIDATE_PRE_SDS,
                                                   new_failure_details_from_exception(ex)))
 
-    def __before_assert__validate_pre_eds(self) -> PartialResult:
+    def __before_assert__validate_pre_sds(self) -> PartialResult:
         return self.__run_internal_instructions_phase_step(
-            phase_step.BEFORE_ASSERT__VALIDATE_PRE_EDS,
-            phase_step_executors.BeforeAssertValidatePreEdsExecutor(self.__global_environment_pre_eds),
+            phase_step.BEFORE_ASSERT__VALIDATE_PRE_SDS,
+            phase_step_executors.BeforeAssertValidatePreEdsExecutor(self.__global_environment_pre_sds),
             self.__test_case.before_assert_phase)
 
-    def __assert__validate_pre_eds(self) -> PartialResult:
-        return self.__run_internal_instructions_phase_step(phase_step.ASSERT__VALIDATE_PRE_EDS,
-                                                           phase_step_executors.AssertValidatePreEdsExecutor(
-                                                               self.__global_environment_pre_eds),
+    def __assert__validate_pre_sds(self) -> PartialResult:
+        return self.__run_internal_instructions_phase_step(phase_step.ASSERT__VALIDATE_PRE_SDS,
+                                                           phase_step_executors.AssertValidatePreSdsExecutor(
+                                                               self.__global_environment_pre_sds),
                                                            self.__test_case.assert_phase)
 
-    def __cleanup__validate_pre_eds(self) -> PartialResult:
-        return self.__run_internal_instructions_phase_step(phase_step.CLEANUP__VALIDATE_PRE_EDS,
-                                                           phase_step_executors.CleanupValidatePreEdsExecutor(
-                                                               self.__global_environment_pre_eds),
+    def __cleanup__validate_pre_sds(self) -> PartialResult:
+        return self.__run_internal_instructions_phase_step(phase_step.CLEANUP__VALIDATE_PRE_SDS,
+                                                           phase_step_executors.CleanupValidatePreSdsExecutor(
+                                                               self.__global_environment_pre_sds),
                                                            self.__test_case.cleanup_phase)
 
     def __setup__main(self) -> PartialResult:
         ret_val = self.__run_internal_instructions_phase_step(phase_step.SETUP__MAIN,
                                                               phase_step_executors.SetupMainExecutor(
                                                                   self.os_services,
-                                                                  self.__post_eds_environment(phase_identifier.SETUP),
+                                                                  self.__post_sds_environment(phase_identifier.SETUP),
                                                                   self.__setup_settings_builder),
                                                               self.__test_case.setup_phase)
         self.___step_execution_result.stdin_settings = self.__setup_settings_builder.stdin
@@ -337,33 +337,33 @@ class _PartialExecutor:
         return self.__run_internal_instructions_phase_step(
             phase_step.SETUP__VALIDATE_POST_SETUP,
             phase_step_executors.SetupValidatePostSetupExecutor(
-                self.__post_eds_environment(phase_identifier.SETUP)),
+                self.__post_sds_environment(phase_identifier.SETUP)),
             self.__test_case.setup_phase)
 
     def __act_program_executor(self):
         return _ActProgramExecution(self.__act_source_and_executor,
-                                    HomeAndSds(self.__configuration.home_dir_path, self._eds),
+                                    HomeAndSds(self.__configuration.home_dir_path, self._sds),
                                     self.___step_execution_result)
 
     def __before_assert__validate_post_setup(self) -> PartialResult:
         return self.__run_internal_instructions_phase_step(
             phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
             phase_step_executors.BeforeAssertValidatePostSetupExecutor(
-                self.__post_eds_environment(phase_identifier.BEFORE_ASSERT)),
+                self.__post_sds_environment(phase_identifier.BEFORE_ASSERT)),
             self.__test_case.before_assert_phase)
 
     def __assert__validate_post_setup(self) -> PartialResult:
         return self.__run_internal_instructions_phase_step(
             phase_step.ASSERT__VALIDATE_POST_SETUP,
             phase_step_executors.AssertValidatePostSetupExecutor(
-                self.__post_eds_environment(phase_identifier.ASSERT)),
+                self.__post_sds_environment(phase_identifier.ASSERT)),
             self.__test_case.assert_phase)
 
     def __assert__main(self) -> PartialResult:
         return self.__run_internal_instructions_phase_step(
             phase_step.ASSERT__MAIN,
             phase_step_executors.AssertMainExecutor(
-                self.__post_eds_environment(phase_identifier.ASSERT),
+                self.__post_sds_environment(phase_identifier.ASSERT),
                 self.os_services),
             self.__test_case.assert_phase)
 
@@ -371,7 +371,7 @@ class _PartialExecutor:
         return self.__run_internal_instructions_phase_step(
             phase_step.CLEANUP__MAIN,
             phase_step_executors.CleanupMainExecutor(
-                self.__post_eds_environment(phase_identifier.CLEANUP),
+                self.__post_sds_environment(phase_identifier.CLEANUP),
                 previous_phase,
                 self.os_services),
             self.__test_case.cleanup_phase)
@@ -380,32 +380,32 @@ class _PartialExecutor:
         return self.__run_internal_instructions_phase_step(
             phase_step.BEFORE_ASSERT__MAIN,
             phase_step_executors.BeforeAssertMainExecutor(
-                self.__post_eds_environment(phase_identifier.BEFORE_ASSERT),
+                self.__post_sds_environment(phase_identifier.BEFORE_ASSERT),
                 self.os_services),
             self.__test_case.before_assert_phase)
 
-    def __set_pre_eds_environment_variables(self):
+    def __set_pre_sds_environment_variables(self):
         os.environ.update(environment_variables.set_at_setup_pre_validate(self.__configuration.home_dir_path))
 
     def __set_cwd_to_act_dir(self):
-        os.chdir(str(self._eds.act_dir))
+        os.chdir(str(self._sds.act_dir))
 
-    def __construct_and_set_eds(self) -> SandboxDirectoryStructure:
-        eds_structure_root = tempfile.mkdtemp(prefix=self.__exe_configuration.execution_directory_root_name_prefix)
-        self.__execution_directory_structure = construct_eds(eds_structure_root)
+    def __construct_and_set_sds(self) -> SandboxDirectoryStructure:
+        sds_structure_root = tempfile.mkdtemp(prefix=self.__exe_configuration.execution_directory_root_name_prefix)
+        self.__execution_directory_structure = construct_sds(sds_structure_root)
 
-    def __post_eds_environment(self,
+    def __post_sds_environment(self,
                                phase: phase_identifier.Phase) -> common.InstructionEnvironmentForPostSdsStep:
         return common.InstructionEnvironmentForPostSdsStep(self.__configuration.home_dir_path,
                                                            self.__execution_directory_structure,
                                                            phase.identifier,
                                                            timeout_in_seconds=self.__configuration.timeout_in_seconds)
 
-    def __set_post_eds_environment_variables(self):
-        os.environ.update(environment_variables.set_at_setup_main(self._eds))
+    def __set_post_sds_environment_variables(self):
+        os.environ.update(environment_variables.set_at_setup_main(self._sds))
 
     def __set_assert_environment_variables(self):
-        os.environ.update(environment_variables.set_at_assert(self._eds))
+        os.environ.update(environment_variables.set_at_assert(self._sds))
 
     def __run_internal_instructions_phase_step(self,
                                                step: PhaseStep,
@@ -416,7 +416,7 @@ class _PartialExecutor:
                                                   phase_step_execution.ElementHeaderExecutorThatDoesNothing(),
                                                   instruction_executor,
                                                   step,
-                                                  self._eds)
+                                                  self._sds)
 
 
 class _PhaseFailureResultConstructor:

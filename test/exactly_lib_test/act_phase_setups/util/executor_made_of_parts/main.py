@@ -56,7 +56,7 @@ class TestConstructor(unittest.TestCase):
         check_execution(self, arrangement, expectation)
         # ASSERT #
         expected_recordings = {
-            phase_step.ACT__VALIDATE_PRE_EDS: 'act phase source',
+            phase_step.ACT__VALIDATE_PRE_SDS: 'act phase source',
             phase_step.ACT__VALIDATE_POST_SETUP: 'act phase source',
             phase_step.ACT__PREPARE: 'act phase source',
             phase_step.ACT__EXECUTE: 'act phase source',
@@ -98,7 +98,7 @@ class ValidatorThatRecordsSteps(sut.Validator):
         self.act_phase_source = act_phase_source
 
     def validate_pre_sds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
-        self.recorder[phase_step.ACT__VALIDATE_PRE_EDS] = self.act_phase_source
+        self.recorder[phase_step.ACT__VALIDATE_PRE_SDS] = self.act_phase_source
         return svh.new_svh_success()
 
     def validate_post_setup(self, home_and_sds: HomeAndSds) -> svh.SuccessOrValidationErrorOrHardError:

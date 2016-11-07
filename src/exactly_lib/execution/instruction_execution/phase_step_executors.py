@@ -50,7 +50,7 @@ class ConfigurationMainExecutor(ControlledInstructionExecutor):
             instruction.main(self.__phase_environment))
 
 
-class SetupValidatePreEdsExecutor(ControlledInstructionExecutor):
+class SetupValidatePreSdsExecutor(ControlledInstructionExecutor):
     def __init__(self,
                  global_environment: instr.InstructionEnvironmentForPreSdsStep):
         self.__global_environment = global_environment
@@ -140,7 +140,7 @@ class BeforeAssertMainExecutor(ControlledInstructionExecutor):
             instruction.main(self.__environment, self.__os_services))
 
 
-class AssertValidatePreEdsExecutor(ControlledInstructionExecutor):
+class AssertValidatePreSdsExecutor(ControlledInstructionExecutor):
     def __init__(self,
                  global_environment: instr.InstructionEnvironmentForPreSdsStep):
         self.__global_environment = global_environment
@@ -150,7 +150,7 @@ class AssertValidatePreEdsExecutor(ControlledInstructionExecutor):
             instruction.validate_pre_sds(self.__global_environment))
 
 
-class CleanupValidatePreEdsExecutor(ControlledInstructionExecutor):
+class CleanupValidatePreSdsExecutor(ControlledInstructionExecutor):
     def __init__(self,
                  global_environment: instr.InstructionEnvironmentForPreSdsStep):
         self.__global_environment = global_environment

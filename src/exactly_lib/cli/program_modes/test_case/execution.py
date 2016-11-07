@@ -96,11 +96,11 @@ class Executor:
             _ErrorDescriptionDisplayer(self._err_printer).visit(ed)
 
     def _process(self,
-                 is_keep_eds: bool) -> test_case_processing.Result:
+                 is_keep_sds: bool) -> test_case_processing.Result:
         configuration = processors.Configuration(self._split_line_into_name_and_argument_function,
                                                  self._instruction_setup,
                                                  self._settings.handling_setup,
-                                                 is_keep_eds,
+                                                 is_keep_sds,
                                                  self._settings.execution_directory_root_name_prefix)
         processor = processors.new_processor_that_is_allowed_to_pollute_current_process(configuration)
         return processor.apply(test_case_processing.TestCaseSetup(self._settings.file_path))
