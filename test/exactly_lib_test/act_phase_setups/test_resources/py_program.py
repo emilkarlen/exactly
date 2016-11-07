@@ -1,3 +1,6 @@
+from exactly_lib_test.test_resources.process import SubProcessResult
+
+
 def write_string_to_stdout(string_to_print) -> list:
     return ['import sys',
             "sys.stdout.write('{}')".format(string_to_print)]
@@ -43,3 +46,17 @@ def program_that_sleeps_at_least(number_of_seconds: int) -> list:
         'import time',
         'time.sleep({})'.format(number_of_seconds),
     ]
+
+
+def program_that_prints_and_exits_with_exit_code(output: SubProcessResult) -> str:
+    return _PY_PGM_THAT_PRINTS_AND_EXITS_WITH_EXIT_CODE.format(exit_code=output.exitcode,
+                                                               stdout=output.stdout,
+                                                               stderr=output.stderr)
+
+
+_PY_PGM_THAT_PRINTS_AND_EXITS_WITH_EXIT_CODE = """\
+import sys
+sys.stdout.write('{stdout}')
+sys.stderr.write('{stderr}')
+sys.exit({exit_code})
+"""
