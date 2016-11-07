@@ -27,8 +27,7 @@ sys.exit(%d)
                     File('program.py', py_pgm_that_exits_with_exit_code)
                 ]))) as sds:
             executor = sut.ExecutorThatStoresResultInFilesInDir(False, with_no_timeout())
-            result = executor.apply(self.source_info,
-                                    sds.log_dir,
+            result = executor.apply(sds.log_dir,
                                     py_exe.args_for_interpreting(sds.act_dir / 'program.py'))
             self.assertTrue(result.is_success,
                             'Result should indicate success')
@@ -39,8 +38,7 @@ sys.exit(%d)
     def test_invalid_executable(self):
         with sandbox_directory_structure() as sds:
             executor = sut.ExecutorThatStoresResultInFilesInDir(False, with_no_timeout())
-            result = executor.apply(self.source_info,
-                                    sds.log_dir,
+            result = executor.apply(sds.log_dir,
                                     [str(sds.act_dir / 'non-existing-program')])
             self.assertFalse(result.is_success,
                              'Result should indicate failure')
@@ -52,8 +50,7 @@ sys.exit(%d)
                          program_that_prints_and_exits_with_exit_code(PROCESS_OUTPUT_WITH_NON_ZERO_EXIT_STATUS))
                 ]))) as sds:
             executor = sut.ExecutorThatStoresResultInFilesInDir(False, with_no_timeout())
-            result = executor.apply(self.source_info,
-                                    sds.log_dir,
+            result = executor.apply(sds.log_dir,
                                     py_exe.args_for_interpreting(sds.act_dir / 'program.py'))
             assert_is_success_and_output_dir_contains_at_least_result_files(self,
                                                                             PROCESS_OUTPUT_WITH_NON_ZERO_EXIT_STATUS,
@@ -66,8 +63,7 @@ sys.exit(%d)
                          program_that_prints_and_exits_with_exit_code(PROCESS_OUTPUT_WITH_NON_ZERO_EXIT_STATUS))
                 ]))) as sds:
             executor = sut.ExecutorThatStoresResultInFilesInDir(False, with_no_timeout())
-            result = executor.apply(self.source_info,
-                                    sds.log_dir / 'non-existing-path-component' / 'one-more-component',
+            result = executor.apply(sds.log_dir / 'non-existing-path-component' / 'one-more-component',
                                     py_exe.args_for_interpreting(sds.act_dir / 'program.py'))
             assert_is_success_and_output_dir_contains_at_least_result_files(self,
                                                                             PROCESS_OUTPUT_WITH_NON_ZERO_EXIT_STATUS,
