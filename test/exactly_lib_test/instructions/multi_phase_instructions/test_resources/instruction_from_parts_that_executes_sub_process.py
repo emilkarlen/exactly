@@ -10,11 +10,16 @@ from exactly_lib.instructions.utils.instruction_from_parts_for_executing_sub_pro
 from exactly_lib.instructions.utils.instruction_parts import InstructionInfoForConstructingAnInstructionFromParts
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParserSource, SingleInstructionParser
+from exactly_lib.test_case.phase_identifier import Phase
+from exactly_lib.test_case.phases.common import PhaseLoggingPaths
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib_test.act_phase_setups.test_resources.py_program import program_that_prints_and_exits_with_exit_code
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.configuration import ConfigurationBase
+from exactly_lib_test.instructions.utils.sub_process_execution import assert_dir_contains_at_least_result_files
 from exactly_lib_test.test_resources.parse import new_source2
+from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.python_program_execution import \
     non_shell_args_for_that_executes_source_on_command_line
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
@@ -28,13 +33,17 @@ class Configuration(ConfigurationBase):
                              source: SingleInstructionParserSource,
                              execution_setup_parser: spe_parts.ValidationAndSubProcessExecutionSetupParser,
                              arrangement,
-                             expectation):
+                             expectation,
+                             instruction_name: str = 'instruction-name'):
         instruction_check.check(put,
-                                self._parser('instruction-name',
+                                self._parser(instruction_name,
                                              execution_setup_parser),
                                 source,
                                 arrangement,
                                 expectation)
+
+    def phase(self) -> Phase:
+        raise NotImplementedError()
 
     def instruction_info_for(self, instruction_name: str) -> InstructionInfoForConstructingAnInstructionFromParts:
         raise NotImplementedError()
@@ -67,6 +76,7 @@ def suite_for(configuration: Configuration) -> unittest.TestSuite:
                          TestResultIsValidationErrorWhenPostSetupValidationFails,
                          TestInstructionIsSuccessfulWhenExitStatusFromCommandIsZero,
                          TestInstructionIsErrorWhenExitStatusFromCommandIsNonZero,
+                         TestOutputIsStoredInFilesInInstructionLogDir,
                          ]
     return unittest.TestSuite(
         [tcc(configuration) for tcc in test_case_classes])
@@ -128,6 +138,49 @@ class TestInstructionIsErrorWhenExitStatusFromCommandIsNonZero(TestCaseBase):
             execution_setup_parser,
             self.conf.empty_arrangement(),
             self.conf.expectation_for_non_zero_exitcode())
+
+
+class TestOutputIsStoredInFilesInInstructionLogDir(TestCaseBase):
+    def runTest(self):
+        sub_process_result = SubProcessResult(exitcode=0,
+                                              stdout='output on stdout',
+                                              stderr='output on stderr')
+        program = program_that_prints_and_exits_with_exit_code(sub_process_result)
+        execution_setup_parser = _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(
+            pre_or_post_validation.ConstantSuccessValidator())
+        source = new_source2(program)
+        instruction_name = 'name-of-the-instruction'
+        source_info = spe.InstructionSourceInfo(source.line_sequence.first_line.line_number,
+                                                instruction_name)
+        self.conf.run_sub_process_test(
+            self,
+            source,
+            execution_setup_parser,
+            self.conf.empty_arrangement(),
+            self.conf.expect_success_and_side_effects_on_files(_InstructionLogDirContainsOutFiles(self.conf.phase(),
+                                                                                                  source_info,
+                                                                                                  sub_process_result)),
+            instruction_name=instruction_name)
+
+
+class _InstructionLogDirContainsOutFiles(va.ValueAssertion):
+    def __init__(self,
+                 phase: Phase,
+                 source_info: spe.InstructionSourceInfo,
+                 expected_files_contents: SubProcessResult):
+        self.phase = phase
+        self.source_info = source_info
+        self.expected_files_contents = expected_files_contents
+
+    def apply(self,
+              put: unittest.TestCase,
+              sds: SandboxDirectoryStructure,
+              message_builder: va.MessageBuilder = va.MessageBuilder()):
+        logging_paths = PhaseLoggingPaths(sds.log_dir, self.phase.identifier)
+        instruction_log_dir = spe.instruction_log_dir(logging_paths, self.source_info)
+        assert_dir_contains_at_least_result_files(self.expected_files_contents).apply(put,
+                                                                                      instruction_log_dir,
+                                                                                      message_builder)
 
 
 class _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(
