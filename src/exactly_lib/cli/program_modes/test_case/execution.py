@@ -67,10 +67,10 @@ class Executor:
         result = self._process(True)
         full_result = result.execution_result
 
-        copy_file(full_result.execution_directory_structure.result.stdout_file, self._std.out)
-        copy_file(full_result.execution_directory_structure.result.stderr_file, self._std.err)
-        exit_code = act_phase_exit_code(full_result.execution_directory_structure.result.exitcode_file)
-        shutil.rmtree(str(full_result.execution_directory_structure.root_dir))
+        copy_file(full_result.sandbox_directory_structure.result.stdout_file, self._std.out)
+        copy_file(full_result.sandbox_directory_structure.result.stderr_file, self._std.err)
+        exit_code = act_phase_exit_code(full_result.sandbox_directory_structure.result.exitcode_file)
+        shutil.rmtree(str(full_result.sandbox_directory_structure.root_dir))
         return exit_code
 
     def _report_full_result(self, the_full_result: full_execution.FullResult):
@@ -80,8 +80,8 @@ class Executor:
     def _print_output_to_stdout_for_full_result(self, the_full_result: full_execution.FullResult):
         if self._settings.output is Output.STATUS_CODE:
             self._out_printer.write_line(the_full_result.status.name)
-        elif self._settings.output is Output.EXECUTION_DIRECTORY_STRUCTURE_ROOT:
-            self._out_printer.write_line(str(the_full_result.execution_directory_structure.root_dir))
+        elif self._settings.output is Output.SANDBOX_DIRECTORY_STRUCTURE_ROOT:
+            self._out_printer.write_line(str(the_full_result.sandbox_directory_structure.root_dir))
 
     def _print_output_to_stderr_for_full_result(self, the_full_result: full_execution.FullResult):
         if the_full_result.is_failure:

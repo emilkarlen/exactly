@@ -7,7 +7,7 @@ from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetu
 
 class Output(enum.Enum):
     STATUS_CODE = 1
-    EXECUTION_DIRECTORY_STRUCTURE_ROOT = 2
+    SANDBOX_DIRECTORY_STRUCTURE_ROOT = 2
     ACT_PHASE_OUTPUT = 3
 
 

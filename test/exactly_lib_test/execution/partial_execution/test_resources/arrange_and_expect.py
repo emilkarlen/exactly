@@ -44,9 +44,9 @@ def execute_and_check(put: unittest.TestCase,
             is_keep_execution_directory_root=True)
         result = Result(home_dir_path, partial_result)
         expectation.assertion_on_sds.apply(put,
-                                           result.partial_result.execution_directory_structure,
+                                           result.partial_result.sandbox_directory_structure,
                                            va.MessageBuilder('Sandbox Directory Structure'))
         # CLEANUP #
         os.chdir(str(result.home_dir_path))
-        if result.execution_directory_structure.root_dir.exists():
-            shutil.rmtree(str(result.execution_directory_structure.root_dir))
+        if result.sandbox_directory_structure.root_dir.exists():
+            shutil.rmtree(str(result.sandbox_directory_structure.root_dir))

@@ -41,8 +41,8 @@ class Result(tuple):
         return self[1]
 
     @property
-    def execution_directory_structure(self) -> SandboxDirectoryStructure:
-        return self.partial_result.execution_directory_structure
+    def sandbox_directory_structure(self) -> SandboxDirectoryStructure:
+        return self.partial_result.sandbox_directory_structure
 
 
 class TestCaseGeneratorForPartialExecutionBase(TestCaseGeneratorBase):
@@ -132,10 +132,10 @@ def test(unittest_case: unittest.TestCase,
     # CLEANUP #
     os.chdir(str(result.home_dir_path))
     if not dbg_do_not_delete_dir_structure:
-        if result.execution_directory_structure.root_dir.exists():
-            shutil.rmtree(str(result.execution_directory_structure.root_dir))
+        if result.sandbox_directory_structure.root_dir.exists():
+            shutil.rmtree(str(result.sandbox_directory_structure.root_dir))
     else:
-        print(str(result.execution_directory_structure.root_dir))
+        print(str(result.sandbox_directory_structure.root_dir))
 
 
 def _execute(test_case: partial_execution.TestCase,

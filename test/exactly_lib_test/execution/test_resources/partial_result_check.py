@@ -12,7 +12,7 @@ class ExpectedPartialResult:
                  directory_structure: SandboxDirectoryStructure,
                  instruction_failure: ExpectedFailure):
         self.__status = status
-        self.__execution_directory_structure = directory_structure
+        self.__sandbox_directory_structure = directory_structure
         self.__expected_instruction_failure = instruction_failure
 
     def assertions(self,
@@ -21,8 +21,8 @@ class ExpectedPartialResult:
         unittest_case.assertEqual(self.__status,
                                   actual_result.status,
                                   'Status')
-        unittest_case.assertEqual(self.__execution_directory_structure,
-                                  actual_result.execution_directory_structure,
+        unittest_case.assertEqual(self.__sandbox_directory_structure,
+                                  actual_result.sandbox_directory_structure,
                                   'Execution Directory Structure')
         self.__expected_instruction_failure.assertions(unittest_case,
                                                        actual_result.failure_info)

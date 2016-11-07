@@ -29,7 +29,7 @@ def parse(default: TestCaseHandlingSetup,
     if namespace.act:
         output = Output.ACT_PHASE_OUTPUT
     elif namespace.keep:
-        output = Output.EXECUTION_DIRECTORY_STRUCTURE_ROOT
+        output = Output.SANDBOX_DIRECTORY_STRUCTURE_ROOT
         is_keep_execution_directory_root = True
     act_phase_setup = resolve_act_phase_setup_from_argparse_argument(default.default_act_phase_setup,
                                                                      namespace.actor)
