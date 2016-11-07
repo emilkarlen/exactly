@@ -125,12 +125,11 @@ class ExecutorThatStoresResultInFilesInDir:
         self.process_execution_settings = process_execution_settings
 
     def apply(self,
-              error_message_header: str,
               storage_dir: pathlib.Path,
               cmd_and_args) -> Result:
 
         def _err_msg(exception: Exception) -> str:
-            return '%sError executing process:\n%s' % (error_message_header, str(exception))
+            return 'Error executing process:\n' + str(exception)
 
         file_services.ensure_directory_exists_as_a_directory(storage_dir)
         with open(str(storage_dir / STDOUT_FILE_NAME), 'w') as f_stdout:
@@ -169,7 +168,7 @@ def failure_message_for_nonzero_status(result_and_err: ResultAndStderr) -> str:
     msg_tail = ''
     if result_and_err.stderr_contents:
         msg_tail = os.linesep + result_and_err.stderr_contents
-    return 'Exit code {}{}'.format(result_and_err.result.exit_code, msg_tail)
+    return 'Exit code: {}{}'.format(result_and_err.result.exit_code, msg_tail)
 
 
 class ExecuteInfo:
@@ -184,10 +183,8 @@ def execute_and_read_stderr_if_non_zero_exitcode(execute_info: ExecuteInfo,
                                                  executor: ExecutorThatStoresResultInFilesInDir,
                                                  phase_logging_paths: PhaseLoggingPaths) -> ResultAndStderr:
     source_info = execute_info.instruction_source_info
-    error_message_header = 'Line %d: %s\n' % (source_info.line_number,
-                                              source_info.instruction_name)
     storage_dir = instruction_log_dir(phase_logging_paths, source_info)
-    result = executor.apply(error_message_header, storage_dir, execute_info.command)
+    result = executor.apply(storage_dir, execute_info.command)
     return read_stderr_if_non_zero_exitcode(result)
 
 
