@@ -12,39 +12,62 @@ from exactly_lib_test.execution.test_resources import test_actions
 class ActSourceAndExecutorThatRunsConstantActions(ActSourceAndExecutor):
     def __init__(self,
                  validate_pre_sds_action=test_actions.validate_action_that_returns(svh.new_svh_success()),
+                 validate_pre_sds_initial_action=test_actions.do_nothing,
                  validate_post_setup_action=test_actions.validate_action_that_returns(svh.new_svh_success()),
+                 validate_post_setup_initial_action=test_actions.do_nothing,
                  prepare_action=test_actions.prepare_action_that_returns(sh.new_sh_success()),
-                 execute_action=test_actions.execute_action_that_returns_exit_code()):
+                 prepare_initial_action=test_actions.do_nothing,
+                 execute_action=test_actions.execute_action_that_returns_exit_code(0),
+                 execute_initial_action=test_actions.do_nothing,
+                 ):
+        self.__validate_pre_sds_initial_action = validate_pre_sds_initial_action
         self.__validate_pre_sds_action = validate_pre_sds_action
+        self.__validate_post_setup_initial_action = validate_post_setup_initial_action
         self.__validate_post_setup_action = validate_post_setup_action
+        self.__prepare_initial_action = prepare_initial_action
         self.__prepare_action = prepare_action
+        self.__execute_initial_action = execute_initial_action
         self.__execute_action = execute_action
 
     def validate_pre_sds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
+        self.__validate_pre_sds_initial_action(home_dir_path)
         return self.__validate_pre_sds_action()
 
     def validate_post_setup(self, home_and_sds: HomeAndSds) -> svh.SuccessOrValidationErrorOrHardError:
+        self.__validate_post_setup_initial_action(home_and_sds)
         return self.__validate_post_setup_action()
 
     def prepare(self, home_and_sds: HomeAndSds, script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
+        self.__prepare_initial_action(home_and_sds, script_output_dir_path)
         return self.__prepare_action()
 
-    def execute(self, home_and_sds: HomeAndSds, script_output_dir_path: pathlib.Path,
+    def execute(self,
+                home_and_sds: HomeAndSds,
+                script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
+        self.__execute_initial_action(home_and_sds, script_output_dir_path, std_files)
         return self.__execute_action()
 
 
 class ActSourceAndExecutorConstructorThatRunsConstantActions(ActSourceAndExecutorConstructor):
     def __init__(self,
                  validate_pre_sds_action=test_actions.validate_action_that_returns(svh.new_svh_success()),
+                 validate_pre_sds_initial_action=test_actions.do_nothing,
                  validate_post_setup_action=test_actions.validate_action_that_returns(svh.new_svh_success()),
+                 validate_post_setup_initial_action=test_actions.do_nothing,
                  prepare_action=test_actions.prepare_action_that_returns(sh.new_sh_success()),
-                 execute_action=test_actions.execute_action_that_returns_exit_code(),
+                 prepare_initial_action=test_actions.do_nothing,
+                 execute_action=test_actions.execute_action_that_returns_exit_code(0),
+                 execute_initial_action=test_actions.do_nothing,
                  apply_action_before_executor_is_constructed=test_actions.do_nothing):
         self.apply_action_before_executor_is_constructed = apply_action_before_executor_is_constructed
+        self.validate_pre_sds_initial_action = validate_pre_sds_initial_action
         self.validate_pre_sds_action = validate_pre_sds_action
+        self.validate_post_setup_initial_action = validate_post_setup_initial_action
         self.validate_post_setup_action = validate_post_setup_action
+        self.prepare_initial_action = prepare_initial_action
         self.prepare_action = prepare_action
+        self.execute_initial_action = execute_initial_action
         self.execute_action = execute_action
 
     def apply(self,
@@ -52,9 +75,13 @@ class ActSourceAndExecutorConstructorThatRunsConstantActions(ActSourceAndExecuto
               act_phase_instructions: list) -> ActSourceAndExecutor:
         self.apply_action_before_executor_is_constructed(environment, act_phase_instructions)
         return ActSourceAndExecutorThatRunsConstantActions(
+            validate_pre_sds_initial_action=self.validate_pre_sds_initial_action,
             validate_pre_sds_action=self.validate_pre_sds_action,
+            validate_post_setup_initial_action=self.validate_post_setup_initial_action,
             validate_post_setup_action=self.validate_post_setup_action,
+            prepare_initial_action=self.prepare_initial_action,
             prepare_action=self.prepare_action,
+            execute_initial_action=self.execute_initial_action,
             execute_action=self.execute_action)
 
 
