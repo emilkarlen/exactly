@@ -22,35 +22,16 @@ class OsServices:
                                                dst: str) -> sh.SuccessOrHardError:
         raise NotImplementedError()
 
-    @property
-    def environ(self) -> dict:
-        """
-        The environment variables available to the act script.
-
-        Corresponds to os.environ.
-
-        May be modified.
-        """
-        raise NotImplementedError()
-
 
 def new_default() -> OsServices:
-    return _Default(os.environ)
+    return _Default()
 
 
-def new_with_environ(environ: dict) -> OsServices:
-    return _Default(environ)
+def new_with_environ() -> OsServices:
+    return _Default()
 
 
 class _Default(OsServices):
-    def __init__(self,
-                 environ: dict):
-        self.__environ = environ
-
-    @property
-    def environ(self) -> dict:
-        return self.__environ
-
     def copy_file_preserve_as_much_as_possible(self, src: str, dst: str) -> sh.SuccessOrHardError:
         try:
             shutil.copy2(src, dst)

@@ -149,7 +149,7 @@ class SetEnvironmentVariableViaInstructionArguments:
                  environment: InstructionEnvironmentForPostSdsStep,
                  os_services: OsServices,
                  *args, **kwargs):
-        os_services.environ[self.variable_name] = 'value that is not used by the test'
+        environment.environ[self.variable_name] = 'value that is not used by the test'
 
 
 class AddPhaseToRecorderIfEnvironmentVariableIsSetForProcess:

@@ -7,7 +7,7 @@ from exactly_lib.instructions.utils.documentation.instruction_documentation_with
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import SingleInstructionParser, \
     SingleInstructionParserSource, SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases.common import TestCaseInstruction
+from exactly_lib.test_case.phases.common import TestCaseInstruction, InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.util.textformat.structure.structures import paras
 
@@ -49,13 +49,13 @@ class Parser(SingleInstructionParser):
 
 
 class Executor:
-    def execute(self, os_services: OsServices):
+    def execute(self, environ: dict):
         raise NotImplementedError()
 
 
 def execute_and_return_sh(executor: Executor,
-                          os_services: OsServices) -> sh.SuccessOrHardError:
-    executor.execute(os_services)
+                          environ: dict) -> sh.SuccessOrHardError:
+    executor.execute(environ)
     return sh.new_sh_success()
 
 
@@ -66,8 +66,8 @@ class _SetExecutor(Executor):
         self.name = name
         self.value = value
 
-    def execute(self, os_services: OsServices):
-        os_services.environ[self.name] = self.value
+    def execute(self, environ: dict):
+        environ[self.name] = self.value
 
 
 class _UnsetExecutor(Executor):
@@ -75,8 +75,8 @@ class _UnsetExecutor(Executor):
                  name: str):
         self.name = name
 
-    def execute(self, os_services: OsServices):
+    def execute(self, environ: dict):
         try:
-            del os_services.environ[self.name]
+            del environ[self.name]
         except KeyError:
             pass

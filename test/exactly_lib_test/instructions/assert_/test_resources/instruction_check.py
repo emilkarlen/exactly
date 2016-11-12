@@ -1,3 +1,4 @@
+import os
 import unittest
 
 from exactly_lib.instructions.utils.sub_process_execution import with_no_timeout
@@ -24,12 +25,14 @@ def arrangement(home_dir_contents: file_structure.DirContents = file_structure.D
                 sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
                 act_result_producer: ActResultProducer = ActResultProducer(),
                 os_services: OsServices = new_default(),
+                environ: dict = None,
                 process_execution_settings=with_no_timeout(),
                 ) -> ArrangementPostAct:
     return ArrangementPostAct(home_dir_contents,
                               sds_contents_before_main,
                               act_result_producer,
                               os_services,
+                              environ,
                               process_execution_settings)
 
 
@@ -95,12 +98,13 @@ class Executor:
             # TODO Execution of validate/pre-sds should be done before act-result is written.
             # But cannot do this for the moment, since many tests write home-dir contents
             # as part of the act-result.
-            environment = i.InstructionEnvironmentForPreSdsStep(home_and_sds.home_dir_path)
+            environment = i.InstructionEnvironmentForPreSdsStep(home_and_sds.home_dir_path, dict(os.environ))
             validate_result = self._execute_validate_pre_sds(environment, instruction)
             if not validate_result.is_success:
                 return
             environment = i.InstructionEnvironmentForPostSdsStep(
-                home_and_sds.home_dir_path,
+                environment.home_directory,
+                environment.environ,
                 home_and_sds.sds,
                 phase_identifier.ASSERT.identifier,
                 timeout_in_seconds=self.arrangement.process_execution_settings.timeout_in_seconds)

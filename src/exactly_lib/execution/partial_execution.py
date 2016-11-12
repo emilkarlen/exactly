@@ -197,6 +197,7 @@ class _PartialExecutor:
         self.__act_source_and_executor_constructor = act_phase_handling.source_and_executor_constructor
         self.__global_environment_pre_sds = InstructionEnvironmentForPreSdsStep(
             self.__configuration.home_dir_path,
+            self.__configuration.environ,
             self.__configuration.timeout_in_seconds)
 
     def execute(self) -> PartialResult:
@@ -404,6 +405,7 @@ class _PartialExecutor:
     def __post_sds_environment(self,
                                phase: phase_identifier.Phase) -> common.InstructionEnvironmentForPostSdsStep:
         return common.InstructionEnvironmentForPostSdsStep(self.__configuration.home_dir_path,
+                                                           self.__configuration.environ,
                                                            self.__sandbox_directory_structure,
                                                            phase.identifier,
                                                            timeout_in_seconds=self.__configuration.timeout_in_seconds)

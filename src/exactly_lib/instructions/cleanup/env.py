@@ -21,7 +21,7 @@ class _Instruction(CleanupPhaseInstruction):
              environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices,
              previous_phase: PreviousPhase) -> sh.SuccessOrHardError:
-        return env.execute_and_return_sh(self.executor, os_services)
+        return env.execute_and_return_sh(self.executor, environment)
 
 
 PARSER = env.Parser(_Instruction)

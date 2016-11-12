@@ -66,7 +66,9 @@ def check_execution(put: unittest.TestCase,
 
     cwd_before_test = os.getcwd()
     with fs_utils.tmp_dir(arrangement.home_dir_contents) as home_dir:
-        environment = InstructionEnvironmentForPreSdsStep(home_dir, arrangement.timeout_in_seconds)
+        environment = InstructionEnvironmentForPreSdsStep(home_dir,
+                                                          dict(os.environ),
+                                                          arrangement.timeout_in_seconds)
         sut = arrangement.executor_constructor.apply(environment, arrangement.act_phase_instructions)
         step_result = sut.validate_pre_sds(home_dir)
         put.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,

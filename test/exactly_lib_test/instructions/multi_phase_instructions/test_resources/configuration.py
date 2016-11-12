@@ -38,6 +38,7 @@ class ConfigurationBase:
 
     def arrangement(self,
                     sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
+                    environ: dict = None,
                     os_services: OsServices = new_default()):
         raise NotImplementedError()
 
