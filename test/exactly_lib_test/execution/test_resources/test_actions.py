@@ -4,7 +4,7 @@ from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.failure_details import new_failure_details_from_message
 
 
-def do_nothing(*args):
+def do_nothing(*args, **kwargs):
     pass
 
 

@@ -19,6 +19,7 @@ from exactly_lib_test.execution.test_resources.instruction_test_resources import
     act_phase_instruction_with_source
 from exactly_lib_test.execution.test_resources.test_case_generation import TestCaseGeneratorBase, \
     instruction_line_constructor
+from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 
 
 class Result(tuple):
@@ -129,6 +130,28 @@ def test(unittest_case: unittest.TestCase,
 
     assertions(unittest_case,
                result)
+    # CLEANUP #
+    os.chdir(str(result.home_dir_path))
+    if not dbg_do_not_delete_dir_structure:
+        if result.sandbox_directory_structure.root_dir.exists():
+            shutil.rmtree(str(result.sandbox_directory_structure.root_dir))
+    else:
+        print(str(result.sandbox_directory_structure.root_dir))
+
+
+def test__va(unittest_case: unittest.TestCase,
+             test_case: partial_execution.TestCase,
+             act_phase_handling: ActPhaseHandling,
+             assertions_on_result: va.ValueAssertion,
+             is_keep_execution_directory_root: bool = True,
+             dbg_do_not_delete_dir_structure=False):
+    result = _execute(test_case,
+                      act_phase_handling,
+                      is_keep_execution_directory_root=is_keep_execution_directory_root)
+
+    assertions_on_result.apply(unittest_case,
+                               result,
+                               va.MessageBuilder('Result'))
     # CLEANUP #
     os.chdir(str(result.home_dir_path))
     if not dbg_do_not_delete_dir_structure:
