@@ -8,9 +8,8 @@ from exactly_lib.execution.phase_step_identifiers.phase_step import SimplePhaseS
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case.phases.result import sh
 from exactly_lib.util.line_source import LineSequence
-from exactly_lib_test.execution.partial_execution.test_resources.basic import Result, test__va
+from exactly_lib_test.execution.partial_execution.test_resources.basic import Result, test__va, dummy_act_phase_handling
 from exactly_lib_test.execution.test_resources.act_source_executor import \
     ActSourceAndExecutorConstructorThatRunsConstantActions
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that, \
@@ -32,11 +31,10 @@ class TestThatWhenAnInstructionSetsAnEnvironmentVariableItShouldNotModifyTheVari
 
         test_case = partial_test_case_with_instructions(
             [setup_phase_instruction_that(
-                main_initial_action=_Sequence([SetEnvironmentVariableViaInstructionArguments(recorder.variable_name,
-                                                                                             sh.new_sh_success()),
+                main_initial_action=_Sequence([SetEnvironmentVariableViaInstructionArguments(recorder.variable_name),
                                                recorder.for_step(step.SETUP__MAIN)]),
                 validate_post_setup_initial_action=recorder.for_step(step.SETUP__VALIDATE_POST_SETUP))],
-            [act_phase_instruction_with_source(LineSequence(1, ('line',)))],
+            _act_phase_instructions_that_are_not_relevant_to_this_test(),
             [before_assert_phase_instruction_that(
                 validate_post_setup_initial_action=recorder.for_step(step.BEFORE_ASSERT__VALIDATE_POST_SETUP),
                 main_initial_action=recorder.for_step(step.BEFORE_ASSERT__MAIN))],
@@ -52,6 +50,71 @@ class TestThatWhenAnInstructionSetsAnEnvironmentVariableItShouldNotModifyTheVari
             _act_phase_handling_that_records_existence_of_var_in_global_env(recorder),
             AssertPhasesWhereTheEnvironmentVariableExistsInTheGlobalEnvironmentIEmpty(recorder.recorded_steps),
             is_keep_execution_directory_root=False)
+
+    def test_set_environment_variable_in_phase_before_assert(self):
+        recorder = _RecorderOfExistenceOfGlobalEnvVar(_unique_variable_name())
+
+        test_case = partial_test_case_with_instructions(
+            [],
+            _act_phase_instructions_that_are_not_relevant_to_this_test(),
+            [before_assert_phase_instruction_that(
+                main_initial_action=_Sequence([SetEnvironmentVariableViaInstructionArguments(recorder.variable_name),
+                                               recorder.for_step(step.BEFORE_ASSERT__MAIN)]))],
+            [assert_phase_instruction_that(
+                validate_post_setup_initial_action=recorder.for_step(step.ASSERT__VALIDATE_POST_SETUP),
+                main_initial_action=recorder.for_step(step.ASSERT__MAIN))],
+            [cleanup_phase_instruction_that(
+                main_initial_action=recorder.for_step(step.CLEANUP__MAIN))],
+        )
+        test__va(
+            self,
+            test_case,
+            dummy_act_phase_handling(),
+            AssertPhasesWhereTheEnvironmentVariableExistsInTheGlobalEnvironmentIEmpty(recorder.recorded_steps),
+            is_keep_execution_directory_root=False)
+
+    def test_set_environment_variable_in_phase_assert(self):
+        recorder = _RecorderOfExistenceOfGlobalEnvVar(_unique_variable_name())
+
+        test_case = partial_test_case_with_instructions(
+            [],
+            _act_phase_instructions_that_are_not_relevant_to_this_test(),
+            [],
+            [assert_phase_instruction_that(
+                main_initial_action=_Sequence([SetEnvironmentVariableViaInstructionArguments(recorder.variable_name),
+                                               recorder.for_step(step.ASSERT__MAIN)]))],
+            [cleanup_phase_instruction_that(
+                main_initial_action=recorder.for_step(step.CLEANUP__MAIN))],
+        )
+        test__va(
+            self,
+            test_case,
+            dummy_act_phase_handling(),
+            AssertPhasesWhereTheEnvironmentVariableExistsInTheGlobalEnvironmentIEmpty(recorder.recorded_steps),
+            is_keep_execution_directory_root=False)
+
+    def test_set_environment_variable_in_phase_cleanup(self):
+        recorder = _RecorderOfExistenceOfGlobalEnvVar(_unique_variable_name())
+
+        test_case = partial_test_case_with_instructions(
+            [],
+            _act_phase_instructions_that_are_not_relevant_to_this_test(),
+            [],
+            [],
+            [cleanup_phase_instruction_that(
+                main_initial_action=_Sequence([SetEnvironmentVariableViaInstructionArguments(recorder.variable_name),
+                                               recorder.for_step(step.CLEANUP__MAIN)]))],
+        )
+        test__va(
+            self,
+            test_case,
+            dummy_act_phase_handling(),
+            AssertPhasesWhereTheEnvironmentVariableExistsInTheGlobalEnvironmentIEmpty(recorder.recorded_steps),
+            is_keep_execution_directory_root=False)
+
+
+def _act_phase_instructions_that_are_not_relevant_to_this_test():
+    return [act_phase_instruction_with_source(LineSequence(1, ('line',)))]
 
 
 def _unique_variable_name():
@@ -74,25 +137,19 @@ class _Sequence:
         self.list_of_callable = list_of_callable
 
     def __call__(self, *args, **kwargs):
-        ret_val = None
         for fun in self.list_of_callable:
-            ret_val = fun(*args, **kwargs)
-        return ret_val
+            fun(*args, **kwargs)
 
 
 class SetEnvironmentVariableViaInstructionArguments:
-    def __init__(self,
-                 variable_name: str,
-                 ret_val):
+    def __init__(self, variable_name: str):
         self.variable_name = variable_name
-        self.ret_val = ret_val
 
     def __call__(self,
                  environment: InstructionEnvironmentForPostSdsStep,
                  os_services: OsServices,
                  *args, **kwargs):
         os_services.environ[self.variable_name] = 'value that is not used by the test'
-        return self.ret_val
 
 
 class AddPhaseToRecorderIfEnvironmentVariableIsSetForProcess:
