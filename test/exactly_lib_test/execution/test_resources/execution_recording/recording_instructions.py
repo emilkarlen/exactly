@@ -62,7 +62,7 @@ class RecordingInstructions:
                                           sh.new_sh_success())
 
     def _do_cleanup_main(self, first_value_of_pair_for_main):
-        def ret_val(environment, previous_phase, *args):
+        def ret_val(environment, os_services, previous_phase, *args):
             element = (first_value_of_pair_for_main, previous_phase)
             self.recorder.recording_of(element).record()
             return sh.new_sh_success()
