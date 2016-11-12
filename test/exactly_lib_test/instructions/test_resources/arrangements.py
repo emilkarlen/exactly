@@ -29,7 +29,7 @@ class ArrangementBase:
                  environ: dict = None,
                  ):
         self.home_contents = home_contents
-        self.environ = {} if not environ else environ
+        self.environ = {} if environ is None else environ
 
 
 class ArrangementWithSds(ArrangementBase):

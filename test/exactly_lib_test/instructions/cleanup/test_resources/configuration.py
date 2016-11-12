@@ -38,6 +38,7 @@ class CleanupConfigurationBase(ConfigurationBase):
                     environ: dict = None,
                     os_services: OsServices = new_default()):
         return Arrangement(sds_contents_before_main=sds_contents_before_main,
+                           environ=environ,
                            os_services=os_services)
 
     def arrangement_with_timeout(self, timeout_in_seconds: int):

@@ -98,7 +98,8 @@ class Executor:
             # TODO Execution of validate/pre-sds should be done before act-result is written.
             # But cannot do this for the moment, since many tests write home-dir contents
             # as part of the act-result.
-            environment = i.InstructionEnvironmentForPreSdsStep(home_and_sds.home_dir_path, dict(os.environ))
+            environment = i.InstructionEnvironmentForPreSdsStep(home_and_sds.home_dir_path,
+                                                                self.arrangement.environ)
             validate_result = self._execute_validate_pre_sds(environment, instruction)
             if not validate_result.is_success:
                 return

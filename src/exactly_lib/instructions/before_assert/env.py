@@ -20,7 +20,7 @@ class _Instruction(BeforeAssertPhaseInstruction):
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices) -> sh.SuccessOrHardError:
-        return env.execute_and_return_sh(self.executor, environment)
+        return env.execute_and_return_sh(self.executor, environment.environ)
 
 
 PARSER = env.Parser(_Instruction)
