@@ -27,7 +27,7 @@ class _Instruction(CleanupPhaseInstruction):
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
-             previous_phase: PreviousPhase,
-             os_services: OsServices) -> sh.SuccessOrHardError:
+             os_services: OsServices,
+             previous_phase: PreviousPhase) -> sh.SuccessOrHardError:
         error_message = mkdir_utils.make_dir_in_current_dir(self.directory_components)
         return sh.new_sh_success() if error_message is None else sh.new_sh_hard_error(error_message)

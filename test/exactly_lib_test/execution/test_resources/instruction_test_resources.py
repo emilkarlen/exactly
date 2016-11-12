@@ -189,8 +189,8 @@ class _CleanupPhaseInstructionThat(CleanupPhaseInstruction):
 
     def main(self,
              environment: instrs.InstructionEnvironmentForPostSdsStep,
-             previous_phase: PreviousPhase,
-             os_services: OsServices) -> sh.SuccessOrHardError:
+             os_services: OsServices,
+             previous_phase: PreviousPhase) -> sh.SuccessOrHardError:
         return self.do_main(environment, previous_phase, os_services)
 
 

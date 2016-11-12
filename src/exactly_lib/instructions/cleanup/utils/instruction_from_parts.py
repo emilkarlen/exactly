@@ -23,8 +23,8 @@ class CleanupPhaseInstructionFromValidatorAndExecutor(CleanupPhaseInstruction):
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
-             previous_phase: PreviousPhase,
-             os_services: OsServices) -> sh.SuccessOrHardError:
+             os_services: OsServices,
+             previous_phase: PreviousPhase) -> sh.SuccessOrHardError:
         validation_result = self._validate_from_main(environment)
         if validation_result.is_hard_error:
             return validation_result

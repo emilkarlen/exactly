@@ -116,8 +116,8 @@ class Executor(InstructionExecutionBase):
                       environment: InstructionEnvironmentForPostSdsStep,
                       instruction: CleanupPhaseInstruction) -> pfh.PassOrFailOrHardError:
         result = instruction.main(environment,
-                                  self.arrangement.previous_phase,
-                                  self.arrangement.os_services)
+                                  self.arrangement.os_services,
+                                  self.arrangement.previous_phase)
         self._check_result_of_main__sh(result)
         self.expectation.main_result.apply(self.put, result)
         self.expectation.main_side_effects_on_files.apply(self.put, environment.sds)
