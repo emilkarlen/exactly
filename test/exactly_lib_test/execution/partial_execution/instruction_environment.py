@@ -16,7 +16,7 @@ from exactly_lib_test.execution.test_resources.test_case_generation import parti
 
 
 class Test(unittest.TestCase):
-    def test_log_dirs(self):
+    def test_instruction_environment_specifies_correct_log_dir_for_each_phase(self):
         recorder = {}
         test_case = partial_test_case_with_instructions(
             [setup_phase_instruction_that(main_initial_action=RecordLogDirForPhase(PhaseEnum.SETUP, recorder))],
@@ -41,7 +41,6 @@ def log_dir_is_correct_for_each_phase(recordings: dict,
     sds = actual.sandbox_directory_structure
     expected = {
         PhaseEnum.SETUP: sds_log_phase_dir(sds, phase_identifier.SETUP.identifier),
-        # PhaseEnum.ACT: sds_log_phase_dir(sds, phases.ACT.identifier),
         PhaseEnum.BEFORE_ASSERT: sds_log_phase_dir(sds, phase_identifier.BEFORE_ASSERT.identifier),
         PhaseEnum.ASSERT: sds_log_phase_dir(sds, phase_identifier.ASSERT.identifier),
         PhaseEnum.CLEANUP: sds_log_phase_dir(sds, phase_identifier.CLEANUP.identifier),
