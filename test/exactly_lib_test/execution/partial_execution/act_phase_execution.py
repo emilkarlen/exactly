@@ -1,3 +1,4 @@
+import os
 import pathlib
 import subprocess
 import sys
@@ -280,7 +281,8 @@ def _execute(constructor: ActSourceAndExecutorConstructor,
     return sut.execute(
         ActPhaseHandling(constructor),
         test_case,
-        sut.Configuration(home_dir_path),
+        sut.Configuration(home_dir_path,
+                          dict(os.environ)),
         setup_settings,
         program_info.PROGRAM_NAME + '-test-',
         is_keep_execution_directory_root)

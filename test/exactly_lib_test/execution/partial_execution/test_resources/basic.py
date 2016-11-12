@@ -168,7 +168,7 @@ def _execute(test_case: partial_execution.TestCase,
     partial_result = partial_execution.execute(
         act_phase_handling,
         test_case,
-        partial_execution.Configuration(home_dir_path),
+        partial_execution.Configuration(home_dir_path, dict(os.environ)),
         setup.default_settings(),
         program_info.PROGRAM_NAME + '-test-',
         is_keep_execution_directory_root)

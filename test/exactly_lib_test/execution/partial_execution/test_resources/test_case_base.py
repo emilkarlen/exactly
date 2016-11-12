@@ -37,7 +37,7 @@ class PartialExecutionTestCaseBase:
         partial_result = partial_execution.execute(
             self.__act_phase_handling,
             self._test_case(),
-            partial_execution.Configuration(self.initial_home_dir_path),
+            partial_execution.Configuration(self.initial_home_dir_path, dict(os.environ)),
             setup.default_settings(),
             program_info.PROGRAM_NAME + '-test-',
             self.__dbg_do_not_delete_dir_structure)
