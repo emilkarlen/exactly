@@ -21,7 +21,7 @@ class _Instruction(SetupPhaseInstruction):
              environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
-        return env.execute_and_return_sh(self.executor, environment)
+        return env.execute_and_return_sh(self.executor, environment.environ)
 
 
 PARSER = env.Parser(_Instruction)

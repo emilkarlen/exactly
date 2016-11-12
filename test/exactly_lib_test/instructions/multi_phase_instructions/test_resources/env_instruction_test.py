@@ -1,26 +1,26 @@
 import unittest
 
-from exactly_lib.test_case.os_services import new_with_environ
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.configuration import ConfigurationBase, \
     suite_for_cases
 from exactly_lib_test.test_resources.parse import new_source2
+from exactly_lib_test.test_resources.test_case_base_with_short_description import \
+    TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
 
 
-class TestCaseBase(unittest.TestCase):
+class TestCaseBase(TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType):
     def __init__(self, conf: ConfigurationBase):
-        super().__init__()
+        super().__init__(conf)
         self.conf = conf
 
 
 class TestSet(TestCaseBase):
     def runTest(self):
         environ = {}
-        os_services = new_with_environ()
         self.conf.run_test(
-                self,
-                new_source2('name = value'),
-                self.conf.arrangement(os_services=os_services),
-                self.conf.expect_success())
+            self,
+            new_source2('name = value'),
+            self.conf.arrangement(environ=environ),
+            self.conf.expect_success())
         self.assertEqual(environ,
                          {'name': 'value'})
 
@@ -28,12 +28,11 @@ class TestSet(TestCaseBase):
 class TestUnsetExistingVariable(TestCaseBase):
     def runTest(self):
         environ = {'a': 'A', 'b': 'B'}
-        os_services = new_with_environ()
         self.conf.run_test(
-                self,
-                new_source2('unset a'),
-                self.conf.arrangement(os_services=os_services),
-                self.conf.expect_success())
+            self,
+            new_source2('unset a'),
+            self.conf.arrangement(environ=environ),
+            self.conf.expect_success())
         self.assertEqual(environ,
                          {'b': 'B'})
 
@@ -41,12 +40,11 @@ class TestUnsetExistingVariable(TestCaseBase):
 class TestUnsetNonExistingVariable(TestCaseBase):
     def runTest(self):
         environ = {'a': 'A'}
-        os_services = new_with_environ()
         self.conf.run_test(
-                self,
-                new_source2('unset non_existing_variable'),
-                self.conf.arrangement(os_services=os_services),
-                self.conf.expect_success())
+            self,
+            new_source2('unset non_existing_variable'),
+            self.conf.arrangement(environ=environ),
+            self.conf.expect_success())
         self.assertEqual(environ,
                          {'a': 'A'})
 

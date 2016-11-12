@@ -28,27 +28,27 @@ class TestCaseBase(unittest.TestCase):
 class TestExistingDirectoryWithMultiplePathComponents(TestCaseBase):
     def runTest(self):
         self.conf.run_test(
-                self,
-                new_source2('first-component/second-component'),
-                self.conf.arrangement(
-                    sds_contents_before_main=act_dir_contents(DirContents([
-                            Dir('first-component', [
-                                empty_dir('second-component')
-                            ])]))),
-                self.conf.expect_successful_execution_with_side_effect(
-                        AssertCwdIsSubDirOfActDir(
-                                pathlib.Path('first-component') / 'second-component')))
+            self,
+            new_source2('first-component/second-component'),
+            self.conf.arrangement(
+                sds_contents_before_main=act_dir_contents(DirContents([
+                    Dir('first-component', [
+                        empty_dir('second-component')
+                    ])]))),
+            self.conf.expect_successful_execution_with_side_effect(
+                AssertCwdIsSubDirOfActDir(
+                    pathlib.Path('first-component') / 'second-component')))
 
 
 class TestArgumentExistsAsNonDirectory(TestCaseBase):
     def runTest(self):
         self.conf.run_test(
-                self,
-                new_source2('file'),
+            self,
+            new_source2('file'),
             self.conf.arrangement(sds_contents_before_main=act_dir_contents(DirContents([
-                    empty_file('file')
-                ]))),
-                self.conf.expect_target_is_not_a_directory())
+                empty_file('file')
+            ]))),
+            self.conf.expect_target_is_not_a_directory())
 
 
 def suite_for(conf: ConfigurationBase) -> unittest.TestSuite:

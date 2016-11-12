@@ -104,8 +104,8 @@ class Executor:
             with tempfile.TemporaryDirectory(prefix=prefix + '-home-') as home_dir_name:
                 home_dir_path = pathlib.Path(home_dir_name).resolve()
                 self.arrangement.home_contents.write_to(home_dir_path)
-                environment = InstructionEnvironmentForPreSdsStep(home_dir_path, dict(os.environ))
-                pre_validate_result = self._execute_pre_validate(environment)
+                environment = InstructionEnvironmentForPreSdsStep(home_dir_path, self.arrangement.environ)
+                pre_validate_result = self._execute_pre_validate(environment, instruction)
                 if not pre_validate_result.is_success:
                     return
                 with tempfile.TemporaryDirectory(prefix=prefix + '-sds-') as sds_root_dir_name:

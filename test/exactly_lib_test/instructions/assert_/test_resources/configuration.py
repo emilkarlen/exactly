@@ -41,6 +41,7 @@ class AssertConfigurationBase(ConfigurationBase):
                     environ: dict = None,
                     os_services: OsServices = new_default()):
         return arrangement(sds_contents_before_main=sds_contents_before_main,
+                           environ=environ,
                            os_services=os_services)
 
     def expect_success_and_side_effects_on_files(self,

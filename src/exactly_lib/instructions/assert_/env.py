@@ -20,7 +20,7 @@ class _Instruction(AssertPhaseInstruction):
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
-        self.executor.execute(os_services)
+        self.executor.execute(environment.environ)
         return pfh.new_pfh_pass()
 
 

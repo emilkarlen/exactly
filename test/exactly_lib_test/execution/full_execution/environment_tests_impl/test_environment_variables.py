@@ -10,6 +10,7 @@ from exactly_lib.execution.phase_step_identifiers.phase_step import PhaseStep
 from exactly_lib.execution.result import FullResultStatus
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib.util.line_source import LineSequence
 from exactly_lib_test.execution.full_execution.test_resources.test_case_base import FullExecutionTestCaseBase
@@ -207,15 +208,15 @@ class _ConfigurationPhaseActionThatRecordsEnvVarsAndSetsHomeDirToParent(_ActionW
 
 
 class _RecordEnvVars(_ActionWithPhaseStepAndRecording):
-    def __call__(self, *args, **kwargs):
-        self.recorder.set_phase_step_recording(self.my_phase_step, env_vars_dict())
+    def __call__(self, environment: InstructionEnvironmentForPreSdsStep, *args, **kwargs):
+        self.recorder.set_phase_step_recording(self.my_phase_step, env_vars_dict(environment))
 
 
-def env_vars_dict() -> dict:
+def env_vars_dict(environment: InstructionEnvironmentForPreSdsStep) -> dict:
     ret_val = dict()
     for env_var in environment_variables.ALL_ENV_VARS:
         if env_var in os.environ:
-            ret_val[env_var] = os.environ[env_var]
+            ret_val[env_var] = environment.environ[env_var]
     return ret_val
 
 
@@ -227,8 +228,6 @@ def print_to_file__generate_script(code_using_file_opened_for_writing: types.Fun
 
     :param code_using_file_opened_for_writing: function: file_variable: str -> ModulesAndStatements
     :param file_name: the name of the file to output to.
-    :param global_environment: Environment from act instruction
-    :param phase_environment: Environment from act instruction
     """
     file_path = pathlib.Path() / file_name
     file_name = str(file_path)
