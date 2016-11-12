@@ -172,5 +172,5 @@ class CleanupMainExecutor(ControlledInstructionExecutor):
     def apply(self, instruction: CleanupPhaseInstruction) -> PartialInstructionControlledFailureInfo:
         return _from_success_or_hard_error(
             instruction.main(self.__environment,
-                             self.__previous_phase,
-                             self.__os_services))
+                             self.__os_services,
+                             self.__previous_phase))

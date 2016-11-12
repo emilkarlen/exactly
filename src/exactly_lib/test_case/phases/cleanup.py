@@ -29,8 +29,8 @@ class CleanupPhaseInstruction(TestCaseInstruction):
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
-             previous_phase: PreviousPhase,
-             os_services: OsServices) -> SuccessOrHardError:
+             os_services: OsServices,
+             previous_phase: PreviousPhase) -> SuccessOrHardError:
         """
         :param previous_phase: The phase that was executed directly before the cleanup phase.
         """

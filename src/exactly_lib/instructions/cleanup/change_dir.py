@@ -26,7 +26,7 @@ class _Instruction(CleanupPhaseInstruction):
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
-             previous_phase: PreviousPhase,
-             os_services: OsServices) -> sh.SuccessOrHardError:
+             os_services: OsServices,
+             previous_phase: PreviousPhase) -> sh.SuccessOrHardError:
         return cd_utils.execute_with_sh_result(self.destination_directory,
                                                environment.sds)
