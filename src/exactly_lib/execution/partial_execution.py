@@ -32,12 +32,13 @@ from .result import PartialResult, PartialResultStatus, new_partial_result_pass,
 class Configuration(tuple):
     def __new__(cls,
                 home_dir_path: pathlib.Path,
+                environ: dict,
                 timeout_in_seconds: int = None):
         """
         :param home_dir_path:
         :param timeout_in_seconds: None if no timeout
         """
-        return tuple.__new__(cls, (home_dir_path, timeout_in_seconds))
+        return tuple.__new__(cls, (home_dir_path, timeout_in_seconds, environ))
 
     @property
     def home_dir_path(self) -> pathlib.Path:
@@ -46,6 +47,14 @@ class Configuration(tuple):
     @property
     def timeout_in_seconds(self) -> int:
         return self[1]
+
+    @property
+    def environ(self) -> dict:
+        """
+        The set of environment variables available to instructions.
+        These may be both read and written.
+        """
+        return self[2]
 
 
 class _ExecutionConfiguration(tuple):
@@ -191,9 +200,6 @@ class _PartialExecutor:
             self.__configuration.timeout_in_seconds)
 
     def execute(self) -> PartialResult:
-        # TODO Köra det här i sub-process?
-        # Tror det behövs för att undvika att sätta omgivningen mm, o därmed
-        # påverka huvudprocessen.
         self.__set_pre_sds_environment_variables()
         res = self._sequence([
             self.__setup__validate_pre_sds,
@@ -385,7 +391,8 @@ class _PartialExecutor:
             self.__test_case.before_assert_phase)
 
     def __set_pre_sds_environment_variables(self):
-        os.environ.update(environment_variables.set_at_setup_pre_validate(self.__configuration.home_dir_path))
+        self.__configuration.environ.update(
+            environment_variables.set_at_setup_pre_validate(self.__configuration.home_dir_path))
 
     def __set_cwd_to_act_dir(self):
         os.chdir(str(self._sds.act_dir))
@@ -402,10 +409,10 @@ class _PartialExecutor:
                                                            timeout_in_seconds=self.__configuration.timeout_in_seconds)
 
     def __set_post_sds_environment_variables(self):
-        os.environ.update(environment_variables.set_at_setup_main(self._sds))
+        self.__configuration.environ.update(environment_variables.set_at_setup_main(self._sds))
 
     def __set_assert_environment_variables(self):
-        os.environ.update(environment_variables.set_at_assert(self._sds))
+        self.__configuration.environ.update(environment_variables.set_at_assert(self._sds))
 
     def __run_internal_instructions_phase_step(self,
                                                step: PhaseStep,

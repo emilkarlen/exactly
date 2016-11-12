@@ -28,6 +28,7 @@ def execute(test_case: test_case_doc.TestCase,
     if configuration_builder.execution_mode is ExecutionMode.SKIP:
         return result.new_skipped()
     partial_execution_configuration = partial_execution.Configuration(configuration_builder.home_dir_path,
+                                                                      dict(os.environ),
                                                                       configuration_builder.timeout_in_seconds)
     partial_result = partial_execution.execute(configuration_builder.act_phase_handling,
                                                partial_execution.TestCase(test_case.setup_phase,
