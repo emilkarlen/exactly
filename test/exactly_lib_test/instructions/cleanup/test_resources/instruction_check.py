@@ -1,3 +1,4 @@
+import os
 import pathlib
 import unittest
 
@@ -27,11 +28,13 @@ class Arrangement(ArrangementWithSds):
                  home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
                  sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
                  os_services: OsServices = new_default(),
+                 environ: dict = None,
                  process_execution_settings: ProcessExecutionSettings = with_no_timeout(),
                  previous_phase: PreviousPhase = PreviousPhase.ASSERT):
         super().__init__(home_dir_contents,
                          sds_contents_before_main,
                          os_services,
+                         environ,
                          process_execution_settings)
         self.previous_phase = previous_phase
 
@@ -91,11 +94,13 @@ class Executor(InstructionExecutionBase):
         with utils.home_and_sds_and_test_as_curr_dir(
                 home_dir_contents=self.arrangement.home_contents,
                 sds_contents=self.arrangement.sds_contents) as home_and_sds:
-            result_of_validate_pre_sds = self._execute_pre_validate(home_and_sds.home_dir_path, instruction)
+            environment = InstructionEnvironmentForPreSdsStep(home_and_sds.home_dir_path, dict(os.environ))
+            result_of_validate_pre_sds = self._execute_pre_validate(environment, instruction)
             if not result_of_validate_pre_sds.is_success:
                 return
             environment = i.InstructionEnvironmentForPostSdsStep(
-                home_and_sds.home_dir_path,
+                environment.home_directory,
+                environment.environ,
                 home_and_sds.sds,
                 phase_identifier.CLEANUP.identifier,
                 timeout_in_seconds=self.arrangement.process_execution_settings.timeout_in_seconds)
@@ -104,10 +109,9 @@ class Executor(InstructionExecutionBase):
             self.expectation.side_effects_check.apply(self.put, home_and_sds)
 
     def _execute_pre_validate(self,
-                              home_dir_path: pathlib.Path,
+                              environment: InstructionEnvironmentForPreSdsStep,
                               instruction: CleanupPhaseInstruction) -> svh.SuccessOrValidationErrorOrHardError:
-        pre_validation_environment = InstructionEnvironmentForPreSdsStep(home_dir_path)
-        result = instruction.validate_pre_sds(pre_validation_environment)
+        result = instruction.validate_pre_sds(environment)
         self._check_result_of_validate_pre_sds(result)
         self.expectation.validate_pre_sds_result.apply(self.put, result)
         return result

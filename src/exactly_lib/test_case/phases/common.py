@@ -24,13 +24,23 @@ class HomeAndSds:
 class InstructionEnvironmentForPreSdsStep:
     def __init__(self,
                  home_dir: pathlib.Path,
+                 environ: dict,
                  timeout_in_seconds: int = None):
         self.__home_dir = home_dir
         self.__timeout_in_seconds = timeout_in_seconds
+        self.__environ = environ
 
     @property
     def home_directory(self) -> pathlib.Path:
         return self.__home_dir
+
+    @property
+    def environ(self) -> dict:
+        """
+        The set of environment variables available to instructions.
+        These may be both read and written by instructions.
+        """
+        return self.__environ
 
     @property
     def timeout_in_seconds(self) -> int:
@@ -81,10 +91,11 @@ class PhaseLoggingPaths:
 class InstructionEnvironmentForPostSdsStep(InstructionEnvironmentForPreSdsStep):
     def __init__(self,
                  home_dir: pathlib.Path,
+                 environ: dict,
                  sds: _sds.SandboxDirectoryStructure,
                  phase_identifier: str,
                  timeout_in_seconds: int = None):
-        super().__init__(home_dir, timeout_in_seconds)
+        super().__init__(home_dir, environ, timeout_in_seconds)
         self.__sds = sds
         self._phase_logging = PhaseLoggingPaths(sds.log_dir, phase_identifier)
 

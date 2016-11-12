@@ -1,3 +1,4 @@
+import os
 import unittest
 
 from exactly_lib.instructions.multi_phase_instructions import run as sut
@@ -29,6 +30,7 @@ class ExecuteAction(home_and_sds_test.Action):
               home_and_sds: HomeAndSds) -> spe.ResultAndStderr:
         executor = MainStepExecutorForSubProcess(self.source_info, self.setup)
         return executor.apply(InstructionEnvironmentForPostSdsStep(home_and_sds.home_dir_path,
+                                                                   dict(os.environ),
                                                                    home_and_sds.sds,
                                                                    'the-phase'),
                               PhaseLoggingPaths(home_and_sds.sds.log_dir, 'the-phase'),

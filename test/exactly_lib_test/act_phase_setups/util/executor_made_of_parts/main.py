@@ -1,3 +1,4 @@
+import os
 import pathlib
 import unittest
 
@@ -66,7 +67,7 @@ class TestConstructor(unittest.TestCase):
 
 
 def _environment() -> InstructionEnvironmentForPreSdsStep:
-    return InstructionEnvironmentForPreSdsStep(pathlib.Path())
+    return InstructionEnvironmentForPreSdsStep(pathlib.Path(), dict(os.environ))
 
 
 class ParserThatRaisesException(sut.Parser):

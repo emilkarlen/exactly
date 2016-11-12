@@ -15,7 +15,7 @@ class TestCaseBase(unittest.TestCase):
 class TestSet(TestCaseBase):
     def runTest(self):
         environ = {}
-        os_services = new_with_environ(environ)
+        os_services = new_with_environ()
         self.conf.run_test(
                 self,
                 new_source2('name = value'),
@@ -28,7 +28,7 @@ class TestSet(TestCaseBase):
 class TestUnsetExistingVariable(TestCaseBase):
     def runTest(self):
         environ = {'a': 'A', 'b': 'B'}
-        os_services = new_with_environ(environ)
+        os_services = new_with_environ()
         self.conf.run_test(
                 self,
                 new_source2('unset a'),
@@ -41,7 +41,7 @@ class TestUnsetExistingVariable(TestCaseBase):
 class TestUnsetNonExistingVariable(TestCaseBase):
     def runTest(self):
         environ = {'a': 'A'}
-        os_services = new_with_environ(environ)
+        os_services = new_with_environ()
         self.conf.run_test(
                 self,
                 new_source2('unset non_existing_variable'),

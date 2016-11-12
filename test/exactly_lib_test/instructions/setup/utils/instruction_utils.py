@@ -1,3 +1,4 @@
+import os
 import unittest
 
 from exactly_lib.instructions.setup.utils.instruction_utils import InstructionWithFileRefsBase
@@ -28,20 +29,22 @@ class TestValidationShouldBeInPreValidateIfFileDoesExistPreSds(unittest.TestCase
         instruction = TestInstruction((FileRefCheck(file_ref.rel_home('file.txt'),
                                                     FileCheckThatEvaluatesTo(True)),))
         with home_and_sds_and_test_as_curr_dir() as home_and_sds:
-            pre_validate = instruction.validate_pre_sds(InstructionEnvironmentForPreSdsStep(home_and_sds.home_dir_path))
+            environment = InstructionEnvironmentForPreSdsStep(home_and_sds.home_dir_path, dict(os.environ))
+            pre_validate = instruction.validate_pre_sds(environment)
             self.assertTrue(pre_validate.is_success)
 
-            post_validate = instruction.validate_post_setup(_env_from(home_and_sds))
+            post_validate = instruction.validate_post_setup(_env_from(home_and_sds, environment))
             self.assertTrue(post_validate.is_success)
 
     def test_unsuccessful_validation(self):
         instruction = TestInstruction((FileRefCheck(file_ref.rel_home('file.txt'),
                                                     FileCheckThatEvaluatesTo(False)),))
         with home_and_sds_and_test_as_curr_dir() as home_and_sds:
-            pre_validate = instruction.validate_pre_sds(InstructionEnvironmentForPreSdsStep(home_and_sds.home_dir_path))
+            environment = InstructionEnvironmentForPreSdsStep(home_and_sds.home_dir_path, dict(os.environ))
+            pre_validate = instruction.validate_pre_sds(environment)
             self.assertFalse(pre_validate.is_success)
 
-            post_validate = instruction.validate_post_setup(_env_from(home_and_sds))
+            post_validate = instruction.validate_post_setup(_env_from(home_and_sds, environment))
             self.assertTrue(post_validate.is_success)
 
 
@@ -50,35 +53,42 @@ class TestValidationShouldBeInPostValidateIfFileDoesNotExistPreSds(unittest.Test
         instruction = TestInstruction((FileRefCheck(file_ref.rel_cwd('file.txt'),
                                                     FileCheckThatEvaluatesTo(True)),))
         with home_and_sds_and_test_as_curr_dir() as home_and_sds:
-            pre_validate = instruction.validate_pre_sds(InstructionEnvironmentForPreSdsStep(home_and_sds.home_dir_path))
+            environment = InstructionEnvironmentForPreSdsStep(home_and_sds.home_dir_path, dict(os.environ))
+            pre_validate = instruction.validate_pre_sds(environment)
             self.assertTrue(pre_validate.is_success)
 
-            post_validate = instruction.validate_post_setup(_env_from(home_and_sds))
+            post_validate = instruction.validate_post_setup(_env_from(home_and_sds, environment))
             self.assertTrue(post_validate.is_success)
 
     def test_unsuccessful_validation(self):
         instruction = TestInstruction((FileRefCheck(file_ref.rel_cwd('file.txt'),
                                                     FileCheckThatEvaluatesTo(False)),))
         with home_and_sds_and_test_as_curr_dir() as home_and_sds:
-            pre_validate = instruction.validate_pre_sds(InstructionEnvironmentForPreSdsStep(home_and_sds.home_dir_path))
+            environment = InstructionEnvironmentForPreSdsStep(home_and_sds.home_dir_path, dict(os.environ))
+            pre_validate = instruction.validate_pre_sds(environment)
             self.assertTrue(pre_validate.is_success)
 
-            post_validate = instruction.validate_post_setup(_env_from(home_and_sds))
+            post_validate = instruction.validate_post_setup(_env_from(home_and_sds, environment))
             self.assertFalse(post_validate.is_success)
 
 
-def _env_from(home_and_sds: HomeAndSds) -> InstructionEnvironmentForPostSdsStep:
-    return InstructionEnvironmentForPostSdsStep(home_and_sds.home_dir_path,
+def _env_from(home_and_sds: HomeAndSds,
+              environment: InstructionEnvironmentForPreSdsStep) -> InstructionEnvironmentForPostSdsStep:
+    return InstructionEnvironmentForPostSdsStep(environment.home_directory,
+                                                environment.environ,
                                                 home_and_sds.sds,
-                                            'phase-identifier')
+                                                'phase-identifier')
 
 
-def suite():
+def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestValidationShouldBeInPreValidateIfFileDoesExistPreSds))
     ret_val.addTest(unittest.makeSuite(TestValidationShouldBeInPostValidateIfFileDoesNotExistPreSds))
     return ret_val
 
 
+def run_suite():
+    unittest.TextTestRunner().run(suite())
+
 if __name__ == '__main__':
-    unittest.main()
+    run_suite()

@@ -61,8 +61,7 @@ class TestSet(unittest.TestCase):
         executor = parser.apply(new_source2('name = value'))
         assert isinstance(executor, sut.Executor)
         environ = {}
-        os_services = new_with_environ(environ)
-        executor.execute(os_services)
+        executor.execute(environ)
         self.assertEqual(environ,
                          {'name': 'value'})
 
@@ -73,8 +72,7 @@ class TestUnset(unittest.TestCase):
         executor = parser.apply(new_source2('unset a'))
         assert isinstance(executor, sut.Executor)
         environ = {'a': 'A', 'b': 'B'}
-        os_services = new_with_environ(environ)
-        executor.execute(os_services)
+        executor.execute(environ)
         self.assertEqual(environ,
                          {'b': 'B'})
 

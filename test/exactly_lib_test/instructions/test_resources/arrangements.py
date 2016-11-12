@@ -26,8 +26,10 @@ class ActResultProducer:
 class ArrangementBase:
     def __init__(self,
                  home_contents: file_structure.DirContents = file_structure.DirContents([]),
+                 environ: dict = None,
                  ):
         self.home_contents = home_contents
+        self.environ = {} if not environ else environ
 
 
 class ArrangementWithSds(ArrangementBase):
@@ -35,9 +37,10 @@ class ArrangementWithSds(ArrangementBase):
                  home_contents: file_structure.DirContents = file_structure.DirContents([]),
                  sds_contents: sds_populator.SdsPopulator = sds_populator.empty(),
                  os_services: OsServices = new_default(),
+                 environ: dict = None,
                  process_execution_settings=with_no_timeout(),
                  ):
-        super().__init__(home_contents)
+        super().__init__(home_contents, environ)
         self.sds_contents = sds_contents
         self.os_services = os_services
         self.process_execution_settings = process_execution_settings
@@ -49,7 +52,8 @@ class ArrangementPostAct(ArrangementWithSds):
                  sds_contents: sds_populator.SdsPopulator = sds_populator.empty(),
                  act_result_producer: ActResultProducer = ActResultProducer(),
                  os_services: OsServices = new_default(),
+                 environ: dict = None,
                  process_execution_settings=with_no_timeout(),
                  ):
-        super().__init__(home_contents, sds_contents, os_services, process_execution_settings)
+        super().__init__(home_contents, sds_contents, os_services, environ, process_execution_settings)
         self.act_result_producer = act_result_producer

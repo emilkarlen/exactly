@@ -1,3 +1,4 @@
+import os
 import pathlib
 import unittest
 from contextlib import contextmanager
@@ -36,7 +37,7 @@ class TestValidation(unittest.TestCase):
         super().__init__(method_name)
         self.constructor = sut.Constructor()
         self.home_dir_as_current_dir = pathlib.Path()
-        self.pre_sds_env = InstructionEnvironmentForPreSdsStep(self.home_dir_as_current_dir)
+        self.pre_sds_env = InstructionEnvironmentForPreSdsStep(self.home_dir_as_current_dir, dict(os.environ))
 
     def test_fails_when_there_are_no_instructions(self):
         act_phase_instructions = []
@@ -126,7 +127,7 @@ class TestValidation(unittest.TestCase):
     @staticmethod
     def _new_environment() -> InstructionEnvironmentForPreSdsStep:
         home_dir_path = pathlib.Path()
-        return InstructionEnvironmentForPreSdsStep(home_dir_path)
+        return InstructionEnvironmentForPreSdsStep(home_dir_path, dict(os.environ))
 
     def _do_validate_pre_sds(self, act_phase_instructions: list) -> svh.SuccessOrValidationErrorOrHardError:
         executor = self.constructor.apply(self.pre_sds_env, act_phase_instructions)

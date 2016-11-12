@@ -96,7 +96,7 @@ class TestExecuteBase(unittest.TestCase):
 
         cwd_before_test = os.getcwd()
         home_dir = pathlib.Path()
-        environment = InstructionEnvironmentForPreSdsStep(home_dir)
+        environment = InstructionEnvironmentForPreSdsStep(home_dir, dict(os.environ))
         sut = self.source_and_executor_constructor.apply(environment, act_phase_instructions)
         step_result = sut.validate_pre_sds(home_dir)
         self.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
@@ -189,7 +189,7 @@ class TestInitialCwdIsCurrentDirAndThatCwdIsRestoredAfterwards(TestBase):
             with self.test_setup.program_that_prints_cwd_without_new_line_to_stdout() as source:
                 executor_constructor = self.test_setup.sut
                 home_dir = pathlib.Path.cwd()
-                environment = InstructionEnvironmentForPreSdsStep(home_dir)
+                environment = InstructionEnvironmentForPreSdsStep(home_dir, dict(os.environ))
                 sut = executor_constructor.apply(environment, source)
                 step_result = sut.validate_pre_sds(home_dir)
                 self.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,

@@ -31,10 +31,11 @@ class Arrangement(ArrangementWithSds):
     def __init__(self,
                  home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
                  os_services: OsServices = new_default(),
+                 environ: dict = None,
                  process_execution_settings: ProcessExecutionSettings = with_no_timeout(),
                  sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
                  initial_settings_builder: SetupSettingsBuilder = SetupSettingsBuilder()):
-        super().__init__(home_dir_contents, sds_contents_before_main, os_services, process_execution_settings)
+        super().__init__(home_dir_contents, sds_contents_before_main, os_services, environ, process_execution_settings)
         self.initial_settings_builder = initial_settings_builder
 
 
@@ -103,14 +104,16 @@ class Executor:
             with tempfile.TemporaryDirectory(prefix=prefix + '-home-') as home_dir_name:
                 home_dir_path = pathlib.Path(home_dir_name).resolve()
                 self.arrangement.home_contents.write_to(home_dir_path)
-                pre_validate_result = self._execute_pre_validate(home_dir_path, instruction)
+                environment = InstructionEnvironmentForPreSdsStep(home_dir_path, dict(os.environ))
+                pre_validate_result = self._execute_pre_validate(environment)
                 if not pre_validate_result.is_success:
                     return
                 with tempfile.TemporaryDirectory(prefix=prefix + '-sds-') as sds_root_dir_name:
                     sds = sandbox_directory_structure.construct_at(resolved_path_name(sds_root_dir_name))
                     os.chdir(str(sds.act_dir))
                     global_environment_with_sds = i.InstructionEnvironmentForPostSdsStep(
-                        home_dir_path,
+                        environment.home_directory,
+                        environment.environ,
                         sds,
                         phase_identifier.SETUP.identifier,
                         timeout_in_seconds=self.arrangement.process_execution_settings.timeout_in_seconds)
@@ -123,10 +126,9 @@ class Executor:
             os.chdir(initial_cwd)
 
     def _execute_pre_validate(self,
-                              home_dir_path: pathlib.Path,
+                              environment: InstructionEnvironmentForPreSdsStep,
                               instruction: SetupPhaseInstruction) -> svh.SuccessOrValidationErrorOrHardError:
-        pre_validation_environment = InstructionEnvironmentForPreSdsStep(home_dir_path)
-        pre_validate_result = instruction.validate_pre_sds(pre_validation_environment)
+        pre_validate_result = instruction.validate_pre_sds(environment)
         self.put.assertIsInstance(pre_validate_result,
                                   svh.SuccessOrValidationErrorOrHardError,
                                   'pre_validate must return a ' + str(svh.SuccessOrValidationErrorOrHardError))
