@@ -66,7 +66,7 @@ class Test(FullExecutionTestCaseBase):
                                                                   phase_step.SETUP__VALIDATE_POST_SETUP),
                 main_initial_action=_RecordEnvVars(self.recorder,
                                                    phase_step.SETUP__MAIN))],
-            [act_phase_instruction_with_source(LineSequence(72, py_pgm_to_print_env_vars))],
+            [act_phase_instruction_with_source(LineSequence(72, tuple(py_pgm_to_print_env_vars)))],
             [before_assert_phase_instruction_that(
                 validate_pre_sds_initial_action=_RecordEnvVars(self.recorder,
                                                                phase_step.BEFORE_ASSERT__VALIDATE_PRE_SDS),
@@ -220,7 +220,7 @@ def env_vars_dict() -> dict:
 
 
 def print_to_file__generate_script(code_using_file_opened_for_writing: types.FunctionType,
-                                   file_name: str):
+                                   file_name: str) -> list:
     """
     Function that is designed as the execution__generate_script argument to TestCaseSetup, after
     giving the first two arguments using partial application.
