@@ -3,7 +3,7 @@ import pathlib
 import subprocess
 
 from exactly_lib.instructions.utils import file_services
-from exactly_lib.test_case.phases.common import PhaseLoggingPaths, HomeAndSds
+from exactly_lib.test_case.phases.common import PhaseLoggingPaths, HomeAndSds, InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.util import file_utils
@@ -121,6 +121,12 @@ class ProcessExecutionSettings(tuple):
         return self[1]
 
 
+def settings_from_instruction_env(environment: InstructionEnvironmentForPreSdsStep) -> ProcessExecutionSettings:
+    return ProcessExecutionSettings(timeout_in_seconds=environment.timeout_in_seconds,
+
+                                    environ=environment.environ)
+
+
 def with_no_timeout() -> ProcessExecutionSettings:
     return ProcessExecutionSettings()
 
@@ -147,6 +153,7 @@ class ExecutorThatStoresResultInFilesInDir:
                                                 stdin=subprocess.DEVNULL,
                                                 stdout=f_stdout,
                                                 stderr=f_stderr,
+                                                env=self.process_execution_settings.environ,
                                                 timeout=self.process_execution_settings.timeout_in_seconds,
                                                 shell=self.is_shell)
                     write_new_text_file(storage_dir / EXIT_CODE_FILE_NAME,

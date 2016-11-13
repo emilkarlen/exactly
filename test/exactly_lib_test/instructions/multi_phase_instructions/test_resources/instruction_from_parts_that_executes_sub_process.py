@@ -1,4 +1,5 @@
 import pathlib
+import random
 import unittest
 
 from exactly_lib.instructions.utils import instruction_from_parts_for_executing_sub_process as spe_parts
@@ -14,8 +15,7 @@ from exactly_lib.test_case.phase_identifier import Phase
 from exactly_lib.test_case.phases.common import PhaseLoggingPaths
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.string import lines_content
-from exactly_lib_test.act_phase_setups.test_resources.py_program import program_that_prints_and_exits_with_exit_code, \
-    program_that_sleeps_at_least_and_then_exists_with_zero_exit_status
+from exactly_lib_test.act_phase_setups.test_resources import py_program as py
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.configuration import ConfigurationBase
 from exactly_lib_test.instructions.utils.sub_process_execution import assert_dir_contains_at_least_result_files
@@ -83,6 +83,7 @@ def suite_for(configuration: Configuration) -> unittest.TestSuite:
                          TestInstructionIsSuccessfulWhenExitStatusFromCommandIsZero,
                          TestInstructionIsErrorWhenExitStatusFromCommandIsNonZero,
                          TestInstructionIsErrorWhenProcessTimesOut,
+                         TestEnvironmentVariablesArePassedToSubProcess,
                          TestOutputIsStoredInFilesInInstructionLogDir,
                          TestWhenNonZeroExitCodeTheContentsOfStderrShouldBeIncludedInTheErrorMessage,
                          TestInstructionIsSuccessfulWhenExitStatusFromShellCommandIsZero,
@@ -165,7 +166,7 @@ class TestInstructionIsErrorWhenExitStatusFromCommandIsNonZero(TestCaseBase):
 class TestInstructionIsErrorWhenProcessTimesOut(TestCaseBase):
     def runTest(self):
         timeout_in_seconds = 1
-        script_that_sleeps = lines_content(program_that_sleeps_at_least_and_then_exists_with_zero_exit_status(4))
+        script_that_sleeps = lines_content(py.program_that_sleeps_at_least_and_then_exists_with_zero_exit_status(4))
 
         execution_setup_parser = _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(
             pre_or_post_validation.ConstantSuccessValidator())
@@ -177,12 +178,39 @@ class TestInstructionIsErrorWhenProcessTimesOut(TestCaseBase):
             self.conf.expect_hard_error_in_main())
 
 
+class TestEnvironmentVariablesArePassedToSubProcess(TestCaseBase):
+    def runTest(self):
+        var_name = 'TEST_VAR_' + str(random.getrandbits(32))
+        var_value = str(random.getrandbits(32))
+        sub_process_result = SubProcessResult(exitcode=0,
+                                              stdout=var_value,
+                                              stderr='')
+        environ = {var_name: var_value}
+        program = lines_content(py.write_value_of_environment_variable_to_stdout(var_name))
+
+        execution_setup_parser = _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(
+            pre_or_post_validation.ConstantSuccessValidator())
+        source = new_source2(program)
+        instruction_name = 'name-of-the-instruction'
+        source_info = spe.InstructionSourceInfo(source.line_sequence.first_line.line_number,
+                                                instruction_name)
+        self.conf.run_sub_process_test(
+            self,
+            source,
+            execution_setup_parser,
+            self.conf.arrangement(environ=environ),
+            self.conf.expect_success_and_side_effects_on_files(_InstructionLogDirContainsOutFiles(self.conf.phase(),
+                                                                                                  source_info,
+                                                                                                  sub_process_result)),
+            instruction_name=instruction_name)
+
+
 class TestOutputIsStoredInFilesInInstructionLogDir(TestCaseBase):
     def runTest(self):
         sub_process_result = SubProcessResult(exitcode=0,
                                               stdout='output on stdout',
                                               stderr='output on stderr')
-        program = program_that_prints_and_exits_with_exit_code(sub_process_result)
+        program = py.program_that_prints_and_exits_with_exit_code(sub_process_result)
         execution_setup_parser = _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(
             pre_or_post_validation.ConstantSuccessValidator())
         source = new_source2(program)
@@ -205,7 +233,7 @@ class TestWhenNonZeroExitCodeTheContentsOfStderrShouldBeIncludedInTheErrorMessag
         sub_process_result = SubProcessResult(exitcode=72,
                                               stdout='output on stdout',
                                               stderr='output on stderr')
-        program = program_that_prints_and_exits_with_exit_code(sub_process_result)
+        program = py.program_that_prints_and_exits_with_exit_code(sub_process_result)
         execution_setup_parser = _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(
             pre_or_post_validation.ConstantSuccessValidator())
         source = new_source2(program)
