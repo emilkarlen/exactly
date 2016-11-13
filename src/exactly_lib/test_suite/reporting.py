@@ -2,7 +2,7 @@ import pathlib
 
 from exactly_lib.common.exit_value import ExitValue
 from exactly_lib.processing import test_case_processing
-from exactly_lib.util.std import StdOutputFiles, FilePrinter
+from exactly_lib.util.std import StdOutputFiles
 from . import structure
 
 
@@ -64,7 +64,7 @@ class RootSuiteReporter:
                                sub_suite: structure.TestSuite) -> SubSuiteReporter:
         raise NotImplementedError()
 
-    def report_final_results(self, text_output_file: FilePrinter) -> ExitValue:
+    def report_final_results(self) -> ExitValue:
         """
         Gives the number that shall be the exit code of the main program.
         Called after all sub suites have been executed and reported.

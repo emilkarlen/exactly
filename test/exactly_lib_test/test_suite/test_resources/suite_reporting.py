@@ -7,7 +7,6 @@ from exactly_lib.processing.test_case_processing import TestCaseSetup
 from exactly_lib.test_case.test_case_doc import TestCase
 from exactly_lib.test_suite import reporting, structure
 from exactly_lib.util import std
-from exactly_lib.util.std import FilePrinter
 
 
 class ExecutionTracingReporterFactory(reporting.RootSuiteReporterFactory):
@@ -33,7 +32,7 @@ class ExecutionTracingRootSuiteReporter(reporting.RootSuiteReporter):
         self.sub_suite_reporters.append(reporter)
         return reporter
 
-    def report_final_results(self, text_output_file: FilePrinter) -> ExitValue:
+    def report_final_results(self) -> ExitValue:
         self.num_report_final_result_invocations += 1
         return ExitValue(self.VALID_SUITE_EXIT_CODE, 'valid suite')
 
