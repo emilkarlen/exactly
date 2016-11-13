@@ -41,5 +41,9 @@ def suite() -> unittest.TestSuite:
     return test_impl.suite_for(ConfigurationForTheAssertPhase())
 
 
-if __name__ == '__main__':
+def run_suite():
     unittest.TextTestRunner().run(suite())
+
+
+if __name__ == '__main__':
+    run_suite()
