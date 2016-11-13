@@ -89,7 +89,7 @@ class TestExecutionOfSuite(unittest.TestCase):
             (FULL_RESULT_IMPLEMENTATION_ERROR, case_ev.EXECUTION__IMPLEMENTATION_ERROR, suite_ev.FAILED_TESTS),
         ]
         for case_result, expected_case_exit_value, expected_suite_exit_value in cases:
-            with self.subTest(case_result=case_result,
+            with self.subTest(case_result_status=case_result.status,
                               expected_case_exit_value=expected_case_exit_value,
                               expected_suite_exit_value=expected_suite_exit_value):
                 # ARRANGE #
