@@ -11,7 +11,7 @@ from exactly_lib.test_suite.reporters import simple_progress_reporter as sut
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.test_resources.str_std_out_files import StringStdOutFiles
 from exactly_lib_test.test_suite.test_resources.execution_utils import TestCaseProcessorThatGivesConstant, \
-    FULL_RESULT_PASS, new_test_suite, DUMMY_CASE_PROCESSING, test_case
+    FULL_RESULT_PASS, test_suite, DUMMY_CASE_PROCESSING, test_case
 
 
 def suite() -> unittest.TestSuite:
@@ -62,7 +62,7 @@ class TestExecutionOfSuite(unittest.TestCase):
             expected_exit_value.exit_identifier,
         ])
         test_suites = [
-            new_test_suite('root file name', [], [])
+            test_suite('root file name', [], [])
         ]
         std_output_files = StringStdOutFiles()
         executor = _suite_executor_for_case_processing_that_unconditionally_passes(std_output_files,
@@ -85,7 +85,7 @@ class TestExecutionOfSuite(unittest.TestCase):
             expected_exit_value.exit_identifier,
         ])
         test_suites = [
-            new_test_suite('root file name', [], [
+            test_suite('root file name', [], [
                 test_case('test case file')
             ])
         ]

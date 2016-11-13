@@ -41,9 +41,9 @@ FULL_RESULT_PASS = result.new_pass(DUMMY_SDS)
 T_C_H_S = test_case_handling_setup_with_identity_preprocessor()
 
 
-def new_test_suite(source_file_name: str,
-                   sub_test_suites: list,
-                   test_cases: list) -> structure.TestSuite:
+def test_suite(source_file_name: str,
+               sub_test_suites: list,
+               test_cases: list) -> structure.TestSuite:
     return structure.TestSuite(pathlib.Path(source_file_name),
                                [],
                                T_C_H_S,
