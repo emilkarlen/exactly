@@ -7,6 +7,7 @@ from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.processing.instruction_setup import InstructionsSetup
 from exactly_lib.processing.preprocessor import IDENTITY_PREPROCESSOR
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
+from exactly_lib.processing.test_case_processing import TestCaseSetup
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_suite import structure
 from exactly_lib_test.execution.test_resources.act_source_executor import \
@@ -48,3 +49,7 @@ def new_test_suite(source_file_name: str,
                                T_C_H_S,
                                sub_test_suites,
                                test_cases)
+
+
+def test_case(source_file_name: str) -> TestCaseSetup:
+    return TestCaseSetup(pathlib.Path(source_file_name))
