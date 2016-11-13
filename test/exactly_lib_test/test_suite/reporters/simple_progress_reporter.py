@@ -12,7 +12,6 @@ class TestFinalResultFormatting(unittest.TestCase):
     def test_with_no_errors(self):
         # ARRANGE #
         elapsed_time = datetime.timedelta(seconds=1)
-        exit_identifier = 'exit identifier'
         num_test_cases = 5
         errors = {}
         # ACT #
@@ -27,7 +26,6 @@ class TestFinalResultFormatting(unittest.TestCase):
     def test_with_multiple_errors(self):
         # ARRANGE #
         elapsed_time = datetime.timedelta(seconds=1)
-        exit_identifier = 'exit identifier'
         num_test_cases = 6
         errors = {'identifier_4': 4,
                   'longer_identifier_12': 12,
