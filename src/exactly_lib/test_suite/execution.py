@@ -75,7 +75,7 @@ class Executor:
 
 class SuitesExecutor:
     """
-    Executes a list suites.
+    Executes a list of TestSuite:s.
     """
 
     def __init__(self,
@@ -89,7 +89,7 @@ class SuitesExecutor:
     def execute_and_report(self, suits_in_processing_order: list) -> ExitValue:
         """
         :param suits_in_processing_order: [TestSuite]
-        :return: Exit code from main program.
+        :return: Exit code for main program.
         """
         self._reporter.root_suite_begin()
         for suite in suits_in_processing_order:
