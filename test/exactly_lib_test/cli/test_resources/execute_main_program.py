@@ -1,8 +1,8 @@
 from exactly_lib.cli.argument_parsing_of_act_phase_setup import INTERPRETER_FOR_TEST
 from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_options import OPTION_FOR_ACTOR
 from exactly_lib.default import default_main_program as sut
-from exactly_lib.default.program_modes.test_suite.reporting import DefaultRootSuiteReporterFactory
 from exactly_lib.processing.instruction_setup import InstructionsSetup
+from exactly_lib.test_suite.reporters.simple_progress_reporter import DefaultRootSuiteReporterFactory
 from exactly_lib_test.cli.test_resources.test_case_handling_setup import test_case_handling_setup
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.str_std_out_files import StringStdOutFiles
