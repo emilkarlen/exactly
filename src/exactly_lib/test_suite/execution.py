@@ -39,7 +39,6 @@ class Executor:
         self._reporter_factory = reporter_factory
         self._test_case_processor_constructor = test_case_processor_constructor
         self._suite_root_file_path = suite_root_file_path
-        self._reporter = self._reporter_factory.new_reporter(output, suite_root_file_path)
 
     def execute(self) -> int:
         final_result_output_file = FilePrinter(self._std.err)
@@ -65,7 +64,8 @@ class Executor:
             return exit_value
 
         suits_in_processing_order = self._suite_enumerator.apply(root_suite)
-        executor = SuitesExecutor(self._reporter,
+        executor = SuitesExecutor(self._reporter_factory.new_reporter(self._std,
+                                                                      self._suite_root_file_path),
                                   self._default_case_configuration,
                                   self._test_case_processor_constructor)
         return executor.execute_and_report(suits_in_processing_order, reporter_out)
