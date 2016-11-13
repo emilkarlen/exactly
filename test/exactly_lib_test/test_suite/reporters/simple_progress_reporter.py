@@ -9,7 +9,9 @@ from exactly_lib.processing.instruction_setup import InstructionsSetup
 from exactly_lib.processing.preprocessor import IDENTITY_PREPROCESSOR
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.test_suite import execution
+from exactly_lib.test_suite import exit_values
 from exactly_lib.test_suite.reporters import simple_progress_reporter as sut
+from exactly_lib.util.string import lines_content
 from exactly_lib_test.execution.test_resources.act_source_executor import \
     ActSourceAndExecutorConstructorThatRunsConstantActions
 from exactly_lib_test.test_resources.str_std_out_files import StringStdOutFiles
@@ -25,7 +27,8 @@ def suite() -> unittest.TestSuite:
 
 
 class TestExecutionOfSuite(unittest.TestCase):
-    def test_empty_suite_just_execute_TODO_make_this_test_better(self):
+    def test_empty_suite_SHOULD_exit_with_success_and_print_single_line_with_ok_identifier(self):
+        # ARRANGE #
         factory = sut.SimpleProgressRootSuiteReporterFactory()
         files = StringStdOutFiles()
         root_file_path = pathlib.Path()
@@ -33,7 +36,14 @@ class TestExecutionOfSuite(unittest.TestCase):
         result = test_case_processing.new_executed(FULL_RESULT_PASS)
         executor = execution.SuitesExecutor(reporter, DEFAULT_CASE_PROCESSING,
                                             TestCaseProcessorThatGivesConstant(result))
-        executor.execute_and_report([])
+        test_suites = []
+        # ACT #
+        exit_value = executor.execute_and_report(test_suites)
+        # ASSERT #
+        files.finish()
+        self.assertEquals(exit_values.ALL_PASS, exit_value)
+        self.assertEqual(lines_content([exit_values.ALL_PASS.exit_identifier]),
+                         files.stdout_contents)
 
 
 class TestFinalResultFormatting(unittest.TestCase):
