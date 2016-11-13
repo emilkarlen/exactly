@@ -39,6 +39,7 @@ DUMMY_CASE_PROCESSING = case_processing.Configuration(
 DUMMY_SDS = SandboxDirectoryStructure('test-root-dir')
 
 FULL_RESULT_PASS = result.new_pass(DUMMY_SDS)
+FULL_RESULT_SKIP = result.new_skipped()
 FULL_RESULT_FAIL = result.FullResult(result.FullResultStatus.FAIL,
                                      DUMMY_SDS,
                                      result.FailureInfo(phase_step.ASSERT__MAIN,

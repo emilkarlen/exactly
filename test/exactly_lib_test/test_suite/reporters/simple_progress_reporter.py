@@ -12,7 +12,7 @@ from exactly_lib.test_suite.reporters import simple_progress_reporter as sut
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.test_resources.str_std_out_files import StringStdOutFiles
 from exactly_lib_test.test_suite.test_resources.execution_utils import TestCaseProcessorThatGivesConstant, \
-    FULL_RESULT_PASS, test_suite, DUMMY_CASE_PROCESSING, test_case, FULL_RESULT_FAIL
+    FULL_RESULT_PASS, test_suite, DUMMY_CASE_PROCESSING, test_case, FULL_RESULT_FAIL, FULL_RESULT_SKIP
 
 
 def suite() -> unittest.TestSuite:
@@ -121,6 +121,33 @@ class TestExecutionOfSuite(unittest.TestCase):
         ]
         std_output_files = StringStdOutFiles()
         executor = _suite_executor_for_case_processing_that_unconditionally(FULL_RESULT_FAIL,
+                                                                            std_output_files,
+                                                                            Path())
+        # ACT #
+        exit_value = executor.execute_and_report(test_suites)
+        # ASSERT #
+        std_output_files.finish()
+
+        self.assertEquals(expected_exit_value, exit_value)
+        self.assertEqual(expected_output,
+                         std_output_files.stdout_contents)
+
+    def test_suite_with_single_case_that_is_skipped(self):
+        # ARRANGE #
+        expected_exit_value = suite_exit_value.ALL_PASS
+        expected_output = lines_content([
+            _suite_begin('root file name'),
+            _case('test case file', case_exit_value.EXECUTION__SKIPPED),
+            _suite_end('root file name'),
+            expected_exit_value.exit_identifier,
+        ])
+        test_suites = [
+            test_suite('root file name', [], [
+                test_case('test case file')
+            ])
+        ]
+        std_output_files = StringStdOutFiles()
+        executor = _suite_executor_for_case_processing_that_unconditionally(FULL_RESULT_SKIP,
                                                                             std_output_files,
                                                                             Path())
         # ACT #
