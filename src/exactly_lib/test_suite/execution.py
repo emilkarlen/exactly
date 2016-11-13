@@ -104,8 +104,7 @@ class SuitesExecutor:
         """
         sub_suite_reporter = self._reporter.new_sub_suite_reporter(suite)
         sub_suite_reporter.listener().suite_begin()
-        configuration = self._configuration_for_cases_in_suite(suite)
-        case_processor = self._test_case_processor_constructor(configuration)
+        case_processor = self._case_processor_for(suite)
         for case in suite.test_cases:
             sub_suite_reporter.listener().case_begin(case)
             result = self._process_case(case_processor, case)
@@ -114,6 +113,11 @@ class SuitesExecutor:
             sub_suite_reporter.case_end(case,
                                         result)
         sub_suite_reporter.listener().suite_end()
+
+    def _case_processor_for(self, suite):
+        configuration = self._configuration_for_cases_in_suite(suite)
+        case_processor = self._test_case_processor_constructor(configuration)
+        return case_processor
 
     @staticmethod
     def _process_case(case_processor: test_case_processing.Processor,
