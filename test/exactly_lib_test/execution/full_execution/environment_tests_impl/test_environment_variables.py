@@ -1,4 +1,3 @@
-import os
 import pathlib
 import types
 import unittest
@@ -126,14 +125,6 @@ class Test(FullExecutionTestCaseBase):
             phase_step.ASSERT__MAIN: set_after_act,
             phase_step.CLEANUP__MAIN: set_after_act,
         }
-        expected_act_output = ''.join([
-            '%s=%s%s' % (
-                environment_variables.ENV_VAR_HOME, home_dir_after_configuration, os.linesep),
-            '%s=%s%s' % (
-                environment_variables.ENV_VAR_ACT, str(self.sds.act_dir), os.linesep),
-            '%s=%s%s' % (environment_variables.ENV_VAR_TMP, str(self.sds.tmp.user_dir),
-                         os.linesep),
-        ])
         self.__assert_expected_recorded_variables(expected_recorded_internally)
 
     def __assert_test_sanity(self):

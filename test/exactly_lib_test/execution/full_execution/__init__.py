@@ -7,7 +7,7 @@ from exactly_lib_test.execution.full_execution import \
     propagation_of_timeout_to_phases
 
 
-def suite():
+def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(test_translation_of_partial_result_to_full_result.Test))
     ret_val.addTest(unittest.makeSuite(test_environment.Test))
@@ -17,8 +17,7 @@ def suite():
 
 
 def run_suite():
-    runner = unittest.TextTestRunner()
-    runner.run(suite())
+    unittest.TextTestRunner().run(suite())
 
 
 if __name__ == '__main__':
