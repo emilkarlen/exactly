@@ -1,5 +1,3 @@
-import copy
-import os
 import pathlib
 
 from exactly_lib import program_info
@@ -58,10 +56,8 @@ def new_accessor(configuration: Configuration) -> processing.Accessor:
 
 
 def new_executor_that_should_not_pollute_current_processes(configuration: Configuration) -> processing_utils.Executor:
-    return _ExecutorThatSavesAndRestoresEnvironmentVariables(
-        configuration.default_handling_setup.default_act_phase_setup,
-        configuration.is_keep_execution_directory_root,
-        configuration.execution_directory_root_name_prefix)
+    # Currently, the executor does not pollute the current process
+    return new_executor_that_may_pollute_current_processes(configuration)
 
 
 def new_executor_that_may_pollute_current_processes(configuration: Configuration) -> processing_utils.Executor:
@@ -128,22 +124,3 @@ class _Executor(processing_utils.Executor):
                                                            act_phase_handling_for_setup(self.default_act_phase_setup)),
                                       self._execution_directory_root_name_prefix,
                                       self._is_keep_execution_directory_root)
-
-
-class _ExecutorThatSavesAndRestoresEnvironmentVariables(processing_utils.Executor):
-    def __init__(self,
-                 act_phase_setup: ActPhaseSetup,
-                 is_keep_execution_directory_root: bool,
-                 execution_directory_root_name_prefix: str = program_info.PROGRAM_NAME + '-'):
-        self._polluting_executor = _Executor(act_phase_setup,
-                                             is_keep_execution_directory_root,
-                                             execution_directory_root_name_prefix)
-
-    def apply(self,
-              test_case_file_path: pathlib.Path,
-              test_case: test_case_doc.TestCase) -> FullResult:
-        variables_before = copy.deepcopy(os.environ)
-        ret_val = self._polluting_executor.apply(test_case_file_path,
-                                                 test_case)
-        os.environ = variables_before
-        return ret_val
