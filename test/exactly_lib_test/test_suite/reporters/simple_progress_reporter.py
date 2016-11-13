@@ -1,11 +1,39 @@
 import datetime
+import pathlib
 import unittest
 
+from exactly_lib.processing import processors as case_processing
+from exactly_lib.processing import test_case_processing
+from exactly_lib.processing.act_phase import ActPhaseSetup
+from exactly_lib.processing.instruction_setup import InstructionsSetup
+from exactly_lib.processing.preprocessor import IDENTITY_PREPROCESSOR
+from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
+from exactly_lib.test_suite import execution
 from exactly_lib.test_suite.reporters import simple_progress_reporter as sut
+from exactly_lib_test.execution.test_resources.act_source_executor import \
+    ActSourceAndExecutorConstructorThatRunsConstantActions
+from exactly_lib_test.test_resources.str_std_out_files import StringStdOutFiles
+from exactly_lib_test.test_suite.test_resources.execution_utils import TestCaseProcessorThatGivesConstant, \
+    FULL_RESULT_PASS
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.makeSuite(TestFinalResultFormatting)
+    return unittest.TestSuite([
+        unittest.makeSuite(TestExecutionOfSuite),
+        unittest.makeSuite(TestFinalResultFormatting)
+    ])
+
+
+class TestExecutionOfSuite(unittest.TestCase):
+    def test_empty_suite_just_execute_TODO_make_this_test_better(self):
+        factory = sut.SimpleProgressRootSuiteReporterFactory()
+        files = StringStdOutFiles()
+        root_file_path = pathlib.Path()
+        reporter = factory.new_reporter(files.stdout_files, root_file_path)
+        result = test_case_processing.new_executed(FULL_RESULT_PASS)
+        executor = execution.SuitesExecutor(reporter, DEFAULT_CASE_PROCESSING,
+                                            TestCaseProcessorThatGivesConstant(result))
+        executor.execute_and_report([])
 
 
 class TestFinalResultFormatting(unittest.TestCase):
@@ -51,3 +79,11 @@ class TestFinalResultFormatting(unittest.TestCase):
         self.assertRegex(line,
                          reg_ex,
                          'Line that reports number of tests and elapsed time')
+
+
+DEFAULT_CASE_PROCESSING = case_processing.Configuration(
+    lambda x: ((), ()),
+    InstructionsSetup({}, {}, {}, {}, {}),
+    TestCaseHandlingSetup(ActPhaseSetup(ActSourceAndExecutorConstructorThatRunsConstantActions()),
+                          IDENTITY_PREPROCESSOR),
+    False)

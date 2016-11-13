@@ -2,10 +2,9 @@ import pathlib
 import unittest
 from pathlib import Path
 
-from exactly_lib.execution.result import new_skipped, new_pass
+from exactly_lib.execution.result import new_skipped
 from exactly_lib.processing import test_case_processing
 from exactly_lib.processing.test_case_processing import TestCaseSetup
-from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_suite import exit_values
 from exactly_lib.test_suite import reporting
 from exactly_lib.test_suite import structure
@@ -17,7 +16,8 @@ from exactly_lib.util import line_source
 from exactly_lib_test.test_case.test_resources import error_info
 from exactly_lib_test.test_resources.str_std_out_files import StringStdOutFiles
 from exactly_lib_test.test_suite.test_resources.execution_utils import \
-    test_case_handling_setup_with_identity_preprocessor, TestCaseProcessorThatGivesConstant, DUMMY_CASE_PROCESSING
+    test_case_handling_setup_with_identity_preprocessor, TestCaseProcessorThatGivesConstant, DUMMY_CASE_PROCESSING, \
+    FULL_RESULT_PASS
 from exactly_lib_test.test_suite.test_resources.suite_reporting import ExecutionTracingReporterFactory, \
     ExecutionTracingRootSuiteReporter, EventType, ExecutionTracingSubSuiteProgressReporter
 
@@ -456,11 +456,6 @@ class ExpectedSuiteReporting(tuple):
             put.assertIs(EventType.CASE_END,
                          sr.event_type_list[case_idx + 1],
                          msg_header + 'Second event of case processing')
-
-
-DUMMY_SDS = SandboxDirectoryStructure('test-root-dir')
-
-FULL_RESULT_PASS = new_pass(DUMMY_SDS)
 
 
 def suite() -> unittest.TestSuite:
