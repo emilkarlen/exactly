@@ -3,9 +3,7 @@ import unittest
 from pathlib import Path
 
 from exactly_lib.execution.result import new_skipped, new_pass
-from exactly_lib.processing import processors as case_processing
 from exactly_lib.processing import test_case_processing
-from exactly_lib.processing.instruction_setup import InstructionsSetup
 from exactly_lib.processing.test_case_processing import TestCaseSetup
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_suite import exit_values
@@ -18,10 +16,10 @@ from exactly_lib.test_suite.suite_hierarchy_reading import SuiteHierarchyReader
 from exactly_lib.util import line_source
 from exactly_lib_test.test_case.test_resources import error_info
 from exactly_lib_test.test_resources.str_std_out_files import StringStdOutFiles
+from exactly_lib_test.test_suite.test_resources.execution_utils import \
+    test_case_handling_setup_with_identity_preprocessor, TestCaseProcessorThatGivesConstant, DUMMY_CASE_PROCESSING
 from exactly_lib_test.test_suite.test_resources.suite_reporting import ExecutionTracingReporterFactory, \
     ExecutionTracingRootSuiteReporter, EventType, ExecutionTracingSubSuiteProgressReporter
-from exactly_lib_test.test_suite.test_resources.test_case_handling_setup import \
-    test_case_handling_setup_with_identity_preprocessor
 
 T_C_H_S = test_case_handling_setup_with_identity_preprocessor()
 
@@ -42,7 +40,7 @@ class TestError(unittest.TestCase):
         str_std_out_files = StringStdOutFiles()
         suite_hierarchy_reader = ReaderThatRaisesParseError()
         reporter_factory = ExecutionTracingReporterFactory()
-        executor = Executor(DEFAULT_CASE_PROCESSING,
+        executor = Executor(DUMMY_CASE_PROCESSING,
                             str_std_out_files.stdout_files,
                             suite_hierarchy_reader,
                             reporter_factory,
@@ -65,7 +63,7 @@ class TestError(unittest.TestCase):
         root = new_test_suite('root', [], [test_case])
         suite_hierarchy_reader = ReaderThatGivesConstantSuite(root)
         reporter_factory = ExecutionTracingReporterFactory()
-        executor = Executor(DEFAULT_CASE_PROCESSING,
+        executor = Executor(DUMMY_CASE_PROCESSING,
                             str_std_out_files.stdout_files,
                             suite_hierarchy_reader,
                             reporter_factory,
@@ -111,7 +109,7 @@ class TestReturnValueFromTestCaseProcessor(unittest.TestCase):
         root = new_test_suite('root', [], [test_case])
         suite_hierarchy_reader = ReaderThatGivesConstantSuite(root)
         reporter_factory = ExecutionTracingReporterFactory()
-        executor = Executor(DEFAULT_CASE_PROCESSING,
+        executor = Executor(DUMMY_CASE_PROCESSING,
                             str_std_out_files.stdout_files,
                             suite_hierarchy_reader,
                             reporter_factory,
@@ -162,7 +160,7 @@ class TestComplexSuite(unittest.TestCase):
                                    ])
         ]
         suite_hierarchy_reader = ReaderThatGivesConstantSuite(root)
-        executor = Executor(DEFAULT_CASE_PROCESSING,
+        executor = Executor(DUMMY_CASE_PROCESSING,
                             str_std_out_files.stdout_files,
                             suite_hierarchy_reader,
                             reporter_factory,
@@ -201,7 +199,7 @@ class TestComplexSuite(unittest.TestCase):
             ExpectedSuiteReporting(root, []),
         ]
         suite_hierarchy_reader = ReaderThatGivesConstantSuite(root)
-        executor = Executor(DEFAULT_CASE_PROCESSING,
+        executor = Executor(DUMMY_CASE_PROCESSING,
                             str_std_out_files.stdout_files,
                             suite_hierarchy_reader,
                             reporter_factory,
@@ -270,7 +268,7 @@ class TestComplexSuite(unittest.TestCase):
             ExpectedSuiteReporting(root, [(tc_executed_root, test_case_processing.Status.EXECUTED)]),
         ]
         suite_hierarchy_reader = ReaderThatGivesConstantSuite(root)
-        executor = Executor(DEFAULT_CASE_PROCESSING,
+        executor = Executor(DUMMY_CASE_PROCESSING,
                             str_std_out_files.stdout_files,
                             suite_hierarchy_reader,
                             reporter_factory,
@@ -307,21 +305,18 @@ class TestCaseProcessorThatRaisesUnconditionally(test_case_processing.Processor)
         raise NotImplementedError('Unconditional expected exception from test implementation')
 
 
-class TestCaseProcessorThatGivesConstant(test_case_processing.Processor):
-    def __init__(self,
-                 result: test_case_processing.Result):
-        self.result = result
-
-    def apply(self, test_case: TestCaseSetup) -> test_case_processing.Result:
-        return self.result
-
-
 class TestCaseProcessorThatGivesConstantPerCase(test_case_processing.Processor):
+    """
+    Processor that associates object ID:s of TestCaseSetup:s (Pythons internal id of objects, given
+    by the id() method), with a processing result.
+
+    Only TestCaseSetup:s that are included in this association (dict) can be executed.
+    """
+
     def __init__(self,
                  test_case_id_2_result: dict):
         """
         :param test_case_id_2_result: int -> test_case_processing.TestCaseProcessingResult
-        :return:
         """
         self.test_case_id_2_result = test_case_id_2_result
 
@@ -466,12 +461,6 @@ class ExpectedSuiteReporting(tuple):
 DUMMY_SDS = SandboxDirectoryStructure('test-root-dir')
 
 FULL_RESULT_PASS = new_pass(DUMMY_SDS)
-
-DEFAULT_CASE_PROCESSING = case_processing.Configuration(
-    lambda x: ((), ()),
-    InstructionsSetup({}, {}, {}, {}, {}),
-    T_C_H_S,
-    False)
 
 
 def suite() -> unittest.TestSuite:
