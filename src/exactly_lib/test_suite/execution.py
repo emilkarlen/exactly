@@ -6,6 +6,7 @@ from exactly_lib.common.exit_value import ExitValue
 from exactly_lib.processing import processors as case_processing
 from exactly_lib.processing import test_case_processing
 from exactly_lib.test_case import error_description
+from exactly_lib.test_suite import exit_values
 from exactly_lib.test_suite import reporting
 from exactly_lib.test_suite import structure
 from exactly_lib.test_suite.enumeration import SuiteEnumerator
@@ -42,10 +43,7 @@ class Executor:
 
     def execute(self) -> int:
         final_result_output_file = FilePrinter(self._std.err)
-        exit_identifier_output_file = FilePrinter(self._std.out)
         exit_value = self._execute_and_let_reporter_report_final_result(final_result_output_file)
-        self._std.err.flush()
-        exit_identifier_output_file.write_line(exit_value.exit_identifier)
         return exit_value.exit_code
 
     def _execute_and_let_reporter_report_final_result(self,
@@ -60,7 +58,11 @@ class Executor:
                             ex.line,
                             'section')
             file_printer.write_lines(ex.error_message_lines())
-            return self._reporter.report_final_results_for_invalid_suite(reporter_out)
+            exit_identifier_output_file = FilePrinter(self._std.out)
+            exit_value = exit_values.INVALID_SUITE
+            self._std.err.flush()
+            exit_identifier_output_file.write_line(exit_value.exit_identifier)
+            return exit_value
 
         suits_in_processing_order = self._suite_enumerator.apply(root_suite)
         executor = SuitesExecutor(self._reporter,

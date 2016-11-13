@@ -60,6 +60,7 @@ class SimpleProgressRootSuiteReporter(reporting.RootSuiteReporter):
     def __init__(self,
                  std_output_files: StdOutputFiles,
                  root_suite_dir_abs_path: pathlib.Path):
+        self._std_output_files = std_output_files
         self._output_file = FilePrinter(std_output_files.out)
         self._sub_reporters = []
         self._start_time = None
@@ -91,6 +92,8 @@ class SimpleProgressRootSuiteReporter(reporting.RootSuiteReporter):
         lines = format_final_result_for_valid_suite(num_cases, self._total_time_timedelta, errors)
         lines.insert(0, '')
         text_output_file.write_line(os.linesep.join(lines))
+        self._std_output_files.err.flush()
+        self._output_file.write_line(exit_value.exit_identifier)
         return exit_value
 
     def _valid_suite_exit_value(self) -> (int, dict, exit_values.ExitValue):
