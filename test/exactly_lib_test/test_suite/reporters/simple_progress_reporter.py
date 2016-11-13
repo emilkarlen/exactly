@@ -1,7 +1,7 @@
 import datetime
 import unittest
 
-from exactly_lib.default.program_modes.test_suite import reporting as sut
+from exactly_lib.test_suite.reporters import simple_progress_reporter as sut
 
 
 def suite() -> unittest.TestSuite:
