@@ -116,8 +116,7 @@ class SuitesExecutor:
 
     def _case_processor_for(self, suite):
         configuration = self._configuration_for_cases_in_suite(suite)
-        case_processor = self._test_case_processor_constructor(configuration)
-        return case_processor
+        return self._test_case_processor_constructor(configuration)
 
     @staticmethod
     def _process_case(case_processor: test_case_processing.Processor,
