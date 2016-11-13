@@ -12,6 +12,7 @@ from exactly_lib.processing.preprocessor import IDENTITY_PREPROCESSOR
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.processing.test_case_processing import TestCaseSetup
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.test_suite import exit_values
 from exactly_lib.test_suite import reporting
 from exactly_lib.test_suite import structure
 from exactly_lib.test_suite.enumeration import DepthFirstEnumerator
@@ -56,7 +57,7 @@ class TestError(unittest.TestCase):
         exit_code = executor.execute()
         # ASSERT #
         check_exit_code_and_empty_stdout(self,
-                                         ExecutionTracingRootSuiteReporter.INVALID_SUITE_EXIT_CODE,
+                                         exit_values.INVALID_SUITE.exit_code,
                                          exit_code,
                                          str_std_out_files)
         ExpectedSuiteReporting.check_list(self, [], reporter_factory.complete_suite_reporter)
