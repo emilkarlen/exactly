@@ -21,6 +21,8 @@ class FailureInfo:
     def failure_details(self) -> FailureDetails:
         return self.__failure_details
 
+    def __str__(self):
+        return str(self.phase_step) + ': ' + str(self.failure_details)
 
 class InstructionFailureInfo(FailureInfo):
     """

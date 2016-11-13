@@ -32,7 +32,7 @@ class TestConstructor(unittest.TestCase):
         act_phase_instructions = []
         # ACT #
         executor = constructor.apply(environment, act_phase_instructions)
-        actual = executor.validate_pre_sds(environment.home_directory)
+        actual = executor.validate_pre_sds(environment)
         # ASSERT #
         self.assertIs(parser_error, actual)
 

@@ -11,7 +11,8 @@ from exactly_lib.section_document.model import new_empty_section_contents
 from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutor, ExitCodeOrHardError, new_eh_exit_code, \
     ActPhaseHandling, ActSourceAndExecutorConstructor
 from exactly_lib.test_case.phases import setup
-from exactly_lib.test_case.phases.common import HomeAndSds
+from exactly_lib.test_case.phases.common import HomeAndSds, InstructionEnvironmentForPostSdsStep, \
+    InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
@@ -186,20 +187,26 @@ class _ExecutorThatRecordsCurrentDir(ActSourceAndExecutor):
         self._home_and_sds = None
         self.phase_step_2_cwd = {}
 
-    def validate_pre_sds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
+    def validate_pre_sds(self,
+                         environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
         self._register_cwd_for(phase_step.ACT__VALIDATE_PRE_SDS)
         return svh.new_svh_success()
 
-    def validate_post_setup(self, home_and_sds: HomeAndSds) -> svh.SuccessOrValidationErrorOrHardError:
-        self._home_and_sds = home_and_sds
+    def validate_post_setup(self,
+                            environment: InstructionEnvironmentForPostSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
+        self._home_and_sds = environment.home_and_sds
         self._register_cwd_for(phase_step.ACT__VALIDATE_POST_SETUP)
         return svh.new_svh_success()
 
-    def prepare(self, home_and_sds: HomeAndSds, script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
+    def prepare(self,
+                environment: InstructionEnvironmentForPostSdsStep,
+                script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
         self._register_cwd_for(phase_step.ACT__PREPARE)
         return sh.new_sh_success()
 
-    def execute(self, home_and_sds: HomeAndSds, script_output_dir_path: pathlib.Path,
+    def execute(self,
+                environment: InstructionEnvironmentForPostSdsStep,
+                script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
         self._register_cwd_for(phase_step.ACT__EXECUTE)
         return new_eh_exit_code(0)
@@ -217,7 +224,7 @@ class _ExecutorThatExecutesPythonProgramFile(ActSourceAndExecutorThatJustReturns
         self.python_program_file = python_program_file
 
     def execute(self,
-                home_and_sds: HomeAndSds,
+                environment: InstructionEnvironmentForPostSdsStep,
                 script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
         exit_code = subprocess.call([sys.executable, str(self.python_program_file)],
@@ -234,7 +241,7 @@ class _ExecutorThatExecutesPythonProgramSource(ActSourceAndExecutorThatJustRetur
         self.python_program_source = python_program_source
 
     def execute(self,
-                home_and_sds: HomeAndSds,
+                environment: InstructionEnvironmentForPostSdsStep,
                 script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
         python_file = pathlib.Path() / self.PYTHON_FILE_NAME
@@ -259,7 +266,7 @@ class _ExecutorThatReturnsConstantExitCode(ActSourceAndExecutorThatJustReturnsSu
         self.exit_code = exit_code
 
     def execute(self,
-                home_and_sds: HomeAndSds,
+                environment: InstructionEnvironmentForPostSdsStep,
                 script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
         return new_eh_exit_code(self.exit_code)

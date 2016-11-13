@@ -4,8 +4,10 @@ import random
 import unittest
 from contextlib import contextmanager
 
+from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutorConstructor
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, HomeAndSds
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
+    InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib_test.act_phase_setups.test_resources import act_phase_execution
 from exactly_lib_test.act_phase_setups.test_resources.act_phase_execution import \
@@ -91,30 +93,36 @@ class TestExecuteBase(unittest.TestCase):
 
     def _execute(self,
                  act_phase_instructions: list,
-                 stdin_contents: str = '') -> SubProcessResult:
+                 stdin_contents: str = '',
+                 environ: dict = None) -> SubProcessResult:
+        environ = dict(os.environ) if environ is None else environ
         assert_is_list_of_act_phase_instructions(self, act_phase_instructions)
 
         cwd_before_test = os.getcwd()
         home_dir = pathlib.Path()
-        environment = InstructionEnvironmentForPreSdsStep(home_dir, dict(os.environ))
+        environment = InstructionEnvironmentForPreSdsStep(home_dir, environ)
         sut = self.source_and_executor_constructor.apply(environment, act_phase_instructions)
-        step_result = sut.validate_pre_sds(home_dir)
+        step_result = sut.validate_pre_sds(environment)
         self.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                          step_result.status,
                          'Result of validation/pre-sds')
         with sandbox_directory_structure() as sds:
+            environment = InstructionEnvironmentForPostSdsStep(environment.home_directory,
+                                                               environment.environ,
+                                                               sds,
+                                                               phase_identifier.ACT.identifier,
+                                                               environment.timeout_in_seconds)
             try:
                 os.chdir(str(sds.act_dir))
-                home_and_sds = HomeAndSds(home_dir, sds)
-                step_result = sut.validate_post_setup(home_and_sds)
+                step_result = sut.validate_post_setup(environment)
                 self.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                                  step_result.status,
                                  'Result of validation/post-setup')
                 script_output_path = sds.test_case_dir
-                step_result = sut.prepare(home_and_sds, script_output_path)
+                step_result = sut.prepare(environment, script_output_path)
                 self.assertTrue(step_result.is_success,
                                 'Expecting success from prepare (found hard error)')
-                process_executor = ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(home_and_sds,
+                process_executor = ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(environment,
                                                                                                     script_output_path,
                                                                                                     sut)
                 return capture_process_executor_result(process_executor,
@@ -174,9 +182,10 @@ class TestEnvironmentVariablesAreAccessibleByProgram(TestBase):
     def runTest(self):
         var_name = 'THIS_IS_A_TEST_VAR_23026509234'
         var_value = str(random.getrandbits(32))
-        os.environ[var_name] = var_value
+        environ = dict(os.environ)
+        environ[var_name] = var_value
         with self.test_setup.program_that_prints_value_of_environment_variable_to_stdout(var_name) as program:
-            process_result = self._execute(program)
+            process_result = self._execute(program, environ=environ)
             self.assertEqual(var_value,
                              process_result.stdout,
                              'Contents of stdout should be value of environment variable')
@@ -191,26 +200,31 @@ class TestInitialCwdIsCurrentDirAndThatCwdIsRestoredAfterwards(TestBase):
                 home_dir = pathlib.Path.cwd()
                 environment = InstructionEnvironmentForPreSdsStep(home_dir, dict(os.environ))
                 sut = executor_constructor.apply(environment, source)
-                step_result = sut.validate_pre_sds(home_dir)
+                step_result = sut.validate_pre_sds(environment)
                 self.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                                  step_result.status,
                                  'Result of validation/pre-sds')
                 with sandbox_directory_structure(act_dir_contents(DirContents([empty_dir('expected-cwd')]))) as sds:
-                    home_and_sds = HomeAndSds(home_dir, sds)
+                    environment = InstructionEnvironmentForPostSdsStep(environment.home_directory,
+                                                                       environment.environ,
+                                                                       sds,
+                                                                       phase_identifier.ACT.identifier,
+                                                                       environment.timeout_in_seconds)
                     process_cwd = str(sds.act_dir / 'expected-cwd')
                     os.chdir(process_cwd)
                     assert process_cwd == os.getcwd()
-                    step_result = sut.validate_post_setup(home_and_sds)
+                    step_result = sut.validate_post_setup(environment)
                     self.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                                      step_result.status,
                                      'Result of validation/post-setup')
                     script_output_dir_path = sds.test_case_dir
-                    step_result = sut.prepare(home_and_sds, script_output_dir_path)
+                    step_result = sut.prepare(environment, script_output_dir_path)
                     self.assertTrue(step_result.is_success,
                                     'Expecting success from prepare (found hard error)')
-                    process_executor = ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(home_and_sds,
-                                                                                                        script_output_dir_path,
-                                                                                                        sut)
+                    process_executor = ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(
+                        environment,
+                        script_output_dir_path,
+                        sut)
                     process_result = capture_process_executor_result(process_executor,
                                                                      sds.result.root_dir)
                     self.assertEqual(process_cwd,

@@ -17,7 +17,8 @@ from exactly_lib.test_case.os_services import new_default
 from exactly_lib.test_case.phases import common
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, HomeAndSds
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
+    InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder, StdinSettings
 from exactly_lib.test_case.sandbox_directory_structure import construct_at, SandboxDirectoryStructure, \
     stdin_contents_file
@@ -195,7 +196,7 @@ class _PartialExecutor:
         self.os_services = None
         self.__act_source_and_executor = None
         self.__act_source_and_executor_constructor = act_phase_handling.source_and_executor_constructor
-        self.__global_environment_pre_sds = InstructionEnvironmentForPreSdsStep(
+        self.__instruction_environment_pre_sds = InstructionEnvironmentForPreSdsStep(
             self.__configuration.home_dir_path,
             self.__configuration.environ,
             self.__configuration.timeout_in_seconds)
@@ -273,7 +274,7 @@ class _PartialExecutor:
     def __setup__validate_pre_sds(self) -> PartialResult:
         return self.__run_internal_instructions_phase_step(phase_step.SETUP__VALIDATE_PRE_SDS,
                                                            phase_step_executors.SetupValidatePreSdsExecutor(
-                                                               self.__global_environment_pre_sds),
+                                                               self.__instruction_environment_pre_sds),
                                                            self.__test_case.setup_phase)
 
     def __act__create_executor_and_validate_pre_sds(self) -> PartialResult:
@@ -294,9 +295,9 @@ class _PartialExecutor:
                     return failure_con.implementation_error_msg(msg)
 
             self.__act_source_and_executor = self.__act_phase_handling.source_and_executor_constructor.apply(
-                self.__global_environment_pre_sds,
+                self.__instruction_environment_pre_sds,
                 instructions)
-            res = self.__act_source_and_executor.validate_pre_sds(self.__global_environment_pre_sds.home_directory)
+            res = self.__act_source_and_executor.validate_pre_sds(self.__instruction_environment_pre_sds)
             if res.is_success:
                 return new_partial_result_pass(None)
             else:
@@ -314,19 +315,19 @@ class _PartialExecutor:
     def __before_assert__validate_pre_sds(self) -> PartialResult:
         return self.__run_internal_instructions_phase_step(
             phase_step.BEFORE_ASSERT__VALIDATE_PRE_SDS,
-            phase_step_executors.BeforeAssertValidatePreSdsExecutor(self.__global_environment_pre_sds),
+            phase_step_executors.BeforeAssertValidatePreSdsExecutor(self.__instruction_environment_pre_sds),
             self.__test_case.before_assert_phase)
 
     def __assert__validate_pre_sds(self) -> PartialResult:
         return self.__run_internal_instructions_phase_step(phase_step.ASSERT__VALIDATE_PRE_SDS,
                                                            phase_step_executors.AssertValidatePreSdsExecutor(
-                                                               self.__global_environment_pre_sds),
+                                                               self.__instruction_environment_pre_sds),
                                                            self.__test_case.assert_phase)
 
     def __cleanup__validate_pre_sds(self) -> PartialResult:
         return self.__run_internal_instructions_phase_step(phase_step.CLEANUP__VALIDATE_PRE_SDS,
                                                            phase_step_executors.CleanupValidatePreSdsExecutor(
-                                                               self.__global_environment_pre_sds),
+                                                               self.__instruction_environment_pre_sds),
                                                            self.__test_case.cleanup_phase)
 
     def __setup__main(self) -> PartialResult:
@@ -349,7 +350,7 @@ class _PartialExecutor:
 
     def __act_program_executor(self):
         return _ActProgramExecution(self.__act_source_and_executor,
-                                    HomeAndSds(self.__configuration.home_dir_path, self._sds),
+                                    self.__post_sds_environment(phase_identifier.ACT),
                                     self.___step_execution_result)
 
     def __before_assert__validate_post_setup(self) -> PartialResult:
@@ -455,18 +456,19 @@ class _PhaseFailureResultConstructor:
 class _ActProgramExecution:
     def __init__(self,
                  act_source_and_executor: ActSourceAndExecutor,
-                 home_and_sds: HomeAndSds,
+                 environment: InstructionEnvironmentForPostSdsStep,
                  step_execution_result: _StepExecutionResult()):
         self.act_source_and_executor = act_source_and_executor
-        self.home_and_sds = home_and_sds
+        self.environment = environment
+        self.home_and_sds = environment.home_and_sds
         self.step_execution_result = step_execution_result
-        self.script_output_dir_path = self.home_and_sds.sds.test_case_dir
+        self.script_output_dir_path = environment.home_and_sds.sds.test_case_dir
 
     def validate_post_setup(self) -> PartialResult:
         step = phase_step.ACT__VALIDATE_POST_SETUP
 
         def action():
-            res = self.act_source_and_executor.validate_post_setup(self.home_and_sds)
+            res = self.act_source_and_executor.validate_post_setup(self.environment)
             if res.is_success:
                 return self._pass()
             else:
@@ -480,7 +482,7 @@ class _ActProgramExecution:
         step = phase_step.ACT__PREPARE
 
         def action():
-            res = self.act_source_and_executor.prepare(self.home_and_sds,
+            res = self.act_source_and_executor.prepare(self.environment,
                                                        self.script_output_dir_path)
             if res.is_success:
                 return self._pass()
@@ -528,7 +530,7 @@ class _ActProgramExecution:
         with open(str(sds.result.stdout_file), 'w') as f_stdout:
             with open(str(sds.result.stderr_file), 'w') as f_stderr:
                 exit_code_or_hard_error = self.act_source_and_executor.execute(
-                    self.home_and_sds,
+                    self.environment,
                     self.script_output_dir_path,
                     StdFiles(f_stdin,
                              StdOutputFiles(f_stdout,

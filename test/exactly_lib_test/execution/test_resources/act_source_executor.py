@@ -2,7 +2,8 @@ import pathlib
 
 from exactly_lib.test_case.act_phase_handling import ExitCodeOrHardError, ActSourceAndExecutor, \
     ActSourceAndExecutorConstructor, ActPhaseHandling
-from exactly_lib.test_case.phases.common import HomeAndSds, InstructionEnvironmentForPreSdsStep
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
+    InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.std import StdFiles
@@ -29,24 +30,27 @@ class ActSourceAndExecutorThatRunsConstantActions(ActSourceAndExecutor):
         self.__execute_initial_action = execute_initial_action
         self.__execute_action = execute_action
 
-    def validate_pre_sds(self, home_dir_path: pathlib.Path) -> svh.SuccessOrValidationErrorOrHardError:
-        self.__validate_pre_sds_initial_action(home_dir_path)
-        return self.__validate_pre_sds_action()
+    def validate_pre_sds(self,
+                         environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
+        self.__validate_pre_sds_initial_action(environment)
+        return self.__validate_pre_sds_action(environment)
 
-    def validate_post_setup(self, home_and_sds: HomeAndSds) -> svh.SuccessOrValidationErrorOrHardError:
-        self.__validate_post_setup_initial_action(home_and_sds)
-        return self.__validate_post_setup_action()
+    def validate_post_setup(self,
+                            environment: InstructionEnvironmentForPostSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
+        self.__validate_post_setup_initial_action(environment)
+        return self.__validate_post_setup_action(environment)
 
-    def prepare(self, home_and_sds: HomeAndSds, script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
-        self.__prepare_initial_action(home_and_sds, script_output_dir_path)
-        return self.__prepare_action()
+    def prepare(self, environment: InstructionEnvironmentForPostSdsStep,
+                script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
+        self.__prepare_initial_action(environment, script_output_dir_path)
+        return self.__prepare_action(environment, script_output_dir_path)
 
     def execute(self,
-                home_and_sds: HomeAndSds,
+                environment: InstructionEnvironmentForPostSdsStep,
                 script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
-        self.__execute_initial_action(home_and_sds, script_output_dir_path, std_files)
-        return self.__execute_action()
+        self.__execute_initial_action(environment, script_output_dir_path, std_files)
+        return self.__execute_action(environment, script_output_dir_path, std_files)
 
 
 class ActSourceAndExecutorConstructorThatRunsConstantActions(ActSourceAndExecutorConstructor):

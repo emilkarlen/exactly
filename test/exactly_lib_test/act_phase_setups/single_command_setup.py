@@ -117,9 +117,10 @@ class TestValidation(unittest.TestCase):
 
     def test_validate_pre_sds_SHOULD_succeed_WHEN_statement_line_is_relative_name_of_an_existing_file_rel_home(self):
         act_phase_instructions = [instr(['system-under-test'])]
-        executor = self.constructor.apply(self.pre_sds_env, act_phase_instructions)
         with fs_utils.tmp_dir(fs.DirContents([fs.empty_file('system-under-test')])) as home_dir_path:
-            actual = executor.validate_pre_sds(home_dir_path)
+            environment = InstructionEnvironmentForPreSdsStep(home_dir_path, dict(os.environ))
+            executor = self.constructor.apply(environment, act_phase_instructions)
+            actual = executor.validate_pre_sds(environment)
         self.assertIs(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                       actual.status,
                       'Validation result')
@@ -131,7 +132,7 @@ class TestValidation(unittest.TestCase):
 
     def _do_validate_pre_sds(self, act_phase_instructions: list) -> svh.SuccessOrValidationErrorOrHardError:
         executor = self.constructor.apply(self.pre_sds_env, act_phase_instructions)
-        return executor.validate_pre_sds(self.pre_sds_env.home_directory)
+        return executor.validate_pre_sds(self.pre_sds_env)
 
 
 class TheConfiguration(Configuration):
