@@ -1,6 +1,7 @@
 import pathlib
 
 from exactly_lib.execution import result
+from exactly_lib.execution.phase_step_identifiers import phase_step
 from exactly_lib.processing import processors as case_processing
 from exactly_lib.processing import test_case_processing
 from exactly_lib.processing.act_phase import ActPhaseSetup
@@ -10,6 +11,7 @@ from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetu
 from exactly_lib.processing.test_case_processing import TestCaseSetup
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_suite import structure
+from exactly_lib.util.failure_details import new_failure_details_from_message
 from exactly_lib_test.execution.test_resources.act_source_executor import \
     ActSourceAndExecutorConstructorThatRunsConstantActions
 
@@ -37,6 +39,10 @@ DUMMY_CASE_PROCESSING = case_processing.Configuration(
 DUMMY_SDS = SandboxDirectoryStructure('test-root-dir')
 
 FULL_RESULT_PASS = result.new_pass(DUMMY_SDS)
+FULL_RESULT_FAIL = result.FullResult(result.FullResultStatus.FAIL,
+                                     DUMMY_SDS,
+                                     result.FailureInfo(phase_step.ASSERT__MAIN,
+                                                        new_failure_details_from_message('failure message')))
 
 T_C_H_S = test_case_handling_setup_with_identity_preprocessor()
 

@@ -24,6 +24,7 @@ class FailureInfo:
     def __str__(self):
         return str(self.phase_step) + ': ' + str(self.failure_details)
 
+
 class InstructionFailureInfo(FailureInfo):
     """
     Information that is present when an instruction has failed.
