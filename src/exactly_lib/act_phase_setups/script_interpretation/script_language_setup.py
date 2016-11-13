@@ -73,7 +73,7 @@ class Executor(executor_made_of_parts.Executor):
         script_file_path = self._script_path(script_output_dir_path)
         cmd_and_args = self.script_language_setup.command_and_args_for_executing_script_file(str(script_file_path))
         return utils.execute_cmd_and_args(cmd_and_args, std_files,
-                                          timeout=environment.timeout_in_seconds)
+                                          utils.settings_from_env(environment))
 
     def _script_path(self,
                      script_output_dir_path: pathlib.Path) -> pathlib.Path:

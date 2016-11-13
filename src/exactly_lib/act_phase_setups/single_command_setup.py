@@ -71,4 +71,4 @@ class Executor(executor_made_of_parts.Executor):
             self.cmd_and_args[0] = str(cmd_path)
         return utils.execute_cmd_and_args(self.cmd_and_args,
                                           std_files,
-                                          timeout=self.environment.timeout_in_seconds)
+                                          utils.settings_from_env(environment))

@@ -41,4 +41,4 @@ class Executor(executor_made_of_parts.Executor):
                 std_files: StdFiles) -> ExitCodeOrHardError:
         return utils.execute_shell_command(self.command_line,
                                            std_files,
-                                           timeout=environment.timeout_in_seconds)
+                                           utils.settings_from_env(environment))
