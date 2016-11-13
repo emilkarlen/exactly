@@ -30,9 +30,9 @@ class TestExecutionOfSuite(unittest.TestCase):
     def test_empty_suite_SHOULD_exit_with_success_and_print_single_line_with_ok_identifier(self):
         # ARRANGE #
         factory = sut.SimpleProgressRootSuiteReporterFactory()
-        files = StringStdOutFiles()
+        std_output_files = StringStdOutFiles()
         root_file_path = pathlib.Path()
-        reporter = factory.new_reporter(files.stdout_files, root_file_path)
+        reporter = factory.new_reporter(std_output_files.stdout_files, root_file_path)
         result = test_case_processing.new_executed(FULL_RESULT_PASS)
         executor = execution.SuitesExecutor(reporter, DEFAULT_CASE_PROCESSING,
                                             TestCaseProcessorThatGivesConstant(result))
@@ -40,10 +40,10 @@ class TestExecutionOfSuite(unittest.TestCase):
         # ACT #
         exit_value = executor.execute_and_report(test_suites)
         # ASSERT #
-        files.finish()
+        std_output_files.finish()
         self.assertEquals(exit_values.ALL_PASS, exit_value)
         self.assertEqual(lines_content([exit_values.ALL_PASS.exit_identifier]),
-                         files.stdout_contents)
+                         std_output_files.stdout_contents)
 
 
 class TestFinalResultFormatting(unittest.TestCase):
