@@ -5,10 +5,7 @@ from pathlib import Path
 from exactly_lib.execution.result import new_skipped, new_pass
 from exactly_lib.processing import processors as case_processing
 from exactly_lib.processing import test_case_processing
-from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.processing.instruction_setup import InstructionsSetup
-from exactly_lib.processing.preprocessor import IDENTITY_PREPROCESSOR
-from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.processing.test_case_processing import TestCaseSetup
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_suite import exit_values
@@ -19,8 +16,6 @@ from exactly_lib.test_suite.execution import Executor
 from exactly_lib.test_suite.instruction_set.parse import SuiteSyntaxError
 from exactly_lib.test_suite.suite_hierarchy_reading import SuiteHierarchyReader
 from exactly_lib.util import line_source
-from exactly_lib_test.execution.test_resources.act_source_executor import \
-    ActSourceAndExecutorConstructorThatRunsConstantActions
 from exactly_lib_test.test_case.test_resources import error_info
 from exactly_lib_test.test_resources.str_std_out_files import StringStdOutFiles
 from exactly_lib_test.test_suite.test_resources.suite_reporting import ExecutionTracingReporterFactory, \
@@ -475,8 +470,7 @@ FULL_RESULT_PASS = new_pass(DUMMY_SDS)
 DEFAULT_CASE_PROCESSING = case_processing.Configuration(
     lambda x: ((), ()),
     InstructionsSetup({}, {}, {}, {}, {}),
-    TestCaseHandlingSetup(ActPhaseSetup(ActSourceAndExecutorConstructorThatRunsConstantActions()),
-                          IDENTITY_PREPROCESSOR),
+    T_C_H_S,
     False)
 
 
