@@ -38,12 +38,24 @@ DUMMY_CASE_PROCESSING = case_processing.Configuration(
 
 DUMMY_SDS = SandboxDirectoryStructure('test-root-dir')
 
+
+def full_result_with_failure_info(status: result.FullResultStatus,
+                                  failure_phase_step=phase_step.ASSERT__MAIN) -> result.FullResult:
+    return result.FullResult(status,
+                             DUMMY_SDS,
+                             result.FailureInfo(failure_phase_step,
+                                                new_failure_details_from_message('failure message')))
+
+
+def full_result_without_failure_info(status: result.FullResultStatus) -> result.FullResult:
+    return result.FullResult(status,
+                             DUMMY_SDS,
+                             None)
+
+
 FULL_RESULT_PASS = result.new_pass(DUMMY_SDS)
 FULL_RESULT_SKIP = result.new_skipped()
-FULL_RESULT_FAIL = result.FullResult(result.FullResultStatus.FAIL,
-                                     DUMMY_SDS,
-                                     result.FailureInfo(phase_step.ASSERT__MAIN,
-                                                        new_failure_details_from_message('failure message')))
+FULL_RESULT_FAIL = full_result_with_failure_info(result.FullResultStatus.FAIL)
 
 T_C_H_S = test_case_handling_setup_with_identity_preprocessor()
 
