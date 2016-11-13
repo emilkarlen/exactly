@@ -2,11 +2,13 @@ import os
 import pathlib
 import unittest
 
+from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.act_phase_handling import ExitCodeOrHardError, ActSourceAndExecutorConstructor, \
     new_eh_exit_code, \
     ActSourceAndExecutor
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, HomeAndSds
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
+    InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.failure_details import FailureDetails
 from exactly_lib.util.std import StdFiles
@@ -33,11 +35,13 @@ class Arrangement:
                  executor_constructor: ActSourceAndExecutorConstructor,
                  act_phase_instructions: list,
                  home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
+                 environ: dict = None,
                  timeout_in_seconds: int = None
                  ):
         self.executor_constructor = executor_constructor
         self.act_phase_instructions = act_phase_instructions
         self.home_dir_contents = home_dir_contents
+        self.environ = {} if environ is None else environ
         self.timeout_in_seconds = timeout_in_seconds
 
 
@@ -67,23 +71,27 @@ def check_execution(put: unittest.TestCase,
     cwd_before_test = os.getcwd()
     with fs_utils.tmp_dir(arrangement.home_dir_contents) as home_dir:
         environment = InstructionEnvironmentForPreSdsStep(home_dir,
-                                                          dict(os.environ),
+                                                          arrangement.environ,
                                                           arrangement.timeout_in_seconds)
         sut = arrangement.executor_constructor.apply(environment, arrangement.act_phase_instructions)
-        step_result = sut.validate_pre_sds(home_dir)
+        step_result = sut.validate_pre_sds(environment)
         put.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                         step_result.status,
                         'Result of validation/pre-sds')
         with sandbox_directory_structure() as sds:
+            environment = InstructionEnvironmentForPostSdsStep(environment.home_directory,
+                                                               environment.environ,
+                                                               sds,
+                                                               phase_identifier.ACT.identifier,
+                                                               environment.timeout_in_seconds)
             try:
                 os.chdir(str(sds.act_dir))
-                home_and_sds = HomeAndSds(home_dir, sds)
-                step_result = sut.validate_post_setup(home_and_sds)
+                step_result = sut.validate_post_setup(environment)
                 put.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                                 step_result.status,
                                 'Result of validation/post-setup')
                 script_output_dir_path = sds.test_case_dir
-                step_result = sut.prepare(home_and_sds, script_output_dir_path)
+                step_result = sut.prepare(environment, script_output_dir_path)
                 expectation.side_effects_on_files_after_prepare.apply(put, sds)
                 expectation.result_of_prepare.apply(put,
                                                     step_result,
@@ -91,9 +99,10 @@ def check_execution(put: unittest.TestCase,
                 if not step_result.is_success:
                     return
 
-                process_executor = ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(home_and_sds,
-                                                                                                    script_output_dir_path,
-                                                                                                    sut)
+                process_executor = ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(
+                    environment,
+                    script_output_dir_path,
+                    sut)
                 error_msg_extra_info = ''
                 sub_process_result = None
                 try:
@@ -133,11 +142,11 @@ class ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(ProcessEx
     """
 
     def __init__(self,
-                 home_and_sds: HomeAndSds,
+                 environment: InstructionEnvironmentForPostSdsStep,
                  script_output_path: pathlib.Path,
                  program_executor: ActSourceAndExecutor):
         self.program_executor = program_executor
-        self.home_and_sds = home_and_sds
+        self.environment = environment
         self.script_output_path = script_output_path
 
     def execute(self,
@@ -145,7 +154,7 @@ class ProcessExecutorForProgramExecutorThatRaisesIfResultIsNotExitCode(ProcessEx
         """
          :raises HardErrorResultError: Return value from executor is not an exit code.
         """
-        exit_code_or_hard_error = self.program_executor.execute(self.home_and_sds,
+        exit_code_or_hard_error = self.program_executor.execute(self.environment,
                                                                 self.script_output_path,
                                                                 files)
         if exit_code_or_hard_error.is_exit_code:
