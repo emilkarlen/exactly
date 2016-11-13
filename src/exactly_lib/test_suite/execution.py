@@ -41,12 +41,10 @@ class Executor:
         self._suite_root_file_path = suite_root_file_path
 
     def execute(self) -> int:
-        final_result_output_file = FilePrinter(self._std.err)
-        exit_value = self._execute_and_let_reporter_report_final_result(final_result_output_file)
+        exit_value = self._execute_and_let_reporter_report_final_result()
         return exit_value.exit_code
 
-    def _execute_and_let_reporter_report_final_result(self,
-                                                      reporter_out: FilePrinter) -> ExitValue:
+    def _execute_and_let_reporter_report_final_result(self) -> ExitValue:
         try:
             root_suite = self._read_structure(self._suite_root_file_path)
         except SuiteReadError as ex:
@@ -68,7 +66,7 @@ class Executor:
                                                                       self._suite_root_file_path),
                                   self._default_case_configuration,
                                   self._test_case_processor_constructor)
-        return executor.execute_and_report(suits_in_processing_order, reporter_out)
+        return executor.execute_and_report(suits_in_processing_order)
 
     def _read_structure(self,
                         suite_file_path: pathlib.Path) -> structure.TestSuite:
@@ -88,9 +86,7 @@ class SuitesExecutor:
         self._default_case_configuration = default_case_configuration
         self._test_case_processor_constructor = test_case_processor_constructor
 
-    def execute_and_report(self,
-                           suits_in_processing_order: list,
-                           reporter_out: FilePrinter) -> ExitValue:
+    def execute_and_report(self, suits_in_processing_order: list) -> ExitValue:
         """
         :param suits_in_processing_order: [TestSuite]
         :return: Exit code from main program.
@@ -99,7 +95,7 @@ class SuitesExecutor:
         for suite in suits_in_processing_order:
             self._process_single_sub_suite(suite)
         self._reporter.root_suite_end()
-        return self._reporter.report_final_results(reporter_out)
+        return self._reporter.report_final_results()
 
     def _process_single_sub_suite(self,
                                   suite: structure.TestSuite):
