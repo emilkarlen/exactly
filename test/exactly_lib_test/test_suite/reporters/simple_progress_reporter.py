@@ -2,17 +2,18 @@ import datetime
 import unittest
 from pathlib import Path
 
-from exactly_lib.execution import exit_values as case_exit_value
+from exactly_lib.execution import exit_values as case_ev
 from exactly_lib.execution import result
 from exactly_lib.processing import test_case_processing
 from exactly_lib.test_suite import execution
-from exactly_lib.test_suite import exit_values as suite_exit_value
+from exactly_lib.test_suite import exit_values as suite_ev
 from exactly_lib.test_suite.execution import SuitesExecutor
 from exactly_lib.test_suite.reporters import simple_progress_reporter as sut
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.test_resources.str_std_out_files import StringStdOutFiles
 from exactly_lib_test.test_suite.test_resources.execution_utils import TestCaseProcessorThatGivesConstant, \
-    FULL_RESULT_PASS, test_suite, DUMMY_CASE_PROCESSING, test_case, FULL_RESULT_FAIL, FULL_RESULT_SKIP
+    FULL_RESULT_PASS, test_suite, DUMMY_CASE_PROCESSING, test_case, FULL_RESULT_FAIL, FULL_RESULT_SKIP, \
+    full_result_with_failure_info, full_result_without_failure_info
 
 
 def suite() -> unittest.TestSuite:
@@ -30,14 +31,14 @@ def _suite_end(file_name: str) -> str:
     return 'suite ' + file_name + ': end'
 
 
-def _case(file_name: str, exit_value: case_exit_value.ExitValue) -> str:
+def _case(file_name: str, exit_value: case_ev.ExitValue) -> str:
     return 'case  ' + file_name + ': ' + exit_value.exit_identifier
 
 
 class TestExecutionOfSuite(unittest.TestCase):
     def test_no_suites_SHOULD_exit_with_success_and_print_single_line_with_ok_identifier(self):
         # ARRANGE #
-        expected_exit_value = suite_exit_value.ALL_PASS
+        expected_exit_value = suite_ev.ALL_PASS
         expected_output = lines_content([
             expected_exit_value.exit_identifier,
         ])
@@ -55,9 +56,9 @@ class TestExecutionOfSuite(unittest.TestCase):
         self.assertEqual(expected_output,
                          std_output_files.stdout_contents)
 
-    def test_single_empty_suite_SHOULD_exit_with_success_and_print_suite_lines_and_exit_identifier(self):
+    def test_single_empty_suite(self):
         # ARRANGE #
-        expected_exit_value = suite_exit_value.ALL_PASS
+        expected_exit_value = suite_ev.ALL_PASS
         expected_output = lines_content([
             _suite_begin('root file name'),
             _suite_end('root file name'),
@@ -78,86 +79,44 @@ class TestExecutionOfSuite(unittest.TestCase):
         self.assertEquals(expected_exit_value, exit_value)
         self.assertEqual(expected_output, std_output_files.stdout_contents)
 
-    def test_suite_with_single_successful_case(self):
-        # ARRANGE #
-        expected_exit_value = suite_exit_value.ALL_PASS
-        expected_output = lines_content([
-            _suite_begin('root file name'),
-            _case('test case file', case_exit_value.EXECUTION__PASS),
-            _suite_end('root file name'),
-            expected_exit_value.exit_identifier,
-        ])
-        test_suites = [
-            test_suite('root file name', [], [
-                test_case('test case file')
-            ])
+    def test_suite_with_single_case(self):
+        cases = [
+            (FULL_RESULT_PASS, case_ev.EXECUTION__PASS, suite_ev.ALL_PASS),
+            (FULL_RESULT_FAIL, case_ev.EXECUTION__FAIL, suite_ev.FAILED_TESTS),
+            (FULL_RESULT_SKIP, case_ev.EXECUTION__SKIPPED, suite_ev.ALL_PASS),
+
+            (FULL_RESULT_HARD_ERROR, case_ev.EXECUTION__HARD_ERROR, suite_ev.FAILED_TESTS),
+            (FULL_RESULT_VALIDATE, case_ev.EXECUTION__VALIDATE, suite_ev.FAILED_TESTS),
+            (FULL_RESULT_IMPLEMENTATION_ERROR, case_ev.EXECUTION__IMPLEMENTATION_ERROR, suite_ev.FAILED_TESTS),
         ]
-        std_output_files = StringStdOutFiles()
-        executor = _suite_executor_for_case_processing_that_unconditionally(FULL_RESULT_PASS,
-                                                                            std_output_files,
-                                                                            Path())
-        # ACT #
-        exit_value = executor.execute_and_report(test_suites)
-        # ASSERT #
-        std_output_files.finish()
+        for case_result, expected_case_exit_value, expected_suite_exit_value in cases:
+            with self.subTest(case_result=case_result,
+                              expected_case_exit_value=expected_case_exit_value,
+                              expected_suite_exit_value=expected_suite_exit_value):
+                # ARRANGE #
+                expected_output = lines_content([
+                    _suite_begin('root file name'),
+                    _case('test case file', expected_case_exit_value),
+                    _suite_end('root file name'),
+                    expected_suite_exit_value.exit_identifier,
+                ])
+                test_suites = [
+                    test_suite('root file name', [], [
+                        test_case('test case file')
+                    ])
+                ]
+                std_output_files = StringStdOutFiles()
+                executor = _suite_executor_for_case_processing_that_unconditionally(case_result,
+                                                                                    std_output_files,
+                                                                                    Path())
+                # ACT #
+                exit_value = executor.execute_and_report(test_suites)
+                # ASSERT #
+                std_output_files.finish()
 
-        self.assertEquals(expected_exit_value, exit_value)
-        self.assertEqual(expected_output,
-                         std_output_files.stdout_contents)
-
-    def test_suite_with_single_case_that_fails(self):
-        # ARRANGE #
-        expected_exit_value = suite_exit_value.FAILED_TESTS
-        expected_output = lines_content([
-            _suite_begin('root file name'),
-            _case('test case file', case_exit_value.EXECUTION__FAIL),
-            _suite_end('root file name'),
-            expected_exit_value.exit_identifier,
-        ])
-        test_suites = [
-            test_suite('root file name', [], [
-                test_case('test case file')
-            ])
-        ]
-        std_output_files = StringStdOutFiles()
-        executor = _suite_executor_for_case_processing_that_unconditionally(FULL_RESULT_FAIL,
-                                                                            std_output_files,
-                                                                            Path())
-        # ACT #
-        exit_value = executor.execute_and_report(test_suites)
-        # ASSERT #
-        std_output_files.finish()
-
-        self.assertEquals(expected_exit_value, exit_value)
-        self.assertEqual(expected_output,
-                         std_output_files.stdout_contents)
-
-    def test_suite_with_single_case_that_is_skipped(self):
-        # ARRANGE #
-        expected_exit_value = suite_exit_value.ALL_PASS
-        expected_output = lines_content([
-            _suite_begin('root file name'),
-            _case('test case file', case_exit_value.EXECUTION__SKIPPED),
-            _suite_end('root file name'),
-            expected_exit_value.exit_identifier,
-        ])
-        test_suites = [
-            test_suite('root file name', [], [
-                test_case('test case file')
-            ])
-        ]
-        std_output_files = StringStdOutFiles()
-        executor = _suite_executor_for_case_processing_that_unconditionally(FULL_RESULT_SKIP,
-                                                                            std_output_files,
-                                                                            Path())
-        # ACT #
-        exit_value = executor.execute_and_report(test_suites)
-        # ASSERT #
-        std_output_files.finish()
-
-        self.assertEquals(expected_exit_value, exit_value)
-        self.assertEqual(expected_output,
-                         std_output_files.stdout_contents)
+                self.assertEquals(expected_suite_exit_value, exit_value)
+                self.assertEqual(expected_output,
+                                 std_output_files.stdout_contents)
 
 
 class TestFinalResultFormatting(unittest.TestCase):
@@ -210,6 +169,13 @@ def _suite_executor_for_case_processing_that_unconditionally(execution_result: r
                                                              root_file_path: Path) -> SuitesExecutor:
     factory = sut.SimpleProgressRootSuiteReporterFactory()
     root_suite_reporter = factory.new_reporter(std_output_files.stdout_files, root_file_path)
-    result = test_case_processing.new_executed(execution_result)
+    case_result = test_case_processing.new_executed(execution_result)
     return execution.SuitesExecutor(root_suite_reporter, DUMMY_CASE_PROCESSING,
-                                    lambda conf: TestCaseProcessorThatGivesConstant(result))
+                                    lambda conf: TestCaseProcessorThatGivesConstant(case_result))
+
+
+FULL_RESULT_XFAIL = full_result_with_failure_info(result.FullResultStatus.XFAIL)
+FULL_RESULT_XPASS = full_result_without_failure_info(result.FullResultStatus.XPASS)
+FULL_RESULT_HARD_ERROR = full_result_with_failure_info(result.FullResultStatus.HARD_ERROR)
+FULL_RESULT_VALIDATE = full_result_with_failure_info(result.FullResultStatus.VALIDATE)
+FULL_RESULT_IMPLEMENTATION_ERROR = full_result_with_failure_info(result.FullResultStatus.IMPLEMENTATION_ERROR)
