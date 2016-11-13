@@ -1,4 +1,5 @@
 import pathlib
+import types
 
 from exactly_lib.cli.util.error_message_printing import output_location
 from exactly_lib.common.exit_value import ExitValue
@@ -9,11 +10,16 @@ from exactly_lib.test_suite import reporting
 from exactly_lib.test_suite import structure
 from exactly_lib.test_suite.enumeration import SuiteEnumerator
 from exactly_lib.test_suite.instruction_set.parse import SuiteReadError
+from exactly_lib.test_suite.reporting import RootSuiteReporter
 from exactly_lib.test_suite.suite_hierarchy_reading import SuiteHierarchyReader
 from exactly_lib.util.std import StdOutputFiles, FilePrinter
 
 
 class Executor:
+    """
+    Reads a suite file and executes it.
+    """
+
     def __init__(self,
                  default_case_configuration: case_processing.Configuration,
                  output: StdOutputFiles,
@@ -46,9 +52,6 @@ class Executor:
                                                       reporter_out: FilePrinter) -> ExitValue:
         try:
             root_suite = self._read_structure(self._suite_root_file_path)
-            suits_in_processing_order = self._suite_enumerator.apply(root_suite)
-            self._process_suits(suits_in_processing_order)
-            return self._reporter.report_final_results_for_valid_suite(reporter_out)
         except SuiteReadError as ex:
             file_printer = FilePrinter(self._std.err)
             output_location(file_printer,
@@ -57,15 +60,35 @@ class Executor:
                             ex.line,
                             'section')
             file_printer.write_lines(ex.error_message_lines())
-
             return self._reporter.report_final_results_for_invalid_suite(reporter_out)
+
+        suits_in_processing_order = self._suite_enumerator.apply(root_suite)
+        executor = SuitesExecutor(self._reporter,
+                                  self._default_case_configuration,
+                                  self._test_case_processor_constructor)
+        return executor.execute_and_report(suits_in_processing_order, reporter_out)
 
     def _read_structure(self,
                         suite_file_path: pathlib.Path) -> structure.TestSuite:
         return self._suite_hierarchy_reader.apply(suite_file_path)
 
-    def _process_suits(self,
-                       suits_in_processing_order: list):
+
+class SuitesExecutor:
+    """
+    Executes a list suites.
+    """
+
+    def __init__(self,
+                 reporter: RootSuiteReporter,
+                 default_case_configuration: case_processing.Configuration,
+                 test_case_processor_constructor: types.FunctionType):
+        self._reporter = reporter
+        self._default_case_configuration = default_case_configuration
+        self._test_case_processor_constructor = test_case_processor_constructor
+
+    def execute_and_report(self,
+                           suits_in_processing_order: list,
+                           reporter_out: FilePrinter) -> ExitValue:
         """
         :param suits_in_processing_order: [TestSuite]
         :return: Exit code from main program.
@@ -74,6 +97,7 @@ class Executor:
         for suite in suits_in_processing_order:
             self._process_single_sub_suite(suite)
         self._reporter.root_suite_end()
+        return self._reporter.report_final_results_for_valid_suite(reporter_out)
 
     def _process_single_sub_suite(self,
                                   suite: structure.TestSuite):
@@ -92,7 +116,6 @@ class Executor:
             sub_suite_reporter.case_end(case,
                                         result)
         sub_suite_reporter.listener().suite_end()
-        pass
 
     @staticmethod
     def _process_case(case_processor: test_case_processing.Processor,
