@@ -1,6 +1,6 @@
 import pathlib
 
-from exactly_lib.cli.cli_environment.exit_value import ExitValue
+from exactly_lib.common.exit_value import ExitValue
 
 
 class ExpectedLine:

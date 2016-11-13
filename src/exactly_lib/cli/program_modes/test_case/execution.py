@@ -1,10 +1,9 @@
 import pathlib
 import shutil
 
-from exactly_lib.cli.cli_environment.program_modes.test_case import exit_values
 from exactly_lib.cli.program_modes.test_case.settings import Output, TestCaseExecutionSettings
 from exactly_lib.cli.util.error_message_printing import output_location
-from exactly_lib.execution import full_execution
+from exactly_lib.execution import full_execution, exit_values
 from exactly_lib.execution.result import FailureInfoVisitor, PhaseFailureInfo, InstructionFailureInfo
 from exactly_lib.processing import test_case_processing, processors
 from exactly_lib.processing.instruction_setup import InstructionsSetup

@@ -1,7 +1,7 @@
 import os
 import unittest
 
-from exactly_lib.cli.cli_environment.exit_value import ExitValue
+from exactly_lib.common.exit_value import ExitValue
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 

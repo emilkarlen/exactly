@@ -3,10 +3,9 @@ import shutil
 import unittest
 
 from exactly_lib.cli import main_program
-from exactly_lib.cli.cli_environment.program_modes.test_case import exit_values
 from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_options import \
     OPTION_FOR_EXECUTING_ACT_PHASE, OPTION_FOR_KEEPING_SANDBOX_DIRECTORY
-from exactly_lib.execution import environment_variables
+from exactly_lib.execution import environment_variables, exit_values
 from exactly_lib.section_document.syntax import section_header
 from exactly_lib.test_case import phase_identifier, sandbox_directory_structure
 from exactly_lib.util.string import lines_content

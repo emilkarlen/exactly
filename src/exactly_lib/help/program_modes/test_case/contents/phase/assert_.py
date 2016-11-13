@@ -1,5 +1,5 @@
-from exactly_lib.cli.cli_environment.program_modes.test_case.exit_values import EXECUTION__PASS, EXECUTION__FAIL
 from exactly_lib.execution.environment_variables import EXISTS_AT_BEFORE_ASSERT_MAIN, ENV_VAR_RESULT
+from exactly_lib.execution.exit_values import EXECUTION__PASS, EXECUTION__FAIL
 from exactly_lib.help.concepts.plain_concepts.environment_variable import ENVIRONMENT_VARIABLE_CONCEPT
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
 from exactly_lib.help.cross_reference_id import TestCasePhaseCrossReference

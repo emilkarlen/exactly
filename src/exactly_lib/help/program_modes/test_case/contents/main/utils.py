@@ -1,4 +1,4 @@
-from exactly_lib.cli.cli_environment.exit_value import ExitValue
+from exactly_lib.common.exit_value import ExitValue
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from exactly_lib.help.utils.phase_names import phase_name_dictionary
 from exactly_lib.help.utils.render import SectionContentsRenderer

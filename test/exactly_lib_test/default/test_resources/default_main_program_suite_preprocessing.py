@@ -1,10 +1,10 @@
 import pathlib
 
-from exactly_lib.cli.cli_environment.program_modes.test_case.exit_values import EXECUTION__PASS, \
+from exactly_lib.execution.exit_values import EXECUTION__PASS, \
     NO_EXECUTION__SYNTAX_ERROR
-from exactly_lib.cli.cli_environment.program_modes.test_suite import exit_values
 from exactly_lib.section_document.syntax import section_header
 from exactly_lib.test_case import phase_identifier
+from exactly_lib.test_suite import exit_values
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.default.test_resources import suite_reporting_output
 from exactly_lib_test.test_resources import quoting
