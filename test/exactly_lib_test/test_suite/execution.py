@@ -18,7 +18,7 @@ from exactly_lib_test.test_case.test_resources import error_info
 from exactly_lib_test.test_resources.str_std_out_files import StringStdOutFiles
 from exactly_lib_test.test_suite.test_resources.execution_utils import \
     TestCaseProcessorThatGivesConstant, DUMMY_CASE_PROCESSING, \
-    FULL_RESULT_PASS, new_test_suite
+    FULL_RESULT_PASS, test_suite
 from exactly_lib_test.test_suite.test_resources.suite_reporting import ExecutionTracingReporterFactory, \
     ExecutionTracingRootSuiteReporter, EventType, ExecutionTracingSubSuiteProgressReporter
 
@@ -49,7 +49,7 @@ class TestError(unittest.TestCase):
         # ARRANGE #
         str_std_out_files = StringStdOutFiles()
         test_case = TestCaseSetup(Path('test-case'))
-        root = new_test_suite('root', [], [test_case])
+        root = test_suite('root', [], [test_case])
         suite_hierarchy_reader = ReaderThatGivesConstantSuite(root)
         reporter_factory = ExecutionTracingReporterFactory()
         executor = Executor(DUMMY_CASE_PROCESSING,
@@ -95,7 +95,7 @@ class TestReturnValueFromTestCaseProcessor(unittest.TestCase):
         # ARRANGE #
         str_std_out_files = StringStdOutFiles()
         test_case = TestCaseSetup(Path('test-case'))
-        root = new_test_suite('root', [], [test_case])
+        root = test_suite('root', [], [test_case])
         suite_hierarchy_reader = ReaderThatGivesConstantSuite(root)
         reporter_factory = ExecutionTracingReporterFactory()
         executor = Executor(DUMMY_CASE_PROCESSING,
@@ -126,7 +126,7 @@ class TestComplexSuite(unittest.TestCase):
         tc_internal_error = TestCaseSetup(Path('internal error'))
         tc_access_error = TestCaseSetup(Path('access error'))
         tc_executed = TestCaseSetup(Path('executed'))
-        root = new_test_suite(
+        root = test_suite(
             'root',
             [],
             [
@@ -172,12 +172,12 @@ class TestComplexSuite(unittest.TestCase):
         # ARRANGE #
         reporter_factory = ExecutionTracingReporterFactory()
         str_std_out_files = StringStdOutFiles()
-        sub11 = new_test_suite('11', [], [])
-        sub12 = new_test_suite('12', [], [])
-        sub1 = new_test_suite('1', [sub11, sub12], [])
-        sub21 = new_test_suite('21', [], [])
-        sub2 = new_test_suite('2', [sub21], [])
-        root = new_test_suite('root', [sub1, sub2], [])
+        sub11 = test_suite('11', [], [])
+        sub12 = test_suite('12', [], [])
+        sub1 = test_suite('1', [sub11, sub12], [])
+        sub21 = test_suite('21', [], [])
+        sub2 = test_suite('2', [sub21], [])
+        root = test_suite('root', [sub1, sub2], [])
 
         expected_suites = [
             ExpectedSuiteReporting(sub11, []),
@@ -233,16 +233,16 @@ class TestComplexSuite(unittest.TestCase):
             id(tc_executed_2): new_executed(FULL_RESULT_PASS),
             id(tc_executed_root): new_executed(FULL_RESULT_PASS),
         })
-        sub11 = new_test_suite('11', [], [tc_internal_error_11,
-                                          tc_executed_11])
-        sub12 = new_test_suite('12', [], [tc_executed_12,
-                                          tc_access_error_12])
-        sub1 = new_test_suite('1', [sub11, sub12], [tc_access_error_1,
-                                                    tc_executed_1])
-        sub21 = new_test_suite('21', [], [tc_internal_error_21])
-        sub2 = new_test_suite('2', [sub21], [tc_executed_2])
-        sub3 = new_test_suite('2', [], [])
-        root = new_test_suite('root', [sub1, sub2, sub3], [tc_executed_root])
+        sub11 = test_suite('11', [], [tc_internal_error_11,
+                                      tc_executed_11])
+        sub12 = test_suite('12', [], [tc_executed_12,
+                                      tc_access_error_12])
+        sub1 = test_suite('1', [sub11, sub12], [tc_access_error_1,
+                                                tc_executed_1])
+        sub21 = test_suite('21', [], [tc_internal_error_21])
+        sub2 = test_suite('2', [sub21], [tc_executed_2])
+        sub3 = test_suite('2', [], [])
+        root = test_suite('root', [sub1, sub2, sub3], [tc_executed_root])
 
         expected_suites = [
             ExpectedSuiteReporting(sub11, [(tc_internal_error_11, tcp.Status.INTERNAL_ERROR),
