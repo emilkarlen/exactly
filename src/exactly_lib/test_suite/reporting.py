@@ -64,16 +64,7 @@ class RootSuiteReporter:
                                sub_suite: structure.TestSuite) -> SubSuiteReporter:
         raise NotImplementedError()
 
-    def report_final_results_for_invalid_suite(self, text_output_file: FilePrinter) -> ExitValue:
-        """
-        Executed iff the suite is invalid, so that no test cases can be executed.
-        Note that this does not include invalid test cases, since these should not
-        prevent other test cases from being executed.
-        :return: The exit code of the main program.
-        """
-        raise NotImplementedError()
-
-    def report_final_results_for_valid_suite(self, text_output_file: FilePrinter) -> ExitValue:
+    def report_final_results(self, text_output_file: FilePrinter) -> ExitValue:
         """
         Gives the number that shall be the exit code of the main program.
         Called after all sub suites have been executed and reported.

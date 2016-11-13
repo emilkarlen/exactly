@@ -99,7 +99,7 @@ class SuitesExecutor:
         for suite in suits_in_processing_order:
             self._process_single_sub_suite(suite)
         self._reporter.root_suite_end()
-        return self._reporter.report_final_results_for_valid_suite(reporter_out)
+        return self._reporter.report_final_results(reporter_out)
 
     def _process_single_sub_suite(self,
                                   suite: structure.TestSuite):
