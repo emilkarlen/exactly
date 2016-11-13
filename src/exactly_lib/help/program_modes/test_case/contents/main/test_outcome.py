@@ -1,7 +1,7 @@
 import exactly_lib.test_case.execution_mode
 from exactly_lib import program_info
-from exactly_lib.cli.cli_environment.exit_value import ExitValue
-from exactly_lib.cli.cli_environment.program_modes.test_case import exit_values
+from exactly_lib.common.exit_value import ExitValue
+from exactly_lib.execution import exit_values
 from exactly_lib.execution.result import PartialResultStatus, FullResultStatus
 from exactly_lib.help.program_modes.test_case.contents.main.ref_test_case_processing import \
     FAILURE_CONDITION_OF_PREPROCESSING

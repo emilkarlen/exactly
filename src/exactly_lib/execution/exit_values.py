@@ -1,4 +1,4 @@
-from exactly_lib.cli.cli_environment.exit_value import ExitValue
+from exactly_lib.common.exit_value import ExitValue
 from exactly_lib.execution.result import FullResultStatus
 from exactly_lib.processing import test_case_processing as processing
 

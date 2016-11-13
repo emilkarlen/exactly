@@ -2,12 +2,11 @@ import datetime
 import os
 import pathlib
 
-from exactly_lib.cli.cli_environment.program_modes.test_case import exit_values as test_case_exit_values
-from exactly_lib.cli.cli_environment.program_modes.test_suite import exit_values
+from exactly_lib.execution import exit_values as test_case_exit_values
 from exactly_lib.execution.result import FullResultStatus
 from exactly_lib.processing import test_case_processing
 from exactly_lib.processing.test_case_processing import Status
-from exactly_lib.test_suite import reporting, structure
+from exactly_lib.test_suite import reporting, structure, exit_values
 from exactly_lib.util.std import StdOutputFiles, FilePrinter
 from exactly_lib.util.timedelta_format import elapsed_time_value_and_unit
 
