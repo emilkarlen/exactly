@@ -3,8 +3,9 @@ import unittest
 from pathlib import Path
 
 from exactly_lib.execution.result import new_skipped
-from exactly_lib.processing import test_case_processing
-from exactly_lib.processing.test_case_processing import TestCaseSetup
+from exactly_lib.processing import test_case_processing as tcp
+from exactly_lib.processing.test_case_processing import TestCaseSetup, new_internal_error, new_executed, \
+    new_access_error
 from exactly_lib.test_suite import exit_values
 from exactly_lib.test_suite import reporting
 from exactly_lib.test_suite import structure
@@ -79,30 +80,30 @@ class TestError(unittest.TestCase):
                                          str_std_out_files)
         ExpectedSuiteReporting.check_list(
             self,
-            [ExpectedSuiteReporting(root, [(test_case, test_case_processing.Status.INTERNAL_ERROR)])],
+            [ExpectedSuiteReporting(root, [(test_case, tcp.Status.INTERNAL_ERROR)])],
             reporter_factory.complete_suite_reporter)
 
 
 class TestReturnValueFromTestCaseProcessor(unittest.TestCase):
     def test_internal_error(self):
-        result = test_case_processing.new_internal_error(error_info.of_message('message'))
+        result = new_internal_error(error_info.of_message('message'))
         self._helper_for_test_of_return_value_from_test_case_processor(result)
 
     def test_reading_error(self):
-        result = test_case_processing.new_access_error(test_case_processing.AccessErrorType.FILE_ACCESS_ERROR,
-                                                       error_info.of_message('message'))
+        result = new_access_error(tcp.AccessErrorType.FILE_ACCESS_ERROR,
+                                  error_info.of_message('message'))
         self._helper_for_test_of_return_value_from_test_case_processor(result)
 
     def test_executed__skipped(self):
-        result = test_case_processing.new_executed(new_skipped())
+        result = new_executed(new_skipped())
         self._helper_for_test_of_return_value_from_test_case_processor(result)
 
     def test_executed__pass(self):
-        result = test_case_processing.new_executed(FULL_RESULT_PASS)
+        result = new_executed(FULL_RESULT_PASS)
         self._helper_for_test_of_return_value_from_test_case_processor(result)
 
     def _helper_for_test_of_return_value_from_test_case_processor(self,
-                                                                  result: test_case_processing.Result):
+                                                                  result: tcp.Result):
         # ARRANGE #
         str_std_out_files = StringStdOutFiles()
         test_case = TestCaseSetup(Path('test-case'))
@@ -146,17 +147,17 @@ class TestComplexSuite(unittest.TestCase):
                 tc_executed,
             ])
         test_case_processor = TestCaseProcessorThatGivesConstantPerCase({
-            id(tc_internal_error): test_case_processing.new_internal_error(error_info.of_message('message')),
-            id(tc_access_error): test_case_processing.new_access_error(
-                test_case_processing.AccessErrorType.SYNTAX_ERROR, error_info.of_message('syntax error')),
-            id(tc_executed): test_case_processing.new_executed(FULL_RESULT_PASS),
+            id(tc_internal_error): new_internal_error(error_info.of_message('message')),
+            id(tc_access_error): new_access_error(
+                tcp.AccessErrorType.SYNTAX_ERROR, error_info.of_message('syntax error')),
+            id(tc_executed): new_executed(FULL_RESULT_PASS),
         })
         expected_suites = [
             ExpectedSuiteReporting(root,
                                    [
-                                       (tc_internal_error, test_case_processing.Status.INTERNAL_ERROR),
-                                       (tc_access_error, test_case_processing.Status.ACCESS_ERROR),
-                                       (tc_executed, test_case_processing.Status.EXECUTED),
+                                       (tc_internal_error, tcp.Status.INTERNAL_ERROR),
+                                       (tc_access_error, tcp.Status.ACCESS_ERROR),
+                                       (tc_executed, tcp.Status.EXECUTED),
                                    ])
         ]
         suite_hierarchy_reader = ReaderThatGivesConstantSuite(root)
@@ -232,17 +233,17 @@ class TestComplexSuite(unittest.TestCase):
         tc_executed_2 = TestCaseSetup(Path('executed 2'))
         tc_executed_root = TestCaseSetup(Path('executed root'))
         test_case_processor = TestCaseProcessorThatGivesConstantPerCase({
-            id(tc_internal_error_11): test_case_processing.new_internal_error(error_info.of_message('message A')),
-            id(tc_internal_error_21): test_case_processing.new_internal_error(error_info.of_message('message B')),
-            id(tc_access_error_1): test_case_processing.new_access_error(
-                test_case_processing.AccessErrorType.SYNTAX_ERROR, error_info.of_message('syntax error')),
-            id(tc_access_error_12): test_case_processing.new_access_error(
-                test_case_processing.AccessErrorType.FILE_ACCESS_ERROR, error_info.of_message('file access error')),
-            id(tc_executed_11): test_case_processing.new_executed(FULL_RESULT_PASS),
-            id(tc_executed_12): test_case_processing.new_executed(FULL_RESULT_PASS),
-            id(tc_executed_1): test_case_processing.new_executed(FULL_RESULT_PASS),
-            id(tc_executed_2): test_case_processing.new_executed(FULL_RESULT_PASS),
-            id(tc_executed_root): test_case_processing.new_executed(FULL_RESULT_PASS),
+            id(tc_internal_error_11): new_internal_error(error_info.of_message('message A')),
+            id(tc_internal_error_21): new_internal_error(error_info.of_message('message B')),
+            id(tc_access_error_1): new_access_error(
+                tcp.AccessErrorType.SYNTAX_ERROR, error_info.of_message('syntax error')),
+            id(tc_access_error_12): new_access_error(tcp.AccessErrorType.FILE_ACCESS_ERROR,
+                                                     error_info.of_message('file access error')),
+            id(tc_executed_11): new_executed(FULL_RESULT_PASS),
+            id(tc_executed_12): new_executed(FULL_RESULT_PASS),
+            id(tc_executed_1): new_executed(FULL_RESULT_PASS),
+            id(tc_executed_2): new_executed(FULL_RESULT_PASS),
+            id(tc_executed_root): new_executed(FULL_RESULT_PASS),
         })
         sub11 = new_test_suite('11', [], [tc_internal_error_11,
                                           tc_executed_11])
@@ -256,16 +257,16 @@ class TestComplexSuite(unittest.TestCase):
         root = new_test_suite('root', [sub1, sub2, sub3], [tc_executed_root])
 
         expected_suites = [
-            ExpectedSuiteReporting(sub11, [(tc_internal_error_11, test_case_processing.Status.INTERNAL_ERROR),
-                                           (tc_executed_11, test_case_processing.Status.EXECUTED)]),
-            ExpectedSuiteReporting(sub12, [(tc_executed_12, test_case_processing.Status.EXECUTED),
-                                           (tc_access_error_12, test_case_processing.Status.ACCESS_ERROR)]),
-            ExpectedSuiteReporting(sub1, [(tc_access_error_1, test_case_processing.Status.ACCESS_ERROR),
-                                          (tc_executed_1, test_case_processing.Status.EXECUTED)]),
-            ExpectedSuiteReporting(sub21, [(tc_internal_error_21, test_case_processing.Status.INTERNAL_ERROR)]),
-            ExpectedSuiteReporting(sub2, [(tc_executed_2, test_case_processing.Status.EXECUTED)]),
+            ExpectedSuiteReporting(sub11, [(tc_internal_error_11, tcp.Status.INTERNAL_ERROR),
+                                           (tc_executed_11, tcp.Status.EXECUTED)]),
+            ExpectedSuiteReporting(sub12, [(tc_executed_12, tcp.Status.EXECUTED),
+                                           (tc_access_error_12, tcp.Status.ACCESS_ERROR)]),
+            ExpectedSuiteReporting(sub1, [(tc_access_error_1, tcp.Status.ACCESS_ERROR),
+                                          (tc_executed_1, tcp.Status.EXECUTED)]),
+            ExpectedSuiteReporting(sub21, [(tc_internal_error_21, tcp.Status.INTERNAL_ERROR)]),
+            ExpectedSuiteReporting(sub2, [(tc_executed_2, tcp.Status.EXECUTED)]),
             ExpectedSuiteReporting(sub3, []),
-            ExpectedSuiteReporting(root, [(tc_executed_root, test_case_processing.Status.EXECUTED)]),
+            ExpectedSuiteReporting(root, [(tc_executed_root, tcp.Status.EXECUTED)]),
         ]
         suite_hierarchy_reader = ReaderThatGivesConstantSuite(root)
         executor = Executor(DUMMY_CASE_PROCESSING,
@@ -300,12 +301,12 @@ def check_exit_code_and_empty_stdout(put: unittest.TestCase,
                     'Output to stdout')
 
 
-class TestCaseProcessorThatRaisesUnconditionally(test_case_processing.Processor):
-    def apply(self, test_case: TestCaseSetup) -> test_case_processing.Result:
+class TestCaseProcessorThatRaisesUnconditionally(tcp.Processor):
+    def apply(self, test_case: TestCaseSetup) -> tcp.Result:
         raise NotImplementedError('Unconditional expected exception from test implementation')
 
 
-class TestCaseProcessorThatGivesConstantPerCase(test_case_processing.Processor):
+class TestCaseProcessorThatGivesConstantPerCase(tcp.Processor):
     """
     Processor that associates object ID:s of TestCaseSetup:s (Pythons internal id of objects, given
     by the id() method), with a processing result.
@@ -316,11 +317,11 @@ class TestCaseProcessorThatGivesConstantPerCase(test_case_processing.Processor):
     def __init__(self,
                  test_case_id_2_result: dict):
         """
-        :param test_case_id_2_result: int -> test_case_processing.TestCaseProcessingResult
+        :param test_case_id_2_result: int -> tcp.TestCaseProcessingResult
         """
         self.test_case_id_2_result = test_case_id_2_result
 
-    def apply(self, test_case: TestCaseSetup) -> test_case_processing.Result:
+    def apply(self, test_case: TestCaseSetup) -> tcp.Result:
         return self.test_case_id_2_result[id(test_case)]
 
 
@@ -345,7 +346,7 @@ class ExpectedSuiteReporting(tuple):
                 test_suite: structure.TestSuite,
                 case_and_result_status_list: list):
         """
-        :param case_and_result_status_list: [(TestCase, test_case_processing.Status)]
+        :param case_and_result_status_list: [(TestCase, tcp.Status)]
         """
         return tuple.__new__(cls, (test_suite, case_and_result_status_list))
 
@@ -398,7 +399,7 @@ class ExpectedSuiteReporting(tuple):
                          msg_header + 'Registered %s instance for case-begin' % str(TestCaseSetup))
             put.assertIs(expected_status,
                          result.status,
-                         msg_header + 'Registered %s instance for case-end' % str(test_case_processing.Status))
+                         msg_header + 'Registered %s instance for case-end' % str(tcp.Status))
 
     def _assert_correct_progress_reporter_invocations(self, listener, msg_header, put):
         put.assertEqual(len(self.case_and_result_status_list),
@@ -417,7 +418,7 @@ class ExpectedSuiteReporting(tuple):
 
     @staticmethod
     def _assert_case_is_registered_correctly(expected_case: TestCaseSetup,
-                                             expected_status: test_case_processing.Status,
+                                             expected_status: tcp.Status,
                                              actual_begin_case,
                                              actual_end_case,
                                              actual_end_proc_result,
@@ -431,7 +432,7 @@ class ExpectedSuiteReporting(tuple):
                      msg_header + 'Registered %s instance for case-end' % str(TestCaseSetup))
         put.assertIs(expected_status,
                      actual_end_proc_result.status,
-                     msg_header + 'Registered %s instance for case-end' % str(test_case_processing.Status))
+                     msg_header + 'Registered %s instance for case-end' % str(tcp.Status))
 
     def _check_invokation_sequence(self,
                                    put: unittest.TestCase,
