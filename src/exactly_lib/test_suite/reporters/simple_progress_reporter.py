@@ -84,10 +84,7 @@ class SimpleProgressRootSuiteReporter(reporting.RootSuiteReporter):
         self._sub_reporters.append(reporter)
         return reporter
 
-    def report_final_results_for_invalid_suite(self, text_output_file: FilePrinter) -> exit_values.ExitValue:
-        return exit_values.INVALID_SUITE
-
-    def report_final_results_for_valid_suite(self, text_output_file: FilePrinter) -> exit_values.ExitValue:
+    def report_final_results(self, text_output_file: FilePrinter) -> exit_values.ExitValue:
         num_cases, errors, exit_value = self._valid_suite_exit_value()
         lines = format_final_result_for_valid_suite(num_cases, self._total_time_timedelta, errors)
         lines.insert(0, '')

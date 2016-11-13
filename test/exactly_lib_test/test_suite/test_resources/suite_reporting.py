@@ -33,10 +33,7 @@ class ExecutionTracingRootSuiteReporter(reporting.RootSuiteReporter):
         self.sub_suite_reporters.append(reporter)
         return reporter
 
-    def report_final_results_for_invalid_suite(self, text_output_file: FilePrinter) -> ExitValue:
-        return ExitValue(self.INVALID_SUITE_EXIT_CODE, 'invalid suite')
-
-    def report_final_results_for_valid_suite(self, text_output_file: FilePrinter) -> ExitValue:
+    def report_final_results(self, text_output_file: FilePrinter) -> ExitValue:
         self.num_report_final_result_invocations += 1
         return ExitValue(self.VALID_SUITE_EXIT_CODE, 'valid suite')
 
