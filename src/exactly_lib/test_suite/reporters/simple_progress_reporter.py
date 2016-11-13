@@ -16,7 +16,7 @@ SUCCESS_STATUSES = {FullResultStatus.PASS,
                     }
 
 
-class DefaultSubSuiteProgressReporter(reporting.SubSuiteProgressReporter):
+class SimpleProgressSubSuiteProgressReporter(reporting.SubSuiteProgressReporter):
     def __init__(self,
                  output_file: FilePrinter,
                  suite: structure.TestSuite,
@@ -47,16 +47,16 @@ class DefaultSubSuiteProgressReporter(reporting.SubSuiteProgressReporter):
             return str(file)
 
 
-class DefaultRootSuiteReporterFactory(reporting.RootSuiteReporterFactory):
+class SimpleProgressRootSuiteReporterFactory(reporting.RootSuiteReporterFactory):
     def new_reporter(self,
                      std_output_files: StdOutputFiles,
                      root_suite_file: pathlib.Path) -> reporting.RootSuiteReporter:
         root_suite_dir_abs_path = root_suite_file.resolve().parent
-        return DefaultRootSuiteReporter(std_output_files,
-                                        root_suite_dir_abs_path)
+        return SimpleProgressRootSuiteReporter(std_output_files,
+                                               root_suite_dir_abs_path)
 
 
-class DefaultRootSuiteReporter(reporting.RootSuiteReporter):
+class SimpleProgressRootSuiteReporter(reporting.RootSuiteReporter):
     def __init__(self,
                  std_output_files: StdOutputFiles,
                  root_suite_dir_abs_path: pathlib.Path):
@@ -76,9 +76,9 @@ class DefaultRootSuiteReporter(reporting.RootSuiteReporter):
 
     def new_sub_suite_reporter(self,
                                sub_suite: structure.TestSuite) -> reporting.SubSuiteReporter:
-        progress_reporter = DefaultSubSuiteProgressReporter(self._output_file,
-                                                            sub_suite,
-                                                            self._root_suite_dir_abs_path)
+        progress_reporter = SimpleProgressSubSuiteProgressReporter(self._output_file,
+                                                                   sub_suite,
+                                                                   self._root_suite_dir_abs_path)
         reporter = reporting.SubSuiteReporter(progress_reporter)
         self._sub_reporters.append(reporter)
         return reporter
