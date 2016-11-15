@@ -13,9 +13,15 @@ class SubSuiteProgressReporter:
     """
 
     def suite_begin(self):
+        """
+        Called once.
+        """
         raise NotImplementedError()
 
     def suite_end(self):
+        """
+        Called once.
+        """
         raise NotImplementedError()
 
     def case_begin(self,
@@ -30,7 +36,9 @@ class SubSuiteProgressReporter:
 
 class SubSuiteReporter:
     def __init__(self,
+                 suite: structure.TestSuite,
                  listener: SubSuiteProgressReporter):
+        self._suite = suite
         self._listener = listener
         self._result = []
 
@@ -41,6 +49,10 @@ class SubSuiteReporter:
                  case: test_case_processing.TestCaseSetup,
                  result: test_case_processing.Result):
         self._result.append((case, result))
+
+    @property
+    def suite(self) -> structure.TestSuite:
+        return self._suite
 
     def result(self) -> list:
         """

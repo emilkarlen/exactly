@@ -1,12 +1,13 @@
 import datetime
 import os
 import pathlib
+from xml.etree import ElementTree as ET
 
 from exactly_lib.execution import exit_values as test_case_exit_values
 from exactly_lib.execution.result import FullResultStatus
-from exactly_lib.processing import test_case_processing
 from exactly_lib.processing.test_case_processing import Status
 from exactly_lib.test_suite import reporting, structure, exit_values
+from exactly_lib.test_suite.reporters import simple_progress_reporter as simple_reporter
 from exactly_lib.util.std import StdOutputFiles, FilePrinter
 from exactly_lib.util.timedelta_format import elapsed_time_value_and_unit
 
@@ -16,47 +17,16 @@ SUCCESS_STATUSES = {FullResultStatus.PASS,
                     }
 
 
-class SimpleProgressSubSuiteProgressReporter(reporting.SubSuiteProgressReporter):
-    def __init__(self,
-                 output_file: FilePrinter,
-                 suite: structure.TestSuite,
-                 root_suite_dir_abs_path: pathlib.Path):
-        self.output_file = output_file
-        self.suite = suite
-        self.root_suite_dir_abs_path = root_suite_dir_abs_path
-
-    def suite_begin(self):
-        self.output_file.write_line('suite ' + self._file_path_pres(self.suite.source_file) + ': begin')
-
-    def suite_end(self):
-        self.output_file.write_line('suite ' + self._file_path_pres(self.suite.source_file) + ': end')
-
-    def case_begin(self, case: test_case_processing.TestCaseSetup):
-        self.output_file.write('case  ' + self._file_path_pres(case.file_path) + ': ')
-
-    def case_end(self,
-                 case: test_case_processing.TestCaseSetup,
-                 result: test_case_processing.Result):
-        exit_value = test_case_exit_values.from_result(result)
-        self.output_file.write_line(exit_value.exit_identifier)
-
-    def _file_path_pres(self, file: pathlib.Path):
-        try:
-            return str(file.relative_to(self.root_suite_dir_abs_path))
-        except ValueError:
-            return str(file)
-
-
-class SimpleProgressRootSuiteReporterFactory(reporting.RootSuiteReporterFactory):
+class JUnitRootSuiteReporterFactory(reporting.RootSuiteReporterFactory):
     def new_reporter(self,
                      std_output_files: StdOutputFiles,
                      root_suite_file: pathlib.Path) -> reporting.RootSuiteReporter:
         root_suite_dir_abs_path = root_suite_file.resolve().parent
-        return SimpleProgressRootSuiteReporter(std_output_files,
-                                               root_suite_dir_abs_path)
+        return JUnitRootSuiteReporter(std_output_files,
+                                      root_suite_dir_abs_path)
 
 
-class SimpleProgressRootSuiteReporter(reporting.RootSuiteReporter):
+class JUnitRootSuiteReporter(reporting.RootSuiteReporter):
     def __init__(self,
                  std_output_files: StdOutputFiles,
                  root_suite_dir_abs_path: pathlib.Path):
@@ -78,21 +48,24 @@ class SimpleProgressRootSuiteReporter(reporting.RootSuiteReporter):
 
     def new_sub_suite_reporter(self,
                                sub_suite: structure.TestSuite) -> reporting.SubSuiteReporter:
-        progress_reporter = SimpleProgressSubSuiteProgressReporter(self._output_file,
-                                                                   sub_suite,
-                                                                   self._root_suite_dir_abs_path)
+        progress_reporter = simple_reporter.SimpleProgressSubSuiteProgressReporter(self._error_file,
+                                                                                   sub_suite,
+                                                                                   self._root_suite_dir_abs_path)
         reporter = reporting.SubSuiteReporter(sub_suite, progress_reporter)
         self._sub_reporters.append(reporter)
         return reporter
 
     def report_final_results(self) -> exit_values.ExitValue:
-        num_cases, errors, exit_value = self._valid_suite_exit_value()
-        lines = format_final_result_for_valid_suite(num_cases, self._total_time_timedelta, errors)
-        lines.insert(0, '')
-        self._error_file.write_line(os.linesep.join(lines))
-        self._std_output_files.err.flush()
-        self._output_file.write_line(exit_value.exit_identifier)
-        return exit_value
+        if len(self._sub_reporters) == 1:
+            xml = ET.ElementTree(_xml_for_suite(self._sub_reporters[0]))
+        else:
+            raise NotImplementedError()
+        xml.write(self._std_output_files.out,
+                  encoding='unicode',
+                  xml_declaration=True,
+                  short_empty_elements=True)
+        self._std_output_files.out.write(os.linesep)
+        return exit_values.ALL_PASS
 
     def _valid_suite_exit_value(self) -> (int, dict, exit_values.ExitValue):
         errors = {}
@@ -148,3 +121,12 @@ def format_final_result_for_valid_suite(num_cases: int,
         ret_val.append('')
         ret_val.extend(error_lines())
     return ret_val
+
+
+def _xml_for_suite(suite_reporter: reporting.SubSuiteReporter) -> ET.Element:
+    suite_reporter.result()
+    root = ET.Element('testsuite', {
+        'name': str(suite_reporter.suite.source_file),
+        'tests': str(len(suite_reporter.result()))
+    })
+    return root
