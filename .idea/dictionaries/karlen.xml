@@ -18,6 +18,7 @@
       <w>stdin</w>
       <w>stdout</w>
       <w>testcase</w>
+      <w>testsuite</w>
       <w>xfail</w>
       <w>xpass</w>
     </words>
