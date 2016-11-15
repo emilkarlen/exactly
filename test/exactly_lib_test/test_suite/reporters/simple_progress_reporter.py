@@ -11,9 +11,10 @@ from exactly_lib.test_suite.execution import SuitesExecutor
 from exactly_lib.test_suite.reporters import simple_progress_reporter as sut
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.test_resources.str_std_out_files import StringStdOutFiles
+from exactly_lib_test.test_suite.reporters.test_resources import FULL_RESULT_HARD_ERROR, FULL_RESULT_VALIDATE, \
+    FULL_RESULT_IMPLEMENTATION_ERROR
 from exactly_lib_test.test_suite.test_resources.execution_utils import TestCaseProcessorThatGivesConstant, \
-    FULL_RESULT_PASS, test_suite, DUMMY_CASE_PROCESSING, test_case, FULL_RESULT_FAIL, FULL_RESULT_SKIP, \
-    full_result_with_failure_info, full_result_without_failure_info
+    FULL_RESULT_PASS, test_suite, DUMMY_CASE_PROCESSING, test_case, FULL_RESULT_FAIL, FULL_RESULT_SKIP
 
 
 def suite() -> unittest.TestSuite:
@@ -171,10 +172,3 @@ def _suite_executor_for_case_processing_that_unconditionally(execution_result: r
     case_result = test_case_processing.new_executed(execution_result)
     return execution.SuitesExecutor(root_suite_reporter, DUMMY_CASE_PROCESSING,
                                     lambda conf: TestCaseProcessorThatGivesConstant(case_result))
-
-
-FULL_RESULT_XFAIL = full_result_with_failure_info(result.FullResultStatus.XFAIL)
-FULL_RESULT_XPASS = full_result_without_failure_info(result.FullResultStatus.XPASS)
-FULL_RESULT_HARD_ERROR = full_result_with_failure_info(result.FullResultStatus.HARD_ERROR)
-FULL_RESULT_VALIDATE = full_result_with_failure_info(result.FullResultStatus.VALIDATE)
-FULL_RESULT_IMPLEMENTATION_ERROR = full_result_with_failure_info(result.FullResultStatus.IMPLEMENTATION_ERROR)
