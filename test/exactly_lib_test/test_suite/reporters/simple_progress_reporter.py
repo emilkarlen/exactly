@@ -49,11 +49,11 @@ class TestExecutionOfSuite(unittest.TestCase):
                                                                             std_output_files,
                                                                             Path())
         # ACT #
-        exit_value = executor.execute_and_report(test_suites)
+        exit_code = executor.execute_and_report(test_suites)
         # ASSERT #
         std_output_files.finish()
 
-        self.assertEquals(expected_exit_value, exit_value)
+        self.assertEquals(expected_exit_value.exit_code, exit_code)
         self.assertEqual(expected_output,
                          std_output_files.stdout_contents)
 
@@ -73,11 +73,11 @@ class TestExecutionOfSuite(unittest.TestCase):
                                                                             std_output_files,
                                                                             Path())
         # ACT #
-        exit_value = executor.execute_and_report(test_suites)
+        exit_code = executor.execute_and_report(test_suites)
         # ASSERT #
         std_output_files.finish()
 
-        self.assertEquals(expected_exit_value, exit_value)
+        self.assertEquals(expected_exit_value.exit_code, exit_code)
         self.assertEqual(expected_output, std_output_files.stdout_contents)
 
     def test_suite_with_single_case(self):
@@ -110,11 +110,11 @@ class TestExecutionOfSuite(unittest.TestCase):
                                                                                     std_output_files,
                                                                                     Path())
                 # ACT #
-                exit_value = executor.execute_and_report(test_suites)
+                exit_code = executor.execute_and_report(test_suites)
                 # ASSERT #
                 std_output_files.finish()
 
-                self.assertEquals(expected_suite_exit_value, exit_value)
+                self.assertEquals(expected_suite_exit_value.exit_code, exit_code)
                 self.assertEqual(expected_output,
                                  std_output_files.stdout_contents)
 

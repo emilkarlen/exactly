@@ -2,7 +2,6 @@ import pathlib
 import types
 
 from exactly_lib.cli.util.error_message_printing import output_location
-from exactly_lib.common.exit_value import ExitValue
 from exactly_lib.processing import processors as case_processing
 from exactly_lib.processing import test_case_processing
 from exactly_lib.test_case import error_description
@@ -41,10 +40,9 @@ class Executor:
         self._suite_root_file_path = suite_root_file_path
 
     def execute(self) -> int:
-        exit_value = self._execute_and_let_reporter_report_final_result()
-        return exit_value.exit_code
+        return self._execute_and_let_reporter_report_final_result()
 
-    def _execute_and_let_reporter_report_final_result(self) -> ExitValue:
+    def _execute_and_let_reporter_report_final_result(self) -> int:
         try:
             root_suite = self._read_structure(self._suite_root_file_path)
         except SuiteReadError as ex:
@@ -59,7 +57,7 @@ class Executor:
             exit_value = exit_values.INVALID_SUITE
             self._std.err.flush()
             exit_identifier_output_file.write_line(exit_value.exit_identifier)
-            return exit_value
+            return exit_value.exit_code
 
         suits_in_processing_order = self._suite_enumerator.apply(root_suite)
         executor = SuitesExecutor(self._reporter_factory.new_reporter(self._std,
@@ -86,7 +84,7 @@ class SuitesExecutor:
         self._default_case_configuration = default_case_configuration
         self._test_case_processor_constructor = test_case_processor_constructor
 
-    def execute_and_report(self, suits_in_processing_order: list) -> ExitValue:
+    def execute_and_report(self, suits_in_processing_order: list) -> int:
         """
         :param suits_in_processing_order: [TestSuite]
         :return: Exit code for main program.

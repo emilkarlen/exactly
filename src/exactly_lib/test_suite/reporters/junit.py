@@ -55,7 +55,7 @@ class JUnitRootSuiteReporter(reporting.RootSuiteReporter):
         self._sub_reporters.append(reporter)
         return reporter
 
-    def report_final_results(self) -> exit_values.ExitValue:
+    def report_final_results(self) -> int:
         if len(self._sub_reporters) == 1:
             xml = ET.ElementTree(_xml_for_suite(self._sub_reporters[0]))
         else:
@@ -65,7 +65,7 @@ class JUnitRootSuiteReporter(reporting.RootSuiteReporter):
                   xml_declaration=True,
                   short_empty_elements=True)
         self._std_output_files.out.write(os.linesep)
-        return exit_values.ALL_PASS
+        return 0
 
     def _valid_suite_exit_value(self) -> (int, dict, exit_values.ExitValue):
         errors = {}

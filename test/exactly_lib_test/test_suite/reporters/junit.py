@@ -7,7 +7,6 @@ from xml.etree import ElementTree as ET
 from exactly_lib.execution import result
 from exactly_lib.processing import test_case_processing
 from exactly_lib.test_suite import execution
-from exactly_lib.test_suite import exit_values as suite_ev
 from exactly_lib.test_suite.execution import SuitesExecutor
 from exactly_lib.test_suite.reporters import junit as sut
 from exactly_lib_test.test_resources.str_std_out_files import StringStdOutFiles
@@ -25,7 +24,6 @@ def suite() -> unittest.TestSuite:
 class TestExecutionOfSuite(unittest.TestCase):
     def test_single_empty_suite(self):
         # ARRANGE #
-        expected_exit_value = suite_ev.ALL_PASS
         expected_xml = ET.Element('testsuite', {
             'name': 'root file name',
             'tests': '0'
@@ -39,11 +37,11 @@ class TestExecutionOfSuite(unittest.TestCase):
                                                                            std_output_files,
                                                                            Path())
         # ACT #
-        exit_value = executor.execute_and_report(test_suites)
+        exit_code = executor.execute_and_report(test_suites)
         # ASSERT #
         std_output_files.finish()
 
-        self.assertEquals(expected_exit_value, exit_value)
+        self.assertEquals(0, exit_code)
         self.assertEqual(expected_output, std_output_files.stdout_contents)
 
 
