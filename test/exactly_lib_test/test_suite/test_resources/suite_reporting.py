@@ -28,7 +28,7 @@ class ExecutionTracingRootSuiteReporter(reporting.RootSuiteReporter):
         self.num_report_final_result_invocations = 0
 
     def new_sub_suite_reporter(self, sub_suite: structure.TestSuite) -> reporting.SubSuiteReporter:
-        reporter = reporting.SubSuiteReporter(ExecutionTracingSubSuiteProgressReporter(sub_suite))
+        reporter = reporting.SubSuiteReporter(sub_suite, ExecutionTracingSubSuiteProgressReporter(sub_suite))
         self.sub_suite_reporters.append(reporter)
         return reporter
 
