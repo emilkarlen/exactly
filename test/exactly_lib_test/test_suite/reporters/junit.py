@@ -32,17 +32,28 @@ class TestExecutionOfSuite(unittest.TestCase):
         test_suites = [
             test_suite('root file name', [], [])
         ]
-        std_output_files = StringStdOutFiles()
-        executor = suite_executor_for_case_processing_that_unconditionally(FULL_RESULT_PASS,
-                                                                           std_output_files,
-                                                                           Path())
         # ACT #
-        exit_code = executor.execute_and_report(test_suites)
+        actual = execute_with_case_processing_with_constant_result(FULL_RESULT_PASS,
+                                                                   Path(),
+                                                                   test_suites)
         # ASSERT #
-        std_output_files.finish()
+        self.assertEquals(0, actual.exit_code)
+        self.assertEqual(expected_output, actual.stdout)
 
-        self.assertEquals(0, exit_code)
-        self.assertEqual(expected_output, std_output_files.stdout_contents)
+
+class ExitCodeAndStdOut(tuple):
+    def __new__(cls,
+                exit_code: int,
+                stdout: str):
+        return tuple.__new__(cls, (exit_code, stdout))
+
+    @property
+    def exit_code(self) -> int:
+        return self[0]
+
+    @property
+    def stdout(self) -> str:
+        return self[1]
 
 
 def suite_executor_for_case_processing_that_unconditionally(execution_result: result.FullResult,
@@ -53,6 +64,20 @@ def suite_executor_for_case_processing_that_unconditionally(execution_result: re
     case_result = test_case_processing.new_executed(execution_result)
     return execution.SuitesExecutor(root_suite_reporter, DUMMY_CASE_PROCESSING,
                                     lambda conf: TestCaseProcessorThatGivesConstant(case_result))
+
+
+def execute_with_case_processing_with_constant_result(test_case_execution_result: result.FullResult,
+                                                      root_file_path: Path,
+                                                      test_suites: list) -> ExitCodeAndStdOut:
+    std_output_files = StringStdOutFiles()
+    factory = sut.JUnitRootSuiteReporterFactory()
+    root_suite_reporter = factory.new_reporter(std_output_files.stdout_files, root_file_path)
+    case_result = test_case_processing.new_executed(test_case_execution_result)
+    executor = execution.SuitesExecutor(root_suite_reporter, DUMMY_CASE_PROCESSING,
+                                        lambda conf: TestCaseProcessorThatGivesConstant(case_result))
+    exit_code = executor.execute_and_report(test_suites)
+    std_output_files.finish()
+    return ExitCodeAndStdOut(exit_code, std_output_files.stdout_contents)
 
 
 def expected_output_from(root: ET.Element) -> str:
