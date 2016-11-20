@@ -4,11 +4,10 @@ import shutil
 from exactly_lib.cli.program_modes.test_case.settings import Output, TestCaseExecutionSettings
 from exactly_lib.cli.util.error_message_printing import output_location
 from exactly_lib.execution import full_execution, exit_values
-from exactly_lib.execution.result import FailureInfoVisitor, PhaseFailureInfo, InstructionFailureInfo
+from exactly_lib.execution.result_reporting import print_error_message_for_full_result, _ErrorDescriptionDisplayer
 from exactly_lib.processing import test_case_processing, processors
 from exactly_lib.processing.instruction_setup import InstructionsSetup
 from exactly_lib.processing.test_case_processing import ErrorInfo
-from exactly_lib.test_case import error_description
 from exactly_lib.util.std import StdOutputFiles, FilePrinter
 
 
@@ -74,25 +73,13 @@ class Executor:
 
     def _report_full_result(self, the_full_result: full_execution.FullResult):
         self._print_output_to_stdout_for_full_result(the_full_result)
-        self._print_output_to_stderr_for_full_result(the_full_result)
+        print_error_message_for_full_result(self._err_printer, the_full_result)
 
     def _print_output_to_stdout_for_full_result(self, the_full_result: full_execution.FullResult):
         if self._settings.output is Output.STATUS_CODE:
             self._out_printer.write_line(the_full_result.status.name)
         elif self._settings.output is Output.SANDBOX_DIRECTORY_STRUCTURE_ROOT:
             self._out_printer.write_line(str(the_full_result.sandbox_directory_structure.root_dir))
-
-    def _print_output_to_stderr_for_full_result(self, the_full_result: full_execution.FullResult):
-        if the_full_result.is_failure:
-            failure_info = the_full_result.failure_info
-            _SourceDisplayer(self._err_printer).visit(failure_info)
-            failure_details = failure_info.failure_details
-            if failure_info.failure_details.is_only_failure_message:
-                ed = error_description.of_message(failure_details.failure_message)
-            else:
-                ed = error_description.of_exception(failure_details.exception,
-                                                    failure_details.failure_message)
-            _ErrorDescriptionDisplayer(self._err_printer).visit(ed)
 
     def _process(self,
                  is_keep_sds: bool) -> test_case_processing.Result:
@@ -105,39 +92,3 @@ class Executor:
         return processor.apply(test_case_processing.TestCaseSetup(self._settings.file_path))
 
 
-class _ErrorDescriptionDisplayer(error_description.ErrorDescriptionVisitor):
-    def __init__(self,
-                 out: FilePrinter):
-        self.out = out
-
-    def _visit_message(self, ed: error_description.ErrorDescriptionOfMessage):
-        self.out.write_line_if_present(ed.message)
-
-    def _visit_exception(self, ed: error_description.ErrorDescriptionOfException):
-        self.out.write_line_if_present(ed.message)
-        self.out.write_line('Exception:')
-        self.out.write_line(str(ed.exception))
-
-    def _visit_external_process_error(self, ed: error_description.ErrorDescriptionOfExternalProcessError):
-        self.out.write_line_if_present(ed.message)
-        self.out.write_line('Exit code: ' + str(ed.external_process_error.exit_code))
-        if ed.external_process_error.stderr_output:
-            self.out.write_line(ed.external_process_error.stderr_output)
-
-
-class _SourceDisplayer(FailureInfoVisitor):
-    def __init__(self,
-                 out: FilePrinter):
-        self.out = out
-
-    def _visit_phase_failure(self, failure_info: PhaseFailureInfo):
-        output_location(self.out,
-                        None,
-                        failure_info.phase_step.phase.identifier,
-                        None)
-
-    def _visit_instruction_failure(self, failure_info: InstructionFailureInfo):
-        output_location(self.out,
-                        None,
-                        failure_info.phase_step.phase.identifier,
-                        failure_info.source_line)
