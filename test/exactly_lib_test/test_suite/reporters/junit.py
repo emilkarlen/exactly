@@ -4,12 +4,10 @@ import unittest
 from pathlib import Path
 from xml.etree import ElementTree as ET
 
-from exactly_lib.execution import exit_values as case_ev
 from exactly_lib.execution import result
 from exactly_lib.execution.result_reporting import error_message_for_full_result
 from exactly_lib.processing import test_case_processing
 from exactly_lib.test_suite import execution
-from exactly_lib.test_suite import exit_values as suite_ev
 from exactly_lib.test_suite.execution import SuitesExecutor
 from exactly_lib.test_suite.reporters import junit as sut
 from exactly_lib_test.test_resources.str_std_out_files import StringStdOutFiles
@@ -48,14 +46,12 @@ class TestExecutionOfSuite(unittest.TestCase):
 
     def test_suite_with_single_case_that_passes(self):
         cases = [
-            (FULL_RESULT_PASS, case_ev.EXECUTION__PASS, suite_ev.ALL_PASS),
-            (FULL_RESULT_XFAIL, case_ev.EXECUTION__PASS, suite_ev.ALL_PASS),
-            (FULL_RESULT_SKIP, case_ev.EXECUTION__PASS, suite_ev.ALL_PASS),
+            FULL_RESULT_PASS,
+            FULL_RESULT_XFAIL,
+            FULL_RESULT_SKIP,
         ]
-        for case_result, expected_case_exit_value, expected_suite_exit_value in cases:
-            with self.subTest(case_result_status=case_result.status,
-                              expected_case_exit_value=expected_case_exit_value,
-                              expected_suite_exit_value=expected_suite_exit_value):
+        for case_result in cases:
+            with self.subTest(case_result_status=case_result.status):
                 # ARRANGE #
                 expected_xml = ET.Element('testsuite', {
                     'name': 'suite that passes',
@@ -80,14 +76,12 @@ class TestExecutionOfSuite(unittest.TestCase):
 
     def test_suite_with_single_case_with_error(self):
         cases = [
-            (FULL_RESULT_HARD_ERROR, case_ev.EXECUTION__HARD_ERROR, suite_ev.FAILED_TESTS),
-            (FULL_RESULT_VALIDATE, case_ev.EXECUTION__VALIDATE, suite_ev.FAILED_TESTS),
-            (FULL_RESULT_IMPLEMENTATION_ERROR, case_ev.EXECUTION__IMPLEMENTATION_ERROR, suite_ev.FAILED_TESTS),
+            FULL_RESULT_HARD_ERROR,
+            FULL_RESULT_VALIDATE,
+            FULL_RESULT_IMPLEMENTATION_ERROR,
         ]
-        for case_result, expected_case_exit_value, expected_suite_exit_value in cases:
-            with self.subTest(case_result_status=case_result.status,
-                              expected_case_exit_value=expected_case_exit_value,
-                              expected_suite_exit_value=expected_suite_exit_value):
+        for case_result in cases:
+            with self.subTest(case_result_status=case_result.status):
                 # ARRANGE #
                 expected_xml = ET.Element('testsuite', {
                     'name': 'suite with error',
@@ -114,13 +108,11 @@ class TestExecutionOfSuite(unittest.TestCase):
 
     def test_suite_with_single_case_with_failure(self):
         cases = [
-            (FULL_RESULT_FAIL, case_ev.EXECUTION__FAIL, suite_ev.FAILED_TESTS),
-            (FULL_RESULT_XPASS, case_ev.EXECUTION__FAIL, suite_ev.FAILED_TESTS),
+            FULL_RESULT_FAIL,
+            FULL_RESULT_XPASS,
         ]
-        for case_result, expected_case_exit_value, expected_suite_exit_value in cases:
-            with self.subTest(case_result_status=case_result.status,
-                              expected_case_exit_value=expected_case_exit_value,
-                              expected_suite_exit_value=expected_suite_exit_value):
+        for case_result in cases:
+            with self.subTest(case_result_status=case_result.status):
                 # ARRANGE #
                 expected_xml = ET.Element('testsuite', {
                     'name': 'suite with failure',
