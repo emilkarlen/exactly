@@ -14,8 +14,9 @@ from exactly_lib.test_suite.execution import SuitesExecutor
 from exactly_lib.test_suite.reporters import junit as sut
 from exactly_lib_test.test_resources.str_std_out_files import StringStdOutFiles
 from exactly_lib_test.test_suite.reporters.test_resources import FULL_RESULT_HARD_ERROR, FULL_RESULT_VALIDATE, \
-    FULL_RESULT_IMPLEMENTATION_ERROR
-from exactly_lib_test.test_suite.test_resources.execution_utils import FULL_RESULT_PASS, test_suite, test_case
+    FULL_RESULT_IMPLEMENTATION_ERROR, FULL_RESULT_XPASS
+from exactly_lib_test.test_suite.test_resources.execution_utils import FULL_RESULT_PASS, test_suite, test_case, \
+    FULL_RESULT_FAIL
 from exactly_lib_test.test_suite.test_resources.execution_utils import TestCaseProcessorThatGivesConstant, \
     DUMMY_CASE_PROCESSING
 
@@ -60,6 +61,38 @@ class TestExecutionOfSuite(unittest.TestCase):
                     'name': 'suite with error',
                     'tests': '1',
                     'errors': '1'
+                })
+                expected_xml.append(
+                    _failing_test_case('test case file name',
+                                       failure_message=error_message_for_full_result(case_result)))
+                expected_output = expected_output_from(expected_xml)
+                test_suites = [
+                    test_suite('suite with error', [], [
+                        test_case('test case file name')
+                    ])
+                ]
+                # ACT #
+                actual = execute_with_case_processing_with_constant_result(case_result,
+                                                                           Path(),
+                                                                           test_suites)
+
+                self.assertEquals(0, actual.exit_code)
+                self.assertEqual(expected_output, actual.stdout)
+
+    def test_suite_with_single_case_with_failure(self):
+        cases = [
+            (FULL_RESULT_FAIL, case_ev.EXECUTION__FAIL, suite_ev.FAILED_TESTS),
+            (FULL_RESULT_XPASS, case_ev.EXECUTION__FAIL, suite_ev.FAILED_TESTS),
+        ]
+        for case_result, expected_case_exit_value, expected_suite_exit_value in cases:
+            with self.subTest(case_result_status=case_result.status,
+                              expected_case_exit_value=expected_case_exit_value,
+                              expected_suite_exit_value=expected_suite_exit_value):
+                # ARRANGE #
+                expected_xml = ET.Element('testsuite', {
+                    'name': 'suite with failure',
+                    'tests': '1',
+                    'failures': '1'
                 })
                 expected_xml.append(
                     _failing_test_case('test case file name',
