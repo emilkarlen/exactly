@@ -2,9 +2,8 @@ import pathlib
 import shutil
 
 from exactly_lib.cli.program_modes.test_case.settings import Output, TestCaseExecutionSettings
-from exactly_lib.cli.util.error_message_printing import output_location
 from exactly_lib.execution import full_execution, exit_values
-from exactly_lib.execution.result_reporting import print_error_message_for_full_result, _ErrorDescriptionDisplayer
+from exactly_lib.execution.result_reporting import print_error_message_for_full_result, print_error_info
 from exactly_lib.processing import test_case_processing, processors
 from exactly_lib.processing.instruction_setup import InstructionsSetup
 from exactly_lib.processing.test_case_processing import ErrorInfo
@@ -44,11 +43,7 @@ class Executor:
                               stdout_error_code: str,
                               error_info: ErrorInfo):
         self._out_printer.write_line(stdout_error_code)
-        output_location(self._err_printer,
-                        error_info.file,
-                        error_info.maybe_section_name,
-                        error_info.line)
-        _ErrorDescriptionDisplayer(self._err_printer).visit(error_info.description)
+        print_error_info(self._err_printer, error_info)
 
     def _execute_act_phase(self) -> int:
         def copy_file(input_file_path: pathlib.Path,
@@ -90,5 +85,3 @@ class Executor:
                                                  self._settings.execution_directory_root_name_prefix)
         processor = processors.new_processor_that_is_allowed_to_pollute_current_process(configuration)
         return processor.apply(test_case_processing.TestCaseSetup(self._settings.file_path))
-
-
