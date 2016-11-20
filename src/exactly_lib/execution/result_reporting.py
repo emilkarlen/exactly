@@ -1,9 +1,11 @@
 import io
+import pathlib
 
-from exactly_lib.cli.util.error_message_printing import output_location
 from exactly_lib.execution import full_execution
 from exactly_lib.execution.result import FailureInfoVisitor, PhaseFailureInfo, InstructionFailureInfo
+from exactly_lib.processing.test_case_processing import ErrorInfo
 from exactly_lib.test_case import error_description
+from exactly_lib.util import line_source
 from exactly_lib.util.std import FilePrinter
 
 
@@ -24,6 +26,40 @@ def print_error_message_for_full_result(printer: FilePrinter, the_full_result: f
             ed = error_description.of_exception(failure_details.exception,
                                                 failure_details.failure_message)
         _ErrorDescriptionDisplayer(printer).visit(ed)
+
+
+def error_message_for_error_info(error_info: ErrorInfo) -> str:
+    output_file = io.StringIO()
+    print_error_info(FilePrinter(output_file), error_info)
+    return output_file.getvalue()
+
+
+def print_error_info(printer: FilePrinter, error_info: ErrorInfo):
+    output_location(printer,
+                    error_info.file,
+                    error_info.maybe_section_name,
+                    error_info.line)
+    _ErrorDescriptionDisplayer(printer).visit(error_info.description)
+
+
+def output_location(printer: FilePrinter,
+                    file: pathlib.Path,
+                    section_name: str,
+                    line: line_source.Line,
+                    section_presentation_type_name: str = 'phase'):
+    has_output_header = False
+    if file:
+        printer.write_line('File: ' + str(file))
+        has_output_header = True
+    if section_name:
+        printer.write_line('In %s "%s"' % (section_presentation_type_name, section_name))
+        has_output_header = True
+    if line:
+        printer.write_line('Line {}: `{}\''.format(line.line_number, line.text))
+        has_output_header = True
+
+    if has_output_header:
+        printer.write_line('')
 
 
 class _ErrorDescriptionDisplayer(error_description.ErrorDescriptionVisitor):

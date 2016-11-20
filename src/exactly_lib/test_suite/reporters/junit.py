@@ -5,7 +5,7 @@ from xml.etree import ElementTree as ET
 
 from exactly_lib.execution import exit_values as test_case_exit_values
 from exactly_lib.execution.result import FullResultStatus
-from exactly_lib.execution.result_reporting import error_message_for_full_result
+from exactly_lib.execution.result_reporting import error_message_for_full_result, error_message_for_error_info
 from exactly_lib.processing.test_case_processing import Status, TestCaseSetup, Result
 from exactly_lib.test_suite import reporting, structure, exit_values
 from exactly_lib.test_suite.reporters import simple_progress_reporter as simple_reporter
@@ -170,6 +170,6 @@ def _xml_for_failure(result: Result) -> ET.Element:
 
 def _error_message_for(result: Result) -> str:
     if result.status != Status.EXECUTED:
-        return result.access_error_type.name
+        return error_message_for_error_info(result.error_info)
     else:
         return error_message_for_full_result(result.execution_result)

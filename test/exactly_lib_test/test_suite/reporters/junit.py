@@ -4,12 +4,13 @@ import unittest
 from pathlib import Path
 from xml.etree import ElementTree as ET
 
-from exactly_lib.execution import result
-from exactly_lib.execution.result_reporting import error_message_for_full_result
+from exactly_lib.execution.result_reporting import error_message_for_full_result, error_message_for_error_info
 from exactly_lib.processing import test_case_processing
+from exactly_lib.processing.test_case_processing import Result, AccessErrorType
 from exactly_lib.test_suite import execution
 from exactly_lib.test_suite.execution import SuitesExecutor
 from exactly_lib.test_suite.reporters import junit as sut
+from exactly_lib_test.test_case.test_resources import error_info
 from exactly_lib_test.test_resources.str_std_out_files import StringStdOutFiles
 from exactly_lib_test.test_suite.reporters.test_resources import FULL_RESULT_HARD_ERROR, FULL_RESULT_VALIDATE, \
     FULL_RESULT_IMPLEMENTATION_ERROR, FULL_RESULT_XPASS, FULL_RESULT_XFAIL
@@ -66,9 +67,10 @@ class TestExecutionOfSuite(unittest.TestCase):
                     ])
                 ]
                 # ACT #
-                actual = execute_with_case_processing_with_constant_result(case_result,
-                                                                           Path(),
-                                                                           test_suites)
+                actual = execute_with_case_processing_with_constant_result(
+                    test_case_processing.new_executed(case_result),
+                    Path(),
+                    test_suites)
 
                 # ASSERT #
                 self.assertEquals(0, actual.exit_code)
@@ -98,9 +100,43 @@ class TestExecutionOfSuite(unittest.TestCase):
                     ])
                 ]
                 # ACT #
-                actual = execute_with_case_processing_with_constant_result(case_result,
-                                                                           Path(),
-                                                                           test_suites)
+                actual = execute_with_case_processing_with_constant_result(
+                    test_case_processing.new_executed(case_result),
+                    Path(),
+                    test_suites)
+
+                # ASSERT #
+                self.assertEquals(0, actual.exit_code)
+                self.assertEqual(expected_output, actual.stdout)
+
+    def test_suite_with_single_case_with_error_due_to_failure_to_execute(self):
+        cases = [
+            test_case_processing.new_internal_error(error_info.of_message('error message')),
+            test_case_processing.new_access_error(AccessErrorType.FILE_ACCESS_ERROR,
+                                                  error_info.of_message('error message')),
+        ]
+        for case_result in cases:
+            with self.subTest(case_result_status=case_result.status):
+                # ARRANGE #
+                expected_xml = ET.Element('testsuite', {
+                    'name': 'suite with error',
+                    'tests': '1',
+                    'errors': '1'
+                })
+                expected_xml.append(
+                    _failing_test_case('test case file name',
+                                       failure_message=error_message_for_error_info(case_result.error_info)))
+                expected_output = expected_output_from(expected_xml)
+                test_suites = [
+                    test_suite('suite with error', [], [
+                        test_case('test case file name')
+                    ])
+                ]
+                # ACT #
+                actual = execute_with_case_processing_with_constant_result(
+                    case_result,
+                    Path(),
+                    test_suites)
 
                 # ASSERT #
                 self.assertEquals(0, actual.exit_code)
@@ -129,9 +165,10 @@ class TestExecutionOfSuite(unittest.TestCase):
                     ])
                 ]
                 # ACT #
-                actual = execute_with_case_processing_with_constant_result(case_result,
-                                                                           Path(),
-                                                                           test_suites)
+                actual = execute_with_case_processing_with_constant_result(
+                    test_case_processing.new_executed(case_result),
+                    Path(),
+                    test_suites)
 
                 # ASSERT #
                 self.assertEquals(0, actual.exit_code)
@@ -153,23 +190,21 @@ class ExitCodeAndStdOut(tuple):
         return self[1]
 
 
-def suite_executor_for_case_processing_that_unconditionally(execution_result: result.FullResult,
+def suite_executor_for_case_processing_that_unconditionally(case_result: Result,
                                                             std_output_files: StringStdOutFiles,
                                                             root_file_path: Path) -> SuitesExecutor:
     factory = sut.JUnitRootSuiteReporterFactory()
     root_suite_reporter = factory.new_reporter(std_output_files.stdout_files, root_file_path)
-    case_result = test_case_processing.new_executed(execution_result)
     return execution.SuitesExecutor(root_suite_reporter, DUMMY_CASE_PROCESSING,
                                     lambda conf: TestCaseProcessorThatGivesConstant(case_result))
 
 
-def execute_with_case_processing_with_constant_result(test_case_execution_result: result.FullResult,
+def execute_with_case_processing_with_constant_result(case_result: Result,
                                                       root_file_path: Path,
                                                       test_suites: list) -> ExitCodeAndStdOut:
     std_output_files = StringStdOutFiles()
     factory = sut.JUnitRootSuiteReporterFactory()
     root_suite_reporter = factory.new_reporter(std_output_files.stdout_files, root_file_path)
-    case_result = test_case_processing.new_executed(test_case_execution_result)
     executor = execution.SuitesExecutor(root_suite_reporter, DUMMY_CASE_PROCESSING,
                                         lambda conf: TestCaseProcessorThatGivesConstant(case_result))
     exit_code = executor.execute_and_report(test_suites)
