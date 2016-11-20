@@ -43,8 +43,8 @@ def full_result_with_failure_info(status: result.FullResultStatus,
                                   failure_phase_step=phase_step.ASSERT__MAIN) -> result.FullResult:
     return result.FullResult(status,
                              DUMMY_SDS,
-                             result.FailureInfo(failure_phase_step,
-                                                new_failure_details_from_message('failure message')))
+                             result.PhaseFailureInfo(failure_phase_step,
+                                                     new_failure_details_from_message('failure message')))
 
 
 def full_result_without_failure_info(status: result.FullResultStatus) -> result.FullResult:

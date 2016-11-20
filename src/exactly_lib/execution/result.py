@@ -58,7 +58,7 @@ class FailureInfoVisitor:
         elif isinstance(failure_info, PhaseFailureInfo):
             return self._visit_phase_failure(failure_info)
         else:
-            raise ValueError('Unknown FailureInfo: {}'.format(type(failure_info)))
+            raise TypeError('Unknown FailureInfo: {}'.format(type(failure_info)))
 
     def _visit_instruction_failure(self,
                                    failure_info: InstructionFailureInfo):

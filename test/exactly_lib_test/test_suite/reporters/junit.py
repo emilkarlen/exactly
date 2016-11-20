@@ -4,13 +4,18 @@ import unittest
 from pathlib import Path
 from xml.etree import ElementTree as ET
 
+from exactly_lib.execution import exit_values as case_ev
 from exactly_lib.execution import result
+from exactly_lib.execution.result_reporting import error_message_for_full_result
 from exactly_lib.processing import test_case_processing
 from exactly_lib.test_suite import execution
+from exactly_lib.test_suite import exit_values as suite_ev
 from exactly_lib.test_suite.execution import SuitesExecutor
 from exactly_lib.test_suite.reporters import junit as sut
 from exactly_lib_test.test_resources.str_std_out_files import StringStdOutFiles
-from exactly_lib_test.test_suite.test_resources.execution_utils import FULL_RESULT_PASS, test_suite
+from exactly_lib_test.test_suite.reporters.test_resources import FULL_RESULT_HARD_ERROR, FULL_RESULT_VALIDATE, \
+    FULL_RESULT_IMPLEMENTATION_ERROR
+from exactly_lib_test.test_suite.test_resources.execution_utils import FULL_RESULT_PASS, test_suite, test_case
 from exactly_lib_test.test_suite.test_resources.execution_utils import TestCaseProcessorThatGivesConstant, \
     DUMMY_CASE_PROCESSING
 
@@ -39,6 +44,39 @@ class TestExecutionOfSuite(unittest.TestCase):
         # ASSERT #
         self.assertEquals(0, actual.exit_code)
         self.assertEqual(expected_output, actual.stdout)
+
+    def test_suite_with_single_case_with_error(self):
+        cases = [
+            (FULL_RESULT_HARD_ERROR, case_ev.EXECUTION__HARD_ERROR, suite_ev.FAILED_TESTS),
+            (FULL_RESULT_VALIDATE, case_ev.EXECUTION__VALIDATE, suite_ev.FAILED_TESTS),
+            (FULL_RESULT_IMPLEMENTATION_ERROR, case_ev.EXECUTION__IMPLEMENTATION_ERROR, suite_ev.FAILED_TESTS),
+        ]
+        for case_result, expected_case_exit_value, expected_suite_exit_value in cases:
+            with self.subTest(case_result_status=case_result.status,
+                              expected_case_exit_value=expected_case_exit_value,
+                              expected_suite_exit_value=expected_suite_exit_value):
+                # ARRANGE #
+                expected_xml = ET.Element('testsuite', {
+                    'name': 'suite with error',
+                    'tests': '1',
+                    'errors': '1'
+                })
+                expected_xml.append(
+                    _failing_test_case('test case file name',
+                                       failure_message=error_message_for_full_result(case_result)))
+                expected_output = expected_output_from(expected_xml)
+                test_suites = [
+                    test_suite('suite with error', [], [
+                        test_case('test case file name')
+                    ])
+                ]
+                # ACT #
+                actual = execute_with_case_processing_with_constant_result(case_result,
+                                                                           Path(),
+                                                                           test_suites)
+
+                self.assertEquals(0, actual.exit_code)
+                self.assertEqual(expected_output, actual.stdout)
 
 
 class ExitCodeAndStdOut(tuple):
@@ -88,3 +126,12 @@ def expected_output_from(root: ET.Element) -> str:
                xml_declaration=True,
                short_empty_elements=True)
     return stream.getvalue() + os.linesep
+
+
+def _failing_test_case(name: str, failure_message: str) -> ET.Element:
+    ret_val = ET.Element('testcase', {
+        'name': name,
+    })
+    failure = ET.SubElement(ret_val, 'failure')
+    failure.text = failure_message
+    return ret_val
