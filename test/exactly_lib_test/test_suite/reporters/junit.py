@@ -74,6 +74,7 @@ class TestExecutionOfSuite(unittest.TestCase):
                                                                            Path(),
                                                                            test_suites)
 
+                # ASSERT #
                 self.assertEquals(0, actual.exit_code)
                 self.assertEqual(expected_output, actual.stdout)
 
@@ -107,6 +108,7 @@ class TestExecutionOfSuite(unittest.TestCase):
                                                                            Path(),
                                                                            test_suites)
 
+                # ASSERT #
                 self.assertEquals(0, actual.exit_code)
                 self.assertEqual(expected_output, actual.stdout)
 
@@ -139,6 +141,7 @@ class TestExecutionOfSuite(unittest.TestCase):
                                                                            Path(),
                                                                            test_suites)
 
+                # ASSERT #
                 self.assertEquals(0, actual.exit_code)
                 self.assertEqual(expected_output, actual.stdout)
 
