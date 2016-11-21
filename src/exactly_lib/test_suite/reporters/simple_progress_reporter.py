@@ -49,6 +49,7 @@ class SimpleProgressSubSuiteProgressReporter(reporting.SubSuiteProgressReporter)
 
 class SimpleProgressRootSuiteReporterFactory(reporting.RootSuiteReporterFactory):
     def new_reporter(self,
+                     root_suite: structure.TestSuite,
                      std_output_files: StdOutputFiles,
                      root_suite_file: pathlib.Path) -> reporting.RootSuiteReporter:
         root_suite_dir_abs_path = root_suite_file.resolve().parent

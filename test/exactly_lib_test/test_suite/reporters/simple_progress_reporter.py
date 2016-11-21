@@ -7,6 +7,7 @@ from exactly_lib.execution import result
 from exactly_lib.processing import test_case_processing
 from exactly_lib.test_suite import execution
 from exactly_lib.test_suite import exit_values as suite_ev
+from exactly_lib.test_suite import structure
 from exactly_lib.test_suite.execution import SuitesExecutor
 from exactly_lib.test_suite.reporters import simple_progress_reporter as sut
 from exactly_lib.util.string import lines_content
@@ -37,26 +38,6 @@ def _case(file_name: str, exit_value: case_ev.ExitValue) -> str:
 
 
 class TestExecutionOfSuite(unittest.TestCase):
-    def test_no_suites_SHOULD_exit_with_success_and_print_single_line_with_ok_identifier(self):
-        # ARRANGE #
-        expected_exit_value = suite_ev.ALL_PASS
-        expected_output = lines_content([
-            expected_exit_value.exit_identifier,
-        ])
-        test_suites = []
-        std_output_files = StringStdOutFiles()
-        executor = _suite_executor_for_case_processing_that_unconditionally(FULL_RESULT_PASS,
-                                                                            std_output_files,
-                                                                            Path())
-        # ACT #
-        exit_code = executor.execute_and_report(test_suites)
-        # ASSERT #
-        std_output_files.finish()
-
-        self.assertEquals(expected_exit_value.exit_code, exit_code)
-        self.assertEqual(expected_output,
-                         std_output_files.stdout_contents)
-
     def test_single_empty_suite(self):
         # ARRANGE #
         expected_exit_value = suite_ev.ALL_PASS
@@ -65,11 +46,11 @@ class TestExecutionOfSuite(unittest.TestCase):
             _suite_end('root file name'),
             expected_exit_value.exit_identifier,
         ])
-        test_suites = [
-            test_suite('root file name', [], [])
-        ]
+        root_suite = test_suite('root file name', [], [])
+        test_suites = [root_suite]
         std_output_files = StringStdOutFiles()
         executor = _suite_executor_for_case_processing_that_unconditionally(FULL_RESULT_PASS,
+                                                                            root_suite,
                                                                             std_output_files,
                                                                             Path())
         # ACT #
@@ -100,13 +81,11 @@ class TestExecutionOfSuite(unittest.TestCase):
                     _suite_end('root file name'),
                     expected_suite_exit_value.exit_identifier,
                 ])
-                test_suites = [
-                    test_suite('root file name', [], [
-                        test_case('test case file')
-                    ])
-                ]
+                root_suite = test_suite('root file name', [], [test_case('test case file')])
+                test_suites = [root_suite]
                 std_output_files = StringStdOutFiles()
                 executor = _suite_executor_for_case_processing_that_unconditionally(case_result,
+                                                                                    root_suite,
                                                                                     std_output_files,
                                                                                     Path())
                 # ACT #
@@ -165,10 +144,11 @@ class TestFinalResultFormatting(unittest.TestCase):
 
 
 def _suite_executor_for_case_processing_that_unconditionally(execution_result: result.FullResult,
+                                                             root_suite: structure.TestSuite,
                                                              std_output_files: StringStdOutFiles,
                                                              root_file_path: Path) -> SuitesExecutor:
     factory = sut.SimpleProgressRootSuiteReporterFactory()
-    root_suite_reporter = factory.new_reporter(std_output_files.stdout_files, root_file_path)
+    root_suite_reporter = factory.new_reporter(root_suite, std_output_files.stdout_files, root_file_path)
     case_result = test_case_processing.new_executed(execution_result)
     return execution.SuitesExecutor(root_suite_reporter, DUMMY_CASE_PROCESSING,
                                     lambda conf: TestCaseProcessorThatGivesConstant(case_result))

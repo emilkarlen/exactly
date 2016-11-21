@@ -8,6 +8,7 @@ from exactly_lib.execution.result_reporting import error_message_for_full_result
 from exactly_lib.processing import test_case_processing as tcp
 from exactly_lib.processing.test_case_processing import Result, AccessErrorType
 from exactly_lib.test_suite import execution
+from exactly_lib.test_suite import structure
 from exactly_lib.test_suite.reporters import junit as sut
 from exactly_lib_test.test_case.test_resources import error_info
 from exactly_lib_test.test_resources.str_std_out_files import StringStdOutFiles
@@ -23,6 +24,7 @@ def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestExecutionOfSingleSuiteWithSingleTestCase),
         unittest.makeSuite(TestExecutionOfSingleSuiteWithMultipleTestCases),
+        unittest.makeSuite(TestExecutionOfSuiteWithSubSuites),
     ])
 
 
@@ -34,11 +36,11 @@ class TestExecutionOfSingleSuiteWithSingleTestCase(unittest.TestCase):
             'tests': '0'
         })
         expected_output = expected_output_from(expected_xml)
-        test_suites = [
-            test_suite('root file name', [], [])
-        ]
+        root_suite = test_suite('root file name', [], [])
+        test_suites = [root_suite]
         # ACT #
         actual = execute_with_case_processing_with_constant_result(FULL_RESULT_PASS,
+                                                                   root_suite,
                                                                    Path(),
                                                                    test_suites)
         # ASSERT #
@@ -57,17 +59,15 @@ class TestExecutionOfSingleSuiteWithSingleTestCase(unittest.TestCase):
                 expected_xml = _suite_xml(attributes={
                     'name': 'suite that passes',
                     'tests': '1'},
-                    sub_elements=[_successful_test_case('test case file name')]
+                    test_case_elements=[_successful_test_case('test case file name')]
                 )
                 expected_output = expected_output_from(expected_xml)
-                test_suites = [
-                    test_suite('suite that passes', [], [
-                        test_case('test case file name')
-                    ])
-                ]
+                root_suite = test_suite('suite that passes', [], [test_case('test case file name')])
+                test_suites = [root_suite]
                 # ACT #
                 actual = execute_with_case_processing_with_constant_result(
                     tcp.new_executed(case_result),
+                    root_suite,
                     Path(),
                     test_suites)
 
@@ -93,14 +93,12 @@ class TestExecutionOfSingleSuiteWithSingleTestCase(unittest.TestCase):
                     _failing_test_case('test case file name',
                                        failure_message=error_message_for_full_result(case_result)))
                 expected_output = expected_output_from(expected_xml)
-                test_suites = [
-                    test_suite('suite with error', [], [
-                        test_case('test case file name')
-                    ])
-                ]
+                root_suite = test_suite('suite with error', [], [test_case('test case file name')])
+                test_suites = [root_suite]
                 # ACT #
                 actual = execute_with_case_processing_with_constant_result(
                     tcp.new_executed(case_result),
+                    root_suite,
                     Path(),
                     test_suites)
 
@@ -126,14 +124,12 @@ class TestExecutionOfSingleSuiteWithSingleTestCase(unittest.TestCase):
                     _failing_test_case('test case file name',
                                        failure_message=error_message_for_error_info(case_result.error_info)))
                 expected_output = expected_output_from(expected_xml)
-                test_suites = [
-                    test_suite('suite with error', [], [
-                        test_case('test case file name')
-                    ])
-                ]
+                root_suite = test_suite('suite with error', [], [test_case('test case file name')])
+                test_suites = [root_suite]
                 # ACT #
                 actual = execute_with_case_processing_with_constant_result(
                     case_result,
+                    root_suite,
                     Path(),
                     test_suites)
 
@@ -158,14 +154,12 @@ class TestExecutionOfSingleSuiteWithSingleTestCase(unittest.TestCase):
                     _failing_test_case('test case file name',
                                        failure_message=error_message_for_full_result(case_result)))
                 expected_output = expected_output_from(expected_xml)
-                test_suites = [
-                    test_suite('suite with failure', [], [
-                        test_case('test case file name')
-                    ])
-                ]
+                root_suite = test_suite('suite with failure', [], [test_case('test case file name')])
+                test_suites = [root_suite]
                 # ACT #
                 actual = execute_with_case_processing_with_constant_result(
                     tcp.new_executed(case_result),
+                    root_suite,
                     Path(),
                     test_suites)
                 # ASSERT #
@@ -174,17 +168,17 @@ class TestExecutionOfSingleSuiteWithSingleTestCase(unittest.TestCase):
 
 
 class TestExecutionOfSingleSuiteWithMultipleTestCases(unittest.TestCase):
-    def test_single_suite_with_test_cases_with_different_results(self):
+    def test_single_sub_suite_with_test_cases_with_different_results(self):
         # ARRANGE #
         tc_pass = test_case('successful case')
         tc_fail = test_case('failing case')
         tc_error = test_case('erroneous case')
-        suite = test_suite('suite file name', [], [
+        root_suite = test_suite('suite file name', [], [
             tc_pass,
             tc_fail,
             tc_error,
         ])
-        suites = [suite]
+        suites = [root_suite]
         test_case_processor = TestCaseProcessorThatGivesConstantPerCase({
             id(tc_pass): tcp.new_executed(FULL_RESULT_PASS),
             id(tc_fail): tcp.new_executed(FULL_RESULT_FAIL),
@@ -192,6 +186,7 @@ class TestExecutionOfSingleSuiteWithMultipleTestCases(unittest.TestCase):
         })
         # ACT #
         actual = execute_with_case_processing_with_constant_processor(test_case_processor,
+                                                                      root_suite,
                                                                       Path(),
                                                                       suites)
         # ASSERT #
@@ -200,12 +195,68 @@ class TestExecutionOfSingleSuiteWithMultipleTestCases(unittest.TestCase):
             'tests': '3',
             'failures': '1',
             'errors': '1'},
-            sub_elements=[
+            test_case_elements=[
                 _successful_test_case('successful case'),
                 _failing_test_case('failing case', error_message_for_full_result(FULL_RESULT_FAIL)),
                 _failing_test_case('erroneous case', error_message_for_full_result(FULL_RESULT_HARD_ERROR)),
             ]
         )
+        expected_output = expected_output_from(expected_xml)
+        self.assertEquals(0, actual.exit_code)
+        self.assertEqual(expected_output, actual.stdout)
+
+
+class TestExecutionOfSuiteWithSubSuites(unittest.TestCase):
+    def test_suite_with_sub_suites_with_successful_and_non_successful_cases(self):
+        # ARRANGE #
+        tc_pass = test_case('successful case')
+        tc_fail = test_case('failing case')
+        tc_error = test_case('erroneous case')
+        suite_with_single_successful_case = test_suite('suite with single successful case', [], [tc_pass])
+        suite_with_failing_and_erroneous_case = test_suite('suite with failing and erroneous case', [], [
+            tc_fail, tc_error
+        ])
+        root_suite = test_suite('root suite file name', [
+            suite_with_single_successful_case,
+            suite_with_failing_and_erroneous_case,
+        ], [])
+        suites = [
+            root_suite,
+            suite_with_single_successful_case,
+            suite_with_failing_and_erroneous_case,
+        ]
+        test_case_processor = TestCaseProcessorThatGivesConstantPerCase({
+            id(tc_pass): tcp.new_executed(FULL_RESULT_PASS),
+            id(tc_fail): tcp.new_executed(FULL_RESULT_FAIL),
+            id(tc_error): tcp.new_executed(FULL_RESULT_HARD_ERROR),
+        })
+        # ACT #
+        actual = execute_with_case_processing_with_constant_processor(test_case_processor,
+                                                                      root_suite,
+                                                                      Path(),
+                                                                      suites)
+        # ASSERT #
+        expected_xml = _suites_xml([
+            _suite_xml(attributes={
+                'name': 'suite with single successful case',
+                'package': 'root suite file name',
+                'id': '1',
+                'tests': '1'},
+                test_case_elements=[_successful_test_case('successful case')]
+            ),
+            _suite_xml(attributes={
+                'name': 'suite with failing and erroneous case',
+                'package': 'root suite file name',
+                'id': '2',
+                'tests': '2',
+                'failures': '1',
+                'errors': '1'},
+                test_case_elements=[
+                    _failing_test_case('failing case', error_message_for_full_result(FULL_RESULT_FAIL)),
+                    _failing_test_case('erroneous case', error_message_for_full_result(FULL_RESULT_HARD_ERROR)),
+                ]
+            ),
+        ])
         expected_output = expected_output_from(expected_xml)
         self.assertEquals(0, actual.exit_code)
         self.assertEqual(expected_output, actual.stdout)
@@ -227,19 +278,22 @@ class ExitCodeAndStdOut(tuple):
 
 
 def execute_with_case_processing_with_constant_result(case_result: Result,
+                                                      root_suite: structure.TestSuite,
                                                       root_file_path: Path,
                                                       test_suites: list) -> ExitCodeAndStdOut:
     return execute_with_case_processing_with_constant_processor(TestCaseProcessorThatGivesConstant(case_result),
+                                                                root_suite,
                                                                 root_file_path,
                                                                 test_suites)
 
 
 def execute_with_case_processing_with_constant_processor(processor: tcp.Processor,
+                                                         root_suite: structure.TestSuite,
                                                          root_file_path: Path,
                                                          test_suites: list) -> ExitCodeAndStdOut:
     std_output_files = StringStdOutFiles()
     factory = sut.JUnitRootSuiteReporterFactory()
-    root_suite_reporter = factory.new_reporter(std_output_files.stdout_files, root_file_path)
+    root_suite_reporter = factory.new_reporter(root_suite, std_output_files.stdout_files, root_file_path)
     executor = execution.SuitesExecutor(root_suite_reporter,
                                         DUMMY_CASE_PROCESSING,
                                         lambda conf: processor)
@@ -258,9 +312,15 @@ def expected_output_from(root: ET.Element) -> str:
     return stream.getvalue() + os.linesep
 
 
-def _suite_xml(attributes: dict, sub_elements: list) -> ET.Element:
+def _suites_xml(test_suite_elements: list) -> ET.Element:
+    ret_val = ET.Element('testsuites')
+    ret_val.extend(test_suite_elements)
+    return ret_val
+
+
+def _suite_xml(attributes: dict, test_case_elements: list) -> ET.Element:
     ret_val = ET.Element('testsuite', attributes)
-    ret_val.extend(sub_elements)
+    ret_val.extend(test_case_elements)
     return ret_val
 
 

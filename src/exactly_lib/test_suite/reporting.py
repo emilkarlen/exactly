@@ -86,6 +86,7 @@ class RootSuiteReporter:
 
 class RootSuiteReporterFactory:
     def new_reporter(self,
+                     root_suite: structure.TestSuite,
                      std_output_files: StdOutputFiles,
                      root_suite_file: pathlib.Path) -> RootSuiteReporter:
         raise NotImplementedError()

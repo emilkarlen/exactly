@@ -13,6 +13,7 @@ class ExecutionTracingReporterFactory(reporting.RootSuiteReporterFactory):
         self.complete_suite_reporter = ExecutionTracingRootSuiteReporter()
 
     def new_reporter(self,
+                     root_suite: structure.TestSuite,
                      std_output_files: std.StdOutputFiles,
                      root_suite_file: pathlib.Path) -> reporting.RootSuiteReporter:
         return self.complete_suite_reporter
