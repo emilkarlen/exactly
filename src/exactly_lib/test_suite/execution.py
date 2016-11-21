@@ -60,7 +60,8 @@ class Executor:
             return exit_value.exit_code
 
         suits_in_processing_order = self._suite_enumerator.apply(root_suite)
-        executor = SuitesExecutor(self._reporter_factory.new_reporter(self._std,
+        executor = SuitesExecutor(self._reporter_factory.new_reporter(root_suite,
+                                                                      self._std,
                                                                       self._suite_root_file_path),
                                   self._default_case_configuration,
                                   self._test_case_processor_constructor)
