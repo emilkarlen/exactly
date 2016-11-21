@@ -18,7 +18,7 @@ from exactly_lib_test.test_case.test_resources import error_info
 from exactly_lib_test.test_resources.str_std_out_files import StringStdOutFiles
 from exactly_lib_test.test_suite.test_resources.execution_utils import \
     TestCaseProcessorThatGivesConstant, DUMMY_CASE_PROCESSING, \
-    FULL_RESULT_PASS, test_suite
+    FULL_RESULT_PASS, test_suite, TestCaseProcessorThatGivesConstantPerCase
 from exactly_lib_test.test_suite.test_resources.suite_reporting import ExecutionTracingReporterFactory, \
     ExecutionTracingRootSuiteReporter, EventType, ExecutionTracingSubSuiteProgressReporter
 
@@ -292,25 +292,6 @@ def check_exit_code_and_empty_stdout(put: unittest.TestCase,
 class TestCaseProcessorThatRaisesUnconditionally(tcp.Processor):
     def apply(self, test_case: TestCaseSetup) -> tcp.Result:
         raise NotImplementedError('Unconditional expected exception from test implementation')
-
-
-class TestCaseProcessorThatGivesConstantPerCase(tcp.Processor):
-    """
-    Processor that associates object ID:s of TestCaseSetup:s (Pythons internal id of objects, given
-    by the id() method), with a processing result.
-
-    Only TestCaseSetup:s that are included in this association (dict) can be executed.
-    """
-
-    def __init__(self,
-                 test_case_id_2_result: dict):
-        """
-        :param test_case_id_2_result: int -> tcp.TestCaseProcessingResult
-        """
-        self.test_case_id_2_result = test_case_id_2_result
-
-    def apply(self, test_case: TestCaseSetup) -> tcp.Result:
-        return self.test_case_id_2_result[id(test_case)]
 
 
 class ReaderThatRaisesParseError(SuiteHierarchyReader):
