@@ -22,12 +22,12 @@ from exactly_lib_test.test_suite.test_resources.execution_utils import TestCaseP
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        unittest.makeSuite(TestExecutionOfSuite),
+        unittest.makeSuite(TestExecutionOfSingleSuiteWithoutSubSuites),
     ])
 
 
-class TestExecutionOfSuite(unittest.TestCase):
-    def test_single_empty_suite(self):
+class TestExecutionOfSingleSuiteWithoutSubSuites(unittest.TestCase):
+    def test_empty_suite(self):
         # ARRANGE #
         expected_xml = ET.Element('testsuite', {
             'name': 'root file name',
@@ -45,7 +45,7 @@ class TestExecutionOfSuite(unittest.TestCase):
         self.assertEquals(0, actual.exit_code)
         self.assertEqual(expected_output, actual.stdout)
 
-    def test_suite_with_single_case_that_passes(self):
+    def test_single_case_that_passes(self):
         cases = [
             FULL_RESULT_PASS,
             FULL_RESULT_XFAIL,
@@ -76,7 +76,7 @@ class TestExecutionOfSuite(unittest.TestCase):
                 self.assertEquals(0, actual.exit_code)
                 self.assertEqual(expected_output, actual.stdout)
 
-    def test_suite_with_single_case_with_error(self):
+    def test_single_case_with_error(self):
         cases = [
             FULL_RESULT_HARD_ERROR,
             FULL_RESULT_VALIDATE,
@@ -109,7 +109,7 @@ class TestExecutionOfSuite(unittest.TestCase):
                 self.assertEquals(0, actual.exit_code)
                 self.assertEqual(expected_output, actual.stdout)
 
-    def test_suite_with_single_case_with_error_due_to_failure_to_execute(self):
+    def test_single_case_with_error_due_to_failure_to_execute(self):
         cases = [
             test_case_processing.new_internal_error(error_info.of_message('error message')),
             test_case_processing.new_access_error(AccessErrorType.FILE_ACCESS_ERROR,
@@ -142,7 +142,7 @@ class TestExecutionOfSuite(unittest.TestCase):
                 self.assertEquals(0, actual.exit_code)
                 self.assertEqual(expected_output, actual.stdout)
 
-    def test_suite_with_single_case_with_failure(self):
+    def test_single_case_with_failure(self):
         cases = [
             FULL_RESULT_FAIL,
             FULL_RESULT_XPASS,
