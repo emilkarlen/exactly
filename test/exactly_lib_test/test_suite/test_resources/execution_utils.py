@@ -3,7 +3,7 @@ import pathlib
 from exactly_lib.execution import result
 from exactly_lib.execution.phase_step_identifiers import phase_step
 from exactly_lib.processing import processors as case_processing
-from exactly_lib.processing import test_case_processing
+from exactly_lib.processing import test_case_processing as tcp
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.processing.instruction_setup import InstructionsSetup
 from exactly_lib.processing.preprocessor import IDENTITY_PREPROCESSOR
@@ -21,13 +21,32 @@ def test_case_handling_setup_with_identity_preprocessor() -> TestCaseHandlingSet
                                  IDENTITY_PREPROCESSOR)
 
 
-class TestCaseProcessorThatGivesConstant(test_case_processing.Processor):
+class TestCaseProcessorThatGivesConstant(tcp.Processor):
     def __init__(self,
-                 result: test_case_processing.Result):
+                 result: tcp.Result):
         self.result = result
 
-    def apply(self, test_case: test_case_processing.TestCaseSetup) -> test_case_processing.Result:
+    def apply(self, test_case: tcp.TestCaseSetup) -> tcp.Result:
         return self.result
+
+
+class TestCaseProcessorThatGivesConstantPerCase(tcp.Processor):
+    """
+    Processor that associates object ID:s of TestCaseSetup:s (Pythons internal id of objects, given
+    by the id() method), with a processing result.
+
+    Only TestCaseSetup:s that are included in this association (dict) can be executed.
+    """
+
+    def __init__(self,
+                 test_case_id_2_result: dict):
+        """
+        :param test_case_id_2_result: int -> tcp.TestCaseProcessingResult
+        """
+        self.test_case_id_2_result = test_case_id_2_result
+
+    def apply(self, test_case: TestCaseSetup) -> tcp.Result:
+        return self.test_case_id_2_result[id(test_case)]
 
 
 DUMMY_CASE_PROCESSING = case_processing.Configuration(
