@@ -24,7 +24,7 @@ def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestExecutionOfSingleSuiteWithSingleTestCase),
         unittest.makeSuite(TestExecutionOfSingleSuiteWithMultipleTestCases),
-        unittest.makeSuite(TestExecutionOfSuiteWithSubSuites),
+        unittest.makeSuite(TestExecutionOfSuiteWithoutTestCasesButWithSubSuites),
     ])
 
 
@@ -206,7 +206,38 @@ class TestExecutionOfSingleSuiteWithMultipleTestCases(unittest.TestCase):
         self.assertEqual(expected_output, actual.stdout)
 
 
-class TestExecutionOfSuiteWithSubSuites(unittest.TestCase):
+class TestExecutionOfSuiteWithoutTestCasesButWithSubSuites(unittest.TestCase):
+    def test_suite_with_only_single_sub_suite_SHOULD_not_include_root_suite_as_test_suite(self):
+        # ARRANGE #
+        suite_with_single_case = test_suite('suite with single case', [], [
+            test_case('the test case')
+        ])
+        root_suite = test_suite('root suite file name', [
+            suite_with_single_case,
+        ], [])
+        suites = [
+            root_suite,
+            suite_with_single_case,
+        ]
+        # ACT #
+        actual = execute_with_case_processing_with_constant_result(tcp.new_executed(FULL_RESULT_PASS),
+                                                                   root_suite,
+                                                                   Path(),
+                                                                   suites)
+        # ASSERT #
+        expected_xml = _suites_xml([
+            _suite_xml(attributes={
+                'name': 'suite with single case',
+                'package': 'root suite file name',
+                'id': '1',
+                'tests': '1'},
+                test_case_elements=[_successful_test_case('the test case')]
+            ),
+        ])
+        expected_output = expected_output_from(expected_xml)
+        self.assertEquals(0, actual.exit_code)
+        self.assertEqual(expected_output, actual.stdout)
+
     def test_suite_with_sub_suites_with_successful_and_non_successful_cases(self):
         # ARRANGE #
         tc_pass = test_case('successful case')
