@@ -77,7 +77,7 @@ class JUnitRootSuiteReporter(reporting.RootSuiteReporter):
 
 def _xml_for_suites(root_suite: structure.TestSuite, suite_reporters: list) -> ET.Element:
     def is_root_suite_and_should_skip_root_suite(reporter: reporting.SubSuiteReporter) -> bool:
-        return reporter.suite is root_suite
+        return reporter.suite is root_suite and (not root_suite.test_cases)
 
     root = ET.Element('testsuites')
     next_suite_id = 1
