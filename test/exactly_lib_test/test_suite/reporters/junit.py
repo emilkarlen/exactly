@@ -25,6 +25,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestExecutionOfSingleSuiteWithSingleTestCase),
         unittest.makeSuite(TestExecutionOfSingleSuiteWithMultipleTestCases),
         unittest.makeSuite(TestExecutionOfSuiteWithoutTestCasesButWithSubSuites),
+        unittest.makeSuite(TestExecutionOfRootSuiteWithBothTestCasesAndSubSuites),
     ])
 
 
@@ -286,6 +287,46 @@ class TestExecutionOfSuiteWithoutTestCasesButWithSubSuites(unittest.TestCase):
                     _failing_test_case('failing case', error_message_for_full_result(FULL_RESULT_FAIL)),
                     _failing_test_case('erroneous case', error_message_for_full_result(FULL_RESULT_HARD_ERROR)),
                 ]
+            ),
+        ])
+        expected_output = expected_output_from(expected_xml)
+        self.assertEquals(0, actual.exit_code)
+        self.assertEqual(expected_output, actual.stdout)
+
+
+class TestExecutionOfRootSuiteWithBothTestCasesAndSubSuites(unittest.TestCase):
+    def test_suite_with_only_single_sub_suite_SHOULD_not_include_root_suite_as_test_suite(self):
+        # ARRANGE #
+        suite_with_single_case = test_suite('suite with single case', [], [
+            test_case('test case in sub suite'),
+        ])
+        root_suite = test_suite('root suite file name',
+                                [suite_with_single_case],
+                                [test_case('test case in root suite')])
+        suites = [
+            root_suite,
+            suite_with_single_case,
+        ]
+        # ACT #
+        actual = execute_with_case_processing_with_constant_result(tcp.new_executed(FULL_RESULT_PASS),
+                                                                   root_suite,
+                                                                   Path(),
+                                                                   suites)
+        # ASSERT #
+        expected_xml = _suites_xml([
+            _suite_xml(attributes={
+                'name': 'root suite file name',
+                'package': 'root suite file name',
+                'id': '1',
+                'tests': '1'},
+                test_case_elements=[_successful_test_case('test case in root suite')]
+            ),
+            _suite_xml(attributes={
+                'name': 'suite with single case',
+                'package': 'root suite file name',
+                'id': '2',
+                'tests': '1'},
+                test_case_elements=[_successful_test_case('test case in sub suite')]
             ),
         ])
         expected_output = expected_output_from(expected_xml)
