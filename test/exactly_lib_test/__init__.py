@@ -30,17 +30,19 @@ def suite_that_does_not_require_main_program_runner() -> unittest.TestSuite:
     ret_val.addTest(test_case.suite())
     ret_val.addTest(execution.suite())
     ret_val.addTest(processing.suite())
-    ret_val.addTest(cli.suite())
     ret_val.addTest(test_suite.suite())
     ret_val.addTest(instructions.suite())
     ret_val.addTest(act_phase_setups.suite())
     ret_val.addTest(help.suite())
     ret_val.addTest(default.suite_that_does_not_require_main_program_runner())
+    ret_val.addTest(cli.suite_that_does_not_require_main_program_runner())
     return ret_val
 
 
 def suite_that_does_require_main_program_runner(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
-    return default.suite_that_does_require_main_program_runner(main_program_runner)
+    ret_val = default.suite_that_does_require_main_program_runner(main_program_runner)
+    ret_val.addTests(cli.suite_that_does_require_main_program_runner(main_program_runner))
+    return ret_val
 
 
 if __name__ == '__main__':
