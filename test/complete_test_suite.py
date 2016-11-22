@@ -5,10 +5,7 @@ from exactly_lib_test.test_resources.main_program.main_program_runner import Mai
 
 
 def suite_for(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
-    suite = unittest.TestSuite()
-    suite.addTest(exactly_lib_test.suite())
-    suite.addTest(exactly_lib_test.default.program_modes.suite_for(main_program_runner))
-    return suite
+    return exactly_lib_test.complete_suite_for(main_program_runner)
 
 
 def run_suite_for(main_program_runner: MainProgramRunner):
