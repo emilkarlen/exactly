@@ -57,10 +57,10 @@ class TestExecutionOfSingleSuiteWithSingleTestCase(unittest.TestCase):
         for case_result in cases:
             with self.subTest(case_result_status=case_result.status):
                 # ARRANGE #
-                expected_xml = _suite_xml(attributes={
+                expected_xml = suite_xml(attributes={
                     'name': 'suite that passes',
                     'tests': '1'},
-                    test_case_elements=[_successful_test_case('test case file name')]
+                    test_case_elements=[successful_test_case_xml('test case file name')]
                 )
                 expected_output = expected_output_from(expected_xml)
                 root_suite = test_suite('suite that passes', [], [test_case('test case file name')])
@@ -91,8 +91,8 @@ class TestExecutionOfSingleSuiteWithSingleTestCase(unittest.TestCase):
                     'errors': '1'
                 })
                 expected_xml.append(
-                    _failing_test_case('test case file name',
-                                       failure_message=error_message_for_full_result(case_result)))
+                    failing_test_case_xml('test case file name',
+                                          failure_message=error_message_for_full_result(case_result)))
                 expected_output = expected_output_from(expected_xml)
                 root_suite = test_suite('suite with error', [], [test_case('test case file name')])
                 test_suites = [root_suite]
@@ -122,8 +122,8 @@ class TestExecutionOfSingleSuiteWithSingleTestCase(unittest.TestCase):
                     'errors': '1'
                 })
                 expected_xml.append(
-                    _failing_test_case('test case file name',
-                                       failure_message=error_message_for_error_info(case_result.error_info)))
+                    failing_test_case_xml('test case file name',
+                                          failure_message=error_message_for_error_info(case_result.error_info)))
                 expected_output = expected_output_from(expected_xml)
                 root_suite = test_suite('suite with error', [], [test_case('test case file name')])
                 test_suites = [root_suite]
@@ -152,8 +152,8 @@ class TestExecutionOfSingleSuiteWithSingleTestCase(unittest.TestCase):
                     'failures': '1'
                 })
                 expected_xml.append(
-                    _failing_test_case('test case file name',
-                                       failure_message=error_message_for_full_result(case_result)))
+                    failing_test_case_xml('test case file name',
+                                          failure_message=error_message_for_full_result(case_result)))
                 expected_output = expected_output_from(expected_xml)
                 root_suite = test_suite('suite with failure', [], [test_case('test case file name')])
                 test_suites = [root_suite]
@@ -191,15 +191,15 @@ class TestExecutionOfSingleSuiteWithMultipleTestCases(unittest.TestCase):
                                                                       Path(),
                                                                       suites)
         # ASSERT #
-        expected_xml = _suite_xml(attributes={
+        expected_xml = suite_xml(attributes={
             'name': 'suite file name',
             'tests': '3',
             'failures': '1',
             'errors': '1'},
             test_case_elements=[
-                _successful_test_case('successful case'),
-                _failing_test_case('failing case', error_message_for_full_result(FULL_RESULT_FAIL)),
-                _failing_test_case('erroneous case', error_message_for_full_result(FULL_RESULT_HARD_ERROR)),
+                successful_test_case_xml('successful case'),
+                failing_test_case_xml('failing case', error_message_for_full_result(FULL_RESULT_FAIL)),
+                failing_test_case_xml('erroneous case', error_message_for_full_result(FULL_RESULT_HARD_ERROR)),
             ]
         )
         expected_output = expected_output_from(expected_xml)
@@ -227,12 +227,12 @@ class TestExecutionOfSuiteWithoutTestCasesButWithSubSuites(unittest.TestCase):
                                                                    suites)
         # ASSERT #
         expected_xml = _suites_xml([
-            _suite_xml(attributes={
+            suite_xml(attributes={
                 'name': 'suite with single case',
                 'package': 'root suite file name',
                 'id': '1',
                 'tests': '1'},
-                test_case_elements=[_successful_test_case('the test case')]
+                test_case_elements=[successful_test_case_xml('the test case')]
             ),
         ])
         expected_output = expected_output_from(expected_xml)
@@ -269,14 +269,14 @@ class TestExecutionOfSuiteWithoutTestCasesButWithSubSuites(unittest.TestCase):
                                                                       suites)
         # ASSERT #
         expected_xml = _suites_xml([
-            _suite_xml(attributes={
+            suite_xml(attributes={
                 'name': 'suite with single successful case',
                 'package': 'root suite file name',
                 'id': '1',
                 'tests': '1'},
-                test_case_elements=[_successful_test_case('successful case')]
+                test_case_elements=[successful_test_case_xml('successful case')]
             ),
-            _suite_xml(attributes={
+            suite_xml(attributes={
                 'name': 'suite with failing and erroneous case',
                 'package': 'root suite file name',
                 'id': '2',
@@ -284,8 +284,8 @@ class TestExecutionOfSuiteWithoutTestCasesButWithSubSuites(unittest.TestCase):
                 'failures': '1',
                 'errors': '1'},
                 test_case_elements=[
-                    _failing_test_case('failing case', error_message_for_full_result(FULL_RESULT_FAIL)),
-                    _failing_test_case('erroneous case', error_message_for_full_result(FULL_RESULT_HARD_ERROR)),
+                    failing_test_case_xml('failing case', error_message_for_full_result(FULL_RESULT_FAIL)),
+                    failing_test_case_xml('erroneous case', error_message_for_full_result(FULL_RESULT_HARD_ERROR)),
                 ]
             ),
         ])
@@ -314,19 +314,19 @@ class TestExecutionOfRootSuiteWithBothTestCasesAndSubSuites(unittest.TestCase):
                                                                    suites)
         # ASSERT #
         expected_xml = _suites_xml([
-            _suite_xml(attributes={
+            suite_xml(attributes={
                 'name': 'root suite file name',
                 'package': 'root suite file name',
                 'id': '1',
                 'tests': '1'},
-                test_case_elements=[_successful_test_case('test case in root suite')]
+                test_case_elements=[successful_test_case_xml('test case in root suite')]
             ),
-            _suite_xml(attributes={
+            suite_xml(attributes={
                 'name': 'suite with single case',
                 'package': 'root suite file name',
                 'id': '2',
                 'tests': '1'},
-                test_case_elements=[_successful_test_case('test case in sub suite')]
+                test_case_elements=[successful_test_case_xml('test case in sub suite')]
             ),
         ])
         expected_output = expected_output_from(expected_xml)
@@ -390,19 +390,19 @@ def _suites_xml(test_suite_elements: list) -> ET.Element:
     return ret_val
 
 
-def _suite_xml(attributes: dict, test_case_elements: list) -> ET.Element:
+def suite_xml(attributes: dict, test_case_elements: list) -> ET.Element:
     ret_val = ET.Element('testsuite', attributes)
     ret_val.extend(test_case_elements)
     return ret_val
 
 
-def _successful_test_case(name: str) -> ET.Element:
+def successful_test_case_xml(name: str) -> ET.Element:
     return ET.Element('testcase', {
         'name': name,
     })
 
 
-def _failing_test_case(name: str, failure_message: str) -> ET.Element:
+def failing_test_case_xml(name: str, failure_message: str) -> ET.Element:
     ret_val = ET.Element('testcase', {
         'name': name,
     })
