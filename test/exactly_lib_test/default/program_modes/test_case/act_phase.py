@@ -17,9 +17,7 @@ from exactly_lib_test.test_resources.value_assertions.process_result_info_assert
 
 
 def suite_for(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(tests_for_setup_without_preprocessor(TESTS, main_program_runner))
-    return ret_val
+    return tests_for_setup_without_preprocessor(TESTS, main_program_runner)
 
 
 def suite() -> unittest.TestSuite:
