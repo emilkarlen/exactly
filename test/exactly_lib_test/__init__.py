@@ -12,9 +12,17 @@ from exactly_lib_test import test_case
 from exactly_lib_test import test_resources
 from exactly_lib_test import test_suite
 from exactly_lib_test import util
+from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
+from exactly_lib_test.test_resources.main_program.main_program_runners import RunViaOsInSubProcess
 
 
-def suite() -> unittest.TestSuite:
+def complete_suite_for(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
+    ret_val = suite_that_does_not_require_main_program_runner()
+    ret_val.addTests(suite_that_does_require_main_program_runner(main_program_runner))
+    return ret_val
+
+
+def suite_that_does_not_require_main_program_runner() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(test_resources.suite())
     ret_val.addTest(util.suite())
@@ -27,9 +35,13 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(instructions.suite())
     ret_val.addTest(act_phase_setups.suite())
     ret_val.addTest(help.suite())
-    ret_val.addTest(default.suite())
+    ret_val.addTest(default.suite_that_does_not_require_main_program_runner())
     return ret_val
 
 
+def suite_that_does_require_main_program_runner(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
+    return default.suite_that_does_require_main_program_runner(main_program_runner)
+
+
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(suite())
+    unittest.TextTestRunner().run(complete_suite_for(RunViaOsInSubProcess()))
