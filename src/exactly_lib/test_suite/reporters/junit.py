@@ -64,9 +64,9 @@ class JUnitRootSuiteReporter(reporting.RootSuiteReporter):
 
     def report_final_results(self) -> int:
         if len(self._sub_reporters) == 1:
-            xml = ET.ElementTree(_xml_for_suite(self._sub_reporters[0]))
+            xml = ET.ElementTree(self._xml_for_suite(self._sub_reporters[0]))
         else:
-            xml = ET.ElementTree(_xml_for_suites(self._root_suite, self._sub_reporters))
+            xml = ET.ElementTree(self._xml_for_suites(self._root_suite, self._sub_reporters))
         xml.write(self._std_output_files.out,
                   encoding='unicode',
                   xml_declaration=True,
@@ -74,57 +74,60 @@ class JUnitRootSuiteReporter(reporting.RootSuiteReporter):
         self._std_output_files.out.write(os.linesep)
         return 0
 
+    def _xml_for_suites(self, root_suite: structure.TestSuite, suite_reporters: list) -> ET.Element:
+        def is_root_suite_and_should_skip_root_suite(reporter: reporting.SubSuiteReporter) -> bool:
+            return reporter.suite is root_suite and (not root_suite.test_cases)
 
-def _xml_for_suites(root_suite: structure.TestSuite, suite_reporters: list) -> ET.Element:
-    def is_root_suite_and_should_skip_root_suite(reporter: reporting.SubSuiteReporter) -> bool:
-        return reporter.suite is root_suite and (not root_suite.test_cases)
+        root = ET.Element('testsuites')
+        next_suite_id = 1
+        for suite_reporter in suite_reporters:
+            if not is_root_suite_and_should_skip_root_suite(suite_reporter):
+                root.append(self._xml_for_suite(suite_reporter, {
+                    'id': str(next_suite_id),
+                    'package': str(root_suite.source_file),
+                }))
+                next_suite_id += 1
+        return root
 
-    root = ET.Element('testsuites')
-    next_suite_id = 1
-    for suite_reporter in suite_reporters:
-        if not is_root_suite_and_should_skip_root_suite(suite_reporter):
-            root.append(_xml_for_suite(suite_reporter, {
-                'id': str(next_suite_id),
-                'package': str(root_suite.source_file),
-            }))
-            next_suite_id += 1
-    return root
+    def _xml_for_suite(self, suite_reporter: reporting.SubSuiteReporter,
+                       additional_attributes: dict = None) -> ET.Element:
+        suite_reporter.result()
+        attributes = {
+            'name': self._file_path_pres(suite_reporter.suite.source_file),
+            'tests': str(len(suite_reporter.result()))
+        }
+        if additional_attributes:
+            attributes.update(additional_attributes)
+        root = ET.Element('testsuite', attributes)
+        num_errors = 0
+        num_failures = 0
+        for test_case_setup, result in suite_reporter.result():
+            root.append(self._xml_for_case(test_case_setup, result))
+            if result.status != Status.EXECUTED:
+                num_errors += 1
+            elif result.execution_result.status in FAIL_STATUSES:
+                num_failures += 1
+            elif result.execution_result.status in ERROR_STATUSES:
+                num_errors += 1
+        if num_failures > 0:
+            root.set('failures', str(num_failures))
+        if num_errors > 0:
+            root.set('errors', str(num_errors))
+        return root
 
+    def _xml_for_case(self, test_case_setup: TestCaseSetup, result: Result) -> ET.Element:
+        ret_val = ET.Element('testcase', {
+            'name': self._file_path_pres(test_case_setup.file_path)
+        })
+        if result.status != Status.EXECUTED or result.execution_result.status in NON_PASS_STATUSES:
+            ret_val.append(_xml_for_failure(result))
+        return ret_val
 
-def _xml_for_suite(suite_reporter: reporting.SubSuiteReporter,
-                   additional_attributes: dict = None) -> ET.Element:
-    suite_reporter.result()
-    attributes = {
-        'name': str(suite_reporter.suite.source_file),
-        'tests': str(len(suite_reporter.result()))
-    }
-    if additional_attributes:
-        attributes.update(additional_attributes)
-    root = ET.Element('testsuite', attributes)
-    num_errors = 0
-    num_failures = 0
-    for test_case_setup, result in suite_reporter.result():
-        root.append(_xml_for_case(test_case_setup, result))
-        if result.status != Status.EXECUTED:
-            num_errors += 1
-        elif result.execution_result.status in FAIL_STATUSES:
-            num_failures += 1
-        elif result.execution_result.status in ERROR_STATUSES:
-            num_errors += 1
-    if num_failures > 0:
-        root.set('failures', str(num_failures))
-    if num_errors > 0:
-        root.set('errors', str(num_errors))
-    return root
-
-
-def _xml_for_case(test_case_setup: TestCaseSetup, result: Result) -> ET.Element:
-    ret_val = ET.Element('testcase', {
-        'name': str(test_case_setup.file_path)
-    })
-    if result.status != Status.EXECUTED or result.execution_result.status in NON_PASS_STATUSES:
-        ret_val.append(_xml_for_failure(result))
-    return ret_val
+    def _file_path_pres(self, file: pathlib.Path):
+        try:
+            return str(file.relative_to(self._root_suite_dir_abs_path))
+        except ValueError:
+            return str(file)
 
 
 def _xml_for_failure(result: Result) -> ET.Element:

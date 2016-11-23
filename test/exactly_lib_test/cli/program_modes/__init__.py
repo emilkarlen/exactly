@@ -1,8 +1,8 @@
 import unittest
 
+from exactly_lib_test.cli.program_modes import help, test_case, test_suite
 from exactly_lib_test.default import run_via_main_program_internally_with_default_setup
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
-from . import help, test_case, test_suite
 
 
 def suite_that_does_not_require_main_program_runner() -> unittest.TestSuite:
