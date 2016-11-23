@@ -1,7 +1,6 @@
 import unittest
 
 from exactly_lib_test.cli.program_modes import help, test_case, test_suite
-from exactly_lib_test.default import run_via_main_program_internally_with_default_setup
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
 
 
@@ -23,4 +22,5 @@ def complete_suite_for(main_program_runner: MainProgramRunner) -> unittest.TestS
 
 
 if __name__ == '__main__':
+    from exactly_lib_test.default import run_via_main_program_internally_with_default_setup
     unittest.TextTestRunner().run(complete_suite_for(run_via_main_program_internally_with_default_setup()))

@@ -1,7 +1,6 @@
 import unittest
 
 from exactly_lib_test import act_phase_setups
-from exactly_lib_test import cli
 from exactly_lib_test import default
 from exactly_lib_test import execution
 from exactly_lib_test import help
@@ -12,7 +11,6 @@ from exactly_lib_test import test_case
 from exactly_lib_test import test_resources
 from exactly_lib_test import test_suite
 from exactly_lib_test import util
-from exactly_lib_test.default import run_via_main_program_internally_with_default_setup
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
 from exactly_lib_test.test_resources.main_program.main_program_runners import RunViaOsInSubProcess
 
@@ -24,6 +22,7 @@ def complete_suite_for(main_program_runner: MainProgramRunner) -> unittest.TestS
 
 
 def suite_that_does_not_require_main_program_runner() -> unittest.TestSuite:
+    from exactly_lib_test import cli
     ret_val = unittest.TestSuite()
     ret_val.addTest(test_resources.suite())
     ret_val.addTest(util.suite())
@@ -41,10 +40,12 @@ def suite_that_does_not_require_main_program_runner() -> unittest.TestSuite:
 
 
 def suite_that_does_require_main_program_runner(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
+    from exactly_lib_test import cli
     ret_val = default.suite_that_does_require_main_program_runner(main_program_runner)
     ret_val.addTests(cli.suite_that_does_require_main_program_runner(main_program_runner))
     return ret_val
 
 
 if __name__ == '__main__':
+    from exactly_lib_test.default import run_via_main_program_internally_with_default_setup
     unittest.TextTestRunner().run(complete_suite_for(run_via_main_program_internally_with_default_setup()))

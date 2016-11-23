@@ -119,7 +119,9 @@ class JUnitRootSuiteReporter(reporting.RootSuiteReporter):
         ret_val = ET.Element('testcase', {
             'name': self._file_path_pres(test_case_setup.file_path)
         })
-        if result.status != Status.EXECUTED or result.execution_result.status in NON_PASS_STATUSES:
+        if result.status != Status.EXECUTED or result.execution_result.status in ERROR_STATUSES:
+            ret_val.append(_xml_for_error(result))
+        elif result.execution_result.status in FAIL_STATUSES:
             ret_val.append(_xml_for_failure(result))
         return ret_val
 
@@ -132,6 +134,12 @@ class JUnitRootSuiteReporter(reporting.RootSuiteReporter):
 
 def _xml_for_failure(result: Result) -> ET.Element:
     ret_val = ET.Element('failure')
+    ret_val.text = _error_message_for(result)
+    return ret_val
+
+
+def _xml_for_error(result: Result) -> ET.Element:
+    ret_val = ET.Element('error')
     ret_val.text = _error_message_for(result)
     return ret_val
 
