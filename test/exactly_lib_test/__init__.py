@@ -12,6 +12,7 @@ from exactly_lib_test import test_case
 from exactly_lib_test import test_resources
 from exactly_lib_test import test_suite
 from exactly_lib_test import util
+from exactly_lib_test.default import run_via_main_program_internally_with_default_setup
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
 from exactly_lib_test.test_resources.main_program.main_program_runners import RunViaOsInSubProcess
 
@@ -46,4 +47,4 @@ def suite_that_does_require_main_program_runner(main_program_runner: MainProgram
 
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(complete_suite_for(RunViaOsInSubProcess()))
+    unittest.TextTestRunner().run(complete_suite_for(run_via_main_program_internally_with_default_setup()))

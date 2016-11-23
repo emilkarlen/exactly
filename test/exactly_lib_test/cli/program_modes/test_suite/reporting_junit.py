@@ -1,6 +1,9 @@
 import pathlib
 import unittest
 
+import exactly_lib.cli.cli_environment.common_cli_options as opt
+from exactly_lib.cli.cli_environment.program_modes.test_suite import command_line_options
+from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.default.test_resources.internal_main_program_runner import \
     run_via_main_program_internally_with_default_setup
@@ -13,6 +16,11 @@ from exactly_lib_test.test_suite.reporters.junit import suite_xml, successful_te
 
 
 class SuiteWithSingleEmptyTestCase(main_program_check_for_test_suite.SetupWithoutPreprocessorWithTestActor):
+    def first_arguments(self, root_path: pathlib.Path) -> list:
+        return [opt.SUITE_COMMAND,
+                long_option_syntax(command_line_options.OPTION_FOR_REPORTER__LONG),
+                command_line_options.REPORTER_OPTION__JUNIT]
+
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -32,7 +40,7 @@ class SuiteWithSingleEmptyTestCase(main_program_check_for_test_suite.SetupWithou
             test_case_elements=[successful_test_case_xml('the.case')]
         )
         expected_output = expected_output_from(expected_xml)
-        return [expected_output]
+        return expected_output.splitlines()
 
     def expected_exit_code(self) -> int:
         return 0

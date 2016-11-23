@@ -6,7 +6,6 @@ from exactly_lib.cli.program_modes.test_case import execution as test_case_execu
 from exactly_lib.cli.program_modes.test_case.settings import TestCaseExecutionSettings
 from exactly_lib.processing.instruction_setup import InstructionsSetup
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
-from exactly_lib.test_suite.reporting import RootSuiteReporterFactory
 from exactly_lib.util.std import StdOutputFiles
 
 
@@ -15,11 +14,9 @@ class MainProgram(main_program.MainProgram):
                  output: StdOutputFiles,
                  split_line_into_name_and_argument_function,
                  instruction_setup: InstructionsSetup,
-                 default: TestCaseHandlingSetup,
-                 root_suite_reporter_factory: RootSuiteReporterFactory):
+                 default: TestCaseHandlingSetup):
         super().__init__(output, instruction_setup, default)
         self._split_line_into_name_and_argument_function = split_line_into_name_and_argument_function
-        self.root_suite_reporter_factory = root_suite_reporter_factory
 
     def execute_test_case(self, settings: TestCaseExecutionSettings) -> int:
         executor = test_case_execution.Executor(self._std,
@@ -44,7 +41,7 @@ class MainProgram(main_program.MainProgram):
                                                      suite_hierarchy_reading.Environment(
                                                          default_configuration.default_handling_setup.preprocessor,
                                                          default_configuration.default_handling_setup.default_act_phase_setup)),
-                                                 self.root_suite_reporter_factory,
+                                                 test_suite_execution_settings.reporter_factory,
                                                  enumeration.DepthFirstEnumerator(),
                                                  case_processing.new_processor_that_should_not_pollute_current_process,
                                                  test_suite_execution_settings.suite_root_file_path)

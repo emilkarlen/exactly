@@ -22,9 +22,22 @@ def parse(default: TestCaseHandlingSetup,
                                                                                    argv)
     act_phase_setup = resolve_act_phase_setup_from_argparse_argument(default.default_act_phase_setup,
                                                                      namespace.actor)
-    return TestSuiteExecutionSettings(TestCaseHandlingSetup(act_phase_setup,
+    return TestSuiteExecutionSettings(_resolve_reporter_factory(vars(namespace)),
+                                      TestCaseHandlingSetup(act_phase_setup,
                                                             default.preprocessor),
                                       pathlib.Path(namespace.file).resolve())
+
+
+def _resolve_reporter_factory(namespace: dict):
+    if opts.OPTION_FOR_REPORTER__LONG in namespace:
+        reporter_list = namespace[opts.OPTION_FOR_REPORTER__LONG]
+        if reporter_list is not None and len(reporter_list) == 1:
+            reporter = reporter_list[0]
+            if reporter == opts.REPORTER_OPTION__JUNIT:
+                from exactly_lib.test_suite.reporters.junit import JUnitRootSuiteReporterFactory
+                return JUnitRootSuiteReporterFactory()
+    from exactly_lib.test_suite.reporters.simple_progress_reporter import SimpleProgressRootSuiteReporterFactory
+    return SimpleProgressRootSuiteReporterFactory()
 
 
 def _new_argument_parser() -> argparse.ArgumentParser:
@@ -34,6 +47,11 @@ def _new_argument_parser() -> argparse.ArgumentParser:
                          metavar=opts.TEST_SUITE_FILE_ARGUMENT,
                          type=str,
                          help='The test suite file.')
+    ret_val.add_argument(long_option_syntax(opts.OPTION_FOR_REPORTER__LONG),
+                         metavar=opts.REPORTER_OPTION_ARGUMENT,
+                         nargs=1,
+                         choices=[opts.REPORTER_OPTION__JUNIT],
+                         help=_REPORTER_OPTION_DESCRIPTION.format(junit=opts.REPORTER_OPTION__JUNIT))
     ret_val.add_argument(long_option_syntax(opts.OPTION_FOR_ACTOR__LONG),
                          metavar=case_opts.ACTOR_OPTION_ARGUMENT,
                          nargs=1,
@@ -45,3 +63,7 @@ def _new_argument_parser() -> argparse.ArgumentParser:
 
 _ACTOR_OPTION_DESCRIPTION = """\
 An {INTERPRETER_ACTOR_TERM} to use for every test case in the suite."""
+
+_REPORTER_OPTION_DESCRIPTION = """\
+Format of the report of the suite. "{junit}" will output JUnit XML, and exit with
+exit code 0, as long as the suite file is valid."""
