@@ -109,10 +109,8 @@ class JUnitRootSuiteReporter(reporting.RootSuiteReporter):
                 num_failures += 1
             elif result.execution_result.status in ERROR_STATUSES:
                 num_errors += 1
-        if num_failures > 0:
-            root.set('failures', str(num_failures))
-        if num_errors > 0:
-            root.set('errors', str(num_errors))
+        root.set('failures', str(num_failures))
+        root.set('errors', str(num_errors))
         return root
 
     def _xml_for_case(self, test_case_setup: TestCaseSetup, result: Result) -> ET.Element:

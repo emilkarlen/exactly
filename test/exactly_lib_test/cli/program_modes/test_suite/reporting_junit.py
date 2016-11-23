@@ -34,7 +34,10 @@ class SuiteWithSingleEmptyTestCase(main_program_check_for_test_suite.SetupWithou
     def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
         expected_xml = suite_xml(attributes={
             'name': 'main.suite',
-            'tests': '1'},
+            'tests': '1',
+            'errors': '0',
+            'failures': '0',
+        },
             test_case_elements=[successful_test_case_xml('the.case')]
         )
         expected_output = expected_output_from(expected_xml)

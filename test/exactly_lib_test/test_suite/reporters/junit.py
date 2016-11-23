@@ -34,7 +34,9 @@ class TestExecutionOfSingleSuiteWithSingleTestCase(unittest.TestCase):
         # ARRANGE #
         expected_xml = ET.Element('testsuite', {
             'name': 'root file name',
-            'tests': '0'
+            'tests': '0',
+            'errors': '0',
+            'failures': '0',
         })
         expected_output = expected_output_from(expected_xml)
         root_suite = test_suite('root file name', [], [])
@@ -59,7 +61,10 @@ class TestExecutionOfSingleSuiteWithSingleTestCase(unittest.TestCase):
                 # ARRANGE #
                 expected_xml = suite_xml(attributes={
                     'name': 'suite that passes',
-                    'tests': '1'},
+                    'tests': '1',
+                    'errors': '0',
+                    'failures': '0',
+                },
                     test_case_elements=[successful_test_case_xml('test case file name')]
                 )
                 expected_output = expected_output_from(expected_xml)
@@ -88,7 +93,8 @@ class TestExecutionOfSingleSuiteWithSingleTestCase(unittest.TestCase):
                 expected_xml = ET.Element('testsuite', {
                     'name': 'suite with error',
                     'tests': '1',
-                    'errors': '1'
+                    'errors': '1',
+                    'failures': '0',
                 })
                 expected_xml.append(
                     erroneous_test_case_xml('test case file name',
@@ -122,7 +128,8 @@ class TestExecutionOfSingleSuiteWithSingleTestCase(unittest.TestCase):
                 expected_xml = ET.Element('testsuite', {
                     'name': 'suite with error',
                     'tests': '1',
-                    'errors': '1'
+                    'errors': '1',
+                    'failures': '0',
                 })
                 expected_xml.append(
                     erroneous_test_case_xml('test case file name',
@@ -153,7 +160,8 @@ class TestExecutionOfSingleSuiteWithSingleTestCase(unittest.TestCase):
                 expected_xml = ET.Element('testsuite', {
                     'name': 'suite with failure',
                     'tests': '1',
-                    'failures': '1'
+                    'errors': '0',
+                    'failures': '1',
                 })
                 expected_xml.append(
                     failing_test_case_xml('test case file name',
@@ -240,7 +248,10 @@ class TestExecutionOfSuiteWithoutTestCasesButWithSubSuites(unittest.TestCase):
                 'name': 'suite with single case',
                 'package': 'root suite file name',
                 'id': '1',
-                'tests': '1'},
+                'tests': '1',
+                'errors': '0',
+                'failures': '0',
+            },
                 test_case_elements=[successful_test_case_xml('the test case')]
             ),
         ])
@@ -282,7 +293,10 @@ class TestExecutionOfSuiteWithoutTestCasesButWithSubSuites(unittest.TestCase):
                 'name': 'suite with single successful case',
                 'package': 'root suite file name',
                 'id': '1',
-                'tests': '1'},
+                'tests': '1',
+                'errors': '0',
+                'failures': '0',
+            },
                 test_case_elements=[successful_test_case_xml('successful case')]
             ),
             suite_xml(attributes={
@@ -291,7 +305,8 @@ class TestExecutionOfSuiteWithoutTestCasesButWithSubSuites(unittest.TestCase):
                 'id': '2',
                 'tests': '2',
                 'failures': '1',
-                'errors': '1'},
+                'errors': '1',
+            },
                 test_case_elements=[
                     failing_test_case_xml('failing case',
                                           failure_type=FULL_RESULT_FAIL.status.name,
@@ -331,14 +346,20 @@ class TestExecutionOfRootSuiteWithBothTestCasesAndSubSuites(unittest.TestCase):
                 'name': 'root suite file name',
                 'package': 'root suite file name',
                 'id': '1',
-                'tests': '1'},
+                'tests': '1',
+                'errors': '0',
+                'failures': '0',
+            },
                 test_case_elements=[successful_test_case_xml('test case in root suite')]
             ),
             suite_xml(attributes={
                 'name': 'suite with single case',
                 'package': 'root suite file name',
                 'id': '2',
-                'tests': '1'},
+                'tests': '1',
+                'errors': '0',
+                'failures': '0',
+            },
                 test_case_elements=[successful_test_case_xml('test case in sub suite')]
             ),
         ])
