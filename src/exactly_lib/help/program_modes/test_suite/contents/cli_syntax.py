@@ -38,6 +38,7 @@ class SuiteCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
     def argument_descriptions(self) -> list:
         return [
             self._actor_argument(),
+            self._reporter_argument(),
         ]
 
     def _actor_argument(self) -> cli_syntax.DescribedArgument:
@@ -52,11 +53,21 @@ class SuiteCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
                                                                                           INSTRUCTION_NAME__ACTOR),
                                             ])
 
+    def _reporter_argument(self) -> cli_syntax.DescribedArgument:
+        extra_format_map = {
+            'junit_format': opts.REPORTER_OPTION__JUNIT,
+        }
+        return cli_syntax.DescribedArgument(_REPORTER_OPTION,
+                                            self.parser.fnap(_REPORTER_OPTION_DESCRIPTION, extra_format_map)
+                                            )
+
 
 def synopsis() -> cli_syntax.Synopsis:
     command_line = arg.CommandLine([
         arg.Single(arg.Multiplicity.MANDATORY,
                    arg.Constant(common_opts.SUITE_COMMAND)),
+        arg.Single(arg.Multiplicity.OPTIONAL,
+                   _REPORTER_OPTION),
         arg.Single(arg.Multiplicity.OPTIONAL,
                    _ACTOR_OPTION),
         arg.Single(arg.Multiplicity.MANDATORY,
@@ -85,5 +96,20 @@ followed by optional arguments (using shell syntax).
 
 _ACTOR_OPTION = arg.option(long_name=opts.OPTION_FOR_ACTOR__LONG,
                            argument=case_opts.ACTOR_OPTION_ARGUMENT)
+
+_REPORTER_OPTION = arg.option(long_name=opts.OPTION_FOR_REPORTER__LONG,
+                              argument=opts.REPORTER_OPTION_ARGUMENT)
+
+_REPORTER_OPTION_DESCRIPTION = """\
+Specifies in which format to report the execution of the test suite.
+
+
+The default is to report the progress of each test case, in a human readable format.
+The exit code of the program indicates weather all cases in the suite passed or not.
+
+
+The "{junit_format}" reporter outputs XML in JUnit format.
+The exit code of the program is 0, unless the test suite could not be read.
+"""
 
 _FILE_ARGUMENT = arg.Named(opts.TEST_SUITE_FILE_ARGUMENT)
