@@ -133,13 +133,17 @@ class JUnitRootSuiteReporter(reporting.RootSuiteReporter):
 
 
 def _xml_for_failure(result: Result) -> ET.Element:
-    ret_val = ET.Element('failure')
+    ret_val = ET.Element('failure', {
+        'type': _error_type(result),
+    })
     ret_val.text = _error_message_for(result)
     return ret_val
 
 
 def _xml_for_error(result: Result) -> ET.Element:
-    ret_val = ET.Element('error')
+    ret_val = ET.Element('error', {
+        'type': _error_type(result),
+    })
     ret_val.text = _error_message_for(result)
     return ret_val
 
@@ -149,3 +153,12 @@ def _error_message_for(result: Result) -> str:
         return error_message_for_error_info(result.error_info)
     else:
         return error_message_for_full_result(result.execution_result)
+
+
+def _error_type(result: Result) -> str:
+    if result.status is Status.INTERNAL_ERROR:
+        return Status.INTERNAL_ERROR.name
+    elif result.status is Status.ACCESS_ERROR:
+        return result.access_error_type.name
+    else:
+        return result.execution_result.status.name
