@@ -33,14 +33,13 @@ def suite() -> unittest.TestSuite:
 class TestExecutionOfSingleSuiteWithSingleTestCase(unittest.TestCase):
     def test_empty_suite(self):
         # ARRANGE #
-        expected_xml = ET.Element('testsuite', {
+        expected_xml = suite_xml(attributes={
             'name': 'root file name',
             'tests': '0',
             'errors': '0',
             'failures': '0',
-            'time': TIME_VALUE_REPLACEMENT,
-            'timestamp': TIMESTAMP_VALUE_REPLACEMENT,
-        })
+        },
+            test_case_elements=[])
         expected_output = expected_output_from(expected_xml)
         root_suite = test_suite('root file name', [], [])
         test_suites = [root_suite]
@@ -67,8 +66,6 @@ class TestExecutionOfSingleSuiteWithSingleTestCase(unittest.TestCase):
                     'tests': '1',
                     'errors': '0',
                     'failures': '0',
-                    'time': TIME_VALUE_REPLACEMENT,
-                    'timestamp': TIMESTAMP_VALUE_REPLACEMENT,
                 },
                     test_case_elements=[successful_test_case_xml('test case file name')]
                 )
@@ -95,14 +92,12 @@ class TestExecutionOfSingleSuiteWithSingleTestCase(unittest.TestCase):
         for case_result in cases:
             with self.subTest(case_result_status=case_result.status):
                 # ARRANGE #
-                expected_xml = ET.Element('testsuite', {
+                expected_xml = suite_xml(attributes={
                     'name': 'suite with error',
                     'tests': '1',
                     'errors': '1',
-                    'failures': '0',
-                    'time': TIME_VALUE_REPLACEMENT,
-                    'timestamp': TIMESTAMP_VALUE_REPLACEMENT,
-                })
+                    'failures': '0'},
+                    test_case_elements=[])
                 expected_xml.append(
                     erroneous_test_case_xml('test case file name',
                                             error_type=case_result.status.name,
@@ -132,18 +127,16 @@ class TestExecutionOfSingleSuiteWithSingleTestCase(unittest.TestCase):
         for case_result, error_type in cases:
             with self.subTest(case_result_status=case_result.status):
                 # ARRANGE #
-                expected_xml = ET.Element('testsuite', {
+                expected_xml = suite_xml(attributes={
                     'name': 'suite with error',
                     'tests': '1',
                     'errors': '1',
-                    'failures': '0',
-                    'time': TIME_VALUE_REPLACEMENT,
-                    'timestamp': TIMESTAMP_VALUE_REPLACEMENT,
-                })
-                expected_xml.append(
-                    erroneous_test_case_xml('test case file name',
-                                            error_type=error_type,
-                                            failure_message=error_message_for_error_info(case_result.error_info)))
+                    'failures': '0'},
+                    test_case_elements=[
+                        erroneous_test_case_xml('test case file name',
+                                                error_type=error_type,
+                                                failure_message=error_message_for_error_info(case_result.error_info))
+                    ])
                 expected_output = expected_output_from(expected_xml)
                 root_suite = test_suite('suite with error', [], [test_case('test case file name')])
                 test_suites = [root_suite]
@@ -166,18 +159,16 @@ class TestExecutionOfSingleSuiteWithSingleTestCase(unittest.TestCase):
         for case_result in cases:
             with self.subTest(case_result_status=case_result.status):
                 # ARRANGE #
-                expected_xml = ET.Element('testsuite', {
+                expected_xml = suite_xml(attributes={
                     'name': 'suite with failure',
                     'tests': '1',
                     'errors': '0',
-                    'failures': '1',
-                    'time': TIME_VALUE_REPLACEMENT,
-                    'timestamp': TIMESTAMP_VALUE_REPLACEMENT,
-                })
-                expected_xml.append(
-                    failing_test_case_xml('test case file name',
-                                          failure_type=case_result.status.name,
-                                          failure_message=error_message_for_full_result(case_result)))
+                    'failures': '1'},
+                    test_case_elements=[
+                        failing_test_case_xml('test case file name',
+                                              failure_type=case_result.status.name,
+                                              failure_message=error_message_for_full_result(case_result))
+                    ])
                 expected_output = expected_output_from(expected_xml)
                 root_suite = test_suite('suite with failure', [], [test_case('test case file name')])
                 test_suites = [root_suite]
@@ -220,8 +211,6 @@ class TestExecutionOfSingleSuiteWithMultipleTestCases(unittest.TestCase):
             'tests': '3',
             'errors': '1',
             'failures': '1',
-            'time': TIME_VALUE_REPLACEMENT,
-            'timestamp': TIMESTAMP_VALUE_REPLACEMENT,
         },
             test_case_elements=[
                 successful_test_case_xml('successful case'),
@@ -265,8 +254,6 @@ class TestExecutionOfSuiteWithoutTestCasesButWithSubSuites(unittest.TestCase):
                 'tests': '1',
                 'errors': '0',
                 'failures': '0',
-                'time': TIME_VALUE_REPLACEMENT,
-                'timestamp': TIMESTAMP_VALUE_REPLACEMENT,
             },
                 test_case_elements=[successful_test_case_xml('the test case')]
             ),
@@ -312,8 +299,6 @@ class TestExecutionOfSuiteWithoutTestCasesButWithSubSuites(unittest.TestCase):
                 'tests': '1',
                 'errors': '0',
                 'failures': '0',
-                'time': TIME_VALUE_REPLACEMENT,
-                'timestamp': TIMESTAMP_VALUE_REPLACEMENT,
             },
                 test_case_elements=[successful_test_case_xml('successful case')]
             ),
@@ -324,8 +309,6 @@ class TestExecutionOfSuiteWithoutTestCasesButWithSubSuites(unittest.TestCase):
                 'tests': '2',
                 'errors': '1',
                 'failures': '1',
-                'time': TIME_VALUE_REPLACEMENT,
-                'timestamp': TIMESTAMP_VALUE_REPLACEMENT,
             },
                 test_case_elements=[
                     failing_test_case_xml('failing case',
@@ -369,8 +352,6 @@ class TestExecutionOfRootSuiteWithBothTestCasesAndSubSuites(unittest.TestCase):
                 'tests': '1',
                 'errors': '0',
                 'failures': '0',
-                'time': TIME_VALUE_REPLACEMENT,
-                'timestamp': TIMESTAMP_VALUE_REPLACEMENT,
             },
                 test_case_elements=[successful_test_case_xml('test case in root suite')]
             ),
@@ -381,8 +362,6 @@ class TestExecutionOfRootSuiteWithBothTestCasesAndSubSuites(unittest.TestCase):
                 'tests': '1',
                 'errors': '0',
                 'failures': '0',
-                'time': TIME_VALUE_REPLACEMENT,
-                'timestamp': TIMESTAMP_VALUE_REPLACEMENT,
             },
                 test_case_elements=[successful_test_case_xml('test case in sub suite')]
             ),
@@ -440,9 +419,6 @@ def expected_output_from(root: ET.Element) -> str:
                xml_declaration=True,
                short_empty_elements=True)
     return stream.getvalue() + os.linesep
-    # ret_val = stream.getvalue() + os.linesep
-    # print('----------------\n' + ret_val + '--------------------\n')
-    # return ret_val
 
 
 def _suites_xml(test_suite_elements: list) -> ET.Element:
@@ -452,6 +428,10 @@ def _suites_xml(test_suite_elements: list) -> ET.Element:
 
 
 def suite_xml(attributes: dict, test_case_elements: list) -> ET.Element:
+    attributes.update({
+        'time': TIME_VALUE_REPLACEMENT,
+        'timestamp': TIMESTAMP_VALUE_REPLACEMENT,
+    })
     ret_val = ET.Element('testsuite', attributes)
     ret_val.extend(test_case_elements)
     return ret_val
@@ -493,6 +473,7 @@ def replace_xml_variables(xml: str) -> str:
     ret_val = xml
     ret_val = _TIME_ATTRIBUTE_RE.sub(_TIME_ATTRIBUTE_REPLACEMENT, ret_val)
     ret_val = _TIMESTAMP_ATTRIBUTE_RE.sub(_TIMESTAMP_ATTRIBUTE_REPLACEMENT, ret_val)
+    ret_val = _HOST_ATTRIBUTE_RE.sub(_HOST_ATTRIBUTE_REPLACEMENT, ret_val)
     return ret_val
 
 
@@ -503,3 +484,12 @@ _TIME_ATTRIBUTE_REPLACEMENT = 'time="' + TIME_VALUE_REPLACEMENT + '"'
 _TIMESTAMP_ATTRIBUTE_RE = re.compile(r'timestamp="[^"]+"')
 TIMESTAMP_VALUE_REPLACEMENT = '__TIMESTAMP__'
 _TIMESTAMP_ATTRIBUTE_REPLACEMENT = 'timestamp="' + TIMESTAMP_VALUE_REPLACEMENT + '"'
+
+_HOST_ATTRIBUTE_RE = re.compile(r'host="[^"]+"')
+HOST_VALUE_REPLACEMENT = '__HOST__'
+_HOST_ATTRIBUTE_REPLACEMENT = 'host="' + HOST_VALUE_REPLACEMENT + '"'
+
+STD_TESTSUITE_ATTRIBUTES = {
+    'time': TIME_VALUE_REPLACEMENT,
+    'timestamp': TIMESTAMP_VALUE_REPLACEMENT,
+}
