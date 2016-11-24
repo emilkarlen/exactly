@@ -431,6 +431,7 @@ def suite_xml(attributes: dict, test_case_elements: list) -> ET.Element:
     attributes.update({
         'time': TIME_VALUE_REPLACEMENT,
         'timestamp': TIMESTAMP_VALUE_REPLACEMENT,
+        'hostname': HOST_VALUE_REPLACEMENT,
     })
     ret_val = ET.Element('testsuite', attributes)
     ret_val.extend(test_case_elements)
@@ -485,11 +486,6 @@ _TIMESTAMP_ATTRIBUTE_RE = re.compile(r'timestamp="[^"]+"')
 TIMESTAMP_VALUE_REPLACEMENT = '__TIMESTAMP__'
 _TIMESTAMP_ATTRIBUTE_REPLACEMENT = 'timestamp="' + TIMESTAMP_VALUE_REPLACEMENT + '"'
 
-_HOST_ATTRIBUTE_RE = re.compile(r'host="[^"]+"')
-HOST_VALUE_REPLACEMENT = '__HOST__'
-_HOST_ATTRIBUTE_REPLACEMENT = 'host="' + HOST_VALUE_REPLACEMENT + '"'
-
-STD_TESTSUITE_ATTRIBUTES = {
-    'time': TIME_VALUE_REPLACEMENT,
-    'timestamp': TIMESTAMP_VALUE_REPLACEMENT,
-}
+_HOST_ATTRIBUTE_RE = re.compile(r'hostname="[^"]+"')
+HOST_VALUE_REPLACEMENT = '__HOSTNAME__'
+_HOST_ATTRIBUTE_REPLACEMENT = 'hostname="' + HOST_VALUE_REPLACEMENT + '"'
