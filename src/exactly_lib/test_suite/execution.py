@@ -1,3 +1,4 @@
+import datetime
 import pathlib
 import types
 
@@ -10,7 +11,7 @@ from exactly_lib.test_suite import reporting
 from exactly_lib.test_suite import structure
 from exactly_lib.test_suite.enumeration import SuiteEnumerator
 from exactly_lib.test_suite.instruction_set.parse import SuiteReadError
-from exactly_lib.test_suite.reporting import RootSuiteReporter
+from exactly_lib.test_suite.reporting import RootSuiteReporter, TestCaseProcessingInfo
 from exactly_lib.test_suite.suite_hierarchy_reading import SuiteHierarchyReader
 from exactly_lib.util.std import StdOutputFiles, FilePrinter
 
@@ -106,26 +107,14 @@ class SuitesExecutor:
         case_processor = self._case_processor_for(suite)
         for case in suite.test_cases:
             sub_suite_reporter.listener().case_begin(case)
-            result = self._process_case(case_processor, case)
-            sub_suite_reporter.listener().case_end(case,
-                                                   result)
-            sub_suite_reporter.case_end(case,
-                                        result)
+            processing_info = _process_and_time(case_processor, case)
+            sub_suite_reporter.listener().case_end(case, processing_info.result)
+            sub_suite_reporter.case_end(case, processing_info)
         sub_suite_reporter.listener().suite_end()
 
     def _case_processor_for(self, suite):
         configuration = self._configuration_for_cases_in_suite(suite)
         return self._test_case_processor_constructor(configuration)
-
-    @staticmethod
-    def _process_case(case_processor: test_case_processing.Processor,
-                      case: test_case_processing.TestCaseSetup) -> test_case_processing.Result:
-        try:
-            return case_processor.apply(case)
-        except Exception as ex:
-            error_info = test_case_processing.ErrorInfo(error_description.of_exception(ex),
-                                                        file_path=case.file_path)
-            return test_case_processing.new_internal_error(error_info)
 
     def _configuration_for_cases_in_suite(self, suite: structure.TestSuite) -> case_processing.Configuration:
         return case_processing.Configuration(
@@ -134,3 +123,22 @@ class SuitesExecutor:
             suite.test_case_handling_setup,
             self._default_case_configuration.is_keep_execution_directory_root,
             self._default_case_configuration.execution_directory_root_name_prefix)
+
+
+def _process_and_time(case_processor: test_case_processing.Processor,
+                      case: test_case_processing.TestCaseSetup) -> TestCaseProcessingInfo:
+    case_start_time = datetime.datetime.now()
+    result = _process_case(case_processor, case)
+    case_end_time = datetime.datetime.now()
+    duration = case_end_time - case_start_time
+    return TestCaseProcessingInfo(result, duration)
+
+
+def _process_case(case_processor: test_case_processing.Processor,
+                  case: test_case_processing.TestCaseSetup) -> test_case_processing.Result:
+    try:
+        return case_processor.apply(case)
+    except Exception as ex:
+        error_info = test_case_processing.ErrorInfo(error_description.of_exception(ex),
+                                                    file_path=case.file_path)
+        return test_case_processing.new_internal_error(error_info)

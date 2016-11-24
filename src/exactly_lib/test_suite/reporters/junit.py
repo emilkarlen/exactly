@@ -8,6 +8,7 @@ from exactly_lib.execution.result_reporting import error_message_for_full_result
 from exactly_lib.processing.test_case_processing import Status, TestCaseSetup, Result
 from exactly_lib.test_suite import reporting, structure
 from exactly_lib.test_suite.reporters import simple_progress_reporter as simple_reporter
+from exactly_lib.test_suite.reporting import TestCaseProcessingInfo
 from exactly_lib.util.std import StdOutputFiles, FilePrinter
 
 FAIL_STATUSES = {FullResultStatus.FAIL,
@@ -91,7 +92,6 @@ class JUnitRootSuiteReporter(reporting.RootSuiteReporter):
 
     def _xml_for_suite(self, suite_reporter: reporting.SubSuiteReporter,
                        additional_attributes: dict = None) -> ET.Element:
-        suite_reporter.result()
         attributes = {
             'name': self._file_path_pres(suite_reporter.suite.source_file),
             'tests': str(len(suite_reporter.result()))
@@ -101,8 +101,11 @@ class JUnitRootSuiteReporter(reporting.RootSuiteReporter):
         root = ET.Element('testsuite', attributes)
         num_errors = 0
         num_failures = 0
-        for test_case_setup, result in suite_reporter.result():
-            root.append(self._xml_for_case(test_case_setup, result))
+        sum_of_time_for_cases = datetime.timedelta()
+        for test_case_setup, processing_info in suite_reporter.result():
+            sum_of_time_for_cases += processing_info.duration
+            result = processing_info.result
+            root.append(self._xml_for_case(test_case_setup, processing_info))
             if result.status != Status.EXECUTED:
                 num_errors += 1
             elif result.execution_result.status in FAIL_STATUSES:
@@ -111,12 +114,14 @@ class JUnitRootSuiteReporter(reporting.RootSuiteReporter):
                 num_errors += 1
         root.set('failures', str(num_failures))
         root.set('errors', str(num_errors))
+        root.set('time', '%f' % sum_of_time_for_cases.total_seconds())
         return root
 
-    def _xml_for_case(self, test_case_setup: TestCaseSetup, result: Result) -> ET.Element:
+    def _xml_for_case(self, test_case_setup: TestCaseSetup, processing_info: TestCaseProcessingInfo) -> ET.Element:
         ret_val = ET.Element('testcase', {
             'name': self._file_path_pres(test_case_setup.file_path)
         })
+        result = processing_info.result
         if result.status != Status.EXECUTED or result.execution_result.status in ERROR_STATUSES:
             ret_val.append(_xml_for_error(result))
         elif result.execution_result.status in FAIL_STATUSES:

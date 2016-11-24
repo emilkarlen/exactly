@@ -1,5 +1,6 @@
 import io
 import os
+import re
 import unittest
 from pathlib import Path
 from xml.etree import ElementTree as ET
@@ -37,6 +38,7 @@ class TestExecutionOfSingleSuiteWithSingleTestCase(unittest.TestCase):
             'tests': '0',
             'errors': '0',
             'failures': '0',
+            'time': '__TIME__',
         })
         expected_output = expected_output_from(expected_xml)
         root_suite = test_suite('root file name', [], [])
@@ -47,8 +49,9 @@ class TestExecutionOfSingleSuiteWithSingleTestCase(unittest.TestCase):
                                                                    Path(),
                                                                    test_suites)
         # ASSERT #
+        _print_xml(actual.stdout)
         self.assertEquals(0, actual.exit_code)
-        self.assertEqual(expected_output, actual.stdout)
+        self.assertEqual(expected_output, replace_xml_variables(actual.stdout))
 
     def test_single_case_that_passes(self):
         cases = [
@@ -64,6 +67,7 @@ class TestExecutionOfSingleSuiteWithSingleTestCase(unittest.TestCase):
                     'tests': '1',
                     'errors': '0',
                     'failures': '0',
+                    'time': '__TIME__',
                 },
                     test_case_elements=[successful_test_case_xml('test case file name')]
                 )
@@ -79,7 +83,7 @@ class TestExecutionOfSingleSuiteWithSingleTestCase(unittest.TestCase):
 
                 # ASSERT #
                 self.assertEquals(0, actual.exit_code)
-                self.assertEqual(expected_output, actual.stdout)
+                self.assertEqual(expected_output, replace_xml_variables(actual.stdout))
 
     def test_single_case_with_error(self):
         cases = [
@@ -95,6 +99,7 @@ class TestExecutionOfSingleSuiteWithSingleTestCase(unittest.TestCase):
                     'tests': '1',
                     'errors': '1',
                     'failures': '0',
+                    'time': '__TIME__',
                 })
                 expected_xml.append(
                     erroneous_test_case_xml('test case file name',
@@ -112,7 +117,7 @@ class TestExecutionOfSingleSuiteWithSingleTestCase(unittest.TestCase):
 
                 # ASSERT #
                 self.assertEquals(0, actual.exit_code)
-                self.assertEqual(expected_output, actual.stdout)
+                self.assertEqual(expected_output, replace_xml_variables(actual.stdout))
 
     def test_single_case_with_error_due_to_failure_to_execute(self):
         cases = [
@@ -130,6 +135,7 @@ class TestExecutionOfSingleSuiteWithSingleTestCase(unittest.TestCase):
                     'tests': '1',
                     'errors': '1',
                     'failures': '0',
+                    'time': '__TIME__',
                 })
                 expected_xml.append(
                     erroneous_test_case_xml('test case file name',
@@ -147,7 +153,7 @@ class TestExecutionOfSingleSuiteWithSingleTestCase(unittest.TestCase):
 
                 # ASSERT #
                 self.assertEquals(0, actual.exit_code)
-                self.assertEqual(expected_output, actual.stdout)
+                self.assertEqual(expected_output, replace_xml_variables(actual.stdout))
 
     def test_single_case_with_failure(self):
         cases = [
@@ -162,6 +168,7 @@ class TestExecutionOfSingleSuiteWithSingleTestCase(unittest.TestCase):
                     'tests': '1',
                     'errors': '0',
                     'failures': '1',
+                    'time': '__TIME__',
                 })
                 expected_xml.append(
                     failing_test_case_xml('test case file name',
@@ -178,7 +185,7 @@ class TestExecutionOfSingleSuiteWithSingleTestCase(unittest.TestCase):
                     test_suites)
                 # ASSERT #
                 self.assertEquals(0, actual.exit_code)
-                self.assertEqual(expected_output, actual.stdout)
+                self.assertEqual(expected_output, replace_xml_variables(actual.stdout))
 
 
 class TestExecutionOfSingleSuiteWithMultipleTestCases(unittest.TestCase):
@@ -207,8 +214,10 @@ class TestExecutionOfSingleSuiteWithMultipleTestCases(unittest.TestCase):
         expected_xml = suite_xml(attributes={
             'name': 'suite file name',
             'tests': '3',
+            'errors': '1',
             'failures': '1',
-            'errors': '1'},
+            'time': '__TIME__',
+        },
             test_case_elements=[
                 successful_test_case_xml('successful case'),
                 failing_test_case_xml('failing case',
@@ -221,7 +230,7 @@ class TestExecutionOfSingleSuiteWithMultipleTestCases(unittest.TestCase):
         )
         expected_output = expected_output_from(expected_xml)
         self.assertEquals(0, actual.exit_code)
-        self.assertEqual(expected_output, actual.stdout)
+        self.assertEqual(expected_output, replace_xml_variables(actual.stdout))
 
 
 class TestExecutionOfSuiteWithoutTestCasesButWithSubSuites(unittest.TestCase):
@@ -251,13 +260,14 @@ class TestExecutionOfSuiteWithoutTestCasesButWithSubSuites(unittest.TestCase):
                 'tests': '1',
                 'errors': '0',
                 'failures': '0',
+                'time': '__TIME__',
             },
                 test_case_elements=[successful_test_case_xml('the test case')]
             ),
         ])
         expected_output = expected_output_from(expected_xml)
         self.assertEquals(0, actual.exit_code)
-        self.assertEqual(expected_output, actual.stdout)
+        self.assertEqual(expected_output, replace_xml_variables(actual.stdout))
 
     def test_suite_with_sub_suites_with_successful_and_non_successful_cases(self):
         # ARRANGE #
@@ -296,6 +306,7 @@ class TestExecutionOfSuiteWithoutTestCasesButWithSubSuites(unittest.TestCase):
                 'tests': '1',
                 'errors': '0',
                 'failures': '0',
+                'time': '__TIME__',
             },
                 test_case_elements=[successful_test_case_xml('successful case')]
             ),
@@ -304,8 +315,9 @@ class TestExecutionOfSuiteWithoutTestCasesButWithSubSuites(unittest.TestCase):
                 'package': 'root suite file name',
                 'id': '2',
                 'tests': '2',
-                'failures': '1',
                 'errors': '1',
+                'failures': '1',
+                'time': '__TIME__',
             },
                 test_case_elements=[
                     failing_test_case_xml('failing case',
@@ -319,7 +331,7 @@ class TestExecutionOfSuiteWithoutTestCasesButWithSubSuites(unittest.TestCase):
         ])
         expected_output = expected_output_from(expected_xml)
         self.assertEquals(0, actual.exit_code)
-        self.assertEqual(expected_output, actual.stdout)
+        self.assertEqual(expected_output, replace_xml_variables(actual.stdout))
 
 
 class TestExecutionOfRootSuiteWithBothTestCasesAndSubSuites(unittest.TestCase):
@@ -349,6 +361,7 @@ class TestExecutionOfRootSuiteWithBothTestCasesAndSubSuites(unittest.TestCase):
                 'tests': '1',
                 'errors': '0',
                 'failures': '0',
+                'time': '__TIME__',
             },
                 test_case_elements=[successful_test_case_xml('test case in root suite')]
             ),
@@ -359,13 +372,14 @@ class TestExecutionOfRootSuiteWithBothTestCasesAndSubSuites(unittest.TestCase):
                 'tests': '1',
                 'errors': '0',
                 'failures': '0',
+                'time': '__TIME__',
             },
                 test_case_elements=[successful_test_case_xml('test case in sub suite')]
             ),
         ])
         expected_output = expected_output_from(expected_xml)
         self.assertEquals(0, actual.exit_code)
-        self.assertEqual(expected_output, actual.stdout)
+        self.assertEqual(expected_output, replace_xml_variables(actual.stdout))
 
 
 class ExitCodeAndStdOut(tuple):
@@ -416,6 +430,9 @@ def expected_output_from(root: ET.Element) -> str:
                xml_declaration=True,
                short_empty_elements=True)
     return stream.getvalue() + os.linesep
+    # ret_val = stream.getvalue() + os.linesep
+    # print('----------------\n' + ret_val + '--------------------\n')
+    # return ret_val
 
 
 def _suites_xml(test_suite_elements: list) -> ET.Element:
@@ -460,3 +477,18 @@ def erroneous_test_case_xml(name: str,
     })
     failure.text = failure_message
     return ret_val
+
+
+def replace_xml_variables(xml: str) -> str:
+    return _TIME_ATTRIBUTE_RE.sub(_TIME_ATTRIBUTE_REPLACEMENT, xml)
+
+
+def _print_xml(xml: str):
+    print('-----------------------')
+    print(xml)
+    print('-----------------------')
+
+
+_TIME_ATTRIBUTE_RE = re.compile(r'time="[0-9]*(\.[0-9]+)?"')
+TIME_VALUE_REPLACEMENT = '__TIME__'
+_TIME_ATTRIBUTE_REPLACEMENT = 'time="' + TIME_VALUE_REPLACEMENT + '"'
