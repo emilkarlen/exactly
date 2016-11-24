@@ -490,6 +490,6 @@ _TIME_ATTRIBUTE_RE = re.compile(r'time="[0-9]*(\.[0-9]+)?"')
 TIME_VALUE_REPLACEMENT = '__TIME__'
 _TIME_ATTRIBUTE_REPLACEMENT = 'time="' + TIME_VALUE_REPLACEMENT + '"'
 
-_TIMESTAMP_ATTRIBUTE_RE = re.compile(r'timestamp="[^"]+"')
+_TIMESTAMP_ATTRIBUTE_RE = re.compile(r'timestamp="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}"')
 TIMESTAMP_VALUE_REPLACEMENT = '__TIMESTAMP__'
 _TIMESTAMP_ATTRIBUTE_REPLACEMENT = 'timestamp="' + TIMESTAMP_VALUE_REPLACEMENT + '"'
