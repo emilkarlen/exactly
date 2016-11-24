@@ -10,7 +10,7 @@ from exactly_lib.test_suite import exit_values as suite_ev
 from exactly_lib.test_suite import structure
 from exactly_lib.test_suite.execution import SuitesExecutor
 from exactly_lib.test_suite.reporters import simple_progress_reporter as sut
-from exactly_lib.util.string import lines_content
+from exactly_lib.util.string import lines_content_with_os_linesep
 from exactly_lib_test.test_resources.str_std_out_files import StringStdOutFiles
 from exactly_lib_test.test_suite.reporters.test_resources import FULL_RESULT_HARD_ERROR, FULL_RESULT_VALIDATE, \
     FULL_RESULT_IMPLEMENTATION_ERROR
@@ -41,7 +41,7 @@ class TestExecutionOfSuite(unittest.TestCase):
     def test_single_empty_suite(self):
         # ARRANGE #
         expected_exit_value = suite_ev.ALL_PASS
-        expected_output = lines_content([
+        expected_output = lines_content_with_os_linesep([
             _suite_begin('root file name'),
             _suite_end('root file name'),
             expected_exit_value.exit_identifier,
@@ -75,7 +75,7 @@ class TestExecutionOfSuite(unittest.TestCase):
                               expected_case_exit_value=expected_case_exit_value,
                               expected_suite_exit_value=expected_suite_exit_value):
                 # ARRANGE #
-                expected_output = lines_content([
+                expected_output = lines_content_with_os_linesep([
                     _suite_begin('root file name'),
                     _case('test case file', expected_case_exit_value),
                     _suite_end('root file name'),
