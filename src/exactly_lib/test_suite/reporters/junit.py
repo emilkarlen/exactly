@@ -104,6 +104,7 @@ class JUnitRootSuiteReporter(reporting.RootSuiteReporter):
         if additional_attributes:
             attributes.update(additional_attributes)
         root = ET.Element('testsuite', attributes)
+        ET.SubElement(root, 'properties')
         num_errors = 0
         num_failures = 0
         sum_of_time_for_cases = datetime.timedelta()

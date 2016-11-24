@@ -434,6 +434,7 @@ def suite_xml(attributes: dict, test_case_elements: list) -> ET.Element:
         'hostname': HOST_VALUE_REPLACEMENT,
     })
     ret_val = ET.Element('testsuite', attributes)
+    ret_val.append(ET.Element('properties'))
     ret_val.extend(test_case_elements)
     return ret_val
 
