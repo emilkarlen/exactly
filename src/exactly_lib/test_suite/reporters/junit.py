@@ -67,7 +67,9 @@ class JUnitRootSuiteReporter(reporting.RootSuiteReporter):
 
     def report_final_results(self) -> int:
         if len(self._sub_reporters) == 1:
-            xml = ET.ElementTree(self._xml_for_suite(self._sub_reporters[0]))
+            reporter = self._sub_reporters[0]
+            xml = ET.ElementTree(self._xml_for_suite(reporter,
+                                                     self._file_path_pres(reporter.suite.source_file)))
         else:
             xml = ET.ElementTree(self._xml_for_suites(self._root_suite, self._sub_reporters))
         xml.write(self._std_output_files.out,
@@ -85,18 +87,20 @@ class JUnitRootSuiteReporter(reporting.RootSuiteReporter):
         next_suite_id = 1
         for suite_reporter in suite_reporters:
             if not is_root_suite_and_should_skip_root_suite(suite_reporter):
-                root.append(self._xml_for_suite(suite_reporter, {
+                package_name, name = self._package_and_name(suite_reporter.suite)
+                root.append(self._xml_for_suite(suite_reporter, name, {
                     'id': str(next_suite_id),
-                    'package': str(root_suite.source_file),
+                    'package': package_name,
                 }))
                 next_suite_id += 1
         return root
 
     def _xml_for_suite(self, suite_reporter: reporting.SubSuiteReporter,
+                       name: str,
                        additional_attributes: dict = None) -> ET.Element:
         timestamp = suite_reporter.start_time.replace(microsecond=0)
         attributes = {
-            'name': self._file_path_pres(suite_reporter.suite.source_file),
+            'name': name,
             'tests': str(len(suite_reporter.result())),
             'timestamp': timestamp.isoformat(),
             'hostname': self._host_name,
@@ -144,6 +148,15 @@ class JUnitRootSuiteReporter(reporting.RootSuiteReporter):
             return str(file.relative_to(self._root_suite_dir_abs_path))
         except ValueError:
             return str(file)
+
+    def _package_and_name(self, suite: structure.TestSuite):
+        try:
+            relative_path = suite.source_file.relative_to(self._root_suite_dir_abs_path)
+            if relative_path.parts:
+                return str(relative_path.parent), relative_path.name
+            return '.', str(relative_path)
+        except ValueError:
+            return '.', str(suite.source_file)
 
 
 def _xml_for_failure(result: Result) -> ET.Element:
