@@ -11,7 +11,7 @@ from exactly_lib_test.test_resources.main_program.main_program_check_base import
     tests_for_setup_without_preprocessor
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
 from exactly_lib_test.test_suite.reporters.junit import suite_xml, successful_test_case_xml, expected_output_from, \
-    replace_xml_variables, TIME_VALUE_REPLACEMENT
+    replace_xml_variables, TIME_VALUE_REPLACEMENT, TIMESTAMP_VALUE_REPLACEMENT
 
 
 class SuiteWithSingleEmptyTestCase(main_program_check_for_test_suite.SetupWithoutPreprocessorWithTestActor):
@@ -39,6 +39,7 @@ class SuiteWithSingleEmptyTestCase(main_program_check_for_test_suite.SetupWithou
             'errors': '0',
             'failures': '0',
             'time': TIME_VALUE_REPLACEMENT,
+            'timestamp': TIMESTAMP_VALUE_REPLACEMENT,
         },
             test_case_elements=[successful_test_case_xml('the.case')]
         )

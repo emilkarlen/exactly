@@ -92,9 +92,11 @@ class JUnitRootSuiteReporter(reporting.RootSuiteReporter):
 
     def _xml_for_suite(self, suite_reporter: reporting.SubSuiteReporter,
                        additional_attributes: dict = None) -> ET.Element:
+        timestamp = suite_reporter.start_time.replace(microsecond=0)
         attributes = {
             'name': self._file_path_pres(suite_reporter.suite.source_file),
-            'tests': str(len(suite_reporter.result()))
+            'tests': str(len(suite_reporter.result())),
+            'timestamp': timestamp.isoformat(),
         }
         if additional_attributes:
             attributes.update(additional_attributes)
