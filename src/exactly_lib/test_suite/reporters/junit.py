@@ -121,6 +121,8 @@ class JUnitRootSuiteReporter(reporting.RootSuiteReporter):
         root.set('failures', str(num_failures))
         root.set('errors', str(num_errors))
         root.set('time', '%f' % sum_of_time_for_cases.total_seconds())
+        root.append(ET.Element('system-out'))
+        root.append(ET.Element('system-err'))
         return root
 
     def _xml_for_case(self, test_case_setup: TestCaseSetup, processing_info: TestCaseProcessingInfo) -> ET.Element:

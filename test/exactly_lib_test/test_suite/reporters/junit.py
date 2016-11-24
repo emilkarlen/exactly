@@ -97,11 +97,10 @@ class TestExecutionOfSingleSuiteWithSingleTestCase(unittest.TestCase):
                     'tests': '1',
                     'errors': '1',
                     'failures': '0'},
-                    test_case_elements=[])
-                expected_xml.append(
-                    erroneous_test_case_xml('test case file name',
-                                            error_type=case_result.status.name,
-                                            failure_message=error_message_for_full_result(case_result)))
+                    test_case_elements=[
+                        erroneous_test_case_xml('test case file name',
+                                                error_type=case_result.status.name,
+                                                failure_message=error_message_for_full_result(case_result))])
                 expected_output = expected_output_from(expected_xml)
                 root_suite = test_suite('suite with error', [], [test_case('test case file name')])
                 test_suites = [root_suite]
@@ -436,6 +435,8 @@ def suite_xml(attributes: dict, test_case_elements: list) -> ET.Element:
     ret_val = ET.Element('testsuite', attributes)
     ret_val.append(ET.Element('properties'))
     ret_val.extend(test_case_elements)
+    ret_val.append(ET.Element('system-out'))
+    ret_val.append(ET.Element('system-err'))
     return ret_val
 
 
