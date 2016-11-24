@@ -1,5 +1,6 @@
 import io
 import os
+import platform
 import re
 import unittest
 from pathlib import Path
@@ -430,7 +431,7 @@ def suite_xml(attributes: dict, test_case_elements: list) -> ET.Element:
     attributes.update({
         'time': TIME_VALUE_REPLACEMENT,
         'timestamp': TIMESTAMP_VALUE_REPLACEMENT,
-        'hostname': HOST_VALUE_REPLACEMENT,
+        'hostname': platform.node(),
     })
     ret_val = ET.Element('testsuite', attributes)
     ret_val.append(ET.Element('properties'))
@@ -482,7 +483,6 @@ def replace_xml_variables(xml: str) -> str:
     ret_val = xml
     ret_val = _TIME_ATTRIBUTE_RE.sub(_TIME_ATTRIBUTE_REPLACEMENT, ret_val)
     ret_val = _TIMESTAMP_ATTRIBUTE_RE.sub(_TIMESTAMP_ATTRIBUTE_REPLACEMENT, ret_val)
-    ret_val = _HOST_ATTRIBUTE_RE.sub(_HOST_ATTRIBUTE_REPLACEMENT, ret_val)
     return ret_val
 
 
@@ -493,7 +493,3 @@ _TIME_ATTRIBUTE_REPLACEMENT = 'time="' + TIME_VALUE_REPLACEMENT + '"'
 _TIMESTAMP_ATTRIBUTE_RE = re.compile(r'timestamp="[^"]+"')
 TIMESTAMP_VALUE_REPLACEMENT = '__TIMESTAMP__'
 _TIMESTAMP_ATTRIBUTE_REPLACEMENT = 'timestamp="' + TIMESTAMP_VALUE_REPLACEMENT + '"'
-
-_HOST_ATTRIBUTE_RE = re.compile(r'hostname="[^"]+"')
-HOST_VALUE_REPLACEMENT = '__HOSTNAME__'
-_HOST_ATTRIBUTE_REPLACEMENT = 'hostname="' + HOST_VALUE_REPLACEMENT + '"'
