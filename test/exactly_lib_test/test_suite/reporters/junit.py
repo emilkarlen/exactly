@@ -248,7 +248,7 @@ class TestExecutionOfSuiteWithoutTestCasesButWithSubSuites(unittest.TestCase):
         expected_xml = _suites_xml([
             suite_xml(attributes={
                 'name': 'suite with single case',
-                'package': 'root suite file name',
+                'package': '.',
                 'id': '1',
                 'tests': '1',
                 'errors': '0',
@@ -293,7 +293,7 @@ class TestExecutionOfSuiteWithoutTestCasesButWithSubSuites(unittest.TestCase):
         expected_xml = _suites_xml([
             suite_xml(attributes={
                 'name': 'suite with single successful case',
-                'package': 'root suite file name',
+                'package': '.',
                 'id': '1',
                 'tests': '1',
                 'errors': '0',
@@ -303,7 +303,7 @@ class TestExecutionOfSuiteWithoutTestCasesButWithSubSuites(unittest.TestCase):
             ),
             suite_xml(attributes={
                 'name': 'suite with failing and erroneous case',
-                'package': 'root suite file name',
+                'package': '.',
                 'id': '2',
                 'tests': '2',
                 'errors': '1',
@@ -346,7 +346,7 @@ class TestExecutionOfRootSuiteWithBothTestCasesAndSubSuites(unittest.TestCase):
         expected_xml = _suites_xml([
             suite_xml(attributes={
                 'name': 'root suite file name',
-                'package': 'root suite file name',
+                'package': '.',
                 'id': '1',
                 'tests': '1',
                 'errors': '0',
@@ -356,7 +356,7 @@ class TestExecutionOfRootSuiteWithBothTestCasesAndSubSuites(unittest.TestCase):
             ),
             suite_xml(attributes={
                 'name': 'suite with single case',
-                'package': 'root suite file name',
+                'package': '.',
                 'id': '2',
                 'tests': '1',
                 'errors': '0',
