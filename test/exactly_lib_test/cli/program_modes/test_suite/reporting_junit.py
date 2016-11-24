@@ -10,7 +10,8 @@ from exactly_lib_test.test_resources.main_program import main_program_check_for_
 from exactly_lib_test.test_resources.main_program.main_program_check_base import \
     tests_for_setup_without_preprocessor
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
-from exactly_lib_test.test_suite.reporters.junit import suite_xml, successful_test_case_xml, expected_output_from
+from exactly_lib_test.test_suite.reporters.junit import suite_xml, successful_test_case_xml, expected_output_from, \
+    replace_xml_variables, TIME_VALUE_REPLACEMENT
 
 
 class SuiteWithSingleEmptyTestCase(main_program_check_for_test_suite.SetupWithoutPreprocessorWithTestActor):
@@ -37,6 +38,7 @@ class SuiteWithSingleEmptyTestCase(main_program_check_for_test_suite.SetupWithou
             'tests': '1',
             'errors': '0',
             'failures': '0',
+            'time': TIME_VALUE_REPLACEMENT,
         },
             test_case_elements=[successful_test_case_xml('the.case')]
         )
@@ -45,6 +47,9 @@ class SuiteWithSingleEmptyTestCase(main_program_check_for_test_suite.SetupWithou
 
     def expected_exit_code(self) -> int:
         return 0
+
+    def _translate_stdout_before_comparison(self, output_on_stdout: str) -> str:
+        return replace_xml_variables(output_on_stdout)
 
 
 _TESTS = [

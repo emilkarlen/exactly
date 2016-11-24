@@ -361,8 +361,10 @@ class ExpectedSuiteReporting(tuple):
         put.assertEqual(len(self.case_and_result_status_list),
                         len(sr.result()),
                         msg_header + 'Number of registered results in ' + str(reporting.SubSuiteReporter))
-        for (expected_case, expected_status), (test_case_setup, result) in zip(self.case_and_result_status_list,
-                                                                               sr.result()):
+        for (expected_case, expected_status), (test_case_setup, processing_info) in zip(
+                self.case_and_result_status_list,
+                sr.result()):
+            result = processing_info.result
             put.assertIs(expected_case,
                          test_case_setup,
                          msg_header + 'Registered %s instance for case-begin' % str(TestCaseSetup))

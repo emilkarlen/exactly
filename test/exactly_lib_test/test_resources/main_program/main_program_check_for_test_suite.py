@@ -44,7 +44,7 @@ class SetupBase:
                       actual_result: SubProcessResult):
         expected_lines = self.expected_stdout_lines(root_path)
         if expected_lines is not None:
-            actual_lines = actual_result.stdout.splitlines()
+            actual_lines = self._translate_stdout_before_comparison(actual_result.stdout).splitlines()
             line_number = 0
             for expected_line, actual_line in zip(expected_lines, actual_lines):
                 if isinstance(expected_line, str):
@@ -57,6 +57,9 @@ class SetupBase:
             put.assertEqual(len(expected_lines),
                             len(actual_lines),
                             'Expecting ' + str(len(expected_lines)) + ' lines')
+
+    def _translate_stdout_before_comparison(self, output_on_stdout: str) -> str:
+        return output_on_stdout
 
 
 class SetupWithPreprocessor(main_program_check_base.SetupWithPreprocessor,

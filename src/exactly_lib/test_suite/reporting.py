@@ -1,8 +1,24 @@
+import datetime
 import pathlib
 
 from exactly_lib.processing import test_case_processing
 from exactly_lib.util.std import StdOutputFiles
 from . import structure
+
+
+class TestCaseProcessingInfo(tuple):
+    def __new__(cls,
+                result: test_case_processing.Result,
+                duration: datetime.timedelta):
+        return tuple.__new__(cls, (result, duration))
+
+    @property
+    def result(self) -> test_case_processing.Result:
+        return self[0]
+
+    @property
+    def duration(self) -> datetime.timedelta:
+        return self[1]
 
 
 class SubSuiteProgressReporter:
@@ -46,8 +62,8 @@ class SubSuiteReporter:
 
     def case_end(self,
                  case: test_case_processing.TestCaseSetup,
-                 result: test_case_processing.Result):
-        self._result.append((case, result))
+                 execution_info: TestCaseProcessingInfo):
+        self._result.append((case, execution_info))
 
     @property
     def suite(self) -> structure.TestSuite:
@@ -55,7 +71,7 @@ class SubSuiteReporter:
 
     def result(self) -> list:
         """
-        :rtype: [(TestCaseSetup, test_case_processing.Result)]
+        :rtype: [(TestCaseSetup, TestCaseProcessingInfo)]
         """
         return self._result
 

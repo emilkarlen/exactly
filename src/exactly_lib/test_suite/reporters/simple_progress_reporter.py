@@ -75,7 +75,6 @@ class SimpleProgressRootSuiteReporter(reporting.RootSuiteReporter):
     def root_suite_end(self):
         stop_time = datetime.datetime.now()
         self._total_time_timedelta = stop_time - self._start_time
-        pass
 
     def new_sub_suite_reporter(self,
                                sub_suite: structure.TestSuite) -> reporting.SubSuiteReporter:
@@ -107,7 +106,8 @@ class SimpleProgressRootSuiteReporter(reporting.RootSuiteReporter):
         exit_value = exit_values.ALL_PASS
         for suite_reporter in self._sub_reporters:
             assert isinstance(suite_reporter, reporting.SubSuiteReporter)
-            for case, result in suite_reporter.result():
+            for case, processing_info in suite_reporter.result():
+                result = processing_info.result
                 num_tests += 1
                 case_exit_value = test_case_exit_values.from_result(result)
                 if result.status is not Status.EXECUTED:
