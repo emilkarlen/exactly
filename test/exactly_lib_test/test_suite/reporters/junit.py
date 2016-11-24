@@ -443,6 +443,7 @@ def suite_xml(attributes: dict, test_case_elements: list) -> ET.Element:
 def successful_test_case_xml(name: str) -> ET.Element:
     return ET.Element('testcase', {
         'name': name,
+        'classname': name,
     })
 
 
@@ -451,6 +452,7 @@ def failing_test_case_xml(name: str,
                           failure_message: str) -> ET.Element:
     ret_val = ET.Element('testcase', {
         'name': name,
+        'classname': name,
     })
     failure = ET.SubElement(ret_val, 'failure', {
         'type': failure_type,
@@ -464,6 +466,7 @@ def erroneous_test_case_xml(name: str,
                             failure_message: str) -> ET.Element:
     ret_val = ET.Element('testcase', {
         'name': name,
+        'classname': name,
     })
     failure = ET.SubElement(ret_val, 'error', {
         'type': error_type,

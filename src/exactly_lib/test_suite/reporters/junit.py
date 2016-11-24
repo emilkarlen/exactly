@@ -126,8 +126,10 @@ class JUnitRootSuiteReporter(reporting.RootSuiteReporter):
         return root
 
     def _xml_for_case(self, test_case_setup: TestCaseSetup, processing_info: TestCaseProcessingInfo) -> ET.Element:
+        name = self._file_path_pres(test_case_setup.file_path)
         ret_val = ET.Element('testcase', {
-            'name': self._file_path_pres(test_case_setup.file_path)
+            'name': name,
+            'classname': name,
         })
         result = processing_info.result
         if result.status != Status.EXECUTED or result.execution_result.status in ERROR_STATUSES:
