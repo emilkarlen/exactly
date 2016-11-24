@@ -1,6 +1,7 @@
 import datetime
 import os
 import pathlib
+import platform
 from xml.etree import ElementTree as ET
 
 from exactly_lib.execution.result import FullResultStatus
@@ -45,6 +46,7 @@ class JUnitRootSuiteReporter(reporting.RootSuiteReporter):
         self._start_time = None
         self._total_time_timedelta = None
         self._root_suite_dir_abs_path = root_suite_dir_abs_path
+        self._host_name = platform.node()
 
     def root_suite_begin(self):
         self._start_time = datetime.datetime.now()
@@ -97,6 +99,7 @@ class JUnitRootSuiteReporter(reporting.RootSuiteReporter):
             'name': self._file_path_pres(suite_reporter.suite.source_file),
             'tests': str(len(suite_reporter.result())),
             'timestamp': timestamp.isoformat(),
+            'hostname': self._host_name,
         }
         if additional_attributes:
             attributes.update(additional_attributes)
