@@ -444,6 +444,7 @@ def successful_test_case_xml(name: str) -> ET.Element:
     return ET.Element('testcase', {
         'name': name,
         'classname': name,
+        'time': TIME_VALUE_REPLACEMENT,
     })
 
 
@@ -453,6 +454,7 @@ def failing_test_case_xml(name: str,
     ret_val = ET.Element('testcase', {
         'name': name,
         'classname': name,
+        'time': TIME_VALUE_REPLACEMENT,
     })
     failure = ET.SubElement(ret_val, 'failure', {
         'type': failure_type,
@@ -467,6 +469,7 @@ def erroneous_test_case_xml(name: str,
     ret_val = ET.Element('testcase', {
         'name': name,
         'classname': name,
+        'time': TIME_VALUE_REPLACEMENT,
     })
     failure = ET.SubElement(ret_val, 'error', {
         'type': error_type,

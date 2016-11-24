@@ -120,7 +120,7 @@ class JUnitRootSuiteReporter(reporting.RootSuiteReporter):
                 num_errors += 1
         root.set('failures', str(num_failures))
         root.set('errors', str(num_errors))
-        root.set('time', '%f' % sum_of_time_for_cases.total_seconds())
+        root.set('time', _time_attribute_string(sum_of_time_for_cases))
         root.append(ET.Element('system-out'))
         root.append(ET.Element('system-err'))
         return root
@@ -130,6 +130,7 @@ class JUnitRootSuiteReporter(reporting.RootSuiteReporter):
         ret_val = ET.Element('testcase', {
             'name': name,
             'classname': name,
+            'time': _time_attribute_string(processing_info.duration)
         })
         result = processing_info.result
         if result.status != Status.EXECUTED or result.execution_result.status in ERROR_STATUSES:
@@ -175,3 +176,7 @@ def _error_type(result: Result) -> str:
         return result.access_error_type.name
     else:
         return result.execution_result.status.name
+
+
+def _time_attribute_string(sum_of_time_for_cases: datetime.timedelta) -> str:
+    return '%f' % sum_of_time_for_cases.total_seconds()
