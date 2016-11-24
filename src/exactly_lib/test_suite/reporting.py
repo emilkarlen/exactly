@@ -56,6 +56,7 @@ class SubSuiteReporter:
         self._suite = suite
         self._listener = listener
         self._result = []
+        self._start_time = datetime.datetime.now()
 
     def listener(self) -> SubSuiteProgressReporter:
         return self._listener
@@ -68,6 +69,10 @@ class SubSuiteReporter:
     @property
     def suite(self) -> structure.TestSuite:
         return self._suite
+
+    @property
+    def start_time(self) -> datetime.datetime:
+        return self._start_time
 
     def result(self) -> list:
         """

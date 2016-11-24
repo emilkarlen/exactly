@@ -38,7 +38,8 @@ class TestExecutionOfSingleSuiteWithSingleTestCase(unittest.TestCase):
             'tests': '0',
             'errors': '0',
             'failures': '0',
-            'time': '__TIME__',
+            'time': TIME_VALUE_REPLACEMENT,
+            'timestamp': TIMESTAMP_VALUE_REPLACEMENT,
         })
         expected_output = expected_output_from(expected_xml)
         root_suite = test_suite('root file name', [], [])
@@ -49,7 +50,6 @@ class TestExecutionOfSingleSuiteWithSingleTestCase(unittest.TestCase):
                                                                    Path(),
                                                                    test_suites)
         # ASSERT #
-        _print_xml(actual.stdout)
         self.assertEquals(0, actual.exit_code)
         self.assertEqual(expected_output, replace_xml_variables(actual.stdout))
 
@@ -67,7 +67,8 @@ class TestExecutionOfSingleSuiteWithSingleTestCase(unittest.TestCase):
                     'tests': '1',
                     'errors': '0',
                     'failures': '0',
-                    'time': '__TIME__',
+                    'time': TIME_VALUE_REPLACEMENT,
+                    'timestamp': TIMESTAMP_VALUE_REPLACEMENT,
                 },
                     test_case_elements=[successful_test_case_xml('test case file name')]
                 )
@@ -99,7 +100,8 @@ class TestExecutionOfSingleSuiteWithSingleTestCase(unittest.TestCase):
                     'tests': '1',
                     'errors': '1',
                     'failures': '0',
-                    'time': '__TIME__',
+                    'time': TIME_VALUE_REPLACEMENT,
+                    'timestamp': TIMESTAMP_VALUE_REPLACEMENT,
                 })
                 expected_xml.append(
                     erroneous_test_case_xml('test case file name',
@@ -135,7 +137,8 @@ class TestExecutionOfSingleSuiteWithSingleTestCase(unittest.TestCase):
                     'tests': '1',
                     'errors': '1',
                     'failures': '0',
-                    'time': '__TIME__',
+                    'time': TIME_VALUE_REPLACEMENT,
+                    'timestamp': TIMESTAMP_VALUE_REPLACEMENT,
                 })
                 expected_xml.append(
                     erroneous_test_case_xml('test case file name',
@@ -168,7 +171,8 @@ class TestExecutionOfSingleSuiteWithSingleTestCase(unittest.TestCase):
                     'tests': '1',
                     'errors': '0',
                     'failures': '1',
-                    'time': '__TIME__',
+                    'time': TIME_VALUE_REPLACEMENT,
+                    'timestamp': TIMESTAMP_VALUE_REPLACEMENT,
                 })
                 expected_xml.append(
                     failing_test_case_xml('test case file name',
@@ -216,7 +220,8 @@ class TestExecutionOfSingleSuiteWithMultipleTestCases(unittest.TestCase):
             'tests': '3',
             'errors': '1',
             'failures': '1',
-            'time': '__TIME__',
+            'time': TIME_VALUE_REPLACEMENT,
+            'timestamp': TIMESTAMP_VALUE_REPLACEMENT,
         },
             test_case_elements=[
                 successful_test_case_xml('successful case'),
@@ -260,7 +265,8 @@ class TestExecutionOfSuiteWithoutTestCasesButWithSubSuites(unittest.TestCase):
                 'tests': '1',
                 'errors': '0',
                 'failures': '0',
-                'time': '__TIME__',
+                'time': TIME_VALUE_REPLACEMENT,
+                'timestamp': TIMESTAMP_VALUE_REPLACEMENT,
             },
                 test_case_elements=[successful_test_case_xml('the test case')]
             ),
@@ -306,7 +312,8 @@ class TestExecutionOfSuiteWithoutTestCasesButWithSubSuites(unittest.TestCase):
                 'tests': '1',
                 'errors': '0',
                 'failures': '0',
-                'time': '__TIME__',
+                'time': TIME_VALUE_REPLACEMENT,
+                'timestamp': TIMESTAMP_VALUE_REPLACEMENT,
             },
                 test_case_elements=[successful_test_case_xml('successful case')]
             ),
@@ -317,7 +324,8 @@ class TestExecutionOfSuiteWithoutTestCasesButWithSubSuites(unittest.TestCase):
                 'tests': '2',
                 'errors': '1',
                 'failures': '1',
-                'time': '__TIME__',
+                'time': TIME_VALUE_REPLACEMENT,
+                'timestamp': TIMESTAMP_VALUE_REPLACEMENT,
             },
                 test_case_elements=[
                     failing_test_case_xml('failing case',
@@ -361,7 +369,8 @@ class TestExecutionOfRootSuiteWithBothTestCasesAndSubSuites(unittest.TestCase):
                 'tests': '1',
                 'errors': '0',
                 'failures': '0',
-                'time': '__TIME__',
+                'time': TIME_VALUE_REPLACEMENT,
+                'timestamp': TIMESTAMP_VALUE_REPLACEMENT,
             },
                 test_case_elements=[successful_test_case_xml('test case in root suite')]
             ),
@@ -372,7 +381,8 @@ class TestExecutionOfRootSuiteWithBothTestCasesAndSubSuites(unittest.TestCase):
                 'tests': '1',
                 'errors': '0',
                 'failures': '0',
-                'time': '__TIME__',
+                'time': TIME_VALUE_REPLACEMENT,
+                'timestamp': TIMESTAMP_VALUE_REPLACEMENT,
             },
                 test_case_elements=[successful_test_case_xml('test case in sub suite')]
             ),
@@ -480,15 +490,16 @@ def erroneous_test_case_xml(name: str,
 
 
 def replace_xml_variables(xml: str) -> str:
-    return _TIME_ATTRIBUTE_RE.sub(_TIME_ATTRIBUTE_REPLACEMENT, xml)
-
-
-def _print_xml(xml: str):
-    print('-----------------------')
-    print(xml)
-    print('-----------------------')
+    ret_val = xml
+    ret_val = _TIME_ATTRIBUTE_RE.sub(_TIME_ATTRIBUTE_REPLACEMENT, ret_val)
+    ret_val = _TIMESTAMP_ATTRIBUTE_RE.sub(_TIMESTAMP_ATTRIBUTE_REPLACEMENT, ret_val)
+    return ret_val
 
 
 _TIME_ATTRIBUTE_RE = re.compile(r'time="[0-9]*(\.[0-9]+)?"')
 TIME_VALUE_REPLACEMENT = '__TIME__'
 _TIME_ATTRIBUTE_REPLACEMENT = 'time="' + TIME_VALUE_REPLACEMENT + '"'
+
+_TIMESTAMP_ATTRIBUTE_RE = re.compile(r'timestamp="[^"]+"')
+TIMESTAMP_VALUE_REPLACEMENT = '__TIMESTAMP__'
+_TIMESTAMP_ATTRIBUTE_REPLACEMENT = 'timestamp="' + TIMESTAMP_VALUE_REPLACEMENT + '"'
