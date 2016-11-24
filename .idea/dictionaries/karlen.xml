@@ -2,6 +2,7 @@
   <dictionary name="karlen">
     <words>
       <w>argv</w>
+      <w>classname</w>
       <w>exactly</w>
       <w>identation</w>
       <w>instrs</w>
