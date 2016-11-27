@@ -1,7 +1,7 @@
 import pathlib
 
 from exactly_lib.act_phase_setups import utils
-from exactly_lib.act_phase_setups.script_interpretation.script_language_management import ScriptLanguageSetup
+from exactly_lib.act_phase_setups.source_interpreter.script_language_management import ScriptLanguageSetup
 from exactly_lib.act_phase_setups.util.executor_made_of_parts import main as executor_made_of_parts
 from exactly_lib.instructions.utils import sub_process_execution as spe
 from exactly_lib.processing.act_phase import ActPhaseSetup
