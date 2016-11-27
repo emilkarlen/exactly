@@ -2,7 +2,7 @@ import os
 import pathlib
 import unittest
 
-from exactly_lib.act_phase_setups.util.executor_made_of_parts import main as sut
+from exactly_lib.act_phase_setups.util.executor_made_of_parts import parts as sut
 from exactly_lib.execution.phase_step_identifiers import phase_step
 from exactly_lib.test_case.act_phase_handling import ExitCodeOrHardError, new_eh_exit_code
 from exactly_lib.test_case.phases.act import ActPhaseInstruction

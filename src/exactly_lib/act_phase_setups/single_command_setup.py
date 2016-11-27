@@ -1,7 +1,7 @@
 import pathlib
 
 from exactly_lib.act_phase_setups import utils
-from exactly_lib.act_phase_setups.util.executor_made_of_parts import main as executor_made_of_parts
+from exactly_lib.act_phase_setups.util.executor_made_of_parts import parts
 from exactly_lib.act_phase_setups.util.executor_made_of_parts.parser_for_single_line import \
     ParserForSingleLineUsingStandardSyntaxSplitAccordingToShellSyntax
 from exactly_lib.processing.act_phase import ActPhaseSetup
@@ -17,14 +17,14 @@ def act_phase_setup() -> ActPhaseSetup:
     return ActPhaseSetup(Constructor())
 
 
-class Constructor(executor_made_of_parts.Constructor):
+class Constructor(parts.Constructor):
     def __init__(self):
         super().__init__(ParserForSingleLineUsingStandardSyntaxSplitAccordingToShellSyntax(),
                          Validator,
                          Executor)
 
 
-class Validator(executor_made_of_parts.Validator):
+class Validator(parts.Validator):
     def __init__(self,
                  environment: InstructionEnvironmentForPreSdsStep,
                  cmd_and_args: list):
@@ -48,7 +48,7 @@ class Validator(executor_made_of_parts.Validator):
         return svh.new_svh_success()
 
 
-class Executor(executor_made_of_parts.Executor):
+class Executor(parts.Executor):
     def __init__(self,
                  environment: InstructionEnvironmentForPreSdsStep,
                  cmd_and_args: list):
