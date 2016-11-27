@@ -12,10 +12,10 @@ from exactly_lib.processing.test_case_processing import Result, AccessErrorType
 from exactly_lib.test_suite import execution
 from exactly_lib.test_suite import structure
 from exactly_lib.test_suite.reporters import junit as sut
+from exactly_lib_test.execution.test_resources.full_result_values import FULL_RESULT_HARD_ERROR, FULL_RESULT_VALIDATE, \
+    FULL_RESULT_IMPLEMENTATION_ERROR, FULL_RESULT_XPASS, FULL_RESULT_XFAIL
 from exactly_lib_test.test_case.test_resources import error_info
 from exactly_lib_test.test_resources.str_std_out_files import StringStdOutFiles
-from exactly_lib_test.test_suite.reporters.test_resources import FULL_RESULT_HARD_ERROR, FULL_RESULT_VALIDATE, \
-    FULL_RESULT_IMPLEMENTATION_ERROR, FULL_RESULT_XPASS, FULL_RESULT_XFAIL
 from exactly_lib_test.test_suite.test_resources.execution_utils import FULL_RESULT_PASS, test_suite, test_case, \
     FULL_RESULT_FAIL, FULL_RESULT_SKIP, TestCaseProcessorThatGivesConstantPerCase
 from exactly_lib_test.test_suite.test_resources.execution_utils import TestCaseProcessorThatGivesConstant, \
