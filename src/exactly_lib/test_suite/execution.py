@@ -108,7 +108,7 @@ class SuitesExecutor:
         for case in suite.test_cases:
             sub_suite_reporter.listener().case_begin(case)
             processing_info = _process_and_time(case_processor, case)
-            sub_suite_reporter.listener().case_end(case, processing_info.result)
+            sub_suite_reporter.listener().case_end(case, processing_info)
             sub_suite_reporter.case_end(case, processing_info)
         sub_suite_reporter.listener().suite_end()
 

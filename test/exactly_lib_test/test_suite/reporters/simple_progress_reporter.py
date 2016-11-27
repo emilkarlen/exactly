@@ -1,4 +1,5 @@
 import datetime
+import re
 import unittest
 from pathlib import Path
 
@@ -34,7 +35,7 @@ def _suite_end(file_name: str) -> str:
 
 
 def _case(file_name: str, exit_value: case_ev.ExitValue) -> str:
-    return 'case  ' + file_name + ': ' + exit_value.exit_identifier
+    return 'case  ' + file_name + ': (__TIME__s) ' + exit_value.exit_identifier
 
 
 class TestExecutionOfSuite(unittest.TestCase):
@@ -94,8 +95,9 @@ class TestExecutionOfSuite(unittest.TestCase):
                 std_output_files.finish()
 
                 self.assertEquals(expected_suite_exit_value.exit_code, exit_code)
+                stdout_contents_prepared_for_assertion = _replace_seconds_with_const(std_output_files.stdout_contents)
                 self.assertEqual(expected_output,
-                                 std_output_files.stdout_contents)
+                                 stdout_contents_prepared_for_assertion)
 
 
 class TestFinalResultFormatting(unittest.TestCase):
@@ -152,3 +154,11 @@ def _suite_executor_for_case_processing_that_unconditionally(execution_result: r
     case_result = test_case_processing.new_executed(execution_result)
     return execution.SuitesExecutor(root_suite_reporter, DUMMY_CASE_PROCESSING,
                                     lambda conf: TestCaseProcessorThatGivesConstant(case_result))
+
+
+def _replace_seconds_with_const(string_with_seconds_in_decimal_notation: str) -> str:
+    return _TIME_ATTRIBUTE_RE.sub(TIME_VALUE_REPLACEMENT, string_with_seconds_in_decimal_notation)
+
+
+_TIME_ATTRIBUTE_RE = re.compile(r'[0-9]+(\.[0-9]+)?')
+TIME_VALUE_REPLACEMENT = '__TIME__'
