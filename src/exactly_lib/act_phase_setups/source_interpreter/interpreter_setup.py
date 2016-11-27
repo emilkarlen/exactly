@@ -44,7 +44,7 @@ class Parser(parts.Parser):
 
 
 class Executor(CommandExecutor):
-    FILE_NAME_STEM = 'act-script'
+    FILE_NAME_STEM = 'act-source'
 
     def __init__(self,
                  environment: InstructionEnvironmentForPreSdsStep,
