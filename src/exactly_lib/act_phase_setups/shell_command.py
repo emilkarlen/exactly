@@ -1,15 +1,13 @@
 import pathlib
 
-from exactly_lib.act_phase_setups import utils
 from exactly_lib.act_phase_setups.util.executor_made_of_parts import parts
 from exactly_lib.act_phase_setups.util.executor_made_of_parts.parser_for_single_line import \
     ParserForSingleLineUsingStandardSyntax
+from exactly_lib.act_phase_setups.util.executor_made_of_parts.sub_process_executor import CommandExecutor
 from exactly_lib.processing.act_phase import ActPhaseSetup
-from exactly_lib.test_case.act_phase_handling import ExitCodeOrHardError
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case.phases.result import sh
-from exactly_lib.util.std import StdFiles
+from exactly_lib.util.process_execution.process_execution_settings import Command
 
 
 def act_phase_setup() -> ActPhaseSetup:
@@ -23,22 +21,13 @@ class Constructor(parts.Constructor):
                          Executor)
 
 
-class Executor(parts.Executor):
+class Executor(CommandExecutor):
     def __init__(self,
                  environment: InstructionEnvironmentForPreSdsStep,
                  command_line: str):
-        self.environment = environment
         self.command_line = command_line
 
-    def prepare(self,
-                environment: InstructionEnvironmentForPostSdsStep,
-                script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
-        return sh.new_sh_success()
-
-    def execute(self,
-                environment: InstructionEnvironmentForPostSdsStep,
-                script_output_dir_path: pathlib.Path,
-                std_files: StdFiles) -> ExitCodeOrHardError:
-        return utils.execute_shell_command(self.command_line,
-                                           std_files,
-                                           environment.process_execution_settings)
+    def _command_to_execute(self,
+                            environment: InstructionEnvironmentForPostSdsStep,
+                            script_output_dir_path: pathlib.Path) -> Command:
+        return Command(self.command_line, shell=True)

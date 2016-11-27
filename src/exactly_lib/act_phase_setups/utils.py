@@ -6,25 +6,9 @@ from exactly_lib.util.process_execution.process_execution_settings import Proces
 from exactly_lib.util.std import StdFiles
 
 
-def execute_cmd_and_args(cmd_and_args: list,
-                         std_files: StdFiles,
-                         process_execution_settings: ProcessExecutionSettings) -> ExitCodeOrHardError:
-    return _execute_sub_process(Command(cmd_and_args, shell=False),
-                                std_files,
-                                process_execution_settings)
-
-
-def execute_shell_command(command_line: str,
-                          std_files: StdFiles,
-                          process_execution_settings: ProcessExecutionSettings) -> ExitCodeOrHardError:
-    return _execute_sub_process(Command(command_line, shell=True),
-                                std_files,
-                                process_execution_settings)
-
-
-def _execute_sub_process(command: Command,
-                         std_files: StdFiles,
-                         process_execution_settings: ProcessExecutionSettings) -> ExitCodeOrHardError:
+def execute_sub_process(command: Command,
+                        std_files: StdFiles,
+                        process_execution_settings: ProcessExecutionSettings) -> ExitCodeOrHardError:
     try:
         exit_code = subprocess.call(command.args,
                                     timeout=process_execution_settings.timeout_in_seconds,
