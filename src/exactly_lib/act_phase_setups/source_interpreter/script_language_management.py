@@ -18,10 +18,6 @@ class ScriptLanguageSetup:
     def __init__(self, file_manager: ScriptFileManager):
         self.__file_manager = file_manager
 
-    @property
-    def file_manager(self) -> ScriptFileManager:
-        return self.__file_manager
-
     def base_name_from_stem(self, stem: str) -> str:
         return self.__file_manager.base_name_from_stem(stem)
 
