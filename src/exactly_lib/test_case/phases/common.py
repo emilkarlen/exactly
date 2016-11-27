@@ -121,7 +121,3 @@ class TestCaseInstruction(Instruction):
     @property
     def phase(self) -> Phase:
         raise NotImplementedError()
-
-
-class TestCaseInstructionExecutedInSandbox(TestCaseInstruction):
-    pass

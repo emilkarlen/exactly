@@ -6,7 +6,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionParserSource, SingleInstructionParser
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths, \
-    TestCaseInstructionExecutedInSandbox
+    TestCaseInstruction
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import sh
 
@@ -81,7 +81,7 @@ class InstructionParser(SingleInstructionParser):
         self.instruction_info = instruction_info
         self.setup_parser = setup_parser
 
-    def apply(self, source: SingleInstructionParserSource) -> TestCaseInstructionExecutedInSandbox:
+    def apply(self, source: SingleInstructionParserSource) -> TestCaseInstruction:
         source_info = spe.InstructionSourceInfo(source.line_sequence.first_line.line_number,
                                                 self.instruction_info.instruction_name)
         setup = self.setup_parser.apply(source)
