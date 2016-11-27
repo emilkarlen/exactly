@@ -21,3 +21,24 @@ class ProcessExecutionSettings(tuple):
 
 def with_no_timeout() -> ProcessExecutionSettings:
     return ProcessExecutionSettings()
+
+
+class Command(tuple):
+    def __new__(cls,
+                args,
+                shell: bool):
+        return tuple.__new__(cls, (args, shell))
+
+    @property
+    def args(self):
+        """
+        :return: Either a string or an iterable of strings
+        """
+        return self[0]
+
+    @property
+    def shell(self) -> bool:
+        """
+        Tells whether args should be executed as a shell command.
+        """
+        return self[1]

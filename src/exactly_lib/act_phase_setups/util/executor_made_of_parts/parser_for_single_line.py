@@ -1,6 +1,6 @@
 import shlex
 
-from exactly_lib.act_phase_setups.util.executor_made_of_parts.main import Parser, ParseException
+from exactly_lib.act_phase_setups.util.executor_made_of_parts.parts import Parser, ParseException
 from exactly_lib.section_document.syntax import is_empty_line, is_comment_line
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.result import svh

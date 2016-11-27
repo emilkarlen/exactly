@@ -1,7 +1,7 @@
 import pathlib
 
 from exactly_lib.act_phase_setups import utils
-from exactly_lib.act_phase_setups.util.executor_made_of_parts import main as executor_made_of_parts
+from exactly_lib.act_phase_setups.util.executor_made_of_parts import parts
 from exactly_lib.act_phase_setups.util.executor_made_of_parts.parser_for_single_line import \
     ParserForSingleLineUsingStandardSyntax
 from exactly_lib.processing.act_phase import ActPhaseSetup
@@ -16,14 +16,14 @@ def act_phase_setup() -> ActPhaseSetup:
     return ActPhaseSetup(Constructor())
 
 
-class Constructor(executor_made_of_parts.Constructor):
+class Constructor(parts.Constructor):
     def __init__(self):
         super().__init__(ParserForSingleLineUsingStandardSyntax(),
-                         executor_made_of_parts.UnconditionallySuccessfulValidator,
+                         parts.UnconditionallySuccessfulValidator,
                          Executor)
 
 
-class Executor(executor_made_of_parts.Executor):
+class Executor(parts.Executor):
     def __init__(self,
                  environment: InstructionEnvironmentForPreSdsStep,
                  command_line: str):
