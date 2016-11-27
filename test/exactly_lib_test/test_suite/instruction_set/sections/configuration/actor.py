@@ -1,7 +1,7 @@
 import unittest
 
-from exactly_lib.act_phase_setups.script_interpretation import script_language_setup
-from exactly_lib.act_phase_setups.script_interpretation.script_language_management import ScriptLanguageSetup, \
+from exactly_lib.act_phase_setups.source_interpreter import script_language_setup
+from exactly_lib.act_phase_setups.source_interpreter.script_language_management import ScriptLanguageSetup, \
     StandardScriptFileManager
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \

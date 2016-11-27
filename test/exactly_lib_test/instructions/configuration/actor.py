@@ -1,8 +1,8 @@
 import pathlib
 import unittest
 
-from exactly_lib.act_phase_setups.script_interpretation import script_language_setup
-from exactly_lib.act_phase_setups.script_interpretation.script_language_management import ScriptLanguageSetup, \
+from exactly_lib.act_phase_setups.source_interpreter import script_language_setup
+from exactly_lib.act_phase_setups.source_interpreter.script_language_management import ScriptLanguageSetup, \
     StandardScriptFileManager
 from exactly_lib.instructions.configuration import actor as sut
 from exactly_lib.instructions.configuration.utils import actor_utils

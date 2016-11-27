@@ -2,8 +2,8 @@ import pathlib
 import unittest
 from contextlib import contextmanager
 
-from exactly_lib.act_phase_setups.script_interpretation import script_language_setup as sut, python3
-from exactly_lib.act_phase_setups.script_interpretation.script_language_management import ScriptFileManager, \
+from exactly_lib.act_phase_setups.source_interpreter import script_language_setup as sut, python3
+from exactly_lib.act_phase_setups.source_interpreter.script_language_management import ScriptFileManager, \
     ScriptLanguageSetup
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.act_phase_setups.test_resources import py_program
