@@ -53,7 +53,7 @@ class MainStepExecutorForSubProcess(MainStepExecutor):
                                        self._setup.cmd_and_args_resolver.resolve(environment.home_and_sds))
         executor = spe.ExecutorThatStoresResultInFilesInDir(
             self._setup.is_shell,
-            spe.settings_from_instruction_env(environment))
+            environment.process_execution_settings)
         return spe.execute_and_read_stderr_if_non_zero_exitcode(execute_info, executor, logging_paths)
 
     def apply_as_non_assertion(self,

@@ -1,6 +1,5 @@
 import unittest
 
-from exactly_lib.instructions.utils.sub_process_execution import with_no_timeout
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParser, SingleInstructionParserSource
 from exactly_lib.test_case import phase_identifier
@@ -11,7 +10,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
     InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import svh
-from exactly_lib.util.process_execution.process_execution_settings import ProcessExecutionSettings
+from exactly_lib.util.process_execution.process_execution_settings import ProcessExecutionSettings, with_no_timeout
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check, svh_check
 from exactly_lib_test.instructions.test_resources.expectations import ExpectationBase

@@ -17,3 +17,7 @@ class ProcessExecutionSettings(tuple):
         :return: None if inherit current process' environment
         """
         return self[1]
+
+
+def with_no_timeout() -> ProcessExecutionSettings:
+    return ProcessExecutionSettings()

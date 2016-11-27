@@ -3,7 +3,6 @@ import pathlib
 from exactly_lib.act_phase_setups import utils
 from exactly_lib.act_phase_setups.source_interpreter.source_file_management import SourceInterpreterSetup
 from exactly_lib.act_phase_setups.util.executor_made_of_parts import main as executor_made_of_parts
-from exactly_lib.instructions.utils import sub_process_execution as spe
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.test_case.act_phase_handling import ExitCodeOrHardError, \
     ActPhaseHandling
@@ -74,7 +73,7 @@ class Executor(executor_made_of_parts.Executor):
         script_file_path = self._script_path(script_output_dir_path)
         cmd_and_args = self.script_language_setup.command_and_args_for_executing_script_file(str(script_file_path))
         return utils.execute_cmd_and_args(cmd_and_args, std_files,
-                                          spe.settings_from_instruction_env(environment))
+                                          environment.process_execution_settings)
 
     def _script_path(self,
                      script_output_dir_path: pathlib.Path) -> pathlib.Path:
