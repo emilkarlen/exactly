@@ -228,6 +228,7 @@ class _ExecutorThatExecutesPythonProgramFile(ActSourceAndExecutorThatJustReturns
                 script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
         exit_code = subprocess.call([sys.executable, str(self.python_program_file)],
+                                    timeout=60,
                                     stdin=std_files.stdin,
                                     stdout=std_files.output.out,
                                     stderr=std_files.output.err)
@@ -249,6 +250,7 @@ class _ExecutorThatExecutesPythonProgramSource(ActSourceAndExecutorThatJustRetur
             f.write(self.python_program_source)
 
         exit_code = subprocess.call([sys.executable, str(python_file)],
+                                    timeout=60,
                                     stdin=std_files.stdin,
                                     stdout=std_files.output.out,
                                     stderr=std_files.output.err)

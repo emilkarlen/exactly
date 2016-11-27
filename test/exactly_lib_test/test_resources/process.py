@@ -90,6 +90,7 @@ class ProcessExecutorForSubProcess(ProcessExecutor):
 
     def execute(self, files: StdFiles) -> int:
         return subprocess.call(self.__cmd_and_args,
+                               timeout=60,
                                stdin=files.stdin,
                                stdout=files.output.out,
                                stderr=files.output.err)
