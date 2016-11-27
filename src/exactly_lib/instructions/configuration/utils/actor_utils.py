@@ -1,6 +1,7 @@
 import shlex
 
 from exactly_lib.act_phase_setups import shell_command
+from exactly_lib.act_phase_setups.source_interpreter import shell_command_interpreter_setup as shell_cmd
 from exactly_lib.act_phase_setups.source_interpreter.interpreter_setup import new_for_script_language_handling
 from exactly_lib.act_phase_setups.source_interpreter.source_file_management import SourceInterpreterSetup
 from exactly_lib.act_phase_setups.source_interpreter.source_file_management import StandardSourceFileManager
@@ -15,6 +16,8 @@ from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.util.cli_syntax.elements import argument as a
 
 SHELL_COMMAND_ACTOR_KEYWORD = 'shell'
+
+SHELL_COMMAND_INTERPRETER_ACTOR_KEYWORD = '$'
 
 INTERPRETER_ACTOR_KEYWORD = 'interpreter'
 
@@ -92,13 +95,27 @@ def parse(source: SingleInstructionParserSource) -> ActPhaseHandling:
     if args:
         if args[0] == SHELL_COMMAND_ACTOR_KEYWORD and len(args) > 1:
             raise SingleInstructionInvalidArgumentException('Superfluous argument to ' + SHELL_COMMAND_ACTOR_KEYWORD)
+    if len(args) > 0 and args[0] == INTERPRETER_ACTOR_KEYWORD:
+        if len(args) == 1:
+            raise SingleInstructionInvalidArgumentException('Missing interpreter')
+        return _parse_interpreter(args[1])
+    else:
+        return _parse_interpreter(arg)
 
+
+def _parse_interpreter(arg: str) -> ActPhaseHandling:
+    args = arg.split(maxsplit=1)
+    if not args:
+        raise SingleInstructionInvalidArgumentException('Missing interpreter')
+    if args[0] == SHELL_COMMAND_INTERPRETER_ACTOR_KEYWORD:
+        if len(args) == 1:
+            raise SingleInstructionInvalidArgumentException('Missing shell command for interpreter')
+        else:
+            return shell_cmd.handling_for_interpreter_command(args[1])
     try:
         command_and_arguments = shlex.split(arg)
     except:
         raise SingleInstructionInvalidArgumentException('Invalid quoting: ' + arg)
-    if len(command_and_arguments) > 0 and command_and_arguments[0] == INTERPRETER_ACTOR_KEYWORD:
-        del command_and_arguments[0]
     if not command_and_arguments:
         raise SingleInstructionInvalidArgumentException('Missing interpreter')
 
