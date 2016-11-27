@@ -92,6 +92,7 @@ def parse(source: SingleInstructionParserSource) -> ActPhaseHandling:
     if args:
         if args[0] == SHELL_COMMAND_ACTOR_KEYWORD and len(args) > 1:
             raise SingleInstructionInvalidArgumentException('Superfluous argument to ' + SHELL_COMMAND_ACTOR_KEYWORD)
+
     try:
         command_and_arguments = shlex.split(arg)
     except:
