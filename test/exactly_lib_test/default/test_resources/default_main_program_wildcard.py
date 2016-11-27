@@ -4,11 +4,12 @@ from exactly_lib.execution.exit_values import EXECUTION__PASS
 from exactly_lib.test_suite import exit_values
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.test_resources.file_structure import DirContents, Dir, File, empty_file
-from exactly_lib_test.test_resources.main_program import main_program_check_for_test_suite
 from exactly_lib_test.test_suite.reporters.test_resources import simple_progress_reporter_output
+from exactly_lib_test.test_suite.reporters.test_resources.simple_progress_reporter_test_setup_base import \
+    SetupWithReplacementOfVariableOutputWithPlaceholders
 
 
-class ReferencesToCaseFilesThatMatchesNoFiles(main_program_check_for_test_suite.SetupWithoutPreprocessorWithTestActor):
+class ReferencesToCaseFilesThatMatchesNoFiles(SetupWithReplacementOfVariableOutputWithPlaceholders):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -33,7 +34,7 @@ class ReferencesToCaseFilesThatMatchesNoFiles(main_program_check_for_test_suite.
         return exit_values.ALL_PASS.exit_code
 
 
-class ReferencesToSuiteFilesThatMatchesNoFiles(main_program_check_for_test_suite.SetupWithoutPreprocessorWithTestActor):
+class ReferencesToSuiteFilesThatMatchesNoFiles(SetupWithReplacementOfVariableOutputWithPlaceholders):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -58,8 +59,7 @@ class ReferencesToSuiteFilesThatMatchesNoFiles(main_program_check_for_test_suite
         return exit_values.ALL_PASS.exit_code
 
 
-class ReferencesToCaseFilesThatMatchesFilesTypeQuestionMark(
-    main_program_check_for_test_suite.SetupWithoutPreprocessorWithTestActor):
+class ReferencesToCaseFilesThatMatchesFilesTypeQuestionMark(SetupWithReplacementOfVariableOutputWithPlaceholders):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -89,7 +89,7 @@ class ReferencesToCaseFilesThatMatchesFilesTypeQuestionMark(
 
 
 class ReferencesToSuiteFilesThatMatchesFilesTypeQuestionMark(
-    main_program_check_for_test_suite.SetupWithoutPreprocessorWithTestActor):
+    SetupWithReplacementOfVariableOutputWithPlaceholders):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -120,8 +120,7 @@ class ReferencesToSuiteFilesThatMatchesFilesTypeQuestionMark(
         return exit_values.ALL_PASS.exit_code
 
 
-class ReferencesToCaseFilesThatMatchesFilesTypeCharacterRange(
-    main_program_check_for_test_suite.SetupWithoutPreprocessorWithTestActor):
+class ReferencesToCaseFilesThatMatchesFilesTypeCharacterRange(SetupWithReplacementOfVariableOutputWithPlaceholders):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -153,8 +152,7 @@ class ReferencesToCaseFilesThatMatchesFilesTypeCharacterRange(
         return exit_values.ALL_PASS.exit_code
 
 
-class ReferencesToSuiteFilesThatMatchesFilesTypeCharacterRange(
-    main_program_check_for_test_suite.SetupWithoutPreprocessorWithTestActor):
+class ReferencesToSuiteFilesThatMatchesFilesTypeCharacterRange(SetupWithReplacementOfVariableOutputWithPlaceholders):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -190,7 +188,7 @@ class ReferencesToSuiteFilesThatMatchesFilesTypeCharacterRange(
 
 
 class ReferencesToSuiteFilesThatMatchesFilesTypeNegatedCharacterRange(
-    main_program_check_for_test_suite.SetupWithoutPreprocessorWithTestActor):
+    SetupWithReplacementOfVariableOutputWithPlaceholders):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -222,7 +220,7 @@ class ReferencesToSuiteFilesThatMatchesFilesTypeNegatedCharacterRange(
 
 
 class ReferencesToCaseFilesThatMatchesFilesTypeNegatedCharacterRange(
-    main_program_check_for_test_suite.SetupWithoutPreprocessorWithTestActor):
+    SetupWithReplacementOfVariableOutputWithPlaceholders):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -252,7 +250,7 @@ class ReferencesToCaseFilesThatMatchesFilesTypeNegatedCharacterRange(
         return exit_values.ALL_PASS.exit_code
 
 
-class ReferencesToCaseFilesInAnyDirectSubDir(main_program_check_for_test_suite.SetupWithoutPreprocessorWithTestActor):
+class ReferencesToCaseFilesInAnyDirectSubDir(SetupWithReplacementOfVariableOutputWithPlaceholders):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -294,7 +292,7 @@ class ReferencesToCaseFilesInAnyDirectSubDir(main_program_check_for_test_suite.S
         return exit_values.ALL_PASS.exit_code
 
 
-class ReferencesToSuiteFilesInAnyDirectSubDir(main_program_check_for_test_suite.SetupWithoutPreprocessorWithTestActor):
+class ReferencesToSuiteFilesInAnyDirectSubDir(SetupWithReplacementOfVariableOutputWithPlaceholders):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -340,7 +338,7 @@ class ReferencesToSuiteFilesInAnyDirectSubDir(main_program_check_for_test_suite.
         return exit_values.ALL_PASS.exit_code
 
 
-class ReferencesToCaseFilesInAnySubDir(main_program_check_for_test_suite.SetupWithoutPreprocessorWithTestActor):
+class ReferencesToCaseFilesInAnySubDir(SetupWithReplacementOfVariableOutputWithPlaceholders):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -372,7 +370,7 @@ class ReferencesToCaseFilesInAnySubDir(main_program_check_for_test_suite.SetupWi
             expected_line.case(root_path / 'sub-dir-1' / 'a.case', EXECUTION__PASS.exit_identifier),
             expected_line.case(root_path / 'sub-dir-1' / 'b.case', EXECUTION__PASS.exit_identifier),
             expected_line.case(root_path / 'sub-dir-1' / 'sub-dir-1-1' / '1-1.case',
-                                        EXECUTION__PASS.exit_identifier),
+                               EXECUTION__PASS.exit_identifier),
             expected_line.case(root_path / 'sub-dir-2' / 'x.case', EXECUTION__PASS.exit_identifier),
             expected_line.case(root_path / 'sub-dir-2' / 'y.case', EXECUTION__PASS.exit_identifier),
             expected_line.suite_end(root_path / 'main.suite'),
@@ -386,7 +384,7 @@ class ReferencesToCaseFilesInAnySubDir(main_program_check_for_test_suite.SetupWi
         return exit_values.ALL_PASS.exit_code
 
 
-class ReferencesToSuiteFilesInAnySubDir(main_program_check_for_test_suite.SetupWithoutPreprocessorWithTestActor):
+class ReferencesToSuiteFilesInAnySubDir(SetupWithReplacementOfVariableOutputWithPlaceholders):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -438,7 +436,7 @@ class ReferencesToSuiteFilesInAnySubDir(main_program_check_for_test_suite.SetupW
         return exit_values.ALL_PASS.exit_code
 
 
-class ReferencesToCaseFilesThatAreDirectories(main_program_check_for_test_suite.SetupWithoutPreprocessorWithTestActor):
+class ReferencesToCaseFilesThatAreDirectories(SetupWithReplacementOfVariableOutputWithPlaceholders):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -462,7 +460,7 @@ class ReferencesToCaseFilesThatAreDirectories(main_program_check_for_test_suite.
         return exit_values.INVALID_SUITE.exit_code
 
 
-class ReferencesToSuiteFilesThatAreDirectories(main_program_check_for_test_suite.SetupWithoutPreprocessorWithTestActor):
+class ReferencesToSuiteFilesThatAreDirectories(SetupWithReplacementOfVariableOutputWithPlaceholders):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -486,8 +484,7 @@ class ReferencesToSuiteFilesThatAreDirectories(main_program_check_for_test_suite
         return exit_values.INVALID_SUITE.exit_code
 
 
-class ReferencesToCaseFilesInSubDirThatMatchesFiles(
-    main_program_check_for_test_suite.SetupWithoutPreprocessorWithTestActor):
+class ReferencesToCaseFilesInSubDirThatMatchesFiles(SetupWithReplacementOfVariableOutputWithPlaceholders):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
