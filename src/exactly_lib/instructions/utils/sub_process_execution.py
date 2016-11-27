@@ -8,6 +8,7 @@ from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.util import file_utils
 from exactly_lib.util.file_utils import write_new_text_file
+from exactly_lib.util.process_execution.process_execution_settings import ProcessExecutionSettings
 
 EXIT_CODE_FILE_NAME = 'exitcode'
 STDOUT_FILE_NAME = 'stdout'
@@ -100,30 +101,8 @@ class CmdAndArgsResolver:
         raise NotImplementedError()
 
 
-class ProcessExecutionSettings(tuple):
-    def __new__(cls,
-                timeout_in_seconds: int = None,
-                environ: dict = None):
-        return tuple.__new__(cls, (timeout_in_seconds, environ))
-
-    @property
-    def timeout_in_seconds(self) -> int:
-        """
-        :return: None if no timeout
-        """
-        return self[0]
-
-    @property
-    def environ(self) -> dict:
-        """
-        :return: None if inherit current process' environment
-        """
-        return self[1]
-
-
 def settings_from_instruction_env(environment: InstructionEnvironmentForPreSdsStep) -> ProcessExecutionSettings:
     return ProcessExecutionSettings(timeout_in_seconds=environment.timeout_in_seconds,
-
                                     environ=environment.environ)
 
 
