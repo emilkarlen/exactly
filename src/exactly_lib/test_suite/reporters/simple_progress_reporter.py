@@ -133,7 +133,7 @@ def format_final_result_for_valid_suite(num_cases: int,
         num_tests = '1 test' if num_cases == 1 else '%d tests' % num_cases
         ret_val.append(num_tests)
         ret_val.append('in')
-        ret_val.extend(list(elapsed_time_value_and_unit(elapsed_time)))
+        ret_val.append(''.join(elapsed_time_value_and_unit(elapsed_time)))
         return ' '.join(ret_val)
 
     def error_lines() -> list:
