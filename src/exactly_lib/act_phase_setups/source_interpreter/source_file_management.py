@@ -1,4 +1,4 @@
-class ScriptFileManager:
+class SourceFileManager:
     """
     Manages generation of a file-name and execution of an existing file.
     """
@@ -14,8 +14,8 @@ class ScriptFileManager:
         raise NotImplementedError()
 
 
-class ScriptLanguageSetup:
-    def __init__(self, file_manager: ScriptFileManager):
+class SourceInterpreterSetup:
+    def __init__(self, file_manager: SourceFileManager):
         self.__file_manager = file_manager
 
     def base_name_from_stem(self, stem: str) -> str:
@@ -25,7 +25,7 @@ class ScriptLanguageSetup:
         return self.__file_manager.command_and_args_for_executing_script_file(file_name)
 
 
-class StandardScriptFileManager(ScriptFileManager):
+class StandardSourceFileManager(SourceFileManager):
     def __init__(self,
                  extension_after_dot: str,
                  interpreter: str,

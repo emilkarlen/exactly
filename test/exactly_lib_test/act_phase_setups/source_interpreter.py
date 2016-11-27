@@ -3,8 +3,8 @@ import unittest
 from contextlib import contextmanager
 
 from exactly_lib.act_phase_setups.source_interpreter import interpreter_setup as sut, python3
-from exactly_lib.act_phase_setups.source_interpreter.script_language_management import ScriptFileManager, \
-    ScriptLanguageSetup
+from exactly_lib.act_phase_setups.source_interpreter.source_file_management import SourceFileManager, \
+    SourceInterpreterSetup
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.act_phase_setups.test_resources import py_program
 from exactly_lib_test.act_phase_setups.test_resources.act_phase_execution import Arrangement, Expectation, \
@@ -58,7 +58,7 @@ def _instructions_for(statements: list) -> list:
 
 class TestWhenInterpreterDoesNotExistThanExecuteShouldGiveHardError(unittest.TestCase):
     def runTest(self):
-        language_setup = ScriptLanguageSetup(_ScriptFileManagerWithNonExistingInterpreter())
+        language_setup = SourceInterpreterSetup(_SourceFileManagerWithNonExistingInterpreter())
         act_phase_setup = sut.new_for_script_language_setup(language_setup)
         empty_source = []
         check_execution(self,
@@ -69,7 +69,7 @@ class TestWhenInterpreterDoesNotExistThanExecuteShouldGiveHardError(unittest.Tes
 
 class TestThatScriptSourceIsWrittenToTestCaseDir(unittest.TestCase):
     def runTest(self):
-        language_setup = ScriptLanguageSetup(_ScriptFileManagerWithNonExistingInterpreter())
+        language_setup = SourceInterpreterSetup(_SourceFileManagerWithNonExistingInterpreter())
         act_phase_setup = sut.new_for_script_language_setup(language_setup)
         source = [instr(['print(1)'])]
         expected_file_name = language_setup.base_name_from_stem(sut.Executor.FILE_NAME_STEM)
@@ -85,7 +85,7 @@ class TestThatScriptSourceIsWrittenToTestCaseDir(unittest.TestCase):
                         'Expecting a HARD ERROR')
 
 
-class _ScriptFileManagerWithNonExistingInterpreter(ScriptFileManager):
+class _SourceFileManagerWithNonExistingInterpreter(SourceFileManager):
     def command_and_args_for_executing_script_file(self, script_file_name: str) -> list:
         interpreter_path = pathlib.Path().cwd().resolve() / 'non-existing-interpreter'
         return [str(interpreter_path), script_file_name]
