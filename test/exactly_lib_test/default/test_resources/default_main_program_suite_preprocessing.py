@@ -61,3 +61,6 @@ else:
 
     def expected_exit_code(self) -> int:
         return exit_values.FAILED_TESTS.exit_code
+
+    def _translate_actual_stdout_before_assertion(self, output_on_stdout: str) -> str:
+        return simple_progress_reporter_output.replace_variable_output_with_placeholders(output_on_stdout)

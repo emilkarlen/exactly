@@ -11,14 +11,15 @@ from exactly_lib_test.default.test_resources import default_main_program_wildcar
 from exactly_lib_test.default.test_resources.internal_main_program_runner import \
     run_via_main_program_internally_with_default_setup
 from exactly_lib_test.test_resources.file_structure import DirContents, File
-from exactly_lib_test.test_resources.main_program import main_program_check_for_test_suite
 from exactly_lib_test.test_resources.main_program.main_program_check_base import \
     tests_for_setup_without_preprocessor, tests_for_setup_with_preprocessor
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
 from exactly_lib_test.test_suite.reporters.test_resources import simple_progress_reporter_output
+from exactly_lib_test.test_suite.reporters.test_resources.simple_progress_reporter_test_setup_base import \
+    SetupWithReplacementOfVariableOutputWithPlaceholders
 
 
-class InvalidOptions(main_program_check_for_test_suite.SetupWithoutPreprocessorWithTestActor):
+class InvalidOptions(SetupWithReplacementOfVariableOutputWithPlaceholders):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -38,7 +39,7 @@ class InvalidOptions(main_program_check_for_test_suite.SetupWithoutPreprocessorW
         return main_program.EXIT_INVALID_USAGE
 
 
-class EmptySuite(main_program_check_for_test_suite.SetupWithoutPreprocessorWithTestActor):
+class EmptySuite(SetupWithReplacementOfVariableOutputWithPlaceholders):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'empty.suite'
 
@@ -62,7 +63,7 @@ class EmptySuite(main_program_check_for_test_suite.SetupWithoutPreprocessorWithT
         return exit_values.ALL_PASS.exit_code
 
 
-class SuiteWithSingleEmptyTestCase(main_program_check_for_test_suite.SetupWithoutPreprocessorWithTestActor):
+class SuiteWithSingleEmptyTestCase(SetupWithReplacementOfVariableOutputWithPlaceholders):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -88,8 +89,7 @@ class SuiteWithSingleEmptyTestCase(main_program_check_for_test_suite.SetupWithou
         return exit_values.ALL_PASS.exit_code
 
 
-class SuiteWithSingleTestCaseWithOnlySectionHeaders(
-    main_program_check_for_test_suite.SetupWithoutPreprocessorWithTestActor):
+class SuiteWithSingleTestCaseWithOnlySectionHeaders(SetupWithReplacementOfVariableOutputWithPlaceholders):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -124,7 +124,7 @@ class SuiteWithSingleTestCaseWithOnlySectionHeaders(
         return exit_values.ALL_PASS.exit_code
 
 
-class SuiteReferenceToNonExistingCaseFile(main_program_check_for_test_suite.SetupWithoutPreprocessorWithTestActor):
+class SuiteReferenceToNonExistingCaseFile(SetupWithReplacementOfVariableOutputWithPlaceholders):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -145,7 +145,7 @@ class SuiteReferenceToNonExistingCaseFile(main_program_check_for_test_suite.Setu
         return exit_values.INVALID_SUITE.exit_code
 
 
-class SuiteReferenceToNonExistingSuiteFile(main_program_check_for_test_suite.SetupWithoutPreprocessorWithTestActor):
+class SuiteReferenceToNonExistingSuiteFile(SetupWithReplacementOfVariableOutputWithPlaceholders):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -166,7 +166,7 @@ class SuiteReferenceToNonExistingSuiteFile(main_program_check_for_test_suite.Set
         return exit_values.INVALID_SUITE.exit_code
 
 
-class SuiteWithSingleCaseWithInvalidSyntax(main_program_check_for_test_suite.SetupWithoutPreprocessorWithTestActor):
+class SuiteWithSingleCaseWithInvalidSyntax(SetupWithReplacementOfVariableOutputWithPlaceholders):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
@@ -194,7 +194,7 @@ class SuiteWithSingleCaseWithInvalidSyntax(main_program_check_for_test_suite.Set
         return exit_values.FAILED_TESTS.exit_code
 
 
-class ComplexSuccessfulSuite(main_program_check_for_test_suite.SetupWithoutPreprocessorWithTestActor):
+class ComplexSuccessfulSuite(SetupWithReplacementOfVariableOutputWithPlaceholders):
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'
 
