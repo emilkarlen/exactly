@@ -6,8 +6,7 @@ from exactly_lib.act_phase_setups.util.executor_made_of_parts.sub_process_execut
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
-    InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.util.process_execution.process_execution_settings import Command
 
@@ -24,14 +23,14 @@ class Constructor(parts.Constructor):
     def __init__(self, script_language_setup: SourceInterpreterSetup):
         super().__init__(Parser(),
                          parts.UnconditionallySuccessfulValidator,
-                         lambda environment, source_code: Executor(environment, script_language_setup, source_code))
+                         lambda environment, source_code: Executor(script_language_setup, source_code))
         self.script_language_setup = script_language_setup
 
 
 class Parser(parts.Parser):
     def apply(self, act_phase_instructions: list) -> str:
-        from exactly_lib.util.string import lines_content
-        return lines_content(self._all_source_code_lines(act_phase_instructions))
+        from exactly_lib.util.string import lines_content_with_os_linesep
+        return lines_content_with_os_linesep(self._all_source_code_lines(act_phase_instructions))
 
     @staticmethod
     def _all_source_code_lines(act_phase_instructions) -> list:
@@ -47,7 +46,6 @@ class Executor(CommandExecutor):
     FILE_NAME_STEM = 'act-source'
 
     def __init__(self,
-                 environment: InstructionEnvironmentForPreSdsStep,
                  script_language_setup: SourceInterpreterSetup,
                  source_code: str):
         self.script_language_setup = script_language_setup
