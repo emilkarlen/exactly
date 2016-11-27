@@ -36,7 +36,7 @@ class Executor:
     def prepare(self,
                 environment: InstructionEnvironmentForPostSdsStep,
                 script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
-        raise NotImplementedError(str(type(self)))
+        return sh.new_sh_success()
 
     def execute(self,
                 environment: InstructionEnvironmentForPostSdsStep,

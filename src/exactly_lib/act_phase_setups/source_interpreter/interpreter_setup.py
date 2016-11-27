@@ -1,16 +1,15 @@
 import pathlib
 
-from exactly_lib.act_phase_setups import utils
 from exactly_lib.act_phase_setups.source_interpreter.source_file_management import SourceInterpreterSetup
 from exactly_lib.act_phase_setups.util.executor_made_of_parts import parts
+from exactly_lib.act_phase_setups.util.executor_made_of_parts.sub_process_executor import CommandExecutor
 from exactly_lib.processing.act_phase import ActPhaseSetup
-from exactly_lib.test_case.act_phase_handling import ExitCodeOrHardError, \
-    ActPhaseHandling
+from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.result import sh
-from exactly_lib.util.std import StdFiles
+from exactly_lib.util.process_execution.process_execution_settings import Command
 
 
 def new_for_script_language_setup(script_language_setup: SourceInterpreterSetup) -> ActPhaseSetup:
@@ -44,14 +43,13 @@ class Parser(parts.Parser):
         return ret_val
 
 
-class Executor(parts.Executor):
+class Executor(CommandExecutor):
     FILE_NAME_STEM = 'act-script'
 
     def __init__(self,
                  environment: InstructionEnvironmentForPreSdsStep,
                  script_language_setup: SourceInterpreterSetup,
                  source_code: str):
-        self.environment = environment
         self.script_language_setup = script_language_setup
         self.source_code = source_code
 
@@ -66,14 +64,12 @@ class Executor(parts.Executor):
         except OSError as ex:
             return sh.new_sh_hard_error(str(ex))
 
-    def execute(self,
-                environment: InstructionEnvironmentForPostSdsStep,
-                script_output_dir_path: pathlib.Path,
-                std_files: StdFiles) -> ExitCodeOrHardError:
+    def _command_to_execute(self,
+                            environment: InstructionEnvironmentForPostSdsStep,
+                            script_output_dir_path: pathlib.Path) -> Command:
         script_file_path = self._script_path(script_output_dir_path)
         cmd_and_args = self.script_language_setup.command_and_args_for_executing_script_file(str(script_file_path))
-        return utils.execute_cmd_and_args(cmd_and_args, std_files,
-                                          environment.process_execution_settings)
+        return Command(cmd_and_args, shell=False)
 
     def _script_path(self,
                      script_output_dir_path: pathlib.Path) -> pathlib.Path:

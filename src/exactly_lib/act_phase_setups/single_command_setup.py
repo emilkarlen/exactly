@@ -1,16 +1,14 @@
 import pathlib
 
-from exactly_lib.act_phase_setups import utils
 from exactly_lib.act_phase_setups.util.executor_made_of_parts import parts
 from exactly_lib.act_phase_setups.util.executor_made_of_parts.parser_for_single_line import \
     ParserForSingleLineUsingStandardSyntaxSplitAccordingToShellSyntax
+from exactly_lib.act_phase_setups.util.executor_made_of_parts.sub_process_executor import CommandExecutor
 from exactly_lib.processing.act_phase import ActPhaseSetup
-from exactly_lib.test_case.act_phase_handling import ExitCodeOrHardError
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
-from exactly_lib.util.std import StdFiles
+from exactly_lib.util.process_execution.process_execution_settings import Command
 
 
 def act_phase_setup() -> ActPhaseSetup:
@@ -48,27 +46,18 @@ class Validator(parts.Validator):
         return svh.new_svh_success()
 
 
-class Executor(parts.Executor):
+class Executor(CommandExecutor):
     def __init__(self,
                  environment: InstructionEnvironmentForPreSdsStep,
                  cmd_and_args: list):
-        self.environment = environment
         self.cmd_and_args = cmd_and_args
 
-    def prepare(self,
-                environment: InstructionEnvironmentForPostSdsStep,
-                script_output_dir_path: pathlib.Path) -> sh.SuccessOrHardError:
-        return sh.new_sh_success()
-
-    def execute(self,
-                environment: InstructionEnvironmentForPostSdsStep,
-                script_output_dir_path: pathlib.Path,
-                std_files: StdFiles) -> ExitCodeOrHardError:
+    def _command_to_execute(self,
+                            environment: InstructionEnvironmentForPostSdsStep,
+                            script_output_dir_path: pathlib.Path) -> Command:
         cmd = self.cmd_and_args[0]
         cmd_path = pathlib.Path(cmd)
         if not cmd_path.is_absolute():
             cmd_path = environment.home_directory / cmd_path
             self.cmd_and_args[0] = str(cmd_path)
-        return utils.execute_cmd_and_args(self.cmd_and_args,
-                                          std_files,
-                                          environment.process_execution_settings)
+        return Command(self.cmd_and_args, shell=False)
