@@ -6,10 +6,10 @@ from exactly_lib.section_document.syntax import section_header
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_suite import exit_values
 from exactly_lib.util.string import lines_content
-from exactly_lib_test.default.test_resources import suite_reporting_output
 from exactly_lib_test.test_resources import quoting
 from exactly_lib_test.test_resources.file_structure import DirContents, File
 from exactly_lib_test.test_resources.main_program import main_program_check_for_test_suite
+from exactly_lib_test.test_suite.reporters.test_resources import simple_progress_reporter_output
 
 
 class PreprocessorIsAppliedWithTestCaseFileAsArgument(main_program_check_for_test_suite.SetupWithPreprocessor):
@@ -47,7 +47,7 @@ else:
         ])
 
     def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
-        expected_line = suite_reporting_output.ExpectedLine(root_path)
+        expected_line = simple_progress_reporter_output.ExpectedLine(root_path)
         return [
             expected_line.suite_begin(root_path / 'main.suite'),
             expected_line.case(root_path / 'pass', EXECUTION__PASS.exit_identifier),
@@ -56,7 +56,7 @@ else:
         ]
 
     def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
-        expected_line = suite_reporting_output.ExpectedLine(root_path)
+        expected_line = simple_progress_reporter_output.ExpectedLine(root_path)
         return expected_line.summary_for_valid_suite(root_path, exit_values.FAILED_TESTS)
 
     def expected_exit_code(self) -> int:

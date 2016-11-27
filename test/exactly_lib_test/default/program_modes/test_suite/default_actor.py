@@ -5,7 +5,6 @@ from exactly_lib.execution.exit_values import EXECUTION__PASS
 from exactly_lib.test_suite import exit_values
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.default.program_modes.test_case.act_phase import PYTHON_PROGRAM_THAT_EXISTS_WITH_STATUS_0
-from exactly_lib_test.default.test_resources import suite_reporting_output
 from exactly_lib_test.default.test_resources.internal_main_program_runner import \
     run_via_main_program_internally_with_default_setup
 from exactly_lib_test.test_resources.file_structure import DirContents, File, python_executable_file
@@ -13,6 +12,7 @@ from exactly_lib_test.test_resources.main_program import main_program_check_for_
 from exactly_lib_test.test_resources.main_program.main_program_check_base import \
     tests_for_setup_without_preprocessor
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
+from exactly_lib_test.test_suite.reporters.test_resources import simple_progress_reporter_output
 
 
 class SuiteWithSingleTestCaseThatInvokesSuccessfulCommandUsingDefaultActor(
@@ -32,7 +32,7 @@ class SuiteWithSingleTestCaseThatInvokesSuccessfulCommandUsingDefaultActor(
         ])
 
     def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
-        expected_line = suite_reporting_output.ExpectedLine(root_path)
+        expected_line = simple_progress_reporter_output.ExpectedLine(root_path)
         return [
             expected_line.suite_begin(root_path / 'main.suite'),
             expected_line.case(root_path / 'the.case', EXECUTION__PASS.exit_identifier),
@@ -40,7 +40,7 @@ class SuiteWithSingleTestCaseThatInvokesSuccessfulCommandUsingDefaultActor(
         ]
 
     def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
-        expected_line = suite_reporting_output.ExpectedLine(root_path)
+        expected_line = simple_progress_reporter_output.ExpectedLine(root_path)
         return expected_line.summary_for_valid_suite(root_path, exit_values.ALL_PASS)
 
     def expected_exit_code(self) -> int:
