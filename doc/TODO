@@ -1,5 +1,9 @@
 -*- org -*-
 
+* Default act phase setup should be able to treat "$ cmd" as a shell command
+<2016-11-27 sön>
+* TODO Preprocessor process should maybe have timeout
+<2016-11-27 sön>
 * TODO env instruction should not set global environment variables
 <2016-11-02 ons>
 Need to determine what parts of the program should get access to the
