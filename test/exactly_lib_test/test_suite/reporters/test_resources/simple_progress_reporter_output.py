@@ -4,8 +4,8 @@ from exactly_lib.common.exit_value import ExitValue
 
 
 class ExpectedLine:
-    def __init__(self, root_path: pathlib.Path):
-        self.suite_file_dir_abs_path = root_path
+    def __init__(self, suite_file_dir_abs_path: pathlib.Path):
+        self.suite_file_dir_abs_path = suite_file_dir_abs_path
 
     def suite_begin(self, file_path: pathlib.Path) -> str:
         return 'suite ' + self._sub_file_path(file_path) + ': begin'
