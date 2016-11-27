@@ -5,6 +5,7 @@ from exactly_lib.processing import test_case_processing
 from exactly_lib.processing.test_case_processing import TestCaseSetup
 from exactly_lib.test_case.test_case_doc import TestCase
 from exactly_lib.test_suite import reporting, structure
+from exactly_lib.test_suite.reporting import TestCaseProcessingInfo
 from exactly_lib.util import std
 
 
@@ -81,6 +82,6 @@ class ExecutionTracingSubSuiteProgressReporter(reporting.SubSuiteProgressReporte
 
     def case_end(self,
                  case: TestCaseSetup,
-                 result: test_case_processing.Result):
+                 processing_info: TestCaseProcessingInfo):
         self.event_type_list.append(EventType.CASE_END)
-        self.case_end_list.append(CaseEndInfo(case, result))
+        self.case_end_list.append(CaseEndInfo(case, processing_info.result))

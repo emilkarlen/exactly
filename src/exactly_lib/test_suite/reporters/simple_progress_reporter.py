@@ -7,6 +7,7 @@ from exactly_lib.execution.result import FullResultStatus
 from exactly_lib.processing import test_case_processing
 from exactly_lib.processing.test_case_processing import Status
 from exactly_lib.test_suite import reporting, structure, exit_values
+from exactly_lib.test_suite.reporting import TestCaseProcessingInfo
 from exactly_lib.util.std import StdOutputFiles, FilePrinter
 from exactly_lib.util.timedelta_format import elapsed_time_value_and_unit
 
@@ -36,8 +37,9 @@ class SimpleProgressSubSuiteProgressReporter(reporting.SubSuiteProgressReporter)
 
     def case_end(self,
                  case: test_case_processing.TestCaseSetup,
-                 result: test_case_processing.Result):
-        exit_value = test_case_exit_values.from_result(result)
+                 processing_info: TestCaseProcessingInfo):
+        exit_value = test_case_exit_values.from_result(processing_info.result)
+        self.output_file.write('(%fs) ' % processing_info.duration.total_seconds())
         self.output_file.write_line(exit_value.exit_identifier)
 
     def _file_path_pres(self, file: pathlib.Path):

@@ -47,7 +47,7 @@ class SuiteWithSingleEmptyTestCase(main_program_check_for_test_suite.SetupWithou
     def expected_exit_code(self) -> int:
         return 0
 
-    def _translate_stdout_before_comparison(self, output_on_stdout: str) -> str:
+    def _translate_actual_stdout_before_assertion(self, output_on_stdout: str) -> str:
         return replace_xml_variables(output_on_stdout)
 
 
