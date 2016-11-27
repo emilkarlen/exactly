@@ -1,7 +1,7 @@
 import pathlib
 
 from exactly_lib.act_phase_setups import utils
-from exactly_lib.act_phase_setups.source_interpreter.script_language_management import ScriptLanguageSetup
+from exactly_lib.act_phase_setups.source_interpreter.source_file_management import SourceInterpreterSetup
 from exactly_lib.act_phase_setups.util.executor_made_of_parts import main as executor_made_of_parts
 from exactly_lib.instructions.utils import sub_process_execution as spe
 from exactly_lib.processing.act_phase import ActPhaseSetup
@@ -14,16 +14,16 @@ from exactly_lib.test_case.phases.result import sh
 from exactly_lib.util.std import StdFiles
 
 
-def new_for_script_language_setup(script_language_setup: ScriptLanguageSetup) -> ActPhaseSetup:
+def new_for_script_language_setup(script_language_setup: SourceInterpreterSetup) -> ActPhaseSetup:
     return ActPhaseSetup(Constructor(script_language_setup))
 
 
-def new_for_script_language_handling(script_language_setup: ScriptLanguageSetup) -> ActPhaseHandling:
+def new_for_script_language_handling(script_language_setup: SourceInterpreterSetup) -> ActPhaseHandling:
     return ActPhaseHandling(Constructor(script_language_setup))
 
 
 class Constructor(executor_made_of_parts.Constructor):
-    def __init__(self, script_language_setup: ScriptLanguageSetup):
+    def __init__(self, script_language_setup: SourceInterpreterSetup):
         super().__init__(Parser(),
                          executor_made_of_parts.UnconditionallySuccessfulValidator,
                          lambda environment, source_code: Executor(environment, script_language_setup, source_code))
@@ -50,7 +50,7 @@ class Executor(executor_made_of_parts.Executor):
 
     def __init__(self,
                  environment: InstructionEnvironmentForPreSdsStep,
-                 script_language_setup: ScriptLanguageSetup,
+                 script_language_setup: SourceInterpreterSetup,
                  source_code: str):
         self.environment = environment
         self.script_language_setup = script_language_setup

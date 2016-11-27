@@ -2,8 +2,8 @@ import shlex
 
 from exactly_lib.act_phase_setups import shell_command
 from exactly_lib.act_phase_setups.source_interpreter.interpreter_setup import new_for_script_language_handling
-from exactly_lib.act_phase_setups.source_interpreter.script_language_management import ScriptLanguageSetup
-from exactly_lib.act_phase_setups.source_interpreter.script_language_management import StandardScriptFileManager
+from exactly_lib.act_phase_setups.source_interpreter.source_file_management import SourceInterpreterSetup
+from exactly_lib.act_phase_setups.source_interpreter.source_file_management import StandardSourceFileManager
 from exactly_lib.common.instruction_documentation import InvokationVariant, SyntaxElementDescription
 from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.phase_names import ACT_PHASE_NAME
@@ -102,7 +102,7 @@ def parse(source: SingleInstructionParserSource) -> ActPhaseHandling:
         raise SingleInstructionInvalidArgumentException('Missing interpreter')
 
     act_phase_setup = new_for_script_language_handling(
-        ScriptLanguageSetup(StandardScriptFileManager(
+        SourceInterpreterSetup(StandardSourceFileManager(
             'src',
             command_and_arguments[0],
             command_and_arguments[1:])))
