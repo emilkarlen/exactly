@@ -3,6 +3,7 @@ import pathlib
 from exactly_lib.section_document.model import Instruction
 from exactly_lib.test_case import sandbox_directory_structure as _sds
 from exactly_lib.test_case.phase_identifier import Phase
+from exactly_lib.util.process_execution.process_execution_settings import ProcessExecutionSettings
 
 
 class HomeAndSds:
@@ -48,6 +49,10 @@ class InstructionEnvironmentForPreSdsStep:
         :return: None if no timeout
         """
         return self.__timeout_in_seconds
+
+    @property
+    def process_execution_settings(self) -> ProcessExecutionSettings:
+        return ProcessExecutionSettings(self.timeout_in_seconds, self.environ)
 
 
 class PhaseLoggingPaths:

@@ -3,7 +3,7 @@ import pathlib
 import subprocess
 
 from exactly_lib.instructions.utils import file_services
-from exactly_lib.test_case.phases.common import PhaseLoggingPaths, HomeAndSds, InstructionEnvironmentForPreSdsStep
+from exactly_lib.test_case.phases.common import PhaseLoggingPaths, HomeAndSds
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.util import file_utils
@@ -99,15 +99,6 @@ class CmdAndArgsResolver:
         followed by arguments.
         """
         raise NotImplementedError()
-
-
-def settings_from_instruction_env(environment: InstructionEnvironmentForPreSdsStep) -> ProcessExecutionSettings:
-    return ProcessExecutionSettings(timeout_in_seconds=environment.timeout_in_seconds,
-                                    environ=environment.environ)
-
-
-def with_no_timeout() -> ProcessExecutionSettings:
-    return ProcessExecutionSettings()
 
 
 class ExecutorThatStoresResultInFilesInDir:
