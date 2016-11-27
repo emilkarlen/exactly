@@ -1,8 +1,7 @@
 import unittest
 
-from exactly_lib.act_phase_setups.source_interpreter import script_language_setup
-from exactly_lib.act_phase_setups.source_interpreter.script_language_management import ScriptLanguageSetup, \
-    StandardScriptFileManager
+from exactly_lib.act_phase_setups.source_interpreter import interpreter_setup
+from exactly_lib.act_phase_setups.source_interpreter.script_language_management import ScriptLanguageSetup
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
@@ -58,17 +57,14 @@ class TestSuccessfulParseAndInstructionExecution(unittest.TestCase):
         assert isinstance(act_phase_setup, ActPhaseSetup)
         constructor = act_phase_setup.source_and_executor_constructor
         self.assertIsInstance(constructor,
-                              script_language_setup.Constructor)
+                              interpreter_setup.Constructor)
         language_setup = constructor.script_language_setup
         self.assertIsInstance(language_setup,
                               ScriptLanguageSetup)
         assert isinstance(language_setup, ScriptLanguageSetup)
-        file_manager = language_setup.file_manager
-        self.assertIsInstance(file_manager,
-                              StandardScriptFileManager)
-        assert isinstance(file_manager, StandardScriptFileManager)
-        self.assertEqual([file_manager.interpreter] + file_manager.command_line_options_before_file_argument,
-                         expected_command_and_arguments)
+        actual_cmd_and_args = language_setup.command_and_args_for_executing_script_file('the file')
+        self.assertEqual(actual_cmd_and_args,
+                         expected_command_and_arguments + ['the file'])
 
     def test_single_command(self):
         self._check('executable', ['executable'])
