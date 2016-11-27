@@ -171,11 +171,12 @@ class TheConfiguration(Configuration):
 
     def _builder_for_executing_source_from_py_file(self, statements: list) -> list:
         with tmp_file_containing_lines(statements) as src_path:
-            yield self._builder_for_executing_py_file(src_path)
+            yield _instructions_for_executing_py_file(src_path)
 
-    def _builder_for_executing_py_file(self, src_path: pathlib.Path) -> list:
-        cmd = py_exe.command_line_for_interpreting(src_path)
-        return [instr([cmd])]
+
+def _instructions_for_executing_py_file(src_path: pathlib.Path) -> list:
+    cmd = py_exe.command_line_for_interpreting(src_path)
+    return [instr([cmd])]
 
 
 class TestSuccessfulExecutionOfProgramRelHomeWithCommandLineArguments(unittest.TestCase):
