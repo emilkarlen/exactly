@@ -1,9 +1,15 @@
+"""
+NOTE: These tests should not use MainProgramRunner, but should be normal (à la instruction test) integration tests
+"""
 import pathlib
+import unittest
 
 from exactly_lib.execution.exit_values import EXECUTION__PASS
 from exactly_lib.test_suite import exit_values
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.test_resources.file_structure import DirContents, Dir, File, empty_file
+from exactly_lib_test.test_resources.main_program.main_program_check_base import tests_for_setup_without_preprocessor
+from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
 from exactly_lib_test.test_suite.reporters.test_resources import simple_progress_reporter_output
 from exactly_lib_test.test_suite.reporters.test_resources.simple_progress_reporter_test_setup_base import \
     SetupWithReplacementOfVariableOutputWithPlaceholders
@@ -520,3 +526,44 @@ class ReferencesToCaseFilesInSubDirThatMatchesFiles(SetupWithReplacementOfVariab
 
     def expected_exit_code(self) -> int:
         return exit_values.ALL_PASS.exit_code
+
+
+TESTS_WITH_WILDCARD_FILE_REFERENCES_TO_CASE_FILES = [
+    ReferencesToCaseFilesThatMatchesNoFiles(),
+    ReferencesToCaseFilesThatAreDirectories(),
+    ReferencesToCaseFilesThatMatchesFilesTypeQuestionMark(),
+    ReferencesToCaseFilesThatMatchesFilesTypeCharacterRange(),
+    ReferencesToCaseFilesThatMatchesFilesTypeNegatedCharacterRange(),
+    ReferencesToCaseFilesInSubDirThatMatchesFiles(),
+    ReferencesToCaseFilesInAnyDirectSubDir(),
+    ReferencesToCaseFilesInAnySubDir(),
+]
+
+TESTS_WITH_WILDCARD_FILE_REFERENCES_TO_SUITE_FILES = [
+    ReferencesToSuiteFilesThatAreDirectories(),
+    ReferencesToSuiteFilesThatMatchesFilesTypeQuestionMark(),
+    ReferencesToSuiteFilesThatMatchesFilesTypeCharacterRange(),
+    ReferencesToSuiteFilesThatMatchesFilesTypeNegatedCharacterRange(),
+    ReferencesToSuiteFilesInAnyDirectSubDir(),
+    ReferencesToSuiteFilesInAnySubDir(),
+]
+
+
+def suite_for(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
+    ret_val = unittest.TestSuite()
+    ret_val.addTest(
+        tests_for_setup_without_preprocessor(TESTS_WITH_WILDCARD_FILE_REFERENCES_TO_CASE_FILES,
+                                             main_program_runner))
+    ret_val.addTest(
+        tests_for_setup_without_preprocessor(TESTS_WITH_WILDCARD_FILE_REFERENCES_TO_SUITE_FILES,
+                                             main_program_runner))
+    return ret_val
+
+
+def suite_for_running_main_program_internally() -> unittest.TestSuite:
+    from exactly_lib_test import run_via_main_program_internally_with_default_setup
+    return suite_for(run_via_main_program_internally_with_default_setup())
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite_for_running_main_program_internally())

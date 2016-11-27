@@ -7,7 +7,6 @@ from exactly_lib.execution.exit_values import NO_EXECUTION__SYNTAX_ERROR, \
 from exactly_lib.test_suite import exit_values
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.default.test_resources import default_main_program_suite_preprocessing as pre_proc_tests
-from exactly_lib_test.default.test_resources import default_main_program_wildcard as wildcard
 from exactly_lib_test.default.test_resources.internal_main_program_runner import \
     run_via_main_program_internally_with_default_setup
 from exactly_lib_test.test_resources.file_structure import DirContents, File
@@ -247,26 +246,6 @@ BASIC_TESTS = [
     ComplexSuccessfulSuite(),
 ]
 
-TESTS_WITH_WILDCARD_FILE_REFERENCES_TO_CASE_FILES = [
-    wildcard.ReferencesToCaseFilesThatMatchesNoFiles(),
-    wildcard.ReferencesToCaseFilesThatAreDirectories(),
-    wildcard.ReferencesToCaseFilesThatMatchesFilesTypeQuestionMark(),
-    wildcard.ReferencesToCaseFilesThatMatchesFilesTypeCharacterRange(),
-    wildcard.ReferencesToCaseFilesThatMatchesFilesTypeNegatedCharacterRange(),
-    wildcard.ReferencesToCaseFilesInSubDirThatMatchesFiles(),
-    wildcard.ReferencesToCaseFilesInAnyDirectSubDir(),
-    wildcard.ReferencesToCaseFilesInAnySubDir(),
-]
-
-TESTS_WITH_WILDCARD_FILE_REFERENCES_TO_SUITE_FILES = [
-    wildcard.ReferencesToSuiteFilesThatAreDirectories(),
-    wildcard.ReferencesToSuiteFilesThatMatchesFilesTypeQuestionMark(),
-    wildcard.ReferencesToSuiteFilesThatMatchesFilesTypeCharacterRange(),
-    wildcard.ReferencesToSuiteFilesThatMatchesFilesTypeNegatedCharacterRange(),
-    wildcard.ReferencesToSuiteFilesInAnyDirectSubDir(),
-    wildcard.ReferencesToSuiteFilesInAnySubDir(),
-]
-
 TEST_TEST_SUITE_PREPROCESSING = [
     pre_proc_tests.PreprocessorIsAppliedWithTestCaseFileAsArgument()
 ]
@@ -276,12 +255,6 @@ def suite_for(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(
         tests_for_setup_without_preprocessor(BASIC_TESTS,
-                                             main_program_runner))
-    ret_val.addTest(
-        tests_for_setup_without_preprocessor(TESTS_WITH_WILDCARD_FILE_REFERENCES_TO_CASE_FILES,
-                                             main_program_runner))
-    ret_val.addTest(
-        tests_for_setup_without_preprocessor(TESTS_WITH_WILDCARD_FILE_REFERENCES_TO_SUITE_FILES,
                                              main_program_runner))
     ret_val.addTest(
         tests_for_setup_with_preprocessor(TEST_TEST_SUITE_PREPROCESSING,
