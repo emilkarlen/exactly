@@ -1,12 +1,14 @@
 import unittest
 
-from exactly_lib.act_phase_setups.source_interpreter import interpreter_setup
-from exactly_lib.act_phase_setups.source_interpreter.source_file_management import SourceInterpreterSetup
-from exactly_lib.processing.act_phase import ActPhaseSetup
+from exactly_lib.instructions.configuration.utils.actor_utils import SHELL_COMMAND_ACTOR_KEYWORD
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_suite.instruction_set.sections.configuration import actor as sut
+from exactly_lib_test.act_phase_setups.test_resources import act_phase_execution
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
+from exactly_lib_test.test_case.test_resources.act_phase_os_process_executor import \
+    ActPhaseOsProcessExecutorThatRecordsArguments
+from exactly_lib_test.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_resources.parse import new_source2
 from exactly_lib_test.test_suite.instruction_set.sections.configuration.test_resources import \
     configuration_section_environment
@@ -15,7 +17,7 @@ from exactly_lib_test.test_suite.instruction_set.sections.configuration.test_res
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestFailingParse),
-        unittest.makeSuite(TestSuccessfulParseAndInstructionExecution),
+        unittest.makeSuite(TestSuccessfulParseAndInstructionExecutionForShellCommandActor),
         suite_for_instruction_documentation(sut.actor_utils.InstructionDocumentation('instruction mame',
                                                                                      'single line description',
                                                                                      'description-rest')),
@@ -38,41 +40,35 @@ class TestFailingParse(unittest.TestCase):
             sut.Parser().apply(source)
 
 
-class TestSuccessfulParseAndInstructionExecution(unittest.TestCase):
-    def _check(self, instruction_argument_source: str,
-               expected_command_and_arguments: list):
-        # TODO Quite bad test, since it checks too many internal details.
-        # It should instead test the behaviour of the act-phase-setup
-        # by executing it.
+class TestSuccessfulParseAndInstructionExecutionForShellCommandActor(unittest.TestCase):
+    """
+    Not a beautiful test.
+    This test mimics the test of the actor instruction of the test-case/configuration phase.
 
+    This test should probably be refactored. But not clear what is the best way to do it, at the moment.
+    """
+
+    def test_act_phase_source_is_single_shell_command(self):
         # ARRANGE #
-        source = new_source2(instruction_argument_source)
+        os_process_executor = ActPhaseOsProcessExecutorThatRecordsArguments()
+        source = new_source2(SHELL_COMMAND_ACTOR_KEYWORD)
         instruction = sut.Parser().apply(source)
         environment = configuration_section_environment()
         # ACT #
         instruction.execute(environment)
+        executor_constructor = environment.act_phase_setup.source_and_executor_constructor
+        act_phase_instructions = [instr(['act phase source line'])]
+        act_phase_execution.check_execution(self,
+                                            act_phase_execution.Arrangement(
+                                                executor_constructor=executor_constructor,
+                                                act_phase_instructions=act_phase_instructions,
+                                                act_phase_process_executor=os_process_executor),
+                                            act_phase_execution.Expectation())
         # ASSERT #
-        act_phase_setup = environment.act_phase_setup
-        self.assertIsInstance(act_phase_setup, ActPhaseSetup)
-        assert isinstance(act_phase_setup, ActPhaseSetup)
-        constructor = act_phase_setup.source_and_executor_constructor
-        self.assertIsInstance(constructor,
-                              interpreter_setup.Constructor)
-        language_setup = constructor.script_language_setup
-        self.assertIsInstance(language_setup,
-                              SourceInterpreterSetup)
-        assert isinstance(language_setup, SourceInterpreterSetup)
-        actual_cmd_and_args = language_setup.command_and_args_for_executing_script_file('the file')
+        self.assertTrue(os_process_executor.command.shell,
+                        'Command should indicate shell execution')
+        actual_cmd_and_args = os_process_executor.command.args
+        self.assertIsInstance(actual_cmd_and_args, str,
+                              'Arguments of command to execute should be a string')
         self.assertEqual(actual_cmd_and_args,
-                         expected_command_and_arguments + ['the file'])
-
-    def test_single_command(self):
-        self._check('executable', ['executable'])
-
-    def test_command_with_arguments(self):
-        self._check('executable arg1 --arg2',
-                    ['executable', 'arg1', '--arg2'])
-
-    def test_quoting(self):
-        self._check("'executable with space' arg2 \"arg 3\"",
-                    ['executable with space', 'arg2', 'arg 3'])
+                         'act phase source line')
