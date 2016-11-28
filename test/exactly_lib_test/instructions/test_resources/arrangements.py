@@ -1,6 +1,6 @@
 from exactly_lib.test_case.os_services import OsServices, new_default
 from exactly_lib.test_case.phases import common as i
-from exactly_lib.util.process_execution.process_execution_settings import with_no_timeout
+from exactly_lib.util.process_execution.os_process_execution import with_no_timeout
 from exactly_lib_test.test_resources import file_structure
 from exactly_lib_test.test_resources.execution import sds_populator, utils
 

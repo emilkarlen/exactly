@@ -2,7 +2,7 @@ import subprocess
 
 from exactly_lib.test_case.act_phase_handling import ExitCodeOrHardError, new_eh_exit_code, new_eh_hard_error
 from exactly_lib.util.failure_details import new_failure_details_from_exception
-from exactly_lib.util.process_execution.process_execution_settings import ProcessExecutionSettings, Command
+from exactly_lib.util.process_execution.os_process_execution import ProcessExecutionSettings, Command
 from exactly_lib.util.std import StdFiles
 
 
