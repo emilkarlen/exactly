@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionParserSource, SingleInstructionParser
 from exactly_lib.test_case.os_services import OsServices, new_default
-from exactly_lib.util.process_execution.process_execution_settings import ProcessExecutionSettings
+from exactly_lib.util.process_execution.os_process_execution import ProcessExecutionSettings
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.configuration import ConfigurationBase
 from exactly_lib_test.instructions.setup.test_resources import instruction_check as ic
 from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check, svh_check

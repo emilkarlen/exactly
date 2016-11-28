@@ -3,7 +3,7 @@ import pathlib
 from exactly_lib.act_phase_setups import utils
 from exactly_lib.test_case.act_phase_handling import ExitCodeOrHardError
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
-from exactly_lib.util.process_execution.process_execution_settings import Command
+from exactly_lib.util.process_execution.os_process_execution import Command
 from exactly_lib.util.std import StdFiles
 from . import parts
 

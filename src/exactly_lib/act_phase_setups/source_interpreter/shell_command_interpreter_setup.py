@@ -5,7 +5,7 @@ from exactly_lib.act_phase_setups.source_interpreter import parser_and_executor 
 from exactly_lib.act_phase_setups.util.executor_made_of_parts import parts
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
-from exactly_lib.util.process_execution.process_execution_settings import Command
+from exactly_lib.util.process_execution.os_process_execution import Command
 
 ACT_PHASE_SOURCE_FILE_BASE_NAME = 'act-phase.src'
 

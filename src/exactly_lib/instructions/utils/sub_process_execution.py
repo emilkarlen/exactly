@@ -8,7 +8,7 @@ from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.util import file_utils
 from exactly_lib.util.file_utils import write_new_text_file
-from exactly_lib.util.process_execution.process_execution_settings import ProcessExecutionSettings
+from exactly_lib.util.process_execution.os_process_execution import ProcessExecutionSettings
 
 EXIT_CODE_FILE_NAME = 'exitcode'
 STDOUT_FILE_NAME = 'stdout'

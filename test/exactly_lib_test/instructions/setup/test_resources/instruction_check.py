@@ -17,7 +17,7 @@ from exactly_lib.test_case.phases.result import svh
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.file_utils import resolved_path_name
-from exactly_lib.util.process_execution.process_execution_settings import ProcessExecutionSettings, with_no_timeout
+from exactly_lib.util.process_execution.os_process_execution import ProcessExecutionSettings, with_no_timeout
 from exactly_lib_test.instructions.setup.test_resources import settings_check
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.instructions.test_resources.assertion_utils import sh_check, svh_check
