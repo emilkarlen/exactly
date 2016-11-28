@@ -2,7 +2,7 @@ import pathlib
 
 from exactly_lib.execution.phase_step_identifiers import phase_step_simple as phase_step
 from exactly_lib.test_case.act_phase_handling import ExitCodeOrHardError, ActSourceAndExecutor, \
-    ActSourceAndExecutorConstructor, new_eh_exit_code
+    ActSourceAndExecutorConstructor, new_eh_exit_code, ActPhaseOsProcessExecutor
 from exactly_lib.test_case.phases.common import HomeAndSds, InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.result import sh
@@ -68,7 +68,9 @@ class ActSourceAndExecutorWrapperConstructorThatRecordsSteps(ActSourceAndExecuto
         self.__recorder = recorder
         self.__wrapped = wrapped
 
-    def apply(self, environment: InstructionEnvironmentForPreSdsStep,
+    def apply(self,
+              os_process_executor: ActPhaseOsProcessExecutor,
+              environment: InstructionEnvironmentForPreSdsStep,
               act_phase_instructions: list) -> ActSourceAndExecutor:
         return ActSourceAndExecutorWrapperThatRecordsSteps(self.__recorder, self.__wrapped)
 
@@ -116,6 +118,7 @@ class ActSourceAndExecutorConstructorForConstantExecutor(ActSourceAndExecutorCon
         self.executor = executor
 
     def apply(self,
+              os_process_executor: ActPhaseOsProcessExecutor,
               environment: InstructionEnvironmentForPreSdsStep,
               act_phase_instructions: list) -> ActSourceAndExecutor:
         return self.executor
@@ -135,9 +138,10 @@ class ActSourceAndExecutorConstructorWithActionsForExecutor(ActSourceAndExecutor
         self.before_wrapped_execute = before_wrapped_execute
 
     def apply(self,
+              os_process_executor: ActPhaseOsProcessExecutor,
               environment: InstructionEnvironmentForPreSdsStep,
               act_phase_instructions: list) -> ActSourceAndExecutor:
-        wrapped_executor = self.__wrapped.apply(environment, act_phase_instructions)
+        wrapped_executor = self.__wrapped.apply(os_process_executor, environment, act_phase_instructions)
         return ActSourceAndExecutorWrapperWithActions(
             wrapped_executor,
             before_wrapped_validate=self.before_wrapped_validate,

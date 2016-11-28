@@ -7,6 +7,7 @@ from exactly_lib.execution.phase_step_identifiers import phase_step
 from exactly_lib.section_document.model import SectionContents
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.execution_mode import ExecutionMode
+from exactly_lib.test_case.os_services import ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases import setup
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from . import result
@@ -28,7 +29,8 @@ def execute(test_case: test_case_doc.TestCase,
         return new_configuration_phase_failure_from(partial_result)
     if configuration_builder.execution_mode is ExecutionMode.SKIP:
         return result.new_skipped()
-    partial_execution_configuration = partial_execution.Configuration(configuration_builder.home_dir_path,
+    partial_execution_configuration = partial_execution.Configuration(ACT_PHASE_OS_PROCESS_EXECUTOR,
+                                                                      configuration_builder.home_dir_path,
                                                                       environ,
                                                                       configuration_builder.timeout_in_seconds)
     partial_result = partial_execution.execute(configuration_builder.act_phase_handling,

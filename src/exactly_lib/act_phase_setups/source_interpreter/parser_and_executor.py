@@ -2,6 +2,7 @@ import pathlib
 
 from exactly_lib.act_phase_setups.util.executor_made_of_parts import parts
 from exactly_lib.act_phase_setups.util.executor_made_of_parts.sub_process_executor import CommandExecutor
+from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.result import sh
@@ -50,8 +51,10 @@ class ExecutorBase(CommandExecutor):
     """
 
     def __init__(self,
+                 os_process_executor: ActPhaseOsProcessExecutor,
                  file_name_generator: ActSourceFileNameGenerator,
                  source_code: str):
+        super().__init__(os_process_executor)
         self.file_name_generator = file_name_generator
         self.source_code = source_code
 

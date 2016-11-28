@@ -8,6 +8,7 @@ from exactly_lib import program_info
 from exactly_lib.execution import partial_execution
 from exactly_lib.execution.result import PartialResult
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
+from exactly_lib.test_case.os_services import ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phase_identifier import PhaseEnum
 from exactly_lib.test_case.phases import setup
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
@@ -168,7 +169,9 @@ def _execute(test_case: partial_execution.TestCase,
     partial_result = partial_execution.execute(
         act_phase_handling,
         test_case,
-        partial_execution.Configuration(home_dir_path, dict(os.environ)),
+        partial_execution.Configuration(ACT_PHASE_OS_PROCESS_EXECUTOR,
+                                        home_dir_path,
+                                        dict(os.environ)),
         setup.default_settings(),
         program_info.PROGRAM_NAME + '-test-',
         is_keep_execution_directory_root)

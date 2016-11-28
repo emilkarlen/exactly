@@ -10,6 +10,7 @@ from exactly_lib.execution.partial_execution import TestCase
 from exactly_lib.execution.result import PartialResult
 from exactly_lib.processing.processors import act_phase_handling_for_setup
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
+from exactly_lib.test_case.os_services import ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases import setup
 from exactly_lib.test_case.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib_test.execution.test_resources import utils
@@ -37,7 +38,9 @@ class PartialExecutionTestCaseBase:
         partial_result = partial_execution.execute(
             self.__act_phase_handling,
             self._test_case(),
-            partial_execution.Configuration(self.initial_home_dir_path, dict(os.environ)),
+            partial_execution.Configuration(ACT_PHASE_OS_PROCESS_EXECUTOR,
+                                            self.initial_home_dir_path,
+                                            dict(os.environ)),
             setup.default_settings(),
             program_info.PROGRAM_NAME + '-test-',
             self.__dbg_do_not_delete_dir_structure)

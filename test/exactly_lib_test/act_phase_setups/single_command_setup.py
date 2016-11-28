@@ -5,6 +5,7 @@ from contextlib import contextmanager
 
 from exactly_lib.act_phase_setups import single_command_setup as sut
 from exactly_lib.section_document.syntax import LINE_COMMENT_MARKER
+from exactly_lib.test_case.os_services import ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.string import lines_content
@@ -119,7 +120,7 @@ class TestValidation(unittest.TestCase):
         act_phase_instructions = [instr(['system-under-test'])]
         with fs_utils.tmp_dir(fs.DirContents([fs.empty_file('system-under-test')])) as home_dir_path:
             environment = InstructionEnvironmentForPreSdsStep(home_dir_path, dict(os.environ))
-            executor = self.constructor.apply(environment, act_phase_instructions)
+            executor = self.constructor.apply(ACT_PHASE_OS_PROCESS_EXECUTOR, environment, act_phase_instructions)
             actual = executor.validate_pre_sds(environment)
         self.assertIs(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                       actual.status,
@@ -131,7 +132,7 @@ class TestValidation(unittest.TestCase):
         return InstructionEnvironmentForPreSdsStep(home_dir_path, dict(os.environ))
 
     def _do_validate_pre_sds(self, act_phase_instructions: list) -> svh.SuccessOrValidationErrorOrHardError:
-        executor = self.constructor.apply(self.pre_sds_env, act_phase_instructions)
+        executor = self.constructor.apply(ACT_PHASE_OS_PROCESS_EXECUTOR, self.pre_sds_env, act_phase_instructions)
         return executor.validate_pre_sds(self.pre_sds_env)
 
 

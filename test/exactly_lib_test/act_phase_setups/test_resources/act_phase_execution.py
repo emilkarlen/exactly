@@ -6,6 +6,7 @@ from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.act_phase_handling import ExitCodeOrHardError, ActSourceAndExecutorConstructor, \
     new_eh_exit_code, \
     ActSourceAndExecutor
+from exactly_lib.test_case.os_services import ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
@@ -73,7 +74,9 @@ def check_execution(put: unittest.TestCase,
         environment = InstructionEnvironmentForPreSdsStep(home_dir,
                                                           arrangement.environ,
                                                           arrangement.timeout_in_seconds)
-        sut = arrangement.executor_constructor.apply(environment, arrangement.act_phase_instructions)
+        sut = arrangement.executor_constructor.apply(ACT_PHASE_OS_PROCESS_EXECUTOR,
+                                                     environment,
+                                                     arrangement.act_phase_instructions)
         step_result = sut.validate_pre_sds(environment)
         put.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,
                         step_result.status,

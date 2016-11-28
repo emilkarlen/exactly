@@ -5,6 +5,7 @@ from exactly_lib.act_phase_setups.util.executor_made_of_parts.parser_for_single_
     ParserForSingleLineUsingStandardSyntaxSplitAccordingToShellSyntax
 from exactly_lib.act_phase_setups.util.executor_made_of_parts.sub_process_executor import CommandExecutor
 from exactly_lib.processing.act_phase import ActPhaseSetup
+from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.result import svh
@@ -48,8 +49,10 @@ class Validator(parts.Validator):
 
 class Executor(CommandExecutor):
     def __init__(self,
+                 os_process_executor: ActPhaseOsProcessExecutor,
                  environment: InstructionEnvironmentForPreSdsStep,
                  cmd_and_args: list):
+        super().__init__(os_process_executor)
         self.cmd_and_args = cmd_and_args
 
     def _command_to_execute(self,
