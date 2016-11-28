@@ -5,6 +5,7 @@ from exactly_lib.act_phase_setups.util.executor_made_of_parts.parser_for_single_
     ParserForSingleLineUsingStandardSyntax
 from exactly_lib.act_phase_setups.util.executor_made_of_parts.sub_process_executor import CommandExecutor
 from exactly_lib.processing.act_phase import ActPhaseSetup
+from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.util.process_execution.os_process_execution import Command
@@ -23,8 +24,10 @@ class Constructor(parts.Constructor):
 
 class Executor(CommandExecutor):
     def __init__(self,
+                 os_process_executor: ActPhaseOsProcessExecutor,
                  environment: InstructionEnvironmentForPreSdsStep,
                  command_line: str):
+        super().__init__(os_process_executor)
         self.command_line = command_line
 
     def _command_to_execute(self,

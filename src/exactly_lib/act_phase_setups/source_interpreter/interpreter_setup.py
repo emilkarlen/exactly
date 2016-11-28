@@ -4,7 +4,7 @@ from exactly_lib.act_phase_setups.source_interpreter import parser_and_executor 
 from exactly_lib.act_phase_setups.source_interpreter.source_file_management import SourceInterpreterSetup
 from exactly_lib.act_phase_setups.util.executor_made_of_parts import parts
 from exactly_lib.processing.act_phase import ActPhaseSetup
-from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
+from exactly_lib.test_case.act_phase_handling import ActPhaseHandling, ActPhaseOsProcessExecutor
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.util.process_execution.os_process_execution import Command
 
@@ -21,8 +21,10 @@ class Constructor(parts.Constructor):
     def __init__(self, script_language_setup: SourceInterpreterSetup):
         super().__init__(pa.Parser(),
                          parts.UnconditionallySuccessfulValidator,
-                         lambda environment, source_code: ExecutorForSourceInterpreterSetup(script_language_setup,
-                                                                                            source_code))
+                         lambda os_process_executor, environment, source_code: ExecutorForSourceInterpreterSetup(
+                             os_process_executor,
+                             script_language_setup,
+                             source_code))
         self.script_language_setup = script_language_setup
 
 
@@ -38,9 +40,12 @@ class ActSourceFileNameGeneratorForSourceInterpreterSetup(pa.ActSourceFileNameGe
 
 
 class ExecutorForSourceInterpreterSetup(pa.ExecutorBase):
-    def __init__(self, script_language_setup: SourceInterpreterSetup,
+    def __init__(self,
+                 os_process_executor: ActPhaseOsProcessExecutor,
+                 script_language_setup: SourceInterpreterSetup,
                  source_code: str):
-        super().__init__(ActSourceFileNameGeneratorForSourceInterpreterSetup(script_language_setup),
+        super().__init__(os_process_executor,
+                         ActSourceFileNameGeneratorForSourceInterpreterSetup(script_language_setup),
                          source_code)
         self.script_language_setup = script_language_setup
 

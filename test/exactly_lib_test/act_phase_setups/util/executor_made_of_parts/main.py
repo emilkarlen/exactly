@@ -5,6 +5,7 @@ import unittest
 from exactly_lib.act_phase_setups.util.executor_made_of_parts import parts as sut
 from exactly_lib.execution.phase_step_identifiers import phase_step
 from exactly_lib.test_case.act_phase_handling import ExitCodeOrHardError, new_eh_exit_code
+from exactly_lib.test_case.os_services import ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, HomeAndSds
 from exactly_lib.test_case.phases.result import sh
@@ -31,7 +32,7 @@ class TestConstructor(unittest.TestCase):
         environment = _environment()
         act_phase_instructions = []
         # ACT #
-        executor = constructor.apply(environment, act_phase_instructions)
+        executor = constructor.apply(ACT_PHASE_OS_PROCESS_EXECUTOR, environment, act_phase_instructions)
         actual = executor.validate_pre_sds(environment)
         # ASSERT #
         self.assertIs(parser_error, actual)
@@ -44,7 +45,7 @@ class TestConstructor(unittest.TestCase):
         def validator_constructor(environment, x):
             return ValidatorThatRecordsSteps(step_recorder, x)
 
-        def executor_constructor(environment, x):
+        def executor_constructor(os_process_executor, environment, x):
             return ExecutorThatRecordsSteps(step_recorder, x)
 
         constructor = sut.Constructor(parser,

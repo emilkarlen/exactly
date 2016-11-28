@@ -5,6 +5,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsS
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.failure_details import FailureDetails
+from exactly_lib.util.process_execution.os_process_execution import Command, ProcessExecutionSettings
 from exactly_lib.util.std import StdFiles
 
 
@@ -105,6 +106,18 @@ class ActSourceAndExecutor:
         raise NotImplementedError()
 
 
+class ActPhaseOsProcessExecutor:
+    """
+    Executes a command in a sub process
+    """
+
+    def execute(self,
+                command: Command,
+                std_files: StdFiles,
+                process_execution_settings: ProcessExecutionSettings) -> ExitCodeOrHardError:
+        raise NotImplementedError()
+
+
 class ActSourceAndExecutorConstructor:
     """
     Parses the contents of the act phase which is the source that is to be executed as the act phase.
@@ -115,6 +128,7 @@ class ActSourceAndExecutorConstructor:
     """
 
     def apply(self,
+              os_process_executor: ActPhaseOsProcessExecutor,
               environment: InstructionEnvironmentForPreSdsStep,
               act_phase_instructions: list) -> ActSourceAndExecutor:
         raise NotImplementedError()

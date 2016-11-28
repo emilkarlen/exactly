@@ -1,7 +1,7 @@
 import pathlib
 
 from exactly_lib.test_case.act_phase_handling import ExitCodeOrHardError, ActSourceAndExecutor, \
-    ActSourceAndExecutorConstructor, ActPhaseHandling
+    ActSourceAndExecutorConstructor, ActPhaseHandling, ActPhaseOsProcessExecutor
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.result import sh
@@ -75,6 +75,7 @@ class ActSourceAndExecutorConstructorThatRunsConstantActions(ActSourceAndExecuto
         self.execute_action = execute_action
 
     def apply(self,
+              os_process_executor: ActPhaseOsProcessExecutor,
               environment: InstructionEnvironmentForPreSdsStep,
               act_phase_instructions: list) -> ActSourceAndExecutor:
         self.apply_action_before_executor_is_constructed(environment, act_phase_instructions)

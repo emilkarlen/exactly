@@ -12,7 +12,7 @@ from exactly_lib.execution.phase_step_identifiers.phase_step import PhaseStep
 from exactly_lib.section_document.model import SectionContents, ElementType
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.act_phase_handling import ExitCodeOrHardError, ActSourceAndExecutor, \
-    ActPhaseHandling, new_eh_hard_error
+    ActPhaseHandling, new_eh_hard_error, ActPhaseOsProcessExecutor
 from exactly_lib.test_case.os_services import new_default
 from exactly_lib.test_case.phases import common
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
@@ -32,6 +32,7 @@ from .result import PartialResult, PartialResultStatus, new_partial_result_pass,
 
 class Configuration(tuple):
     def __new__(cls,
+                act_phase_os_process_executor: ActPhaseOsProcessExecutor,
                 home_dir_path: pathlib.Path,
                 environ: dict,
                 timeout_in_seconds: int = None):
@@ -39,7 +40,11 @@ class Configuration(tuple):
         :param home_dir_path:
         :param timeout_in_seconds: None if no timeout
         """
-        return tuple.__new__(cls, (home_dir_path, timeout_in_seconds, environ))
+        return tuple.__new__(cls, (home_dir_path, timeout_in_seconds, environ, act_phase_os_process_executor))
+
+    @property
+    def act_phase_os_process_executor(self) -> ActPhaseOsProcessExecutor:
+        return self[3]
 
     @property
     def home_dir_path(self) -> pathlib.Path:
@@ -295,6 +300,7 @@ class _PartialExecutor:
                     return failure_con.implementation_error_msg(msg)
 
             self.__act_source_and_executor = self.__act_phase_handling.source_and_executor_constructor.apply(
+                self.configuration.act_phase_os_process_executor,
                 self.__instruction_environment_pre_sds,
                 instructions)
             res = self.__act_source_and_executor.validate_pre_sds(self.__instruction_environment_pre_sds)

@@ -1,7 +1,7 @@
 import pathlib
 
 from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutor, ExitCodeOrHardError, \
-    ActSourceAndExecutorConstructor
+    ActSourceAndExecutorConstructor, ActPhaseOsProcessExecutor
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.result import sh
@@ -73,11 +73,13 @@ class Constructor(ActSourceAndExecutorConstructor):
         self.executor_constructor = executor_constructor
 
     def apply(self,
+              os_process_executor: ActPhaseOsProcessExecutor,
               environment: InstructionEnvironmentForPreSdsStep,
               act_phase_instructions: list) -> ActSourceAndExecutor:
         return ActSourceAndExecutorMadeFromParserValidatorAndExecutor(self.parser,
                                                                       self.validator_constructor,
                                                                       self.executor_constructor,
+                                                                      os_process_executor,
                                                                       environment,
                                                                       act_phase_instructions)
 
@@ -91,11 +93,13 @@ class ActSourceAndExecutorMadeFromParserValidatorAndExecutor(ActSourceAndExecuto
                  parser: Parser,
                  validator_constructor,
                  executor_constructor,
+                 os_process_executor: ActPhaseOsProcessExecutor,
                  environment: InstructionEnvironmentForPreSdsStep,
                  act_phase_instructions: list):
         self.parser = parser
         self.validator_constructor = validator_constructor
         self.executor_constructor = executor_constructor
+        self.os_process_executor = os_process_executor
         self.environment = environment
         self.act_phase_instructions = act_phase_instructions
 
@@ -130,7 +134,7 @@ class ActSourceAndExecutorMadeFromParserValidatorAndExecutor(ActSourceAndExecuto
             self.__validator = self.validator_constructor(self.environment, object_to_execute)
             assert isinstance(self.__validator, Validator), \
                 'Constructed validator must be instance of ' + str(Validator)
-            self.__executor = self.executor_constructor(self.environment, object_to_execute)
+            self.__executor = self.executor_constructor(self.os_process_executor, self.environment, object_to_execute)
             assert isinstance(self.__executor, Executor), \
                 'Constructed executor must be instance of ' + str(Executor)
             return svh.new_svh_success()
