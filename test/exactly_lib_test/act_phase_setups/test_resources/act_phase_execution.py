@@ -5,7 +5,7 @@ import unittest
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.act_phase_handling import ExitCodeOrHardError, ActSourceAndExecutorConstructor, \
     new_eh_exit_code, \
-    ActSourceAndExecutor
+    ActSourceAndExecutor, ActPhaseOsProcessExecutor
 from exactly_lib.test_case.os_services import ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
@@ -37,13 +37,15 @@ class Arrangement:
                  act_phase_instructions: list,
                  home_dir_contents: file_structure.DirContents = file_structure.DirContents([]),
                  environ: dict = None,
-                 timeout_in_seconds: int = None
+                 timeout_in_seconds: int = None,
+                 act_phase_process_executor: ActPhaseOsProcessExecutor = ACT_PHASE_OS_PROCESS_EXECUTOR
                  ):
         self.executor_constructor = executor_constructor
         self.act_phase_instructions = act_phase_instructions
         self.home_dir_contents = home_dir_contents
         self.environ = {} if environ is None else environ
         self.timeout_in_seconds = timeout_in_seconds
+        self.act_phase_process_executor = act_phase_process_executor
 
 
 class Expectation:
@@ -74,7 +76,7 @@ def check_execution(put: unittest.TestCase,
         environment = InstructionEnvironmentForPreSdsStep(home_dir,
                                                           arrangement.environ,
                                                           arrangement.timeout_in_seconds)
-        sut = arrangement.executor_constructor.apply(ACT_PHASE_OS_PROCESS_EXECUTOR,
+        sut = arrangement.executor_constructor.apply(arrangement.act_phase_process_executor,
                                                      environment,
                                                      arrangement.act_phase_instructions)
         step_result = sut.validate_pre_sds(environment)

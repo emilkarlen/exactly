@@ -1,18 +1,20 @@
 import pathlib
 import unittest
 
-from exactly_lib.act_phase_setups.source_interpreter import interpreter_setup
-from exactly_lib.act_phase_setups.source_interpreter.source_file_management import SourceInterpreterSetup
 from exactly_lib.instructions.configuration import actor as sut
 from exactly_lib.instructions.configuration.utils import actor_utils
+from exactly_lib.instructions.configuration.utils.actor_utils import SHELL_COMMAND_INTERPRETER_ACTOR_KEYWORD
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling, ActSourceAndExecutorConstructor, \
     ActPhaseOsProcessExecutor
+from exactly_lib.test_case.os_services import ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib_test.act_phase_setups.test_resources import act_phase_execution
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
+from exactly_lib_test.test_case.test_resources.act_phase_os_process_executor import \
+    ActPhaseOsProcessExecutorThatRecordsArguments
 from exactly_lib_test.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_resources.parse import new_source2
 from exactly_lib_test.test_resources.programs import shell_commands
@@ -48,31 +50,26 @@ class TestFailingParseForInterpreter(unittest.TestCase):
 
 class TestSuccessfulParseAndInstructionExecutionForInterpreterActor(unittest.TestCase):
     def _check(self, instruction_argument_source: str,
-               expected_command_and_arguments: list):
-        # TODO Quite bad test, since it checks too many internal details.
-        # It should instead test the behaviour of the act-phase-setup
-        # by executing it.
-
+               expected_command_and_arguments_except_final_file_name_arg: list):
         # ARRANGE #
-        source = new_source2(instruction_argument_source)
-        instruction = sut.Parser().apply(source)
+        os_process_executor = ActPhaseOsProcessExecutorThatRecordsArguments()
+        arrangement = Arrangement(instruction_argument_source,
+                                  ['this is act phase source code that is not used in the test'],
+                                  act_phase_process_executor=os_process_executor)
+        expectation = Expectation()
         # ACT #
-        configuration_builder = _configuration_builder_with_exception_throwing_act_phase_setup()
-        instruction.main(configuration_builder)
+        _check(self, arrangement, expectation)
         # ASSERT #
-        act_phase_handling = configuration_builder.act_phase_handling
-        self.assertIsInstance(act_phase_handling, ActPhaseHandling)
-        assert isinstance(act_phase_handling, ActPhaseHandling)
-        constructor = act_phase_handling.source_and_executor_constructor
-        self.assertIsInstance(constructor,
-                              interpreter_setup.Constructor)
-        language_setup = constructor.script_language_setup
-        self.assertIsInstance(language_setup,
-                              SourceInterpreterSetup)
-        assert isinstance(language_setup, SourceInterpreterSetup)
-        actual_cmd_and_args = language_setup.command_and_args_for_executing_script_file('the file arg')
+        self.assertFalse(os_process_executor.command.shell,
+                         'Command should not indicate shell execution')
+        actual_cmd_and_args = os_process_executor.command.args
+        self.assertIsInstance(actual_cmd_and_args, list,
+                              'Arguments of command to execute should be a list of arguments')
+        self.assertTrue(len(actual_cmd_and_args) > 0,
+                        'List of arguments is expected to contain at least the file argument')
+        del actual_cmd_and_args[-1]
         self.assertEqual(actual_cmd_and_args,
-                         expected_command_and_arguments + ['the file arg'])
+                         expected_command_and_arguments_except_final_file_name_arg)
 
     def test_single_command(self):
         self._check('executable', ['executable'])
@@ -90,6 +87,66 @@ class TestSuccessfulParseAndInstructionExecutionForInterpreterActor(unittest.Tes
                     ['executable', 'arg'])
 
 
+class TestSuccessfulParseAndInstructionExecutionForShellCommandInterpreterActor(unittest.TestCase):
+    def _check(self, instruction_argument_source: str,
+               expected_command_except_final_file_name_part: str):
+        # ARRANGE #
+        os_process_executor = ActPhaseOsProcessExecutorThatRecordsArguments()
+        arrangement = Arrangement(instruction_argument_source,
+                                  ['this is act phase source code that is not used in the test'],
+                                  act_phase_process_executor=os_process_executor)
+        expectation = Expectation()
+        # ACT #
+        _check(self, arrangement, expectation)
+        # ASSERT #
+        self.assertTrue(os_process_executor.command.shell,
+                        'Command should indicate shell execution')
+        actual_cmd_and_args = os_process_executor.command.args
+        self.assertIsInstance(actual_cmd_and_args, str,
+                              'Arguments of command to execute should be a string')
+        self.assertTrue(len(actual_cmd_and_args) > len(expected_command_except_final_file_name_part),
+                        'Command line string is expected to contain at least the argument of the instruction')
+        command_head = actual_cmd_and_args[:len(expected_command_except_final_file_name_part)]
+        self.assertEqual(command_head,
+                         expected_command_except_final_file_name_part)
+
+    def test_single_command(self):
+        self._check(SHELL_COMMAND_INTERPRETER_ACTOR_KEYWORD + ' arg', 'arg')
+
+    def test_command_with_arguments(self):
+        self._check(SHELL_COMMAND_INTERPRETER_ACTOR_KEYWORD + ' arg arg1 --arg2',
+                    'arg arg1 --arg2')
+
+    def test_quoting(self):
+        self._check(SHELL_COMMAND_INTERPRETER_ACTOR_KEYWORD + " 'arg with space' arg2 \"arg 3\"",
+                    "'arg with space' arg2 \"arg 3\"")
+
+    def test_with_interpreter_keyword(self):
+        self._check(actor_utils.INTERPRETER_ACTOR_KEYWORD + ' ' + SHELL_COMMAND_INTERPRETER_ACTOR_KEYWORD +
+                    ' arg1 arg2',
+                    'arg1 arg2')
+
+
+class TestSuccessfulParseAndInstructionExecutionForShellCommandActor(unittest.TestCase):
+    def test_act_phase_source_is_single_shell_command(self):
+        # ARRANGE #
+        os_process_executor = ActPhaseOsProcessExecutorThatRecordsArguments()
+        arrangement = Arrangement(actor_utils.SHELL_COMMAND_ACTOR_KEYWORD,
+                                  ['act phase source'],
+                                  act_phase_process_executor=os_process_executor)
+        expectation = Expectation()
+        # ACT #
+        _check(self, arrangement, expectation)
+        # ASSERT #
+        self.assertTrue(os_process_executor.command.shell,
+                        'Command should indicate shell execution')
+        actual_cmd_and_args = os_process_executor.command.args
+        self.assertIsInstance(actual_cmd_and_args, str,
+                              'Arguments of command to execute should be a string')
+        self.assertEqual(actual_cmd_and_args,
+                         'act phase source')
+
+
 class TestShellHandlingViaExecution(unittest.TestCase):
     def test_valid_shell_command(self):
         _check(self,
@@ -103,9 +160,12 @@ class TestShellHandlingViaExecution(unittest.TestCase):
 class Arrangement:
     def __init__(self,
                  instruction_argument: str,
-                 act_phase_source_lines: list):
+                 act_phase_source_lines: list,
+                 act_phase_process_executor: ActPhaseOsProcessExecutor = ACT_PHASE_OS_PROCESS_EXECUTOR
+                 ):
         self.instruction_argument = instruction_argument
         self.act_phase_source_lines = act_phase_source_lines
+        self.act_phase_process_executor = act_phase_process_executor
 
 
 class Expectation:
@@ -124,8 +184,10 @@ def _check(put: unittest.TestCase,
     act_phase_instructions = [instr(arrangement.act_phase_source_lines)]
     executor_constructor = configuration_builder.act_phase_handling.source_and_executor_constructor
     act_phase_execution.check_execution(put,
-                                        act_phase_execution.Arrangement(executor_constructor=executor_constructor,
-                                                                        act_phase_instructions=act_phase_instructions),
+                                        act_phase_execution.Arrangement(
+                                            executor_constructor=executor_constructor,
+                                            act_phase_instructions=act_phase_instructions,
+                                            act_phase_process_executor=arrangement.act_phase_process_executor),
                                         act_phase_execution.Expectation(
                                             sub_process_result_from_execute=expectation.sub_process_result_from_execute)
                                         )
@@ -137,6 +199,8 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestFailingParseForShellCommand),
         unittest.makeSuite(TestFailingParseForInterpreter),
         unittest.makeSuite(TestSuccessfulParseAndInstructionExecutionForInterpreterActor),
+        unittest.makeSuite(TestSuccessfulParseAndInstructionExecutionForShellCommandInterpreterActor),
+        unittest.makeSuite(TestSuccessfulParseAndInstructionExecutionForShellCommandActor),
         unittest.makeSuite(TestShellHandlingViaExecution),
         suite_for_instruction_documentation(sut.setup('instruction name').documentation),
     ])
@@ -156,4 +220,4 @@ class _ActSourceAndExecutorConstructorThatRaisesException(ActSourceAndExecutorCo
 
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.TextTestRunner().run(suite())

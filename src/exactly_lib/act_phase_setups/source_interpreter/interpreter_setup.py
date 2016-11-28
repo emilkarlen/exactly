@@ -25,7 +25,6 @@ class Constructor(parts.Constructor):
                              os_process_executor,
                              script_language_setup,
                              source_code))
-        self.script_language_setup = script_language_setup
 
 
 class ActSourceFileNameGeneratorForSourceInterpreterSetup(pa.ActSourceFileNameGenerator):
