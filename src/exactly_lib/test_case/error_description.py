@@ -81,7 +81,7 @@ class ErrorDescriptionVisitor:
         elif isinstance(error_description, ErrorDescriptionOfExternalProcessError):
             return self._visit_external_process_error(error_description)
         else:
-            raise ValueError('Unknown {}: {}'.format(ErrorDescription, str(error_description)))
+            raise TypeError('Unknown {}: {}'.format(ErrorDescription, str(error_description)))
 
     def _visit_message(self, error_description: ErrorDescriptionOfMessage):
         raise NotImplementedError()

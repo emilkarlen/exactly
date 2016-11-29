@@ -45,7 +45,7 @@ class TestVisitor(unittest.TestCase):
         recording_visitor = VisitorThatRegisterClassOfVisitMethod()
         non_concept = 'a string is not a sub class of ' + str(sut.ConceptDocumentation)
         # ACT & ASSERT #
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             recording_visitor.visit(non_concept)
 
 
