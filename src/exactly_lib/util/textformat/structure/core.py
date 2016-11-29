@@ -81,7 +81,7 @@ class TextVisitor:
             return self.visit_cross_reference(text)
         if isinstance(text, AnchorText):
             return self.visit_anchor(text)
-        raise ValueError('Not a value of sub type of %s: %s' % (str(Text), str(text)))
+        raise TypeError('Not a value of sub type of %s: %s' % (str(Text), str(text)))
 
     def visit_string(self, text: StringText):
         raise NotImplementedError()

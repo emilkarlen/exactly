@@ -72,7 +72,7 @@ class ConceptDocumentationVisitor:
             return self.visit_plain_concept(x)
         if isinstance(x, ConfigurationParameterDocumentation):
             return self.visit_configuration_parameter(x)
-        raise ValueError('%s is not an instance of %s' % (str(x), str(ConceptDocumentation)))
+        raise TypeError('%s is not an instance of %s' % (str(x), str(ConceptDocumentation)))
 
     def visit_plain_concept(self, x: PlainConceptDocumentation):
         raise NotImplementedError()

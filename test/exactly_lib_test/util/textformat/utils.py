@@ -73,7 +73,7 @@ class TestParagraphItemVisitor(unittest.TestCase):
         item = 'A value of a type that is not a ParagraphItem'
         visitor = AVisitorThatRecordsVisitedMethods()
         # ACT #
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             visitor.visit(item)
         # ASSERT #
         self.assertIsNot(visitor.visited_types,

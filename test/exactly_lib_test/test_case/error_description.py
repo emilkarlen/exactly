@@ -42,7 +42,7 @@ class TestVisitor(unittest.TestCase):
                       ret_val)
 
     def testVisitNonSubClassObject(self):
-        with self.assertRaises(ValueError) as info:
+        with self.assertRaises(TypeError):
             self.VISITOR.visit('string is not a sub class of ErrorDescription')
 
 

@@ -49,4 +49,4 @@ def _renderer(application_help: ApplicationHelp,
     if isinstance(request, TestSuiteHelpRequest):
         resolver = TestSuiteHelpRendererResolver(application_help.test_suite_help)
         return resolver.resolve(request)
-    raise ValueError('Invalid %s: %s' % (str(HelpRequest), str(type(request))))
+    raise TypeError('Invalid %s: %s' % (str(HelpRequest), str(type(request))))

@@ -15,7 +15,7 @@ class ParagraphItemVisitor:
             return self.visit_literal_layout(item)
         if isinstance(item, Table):
             return self.visit_table(item)
-        raise ValueError('Unknown {}: {}'.format(ParagraphItem.__name__, str(type(item))))
+        raise TypeError('Unknown {}: {}'.format(ParagraphItem.__name__, str(type(item))))
 
     def visit_paragraph(self, paragraph: Paragraph):
         raise NotImplemented()
