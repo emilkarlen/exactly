@@ -1,3 +1,5 @@
+from exactly_lib.help.actors.actor.all_actors import ALL_ACTORS
+from exactly_lib.help.actors.contents_structure import ActorsHelp
 from exactly_lib.help.concepts.all_concepts import all_concepts
 from exactly_lib.help.concepts.contents_structure import ConceptsHelp
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet
@@ -20,12 +22,14 @@ class ApplicationHelp(tuple):
     def __new__(cls,
                 main_program_help: MainProgramHelp,
                 concepts_help: ConceptsHelp,
+                actors_help: ActorsHelp,
                 test_case_help: TestCaseHelp,
                 test_suite_help: TestSuiteHelp):
         return tuple.__new__(cls, (main_program_help,
                                    concepts_help,
                                    test_case_help,
-                                   test_suite_help))
+                                   test_suite_help,
+                                   actors_help))
 
     @property
     def main_program_help(self) -> MainProgramHelp:
@@ -43,10 +47,15 @@ class ApplicationHelp(tuple):
     def test_suite_help(self) -> TestSuiteHelp:
         return self[3]
 
+    @property
+    def actors_help(self) -> ActorsHelp:
+        return self[4]
+
 
 def application_help_for(instructions_setup: InstructionsSetup) -> ApplicationHelp:
     return ApplicationHelp(MainProgramHelp(),
                            ConceptsHelp(all_concepts()),
+                           ActorsHelp(ALL_ACTORS),
                            TestCaseHelp(phase_helps_for(instructions_setup)),
                            TestSuiteHelp([
                                ConfigurationSectionDocumentation(SECTION_NAME__CONF,
