@@ -70,6 +70,15 @@ class ConceptCrossReferenceId(CrossReferenceId):
         return self._concept_name
 
 
+class ActorCrossReferenceId(CrossReferenceId):
+    def __init__(self, actor_name: str):
+        self._actor_name = actor_name
+
+    @property
+    def actor_name(self) -> str:
+        return self._actor_name
+
+
 class CrossReferenceIdVisitor:
     def visit(self, x: CrossReferenceId):
         if isinstance(x, CustomCrossReferenceId):
@@ -84,11 +93,16 @@ class CrossReferenceIdVisitor:
             return self.visit_test_suite_section_instruction(x)
         if isinstance(x, ConceptCrossReferenceId):
             return self.visit_concept(x)
+        if isinstance(x, ActorCrossReferenceId):
+            return self.visit_actor(x)
         else:
             raise TypeError('Not a concrete %s: %s' % (str(CrossReferenceId),
                                                        str(x)))
 
     def visit_concept(self, x: ConceptCrossReferenceId):
+        raise NotImplementedError()
+
+    def visit_actor(self, x: ActorCrossReferenceId):
         raise NotImplementedError()
 
     def visit_test_case_phase(self, x: TestCasePhaseCrossReference):

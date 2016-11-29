@@ -1,5 +1,8 @@
 from exactly_lib.help import cross_reference_id as cross_ref
+from exactly_lib.help.actors.actor.all_actors import ALL_ACTORS
+from exactly_lib.help.actors.contents_structure import ActorsHelp
 from exactly_lib.help.cross_reference_id import CustomTargetInfoFactory, CrossReferenceId
+from exactly_lib.help.html_doc.parts.actors import HtmlDocGeneratorForActorsHelp
 from exactly_lib.help.html_doc.parts.utils import HtmlDocGeneratorForSectionDocumentBase
 from exactly_lib.help.program_modes.test_case.contents.cli_syntax import TestCaseCliSyntaxDocumentation
 from exactly_lib.help.program_modes.test_case.contents.main import specification as test_case_specification_rendering
@@ -35,6 +38,10 @@ class HtmlDocGeneratorForTestCaseHelp(HtmlDocGeneratorForSectionDocumentBase):
             phases_targets_factory,
             self.test_case_help.phase_helps_in_order_of_execution)
 
+        actors_targets_factory = cross_ref.sub_component_factory('actors', targets_factory)
+        actors_target = actors_targets_factory.root('Actors')
+        actors_sub_targets, actors_contents = self._actors_contents(actors_targets_factory)
+
         instructions_targets_factory = cross_ref.sub_component_factory('instructions',
                                                                        targets_factory)
         instructions_target = instructions_targets_factory.root('Instructions per phase')
@@ -49,6 +56,8 @@ class HtmlDocGeneratorForTestCaseHelp(HtmlDocGeneratorForSectionDocumentBase):
                             specification_contents),
                 doc.Section(phases_target.anchor_text(),
                             phases_contents),
+                doc.Section(actors_target.anchor_text(),
+                            actors_contents),
                 doc.Section(cli_syntax_target.anchor_text(),
                             cli_syntax_contents),
                 doc.Section(instructions_target.anchor_text(),
@@ -60,6 +69,8 @@ class HtmlDocGeneratorForTestCaseHelp(HtmlDocGeneratorForSectionDocumentBase):
                                      specification_sub_targets),
             cross_ref.TargetInfoNode(phases_target,
                                      phases_sub_targets),
+            cross_ref.TargetInfoNode(actors_target,
+                                     actors_sub_targets),
             cross_ref.TargetInfoNode(cli_syntax_target, []),
             cross_ref.TargetInfoNode(instructions_target,
                                      instructions_sub_targets),
@@ -70,6 +81,10 @@ class HtmlDocGeneratorForTestCaseHelp(HtmlDocGeneratorForSectionDocumentBase):
         generator = test_case_specification_rendering.SpecificationRenderer(self.test_case_help, targets_factory)
         section_contents = generator.apply(self.rendering_environment)
         return generator.target_info_hierarchy(), section_contents
+
+    def _actors_contents(self, targets_factory: CustomTargetInfoFactory) -> (list, doc.SectionContents):
+        generator = HtmlDocGeneratorForActorsHelp(self.rendering_environment, ActorsHelp(ALL_ACTORS))
+        return generator.apply(targets_factory)
 
     def _cli_syntax_contents(self) -> doc.SectionContents:
         renderer = ProgramDocumentationSectionContentsRenderer(TestCaseCliSyntaxDocumentation())

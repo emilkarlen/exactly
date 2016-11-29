@@ -26,6 +26,7 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
         self.format_map = {
             'phase': phase_name_dictionary(),
             'home_directory': HOME_DIRECTORY_CONFIGURATION_PARAMETER.name().singular,
+            'actor': HOME_DIRECTORY_CONFIGURATION_PARAMETER.name().singular,
             'sandbox': SANDBOX_CONCEPT.name().singular,
             'result_subdir': sds.SUB_DIRECTORY__RESULT,
             'actor_option': OPTION_FOR_ACTOR,
@@ -46,7 +47,11 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
         return True
 
     def contents_description(self) -> list:
-        return self._parse(_CONTENTS_DESCRIPTION)
+        from exactly_lib.help.actors.default_actor import DEFAULT_ACTOR
+        return (self._parse(_CONTENTS_DESCRIPTION__BEFORE_DEFAULT_ACTOR_DESCRIPTION) +
+                docs.paras(DEFAULT_ACTOR.name_and_single_line_description()) +
+                self._parse(_CONTENTS_DESCRIPTION__AFTER_DEFAULT_ACTOR_DESCRIPTION)
+                )
 
     def execution_environment_info(self) -> ExecutionEnvironmentInfo:
         return ExecutionEnvironmentInfo(pwd_at_start_of_phase_for_non_first_phases(),
@@ -54,7 +59,9 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
 
     @property
     def see_also(self) -> list:
+        from exactly_lib.help.concepts.configuration_parameters.actor import ACTOR_CONCEPT
         return [
+            ACTOR_CONCEPT.cross_reference_target(),
             SANDBOX_CONCEPT.cross_reference_target(),
             ENVIRONMENT_VARIABLE_CONCEPT.cross_reference_target(),
             HOME_DIRECTORY_CONFIGURATION_PARAMETER.cross_reference_target(),
@@ -76,21 +83,13 @@ The program specified by the {phase[act]} phase is executed and its result is st
 in the {result_subdir}/ sub directory of the {sandbox}:
 """
 
-_CONTENTS_DESCRIPTION = """\
-By default, the {phase[act]} phase should contain exactly one command line.
+_CONTENTS_DESCRIPTION__BEFORE_DEFAULT_ACTOR_DESCRIPTION = """\
+The meaning and syntax of the {phase[act]} phase depends on which TODO actor_concept is used.
 
 
-This command line uses shell syntax for quoting and separation of elements.
+The default TODO actor_concept is:
+"""
 
-
-The first element must be the path of an existing, executable file.
-
-
-If the path is relative, then it is taken to be relative the {home_directory}.
-
-
-The the path is not found, then this will cause a VALIDATION error, and the test case will not be executed.
-
-
-The {actor_option} option can be used to specify a different setup of the {phase[act]} phase.
+_CONTENTS_DESCRIPTION__AFTER_DEFAULT_ACTOR_DESCRIPTION = """\
+The {actor_option} option can be used to specify a different TODO actor_concept.
 """

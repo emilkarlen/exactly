@@ -1,6 +1,7 @@
 from exactly_lib import program_info
 from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options as opt
 from exactly_lib.default.program_modes.test_case.default_instruction_names import ACTOR_INSTRUCTION_NAME
+from exactly_lib.help.actors.names_and_cross_references import ALL_ACTORS__CROSS_REFS
 from exactly_lib.help.concepts.configuration_parameters.home_directory import HOME_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.concepts.contents_structure import Name, \
     ConfigurationParameterDocumentation
@@ -39,16 +40,18 @@ class _ActorConcept(ConfigurationParameterDocumentation):
                                               ]))
 
     def default_value_str(self) -> str:
-        return "Executes a single command line, consisting of a program and optional arguments."
+        from exactly_lib.help.actors.default_actor import DEFAULT_ACTOR
+        return DEFAULT_ACTOR.name_and_single_line_description_str()
 
     def see_also(self) -> list:
-        return [
-            HOME_DIRECTORY_CONFIGURATION_PARAMETER.cross_reference_target(),
-            TestCasePhaseInstructionCrossReference(CONFIGURATION_PHASE_NAME.plain,
-                                                   ACTOR_INSTRUCTION_NAME),
-            TestSuiteSectionInstructionCrossReference(suite_section_names.CONFIGURATION_SECTION_NAME.plain,
-                                                      ACTOR_INSTRUCTION_NAME),
-        ]
+        return (ALL_ACTORS__CROSS_REFS +
+                [
+                    HOME_DIRECTORY_CONFIGURATION_PARAMETER.cross_reference_target(),
+                    TestCasePhaseInstructionCrossReference(CONFIGURATION_PHASE_NAME.plain,
+                                                           ACTOR_INSTRUCTION_NAME),
+                    TestSuiteSectionInstructionCrossReference(suite_section_names.CONFIGURATION_SECTION_NAME.plain,
+                                                              ACTOR_INSTRUCTION_NAME),
+                ])
 
 
 ACTOR_CONCEPT = _ActorConcept()
