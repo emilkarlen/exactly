@@ -10,7 +10,7 @@ from exactly_lib.cli.program_modes.help.program_modes.test_case.help_request imp
 from exactly_lib.cli.program_modes.help.program_modes.test_suite.help_request import *
 from exactly_lib.common.instruction_documentation import InstructionDocumentation
 from exactly_lib.help.actors.contents_structure import ActorsHelp
-from exactly_lib.help.concepts.contents_structure import PlainConceptDocumentation, Name, ConceptDocumentation, \
+from exactly_lib.help.concepts.contents_structure import ConceptDocumentation, \
     ConceptsHelp
 from exactly_lib.help.contents_structure import ApplicationHelp
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
@@ -18,7 +18,7 @@ from exactly_lib.help.program_modes.main_program.contents_structure import MainP
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
 from exactly_lib.help.utils import formatting
-from exactly_lib.util.description import single_line_description_with_sub_sections, DescriptionWithSubSections
+from exactly_lib_test.help.concepts.test_resources.documentation import ConceptTestImpl
 from exactly_lib_test.help.test_resources import section_documentation, \
     single_line_description_that_identifies_instruction_and_section, application_help_for, \
     SectionDocumentationForSectionWithoutInstructionsTestImpl, application_help_for_suite_sections
@@ -487,14 +487,6 @@ class TestConceptHelp(unittest.TestCase):
 
         self.assertEqual(concept_name,
                          actual.individual_concept.name().singular)
-
-
-class ConceptTestImpl(PlainConceptDocumentation):
-    def __init__(self, singular_name: str):
-        super().__init__(Name(singular_name, 'plural of ' + singular_name))
-
-    def purpose(self) -> DescriptionWithSubSections:
-        return single_line_description_with_sub_sections('single line description')
 
 
 def suite() -> unittest.TestSuite:
