@@ -45,9 +45,9 @@ class ActorDocumentation:
         """
         :rtype [`CrossReferenceTarget`]
         """
-        return self._see_also_common() + self._see_also_specific()
+        return self.__see_also_common() + self._see_also_specific()
 
-    def _see_also_common(self) -> list:
+    def __see_also_common(self) -> list:
         """
         :rtype [`CrossReferenceTarget`]
         """
@@ -69,7 +69,7 @@ class ActorsHelp(tuple):
     def __new__(cls,
                 actors: iter):
         """
-        :type concepts: [`ActorDocumentation`]
+        :type actors: [`ActorDocumentation`]
         """
         return tuple.__new__(cls, (list(actors),))
 
