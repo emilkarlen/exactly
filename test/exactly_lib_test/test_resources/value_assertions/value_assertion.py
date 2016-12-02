@@ -242,6 +242,18 @@ def sub_component(component_name: str,
                         component_assertion)
 
 
+def with_transformed_message(message_builder_transformer: types.FunctionType,
+                             value_assertion: ValueAssertion) -> ValueAssertion:
+    return _WithTransformedMessage(message_builder_transformer, value_assertion)
+
+
+def append_to_message(s: str) -> types.FunctionType:
+    def ret_val(message_builder: MessageBuilder) -> MessageBuilder:
+        return message_builder.for_sub_component(s, component_separator='')
+
+    return ret_val
+
+
 def sub_component_list(list_name: str,
                        list_getter: types.FunctionType,
                        element_assertion: ValueAssertion,
@@ -254,6 +266,33 @@ def sub_component_list(list_name: str,
                          every_element('',
                                        element_assertion),
                          component_separator)
+
+
+def is_list_of(element_assertion: ValueAssertion) -> ValueAssertion:
+    return is_instance_with(list,
+                            every_element('', element_assertion, component_separator=''))
+
+
+class _IsInstanceWith(ValueAssertion):
+    def __init__(self,
+                 expected_type: type,
+                 value_assertion: ValueAssertion):
+        self.expected_type = expected_type
+        self.value_assertion = value_assertion
+
+    def apply(self,
+              put: unittest.TestCase,
+              value,
+              message_builder: MessageBuilder = MessageBuilder()):
+        put.assertIsInstance(value,
+                             self.expected_type,
+                             message_builder.apply(''))
+        self.value_assertion.apply(put, value, message_builder)
+
+
+def is_instance_with(expected_type: type,
+                     value_assertion: ValueAssertion) -> ValueAssertion:
+    return _IsInstanceWith(expected_type, value_assertion)
 
 
 def every_element(iterable_name: str,
@@ -337,3 +376,19 @@ class EveryElement(ValueAssertion):
 
 def fail(msg: str) -> ValueAssertion:
     return Constant(False, msg)
+
+
+class _WithTransformedMessage(ValueAssertion):
+    def __init__(self,
+                 message_builder_transformer: types.FunctionType,
+                 value_assertion: ValueAssertion):
+        self.value_assertion = value_assertion
+        self.message_builder_transformer = message_builder_transformer
+
+    def apply(self,
+              put: unittest.TestCase,
+              value,
+              message_builder: MessageBuilder = MessageBuilder()):
+        self.value_assertion.apply(put,
+                                   value,
+                                   self.message_builder_transformer(message_builder))
