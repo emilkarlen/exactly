@@ -37,25 +37,25 @@ class TestName(WithActorDocumentationBase):
 class TestSingleLineDescriptionStr(WithActorDocumentationBase):
     def runTest(self):
         actual = self.documentation.single_line_description_str()
-        self.assertIsInstance(actual, str)
+        self.assertIsInstance(actual, str, 'single_line_description_str')
 
 
 class TestSingleLineDescription(WithActorDocumentationBase):
     def runTest(self):
         actual = self.documentation.single_line_description()
-        struct_check.is_text.apply(self, actual)
+        struct_check.is_text.apply(self, actual, va.MessageBuilder('single_line_description'))
 
 
 class TestNameAndSingleLineDescriptionStr(WithActorDocumentationBase):
     def runTest(self):
         actual = self.documentation.name_and_single_line_description_str()
-        self.assertIsInstance(actual, str)
+        self.assertIsInstance(actual, str, 'name_and_single_line_description_str')
 
 
 class TestNameAndSingleLineDescription(WithActorDocumentationBase):
     def runTest(self):
         actual = self.documentation.name_and_single_line_description()
-        struct_check.is_text.apply(self, actual)
+        struct_check.is_text.apply(self, actual, va.MessageBuilder('name_and_single_line_description'))
 
 
 class TestActPhaseContents(WithActorDocumentationBase):
