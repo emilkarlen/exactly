@@ -28,7 +28,7 @@ class IndividualActorRenderer(SectionContentsRenderer):
 
 
 def _sorted_actors_list(actors: iter) -> ParagraphItem:
-    all_actors = sorted(actors, key=lambda cd: cd.name().singular)
+    all_actors = sorted(actors, key=lambda ad: ad.name())
     items = [lists.HeaderContentListItem(text(actor.name()),
                                          paras(actor.single_line_description()))
              for actor in all_actors]
