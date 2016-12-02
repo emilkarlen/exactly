@@ -1,12 +1,13 @@
 import unittest
 
-from exactly_lib_test.cli.program_modes.help import argument_parsing, concepts
+from exactly_lib_test.cli.program_modes.help import argument_parsing, concepts, actors
 
 
-def suite():
+def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(argument_parsing.suite())
     ret_val.addTest(concepts.suite())
+    ret_val.addTest(actors.suite())
     return ret_val
 
 
