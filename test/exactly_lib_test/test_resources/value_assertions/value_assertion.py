@@ -132,7 +132,7 @@ class And(ValueAssertion):
 class Or(ValueAssertion):
     def __init__(self,
                  assertions: list,
-                 assertion_name: str = 'none of the assertions was satisfied'):
+                 assertion_name: str = 'none of the assertions were satisfied'):
         self.assertions = assertions
         self.assertion_name = assertion_name
 
@@ -147,9 +147,9 @@ class Or(ValueAssertion):
                 assertion.apply(put, value, message_builder)
                 return
             except put.failureException as ex:
-                failures.append(ex)
-        put.fail(message_builder.apply('OR: ' + self.assertion_name) + '\n' +
-                 os.linesep.join([str(ex) for ex in failures]))
+                failures.append('  ' + str(ex))
+        put.fail(message_builder.apply('OR: ' + self.assertion_name) + ':' + os.linesep +
+                 os.linesep.join(failures))
 
 
 class Not(ValueAssertion):
