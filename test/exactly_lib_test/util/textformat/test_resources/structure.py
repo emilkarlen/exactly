@@ -13,37 +13,43 @@ def is_paragraph_item_list(name: str = '') -> va.ValueAssertion:
     return va.every_element(name, is_paragraph_item)
 
 
-is_string_text = va.And([
-    va.IsInstance(core.StringText),
-    va.sub_component('value',
-                     core.StringText.value.fget,
-                     va.IsInstance(str))
-])
+is_string_text = va.is_instance_with(core.StringText,
+                                     va.sub_component('value',
+                                                      core.StringText.value.fget,
+                                                      va.IsInstance(str)))
 
-is_cross_reference_text = va.And([
-    va.IsInstance(core.CrossReferenceText),
-    va.sub_component('target',
-                     core.CrossReferenceText.target.fget,
-                     va.IsInstance(core.CrossReferenceTarget)),
-    va.sub_component('title',
-                     core.CrossReferenceText.title.fget,
-                     va.IsInstance(str))
-])
+is_cross_reference_text = va.is_instance_with(core.CrossReferenceText,
+                                              va.And([
+                                                  va.sub_component('target',
+                                                                   core.CrossReferenceText.target.fget,
+                                                                   va.IsInstance(core.CrossReferenceTarget)),
+                                                  va.sub_component('title',
+                                                                   core.CrossReferenceText.title.fget,
+                                                                   va.IsInstance(str))
+                                              ]))
+
+
+def is_cross_reference_target_list(name: str = '') -> va.ValueAssertion:
+    return va.every_element(name, is_cross_reference_target)
+
+
+is_cross_reference_target = va.IsInstance(core.CrossReferenceTarget)
 
 is_concrete_text = va.Or([
     is_string_text,
     is_cross_reference_text,
 ])
 
-is_anchor_text = va.And([
-    va.IsInstance(core.AnchorText),
-    va.sub_component('anchor',
-                     core.AnchorText.anchor.fget,
-                     va.IsInstance(core.CrossReferenceTarget)),
-    va.sub_component('anchored_text',
-                     core.AnchorText.anchored_text.fget,
-                     is_concrete_text)
-])
+is_anchor_text = va.is_instance_with(
+    core.AnchorText,
+    va.And([
+        va.sub_component('anchor',
+                         core.AnchorText.anchor.fget,
+                         va.IsInstance(core.CrossReferenceTarget)),
+        va.sub_component('anchored_text',
+                         core.AnchorText.anchored_text.fget,
+                         is_concrete_text)
+    ]))
 
 is_text = va.Or([
     is_concrete_text,
