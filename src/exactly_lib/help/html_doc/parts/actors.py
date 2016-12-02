@@ -3,8 +3,8 @@ from exactly_lib.help.actors.contents_structure import ActorsHelp, ActorDocument
 from exactly_lib.help.actors.render import IndividualActorRenderer
 from exactly_lib.help.cross_reference_id import CustomTargetInfoFactory
 from exactly_lib.help.utils.render import RenderingEnvironment
-from exactly_lib.util.textformat.structure import document  as doc
-from exactly_lib.util.textformat.structure import structures  as docs
+from exactly_lib.util.textformat.structure import document as doc
+from exactly_lib.util.textformat.structure import structures as docs
 
 
 class HtmlDocGeneratorForActorsHelp:
