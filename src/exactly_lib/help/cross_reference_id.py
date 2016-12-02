@@ -12,7 +12,11 @@ class CrossReferenceId(CrossReferenceTarget):
 
 class CustomCrossReferenceId(CrossReferenceId):
     def __init__(self, target_name: str):
-        self.target_name = target_name
+        self._target_name = target_name
+
+    @property
+    def target_name(self) -> str:
+        return self._target_name
 
 
 class ProgramCrossReferenceId(CrossReferenceId):
@@ -25,7 +29,11 @@ class TestCaseCrossReferenceId(CrossReferenceId):
 
 class TestCasePhaseCrossReferenceBase(TestCaseCrossReferenceId):
     def __init__(self, phase_name: str):
-        self.phase_name = phase_name
+        self._phase_name = phase_name
+
+    @property
+    def phase_name(self) -> str:
+        return self._phase_name
 
 
 class TestCasePhaseCrossReference(TestCasePhaseCrossReferenceBase):
@@ -37,7 +45,11 @@ class TestCasePhaseInstructionCrossReference(TestCasePhaseCrossReferenceBase):
                  phase_name: str,
                  instruction_name: str):
         super().__init__(phase_name)
-        self.instruction_name = instruction_name
+        self._instruction_name = instruction_name
+
+    @property
+    def instruction_name(self) -> str:
+        return self._instruction_name
 
 
 class TestSuiteCrossReferenceId(CrossReferenceId):
@@ -46,7 +58,11 @@ class TestSuiteCrossReferenceId(CrossReferenceId):
 
 class TestSuiteSectionCrossReferenceBase(TestSuiteCrossReferenceId):
     def __init__(self, section_name: str):
-        self.section_name = section_name
+        self._section_name = section_name
+
+    @property
+    def section_name(self) -> str:
+        return self._section_name
 
 
 class TestSuiteSectionCrossReference(TestSuiteSectionCrossReferenceBase):
@@ -58,7 +74,11 @@ class TestSuiteSectionInstructionCrossReference(TestSuiteSectionCrossReferenceBa
                  section_name: str,
                  instruction_name: str):
         super().__init__(section_name)
-        self.instruction_name = instruction_name
+        self._instruction_name = instruction_name
+
+    @property
+    def instruction_name(self) -> str:
+        return self._instruction_name
 
 
 class ConceptCrossReferenceId(CrossReferenceId):
