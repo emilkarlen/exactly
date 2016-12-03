@@ -27,7 +27,7 @@ if __name__ == '__main__':
 class TestAllConceptsList(unittest.TestCase):
     def runTest(self):
         # ARRANGE #
-        renderer = sut.AllConceptsListRenderer(ConceptsHelp(all_concepts()))
+        renderer = sut.all_concepts_list_renderer(ConceptsHelp(all_concepts()))
         # ACT #
         actual = renderer.apply(RENDERING_ENVIRONMENT)
         # ASSERT #

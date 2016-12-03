@@ -11,7 +11,7 @@ class ConceptHelpRequestRendererResolver:
         from exactly_lib.help.concepts import render
         item = request.item
         if item is ConceptHelpItem.ALL_CONCEPTS_LIST:
-            return render.AllConceptsListRenderer(self.concepts_help)
+            return render.all_concepts_list_renderer(self.concepts_help)
         if item is ConceptHelpItem.INDIVIDUAL_CONCEPT:
             return render.IndividualConceptRenderer(request.individual_concept)
         raise ValueError('Invalid %s: %s' % (str(ConceptHelpItem), str(item)))
