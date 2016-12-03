@@ -1,5 +1,4 @@
-from exactly_lib.cli.program_modes.help.actors.help_request import ActorHelpRequest
-from exactly_lib.cli.program_modes.help.concepts.help_request import ConceptHelpRequest
+from exactly_lib.cli.program_modes.help.entities_requests import EntityHelpRequest, EntityHelpRequestRendererResolver
 from exactly_lib.cli.program_modes.help.html_documentation.help_request import HtmlDocHelpRequest
 from exactly_lib.cli.program_modes.help.html_documentation.request_rendering import HtmlGenerationRequestHandler
 from exactly_lib.cli.program_modes.help.program_modes.help_request import *
@@ -14,6 +13,7 @@ from exactly_lib.cli.program_modes.help.program_modes.test_suite.request_renderi
 from exactly_lib.cli.program_modes.help.request_handling.console_help import ConsoleHelpRequestHandler
 from exactly_lib.cli.program_modes.help.request_handling.request_handler import RequestHandler
 from exactly_lib.help.contents_structure import ApplicationHelp
+from exactly_lib.help.entity_names import ACTOR_ENTITY_TYPE_NAME, CONCEPT_ENTITY_TYPE_NAME
 from exactly_lib.help.utils.render import SectionContentsRenderer
 from exactly_lib.util.std import StdOutputFiles
 
@@ -40,18 +40,24 @@ def _renderer(application_help: ApplicationHelp,
     if isinstance(request, MainProgramHelpRequest):
         resolver = MainProgramHelpRendererResolver(application_help.main_program_help)
         return resolver.renderer_for(request)
-    if isinstance(request, ConceptHelpRequest):
-        from exactly_lib.cli.program_modes.help.concepts import request_rendering
-        resolver = request_rendering.concept_help_request_renderer_resolver(application_help.concepts_help)
-        return resolver.renderer_for(request)
-    if isinstance(request, ActorHelpRequest):
-        from exactly_lib.cli.program_modes.help.actors import request_rendering
-        resolver = request_rendering.actor_help_request_renderer_resolver(application_help.actors_help)
-        return resolver.renderer_for(request)
     if isinstance(request, TestCaseHelpRequest):
         resolver = TestCaseHelpRendererResolver(application_help.test_case_help)
         return resolver.resolve(request)
     if isinstance(request, TestSuiteHelpRequest):
         resolver = TestSuiteHelpRendererResolver(application_help.test_suite_help)
         return resolver.resolve(request)
+    if isinstance(request, EntityHelpRequest):
+        resolver = _entity_help_request_renderer_resolver_for(application_help, request)
+        return resolver.renderer_for(request)
     raise TypeError('Invalid %s: %s' % (str(HelpRequest), str(type(request))))
+
+
+def _entity_help_request_renderer_resolver_for(application_help: ApplicationHelp,
+                                               request: EntityHelpRequest) -> EntityHelpRequestRendererResolver:
+    if request.entity_type == ACTOR_ENTITY_TYPE_NAME:
+        from exactly_lib.cli.program_modes.help.actors import request_rendering
+        return request_rendering.actor_help_request_renderer_resolver(application_help.actors_help)
+    if request.entity_type == CONCEPT_ENTITY_TYPE_NAME:
+        from exactly_lib.cli.program_modes.help.concepts import request_rendering
+        return request_rendering.concept_help_request_renderer_resolver(application_help.concepts_help)
+    raise ValueError('Non existing entity: ' + str(request.entity_type))

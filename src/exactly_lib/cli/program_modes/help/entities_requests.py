@@ -12,10 +12,16 @@ class EntityHelpItem(Enum):
 
 class EntityHelpRequest(HelpRequest):
     def __init__(self,
+                 entity_type: str,
                  item: EntityHelpItem,
-                 individual_entity: EntityDocumentation):
+                 individual_entity: EntityDocumentation = None):
+        self._entity_type = entity_type
         self._item = item
         self._individual_entity = individual_entity
+
+    @property
+    def entity_type(self) -> str:
+        return self._entity_type
 
     @property
     def item(self) -> EntityHelpItem:

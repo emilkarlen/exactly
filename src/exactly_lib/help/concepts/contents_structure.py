@@ -1,4 +1,5 @@
 from exactly_lib.help.cross_reference_id import ConceptCrossReferenceId
+from exactly_lib.help.entity_names import CONCEPT_ENTITY_TYPE_NAME
 from exactly_lib.help.utils.entity_documentation import EntityDocumentation, EntitiesHelp
 from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.structure.core import ParagraphItem, Text
@@ -91,7 +92,7 @@ def concepts_help(concepts: iter) -> EntitiesHelp:
     """
     :param concepts: [ConceptDocumentation]
     """
-    return EntitiesHelp('actor', concepts)
+    return EntitiesHelp(CONCEPT_ENTITY_TYPE_NAME, concepts)
 
 
 class ConceptsHelp(tuple):

@@ -1,4 +1,5 @@
 from exactly_lib.help.cross_reference_id import ActorCrossReferenceId, TestCasePhaseCrossReference
+from exactly_lib.help.entity_names import ACTOR_ENTITY_TYPE_NAME
 from exactly_lib.help.utils.entity_documentation import EntityDocumentation, EntitiesHelp
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import Text
@@ -70,4 +71,4 @@ def actors_help(actors: iter) -> EntitiesHelp:
     """
     :param actors: [ActorDocumentation]
     """
-    return EntitiesHelp('actor', actors)
+    return EntitiesHelp(ACTOR_ENTITY_TYPE_NAME, actors)
