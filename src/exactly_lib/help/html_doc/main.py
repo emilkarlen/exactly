@@ -1,12 +1,13 @@
 from exactly_lib.help import cross_reference_id as cross_ref
+from exactly_lib.help.concepts.render import IndividualConceptRenderer
 from exactly_lib.help.contents_structure import ApplicationHelp
 from exactly_lib.help.cross_reference_id import CustomTargetInfoFactory
 from exactly_lib.help.html_doc import page_setup
 from exactly_lib.help.html_doc.cross_ref_target_renderer import HtmlTargetRenderer
-from exactly_lib.help.html_doc.parts.concepts import HtmlDocGeneratorForConceptsHelp
 from exactly_lib.help.html_doc.parts.help import HtmlDocGeneratorForHelpHelp
 from exactly_lib.help.html_doc.parts.test_case import HtmlDocGeneratorForTestCaseHelp
 from exactly_lib.help.html_doc.parts.test_suite import HtmlDocGeneratorForTestSuiteHelp
+from exactly_lib.help.html_doc.parts.utils.entities_list_renderer import HtmlDocGeneratorForEntitiesHelp
 from exactly_lib.help.utils.cross_reference import CrossReferenceTextConstructor
 from exactly_lib.help.utils.render import RenderingEnvironment
 from exactly_lib.help.utils.table_of_contents import toc_list
@@ -31,8 +32,9 @@ class HtmlDocGenerator:
                                                                    application_help.test_case_help)
         self.test_suite_generator = HtmlDocGeneratorForTestSuiteHelp(rendering_environment,
                                                                      application_help.test_suite_help)
-        self.concepts_generator = HtmlDocGeneratorForConceptsHelp(rendering_environment,
-                                                                  application_help.concepts_help)
+        self.concepts_generator = HtmlDocGeneratorForEntitiesHelp(IndividualConceptRenderer,
+                                                                  application_help.concepts_help.all_concepts,
+                                                                  rendering_environment)
         self.help_generator = HtmlDocGeneratorForHelpHelp(rendering_environment)
 
     def apply(self):
