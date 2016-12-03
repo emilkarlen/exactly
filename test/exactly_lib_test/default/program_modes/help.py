@@ -4,6 +4,7 @@ from exactly_lib.cli import main_program
 from exactly_lib.cli.cli_environment.common_cli_options import HELP_COMMAND
 from exactly_lib.cli.program_modes.help import arguments_for
 from exactly_lib.default.program_modes.test_case.default_instruction_names import CHANGE_DIR_INSTRUCTION_NAME
+from exactly_lib.help.actors.names_and_cross_references import SINGLE_COMMAND_LINE_ACTOR__NAME
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
 from exactly_lib.help.program_modes.test_case.config import phase_help_name
 from exactly_lib.test_case import phase_identifier
@@ -84,6 +85,14 @@ def main_program_test_cases() -> list:
 
         ProcessTestCase('help for "individual concept" SHOULD be successful',
                         HelpInvokation(arguments_for.concept_single(SANDBOX_CONCEPT.name().singular)),
+                        _RESULT_IS_SUCCESSFUL),
+
+        ProcessTestCase('help for "actor list" SHOULD be successful',
+                        HelpInvokation(arguments_for.actor_list()),
+                        _RESULT_IS_SUCCESSFUL),
+
+        ProcessTestCase('help for "actor concept" SHOULD be successful',
+                        HelpInvokation(arguments_for.actor_single(SINGLE_COMMAND_LINE_ACTOR__NAME)),
                         _RESULT_IS_SUCCESSFUL),
     ]
 
