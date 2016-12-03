@@ -13,6 +13,7 @@ from exactly_lib_test.test_resources.str_std_out_files import null_output_files
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as pr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 from exactly_lib_test.test_resources.value_assertions.value_assertion_str import begins_with
+from exactly_lib_test.util.textformat.test_resources import structure as struct_check
 
 
 def suite_for(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
@@ -30,8 +31,7 @@ def main_program_test_cases() -> list:
     return [
         ProcessTestCase('Generation of html-doc SHOULD exit with 0 exitcode '
                         'AND output html',
-                        PlainArrangement([
-                                             HELP_COMMAND] + arguments_for.html_doc()),
+                        PlainArrangement([HELP_COMMAND] + arguments_for.html_doc()),
                         va.And([
                             pr.is_result_for_exit_code(0),
                             pr.stdout(begins_with(DOCTYPE_XHTML1_0))
@@ -48,3 +48,12 @@ class TestHtmlDoc(unittest.TestCase):
         generator = sut.HtmlDocGenerator(output, application_help)
         # ACT & ASSERT #
         generator.apply()
+
+    def test_that_html_doc_renderer_returns_valid_section_contents(self):
+        # ARRANGE #
+        application_help = application_help_for(default_instructions_setup.INSTRUCTIONS_SETUP)
+        renderer = sut.HtmlDocContentsRenderer(application_help)
+        # ACT #
+        actual = renderer.apply()
+        # ASSERT #
+        struct_check.is_section_contents.apply(self, actual)
