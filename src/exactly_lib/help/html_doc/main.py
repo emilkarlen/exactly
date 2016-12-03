@@ -25,6 +25,26 @@ class HtmlDocGenerator:
                  output: StdOutputFiles,
                  application_help: ApplicationHelp):
         self.output = output
+        self.renderer = HtmlDocContentsRenderer(application_help)
+
+    def apply(self):
+        setup = self._page_setup()
+        contents = self.renderer.apply()
+        section_renderer = _section_renderer()
+        renderer = doc_rendering.DocumentRenderer(section_renderer)
+        renderer.apply(self.output.out, setup, contents)
+
+    def _page_setup(self) -> doc_rendering.DocumentSetup:
+        head_populator = page_setup.StylePopulator(page_setup.ELEMENT_STYLES)
+        setup = doc_rendering.DocumentSetup(page_setup.PAGE_TITLE,
+                                            head_populator=head_populator,
+                                            header_populator=page_setup.HEADER_POPULATOR)
+        return setup
+
+
+class HtmlDocContentsRenderer:
+    def __init__(self,
+                 application_help: ApplicationHelp):
         self.application_help = application_help
         rendering_environment = RenderingEnvironment(CrossReferenceTextConstructor(),
                                                      render_simple_header_value_lists_as_tables=True)
@@ -37,21 +57,7 @@ class HtmlDocGenerator:
                                                                   rendering_environment)
         self.help_generator = HtmlDocGeneratorForHelpHelp(rendering_environment)
 
-    def apply(self):
-        setup = self._page_setup()
-        contents = self._contents()
-        section_renderer = _section_renderer()
-        renderer = doc_rendering.DocumentRenderer(section_renderer)
-        renderer.apply(self.output.out, setup, contents)
-
-    def _page_setup(self) -> doc_rendering.DocumentSetup:
-        head_populator = page_setup.StylePopulator(page_setup.ELEMENT_STYLES)
-        setup = doc_rendering.DocumentSetup(page_setup.PAGE_TITLE,
-                                            head_populator=head_populator,
-                                            header_populator=page_setup.HEADER_POPULATOR)
-        return setup
-
-    def _contents(self) -> doc.SectionContents:
+    def apply(self) -> doc.SectionContents:
         root_targets_factory = CustomTargetInfoFactory('')
         target_info_hierarchy, ret_val_contents = self._main_contents(root_targets_factory)
         toc_paragraph = toc_list(target_info_hierarchy, lists.ListType.ITEMIZED_LIST)
