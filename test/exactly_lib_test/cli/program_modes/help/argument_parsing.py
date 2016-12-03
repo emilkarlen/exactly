@@ -2,6 +2,7 @@ import unittest
 
 from exactly_lib.cli.program_modes.help import argument_parsing as sut
 from exactly_lib.cli.program_modes.help import arguments_for
+from exactly_lib.cli.program_modes.help.actors.help_request import ActorHelpRequest, ActorHelpItem
 from exactly_lib.cli.program_modes.help.argument_parsing import HelpError
 from exactly_lib.cli.program_modes.help.concepts.help_request import ConceptHelpRequest, ConceptHelpItem
 from exactly_lib.cli.program_modes.help.html_documentation.help_request import HtmlDocHelpRequest
@@ -9,7 +10,7 @@ from exactly_lib.cli.program_modes.help.program_modes.main_program.help_request 
 from exactly_lib.cli.program_modes.help.program_modes.test_case.help_request import *
 from exactly_lib.cli.program_modes.help.program_modes.test_suite.help_request import *
 from exactly_lib.common.instruction_documentation import InstructionDocumentation
-from exactly_lib.help.actors.contents_structure import ActorsHelp
+from exactly_lib.help.actors.contents_structure import ActorsHelp, ActorDocumentation
 from exactly_lib.help.concepts.contents_structure import ConceptDocumentation, \
     ConceptsHelp
 from exactly_lib.help.contents_structure import ApplicationHelp
@@ -18,6 +19,7 @@ from exactly_lib.help.program_modes.main_program.contents_structure import MainP
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
 from exactly_lib.help.utils import formatting
+from exactly_lib_test.help.actors.test_resources.documentation import ActorTestImpl
 from exactly_lib_test.help.concepts.test_resources.documentation import ConceptTestImpl
 from exactly_lib_test.help.test_resources import section_documentation, \
     single_line_description_that_identifies_instruction_and_section, application_help_for, \
@@ -489,11 +491,98 @@ class TestConceptHelp(unittest.TestCase):
                          actual.individual_concept.name().singular)
 
 
+class TestActorHelp(unittest.TestCase):
+    def test_actor_list(self):
+        actual = sut.parse(application_help_for([]),
+                           arguments_for.actor_list())
+        self.assertIsInstance(actual,
+                              ActorHelpRequest,
+                              'Expecting settings for actors')
+        assert isinstance(actual,
+                          ActorHelpRequest)
+        self.assertIs(ActorHelpItem.ALL_ACTORS_LIST,
+                      actual.item,
+                      'Item should denote help for ' + ActorHelpItem.ALL_ACTORS_LIST.name)
+
+    def test_individual_actor_with_single_word_name(self):
+        # ARRANGE #
+        actors = [
+            ActorTestImpl('first'),
+            ActorTestImpl('second'),
+        ]
+        application_help = application_help_for([], actors=actors)
+        # ACT #
+        actual = sut.parse(application_help,
+                           arguments_for.actor_single('second'))
+        # ASSERT #
+        self._assert_result_is_individual_actor(actual, 'second')
+
+    def test_individual_actor_with_multiple_words_name(self):
+        # ARRANGE #
+        actors = [
+            ActorTestImpl('first'),
+            ActorTestImpl('a b c'),
+            ActorTestImpl('last'),
+        ]
+        application_help = application_help_for([], actors=actors)
+        # ACT #
+        actual = sut.parse(application_help,
+                           arguments_for.actor_single('a b c'))
+        # ASSERT #
+        self._assert_result_is_individual_actor(actual, 'a b c')
+
+    def test_individual_actor_with_multiple_words_and_different_case_name(self):
+        # ARRANGE #
+        actors = [
+            ActorTestImpl('first'),
+            ActorTestImpl('a b c'),
+            ActorTestImpl('last'),
+        ]
+        application_help = application_help_for([], actors=actors)
+        # ACT #
+        actual = sut.parse(application_help,
+                           arguments_for.actor_single('a B C'))
+        # ASSERT #
+        self._assert_result_is_individual_actor(actual, 'a b c')
+
+    def test_search_for_non_existing_actor_SHOULD_raise_HelpError(self):
+        # ARRANGE #
+        actors = [
+            ActorTestImpl('first'),
+            ActorTestImpl('second'),
+        ]
+        application_help = application_help_for([], actors=actors)
+        # ACT & ASSERT #
+        with self.assertRaises(HelpError):
+            sut.parse(application_help,
+                      arguments_for.actor_single('non-existing actor'))
+
+    def _assert_result_is_individual_actor(self,
+                                           actual: HelpRequest,
+                                           actor_name: str):
+        self.assertIsInstance(actual,
+                              ActorHelpRequest,
+                              'Expecting settings for actors')
+        assert isinstance(actual,
+                          ActorHelpRequest)
+        self.assertIs(ActorHelpItem.INDIVIDUAL_ACTOR,
+                      actual.item,
+                      'Item should denote help for ' + ActorHelpItem.INDIVIDUAL_ACTOR.name)
+
+        self.assertIsInstance(actual.individual_actor,
+                              ActorDocumentation,
+                              'Individual actor is expected to an instance of ' + str(ActorDocumentation))
+
+        self.assertEqual(actor_name,
+                         actual.individual_actor.name())
+
+
 def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestProgramHelp))
     ret_val.addTest(unittest.makeSuite(TestHtmlDocHelp))
     ret_val.addTest(unittest.makeSuite(TestConceptHelp))
+    ret_val.addTest(unittest.makeSuite(TestActorHelp))
     ret_val.addTest(unittest.makeSuite(TestTestCaseCliAndOverviewHelp))
     ret_val.addTest(unittest.makeSuite(TestTestCaseInstructionSet))
     ret_val.addTest(unittest.makeSuite(TestTestCaseSingleInstructionInPhase))

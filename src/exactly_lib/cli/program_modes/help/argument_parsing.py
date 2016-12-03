@@ -1,3 +1,4 @@
+from exactly_lib.cli.program_modes.help.actors.help_request import ActorHelpRequest, ActorHelpItem
 from exactly_lib.cli.program_modes.help.concepts.help_request import ConceptHelpRequest, ConceptHelpItem
 from exactly_lib.cli.program_modes.help.html_documentation.help_request import HtmlDocHelpRequest
 from exactly_lib.cli.program_modes.help.program_modes import help_request
@@ -14,6 +15,7 @@ TEST_CASE = 'case'
 TEST_SUITE = 'suite'
 SPECIFICATION = 'spec'
 CONCEPT = 'concept'
+ACTOR = 'actor'
 HTML_DOCUMENTATION = 'htmldoc'
 
 
@@ -47,6 +49,8 @@ class Parser:
             return MainProgramHelpRequest(MainProgramHelpItem.HELP)
         if help_command_arguments[0] == CONCEPT:
             return self._parse_concept_help(help_command_arguments[1:])
+        if help_command_arguments[0] == ACTOR:
+            return self._parse_actor_help(help_command_arguments[1:])
         if help_command_arguments[0] == HTML_DOCUMENTATION:
             return self._parse_xhtml_help(help_command_arguments[1:])
         if help_command_arguments[0] == TEST_CASE:
@@ -158,6 +162,16 @@ class Parser:
             return ConceptHelpRequest(ConceptHelpItem.INDIVIDUAL_CONCEPT, concept)
         except KeyError:
             raise HelpError('Concept does not exist: "%s"' % concept_name)
+
+    def _parse_actor_help(self, actor_arguments: list) -> ConceptHelpRequest:
+        if not actor_arguments:
+            return ActorHelpRequest(ActorHelpItem.ALL_ACTORS_LIST)
+        actor_name = ' '.join(actor_arguments).lower()
+        try:
+            actor = self.application_help.actors_help.lookup_by_name_in_singular(actor_name)
+            return ActorHelpRequest(ActorHelpItem.INDIVIDUAL_ACTOR, actor)
+        except KeyError:
+            raise HelpError('Actor does not exist: "%s"' % actor_name)
 
     def _parse_xhtml_help(self, arguments: list) -> ConceptHelpRequest:
         if arguments:

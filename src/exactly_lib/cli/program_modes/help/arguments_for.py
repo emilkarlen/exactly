@@ -1,5 +1,5 @@
 from exactly_lib.cli.program_modes.help.argument_parsing import INSTRUCTIONS, TEST_SUITE, TEST_CASE, HELP, \
-    CONCEPT, HTML_DOCUMENTATION, SPECIFICATION
+    CONCEPT, HTML_DOCUMENTATION, SPECIFICATION, ACTOR
 from exactly_lib.help.program_modes.test_case.config import phase_help_name
 from exactly_lib.test_case import phase_identifier
 
@@ -14,14 +14,6 @@ def html_doc() -> list:
 
 def help_help() -> list:
     return [HELP]
-
-
-def concept_list() -> list:
-    return [CONCEPT]
-
-
-def concept_single(concept_name: str) -> list:
-    return [CONCEPT] + concept_name.split()
 
 
 def case_cli_syntax() -> list:
@@ -68,3 +60,19 @@ def suite_section_for_name(section_name: str) -> list:
 def suite_instruction_in_section(section_name: str,
                                  instruction_name: str) -> list:
     return [TEST_SUITE, section_name, instruction_name]
+
+
+def concept_list() -> list:
+    return [CONCEPT]
+
+
+def concept_single(concept_name: str) -> list:
+    return [CONCEPT] + concept_name.split()
+
+
+def actor_list() -> list:
+    return [ACTOR]
+
+
+def actor_single(actor_name: str) -> list:
+    return [ACTOR] + actor_name.split()
