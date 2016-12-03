@@ -30,7 +30,7 @@ class WithActorDocumentationBase(TestCaseBaseWithShortDescriptionOfTestClassAndA
 
 class TestName(WithActorDocumentationBase):
     def runTest(self):
-        actual = self.documentation.name()
+        actual = self.documentation.singular_name()
         self.assertIsInstance(actual, str, 'name')
 
 

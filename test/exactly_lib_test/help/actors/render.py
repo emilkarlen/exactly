@@ -22,8 +22,8 @@ if __name__ == '__main__':
 class TestAllActorsList(unittest.TestCase):
     def runTest(self):
         # ARRANGE #
-        renderer = sut.AllActorsListRenderer(ActorsHelp([ActorTestImpl('actor 1'),
-                                                         ActorTestImpl('actor 2')]))
+        renderer = sut.all_actors_list_renderer(ActorsHelp([ActorTestImpl('actor 1'),
+                                                            ActorTestImpl('actor 2')]))
         # ACT #
         actual = renderer.apply(RENDERING_ENVIRONMENT)
         # ASSERT #
