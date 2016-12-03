@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.cli.program_modes.help.actors import request_rendering as sut
 from exactly_lib.cli.program_modes.help.actors.help_request import ActorHelpRequest
 from exactly_lib.cli.program_modes.help.entities_requests import EntityHelpItem
-from exactly_lib.help.actors.contents_structure import ActorsHelp
+from exactly_lib.help.actors.contents_structure import actors_help
 from exactly_lib.help.utils.render import SectionContentsRenderer, RenderingEnvironment
 from exactly_lib_test.help.actors.test_resources.documentation import ActorTestImpl
 from exactly_lib_test.help.test_resources import CrossReferenceTextConstructorTestImpl
@@ -17,7 +17,7 @@ class TestActorHelpRequestRendererResolver(unittest.TestCase):
             ActorTestImpl('first'),
             ActorTestImpl('second'),
         ]
-        resolver = sut.actor_help_request_renderer_resolver(ActorsHelp(actors))
+        resolver = sut.actor_help_request_renderer_resolver(actors_help(actors))
         # ACT #
         actual = resolver.renderer_for(ActorHelpRequest(EntityHelpItem.ALL_ENTITIES_LIST))
         # ASSERT #
@@ -33,7 +33,7 @@ class TestActorHelpRequestRendererResolver(unittest.TestCase):
         actors = [
             first_actor,
         ]
-        resolver = sut.actor_help_request_renderer_resolver(ActorsHelp(actors))
+        resolver = sut.actor_help_request_renderer_resolver(actors_help(actors))
         # ACT #
         actual = resolver.renderer_for(ActorHelpRequest(EntityHelpItem.INDIVIDUAL_ENTITY, first_actor))
         # ASSERT #
