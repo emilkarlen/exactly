@@ -3,6 +3,10 @@ Utilities for generating documentation for "entities" - things with a name and s
 
 Makes it possible to reuse some code for generating documentation.
 """
+import types
+
+from exactly_lib.help import cross_reference_id as cross_ref
+from exactly_lib.help.cross_reference_id import CustomTargetInfoFactory, CrossReferenceId
 from exactly_lib.help.utils.render import SectionContentsRenderer, RenderingEnvironment
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import lists
@@ -28,6 +32,13 @@ class EntityDocumentation:
         """
         raise NotImplementedError()
 
+    def cross_reference_target(self) -> CrossReferenceId:
+        raise NotImplementedError()
+
+
+def sorted_entity_list(entities: list) -> list:
+    return sorted(entities, key=lambda ed: ed.singular_name())
+
 
 class AllEntitiesListRenderer(SectionContentsRenderer):
     def __init__(self, all_entities: list):
@@ -37,8 +48,40 @@ class AllEntitiesListRenderer(SectionContentsRenderer):
         return doc.SectionContents([_sorted_entities_list(self.all_entities)], [])
 
 
-def sorted_entity_list(entities: list) -> list:
-    return sorted(entities, key=lambda ed: ed.singular_name())
+class HtmlDocGeneratorForEntitiesHelp:
+    def __init__(self,
+                 entity_2_section_contents_renderer: types.FunctionType,
+                 all_entities: list,
+                 rendering_environment: RenderingEnvironment,
+                 ):
+        """
+
+        :param entity_2_section_contents_renderer: EntityDocumentation -> SectionContentsRenderer
+        :param rendering_environment:
+        :param all_entities:
+        """
+        self.entity_2_section_contents_renderer = entity_2_section_contents_renderer
+        self.all_entities = all_entities
+        self.rendering_environment = rendering_environment
+
+    def apply(self, targets_factory: CustomTargetInfoFactory) -> (list, doc.SectionContents):
+        ret_val_sections = []
+        ret_val_targets = []
+        for entity in sorted_entity_list(self.all_entities):
+            assert isinstance(entity, EntityDocumentation)
+            actor_presentation_str = entity.singular_name()
+            header = docs.anchor_text(docs.text(actor_presentation_str),
+                                      entity.cross_reference_target())
+            section_contents_renderer = self.entity_2_section_contents_renderer(entity)
+            assert isinstance(section_contents_renderer, SectionContentsRenderer)
+            section = doc.Section(header,
+                                  section_contents_renderer.apply(self.rendering_environment))
+            target_info_node = cross_ref.TargetInfoNode(cross_ref.TargetInfo(actor_presentation_str,
+                                                                             entity.cross_reference_target()),
+                                                        [])
+            ret_val_sections.append(section)
+            ret_val_targets.append(target_info_node)
+        return ret_val_targets, doc.SectionContents([], ret_val_sections)
 
 
 def _sorted_entities_list(entities: iter) -> ParagraphItem:
