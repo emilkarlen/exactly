@@ -34,6 +34,36 @@ class EntityDocumentation:
         raise NotImplementedError()
 
 
+class EntitiesHelp(tuple):
+    def __new__(cls,
+                entity_name: str,
+                entities: iter):
+        """
+        :type entities: [`EntityDocumentation`]
+        """
+        return tuple.__new__(cls, (list(entity_name), entities))
+
+    @property
+    def entity_name(self) -> str:
+        """
+        Name of entity.
+        """
+        return self[0]
+
+    @property
+    def all_entities(self) -> list:
+        """
+        :type: [`EntityDocumentation`]
+        """
+        return self[1]
+
+    def lookup_by_name_in_singular(self, entity_name: str) -> EntityDocumentation:
+        matches = list(filter(lambda e: e.singular_name() == entity_name, self.all_entities))
+        if not matches:
+            raise KeyError('Not a concept: ' + entity_name)
+        return matches[0]
+
+
 def sorted_entity_list(entities: list) -> list:
     return sorted(entities, key=lambda ed: ed.singular_name())
 
