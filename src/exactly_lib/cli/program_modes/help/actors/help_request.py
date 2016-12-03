@@ -6,10 +6,5 @@ class ActorHelpRequest(EntityHelpRequest):
     def __init__(self,
                  item: EntityHelpItem,
                  individual_actor: ActorDocumentation = None):
-        super().__init__(item)
+        super().__init__(item, individual_actor)
         self._item = item
-        self._individual_actor = individual_actor
-
-    @property
-    def individual_actor(self) -> ActorDocumentation:
-        return self._individual_actor
