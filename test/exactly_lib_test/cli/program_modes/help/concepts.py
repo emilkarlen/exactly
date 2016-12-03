@@ -1,7 +1,8 @@
 import unittest
 
 from exactly_lib.cli.program_modes.help.concepts import request_rendering
-from exactly_lib.cli.program_modes.help.concepts.help_request import ConceptHelpRequest, ConceptHelpItem
+from exactly_lib.cli.program_modes.help.concepts.help_request import ConceptHelpRequest
+from exactly_lib.cli.program_modes.help.entities_requests import EntityHelpItem
 from exactly_lib.help.concepts.contents_structure import ConceptsHelp
 from exactly_lib.help.utils.render import SectionContentsRenderer
 from exactly_lib_test.help.concepts.test_resources.documentation import ConceptTestImpl
@@ -14,9 +15,9 @@ class TestConceptHelpRequestRendererResolver(unittest.TestCase):
             ConceptTestImpl('first'),
             ConceptTestImpl('second'),
         ]
-        resolver = request_rendering.ConceptHelpRequestRendererResolver(ConceptsHelp(concepts))
+        resolver = request_rendering.concept_help_request_renderer_resolver(ConceptsHelp(concepts))
         # ACT #
-        actual = resolver.renderer_for(ConceptHelpRequest(ConceptHelpItem.ALL_CONCEPTS_LIST, None))
+        actual = resolver.renderer_for(ConceptHelpRequest(EntityHelpItem.ALL_ENTITIES_LIST, None))
         # ASSERT #
         self.assertIsInstance(actual, SectionContentsRenderer)
 
@@ -26,9 +27,9 @@ class TestConceptHelpRequestRendererResolver(unittest.TestCase):
         concepts = [
             first_concept,
         ]
-        resolver = request_rendering.ConceptHelpRequestRendererResolver(ConceptsHelp(concepts))
+        resolver = request_rendering.concept_help_request_renderer_resolver(ConceptsHelp(concepts))
         # ACT #
-        actual = resolver.renderer_for(ConceptHelpRequest(ConceptHelpItem.INDIVIDUAL_CONCEPT, first_concept))
+        actual = resolver.renderer_for(ConceptHelpRequest(EntityHelpItem.INDIVIDUAL_ENTITY, first_concept))
         # ASSERT #
         self.assertIsInstance(actual, SectionContentsRenderer)
 
