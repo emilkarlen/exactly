@@ -1,5 +1,5 @@
 from exactly_lib.help.cross_reference_id import ActorCrossReferenceId, TestCasePhaseCrossReference
-from exactly_lib.help.utils.entity_documentation import EntityDocumentation
+from exactly_lib.help.utils.entity_documentation import EntityDocumentation, EntitiesHelp
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import Text
 
@@ -8,6 +8,7 @@ class ActorDocumentation(EntityDocumentation):
     """
     Abstract base class for concepts.
     """
+
     def __init__(self, name: str):
         self._name = name
 
@@ -65,23 +66,8 @@ class ActorDocumentation(EntityDocumentation):
         return []
 
 
-class ActorsHelp(tuple):
-    def __new__(cls,
-                actors: iter):
-        """
-        :type actors: [`ActorDocumentation`]
-        """
-        return tuple.__new__(cls, (list(actors),))
-
-    @property
-    def all_actors(self) -> list:
-        """
-        :type: [`ActorDocumentation`]
-        """
-        return self[0]
-
-    def lookup_by_name_in_singular(self, actor_name: str) -> ActorDocumentation:
-        matches = list(filter(lambda c: c.singular_name() == actor_name, self.all_actors))
-        if not matches:
-            raise KeyError('Not an actor: ' + actor_name)
-        return matches[0]
+def actors_help(actors: iter) -> EntitiesHelp:
+    """
+    :param actors: [ActorDocumentation]
+    """
+    return EntitiesHelp('actor', actors)

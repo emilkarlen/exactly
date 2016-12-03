@@ -36,15 +36,15 @@ class EntityDocumentation:
 
 class EntitiesHelp(tuple):
     def __new__(cls,
-                entity_name: str,
+                entity_type_name: str,
                 entities: iter):
         """
         :type entities: [`EntityDocumentation`]
         """
-        return tuple.__new__(cls, (list(entity_name), entities))
+        return tuple.__new__(cls, (entity_type_name, list(entities)))
 
     @property
-    def entity_name(self) -> str:
+    def entity_type_name(self) -> str:
         """
         Name of entity.
         """
@@ -60,7 +60,7 @@ class EntitiesHelp(tuple):
     def lookup_by_name_in_singular(self, entity_name: str) -> EntityDocumentation:
         matches = list(filter(lambda e: e.singular_name() == entity_name, self.all_entities))
         if not matches:
-            raise KeyError('Not a concept: ' + entity_name)
+            raise KeyError('Not a ' + self.entity_type_name + ': ' + entity_name)
         return matches[0]
 
 

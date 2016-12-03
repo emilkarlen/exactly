@@ -1,5 +1,5 @@
 from exactly_lib.help.actors.actor.all_actors import ALL_ACTORS
-from exactly_lib.help.actors.contents_structure import ActorsHelp
+from exactly_lib.help.actors.contents_structure import actors_help
 from exactly_lib.help.concepts.all_concepts import all_concepts
 from exactly_lib.help.concepts.contents_structure import ConceptsHelp
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet
@@ -12,6 +12,7 @@ from exactly_lib.help.program_modes.test_suite.contents_structure import TestSui
 from exactly_lib.help.program_modes.test_suite.section.cases import CasesSectionDocumentation
 from exactly_lib.help.program_modes.test_suite.section.configuration import ConfigurationSectionDocumentation
 from exactly_lib.help.program_modes.test_suite.section.suites import SuitesSectionDocumentation
+from exactly_lib.help.utils.entity_documentation import EntitiesHelp
 from exactly_lib.processing.instruction_setup import InstructionsSetup
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_set import CONFIGURATION_INSTRUCTIONS
@@ -22,7 +23,7 @@ class ApplicationHelp(tuple):
     def __new__(cls,
                 main_program_help: MainProgramHelp,
                 concepts_help: ConceptsHelp,
-                actors_help: ActorsHelp,
+                actors_help: EntitiesHelp,
                 test_case_help: TestCaseHelp,
                 test_suite_help: TestSuiteHelp):
         return tuple.__new__(cls, (main_program_help,
@@ -48,14 +49,14 @@ class ApplicationHelp(tuple):
         return self[3]
 
     @property
-    def actors_help(self) -> ActorsHelp:
+    def actors_help(self) -> EntitiesHelp:
         return self[4]
 
 
 def application_help_for(instructions_setup: InstructionsSetup) -> ApplicationHelp:
     return ApplicationHelp(MainProgramHelp(),
                            ConceptsHelp(all_concepts()),
-                           ActorsHelp(ALL_ACTORS),
+                           actors_help(ALL_ACTORS),
                            TestCaseHelp(phase_helps_for(instructions_setup)),
                            TestSuiteHelp([
                                ConfigurationSectionDocumentation(SECTION_NAME__CONF,
