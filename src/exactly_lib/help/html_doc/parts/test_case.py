@@ -2,7 +2,7 @@ from exactly_lib.help import cross_reference_id as cross_ref
 from exactly_lib.help.actors.actor.all_actors import ALL_ACTORS
 from exactly_lib.help.actors.render import IndividualActorRenderer
 from exactly_lib.help.cross_reference_id import CustomTargetInfoFactory, CrossReferenceId
-from exactly_lib.help.html_doc.parts.utils import HtmlDocGeneratorForSectionDocumentBase
+from exactly_lib.help.html_doc.parts.utils.section_document_renderer_base import HtmlDocGeneratorForSectionDocumentBase
 from exactly_lib.help.program_modes.test_case.contents.cli_syntax import TestCaseCliSyntaxDocumentation
 from exactly_lib.help.program_modes.test_case.contents.main import specification as test_case_specification_rendering
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
