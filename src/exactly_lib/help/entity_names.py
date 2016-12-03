@@ -1,0 +1,2 @@
+ACTOR_ENTITY_TYPE_NAME = 'actor'
+CONCEPT_ENTITY_TYPE_NAME = 'concept'

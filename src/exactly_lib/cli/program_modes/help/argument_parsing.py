@@ -6,6 +6,8 @@ from exactly_lib.cli.program_modes.help.program_modes import help_request
 from exactly_lib.cli.program_modes.help.program_modes.main_program.help_request import *
 from exactly_lib.cli.program_modes.help.program_modes.test_case.help_request import *
 from exactly_lib.cli.program_modes.help.program_modes.test_suite.help_request import *
+from exactly_lib.help.actors.contents_structure import ActorDocumentation
+from exactly_lib.help.concepts.contents_structure import ConceptDocumentation
 from exactly_lib.help.contents_structure import ApplicationHelp
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
 from exactly_lib.test_case import phase_identifier
@@ -154,27 +156,33 @@ class Parser:
             instruction_name,
             phase_and_instr_descr_list)
 
-    def _parse_concept_help(self, concept_arguments: list) -> ConceptHelpRequest:
-        if not concept_arguments:
+    def _parse_concept_help(self, arguments: list) -> ConceptHelpRequest:
+        if not arguments:
             return ConceptHelpRequest(EntityHelpItem.ALL_ENTITIES_LIST, None)
-        concept_name = ' '.join(concept_arguments).lower()
+        name_to_lookup = ' '.join(arguments).lower()
+        entities_help = self.application_help.concepts_help
         try:
-            concept = self.application_help.concepts_help.lookup_by_name_in_singular(concept_name)
-            return ConceptHelpRequest(EntityHelpItem.INDIVIDUAL_ENTITY, concept)
+            entity = entities_help.lookup_by_name_in_singular(name_to_lookup)
+            assert isinstance(entity, ConceptDocumentation)
+            return ConceptHelpRequest(EntityHelpItem.INDIVIDUAL_ENTITY, entity)
         except KeyError:
-            raise HelpError('Concept does not exist: "%s"' % concept_name)
+            raise HelpError('%s does not exist: "%s"' % (entities_help.entity_type_name.capitalize(),
+                                                         name_to_lookup))
 
-    def _parse_actor_help(self, actor_arguments: list) -> ConceptHelpRequest:
-        if not actor_arguments:
+    def _parse_actor_help(self, arguments: list) -> ActorHelpRequest:
+        if not arguments:
             return ActorHelpRequest(EntityHelpItem.ALL_ENTITIES_LIST)
-        actor_name = ' '.join(actor_arguments).lower()
+        name_to_lookup = ' '.join(arguments).lower()
+        entities_help = self.application_help.actors_help
         try:
-            actor = self.application_help.actors_help.lookup_by_name_in_singular(actor_name)
-            return ActorHelpRequest(EntityHelpItem.INDIVIDUAL_ENTITY, actor)
+            entity = entities_help.lookup_by_name_in_singular(name_to_lookup)
+            assert isinstance(entity, ActorDocumentation)
+            return ActorHelpRequest(EntityHelpItem.INDIVIDUAL_ENTITY, entity)
         except KeyError:
-            raise HelpError('Actor does not exist: "%s"' % actor_name)
+            raise HelpError('%s does not exist: "%s"' % (entities_help.entity_type_name.capitalize(),
+                                                         name_to_lookup))
 
-    def _parse_xhtml_help(self, arguments: list) -> ConceptHelpRequest:
+    def _parse_xhtml_help(self, arguments: list) -> HtmlDocHelpRequest:
         if arguments:
             raise HelpError('The %s command expects no arguments.' % HTML_DOCUMENTATION)
         return HtmlDocHelpRequest()
