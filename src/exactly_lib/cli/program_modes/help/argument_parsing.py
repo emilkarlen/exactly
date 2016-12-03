@@ -1,14 +1,11 @@
-from exactly_lib.cli.program_modes.help.actors.help_request import actor_help_request
-from exactly_lib.cli.program_modes.help.concepts.help_request import concept_help_request
 from exactly_lib.cli.program_modes.help.entities_requests import EntityHelpItem, EntityHelpRequest
 from exactly_lib.cli.program_modes.help.html_documentation.help_request import HtmlDocHelpRequest
 from exactly_lib.cli.program_modes.help.program_modes import help_request
 from exactly_lib.cli.program_modes.help.program_modes.main_program.help_request import *
 from exactly_lib.cli.program_modes.help.program_modes.test_case.help_request import *
 from exactly_lib.cli.program_modes.help.program_modes.test_suite.help_request import *
-from exactly_lib.help.actors.contents_structure import ActorDocumentation
-from exactly_lib.help.concepts.contents_structure import ConceptDocumentation
 from exactly_lib.help.contents_structure import ApplicationHelp
+from exactly_lib.help.entity_names import CONCEPT_ENTITY_TYPE_NAME, ACTOR_ENTITY_TYPE_NAME
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
 from exactly_lib.test_case import phase_identifier
 
@@ -17,8 +14,8 @@ INSTRUCTIONS = 'instructions'
 TEST_CASE = 'case'
 TEST_SUITE = 'suite'
 SPECIFICATION = 'spec'
-CONCEPT = 'concept'
-ACTOR = 'actor'
+CONCEPT = CONCEPT_ENTITY_TYPE_NAME
+ACTOR = ACTOR_ENTITY_TYPE_NAME
 HTML_DOCUMENTATION = 'htmldoc'
 
 
@@ -41,36 +38,34 @@ class Parser:
                  application_help: ApplicationHelp):
         self.application_help = application_help
 
-    def apply(self,
-              help_command_arguments: list) -> help_request.HelpRequest:
+    def apply(self, help_command_arguments: list) -> help_request.HelpRequest:
         """
         :raises HelpError Invalid usage
         """
         if not help_command_arguments:
             return MainProgramHelpRequest(MainProgramHelpItem.PROGRAM)
-        if help_command_arguments[0] == HELP:
+        command_argument = help_command_arguments[0].lower()
+        if command_argument == HELP:
             return MainProgramHelpRequest(MainProgramHelpItem.HELP)
-        if help_command_arguments[0] == CONCEPT:
-            return self._parse_concept_help(help_command_arguments[1:])
-        if help_command_arguments[0] == ACTOR:
-            return self._parse_actor_help(help_command_arguments[1:])
-        if help_command_arguments[0] == HTML_DOCUMENTATION:
+        if command_argument in _ENTITY_TYPE_NAME_2_ENTITY_HELP:
+            return self._parse_entity_help(command_argument, help_command_arguments[1:])
+        if command_argument == HTML_DOCUMENTATION:
             return self._parse_xhtml_help(help_command_arguments[1:])
-        if help_command_arguments[0] == TEST_CASE:
+        if command_argument == TEST_CASE:
             if len(help_command_arguments) == 1:
                 return TestCaseHelpRequest(TestCaseHelpItem.CLI_SYNTAX, None, None)
             elif help_command_arguments[1:] == [SPECIFICATION]:
                 return TestCaseHelpRequest(TestCaseHelpItem.SPECIFICATION, None, None)
             else:
                 raise HelpError('Invalid number of arguments for help command. Use help help, for help.')
-        if help_command_arguments[0] == TEST_SUITE:
+        if command_argument == TEST_SUITE:
             return self._parse_suite_help(help_command_arguments[1:])
         if len(help_command_arguments) == 2:
-            return self._parse_instruction_in_phase(help_command_arguments[0],
+            return self._parse_instruction_in_phase(command_argument,
                                                     help_command_arguments[1])
         if len(help_command_arguments) != 1:
             raise HelpError('Invalid number of arguments for help command. Use help help, for help.')
-        argument = help_command_arguments[0]
+        argument = command_argument
         if argument == INSTRUCTIONS:
             return TestCaseHelpRequest(TestCaseHelpItem.INSTRUCTION_SET, None, None)
         case_help = self.application_help.test_case_help
@@ -156,31 +151,16 @@ class Parser:
             instruction_name,
             phase_and_instr_descr_list)
 
-    def _parse_concept_help(self, arguments: list) -> EntityHelpRequest:
+    def _parse_entity_help(self, entity_type_name: str, arguments: list) -> EntityHelpRequest:
         if not arguments:
-            return concept_help_request(EntityHelpItem.ALL_ENTITIES_LIST, None)
+            return EntityHelpRequest(entity_type_name, EntityHelpItem.ALL_ENTITIES_LIST)
         name_to_lookup = ' '.join(arguments).lower()
-        entities_help = self.application_help.concepts_help
+        entities_help = _ENTITY_TYPE_NAME_2_ENTITY_HELP[entity_type_name](self.application_help)
         try:
             entity = entities_help.lookup_by_name_in_singular(name_to_lookup)
-            assert isinstance(entity, ConceptDocumentation)
-            return concept_help_request(EntityHelpItem.INDIVIDUAL_ENTITY, entity)
+            return EntityHelpRequest(entity_type_name, EntityHelpItem.INDIVIDUAL_ENTITY, entity)
         except KeyError:
-            raise HelpError('%s does not exist: "%s"' % (entities_help.entity_type_name.capitalize(),
-                                                         name_to_lookup))
-
-    def _parse_actor_help(self, arguments: list) -> EntityHelpRequest:
-        if not arguments:
-            return actor_help_request(EntityHelpItem.ALL_ENTITIES_LIST)
-        name_to_lookup = ' '.join(arguments).lower()
-        entities_help = self.application_help.actors_help
-        try:
-            entity = entities_help.lookup_by_name_in_singular(name_to_lookup)
-            assert isinstance(entity, ActorDocumentation)
-            return actor_help_request(EntityHelpItem.INDIVIDUAL_ENTITY, entity)
-        except KeyError:
-            raise HelpError('%s does not exist: "%s"' % (entities_help.entity_type_name.capitalize(),
-                                                         name_to_lookup))
+            raise HelpError('%s does not exist: "%s"' % (entity_type_name.capitalize(), name_to_lookup))
 
     def _parse_xhtml_help(self, arguments: list) -> HtmlDocHelpRequest:
         if arguments:
@@ -190,3 +170,9 @@ class Parser:
 
 def _is_name_of_phase(name: str):
     return name in map(lambda x: x.identifier, phase_identifier.ALL)
+
+
+_ENTITY_TYPE_NAME_2_ENTITY_HELP = {
+    ACTOR_ENTITY_TYPE_NAME: ApplicationHelp.actors_help.fget,
+    CONCEPT_ENTITY_TYPE_NAME: ApplicationHelp.concepts_help.fget,
+}
