@@ -13,7 +13,7 @@ from exactly_lib.cli.program_modes.help.program_modes.test_suite.help_request im
 from exactly_lib.common.instruction_documentation import InstructionDocumentation
 from exactly_lib.help.actors.contents_structure import ActorDocumentation, actors_help
 from exactly_lib.help.concepts.contents_structure import ConceptDocumentation, \
-    ConceptsHelp
+    concepts_help
 from exactly_lib.help.contents_structure import ApplicationHelp
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
 from exactly_lib.help.program_modes.main_program.contents_structure import MainProgramHelp
@@ -105,7 +105,7 @@ class TestTestCasePhase(unittest.TestCase):
 
     def _application_help_with_phases(self, all_phases):
         return ApplicationHelp(MainProgramHelp(),
-                               ConceptsHelp(()),
+                               concepts_help(()),
                                actors_help(()),
                                TestCaseHelp(map(lambda ph_name: section_documentation(ph_name, []),
                                                 all_phases)),

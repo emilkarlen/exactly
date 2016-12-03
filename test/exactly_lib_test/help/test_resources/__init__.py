@@ -1,6 +1,6 @@
 from exactly_lib.common.instruction_documentation import InstructionDocumentation
 from exactly_lib.help.actors.contents_structure import actors_help
-from exactly_lib.help.concepts.contents_structure import ConceptsHelp
+from exactly_lib.help.concepts.contents_structure import concepts_help
 from exactly_lib.help.contents_structure import ApplicationHelp
 from exactly_lib.help.cross_reference_id import CrossReferenceId
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet, \
@@ -50,7 +50,7 @@ def application_help_for(test_case_phase_helps: list,
                          concepts=(),
                          actors=()) -> ApplicationHelp:
     return ApplicationHelp(MainProgramHelp(),
-                           ConceptsHelp(concepts),
+                           concepts_help(concepts),
                            actors_help(actors),
                            TestCaseHelp(test_case_phase_helps),
                            TestSuiteHelp(suite_sections))
@@ -58,7 +58,7 @@ def application_help_for(test_case_phase_helps: list,
 
 def application_help_for_suite_sections(suite_sections: list) -> ApplicationHelp:
     return ApplicationHelp(MainProgramHelp(),
-                           ConceptsHelp([]),
+                           concepts_help([]),
                            actors_help([]),
                            TestCaseHelp([]),
                            TestSuiteHelp(suite_sections))
