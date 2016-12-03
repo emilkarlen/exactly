@@ -7,4 +7,3 @@ class ActorHelpRequest(EntityHelpRequest):
                  item: EntityHelpItem,
                  individual_actor: ActorDocumentation = None):
         super().__init__(item, individual_actor)
-        self._item = item

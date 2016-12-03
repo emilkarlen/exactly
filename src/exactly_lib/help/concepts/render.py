@@ -1,5 +1,5 @@
 from exactly_lib.help.concepts.contents_structure import ConceptDocumentation, ConceptDocumentationVisitor, \
-    PlainConceptDocumentation, ConfigurationParameterDocumentation, ConceptsHelp
+    PlainConceptDocumentation, ConfigurationParameterDocumentation
 from exactly_lib.help.concepts.plain_concepts.configuration_parameter import CONFIGURATION_PARAMETER_CONCEPT
 from exactly_lib.help.utils.entity_documentation import AllEntitiesListRenderer
 from exactly_lib.help.utils.phase_names import phase_name_dictionary
@@ -9,10 +9,9 @@ from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure.structures import para, section, paras
 
 
-def all_concepts_list_renderer(concepts_help: ConceptsHelp) -> SectionContentsRenderer:
+def all_concepts_list_renderer(all_concepts: list) -> SectionContentsRenderer:
     summary_constructor = _SummaryConstructor()
-    return AllEntitiesListRenderer(summary_constructor.visit,
-                                   concepts_help.all_concepts)
+    return AllEntitiesListRenderer(summary_constructor.visit, all_concepts)
 
 
 class IndividualConceptRenderer(SectionContentsRenderer, ConceptDocumentationVisitor):

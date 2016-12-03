@@ -4,7 +4,7 @@ from exactly_lib.cli.program_modes.help import argument_parsing as sut
 from exactly_lib.cli.program_modes.help import arguments_for
 from exactly_lib.cli.program_modes.help.actors.help_request import ActorHelpRequest
 from exactly_lib.cli.program_modes.help.argument_parsing import HelpError
-from exactly_lib.cli.program_modes.help.concepts.help_request import ConceptHelpRequest, ConceptHelpItem
+from exactly_lib.cli.program_modes.help.concepts.help_request import ConceptHelpRequest
 from exactly_lib.cli.program_modes.help.entities_requests import EntityHelpItem
 from exactly_lib.cli.program_modes.help.html_documentation.help_request import HtmlDocHelpRequest
 from exactly_lib.cli.program_modes.help.program_modes.main_program.help_request import *
@@ -415,9 +415,9 @@ class TestConceptHelp(unittest.TestCase):
                               'Expecting settings for concepts')
         assert isinstance(actual,
                           ConceptHelpRequest)
-        self.assertIs(ConceptHelpItem.ALL_CONCEPTS_LIST,
+        self.assertIs(EntityHelpItem.ALL_ENTITIES_LIST,
                       actual.item,
-                      'Item should denote help for ' + ConceptHelpItem.ALL_CONCEPTS_LIST.name)
+                      'Item should denote help for ' + EntityHelpItem.ALL_ENTITIES_LIST.name)
 
     def test_individual_concept_with_single_word_name(self):
         # ARRANGE #
@@ -480,16 +480,16 @@ class TestConceptHelp(unittest.TestCase):
                               'Expecting settings for concepts')
         assert isinstance(actual,
                           ConceptHelpRequest)
-        self.assertIs(ConceptHelpItem.INDIVIDUAL_CONCEPT,
+        self.assertIs(EntityHelpItem.INDIVIDUAL_ENTITY,
                       actual.item,
-                      'Item should denote help for ' + ConceptHelpItem.INDIVIDUAL_CONCEPT.name)
+                      'Item should denote help for ' + EntityHelpItem.INDIVIDUAL_ENTITY.name)
 
-        self.assertIsInstance(actual.individual_concept,
+        self.assertIsInstance(actual.individual_entity,
                               ConceptDocumentation,
                               'Individual concept is expected to an instance of ' + str(ConceptDocumentation))
 
         self.assertEqual(concept_name,
-                         actual.individual_concept.name().singular)
+                         actual.individual_entity.singular_name())
 
 
 class TestActorHelp(unittest.TestCase):

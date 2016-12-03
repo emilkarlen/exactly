@@ -1,5 +1,5 @@
 from exactly_lib.cli.program_modes.help.actors.help_request import ActorHelpRequest
-from exactly_lib.cli.program_modes.help.concepts.help_request import ConceptHelpRequest, ConceptHelpItem
+from exactly_lib.cli.program_modes.help.concepts.help_request import ConceptHelpRequest
 from exactly_lib.cli.program_modes.help.entities_requests import EntityHelpItem
 from exactly_lib.cli.program_modes.help.html_documentation.help_request import HtmlDocHelpRequest
 from exactly_lib.cli.program_modes.help.program_modes import help_request
@@ -156,11 +156,11 @@ class Parser:
 
     def _parse_concept_help(self, concept_arguments: list) -> ConceptHelpRequest:
         if not concept_arguments:
-            return ConceptHelpRequest(ConceptHelpItem.ALL_CONCEPTS_LIST, None)
+            return ConceptHelpRequest(EntityHelpItem.ALL_ENTITIES_LIST, None)
         concept_name = ' '.join(concept_arguments).lower()
         try:
             concept = self.application_help.concepts_help.lookup_by_name_in_singular(concept_name)
-            return ConceptHelpRequest(ConceptHelpItem.INDIVIDUAL_CONCEPT, concept)
+            return ConceptHelpRequest(EntityHelpItem.INDIVIDUAL_ENTITY, concept)
         except KeyError:
             raise HelpError('Concept does not exist: "%s"' % concept_name)
 

@@ -1,6 +1,5 @@
 from exactly_lib.cli.program_modes.help.actors.help_request import ActorHelpRequest
 from exactly_lib.cli.program_modes.help.concepts.help_request import ConceptHelpRequest
-from exactly_lib.cli.program_modes.help.concepts.request_rendering import ConceptHelpRequestRendererResolver
 from exactly_lib.cli.program_modes.help.html_documentation.help_request import HtmlDocHelpRequest
 from exactly_lib.cli.program_modes.help.html_documentation.request_rendering import HtmlGenerationRequestHandler
 from exactly_lib.cli.program_modes.help.program_modes.help_request import *
@@ -42,7 +41,8 @@ def _renderer(application_help: ApplicationHelp,
         resolver = MainProgramHelpRendererResolver(application_help.main_program_help)
         return resolver.renderer_for(request)
     if isinstance(request, ConceptHelpRequest):
-        resolver = ConceptHelpRequestRendererResolver(application_help.concepts_help)
+        from exactly_lib.cli.program_modes.help.concepts import request_rendering
+        resolver = request_rendering.concept_help_request_renderer_resolver(application_help.concepts_help)
         return resolver.renderer_for(request)
     if isinstance(request, ActorHelpRequest):
         from exactly_lib.cli.program_modes.help.actors import request_rendering
