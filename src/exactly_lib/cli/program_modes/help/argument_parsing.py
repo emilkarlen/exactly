@@ -50,7 +50,7 @@ class Parser:
         if command_argument in _ENTITY_TYPE_NAME_2_ENTITY_HELP:
             return self._parse_entity_help(command_argument, help_command_arguments[1:])
         if command_argument == HTML_DOCUMENTATION:
-            return self._parse_xhtml_help(help_command_arguments[1:])
+            return self._parse_html_doc_help(help_command_arguments[1:])
         if command_argument == TEST_CASE:
             if len(help_command_arguments) == 1:
                 return TestCaseHelpRequest(TestCaseHelpItem.CLI_SYNTAX, None, None)
@@ -162,7 +162,8 @@ class Parser:
         except KeyError:
             raise HelpError('%s does not exist: "%s"' % (entity_type_name.capitalize(), name_to_lookup))
 
-    def _parse_xhtml_help(self, arguments: list) -> HtmlDocHelpRequest:
+    @staticmethod
+    def _parse_html_doc_help(arguments: list) -> HtmlDocHelpRequest:
         if arguments:
             raise HelpError('The %s command expects no arguments.' % HTML_DOCUMENTATION)
         return HtmlDocHelpRequest()
