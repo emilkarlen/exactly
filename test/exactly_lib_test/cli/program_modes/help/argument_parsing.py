@@ -2,9 +2,10 @@ import unittest
 
 from exactly_lib.cli.program_modes.help import argument_parsing as sut
 from exactly_lib.cli.program_modes.help import arguments_for
-from exactly_lib.cli.program_modes.help.actors.help_request import ActorHelpRequest, ActorHelpItem
+from exactly_lib.cli.program_modes.help.actors.help_request import ActorHelpRequest
 from exactly_lib.cli.program_modes.help.argument_parsing import HelpError
 from exactly_lib.cli.program_modes.help.concepts.help_request import ConceptHelpRequest, ConceptHelpItem
+from exactly_lib.cli.program_modes.help.entities_requests import EntityHelpItem
 from exactly_lib.cli.program_modes.help.html_documentation.help_request import HtmlDocHelpRequest
 from exactly_lib.cli.program_modes.help.program_modes.main_program.help_request import *
 from exactly_lib.cli.program_modes.help.program_modes.test_case.help_request import *
@@ -500,9 +501,9 @@ class TestActorHelp(unittest.TestCase):
                               'Expecting settings for actors')
         assert isinstance(actual,
                           ActorHelpRequest)
-        self.assertIs(ActorHelpItem.ALL_ACTORS_LIST,
+        self.assertIs(EntityHelpItem.ALL_ENTITIES_LIST,
                       actual.item,
-                      'Item should denote help for ' + ActorHelpItem.ALL_ACTORS_LIST.name)
+                      'Item should denote help for ' + EntityHelpItem.ALL_ENTITIES_LIST.name)
 
     def test_individual_actor_with_single_word_name(self):
         # ARRANGE #
@@ -565,9 +566,9 @@ class TestActorHelp(unittest.TestCase):
                               'Expecting settings for actors')
         assert isinstance(actual,
                           ActorHelpRequest)
-        self.assertIs(ActorHelpItem.INDIVIDUAL_ACTOR,
+        self.assertIs(EntityHelpItem.INDIVIDUAL_ENTITY,
                       actual.item,
-                      'Item should denote help for ' + ActorHelpItem.INDIVIDUAL_ACTOR.name)
+                      'Item should denote help for ' + EntityHelpItem.INDIVIDUAL_ENTITY.name)
 
         self.assertIsInstance(actual.individual_actor,
                               ActorDocumentation,

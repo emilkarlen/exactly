@@ -1,5 +1,6 @@
-from exactly_lib.cli.program_modes.help.actors.help_request import ActorHelpRequest, ActorHelpItem
+from exactly_lib.cli.program_modes.help.actors.help_request import ActorHelpRequest
 from exactly_lib.cli.program_modes.help.concepts.help_request import ConceptHelpRequest, ConceptHelpItem
+from exactly_lib.cli.program_modes.help.entities_requests import EntityHelpItem
 from exactly_lib.cli.program_modes.help.html_documentation.help_request import HtmlDocHelpRequest
 from exactly_lib.cli.program_modes.help.program_modes import help_request
 from exactly_lib.cli.program_modes.help.program_modes.main_program.help_request import *
@@ -165,11 +166,11 @@ class Parser:
 
     def _parse_actor_help(self, actor_arguments: list) -> ConceptHelpRequest:
         if not actor_arguments:
-            return ActorHelpRequest(ActorHelpItem.ALL_ACTORS_LIST)
+            return ActorHelpRequest(EntityHelpItem.ALL_ENTITIES_LIST)
         actor_name = ' '.join(actor_arguments).lower()
         try:
             actor = self.application_help.actors_help.lookup_by_name_in_singular(actor_name)
-            return ActorHelpRequest(ActorHelpItem.INDIVIDUAL_ACTOR, actor)
+            return ActorHelpRequest(EntityHelpItem.INDIVIDUAL_ENTITY, actor)
         except KeyError:
             raise HelpError('Actor does not exist: "%s"' % actor_name)
 
