@@ -40,6 +40,8 @@ class HelpCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
                       'Describes an instruction in a suite section.'),
             _synopsis(_ns(arguments_for.concept_list()), 'Lists all concepts.'),
             _synopsis(_ns(arguments_for.concept_single('CONCEPT')), 'Describes a concept.'),
+            _synopsis(_ns(arguments_for.actor_list()), 'Lists all actors.'),
+            _synopsis(_ns(arguments_for.actor_single('ACTOR')), 'Describes an actor.'),
         ]
 
     def argument_descriptions(self) -> list:
