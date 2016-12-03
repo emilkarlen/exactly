@@ -17,9 +17,9 @@ class HtmlDocGeneratorForActorsHelp:
     def apply(self, targets_factory: CustomTargetInfoFactory) -> (list, doc.SectionContents):
         ret_val_sections = []
         ret_val_targets = []
-        for actor in sorted(self.actors_help.all_actors, key=lambda cn: cn.name()):
+        for actor in sorted(self.actors_help.all_actors, key=lambda cn: cn.singular_name()):
             assert isinstance(actor, ActorDocumentation)
-            actor_presentation_str = actor.name()
+            actor_presentation_str = actor.singular_name()
             header = docs.anchor_text(docs.text(actor_presentation_str),
                                       actor.cross_reference_target())
             section = doc.Section(header,

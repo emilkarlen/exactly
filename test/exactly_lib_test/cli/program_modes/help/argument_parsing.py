@@ -574,7 +574,7 @@ class TestActorHelp(unittest.TestCase):
                               'Individual actor is expected to an instance of ' + str(ActorDocumentation))
 
         self.assertEqual(actor_name,
-                         actual.individual_actor.name())
+                         actual.individual_actor.singular_name())
 
 
 def suite() -> unittest.TestSuite:

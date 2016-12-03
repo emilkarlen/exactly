@@ -11,7 +11,7 @@ class ActorHelpRequestRendererResolver:
         from exactly_lib.help.actors import render
         item = request.item
         if item is ActorHelpItem.ALL_ACTORS_LIST:
-            return render.AllActorsListRenderer(self.actors_help)
+            return render.all_actors_list_renderer(self.actors_help)
         if item is ActorHelpItem.INDIVIDUAL_ACTOR:
             return render.IndividualActorRenderer(request.individual_actor)
         raise ValueError('Invalid %s: %s' % (str(ActorHelpItem), str(item)))
