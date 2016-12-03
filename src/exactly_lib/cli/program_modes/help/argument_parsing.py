@@ -1,6 +1,6 @@
-from exactly_lib.cli.program_modes.help.actors.help_request import ActorHelpRequest
-from exactly_lib.cli.program_modes.help.concepts.help_request import ConceptHelpRequest
-from exactly_lib.cli.program_modes.help.entities_requests import EntityHelpItem
+from exactly_lib.cli.program_modes.help.actors.help_request import actor_help_request
+from exactly_lib.cli.program_modes.help.concepts.help_request import concept_help_request
+from exactly_lib.cli.program_modes.help.entities_requests import EntityHelpItem, EntityHelpRequest
 from exactly_lib.cli.program_modes.help.html_documentation.help_request import HtmlDocHelpRequest
 from exactly_lib.cli.program_modes.help.program_modes import help_request
 from exactly_lib.cli.program_modes.help.program_modes.main_program.help_request import *
@@ -156,28 +156,28 @@ class Parser:
             instruction_name,
             phase_and_instr_descr_list)
 
-    def _parse_concept_help(self, arguments: list) -> ConceptHelpRequest:
+    def _parse_concept_help(self, arguments: list) -> EntityHelpRequest:
         if not arguments:
-            return ConceptHelpRequest(EntityHelpItem.ALL_ENTITIES_LIST, None)
+            return concept_help_request(EntityHelpItem.ALL_ENTITIES_LIST, None)
         name_to_lookup = ' '.join(arguments).lower()
         entities_help = self.application_help.concepts_help
         try:
             entity = entities_help.lookup_by_name_in_singular(name_to_lookup)
             assert isinstance(entity, ConceptDocumentation)
-            return ConceptHelpRequest(EntityHelpItem.INDIVIDUAL_ENTITY, entity)
+            return concept_help_request(EntityHelpItem.INDIVIDUAL_ENTITY, entity)
         except KeyError:
             raise HelpError('%s does not exist: "%s"' % (entities_help.entity_type_name.capitalize(),
                                                          name_to_lookup))
 
-    def _parse_actor_help(self, arguments: list) -> ActorHelpRequest:
+    def _parse_actor_help(self, arguments: list) -> EntityHelpRequest:
         if not arguments:
-            return ActorHelpRequest(EntityHelpItem.ALL_ENTITIES_LIST)
+            return actor_help_request(EntityHelpItem.ALL_ENTITIES_LIST)
         name_to_lookup = ' '.join(arguments).lower()
         entities_help = self.application_help.actors_help
         try:
             entity = entities_help.lookup_by_name_in_singular(name_to_lookup)
             assert isinstance(entity, ActorDocumentation)
-            return ActorHelpRequest(EntityHelpItem.INDIVIDUAL_ENTITY, entity)
+            return actor_help_request(EntityHelpItem.INDIVIDUAL_ENTITY, entity)
         except KeyError:
             raise HelpError('%s does not exist: "%s"' % (entities_help.entity_type_name.capitalize(),
                                                          name_to_lookup))
