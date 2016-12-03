@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.cli.program_modes.help.concepts import request_rendering
+from exactly_lib.cli.program_modes.help import concepts as sut
 from exactly_lib.cli.program_modes.help.entities_requests import EntityHelpItem, EntityHelpRequest
 from exactly_lib.help.concepts.contents_structure import concepts_help, ConceptDocumentation
 from exactly_lib.help.entity_names import CONCEPT_ENTITY_TYPE_NAME
@@ -15,9 +15,9 @@ class TestConceptHelpRequestRendererResolver(unittest.TestCase):
             ConceptTestImpl('first'),
             ConceptTestImpl('second'),
         ]
-        resolver = request_rendering.concept_help_request_renderer_resolver(concepts_help(concepts))
+        resolver = sut.concept_help_request_renderer_resolver(concepts_help(concepts))
         # ACT #
-        actual = resolver.renderer_for(concept_help_request(EntityHelpItem.ALL_ENTITIES_LIST, None))
+        actual = resolver.renderer_for(_concept_help_request(EntityHelpItem.ALL_ENTITIES_LIST, None))
         # ASSERT #
         self.assertIsInstance(actual, SectionContentsRenderer)
 
@@ -27,9 +27,9 @@ class TestConceptHelpRequestRendererResolver(unittest.TestCase):
         concepts = [
             first_concept,
         ]
-        resolver = request_rendering.concept_help_request_renderer_resolver(concepts_help(concepts))
+        resolver = sut.concept_help_request_renderer_resolver(concepts_help(concepts))
         # ACT #
-        actual = resolver.renderer_for(concept_help_request(EntityHelpItem.INDIVIDUAL_ENTITY, first_concept))
+        actual = resolver.renderer_for(_concept_help_request(EntityHelpItem.INDIVIDUAL_ENTITY, first_concept))
         # ASSERT #
         self.assertIsInstance(actual, SectionContentsRenderer)
 
@@ -44,6 +44,6 @@ if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())
 
 
-def concept_help_request(item: EntityHelpItem,
-                         individual_concept: ConceptDocumentation = None) -> EntityHelpRequest:
+def _concept_help_request(item: EntityHelpItem,
+                          individual_concept: ConceptDocumentation = None) -> EntityHelpRequest:
     return EntityHelpRequest(CONCEPT_ENTITY_TYPE_NAME, item, individual_concept)

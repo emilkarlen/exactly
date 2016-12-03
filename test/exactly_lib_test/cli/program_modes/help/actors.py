@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.cli.program_modes.help.actors import request_rendering as sut
+from exactly_lib.cli.program_modes.help import actors as sut
 from exactly_lib.cli.program_modes.help.entities_requests import EntityHelpItem, EntityHelpRequest
 from exactly_lib.help.actors.contents_structure import actors_help, ActorDocumentation
 from exactly_lib.help.entity_names import ACTOR_ENTITY_TYPE_NAME

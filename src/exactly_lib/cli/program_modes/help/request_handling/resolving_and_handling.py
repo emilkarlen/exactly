@@ -55,9 +55,9 @@ def _renderer(application_help: ApplicationHelp,
 def _entity_help_request_renderer_resolver_for(application_help: ApplicationHelp,
                                                request: EntityHelpRequest) -> EntityHelpRequestRendererResolver:
     if request.entity_type == ACTOR_ENTITY_TYPE_NAME:
-        from exactly_lib.cli.program_modes.help.actors import request_rendering
-        return request_rendering.actor_help_request_renderer_resolver(application_help.actors_help)
+        from exactly_lib.cli.program_modes.help.actors import actor_help_request_renderer_resolver
+        return actor_help_request_renderer_resolver(application_help.actors_help)
     if request.entity_type == CONCEPT_ENTITY_TYPE_NAME:
-        from exactly_lib.cli.program_modes.help.concepts import request_rendering
-        return request_rendering.concept_help_request_renderer_resolver(application_help.concepts_help)
+        from exactly_lib.cli.program_modes.help.concepts import concept_help_request_renderer_resolver
+        return concept_help_request_renderer_resolver(application_help.concepts_help)
     raise ValueError('Non existing entity: ' + str(request.entity_type))
