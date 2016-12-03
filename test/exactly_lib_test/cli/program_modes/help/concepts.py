@@ -1,9 +1,9 @@
 import unittest
 
 from exactly_lib.cli.program_modes.help.concepts import request_rendering
-from exactly_lib.cli.program_modes.help.concepts.help_request import concept_help_request
-from exactly_lib.cli.program_modes.help.entities_requests import EntityHelpItem
-from exactly_lib.help.concepts.contents_structure import concepts_help
+from exactly_lib.cli.program_modes.help.entities_requests import EntityHelpItem, EntityHelpRequest
+from exactly_lib.help.concepts.contents_structure import concepts_help, ConceptDocumentation
+from exactly_lib.help.entity_names import CONCEPT_ENTITY_TYPE_NAME
 from exactly_lib.help.utils.render import SectionContentsRenderer
 from exactly_lib_test.help.concepts.test_resources.documentation import ConceptTestImpl
 
@@ -42,3 +42,8 @@ def suite() -> unittest.TestSuite:
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())
+
+
+def concept_help_request(item: EntityHelpItem,
+                         individual_concept: ConceptDocumentation = None) -> EntityHelpRequest:
+    return EntityHelpRequest(CONCEPT_ENTITY_TYPE_NAME, item, individual_concept)
