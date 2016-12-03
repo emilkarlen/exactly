@@ -17,7 +17,7 @@ class TestActorHelpRequestRendererResolver(unittest.TestCase):
             ActorTestImpl('first'),
             ActorTestImpl('second'),
         ]
-        resolver = sut.ActorHelpRequestRendererResolver(ActorsHelp(actors))
+        resolver = sut.actor_help_request_renderer_resolver(ActorsHelp(actors))
         # ACT #
         actual = resolver.renderer_for(ActorHelpRequest(EntityHelpItem.ALL_ENTITIES_LIST))
         # ASSERT #
@@ -33,7 +33,7 @@ class TestActorHelpRequestRendererResolver(unittest.TestCase):
         actors = [
             first_actor,
         ]
-        resolver = sut.ActorHelpRequestRendererResolver(ActorsHelp(actors))
+        resolver = sut.actor_help_request_renderer_resolver(ActorsHelp(actors))
         # ACT #
         actual = resolver.renderer_for(ActorHelpRequest(EntityHelpItem.INDIVIDUAL_ENTITY, first_actor))
         # ASSERT #

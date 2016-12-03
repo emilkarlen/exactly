@@ -570,12 +570,12 @@ class TestActorHelp(unittest.TestCase):
                       actual.item,
                       'Item should denote help for ' + EntityHelpItem.INDIVIDUAL_ENTITY.name)
 
-        self.assertIsInstance(actual.individual_actor,
+        self.assertIsInstance(actual.individual_entity,
                               ActorDocumentation,
                               'Individual actor is expected to an instance of ' + str(ActorDocumentation))
 
         self.assertEqual(actor_name,
-                         actual.individual_actor.singular_name())
+                         actual.individual_entity.singular_name())
 
 
 def suite() -> unittest.TestSuite:
