@@ -1,6 +1,7 @@
 from exactly_lib.help.cross_reference_id import ConceptCrossReferenceId
+from exactly_lib.help.utils.entity_documentation import EntityDocumentation
 from exactly_lib.util.description import DescriptionWithSubSections
-from exactly_lib.util.textformat.structure.core import ParagraphItem
+from exactly_lib.util.textformat.structure.core import ParagraphItem, Text
 from exactly_lib.util.textformat.structure.structures import para
 
 
@@ -19,17 +20,22 @@ class Name(tuple):
         return self[1]
 
 
-class ConceptDocumentation:
+class ConceptDocumentation(EntityDocumentation):
     """
     Abstract base class for concepts.
     """
-
     def __init__(self,
                  name: Name):
         self._name = name
 
     def name(self) -> Name:
         return self._name
+
+    def single_line_description(self) -> Text:
+        return self.purpose().single_line_description
+
+    def singular_name(self) -> str:
+        return self.name().singular
 
     def cross_reference_target(self) -> ConceptCrossReferenceId:
         return ConceptCrossReferenceId(self._name.singular)
