@@ -1,6 +1,6 @@
 from exactly_lib.help import cross_reference_id as cross_ref
 from exactly_lib.help.cross_reference_id import CustomTargetInfoFactory, CrossReferenceId
-from exactly_lib.help.html_doc.parts.utils import HtmlDocGeneratorForSectionDocumentBase
+from exactly_lib.help.html_doc.parts.utils.section_document_renderer_base import HtmlDocGeneratorForSectionDocumentBase
 from exactly_lib.help.program_modes.help.cli_syntax import HelpCliSyntaxDocumentation
 from exactly_lib.help.utils.cli_program_documentation_rendering import ProgramDocumentationSectionContentsRenderer
 from exactly_lib.help.utils.render import RenderingEnvironment
