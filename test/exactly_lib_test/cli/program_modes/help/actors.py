@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.cli.program_modes.help.actors import request_rendering as sut
-from exactly_lib.cli.program_modes.help.actors.help_request import ActorHelpRequest
+from exactly_lib.cli.program_modes.help.actors.help_request import actor_help_request
 from exactly_lib.cli.program_modes.help.entities_requests import EntityHelpItem
 from exactly_lib.help.actors.contents_structure import actors_help
 from exactly_lib.help.utils.render import SectionContentsRenderer, RenderingEnvironment
@@ -19,7 +19,7 @@ class TestActorHelpRequestRendererResolver(unittest.TestCase):
         ]
         resolver = sut.actor_help_request_renderer_resolver(actors_help(actors))
         # ACT #
-        actual = resolver.renderer_for(ActorHelpRequest(EntityHelpItem.ALL_ENTITIES_LIST))
+        actual = resolver.renderer_for(actor_help_request(EntityHelpItem.ALL_ENTITIES_LIST))
         # ASSERT #
         self.assertIsInstance(actual, SectionContentsRenderer)
         # ACT #
@@ -35,7 +35,7 @@ class TestActorHelpRequestRendererResolver(unittest.TestCase):
         ]
         resolver = sut.actor_help_request_renderer_resolver(actors_help(actors))
         # ACT #
-        actual = resolver.renderer_for(ActorHelpRequest(EntityHelpItem.INDIVIDUAL_ENTITY, first_actor))
+        actual = resolver.renderer_for(actor_help_request(EntityHelpItem.INDIVIDUAL_ENTITY, first_actor))
         # ASSERT #
         self.assertIsInstance(actual, SectionContentsRenderer)
         # ACT #

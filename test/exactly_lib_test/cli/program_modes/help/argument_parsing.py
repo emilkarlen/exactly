@@ -2,10 +2,8 @@ import unittest
 
 from exactly_lib.cli.program_modes.help import argument_parsing as sut
 from exactly_lib.cli.program_modes.help import arguments_for
-from exactly_lib.cli.program_modes.help.actors.help_request import ActorHelpRequest
 from exactly_lib.cli.program_modes.help.argument_parsing import HelpError
-from exactly_lib.cli.program_modes.help.concepts.help_request import ConceptHelpRequest
-from exactly_lib.cli.program_modes.help.entities_requests import EntityHelpItem
+from exactly_lib.cli.program_modes.help.entities_requests import EntityHelpItem, EntityHelpRequest
 from exactly_lib.cli.program_modes.help.html_documentation.help_request import HtmlDocHelpRequest
 from exactly_lib.cli.program_modes.help.program_modes.main_program.help_request import *
 from exactly_lib.cli.program_modes.help.program_modes.test_case.help_request import *
@@ -15,6 +13,7 @@ from exactly_lib.help.actors.contents_structure import ActorDocumentation, actor
 from exactly_lib.help.concepts.contents_structure import ConceptDocumentation, \
     concepts_help
 from exactly_lib.help.contents_structure import ApplicationHelp
+from exactly_lib.help.entity_names import CONCEPT_ENTITY_TYPE_NAME, ACTOR_ENTITY_TYPE_NAME
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
 from exactly_lib.help.program_modes.main_program.contents_structure import MainProgramHelp
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
@@ -411,10 +410,10 @@ class TestConceptHelp(unittest.TestCase):
         actual = sut.parse(application_help_for([]),
                            arguments_for.concept_list())
         self.assertIsInstance(actual,
-                              ConceptHelpRequest,
+                              EntityHelpRequest,
                               'Expecting settings for concepts')
-        assert isinstance(actual,
-                          ConceptHelpRequest)
+        assert isinstance(actual, EntityHelpRequest)
+        self.assertEqual(actual.entity_type, CONCEPT_ENTITY_TYPE_NAME)
         self.assertIs(EntityHelpItem.ALL_ENTITIES_LIST,
                       actual.item,
                       'Item should denote help for ' + EntityHelpItem.ALL_ENTITIES_LIST.name)
@@ -476,10 +475,10 @@ class TestConceptHelp(unittest.TestCase):
                                              actual: HelpRequest,
                                              concept_name: str):
         self.assertIsInstance(actual,
-                              ConceptHelpRequest,
+                              EntityHelpRequest,
                               'Expecting settings for concepts')
-        assert isinstance(actual,
-                          ConceptHelpRequest)
+        assert isinstance(actual, EntityHelpRequest)
+        self.assertEqual(actual.entity_type, CONCEPT_ENTITY_TYPE_NAME)
         self.assertIs(EntityHelpItem.INDIVIDUAL_ENTITY,
                       actual.item,
                       'Item should denote help for ' + EntityHelpItem.INDIVIDUAL_ENTITY.name)
@@ -497,10 +496,11 @@ class TestActorHelp(unittest.TestCase):
         actual = sut.parse(application_help_for([]),
                            arguments_for.actor_list())
         self.assertIsInstance(actual,
-                              ActorHelpRequest,
+                              EntityHelpRequest,
                               'Expecting settings for actors')
-        assert isinstance(actual,
-                          ActorHelpRequest)
+        assert isinstance(actual, EntityHelpRequest, )
+        self.assertEqual(actual.entity_type, ACTOR_ENTITY_TYPE_NAME,
+                         'Expecting settings for actors')
         self.assertIs(EntityHelpItem.ALL_ENTITIES_LIST,
                       actual.item,
                       'Item should denote help for ' + EntityHelpItem.ALL_ENTITIES_LIST.name)
@@ -562,10 +562,11 @@ class TestActorHelp(unittest.TestCase):
                                            actual: HelpRequest,
                                            actor_name: str):
         self.assertIsInstance(actual,
-                              ActorHelpRequest,
+                              EntityHelpRequest,
                               'Expecting settings for actors')
-        assert isinstance(actual,
-                          ActorHelpRequest)
+        assert isinstance(actual, EntityHelpRequest)
+        self.assertEqual(actual.entity_type, ACTOR_ENTITY_TYPE_NAME,
+                         'Expecting settings for actors')
         self.assertIs(EntityHelpItem.INDIVIDUAL_ENTITY,
                       actual.item,
                       'Item should denote help for ' + EntityHelpItem.INDIVIDUAL_ENTITY.name)
