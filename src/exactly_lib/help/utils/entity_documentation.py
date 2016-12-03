@@ -39,18 +39,23 @@ def sorted_entity_list(entities: list) -> list:
 
 
 class AllEntitiesListRenderer(SectionContentsRenderer):
-    def __init__(self, all_entities: list):
+    def __init__(self,
+                 entity_2_summary_paragraphs,
+                 all_entities: list):
+        """
+        :param entity_2_summary_paragraphs: EntityDocumentation -> [ParagraphItem]
+        """
+        self.entity_2_summary_paragraphs = entity_2_summary_paragraphs
         self.all_entities = all_entities
 
     def apply(self, environment: RenderingEnvironment) -> doc.SectionContents:
-        return doc.SectionContents([_sorted_entities_list(self.all_entities)], [])
+        return doc.SectionContents([self._sorted_entities_list(self.all_entities)], [])
 
-
-def _sorted_entities_list(entities: iter) -> ParagraphItem:
-    items = [lists.HeaderContentListItem(docs.text(entity.singular_name()),
-                                         docs.paras(entity.single_line_description()))
-             for entity in (sorted_entity_list(entities))]
-    return lists.HeaderContentList(items,
-                                   lists.Format(lists.ListType.VARIABLE_LIST,
-                                                custom_indent_spaces=0,
-                                                custom_separations=SEPARATION_OF_HEADER_AND_CONTENTS))
+    def _sorted_entities_list(self, entities: iter) -> ParagraphItem:
+        items = [lists.HeaderContentListItem(docs.text(entity.singular_name()),
+                                             self.entity_2_summary_paragraphs(entity))
+                 for entity in (sorted_entity_list(entities))]
+        return lists.HeaderContentList(items,
+                                       lists.Format(lists.ListType.VARIABLE_LIST,
+                                                    custom_indent_spaces=0,
+                                                    custom_separations=SEPARATION_OF_HEADER_AND_CONTENTS))
