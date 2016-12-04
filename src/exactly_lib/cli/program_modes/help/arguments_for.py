@@ -1,5 +1,5 @@
 from exactly_lib.cli.program_modes.help.argument_parsing import INSTRUCTIONS, TEST_SUITE, TEST_CASE, HELP, \
-    CONCEPT, HTML_DOCUMENTATION, SPECIFICATION, ACTOR
+    CONCEPT, HTML_DOCUMENTATION, SPECIFICATION, ACTOR, SUITE_REPORTER
 from exactly_lib.help.program_modes.test_case.config import phase_help_name
 from exactly_lib.test_case import phase_identifier
 
@@ -81,3 +81,11 @@ def actor_list() -> list:
 
 def actor_single(actor_name: str) -> list:
     return [ACTOR] + actor_name.split()
+
+
+def suite_reporter_list() -> list:
+    return [SUITE_REPORTER]
+
+
+def suite_reporter_single(suite_reporter_name: str) -> list:
+    return [SUITE_REPORTER] + suite_reporter_name.split()

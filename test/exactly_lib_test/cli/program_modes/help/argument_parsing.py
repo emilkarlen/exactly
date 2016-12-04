@@ -13,14 +13,17 @@ from exactly_lib.help.actors.contents_structure import ActorDocumentation, actor
 from exactly_lib.help.concepts.contents_structure import ConceptDocumentation, \
     concepts_help
 from exactly_lib.help.contents_structure import ApplicationHelp
-from exactly_lib.help.entity_names import CONCEPT_ENTITY_TYPE_NAME, ACTOR_ENTITY_TYPE_NAME
+from exactly_lib.help.entity_names import CONCEPT_ENTITY_TYPE_NAME, ACTOR_ENTITY_TYPE_NAME, \
+    SUITE_REPORTER_ENTITY_TYPE_NAME
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
 from exactly_lib.help.program_modes.main_program.contents_structure import MainProgramHelp
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
+from exactly_lib.help.suite_reporters.contents_structure import SuiteReporterDocumentation
 from exactly_lib.help.utils import formatting
 from exactly_lib_test.help.actors.test_resources.documentation import ActorTestImpl
 from exactly_lib_test.help.concepts.test_resources.documentation import ConceptTestImpl
+from exactly_lib_test.help.suite_reporters.test_resources.documentation import SuiteReporterDocTestImpl
 from exactly_lib_test.help.test_resources import section_documentation, \
     single_line_description_that_identifies_instruction_and_section, application_help_for, \
     SectionDocumentationForSectionWithoutInstructionsTestImpl, application_help_for_suite_sections
@@ -579,12 +582,102 @@ class TestActorHelp(unittest.TestCase):
                          actual.individual_entity.singular_name())
 
 
+class TestSuiteReporterHelp(unittest.TestCase):
+    def test_suite_reporter_list(self):
+        actual = sut.parse(application_help_for([]),
+                           arguments_for.suite_reporter_list())
+        self.assertIsInstance(actual,
+                              EntityHelpRequest,
+                              'Expecting settings for suite reporters')
+        assert isinstance(actual, EntityHelpRequest, )
+        self.assertEqual(actual.entity_type, SUITE_REPORTER_ENTITY_TYPE_NAME,
+                         'Expecting settings for suite reporters')
+        self.assertIs(EntityHelpItem.ALL_ENTITIES_LIST,
+                      actual.item,
+                      'Item should denote help for ' + EntityHelpItem.ALL_ENTITIES_LIST.name)
+
+    def test_individual_suite_reporter_with_single_word_name(self):
+        # ARRANGE #
+        suite_reporters = [
+            SuiteReporterDocTestImpl('first'),
+            SuiteReporterDocTestImpl('second'),
+        ]
+        application_help = application_help_for([], suite_reporters=suite_reporters)
+        # ACT #
+        actual = sut.parse(application_help,
+                           arguments_for.suite_reporter_single('second'))
+        # ASSERT #
+        self._assert_result_is_individual_suite_reporter(actual, 'second')
+
+    def test_individual_suite_reporter_with_multiple_words_name(self):
+        # ARRANGE #
+        suite_reporters = [
+            SuiteReporterDocTestImpl('first'),
+            SuiteReporterDocTestImpl('a b c'),
+            SuiteReporterDocTestImpl('last'),
+        ]
+        application_help = application_help_for([], suite_reporters=suite_reporters)
+        # ACT #
+        actual = sut.parse(application_help,
+                           arguments_for.suite_reporter_single('a b c'))
+        # ASSERT #
+        self._assert_result_is_individual_suite_reporter(actual, 'a b c')
+
+    def test_individual_suite_reporter_with_multiple_words_and_different_case_name(self):
+        # ARRANGE #
+        suite_reporters = [
+            SuiteReporterDocTestImpl('first'),
+            SuiteReporterDocTestImpl('a b c'),
+            SuiteReporterDocTestImpl('last'),
+        ]
+        application_help = application_help_for([], suite_reporters=suite_reporters)
+        # ACT #
+        actual = sut.parse(application_help,
+                           arguments_for.suite_reporter_single('a B C'))
+        # ASSERT #
+        self._assert_result_is_individual_suite_reporter(actual, 'a b c')
+
+    def test_search_for_non_existing_suite_reporter_SHOULD_raise_HelpError(self):
+        # ARRANGE #
+        suite_reporters = [
+            SuiteReporterDocTestImpl('first'),
+            SuiteReporterDocTestImpl('second'),
+        ]
+        application_help = application_help_for([], suite_reporters=suite_reporters)
+        # ACT & ASSERT #
+        with self.assertRaises(HelpError):
+            sut.parse(application_help,
+                      arguments_for.suite_reporter_single('non-existing suite reporter'))
+
+    def _assert_result_is_individual_suite_reporter(self,
+                                                    actual: HelpRequest,
+                                                    suite_reporter_name: str):
+        self.assertIsInstance(actual,
+                              EntityHelpRequest,
+                              'Expecting settings for suite reporters')
+        assert isinstance(actual, EntityHelpRequest)
+        self.assertEqual(actual.entity_type, SUITE_REPORTER_ENTITY_TYPE_NAME,
+                         'Expecting settings for suite reporters')
+        self.assertIs(EntityHelpItem.INDIVIDUAL_ENTITY,
+                      actual.item,
+                      'Item should denote help for ' + EntityHelpItem.INDIVIDUAL_ENTITY.name)
+
+        self.assertIsInstance(actual.individual_entity,
+                              SuiteReporterDocumentation,
+                              'Individual suite_reporter is expected to an instance of ' + str(
+                                  SuiteReporterDocumentation))
+
+        self.assertEqual(suite_reporter_name,
+                         actual.individual_entity.singular_name())
+
+
 def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestProgramHelp))
     ret_val.addTest(unittest.makeSuite(TestHtmlDocHelp))
     ret_val.addTest(unittest.makeSuite(TestConceptHelp))
     ret_val.addTest(unittest.makeSuite(TestActorHelp))
+    ret_val.addTest(unittest.makeSuite(TestSuiteReporterHelp))
     ret_val.addTest(unittest.makeSuite(TestTestCaseCliAndOverviewHelp))
     ret_val.addTest(unittest.makeSuite(TestTestCaseInstructionSet))
     ret_val.addTest(unittest.makeSuite(TestTestCaseSingleInstructionInPhase))
