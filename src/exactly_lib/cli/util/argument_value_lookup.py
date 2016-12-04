@@ -13,9 +13,11 @@ def entities_key_value_iter(entities_help: EntitiesHelp) -> iter:
 
 def lookup_argument(object_name: str,
                     argument_pattern: str,
-                    key_value_iter) -> Match:
+                    key_value_iter_or_dict) -> Match:
+    if isinstance(key_value_iter_or_dict, dict):
+        key_value_iter_or_dict = key_value_iter_or_dict.items()
     try:
-        return value_lookup.lookup(argument_pattern, key_value_iter)
+        return value_lookup.lookup(argument_pattern, key_value_iter_or_dict)
     except value_lookup.NoMatchError:
         raise HelpError('No matching ' + object_name)
     except value_lookup.MultipleMatchesError as ex:
