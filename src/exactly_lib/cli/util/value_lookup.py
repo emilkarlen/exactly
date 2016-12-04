@@ -7,7 +7,27 @@ class MultipleMatchesError(LookupError):
         self.matching_key_values = matching_key_values
 
 
-def lookup(key_pattern: str, key_value_iter: iter):
+class Match(tuple):
+    def __new__(cls,
+                key: str,
+                value,
+                is_exact_match: bool):
+        return tuple.__new__(cls, (key, value, is_exact_match))
+
+    @property
+    def key(self) -> str:
+        return self[0]
+
+    @property
+    def value(self):
+        return self[1]
+
+    @property
+    def is_exact_match(self) -> bool:
+        return self[2]
+
+
+def lookup(key_pattern: str, key_value_iter: iter) -> Match:
     """
     Looks up a value from a sequence of (key,value) pairs.
 
@@ -20,12 +40,13 @@ def lookup(key_pattern: str, key_value_iter: iter):
     matches = []
     for key, value in key_value_iter:
         if key_pattern == key:
-            return value
+            return Match(key, value, True)
         if key_pattern in key:
             matches.append((key, value))
     num_matches = len(matches)
     if num_matches == 0:
         raise NoMatchError()
     if num_matches == 1:
-        return matches[0][1]
+        match = matches[0]
+        return Match(match[0], match[1], False)
     raise MultipleMatchesError(matches)

@@ -15,18 +15,20 @@ class TestMatch(unittest.TestCase):
     def test_WHEN_sequence_contains_exactly_key_pattern_THEN_corresponding_value_SHOULD_be_returned(self):
         cases = [('1', 1, [('1', 1)]),
                  ('2', 2, [('1', 1), ('2', 2)])]
-        for key_pattern, expected, iterable in cases:
-            with self.subTest(key_pattern=key_pattern, expected=expected, iterable=iterable):
+        for key_pattern, expected_value, iterable in cases:
+            with self.subTest(key_pattern=key_pattern, expected_value=expected_value, iterable=iterable):
                 actual = sut.lookup(key_pattern, iterable)
-                self.assertEqual(expected, actual)
+                self._assertIsExactMatch(key_pattern, expected_value, actual)
 
     def test_WHEN_sequence_contains_key_pattern_as_sub_string_THEN_corresponding_value_SHOULD_be_returned(self):
-        cases = [('b', 1, [('abc', 1)]),
-                 ('ab', 2, [('ac', 1), ('abc', 2)])]
-        for key_pattern, expected, iterable in cases:
-            with self.subTest(key_pattern=key_pattern, expected=expected, iterable=iterable):
+        cases = [('b', 'abc', 1, [('abc', 1)]),
+                 ('ab', 'abc', 2, [('ac', 1), ('abc', 2)])]
+        for key_pattern, expected_key, expected_value, iterable in cases:
+            with self.subTest(key_pattern=key_pattern,
+                              expected_key=expected_key, expected_value=expected_value,
+                              iterable=iterable):
                 actual = sut.lookup(key_pattern, iterable)
-                self.assertEqual(expected, actual)
+                self._assertIsInexactMatch(expected_key, expected_value, actual)
 
     def test_exact_match_should_have_precedence_over_sub_string_match(self):
         # ARRANGE #
@@ -38,7 +40,7 @@ class TestMatch(unittest.TestCase):
         # ACT #
         actual = sut.lookup(key_pattern, iterable)
         # ASSERT #
-        self.assertEqual(3, actual)
+        self._assertIsExactMatch('snake', 3, actual)
 
     def test_iterable_should_not_need_to_be_a_list(self):
         # ARRANGE #
@@ -47,7 +49,18 @@ class TestMatch(unittest.TestCase):
         # ACT #
         actual = sut.lookup(key_pattern, iterable)
         # ASSERT #
-        self.assertEqual(1, actual)
+        self._assertIsExactMatch('1', 1, actual)
+
+    def _assertIsExactMatch(self, key: str, value, actual: sut.Match):
+        self._assertEqual(_exact_match(key, value), actual)
+
+    def _assertIsInexactMatch(self, key: str, value, actual: sut.Match):
+        self._assertEqual(_inexact_match(key, value), actual)
+
+    def _assertEqual(self, expected: sut.Match, actual: sut.Match):
+        self.assertEqual(expected.value, actual.value, 'value')
+        self.assertEqual(expected.key, actual.key, 'key')
+        self.assertEqual(expected.is_exact_match, actual.is_exact_match, 'is_exact_match')
 
 
 class TestNoMatch(unittest.TestCase):
@@ -74,3 +87,11 @@ class TestMultipleMatches(unittest.TestCase):
             expected_matches = [('aB', 1),
                                 ('Bc', 2)]
             self.assertListEqual(expected_matches, cm.ex.matching_key_values)
+
+
+def _exact_match(key, value) -> sut.Match:
+    return sut.Match(key, value, True)
+
+
+def _inexact_match(key, value) -> sut.Match:
+    return sut.Match(key, value, False)

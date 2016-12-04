@@ -10,7 +10,7 @@ from exactly_lib.help.contents_structure import ApplicationHelp
 from exactly_lib.help.entity_names import CONCEPT_ENTITY_TYPE_NAME, ACTOR_ENTITY_TYPE_NAME, \
     SUITE_REPORTER_ENTITY_TYPE_NAME
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
-from exactly_lib.help.utils.entity_documentation import EntitiesHelp, EntityDocumentation
+from exactly_lib.help.utils.entity_documentation import EntitiesHelp
 from exactly_lib.test_case import phase_identifier
 
 HELP = 'help'
@@ -124,13 +124,13 @@ class Parser:
                 phase_name,
                 test_case_phase_help)
         key_value_iter = test_case_phase_help.instruction_set.name_2_description.items()
-        description = argument_value_lookup.lookup_argument('instruction',
-                                                            instruction_name,
-                                                            key_value_iter)
+        match = argument_value_lookup.lookup_argument('instruction',
+                                                      instruction_name,
+                                                      key_value_iter)
         return TestCaseHelpRequest(
             TestCaseHelpItem.INSTRUCTION,
             instruction_name,
-            description)
+            match.value)
 
     def _parse_instruction_search_when_not_a_phase(self, instruction_name) -> TestCaseHelpRequest:
         phase_and_instr_descr_list = []
@@ -154,8 +154,8 @@ class Parser:
             return EntityHelpRequest(entity_type_name, EntityHelpItem.ALL_ENTITIES_LIST)
         name_to_lookup = ' '.join(arguments).lower()
         entities_help = ENTITY_TYPE_NAME_2_ENTITY_HELP_FROM_APP_HELP_GETTER[entity_type_name](self.application_help)
-        entity = lookup_entity(entities_help, name_to_lookup)
-        return EntityHelpRequest(entity_type_name, EntityHelpItem.INDIVIDUAL_ENTITY, entity)
+        match = lookup_entity(entities_help, name_to_lookup)
+        return EntityHelpRequest(entity_type_name, EntityHelpItem.INDIVIDUAL_ENTITY, match.value)
 
     @staticmethod
     def _parse_html_doc_help(arguments: list) -> HtmlDocHelpRequest:
@@ -168,7 +168,7 @@ def _is_name_of_phase(name: str):
     return name in map(lambda x: x.identifier, phase_identifier.ALL)
 
 
-def lookup_entity(entities: EntitiesHelp, name: str) -> EntityDocumentation:
+def lookup_entity(entities: EntitiesHelp, name: str) -> argument_value_lookup.Match:
     return argument_value_lookup.lookup_argument(entities.entity_type_name,
                                                  name,
                                                  argument_value_lookup.entities_key_value_iter(entities))
