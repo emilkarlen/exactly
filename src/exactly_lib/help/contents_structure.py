@@ -13,7 +13,7 @@ from exactly_lib.help.program_modes.test_suite.section.cases import CasesSection
 from exactly_lib.help.program_modes.test_suite.section.configuration import ConfigurationSectionDocumentation
 from exactly_lib.help.program_modes.test_suite.section.suites import SuitesSectionDocumentation
 from exactly_lib.help.suite_reporters.contents_structure import suite_reporters_help
-from exactly_lib.help.suite_reporters.suite_reporter.all_suite_reporters import ALL_SUITE_REPORTER
+from exactly_lib.help.suite_reporters.suite_reporter.all_suite_reporters import ALL_SUITE_REPORTERS
 from exactly_lib.help.utils.entity_documentation import EntitiesHelp
 from exactly_lib.processing.instruction_setup import InstructionsSetup
 from exactly_lib.test_case import phase_identifier
@@ -73,7 +73,7 @@ def application_help_for(instructions_setup: InstructionsSetup) -> ApplicationHe
                                CasesSectionDocumentation(SECTION_NAME__CASES),
                                SuitesSectionDocumentation(SECTION_NAME__SUITS),
                            ]),
-                           suite_reporters_help(ALL_SUITE_REPORTER))
+                           suite_reporters_help(ALL_SUITE_REPORTERS))
 
 
 def phase_helps_for(instructions_setup: InstructionsSetup) -> iter:
