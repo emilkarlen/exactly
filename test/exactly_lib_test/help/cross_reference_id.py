@@ -25,6 +25,19 @@ class CrossReferenceIdVisitorTest(unittest.TestCase):
                       returned,
                       'The object itself is expected to be returned by the visitor')
 
+    def test_visit_EntityCrossReferenceId(self):
+        # ARRANGE #
+        x = sut.EntityCrossReferenceId('entity type name', 'entity name')
+        visitor = VisitorThatRegistersVisitedClassesAndReturnsTheArgument()
+        # ACT #
+        returned = visitor.visit(x)
+        # ASSERT #
+        self.assertEqual([sut.EntityCrossReferenceId],
+                         visitor.visited_classes)
+        self.assertIs(x,
+                      returned,
+                      'The object itself is expected to be returned by the visitor')
+
     def test_visit_ActorCrossReferenceId(self):
         # ARRANGE #
         x = sut.ActorCrossReferenceId('actor name')
@@ -118,6 +131,10 @@ class VisitorThatRegistersVisitedClassesAndReturnsTheArgument(sut.CrossReference
 
     def visit_concept(self, x: sut.ConceptCrossReferenceId):
         self.visited_classes.append(sut.ConceptCrossReferenceId)
+        return x
+
+    def visit_entity(self, x: sut.EntityCrossReferenceId):
+        self.visited_classes.append(sut.EntityCrossReferenceId)
         return x
 
     def visit_actor(self, x: sut.ActorCrossReferenceId):
