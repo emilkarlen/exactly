@@ -2,6 +2,7 @@ import os
 
 from exactly_lib.cli.program_modes.help.error import HelpError
 from exactly_lib.cli.util import value_lookup
+from exactly_lib.cli.util.value_lookup import Match
 from exactly_lib.help.utils.entity_documentation import EntitiesHelp
 
 
@@ -12,7 +13,7 @@ def entities_key_value_iter(entities_help: EntitiesHelp) -> iter:
 
 def lookup_argument(object_name: str,
                     argument_pattern: str,
-                    key_value_iter):
+                    key_value_iter) -> Match:
     try:
         return value_lookup.lookup(argument_pattern, key_value_iter)
     except value_lookup.NoMatchError:
