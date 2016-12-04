@@ -38,10 +38,12 @@ class HelpCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
             _synopsis(_ns(arguments_for.suite_section_for_name('SECTION')), 'Describes a test suite section.'),
             _synopsis(_ns(arguments_for.suite_instruction_in_section('SECTION', 'INSTRUCTION')),
                       'Describes an instruction in a suite section.'),
-            _synopsis(_ns(arguments_for.concept_list()), 'Lists all concepts.'),
-            _synopsis(_ns(arguments_for.concept_single('CONCEPT')), 'Describes a concept.'),
-            _synopsis(_ns(arguments_for.actor_list()), 'Lists all actors.'),
-            _synopsis(_ns(arguments_for.actor_single('ACTOR')), 'Describes an actor.'),
+            _entity_list_and_describe(opt.ACTOR, 'ACTOR',
+                                      'Lists all actors; or describes a given actor.'),
+            _entity_list_and_describe(opt.CONCEPT, 'CONCEPT',
+                                      'Lists all concepts; or describes a given concept.'),
+            _entity_list_and_describe(opt.SUITE_REPORTER, 'REPORTER',
+                                      'Lists all suite reporters; or describes a given suite reporter.'),
         ]
 
     def argument_descriptions(self) -> list:
@@ -55,6 +57,21 @@ def _synopsis(additional_arguments: list,
                                docs.text(single_line_description))
 
 
+def _entity_list_and_describe(entity_type_name: str,
+                              entity_option_syntax_element: str,
+                              single_line_description: str) -> cli_syntax.Synopsis:
+    arguments = [
+        arg.Single(arg.Multiplicity.MANDATORY,
+                   _c(opt.HELP)),
+        arg.Single(arg.Multiplicity.MANDATORY,
+                   _c(entity_type_name)),
+        arg.Single(arg.Multiplicity.OPTIONAL,
+                   _n(entity_option_syntax_element))
+    ]
+    return cli_syntax.Synopsis(arg.CommandLine(arguments),
+                               docs.text(single_line_description))
+
+
 def _ns(names: list) -> list:
     return list(map(_n, names))
 
@@ -64,9 +81,6 @@ def _single_mandatory_arg(argument: arg.Argument) -> arg.ArgumentUsage:
                       argument)
 
 
-def _c(s: str) -> arg.Argument:
-    return arg.Constant(s)
+_c = arg.Constant
 
-
-def _n(s: str) -> arg.Argument:
-    return arg.Named(s)
+_n = arg.Named
