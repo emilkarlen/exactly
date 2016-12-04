@@ -113,25 +113,24 @@ class Parser:
                                     instruction_name: str) -> TestCaseHelpRequest:
         try:
             test_case_phase_help = self.application_help.test_case_help.phase_name_2_phase_help[phase_name]
-            if not test_case_phase_help.has_instructions:
-                msg = 'The phase %s does not use instructions.' % instruction_name
-                raise HelpError(msg)
-            if instruction_name == INSTRUCTIONS:
-                return TestCaseHelpRequest(
-                    TestCaseHelpItem.PHASE_INSTRUCTION_LIST,
-                    phase_name,
-                    test_case_phase_help)
-            try:
-                description = test_case_phase_help.instruction_set.name_2_description[instruction_name]
-                return TestCaseHelpRequest(
-                    TestCaseHelpItem.INSTRUCTION,
-                    instruction_name,
-                    description)
-            except KeyError:
-                msg = 'The phase %s does not contain the instruction: %s' % (phase_name, instruction_name)
-                raise HelpError(msg)
         except KeyError:
             raise HelpError('There is no phase with the name "%s"' % phase_name)
+        if not test_case_phase_help.has_instructions:
+            msg = 'The phase %s does not use instructions.' % instruction_name
+            raise HelpError(msg)
+        if instruction_name == INSTRUCTIONS:
+            return TestCaseHelpRequest(
+                TestCaseHelpItem.PHASE_INSTRUCTION_LIST,
+                phase_name,
+                test_case_phase_help)
+        key_value_iter = test_case_phase_help.instruction_set.name_2_description.items()
+        description = argument_value_lookup.lookup_argument('instruction',
+                                                            instruction_name,
+                                                            key_value_iter)
+        return TestCaseHelpRequest(
+            TestCaseHelpItem.INSTRUCTION,
+            instruction_name,
+            description)
 
     def _parse_instruction_search_when_not_a_phase(self, instruction_name) -> TestCaseHelpRequest:
         phase_and_instr_descr_list = []
