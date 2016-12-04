@@ -15,18 +15,22 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion_str import begins_with
 
 
-def suite_for(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
+def complete_suite_for(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestHtmlDoc))
-    ret_val.addTest(suite_for_main_program(main_program_runner))
+    ret_val.addTests(suite_that_does_not_require_main_program_runner())
+    ret_val.addTest(suite_that_does_require_main_program_runner(main_program_runner))
     return ret_val
 
 
-def suite_for_main_program(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
-    return test_suite_for_test_cases(main_program_test_cases(), main_program_runner)
+def suite_that_does_not_require_main_program_runner() -> unittest.TestSuite:
+    return unittest.makeSuite(TestHtmlDoc)
 
 
-def main_program_test_cases() -> list:
+def suite_that_does_require_main_program_runner(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
+    return test_suite_for_test_cases(_main_program_test_cases(), main_program_runner)
+
+
+def _main_program_test_cases() -> list:
     return [
         ProcessTestCase('Generation of html-doc SHOULD exit with 0 exitcode '
                         'AND output html',

@@ -20,13 +20,13 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion_str import
 
 def suite_for(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
-    ret_val.addTest(test_suite_for_test_cases(main_program_test_cases(), main_program_runner))
-    ret_val.addTest(test_suite_for_test_cases(main_program_test_cases_for_all_case_phases(), main_program_runner))
-    ret_val.addTest(test_suite_for_test_cases(main_program_test_cases_for_all_suite_sections(), main_program_runner))
+    ret_val.addTest(test_suite_for_test_cases(_main_program_test_cases(), main_program_runner))
+    ret_val.addTest(test_suite_for_test_cases(_main_program_test_cases_for_all_case_phases(), main_program_runner))
+    ret_val.addTest(test_suite_for_test_cases(_main_program_test_cases_for_all_suite_sections(), main_program_runner))
     return ret_val
 
 
-def main_program_test_cases() -> list:
+def _main_program_test_cases() -> list:
     return [
         ProcessTestCase('WHEN command line arguments are invalid THEN'
                         ' exit code SHOULD indicate this'
@@ -97,7 +97,7 @@ def main_program_test_cases() -> list:
     ]
 
 
-def main_program_test_cases_for_all_suite_sections() -> list:
+def _main_program_test_cases_for_all_suite_sections() -> list:
     return [
         ProcessTestCase("""help for "suite/section '%s'" SHOULD be successful""" % section_name,
                         HelpInvokation(arguments_for.suite_section_for_name(section_name)),
@@ -106,7 +106,7 @@ def main_program_test_cases_for_all_suite_sections() -> list:
         ]
 
 
-def main_program_test_cases_for_all_case_phases() -> list:
+def _main_program_test_cases_for_all_case_phases() -> list:
     return [
         ProcessTestCase("""help for "case/phase '%s'" SHOULD be successful""" % phase.section_name,
                         HelpInvokation(arguments_for.case_phase(phase)),
