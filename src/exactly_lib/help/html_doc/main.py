@@ -11,7 +11,6 @@ from exactly_lib.help.html_doc.parts.utils.entities_list_renderer import HtmlDoc
 from exactly_lib.help.utils.cross_reference import CrossReferenceTextConstructor
 from exactly_lib.help.utils.render import RenderingEnvironment
 from exactly_lib.help.utils.table_of_contents import toc_list
-from exactly_lib.util.std import StdOutputFiles
 from exactly_lib.util.textformat.formatting.html import document as doc_rendering
 from exactly_lib.util.textformat.formatting.html import text
 from exactly_lib.util.textformat.formatting.html.paragraph_item.full_paragraph_item import FullParagraphItemRenderer
@@ -20,26 +19,16 @@ from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import lists
 
 
-class HtmlDocGenerator:
-    def __init__(self,
-                 output: StdOutputFiles,
-                 application_help: ApplicationHelp):
-        self.output = output
-        self.renderer = HtmlDocContentsRenderer(application_help)
-
-    def apply(self):
-        setup = self._page_setup()
-        contents = self.renderer.apply()
-        section_renderer = _section_renderer()
-        renderer = doc_rendering.DocumentRenderer(section_renderer)
-        renderer.apply(self.output.out, setup, contents)
-
-    def _page_setup(self) -> doc_rendering.DocumentSetup:
-        head_populator = page_setup.StylePopulator(page_setup.ELEMENT_STYLES)
-        setup = doc_rendering.DocumentSetup(page_setup.PAGE_TITLE,
-                                            head_populator=head_populator,
-                                            header_populator=page_setup.HEADER_POPULATOR)
-        return setup
+def generate_and_output(output_file,
+                        application_help: ApplicationHelp):
+    """
+    Outputs html-doc help on given file.
+    """
+    contents = HtmlDocContentsRenderer(application_help).apply()
+    section_renderer = _section_renderer()
+    renderer = doc_rendering.DocumentRenderer(section_renderer)
+    setup = _page_setup()
+    renderer.apply(output_file, setup, contents)
 
 
 class HtmlDocContentsRenderer:
@@ -117,3 +106,11 @@ def _section_renderer() -> doc_rendering.SectionRenderer:
     section_header_renderer = HnSectionHeaderRenderer(text_renderer)
     paragraph_item_renderer = FullParagraphItemRenderer(text_renderer)
     return doc_rendering.SectionRenderer(section_header_renderer, paragraph_item_renderer)
+
+
+def _page_setup() -> doc_rendering.DocumentSetup:
+    head_populator = page_setup.StylePopulator(page_setup.ELEMENT_STYLES)
+    setup = doc_rendering.DocumentSetup(page_setup.PAGE_TITLE,
+                                        head_populator=head_populator,
+                                        header_populator=page_setup.HEADER_POPULATOR)
+    return setup

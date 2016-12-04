@@ -1,3 +1,4 @@
+import io
 import unittest
 
 from exactly_lib.cli.cli_environment.common_cli_options import HELP_COMMAND
@@ -9,11 +10,9 @@ from exactly_lib.util.textformat.formatting.html.document import DOCTYPE_XHTML1_
 from exactly_lib_test.test_resources.main_program.constant_arguments_check import ProcessTestCase, PlainArrangement
 from exactly_lib_test.test_resources.main_program.constant_arguments_check_execution import test_suite_for_test_cases
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
-from exactly_lib_test.test_resources.str_std_out_files import null_output_files
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as pr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as va
 from exactly_lib_test.test_resources.value_assertions.value_assertion_str import begins_with
-from exactly_lib_test.util.textformat.test_resources import structure as struct_check
 
 
 def suite_for(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
@@ -41,19 +40,12 @@ def main_program_test_cases() -> list:
 
 
 class TestHtmlDoc(unittest.TestCase):
-    def test_that_html_doc_generation_does_not_raise_an_exception(self):
-        # ARRANGE #
-        output = null_output_files()
-        application_help = application_help_for(default_instructions_setup.INSTRUCTIONS_SETUP)
-        generator = sut.HtmlDocGenerator(output, application_help)
-        # ACT & ASSERT #
-        generator.apply()
-
-    def test_that_html_doc_renderer_returns_valid_section_contents(self):
+    def test_generate_and_output_SHOULD_output_xhtml(self):
         # ARRANGE #
         application_help = application_help_for(default_instructions_setup.INSTRUCTIONS_SETUP)
-        renderer = sut.HtmlDocContentsRenderer(application_help)
+        output_file = io.StringIO()
         # ACT #
-        actual = renderer.apply()
+        sut.generate_and_output(output_file, application_help)
         # ASSERT #
-        struct_check.is_section_contents.apply(self, actual)
+        actual_output = output_file.getvalue()
+        begins_with(DOCTYPE_XHTML1_0).apply(self, actual_output, va.MessageBuilder('file output'))
