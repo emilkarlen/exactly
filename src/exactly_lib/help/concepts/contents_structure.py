@@ -95,25 +95,3 @@ def concepts_help(concepts: iter) -> EntitiesHelp:
     :param concepts: [ConceptDocumentation]
     """
     return EntitiesHelp(CONCEPT_ENTITY_TYPE_NAME, concepts)
-
-
-class ConceptsHelp(tuple):
-    def __new__(cls,
-                concepts: iter):
-        """
-        :type concepts: [`ConceptDocumentation`]
-        """
-        return tuple.__new__(cls, (list(concepts),))
-
-    @property
-    def all_concepts(self) -> list:
-        """
-        :type: [`ConceptDocumentation`]
-        """
-        return self[0]
-
-    def lookup_by_name_in_singular(self, concept_name: str) -> ConceptDocumentation:
-        matches = list(filter(lambda c: c.name().singular == concept_name, self.all_concepts))
-        if not matches:
-            raise KeyError('Not a concept: ' + concept_name)
-        return matches[0]
