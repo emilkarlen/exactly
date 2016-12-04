@@ -3,6 +3,7 @@ from exactly_lib.help.concepts.plain_concepts.environment_variable import ENVIRO
 from exactly_lib.help.concepts.plain_concepts.preprocessor import PREPROCESSOR_CONCEPT
 from exactly_lib.help.concepts.plain_concepts.present_working_directory import PRESENT_WORKING_DIRECTORY_CONCEPT
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
+from exactly_lib.help.concepts.plain_concepts.suite_reporter import SUITE_REPORTER_CONCEPT
 
 
 def all_plain_concepts() -> list:
@@ -15,4 +16,5 @@ def all_plain_concepts() -> list:
         ENVIRONMENT_VARIABLE_CONCEPT,
         PREPROCESSOR_CONCEPT,
         PRESENT_WORKING_DIRECTORY_CONCEPT,
+        SUITE_REPORTER_CONCEPT,
     ]
