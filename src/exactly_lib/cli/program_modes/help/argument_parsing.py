@@ -1,5 +1,5 @@
 from exactly_lib.cli.program_modes.help.entities_requests import EntityHelpItem, EntityHelpRequest
-from exactly_lib.cli.program_modes.help.html_documentation.help_request import HtmlDocHelpRequest
+from exactly_lib.cli.program_modes.help.html_doc.help_request import HtmlDocHelpRequest
 from exactly_lib.cli.program_modes.help.program_modes import help_request
 from exactly_lib.cli.program_modes.help.program_modes.main_program.help_request import *
 from exactly_lib.cli.program_modes.help.program_modes.test_case.help_request import *
