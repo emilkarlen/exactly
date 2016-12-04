@@ -17,3 +17,4 @@ INSTRUCTIONS = instruction_set_from_name_and_setup_constructor_list(
         ('type', type.setup),
     ]
 )
+
