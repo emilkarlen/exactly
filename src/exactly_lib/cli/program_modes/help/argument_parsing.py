@@ -39,7 +39,7 @@ class Parser:
 
     def apply(self, help_command_arguments: list) -> help_request.HelpRequest:
         """
-        :raises HelpError Invalid usage
+        :raises HelpError: Invalid usage
         """
         if not help_command_arguments:
             return MainProgramHelpRequest(MainProgramHelpItem.PROGRAM)
@@ -92,15 +92,12 @@ class Parser:
         if not test_suite_section_help.has_instructions:
             raise HelpError('Section "%s" does not have instructions.')
         instruction_name = arguments[0]
-        try:
-            description = test_suite_section_help.instruction_set.name_2_description[instruction_name]
-            return TestSuiteHelpRequest(
-                TestSuiteHelpItem.INSTRUCTION,
-                instruction_name,
-                description)
-        except KeyError:
-            msg = 'The section %s does not contain the instruction: %s' % (section_name, instruction_name)
-            raise HelpError(msg)
+        match = argument_value_lookup.lookup_argument('instruction',
+                                                      instruction_name,
+                                                      test_suite_section_help.instruction_set.name_2_description)
+        return TestSuiteHelpRequest(TestSuiteHelpItem.INSTRUCTION,
+                                    match.key,
+                                    match.value)
 
     def _lookup_suite_section(self, section_name: str) -> SectionDocumentation:
         for test_suite_section_help in self.application_help.test_suite_help.section_helps:
@@ -119,18 +116,15 @@ class Parser:
             msg = 'The phase %s does not use instructions.' % instruction_name
             raise HelpError(msg)
         if instruction_name == INSTRUCTIONS:
-            return TestCaseHelpRequest(
-                TestCaseHelpItem.PHASE_INSTRUCTION_LIST,
-                phase_name,
-                test_case_phase_help)
-        key_value_iter = test_case_phase_help.instruction_set.name_2_description.items()
+            return TestCaseHelpRequest(TestCaseHelpItem.PHASE_INSTRUCTION_LIST,
+                                       phase_name,
+                                       test_case_phase_help)
         match = argument_value_lookup.lookup_argument('instruction',
                                                       instruction_name,
-                                                      key_value_iter)
-        return TestCaseHelpRequest(
-            TestCaseHelpItem.INSTRUCTION,
-            instruction_name,
-            match.value)
+                                                      test_case_phase_help.instruction_set.name_2_description)
+        return TestCaseHelpRequest(TestCaseHelpItem.INSTRUCTION,
+                                   match.key,
+                                   match.value)
 
     def _parse_instruction_search_when_not_a_phase(self, instruction_name) -> TestCaseHelpRequest:
         phase_and_instr_descr_list = []
@@ -144,10 +138,9 @@ class Parser:
         if not phase_and_instr_descr_list:
             msg = 'Neither the name of a phase nor of an instruction: "%s"' % instruction_name
             raise HelpError(msg)
-        return TestCaseHelpRequest(
-            TestCaseHelpItem.INSTRUCTION_SEARCH,
-            instruction_name,
-            phase_and_instr_descr_list)
+        return TestCaseHelpRequest(TestCaseHelpItem.INSTRUCTION_SEARCH,
+                                   instruction_name,
+                                   phase_and_instr_descr_list)
 
     def _parse_entity_help(self, entity_type_name: str, arguments: list) -> EntityHelpRequest:
         if not arguments:
