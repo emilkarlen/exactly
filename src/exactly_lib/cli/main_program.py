@@ -1,5 +1,6 @@
 import os
 
+import exactly_lib.cli.program_modes.help.error
 from exactly_lib.cli.cli_environment.common_cli_options import HELP_COMMAND, SUITE_COMMAND
 from exactly_lib.cli.program_modes import main_program_argument_parsing as case_argument_parsing
 from exactly_lib.cli.program_modes.test_case.settings import TestCaseExecutionSettings
@@ -69,7 +70,7 @@ class MainProgram:
             application_help = application_help_for(self._instruction_set)
             help_request = parse_help.parse(application_help,
                                             help_command_arguments)
-        except parse_help.HelpError as ex:
+        except exactly_lib.cli.program_modes.help.error.HelpError as ex:
             self._output.err.write(ex.msg + os.linesep)
             return EXIT_INVALID_USAGE
         handle_help_request(self._output, application_help, help_request)

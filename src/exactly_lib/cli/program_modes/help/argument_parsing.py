@@ -1,13 +1,16 @@
 from exactly_lib.cli.program_modes.help.entities_requests import EntityHelpItem, EntityHelpRequest
+from exactly_lib.cli.program_modes.help.error import HelpError
 from exactly_lib.cli.program_modes.help.html_doc.help_request import HtmlDocHelpRequest
 from exactly_lib.cli.program_modes.help.program_modes import help_request
 from exactly_lib.cli.program_modes.help.program_modes.main_program.help_request import *
 from exactly_lib.cli.program_modes.help.program_modes.test_case.help_request import *
 from exactly_lib.cli.program_modes.help.program_modes.test_suite.help_request import *
+from exactly_lib.cli.util import argument_value_lookup
 from exactly_lib.help.contents_structure import ApplicationHelp
 from exactly_lib.help.entity_names import CONCEPT_ENTITY_TYPE_NAME, ACTOR_ENTITY_TYPE_NAME, \
     SUITE_REPORTER_ENTITY_TYPE_NAME
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
+from exactly_lib.help.utils.entity_documentation import EntitiesHelp, EntityDocumentation
 from exactly_lib.test_case import phase_identifier
 
 HELP = 'help'
@@ -19,12 +22,6 @@ CONCEPT = CONCEPT_ENTITY_TYPE_NAME
 ACTOR = ACTOR_ENTITY_TYPE_NAME
 SUITE_REPORTER = SUITE_REPORTER_ENTITY_TYPE_NAME
 HTML_DOCUMENTATION = 'htmldoc'
-
-
-class HelpError(Exception):
-    def __init__(self,
-                 msg: str):
-        self.msg = msg
 
 
 def parse(application_help: ApplicationHelp,
@@ -158,11 +155,8 @@ class Parser:
             return EntityHelpRequest(entity_type_name, EntityHelpItem.ALL_ENTITIES_LIST)
         name_to_lookup = ' '.join(arguments).lower()
         entities_help = ENTITY_TYPE_NAME_2_ENTITY_HELP_FROM_APP_HELP_GETTER[entity_type_name](self.application_help)
-        try:
-            entity = entities_help.lookup_by_name_in_singular(name_to_lookup)
-            return EntityHelpRequest(entity_type_name, EntityHelpItem.INDIVIDUAL_ENTITY, entity)
-        except KeyError:
-            raise HelpError('%s does not exist: "%s"' % (entity_type_name.capitalize(), name_to_lookup))
+        entity = lookup_entity(entities_help, name_to_lookup)
+        return EntityHelpRequest(entity_type_name, EntityHelpItem.INDIVIDUAL_ENTITY, entity)
 
     @staticmethod
     def _parse_html_doc_help(arguments: list) -> HtmlDocHelpRequest:
@@ -173,6 +167,12 @@ class Parser:
 
 def _is_name_of_phase(name: str):
     return name in map(lambda x: x.identifier, phase_identifier.ALL)
+
+
+def lookup_entity(entities: EntitiesHelp, name: str) -> EntityDocumentation:
+    return argument_value_lookup.lookup_argument(entities.entity_type_name,
+                                                 name,
+                                                 argument_value_lookup.entities_key_value_iter(entities))
 
 
 ENTITY_TYPE_NAME_2_ENTITY_HELP_FROM_APP_HELP_GETTER = {

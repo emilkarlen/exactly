@@ -57,12 +57,6 @@ class EntitiesHelp(tuple):
         """
         return self[1]
 
-    def lookup_by_name_in_singular(self, entity_name: str) -> EntityDocumentation:
-        matches = list(filter(lambda e: e.singular_name() == entity_name, self.all_entities))
-        if not matches:
-            raise KeyError('Not a ' + self.entity_type_name + ': ' + entity_name)
-        return matches[0]
-
 
 def sorted_entity_list(entities: list) -> list:
     return sorted(entities, key=lambda ed: ed.singular_name())
