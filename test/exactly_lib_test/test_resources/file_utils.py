@@ -61,3 +61,6 @@ class NullFile(object):
 
     def flush(self):
         pass
+
+
+NULL_FILE = NullFile()
