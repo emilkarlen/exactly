@@ -2,8 +2,8 @@ import unittest
 
 from exactly_lib.cli.program_modes.help import argument_parsing as sut
 from exactly_lib.cli.program_modes.help import arguments_for
-from exactly_lib.cli.program_modes.help.argument_parsing import HelpError
 from exactly_lib.cli.program_modes.help.entities_requests import EntityHelpItem, EntityHelpRequest
+from exactly_lib.cli.program_modes.help.error import HelpError
 from exactly_lib.cli.program_modes.help.html_doc.help_request import HtmlDocHelpRequest
 from exactly_lib.cli.program_modes.help.program_modes.main_program.help_request import *
 from exactly_lib.cli.program_modes.help.program_modes.test_case.help_request import *
@@ -79,7 +79,7 @@ class TestTestCasePhase(unittest.TestCase):
         application_help = self._application_help_with_phases(['phase 1',
                                                                'phase 2'])
         arguments = arguments_for.case_phase_for_name('non existing phase')
-        with self.assertRaises(sut.HelpError):
+        with self.assertRaises(HelpError):
             sut.parse(application_help, arguments)
 
     def _assert_successful_parsing_of_existing_phase(self,
@@ -119,7 +119,7 @@ class TestTestCaseSingleInstructionInPhase(unittest.TestCase):
         application_help = application_help_for([
             section_documentation('phase', ['instruction-name'])
         ])
-        with self.assertRaises(sut.HelpError):
+        with self.assertRaises(HelpError):
             sut.parse(application_help,
                       arguments_for.case_instruction_in_phase('non-existing-phase', 'instruction-name'))
 
@@ -128,7 +128,7 @@ class TestTestCaseSingleInstructionInPhase(unittest.TestCase):
             section_documentation('phase-1', ['instruction']),
             section_documentation('empty-phase', []),
         ])
-        with self.assertRaises(sut.HelpError):
+        with self.assertRaises(HelpError):
             sut.parse(application_help,
                       arguments_for.case_instruction_in_phase('empty-phase', 'instruction'))
 
@@ -215,7 +215,7 @@ class TestTestCaseInstructionList(unittest.TestCase):
     def test_unknown_instruction(self):
         instructions = ['known-instruction']
         application_help = application_help_for([section_documentation('phase', instructions)])
-        with self.assertRaises(sut.HelpError):
+        with self.assertRaises(HelpError):
             sut.parse(application_help,
                       arguments_for.case_instruction_search('unknown-instruction'))
 
@@ -342,7 +342,7 @@ class TestTestSuiteHelp(unittest.TestCase):
         application_help = application_help_for(
             [],
             suite_sections=[SectionDocumentationForSectionWithoutInstructionsTestImpl('section A')])
-        with self.assertRaises(sut.HelpError):
+        with self.assertRaises(HelpError):
             sut.parse(application_help,
                       arguments_for.suite_section_for_name('unknown section'))
 
@@ -352,7 +352,7 @@ class TestTestSuiteSingleInstructionInSection(unittest.TestCase):
         application_help = application_help_for_suite_sections([
             section_documentation('section', ['instruction-name'])
         ])
-        with self.assertRaises(sut.HelpError):
+        with self.assertRaises(HelpError):
             sut.parse(application_help,
                       arguments_for.suite_instruction_in_section('non-existing-section', 'instruction-name'))
 
@@ -361,7 +361,7 @@ class TestTestSuiteSingleInstructionInSection(unittest.TestCase):
             section_documentation('section-1', ['instruction']),
             section_documentation('empty-section', []),
         ])
-        with self.assertRaises(sut.HelpError):
+        with self.assertRaises(HelpError):
             sut.parse(application_help,
                       arguments_for.suite_instruction_in_section('empty-section', 'instruction'))
 
