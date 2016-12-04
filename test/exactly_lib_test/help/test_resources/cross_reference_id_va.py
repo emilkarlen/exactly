@@ -73,6 +73,18 @@ entity_is_valid = va.And([
     _is_str('entity name', EntityCrossReferenceId.entity_name.fget),
 ])
 
+
+def is_entity_for_type(entity_type_name: str) -> va.ValueAssertion:
+    return va.And([
+        is_entity,
+        va.sub_component('entity type name',
+                         EntityCrossReferenceId.entity_type_name.fget,
+                         va.Equals(entity_type_name))
+    ])
+
+
+is_entity = va.is_instance_with(EntityCrossReferenceId, entity_is_valid)
+
 test_case_phase_instruction_is_valid = va.And([
     _is_str('phase name', TestCasePhaseInstructionCrossReference.phase_name.fget),
     _is_str('instruction name', TestCasePhaseInstructionCrossReference.instruction_name.fget),

@@ -1,6 +1,7 @@
 import unittest
 
 from exactly_lib.help.actors.contents_structure import ActorDocumentation
+from exactly_lib.help.entity_names import ACTOR_ENTITY_TYPE_NAME
 from exactly_lib_test.help.test_resources import cross_reference_id_va as xref_va
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
@@ -79,4 +80,5 @@ class TestSeeAlso(WithActorDocumentationBase):
 class TestCrossReferenceTarget(WithActorDocumentationBase):
     def runTest(self):
         actual = self.documentation.cross_reference_target()
-        xref_va.is_actor.apply(self, actual, va.MessageBuilder('cross_reference_target'))
+        assertion = xref_va.is_entity_for_type(ACTOR_ENTITY_TYPE_NAME)
+        assertion.apply(self, actual, va.MessageBuilder('cross_reference_target'))

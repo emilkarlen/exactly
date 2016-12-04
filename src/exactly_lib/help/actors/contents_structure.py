@@ -1,3 +1,4 @@
+from exactly_lib.help.actors.names_and_cross_references import actor_cross_ref
 from exactly_lib.help.cross_reference_id import ActorCrossReferenceId, TestCasePhaseCrossReference
 from exactly_lib.help.entity_names import ACTOR_ENTITY_TYPE_NAME
 from exactly_lib.help.utils.entity_documentation import EntityDocumentation, EntitiesHelp
@@ -17,7 +18,7 @@ class ActorDocumentation(EntityDocumentation):
         return self._name
 
     def cross_reference_target(self) -> ActorCrossReferenceId:
-        return ActorCrossReferenceId(self._name)
+        return actor_cross_ref(self._name)
 
     def single_line_description(self) -> Text:
         return docs.text(self.single_line_description_str())
