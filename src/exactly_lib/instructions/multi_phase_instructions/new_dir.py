@@ -1,7 +1,7 @@
 import pathlib
 
 from exactly_lib.common.instruction_documentation import InvokationVariant
-from exactly_lib.help.concepts.plain_concepts.present_working_directory import PRESENT_WORKING_DIRECTORY_CONCEPT
+from exactly_lib.help.concepts.plain_concepts.current_working_directory import CURRENT_WORKING_DIRECTORY_CONCEPT
 from exactly_lib.help.utils import formatting
 from exactly_lib.instructions.utils.arg_parse.parse_utils import split_arguments_list_string, \
     ensure_is_not_option_argument
@@ -17,7 +17,7 @@ from exactly_lib.util.cli_syntax.elements import argument as a
 class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase):
     def __init__(self, name: str, additional_format_map: dict = None, is_in_assert_phase: bool = False):
         format_map = {
-            'pwd': formatting.concept(PRESENT_WORKING_DIRECTORY_CONCEPT.name().singular),
+            'pwd': formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT.name().singular),
         }
         if additional_format_map is not None:
             format_map.update(additional_format_map)
@@ -47,12 +47,12 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
     def syntax_element_descriptions(self) -> list:
         return [
             dt.a_path_that_is_relative_the(self.path_arg,
-                                           PRESENT_WORKING_DIRECTORY_CONCEPT),
+                                           CURRENT_WORKING_DIRECTORY_CONCEPT),
         ]
 
     def see_also(self) -> list:
         return [
-            PRESENT_WORKING_DIRECTORY_CONCEPT.cross_reference_target(),
+            CURRENT_WORKING_DIRECTORY_CONCEPT.cross_reference_target(),
         ]
 
 

@@ -1,7 +1,7 @@
 from exactly_lib.default.program_modes.test_case.default_instruction_names import CHANGE_DIR_INSTRUCTION_NAME
 from exactly_lib.execution.environment_variables import ENV_VAR_RESULT, ENV_VAR_ACT
 from exactly_lib.help.concepts.contents_structure import PlainConceptDocumentation, Name
-from exactly_lib.help.concepts.some_concept_names import PRESENT_WORKING_DIRECTORY_CONCEPT_NAME
+from exactly_lib.help.concepts.some_concept_names import CURRENT_WORKING_DIRECTORY_CONCEPT_NAME
 from exactly_lib.help.cross_reference_id import TestCasePhaseInstructionCrossReference
 from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.formatting import AnyInstructionNameDictionary
@@ -69,7 +69,7 @@ def _act_dir_description_paragraphs(instruction: AnyInstructionNameDictionary, p
     ret_val.extend(normalize_and_parse(
         _ACT_DIR_DESCRIPTION.format(phase=phase,
                                     instruction=instruction,
-                                    pwd=formatting.concept(PRESENT_WORKING_DIRECTORY_CONCEPT_NAME.singular))))
+                                    pwd=formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT_NAME.singular))))
     ret_val.extend(_act_dir_environment_variables(phase=phase))
     return ret_val
 

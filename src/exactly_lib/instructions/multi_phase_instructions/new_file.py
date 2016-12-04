@@ -1,5 +1,5 @@
 from exactly_lib.common.instruction_documentation import InvokationVariant
-from exactly_lib.help.concepts.plain_concepts.present_working_directory import PRESENT_WORKING_DIRECTORY_CONCEPT
+from exactly_lib.help.concepts.plain_concepts.current_working_directory import CURRENT_WORKING_DIRECTORY_CONCEPT
 from exactly_lib.instructions.utils.arg_parse.parse_destination_path import parse_destination_path, ALL_OPTIONS
 from exactly_lib.instructions.utils.arg_parse.parse_here_document import parse_as_last_argument
 from exactly_lib.instructions.utils.arg_parse.parse_utils import split_arguments_list_string
@@ -51,8 +51,8 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
     def see_also(self) -> list:
         concepts = rel_path_doc.see_also_concepts(ALL_OPTIONS)
-        if PRESENT_WORKING_DIRECTORY_CONCEPT not in concepts:
-            concepts.append(PRESENT_WORKING_DIRECTORY_CONCEPT)
+        if CURRENT_WORKING_DIRECTORY_CONCEPT not in concepts:
+            concepts.append(CURRENT_WORKING_DIRECTORY_CONCEPT)
         return [concept.cross_reference_target() for concept in concepts]
 
 

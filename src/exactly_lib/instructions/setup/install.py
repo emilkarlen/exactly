@@ -3,7 +3,7 @@ import pathlib
 from exactly_lib.common.instruction_documentation import InvokationVariant
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help.concepts.configuration_parameters.home_directory import HOME_DIRECTORY_CONFIGURATION_PARAMETER
-from exactly_lib.help.concepts.plain_concepts.present_working_directory import PRESENT_WORKING_DIRECTORY_CONCEPT
+from exactly_lib.help.concepts.plain_concepts.current_working_directory import CURRENT_WORKING_DIRECTORY_CONCEPT
 from exactly_lib.help.utils import formatting
 from exactly_lib.instructions.utils.arg_parse.parse_utils import split_arguments_list_string
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
@@ -33,7 +33,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         self.dst_arg = a.Named('DESTINATION')
         super().__init__(name, {
             'home_dir': formatting.concept(HOME_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
-            'current_dir': formatting.concept(PRESENT_WORKING_DIRECTORY_CONCEPT.name().singular),
+            'current_dir': formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT.name().singular),
             'DESTINATION': self.dst_arg.name,
         })
 
@@ -80,13 +80,13 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
             dt.a_path_that_is_relative_the(dt.DIR_ARGUMENT,
                                            HOME_DIRECTORY_CONFIGURATION_PARAMETER),
             dt.a_path_that_is_relative_the(self.dst_arg,
-                                           PRESENT_WORKING_DIRECTORY_CONCEPT),
+                                           CURRENT_WORKING_DIRECTORY_CONCEPT),
         ]
 
     def see_also(self) -> list:
         return [
             HOME_DIRECTORY_CONFIGURATION_PARAMETER.cross_reference_target(),
-            PRESENT_WORKING_DIRECTORY_CONCEPT.cross_reference_target(),
+            CURRENT_WORKING_DIRECTORY_CONCEPT.cross_reference_target(),
         ]
 
 

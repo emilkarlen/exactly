@@ -1,7 +1,7 @@
 from exactly_lib.execution import environment_variables
 from exactly_lib.execution.environment_variables import ENV_VAR_RESULT
 from exactly_lib.help.concepts.configuration_parameters.execution_mode import EXECUTION_MODE_CONFIGURATION_PARAMETER
-from exactly_lib.help.concepts.plain_concepts.present_working_directory import PRESENT_WORKING_DIRECTORY_CONCEPT
+from exactly_lib.help.concepts.plain_concepts.current_working_directory import CURRENT_WORKING_DIRECTORY_CONCEPT
 from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
 from exactly_lib.help.utils import formatting
 from exactly_lib.help.utils.formatting import SectionName
@@ -21,7 +21,7 @@ def pwd_at_start_of_phase_first_phase_executed_in_the_sandbox() -> list:
     is the {act_dir}/ sub directory of the sandbox.
     """
     return normalize_and_parse(text.format(act_dir=sds.SUB_DIRECTORY__ACT,
-                                           pwd=formatting.concept(PRESENT_WORKING_DIRECTORY_CONCEPT.name().singular)))
+                                           pwd=formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT.name().singular)))
 
 
 def pwd_at_start_of_phase_is_same_as_at_end_of_the(previous: str) -> list:
@@ -31,7 +31,7 @@ def pwd_at_start_of_phase_is_same_as_at_end_of_the(previous: str) -> list:
     (which is the {act_dir}/ sub directory of the sandbox, if it has not been changed.)
     """
     return normalize_and_parse(text.format(act_dir=sds.SUB_DIRECTORY__ACT,
-                                           pwd=formatting.concept(PRESENT_WORKING_DIRECTORY_CONCEPT.name().singular),
+                                           pwd=formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT.name().singular),
                                            previous=previous))
 
 

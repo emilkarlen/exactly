@@ -1,7 +1,7 @@
 from exactly_lib.common.instruction_documentation import InvokationVariant, \
     SyntaxElementDescription
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
-from exactly_lib.help.concepts.plain_concepts.present_working_directory import PRESENT_WORKING_DIRECTORY_CONCEPT
+from exactly_lib.help.concepts.plain_concepts.current_working_directory import CURRENT_WORKING_DIRECTORY_CONCEPT
 from exactly_lib.help.utils import formatting
 from exactly_lib.instructions.utils import file_ref
 from exactly_lib.instructions.utils.arg_parse.parse_utils import split_arguments_list_string, \
@@ -49,7 +49,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         self.path_argument = dt.PATH_ARGUMENT
         super().__init__(name, {
             'PATH': self.path_argument.name,
-            'pwd': formatting.concept(PRESENT_WORKING_DIRECTORY_CONCEPT.name().singular),
+            'pwd': formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT.name().singular),
         })
 
     def single_line_description(self) -> str:
@@ -99,7 +99,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
     def see_also(self) -> list:
         return [
-            PRESENT_WORKING_DIRECTORY_CONCEPT.cross_reference_target(),
+            CURRENT_WORKING_DIRECTORY_CONCEPT.cross_reference_target(),
         ]
 
 
