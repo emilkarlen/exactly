@@ -30,6 +30,9 @@ class _IsCrossReferenceIdAssertionGetter(CrossReferenceIdVisitor):
     def visit_actor(self, x: ActorCrossReferenceId):
         return _assertion_on_properties_of(x, actor_is_valid)
 
+    def visit_entity(self, x: EntityCrossReferenceId):
+        return _assertion_on_properties_of(x, entity_is_valid)
+
     def visit_test_case_phase(self, x: TestCasePhaseCrossReference):
         return _assertion_on_properties_of(x, test_case_phase_is_valid)
 
@@ -64,6 +67,11 @@ is_actor = va.is_instance_with(ActorCrossReferenceId, actor_is_valid)
 test_case_phase_is_valid = _is_str('phase name', TestCasePhaseCrossReference.phase_name.fget)
 
 test_suite_section_is_valid = _is_str('section name', TestSuiteSectionCrossReference.section_name.fget)
+
+entity_is_valid = va.And([
+    _is_str('entity type name', EntityCrossReferenceId.entity_type_name.fget),
+    _is_str('entity name', EntityCrossReferenceId.entity_name.fget),
+])
 
 test_case_phase_instruction_is_valid = va.And([
     _is_str('phase name', TestCasePhaseInstructionCrossReference.phase_name.fget),

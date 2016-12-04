@@ -62,6 +62,11 @@ def suite_instruction_in_section(section_name: str,
     return [TEST_SUITE, section_name, instruction_name]
 
 
+def entity_single(entity_type_name: str,
+                  entity_name: str) -> list:
+    return [entity_type_name] + entity_name.split()
+
+
 def concept_list() -> list:
     return [CONCEPT]
 
