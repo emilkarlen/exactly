@@ -14,7 +14,7 @@ from exactly_lib.util.description import Description
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure.core import Text
 from exactly_lib.util.textformat.structure.structures import para, text
-from exactly_lib_test.test_resources.instruction_description import InstructionDocumentationWithConstantValues
+from exactly_lib_test.common.test_resources.instruction_documentation import InstructionDocumentationWithConstantValues
 
 
 def instr_descr(phase_name: str, name: str) -> InstructionDocumentation:
