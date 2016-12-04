@@ -8,6 +8,7 @@ from exactly_lib.help.program_modes.common.contents_structure import SectionInst
 from exactly_lib.help.program_modes.main_program.contents_structure import MainProgramHelp
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
+from exactly_lib.help.suite_reporters.contents_structure import suite_reporters_help
 from exactly_lib.help.utils.cross_reference import CrossReferenceTextConstructor
 from exactly_lib.help.utils.render import RenderingEnvironment
 from exactly_lib.util.description import Description
@@ -48,12 +49,14 @@ def section_instruction_set(section_name: str,
 def application_help_for(test_case_phase_helps: list,
                          suite_sections=(),
                          concepts=(),
-                         actors=()) -> ApplicationHelp:
+                         actors=(),
+                         suite_reporters=()) -> ApplicationHelp:
     return ApplicationHelp(MainProgramHelp(),
                            concepts_help(concepts),
                            actors_help(actors),
                            TestCaseHelp(test_case_phase_helps),
-                           TestSuiteHelp(suite_sections))
+                           TestSuiteHelp(suite_sections),
+                           suite_reporters_help(suite_reporters))
 
 
 def application_help_for_suite_sections(suite_sections: list) -> ApplicationHelp:
@@ -61,7 +64,8 @@ def application_help_for_suite_sections(suite_sections: list) -> ApplicationHelp
                            concepts_help([]),
                            actors_help([]),
                            TestCaseHelp([]),
-                           TestSuiteHelp(suite_sections))
+                           TestSuiteHelp(suite_sections),
+                           suite_reporters_help([]))
 
 
 class SectionDocumentationForSectionWithoutInstructionsTestImpl(SectionDocumentation):

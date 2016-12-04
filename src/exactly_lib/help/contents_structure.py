@@ -12,6 +12,8 @@ from exactly_lib.help.program_modes.test_suite.contents_structure import TestSui
 from exactly_lib.help.program_modes.test_suite.section.cases import CasesSectionDocumentation
 from exactly_lib.help.program_modes.test_suite.section.configuration import ConfigurationSectionDocumentation
 from exactly_lib.help.program_modes.test_suite.section.suites import SuitesSectionDocumentation
+from exactly_lib.help.suite_reporters.contents_structure import suite_reporters_help
+from exactly_lib.help.suite_reporters.suite_reporter.all_suite_reporters import ALL_SUITE_REPORTER
 from exactly_lib.help.utils.entity_documentation import EntitiesHelp
 from exactly_lib.processing.instruction_setup import InstructionsSetup
 from exactly_lib.test_case import phase_identifier
@@ -25,12 +27,14 @@ class ApplicationHelp(tuple):
                 concepts_help: EntitiesHelp,
                 actors_help: EntitiesHelp,
                 test_case_help: TestCaseHelp,
-                test_suite_help: TestSuiteHelp):
+                test_suite_help: TestSuiteHelp,
+                suite_reporters_help: EntitiesHelp):
         return tuple.__new__(cls, (main_program_help,
                                    concepts_help,
                                    test_case_help,
                                    test_suite_help,
-                                   actors_help))
+                                   actors_help,
+                                   suite_reporters_help))
 
     @property
     def main_program_help(self) -> MainProgramHelp:
@@ -52,6 +56,10 @@ class ApplicationHelp(tuple):
     def actors_help(self) -> EntitiesHelp:
         return self[4]
 
+    @property
+    def suite_reporters_help(self) -> EntitiesHelp:
+        return self[5]
+
 
 def application_help_for(instructions_setup: InstructionsSetup) -> ApplicationHelp:
     return ApplicationHelp(MainProgramHelp(),
@@ -64,7 +72,8 @@ def application_help_for(instructions_setup: InstructionsSetup) -> ApplicationHe
                                                                      CONFIGURATION_INSTRUCTIONS)),
                                CasesSectionDocumentation(SECTION_NAME__CASES),
                                SuitesSectionDocumentation(SECTION_NAME__SUITS),
-                           ]))
+                           ]),
+                           suite_reporters_help(ALL_SUITE_REPORTER))
 
 
 def phase_helps_for(instructions_setup: InstructionsSetup) -> iter:
